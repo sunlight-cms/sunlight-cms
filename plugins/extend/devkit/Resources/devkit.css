@@ -1,0 +1,193 @@
+/* Toolbar */
+#devkit-toolbar * {
+    margin: 0;
+    padding: 0;
+    width: auto;
+    height: auto;
+    max-width: none;
+    max-height: none;
+    font-size: 13px;
+    font-family: monospace;
+    font-weight: normal;
+    text-decoration: none;
+    color: #000;
+    border: none;
+    background: none;
+    line-height: 100%;
+    box-shadow: none;
+}
+#devkit-toolbar {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    z-index: 1000;
+    padding: 0 10px;
+    width: 100%;
+    border-top: 1px solid #aaa;
+    background: #ccc;
+    background: linear-gradient(to bottom, #ddd, #bbb);
+}
+#devkit-toolbar.devkit-toolbar-closed {
+    left: auto;
+    right: 0;
+    width: 18px;
+    height: 34px;
+    overflow: hidden;
+    border-left: 1px solid #aaa;
+    border-radius: 10px 0 0 0;
+    outline: none;
+    opacity: 0.5;
+}
+#devkit-toolbar.devkit-toolbar-closed:hover {
+    opacity: 1;
+}
+#devkit-toolbar.devkit-toolbar-open {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Sections */
+#devkit-toolbar .devkit-section {
+    float: left;
+    padding: 10px 15px 10px 32px;
+    border-right: 1px solid #aaa;
+    background-repeat: no-repeat;
+    background-position: 8px center;
+}
+#devkit-toolbar.devkit-toolbar-closed .devkit-section {
+    display: none;
+}
+
+#devkit-toolbar .devkit-info {background-image: url("images/info.png");}
+#devkit-toolbar .devkit-time {background-image: url("images/clock.png");}
+#devkit-toolbar .devkit-memory {background-image: url("images/memory.png");}
+#devkit-toolbar .devkit-database {background-image: url("images/database.png");}
+#devkit-toolbar .devkit-extend {background-image: url("images/plugin.png");}
+#devkit-toolbar .devkit-request {background-image: url("images/blocks.png");}
+#devkit-toolbar .devkit-login {background-image: url("images/key.png");}
+
+#devkit-toolbar > a:hover .devkit-section,
+#devkit-toolbar .devkit-toggleable:hover {
+    background-color: #aaa;
+    text-shadow: 0 0 5px #fff;
+}
+
+/* Toggleable sections */
+#devkit-toolbar .devkit-toggleable {
+    cursor: pointer;
+}
+
+/* Toggleable content */
+#devkit-toolbar > .devkit-content {
+    display: none;
+    overflow: auto;
+    position: fixed;
+    left: 0;
+    bottom: 34px;
+    width: 100%;
+    min-width: 700px;
+    height: 100%;
+    border-width: 0 1px;
+    border-style: solid;
+    border-color: #aaa;
+    background-color: #fff;
+}
+#devkit-toolbar > .devkit-content > div {
+    padding: 13px;
+}
+body.devkit-content-open {
+    overflow: hidden;
+}
+
+/* Links */
+#devkit-toolbar > .devkit-content a {
+    color: #f60;
+}
+#devkit-toolbar > .devkit-content a:hover {
+    text-decoration: underline;
+}
+
+/* Sql log */
+#devkit-toolbar li.devkit-slow-query > input {
+    color: #a00;
+}
+
+/* Request */
+#devkit-toolbar .devkit-request-dump {
+    padding: 13px;
+    margin: 8px 0;
+    border: 1px solid #aaa;
+    background-color: #fff;
+    white-space: pre;
+}
+
+/* Hide/show */
+#devkit-toolbar .devkit-hideshow {
+    cursor: pointer;
+}
+
+/* Buttons */
+#devkit-toolbar .devkit-button {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    padding: 2px 12px;
+    font-size: 30px;
+    color: #777;
+    cursor: pointer;
+}
+#devkit-toolbar.devkit-toolbar-closed .devkit-close {
+    display: none;
+}
+#devkit-toolbar.devkit-toolbar-open .devkit-open {
+    display: none;
+}
+
+/* Tables */
+#devkit-toolbar table {
+    border-collapse: collapse;
+}
+#devkit-toolbar th {
+    background-color: #fff;
+    white-space: nowrap;
+}
+#devkit-toolbar th,
+#devkit-toolbar td {
+    padding: 0.3em 0.6em;
+    border: 1px solid #777;
+}
+
+/* Generic */
+#devkit-toolbar .devkit-hidden {
+    display: none;
+}
+#devkit-toolbar .devkit-blood {
+    color: #a00;
+}
+#devkit-toolbar .devkit-heading {
+    margin-bottom: 10px;
+    font-size: 19px;
+    font-weight: bold;
+    font-style: italic;
+}
+#devkit-toolbar ol, #devkit-toolbar ul {
+    margin: 10px 0 10px 20px;
+}
+#devkit-toolbar li {
+    line-height: 150%;
+    padding: 2px 0;
+}
+#devkit-toolbar input {
+    padding: 5px;
+    border: none;
+    background: none;
+}
+#devkit-toolbar small {
+    font-size: 0.8em;
+    color: #0077A7;
+}
+#devkit-toolbar .break-all {
+    word-break: break-all;
+}
+#devkit-toolbar .no-break {
+    white-space: nowrap;
+}

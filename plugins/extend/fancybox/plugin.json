@@ -1,0 +1,15 @@
+{
+    "name": "Fancybox",
+    "description": "A lightbox plugin for images and galleries.",
+    "version": "8.0",
+    "api": "8.0.*",
+    "url": "https://sunlight-cms.org/",
+
+    "custom_class": true,
+    "events.web": [
+        ["tpl.head", "$this::onHead"]
+    ],
+    "events.admin": [
+        ["admin.head", "$this::onHead"]
+    ]
+}

@@ -1,0 +1,74 @@
+<?php
+
+namespace SunlightPlugins\Extend\Codemirror;
+
+use Sunlight\Core;
+use Sunlight\Plugin\ExtendPlugin;
+
+/**
+ * Codemirror plugin
+ *
+ * @author ShiraNai7 <shira.cz>
+ */
+class CodemirrorPlugin extends ExtendPlugin
+{
+    /**
+     * Define JS variables
+     *
+     * @param array $args
+     */
+    public function onCoreJavascript(array $args)
+    {
+        $args['variables']['pluginCodemirror'] = array(
+            'userWysiwygEnabled' => _login ? (bool) Core::$userData['wysiwyg'] : false,
+        );
+    }
+
+    /**
+     * Load CSS and JS
+     *
+     * @param array $args
+     */
+    public function onAdminHead(array $args)
+    {
+        $basePath = $this->getWebPath() . '/Resources';
+
+        $args['css']['codemirror'] = $basePath . '/lib/codemirror.css';
+        $args['css']['codemirror_theme'] = $basePath . '/theme/' . (_adminIsDarkScheme() ? 'ambiance' : 'eclipse') . '.css';
+        $args['css']['codemirror_dialog'] = $basePath . '/addon/dialog/dialog.css';
+
+        $args['js']['codemirror'] = $basePath . '/lib/codemirror.js';
+        $args['js']['codemirror_search'] = $basePath . '/addon/search/search.js';
+        $args['js']['codemirror_searchcursor'] = $basePath . '/addon/search/searchcursor.js';
+        $args['js']['codemirror_dialog'] = $basePath . '/addon/dialog/dialog.js';
+        $args['js']['codemirror_activeline'] = $basePath . '/addon/selection/active-line.js';
+        $args['js']['codemirror_matchbrackets'] = $basePath . '/addon/edit/matchbrackets.js';
+        $args['js']['codemirror_init'] = $basePath . '/lib/codemirror-init.js';
+    }
+
+    /**
+     * Generate admin CSS
+     *
+     * @param array $args
+     */
+    public function onAdminStyle(array $args)
+    {
+        $args['output'] .= "/* codemirror */\n";
+        $args['output'] .= "div.CodeMirror {\n";
+
+        if ($GLOBALS['dark']) {
+            $args['output'] .= "border: 1px solid {$GLOBALS['scheme_smoke_dark']};\n";
+        } else {
+            $args['output'] .= "outline: 1px solid  {$GLOBALS['scheme_white']};\n";
+            $args['output'] .= "border-width: 1px;\n";
+            $args['output'] .= "border-style: solid;\n";
+            $args['output'] .= "border-color: {$GLOBALS['scheme_smoke_dark']} {$GLOBALS['scheme_smoke']} {$GLOBALS['scheme_smoke']} {$GLOBALS['scheme_smoke_dark']};\n";
+        }
+
+        $args['output'] .= "line-height: 1.5;\n";
+        $args['output'] .= "cursor: text;\n";
+        $args['output'] .= "background-color: #fff;\n";
+        $args['output'] .= "}\n";
+        $args['output'] .= "div.CodeMirror span.cm-hcm {color: " . ($GLOBALS['dark'] ? '#ff0' : '#f60') . ";}\n";
+    }
+}

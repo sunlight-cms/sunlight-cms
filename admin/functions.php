@@ -1,0 +1,484 @@
+<?php
+
+use Sunlight\Core;
+use Sunlight\Extend;
+use Sunlight\Page\PageManager;
+use Sunlight\Plugin\TemplateHelper;
+use Sunlight\Database\SimpleTreeFilter;
+
+/**
+ * Vykreslit menu
+ *
+ * @return string
+ */
+function _adminMenu()
+{
+    global $admin_access, $admin_modules, $admin_menu_items, $admin_current_module;
+
+    $output = "<div id=\"menu\">\n";
+    if ($admin_access) {
+        foreach ($admin_menu_items as $module => $order) {
+            if (_adminModuleAccess($module)) {
+                $active = (
+                    $admin_current_module === $module
+                    || !empty($admin_modules[$module]['children']) && in_array($admin_current_module, $admin_modules[$module]['children'])
+                );
+                $url = isset($admin_modules[$module]['url'])
+                    ? $admin_modules[$module]['url']
+                    : 'index.php?p=' . $module
+                ;
+
+                $output .= '<a href="' . $url . '"'
+                    . ($active ? ' class="act"' : '')
+                    . '><span>' . $admin_modules[$module]['title'] . "</span></a>\n"
+                ;
+            }
+        }
+    } else {
+        $output .= '<a href="./" class="act"><span>' . $GLOBALS['_lang']['login.title'] . "</span></a>\n";
+    }
+    $output .= "</div>\n";
+
+    return $output;
+}
+
+/**
+ * Vykreslit uziv. menu
+ *
+ * @return string
+ */
+function _adminUserMenu()
+{
+    global $_lang;
+
+    $output = '<span id="usermenu">';
+    if (_login && _priv_administration) {
+        $profile_link = _linkModule('profile', 'id=' . _loginname);
+        $avatar = _getAvatar(Core::$userData, array('get_url' => true, 'default' => false));
+        if (null !== $avatar) {
+            $output .= '<a id="usermenu-avatar" href="' . $profile_link . '"><img src="' . $avatar . '" alt="' . _loginname . '"></a>';
+        }
+        $output .= '<a id="usermenu-username" href="' . $profile_link . '">' . _loginpublicname . '</a> [';
+        if (_messages) {
+            $messages_count = DB::result(DB::query("SELECT COUNT(*) FROM " . _pm_table . " WHERE (receiver=" . _loginid . " AND receiver_deleted=0 AND receiver_readtime<update_time) OR (sender=" . _loginid . " AND sender_deleted=0 AND sender_readtime<update_time)"), 0);
+            if ($messages_count != 0) {
+                $messages_count = " <span class='highlight'>(" . $messages_count . ")</span>";
+            } else {
+                $messages_count = "";
+            }
+            $output .= "<a href='" . _linkModule('messages') . "'>" . $_lang['usermenu.messages'] . $messages_count . "</a>, ";
+        }
+        $output .= '<a href="' . _linkModule('settings') . '">' . $_lang['usermenu.settings'] . '</a>, <a href="' . _xsrfLink(_link('system/script/logout.php?_return=admin/')) . '">' . $_lang['usermenu.logout'] . '</a>]';
+        $output .= '<a href="' . Core::$url . '/" target="_blank" class="usermenu-web-link" title="' . $_lang['admin.link.site'] . '"><img class="icon" src="images/icons/guide.png" alt="' . $_lang['admin.link.site'] . '"></a>';
+    } else {
+        $output .= '<a href="./">' . $_lang['usermenu.guest'] . '</a>';
+    }
+    $output .= '</span>';
+
+    return $output;
+}
+
+/**
+ * Sestavit kod zpetneho odkazu
+ *
+ * @param string $url
+ * @return string
+ */
+function _adminBacklink($url)
+{
+    return '<a href="' . _e($url) . '" class="backlink">&lt; ' . $GLOBALS['_lang']['global.return'] . "</a>\n";
+}
+
+/**
+ * Sestavit kod poznamky
+ *
+ * @param string      $str     zprava
+ * @param bool        $no_gray nepridavat tridu "note" 1/0
+ * @param string|null $icon    nazev ikony nebo null (= 'note')
+ * @return string
+ */
+function _adminNote($str, $no_gray = false, $icon = null)
+{
+    return "<p" . ($no_gray ? '' : ' class="note"') . "><img src='images/icons/" . (isset($icon) ? $icon : 'note') . ".png' alt='note' class='icon'>" . $str . "</p>";
+}
+
+/**
+ * Zjistit, zda-li ma uzivatel pristup k modulu
+ *
+ * @param string $module nazev modulu
+ * @return bool
+ */
+function _adminModuleAccess($module)
+{
+    global $admin_modules;
+
+    if (isset($admin_modules[$module])) {
+        $access = $admin_modules[$module]['access'];
+
+        if (is_string($access)) {
+            return eval('return ' . $access . ';');
+        } else {
+            return (bool) $access;
+        }
+    } else {
+        return false;
+    }
+}
+
+/**
+ * Sestavit cast sql dotazu pro pristup k ankete - 'where'
+ *
+ * @param bool   $csep  oddelit SQL dotaz vyrazem ' AND ' zleva 1/0
+ * @param string $alias alias tabulky s anketami vcetne tecky
+ * @return string
+ */
+function _adminPollAccess($csep = true, $alias = 'p.')
+{
+    if ($csep) {
+        $csep = " AND ";
+    } else {
+        $csep = "";
+    }
+
+    return ((!_priv_adminallart) ? $csep . "{$alias}author=" . _loginid : $csep . "({$alias}author=" . _loginid . " OR (SELECT level FROM " . _groups_table . " WHERE id=(SELECT group_id FROM " . _users_table . " WHERE id={$alias}author))<" . _priv_level . ")");
+}
+
+/**
+ * Sestavit cast sql dotazu pro pristup k clanku - 'where'
+ *
+ * @param string|null $alias alias tabulky clanku nebo null
+ * @return string
+ */
+function _adminArticleAccess($alias = '')
+{
+    if ('' !== $alias) {
+        $alias .= '.';
+    }
+    if (_priv_adminallart) {
+        return " AND (" . $alias . "author=" . _loginid . " OR (SELECT level FROM " . _groups_table . " WHERE id=(SELECT group_id FROM " . _users_table . " WHERE id=" . (('' === $alias) ? "" . _articles_table . "." : $alias) . "author))<" . _priv_level . ")";
+    } else {
+        return " AND " . $alias . "author=" . _loginid;
+    }
+}
+
+/**
+ * Sestavit odkaz na clanek ve vypisu
+ *
+ * @param array $art    data clanku vcetne cat_slug
+ * @param bool  $ucnote zobrazovat poznamku o neschvaleni 1/0
+ * @return string
+ */
+function _adminArticleEditLink($art, $ucnote = true)
+{
+    global $_lang;
+    $output = "";
+
+    // trida
+    $class = "";
+    if ($art['visible'] == 0 && $art['public'] == 1) {
+        $class = " class='invisible'";
+    }
+    if ($art['visible'] == 1 && $art['public'] == 0) {
+        $class = " class='notpublic'";
+    }
+    if ($art['visible'] == 0 && $art['public'] == 0) {
+        $class = " class='invisible-notpublic'";
+    }
+
+    // odkaz
+    $output .= "<a href='" . _linkArticle($art['id'], $art['slug'], $art['cat_slug']) . "' target='_blank'" . $class . ">";
+    if ($art['time'] <= time()) {
+        $output .= "<strong>";
+    }
+    $output .= $art['title'];
+    if ($art['time'] <= time()) {
+        $output .= "</strong>";
+    }
+    $output .= "</a>";
+
+    // poznamka o neschvaleni
+    if ($art['confirmed'] != 1 && $ucnote) {
+        $output .= " <small>(" . $_lang['global.unconfirmed'] . ")</small>";
+    }
+
+    return $output;
+}
+
+/**
+ * Sestavit <select> pro vyber stranky
+ *
+ * Mozne volby v $options:
+ * -----------------------
+ * selected             ID aktivni polozky
+ * empty_item           popisek prazdne polozky (ID = -1)
+ * type                 omezeni na typ stranky
+ * allow_separators     povolit vyber oddelovace 1/0
+ * disabled_branches    pole ID stranek, jejichz uzly a podstranky maji byt vynechany z vypisu
+ * maxlength            maximalni delka zobrazeneho titulku stranky (null = bez limitu)
+ * attrs                HTML retezec s extra atributy pro <select> tag (bez mezery na zacatku)
+ *
+ * @param string $name    nazev selectu
+ * @param array  $options
+ * @return string
+ */
+function _adminRootSelect($name, array $options)
+{
+    // vychozi volby
+    $options += array(
+        'selected' => -1,
+        'empty_item' => null,
+        'type' => null,
+        'allow_separators' => false,
+        'disabled_branches' => array(),
+        'maxlength' => 22,
+        'attrs' => null,
+    );
+
+    // filtr na typ
+    if (null !== $options['type']) {
+        $filter = new SimpleTreeFilter(array('type' => $options['type']));
+    } else {
+        $filter = null;
+    }
+
+    // extend
+    Extend::call('admin.root.select', array(
+        'options' => &$options,
+        'filter' => &$filter,
+    ));
+
+    // deaktivovane vetve
+    if (!empty($options['disabled_branches'])) {
+        $options['disabled_branches'] = array_flip($options['disabled_branches']);
+    }
+
+    // nacteni stromu
+    $tree = PageManager::getFlatTree(null, null, $filter);
+
+    // vypis
+    $output = "<select name='{$name}'" . (null !== $options['attrs'] ? ' ' . $options['attrs'] : '') . ">\n";
+
+    if (null !== $options['empty_item']) {
+        $output .= "<option class='special' value='-1'>{$options['empty_item']}</option>\n";
+    }
+
+    $disabledBranchLevel = null;
+    foreach ($tree as $page) {
+        // filtr deaktivovanych vetvi
+        if (null === $disabledBranchLevel) {
+            if (isset($options['disabled_branches'][$page['id']])) {
+                $disabledBranchLevel = $page['node_level'];
+            }
+        } elseif ($page['node_level'] <= $disabledBranchLevel) {
+            $disabledBranchLevel = null;
+        }
+
+        // vypis stranky
+        if (null === $disabledBranchLevel) {
+            $output .= "<option value='{$page['id']}'"
+                . (($options['selected'] == $page['id']) ? " selected" : '')
+                . ((null !== $options['type'] && $page['type'] != $options['type'] || !$options['allow_separators'] && _page_separator == $page['type']) ? " disabled" : '')
+                . '>'
+                . str_repeat('&nbsp;&nbsp;&nbsp;│&nbsp;', $page['node_level'])
+                . _cutText($page['title'], $options['maxlength'])
+                . "</option>\n"
+            ;
+        }
+    }
+
+    if (empty($tree) && null === $options['empty_item']) {
+        $output .= "<option value='-1'>" . $GLOBALS['_lang']['global.nokit'] . "</option>\n";
+    }
+
+    $output .= "</select>\n";
+
+    return $output;
+}
+
+/**
+ * Sestavit <select> pro vyber uzivatele/skupiny
+ *
+ * @param string      $name        nazev selectu
+ * @param int         $selected    id zvoleneho uzivatele
+ * @param string      $gcond       SQL podminka pro zarazeni skupiny
+ * @param string|null $class       trida selectu nebo null
+ * @param string|null $extraoption popisek extra volby (-1) nebo null (= deaktivovano)
+ * @param bool        $groupmode   vybirat pouze cele skupiny 1/0
+ * @param int|null    $multiple    povolit vyber vice polozek (size = $multiple) nebo null (= deaktivovano)
+ * @return string
+ */
+function _adminUserSelect($name, $selected, $gcond, $class = null, $extraoption = null, $groupmode = false, $multiple = null)
+{
+    if ($class != null) {
+        $class = " class='" . $class . "'";
+    } else {
+        $class = "";
+    }
+    if ($multiple != null) {
+        $multiple = " multiple size='" . $multiple . "'";
+        $name .= "[]";
+    } else {
+        $multiple = "";
+    }
+    $output = "<select name='" . $name . "'" . $class . $multiple . ">";
+    $query = DB::query("SELECT id,title,level FROM " . _groups_table . " WHERE " . $gcond . " AND id!=2 ORDER BY level DESC");
+    if ($extraoption != null) {
+        $output .= "<option value='-1' class='special'>" . $extraoption . "</option>";
+    }
+
+    if (!$groupmode) {
+        while ($item = DB::row($query)) {
+            $users = DB::query("SELECT id,username,publicname FROM " . _users_table . " WHERE group_id=" . $item['id'] . " AND (" . $item['level'] . "<" . _priv_level . " OR id=" . _loginid . ") ORDER BY id");
+            if (DB::size($users) != 0) {
+                $output .= "<optgroup label='" . $item['title'] . "'>";
+                while ($user = DB::row($users)) {
+                    if ($selected == $user['id']) {
+                        $sel = " selected";
+                    } else {
+                        $sel = "";
+                    }
+                    $output .= "<option value='" . $user['id'] . "'" . $sel . ">" . $user[(null !== $user['publicname']) ? 'publicname' : 'username'] . "</option>\n";
+                }
+                $output .= "</optgroup>";
+            }
+        }
+    } else {
+        while ($item = DB::row($query)) {
+            if ($selected == $item['id']) {
+                $sel = " selected";
+            } else {
+                $sel = "";
+            }
+            $output .= "<option value='" . $item['id'] . "'" . $sel . ">" . $item['title'] . " (" . DB::result(DB::query("SELECT COUNT(*) FROM " . _users_table . " WHERE group_id=" . $item['id']), 0) . ")</option>\n";
+        }
+    }
+
+    $output .= "</select>";
+
+    return $output;
+}
+
+/**
+ * Sestavit <select> pro vyber layoutu motivu
+ *
+ * @param string          $name
+ * @param string|string[] $selected
+ * @param string|null     $empty_option
+ * @param int|null        $multiple
+ * @param string|null     $class
+ * @return string
+ */
+function _adminTemplateLayoutSelect($name, $selected, $empty_option = null, $multiple = null, $class = null)
+{
+    $output = "<select name=\"{$name}\""
+        . (null !== $class ? " class=\"{$class}\"" : '')
+        . (null !== $multiple ? " multiple size=\"{$multiple}\"" : '')
+        . ">\n"
+    ;
+
+    if (null !== $empty_option) {
+        $output .= '<option class="special" value="">' . _e($empty_option) . "</option>\n";
+    }
+
+    foreach (Core::$pluginManager->getAllTemplates() as $template) {
+        $output .= '<optgroup label="' . _e($template->getOption('name')) . "\">\n";
+        foreach ($template->getLayouts() as $layout) {
+            $layoutUid = TemplateHelper::composeLayoutUid($template->getName(), $layout);
+            $layoutLabel = TemplateHelper::getLayoutUidLabel($layoutUid);
+
+            $active = null === $multiple && $layoutUid === $selected || null !== $multiple && in_array($layoutUid, $selected, true);
+
+            $output .= '<option value="' . _e($layoutUid) . '"' . ($active ? ' selected' : '') . '>'
+                . _e($layoutLabel)
+                . "</option>\n"
+            ;
+        }
+        $output .= "</optgroup>\n";
+    }
+
+    $output .= "</select>";
+
+    return $output;
+}
+
+/**
+ * Formatovat barvu jako #XXXXXX
+ *
+ * @param string $value
+ * @param bool   $expand
+ * @param string $default
+ * @return string
+ */
+function _adminFormatHtmlColor($value, $expand = true, $default = '#000000')
+{
+    // pripravit hodnotu
+    $value = trim($value);
+    if ('' === $value) {
+        // prazdna hodnota
+        return $default;
+    }
+    if ('#' !== $value[0]) {
+        $value = '#' . $value;
+    }
+
+    // vytahnout hex cast
+    $hex = substr($value, 1);
+    if (!ctype_xdigit($hex)) {
+        // neplatne znaky
+        return $default;
+    }
+    $hexLen = strlen($hex);
+
+    // zpracovat
+    if (3 === $hexLen && $expand) {
+        // zkracena verze
+        $output = '#';
+        for ($i = 0; $i < $hexLen; ++$i) {
+            $output .= str_repeat($hex[$i], 2);
+        }
+
+        return $output;
+    } elseif (6 === $hexLen) {
+        // plna verze
+        return $value;
+    } else {
+        // neplatny pocet znaku
+        return $default;
+    }
+}
+
+/**
+ * Smazat obrazky z uloziste galerie
+ *
+ * @param string $sql_cond SQL podminka pro vyber obrazku
+ */
+function _adminDeleteGalleryStorage($sql_cond)
+{
+    $result = DB::query("SELECT full,(SELECT COUNT(*) FROM " . _images_table . " WHERE full=toptable.full) AS counter FROM " . _images_table . " AS toptable WHERE in_storage=1 AND (" . $sql_cond . ") HAVING counter=1");
+    while($r = DB::row($result)) {
+        @unlink(_root . $r['full']);
+    }
+}
+
+/**
+ * Zjisteni, zda ma byt schema tmave
+ *
+ * @return bool
+ */
+function _adminIsDarkScheme()
+{
+    if (_adminscheme_mode == 0) {
+        // vzdy svetle
+        return false;
+    } elseif (_adminscheme_mode == 1) {
+        // vzdy tmave
+        return true;
+    } else {
+        // podle zapadu a vychodu slunce
+        $isday = _isDayTime();
+        if ($isday === false) {
+            return true;
+        }
+        return false;
+    }
+}

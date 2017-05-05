@@ -1,0 +1,60 @@
+<?php
+
+if (!defined('_root')) {
+    exit;
+}
+
+if (!_login) {
+    $_index['is_accessible'] = false;
+    return;
+}
+
+/* ---  priprava promennych  --- */
+
+$success = false;
+$message = '';
+$unstick = '';
+$id = (int) _get('id');
+$userQuery = _userQuery('p.author');
+$query = DB::query("SELECT p.id,p.time,p.subject,p.sticky,r.slug forum_slug," . $userQuery['column_list'] . " FROM " . _posts_table . " p JOIN " . _root_table . " r ON(p.home=r.id) " . $userQuery['joins'] . " WHERE p.id=" . $id . " AND p.type=5 AND p.xhome=-1");
+if (DB::size($query) != 0) {
+    $query = DB::row($query);
+    $_index['backlink'] = _linkTopic($query['id'], $query['forum_slug']);
+    if ($query['sticky']) {
+        $unstick = '2';
+    }
+    if (!_postAccess($userQuery, $query) || !_priv_stickytopics) {
+        $_index['is_accessible'] = false;
+        return;
+    }
+} else {
+    $_index['is_found'] = false;
+    return;
+}
+
+/* ---  ulozeni  --- */
+
+if (isset($_POST['doit'])) {
+    DB::query("UPDATE " . _posts_table . " SET sticky=" . (($query['sticky'] == 1) ? 0 : 1) . " WHERE id=" . $id);
+    $message = _msg(_msg_ok, $_lang['mod.stickytopic.ok' . $unstick]);
+    $success = true;
+}
+
+/* ---  vystup  --- */
+
+$_index['title'] = $_lang['mod.stickytopic'];
+
+// zprava
+$output .= $message;
+
+// formular
+if (!$success) {
+    $furl = _linkModule('stickytopic', 'id=' . $id);
+
+    $output .= '
+    <form action="' . $furl . '" method="post">
+    ' . _msg(_msg_warn, sprintf($_lang['mod.stickytopic.text' . $unstick], $query['subject'])) . '
+    <input type="submit" name="doit" value="' . $_lang['mod.stickytopic.submit' . $unstick] . '">
+    ' . _xsrfProtect() . '</form>
+    ';
+}

@@ -1,0 +1,191 @@
+<?php
+
+if (!defined('_root')) {
+    exit;
+}
+
+/* ---  priprava promennych  --- */
+
+$continue = false;
+$message = "";
+if (isset($_GET['id'])) {
+    $id = (int) _get('id');
+    $query = DB::query("SELECT p.* FROM " . _polls_table . " p WHERE p.id=" . $id . _adminPollAccess());
+    if (DB::size($query) != 0) {
+        $query = DB::row($query);
+        $new = false;
+        $actionbonus = "&amp;id=" . $id;
+        $submitcaption = $_lang['global.save'];
+        $continue = true;
+    }
+} else {
+    $id = -1;
+    $query = array('author' => _loginid, 'question' => "", 'answers' => "", 'locked' => 0);
+    $new = true;
+    $actionbonus = "";
+    $submitcaption = $_lang['global.create'];
+    $continue = true;
+}
+
+/* ---  ulozeni / vytvoreni  --- */
+
+if (isset($_POST['question'])) {
+
+    // nacteni promennych
+    $question = _cutHtml(_e(trim(_post('question'))), 255);
+    $query['question'] = $question;
+
+    // odpovedi
+    $answers = explode("\n", _post('answers'));
+    $answers_new = array();
+    foreach ($answers as $answer) {
+        $answers_new[] = _e(trim($answer));
+    }
+    $answers = _arrayRemoveValue($answers_new, "");
+    $answers_count = count($answers);
+    $answers = implode("\n", $answers);
+    $query['answers'] = $answers;
+
+    if (_priv_adminpollall) {
+        $author = (int) _post('author');
+    } else {
+        $author = _loginid;
+    }
+    $locked = _checkboxLoad("locked");
+    $reset = _checkboxLoad("reset");
+
+    // kontrola promennych
+    $errors = array();
+    if ($question == "") {
+        $errors[] = $_lang['admin.content.polls.edit.error1'];
+    }
+    if ($answers_count == 0) {
+        $errors[] = $_lang['admin.content.polls.edit.error2'];
+    }
+    if ($answers_count > 20) {
+        $errors[] = $_lang['admin.content.polls.edit.error3'];
+    }
+    if (_priv_adminpollall && DB::result(DB::query("SELECT COUNT(*) FROM " . _users_table . " WHERE id=" . $author . " AND (id=" . _loginid . " OR (SELECT level FROM " . _groups_table . " WHERE id=" . _users_table . ".group_id)<" . _priv_level . ")"), 0) == 0) {
+        $errors[] = $_lang['admin.content.articles.edit.error3'];
+    }
+
+    // ulozeni
+    if (count($errors) == 0) {
+
+        if (!$new) {
+            DB::query("UPDATE " . _polls_table . " SET question=" . DB::val($question) . ",answers=" . DB::val($answers) . ",author=" . $author . ",locked=" . $locked . " WHERE id=" . $id);
+
+            // korekce seznamu hlasu
+            if (!$reset) {
+                $votes = explode("-", $query['votes']);
+                $votes_count = count($votes);
+                $newvotes = "";
+
+                // prilis mnoho polozek
+                if ($votes_count > $answers_count) {
+                    for ($i = 0; $i < $votes_count - $answers_count; $i++) {
+                        array_pop($votes);
+                    }
+                    $newvotes = implode("-", $votes);
+                }
+
+                // malo polozek
+                if ($votes_count < $answers_count) {
+                    $newvotes = implode("-", $votes) . str_repeat("-0", $answers_count - $votes_count);
+                }
+
+                // ulozeni korekci
+                if ($newvotes != "") {
+                    DB::query("UPDATE " . _polls_table . " SET votes='" . $newvotes . "' WHERE id=" . $id);
+                }
+
+            }
+
+            // vynulovani
+            if ($reset) {
+                DB::query("UPDATE " . _polls_table . " SET votes='" . trim(str_repeat("0-", $answers_count), "-") . "' WHERE id=" . $id);
+                DB::query("DELETE FROM " . _iplog_table . " WHERE type=4 AND var=" . $id);
+            }
+
+            // presmerovani
+            $admin_redirect_to = 'index.php?p=content-polls-edit&id=' . $id . '&saved';
+
+            return;
+
+        } else {
+            DB::query("INSERT INTO " . _polls_table . " (author,question,answers,locked,votes) VALUES (" . $author . ",'" . $question . "'," . DB::val($answers) . "," . $locked . ",'" . trim(str_repeat("0-", $answers_count), "-") . "')");
+            $newid = DB::insertID();
+            $admin_redirect_to = 'index.php?p=content-polls-edit&id=' . $newid . '&created';
+
+            return;
+        }
+
+    } else {
+        $message = _msg(_msg_warn, _msgList($errors, 'errors'));
+    }
+
+}
+
+/* ---  vystup  --- */
+
+if ($continue) {
+
+    // vyber autora
+    if (_priv_adminpollall) {
+        $author_select = "
+    <tr>
+    <th>" . $_lang['article.author'] . "</th>
+    <td>" . _adminUserSelect("author", $query['author'], "adminpoll=1", "selectmedium") . "</td></tr>
+    ";
+    } else {
+        $author_select = "";
+    }
+
+    // zprava
+    if (isset($_GET['saved'])) {
+        $message = _msg(_msg_ok, $_lang['global.saved']);
+    }
+    if (isset($_GET['created'])) {
+        $message = _msg(_msg_ok, $_lang['global.created']);
+    }
+
+    $output .= $message . "
+  <form action='index.php?p=content-polls-edit" . $actionbonus . "' method='post'>
+  <table class='formtable'>
+
+  <tr>
+  <th>" . $_lang['admin.content.form.question'] . "</th>
+  <td><input type='text' name='question' class='inputmedium' value='" . $query['question'] . "' maxlength='255'></td>
+  </tr>
+
+  " . $author_select . "
+
+  <tr class='valign-top'>
+  <th>" . $_lang['admin.content.form.answers'] . "</th>
+  <td><textarea name='answers' rows='25' cols='94' class='areamedium'>" . $query['answers'] . "</textarea></td>
+  </tr>
+
+  " . (!$new ? "<tr>
+  <th>" . $_lang['admin.content.form.hcm'] . "</th>
+  <td><input type='text' name='hcm' value='[hcm]poll," . $id . "[/hcm]' readonly='readonly' onclick='this.select();' class='inputmedium'></td>
+  </tr>" : '') . "
+
+  <tr>
+  <th>" . $_lang['admin.content.form.settings'] . "</th>
+  <td>
+  <label><input type='checkbox' name='locked' value='1'" . _checkboxActivate($query['locked']) . "> " . $_lang['admin.content.form.locked'] . "</label> 
+  " . (!$new ? "<label><input type='checkbox' name='reset' value='1'> " . $_lang['admin.content.polls.reset'] . "</label>" : '') . "
+  </td>
+  </tr>
+
+  <tr><td></td>
+  <td><input type='submit' value='" . $submitcaption . "'>" . (!$new ? " <small>" . $_lang['admin.content.form.thisid'] . " " . $id . "</small> <span class='customsettings'><a class='button' href='" . _xsrfLink("index.php?p=content-polls&amp;del=" . $id) . "' onclick='return Sunlight.confirm();'><img src='images/icons/delete.png' class='icon' alt='del'> " . $_lang['global.delete'] . "</a>" : '') . "</span></td>
+  </tr>
+
+  </table>
+  " . _xsrfProtect() . "</form>
+  ";
+
+} else {
+    $output .= _msg(_msg_err, $_lang['global.badinput']);
+}

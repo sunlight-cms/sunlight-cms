@@ -1,0 +1,14 @@
+{
+    "name": "Codemirror",
+    "description": "Syntax highlighter for the backend.",
+    "version": "8.0",
+    "api": "8.0.*",
+    "url": "https://sunlight-cms.org/",
+
+    "custom_class": true,
+    "events.admin": [
+        ["admin.head", "$this::onAdminHead"],
+        ["admin.style", "$this::onAdminStyle"],
+        ["core.javascript", "$this::onCoreJavascript"]
+    ]
+}

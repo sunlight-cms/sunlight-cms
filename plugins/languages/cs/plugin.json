@@ -1,0 +1,7 @@
+{
+    "name": "Čeština",
+    "description": "Česká lokalizace systému.",
+    "version": "8.0",
+    "api": "^8.0.0",
+    "url": "https://sunlight-cms.org/"
+}

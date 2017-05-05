@@ -1,0 +1,168 @@
+<?php
+
+namespace Sunlight\Plugin;
+
+use Sunlight\Util\Zip;
+use ZipArchive;
+
+class PluginArchive
+{
+    /** @var PluginManager */
+    protected $manager;
+    /** @var ZipArchive */
+    protected $zip;
+    /** @var string */
+    protected $path;
+    /** @var bool */
+    protected $open = false;
+    /**
+     * type => array(
+     *      name1 => array(
+     *          path => string,
+     *          valid => bool,
+     *      ),
+     *      ...
+     * )
+     *
+     * @var array|null
+     */
+    protected $plugins;
+
+    /**
+     * @param PluginManager $manager
+     * @param string        $path
+     */
+    public function __construct(PluginManager $manager, $path)
+    {
+        $this->manager = $manager;
+        $this->zip = new ZipArchive();
+        $this->path = $path;
+    }
+
+    /**
+     * Extract the archive
+     *
+     * @param bool          $merge          merge with current plugins (only install new ones) 1/0
+     * @param string[]|null &$failedPlugins
+     * @return string[] list of successfully extracted plugins
+     */
+    public function extract($merge = false, array &$failedPlugins = null)
+    {
+        $toExtract = array();
+        $failedPlugins = array();
+
+        // get and check plugins
+        foreach ($this->getPlugins() as $pluginPath) {
+            $pluginExists = file_exists(_root . $pluginPath);
+
+            if (!$pluginExists) {
+                $toExtract[] = $pluginPath;
+            } else {
+                $failedPlugins[] = $pluginPath;
+            }
+        }
+
+        // abort if there are failed plugins and we are not merging
+        if (!$merge && !empty($failedPlugins)) {
+            return array();
+        }
+
+        // extract plugins
+        Zip::extractPaths($this->zip, $toExtract, _root);
+
+        return $toExtract;
+    }
+
+    /**
+     * See if the archive contains any plugins
+     *
+     * @return bool
+     */
+    public function hasPlugins()
+    {
+        $this->ensureOpen();
+
+        return !empty($this->plugins);
+    }
+
+    /**
+     * Get list of plugin paths
+     *
+     * @return string[]
+     */
+    public function getPlugins()
+    {
+        $this->ensureOpen();
+
+        $pluginPaths = array();
+        
+        foreach ($this->plugins as $plugins) {
+            foreach ($plugins as $plugin) {
+                if ($plugin['valid']) {
+                    $pluginPaths[] = $plugin['path'];
+                }
+            }
+        }
+
+        return $pluginPaths;
+    }
+
+    /**
+     * Ensure that the archive is open
+     */
+    protected function ensureOpen()
+    {
+        if (!$this->open) {
+            _ensureFileExists($this->path);
+
+            if (true !== ($errorCode = $this->zip->open($this->path, ZipArchive::CREATE))) {
+                throw new \RuntimeException(sprintf('Could not open ZIP archive at "%s" (code %d)', $this->path, $errorCode));
+            }
+
+            $this->load();
+
+            $this->open = true;
+        }
+    }
+
+    /**
+     * Load the archive
+     */
+    protected function load()
+    {
+        $this->plugins = array();
+
+        // map types
+        // build the regex
+        $dirPatterns = array();
+        $typeDir2Type = array();
+        foreach ($this->manager->getTypes() as $type) {
+            $definition = $this->manager->getTypeDefinition($type);
+
+            $dirPatterns[] = preg_quote($definition['dir'], '~');
+            $typeDir2Type[$definition['dir']] = $type;
+        }
+        $regex = '~^(' . implode('|', $dirPatterns) . ')/(' . PluginLoader::PLUGIN_NAME_PATTERN . ')/(.+)$~';
+
+        // iterate all files in the archive
+        for ($i = 0; $i < $this->zip->numFiles; ++$i) {
+            $stat = $this->zip->statIndex($i);
+
+            if (preg_match($regex, $stat['name'], $match)) {
+                list(, $dir, $name, $subpath) = $match;
+                $type = $typeDir2Type[$dir];
+
+                if (!isset($this->plugins[$type][$name])) {
+                    $this->plugins[$type][$name] = array(
+                        'path' => $dir . '/' . $name,
+                        'valid' => false,
+                    );
+                }
+
+                if (PluginLoader::PLUGIN_FILE === $subpath) {
+                    $this->plugins[$type][$name]['valid'] = true;
+                }
+            }
+        }
+    }
+}

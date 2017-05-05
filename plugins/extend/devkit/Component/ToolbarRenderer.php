@@ -1,0 +1,262 @@
+<?php
+
+namespace SunlightPlugins\Extend\Devkit\Component;
+
+use Kuria\Error\Util\Debug;
+use Sunlight\Core;
+
+/**
+ * Devkit toolbar renderer
+ *
+ * @author ShiraNai7 <shira.cz>
+ */
+class ToolbarRenderer
+{
+    /** @var SqlLogger */
+    private $sqlLogger;
+    /** @var EventLogger */
+    private $eventLogger;
+
+    /**
+     * @param SqlLogger   $sqlLogger
+     * @param EventLogger $eventLogger
+     */
+    public function __construct(SqlLogger $sqlLogger, EventLogger $eventLogger)
+    {
+        $this->sqlLogger = $sqlLogger;
+        $this->eventLogger = $eventLogger;
+    }
+    /**
+     * Render the toolbar
+     *
+     * @return string
+     */
+    public function render()
+    {
+        $now = microtime(true);
+
+        // determine class
+        if (isset($_COOKIE['sl_devkit_toolbar']) && 'closed' === $_COOKIE['sl_devkit_toolbar']) {
+            $class = 'devkit-toolbar-closed';
+        } else {
+            $class = 'devkit-toolbar-open';
+        }
+
+        ob_start();
+
+        // start
+        ?>
+<div id="devkit-toolbar" class="<?php echo $class ?>">
+<?php
+
+        // sections
+        $this->renderInfo();
+        $this->renderTime($now);
+        $this->renderMemory();
+        $this->renderDatabase();
+        $this->renderEvents();
+        $this->renderRequest();
+        $this->renderLogin();
+
+        // controls
+        ?>
+    <div class="devkit-button devkit-close">×</div>
+    <div class="devkit-button devkit-open">+</div>
+</div>
+<?php
+
+        return ob_get_clean();
+    }
+
+    /**
+     * Render the system info section
+     */
+    private function renderInfo()
+    {
+        ?>
+<div class="devkit-section devkit-info">
+    <?php echo Core::VERSION, ' ', Core::STATE ?>
+</div>
+<?php
+    }
+
+    /**
+     * Render the time section
+     *
+     * @param float $now
+     */
+    private function renderTime($now)
+    {
+        ?>
+<div class="devkit-section devkit-time">
+    <?php echo round(($now - Core::$start) * 1000) ?>ms
+</div>
+<?php
+    }
+
+    /**
+     * Render the memory section
+     */
+    private function renderMemory()
+    {
+        ?>
+<div class="devkit-section devkit-memory">
+    <?php echo number_format(round(memory_get_peak_usage() / 1048576, 1), 1, '.', ',') ?>MB
+</div>
+<?php
+    }
+
+    /**
+     * Render the database section
+     */
+    private function renderDatabase()
+    {
+        $sqlLog = $this->sqlLogger->getLog();
+
+        ?>
+<div class="devkit-section devkit-database devkit-toggleable">
+    <?php echo sizeof($sqlLog) ?>
+</div>
+
+<div class="devkit-content">
+    <div class="devkit-heading">SQL log</div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Time</th>
+                <th>Trace</th>
+                <th>SQL</th>
+            </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($sqlLog as $index => $entry): ?>
+            <tr>
+                <td><?php echo $index + 1 ?></td>
+                <td><?php echo round($entry['time'] * 1000) ?>ms</td>
+                <td>
+                    <a href="#" class="devkit-hideshow" data-target="#devkit-db-trace-<?php echo $index ?>">show</a>
+                </td>
+                <td class="break-all"><?php echo _e($entry['query']) ?></td>
+            </tr>
+            <tr id="devkit-db-trace-<?php echo $index ?>" class="devkit-hidden">
+                <td colspan="4">
+                    <pre><?php echo _e($entry['trace']) ?></pre>
+                </td>
+            </tr>
+        <?php endforeach ?>
+        </tbody>
+    </table>
+</div>
+<?php
+    }
+
+    /**
+     * Render the event section
+     */
+    private function renderEvents()
+    {
+        $events = $this->eventLogger->getLog();
+
+        ?>
+<div class="devkit-section devkit-extend devkit-toggleable">
+    <?php echo sizeof($events) ?>
+</div>
+
+<div class="devkit-content">
+    <div>
+        <div class="devkit-heading">Extend event log</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Event</th>
+                    <th>Count</th>
+                    <th>Args</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($events as $event => $data): ?>
+                <tr>
+                    <td><?php echo _e($event) ?></td>
+                    <td><?php echo $data[0] ?></td>
+                    <td><?php $this->renderEventArgs($data[1]) ?></td>
+                </tr>
+                <?php endforeach ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+<?php
+    }
+
+    /**
+     * Render event argument list
+     *
+     * @param array $args
+     */
+    private function renderEventArgs(array $args)
+    {
+        if (!empty($args)) {
+            $eventArgIsFirst = true;
+            foreach ($args as $eventArgName => $eventArgType) {
+                if ($eventArgIsFirst) {
+                    $eventArgIsFirst = false;
+                } else {
+                    echo ', ';
+                }
+                echo '<small>(' . _e($eventArgType) . ')</small> ' . _e($eventArgName);
+            }
+        } else {
+            echo '-';
+        }
+    }
+
+    /**
+     * Render the request section
+     */
+    private function renderRequest()
+    {
+        ?>
+<div class="devkit-section devkit-request devkit-toggleable">
+    <?php echo 'GET(', sizeof($_GET), ') POST(', sizeof($_POST), ') COOKIE(', sizeof($_COOKIE), ') SESSION(', sizeof($_SESSION), ')' ?>
+</div>
+
+<div class="devkit-content">
+    <div>
+        <?php foreach (array('_GET', '_POST', '_COOKIE', '_SESSION') as $globalVarName): ?>
+            <?php if (!empty($GLOBALS[$globalVarName])): ?>
+            <div class="devkit-heading devkit-hideshow">
+                $<?php echo $globalVarName, ' (', sizeof($GLOBALS[$globalVarName]), ')' ?>
+            </div>
+
+            <div class="devkit-request-dump devkit-hideshow-target"><?php echo Debug::dump($GLOBALS[$globalVarName]) ?></div>
+            <?php endif ?>
+        <?php endforeach ?>
+    </div>
+</div>
+<?php
+    }
+
+    /**
+     * Render the login section
+     */
+    private function renderLogin()
+    {
+        if (_login) {
+            $loginInfo = sprintf('level %d', _priv_level);
+            $loginName = _loginname;
+        } else {
+            $loginInfo = 'not logged in';
+            $loginName = '---';
+        }
+
+        ?>
+<a href="<?php echo _linkModule('login') ?>">
+    <div class="devkit-section devkit-login" title="<?php echo $loginInfo ?>">
+        <?php echo _e($loginName) ?>
+    </div>
+</a>
+<?php
+    }
+}

@@ -1,0 +1,364 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "hash": "0a6e47288b3b5a91911e7fa79e084fcf",
+    "content-hash": "672d4aa1a0c768ed70a45e4bbdc90b7e",
+    "packages": [
+        {
+            "name": "composer/semver",
+            "version": "1.4.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/composer/semver.git",
+                "reference": "c7cb9a2095a074d131b65a8a0cd294479d785573"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/composer/semver/zipball/c7cb9a2095a074d131b65a8a0cd294479d785573",
+                "reference": "c7cb9a2095a074d131b65a8a0cd294479d785573",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.3.2 || ^7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.5 || ^5.0.5",
+                "phpunit/phpunit-mock-objects": "2.3.0 || ^3.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Composer\\Semver\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nils Adermann",
+                    "email": "naderman@naderman.de",
+                    "homepage": "http://www.naderman.de"
+                },
+                {
+                    "name": "Jordi Boggiano",
+                    "email": "j.boggiano@seld.be",
+                    "homepage": "http://seld.be"
+                },
+                {
+                    "name": "Rob Bast",
+                    "email": "rob.bast@gmail.com",
+                    "homepage": "http://robbast.nl"
+                }
+            ],
+            "description": "Semver library that offers utilities, version constraint parsing and validation.",
+            "keywords": [
+                "semantic",
+                "semver",
+                "validation",
+                "versioning"
+            ],
+            "time": "2016-08-30 16:08:34"
+        },
+        {
+            "name": "eloquent/pbkdf2-compat",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/eloquent/pbkdf2-compat.git",
+                "reference": "1f08847b909244c02b80dfdcd9ea8e2bf149f5df"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/eloquent/pbkdf2-compat/zipball/1f08847b909244c02b80dfdcd9ea8e2bf149f5df",
+                "reference": "1f08847b909244c02b80dfdcd9ea8e2bf149f5df",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3"
+            },
+            "require-dev": {
+                "icecave/archer": "~1"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/hash_pbkdf2.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Erin Millard",
+                    "email": "ezzatron@gmail.com",
+                    "homepage": "http://ezzatron.com/"
+                }
+            ],
+            "description": "A compatibility library for the PHP 5.5 function hash_pbkdf2().",
+            "homepage": "https://github.com/eloquent/pbkdf2-compat",
+            "keywords": [
+                "compat",
+                "compatibility",
+                "hash",
+                "hash_pbkdf2",
+                "pbkdf",
+                "pbkdf2",
+                "pkcs",
+                "pkcs5"
+            ],
+            "time": "2014-02-13 12:35:03"
+        },
+        {
+            "name": "kuria/cache",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kuria/cache.git",
+                "reference": "0ed1db76f2a17568bbf75c44d9eb40beb20abf11"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kuria/cache/zipball/0ed1db76f2a17568bbf75c44d9eb40beb20abf11",
+                "reference": "0ed1db76f2a17568bbf75c44d9eb40beb20abf11",
+                "shasum": ""
+            },
+            "require": {
+                "kuria/event": "~1.0.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Kuria\\Cache\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Caching library with driver abstraction and namespacing support.",
+            "keywords": [
+                "apc",
+                "apcu",
+                "cache",
+                "caching",
+                "file",
+                "filesystem",
+                "memcache",
+                "memory",
+                "wincache",
+                "xcache"
+            ],
+            "time": "2015-09-04 01:21:32"
+        },
+        {
+            "name": "kuria/class-loader",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kuria/class-loader.git",
+                "reference": "3f0147dbd75dad24930f2c17d2c55147383ca77d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kuria/class-loader/zipball/3f0147dbd75dad24930f2c17d2c55147383ca77d",
+                "reference": "3f0147dbd75dad24930f2c17d2c55147383ca77d",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Kuria\\ClassLoader\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Class loader implementation (PSR-0, PSR-4).",
+            "keywords": [
+                "PSR-4",
+                "autoload",
+                "class loader",
+                "psr-0"
+            ],
+            "time": "2015-09-04 01:22:32"
+        },
+        {
+            "name": "kuria/error",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kuria/error.git",
+                "reference": "9d90add2a2a0ff9b109d47f4dda12f2a546c02fb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kuria/error/zipball/9d90add2a2a0ff9b109d47f4dda12f2a546c02fb",
+                "reference": "9d90add2a2a0ff9b109d47f4dda12f2a546c02fb",
+                "shasum": ""
+            },
+            "require": {
+                "kuria/event": "~1.0.0",
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Kuria\\Error\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Makes handling and debugging PHP errors suck less.",
+            "keywords": [
+                "debug",
+                "debugger",
+                "error",
+                "error handler",
+                "exception",
+                "exception handler",
+                "fatal"
+            ],
+            "time": "2015-09-04 01:14:04"
+        },
+        {
+            "name": "kuria/event",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kuria/event.git",
+                "reference": "08851722fedee0e6cda6e84fa1563bb355e61eab"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kuria/event/zipball/08851722fedee0e6cda6e84fa1563bb355e61eab",
+                "reference": "08851722fedee0e6cda6e84fa1563bb355e61eab",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Kuria\\Event\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Event library that implements variations of the mediator and observer patterns.",
+            "keywords": [
+                "dispatcher",
+                "emitter",
+                "event",
+                "listener",
+                "mediator",
+                "observable",
+                "observer",
+                "subscriber"
+            ],
+            "time": "2015-09-04 00:33:39"
+        },
+        {
+            "name": "kuria/parser",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kuria/parser.git",
+                "reference": "eba7f1c62b3af48a79c5fcf2ce647ef64047023a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kuria/parser/zipball/eba7f1c62b3af48a79c5fcf2ce647ef64047023a",
+                "reference": "eba7f1c62b3af48a79c5fcf2ce647ef64047023a",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Kuria\\Parser\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Character-by-character string parsing library.",
+            "keywords": [
+                "character-by-character",
+                "lexer",
+                "parser"
+            ],
+            "time": "2015-09-04 01:00:55"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [
+        {
+            "alias": "1.0.0-beta",
+            "alias_normalized": "1.0.0.0-beta",
+            "version": "9999999-dev",
+            "package": "kuria/class-loader"
+        },
+        {
+            "alias": "1.0.0-beta",
+            "alias_normalized": "1.0.0.0-beta",
+            "version": "9999999-dev",
+            "package": "kuria/error"
+        },
+        {
+            "alias": "1.0.0-beta",
+            "alias_normalized": "1.0.0.0-beta",
+            "version": "9999999-dev",
+            "package": "kuria/event"
+        },
+        {
+            "alias": "1.0.0-beta",
+            "alias_normalized": "1.0.0.0-beta",
+            "version": "9999999-dev",
+            "package": "kuria/cache"
+        },
+        {
+            "alias": "1.0.0-beta",
+            "alias_normalized": "1.0.0.0-beta",
+            "version": "9999999-dev",
+            "package": "kuria/parser"
+        }
+    ],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "kuria/class-loader": 20,
+        "kuria/error": 20,
+        "kuria/event": 20,
+        "kuria/cache": 20,
+        "kuria/parser": 20
+    },
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {
+        "php": ">=5.3.0"
+    },
+    "platform-dev": []
+}

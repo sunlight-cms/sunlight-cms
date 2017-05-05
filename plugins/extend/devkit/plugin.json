@@ -1,0 +1,26 @@
+{
+    "name": "Devkit",
+    "description": "Developer toolbar. Only active in dev mode.",
+    "version": "8.0",
+    "api": "8.0.*",
+    "url": "https://sunlight-cms.org/",
+    "dev": true,
+
+    "custom_class": true,
+    "events": [
+        ["db.query", "$this::onDbQuery"],
+        ["db.query.post", "$this::onDbQueryPost"],
+        ["sys.mail", "$this::onMail"]
+    ],
+    "events.web": [
+        ["tpl.head", "$this::onHead"],
+        ["tpl.end", "$this::onEnd"]
+    ],
+    "events.admin": [
+        ["admin.head", "$this::onHead"],
+        ["admin.end", "$this::onEnd"]
+    ],
+    "scripts": [
+        "init.php"
+    ]
+}
