@@ -60,7 +60,7 @@ if (isset($_POST['text'])) {
             $item_total = DB::size($query);
 
             // poznamka na konci zpravy
-            $notice = str_replace('*domain*', Sunlight\Core::$host, $_lang['admin.other.massemail.emailnotice']);
+            $notice = str_replace('*domain*', Sunlight\Util\Url::base()->getFullHost(), $_lang['admin.other.massemail.emailnotice']);
             if ($ctype == 1) {
                 $notice = "\n\n\n-------------------------------------\n" . $notice;
             } else {

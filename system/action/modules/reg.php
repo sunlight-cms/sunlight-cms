@@ -236,7 +236,7 @@ if (!$user_data_valid && $show_form) {
         ), true);
 
         // potvrzovaci zprava
-        $domain = Sunlight\Core::$host;
+        $domain = Sunlight\Util\Url::base()->getFullHost();
         $mail = _mail(
             $user_data['email'],
             str_replace('*domain*', $domain, $_lang['mod.reg.confirm.subject']),

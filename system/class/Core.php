@@ -36,8 +36,6 @@ class Core
     /** @var string */
     public static $url;
     /** @var string */
-    public static $host;
-    /** @var string */
     public static $fallbackLang;
     /** @var bool */
     public static $sessionEnabled;
@@ -200,7 +198,6 @@ class Core
         static::$appId = $options['app_id'];
         static::$secret = $options['secret'];
         static::$url = $options['url'];
-        static::$host = $url->host . (isset($url->port) ? ":{$url->port}" : '');
         static::$fallbackLang = $options['fallback_lang'];
         static::$sessionEnabled = $options['session_enabled'];
         static::$sessionRegenerate = $options['session_regenerate'] || isset($_POST['_session_force_regenerate']);
@@ -256,7 +253,7 @@ class Core
 
         // plugin manager
         static::$pluginManager = new PluginManager(
-            static::$cache->getNamespace('plugins')
+            static::$cache->getNamespace('plugins.')
         );
 
         // konstanty
@@ -362,14 +359,21 @@ class Core
             static::updateSetting('install_check', 0);
         }
 
-        // kontrola aktualni domeny
-        if ($_SERVER['HTTP_HOST'] !== static::$host) {
-            $url = Url::current();
-            $url->host = static::$host;
+        // kontrola aktualni adresy
+        $currentUrl = Url::current();
+        $baseUrl = Url::base();
 
-            _redirectHeader($url->generateAbsolute());
-
+        if ($currentUrl->host !== $baseUrl->host) {
+            // neplatna domena
+            $currentUrl->host = $baseUrl->host;
+            _redirectHeader($currentUrl->generateAbsolute());
             exit;
+        }
+
+        if ($currentUrl->scheme !== $baseUrl->scheme) {
+            // neplatny protokol
+            $currentUrl->scheme = $baseUrl->scheme;
+            _redirectHeader($currentUrl->generateAbsolute());
         }
     }
 

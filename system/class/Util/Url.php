@@ -150,11 +150,7 @@ class Url
             }
 
             // host and port
-            $output .= $this->components['host'];
-
-            if (!empty($this->components['port'])) {
-                $output .= ':' . $this->components['port'];
-            }
+            $output .= $this->getFullHost();
         }
 
         // path
@@ -206,6 +202,24 @@ class Url
     public function getQueryString()
     {
         return http_build_query($this->components['query'], '', '&');
+    }
+
+    /**
+     * Get host name, including the port if it's non-default (e.g. example.com:8080)
+     *
+     * @return string|null
+     */
+    public function getFullHost()
+    {
+        if ($this->components['host'] !== null) {
+            $fullHost = $this->components['host'];
+
+            if (!empty($this->components['port'])) {
+                $fullHost .= ':' . $this->components['port'];
+            }
+
+            return $fullHost;
+        }
     }
 
     /**

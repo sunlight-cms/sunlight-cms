@@ -55,7 +55,7 @@ if (_xsrfCheck()) {
             $info_ip .= ' (' . _loginname . ')';
         }
         $info_from = array("*domain*", "*time*", "*ip*", "*sender*");
-        $info_to = array(Sunlight\Core::$host, _formatTime(time()), $info_ip, $sender);
+        $info_to = array(Sunlight\Util\Url::base()->getFullHost(), _formatTime(time()), $info_ip, $sender);
         $text .= "\n\n" . str_repeat('-', 16) . "\n" . str_replace($info_from, $info_to, $_lang['hcm.mailform.info']);
 
         // odeslani

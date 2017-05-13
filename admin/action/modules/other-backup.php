@@ -5,6 +5,7 @@ use Sunlight\Backup\Backup;
 use Sunlight\Backup\BackupBuilder;
 use Sunlight\Backup\BackupRestorer;
 use Sunlight\Extend;
+use Sunlight\Util\Url;
 use Sunlight\Util\Filesystem;
 
 if (!defined('_root')) {
@@ -118,7 +119,7 @@ if (!empty($_POST)) {
                 BackupBuilder::TYPE_PARTIAL === $type
                     ? 'backup'
                     : 'full_backup',
-                Core::$host,
+                Url::base()->host,
                 date('Y_m_d')
             );
 

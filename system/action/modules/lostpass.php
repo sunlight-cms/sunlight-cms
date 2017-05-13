@@ -46,11 +46,11 @@ if (isset($_GET['user'], $_GET['hash'])) {
         // vygenerovat heslo a odeslat na email
         $newpass = Sunlight\Util\StringGenerator::generateHash(12);
         $text_tags = array('*domain*', '*username*', '*newpass*', '*date*', '*ip*');
-        $text_contents = array(Sunlight\Core::$host, $userdata['username'], $newpass, _formatTime(time()), _userip);
+        $text_contents = array(Sunlight\Util\Url::base()->getFullHost(), $userdata['username'], $newpass, _formatTime(time()), _userip);
 
         if (!_mail(
             $userdata['email'],
-            str_replace('*domain*', Sunlight\Core::$host, $_lang['mod.lostpass.mail.subject']),
+            str_replace('*domain*', Sunlight\Util\Url::base()->getFullHost(), $_lang['mod.lostpass.mail.subject']),
             str_replace($text_tags, $text_contents, $_lang['mod.lostpass.mail.text2'])
         )) {
             $output .= _msg(_msg_err, $_lang['global.emailerror']);
@@ -107,11 +107,11 @@ if (isset($_GET['user'], $_GET['hash'])) {
         // odeslani emailu
         $link = _linkModule('lostpass', 'user=' . $username . '&hash=' . $hash, false, true);
         $text_tags = array('*domain*', '*username*', '*link*', '*date*', '*ip*');
-        $text_contents = array(Sunlight\Core::$host, $userdata['username'], $link, _formatTime(time()), _userip);
+        $text_contents = array(Sunlight\Util\Url::base()->getFullHost(), $userdata['username'], $link, _formatTime(time()), _userip);
 
         if (!_mail(
             $userdata['email'],
-            str_replace('*domain*', Sunlight\Core::$host, $_lang['mod.lostpass.mail.subject']),
+            str_replace('*domain*', Sunlight\Util\Url::base()->getFullHost(), $_lang['mod.lostpass.mail.subject']),
             str_replace($text_tags, $text_contents, $_lang['mod.lostpass.mail.text'])
         )) {
             $output .= _msg(_msg_err, $_lang['global.emailerror']);

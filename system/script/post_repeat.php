@@ -60,7 +60,7 @@ if ($valid && $login && !_login) {
             </p>
 
             <p id="warning">
-                <?php echo str_replace('*domain*', Sunlight\Core::$host, $_lang['xsrf.warning']) ?>
+                <?php echo str_replace('*domain*', Sunlight\Util\Url::base()->getFullHost(), $_lang['xsrf.warning']) ?>
             </p>
 
             <?php echo _postRepeatForm(
