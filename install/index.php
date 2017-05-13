@@ -238,7 +238,7 @@ class Labels
             'complete.title' => 'Complete',
             'complete.success' => 'Installation has been completed successfully!',
             'complete.installdir_warning' => 'Warning! Before you continue, remove the install directory.',
-            'complete.installdir_warning.dev' => 'Dev mode is enabled - removing the install directory is not neccessary. But you SHOULD remove it, if this installation is accessible by others.',
+            'complete.installdir_warning.dev' => 'Dev mode is enabled - removing the install directory is not neccessary. But you SHOULD remove it if this installation is accessible by others.',
             'complete.goto.web' => 'open the website',
             'complete.goto.admin' => 'log into administration',
         ),
