@@ -4,15 +4,21 @@
     "license": "MIT",
     "require": {
         "php": ">=5.3.0",
-        "kuria/class-loader": "dev-master as 1.0.0-beta",
-        "kuria/error": "dev-master as 1.0.0-beta",
-        "kuria/event": "dev-master as 1.0.0-beta",
-        "kuria/cache": "dev-master as 1.0.0-beta",
-        "kuria/parser": "dev-master as 1.0.0-beta",
-        "eloquent/pbkdf2-compat": "~1.0.1",
-        "composer/semver": "^1.4"
+        "kuria/class-loader": "^1.0.0",
+        "kuria/error": "^1.0.0",
+        "kuria/event": "^1.0.0",
+        "kuria/cache": "^1.0.0",
+        "kuria/parser": "^1.0.0",
+        "eloquent/pbkdf2-compat": "^1.0.1",
+        "composer/semver": "^1.4.0"
     },
     "config": {
         "vendor-dir": "system/vendor"
+    },
+    "autoload": {
+        "psr-4": {
+            "Sunlight\\Admin\\": "admin/class",
+            "Sunlight\\": "system/class"
+        }
     }
 }

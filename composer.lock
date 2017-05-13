@@ -4,8 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "0a6e47288b3b5a91911e7fa79e084fcf",
-    "content-hash": "672d4aa1a0c768ed70a45e4bbdc90b7e",
+    "content-hash": "2fbdf8af8f910423d85c132cf086c3bb",
     "packages": [
         {
             "name": "composer/semver",
@@ -67,7 +66,7 @@
                 "validation",
                 "versioning"
             ],
-            "time": "2016-08-30 16:08:34"
+            "time": "2016-08-30T16:08:34+00:00"
         },
         {
             "name": "eloquent/pbkdf2-compat",
@@ -118,24 +117,28 @@
                 "pkcs",
                 "pkcs5"
             ],
-            "time": "2014-02-13 12:35:03"
+            "time": "2014-02-13T12:35:03+00:00"
         },
         {
             "name": "kuria/cache",
-            "version": "dev-master",
+            "version": "v1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kuria/cache.git",
-                "reference": "0ed1db76f2a17568bbf75c44d9eb40beb20abf11"
+                "reference": "df920a6360313140838e40edc6d7ab16647d476d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kuria/cache/zipball/0ed1db76f2a17568bbf75c44d9eb40beb20abf11",
-                "reference": "0ed1db76f2a17568bbf75c44d9eb40beb20abf11",
+                "url": "https://api.github.com/repos/kuria/cache/zipball/df920a6360313140838e40edc6d7ab16647d476d",
+                "reference": "df920a6360313140838e40edc6d7ab16647d476d",
                 "shasum": ""
             },
             "require": {
-                "kuria/event": "~1.0.0"
+                "kuria/event": "^1.0.0",
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8"
             },
             "type": "library",
             "autoload": {
@@ -160,24 +163,27 @@
                 "wincache",
                 "xcache"
             ],
-            "time": "2015-09-04 01:21:32"
+            "time": "2017-05-08T12:48:44+00:00"
         },
         {
             "name": "kuria/class-loader",
-            "version": "dev-master",
+            "version": "v1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kuria/class-loader.git",
-                "reference": "3f0147dbd75dad24930f2c17d2c55147383ca77d"
+                "reference": "6f5648ab93459b3eed94603abad4cd3943f2077e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kuria/class-loader/zipball/3f0147dbd75dad24930f2c17d2c55147383ca77d",
-                "reference": "3f0147dbd75dad24930f2c17d2c55147383ca77d",
+                "url": "https://api.github.com/repos/kuria/class-loader/zipball/6f5648ab93459b3eed94603abad4cd3943f2077e",
+                "reference": "6f5648ab93459b3eed94603abad4cd3943f2077e",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8"
             },
             "type": "library",
             "autoload": {
@@ -196,25 +202,28 @@
                 "class loader",
                 "psr-0"
             ],
-            "time": "2015-09-04 01:22:32"
+            "time": "2017-05-08T21:57:30+00:00"
         },
         {
             "name": "kuria/error",
-            "version": "dev-master",
+            "version": "v1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kuria/error.git",
-                "reference": "9d90add2a2a0ff9b109d47f4dda12f2a546c02fb"
+                "reference": "a8be9c080ab5bae975b613ea933d1032b0452add"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kuria/error/zipball/9d90add2a2a0ff9b109d47f4dda12f2a546c02fb",
-                "reference": "9d90add2a2a0ff9b109d47f4dda12f2a546c02fb",
+                "url": "https://api.github.com/repos/kuria/error/zipball/a8be9c080ab5bae975b613ea933d1032b0452add",
+                "reference": "a8be9c080ab5bae975b613ea933d1032b0452add",
                 "shasum": ""
             },
             "require": {
-                "kuria/event": "~1.0.0",
+                "kuria/event": "^1.0.0",
                 "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8"
             },
             "type": "library",
             "autoload": {
@@ -236,24 +245,27 @@
                 "exception handler",
                 "fatal"
             ],
-            "time": "2015-09-04 01:14:04"
+            "time": "2017-05-08T00:30:33+00:00"
         },
         {
             "name": "kuria/event",
-            "version": "dev-master",
+            "version": "v1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kuria/event.git",
-                "reference": "08851722fedee0e6cda6e84fa1563bb355e61eab"
+                "reference": "a33582dd57cd969debcf5f9e667643e92237c9e4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kuria/event/zipball/08851722fedee0e6cda6e84fa1563bb355e61eab",
-                "reference": "08851722fedee0e6cda6e84fa1563bb355e61eab",
+                "url": "https://api.github.com/repos/kuria/event/zipball/a33582dd57cd969debcf5f9e667643e92237c9e4",
+                "reference": "a33582dd57cd969debcf5f9e667643e92237c9e4",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8"
             },
             "type": "library",
             "autoload": {
@@ -276,24 +288,27 @@
                 "observer",
                 "subscriber"
             ],
-            "time": "2015-09-04 00:33:39"
+            "time": "2017-05-08T00:08:18+00:00"
         },
         {
             "name": "kuria/parser",
-            "version": "dev-master",
+            "version": "v1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kuria/parser.git",
-                "reference": "eba7f1c62b3af48a79c5fcf2ce647ef64047023a"
+                "reference": "ef6e307d6eecc05f8c353dbf60ff0472eaa3d30d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kuria/parser/zipball/eba7f1c62b3af48a79c5fcf2ce647ef64047023a",
-                "reference": "eba7f1c62b3af48a79c5fcf2ce647ef64047023a",
+                "url": "https://api.github.com/repos/kuria/parser/zipball/ef6e307d6eecc05f8c353dbf60ff0472eaa3d30d",
+                "reference": "ef6e307d6eecc05f8c353dbf60ff0472eaa3d30d",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8"
             },
             "type": "library",
             "autoload": {
@@ -311,50 +326,13 @@
                 "lexer",
                 "parser"
             ],
-            "time": "2015-09-04 01:00:55"
+            "time": "2017-05-08T22:43:37+00:00"
         }
     ],
     "packages-dev": [],
-    "aliases": [
-        {
-            "alias": "1.0.0-beta",
-            "alias_normalized": "1.0.0.0-beta",
-            "version": "9999999-dev",
-            "package": "kuria/class-loader"
-        },
-        {
-            "alias": "1.0.0-beta",
-            "alias_normalized": "1.0.0.0-beta",
-            "version": "9999999-dev",
-            "package": "kuria/error"
-        },
-        {
-            "alias": "1.0.0-beta",
-            "alias_normalized": "1.0.0.0-beta",
-            "version": "9999999-dev",
-            "package": "kuria/event"
-        },
-        {
-            "alias": "1.0.0-beta",
-            "alias_normalized": "1.0.0.0-beta",
-            "version": "9999999-dev",
-            "package": "kuria/cache"
-        },
-        {
-            "alias": "1.0.0-beta",
-            "alias_normalized": "1.0.0.0-beta",
-            "version": "9999999-dev",
-            "package": "kuria/parser"
-        }
-    ],
+    "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "kuria/class-loader": 20,
-        "kuria/error": 20,
-        "kuria/event": 20,
-        "kuria/cache": 20,
-        "kuria/parser": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

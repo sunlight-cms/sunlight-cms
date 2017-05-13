@@ -16,10 +16,7 @@ require $classDir . '/Core.php';
 $classLoader = new ClassLoader();
 $classLoader->register();
 
-$classLoader
-    ->addPrefix('Sunlight\\Admin\\', __DIR__ . '/../admin/class')
-    ->addPrefix('Sunlight\\', __DIR__ . '/class')
-;
-
 ComposerBridge::configure($classLoader, $vendorDir);
 Core::$classLoader = $classLoader;
+
+unset($classLoader);
