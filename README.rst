@@ -40,4 +40,4 @@ Legacy code notice
 
 This codebase is, as of writing, more than 10 years old. It was originally written for PHP 4 and uses very little OOP (as it was my very first big project).
 
-While it is functional and secure, one should keep this in mind when browsing through the code and possibly copying parts of it.
+While it is functional and secure, one should keep this in mind when browsing through the code :)
