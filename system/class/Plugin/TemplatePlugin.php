@@ -12,7 +12,7 @@ class TemplatePlugin extends Plugin
     protected static $typeDefinition = array(
         'dir' => 'plugins/templates',
         'class' => __CLASS__,
-        'default_namespace' => 'SunlightPlugins\\Template',
+        'default_base_namespace' => 'SunlightTemplate',
         'options' => array(
             'css' => array('type' => 'array', 'required' => false, 'default' => array('template_style' => 'style.css'), 'normalizer' => array('Sunlight\Plugin\PluginOptionNormalizer', 'normalizeWebPathArray')),
             'js' => array('type' => 'array', 'required' => false, 'default' => array(), 'normalizer' => array('Sunlight\Plugin\PluginOptionNormalizer', 'normalizeWebPathArray')),

@@ -32,7 +32,7 @@ class PluginLoader
         'installer' => array('type' => 'boolean', 'required' => false, 'nullable' => true, 'default' => false),
         'autoload' => array('type' => 'array', 'required' => false, 'default' => array(), 'normalizer' => array('Sunlight\Plugin\PluginOptionNormalizer', 'normalizeAutoload')),
         'dev' => array('type' => 'boolean', 'required' => false, 'nullable' => true),
-        'custom_class' => array('type' => 'boolean', 'required' => false, 'default' => false),
+        'class' => array('type' => 'string', 'required' => false),
         'namespace' => array('type' => 'string', 'required' => false, 'normalizer' => array('Sunlight\Plugin\PluginOptionNormalizer', 'normalizeNamespace')),
     );
 
@@ -143,6 +143,9 @@ class PluginLoader
                         }
                     }
 
+                    // resolve plugin class
+                    $plugin['options']['class'] = $this->resolvePluginClass($plugin, $type);
+
                     // override status if the plugin is disabled
                     if ($isDisabled) {
                         $plugin['status'] = Plugin::STATUS_DISABLED;
@@ -202,6 +205,29 @@ class PluginLoader
                 : 'production mode is required'
             ;
         }
+    }
+
+    /**
+     * @param array $plugin
+     * @param array $type
+     * @return string
+     */
+    private function resolvePluginClass(array $plugin, array $type)
+    {
+        $specifiedClass = $plugin['options']['class'];
+
+        if (null === $specifiedClass) {
+            // no class specified - use default class of the given type
+            return $type['class'];
+        }
+
+        if (false === strpos($specifiedClass, '\\')) {
+            // plain (unnamespaced) class name specified - prefix by plugin namespace
+            return $plugin['options']['namespace'] . '\\' . $specifiedClass;
+        }
+
+        // fully-qualified class name
+        return $specifiedClass;
     }
 
     /**

@@ -1,6 +1,6 @@
 <?php
 
-namespace SunlightPlugins\Extend\Codemirror;
+namespace SunlightExtend\Codemirror;
 
 use Sunlight\Core;
 use Sunlight\Plugin\ExtendPlugin;

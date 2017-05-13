@@ -23,6 +23,9 @@ abstract class Plugin
     /** Autload type - class map */
     const AUTOLOAD_CLASSMAP = 2;
 
+    /** @var array */
+    protected static $typeDefinition = array();
+
     /** @var string */
     protected $type;
     /** @var string */

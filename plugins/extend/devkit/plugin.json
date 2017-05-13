@@ -6,7 +6,7 @@
     "url": "https://sunlight-cms.org/",
     "dev": true,
 
-    "custom_class": true,
+    "class": "DevkitPlugin",
     "events": [
         ["db.query", "$this::onDbQuery"],
         ["db.query.post", "$this::onDbQueryPost"],

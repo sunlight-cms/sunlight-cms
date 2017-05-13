@@ -1,6 +1,6 @@
 <?php
 
-namespace SunlightPlugins\Extend\Devkit\Component;
+namespace SunlightExtend\Devkit\Component;
 
 use Kuria\Error\Screen\WebErrorScreen;
 

@@ -22,7 +22,7 @@ class PluginOptionNormalizer
     public static function normalizeNamespace($namespace, array $context)
     {
         if (null === $namespace) {
-            return $context['type']['default_namespace'] . '\\' . $context['plugin']['camel_name'];
+            return $context['type']['default_base_namespace'] . '\\' . $context['plugin']['camel_name'];
         } else {
             return $namespace;
         }

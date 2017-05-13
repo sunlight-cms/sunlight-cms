@@ -1,11 +1,9 @@
 <?php
 
-namespace SunlightPlugins\Extend\Devkit;
+namespace SunlightExtend\Devkit;
 
 use Sunlight\Plugin\ExtendPlugin;
 use Sunlight\Plugin\PluginManager;
-use SunlightPlugins\Extend\Devkit\Component\EventLogger;
-use SunlightPlugins\Extend\Devkit\Component\SqlLogger;
 
 /**
  * Devkit plugin
@@ -14,9 +12,9 @@ use SunlightPlugins\Extend\Devkit\Component\SqlLogger;
  */
 class DevkitPlugin extends ExtendPlugin
 {
-    /** @var SqlLogger */
+    /** @var Component\SqlLogger */
     public $sqlLogger;
-    /** @var EventLogger */
+    /** @var Component\EventLogger */
     public $eventLogger;
 
     public function __construct(array $data, PluginManager $manager)

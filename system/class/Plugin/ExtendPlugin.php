@@ -10,7 +10,7 @@ class ExtendPlugin extends Plugin
     protected static $typeDefinition = array(
         'dir' => 'plugins/extend',
         'class' => __CLASS__,
-        'default_namespace' => 'SunlightPlugins\\Extend',
+        'default_base_namespace' => 'SunlightExtend',
         'options' => array(
             'events' => array('type' => 'array', 'required' => false, 'default' => array(), 'normalizer' => array('Sunlight\Plugin\PluginOptionNormalizer', 'normalizeEvents')),
             'events.web' => array('type' => 'array', 'required' => false, 'default' => array(), 'normalizer' => array('Sunlight\Plugin\PluginOptionNormalizer', 'normalizeEvents')),

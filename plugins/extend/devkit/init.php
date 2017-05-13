@@ -1,6 +1,6 @@
 <?php
 
-namespace SunlightPlugins\Extend\Devkit;
+namespace SunlightExtend\Devkit;
 
 use Sunlight\Core;
 use Sunlight\Extend;

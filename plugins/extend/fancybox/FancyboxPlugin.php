@@ -1,6 +1,6 @@
 <?php
 
-namespace SunlightPlugins\Extend\Fancybox;
+namespace SunlightExtend\Fancybox;
 
 use Sunlight\Plugin\ExtendPlugin;
 

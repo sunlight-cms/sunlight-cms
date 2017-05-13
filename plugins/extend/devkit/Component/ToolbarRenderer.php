@@ -1,9 +1,10 @@
 <?php
 
-namespace SunlightPlugins\Extend\Devkit\Component;
+namespace SunlightExtend\Devkit\Component;
 
 use Kuria\Error\Util\Debug;
 use Sunlight\Core;
+use Sunlight\Extend;
 
 /**
  * Devkit toolbar renderer
@@ -33,45 +34,48 @@ class ToolbarRenderer
      */
     public function render()
     {
-        $now = microtime(true);
+        $that = $this;
 
-        // determine class
-        if (isset($_COOKIE['sl_devkit_toolbar']) && 'closed' === $_COOKIE['sl_devkit_toolbar']) {
-            $class = 'devkit-toolbar-closed';
-        } else {
-            $class = 'devkit-toolbar-open';
-        }
+        return _buffer(function () use ($that) {
+            $now = microtime(true);
 
-        ob_start();
+            // determine class
+            if (isset($_COOKIE['sl_devkit_toolbar']) && 'closed' === $_COOKIE['sl_devkit_toolbar']) {
+                $class = 'devkit-toolbar-closed';
+            } else {
+                $class = 'devkit-toolbar-open';
+            }
 
-        // start
-        ?>
-<div id="devkit-toolbar" class="<?php echo $class ?>">
+            // start
+            ?>
+            <div id="devkit-toolbar" class="<?php echo $class ?>">
+                <?php
+
+                // sections
+                $that->renderInfo();
+                $that->renderTime($now);
+                $that->renderMemory();
+                $that->renderDatabase();
+                $that->renderEvents();
+
+                Extend::call('devkit.toolbar.render');
+
+                $that->renderRequest();
+                $that->renderLogin();
+
+                // controls
+                ?>
+                <div class="devkit-button devkit-close">×</div>
+                <div class="devkit-button devkit-open">+</div>
+            </div>
 <?php
-
-        // sections
-        $this->renderInfo();
-        $this->renderTime($now);
-        $this->renderMemory();
-        $this->renderDatabase();
-        $this->renderEvents();
-        $this->renderRequest();
-        $this->renderLogin();
-
-        // controls
-        ?>
-    <div class="devkit-button devkit-close">×</div>
-    <div class="devkit-button devkit-open">+</div>
-</div>
-<?php
-
-        return ob_get_clean();
+        });
     }
 
     /**
      * Render the system info section
      */
-    private function renderInfo()
+    public function renderInfo()
     {
         ?>
 <div class="devkit-section devkit-info">
@@ -85,7 +89,7 @@ class ToolbarRenderer
      *
      * @param float $now
      */
-    private function renderTime($now)
+    public function renderTime($now)
     {
         ?>
 <div class="devkit-section devkit-time">
@@ -97,7 +101,7 @@ class ToolbarRenderer
     /**
      * Render the memory section
      */
-    private function renderMemory()
+    public function renderMemory()
     {
         ?>
 <div class="devkit-section devkit-memory">
@@ -109,7 +113,7 @@ class ToolbarRenderer
     /**
      * Render the database section
      */
-    private function renderDatabase()
+    public function renderDatabase()
     {
         $sqlLog = $this->sqlLogger->getLog();
 
@@ -155,7 +159,7 @@ class ToolbarRenderer
     /**
      * Render the event section
      */
-    private function renderEvents()
+    public function renderEvents()
     {
         $events = $this->eventLogger->getLog();
 
@@ -195,7 +199,7 @@ class ToolbarRenderer
      *
      * @param array $args
      */
-    private function renderEventArgs(array $args)
+    public function renderEventArgs(array $args)
     {
         if (!empty($args)) {
             $eventArgIsFirst = true;
@@ -215,7 +219,7 @@ class ToolbarRenderer
     /**
      * Render the request section
      */
-    private function renderRequest()
+    public function renderRequest()
     {
         ?>
 <div class="devkit-section devkit-request devkit-toggleable">
@@ -241,7 +245,7 @@ class ToolbarRenderer
     /**
      * Render the login section
      */
-    private function renderLogin()
+    public function renderLogin()
     {
         if (_login) {
             $loginInfo = sprintf('level %d', _priv_level);

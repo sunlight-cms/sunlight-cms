@@ -9,7 +9,7 @@ class LanguagePlugin extends Plugin
     protected static $typeDefinition = array(
         'dir' => 'plugins/languages',
         'class' => __CLASS__,
-        'default_namespace' => 'SunlightPlugins\\Language',
+        'default_base_namespace' => 'SunlightLanguage',
         'options' => array(),
     );
 

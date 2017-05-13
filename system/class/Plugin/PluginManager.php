@@ -401,7 +401,7 @@ class PluginManager
         }
 
         // load data
-        $data = $this->cache->get('plugin_data', array('has_bound_files' => true));
+        $data = $this->cache->get('plugin_data');
 
         // invalidate stale data
         if (
@@ -438,19 +438,11 @@ class PluginManager
 
             foreach ($plugins as $name => $plugin) {
                 if (Plugin::STATUS_OK === $plugin['status']) {
-                    if ($plugin['options']['custom_class']) {
-                        // custom class
-                        $class = $plugin['options']['namespace'] . '\\' .$plugin['camel_name'] . 'Plugin';
-                    } else {
-                        // default class
-                        $class = $this->types[$type]['class'];
-                    }
-
                     // setup autoloading
                     $this->setupAutoload($plugin);
 
                     // create instance
-                    $this->plugins[$type][$name] = new $class(
+                    $this->plugins[$type][$name] = new $plugin['options']['class'](
                         $plugin,
                         $this
                     );

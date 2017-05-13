@@ -5,7 +5,7 @@
     "api": "8.0.*",
     "url": "https://sunlight-cms.org/",
 
-    "custom_class": true,
+    "class": "CodeMirrorPlugin",
     "events.admin": [
         ["admin.head", "$this::onAdminHead"],
         ["admin.style", "$this::onAdminStyle"],
