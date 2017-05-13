@@ -322,7 +322,7 @@ function _templateLinks()
     global $_lang;
 
     return
-        "<li><a href=\"http://sunlight-cms.org/\">SunLight CMS</a></li>\n"
+        "<li><a href=\"https://sunlight-cms.org/\">SunLight CMS</a></li>\n"
         . ((!_adminlinkprivate || (_login && _priv_administration)) ? '<li><a href="' . _link('admin/') . '">' . $_lang['global.adminlink'] . "</a></li>\n" : '')
     ;
 }

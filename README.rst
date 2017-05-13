@@ -3,7 +3,7 @@ SunLight CMS
 
 This is the official GIT repository of SunLight CMS.
 
-Documentation, support and stable downloads are available at `sunlight-cms.org <http://sunlight-cms.org/>`_
+Documentation, support and stable downloads are available at `sunlight-cms.org <https://sunlight-cms.org/>`_
 
 
 Requirements
