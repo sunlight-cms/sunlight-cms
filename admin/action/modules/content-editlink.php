@@ -18,7 +18,7 @@ if ($continue) {
     $editscript_extra_row = "<tr class='valign-top'>
 <th>" . $_lang['admin.content.form.url'] . (!$new ? " <a onclick='this.href=$(\"input[name=link_url]\").val()' href='" . (_isAbsoluteUrl($query['link_url']) ? '' : _root) . _e($query['link_url']) . "' target='_blank'><img src='images/icons/loupe.png' alt='prev'></a>" : '') . "</td>
 <td colspan='3'>
-<input class='inputmax' type='text' name='link_url' value='" . _e($query['link_url']) . "'>
+<input class='inputmax' type='url' name='link_url' value='" . _e($query['link_url']) . "'>
 </td>
 </tr>";
     $custom_settings = "<label><input type='checkbox' name='link_new_window' value='1'" . _checkboxActivate($query['link_new_window']) . "> " . $_lang['admin.content.form.newwindow'] . "</label>";

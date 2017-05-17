@@ -252,7 +252,7 @@ label {padding-right: 0.5em;}
 input, button, select, textarea {padding: 6px; margin: 0; box-sizing: border-box; font-size: 12px; line-height: 1 !important; vertical-align: middle;}
 
 input[type=checkbox], input[type=radio] {padding: 0; margin: 3px; border: none; vertical-align: middle;}
-input[type=text], input[type=password], select {height: 26px; border: 1px solid <?php echo $scheme_smoke_dark; ?>; box-shadow: inset 0 0 4px <?php echo $scheme_alpha_shadow2; ?>;}
+input[type=text], input[type=password], input[type=number], input[type=email], input[type=search], select {height: 26px; border: 1px solid <?php echo $scheme_smoke_dark; ?>; box-shadow: inset 0 0 4px <?php echo $scheme_alpha_shadow2; ?>;}
 input[type=submit], input[type=button], input[type=reset], button {cursor: pointer; padding: 8px 12px; border: 1px solid <?php echo $scheme_smoke_med; ?>; background: <?php echo $scheme_smoke_lighter; ?>; background: linear-gradient(to bottom, <?php echo $scheme_smoke_lightest; ?>, <?php echo $scheme_smoke; ?>); color: <?php echo $scheme_text; ?>; font-size: 13px;}
 input[type=submit]:focus, input[type=button]:focus, input[type=reset]:focus, button:focus {outline: 1px solid <?php echo $scheme_med; ?>;}
 input[type=submit]:hover, input[type=button]:hover, input[type=reset]:hover, button:hover {background: <?php echo $scheme_lightest; ?>; background: linear-gradient(to bottom, <?php echo $scheme_lightest; ?>, <?php echo $scheme_lighter; ?>); border-color: <?php echo $scheme_lighter; ?>; outline: none;}
@@ -533,6 +533,7 @@ pre.exception {max-height: 300px; margin: 1em 0; padding: 13px; overflow: auto; 
 .areabig {width: 99%; height: 400px;}
 .areabigperex {width: 99%; height: 150px;}
 .inputmini {width: 38px;}
+.inputmini[type=number] {width:50px;}
 .inputsmaller {width: 80px;}
 .inputsmall {width: 145px;}
 .inputmedium {width: 290px;}

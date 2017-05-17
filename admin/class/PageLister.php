@@ -465,7 +465,7 @@ class PageLister
 
         // order input
         if ($options['sortable']) {
-            $output .= "<td class=\"page-list-sortcell\"><input class=\"inputmini\" type=\"text\" name=\"ord[{$page['id']}]\" value=\"{$page['ord']}\"></td>\n";
+            $output .= "<td class=\"page-list-sortcell\"><input class=\"inputmini\" type=\"number\" name=\"ord[{$page['id']}]\" value=\"{$page['ord']}\"></td>\n";
         }
 
         // title

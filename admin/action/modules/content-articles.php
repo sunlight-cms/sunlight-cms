@@ -59,6 +59,6 @@ $output .= "
 <input type='hidden' name='p' value='content-articles-edit'>
 <input type='hidden' name='returnid' value='load'>
 <input type='hidden' name='returnpage' value='1'>
-" . $_lang['admin.content.articles.openid'] . ": <input type='text' name='id' class='inputmini'> <input class='button' type='submit' value='" . $_lang['global.open'] . "'>
+" . $_lang['admin.content.articles.openid'] . ": <input type='number' name='id' class='inputmini'> <input class='button' type='submit' value='" . $_lang['global.open'] . "'>
 </form>
 ";

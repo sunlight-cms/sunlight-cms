@@ -309,7 +309,7 @@ if ($continue) {
 
 <tr>
 <th>" . $_lang['global.email'] . "</th>
-<td><input type='text' class='inputsmall'" . _restorePostValueAndName('email', $query['email']) . "></td>
+<td><input type='email' class='inputsmall'" . _restorePostValueAndName('email', $query['email']) . "></td>
 </tr>
 
 <tr>

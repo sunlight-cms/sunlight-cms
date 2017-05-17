@@ -21,7 +21,7 @@ if ($continue) {
         $artorder_select .= "<option value='" . $x . "'" . $selected . ">" . $_lang['admin.content.form.artorder.' . $x] . "</option>";
     }
 
-    $custom_settings = $_lang['admin.content.form.artorder'] . " <select name='var1'>" . $artorder_select . "</select> " . $_lang['admin.content.form.artsperpage'] . " <input type='text' name='var2' value='" . $query['var2'] . "' class='inputmini'></span>
+    $custom_settings = $_lang['admin.content.form.artorder'] . " <select name='var1'>" . $artorder_select . "</select> " . $_lang['admin.content.form.artsperpage'] . " <input type='number' min='1' name='var2' value='" . $query['var2'] . "' class='inputmini'></span>
   </span> <span class='customsettings'>
   <label><input type='checkbox' name='var3' value='1'" . _checkboxActivate($query['var3']) . "> " . $_lang['admin.content.form.showinfo'] . "</label>
   <label><input type='checkbox' name='var4' value='1'" . _checkboxActivate($query['var4']) . "> " . $_lang['admin.content.form.showpics'] . "</label>

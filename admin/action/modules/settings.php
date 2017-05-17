@@ -358,7 +358,7 @@ foreach ($editable_settings as $settings_category => $settings_category_data) {
             } else {
                 switch ($settings[$item['name']]['format']) {
                     case 'int':
-                        $input = "<input type=\"text\"{$inputAttrs} value=\"" . _e($value) . "\">";
+                        $input = "<input type=\"number\"{$inputAttrs} value=\"" . _e($value) . "\">";
                         break;
                     case 'bool':
                         $input = "<input type=\"checkbox\"{$inputAttrs} value=\"1\"" . _checkboxActivate($value) . ">";

@@ -484,7 +484,7 @@ $output .= "<form class='cform' action='index.php?p=content-edit" . $type_array[
 
 <tr>
 <th>" . $_lang['admin.content.form.ord'] . "</th>
-<td><input type='text' name='ord'" . _inputDisableUnless(_priv_adminroot) ." value='" . $query['ord'] . "' class='inputmax'></td>
+<td><input type='number' name='ord'" . _inputDisableUnless(_priv_adminroot) ." value='" . $query['ord'] . "' class='inputmax'></td>
 
 " . ($editscript_enable_slug ? "<td></td><td><label><input type='checkbox' name='slug_abs'" . _checkboxActivate($query['slug_abs']) . "> " . $_lang['admin.content.form.slug_abs.label'] . "</label></td>" : '') . "
 </tr>
@@ -565,7 +565,7 @@ $output .= "<form class='cform' action='index.php?p=content-edit" . $type_array[
 <th>" . $_lang['global.access'] . "</th>
 <td" . $colspan . ">
 <label><input type='checkbox' name='public' value='1'" . _checkboxActivate($query['public']) . "> " . $_lang['admin.content.form.public'] . "</label> 
-<input type='text' name='level' value='" . ($query['level_inherit'] ? '' : $query['level']) . "' class='inputsmaller' maxlength='5'> " . $_lang['admin.content.form.level'] . "
+<input type='number' min='0' max='" . _priv_max_level . "' name='level' value='" . ($query['level_inherit'] ? '' : $query['level']) . "' class='inputsmaller' maxlength='5'> " . $_lang['admin.content.form.level'] . "
 " . ($query['level_inherit'] ? '<small>(' . $_lang['admin.content.form.inherited'] . ': ' . $query['level'] . ')</small>' : '') . "
 </td>
 </tr>
