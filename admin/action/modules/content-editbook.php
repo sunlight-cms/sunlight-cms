@@ -16,7 +16,7 @@ if ($continue) {
     if (!$new) {
         $custom_settings .= " <label><input type='checkbox' name='delposts' value='1'> " . $_lang['admin.content.form.delposts'] . "</label><small>(" . DB::result(DB::query("SELECT COUNT(*) FROM " . _posts_table . " WHERE home=" . $id . " AND type=3"), 0) . ")</small>";
     }
-    $custom_settings .= " <input type='text' name='var2' value='" . $query['var2'] . "' class='inputmini'> " . $_lang['admin.content.form.postsperpage'];
+    $custom_settings .= " <input type='number' min='1' name='var2' value='" . $query['var2'] . "' class='inputmini'> " . $_lang['admin.content.form.postsperpage'];
     $custom_save_array = array(
         'var1' => array('type' => 'bool', 'nullable' => false),
         'var2' => array('type' => 'int', 'nullable' => true),

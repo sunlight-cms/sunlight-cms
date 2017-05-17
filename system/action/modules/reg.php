@@ -200,7 +200,7 @@ if (!$user_data_valid && $show_form) {
             array('label' => $_lang['login.username'], 'content' => "<input type='text' class='inputsmall' maxlength='24'" . _restorePostValueAndName('username') . ">"),
             array('label' => $_lang['login.password'], 'content' => "<input type='password' name='password' class='inputsmall'>"),
             array('label' => $_lang['login.password'] . " (" . $_lang['global.check'] . ")", 'content' => "<input type='password' name='password2' class='inputsmall'>"),
-            array('label' => $_lang['global.email'], 'content' => "<input type='text' class='inputsmall' " . _restorePostValueAndName('email', '@') . ">"),
+            array('label' => $_lang['global.email'], 'content' => "<input type='email' class='inputsmall' " . _restorePostValueAndName('email', '@') . ">"),
             array('label' => $_lang['mod.settings.massemail'], 'content' => "<label><input type='checkbox' value='1'" . _restoreCheckedAndName('regform', 'massemail', true) . "> " . $_lang['mod.settings.massemail.label'] . '</label>'),
             $groupselect,
             $captcha,

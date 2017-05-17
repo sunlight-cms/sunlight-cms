@@ -39,7 +39,7 @@ $output .= "
 
 <form action='" . _linkModule('search') . "' method='get'>
 " . (!_pretty_urls ? _renderHiddenInputs(_arrayFilter($_GET, null, null, array('q', 'root', 'art', 'post', 'img'))) : '') . "
-<p><input type='text' name='q' class='inputmedium' value='" . _e($search_query) . "'> <input type='submit' value='" . $_lang['mod.search.submit'] . "'></p>
+<p><input type='search' name='q' class='inputmedium' value='" . _e($search_query) . "'> <input type='submit' value='" . $_lang['mod.search.submit'] . "'></p>
 <p>
     " . $_lang['mod.search.where'] . ":
     <label><input type='checkbox' name='root' value='1'" . _checkboxActivate($root) . "> " . $_lang['mod.search.where.root'] . "</label>

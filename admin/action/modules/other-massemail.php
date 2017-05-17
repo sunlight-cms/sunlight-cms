@@ -130,7 +130,7 @@ $output .= "
 
 <tr>
 <th>" . $_lang['admin.other.massemail.sender'] . "</th>
-<td><input type='text'" . _restorePostValueAndName('sender', _sysmail) . " class='inputbig'></td>
+<td><input type='email'" . _restorePostValueAndName('sender', _sysmail) . " class='inputbig'></td>
 </tr>
 
 <tr>

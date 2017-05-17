@@ -15,11 +15,11 @@ if ($continue) {
     }
 
     $custom_settings = "
-  <input type='text' name='var1' value='" . $query['var1'] . "' class='inputmini'> " . $_lang['admin.content.form.imgsperrow'] . ",
-  <input type='text' name='var2' value='" . $query['var2'] . "' class='inputmini'> " . $_lang['admin.content.form.imgsperpage'] . "
+  <input type='number' min='-1' name='var1' value='" . $query['var1'] . "' class='inputmini'> " . $_lang['admin.content.form.imgsperrow'] . ",
+  <input type='number' min='1' name='var2' value='" . $query['var2'] . "' class='inputmini'> " . $_lang['admin.content.form.imgsperpage'] . "
   </span> <span class='customsettings'>
-  <input type='text' name='var4' value='" . $query['var4'] . "' class='inputmini'> " . $_lang['admin.content.form.prevwidth'] . " 
-  <input type='text' name='var3' value='" . $query['var3'] . "' class='inputmini'> " . $_lang['admin.content.form.prevheight'] . "
+  <input type='number' min='10' max='1024' name='var4' value='" . $query['var4'] . "' class='inputmini'> " . $_lang['admin.content.form.prevwidth'] . " 
+  <input type='number' min='10' max='1024' name='var3' value='" . $query['var3'] . "' class='inputmini'> " . $_lang['admin.content.form.prevheight'] . "
   ";
 
     $custom_save_array = array(

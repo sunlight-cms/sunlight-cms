@@ -85,6 +85,6 @@ $output .= "
 
 <form class='cform' action='index.php' method='get'>
 <input type='hidden' name='p' value='content-polls-edit'>
-" . $_lang['admin.content.polls.openid'] . ": <input type='text' name='id' class='inputmini'> <input class='button' type='submit' value='" . $_lang['global.open'] . "'>
+" . $_lang['admin.content.polls.openid'] . ": <input type='number' name='id' class='inputmini'> <input class='button' type='submit' value='" . $_lang['global.open'] . "'>
 </form>
 ";

@@ -309,7 +309,7 @@ $output .= "
 
   <tr class='valign-top'>
   <th>" . $_lang['global.email'] . " <span class='important'>*</span></th>
-  <td><input type='text'" . _restorePostValueAndName('email', $query['email']) . " class='inputsmall'/> <span class='hint'>(" . $_lang['mod.settings.emailchangenote'] . ")</span></td>
+  <td><input type='email'" . _restorePostValueAndName('email', $query['email']) . " class='inputsmall'/> <span class='hint'>(" . $_lang['mod.settings.emailchangenote'] . ")</span></td>
   </tr>
 
   " . $language_select . "

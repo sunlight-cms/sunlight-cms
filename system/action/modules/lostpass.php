@@ -138,7 +138,7 @@ if (isset($_GET['user'], $_GET['hash'])) {
             ),
             array(
                 array('label' => $_lang['login.username'], 'content' => "<input type='text' class='inputsmall' maxlength='24'" . _restorePostValueAndName('username') . ">"),
-                array('label' => $_lang['global.email'], 'content' => "<input type='text' class='inputsmall' " . _restorePostValueAndName('email', '@') . ">"),
+                array('label' => $_lang['global.email'], 'content' => "<input type='email' class='inputsmall' " . _restorePostValueAndName('email', '@') . ">"),
                 $captcha
             )
         );

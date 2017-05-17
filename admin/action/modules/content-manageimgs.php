@@ -336,7 +336,7 @@ if ($continue) {
 
 <tr>
 <th>" . $_lang['admin.content.form.ord'] . "</th>
-<td><input type='text' name='ord' class='inputsmall' disabled> <label><input type='checkbox' name='moveords' value='1' checked onclick=\"Sunlight.toggleFormField(this.checked, 'addform', 'ord');\"> " . $_lang['admin.content.manageimgs.moveords'] . "</label></td>
+<td><input type='number' name='ord' class='inputsmall' disabled> <label><input type='checkbox' name='moveords' value='1' checked onclick=\"Sunlight.toggleFormField(this.checked, 'addform', 'ord');\"> " . $_lang['admin.content.manageimgs.moveords'] . "</label></td>
 </tr>
 
 <tr>

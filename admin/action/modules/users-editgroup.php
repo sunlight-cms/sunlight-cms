@@ -266,7 +266,7 @@ if ($continue) {
 
   <tr>
   <th>" . $_lang['admin.users.groups.level'] . "</th>
-  <td><input type='text' name='level' class='inputmedium' value='" . $query['level'] . "'" . _inputDisableUnless(!$systemitem) . "></td>
+  <td><input type='number' min='0' max='" . _priv_max_assignable_level . "' name='level' class='inputmedium' value='" . $query['level'] . "'" . _inputDisableUnless(!$systemitem) . "></td>
   </tr>
 
   " . (($id != _group_guests) ? "
