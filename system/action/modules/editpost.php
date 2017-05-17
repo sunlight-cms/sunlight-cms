@@ -30,17 +30,17 @@ if (DB::size($query) != 0) {
 
             switch ($query['type']) {
                 case _post_section_comment:
-                    $_index['backlink'] = _addGetToLink($url, "page=" . _resultPagingGetItemPage(_commentsperpage, _posts_table, "id>" . $query['id'] . " AND type=1 AND xhome=-1 AND home=" . $query['home']), false) . "#post-" . $query['id'];
+                    $_index['backlink'] = _addGetToLink($url, "page=" . _resultPagingGetItemPage(_commentsperpage, _posts_table, "id>" . $query['id'] . " AND type=" . _post_section_comment . " AND xhome=-1 AND home=" . $query['home']), false) . "#post-" . $query['id'];
                     break;
                 case _post_article_comment:
-                    $_index['backlink'] = _addGetToLink($url, "page=" . _resultPagingGetItemPage(_commentsperpage, _posts_table, "id>" . $query['id'] . " AND type=2 AND xhome=-1 AND home=" . $query['home']), false) . "#post-" . $query['id'];
+                    $_index['backlink'] = _addGetToLink($url, "page=" . _resultPagingGetItemPage(_commentsperpage, _posts_table, "id>" . $query['id'] . " AND type=" . _post_article_comment . " AND xhome=-1 AND home=" . $query['home']), false) . "#post-" . $query['id'];
                     break;
                 case _post_book_entry:
                     $postsperpage = DB::queryRow("SELECT var2 FROM " . _root_table . " WHERE id=" . $query['home']);
                     if (null === $postsperpage['var2']) {
                         $postsperpage['var2'] = _commentsperpage;
                     }
-                    $_index['backlink'] = _addGetToLink($url, "page=" . _resultPagingGetItemPage($postsperpage['var2'], _posts_table, "id>" . $query['id'] . " AND type=3 AND xhome=-1 AND home=" . $query['home']), false) . "#post-" . $query['id'];
+                    $_index['backlink'] = _addGetToLink($url, "page=" . _resultPagingGetItemPage($postsperpage['var2'], _posts_table, "id>" . $query['id'] . " AND type=" . _post_book_entry . " AND xhome=-1 AND home=" . $query['home']), false) . "#post-" . $query['id'];
                     break;
                 case _post_shoutbox_entry:
                     $bbcode = false;
@@ -53,12 +53,12 @@ if (DB::size($query) != 0) {
                             $_index['backlink'] = _linkRoot($query['home'], $query['root_slug']);
                         }
                     } else {
-                        $_index['backlink'] = _addGetToLink($url, "page=" . _resultPagingGetItemPage(_commentsperpage, _posts_table, "id<" . $query['id'] . " AND type=5 AND xhome=" . $query['xhome'] . " AND home=" . $query['home']), false) . "#post-" . $query['id'];
+                        $_index['backlink'] = _addGetToLink($url, "page=" . _resultPagingGetItemPage(_commentsperpage, _posts_table, "id<" . $query['id'] . " AND type=" . _post_forum_topic . " AND xhome=" . $query['xhome'] . " AND home=" . $query['home']), false) . "#post-" . $query['id'];
                     }
                     break;
 
                 case _post_pm:
-                    $_index['backlink'] = _addGetToLink($url, 'page=' . _resultPagingGetItemPage(_messagesperpage, _posts_table, 'id<' . $query['id'] . ' AND type=6 AND home=' . $query['home']), false) . '#post-' . $query['id'];
+                    $_index['backlink'] = _addGetToLink($url, 'page=' . _resultPagingGetItemPage(_messagesperpage, _posts_table, 'id<' . $query['id'] . ' AND type=' . _post_pm . ' AND home=' . $query['home']), false) . '#post-' . $query['id'];
                     break;
 
                 case _post_plugin:
@@ -126,7 +126,14 @@ if (isset($_POST['text'])) {
                 'message' => &$message,
             ));
             if ('' === $message) {
-                DB::query("UPDATE " . _posts_table . " SET text=" . DB::val($text) . ",subject=" . DB::val($subject) . (isset($guest) ? ",guest=" . DB::val($guest) : '') . " WHERE id=" . DB::val($id));
+                $update_data = array(
+                    'text' => $text,
+                    'subject' => $subject
+                );
+                if(isset($guest)) {
+                    $update_data['guest'] = $guest;
+                }
+                DB::update(_posts_table, 'id=' . DB::val($id), $update_data);
                 $_index['redirect_to'] = _linkModule('editpost', 'id=' . $id . '&saved', false, true);
 
                 return;
@@ -148,19 +155,17 @@ if (isset($_POST['text'])) {
             // debump topicu
             if ($query['type'] == _post_forum_topic && $query['xhome'] != -1) {
                 // kontrola, zda se jedna o posledni odpoved
-                $chq = DB::query('SELECT id,time FROM ' . _posts_table . ' WHERE type=5 AND xhome=' . $query['xhome'] . ' ORDER BY id DESC LIMIT 2');
-                $chr = DB::row($chq);
+                $chr = DB::queryRow('SELECT id,time FROM ' . _posts_table . ' WHERE type=' . _post_forum_topic . ' AND xhome=' . $query['xhome'] . ' ORDER BY id DESC LIMIT 2');
                 if ($chr !== false && $chr['id'] == $id) {
                     // ano, debump podle casu predchoziho postu nebo samotneho topicu (pokud se smazala jedina odpoved)
-                    $chr = DB::row($chq);
                     DB::query('UPDATE ' . _posts_table . ' SET bumptime=' . (($chr !== false) ? $chr['time'] : 'time') . ' WHERE id=' . $query['xhome']);
                 }
             }
 
             // smazani prispevku a odpovedi
-            DB::query("DELETE FROM " . _posts_table . " WHERE id=" . $id);
+            DB::delete(_posts_table, 'id=' . DB::val($id));
             if ($query['xhome'] == -1) {
-                DB::query("DELETE FROM " . _posts_table . " WHERE xhome=" . $id . " AND home=" . $query['home'] . " AND type=" . $query['type']);
+                DB::delete(_posts_table, 'xhome=' . DB::val($id) . ' AND home=' . DB::val($query['home']) . ' AND type=' . DB::val($query['type']));
             }
 
             // info

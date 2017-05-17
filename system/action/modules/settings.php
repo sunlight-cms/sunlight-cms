@@ -15,10 +15,10 @@ if (!_login) {
 /* ---  priprava promennych  --- */
 
 $message = "";
-$query = DB::queryRow("SELECT * FROM " . _users_table . " WHERE id=" . _loginid);
+$userdata = Sunlight\Core::$userData;
 
 // cesta k avataru
-$avatar_path = _getAvatar(Sunlight\Core::$userData, array('get_url' => true, 'extend' => false));
+$avatar_path = _getAvatar($userdata, array('get_url' => true, 'extend' => false));
 
 /* ---  ulozeni  --- */
 
@@ -28,7 +28,7 @@ if (isset($_POST['username'])) {
 
     // smazani vlastniho uctu
     if (_priv_selfremove && _checkboxLoad('selfremove')) {
-        if (Sunlight\Util\Password::load($query['password'])->match(_post('selfremove-confirm'))) {
+        if (Sunlight\Util\Password::load($userdata['password'])->match(_post('selfremove-confirm'))) {
             if (_loginid != 0) {
                 _deleteUser(_loginid);
                 $_SESSION = array();
@@ -56,7 +56,7 @@ if (isset($_POST['username'])) {
         $usernamechange = false;
         if ($username != _loginname) {
             if (_priv_changeusername || mb_strtolower($username) == mb_strtolower(_loginname)) {
-                if (DB::result(DB::query("SELECT COUNT(*) FROM " . _users_table . " WHERE (username=" . DB::val($username) . " OR publicname=" . DB::val($username) . ") AND id!=" . _loginid), 0) == 0) {
+                if (DB::count(_users_table, '(username=' . DB::val($username) . ' OR publicname=' . DB::val($username) . ') AND id!=' . _loginid) === 0) {
                     $usernamechange = true;
                 } else {
                     $errors[] = $_lang['user.msg.userexists'];
@@ -71,8 +71,8 @@ if (isset($_POST['username'])) {
     $publicname = _e(_wsTrim(_post('publicname')));
     if (mb_strlen($publicname) > 24) {
         $errors[] = $_lang['user.msg.publicnametoolong'];
-    } elseif ($publicname != $query['publicname'] && $publicname != "") {
-        if (DB::result(DB::query("SELECT COUNT(*) FROM " . _users_table . " WHERE (publicname=" . DB::val($publicname) . " OR username=" . DB::val($publicname) . ") AND id!=" . _loginid), 0) != 0) {
+    } elseif ($publicname != $userdata['publicname'] && $publicname != "") {
+        if (DB::count(_users_table, '(publicname=' . DB::val($publicname) . ' OR username=' . DB::val($publicname) . ') AND id!=' . _loginid) !== 0) {
             $errors[] = $_lang['user.msg.publicnameexists'];
         }
     }
@@ -88,10 +88,10 @@ if (isset($_POST['username'])) {
         if ($email != _loginemail) {
             if ('' === _post('currentpassword')) {
                 $errors[] = $_lang['mod.settings.error.emailchangenopass'];
-            } elseif (!Sunlight\Util\Password::load($query['password'])->match(_post('currentpassword'))) {
+            } elseif (!Sunlight\Util\Password::load($userdata['password'])->match(_post('currentpassword'))) {
                 $errors[] = $_lang['mod.settings.error.badcurrentpass'];
             }
-            if (DB::result(DB::query("SELECT COUNT(*) FROM " . _users_table . " WHERE email=" . DB::val($email) . " AND id!=" . _loginid), 0) != 0) {
+            if (DB::count(_users_table, 'email=' . DB::val($email) . ' AND id!=' . _loginid) !== 0) {
                 $errors[] = $_lang['user.msg.emailexists'];
             }
         }
@@ -119,7 +119,7 @@ if (isset($_POST['username'])) {
     }
 
     // avatar
-    $avatar = $query['avatar'];
+    $avatar = $userdata['avatar'];
     if (_uploadavatar) {
 
         // smazani avataru
@@ -165,7 +165,7 @@ if (isset($_POST['username'])) {
     if (_post('newpassword') != "" || _post('newpassword-confirm') != "") {
         $newpassword = _post('newpassword');
         $newpassword_confirm = _post('newpassword-confirm');
-        if (Sunlight\Util\Password::load($query['password'])->match(_post('currentpassword'))) {
+        if (Sunlight\Util\Password::load($userdata['password'])->match(_post('currentpassword'))) {
             if ($newpassword == $newpassword_confirm) {
                 if ($newpassword != "") {
                     $passwordchange = true;
@@ -221,7 +221,7 @@ if (isset($_POST['username'])) {
     // extend
     Sunlight\Extend::call('mod.settings.submit', array(
         'changeset' => &$changeset,
-        'current' => $query,
+        'current' => $userdata,
         'errors' => &$errors,
     ));
 
@@ -236,7 +236,7 @@ if (isset($_POST['username'])) {
         // extend
         Sunlight\Extend::call('mod.settings.save', array(
             'changeset' => &$changeset,
-            'current' => $query,
+            'current' => $userdata,
         ));
 
         // update
@@ -266,7 +266,7 @@ if (_language_allowcustom) {
     <tr>
     <th>' . $_lang['global.language'] . '</th>
     <td><select name="language" class="inputsmall"><option value="">' . $_lang['global.default'] . '</option>';
-    $language_select .= Core::$pluginManager->select(PluginManager::LANGUAGE, $query['language']);
+    $language_select .= Core::$pluginManager->select(PluginManager::LANGUAGE, $userdata['language']);
     $language_select .= '</td></tr>';
 } else {
     $language_select = "";
@@ -278,7 +278,7 @@ if (_priv_administration) {
 
   <tr>
   <th>" . $_lang['mod.settings.wysiwyg'] . "</th>
-  <td><label><input type='checkbox' name='wysiwyg' value='1'" . _checkboxActivate($query['wysiwyg']) . "> " . $_lang['mod.settings.wysiwyg.label'] . "</label></td>
+  <td><label><input type='checkbox' name='wysiwyg' value='1'" . _checkboxActivate($userdata['wysiwyg']) . "> " . $_lang['mod.settings.wysiwyg.label'] . "</label></td>
   </tr>
 
   ";
@@ -304,19 +304,19 @@ $output .= "
 
   <tr>
   <th>" . $_lang['mod.settings.publicname'] . "</th>
-  <td><input type='text'" . _restorePostValueAndName('publicname', $query['publicname'], true) . " class='inputsmall' maxlength='24'></td>
+  <td><input type='text'" . _restorePostValueAndName('publicname', $userdata['publicname'], true) . " class='inputsmall' maxlength='24'></td>
   </tr>
 
   <tr class='valign-top'>
   <th>" . $_lang['global.email'] . " <span class='important'>*</span></th>
-  <td><input type='email'" . _restorePostValueAndName('email', $query['email']) . " class='inputsmall'/> <span class='hint'>(" . $_lang['mod.settings.emailchangenote'] . ")</span></td>
+  <td><input type='email'" . _restorePostValueAndName('email', $userdata['email']) . " class='inputsmall'/> <span class='hint'>(" . $_lang['mod.settings.emailchangenote'] . ")</span></td>
   </tr>
 
   " . $language_select . "
 
   <tr>
   <th>" . $_lang['mod.settings.massemail'] . "</th>
-  <td><label><input type='checkbox' name='massemail' value='1'" . _checkboxActivate($query['massemail']) . "> " . $_lang['mod.settings.massemail.label'] . "</label></td>
+  <td><label><input type='checkbox' name='massemail' value='1'" . _checkboxActivate($userdata['massemail']) . "> " . $_lang['mod.settings.massemail.label'] . "</label></td>
   </tr>
 
   " . $admin . "
@@ -355,22 +355,22 @@ $output .= "
 
   <tr>
   <th>" . $_lang['global.icq'] . "</th>
-  <td><input type='text'" . _restorePostValueAndName('icq', $query['icq'] ? $query['icq'] : '') . " class='inputsmall'></td>
+  <td><input type='text'" . _restorePostValueAndName('icq', $userdata['icq'] ? $userdata['icq'] : '') . " class='inputsmall'></td>
   </tr>
 
   <tr>
   <th>" . $_lang['global.skype'] . "</th>
-  <td><input type='text'" . _restorePostValueAndName('skype', $query['skype']) . " class='inputsmall'></td>
+  <td><input type='text'" . _restorePostValueAndName('skype', $userdata['skype']) . " class='inputsmall'></td>
   </tr>
 
   <tr>
   <th>" . $_lang['global.web'] . "</th>
-  <td><input type='text' name='web' value='" . $query['web'] . "' class='inputsmall'></td>
+  <td><input type='text' name='web' value='" . $userdata['web'] . "' class='inputsmall'></td>
   </tr>
 
   <tr class='valign-top'>
   <th>" . $_lang['global.note'] . "</th>
-  <td><textarea class='areasmall' rows='9' cols='33' name='note'>" . _restorePostValue('note', $query['note'], false, false) . "</textarea></td>
+  <td><textarea class='areasmall' rows='9' cols='33' name='note'>" . _restorePostValue('note', $userdata['note'], false, false) . "</textarea></td>
   </tr>
 
   <tr><td></td>
@@ -386,7 +386,7 @@ if (_uploadavatar) {
     $output .= "
   <fieldset>
   <legend>" . $_lang['mod.settings.avatar'] . "</legend>
-  " . Sunlight\Extend::buffer('mod.settings.avatar', array('user' => $query)) . "
+  " . Sunlight\Extend::buffer('mod.settings.avatar', array('user' => $userdata)) . "
   <p><strong>" . $_lang['mod.settings.avatar.upload'] . ":</strong> <input type='file' name='avatar'></p>
     <table>
     <tr class='valign-top'>

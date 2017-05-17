@@ -16,9 +16,8 @@ $message = '';
 $unstick = '';
 $id = (int) _get('id');
 $userQuery = _userQuery('p.author');
-$query = DB::query("SELECT p.id,p.time,p.subject,p.sticky,r.slug forum_slug," . $userQuery['column_list'] . " FROM " . _posts_table . " p JOIN " . _root_table . " r ON(p.home=r.id) " . $userQuery['joins'] . " WHERE p.id=" . $id . " AND p.type=5 AND p.xhome=-1");
-if (DB::size($query) != 0) {
-    $query = DB::row($query);
+$query = DB::queryRow("SELECT p.id,p.time,p.subject,p.sticky,r.slug forum_slug," . $userQuery['column_list'] . " FROM " . _posts_table . " p JOIN " . _root_table . " r ON(p.home=r.id) " . $userQuery['joins'] . " WHERE p.id=" . $id . " AND p.type=" . _post_forum_topic . " AND p.xhome=-1");
+if ($query !== false) {
     $_index['backlink'] = _linkTopic($query['id'], $query['forum_slug']);
     if ($query['sticky']) {
         $unstick = '2';
@@ -35,7 +34,9 @@ if (DB::size($query) != 0) {
 /* ---  ulozeni  --- */
 
 if (isset($_POST['doit'])) {
-    DB::query("UPDATE " . _posts_table . " SET sticky=" . (($query['sticky'] == 1) ? 0 : 1) . " WHERE id=" . $id);
+    DB::update(_posts_table, 'id=' . DB::val($id), array(
+        'sticky' => (($query['sticky'] == 1) ? 0 : 1)
+    ));
     $message = _msg(_msg_ok, $_lang['mod.stickytopic.ok' . $unstick]);
     $success = true;
 }

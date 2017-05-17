@@ -12,9 +12,8 @@ if (!_login && _notpublicsite) {
 /* ---  priprava  --- */
 
 $id = _slugify(_get('id'));
-$query = DB::query("SELECT * FROM " . _users_table . " WHERE username=" . DB::val($id));
-if (DB::size($query) != 0) {
-    $query = DB::row($query);
+$query = DB::queryRow("SELECT * FROM " . _users_table . " WHERE username=" . DB::val($id));
+if ($query !== false) {
     $groupdata = DB::queryRow("SELECT title,descr,icon,color,blocked FROM " . _groups_table . " WHERE id=" . $query['group_id']);
 
     // promenne
@@ -47,7 +46,7 @@ if (DB::size($query) != 0) {
     }
 
     // odkaz na prispevky uzivatele
-    $posts_count = DB::result(DB::query("SELECT COUNT(*) FROM " . _posts_table . " WHERE author=" . $query['id'] . ' AND type!=6 AND type!=4'), 0);
+    $posts_count = DB::count(_posts_table, 'author=' . $query['id'] . ' AND type!=' . _post_pm . ' AND type!=' . _post_shoutbox_entry);
     if ($posts_count > 0) {
         $posts_viewlink = ", <a href='" . _linkModule('profile-posts', 'id=' . $id) . "'>" . $_lang['global.show'] . " &gt;</a>";
     } else {
