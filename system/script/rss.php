@@ -69,7 +69,7 @@ switch ($type) {
                 $image_h = _article_pic_h;
             }
 
-            $feed_url = Sunlight\Core::$url . '/' . _linkArticle($id, $query['slug'], $query['cat_slug']);
+            $feed_url = _linkArticle($id, $query['slug'], $query['cat_slug'], true);
             $feed_title = $_lang['rss.recentcomments'];
             $post_types = array(_post_article_comment);
         }
