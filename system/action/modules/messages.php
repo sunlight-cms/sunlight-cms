@@ -107,7 +107,7 @@ switch ($a) {
                 DB::query("INSERT INTO " . _posts_table . " (type,home,xhome,subject,text,author,guest,time,ip,bumptime) VALUES (6," . $pm_id . ",-1," . DB::val($subject) . "," . DB::val($text) . "," . _loginid . ",''," . time() . "," . DB::val(_userip) . ",0)");
 
                 // presmerovani a konec
-                $_index['redirect_to'] = Sunlight\Core::$url . '/' . $_index['url'] . '&a=list&read=' . $pm_id;
+                $_index['redirect_to'] = _linkModule('messages', 'a=list&read=' . $pm_id, false, true);
 
                 return;
 
