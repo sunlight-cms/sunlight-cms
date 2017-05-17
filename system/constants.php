@@ -326,3 +326,12 @@ const _group_guests = 2;
 
 /** Default registered user group ID */
 const _group_registered = 3;
+
+
+// Privilege level constraints
+
+/** Max user level */
+const _priv_max_level = 10001;
+
+/** Max assignable level */
+const _priv_max_assignable_level = 9999;
