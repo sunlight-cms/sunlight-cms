@@ -320,6 +320,9 @@ input[type=password],
 input[type=submit],
 input[type=button],
 input[type=reset],
+input[type=email],
+input[type=number],
+input[type=search],
 button,
 select {
     padding: 3px;
