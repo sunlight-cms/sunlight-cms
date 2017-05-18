@@ -23,7 +23,7 @@ if (isset($_GET['id']) && isset($_GET['returnid']) && isset($_GET['returnpage'])
 if (isset($_POST['confirm'])) {
 
     // smazani komentaru
-    DB::query("DELETE FROM " . _posts_table . " WHERE type=2 AND home=" . $id);
+    DB::query("DELETE FROM " . _posts_table . " WHERE type=" . _post_article_comment . " AND home=" . $id);
 
     // smazani clanku
     DB::query("DELETE FROM " . _articles_table . " WHERE id=" . $id);

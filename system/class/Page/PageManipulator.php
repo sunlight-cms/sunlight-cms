@@ -294,19 +294,19 @@ class PageManipulator
         // dle typu
         switch ($page['type']) {
             case _page_section:
-                $dependencies[] = DB::result(DB::query("SELECT COUNT(*) FROM " . _posts_table . " WHERE type=1 AND home=" . $page['id']), 0) . " " . $_lang['count.comments'];
+                $dependencies[] = DB::result(DB::query("SELECT COUNT(*) FROM " . _posts_table . " WHERE type=" . _post_section_comment . " AND home=" . $page['id']), 0) . " " . $_lang['count.comments'];
                 break;
             case _page_category:
                 $dependencies[] = DB::result(DB::query("SELECT COUNT(*) FROM " . _articles_table . " WHERE home1=" . $page['id'] . " AND home2=-1 AND home3=-1"), 0) . " " . $_lang['count.articles'];
                 break;
             case _page_book:
-                $dependencies[] = DB::result(DB::query("SELECT COUNT(*) FROM " . _posts_table . " WHERE type=3 AND home=" . $page['id']), 0) . " " . $_lang['count.posts'];
+                $dependencies[] = DB::result(DB::query("SELECT COUNT(*) FROM " . _posts_table . " WHERE type=" . _post_book_entry . " AND home=" . $page['id']), 0) . " " . $_lang['count.posts'];
                 break;
             case _page_gallery:
                 $dependencies[] = DB::result(DB::query("SELECT COUNT(*) FROM " . _images_table . " WHERE home=" . $page['id']), 0) . " " . $_lang['count.images'];
                 break;
             case _page_forum:
-                $dependencies[] = DB::result(DB::query("SELECT COUNT(*) FROM " . _posts_table . " WHERE type=5 AND home=" . $page['id']), 0) . " " . $_lang['count.posts'];
+                $dependencies[] = DB::result(DB::query("SELECT COUNT(*) FROM " . _posts_table . " WHERE type=" . _post_forum_topic . " AND home=" . $page['id']), 0) . " " . $_lang['count.posts'];
                 break;
             case _page_plugin:
                 Extend::call('ppage.' . $page['type_idt'] . '.delete.confirm', array(
@@ -397,7 +397,7 @@ class PageManipulator
             switch ($page['type']) {
                     // komentare v sekcich
                 case _page_section:
-                    DB::query("DELETE FROM " . _posts_table . " WHERE type=1 AND home=" . $page['id']);
+                    DB::query("DELETE FROM " . _posts_table . " WHERE type=" . _post_section_comment . " AND home=" . $page['id']);
                     break;
 
                     // clanky v kategoriich a jejich komentare
@@ -405,7 +405,7 @@ class PageManipulator
                     $rquery = DB::query("SELECT id,home1,home2,home3 FROM " . _articles_table . " WHERE home1=" . $page['id'] . " OR home2=" . $page['id'] . " OR home3=" . $page['id']);
                     while ($item = DB::row($rquery)) {
                         if ($item['home1'] == $page['id'] && $item['home2'] == -1 && $item['home3'] == -1) {
-                            DB::query("DELETE FROM " . _posts_table . " WHERE type=2 AND home=" . $item['id']);
+                            DB::query("DELETE FROM " . _posts_table . " WHERE type=" . _post_article_comment . " AND home=" . $item['id']);
                             DB::query("DELETE FROM " . _articles_table . " WHERE id=" . $item['id']);
                             continue;
                         } // delete
@@ -438,7 +438,7 @@ class PageManipulator
 
                     // prispevky v knihach
                 case _page_book:
-                    DB::query("DELETE FROM " . _posts_table . " WHERE type=3 AND home=" . $page['id']);
+                    DB::query("DELETE FROM " . _posts_table . " WHERE type=" . _post_book_entry . " AND home=" . $page['id']);
                     break;
 
                     // obrazky v galerii
@@ -450,7 +450,7 @@ class PageManipulator
 
                     // prispevky ve forech
                 case _page_forum:
-                    DB::query("DELETE FROM " . _posts_table . " WHERE type=5 AND home=" . $page['id']);
+                    DB::query("DELETE FROM " . _posts_table . " WHERE type=" . _post_forum_topic . " AND home=" . $page['id']);
                     break;
             }
         }

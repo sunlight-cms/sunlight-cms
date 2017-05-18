@@ -36,7 +36,7 @@ if (DB::size($items) != 0) {
                     // sekce
                 case _page_section:
                     if ($item['var1'] == 1) {
-                        $iteminfos['comment_num'] = array($_lang['article.comments'], DB::result(DB::query("SELECT COUNT(*) FROM " . _posts_table . " WHERE type=1 AND home=" . $item['id']), 0));
+                        $iteminfos['comment_num'] = array($_lang['article.comments'], DB::result(DB::query("SELECT COUNT(*) FROM " . _posts_table . " WHERE type=" . _post_section_comment . " AND home=" . $item['id']), 0));
                     }
                     break;
 
@@ -62,7 +62,7 @@ if (DB::size($items) != 0) {
                         $lastpost = "-";
                     }
 
-                    $iteminfos['post_num'] = array($_lang['global.postsnum'], DB::result(DB::query("SELECT COUNT(*) FROM " . _posts_table . " WHERE type=3 AND home=" . $item['id']), 0));
+                    $iteminfos['post_num'] = array($_lang['global.postsnum'], DB::result(DB::query("SELECT COUNT(*) FROM " . _posts_table . " WHERE type=" . _post_book_entry . " AND home=" . $item['id']), 0));
                     $iteminfos['last_post'] = array($_lang['global.lastpost'], $lastpost);
                     break;
 
@@ -73,8 +73,8 @@ if (DB::size($items) != 0) {
 
                     // forum
                 case _page_forum:
-                    $iteminfos['topic_num'] = array($_lang['global.topicsnum'], DB::result(DB::query("SELECT COUNT(*) FROM " . _posts_table . " WHERE type=5 AND home=" . $item['id'] . " AND xhome=-1"), 0));
-                    $iteminfos['answer_num'] = array($_lang['global.answersnum'], DB::result(DB::query("SELECT COUNT(*) FROM " . _posts_table . " WHERE type=5 AND home=" . $item['id'] . " AND xhome!=-1"), 0));
+                    $iteminfos['topic_num'] = array($_lang['global.topicsnum'], DB::result(DB::query("SELECT COUNT(*) FROM " . _posts_table . " WHERE type=" . _post_forum_topic . " AND home=" . $item['id'] . " AND xhome=-1"), 0));
+                    $iteminfos['answer_num'] = array($_lang['global.answersnum'], DB::result(DB::query("SELECT COUNT(*) FROM " . _posts_table . " WHERE type=" . _post_forum_topic . " AND home=" . $item['id'] . " AND xhome!=-1"), 0));
                     break;
 
                     // plugin stranka

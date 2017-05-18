@@ -20,7 +20,7 @@ if ($continue) {
   <label><input type='checkbox' name='var3' value='1'" . _checkboxActivate($query['var3']) . "> " . $_lang['admin.content.form.commentslocked'] . "</label>
   ";
     if (!$new) {
-        $custom_settings .= " <label><input type='checkbox' name='delcomments' value='1'> " . $_lang['admin.content.form.delcomments'] . "</label><small>(" . DB::result(DB::query("SELECT COUNT(*) FROM " . _posts_table . " WHERE home=" . $id . " AND type=1"), 0) . ")</small>";
+        $custom_settings .= " <label><input type='checkbox' name='delcomments' value='1'> " . $_lang['admin.content.form.delcomments'] . "</label><small>(" . DB::result(DB::query("SELECT COUNT(*) FROM " . _posts_table . " WHERE home=" . $id . " AND type=" . _post_section_comment), 0) . ")</small>";
     }
 }
 require _root . 'admin/action/modules/include/page-editscript.php';

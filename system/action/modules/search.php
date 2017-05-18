@@ -136,13 +136,13 @@ if ($search_query != '') {
 
                         // komentar clanku
                     case _post_article_comment:
-                        $pagenum = _resultPagingGetItemPage(_commentsperpage, _posts_table, "id>" . $r['id'] . " AND type=2 AND xhome=-1 AND home=" . $r['home']);
+                        $pagenum = _resultPagingGetItemPage(_commentsperpage, _posts_table, "id>" . $r['id'] . " AND type=" . _post_article_comment . " AND xhome=-1 AND home=" . $r['home']);
                         break;
 
                         // prispevek na foru
                     case _post_forum_topic:
                         if ($r['xhome'] != -1) {
-                            $pagenum = _resultPagingGetItemPage(_commentsperpage, _posts_table, "id<" . $r['id'] . " AND type=5 AND xhome=" . $r['xhome'] . " AND home=" . $r['home']);
+                            $pagenum = _resultPagingGetItemPage(_commentsperpage, _posts_table, "id<" . $r['id'] . " AND type=" . _post_forum_topic . " AND xhome=" . $r['xhome'] . " AND home=" . $r['home']);
                         } else {
                             $post_anchor = false;
                         }

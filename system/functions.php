@@ -1512,7 +1512,7 @@ function _deleteUser($id)
 
     // vyresit vazby
     DB::query("DELETE FROM " . _users_table . " WHERE id=" . $id);
-    DB::query("DELETE " . _pm_table . ",post FROM " . _pm_table . " LEFT JOIN " . _posts_table . " AS post ON (post.type=6 AND post.home=" . _pm_table . ".id) WHERE receiver=" . $id . " OR sender=" . $id);
+    DB::query("DELETE " . _pm_table . ",post FROM " . _pm_table . " LEFT JOIN " . _posts_table . " AS post ON (post.type=" . _post_pm . " AND post.home=" . _pm_table . ".id) WHERE receiver=" . $id . " OR sender=" . $id);
     DB::query("UPDATE " . _posts_table . " SET guest='" . $udata['username'] . "',author=-1 WHERE author=" . $id);
     DB::query("UPDATE " . _articles_table . " SET author=0 WHERE author=" . $id);
     DB::query("UPDATE " . _polls_table . " SET author=0 WHERE author=" . $id);
@@ -2270,20 +2270,20 @@ function _iplogUpdate($type, $var = null)
                 $query = DB::row($query);
                 DB::query("UPDATE " . _iplog_table . " SET var=" . ($query['var'] + 1) . " WHERE id=" . $query['id']);
             } else {
-                DB::query("INSERT INTO " . _iplog_table . " (ip,type,time,var) VALUES (" . DB::val(_userip) . ",1," . time() . ",1)");
+                DB::query("INSERT INTO " . _iplog_table . " (ip,type,time,var) VALUES (" . DB::val(_userip) . "," . _iplog_failed_login_attempt . "," . time() . ",1)");
             }
             break;
 
         case _iplog_article_read:
-            DB::query("INSERT INTO " . _iplog_table . " (ip,type,time,var) VALUES (" . DB::val(_userip) . ",2," . time() . "," . $var . ")");
+            DB::query("INSERT INTO " . _iplog_table . " (ip,type,time,var) VALUES (" . DB::val(_userip) . "," . _iplog_article_read . "," . time() . "," . $var . ")");
             break;
 
         case _iplog_article_rated:
-            DB::query("INSERT INTO " . _iplog_table . " (ip,type,time,var) VALUES (" . DB::val(_userip) . ",3," . time() . "," . $var . ")");
+            DB::query("INSERT INTO " . _iplog_table . " (ip,type,time,var) VALUES (" . DB::val(_userip) . "," . _iplog_article_rated . "," . time() . "," . $var . ")");
             break;
 
         case _iplog_poll_vote:
-            DB::query("INSERT INTO " . _iplog_table . " (ip,type,time,var) VALUES (" . DB::val(_userip) . ",4," . time() . "," . $var . ")");
+            DB::query("INSERT INTO " . _iplog_table . " (ip,type,time,var) VALUES (" . DB::val(_userip) . "," . _iplog_poll_vote . "," . time() . "," . $var . ")");
             break;
 
         case _iplog_anti_spam:
@@ -2297,7 +2297,7 @@ function _iplogUpdate($type, $var = null)
                 $query = DB::row($query);
                 DB::query("UPDATE " . _iplog_table . " SET var=" . ($query['var'] + 1) . " WHERE id=" . $query['id']);
             } else {
-                DB::query("INSERT INTO " . _iplog_table . " (ip,type,time,var) VALUES (" . DB::val(_userip) . ",6," . time() . ",1)");
+                DB::query("INSERT INTO " . _iplog_table . " (ip,type,time,var) VALUES (" . DB::val(_userip) . "," . _iplog_failed_account_activation . "," . time() . ",1)");
             }
             break;
 
@@ -3872,7 +3872,7 @@ home_post.subject xhome_subject";
 
     $conditions[] = "(home_root.id IS NULL OR " . (_login ? '' : 'home_root.public=1 AND ') . "home_root.level<=" . _priv_level . ")
 AND (home_art.id IS NULL OR " . (_login ? '' : 'home_art.public=1 AND ') . "home_art.time<=" . time() . " AND home_art.confirmed=1)
-AND ({$alias}.type!=2 OR (
+AND ({$alias}.type!=" . _post_article_comment . " OR (
     " . (_login ? '' : '(home_cat1.public=1 OR home_cat2.public=1 OR home_cat3.public=1) AND') . "
     (home_cat1.level<=" . _priv_level . " OR home_cat2.level<=" . _priv_level . " OR home_cat3.level<=" . _priv_level . ")
 ))";
@@ -3884,11 +3884,11 @@ AND ({$alias}.type!=2 OR (
 
     // joiny
     $joins = "LEFT JOIN " . _root_table . " home_root ON({$alias}.type IN(1,3,5) AND {$alias}.home=home_root.id)
-LEFT JOIN " . _articles_table . " home_art ON({$alias}.type=2 AND {$alias}.home=home_art.id)
-LEFT JOIN " . _root_table . " home_cat1 ON({$alias}.type=2 AND home_art.home1=home_cat1.id)
-LEFT JOIN " . _root_table . " home_cat2 ON({$alias}.type=2 AND home_art.home2!=-1 AND home_art.home2=home_cat2.id)
-LEFT JOIN " . _root_table . " home_cat3 ON({$alias}.type=2 AND home_art.home3!=-1 AND home_art.home3=home_cat3.id)
-LEFT JOIN " . _posts_table . " home_post ON({$alias}.type=5 AND {$alias}.xhome!=-1 AND {$alias}.xhome=home_post.id)";
+LEFT JOIN " . _articles_table . " home_art ON({$alias}.type=" . _post_article_comment . " AND {$alias}.home=home_art.id)
+LEFT JOIN " . _root_table . " home_cat1 ON({$alias}.type=" . _post_article_comment . " AND home_art.home1=home_cat1.id)
+LEFT JOIN " . _root_table . " home_cat2 ON({$alias}.type=" . _post_article_comment . " AND home_art.home2!=-1 AND home_art.home2=home_cat2.id)
+LEFT JOIN " . _root_table . " home_cat3 ON({$alias}.type=" . _post_article_comment . " AND home_art.home3!=-1 AND home_art.home3=home_cat3.id)
+LEFT JOIN " . _posts_table . " home_post ON({$alias}.type=" . _post_forum_topic . " AND {$alias}.xhome!=-1 AND {$alias}.xhome=home_post.id)";
 
     // extend
     Extend::call('posts.filter', array(

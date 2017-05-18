@@ -247,7 +247,7 @@ if ($continue) {
                     $galid = (int) _post('gallery');
 
                     // vlozeni obrazku
-                    if (DB::result(DB::query("SELECT COUNT(*) FROM " . _root_table . " WHERE id=" . $galid . " AND type=5"), 0) != 0) {
+                    if (DB::result(DB::query("SELECT COUNT(*) FROM " . _root_table . " WHERE id=" . $galid . " AND type=" . _page_gallery), 0) != 0) {
 
                         // nacteni nejmensiho poradoveho cisla
                         $smallestord = DB::query("SELECT ord FROM " . _images_table . " WHERE home=" . $galid . " ORDER BY ord LIMIT 1");

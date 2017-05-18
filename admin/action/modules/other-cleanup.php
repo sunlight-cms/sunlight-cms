@@ -47,16 +47,16 @@ if (isset($_POST['action'])) {
                     if ($prev) {
                         $prev_count['mod.messages'] = DB::count(_pm_table, 'update_time<' . $messages_time);
                     } else {
-                        DB::query("DELETE " . _pm_table . ",post FROM " . _pm_table . " LEFT JOIN " . _posts_table . " AS post ON (post.type=6 AND post.home=" . _pm_table . ".id) WHERE update_time<" . $messages_time);
+                        DB::query("DELETE " . _pm_table . ",post FROM " . _pm_table . " LEFT JOIN " . _posts_table . " AS post ON (post.type=" . _post_pm . " AND post.home=" . _pm_table . ".id) WHERE update_time<" . $messages_time);
                     }
                     break;
 
                 case 2:
                     if ($prev) {
-                        $prev_count['mod.messages'] = DB::count(_posts_table, 'type=6');
+                        $prev_count['mod.messages'] = DB::count(_posts_table, 'type=' . _post_pm);
                     } else {
                         DB::query("TRUNCATE TABLE " . _pm_table);
-                        DB::query("DELETE FROM " . _posts_table . " WHERE type=6");
+                        DB::query("DELETE FROM " . _posts_table . " WHERE type=" . _post_pm);
                     }
                     break;
 
@@ -65,23 +65,23 @@ if (isset($_POST['action'])) {
             // komentare, prispevky, iplog
             if (_checkboxLoad("comments")) {
                 if ($prev) {
-                    $prev_count['admin.settings.functions.comments'] = DB::count(_posts_table, 'type=1 OR type=2');
+                    $prev_count['admin.settings.functions.comments'] = DB::count(_posts_table, 'type=' . _post_section_comment . ' OR type=' . _post_article_comment);
                 } else {
-                    DB::query("DELETE FROM " . _posts_table . " WHERE type=1 OR type=2");
+                    DB::query("DELETE FROM " . _posts_table . " WHERE type=" . _post_section_comment . " OR type=" . _post_article_comment);
                 }
             }
             if (_checkboxLoad("posts")) {
                 if ($prev) {
-                    $prev_count['global.posts'] = DB::count(_posts_table, 'type IN(3,4,5)');
+                    $prev_count['global.posts'] = DB::count(_posts_table, 'type IN(' . DB::arr(array(_post_book_entry, _post_shoutbox_entry, _post_forum_topic)) . ')');
                 } else {
-                    DB::query("DELETE FROM " . _posts_table . " WHERE type IN(3,4,5)");
+                    DB::query("DELETE FROM " . _posts_table . " WHERE type IN(" . DB::arr(array(_post_book_entry, _post_shoutbox_entry, _post_forum_topic)) . ")");
                 }
             }
             if (_checkboxLoad("plugin_posts")) {
                 if ($prev) {
-                    $prev_count['admin.other.cleanup.other.plugin_posts.label'] = DB::count(_posts_table, 'type=7');
+                    $prev_count['admin.other.cleanup.other.plugin_posts.label'] = DB::count(_posts_table, 'type=' . _post_plugin);
                 } else {
-                    DB::query("DELETE FROM " . _posts_table . " WHERE type=7");
+                    DB::query("DELETE FROM " . _posts_table . " WHERE type=" . _post_plugin);
                 }
             }
             if (_checkboxLoad("iplog")) {

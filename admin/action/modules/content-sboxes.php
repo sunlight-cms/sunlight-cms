@@ -56,7 +56,7 @@ if (isset($_POST['action'])) {
                             break;
                         case "delposts":
                             $skip = true;
-                            DB::query("DELETE FROM " . _posts_table . " WHERE home=" . $id . " AND type=4");
+                            DB::query("DELETE FROM " . _posts_table . " WHERE home=" . $id . " AND type=" . _post_shoutbox_entry);
                             break;
                         default:
                             $skip = true;
@@ -105,7 +105,7 @@ if (isset($_POST['action'])) {
 if (isset($_GET['del']) && _xsrfCheck(true)) {
     $del = (int) _get('del');
     DB::query("DELETE FROM " . _sboxes_table . " WHERE id=" . $del);
-    DB::query("DELETE FROM " . _posts_table . " WHERE home=" . $del . " AND type=4");
+    DB::query("DELETE FROM " . _posts_table . " WHERE home=" . $del . " AND type=" . _post_shoutbox_entry);
     $message = _msg(_msg_ok, $_lang['global.done']);
 }
 

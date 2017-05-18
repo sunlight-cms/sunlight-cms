@@ -10,7 +10,7 @@ $message = "";
 $continue = false;
 if (isset($_GET['g'])) {
     $g = (int) _get('g');
-    $galdata = DB::query("SELECT title,var2,var3,var4 FROM " . _root_table . " WHERE id=" . $g . " AND type=5");
+    $galdata = DB::query("SELECT title,var2,var3,var4 FROM " . _root_table . " WHERE id=" . $g . " AND type=" . _page_gallery);
     if (DB::size($galdata) != 0) {
         $galdata = DB::row($galdata);
         if (null === $galdata['var2']) {
@@ -147,7 +147,7 @@ if (isset($_POST['xaction']) && $continue) {
         case 5:
             $newhome = (int) _post('newhome');
             if ($newhome != $g) {
-                if (DB::result(DB::query("SELECT COUNT(*) FROM " . _root_table . " WHERE id=" . $newhome . " AND type=5"), 0) != 0) {
+                if (DB::result(DB::query("SELECT COUNT(*) FROM " . _root_table . " WHERE id=" . $newhome . " AND type=" . _page_gallery), 0) != 0) {
                     if (DB::result(DB::query("SELECT COUNT(*) FROM " . _images_table . " WHERE home=" . $g), 0) != 0) {
 
                         // posunuti poradovych cisel v cilove galerii

@@ -19,10 +19,10 @@ if (isset($_POST['source'])) {
 
     // kontrola promennych
     $error_log = array();
-    if (DB::result(DB::query("SELECT COUNT(*) FROM " . _root_table . " WHERE id=" . $source . " AND type=2"), 0) == 0) {
+    if (DB::result(DB::query("SELECT COUNT(*) FROM " . _root_table . " WHERE id=" . $source . " AND type=" . _page_category), 0) == 0) {
         $error_log[] = $_lang['admin.content.movearts.badsource'];
     }
-    if (DB::result(DB::query("SELECT COUNT(*) FROM " . _root_table . " WHERE id=" . $target . " AND type=2"), 0) == 0) {
+    if (DB::result(DB::query("SELECT COUNT(*) FROM " . _root_table . " WHERE id=" . $target . " AND type=" . _page_category), 0) == 0) {
         $error_log[] = $_lang['admin.content.movearts.badtarget'];
     }
     if ($source == $target) {

@@ -104,7 +104,7 @@ if (isset($_POST['question'])) {
             // vynulovani
             if ($reset) {
                 DB::query("UPDATE " . _polls_table . " SET votes='" . trim(str_repeat("0-", $answers_count), "-") . "' WHERE id=" . $id);
-                DB::query("DELETE FROM " . _iplog_table . " WHERE type=4 AND var=" . $id);
+                DB::query("DELETE FROM " . _iplog_table . " WHERE type=" . _iplog_poll_vote . " AND var=" . $id);
             }
 
             // presmerovani

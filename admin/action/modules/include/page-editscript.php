@@ -298,7 +298,7 @@ if (!empty($_POST)) {
             // smazani komentaru v sekcich
             case 'delcomments':
                 if ($type == _page_section && $val == 1 && !$new) {
-                    DB::query("DELETE FROM " . _posts_table . " WHERE home=" . $id . " AND type=1");
+                    DB::query("DELETE FROM " . _posts_table . " WHERE home=" . $id . " AND type=" . _post_section_comment);
                 }
                 $skip = true;
                 break;

@@ -53,7 +53,7 @@ if (isset($_POST['category'])) {
 
     // kontrola promennych
     if ($new_category != -1) {
-        if (DB::result(DB::query("SELECT COUNT(*) FROM " . _root_table . " WHERE id=" . $new_category . " AND type=2"), 0) == 0) {
+        if (DB::result(DB::query("SELECT COUNT(*) FROM " . _root_table . " WHERE id=" . $new_category . " AND type=" . _page_category), 0) == 0) {
             $new_category = -1;
         }
     }
@@ -156,7 +156,7 @@ if (isset($_POST['category'])) {
 
                 // smazani komentaru
                 if ($new_delcomments || $new_delete) {
-                    DB::query("DELETE FROM " . _posts_table . " WHERE type=2 AND home=" . $item['id']);
+                    DB::query("DELETE FROM " . _posts_table . " WHERE type=" . _post_article_comment . " AND home=" . $item['id']);
                 }
 
                 // smazani clanku
@@ -168,7 +168,7 @@ if (isset($_POST['category'])) {
                 // vynulovani hodnoceni
                 if ($new_resetrate) {
                     DB::query("UPDATE " . _articles_table . " SET ratenum=0, ratesum=0 WHERE id=" . $item['id']);
-                    DB::query("DELETE FROM " . _iplog_table . " WHERE type=3 AND var=" . $item['id']);
+                    DB::query("DELETE FROM " . _iplog_table . " WHERE type=" . _iplog_article_rated . " AND var=" . $item['id']);
                 }
 
                 // vynulovani poctu precteni

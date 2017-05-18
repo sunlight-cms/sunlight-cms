@@ -57,7 +57,7 @@ switch ($posttype) {
 
         // sekce
     case _post_section_comment:
-        $tdata = DB::query("SELECT public,var1,var3,level FROM " . _root_table . " WHERE id=" . $posttarget . " AND type=1");
+        $tdata = DB::query("SELECT public,var1,var3,level FROM " . _root_table . " WHERE id=" . $posttarget . " AND type=" . _page_section);
         if (DB::size($tdata) != 0) {
             $tdata = DB::row($tdata);
             if (_publicAccess($tdata['public'], $tdata['level']) && $tdata['var1'] == 1 && $tdata['var3'] != 1) {
@@ -79,7 +79,7 @@ switch ($posttype) {
 
         // kniha
     case _post_book_entry:
-        $tdata = DB::query("SELECT public,var1,var3,level FROM " . _root_table . " WHERE id=" . $posttarget . " AND type=3");
+        $tdata = DB::query("SELECT public,var1,var3,level FROM " . _root_table . " WHERE id=" . $posttarget . " AND type=" . _page_book);
         if (DB::size($tdata) != 0) {
             $tdata = DB::row($tdata);
             if (_publicAccess($tdata['public'], $tdata['level']) && _publicAccess($tdata['var1']) && $tdata['var3'] != 1) {
@@ -102,7 +102,7 @@ switch ($posttype) {
 
         // forum
     case _post_forum_topic:
-        $tdata = DB::query("SELECT public,var2,var3,level FROM " . _root_table . " WHERE id=" . $posttarget . " AND type=8");
+        $tdata = DB::query("SELECT public,var2,var3,level FROM " . _root_table . " WHERE id=" . $posttarget . " AND type=" . _page_forum);
         if (DB::size($tdata) != 0) {
             $tdata = DB::row($tdata);
             if (_publicAccess($tdata['public'], $tdata['level']) && _publicAccess($tdata['var3']) && $tdata['var2'] != 1) {
@@ -180,10 +180,10 @@ if ($continue && $continue2 && $text != '' && ($posttype == _post_shoutbox_entry
 
                     // shoutboxy - odstraneni prispevku za hranici limitu
                     if ($posttype == _post_shoutbox_entry) {
-                        $pnum = DB::result(DB::query("SELECT COUNT(*) FROM " . _posts_table . " WHERE type=4 AND home=" . $posttarget), 0);
+                        $pnum = DB::result(DB::query("SELECT COUNT(*) FROM " . _posts_table . " WHERE type=" . _post_shoutbox_entry . " AND home=" . $posttarget), 0);
                         if ($pnum > _sboxmemory) {
                             $dnum = $pnum - _sboxmemory;
-                            $dposts = DB::query("SELECT id FROM " . _posts_table . " WHERE type=4 AND home=" . $posttarget . " ORDER BY id LIMIT " . $dnum);
+                            $dposts = DB::query("SELECT id FROM " . _posts_table . " WHERE type=" . _post_shoutbox_entry . " AND home=" . $posttarget . " ORDER BY id LIMIT " . $dnum);
                             while ($dpost = DB::row($dposts)) {
                                 DB::query("DELETE FROM " . _posts_table . " WHERE id=" . $dpost['id']);
                             }

@@ -38,20 +38,20 @@ function _HCM_articles($typ = 1, $pocet = null, $perex = true, $info = true, $ka
             $rcond = "";
             break;
         case 6:
-            $rorder = "(SELECT time FROM " . _iplog_table . " WHERE type=2 AND var=art.id AND art.visible=1 AND art.time<=" . time() . " AND art.confirmed=1 ORDER BY id DESC LIMIT 1) DESC";
+            $rorder = "(SELECT time FROM " . _iplog_table . " WHERE type=" . _iplog_article_read . " AND var=art.id AND art.visible=1 AND art.time<=" . time() . " AND art.confirmed=1 ORDER BY id DESC LIMIT 1) DESC";
             $rcond = "art.readnum!=0";
             break;
         case 7:
-            $rorder = "(SELECT time FROM " . _iplog_table . " WHERE type=3 AND var=art.id AND art.visible=1 AND art.time<=" . time() . " AND art.confirmed=1 ORDER BY id DESC LIMIT 1) DESC";
+            $rorder = "(SELECT time FROM " . _iplog_table . " WHERE type=" . _iplog_article_rated . " AND var=art.id AND art.visible=1 AND art.time<=" . time() . " AND art.confirmed=1 ORDER BY id DESC LIMIT 1) DESC";
             $rcond = "art.ratenum!=0";
             break;
         case 8:
-            $rorder = "(SELECT time FROM " . _posts_table . " WHERE home=art.id AND type=2 ORDER BY time DESC LIMIT 1) DESC";
-            $rcond = "(SELECT COUNT(*) FROM " . _posts_table . " WHERE home=art.id AND type=2)!=0";
+            $rorder = "(SELECT time FROM " . _posts_table . " WHERE home=art.id AND type=" . _post_article_comment . " ORDER BY time DESC LIMIT 1) DESC";
+            $rcond = "(SELECT COUNT(*) FROM " . _posts_table . " WHERE home=art.id AND type=" . _post_article_comment . ")!=0";
             break;
         case 9:
-            $rorder = "(SELECT COUNT(*) FROM " . _posts_table . " WHERE home=art.id AND type=2) DESC";
-            $rcond = "(SELECT COUNT(*) FROM " . _posts_table . " WHERE home=art.id AND type=2)!=0";
+            $rorder = "(SELECT COUNT(*) FROM " . _posts_table . " WHERE home=art.id AND type=" . _post_article_comment . ") DESC";
+            $rcond = "(SELECT COUNT(*) FROM " . _posts_table . " WHERE home=art.id AND type=" . _post_article_comment . ")!=0";
             break;
         default:
             $rorder = "art.time DESC";
@@ -73,7 +73,7 @@ function _HCM_articles($typ = 1, $pocet = null, $perex = true, $info = true, $ka
 
     // vypis
     $userQuery = _userQuery('art.author');
-    $query = DB::query("SELECT art.id,art.title,art.slug,art.perex," . (($perex === 2) ? 'art.picture_uid,' : '') . "art.time,art.readnum,art.comments,cat1.slug AS cat_slug," . $userQuery['column_list'] . (($info !== 0) ? ",(SELECT COUNT(*) FROM " . _posts_table . " AS post WHERE home=art.id AND post.type=2) AS comment_count" : '') . " FROM " . _articles_table . " AS art " . $joins . ' ' . $userQuery['joins'] . " WHERE " . $cond . " ORDER BY " . $rorder . " LIMIT " . $pocet);
+    $query = DB::query("SELECT art.id,art.title,art.slug,art.perex," . (($perex === 2) ? 'art.picture_uid,' : '') . "art.time,art.readnum,art.comments,cat1.slug AS cat_slug," . $userQuery['column_list'] . (($info !== 0) ? ",(SELECT COUNT(*) FROM " . _posts_table . " AS post WHERE home=art.id AND post.type=" . _post_article_comment . ") AS comment_count" : '') . " FROM " . _articles_table . " AS art " . $joins . ' ' . $userQuery['joins'] . " WHERE " . $cond . " ORDER BY " . $rorder . " LIMIT " . $pocet);
     while ($item = DB::row($query)) {
         $result .= _articlePreview($item, $userQuery, $info, $perex !== 0, (($info !== 0) ? $item['comment_count'] : null));
     }

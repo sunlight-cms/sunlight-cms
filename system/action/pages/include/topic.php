@@ -14,7 +14,7 @@ if (!ctype_digit($_index['segment'])) {
 // nacteni dat
 $id = (int) $_index['segment'];
 $userQuery = _userQuery('p.author');
-$query = DB::queryRow("SELECT p.*," . $userQuery['column_list'] . " FROM " . _posts_table . " p " . $userQuery['joins'] . " WHERE p.id=" . $id . " AND p.type=5 AND p.home=" . $_page['id'] . " AND p.xhome=-1");
+$query = DB::queryRow("SELECT p.*," . $userQuery['column_list'] . " FROM " . _posts_table . " p " . $userQuery['joins'] . " WHERE p.id=" . $id . " AND p.type=" . _post_forum_topic . " AND p.home=" . $_page['id'] . " AND p.xhome=-1");
 if (false === $query) {
     $_index['is_found'] = false;
     return;
@@ -47,7 +47,7 @@ $_index['url'] = _linkTopic($id, $_page['slug']);
 // priprava zpetneho odkazu
 $_index['backlink'] = _linkRoot($_page['id'], $_page['slug']);
 if (!$query['sticky']) {
-    $_index['backlink'] = _addGetToLink($_index['backlink'], 'page=' . _resultPagingGetItemPage($_page['var1'], _posts_table, "bumptime>" . $query['bumptime'] . " AND xhome=-1 AND type=5 AND home=" . $_page['id']), false);
+    $_index['backlink'] = _addGetToLink($_index['backlink'], 'page=' . _resultPagingGetItemPage($_page['var1'], _posts_table, "bumptime>" . $query['bumptime'] . " AND xhome=-1 AND type=" . _post_forum_topic . " AND home=" . $_page['id']), false);
 }
 
 // sprava tematu
