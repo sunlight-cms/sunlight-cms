@@ -18,9 +18,8 @@ list($columns, $joins, $cond) = _postFilter('post');
 $userQuery = _userQuery('post.author');
 $columns .= ',' . $userQuery['column_list'];
 $joins .= ' ' . $userQuery['joins'];
-$query = DB::query("SELECT " . $columns . " FROM " . _posts_table . " post " . $joins . " WHERE post.id=" . $id . " AND " . $cond);
-if (DB::size($query) != 0) {
-    $query = DB::row($query);
+$query = DB::queryRow("SELECT " . $columns . " FROM " . _posts_table . " post " . $joins . " WHERE post.id=" . $id . " AND " . $cond);
+if ($query !== false) {
     if (_postAccess($userQuery, $query)) {
         $bbcode = true;
         Sunlight\Extend::call('mod.editpost.backlink', array('backlink' => &$_index['backlink'], 'post' => $query));
@@ -158,7 +157,7 @@ if (isset($_POST['text'])) {
                 $chr = DB::queryRow('SELECT id,time FROM ' . _posts_table . ' WHERE type=' . _post_forum_topic . ' AND xhome=' . $query['xhome'] . ' ORDER BY id DESC LIMIT 2');
                 if ($chr !== false && $chr['id'] == $id) {
                     // ano, debump podle casu predchoziho postu nebo samotneho topicu (pokud se smazala jedina odpoved)
-                    DB::query('UPDATE ' . _posts_table . ' SET bumptime=' . (($chr !== false) ? $chr['time'] : 'time') . ' WHERE id=' . $query['xhome']);
+                    DB::update(_posts_table, 'id=' . $query['xhome'], array('bumptime' => (($chr !== false) ? $chr['time'] : DB::raw('time'))));
                 }
             }
 

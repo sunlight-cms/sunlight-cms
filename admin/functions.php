@@ -60,7 +60,7 @@ function _adminUserMenu()
         }
         $output .= '<a id="usermenu-username" href="' . $profile_link . '">' . _loginpublicname . '</a> [';
         if (_messages) {
-            $messages_count = DB::result(DB::query("SELECT COUNT(*) FROM " . _pm_table . " WHERE (receiver=" . _loginid . " AND receiver_deleted=0 AND receiver_readtime<update_time) OR (sender=" . _loginid . " AND sender_deleted=0 AND sender_readtime<update_time)"), 0);
+            $messages_count = DB::count(_pm_table, '(receiver=' . _loginid . ' AND receiver_deleted=0 AND receiver_readtime<update_time) OR (sender=' . _loginid . ' AND sender_deleted=0 AND sender_readtime<update_time)');
             if ($messages_count != 0) {
                 $messages_count = " <span class='highlight'>(" . $messages_count . ")</span>";
             } else {
@@ -349,7 +349,7 @@ function _adminUserSelect($name, $selected, $gcond, $class = null, $extraoption 
             } else {
                 $sel = "";
             }
-            $output .= "<option value='" . $item['id'] . "'" . $sel . ">" . $item['title'] . " (" . DB::result(DB::query("SELECT COUNT(*) FROM " . _users_table . " WHERE group_id=" . $item['id']), 0) . ")</option>\n";
+            $output .= "<option value='" . $item['id'] . "'" . $sel . ">" . $item['title'] . " (" . DB::count(_users_table, 'group_id=' . $item['id']) . ")</option>\n";
         }
     }
 

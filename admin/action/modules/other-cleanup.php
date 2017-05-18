@@ -56,7 +56,7 @@ if (isset($_POST['action'])) {
                         $prev_count['mod.messages'] = DB::count(_posts_table, 'type=' . _post_pm);
                     } else {
                         DB::query("TRUNCATE TABLE " . _pm_table);
-                        DB::query("DELETE FROM " . _posts_table . " WHERE type=" . _post_pm);
+                        DB::delete(_posts_table, 'type=' . _post_pm);
                     }
                     break;
 
@@ -67,21 +67,25 @@ if (isset($_POST['action'])) {
                 if ($prev) {
                     $prev_count['admin.settings.functions.comments'] = DB::count(_posts_table, 'type=' . _post_section_comment . ' OR type=' . _post_article_comment);
                 } else {
-                    DB::query("DELETE FROM " . _posts_table . " WHERE type=" . _post_section_comment . " OR type=" . _post_article_comment);
+                    DB::delete(_posts_table, 'type=' . _post_section_comment . ' OR type=' . _post_article_comment);
                 }
             }
             if (_checkboxLoad("posts")) {
                 if ($prev) {
                     $prev_count['global.posts'] = DB::count(_posts_table, 'type IN(' . DB::arr(array(_post_book_entry, _post_shoutbox_entry, _post_forum_topic)) . ')');
                 } else {
-                    DB::query("DELETE FROM " . _posts_table . " WHERE type IN(" . DB::arr(array(_post_book_entry, _post_shoutbox_entry, _post_forum_topic)) . ")");
+                    DB::deleteSet(_posts_table, 'type', array(
+                        _post_book_entry,
+                        _post_shoutbox_entry,
+                        _post_forum_topic
+                    ));
                 }
             }
             if (_checkboxLoad("plugin_posts")) {
                 if ($prev) {
                     $prev_count['admin.other.cleanup.other.plugin_posts.label'] = DB::count(_posts_table, 'type=' . _post_plugin);
                 } else {
-                    DB::query("DELETE FROM " . _posts_table . " WHERE type=" . _post_plugin);
+                    DB::delete(_posts_table, 'type=' . _post_plugin);
                 }
             }
             if (_checkboxLoad("iplog")) {

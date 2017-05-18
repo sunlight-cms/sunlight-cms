@@ -102,7 +102,7 @@ if (isset($_GET['new']) || isset($_GET['edit'])) {
 } elseif (isset($_GET['del']) && _xsrfCheck(true)) {
 
     // smazani
-    DB::query('DELETE FROM ' . _redir_table . ' WHERE id=' . (int) _get('del'));
+    DB::delete(_redir_table, 'id=' . DB::val(_get('del')));
     $output .= _msg(_msg_ok, $_lang['global.done']);
 
 } elseif (isset($_GET['wipe'])) {

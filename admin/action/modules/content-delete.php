@@ -11,9 +11,8 @@ $type_array = Sunlight\Page\PageManager::getTypes();
 $continue = false;
 if (isset($_GET['id'])) {
     $id = (int) _get('id');
-    $query = DB::query("SELECT id,node_level,node_depth,node_parent,title,type,type_idt,ord FROM " . _root_table . " WHERE id=" . $id);
-    if (DB::size($query) != 0) {
-        $query = DB::row($query);
+    $query = DB::queryRow("SELECT id,node_level,node_depth,node_parent,title,type,type_idt,ord FROM " . _root_table . " WHERE id=" . $id);
+    if ($query !== false) {
         if (_userHasRight('admin' . $type_array[$query['type']])) {
             $continue = true;
         }

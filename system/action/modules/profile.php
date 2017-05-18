@@ -46,7 +46,7 @@ if ($query !== false) {
     }
 
     // odkaz na prispevky uzivatele
-    $posts_count = DB::count(_posts_table, 'author=' . $query['id'] . ' AND type!=' . _post_pm . ' AND type!=' . _post_shoutbox_entry);
+    $posts_count = DB::count(_posts_table, 'author=' . DB::val($query['id']) . ' AND type!=' . _post_pm . ' AND type!=' . _post_shoutbox_entry);
     if ($posts_count > 0) {
         $posts_viewlink = ", <a href='" . _linkModule('profile-posts', 'id=' . $id) . "'>" . $_lang['global.show'] . " &gt;</a>";
     } else {

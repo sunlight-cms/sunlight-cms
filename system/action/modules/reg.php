@@ -48,8 +48,8 @@ if (isset($_GET['confirm'])) {
 
                 // kontrola dostupnosti uziv. jmena a emailu
                 if (
-                    0 == DB::result(DB::query("SELECT COUNT(*) FROM " . _users_table . " WHERE username=" . DB::val($user_data['username']) . " OR publicname=" . DB::val($user_data['username'])), 0)
-                    && 0 == DB::result(DB::query("SELECT COUNT(*) FROM " . _users_table . " WHERE email=" . DB::val($user_data['email'])), 0)
+                    0 == DB::count(_users_table, 'username=' . DB::val($user_data['username']) . ' OR publicname=' . DB::val($user_data['username']))
+                    && 0 == DB::count(_users_table, 'email=' . DB::val($user_data['email']))
                 ) {
                     // vse ok
                     $user_data_valid = true;

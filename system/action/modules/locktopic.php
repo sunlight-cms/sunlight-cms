@@ -34,9 +34,7 @@ if ($query !== false) {
 /* ---  ulozeni  --- */
 
 if (isset($_POST['doit'])) {
-    DB::update(_posts_table, 'id=' . DB::val($id), array(
-        'locked' => (($query['locked'] == 1) ? 0 : 1)
-    ));
+    DB::update(_posts_table, 'id=' . DB::val($id), array('locked' => (($query['locked'] == 1) ? 0 : 1)));
     $message = _msg(_msg_ok, $_lang['mod.locktopic.ok' . $unlock]);
     $success = true;
 }

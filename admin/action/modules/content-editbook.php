@@ -14,7 +14,7 @@ if ($continue) {
   <label><input type='checkbox' name='var1' value='1'" . _checkboxActivate($query['var1']) . "> " . $_lang['admin.content.form.unregpost'] . "</label>
   ";
     if (!$new) {
-        $custom_settings .= " <label><input type='checkbox' name='delposts' value='1'> " . $_lang['admin.content.form.delposts'] . "</label><small>(" . DB::result(DB::query("SELECT COUNT(*) FROM " . _posts_table . " WHERE home=" . $id . " AND type=" . _post_book_entry), 0) . ")</small>";
+        $custom_settings .= " <label><input type='checkbox' name='delposts' value='1'> " . $_lang['admin.content.form.delposts'] . "</label><small>(" . DB::count(_posts_table, 'home=' . DB::val($id) . ' AND type=' . _post_book_entry) . ")</small>";
     }
     $custom_settings .= " <input type='number' min='1' name='var2' value='" . $query['var2'] . "' class='inputmini'> " . $_lang['admin.content.form.postsperpage'];
     $custom_save_array = array(

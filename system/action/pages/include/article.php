@@ -194,6 +194,6 @@ Sunlight\Extend::call('article.comments.after', $extend_args);
 
 // zapocteni precteni
 if ($_article['confirmed'] && $_article['time'] <= time() && _iplogCheck(_iplog_article_read, $_article['id'])) {
-    DB::query("UPDATE " . _articles_table . " SET readnum=readnum+1 WHERE id=" . $_article['id']);
+    DB::update(_articles_table, 'id=' . $_article['id'], array('readnum' => DB::raw('readnum+1')));
     _iplogUpdate(_iplog_article_read, $_article['id']);
 }

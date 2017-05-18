@@ -11,9 +11,8 @@ if (isset($_GET['id']) && isset($_GET['returnid']) && isset($_GET['returnpage'])
     $id = (int) _get('id');
     $returnid = (int) _get('returnid');
     $returnpage = (int) _get('returnpage');
-    $query = DB::query("SELECT title FROM " . _articles_table . " WHERE id=" . $id . _adminArticleAccess());
-    if (DB::size($query) != 0) {
-        $query = DB::row($query);
+    $query = DB::queryRow("SELECT title FROM " . _articles_table . " WHERE id=" . $id . _adminArticleAccess());
+    if ($query !== false) {
         $continue = true;
     }
 }
@@ -23,10 +22,10 @@ if (isset($_GET['id']) && isset($_GET['returnid']) && isset($_GET['returnpage'])
 if (isset($_POST['confirm'])) {
 
     // smazani komentaru
-    DB::query("DELETE FROM " . _posts_table . " WHERE type=" . _post_article_comment . " AND home=" . $id);
+    DB::delete(_posts_table, 'type=' . _post_article_comment . ' AND home=' . $id);
 
     // smazani clanku
-    DB::query("DELETE FROM " . _articles_table . " WHERE id=" . $id);
+    DB::delete(_articles_table, 'id=' . $id);
 
     // udalost
     Sunlight\Extend::call('admin.article.delete', array('id' => $id));

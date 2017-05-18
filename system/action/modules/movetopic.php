@@ -33,9 +33,7 @@ $forums = Sunlight\Page\PageManager::getFlatTree(null, null, new Sunlight\Databa
 if (isset($_POST['new_forum'])) {
     $new_forum_id = (int) _post('new_forum');
     if (isset($forums[$new_forum_id]) && $forums[$new_forum_id]['type'] == _page_forum) {
-        DB::update(_posts_table, 'id=' . DB::val($id) . ' OR (type=' . _post_forum_topic . ' AND xhome=' . $id . ')', array(
-            'home' => $new_forum_id
-        ));
+        DB::update(_posts_table, 'id=' . DB::val($id) . ' OR (type=' . _post_forum_topic . ' AND xhome=' . $id . ')', array('home' => $new_forum_id));
         $query['home'] = $new_forum_id;
         $_index['backlink'] = _linkTopic($query['id']);
         $message = _msg(_msg_ok, $_lang['mod.movetopic.ok']);

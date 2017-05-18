@@ -673,6 +673,6 @@ class CommentService
             return Database::count(_posts_table, $cond);
         }
 
-        Database::query('DELETE FROM ' . _posts_table . ' WHERE ' . $cond);
+        Database::delete(_posts_table, $cond);
     }
 }

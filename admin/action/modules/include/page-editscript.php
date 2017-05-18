@@ -298,7 +298,7 @@ if (!empty($_POST)) {
             // smazani komentaru v sekcich
             case 'delcomments':
                 if ($type == _page_section && $val == 1 && !$new) {
-                    DB::query("DELETE FROM " . _posts_table . " WHERE home=" . $id . " AND type=" . _post_section_comment);
+                    DB::delete(_posts_table, 'home=' . $id . ' AND type=' . _post_section_comment);
                 }
                 $skip = true;
                 break;
@@ -316,7 +316,7 @@ if (!empty($_POST)) {
                             break;
                     }
                     if ($ptype != null) {
-                        DB::query("DELETE FROM " . _posts_table . " WHERE home=" . $id . " AND type=" . $ptype);
+                        DB::delete(_posts_table, 'home=' . $id . ' AND type=' . $ptype);
                     }
                 }
                 $skip = true;
@@ -460,7 +460,7 @@ if ('' === $editor) {
 if (isset($_GET['saved'])) {
     $output .= _msg(_msg_ok, $_lang['global.saved'] . " <small>(" . _formatTime(time()) . ")</small>");
 }
-if (!$new && $editscript_enable_slug && DB::result(DB::query('SELECT COUNT(*) FROM ' . _root_table . ' WHERE id!=' . $query['id'] . ' AND slug=\'' . $query['slug'] . '\''), 0) != 0) {
+if (!$new && $editscript_enable_slug && DB::count(_root_table, 'id!=' . DB::val($query['id']) . ' AND slug=' . DB::val($query['slug'])) !== 0) {
     $output .= _msg(_msg_warn, $_lang['admin.content.form.slug.collision']);
 }
 if (!$new && $id == _index_page_id) {

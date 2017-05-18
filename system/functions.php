@@ -1511,11 +1511,14 @@ function _deleteUser($id)
     }
 
     // vyresit vazby
-    DB::query("DELETE FROM " . _users_table . " WHERE id=" . $id);
+    DB::delete(_users_table, 'id=' . $id);
     DB::query("DELETE " . _pm_table . ",post FROM " . _pm_table . " LEFT JOIN " . _posts_table . " AS post ON (post.type=" . _post_pm . " AND post.home=" . _pm_table . ".id) WHERE receiver=" . $id . " OR sender=" . $id);
-    DB::query("UPDATE " . _posts_table . " SET guest='" . $udata['username'] . "',author=-1 WHERE author=" . $id);
-    DB::query("UPDATE " . _articles_table . " SET author=0 WHERE author=" . $id);
-    DB::query("UPDATE " . _polls_table . " SET author=0 WHERE author=" . $id);
+    DB::update(_posts_table, 'author=' . $id, array(
+        'guest' => $udata['username'],
+        'author' => -1
+    ));
+    DB::update(_articles_table, 'author=' . $id, array('author' => 0));
+    DB::update(_polls_table, 'author=' . $id, array('author' => 0));
 
     // odstraneni uploadovaneho avataru
     if (isset($udata['avatar'])) {
@@ -2182,7 +2185,7 @@ function _iplogCheck($type, $var = null, $expires = null)
         if (null === $expires) {
             throw new InvalidArgumentException('The "expires" argument must be specified for custom types');
         }
-        DB::query("DELETE FROM " . _iplog_table . " WHERE type=" . $type . ((null !== $var) ? " AND var=" . $var : '') . " AND " . time() . "-time>" . ((int) $expires));
+        DB::delete(_iplog_table, 'type=' . $type .((null !== $var) ? ' AND var=' . $var : '') . ' AND ' . time() . '-time>' . ((int) $expires));
         $cleaned['custom'][$type] = true;
     }
 
@@ -2193,9 +2196,8 @@ function _iplogCheck($type, $var = null, $expires = null)
     switch ($type) {
 
         case _iplog_failed_login_attempt:
-            $query = DB::query($querybasic);
-            if (DB::size($query) != 0) {
-                $query = DB::row($query);
+            $query = DB::queryRow($querybasic);
+            if ($query !== false) {
                 if ($query['var'] >= _maxloginattempts) {
                     $result = false;
                 }
@@ -2220,9 +2222,8 @@ function _iplogCheck($type, $var = null, $expires = null)
             break;
 
         case _iplog_failed_account_activation:
-            $query = DB::query($querybasic);
-            if (DB::size($query) != 0) {
-                $query = DB::row($query);
+            $query = DB::queryRow($querybasic);
+            if ($query !== false) {
                 if ($query['var'] >= 5) {
                     $result = false;
                 }
@@ -2265,49 +2266,81 @@ function _iplogUpdate($type, $var = null)
     switch ($type) {
 
         case _iplog_failed_login_attempt:
-            $query = DB::query($querybasic);
-            if (DB::size($query) != 0) {
-                $query = DB::row($query);
-                DB::query("UPDATE " . _iplog_table . " SET var=" . ($query['var'] + 1) . " WHERE id=" . $query['id']);
+            $query = DB::queryRow($querybasic);
+            if ($query !== false) {
+                DB::update(_iplog_table, 'id=' . $query['id'], array('var' => ($query['var'] + 1)));
             } else {
-                DB::query("INSERT INTO " . _iplog_table . " (ip,type,time,var) VALUES (" . DB::val(_userip) . "," . _iplog_failed_login_attempt . "," . time() . ",1)");
+                DB::insert(_iplog_table, array(
+                    'ip' => _userip,
+                    'type' => _iplog_failed_login_attempt,
+                    'time' => time(),
+                    'var' => 1
+                ));
             }
             break;
 
         case _iplog_article_read:
-            DB::query("INSERT INTO " . _iplog_table . " (ip,type,time,var) VALUES (" . DB::val(_userip) . "," . _iplog_article_read . "," . time() . "," . $var . ")");
+            DB::insert(_iplog_table, array(
+                'ip' => _userip,
+                'type' => _iplog_article_read,
+                'time' => time(),
+                'var' => $var
+            ));
             break;
 
         case _iplog_article_rated:
-            DB::query("INSERT INTO " . _iplog_table . " (ip,type,time,var) VALUES (" . DB::val(_userip) . "," . _iplog_article_rated . "," . time() . "," . $var . ")");
+            DB::insert(_iplog_table, array(
+                'ip' => _userip,
+                'type' => _iplog_article_rated,
+                'time' => time(),
+                'var' => $var
+            ));
             break;
 
         case _iplog_poll_vote:
-            DB::query("INSERT INTO " . _iplog_table . " (ip,type,time,var) VALUES (" . DB::val(_userip) . "," . _iplog_poll_vote . "," . time() . "," . $var . ")");
+            DB::insert(_iplog_table, array(
+                'ip' => _userip,
+                'type' => _iplog_poll_vote,
+                'time' => time(),
+                'var' => $var
+            ));
             break;
 
         case _iplog_anti_spam:
         case _iplog_password_reset_requested:
-            DB::query("INSERT INTO " . _iplog_table . " (ip,type,time,var) VALUES (" . DB::val(_userip) . "," . $type . "," . time() . ",0)");
+            DB::insert(_iplog_table, array(
+                'ip' => _userip,
+                'type' => $type,
+                'time' => time(),
+                'var' => 0
+            ));
             break;
 
         case _iplog_failed_account_activation:
-            $query = DB::query($querybasic);
-            if (DB::size($query) != 0) {
-                $query = DB::row($query);
-                DB::query("UPDATE " . _iplog_table . " SET var=" . ($query['var'] + 1) . " WHERE id=" . $query['id']);
+            $query = DB::queryRow($querybasic);
+            if ($query !== false) {
+                DB::update(_iplog_table, 'id=' . $query['id'], array('var' => ($query['var'] + 1)));
             } else {
-                DB::query("INSERT INTO " . _iplog_table . " (ip,type,time,var) VALUES (" . DB::val(_userip) . "," . _iplog_failed_account_activation . "," . time() . ",1)");
+                DB::insert(_iplog_table, array(
+                    'ip' => _userip,
+                    'type' => _iplog_failed_account_activation,
+                    'time' => time(),
+                    'var' => 1
+                ));
             }
             break;
 
         default:
-            $query = DB::query($querybasic . ((null !== $var) ? " AND var=" . $var : ''));
-            if (DB::size($query) != 0) {
-                $query = DB::row($query);
-                DB::query("UPDATE " . _iplog_table . " SET time=" . time() . " WHERE id=" . $query['id']);
+            $query = DB::queryRow($querybasic . ((null !== $var) ? " AND var=" . $var : ''));
+            if ($query !== false) {
+                DB::update(_iplog_table, 'id=' . $query['id'], array('time' => time()));
             } else {
-                DB::query("INSERT INTO " . _iplog_table . " (ip,type,time,var) VALUES (" . DB::val(_userip) . "," . $type . "," . time() . "," . DB::val($var) . ")");
+                DB::insert(_iplog_table, array(
+                    'ip' => _userip,
+                    'type' => $type,
+                    'time' => time(),
+                    'var' => $var
+                ));
             }
             break;
     }

@@ -14,9 +14,8 @@ $unregistered_useable = array('postcomments', 'artrate', 'pollvote');
 $continue = false;
 if (isset($_GET['id'])) {
     $id = (int) _get('id');
-    $query = DB::query("SELECT * FROM " . _groups_table . " WHERE id=" . $id);
-    if (DB::size($query) != 0) {
-        $query = DB::row($query);
+    $query = DB::queryRow("SELECT * FROM " . _groups_table . " WHERE id=" . $id);
+    if ($query !== false) {
         $systemitem = in_array($query['id'], $sysgroups_array);
         if (_priv_level > $query['level']) {
             $continue = true;

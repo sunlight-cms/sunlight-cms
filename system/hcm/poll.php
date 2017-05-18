@@ -11,8 +11,7 @@ function _HCM_poll($id = null)
 
     // nacteni dat ankety
     $vpolldata = DB::query("SELECT * FROM " . _polls_table . " WHERE id=" . DB::val($id));
-    if (DB::size($vpolldata) != 0) {
-        $vpolldata = DB::row($vpolldata);
+    if ($vpolldata !== false) {
         $rcontinue = true;
     } else {
         $rcontinue = false;

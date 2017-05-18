@@ -13,9 +13,8 @@ $errno = 0;
 $continue = false;
 if (isset($_GET['id'])) {
     $id = _get('id');
-    $query = DB::query("SELECT u.*,g.level group_level FROM " . _users_table . " u JOIN " . _groups_table . " g ON(u.group_id=g.id) WHERE u.username=" . DB::val($id));
-    if (DB::size($query) != 0) {
-        $query = DB::row($query);
+    $query = DB::queryRow("SELECT u.*,g.level group_level FROM " . _users_table . " u JOIN " . _groups_table . " g ON(u.group_id=g.id) WHERE u.username=" . DB::val($id));
+    if ($query !== false) {
 
         // test pristupu
         if ($query['id'] != _loginid) {
@@ -79,7 +78,7 @@ if ($continue) {
         } else {
             $usernamechange = false;
             if ($username != $query['username']) {
-                if (DB::result(DB::query("SELECT COUNT(*) FROM " . _users_table . " WHERE (username=" . DB::val($username) . " OR publicname=" . DB::val($username) . ") AND id!=" . $query['id']), 0) == 0) {
+                if (DB::count(_users_table, '(username=' . DB::val($username) . ' OR publicname=' . DB::val($username) . ') AND id!=' . DB::val($query['id'])) === 0) {
                     $usernamechange = true;
                 } else {
                     $errors[] = $_lang['user.msg.userexists'];
@@ -92,7 +91,7 @@ if ($continue) {
         if (mb_strlen($publicname) > 24) {
             $errors[] = $_lang['user.msg.publicnametoolong'];
         } elseif ($publicname != $query['publicname'] && $publicname != "") {
-            if (DB::result(DB::query("SELECT COUNT(*) FROM " . _users_table . " WHERE (publicname=" . DB::val($publicname) . " OR username=" . DB::val($publicname) . ") AND id!=" . $query['id']), 0) != 0) {
+            if (DB::count(_users_table, '(publicname=' . DB::val($publicname) . ' OR username=' . DB::val($publicname) . ') AND id!=' . DB::val($query['id'])) !== 0) {
                 $errors[] = $_lang['user.msg.publicnameexists'];
             }
         }
@@ -106,7 +105,7 @@ if ($continue) {
             $errors[] = $_lang['user.msg.bademail'];
         } else {
             if ($email != $query['email']) {
-                if (DB::result(DB::query("SELECT COUNT(*) FROM " . _users_table . " WHERE email=" . DB::val($email) . " AND id!=" . $query['id']), 0) != 0) {
+                if (DB::count(_users_table, ' WHERE email=' . DB::val($email) . ' AND id!=' . DB::val($query['id'])) !== 0) {
                     $errors[] = $_lang['user.msg.emailexists'];
                 }
             }
@@ -163,9 +162,8 @@ if ($continue) {
         // group
         if (isset($_POST['group_id'])) {
             $group = (int) _post('group_id');
-            $group_test = DB::query("SELECT level FROM " . _groups_table . " WHERE id=" . $group . " AND id!=2 AND level<" . _priv_level);
-            if (DB::size($group_test) != 0) {
-                $group_test = DB::row($group_test);
+            $group_test = DB::queryRow("SELECT level FROM " . _groups_table . " WHERE id=" . $group . " AND id!=2 AND level<" . _priv_level);
+            if ($group_test !== false) {
                 if ($group_test['level'] > _priv_level) {
                     $errors[] = $_lang['global.badinput'];
                 }

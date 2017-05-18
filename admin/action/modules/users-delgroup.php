@@ -14,9 +14,8 @@ $continue = false;
 if (isset($_GET['id'])) {
     $id = (int) _get('id');
     $systemgroup = in_array($id, $sysgroups_array);
-    $query = DB::query("SELECT id,title,level FROM " . _groups_table . " WHERE id=" . $id);
-    if (DB::size($query) != 0) {
-        $query = DB::row($query);
+    $query = DB::queryRow("SELECT id,title,level FROM " . _groups_table . " WHERE id=" . $id);
+    if ($query !== false) {
         if (_priv_level > $query['level']) {
             $continue = true;
         } else {
@@ -28,7 +27,7 @@ if (isset($_GET['id'])) {
 if ($continue) {
 
     /* --- spocitani uzivatelu --- */
-    $user_count = DB::count(_users_table, 'group_id=' . $id);
+    $user_count = DB::count(_users_table, 'group_id=' . DB::val($id));
 
     /* ---  odstraneni  --- */
     $done = false;
@@ -36,12 +35,12 @@ if ($continue) {
 
         // smazani skupiny
         if (!$systemgroup) {
-            DB::query("DELETE FROM " . _groups_table . " WHERE id=" . $id);
+            DB::delete(_groups_table, 'id=' . $id);
         }
 
         // zmena vychozi skupiny
         if (!$systemgroup && $id == _defaultgroup) {
-            DB::query("UPDATE " . _settings_table . " SET val='3' WHERE var='defaultgroup'");
+            \Sunlight\Core::updateSetting('defaultgroup', 3);
         }
 
         // smazani uzivatelu

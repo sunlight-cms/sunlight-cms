@@ -131,7 +131,7 @@ class TreeManager
             $this->deleteSet($this->idColumn, $children);
         }
         $rootNodeId = $this->getRoot($nodeId);
-        DB::query('DELETE FROM `' . $this->table . '` WHERE ' . $this->idColumn . '=' . DB::val($nodeId));
+        DB::delete($this->table, $this->idColumn . '=' . DB::val($nodeId));
         if ($nodeId != $rootNodeId) {
             $this->doRefreshDepth($rootNodeId, true);
         }
@@ -202,7 +202,7 @@ class TreeManager
                 $this->deleteSet($this->idColumn, $this->getChildren($row[$this->idColumn], true));
 
                 // odstranit osirely uzel a jeho prime potomky
-                DB::query('DELETE FROM `' . $this->table . '` WHERE ' . $this->idColumn . '=' . DB::val($row[$this->idColumn]) . ' OR ' . $this->parentColumn . '=' . DB::val($row[$this->parentColumn]));
+                DB::delete($this->table, $this->idColumn . '=' . DB::val($row[$this->idColumn]) . ' OR ' . $this->parentColumn . '=' . DB::val($row[$this->parentColumn]));
 
             }
             DB::free($orphaned);

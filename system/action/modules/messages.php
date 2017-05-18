@@ -196,7 +196,7 @@ switch ($a) {
             list($role, $role_other) = (($q['sender'] == _loginid) ? array('sender', 'receiver') : array('receiver', 'sender'));
 
             // citace neprectenych zprav
-            $counter = DB::count(_posts_table, 'home=' . $q['id'] . ' AND type=' . _post_pm . ' AND time>' . $q[$role_other . '_readtime']);
+            $counter = DB::count(_posts_table, 'home=' . DB::val($q['id']) . ' AND type=' . _post_pm . ' AND time>' . $q[$role_other . '_readtime']);
             $counter_s = array('', '');
             $counter_s[($role === 'sender' ? 1 : 0)] = ' <span class="post-info">(' . $counter . ' ' . $_lang['mod.messages.unreadcount'] . ')</span>';
 
@@ -226,9 +226,7 @@ switch ($a) {
             $output .= CommentService::render(CommentService::RENDER_PM_LIST, $q['id'], array($locked), false, $_SERVER['REQUEST_URI']);
 
             // aktualizace casu precteni
-            DB::update(_pm_table, 'id=' . DB::val($id), array(
-                $role . '_readtime' => time()
-            ));
+            DB::update(_pm_table, 'id=' . DB::val($id), array($role . '_readtime' => time()));
 
             break;
         }
@@ -261,9 +259,7 @@ switch ($a) {
                         $del_list[] = $r['id'];
                     } else {
                         // pouze oznacit
-                        DB::update(_pm_table, 'id=' . $r['id'], array(
-                            $role . '_deleted' => 1
-                        ));
+                        DB::update(_pm_table, 'id=' . $r['id'], array($role . '_deleted' => 1));
                     }
                 }
 

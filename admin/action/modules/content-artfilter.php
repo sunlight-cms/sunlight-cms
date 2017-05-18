@@ -53,12 +53,12 @@ if (isset($_POST['category'])) {
 
     // kontrola promennych
     if ($new_category != -1) {
-        if (DB::result(DB::query("SELECT COUNT(*) FROM " . _root_table . " WHERE id=" . $new_category . " AND type=" . _page_category), 0) == 0) {
+        if (DB::count(_root_table, 'id=' . DB::val($new_category) . ' AND type=' . _page_category) === 0) {
             $new_category = -1;
         }
     }
     if ($new_author != -1) {
-        if (DB::result(DB::query("SELECT COUNT(*) FROM " . _users_table . " WHERE id=" . $new_author), 0) == 0) {
+        if (DB::count( _users_table, 'id=' . DB::val($new_author)) === 0) {
             $new_author = -1;
         }
     }
@@ -156,44 +156,53 @@ if (isset($_POST['category'])) {
 
                 // smazani komentaru
                 if ($new_delcomments || $new_delete) {
-                    DB::query("DELETE FROM " . _posts_table . " WHERE type=" . _post_article_comment . " AND home=" . $item['id']);
+                    DB::delete(_posts_table, 'type=' . _post_article_comment . ' AND home=' . $item['id']);
                 }
 
                 // smazani clanku
                 if ($new_delete) {
-                    DB::query("DELETE FROM " . _articles_table . " WHERE id=" . $item['id']);
+                    DB::delete(_articles_table, 'id=' . $item['id']);
                     continue;
                 }
 
                 // vynulovani hodnoceni
                 if ($new_resetrate) {
-                    DB::query("UPDATE " . _articles_table . " SET ratenum=0, ratesum=0 WHERE id=" . $item['id']);
-                    DB::query("DELETE FROM " . _iplog_table . " WHERE type=" . _iplog_article_rated . " AND var=" . $item['id']);
+                    DB::update(_articles_table, 'id=' . $item['id'], array(
+                        'ratenum' => 0,
+                        'ratesum' => 0
+                    ));
+                    DB::delete(_iplog_table, 'type=' . _iplog_article_rated . ' AND var=' . $item['id']);
                 }
 
                 // vynulovani poctu precteni
                 if ($new_resetread) {
-                    DB::query("UPDATE " . _articles_table . " SET readnum=0 WHERE id=" . $item['id']);
+                    DB::update(_articles_table, 'id=' . $item['id'], array('readnum' => 0));
                 }
 
                 // zmena kategorie
                 if ($new_category != -1) {
-                    DB::query("UPDATE " . _articles_table . " SET home1=" . $new_category . ", home2=-1, home3=-1 WHERE id=" . $item['id']);
+                    DB::update(_articles_table, 'id=' . $item['id'], array(
+                        'home1' => $new_category,
+                        'home2' => -1,
+                        'home3' => -1
+                    ));
                 }
 
                 // zmena autora
                 if ($new_author != -1) {
-                    DB::query("UPDATE " . _articles_table . " SET author=" . $new_author . " WHERE id=" . $item['id']);
+                    DB::update(_articles_table, 'id=' . $item['id'], array('author' => $new_author));
                 }
 
                 // konfigurace
+                $updatedata = array();
                 foreach ($boolparams as $param) {
                     $paramvar = "new_" . $param;
                     $paramval = $$paramvar;
                     if ($paramval == 0 || $paramval == 1) {
-                        DB::query("UPDATE " . _articles_table . " SET " . $param . "=" . $paramval . " WHERE id=" . $item['id']);
+                        $updatedata[$param] = $paramval;
                     }
                 }
+                DB::update(_articles_table, 'id=' . $item['id'], $updatedata);
 
             }
             $message = _msg(_msg_ok, $_lang['global.done']);

@@ -11,9 +11,8 @@ function _HCM_sbox($id = null)
     $id = (int) $id;
 
     // nacteni dat shoutboxu
-    $sboxdata = DB::query("SELECT * FROM " . _sboxes_table . " WHERE id=" . $id);
-    if (DB::size($sboxdata) != 0) {
-        $sboxdata = DB::row($sboxdata);
+    $sboxdata = DB::queryRow("SELECT * FROM " . _sboxes_table . " WHERE id=" . $id);
+    if ($sboxdata !== false) {
         $rcontinue = true;
     } else {
         $rcontinue = false;
