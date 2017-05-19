@@ -133,7 +133,7 @@ if (DB::size($query) != 0) {
 $output .= "</tbody></table>\n";
 
 // pocet uzivatelu
-$totalusers = DB::result(DB::query("SELECT COUNT(*) FROM " . _users_table), 0);
+$totalusers = DB::count(_users_table);
 $output .= '<p class="right">' . $_lang['admin.users.list.totalusers'] . ": " . $totalusers . '</p>';
 
 // hromadna akce

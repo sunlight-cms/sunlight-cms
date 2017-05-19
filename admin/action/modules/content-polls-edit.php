@@ -10,9 +10,8 @@ $continue = false;
 $message = "";
 if (isset($_GET['id'])) {
     $id = (int) _get('id');
-    $query = DB::query("SELECT p.* FROM " . _polls_table . " p WHERE p.id=" . $id . _adminPollAccess());
-    if (DB::size($query) != 0) {
-        $query = DB::row($query);
+    $query = DB::queryRow("SELECT p.* FROM " . _polls_table . " p WHERE p.id=" . $id . _adminPollAccess());
+    if ($query !== false) {
         $new = false;
         $actionbonus = "&amp;id=" . $id;
         $submitcaption = $_lang['global.save'];
@@ -73,7 +72,12 @@ if (isset($_POST['question'])) {
     if (count($errors) == 0) {
 
         if (!$new) {
-            DB::query("UPDATE " . _polls_table . " SET question=" . DB::val($question) . ",answers=" . DB::val($answers) . ",author=" . $author . ",locked=" . $locked . " WHERE id=" . $id);
+            DB::update(_polls_table, 'id=' . $id, array(
+                'question' => $question,
+                'answers' => $answers,
+                'author' => $author,
+                'locked' => $locked
+            ));
 
             // korekce seznamu hlasu
             if (!$reset) {
@@ -96,15 +100,15 @@ if (isset($_POST['question'])) {
 
                 // ulozeni korekci
                 if ($newvotes != "") {
-                    DB::query("UPDATE " . _polls_table . " SET votes='" . $newvotes . "' WHERE id=" . $id);
+                    DB::update(_polls_table, 'id=' . $id, array('votes' => $newvotes));
                 }
 
             }
 
             // vynulovani
             if ($reset) {
-                DB::query("UPDATE " . _polls_table . " SET votes='" . trim(str_repeat("0-", $answers_count), "-") . "' WHERE id=" . $id);
-                DB::query("DELETE FROM " . _iplog_table . " WHERE type=4 AND var=" . $id);
+                DB::update(_polls_table, 'id=' . $id, array('votes' => trim(str_repeat("0-", $answers_count), "-")));
+                DB::delete(_iplog_table, 'type=' . _iplog_poll_vote . ' AND var=' . $id);
             }
 
             // presmerovani
@@ -113,8 +117,13 @@ if (isset($_POST['question'])) {
             return;
 
         } else {
-            DB::query("INSERT INTO " . _polls_table . " (author,question,answers,locked,votes) VALUES (" . $author . ",'" . $question . "'," . DB::val($answers) . "," . $locked . ",'" . trim(str_repeat("0-", $answers_count), "-") . "')");
-            $newid = DB::insertID();
+            $newid = DB::insert(_polls_table, array(
+                'author' => $author,
+                'question' => $question,
+                'answers' => $answers,
+                'locked' => $locked,
+                'votes' => trim(str_repeat("0-", $answers_count), "-")
+            ), true);
             $admin_redirect_to = 'index.php?p=content-polls-edit&id=' . $newid . '&created';
 
             return;

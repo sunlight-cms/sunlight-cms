@@ -11,7 +11,7 @@ $message = "";
 /* ---  akce  --- */
 
 if (isset($_POST['index'])) {
-    DB::query("UPDATE " . _settings_table . " SET val=" . ($index_id = (int) _post('index')) . ' WHERE var=\'index_page_id\'');
+    \Sunlight\Core::updateSetting('index_page_id', ($index_id = (int) _post('index')));
     $message = _msg(_msg_ok, $_lang['global.done']);
 
 } else {

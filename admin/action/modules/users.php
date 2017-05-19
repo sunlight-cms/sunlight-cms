@@ -14,13 +14,16 @@ if (isset($_POST['type']) && _priv_admingroups) {
     $type = (int) _post('type');
     if ($type == -1) {
         // prazdna skupina
-        DB::query("INSERT INTO " . _groups_table . " (title,level,icon) VALUES (" . DB::val($_lang['admin.users.groups.new.empty']) . ",0,'')");
+        DB::insert(_groups_table, array(
+            'title' => $_lang['admin.users.groups.new.empty'],
+            'level' => 0,
+            'icon' => ''
+        ));
         $msg = 1;
     } else {
         // kopirovat skupinu
-        $source_group = DB::query("SELECT * FROM " . _groups_table . " WHERE id=" . $type);
-        if (DB::size($source_group) != 0) {
-            $source_group = DB::row($source_group);
+        $source_group = DB::queryRow("SELECT * FROM " . _groups_table . " WHERE id=" . $type);
+        if ($source_group !== false) {
             $new_group = array();
             $privilege_map = array_flip(_getPrivileges());
 
@@ -66,9 +69,8 @@ if (isset($_POST['type']) && _priv_admingroups) {
 // prepnuti uzivatele
 if (_super_admin_id == _loginid && isset($_POST['switch_user'])) {
     $user = trim(_post('switch_user'));
-    $query = DB::query("SELECT id,password,email FROM " . _users_table . " WHERE username=" . DB::val($user));
-    if (DB::size($query) != 0) {
-        $query = DB::row($query);
+    $query = DB::queryRow("SELECT id,password,email FROM " . _users_table . " WHERE username=" . DB::val($user));
+    if ($query !== false) {
 
         _userLogin($query['id'], $query['password'], $query['email']);
 

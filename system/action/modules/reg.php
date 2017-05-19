@@ -48,8 +48,8 @@ if (isset($_GET['confirm'])) {
 
                 // kontrola dostupnosti uziv. jmena a emailu
                 if (
-                    0 == DB::result(DB::query("SELECT COUNT(*) FROM " . _users_table . " WHERE username=" . DB::val($user_data['username']) . " OR publicname=" . DB::val($user_data['username'])), 0)
-                    && 0 == DB::result(DB::query("SELECT COUNT(*) FROM " . _users_table . " WHERE email=" . DB::val($user_data['email'])), 0)
+                    0 == DB::count(_users_table, 'username=' . DB::val($user_data['username']) . ' OR publicname=' . DB::val($user_data['username']))
+                    && 0 == DB::count(_users_table, 'email=' . DB::val($user_data['email']))
                 ) {
                     // vse ok
                     $user_data_valid = true;
@@ -91,7 +91,7 @@ if (isset($_GET['confirm'])) {
         $user_data['username'] = _slugify($user_data['username'], false);
         if ($user_data['username'] == "") {
             $errors[] = $_lang['user.msg.badusername'];
-        } elseif (DB::result(DB::query("SELECT COUNT(*) FROM " . _users_table . " WHERE username=" . DB::val($user_data['username']) . " OR publicname=" . DB::val($user_data['username'])), 0) != 0) {
+        } elseif (DB::count(_users_table, 'username=' . DB::val($user_data['username']) . ' OR publicname=' . DB::val($user_data['username'])) !== 0) {
             $errors[] = $_lang['user.msg.userexists'];
         }
 
@@ -110,7 +110,7 @@ if (isset($_GET['confirm'])) {
         if (!_validateEmail($user_data['email'])) {
             $errors[] = $_lang['user.msg.bademail'];
         }
-        if (DB::result(DB::query("SELECT COUNT(*) FROM " . _users_table . " WHERE email=" . DB::val($user_data['email'])), 0) != 0) {
+        if (DB::count(_users_table, 'email=' . DB::val($user_data['email'])) !== 0) {
             $errors[] = $_lang['user.msg.emailexists'];
         }
 

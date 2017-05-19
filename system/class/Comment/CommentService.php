@@ -239,7 +239,7 @@ class CommentService
                 $locked = (bool) $vars[2];
                 $replynote = false;
                 $desc = "";
-                $countcond = "type=5 AND xhome=" . $xhome . " AND home=" . $home;
+                $countcond = "type=" . _post_forum_topic . " AND xhome=" . $xhome . " AND home=" . $home;
                 $autolast = isset($_GET['autolast']);
                 $postlink = true;
                 $replies_enabled = false;
@@ -257,7 +257,7 @@ class CommentService
                 $locked = (bool) $vars[0];
                 $replynote = false;
                 $desc = "";
-                $countcond = "type=6 AND home=" . $home;
+                $countcond = "type=" . _post_pm . " AND home=" . $home;
                 $locked_textid = '4';
                 $autolast = true;
                 $replies_enabled = false;
@@ -275,7 +275,7 @@ class CommentService
                 $locked = (bool) $vars[2];
                 $replynote = true;
                 $pluginflag = $vars[3];
-                $countcond = "type=7 AND flag=" . $pluginflag;
+                $countcond = "type=" . _post_plugin . " AND flag=" . $pluginflag;
                 if (!$vars[4]) {
                     $desc = '';
                 }
@@ -412,7 +412,7 @@ class CommentService
         // base query
         $userQuery = _userQuery('p.author');
         if ($is_topic_list) {
-            $sql = "SELECT p.id,p.author,p.guest,p.subject,p.time,p.ip,p.locked,p.bumptime,p.sticky,(SELECT COUNT(*) FROM " . _posts_table . " WHERE type=5 AND xhome=p.id) AS answer_count";
+            $sql = "SELECT p.id,p.author,p.guest,p.subject,p.time,p.ip,p.locked,p.bumptime,p.sticky,(SELECT COUNT(*) FROM " . _posts_table . " WHERE type=" . _post_forum_topic . " AND xhome=p.id) AS answer_count";
         } else {
             $sql = "SELECT p.id,p.xhome,p.subject,p.text,p.author,p.guest,p.time,p.ip" . Extend::buffer('posts.columns');
         }
@@ -444,7 +444,7 @@ class CommentService
         if ($is_topic_list) {
             // last post (for topic lists)
             if (!empty($item_ids_with_answers)) {
-                $topicextra = Database::query("SELECT * FROM (SELECT p.id,p.xhome,p.author,p.guest," . $userQuery['column_list'] . " FROM " . _posts_table . " AS p " . $userQuery['joins'] . " WHERE p.type=5 AND p.home=" . $home . " AND p.xhome IN(" . implode(',', $item_ids_with_answers) . ") ORDER BY p.id DESC) AS replies GROUP BY xhome");
+                $topicextra = Database::query("SELECT * FROM (SELECT p.id,p.xhome,p.author,p.guest," . $userQuery['column_list'] . " FROM " . _posts_table . " AS p " . $userQuery['joins'] . " WHERE p.type=" . _post_forum_topic . " AND p.home=" . $home . " AND p.xhome IN(" . implode(',', $item_ids_with_answers) . ") ORDER BY p.id DESC) AS replies GROUP BY xhome");
                 while ($item = Database::row($topicextra)) {
                     if (!isset($items[$item['xhome']])) {
                         if (_dev) {
@@ -622,7 +622,7 @@ class CommentService
 
                 // latest answers
                 $output .= "\n<div class='post-answer-list'>\n<h3>" . $_lang['posts.forum.lastact'] . "</h3>\n";
-                $query = Database::query("SELECT topic.id AS topic_id,topic.subject AS topic_subject,p.author,p.guest,p.time," . $userQuery['column_list'] . " FROM " . _posts_table . " AS p JOIN " . _posts_table . " AS topic ON(topic.type=5 AND topic.id=p.xhome) " . $userQuery['joins'] . " WHERE p.type=5 AND p.home=" . $home . " AND p.xhome!=-1 ORDER BY p.id DESC LIMIT " . _extratopicslimit);
+                $query = Database::query("SELECT topic.id AS topic_id,topic.subject AS topic_subject,p.author,p.guest,p.time," . $userQuery['column_list'] . " FROM " . _posts_table . " AS p JOIN " . _posts_table . " AS topic ON(topic.type=" . _post_forum_topic . " AND topic.id=p.xhome) " . $userQuery['joins'] . " WHERE p.type=" . _post_forum_topic . " AND p.home=" . $home . " AND p.xhome!=-1 ORDER BY p.id DESC LIMIT " . _extratopicslimit);
                 if (Database::size($query) != 0) {
                     $output .= "<table class='topic-latest'>\n";
                     while ($item = Database::row($query)) {
@@ -663,7 +663,7 @@ class CommentService
     public static function deleteByPluginFlag($flag, $home, $get_count = true)
     {
         // condition
-        $cond = "type=7 AND flag=" . $flag;
+        $cond = "type=" . _post_plugin . " AND flag=" . $flag;
         if (isset($home)) {
             $cond .= " AND home=" . $home;
         }
@@ -673,6 +673,6 @@ class CommentService
             return Database::count(_posts_table, $cond);
         }
 
-        Database::query('DELETE FROM ' . _posts_table . ' WHERE ' . $cond);
+        Database::delete(_posts_table, $cond);
     }
 }

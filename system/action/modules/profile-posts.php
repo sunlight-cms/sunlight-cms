@@ -12,10 +12,8 @@ if (!_login && _notpublicsite) {
 /* ---  priprava  --- */
 
 $id = _slugify(_get('id'), false);
-$query = DB::query("SELECT id,username,publicname FROM " . _users_table . " WHERE username=" . DB::val($id));
-if (DB::size($query) != 0) {
-    $query = DB::row($query);
-} else {
+$query = DB::queryRow("SELECT id,username,publicname FROM " . _users_table . " WHERE username=" . DB::val($id));
+if ($query === false) {
     $_index['is_found'] = false;
     return;
 }

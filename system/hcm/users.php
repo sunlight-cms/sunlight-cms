@@ -41,7 +41,7 @@ function _HCM_users($razeni = 1, $pocet = 5)
 
                 // pocet prispevku
             case 3:
-                $rvar = DB::result(DB::query("SELECT COUNT(*) FROM " . _posts_table . " WHERE author=" . $item['id']), 0);
+                $rvar = DB::count(_posts_table, 'author=' . DB::val($item['id']));
                 if ($rvar == 0) {
                     continue;
                 } else {

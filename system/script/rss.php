@@ -79,7 +79,7 @@ switch ($type) {
         // nejnovejsi clanky
     case _rss_latest_articles:
         if ($id != -1) {
-            $query = DB::query("SELECT title,slug FROM " . _root_table . " WHERE type=2 AND " . $root_cond . " AND id=" . $id);
+            $query = DB::query("SELECT title,slug FROM " . _root_table . " WHERE type=" . _page_category . " AND " . $root_cond . " AND id=" . $id);
             $categories = array($id);
         } else {
             $donottestsource = true;
@@ -92,7 +92,7 @@ switch ($type) {
 
         // nejnovejsi temata
     case _rss_latest_topics:
-        $query = DB::query("SELECT title,slug FROM " . _root_table . " WHERE type=8 AND " . $root_cond . " AND id=" . $id);
+        $query = DB::query("SELECT title,slug FROM " . _root_table . " WHERE type=" . _page_forum . " AND " . $root_cond . " AND id=" . $id);
         $feed_title = $_lang['rss.recenttopics'];
         $post_types = array(_post_forum_topic);
         $post_cond = "post.xhome=-1";
@@ -100,7 +100,7 @@ switch ($type) {
 
         // nejnovejsi odpovedi na tema
     case _rss_latest_topic_answers:
-        $query = DB::query("SELECT topic.subject FROM " . _posts_table . " topic JOIN " . _root_table . " root ON(root.id=topic.home) WHERE topic.type=5 AND topic.id=" . $id . " AND " . $root_joined_cond);
+        $query = DB::query("SELECT topic.subject FROM " . _posts_table . " topic JOIN " . _root_table . " root ON(root.id=topic.home) WHERE topic.type=" . _post_forum_topic . " AND topic.id=" . $id . " AND " . $root_joined_cond);
         $feed_title = $_lang['rss.recentanswers'];
         $post_cond = "post.xhome=" . $id;
         $post_types = array(_post_forum_topic);

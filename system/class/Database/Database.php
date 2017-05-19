@@ -434,6 +434,9 @@ class Database
      */
     public static function val($value, $handleArray = false)
     {
+        if ($value instanceof RawSqlValue) {
+            return $value->getSql();
+        }
         $value = static::esc($value, $handleArray);
         if ($handleArray && is_array($value)) {
             $out = '';
@@ -453,6 +456,17 @@ class Database
             return 'NULL';
         }
         return $value;
+    }
+
+    /**
+     * Zpracovat hodnotu pro surove pouziti v dotazu
+     *
+     * @param string $safeSql hodnota
+     * @return RawSqlValue
+     */
+    public static function raw($safeSql)
+    {
+        return new RawSqlValue($safeSql);
     }
 
     /**

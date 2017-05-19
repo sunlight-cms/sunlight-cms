@@ -8,7 +8,7 @@ if (!defined('_root')) {
 
 $message = "";
 if (isset($_GET['id'])) {
-    DB::query("UPDATE " . _articles_table . " SET confirmed=1 WHERE id=" . (int) _get('id'));
+    DB::update(_articles_table, 'id=' . DB::val(_get('id')), array('confirmed' => 1));
     $message = _msg(_msg_ok, $_lang['global.done']);
 }
 

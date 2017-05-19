@@ -19,7 +19,11 @@ if (isset($_POST['action'])) {
             $locked = _checkboxLoad("lockedc");
 
             // vlozeni
-            DB::query("INSERT INTO " . _sboxes_table . " (title,locked,public) VALUES(" . DB::val($title) . "," . $locked . "," . $public . ")");
+            DB::insert(_sboxes_table, array(
+                'title' => $title,
+                'locked' => $locked,
+                'public' => $public
+            ));
             $message = _msg(_msg_ok, $_lang['global.created']);
             break;
 
@@ -56,7 +60,7 @@ if (isset($_POST['action'])) {
                             break;
                         case "delposts":
                             $skip = true;
-                            DB::query("DELETE FROM " . _posts_table . " WHERE home=" . $id . " AND type=4");
+                            DB::delete(_posts_table, 'home=' . $id . ' AND type=' . _post_shoutbox_entry);
                             break;
                         default:
                             $skip = true;
@@ -104,8 +108,8 @@ if (isset($_POST['action'])) {
 
 if (isset($_GET['del']) && _xsrfCheck(true)) {
     $del = (int) _get('del');
-    DB::query("DELETE FROM " . _sboxes_table . " WHERE id=" . $del);
-    DB::query("DELETE FROM " . _posts_table . " WHERE home=" . $del . " AND type=4");
+    DB::delete(_sboxes_table, 'id=' . $del);
+    DB::delete(_posts_table, 'home=' . $del . ' AND type=' . _post_shoutbox_entry);
     $message = _msg(_msg_ok, $_lang['global.done']);
 }
 

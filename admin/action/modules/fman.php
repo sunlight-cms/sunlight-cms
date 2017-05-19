@@ -247,19 +247,18 @@ if ($continue) {
                     $galid = (int) _post('gallery');
 
                     // vlozeni obrazku
-                    if (DB::result(DB::query("SELECT COUNT(*) FROM " . _root_table . " WHERE id=" . $galid . " AND type=5"), 0) != 0) {
+                    if (DB::count(_root_table, 'id=' . DB::val($galid) . ' AND type=' . _page_gallery) !== 0) {
 
                         // nacteni nejmensiho poradoveho cisla
-                        $smallestord = DB::query("SELECT ord FROM " . _images_table . " WHERE home=" . $galid . " ORDER BY ord LIMIT 1");
-                        if (DB::size($smallestord) != 0) {
-                            $smallestord = DB::row($smallestord);
+                        $smallestord = DB::queryRow("SELECT ord FROM " . _images_table . " WHERE home=" . $galid . " ORDER BY ord LIMIT 1");
+                        if ($smallestord !== false) {
                             $smallestord = $smallestord['ord'];
                         } else {
                             $smallestord = 1;
                         }
 
                         // posunuti poradovych cisel
-                        DB::query("UPDATE " . _images_table . " SET ord=ord+" . (count($_POST) - 2) . " WHERE home=" . $galid);
+                        DB::update(_images_table, 'home=' . $galid, array('ord' => DB::raw('ord+' . (count($_POST) - 2))));
 
                         // cyklus
                         $sql = "";

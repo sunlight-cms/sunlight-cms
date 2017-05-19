@@ -9,7 +9,7 @@ if (!defined('_root')) {
 $continue = false;
 if (isset($_GET['cat'])) {
     $cid = (int) _get('cat');
-    if (DB::result(DB::query("SELECT COUNT(*) FROM " . _root_table . " WHERE id=" . $cid . " AND type=2"), 0) != 0) {
+    if (DB::count(_root_table, 'id=' . DB::val($cid) . ' AND type=' . _page_category) !== 0) {
         $catdata = DB::queryRow("SELECT title,var1,var2 FROM " . _root_table . " WHERE id=" . $cid);
         $continue = true;
     }

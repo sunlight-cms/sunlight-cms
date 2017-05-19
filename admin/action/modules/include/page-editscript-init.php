@@ -27,9 +27,8 @@ $plugin_type_array = Sunlight\Page\PageManager::getPluginTypes();
 
 if (isset($_GET['id'])) {
     $id = (int) _get('id');
-    $query = DB::query("SELECT * FROM " . _root_table . " WHERE id=" . $id . " AND type=" . $type);
-    if (DB::size($query) != 0) {
-        $query = DB::row($query);
+    $query = DB::queryRow("SELECT * FROM " . _root_table . " WHERE id=" . $id . " AND type=" . $type);
+    if ($query !== false) {
         $continue = true;
         $new = false;
         if (_page_plugin == $type) {

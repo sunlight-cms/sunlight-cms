@@ -14,9 +14,8 @@ if (!_login) {
 $message = "";
 $id = (int) _get('id');
 $userQuery = _userQuery('p.author');
-$query = DB::query("SELECT p.id,p.home,p.time,p.subject,p.sticky,r.slug forum_slug," . $userQuery['column_list'] . " FROM " . _posts_table . " p JOIN " . _root_table . " r ON(p.home=r.id) " . $userQuery['joins'] . " WHERE p.id=" . $id . " AND p.type=5 AND p.xhome=-1");
-if (DB::size($query) != 0) {
-    $query = DB::row($query);
+$query = DB::queryRow("SELECT p.id,p.home,p.time,p.subject,p.sticky,r.slug forum_slug," . $userQuery['column_list'] . " FROM " . _posts_table . " p JOIN " . _root_table . " r ON(p.home=r.id) " . $userQuery['joins'] . " WHERE p.id=" . $id . " AND p.type=" . _post_forum_topic . " AND p.xhome=-1");
+if ($query !== false) {
     $_index['backlink'] = _linkTopic($query['id'], $query['forum_slug']);
     if (!_postAccess($userQuery, $query) || !_priv_movetopics) {
         $_index['is_accessible'] = false;
@@ -34,7 +33,7 @@ $forums = Sunlight\Page\PageManager::getFlatTree(null, null, new Sunlight\Databa
 if (isset($_POST['new_forum'])) {
     $new_forum_id = (int) _post('new_forum');
     if (isset($forums[$new_forum_id]) && $forums[$new_forum_id]['type'] == _page_forum) {
-        DB::query("UPDATE " . _posts_table . " SET home=" . $new_forum_id . " WHERE id=" . $id . " OR (type=5 AND xhome=" . $id . ")");
+        DB::update(_posts_table, 'id=' . DB::val($id) . ' OR (type=' . _post_forum_topic . ' AND xhome=' . $id . ')', array('home' => $new_forum_id));
         $query['home'] = $new_forum_id;
         $_index['backlink'] = _linkTopic($query['id']);
         $message = _msg(_msg_ok, $_lang['mod.movetopic.ok']);

@@ -11,9 +11,8 @@ function _HCM_sbox($id = null)
     $id = (int) $id;
 
     // nacteni dat shoutboxu
-    $sboxdata = DB::query("SELECT * FROM " . _sboxes_table . " WHERE id=" . $id);
-    if (DB::size($sboxdata) != 0) {
-        $sboxdata = DB::row($sboxdata);
+    $sboxdata = DB::queryRow("SELECT * FROM " . _sboxes_table . " WHERE id=" . $id);
+    if ($sboxdata !== false) {
         $rcontinue = true;
     } else {
         $rcontinue = false;
@@ -55,7 +54,7 @@ function _HCM_sbox($id = null)
         $result .= "\n</div>\n<div class='sbox-posts'>";
         // vypis prispevku
         $userQuery = _userQuery('p.author');
-        $sposts = DB::query("SELECT p.id,p.text,p.author,p.guest,p.time,p.ip," . $userQuery['column_list'] . " FROM " . _posts_table . " p " . $userQuery['joins'] . " WHERE p.home=" . $id . " AND p.type=4 ORDER BY p.id DESC");
+        $sposts = DB::query("SELECT p.id,p.text,p.author,p.guest,p.time,p.ip," . $userQuery['column_list'] . " FROM " . _posts_table . " p " . $userQuery['joins'] . " WHERE p.home=" . $id . " AND p.type=" . _post_shoutbox_entry . " ORDER BY p.id DESC");
         if (DB::size($sposts) != 0) {
             while ($spost = DB::row($sposts)) {
 

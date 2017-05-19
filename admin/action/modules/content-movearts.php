@@ -19,10 +19,10 @@ if (isset($_POST['source'])) {
 
     // kontrola promennych
     $error_log = array();
-    if (DB::result(DB::query("SELECT COUNT(*) FROM " . _root_table . " WHERE id=" . $source . " AND type=2"), 0) == 0) {
+    if (DB::count(_root_table, 'id=' . DB::val($source) . ' AND type=' . _page_category) === 0) {
         $error_log[] = $_lang['admin.content.movearts.badsource'];
     }
-    if (DB::result(DB::query("SELECT COUNT(*) FROM " . _root_table . " WHERE id=" . $target . " AND type=2"), 0) == 0) {
+    if (DB::count(_root_table, 'id=' . DB::val($target) . ' AND type=' . _page_category) === 0) {
         $error_log[] = $_lang['admin.content.movearts.badtarget'];
     }
     if ($source == $target) {
@@ -48,20 +48,26 @@ if (isset($_POST['source'])) {
                     $homeid = 3;
                     $homecheck = array(1, 2);
                 }
-                DB::query("UPDATE " . _articles_table . " SET home" . $homeid . "=" . $target . " WHERE id=" . $item['id']);
+                DB::update(_articles_table, 'id=' . $item['id'], array('home' . $homeid => $target));
                 foreach ($homecheck as $hc) {
                     if ($item['home' . $hc] == $target) {
+                        $updatedata = array();
                         if ($hc != 1) {
-                            DB::query("UPDATE " . _articles_table . " SET home" . $hc . "=-1 WHERE id=" . $item['id']);
+                            $updatedata['home' . $hc] = -1;
                         } else {
-                            DB::query("UPDATE " . _articles_table . " SET home" . $homeid . "=-1 WHERE id=" . $item['id']);
+                            $updatedata['home' . $homeid] = -1;
                         }
+                        DB::update(_articles_table, 'id=' . $item['id'], $updatedata);
                     }
                 }
                 $counter++;
             }
         } else {
-            DB::query("UPDATE " . _articles_table . " SET home1=" . $target . ",home2=-1,home3=-1 WHERE home1=" . $source . " OR home2=" . $source . " OR home3=" . $source);
+            DB::update(_articles_table, 'home1=' . $source . ' OR home2=' . $source. ' OR home3=' . $source, array(
+                'home1' => $target,
+                'home2' => -1,
+                'home3' => -1
+            ));
             $counter = DB::affectedRows();
         }
 

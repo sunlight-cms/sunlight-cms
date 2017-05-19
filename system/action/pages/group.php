@@ -36,7 +36,7 @@ if (DB::size($items) != 0) {
                     // sekce
                 case _page_section:
                     if ($item['var1'] == 1) {
-                        $iteminfos['comment_num'] = array($_lang['article.comments'], DB::result(DB::query("SELECT COUNT(*) FROM " . _posts_table . " WHERE type=1 AND home=" . $item['id']), 0));
+                        $iteminfos['comment_num'] = array($_lang['article.comments'], DB::count(_posts_table, 'type=' . _post_section_comment . ' AND home=' . DB::val($item['id'])));
                     }
                     break;
 
@@ -51,8 +51,7 @@ if (DB::size($items) != 0) {
                     // nacteni jmena autora posledniho prispevku
                     $userQuery = _userQuery('p.author');
                     $lastpost = DB::query("SELECT p.author,p.guest," . $userQuery['column_list'] . " FROM " . _posts_table . " p " . $userQuery['joins'] . " WHERE p.home=" . $item['id'] . " ORDER BY p.id DESC LIMIT 1");
-                    if (DB::size($lastpost) != 0) {
-                        $lastpost = DB::row($lastpost);
+                    if ($lastpost !== false) {
                         if ($lastpost['author'] != -1) {
                             $lastpost = _linkUserFromQuery($userQuery, $lastpost);
                         } else {
@@ -62,19 +61,19 @@ if (DB::size($items) != 0) {
                         $lastpost = "-";
                     }
 
-                    $iteminfos['post_num'] = array($_lang['global.postsnum'], DB::result(DB::query("SELECT COUNT(*) FROM " . _posts_table . " WHERE type=3 AND home=" . $item['id']), 0));
+                    $iteminfos['post_num'] = array($_lang['global.postsnum'], DB::count(_posts_table, 'type=' . _post_book_entry . ' AND home=' . DB::val($item['id'])));
                     $iteminfos['last_post'] = array($_lang['global.lastpost'], $lastpost);
                     break;
 
                     // galerie
                 case _page_gallery:
-                    $iteminfos['image_num'] = array($_lang['global.imgsnum'], DB::result(DB::query("SELECT COUNT(*) FROM " . _images_table . " WHERE home=" . $item['id']), 0));
+                    $iteminfos['image_num'] = array($_lang['global.imgsnum'], DB::count(_images_table, 'home=' . DB::val($item['id'])));
                     break;
 
                     // forum
                 case _page_forum:
-                    $iteminfos['topic_num'] = array($_lang['global.topicsnum'], DB::result(DB::query("SELECT COUNT(*) FROM " . _posts_table . " WHERE type=5 AND home=" . $item['id'] . " AND xhome=-1"), 0));
-                    $iteminfos['answer_num'] = array($_lang['global.answersnum'], DB::result(DB::query("SELECT COUNT(*) FROM " . _posts_table . " WHERE type=5 AND home=" . $item['id'] . " AND xhome!=-1"), 0));
+                    $iteminfos['topic_num'] = array($_lang['global.topicsnum'], DB::count(_posts_table, 'type=' . _post_forum_topic . ' AND home=' . DB::val($item['id']) . ' AND xhome=-1'));
+                    $iteminfos['answer_num'] = array($_lang['global.answersnum'], DB::count(_posts_table, 'type=' . _post_forum_topic . ' AND home=' . DB::val($item['id']) . ' AND xhome!=-1'));
                     break;
 
                     // plugin stranka
