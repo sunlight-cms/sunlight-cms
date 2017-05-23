@@ -69,7 +69,15 @@ class Message
      */
     public function __toString()
     {
-        return _msg($this->type, $this->isHtml ? $this->message : _e($this->message));
+        $output = Extend::buffer('message.render');
+
+        if ('' === $output) {
+            $output = "\n<div class='message message-" . _e($this->type) . "'>"
+                . ($this->isHtml ? $this->message : _e($this->message))
+                . "</div>\n";
+        }
+
+        return (string) $output;
     }
 
     /**
@@ -112,19 +120,19 @@ class Message
      */
     public function append($str, $isHtml = false)
     {
-        $this->forceHtml();
-
-        $this->message .= $isHtml ? $str : _e($str);
-    }
-
-    /**
-     * Force the message to become HTML, if it isn't already
-     */
-    protected function forceHtml()
-    {
-        if (!$this->isHtml) {
-            $this->message = _e($this->message);
-            $this->isHtml = true;
+        if ($this->isHtml) {
+            // append to current HTML
+            $this->message .= $isHtml ? $str : _e($str);
+        } else {
+            // append to current plaintext
+            if ($isHtml) {
+                // convert message to HTML
+                $this->message = _e($this->message) . $str;
+                $this->isHtml = true;
+            } else {
+                // append as-is
+                $this->message .= $str;
+            }
         }
     }
 }

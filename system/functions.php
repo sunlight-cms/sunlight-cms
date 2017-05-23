@@ -1595,11 +1595,12 @@ function _formatFilesize($bytes)
  *
  * @param string $type   typ zpravy, hodnota konstanty _msg_ok, _msg_warn nebo _msg_err
  * @param string $string text zpravy
+ * @param bool   $isHtml text zpravy je HTML 1/0
  * @return string
  */
-function _msg($type, $string)
+function _msg($type, $string, $isHtml = true)
 {
-    return "\n<div class='message message-" . $type . "'>$string</div>\n";
+    return (string) new Message($type, $string, $isHtml);
 }
 
 /**
