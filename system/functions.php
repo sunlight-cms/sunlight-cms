@@ -4738,10 +4738,17 @@ function _pictureResize($res, array $opt, $size = null)
         'trans_format' => null,
     );
 
+    $extend_output = null;
+
     Extend::call('fc.picture.resize', array(
         'res' => &$res,
         'options' => &$opt,
+        'output' => &$extend_output,
     ));
+
+    if (null !== $extend_output) {
+        return $extend_output;
+    }
 
     // zadna operace?
     if ('none' === $opt['mode']) {
