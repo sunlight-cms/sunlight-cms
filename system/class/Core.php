@@ -7,6 +7,7 @@ use Kuria\Cache\Extension\BoundFile\BoundFileExtension;
 use Kuria\Cache\Driver\FilesystemDriver;
 use Kuria\Cache\Driver\MemoryDriver;
 use Kuria\ClassLoader\ClassLoader;
+use Kuria\Debug\Error;
 use Kuria\Error\Util\Debug;
 use Kuria\Error\ErrorHandler;
 use Kuria\Error\Screen\WebErrorScreen;
@@ -231,9 +232,13 @@ class Core
         class_alias('Sunlight\Database\Database', 'DB'); // zpetna kompatibilita
 
         // error handler
-        static::$errorHandler = new ErrorHandler(_dev);
+        static::$errorHandler = new ErrorHandler();
         static::$errorHandler->register();
-        static::$errorHandler->on('fatal', array(__CLASS__, 'onException'));
+        static::$errorHandler->setDebug(_dev);
+
+        if (($exceptionHandler = static::$errorHandler->getExceptionHandler()) instanceof WebErrorScreen) {
+            static::configureWebExceptionHandler($exceptionHandler);
+        }
 
         // cache
         if (null === static::$cache) {
@@ -967,52 +972,37 @@ class Core
      */
     public static function renderException(\Exception $e, $showTrace = true, $showPrevious = true)
     {
-        return '<pre class="exception">' . _e(Debug::renderException($e, $showTrace, $showPrevious)) . "</pre>\n";
+        return '<pre class="exception">' . _e(Error::renderException($e, $showTrace, $showPrevious)) . "</pre>\n";
     }
 
-    /**
-     * Upravit vykreslovani chyb
-     *
-     * @param object $exception
-     * @param bool   $debug
-     * @param object $handler
-     */
-    public static function onException($exception, $debug, $handler)
+    protected static function configureWebExceptionHandler(WebErrorScreen $errorScreen)
     {
-        if (
-            isset($GLOBALS['_lang'])
-            && is_array($GLOBALS['_lang'])
-            && $handler instanceof WebErrorScreen
-        ) {
-            $handler->on('layout.css', function ($params) {
-                $params['css'] .= <<<'CSS'
+        $errorScreen->on('layout.css', function ($params) {
+            $params['css'] .= <<<'CSS'
 body {background-color: #ededed; color: #000000;}
 a {color: #ff6600;}
 .core-exception-info {opacity: 0.8;}
 .website-link {display: block; margin: 1em 0; text-align: center; color: #000000; opacity: 0.5;}
 CSS;
+        });
+
+        if (!_dev) {
+            $errorScreen->on('render', function ($view) {
+                $view['title'] = $view['heading'] = Core::$fallbackLang === 'cs'
+                    ? 'Chyba serveru'
+                    : 'Something went wrong';
+
+                $view['text'] = Core::$fallbackLang === 'cs'
+                    ? 'Omlouváme se, ale při zpracovávání Vašeho požadavku došlo k neočekávané chybě.'
+                    : 'We are sorry, but an unexpected error has occurred while processing your request.';
+
+                if ($view['exception'] instanceof CoreException) {
+                    $view['extras'] .= '<div class="group core-exception-info"><div class="section">';
+                    $view['extras'] .=  '<p class="message">' . nl2br(_e($view['exception']->getMessage())) . '</p>';
+                    $view['extras'] .= '</div></div>';
+                    $view['extras'] .= '<a class="website-link" href="https://sunlight-cms.org/" target="_blank">SunLight CMS ' . Core::VERSION . '</a>';
+                }
             });
-
-            if (!$debug) {
-                $handler->on('render', function ($view) {
-                    $view['title'] = $view['heading'] = Core::$fallbackLang === 'cs'
-                        ? 'Chyba serveru'
-                        : 'Something went wrong';
-
-                    $view['text'] = Core::$fallbackLang === 'cs'
-                        ? 'Omlouváme se, ale při zpracovávání Vašeho požadavku došlo k neočekávané chybě.'
-                        : 'We are sorry, but an unexpected error has occurred while processing your request.';
-
-                    if ($view['exception'] instanceof CoreException) {
-                        $view['extras'] .= '<div class="group core-exception-info"><div class="section">';
-                        $view['extras'] .=  '<p class="message">' . nl2br(_e($view['exception']->getMessage())) . '</p>';
-                        $view['extras'] .= '</div></div>';
-                        $view['extras'] .= '<a class="website-link" href="https://sunlight-cms.org/" target="_blank">SunLight CMS ' . Core::VERSION . '</a>';
-                    }
-                });
-            }
         }
     }
-
-
 }

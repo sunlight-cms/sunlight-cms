@@ -7,7 +7,7 @@ use Sunlight\Util\Url;
 use Sunlight\Message;
 use Sunlight\Exception\ContentPrivilegeException;
 use Kuria\Cache\Util\TemporaryFile;
-use Kuria\Error\Util\Debug;
+use Kuria\Debug\Output;
 use Sunlight\Util\Filesystem;
 use Sunlight\Util\Password;
 use Sunlight\Plugin\TemplatePlugin;
@@ -3834,7 +3834,7 @@ function _downloadFile($filepath, $filename = null)
         $filename = basename($filepath);
     }
 
-    Debug::cleanBuffers();
+    Output::cleanBuffers();
     _downloadHeaders($filename, filesize($filepath));
 
     $handle = fopen($filepath, 'rb');

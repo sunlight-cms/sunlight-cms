@@ -2,7 +2,7 @@
 
 namespace SunlightExtend\Devkit\Component;
 
-use Kuria\Error\Util\Debug;
+use Kuria\Debug\Dumper;
 use Sunlight\Core;
 use Sunlight\Extend;
 
@@ -234,7 +234,7 @@ class ToolbarRenderer
                 $<?php echo $globalVarName, ' (', sizeof($GLOBALS[$globalVarName]), ')' ?>
             </div>
 
-            <div class="devkit-request-dump devkit-hideshow-target"><?php echo Debug::dump($GLOBALS[$globalVarName]) ?></div>
+            <div class="devkit-request-dump devkit-hideshow-target"><?php echo Dumper::dump($GLOBALS[$globalVarName]) ?></div>
             <?php endif ?>
         <?php endforeach ?>
     </div>

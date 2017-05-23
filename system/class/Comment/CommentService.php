@@ -60,7 +60,7 @@ class CommentService
      * Private message list
      *
      * $vars: [
-     *      (bool) locked],
+     *      (bool) locked,
      * ]
      */
     const RENDER_PM_LIST = 7;

@@ -2,6 +2,8 @@
 
 namespace Sunlight\Installer;
 
+use Kuria\Debug\Output;
+use Kuria\Error\ErrorHandler;
 use Sunlight\Core;
 use Sunlight\Database\Database as DB;
 use Sunlight\Database\DatabaseLoader;
@@ -10,7 +12,6 @@ use Sunlight\Util\Password;
 use Sunlight\Util\PhpTemplate;
 use Sunlight\Util\StringGenerator;
 use Sunlight\Util\Url;
-use Kuria\Error\Util\Debug;
 
 define('_dev', true);
 define(__NAMESPACE__ . '\CONFIG_PATH', __DIR__ . '/../config.php');
@@ -22,11 +23,9 @@ require __DIR__ . '/../system/bootstrap.php';
 require __DIR__ . '/../system/functions.php';
 
 // set error handler
-set_error_handler(function ($code, $message, $file = null, $line = null) {
-    if (0 !== ($code & error_reporting())) {
-        throw new \ErrorException($message, 0, $code, $file, $line);
-    }
-});
+$errorHandler = new ErrorHandler();
+$errorHandler->setDebug(true);
+$errorHandler->register();
 
 /**
  * Configuration
@@ -1229,7 +1228,7 @@ $stepRunner= new StepRunner(array(
 try {
     $content = $stepRunner->run();
 } catch (\Exception $e) {
-    Debug::cleanBuffers();
+    Output::cleanBuffers();
 
     ob_start();
     ?>

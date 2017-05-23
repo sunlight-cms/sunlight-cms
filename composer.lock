@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "2fbdf8af8f910423d85c132cf086c3bb",
+    "content-hash": "0de6e60c5c358d3bc632f462adfd6948",
     "packages": [
         {
             "name": "composer/semver",
@@ -205,20 +205,59 @@
             "time": "2017-05-08T21:57:30+00:00"
         },
         {
+            "name": "kuria/debug",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kuria/debug.git",
+                "reference": "8d6d4287803db98a07b5281407813706810523fc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kuria/debug/zipball/8d6d4287803db98a07b5281407813706810523fc",
+                "reference": "8d6d4287803db98a07b5281407813706810523fc",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Kuria\\Debug\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Collection of utilities useful for debugging purposes.",
+            "keywords": [
+                "debug",
+                "dump",
+                "exceptions"
+            ],
+            "time": "2017-05-22T17:34:29+00:00"
+        },
+        {
             "name": "kuria/error",
             "version": "v1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kuria/error.git",
-                "reference": "a8be9c080ab5bae975b613ea933d1032b0452add"
+                "reference": "3db6cd7541ab7543b6c4cb212448c175863c9c58"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kuria/error/zipball/a8be9c080ab5bae975b613ea933d1032b0452add",
-                "reference": "a8be9c080ab5bae975b613ea933d1032b0452add",
+                "url": "https://api.github.com/repos/kuria/error/zipball/3db6cd7541ab7543b6c4cb212448c175863c9c58",
+                "reference": "3db6cd7541ab7543b6c4cb212448c175863c9c58",
                 "shasum": ""
             },
             "require": {
+                "kuria/debug": "^1.0.0",
                 "kuria/event": "^1.0.0",
                 "php": ">=5.3.0"
             },
@@ -245,7 +284,7 @@
                 "exception handler",
                 "fatal"
             ],
-            "time": "2017-05-08T00:30:33+00:00"
+            "time": "2017-05-23T17:43:21+00:00"
         },
         {
             "name": "kuria/event",
