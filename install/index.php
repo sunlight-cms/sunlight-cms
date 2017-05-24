@@ -15,6 +15,10 @@ use Sunlight\Util\Url;
 
 define('_dev', true);
 define(__NAMESPACE__ . '\CONFIG_PATH', __DIR__ . '/../config.php');
+define(__NAMESPACE__ . '\DEFAULT_TIMEZONE', @date_default_timezone_get());
+
+// set timezone
+date_default_timezone_set(DEFAULT_TIMEZONE);
 
 // bootstrap
 require __DIR__ . '/../system/bootstrap.php';
@@ -711,7 +715,7 @@ class ConfigurationStep extends Step
 
         if ('' === $config['url']) {
             $this->errors[] = 'url.empty';
-        } elseif (!preg_match('~^https?://[a-zA-Z0-9_.\-]+((?:/[^/]+)*)$~', $config['url'])) {
+        } elseif (!preg_match('~^https?://[a-zA-Z0-9_.\-]+(:\d+)?((?:/[^/]+)*)$~', $config['url'])) {
             $this->errors[] = 'url.invalid';
         }
 
@@ -766,7 +770,7 @@ class ConfigurationStep extends Step
             $path = '/';
         }
 
-        $defaultUrl = sprintf('%s://%s%s', $url->scheme, $url->host, $path);
+        $defaultUrl = sprintf('%s://%s%s', $url->scheme, $url->getFullHost(), $path);
         $defaultSecret = StringGenerator::generateHash(64);
         $defaultTimezone = date_default_timezone_get();
         $defaultGeoLatitude = 50.5;
