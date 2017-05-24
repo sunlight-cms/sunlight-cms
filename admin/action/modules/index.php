@@ -39,7 +39,7 @@ if (!empty($maxltime) && !isset($_COOKIE[Sunlight\Core::$appId . '_persistent_ke
 
 // vystup
 $output .= "
-<table id='indextable'>
+<table id='index-table'>
 
 <tr class='valign-top'>
 
@@ -100,12 +100,10 @@ Sunlight\Extend::call('admin.index.messages', array(
    'messages' => &$messages,
 ));
 
-if (!empty($messages)) {
-    $output .= "<div class='well'>\n";
-    $output .= '<h2>' . $_lang['admin.index.messages'] . "</h2>\n";
-    $output .= join($messages);
-    $output .= "</div>\n";
-}
+$output .= "<div id='index-messages' class='well'>\n";
+$output .= '<h2>' . $_lang['admin.index.messages'] . "</h2>\n";
+$output .= join($messages);
+$output .= "</div>\n";
 
 // editace
 if (_logingroup == _group_admin) {
@@ -128,7 +126,43 @@ $.ajax({
     dataType: 'jsonp',
     cache: false,
     success: function (response) {
-        Sunlight.admin.showLatestVersion(response.latestVersion, response.localAge, response.url);
+        // update #latest-version
+        var elem = document.createElement(response.url ? 'a' : 'span');
+        var ageClass;
+
+        switch (response.localAge) {
+            case 1: ageClass = 'patch';  break;
+            case 2: ageClass = 'minor'; break;
+            case 3: ageClass = 'major'; break;
+            default: ageClass = 'latest'; break;
+        }
+        
+        if (response.url) {
+            elem.href = response.url;
+            elem.target = '_blank';
+        }
+        elem.className = 'version-' + ageClass;
+        elem.appendChild(document.createTextNode(response.latestVersion));
+
+        $('#latest-version').empty().append(elem);
+        
+        // add message to #index-messages
+        if (response.localAge >= 0) {
+            var messageType, message;
+            
+            if (response.localAge <= 0) {
+                messageType = 'ok';
+                message = " . json_encode($_lang['admin.index.version.latest']) . ";
+            } else {
+                messageType = 'warn';
+                message = " . json_encode($_lang['admin.index.version.old']) . ";
+                message = message
+                    .replace('*version*', Sunlight.escapeHtml(response.latestVersion))
+                    .replace('*link*', 'https://sunlight-cms.org/goto/update');
+            }
+            
+            $(Sunlight.msg(messageType, message, true)).insertAfter('#index-messages > h2:first-child');
+        }
     }
 });
 </script>\n";

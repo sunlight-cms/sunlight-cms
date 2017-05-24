@@ -1,5 +1,81 @@
 var Sunlight = (function ($) {
+    var matchHtmlRegExp;
+
     return {
+        /**
+         * Nahradit specialni znaky entitami
+         *
+         * @param {String} string
+         * @return {String}
+         */
+        escapeHtml: function (string) {
+            if (!matchHtmlRegExp) {
+                matchHtmlRegExp = /["'&<>]/;
+            }
+
+            var str = '' + string;
+            var match = matchHtmlRegExp.exec(str);
+
+            if (!match) {
+                return str;
+            }
+
+            var escape;
+            var html = '';
+            var index;
+            var lastIndex = 0;
+
+            for (index = match.index; index < str.length; ++index) {
+                switch (str.charCodeAt(index)) {
+                    case 34: // "
+                        escape = '&quot;';
+                        break;
+                    case 38: // &
+                        escape = '&amp;';
+                        break;
+                    case 39: // '
+                        escape = '&#39;';
+                        break;
+                    case 60: // <
+                        escape = '&lt;';
+                        break;
+                    case 62: // >
+                        escape = '&gt;';
+                        break;
+                    default:
+                        continue;
+                }
+
+                if (lastIndex !== index) {
+                    html += str.substring(lastIndex, index);
+                }
+
+                lastIndex = index + 1;
+                html += escape;
+            }
+
+            return lastIndex !== index
+                ? html + str.substring(lastIndex, index)
+                : html;
+        },
+
+        /**
+         * Vykreslit systemovy box se zpravou
+         *
+         * @param {String}  type   ok / warn / err
+         * @param {String}  text   text zpravy
+         * @param {Boolean} isHtml vykreslit text jako HTML
+         * @return {HTMLElement}
+         */
+        msg: function (type, text, isHtml) {
+            var msg = document.createElement('div');
+
+            $(msg).addClass('message message-' + type);
+            $(msg)[isHtml ? 'html' : 'text'](text);
+
+            return msg;
+        },
+
         /**
          * Aplikovat lightbox funkcionalitu na obrazky a galerie
          */

@@ -327,13 +327,13 @@ body.login-layout #footer, body.login-layout #footer a {color: <?php echo $schem
 #external-container h1 {border-bottom: 3px solid <?php echo $scheme; ?>; padding-bottom: 3px; margin-bottom: 6px;}
 
 /* index */
-#indextable {width: 100%; margin: 0; padding: 0; border-collapse: collapse;}
-#indextable > tbody > tr > td {padding: 10px; border: 1px solid <?php echo $scheme_smoke_med; ?>; background-color: <?php echo $scheme_smoke_lighter; ?>;}
-#indextable h2 {margin-bottom: 6px; border-bottom: 2px solid <?php echo $scheme_smoke_med; ?>; padding-bottom: 6px;}
-#indextable li {padding: 3px;}
-#indextable table {width: 100%;}
-#indextable table th, #indextable table td {text-align: left; padding: 0.2em; border-bottom: 1px solid <?php echo $scheme_smoke_med; ?>;}
-#indextable table tr:last-child th, #indextable table tr:last-child td {border-bottom: none;}
+#index-table {width: 100%; margin: 0; padding: 0; border-collapse: collapse;}
+#index-table > tbody > tr > td {padding: 10px; border: 1px solid <?php echo $scheme_smoke_med; ?>; background-color: <?php echo $scheme_smoke_lighter; ?>;}
+#index-table h2 {margin-bottom: 6px; border-bottom: 2px solid <?php echo $scheme_smoke_med; ?>; padding-bottom: 6px;}
+#index-table li {padding: 3px;}
+#index-table table {width: 100%;}
+#index-table table th, #index-table table td {text-align: left; padding: 0.2em; border-bottom: 1px solid <?php echo $scheme_smoke_med; ?>;}
+#index-table table tr:last-child th, #index-table table tr:last-child td {border-bottom: none;}
 #latest-version {font-weight: bold;}
 #latest-version .version-latest {color: #009800;}
 #latest-version .version-patch {color: #8b9800;}

@@ -27,6 +27,8 @@ return array(
     'admin.index.messages' => 'Systémové zprávy',
     'admin.index.statewarn' => 'Toto je *state* verze systému, která není určena do ostrého provozu!',
     'admin.index.devwarn' => 'Systém se nachází ve vývojovém režimu.',
+    'admin.index.version.latest' => 'Používáte nejnovější verzi systému.',
+    'admin.index.version.old' => 'Je k dispozici nová verze <strong>*version*</strong>. Je doporučeno <a href="*link*">aktualizovat</a>.',
     'admin.menu.index.edit.title' => 'Úprava hlavní strany',
     'admin.menu.index.edit.p' => 'Zde máte možnost upravit obsah hlavní strany. Chcete-li tuto funkci deaktivovat, ponechte pole <q>Vlastní text</q> prázdné.',
     'admin.menu.index.edit.pos' => 'Pozice textu',

@@ -27,6 +27,8 @@ return array(
     'admin.index.messages' => 'System messages',
     'admin.index.statewarn' => 'The system is in the *state* state, which is not meant for production usage!',
     'admin.index.devwarn' => 'Development mode is active.',
+    'admin.index.version.latest' => 'You are using the latest version.',
+    'admin.index.version.old' => 'A new version <strong>*version*</strong> is available. An <a href="*link*">upgrade</a> is recommended.',
     'admin.menu.index.edit.title' => 'Editing the main page',
     'admin.menu.index.edit.p' => 'Here you can change contents of the main page. If you want to deactivate this function, leave the <q> Your text </q> field empty.',
     'admin.menu.index.edit.pos' => 'Text positioning',

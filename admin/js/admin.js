@@ -115,34 +115,6 @@ Sunlight.admin = (function ($) {
     // verejne metody
     var self = {
         /**
-         * Zobrazit nejnovejsi verzi systemu na uvodni strane administrace
-         * 
-         * @param {String} latestVersion  aktualni verze
-         * @param {Number} localAge       stari lokalni verze (0 = aktualni, 1 = patch, 2 = minor, 3 = major)
-         * @param {String} url            adresa, na kterou odkazovat (nepovinne)
-         */
-        showLatestVersion: function (latestVersion, localAge, url) {
-            var elem = document.createElement(url ? 'a' : 'span');
-            var ageClass;
-
-            switch (localAge) {
-                case 0: ageClass = 'latest'; break;
-                case 1: ageClass = 'patch'; break;
-                case 2: ageClass = 'minor'; break;
-                default: ageClass = 'major'; break;
-            }
-            
-            if (url) {
-                elem.href = url;
-                elem.target = '_blank';
-            }
-            elem.className = 'version-' + ageClass;
-            elem.appendChild(document.createTextNode(latestVersion));
-
-            $('#latest-version').empty().append(elem);
-        },
-
-        /**
          * Zobrazit modalni indikator
          *
          * @param {Boolean} cancellable povolit zruseni 1/0
