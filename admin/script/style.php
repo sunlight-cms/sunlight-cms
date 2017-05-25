@@ -607,6 +607,9 @@ span.inline-separator {margin-left: 0.5em; padding-right: 0.5em; border-left: 1p
 .well {margin: 10px 0; padding: 10px; border: 1px solid <?php echo $scheme_smoke_med; ?>; background-color: <?php echo $scheme_smoke_lighter; ?>;}
 .well h2 {font-weight: normal;}
 
+/* sortables */
+.sortable.ui-sortable {overflow: hidden;}
+
 /* generic */
 .bborder {padding-bottom: 8px; margin-bottom: 12px; border-bottom: 1px solid <?php echo $scheme_smoke; ?>;}
 fieldset .bborder {border-color: <?php echo $scheme_smoke_text; ?>;}
