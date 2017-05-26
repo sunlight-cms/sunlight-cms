@@ -113,13 +113,7 @@ function _adminModuleAccess($module)
     global $admin_modules;
 
     if (isset($admin_modules[$module])) {
-        $access = $admin_modules[$module]['access'];
-
-        if (is_string($access)) {
-            return eval('return ' . $access . ';');
-        } else {
-            return (bool) $access;
-        }
+        return (bool) $admin_modules[$module]['access'];
     } else {
         return false;
     }
