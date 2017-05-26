@@ -206,16 +206,16 @@
         },
         {
             "name": "kuria/debug",
-            "version": "v1.0.0",
+            "version": "v1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kuria/debug.git",
-                "reference": "8d6d4287803db98a07b5281407813706810523fc"
+                "reference": "3f235107601391773a16c6ab61d169a1b99f51f7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kuria/debug/zipball/8d6d4287803db98a07b5281407813706810523fc",
-                "reference": "8d6d4287803db98a07b5281407813706810523fc",
+                "url": "https://api.github.com/repos/kuria/debug/zipball/3f235107601391773a16c6ab61d169a1b99f51f7",
+                "reference": "3f235107601391773a16c6ab61d169a1b99f51f7",
                 "shasum": ""
             },
             "require": {
@@ -234,13 +234,16 @@
             "license": [
                 "MIT"
             ],
-            "description": "Collection of utilities useful for debugging purposes.",
+            "description": "Collection of useful debugging utilities.",
             "keywords": [
                 "debug",
                 "dump",
-                "exceptions"
+                "error",
+                "exception",
+                "hex",
+                "var_dump"
             ],
-            "time": "2017-05-22T17:34:29+00:00"
+            "time": "2017-05-26T13:23:20+00:00"
         },
         {
             "name": "kuria/error",
