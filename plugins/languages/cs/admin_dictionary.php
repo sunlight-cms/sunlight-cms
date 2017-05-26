@@ -310,6 +310,8 @@ return array(
     'admin.settings.admin' => 'Administrace',
     'admin.settings.admin.adminlinkprivate' => 'Neveřejný odkaz',
     'admin.settings.admin.adminlinkprivate.help' => 'při aktivaci bude odkaz na administraci zobrazován pouze přihlášeným a oprávněným uživatelům',
+    'admin.settings.admin.latest_version_check' => 'Kontrola verze',
+    'admin.settings.admin.latest_version_check.help' => 'kontrolovat, zda je verze systému aktuální (pouze na hlavní straně administrace)',
     'admin.settings.admin.adminscheme' => 'Barevné schéma',
     'admin.settings.admin.adminscheme.help' => 'barevné schéma stylu administrace',
     'admin.settings.admin.adminscheme.0' => 'oranžové',

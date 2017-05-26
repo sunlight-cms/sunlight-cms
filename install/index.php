@@ -146,6 +146,8 @@ class Labels
             'import.settings.description.help' => 'krátký popis stránek',
             'import.settings.keywords' => 'Klíčová slova',
             'import.settings.keywords.help' => 'klíčová slova oddělená čárkou',
+            'import.settings.latest_version_check' => 'Kontrola verze',
+            'import.settings.latest_version_check.help' => 'kontrolovat, zda je verze systému aktuální (pouze na hlavní straně administrace)',
             'import.admin' => 'Účet administrátora',
             'import.admin.username' => 'Uživ. jméno',
             'import.admin.username.help' => 'povolené znaky jsou: a-z, tečka, pomlčka, podtržítko',
@@ -227,6 +229,8 @@ class Labels
             'import.settings.description.help' => 'brief site description',
             'import.settings.keywords' => 'Keywords',
             'import.settings.keywords.help' => 'comma-separated list of keywords',
+            'import.settings.latest_version_check' => 'Check version',
+            'import.settings.latest_version_check.help' => 'check whether the system is up to date (only on the administration home page)',
             'import.admin' => 'Admin account',
             'import.admin.username' => 'Username',
             'import.admin.username.help' => 'allowed characters: a-z, dot, dash, underscore',
@@ -441,7 +445,7 @@ class StepRunner
     <?php endif ?>
     <?php if ($step->isSubmittable()): ?>
         <input id="submit" name="step_submit" type="submit" value="<?php Labels::render('step.submit') ?>">
-        <input type="hidden" name="step_submit_<?php echo $step->getNumber() ?>" value="1">
+        <input type="hidden" name="<?php echo $step->getFormKeyVar() ?>" value="1">
         <input type="hidden" name="step_number" value="<?php echo $step->getNumber() ?>">
     <?php endif ?>
     </p>
@@ -952,6 +956,7 @@ class ImportDatabaseStep extends Step
             'keywords' => trim(_post('import_settings_keywords')),
             'language' => $this->vars['language'],
             'atreplace' => 'cs' === $this->vars['language'] ? '[zavinac]' : '[at]',
+            'latest_version_check' => _post('import_settings_latest_version_check') ? 1 : 0,
         );
 
         $admin = array(
@@ -1102,6 +1107,11 @@ Now you can <a href="admin/">log in to the administration</a> (username and pass
             <th><?php Labels::render('import.settings.keywords') ?></th>
             <td><input type="text"<?php echo _restorePostValueAndName('import_settings_keywords') ?>></td>
             <td class="help"><?php Labels::render('import.settings.keywords.help') ?></td>
+        </tr>
+        <tr>
+            <th><?php Labels::render('import.settings.latest_version_check') ?></th>
+            <td><input type="checkbox"<?php echo _restoreCheckedAndName($this->getFormKeyVar(), 'import_settings_latest_version_check', true) ?>></td>
+            <td class="help"><?php Labels::render('import.settings.latest_version_check.help') ?></td>
         </tr>
     </table>
 </fieldset>

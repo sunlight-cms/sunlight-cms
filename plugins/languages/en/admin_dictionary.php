@@ -310,6 +310,8 @@ return array(
     'admin.settings.admin' => 'Administration',
     'admin.settings.admin.adminlinkprivate' => 'Private link',
     'admin.settings.admin.adminlinkprivate.help' => 'if activated, the administration link will be shown only to authorized users',
+    'admin.settings.admin.latest_version_check' => 'Check version',
+    'admin.settings.admin.latest_version_check.help' => 'check whether the system is up to date (only on the administration home page)',
     'admin.settings.admin.adminscheme' => 'Color scheme',
     'admin.settings.admin.adminscheme.help' => 'main color of the administration theme',
     'admin.settings.admin.adminscheme.0' => 'orange',

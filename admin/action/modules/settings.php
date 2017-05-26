@@ -73,6 +73,7 @@ $editable_settings = array(
     'admin' => array(
         'items' => array(
             array('name' => 'adminlinkprivate'),
+            array('name' => 'latest_version_check'),
             array('name' => 'adminscheme', 'choices' => $adminscheme_choices, 'reload_on_update' => true),
             array('name' => 'adminscheme_mode', 'choices' => $adminscheme_mode_choices, 'reload_on_update' => true),
             array('name' => 'adminpagelist_mode', 'choices' => array(

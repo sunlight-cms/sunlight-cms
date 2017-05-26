@@ -6,7 +6,11 @@ if (!defined('_root')) {
 
 /* ---  priprava promennych  --- */
 
-$admin_index_cfg = Sunlight\Core::loadSettings(array('admin_index_custom', 'admin_index_custom_pos'));
+$admin_index_cfg = Sunlight\Core::loadSettings(array(
+    'admin_index_custom',
+    'admin_index_custom_pos',
+    'latest_version_check',
+));
 
 $mysqlver = DB::getMysqli()->server_info;
 if ($mysqlver != null && mb_substr_count($mysqlver, "-") != 0) {
@@ -58,10 +62,12 @@ $output .= "
       <td>" . Sunlight\Core::VERSION . ' <small>' . Sunlight\Core::STATE . "</small></td>
     </tr>
 
+    " . ($admin_index_cfg['latest_version_check'] ? "
     <tr>
       <th>" . $_lang['admin.index.box.latest'] . ":</th>
       <td><span id='latest-version'>---</span></td>
     </tr>
+    " : '') . "
 
     <tr>
       <th>PHP:</th>
@@ -111,16 +117,17 @@ if (_logingroup == _group_admin) {
 }
 
 // nacteni a zobrazeni aktualni verze
-$versionApiUrl = Sunlight\Util\Url::parse('https://sunlight-cms.org/api/v2/version');
-$versionApiUrl->add(array(
-    'ver' => Sunlight\Core::VERSION,
-    'state' => Sunlight\Core::STATE,
-    'php' => PHP_VERSION_ID,
-    'referer' => sprintf('%s@%s', sha1(Sunlight\Core::$appId . '$' . Sunlight\Core::$secret), Sunlight\Util\Url::current()->host),
-    'lang' => $_lang['langcode.iso639'],
-));
+if ($admin_index_cfg['latest_version_check']) {
+    $versionApiUrl = Sunlight\Util\Url::parse('https://sunlight-cms.org/api/v2/version');
+    $versionApiUrl->add(array(
+        'ver' => Sunlight\Core::VERSION,
+        'state' => Sunlight\Core::STATE,
+        'php' => PHP_VERSION_ID,
+        'referer' => sprintf('%s@%s', sha1(Sunlight\Core::$appId . '$' . Sunlight\Core::$secret), Sunlight\Util\Url::current()->host),
+        'lang' => $_lang['langcode.iso639'],
+    ));
 
-$output .= "<script type='text/javascript'>
+    $output .= "<script type='text/javascript'>
 $.ajax({
     url: " . json_encode($versionApiUrl->generate(true)) . ",
     dataType: 'jsonp',
@@ -166,3 +173,4 @@ $.ajax({
     }
 });
 </script>\n";
+}
