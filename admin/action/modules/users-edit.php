@@ -105,7 +105,7 @@ if ($continue) {
             $errors[] = $_lang['user.msg.bademail'];
         } else {
             if ($email != $query['email']) {
-                if (DB::count(_users_table, ' WHERE email=' . DB::val($email) . ' AND id!=' . DB::val($query['id'])) !== 0) {
+                if (DB::count(_users_table, 'email=' . DB::val($email) . ' AND id!=' . DB::val($query['id'])) !== 0) {
                     $errors[] = $_lang['user.msg.emailexists'];
                 }
             }

@@ -10,7 +10,7 @@ function _HCM_poll($id = null)
     $id = (int) $id;
 
     // nacteni dat ankety
-    $vpolldata = DB::query("SELECT * FROM " . _polls_table . " WHERE id=" . DB::val($id));
+    $vpolldata = DB::queryRow("SELECT * FROM " . _polls_table . " WHERE id=" . DB::val($id));
     if ($vpolldata !== false) {
         $rcontinue = true;
     } else {

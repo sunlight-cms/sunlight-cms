@@ -18,7 +18,7 @@ if (isset($_POST['pid']) && isset($_POST['option']) && _xsrfCheck()) {
         if (_priv_pollvote && $query['locked'] == 0 && _iplogCheck(_iplog_poll_vote, $pid) && isset($votes[$option])) {
             $votes[$option] += 1;
             $votes = implode("-", $votes);
-            DB::update(_posts_table, 'id=' . $pid, array('votes' =>$votes));
+            DB::update(_polls_table, 'id=' . $pid, array('votes' => $votes));
             _iplogUpdate(_iplog_poll_vote, $pid);
             Sunlight\Extend::call('poll.voted', array('id' => $pid, 'option' => $option));
         }
