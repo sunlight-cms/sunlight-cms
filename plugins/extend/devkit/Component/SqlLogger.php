@@ -55,30 +55,24 @@ class SqlLogger
     /**
      * Render SQL log in debugger screen
      *
-     * @param object $exception
-     * @param bool   $debug
-     * @param object $handler
+     * @param array $view
      */
-    public function showInDebugScreen($exception, $debug, $handler)
+    public function showInDebugScreen(array $view)
     {
-        if ($debug && $handler instanceof WebErrorScreen) {
-            $that = $this;
+        $log = $this->getLog();
+        $logSize = sizeof($log);
 
-            $handler->on('render.debug', function (array $view) use ($that) {
-                $log = $that->getLog();
-                $logSize = sizeof($log);
+        $logHtml = _buffer(function () use ($log) {
+            ?>
+            <ol>
+                <?php foreach ($log as $entry): ?>
+                    <li><code><?php echo _e($entry['query']) ?></code></li>
+                <?php endforeach ?>
+            </ol>
+            <?php
+        });
 
-                $logHtml = _buffer(function () use ($log) {
-                    ?>
-<ol>
-    <?php foreach ($log as $entry): ?>
-    <li><code><?php echo _e($entry['query']) ?></code></li>
-    <?php endforeach ?>
-</ol>
-<?php
-                });
-
-                $view['extras'] .= <<<HTML
+        $view['extras'] .= <<<HTML
 <div class="group">
     <div class="section">
         <h2 class="toggle-control closed" onclick="Kuria.Error.WebErrorScreen.toggle('devkit-sql-log', this)">SQL log <em>({$logSize})</em></h2>
@@ -88,7 +82,5 @@ class SqlLogger
     </div>
 </div>
 HTML;
-            });
-        }
     }
 }
