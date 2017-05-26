@@ -54,10 +54,20 @@ class ExtendPlugin extends Plugin
 
         // load scripts
         foreach ($this->options['scripts'] as $script) {
-            include $script;
+            $this->loadScript($script);
         }
         foreach ($this->options['scripts.' . _env] as $script) {
-            include $script;
+            $this->loadScript($script);
         }
+    }
+
+    /**
+     * Load a script
+     *
+     * @param string $script
+     */
+    protected function loadScript($script)
+    {
+        include $script;
     }
 }
