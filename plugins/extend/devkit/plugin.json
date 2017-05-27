@@ -10,7 +10,7 @@
     "events": [
         ["db.query", "$this::onDbQuery"],
         ["db.query.post", "$this::onDbQueryPost"],
-        ["sys.mail", "$this::onMail"]
+        ["mail.send", "$this::onMail"]
     ],
     "events.web": [
         ["tpl.head", "$this::onHead"],

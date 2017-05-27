@@ -1124,7 +1124,7 @@ function _editTime($name, $timestamp = null, $updatebox = false, $updateboxcheck
 {
     global $_lang;
 
-    $output = Extend::buffer('fc.edit_time', array(
+    $output = Extend::buffer('time.edit', array(
         'timestamp' => $timestamp,
         'updatebox' => $updatebox,
         'updatebox_checked' => $updateboxchecked,
@@ -1157,7 +1157,7 @@ function _editTime($name, $timestamp = null, $updatebox = false, $updateboxcheck
  */
 function _loadTime($name, $default = null)
 {
-    $result = Extend::fetch('fc.load_time', array(
+    $result = Extend::fetch('time.load', array(
         'name' => $name,
         'default' => $default,
     ));
@@ -1557,7 +1557,7 @@ function _formatNumber($number, $decimals = 2)
  */
 function _formatTime($timestamp, $category = null)
 {
-    $extend = Extend::buffer('fc.format_time', array(
+    $extend = Extend::buffer('time.format', array(
         'timestamp' => $timestamp,
         'category' => $category
     ));
@@ -1708,7 +1708,7 @@ function _formOutput(array $options, array $rows)
     }
 
     // extend
-    $extend_buffer = Extend::buffer('fc.form_output', array(
+    $extend_buffer = Extend::buffer('form.output', array(
         'options' => &$options,
         'rows' => &$rows,
     ));
@@ -2893,7 +2893,7 @@ function _filterUserContent($content, $isHtml = true, $hasHcm = true)
         $content = _filterHCM($content, true);
     }
 
-    Extend::call('fc.filter_user_content', array(
+    Extend::call('user.filter_content', array(
         'content' => &$content,
         'is_html' => $isHtml,
         'has_hcm' => $hasHcm,
@@ -2998,7 +2998,7 @@ function _filterHCM($content, $exception = false)
         $whitelist = null; // vsechny HCM moduly povoleny
     }
 
-    Extend::call('fc.filter_hcm', array(
+    Extend::call('hcm.filter', array(
         'blacklist' => &$blacklist,
         'whitelist' => &$blacklist,
     ));
@@ -3592,7 +3592,7 @@ function _resultPaging($url, $limit, $table, $conditions = '1', $linksuffix = ''
 
     // vypis stran
     $paging = null;
-    Extend::call('fc.paging', array(
+    Extend::call('paging.render', array(
         'url' => $url,
         'param' => $param,
         'autolast' => $autolast,
@@ -4748,7 +4748,7 @@ function _pictureResize($res, array $opt, $size = null)
 
     $extend_output = null;
 
-    Extend::call('fc.picture.resize', array(
+    Extend::call('picture.resize', array(
         'res' => &$res,
         'options' => &$opt,
         'output' => &$extend_output,
@@ -5009,7 +5009,7 @@ function _pictureStoragePut($res, $path, $home_path, $format, $jpg_quality = 80,
     }
 
     // udalost
-    Extend::call('fc.picture.storage.put', array(
+    Extend::call('picture.storage.put', array(
         'res' => &$res,
         'path' => $path,
         'home_path' => $home_path,
@@ -5085,7 +5085,7 @@ function _pictureStoragePut($res, $path, $home_path, $format, $jpg_quality = 80,
  */
 function _pictureStorageGet($path, $home_path, $uid, $format)
 {
-    Extend::call('fc.picture.storage.get', array(
+    Extend::call('picture.storage.get', array(
         'path' => $path,
         'home_path' => $home_path,
         'uid' => &$uid,
@@ -5145,7 +5145,7 @@ function _pictureProcess(array $opt, &$error = null, &$format = null, &$resource
         'jpg_quality' => 90,
     );
 
-    Extend::call('fc.picture.process', array('options' => &$opt));
+    Extend::call('picture.process', array('options' => &$opt));
 
     try {
 
@@ -5265,7 +5265,7 @@ function _pictureThumb($source, array $resize_opts, $use_error_image = true, &$e
     $path = _root . 'images/thumb/';
 
     // extend pro nastaveni velikosti
-    Extend::call('fc.thumb.resize', array('options' => &$resize_opts));
+    Extend::call('thumb.resize', array('options' => &$resize_opts));
 
     // vychozi nastaveni zmenseni
     $resize_opts += array(
@@ -5314,7 +5314,7 @@ function _pictureThumb($source, array $resize_opts, $use_error_image = true, &$e
         );
 
         // extend
-        Extend::call('fc.thumb.process', array('options' => &$options));
+        Extend::call('thumb.process', array('options' => &$options));
 
         // vygenerovat
         if (false !== _pictureProcess($options, $error)) {
@@ -5534,7 +5534,7 @@ function _mail($to, $subject, $message, array $headers = array())
 
     // udalost
     $result = null;
-    Extend::call('fc.mail', array(
+    Extend::call('mail.send', array(
         'to' => &$to,
         'subject' => &$subject,
         'message' => &$message,
