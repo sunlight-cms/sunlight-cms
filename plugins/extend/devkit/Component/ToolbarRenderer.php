@@ -223,7 +223,7 @@ class ToolbarRenderer
     {
         ?>
 <div class="devkit-section devkit-request devkit-toggleable">
-    <?php echo 'GET(', sizeof($_GET), ') POST(', sizeof($_POST), ') COOKIE(', sizeof($_COOKIE), ') SESSION(', sizeof($_SESSION), ')' ?>
+    <?php echo _e($_SERVER['REQUEST_METHOD']) ?>
 </div>
 
 <div class="devkit-content">
