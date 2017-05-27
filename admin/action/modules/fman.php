@@ -27,6 +27,124 @@ $encodeFilename = function ($value, $urlencode = true) {
 
 /* ----  priprava promennych  ---- */
 
+$extensions = array(
+    // archives
+    'rar' => 'archive',
+    'zip' => 'archive',
+    'tar' => 'archive',
+    'gz' => 'archive',
+    'tgz' => 'archive',
+    '7z' => 'archive',
+    'cab' => 'archive',
+    'xar' => 'archive',
+    'xla' => 'archive',
+    '777' => 'archive',
+    'alz' => 'archive',
+    'arc' => 'archive',
+    'arj' => 'archive',
+    'bz' => 'archive',
+    'bz2' => 'archive',
+    'bza' => 'archive',
+    'bzip2' => 'archive',
+    'dz' => 'archive',
+    'gza' => 'archive',
+    'gzip' => 'archive',
+    'lzma' => 'archive',
+    'lzs' => 'archive',
+    'lzo' => 'archive',
+    's7z' => 'archive',
+    'taz' => 'archive',
+    'tbz' => 'archive',
+    'tz' => 'archive',
+    'tzip' => 'archive',
+    'dmg' => 'archive',
+
+    // images
+    'jpg' => 'image',
+    'jpeg' => 'image',
+    'png' => 'image',
+    'gif' => 'image',
+    'bmp' => 'image',
+    'jp2' => 'image',
+    'tga' => 'image',
+    'pcx' => 'image',
+    'tif' => 'image',
+    'ppf' => 'image',
+    'pct' => 'image',
+    'pic' => 'image',
+    'ai' => 'image',
+    'ico' => 'image',
+
+    // editable
+    'sql' => 'editable',
+    'php' => 'editable',
+    'php3' => 'editable',
+    'php4' => 'editable',
+    'php5' => 'editable',
+    'phtml' => 'editable',
+    'py' => 'editable',
+    'asp' => 'editable',
+    'cgi' => 'editable',
+    'shtml' => 'editable',
+    'htaccess' => 'editable',
+    'txt' => 'editable',
+    'nfo' => 'editable',
+    'rtf' => 'editable',
+    'html' => 'editable',
+    'htm' => 'editable',
+    'xhtml' => 'editable',
+    'css' => 'editable',
+    'js' => 'editable',
+    'ini' => 'editable',
+    'bat' => 'editable',
+    'inf' => 'editable',
+    'me' => 'editable',
+    'inc' => 'editable',
+    'xml' => 'editable',
+    'json' => 'editable',
+
+    // media
+    'wav' => 'media',
+    'mp3' => 'media',
+    'mid' => 'media',
+    'rmi' => 'media',
+    'wma' => 'media',
+    'mpeg' => 'media',
+    'mpg' => 'media',
+    'wmv' => 'media',
+    '3gp' => 'media',
+    'mp4' => 'media',
+    'm4a' => 'media',
+    'xac' => 'media',
+    'aif' => 'media',
+    'au' => 'media',
+    'avi' => 'media',
+    'voc' => 'media',
+    'snd' => 'media',
+    'vox' => 'media',
+    'ogg' => 'media',
+    'flac' => 'media',
+    'mov' => 'media',
+    'aac' => 'media',
+    'vob' => 'media',
+    'amr' => 'media',
+    'asf' => 'media',
+    'rm' => 'media',
+    'ra' => 'media',
+    'ac3' => 'media',
+    'swf' => 'media',
+    'flv' => 'media',
+
+    // executable
+    'exe' => 'executable',
+    'com' => 'executable',
+    'dll' => 'executable',
+);
+
+Sunlight\Extend::call('admin.fman.extensions', array(
+    'extensions' => &$extensions,
+));
+
 $continue = true;
 $message = "";
 $action_code = "";
@@ -585,20 +703,9 @@ if ($continue) {
         }
         $ext = strtolower($iteminfo['extension']);
         $image = false;
-        if (in_array($ext, array("rar", "zip", "tar", "gz", "tgz", "7z", "cab", "xar", "xla", "777", "alz", "arc", "arj", "bz", "bz2", "bza", "bzip2", "dz", "gza", "gzip", "lzma", "lzs", "lzo", "s7z", "taz", "tbz", "tz", "tzip"))) {
-            $icon = "archive";
-        } elseif (in_array($ext, array("jpg", "jpeg", "png", "gif", "bmp", "jp2", "tga", "pcx", "tif", "ppf", "pct", "pic", "ai", "ico"))) {
-            $icon = "image";
-            $image = true;
-        } elseif (in_array($ext, array("sql", "php", "php3", "php4", "php5", "phtml", "py", "asp", "cgi", "shtml", "htaccess", "txt", "nfo", "rtf", "html", "htm", "xhtml", "css", "js", "ini", "bat", "inf", "me", "inc", "xml", "json"))) {
-            $icon = "editable";
-        } elseif (in_array($ext, array("wav", "mp3", "mid", "rmi", "wma", "mpeg", "mpg", "wmv", "3gp", "mp4", "m4a", "xac", "aif", "au", "avi", "voc", "snd", "vox", "ogg", "flac", "mov", "aac", "vob", "amr", "asf", "rm", "ra", "ac3", "swf", "flv"))) {
-            $icon = "media";
-        } elseif (in_array($ext, array("exe", "com", "bat", "dll"))) {
-            $icon = "executable";
-        } else {
-            $icon = "other";
-        }
+
+        $icon = isset($extensions[$ext]) ? $extensions[$ext] : 'other';
+        $image = 'image' === $icon;
 
         $filesize = filesize($dir . $item);
 
