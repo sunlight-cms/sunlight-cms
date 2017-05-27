@@ -346,6 +346,7 @@ Platnost tohoto odkazu je 1 hodina.
     'login.selfremove' => 'Váš účet byl zrušen.',
     'login.attemptlimit' => 'Byl překročen limit počtu nezdařilých pokusů, který je maximálně *1* nezdařilých pokusů za *2* minut.',
     'login.persistent' => 'trvalé přihlášení',
+    'login.links' => 'Kam dál?',
     'javascript.alert.confirm' => 'Opravdu chcete provést tuto akci?',
     'javascript.loading' => 'Načítání...',
     'captcha.input' => 'Kontrola',
