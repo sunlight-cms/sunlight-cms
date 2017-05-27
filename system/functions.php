@@ -3396,6 +3396,14 @@ function _parseBBCode_processTag($tag, $arg = '', $buffer = null)
  */
 function _parsePost($input, $smileys = true, $bbcode = true, $nl2br = true)
 {
+    // event
+    Extend::call('post.parse', array(
+        'content' => &$input,
+        'smileys' => $smileys,
+        'bbcode' => $bbcode,
+        'nl2br' => $nl2br,
+    ));
+
     // vyhodnoceni smajlu
     if (_smileys && $smileys) {
         $template = _getCurrentTemplate();
