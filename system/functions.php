@@ -5265,7 +5265,7 @@ function _pictureThumb($source, array $resize_opts, $use_error_image = true, &$e
     $path = _root . 'images/thumb/';
 
     // extend pro nastaveni velikosti
-    Extend::call('thumb.resize', array('options' => &$resize_opts));
+    Extend::call('picture.thumb.resize', array('options' => &$resize_opts));
 
     // vychozi nastaveni zmenseni
     $resize_opts += array(
