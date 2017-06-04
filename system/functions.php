@@ -5314,7 +5314,7 @@ function _pictureThumb($source, array $resize_opts, $use_error_image = true, &$e
         );
 
         // extend
-        Extend::call('thumb.process', array('options' => &$options));
+        Extend::call('picture.thumb.process', array('options' => &$options));
 
         // vygenerovat
         if (false !== _pictureProcess($options, $error)) {
