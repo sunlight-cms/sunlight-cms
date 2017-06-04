@@ -458,7 +458,7 @@ ul.page-list-breadcrumbs a:hover {color: <?php echo $scheme_link; ?>;}
 /* settings */
 #settingsnav {width: 20%; float: left; margin-right: 1em;}
 #settingsnav, #settingsnav a {font-size: 12px;}
-#settingsnav.scroll-fix {position: fixed; top: 10px; height: calc(100% - 60px); overflow: auto; z-index: 100;}
+#settingsnav.scrollfix-top {position: fixed; top: 10px; height: calc(100% - 60px); overflow: auto; z-index: 100;}
 #settingsnav input {width: 100%; padding: 0.5em;}
 #settingsnav ul {padding: 0; margin: 0.5em 0 0 0; border: 1px solid <?php echo $scheme_smoke; ?>; background-color: <?php echo $scheme_smoke_lighter; ?>;}
 #settingsnav li {display: block; list-style-type: none;}

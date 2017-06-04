@@ -424,8 +424,7 @@ $output .= '
 (function () {
     $("#settingsnav").scrollFix({
         style: false,
-        fixOffset: -10,
-        unfixOffset: -10
+        topPosition: 10
     });
 
     $("fieldset[id]").scrollWatchMapTo("#settingsnav li", null, {
