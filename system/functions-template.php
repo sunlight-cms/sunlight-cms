@@ -323,8 +323,7 @@ function _templateLinks()
 
     return
         "<li><a href=\"https://sunlight-cms.org/\">SunLight CMS</a></li>\n"
-        . ((!_adminlinkprivate || (_login && _priv_administration)) ? '<li><a href="' . _link('admin/') . '">' . $_lang['global.adminlink'] . "</a></li>\n" : '')
-    ;
+        . ((!_adminlinkprivate || (_login && _priv_administration)) ? '<li><a href="' . _link('admin/') . '">' . $_lang['global.adminlink'] . "</a></li>\n" : '');
 }
 
 /**
@@ -687,8 +686,7 @@ function _templateCurrentIsArticle()
     return
         $GLOBALS['_index']['is_page']
         && _page_category == $GLOBALS['_page']['type']
-        && null !== $GLOBALS['_index']['segment']
-    ;
+        && null !== $GLOBALS['_index']['segment'];
 }
 
 /**
@@ -701,8 +699,7 @@ function _templateCurrentIsTopic()
     return
         $GLOBALS['_index']['is_page']
         && _page_forum == $GLOBALS['_page']['type']
-        && null !== $GLOBALS['_index']['segment']
-    ;
+        && null !== $GLOBALS['_index']['segment'];
 }
 
 /**

@@ -196,8 +196,7 @@ class BackupBuilder
 
         $this->dynamicPathMap[$name] = isset($this->dynamicPathMap[$name])
             ? array_merge($this->dynamicPathMap[$name], $paths)
-            : $paths
-        ;
+            : $paths;
 
         return $this;
     }

@@ -381,8 +381,7 @@ class PluginManager
             $output .=
                 '<option value="' . _e($name) . '"' . ($active === $name ? ' selected' : '') . '>'
                 . _e($label)
-                . "</option>\n"
-            ;
+                . "</option>\n";
         }
         if ($inputName) {
             $output .= "</select>\n";

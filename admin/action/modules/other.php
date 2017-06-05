@@ -40,12 +40,10 @@ foreach ($other_modules as $type => $modules) {
         foreach ($modules as $module => $order) {
             $url = isset($admin_modules[$module]['url'])
                 ? $admin_modules[$module]['url']
-                : 'index.php?p=' . $module
-            ;
+                : 'index.php?p=' . $module;
             $icon = isset($admin_modules[$module]['other_icon'])
                 ? $admin_modules[$module]['other_icon']
-                : 'images/icons/big-cog.png'
-            ;
+                : 'images/icons/big-cog.png';
             $new_window = isset($admin_modules[$module]['other_new_window']) && $admin_modules[$module]['other_new_window'];
 
             $output .= '<a class="button block" href="' . $url . '"'
@@ -53,8 +51,7 @@ foreach ($other_modules as $type => $modules) {
                 . '>'
                 . '<img class="icon" alt="' . $module . '" src="' . $icon . '">'
                 . $admin_modules[$module]['title']
-                . "</a>\n"
-            ;
+                . "</a>\n";
         }
         $output .= "</td>\n";
     }

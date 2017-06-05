@@ -822,8 +822,7 @@ class Core
                 // a nejedna se o skryty soubor
                 return
                     '.' !== substr($file->getFilename(), 0, 1)
-                    && time() - $file->getMTime() > 86400
-                ;
+                    && time() - $file->getMTime() > 86400;
             },
         ));
     }

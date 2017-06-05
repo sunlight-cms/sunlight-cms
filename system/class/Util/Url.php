@@ -294,8 +294,7 @@ class Url
         return
             isset($this->components['query'][$name])
                 ? $this->components['query'][$name]
-                : $default
-        ;
+                : $default;
     }
 
     /**

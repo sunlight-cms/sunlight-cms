@@ -32,8 +32,7 @@ class Filesystem
                 : (static::isAbsolutePath($path)
                     ? $path
                     : $basePath . '/' . $path
-                )
-        ;
+                );
     }
 
     /**
@@ -46,8 +45,7 @@ class Filesystem
     {
         return
             isset($path[0]) && ('/' === $path[0] || '\\' === $path[0])
-            || isset($path[1]) && ':' === $path[1]
-        ;
+            || isset($path[1]) && ':' === $path[1];
     }
 
     /**

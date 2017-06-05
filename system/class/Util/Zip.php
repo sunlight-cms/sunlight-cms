@@ -80,8 +80,7 @@ class Zip
 
         $excludePrefixLen = null !== $options['exclude_prefix']
             ? strlen($options['exclude_prefix'])
-            : 0
-        ;
+            : 0;
 
         // build archive path prefix map
         $archivePathPrefixMap = array();
@@ -150,14 +149,12 @@ class Zip
             case static::PATH_FULL:
                 $subpath = false !== $lastSlashPos
                     ? substr($path, 0, $lastSlashPos)
-                    : null
-                ;
+                    : null;
                 break;
             case static::PATH_SUB:
                 $subpath = false !== $lastSlashPos && $lastSlashPos > $prefixLen
                     ? substr($path, $prefixLen, $lastSlashPos - $prefixLen)
-                    : null
-                ;
+                    : null;
                 break;
             case static::PATH_NONE:
                 $subpath = null;

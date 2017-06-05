@@ -59,8 +59,7 @@ class PageTreeFilter implements TreeFilterInterface
                                             $node['node_level'] != $this->options['ord_level']
                                             || $node['ord'] <= $this->options['ord_end']
                                         )
-                                    )
-        ;
+                                    );
     }
 
     public function acceptInvalidNodeWithValidChild(array $invalidNode, array $validChildNode, TreeReader $reader)

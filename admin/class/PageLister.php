@@ -452,8 +452,7 @@ class PageLister
             $class .= ' page-'
                 . $typeName
                 . '-'
-                . static::$ppageTypes[$page['type_idt']]
-            ;
+                . static::$ppageTypes[$page['type_idt']];
         }
 
         if (!$isAccessible) {
@@ -513,8 +512,7 @@ class PageLister
                 $output .= "<a"
                     . ((isset($action['new_window']) && $action['new_window']) ? ' target="_blank"' : '')
                     . " class=\"page-action-{$actionId}\" href=\"" . _e($action['url']) . "\" title=\"{$actionLabel}\""
-                    . '>'
-                ;
+                    . '>';
                 if (isset($action['icon'])) {
                     $output .= "<img class=\"icon\" src=\"" . _e($action['icon']) . "\" alt=\"{$actionLabel}\">";
                 }

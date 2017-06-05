@@ -56,8 +56,7 @@ function _HCM_mailform($adresa = "", $predmet = null)
                 $rcaptcha,
                 array('label' => $GLOBALS['_lang']['hcm.mailform.text'], 'content' => "<textarea class='areasmall' name='text' rows='9' cols='33'></textarea>", 'top' => true),
             )
-        )
-    ;
+        );
 
     return $result;
 }

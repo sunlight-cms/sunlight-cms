@@ -368,8 +368,7 @@ foreach ($editable_settings as $settings_category => $settings_category_data) {
                     default:
                         $input = "<input type=\"text\"{$inputAttrs} value=\""
                             . ('html' === $settings[$item['name']]['format'] ? $value : _e($value))
-                            . "\">"
-                        ;
+                            . "\">";
                         break;
                 }
             }

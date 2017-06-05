@@ -558,8 +558,7 @@ abstract class Step
                 && empty($this->errors)
             ) || (
                 $this->submittedNumber > $this->number
-            )
-        ;
+            );
     }
 
     /**
@@ -654,8 +653,7 @@ class ChooseLanguageStep extends Step
         return
             parent::isComplete()
             && isset($this->vars['language'])
-            && in_array($this->vars['language'], array('cs', 'en'), true)
-        ;
+            && in_array($this->vars['language'], array('cs', 'en'), true);
     }
 
     public function run()
@@ -759,8 +757,7 @@ class ConfigurationStep extends Step
             parent::isComplete()
             && is_file(CONFIG_PATH)
             && Config::isLoaded()
-            && null === DB::connect(Config::$config['db.server'], Config::$config['db.user'], Config::$config['db.password'], Config::$config['db.name'], Config::$config['db.port'])
-        ;
+            && null === DB::connect(Config::$config['db.server'], Config::$config['db.user'], Config::$config['db.password'], Config::$config['db.name'], Config::$config['db.port']);
     }
 
     public function run()
@@ -911,8 +908,7 @@ class ConfigurationStep extends Step
 
         return null !== $value
             ? implode(', ', $value)
-            : ''
-        ;
+            : '';
     }
 }
 
@@ -1083,8 +1079,7 @@ Now you can <a href="admin/">log in to the administration</a> (username and pass
     {
         return
             parent::isComplete()
-            && $this->isDatabaseInstalled()
-        ;
+            && $this->isDatabaseInstalled();
     }
 
     public function run()

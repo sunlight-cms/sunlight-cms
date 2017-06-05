@@ -158,8 +158,7 @@ class Password
             && '' !== $this->hash
             && is_string($hash)
             && '' !== $hash
-            && $hash === $this->hash
-        ;
+            && $hash === $this->hash;
     }
 
     /**
@@ -171,8 +170,7 @@ class Password
     {
         return
             static::PREFERRED_ALGO !== $this->algo
-            || static::PBKDF2_ITERATIONS > $this->iterations
-        ;
+            || static::PBKDF2_ITERATIONS > $this->iterations;
     }
 
     /**

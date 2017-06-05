@@ -70,8 +70,7 @@ if (empty($forums)) {
             . ">"
             . str_repeat('&nbsp;&nbsp;&nbsp;│&nbsp;', $forum['node_level'])
             . $forum['title']
-            . "</option>\n"
-        ;
+            . "</option>\n";
     }
 }
 

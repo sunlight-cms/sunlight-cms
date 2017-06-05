@@ -444,6 +444,5 @@ if ($continue) {
     $output .=
         _adminBacklink('index.php?p=content-articles')
         . "<h1>" . $_lang['admin.content.articles.edit.title'] . "</h1>\n"
-        . _msg(_msg_err, $_lang['global.badinput'])
-    ;
+        . _msg(_msg_err, $_lang['global.badinput']);
 }

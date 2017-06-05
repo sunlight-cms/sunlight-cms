@@ -202,8 +202,7 @@ class PluginLoader
         if (!isset($configurationErrors['dev']) && null !== $options['dev'] && $options['dev'] !== _dev) {
             $errors[] = $options['dev']
                 ? 'development mode is required'
-                : 'production mode is required'
-            ;
+                : 'production mode is required';
         }
     }
 

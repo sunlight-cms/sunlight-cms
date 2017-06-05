@@ -150,8 +150,7 @@ class OptionSet
                 // default value
                 $data[$index] = isset($entry['default'])
                     ? $entry['default']
-                    : null
-                ;
+                    : null;
             }
 
             // normalize

@@ -83,8 +83,7 @@ class TemplateHelper
 
         return
             Core::$pluginManager->has(PluginManager::TEMPLATE, $template)
-            && Core::$pluginManager->getTemplate($template)->hasLayout($layout)
-        ;
+            && Core::$pluginManager->getTemplate($template)->hasLayout($layout);
     }
 
     /**

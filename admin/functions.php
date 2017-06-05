@@ -25,13 +25,11 @@ function _adminMenu()
                 );
                 $url = isset($admin_modules[$module]['url'])
                     ? $admin_modules[$module]['url']
-                    : 'index.php?p=' . $module
-                ;
+                    : 'index.php?p=' . $module;
 
                 $output .= '<a href="' . $url . '"'
                     . ($active ? ' class="act"' : '')
-                    . '><span>' . $admin_modules[$module]['title'] . "</span></a>\n"
-                ;
+                    . '><span>' . $admin_modules[$module]['title'] . "</span></a>\n";
             }
         }
     } else {
@@ -275,8 +273,7 @@ function _adminRootSelect($name, array $options)
                 . '>'
                 . str_repeat('&nbsp;&nbsp;&nbsp;│&nbsp;', $page['node_level'])
                 . _cutText($page['title'], $options['maxlength'])
-                . "</option>\n"
-            ;
+                . "</option>\n";
         }
     }
 
@@ -367,8 +364,7 @@ function _adminTemplateLayoutSelect($name, $selected, $empty_option = null, $mul
     $output = "<select name=\"{$name}\""
         . (null !== $class ? " class=\"{$class}\"" : '')
         . (null !== $multiple ? " multiple size=\"{$multiple}\"" : '')
-        . ">\n"
-    ;
+        . ">\n";
 
     if (null !== $empty_option) {
         $output .= '<option class="special" value="">' . _e($empty_option) . "</option>\n";
@@ -384,8 +380,7 @@ function _adminTemplateLayoutSelect($name, $selected, $empty_option = null, $mul
 
             $output .= '<option value="' . _e($layoutUid) . '"' . ($active ? ' selected' : '') . '>'
                 . _e($layoutLabel)
-                . "</option>\n"
-            ;
+                . "</option>\n";
         }
         $output .= "</optgroup>\n";
     }

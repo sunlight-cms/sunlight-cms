@@ -69,8 +69,7 @@ $(document).ready(function () {
         }
         $('#devkit-toolbar')
             .addClass('devkit-toolbar-closed')
-            .removeClass('devkit-toolbar-open')
-        ;
+            .removeClass('devkit-toolbar-open');
     }
 
     /**
@@ -81,8 +80,7 @@ $(document).ready(function () {
         setCookie('sl_devkit_toolbar', 'open');
         $('#devkit-toolbar')
             .addClass('devkit-toolbar-open')
-            .removeClass('devkit-toolbar-closed')
-        ;
+            .removeClass('devkit-toolbar-closed');
     }
 
     // toggleable

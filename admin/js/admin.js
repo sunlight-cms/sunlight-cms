@@ -73,8 +73,7 @@ Sunlight.admin = (function ($) {
                     + '<button onclick="void Sunlight.admin.hideBusyOverlay()"></button>'
                 + '</div></div>'
                 + '</div>')
-                .appendTo(document.body)
-            ;
+                .appendTo(document.body);
             overlay.find('p:first-child').text(SunlightVars.labels.busyOverlayText);
             overlay.find('button').text(SunlightVars.labels.cancel);
         }
@@ -96,8 +95,7 @@ Sunlight.admin = (function ($) {
                 if (fieldset) {
                     $(':not(legend)', fieldset).toggle();
                 }
-            })
-        ;
+            });
 
         $('fieldset.hs_fieldset :not(legend)').hide();
     }
@@ -344,8 +342,7 @@ Sunlight.admin = (function ($) {
                     if ($(ui.item).is('.even, .odd')) {
                         self.updateParityClasses($(options.itemSelector, container));
                     }
-                })
-            ;
+                });
         },
 
         /**

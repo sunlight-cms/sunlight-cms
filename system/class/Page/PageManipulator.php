@@ -138,8 +138,7 @@ class PageManipulator
                 if (!$currentPage['slug_abs']) {
                     $slug = null !== $baseSlug
                         ? "{$baseSlug}/" . PageManipulator::getBaseSlug($currentPage['slug'])
-                        : $currentPage['slug']
-                    ;
+                        : $currentPage['slug'];
 
                     if ($currentPage['slug'] !== $slug) {
                         return array('slug' => $slug);
@@ -149,8 +148,7 @@ class PageManipulator
             function ($baseSlug, $currentPage) {
                 return (null !== $baseSlug && !$currentPage['slug_abs'])
                     ? "{$baseSlug}/" . PageManipulator::getBaseSlug($currentPage['slug'])
-                    : $currentPage['slug']
-                ;
+                    : $currentPage['slug'];
             },
             $getChangesetMap
         );
@@ -236,8 +234,7 @@ class PageManipulator
 
         return false !== $slugLastSlashPos
             ? mb_substr($slug, $slugLastSlashPos + 1)
-            : $slug
-        ;
+            : $slug;
     }
 
     /**
