@@ -39,12 +39,12 @@ if (!empty($_POST)) {
 
     // pole vstupu array(nazev => typ)
     $save_array = array(
-        'title' => array('type' => 'html', 'length' => 255, 'nullable' => false),
-        'heading' => array('type' => 'html', 'length' => 255, 'nullable' => false, 'enabled' => $editscript_enable_heading),
+        'title' => array('type' => 'escaped_plaintext', 'length' => 255, 'nullable' => false),
+        'heading' => array('type' => 'escaped_plaintext', 'length' => 255, 'nullable' => false, 'enabled' => $editscript_enable_heading),
         'slug_abs' => array('type' => 'bool', 'nullable' => false, 'enabled' => $editscript_enable_slug),
         'slug' => array('type' => 'raw', 'nullable' => false, 'enabled' => $editscript_enable_slug),
-        'keywords' => array('type' => 'html', 'nullable' => false, 'enabled' => $editscript_enable_meta),
-        'description' => array('type' => 'html', 'nullable' => false, 'enabled' => $editscript_enable_meta),
+        'keywords' => array('type' => 'escaped_plaintext', 'nullable' => false, 'enabled' => $editscript_enable_meta),
+        'description' => array('type' => 'escaped_plaintext', 'nullable' => false, 'enabled' => $editscript_enable_meta),
         'node_parent' => array('type' => 'int', 'nullable' => true, 'enabled' => _priv_adminroot),
         'ord' => array('type' => 'raw', 'nullable' => false, 'enabled' => _priv_adminroot),
         'visible' => array('type' => 'bool', 'nullable' => false, 'enabled' => $editscript_enable_visible),
@@ -97,7 +97,7 @@ if (!empty($_POST)) {
                     $val = (int) $val;
                 }
                 break;
-            case 'html':
+            case 'escaped_plaintext':
                 if ($item_opts['nullable'] && '' === $val) {
                     $val = null;
                 } else {
