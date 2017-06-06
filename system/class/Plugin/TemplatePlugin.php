@@ -96,17 +96,9 @@ class TemplatePlugin extends Plugin
      */
     public function getLayoutLabel($layout)
     {
-        if (isset($this->options['layouts'][$layout])) {
-            return sprintf(
-                '%s - %s',
-                $this->options['name'],
-                $this->loadLayoutLabels()
-                    ? $GLOBALS['_lang'][$this->getLayoutLabelsKey()][$layout]['label']
-                    : $layout
-            );
-        } else {
-            return $layout;
-        }
+        return $this->loadLayoutLabels()
+            ? $GLOBALS['_lang'][$this->getLayoutLabelsKey()][$layout]['label']
+            : $layout;
     }
 
     /**
@@ -134,15 +126,9 @@ class TemplatePlugin extends Plugin
      */
     public function getSlotLabel($layout, $slot)
     {
-        $this->loadLayoutLabels();
-        $labelsKey = $this->getLayoutLabelsKey();
-
-        return sprintf(
-            '%s - %s - %s',
-            $this->options['name'],
-            $this->layoutLabelsLoaded ? $GLOBALS['_lang'][$labelsKey][$layout]['label'] : $layout,
-            $this->layoutLabelsLoaded ? $GLOBALS['_lang'][$labelsKey][$layout]['slots'][$slot] : $slot
-        );
+        return $this->loadLayoutLabels()
+            ? $GLOBALS['_lang'][$this->getLayoutLabelsKey()][$layout]['slots'][$slot]
+            : $slot;
     }
 
     /**
@@ -176,7 +162,7 @@ class TemplatePlugin extends Plugin
      */
     protected function loadLayoutLabels()
     {
-        if (null !== $this->options['layout.labels'] && !$this->layoutLabelsLoaded) {
+        if (!$this->layoutLabelsLoaded && null !== $this->options['layout.labels']) {
             LangPack::register($this->getLayoutLabelsKey(), $this->options['layout.labels']);
             $this->layoutLabelsLoaded = true;
         }
