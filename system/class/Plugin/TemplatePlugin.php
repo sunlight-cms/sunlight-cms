@@ -49,7 +49,7 @@ class TemplatePlugin extends Plugin
      */
     public function isDefault()
     {
-        return $this->name === _default_template;
+        return $this->id === _default_template;
     }
     
     /**
@@ -144,7 +144,7 @@ class TemplatePlugin extends Plugin
         }
 
         $boxes = array();
-        $query = DB::query('SELECT id,title,content,slot,page_ids,page_children,class FROM ' . _boxes_table . ' WHERE template=' . DB::val($this->name) . ' AND layout=' . DB::val($layout) . ' AND visible=1' . (!_login ? ' AND public=1' : '') . ' AND level <= ' . _priv_level . ' ORDER BY ord');
+        $query = DB::query('SELECT id,title,content,slot,page_ids,page_children,class FROM ' . _boxes_table . ' WHERE template=' . DB::val($this->id) . ' AND layout=' . DB::val($layout) . ' AND visible=1' . (!_login ? ' AND public=1' : '') . ' AND level <= ' . _priv_level . ' ORDER BY ord');
 
         while ($box = DB::row($query)) {
             $boxes[$box['slot']][$box['id']] = $box;
@@ -177,6 +177,6 @@ class TemplatePlugin extends Plugin
      */
     protected function getLayoutLabelsKey()
     {
-        return $this->type . '.' . $this->name . '.layout_labels';
+        return $this->type . '.' . $this->id . '.layout_labels';
     }
 }

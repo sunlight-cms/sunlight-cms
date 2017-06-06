@@ -912,7 +912,7 @@ class Core
         // prepare variables
         $variables = array(
             'basePath' => Url::base()->path . '/',
-            'currentTemplate' => _getCurrentTemplate()->getName(),
+            'currentTemplate' => _getCurrentTemplate()->getId(),
             'labels' => array(
                 'alertConfirm' => $_lang['javascript.alert.confirm'],
                 'loading' => $_lang['javascript.loading'],

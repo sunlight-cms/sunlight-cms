@@ -97,7 +97,7 @@ foreach (Core::$pluginManager->all() as $pluginType => $plugins) {
             <p>
                 ' . _buffer(function () use ($plugin) {
                     foreach ($plugin->getActionList() as $action => $label) {
-                        echo '<a class="button" href="' . _xsrfLink('index.php?p=plugins-action&amp;type=' . _e($plugin->getType()) . '&amp;name=' . _e($plugin->getName()) . '&amp;action=' . _e($action)) . '">' . _e($label) . "</a>\n";
+                        echo '<a class="button" href="' . _xsrfLink('index.php?p=plugins-action&amp;type=' . _e($plugin->getType()) . '&amp;name=' . _e($plugin->getId()) . '&amp;action=' . _e($action)) . '">' . _e($label) . "</a>\n";
                     }
                 }) . '
             </p>

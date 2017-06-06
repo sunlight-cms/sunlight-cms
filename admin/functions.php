@@ -373,7 +373,7 @@ function _adminTemplateLayoutSelect($name, $selected, $empty_option = null, $mul
     foreach (Core::$pluginManager->getAllTemplates() as $template) {
         $output .= '<optgroup label="' . _e($template->getOption('name')) . "\">\n";
         foreach ($template->getLayouts() as $layout) {
-            $layoutUid = TemplateHelper::composeLayoutUid($template->getName(), $layout);
+            $layoutUid = TemplateHelper::composeLayoutUid($template->getId(), $layout);
             $layoutLabel = TemplateHelper::getLayoutUidLabel($layoutUid);
 
             $active = null === $multiple && $layoutUid === $selected || null !== $multiple && in_array($layoutUid, $selected, true);

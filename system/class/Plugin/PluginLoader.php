@@ -78,11 +78,11 @@ class PluginLoader
                 ) {
                     $boundFiles[] = $pluginFile;
                     $pluginDir = str_replace('\\', '/', realpath($pluginDir));
-                    $camelCasedName = _camelCase($item);
+                    $camelCasedId = _camelCase($item);
 
                     $plugin = array(
-                        'name' => $item,
-                        'camel_name' => $camelCasedName,
+                        'id' => $item,
+                        'camel_id' => $camelCasedId,
                         'type' => $typeName,
                         'status' => null,
                         'installed' => null,
@@ -134,7 +134,7 @@ class PluginLoader
                             $plugin['options'] = $options;
                         } else {
                             $options = array(
-                                'name' => $item,
+                                'id' => $item,
                                 'version' => '0.0.0',
                                 'api' => '0.0.0',
                             );
@@ -369,13 +369,13 @@ class PluginLoader
     private function checkDependency(array $plugin, $requiredVersion, array &$errors)
     {
         if (Plugin::STATUS_OK !== $plugin['status']) {
-            $errors[] = sprintf('dependency "%s" is not available', $plugin['name']);
+            $errors[] = sprintf('dependency "%s" is not available', $plugin['id']);
             
             return false;
         } elseif (!$this->checkVersion($requiredVersion, $plugin['options']['version'])) {
             $errors[] = sprintf(
                 'dependency "%s" (version "%s") is not compatible, version "%s" is required',
-                $plugin['name'],
+                $plugin['id'],
                 $plugin['options']['version'],
                 $requiredVersion
             );
@@ -398,7 +398,7 @@ class PluginLoader
                 $installer = PluginInstaller::load(
                     $plugin['dir'],
                     $plugin['options']['namespace'],
-                    $plugin['camel_name']
+                    $plugin['camel_id']
                 );
 
                 $isInstalled = $installer->isInstalled();

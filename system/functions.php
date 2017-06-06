@@ -5641,5 +5641,5 @@ function _getCurrentTemplate()
  */
 function _addCurrentTemplateToURL($url, $entity = true)
 {
-    return _addGetToLink($url, 'current_template=' . _getCurrentTemplate()->getName(), $entity);
+    return _addGetToLink($url, 'current_template=' . _getCurrentTemplate()->getId(), $entity);
 }

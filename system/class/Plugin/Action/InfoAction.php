@@ -30,8 +30,8 @@ class InfoAction extends PluginAction
     </tr>
 
     <tr>
-        <th><?php echo $_lang['global.name'] ?></th>
-        <td><?php echo _e($plugin->getName()) ?></td>
+        <th><?php echo $_lang['global.id'] ?></th>
+        <td><?php echo _e($plugin->getId()) ?></td>
     </tr>
 
     <tr>

@@ -29,9 +29,9 @@ abstract class Plugin
     /** @var string */
     protected $type;
     /** @var string */
-    protected $name;
+    protected $id;
     /** @var string */
-    protected $camelName;
+    protected $camelId;
     /** @var int */
     protected $status;
     /** @var bool|null */
@@ -56,8 +56,8 @@ abstract class Plugin
     public function __construct(array $data, PluginManager $manager)
     {
         $this->type = $data['type'];
-        $this->name = $data['name'];
-        $this->camelName = $data['camel_name'];
+        $this->id = $data['id'];
+        $this->camelId = $data['camel_id'];
         $this->status = $data['status'];
         $this->installed = $data['installed'];
         $this->errors = $data['errors'];
@@ -79,23 +79,23 @@ abstract class Plugin
     }
 
     /**
-     * Get name
+     * Get plugin identifier
      *
      * @return string
      */
-    public function getName()
+    public function getId()
     {
-        return $this->name;
+        return $this->id;
     }
 
     /**
-     * Get camel cased name
+     * Get camel cased plugin identifier
      *
      * @return string
      */
-    public function getCamelName()
+    public function getCamelId()
     {
-        return $this->camelName;
+        return $this->camelId;
     }
 
     /**
@@ -170,7 +170,7 @@ abstract class Plugin
             throw new \LogicException('Plugin has no installer');
         }
 
-        return PluginInstaller::load($this->dir, $this->options['namespace'], $this->camelName);
+        return PluginInstaller::load($this->dir, $this->options['namespace'], $this->camelId);
     }
 
     /**

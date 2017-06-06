@@ -30,7 +30,7 @@ class LanguagePlugin extends Plugin
      */
     public function isFallback()
     {
-        return $this->name === Core::$fallbackLang;
+        return $this->id === Core::$fallbackLang;
     }
 
     /**
