@@ -364,8 +364,6 @@ table.page-list.page-list-full-tree td.page-title > :not(.node-level-p0) span.pa
 table.page-list.page-list-full-tree tr.page-separator td.page-title span.page-list-title {border-left-color: <?php echo $scheme_smoke_text; ?>;}
 table.page-list.page-list-full-tree td.page-title a:hover span:after, table.page-list.page-list-single-level td.page-title a span:after {content: url("../images/down<?php echo $dark ? '_inverted' : ''; ?>.png"); position: absolute; margin-left: 0.5em; margin-top: 2px;}
 
-table.page-list tr.even td {background-color: <?php echo $scheme_smoke; ?>;}
-table.page-list tr.odd td {background-color: <?php echo $scheme_smoke_lightest; ?>;}
 table.page-list tr:hover:not(.page-separator) td {background-color: <?php echo $scheme_lighter; ?>;}
 
 table.page-list tr.page-separator td {border-top: 24px solid <?php echo $scheme_white; ?>; border-bottom: 2px solid <?php echo $scheme_smoke_dark; ?>; background-color: <?php echo $scheme_lighter; ?>;}
@@ -523,6 +521,8 @@ pre.exception {max-height: 300px; margin: 1em 0; padding: 13px; overflow: auto; 
 .cell-success, .row-success th, .row-success td {background-color: <?php echo $dark ? '#001e00' : '#e1ffe1' ?>;}
 .cell-warning, .row-warning th, .row-warning td {background-color: <?php echo $dark ? '#1e0f00' : '#fff0e1' ?>;}
 .cell-danger, .row-danger th, .row-danger td {background-color: <?php echo $dark ? '#1b0303' : '#fde3e3' ?>;}
+tr.even td {background-color: <?php echo $scheme_smoke; ?>;}
+tr.odd td {background-color: <?php echo $scheme_smoke_lightest; ?>;}
 
 /* form element sizes */
 .arealine {width: 99%; height: 100px;}
@@ -609,6 +609,7 @@ span.inline-separator {margin-left: 0.5em; padding-right: 0.5em; border-left: 1p
 
 /* sortables */
 .sortable.ui-sortable {overflow: hidden;}
+.sortable-handle {display: inline-block; vertical-align: middle; padding-right: 10px; width: 11px; height: 18px; background: url("../images/icons/drag-handle.png") left top no-repeat; cursor: move;}
 
 /* generic */
 .bborder {padding-bottom: 8px; margin-bottom: 12px; border-bottom: 1px solid <?php echo $scheme_smoke; ?>;}

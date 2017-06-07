@@ -250,7 +250,7 @@ class PageLister
     class="sortable"
     data-input-selector="td.page-list-sortcell input"
     data-stopper-selector="tr.page-separator"
-    data-handle-selector="td.page-title"';
+    data-handle-selector="td.page-title, .sortable-handle"';
         }
         $output .= ">\n";
 
@@ -275,7 +275,7 @@ class PageLister
                     $options['level_class'] = true;
                 }
                 if ($options['sortable']) {
-                    throw new \RuntimeException('The "sortable" option is not supported for full tree list');
+                    throw new \RuntimeException('The "sortable" option is not supported in full tree list mode');
                 }
                 static::renderFullTree($output, $tree, $options);
                 break;
@@ -464,7 +464,7 @@ class PageLister
 
         // order input
         if ($options['sortable']) {
-            $output .= "<td class=\"page-list-sortcell\"><input class=\"inputmini\" type=\"number\" name=\"ord[{$page['id']}]\" value=\"{$page['ord']}\"></td>\n";
+            $output .= "<td class=\"page-list-sortcell\"><span class=\"sortable-handle\"></span><input class=\"inputmini\" type=\"number\" name=\"ord[{$page['id']}]\" value=\"{$page['ord']}\"></td>\n";
         }
 
         // title
