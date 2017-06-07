@@ -3,7 +3,7 @@ Sunlight.admin = (function ($) {
     var busyOverlayActive = false;
     
     /**
-     * Inicializace (ready)
+     * Initialize on ready
      */
     function initializeOnReady()
     {
@@ -13,7 +13,7 @@ Sunlight.admin = (function ($) {
     }
 
     /**
-     * Inicializace (load)
+     * Initialize on load
      */
     function initializeOnLoad()
     {
@@ -21,7 +21,7 @@ Sunlight.admin = (function ($) {
     }
     
     /**
-     * Inicializovat oznacovani pouzitych prvku pro odesilani formulare
+     * Automatically mark used submit buttons
      */
     function initSubmitButtonMarks()
     {
@@ -34,7 +34,7 @@ Sunlight.admin = (function ($) {
     }
 
     /**
-     * Inicializovat modalni indikator
+     * Initialize busy overlay
      */
     function initBusyOverlay()
     {
@@ -56,7 +56,7 @@ Sunlight.admin = (function ($) {
     }
     
     /**
-     * Ziskat objekt modalniho indikatoru
+     * Get busy overlay object
      *
      * @param {Boolean} cancellable povolit zruseni 1/0
      * @returns {jQuery}
@@ -84,7 +84,7 @@ Sunlight.admin = (function ($) {
     }
 
     /**
-     * Inicializovat rozbalovaci fieldsety
+     * Initialize hide-show fieldsets
      */
     function initHsFieldsets()
     {
@@ -101,7 +101,7 @@ Sunlight.admin = (function ($) {
     }
 
     /**
-     * Inicializovat razeni tazenim
+     * Initialize sortable elements
      */
     function initSortables()
     {
@@ -110,13 +110,13 @@ Sunlight.admin = (function ($) {
         });
     }
     
-    // verejne metody
+    // public methods
     var self = {
         /**
-         * Zobrazit modalni indikator
+         * Show busy overlay
          *
-         * @param {Boolean} cancellable povolit zruseni 1/0
-         * @param {Number}  delay       prodleva pred zobrazenim
+         * @param {Boolean} cancellable allow cancellation 1/0
+         * @param {Number}  delay       show delay
          */
         showBusyOverlay: function (cancellable, delay) {
             // get overlay
@@ -142,7 +142,7 @@ Sunlight.admin = (function ($) {
         },
 
         /**
-         * Skryt modalni indikator
+         * Hide busy overlay
          *
          * @param {Boolean} stopLoading stop page's loading
          */
@@ -175,10 +175,10 @@ Sunlight.admin = (function ($) {
         },
 
         /**
-         * Soub. manazer - zaskrtnout vse, odskrtnout vse, invertovat
+         * File manager - select / unselect / invert file selections
          *
-         * @param {Number} number celkovy pocet souboru
-         * @param {Number} action akce (1 = zaskrtnout, 2 = odskrtnout, 3 = invertovat)
+         * @param {Number} number total number of files
+         * @param {Number} action action (1 = check, 2 = uncheck, 3 = invert)
          */
         fmanSelect: function (number, action) {
             var tmp = 1;
@@ -201,7 +201,7 @@ Sunlight.admin = (function ($) {
         },
 
         /**
-         * Soub. manazer - presunout vybrane
+         * File manager - move selected files
          */
         fmanMoveSelected: function () {
             var newdir = prompt(SunlightVars.labels.fmanMovePrompt + ":", '');
@@ -215,7 +215,7 @@ Sunlight.admin = (function ($) {
         },
 
         /**
-         * Soub. manazer - smazat vybrane
+         * File manager - delete selected files
          */
         fmanDeleteSelected: function () {
             if (confirm(SunlightVars.labels.fmanDeleteConfirm)) {
@@ -227,7 +227,7 @@ Sunlight.admin = (function ($) {
         },
 
         /**
-         * Soub. manazer - pridat vyber do galerie
+         * File manager - add selected files to a gallery
          */
         fmanAddSelectedToGallery: function () {
             document.filelist.action.value = 'addtogallery_showform';
@@ -237,7 +237,7 @@ Sunlight.admin = (function ($) {
         },
 
         /**
-         * Soub. manazer - upload souboru
+         * File manager - add file upload input
          */
         fmanAddFile: function () {
             var newfile = document.createElement('span');
@@ -250,7 +250,7 @@ Sunlight.admin = (function ($) {
         },
 
         /**
-         * Soub. manazer - smazat soubor
+         * File manager - remove selected file
          *
          * @param {Number} id
          */
@@ -259,7 +259,7 @@ Sunlight.admin = (function ($) {
         },
 
         /**
-         * Vyhodnoceni SQL - vlozit nazev tabulky
+         * SQL executor - insert table name
          *
          * @param {HTMLElement} link
          */
@@ -268,7 +268,7 @@ Sunlight.admin = (function ($) {
         },
 
         /**
-         * Iniciaizovat razeni v danem prvku
+         * Initialize sortable elements
          *
          * @param {HTMLElement} container
          * @param {Object}      options
@@ -312,7 +312,7 @@ Sunlight.admin = (function ($) {
 
             if (options.inputSelector) {
                 $(container).on('change', options.inputSelector, function () {
-                    self.reorderSortable(container, this, options);
+                    self.reorderSortableByInputValues(container, this, options);
                     self.updateSortableInputs(container, options);
                 });
             }
@@ -346,7 +346,7 @@ Sunlight.admin = (function ($) {
         },
 
         /**
-         * Prepocitat poradova cisla
+         * Recalculate and update sortable input values
          *
          * @param {HTMLElement} container
          * @param {Object}      options
@@ -360,12 +360,8 @@ Sunlight.admin = (function ($) {
                     || !options.stopperSelector
                     || 0 !== $(this).parents(options.stopperSelector).length
                 ) {
-                    var value = parseInt(this.value);
-
                     if (null === currentOrd) {
                         this.value = currentOrd = options.start;
-                    } else if (value > currentOrd) {
-                        currentOrd = value;
                     } else {
                         this.value = ++currentOrd;
                     }
@@ -376,16 +372,18 @@ Sunlight.admin = (function ($) {
         },
 
         /**
-         * Seradit polozky
+         * Order sortable elements using input values
          *
          * @param {HTMLElement} container
          * @param {HTMLElement} changedInput
          * @param {Object}      options
          */
-        reorderSortable: function (container, changedInput, options) {
+        reorderSortableByInputValues: function (container, changedInput, options) {
             var items = $(options.itemSelector, container).toArray();
 
-            items.sort(function (a, b) {
+            var sortedItems = items.slice(0);
+
+            sortedItems.sort(function (a, b) {
                 var inputA = $(options.inputSelector, a)[0];
                 var inputB = $(options.inputSelector, b)[0];
 
@@ -400,9 +398,9 @@ Sunlight.admin = (function ($) {
 
                 if (valA === valB) {
                     if (inputA === changedInput) {
-                        return -1;
+                        return a === Sunlight.admin.determineWhichItemComesFirst(items, a, b) ? 1 : -1;
                     } else if (inputB === changedInput) {
-                        return 1;
+                        return b === Sunlight.admin.determineWhichItemComesFirst(items, a, b) ? -1 : 1;
                     } else {
                         return 0;
                     }
@@ -411,13 +409,32 @@ Sunlight.admin = (function ($) {
                 return valA > valB ? 1 : -1;
             });
 
-            for (var i = 0; i < items.length; ++i) {
-                $(items[i]).appendTo(container);
+            for (var i = 0; i < sortedItems.length; ++i) {
+                $(sortedItems[i]).appendTo(container);
             }
         },
 
         /**
-         * Aktualizovat even / odd classy
+         * Determine which item is found first in a list
+         *
+         * @param {Array} list
+         * @param {*}     a
+         * @param {*}     b
+         * @returns {*} a, b or undefined
+         */
+        determineWhichItemComesFirst: function (list, a, b) {
+            for (var i = 0; i < list.length; ++i) {
+                if (a === list[i]) {
+                    return a;
+                }
+                if (b === list[i]) {
+                    return b;
+                }
+            }
+        },
+
+        /**
+         * Update odd / even classes
          *
          * @param {jQuery} items
          */
@@ -435,7 +452,7 @@ Sunlight.admin = (function ($) {
         }
     };
     
-    // inicializace
+    // initialize
     $(document).ready(initializeOnReady);
     $(window).load(initializeOnLoad);
     
