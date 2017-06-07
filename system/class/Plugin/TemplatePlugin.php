@@ -102,6 +102,18 @@ class TemplatePlugin extends Plugin
     }
 
     /**
+     * See if the given slot exists
+     *
+     * @param string $layout
+     * @param string $slot
+     * @return bool
+     */
+    public function hasSlot($layout, $slot)
+    {
+        return in_array($slot, $this->getSlots($layout), true);
+    }
+
+    /**
      * Get list of slot identifiers for the given layout
      *
      * string $layout layout name

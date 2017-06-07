@@ -2,7 +2,7 @@
 
 return array(
     'default' => array(
-        'label' => 'Výchozí',
+        'label' => 'výchozí',
         'slots' => array(
             'right' => 'pravý sloupec',
         ),

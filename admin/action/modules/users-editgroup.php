@@ -180,16 +180,7 @@ if ($continue) {
 
         // uroven, blokovani
         if ($id > _group_guests) {
-            $changeset['level'] = (int) _post('level');
-            if ($changeset['level'] > _priv_level) {
-                $changeset['level'] = _priv_level - 1;
-            }
-            if ($changeset['level'] >= 10000) {
-                $changeset['level'] = 9999;
-            }
-            if ($changeset['level'] < 0) {
-                $changeset['level'] = 0;
-            }
+            $changeset['level'] = Sunlight\Util\Math::range((int) _post('level'), 0, min(_priv_level, _priv_max_assignable_level));
         }
 
         // prava
@@ -265,7 +256,7 @@ if ($continue) {
 
   <tr>
   <th>" . $_lang['admin.users.groups.level'] . "</th>
-  <td><input type='number' min='0' max='" . _priv_max_assignable_level . "' name='level' class='inputmedium' value='" . $query['level'] . "'" . _inputDisableUnless(!$systemitem) . "></td>
+  <td><input type='number' min='0' max='" . min(_priv_level -1, _priv_max_assignable_level) . "' name='level' class='inputmedium' value='" . $query['level'] . "'" . _inputDisableUnless(!$systemitem) . "></td>
   </tr>
 
   " . (($id != _group_guests) ? "

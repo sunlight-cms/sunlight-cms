@@ -34,12 +34,7 @@ if (isset($_POST['type']) && _priv_admingroups) {
                         continue 2;
 
                     case "level":
-                        if ($val >= 10000) {
-                            $val = 9999;
-                        }
-                        if ($val >= _priv_level) {
-                            $val = _priv_level - 1;
-                        }
+                        $val = Sunlight\Util\Math::range($val, 0, min(_priv_level - 1, _priv_max_assignable_level));
                         break;
                         
                     case "title":

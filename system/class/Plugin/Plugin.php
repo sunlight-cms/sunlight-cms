@@ -2,7 +2,6 @@
 
 namespace Sunlight\Plugin;
 
-use Sunlight\Core;
 use Sunlight\Plugin\Action\PluginAction;
 
 abstract class Plugin

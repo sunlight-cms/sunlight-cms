@@ -237,6 +237,7 @@ return array(
     'admin.content.boxes' => 'Boxes',
     'admin.content.boxes.title' => 'Box management',
     'admin.content.boxes.edit.title' => 'Edit box',
+    'admin.content.boxes.edit.badslot' => 'Please choose a valid slot',
     'admin.content.delete.title' => 'Delete item',
     'admin.content.delete.p' => 'The item will be permanently deleted with all its content (comments, articles, posts)!',
     'admin.content.delete.contentlist' => 'Along with this item will be deleted',

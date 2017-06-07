@@ -44,6 +44,7 @@ return array(
     'global.sysitem' => 'Systémová položka',
     'global.return' => 'návrat zpět',
     'global.saved' => 'Uloženo',
+    'global.deleted' => 'Smazáno',
     'global.created' => 'Vytvořeno',
     'global.created_at' => 'Čas vytvoření',
     'global.inserted' => 'Vloženo',

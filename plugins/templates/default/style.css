@@ -274,6 +274,7 @@ td, th {
 }
 th {
     text-align: left;
+    font-weight: normal;
 }
 tr.valign-top td,
 tr.valign-top th {

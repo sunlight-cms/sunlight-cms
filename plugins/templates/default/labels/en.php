@@ -2,7 +2,7 @@
 
 return array(
     'default' => array(
-        'label' => 'Default',
+        'label' => 'default',
         'slots' => array(
             'right' => 'right column',
         ),

@@ -11,7 +11,7 @@ use Kuria\Debug\Output;
 use Sunlight\Util\Filesystem;
 use Sunlight\Util\Password;
 use Sunlight\Plugin\TemplatePlugin;
-use Sunlight\Plugin\TemplateHelper;
+use Sunlight\Plugin\TemplateService;
 
 /**
  * Vlozeni GET promenne do odkazu
@@ -663,8 +663,14 @@ function _removeSlashesFromEnd($string)
  */
 function _restoreChecked($key_var, $name, $default = false, $method = 'POST')
 {
-    if (isset($GLOBALS['_' . $method][$key_var]) && $method === $_SERVER['REQUEST_METHOD']) {
-        $active = isset($GLOBALS['_' . $method][$name]);
+    if (
+        $method === $_SERVER['REQUEST_METHOD']
+        && (
+            'POST' === $method && isset($_POST[$key_var], $_POST[$name])
+            || 'GET' === $method && isset($_GET[$key_var], $_GET[$name])
+        )
+    ) {
+        $active = true;
     } else {
         $active = $default;
     }
@@ -5628,12 +5634,12 @@ function _getCurrentTemplate()
     // pouzit argument z GET
     // (moznost pro skripty mimo index)
     $request_template = _get('current_template');
-    if (null !== $request_template && TemplateHelper::templateExists($request_template)) {
-        return TemplateHelper::getTemplate($request_template);
+    if (null !== $request_template && TemplateService::templateExists($request_template)) {
+        return TemplateService::getTemplate($request_template);
     }
 
     // pouzit vychozi
-    return TemplateHelper::getDefaultTemplate();
+    return TemplateService::getDefaultTemplate();
 }
 
 /**

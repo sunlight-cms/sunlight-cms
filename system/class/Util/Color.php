@@ -157,7 +157,7 @@ class Color
         }
         $m = $l - $c * .5;
         for($i = 0; $i < 3; ++$i) {
-            $rgb[$i] = $this->range(floor(($rgb[$i] + $m) * 255 + 127), 0, 255);
+            $rgb[$i] = Math::range(floor(($rgb[$i] + $m) * 255 + 127), 0, 255);
         }
 
         return $rgb;
@@ -203,26 +203,5 @@ class Color
         $l = round($l);
 
         return array($h, $l, $s);
-    }
-
-    /**
-     * Limit number range
-     *
-     * @param number      $num the number
-     * @param number|null $min minimal value or null (= unlimited)
-     * @param number|null $max maximal value or null (= unlimited)
-     * @return number
-     */
-    protected function range($num, $min, $max)
-    {
-        if (isset($min) && $num < $min) {
-            return $min;
-        }
-
-        if (isset($max) && $num > $max) {
-            return $max;
-        }
-
-        return $num;
     }
 }

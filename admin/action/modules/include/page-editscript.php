@@ -1,5 +1,10 @@
 <?php
 
+use Sunlight\Extend;
+use Sunlight\Plugin\TemplateService;
+use Sunlight\Page\PageManager;
+use Sunlight\Page\PageManipulator;
+
 if (!defined('_root')) {
     exit;
 }
@@ -53,7 +58,7 @@ if (!empty($_POST)) {
         'show_heading' => array('type' => 'bool', 'nullable' => false, 'enabled' => $editscript_enable_show_heading),
         'perex' => array('type' => 'raw', 'nullable' => false, 'enabled' => $editscript_enable_perex),
         'content' => array('type' => 'raw', 'nullable' => false, 'enabled' => $editscript_enable_content),
-        'events' => array('type' => 'raw', 'nullable' => true, 'enabled' => $editscript_enable_events),
+        'events' => array('type' => 'raw', 'length' => 255, 'nullable' => true, 'enabled' => $editscript_enable_events),
         'layout' => array('type' => 'raw', 'nullable' => true, 'enabled' => $editscript_enable_layout),
     );
     $save_array += $custom_save_array;
@@ -121,11 +126,11 @@ if (!empty($_POST)) {
 
                 $skip = true;
                 if ($new || $val != $query['node_parent']) {
-                    $pageTreeManager = Sunlight\Page\PageManager::getTreeManager();
+                    $pageTreeManager = PageManager::getTreeManager();
 
                     if (null !== $val) {
                         // novy rodic
-                        $parentData = Sunlight\Page\PageManager::getData($val, array('id', 'type'));
+                        $parentData = PageManager::getData($val, array('id', 'type'));
                         if (
                             false !== $parentData
                             && _page_separator != $parentData['type']
@@ -227,9 +232,9 @@ if (!empty($_POST)) {
                         break;
                     // obrazku na radek v galerii
                     case _page_gallery:
-                    if ($val <= 0 && $val != -1) {
-                        $val = 1;
-                    }
+                        if ($val <= 0 && $val != -1) {
+                            $val = 1;
+                        }
                         break;
                     // temat na stranu ve forech
                     case _page_forum:
@@ -263,7 +268,7 @@ if (!empty($_POST)) {
                 if (null === $val) {
                     break;
                 }
-                
+
                 switch ($type) {
                     // vyska nahledu v galeriich
                     case _page_gallery:
@@ -340,7 +345,7 @@ if (!empty($_POST)) {
 
             // layout
             case 'layout':
-                if ('' === $val || !Sunlight\Plugin\TemplateHelper::validateLayoutUid($val)) {
+                if ('' === $val || !TemplateService::validateUid($val, TemplateService::UID_TEMPLATE_LAYOUT)) {
                     if ($query['layout_inherit']) {
                         $skip = true;
                     } else {
@@ -357,6 +362,14 @@ if (!empty($_POST)) {
         }
 
         if (!$skip) {
+            if (isset($item_opts['length'])) {
+                if ('escaped_plaintext' === $item_opts['type']) {
+                    $val = _cutHtml($val, $item_opts['length']);
+                } else {
+                    $val = _cutText($val, $item_opts['length'], false);
+                }
+            }
+
             $changeset[$item] = $val;
         }
 
@@ -364,7 +377,7 @@ if (!empty($_POST)) {
 
     // vlozeni / ulozeni
     $action = ($new ? 'new' : 'edit');
-    Sunlight\Extend::call('admin.root.' . $action . '.pre', array(
+    Extend::call('admin.root.' . $action . '.pre', array(
         'id' => $id,
         'page' => $new ? null : $query,
         'changeset' => &$changeset,
@@ -380,7 +393,7 @@ if (!empty($_POST)) {
         $id = $query['id'] = DB::insert(_root_table, $changeset, true);
     }
 
-    Sunlight\Extend::call('admin.root.' . $action, array(
+    Extend::call('admin.root.' . $action, array(
         'id' => $id,
         'page' => $query,
         'changeset' => $changeset,
@@ -397,17 +410,17 @@ if (!empty($_POST)) {
 
     // pregenerovat identifikatory
     if ($refresh_slug) {
-        Sunlight\Page\PageManipulator::refreshSlugs($id);
+        PageManipulator::refreshSlugs($id);
     }
 
     // aktualizovat opravneni
     if ($refresh_levels) {
-        Sunlight\Page\PageManipulator::refreshLevels($id);
+        PageManipulator::refreshLevels($id);
     }
 
     // aktualizovat layouty
     if ($refresh_layouts) {
-        Sunlight\Page\PageManipulator::refreshLayouts($id);
+        PageManipulator::refreshLayouts($id);
     }
 
     $admin_redirect_to = 'index.php?p=content-edit' . $type_array[$type] . '&id=' . $id . '&saved';
@@ -449,10 +462,10 @@ if ($custom_settings != "") {
 }
 
 // editacni pole
-$editor = Sunlight\Extend::buffer('admin.root.editor');
+$editor = Extend::buffer('admin.root.editor');
 
 if ('' === $editor) {
-    // vychozi implementace 
+    // vychozi implementace
     $editor = "<textarea name='content' rows='25' cols='94' class='areabig editor'>" . _e($query['content']) . "</textarea>";
 }
 
@@ -505,14 +518,14 @@ $output .= "<form class='cform' action='index.php?p=content-edit" . $type_array[
 <tr>
 <th>" . $_lang['admin.content.form.layout'] . "</th>
 <td " . $colspan . ">" . _adminTemplateLayoutSelect(
-    'layout',
-    $query['layout_inherit'] ? null : $query['layout'],
-    $query['layout_inherit']
-        ? sprintf($_lang['admin.content.form.layout.inherited'], Sunlight\Plugin\TemplateHelper::getLayoutUidLabel($query['layout']))
-        : $_lang['admin.content.form.layout.inherit'],
-    null,
-    'inputmax'
-) . "</td>
+            'layout',
+            $query['layout_inherit'] ? null : $query['layout'],
+            $query['layout_inherit']
+                ? sprintf($_lang['admin.content.form.layout.inherited'], TemplateService::getComponentLabelByUid($query['layout'], TemplateService::UID_TEMPLATE_LAYOUT))
+                : $_lang['admin.content.form.layout.inherit'],
+            null,
+            'inputmax'
+        ) . "</td>
 </tr>
 " : '') . "
 

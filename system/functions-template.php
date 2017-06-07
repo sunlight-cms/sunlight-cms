@@ -5,7 +5,7 @@ use Sunlight\Extend;
 use Sunlight\Page\PageManager;
 use Sunlight\Page\PageMenu;
 use Sunlight\Page\PageTreeFilter;
-use Sunlight\Plugin\TemplateHelper;
+use Sunlight\Plugin\TemplateService;
 
 /**
  * Zmenit aktivni sablonu a layout
@@ -17,8 +17,11 @@ function _templateSwitch($idt)
 {
     global $_template, $_template_layout;
 
-    if (TemplateHelper::validateLayoutUid($idt)) {
-        list($_template, $_template_layout) = TemplateHelper::getTemplateAndLayout($idt);
+    $components = TemplateService::getComponentsByUid($idt, TemplateService::UID_TEMPLATE_LAYOUT);
+
+    if (null !== $components) {
+        $_template = $components['template'];
+        $_template_layout = $components['layout'];
 
         Extend::call('tpl.switch', array(
             'template' => $_template,
@@ -142,7 +145,7 @@ function _templateBoxes($slot, array $overrides = array())
         }
         foreach ($boxes as $item) {
             // filtrovani boxu
-            if ('' !== $item['page_ids'] && !PageManager::isActive(explode(',', $item['page_ids']), $item['page_children'])) {
+            if (null !== $item['page_ids'] && !PageManager::isActive(explode(',', $item['page_ids']), $item['page_children'])) {
                 continue;
             }
 
@@ -160,7 +163,7 @@ function _templateBoxes($slot, array $overrides = array())
 
             // starttag polozky
             if ($options['box.item']) {
-                $output .= "<{$options['box.item']} class='box-item" . (isset($item['class']) ? ' ' . $item['class'] : '') . "'>\n";
+                $output .= "<{$options['box.item']} class='box-item" . (isset($item['class']) ? ' ' . _e($item['class']) : '') . "'>\n";
             }
 
             // titulek vevnitr

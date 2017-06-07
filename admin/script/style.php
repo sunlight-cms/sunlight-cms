@@ -389,6 +389,11 @@ ul.page-list-breadcrumbs li:not(:last-child):after {content: ">"; display: inlin
 ul.page-list-breadcrumbs a {color: <?php echo $scheme_text; ?>; font-weight: bold; vertical-align: middle;}
 ul.page-list-breadcrumbs a:hover {color: <?php echo $scheme_link; ?>;}
 
+/* box management */
+.module-content-boxes .list {margin-bottom: 32px;}
+.module-content-boxes td {white-space: nowrap;}
+.module-content-boxes .box-title-cell {white-space: normal; width: 90%;}
+
 /* article edit */
 #ae-table {width: 99.1%; table-layout: fixed; border-collapse: collapse; float: left;}
 #ae-table, #ae-table td {margin: 0; padding: 0;}
@@ -566,10 +571,12 @@ table.two-columns > tbody > tr > td > form:last-child {margin-bottom: 0;}
 /* list */
 table.list {margin: 10px 0; border-collapse: collapse; border: 1px solid <?php echo $scheme_smoke; ?>; background-color: <?php echo $scheme_white ?>;}
 table.list.list-max {width: 100%;}
+table.list caption {padding: 15px; border-bottom: 3px double <?php echo $scheme_smoke_lightest; ?>; background-color: <?php echo $scheme_smoke; ?>; text-align: left;}
 table.list thead th, .list thead td {font-weight: bold; background-color: <?php echo $scheme_smoke; ?>;}
 table.list td, .list th {padding: 7px 15px; border-bottom: 1px solid <?php echo $scheme_smoke; ?>;}
 table.list.list-hover tbody tr:hover:not(.nohover) td {background-color: <?php echo $scheme_smoke_lightest_colored; ?>;}
 table.list.list-noborder th, .list.list-noborder td {border: none;}
+table.list tbody + tbody {border-top: 3px double <?php echo $scheme_smoke ?>;}
 table.list h3 {font-weight: normal; font-size: 16px;}
 fieldset table.list thead td, fieldset table.list thead th {background-color: <?php echo $scheme_smoke_dark; ?>;}
 fieldset table.list td {border-color: <?php echo $scheme_smoke_dark; ?>;}
@@ -593,7 +600,7 @@ div.radio-group label:first-child {border-left: none;}
 
 /* buttons */
 a.button {display: inline-block; margin: 0; padding: 6px; border: 1px solid <?php echo $scheme_smoke_med; ?>; background: <?php echo $scheme_smoke_lighter; ?>; background: linear-gradient(to bottom, <?php echo $scheme_smoke_lightest; ?>, <?php echo $scheme_smoke; ?>); color: <?php echo $scheme_text; ?>; vertical-align: middle; font-weight: normal; line-height: 1;}
-a.button img.icon {float: left; margin: -1px 0 -1px 0; padding: 0 6px 0 0;}
+a.button img.icon {margin: -1px 0 -1px 0; padding: 0 6px 0 0;}
 a.button.block {display: block; margin: 6px;}
 a.button.block img.icon {float: none; margin: 0; padding: 0 10px 0 0;}
 a.button:hover {background: <?php echo $scheme_lightest; ?>; background: linear-gradient(to bottom, <?php echo $scheme_lightest; ?>, <?php echo $scheme_lighter; ?>); border-color: <?php echo $scheme_lighter; ?>;}

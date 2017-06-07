@@ -44,6 +44,7 @@ return array(
   'global.sysitem' => 'System item',
   'global.return' => 'go back',
   'global.saved' => 'Saved',
+  'global.deleted' => 'Deleted',
   'global.created' => 'Created',
   'global.created_at' => 'Created at',
   'global.inserted' => 'Inserted',

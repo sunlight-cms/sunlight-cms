@@ -4,6 +4,7 @@ use Sunlight\Core;
 use Sunlight\Util\Url;
 use Sunlight\Extend;
 use Sunlight\Plugin\TemplatePlugin;
+use Sunlight\Plugin\TemplateService;
 
 require './system/bootstrap.php';
 Core::init('./');
@@ -20,7 +21,7 @@ $_template = null;
 $_template_layout = null;
 
 // nacist vychozi motiv
-if (!_templateSwitch(_default_template)) {
+if (!_templateSwitch(TemplateService::composeUid(_default_template, TemplatePlugin::DEFAULT_LAYOUT))) {
     Core::updateSetting('default_template', 'default');
 
     Core::systemFailure(
@@ -194,12 +195,12 @@ if ($_index['template_enabled']) {
     $_template_boxes = $_template->getBoxes($_template_layout);
     
     // zjistit cestu k sablone
-    $_template_path = Extend::fetch('index.template');
-    if (null === $_template_path) {
-        $_template_path = $_template->getTemplate($_template_layout);
-    }
+    $_template_path = $_template->getTemplate($_template_layout);
 
-    Extend::call('index.template');
+    Extend::call('index.template', array(
+        'path' => &$_template_path,
+        'boxes' => &$_template_boxes,
+    ));
 
     // hlavicka
     require _root . 'system/html_start.php';

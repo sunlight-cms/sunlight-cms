@@ -3,7 +3,7 @@
 use Sunlight\Core;
 use Sunlight\Extend;
 use Sunlight\Page\PageManager;
-use Sunlight\Plugin\TemplateHelper;
+use Sunlight\Plugin\TemplateService;
 use Sunlight\Database\SimpleTreeFilter;
 
 /**
@@ -201,7 +201,8 @@ function _adminArticleEditLink($art, $ucnote = true)
  *
  * Mozne volby v $options:
  * -----------------------
- * selected             ID aktivni polozky
+ * selected             ID aktivni polozky (nebo pole, pokud multiple = TRUE)
+ * multiple             povolit vyber vice polozek 1/0
  * empty_item           popisek prazdne polozky (ID = -1)
  * type                 omezeni na typ stranky
  * allow_separators     povolit vyber oddelovace 1/0
@@ -218,6 +219,7 @@ function _adminRootSelect($name, array $options)
     // vychozi volby
     $options += array(
         'selected' => -1,
+        'multiple' => false,
         'empty_item' => null,
         'type' => null,
         'allow_separators' => false,
@@ -248,7 +250,10 @@ function _adminRootSelect($name, array $options)
     $tree = PageManager::getFlatTree(null, null, $filter);
 
     // vypis
-    $output = "<select name='{$name}'" . (null !== $options['attrs'] ? ' ' . $options['attrs'] : '') . ">\n";
+    $output = "<select name='{$name}'"
+        . ($options['multiple'] ? ' multiple' : 'ß')
+        . (null !== $options['attrs'] ? ' ' . $options['attrs'] : '')
+        . ">\n";
 
     if (null !== $options['empty_item']) {
         $output .= "<option class='special' value='-1'>{$options['empty_item']}</option>\n";
@@ -267,8 +272,14 @@ function _adminRootSelect($name, array $options)
 
         // vypis stranky
         if (null === $disabledBranchLevel) {
+            if ($options['multiple']) {
+                $active = in_array($page['id'], $options['selected']);
+            } else {
+                $active = $options['selected'] == $page['id'];
+            }
+
             $output .= "<option value='{$page['id']}'"
-                . (($options['selected'] == $page['id']) ? " selected" : '')
+                . ($active ? " selected" : '')
                 . ((null !== $options['type'] && $page['type'] != $options['type'] || !$options['allow_separators'] && _page_separator == $page['type']) ? " disabled" : '')
                 . '>'
                 . str_repeat('&nbsp;&nbsp;&nbsp;│&nbsp;', $page['node_level'])
@@ -373,8 +384,8 @@ function _adminTemplateLayoutSelect($name, $selected, $empty_option = null, $mul
     foreach (Core::$pluginManager->getAllTemplates() as $template) {
         $output .= '<optgroup label="' . _e($template->getOption('name')) . "\">\n";
         foreach ($template->getLayouts() as $layout) {
-            $layoutUid = TemplateHelper::composeLayoutUid($template->getId(), $layout);
-            $layoutLabel = TemplateHelper::getLayoutUidLabel($layoutUid);
+            $layoutUid = TemplateService::composeUid($template, $layout);
+            $layoutLabel = TemplateService::getComponentLabel($template, $layout);
 
             $active = null === $multiple && $layoutUid === $selected || null !== $multiple && in_array($layoutUid, $selected, true);
 
@@ -386,6 +397,48 @@ function _adminTemplateLayoutSelect($name, $selected, $empty_option = null, $mul
     }
 
     $output .= "</select>";
+
+    return $output;
+}
+
+/**
+ * Sestavit <select> pro vyber motivu, layoutu a slotu
+ *
+ * @param string                $name
+ * @param string|null           $selected
+ * @param string|null           $empty_option
+ * @param string|null           $class
+ * @param TemplatePlugin[]|null $templates
+ * @return string
+ */
+function _adminTemplateLayoutSlotSelect($name, $selected, $empty_option = null, $class = null, array $templates = null)
+{
+    $output = "<select name=\"{$name}\""
+        . (null !== $class ? " class=\"{$class}\"" : '')
+        . ">\n";
+
+    if (null !== $empty_option) {
+        $output .= '<option class="special" value="">' . _e($empty_option) . "</option>\n";
+    }
+
+    if (null === $templates) {
+        $templates = Core::$pluginManager->getAllTemplates();
+    }
+
+    foreach ($templates as $template) {
+        $output .= '<optgroup label="' . _e($template->getOption('name')) . "\">\n";
+        foreach ($template->getLayouts() as $layout) {
+            foreach ($template->getSlots($layout) as $slot) {
+                $slotUid = TemplateService::composeUid($template, $layout, $slot);
+                $slotLabel = TemplateService::getComponentLabel($template, $layout, $slot, false);
+
+                $output .= '<option value="' . _e($slotUid) . '"' . ($selected === $slotUid ? ' selected' : '') . '>'
+                    . _e($slotLabel)
+                    . "</option>\n";
+            }
+        }
+        $output .= "</optgroup>\n";
+    }
 
     return $output;
 }

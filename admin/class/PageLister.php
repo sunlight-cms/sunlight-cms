@@ -6,7 +6,7 @@ use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\Page\PageManager;
 use Sunlight\Util\Url;
-use Sunlight\Plugin\TemplateHelper;
+use Sunlight\Plugin\TemplateService;
 
 class PageLister
 {
@@ -132,9 +132,13 @@ class PageLister
     public static function saveOrd()
     {
         if (isset($_POST['ord']) && is_array($_POST['ord']) && !isset($_POST['reset'])) {
+            $changeset = array();
+
             foreach ($_POST['ord'] as $id => $ord) {
-                DB::update(_root_table, 'id=' . DB::val($id), array('ord' => (int) $ord));
+                $changeset[$id] = array('ord' => (int) $ord);
             }
+
+            DB::updateSetMulti(_root_table, 'id', $changeset);
 
             return true;
         } else {
@@ -625,7 +629,7 @@ class PageLister
                 $output .= "<img src=\"images/icons/home.png\" class=\"icon\" alt=\"{$iconTitle}\" title=\"{$iconTitle}\">";
             }
             if (null !== $page['layout'] && !$page['layout_inherit']) {
-                $iconTitle = sprintf($GLOBALS['_lang']['admin.content.form.layout.setting'], _e(TemplateHelper::getLayoutUidLabel($page['layout'])));
+                $iconTitle = sprintf($GLOBALS['_lang']['admin.content.form.layout.setting'], _e(TemplateService::getComponentLabelByUid($page['layout'], TemplateService::UID_TEMPLATE_LAYOUT)));
                 $output .= "<img src=\"images/icons/template.png\" class=\"icon\" alt=\"{$iconTitle}\" title=\"{$iconTitle}\">";
             }
             if (!$page['public']) {

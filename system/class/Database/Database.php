@@ -657,18 +657,18 @@ class Database
      * Aktualizovat radky v databazi dle seznamu identifikatoru
      *
      * @param string $table       nazev tabulky s prefixem
-     * @param string $column      nazev sloupce, ktery obsahuje identifikator
+     * @param string $idColumn    nazev sloupce, ktery obsahuje identifikator
      * @param array  $set         seznam identifikatoru
      * @param array  $changeset   spolecne asociativni pole se zmenami
      * @param int    $maxPerQuery maximalni pocet polozek v 1 dotazu
      */
-    public static function updateSet($table, $column, array $set, $changeset, $maxPerQuery = 100)
+    public static function updateSet($table, $idColumn, array $set, $changeset, $maxPerQuery = 100)
     {
         if (!empty($set)) {
             foreach (array_chunk($set, $maxPerQuery) as $chunk) {
                 static::update(
                     $table,
-                    static::escIdt($column) . ' IN(' . static::arr($chunk) . ')',
+                    static::escIdt($idColumn) . ' IN(' . static::arr($chunk) . ')',
                     $changeset,
                     null
                 );
@@ -682,14 +682,14 @@ class Database
      * Pro popis formatu mapy, viz {@see Database::changesetMapToList}
      *
      * @param string $table        nazev tabulky s prefixem
-     * @param string $column       nazev sloupce, ktery obsahuje identifikator
-     * @param array  $changesetMap mapa zmen pro kazdy radek
+     * @param string $idColumn     nazev sloupce, ktery obsahuje identifikator
+     * @param array  $changesetMap mapa zmen pro kazdy radek: array(id1 => changeset1, ...)
      * @param int    $maxPerQuery  maximalni pocet polozek v 1 dotazu
      */
-    public static function updateSetMulti($table, $column, array $changesetMap, $maxPerQuery = 100)
+    public static function updateSetMulti($table, $idColumn, array $changesetMap, $maxPerQuery = 100)
     {
         foreach (static::changesetMapToList($changesetMap) as $change) {
-            static::updateSet($table, $column, $change['set'], $change['changeset'], $maxPerQuery);
+            static::updateSet($table, $idColumn, $change['set'], $change['changeset'], $maxPerQuery);
         }
     }
 

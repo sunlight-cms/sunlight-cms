@@ -11,7 +11,7 @@
     </div>
 
 	<div id="menu">
-		<?php //echo _templateMenu() ?>
+		<?php echo _templateMenu() ?>
 	</div>
 
 	<div id="page">
