@@ -3,7 +3,7 @@ var Sunlight = (function ($) {
 
     return {
         /**
-         * Nahradit specialni znaky entitami
+         * Replace special characters by HTML entities
          *
          * @param {String} string
          * @return {String}
@@ -60,11 +60,11 @@ var Sunlight = (function ($) {
         },
 
         /**
-         * Vykreslit systemovy box se zpravou
+         * Render system message box
          *
          * @param {String}  type   ok / warn / err
-         * @param {String}  text   text zpravy
-         * @param {Boolean} isHtml vykreslit text jako HTML
+         * @param {String}  text   message text
+         * @param {Boolean} isHtml render text as HTML
          * @return {HTMLElement}
          */
         msg: function (type, text, isHtml) {
@@ -77,14 +77,14 @@ var Sunlight = (function ($) {
         },
 
         /**
-         * Aplikovat lightbox funkcionalitu na obrazky a galerie
+         * Apply lightbox functionality to gallery images
          */
         galleryScan: function () {
-            // implementovano danym komponentem
+            // to be implemented by a plugin
         },
 
         /**
-         * Aktivovat nebo deaktivovat prvek formulare
+         * Activate or deactivate a form field
          *
          * @param {Boolean} disabled
          * @param {String}  formName
@@ -95,7 +95,7 @@ var Sunlight = (function ($) {
         },
 
         /**
-         * Zaskrtnout/odskrtnout vsechny checkboxy v danem elementu
+         * Check or uncheck all checkboxes inside the given element
          *
          * @param {MouseEvent}  event
          * @param {boolean}     checked
@@ -117,7 +117,7 @@ var Sunlight = (function ($) {
         },
 
         /**
-         * Zobrazit potvrzeni akce
+         * Show a confirmation dialog
          *
          * @returns {Boolean}
          */
@@ -126,8 +126,7 @@ var Sunlight = (function ($) {
         },
 
         /**
-         * Prepsat maskovani zavinace v odkazu
-         * Pouziti v ramci "onclick" udalosti.
+         * Undo email address symbol replacement in a link
          *
          * @param {HTMLLinkElement} f
          * @returns {Boolean}
@@ -140,7 +139,7 @@ var Sunlight = (function ($) {
         },
 
         /**
-         * Pridat smajlika do daneho formulare a textarey
+         * Add emoticon code to the given textarea
          *
          * @param {String} formName
          * @param {String} textareaName
@@ -159,7 +158,7 @@ var Sunlight = (function ($) {
         },
 
         /**
-         * Pridat BBCode tag do daneho formulare a textarey
+         * Add BBCode tag to the given textarea
          *
          * @param {String}  fid
          * @param {String}  aid
@@ -186,8 +185,7 @@ var Sunlight = (function ($) {
         },
 
         /**
-         * Omezit delku textarey
-         * Pouziti v ramci "keyup", "mouseup", "mousedown" udalosti textarey.
+         * Limit textarea length
          *
          * @param {HTMLElement} area
          * @param {Number}      limit
@@ -202,7 +200,7 @@ var Sunlight = (function ($) {
         },
 
         /**
-         * Zobrazit nahled prispevku
+         * Show post preview
          *
          * @param {HTMLElement} button
          * @param {String}      formName
@@ -219,7 +217,7 @@ var Sunlight = (function ($) {
                 hr.className = 'hr';
                 $(hr).appendTo(form);
 
-                // kontejner
+                // container
                 container = document.createElement('p');
                 container.className = 'post-form-preview';
                 container = $(container).appendTo(form);
