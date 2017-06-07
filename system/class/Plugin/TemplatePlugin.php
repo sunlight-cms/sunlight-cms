@@ -96,7 +96,7 @@ class TemplatePlugin extends Plugin
      */
     public function getLayoutLabel($layout)
     {
-        return $this->loadLayoutLabels()
+        return $this->loadLayoutLabels() && isset($GLOBALS['_lang'][$this->getLayoutLabelsKey()][$layout]['label'])
             ? $GLOBALS['_lang'][$this->getLayoutLabelsKey()][$layout]['label']
             : $layout;
     }
@@ -126,7 +126,7 @@ class TemplatePlugin extends Plugin
      */
     public function getSlotLabel($layout, $slot)
     {
-        return $this->loadLayoutLabels()
+        return $this->loadLayoutLabels() && isset($GLOBALS['_lang'][$this->getLayoutLabelsKey()][$layout]['slots'][$slot])
             ? $GLOBALS['_lang'][$this->getLayoutLabelsKey()][$layout]['slots'][$slot]
             : $slot;
     }
