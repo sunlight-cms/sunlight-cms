@@ -330,6 +330,7 @@ Sunlight.admin = (function ($) {
                 .on('sortstart', function (e, ui) {
                     $(container).addClass(options.sortingClass);
                     $(ui.item).addClass(options.sortingClass);
+                    $(ui.placeholder).height($(ui.item).height());
                 })
                 .on('sortstop', function (e, ui) {
                     $(container).removeClass(options.sortingClass);
