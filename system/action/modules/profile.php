@@ -119,19 +119,10 @@ $output .= "
 
 <tr><th>" . $_lang['mod.profile.regtime'] . "</th><td>" . _formatTime($query['registertime']) . "</td></tr>
 " . (_profileemail ? "<tr><th>" . $_lang['global.email'] . "</th><td>" . _mailto($query['email']) . "</td></tr>" : '') . "
-" . (($query['icq'] != "") ? "<tr><th>" . $_lang['global.icq'] . "</th><td>" . $query['icq'] . "</td></tr>" : '') . "
-" . (($query['skype'] != "") ? "<tr><th>" . $_lang['global.skype'] . "</th><td>" . $query['skype'] . "</td></tr>" : '') . "
-" . (($query['web'] != "") ? "<tr><th>" . $_lang['global.web'] . "</th><td><a href='" . $query['web'] . "' target='_blank' rel='nofollow'>" . _cutText($query['web'], 32) . "</a></td></tr>" : '') . "
-
-<tr>
-<th>" . $_lang['global.postsnum'] . "</th>
-<td>" . $posts_count . $posts_viewlink . "</td>
-</tr>
+<tr><th>" . $_lang['global.postsnum'] . "</th><td>" . $posts_count . $posts_viewlink . "</td></tr>
 
 " . $arts . "
-
 " . Sunlight\Extend::buffer('mod.profile.table', array('user' => $query)) . "
-
 " . $note . "
 
 </table>

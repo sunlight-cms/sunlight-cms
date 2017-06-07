@@ -46,9 +46,6 @@ if (isset($_GET['id'])) {
         'blocked' => 0,
         'email' => '@',
         'avatar' => null,
-        'web' => '',
-        'skype' => '',
-        'icq' => '',
         'note' => '',
         'wysiwyg' => '1',
         'massemail' => '1',
@@ -117,23 +114,6 @@ if ($continue) {
         // hromadny email
         $massemail = _checkboxLoad('massemail');
 
-        // icq
-        $icq = _cutHtml(_e(trim(_post('icq'))), 255);
-
-        // skype
-        $skype = _cutHtml(_e(trim(_post('skype'))), 255);
-
-        // web
-        $web = trim(_post('web'));
-        if ($web != "") {
-            $web = _addSchemeToURL($web);
-            if (_validateURL($web)) {
-                $web = _cutHtml(_e($web), 255);
-            } else {
-                $web = "";
-            }
-        }
-
         // avatar
         if (isset($query['avatar']) && _checkboxLoad("removeavatar")) {
             @unlink(_root . 'images/avatars/' . $query['avatar'] . '.jpg');
@@ -189,8 +169,6 @@ if ($continue) {
                 'email' => $email,
                 'avatar' => $avatar,
                 'web' => $web,
-                'skype' => $skype,
-                'icq' => $icq,
                 'note' => $note,
                 'publicname' => $publicname,
                 'group_id' => $group,
@@ -308,21 +286,6 @@ if ($continue) {
 <tr>
 <th>" . $_lang['global.email'] . "</th>
 <td><input type='email' class='inputsmall'" . _restorePostValueAndName('email', $query['email']) . "></td>
-</tr>
-
-<tr>
-<th>" . $_lang['global.icq'] . "</th>
-<td><input type='text' class='inputsmall'" . _restorePostValueAndName('icq', $query['icq'], true) . "></td>
-</tr>
-
-<tr>
-<th>" . $_lang['global.skype'] . "</th>
-<td><input type='text' class='inputsmall'" . _restorePostValueAndName('skype', $query['skype'], true) . "></td>
-</tr>
-
-<tr>
-<th>" . $_lang['global.web'] . "</th>
-<td><input type='text' class='inputsmall'" . _restorePostValueAndName('web', $query['web'], true) . "></td>
 </tr>
 
 <tr>

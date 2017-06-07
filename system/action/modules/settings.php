@@ -97,25 +97,10 @@ if (isset($_POST['username'])) {
         }
     }
 
-    // massemail, wysiwyg, icq
+    // massemail, wysiwyg
     $massemail = _checkboxLoad('massemail');
     if (_priv_administration) {
         $wysiwyg = _checkboxLoad('wysiwyg');
-    }
-    $icq = _cutHtml(_e(trim(_post('icq'))), 255);
-
-    // skype
-    $skype = _cutHtml(_e(trim(_post('skype'))), 255);
-
-    // web
-    $web = trim(_post('web'));
-    if ($web != "") {
-        $web = _addSchemeToURL($web);
-        if (_validateURL($web)) {
-            $web = _cutHtml(_e($web), 255);
-        } else {
-            $web = "";
-        }
     }
 
     // avatar
@@ -197,9 +182,6 @@ if (isset($_POST['username'])) {
     $changeset = array(
         'email' => $email,
         'avatar' => $avatar,
-        'web' => $web,
-        'skype' => $skype,
-        'icq' => $icq,
         'massemail' => $massemail,
         'note' => $note,
         'publicname' => $publicname,
@@ -352,21 +334,8 @@ $output .= "
   <legend>" . $_lang['mod.settings.info'] . "</legend>
 
   <table class='profiletable'>
-
-  <tr>
-  <th>" . $_lang['global.icq'] . "</th>
-  <td><input type='text'" . _restorePostValueAndName('icq', $userdata['icq'] ? $userdata['icq'] : '') . " class='inputsmall'></td>
-  </tr>
-
-  <tr>
-  <th>" . $_lang['global.skype'] . "</th>
-  <td><input type='text'" . _restorePostValueAndName('skype', $userdata['skype']) . " class='inputsmall'></td>
-  </tr>
-
-  <tr>
-  <th>" . $_lang['global.web'] . "</th>
-  <td><input type='text' name='web' value='" . $userdata['web'] . "' class='inputsmall'></td>
-  </tr>
+  
+   " . Sunlight\Extend::buffer('mod.settings.form.info') . "
 
   <tr class='valign-top'>
   <th>" . $_lang['global.note'] . "</th>

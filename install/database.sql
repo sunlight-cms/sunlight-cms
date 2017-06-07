@@ -406,9 +406,6 @@ CREATE TABLE `sunlight_users` (
   `ip` varchar(45) NOT NULL DEFAULT '',
   `email` varchar(255) NOT NULL,
   `avatar` varchar(13) DEFAULT NULL,
-  `web` varchar(255) NOT NULL DEFAULT '',
-  `skype` varchar(255) NOT NULL DEFAULT '',
-  `icq` varchar(255) NOT NULL DEFAULT '',
   `note` text NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
@@ -422,8 +419,8 @@ CREATE TABLE `sunlight_users` (
   KEY `massemail` (`massemail`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-INSERT INTO `sunlight_users` (`id`, `group_id`, `levelshift`, `username`, `publicname`, `password`, `security_hash`, `security_hash_expires`, `logincounter`, `registertime`, `activitytime`, `blocked`, `massemail`, `wysiwyg`, `language`, `ip`, `email`, `avatar`, `web`, `skype`, `icq`, `note`) VALUES
-  (0,	1,	1,	'',	NULL,	'',	NULL,	0,	0,	0,	0,	0,	1,	0,	'',	'',	'',	NULL,	'',	'',	'',	'');
+INSERT INTO `sunlight_users` (`id`, `group_id`, `levelshift`, `username`, `publicname`, `password`, `security_hash`, `security_hash_expires`, `logincounter`, `registertime`, `activitytime`, `blocked`, `massemail`, `wysiwyg`, `language`, `ip`, `email`, `avatar`, `note`) VALUES
+  (0,	1,	1,	'',	NULL,	'',	NULL,	0,	0,	0,	0,	0,	1,	0,	'',	'',	'',	NULL,	'');
 
 CREATE TABLE `sunlight_user_activation` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
