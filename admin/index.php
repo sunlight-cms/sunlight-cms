@@ -136,7 +136,7 @@ $admin_body_classes[] = $scheme_dark ? 'dark' : 'light';
     </div>
 
     <div id="page" class="wrapper">
-        <div id="content">
+        <div id="content" class="module-<?php echo _e($admin_current_module) ?>">
             <?php echo $admin_output, $output; ?>
 
             <div class="cleaner"></div>
