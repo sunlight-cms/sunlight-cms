@@ -30,9 +30,10 @@ class Database
      * @param string      $database
      * @param string|null $port
      * @param string|null $charset
+     * @param string|null $sqlMode
      * @return string|null null on success, error message on failure
      */
-    public static function connect($server, $user, $password, $database, $port, $charset = 'utf8')
+    public static function connect($server, $user, $password, $database, $port, $charset = 'utf8', $sqlMode = '')
     {
         $mysqli = @mysqli_connect($server, $user, $password, $database, $port);
         $connectError = mysqli_connect_error();
@@ -43,6 +44,10 @@ class Database
             }
 
             static::$mysqli = $mysqli;
+
+            if (null !== $sqlMode) {
+                static::query('SET SQL_MODE=' . static::val($sqlMode));
+            }
         }
 
         return $connectError;
