@@ -105,13 +105,13 @@ class CommentService
         $captcha = _captchaInit();
         $output = _jsLimitLength(16384, "postform", "text");
         if (!_login) {
-            $inputs[] = array('label' => $_lang['posts.guestname'], 'content' => "<input type='text' name='guest' maxlength='24' class='inputsmall'" . _restoreValue('_SESSION', 'post_form_guest') . ">");
+            $inputs[] = array('label' => $_lang['posts.guestname'], 'content' => "<input type='text' name='guest' maxlength='24' class='inputsmall'" . _restoreValue($_SESSION, 'post_form_guest') . ">");
         }
         if ($vars['xhome'] == -1 && $vars['subject']) {
-            $inputs[] = array('label' => $_lang[$vars['is_topic'] ? 'posts.topic' : 'posts.subject'], 'content' => "<input type='text' name='subject' class='input" . ($vars['is_topic'] ? 'medium' : 'small') . "' maxlength='48'" . _restoreValue('_SESSION', 'post_form_subject') . ">");
+            $inputs[] = array('label' => $_lang[$vars['is_topic'] ? 'posts.topic' : 'posts.subject'], 'content' => "<input type='text' name='subject' class='input" . ($vars['is_topic'] ? 'medium' : 'small') . "' maxlength='48'" . _restoreValue($_SESSION, 'post_form_subject') . ">");
         }
         $inputs[] = $captcha;
-        $inputs[] = array('label' => $_lang['posts.text'], 'content' => "<textarea name='text' class='areamedium' rows='5' cols='33'>" . _restoreValue('_SESSION', 'post_form_text', null, false) . "</textarea><input type='hidden' name='_posttype' value='" . $vars['posttype'] . "'><input type='hidden' name='_posttarget' value='" . $vars['posttarget'] . "'><input type='hidden' name='_xhome' value='" . $vars['xhome'] . "'>" . (isset($vars['pluginflag']) ? "<input type='hidden' name='_pluginflag' value='" . $vars['pluginflag'] . "'>" : ''), 'top' => true);
+        $inputs[] = array('label' => $_lang['posts.text'], 'content' => "<textarea name='text' class='areamedium' rows='5' cols='33'>" . _restoreValue($_SESSION, 'post_form_text', null, false) . "</textarea><input type='hidden' name='_posttype' value='" . $vars['posttype'] . "'><input type='hidden' name='_posttarget' value='" . $vars['posttarget'] . "'><input type='hidden' name='_xhome' value='" . $vars['xhome'] . "'>" . (isset($vars['pluginflag']) ? "<input type='hidden' name='_pluginflag' value='" . $vars['pluginflag'] . "'>" : ''), 'top' => true);
         $inputs[] = array('label' => '', 'content' => _getPostFormControls('postform', 'text'));
 
         unset(

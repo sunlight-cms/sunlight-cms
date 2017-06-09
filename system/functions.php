@@ -697,7 +697,7 @@ function _restoreCheckedAndName($key_var, $name, $default = false, $method = 'PO
  */
 function _restorePostValue($name, $else = null, $param = true, $else_entities = true)
 {
-    return _restoreValue('_POST', $name, $else, $param, $else_entities);
+    return _restoreValue($_POST, $name, $else, $param, $else_entities);
 }
 
 /**
@@ -724,7 +724,7 @@ function _restorePostValueAndName($name, $else = null, $else_entities = true)
  */
 function _restoreGetValue($name, $else = null, $param = true, $else_entities = true)
 {
-    return _restoreValue('_GET', $name, $else, $param, $else_entities);
+    return _restoreValue($_GET, $name, $else, $param, $else_entities);
 }
 
 /**
@@ -741,19 +741,19 @@ function _restoreGetValueAndName($name, $else = null, $else_entities = true)
 }
 
 /**
- * Obnoveni hodnoty prvku na zaklade globalni promenne
+ * Obnoveni hodnoty prvku na zaklade hodnoty z pole
  *
- * @param string      $var           nazev globalni promenne (_GET, _POST, ..)
- * @param string      $name          nazev klice
+ * @param array       $values        pole s hodnotami
+ * @param string      $key           nazev klice
  * @param string|null $else          vychozi hodnota
  * @param bool        $param         vykreslit jako atribut ' value=".."' 1/0
  * @param bool        $else_entities escapovat hodnotu $else 1/0
  * @return string
  */
-function _restoreValue($var, $name, $else = null, $param = true, $else_entities = true)
+function _restoreValue(array $values, $key, $else = null, $param = true, $else_entities = true)
 {
-    if (isset($GLOBALS[$var][$name]) && is_scalar($GLOBALS[$var][$name])) {
-        $value = _e((string) $GLOBALS[$var][$name]);
+    if (isset($values[$key]) && is_scalar($values[$key])) {
+        $value = _e((string) $values[$key]);
     } else {
         $value = ($else_entities ? _e($else) : $else);
     }
@@ -4184,10 +4184,14 @@ function _userLoginForm($title = false, $required = false, $return = null, $embe
                 'form_append' => $form_append,
             ),
             array(
-                array('label' => $_lang['login.username'], 'content' => "<input type='text' name='login_username' class='inputmedium'" . _restoreGetValue('login_form_username') . " maxlength='24'>"),
+                array('label' => $_lang['login.username'], 'content' => "<input type='text' name='login_username' class='inputmedium'" . _restoreValue($_SESSION, 'login_form_username') . " maxlength='24'>"),
                 array('label' => $_lang['login.password'], 'content' => "<input type='password' name='login_password' class='inputmedium'>")
             )
         );
+
+        if (isset($_SESSION['login_form_username'])) {
+            unset($_SESSION['login_form_username']);
+        }
 
         // odkazy
         if (!$embedded) {

@@ -15,9 +15,11 @@ $result = _userLoginSubmit($username, $password, $persistent);
 
 // presmerovani
 if (1 !== $result && isset($_POST['login_form_url'])) {
+    $_SESSION['login_form_username'] = $username;
+
     _returnHeader(_addGetToLink(
         _post('login_form_url'),
-        'login_form_result=' . $result . '&login_form_username=' . rawurlencode($username),
+        'login_form_result=' . $result,
         false
     ));
 } else {

@@ -219,9 +219,11 @@ if (!$user_data_valid && $show_form) {
         Sunlight\Extend::call('user.new', array('id' => $user_id, 'username' => $user_data['username'], 'email' => $user_data['email']));
 
         // hlaska
+        $_SESSION['login_form_username'] = $user_data['username'];
+
         $output .= _msg(_msg_ok, str_replace(
             '*login_link*',
-            _linkModule('login', 'login_form_username=' . rawurlencode($user_data['username'])),
+            _linkModule('login'),
             $_lang['mod.reg.done']
         ));
 
