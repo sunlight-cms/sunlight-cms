@@ -1116,7 +1116,7 @@ Now you can <a href="admin/">log in to the administration</a> (username and pass
     <table>
         <tr>
             <th><?php Labels::render('import.admin.username') ?></th>
-            <td><input type="text"<?php echo _restorePostValueAndName('import_admin_username') ?>></td>
+            <td><input type="text"<?php echo _restorePostValueAndName('import_admin_username', 'admin') ?>></td>
             <td class="help"><?php Labels::render('import.admin.username.help') ?></td>
         </tr>
         <tr>
