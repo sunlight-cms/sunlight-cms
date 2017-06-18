@@ -61,7 +61,7 @@ CREATE TABLE `sunlight_boxes` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 INSERT INTO `sunlight_boxes` (`id`, `ord`, `title`, `content`, `visible`, `public`, `level`, `template`, `layout`, `slot`, `page_ids`, `page_children`, `class`) VALUES
-(1,	1,	'Menu',	'[hcm]menu_tree[/hcm]',	1,	1,	0,	'default',	'default',	'right',	NULL,	0,	NULL),
+(1,	1,	'Menu',	'[hcm]menu_subtree,-1,null,null,1[/hcm]',	1,	1,	0,	'default',	'default',	'right',	NULL,	0,	NULL),
 (2,	2,	'Vyhledávání',	'[hcm]search[/hcm]',	1,	1,	0,	'default',	'default',	'right',	NULL,	0,	NULL),
 (3,	3,	'',	'<br /><p class=\"center\"><a href=\'https://sunlight-cms.org/\' title=\'SunLight CMS - open source redakční systém zdarma\'><img src=\'https://sunlight-cms.org/icon.png\' alt=\'SunLight CMS - open source redakční systém zdarma\' style=\'width:88px;height:31px;border:0;\' /></a></p>',	1,	1,	0,	'default',	'default',	'right',	NULL,	0,	NULL);
 
