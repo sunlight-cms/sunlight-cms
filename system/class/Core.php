@@ -8,7 +8,6 @@ use Kuria\Cache\Driver\FilesystemDriver;
 use Kuria\Cache\Driver\MemoryDriver;
 use Kuria\ClassLoader\ClassLoader;
 use Kuria\Debug\Error;
-use Kuria\Error\Util\Debug;
 use Kuria\Error\ErrorHandler;
 use Kuria\Error\Screen\WebErrorScreen;
 use Sunlight\Database\Database as DB;
