@@ -1,6 +1,6 @@
 {
-    "name": "Default",
-    "description": "8.x default template.",
+    "name": "Classic",
+    "description": "7.x default template.",
     "version": "8.0",
     "api": "^8.0",
     "url": "https://sunlight-cms.org/",
@@ -8,7 +8,7 @@
     "layouts": {
         "default": {
             "template": "template.php",
-            "slots": ["right"]
+            "slots": ["left"]
         }
     },
     "layout.labels": "labels",
@@ -17,8 +17,8 @@
     "smiley.count": 10,
     "smiley.format": "gif",
     "bbcode.buttons": true,
-    "box.parent": "ul",
-    "box.item": "li",
-    "box.title": "h2",
-    "box.title.inside": true
+    "box.parent": "",
+    "box.item": "div",
+    "box.title": "h3",
+    "box.title.inside": false
 }

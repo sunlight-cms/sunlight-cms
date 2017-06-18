@@ -30,6 +30,7 @@
 
 /plugins/templates/*
 !/plugins/templates/default
+!/plugins/templates/classic
 
 /.htaccess
 /config.php
