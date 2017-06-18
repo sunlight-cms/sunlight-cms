@@ -786,7 +786,7 @@ class ConfigurationStep extends Step
     <table>
         <tr>
             <th><?php Labels::render('config.db.server') ?></th>
-            <td><input type="text"<?php echo _restorePostValueAndName('config_db_server', $this->getConfig('db.server')) ?>></td>
+            <td><input type="text"<?php echo _restorePostValueAndName('config_db_server', $this->getConfig('db.server', 'localhost')) ?>></td>
             <td class="help"><?php Labels::render('config.db.server.help') ?></td>
         </tr>
         <tr>
