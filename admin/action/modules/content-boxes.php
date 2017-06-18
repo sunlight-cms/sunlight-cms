@@ -24,7 +24,7 @@ if (isset($_POST['action'])) {
             }
 
             Database::updateSetMulti(_boxes_table, 'id', $changeset);
-            $message = Message::ok($_lang['global.saved']);
+            $message = Message::ok($_lang['admin.content.form.ord.saved']);
             break;
 
         case 'delete':
