@@ -25,7 +25,7 @@ return array(
     'admin.index.box.latest' => 'Latest',
     'admin.index.logoutwarn' => 'You will be automatically logged out after %s minutes of inactivity',
     'admin.index.messages' => 'System messages',
-    'admin.index.statewarn' => 'This is a *state* version, which is not meant for production use!',
+    'admin.index.statewarn' => 'This is a *state* version. Do not use in production!',
     'admin.index.devwarn' => 'Development mode is active.',
     'admin.index.version.latest' => 'You are using the latest version.',
     'admin.index.version.old' => 'A new version <strong>*version*</strong> is available. An <a href="*link*">upgrade</a> is recommended.',
