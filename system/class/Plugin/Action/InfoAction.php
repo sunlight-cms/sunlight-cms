@@ -4,6 +4,7 @@ namespace Sunlight\Plugin\Action;
 
 use Sunlight\Action\ActionResult;
 use Sunlight\Plugin\PluginLoader;
+use Kuria\Debug\Dumper;
 
 /**
  * Show information about a plugin
@@ -65,6 +66,13 @@ class InfoAction extends PluginAction
         <th><?php echo $_lang['admin.plugins.data'] ?></th>
         <td>
             <pre><?php echo _e(file_get_contents($plugin->getDirectory() . '/' . PluginLoader::PLUGIN_FILE)) ?></pre>
+        </td>
+    </tr>
+
+    <tr>
+        <th><?php echo $_lang['admin.content.form.settings'] ?></th>
+        <td>
+            <pre><?php echo _e(Dumper::dump($plugin->getOptions(), 4)) ?></pre>
         </td>
     </tr>
 </table>
