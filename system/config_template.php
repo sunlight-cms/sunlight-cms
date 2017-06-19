@@ -16,7 +16,7 @@ return array(
 
     // nahodny tajny hash (pouzivano pro XSRF ochranu aj.)
     // random secret hash (used for XSRF protection etc.)
-    // https://sunlight-cms.org/goto/hashgen
+    // https://sunlight-cms.org/resource/hashgen
     'secret' => '@@secret@@',
 
     // unikatni identifikator v ramci serveru (pouzivano pro nazev session, cookies, aj.)

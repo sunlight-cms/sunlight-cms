@@ -165,7 +165,7 @@ $.ajax({
                 message = " . json_encode($_lang['admin.index.version.old']) . ";
                 message = message
                     .replace('*version*', Sunlight.escapeHtml(response.latestVersion))
-                    .replace('*link*', 'https://sunlight-cms.org/goto/update');
+                    .replace('*link*', 'https://sunlight-cms.org/resource/update');
             }
             
             $(Sunlight.msg(messageType, message, true)).insertAfter('#index-messages > h2:first-child');

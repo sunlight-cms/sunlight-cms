@@ -55,7 +55,7 @@ $editable_settings = array(
             array('name' => 'language', 'choices' => Sunlight\Core::$pluginManager->choices(Sunlight\Plugin\PluginManager::LANGUAGE), 'reload_on_update' => true),
             array('name' => 'language_allowcustom'),
             array('name' => 'notpublicsite'),
-            array('name' => 'proxy_mode', 'help_attrs' => array('*ip*' => _userip, '*link*' => 'https://sunlight-cms.org/goto/ip-compare?with=' . rawurlencode(_userip))),
+            array('name' => 'proxy_mode', 'help_attrs' => array('*ip*' => _userip, '*link*' => 'https://sunlight-cms.org/resource/ip-compare?with=' . rawurlencode(_userip))),
             array('name' => 'pretty_urls', 'force_install_check' => true),
         ),
     ),
