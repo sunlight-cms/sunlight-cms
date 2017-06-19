@@ -47,10 +47,9 @@ abstract class Action
      */
     public function run()
     {
-        global $_lang;
-
         $this->result = null;
 
+        $e = null;
         try {
             $result = $this->execute();
 
@@ -60,7 +59,13 @@ abstract class Action
                     get_called_class()
                 ));
             }
+
+            return $result;
         } catch (\Exception $e) {
+        } catch (\Throwable $e) {
+        }
+
+        if (null !== $e) {
             if ($this->catchExceptions) {
                 $result = ActionResult::failure(Message::error($_lang['global.error']));
 
@@ -71,8 +76,6 @@ abstract class Action
                 throw $e;
             }
         }
-
-        return $result;
     }
 
     /**
