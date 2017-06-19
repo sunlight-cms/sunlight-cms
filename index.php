@@ -96,6 +96,8 @@ $_index = array(
 
 /* ---- priprava obsahu ---- */
 
+Extend::call('index.init', array('index' => &$_index));
+
 $output = &$_index['output'];
 
 if (empty($_POST) || _xsrfCheck()) {
@@ -167,6 +169,8 @@ if (empty($_POST) || _xsrfCheck()) {
 
 /* ----  vystup  ---- */
 
+Extend::call('index.prepare', array('index' => &$_index));
+
 // zpracovani stavu
 if (null !== $_index['redirect_to']) {
     // presmerovani
@@ -187,7 +191,7 @@ if (null !== $_index['redirect_to']) {
     $_index['is_successful'] = true;
 }
 
-Extend::call('index.ready');
+Extend::call('index.ready', array('index' => &$_index));
 
 // vlozeni motivu
 if ($_index['template_enabled']) {
@@ -217,3 +221,5 @@ if ($_index['template_enabled']) {
 </html>
 <?php
 }
+
+Extend::call('index.finish', array('index' => $_index));
