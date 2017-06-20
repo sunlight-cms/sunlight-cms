@@ -24,8 +24,8 @@ class Core
 {
     /** Verze systemu */
     const VERSION = '8.0.0';
-    /** Stav systemu */
-    const STATE = 'BETA';
+    /** Distribuce systemu */
+    const DIST = 'GIT'; // GIT / STABLE / BETA
 
     /** @var float */
     public static $start;

@@ -339,6 +339,7 @@ body.login-layout #footer, body.login-layout #footer a {color: <?php echo $schem
 #latest-version .version-patch {color: #8b9800;}
 #latest-version .version-minor {color: #f06c00;}
 #latest-version .version-major {color: #e60000;}
+#latest-version .version-unk {color: #8f8f8f;}
 
 /* content management */
 #contenttable {width: 100%; border: 1px solid <?php echo $scheme_smoke; ?>; line-height: 140%;}

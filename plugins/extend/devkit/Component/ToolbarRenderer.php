@@ -79,7 +79,7 @@ class ToolbarRenderer
     {
         ?>
 <div class="devkit-section devkit-info">
-    <?php echo Core::VERSION, ' ', Core::STATE ?>
+    <?php echo Core::VERSION, ' ', Core::DIST ?>
 </div>
 <?php
     }

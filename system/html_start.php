@@ -9,4 +9,4 @@ if (!defined('_root')) {
 <html lang="<?php echo _e($_lang['langcode.iso639']) ?>">
 <head>
 <meta charset="UTF-8">
-<meta name="generator" content="SunLight CMS <?php echo Sunlight\Core::VERSION . ' ' . Sunlight\Core::STATE; ?>">
+<meta name="generator" content="SunLight CMS <?php echo Sunlight\Core::VERSION . ' ' . Sunlight\Core::DIST; ?>">

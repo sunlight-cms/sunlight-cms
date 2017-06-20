@@ -59,7 +59,7 @@ $output .= "
   <table>
     <tr>
       <th>" . $_lang['global.version'] . ":</th>
-      <td>" . Sunlight\Core::VERSION . ' <small>' . Sunlight\Core::STATE . "</small></td>
+      <td>" . Sunlight\Core::VERSION . ' <small>' . Sunlight\Core::DIST . "</small></td>
     </tr>
 
     " . ($admin_index_cfg['latest_version_check'] ? "
@@ -93,9 +93,9 @@ $output .= Sunlight\Extend::buffer('admin.index.after_table');
 // zpravy
 $messages = array();
 
-if ('STABLE' !== Sunlight\Core::STATE) {
+if ('BETA' === Sunlight\Core::DIST) {
     // nestabilni verze
-    $messages[] = Sunlight\Message::warning(str_replace('*state*', Sunlight\Core::STATE, $_lang['admin.index.statewarn']));
+    $messages[] = Sunlight\Message::warning(str_replace('*state*', Sunlight\Core::DIST, $_lang['admin.index.statewarn']));
 }
 if (_dev) {
     // vyvojovy rezim
@@ -121,7 +121,7 @@ if ($admin_index_cfg['latest_version_check']) {
     $versionApiUrl = Sunlight\Util\Url::parse('https://sunlight-cms.org/api/v2/version');
     $versionApiUrl->add(array(
         'ver' => Sunlight\Core::VERSION,
-        'state' => Sunlight\Core::STATE,
+        'dist' => Sunlight\Core::DIST,
         'php' => PHP_VERSION_ID,
         'referer' => sprintf('%s@%s', sha1(Sunlight\Core::$appId . '$' . Sunlight\Core::$secret), Sunlight\Util\Url::current()->host),
         'lang' => $_lang['langcode.iso639'],
@@ -138,10 +138,11 @@ $.ajax({
         var ageClass;
 
         switch (response.localAge) {
+            case 0: ageClass = 'latest'; break;
             case 1: ageClass = 'patch';  break;
             case 2: ageClass = 'minor'; break;
             case 3: ageClass = 'major'; break;
-            default: ageClass = 'latest'; break;
+            default: ageClass = 'unk'; break;
         }
         
         if (response.url) {
