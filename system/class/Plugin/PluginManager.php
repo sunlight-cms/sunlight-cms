@@ -441,10 +441,13 @@ class PluginManager
                     $this->setupAutoload($plugin);
 
                     // create instance
-                    $this->plugins[$type][$name] = new $plugin['options']['class'](
-                        $plugin,
-                        $this
-                    );
+                    $pluginInstance = new $plugin['options']['class']($plugin, $this);
+
+                    if (!is_a($pluginInstance, $this->types[$type]['class'])) {
+                        throw new \LogicException(sprintf('Plugin class "%s" of plugin type "%s" must extend "%s"', get_class($pluginInstance), $type, $this->types[$type]['class']));
+                    }
+
+                    $this->plugins[$type][$name] = $pluginInstance;
                 } else {
                     $this->inactivePlugins[$type][$name] = new InactivePlugin(
                         $plugin,
