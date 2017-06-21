@@ -336,10 +336,10 @@ body.login-layout #footer, body.login-layout #footer a {color: <?php echo $schem
 #index-table table tr:last-child th, #index-table table tr:last-child td {border-bottom: none;}
 #latest-version {font-weight: bold;}
 #latest-version .version-latest {color: #009800;}
-#latest-version .version-patch {color: #8b9800;}
+#latest-version .version-patch {color: #cda869;}
 #latest-version .version-minor {color: #f06c00;}
 #latest-version .version-major {color: #e60000;}
-#latest-version .version-unk {color: #8f8f8f;}
+#latest-version .version-unk {color: #0077a7;}
 
 /* content management */
 #contenttable {width: 100%; border: 1px solid <?php echo $scheme_smoke; ?>; line-height: 140%;}
