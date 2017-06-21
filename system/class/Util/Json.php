@@ -7,35 +7,14 @@ namespace Sunlight\Util;
  */
 class Json
 {
+    const CONTENT_TYPE_JSON = 'application/json; charset=UTF-8';
+    const CONTENT_TYPE_JSONP = 'application/javascript; charset=UTF-8';
+
     /**
      * This is a static class
      */
     private function __construct()
     {
-    }
-
-    /**
-     * Decode a JSON string
-     *
-     * @param string $json           the JSON string to decode
-     * @param bool   $assoc          decode objects as associative arrays 1/0
-     * @param bool   $bigIntAsString represent big integers as strings (instead of floats) 1/0
-     * @throws \RuntimeException in case of an error
-     * @return mixed
-     */
-    public static function decode($json, $assoc = true, $bigIntAsString = false)
-    {
-        if (!$bigIntAsString || !defined('JSON_BIGINT_AS_STRING')) {
-            $data = json_decode($json, $assoc);
-        } else {
-            $data = json_decode($json, $assoc, 512, JSON_BIGINT_AS_STRING);
-        }
-
-        if (JSON_ERROR_NONE !== ($errorCode = json_last_error())) {
-            throw new \RuntimeException(static::getErrorMessage($errorCode));
-        }
-
-        return $data;
     }
 
     /**
@@ -69,6 +48,76 @@ class Json
         }
 
         return $json;
+    }
+
+    /**
+     * Encode data as JSONP
+     *
+     * @param string $callback
+     * @param mixed  $data
+     * @param bool   $pretty         produce formatted JSON 1/0 (true works in PHP 5.4.0+ only)
+     * @param bool   $escapedUnicode escape unicode 1/0 (false works in PHP 5.4.0+ only)
+     * @param bool   $escapedSlashes escape slashes 1/0 (false works in PHP 5.4.0+ only)
+     * @throws \RuntimeException in case of an error
+     * @return string
+     */
+    public static function encodeJsonp($callback, $data, $pretty = true, $escapedUnicode = true, $escapedSlashes = true)
+    {
+        return sprintf('%s(%s);', $callback, static::encode($data, $pretty, $escapedUnicode, $escapedSlashes));
+    }
+
+
+
+    /**
+     * Determine JSON / JSONP format using a GET parameter and return the content type and encoded data
+     *
+     * @param mixed  $data
+     * @param bool   $pretty             produce formatted JSON 1/0 (true works in PHP 5.4.0+ only)
+     * @param bool   $escapedUnicode     escape unicode 1/0 (false works in PHP 5.4.0+ only)
+     * @param bool   $escapedSlashes     escape slashes 1/0 (false works in PHP 5.4.0+ only)
+     * @param string $jsonpCallbackParam JSONP callback parameter name
+     * @throws \RuntimeException in case of an error
+     * @return string[] content type, encoded data
+     */
+    public static function smartEncode($data, $pretty = true, $escapedUnicode = true, $escapedSlashes = false, $jsonpCallbackParam = 'callback')
+    {
+        if (
+            $jsonpCallbackParam !== null
+            && isset($_GET[$jsonpCallbackParam])
+            && preg_match('{^[a-z_$]\w+$}i', $callback = _get($jsonpCallbackParam))
+        ) {
+            $contentType = static::CONTENT_TYPE_JSONP;
+            $encodedData = static::encodeJsonp($callback, $data, $pretty, $escapedUnicode, $escapedSlashes);
+        } else {
+            $contentType = static::CONTENT_TYPE_JSON;
+            $encodedData = static::encode($data, $pretty, $escapedUnicode, $escapedSlashes);
+        }
+
+        return array($contentType, $encodedData);
+    }
+
+    /**
+     * Decode a JSON string
+     *
+     * @param string $json           the JSON string to decode
+     * @param bool   $assoc          decode objects as associative arrays 1/0
+     * @param bool   $bigIntAsString represent big integers as strings (instead of floats) 1/0
+     * @throws \RuntimeException in case of an error
+     * @return mixed
+     */
+    public static function decode($json, $assoc = true, $bigIntAsString = false)
+    {
+        if (!$bigIntAsString || !defined('JSON_BIGINT_AS_STRING')) {
+            $data = json_decode($json, $assoc);
+        } else {
+            $data = json_decode($json, $assoc, 512, JSON_BIGINT_AS_STRING);
+        }
+
+        if (JSON_ERROR_NONE !== ($errorCode = json_last_error())) {
+            throw new \RuntimeException(static::getErrorMessage($errorCode));
+        }
+
+        return $data;
     }
 
     /**
