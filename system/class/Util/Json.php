@@ -66,8 +66,6 @@ class Json
         return sprintf('%s(%s);', $callback, static::encode($data, $pretty, $escapedUnicode, $escapedSlashes));
     }
 
-
-
     /**
      * Determine JSON / JSONP format using a GET parameter and return the content type and encoded data
      *
