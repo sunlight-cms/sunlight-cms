@@ -12,13 +12,13 @@ if (isset($_GET['g'])) {
     $g = (int) _get('g');
     $galdata = DB::queryRow("SELECT title,var2,var3,var4 FROM " . _root_table . " WHERE id=" . $g . " AND type=" . _page_gallery);
     if ($galdata !== false) {
-        if (null === $galdata['var2']) {
+        if ($galdata['var2'] === null) {
             $galdata['var2'] = _galdefault_per_page;
         }
-        if (null === $galdata['var3']) {
+        if ($galdata['var3'] === null) {
             $galdata['var3'] = _galdefault_thumb_h;
         }
-        if (null === $galdata['var4']) {
+        if ($galdata['var4'] === null) {
             $galdata['var4'] = _galdefault_thumb_w;
         }
         $continue = true;
@@ -125,7 +125,7 @@ if (isset($_POST['xaction']) && $continue) {
                             $lastid = $id;
                         }
 
-                        if ('' !== $sql) {
+                        if ($sql !== '') {
                             $sql .= ',';
                         }
                         $sql .= $var . '=';
@@ -242,7 +242,7 @@ if (isset($_POST['xaction']) && $continue) {
                     // process
                     $picUid = _pictureProcess($picOpts, $picError, $picFormat);
 
-                    if (false === $picUid) {
+                    if ($picUid === false) {
                         continue;
                     }
 

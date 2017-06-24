@@ -71,7 +71,7 @@ class Message
     {
         $output = Extend::buffer('message.render', array('message' => $this));
 
-        if ('' === $output) {
+        if ($output === '') {
             $output = "\n<div class='message message-" . _e($this->type) . "'>"
                 . ($this->isHtml ? $this->message : _e($this->message))
                 . "</div>\n";

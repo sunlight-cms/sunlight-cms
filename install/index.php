@@ -63,7 +63,7 @@ class Config
      */
     public static function isLoaded()
     {
-        return null !== static::$config;
+        return static::$config !== null;
     }
 }
 
@@ -279,7 +279,7 @@ class Labels
      */
     public static function get($key, array $replacements = null)
     {
-        if (null === static::$language) {
+        if (static::$language === null) {
             throw new \RuntimeException('Language not set');
         }
         if (!isset(static::$labels[static::$language][$key])) {
@@ -451,7 +451,7 @@ class StepRunner
     </p>
     
     <?php foreach ($vars as $name => $value): ?>
-        <?php if (null !== $value): ?>
+        <?php if ($value !== null): ?>
             <input type="hidden" name="<?php echo _e($name) ?>" value="<?php echo _e($value) ?>">
         <?php endif ?>
     <?php endforeach ?>
@@ -705,27 +705,27 @@ class ConfigurationStep extends Step
         );
 
         // validate
-        if (null !== $config['db.port'] && $config['db.port'] <= 0) {
+        if ($config['db.port'] !== null && $config['db.port'] <= 0) {
             $this->errors[] = 'db.port.invalid';
         }
 
-        if ('' === $config['db.prefix']) {
+        if ($config['db.prefix'] === '') {
             $this->errors[] = 'db.prefix.empty';
         } elseif (!preg_match('/^[a-zA-Z0-9_]+$/', $config['db.prefix'])) {
             $this->errors[] = 'db.prefix.invalid';
         }
 
-        if ('' === $config['url']) {
+        if ($config['url'] === '') {
             $this->errors[] = 'url.empty';
         } elseif (!preg_match('~^https?://[a-zA-Z0-9_.\-]+(:\d+)?((?:/[^/]+)*)$~', $config['url'])) {
             $this->errors[] = 'url.invalid';
         }
 
-        if ('' === $config['secret']) {
+        if ($config['secret'] === '') {
             $this->errors[] = 'secret.empty';
         }
 
-        if ('' === $config['app_id']) {
+        if ($config['app_id'] === '') {
             $this->errors[] = 'app_id.empty';
         } elseif (!ctype_alnum($config['app_id'])) {
             $this->errors[] = 'app_id.invalid';
@@ -735,7 +735,7 @@ class ConfigurationStep extends Step
         if (empty($this->errors)) {
             $connectError = DB::connect($config['db.server'], $config['db.user'], $config['db.password'], $config['db.name'], $config['db.port']);
 
-            if (null !== $connectError) {
+            if ($connectError !== null) {
                 $this->errors[] = array('db.connect.error', array('%error%' => $connectError));
             }
         }
@@ -757,7 +757,7 @@ class ConfigurationStep extends Step
             parent::isComplete()
             && is_file(CONFIG_PATH)
             && Config::isLoaded()
-            && null === DB::connect(Config::$config['db.server'], Config::$config['db.user'], Config::$config['db.password'], Config::$config['db.name'], Config::$config['db.port']);
+            && DB::connect(Config::$config['db.server'], Config::$config['db.user'], Config::$config['db.password'], Config::$config['db.name'], Config::$config['db.port']) === null;
     }
 
     public function run()
@@ -884,7 +884,7 @@ class ConfigurationStep extends Step
     {
         $array = preg_split('/\s*,\s*/', $value, null, PREG_SPLIT_NO_EMPTY);
 
-        if (null !== $mapper) {
+        if ($mapper !== null) {
             $array = array_map($mapper, $array);
         }
 
@@ -906,7 +906,7 @@ class ConfigurationStep extends Step
             $value = $this->getConfig($key);
         }
 
-        return null !== $value
+        return $value !== null
             ? implode(', ', $value)
             : '';
     }
@@ -951,7 +951,7 @@ class ImportDatabaseStep extends Step
             'description' => trim(_post('import_settings_description')),
             'keywords' => trim(_post('import_settings_keywords')),
             'language' => $this->vars['language'],
-            'atreplace' => 'cs' === $this->vars['language'] ? '[zavinac]' : '[at]',
+            'atreplace' => $this->vars['language'] === 'cs' ? '[zavinac]' : '[at]',
             'latest_version_check' => _post('import_settings_latest_version_check') ? 1 : 0,
         );
 
@@ -962,19 +962,19 @@ class ImportDatabaseStep extends Step
         );
 
         // validate
-        if ('' === $settings['title']) {
+        if ($settings['title'] === '') {
             $this->errors[] = 'settings.title.empty';
         }
 
-        if ('' === $admin['username']) {
+        if ($admin['username'] === '') {
             $this->errors[] = 'admin.username.empty';
         }
 
-        if ('' === $admin['password']) {
+        if ($admin['password'] === '') {
             $this->errors[] = 'admin.password.empty';
         }
 
-        if ('' === $admin['email']) {
+        if ($admin['email'] === '') {
             $this->errors[] = 'admin.email.empty';
         } elseif (!_validateEmail($admin['email'])) {
             $this->errors[] = 'admin.email.invalid';
@@ -1026,7 +1026,7 @@ class ImportDatabaseStep extends Step
 
     private function getInitialContent()
     {
-        if ('cs' === $this->vars['language']) {
+        if ($this->vars['language'] === 'cs') {
             return array(
                 'boxes' => array(
                     1 => array('title' => 'Menu'),
@@ -1147,7 +1147,7 @@ Now you can <a href="admin/">log in to the administration</a> (username and pass
      */
     private function isDatabaseInstalled()
     {
-        return 0 === sizeof(array_diff($this->getTableNames(), $this->getExistingTableNames()));
+        return sizeof(array_diff($this->getTableNames(), $this->getExistingTableNames())) === 0;
     }
 
     /**
@@ -1155,7 +1155,7 @@ Now you can <a href="admin/">log in to the administration</a> (username and pass
      */
     private function getExistingTableNames()
     {
-        if (null === $this->existingTableNames) {
+        if ($this->existingTableNames === null) {
             $this->existingTableNames = DB::queryRows(
                 'SHOW TABLES LIKE ' . DB::val(Config::$config['db.prefix'] . '_%'),
                 null,

@@ -27,7 +27,7 @@ class Filesystem
         $path = str_replace('\\', '/', $path);
 
         return
-            '' === $path
+            $path === ''
                 ? $basePath
                 : (static::isAbsolutePath($path)
                     ? $path
@@ -44,8 +44,8 @@ class Filesystem
     public static function isAbsolutePath($path)
     {
         return
-            isset($path[0]) && ('/' === $path[0] || '\\' === $path[0])
-            || isset($path[1]) && ':' === $path[1];
+            isset($path[0]) && ($path[0] === '/' || $path[0] === '\\')
+            || isset($path[1]) && $path[1] === ':';
     }
 
     /**
@@ -61,9 +61,9 @@ class Filesystem
         $parentJumps = 0;
 
         for ($i = sizeof($segments) - 1; $i >= 0; --$i) {
-            $isCurrent = '.' === $segments[$i];
-            $isParent = '..' === $segments[$i];
-            $isEmpty = '' === $segments[$i];
+            $isCurrent = $segments[$i] === '.';
+            $isParent = $segments[$i] === '..';
+            $isEmpty = $segments[$i] === '';
             $isDot = $isCurrent || $isParent;
 
             if ($isParent) {
@@ -90,7 +90,7 @@ class Filesystem
             $result .= '/';
         }
 
-        if ('' === $result) {
+        if ($result === '') {
             $result = './';
         }
 
@@ -130,8 +130,8 @@ class Filesystem
         $isEmpty = true;
         
         $handle = opendir($path);
-        while (false !== ($item = readdir($handle))) {
-            if ('.' !== $item && '..' !== $item) {
+        while (($item = readdir($handle)) !== (false)) {
+            if ($item !== '.' && $item !== '..') {
                 $isEmpty = false;
                 break;
             }
@@ -153,14 +153,14 @@ class Filesystem
     {
         $iterator = static::createRecursiveIterator($path);
 
-        if (null !== $failedPaths) {
+        if ($failedPaths !== null) {
             $failedPaths = array();
         }
 
         foreach ($iterator as $item) {
             /* @var $item \SplFileInfo */
             if (!$item->isReadable() || ($checkWrite && !$item->isWritable())) {
-                if (null !== $failedPaths) {
+                if ($failedPaths !== null) {
                     $failedPaths[] = $item->getPathname();
                 } else {
                     return false;
@@ -230,7 +230,7 @@ class Filesystem
             } elseif (
                 (
                     !$options['files_only']
-                    || null === $options['file_callback']
+                    || $options['file_callback'] === null
                     || call_user_func($options['file_callback'], $item)
                 )
                 && !@unlink($item)

@@ -46,7 +46,7 @@ class TreeManager
     public function checkParent($nodeId, $parentNodeId)
     {
         if (
-            null === $parentNodeId
+            $parentNodeId === null
             || $nodeId != $parentNodeId
                 && !in_array($parentNodeId, $this->getChildren($nodeId, true))
         ) {
@@ -176,7 +176,7 @@ class TreeManager
      */
     public function refreshOnParentUpdate($nodeId, $newParent, $oldParent)
     {
-        if (false === $oldParent) {
+        if ($oldParent === false) {
             $oldParent = $this->getParent($nodeId);
         }
         if ($oldParent != $newParent) {
@@ -239,13 +239,13 @@ class TreeManager
             
             // zavolat propagator aktualniho kontextu
             $changeset = call_user_func($propagator, $context, $node);
-            if (null !== $changeset) {
+            if ($changeset !== null) {
                 $changesetMap[$node[$this->idColumn]] = $changeset;
             }
 
             // zavolat aktualizator kontextu (pro potomky)
             $newContext = call_user_func($contextUpdater, $context, $node, $changeset);
-            if (null !== $newContext) {
+            if ($newContext !== null) {
                 $stack[] = array($context, $contextLevel);
                 $context = $newContext;
                 $contextLevel = $node[$this->levelColumn] + 1;
@@ -271,16 +271,16 @@ class TreeManager
     {
         $level = 0;
         $parents = array();
-        if (null === $nodeId) {
+        if ($nodeId === null) {
             return 0;
         }
         do {
             $node = DB::queryRow('SELECT ' . $this->parentColumn . ' FROM `' . $this->table . '` WHERE ' . $this->idColumn . '=' . DB::val($nodeId));
-            if (false === $node) {
+            if ($node === false) {
                 throw new \RuntimeException(sprintf('Node "%s" does not exist', $nodeId));
             }
 
-            $hasParent = (null !== $node[$this->parentColumn]);
+            $hasParent = ($node[$this->parentColumn] !== null);
             if ($hasParent) {
                 $nodeId = $node[$this->parentColumn];
                 $parents[] = $nodeId;
@@ -302,7 +302,7 @@ class TreeManager
     protected function getParent($nodeId)
     {
         $node = DB::queryRow('SELECT ' . $this->parentColumn . ' FROM `' . $this->table . '` WHERE ' . $this->idColumn . '=' . DB::val($nodeId));
-        if (false === $node) {
+        if ($node === false) {
             throw new \RuntimeException(sprintf('Node "%s" does not exist', $nodeId));
         }
 
@@ -337,13 +337,13 @@ class TreeManager
     {
         // zjistit hloubku uzlu
         $node = DB::queryRow('SELECT ' . $this->depthColumn . ' FROM `' . $this->table . '` WHERE id=' . DB::val($nodeId));
-        if (false === $node) {
+        if ($node === false) {
             if ($emptyArrayOnFailure) {
                 return array();
             }
             throw new \RuntimeException(sprintf('Node "%s" does not exist', $nodeId));
         }
-        if (0 == $node[$this->depthColumn]) {
+        if ($node[$this->depthColumn] == 0) {
             // nulova hloubka
             return array();
         }
@@ -351,7 +351,7 @@ class TreeManager
         // sestavit dotaz
         $sql = 'SELECT ';
         for ($i = 0; $i < $node[$this->depthColumn]; ++$i) {
-            if (0 !== $i) {
+            if ($i !== 0) {
                 $sql .= ',';
             }
             $sql .= 'n' . $i . '.id';
@@ -405,7 +405,7 @@ class TreeManager
             ),
         );
         $levelset = array();
-        if (null !== $currentNodeId) {
+        if ($currentNodeId !== null) {
             $levelset[$currentNodeLevel] = array($currentNodeId => true);
         }
 
@@ -413,7 +413,7 @@ class TreeManager
         for ($i = 0; isset($queue[$i]); ++$i) {
 
             // traverzovat potomky aktualniho uzlu
-            if (null !== $queue[$i][0]) {
+            if ($queue[$i][0] !== null) {
                 $childCondition = $this->parentColumn . '=' . DB::val($queue[$i][0]);
                 $childrenLevel = $queue[$i][1] + 1;
             } else {
@@ -443,7 +443,7 @@ class TreeManager
 
         // aktualizovat hloubku cele vetve
         $topNodeId = end($currentNodeParents);
-        if (false === $topNodeId) {
+        if ($topNodeId === false) {
             $topNodeId = $currentNodeId;
         }
         $this->doRefreshDepth($topNodeId, true);
@@ -459,7 +459,7 @@ class TreeManager
     {
         // zjistit korenovy uzel
         $rootNodeId = $currentNodeId;
-        if (true !== $isRootNode && null !== $currentNodeId) {
+        if ($isRootNode !== true && $currentNodeId !== null) {
             $rootNodeId = $this->getRoot($currentNodeId);
         }
 
@@ -477,7 +477,7 @@ class TreeManager
         for ($i = 0; isset($queue[$i]); ++$i) {
 
             // vyhledat potomky
-            if (null !== $queue[$i][0]) {
+            if ($queue[$i][0] !== null) {
                 $childCondition = $this->parentColumn . '=' . DB::val($queue[$i][0]);
             } else {
                 $childCondition = $this->parentColumn . ' IS NULL';
@@ -485,7 +485,7 @@ class TreeManager
             $children = DB::query($s = 'SELECT ' . $this->idColumn . ',' . $this->depthColumn . ' FROM `' . $this->table . '` WHERE ' . $childCondition);
             if (DB::size($children) > 0) {
                 // uzel ma potomky, pridat do fronty
-                if (null !== $queue[$i][0]) {
+                if ($queue[$i][0] !== null) {
                     $childParents = array_merge(array($queue[$i][0]), $queue[$i][2]);
                 } else {
                     $childParents = array();
@@ -498,7 +498,7 @@ class TreeManager
             DB::free($children);
 
             // aktualizovat urovne nadrazenych uzlu
-            if (null !== $queue[$i][0] && !isset($depthmap[$queue[$i][0]])) {
+            if ($queue[$i][0] !== null && !isset($depthmap[$queue[$i][0]])) {
                 $depthmap[$queue[$i][0]] = 0;
             }
             for ($j = 0; isset($queue[$i][2][$j]); ++$j) {

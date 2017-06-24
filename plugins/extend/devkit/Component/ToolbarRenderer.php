@@ -40,7 +40,7 @@ class ToolbarRenderer
             $now = microtime(true);
 
             // determine class
-            if (isset($_COOKIE['sl_devkit_toolbar']) && 'closed' === $_COOKIE['sl_devkit_toolbar']) {
+            if (isset($_COOKIE['sl_devkit_toolbar']) && $_COOKIE['sl_devkit_toolbar'] === 'closed') {
                 $class = 'devkit-toolbar-closed';
             } else {
                 $class = 'devkit-toolbar-open';

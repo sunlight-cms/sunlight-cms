@@ -16,7 +16,7 @@ if (isset($_POST['bulk_action'])) {
             $user_delete_counter = 0;
             foreach ($user_ids as $user_id) {
                 $user_id = (int) $user_id;
-                if (0 !== $user_id && _loginid != $user_id) {
+                if ($user_id !== 0 && $user_id != _loginid) {
                     if (_deleteUser($user_id)) {
                         ++$user_delete_counter;
                     }
@@ -51,7 +51,7 @@ if (isset($_GET['group_id'])) {
 
 // aktivace vyhledavani
 $search = trim(_get('search'));
-if ('' !== $search) {
+if ($search !== '') {
     $wildcard = DB::val('%' . $search . '%');
     $list_conds[] = "(u.id=" . DB::val($search) . " OR u.username LIKE {$wildcard} OR u.publicname LIKE {$wildcard} OR u.email LIKE {$wildcard} OR u.ip LIKE {$wildcard})";
 } else {
@@ -89,7 +89,7 @@ $output .= '
 ';
 
 // priprava strankovani
-$paging = _resultPaging("index.php?p=users-list&group=" . $group . (false !== $search ? '&search=' . rawurlencode($search) : ''), 50, _users_table . ':u', $list_conds_sql);
+$paging = _resultPaging("index.php?p=users-list&group=" . $group . ($search !== false ? '&search=' . rawurlencode($search) : ''), 50, _users_table . ':u', $list_conds_sql);
 $output .= $paging['paging'];
 
 // tabulka

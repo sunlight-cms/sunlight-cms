@@ -35,7 +35,7 @@ while ($art_count = DB::row($art_count_query)) {
 // radky
 foreach ($tree as $page) {
     $output .= "<tr><td>";
-    if (_page_category == $page['type']) {
+    if ($page['type'] == _page_category) {
         $output .= "<a class='node-level-m{$page['node_level']}' href='index.php?p=content-articles-list&amp;cat={$page['id']}'>
     <img src='images/icons/dir.png' alt='col' class='icon'>
     {$page['title']}

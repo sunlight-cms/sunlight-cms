@@ -590,7 +590,7 @@ if ($continue) {
             $action_code = "
 <div id='fman-action'>
 <h2>" . $_lang[$action_title] . "</h2>
-<form action='" . $url . $action_acbonus . "'" . ((null !== $action_form_class) ? " class='" . $action_form_class . "'" : '') . " method='post' enctype='multipart/form-data'>
+<form action='" . $url . $action_acbonus . "'" . (($action_form_class !== null) ? " class='" . $action_form_class . "'" : '') . " method='post' enctype='multipart/form-data'>
 <input type='hidden' name='action' value='" . _e(_get('a')) . "'>
 <table class='formtable'>
 " . $action_code . "
@@ -639,7 +639,7 @@ if ($continue) {
     // adresare
     $handle = opendir($dir);
     $items = array();
-    while (false !== ($item = readdir($handle))) {
+    while (($item = readdir($handle)) !== (false)) {
         if (is_dir($dir . $item) && $item != "." && $item != "..") {
             $items[] = $item;
         }
@@ -651,7 +651,7 @@ if ($continue) {
 
         // adresar nebo odkaz na nadrazeny adresar
         if ($item == "..") {
-            if (false === ($dirhref = _userCheckPath($dir . $item, false, true))) {
+            if (($dirhref = _userCheckPath($dir . $item, false, true)) === (false)) {
                 continue;
             }
         } else {
@@ -677,14 +677,14 @@ if ($continue) {
         ++$dircounter;
     }
 
-    if (0 !== $dircounter) {
+    if ($dircounter !== 0) {
         $output .= "<tr><td colspan='3'> </td></tr>";
     }
 
     // soubory
     rewinddir($handle);
     $items = array();
-    while (false !== ($item = readdir($handle))) {
+    while (($item = readdir($handle)) !== (false)) {
         if (!is_dir($dir . $item) && $item != "..") {
             $items[] = $item;
         }
@@ -705,7 +705,7 @@ if ($continue) {
         $image = false;
 
         $icon = isset($extensions[$ext]) ? $extensions[$ext] : 'other';
-        $image = 'image' === $icon;
+        $image = $icon === 'image';
 
         $filesize = filesize($dir . $item);
 
@@ -732,7 +732,7 @@ if ($continue) {
         $highlight = !$highlight;
     }
 
-    if (0 === $filecounter && 0 === $dircounter) {
+    if ($filecounter === 0 && $dircounter === 0) {
         $output .= "<tr><td colspan='3'>" . $_lang['global.nokit'] . "</td></tr>\n";
     }
 

@@ -24,7 +24,7 @@ if ($query !== false) {
         $bbcode = true;
         Sunlight\Extend::call('mod.editpost.backlink', array('backlink' => &$_index['backlink'], 'post' => $query));
 
-        if (null === $_index['backlink']) {
+        if ($_index['backlink'] === null) {
             list($url) = _linkPost($query, false);
 
             switch ($query['type']) {
@@ -36,7 +36,7 @@ if ($query !== false) {
                     break;
                 case _post_book_entry:
                     $postsperpage = DB::queryRow("SELECT var2 FROM " . _root_table . " WHERE id=" . $query['home']);
-                    if (null === $postsperpage['var2']) {
+                    if ($postsperpage['var2'] === null) {
                         $postsperpage['var2'] = _commentsperpage;
                     }
                     $_index['backlink'] = _addGetToLink($url, "page=" . _resultPagingGetItemPage($postsperpage['var2'], _posts_table, "id>" . $query['id'] . " AND type=" . _post_book_entry . " AND xhome=-1 AND home=" . $query['home']), false) . "#post-" . $query['id'];
@@ -61,7 +61,7 @@ if ($query !== false) {
                     break;
 
                 case _post_plugin:
-                    if ('' === $url) {
+                    if ($url === '') {
                         $output .= _msg(_msg_err, sprintf($_lang['plugin.error'], $query['flag']));
 
                         return;
@@ -105,7 +105,7 @@ if (isset($_POST['text'])) {
         $text = _cutHtml(_e(trim(_post('text'))), ($query['type'] != _post_shoutbox_entry) ? 16384 : 255);
         if ($query['xhome'] == -1 && in_array($query['type'], array(_post_forum_topic, _post_pm))) {
             $subject = _cutHtml(_e(_wsTrim(_post('subject'))), 48);
-            if ('' === $subject)  {
+            if ($subject === '')  {
                 $subject = '-';
             }
         } else {
@@ -124,7 +124,7 @@ if (isset($_POST['text'])) {
                 'post' => $query,
                 'message' => &$message,
             ));
-            if ('' === $message) {
+            if ($message === '') {
                 $update_data = array(
                     'text' => $text,
                     'subject' => $subject

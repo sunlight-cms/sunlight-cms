@@ -51,10 +51,10 @@ class Password
         $segments = explode(':', $storedPassword, 4);
 
         if (
-            4 !== sizeof($segments)
+            sizeof($segments) !== 4
             || !ctype_digit($segments[1])
-            || '' === $segments[2]
-            || '' === $segments[3]
+            || $segments[2] === ''
+            || $segments[3] === ''
         ) {
             throw new \InvalidArgumentException('Invalid password format');
         }
@@ -93,13 +93,13 @@ class Password
         if (!is_string($plainPassword)) {
             throw new \InvalidArgumentException('Password must be a string');
         }
-        if ('' === $plainPassword) {
+        if ($plainPassword === '') {
             throw new \InvalidArgumentException('Password must not be empty');
         }
 
         if (static::MD5_LEGACY_ALGO === $algo) {
             // backward compatibility
-            if (0 !== $iterations) {
+            if ($iterations !== 0) {
                 throw new \InvalidArgumentException(sprintf('Iterations is expected to be 0 if algo = "%s"', $algo));
             }
 
@@ -147,7 +147,7 @@ class Password
      */
     public function match($plainPassword)
     {
-        if ('' === $plainPassword) {
+        if ($plainPassword === '') {
             return false;
         }
 
@@ -155,9 +155,9 @@ class Password
 
         return
             is_string($this->hash)
-            && '' !== $this->hash
+            && $this->hash !== ''
             && is_string($hash)
-            && '' !== $hash
+            && $hash !== ''
             && $hash === $this->hash;
     }
 

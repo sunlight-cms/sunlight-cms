@@ -63,10 +63,10 @@ class TemplateService
             ? $template->getId()
             : $template;
 
-        if (null !== $layout || null !== $slot) {
+        if ($layout !== null || $slot !== null) {
             $uid .= ':' . $layout;
         }
-        if (null !== $slot) {
+        if ($slot !== null) {
             $uid .= ':' . $slot;
         }
 
@@ -97,7 +97,7 @@ class TemplateService
      */
     public static function validateUid($uid, $type)
     {
-        return null !== static::getComponentsByUid($uid, $type);
+        return static::getComponentsByUid($uid, $type) !== null;
     }
 
     /**
@@ -142,7 +142,7 @@ class TemplateService
             'template' => $template,
         );
 
-        if (null !== $layout) {
+        if ($layout !== null) {
             if (!$template->hasLayout($layout)) {
                 return null;
             }
@@ -150,7 +150,7 @@ class TemplateService
             $components['layout'] = $layout;
         }
 
-        if (null !== $slot && null !== $layout) {
+        if ($slot !== null && $layout !== null) {
             if (!$template->hasSlot($layout, $slot)) {
                 return null;
             }
@@ -177,10 +177,10 @@ class TemplateService
         if ($includeTemplateName) {
             $parts[] = $template->getOption('name');
         }
-        if (null !== $layout || null !== $slot) {
+        if ($layout !== null || $slot !== null) {
             $parts[] = $template->getLayoutLabel($layout);
         }
-        if (null !== $slot) {
+        if ($slot !== null) {
             $parts[] = $template->getSlotLabel($layout, $slot);
         }
 
@@ -216,7 +216,7 @@ class TemplateService
      */
     public static function getComponentLabelByUid($uid, $type, $includeTemplateName = true)
     {
-        if (null !== $uid) {
+        if ($uid !== null) {
             $components = static::getComponentsByUid($uid, $type);
         } else {
             $components = array(
@@ -231,7 +231,7 @@ class TemplateService
             }
         }
 
-        if (null !== $components) {
+        if ($components !== null) {
             return static::getComponentLabelFromArray($components, $includeTemplateName);
         }
 

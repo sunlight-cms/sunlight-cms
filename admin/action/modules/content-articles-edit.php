@@ -72,7 +72,7 @@ if (isset($_POST['title'])) {
 
     // nacteni promennych
     $newdata['title'] = _cutHtml(_e(_post('title')), 255);
-    if ('' === _post('slug')) {
+    if (_post('slug') === '') {
         $_POST['slug'] = _post('title');
     }
     $newdata['slug'] = _slugify(_post('slug'), true);
@@ -157,7 +157,7 @@ if (isset($_POST['title'])) {
         // zpracovani
         $picUid = _pictureProcess($picOpts, $picError);
 
-        if (false !== $picUid) {
+        if ($picUid !== false) {
             // uspech
             if (isset($query['picture_uid'])) {
                 // odstraneni stareho
@@ -316,7 +316,7 @@ if ($continue) {
     // editacni pole
     $editor = Sunlight\Extend::buffer('admin.article.editor');
 
-    if ('' === $editor) {
+    if ($editor === '') {
         // vychozi implementace
         $editor = "<textarea name='content' rows='25' cols='68' class='editor'>" . _e($query['content']) . "</textarea>";
     }

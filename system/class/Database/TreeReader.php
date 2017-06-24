@@ -97,12 +97,12 @@ class TreeReader
     public function extractChildren(array $tree, $rootNodeId, $flat)
     {
         if ($flat) {
-            if (null !== $rootNodeId && !empty($tree)) {
+            if ($rootNodeId !== null && !empty($tree)) {
                 reset($tree);
                 unset($tree[key($tree)]);
             }
         } else {
-            if (null !== $rootNodeId && !empty($tree)) {
+            if ($rootNodeId !== null && !empty($tree)) {
                 $tree = $tree[0][$this->childrenIndex];
             }
         }
@@ -160,7 +160,7 @@ class TreeReader
             }
 
             $frame = array_pop($stack);
-        } while (null !== $frame);
+        } while ($frame !== null);
 
         return $list;
     }
@@ -181,7 +181,7 @@ class TreeReader
             $node[$this->childrenIndex] = array();
 
             // pridat uzel
-            if (null !== $node[$this->parentColumn] && (null === $rootId || $rootId != $node[$this->idColumn])) {
+            if ($node[$this->parentColumn] !== null && ($rootId === null || $rootId != $node[$this->idColumn])) {
                 // jako potomka
                 if ($node[$this->depthColumn] > 0) {
                     $nodeIndex = array_push($childrenMap[$node[$this->parentColumn]], $node) - 1;
@@ -212,7 +212,7 @@ class TreeReader
         $stack = array();
         $parentId = $rootId;
 
-        if (null !== $rootId) {
+        if ($rootId !== null) {
             foreach ($nodes as $nodeId => $node) {
                 if ($nodeId == $rootId) {
                     $output[$nodeId] = $node;
@@ -228,8 +228,8 @@ class TreeReader
                 $nodeParentId = $node[$this->parentColumn];
 
                 if (
-                    null === $parentId && null === $nodeParentId
-                    || null !== $parentId && $parentId == $nodeParentId
+                    $parentId === null && $nodeParentId === null
+                    || $parentId !== null && $parentId == $nodeParentId
                 ) {
                     $output[$node[$this->idColumn]] = $node;
                     unset($nodes[$nodeId]);
@@ -248,7 +248,7 @@ class TreeReader
             } else {
                 $parentId = false;
             }
-        } while(false !== $parentId);
+        } while($parentId !== false);
 
         return $output;
     }
@@ -262,7 +262,7 @@ class TreeReader
     public function loadTree(TreeReaderOptions $options)
     {
         // zjistit hloubku stromu
-        if (null !== $options->nodeDepth) {
+        if ($options->nodeDepth !== null) {
             $nodeDepth = $options->nodeDepth;
         } else {
             $nodeDepth = $this->getDepth($options->nodeId);
@@ -278,7 +278,7 @@ class TreeReader
         // sestavit dotaz
         $sql = 'SELECT ';
         for ($i = 0; $i < $columnCount; ++$i) {
-            if (0 !== $i) {
+            if ($i !== 0) {
                 $sql .= ',';
             }
             $sql .= 'r.' . $columns[$i];
@@ -300,19 +300,19 @@ class TreeReader
                 $this->parentColumn,
                 $parentAlias,
                 $this->idColumn,
-                (null !== $filterSql)
+                ($filterSql !== null)
                     ? ' AND (' . str_replace('%__node__%', $nodeAlias, $filterSql) . ')'
                     : ''
             );
             $parentAlias = $nodeAlias;
         }
         $sql .= ' WHERE r.';
-        if (null === $options->nodeId) {
+        if ($options->nodeId === null) {
             $sql .= $this->levelColumn . '=0';
         } else {
             $sql .= $this->idColumn . '=' . DB::val($options->nodeId);
         }
-        if (null !== $filterSql) {
+        if ($filterSql !== null) {
             $sql .= ' AND (' . str_replace('%__node__%', 'r', $filterSql) . ')';
         }
 
@@ -340,7 +340,7 @@ class TreeReader
                     return 1;
                 }
                 if ($a[$levelColumn] == $b[$levelColumn]) {
-                    if (null !== $options->sortBy) {
+                    if ($options->sortBy !== null) {
                         return strnatcmp($a[$options->sortBy], $b[$options->sortBy]) * ($options->sortAsc ? 1 : -1);
                     } else {
                         return 0;
@@ -379,7 +379,7 @@ class TreeReader
 
                 // projit neplatne uzly
                 foreach ($invalidNodes as $invalidNodeId => &$invalidNodeLevel) {
-                    if (false === $invalidNodeLevel) {
+                    if ($invalidNodeLevel === false) {
                         continue;
                     }
 
@@ -411,7 +411,7 @@ class TreeReader
                         do {
                             $invalidNodes[$invalidNodeId] = false;
                             $invalidNodeId = $nodeMap[$invalidNodeId][$this->parentColumn];
-                        } while(null !== $invalidNodeId);
+                        } while($invalidNodeId !== null);
                     } else {
                         // odstranit uzel
                         unset($nodeMap[$invalidNodeId]);
@@ -499,7 +499,7 @@ class TreeReader
     public function loadPath(array $columns, $nodeId, $nodeLevel = null)
     {
         // zjistit uroven uzlu
-        if (null === $nodeLevel) {
+        if ($nodeLevel === null) {
             $nodeLevel = $this->getLevel($nodeId);
         }
 
@@ -513,7 +513,7 @@ class TreeReader
         $sql = 'SELECT ';
         for ($i = 0; $i <= $nodeLevel; ++$i) {
             for ($j = 0; $j < $columnCount; ++$j) {
-                if (0 !== $i || 0 !== $j) {
+                if ($i !== 0 || $j !== 0) {
                     $sql .= ',';
                 }
                 $sql .= 'n' . $i . '.' . $columns[$j];
@@ -551,7 +551,7 @@ class TreeReader
      */
     public function getLevelAndDepth($nodeId)
     {
-        if (null === $nodeId) {
+        if ($nodeId === null) {
             // koren
             return array(
                 0,
@@ -560,7 +560,7 @@ class TreeReader
         } else {
             // uzel
             $data = DB::queryRow('SELECT ' . $this->levelColumn . ',' . $this->depthColumn . ' FROM `' . $this->table . '` WHERE ' . $this->idColumn . '=' . DB::val($nodeId));
-            if (false === $data) {
+            if ($data === false) {
                 throw new \RuntimeException(sprintf('Node "%s" does not exist', $nodeId));
             }
 
@@ -579,11 +579,11 @@ class TreeReader
      */
     public function getLevel($nodeId)
     {
-        if (null === $nodeId) {
+        if ($nodeId === null) {
             return 0;
         } else {
             $nodeLevel = DB::queryRow('SELECT ' . $this->levelColumn . ' FROM `' . $this->table . '` WHERE ' . $this->idColumn . '=' . DB::val($nodeId));
-            if (false === $nodeLevel) {
+            if ($nodeLevel === false) {
                 throw new \RuntimeException(sprintf('Node "%s" does not exist', $nodeId));
             }
 
@@ -599,20 +599,20 @@ class TreeReader
      */
     public function getDepth($nodeId)
     {
-        if (null === $nodeId) {
+        if ($nodeId === null) {
             $nodeDepth = DB::queryRow('SELECT MAX(' . $this->depthColumn . ') ' . $this->depthColumn . ' FROM `' . $this->table . '` WHERE ' . $this->levelColumn . '=0');
         } else {
             $nodeDepth = DB::queryRow('SELECT ' . $this->depthColumn . ' FROM `' . $this->table . '` WHERE ' . $this->idColumn . '=' . DB::val($nodeId));
         }
 
-        if (false === $nodeDepth) {
+        if ($nodeDepth === false) {
             // neexistujici node nebo jina chyba
             throw new \RuntimeException(
-                (null === $nodeId) ? 'Failed to determine tree depth' : sprintf('Node "%s" does not exist', $nodeId)
+                ($nodeId === null) ? 'Failed to determine tree depth' : sprintf('Node "%s" does not exist', $nodeId)
             );
         }
 
-        if (null === $nodeDepth[$this->depthColumn]) {
+        if ($nodeDepth[$this->depthColumn] === null) {
             // prazdna tabulka
             return 0;
         } else {

@@ -9,7 +9,7 @@ if (!defined('_root')) {
 
 // nacteni dat stranky
 $_page = _findPage($segments);
-if (false === $_page) {
+if ($_page === false) {
     $_index['is_found'] = false;
     return;
 }
@@ -18,22 +18,22 @@ if (false === $_page) {
 $_index['url'] = _linkRoot($_page['id'], $_index['slug']);
 
 // segment stranky
-if (null !== $_index['slug'] && ($slug_length = strlen($_page['slug'])) < strlen($_index['slug'])) {
+if ($_index['slug'] !== null && ($slug_length = strlen($_page['slug'])) < strlen($_index['slug'])) {
     $segment = substr($_index['slug'], $slug_length + 1);
 } else {
     $segment = null;
 }
 
 // motiv
-if (null !== $_page['layout']) {
+if ($_page['layout'] !== null) {
     _templateSwitch($_page['layout']);
 }
 
 // kontrola typu pristupu k hlavni strane
 if (
-    _index_page_id == $_page['id']
+    $_page['id'] == _index_page_id
     && !empty($segments)
-    && null === $segment
+    && $segment === null
 ) {
     if (!_pretty_urls) {
         $_url->remove('p');
@@ -47,9 +47,9 @@ if (
     return;
 }
 
-if (null !== $segment) {
+if ($segment !== null) {
     // zkontrolovat, zda stranka podporuje segment
-    if (_page_category == $_page['type'] || _page_forum == $_page['type']) {
+    if ($_page['type'] == _page_category || $_page['type'] == _page_forum) {
         $segment_support = true;
     } else {
         $segment_support = false;
@@ -85,14 +85,14 @@ if (!_publicAccess($_page['public'], $_page['level'])) {
 // nastaveni atributu
 $_index['id'] = $_page['id'];
 $_index['title'] = $_page['title'];
-if ('' !== $_page['heading']) {
+if ($_page['heading'] !== '') {
     $_index['heading'] = $_page['heading'];
 }
 $_index['heading_enabled'] = (bool) $_page['show_heading'];
 $_index['segment'] = $segment;
 
 // udalosti stranky
-if (null !== $_page['events']) {
+if ($_page['events'] !== null) {
     foreach (_parseStr($_page['events']) as $page_event) {
         $page_event_parts = explode(':', $page_event, 2);
         Extend::call('page.event.' . $page_event_parts[0], array(
@@ -109,7 +109,7 @@ $type_name = $types[$_page['type']];
 $script = null;
 
 // urceni skriptu
-if (_page_plugin == $_page['type']) {
+if ($_page['type'] == _page_plugin) {
     // plugin stranka
     $script = null;
     Extend::call('page.plugin.' . $_page['type_idt'], array(
@@ -117,7 +117,7 @@ if (_page_plugin == $_page['type']) {
         'script' => &$script,
     ));
 
-    if (null === $script) {
+    if ($script === null) {
         throw new RuntimeException(sprintf('No handler for plugin page type "%s"', $_page['type_idt']));
     }
 } else {

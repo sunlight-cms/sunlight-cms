@@ -40,7 +40,7 @@ if (isset($admin_modules[$admin_current_module])) {
         Extend::call('admin.mod.init', $extend_args);
         Extend::call('admin.mod.' . $admin_current_module . '.pre', $extend_args);
 
-        if (false !== $script && file_exists($script)) {
+        if ($script !== false && file_exists($script)) {
             require $script;
 
             $extend_args = Extend::args($output);

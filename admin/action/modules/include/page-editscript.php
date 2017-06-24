@@ -23,7 +23,7 @@ if ($query['slug_abs']) {
     $base_slug = '';
 } else {
     $slug_last_slash = mb_strrpos($query['slug'], '/');
-    if (false === $slug_last_slash) {
+    if ($slug_last_slash === false) {
         $editable_slug = $query['slug'];
         $base_slug = '';
     } else {
@@ -38,7 +38,7 @@ if ($query['slug_abs']) {
 if (!empty($_POST)) {
 
     // kontroly
-    if (!$editscript_enable_slug && _page_separator != $type) {
+    if (!$editscript_enable_slug && $type != _page_separator) {
         throw new LogicException('Only separators are allowed to have disabled identifier');
     }
 
@@ -78,7 +78,7 @@ if (!empty($_POST)) {
         // nacteni a zpracovani hodnoty
         if (!isset($item_opts['enabled']) || $item_opts['enabled']) {
             $val = _post($item);
-            if (null !== $val) {
+            if ($val !== null) {
                 $val = trim($val);
             } elseif (!$item_opts['nullable']) {
                 $val = '';
@@ -88,7 +88,7 @@ if (!empty($_POST)) {
         }
         switch ($item_opts['type']) {
             case 'raw':
-                if ($item_opts['nullable'] && '' === $val) {
+                if ($item_opts['nullable'] && $val === '') {
                     $val = null;
                 }
                 break;
@@ -96,14 +96,14 @@ if (!empty($_POST)) {
                 $val = (empty($val) ? 0 : 1);
                 break;
             case 'int':
-                if ($item_opts['nullable'] && '' === $val) {
+                if ($item_opts['nullable'] && $val === '') {
                     $val = null;
                 } else {
                     $val = (int) $val;
                 }
                 break;
             case 'escaped_plaintext':
-                if ($item_opts['nullable'] && '' === $val) {
+                if ($item_opts['nullable'] && $val === '') {
                     $val = null;
                 } else {
                     $val = _e($val);
@@ -128,12 +128,12 @@ if (!empty($_POST)) {
                 if ($new || $val != $query['node_parent']) {
                     $pageTreeManager = PageManager::getTreeManager();
 
-                    if (null !== $val) {
+                    if ($val !== null) {
                         // novy rodic
                         $parentData = PageManager::getData($val, array('id', 'type'));
                         if (
-                            false !== $parentData
-                            && _page_separator != $parentData['type']
+                            $parentData !== false
+                            && $parentData['type'] != _page_separator
                             && ($new || $pageTreeManager->checkParent($id, $val))
                         ) {
                             $val = $actual_parent_id = $parentData['id'];
@@ -157,9 +157,9 @@ if (!empty($_POST)) {
 
             // ord
             case 'ord':
-                if ('' === $val) {
-                    $maxOrd = DB::queryRow('SELECT MAX(ord) max_ord FROM ' . _root_table . ' WHERE node_parent' . (null === $actual_parent_id ? ' IS NULL' : '=' . DB::val($actual_parent_id)));
-                    if ($maxOrd && null !== $maxOrd['max_ord']) {
+                if ($val === '') {
+                    $maxOrd = DB::queryRow('SELECT MAX(ord) max_ord FROM ' . _root_table . ' WHERE node_parent' . ($actual_parent_id === null ? ' IS NULL' : '=' . DB::val($actual_parent_id)));
+                    if ($maxOrd && $maxOrd['max_ord'] !== null) {
                         $val = $maxOrd['max_ord'] + 1;
                     } else {
                         $val = 1;
@@ -171,7 +171,7 @@ if (!empty($_POST)) {
 
             // title
             case 'title':
-                if ('' === $val) {
+                if ($val === '') {
                     $val = $_lang['global.novalue'];
                 }
                 $title = $val;
@@ -192,7 +192,7 @@ if (!empty($_POST)) {
                     $val = _slugify($val, true, array('/' => 0));
                 } else {
                     // pouze segment
-                    $val = ('' !== $base_slug ? $base_slug . '/' : '') . _slugify($val);
+                    $val = ($base_slug !== '' ? $base_slug . '/' : '') . _slugify($val);
                 }
                 if ($query['slug'] !== $val || $query['slug_abs'] != $slug_abs) {
                     $refresh_slug = true;
@@ -201,7 +201,7 @@ if (!empty($_POST)) {
 
             // level
             case 'level':
-                if ('' === $val) {
+                if ($val === '') {
                     if (!$new && $query['level_inherit']) {
                         $skip = true;
                     } else {
@@ -219,7 +219,7 @@ if (!empty($_POST)) {
 
             // var1
             case 'var1':
-                if (null === $val) {
+                if ($val === null) {
                     break;
                 }
 
@@ -247,7 +247,7 @@ if (!empty($_POST)) {
 
             // var2
             case 'var2':
-                if (null === $val) {
+                if ($val === null) {
                     break;
                 }
 
@@ -265,7 +265,7 @@ if (!empty($_POST)) {
 
             // var3
             case 'var3':
-                if (null === $val) {
+                if ($val === null) {
                     break;
                 }
 
@@ -283,7 +283,7 @@ if (!empty($_POST)) {
 
             // var4
             case 'var4':
-                if (null === $val) {
+                if ($val === null) {
                     break;
                 }
 
@@ -338,14 +338,14 @@ if (!empty($_POST)) {
 
             // udalosti stranky
             case 'events':
-                if ('' === $val) {
+                if ($val === '') {
                     $val = null;
                 }
                 break;
 
             // layout
             case 'layout':
-                if ('' === $val || !TemplateService::validateUid($val, TemplateService::UID_TEMPLATE_LAYOUT)) {
+                if ($val === '' || !TemplateService::validateUid($val, TemplateService::UID_TEMPLATE_LAYOUT)) {
                     if ($query['layout_inherit']) {
                         $skip = true;
                     } else {
@@ -363,7 +363,7 @@ if (!empty($_POST)) {
 
         if (!$skip) {
             if (isset($item_opts['length'])) {
-                if ('escaped_plaintext' === $item_opts['type']) {
+                if ($item_opts['type'] === 'escaped_plaintext') {
                     $val = _cutHtml($val, $item_opts['length']);
                 } else {
                     $val = _cutText($val, $item_opts['length'], false);
@@ -464,7 +464,7 @@ if ($custom_settings != "") {
 // editacni pole
 $editor = Extend::buffer('admin.root.editor');
 
-if ('' === $editor) {
+if ($editor === '') {
     // vychozi implementace
     $editor = "<textarea name='content' rows='25' cols='94' class='areabig editor'>" . _e($query['content']) . "</textarea>";
 }

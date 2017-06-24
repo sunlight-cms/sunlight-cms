@@ -122,12 +122,12 @@ class OptionSet
             if (array_key_exists($index, $data)) {
                 // type
                 if (
-                    'scalar' === $entry['type'] && !is_scalar($data[$index])
+                    $entry['type'] === 'scalar' && !is_scalar($data[$index])
                     || (
-                        'scalar' !== $entry['type']
+                        $entry['type'] !== 'scalar'
                         && ($type = gettype($data[$index])) !== $entry['type']
                         && (
-                            null !== $data[$index]
+                            $data[$index] !== null
                             || !isset($entry['nullable'])
                             || !$entry['nullable']
                         )
@@ -169,6 +169,6 @@ class OptionSet
             }
         }
 
-        return 0 === sizeof($errors);
+        return sizeof($errors) === 0;
     }
 }

@@ -52,13 +52,13 @@ class Regexp
         // match the subject
         while (
             (-1 === $limit || $count < $limit)
-            && 0 !== ($result = preg_match($pattern, $subject, $matches, PREG_OFFSET_CAPTURE, $offset))
+            && ($result = preg_match($pattern, $subject, $matches, PREG_OFFSET_CAPTURE, $offset)) !== (0)
         ) {
             // evaluate the result
-            if (false === $result) {
+            if ($result === false) {
                 return false;
             }
-            if (1 !== $result) {
+            if ($result !== 1) {
                 break;
             }
 
@@ -78,7 +78,7 @@ class Regexp
         }
         
         // handle no matches
-        if (0 === $offset) {
+        if ($offset === 0) {
             return $subject;
         }
 

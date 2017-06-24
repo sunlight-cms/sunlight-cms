@@ -61,7 +61,7 @@ if (!empty($queries)) {
         if ($result instanceof mysqli_result) {
             // resource
             $log[] = $_lang['admin.other.sqlex.rows'] . ': ' . DB::size($result);
-            if (null !== $lastResource) {
+            if ($lastResource !== null) {
                 DB::free($lastResource);
             }
             $lastResource = $result;
@@ -92,7 +92,7 @@ if (!empty($queries)) {
     // vypis vysledku
     if ($error) {
         $output .= _msg(_msg_err, _e(DB::error()));
-    } elseif (null !== $lastResource) {
+    } elseif ($lastResource !== null) {
 
         $columns = DB::columns($lastResource);
 
@@ -113,10 +113,10 @@ if (!empty($queries)) {
             $output .= "<tr>\n";
             for ($j = 0; $j < $i; ++$j) {
                 $output .= '<td>';
-                if (null === $row[$j]) {
+                if ($row[$j] === null) {
                     // null
                     $output .= '<code class="text-warning">NULL</code>';
-                } elseif (false !== strpos($row[$j], "\n")) {
+                } elseif (strpos($row[$j], "\n") !== false) {
                     // s odradkovanim
                     $output .= '<textarea cols="60" rows="' . max(10, substr_count($row[$j], "\n")) . '">' . _e($row[$j]) . '</textarea>';
                 } elseif (strlen($row[$j]) > 64) {

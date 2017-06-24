@@ -12,7 +12,7 @@ $do_repeat = true;
 $valid = true;
 
 // kontrola
-if ('POST' !== $_SERVER['REQUEST_METHOD'] || empty($target)) {
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' || empty($target)) {
     $valid = false;
 }
 
@@ -25,7 +25,7 @@ if ($valid && $login && !_login) {
     $login_result = _userLoginSubmit($username, $password, $persistent);
     $login_message = _userLoginMessage($login_result);
 
-    if (1 === $login_result) {
+    if ($login_result === 1) {
         $allow_login = false;
     } else {
         $do_repeat = false;

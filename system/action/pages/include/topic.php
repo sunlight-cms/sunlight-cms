@@ -15,7 +15,7 @@ if (!ctype_digit($_index['segment'])) {
 $id = (int) $_index['segment'];
 $userQuery = _userQuery('p.author');
 $query = DB::queryRow("SELECT p.*," . $userQuery['column_list'] . " FROM " . _posts_table . " p " . $userQuery['joins'] . " WHERE p.id=" . $id . " AND p.type=" . _post_forum_topic . " AND p.home=" . $_page['id'] . " AND p.xhome=-1");
-if (false === $query) {
+if ($query === false) {
     $_index['is_found'] = false;
     return;
 }
@@ -83,9 +83,9 @@ $extend_buffer = Sunlight\Extend::buffer('topic.render', array(
     'access' => $topic_access,
     'admin' => &$topic_admin,
 ));
-if ('' === $extend_buffer) {
+if ($extend_buffer === '') {
     $output .= (!empty($topic_admin) ? "<p class='topic-admin'>\n" . implode(' ', $topic_admin) . "</p>\n" : '') . "
-<div id='post-" . $id . "' class='topic" . ('' !== $avatar ? ' topic-withavatar' : '') . "'>
+<div id='post-" . $id . "' class='topic" . ($avatar !== '' ? ' topic-withavatar' : '') . "'>
 <h2>" . $_lang['posts.topic'] . ": " . $query['subject'] . ' ' . _templateRssLink(_linkRSS($id, 6, false), true) . "</h2>
 <p class='topic-info'>"
     . $_lang['global.postauthor']

@@ -110,7 +110,7 @@ class PluginLoader
                     }
 
                     // process options
-                    if (null !== $options) {
+                    if ($options !== null) {
                         // common options
                         $commonOptionSet->process($options, $context, $plugin['configuration_errors']);
 
@@ -130,7 +130,7 @@ class PluginLoader
                     } else {
                         // there are errors
                         $plugin['status'] = Plugin::STATUS_HAS_ERRORS;
-                        if (null !== $options && empty($plugin['configuration_errors'])) {
+                        if ($options !== null && empty($plugin['configuration_errors'])) {
                             $plugin['options'] = $options;
                         } else {
                             $options = array(
@@ -185,7 +185,7 @@ class PluginLoader
         }
 
         // PHP version
-        if (!isset($configurationErrors['php']) && null !== $options['php'] && !version_compare($options['php'], PHP_VERSION, '<=')) {
+        if (!isset($configurationErrors['php']) && $options['php'] !== null && !version_compare($options['php'], PHP_VERSION, '<=')) {
             $errors[] = sprintf('PHP version "%s" or newer is required', $options['php']);
         }
 
@@ -199,7 +199,7 @@ class PluginLoader
         }
 
         // dev mode
-        if (!isset($configurationErrors['dev']) && null !== $options['dev'] && $options['dev'] !== _dev) {
+        if (!isset($configurationErrors['dev']) && $options['dev'] !== null && $options['dev'] !== _dev) {
             $errors[] = $options['dev']
                 ? 'development mode is required'
                 : 'production mode is required';
@@ -215,12 +215,12 @@ class PluginLoader
     {
         $specifiedClass = $plugin['options']['class'];
 
-        if (null === $specifiedClass) {
+        if ($specifiedClass === null) {
             // no class specified - use default class of the given type
             return $type['class'];
         }
 
-        if (false === strpos($specifiedClass, '\\')) {
+        if (strpos($specifiedClass, '\\') === false) {
             // plain (unnamespaced) class name specified - prefix by plugin namespace
             return $plugin['options']['namespace'] . '\\' . $specifiedClass;
         }
@@ -301,7 +301,7 @@ class PluginLoader
                 }
             }
 
-            if (0 === $numAdded) {
+            if ($numAdded === 0) {
                 // this should not happen
                 throw new \RuntimeException('Could not resolve plugin dependencies');
             }

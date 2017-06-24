@@ -5,12 +5,12 @@ if (!defined('_root')) {
 }
 
 // vychozi nastaveni
-if (null === $_page['var2']) {
+if ($_page['var2'] === null) {
     $_page['var2'] = _articlesperpage;
 }
 
 // zobrazeni clanku?
-if (null !== $_index['segment']) {
+if ($_index['segment'] !== null) {
     require _root . 'system/action/pages/include/article.php';
     return;
 }

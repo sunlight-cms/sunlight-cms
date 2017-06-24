@@ -64,7 +64,7 @@ if ($search_query != '') {
 
         // funkce na skladani vyhledavaciho dotazu
         $searchQuery = function ($alias, $cols) {
-            if (null === $alias) {
+            if ($alias === null) {
                 $alias = '';
             } else {
                 $alias = $alias . '.';

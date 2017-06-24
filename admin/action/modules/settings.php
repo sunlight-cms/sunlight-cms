@@ -197,7 +197,7 @@ if (!empty($_POST)) {
             }
 
             // nacist odeslanou hodnotu
-            if ('bool' === $settings[$item['name']]['format']) {
+            if ($settings[$item['name']]['format'] === 'bool') {
                 // checkbox
                 $value = _checkboxLoad($item['name']) ? '1' : '0';
             } else {
@@ -339,7 +339,7 @@ foreach ($editable_settings as $settings_category => $settings_category_data) {
             if (isset($item['disabled']) && $item['disabled']) {
                 $inputAttrs .= " disabled=\"disabled\"";
             }
-            if ('bool' !== $settings[$item['name']]['format']) {
+            if ($settings[$item['name']]['format'] !== 'bool') {
                 if (!isset($item['input_class'])) {
                     if (!isset($item['choices'])) {
                         $inputAttrs .= " class=\"inputmedium\"";
@@ -367,7 +367,7 @@ foreach ($editable_settings as $settings_category => $settings_category_data) {
                     case 'html':
                     default:
                         $input = "<input type=\"text\"{$inputAttrs} value=\""
-                            . ('html' === $settings[$item['name']]['format'] ? $value : _e($value))
+                            . ($settings[$item['name']]['format'] === 'html' ? $value : _e($value))
                             . "\">";
                         break;
                 }
@@ -378,7 +378,7 @@ foreach ($editable_settings as $settings_category => $settings_category_data) {
 
         // napoveda
         if (isset($item['help'])) {
-            if (false !== $item['help']) {
+            if ($item['help'] !== false) {
                 $help = $item['help'];
             } else {
                 $help = '';
@@ -393,8 +393,8 @@ foreach ($editable_settings as $settings_category => $settings_category_data) {
         // polozka
         $output .= "<tr>
     <td><label" . (!isset($item['id']) || $item['id'] ? " for=\"{$id}\"" : '') . ">{$label}</label></td>
-    <td" . ('' === $help ? ' colspan="2"' : '') . ">{$input}</td>\n";
-        if ('' !== $help) {
+    <td" . ($help === '' ? ' colspan="2"' : '') . ">{$input}</td>\n";
+        if ($help !== '') {
             $output .= "<td>{$help}</td>\n";
         }
         $output .= "</tr>\n";

@@ -47,7 +47,7 @@ $output .= "
 
 <tr class='valign-top'>
 
-<td>" . (('' !== $custom && $admin_index_cfg['admin_index_custom_pos'] == 0) ? $custom : "
+<td>" . (($custom !== '' && $admin_index_cfg['admin_index_custom_pos'] == 0) ? $custom : "
   <h1>" . $_lang['admin.menu.index'] . "</h1>
   <p>" . $_lang['admin.index.p'] . "</p>
   " . $logout_warning . "
@@ -82,7 +82,7 @@ $output .= "
 
 </tr>
 
-" . (('' !== $custom && $admin_index_cfg['admin_index_custom_pos'] == 1) ? '<tr><td colspan="2">' . $custom . '</td></tr>' : '') . "
+" . (($custom !== '' && $admin_index_cfg['admin_index_custom_pos'] == 1) ? '<tr><td colspan="2">' . $custom . '</td></tr>' : '') . "
 
 </table>
 ";
@@ -93,7 +93,7 @@ $output .= Sunlight\Extend::buffer('admin.index.after_table');
 // zpravy
 $messages = array();
 
-if ('BETA' === Sunlight\Core::DIST) {
+if (Sunlight\Core::DIST === 'BETA') {
     // nestabilni verze
     $messages[] = Sunlight\Message::warning(str_replace('*state*', Sunlight\Core::DIST, $_lang['admin.index.statewarn']));
 }

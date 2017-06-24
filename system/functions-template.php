@@ -19,7 +19,7 @@ function _templateSwitch($idt)
 
     $components = TemplateService::getComponentsByUid($idt, TemplateService::UID_TEMPLATE_LAYOUT);
 
-    if (null !== $components) {
+    if ($components !== null) {
         $_template = $components['template'];
         $_template_layout = $components['layout'];
 
@@ -133,7 +133,7 @@ function _templateBoxes($slot, array $overrides = array())
             'boxes' => &$boxes,
             'overrides' => &$overrides,
         ));
-        if ('' !== $output) {
+        if ($output !== '') {
             return $output;
         }
 
@@ -145,12 +145,12 @@ function _templateBoxes($slot, array $overrides = array())
         }
         foreach ($boxes as $item) {
             // filtrovani boxu
-            if (null !== $item['page_ids'] && !PageManager::isActive(explode(',', $item['page_ids']), $item['page_children'])) {
+            if ($item['page_ids'] !== null && !PageManager::isActive(explode(',', $item['page_ids']), $item['page_children'])) {
                 continue;
             }
 
             // kod titulku
-            if ('' !== $item['title']) {
+            if ($item['title'] !== '') {
                 $title = "<{$options['box.title']} class='box-title'>{$item['title']}</{$options['box.title']}>\n";
             } else {
                 $title = '';
@@ -207,7 +207,7 @@ function _templateContent($heading = true, $backlink = true, $rsslink = true)
     ));
 
     // vychozi implementace?
-    if ('' === $output) {
+    if ($output === '') {
         // rss odkaz
         if ($rsslink) {
             $output .= _templateRssLink(null, false);
@@ -244,13 +244,13 @@ function _templateHeading()
     $output = '';
 
     if ($_index['heading_enabled']) {
-        $heading = $_index[(null !== $_index['heading']) ? 'heading' : 'title'];
+        $heading = $_index[($_index['heading'] !== null) ? 'heading' : 'title'];
 
         // extend
         $output = Extend::buffer('tpl.heading', array('heading' => $heading));
 
         // vychozi implementace?
-        if ('' === $output) {
+        if ($output === '') {
             $output = "<h1>{$heading}</h1>\n";
         }
     }
@@ -269,7 +269,7 @@ function _templateBacklink()
     $output = Extend::buffer('tpl.backlink');
 
     // vychozi implementace?
-    if ('' === $output && null !== $GLOBALS['_index']['backlink']) {
+    if ($output === '' && $GLOBALS['_index']['backlink'] !== null) {
         $output = '<div class="backlink"><a href="' . _e($GLOBALS['_index']['backlink']) . '">&lt; ' . $GLOBALS['_lang']['global.return'] . "</a></div>\n";
     }
 
@@ -286,12 +286,12 @@ function _templateBacklink()
 function _templateRssLink($url = null, $inline = true)
 {
     // deaktivovane RSS / nenastavena adresa?
-    if (!_rss || null === $url && null === $GLOBALS['_index']['rsslink']) {
+    if (!_rss || $url === null && $GLOBALS['_index']['rsslink'] === null) {
         return '';
     }
 
     // pouzit RSS adresu aktualni stranky
-    if (null === $url) {
+    if ($url === null) {
         $url = $GLOBALS['_index']['rsslink'];
     }
 
@@ -302,7 +302,7 @@ function _templateRssLink($url = null, $inline = true)
     ));
 
     // vychozi implementace?
-    if ('' === $output) {
+    if ($output === '') {
         if (!$inline) {
             $output .= '<div class="rsslink">';
         }
@@ -422,7 +422,7 @@ function _templateTreeMenu(array $options)
 
     // pouziti aktivni stranky
     if (-1 == $options['page_id']) {
-        if (null === $activeId) {
+        if ($activeId === null) {
             return '';
         } else {
             $options['page_id'] = $activeId;
@@ -432,7 +432,7 @@ function _templateTreeMenu(array $options)
     // zjistit uroven a hloubku
     try {
         list($level, $depth) = PageManager::getTreeReader()->getLevelAndDepth($options['page_id']);
-        if (null !== $options['max_depth']) {
+        if ($options['max_depth'] !== null) {
             $depth = min($options['max_depth'], $depth);
         }
     } catch (RuntimeException $e) {
@@ -444,7 +444,7 @@ function _templateTreeMenu(array $options)
     $filter = new PageTreeFilter(array(
         'ord_start' => $options['ord_start'],
         'ord_end' => $options['ord_end'],
-        'ord_level' => null === $options['page_id'] ? $level : $level + 1,
+        'ord_level' => $options['page_id'] === null ? $level : $level + 1,
     ) + $options['filter']);
 
     $pages = PageManager::getFlatTree(
@@ -481,14 +481,14 @@ function _templateBreadcrumbs($breadcrumbs = array())
 
     // zjistit aktivni stranku a jeji uroven
     list($rootId, $rootData) = PageManager::getActive();
-    if (null !== $rootData) {
+    if ($rootData !== null) {
         $rootLevel = $rootData['node_level'];
     } else {
         $rootLevel = null;
     }
 
     // pridat stranky
-    if (null !== $rootId) {
+    if ($rootId !== null) {
         foreach (PageManager::getPath($rootId, $rootLevel) as $page) {
             $breadcrumbs[] = array(
                 'title' => $page['title'],
@@ -518,7 +518,7 @@ function _templateBreadcrumbs($breadcrumbs = array())
     ));
 
     // vykreslit
-    if (!empty($breadcrumbs) && '' === $output) {
+    if (!empty($breadcrumbs) && $output === '') {
         $output .= "<ul class=\"breadcrumbs\">\n";
         foreach ($breadcrumbs as $crumb) {
             $output .= "<li><a href=\"" . _e($crumb['url']) . "\">{$crumb['title']}</a></li>\n";
@@ -648,7 +648,7 @@ function _templateUserMenu($profileLink = true)
 
     // vykreslit
     $output = Extend::buffer('tpl.usermenu', array('items' => &$items));
-    if ('' === $output && !empty($items)) {
+    if ($output === '' && !empty($items)) {
         $output = "<ul class=\"user-menu " . (_login ? 'logged-in' : 'not-logged-in') . "\">\n";
         foreach ($items as $id => $item) {
             $output .= "<li class=\"user-menu-{$id}\"><a href=\"{$item[0]}\">{$item[1]}</a></li>\n";
@@ -688,8 +688,8 @@ function _templateCurrentIsArticle()
 {
     return
         $GLOBALS['_index']['is_page']
-        && _page_category == $GLOBALS['_page']['type']
-        && null !== $GLOBALS['_index']['segment'];
+        && $GLOBALS['_page']['type'] == _page_category
+        && $GLOBALS['_index']['segment'] !== null;
 }
 
 /**
@@ -701,8 +701,8 @@ function _templateCurrentIsTopic()
 {
     return
         $GLOBALS['_index']['is_page']
-        && _page_forum == $GLOBALS['_page']['type']
-        && null !== $GLOBALS['_index']['segment'];
+        && $GLOBALS['_page']['type'] == _page_forum
+        && $GLOBALS['_index']['segment'] !== null;
 }
 
 /**

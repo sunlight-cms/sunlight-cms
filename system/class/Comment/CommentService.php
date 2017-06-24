@@ -292,7 +292,7 @@ class CommentService
         }
 
         // enable replies?
-        if (null === $replies_enabled && !$locked) {
+        if ($replies_enabled === null && !$locked) {
             $replies_enabled = true;
         }
 
@@ -317,7 +317,7 @@ class CommentService
             'form_position' => &$form_position,
         ));
 
-        if ('' !== $extend_output) {
+        if ($extend_output !== '') {
             return $extend_output;
         }
 
@@ -399,7 +399,7 @@ class CommentService
 
         $form_output .= "\n</div>\n";
 
-        if (0 === $form_position) {
+        if ($form_position === 0) {
             $output .= $form_output;
             $form_output = null;
         }
@@ -503,7 +503,7 @@ class CommentService
                     // post
                     $hl = !$hl;
                     Extend::call('posts.post', array('item' => &$item, 'avatar' => &$avatar, 'actlinks' => &$actlinks, 'type' => $style));
-                    if (null === $callback) {
+                    if ($callback === null) {
                         $output .= "<div id='post-" . $item['id'] . "' class='post" . ($hl ? ' post-hl' : '') . (isset($avatar) ? ' post-withavatar' : '') . "'><div class='post-head'>" . $author;
                         $output .= " <span class='post-info'>(" . _formatTime($item['time'], 'post') . ")</span>" . $actlinks . ($postlink ? "<a class='post-postlink' href='" . _addGetToLink($url_html, 'page=' . $paging['current']) . "#post-" . $item['id'] . "'><span>#" . str_pad($item['id'], 6, '0', STR_PAD_LEFT) . "</span></a>" : '') . "</div><div class='post-body" . (isset($avatar) ? ' post-body-withavatar' : '') . "'>" . $avatar . '<div class="post-body-text">' . _parsePost($item['text']) . "</div></div></div>\n";
                     } else {
@@ -537,7 +537,7 @@ class CommentService
                             }
 
                             Extend::call('posts.post', array('item' => &$answer, 'avatar' => &$avatar, 'actlinks' => &$actlinks, 'type' => $style));
-                            if (null === $callback) {
+                            if ($callback === null) {
                                 $output .= "<div id='post-" . $answer['id'] . "' class='post-answer" . (isset($avatar) ? ' post-answer-withavatar' : '') . "'><div class='post-head'>" . $author . " <span class='post-info'>(" . _formatTime($answer['time'], 'post') . ")</span>" . $actlinks . "</div><div class='post-body" . (isset($avatar) ? ' post-body-withavatar' : '') . "'>" . $avatar . '<div class="post-body-text">' . _parsePost($answer['text']) . "</div></div></div>\n";
                             } else {
                                 $output .= call_user_func($callback, array(
@@ -561,7 +561,7 @@ class CommentService
                 }
 
                 // form
-                if (1 === $form_position) {
+                if ($form_position === 1) {
                     $output .= $form_output;
                     $form_output = null;
                 }
@@ -615,7 +615,7 @@ class CommentService
                 }
 
                 // form
-                if (1 === $form_position) {
+                if ($form_position === 1) {
                     $output .= $form_output;
                     $form_output = null;
                 }
@@ -643,7 +643,7 @@ class CommentService
             $output .= "<p>" . $nopostsmessage . "</p>";
         }
 
-        if (1 === $form_position) {
+        if ($form_position === 1) {
             $output .= $form_output;
         }
 

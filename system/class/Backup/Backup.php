@@ -68,7 +68,7 @@ class Backup
      */
     public function create()
     {
-        if (true !== ($errorCode = $this->zip->open($this->path, ZipArchive::CREATE | ZipArchive::OVERWRITE))) {
+        if (($errorCode = $this->zip->open($this->path, ZipArchive::CREATE | ZipArchive::OVERWRITE)) !== (true)) {
             throw new \RuntimeException(sprintf('Could not create ZIP archive at "%s" (code %d)', $this->path, $errorCode));
         }
 
@@ -85,7 +85,7 @@ class Backup
     {
         _ensureFileExists($this->path);
 
-        if (true !== ($errorCode = $this->zip->open($this->path, ZipArchive::CREATE))) {
+        if (($errorCode = $this->zip->open($this->path, ZipArchive::CREATE)) !== (true)) {
             throw new \RuntimeException(sprintf('Could not open ZIP archive at "%s" (code %d)', $this->path, $errorCode));
         }
 
@@ -209,7 +209,7 @@ class Backup
         foreach ($iterator as $item) {
             $dataPath = substr($item->getPathname(), $filePathNamePrefixLength);
 
-            if (null !== $filter && !call_user_func($filter, $dataPath)) {
+            if ($filter !== null && !call_user_func($filter, $dataPath)) {
                 continue;
             }
 
@@ -251,7 +251,7 @@ class Backup
     {
         $this->ensureOpenAndNew();
 
-        if (null === $filter || call_user_func($filter, $dataPath)) {
+        if ($filter === null || call_user_func($filter, $dataPath)) {
             $this->zip->addFile(
                 $realPath,
                 static::DATA_PATH . "/{$dataPath}"
@@ -281,7 +281,7 @@ class Backup
     {
         $this->ensureOpenAndNotNew();
 
-        return false !== $this->zip->statName(static::DB_DUMP_PATH);
+        return $this->zip->statName(static::DB_DUMP_PATH) !== false;
     }
 
     /**
@@ -347,7 +347,7 @@ class Backup
     {
         $this->ensureOpenAndNotNew();
 
-        if (null === $this->metadataCache) {
+        if ($this->metadataCache === null) {
             $stream = $this->zip->getStream(static::METADATA_PATH);
             try {
                 $this->metadataCache = Json::decode(stream_get_contents($stream));
@@ -358,7 +358,7 @@ class Backup
             }
         }
 
-        if (null !== $key) {
+        if ($key !== null) {
             if (!array_key_exists($key, $this->metadataCache)) {
                 throw new \OutOfBoundsException(sprintf('Unknown metadata key "%s"', $key));
             }

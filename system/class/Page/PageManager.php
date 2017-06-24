@@ -71,7 +71,7 @@ class PageManager
         // zjistit aktualni stranku
         list($currentId, $currentData) = static::getActive();
 
-        if (null !== $currentData) {
+        if ($currentData !== null) {
             $currentLevel = $currentData['node_level'];
         } else {
             $currentLevel = null;
@@ -129,7 +129,7 @@ class PageManager
     {
         static $cache = null;
         
-        if (null === $cache) {
+        if ($cache === null) {
             $cache = array();
             Extend::call('ppage.reg', array('infos' => &$cache));
         }
@@ -147,7 +147,7 @@ class PageManager
      */
     public static function getData($id, array $columns, $addTreeColumns = false)
     {
-        if (null === $id || $id < 1) {
+        if ($id === null || $id < 1) {
             return false;
         }
 
@@ -165,7 +165,7 @@ class PageManager
      */
     public static function getTreeManager()
     {
-        if (null === static::$treeManager) {
+        if (static::$treeManager === null) {
             static::$treeManager = new TreeManager(_root_table);
         }
 
@@ -179,7 +179,7 @@ class PageManager
      */
     public static function getTreeReader()
     {
-        if (null === static::$treeReader) {
+        if (static::$treeReader === null) {
             static::$treeReader = new TreeReader(_root_table);
         }
 
@@ -196,13 +196,13 @@ class PageManager
      */
     public static function getSingleLevel($parentNodeId, $sqlCond = null, array $extraColumns = null)
     {
-        if (null === $parentNodeId) {
+        if ($parentNodeId === null) {
             $where = 'node_parent IS NULL';
         } else {
             $where = 'node_parent=' . DB::val($parentNodeId);
         }
 
-        if (null !== $sqlCond) {
+        if ($sqlCond !== null) {
             $where .= ' AND (' . $sqlCond . ')';
         }
 
@@ -275,7 +275,7 @@ class PageManager
         array $filter = null,
         array $extraColumns = null
     ) {
-        $canBeCached = null === $filter && null === $extraColumns;
+        $canBeCached = $filter === null && $extraColumns === null;
 
         if ($canBeCached && isset(static::$childrenCache[$nodeId])) {
             return static::$childrenCache[$nodeId];
@@ -317,7 +317,7 @@ class PageManager
      */
     public static function getPath($id, $level = null, array $extraColumns = null)
     {
-        $canBeCached = null === $extraColumns;
+        $canBeCached = $extraColumns === null;
 
         if ($canBeCached && isset(static::$pathCache[$id])) {
             return static::$pathCache[$id];
@@ -344,7 +344,7 @@ class PageManager
      */
     public static function prepareTreeColumns(array $extraColumns = null)
     {
-        if (null === $extraColumns) {
+        if ($extraColumns === null) {
             $extraColumns = array();
         }
 

@@ -34,9 +34,9 @@ class Zip
      */
     public static function extract(ZipArchive $zip, $archivePath, $targetPath)
     {
-        if ('/' !== substr($archivePath, -1)) {
+        if (substr($archivePath, -1) !== '/') {
             $source = $zip->getStream($archivePath);
-            if (false === $source) {
+            if ($source === false) {
                 throw new \InvalidArgumentException(sprintf('Could not get stream for "%s"', $archivePath));
             }
 
@@ -78,14 +78,14 @@ class Zip
             'exclude_prefix' => null,
         );
 
-        $excludePrefixLen = null !== $options['exclude_prefix']
+        $excludePrefixLen = $options['exclude_prefix'] !== null
             ? strlen($options['exclude_prefix'])
             : 0;
 
         // build archive path prefix map
         $archivePathPrefixMap = array();
         foreach ((array) $archivePaths as $archivePath) {
-            if ('' !== $archivePath) {
+            if ($archivePath !== '') {
                 $archivePathPrefix = "{$archivePath}/";
                 $archivePathPrefixMap[$archivePathPrefix] = strlen($archivePathPrefix);
             } else {
@@ -99,18 +99,18 @@ class Zip
 
             foreach ($archivePathPrefixMap as $archivePathPrefix => $archivePathPrefixLen) {
                 if (
-                    0 === $archivePathPrefixLen
-                    || 0 === strncmp($archivePathPrefix, $stat['name'], $archivePathPrefixLen)
+                    $archivePathPrefixLen === 0
+                    || strncmp($archivePathPrefix, $stat['name'], $archivePathPrefixLen) === 0
                 ) {
                     $lastSlashPos = strrpos($stat['name'], '/');
-                    if (false === $lastSlashPos || $options['recursive'] || $lastSlashPos === $archivePathPrefixLen - 1) {
+                    if ($lastSlashPos === false || $options['recursive'] || $lastSlashPos === $archivePathPrefixLen - 1) {
                         // parse current item
-                        $fileName = false !== $lastSlashPos ? substr($stat['name'], $lastSlashPos) : $stat['name'];
+                        $fileName = $lastSlashPos !== false ? substr($stat['name'], $lastSlashPos) : $stat['name'];
                         $subpath = static::getSubpath($options['path_mode'], $stat['name'], $lastSlashPos, $archivePathPrefixLen, $options['exclude_prefix'], $excludePrefixLen);
 
                         // determine target directory
                         $targetDir = $targetPath;
-                        if (null !== $subpath) {
+                        if ($subpath !== null) {
                             $targetDir .= "/{$subpath}";
                         }
 
@@ -147,12 +147,12 @@ class Zip
     {
         switch ($mode) {
             case static::PATH_FULL:
-                $subpath = false !== $lastSlashPos
+                $subpath = $lastSlashPos !== false
                     ? substr($path, 0, $lastSlashPos)
                     : null;
                 break;
             case static::PATH_SUB:
-                $subpath = false !== $lastSlashPos && $lastSlashPos > $prefixLen
+                $subpath = $lastSlashPos !== false && $lastSlashPos > $prefixLen
                     ? substr($path, $prefixLen, $lastSlashPos - $prefixLen)
                     : null;
                 break;
@@ -164,13 +164,13 @@ class Zip
         }
 
         if (
-            null !== $subpath
-            && null !== $excludePrefix
-            && 0 === strncmp($excludePrefix, $subpath, $excludePrefixLen)
+            $subpath !== null
+            && $excludePrefix !== null
+            && strncmp($excludePrefix, $subpath, $excludePrefixLen) === 0
         ) {
             $subpath = substr($subpath, $excludePrefixLen);
 
-            if ('' === $subpath) {
+            if ($subpath === '') {
                 $subpath = null;
             }
         }

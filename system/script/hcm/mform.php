@@ -43,7 +43,7 @@ if (_xsrfCheck()) {
         _setMailSender($headers, $sender);
 
         // uprava predmetu
-        if ('' === $subject) {
+        if ($subject === '') {
             $subject = $_lang['hcm.mailform.subjectprefix'];
         } else {
             $subject = sprintf('%s: %s', $_lang['hcm.mailform.subjectprefix'], $subject);

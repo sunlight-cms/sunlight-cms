@@ -65,7 +65,7 @@ if (empty($forums)) {
     foreach($forums as $forum_id => $forum) {
         $output .= '<option'
             . " value='" . $forum_id . "'"
-            . (_page_forum != $forum['type'] ? " disabled" : '')
+            . ($forum['type'] != _page_forum ? " disabled" : '')
             . ($forum_id == $query['home'] ? " selected" : '')
             . ">"
             . str_repeat('&nbsp;&nbsp;&nbsp;│&nbsp;', $forum['node_level'])

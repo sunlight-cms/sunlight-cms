@@ -22,7 +22,7 @@ if ($query === false) {
 
 $_index['title'] = str_replace(
     '*user*',
-    $query[null !== $query['publicname'] ? 'publicname' : 'username'],
+    $query[$query['publicname'] !== null ? 'publicname' : 'username'],
     $_lang['mod.profile.arts']
 );
 

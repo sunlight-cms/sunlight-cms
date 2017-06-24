@@ -5,16 +5,16 @@ if (!defined('_root')) {
 }
 
 // vychozi nastaveni
-if (null === $_page['var1']) {
+if ($_page['var1'] === null) {
     $_page['var1'] = _galdefault_per_row;
 }
-if (null === $_page['var2']) {
+if ($_page['var2'] === null) {
     $_page['var2'] = _galdefault_per_page;
 }
-if (null === $_page['var3']) {
+if ($_page['var3'] === null) {
     $_page['var3'] = _galdefault_thumb_h;
 }
-if (null === $_page['var4']) {
+if ($_page['var4'] === null) {
     $_page['var4'] = _galdefault_thumb_w;
 }
 

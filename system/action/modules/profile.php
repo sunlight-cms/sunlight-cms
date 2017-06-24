@@ -60,7 +60,7 @@ if ($query !== false) {
 
 /* ---  modul  --- */
 
-$_index['title'] = $_lang['mod.profile'] . ': ' . $query[null !== $query['publicname'] ? 'publicname' : 'username'];
+$_index['title'] = $_lang['mod.profile'] . ': ' . $query[$query['publicname'] !== null ? 'publicname' : 'username'];
 
 // poznamka o blokovani
 if ($query['blocked'] == 1 || $groupdata['blocked'] == 1) {
@@ -84,7 +84,7 @@ $output .= "
 <td>" . $query['username'] . "</td>
 </tr>
 
-" . ((null !== $query['publicname']) ? "<tr><th>" . $_lang['mod.settings.publicname'] . "</th><td>" . $query['publicname'] . "</td></tr>" : '') . "
+" . (($query['publicname'] !== null) ? "<tr><th>" . $_lang['mod.settings.publicname'] . "</th><td>" . $query['publicname'] . "</td></tr>" : '') . "
 
 <tr>
 <th>" . $_lang['global.group'] . "</th>
@@ -96,7 +96,7 @@ $output .= "
 <td>" . $groupdata['descr'] . "</td>
 </tr>" : '') . "
 
-" . (_loginid == $query['id'] || _priv_administration && _priv_adminusers ? "<tr>
+" . ($query['id'] == _loginid || _priv_administration && _priv_adminusers ? "<tr>
 <th>" . $_lang['mod.profile.lastact'] . "</th>
 <td>" . _formatTime($query['activitytime'], 'activity') . "</td>
 </tr>

@@ -123,7 +123,7 @@ class PageManipulator
      */
     public static function refreshSlugs($id, $getChangesetMap = false)
     {
-        if (null !== $id) {
+        if ($id !== null) {
             $id = static::findFirstTreeMatch($id, 'slug_abs', 1);
         }
 
@@ -136,7 +136,7 @@ class PageManipulator
             null,
             function ($baseSlug, $currentPage) {
                 if (!$currentPage['slug_abs']) {
-                    $slug = null !== $baseSlug
+                    $slug = $baseSlug !== null
                         ? "{$baseSlug}/" . PageManipulator::getBaseSlug($currentPage['slug'])
                         : $currentPage['slug'];
 
@@ -146,7 +146,7 @@ class PageManipulator
                 }
             },
             function ($baseSlug, $currentPage) {
-                return (null !== $baseSlug && !$currentPage['slug_abs'])
+                return ($baseSlug !== null && !$currentPage['slug_abs'])
                     ? "{$baseSlug}/" . PageManipulator::getBaseSlug($currentPage['slug'])
                     : $currentPage['slug'];
             },
@@ -163,7 +163,7 @@ class PageManipulator
      */
     public static function refreshLevels($id, $getChangesetMap = false)
     {
-        if (null !== $id) {
+        if ($id !== null) {
             $id = static::findFirstTreeMatch($id, 'level_inherit', 0);
         }
 
@@ -197,7 +197,7 @@ class PageManipulator
      */
     public static function refreshLayouts($id, $getChangesetMap = false)
     {
-        if (null !== $id) {
+        if ($id !== null) {
             $id = static::findFirstTreeMatch($id, 'layout_inherit', 0);
         }
 
@@ -232,7 +232,7 @@ class PageManipulator
     {
         $slugLastSlashPos = mb_strrpos($slug, '/');
 
-        return false !== $slugLastSlashPos
+        return $slugLastSlashPos !== false
             ? mb_substr($slug, $slugLastSlashPos + 1)
             : $slug;
     }
@@ -268,7 +268,7 @@ class PageManipulator
 
             return true;
         } else {
-            if (null === $error) {
+            if ($error === null) {
                 $error = $GLOBALS['_lang']['global.deletefail'];
             }
 
@@ -350,9 +350,9 @@ class PageManipulator
      */
     public static function deleteDependencies(array $page, $flags, &$error = null)
     {
-        $deleteChildPages = (0 !== ($flags & static::DEPEND_CHILD_PAGES));
-        $deleteDirect = (0 !== ($flags & static::DEPEND_DIRECT));
-        $deleteDirectForce = (0 !== ($flags & static::DEPEND_DIRECT_FORCE));
+        $deleteChildPages = (($flags & static::DEPEND_CHILD_PAGES) !== (0));
+        $deleteDirect = (($flags & static::DEPEND_DIRECT) !== (0));
+        $deleteDirectForce = (($flags & static::DEPEND_DIRECT_FORCE) !== (0));
 
         // kontrola podstranek
         if ($page['node_depth'] > 0 && !$deleteChildPages && !$deleteDirectForce) {
@@ -472,7 +472,7 @@ class PageManipulator
         $path = PageManager::getTreeReader()->getPath(array($column), $currentId);
 
         for ($i = sizeof($path) - 1; $i >= 0; --$i) {
-            if ($path[$i][$column] == $value || 0 === $i) {
+            if ($path[$i][$column] == $value || $i === 0) {
                 return $path[$i]['id'];
             }
         }

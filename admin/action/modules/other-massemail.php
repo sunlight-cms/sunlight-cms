@@ -42,7 +42,7 @@ if (isset($_POST['text'])) {
 
         // hlavicky
         $headers = array(
-            'Content-Type' => 'text/' . (2 == $ctype ? 'html' : 'plain') . '; charset=UTF-8',
+            'Content-Type' => 'text/' . ($ctype == 2 ? 'html' : 'plain') . '; charset=UTF-8',
         );
         _setMailSender($headers, $sender);
 

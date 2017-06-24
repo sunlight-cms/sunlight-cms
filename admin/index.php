@@ -97,7 +97,7 @@ if (!empty($admin_extra_js)) {
 /* ----  vystup  ---- */
 
 // presmerovani?
-if (null !== $admin_redirect_to) {
+if ($admin_redirect_to !== null) {
     header('Location: ' . $admin_redirect_to);
     exit;
 }

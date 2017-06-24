@@ -37,7 +37,7 @@ class DatabaseLoader
     {
         // determine current sql mode
         $oldSqlMode = DB::queryRow('SHOW VARIABLES WHERE Variable_name=\'sql_mode\'');
-        if (false !== $oldSqlMode) {
+        if ($oldSqlMode !== false) {
             $oldSqlMode = $oldSqlMode['Value'];
         } else {
             $oldSqlMode = '';
@@ -49,7 +49,7 @@ class DatabaseLoader
         // restore
         try {
             $reader->read(function ($query, $queryMap) use ($currentPrefix, $newPrefix) {
-                if (null !== $currentPrefix && null !== $newPrefix && $currentPrefix !== $newPrefix) {
+                if ($currentPrefix !== null && $newPrefix !== null && $currentPrefix !== $newPrefix) {
                     DB::query(DatabaseLoader::replacePrefix($query, $queryMap, $currentPrefix, $newPrefix));
                 } else {
                     DB::query($query);
@@ -89,7 +89,7 @@ class DatabaseLoader
 
             // replace the match
             if (
-                null !== $segment
+                $segment !== null
                 && SqlReader::QUOTED === $queryMap[$segment][0]
                 && $offset === $queryMap[$segment][1]
             ) {

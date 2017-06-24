@@ -114,14 +114,14 @@ class LangPack implements \ArrayAccess
 
         // pouzit fallback jazyk, pokud neni aktualni jazyk dostupny
         if (
-            (null !== $this->list && !in_array(_language, $this->list) || null === $this->list && !is_file($path))
+            ($this->list !== null && !in_array(_language, $this->list) || $this->list === null && !is_file($path))
             && (Core::$fallbackLang === _language || !is_file($path = $this->dir . '/' . Core::$fallbackLang . '.php'))
         ) {
             $path = false;
         }
 
         // nacist balik
-        $GLOBALS['_lang'][$this->key] = false !== $path ? (array) include $path : array();
+        $GLOBALS['_lang'][$this->key] = $path !== false ? (array) include $path : array();
 
         $this->loaded = true;
     }

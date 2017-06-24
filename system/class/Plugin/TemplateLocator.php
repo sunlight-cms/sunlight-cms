@@ -64,10 +64,10 @@ class TemplateLocator
     {
         $uid = $template;
 
-        if (null !== $layout || null !== $slot) {
+        if ($layout !== null || $slot !== null) {
             $uid .= ':' . $layout;
         }
-        if (null !== $slot) {
+        if ($slot !== null) {
             $uid .= ':' . $slot;
         }
 
@@ -130,7 +130,7 @@ class TemplateLocator
             'template' => $template,
         );
 
-        if (null !== $layout) {
+        if ($layout !== null) {
             if (!$template->hasLayout($layout)) {
                 return null;
             }
@@ -138,7 +138,7 @@ class TemplateLocator
             $components['layout'] = $layout;
         }
 
-        if (null !== $slot && null !== $layout) {
+        if ($slot !== null && $layout !== null) {
             if (!$template->hasSlot($layout, $slot)) {
                 return null;
             }
@@ -213,7 +213,7 @@ class TemplateLocator
      */
     public static function getLayoutUidLabel($layoutUid)
     {
-        if (null === $layoutUid) {
+        if ($layoutUid === null) {
             return static::getLayoutUidLabel(_default_template);
         } elseif (static::validateLayoutUid($layoutUid)) {
             list($template, $layout) = static::getTemplateAndLayout($layoutUid);

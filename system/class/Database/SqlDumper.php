@@ -45,7 +45,7 @@ class SqlDumper
 
             fclose($handle);
         } catch (\Exception $e) {
-            if (null !== $handle) {
+            if ($handle !== null) {
                 fclose($handle);
             }
             $tmpFile->discard();
@@ -117,10 +117,10 @@ class SqlDumper
      */
     public function getMaxPacketSize()
     {
-        if (null === $this->maxPacketSize) {
+        if ($this->maxPacketSize === null) {
             // determine max packet size
             $maxAllowedPacket = DB::queryRow('SHOW VARIABLES WHERE Variable_name=\'max_allowed_packet\'');
-            if (false === $maxAllowedPacket) {
+            if ($maxAllowedPacket === false) {
                 throw new DatabaseException('Could not determine value of the "max_allowed_packet" variable');
             }
 
@@ -154,7 +154,7 @@ class SqlDumper
         foreach ($this->tables as $table) {
             $createTable = DB::queryRow('SHOW CREATE TABLE `' . $table . '`');
 
-            if (false === $createTable || !isset($createTable['Create Table'])) {
+            if ($createTable === false || !isset($createTable['Create Table'])) {
                 throw new DatabaseException(sprintf('SHOW CREATE TABLE failed for "%s"', $table));
             }
 
@@ -219,7 +219,7 @@ class SqlDumper
                 }
 
                 // cast
-                if (null !== $value) {
+                if ($value !== null) {
                     switch ($columnOptions[0]) {
                         case 'integer':
                             $value = (int) $value;
@@ -289,7 +289,7 @@ class SqlDumper
         $result = DB::query('SHOW COLUMNS FROM `' . $table . '`');
 
         while ($row = DB::row($result)) {
-            if (false !== ($parentPos = strpos($row['Type'], '('))) {
+            if (($parentPos = strpos($row['Type'], '(')) !== (false)) {
                 $type = substr($row['Type'], 0, $parentPos);
             } else {
                 $type = $row['Type'];

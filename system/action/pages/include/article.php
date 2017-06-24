@@ -8,7 +8,7 @@ if (!defined('_root')) {
 
 // nacteni dat
 $_article = _findArticle($_index['segment'], $_page['id']);
-if (false === $_article) {
+if ($_article === false) {
     $_index['is_found'] = false;
     return;
 }
@@ -43,7 +43,7 @@ if (!$continue) {
 if ($_article['visible']) {
     $output .= "<div class='article-navigation'><span>" . $_lang['article.category'] . ": </span>";
     for ($i = 1; $i <= 3; ++$i) {
-        if (null === $_article["cat{$i}_id"]) {
+        if ($_article["cat{$i}_id"] === null) {
             continue;
         }
         if ($i > 1) {
@@ -74,7 +74,7 @@ if (isset($_article['picture_uid'])) {
 
 //  perex
 Sunlight\Extend::call('article.perex.before', $extend_args);
-$output .= "<div class='article-perex'>" . (null !== $thumbnail ? "<img class='article-perex-image' src='" . _e(_linkFile($thumbnail)) . "' alt='" . $_article['title'] . "'>" : '') . $_article['perex'] . "</div>\n";
+$output .= "<div class='article-perex'>" . ($thumbnail !== null ? "<img class='article-perex-image' src='" . _e(_linkFile($thumbnail)) . "' alt='" . $_article['title'] . "'>" : '') . $_article['perex'] . "</div>\n";
 Sunlight\Extend::call('article.perex.after', $extend_args);
 
 //  obsah
@@ -164,7 +164,7 @@ if ($_article['rateon'] && _ratemode != 0 && _priv_artrate && _iplogCheck(_iplog
 // sestaveni kodu
 Sunlight\Extend::call('article.infos', array('article' => $_article, 'infos' => &$infos));
 
-if (null !== $rateform || !empty($infos)) {
+if ($rateform !== null || !empty($infos)) {
     // zacatek tabulky
     $output .= "
 <table id='article-info' class='article-footer'>
@@ -177,7 +177,7 @@ if (null !== $rateform || !empty($infos)) {
     }
     
     // hodnoceni
-    if (null !== $rateform) {
+    if ($rateform !== null) {
         $output .= "<td>{$rateform}</td>\n";
     }
     

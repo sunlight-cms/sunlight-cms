@@ -17,9 +17,9 @@ if (!$continue) {
 }
 
 // presmerovani
-if ($_index['is_page'] && null !== $_index['slug']) {
+if ($_index['is_page'] && $_index['slug'] !== null) {
     $redirect = DB::queryRow('SELECT new,permanent FROM ' . _redir_table . ' WHERE old=' . DB::val($_index['slug']) . ' AND active=1');
-    if (false !== $redirect) {
+    if ($redirect !== false) {
         header('HTTP/1.1 ' . ($redirect['permanent'] ? '301 Moved Permanently' : '302 Found'));
         header('Location: ' . _linkPage($redirect['new'], true));
 
@@ -37,6 +37,6 @@ Extend::call('index.not_found', array(
     'index' => &$_index,
 ));
 
-if ('' === $_index['output']) {
+if ($_index['output'] === '') {
     $_index['output'] = _msg(_msg_warn, $_lang['global.error404']);
 }

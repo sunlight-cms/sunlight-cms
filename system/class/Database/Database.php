@@ -38,14 +38,14 @@ class Database
         $mysqli = @mysqli_connect($server, $user, $password, $database, $port);
         $connectError = mysqli_connect_error();
 
-        if (null === $connectError) {
-            if (null !== $charset) {
+        if ($connectError === null) {
+            if ($charset !== null) {
                 mysqli_set_charset($mysqli, $charset);
             }
 
             static::$mysqli = $mysqli;
 
-            if (null !== $sqlMode) {
+            if ($sqlMode !== null) {
                 static::query('SET SQL_MODE=' . static::val($sqlMode));
             }
         }
@@ -130,7 +130,7 @@ class Database
     public static function queryRow($sql, $expectError = false)
     {
         $result = static::query($sql, $expectError);
-        if (false === $result) {
+        if ($result === false) {
             return false;
         }
         $row = static::row($result);
@@ -152,7 +152,7 @@ class Database
     public static function queryRows($sql, $indexBy = null, $fetchColumn = null, $assoc = true, $expectError = false)
     {
         $result = static::query($sql, $expectError);
-        if (false === $result) {
+        if ($result === false) {
             return false;
         }
         $rows = static::rows($result, $indexBy, $fetchColumn, $assoc);
@@ -219,7 +219,7 @@ class Database
     {
         $row = $result->fetch_assoc();
 
-        if (null !== $row) {
+        if ($row !== null) {
             return $row;
         } else {
             return false;
@@ -241,10 +241,10 @@ class Database
         $rows = array();
 
         while ($row = $result->fetch_array($type)) {
-            if (null !== $indexBy) {
-                $rows[$row[$indexBy]] = null !== $fetchColumn ? $row[$fetchColumn] : $row;
+            if ($indexBy !== null) {
+                $rows[$row[$indexBy]] = $fetchColumn !== null ? $row[$fetchColumn] : $row;
             } else {
-                $rows[] = null !== $fetchColumn ? $row[$fetchColumn] : $row;
+                $rows[] = $fetchColumn !== null ? $row[$fetchColumn] : $row;
             }
         }
 
@@ -261,7 +261,7 @@ class Database
     {
         $row = $result->fetch_row();
 
-        if (null !== $row) {
+        if ($row !== null) {
             return $row;
         } else {
             return false;
@@ -279,7 +279,7 @@ class Database
     {
         $row = $result->fetch_row();
 
-        if (null !== $row && isset($row[$column])) {
+        if ($row !== null && isset($row[$column])) {
             return $row[$column];
         } else {
             return null;
@@ -356,7 +356,7 @@ class Database
      */
     public static function esc($value, $handleArray = false)
     {
-        if (null === $value) {
+        if ($value === null) {
             return null;
         }
         
@@ -447,7 +447,7 @@ class Database
             $out = '';
             $itemCounter = 0;
             foreach ($value as $item) {
-                if (0 !== $itemCounter) {
+                if ($itemCounter !== 0) {
                     $out .= ',';
                 }
                 $out .= static::val($item);
@@ -457,7 +457,7 @@ class Database
             return $out;
         } elseif (is_string($value)) {
             return '\'' . $value . '\'';
-        } elseif (null === $value) {
+        } elseif ($value === null) {
             return 'NULL';
         }
         return $value;
@@ -482,7 +482,7 @@ class Database
      */
     public static function equal($value)
     {
-        if (null === $value) {
+        if ($value === null) {
             return 'IS NULL';
         } else {
             return '=' . static::val($value);
@@ -497,7 +497,7 @@ class Database
      */
     public static function notEqual($value)
     {
-        if (null === $value) {
+        if ($value === null) {
             return 'IS NOT NULL';
         } else {
             return '!=' . static::val($value);
@@ -515,7 +515,7 @@ class Database
         $sql = '';
 
         foreach ($arr as $item) {
-            if ('' !== $sql) {
+            if ($sql !== '') {
                 $sql .= ',';
             }
 
@@ -542,7 +542,7 @@ class Database
         $col_list = '';
         $val_list = '';
         foreach ($data as $col => $val) {
-            if (0 !== $counter) {
+            if ($counter !== 0) {
                 $col_list .= ',';
                 $val_list .= ',';
             }
@@ -551,7 +551,7 @@ class Database
             ++$counter;
         }
         $result = static::query('INSERT INTO ' . static::escIdt($table) . " ({$col_list}) VALUES({$val_list})");
-        if (false !== $result && $getInsertId) {
+        if ($result !== false && $getInsertId) {
             return static::insertID();
         }
         
@@ -596,7 +596,7 @@ class Database
 
         $columnCounter = 0;
         foreach ($columns as $column) {
-            if (0 !== $columnCounter) {
+            if ($columnCounter !== 0) {
                 $sql .= ',';
             }
             $sql .= static::escIdt($column);
@@ -607,13 +607,13 @@ class Database
 
         $rowCounter = 0;
         foreach ($rows as $row) {
-            if (0 !== $rowCounter) {
+            if ($rowCounter !== 0) {
                 $sql .= ',';
             }
             $sql .= '(';
             $columnCounter = 0;
             foreach ($columns as $column) {
-                if (0 !== $columnCounter) {
+                if ($columnCounter !== 0) {
                     $sql .= ',';
                 }
                 $sql .= static::val(isset($row[$column]) ? $row[$column] : null);
@@ -643,14 +643,14 @@ class Database
         $counter = 0;
         $set_list = '';
         foreach ($data as $col => $val) {
-            if (0 !== $counter) {
+            if ($counter !== 0) {
                 $set_list .= ',';
             }
             $set_list .= static::escIdt($col) . '=' . static::val($val);
             ++$counter;
         }
 
-        return static::query('UPDATE ' . static::escIdt($table) . " SET {$set_list} WHERE {$cond}" . ((null === $limit) ? '' : " LIMIT {$limit}"));
+        return static::query('UPDATE ' . static::escIdt($table) . " SET {$set_list} WHERE {$cond}" . (($limit === null) ? '' : " LIMIT {$limit}"));
     }
 
     /**
@@ -756,7 +756,7 @@ class Database
      */
     public static function delete($table, $cond, $limit = 1)
     {
-        return static::query('DELETE FROM ' . static::escIdt($table) . " WHERE {$cond}" . ((null === $limit) ? '' : " LIMIT {$limit}"));
+        return static::query('DELETE FROM ' . static::escIdt($table) . " WHERE {$cond}" . (($limit === null) ? '' : " LIMIT {$limit}"));
     }
 
     /**

@@ -189,7 +189,7 @@ abstract class Plugin
      */
     public function canBeInstalled()
     {
-        return $this->hasInstaller() && false === $this->installed;
+        return $this->hasInstaller() && $this->installed === false;
     }
 
     /**
@@ -199,7 +199,7 @@ abstract class Plugin
      */
     public function canBeUninstalled()
     {
-        return $this->hasInstaller() && true === $this->installed;
+        return $this->hasInstaller() && $this->installed === true;
     }
 
     /**
@@ -209,7 +209,7 @@ abstract class Plugin
      */
     public function canBeRemoved()
     {
-        return !$this->hasInstaller() || false === $this->installed;
+        return !$this->hasInstaller() || $this->installed === false;
     }
 
     /**

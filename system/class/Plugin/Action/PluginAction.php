@@ -55,7 +55,7 @@ abstract class PluginAction extends Action
      */
     protected function confirm($message, $buttonText = null)
     {
-        if (null === $buttonText) {
+        if ($buttonText === null) {
             $buttonText = $GLOBALS['_lang']['global.continue'];
         }
 

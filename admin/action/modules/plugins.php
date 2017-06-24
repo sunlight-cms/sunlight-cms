@@ -34,7 +34,7 @@ $renderPluginAuthor = function ($author, $url) {
         $renderedAuthor .= '</a>';
     }
 
-    if ('' !== $renderedAuthor) {
+    if ($renderedAuthor !== '') {
         $renderedAuthor = "<li><strong>{$GLOBALS['_lang']['admin.plugins.author']}:</strong> {$renderedAuthor}</li>\n";
     }
 
@@ -89,7 +89,7 @@ foreach (Core::$pluginManager->all() as $pluginType => $plugins) {
 
         // vykreslit radek
         $output .= '
-    <tr' . (null !== $rowClass ? " class=\"{$rowClass}\"" : '') . '>
+    <tr' . ($rowClass !== null ? " class=\"{$rowClass}\"" : '') . '>
         <td>
             ' . ($isInactive
                 ? '<h3><del>' . _e($title) . '</del> <small>(' . $_lang['admin.plugins.status.' . $plugin->getStatus()] . ')</small></h3>'

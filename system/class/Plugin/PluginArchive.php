@@ -115,7 +115,7 @@ class PluginArchive
         if (!$this->open) {
             _ensureFileExists($this->path);
 
-            if (true !== ($errorCode = $this->zip->open($this->path, ZipArchive::CREATE))) {
+            if (($errorCode = $this->zip->open($this->path, ZipArchive::CREATE)) !== (true)) {
                 throw new \RuntimeException(sprintf('Could not open ZIP archive at "%s" (code %d)', $this->path, $errorCode));
             }
 

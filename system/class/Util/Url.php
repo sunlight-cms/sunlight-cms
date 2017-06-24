@@ -45,7 +45,7 @@ class Url
     {
         $components = parse_url($url);
 
-        if (false === $components) {
+        if ($components === false) {
             throw new \InvalidArgumentException('Invalid URL');
         }
 
@@ -76,10 +76,10 @@ class Url
      */
     public static function current()
     {
-        if (null === static::$current) {
+        if (static::$current === null) {
             $url = sprintf(
                 '%s://%s%s',
-                !empty($_SERVER['HTTPS']) && 'off' !== strtolower($_SERVER['HTTPS']) ? 'https' : 'http',
+                !empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off' ? 'https' : 'http',
                 $_SERVER['HTTP_HOST'] ?: 'localhost',
                 $_SERVER['REQUEST_URI']
             );
@@ -99,7 +99,7 @@ class Url
      */
     public static function base()
     {
-        if (null === static::$base || static::$cachedBaseUrl !== Core::$url) {
+        if (static::$base === null || static::$cachedBaseUrl !== Core::$url) {
             static::$base = static::parse(Core::$url);
             static::$cachedBaseUrl = Core::$url;
         }
@@ -262,9 +262,9 @@ class Url
             throw new \OutOfBoundsException(sprintf('Unknown URL component "%s"', $name));
         }
 
-        if ('query' === $name) {
+        if ($name === 'query') {
             $value = (array) $value;
-        } elseif (null !== $value) {
+        } elseif ($value !== null) {
             $value = (string) $value;
         }
 
@@ -306,7 +306,7 @@ class Url
      */
     public function set($name, $value)
     {
-        if (null === $value) {
+        if ($value === null) {
             unset($this->components['query'][$name]);
         } else {
             $this->components['query'][$name] = $value;

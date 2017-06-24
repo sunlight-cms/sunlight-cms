@@ -31,7 +31,7 @@ if (isset($_GET['id'])) {
     if ($query !== false) {
         $continue = true;
         $new = false;
-        if (_page_plugin == $type) {
+        if ($type == _page_plugin) {
             $type_idt = $query['type_idt'];
         } else {
             $type_idt = null;
@@ -43,7 +43,7 @@ if (isset($_GET['id'])) {
     $continue = true;
 
     // zjistit typ plugin stranky
-    if (_page_plugin == $type) {
+    if ($type == _page_plugin) {
         if (!isset($_GET['idt'])) {
             $continue = false;
             return;
@@ -63,7 +63,7 @@ if (isset($_GET['id'])) {
     /* ---  vychozi data pro novou polozku --- */
     $default_parent = Sunlight\Admin\PageLister::getConfig('current_page');
 
-    if (_page_plugin == $type) {
+    if ($type == _page_plugin) {
         $default_title = $plugin_type_array[$type_idt];
     } else {
         $default_title = $_lang['page.type.' . $type_array[$type]];

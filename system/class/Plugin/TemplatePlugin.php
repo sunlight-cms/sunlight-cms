@@ -174,7 +174,7 @@ class TemplatePlugin extends Plugin
      */
     protected function loadLayoutLabels()
     {
-        if (!$this->layoutLabelsLoaded && null !== $this->options['layout.labels']) {
+        if (!$this->layoutLabelsLoaded && $this->options['layout.labels'] !== null) {
             LangPack::register($this->getLayoutLabelsKey(), $this->options['layout.labels']);
             $this->layoutLabelsLoaded = true;
         }

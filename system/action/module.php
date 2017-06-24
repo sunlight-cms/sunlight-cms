@@ -32,7 +32,7 @@ if (preg_match('/^[a-zA-Z_\-.]+$/', $_index['slug'])) {
     }
 
     // spusteni modulu
-    if (null !== $script) {
+    if ($script !== null) {
         $_index['is_found'] = true;
 
         $extend_args = Extend::args($output, array('id' => $_index['slug'], 'script' => &$script));

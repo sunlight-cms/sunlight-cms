@@ -38,11 +38,11 @@ $_url_path = $_url->path;
 $_system_url_path = $_system_url->path;
 
 // zkontrolovat aktualni cestu
-if (0 === strncmp($_url_path, $_system_url_path, strlen($_system_url_path))) {
+if (strncmp($_url_path, $_system_url_path, strlen($_system_url_path)) === 0) {
     $_subpath = substr($_url_path, strlen($_system_url_path));
 
     // presmerovat /index.php na /
-    if ('/index.php' === $_subpath && empty($_url->query)) {
+    if ($_subpath === '/index.php' && empty($_url->query)) {
         _redirectHeader(Core::$url . '/');
         exit;
     }
@@ -131,13 +131,13 @@ if (empty($_POST) || _xsrfCheck()) {
             $_index['slug'] = _get('p');
         }
 
-        if (null !== $_index['slug']) {
+        if ($_index['slug'] !== null) {
             $segments = explode('/', $_index['slug']);
         } else {
             $segments = array();
         }
 
-        if (!empty($segments) && '' === $segments[sizeof($segments) - 1]) {
+        if (!empty($segments) && $segments[sizeof($segments) - 1] === '') {
             // presmerovat identifikator/ na identifikator
             $_url->path = rtrim($_url_path, '/');
 
@@ -172,7 +172,7 @@ if (empty($_POST) || _xsrfCheck()) {
 Extend::call('index.prepare', array('index' => &$_index));
 
 // zpracovani stavu
-if (null !== $_index['redirect_to']) {
+if ($_index['redirect_to'] !== null) {
     // presmerovani
     $_index['template_enabled'] = false;
     _redirectHeader($_index['redirect_to'], $_index['redirect_to_permanent']);

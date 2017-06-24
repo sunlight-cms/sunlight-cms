@@ -13,6 +13,6 @@ Extend::call('index.login_required', array(
     'index' => &$_index,
 ));
 
-if ('' === $_index['output']) {
+if ($_index['output'] === '') {
     $_index['output'] = _userLoginForm(true, true);
 }

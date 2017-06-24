@@ -20,7 +20,7 @@ class ActionResult
      */
     public function __construct($result = null, $messages = null, $output = null)
     {
-        if (null !== $messages) {
+        if ($messages !== null) {
             if (!is_array($messages)) {
                 $messages = array($messages);
             }
@@ -91,7 +91,7 @@ class ActionResult
      */
     public function isComplete()
     {
-        return null !== $this->result;
+        return $this->result !== null;
     }
 
     /**
@@ -101,7 +101,7 @@ class ActionResult
      */
     public function isSuccessful()
     {
-        return true === $this->result;
+        return $this->result === true;
     }
 
     /**
@@ -180,7 +180,7 @@ class ActionResult
      */
     public function hasOutput()
     {
-        return null !== $this->output && '' !== $this->output;
+        return $this->output !== null && $this->output !== '';
     }
 
     /**

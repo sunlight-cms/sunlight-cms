@@ -54,7 +54,7 @@ class BackupRestorer
         // normalize arguments
         $database = $database && $this->backup->hasDatabaseDump();
 
-        if (null === $directories) {
+        if ($directories === null) {
             $directories = $this->backup->getMetaData('directory_list');
         } else {
             $directories = array_intersect($this->backup->getMetaData('directory_list'), $directories);

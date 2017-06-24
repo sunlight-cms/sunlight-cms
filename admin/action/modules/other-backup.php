@@ -30,8 +30,8 @@ $backup_dir = _root . 'system/backup';
 $backup_files = array();
 foreach (scandir($backup_dir) as $item) {
     if (
-        '.' !== $item
-        && '..' !== $item
+        $item !== '.'
+        && $item !== '..'
         && preg_match('/\.zip$/i', $item)
         && is_file($backup_path = $backup_dir . '/' . $item)
     ) {

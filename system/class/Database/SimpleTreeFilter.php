@@ -36,7 +36,7 @@ class SimpleTreeFilter implements TreeFilterInterface
     public function filterNode(array $node, TreeReader $reader)
     {
         foreach ($this->filter as $cond) {
-            $isInvalid = (null === $cond[1] && null !== $node[$cond[0]] || $node[$cond[0]] != $cond[1]);
+            $isInvalid = ($cond[1] === null && $node[$cond[0]] !== null || $node[$cond[0]] != $cond[1]);
 
             if ($cond[2]) {
                 $isInvalid = !$isInvalid;
@@ -76,7 +76,7 @@ class SimpleTreeFilter implements TreeFilterInterface
         $compiledFilter = array();
 
         foreach ($filter as $prop => $val) {
-            if ('!' === $prop[0]) {
+            if ($prop[0] === '!') {
                 $compiledFilter[] = array(substr($prop, 1), $val, true);
             } else {
                 $compiledFilter[] = array($prop, $val, false);
@@ -96,10 +96,10 @@ class SimpleTreeFilter implements TreeFilterInterface
 
         $condCounter = 0;
         foreach ($filter as $cond) {
-            if (0 !== $condCounter) {
+            if ($condCounter !== 0) {
                 $sql .= ' AND ';
             }
-            if (null !== $cond[1]) {
+            if ($cond[1] !== null) {
                 // hodnota
                 $sql .= sprintf(
                     '%%__node__%%.`%s`%s=%s',

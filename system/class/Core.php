@@ -185,7 +185,7 @@ class Core
             }
         }
 
-        if ('admin' !== $options['env'] && 'web' !== $options['env']) {
+        if ($options['env'] !== 'admin' && $options['env'] !== 'web') {
             static::systemFailure(
                 'Konfigurační volba "env" musí být "admin" nebo "web".',
                 'The configuration option "env" must be either "admin" or "web".'
@@ -206,8 +206,8 @@ class Core
         // systemove konstanty
         define('_root', $root);
         define('_env', $options['env']);
-        define('_env_web', 'web' === $options['env']);
-        define('_env_admin', 'admin' === $options['env']);
+        define('_env_web', $options['env'] === 'web');
+        define('_env_admin', $options['env'] === 'admin');
         define('_dev', (bool) $options['dev']);
         define('_dbprefix', $options['db.prefix'] . '_');
         define('_dbname', $options['db.name']);
@@ -240,7 +240,7 @@ class Core
         }
 
         // cache
-        if (null === static::$cache) {
+        if (static::$cache === null) {
             static::$cache = new Cache(
                 $options['cache']
                     ? new FilesystemDriver(
@@ -276,7 +276,7 @@ class Core
     {
         $connectError = DB::connect($options['db.server'], $options['db.user'], $options['db.password'], $options['db.name'], $options['db.port']);
 
-        if (null !== $connectError) {
+        if ($connectError !== null) {
             static::systemFailure(
                 'Připojení k databázi se nezdařilo. Důvodem je pravděpodobně výpadek serveru nebo chybné přístupové údaje. Zkontrolujte přístupové údaje v souboru config.php.',
                 'Could not connect to the database. This may have been caused by the database server being temporarily unavailable or an error in the configuration. Check your config.php file for errors.',
@@ -454,11 +454,11 @@ class Core
         }
 
         // hlavicky
-        if (null === $options['content_type']) {
+        if ($options['content_type'] === null) {
             // vychozi hlavicky
             header('Content-Type: text/html; charset=UTF-8');
             header('Expires: ' . _httpDate(-604800, true));
-        } elseif (false !== $options['content_type']) {
+        } elseif ($options['content_type'] !== false) {
             header('Content-Type: ' . $options['content_type']);
         }
     }
@@ -486,7 +486,7 @@ class Core
             // nastaveni cookie
             $cookieParams = session_get_cookie_params();
             $cookieParams['httponly'] = 1;
-            $cookieParams['secure'] = 'https' === Url::current()->scheme ? 1 : 0;
+            $cookieParams['secure'] = Url::current()->scheme === 'https' ? 1 : 0;
             session_set_cookie_params($cookieParams['lifetime'], $cookieParams['path'], $cookieParams['domain'], $cookieParams['secure'], $cookieParams['httponly']);
 
             // nastaveni session a start
@@ -525,7 +525,7 @@ class Core
                     do {
                         // zpracovani cookie
                         $cookie = explode('$', $_COOKIE[$persistentCookieName], 2);
-                        if (2 !== sizeof($cookie)) {
+                        if (sizeof($cookie) !== 2) {
                             // neplatny format cookie
                             $errorCode = 1;
                             break;
@@ -537,7 +537,7 @@ class Core
 
                         // nacist data uzivatele
                         $userData = DB::queryRow('SELECT * FROM ' . _users_table . ' WHERE id=' . DB::val($cookie['id']));
-                        if (false === $userData) {
+                        if ($userData === false) {
                             // uzivatel nenalezen
                             $errorCode = 2;
                             break;
@@ -565,7 +565,7 @@ class Core
                     } while (false);
 
                     // kontrola vysledku
-                    if (null !== $errorCode) {
+                    if ($errorCode !== null) {
                         // autorizace se nepodarila, smazat neplatnou cookie
                         setcookie(static::$appId . '_persistent_key', '', (time() - 3600), '/');
                         break;
@@ -583,7 +583,7 @@ class Core
             // nacist data uzivatele
             if (!$userData) {
                 $userData = DB::queryRow('SELECT * FROM ' . _users_table . ' WHERE id=' . DB::val($_SESSION['user_id']));
-                if (false === $userData) {
+                if ($userData === false) {
                     // uzivatel nenalezen
                     $errorCode = 6;
                     break;
@@ -606,7 +606,7 @@ class Core
 
             // nacist data skupiny
             $groupData = DB::queryRow('SELECT * FROM ' . _groups_table . ' WHERE id=' . DB::val($userData['group_id']));
-            if (false === $groupData) {
+            if ($groupData === false) {
                 // skupina nenalezena
                 $errorCode = 9;
                 break;
@@ -660,7 +660,7 @@ class Core
 
             // nacteni dat skupiny pro neprihlasene uziv.
             $groupData = DB::queryRow('SELECT * FROM ' . _groups_table . ' WHERE id=2');
-            if (false === $groupData) {
+            if ($groupData === false) {
                 throw new \RuntimeException('Anonymous user group was not found (id=2)');
             }
 
@@ -676,7 +676,7 @@ class Core
         define('_login', $authorized);
         define('_loginid', $userData['id']);
         define('_loginname', $userData['username']);
-        define('_loginpublicname', $userData[null !== $userData['publicname'] ? 'publicname' : 'username']);
+        define('_loginpublicname', $userData[$userData['publicname'] !== null ? 'publicname' : 'username']);
         define('_loginemail', $userData['email']);
         define('_logingroup', $groupData['id']);
 
@@ -684,7 +684,7 @@ class Core
             define('_priv_' . $item, $groupData[$item]);
         }
 
-        define('_priv_super_admin', $userData['levelshift'] && _group_admin == $groupData['id']);
+        define('_priv_super_admin', $userData['levelshift'] && $groupData['id'] == _group_admin);
     }
 
     /**
@@ -693,7 +693,7 @@ class Core
     private static function initLanguageFile()
     {
         // volba jazyka
-        if (_login && _language_allowcustom && '' !== static::$userData['language']) {
+        if (_login && _language_allowcustom && static::$userData['language'] !== '') {
             $language = static::$userData['language'];
             $usedLoginLanguage = true;
         } else {
@@ -708,7 +708,7 @@ class Core
             $languagePlugin = null;
         }
 
-        if (null !== $languagePlugin) {
+        if ($languagePlugin !== null) {
             $GLOBALS['_lang'] += $languagePlugin->load();
         } else {
             if ($usedLoginLanguage) {
@@ -740,7 +740,7 @@ class Core
         } else {
             $cronTimes = false;
         }
-        if (false === $cronTimes) {
+        if ($cronTimes === false) {
             $cronTimes = array();
             $cronUpdate = true;
         }
@@ -750,7 +750,7 @@ class Core
                 // posledni cas je zaznamenan
                 if ($cronNow - $cronTimes[$cronIntervalName] >= $cronIntervalSeconds) {
                     // kontrola lock file
-                    if (null === $cronLockFileHandle) {
+                    if ($cronLockFileHandle === null) {
                         $cronLockFile = _root . 'system/cron.lock';
                         $cronLockFileHandle = fopen($cronLockFile, 'r');
                         if (!flock($cronLockFileHandle, LOCK_EX | LOCK_NB)) {
@@ -797,7 +797,7 @@ class Core
         }
 
         // uvolnit lockfile
-        if (null !== $cronLockFileHandle) {
+        if ($cronLockFileHandle !== null) {
             flock($cronLockFileHandle, LOCK_UN);
             fclose($cronLockFileHandle);
             $cronLockFileHandle = null;
@@ -820,7 +820,7 @@ class Core
                 // posledni zmena souboru byla pred vice nez 24h
                 // a nejedna se o skryty soubor
                 return
-                    '.' !== substr($file->getFilename(), 0, 1)
+                    substr($file->getFilename(), 0, 1) !== '.'
                     && time() - $file->getMTime() > 86400;
             },
         ));
@@ -836,7 +836,7 @@ class Core
     public static function loadSetting($name, $default = null)
     {
         $result = DB::queryRow('SELECT val FROM ' . _settings_table . ' WHERE var=' . DB::val($name));
-        if (false !== $result) {
+        if ($result !== false) {
             return $result['val'];
         } else {
             return $default;
@@ -871,7 +871,7 @@ class Core
     public static function loadSettingsByType($type)
     {
         $settings = array();
-        $query = DB::query('SELECT var,val FROM ' . _settings_table . ' WHERE type' . (null === $type ? ' IS NULL' : '=' . DB::val($type)));
+        $query = DB::query('SELECT var,val FROM ' . _settings_table . ' WHERE type' . ($type === null ? ' IS NULL' : '=' . DB::val($type)));
         while ($row = DB::row($query)) {
             $settings[$row['var']] = $row['val'];
         }
@@ -947,7 +947,7 @@ class Core
      */
     public static function systemFailure($msgCs, $msgEn, array $msgArgs = null, $msgExtra = null)
     {
-        if ('cs' === static::$fallbackLang) {
+        if (static::$fallbackLang === 'cs') {
             $message = !empty($msgArgs) ? vsprintf($msgCs, $msgArgs) : $msgCs;
         } else {
             $message = !empty($msgArgs) ? vsprintf($msgEn, $msgArgs) : $msgEn;

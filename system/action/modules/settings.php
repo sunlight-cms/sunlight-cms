@@ -76,7 +76,7 @@ if (isset($_POST['username'])) {
             $errors[] = $_lang['user.msg.publicnameexists'];
         }
     }
-    if ('' === $publicname) {
+    if ($publicname === '') {
         $publicname = null;
     }
 
@@ -86,7 +86,7 @@ if (isset($_POST['username'])) {
         $errors[] = $_lang['user.msg.bademail'];
     } else {
         if ($email != _loginemail) {
-            if ('' === _post('currentpassword')) {
+            if (_post('currentpassword') === '') {
                 $errors[] = $_lang['mod.settings.error.emailchangenopass'];
             } elseif (!Sunlight\Util\Password::load($userdata['password'])->match(_post('currentpassword'))) {
                 $errors[] = $_lang['mod.settings.error.badcurrentpass'];
@@ -127,10 +127,10 @@ if (isset($_POST['username'])) {
                 'jpg_quality' => 95,
             ), $avatarError);
 
-            if (false !== $avatarUid) {
+            if ($avatarUid !== false) {
 
                 // smazani stareho avataru
-                if (null !== $avatar) {
+                if ($avatar !== null) {
                     @unlink(_root . 'images/avatars/' . $avatar . '.jpg');
                 }
 

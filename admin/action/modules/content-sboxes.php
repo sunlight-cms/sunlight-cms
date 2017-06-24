@@ -77,7 +77,7 @@ if (isset($_POST['action'])) {
                             $lastid = $id;
                         }
 
-                        if ('' !== $sql) {
+                        if ($sql !== '') {
                             $sql .= ',';
                         }
                         $sql .= $var . '=';

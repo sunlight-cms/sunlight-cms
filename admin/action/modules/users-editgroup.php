@@ -129,8 +129,8 @@ if ($continue) {
         $rights .= "<fieldset><legend>" . $section['title'] . "</legend><table>\n";
         foreach ($section['rights'] as $item) {
             if (
-                _group_admin == $id
-                || _group_guests == $id && !in_array($item['name'], $unregistered_useable, true)
+                $id == _group_admin
+                || $id == _group_guests && !in_array($item['name'], $unregistered_useable, true)
                 || !_userHasRight($item['name'])
             ) {
                 $disabled = true;
@@ -188,7 +188,7 @@ if ($continue) {
             foreach ($rights_array as $section) {
                 foreach ($section['rights'] as $item) {
                     if (
-                        _group_guests == $id && !in_array($item['name'], $unregistered_useable, true)
+                        $id == _group_guests && !in_array($item['name'], $unregistered_useable, true)
                         || !_userHasRight($item['name'])
                     ) {
                         continue;
@@ -218,13 +218,13 @@ if ($continue) {
 
     if ($id != _group_guests) {
         $icons = "<div class='radio-group'>\n";
-        $icons .= "<label><input" . _checkboxActivate('' === $query['icon']) . " type='radio' name='icon' value=''> " . $_lang['global.undefined'] . "</label>\n";
+        $icons .= "<label><input" . _checkboxActivate($query['icon'] === '') . " type='radio' name='icon' value=''> " . $_lang['global.undefined'] . "</label>\n";
 
         $icon_dir = _root . 'images/groupicons';
         foreach (scandir($icon_dir) as $file) {
             if (
-                '.' === $file
-                || '..' === $file
+                $file === '.'
+                || $file === '..'
                 || !is_file($icon_dir . '/' . $file)
                 || !in_array(strtolower(pathinfo($file, PATHINFO_EXTENSION)), Sunlight\Core::$imageExt, true)
             ) {

@@ -69,8 +69,8 @@ class PageLister
     {
         // set current page
         $pageId = _get('page_id', null);
-        if (null !== $pageId) {
-            if ('root' === $pageId) {
+        if ($pageId !== null) {
+            if ($pageId === 'root') {
                 $pageId = null;
             } else {
                 $pageId = (int) $pageId;
@@ -81,7 +81,7 @@ class PageLister
 
         // set mode
         $mode = _get('list_mode', null);
-        if (null !== $mode) {
+        if ($mode !== null) {
             switch ($mode) {
                 case 'tree':
                     static::setConfig('mode', static::MODE_FULL_TREE);
@@ -188,7 +188,7 @@ class PageLister
         );
 
         // check current page
-        if (null !== static::$config['current_page'] && !DB::count(_root_table, 'id=' . DB::val(static::$config['current_page']))) {
+        if (static::$config['current_page'] !== null && !DB::count(_root_table, 'id=' . DB::val(static::$config['current_page']))) {
             static::$config['current_page'] = null;
         }
 
@@ -196,7 +196,7 @@ class PageLister
         $output = "<div class=\"page-list-container\">\n";
 
         // breadcrumbs
-        if ($options['breadcrumbs'] && null !== static::$config['current_page']) {
+        if ($options['breadcrumbs'] && static::$config['current_page'] !== null) {
             static::renderBreadcrumbs($output);
         }
 
@@ -263,7 +263,7 @@ class PageLister
             PageManager::getChildren(
                 static::$config['current_page'],
                 static::MODE_SINGLE_LEVEL == $options['mode']
-                    ? (null !== static::$config['current_page'] ? 1 : 0)
+                    ? (static::$config['current_page'] !== null ? 1 : 0)
                     : null,
                 true,
                 null,
@@ -275,7 +275,7 @@ class PageLister
         // render mode
         switch ($options['mode']) {
             case static::MODE_FULL_TREE:
-                if (null === $options['level_class']) {
+                if ($options['level_class'] === null) {
                     $options['level_class'] = true;
                 }
                 if ($options['sortable']) {
@@ -313,7 +313,7 @@ class PageLister
     {
         if (!empty($tree)) {
             // determine level offset
-            if (null !== static::$config['current_page']) {
+            if (static::$config['current_page'] !== null) {
                 $firstPage = current($tree);
                 $levelOffset = -$firstPage['node_level'];
             } else {
@@ -436,7 +436,7 @@ class PageLister
         ));
 
         // detect separator, compose link
-        $isSeparator = (_page_separator == $page['type']);
+        $isSeparator = ($page['type'] == _page_separator);
         if (!$isSeparator && $options['links'] && $page['node_depth'] > 0) {
             $nodeLink = Url::current()->set('page_id', $page['id'])->generateRelative();
         } else {
@@ -447,12 +447,12 @@ class PageLister
         $actions = static::getPageActions($page, $isAccessible);
 
         // compose class
-        if ('' !== $class) {
+        if ($class !== '') {
             $class .= ' ';
         }
         $class .= 'page-' . static::$pageTypes[$page['type']];
 
-        if (_page_plugin == $page['type'] && isset(static::$ppageTypes[$page['type_idt']])) {
+        if ($page['type'] == _page_plugin && isset(static::$ppageTypes[$page['type_idt']])) {
             $class .= ' page-'
                 . $typeName
                 . '-'
@@ -477,7 +477,7 @@ class PageLister
         if ($options['level_class']) {
             $itemAttrs .= " class=\"node-level-p" . ($page['node_level'] + $levelOffset) . "\"";
         }
-        if (null !== $nodeLink && !$options['title_editable']) {
+        if ($nodeLink !== null && !$options['title_editable']) {
             $output .= "<a{$itemAttrs} href=\"" . _e($nodeLink) . "\"><span class=\"page-list-title\">{$page['title']}</span></a>";
         } else {
             $output .= "<span{$itemAttrs}><span class=\"page-list-title\"><span>";
@@ -500,7 +500,7 @@ class PageLister
         if ($options['type']) {
             if ($isSeparator) {
                 $typeLabel = '';
-            } elseif (_page_plugin == $page['type'] && isset(static::$ppageTypes[$page['type_idt']])) {
+            } elseif ($page['type'] == _page_plugin && isset(static::$ppageTypes[$page['type_idt']])) {
                 $typeLabel = static::$ppageTypes[$page['type_idt']];
             } else {
                 $typeLabel = $GLOBALS['_lang']['page.type.' . static::$pageTypes[$page['type']]];
@@ -550,7 +550,7 @@ class PageLister
         }
 
         // show
-        if (_page_separator != $page['type']) {
+        if ($page['type'] != _page_separator) {
             $actions['show'] = array(
                 'url' => _linkRoot($page['id'], $page['slug']),
                 'new_window' => true,
@@ -624,11 +624,11 @@ class PageLister
     {
         $output = '';
         if ($page['type'] != _page_separator) {
-            if (_index_page_id == $page['id']) {
+            if ($page['id'] == _index_page_id) {
                 $iconTitle = $GLOBALS['_lang']['admin.content.form.homepage'];
                 $output .= "<img src=\"images/icons/home.png\" class=\"icon\" alt=\"{$iconTitle}\" title=\"{$iconTitle}\">";
             }
-            if (null !== $page['layout'] && !$page['layout_inherit']) {
+            if ($page['layout'] !== null && !$page['layout_inherit']) {
                 $iconTitle = sprintf($GLOBALS['_lang']['admin.content.form.layout.setting'], _e(TemplateService::getComponentLabelByUid($page['layout'], TemplateService::UID_TEMPLATE_LAYOUT)));
                 $output .= "<img src=\"images/icons/template.png\" class=\"icon\" alt=\"{$iconTitle}\" title=\"{$iconTitle}\">";
             }

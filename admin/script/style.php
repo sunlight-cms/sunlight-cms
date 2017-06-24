@@ -24,7 +24,7 @@ $s = (int) _get('s', 0);
 function _admin_color($loff = 0, $satc = null, $sat_abs = false, $light_abs = false)
 {
     // nacteni a uprava barev
-    if (0 === $satc) {
+    if ($satc === 0) {
         $light_abs = true;
         $loff += 127;
     }

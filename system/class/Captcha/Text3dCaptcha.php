@@ -109,7 +109,7 @@ class Text3dCaptcha
      */
     public function draw($text)
     {
-        if ('' === $text) {
+        if ($text === '') {
             throw new \InvalidArgumentException('No text given');
         }
 

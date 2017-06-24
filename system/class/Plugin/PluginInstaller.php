@@ -36,7 +36,7 @@ abstract class PluginInstaller
      */
     public function isInstalled()
     {
-        if (null === $this->installed) {
+        if ($this->installed === null) {
             $this->installed = (bool) $this->verify();
         }
 
@@ -110,7 +110,7 @@ abstract class PluginInstaller
         $foundTables = array();
 
         foreach ($tables as $table) {
-            if (false !== DB::queryRow('SHOW TABLES LIKE ' . DB::val($table))) {
+            if (DB::queryRow('SHOW TABLES LIKE ' . DB::val($table)) !== false) {
                 $foundTables[] = $table;
             }
         }
@@ -130,7 +130,7 @@ abstract class PluginInstaller
         $foundColumns = array();
 
         foreach ($columns as $column) {
-            if (false !== DB::queryRow('SHOW COLUMNS FROM ' . DB::escIdt($table) . ' LIKE ' . DB::val($column))) {
+            if (DB::queryRow('SHOW COLUMNS FROM ' . DB::escIdt($table) . ' LIKE ' . DB::val($column)) !== false) {
                 $foundColumns[] = $column;
             }
         }

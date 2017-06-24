@@ -33,7 +33,7 @@ if (isset($_GET['user'], $_GET['hash'])) {
         $hash = _get('hash');
         $userdata = DB::queryRow("SELECT id,email,username,security_hash,security_hash_expires FROM " . _users_table . " WHERE username=" . DB::val($user));
         if (
-            false === $userdata
+            $userdata === false
             || $hash !== $userdata['security_hash']
             || time() >= $userdata['security_hash_expires']
         ) {
@@ -92,7 +92,7 @@ if (isset($_GET['user'], $_GET['hash'])) {
         $username = _post('username');
         $email = _post('email');
         $userdata = DB::queryRow("SELECT id,email,username FROM " . _users_table . " WHERE username=" . DB::val($username) . " AND email=" . DB::val($email));
-        if (false === $userdata) {
+        if ($userdata === false) {
             $output .= _msg(_msg_warn, $_lang['mod.lostpass.notfound']);
             break;
         }

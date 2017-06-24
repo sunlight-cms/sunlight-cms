@@ -65,7 +65,7 @@ abstract class Action
         } catch (\Throwable $e) {
         }
 
-        if (null !== $e) {
+        if ($e !== null) {
             if ($this->catchExceptions) {
                 $result = ActionResult::failure(Message::error($_lang['global.error']));
 

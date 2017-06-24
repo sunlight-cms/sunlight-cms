@@ -81,7 +81,7 @@ class PhpTemplate
             $php = var_export($vars[$name], true);
         } else {
             // no value
-            if (null !== $default) {
+            if ($default !== null) {
                 $php = $this->compileDefault($default);
             } else {
                 $php = "''";
@@ -100,14 +100,14 @@ class PhpTemplate
     protected function compileDefault($default)
     {
         if (
-            'true' === $default
-            || 'false' === $default
-            || 'null' === $default
+            $default === 'true'
+            || $default === 'false'
+            || $default === 'null'
             || preg_match('/^(0x)?[0-9]+(\.[0-9]+)?$/', $default)
         ) {
             // keywords, numbers
             return $default;
-        } elseif (0 === strncmp($default, 'array(', 6)) {
+        } elseif (strncmp($default, 'array(', 6) === 0) {
             // arrays
             return str_replace("\\'", "'", $default);
         } elseif (preg_match('/^"(.+)"$/', $default, $match)) {

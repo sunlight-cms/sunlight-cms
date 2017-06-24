@@ -53,7 +53,7 @@ function _adminUserMenu()
     if (_login && _priv_administration) {
         $profile_link = _linkModule('profile', 'id=' . _loginname);
         $avatar = _getAvatar(Core::$userData, array('get_url' => true, 'default' => false));
-        if (null !== $avatar) {
+        if ($avatar !== null) {
             $output .= '<a id="usermenu-avatar" href="' . $profile_link . '"><img src="' . $avatar . '" alt="' . _loginname . '"></a>';
         }
         $output .= '<a id="usermenu-username" href="' . $profile_link . '">' . _loginpublicname . '</a> [';
@@ -143,11 +143,11 @@ function _adminPollAccess($csep = true, $alias = 'p.')
  */
 function _adminArticleAccess($alias = '')
 {
-    if ('' !== $alias) {
+    if ($alias !== '') {
         $alias .= '.';
     }
     if (_priv_adminallart) {
-        return " AND (" . $alias . "author=" . _loginid . " OR (SELECT level FROM " . _groups_table . " WHERE id=(SELECT group_id FROM " . _users_table . " WHERE id=" . (('' === $alias) ? "" . _articles_table . "." : $alias) . "author))<" . _priv_level . ")";
+        return " AND (" . $alias . "author=" . _loginid . " OR (SELECT level FROM " . _groups_table . " WHERE id=(SELECT group_id FROM " . _users_table . " WHERE id=" . (($alias === '') ? "" . _articles_table . "." : $alias) . "author))<" . _priv_level . ")";
     } else {
         return " AND " . $alias . "author=" . _loginid;
     }
@@ -229,7 +229,7 @@ function _adminRootSelect($name, array $options)
     );
 
     // filtr na typ
-    if (null !== $options['type']) {
+    if ($options['type'] !== null) {
         $filter = new SimpleTreeFilter(array('type' => $options['type']));
     } else {
         $filter = null;
@@ -252,17 +252,17 @@ function _adminRootSelect($name, array $options)
     // vypis
     $output = "<select name='{$name}'"
         . ($options['multiple'] ? ' multiple' : 'ß')
-        . (null !== $options['attrs'] ? ' ' . $options['attrs'] : '')
+        . ($options['attrs'] !== null ? ' ' . $options['attrs'] : '')
         . ">\n";
 
-    if (null !== $options['empty_item']) {
+    if ($options['empty_item'] !== null) {
         $output .= "<option class='special' value='-1'>{$options['empty_item']}</option>\n";
     }
 
     $disabledBranchLevel = null;
     foreach ($tree as $page) {
         // filtr deaktivovanych vetvi
-        if (null === $disabledBranchLevel) {
+        if ($disabledBranchLevel === null) {
             if (isset($options['disabled_branches'][$page['id']])) {
                 $disabledBranchLevel = $page['node_level'];
             }
@@ -271,7 +271,7 @@ function _adminRootSelect($name, array $options)
         }
 
         // vypis stranky
-        if (null === $disabledBranchLevel) {
+        if ($disabledBranchLevel === null) {
             if ($options['multiple']) {
                 $active = in_array($page['id'], $options['selected']);
             } else {
@@ -280,7 +280,7 @@ function _adminRootSelect($name, array $options)
 
             $output .= "<option value='{$page['id']}'"
                 . ($active ? " selected" : '')
-                . ((null !== $options['type'] && $page['type'] != $options['type'] || !$options['allow_separators'] && _page_separator == $page['type']) ? " disabled" : '')
+                . (($options['type'] !== null && $page['type'] != $options['type'] || !$options['allow_separators'] && $page['type'] == _page_separator) ? " disabled" : '')
                 . '>'
                 . str_repeat('&nbsp;&nbsp;&nbsp;│&nbsp;', $page['node_level'])
                 . _cutText($page['title'], $options['maxlength'])
@@ -288,7 +288,7 @@ function _adminRootSelect($name, array $options)
         }
     }
 
-    if (empty($tree) && null === $options['empty_item']) {
+    if (empty($tree) && $options['empty_item'] === null) {
         $output .= "<option value='-1'>" . $GLOBALS['_lang']['global.nokit'] . "</option>\n";
     }
 
@@ -339,7 +339,7 @@ function _adminUserSelect($name, $selected, $gcond, $class = null, $extraoption 
                     } else {
                         $sel = "";
                     }
-                    $output .= "<option value='" . $user['id'] . "'" . $sel . ">" . $user[(null !== $user['publicname']) ? 'publicname' : 'username'] . "</option>\n";
+                    $output .= "<option value='" . $user['id'] . "'" . $sel . ">" . $user[($user['publicname'] !== null) ? 'publicname' : 'username'] . "</option>\n";
                 }
                 $output .= "</optgroup>";
             }
@@ -373,11 +373,11 @@ function _adminUserSelect($name, $selected, $gcond, $class = null, $extraoption 
 function _adminTemplateLayoutSelect($name, $selected, $empty_option = null, $multiple = null, $class = null)
 {
     $output = "<select name=\"{$name}\""
-        . (null !== $class ? " class=\"{$class}\"" : '')
-        . (null !== $multiple ? " multiple size=\"{$multiple}\"" : '')
+        . ($class !== null ? " class=\"{$class}\"" : '')
+        . ($multiple !== null ? " multiple size=\"{$multiple}\"" : '')
         . ">\n";
 
-    if (null !== $empty_option) {
+    if ($empty_option !== null) {
         $output .= '<option class="special" value="">' . _e($empty_option) . "</option>\n";
     }
 
@@ -387,7 +387,7 @@ function _adminTemplateLayoutSelect($name, $selected, $empty_option = null, $mul
             $layoutUid = TemplateService::composeUid($template, $layout);
             $layoutLabel = TemplateService::getComponentLabel($template, $layout);
 
-            $active = null === $multiple && $layoutUid === $selected || null !== $multiple && in_array($layoutUid, $selected, true);
+            $active = $multiple === null && $layoutUid === $selected || $multiple !== null && in_array($layoutUid, $selected, true);
 
             $output .= '<option value="' . _e($layoutUid) . '"' . ($active ? ' selected' : '') . '>'
                 . _e($layoutLabel)
@@ -414,14 +414,14 @@ function _adminTemplateLayoutSelect($name, $selected, $empty_option = null, $mul
 function _adminTemplateLayoutSlotSelect($name, $selected, $empty_option = null, $class = null, array $templates = null)
 {
     $output = "<select name=\"{$name}\""
-        . (null !== $class ? " class=\"{$class}\"" : '')
+        . ($class !== null ? " class=\"{$class}\"" : '')
         . ">\n";
 
-    if (null !== $empty_option) {
+    if ($empty_option !== null) {
         $output .= '<option class="special" value="">' . _e($empty_option) . "</option>\n";
     }
 
-    if (null === $templates) {
+    if ($templates === null) {
         $templates = Core::$pluginManager->getAllTemplates();
     }
 
@@ -455,11 +455,11 @@ function _adminFormatHtmlColor($value, $expand = true, $default = '#000000')
 {
     // pripravit hodnotu
     $value = trim($value);
-    if ('' === $value) {
+    if ($value === '') {
         // prazdna hodnota
         return $default;
     }
-    if ('#' !== $value[0]) {
+    if ($value[0] !== '#') {
         $value = '#' . $value;
     }
 
@@ -472,7 +472,7 @@ function _adminFormatHtmlColor($value, $expand = true, $default = '#000000')
     $hexLen = strlen($hex);
 
     // zpracovat
-    if (3 === $hexLen && $expand) {
+    if ($hexLen === 3 && $expand) {
         // zkracena verze
         $output = '#';
         for ($i = 0; $i < $hexLen; ++$i) {
@@ -480,7 +480,7 @@ function _adminFormatHtmlColor($value, $expand = true, $default = '#000000')
         }
 
         return $output;
-    } elseif (6 === $hexLen) {
+    } elseif ($hexLen === 6) {
         // plna verze
         return $value;
     } else {

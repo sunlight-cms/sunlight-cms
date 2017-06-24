@@ -13,7 +13,7 @@ Core::init('../../', array(
 
 $auth = explode(':', Core::loadSetting('cron_auth'), 2);
 if (
-    2 !== sizeof($auth)
+    sizeof($auth) !== 2
     || _get('user') !== $auth[0]
     || _get('password') !== $auth[1]
 ) {

@@ -43,7 +43,7 @@ class Json
 
         $json = json_encode($data, $options);
 
-        if (false === $json) {
+        if ($json === false) {
             throw new \RuntimeException(static::getErrorMessage());
         }
 
@@ -111,7 +111,7 @@ class Json
             $data = json_decode($json, $assoc, 512, JSON_BIGINT_AS_STRING);
         }
 
-        if (JSON_ERROR_NONE !== ($errorCode = json_last_error())) {
+        if (($errorCode = json_last_error()) !== (JSON_ERROR_NONE)) {
             throw new \RuntimeException(static::getErrorMessage($errorCode));
         }
 
@@ -126,7 +126,7 @@ class Json
      */
     public static function getErrorMessage($errorCode = null)
     {
-        if (null === $errorCode) {
+        if ($errorCode === null) {
             $errorCode = json_last_error();
         }
 

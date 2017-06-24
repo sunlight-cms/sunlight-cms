@@ -62,7 +62,7 @@ class SystemChecker
     {
         $errors_str = '';
         for($i = 0; isset($this->errors[$i]); ++$i) {
-            $errors_str .= ($i + 1) . '. ' . $this->errors[$i]['cs' === Core::$fallbackLang ? 0 : 1] . "\n";
+            $errors_str .= ($i + 1) . '. ' . $this->errors[$i][Core::$fallbackLang === 'cs' ? 0 : 1] . "\n";
         }
 
         return $errors_str;

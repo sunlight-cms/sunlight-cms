@@ -33,7 +33,7 @@ function _HCM_gallery($cesta = "", $rozmery = null, $strankovani = null, $lightb
 
         // nacteni polozek
         $items = array();
-        while (false !== ($item = readdir($handle))) {
+        while (($item = readdir($handle)) !== (false)) {
             $ext = pathinfo($item);
             if (isset($ext['extension'])) {
                 $ext = mb_strtolower($ext['extension']);

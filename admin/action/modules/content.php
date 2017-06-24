@@ -188,7 +188,7 @@ foreach ($content_modules as $category_alias => $category_data) {
         }
     }
 
-    if ('' !== $buttons_str) {
+    if ($buttons_str !== '') {
         $content_modules_str .= '<div class="content-' . $category_alias . '">
 <h2>' . (isset($category_data['label']) ? $category_data['label'] : $_lang['admin.content.' . $category_alias]) . '</h2>
 ' . $buttons_str;
@@ -206,7 +206,7 @@ $output .= $message . '
 <table id="contenttable">
 <tr class="valign-top">
   ' . $rootitems . '
-  ' . ('' !== $content_modules_str ? "<td class=\"contenttable-box\" id=\"content-modules\">{$content_modules_str}</td>" : '') . '
+  ' . ($content_modules_str !== '' ? "<td class=\"contenttable-box\" id=\"content-modules\">{$content_modules_str}</td>" : '') . '
 </tr>
 </table>
 ';

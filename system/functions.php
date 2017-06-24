@@ -24,8 +24,8 @@ use Sunlight\Plugin\TemplateService;
 function _addGetToLink($link, $params, $entity = true)
 {
     // oddelovaci znak
-    if ('' !== $params) {
-        if (false === strpos($link, '?')) {
+    if ($params !== '') {
+        if (strpos($link, '?') === false) {
             $link .= '?';
         } else {
             if ($entity) {
@@ -91,7 +91,7 @@ function _slugify($input, $lower = true, $extra = null)
     $output = "";
     for ($i = 0; isset($input[$i]); ++$i) {
         $char = $input[$i];
-        if (isset($allow[$char]) || null !== $extra && isset($extra[$char])) {
+        if (isset($allow[$char]) || $extra !== null && isset($extra[$char])) {
             if ($lower && isset($lowermap[$char])) {
                 $output .= $lowermap[$char];
             } else {
@@ -103,7 +103,7 @@ function _slugify($input, $lower = true, $extra = null)
     // dvojite symboly
     $from = array('|--+|', '|\.\.+|', '|\.-+|', '|-\.+|');
     $to = array('-', '.', '.', '-');
-    if (null !== $extra) {
+    if ($extra !== null) {
         foreach ($extra as $extra_char => $i) {
             $from[] = '|' . preg_quote($extra_char . $extra_char) . '+|';
             $to[] = $extra_char;
@@ -113,7 +113,7 @@ function _slugify($input, $lower = true, $extra = null)
 
     // orezani
     $trim_chars = '-_.';
-    if (null !== $extra) {
+    if ($extra !== null) {
         $trim_chars .= implode('', array_keys($extra));
     }
     $output = trim($output, $trim_chars);
@@ -190,11 +190,11 @@ function _arrayGetSubset(array $array, array $keys, $prefixLen = null, $exceptio
     $out = array();
     foreach ($keys as $key) {
         if (array_key_exists($key, $array)) {
-            $out[null === $prefixLen ? $key : substr($key, $prefixLen)] = $array[$key];
+            $out[$prefixLen === null ? $key : substr($key, $prefixLen)] = $array[$key];
         } elseif ($exceptionOnMissing) {
             throw new OutOfBoundsException(sprintf('Missing key "%s"', $key));
         } else {
-            $out[null === $prefixLen ? $key : substr($key, $prefixLen)] = null;
+            $out[$prefixLen === null ? $key : substr($key, $prefixLen)] = null;
         }
     }
 
@@ -214,10 +214,10 @@ function _arrayGetSubset(array $array, array $keys, $prefixLen = null, $exceptio
  */
 function _arrayFilter(array $array, $include = null, $exclude = null, array $excludeList = array())
 {
-    if (null !== $include) {
+    if ($include !== null) {
         $includeLength = strlen($include);
     }
-    if (null !== $exclude) {
+    if ($exclude !== null) {
         $excludeLength = strlen($exclude);
     }
     if (!empty($excludeList)) {
@@ -227,8 +227,8 @@ function _arrayFilter(array $array, $include = null, $exclude = null, array $exc
     $output = array();
     foreach ($array as $key => $value) {
         if (
-            null !== $include && 0 !== strncmp($key, $include, $includeLength)
-            || null !== $exclude && 0 === strncmp($key, $exclude, $excludeLength)
+            $include !== null && strncmp($key, $include, $includeLength) !== 0
+            || $exclude !== null && strncmp($key, $exclude, $excludeLength) === 0
             || isset($excludeList[$key])
         ) {
             continue;
@@ -263,7 +263,7 @@ function _booleanStr($input)
 function _normalize(&$variable, $type, $emptyToNull = true)
 {
     if (
-        $emptyToNull && (null === $variable || '' === $variable)
+        $emptyToNull && ($variable === null || $variable === '')
         || !settype($variable, $type)
     ) {
         $variable = null;
@@ -281,7 +281,7 @@ function _randomInteger($min, $max)
 {
     static $fc = null;
 
-    if (null === $fc) {
+    if ($fc === null) {
         if (function_exists('random_int')) {
             $fc = 'random_int';
         } else {
@@ -438,7 +438,7 @@ function _unescapeHtml($input)
 {
     static $map = null;
     
-    if (null === $map) {
+    if ($map === null) {
         $map = array_flip(get_html_translation_table(HTML_SPECIALCHARS, ENT_QUOTES));
     }
     $output = strtr($input, $map);
@@ -589,7 +589,7 @@ function _parseStr($input)
 
                         // detekovat klicova slova
                         if (isset($keywords[$val])) {
-                            if (0 === $keywords[$val]) {
+                            if ($keywords[$val] === 0) {
                                 $val = null;
                             } else {
                                 $val = $keywords[$val];
@@ -638,7 +638,7 @@ function _parseStr($input)
  */
 function _isSafeUrl($url)
 {
-    return 0 === preg_match('/^[\s\0-\32a-z0-9_\-]+:/i', $url);
+    return preg_match('/^[\s\0-\32a-z0-9_\-]+:/i', $url) === 0;
 }
 
 /**
@@ -666,8 +666,8 @@ function _restoreChecked($key_var, $name, $default = false, $method = 'POST')
     if (
         $method === $_SERVER['REQUEST_METHOD']
         && (
-            'POST' === $method && isset($_POST[$key_var], $_POST[$name])
-            || 'GET' === $method && isset($_GET[$key_var], $_GET[$name])
+            $method === 'POST' && isset($_POST[$key_var], $_POST[$name])
+            || $method === 'GET' && isset($_GET[$key_var], $_GET[$name])
         )
     ) {
         $active = true;
@@ -765,7 +765,7 @@ function _restoreValue(array $values, $key, $else = null, $param = true, $else_e
     }
 
     if ($param) {
-        if (null !== $value && '' !== $value) {
+        if ($value !== null && $value !== '') {
             return ' value="' . $value . '"';
         } else {
             return '';
@@ -1003,7 +1003,7 @@ function _getUploadLimit()
 function _renderUploadLimit()
 {
     $limit = _getUploadLimit();
-    if (null !== $limit) {
+    if ($limit !== null) {
         return '<small>' . $GLOBALS['_lang']['global.uploadlimit'] . ': <em>' . _formatFilesize($limit) . '</em></small>';
     } else {
         return '';
@@ -1059,8 +1059,8 @@ function _phpIniLimit($opt)
 function _isApache()
 {
     return
-        false !== mb_stripos(php_sapi_name(), 'apache')
-        || isset($_SERVER['SERVER_SOFTWARE']) && false !== mb_stripos($_SERVER['SERVER_SOFTWARE'], 'apache');
+        mb_stripos(php_sapi_name(), 'apache') !== false
+        || isset($_SERVER['SERVER_SOFTWARE']) && mb_stripos($_SERVER['SERVER_SOFTWARE'], 'apache') !== false;
 }
 
 /**
@@ -1133,11 +1133,11 @@ function _editTime($name, $timestamp = null, $updatebox = false, $updateboxcheck
         'updatebox_checked' => $updateboxchecked,
     ));
 
-    if ('' === $output) {
+    if ($output === '') {
         if (-1 === $timestamp) {
             $timestamp = time();
         }
-        if (null !== $timestamp) {
+        if ($timestamp !== null) {
             $timestamp = getdate($timestamp);
         } else {
             $timestamp = array('seconds' => '', 'minutes' => '', 'hours' => '', 'mday' => '', 'mon' => '', 'year' => '');
@@ -1165,7 +1165,7 @@ function _loadTime($name, $default = null)
         'default' => $default,
     ));
 
-    if (null === $result) {
+    if ($result === null) {
         if (!isset($_POST[$name]) || !is_array($_POST[$name])) {
             $result = $default;
         } elseif (!isset($_POST[$name]['tupdate'])) {
@@ -1303,7 +1303,7 @@ function _articlePreview(array $art, array $userQuery, $info = true, $perex = tr
         'perex' => $perex,
         'comment_count' => $comment_count,
     ));
-    if ('' !== $extendOutput) {
+    if ($extendOutput !== '') {
         return $extendOutput;
     }
 
@@ -1330,7 +1330,7 @@ function _articlePreview(array $art, array $userQuery, $info = true, $perex = tr
             $thumbnail = null;
         }
 
-        $output .= "<div class='list-perex'>" . (null !== $thumbnail ? "<a href='" . _e($link) . "'><img class='list-perex-image' src='" . _e(_linkFile($thumbnail)) . "' alt='" . $art['title'] . "'></a>" : '') . $art['perex'] . "</div>\n";
+        $output .= "<div class='list-perex'>" . ($thumbnail !== null ? "<a href='" . _e($link) . "'><img class='list-perex-image' src='" . _e(_linkFile($thumbnail)) . "' alt='" . $art['title'] . "'></a>" : '') . $art['perex'] . "</div>\n";
     }
 
     // info
@@ -1389,7 +1389,7 @@ function _galleryImage($img, $lightboxid, $width, $height)
         } else {
             $prevUrl = _link($img['prev']);
         }
-    } elseif (null !== $fullFile) {
+    } elseif ($fullFile !== null) {
         $prevUrl = _linkFile(_pictureThumb($fullFile, array('x' => $width, 'y' => $height)));
     } else {
         $prevUrl = $fullUrl;
@@ -1425,7 +1425,7 @@ function _captchaInit()
     static $captchaCounter = 0;
 
     $output = Extend::fetch('captcha.init');
-    if (null !== $output) {
+    if ($output !== null) {
         return $output;
     }
 
@@ -1457,7 +1457,7 @@ function _captchaCheck()
 {
     $result = Extend::fetch('captcha.check');
 
-    if (null === $result) {
+    if ($result === null) {
         // pole pro nahradu matoucich znaku
         $disambiguation = array(
             '0' => 'O',
@@ -1472,7 +1472,7 @@ function _captchaCheck()
             $enteredCode = _post('_cp');
             $captchaId = _post('_cn');
 
-            if (null !== $enteredCode && isset($_SESSION['captcha_code'][$captchaId])) {
+            if ($enteredCode !== null && isset($_SESSION['captcha_code'][$captchaId])) {
                 if (strtr($_SESSION['captcha_code'][$captchaId][0], $disambiguation) === strtr(mb_strtoupper($enteredCode), $disambiguation)) {
                     $result = true;
                 }
@@ -1564,7 +1564,7 @@ function _formatTime($timestamp, $category = null)
         'category' => $category
     ));
 
-    if ('' !== $extend) {
+    if ($extend !== '') {
         return $extend;
     } else {
         return date(_time_format, $timestamp);
@@ -1584,12 +1584,12 @@ function _formatFilesize($bytes)
     for ($i = 2; $i >= 0; --$i) {
         $bytesPerUnit = pow(1000, $i);
         $value = $bytes / $bytesPerUnit;
-        if ($value >= 1 || 0 === $i) {
+        if ($value >= 1 || $i === 0) {
             break;
         }
     }
 
-    return _formatNumber(2 === $i ? $value : ceil($value)) . ' ' . $units[$i];
+    return _formatNumber($i === 2 ? $value : ceil($value)) . ' ' . $units[$i];
 }
 
 /**
@@ -1715,7 +1715,7 @@ function _formOutput(array $options, array $rows)
         'rows' => &$rows,
     ));
 
-    if ('' !== $extend_buffer) {
+    if ($extend_buffer !== '') {
         // vykresleni pretizeno
         return $extend_buffer;
     }
@@ -1728,7 +1728,7 @@ function _formOutput(array $options, array $rows)
         $output .= '<form';
 
         foreach (array('name', 'method', 'action', 'enctype', 'id', 'class', 'autocomplete') as $attr) {
-            if (null !== $options[$attr]) {
+            if ($options[$attr] !== null) {
                 $output .= ' ' . $attr . '="' . _e($options[$attr]) . '"';
             }
         }
@@ -1746,7 +1746,7 @@ function _formOutput(array $options, array $rows)
 
     // radek s odesilacim tlacitkem
     if (!$options['embedded']) {
-        if (null !== $options['submit_row']) {
+        if ($options['submit_row'] !== null) {
             $submit_row = $options['submit_row'];
         } else {
             $submit_row = array(
@@ -1794,7 +1794,7 @@ function _formOutputRow(array $row)
         'class' => '',
     );
     if ($row['top']) {
-        $row['class'] .= ('' !== $row['class'] ? ' ' : '') . 'valign-top';
+        $row['class'] .= ($row['class'] !== '' ? ' ' : '') . 'valign-top';
     }
 
     // prazdny radek?
@@ -1803,16 +1803,16 @@ function _formOutputRow(array $row)
     }
 
     // zacatek radku
-    $output = '<tr' . ('' !== $row['class'] ? " class=\"{$row['class']}\"" : '') . ">\n";
+    $output = '<tr' . ($row['class'] !== '' ? " class=\"{$row['class']}\"" : '') . ">\n";
 
     // popisek
-    if (null !== $row['label']) {
+    if ($row['label'] !== null) {
         $output .= "<th>{$row['label']}</th>\n";
     }
 
     // obsah
     $output .= '<td';
-    if (null === $row['label']) {
+    if ($row['label'] === null) {
         $output .= ' colspan="2"';
     }
     $output .= ">{$row['content']}</td>\n";
@@ -1938,9 +1938,9 @@ function _userHomeDir($getTopmost = false)
 function _userNormalizeDir($dirPath)
 {
     if (
-        null !== $dirPath
-        && '' !== $dirPath
-        && false !== ($dirPath = _userCheckPath($dirPath, false, true))
+        $dirPath !== null
+        && $dirPath !== ''
+        && ($dirPath = _userCheckPath($dirPath, false, true)) !== (false)
         && is_dir($dirPath)
     ) {
         return $dirPath;
@@ -1965,7 +1965,7 @@ function _userCheckPath($path, $isFile, $getPath = false)
 
         if (
             /* nepovolit vystup z rootu */                  substr_count($path, '..') <= substr_count(_root, '..')
-            /* nepovolit vystup z domovskeho adresare */    && 0 === strncmp($homeDirPath, $path, strlen($homeDirPath))
+            /* nepovolit vystup z domovskeho adresare */    && strncmp($homeDirPath, $path, strlen($homeDirPath)) === 0
             /* nepovolit praci s nebezpecnymi soubory */    && (!$isFile || _userCheckFilename(basename($path)))
         ) {
             return $getPath ? $path : true;
@@ -2052,7 +2052,7 @@ function _userQuery($joinUserIdColumn = null, $prefix = 'user_', $alias = 'u', $
 
     // joiny
     $joins = array();
-    if (null !== $joinUserIdColumn) {
+    if ($joinUserIdColumn !== null) {
         $joins[] = 'LEFT JOIN ' . _users_table . " {$alias} ON({$joinUserIdColumn}" . DB::notEqual($emptyValue) . " AND {$joinUserIdColumn}={$alias}.id)";
     }
     $joins[] = 'LEFT JOIN ' . _groups_table . " {$groupAlias} ON({$groupAlias}.id={$alias}.group_id)";
@@ -2169,7 +2169,7 @@ function _getPostFormPreviewButton($form, $area)
 function _iplogCheck($type, $var = null, $expires = null)
 {
     $type = (int) $type;
-    if (null !== $var) {
+    if ($var !== null) {
         $var = (int) $var;
     }
 
@@ -2184,10 +2184,10 @@ function _iplogCheck($type, $var = null, $expires = null)
             $cleaned['system'] = true;
         }
     } elseif (!isset($cleaned['custom'][$type])) {
-        if (null === $expires) {
+        if ($expires === null) {
             throw new InvalidArgumentException('The "expires" argument must be specified for custom types');
         }
-        DB::delete(_iplog_table, 'type=' . $type .((null !== $var) ? ' AND var=' . $var : '') . ' AND ' . time() . '-time>' . ((int) $expires));
+        DB::delete(_iplog_table, 'type=' . $type .(($var !== null) ? ' AND var=' . $var : '') . ' AND ' . time() . '-time>' . ((int) $expires));
         $cleaned['custom'][$type] = true;
     }
 
@@ -2233,7 +2233,7 @@ function _iplogCheck($type, $var = null, $expires = null)
             break;
 
         default:
-            $query = DB::query($querybasic . ((null !== $var) ? " AND var=" . $var : ''));
+            $query = DB::query($querybasic . (($var !== null) ? " AND var=" . $var : ''));
             if (DB::size($query) != 0) {
                 $result = false;
             }
@@ -2259,7 +2259,7 @@ function _iplogCheck($type, $var = null, $expires = null)
 function _iplogUpdate($type, $var = null)
 {
     $type = (int) $type;
-    if (null !== $var) {
+    if ($var !== null) {
         $var = (int) $var;
     }
 
@@ -2333,7 +2333,7 @@ function _iplogUpdate($type, $var = null)
             break;
 
         default:
-            $query = DB::queryRow($querybasic . ((null !== $var) ? " AND var=" . $var : ''));
+            $query = DB::queryRow($querybasic . (($var !== null) ? " AND var=" . $var : ''));
             if ($query !== false) {
                 DB::update(_iplog_table, 'id=' . $query['id'], array('time' => time()));
             } else {
@@ -2404,11 +2404,11 @@ function _findPage(array $segments, $extra_columns = null, $extra_joins = null, 
 {
     // zaklad dotazu
     $sql = 'SELECT page.*';
-    if (null !== $extra_columns) {
+    if ($extra_columns !== null) {
          $sql .= ',' . $extra_columns;
     }
     $sql .= ' FROM ' . _root_table . ' AS page';
-    if (null !== $extra_joins) {
+    if ($extra_joins !== null) {
         $sql .= ' ' . $extra_joins;
     }
 
@@ -2419,7 +2419,7 @@ function _findPage(array $segments, $extra_columns = null, $extra_joins = null, 
     $conds[] = 'page.type!=' . _page_separator;
 
     // predane podminky
-    if (null !== $extra_conds) {
+    if ($extra_conds !== null) {
         $extra_conds[] = '(' . $conds . ')';
     }
 
@@ -2469,13 +2469,13 @@ function _findArticle($slug, $cat_id = null)
     }
     $sql .= ' ' . $author_user_query['joins'];
     $sql .= ' WHERE a.slug=' . DB::val($slug);
-    if (null !== $cat_id) {
+    if ($cat_id !== null) {
         $sql .= ' AND a.home1=' . DB::val($cat_id);
     }
     $sql .= ' LIMIT 1';
 
     $query = DB::queryRow($sql);
-    if (false !== $query) {
+    if ($query !== false) {
         $query['author_query'] = $author_user_query;
     }
 
@@ -2517,18 +2517,18 @@ function _linkFile($filePath, $absolute = false)
 {
     static $realRootPath = null, $realRootPathLength = null;
 
-    if (null === $realRootPath) {
+    if ($realRootPath === null) {
         $realRootPath = realpath(_root) . DIRECTORY_SEPARATOR;
         $realRootPathLength = strlen($realRootPath);
     }
 
     $realFilePath = realpath($filePath);
 
-    if (false !== $realFilePath && substr($realFilePath, 0, $realRootPathLength) === $realRootPath) {
+    if ($realFilePath !== false && substr($realFilePath, 0, $realRootPathLength) === $realRootPath) {
         $path = str_replace('\\', '/', substr($realFilePath, $realRootPathLength));
     } else {
         if (_dev) {
-            if (false === $realFilePath) {
+            if ($realFilePath === false) {
                 throw new \InvalidArgumentException(sprintf('File "%s" does not exist or is not accessible', $filePath));
             } else {
                 throw new \InvalidArgumentException(sprintf('File "%s" is outside of the root ("%s")', $realFilePath, $realRootPath));
@@ -2552,8 +2552,8 @@ function _linkFile($filePath, $absolute = false)
  */
 function _linkArticle($id, $slug = null, $category_slug = null, $absolute = false)
 {
-    if (null !== $id) {
-        if (null === $slug || null === $category_slug) {
+    if ($id !== null) {
+        if ($slug === null || $category_slug === null) {
             $slug = DB::queryRow("SELECT art.slug AS art_ts, cat.slug AS cat_ts FROM " . _articles_table . " AS art JOIN " . _root_table . " AS cat ON(cat.id=art.home1) WHERE art.id=" . $id);
             if ($slug === false) {
                 $slug = array('---', '---');
@@ -2582,7 +2582,7 @@ function _linkPage($slug, $absolute = false)
     if (_pretty_urls) {
         $path = $slug;
     } else {
-        if ('' !== $slug) {
+        if ($slug !== '') {
             $path = 'index.php?p=' . $slug;
         } else {
             $path = '';
@@ -2603,12 +2603,12 @@ function _linkPage($slug, $absolute = false)
  */
 function _linkRoot($id, $slug = null, $segment = null, $absolute = false)
 {
-    if (null !== $id && null === $slug) {
+    if ($id !== null && $slug === null) {
         $slug = DB::queryRow("SELECT slug FROM " . _root_table . " WHERE id=" . DB::val($id));
-        $slug = (false !== $slug ? $slug['slug'] : '---');
+        $slug = ($slug !== false ? $slug['slug'] : '---');
     }
 
-    if (null !== $segment) {
+    if ($segment !== null) {
         $slug .= '/' . $segment;
     } elseif ($id == _index_page_id) {
         $slug = '';
@@ -2642,11 +2642,11 @@ function _linkPost(array $post, $entity = true, $absolute = false)
         case _post_forum_topic:
         case _post_pm:
             if (-1 == $post['xhome']) {
-                $topicId = $post[_post_pm == $post['type'] ? 'home' : 'id'];
+                $topicId = $post[$post['type'] == _post_pm ? 'home' : 'id'];
             } else {
                 $topicId = $post['xhome'];
             }
-            if (_post_forum_topic == $post['type']) {
+            if ($post['type'] == _post_forum_topic) {
                 $url = _linkTopic($topicId, $post['root_slug'], $absolute);
             } else {
                 $url = _linkModule('messages', "a=list&read={$topicId}", $entity, $absolute);
@@ -2687,9 +2687,9 @@ function _linkPost(array $post, $entity = true, $absolute = false)
  */
 function _linkTopic($topic_id, $forum_slug = null, $absolute = false)
 {
-    if (null === $forum_slug) {
+    if ($forum_slug === null) {
         $forum_slug = DB::queryRow('SELECT r.slug FROM ' . _root_table . ' r WHERE type=' . _page_forum . ' AND id=(SELECT p.home FROM ' . _posts_table . ' p WHERE p.id=' . DB::val($topic_id) . ')');
-        if (false !== $forum_slug) {
+        if ($forum_slug !== false) {
             $forum_slug = $forum_slug['slug'];
         } else {
             $forum_slug = '---';
@@ -2790,8 +2790,8 @@ function _linkUser(array $data, array $options = array())
     );
 
     $tag = ($options['link'] ? 'a' : 'span');
-    $name = $data[$options['publicname'] && null !== $data['publicname'] ? 'publicname' : 'username'];
-    $nameIsTooLong = (null !== $options['max_len'] && mb_strlen($name) > $options['max_len']);
+    $name = $data[$options['publicname'] && $data['publicname'] !== null ? 'publicname' : 'username'];
+    $nameIsTooLong = ($options['max_len'] !== null && mb_strlen($name) > $options['max_len']);
 
     // pouze jmeno?
     if ($options['plain']) {
@@ -2805,7 +2805,7 @@ function _linkUser(array $data, array $options = array())
     // titulek
     $title = $options['title'];
     if ($nameIsTooLong) {
-        if (null === $title) {
+        if ($title === null) {
             $title = $name;
         } else {
             $title = "{$name}, {$title}";
@@ -2816,13 +2816,13 @@ function _linkUser(array $data, array $options = array())
     $out = "<{$tag}"
         . ($options['link'] ? ' href="' . _linkModule('profile', 'id=' .  $data['username']) . '"' : '')
         . ($options['link'] && $options['new_window'] ? ' target="_blank"' : '')
-        . " class=\"user-link user-link-{$data['id']} user-link-group-{$data['group_id']}" . (null !== $options['class'] ? " {$options['class']}" : '') . "\""
-        . ($options['color'] && '' !== $data['group_color'] ? " style=\"color:{$data['group_color']}\"" : '')
-        . (null !== $title ? " title=\"{$title}\"" : '')
+        . " class=\"user-link user-link-{$data['id']} user-link-group-{$data['group_id']}" . ($options['class'] !== null ? " {$options['class']}" : '') . "\""
+        . ($options['color'] && $data['group_color'] !== '' ? " style=\"color:{$data['group_color']}\"" : '')
+        . ($title !== null ? " title=\"{$title}\"" : '')
         . '>';
 
     // ikona skupiny
-    if ($options['icon'] && '' !== $data['group_icon']) {
+    if ($options['icon'] && $data['group_icon'] !== '') {
         $out .= "<img src=\"" . _link('images/groupicons/' . $data['group_icon']) . "\" title=\"{$data['group_title']}\" alt=\"{$data['group_title']}\" class=\"icon\">";
     }
 
@@ -2851,7 +2851,7 @@ function _linkUserFromQuery(array $userQuery, array $row, array $options = array
 {
     $userData = _arrayGetSubset($row, $userQuery['columns'], strlen($userQuery['prefix']));
 
-    if (null === $userData['id']) {
+    if ($userData['id'] === null) {
         return '?';
     }
 
@@ -2994,7 +2994,7 @@ function _filterHCM($content, $exception = false)
     }
 
     $whitelist = preg_split('/\s*,\s*/', _priv_adminhcm);
-    if (1 === sizeof($whitelist) && '*' === $whitelist[0]) {
+    if (sizeof($whitelist) === 1 && $whitelist[0] === '*') {
         $whitelist = null; // vsechny HCM moduly povoleny
     }
 
@@ -3004,8 +3004,8 @@ function _filterHCM($content, $exception = false)
     ));
 
     // pripravit mapy
-    $blacklistMap = null !== $blacklist ? array_flip($blacklist) : null;
-    $whitelistMap = null !== $whitelist ? array_flip($whitelist) : null;
+    $blacklistMap = $blacklist !== null ? array_flip($blacklist) : null;
+    $whitelistMap = $whitelist !== null ? array_flip($whitelist) : null;
 
     // filtrovat
     return _parseHCM($content, function ($match) use ($blacklistMap, $whitelistMap, $exception) {
@@ -3013,8 +3013,8 @@ function _filterHCM($content, $exception = false)
         $module = isset($params[0]) ? mb_strtolower($params[0]) : '';
 
         if (
-            null !== $whitelistMap && !isset($whitelistMap[$module])
-            || null === $blacklistMap
+            $whitelistMap !== null && !isset($whitelistMap[$module])
+            || $blacklistMap === null
             || isset($blacklistMap[$module])
         ) {
             if ($exception) {
@@ -3485,12 +3485,12 @@ function _postAccess(array $userQuery, array $post)
             'post' => $post,
             'user_query' => $userQuery,
         ));
-        if (null !== $access) {
+        if ($access !== null) {
             return $access;
         }
 
         // je uzivatel autorem prispevku?
-        if (_loginid == $post[$userQuery['prefix'] . 'id'] && ($post['time'] + _postadmintime > time() || _priv_unlimitedpostaccess)) {
+        if ($post[$userQuery['prefix'] . 'id'] == _loginid && ($post['time'] + _postadmintime > time() || _priv_unlimitedpostaccess)) {
             return true;
         } elseif (_priv_adminposts && _priv_level > $post[$userQuery['prefix'] . 'group_level']) {
             // uzivatel ma pravo spravovat cizi prispevky
@@ -3606,10 +3606,10 @@ function _resultPaging($url, $limit, $table, $conditions = '1', $linksuffix = ''
         'paging' => &$paging,
     ));
 
-    if (null === $paging) {
+    if ($paging === null) {
         if ($pages > 1) {
 
-            if (false === strpos($url, "?")) {
+            if (strpos($url, "?") === false) {
                 $url .= '?';
             } else {
                 $url .= '&';
@@ -3757,7 +3757,7 @@ function _redirectHeader($url, $permanent = false)
  */
 function _returnHeader($url = null)
 {
-    if (null === $url) {
+    if ($url === null) {
         $url = _returnUrl();
     }
 
@@ -3789,12 +3789,12 @@ function _returnUrl()
     $specifiedUrl = _get('_return', '');
     $baseUrl = Url::base();
 
-    if ('' !== $specifiedUrl) {
+    if ($specifiedUrl !== '') {
         $returnUrl = clone $baseUrl;
 
-        if ('/' === $specifiedUrl[0]) {
+        if ($specifiedUrl[0] === '/') {
             $returnUrl->path = $specifiedUrl;
-        }  elseif ('./' !== $specifiedUrl) {
+        }  elseif ($specifiedUrl !== './') {
             $returnUrl->path = $returnUrl->path . '/' . $specifiedUrl;
         }
     } elseif (!empty($_SERVER['HTTP_REFERER'])) {
@@ -3820,7 +3820,7 @@ function _downloadHeaders($filename, $filesize = null)
     header('Content-Type: application/octet-stream');
     header(sprintf('Content-Disposition: attachment; filename="%s"', $filename));
 
-    if (null !== $filesize) {
+    if ($filesize !== null) {
         header(sprintf('Content-Length: %d', $filesize));
     }
 }
@@ -3838,7 +3838,7 @@ function _downloadFile($filepath, $filename = null)
     _ensureHeadersNotSent();
     _ensureFileExists($filepath);
 
-    if (null === $filename) {
+    if ($filename === null) {
         $filename = basename($filepath);
     }
 
@@ -3966,7 +3966,7 @@ function _articleFilterCategories(array $categories, $alias = null)
         return '1';
     }
 
-    if (null !== $alias) {
+    if ($alias !== null) {
         $alias .= '.';
     }
 
@@ -4141,7 +4141,7 @@ function _userLoginForm($title = false, $required = false, $return = null, $embe
     // zpravy
     if (isset($_GET['login_form_result'])) {
         $login_result = _userLoginMessage(_get('login_form_result'));
-        if (null !== $login_result) {
+        if ($login_result !== null) {
             $output .= $login_result;
         }
     }
@@ -4152,7 +4152,7 @@ function _userLoginForm($title = false, $required = false, $return = null, $embe
         $form_append = '';
 
         // adresa pro navrat
-        if (null === $return && !$embedded) {
+        if ($return === null && !$embedded) {
             if (isset($_GET['login_form_return'])) {
                 $return = _get('login_form_return');
             } else  {
@@ -4292,7 +4292,7 @@ function _userLoginSubmit($username, $plainPassword, $persistent = false)
     }
 
     // kontrola uziv. jmena
-    if ('' === $username) {
+    if ($username === '') {
         // prazdne uziv. jmeno
         return 0;
     }
@@ -4305,19 +4305,19 @@ function _userLoginSubmit($username, $plainPassword, $persistent = false)
         'persistent' => $persistent,
         'result' => &$extend_result,
     ));
-    if (null !== $extend_result) {
+    if ($extend_result !== null) {
         return $extend_result;
     }
 
     // nalezeni uzivatele
-    if (false !== strpos($username, '@')) {
+    if (strpos($username, '@') !== false) {
         $cond = 'u.email=' . DB::val($username);
     } else {
         $cond = 'u.username=' . DB::val($username) . ' OR u.publicname=' . DB::val($username);
     }
 
     $query = DB::queryRow("SELECT u.id,u.username,u.email,u.logincounter,u.password,u.blocked,g.blocked group_blocked FROM " . _users_table . " u JOIN " . _groups_table . " g ON(u.group_id=g.id) WHERE " . $cond);
-    if (false === $query) {
+    if ($query === false) {
         // uzivatel nenalezen
         return 0;
     }
@@ -4425,7 +4425,7 @@ function _userGetUnreadPmCount()
 {
     static $result = null;
 
-    if (null === $result) {
+    if ($result === null) {
         $result = DB::count(_pm_table, "(receiver=" . _loginid . " AND receiver_deleted=0 AND receiver_readtime<update_time) OR (sender=" . _loginid . " AND sender_deleted=0 AND sender_readtime<update_time)");
     }
 
@@ -4498,7 +4498,7 @@ function _getAvatar(array $data, array $options = array())
         'class' => null,
     );
 
-    $hasAvatar = (null !== $data['avatar']);
+    $hasAvatar = ($data['avatar'] !== null);
     $url = _link('images/avatars/' . ($hasAvatar ? $data['avatar'] : 'no-avatar' . (_getCurrentTemplate()->getOption('dark') ? '-dark' : '')) . '.jpg');
 
     // zpracovani rozsirenim
@@ -4508,7 +4508,7 @@ function _getAvatar(array $data, array $options = array())
             'url' => &$url,
             'options' => $options,
         ));
-        if ('' !== $extendOutput) {
+        if ($extendOutput !== '') {
             return $extendOutput;
         }
     }
@@ -4528,7 +4528,7 @@ function _getAvatar(array $data, array $options = array())
     if ($options['link']) {
         $out .= '<a href="' . _linkModule('profile', 'id=' .  $data['username']) . '">';
     }
-    $out .= "<img class=\"avatar" . (null !== $options['class'] ? " {$options['class']}" : '') . "\" src=\"{$url}\" alt=\"" . $data[null !== $data['publicname'] ? 'publicname' : 'username'] . "\">";
+    $out .= "<img class=\"avatar" . ($options['class'] !== null ? " {$options['class']}" : '') . "\" src=\"{$url}\" alt=\"" . $data[$data['publicname'] !== null ? 'publicname' : 'username'] . "\">";
     if ($options['link']) {
         $out .= '</a>';
     }
@@ -4584,7 +4584,7 @@ function _pictureLoad($filepath, $limit = array(), $filename = null)
         /* --------  kontroly a nacteni  -------- */
 
         // zjisteni nazvu souboru
-        if (null === $filename) {
+        if ($filename === null) {
             $filename = basename($filepath);
         }
 
@@ -4631,7 +4631,7 @@ function _pictureLoad($filepath, $limit = array(), $filename = null)
         if (!isset($imageInfo['bits'])) {
             $imageInfo['bits'] = 8;
         }
-        if (false === $imageInfo || 0 == $imageInfo[0] || 0 == $imageInfo[1]) {
+        if ($imageInfo === false || $imageInfo[0] == 0 || $imageInfo[1] == 0) {
             $code = 5;
             break;
         }
@@ -4699,7 +4699,7 @@ function _pictureLoad($filepath, $limit = array(), $filename = null)
 
         case 5:
             $lastError = error_get_last();
-            if (null !== $lastError && !empty($lastError['message'])) {
+            if ($lastError !== null && !empty($lastError['message'])) {
                 $output['msg'] .= " {$_lang['global.error']}: " . _e($lastError['message']);
             }
             break;
@@ -4757,12 +4757,12 @@ function _pictureResize($res, array $opt, $size = null)
         'output' => &$extend_output,
     ));
 
-    if (null !== $extend_output) {
+    if ($extend_output !== null) {
         return $extend_output;
     }
 
     // zadna operace?
-    if ('none' === $opt['mode']) {
+    if ($opt['mode'] === 'none') {
         return array('status' => true, 'code' => 0, 'resource' => $res, 'changed' => false);
     }
 
@@ -4775,22 +4775,22 @@ function _pictureResize($res, array $opt, $size = null)
     }
 
     // rozmery kompatibilita 0 => null
-    if (0 == $opt['x']) {
+    if ($opt['x'] == 0) {
         $opt['x'] = null;
     }
-    if (0 == $opt['y']) {
+    if ($opt['y'] == 0) {
         $opt['y'] = null;
     }
 
     // kontrola parametru
-    if (null === $opt['x'] && null === $opt['y'] || null !== $opt['y'] && $opt['y'] < 1 || null !== $opt['x'] && $opt['x'] < 1) {
+    if ($opt['x'] === null && $opt['y'] === null || $opt['y'] !== null && $opt['y'] < 1 || $opt['x'] !== null && $opt['x'] < 1) {
         return array('status' => false, 'code' => 2, 'msg' => $_lang['pic.resize.2']);
     }
 
     // proporcionalni dopocet chybejiciho rozmeru
-    if (null === $opt['x']) {
+    if ($opt['x'] === null) {
         $opt['x'] = max(round($x / $y * $opt['y']), 1);
-    } elseif (null === $opt['y']) {
+    } elseif ($opt['y'] === null) {
         $opt['y'] = max(round($opt['x'] / ($x / $y)), 1);
     }
 
@@ -4840,12 +4840,12 @@ function _pictureResize($res, array $opt, $size = null)
     $output = imagecreatetruecolor($opt['x'], $opt['y']);
 
     // prekresleni pozadi
-    if ($opt['trans'] && null !== $opt['trans_format']) {
+    if ($opt['trans'] && $opt['trans_format'] !== null) {
         // pruhledne
         _pictureAlpha($output, $opt['trans_format'], $res);
     } else {
         // nepruhledne
-        if ($opt['mode'] === 'fit' && null !== $opt['bgcolor']) {
+        if ($opt['mode'] === 'fit' && $opt['bgcolor'] !== null) {
             $bgc = imagecolorallocate($output, $opt['bgcolor'][0], $opt['bgcolor'][1], $opt['bgcolor'][2]);
             imagefilledrectangle($output, 0, 0, $opt['x'], $opt['y'], $bgc);
         }
@@ -4871,7 +4871,7 @@ function _pictureResize($res, array $opt, $size = null)
 function _pictureAlpha($resource, $format, $tColorSource = null)
 {
     // paleta?
-    $trans = imagecolortransparent(null !== $tColorSource ? $tColorSource : $resource);
+    $trans = imagecolortransparent($tColorSource !== null ? $tColorSource : $resource);
     if ($trans >= 0) {
         $transColor = imagecolorsforindex($resource, $trans);
         $transColorAl = imagecolorallocate($resource, $transColor['red'], $transColor['green'], $transColor['blue']);
@@ -4882,7 +4882,7 @@ function _pictureAlpha($resource, $format, $tColorSource = null)
     }
 
     // png alpha?
-    if ('png' === $format) {
+    if ($format === 'png') {
         imagealphablending($resource, false);
         $transColorAl = imagecolorallocatealpha($resource, 0, 0, 0, 127);
         imagefill($resource, 0, 0, $transColorAl);
@@ -4963,11 +4963,11 @@ function _pictureResizeOptions($input, $defaultMode = 'fit', $defaultWidth = 96,
 
         // zpracovat rozmery
         $sizes = explode('x', $size, 2);
-        $width = ('?' === $sizes[0] ? null : (int) $sizes[0]);
-        $height = (isset($sizes[1]) ? ('?' === $sizes[1] ? null : (int) $sizes[1]) : $defaultHeight);
+        $width = ($sizes[0] === '?' ? null : (int) $sizes[0]);
+        $height = (isset($sizes[1]) ? ($sizes[1] === '?' ? null : (int) $sizes[1]) : $defaultHeight);
     }
 
-    if (null === $width && null === $height) {
+    if ($width === null && $height === null) {
         // vychozi rozmery pokud jsou oba null
         $width = $defaultWidth;
         $height = $defaultHeight;
@@ -5164,13 +5164,13 @@ function _pictureProcess(array $opt, &$error = null, &$format = null, &$resource
         $format = $load['ext'];
 
         // zmena velikosti
-        if (null !== $opt['resize']) {
+        if ($opt['resize'] !== null) {
 
             // zachovat pruhlednost, neni-li uvedeno jinak
             if (
                 !isset($opt['resize']['trans'], $opt['resize']['trans_format'])
-                && ('png' === $format || 'gif' === $format)
-                && (null === $opt['target_format'] || $opt['target_format'] === $format)
+                && ($format === 'png' || $format === 'gif')
+                && ($opt['target_format'] === null || $opt['target_format'] === $format)
             ) {
                 $opt['resize']['trans'] = true;
                 $opt['resize']['trans_format'] = $format;
@@ -5194,9 +5194,9 @@ function _pictureProcess(array $opt, &$error = null, &$format = null, &$resource
         }
 
         // callback
-        if (null !== $opt['callback']) {
+        if ($opt['callback'] !== null) {
             $targetCallbackResult = call_user_func($opt['callback'], $load['resource'], $load['ext'], $opt);
-            if (null !== $targetCallbackResult) {
+            if ($targetCallbackResult !== null) {
                 // smazani obrazku z pameti
                 if ($opt['destroy']) {
                     imagedestroy($load['resource']);
@@ -5211,13 +5211,13 @@ function _pictureProcess(array $opt, &$error = null, &$format = null, &$resource
         }
 
         // akce s vysledkem
-        if (null !== $opt['target_path']) {
+        if ($opt['target_path'] !== null) {
             // ulozeni
             $put = _pictureStoragePut(
                 $load['resource'],
                 $opt['target_path'],
                 null,
-                null !== $opt['target_format'] ? $opt['target_format'] : $load['ext'],
+                $opt['target_format'] !== null ? $opt['target_format'] : $load['ext'],
                 $opt['jpg_quality'],
                 $opt['target_uid']
             );
@@ -5273,17 +5273,17 @@ function _pictureThumb($source, array $resize_opts, $use_error_image = true, &$e
     // vychozi nastaveni zmenseni
     $resize_opts += array(
         'mode' => 'zoom',
-        'trans' => 'png' === $ext || 'gif' === $ext,
+        'trans' => $ext === 'png' || $ext === 'gif',
         'trans_format' => $ext,
     );
 
     // normalizovani nastaveni zmenseni
-    if (!isset($resize_opts['x']) || 0 == $resize_opts['x']) {
+    if (!isset($resize_opts['x']) || $resize_opts['x'] == 0) {
         $resize_opts['x'] = null;
     } else {
          $resize_opts['x'] = (int) $resize_opts['x'];
     }
-    if (!isset($resize_opts['y']) || 0 == $resize_opts['y']) {
+    if (!isset($resize_opts['y']) || $resize_opts['y'] == 0) {
         $resize_opts['y'] = null;
     } else {
         $resize_opts['y'] = (int) $resize_opts['y'];
@@ -5320,7 +5320,7 @@ function _pictureThumb($source, array $resize_opts, $use_error_image = true, &$e
         Extend::call('picture.thumb.process', array('options' => &$options));
 
         // vygenerovat
-        if (false !== _pictureProcess($options, $error)) {
+        if (_pictureProcess($options, $error) !== false) {
             // uspech
             return $image_path;
         } else {
@@ -5341,8 +5341,8 @@ function _pictureThumbClean($threshold)
     $handle = opendir($dir);
     while ($item = readdir($handle)) {
         if (
-            '.' !== $item
-            && '..' !== $item
+            $item !== '.'
+            && $item !== '..'
             && is_file($dir . $item)
             && in_array(strtolower(pathinfo($item, PATHINFO_EXTENSION)), Core::$imageExt)
             && time() - filemtime($dir . $item) > $threshold
@@ -5390,7 +5390,7 @@ function _xsrfToken($forCheck = false)
     $type = ($forCheck ? 1 : 0);
 
     // vygenerovat token
-    if (null === $tokens[$type]) {
+    if ($tokens[$type] === null) {
 
         // zjistit ID session
         if (!Core::$sessionEnabled) {
@@ -5402,7 +5402,7 @@ function _xsrfToken($forCheck = false)
         } else {
             // ID aktualni session
             $sessionId = session_id();
-            if ('' === $sessionId) {
+            if ($sessionId === '') {
                 $sessionId = 'none';
             }
         }
@@ -5440,7 +5440,7 @@ function _xsrfCheck($get = false)
     }
 
     // check
-    if (null !== $test && _xsrfToken(true) === $test) {
+    if ($test !== null && _xsrfToken(true) === $test) {
         return true;
     }
 
@@ -5460,7 +5460,7 @@ function _postRepeatForm($allow_login = true, Message $login_message = null, $ta
 {
     global $_lang;
 
-    if (null === $target_url) {
+    if ($target_url === null) {
         $target_url = $_SERVER['REQUEST_URI'];
     }
 
@@ -5474,13 +5474,13 @@ function _postRepeatForm($allow_login = true, Message $login_message = null, $ta
     $output .= _renderHiddenPostInputs(null, $allow_login ? 'login_' : null);
 
     if ($allow_login && !_login) {
-        if (null === $login_message) {
+        if ($login_message === null) {
             $login_message = Message::ok($_lang['post_repeat.login']);
         }
         $login_message->append('<div class="hr"><hr></div>' . _userLoginForm(false, false, null, true), true);
 
         $output .= $login_message;
-    } elseif (null !== $login_message) {
+    } elseif ($login_message !== null) {
         $output .= $login_message;
     }
 
@@ -5544,7 +5544,7 @@ function _mail($to, $subject, $message, array $headers = array())
         'headers' => &$headers,
         'result' => &$result,
     ));
-    if (null !== $result) {
+    if ($result !== null) {
         // odchyceno rozsirenim
         return $result;
     }
@@ -5582,7 +5582,7 @@ function _setMailSender(array &$headers, $sender, $name = null)
         $headerName = 'Reply-To';
     }
 
-    if (null !== $name) {
+    if ($name !== null) {
         $headerValue = sprintf('%s <%s>', $name, $sender);
     } else {
         $headerValue = $sender;
@@ -5609,7 +5609,7 @@ function _buffer($callback, array $arguments = array())
     } catch (Throwable $e) {
     }
     
-    if (null !== $e) {
+    if ($e !== null) {
         ob_end_clean();
         throw $e;
     }
@@ -5634,7 +5634,7 @@ function _getCurrentTemplate()
     // pouzit argument z GET
     // (moznost pro skripty mimo index)
     $request_template = _get('current_template');
-    if (null !== $request_template && TemplateService::templateExists($request_template)) {
+    if ($request_template !== null && TemplateService::templateExists($request_template)) {
         return TemplateService::getTemplate($request_template);
     }
 

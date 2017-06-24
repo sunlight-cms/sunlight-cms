@@ -93,7 +93,7 @@ class Extend
             // call
             foreach (static::$data[$event] as $listener) {
                 $call = call_user_func($listener[0], $args);
-                if (false === $call) {
+                if ($call === false) {
                     break;
                 }
             }
@@ -110,7 +110,7 @@ class Extend
             // call
             foreach (static::$globalData as $listener) {
                 $call = call_user_func($listener[0], $event, $args);
-                if (false === $call) {
+                if ($call === false) {
                     break;
                 }
             }

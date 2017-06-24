@@ -21,7 +21,7 @@ class PluginOptionNormalizer
      */
     public static function normalizeNamespace($namespace, array $context)
     {
-        if (null === $namespace) {
+        if ($namespace === null) {
             return $context['type']['default_base_namespace'] . '\\' . $context['plugin']['camel_id'];
         } else {
             return $namespace;
@@ -35,7 +35,7 @@ class PluginOptionNormalizer
      */
     public static function normalizePath($path, array $context)
     {
-        if (null !== $path) {
+        if ($path !== null) {
             return Filesystem::normalizePath($context['plugin']['dir'], $path);
         }
     }
@@ -68,7 +68,7 @@ class PluginOptionNormalizer
      */
     public static function normalizeWebPath($path, array $context)
     {
-        if (null !== $path) {
+        if ($path !== null) {
             return $context['plugin']['web_path'] . '/' . $path;
         }
     }
@@ -193,12 +193,12 @@ class PluginOptionNormalizer
             if (!is_callable($callback, true)) {
                 throw new OptionSetNormalizerException(sprintf('[%s] invalid callback', $key));
             }
-            if (is_array($callback) && '$this' === $callback[0]) {
+            if (is_array($callback) && $callback[0] === '$this') {
                 $callback = $callback[1];
                 $useThis = true;
             } elseif (
-                false !== ($doubleColonPos = strpos($callback, '::'))
-                && '$this' === substr($callback, 0, $doubleColonPos)
+                ($doubleColonPos = strpos($callback, '::')) !== (false)
+                && substr($callback, 0, $doubleColonPos) === '$this'
             ) {
                 $callback = substr($callback, $doubleColonPos + 2);
                 $useThis = true;

@@ -92,7 +92,7 @@ if ($continue) {
                 $errors[] = $_lang['user.msg.publicnameexists'];
             }
         }
-        if ('' === $publicname) {
+        if ($publicname === '') {
             $publicname = null;
         }
 
@@ -184,14 +184,14 @@ if ($continue) {
                 $changeset['username'] = $username;
             }
 
-            $action = (null === $id ? 'new' : 'edit');
+            $action = ($id === null ? 'new' : 'edit');
             Sunlight\Extend::call('admin.user.' . $action . '.pre', array(
                 'id' => $id,
-                'user' => null === $id ? null : $query,
+                'user' => $id === null ? null : $query,
                 'changeset' => &$changeset,
             ));
 
-            if (null !== $id) {
+            if ($id !== null) {
                 // uprava
                 DB::update(_users_table, 'id=' . DB::val($query['id']), $changeset);
                 Sunlight\Extend::call('user.edit', array('id' => $query['id'], 'username' => $username, 'email' => $email));

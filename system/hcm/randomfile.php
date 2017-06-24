@@ -27,7 +27,7 @@ function _HCM_randomfile($cesta = "", $typ = 1, $pocet = 1, $rozmery_nahledu = n
         }
 
         $items = array();
-        while (false !== ($item = readdir($handle))) {
+        while (($item = readdir($handle)) !== (false)) {
             $ext = pathinfo($item);
             if (isset($ext['extension'])) {
                 $ext = mb_strtolower($ext['extension']);

@@ -7,12 +7,12 @@ if (!defined('_root')) {
 }
 
 // vychozi nastaveni
-if (null === $_page['var1']) {
+if ($_page['var1'] === null) {
     $_page['var1'] = _topicsperpage;
 }
 
 // zobrazit tema?
-if (null !== $_index['segment']) {
+if ($_index['segment'] !== null) {
     require _root . 'system/action/pages/include/topic.php';
     return;
 }

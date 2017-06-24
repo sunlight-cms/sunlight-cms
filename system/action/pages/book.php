@@ -7,7 +7,7 @@ if (!defined('_root')) {
 }
 
 // vychozi nastaveni
-if (null === $_page['var2']) {
+if ($_page['var2'] === null) {
     $_page['var2'] = _commentsperpage;
 }
 

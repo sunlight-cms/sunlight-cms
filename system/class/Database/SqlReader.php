@@ -116,7 +116,7 @@ class SqlReader
     public function read($callback = null)
     {
         $query = null;
-        $queries = null === $callback ? array() : 0;
+        $queries = $callback === null ? array() : 0;
         $queryMap = array();
         $queryOffset = 0;
 
@@ -134,8 +134,8 @@ class SqlReader
         $segmentOffset = 0; // start offset of a quote/comment
 
         $handleCompleteQuery = function () use (&$query, &$queries, &$queryMap, $callback) {
-            if (null !== $query) {
-                if (null !== $callback) {
+            if ($query !== null) {
+                if ($callback !== null) {
                     call_user_func($callback, $query, $queryMap);
                     ++$queries;
                 } else {
@@ -178,7 +178,7 @@ class SqlReader
             } elseif ($inComment) {
                 // inside of a comment
                 if (
-                    "\n" === $commentEndSyntax && ("\n" === $char || "\r" === $char)
+                    $commentEndSyntax === "\n" && ($char === "\n" || $char === "\r")
                     || $char === $commentEndSyntax[$commentEndMatch]
                 ) {
                     if (!isset($commentEndSyntax[++$commentEndMatch])) {
@@ -192,7 +192,7 @@ class SqlReader
 
             if (!$inQuotes && !$inComment) {
                 // detect comments
-                if (null !== $commentMatches) {
+                if ($commentMatches !== null) {
                     for ($j = 0; isset($commentMatches[$j]); ++$j) {
                         if ($char === $this->commentSyntaxMap[$j][0][$commentMatches[$j]]) {
                             if (!isset($this->commentSyntaxMap[$j][0][++$commentMatches[$j]])) {
@@ -229,7 +229,7 @@ class SqlReader
             }
 
             // append character to the current query
-            if (null === $query) {
+            if ($query === null) {
                 if (!isset($this->whitespaceMap[$char])) {
                     // first non-whitespace character encountered
                     $query = $char;

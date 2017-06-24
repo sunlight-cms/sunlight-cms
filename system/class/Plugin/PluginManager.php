@@ -200,7 +200,7 @@ class PluginManager
             $this->initialize();
         }
 
-        if (null !== $type) {
+        if ($type !== null) {
             if (!isset($this->types[$type])) {
                 throw new \InvalidArgumentException(sprintf('Invalid plugin type "%s"', $type));
             }
@@ -294,7 +294,7 @@ class PluginManager
             $this->initialize();
         }
 
-        if (null !== $type) {
+        if ($type !== null) {
             if (!isset($this->types[$type])) {
                 throw new \InvalidArgumentException(sprintf('Invalid plugin type "%s"', $type));
             }
@@ -404,7 +404,7 @@ class PluginManager
 
         // invalidate stale data
         if (
-            false !== $data
+            $data !== false
             && (
                 $data['system_version'] !== Core::VERSION
                 || $data['system_dist'] !== Core::DIST
@@ -414,7 +414,7 @@ class PluginManager
         }
 
         // if data could not be loaded from cache, use plugin loader
-        if (false === $data) {
+        if ($data === false) {
             $pluginLoader = new PluginLoader($this->types);
             list($plugins, $boundFiles) = $pluginLoader->load();
 

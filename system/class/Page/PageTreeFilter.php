@@ -47,14 +47,14 @@ class PageTreeFilter implements TreeFilterInterface
             /* page public */       && (!$this->options['check_public'] || _login || $node['public'])
             /* separator  check */  && $node['type'] != _page_separator
             /* order from */        && (
-                                        null === $this->options['ord_start']
+                                        $this->options['ord_start'] === null
                                         || (
                                             $node['node_level'] != $this->options['ord_level']
                                             || $node['ord'] >= $this->options['ord_start']
                                         )
                                     )
             /* order to */          && (
-                                        null === $this->options['ord_end']
+                                        $this->options['ord_end'] === null
                                         || (
                                             $node['node_level'] != $this->options['ord_level']
                                             || $node['ord'] <= $this->options['ord_end']
@@ -65,7 +65,7 @@ class PageTreeFilter implements TreeFilterInterface
     public function acceptInvalidNodeWithValidChild(array $invalidNode, array $validChildNode, TreeReader $reader)
     {
         if (
-            (null !== $this->options['ord_start'] || null !== $this->options['ord_end'])
+            ($this->options['ord_start'] !== null || $this->options['ord_end'] !== null)
             && $invalidNode['node_level'] == $this->options['ord_level']
         ) {
             // always reject invalid nodes which have been rejected by order-filtering at that level
@@ -94,13 +94,13 @@ class PageTreeFilter implements TreeFilterInterface
         }
 
         // order constraints
-        if (null !== $options['ord_start'] || null !== $options['ord_end']) {
+        if ($options['ord_start'] !== null || $options['ord_end'] !== null) {
             $ordSql = '';
-            if (null !== $options['ord_start']) {
+            if ($options['ord_start'] !== null) {
                 $ordSql .= "%__node__%.ord>=" . Database::val($options['ord_start']);
             }
-            if (null !== $options['ord_end']) {
-                if (null !== $options['ord_start']) {
+            if ($options['ord_end'] !== null) {
+                if ($options['ord_start'] !== null) {
                     $ordSql .= ' AND ';
                 }
                 $ordSql .= "%__node__%.ord<=" . Database::val($options['ord_end']);

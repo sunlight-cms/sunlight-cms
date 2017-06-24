@@ -59,7 +59,7 @@ switch ($type) {
 
         // test pristupu k clanku
         $custom_cond = false;
-        if (false !== $query) {
+        if ($query !== false) {
             $custom_cond = _articleAccess($query);
 
             // obrazek clanku
@@ -146,7 +146,7 @@ if ($custom_cond && ($donottestsource || DB::size($query) != 0)) {
             $userQuery = _userQuery('post.author');
             $columns .= ',' . $userQuery['column_list'];
             $joins .= ' ' . $userQuery['joins'];
-            if (null !== $post_cond) {
+            if ($post_cond !== null) {
                 $cond .= " AND " . $post_cond;
             }
             $items = DB::query("SELECT " . $columns . " FROM " . _posts_table . " post " . $joins . " WHERE " . $cond . " ORDER BY post.id DESC LIMIT " . _rsslimit);
@@ -163,12 +163,12 @@ if ($custom_cond && ($donottestsource || DB::size($query) != 0)) {
                 list($homelink, $hometitle) = _linkPost($item, true, true);
 
                 // sestaveni titulku
-                if (_rss_latest_comments == $type) {
+                if ($type == _rss_latest_comments) {
                     $title = "{$hometitle}, {$author}";
                 } else {
                     $title = $author;
                 }
-                if ('' != $item['subject'] && '-' != $item['subject']) {
+                if ($item['subject'] != '' && $item['subject'] != '-') {
                     $title .= ": {$item['subject']}";
                 }
 

@@ -31,11 +31,11 @@ class PageMenu
 
         // sestavit mapu drobecku
         $trailMap = array();
-        if (null !== $activeId) {
+        if ($activeId !== null) {
             foreach ($flatPageTree as $pageId => $page) {
                 if ($page['id'] == $activeId) {
                     $current = $page;
-                    while (null !== $current['node_parent'] && isset($flatPageTree[$current['node_parent']])) {
+                    while ($current['node_parent'] !== null && isset($flatPageTree[$current['node_parent']])) {
                         $current = $flatPageTree[$current['node_parent']];
                         $trailMap[$current['id']] = true;
                     }
@@ -51,17 +51,17 @@ class PageMenu
         foreach ($flatPageTree as $pageId => $page) {
 
             $pageLevel = $page['node_level'];
-            if (null === $rootLevel) {
+            if ($rootLevel === null) {
                 $rootLevel = $pageLevel;
             }
             $visualLevel = $pageLevel - $rootLevel;
 
             // otevreni/uzavreni tagu dle urovne
-            if (null === $currentLevel || $pageLevel > $currentLevel) {
+            if ($currentLevel === null || $pageLevel > $currentLevel) {
                 $containerClass = "menu level-{$visualLevel}";
-                if (null !== $currentLevel) {
+                if ($currentLevel !== null) {
                     $out .= "\n";
-                } elseif (null !== $rootClass) {
+                } elseif ($rootClass !== null) {
                     $containerClass .= ' ' . $rootClass;
                 }
 
@@ -89,24 +89,24 @@ class PageMenu
             $url = null;
             $attrs = '';
             if (
-                null === $pageEvent
-                || '' === ($link = Extend::buffer($pageEvent, array(
+                $pageEvent === null
+                || ($link = Extend::buffer($pageEvent, array(
                     'type' => $menuType,
                     'page' => &$page,
                     'classes' => &$classes,
                     'url' => &$url,
                     'attrs' => &$attrs,
-                )))
+                ))) === ('')
             ) {
                 // vychozi implementace
-                if (null === $url) {
-                    if (_page_link == $page['type']) {
+                if ($url === null) {
+                    if ($page['type'] == _page_link) {
                         $url = _e($page['link_url']);
                     } else {
                         $url = _linkRoot($page['id'], $page['slug']);
                     }
                 }
-                if (_page_link == $page['type'] && $page['link_new_window']) {
+                if ($page['type'] == _page_link && $page['link_new_window']) {
                     $attrs .= ' target="_blank"';
                 }
                 $link = "<a href=\"" . _e($url) . "\"{$attrs}>{$page['title']}</a>";

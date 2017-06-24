@@ -14,7 +14,7 @@ $persistent = _checkboxLoad('login_persistent');
 $result = _userLoginSubmit($username, $password, $persistent);
 
 // presmerovani
-if (1 !== $result && isset($_POST['login_form_url'])) {
+if ($result !== 1 && isset($_POST['login_form_url'])) {
     $_SESSION['login_form_username'] = $username;
 
     _returnHeader(_addGetToLink(

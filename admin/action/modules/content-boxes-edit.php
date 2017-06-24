@@ -14,7 +14,7 @@ $templates_to_choose_slot_from = null;
 
 // fetch box data
 $id = _get('id');
-$new = null === $id;
+$new = $id === null;
 
 if (!$new) {
     $box = Database::queryRow('SELECT * FROM ' . _boxes_table . ' WHERE id = ' . DB::val($id));
@@ -41,7 +41,7 @@ if (!$new) {
     }
 }
 
-if (false === $box) {
+if ($box === false) {
     $output .= Message::error($_lang['global.badinput']);
 
     return;
@@ -68,7 +68,7 @@ if (isset($_POST['box_edit'])) do {
     // slot uid
     $template_components = TemplateService::getComponentsByUid(_post('slot_uid'), TemplateService::UID_TEMPLATE_LAYOUT_SLOT);
 
-    if (null !== $template_components) {
+    if ($template_components !== null) {
         $changeset += array(
             'template' => $template_components['template']->getId(),
             'layout' => $template_components['layout'],
@@ -81,7 +81,7 @@ if (isset($_POST['box_edit'])) do {
     // ord
     $new_ord = trim(_post('ord'));
 
-    if ('' !== $new_ord) {
+    if ($new_ord !== '') {
         $new_ord = Math::range((int) _post('ord'), 0, null);
     }
 
@@ -100,7 +100,7 @@ if (isset($_POST['box_edit'])) do {
     }
 
     // auto order
-    if ('' === $changeset['ord']) {
+    if ($changeset['ord'] === '') {
         $max_ord = Database::queryRow('SELECT MAX(ord) AS max_ord FROM ' . _boxes_table . ' WHERE template=' . Database::val($changeset['template']) . ' AND layout=' . Database::val($changeset['layout']));
 
         if ($max_ord && $max_ord['max_ord']) {

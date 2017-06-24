@@ -42,14 +42,14 @@ if (isset($_GET['confirm'])) {
 
             // nalezeni zaznamu
             $activation = DB::queryRow('SELECT * FROM ' . _user_activation_table . ' WHERE code=' . DB::val($code));
-            if (false !== $activation) {
+            if ($activation !== false) {
                 // zaznam nalezen
                 $user_data = unserialize($activation['data']);
 
                 // kontrola dostupnosti uziv. jmena a emailu
                 if (
-                    0 == DB::count(_users_table, 'username=' . DB::val($user_data['username']) . ' OR publicname=' . DB::val($user_data['username']))
-                    && 0 == DB::count(_users_table, 'email=' . DB::val($user_data['email']))
+                    DB::count(_users_table, 'username=' . DB::val($user_data['username']) . ' OR publicname=' . DB::val($user_data['username'])) == 0
+                    && DB::count(_users_table, 'email=' . DB::val($user_data['email'])) == 0
                 ) {
                     // vse ok
                     $user_data_valid = true;
@@ -192,7 +192,7 @@ if (!$user_data_valid && $show_form) {
             'name' => 'regform',
             'action' => _linkModule('reg'),
             'submit_text' => $_lang['mod.reg.submit' . (_registration_confirm ? '2' : '')],
-            'submit_span' => '' !== $rules,
+            'submit_span' => $rules !== '',
             'submit_name' => 'regform',
             'autocomplete' => 'off',
         ),

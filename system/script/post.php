@@ -231,7 +231,7 @@ if ($posttype != _post_shoutbox_entry) {
         $returnUrl,
         "r=" . $return
             . (($posttype == _post_forum_topic) ? '&autolast' : '')
-            . (($posttype != _post_shoutbox_entry && isset($insert_id)) ? '#post-' . $insert_id : ((1 != $return) ? '#post-form' : '')),
+            . (($posttype != _post_shoutbox_entry && isset($insert_id)) ? '#post-' . $insert_id : (($return != 1) ? '#post-form' : '')),
         false
     );
 }
