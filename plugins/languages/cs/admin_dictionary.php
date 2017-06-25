@@ -240,6 +240,7 @@ return array(
     'admin.content.boxes' => 'Boxy',
     'admin.content.boxes.title' => 'Správa boxů',
     'admin.content.boxes.new' => 'Nový box',
+    'admin.content.boxes.new.for_template' => 'Vytvořit nový box v tomto motivu',
     'admin.content.boxes.ord' => 'Pořadí',
     'admin.content.boxes.slot' => 'Slot',
     'admin.content.boxes.page_ids.icon' => 'zobrazení pouze na určitých stránkách',

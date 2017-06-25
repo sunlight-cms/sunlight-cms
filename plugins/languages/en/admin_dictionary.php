@@ -240,6 +240,7 @@ return array(
     'admin.content.boxes' => 'Boxes',
     'admin.content.boxes.title' => 'Box management',
     'admin.content.boxes.new' => 'New box',
+    'admin.content.boxes.new.for_template' => 'Add box to this template',
     'admin.content.boxes.ord' => 'Order',
     'admin.content.boxes.slot' => 'Slot',
     'admin.content.boxes.page_ids.icon' => 'shown only on certain pages',
