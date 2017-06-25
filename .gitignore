@@ -18,6 +18,7 @@
 /system/cache/*
 !/system/cache/.gitkeep
 /system/vendor/*
+!/system/vendor/.htaccess
 
 /plugins/extend/*
 !/plugins/extend/devkit
