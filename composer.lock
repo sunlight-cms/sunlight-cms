@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "0de6e60c5c358d3bc632f462adfd6948",
+    "content-hash": "a91f481ba50b7d68a461f3d19bc40395",
     "packages": [
         {
             "name": "composer/semver",
@@ -206,16 +206,16 @@
         },
         {
             "name": "kuria/debug",
-            "version": "v1.0.1",
+            "version": "v1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kuria/debug.git",
-                "reference": "3f235107601391773a16c6ab61d169a1b99f51f7"
+                "reference": "715a8e5efef950b8a6b557ffd78ba5ebb2e58d32"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kuria/debug/zipball/3f235107601391773a16c6ab61d169a1b99f51f7",
-                "reference": "3f235107601391773a16c6ab61d169a1b99f51f7",
+                "url": "https://api.github.com/repos/kuria/debug/zipball/715a8e5efef950b8a6b557ffd78ba5ebb2e58d32",
+                "reference": "715a8e5efef950b8a6b557ffd78ba5ebb2e58d32",
                 "shasum": ""
             },
             "require": {
@@ -243,7 +243,7 @@
                 "hex",
                 "var_dump"
             ],
-            "time": "2017-05-26T13:23:20+00:00"
+            "time": "2017-06-24T00:26:45+00:00"
         },
         {
             "name": "kuria/error",
