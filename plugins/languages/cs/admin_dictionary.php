@@ -479,6 +479,7 @@ return array(
     'admin.plugins.implementation' => 'Implementace',
     'admin.plugins.errors' => 'Chyby',
     'admin.plugins.data' => 'Definice',
+    'admin.plugins.object' => 'Objekt',
     'admin.plugins.status.0' => 'ok',
     'admin.plugins.status.1' => 'chyba',
     'admin.plugins.status.2' => 'nenainstalován',

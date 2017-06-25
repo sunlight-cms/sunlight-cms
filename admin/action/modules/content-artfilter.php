@@ -11,13 +11,11 @@ $infopage = false;
 
 function _admin_boolSelect($name, $type2 = false)
 {
-    global $_lang;
-
     return "
 <select name='" . $name . "'>
-<option value='-1'>" . (($type2 == false) ? $_lang['admin.content.artfilter.f1.bool.doesntmatter'] : $_lang['global.nochange']) . "</option>
-<option value='1'>" . $_lang['admin.content.artfilter.f1.bool.mustbe'] . "</option>
-<option value='0'>" . $_lang['admin.content.artfilter.f1.bool.mustntbe'] . "</option>
+<option value='-1'>" . (($type2 == false) ? _lang('admin.content.artfilter.f1.bool.doesntmatter') : _lang('global.nochange')) . "</option>
+<option value='1'>" . _lang('admin.content.artfilter.f1.bool.mustbe') . "</option>
+<option value='0'>" . _lang('admin.content.artfilter.f1.bool.mustntbe') . "</option>
 </select> \n";
 }
 
@@ -205,10 +203,10 @@ if (isset($_POST['category'])) {
                 DB::update(_articles_table, 'id=' . $item['id'], $updatedata);
 
             }
-            $message = _msg(_msg_ok, $_lang['global.done']);
+            $message = _msg(_msg_ok, _lang('global.done'));
         }
     } else {
-        $message = _msg(_msg_warn, $_lang['admin.content.artfilter.f1.noresult']);
+        $message = _msg(_msg_warn, _lang('admin.content.artfilter.f1.noresult'));
     }
 
 }
@@ -221,29 +219,29 @@ $output .= $message . "
 
 if (!$infopage) {
     $output .= "
-<h2>" . $_lang['admin.content.artfilter.f1.title'] . "</h2>
-<p>" . $_lang['admin.content.artfilter.f1.p'] . "</p>
+<h2>" . _lang('admin.content.artfilter.f1.title') . "</h2>
+<p>" . _lang('admin.content.artfilter.f1.p') . "</p>
 <table>
 
 <tr>
-<th>" . $_lang['article.category'] . "</th>
-<td>" . _adminRootSelect("category", array('type' => _page_category, 'empty_item' => $_lang['global.any2'])) . "</td>
+<th>" . _lang('article.category') . "</th>
+<td>" . _adminRootSelect("category", array('type' => _page_category, 'empty_item' => _lang('global.any2'))) . "</td>
 </tr>
 
 <tr>
-<th>" . $_lang['article.author'] . "</th>
-<td>" . _adminUserSelect("author", -1, "adminart=1", "selectmedium", $_lang['global.any']) . "</td>
+<th>" . _lang('article.author') . "</th>
+<td>" . _adminUserSelect("author", -1, "adminart=1", "selectmedium", _lang('global.any')) . "</td>
 </tr>
 
 <tr>
-<th>" . $_lang['article.posted'] . "</th>
+<th>" . _lang('article.posted') . "</th>
 <td>
 
 <select name='ba'>
-<option value='0'>" . $_lang['admin.content.artfilter.f1.time0'] . "</option>
-<option value='1'>" . $_lang['admin.content.artfilter.f1.time1'] . "</option>
-<option value='2'>" . $_lang['admin.content.artfilter.f1.time2'] . "</option>
-<option value='3'>" . $_lang['admin.content.artfilter.f1.time3'] . "</option>
+<option value='0'>" . _lang('admin.content.artfilter.f1.time0') . "</option>
+<option value='1'>" . _lang('admin.content.artfilter.f1.time1') . "</option>
+<option value='2'>" . _lang('admin.content.artfilter.f1.time2') . "</option>
+<option value='3'>" . _lang('admin.content.artfilter.f1.time3') . "</option>
 </select>
 
 " . _editTime('time', -1) . "
@@ -252,14 +250,14 @@ if (!$infopage) {
 </tr>
 
 <tr class='valign-top'>
-<th>" . $_lang['admin.content.form.settings'] . "</th>
+<th>" . _lang('admin.content.form.settings') . "</th>
 <td>
-" . _admin_boolSelect("public") . $_lang['admin.content.form.public'] . "<br>
-" . _admin_boolSelect("visible") . $_lang['admin.content.form.visible'] . "<br>
-" . _admin_boolSelect("confirmed") . $_lang['admin.content.form.confirmed'] . "<br>
-" . _admin_boolSelect("comments") . $_lang['admin.content.form.comments'] . "<br>
-" . _admin_boolSelect("rateon") . $_lang['admin.content.form.artrate'] . "<br>
-" . _admin_boolSelect("showinfo") . $_lang['admin.content.form.showinfo'] . "
+" . _admin_boolSelect("public") . _lang('admin.content.form.public') . "<br>
+" . _admin_boolSelect("visible") . _lang('admin.content.form.visible') . "<br>
+" . _admin_boolSelect("confirmed") . _lang('admin.content.form.confirmed') . "<br>
+" . _admin_boolSelect("comments") . _lang('admin.content.form.comments') . "<br>
+" . _admin_boolSelect("rateon") . _lang('admin.content.form.artrate') . "<br>
+" . _admin_boolSelect("showinfo") . _lang('admin.content.form.showinfo') . "
 </td>
 </tr>
 
@@ -267,39 +265,39 @@ if (!$infopage) {
 
 <br><div class='hr'><hr></div><br>
 
-<h2>" . $_lang['admin.content.artfilter.f2.title'] . "</h2>
-<p>" . $_lang['admin.content.artfilter.f2.p'] . "</p>
+<h2>" . _lang('admin.content.artfilter.f2.title') . "</h2>
+<p>" . _lang('admin.content.artfilter.f2.p') . "</p>
 <table>
 
 <tr>
-<th>" . $_lang['article.category'] . "</th>
-<td>" . _adminRootSelect("new_category", array('type' => _page_category, 'empty_item' => $_lang['global.nochange'])) . "</td>
+<th>" . _lang('article.category') . "</th>
+<td>" . _adminRootSelect("new_category", array('type' => _page_category, 'empty_item' => _lang('global.nochange'))) . "</td>
 </tr>
 
 <tr>
-<th>" . $_lang['article.author'] . "</th>
-<td>" . _adminUserSelect("new_author", -1, "adminart=1", "selectmedium", $_lang['global.nochange']) . "</td>
+<th>" . _lang('article.author') . "</th>
+<td>" . _adminUserSelect("new_author", -1, "adminart=1", "selectmedium", _lang('global.nochange')) . "</td>
 </tr>
 
 <tr class='valign-top'>
-<th>" . $_lang['admin.content.form.settings'] . "</th>
+<th>" . _lang('admin.content.form.settings') . "</th>
 <td>
-" . _admin_boolSelect("new_public", true) . $_lang['admin.content.form.public'] . "<br>
-" . _admin_boolSelect("new_visible", true) . $_lang['admin.content.form.visible'] . "<br>
-" . (_priv_adminconfirm ? _admin_boolSelect("new_confirmed", true) . $_lang['admin.content.form.confirmed'] . "<br>" : '') . "
-" . _admin_boolSelect("new_comments", true) . $_lang['admin.content.form.comments'] . "<br>
-" . _admin_boolSelect("new_rateon", true) . $_lang['admin.content.form.artrate'] . "<br>
-" . _admin_boolSelect("new_showinfo", true) . $_lang['admin.content.form.showinfo'] . "
+" . _admin_boolSelect("new_public", true) . _lang('admin.content.form.public') . "<br>
+" . _admin_boolSelect("new_visible", true) . _lang('admin.content.form.visible') . "<br>
+" . (_priv_adminconfirm ? _admin_boolSelect("new_confirmed", true) . _lang('admin.content.form.confirmed') . "<br>" : '') . "
+" . _admin_boolSelect("new_comments", true) . _lang('admin.content.form.comments') . "<br>
+" . _admin_boolSelect("new_rateon", true) . _lang('admin.content.form.artrate') . "<br>
+" . _admin_boolSelect("new_showinfo", true) . _lang('admin.content.form.showinfo') . "
 </td>
 </tr>
 
 <tr class='valign-top'>
-<th>" . $_lang['global.action'] . "</th>
+<th>" . _lang('global.action') . "</th>
 <td>
-<label><input type='checkbox' name='new_delete' value='1'> " . $_lang['global.delete'] . "</label><br>
-<label><input type='checkbox' name='new_resetrate' value='1'> " . $_lang['admin.content.form.resetartrate'] . "</label><br>
-<label><input type='checkbox' name='new_delcomments' value='1'> " . $_lang['admin.content.form.delcomments'] . "</label><br>
-<label><input type='checkbox' name='new_resetread' value='1'> " . $_lang['admin.content.form.resetartread'] . "</label>
+<label><input type='checkbox' name='new_delete' value='1'> " . _lang('global.delete') . "</label><br>
+<label><input type='checkbox' name='new_resetrate' value='1'> " . _lang('admin.content.form.resetartrate') . "</label><br>
+<label><input type='checkbox' name='new_delcomments' value='1'> " . _lang('admin.content.form.delcomments') . "</label><br>
+<label><input type='checkbox' name='new_resetread' value='1'> " . _lang('admin.content.form.resetartread') . "</label>
 </td>
 </tr>
 
@@ -307,12 +305,12 @@ if (!$infopage) {
 
 <br><div class='hr'><hr></div><br>
 
-<input type='submit' value='" . $_lang['mod.search.submit'] . "'>
+<input type='submit' value='" . _lang('mod.search.submit') . "'>
 ";
 } else {
     $output .= _renderHiddenPostInputs(null, null, array('_process')) . "
 <input type='hidden' name='_process' value='1'>
-" . _msg(_msg_ok, str_replace("*found*", $found, $_lang['admin.content.artfilter.f1.infotext'])) . "
+" . _msg(_msg_ok, _lang('admin.content.artfilter.f1.infotext', array("*found*" => $found))) . "
 <ul>";
 
     $counter = 0;
@@ -326,7 +324,7 @@ if (!$infopage) {
     }
 
     $output .="</ul>
-<input type='submit' value='" . $_lang['global.do2'] . "'> <a href='index.php?p=content-artfilter'>" . $_lang['global.cancel'] . "</a>
+<input type='submit' value='" . _lang('global.do2') . "'> <a href='index.php?p=content-artfilter'>" . _lang('global.cancel') . "</a>
 ";
 }
 

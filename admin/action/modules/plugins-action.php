@@ -12,7 +12,7 @@ $name = _get('name');
 $action = _get('action');
 
 if (!_xsrfCheck(true)) {
-    $output .= _msg(_msg_err, $_lang['global.badinput']);
+    $output .= _msg(_msg_err, _lang('global.badinput'));
 
     return;
 }
@@ -23,7 +23,7 @@ if (
     || ($plugin = Core::$pluginManager->find($type, $name, false)) === (null)
     || ($action = $plugin->getAction($action)) === (null)
 ) {
-    $output .= _msg(_msg_err, $_lang['global.badinput']);
+    $output .= _msg(_msg_err, _lang('global.badinput'));
 
     return;
 }

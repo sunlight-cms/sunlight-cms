@@ -14,7 +14,7 @@ function _HCM_search()
 <input type='hidden' name='post' value='1'>
 <input type='hidden' name='img' value='1'>
 " . _xsrfProtect() . "
-<input type='search' name='q' class='search-query'> <input type='submit' value='" . $GLOBALS['_lang']['mod.search.submit'] . "'>
+<input type='search' name='q' class='search-query'> <input type='submit' value='" . _lang('mod.search.submit') . "'>
 </form>
 ";
     }

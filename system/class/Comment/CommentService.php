@@ -98,20 +98,18 @@ class CommentService
      */
     public static function renderForm(array $vars)
     {
-        global $_lang;
-
         $inputs = array();
 
         $captcha = _captchaInit();
         $output = _jsLimitLength(16384, "postform", "text");
         if (!_login) {
-            $inputs[] = array('label' => $_lang['posts.guestname'], 'content' => "<input type='text' name='guest' maxlength='24' class='inputsmall'" . _restoreValue($_SESSION, 'post_form_guest') . ">");
+            $inputs[] = array('label' => _lang('posts.guestname'), 'content' => "<input type='text' name='guest' maxlength='24' class='inputsmall'" . _restoreValue($_SESSION, 'post_form_guest') . ">");
         }
         if ($vars['xhome'] == -1 && $vars['subject']) {
-            $inputs[] = array('label' => $_lang[$vars['is_topic'] ? 'posts.topic' : 'posts.subject'], 'content' => "<input type='text' name='subject' class='input" . ($vars['is_topic'] ? 'medium' : 'small') . "' maxlength='48'" . _restoreValue($_SESSION, 'post_form_subject') . ">");
+            $inputs[] = array('label' => _lang($vars['is_topic'] ? 'posts.topic' : 'posts.subject'), 'content' => "<input type='text' name='subject' class='input" . ($vars['is_topic'] ? 'medium' : 'small') . "' maxlength='48'" . _restoreValue($_SESSION, 'post_form_subject') . ">");
         }
         $inputs[] = $captcha;
-        $inputs[] = array('label' => $_lang['posts.text'], 'content' => "<textarea name='text' class='areamedium' rows='5' cols='33'>" . _restoreValue($_SESSION, 'post_form_text', null, false) . "</textarea><input type='hidden' name='_posttype' value='" . $vars['posttype'] . "'><input type='hidden' name='_posttarget' value='" . $vars['posttarget'] . "'><input type='hidden' name='_xhome' value='" . $vars['xhome'] . "'>" . (isset($vars['pluginflag']) ? "<input type='hidden' name='_pluginflag' value='" . $vars['pluginflag'] . "'>" : ''), 'top' => true);
+        $inputs[] = array('label' => _lang('posts.text'), 'content' => "<textarea name='text' class='areamedium' rows='5' cols='33'>" . _restoreValue($_SESSION, 'post_form_text', null, false) . "</textarea><input type='hidden' name='_posttype' value='" . $vars['posttype'] . "'><input type='hidden' name='_posttarget' value='" . $vars['posttarget'] . "'><input type='hidden' name='_xhome' value='" . $vars['xhome'] . "'>" . (isset($vars['pluginflag']) ? "<input type='hidden' name='_pluginflag' value='" . $vars['pluginflag'] . "'>" : ''), 'top' => true);
         $inputs[] = array('label' => '', 'content' => _getPostFormControls('postform', 'text'));
 
         unset(
@@ -145,7 +143,7 @@ class CommentService
      */
     public static function render($style, $home, $vars, $force_locked = false, $url = null)
     {
-        global $_lang, $_index;
+        global $_index;
 
         /* ---  type  --- */
 
@@ -175,9 +173,9 @@ class CommentService
                 $posttype = _post_section_comment;
                 $xhome = -1;
                 $subclass = "comments";
-                $title = $_lang['posts.comments'];
-                $addlink = $_lang['posts.addcomment'];
-                $nopostsmessage = $_lang['posts.nocomments'];
+                $title = _lang('posts.comments');
+                $addlink = _lang('posts.addcomment');
+                $nopostsmessage = _lang('posts.nocomments');
                 $postsperpage = _commentsperpage;
                 $canpost = _priv_postcomments;
                 $locked = (bool) $vars;
@@ -188,9 +186,9 @@ class CommentService
                 $posttype = _post_article_comment;
                 $xhome = -1;
                 $subclass = "comments";
-                $title = $_lang['posts.comments'];
-                $addlink = $_lang['posts.addcomment'];
-                $nopostsmessage = $_lang['posts.nocomments'];
+                $title = _lang('posts.comments');
+                $addlink = _lang('posts.addcomment');
+                $nopostsmessage = _lang('posts.nocomments');
                 $postsperpage = _commentsperpage;
                 $canpost = _priv_postcomments;
                 $locked = (bool) $vars;
@@ -202,8 +200,8 @@ class CommentService
                 $xhome = -1;
                 $subclass = "book";
                 $title = null;
-                $addlink = $_lang['posts.addpost'];
-                $nopostsmessage = $_lang['posts.noposts'];
+                $addlink = _lang('posts.addpost');
+                $nopostsmessage = _lang('posts.noposts');
                 $postsperpage = $vars[0];
                 $canpost = $vars[1];
                 $locked = (bool) $vars[2];
@@ -215,8 +213,8 @@ class CommentService
                 $xhome = -1;
                 $subclass = "topic";
                 $title = null;
-                $addlink = $_lang['posts.addtopic'];
-                $nopostsmessage = $_lang['posts.notopics'];
+                $addlink = _lang('posts.addtopic');
+                $nopostsmessage = _lang('posts.notopics');
                 $postsperpage = $vars[0];
                 $canpost = $vars[1];
                 $locked = (bool) $vars[2];
@@ -232,8 +230,8 @@ class CommentService
                 $xhome = $vars[3];
                 $subclass = "topic-replies";
                 $title = null;
-                $addlink = $_lang['posts.addanswer'];
-                $nopostsmessage = $_lang['posts.noanswers'];
+                $addlink = _lang('posts.addanswer');
+                $nopostsmessage = _lang('posts.noanswers');
                 $postsperpage = $vars[0];
                 $canpost = $vars[1];
                 $locked = (bool) $vars[2];
@@ -250,8 +248,8 @@ class CommentService
                 $xhome = $home;
                 $subclass = "pm";
                 $title = null;
-                $addlink = $_lang['posts.addanswer'];
-                $nopostsmessage = $_lang['posts.noanswers'];
+                $addlink = _lang('posts.addanswer');
+                $nopostsmessage = _lang('posts.noanswers');
                 $postsperpage = _messagesperpage;
                 $canpost = true;
                 $locked = (bool) $vars[0];
@@ -268,8 +266,8 @@ class CommentService
                 $xhome = -1;
                 $subclass = "plugin";
                 $title = (isset($vars[5]) ? $vars[5] : null);
-                $addlink = $_lang['posts.addpost'];
-                $nopostsmessage = $_lang['posts.noposts'];
+                $addlink = _lang('posts.addpost');
+                $nopostsmessage = _lang('posts.noposts');
                 $postsperpage = $vars[0];
                 $canpost = $vars[1];
                 $locked = (bool) $vars[2];
@@ -339,19 +337,19 @@ class CommentService
         if (isset($_GET['r'])) {
             switch (_get('r')) {
                 case 0:
-                    $form_output .= _msg(_msg_err, $_lang['posts.failed']);
+                    $form_output .= _msg(_msg_err, _lang('posts.failed'));
                     break;
                 case 1:
-                    $form_output .= _msg(_msg_ok, $_lang[(($style != 5) ? 'posts.added' : 'posts.topicadded')]);
+                    $form_output .= _msg(_msg_ok, _lang((($style != 5) ? 'posts.added' : 'posts.topicadded')));
                     break;
                 case 2:
-                    $form_output .= _msg(_msg_warn, str_replace("*postsendexpire*", _postsendexpire, $_lang['misc.requestlimit']));
+                    $form_output .= _msg(_msg_warn, _lang('misc.requestlimit', array("*postsendexpire*" => _postsendexpire)));
                     break;
                 case 3:
-                    $form_output .= _msg(_msg_warn, $_lang['posts.guestnamedenied']);
+                    $form_output .= _msg(_msg_warn, _lang('posts.guestnamedenied'));
                     break;
                 case 4:
-                    $form_output .= _msg(_msg_warn, $_lang['xsrf.msg']);
+                    $form_output .= _msg(_msg_warn, _lang('xsrf.msg'));
                     break;
             }
         }
@@ -364,7 +362,7 @@ class CommentService
                 if (isset($_GET['replyto']) && _get('replyto') != -1) {
                     $reply = (int) _get('replyto');
                     if ($replynote) {
-                        $form_output .= "<p>" . $_lang['posts.replynote'] . " (<a href='" . $url_html . "#posts'>" . $_lang['global.cancel'] . "</a>).</p>";
+                        $form_output .= "<p>" . _lang('posts.replynote') . " (<a href='" . $url_html . "#posts'>" . _lang('global.cancel') . "</a>).</p>";
                     }
                 } else {
                     $reply = -1;
@@ -385,7 +383,7 @@ class CommentService
                     'url' => $url,
                 ));
             } else {
-                $form_output .= "<p>" . $_lang['posts.loginrequired'] . "</p>\n";
+                $form_output .= "<p>" . _lang('posts.loginrequired') . "</p>\n";
                 $form_output .= _userLoginForm();
             }
 
@@ -393,7 +391,7 @@ class CommentService
             if (!$locked) {
                 $form_output .= "<a class='button' href='" . _addGetToLink($url_html, "addpost&page=" . $paging['current']) . "#post-form'><img class='icon' src='" . _templateImage('icons/bubble.png') . "' alt='post'>" . $addlink . "</a>";
             } else {
-                $form_output .= "<img src='" . _templateImage("icons/lock.png") . "' alt='stop' class='icon'><strong>" . $_lang['posts.locked' . $locked_textid] . "</strong>";
+                $form_output .= "<img src='" . _templateImage("icons/lock.png") . "' alt='stop' class='icon'><strong>" . _lang('posts.locked' . $locked_textid) . "</strong>";
             }
         }
 
@@ -486,8 +484,8 @@ class CommentService
                     $post_access = _postAccess($userQuery, $item);
                     if ($replies_enabled || $post_access) {
                         $actlinks = " <span class='post-actions'>";
-                        if ($replies_enabled) $actlinks .= "<a class='post-action-reply' href='" . _addGetToLink($url_html, "replyto=" . $item['id']) . "#posts'>" . $_lang['posts.reply'] . "</a>";
-                        if ($post_access) $actlinks .= ($replies_enabled ? ' ' : '') . "<a class='post-action-edit' href='" . _linkModule('editpost', 'id=' . $item['id']) . "'>" . $_lang['global.edit'] . "</a>";
+                        if ($replies_enabled) $actlinks .= "<a class='post-action-reply' href='" . _addGetToLink($url_html, "replyto=" . $item['id']) . "#posts'>" . _lang('posts.reply') . "</a>";
+                        if ($post_access) $actlinks .= ($replies_enabled ? ' ' : '') . "<a class='post-action-edit' href='" . _linkModule('editpost', 'id=' . $item['id']) . "'>" . _lang('global.edit') . "</a>";
                         $actlinks .= "</span>";
                     } else {
                         $actlinks = "";
@@ -526,7 +524,7 @@ class CommentService
                             else $author = "<span class='post-author-guest' title='" . _showIP($answer['ip']) . "'>" . $answer['guest'] . "</span>";
 
                             // post admin links
-                            if (_postAccess($userQuery, $answer)) $actlinks = " <span class='post-actions'><a class='post-action-edit' href='" . _linkModule('editpost', 'id=' . $answer['id']) . "'>" . $_lang['global.edit'] . "</a></span>";
+                            if (_postAccess($userQuery, $answer)) $actlinks = " <span class='post-actions'><a class='post-action-edit' href='" . _linkModule('editpost', 'id=' . $answer['id']) . "'>" . _lang('global.edit') . "</a></span>";
                             else $actlinks = "";
 
                             // avatar
@@ -570,7 +568,7 @@ class CommentService
 
                 // topic list table
                 $hl = false;
-                $output .= "\n<table class='topic-table'>\n<thead><tr><th colspan='2'>" . $_lang['posts.topic'] . "</th><th>" . $_lang['global.answersnum'] . "</th><th>" . $_lang['global.lastanswer'] . "</th></tr></thead>\n<tbody>\n";
+                $output .= "\n<table class='topic-table'>\n<thead><tr><th colspan='2'>" . _lang('posts.topic') . "</th><th>" . _lang('global.answersnum') . "</th><th>" . _lang('global.lastanswer') . "</th></tr></thead>\n<tbody>\n";
                 foreach ($items as $item) {
 
                     // fetch author
@@ -606,7 +604,7 @@ class CommentService
                     }
 
                     // render row
-                    $output .= "<tr class='topic-" . $icon . ($hl ? ' topic-hl' : '') . "'><td class='topic-icon-cell'><a href='" . _linkTopic($item['id'], $forum_slug) . "'><img src='" . _templateImage('icons/topic-' . $icon . '.png') . "' alt='" . $_lang['posts.topic.' . $icon] . "'></a></td><td class='topic-main-cell'><a href='" . _linkTopic($item['id'], $forum_slug) . "'>" . $item['subject'] . "</a>" . $tpages . "<br>" . $author . " <small class='post-info'>(" . _formatTime($item['time'], 'post') . ")</small></td><td>" . $item['answer_count'] . "</td><td>" . $lastpost . (($item['answer_count'] != 0) ? "<br><small class='post-info'>(" . _formatTime($item['bumptime'], 'post') . ")</small>" : '') . "</td></tr>\n";
+                    $output .= "<tr class='topic-" . $icon . ($hl ? ' topic-hl' : '') . "'><td class='topic-icon-cell'><a href='" . _linkTopic($item['id'], $forum_slug) . "'><img src='" . _templateImage('icons/topic-' . $icon . '.png') . "' alt='" . _lang('posts.topic.' . $icon) . "'></a></td><td class='topic-main-cell'><a href='" . _linkTopic($item['id'], $forum_slug) . "'>" . $item['subject'] . "</a>" . $tpages . "<br>" . $author . " <small class='post-info'>(" . _formatTime($item['time'], 'post') . ")</small></td><td>" . $item['answer_count'] . "</td><td>" . $lastpost . (($item['answer_count'] != 0) ? "<br><small class='post-info'>(" . _formatTime($item['bumptime'], 'post') . ")</small>" : '') . "</td></tr>\n";
                     $hl = !$hl;
                 }
                 $output .= "</tbody></table>\n\n";
@@ -621,7 +619,7 @@ class CommentService
                 }
 
                 // latest answers
-                $output .= "\n<div class='post-answer-list'>\n<h3>" . $_lang['posts.forum.lastact'] . "</h3>\n";
+                $output .= "\n<div class='post-answer-list'>\n<h3>" . _lang('posts.forum.lastact') . "</h3>\n";
                 $query = Database::query("SELECT topic.id AS topic_id,topic.subject AS topic_subject,p.author,p.guest,p.time," . $userQuery['column_list'] . " FROM " . _posts_table . " AS p JOIN " . _posts_table . " AS topic ON(topic.type=" . _post_forum_topic . " AND topic.id=p.xhome) " . $userQuery['joins'] . " WHERE p.type=" . _post_forum_topic . " AND p.home=" . $home . " AND p.xhome!=-1 ORDER BY p.id DESC LIMIT " . _extratopicslimit);
                 if (Database::size($query) != 0) {
                     $output .= "<table class='topic-latest'>\n";
@@ -633,7 +631,7 @@ class CommentService
                     $output .= "</table>\n\n";
 
                 } else {
-                    $output .= "<p>" . $_lang['global.nokit'] . "</p>";
+                    $output .= "<p>" . _lang('global.nokit') . "</p>";
                 }
                 $output .= "</div>\n";
 

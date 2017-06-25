@@ -15,7 +15,7 @@ if (isset($_GET['clear'])) {
 
     return;
 } elseif (isset($_GET['cleared'])) {
-    $output .= _msg(_msg_ok, $_lang['global.done']);
+    $output .= _msg(_msg_ok, _lang('global.done'));
 }
 
 // pomocne funkce
@@ -35,7 +35,7 @@ $renderPluginAuthor = function ($author, $url) {
     }
 
     if ($renderedAuthor !== '') {
-        $renderedAuthor = "<li><strong>{$GLOBALS['_lang']['admin.plugins.author']}:</strong> {$renderedAuthor}</li>\n";
+        $renderedAuthor = "<li><strong>" . _lang('admin.plugins.author') . ":</strong> {$renderedAuthor}</li>\n";
     }
 
     return $renderedAuthor;
@@ -43,9 +43,9 @@ $renderPluginAuthor = function ($author, $url) {
 
 // tlacitka
 $output .= '<p>
-        <a class="button" href="index.php?p=plugins-upload"><img src="images/icons/plugin.png" alt="upload" class="icon">' . $_lang['admin.plugins.upload'] . '</a>
-        <a class="button" href="index.php?p=plugins&amp;clear"><img src="images/icons/refresh.png" alt="clear" class="icon">' . $_lang['admin.plugins.clear_cache'] . '</a>
-        <a class="button right" href="https://sunlight-cms.org/resource/get-plugins" target="_blank"><img src="images/icons/show.png" alt="get" class="icon">' . $_lang['admin.plugins.get'] . '</a>
+        <a class="button" href="index.php?p=plugins-upload"><img src="images/icons/plugin.png" alt="upload" class="icon">' . _lang('admin.plugins.upload') . '</a>
+        <a class="button" href="index.php?p=plugins&amp;clear"><img src="images/icons/refresh.png" alt="clear" class="icon">' . _lang('admin.plugins.clear_cache') . '</a>
+        <a class="button right" href="https://sunlight-cms.org/resource/get-plugins" target="_blank"><img src="images/icons/show.png" alt="get" class="icon">' . _lang('admin.plugins.get') . '</a>
 </p>
 ';
 
@@ -54,12 +54,12 @@ foreach (Core::$pluginManager->all() as $pluginType => $plugins) {
     $inactivePlugins = Core::$pluginManager->allInactive($pluginType);
 
     $output .= "<fieldset>\n";
-    $output .= '<legend>' . $_lang['admin.plugins.title.' . $pluginType] . ' (' . (sizeof($plugins) + sizeof($inactivePlugins)) . ")</legend>\n";
+    $output .= '<legend>' . _lang('admin.plugins.title.' . $pluginType) . ' (' . (sizeof($plugins) + sizeof($inactivePlugins)) . ")</legend>\n";
     $output .= '<table class="list list-hover plugin-list">
 <thead>
     <tr>
-        <th>' . $_lang['admin.plugins.plugin'] . '</th>
-        <th>' . $_lang['admin.plugins.description'] . '</th>
+        <th>' . _lang('admin.plugins.plugin') . '</th>
+        <th>' . _lang('admin.plugins.description') . '</th>
     </tr>
 </thead>
 <tbody>
@@ -92,7 +92,7 @@ foreach (Core::$pluginManager->all() as $pluginType => $plugins) {
     <tr' . ($rowClass !== null ? " class=\"{$rowClass}\"" : '') . '>
         <td>
             ' . ($isInactive
-                ? '<h3><del>' . _e($title) . '</del> <small>(' . $_lang['admin.plugins.status.' . $plugin->getStatus()] . ')</small></h3>'
+                ? '<h3><del>' . _e($title) . '</del> <small>(' . _lang('admin.plugins.status.' . $plugin->getStatus()) . ')</small></h3>'
                 : '<h3>' . _e($title) . '</h3>') . '
             <p>
                 ' . _buffer(function () use ($plugin) {
@@ -105,7 +105,7 @@ foreach (Core::$pluginManager->all() as $pluginType => $plugins) {
         <td>
             ' . (!empty($descr) ? '<p>' . nl2br(_e($descr), false) . "</p>\n" : '') . '
             <ul class="inline-list">
-                <li><strong>' . $_lang['admin.plugins.version'] . ':</strong> ' . _e($version) . '</li>
+                <li><strong>' . _lang('admin.plugins.version') . ':</strong> ' . _e($version) . '</li>
                 ' . $renderPluginAuthor($author, $url) . '
             </ul>
         </td>

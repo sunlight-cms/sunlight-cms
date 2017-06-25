@@ -6,7 +6,7 @@ if (!defined('_root')) {
     exit;
 }
 
-$_index['title'] = $_lang['login.required.title'];
+$_index['title'] = _lang('login.required.title');
 $_index['output'] = '';
 
 Extend::call('index.login_required', array(

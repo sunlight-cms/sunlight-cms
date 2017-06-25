@@ -1,10 +1,6 @@
 <?php
 
 return array(
-    'default' => array(
-        'label' => 'default',
-        'slots' => array(
-            'left' => 'left column',
-        ),
-    ),
+    'default.label' => 'default',
+    'default.slot.left' => 'left column',
 );

@@ -35,13 +35,13 @@ if ($query !== false) {
 
 if (isset($_POST['doit'])) {
     DB::update(_posts_table, 'id=' . DB::val($id), array('sticky' => (($query['sticky'] == 1) ? 0 : 1)));
-    $message = _msg(_msg_ok, $_lang['mod.stickytopic.ok' . $unstick]);
+    $message = _msg(_msg_ok, _lang('mod.stickytopic.ok' . $unstick));
     $success = true;
 }
 
 /* ---  vystup  --- */
 
-$_index['title'] = $_lang['mod.stickytopic'];
+$_index['title'] = _lang('mod.stickytopic');
 
 // zprava
 $output .= $message;
@@ -52,8 +52,8 @@ if (!$success) {
 
     $output .= '
     <form action="' . $furl . '" method="post">
-    ' . _msg(_msg_warn, sprintf($_lang['mod.stickytopic.text' . $unstick], $query['subject'])) . '
-    <input type="submit" name="doit" value="' . $_lang['mod.stickytopic.submit' . $unstick] . '">
+    ' . _msg(_msg_warn, sprintf(_lang('mod.stickytopic.text' . $unstick), $query['subject'])) . '
+    <input type="submit" name="doit" value="' . _lang('mod.stickytopic.submit' . $unstick) . '">
     ' . _xsrfProtect() . '</form>
     ';
 }

@@ -66,7 +66,7 @@ if (isset($_GET['id'])) {
     if ($type == _page_plugin) {
         $default_title = $plugin_type_array[$type_idt];
     } else {
-        $default_title = $_lang['page.type.' . $type_array[$type]];
+        $default_title = _lang('page.type.' . $type_array[$type]);
     }
 
     $query = array(

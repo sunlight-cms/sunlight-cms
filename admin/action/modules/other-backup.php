@@ -46,7 +46,7 @@ $backup_builder = new BackupBuilder();
 $backup_dynpath_choices = array();
 foreach ($backup_builder->getDynamicPathNames() as $name) {
     $backup_dynpath_choices[$name] = array(
-        'label' => $_lang['admin.other.backup.dynpath.' . $name],
+        'label' => _lang('admin.other.backup.dynpath.' . $name),
     );
 }
 
@@ -129,7 +129,7 @@ if (!empty($_POST)) {
                 $backup->move($backup_dir . '/' . $stored_backup_name);
                 $backup_files[$stored_backup_name] = time();
 
-                $message = _msg(_msg_ok, $_lang['admin.other.backup.store.success']);
+                $message = _msg(_msg_ok, _lang('admin.other.backup.store.success'));
             } else {
                 // stahnout
                 _downloadFile($backup, $backup_name);
@@ -161,7 +161,7 @@ if (!empty($_POST)) {
                             $success = $backup_restorer->restore($database, $directories, $errors);
 
                             if ($success) {
-                                $message = _msg(_msg_ok, $_lang['admin.other.backup.restore.complete']);
+                                $message = _msg(_msg_ok, _lang('admin.other.backup.restore.complete'));
                             } else {
                                 $message = _msg(_msg_err, _msgList(_htmlEscapeArrayItems($errors), 'errors'));
                             }
@@ -172,31 +172,31 @@ if (!empty($_POST)) {
                             $backup_metadata = $backup->getMetaData();
 
                             $message .= '<div class="well">
-    <h2>' . $_lang['admin.other.backup.restore.title'] . '</h2>
+    <h2>' . _lang('admin.other.backup.restore.title') . '</h2>
     <form method="post">
         <input type="hidden" name="backup_loaded" value="1">
         <input type="hidden" name="backup_file" value="' . _e($backup_file) . '">
         <table class="list">
             <tr>
-                <th>' . $_lang['global.name'] . '</th>
+                <th>' . _lang('global.name') . '</th>
                 <td>' . _e($remove_hash_suffix($backup_file)) . '</td>
             </tr>
             <tr>
-                <th>' . $_lang['global.size'] . '</th>
+                <th>' . _lang('global.size') . '</th>
                 <td>' . _formatFilesize(filesize($backup_dir . '/' . $backup_file)) . '</td>
             </tr>
             <tr>
-                <th>' . $_lang['global.created_at'] . '</th>
+                <th>' . _lang('global.created_at') . '</th>
                 <td>' . _formatTime($backup_metadata['created_at']) . '</td>
             </tr>
             <tr class="valign-top">
-                <th>' . $_lang['admin.other.backup.restore.contents'] . '</th>
+                <th>' . _lang('admin.other.backup.restore.contents') . '</th>
                 <td>
                     <ul class="no-bullets">
-                        <li><label><input type="checkbox"' . _restoreCheckedAndName('backup_loaded', 'database', $backup->hasDatabaseDump()) . _inputDisableUnless($backup->hasDatabaseDump()) . '> ' . $_lang['admin.other.backup.opt.db'] . '</label></li>
+                        <li><label><input type="checkbox"' . _restoreCheckedAndName('backup_loaded', 'database', $backup->hasDatabaseDump()) . _inputDisableUnless($backup->hasDatabaseDump()) . '> ' . _lang('admin.other.backup.opt.db') . '</label></li>
                         ' . _buffer(function () use ($backup_metadata) {
                                 foreach ($backup_metadata['directory_list'] as $index => $directory) {
-                                    echo '<li><label><input type="checkbox"' . _restoreCheckedAndName('backup_loaded', 'directory_' . $index, true) . ' value="' . _e($directory) . '"> ' . $GLOBALS['_lang']['admin.other.backup.restore.contents.dir'] . ' <code>' . _e($directory) . "</code></label></li>\n";
+                                    echo '<li><label><input type="checkbox"' . _restoreCheckedAndName('backup_loaded', 'directory_' . $index, true) . ' value="' . _e($directory) . '"> ' . _lang('admin.other.backup.restore.contents.dir') . ' <code>' . _e($directory) . "</code></label></li>\n";
                                 }
                         }) . '
                     </ul>
@@ -204,25 +204,25 @@ if (!empty($_POST)) {
             </tr>
         </table>
 
-        ' . _msg(_msg_warn, $_lang['admin.other.backup.restore.warning']) . '
+        ' . _msg(_msg_warn, _lang('admin.other.backup.restore.warning')) . '
 
         <p>
-            <input type="submit" name="do_restore[restore]" onclick="return Sunlight.confirm()" value="' . $_lang['admin.other.backup.restore.title'] . '">
-            <input type="submit" value="' . $_lang['global.cancel2'] . '">
+            <input type="submit" name="do_restore[restore]" onclick="return Sunlight.confirm()" value="' . _lang('admin.other.backup.restore.title') . '">
+            <input type="submit" value="' . _lang('global.cancel2') . '">
         </p>
     ' . _xsrfProtect() . '
     </form>
     </div>';
                         }
                     } else {
-                        $message = _msg(_msg_err, _msgList(_htmlEscapeArrayItems($errors), $_lang['admin.other.backup.restore.errors.validate']));
+                        $message = _msg(_msg_err, _msgList(_htmlEscapeArrayItems($errors), _lang('admin.other.backup.restore.errors.validate')));
                     }
 
                 } elseif (isset($_POST['do_restore']['delete'])) {
                     unlink($backup_dir . '/' . $backup_file);
                     unset($backup_files[$backup_file]);
 
-                    $message = _msg(_msg_ok, $_lang['global.done']);
+                    $message = _msg(_msg_ok, _lang('global.done'));
                 }
             }
 
@@ -238,18 +238,18 @@ if (!empty($_POST)) {
                     _userMoveUploadedFile($_FILES['backup']['tmp_name'], $backup_dir . '/' . $stored_backup_name);
                     $backup_files[$stored_backup_name] = time();
 
-                    $message = _msg(_msg_ok, $_lang['global.done']);
+                    $message = _msg(_msg_ok, _lang('global.done'));
                 } else {
-                    $message = _msg(_msg_warn, $_lang['admin.other.backup.upload.error']);
+                    $message = _msg(_msg_warn, _lang('admin.other.backup.upload.error'));
                 }
 
             } else {
-                $message = _msg(_msg_warn, $_lang['global.noupload']);
+                $message = _msg(_msg_warn, _lang('global.noupload'));
             }
 
         }
     } catch (\Exception $e) {
-        $message = _msg(_msg_err, $_lang['global.error']) . Core::renderException($e);
+        $message = _msg(_msg_err, _lang('global.error')) . Core::renderException($e);
     }
 }
 
@@ -265,12 +265,12 @@ if (!empty($backup_files)) {
     <td><label><input type="radio" name="backup_file" value="' . _e($backup_file) . '"> ' . _e($displayed_backup_name) . '</label></td>
     <td>' . _formatFilesize(filesize($backup_dir . '/' . $backup_file)) . '</td>
     <td>' . _formatTime($backup_ctime) . '</td>
-    <td><a href="' . _e($backup_dir . '/' . $backup_file) . '"><img src="images/icons/floppy.png" alt="' . $_lang['global.download'] . '"></a></td>
+    <td><a href="' . _e($backup_dir . '/' . $backup_file) . '"><img src="images/icons/floppy.png" alt="' . _lang('global.download') . '"></a></td>
 </tr>
 ';
     }
 } else {
-    $backup_list = '<tr><td colspan="4">' . $_lang['global.nokit'] . "</td></tr>\n";
+    $backup_list = '<tr><td colspan="4">' . _lang('global.nokit') . "</td></tr>\n";
 }
 
 // formulare
@@ -279,15 +279,15 @@ $output .= $message . '
 <tr class="valign-top">
 <td>
 
-    <h2>' . $_lang['admin.other.backup.create.title'] . '</h2>
-    <p>' . $_lang['admin.other.backup.create.p'] . '</p>
+    <h2>' . _lang('admin.other.backup.create.title') . '</h2>
+    <p>' . _lang('admin.other.backup.create.p') . '</p>
     <form method="post">
         <table>
             <tr class="valign-top">
-                <th>' . $_lang['admin.other.backup.opts'] . '</th>
+                <th>' . _lang('admin.other.backup.opts') . '</th>
                 <td>
                     <ul class="no-bullets">
-                        <li><label><input type="checkbox" value="1"' . _restoreCheckedAndName('do_create', 'opt_db', true) . '> ' . $_lang['admin.other.backup.opt.db'] . '</label></li>
+                        <li><label><input type="checkbox" value="1"' . _restoreCheckedAndName('do_create', 'opt_db', true) . '> ' . _lang('admin.other.backup.opt.db') . '</label></li>
                         ' . _buffer(function () use ($backup_dynpath_choices) {
                             foreach ($backup_dynpath_choices as $name => $options) {
                                 echo '<li><label><input type="checkbox" value="' . $name . '"' . _restoreCheckedAndName('do_create', 'dynpath_' . $name, true) . '> ' . _e($options['label']) . ' <small>(' . _formatFilesize($options['size']) . ')</small></label></li>';
@@ -300,9 +300,9 @@ $output .= $message . '
             <tr>
                 <td></td>
                 <td>
-                    <input type="submit" name="do_create[download]" formtarget="_blank" value="' . $_lang['global.download'] . '">
-                    ' . $_lang['global.or'] . '
-                    <input type="submit" name="do_create[store]" value="' . $_lang['admin.other.backup.store'] . '">
+                    <input type="submit" name="do_create[download]" formtarget="_blank" value="' . _lang('global.download') . '">
+                    ' . _lang('global.or') . '
+                    <input type="submit" name="do_create[store]" value="' . _lang('admin.other.backup.store') . '">
                 </td>
             </tr>
         </table>
@@ -310,16 +310,16 @@ $output .= $message . '
     </form>
 
 
-    <h2>' . $_lang['admin.other.backup.package.title'] . '</h2>
-    <p>' . $_lang['admin.other.backup.package.p'] . '</p>
+    <h2>' . _lang('admin.other.backup.package.title') . '</h2>
+    <p>' . _lang('admin.other.backup.package.p') . '</p>
     <form method="post">
         <table>
             <tr>
-                <th>' . $_lang['admin.other.backup.opts'] . '</th>
+                <th>' . _lang('admin.other.backup.opts') . '</th>
                 <td>
                     <ul class="no-bullets">
-                        <li><label><input type="checkbox" checked disabled> ' . $_lang['admin.other.backup.opt.db'] . '</label></li>
-                        <li><label><input type="checkbox" checked disabled> ' . $_lang['admin.other.backup.opt.sys'] . ' <small>(' . _formatFilesize($static_size) . ')</small></label></li>
+                        <li><label><input type="checkbox" checked disabled> ' . _lang('admin.other.backup.opt.db') . '</label></li>
+                        <li><label><input type="checkbox" checked disabled> ' . _lang('admin.other.backup.opt.sys') . ' <small>(' . _formatFilesize($static_size) . ')</small></label></li>
                         ' . _buffer(function () use ($backup_dynpath_choices, $backup_builder) {
                             foreach ($backup_dynpath_choices as $name => $options) {
                                 $optional = $backup_builder->isDynamicPathOptional($name);
@@ -339,9 +339,9 @@ $output .= $message . '
             <tr>
                 <td></td>
                 <td>
-                    <input type="submit" name="do_package[download]" formtarget="_blank" value="' . $_lang['global.download'] . '">
-                    ' . $_lang['global.or'] . '
-                    <input type="submit" name="do_package[store]" value="' . $_lang['admin.other.backup.store'] . '">
+                    <input type="submit" name="do_package[download]" formtarget="_blank" value="' . _lang('global.download') . '">
+                    ' . _lang('global.or') . '
+                    <input type="submit" name="do_package[store]" value="' . _lang('admin.other.backup.store') . '">
                 </td>
             </tr>
         </table>
@@ -351,13 +351,13 @@ $output .= $message . '
 </td>
 <td>
 
-    <h2>' . $_lang['admin.other.backup.upload.title'] . '</h2>
-    <p>' . $_lang['admin.other.backup.upload.p'] . '</p>
+    <h2>' . _lang('admin.other.backup.upload.title') . '</h2>
+    <p>' . _lang('admin.other.backup.upload.p') . '</p>
 
     <form method="post" enctype="multipart/form-data">
         <table>
             <tr>
-                <th>' . $_lang['global.file'] . '</th>
+                <th>' . _lang('global.file') . '</th>
                 <td>
                     <input type="file" name="backup">
                     ' . _renderUploadLimit() . '
@@ -365,23 +365,23 @@ $output .= $message . '
             </tr>
             <tr>
                 <td></td>
-                <td><input type="submit" name="do_upload" value="' . $_lang['global.upload'] . '"></td>
+                <td><input type="submit" name="do_upload" value="' . _lang('global.upload') . '"></td>
             </tr>
         </table>
     ' . _xsrfProtect() . '
     </form>
 
 
-    <h2>' . $_lang['admin.other.backup.restore.title'] . '</h2>
-    <p>' . $_lang['admin.other.backup.restore.p'] . '</p>
+    <h2>' . _lang('admin.other.backup.restore.title') . '</h2>
+    <p>' . _lang('admin.other.backup.restore.p') . '</p>
 
     <form method="post" enctype="multipart/form-data">
         <table class="list list-hover max-width">
             <thead>
                 <tr>
-                    <th>' . $_lang['global.name'] . '</th>
-                    <th>' . $_lang['global.size'] . '</th>
-                    <th>' . $_lang['global.created_at'] . '</th>
+                    <th>' . _lang('global.name') . '</th>
+                    <th>' . _lang('global.size') . '</th>
+                    <th>' . _lang('global.created_at') . '</th>
                     <th></th>
                 </tr>
             </thead>
@@ -391,9 +391,9 @@ $output .= $message . '
         </table>
 
         <p>
-            <input type="submit" name="do_restore[load]" value="' . $_lang['admin.other.backup.restore.submit.load'] . '">
-            ' . $_lang['global.or'] . '
-            <input onclick="return Sunlight.confirm()" type="submit" name="do_restore[delete]" value="' . $_lang['admin.other.backup.restore.submit.delete'] . '">
+            <input type="submit" name="do_restore[load]" value="' . _lang('admin.other.backup.restore.submit.load') . '">
+            ' . _lang('global.or') . '
+            <input onclick="return Sunlight.confirm()" type="submit" name="do_restore[delete]" value="' . _lang('admin.other.backup.restore.submit.delete') . '">
         </p>
     ' . _xsrfProtect() . '
     </form>

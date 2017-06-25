@@ -20,7 +20,7 @@ if ($query !== false) {
     if ($query['note'] == "") {
         $note = "";
     } else {
-        $note = "<tr class='valign-top'><th>" . $_lang['global.note'] . "</th><td><div class='note'>" . _parsePost($query['note']) . "</div></td></tr>";
+        $note = "<tr class='valign-top'><th>" . _lang('global.note') . "</th><td><div class='note'>" . _parsePost($query['note']) . "</div></td></tr>";
     }
 
     // clanky autora
@@ -30,15 +30,15 @@ if ($query !== false) {
         // zjisteni prumerneho hodnoceni
         $avgrate = DB::result(DB::query("SELECT ROUND(SUM(ratesum)/SUM(ratenum)) FROM " . _articles_table . " WHERE rateon=1 AND ratenum!=0 AND confirmed=1 AND author=" . $query['id']), 0);
         if ($avgrate === null) {
-            $avgrate = $_lang['article.rate.nodata'];
+            $avgrate = _lang('article.rate.nodata');
         } else {
             $avgrate = "&Oslash; " . $avgrate . "%";
         }
 
         // sestaveni kodu
-        $arts = "\n<tr><th>" . $_lang['global.articlesnum'] . "</th><td>" . $arts . ", <a href='" . _linkModule('profile-arts', 'id=' . $id) . "'>" . $_lang['global.show'] . " &gt;</a></td></tr>\n";
+        $arts = "\n<tr><th>" . _lang('global.articlesnum') . "</th><td>" . $arts . ", <a href='" . _linkModule('profile-arts', 'id=' . $id) . "'>" . _lang('global.show') . " &gt;</a></td></tr>\n";
         if (_ratemode != 0) {
-            $arts .= "\n<tr><th>" . $_lang['article.rate'] . "</th><td>" . $avgrate . "</td></tr>\n";
+            $arts .= "\n<tr><th>" . _lang('article.rate') . "</th><td>" . $avgrate . "</td></tr>\n";
         }
 
     } else {
@@ -48,7 +48,7 @@ if ($query !== false) {
     // odkaz na prispevky uzivatele
     $posts_count = DB::count(_posts_table, 'author=' . DB::val($query['id']) . ' AND type!=' . _post_pm . ' AND type!=' . _post_shoutbox_entry);
     if ($posts_count > 0) {
-        $posts_viewlink = ", <a href='" . _linkModule('profile-posts', 'id=' . $id) . "'>" . $_lang['global.show'] . " &gt;</a>";
+        $posts_viewlink = ", <a href='" . _linkModule('profile-posts', 'id=' . $id) . "'>" . _lang('global.show') . " &gt;</a>";
     } else {
         $posts_viewlink = "";
     }
@@ -60,11 +60,11 @@ if ($query !== false) {
 
 /* ---  modul  --- */
 
-$_index['title'] = $_lang['mod.profile'] . ': ' . $query[$query['publicname'] !== null ? 'publicname' : 'username'];
+$_index['title'] = _lang('mod.profile') . ': ' . $query[$query['publicname'] !== null ? 'publicname' : 'username'];
 
 // poznamka o blokovani
 if ($query['blocked'] == 1 || $groupdata['blocked'] == 1) {
-    $output .= _msg(_msg_err, $_lang['mod.profile.blockednote']);
+    $output .= _msg(_msg_err, _lang('mod.profile.blockednote'));
 }
 
 $output .= "
@@ -80,29 +80,29 @@ $output .= "
 <table class='profiletable'>
 
 <tr>
-<th>" . $_lang['login.username'] . "</th>
+<th>" . _lang('login.username') . "</th>
 <td>" . $query['username'] . "</td>
 </tr>
 
-" . (($query['publicname'] !== null) ? "<tr><th>" . $_lang['mod.settings.publicname'] . "</th><td>" . $query['publicname'] . "</td></tr>" : '') . "
+" . (($query['publicname'] !== null) ? "<tr><th>" . _lang('mod.settings.publicname') . "</th><td>" . $query['publicname'] . "</td></tr>" : '') . "
 
 <tr>
-<th>" . $_lang['global.group'] . "</th>
+<th>" . _lang('global.group') . "</th>
 <td><span class='text-icon'>" . (($groupdata['icon'] != "") ? "<img src='" . _link('images/groupicons/' . $groupdata['icon']) . "' alt='icon' class='icon'>" : '') . (($groupdata['color'] !== '') ? '<span style="color:' . $groupdata['color'] . ';">' . $groupdata['title'] . '</span>' : $groupdata['title']) . "</span></td>
 </tr>
 
 " . (($groupdata['descr'] !== '') ? "<tr>
-<th>" . $_lang['mod.profile.groupdescr'] . "</th>
+<th>" . _lang('mod.profile.groupdescr') . "</th>
 <td>" . $groupdata['descr'] . "</td>
 </tr>" : '') . "
 
 " . ($query['id'] == _loginid || _priv_administration && _priv_adminusers ? "<tr>
-<th>" . $_lang['mod.profile.lastact'] . "</th>
+<th>" . _lang('mod.profile.lastact') . "</th>
 <td>" . _formatTime($query['activitytime'], 'activity') . "</td>
 </tr>
 
 <tr>
-<th>" . $_lang['mod.profile.logincounter'] . "</th>
+<th>" . _lang('mod.profile.logincounter') . "</th>
 <td>" . $query['logincounter'] . "</td>
 </tr>" : '') . "
 
@@ -119,9 +119,9 @@ $output .= "
 <div class='wlimiter'>
 <table class='profiletable'>
 
-<tr><th>" . $_lang['mod.profile.regtime'] . "</th><td>" . _formatTime($query['registertime']) . "</td></tr>
-" . (_profileemail ? "<tr><th>" . $_lang['global.email'] . "</th><td>" . _mailto($query['email']) . "</td></tr>" : '') . "
-<tr><th>" . $_lang['global.postsnum'] . "</th><td>" . $posts_count . $posts_viewlink . "</td></tr>
+<tr><th>" . _lang('mod.profile.regtime') . "</th><td>" . _formatTime($query['registertime']) . "</td></tr>
+" . (_profileemail ? "<tr><th>" . _lang('global.email') . "</th><td>" . _mailto($query['email']) . "</td></tr>" : '') . "
+<tr><th>" . _lang('global.postsnum') . "</th><td>" . $posts_count . $posts_viewlink . "</td></tr>
 
 " . $arts . "
 " . Sunlight\Extend::buffer('mod.profile.table.extra', array('user' => $query)) . "
@@ -133,5 +133,5 @@ $output .= "
 
 // odkaz na zaslani vzkazu
 if (_login && _messages && $query['id'] != _loginid && $query['blocked'] == 0 && $groupdata['blocked'] == 0) {
-    $output .= "<p><a class='button' href='" . _linkModule('messages', 'a=new&receiver=' . $query['username']) . "'><img src='" . _templateImage("icons/bubble.png") . "' alt='msg' class='icon'>" . $_lang['mod.messages.new'] . "</a></p>";
+    $output .= "<p><a class='button' href='" . _linkModule('messages', 'a=new&receiver=' . $query['username']) . "'><img src='" . _templateImage("icons/bubble.png") . "' alt='msg' class='icon'>" . _lang('mod.messages.new') . "</a></p>";
 }

@@ -157,7 +157,7 @@ if (!(file_exists($defdir) && is_dir($defdir))) {
     $test = mkdir($defdir, 0777, true);
     if (!$test) {
         $continue = false;
-        $output .= _msg(_msg_err, $_lang['admin.fman.msg.defdircreationfailure']);
+        $output .= _msg(_msg_err, _lang('admin.fman.msg.defdircreationfailure'));
     } else {
         chmod($defdir, 0777);
     }
@@ -195,11 +195,9 @@ if ($continue) {
                         ++$total;
                     }
                 }
-                $tfrom = array("*done*", "*total*");
-                $tto = array($done, $total);
                 if ($done == $total) $micon = _msg_ok;
                 else $micon = _msg_warn;
-                $message = _msg($micon, str_replace($tfrom, $tto, $_lang['admin.fman.msg.upload.done']));
+                $message = _msg($micon, _lang('admin.fman.msg.upload.done', array('*done*' => $done, '*total*' => $total)));
                 break;
 
                 // novy adresar
@@ -208,13 +206,13 @@ if ($continue) {
                 if (!file_exists($dir . $name)) {
                     $test = mkdir($dir . $name);
                     if ($test) {
-                        $message = _msg(_msg_ok, $_lang['admin.fman.msg.newfolder.done']);
+                        $message = _msg(_msg_ok, _lang('admin.fman.msg.newfolder.done'));
                         chmod($dir . $name, 0777);
                     } else {
-                        $message = _msg(_msg_warn, $_lang['admin.fman.msg.newfolder.failure']);
+                        $message = _msg(_msg_warn, _lang('admin.fman.msg.newfolder.failure'));
                     }
                 } else {
-                    $message = _msg(_msg_warn, $_lang['admin.fman.msg.newfolder.failure2']);
+                    $message = _msg(_msg_warn, _lang('admin.fman.msg.newfolder.failure2'));
                 }
                 break;
 
@@ -225,18 +223,18 @@ if ($continue) {
                     if (!is_dir($dir . $name)) {
                         if (_userCheckFilename($name)) {
                             if (unlink($dir . $name)) {
-                                $message = _msg(_msg_ok, $_lang['admin.fman.msg.delete.done']);
+                                $message = _msg(_msg_ok, _lang('admin.fman.msg.delete.done'));
                             } else {
-                                $message = _msg(_msg_warn, $_lang['admin.fman.msg.delete.failure']);
+                                $message = _msg(_msg_warn, _lang('admin.fman.msg.delete.failure'));
                             }
                         } else {
-                            $message = _msg(_msg_warn, $_lang['admin.fman.msg.disallowedextension']);
+                            $message = _msg(_msg_warn, _lang('admin.fman.msg.disallowedextension'));
                         }
                     } else {
                         if (Filesystem::purgeDirectory($dir . $name, array(), $failedPath)) {
-                            $message = _msg(_msg_ok, $_lang['admin.fman.msg.delete.done']);
+                            $message = _msg(_msg_ok, _lang('admin.fman.msg.delete.done'));
                         } else {
-                            $message = _msg(_msg_warn, str_replace('*failed_path*', _e($failedPath), $_lang['admin.fman.msg.delete.failure']));
+                            $message = _msg(_msg_warn, _lang('admin.fman.msg.delete.failure', array('*failed_path*' => _e($failedPath))));
                         }
                     }
                 }
@@ -250,15 +248,15 @@ if ($continue) {
                     if (!file_exists($dir . $newname)) {
                         if (_userCheckFilename($newname) && _userCheckFilename($name)) {
                             if (rename($dir . $name, $dir . $newname)) {
-                                $message = _msg(_msg_ok, $_lang['admin.fman.msg.rename.done']);
+                                $message = _msg(_msg_ok, _lang('admin.fman.msg.rename.done'));
                             } else {
-                                $message = _msg(_msg_warn, $_lang['admin.fman.msg.rename.failure']);
+                                $message = _msg(_msg_warn, _lang('admin.fman.msg.rename.failure'));
                             }
                         } else {
-                            $message = _msg(_msg_warn, $_lang['admin.fman.msg.disallowedextension']);
+                            $message = _msg(_msg_warn, _lang('admin.fman.msg.disallowedextension'));
                         }
                     } else {
-                        $message = _msg(_msg_warn, $_lang['admin.fman.msg.exists']);
+                        $message = _msg(_msg_warn, _lang('admin.fman.msg.exists'));
                     }
                 }
                 break;
@@ -272,12 +270,12 @@ if ($continue) {
                     if ($file) {
                         fwrite($file, $content);
                         fclose($file);
-                        $message = _msg(_msg_ok, $_lang['admin.fman.msg.edit.done'] . " <small>(" . _formatTime(time()) . ")</small>");
+                        $message = _msg(_msg_ok, _lang('admin.fman.msg.edit.done') . " <small>(" . _formatTime(time()) . ")</small>");
                     } else {
-                        $message = _msg(_msg_warn, $_lang['admin.fman.msg.edit.failure']);
+                        $message = _msg(_msg_warn, _lang('admin.fman.msg.edit.failure'));
                     }
                 } else {
-                    $message = _msg(_msg_warn, $_lang['admin.fman.msg.disallowedextension']);
+                    $message = _msg(_msg_warn, _lang('admin.fman.msg.disallowedextension'));
                 }
                 break;
 
@@ -307,16 +305,14 @@ if ($continue) {
                         $total++;
                     }
 
-                    $tfrom = array("*done*", "*total*");
-                    $tto = array($done, $total);
                     if ($done == $total) {
                         $micon = _msg_ok;
                     } else {
                         $micon = _msg_warn;
                     }
-                    $message = _msg($micon, str_replace($tfrom, $tto, $_lang['admin.fman.msg.move.done']));
+                    $message = _msg($micon, _lang('admin.fman.msg.move.done', array('*done*' => $done, '*total*' => $total)));
                 } else {
-                    $message = _msg(_msg_warn, $_lang['admin.fman.msg.rootlimit']);
+                    $message = _msg(_msg_warn, _lang('admin.fman.msg.rootlimit'));
                 }
                 break;
 
@@ -339,14 +335,12 @@ if ($continue) {
                     $total++;
                 }
 
-                $tfrom = array("*done*", "*total*");
-                $tto = array($done, $total);
                 if ($done == $total) {
                     $micon = _msg_ok;
                 } else {
                     $micon = _msg_warn;
                 }
-                $message = _msg($micon, str_replace($tfrom, $tto, $_lang['admin.fman.msg.deleteselected.done']));
+                $message = _msg($micon, _lang('admin.fman.msg.deleteselected.done', array('*done*' => $done, '*total*' => $total)));
                 break;
 
                 // pridani vyberu do galerie - formular pro vyber galerie
@@ -404,10 +398,10 @@ if ($continue) {
                         }
 
                         // zprava
-                        $message = _msg(_msg_ok, str_replace("*done*", $counter, $_lang['admin.fman.addtogallery.done']));
+                        $message = _msg(_msg_ok, _lang('admin.fman.addtogallery.done', array("*done*" => $counter)));
 
                     } else {
-                        $message = _msg(_msg_warn, $_lang['global.badinput']);
+                        $message = _msg(_msg_warn, _lang('global.badinput'));
                     }
 
                 }
@@ -432,7 +426,7 @@ if ($continue) {
                 $action_title = "admin.fman.menu.createfolder";
                 $action_code = "
       <tr>
-      <th>" . $_lang['global.name'] . ":</th>
+      <th>" . _lang('global.name') . ":</th>
       <td><input type='text' name='name' class='inputmedium' maxlength='64'></td>
       </tr>
       ";
@@ -446,7 +440,7 @@ if ($continue) {
                     $action_title = "admin.fman.delete.title";
                     $action_code = "
         <tr>
-        <td colspan='2'>" . str_replace("*name*", _e($decodeFilename($name)), $_lang['admin.fman.delask']) . "<input type='hidden' name='name' value='" . _e($name) . "'></td>
+        <td colspan='2'>" . _lang('admin.fman.delask', array("*name*" => _e($decodeFilename($name)))) . "<input type='hidden' name='name' value='" . _e($name) . "'></td>
         </tr>
         ";
                 }
@@ -460,7 +454,7 @@ if ($continue) {
                     $action_title = "admin.fman.rename.title";
                     $action_code = "
         <tr>
-        <th>" . $_lang['admin.fman.newname'] . ":</th>
+        <th>" . _lang('admin.fman.newname') . ":</th>
         <td><input type='text' name='newname' class='inputmedium' maxlength='64' value='" . _e($decodeFilename($name)) . "'><input type='hidden' name='name' value='" . _e($name) . "'></td>
         </tr>
         ";
@@ -482,7 +476,7 @@ if ($continue) {
                             $continue = true;
                             $content = file_get_contents($dir . $dname);
                         } else {
-                            $message = _msg(_msg_warn, $_lang['admin.fman.msg.disallowedextension']);
+                            $message = _msg(_msg_warn, _lang('admin.fman.msg.disallowedextension'));
                         }
                     }
                 } else {
@@ -503,12 +497,12 @@ if ($continue) {
 
                     $action_code = "
         <tr>
-        <th>" . $_lang['global.name'] . "</th>
-        <td><input type='text' name='name' class='inputmedium' maxlength='64' value='" . _e($decodeFilename($name)) . "'> <small>" . $_lang['admin.fman.edit.namenote' . ($new ? '2' : '')] . "</small></td>
+        <th>" . _lang('global.name') . "</th>
+        <td><input type='text' name='name' class='inputmedium' maxlength='64' value='" . _e($decodeFilename($name)) . "'> <small>" . _lang('admin.fman.edit.namenote' . ($new ? '2' : '')) . "</small></td>
         </tr>
 
         <tr class='valign-top'>
-        <th>" . $_lang['admin.content.form.content'] . "</th>
+        <th>" . _lang('admin.content.form.content') . "</th>
         <td><textarea rows='25' cols='94' class='areabig editor' data-editor-mode='code' data-editor-format='" . $ext . "' name='content' wrap='off'>" . _e($content) . "</textarea></td>
         </tr>
         ";
@@ -522,14 +516,14 @@ if ($continue) {
                 $action_title = "admin.fman.menu.upload";
                 $action_code = "
       <tr class='valign-top'>
-      <th>" . $_lang['admin.fman.file'] . ":</th>
-      <td id='fmanFiles'><input type='file' name='uf0[]' multiple> <a href='#' onclick='return Sunlight.admin.fmanAddFile();'>" . $_lang['admin.fman.upload.addfile'] . "</a></td>
+      <th>" . _lang('admin.fman.file') . ":</th>
+      <td id='fmanFiles'><input type='file' name='uf0[]' multiple> <a href='#' onclick='return Sunlight.admin.fmanAddFile();'>" . _lang('admin.fman.upload.addfile') . "</a></td>
       </tr>
 
       <tr>
       <td></td>
       <td>
-          <label><input type='checkbox' name='upload_rewrite' value='1'> " . $_lang['global.uploadrewrite'] . "</label>
+          <label><input type='checkbox' name='upload_rewrite' value='1'> " . _lang('global.uploadrewrite') . "</label>
           " . _renderUploadLimit() . "
       </td>
       </tr>
@@ -565,7 +559,7 @@ if ($continue) {
                 if ($counter != 0) {
                     $action_code = "
       <tr>
-      <th>" . $_lang['admin.fman.addtogallery.galllery'] . "</th>
+      <th>" . _lang('admin.fman.addtogallery.galllery') . "</th>
       <td>
       " . _adminRootSelect("gallery", array('type' => _page_gallery)) . "
       " . $images . "
@@ -573,12 +567,12 @@ if ($continue) {
       </tr>
 
       <tr>
-      <th>" . $_lang['admin.fman.addtogallery.counter'] . "</th>
+      <th>" . _lang('admin.fman.addtogallery.counter') . "</th>
       <td>" . $counter . "</td>
       </tr>
       ";
                 } else {
-                    $message = _msg(_msg_warn, $_lang['admin.fman.addtogallery.noimages']);
+                    $message = _msg(_msg_warn, _lang('admin.fman.addtogallery.noimages'));
                 }
                 break;
 
@@ -589,7 +583,7 @@ if ($continue) {
 
             $action_code = "
 <div id='fman-action'>
-<h2>" . $_lang[$action_title] . "</h2>
+<h2>" . _lang($action_title) . "</h2>
 <form action='" . $url . $action_acbonus . "'" . (($action_form_class !== null) ? " class='" . $action_form_class . "'" : '') . " method='post' enctype='multipart/form-data'>
 <input type='hidden' name='action' value='" . _e(_get('a')) . "'>
 <table class='formtable'>
@@ -597,7 +591,7 @@ if ($continue) {
 
   <tr>
   <td></td>
-  <td><input type='submit' value='" . $_lang[$action_submit] . "'> <a href='" . $url . "'>" . $_lang['global.cancel'] . "</a></td>
+  <td><input type='submit' value='" . _lang($action_submit) . "'> <a href='" . $url . "'>" . _lang('global.cancel') . "</a></td>
   </tr>
 
 </table>
@@ -615,12 +609,12 @@ if ($continue) {
     $output .= $message . "
     <a id='top'></a>
     <p class='fman-menu'>
-    <a href='" . $url . "&amp;a=upload'>" . $_lang['admin.fman.menu.upload'] . "</a>
-    <a href='" . $url . "&amp;a=edit'>" . $_lang['admin.fman.menu.createfile'] . "</a>
-    <a href='" . $url . "&amp;a=newfolder'>" . $_lang['admin.fman.menu.createfolder'] . "</a>
-    " . ((_priv_admingallery && _priv_admincontent) ? "<a href='#' onclick='return Sunlight.admin.fmanAddSelectedToGallery()'>" . $_lang['admin.fman.menu.addtogallery'] . "</a>" : '') . "
-    <a href='" . $url_base . "dir=" . rawurlencode($defdir) . "'>" . $_lang['admin.fman.menu.home'] . "</a>
-    <strong>" . $_lang['admin.fman.currentdir'] . ":</strong> " . substr($dir, strlen(_root)) . "
+    <a href='" . $url . "&amp;a=upload'>" . _lang('admin.fman.menu.upload') . "</a>
+    <a href='" . $url . "&amp;a=edit'>" . _lang('admin.fman.menu.createfile') . "</a>
+    <a href='" . $url . "&amp;a=newfolder'>" . _lang('admin.fman.menu.createfolder') . "</a>
+    " . ((_priv_admingallery && _priv_admincontent) ? "<a href='#' onclick='return Sunlight.admin.fmanAddSelectedToGallery()'>" . _lang('admin.fman.menu.addtogallery') . "</a>" : '') . "
+    <a href='" . $url_base . "dir=" . rawurlencode($defdir) . "'>" . _lang('admin.fman.menu.home') . "</a>
+    <strong>" . _lang('admin.fman.currentdir') . ":</strong> " . substr($dir, strlen(_root)) . "
     </p>
 
     " . $action_code;
@@ -668,8 +662,8 @@ if ($continue) {
         <tr" . $hl_class . ">
         <td colspan='" . (($item == "..") ? "3" : "2") . "'><a href='" . $url_base . "dir=" . rawurlencode($dirhref) . "/'><img src='images/icons/fman/dir.png' alt='dir' class='icon'>" . _e(_cutText($item, 64, false)) . "</a></td>
         " . (($item != "..") ? "<td class='actions'>
-            <a class='button' href='" . $url . "&amp;a=delete&amp;name=" . $encodeFilename($item) . "'><img src='images/icons/delete.png' alt='del' class='icon'>" . $_lang['global.delete'] . "</a>
-            <a class='button' href='" . $url . "&amp;a=rename&amp;name=" . $encodeFilename($item) . "'><img src='images/icons/rename.png' alt='rename' class='icon'>" . $_lang['admin.fman.rename'] . "</a>
+            <a class='button' href='" . $url . "&amp;a=delete&amp;name=" . $encodeFilename($item) . "'><img src='images/icons/delete.png' alt='del' class='icon'>" . _lang('global.delete') . "</a>
+            <a class='button' href='" . $url . "&amp;a=rename&amp;name=" . $encodeFilename($item) . "'><img src='images/icons/rename.png' alt='rename' class='icon'>" . _lang('admin.fman.rename') . "</a>
         </td>" : '') . "
         </tr>\n";
 
@@ -721,9 +715,9 @@ if ($continue) {
         <td><input type='checkbox' name='f" . $filecounter . "' id='f" . $filecounter . "' value='" . $encodeFilename($item, false) . "'> <a href='" . _e($dir . $item) . "' target='_blank'" . ($image ? ' class="lightbox" data-gallery-group="fman"' : '') . "><img src='images/icons/fman/" . $icon . ".png' alt='file' class='icon'>" . _e(_cutText($item, 64, false)) . "</a></td>
         <td>" . _formatFilesize($filesize) . "</td>
         <td class='actions'>". (_userCheckFilename($item) ?
-            "<a class='button' href='" . $url . "&amp;a=delete&amp;name=" . $encodeFilename($item) . "'><img src='images/icons/delete.png' alt='del' class='icon'>" . $_lang['global.delete'] . "</a>  "
-            . "<a class='button' href='" . $url . "&amp;a=rename&amp;name=" . $encodeFilename($item) . "'><img src='images/icons/rename.png' alt='rename' class='icon'>" . $_lang['admin.fman.rename'] . "</a>  "
-            . (($icon == "editable") ? "<a class='button' href='" . $url . "&amp;a=edit&amp;name=" . $encodeFilename($item) . "'><img src='images/icons/edit.png' alt='edit' class='icon'>" . $_lang['admin.fman.edit'] . "</a>" : '')
+            "<a class='button' href='" . $url . "&amp;a=delete&amp;name=" . $encodeFilename($item) . "'><img src='images/icons/delete.png' alt='del' class='icon'>" . _lang('global.delete') . "</a>  "
+            . "<a class='button' href='" . $url . "&amp;a=rename&amp;name=" . $encodeFilename($item) . "'><img src='images/icons/rename.png' alt='rename' class='icon'>" . _lang('admin.fman.rename') . "</a>  "
+            . (($icon == "editable") ? "<a class='button' href='" . $url . "&amp;a=edit&amp;name=" . $encodeFilename($item) . "'><img src='images/icons/edit.png' alt='edit' class='icon'>" . _lang('admin.fman.edit') . "</a>" : '')
         : '') . "</td>
         </tr>\n";
 
@@ -733,7 +727,7 @@ if ($continue) {
     }
 
     if ($filecounter === 0 && $dircounter === 0) {
-        $output .= "<tr><td colspan='3'>" . $_lang['global.nokit'] . "</td></tr>\n";
+        $output .= "<tr><td colspan='3'>" . _lang('global.nokit') . "</td></tr>\n";
     }
 
     $output .= "
@@ -741,13 +735,13 @@ if ($continue) {
     " . _xsrfProtect() . "</form>
 
     <p class='fman-menu'>
-    <span><strong>" . $_lang['admin.fman.filecounter'] . ":</strong> " . $filecounter . " <small>(" . _formatFilesize($sizecounter) . ")</small></span>
-    <a href='#' onclick='return Sunlight.admin.fmanSelect(" . $filecounter . ", 1)'>" . $_lang['admin.fman.selectall'] . "</a>
-    <a href='#' onclick='return Sunlight.admin.fmanSelect(" . $filecounter . ", 2)'>" . $_lang['admin.fman.deselectall'] . "</a>
-    <a href='#' onclick='return Sunlight.admin.fmanSelect(" . $filecounter . ", 3)'>" . $_lang['admin.fman.inverse'] . "</a>
-    <strong>" . $_lang['admin.fman.selected'] . ":</strong>
-    <a href='#' onclick='return Sunlight.admin.fmanMoveSelected()'>" . $_lang['admin.fman.selected.move'] . "</a>
-    <a href='#' onclick='return Sunlight.admin.fmanDeleteSelected()'>" . $_lang['admin.fman.selected.delete'] . "</a>
+    <span><strong>" . _lang('admin.fman.filecounter') . ":</strong> " . $filecounter . " <small>(" . _formatFilesize($sizecounter) . ")</small></span>
+    <a href='#' onclick='return Sunlight.admin.fmanSelect(" . $filecounter . ", 1)'>" . _lang('admin.fman.selectall') . "</a>
+    <a href='#' onclick='return Sunlight.admin.fmanSelect(" . $filecounter . ", 2)'>" . _lang('admin.fman.deselectall') . "</a>
+    <a href='#' onclick='return Sunlight.admin.fmanSelect(" . $filecounter . ", 3)'>" . _lang('admin.fman.inverse') . "</a>
+    <strong>" . _lang('admin.fman.selected') . ":</strong>
+    <a href='#' onclick='return Sunlight.admin.fmanMoveSelected()'>" . _lang('admin.fman.selected.move') . "</a>
+    <a href='#' onclick='return Sunlight.admin.fmanDeleteSelected()'>" . _lang('admin.fman.selected.delete') . "</a>
     <a href='#top'><big>&uarr;</big></a>
     </p>
     ";

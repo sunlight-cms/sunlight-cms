@@ -48,7 +48,7 @@ switch ($type) {
     case _rss_section_comments:
     case _rss_book_posts:
         $query = DB::query("SELECT title,slug FROM " . _root_table . " WHERE type=" . $type . ($type == _rss_section_comments ? " AND var1=1" : '') . ' AND ' . $root_cond . " AND id=" . $id);
-        $feed_title = $_lang[(($type == _rss_section_comments) ? 'rss.recentcomments' : 'rss.recentposts')];
+        $feed_title = _lang($type == _rss_section_comments ? 'rss.recentcomments' : 'rss.recentposts');
         $post_types = array($type);
         break;
 
@@ -70,7 +70,7 @@ switch ($type) {
             }
 
             $feed_url = _linkArticle($id, $query['slug'], $query['cat_slug'], true);
-            $feed_title = $_lang['rss.recentcomments'];
+            $feed_title = _lang('rss.recentcomments');
             $post_types = array(_post_article_comment);
         }
 
@@ -87,13 +87,13 @@ switch ($type) {
             $categories = array();
         }
 
-        $feed_title = $_lang['rss.recentarticles'];
+        $feed_title = _lang('rss.recentarticles');
         break;
 
         // nejnovejsi temata
     case _rss_latest_topics:
         $query = DB::query("SELECT title,slug FROM " . _root_table . " WHERE type=" . _page_forum . " AND " . $root_cond . " AND id=" . $id);
-        $feed_title = $_lang['rss.recenttopics'];
+        $feed_title = _lang('rss.recenttopics');
         $post_types = array(_post_forum_topic);
         $post_cond = "post.xhome=-1";
         break;
@@ -101,7 +101,7 @@ switch ($type) {
         // nejnovejsi odpovedi na tema
     case _rss_latest_topic_answers:
         $query = DB::query("SELECT topic.subject FROM " . _posts_table . " topic JOIN " . _root_table . " root ON(root.id=topic.home) WHERE topic.type=" . _post_forum_topic . " AND topic.id=" . $id . " AND " . $root_joined_cond);
-        $feed_title = $_lang['rss.recentanswers'];
+        $feed_title = _lang('rss.recentanswers');
         $post_cond = "post.xhome=" . $id;
         $post_types = array(_post_forum_topic);
         $post_homes = array();
@@ -114,7 +114,7 @@ switch ($type) {
             exit;
         }
         $query = array("title" => null);
-        $feed_title = $_lang['rss.recentcomments'];
+        $feed_title = _lang('rss.recentcomments');
         $post_types = array(_post_section_comment, _post_article_comment, _post_book_entry, _post_forum_topic, _post_plugin);
         $post_homes = array();
         $donottestsource = true;
@@ -217,7 +217,7 @@ if ($continue) {
     <title>' . $cdata($main_title) . '</title>
     <link>' . $cdata($feed_url) . '</link>
     <description>' . $cdata($feed_descr) . '</description>
-    <language>' . $cdata($_lang['langcode.iso639']) . '</language>
+    <language>' . $cdata(_lang('langcode.iso639')) . '</language>
     <image>
       <title>' . $cdata($feed_title) . '</title>
       <url>' . $cdata($image_url) . '</url>

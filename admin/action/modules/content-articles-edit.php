@@ -109,7 +109,7 @@ if (isset($_POST['title'])) {
 
     // titulek
     if ($newdata['title'] == "") {
-        $error_log[] = $_lang['admin.content.articles.edit.error1'];
+        $error_log[] = _lang('admin.content.articles.edit.error1');
     }
 
     // kategorie
@@ -117,7 +117,7 @@ if (isset($_POST['title'])) {
     foreach ($homechecks as $homecheck) {
         if ($newdata[$homecheck] != -1 || $homecheck == "home1") {
             if (DB::count(_root_table, 'type=' . _page_category . ' AND id=' . DB::val($newdata[$homecheck])) === 0) {
-                $error_log[] = $_lang['admin.content.articles.edit.error2'];
+                $error_log[] = _lang('admin.content.articles.edit.error2');
             }
         }
     }
@@ -132,7 +132,7 @@ if (isset($_POST['title'])) {
 
     // autor
     if (DB::result(DB::query("SELECT COUNT(*) FROM " . _users_table . " WHERE id=" . DB::val($newdata['author']) . " AND (id=" . _loginid . " OR (SELECT level FROM " . _groups_table . " WHERE id=" . _users_table . ".group_id)<" . _priv_level . ")"), 0) == 0) {
-        $error_log[] = $_lang['admin.content.articles.edit.error3'];
+        $error_log[] = _lang('admin.content.articles.edit.error3');
     }
 
     // obrazek
@@ -166,7 +166,7 @@ if (isset($_POST['title'])) {
             $newdata['picture_uid'] = $picUid;
         } else {
             // chyba
-            $error_log[] = $_lang['admin.content.form.picture'] . ' - ' . $picError;
+            $error_log[] = _lang('admin.content.form.picture') . ' - ' . $picError;
         }
 
     } elseif (isset($query['picture_uid']) && _checkboxLoad('picture-delete')) {
@@ -283,10 +283,10 @@ if ($continue) {
 
     // zprava
     if (isset($_GET['saved'])) {
-        $message = _msg(_msg_ok, $_lang['global.saved'] . " <small>(" . _formatTime(time()) . ")</small>");
+        $message = _msg(_msg_ok, _lang('global.saved') . " <small>(" . _formatTime(time()) . ")</small>");
     }
     if (isset($_GET['created'])) {
-        $message = _msg(_msg_ok, $_lang['global.created']);
+        $message = _msg(_msg_ok, _lang('global.created'));
     }
 
     // vypocet hodnoceni
@@ -294,7 +294,7 @@ if ($continue) {
         if ($query['ratenum'] != 0) {
             $rate = DB::result(DB::query("SELECT ROUND(ratesum/ratenum) FROM " . _articles_table . " WHERE id=" . $query['id']), 0) . "%, " . $query['ratenum'] . "x";
         } else {
-            $rate = $_lang['article.rate.nodata'];
+            $rate = _lang('article.rate.nodata');
         }
     } else {
         $rate = "";
@@ -307,7 +307,7 @@ if ($continue) {
     $picture = '';
     if (isset($query['picture_uid'])) {
         $picture .= "<img src='" . _e(_linkFile(_pictureStorageGet(_root . 'images/articles/', null, $query['picture_uid'], 'jpg'))) . "' alt='article picture' id='is-picture-file'>
-<label id='is-picture-delete'><input type='checkbox' name='picture-delete' value='1'> <img src='images/icons/delete3.png' class='icon' alt='" . $_lang['global.delete'] . "'></label>";
+<label id='is-picture-delete'><input type='checkbox' name='picture-delete' value='1'> <img src='images/icons/delete3.png' class='icon' alt='" . _lang('global.delete') . "'></label>";
     } else {
         $picture .= "<img src='images/art-no-pic.png' alt='no picture'>\n";
     }
@@ -323,62 +323,62 @@ if ($continue) {
 
     // formular
     $output .= _adminBacklink($backlink) . "
-<h1>" . $_lang['admin.content.articles.edit.title'] . "</h1>
+<h1>" . _lang('admin.content.articles.edit.title') . "</h1>
 " . $message . "
 
-" . (($new && !_priv_adminautoconfirm) ? _adminNote($_lang['admin.content.articles.edit.newconfnote']) : '') . "
-" . ((!$new && $query['confirmed'] != 1) ? _adminNote($_lang['admin.content.articles.edit.confnote']) : '') . "
+" . (($new && !_priv_adminautoconfirm) ? _adminNote(_lang('admin.content.articles.edit.newconfnote')) : '') . "
+" . ((!$new && $query['confirmed'] != 1) ? _adminNote(_lang('admin.content.articles.edit.confnote')) : '') . "
 
-" . ((!$new && DB::count(_articles_table, 'id!=' . DB::val($query['id']) . ' AND home1=' . DB::val($query['home1']) . ' AND slug=' . DB::val($query['slug'])) !== 0) ? _msg(_msg_warn, $_lang['admin.content.form.slug.collision']) : '') . "
+" . ((!$new && DB::count(_articles_table, 'id!=' . DB::val($query['id']) . ' AND home1=' . DB::val($query['home1']) . ' AND slug=' . DB::val($query['slug'])) !== 0) ? _msg(_msg_warn, _lang('admin.content.form.slug.collision')) : '') . "
 
 <form class='cform' action='index.php?p=content-articles-edit" . $actionplus . "' method='post' enctype='multipart/form-data' name='artform'>
 
 <table class='formtable'>
 
 <tr>
-<th>" . $_lang['article.category'] . "</th>
+<th>" . _lang('article.category') . "</th>
 <td>"
     . _adminRootSelect("home1", array('type' => _page_category, 'selected' => $query['home1']))
-    . _adminRootSelect("home2", array('type' => _page_category, 'selected' => $query['home2'], 'empty_item' => $_lang['admin.content.form.category.none']))
-    . _adminRootSelect("home3", array('type' => _page_category, 'selected' => $query['home3'], 'empty_item' => $_lang['admin.content.form.category.none']))
+    . _adminRootSelect("home2", array('type' => _page_category, 'selected' => $query['home2'], 'empty_item' => _lang('admin.content.form.category.none')))
+    . _adminRootSelect("home3", array('type' => _page_category, 'selected' => $query['home3'], 'empty_item' => _lang('admin.content.form.category.none')))
     . "
 </td>
 </tr>
 
 <tr>
-<th>" . $_lang['admin.content.form.title'] . "</th>
+<th>" . _lang('admin.content.form.title') . "</th>
 <td><input type='text' name='title' value='" . $query['title'] . "' class='inputmax'></td>
 </tr>
 
 <tr>
-<th>" . $_lang['admin.content.form.slug'] . "</th>
+<th>" . _lang('admin.content.form.slug') . "</th>
 <td>" . (($author_select == '' ? $seo_input : "
     <table class='ae-twoi'><tr>
     <td>" . $seo_input . "</td>
-    <th>" . $_lang['article.author'] . "</th>
+    <th>" . _lang('article.author') . "</th>
     <td>" . $author_select . "</td>
     </tr></table>
 ")) . "</td>
 </tr>
 
 <tr>
-<th>" . $_lang['admin.content.form.description'] . "</th>
+<th>" . _lang('admin.content.form.description') . "</th>
 <td>
     <table class='ae-twoi'><tr>
     <td><input type='text' name='description' value='" . $query['description'] . "' maxlength='255' class='inputmedium'></td>
-    <th>" . $_lang['admin.content.form.keywords'] . "</th>
+    <th>" . _lang('admin.content.form.keywords') . "</th>
     <td><input type='text' name='keywords' value='" . $query['keywords'] . "' maxlength='255' class='inputmedium'></td>
     </tr></table>
 </td>
 </tr>
 
 <tr class='valign-top'>
-<th>" . $_lang['admin.content.form.perex'] . "</th>
+<th>" . _lang('admin.content.form.perex') . "</th>
 <td><textarea name='perex' rows='9' cols='94' class='areabigperex editor' data-editor-mode='lite'>" . _e($query['perex']) . "</textarea></td>
 </tr>
 
 <tr class='valign-top'>
-<th>" . $_lang['admin.content.form.content'] . $artlink . "</th>
+<th>" . _lang('admin.content.form.content') . $artlink . "</th>
 <td>
 
   <table id='ae-table'>
@@ -390,21 +390,21 @@ if ($continue) {
       <div id='is-cell-wrapper'>
       <div id='is-cell-content'>
 
-      <h2>" . $_lang['admin.content.form.picture'] . "</h2>
+      <h2>" . _lang('admin.content.form.picture') . "</h2>
       <div id='is-picture'>" . $picture . "</div>
 
-      <h2>" . $_lang['admin.content.form.settings'] . "</h2>
+      <h2>" . _lang('admin.content.form.settings') . "</h2>
       <p id='is-settings'>
-      <label><input type='checkbox' name='public' value='1'" . _checkboxActivate($query['public']) . "> " . $_lang['admin.content.form.public'] . "</label>
-      <label><input type='checkbox' name='visible' value='1'" . _checkboxActivate($query['visible']) . "> " . $_lang['admin.content.form.visible'] . "</label>
-      " . ((_priv_adminconfirm || (_priv_adminautoconfirm && $query['author'] == _loginid)) ? "<label><input type='checkbox' name='confirmed' value='1'" . _checkboxActivate($query['confirmed']) . "> " . $_lang['admin.content.form.confirmed'] . "</label>" : '') . "
-      <label><input type='checkbox' name='comments' value='1'" . _checkboxActivate($query['comments']) . "> " . $_lang['admin.content.form.comments'] . "</label>
-      <label><input type='checkbox' name='commentslocked' value='1'" . _checkboxActivate($query['commentslocked']) . "> " . $_lang['admin.content.form.commentslocked'] . "</label>
-      <label><input type='checkbox' name='rateon' value='1'" . _checkboxActivate($query['rateon']) . "> " . $_lang['admin.content.form.artrate'] . "</label>
-      <label><input type='checkbox' name='showinfo' value='1'" . _checkboxActivate($query['showinfo']) . "> " . $_lang['admin.content.form.showinfo'] . "</label>
-      " . (!$new ? "<label><input type='checkbox' name='resetrate' value='1'> " . $_lang['admin.content.form.resetartrate'] . " <small>(" . $rate . ")</small></label>" : '') . "
-      " . (!$new ? "<label><input type='checkbox' name='delcomments' value='1'> " . $_lang['admin.content.form.delcomments'] . " <small>(" . DB::count(_posts_table, 'home=' . DB::val($query['id']) . ' AND type=' . _post_article_comment) . ")</small></label>" : '') . "
-      " . (!$new ? "<label><input type='checkbox' name='resetread' value='1'> " . $_lang['admin.content.form.resetartread'] . " <small>(" . $read_counter . ")</small></label>" : '') . "
+      <label><input type='checkbox' name='public' value='1'" . _checkboxActivate($query['public']) . "> " . _lang('admin.content.form.public') . "</label>
+      <label><input type='checkbox' name='visible' value='1'" . _checkboxActivate($query['visible']) . "> " . _lang('admin.content.form.visible') . "</label>
+      " . ((_priv_adminconfirm || (_priv_adminautoconfirm && $query['author'] == _loginid)) ? "<label><input type='checkbox' name='confirmed' value='1'" . _checkboxActivate($query['confirmed']) . "> " . _lang('admin.content.form.confirmed') . "</label>" : '') . "
+      <label><input type='checkbox' name='comments' value='1'" . _checkboxActivate($query['comments']) . "> " . _lang('admin.content.form.comments') . "</label>
+      <label><input type='checkbox' name='commentslocked' value='1'" . _checkboxActivate($query['commentslocked']) . "> " . _lang('admin.content.form.commentslocked') . "</label>
+      <label><input type='checkbox' name='rateon' value='1'" . _checkboxActivate($query['rateon']) . "> " . _lang('admin.content.form.artrate') . "</label>
+      <label><input type='checkbox' name='showinfo' value='1'" . _checkboxActivate($query['showinfo']) . "> " . _lang('admin.content.form.showinfo') . "</label>
+      " . (!$new ? "<label><input type='checkbox' name='resetrate' value='1'> " . _lang('admin.content.form.resetartrate') . " <small>(" . $rate . ")</small></label>" : '') . "
+      " . (!$new ? "<label><input type='checkbox' name='delcomments' value='1'> " . _lang('admin.content.form.delcomments') . " <small>(" . DB::count(_posts_table, 'home=' . DB::val($query['id']) . ' AND type=' . _post_article_comment) . ")</small></label>" : '') . "
+      " . (!$new ? "<label><input type='checkbox' name='resetread' value='1'> " . _lang('admin.content.form.resetartread') . " <small>(" . $read_counter . ")</small></label>" : '') . "
       </p>
 
       </div>
@@ -417,7 +417,7 @@ if ($continue) {
 </tr>
 
 <tr id='time-cell'>
-<th>" . $_lang['article.posted'] . "</th>
+<th>" . _lang('article.posted') . "</th>
 <td>" . _editTime('time', $query['time'], true, $new) . "</td>
 </tr>
 
@@ -425,10 +425,10 @@ if ($continue) {
 
 <tr>
 <td></td>
-<td id='ae-lastrow'><br><input type='submit' value='" . $_lang[$submittext] . "'>
+<td id='ae-lastrow'><br><input type='submit' value='" . _lang($submittext) . "'>
 " . (!$new ? "
-<span class='customsettings'><a href='index.php?p=content-articles-delete&amp;id=" . $query['id'] . "&amp;returnid=" . $query['home1'] . "&amp;returnpage=1'><span><img src='images/icons/delete.png' alt='del' class='icon'>" . $_lang['global.delete'] . "</span></a></span>
-<span class='customsettings'><small>" . $_lang['admin.content.form.thisid'] . " " . $query['id'] . "</small></span>
+<span class='customsettings'><a href='index.php?p=content-articles-delete&amp;id=" . $query['id'] . "&amp;returnid=" . $query['home1'] . "&amp;returnpage=1'><span><img src='images/icons/delete.png' alt='del' class='icon'>" . _lang('global.delete') . "</span></a></span>
+<span class='customsettings'><small>" . _lang('admin.content.form.thisid') . " " . $query['id'] . "</small></span>
 " : '') . "
 
 </td>
@@ -443,6 +443,6 @@ if ($continue) {
 } else {
     $output .=
         _adminBacklink('index.php?p=content-articles')
-        . "<h1>" . $_lang['admin.content.articles.edit.title'] . "</h1>\n"
-        . _msg(_msg_err, $_lang['global.badinput']);
+        . "<h1>" . _lang('admin.content.articles.edit.title') . "</h1>\n"
+        . _msg(_msg_err, _lang('global.badinput'));
 }

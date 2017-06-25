@@ -34,12 +34,12 @@ class LanguagePlugin extends Plugin
     }
 
     /**
-     * Load the language data
+     * Get localization entries
      *
-     * @param bool $admin load administration labels 1/0
+     * @param bool $admin load administration dictionary as well 1/0
      * @return array|bool false on failure
      */
-    public function load($admin = _env_admin)
+    public function getLocalizationEntries($admin = _env_admin)
     {
         // base dictionary
         $fileName = sprintf('%s/dictionary.php', $this->dir);

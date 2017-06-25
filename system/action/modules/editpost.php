@@ -62,7 +62,7 @@ if ($query !== false) {
 
                 case _post_plugin:
                     if ($url === '') {
-                        $output .= _msg(_msg_err, sprintf($_lang['plugin.error'], $query['flag']));
+                        $output .= _msg(_msg_err, sprintf(_lang('plugin.error'), $query['flag']));
 
                         return;
                     }
@@ -114,7 +114,7 @@ if (isset($_POST['text'])) {
 
         // vyplneni prazdnych poli
         if ($guest == null && $query['guest'] != "") {
-            $guest = $_lang['posts.anonym'];
+            $guest = _lang('posts.anonym');
         }
 
         // ulozeni
@@ -138,7 +138,7 @@ if (isset($_POST['text'])) {
                 return;
             }
         } else {
-            $message = _msg(_msg_warn, $_lang['mod.editpost.failed']);
+            $message = _msg(_msg_warn, _lang('mod.editpost.failed'));
         }
 
     } else {
@@ -168,7 +168,7 @@ if (isset($_POST['text'])) {
             }
 
             // info
-            $message = _msg(_msg_ok, $_lang['mod.editpost.deleted']);
+            $message = _msg(_msg_ok, _lang('mod.editpost.deleted'));
             $form = false;
 
        }
@@ -179,11 +179,11 @@ if (isset($_POST['text'])) {
 
 /* ---  vystup  --- */
 
-$_index['title'] = $_lang['mod.editpost'];
+$_index['title'] = _lang('mod.editpost');
 
 // zprava
 if (isset($_GET['saved']) && $message == '') {
-    $message = _msg(_msg_ok, $_lang['global.saved']);
+    $message = _msg(_msg_ok, _lang('global.saved'));
 }
 $output .= $message;
 
@@ -192,21 +192,21 @@ if ($form) {
     $inputs = array();
 
     if ($query['guest'] != '') {
-        $inputs[] = array('label' => $_lang['posts.guestname'], 'content' => "<input type='text' name='guest' class='inputsmall' value='" . $query['guest'] . "'>");
+        $inputs[] = array('label' => _lang('posts.guestname'), 'content' => "<input type='text' name='guest' class='inputsmall' value='" . $query['guest'] . "'>");
     }
     if ($query['xhome'] == -1 && in_array($query['type'], array(_post_forum_topic, _post_pm))) {
-        $inputs[] = array('label' => $_lang[(($query['type'] != _post_forum_topic) ? 'posts.subject' : 'posts.topic')], 'content' => "<input type='text' name='subject' class='inputmedium' maxlength='48' value='" . $query['subject'] . "'>");
+        $inputs[] = array('label' => _lang((($query['type'] != _post_forum_topic) ? 'posts.subject' : 'posts.topic')), 'content' => "<input type='text' name='subject' class='inputmedium' maxlength='48' value='" . $query['subject'] . "'>");
     }
-    $inputs[] = array('label' => $_lang['posts.text'], 'content' => "<textarea name='text' class='areamedium' rows='5' cols='33'>" . $query['text'] . "</textarea>", 'top' => true);
+    $inputs[] = array('label' => _lang('posts.text'), 'content' => "<textarea name='text' class='areamedium' rows='5' cols='33'>" . $query['text'] . "</textarea>", 'top' => true);
     $inputs[] = array('label' => '', 'content' => _getPostFormControls('postform', 'text', $bbcode));
 
     $output .= _formOutput(
         array(
             'name' => 'postform',
             'action' => _linkModule('editpost', 'id=' . $id, false),
-            'submit_text' => $_lang['global.save'],
+            'submit_text' => _lang('global.save'),
             'submit_append' => ' ' . _getPostFormPreviewButton('postform', 'text')
-                . (($query['type'] != _post_pm || $query['xhome'] != -1) ? "<br><br><label><input type='checkbox' name='delete' value='1'> " . $_lang['mod.editpost.delete'] . "</label>" : ''),
+                . (($query['type'] != _post_pm || $query['xhome'] != -1) ? "<br><br><label><input type='checkbox' name='delete' value='1'> " . _lang('mod.editpost.delete') . "</label>" : ''),
         ),
         $inputs
     );

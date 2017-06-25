@@ -1,10 +1,6 @@
 <?php
 
 return array(
-    'default' => array(
-        'label' => 'výchozí',
-        'slots' => array(
-            'right' => 'pravý sloupec',
-        ),
-    ),
+    'default.label' => 'výchozí',
+    'default.slot.right' => 'pravý sloupec',
 );

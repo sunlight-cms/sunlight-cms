@@ -71,14 +71,14 @@ if ($continue) {
         }
         $username = _slugify($username, false);
         if ($username == "") {
-            $errors[] = $_lang['user.msg.badusername'];
+            $errors[] = _lang('user.msg.badusername');
         } else {
             $usernamechange = false;
             if ($username != $query['username']) {
                 if (DB::count(_users_table, '(username=' . DB::val($username) . ' OR publicname=' . DB::val($username) . ') AND id!=' . DB::val($query['id'])) === 0) {
                     $usernamechange = true;
                 } else {
-                    $errors[] = $_lang['user.msg.userexists'];
+                    $errors[] = _lang('user.msg.userexists');
                 }
             }
         }
@@ -86,10 +86,10 @@ if ($continue) {
         // publicname
         $publicname = _e(_wsTrim(_post('publicname')));
         if (mb_strlen($publicname) > 24) {
-            $errors[] = $_lang['user.msg.publicnametoolong'];
+            $errors[] = _lang('user.msg.publicnametoolong');
         } elseif ($publicname != $query['publicname'] && $publicname != "") {
             if (DB::count(_users_table, '(publicname=' . DB::val($publicname) . ' OR username=' . DB::val($publicname) . ') AND id!=' . DB::val($query['id'])) !== 0) {
-                $errors[] = $_lang['user.msg.publicnameexists'];
+                $errors[] = _lang('user.msg.publicnameexists');
             }
         }
         if ($publicname === '') {
@@ -99,11 +99,11 @@ if ($continue) {
         // email
         $email = trim(_post('email'));
         if (!_validateEmail($email)) {
-            $errors[] = $_lang['user.msg.bademail'];
+            $errors[] = _lang('user.msg.bademail');
         } else {
             if ($email != $query['email']) {
                 if (DB::count(_users_table, 'email=' . DB::val($email) . ' AND id!=' . DB::val($query['id'])) !== 0) {
-                    $errors[] = $_lang['user.msg.emailexists'];
+                    $errors[] = _lang('user.msg.emailexists');
                 }
             }
         }
@@ -126,7 +126,7 @@ if ($continue) {
         $passwordchange = false;
         $password = _post('password');
         if ($id == null && $password == "") {
-            $errors[] = $_lang['admin.users.edit.passwordneeded'];
+            $errors[] = _lang('admin.users.edit.passwordneeded');
         }
         if ($password != "") {
             $passwordchange = true;
@@ -145,10 +145,10 @@ if ($continue) {
             $group_test = DB::queryRow("SELECT level FROM " . _groups_table . " WHERE id=" . $group . " AND id!=2 AND level<" . _priv_level);
             if ($group_test !== false) {
                 if ($group_test['level'] > _priv_level) {
-                    $errors[] = $_lang['global.badinput'];
+                    $errors[] = _lang('global.badinput');
                 }
             } else {
-                $errors[] = $_lang['global.badinput'];
+                $errors[] = _lang('global.badinput');
             }
         } else {
             $group = $query['group_id'];
@@ -225,10 +225,10 @@ if ($continue) {
     if (isset($_GET['r'])) {
         switch (_get('r')) {
             case 1:
-                $messages_code .= _msg(_msg_ok, $_lang['global.saved']);
+                $messages_code .= _msg(_msg_ok, _lang('global.saved'));
                 break;
             case 2:
-                $messages_code .= _msg(_msg_ok, $_lang['global.created']);
+                $messages_code .= _msg(_msg_ok, _lang('global.created'));
                 break;
         }
     }
@@ -238,70 +238,70 @@ if ($continue) {
     }
 
     $output .= "
-<p class='bborder'>" . $_lang['admin.users.edit.p'] . "</p>
+<p class='bborder'>" . _lang('admin.users.edit.p') . "</p>
 " . $messages_code . "
 <form autocomplete='off' action='index.php?p=users-edit" . (($id != null) ? "&amp;id=" . $id : '') . "' method='post' name='userform'>
 <table class='formtable'>
 
 <tr>
-<th>" . $_lang['login.username'] . "</th>
+<th>" . _lang('login.username') . "</th>
 <td><input type='text' class='inputsmall'" . _restorePostValueAndName('username', $query['username']) . " maxlength='24'></td>
 </tr>
 
 <tr>
-<th>" . $_lang['mod.settings.publicname'] . "</th>
+<th>" . _lang('mod.settings.publicname') . "</th>
 <td><input type='text' class='inputsmall'" . _restorePostValueAndName('publicname', $query['publicname'], true) . " maxlength='24'></td>
 </tr>
 
 <tr>
-<th>" . $_lang[(($id == null) ? 'login.password' : 'mod.settings.password.new')] . "</th>
+<th>" . _lang((($id == null) ? 'login.password' : 'mod.settings.password.new')) . "</th>
 <td><input type='password' name='password' class='inputsmall'></td>
 </tr>
 
 <tr>
-<th>" . $_lang['global.group'] . "</th>
+<th>" . _lang('global.group') . "</th>
 <td>" . $group_select . "</td>
 </tr>
 
 <tr>
-<th>" . $_lang['login.blocked'] . "</th>
+<th>" . _lang('login.blocked') . "</th>
 <td><input type='checkbox' name='blocked' value='1'" . _checkboxActivate($query['blocked'] || isset($_POST['blocked'])) . "></td>
 </tr>
 
 <tr>
-<th>" . $_lang['global.levelshift'] . "</th>
+<th>" . _lang('global.levelshift') . "</th>
 <td><input type='checkbox' name='levelshift' value='1'" . _checkboxActivate($query['levelshift'] || isset($_POST['levelshift'])) . _inputDisableUnless(_loginid == _super_admin_id) . "></td>
 </tr>
 
 <tr>
-<th>" . $_lang['mod.settings.wysiwyg'] . "</th>
+<th>" . _lang('mod.settings.wysiwyg') . "</th>
 <td><input type='checkbox' name='wysiwyg' value='1'" . _checkboxActivate($query['wysiwyg'] || isset($_POST['wysiwyg'])) . "></td>
 </tr>
 
 <tr>
-<th>" . $_lang['mod.settings.massemail'] . "</th>
+<th>" . _lang('mod.settings.massemail') . "</th>
 <td><input type='checkbox' name='massemail' value='1'" . _checkboxActivate($query['massemail'] || isset($_POST['massemail'])) . "></td>
 </tr>
 
 <tr>
-<th>" . $_lang['global.email'] . "</th>
+<th>" . _lang('global.email') . "</th>
 <td><input type='email' class='inputsmall'" . _restorePostValueAndName('email', $query['email']) . "></td>
 </tr>
 
 <tr>
-<th>" . $_lang['global.avatar'] . "</th>
-<td><label><input type='checkbox' name='removeavatar' value='1'> " . $_lang['mod.settings.avatar.remove'] . "</label></td>
+<th>" . _lang('global.avatar') . "</th>
+<td><label><input type='checkbox' name='removeavatar' value='1'> " . _lang('mod.settings.avatar.remove') . "</label></td>
 </tr>
 
 <tr class='valign-top'>
-<th>" . $_lang['global.note'] . "</th>
+<th>" . _lang('global.note') . "</th>
 <td><textarea class='areasmall' rows='9' cols='33' name='note'>" . _restorePostValue('note', $query['note'], false, false) . "</textarea></td>
 </tr>
 
 " . Sunlight\Extend::buffer('admin.user.form', array('user' => $query)) . "
 
 <tr><td></td>
-<td><input type='submit' value='" . $_lang[(isset($_GET['id']) ? 'global.save' : 'global.create')] . "'>" . (($id != null) ? " <small>" . $_lang['admin.content.form.thisid'] . " " . $query['id'] . "</small>" : '') . "</td>
+<td><input type='submit' value='" . _lang((isset($_GET['id']) ? 'global.save' : 'global.create')) . "'>" . (($id != null) ? " <small>" . _lang('admin.content.form.thisid') . " " . $query['id'] . "</small>" : '') . "</td>
 </tr>
 
 </table>
@@ -312,7 +312,7 @@ if ($continue) {
     if ($id != null) {
         $output .= "
   <p>
-    <a href='" . _linkModule('profile', 'id=' . $query['username']) . "' target='_blank'>" . $_lang['mod.settings.profilelink'] . " &gt;</a>
+    <a href='" . _linkModule('profile', 'id=' . $query['username']) . "' target='_blank'>" . _lang('mod.settings.profilelink') . " &gt;</a>
   </p>
   ";
     }
@@ -320,13 +320,13 @@ if ($continue) {
 } else {
     switch ($errno) {
         case 1:
-            $output .= _msg(_msg_warn, $_lang['global.baduser']);
+            $output .= _msg(_msg_warn, _lang('global.baduser'));
             break;
         case 2:
-            $output .= _msg(_msg_warn, $_lang['global.rootnote']);
+            $output .= _msg(_msg_warn, _lang('global.rootnote'));
             break;
         default:
-            $output .= _msg(_msg_err, $_lang['global.disallowed']);
+            $output .= _msg(_msg_err, _lang('global.disallowed'));
             break;
     }
 }

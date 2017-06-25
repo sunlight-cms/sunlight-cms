@@ -89,10 +89,10 @@ function _templateHead()
 
     if (_rss) {
         echo '
-<link rel="alternate" type="application/rss+xml" href="' . _linkRSS(-1, _rss_latest_articles) . '" title="' . $GLOBALS['_lang']['rss.recentarticles'] . '">';
+<link rel="alternate" type="application/rss+xml" href="' . _linkRSS(-1, _rss_latest_articles) . '" title="' . _lang('rss.recentarticles') . '">';
         if (_comments) {
             echo '
-<link rel="alternate" type="application/rss+xml" href="' . _linkRSS(-1, _rss_latest_comments) . '" title="' . $GLOBALS['_lang']['rss.recentcomments'] . '">';
+<link rel="alternate" type="application/rss+xml" href="' . _linkRSS(-1, _rss_latest_comments) . '" title="' . _lang('rss.recentcomments') . '">';
         }
     }
 
@@ -270,7 +270,7 @@ function _templateBacklink()
 
     // vychozi implementace?
     if ($output === '' && $GLOBALS['_index']['backlink'] !== null) {
-        $output = '<div class="backlink"><a href="' . _e($GLOBALS['_index']['backlink']) . '">&lt; ' . $GLOBALS['_lang']['global.return'] . "</a></div>\n";
+        $output = '<div class="backlink"><a href="' . _e($GLOBALS['_index']['backlink']) . '">&lt; ' . _lang('global.return') . "</a></div>\n";
     }
 
     return $output;
@@ -306,7 +306,7 @@ function _templateRssLink($url = null, $inline = true)
         if (!$inline) {
             $output .= '<div class="rsslink">';
         }
-        $output .= '<a' . ($inline ? ' class="rsslink-inline"' : '') . ' href="' . _e($url) . '" title="' . $GLOBALS['_lang']['rss.linktitle'] . '"><img src="' . _templateImage("icons/rss.png") . "\" alt=\"rss\" class=\"icon\"></a>";
+        $output .= '<a' . ($inline ? ' class="rsslink-inline"' : '') . ' href="' . _e($url) . '" title="' . _lang('rss.linktitle') . '"><img src="' . _templateImage("icons/rss.png") . "\" alt=\"rss\" class=\"icon\"></a>";
         if (!$inline) {
             $output .= "</div>\n";
         }
@@ -322,11 +322,9 @@ function _templateRssLink($url = null, $inline = true)
  */
 function _templateLinks()
 {
-    global $_lang;
-
     return
         "<li><a href=\"https://sunlight-cms.org/\">SunLight CMS</a></li>\n"
-        . ((!_adminlinkprivate || (_login && _priv_administration)) ? '<li><a href="' . _link('admin/') . '">' . $_lang['global.adminlink'] . "</a></li>\n" : '');
+        . ((!_adminlinkprivate || (_login && _priv_administration)) ? '<li><a href="' . _link('admin/') . '">' . _lang('global.adminlink') . "</a></li>\n" : '');
 }
 
 /**
@@ -582,8 +580,6 @@ function _templateSiteUrl()
  */
 function _templateUserMenu($profileLink = true)
 {
-    global $_lang;
-
     // pripravit polozky
     $items = array();
 
@@ -591,13 +587,13 @@ function _templateUserMenu($profileLink = true)
         // prihlaseni
         $items['login'] = array(
             _linkModule('login', 'login_form_return=' . rawurlencode($_SERVER['REQUEST_URI'])),
-            $_lang['usermenu.login'],
+            _lang('usermenu.login'),
         );
         if (_registration) {
             // registrace
             $items['reg'] = array(
                 _linkModule('reg'),
-                $_lang['usermenu.registration'],
+                _lang('usermenu.registration'),
             );
         }
     } else {
@@ -605,7 +601,7 @@ function _templateUserMenu($profileLink = true)
         if ($profileLink) {
             $items['profile'] = array(
                 _linkModule('profile', 'id=' . _loginname),
-                $_lang['usermenu.profile'],
+                _lang('usermenu.profile'),
             );
         }
 
@@ -619,14 +615,14 @@ function _templateUserMenu($profileLink = true)
             }
             $items['messages'] = array(
                 _linkModule('messages'),
-                $_lang['usermenu.messages'] . $messages_count,
+                _lang('usermenu.messages') . $messages_count,
             );
         }
 
         // nastaveni
         $items['settings'] = array(
             _linkModule('settings'),
-            $_lang['usermenu.settings'],
+            _lang('usermenu.settings'),
         );
     }
 
@@ -634,7 +630,7 @@ function _templateUserMenu($profileLink = true)
         // seznam uzivatelu
         $items['ulist'] = array(
             _linkModule('ulist'),
-            $_lang['usermenu.ulist'],
+            _lang('usermenu.ulist'),
         );
     }
 
@@ -642,7 +638,7 @@ function _templateUserMenu($profileLink = true)
     if (_login) {
         $items['logout'] = array(
             _xsrfLink(_link("system/script/logout.php?_return=" . rawurlencode($_SERVER['REQUEST_URI']))),
-            $_lang['usermenu.logout'],
+            _lang('usermenu.logout'),
         );
     }
 

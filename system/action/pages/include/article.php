@@ -41,7 +41,7 @@ if (!$continue) {
 
 //  navigace
 if ($_article['visible']) {
-    $output .= "<div class='article-navigation'><span>" . $_lang['article.category'] . ": </span>";
+    $output .= "<div class='article-navigation'><span>" . _lang('article.category') . ": </span>";
     for ($i = 1; $i <= 3; ++$i) {
         if ($_article["cat{$i}_id"] === null) {
             continue;
@@ -85,13 +85,13 @@ $output .= "<div class='cleaner'></div>\n";
 $infos = array();
 
 if (_priv_adminart) {
-    $infos['idlink'] = array($_lang['global.id'], "<a href='admin/index.php?p=content-articles-edit&amp;id=" . $_article['id'] . "&amp;returnid=load&amp;returnpage=1'>" . $_article['id'] . " <img src='" . _templateImage("icons/edit.png") . "' alt='edit' class='icon'></a>");
+    $infos['idlink'] = array(_lang('global.id'), "<a href='admin/index.php?p=content-articles-edit&amp;id=" . $_article['id'] . "&amp;returnid=load&amp;returnpage=1'>" . $_article['id'] . " <img src='" . _templateImage("icons/edit.png") . "' alt='edit' class='icon'></a>");
 }
 
 if ($_article['showinfo']) {
-    $infos['author'] = array($_lang['article.author'], _linkUserFromQuery($_article['author_query'], $_article));
-    $infos['posted'] = array($_lang['article.posted'], _formatTime($_article['time'], 'article'));
-    $infos['readnum'] = array($_lang['article.readnum'], $_article['readnum'] . 'x');
+    $infos['author'] = array(_lang('article.author'), _linkUserFromQuery($_article['author_query'], $_article));
+    $infos['posted'] = array(_lang('article.posted'), _formatTime($_article['time'], 'article'));
+    $infos['readnum'] = array(_lang('article.readnum'), $_article['readnum'] . 'x');
 }
 
 if ($_article['rateon'] && _ratemode != 0) {
@@ -103,19 +103,19 @@ if ($_article['rateon'] && _ratemode != 0) {
             // znamka
             $rate = round(-0.04 * ($_article['ratesum'] / $_article['ratenum']) + 5);
         }
-        $rate .= " (" . $_lang['article.rate.num'] . " " . $_article['ratenum'] . "x)";
+        $rate .= " (" . _lang('article.rate.num') . " " . $_article['ratenum'] . "x)";
     } else {
-        $rate = $_lang['article.rate.nodata'];
+        $rate = _lang('article.rate.nodata');
     }
 
-    $infos['rating'] = array($_lang['article.rate'], $rate);
+    $infos['rating'] = array(_lang('article.rate'), $rate);
 }
 
 // formular hodnoceni
 $rateform = null;
 if ($_article['rateon'] && _ratemode != 0 && _priv_artrate && _iplogCheck(_iplog_article_rated, $_article['id'])) {
     $rateform = "
-<strong>" . $_lang['article.rate.title'] . ":</strong>
+<strong>" . _lang('article.rate.title') . ":</strong>
 <form action='" . _link('system/script/artrate.php') . "' method='post'>
 <input type='hidden' name='id' value='" . $_article['id'] . "'>
 ";
@@ -131,7 +131,7 @@ if ($_article['rateon'] && _ratemode != 0 && _priv_artrate && _iplogCheck(_iplog
             }
             $rateform .= "<option value='" . $x . "'" . $selected . ">" . $x . "%</option>\n";
         }
-        $rateform .= "</select> \n<input type='submit' value='" . $_lang['article.rate.submit'] . "'>";
+        $rateform .= "</select> \n<input type='submit' value='" . _lang('article.rate.submit') . "'>";
     } else {
         // znamky
         $rateform .= "<table class='article-rating'>\n";
@@ -153,7 +153,7 @@ if ($_article['rateon'] && _ratemode != 0 && _priv_artrate && _iplogCheck(_iplog
             $rateform .= "</tr>\n";
         }
         $rateform .= "
-<tr><td colspan='7'><input type='submit' value='" . $_lang['article.rate.submit'] . "'></td></tr>
+<tr><td colspan='7'><input type='submit' value='" . _lang('article.rate.submit') . "'></td></tr>
 </table>
 ";
     }

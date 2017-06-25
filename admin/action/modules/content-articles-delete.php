@@ -43,14 +43,14 @@ if ($continue) {
 
     $output .=
 _adminBacklink('index.php?p=content-articles-list&cat=' . $returnid . '&page=' . $returnpage) . "
-<h1>" . $_lang['admin.content.articles.delete.title'] . "</h1>
-<p class='bborder'>" . str_replace("*arttitle*", $query['title'], $_lang['admin.content.articles.delete.p']) . "</p>
+<h1>" . _lang('admin.content.articles.delete.title') . "</h1>
+<p class='bborder'>" . _lang('admin.content.articles.delete.p', array("*arttitle*" => $query['title'])) . "</p>
 <form class='cform' action='index.php?p=content-articles-delete&amp;id=" . $id . "&amp;returnid=" . $returnid . "&amp;returnpage=" . $returnpage . "' method='post'>
 <input type='hidden' name='confirm' value='1'>
-<input type='submit' value='" . $_lang['admin.content.articles.delete.confirmbox'] . "'>
+<input type='submit' value='" . _lang('admin.content.articles.delete.confirmbox') . "'>
 " . _xsrfProtect() . "</form>
 ";
 
 } else {
-    $output .= _msg(_msg_err, $_lang['global.badinput']);
+    $output .= _msg(_msg_err, _lang('global.badinput'));
 }

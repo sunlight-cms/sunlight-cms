@@ -31,9 +31,9 @@ function _HCM_sbox($id = null)
 
             // priprava bunek
             if (!_login) {
-                $inputs[] = array('label' => $GLOBALS['_lang']['posts.guestname'], 'content' => "<input type='text' name='guest' class='sbox-input' maxlength='22'>");
+                $inputs[] = array('label' => _lang('posts.guestname'), 'content' => "<input type='text' name='guest' class='sbox-input' maxlength='22'>");
             }
-            $inputs[] = array('label' => $GLOBALS['_lang']['posts.text'], 'content' => "<input type='text' name='text' class='sbox-input' maxlength='255'><input type='hidden' name='_posttype' value='4'><input type='hidden' name='_posttarget' value='" . $id . "'>");
+            $inputs[] = array('label' => _lang('posts.text'), 'content' => "<input type='text' name='text' class='sbox-input' maxlength='255'><input type='hidden' name='_posttype' value='4'><input type='hidden' name='_posttarget' value='" . $id . "'>");
 
             $result .= _formOutput(
                 array(
@@ -45,9 +45,9 @@ function _HCM_sbox($id = null)
 
         } else {
             if ($sboxdata['locked'] != 1) {
-                $result .= $GLOBALS['_lang']['posts.loginrequired'];
+                $result .= _lang('posts.loginrequired');
             } else {
-                $result .= "<img src='" . _templateImage("icons/lock.png") . "' alt='locked' class='icon'>" . $GLOBALS['_lang']['posts.locked2'];
+                $result .= "<img src='" . _templateImage("icons/lock.png") . "' alt='locked' class='icon'>" . _lang('posts.locked2');
             }
         }
 
@@ -77,7 +77,7 @@ function _HCM_sbox($id = null)
 
             }
         } else {
-            $result .= "\n<div class='sbox-item'>" . $GLOBALS['_lang']['posts.noposts'] . "</div>\n";
+            $result .= "\n<div class='sbox-item'>" . _lang('posts.noposts') . "</div>\n";
         }
 
         $result .= "

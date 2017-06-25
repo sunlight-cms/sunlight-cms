@@ -23,16 +23,16 @@ if (isset($_POST['text'])) {
     // kontrola promennych
     $errors = array();
     if ($text == "" && !$maillist) {
-        $errors[] = $_lang['admin.other.massemail.notext'];
+        $errors[] = _lang('admin.other.massemail.notext');
     }
     if (count($receivers) == 0) {
-        $errors[] = $_lang['admin.other.massemail.noreceivers'];
+        $errors[] = _lang('admin.other.massemail.noreceivers');
     }
     if ($subject == "" && !$maillist) {
-        $errors[] = $_lang['admin.other.massemail.nosubject'];
+        $errors[] = _lang('admin.other.massemail.nosubject');
     }
     if (!_validateEmail($sender) && !$maillist) {
-        $errors[] = $_lang['admin.other.massemail.badsender'];
+        $errors[] = _lang('admin.other.massemail.badsender');
     }
 
     if (count($errors) == 0) {
@@ -60,7 +60,7 @@ if (isset($_POST['text'])) {
             $item_total = DB::size($query);
 
             // poznamka na konci zpravy
-            $notice = str_replace('*domain*', Sunlight\Util\Url::base()->getFullHost(), $_lang['admin.other.massemail.emailnotice']);
+            $notice = _lang('admin.other.massemail.emailnotice', array('*domain*' => Sunlight\Util\Url::base()->getFullHost()));
             if ($ctype == 1) {
                 $notice = "\n\n\n-------------------------------------\n" . $notice;
             } else {
@@ -86,9 +86,12 @@ if (isset($_POST['text'])) {
 
             // zprava
             if ($done != 0) {
-                $output .= _msg(_msg_ok, str_replace(array("*done*", "*total*"), array($done, $item_total), $_lang['admin.other.massemail.send']));
+                $output .= _msg(_msg_ok, _lang('admin.other.massemail.send', array(
+                    '*done*' => $done,
+                    '*total*' => $item_total,
+                )));
             } else {
-                $output .= _msg(_msg_warn, $_lang['admin.other.massemail.noreceiversfound']);
+                $output .= _msg(_msg_warn, _lang('admin.other.massemail.noreceiversfound'));
             }
 
         } else {
@@ -110,7 +113,7 @@ if (isset($_POST['text'])) {
                 $output .= _msg(_msg_ok, "<textarea class='areasmallwide' rows='9' cols='33' name='list'>" . $emails . "</textarea>");
 
             } else {
-                $output .= _msg(_msg_warn, $_lang['admin.other.massemail.noreceiversfound']);
+                $output .= _msg(_msg_warn, _lang('admin.other.massemail.noreceiversfound'));
             }
 
         }
@@ -129,37 +132,37 @@ $output .= "
 <table class='formtable'>
 
 <tr>
-<th>" . $_lang['admin.other.massemail.sender'] . "</th>
+<th>" . _lang('admin.other.massemail.sender') . "</th>
 <td><input type='email'" . _restorePostValueAndName('sender', _sysmail) . " class='inputbig'></td>
 </tr>
 
 <tr>
-<th>" . $_lang['posts.subject'] . "</th>
+<th>" . _lang('posts.subject') . "</th>
 <td><input type='text' class='inputbig'" . _restorePostValueAndName('subject') . "></td>
 </tr>
 
 <tr class='valign-top'>
-<th>" . $_lang['admin.other.massemail.receivers'] . "</th>
+<th>" . _lang('admin.other.massemail.receivers') . "</th>
 <td>" . _adminUserSelect("receivers", -1, "1", "selectbig", null, true, 4) . "</td>
 </tr>
 
 <tr>
-<th>" . $_lang['admin.other.massemail.ctype'] . "</th>
+<th>" . _lang('admin.other.massemail.ctype') . "</th>
 <td>
   <select name='ctype' class='selectbig'>
-  <option value='1'>" . $_lang['admin.other.massemail.ctype.1'] . "</option>
-  <option value='2'" . (_post('ctype') == 2 ? " selected" : '') . ">" . $_lang['admin.other.massemail.ctype.2'] . "</option>
+  <option value='1'>" . _lang('admin.other.massemail.ctype.1') . "</option>
+  <option value='2'" . (_post('ctype') == 2 ? " selected" : '') . ">" . _lang('admin.other.massemail.ctype.2') . "</option>
   </select>
 </td>
 </tr>
 
 <tr class='valign-top'>
-<th>" . $_lang['admin.other.massemail.text'] . "</th>
+<th>" . _lang('admin.other.massemail.text') . "</th>
 <td><textarea name='text' class='areabig editor' rows='9' cols='94' data-editor-mode='code'>" . _restorePostValue('text', null, false) . "</textarea></td>
 </tr>
 
 <tr><td></td>
-<td><input type='submit' value='" . $_lang['global.send'] . "'> <label><input type='checkbox' name='maillist' value='1'" . _checkboxActivate(_checkboxLoad("maillist")) . "> " . $_lang['admin.other.massemail.maillist'] . "</label></td>
+<td><input type='submit' value='" . _lang('global.send') . "'> <label><input type='checkbox' name='maillist' value='1'" . _checkboxActivate(_checkboxLoad("maillist")) . "> " . _lang('admin.other.massemail.maillist') . "</label></td>
 </tr>
 
 </table>

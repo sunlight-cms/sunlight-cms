@@ -65,9 +65,9 @@ if (isset($_POST['xaction']) && $continue) {
                     'prev' => $prev,
                     'full' => $full
                 ));
-                $message = _msg(_msg_ok, $_lang['global.inserted']);
+                $message = _msg(_msg_ok, _lang('global.inserted'));
             } else {
-                $message = _msg(_msg_warn, $_lang['admin.content.manageimgs.insert.error']);
+                $message = _msg(_msg_warn, _lang('admin.content.manageimgs.insert.error'));
             }
 
             break;
@@ -144,7 +144,7 @@ if (isset($_POST['xaction']) && $continue) {
                 DB::query("UPDATE " . _images_table . " SET " . $sql . " WHERE id=" . $id . " AND home=" . $g);
             }
 
-            $message = _msg(_msg_ok, $_lang['global.saved']);
+            $message = _msg(_msg_ok, _lang('global.saved'));
             break;
 
             /* -  presunuti obrazku  - */
@@ -169,16 +169,16 @@ if (isset($_POST['xaction']) && $continue) {
                         DB::update(_images_table, 'home=' . $g, array('home' => $newhome));
 
                         // zprava
-                        $message = _msg(_msg_ok, $_lang['global.done']);
+                        $message = _msg(_msg_ok, _lang('global.done'));
 
                     } else {
-                        $message = _msg(_msg_warn, $_lang['admin.content.manageimgs.moveimgs.nokit']);
+                        $message = _msg(_msg_warn, _lang('admin.content.manageimgs.moveimgs.nokit'));
                     }
                 } else {
-                    $message = _msg(_msg_warn, $_lang['global.badinput']);
+                    $message = _msg(_msg_warn, _lang('global.badinput'));
                 }
             } else {
-                $message = _msg(_msg_warn, $_lang['admin.content.manageimgs.moveimgs.samegal']);
+                $message = _msg(_msg_warn, _lang('admin.content.manageimgs.moveimgs.samegal'));
             }
             break;
 
@@ -187,7 +187,7 @@ if (isset($_POST['xaction']) && $continue) {
             if (_checkboxLoad("confirm")) {
                 _adminDeleteGalleryStorage('home=' . $g);
                 DB::delete(_images_table, 'home=' . $g);
-                $message = _msg(_msg_ok, $_lang['global.done']);
+                $message = _msg(_msg_ok, _lang('global.done'));
             }
             break;
 
@@ -204,7 +204,7 @@ if (isset($_POST['xaction']) && $continue) {
             if (($nostor = !is_dir($stor)) || !is_writeable($stor)) {
                 // try to create or chmod
                 if ($nostor && !mkdir($stor, 0777) || !$nostor && !chmod($stor, 0777)) {
-                    $message = _msg(_msg_err, sprintf($_lang['admin.content.manageimgs.upload.acerr'], $stor));
+                    $message = _msg(_msg_err, sprintf(_lang('admin.content.manageimgs.upload.acerr'), $stor));
                     break;
                 }
             }
@@ -285,7 +285,7 @@ if (isset($_POST['xaction']) && $continue) {
 
             // message
             $done = count($done);
-            $message = _msg(($done === $total) ? _msg_ok : _msg_warn, sprintf($_lang['admin.content.manageimgs.upload.msg'], $done, $total));
+            $message = _msg(($done === $total) ? _msg_ok : _msg_warn, sprintf(_lang('admin.content.manageimgs.upload.msg'), $done, $total));
             break;
 
     }
@@ -299,7 +299,7 @@ if (isset($_GET['del']) && _xsrfCheck(true) && $continue) {
     _adminDeleteGalleryStorage('id=' . $del . ' AND home=' . $g);
     DB::delete(_images_table, 'id=' . $del . ' AND home=' . $g);
     if (DB::affectedRows() === 1) {
-        $message = _msg(_msg_ok, $_lang['global.done']);
+        $message = _msg(_msg_ok, _lang('global.done'));
     }
 }
 
@@ -307,56 +307,56 @@ if (isset($_GET['del']) && _xsrfCheck(true) && $continue) {
 
 if ($continue) {
     $output .= _adminBacklink('index.php?p=content-editgallery&id=' . $g) . "
-<h1>" . $_lang['admin.content.manageimgs.title'] . "</h1>
-<p class='bborder'>" . str_replace("*galtitle*", $galdata['title'], $_lang['admin.content.manageimgs.p']) . "</p>
+<h1>" . _lang('admin.content.manageimgs.title') . "</h1>
+<p class='bborder'>" . _lang('admin.content.manageimgs.p', array("*galtitle*" => $galdata['title'])) . "</p>
 
 " . $message . "
 
 <fieldset>
-<legend>" . $_lang['admin.content.manageimgs.upload'] . "</legend>
+<legend>" . _lang('admin.content.manageimgs.upload') . "</legend>
 <form action='index.php?p=content-manageimgs&amp;g=" . $g . "' method='post' enctype='multipart/form-data'>
-    <p>" . sprintf($_lang['admin.content.manageimgs.upload.text'], _galuploadresize_w, _galuploadresize_h) . "</p>
+    <p>" . sprintf(_lang('admin.content.manageimgs.upload.text'), _galuploadresize_w, _galuploadresize_h) . "</p>
     <input type='hidden' name='xaction' value='7'>
-    <div id='fmanFiles'><input type='file' name='uf0[]' multiple> <a href='#' onclick='return Sunlight.admin.fmanAddFile();'>" . $_lang['admin.fman.upload.addfile'] . "</a></div>
+    <div id='fmanFiles'><input type='file' name='uf0[]' multiple> <a href='#' onclick='return Sunlight.admin.fmanAddFile();'>" . _lang('admin.fman.upload.addfile') . "</a></div>
     <div class='hr'><hr></div>
     <p>
-        <input type='submit' value='" . $_lang['admin.content.manageimgs.upload.submit'] . "'>
-        <label><input type='checkbox' value='1' name='moveords' checked> " . $_lang['admin.content.manageimgs.moveords'] . "</label>"
+        <input type='submit' value='" . _lang('admin.content.manageimgs.upload.submit') . "'>
+        <label><input type='checkbox' value='1' name='moveords' checked> " . _lang('admin.content.manageimgs.moveords') . "</label>"
         . _renderUploadLimit()
-        . ' <small>' . $_lang['global.uploadext'] . ": <em>" . implode(', ', Sunlight\Core::$imageExt) . "</em></small>
+        . ' <small>' . _lang('global.uploadext') . ": <em>" . implode(', ', Sunlight\Core::$imageExt) . "</em></small>
     </p>
 " . _xsrfProtect() . "</form>
 </fieldset>
 
 <fieldset class='hs_fieldset'>
-<legend>" . $_lang['admin.content.manageimgs.insert'] . "  <small>(" . $_lang['admin.content.manageimgs.insert.tip'] . ")</small></legend>
+<legend>" . _lang('admin.content.manageimgs.insert') . "  <small>(" . _lang('admin.content.manageimgs.insert.tip') . ")</small></legend>
 <form action='index.php?p=content-manageimgs&amp;g=" . $g . "' method='post' name='addform'>
 <input type='hidden' name='xaction' value='1'>
 
 <table>
 <tr>
-<th>" . $_lang['admin.content.form.title'] . "</th>
+<th>" . _lang('admin.content.form.title') . "</th>
 <td><input type='text' name='title' class='inputmedium' maxlength='255'></td>
 </tr>
 
 <tr>
-<th>" . $_lang['admin.content.form.ord'] . "</th>
-<td><input type='number' name='ord' class='inputsmall' disabled> <label><input type='checkbox' name='moveords' value='1' checked onclick=\"Sunlight.toggleFormField(this.checked, 'addform', 'ord');\"> " . $_lang['admin.content.manageimgs.moveords'] . "</label></td>
+<th>" . _lang('admin.content.form.ord') . "</th>
+<td><input type='number' name='ord' class='inputsmall' disabled> <label><input type='checkbox' name='moveords' value='1' checked onclick=\"Sunlight.toggleFormField(this.checked, 'addform', 'ord');\"> " . _lang('admin.content.manageimgs.moveords') . "</label></td>
 </tr>
 
 <tr>
-<th>" . $_lang['admin.content.manageimgs.prev'] . "</th>
-<td><input type='text' name='prev' class='inputsmall' disabled> <label><input type='checkbox' name='autoprev' value='1' checked onclick=\"Sunlight.toggleFormField(this.checked, 'addform', 'prev');\"> " . $_lang['admin.content.manageimgs.autoprev'] . "</label></td>
+<th>" . _lang('admin.content.manageimgs.prev') . "</th>
+<td><input type='text' name='prev' class='inputsmall' disabled> <label><input type='checkbox' name='autoprev' value='1' checked onclick=\"Sunlight.toggleFormField(this.checked, 'addform', 'prev');\"> " . _lang('admin.content.manageimgs.autoprev') . "</label></td>
 </tr>
 
 <tr>
-<th>" . $_lang['admin.content.manageimgs.full'] . "</th>
+<th>" . _lang('admin.content.manageimgs.full') . "</th>
 <td><input type='text' name='full' class='inputmedium'></td>
 </tr>
 
 <tr>
 <td></td>
-<td><input type='submit' value='" . $_lang['global.insert'] . "'></td>
+<td><input type='submit' value='" . _lang('global.insert') . "'></td>
 </tr>
 
 </table>
@@ -369,11 +369,11 @@ if ($continue) {
     // obrazky
     $output .= "
 <fieldset>
-<legend>" . $_lang['admin.content.manageimgs.current'] . "</legend>
+<legend>" . _lang('admin.content.manageimgs.current') . "</legend>
 <form action='index.php?p=content-manageimgs&amp;g=" . $g . "' method='post' name='editform'>
 <input type='hidden' name='xaction' value='4'>
 
-<input type='submit' value='" . $_lang['admin.content.manageimgs.savechanges'] . "' class='gallery-savebutton'>
+<input type='submit' value='" . _lang('admin.content.manageimgs.savechanges') . "' class='gallery-savebutton'>
 <div class='cleaner'></div>";
 
     // vypis
@@ -401,28 +401,28 @@ if ($continue) {
 <table>
 
 <tr>
-<th>" . $_lang['admin.content.form.title'] . "</th>
+<th>" . _lang('admin.content.form.title') . "</th>
 <td><input type='text' name='i" . $image['id'] . "_title' class='max-width' value='" . $image['title'] . "' maxlength='255'></td>
 </tr>
 
 <tr class='image-order-row'>
-<th>" . $_lang['admin.content.form.ord'] . "</th>
+<th>" . _lang('admin.content.form.ord') . "</th>
 <td><input type='text' name='i" . $image['id'] . "_ord' class='max-width' value='" . $image['ord'] . "'></td>
 </tr>
 
 " . (!$image['in_storage'] ? "<tr>
-<th>" . $_lang['admin.content.manageimgs.prev'] . "</th>
-<td><input type='hidden' name='i" . $image['id'] . "_prevtrigger' value='1'><input type='text' name='i" . $image['id'] . "_prev' class='inputsmall' value='" . $image['prev'] . "'" . _inputDisableUnless($image['prev'] != "") . "> <label><input type='checkbox' name='i" . $image['id'] . "_autoprev' value='1' onclick=\"Sunlight.toggleFormField(checked, 'editform', 'i" . $image['id'] . "_prev');\"" . _checkboxActivate($image['prev'] == "") . "> " . $_lang['admin.content.manageimgs.autoprev'] . "</label></td>
+<th>" . _lang('admin.content.manageimgs.prev') . "</th>
+<td><input type='hidden' name='i" . $image['id'] . "_prevtrigger' value='1'><input type='text' name='i" . $image['id'] . "_prev' class='inputsmall' value='" . $image['prev'] . "'" . _inputDisableUnless($image['prev'] != "") . "> <label><input type='checkbox' name='i" . $image['id'] . "_autoprev' value='1' onclick=\"Sunlight.toggleFormField(checked, 'editform', 'i" . $image['id'] . "_prev');\"" . _checkboxActivate($image['prev'] == "") . "> " . _lang('admin.content.manageimgs.autoprev') . "</label></td>
 </tr>
 
 <tr>
-<th>" . $_lang['admin.content.manageimgs.full'] . "</th>
+<th>" . _lang('admin.content.manageimgs.full') . "</th>
 <td><input type='text' name='i" . $image['id'] . "_full' class='max-width' value='" . $image['full'] . "'></td>
 </tr>" : '') . "
 
 <tr class='valign-top'>
-<th>" . $_lang['global.preview'] . "</th>
-<td>" . $preview . "<br><br><a class='button' href='" . _xsrfLink("index.php?p=content-manageimgs&amp;g=" . $g . "&amp;del=" . $image['id']) . "' onclick='return Sunlight.confirm();'><img src='images/icons/delete.png' alt='del' class='icon'>" . $_lang['admin.content.manageimgs.delete'] . "</a></td>
+<th>" . _lang('global.preview') . "</th>
+<td>" . $preview . "<br><br><a class='button' href='" . _xsrfLink("index.php?p=content-manageimgs&amp;g=" . $g . "&amp;del=" . $image['id']) . "' onclick='return Sunlight.confirm();'><img src='images/icons/delete.png' alt='del' class='icon'>" . _lang('admin.content.manageimgs.delete') . "</a></td>
 </tr>
 
 </table>
@@ -433,9 +433,9 @@ if ($continue) {
         $output .= "
 </div>
 <div class='cleaner'></div>
-<input type='submit' value='" . $_lang['admin.content.manageimgs.savechanges'] . "' class='gallery-savebutton'>";
+<input type='submit' value='" . _lang('admin.content.manageimgs.savechanges') . "' class='gallery-savebutton'>";
     } else {
-        $output .= '<p>' . $_lang['global.nokit'] . '</p>';
+        $output .= '<p>' . _lang('global.nokit') . '</p>';
     }
 
     $output .= "
@@ -447,12 +447,12 @@ if ($continue) {
 
 <td width='50%'>
   <fieldset class='hs_fieldset'>
-  <legend>" . $_lang['admin.content.manageimgs.moveimgs'] . "</legend>
+  <legend>" . _lang('admin.content.manageimgs.moveimgs') . "</legend>
 
   <form class='cform' action='index.php?p=content-manageimgs&amp;g=" . $g . "' method='post'>
   <input type='hidden' name='xaction' value='5'>
-  " . _adminRootSelect("newhome", array('type' => _page_gallery)) . " <input class='button' type='submit' value='" . $_lang['global.do'] . "' onclick='return Sunlight.confirm();'><br><br>
-  <label><input type='checkbox' name='moveords' value='1' checked> " . $_lang['admin.content.manageimgs.moveords'] . "</label>
+  " . _adminRootSelect("newhome", array('type' => _page_gallery)) . " <input class='button' type='submit' value='" . _lang('global.do') . "' onclick='return Sunlight.confirm();'><br><br>
+  <label><input type='checkbox' name='moveords' value='1' checked> " . _lang('admin.content.manageimgs.moveords') . "</label>
   " . _xsrfProtect() . "</form>
 
   </fieldset>
@@ -460,11 +460,11 @@ if ($continue) {
 
 <td>
   <fieldset class='hs_fieldset'>
-  <legend>" . $_lang['admin.content.manageimgs.delimgs'] . "</legend>
+  <legend>" . _lang('admin.content.manageimgs.delimgs') . "</legend>
 
   <form class='cform' action='index.php?p=content-manageimgs&amp;g=" . $g . "' method='post'>
   <input type='hidden' name='xaction' value='6'>
-  <label><input type='checkbox' name='confirm' value='1'> " . $_lang['admin.content.manageimgs.delimgs.confirm'] . "</label> <input class='button' type='submit' value='" . $_lang['global.do'] . "' onclick='return Sunlight.confirm();'>
+  <label><input type='checkbox' name='confirm' value='1'> " . _lang('admin.content.manageimgs.delimgs.confirm') . "</label> <input class='button' type='submit' value='" . _lang('global.do') . "' onclick='return Sunlight.confirm();'>
   " . _xsrfProtect() . "</form>
 
   </fieldset>
@@ -475,5 +475,5 @@ if ($continue) {
 
 ";
 } else {
-    $output .= _msg(_msg_err, $_lang['global.badinput']);
+    $output .= _msg(_msg_err, _lang('global.badinput'));
 }

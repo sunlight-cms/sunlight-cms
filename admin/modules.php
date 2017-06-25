@@ -39,7 +39,7 @@ return array(
 
     // index
     'index' => array(
-        'title' => $_lang['admin.menu.index'],
+        'title' => _lang('admin.menu.index'),
         'access' => true,
         'parent' => null,
         'children' => array('index-edit'),
@@ -48,14 +48,14 @@ return array(
         'menu_order' => 0,
     ),
     'index-edit' => array(
-        'title' => $_lang['admin.menu.index.edit.title'],
+        'title' => _lang('admin.menu.index.edit.title'),
         'access' => _logingroup == 1,
         'parent' => 'index',
     ),
 
     // content
     'content' => array(
-        'title' => $_lang['admin.menu.content'],
+        'title' => _lang('admin.menu.content'),
         'access' => _priv_admincontent,
         'parent' => null,
         'children' => array('content-sort', 'content-titles', 'content-redir', 'content-articles', 'content-confirm', 'content-movearts', 'content-polls', 'content-polls-edit', 'content-boxes', 'content-editsection', 'content-editcategory', 'content-delete', 'content-editgroup', 'content-articles-list', 'content-articles-edit', 'content-articles-delete', 'content-boxes-edit', 'content-editbook', 'content-editseparator', 'content-editlink', 'content-editpluginpage', 'content-editgallery', 'content-manageimgs', 'content-artfilter'),
@@ -63,136 +63,136 @@ return array(
         'menu_order' => 10,
     ),
     'content-setindex' => array(
-        'title' => $_lang['admin.content.setindex.title'],
+        'title' => _lang('admin.content.setindex.title'),
         'access' => _priv_admincontent && _priv_adminroot,
         'parent' => 'content',
     ),
     'content-sort' => array(
-        'title' => $_lang['admin.content.sort.title'],
+        'title' => _lang('admin.content.sort.title'),
         'access' => _priv_admincontent && _priv_adminroot,
         'parent' => 'content',
     ),
     'content-titles' => array(
-        'title' => $_lang['admin.content.titles.title'],
+        'title' => _lang('admin.content.titles.title'),
         'access' => _priv_admincontent && _priv_adminroot,
         'parent' => 'content',
     ),
     'content-redir' => array(
-        'title' => $_lang['admin.content.redir.title'],
+        'title' => _lang('admin.content.redir.title'),
         'access' => _priv_admincontent && _priv_adminroot,
         'parent' => 'content',
     ),
     'content-articles' => array(
-        'title' => $_lang['admin.content.articles.title'],
+        'title' => _lang('admin.content.articles.title'),
         'access' => _priv_adminart,
         'parent' => 'content',
     ),
-    'content-articles-list' => array('title' => $_lang['admin.content.articles.list.title'],
+    'content-articles-list' => array('title' => _lang('admin.content.articles.list.title'),
         'access' => _priv_adminart,
         'parent' => 'content-articles',
     ),
-    'content-articles-edit' => array('title' => $_lang['admin.content.articles.edit.title'],
+    'content-articles-edit' => array('title' => _lang('admin.content.articles.edit.title'),
         'access' => _priv_adminart,
         'parent' => 'content-articles',
         'custom_header' => true
     ),
     'content-articles-delete' => array(
-        'title' => $_lang['admin.content.articles.delete.title'],
+        'title' => _lang('admin.content.articles.delete.title'),
         'access' => _priv_adminart,
         'parent' => 'content-articles',
         'custom_header' => true
     ),
     'content-confirm' => array(
-        'title' => $_lang['admin.content.confirm.title'],
+        'title' => _lang('admin.content.confirm.title'),
         'access' => _priv_adminconfirm,
         'parent' => 'content',
     ),
     'content-movearts' => array(
-        'title' => $_lang['admin.content.movearts.title'],
+        'title' => _lang('admin.content.movearts.title'),
         'access' => _priv_admincategory,
         'parent' => 'content',
     ),
     'content-artfilter' => array(
-        'title' => $_lang['admin.content.artfilter.title'],
+        'title' => _lang('admin.content.artfilter.title'),
         'access' => _priv_admincategory,
         'parent' => 'content',
     ),
     'content-polls' => array(
-        'title' => $_lang['admin.content.polls.title'],
+        'title' => _lang('admin.content.polls.title'),
         'access' => _priv_adminpoll,
         'parent' => 'content',
     ),
     'content-polls-edit' => array(
-        'title' => $_lang['admin.content.polls.edit.title'],
+        'title' => _lang('admin.content.polls.edit.title'),
         'access' => _priv_adminpoll,
         'parent' => 'content-polls',
     ),
-    'content-sboxes' => array('title' => $_lang['admin.content.sboxes.title'],
+    'content-sboxes' => array('title' => _lang('admin.content.sboxes.title'),
         'access' => _priv_adminsbox,
         'parent' => 'content',
     ),
     'content-boxes' => array(
-        'title' => $_lang['admin.content.boxes.title'],
+        'title' => _lang('admin.content.boxes.title'),
         'access' => _priv_adminbox,
         'parent' => 'content',
     ),
     'content-boxes-edit' => array(
-        'title' => $_lang['admin.content.boxes.edit.title'],
+        'title' => _lang('admin.content.boxes.edit.title'),
         'access' => _priv_adminbox,
         'parent' => 'content-boxes',
     ),
     'content-delete' => array(
-        'title' => $_lang['admin.content.delete.title'],
+        'title' => _lang('admin.content.delete.title'),
         'access' => true,
         'parent' => 'content',
     ),
     'content-editsection' => array(
-        'title' => $_lang['admin.content.editsection.title'],
+        'title' => _lang('admin.content.editsection.title'),
         'access' => _priv_adminsection,
         'parent' => 'content',
     ),
     'content-editcategory' => array(
-        'title' => $_lang['admin.content.editcategory.title'],
+        'title' => _lang('admin.content.editcategory.title'),
         'access' => _priv_admincategory,
         'parent' => 'content',
     ),
     'content-editgroup' => array(
-        'title' => $_lang['admin.content.editgroup.title'],
+        'title' => _lang('admin.content.editgroup.title'),
         'access' => _priv_admingroup,
         'parent' => 'content',
     ),
     'content-editbook' => array(
-        'title' => $_lang['admin.content.editbook.title'],
+        'title' => _lang('admin.content.editbook.title'),
         'access' => _priv_adminbook,
         'parent' => 'content',
     ),
     'content-editseparator' => array(
-        'title' => $_lang['admin.content.editseparator.title'],
+        'title' => _lang('admin.content.editseparator.title'),
         'access' => _priv_adminseparator,
         'parent' => 'content',
     ),
     'content-editlink' => array(
-        'title' => $_lang['admin.content.editlink.title'],
+        'title' => _lang('admin.content.editlink.title'),
         'access' => _priv_adminlink,
         'parent' => 'content',
     ),
     'content-editgallery' => array(
-        'title' => $_lang['admin.content.editgallery.title'],
+        'title' => _lang('admin.content.editgallery.title'),
         'access' => _priv_admingallery,
         'parent' => 'content',
     ),
     'content-editforum' => array(
-        'title' => $_lang['admin.content.editforum.title'],
+        'title' => _lang('admin.content.editforum.title'),
         'access' => _priv_adminforum,
         'parent' => 'content',
     ),
     'content-editpluginpage' => array(
-        'title' => $_lang['admin.content.editpluginpage.title'],
+        'title' => _lang('admin.content.editpluginpage.title'),
         'access' => _priv_adminpluginpage,
         'parent' => 'content',
     ),
     'content-manageimgs' => array(
-        'title' => $_lang['admin.content.manageimgs.title'],
+        'title' => _lang('admin.content.manageimgs.title'),
         'access' => _priv_admingallery,
         'parent' => 'content',
         'custom_header' => true,
@@ -200,7 +200,7 @@ return array(
 
     // users
     'users' => array(
-        'title' => $_lang['admin.menu.users'],
+        'title' => _lang('admin.menu.users'),
         'access' => _priv_adminusers || _priv_admingroups,
         'parent' => null,
         'children' => array('users-editgroup', 'users-delgroup', 'users-edit', 'users-delete', 'users-list', 'users-move'),
@@ -208,40 +208,40 @@ return array(
         'menu_order' => 20,
     ),
     'users-editgroup' => array(
-        'title' => $_lang['admin.users.groups.edittitle'],
+        'title' => _lang('admin.users.groups.edittitle'),
         'access' => _priv_admingroups,
         'parent' => 'users',
     ),
     'users-delgroup' => array(
-        'title' => $_lang['admin.users.groups.deltitle'],
+        'title' => _lang('admin.users.groups.deltitle'),
         'access' => _priv_admingroups,
         'parent' => 'users',
     ),
     'users-list' => array(
-        'title' => $_lang['admin.users.list'],
+        'title' => _lang('admin.users.list'),
         'access' => _priv_adminusers,
         'parent' => 'users',
         'children' => array('users-edit', 'users-delete'),
     ),
     'users-edit' => array(
-        'title' => $_lang['admin.users.edit.title'],
+        'title' => _lang('admin.users.edit.title'),
         'access' => _priv_adminusers,
         'parent' => 'users-list',
     ),
     'users-delete' => array(
-        'title' => $_lang['admin.users.deleteuser'],
+        'title' => _lang('admin.users.deleteuser'),
         'access' => _priv_adminusers,
         'parent' => 'users-list',
     ),
     'users-move' => array(
-        'title' => $_lang['admin.users.move'],
+        'title' => _lang('admin.users.move'),
         'access' => _priv_adminusers,
         'parent' => 'users',
     ),
 
     // fman
     'fman' => array(
-        'title' => $_lang['admin.menu.fman'],
+        'title' => _lang('admin.menu.fman'),
         'access' => _priv_fileaccess,
         'parent' => null,
         'menu' => true,
@@ -250,7 +250,7 @@ return array(
 
     // plugins
     'plugins' => array(
-        'title' => $_lang['admin.menu.plugins'],
+        'title' => _lang('admin.menu.plugins'),
         'access' => _priv_adminplugins,
         'parent' => null,
         'children' => array('plugins-action', 'plugins-upload'),
@@ -260,7 +260,7 @@ return array(
 
     // plugin action
     'plugins-action' => array(
-        'title' => $_lang['admin.plugins.action'],
+        'title' => _lang('admin.plugins.action'),
         'access' => _priv_adminplugins,
         'parent' => 'plugins',
         'custom_header' => true,
@@ -268,14 +268,14 @@ return array(
 
     // plugin upload
     'plugins-upload' => array(
-        'title' => $_lang['admin.plugins.upload'],
+        'title' => _lang('admin.plugins.upload'),
         'access' => _priv_adminplugins,
         'parent' => 'plugins',
     ),
 
     // settings
     'settings' => array(
-        'title' => $_lang['admin.menu.settings'],
+        'title' => _lang('admin.menu.settings'),
         'access' => _priv_adminsettings,
         'parent' => null,
         'menu' => true,
@@ -284,7 +284,7 @@ return array(
 
     // other
     'other' => array(
-        'title' => $_lang['admin.menu.other'],
+        'title' => _lang('admin.menu.other'),
         'access' => _priv_adminother,
         'parent' => null,
         'children' => array('other-backup', 'other-massemail', 'other-cleanup', 'other-sqlex'),
@@ -292,7 +292,7 @@ return array(
         'menu_order' => 60,
     ),
     'other-backup' => array(
-        'title' => $_lang['admin.other.backup.title'],
+        'title' => _lang('admin.other.backup.title'),
         'access' => _priv_adminother && _priv_adminbackup,
         'parent' => 'other',
         'other' => true,
@@ -301,7 +301,7 @@ return array(
         'other_icon' => 'images/icons/big-floppy.png',
     ),
     'other-cleanup' => array(
-        'title' => $_lang['admin.other.cleanup.title'],
+        'title' => _lang('admin.other.cleanup.title'),
         'access' => _priv_adminother && _priv_super_admin,
         'parent' => 'other',
         'other' => true,
@@ -310,7 +310,7 @@ return array(
         'other_icon' => 'images/icons/big-broom.png',
     ),
     'other-sqlex' => array(
-        'title' => $_lang['admin.other.sqlex.title'],
+        'title' => _lang('admin.other.sqlex.title'),
         'access' => _priv_adminother && _priv_super_admin,
         'parent' => 'other',
         'other' => true,
@@ -319,7 +319,7 @@ return array(
         'other_icon' => 'images/icons/big-db.png',
     ),
     'other-php' => array(
-        'title' => $_lang['admin.other.php.title'],
+        'title' => _lang('admin.other.php.title'),
         'access' => _priv_adminother && _priv_super_admin,
         'url' => 'script/php.php',
         'parent' => 'other',
@@ -330,7 +330,7 @@ return array(
         'other_icon' => 'images/icons/big-php.png',
     ),
     'other-massemail' => array(
-        'title' => $_lang['admin.other.massemail.title'],
+        'title' => _lang('admin.other.massemail.title'),
         'access' => _priv_adminother && _priv_adminmassemail,
         'parent' => 'other',
         'other' => true,

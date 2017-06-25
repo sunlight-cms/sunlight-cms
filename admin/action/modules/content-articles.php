@@ -7,11 +7,11 @@ if (!defined('_root')) {
 /* ---  vystup  --- */
 
 $output .= "
-<p><a class='button' href='index.php?p=content-articles-edit'><img src='images/icons/new.png' alt='new' class='icon'>" . $_lang['admin.content.articles.create'] . "</a></p>
+<p><a class='button' href='index.php?p=content-articles-edit'><img src='images/icons/new.png' alt='new' class='icon'>" . _lang('admin.content.articles.create') . "</a></p>
 
 <table class='list list-noborder'>
 <thead>
-<tr><th>" . $_lang['article.category'] . "</th><th>" . $_lang['global.articlesnum'] . "</th></tr>
+<tr><th>" . _lang('article.category') . "</th><th>" . _lang('global.articlesnum') . "</th></tr>
 </thead>
 <tbody>
 ";
@@ -47,7 +47,7 @@ foreach ($tree as $page) {
 }
 
 if (empty($tree)) {
-    $output .= '<tr><td colspan="2">' . $_lang['admin.content.form.category.nonefound'] . '</td></tr>';
+    $output .= '<tr><td colspan="2">' . _lang('admin.content.form.category.nonefound') . '</td></tr>';
 }
 
 $output .= "
@@ -59,6 +59,6 @@ $output .= "
 <input type='hidden' name='p' value='content-articles-edit'>
 <input type='hidden' name='returnid' value='load'>
 <input type='hidden' name='returnpage' value='1'>
-" . $_lang['admin.content.articles.openid'] . ": <input type='number' name='id' class='inputmini'> <input class='button' type='submit' value='" . $_lang['global.open'] . "'>
+" . _lang('admin.content.articles.openid') . ": <input type='number' name='id' class='inputmini'> <input class='button' type='submit' value='" . _lang('global.open') . "'>
 </form>
 ";

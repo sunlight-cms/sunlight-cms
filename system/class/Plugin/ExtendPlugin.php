@@ -2,8 +2,10 @@
 
 namespace Sunlight\Plugin;
 
+use Sunlight\Core;
 use Sunlight\Extend;
-use Sunlight\LangPack;
+use Sunlight\Localization\LocalizationDirectory;
+use Sunlight\Localization\LocalizationSubDictionary;
 
 class ExtendPlugin extends Plugin
 {
@@ -49,7 +51,7 @@ class ExtendPlugin extends Plugin
 
         // register language packs
         foreach ($this->options['langs'] as $key => $dir) {
-            LangPack::register($key, $dir);
+            Core::$lang->registerSubDictionary($key, new LocalizationDirectory($dir));
         }
 
         // load scripts

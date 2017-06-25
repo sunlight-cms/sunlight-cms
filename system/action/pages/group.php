@@ -36,14 +36,14 @@ if (DB::size($items) != 0) {
                     // sekce
                 case _page_section:
                     if ($item['var1'] == 1) {
-                        $iteminfos['comment_num'] = array($_lang['article.comments'], DB::count(_posts_table, 'type=' . _post_section_comment . ' AND home=' . DB::val($item['id'])));
+                        $iteminfos['comment_num'] = array(_lang('article.comments'), DB::count(_posts_table, 'type=' . _post_section_comment . ' AND home=' . DB::val($item['id'])));
                     }
                     break;
 
                     // kategorie
                 case _page_category:
                     list(, , $art_count) = _articleFilter('art', array($item['id']), null, true);
-                    $iteminfos['article_num'] = array($_lang['global.articlesnum'], $art_count);
+                    $iteminfos['article_num'] = array(_lang('global.articlesnum'), $art_count);
                     break;
 
                     // kniha
@@ -61,19 +61,19 @@ if (DB::size($items) != 0) {
                         $lastpost = "-";
                     }
 
-                    $iteminfos['post_num'] = array($_lang['global.postsnum'], DB::count(_posts_table, 'type=' . _post_book_entry . ' AND home=' . DB::val($item['id'])));
-                    $iteminfos['last_post'] = array($_lang['global.lastpost'], $lastpost);
+                    $iteminfos['post_num'] = array(_lang('global.postsnum'), DB::count(_posts_table, 'type=' . _post_book_entry . ' AND home=' . DB::val($item['id'])));
+                    $iteminfos['last_post'] = array(_lang('global.lastpost'), $lastpost);
                     break;
 
                     // galerie
                 case _page_gallery:
-                    $iteminfos['image_num'] = array($_lang['global.imgsnum'], DB::count(_images_table, 'home=' . DB::val($item['id'])));
+                    $iteminfos['image_num'] = array(_lang('global.imgsnum'), DB::count(_images_table, 'home=' . DB::val($item['id'])));
                     break;
 
                     // forum
                 case _page_forum:
-                    $iteminfos['topic_num'] = array($_lang['global.topicsnum'], DB::count(_posts_table, 'type=' . _post_forum_topic . ' AND home=' . DB::val($item['id']) . ' AND xhome=-1'));
-                    $iteminfos['answer_num'] = array($_lang['global.answersnum'], DB::count(_posts_table, 'type=' . _post_forum_topic . ' AND home=' . DB::val($item['id']) . ' AND xhome!=-1'));
+                    $iteminfos['topic_num'] = array(_lang('global.topicsnum'), DB::count(_posts_table, 'type=' . _post_forum_topic . ' AND home=' . DB::val($item['id']) . ' AND xhome=-1'));
+                    $iteminfos['answer_num'] = array(_lang('global.answersnum'), DB::count(_posts_table, 'type=' . _post_forum_topic . ' AND home=' . DB::val($item['id']) . ' AND xhome!=-1'));
                     break;
 
                     // plugin stranka
@@ -90,5 +90,5 @@ if (DB::size($items) != 0) {
         $output .= "</div>\n";
     }
 } else {
-    $output .= '<p>' . $_lang['global.nokit'] . '</p>';
+    $output .= '<p>' . _lang('global.nokit') . '</p>';
 }

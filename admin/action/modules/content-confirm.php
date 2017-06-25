@@ -9,7 +9,7 @@ if (!defined('_root')) {
 $message = "";
 if (isset($_GET['id'])) {
     DB::update(_articles_table, 'id=' . DB::val(_get('id')), array('confirmed' => 1));
-    $message = _msg(_msg_ok, $_lang['global.done']);
+    $message = _msg(_msg_ok, _lang('global.done'));
 }
 
 /* ---  vystup  --- */
@@ -26,17 +26,17 @@ if (isset($_GET['limit'])) {
 $output .= "
 <form class='cform' action='index.php' method='get'>
     <input type='hidden' name='p' value='content-confirm'>"
-    . $_lang['admin.content.confirm.filter'] . ": "
-    . _adminRootSelect("limit", array('type' => _page_category, 'selected' => $catlimit, 'empty_item' => $_lang['global.all']))
+    . _lang('admin.content.confirm.filter') . ": "
+    . _adminRootSelect("limit", array('type' => _page_category, 'selected' => $catlimit, 'empty_item' => _lang('global.all')))
     . "
-    <input type='submit' value='" . $_lang['global.do'] . "'>
+    <input type='submit' value='" . _lang('global.do') . "'>
 </form>
 <div class='hr'><hr></div>
 
 " . $message . "
 
 <table class='list list-hover list-max'>
-<thead><tr><td>" . $_lang['global.article'] . "</td><td>" . $_lang['article.category'] . "</td><td>" . $_lang['article.posted'] . "</td><td>" . $_lang['article.author'] . "</td><td>" . $_lang['global.action'] . "</td></tr></thead>
+<thead><tr><td>" . _lang('global.article') . "</td><td>" . _lang('article.category') . "</td><td>" . _lang('article.posted') . "</td><td>" . _lang('article.author') . "</td><td>" . _lang('global.action') . "</td></tr></thead>
 <tbody>";
 
 // vypis
@@ -62,13 +62,13 @@ if (DB::size($query) != 0) {
             <td>" . $cats . "</td><td>" . _formatTime($item['time']) . "</td>
             <td>" . _linkUserFromQuery($userQuery, $item) . "</td>
             <td class='actions'>
-                <a class='button' href='index.php?p=content-confirm&amp;id=" . $item['id'] . "&amp;limit=" . $catlimit . "'><img src='images/icons/check.png' alt='confirm' class='icon'>" . $_lang['admin.content.confirm.confirm'] . "</a>
-                <a class='button' href='index.php?p=content-articles-edit&amp;id=" . $item['id'] . "&amp;returnid=load&amp;returnpage=1'><img src='images/icons/edit.png' alt='edit' class='icon'>" . $_lang['global.edit'] . "</a>"
+                <a class='button' href='index.php?p=content-confirm&amp;id=" . $item['id'] . "&amp;limit=" . $catlimit . "'><img src='images/icons/check.png' alt='confirm' class='icon'>" . _lang('admin.content.confirm.confirm') . "</a>
+                <a class='button' href='index.php?p=content-articles-edit&amp;id=" . $item['id'] . "&amp;returnid=load&amp;returnpage=1'><img src='images/icons/edit.png' alt='edit' class='icon'>" . _lang('global.edit') . "</a>"
             . "</td>"
             . "</tr>\n";
     }
 } else {
-    $output .= "<tr><td colspan='5'>" . $_lang['global.nokit'] . "</td></tr>";
+    $output .= "<tr><td colspan='5'>" . _lang('global.nokit') . "</td></tr>";
 }
 
 $output .= "</tbody></table>";

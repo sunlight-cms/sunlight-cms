@@ -269,7 +269,7 @@ class PageManipulator
             return true;
         } else {
             if ($error === null) {
-                $error = $GLOBALS['_lang']['global.deletefail'];
+                $error = _lang('global.deletefail');
             }
 
             return false;
@@ -285,25 +285,24 @@ class PageManipulator
      */
     public static function listDependencies(array $page, $childPages = false)
     {
-        global $_lang;
         $dependencies = array();
 
         // dle typu
         switch ($page['type']) {
             case _page_section:
-                $dependencies[] = DB::count(_posts_table, 'type=' . _post_section_comment . ' AND home=' . DB::val($page['id'])) . " " . $_lang['count.comments'];
+                $dependencies[] = DB::count(_posts_table, 'type=' . _post_section_comment . ' AND home=' . DB::val($page['id'])) . " " . _lang('count.comments');
                 break;
             case _page_category:
-                $dependencies[] = DB::count(_articles_table, 'home1=' . DB::val($page['id']) . ' AND home2=-1 AND home3=-1') . " " . $_lang['count.articles'];
+                $dependencies[] = DB::count(_articles_table, 'home1=' . DB::val($page['id']) . ' AND home2=-1 AND home3=-1') . " " . _lang('count.articles');
                 break;
             case _page_book:
-                $dependencies[] = DB::count(_posts_table, 'type=' . _post_book_entry . ' AND home=' . DB::val($page['id'])) . " " . $_lang['count.posts'];
+                $dependencies[] = DB::count(_posts_table, 'type=' . _post_book_entry . ' AND home=' . DB::val($page['id'])) . " " . _lang('count.posts');
                 break;
             case _page_gallery:
-                $dependencies[] = DB::count(_images_table, 'home=' . DB::val($page['id'])) . " " . $_lang['count.images'];
+                $dependencies[] = DB::count(_images_table, 'home=' . DB::val($page['id'])) . " " . _lang('count.images');
                 break;
             case _page_forum:
-                $dependencies[] = DB::count(_posts_table, 'type=' . _post_forum_topic . ' AND home=' . DB::val($page['id'])) . " " . $_lang['count.posts'];
+                $dependencies[] = DB::count(_posts_table, 'type=' . _post_forum_topic . ' AND home=' . DB::val($page['id'])) . " " . _lang('count.posts');
                 break;
             case _page_plugin:
                 Extend::call('ppage.' . $page['type_idt'] . '.delete.confirm', array(
@@ -326,7 +325,7 @@ class PageManipulator
                     '%s%s <small>(%s, <code>%s</code>)</small>',
                     str_repeat('&nbsp;', ($childPage['node_level'] - $page['node_level'] - 1) * 4),
                     $childPage['title'],
-                    $_lang['page.type.' . $pageTypes[$childPage['type']]],
+                    _lang('page.type.' . $pageTypes[$childPage['type']]),
                     $childPage['slug']
                 );
             }
@@ -334,7 +333,7 @@ class PageManipulator
 
         // zadne polozky
         if (empty($dependencies)) {
-            $dependencies[] = $_lang['global.nokit'];
+            $dependencies[] = _lang('global.nokit');
         }
 
         return $dependencies;
@@ -356,7 +355,7 @@ class PageManipulator
 
         // kontrola podstranek
         if ($page['node_depth'] > 0 && !$deleteChildPages && !$deleteDirectForce) {
-            $error = $GLOBALS['_lang']['page.deletefail.children'];
+            $error = _lang('page.deletefail.children');
 
             return false;
         }
@@ -374,7 +373,7 @@ class PageManipulator
             ));
 
             if ($handled !== true) {
-                $error = sprintf($GLOBALS['_lang']['plugin.error'], $page['type_idt']);
+                $error = sprintf(_lang('plugin.error'), $page['type_idt']);
 
                 return false;
             }

@@ -37,10 +37,10 @@ if (isset($_POST['username'])) {
 
                 return;
             } else {
-                $errors[] = $_lang['mod.settings.selfremove.denied'];
+                $errors[] = _lang('mod.settings.selfremove.denied');
             }
         } else {
-            $errors[] = $_lang['mod.settings.selfremove.failed'];
+            $errors[] = _lang('mod.settings.selfremove.failed');
         }
     }
 
@@ -51,7 +51,7 @@ if (isset($_POST['username'])) {
     }
     $username = _slugify($username, false);
     if ($username == "") {
-        $errors[] = $_lang['user.msg.badusername'];
+        $errors[] = _lang('user.msg.badusername');
     } else {
         $usernamechange = false;
         if ($username != _loginname) {
@@ -59,10 +59,10 @@ if (isset($_POST['username'])) {
                 if (DB::count(_users_table, '(username=' . DB::val($username) . ' OR publicname=' . DB::val($username) . ') AND id!=' . _loginid) === 0) {
                     $usernamechange = true;
                 } else {
-                    $errors[] = $_lang['user.msg.userexists'];
+                    $errors[] = _lang('user.msg.userexists');
                 }
             } else {
-                $errors[] = $_lang['mod.settings.error.usernamechangedenied'];
+                $errors[] = _lang('mod.settings.error.usernamechangedenied');
             }
         }
     }
@@ -70,10 +70,10 @@ if (isset($_POST['username'])) {
     // publicname
     $publicname = _e(_wsTrim(_post('publicname')));
     if (mb_strlen($publicname) > 24) {
-        $errors[] = $_lang['user.msg.publicnametoolong'];
+        $errors[] = _lang('user.msg.publicnametoolong');
     } elseif ($publicname != $userdata['publicname'] && $publicname != "") {
         if (DB::count(_users_table, '(publicname=' . DB::val($publicname) . ' OR username=' . DB::val($publicname) . ') AND id!=' . _loginid) !== 0) {
-            $errors[] = $_lang['user.msg.publicnameexists'];
+            $errors[] = _lang('user.msg.publicnameexists');
         }
     }
     if ($publicname === '') {
@@ -83,16 +83,16 @@ if (isset($_POST['username'])) {
     // email
     $email = trim(_post('email'));
     if (!_validateEmail($email)) {
-        $errors[] = $_lang['user.msg.bademail'];
+        $errors[] = _lang('user.msg.bademail');
     } else {
         if ($email != _loginemail) {
             if (_post('currentpassword') === '') {
-                $errors[] = $_lang['mod.settings.error.emailchangenopass'];
+                $errors[] = _lang('mod.settings.error.emailchangenopass');
             } elseif (!Sunlight\Util\Password::load($userdata['password'])->match(_post('currentpassword'))) {
-                $errors[] = $_lang['mod.settings.error.badcurrentpass'];
+                $errors[] = _lang('mod.settings.error.badcurrentpass');
             }
             if (DB::count(_users_table, 'email=' . DB::val($email) . ' AND id!=' . _loginid) !== 0) {
-                $errors[] = $_lang['user.msg.emailexists'];
+                $errors[] = _lang('user.msg.emailexists');
             }
         }
     }
@@ -138,7 +138,7 @@ if (isset($_POST['username'])) {
                 $avatar = $avatarUid;
 
             } else {
-                $errors[] = $_lang['global.avatar'] . ' - ' . $avatarError;
+                $errors[] = _lang('global.avatar') . ' - ' . $avatarError;
             }
 
         }
@@ -156,13 +156,13 @@ if (isset($_POST['username'])) {
                     $passwordchange = true;
                     $newpassword = Sunlight\Util\Password::create($newpassword)->build();
                 } else {
-                    $errors[] = $_lang['mod.settings.error.badnewpass'];
+                    $errors[] = _lang('mod.settings.error.badnewpass');
                 }
             } else {
-                $errors[] = $_lang['mod.settings.error.newpassnosame'];
+                $errors[] = _lang('mod.settings.error.newpassnosame');
             }
         } else {
-            $errors[] = $_lang['mod.settings.error.badcurrentpass'];
+            $errors[] = _lang('mod.settings.error.badcurrentpass');
         }
     }
 
@@ -236,18 +236,18 @@ if (isset($_POST['username'])) {
 
 /* ---  modul  --- */
 
-$_index['title'] = $_lang['mod.settings'];
+$_index['title'] = _lang('mod.settings');
 
 if (isset($_GET['saved'])) {
-    $message = _msg(_msg_ok, $_lang['global.saved']);
+    $message = _msg(_msg_ok, _lang('global.saved'));
 }
 
 // vyber jazyka
 if (_language_allowcustom) {
     $language_select = '
     <tr>
-    <th>' . $_lang['global.language'] . '</th>
-    <td><select name="language" class="inputsmall"><option value="">' . $_lang['global.default'] . '</option>';
+    <th>' . _lang('global.language') . '</th>
+    <td><select name="language" class="inputsmall"><option value="">' . _lang('global.default') . '</option>';
     $language_select .= Core::$pluginManager->select(PluginManager::LANGUAGE, $userdata['language']);
     $language_select .= '</td></tr>';
 } else {
@@ -259,8 +259,8 @@ if (_priv_administration) {
     $admin = "
 
   <tr>
-  <th>" . $_lang['mod.settings.wysiwyg'] . "</th>
-  <td><label><input type='checkbox' name='wysiwyg' value='1'" . _checkboxActivate($userdata['wysiwyg']) . "> " . $_lang['mod.settings.wysiwyg.label'] . "</label></td>
+  <th>" . _lang('mod.settings.wysiwyg') . "</th>
+  <td><label><input type='checkbox' name='wysiwyg' value='1'" . _checkboxActivate($userdata['wysiwyg']) . "> " . _lang('mod.settings.wysiwyg.label') . "</label></td>
   </tr>
 
   ";
@@ -269,36 +269,36 @@ if (_priv_administration) {
 }
 
 $output .= "
-<p><a href='" . _linkModule('profile', 'id=' . _loginname) . "'>" . $_lang['mod.settings.profilelink'] . " &gt;</a></p>
-<p>" . $_lang['mod.settings.p'] . "</p>" . $message . "
+<p><a href='" . _linkModule('profile', 'id=' . _loginname) . "'>" . _lang('mod.settings.profilelink') . " &gt;</a></p>
+<p>" . _lang('mod.settings.p') . "</p>" . $message . "
 <form action='" . _linkModule('settings') . "' method='post' name='setform' enctype='multipart/form-data'>
 
 " . _jsLimitLength(1024, "setform", "note") . "
 
   <fieldset>
-  <legend>" . $_lang['mod.settings.userdata'] . "</legend>
+  <legend>" . _lang('mod.settings.userdata') . "</legend>
   <table class='profiletable'>
 
   <tr>
-  <th>" . $_lang['login.username'] . " <span class='important'>*</span></th>
-  <td><input type='text'" . _restorePostValueAndName('username', _loginname) . " class='inputsmall' maxlength='24'>" . (!_priv_changeusername ? "<span class='hint'>(" . $_lang['mod.settings.namechangenote'] . ")</span>" : '') . "</td>
+  <th>" . _lang('login.username') . " <span class='important'>*</span></th>
+  <td><input type='text'" . _restorePostValueAndName('username', _loginname) . " class='inputsmall' maxlength='24'>" . (!_priv_changeusername ? "<span class='hint'>(" . _lang('mod.settings.namechangenote') . ")</span>" : '') . "</td>
   </tr>
 
   <tr>
-  <th>" . $_lang['mod.settings.publicname'] . "</th>
+  <th>" . _lang('mod.settings.publicname') . "</th>
   <td><input type='text'" . _restorePostValueAndName('publicname', $userdata['publicname'], true) . " class='inputsmall' maxlength='24'></td>
   </tr>
 
   <tr class='valign-top'>
-  <th>" . $_lang['global.email'] . " <span class='important'>*</span></th>
-  <td><input type='email'" . _restorePostValueAndName('email', $userdata['email']) . " class='inputsmall'/> <span class='hint'>(" . $_lang['mod.settings.emailchangenote'] . ")</span></td>
+  <th>" . _lang('global.email') . " <span class='important'>*</span></th>
+  <td><input type='email'" . _restorePostValueAndName('email', $userdata['email']) . " class='inputsmall'/> <span class='hint'>(" . _lang('mod.settings.emailchangenote') . ")</span></td>
   </tr>
 
   " . $language_select . "
 
   <tr>
-  <th>" . $_lang['mod.settings.massemail'] . "</th>
-  <td><label><input type='checkbox' name='massemail' value='1'" . _checkboxActivate($userdata['massemail']) . "> " . $_lang['mod.settings.massemail.label'] . "</label></td>
+  <th>" . _lang('mod.settings.massemail') . "</th>
+  <td><label><input type='checkbox' name='massemail' value='1'" . _checkboxActivate($userdata['massemail']) . "> " . _lang('mod.settings.massemail.label') . "</label></td>
   </tr>
 
   " . $admin . "
@@ -306,22 +306,22 @@ $output .= "
   </fieldset>
 
   <fieldset>
-  <legend>" . $_lang['mod.settings.password'] . "</legend>
-  <p>" . $_lang['mod.settings.password.hint'] . "</p>
+  <legend>" . _lang('mod.settings.password') . "</legend>
+  <p>" . _lang('mod.settings.password.hint') . "</p>
   <table class='profiletable'>
 
   <tr>
-  <th>" . $_lang['mod.settings.password.current'] . "</th>
+  <th>" . _lang('mod.settings.password.current') . "</th>
   <td><input type='password' name='currentpassword' class='inputsmall' autocomplete='off'></td>
   </tr>
 
   <tr>
-  <th>" . $_lang['mod.settings.password.new'] . "</th>
+  <th>" . _lang('mod.settings.password.new') . "</th>
   <td><input type='password' name='newpassword' class='inputsmall' autocomplete='off'></td>
   </tr>
 
   <tr>
-  <th>" . $_lang['mod.settings.password.new'] . " (" . $_lang['global.check'] . ")</th>
+  <th>" . _lang('mod.settings.password.new') . " (" . _lang('global.check') . ")</th>
   <td><input type='password' name='newpassword-confirm' class='inputsmall' autocomplete='off'></td>
   </tr>
 
@@ -331,14 +331,14 @@ $output .= "
   " . Sunlight\Extend::buffer('mod.settings.form') . "
 
   <fieldset>
-  <legend>" . $_lang['mod.settings.info'] . "</legend>
+  <legend>" . _lang('mod.settings.info') . "</legend>
 
   <table class='profiletable'>
   
    " . Sunlight\Extend::buffer('mod.settings.form.info') . "
 
   <tr class='valign-top'>
-  <th>" . $_lang['global.note'] . "</th>
+  <th>" . _lang('global.note') . "</th>
   <td><textarea class='areasmall' rows='9' cols='33' name='note'>" . _restorePostValue('note', $userdata['note'], false, false) . "</textarea></td>
   </tr>
 
@@ -354,13 +354,13 @@ $output .= "
 if (_uploadavatar) {
     $output .= "
   <fieldset>
-  <legend>" . $_lang['mod.settings.avatar'] . "</legend>
+  <legend>" . _lang('mod.settings.avatar') . "</legend>
   " . Sunlight\Extend::buffer('mod.settings.avatar', array('user' => $userdata)) . "
-  <p><strong>" . $_lang['mod.settings.avatar.upload'] . ":</strong> <input type='file' name='avatar'></p>
+  <p><strong>" . _lang('mod.settings.avatar.upload') . ":</strong> <input type='file' name='avatar'></p>
     <table>
     <tr class='valign-top'>
     <td width='106'><img src='" . _e($avatar_path) . "' class='avatar' alt='avatar'></td>
-    <td><p>" . $_lang['mod.settings.avatar.hint'] . "</p><p><label><input type='checkbox' name='removeavatar' value='1'> " . $_lang['mod.settings.avatar.remove'] . "</label></p></td>
+    <td><p>" . _lang('mod.settings.avatar.hint') . "</p><p><label><input type='checkbox' name='removeavatar' value='1'> " . _lang('mod.settings.avatar.remove') . "</label></p></td>
     </tr>
     </table>
   </fieldset>
@@ -371,9 +371,9 @@ if (_priv_selfremove && _loginid != 0) {
     $output .= "
 
   <fieldset>
-  <legend>" . $_lang['mod.settings.selfremove'] . "</legend>
-  <p><label><input type='checkbox' name='selfremove' value='1' onclick='if (this.checked==true) {return Sunlight.confirm();}'> " . $_lang['mod.settings.selfremove.box'] . "</label></p>
-  <div><strong>" . $_lang['mod.settings.selfremove.confirm'] . ":</strong> <input type='password' name='selfremove-confirm' class='inputsmall'></div>
+  <legend>" . _lang('mod.settings.selfremove') . "</legend>
+  <p><label><input type='checkbox' name='selfremove' value='1' onclick='if (this.checked==true) {return Sunlight.confirm();}'> " . _lang('mod.settings.selfremove.box') . "</label></p>
+  <div><strong>" . _lang('mod.settings.selfremove.confirm') . ":</strong> <input type='password' name='selfremove-confirm' class='inputsmall'></div>
   </fieldset>
 
 ";
@@ -381,8 +381,8 @@ if (_priv_selfremove && _loginid != 0) {
 
 $output .= "
 <br>
-<input type='submit' value='" . $_lang['mod.settings.submit'] . "'>
-<input type='reset' value='" . $_lang['global.reset'] . "' onclick='return Sunlight.confirm();'>
+<input type='submit' value='" . _lang('mod.settings.submit') . "'>
+<input type='reset' value='" . _lang('global.reset') . "' onclick='return Sunlight.confirm();'>
 
 " . _xsrfProtect() . "</form>
 ";

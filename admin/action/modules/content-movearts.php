@@ -20,13 +20,13 @@ if (isset($_POST['source'])) {
     // kontrola promennych
     $error_log = array();
     if (DB::count(_root_table, 'id=' . DB::val($source) . ' AND type=' . _page_category) === 0) {
-        $error_log[] = $_lang['admin.content.movearts.badsource'];
+        $error_log[] = _lang('admin.content.movearts.badsource');
     }
     if (DB::count(_root_table, 'id=' . DB::val($target) . ' AND type=' . _page_category) === 0) {
-        $error_log[] = $_lang['admin.content.movearts.badtarget'];
+        $error_log[] = _lang('admin.content.movearts.badtarget');
     }
     if ($source == $target) {
-        $error_log[] = $_lang['admin.content.movearts.samecats'];
+        $error_log[] = _lang('admin.content.movearts.samecats');
     }
 
     // aplikace
@@ -71,7 +71,7 @@ if (isset($_POST['source'])) {
             $counter = DB::affectedRows();
         }
 
-        $message = _msg(_msg_ok, str_replace("*moved*", $counter, $_lang['admin.content.movearts.done']));
+        $message = _msg(_msg_ok, _lang('admin.content.movearts.done', array("*moved*" => $counter)));
     } else {
         $message = _msg(_msg_warn, _msgList($error_log, 'errors'));
     }
@@ -82,12 +82,12 @@ if (isset($_POST['source'])) {
 
 $output .= $message . "
 <form class='cform' action='index.php?p=content-movearts' method='post'>"
-    . $_lang['admin.content.movearts.text1']
+    . _lang('admin.content.movearts.text1')
     . " " . _adminRootSelect("source", array('type' => _page_category))
-    . $_lang['admin.content.movearts.text2']
+    . _lang('admin.content.movearts.text2')
     . " " . _adminRootSelect("target", array('type' => _page_category))
-    . " <input class='button' type='submit' value='" . $_lang['global.do'] . "'>
+    . " <input class='button' type='submit' value='" . _lang('global.do') . "'>
 <br><br>
-<label><input type='checkbox' name='fullmove' value='1'> " . $_lang['admin.content.movearts.fullmove'] . "</label>
+<label><input type='checkbox' name='fullmove' value='1'> " . _lang('admin.content.movearts.fullmove') . "</label>
 " . _xsrfProtect() . "</form>
 ";

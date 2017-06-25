@@ -2,8 +2,11 @@
 
 namespace Sunlight\Plugin;
 
+use Sunlight\Core;
 use Sunlight\Database\Database as DB;
-use Sunlight\LangPack;
+use Sunlight\Localization\LocalizationDictionary;
+use Sunlight\Localization\LocalizationDirectory;
+use Sunlight\Localization\LocalizationSubDictionary;
 
 class TemplatePlugin extends Plugin
 {
@@ -25,12 +28,19 @@ class TemplatePlugin extends Plugin
             'box.title' => array('type' => 'string', 'required' => false, 'default' => 'h3'),
             'box.title.inside' => array('type' => 'boolean', 'required' => false, 'default' => false),
             'layouts' => array('type' => 'array', 'required' => true, 'normalizer' => array('Sunlight\Plugin\PluginOptionNormalizer', 'normalizeTemplateLayouts')),
-            'layout.labels' => array('type' => 'string', 'required' => false, 'normalizer' => array('Sunlight\Plugin\PluginOptionNormalizer', 'normalizePath')),
+            'lang_dir' => array('type' => 'string', 'required' => false, 'default' => 'labels', 'normalizer' => array('Sunlight\Plugin\PluginOptionNormalizer', 'normalizePath')),
         ),
     );
 
-    /** @var bool */
-    protected $layoutLabelsLoaded = false;
+    /** @var LocalizationDictionary */
+    protected $lang;
+
+    public function __construct(array $data, PluginManager $manager)
+    {
+        parent::__construct($data, $manager);
+
+        $this->lang = new LocalizationDirectory($this->options['lang_dir']);
+    }
 
     public function canBeDisabled()
     {
@@ -50,6 +60,16 @@ class TemplatePlugin extends Plugin
     public function isDefault()
     {
         return $this->id === _default_template;
+    }
+
+    /**
+     * Get the localization dictionary
+     *
+     * @return LocalizationDictionary
+     */
+    public function getLang()
+    {
+        return $this->lang;
     }
     
     /**
@@ -96,9 +116,7 @@ class TemplatePlugin extends Plugin
      */
     public function getLayoutLabel($layout)
     {
-        return $this->loadLayoutLabels() && isset($GLOBALS['_lang'][$this->getLayoutLabelsKey()][$layout]['label'])
-            ? $GLOBALS['_lang'][$this->getLayoutLabelsKey()][$layout]['label']
-            : $layout;
+        return $this->lang->get("{$layout}.label");
     }
 
     /**
@@ -138,9 +156,7 @@ class TemplatePlugin extends Plugin
      */
     public function getSlotLabel($layout, $slot)
     {
-        return $this->loadLayoutLabels() && isset($GLOBALS['_lang'][$this->getLayoutLabelsKey()][$layout]['slots'][$slot])
-            ? $GLOBALS['_lang'][$this->getLayoutLabelsKey()][$layout]['slots'][$slot]
-            : $slot;
+        return $this->lang->get("{$layout}.slot.{$slot}");
     }
 
     /**
@@ -168,27 +184,10 @@ class TemplatePlugin extends Plugin
     }
 
     /**
-     * Attempt to load layout labels (if they exist and haven't been loaded yet)
-     *
-     * @return bool whether layout labels are loaded
-     */
-    protected function loadLayoutLabels()
-    {
-        if (!$this->layoutLabelsLoaded && $this->options['layout.labels'] !== null) {
-            LangPack::register($this->getLayoutLabelsKey(), $this->options['layout.labels']);
-            $this->layoutLabelsLoaded = true;
-        }
-
-        return $this->layoutLabelsLoaded;
-    }
-
-    /**
-     * Get layout labels key ($_lang dictionary key)
-     *
      * @return string
      */
-    protected function getLayoutLabelsKey()
+    protected function getLocalizationPrefix()
     {
-        return $this->type . '.' . $this->id . '.layout_labels';
+        return "{$this->type}_{$this->id}";
     }
 }

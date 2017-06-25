@@ -12,17 +12,15 @@ class InstallAction extends PluginAction
 {
     public function getTitle()
     {
-        return $GLOBALS['_lang']['admin.plugins.action.do.install'];
+        return _lang('admin.plugins.action.do.install');
     }
 
     protected function execute()
     {
-        global $_lang;
-
         if (!$this->isConfirmed()) {
             return $this->confirm(
-                $_lang['admin.plugins.action.install.confirm'],
-                $_lang['admin.plugins.action.do.install']
+                _lang('admin.plugins.action.install.confirm'),
+                _lang('admin.plugins.action.do.install')
             );
         }
 
@@ -31,13 +29,13 @@ class InstallAction extends PluginAction
 
             if ($installer->install()) {
                 return ActionResult::success(
-                    Message::ok(sprintf($_lang['admin.plugins.action.install.success'], $this->plugin->getOption('name')))
+                    Message::ok(sprintf(_lang('admin.plugins.action.install.success'), $this->plugin->getOption('name')))
                 );
             }
         }
 
         return ActionResult::failure(
-            Message::error(sprintf($_lang['admin.plugins.action.install.failure'], $this->plugin->getOption('name')))
+            Message::error(sprintf(_lang('admin.plugins.action.install.failure'), $this->plugin->getOption('name')))
         );
     }
 }

@@ -19,7 +19,7 @@ if (isset($_SESSION[$skey])) {
     $receiver = $_SESSION[$skey];
     unset($_SESSION[$skey], $skey);
 } else {
-    exit($_lang['global.badinput']);
+    exit(_lang('global.badinput'));
 }
 
 // casove omezeni
@@ -28,7 +28,7 @@ if (_iplogCheck(_iplog_anti_spam)) {
     _iplogUpdate(_iplog_anti_spam);
 } else {
     // prekroceno
-    echo str_replace('*postsendexpire*', _postsendexpire, $_lang['misc.requestlimit']);
+    echo _lang('misc.requestlimit', array('*postsendexpire*' => _postsendexpire));
     exit;
 }
 
@@ -44,9 +44,9 @@ if (_xsrfCheck()) {
 
         // uprava predmetu
         if ($subject === '') {
-            $subject = $_lang['hcm.mailform.subjectprefix'];
+            $subject = _lang('hcm.mailform.subjectprefix');
         } else {
-            $subject = sprintf('%s: %s', $_lang['hcm.mailform.subjectprefix'], $subject);
+            $subject = sprintf('%s: %s', _lang('hcm.mailform.subjectprefix'), $subject);
         }
 
         // pridani informacniho textu do tela
@@ -54,9 +54,12 @@ if (_xsrfCheck()) {
         if (_login) {
             $info_ip .= ' (' . _loginname . ')';
         }
-        $info_from = array("*domain*", "*time*", "*ip*", "*sender*");
-        $info_to = array(Sunlight\Util\Url::base()->getFullHost(), _formatTime(time()), $info_ip, $sender);
-        $text .= "\n\n" . str_repeat('-', 16) . "\n" . str_replace($info_from, $info_to, $_lang['hcm.mailform.info']);
+        $text .= "\n\n" . str_repeat('-', 16) . "\n" . _lang('hcm.mailform.info', array(
+            '*domain*' => Sunlight\Util\Url::base()->getFullHost(),
+            '*time*' => _formatTime(time()),
+            '*ip*' => $info_ip,
+            '*sender*' => $sender,
+        ));
 
         // odeslani
         if (_mail($receiver, $subject, $text, $headers)) {

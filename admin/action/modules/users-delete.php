@@ -30,29 +30,29 @@ if ($continue) {
     if ($query['id'] != 0 && $query['id'] != _loginid) {
         if (isset($_POST['confirmed'])) {
             if (_deleteUser($id)) {
-                $output .= _msg(_msg_ok, $_lang['global.done']);
+                $output .= _msg(_msg_ok, _lang('global.done'));
             } else {
-                $output .= _msg(_msg_warn, $_lang['global.error']);
+                $output .= _msg(_msg_warn, _lang('global.error'));
             }
         } else {
             $output .= "
-<p class='bborder'>" . str_replace('%user%', $query['username'], $_lang['admin.users.deleteuser.confirmation']) . "
+<p class='bborder'>" . _lang('admin.users.deleteuser.confirmation', array('%user%' => $query['username'])) . "
 <form method='post'>
-    <input type='submit' name='confirmed' value='" . $_lang['admin.users.deleteuser'] . "'>
+    <input type='submit' name='confirmed' value='" . _lang('admin.users.deleteuser') . "'>
 " . _xsrfProtect() . "</form>";
         }
     } else {
         if ($query['id'] == _super_admin_id) {
-            $output .= _msg(_msg_warn, $_lang['global.rootnote']);
+            $output .= _msg(_msg_warn, _lang('global.rootnote'));
         } else {
-            $output .= _msg(_msg_warn, $_lang['admin.users.deleteuser.selfnote']);
+            $output .= _msg(_msg_warn, _lang('admin.users.deleteuser.selfnote'));
         }
     }
 
 } else {
     if ($levelconflict == false) {
-        $output .= _msg(_msg_err, $_lang['global.baduser']);
+        $output .= _msg(_msg_err, _lang('global.baduser'));
     } else {
-        $output .= _msg(_msg_err, $_lang['global.disallowed']);
+        $output .= _msg(_msg_err, _lang('global.disallowed'));
     }
 }

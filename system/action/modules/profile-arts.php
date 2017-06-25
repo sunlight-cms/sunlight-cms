@@ -23,7 +23,7 @@ if ($query === false) {
 $_index['title'] = str_replace(
     '*user*',
     $query[$query['publicname'] !== null ? 'publicname' : 'username'],
-    $_lang['mod.profile.arts']
+    _lang('mod.profile.arts')
 );
 
 // odkaz zpet na profil
@@ -46,5 +46,5 @@ if (DB::size($arts) != 0) {
         $output .= $paging['paging'];
     }
 } else {
-    $output .= '<p>' . $_lang['global.nokit'] . '</p>';
+    $output .= '<p>' . _lang('global.nokit') . '</p>';
 }

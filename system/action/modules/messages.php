@@ -26,7 +26,7 @@ if (isset($_GET['a'])) {
 
 /* ---  modul  --- */
 
-$_index['title'] = $_lang['mod.messages'];
+$_index['title'] = _lang('mod.messages');
 $list = false;
 $mod_title = 'mod.messages';
 $message = '';
@@ -55,13 +55,13 @@ switch ($a) {
 
                 // text
                 if ($text === '') {
-                    $message = _msg(_msg_warn, $_lang['mod.messages.error.notext']);
+                    $message = _msg(_msg_warn, _lang('mod.messages.error.notext'));
                     break;
                 }
 
                 // predmet
                 if ($subject === '') {
-                    $message = _msg(_msg_warn, $_lang['mod.messages.error.nosubject']);
+                    $message = _msg(_msg_warn, _lang('mod.messages.error.nosubject'));
                     break;
                 }
 
@@ -72,16 +72,16 @@ switch ($a) {
                     $rq = false;
                 }
                 if ($rq === false || $rq['usr_id'] == _loginid) {
-                    $message = _msg(_msg_warn, $_lang['mod.messages.error.badreceiver']);
+                    $message = _msg(_msg_warn, _lang('mod.messages.error.badreceiver'));
                     break;
                 } elseif ($rq['usr_blocked'] || $rq['ugrp_blocked']) {
-                    $message = _msg(_msg_warn, $_lang['mod.messages.error.blockedreceiver']);
+                    $message = _msg(_msg_warn, _lang('mod.messages.error.blockedreceiver'));
                     break;
                 }
 
                 // anti spam limit
                 if (!_iplogCheck(_iplog_anti_spam)) {
-                    $message = _msg(_msg_warn, str_replace('*postsendexpire*', _postsendexpire, $_lang['misc.requestlimit']));
+                    $message = _msg(_msg_warn, _lang('misc.requestlimit', array('*postsendexpire*' => _postsendexpire)));
                     break;
                 }
 
@@ -138,17 +138,17 @@ switch ($a) {
 <table>
 
 <tr>
-    <th>" . $_lang['mod.messages.receiver'] . "</th>
+    <th>" . _lang('mod.messages.receiver') . "</th>
     <td><input type='text' class='inputsmall' maxlength='24'" . _restorePostValueAndName('receiver', _get('receiver')) . "></td>
 </tr>
 
 <tr>
-    <th>" . $_lang['posts.subject'] . "</th>
+    <th>" . _lang('posts.subject') . "</th>
     <td><input type='text' class='inputmedium' maxlength='48'" . _restorePostValueAndName('subject', _get('subject')) . "></td>
 </tr>
 
 <tr class='valign-top'>
-    <th>" . $_lang['mod.messages.message'] . "</th>
+    <th>" . _lang('mod.messages.message') . "</th>
     <td><textarea class='areamedium' rows='5' cols='33' name='text'>" . _restorePostValue('text', null, false) . "</textarea></td>
 </tr>
 
@@ -159,7 +159,7 @@ switch ($a) {
 
 <tr>
     <td></td>
-    <td><input type='submit' value='" . $_lang['global.send'] . "'> " . _getPostFormPreviewButton('newmsg', 'text') . "</td>
+    <td><input type='submit' value='" . _lang('global.send') . "'> " . _getPostFormPreviewButton('newmsg', 'text') . "</td>
 </tr>
 
 </table>
@@ -184,7 +184,7 @@ switch ($a) {
             $receiverUserQuery = _userQuery('pm.receiver', 'receiver_', 'ru');
             $q = DB::queryRow('SELECT pm.*,post.id post_id,post.subject,post.time,post.text,' . $senderUserQuery['column_list'] . ',' . $receiverUserQuery['column_list'] . ' FROM ' . _pm_table . ' AS pm JOIN ' . _posts_table . ' AS post ON (post.type=' . _post_pm . ' AND post.home=pm.id AND post.xhome=-1) ' . $senderUserQuery['joins'] . ' ' . $receiverUserQuery['joins'] . ' WHERE pm.id=' . $id . ' AND (sender=' . _loginid . ' AND sender_deleted=0 OR receiver=' . _loginid . ' AND receiver_deleted=0)');
             if ($q === false) {
-                $output .= _msg(_msg_err, $_lang['global.badinput']);
+                $output .= _msg(_msg_err, _lang('global.badinput'));
                 break;
             }
 
@@ -198,24 +198,24 @@ switch ($a) {
             // citace neprectenych zprav
             $counter = DB::count(_posts_table, 'home=' . DB::val($q['id']) . ' AND type=' . _post_pm . ' AND time>' . $q[$role_other . '_readtime']);
             $counter_s = array('', '');
-            $counter_s[($role === 'sender' ? 1 : 0)] = ' <span class="post-info">(' . $counter . ' ' . $_lang['mod.messages.unreadcount'] . ')</span>';
+            $counter_s[($role === 'sender' ? 1 : 0)] = ' <span class="post-info">(' . $counter . ' ' . _lang('mod.messages.unreadcount') . ')</span>';
 
             // odkazy na spravu
             if (_postAccess($senderUserQuery, $q)) {
-                $pm_admin = " <span class='post-actions'><a class='post-action-edit' href='" . _linkModule('editpost', 'id=' . $q['post_id']) . "'>" . $_lang['global.edit'] . "</a></span>";
+                $pm_admin = " <span class='post-actions'><a class='post-action-edit' href='" . _linkModule('editpost', 'id=' . $q['post_id']) . "'>" . _lang('global.edit') . "</a></span>";
             } else {
                 $pm_admin = '';
             }
 
             // vystup
             $output .= "<div id='post-" . $id . "' class='topic'>
-<h2>" . $_lang['mod.messages.message'] . ": " . $q['subject'] . "</h2>
+<h2>" . _lang('mod.messages.message') . ": " . $q['subject'] . "</h2>
 <p class='topic-info'>"
-        . $_lang['global.postauthor']
+        . _lang('global.postauthor')
         . ' ' . _linkUserFromQuery($senderUserQuery, $q)
         . ' <span class="post-info">(' . _formatTime($q['time'], 'post') . ')</span>'
         . $counter_s[0]
-        . ' ' . $_lang['mod.messages.receiver.inview']
+        . ' ' . _lang('mod.messages.receiver.inview')
         . ' ' . _linkUserFromQuery($receiverUserQuery, $q)
         . $counter_s[1]
         . $pm_admin
@@ -274,7 +274,7 @@ switch ($a) {
                 case 1:
                     if (!empty($selected_ids)) {
                         $deletePms('id IN(' . DB::arr($selected_ids) . ')');
-                        $message = _msg(_msg_ok, $_lang['mod.messages.delete.done']);
+                        $message = _msg(_msg_ok, _lang('mod.messages.delete.done'));
                     }
                     break;
 
@@ -288,18 +288,18 @@ switch ($a) {
                             $changesets[$r['id']][$role . '_readtime'] = 0;
                         }
                         DB::updateSetMulti(_pm_table, 'id', $changesets);
-                        $message = _msg(_msg_ok, $_lang['global.done']);
+                        $message = _msg(_msg_ok, _lang('global.done'));
                     }
                     break;
 
                 case 3:
                     $deletePms(null, 'sender_readtime>=update_time', 'receiver_readtime>=update_time');
-                    $message = _msg(_msg_ok, $_lang['mod.messages.delete.done']);
+                    $message = _msg(_msg_ok, _lang('mod.messages.delete.done'));
                     break;
 
                 case 4:
                     $deletePms();
-                    $message = _msg(_msg_ok, $_lang['mod.messages.delete.done']);
+                    $message = _msg(_msg_ok, _lang('mod.messages.delete.done'));
                     break;
             }
         }
@@ -314,11 +314,11 @@ switch ($a) {
         $output .= $message . "
         <form method='post' action=''>
 <p class='messages-menu'>
-    <a class='button' href='" . _linkModule('messages', 'a=new') . "'><img src='" . _templateImage('icons/bubble.png') . "' alt='new' class='icon'>" . $_lang['mod.messages.new'] . "</a>
+    <a class='button' href='" . _linkModule('messages', 'a=new') . "'><img src='" . _templateImage('icons/bubble.png') . "' alt='new' class='icon'>" . _lang('mod.messages.new') . "</a>
 </p>
 
 <table class='messages-table'>
-<tr><td width='10'><input type='checkbox' name='selector' onchange=\"var that=this;$('table.messages-table input').each(function(){this.checked=that.checked;});\"></td><th>" . $_lang['mod.messages.message'] . "</th><th>" . $_lang['global.user'] . "</th><th>" . $_lang['mod.messages.time.update'] . "</th></tr>\n";
+<tr><td width='10'><input type='checkbox' name='selector' onchange=\"var that=this;$('table.messages-table input').each(function(){this.checked=that.checked;});\"></td><th>" . _lang('mod.messages.message') . "</th><th>" . _lang('global.user') . "</th><th>" . _lang('mod.messages.time.update') . "</th></tr>\n";
         $senderUserQuery = _userQuery('pm.sender', 'sender_', 'su');
         $receiverUserQuery = _userQuery('pm.receiver', 'receiver_', 'ru');
         $q = DB::query('SELECT pm.id,pm.sender,pm.receiver,pm.sender_readtime,pm.receiver_readtime,pm.update_time,post.subject,' . $senderUserQuery['column_list'] . ',' . $receiverUserQuery['column_list'] . ',(SELECT COUNT(*) FROM ' . _posts_table . ' AS countpost WHERE countpost.home=pm.id AND countpost.type=' . _post_pm . ' AND (pm.sender=' . _loginid . ' AND countpost.time>pm.receiver_readtime OR pm.receiver=' . _loginid . ' AND countpost.time>pm.sender_readtime)) AS unread_counter FROM ' . _pm_table . ' AS pm JOIN ' . _posts_table . ' AS post ON (post.home=pm.id AND post.type=' . _post_pm . ' AND post.xhome=-1) ' . $senderUserQuery['joins'] . ' ' . $receiverUserQuery['joins'] . ' WHERE pm.sender=' . _loginid . ' AND pm.sender_deleted=0 OR pm.receiver=' . _loginid . ' AND pm.receiver_deleted=0 ORDER BY pm.update_time DESC ' . $paging['sql_limit']);
@@ -327,19 +327,19 @@ switch ($a) {
             $output .= "<tr><td><input type='checkbox' name='msg[]' value='" . $r['id'] . "'></td><td><a href='" . _linkModule('messages', 'a=list&read=' . $r['id']) . "'" . ($read ? '' : ' class="notread"') . ">" . $r['subject'] . "</a></td><td>" . _linkUserFromQuery($r['sender'] == _loginid ? $receiverUserQuery : $senderUserQuery, $r) . " <small>(" . $r['unread_counter'] . ")</small></td><td>" . _formatTime($r['update_time'], 'post') . "</td></tr>\n";
         }
         if (!isset($read)) {
-            $output .= "<tr><td colspan='4'>" . $_lang['mod.messages.nokit'] . "</td></tr>\n";
+            $output .= "<tr><td colspan='4'>" . _lang('mod.messages.nokit') . "</td></tr>\n";
         }
 
         $output .= "
 <tr><td colspan='4'>
     <div class='hr messages-hr'><hr></div>
     <select name='action'>
-    <option value='1'>" . $_lang['mod.messages.delete.selected'] . "</option>
-    <option value='2'>" . $_lang['mod.messages.mark.selected'] . "</option>
-    <option value='3'>" . $_lang['mod.messages.delete.read'] . "</option>
-    <option value='4'>" . $_lang['mod.messages.delete.all'] . "</option>
+    <option value='1'>" . _lang('mod.messages.delete.selected') . "</option>
+    <option value='2'>" . _lang('mod.messages.mark.selected') . "</option>
+    <option value='3'>" . _lang('mod.messages.delete.read') . "</option>
+    <option value='4'>" . _lang('mod.messages.delete.all') . "</option>
     </select>
-    <input type='submit' value='" . $_lang['global.do'] . "' onclick='return Sunlight.confirm();'>
+    <input type='submit' value='" . _lang('global.do') . "' onclick='return Sunlight.confirm();'>
 </td></tr>
 
 </table>

@@ -6,7 +6,7 @@ if (!defined('_root')) {
     exit;
 }
 
-$_index['title'] = $_lang['nologin.title'];
+$_index['title'] = _lang('nologin.title');
 $_index['output'] = '';
 
 Extend::call('index.guest_required', array(
@@ -14,5 +14,5 @@ Extend::call('index.guest_required', array(
 ));
 
 if ($_index['output'] === '') {
-    $_index['output'] =_msg(_msg_ok, $_lang['nologin.msg']);
+    $_index['output'] =_msg(_msg_ok, _lang('nologin.msg'));
 }

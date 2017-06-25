@@ -6,10 +6,6 @@
  * Dynamically defined constants, global variables, etc.
  */
 
-/** @global array */
-$_lang = [];
-
-
 // settings
 
 /** Enforced delay between posts for a single IP (seconds) */

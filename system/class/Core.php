@@ -11,20 +11,21 @@ use Kuria\Debug\Error;
 use Kuria\Error\ErrorHandler;
 use Kuria\Error\Screen\WebErrorScreen;
 use Sunlight\Database\Database as DB;
+use Sunlight\Localization\LocalizationDictionary;
 use Sunlight\Plugin\PluginManager;
 use Sunlight\Util\Filesystem;
 use Sunlight\Util\Url;
 
 /**
- * Hlavni systemovy singleton
+ * Main system singleton
  *
- * Spravuje prostredi systemu.
+ * Manages core components and configuration.
  */
 class Core
 {
-    /** Verze systemu */
+    /** CMS version */
     const VERSION = '8.0.0';
-    /** Distribuce systemu */
+    /** CMS distribution type */
     const DIST = 'GIT'; // GIT / STABLE / BETA
 
     /** @var float */
@@ -52,6 +53,8 @@ class Core
     public static $pluginManager;
     /** @var Cache */
     public static $cache;
+    /** @var LocalizationDictionary */
+    public static $lang;
 
     /** @var array|null */
     public static $userData;
@@ -72,32 +75,32 @@ class Core
     public static $cronIntervals = array();
 
     /**
-     * Staticka trida
+     * This is a static class
      */
     private function __construct()
     {
     }
 
     /**
-     * Inicializovat system
+     * Initialize the system
      *
-     * Mozne klice v $options:
-     * -----------------------
-     * config_file          cesta ke konfiguracnimu skriptu nebo null(= vychozi)
-     * session_enabled      inicializovat session 1/0
-     * session_regenerate   vynutit zmenu session ID 1/0
-     * run_cron             automaticky spustit cron, je-li aktivovan 1/0
-     * content_type         typ obsahu (pro header), false pro deaktivaci, vychozi je "text/html; charset=UTF-8"
-     * env                  prostredi ("web" nebo "admin")
+     * Supported $options keys:
+     * ------------------------
+     * config_file          path to the configuration file or null (= default)
+     * session_enabled      initialize session 1/0
+     * session_regenerate   force new session ID 1/0
+     * run_cron             automatically run cron tasks 1/0
+     * content_type         content type, FALSE = disabled (default is "text/html; charset=UTF-8")
+     * env                  environment identifier, "web" or "admin"
      *
-     * @param string $root    relativni cesta do korenoveho adresare
-     * @param array  $options pole s moznostmi
+     * @param string $root    relative path to the system root directory
+     * @param array  $options
      */
     public static function init($root, array $options = array())
     {
         static::$start = microtime(true);
 
-        // hlavni inicializace
+        // first initialization phase
         static::initConfiguration($root, $options);
         static::initComponents($options);
         static::initEnvironment($options);
@@ -105,32 +108,32 @@ class Core
         static::initPlugins();
         static::initSettings();
 
-        // kontrola
+        // check
         static::initCheck();
 
-        // druha cast inicializace
+        // second initialization phase
         static::initSession();
-        static::initLanguageFile();
+        static::initLocalization();
 
-        // extend udalost po inicializaci
+        // event
         Extend::call('core.ready');
 
-        // cron
+        // cron tasks
         Extend::reg('cron.maintenance', array(__CLASS__, 'doMaintenance'));
         if (_cron_auto && $options['run_cron']) {
-            static::runCron();
+            static::runCronTasks();
         }
     }
 
     /**
-     * Inicializovat konfiguraci
+     * Initialize configuration
      *
      * @param string $root
      * @param array  &$options
      */
     private static function initConfiguration($root, array &$options)
     {
-        // nacteni konfiguracniho souboru
+        // load config file
         if (!isset($options['config_file'])) {
             $configFile = $root . 'config.php';
         } else {
@@ -139,7 +142,7 @@ class Core
 
         $options += require $configFile;
 
-        // vychozi nastaveni
+        // defaults
         $options += array(
             'db.server' => null,
             'db.port' => null,
@@ -167,6 +170,7 @@ class Core
             'env' => 'web',
         );
 
+        // check required options
         $requiredOptions = array(
             'db.server',
             'db.name',
@@ -185,6 +189,7 @@ class Core
             }
         }
 
+        // check environment
         if ($options['env'] !== 'admin' && $options['env'] !== 'web') {
             static::systemFailure(
                 'Konfigurační volba "env" musí být "admin" nebo "web".',
@@ -192,9 +197,7 @@ class Core
             );
         }
 
-        $url = Url::current();
-
-        // definice promennych
+        // define variables
         static::$appId = $options['app_id'];
         static::$secret = $options['secret'];
         static::$url = $options['url'];
@@ -203,7 +206,7 @@ class Core
         static::$sessionRegenerate = $options['session_regenerate'] || isset($_POST['_session_force_regenerate']);
         static::$imageError = $root . 'images/image_error.png';
 
-        // systemove konstanty
+        // define constants
         define('_root', $root);
         define('_env', $options['env']);
         define('_env_web', $options['env'] === 'web');
@@ -218,17 +221,14 @@ class Core
     }
 
     /**
-     * Inicializovat komponenty
+     * Initialize components
      *
      * @param array $options
      */
     private static function initComponents(array $options)
     {
-        // globalni promenne
-        $GLOBALS['_lang'] = array();
-
-        // alias db tridy
-        class_alias('Sunlight\Database\Database', 'DB'); // zpetna kompatibilita
+        // db class alias (BC)
+        class_alias('Sunlight\Database\Database', 'DB');
 
         // error handler
         static::$errorHandler = new ErrorHandler();
@@ -260,15 +260,18 @@ class Core
             static::$cache->getNamespace('plugins.')
         );
 
-        // konstanty
+        // localization
+        static::$lang = new LocalizationDictionary();
+
+        // constants
         require _root . 'system/constants.php';
 
-        // funkce
+        // functions
         require _root . 'system/functions.php';
     }
 
     /**
-     * Inicializovat databazi
+     * Initialize database
      *
      * @param array $options
      */
@@ -287,11 +290,11 @@ class Core
     }
 
     /**
-     * Inicializovat nastaveni
+     * Initialize settings
      */
     private static function initSettings()
     {
-        // nacist z databaze
+        // fetch from database
         $query = DB::query('SELECT var,val,constant FROM ' . _settings_table . ' WHERE preload=1 AND ' . _env . '=1', true);
 
         if (DB::error()) {
@@ -306,10 +309,10 @@ class Core
         $settings = DB::rows($query, 'var');
         DB::free($query);
 
-        // extend udalost
+        // event
         Extend::call('core.settings', array('settings' => &$settings));
 
-        // aplikovat nastaveni
+        // apply settings
         foreach ($settings as $setting) {
             if ($setting['constant']) {
                 define("_{$setting['var']}", $setting['val']);
@@ -318,10 +321,10 @@ class Core
             }
         }
         
-        // nastavit interval pro maintenance
+        // define maintenance cron interval
         static::$cronIntervals['maintenance'] = _maintenance_interval;
 
-        // ip adresa klienta
+        // determine client IP address
         if (empty($_SERVER['REMOTE_ADDR'])) {
             $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
         }
@@ -334,11 +337,11 @@ class Core
     }
 
     /**
-     * Zkontrolovat stav systemu po hlavni inicializaci
+     * Check system state after first initialization phase
      */
     private static function initCheck()
     {
-        // kontrola verze databaze
+        // check database version
         if (!defined('_dbversion') || Core::VERSION !== _dbversion) {
             static::systemFailure(
                 'Verze nainstalované databáze není kompatibilní s verzí systému.',
@@ -346,7 +349,7 @@ class Core
             );
         }
 
-        // poinstalacni kontrola
+        // installation check
         if (_install_check) {
             $systemChecker = new SystemChecker();
             $systemChecker->check();
@@ -363,35 +366,36 @@ class Core
             static::updateSetting('install_check', 0);
         }
 
-        // kontrola aktualni adresy
+        // verify current URL
         $currentUrl = Url::current();
         $baseUrl = Url::base();
 
         if ($currentUrl->host !== $baseUrl->host) {
-            // neplatna domena
+            // invalid hostname
             $currentUrl->host = $baseUrl->host;
             _redirectHeader($currentUrl->generateAbsolute());
             exit;
         }
 
         if ($currentUrl->scheme !== $baseUrl->scheme) {
-            // neplatny protokol
+            // invalid protocol
             $currentUrl->scheme = $baseUrl->scheme;
             _redirectHeader($currentUrl->generateAbsolute());
+            exit;
         }
     }
 
     /**
-     * Inicializovat PHP prostredi
+     * Initialize environment
      *
      * @param array $options
      */
     private static function initEnvironment(array $options)
     {
-        // mbstring kodovani
+        // ensure correct encoding for mb_*() functions
         mb_internal_encoding('UTF-8');
 
-        // kontrola a nastaveni $_SERVER['REQUEST_URI']
+        // // make sure $_SERVER['REQUEST_URI'] is defined
         if (!isset($_SERVER['REQUEST_URI'])) {
             if (isset($_SERVER['HTTP_X_REWRITE_URL'])) {
                 $_SERVER['REQUEST_URI'] = $_SERVER['HTTP_X_REWRITE_URL']; // ISAPI_Rewrite 3.x
@@ -410,14 +414,14 @@ class Core
             }
         }
 
-        // vyruseni register_globals
+        // undo register_globals
         if (ini_get('register_globals')) {
             foreach (array_keys($_REQUEST) as $key) {
                 unset($GLOBALS[$key]);
             }
         }
 
-        // vypnuti magic_quotes
+        // undo magic_quotes
         if (get_magic_quotes_gpc()) {
             $search = array(&$_GET, &$_POST, &$_COOKIE);
             for ($i = 0; isset($search[$i]); ++$i) {
@@ -438,14 +442,14 @@ class Core
             unset($search, $i, $value);
         }
 
-        // hlaseni chyb
+        // set error_reporting
         $err_rep = E_ALL | E_STRICT;
         if (!_dev) {
             $err_rep &= ~(E_NOTICE | E_USER_NOTICE | E_DEPRECATED | E_STRICT);
         }
         error_reporting($err_rep);
 
-        // casove pasmo
+        // set locale
         if (!empty($options['locale'])) {
             @setlocale(LC_TIME, $options['locale']);
         }
@@ -453,7 +457,7 @@ class Core
             date_default_timezone_set($options['timezone']);
         }
 
-        // hlavicky
+        // send default headers
         if ($options['content_type'] === null) {
             // vychozi hlavicky
             header('Content-Type: text/html; charset=UTF-8');
@@ -464,11 +468,10 @@ class Core
     }
 
     /**
-     * Inicializovat pluginy
+     * Initialize plugins
      */
     private static function initPlugins()
     {
-        // extend pluginy
         foreach (static::$pluginManager->getAllExtends() as $extendPlugin) {
             $extendPlugin->initialize();
         }
@@ -477,19 +480,19 @@ class Core
     }
 
     /**
-     * Inicializovat session
+     * Initialize session
      */
     private static function initSession()
     {
-        // spusteni session
+        // start session
         if (static::$sessionEnabled) {
-            // nastaveni cookie
+            // cookie parameters
             $cookieParams = session_get_cookie_params();
             $cookieParams['httponly'] = 1;
             $cookieParams['secure'] = Url::current()->scheme === 'https' ? 1 : 0;
             session_set_cookie_params($cookieParams['lifetime'], $cookieParams['path'], $cookieParams['domain'], $cookieParams['secure'], $cookieParams['httponly']);
 
-            // nastaveni session a start
+            // set session name and start it
             session_name(static::$appId . '_session');
             session_start();
 
@@ -498,35 +501,34 @@ class Core
                 session_regenerate_id(true);
             }
         } else {
-            // session je neaktivni
+            // no session
             $_SESSION = array();
         }
 
-        // proces autorizace
+        // authorization process
         $authorized = false;
-        $isPersistentSession = false;
+        $isPersistentLogin = false;
         $errorCode = null;
 
         if (static::$sessionEnabled) do {
             $userData = null;
-            $sessionDataExists = isset(
+            $loginDataExist = isset(
                 $_SESSION['user_id'],
                 $_SESSION['user_auth'],
                 $_SESSION['user_ip']
             );
 
-            // kontrola cookie trvaleho prihlaseni, neexistujou-li data session
-            if (!$sessionDataExists) {
-                // kontrola existence cookie
+            // check persistent login cookie if there are no login data
+            if (!$loginDataExist) {
+                // check cookie existence
                 $persistentCookieName = static::$appId . '_persistent_key';
                 if (isset($_COOKIE[$persistentCookieName]) && is_string($_COOKIE[$persistentCookieName])) {
-
-                    // proces cookie autorizace
+                    // cookie authorization process
                     do {
-                        // zpracovani cookie
+                        // parse cookie
                         $cookie = explode('$', $_COOKIE[$persistentCookieName], 2);
                         if (sizeof($cookie) !== 2) {
-                            // neplatny format cookie
+                            // invalid cookie format
                             $errorCode = 1;
                             break;
                         }
@@ -535,102 +537,102 @@ class Core
                             'hash' => $cookie[1],
                         );
 
-                        // nacist data uzivatele
+                        // fetch user data
                         $userData = DB::queryRow('SELECT * FROM ' . _users_table . ' WHERE id=' . DB::val($cookie['id']));
                         if ($userData === false) {
-                            // uzivatel nenalezen
+                            // user not found
                             $errorCode = 2;
                             break;
                         }
 
-                        // kontrola hashe
+                        // check failed login attempt limit
                         if (!_iplogCheck(_iplog_failed_login_attempt)) {
-                            // prekrocen pocet pokusu o prihlaseni
+                            // limit exceeded
                             $errorCode = 3;
                             break;
                         }
 
                         $validHash = _userPersistentLoginHash($cookie['id'], _userAuthHash($userData['password']), $userData['email']);
                         if ($validHash !== $cookie['hash']) {
-                            // hash neni validni
+                            // invalid hash
                             _iplogUpdate(_iplog_failed_login_attempt);
                             $errorCode = 4;
                             break;
                         }
 
-                        // vse je ok! pouzit data z cookie pro prihlaseni
+                        // all is well! use cookie data to login the user
                         _userLogin($cookie['id'], $userData['password'], $userData['email']);
-                        $sessionDataExists = true;
-                        $isPersistentSession = true;
+                        $loginDataExist = true;
+                        $isPersistentLogin = true;
                     } while (false);
 
-                    // kontrola vysledku
+                    // check result
                     if ($errorCode !== null) {
-                        // autorizace se nepodarila, smazat neplatnou cookie
+                        // cookie authoriation has failed, remove the cookie
                         setcookie(static::$appId . '_persistent_key', '', (time() - 3600), '/');
                         break;
                     }
                 }
             }
 
-            // kontrola existence dat prihlaseni
-            if (!$sessionDataExists) {
-                // data prihlaseni neexistuji - uzivatel neni prihlasen
+            // check whether login data exist
+            if (!$loginDataExist) {
+                // no login data - user is not logged in
                 $errorCode = 5;
                 break;
             }
 
-            // nacist data uzivatele
+            // fetch user data
             if (!$userData) {
                 $userData = DB::queryRow('SELECT * FROM ' . _users_table . ' WHERE id=' . DB::val($_SESSION['user_id']));
                 if ($userData === false) {
-                    // uzivatel nenalezen
+                    // user not found
                     $errorCode = 6;
                     break;
                 }
             }
 
-            // kontrola dat prihlaseni
+            // check user authentication hash
             if ($_SESSION['user_auth'] !== _userAuthHash($userData['password'])) {
                 // neplatny hash
                 $errorCode = 7;
                 break;
             }
 
-            // kontrola blokace uzivatele
+            // check user account's status
             if ($userData['blocked']) {
-                // uzivatel je zablokovan
+                // account is blocked
                 $errorCode = 8;
                 break;
             }
 
-            // nacist data skupiny
+            // fetch group data
             $groupData = DB::queryRow('SELECT * FROM ' . _groups_table . ' WHERE id=' . DB::val($userData['group_id']));
             if ($groupData === false) {
-                // skupina nenalezena
+                // group data not found
                 $errorCode = 9;
                 break;
             }
 
-            // kontrola blokace skupiny
+            // check group status
             if ($groupData['blocked']) {
-                // skupina je zablokovana
+                // group is blocked
                 $errorCode = 10;
                 break;
             }
 
-            // vse ok! uzivatele je mozne prihlasit
+            // all is well! user is authorized
             $authorized = true;
         } while (false);
 
-        // prihlaseni
+        // process login
         if ($authorized) {
-            // zvyseni urovne pro superuzivatele
+            // increase level for super users
             if ($userData['levelshift']) {
                 $groupData['level'] += 1;
             }
 
-            // zaznamenani casu aktivity (max 1x za 30 sekund)
+            // record activity time (max once per 30 seconds)
             if (time() - $userData['activitytime'] > 30) {
                 DB::update(_users_table, 'id=' . DB::val($userData['id']), array(
                     'activitytime' => time(),
@@ -642,14 +644,14 @@ class Core
             Extend::call('user.auth.success', array(
                 'user' => &$userData,
                 'group' => &$groupData,
-                'persistent_session' => $isPersistentSession,
+                'persistent_session' => $isPersistentLogin,
             ));
 
-            // nastaveni promennych
+            // set variables
             static::$userData = $userData;
             static::$groupData = $groupData;
         } else {
-            // anonymni uzivatel
+            // anonymous user
             $userData = array(
                 'id' => -1,
                 'username' => '',
@@ -658,10 +660,10 @@ class Core
                 'levelshift' => false,
             );
 
-            // nacteni dat skupiny pro neprihlasene uziv.
-            $groupData = DB::queryRow('SELECT * FROM ' . _groups_table . ' WHERE id=2');
+            // fetch anonymous group data
+            $groupData = DB::queryRow('SELECT * FROM ' . _groups_table . ' WHERE id=' . _group_guests);
             if ($groupData === false) {
-                throw new \RuntimeException('Anonymous user group was not found (id=2)');
+                throw new \RuntimeException(sprintf('Anonymous user group was not found (id=%s)', _group_guests));
             }
 
             // event
@@ -672,7 +674,7 @@ class Core
             ));
         }
 
-        // konstanty
+        // define constants
         define('_login', $authorized);
         define('_loginid', $userData['id']);
         define('_loginname', $userData['username']);
@@ -688,11 +690,11 @@ class Core
     }
 
     /**
-     * Inicializovat jazykovy soubor
+     * Initialize localization
      */
-    private static function initLanguageFile()
+    private static function initLocalization()
     {
-        // volba jazyka
+        // language choice
         if (_login && _language_allowcustom && static::$userData['language'] !== '') {
             $language = static::$userData['language'];
             $usedLoginLanguage = true;
@@ -701,7 +703,7 @@ class Core
             $usedLoginLanguage = false;
         }
 
-        // nacteni jazyka
+        // load language plugin
         if (static::$pluginManager->has(PluginManager::LANGUAGE, $language)) {
             $languagePlugin = static::$pluginManager->getLanguage($language);
         } else {
@@ -709,8 +711,14 @@ class Core
         }
 
         if ($languagePlugin !== null) {
-            $GLOBALS['_lang'] += $languagePlugin->load();
+            // load localization entries from the plugin
+            $entries = $languagePlugin->getLocalizationEntries();
+
+            if ($entries !== false) {
+                static::$lang->add($entries);
+            }
         } else {
+            // language plugin was not found
             if ($usedLoginLanguage) {
                 DB::update(_users_table, 'id=' . _loginid, array('language' => ''));
             } else {
@@ -718,8 +726,8 @@ class Core
             }
 
             static::systemFailure(
-                'Jazykový soubor "%s" nebyl nalezen.',
-                'Language file "%s" was not found.',
+                'Jazykový balíček "%s" nebyl nalezen.',
+                'Language plugin "%s" was not found.',
                 array($language)
             );
         }
@@ -728,9 +736,9 @@ class Core
     }
 
     /**
-     * Spustit CRON
+     * Run CRON tasks
      */
-    public static function runCron()
+    public static function runCronTasks()
     {
         $cronNow = time();
         $cronUpdate = false;
@@ -747,9 +755,9 @@ class Core
 
         foreach (static::$cronIntervals as $cronIntervalName => $cronIntervalSeconds) {
             if (isset($cronTimes[$cronIntervalName])) {
-                // posledni cas je zaznamenan
+                // last run time is known
                 if ($cronNow - $cronTimes[$cronIntervalName] >= $cronIntervalSeconds) {
-                    // kontrola lock file
+                    // check lock file
                     if ($cronLockFileHandle === null) {
                         $cronLockFile = _root . 'system/cron.lock';
                         $cronLockFileHandle = fopen($cronLockFile, 'r');
@@ -762,7 +770,7 @@ class Core
                         }
                     }
 
-                    // udalost
+                    // event
                     $cronEventArgs = array(
                         'last' => $cronTimes[$cronIntervalName],
                         'name' => $cronIntervalName,
@@ -772,31 +780,31 @@ class Core
                     Extend::call('cron', $cronEventArgs);
                     Extend::call('cron.' . $cronIntervalName, $cronEventArgs);
 
-                    // aktualizovat posledni cas
+                    // update last run time
                     $cronTimes[$cronIntervalName] = $cronNow;
                     $cronUpdate = true;
                 }
             } else {
-                // posledni cas neni zaznamenan
+                // unknown last run time
                 $cronTimes[$cronIntervalName] = $cronNow;
                 $cronUpdate = true;
             }
         }
 
-        // aktualizovat casy
+        // update run times
         if ($cronUpdate) {
-            // odstranit nezname intervaly
+            // remove unknown intervals
             foreach (array_keys($cronTimes) as $cronTimeKey) {
                 if (!isset(static::$cronIntervals[$cronTimeKey])) {
                     unset($cronTimes[$cronTimeKey]);
                 }
             }
 
-            // ulozit
+            // save
             static::updateSetting('cron_times', serialize($cronTimes));
         }
 
-        // uvolnit lockfile
+        // free lock file
         if ($cronLockFileHandle !== null) {
             flock($cronLockFileHandle, LOCK_UN);
             fclose($cronLockFileHandle);
@@ -805,14 +813,14 @@ class Core
     }
 
     /**
-     * Provest udrzbu systemu
+     * Run system maintenance
      */
     public static function doMaintenance()
     {
-        // cisteni miniatur
+        // clean thumbnails
         _pictureThumbClean(_thumb_cleanup_threshold);
 
-        // promazat stare soubory v docasnem adresari
+        // remove old files in the temporary directory
         Filesystem::purgeDirectory(_root . 'system/tmp', array(
             'keep_dir' => true,
             'files_only' => true,
@@ -827,10 +835,10 @@ class Core
     }
 
     /**
-     * Nacist jednu konfiguracni direktivu
+     * Load a single setting directive
      *
-     * @param string $name    nazev direktivy
-     * @param mixed  $default vychozi hodnota
+     * @param string $name
+     * @param mixed  $default
      * @return mixed
      */
     public static function loadSetting($name, $default = null)
@@ -844,9 +852,9 @@ class Core
     }
 
     /**
-     * Nacist konfiguracni direktivy
+     * Load multiple setting directives
      *
-     * @param string|array $names nazvy direktiv
+     * @param string|string[] $names
      * @return array
      */
     public static function loadSettings(array $names)
@@ -863,7 +871,7 @@ class Core
     }
 
     /**
-     * Nacist konfiguracni direktivy dle typu
+     * Load setting directives by type
      *
      * @param string|null $type
      * @return array
@@ -880,7 +888,7 @@ class Core
     }
 
     /**
-     * Aktualizovat hodnotu konfiguracni direktivy
+     * Update setting directive value
      *
      * @param string $name
      * @param string $newValue
@@ -891,7 +899,7 @@ class Core
     }
 
     /**
-     * Ziskat systemove javascript deklarace
+     * Get global JavaScript definitions
      *
      * @param array $customVariables asociativni pole s vlastnimi promennymi
      * @param bool  $scriptTags      obalit do <script> tagu 1/0
@@ -899,8 +907,6 @@ class Core
      */
     public static function getJavascript(array $customVariables = array(), $scriptTags = true)
     {
-        global $_lang;
-
         $output = '';
 
         // opening script tag
@@ -913,8 +919,8 @@ class Core
             'basePath' => Url::base()->path . '/',
             'currentTemplate' => _getCurrentTemplate()->getId(),
             'labels' => array(
-                'alertConfirm' => $_lang['javascript.alert.confirm'],
-                'loading' => $_lang['javascript.loading'],
+                'alertConfirm' => _lang('javascript.alert.confirm'),
+                'loading' => _lang('javascript.loading'),
             ),
             'settings' => array(
                 'atReplace' => _atreplace,
@@ -937,7 +943,7 @@ class Core
     }
 
     /**
-     * Vyhodit lokalizovanou vyjimku tykajici se nejake neocekavane situace
+     * Throw a localized core exception
      *
      * @param string      $msgCs    zprava cesky
      * @param string      $msgEn    zprava anglicky
@@ -961,7 +967,7 @@ class Core
     }
 
     /**
-     * Vykreslit vyjimku pro zobrazeni uzivateli
+     * Render an exception
      *
      * @param \Exception $e
      * @param bool       $showTrace

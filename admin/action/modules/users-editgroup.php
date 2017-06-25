@@ -30,7 +30,7 @@ if ($continue) {
     // pole prav
     $rights_array = array(
         array(
-            'title' => $_lang['admin.users.groups.commonrights'],
+            'title' => _lang('admin.users.groups.commonrights'),
             'rights' => array(
                 array('name' => 'changeusername'),
                 array('name' => 'selfremove'),
@@ -39,7 +39,7 @@ if ($continue) {
             ),
         ),
         array(
-            'title' => $_lang['admin.users.groups.postrights'],
+            'title' => _lang('admin.users.groups.postrights'),
             'rights' => array(
                 array('name' => 'postcomments'),
                 array('name' => 'locktopics'),
@@ -50,7 +50,7 @@ if ($continue) {
             ),
         ),
         array(
-            'title' => $_lang['admin.users.groups.filerights'],
+            'title' => _lang('admin.users.groups.filerights'),
             'rights' => array(
                 array('name' => 'fileaccess'),
                 array('name' => 'fileglobalaccess'),
@@ -58,7 +58,7 @@ if ($continue) {
             ),
         ),
         array(
-            'title' => $_lang['admin.users.groups.adminrights'],
+            'title' => _lang('admin.users.groups.adminrights'),
             'rights' => array(
                 array('name' => 'administration'),
                 array('name' => 'adminusers'),
@@ -68,7 +68,7 @@ if ($continue) {
             ),
         ),
         array(
-            'title' => $_lang['admin.users.groups.adminotherrights'],
+            'title' => _lang('admin.users.groups.adminotherrights'),
             'rights' => array(
                 array('name' => 'adminother'),
                 array('name' => 'adminmassemail'),
@@ -76,14 +76,14 @@ if ($continue) {
             ),
         ),
         array(
-            'title' => $_lang['admin.users.groups.adminhcmrights'],
+            'title' => _lang('admin.users.groups.adminhcmrights'),
             'rights' => array(
                 array('name' => 'adminhcm', 'text' => true, 'dangerous' => true),
                 array('name' => 'adminhcmphp', 'dangerous' => true),
             ),
         ),
         array(
-            'title' => $_lang['admin.users.groups.admincontentrights'],
+            'title' => _lang('admin.users.groups.admincontentrights'),
             'rights' => array(
                 array('name' => 'admincontent'),
                 array('name' => 'adminroot'),
@@ -99,7 +99,7 @@ if ($continue) {
             ),
         ),
         array(
-            'title' => $_lang['admin.users.groups.admincontentarticlerights'],
+            'title' => _lang('admin.users.groups.admincontentarticlerights'),
             'rights' => array(
                 array('name' => 'adminart'),
                 array('name' => 'adminallart'),
@@ -109,7 +109,7 @@ if ($continue) {
             ),
         ),
         array(
-            'title' => $_lang['admin.users.groups.admincontentotherrights'],
+            'title' => _lang('admin.users.groups.admincontentotherrights'),
             'rights' => array(
                 array('name' => 'adminpoll'),
                 array('name' => 'adminpollall'),
@@ -142,12 +142,12 @@ if ($continue) {
 
             $rights .= "<tr>
     <th" . (isset($item['dangerous']) && $item['dangerous'] ? ' class="highlight-alt"' : '') . ">
-        <label for='setting_" . $item['name'] . "'>" . (isset($item['label']) ? $item['label'] : $_lang['admin.users.groups.' . $item['name']]) . "</label>
+        <label for='setting_" . $item['name'] . "'>" . (isset($item['label']) ? $item['label'] : _lang('admin.users.groups.' . $item['name'])) . "</label>
     </th>
     <td>
         <label>
             <input type='" . ($isText ? 'text' : 'checkbox') . "' id='setting_" . $item['name'] . "' name='" . $item['name'] . "'" . ($isText ? " value='" . _e($query[$item['name']]) . "'" : " value='1'" . _checkboxActivate($query[$item['name']])) . _inputDisableUnless(!$disabled) . ">
-            " . (isset($item['help']) ? $item['help'] : $_lang['admin.users.groups.' . $item['name'] . '.help']) . "
+            " . (isset($item['help']) ? $item['help'] : _lang('admin.users.groups.' . $item['name'] . '.help')) . "
         </label>
     </td>
 </tr>\n";
@@ -164,7 +164,7 @@ if ($continue) {
         // zakladni atributy
         $changeset['title'] = _cutHtml(_e(trim(_post('title'))), 128);
         if ($changeset['title'] == "") {
-            $changeset['title'] = $_lang['global.novalue'];
+            $changeset['title'] = _lang('global.novalue');
         }
         $changeset['descr'] = _cutHtml(_e(trim(_post('descr'))), 255);
         if ($id != _group_guests) {
@@ -218,7 +218,7 @@ if ($continue) {
 
     if ($id != _group_guests) {
         $icons = "<div class='radio-group'>\n";
-        $icons .= "<label><input" . _checkboxActivate($query['icon'] === '') . " type='radio' name='icon' value=''> " . $_lang['global.undefined'] . "</label>\n";
+        $icons .= "<label><input" . _checkboxActivate($query['icon'] === '') . " type='radio' name='icon' value=''> " . _lang('global.undefined') . "</label>\n";
 
         $icon_dir = _root . 'images/groupicons';
         foreach (scandir($icon_dir) as $file) {
@@ -238,53 +238,53 @@ if ($continue) {
 
     /* ---  vystup  --- */
     $output .= "
-  <p class='bborder'>" . $_lang['admin.users.groups.editp'] . "</p>
-  " . (isset($_GET['saved']) ? _msg(_msg_ok, $_lang['global.saved']) : '') . "
-  " . ($systemitem ? _adminNote($_lang['admin.users.groups.specialgroup.editnotice']) : '') . "
+  <p class='bborder'>" . _lang('admin.users.groups.editp') . "</p>
+  " . (isset($_GET['saved']) ? _msg(_msg_ok, _lang('global.saved')) : '') . "
+  " . ($systemitem ? _adminNote(_lang('admin.users.groups.specialgroup.editnotice')) : '') . "
   <form action='index.php?p=users-editgroup&amp;id=" . $id . "' method='post'>
   <table>
 
   <tr>
-  <th>" . $_lang['global.name'] . "</th>
+  <th>" . _lang('global.name') . "</th>
   <td><input type='text' name='title' class='inputmedium' value='" . $query['title'] . "' maxlength='128'></td>
   </tr>
 
   <tr>
-  <th>" . $_lang['global.descr'] . "</th>
+  <th>" . _lang('global.descr') . "</th>
   <td><input type='text' name='descr' class='inputmedium' value='" . $query['descr'] . "' maxlength='255'></td>
   </tr>
 
   <tr>
-  <th>" . $_lang['admin.users.groups.level'] . "</th>
+  <th>" . _lang('admin.users.groups.level') . "</th>
   <td><input type='number' min='0' max='" . min(_priv_level -1, _priv_max_assignable_level) . "' name='level' class='inputmedium' value='" . $query['level'] . "'" . _inputDisableUnless(!$systemitem) . "></td>
   </tr>
 
   " . (($id != _group_guests) ? "
-  <tr><th><dfn title='" . str_replace('%dir%', $icon_dir, $_lang['admin.users.groups.icon.help']) . "'>" . $_lang['admin.users.groups.icon'] . "</dfn></th><td>" . $icons . "</td></tr>
-  <tr><th>" . $_lang['admin.users.groups.color'] . "</th><td><input type='text' name='color' class='inputsmall' value='" . $query['color'] . "' maxlength='16'> <input type='color' value='" . _adminFormatHtmlColor($query['color']) . "' onchange='this.form.elements.color.value=this.value'></td></tr>
-  <tr><th>" . $_lang['admin.users.groups.reglist'] . "</th><td><input type='checkbox' name='reglist' value='1'" . _checkboxActivate($query['reglist']) . "></td></tr>
+  <tr><th><dfn title='" . _lang('admin.users.groups.icon.help', array('%dir%' => $icon_dir)) . "'>" . _lang('admin.users.groups.icon') . "</dfn></th><td>" . $icons . "</td></tr>
+  <tr><th>" . _lang('admin.users.groups.color') . "</th><td><input type='text' name='color' class='inputsmall' value='" . $query['color'] . "' maxlength='16'> <input type='color' value='" . _adminFormatHtmlColor($query['color']) . "' onchange='this.form.elements.color.value=this.value'></td></tr>
+  <tr><th>" . _lang('admin.users.groups.reglist') . "</th><td><input type='checkbox' name='reglist' value='1'" . _checkboxActivate($query['reglist']) . "></td></tr>
   " : '') . "
 
   <tr>
-  <th>" . $_lang['admin.users.groups.blocked'] . "</th>
+  <th>" . _lang('admin.users.groups.blocked') . "</th>
   <td><input type='checkbox' name='blocked' value='1'" . _checkboxActivate($query['blocked']) . _inputDisableUnless($id != _group_admin && $id != _group_guests) . "></td>
   </tr>
 
   </table>
 
-  " . _msg(_msg_ok, $_lang['admin.users.groups.dangernotice']) . "
+  " . _msg(_msg_ok, _lang('admin.users.groups.dangernotice')) . "
   " . $rights . "
   " . Sunlight\Extend::buffer('admin.editgroup.form') . "
 
-  <input type='submit' value='" . $_lang['global.save'] . "'> <small>" . $_lang['admin.content.form.thisid'] . " " . $id . "</small>
+  <input type='submit' value='" . _lang('global.save') . "'> <small>" . _lang('admin.content.form.thisid') . " " . $id . "</small>
 
   " . _xsrfProtect() . "</form>
   ";
 
 } else {
     if ($levelconflict == false) {
-        $output .= _msg(_msg_err, $_lang['global.badinput']);
+        $output .= _msg(_msg_err, _lang('global.badinput'));
     } else {
-        $output .= _msg(_msg_err, $_lang['global.disallowed']);
+        $output .= _msg(_msg_err, _lang('global.disallowed'));
     }
 }

@@ -4,15 +4,12 @@
     "version": "8.0",
     "api": "^8.0",
     "url": "https://sunlight-cms.org/",
-
     "layouts": {
         "default": {
             "template": "template.php",
             "slots": ["right"]
         }
     },
-    "layout.labels": "labels",
-
     "dark": false,
     "smiley.count": 10,
     "smiley.format": "gif",

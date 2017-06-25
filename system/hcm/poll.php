@@ -54,9 +54,9 @@ function _HCM_poll($id = null)
 
         $ranswers_code .= "<div class='poll-answer'>";
         if ($rallowvote) {
-            $ranswers_code .= "<input type='submit' value='" . $GLOBALS['_lang']['hcm.poll.vote'] . "' class='votebutton'>";
+            $ranswers_code .= "<input type='submit' value='" . _lang('hcm.poll.vote') . "' class='votebutton'>";
         }
-        $ranswers_code .= $GLOBALS['_lang']['hcm.poll.votes'] . ": " . $rvotes_sum . "</div>";
+        $ranswers_code .= _lang('hcm.poll.votes') . ": " . $rvotes_sum . "</div>";
         if ($rallowvote) {
             $ranswers_code .= _xsrfProtect() . "</form>\n";
         }
@@ -67,7 +67,7 @@ function _HCM_poll($id = null)
 
 <div class='poll-question'>
 " . $vpolldata['question'] . "
-" . (($vpolldata['locked'] == 1) ? "<div>(" . $GLOBALS['_lang']['hcm.poll.locked'] . ")</div>" : '') . "
+" . (($vpolldata['locked'] == 1) ? "<div>(" . _lang('hcm.poll.locked') . ")</div>" : '') . "
 </div>
 
 " . $ranswers_code . "

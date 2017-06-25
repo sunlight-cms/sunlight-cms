@@ -49,8 +49,8 @@ function _HCM_recentposts($limit = null, $stranky = "", $typ = null)
 <h2 class='list-title'><a href='" . $homelink . "'>" . $hometitle . "</a></h2>
 <p class='list-perex'>" . _cutText(strip_tags(_parsePost($item['text'])), 256) . "</p>
 " . _renderInfos(array(
-    array($GLOBALS['_lang']['global.postauthor'], $authorname),
-    array($GLOBALS['_lang']['global.time'], _formatTime($item['time'], 'post')),
+    array(_lang('global.postauthor'), $authorname),
+    array(_lang('global.time'), _formatTime($item['time'], 'post')),
 )) . "</div>\n";
     }
 

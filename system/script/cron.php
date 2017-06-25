@@ -32,7 +32,7 @@ Extend::reg('cron', function ($args) use (&$names) {
 });
 
 // spusteni
-Core::runCron();
+Core::runCronTasks();
 
 // vysledek
 echo 'OK(', round((microtime(true) - $start) * 1000), 'ms) ', implode(', ', $names);

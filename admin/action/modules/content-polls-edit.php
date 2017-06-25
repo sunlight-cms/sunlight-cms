@@ -14,7 +14,7 @@ if (isset($_GET['id'])) {
     if ($query !== false) {
         $new = false;
         $actionbonus = "&amp;id=" . $id;
-        $submitcaption = $_lang['global.save'];
+        $submitcaption = _lang('global.save');
         $continue = true;
     }
 } else {
@@ -22,7 +22,7 @@ if (isset($_GET['id'])) {
     $query = array('author' => _loginid, 'question' => "", 'answers' => "", 'locked' => 0);
     $new = true;
     $actionbonus = "";
-    $submitcaption = $_lang['global.create'];
+    $submitcaption = _lang('global.create');
     $continue = true;
 }
 
@@ -56,16 +56,16 @@ if (isset($_POST['question'])) {
     // kontrola promennych
     $errors = array();
     if ($question == "") {
-        $errors[] = $_lang['admin.content.polls.edit.error1'];
+        $errors[] = _lang('admin.content.polls.edit.error1');
     }
     if ($answers_count == 0) {
-        $errors[] = $_lang['admin.content.polls.edit.error2'];
+        $errors[] = _lang('admin.content.polls.edit.error2');
     }
     if ($answers_count > 20) {
-        $errors[] = $_lang['admin.content.polls.edit.error3'];
+        $errors[] = _lang('admin.content.polls.edit.error3');
     }
     if (_priv_adminpollall && DB::result(DB::query("SELECT COUNT(*) FROM " . _users_table . " WHERE id=" . $author . " AND (id=" . _loginid . " OR (SELECT level FROM " . _groups_table . " WHERE id=" . _users_table . ".group_id)<" . _priv_level . ")"), 0) == 0) {
-        $errors[] = $_lang['admin.content.articles.edit.error3'];
+        $errors[] = _lang('admin.content.articles.edit.error3');
     }
 
     // ulozeni
@@ -143,7 +143,7 @@ if ($continue) {
     if (_priv_adminpollall) {
         $author_select = "
     <tr>
-    <th>" . $_lang['article.author'] . "</th>
+    <th>" . _lang('article.author') . "</th>
     <td>" . _adminUserSelect("author", $query['author'], "adminpoll=1", "selectmedium") . "</td></tr>
     ";
     } else {
@@ -152,10 +152,10 @@ if ($continue) {
 
     // zprava
     if (isset($_GET['saved'])) {
-        $message = _msg(_msg_ok, $_lang['global.saved']);
+        $message = _msg(_msg_ok, _lang('global.saved'));
     }
     if (isset($_GET['created'])) {
-        $message = _msg(_msg_ok, $_lang['global.created']);
+        $message = _msg(_msg_ok, _lang('global.created'));
     }
 
     $output .= $message . "
@@ -163,32 +163,32 @@ if ($continue) {
   <table class='formtable'>
 
   <tr>
-  <th>" . $_lang['admin.content.form.question'] . "</th>
+  <th>" . _lang('admin.content.form.question') . "</th>
   <td><input type='text' name='question' class='inputmedium' value='" . $query['question'] . "' maxlength='255'></td>
   </tr>
 
   " . $author_select . "
 
   <tr class='valign-top'>
-  <th>" . $_lang['admin.content.form.answers'] . "</th>
+  <th>" . _lang('admin.content.form.answers') . "</th>
   <td><textarea name='answers' rows='25' cols='94' class='areamedium'>" . $query['answers'] . "</textarea></td>
   </tr>
 
   " . (!$new ? "<tr>
-  <th>" . $_lang['admin.content.form.hcm'] . "</th>
+  <th>" . _lang('admin.content.form.hcm') . "</th>
   <td><input type='text' name='hcm' value='[hcm]poll," . $id . "[/hcm]' readonly='readonly' onclick='this.select();' class='inputmedium'></td>
   </tr>" : '') . "
 
   <tr>
-  <th>" . $_lang['admin.content.form.settings'] . "</th>
+  <th>" . _lang('admin.content.form.settings') . "</th>
   <td>
-  <label><input type='checkbox' name='locked' value='1'" . _checkboxActivate($query['locked']) . "> " . $_lang['admin.content.form.locked'] . "</label> 
-  " . (!$new ? "<label><input type='checkbox' name='reset' value='1'> " . $_lang['admin.content.polls.reset'] . "</label>" : '') . "
+  <label><input type='checkbox' name='locked' value='1'" . _checkboxActivate($query['locked']) . "> " . _lang('admin.content.form.locked') . "</label> 
+  " . (!$new ? "<label><input type='checkbox' name='reset' value='1'> " . _lang('admin.content.polls.reset') . "</label>" : '') . "
   </td>
   </tr>
 
   <tr><td></td>
-  <td><input type='submit' value='" . $submitcaption . "'>" . (!$new ? " <small>" . $_lang['admin.content.form.thisid'] . " " . $id . "</small> <span class='customsettings'><a class='button' href='" . _xsrfLink("index.php?p=content-polls&amp;del=" . $id) . "' onclick='return Sunlight.confirm();'><img src='images/icons/delete.png' class='icon' alt='del'> " . $_lang['global.delete'] . "</a>" : '') . "</span></td>
+  <td><input type='submit' value='" . $submitcaption . "'>" . (!$new ? " <small>" . _lang('admin.content.form.thisid') . " " . $id . "</small> <span class='customsettings'><a class='button' href='" . _xsrfLink("index.php?p=content-polls&amp;del=" . $id) . "' onclick='return Sunlight.confirm();'><img src='images/icons/delete.png' class='icon' alt='del'> " . _lang('global.delete') . "</a>" : '') . "</span></td>
   </tr>
 
   </table>
@@ -196,5 +196,5 @@ if ($continue) {
   ";
 
 } else {
-    $output .= _msg(_msg_err, $_lang['global.badinput']);
+    $output .= _msg(_msg_err, _lang('global.badinput'));
 }

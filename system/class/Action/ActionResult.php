@@ -53,7 +53,7 @@ class ActionResult
     public static function success($messages = null)
     {
         if (empty($messages)) {
-            $messages = Message::ok($GLOBALS['_lang']['action.success']);
+            $messages = Message::ok(_lang('action.success'));
         }
 
         return new static(true, $messages);
@@ -68,7 +68,7 @@ class ActionResult
     public static function failure($messages = null)
     {
         if (empty($messages)) {
-            $messages = Message::ok($GLOBALS['_lang']['action.failure']);
+            $messages = Message::ok(_lang('action.failure'));
         }
 
         return new static(false, $messages);

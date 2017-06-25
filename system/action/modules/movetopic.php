@@ -36,15 +36,15 @@ if (isset($_POST['new_forum'])) {
         DB::update(_posts_table, 'id=' . DB::val($id) . ' OR (type=' . _post_forum_topic . ' AND xhome=' . $id . ')', array('home' => $new_forum_id));
         $query['home'] = $new_forum_id;
         $_index['backlink'] = _linkTopic($query['id']);
-        $message = _msg(_msg_ok, $_lang['mod.movetopic.ok']);
+        $message = _msg(_msg_ok, _lang('mod.movetopic.ok'));
     } else {
-        $message = _msg(_msg_err, $_lang['global.badinput']);
+        $message = _msg(_msg_err, _lang('global.badinput'));
     }
 }
 
 /* ---  vystup  --- */
 
-$_index['title'] = $_lang['mod.movetopic'];
+$_index['title'] = _lang('mod.movetopic');
 
 // zprava
 $output .= $message;
@@ -54,13 +54,13 @@ $furl = _linkModule('movetopic', 'id=' . $id);
 
 $output .= '
 <form action="' . $furl . '" method="post">
-' . _msg(_msg_warn, sprintf($_lang['mod.movetopic.text'], $query['subject'])) . '
+' . _msg(_msg_warn, sprintf(_lang('mod.movetopic.text'), $query['subject'])) . '
 <p>
 <select name="new_forum"' . (empty($forums) ? " disabled" : '') . '>
 ';
 
 if (empty($forums)) {
-    $output .= "<option value='-1'>" . $_lang['mod.movetopic.noforums'] . "</option>\n";
+    $output .= "<option value='-1'>" . _lang('mod.movetopic.noforums') . "</option>\n";
 } else {
     foreach($forums as $forum_id => $forum) {
         $output .= '<option'
@@ -75,7 +75,7 @@ if (empty($forums)) {
 }
 
 $output .= '</select>
-<input type="submit" value="' . $_lang['mod.movetopic.submit'] . '">
+<input type="submit" value="' . _lang('mod.movetopic.submit') . '">
 </p>
 ' . _xsrfProtect() . '</form>
 ';

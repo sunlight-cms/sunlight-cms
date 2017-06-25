@@ -79,5 +79,5 @@ if ($images_number != 0) {
     }
 
 } else {
-    $output .= $_lang['misc.gallery.noimages'];
+    $output .= _lang('misc.gallery.noimages');
 }

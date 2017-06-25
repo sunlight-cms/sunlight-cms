@@ -35,13 +35,13 @@ if ($query !== false) {
 
 if (isset($_POST['doit'])) {
     DB::update(_posts_table, 'id=' . DB::val($id), array('locked' => (($query['locked'] == 1) ? 0 : 1)));
-    $message = _msg(_msg_ok, $_lang['mod.locktopic.ok' . $unlock]);
+    $message = _msg(_msg_ok, _lang('mod.locktopic.ok' . $unlock));
     $success = true;
 }
 
 /* ---  vystup  --- */
 
-$_index['title'] = $_lang['mod.locktopic' . $unlock];
+$_index['title'] = _lang('mod.locktopic' . $unlock);
 
 // zprava
 $output .= $message;
@@ -52,8 +52,8 @@ if (!$success) {
 
     $output .= '
     <form action="' . $furl . '" method="post">
-    ' . _msg(_msg_warn, sprintf($_lang['mod.locktopic.text' . $unlock], $query['subject'])) . '
-    <input type="submit" name="doit" value="' . $_lang['mod.locktopic.submit' . $unlock] . '">
+    ' . _msg(_msg_warn, sprintf(_lang('mod.locktopic.text' . $unlock), $query['subject'])) . '
+    <input type="submit" name="doit" value="' . _lang('mod.locktopic.submit' . $unlock) . '">
     ' . _xsrfProtect() . '</form>
     ';
 }

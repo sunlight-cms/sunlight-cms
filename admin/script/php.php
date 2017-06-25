@@ -15,7 +15,7 @@ require _root . "admin/functions.php";
 
 ?>
 <link href="style.php?s=<?php echo _adminscheme . (_adminIsDarkScheme() ? '&amp;d' : '') . '&amp;' . _cacheid; ?>" type="text/css" rel="stylesheet">
-<title><?php echo $_lang['admin.other.php.title']; ?></title>
+<title><?php echo _lang('admin.other.php.title'); ?></title>
 </head>
 
 <body>
@@ -34,11 +34,11 @@ if (isset($_POST['code'])) {
 
 ?>
 
-<h1><?php echo $_lang['admin.other.php.title']; ?></h1>
+<h1><?php echo _lang('admin.other.php.title'); ?></h1>
 
 <form action="php.php" method="post">
 <textarea name="code" rows="25" cols="94" class="areabig"><?php if (isset($code)) echo _e($code); ?></textarea><br>
-<p><input class="inputfat" type="submit" value="<?php echo $_lang['global.do']; ?>">  <label><input type="checkbox" name="html" value="1"<?php echo _checkboxActivate(isset($_POST['html']) ? 1 : 0); ?>> <?php echo $_lang['admin.other.php.html']; ?></label></p>
+<p><input class="inputfat" type="submit" value="<?php echo _lang('global.do'); ?>">  <label><input type="checkbox" name="html" value="1"<?php echo _checkboxActivate(isset($_POST['html']) ? 1 : 0); ?>> <?php echo _lang('admin.other.php.html'); ?></label></p>
 <?php echo _xsrfProtect(); ?>
 </form>
 
@@ -46,7 +46,7 @@ if (isset($_POST['code'])) {
 
 if ($process) {
     $html = isset($_POST['html']);
-    echo '<h2>' . $_lang['global.result'] . '</h2>';
+    echo '<h2>' . _lang('global.result') . '</h2>';
     echo '<div class="hr"><hr></div>';
     echo "\n\n";
 

@@ -15,12 +15,12 @@ if (isset($_POST['title']) && is_array($_POST['title'])) {
         $id = (int) $id;
         $title = _e(trim($title));
         if ($title == "") {
-            $title = $_lang['global.novalue'];
+            $title = _lang('global.novalue');
         }
         DB::update(_root_table, 'id=' . DB::val($id), array('title' => $title));
     }
 
-    $message = _msg(_msg_ok, $_lang['global.saved']);
+    $message = _msg(_msg_ok, _lang('global.saved'));
 }
 
 /* ---  vystup  --- */
@@ -41,7 +41,7 @@ $output .= Sunlight\Admin\PageLister::render(array(
 
 $output .= "
     <p>
-        <input type='submit' value='" . $_lang['global.save'] . "'>
-        <input type='reset' value='" . $_lang['global.reset'] . "' onclick='return Sunlight.confirm();'>
+        <input type='submit' value='" . _lang('global.save') . "'>
+        <input type='reset' value='" . _lang('global.reset') . "' onclick='return Sunlight.confirm();'>
     </p>
 " . _xsrfProtect() . "</form>";

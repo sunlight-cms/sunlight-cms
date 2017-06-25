@@ -33,7 +33,7 @@ function _adminMenu()
             }
         }
     } else {
-        $output .= '<a href="./" class="act"><span>' . $GLOBALS['_lang']['login.title'] . "</span></a>\n";
+        $output .= '<a href="./" class="act"><span>' . _lang('login.title') . "</span></a>\n";
     }
     $output .= "</div>\n";
 
@@ -47,8 +47,6 @@ function _adminMenu()
  */
 function _adminUserMenu()
 {
-    global $_lang;
-
     $output = '<span id="usermenu">';
     if (_login && _priv_administration) {
         $profile_link = _linkModule('profile', 'id=' . _loginname);
@@ -64,12 +62,12 @@ function _adminUserMenu()
             } else {
                 $messages_count = "";
             }
-            $output .= "<a href='" . _linkModule('messages') . "'>" . $_lang['usermenu.messages'] . $messages_count . "</a>, ";
+            $output .= "<a href='" . _linkModule('messages') . "'>" . _lang('usermenu.messages') . $messages_count . "</a>, ";
         }
-        $output .= '<a href="' . _linkModule('settings') . '">' . $_lang['usermenu.settings'] . '</a>, <a href="' . _xsrfLink(_link('system/script/logout.php?_return=admin/')) . '">' . $_lang['usermenu.logout'] . '</a>]';
-        $output .= '<a href="' . Core::$url . '/" target="_blank" class="usermenu-web-link" title="' . $_lang['admin.link.site'] . '"><img class="icon" src="images/icons/guide.png" alt="' . $_lang['admin.link.site'] . '"></a>';
+        $output .= '<a href="' . _linkModule('settings') . '">' . _lang('usermenu.settings') . '</a>, <a href="' . _xsrfLink(_link('system/script/logout.php?_return=admin/')) . '">' . _lang('usermenu.logout') . '</a>]';
+        $output .= '<a href="' . Core::$url . '/" target="_blank" class="usermenu-web-link" title="' . _lang('admin.link.site') . '"><img class="icon" src="images/icons/guide.png" alt="' . _lang('admin.link.site') . '"></a>';
     } else {
-        $output .= '<a href="./">' . $_lang['usermenu.guest'] . '</a>';
+        $output .= '<a href="./">' . _lang('usermenu.guest') . '</a>';
     }
     $output .= '</span>';
 
@@ -84,7 +82,7 @@ function _adminUserMenu()
  */
 function _adminBacklink($url)
 {
-    return '<a href="' . _e($url) . '" class="backlink">&lt; ' . $GLOBALS['_lang']['global.return'] . "</a>\n";
+    return '<a href="' . _e($url) . '" class="backlink">&lt; ' . _lang('global.return') . "</a>\n";
 }
 
 /**
@@ -162,7 +160,6 @@ function _adminArticleAccess($alias = '')
  */
 function _adminArticleEditLink($art, $ucnote = true)
 {
-    global $_lang;
     $output = "";
 
     // trida
@@ -190,7 +187,7 @@ function _adminArticleEditLink($art, $ucnote = true)
 
     // poznamka o neschvaleni
     if ($art['confirmed'] != 1 && $ucnote) {
-        $output .= " <small>(" . $_lang['global.unconfirmed'] . ")</small>";
+        $output .= " <small>(" . _lang('global.unconfirmed') . ")</small>";
     }
 
     return $output;
@@ -289,7 +286,7 @@ function _adminRootSelect($name, array $options)
     }
 
     if (empty($tree) && $options['empty_item'] === null) {
-        $output .= "<option value='-1'>" . $GLOBALS['_lang']['global.nokit'] . "</option>\n";
+        $output .= "<option value='-1'>" . _lang('global.nokit') . "</option>\n";
     }
 
     $output .= "</select>\n";

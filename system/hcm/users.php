@@ -52,7 +52,7 @@ function _HCM_users($razeni = 1, $pocet = 5)
                 // hodnoceni autora
             case 4:
                 $rvar = DB::queryRow("SELECT ROUND(SUM(ratesum)/SUM(ratenum)),COUNT(*) FROM " . _articles_table . " WHERE rateon=1 AND ratenum!=0 AND author=" . $item['id']);
-                $rext = " - " . $rvar[0] . "%, " . $GLOBALS['_lang']['global.articlesnum'] . ": " . $rvar[1];
+                $rext = " - " . $rvar[0] . "%, " . _lang('global.articlesnum') . ": " . $rvar[1];
                 break;
 
                 // nic

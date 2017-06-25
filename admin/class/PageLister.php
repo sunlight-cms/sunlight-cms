@@ -219,10 +219,10 @@ class PageLister
         $url = Url::current();
 
         $output .= "<ul class=\"page-list-breadcrumbs\">\n";
-        $output .= "<li><a href=\"" . _e($url->set('page_id', 'root')->generateRelative()) . "\">{$GLOBALS['_lang']['global.all']}</a></li>\n";
+        $output .= "<li><a href=\"" . _e($url->set('page_id', 'root')->generateRelative()) . "\">" . _lang('global.all') . "</a></li>\n";
         $path = PageManager::getPath(static::$config['current_page'], null, array('level_inherit', 'layout', 'layout_inherit'));
         foreach ($path as $page) {
-            $output .= "<li>" . static::renderPageFlags($page) . "<a href=\"" . _e($url->set('page_id', $page['id'])->generateRelative()) . "\" title=\"ID: {$page['id']}, {$GLOBALS['_lang']['admin.content.form.ord']}: {$page['ord']}\">{$page['title']}</a></li>\n";
+            $output .= "<li>" . static::renderPageFlags($page) . "<a href=\"" . _e($url->set('page_id', $page['id'])->generateRelative()) . "\" title=\"ID: {$page['id']}, " . _lang('admin.content.form.ord') . " {$page['ord']}\">{$page['title']}</a></li>\n";
         }
         $output .= "</ul>\n";
     }
@@ -240,7 +240,7 @@ class PageLister
         if ($options['sortable']) {
             $output .= "<form method=\"post\">\n";
             if (static::saveOrd()) {
-                $output .= _msg(_msg_ok, $GLOBALS['_lang']['admin.content.form.ord.saved']);
+                $output .= _msg(_msg_ok, _lang('admin.content.form.ord.saved'));
             }
         }
         if (static::MODE_SINGLE_LEVEL == $options['mode']) {
@@ -294,8 +294,8 @@ class PageLister
         $output .= "</tbody>\n</table>\n";
         if ($options['sortable']) {
             $output .= "<p class=\"separated\">
-                <input type=\"submit\" value=\"{$GLOBALS['_lang']['global.savechanges']}\">
-                <input type=\"submit\" name=\"reset\" value=\"{$GLOBALS['_lang']['global.reset']}\">
+                <input type=\"submit\" value=\"" . _lang('global.savechanges') . "\">
+                <input type=\"submit\" name=\"reset\" value=\"" . _lang('global.reset') . "\">
             </p>";
 
             $output .= _xsrfProtect() . "</form>";
@@ -473,7 +473,7 @@ class PageLister
 
         // title
         $output .= "<td class=\"page-title\">";
-        $itemAttrs = " title=\"ID: {$page['id']}, {$GLOBALS['_lang']['admin.content.form.ord']}: {$page['ord']}\"";
+        $itemAttrs = " title=\"ID: {$page['id']}, " . _lang('admin.content.form.ord') . ": {$page['ord']}\"";
         if ($options['level_class']) {
             $itemAttrs .= " class=\"node-level-p" . ($page['node_level'] + $levelOffset) . "\"";
         }
@@ -503,7 +503,7 @@ class PageLister
             } elseif ($page['type'] == _page_plugin && isset(static::$ppageTypes[$page['type_idt']])) {
                 $typeLabel = static::$ppageTypes[$page['type_idt']];
             } else {
-                $typeLabel = $GLOBALS['_lang']['page.type.' . static::$pageTypes[$page['type']]];
+                $typeLabel = _lang('page.type.' . static::$pageTypes[$page['type']]);
             }
             $output .= "<td class=\"page-type\">" . $typeLabel . "</td>\n";
         }
@@ -544,7 +544,7 @@ class PageLister
             $actions['edit'] = array(
                 'url' => 'index.php?p=content-edit' . static::$pageTypes[$page['type']] . '&id=' . $page['id'],
                 'icon' => 'images/icons/edit.png',
-                'label' => $GLOBALS['_lang']['global.edit'],
+                'label' => _lang('global.edit'),
                 'order' => 50,
             );
         }
@@ -555,7 +555,7 @@ class PageLister
                 'url' => _linkRoot($page['id'], $page['slug']),
                 'new_window' => true,
                 'icon' => 'images/icons/show.png',
-                'label' => $GLOBALS['_lang']['global.show'],
+                'label' => _lang('global.show'),
                 'order' => 100,
             );
         }
@@ -566,7 +566,7 @@ class PageLister
                 $actions['gallery_images'] = array(
                     'url' => 'index.php?p=content-manageimgs&g=' . $page['id'],
                     'icon' => 'images/icons/img.png',
-                    'label' => $GLOBALS['_lang']['admin.content.form.showpics'],
+                    'label' => _lang('admin.content.form.showpics'),
                     'order' => 150,
                 );
                 break;
@@ -575,7 +575,7 @@ class PageLister
                 $actions['category_articles'] = array(
                     'url' => 'index.php?p=content-articles-list&cat=' . $page['id'],
                     'icon' => 'images/icons/list.png',
-                    'label' => $GLOBALS['_lang']['admin.content.form.showarticles'],
+                    'label' => _lang('admin.content.form.showarticles'),
                     'order' => 150,
                 );
                 break;
@@ -586,7 +586,7 @@ class PageLister
             $actions['delete'] = array(
                 'url' => 'index.php?p=content-delete&id=' . $page['id'],
                 'icon' => 'images/icons/delete.png',
-                'label' => $GLOBALS['_lang']['global.delete'],
+                'label' => _lang('global.delete'),
                 'order' => 200,
             );
         }
@@ -625,29 +625,29 @@ class PageLister
         $output = '';
         if ($page['type'] != _page_separator) {
             if ($page['id'] == _index_page_id) {
-                $iconTitle = $GLOBALS['_lang']['admin.content.form.homepage'];
+                $iconTitle = _lang('admin.content.form.homepage');
                 $output .= "<img src=\"images/icons/home.png\" class=\"icon\" alt=\"{$iconTitle}\" title=\"{$iconTitle}\">";
             }
             if ($page['layout'] !== null && !$page['layout_inherit']) {
-                $iconTitle = sprintf($GLOBALS['_lang']['admin.content.form.layout.setting'], _e(TemplateService::getComponentLabelByUid($page['layout'], TemplateService::UID_TEMPLATE_LAYOUT)));
+                $iconTitle = sprintf(_lang('admin.content.form.layout.setting'), _e(TemplateService::getComponentLabelByUid($page['layout'], TemplateService::UID_TEMPLATE_LAYOUT)));
                 $output .= "<img src=\"images/icons/template.png\" class=\"icon\" alt=\"{$iconTitle}\" title=\"{$iconTitle}\">";
             }
             if (!$page['public']) {
-                $iconTitle = $GLOBALS['_lang']['admin.content.form.private'];
+                $iconTitle = _lang('admin.content.form.private');
                 $output .= "<img src=\"images/icons/lock3.png\" class=\"icon\" alt=\"{$iconTitle}\" title=\"{$iconTitle}\">";
             }
             if ($page['level'] > 0) {
-                $iconTitle = "{$GLOBALS['_lang']['admin.content.form.level']} {$page['level']}+";
+                $iconTitle = _lang('admin.content.form.level') . " {$page['level']}+";
                 if ($page['level_inherit']) {
                     $icon = 'lock2.png';
-                    $iconTitle .= " ({$GLOBALS['_lang']['admin.content.form.inherited']})";
+                    $iconTitle .= ' (' . _lang('admin.content.form.inherited') . ')';
                 } else {
                     $icon = 'lock.png';
                 }
                 $output .= "<img src=\"images/icons/{$icon}\" class=\"icon\" alt=\"{$iconTitle}\" title=\"{$iconTitle}\">";
             }
             if (!$page['visible']) {
-                $iconTitle = $GLOBALS['_lang']['admin.content.form.invisible'];
+                $iconTitle = _lang('admin.content.form.invisible');
                 $output .= "<img src=\"images/icons/eye.png\" class=\"icon\" alt=\"{$iconTitle}\" title=\"{$iconTitle}\">";
             }
         }

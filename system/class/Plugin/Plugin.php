@@ -323,30 +323,28 @@ abstract class Plugin
      */
     public function getActionList()
     {
-        global $_lang;
-
         if (!_env_admin) {
             throw new \RuntimeException('Plugin actions require administration environment');
         }
 
         $actions = array();
 
-        $actions['info'] = $_lang['admin.plugins.action.do.info'];
+        $actions['info'] = _lang('admin.plugins.action.do.info');
         $actions += $this->getCustomActionList();
         if ($this->canBeInstalled()) {
-            $actions['install'] = $_lang['admin.plugins.action.do.install'];
+            $actions['install'] = _lang('admin.plugins.action.do.install');
         }
         if ($this->canBeUninstalled()) {
-            $actions['uninstall'] = $_lang['admin.plugins.action.do.uninstall'];
+            $actions['uninstall'] = _lang('admin.plugins.action.do.uninstall');
         }
         if ($this->canBeDisabled()) {
-            $actions['disable'] = $_lang['admin.plugins.action.do.disable'];
+            $actions['disable'] = _lang('admin.plugins.action.do.disable');
         }
         if ($this->isDisabled()) {
-            $actions['enable'] = $_lang['admin.plugins.action.do.enable'];
+            $actions['enable'] = _lang('admin.plugins.action.do.enable');
         }
         if ($this->canBeRemoved()) {
-            $actions['remove'] = $_lang['admin.plugins.action.do.remove'];
+            $actions['remove'] = _lang('admin.plugins.action.do.remove');
         }
 
         return $actions;

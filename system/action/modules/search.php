@@ -32,20 +32,20 @@ if (isset($_GET['q']) && _xsrfCheck(true)) {
 
 /* ---  modul  --- */
 
-$_index['title'] = $_lang['mod.search'];
+$_index['title'] = _lang('mod.search');
 
 $output .= "
-<p class='bborder'>" . $_lang['mod.search.p'] . "</p>
+<p class='bborder'>" . _lang('mod.search.p') . "</p>
 
 <form action='" . _linkModule('search') . "' method='get'>
 " . (!_pretty_urls ? _renderHiddenInputs(_arrayFilter($_GET, null, null, array('q', 'root', 'art', 'post', 'img'))) : '') . "
-<p><input type='search' name='q' class='inputmedium' value='" . _e($search_query) . "'> <input type='submit' value='" . $_lang['mod.search.submit'] . "'></p>
+<p><input type='search' name='q' class='inputmedium' value='" . _e($search_query) . "'> <input type='submit' value='" . _lang('mod.search.submit') . "'></p>
 <p>
-    " . $_lang['mod.search.where'] . ":
-    <label><input type='checkbox' name='root' value='1'" . _checkboxActivate($root) . "> " . $_lang['mod.search.where.root'] . "</label>
-    <label><input type='checkbox' name='art' value='1'" . _checkboxActivate($art) . "> " . $_lang['mod.search.where.articles'] . "</label>
-    <label><input type='checkbox' name='post' value='1'" . _checkboxActivate($post) . "> " . $_lang['mod.search.where.posts'] . "</label>
-    <label><input type='checkbox' name='img' value='1'" . _checkboxActivate($image) . "> " . $_lang['mod.search.where.images'] . "</label>
+    " . _lang('mod.search.where') . ":
+    <label><input type='checkbox' name='root' value='1'" . _checkboxActivate($root) . "> " . _lang('mod.search.where.root') . "</label>
+    <label><input type='checkbox' name='art' value='1'" . _checkboxActivate($art) . "> " . _lang('mod.search.where.articles') . "</label>
+    <label><input type='checkbox' name='post' value='1'" . _checkboxActivate($post) . "> " . _lang('mod.search.where.posts') . "</label>
+    <label><input type='checkbox' name='img' value='1'" . _checkboxActivate($image) . "> " . _lang('mod.search.where.images') . "</label>
 </p>
 
 " . _xsrfProtect() . "
@@ -152,11 +152,11 @@ if ($search_query != '') {
                 // sestaveni infa
                 $infos = array();
                 if ($r['author'] == -1) {
-                    $infos[] = array($_lang['global.postauthor'], "<span class='post-author-guest'>" . $r['guest'] . '</span>');
+                    $infos[] = array(_lang('global.postauthor'), "<span class='post-author-guest'>" . $r['guest'] . '</span>');
                 } else {
-                    $infos[] = array($_lang['global.postauthor'], _linkUserFromQuery($userQuery, $r));
+                    $infos[] = array(_lang('global.postauthor'), _linkUserFromQuery($userQuery, $r));
                 }
-                $infos[] = array($_lang['global.time'], _formatTime($r['time'], 'post'));
+                $infos[] = array(_lang('global.time'), _formatTime($r['time'], 'post'));
 
                 // pridani do vysledku
                 $results[] = array(
@@ -218,9 +218,9 @@ if ($search_query != '') {
                 $output .= "</div>\n";
             }
         } else {
-            $output .= _msg(_msg_ok, $_lang['mod.search.noresult']);
+            $output .= _msg(_msg_ok, _lang('mod.search.noresult'));
         }
     } else {
-        $output .= _msg(_msg_warn, $_lang['mod.search.minlength']);
+        $output .= _msg(_msg_warn, _lang('mod.search.minlength'));
     }
 }

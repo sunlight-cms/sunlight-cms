@@ -52,7 +52,7 @@ if (_priv_adminsection || _priv_admincategory || _priv_adminbook || _priv_admins
     if (_priv_adminroot) {
         foreach ($type_array as $type => $name) {
             if ($type != _page_plugin && _userHasRight('admin' . $name)) {
-                $create_list .= "<option value='" . $type . "'>" . $_lang['page.type.' . $name] . "</option>\n";
+                $create_list .= "<option value='" . $type . "'>" . _lang('page.type.' . $name) . "</option>\n";
             }
         }
 
@@ -75,26 +75,26 @@ if (_priv_adminsection || _priv_admincategory || _priv_adminbook || _priv_admins
     <select name="type">
     ' . $create_list . '
     </select>
-    <input class="button" type="submit" value="' . $_lang['global.create'] . '">
+    <input class="button" type="submit" value="' . _lang('global.create') . '">
     ' . _xsrfProtect() . '</form>
 
     <span class="inline-separator"></span>
     ' : '' ) . '
 
     ' . (_priv_adminroot ? '
-    <a class="button" href="index.php?p=content-setindex"><img src="images/icons/home.png" alt="act" class="icon">' . $_lang['admin.content.setindex'] . '</a>
+    <a class="button" href="index.php?p=content-setindex"><img src="images/icons/home.png" alt="act" class="icon">' . _lang('admin.content.setindex') . '</a>
 
     <span class="inline-separator"></span>
 
-    <a class="button" href="index.php?p=content-sort"><img src="images/icons/action.png" alt="move" class="icon">' . $_lang['admin.content.sort'] . '</a>
-    <a class="button" href="index.php?p=content-titles"><img src="images/icons/action.png" alt="titles" class="icon">' . $_lang['admin.content.titles'] . '</a>
-    <a class="button" href="index.php?p=content-redir"><img src="images/icons/action.png" alt="redir" class="icon">' . $_lang['admin.content.redir'] . '</a>
+    <a class="button" href="index.php?p=content-sort"><img src="images/icons/action.png" alt="move" class="icon">' . _lang('admin.content.sort') . '</a>
+    <a class="button" href="index.php?p=content-titles"><img src="images/icons/action.png" alt="titles" class="icon">' . _lang('admin.content.titles') . '</a>
+    <a class="button" href="index.php?p=content-redir"><img src="images/icons/action.png" alt="redir" class="icon">' . _lang('admin.content.redir') . '</a>
 
     <span class="inline-separator"></span>
     ' : '' ) . '
 
-    <a class="button" href="index.php?p=content&amp;list_mode=tree"' . (Sunlight\Admin\PageLister::MODE_FULL_TREE == Sunlight\Admin\PageLister::getConfig('mode') ? ' class="active-link"' : '') . '><img src="images/icons/tree.png" alt="move" class="icon">' . $_lang['admin.content.mode.tree'] . '</a>
-    <a class="button" href="index.php?p=content&amp;list_mode=single"' . (Sunlight\Admin\PageLister::MODE_SINGLE_LEVEL == Sunlight\Admin\PageLister::getConfig('mode') ? ' class="active-link"' : '') . '><img src="images/icons/list.png" alt="move" class="icon">' . $_lang['admin.content.mode.single'] . '</a>
+    <a class="button" href="index.php?p=content&amp;list_mode=tree"' . (Sunlight\Admin\PageLister::MODE_FULL_TREE == Sunlight\Admin\PageLister::getConfig('mode') ? ' class="active-link"' : '') . '><img src="images/icons/tree.png" alt="move" class="icon">' . _lang('admin.content.mode.tree') . '</a>
+    <a class="button" href="index.php?p=content&amp;list_mode=single"' . (Sunlight\Admin\PageLister::MODE_SINGLE_LEVEL == Sunlight\Admin\PageLister::getConfig('mode') ? ' class="active-link"' : '') . '><img src="images/icons/list.png" alt="move" class="icon">' . _lang('admin.content.mode.single') . '</a>
 
     <div class="hr"><hr></div>
 
@@ -183,14 +183,14 @@ foreach ($content_modules as $category_alias => $category_data) {
     $buttons_str = '';
     foreach ($category_data['modules'] as $module_alias => $module_options) {
         if ($module_options['access']) {
-            $module_label = isset($module_options['label']) ? $module_options['label'] : $_lang['admin.content.' . $module_alias];
+            $module_label = isset($module_options['label']) ? $module_options['label'] : _lang('admin.content.' . $module_alias);
             $buttons_str .= '<a class="button block" href="' . _e($module_options['url']) . '"><img class="icon" alt="' . _e($module_label) . '" src="' . _e($module_options['icon']) . '">' . $module_label . "</a>\n";
         }
     }
 
     if ($buttons_str !== '') {
         $content_modules_str .= '<div class="content-' . $category_alias . '">
-<h2>' . (isset($category_data['label']) ? $category_data['label'] : $_lang['admin.content.' . $category_alias]) . '</h2>
+<h2>' . (isset($category_data['label']) ? $category_data['label'] : _lang('admin.content.' . $category_alias)) . '</h2>
 ' . $buttons_str;
     }
 }
@@ -199,7 +199,7 @@ foreach ($content_modules as $category_alias => $category_data) {
 
 // zprava
 if (isset($_GET['done'])) {
-    $message = _msg(_msg_ok, $_lang['global.done']);
+    $message = _msg(_msg_ok, _lang('global.done'));
 }
 
 $output .= $message . '

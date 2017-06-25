@@ -67,7 +67,7 @@ abstract class Action
 
         if ($e !== null) {
             if ($this->catchExceptions) {
-                $result = ActionResult::failure(Message::error($_lang['global.error']));
+                $result = ActionResult::failure(Message::error(_lang('global.error')));
 
                 if ($this->renderExceptions) {
                     $result->setOutput(Core::renderException($e));

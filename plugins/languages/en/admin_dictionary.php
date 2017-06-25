@@ -479,6 +479,7 @@ return array(
     'admin.plugins.implementation' => 'Implementation',
     'admin.plugins.errors' => 'Errors',
     'admin.plugins.data' => 'Definition',
+    'admin.plugins.object' => 'Object',
     'admin.plugins.status.0' => 'ok',
     'admin.plugins.status.1' => 'error',
     'admin.plugins.status.2' => 'not installed',

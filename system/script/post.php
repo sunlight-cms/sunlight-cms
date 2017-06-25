@@ -48,7 +48,7 @@ if ($posttype == _post_plugin) {
 
 // vyplneni prazdnych poli
 if ($guest === '' && !_login) {
-    $guest = $_lang['posts.anonym'];
+    $guest = _lang('posts.anonym');
 }
 
 //  kontrola cile

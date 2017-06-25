@@ -30,7 +30,7 @@ if ($_index['is_page'] && $_index['slug'] !== null) {
 // hlavicka a vychozi obsah
 _notFoundHeader();
 
-$_index['title'] = $_lang['global.error404.title'];
+$_index['title'] = _lang('global.error404.title');
 $_index['output'] = '';
 
 Extend::call('index.not_found', array(
@@ -38,5 +38,5 @@ Extend::call('index.not_found', array(
 ));
 
 if ($_index['output'] === '') {
-    $_index['output'] = _msg(_msg_warn, $_lang['global.error404']);
+    $_index['output'] = _msg(_msg_warn, _lang('global.error404'));
 }

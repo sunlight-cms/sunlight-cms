@@ -38,7 +38,7 @@ Sunlight\Extend::call('admin.index.custom', array(
 $logout_warning = '';
 $maxltime = ini_get('session.gc_maxlifetime');
 if (!empty($maxltime) && !isset($_COOKIE[Sunlight\Core::$appId . '_persistent_key'])) {
-    $logout_warning = _adminNote(sprintf($_lang['admin.index.logoutwarn'], round($maxltime / 60)));
+    $logout_warning = _adminNote(sprintf(_lang('admin.index.logoutwarn'), round($maxltime / 60)));
 }
 
 // vystup
@@ -48,23 +48,23 @@ $output .= "
 <tr class='valign-top'>
 
 <td>" . (($custom !== '' && $admin_index_cfg['admin_index_custom_pos'] == 0) ? $custom : "
-  <h1>" . $_lang['admin.menu.index'] . "</h1>
-  <p>" . $_lang['admin.index.p'] . "</p>
+  <h1>" . _lang('admin.menu.index') . "</h1>
+  <p>" . _lang('admin.index.p') . "</p>
   " . $logout_warning . "
   ") . "
 </td>
 
 <td width='200'>
-  <h2>" . $_lang['admin.index.box'] . "</h2>
+  <h2>" . _lang('admin.index.box') . "</h2>
   <table>
     <tr>
-      <th>" . $_lang['global.version'] . ":</th>
+      <th>" . _lang('global.version') . ":</th>
       <td>" . Sunlight\Core::VERSION . ' <small>' . Sunlight\Core::DIST . "</small></td>
     </tr>
 
     " . ($admin_index_cfg['latest_version_check'] ? "
     <tr>
-      <th>" . $_lang['admin.index.box.latest'] . ":</th>
+      <th>" . _lang('admin.index.box.latest') . ":</th>
       <td><span id='latest-version'>---</span></td>
     </tr>
     " : '') . "
@@ -95,11 +95,11 @@ $messages = array();
 
 if (Sunlight\Core::DIST === 'BETA') {
     // nestabilni verze
-    $messages[] = Sunlight\Message::warning(str_replace('*state*', Sunlight\Core::DIST, $_lang['admin.index.statewarn']));
+    $messages[] = Sunlight\Message::warning(_lang('admin.index.statewarn', array('*state*' => Sunlight\Core::DIST)));
 }
 if (_dev) {
     // vyvojovy rezim
-    $messages[] = Sunlight\Message::warning($_lang['admin.index.devwarn']);
+    $messages[] = Sunlight\Message::warning(_lang('admin.index.devwarn'));
 }
 
 Sunlight\Extend::call('admin.index.messages', array(
@@ -107,13 +107,13 @@ Sunlight\Extend::call('admin.index.messages', array(
 ));
 
 $output .= "<div id='index-messages' class='well'>\n";
-$output .= '<h2>' . $_lang['admin.index.messages'] . "</h2>\n";
+$output .= '<h2>' . _lang('admin.index.messages') . "</h2>\n";
 $output .= join($messages);
 $output .= "</div>\n";
 
 // editace
 if (_logingroup == _group_admin) {
-    $output .= '<p align="right"><a class="button" href="index.php?p=index-edit"><img src="images/icons/edit.png" alt="edit" class="icon">' . $_lang['admin.index.edit.link'] . '</a></p>';
+    $output .= '<p align="right"><a class="button" href="index.php?p=index-edit"><img src="images/icons/edit.png" alt="edit" class="icon">' . _lang('admin.index.edit.link') . '</a></p>';
 }
 
 // nacteni a zobrazeni aktualni verze
@@ -124,7 +124,7 @@ if ($admin_index_cfg['latest_version_check']) {
         'dist' => Sunlight\Core::DIST,
         'php' => PHP_VERSION_ID,
         'referer' => sprintf('%s@%s', sha1(Sunlight\Core::$appId . '$' . Sunlight\Core::$secret), Sunlight\Util\Url::current()->host),
-        'lang' => $_lang['langcode.iso639'],
+        'lang' => _lang('langcode.iso639'),
     ));
 
     $output .= "<script type='text/javascript'>
@@ -160,10 +160,10 @@ $.ajax({
             
             if (response.localAge <= 0) {
                 messageType = 'ok';
-                message = " . json_encode($_lang['admin.index.version.latest']) . ";
+                message = " . json_encode(_lang('admin.index.version.latest')) . ";
             } else {
                 messageType = 'warn';
-                message = " . json_encode($_lang['admin.index.version.old']) . ";
+                message = " . json_encode(_lang('admin.index.version.old')) . ";
                 message = message
                     .replace('*version*', Sunlight.escapeHtml(response.latestVersion))
                     .replace('*link*', 'https://sunlight-cms.org/resource/update');

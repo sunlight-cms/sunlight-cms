@@ -79,10 +79,10 @@ $assets = array(
             'themeIsDark' => $scheme_dark,
         ),
         'labels' => array(
-            'cancel' => $_lang['global.cancel'],
-            'fmanMovePrompt' => $_lang['admin.fman.selected.move.prompt'],
-            'fmanDeleteConfirm' => $_lang['admin.fman.selected.delete.confirm'],
-            'busyOverlayText' => $_lang['admin.busy_overlay.text'],
+            'cancel' => _lang('global.cancel'),
+            'fmanMovePrompt' => _lang('admin.fman.selected.move.prompt'),
+            'fmanDeleteConfirm' => _lang('admin.fman.selected.delete.confirm'),
+            'busyOverlayText' => _lang('admin.busy_overlay.text'),
         ),
     )),
 );
@@ -113,7 +113,7 @@ $admin_body_classes[] = $scheme_dark ? 'dark' : 'light';
 
 ?>
 <meta name="robots" content="noindex,follow"><?php echo _headAssets($assets), "\n" ?>
-<title><?php echo _title, ' - ', $_lang['global.admintitle'], (!empty($admin_title) ? ' - ' . $admin_title : '') ?></title>
+<title><?php echo _title, ' - ', _lang('global.admintitle'), (!empty($admin_title) ? ' - ' . $admin_title : '') ?></title>
 </head>
 
 <body class="<?php echo implode(' ', $admin_body_classes) ?>">
@@ -125,7 +125,7 @@ $admin_body_classes[] = $scheme_dark ? 'dark' : 'light';
             <div id="header">
                 <?php echo _adminUserMenu() ?>
                 <div id="title">
-                    <?php echo _title, ' - ', $_lang['global.admintitle'] ?>
+                    <?php echo _title, ' - ', _lang('global.admintitle') ?>
                 </div>
             </div>
 
@@ -146,15 +146,15 @@ $admin_body_classes[] = $scheme_dark ? 'dark' : 'light';
         <div id="footer">
             <div id="footer-links">
                 <?php if ($admin_access): ?>
-                    <a href="<?php echo _link('') ?>" target="_blank"><?php echo $_lang['admin.link.site'] ?></a>
-                    <a href="<?php echo _link('admin/') ?>" target="_blank"><?php echo $_lang['admin.link.newwin'] ?></a>
+                    <a href="<?php echo _link('') ?>" target="_blank"><?php echo _lang('admin.link.site') ?></a>
+                    <a href="<?php echo _link('admin/') ?>" target="_blank"><?php echo _lang('admin.link.newwin') ?></a>
                 <?php else: ?>
-                    <a href="<?php echo _link('') ?>">&lt; <?php echo $_lang['admin.link.home'] ?></a>
+                    <a href="<?php echo _link('') ?>">&lt; <?php echo _lang('admin.link.home') ?></a>
                 <?php endif ?>
             </div>
 
             <div id="footer-powered-by">
-                <?php echo $_lang['system.poweredby'] ?> <a href="https://sunlight-cms.org/" target="_blank">SunLight CMS</a>
+                <?php echo _lang('system.poweredby') ?> <a href="https://sunlight-cms.org/" target="_blank">SunLight CMS</a>
             </div>
         </div>
     </div>

@@ -56,7 +56,7 @@ abstract class PluginAction extends Action
     protected function confirm($message, $buttonText = null)
     {
         if ($buttonText === null) {
-            $buttonText = $GLOBALS['_lang']['global.continue'];
+            $buttonText = _lang('global.continue');
         }
 
         $confirmationToken = md5(get_called_class());

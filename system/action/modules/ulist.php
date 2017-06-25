@@ -14,9 +14,9 @@ if (!_ulist) {
     return;
 }
 
-$_index['title'] = $_lang['user.list.title'];
+$_index['title'] = _lang('user.list.title');
 
-$output .= "<p class='bborder'>" . $_lang['mod.ulist.p'] . "</p>";
+$output .= "<p class='bborder'>" . _lang('mod.ulist.p') . "</p>";
 
 // filtr skupiny
 $group_cond = '1';
@@ -33,8 +33,8 @@ if (isset($_REQUEST['group_id'])) {
 $output .= '
   <form action="' . _linkModule('ulist') . '" method="get">
   ' . (!_pretty_urls ? _renderHiddenInputs(_arrayFilter($_GET, null, null, array('group_id'))) : '') . '
-  <strong>' . $_lang['user.list.groupfilter'] . ':</strong> <select name="group_id">
-  <option value="-1">' . $_lang['global.all'] . '</option>
+  <strong>' . _lang('user.list.groupfilter') . ':</strong> <select name="group_id">
+  <option value="-1">' . _lang('global.all') . '</option>
   ';
 $query = DB::query("SELECT id,title FROM " . _groups_table . " WHERE id!=2 ORDER BY level DESC");
 while ($item = DB::row($query)) {
@@ -45,7 +45,7 @@ while ($item = DB::row($query)) {
     }
     $output .= '<option value="' . $item['id'] . '"' . $selected . '>' . $item['title'] . '</option>';
 }
-$output .= '</select> <input type="submit" value="' . $_lang['global.apply'] . '"></form>';
+$output .= '</select> <input type="submit" value="' . _lang('global.apply') . '"></form>';
 
 // tabulka
 $paging = _resultPaging(_linkModule('ulist', 'group=' . $group, false), 50, _users_table . ':u', $group_cond);
@@ -56,7 +56,7 @@ if ($paging['count'] > 0) {
     $userQuery = _userQuery(null);
     $query = DB::query('SELECT ' . $userQuery['column_list'] . ' FROM ' . _users_table . ' u ' . $userQuery['joins'] . ' WHERE ' . $group_cond . ' ORDER BY ug.level DESC ' . $paging['sql_limit']);
 
-    $output .= "<table class='widetable'>\n<tr><th>" . $_lang['login.username'] . "</th><th>" . $_lang['global.group'] . "</th></tr>\n";
+    $output .= "<table class='widetable'>\n<tr><th>" . _lang('login.username') . "</th><th>" . _lang('global.group') . "</th></tr>\n";
     while ($item = DB::row($query)) {
         $output .= "<tr>
     <td>" . _linkUserFromQuery($userQuery, $item) . "</td>
@@ -71,4 +71,4 @@ if (_showPagingAtBottom()) {
 }
 
 // celkovy pocet uzivatelu
-$output .= "<p>" . $_lang['user.list.total'] . ": " . $paging['count'] . "</p>";
+$output .= "<p>" . _lang('user.list.total') . ": " . $paging['count'] . "</p>";

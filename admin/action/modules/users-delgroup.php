@@ -56,28 +56,28 @@ if ($continue) {
     /* ---  vystup  --- */
     if (!$done) {
         if ($systemgroup) {
-            $output .= _msg(_msg_ok, $_lang['admin.users.groups.specialgroup.delnotice']);
+            $output .= _msg(_msg_ok, _lang('admin.users.groups.specialgroup.delnotice'));
         }
         if ($user_count > 0) {
-            $output .= _msg(_msg_warn, str_replace('%user_count%', $user_count, $_lang['admin.users.groups.delwarning']));
+            $output .= _msg(_msg_warn, _lang('admin.users.groups.delwarning', array('%user_count%' => $user_count)));
         }
 
         $output .= "
     <form class='cform' method='post'>
     <input type='hidden' name='doit' value='1'>
 
-    <p>" . str_replace('%group%', $query['title'], $_lang['admin.users.groups.delconfirm']) . "</p>
-    <input type='submit' value='" . $_lang['global.confirmdelete'] . "'>
+    <p>" . _lang('admin.users.groups.delconfirm', array('%group%' => $query['title'])) . "</p>
+    <input type='submit' value='" . _lang('global.confirmdelete') . "'>
     " . _xsrfProtect() . "</form>
     ";
     } else {
-        $output .= _msg(_msg_ok, $_lang['global.done']);
+        $output .= _msg(_msg_ok, _lang('global.done'));
     }
 
 } else {
     if ($levelconflict == false) {
-        $output .= _msg(_msg_err, $_lang['global.badinput']);
+        $output .= _msg(_msg_err, _lang('global.badinput'));
     } else {
-        $output .= _msg(_msg_err, $_lang['global.disallowed']);
+        $output .= _msg(_msg_err, _lang('global.disallowed'));
     }
 }

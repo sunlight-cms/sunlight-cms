@@ -51,7 +51,7 @@ if (strncmp($_url_path, $_system_url_path, strlen($_system_url_path)) === 0) {
     header('Content-Type: text/plain; charset=UTF-8');
     _notFoundHeader();
 
-    echo $_lang['global.error404.title'];
+    echo _lang('global.error404.title');
     exit;
 }
 

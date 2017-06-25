@@ -38,8 +38,8 @@ $output .= '
     <tr>
         <td></td>
         <td>
-            <input class="inputfat" type="submit" value="' . $_lang['admin.other.sqlex.run'] . '">
-            <span class="note">(' . $_lang['admin.other.sqlex.hint'] . ')</span>
+            <input class="inputfat" type="submit" value="' . _lang('admin.other.sqlex.run') . '">
+            <span class="note">(' . _lang('admin.other.sqlex.hint') . ')</span>
         </td>
     </tr>
 </table>
@@ -60,17 +60,17 @@ if (!empty($queries)) {
         $result = DB::query($queries[$i], true);
         if ($result instanceof mysqli_result) {
             // resource
-            $log[] = $_lang['admin.other.sqlex.rows'] . ': ' . DB::size($result);
+            $log[] = _lang('admin.other.sqlex.rows') . ': ' . DB::size($result);
             if ($lastResource !== null) {
                 DB::free($lastResource);
             }
             $lastResource = $result;
         } elseif ($result) {
             // true
-            $log[] = $_lang['admin.other.sqlex.affected'] . ': ' . DB::affectedRows();
+            $log[] = _lang('admin.other.sqlex.affected') . ': ' . DB::affectedRows();
         } else {
             // false
-            $log[] = $_lang['global.error'];
+            $log[] = _lang('global.error');
             $error = true;
             break;
         }
@@ -80,7 +80,7 @@ if (!empty($queries)) {
     // vypis logu
     $output .= '
     <div id="sqlex-result">
-        <h2>' . $_lang['global.result'] . '</h2>
+        <h2>' . _lang('global.result') . '</h2>
         <ol>
 ';
     for ($i = 0; isset($log[$i]); ++$i) {

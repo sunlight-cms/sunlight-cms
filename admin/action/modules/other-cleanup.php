@@ -9,12 +9,11 @@ if (!defined('_root')) {
 $message = "";
 
 $selectTime = function ($name) {
-    global $_lang;
     $opts = array(1, 2, 4, 8, 25, 52, 104);
     $active = (isset($_POST[$name]) ? (int) _post($name) : 25);
     $output = "<select name='" . $name . "'>\n";
     for($i = 0; isset($opts[$i]); ++$i) {
-        $output .= "<option value='" . $opts[$i] . "'" . (($active === $opts[$i]) ? " selected" : '') . ">" . $_lang['admin.other.cleanup.time.' . $opts[$i]] . "</option>\n";
+        $output .= "<option value='" . $opts[$i] . "'" . (($active === $opts[$i]) ? " selected" : '') . ">" . _lang('admin.other.cleanup.time.' . $opts[$i]) . "</option>\n";
     }
     $output .= "</select>\n";
 
@@ -146,16 +145,16 @@ if (isset($_POST['action'])) {
             // zprava
             if ($prev) {
                 if (empty($prev_count)) {
-                    $message = _msg(_msg_warn, $_lang['global.noaction']);
+                    $message = _msg(_msg_warn, _lang('global.noaction'));
                     break;
                 }
                 $message = "<br><ul>\n";
                 foreach($prev_count as $key => $val) {
-                    $message .= "<li><strong>" . $_lang[$key] . ":</strong> <code>" . $val . "</code></li>\n";
+                    $message .= "<li><strong>" . _lang($key) . ":</strong> <code>" . $val . "</code></li>\n";
                 }
                 $message .= "</ul>";
             } else {
-                $message = _msg(_msg_ok, $_lang['global.done']);
+                $message = _msg(_msg_ok, _lang('global.done'));
             }
 
             break;
@@ -175,11 +174,11 @@ if (isset($_POST['action'])) {
                     Sunlight\Database\DatabaseLoader::dropTables(DB::getTablesByPrefix());
 
                     // zprava
-                    echo "<h1>" . $_lang['global.done'] . "</h1>\n<p>" . $_lang['admin.other.cleanup.uninstall.done'] . "</p>";
+                    echo "<h1>" . _lang('global.done') . "</h1>\n<p>" . _lang('admin.other.cleanup.uninstall.done') . "</p>";
                     exit;
 
                 } else {
-                    $message = _msg(_msg_warn, $_lang['admin.other.cleanup.uninstall.badpass']);
+                    $message = _msg(_msg_warn, _lang('admin.other.cleanup.uninstall.badpass'));
                 }
             }
             break;
@@ -192,35 +191,35 @@ if (isset($_POST['action'])) {
 
 $output .= $message . "
 <fieldset>
-<legend>" . $_lang['admin.other.cleanup.cleanup'] . "</legend>
+<legend>" . _lang('admin.other.cleanup.cleanup') . "</legend>
 <form class='cform' action='index.php?p=other-cleanup' method='post'>
 <input type='hidden' name='action' value='1'>
-<p>" . $_lang['admin.other.cleanup.cleanup.p'] . "</p>
+<p>" . _lang('admin.other.cleanup.cleanup.p') . "</p>
 
 <table>
 <tr class='valign-top'>
 
 <td rowspan='2'>
   <fieldset>
-  <legend>" . $_lang['mod.messages'] . "</legend>
-  <label><input type='radio' name='messages' value='0'" . _checkboxActivate(!isset($_POST['messages']) || _post('messages') == 0) . "> " . $_lang['global.noaction'] . "</label><br>
-  <label><input type='radio' name='messages' value='1'" . _checkboxActivate(isset($_POST['messages']) && _post('messages') == 1) . "> " . $_lang['admin.other.cleanup.messages.1'] . "</label> " . $selectTime("messages-time") . "<br>
-  <label><input type='radio' name='messages' value='2'" . _checkboxActivate(isset($_POST['messages']) && _post('messages') == 2) . "> " . $_lang['admin.other.cleanup.messages.2'] . "</label>
+  <legend>" . _lang('mod.messages') . "</legend>
+  <label><input type='radio' name='messages' value='0'" . _checkboxActivate(!isset($_POST['messages']) || _post('messages') == 0) . "> " . _lang('global.noaction') . "</label><br>
+  <label><input type='radio' name='messages' value='1'" . _checkboxActivate(isset($_POST['messages']) && _post('messages') == 1) . "> " . _lang('admin.other.cleanup.messages.1') . "</label> " . $selectTime("messages-time") . "<br>
+  <label><input type='radio' name='messages' value='2'" . _checkboxActivate(isset($_POST['messages']) && _post('messages') == 2) . "> " . _lang('admin.other.cleanup.messages.2') . "</label>
   </fieldset>
 
   <fieldset>
-  <legend>" . $_lang['admin.users.users'] . "</legend>
-  <p class='bborder'><label><input type='checkbox' name='users' value='1'" . _checkboxActivate(isset($_POST['users'])) . "> " . $_lang['admin.other.cleanup.users'] . "</label></p>
+  <legend>" . _lang('admin.users.users') . "</legend>
+  <p class='bborder'><label><input type='checkbox' name='users' value='1'" . _checkboxActivate(isset($_POST['users'])) . "> " . _lang('admin.other.cleanup.users') . "</label></p>
   <table>
 
   <tr>
-  <th>" . $_lang['admin.other.cleanup.users.time'] . "</th>
+  <th>" . _lang('admin.other.cleanup.users.time') . "</th>
   <td>" . $selectTime("users-time") . "</td>
   </tr>
 
   <tr>
-  <th>" . $_lang['admin.other.cleanup.users.group'] . "</th>
-  <td>" . _adminUserSelect("users-group", (isset($_POST['users-group']) ? (int) _post('users-group') : -1), "1", null, $_lang['global.all'], true) . "</td>
+  <th>" . _lang('admin.other.cleanup.users.group') . "</th>
+  <td>" . _adminUserSelect("users-group", (isset($_POST['users-group']) ? (int) _post('users-group') : -1), "1", null, _lang('global.all'), true) . "</td>
   </tr>
 
   </table>
@@ -229,14 +228,14 @@ $output .= $message . "
 
 <td>
   <fieldset>
-  <legend>" . $_lang['global.other'] . "</legend>
-  <label><input type='checkbox' name='maintenance' value='1' checked> " . $_lang['admin.other.cleanup.other.maintenance'] . "</label><br>
-  <label><input type='checkbox' name='optimize' value='1' checked> " . $_lang['admin.other.cleanup.other.optimize'] . "</label><br>
-  <label><input type='checkbox' name='comments' value='1'" . _checkboxActivate(isset($_POST['comments'])) . "> " . $_lang['admin.other.cleanup.other.comments'] . "</label><br>
-  <label><input type='checkbox' name='posts' value='1'" . _checkboxActivate(isset($_POST['posts'])) . "> " . $_lang['admin.other.cleanup.other.posts'] . "</label><br>
-  <label><input type='checkbox' name='plugin_posts' value='1'" . _checkboxActivate(isset($_POST['plugin_posts'])) . "> " . $_lang['admin.other.cleanup.other.plugin_posts'] . "</label><br>
-  <label><input type='checkbox' name='iplog' value='1'" . _checkboxActivate(isset($_POST['iplog'])) . "> " . $_lang['admin.other.cleanup.other.iplog'] . "</label><br>
-  <label><input type='checkbox' name='user_activation' value='1'" . _checkboxActivate(isset($_POST['user_activation'])) . "> " . $_lang['admin.other.cleanup.other.user_activation'] . "</label>
+  <legend>" . _lang('global.other') . "</legend>
+  <label><input type='checkbox' name='maintenance' value='1' checked> " . _lang('admin.other.cleanup.other.maintenance') . "</label><br>
+  <label><input type='checkbox' name='optimize' value='1' checked> " . _lang('admin.other.cleanup.other.optimize') . "</label><br>
+  <label><input type='checkbox' name='comments' value='1'" . _checkboxActivate(isset($_POST['comments'])) . "> " . _lang('admin.other.cleanup.other.comments') . "</label><br>
+  <label><input type='checkbox' name='posts' value='1'" . _checkboxActivate(isset($_POST['posts'])) . "> " . _lang('admin.other.cleanup.other.posts') . "</label><br>
+  <label><input type='checkbox' name='plugin_posts' value='1'" . _checkboxActivate(isset($_POST['plugin_posts'])) . "> " . _lang('admin.other.cleanup.other.plugin_posts') . "</label><br>
+  <label><input type='checkbox' name='iplog' value='1'" . _checkboxActivate(isset($_POST['iplog'])) . "> " . _lang('admin.other.cleanup.other.iplog') . "</label><br>
+  <label><input type='checkbox' name='user_activation' value='1'" . _checkboxActivate(isset($_POST['user_activation'])) . "> " . _lang('admin.other.cleanup.other.user_activation') . "</label>
   </fieldset>
 </td>
 
@@ -245,8 +244,8 @@ $output .= $message . "
 <tr class='valign-top'>
 
 <td align='center'><p>
-<input type='submit' value='" . $_lang['admin.other.cleanup.prev'] . "'><br><br>
-<input type='submit' name='do_cleanup' value='" . $_lang['admin.other.cleanup.do'] . "' onclick='return Sunlight.confirm();'>
+<input type='submit' value='" . _lang('admin.other.cleanup.prev') . "'><br><br>
+<input type='submit' name='do_cleanup' value='" . _lang('admin.other.cleanup.do') . "' onclick='return Sunlight.confirm();'>
 </p></td>
 
 </tr>
@@ -258,14 +257,14 @@ $output .= $message . "
 <br>
 
 <fieldset>
-<legend>" . $_lang['admin.other.cleanup.uninstall'] . "</legend>
+<legend>" . _lang('admin.other.cleanup.uninstall') . "</legend>
 <form class='cform' action='index.php?p=other-cleanup' method='post' autocomplete='off'>
 <input type='hidden' name='action' value='2'>
-<p class='bborder'>" . $_lang['admin.other.cleanup.uninstall.p'] . "</p>
-" . _adminNote(str_replace('*prefix*', _dbprefix, $_lang['admin.other.cleanup.uninstall.note']), true, 'warn') . "
-<p><label><input type='checkbox' name='confirm' value='1'> " . str_replace('*dbname*', _dbname, $_lang['admin.other.cleanup.uninstall.confirm']) . "</label></p>
-<p><strong>" . $_lang['admin.other.cleanup.uninstall.pass'] . ":</strong>  <input type='password' class='inputsmall' name='pass' autocomplete='off'></p>
-<input type='submit' value='" . $_lang['global.do'] . "' onclick='return Sunlight.confirm();'>
+<p class='bborder'>" . _lang('admin.other.cleanup.uninstall.p') . "</p>
+" . _adminNote(_lang('admin.other.cleanup.uninstall.note', array('*prefix*' => _dbprefix)), true, 'warn') . "
+<p><label><input type='checkbox' name='confirm' value='1'> " . _lang('admin.other.cleanup.uninstall.confirm', array('*dbname*' => _dbname)) . "</label></p>
+<p><strong>" . _lang('admin.other.cleanup.uninstall.pass') . ":</strong>  <input type='password' class='inputsmall' name='pass' autocomplete='off'></p>
+<input type='submit' value='" . _lang('global.do') . "' onclick='return Sunlight.confirm();'>
 " . _xsrfProtect() . "</form>
 </fieldset>
 ";

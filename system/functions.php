@@ -14,6 +14,18 @@ use Sunlight\Plugin\TemplatePlugin;
 use Sunlight\Plugin\TemplateService;
 
 /**
+ * Ziskat preklad
+ *
+ * @param string     $key
+ * @param array|null $replacements
+ * @return string
+ */
+function _lang($key, array $replacements = null)
+{
+    return Core::$lang->get($key, $replacements);
+}
+
+/**
  * Vlozeni GET promenne do odkazu
  *
  * @param string $link   adresa
@@ -1004,7 +1016,7 @@ function _renderUploadLimit()
 {
     $limit = _getUploadLimit();
     if ($limit !== null) {
-        return '<small>' . $GLOBALS['_lang']['global.uploadlimit'] . ': <em>' . _formatFilesize($limit) . '</em></small>';
+        return '<small>' . _lang('global.uploadlimit') . ': <em>' . _formatFilesize($limit) . '</em></small>';
     } else {
         return '';
     }
@@ -1125,8 +1137,6 @@ function _isSafeFile($fname)
  */
 function _editTime($name, $timestamp = null, $updatebox = false, $updateboxchecked = false)
 {
-    global $_lang;
-
     $output = Extend::buffer('time.edit', array(
         'timestamp' => $timestamp,
         'updatebox' => $updatebox,
@@ -1142,9 +1152,9 @@ function _editTime($name, $timestamp = null, $updatebox = false, $updateboxcheck
         } else {
             $timestamp = array('seconds' => '', 'minutes' => '', 'hours' => '', 'mday' => '', 'mon' => '', 'year' => '');
         }
-        $output .= "<input type='text' size='1' maxlength='2' name='{$name}[tday]' value='" . $timestamp['mday'] . "'>.<input type='text' size='1' maxlength='2' name='{$name}[tmonth]' value='" . $timestamp['mon'] . "'> <input type='text' size='3' maxlength='4' name='{$name}[tyear]' value='" . $timestamp['year'] . "'> <input type='text' size='1' maxlength='2' name='{$name}[thour]' value='" . $timestamp['hours'] . "'>:<input type='text' size='1' maxlength='2' name='{$name}[tminute]' value='" . $timestamp['minutes'] . "'>:<input type='text' size='1' maxlength='2' name='{$name}[tsecond]' value='" . $timestamp['seconds'] . "'> <small>" . $_lang['time.help'] . "</small>";
+        $output .= "<input type='text' size='1' maxlength='2' name='{$name}[tday]' value='" . $timestamp['mday'] . "'>.<input type='text' size='1' maxlength='2' name='{$name}[tmonth]' value='" . $timestamp['mon'] . "'> <input type='text' size='3' maxlength='4' name='{$name}[tyear]' value='" . $timestamp['year'] . "'> <input type='text' size='1' maxlength='2' name='{$name}[thour]' value='" . $timestamp['hours'] . "'>:<input type='text' size='1' maxlength='2' name='{$name}[tminute]' value='" . $timestamp['minutes'] . "'>:<input type='text' size='1' maxlength='2' name='{$name}[tsecond]' value='" . $timestamp['seconds'] . "'> <small>" . _lang('time.help') . "</small>";
         if ($updatebox) {
-            $output .= " <label><input type='checkbox' name='{$name}[tupdate]' value='1'" . _checkboxActivate($updateboxchecked) . "> " . $_lang['time.update'] . "</label>";
+            $output .= " <label><input type='checkbox' name='{$name}[tupdate]' value='1'" . _checkboxActivate($updateboxchecked) . "> " . _lang('time.update') . "</label>";
         }
     }
 
@@ -1307,8 +1317,6 @@ function _articlePreview(array $art, array $userQuery, $info = true, $perex = tr
         return $extendOutput;
     }
 
-    global $_lang;
-
     $output = "<div class='list-item article-preview'>\n";
 
     // titulek
@@ -1337,13 +1345,13 @@ function _articlePreview(array $art, array $userQuery, $info = true, $perex = tr
     if ($info == true) {
 
         $infos = array(
-            array($_lang['article.author'], _linkUserFromQuery($userQuery, $art)),
-            array($_lang['article.posted'], _formatTime($art['time'], 'article')),
-            array($_lang['article.readnum'], $art['readnum'] . 'x'),
+            array(_lang('article.author'), _linkUserFromQuery($userQuery, $art)),
+            array(_lang('article.posted'), _formatTime($art['time'], 'article')),
+            array(_lang('article.readnum'), $art['readnum'] . 'x'),
         );
 
         if ($art['comments'] == 1 && _comments && $comment_count !== null) {
-            $infos[] = array($_lang['article.comments'], $comment_count);
+            $infos[] = array(_lang('article.comments'), $comment_count);
         }
 
         Extend::call('article.preview.infos', array(
@@ -1430,7 +1438,6 @@ function _captchaInit()
     }
 
     if (_captcha && !_login) {
-        global $_lang;
         ++$captchaCounter;
         if (!isset($_SESSION['captcha_code']) || !is_array($_SESSION['captcha_code'])) {
             $_SESSION['captcha_code'] = array();
@@ -1438,8 +1445,8 @@ function _captchaInit()
         $_SESSION['captcha_code'][$captchaCounter] = array(StringGenerator::generateCaptchaCode(8), false);
 
         return array(
-            'label' => $_lang['captcha.input'],
-            'content' => "<input type='text' name='_cp' class='inputc'><img src='" . _link('system/script/captcha/image.php?n=' . $captchaCounter) . "' alt='captcha' title='" . $_lang['captcha.help'] . "' class='cimage'><input type='hidden' name='_cn' value='" . $captchaCounter . "'>",
+            'label' => _lang('captcha.input'),
+            'content' => "<input type='text' name='_cp' class='inputc'><img src='" . _link('system/script/captcha/image.php?n=' . $captchaCounter) . "' alt='captcha' title='" . _lang('captcha.help') . "' class='cimage'><input type='hidden' name='_cn' value='" . $captchaCounter . "'>",
             'top' => true,
             'class' => 'captcha-row',
         );
@@ -1539,14 +1546,12 @@ function _deleteUser($id)
  */
 function _formatNumber($number, $decimals = 2)
 {
-    global $_lang;
-
     if (is_int($number) || $decimals <= 0 || abs(fmod($number, 1)) < pow(0.1, $decimals)) {
         // an integer value
-        return number_format($number, 0, '', $_lang['numbers.thousands_sep']);
+        return number_format($number, 0, '', _lang('numbers.thousands_sep'));
     } else {
         // a float value
-        return number_format($number, $decimals, $_lang['numbers.dec_point'], $_lang['numbers.thousands_sep']);
+        return number_format($number, $decimals, _lang('numbers.dec_point'), _lang('numbers.thousands_sep'));
     }
 }
 
@@ -1609,7 +1614,7 @@ function _msg($type, $string, $isHtml = true)
  * Sestavit formatovany seznam zprav
  *
  * @param array       $messages    zpravy
- * @param string|null $description popis ("errors" = $_lang['misc.errorlog.intro'], null = zadny, cokoliv jineho = vlastni)
+ * @param string|null $description popis ("errors" = _lang('misc.errorlog.intro'), null = zadny, cokoliv jineho = vlastni)
  * @param bool        $showKeys    vykreslit take klice z pole $messages
  * @return string
  */
@@ -1623,7 +1628,7 @@ function _msgList($messages, $description = null, $showKeys = false)
             if ($description !== 'errors') {
                 $output .= $description;
             } else {
-                $output .= $GLOBALS['_lang']['misc.errorlog.intro'];
+                $output .= _lang('misc.errorlog.intro');
             }
             $output .= "\n";
         }
@@ -1655,7 +1660,7 @@ function _msgList($messages, $description = null, $showKeys = false)
  * class (-)            class atribut formulare
  * embedded (0)         nevykreslovat <form> tag ani submit radek 1/0
  *
- * submit_text (*)      popisek odesilaciho tlacitka (vychozi je $_lang['global.send'])
+ * submit_text (*)      popisek odesilaciho tlacitka (vychozi je _lang('global.send'))
  * submit_append (-)    vlastni HTML vlozene za odesilaci tlacitko
  * submit_span (0)      roztahnout bunku s odesilacim tlacitkem na cely radek (tzn. zadna mezera vlevo)
  * submit_name (-)      name atribut odesilaciho tlacitka
@@ -1697,7 +1702,7 @@ function _formOutput(array $options, array $rows)
         'id' => null,
         'class' => null,
         'embedded' => false,
-        'submit_text' => $GLOBALS['_lang']['global.send'],
+        'submit_text' => _lang('global.send'),
         'submit_append' => '',
         'submit_span' => false,
         'submit_name' => null,
@@ -2144,7 +2149,7 @@ function _getPostFormControls($form, $area, $bbcode = true, $smileys = true)
  */
 function _getPostFormPreviewButton($form, $area)
 {
-    return '<button class="post-form-preview" onclick="Sunlight.postPreview(this, \'' . $form . '\', \'' . $area . '\'); return false;">' . $GLOBALS['_lang']['global.preview'] . '</button>';
+    return '<button class="post-form-preview" onclick="Sunlight.postPreview(this, \'' . $form . '\', \'' . $area . '\'); return false;">' . _lang('global.preview') . '</button>';
 }
 
 /**
@@ -3539,8 +3544,6 @@ function _publicAccess($public, $level = 0)
  */
 function _resultPaging($url, $limit, $table, $conditions = '1', $linksuffix = '', $param = null, $autolast = false)
 {
-    global $_lang;
-
     // alias tabulky
     if (is_string($table)) {
         $table = explode(':', $table);
@@ -3617,16 +3620,16 @@ function _resultPaging($url, $limit, $table, $conditions = '1', $linksuffix = ''
 
             $url = _e($url);
 
-            $paging = "\n<div class='paging'>\n<span class='paging-label'>" . $_lang['global.paging'] . ":</span>\n";
+            $paging = "\n<div class='paging'>\n<span class='paging-label'>" . _lang('global.paging') . ":</span>\n";
 
             // prvni
             if ($beginpage > 1) {
-                $paging .= "<a href='" . $url . $param . "=1" . $linksuffix . "' title='" . $_lang['global.first'] . "'>1</a><span class='paging-first-addon'> ...</span>\n";
+                $paging .= "<a href='" . $url . $param . "=1" . $linksuffix . "' title='" . _lang('global.first') . "'>1</a><span class='paging-first-addon'> ...</span>\n";
             }
 
             // predchozi
             if ($s + 1 != 1) {
-                $paging .= "<a class='paging-prev' href='" . $url . $param . "=" . ($s) . $linksuffix . "'>&laquo; " . $_lang['global.previous'] . "</a>\n";
+                $paging .= "<a class='paging-prev' href='" . $url . $param . "=" . ($s) . $linksuffix . "'>&laquo; " . _lang('global.previous') . "</a>\n";
             }
 
             // strany
@@ -3646,10 +3649,10 @@ function _resultPaging($url, $limit, $table, $conditions = '1', $linksuffix = ''
 
             // dalsi
             if ($s + 1 != $pages) {
-                $paging .= "<a class='paging-next' href='" . $url . $param . "=" . ($s + 2) . $linksuffix . "'>" . $_lang['global.next'] . " &raquo;</a>\n";
+                $paging .= "<a class='paging-next' href='" . $url . $param . "=" . ($s + 2) . $linksuffix . "'>" . _lang('global.next') . " &raquo;</a>\n";
             }
             if ($endpage < $pages) {
-                $paging .= "<span class='paging-last-addon'> ... </span><a class='paging-last' href='" . $url . $param . "=" . $pages . $linksuffix . "' title='" . $_lang['global.last'] . "'>" . $pages . "</a>\n";
+                $paging .= "<span class='paging-last-addon'> ... </span><a class='paging-last' href='" . $url . $param . "=" . $pages . $linksuffix . "' title='" . _lang('global.last') . "'>" . $pages . "</a>\n";
             }
 
             $paging .= "\n</div>\n\n";
@@ -3766,7 +3769,7 @@ function _returnHeader($url = null)
     } else {
         ?>
         <meta http-equiv="refresh" content="1;url=<?php echo _e($url) ?>">
-        <p><a href="<?php echo _e($url) ?>"><?php echo $GLOBALS['_lang']['global.continue'] ?></a></p>
+        <p><a href="<?php echo _e($url) ?>"><?php echo _lang('global.continue') ?></a></p>
         <?php
     }
 
@@ -4119,13 +4122,11 @@ function _userLogin($id, $storedPassword, $email, $persistent = false)
  */
 function _userLoginForm($title = false, $required = false, $return = null, $embedded = false)
 {
-    global $_lang;
-
     $output = '';
 
     // titulek
     if ($title) {
-        $title_text = $_lang[$required ? 'login.required.title' : 'login.title'];
+        $title_text = _lang($required ? 'login.required.title' : 'login.title');
         if (_env_admin) {
             $output .= '<h1>' . $title_text . "</h1>\n";
         } else {
@@ -4135,7 +4136,7 @@ function _userLoginForm($title = false, $required = false, $return = null, $embe
 
     // text
     if ($required) {
-        $output .= '<p>' . $_lang['login.required.p'] . "</p>\n";
+        $output .= '<p>' . _lang('login.required.p') . "</p>\n";
     }
 
     // zpravy
@@ -4185,13 +4186,13 @@ function _userLoginForm($title = false, $required = false, $return = null, $embe
                 'name' => 'login_form',
                 'action' => $action,
                 'embedded' => $embedded,
-                'submit_text' => $_lang['global.login'],
-                'submit_append' => " <label><input type='checkbox' name='login_persistent' value='1'> " . $_lang['login.persistent'] . "</label>",
+                'submit_text' => _lang('global.login'),
+                'submit_append' => " <label><input type='checkbox' name='login_persistent' value='1'> " . _lang('login.persistent') . "</label>",
                 'form_append' => $form_append,
             ),
             array(
-                array('label' => $_lang['login.username'], 'content' => "<input type='text' name='login_username' class='inputmedium'" . _restoreValue($_SESSION, 'login_form_username') . " maxlength='24'>"),
-                array('label' => $_lang['login.password'], 'content' => "<input type='password' name='login_password' class='inputmedium'>")
+                array('label' => _lang('login.username'), 'content' => "<input type='text' name='login_username' class='inputmedium'" . _restoreValue($_SESSION, 'login_form_username') . " maxlength='24'>"),
+                array('label' => _lang('login.password'), 'content' => "<input type='password' name='login_password' class='inputmedium'>")
             )
         );
 
@@ -4203,10 +4204,10 @@ function _userLoginForm($title = false, $required = false, $return = null, $embe
         if (!$embedded) {
             $links = array();
             if (_registration && _env_web) {
-                $links['reg'] = array('url' => _linkModule('reg'), 'text' => $_lang['mod.reg']);
+                $links['reg'] = array('url' => _linkModule('reg'), 'text' => _lang('mod.reg'));
             }
             if (_lostpass) {
-                $links['lostpass'] = array('url' => _linkModule('lostpass'), 'text' => $_lang['mod.lostpass']);
+                $links['lostpass'] = array('url' => _linkModule('lostpass'), 'text' => _lang('mod.lostpass'));
             }
             Extend::call('user.login.links', array('links' => &$links));
 
@@ -4220,7 +4221,7 @@ function _userLoginForm($title = false, $required = false, $return = null, $embe
         }
 
     } else {
-        $output .= "<p>" . $_lang['login.ininfo'] . " <em>" . _loginname . "</em> - <a href='" . _xsrfLink(_link('system/script/logout.php')) . "'>" . $_lang['usermenu.logout'] . "</a>.</p>";
+        $output .= "<p>" . _lang('login.ininfo') . " <em>" . _loginname . "</em> - <a href='" . _xsrfLink(_link('system/script/logout.php')) . "'>" . _lang('usermenu.logout') . "</a>.</p>";
     }
 
     return $output;
@@ -4244,23 +4245,21 @@ function _userLoginForm($title = false, $required = false, $return = null, $embe
  */
 function _userLoginMessage($code)
 {
-    global $_lang;
-
     switch ($code) {
         case 0:
-            return Message::warning($_lang['login.failure']);
+            return Message::warning(_lang('login.failure'));
         case 1:
-            return Message::ok($_lang['login.success']);
+            return Message::ok(_lang('login.success'));
         case 2:
-            return Message::warning($_lang['login.blocked.message']);
+            return Message::warning(_lang('login.blocked.message'));
         case 3:
-            return Message::error($_lang['login.securitylogout']);
+            return Message::error(_lang('login.securitylogout'));
         case 4:
-            return Message::ok($_lang['login.selfremove']);
+            return Message::ok(_lang('login.selfremove'));
         case 5:
-            return Message::warning(str_replace(array("*1*", "*2*"), array(_maxloginattempts, _maxloginexpire / 60), $_lang['login.attemptlimit']));
+            return Message::warning(_lang('login.attemptlimit', array('*1*' => _maxloginattempts, '*2*' => _maxloginexpire / 60)));
         case 6:
-            return Message::error($_lang['xsrf.msg']);
+            return Message::error(_lang('xsrf.msg'));
         default:
             return Extend::fetch('user.login.message', array('code' => $code));
     }
@@ -4688,8 +4687,7 @@ function _pictureLoad($filepath, $limit = array(), $filename = null)
     } while (false);
 
     // chyba
-    global $_lang;
-    $output = array('status' => false, 'code' => $code, 'msg' => $_lang['pic.load.' . $code], 'ext' => $ext);
+    $output = array('status' => false, 'code' => $code, 'msg' => _lang('pic.load.' . $code), 'ext' => $ext);
 
     // uprava vystupu
     switch ($code) {
@@ -4700,7 +4698,7 @@ function _pictureLoad($filepath, $limit = array(), $filename = null)
         case 5:
             $lastError = error_get_last();
             if ($lastError !== null && !empty($lastError['message'])) {
-                $output['msg'] .= " {$_lang['global.error']}: " . _e($lastError['message']);
+                $output['msg'] .= ' ' . _lang('global.error') . ': ' . _e($lastError['message']);
             }
             break;
 
@@ -4735,8 +4733,6 @@ function _pictureLoad($filepath, $limit = array(), $filename = null)
  */
 function _pictureResize($res, array $opt, $size = null)
 {
-    global $_lang;
-
     // vychozi nastaveni
     $opt += array(
         'x' => null,
@@ -4784,7 +4780,7 @@ function _pictureResize($res, array $opt, $size = null)
 
     // kontrola parametru
     if ($opt['x'] === null && $opt['y'] === null || $opt['y'] !== null && $opt['y'] < 1 || $opt['x'] !== null && $opt['x'] < 1) {
-        return array('status' => false, 'code' => 2, 'msg' => $_lang['pic.resize.2']);
+        return array('status' => false, 'code' => 2, 'msg' => _lang('pic.resize.2'));
     }
 
     // proporcionalni dopocet chybejiciho rozmeru
@@ -4833,7 +4829,7 @@ function _pictureResize($res, array $opt, $size = null)
             }
         }
     } else {
-        return array('status' => false, 'code' => 1, 'msg' => $_lang['pic.resize.1']);
+        return array('status' => false, 'code' => 1, 'msg' => _lang('pic.resize.1'));
     }
 
     // priprava obrazku
@@ -4857,7 +4853,7 @@ function _pictureResize($res, array $opt, $size = null)
     }
     imagedestroy($output);
 
-    return array('status' => false, 'code' => 2, 'msg' => $_lang['pic.resize.2']);
+    return array('status' => false, 'code' => 2, 'msg' => _lang('pic.resize.2'));
 }
 
 /**
@@ -5072,9 +5068,7 @@ function _pictureStoragePut($res, $path, $home_path, $format, $jpg_quality = 80,
     } while (false);
 
     // chyba
-    global $_lang;
-
-    return array('status' => false, 'code' => $code, 'msg' => $_lang['pic.put.' . $code]);
+    return array('status' => false, 'code' => $code, 'msg' => _lang('pic.put.' . $code));
 }
 
 /**
@@ -5458,8 +5452,6 @@ function _xsrfCheck($get = false)
  */
 function _postRepeatForm($allow_login = true, Message $login_message = null, $target_url = null, $do_repeat = false)
 {
-    global $_lang;
-
     if ($target_url === null) {
         $target_url = $_SERVER['REQUEST_URI'];
     }
@@ -5475,7 +5467,7 @@ function _postRepeatForm($allow_login = true, Message $login_message = null, $ta
 
     if ($allow_login && !_login) {
         if ($login_message === null) {
-            $login_message = Message::ok($_lang['post_repeat.login']);
+            $login_message = Message::ok(_lang('post_repeat.login'));
         }
         $login_message->append('<div class="hr"><hr></div>' . _userLoginForm(false, false, null, true), true);
 
@@ -5484,7 +5476,7 @@ function _postRepeatForm($allow_login = true, Message $login_message = null, $ta
         $output .= $login_message;
     }
 
-    $output .= "<p><input type='submit' value='" . $_lang[$do_repeat ? 'post_repeat.submit' : 'global.continue'] . "'></p>";
+    $output .= "<p><input type='submit' value='" . _lang($do_repeat ? 'post_repeat.submit' : 'global.continue') . "'></p>";
     $output .= _xsrfProtect() . "</form>\n";
 
     return $output;

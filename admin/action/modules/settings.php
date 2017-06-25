@@ -18,31 +18,31 @@ while ($row = DB::row($query)) {
 // vyber zpusobu zobrazeni titulku
 $titletype_choices = array();
 for ($x = 1; $x < 3; ++$x) {
-    $titletype_choices[$x] = $_lang['admin.settings.info.titletype.' . $x];
+    $titletype_choices[$x] = _lang('admin.settings.info.titletype.' . $x);
 }
 
 // vyber schematu administrace
 $adminscheme_choices = array();
 for ($x = 0; $x < 11; ++$x) {
-    $adminscheme_choices[$x] = $_lang['admin.settings.admin.adminscheme.' . $x];
+    $adminscheme_choices[$x] = _lang('admin.settings.admin.adminscheme.' . $x);
 }
 
 // vyber modu schematu administrace
 $adminscheme_mode_choices = array();
 for ($x = 0; $x < 3; ++$x) {
-    $adminscheme_mode_choices[$x] = $_lang['admin.settings.admin.adminscheme_mode.' . $x];
+    $adminscheme_mode_choices[$x] = _lang('admin.settings.admin.adminscheme_mode.' . $x);
 }
 
 // vyber zpusobu hodnoceni clanku
 $ratemode_choices = array();
 for ($x = 0; $x < 3; ++$x) {
-    $ratemode_choices[$x] = $_lang['admin.settings.articles.ratemode.' . $x];
+    $ratemode_choices[$x] = _lang('admin.settings.articles.ratemode.' . $x);
 }
 
 // vyber zobrazeni strankovani
 $pagingmode_choices = array();
 for ($x = 1; $x < 4; ++$x) {
-    $pagingmode_choices[$x] = $_lang['admin.settings.paging.pagingmode.' . $x];
+    $pagingmode_choices[$x] = _lang('admin.settings.paging.pagingmode.' . $x);
 }
 
 // konfigurace editovatelnych direktiv
@@ -77,8 +77,8 @@ $editable_settings = array(
             array('name' => 'adminscheme', 'choices' => $adminscheme_choices, 'reload_on_update' => true),
             array('name' => 'adminscheme_mode', 'choices' => $adminscheme_mode_choices, 'reload_on_update' => true),
             array('name' => 'adminpagelist_mode', 'choices' => array(
-                Sunlight\Admin\PageLister::MODE_FULL_TREE => mb_strtolower($_lang['admin.content.mode.tree']),
-                Sunlight\Admin\PageLister::MODE_SINGLE_LEVEL => mb_strtolower($_lang['admin.content.mode.single']),
+                Sunlight\Admin\PageLister::MODE_FULL_TREE => mb_strtolower(_lang('admin.content.mode.tree')),
+                Sunlight\Admin\PageLister::MODE_SINGLE_LEVEL => mb_strtolower(_lang('admin.content.mode.single')),
             )),
         ),
     ),
@@ -87,8 +87,8 @@ $editable_settings = array(
             array('name' => 'registration'),
             array('name' => 'registration_confirm'),
             array('name' => 'registration_grouplist'),
-            array('name' => 'defaultgroup', 'table_id' => _groups_table, 'input' => _adminUserSelect("defaultgroup", _defaultgroup, "id!=2", null, null, true), 'id' => false),
-            array('name' => 'rules', 'help' => false, 'extra_help' => $_lang['admin.settings.users.rules.help'], 'input' => '<textarea id="setting_rules" name="rules" rows="9" cols="33" class="areasmallwide editor">' . _e($settings['rules']['val']) . '</textarea>'),
+            array('name' => 'defaultgroup', 'table_id' => _groups_table, 'input' => _adminUserSelect("defaultgroup", _defaultgroup, "id!=" . _group_guests, null, null, true), 'id' => false),
+            array('name' => 'rules', 'help' => false, 'extra_help' => _lang('admin.settings.users.rules.help'), 'input' => '<textarea id="setting_rules" name="rules" rows="9" cols="33" class="areasmallwide editor">' . _e($settings['rules']['val']) . '</textarea>'),
             array('name' => 'messages'),
             array('name' => 'lostpass'),
             array('name' => 'ulist'),
@@ -272,18 +272,18 @@ if (!empty($_POST)) {
 
 /* ---  vystup  --- */
 
-$output .= ($saved ? _msg(_msg_ok, $_lang['admin.settings.saved']) : '') . '
+$output .= ($saved ? _msg(_msg_ok, _lang('admin.settings.saved')) : '') . '
 
 <form action="index.php?p=settings" method="post">
 
 <div id="settingsnav">
-<input type="submit" value="' . $_lang['global.savechanges'] . '">
+<input type="submit" value="' . _lang('global.savechanges') . '">
 <ul>
 ';
 
 foreach ($editable_settings as $settings_category => $settings_category_data) {
     if (!isset($settings_category_data['title'])) {
-        $title = $_lang['admin.settings.' . $settings_category];
+        $title = _lang('admin.settings.' . $settings_category);
     } else {
         $title = $settings_category_data['title'];
     }
@@ -299,7 +299,7 @@ $output .= '</ul>
 
 foreach ($editable_settings as $settings_category => $settings_category_data) {
     if (!isset($settings_category_data['title'])) {
-        $title = $_lang['admin.settings.' . $settings_category];
+        $title = _lang('admin.settings.' . $settings_category);
     } else {
         $title = $settings_category_data['title'];
     }
@@ -324,7 +324,7 @@ foreach ($editable_settings as $settings_category => $settings_category_data) {
 
         // popisek
         if (!isset($item['label'])) {
-            $label = $_lang['admin.settings.' . $settings_category . '.' . $item['name']];
+            $label = _lang('admin.settings.' . $settings_category . '.' . $item['name']);
         } else {
             $label = $item['label'];
         }
@@ -384,7 +384,7 @@ foreach ($editable_settings as $settings_category => $settings_category_data) {
                 $help = '';
             }
         } else {
-            $help = $_lang['admin.settings.' . $settings_category . '.' . $item['name'] . '.help'];
+            $help = _lang('admin.settings.' . $settings_category . '.' . $item['name'] . '.help');
         }
         if (isset($item['help_attrs'])) {
             $help = strtr($help, $item['help_attrs']);
