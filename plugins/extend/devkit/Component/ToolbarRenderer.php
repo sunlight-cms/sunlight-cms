@@ -5,6 +5,7 @@ namespace SunlightExtend\Devkit\Component;
 use Kuria\Debug\Dumper;
 use Sunlight\Core;
 use Sunlight\Extend;
+use Sunlight\Localization\LocalizationDirectory;
 
 /**
  * Devkit toolbar renderer
@@ -13,20 +14,25 @@ use Sunlight\Extend;
  */
 class ToolbarRenderer
 {
-    /** @var SqlLogger */
-    private $sqlLogger;
-    /** @var EventLogger */
-    private $eventLogger;
+    /** @var array */
+    private $sqlLog;
+    /** @var array */
+    private $eventLog;
+    /** @var \SplObjectStorage */
+    private $missingLocalizations;
 
     /**
-     * @param SqlLogger   $sqlLogger
-     * @param EventLogger $eventLogger
+     * @param array             $sqlLog
+     * @param array             $eventLog
+     * @param \SplObjectStorage $missingLocalizations
      */
-    public function __construct(SqlLogger $sqlLogger, EventLogger $eventLogger)
+    public function __construct(array $sqlLog, array $eventLog, \SplObjectStorage $missingLocalizations)
     {
-        $this->sqlLogger = $sqlLogger;
-        $this->eventLogger = $eventLogger;
+        $this->sqlLog = $sqlLog;
+        $this->eventLog = $eventLog;
+        $this->missingLocalizations = $missingLocalizations;
     }
+
     /**
      * Render the toolbar
      *
@@ -57,6 +63,7 @@ class ToolbarRenderer
                 $that->renderMemory();
                 $that->renderDatabase();
                 $that->renderEvents();
+                $that->renderLang();
 
                 Extend::call('devkit.toolbar.render');
 
@@ -115,11 +122,9 @@ class ToolbarRenderer
      */
     public function renderDatabase()
     {
-        $sqlLog = $this->sqlLogger->getLog();
-
         ?>
 <div class="devkit-section devkit-database devkit-toggleable">
-    <?php echo sizeof($sqlLog) ?>
+    <?php echo sizeof($this->sqlLog) ?>
 </div>
 
 <div class="devkit-content">
@@ -135,21 +140,21 @@ class ToolbarRenderer
             </tr>
         </thead>
         <tbody>
-        <?php foreach ($sqlLog as $index => $entry): ?>
-            <tr>
-                <td><?php echo $index + 1 ?></td>
-                <td><?php echo round($entry['time'] * 1000) ?>ms</td>
-                <td>
-                    <a href="#" class="devkit-hideshow" data-target="#devkit-db-trace-<?php echo $index ?>">show</a>
-                </td>
-                <td class="break-all"><?php echo _e($entry['query']) ?></td>
-            </tr>
-            <tr id="devkit-db-trace-<?php echo $index ?>" class="devkit-hidden">
-                <td colspan="4">
-                    <pre><?php echo _e($entry['trace']) ?></pre>
-                </td>
-            </tr>
-        <?php endforeach ?>
+            <?php foreach ($this->sqlLog as $index => $entry): ?>
+                <tr>
+                    <td><?php echo $index + 1 ?></td>
+                    <td><?php echo round($entry['time'] * 1000) ?>ms</td>
+                    <td>
+                        <a href="#" class="devkit-hideshow" data-target="#devkit-db-trace-<?php echo $index ?>">show</a>
+                    </td>
+                    <td class="break-all"><?php echo _e($entry['query']) ?></td>
+                </tr>
+                <tr id="devkit-db-trace-<?php echo $index ?>" class="devkit-hidden">
+                    <td colspan="4">
+                        <pre><?php echo _e($entry['trace']) ?></pre>
+                    </td>
+                </tr>
+            <?php endforeach ?>
         </tbody>
     </table>
 </div>
@@ -161,16 +166,15 @@ class ToolbarRenderer
      */
     public function renderEvents()
     {
-        $events = $this->eventLogger->getLog();
-
         ?>
 <div class="devkit-section devkit-extend devkit-toggleable">
-    <?php echo sizeof($events) ?>
+    <?php echo sizeof($this->eventLog) ?>
 </div>
 
 <div class="devkit-content">
     <div>
         <div class="devkit-heading">Extend event log</div>
+
         <table>
             <thead>
                 <tr>
@@ -180,18 +184,86 @@ class ToolbarRenderer
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($events as $event => $data): ?>
-                <tr>
-                    <td><?php echo _e($event) ?></td>
-                    <td><?php echo $data[0] ?></td>
-                    <td><?php $this->renderEventArgs($data[1]) ?></td>
-                </tr>
+                <?php foreach ($this->eventLog as $event => $data): ?>
+                    <tr>
+                        <td><?php echo _e($event) ?></td>
+                        <td><?php echo $data[0] ?></td>
+                        <td><?php $this->renderEventArgs($data[1]) ?></td>
+                    </tr>
                 <?php endforeach ?>
             </tbody>
         </table>
     </div>
 </div>
 <?php
+    }
+
+    /**
+     * Render the localization section
+     */
+    public function renderLang()
+    {
+        $missingLocalizationRows = array();
+
+        foreach ($this->missingLocalizations as $dict) {
+            foreach ($this->missingLocalizations[$dict] as $missingKey => $missingKeyCount) {
+                if (Core::$lang === $dict) {
+                    $dictDescription = '{main}';
+                } elseif ($dict instanceof LocalizationDirectory) {
+                    $dictPath = $dict->getPathForLanguage(_language);
+                    $dictDescription = $dictPath;
+
+                    if (!is_file($dictPath)) {
+                        $dictDescription .= ' [does not exist]';
+                    }
+                } else {
+                    $dictDescription = Dumper::dump($dict, 1);
+                }
+
+                $missingLocalizationRows[] = array(
+                    'dict' => $dictDescription,
+                    'key' => $missingKey,
+                    'count' => $missingKeyCount,
+                );
+            }
+        }
+
+        $totalMissingLocalizations = sizeof($missingLocalizationRows);
+
+        ?>
+<div class="devkit-section devkit-lang devkit-toggleable">
+    <span class="devkit-<?php echo $totalMissingLocalizations > 0 ? 'blood-badge' : 'leaf' ?>"><?php echo $totalMissingLocalizations ?></span>
+</div>
+
+<div class="devkit-content">
+    <div>
+        <div class="devkit-heading">Missing localizations for language <em><?php echo _e(_language) ?></em> (<?php echo $totalMissingLocalizations ?>)</div>
+
+        <?php if ($totalMissingLocalizations > 0): ?>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Dictionary</th>
+                        <th>Key</th>
+                        <th>Count</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($missingLocalizationRows as $row): ?>
+                        <tr>
+                            <td><code><?php echo _e($row['dict']) ?></code></td>
+                            <td><?php echo _e($row['key']) ?></td>
+                            <td><?php echo _e($row['count']) ?></td>
+                        </tr>
+                    <?php endforeach ?>
+                </tbody>
+            </table>
+        <?php else: ?>
+            <p>None</p>
+        <?php endif ?>
+    </div>
+</div>
+    <?php
     }
 
     /**

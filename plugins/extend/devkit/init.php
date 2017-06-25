@@ -18,4 +18,3 @@ $exceptionHandler = Core::$errorHandler->getExceptionHandler();
 if ($exceptionHandler instanceof WebErrorScreen) {
     $exceptionHandler->on('render.debug', array($this->sqlLogger, 'showInDebugScreen'));
 }
-

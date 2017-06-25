@@ -16,6 +16,8 @@ class DevkitPlugin extends ExtendPlugin
     public $sqlLogger;
     /** @var Component\EventLogger */
     public $eventLogger;
+    /** @var Component\MissingLocalizationLogger */
+    public $missingLocalizationLogger;
 
     public function __construct(array $data, PluginManager $manager)
     {
@@ -23,6 +25,7 @@ class DevkitPlugin extends ExtendPlugin
 
         $this->sqlLogger = new Component\SqlLogger();
         $this->eventLogger = new Component\EventLogger();
+        $this->missingLocalizationLogger = new Component\MissingLocalizationLogger();
     }
 
     /**
@@ -41,6 +44,16 @@ class DevkitPlugin extends ExtendPlugin
     public function onDbQueryPost(array $args)
     {
         $this->sqlLogger->log($args['sql']);
+    }
+
+    /**
+     * Handle a missing localization entry
+     *
+     * @param array $args
+     */
+    public function onMissingLocalization(array $args)
+    {
+        $this->missingLocalizationLogger->log($args['dict'], $args['key']);
     }
 
     /**
@@ -90,7 +103,11 @@ ENTRY
      */
     public function onEnd(array $args)
     {
-        $toolbar = new Component\ToolbarRenderer($this->sqlLogger, $this->eventLogger);
+        $toolbar = new Component\ToolbarRenderer(
+            $this->sqlLogger->getLog(),
+            $this->eventLogger->getLog(),
+            $this->missingLocalizationLogger->getMissingEntries()
+        );
 
         $args['output'] .= $toolbar->render();
     }

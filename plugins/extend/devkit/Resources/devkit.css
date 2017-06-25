@@ -64,6 +64,7 @@
 #devkit-toolbar .devkit-extend {background-image: url("images/plugin.png");}
 #devkit-toolbar .devkit-request {background-image: url("images/blocks.png");}
 #devkit-toolbar .devkit-login {background-image: url("images/key.png");}
+#devkit-toolbar .devkit-lang {background-image: url("images/lang.png");}
 
 #devkit-toolbar > a:hover .devkit-section,
 #devkit-toolbar .devkit-toggleable:hover {
@@ -156,6 +157,15 @@ body.devkit-content-open {
     border: 1px solid #777;
 }
 
+/* Badges */
+#devkit-toolbar .devkit-blood-badge {
+    display: inline-block;
+    padding-left: 2px;
+    padding-right: 2px;
+    background-color: #a00;
+    color: #fff;
+}
+
 /* Generic */
 #devkit-toolbar .devkit-hidden {
     display: none;
@@ -163,11 +173,17 @@ body.devkit-content-open {
 #devkit-toolbar .devkit-blood {
     color: #a00;
 }
+#devkit-toolbar .devkit-leaf {
+    color: #117700;
+}
 #devkit-toolbar .devkit-heading {
     margin-bottom: 10px;
     font-size: 19px;
     font-weight: bold;
     font-style: italic;
+}
+#devkit-toolbar .devkit-heading * {
+    font-size: inherit;
 }
 #devkit-toolbar ol, #devkit-toolbar ul {
     margin: 10px 0 10px 20px;

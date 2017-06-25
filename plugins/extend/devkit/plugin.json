@@ -10,6 +10,7 @@
     "events": [
         ["db.query", "$this::onDbQuery"],
         ["db.query.post", "$this::onDbQueryPost"],
+        ["localization.missing", "$this::onMissingLocalization"],
         ["mail.send", "$this::onMail"]
     ],
     "events.web": [
