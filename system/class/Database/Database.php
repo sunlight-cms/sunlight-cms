@@ -779,22 +779,22 @@ class Database
     /**
      * Formatovat datum a cas
      *
-     * @param int $timestamp timestamp
+     * @param int|null $timestamp timestamp (null = time())
      * @return string YY-MM-DD HH:MM:SS (bez uvozovek)
      */
-    public static function datetime($timestamp)
+    public static function datetime($timestamp = null)
     {
-        return date('Y-m-d H:i:s', $timestamp);
+        return date('Y-m-d H:i:s', $timestamp !== null ? $timestamp : time());
     }
 
     /**
      * Formatovat datum
      *
-     * @param int $timestamp timestamp
+     * @param int|null $timestamp timestamp (null = time())
      * @return string YY-MM-DD (bez uvozovek)
      */
-    public static function date($timestamp)
+    public static function date($timestamp = null)
     {
-        return date('Y-m-d', $timestamp);
+        return date('Y-m-d', $timestamp !== null ? $timestamp : time());
     }
 }
