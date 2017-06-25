@@ -945,8 +945,8 @@ function _validateEmail($email)
                                     $isValid = false;
                                 }
         if (!_dev && function_exists('checkdnsrr')) {
-            if ($isValid && !(checkdnsrr($domain, 'MX') || checkdnsrr($domain, 'A'))) {
-                // domain not found in DNS
+            if ($isValid && !checkdnsrr($domain . '.', 'ANY')) {
+                // no DNS record for the given domain
                 $isValid = false;
             }
         }
