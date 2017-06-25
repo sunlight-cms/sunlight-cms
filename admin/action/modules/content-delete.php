@@ -13,7 +13,7 @@ if (isset($_GET['id'])) {
     $id = (int) _get('id');
     $query = DB::queryRow("SELECT id,node_level,node_depth,node_parent,title,type,type_idt,ord FROM " . _root_table . " WHERE id=" . $id);
     if ($query !== false) {
-        if (_userHasRight('admin' . $type_array[$query['type']])) {
+        if (_userHasPriv('admin' . $type_array[$query['type']])) {
             $continue = true;
         }
     }
@@ -24,7 +24,7 @@ if ($continue) {
     // opravneni k mazani podstranek = pravo na vsechny typy
     $recursive = true;
     foreach (Sunlight\Page\PageManager::getTypes() as $type) {
-        if (!_userHasRight('admin' . $type)) {
+        if (!_userHasPriv('admin' . $type)) {
             $recursive = false;
             break;
         }

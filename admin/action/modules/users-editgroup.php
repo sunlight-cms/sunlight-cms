@@ -131,7 +131,7 @@ if ($continue) {
             if (
                 $id == _group_admin
                 || $id == _group_guests && !in_array($item['name'], $unregistered_useable, true)
-                || !_userHasRight($item['name'])
+                || !_userHasPriv($item['name'])
             ) {
                 $disabled = true;
             } else {
@@ -189,7 +189,7 @@ if ($continue) {
                 foreach ($section['rights'] as $item) {
                     if (
                         $id == _group_guests && !in_array($item['name'], $unregistered_useable, true)
-                        || !_userHasRight($item['name'])
+                        || !_userHasPriv($item['name'])
                     ) {
                         continue;
                     }

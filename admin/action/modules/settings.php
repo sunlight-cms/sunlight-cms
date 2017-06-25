@@ -353,7 +353,7 @@ foreach ($editable_settings as $settings_category => $settings_category_data) {
             if (isset($item['choices'])) {
                 $input = "<select{$inputAttrs}>\n";
                 foreach ($item['choices'] as $choiceValue => $choiceLabel) {
-                    $input .= "<option" . _optionActivate($choiceValue == $value) . " value=\"" . _e($choiceValue) . "\">{$choiceLabel}</option>\n";
+                    $input .= "<option" . ($choiceValue == $value ? ' selected' : '') . " value=\"" . _e($choiceValue) . "\">{$choiceLabel}</option>\n";
                 }
                 $input .= "</select>";
             } else {

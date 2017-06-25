@@ -253,17 +253,6 @@ function _arrayFilter(array $array, $include = null, $exclude = null, array $exc
 }
 
 /**
- * Vratit textovou reprezentaci boolean hodnoty cisla
- *
- * @param mixed $input vstupni hodnota
- * @return string 'true' nebo 'false'
- */
-function _booleanStr($input)
-{
-    return $input ? 'true' : 'false';
-}
-
-/**
  * Normalizovat promennou
  *
  * V pripade chyby bude promenna nastavena na null.
@@ -313,17 +302,6 @@ function _randomInteger($min, $max)
 function _checkboxActivate($input)
 {
     return $input ? ' checked' : '';
-}
-
-/**
- * Aktivovat volbu na zaklade podminky
- *
- * @param bool $input
- * @return string
- */
-function _optionActivate($input)
-{
-    return $input ? ' selected' : '';
 }
 
 /**
@@ -654,17 +632,6 @@ function _isSafeUrl($url)
 }
 
 /**
- * Odstraneni vsech lomitek z konce retezce
- *
- * @param string $string vstupni retezec
- * @return string
- */
-function _removeSlashesFromEnd($string)
-{
-    return rtrim($string, '/');
-}
-
-/**
  * Obnovit stav zaskrtnuti na zaklade POST/GET dat
  *
  * @param string $key_var nazev klice, ktery indikuje odeslani daneho formulare
@@ -953,17 +920,6 @@ function _validateEmail($email)
     }
 
     return $isValid;
-}
-
-/**
- * Kontrola, zda je zadana URL (v absolutnim tvaru zacinajici http:// nebo https://) platna
- *
- * @param string $url adresa
- * @return bool
- */
-function _validateURL($url)
-{
-    return (preg_match('|^https?:\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6}((:[0-9]{1,5})?\/.*)?$|i', $url) === 1);
 }
 
 /**
@@ -1897,7 +1853,7 @@ function _getPrivileges()
  * @param string $name nazev prava
  * @return bool
  */
-function _userHasRight($name)
+function _userHasPriv($name)
 {
     $constant = '_priv_' . $name;
 
@@ -4086,7 +4042,6 @@ function _userAuthHash($storedPassword)
  * @param int    $id
  * @param string $storedPassword
  * @param string $email
- * @param bool   $ipBound
  * @param bool   $persistent
  */
 function _userLogin($id, $storedPassword, $email, $persistent = false)
@@ -4658,8 +4613,9 @@ function _pictureLoad($filepath, $limit = array(), $filename = null)
         }
 
         // pokus o nacteni obrazku
-        switch ($ext) {
+        $res = null;
 
+        switch ($ext) {
             case 'jpg':
             case 'jpeg':
                 $res = @imagecreatefromjpeg($filepath);
@@ -4672,7 +4628,6 @@ function _pictureLoad($filepath, $limit = array(), $filename = null)
             case 'gif':
                 $res = @imagecreatefromgif ($filepath);
                 break;
-
         }
 
         // kontrola nacteni
@@ -5619,7 +5574,6 @@ function _getCurrentTemplate()
     // pouzit globalni promennou
     // (index)
     if (_env_web && isset($GLOBALS['_template']) && $GLOBALS['_template'] instanceof TemplatePlugin) {
-        
         return $GLOBALS['_template'];
     }
 
@@ -5632,16 +5586,4 @@ function _getCurrentTemplate()
 
     // pouzit vychozi
     return TemplateService::getDefaultTemplate();
-}
-
-/**
- * Pridat nazev aktualniho motivu do URL
- *
- * @param string $url
- * @param bool   $entity {@see _addGetToLink()}
- * @return string
- */
-function _addCurrentTemplateToURL($url, $entity = true)
-{
-    return _addGetToLink($url, 'current_template=' . _getCurrentTemplate()->getId(), $entity);
 }

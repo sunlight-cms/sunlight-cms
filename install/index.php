@@ -692,7 +692,7 @@ class ConfigurationStep extends Step
             'db.password' => trim(_post('config_db_password', '')),
             'db.name' => trim(_post('config_db_name', '')),
             'db.prefix' => trim(_post('config_db_prefix', '')),
-            'url' => _removeSlashesFromEnd(trim(_post('config_url', ''))),
+            'url' => rtrim(trim(_post('config_url', '')), '/'),
             'secret' => trim(_post('config_secret', '')),
             'app_id' => trim(_post('config_app_id', '')),
             'fallback_lang' => $this->vars['language'],

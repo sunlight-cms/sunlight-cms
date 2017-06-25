@@ -42,7 +42,7 @@ if (isset($_POST['type']) && _priv_admingroups) {
                         break;
 
                     default:
-                        if (isset($privilege_map[$column]) && !_userHasRight($column)) {
+                        if (isset($privilege_map[$column]) && !_userHasPriv($column)) {
                             $val = 0;
                         }
                         break;

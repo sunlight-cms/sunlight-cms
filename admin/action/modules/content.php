@@ -35,7 +35,7 @@ if (_priv_adminsection || _priv_admincategory || _priv_adminbook || _priv_admins
                     $is_ppage = true;
                 }
                 if (isset($type_array[$type])) {
-                    if (_userHasRight('admin' . $type_array[$type])) {
+                    if (_userHasPriv('admin' . $type_array[$type])) {
                         $admin_redirect_to = 'index.php?p=content-edit' . $type_array[$type] . ($is_ppage ? '&idt=' . rawurlencode($type_idt) : '');
 
                         return;
@@ -51,7 +51,7 @@ if (_priv_adminsection || _priv_admincategory || _priv_adminbook || _priv_admins
     $create_list = "";
     if (_priv_adminroot) {
         foreach ($type_array as $type => $name) {
-            if ($type != _page_plugin && _userHasRight('admin' . $name)) {
+            if ($type != _page_plugin && _userHasPriv('admin' . $name)) {
                 $create_list .= "<option value='" . $type . "'>" . _lang('page.type.' . $name) . "</option>\n";
             }
         }

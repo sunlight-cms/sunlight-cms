@@ -403,7 +403,7 @@ class PageLister
      */
     private static function isAccessible(array $page)
     {
-        $userHasRight = _userHasRight('admin' . static::$pageTypes[$page['type']]);
+        $userHasRight = _userHasPriv('admin' . static::$pageTypes[$page['type']]);
         $isAccessible = $userHasRight;
 
         Extend::call('admin.root.list.access', array(
