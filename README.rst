@@ -30,8 +30,8 @@ Installation
 Legacy code notice
 ******************
 
-This codebase is very old. It was originally written for PHP 4 and uses
-very little OOP. It was my very first big project.
+This codebase is very old. It was originally written in PHP 4 and uses
+very little OOP.
 
 While it is functional and has no known security vulnerabilities, one
 should keep this in mind when browsing through the code.
