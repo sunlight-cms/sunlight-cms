@@ -1,10 +1,10 @@
 <?php
 
 use Sunlight\Core;
-use Sunlight\Util\Url;
 use Sunlight\Extend;
 use Sunlight\Plugin\TemplatePlugin;
 use Sunlight\Plugin\TemplateService;
+use Sunlight\Util\Url;
 
 require './system/bootstrap.php';
 Core::init('./');

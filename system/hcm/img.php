@@ -1,5 +1,7 @@
 <?php
 
+use Sunlight\Core;
+
 if (!defined('_root')) {
     exit;
 }
@@ -13,7 +15,7 @@ function _HCM_img($cesta = "", $rozmery = null, $titulek = null, $lightbox = nul
         $titulek = _e($titulek);
     }
     if (!isset($lightbox)) {
-        $lightbox = Sunlight\Core::$hcmUid;
+        $lightbox = Core::$hcmUid;
     }
 
     $thumb = _pictureThumb($cesta, $resize_opts);

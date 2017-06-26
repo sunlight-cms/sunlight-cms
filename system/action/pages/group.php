@@ -1,5 +1,8 @@
 <?php
 
+use Sunlight\Database\Database as DB;
+use Sunlight\Extend;
+
 if (!defined('_root')) {
     exit;
 }
@@ -8,11 +11,11 @@ if (!defined('_root')) {
 $_index['title'] = $_page['title'];
 
 // obsah
-Sunlight\Extend::call('page.group.content.before', $extend_args);
+Extend::call('page.group.content.before', $extend_args);
 if ($_page['content'] != "") {
     $output .= _parseHCM($_page['content']) . "\n\n<div class='hr group-hr'><hr></div>\n\n";
 }
-Sunlight\Extend::call('page.group.content.after', $extend_args);
+Extend::call('page.group.content.after', $extend_args);
 
 // vypis polozek
 $items = DB::query("SELECT id,title,slug,type,type_idt,perex,var1 FROM " . _root_table . " WHERE node_parent=" . $id . " AND visible=1 ORDER BY ord");
@@ -78,11 +81,11 @@ if (DB::size($items) != 0) {
 
                     // plugin stranka
                 case _page_plugin:
-                    Sunlight\Extend::call('ppage.' . $item['type_idt'] . '.group_infos', array('item' => $item, 'infos' => &$iteminfos));
+                    Extend::call('ppage.' . $item['type_idt'] . '.group_infos', array('item' => $item, 'infos' => &$iteminfos));
                     break;
             }
 
-            Sunlight\Extend::call('page.group.item_infos', array('item' => $item, 'infos' => &$iteminfos));
+            Extend::call('page.group.item_infos', array('item' => $item, 'infos' => &$iteminfos));
 
             $output .= _renderInfos($iteminfos);
         }

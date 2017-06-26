@@ -1,7 +1,11 @@
 <?php
 
+use Sunlight\Core;
+use Sunlight\Database\Database as DB;
+use Sunlight\Extend;
+
 require '../bootstrap.php';
-Sunlight\Core::init('../../');
+Core::init('../../');
 
 // jmeno hosta nebo ID uzivatele
 if (_login) {
@@ -119,7 +123,7 @@ switch ($posttype) {
 
         // plugin post
     case _post_plugin:
-        Sunlight\Extend::call('posts.' . $pluginflag . '.validate', array('home' => $posttarget, 'valid' => &$continue));
+        Extend::call('posts.' . $pluginflag . '.validate', array('home' => $posttarget, 'valid' => &$continue));
         break;
 
         // blbost
@@ -149,7 +153,7 @@ if ($continue && $continue2 && $text != '' && ($posttype == _post_shoutbox_entry
 
                 // zpracovani pluginem
                 $allow = true;
-                Sunlight\Extend::call('posts.submit', array('allow' => &$allow, 'posttype' => $posttype, 'posttarget' => $posttarget, 'xhome' => $xhome, 'subject' => &$subject, 'text' => &$text, 'author' => $author, 'guest' => $guest));
+                Extend::call('posts.submit', array('allow' => &$allow, 'posttype' => $posttype, 'posttarget' => $posttarget, 'xhome' => $xhome, 'subject' => &$subject, 'text' => &$text, 'author' => $author, 'guest' => $guest));
                 if ($allow) {
 
                     // ulozeni
@@ -170,7 +174,7 @@ if ($continue && $continue2 && $text != '' && ($posttype == _post_shoutbox_entry
                         _iplogUpdate(_iplog_anti_spam);
                     }
                     $return = 1;
-                    Sunlight\Extend::call('posts.new', array('id' => $insert_id, 'posttype' => $posttype));
+                    Extend::call('posts.new', array('id' => $insert_id, 'posttype' => $posttype));
 
                     // topicy - aktualizace bumptime
                     if ($posttype == _post_forum_topic && $xhome != -1) {

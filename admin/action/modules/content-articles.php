@@ -1,5 +1,10 @@
 <?php
 
+use Sunlight\Database\Database as DB;
+use Sunlight\Database\SimpleTreeFilter;
+use Sunlight\Page\PageManager;
+use Sunlight\Extend;
+
 if (!defined('_root')) {
     exit;
 }
@@ -17,9 +22,9 @@ $output .= "
 ";
 
 // nacist strom kategorii
-$filter = new Sunlight\Database\SimpleTreeFilter(array('type' => _page_category));
-Sunlight\Extend::call('admin.article.catfilter', array('filter' => &$filter));
-$tree = Sunlight\Page\PageManager::getFlatTree(null, null, $filter);
+$filter = new SimpleTreeFilter(array('type' => _page_category));
+Extend::call('admin.article.catfilter', array('filter' => &$filter));
+$tree = PageManager::getFlatTree(null, null, $filter);
 
 // nacist pocty clanku
 $art_counts = array();

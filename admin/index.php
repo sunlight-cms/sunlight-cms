@@ -1,8 +1,8 @@
 <?php
 
 use Sunlight\Core;
-use Sunlight\Extend;
 use Sunlight\Exception\PrivilegeException;
+use Sunlight\Extend;
 
 require '../system/bootstrap.php';
 Core::init('../', array(

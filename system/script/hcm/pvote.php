@@ -1,7 +1,11 @@
 <?php
 
+use Sunlight\Core;
+use Sunlight\Database\Database as DB;
+use Sunlight\Extend;
+
 require '../../bootstrap.php';
-Sunlight\Core::init('../../../');
+Core::init('../../../');
 
 /* ---  hlasovani  --- */
 
@@ -20,7 +24,7 @@ if (isset($_POST['pid']) && isset($_POST['option']) && _xsrfCheck()) {
             $votes = implode("-", $votes);
             DB::update(_polls_table, 'id=' . $pid, array('votes' => $votes));
             _iplogUpdate(_iplog_poll_vote, $pid);
-            Sunlight\Extend::call('poll.voted', array('id' => $pid, 'option' => $option));
+            Extend::call('poll.voted', array('id' => $pid, 'option' => $option));
         }
     }
 

@@ -1,7 +1,10 @@
 <?php
 
+use Sunlight\Core;
+use Sunlight\Database\Database as DB;
+
 require '../bootstrap.php';
-Sunlight\Core::init('../../');
+Core::init('../../');
 
 if (_ratemode == 0) {
     exit;

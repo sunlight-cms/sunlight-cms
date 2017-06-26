@@ -1,6 +1,8 @@
 <?php
 
 use Sunlight\Comment\CommentService;
+use Sunlight\Database\Database as DB;
+use Sunlight\Extend;
 
 if (!defined('_root')) {
     exit;
@@ -29,7 +31,7 @@ $_index['crumbs'][] = array(
 // extend
 $continue = true;
 
-Sunlight\Extend::call('topic.pre', Sunlight\Extend::args($output, array(
+Extend::call('topic.pre', Extend::args($output, array(
     'topic' => &$query,
     'continue' => &$continue,
     'page' => $_page,
@@ -78,7 +80,7 @@ if ($query['guest'] == "") {
 }
 
 // vystup
-$extend_buffer = Sunlight\Extend::buffer('topic.render', array(
+$extend_buffer = Extend::buffer('topic.render', array(
     'topic' => &$query,
     'access' => $topic_access,
     'admin' => &$topic_admin,

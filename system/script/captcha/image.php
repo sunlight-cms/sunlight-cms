@@ -1,13 +1,17 @@
 <?php
 
+use Sunlight\Core;
+use Sunlight\Extend;
+use Sunlight\Captcha\Text3dCaptcha;
+
 require '../../bootstrap.php';
-Sunlight\Core::init('../../../', array(
+Core::init('../../../', array(
     'content_type' => false,
 ));
 
 // check GD
 if (!_checkGD('jpg')) {
-    Sunlight\Core::systemFailure(
+    Core::systemFailure(
         'Není dostupná GD knihovna pro generování obrázků nebo nepodporuje JPG formát.',
         'The GD library needed to generate JPG images is not available or does not support this format.'
     );
@@ -30,10 +34,10 @@ if (!empty($captchaNumber) && isset($_SESSION['captcha_code'][$captchaNumber])) 
 }
 
 // generate image
-$captchaRenderer = new Sunlight\Captcha\Text3dCaptcha();
+$captchaRenderer = new Text3dCaptcha();
 $captchaRenderer->setLetterSpacing(2);
 
-Sunlight\Extend::call('captcha.render', array(
+Extend::call('captcha.render', array(
     'renderer' => &$captchaRenderer,
     'code' => &$captchaCode,
 ));
@@ -46,7 +50,7 @@ $captchaResizeOptions = array(
     'mode' => 'fit',
 );
 
-Sunlight\Extend::call('captcha.render.resize', array(
+Extend::call('captcha.render.resize', array(
     'captcha' => $captcha,
     'options' => &$captchaResizeOptions,
 ));

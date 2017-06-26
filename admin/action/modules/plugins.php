@@ -1,8 +1,8 @@
 <?php
 
 use Sunlight\Core;
-use Sunlight\Plugin\Plugin;
 use Sunlight\Plugin\InactivePlugin;
+use Sunlight\Plugin\Plugin;
 
 if (!defined('_root')) {
     exit;

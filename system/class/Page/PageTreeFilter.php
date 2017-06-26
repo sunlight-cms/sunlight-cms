@@ -2,7 +2,7 @@
 
 namespace Sunlight\Page;
 
-use Sunlight\Database\Database;
+use Sunlight\Database\Database as DB;
 use Sunlight\Database\TreeFilterInterface;
 use Sunlight\Database\TreeReader;
 
@@ -97,16 +97,16 @@ class PageTreeFilter implements TreeFilterInterface
         if ($options['ord_start'] !== null || $options['ord_end'] !== null) {
             $ordSql = '';
             if ($options['ord_start'] !== null) {
-                $ordSql .= "%__node__%.ord>=" . Database::val($options['ord_start']);
+                $ordSql .= "%__node__%.ord>=" . DB::val($options['ord_start']);
             }
             if ($options['ord_end'] !== null) {
                 if ($options['ord_start'] !== null) {
                     $ordSql .= ' AND ';
                 }
-                $ordSql .= "%__node__%.ord<=" . Database::val($options['ord_end']);
+                $ordSql .= "%__node__%.ord<=" . DB::val($options['ord_end']);
             }
 
-            $sql .= ' AND (%__node__%.node_level!=' . Database::val($options['ord_level']) . ' OR ' . $ordSql . ')';
+            $sql .= ' AND (%__node__%.node_level!=' . DB::val($options['ord_level']) . ' OR ' . $ordSql . ')';
         }
 
         return $sql;

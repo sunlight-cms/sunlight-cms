@@ -1,5 +1,9 @@
 <?php
 
+use Sunlight\Database\Database as DB;
+use Sunlight\Extend;
+use Sunlight\Util\Password;
+
 if (!defined('_root')) {
     exit;
 }
@@ -130,7 +134,7 @@ if ($continue) {
         }
         if ($password != "") {
             $passwordchange = true;
-            $password = Sunlight\Util\Password::create($password)->build();
+            $password = Password::create($password)->build();
         }
 
         // note
@@ -185,7 +189,7 @@ if ($continue) {
             }
 
             $action = ($id === null ? 'new' : 'edit');
-            Sunlight\Extend::call('admin.user.' . $action . '.pre', array(
+            Extend::call('admin.user.' . $action . '.pre', array(
                 'id' => $id,
                 'user' => $id === null ? null : $query,
                 'changeset' => &$changeset,
@@ -194,7 +198,7 @@ if ($continue) {
             if ($id !== null) {
                 // uprava
                 DB::update(_users_table, 'id=' . DB::val($query['id']), $changeset);
-                Sunlight\Extend::call('user.edit', array('id' => $query['id'], 'username' => $username, 'email' => $email));
+                Extend::call('user.edit', array('id' => $query['id'], 'username' => $username, 'email' => $email));
                 $admin_redirect_to = 'index.php?p=users-edit&r=1&id=' . $username;
 
                 return;
@@ -205,7 +209,7 @@ if ($continue) {
                     'activitytime' => time(),
                 );
                 $id = DB::insert(_users_table, $changeset, true);
-                Sunlight\Extend::call('user.new', array('id' => $id, 'username' => $username, 'email' => $email));
+                Extend::call('user.new', array('id' => $id, 'username' => $username, 'email' => $email));
                 $admin_redirect_to = 'index.php?p=users-edit&r=2&id=' . $username;
 
                 return;
@@ -298,7 +302,7 @@ if ($continue) {
 <td><textarea class='areasmall' rows='9' cols='33' name='note'>" . _restorePostValue('note', $query['note'], false, false) . "</textarea></td>
 </tr>
 
-" . Sunlight\Extend::buffer('admin.user.form', array('user' => $query)) . "
+" . Extend::buffer('admin.user.form', array('user' => $query)) . "
 
 <tr><td></td>
 <td><input type='submit' value='" . _lang((isset($_GET['id']) ? 'global.save' : 'global.create')) . "'>" . (($id != null) ? " <small>" . _lang('admin.content.form.thisid') . " " . $query['id'] . "</small>" : '') . "</td>

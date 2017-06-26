@@ -1,5 +1,10 @@
 <?php
 
+use Sunlight\Database\Database as DB;
+use Sunlight\Database\DatabaseLoader;
+use Sunlight\Extend;
+use Sunlight\Util\Password;
+
 if (!defined('_root')) {
     exit;
 }
@@ -127,7 +132,7 @@ if (isset($_POST['action'])) {
 
             // udrzba
             if (_checkboxLoad('maintenance') && !$prev) {
-                Sunlight\Extend::call('cron.maintenance', array(
+                Extend::call('cron.maintenance', array(
                     'last' => null,
                     'name' => 'maintenance',
                     'seconds' => null,
@@ -165,13 +170,13 @@ if (isset($_POST['action'])) {
             $confirm = _checkboxLoad("confirm");
             if ($confirm) {
                 $right_pass = DB::queryRow("SELECT password FROM " . _users_table . " WHERE id=0");
-                if (Sunlight\Util\Password::load($right_pass['password'])->match($pass)) {
+                if (Password::load($right_pass['password'])->match($pass)) {
 
                     // odhlaseni
                     _userLogout();
 
                     // odstraneni tabulek
-                    Sunlight\Database\DatabaseLoader::dropTables(DB::getTablesByPrefix());
+                    DatabaseLoader::dropTables(DB::getTablesByPrefix());
 
                     // zprava
                     echo "<h1>" . _lang('global.done') . "</h1>\n<p>" . _lang('admin.other.cleanup.uninstall.done') . "</p>";

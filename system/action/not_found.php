@@ -1,5 +1,6 @@
 <?php
 
+use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 
 if (!defined('_root')) {

@@ -1,5 +1,8 @@
 <?php
 
+use Sunlight\Database\Database as DB;
+use Sunlight\Extend;
+
 if (!defined('_root')) {
     exit;
 }
@@ -59,7 +62,7 @@ if (isset($_GET['id']) && isset($_GET['returnid']) && isset($_GET['returnpage'])
         'rateon' => 1,
         'readnum' => 0,
     );
-    Sunlight\Extend::call('admin.article.default', array('data' => &$query));
+    Extend::call('admin.article.default', array('data' => &$query));
     if (isset($_GET['new_cat'])) {
         $query['home1'] = (int) _get('new_cat');
     }
@@ -152,7 +155,7 @@ if (isset($_POST['title'])) {
                 'y' => _article_pic_h,
             ),
         );
-        Sunlight\Extend::call('admin.article.picture', array('opts' => &$picOpts));
+        Extend::call('admin.article.picture', array('opts' => &$picOpts));
 
         // zpracovani
         $picUid = _pictureProcess($picOpts, $picError);
@@ -212,7 +215,7 @@ if (isset($_POST['title'])) {
             $action = 'edit';
         }
 
-        Sunlight\Extend::call('admin.article.' . $action . '.pre', array(
+        Extend::call('admin.article.' . $action . '.pre', array(
             'id' => $id,
             'article' => $new ? null : $query,
             'changeset' => &$changeset,
@@ -255,7 +258,7 @@ if (isset($_POST['title'])) {
 
         }
 
-        Sunlight\Extend::call('admin.article.' . $action, array(
+        Extend::call('admin.article.' . $action, array(
             'id' => $id,
             'article' => $query,
             'changeset' => &$changeset,
@@ -314,7 +317,7 @@ if ($continue) {
     $picture .= "<input type='file' name='picture' id='is-picture-upload'>\n";
 
     // editacni pole
-    $editor = Sunlight\Extend::buffer('admin.article.editor');
+    $editor = Extend::buffer('admin.article.editor');
 
     if ($editor === '') {
         // vychozi implementace
@@ -421,7 +424,7 @@ if ($continue) {
 <td>" . _editTime('time', $query['time'], true, $new) . "</td>
 </tr>
 
-" . Sunlight\Extend::buffer('admin.article.form', array('article' => $query)) . "
+" . Extend::buffer('admin.article.form', array('article' => $query)) . "
 
 <tr>
 <td></td>

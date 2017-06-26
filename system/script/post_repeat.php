@@ -1,7 +1,10 @@
 <?php
 
+use Sunlight\Core;
+use Sunlight\Util\Url;
+
 require '../bootstrap.php';
-Sunlight\Core::init('../../');
+Core::init('../../');
 
 // priprava
 $login = (bool) _get('login');
@@ -60,7 +63,7 @@ if ($valid && $login && !_login) {
             </p>
 
             <p id="warning">
-                <?php echo _lang('xsrf.warning', array('*domain*' => Sunlight\Util\Url::base()->getFullHost())) ?>
+                <?php echo _lang('xsrf.warning', array('*domain*' => Url::base()->getFullHost())) ?>
             </p>
 
             <?php echo _postRepeatForm(

@@ -1,7 +1,9 @@
 <?php
 
+use Sunlight\Core;
+
 require '../bootstrap.php';
-Sunlight\Core::init('../../');
+Core::init('../../');
 
 if (_xsrfCheck(true)) {
     _userLogout();

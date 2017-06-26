@@ -1,5 +1,12 @@
 <?php
 
+use Sunlight\Core;
+use Sunlight\Database\Database as DB;
+use Sunlight\Extend;
+use Sunlight\Util\Password;
+use Sunlight\Util\StringGenerator;
+use Sunlight\Util\Url;
+
 if (!defined('_root')) {
     exit;
 }
@@ -19,7 +26,7 @@ $message = '';
 $user_data = array();
 $user_data_valid = false;
 $show_form = true;
-$rules = Sunlight\Core::loadSetting('rules');
+$rules = Core::loadSetting('rules');
 $confirmed = (_registration_confirm ? false : true);
 
 // akce
@@ -101,7 +108,7 @@ if (isset($_GET['confirm'])) {
             $errors[] = _lang('mod.reg.nosame');
         }
         if ($password != "") {
-            $user_data['password'] = Sunlight\Util\Password::create($password)->build();
+            $user_data['password'] = Password::create($password)->build();
         } else {
             $errors[] = _lang('mod.reg.passwordneeded');
         }
@@ -136,7 +143,7 @@ if (isset($_GET['confirm'])) {
 
         $user_data['ip'] = _userip;
 
-        Sunlight\Extend::call('mod.reg.submit', array(
+        Extend::call('mod.reg.submit', array(
             'user_data' => &$user_data,
             'errors' => &$errors,
         ));
@@ -216,7 +223,7 @@ if (!$user_data_valid && $show_form) {
         $user_id = DB::insert(_users_table, $user_data, true);
 
         // udalost
-        Sunlight\Extend::call('user.new', array('id' => $user_id, 'username' => $user_data['username'], 'email' => $user_data['email']));
+        Extend::call('user.new', array('id' => $user_id, 'username' => $user_data['username'], 'email' => $user_data['email']));
 
         // hlaska
         $_SESSION['login_form_username'] = $user_data['username'];
@@ -230,7 +237,7 @@ if (!$user_data_valid && $show_form) {
     } else {
 
         // nepotvrzeno
-        $code = Sunlight\Util\StringGenerator::generateHash(35);
+        $code = StringGenerator::generateHash(35);
         $insert_id = DB::insert(_user_activation_table, array(
             'code' => $code,
             'expire' => time() + 3600,
@@ -238,7 +245,7 @@ if (!$user_data_valid && $show_form) {
         ), true);
 
         // potvrzovaci zprava
-        $domain = Sunlight\Util\Url::base()->getFullHost();
+        $domain = Url::base()->getFullHost();
         $mail = _mail(
             $user_data['email'],
             _lang('mod.reg.confirm.subject', array('*domain*' => $domain)),

@@ -1,7 +1,11 @@
 <?php
 
+use Sunlight\Core;
+use Sunlight\Extend;
+use Sunlight\Util\Color;
+
 require '../../system/bootstrap.php';
-Sunlight\Core::init('../../', array(
+Core::init('../../', array(
     'env' => 'admin',
     'session_enabled' => false,
     'content_type' => 'text/css; charset=UTF-8',
@@ -37,7 +41,7 @@ function _admin_color($loff = 0, $satc = null, $sat_abs = false, $light_abs = fa
     $s = (isset($satc) ? ($sat_abs ? $satc :  $GLOBALS['sat'] * $satc) : $GLOBALS['sat']);
 
     // vytvoreni hex kodu barvy
-    $color = new Sunlight\Util\Color(array($h, $l, $s), 1);
+    $color = new Color(array($h, $l, $s), 1);
 
     return $color->getRGBStr();
 }
@@ -176,7 +180,7 @@ switch ($s) {
         break;
 }
 
-Sunlight\Extend::call('admin.style.init');
+Extend::call('admin.style.init');
 
 // vypocet barev
 $scheme = _admin_color(($dark ? 40 : 0));
@@ -218,7 +222,7 @@ if ($dark) {
     $scheme_alpha_shadow2 = 'rgba(0, 0, 0, 0.075)';
 }
 
-Sunlight\Extend::call('admin.style.start');
+Extend::call('admin.style.start');
 
 ?>
 /* <style>
@@ -695,4 +699,4 @@ tr.valign-top > *, table.valign-top > * > tr > * {vertical-align: top;}
 .node-level-m20 {margin-left: 480px !important;}
 .node-level-p20 {padding-left: 480px !important;}
 
-<?php echo Sunlight\Extend::buffer('admin.style') ?>
+<?php echo Extend::buffer('admin.style') ?>

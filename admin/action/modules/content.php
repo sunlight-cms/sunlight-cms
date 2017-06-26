@@ -1,6 +1,8 @@
 <?php
 
+use Sunlight\Admin\PageLister;
 use Sunlight\Extend;
+use Sunlight\Page\PageManager;
 
 if (!defined('_root')) {
     exit;
@@ -11,8 +13,8 @@ if (!defined('_root')) {
 $message = "";
 
 // vypis stranek
-$ppages = Sunlight\Page\PageManager::getPluginTypes();
-$type_array = Sunlight\Page\PageManager::getTypes();
+$ppages = PageManager::getPluginTypes();
+$type_array = PageManager::getTypes();
 
 if (_priv_adminsection || _priv_admincategory || _priv_adminbook || _priv_adminseparator || _priv_admingallery || _priv_adminlink || _priv_admingroup || _priv_adminforum || _priv_adminpluginpage) {
 
@@ -93,8 +95,8 @@ if (_priv_adminsection || _priv_admincategory || _priv_adminbook || _priv_admins
     <span class="inline-separator"></span>
     ' : '' ) . '
 
-    <a class="button" href="index.php?p=content&amp;list_mode=tree"' . (Sunlight\Admin\PageLister::MODE_FULL_TREE == Sunlight\Admin\PageLister::getConfig('mode') ? ' class="active-link"' : '') . '><img src="images/icons/tree.png" alt="move" class="icon">' . _lang('admin.content.mode.tree') . '</a>
-    <a class="button" href="index.php?p=content&amp;list_mode=single"' . (Sunlight\Admin\PageLister::MODE_SINGLE_LEVEL == Sunlight\Admin\PageLister::getConfig('mode') ? ' class="active-link"' : '') . '><img src="images/icons/list.png" alt="move" class="icon">' . _lang('admin.content.mode.single') . '</a>
+    <a class="button" href="index.php?p=content&amp;list_mode=tree"' . (PageLister::MODE_FULL_TREE == Sunlight\Admin\PageLister::getConfig('mode') ? ' class="active-link"' : '') . '><img src="images/icons/tree.png" alt="move" class="icon">' . _lang('admin.content.mode.tree') . '</a>
+    <a class="button" href="index.php?p=content&amp;list_mode=single"' . (PageLister::MODE_SINGLE_LEVEL == Sunlight\Admin\PageLister::getConfig('mode') ? ' class="active-link"' : '') . '><img src="images/icons/list.png" alt="move" class="icon">' . _lang('admin.content.mode.single') . '</a>
 
     <div class="hr"><hr></div>
 
@@ -103,14 +105,14 @@ if (_priv_adminsection || _priv_admincategory || _priv_adminbook || _priv_admins
     // tabulka polozek
     if (
         _priv_adminroot
-        && Sunlight\Admin\PageLister::getConfig('mode') == Sunlight\Admin\PageLister::MODE_SINGLE_LEVEL
+        && PageLister::getConfig('mode') == PageLister::MODE_SINGLE_LEVEL
     ) {
         $sortable = true;
     } else {
         $sortable = false;
     }
 
-    $rootitems .= Sunlight\Admin\PageLister::render(array(
+    $rootitems .= PageLister::render(array(
         'type' => true,
         'flags' => true,
         'sortable' => $sortable,

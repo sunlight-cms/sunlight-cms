@@ -1,6 +1,8 @@
 <?php
 
 use Sunlight\Comment\CommentService;
+use Sunlight\Database\Database as DB;
+use Sunlight\Extend;
 
 if (!defined('_root')) {
     exit;
@@ -93,7 +95,7 @@ switch ($a) {
                 }
 
                 // extend
-                Sunlight\Extend::call('mod.messages.new', array(
+                Extend::call('mod.messages.new', array(
                     'receiver' => $rq['usr_id'],
                     'subject' => &$subject,
                     'text' => &$text,

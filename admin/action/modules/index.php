@@ -1,12 +1,18 @@
 <?php
 
+use Sunlight\Core;
+use Sunlight\Database\Database as DB;
+use Sunlight\Extend;
+use Sunlight\Message;
+use Sunlight\Util\Url;
+
 if (!defined('_root')) {
     exit;
 }
 
 /* ---  priprava promennych  --- */
 
-$admin_index_cfg = Sunlight\Core::loadSettings(array(
+$admin_index_cfg = Core::loadSettings(array(
     'admin_index_custom',
     'admin_index_custom_pos',
     'latest_version_check',
@@ -29,7 +35,7 @@ $custom = '';
 if ($admin_index_cfg['admin_index_custom'] !== '') {
     $custom = $admin_index_cfg['admin_index_custom'];
 }
-Sunlight\Extend::call('admin.index.custom', array(
+Extend::call('admin.index.custom', array(
     'custom' => &$custom,
     'position' => &$admin_index_cfg['admin_index_custom_pos'],
 ));
@@ -37,7 +43,7 @@ Sunlight\Extend::call('admin.index.custom', array(
 // upozorneni na logout
 $logout_warning = '';
 $maxltime = ini_get('session.gc_maxlifetime');
-if (!empty($maxltime) && !isset($_COOKIE[Sunlight\Core::$appId . '_persistent_key'])) {
+if (!empty($maxltime) && !isset($_COOKIE[Core::$appId . '_persistent_key'])) {
     $logout_warning = _adminNote(sprintf(_lang('admin.index.logoutwarn'), round($maxltime / 60)));
 }
 
@@ -59,7 +65,7 @@ $output .= "
   <table>
     <tr>
       <th>" . _lang('global.version') . ":</th>
-      <td>" . Sunlight\Core::VERSION . ' <small>' . Sunlight\Core::DIST . "</small></td>
+      <td>" . Core::VERSION . ' <small>' . Core::DIST . "</small></td>
     </tr>
 
     " . ($admin_index_cfg['latest_version_check'] ? "
@@ -88,21 +94,21 @@ $output .= "
 ";
 
 // extend
-$output .= Sunlight\Extend::buffer('admin.index.after_table');
+$output .= Extend::buffer('admin.index.after_table');
 
 // zpravy
 $messages = array();
 
-if (Sunlight\Core::DIST === 'BETA') {
+if (Core::DIST === 'BETA') {
     // nestabilni verze
-    $messages[] = Sunlight\Message::warning(_lang('admin.index.statewarn', array('*state*' => Sunlight\Core::DIST)));
+    $messages[] = Message::warning(_lang('admin.index.statewarn', array('*state*' => Core::DIST)));
 }
 if (_dev) {
     // vyvojovy rezim
-    $messages[] = Sunlight\Message::warning(_lang('admin.index.devwarn'));
+    $messages[] = Message::warning(_lang('admin.index.devwarn'));
 }
 
-Sunlight\Extend::call('admin.index.messages', array(
+Extend::call('admin.index.messages', array(
    'messages' => &$messages,
 ));
 
@@ -118,12 +124,12 @@ if (_logingroup == _group_admin) {
 
 // nacteni a zobrazeni aktualni verze
 if ($admin_index_cfg['latest_version_check']) {
-    $versionApiUrl = Sunlight\Util\Url::parse('https://sunlight-cms.org/api/v2/version');
+    $versionApiUrl = Url::parse('https://sunlight-cms.org/api/v2/version');
     $versionApiUrl->add(array(
-        'ver' => Sunlight\Core::VERSION,
-        'dist' => Sunlight\Core::DIST,
+        'ver' => Core::VERSION,
+        'dist' => Core::DIST,
         'php' => PHP_VERSION_ID,
-        'referer' => sprintf('%s@%s', sha1(Sunlight\Core::$appId . '$' . Sunlight\Core::$secret), Sunlight\Util\Url::current()->host),
+        'referer' => sprintf('%s@%s', sha1(Core::$appId . '$' . Core::$secret), Url::current()->host),
         'lang' => _lang('langcode.iso639'),
     ));
 

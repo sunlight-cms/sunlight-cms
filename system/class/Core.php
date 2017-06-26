@@ -3,9 +3,9 @@
 namespace Sunlight;
 
 use Kuria\Cache\Cache;
-use Kuria\Cache\Extension\BoundFile\BoundFileExtension;
 use Kuria\Cache\Driver\FilesystemDriver;
 use Kuria\Cache\Driver\MemoryDriver;
+use Kuria\Cache\Extension\BoundFile\BoundFileExtension;
 use Kuria\ClassLoader\ClassLoader;
 use Kuria\Debug\Error;
 use Kuria\Error\ErrorHandler;
@@ -227,9 +227,6 @@ class Core
      */
     private static function initComponents(array $options)
     {
-        // db class alias (BC)
-        class_alias('Sunlight\Database\Database', 'DB');
-
         // error handler
         static::$errorHandler = new ErrorHandler();
         static::$errorHandler->register();

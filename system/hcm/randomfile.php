@@ -1,5 +1,7 @@
 <?php
 
+use Sunlight\Core;
+
 if (!defined('_root')) {
     exit;
 }
@@ -18,7 +20,7 @@ function _HCM_randomfile($cesta = "", $typ = 1, $pocet = 1, $rozmery_nahledu = n
 
         switch ($typ) {
             case 2:
-                $allowed_extensions = Sunlight\Core::$imageExt;
+                $allowed_extensions = Core::$imageExt;
                 $resize_opts = _pictureResizeOptions($rozmery_nahledu);
                 break;
             default:
@@ -54,7 +56,7 @@ function _HCM_randomfile($cesta = "", $typ = 1, $pocet = 1, $rozmery_nahledu = n
                 switch ($typ) {
                     case 2:
                         $thumb = _pictureThumb($cesta . $item, $resize_opts);
-                        $result .= "<a href='" . _e(_linkFile($cesta . $item)) . "' target='_blank' class='lightbox' data-gallery-group='lb_hcm" . Sunlight\Core::$hcmUid . "'><img src='" . _e(_linkFile($thumb)) . "' alt='" . _e($item) . "'></a>\n";
+                        $result .= "<a href='" . _e(_linkFile($cesta . $item)) . "' target='_blank' class='lightbox' data-gallery-group='lb_hcm" . Core::$hcmUid . "'><img src='" . _e(_linkFile($thumb)) . "' alt='" . _e($item) . "'></a>\n";
                         break;
                     default:
                         $result .= file_get_contents($cesta . $item);

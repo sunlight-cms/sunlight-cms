@@ -5,8 +5,8 @@ namespace Sunlight\Admin;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\Page\PageManager;
-use Sunlight\Util\Url;
 use Sunlight\Plugin\TemplateService;
+use Sunlight\Util\Url;
 
 class PageLister
 {

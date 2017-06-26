@@ -1,5 +1,8 @@
 <?php
 
+use Sunlight\Core;
+use Sunlight\Database\Database as DB;
+use Sunlight\Extend;
 use Sunlight\Util\Filesystem;
 
 if (!defined('_root')) {
@@ -141,7 +144,7 @@ $extensions = array(
     'dll' => 'executable',
 );
 
-Sunlight\Extend::call('admin.fman.extensions', array(
+Extend::call('admin.fman.extensions', array(
     'extensions' => &$extensions,
 ));
 
@@ -385,7 +388,7 @@ if ($continue) {
                             } else {
                                 $ext = "";
                             }
-                            if (file_exists($dir . $val) && !is_dir($dir . $val) && in_array($ext, Sunlight\Core::$imageExt)) {
+                            if (file_exists($dir . $val) && !is_dir($dir . $val) && in_array($ext, Core::$imageExt)) {
                                 $sql .= "(" . $galid . "," . ($smallestord + $counter) . ",'','','" . substr($dir . $val, 3) . "'),";
                                 ++$counter;
                             }
@@ -550,7 +553,7 @@ if ($continue) {
                 $counter = 0;
                 foreach ($images_load as $images_load_image) {
                     $images_load_image = pathinfo(base64_decode($images_load_image));
-                    if (isset($images_load_image['extension']) && in_array(strtolower($images_load_image['extension']), Sunlight\Core::$imageExt)) {
+                    if (isset($images_load_image['extension']) && in_array(strtolower($images_load_image['extension']), Core::$imageExt)) {
                         $images .= "<input type='hidden' name='f" . $counter . "' value='" . base64_encode($images_load_image['basename']) . "'>\n";
                         ++$counter;
                     }

@@ -1,5 +1,8 @@
 <?php
 
+use Sunlight\Core;
+use Sunlight\Database\Database as DB;
+
 if (!defined('_root')) {
     exit;
 }
@@ -22,7 +25,7 @@ function _HCM_sbox($id = null)
     if ($rcontinue) {
 
         $result = "
-    <div id='hcm_sbox_" . Sunlight\Core::$hcmUid . "' class='sbox'>
+    <div id='hcm_sbox_" . Core::$hcmUid . "' class='sbox'>
     <div class='sbox-content'>
     " . (($sboxdata['title'] != "") ? "<div class='sbox-title'>" . $sboxdata['title'] . "</div>" : '') . "<div class='sbox-item'" . (($sboxdata['title'] == "") ? " style='border-top:none;'" : '') . ">";
 
@@ -37,8 +40,8 @@ function _HCM_sbox($id = null)
 
             $result .= _formOutput(
                 array(
-                    'name' => 'hcm_sboxform_' . Sunlight\Core::$hcmUid,
-                    'action' => _link('system/script/post.php?_return=' . rawurlencode($GLOBALS['_index']['url']) . "#hcm_sbox_" . Sunlight\Core::$hcmUid),
+                    'name' => 'hcm_sboxform_' . Core::$hcmUid,
+                    'action' => _link('system/script/post.php?_return=' . rawurlencode($GLOBALS['_index']['url']) . "#hcm_sbox_" . Core::$hcmUid),
                 ),
                 $inputs
             );

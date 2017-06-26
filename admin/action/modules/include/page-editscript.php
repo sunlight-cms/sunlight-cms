@@ -1,9 +1,10 @@
 <?php
 
+use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
-use Sunlight\Plugin\TemplateService;
 use Sunlight\Page\PageManager;
 use Sunlight\Page\PageManipulator;
+use Sunlight\Plugin\TemplateService;
 
 if (!defined('_root')) {
     exit;

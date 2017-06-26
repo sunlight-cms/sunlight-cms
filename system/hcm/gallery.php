@@ -1,5 +1,7 @@
 <?php
 
+use Sunlight\Core;
+
 if (!defined('_root')) {
     exit;
 }
@@ -40,7 +42,7 @@ function _HCM_gallery($cesta = "", $rozmery = null, $strankovani = null, $lightb
             } else {
                 $ext = "";
             }
-            if (is_dir($item) || $item == "." || $item == ".." || !in_array($ext, Sunlight\Core::$imageExt)) {
+            if (is_dir($item) || $item == "." || $item == ".." || !in_array($ext, Core::$imageExt)) {
                 continue;
             }
             $items[] = $item;
@@ -51,11 +53,11 @@ function _HCM_gallery($cesta = "", $rozmery = null, $strankovani = null, $lightb
         // priprava strankovani
         if ($strankovat) {
             $count = count($items);
-            $paging = _resultPaging($_index['url'], $strankovani, $count, "", "#hcm_gal" . Sunlight\Core::$hcmUid, "hcm_gal" . Sunlight\Core::$hcmUid . "p");
+            $paging = _resultPaging($_index['url'], $strankovani, $count, "", "#hcm_gal" . Core::$hcmUid, "hcm_gal" . Core::$hcmUid . "p");
         }
 
         // vypis
-        $result = "<div id='hcm_gal" . Sunlight\Core::$hcmUid . "' class='gallery'>\n";
+        $result = "<div id='hcm_gal" . Core::$hcmUid . "' class='gallery'>\n";
         $counter = 0;
         foreach ($items as $item) {
             if ($strankovat && $counter > $paging['last']) {
@@ -63,7 +65,7 @@ function _HCM_gallery($cesta = "", $rozmery = null, $strankovani = null, $lightb
             }
             if (!$strankovat || ($strankovat && _resultPagingIsItemInRange($paging, $counter))) {
                 $thumb = _pictureThumb($cesta . $item, $resize_opts);
-                $result .= "<a href='" . _e(_linkFile($cesta . $item)) . "' target='_blank'" . ($lightbox ? " class='lightbox' data-gallery-group='lb_hcm" . Sunlight\Core::$hcmUid . "'" : '') . "><img src='" . _e(_linkFile($thumb)) . "' alt='" . _e($item) . "'></a>\n";
+                $result .= "<a href='" . _e(_linkFile($cesta . $item)) . "' target='_blank'" . ($lightbox ? " class='lightbox' data-gallery-group='lb_hcm" . Core::$hcmUid . "'" : '') . "><img src='" . _e(_linkFile($thumb)) . "' alt='" . _e($item) . "'></a>\n";
             }
             $counter++;
         }

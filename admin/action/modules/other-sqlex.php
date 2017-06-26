@@ -1,5 +1,8 @@
 <?php
 
+use Sunlight\Database\Database as DB;
+use Sunlight\Database\SqlReader;
+
 if (!defined('_root')) {
     exit;
 }
@@ -48,7 +51,7 @@ $output .= '
 
 /* --- vysledek --- */
 
-$queries = Sunlight\Database\SqlReader::fromString($sql)->read();
+$queries = SqlReader::fromString($sql)->read();
 if (!empty($queries)) {
 
     // zpracovat dotazy

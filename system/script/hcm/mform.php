@@ -1,7 +1,10 @@
 <?php
 
+use Sunlight\Core;
+use Sunlight\Util\Url;
+
 require '../../bootstrap.php';
-Sunlight\Core::init('../../../', array(
+Core::init('../../../', array(
     'content_type' => 'text/plain; charset=UTF-8',
 ));
 
@@ -55,7 +58,7 @@ if (_xsrfCheck()) {
             $info_ip .= ' (' . _loginname . ')';
         }
         $text .= "\n\n" . str_repeat('-', 16) . "\n" . _lang('hcm.mailform.info', array(
-            '*domain*' => Sunlight\Util\Url::base()->getFullHost(),
+            '*domain*' => Url::base()->getFullHost(),
             '*time*' => _formatTime(time()),
             '*ip*' => $info_ip,
             '*sender*' => $sender,

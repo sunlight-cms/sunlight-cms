@@ -1,5 +1,8 @@
 <?php
 
+use Sunlight\Database\Database as DB;
+use Sunlight\Util\Math;
+
 if (!defined('_root')) {
     exit;
 }
@@ -34,7 +37,7 @@ if (isset($_POST['type']) && _priv_admingroups) {
                         continue 2;
 
                     case "level":
-                        $val = Sunlight\Util\Math::range($val, 0, min(_priv_level - 1, _priv_max_assignable_level));
+                        $val = Math::range($val, 0, min(_priv_level - 1, _priv_max_assignable_level));
                         break;
                         
                     case "title":

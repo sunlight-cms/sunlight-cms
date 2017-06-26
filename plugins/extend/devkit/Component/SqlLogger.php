@@ -2,8 +2,6 @@
 
 namespace SunlightExtend\Devkit\Component;
 
-use Kuria\Error\Screen\WebErrorScreen;
-
 /**
  * Devkit SQL logger
  *

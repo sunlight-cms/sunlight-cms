@@ -1,10 +1,12 @@
 <?php
 
 use Sunlight\Core;
+use Sunlight\Database\Database as DB;
+use Sunlight\Database\SimpleTreeFilter;
 use Sunlight\Extend;
 use Sunlight\Page\PageManager;
+use Sunlight\Plugin\TemplatePlugin;
 use Sunlight\Plugin\TemplateService;
-use Sunlight\Database\SimpleTreeFilter;
 
 /**
  * Vykreslit menu

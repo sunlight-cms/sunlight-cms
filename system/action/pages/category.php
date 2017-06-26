@@ -1,5 +1,8 @@
 <?php
 
+use Sunlight\Database\Database as DB;
+use Sunlight\Extend;
+
 if (!defined('_root')) {
     exit;
 }
@@ -39,11 +42,11 @@ $_index['title'] = $_page['title'];
 $_index['rsslink'] = _linkRSS($id, _rss_latest_articles, false);
 
 // obsah
-Sunlight\Extend::call('page.category.content.before', $extend_args);
+Extend::call('page.category.content.before', $extend_args);
 if ($_page['content'] != '') {
     $output .= _parseHCM($_page['content']) . "\n\n<div class='hr category-hr'><hr></div>\n\n";
 }
-Sunlight\Extend::call('page.category.content.after', $extend_args);
+Extend::call('page.category.content.after', $extend_args);
 
 // vypis clanku
 list($art_joins, $art_cond, $art_count) = _articleFilter('art', array($id), null, true);
@@ -56,10 +59,10 @@ if (DB::size($arts) != 0) {
         $output .= $paging['paging'];
     }
     while ($art = DB::row($arts)) {
-        $extend_item_args = Sunlight\Extend::args($output, array('page' => $_page, 'item-query' => &$art));
-        Sunlight\Extend::call('page.category.item.before', $extend_item_args);
+        $extend_item_args = Extend::args($output, array('page' => $_page, 'item-query' => &$art));
+        Extend::call('page.category.item.before', $extend_item_args);
         $output .= _articlePreview($art, $userQuery, $_page['var3'] == 1, true, $art['comment_count']);
-        Sunlight\Extend::call('page.category.item.after', $extend_item_args);
+        Extend::call('page.category.item.after', $extend_item_args);
     }
     if (_showPagingAtBottom()) {
         $output .= $paging['paging'];

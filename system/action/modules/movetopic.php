@@ -1,5 +1,9 @@
 <?php
 
+use Sunlight\Database\Database as DB;
+use Sunlight\Database\SimpleTreeFilter;
+use Sunlight\Page\PageManager;
+
 if (!defined('_root')) {
     exit;
 }
@@ -26,7 +30,7 @@ if ($query !== false) {
     return;
 }
 
-$forums = Sunlight\Page\PageManager::getFlatTree(null, null, new Sunlight\Database\SimpleTreeFilter(array('type' => _page_forum)));
+$forums = PageManager::getFlatTree(null, null, new SimpleTreeFilter(array('type' => _page_forum)));
 
 /* ---  ulozeni  --- */
 

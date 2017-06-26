@@ -1,5 +1,8 @@
 <?php
 
+use Sunlight\Database\Database as DB;
+use Sunlight\Util\Url;
+
 if (!defined('_root')) {
     exit;
 }
@@ -60,7 +63,7 @@ if (isset($_POST['text'])) {
             $item_total = DB::size($query);
 
             // poznamka na konci zpravy
-            $notice = _lang('admin.other.massemail.emailnotice', array('*domain*' => Sunlight\Util\Url::base()->getFullHost()));
+            $notice = _lang('admin.other.massemail.emailnotice', array('*domain*' => Url::base()->getFullHost()));
             if ($ctype == 1) {
                 $notice = "\n\n\n-------------------------------------\n" . $notice;
             } else {
