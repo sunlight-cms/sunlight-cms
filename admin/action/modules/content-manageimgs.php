@@ -1,5 +1,9 @@
 <?php
 
+use Sunlight\Core;
+use Sunlight\Database\Database as DB;
+use Sunlight\Extend;
+
 if (!defined('_root')) {
     exit;
 }
@@ -237,7 +241,7 @@ if (isset($_POST['xaction']) && $continue) {
                             'y' => _galuploadresize_h,
                         ),
                     );
-                    Sunlight\Extend::call('admin.gallery.picture', array('opts' => &$picOpts));
+                    Extend::call('admin.gallery.picture', array('opts' => &$picOpts));
 
                     // process
                     $picUid = _pictureProcess($picOpts, $picError, $picFormat);
@@ -323,7 +327,7 @@ if ($continue) {
         <input type='submit' value='" . _lang('admin.content.manageimgs.upload.submit') . "'>
         <label><input type='checkbox' value='1' name='moveords' checked> " . _lang('admin.content.manageimgs.moveords') . "</label>"
         . _renderUploadLimit()
-        . ' <small>' . _lang('global.uploadext') . ": <em>" . implode(', ', Sunlight\Core::$imageExt) . "</em></small>
+        . ' <small>' . _lang('global.uploadext') . ": <em>" . implode(', ', Core::$imageExt) . "</em></small>
     </p>
 " . _xsrfProtect() . "</form>
 </fieldset>

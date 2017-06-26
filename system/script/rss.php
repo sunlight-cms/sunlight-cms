@@ -1,7 +1,10 @@
 <?php
 
+use Sunlight\Core;
+use Sunlight\Database\Database as DB;
+
 require '../bootstrap.php';
-Sunlight\Core::init('../../', array(
+Core::init('../../', array(
     'content_type' => false,
 ));
 
@@ -32,7 +35,7 @@ if (!_login) {
 $image_url = $template->getWebPath(true) . '/images/system/rss-logo.gif';
 $image_w = 80;
 $image_h = 80;
-$feed_url = Sunlight\Core::$url;
+$feed_url = Core::$url;
 $feed_descr = _description;
 
 // promenne

@@ -1,7 +1,9 @@
 <?php
 
+use Sunlight\Core;
+
 require '../../system/bootstrap.php';
-Sunlight\Core::init('../../', array(
+Core::init('../../', array(
     'env' => 'admin',
 ));
 
@@ -55,7 +57,7 @@ if ($process) {
     try {
         eval($code);
     } catch (\Exception $e) {
-        echo Sunlight\Core::renderException($e);
+        echo Core::renderException($e);
         $html = true;
     }
 

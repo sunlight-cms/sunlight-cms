@@ -1,6 +1,7 @@
 <?php
 
 use Sunlight\Comment\CommentService;
+use Sunlight\Extend;
 
 if (!defined('_root')) {
     exit;
@@ -10,9 +11,9 @@ if (!defined('_root')) {
 $_index['title'] = $_page['title'];
 
 // obsah
-Sunlight\Extend::call('page.section.content.before', $extend_args);
+Extend::call('page.section.content.before', $extend_args);
 $output .= _parseHCM($_page['content']);
-Sunlight\Extend::call('page.section.content.after', $extend_args);
+Extend::call('page.section.content.after', $extend_args);
 
 // komentare
 if ($_page['var1'] == 1 && _comments) {

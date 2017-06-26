@@ -1,5 +1,8 @@
 <?php
 
+use Sunlight\Database\Database as DB;
+use Sunlight\Extend;
+
 if (!defined('_root')) {
     exit;
 }
@@ -28,7 +31,7 @@ if (isset($_POST['confirm'])) {
     DB::delete(_articles_table, 'id=' . $id);
 
     // udalost
-    Sunlight\Extend::call('admin.article.delete', array('id' => $id));
+    Extend::call('admin.article.delete', array('id' => $id));
 
     // presmerovani
     $admin_redirect_to = 'index.php?p=content-articles-list&cat=' . $returnid . '&page=' . $returnpage . '&artdeleted';

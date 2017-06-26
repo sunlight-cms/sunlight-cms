@@ -1,5 +1,8 @@
 <?php
 
+use Sunlight\Core;
+use Sunlight\Database\Database as DB;
+
 if (!defined('_root')) {
     exit;
 }
@@ -45,7 +48,7 @@ function _HCM_galimg($galerie = "", $typ = 1, $rozmery = null, $limit = null)
     // vypis obrazku
     $rimgs = DB::query("SELECT id,title,prev,full FROM " . _images_table . " WHERE " . $galerie . " ORDER BY " . $razeni . " LIMIT " . $limit);
     while($rimg = DB::row($rimgs)) {
-        $result .= _galleryImage($rimg, "hcm" . Sunlight\Core::$hcmUid, $x, $y);
+        $result .= _galleryImage($rimg, "hcm" . Core::$hcmUid, $x, $y);
     }
 
     return $result;

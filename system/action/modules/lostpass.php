@@ -1,5 +1,11 @@
 <?php
 
+use Sunlight\Core;
+use Sunlight\Database\Database as DB;
+use Sunlight\Util\Password;
+use Sunlight\Util\StringGenerator;
+use Sunlight\Util\Url;
+
 if (!defined('_root')) {
     exit;
 }
@@ -44,13 +50,13 @@ if (isset($_GET['user'], $_GET['hash'])) {
         }
 
         // vygenerovat heslo a odeslat na email
-        $newpass = Sunlight\Util\StringGenerator::generateHash(12);
+        $newpass = StringGenerator::generateHash(12);
 
         if (!_mail(
             $userdata['email'],
-            _lang('mod.lostpass.mail.subject', array('*domain*' => Sunlight\Util\Url::base()->getFullHost())),
+            _lang('mod.lostpass.mail.subject', array('*domain*' => Url::base()->getFullHost())),
             _lang('mod.lostpass.mail.text2', array(
-                '*domain*' => Sunlight\Util\Url::base()->getFullHost(),
+                '*domain*' => Url::base()->getFullHost(),
                 '*username*' =>  $userdata['username'],
                 '*newpass*' => $newpass,
                 '*date*' => _formatTime(time()),
@@ -63,7 +69,7 @@ if (isset($_GET['user'], $_GET['hash'])) {
 
         // zmenit heslo
         DB::update(_users_table, 'id=' . DB::val($userdata['id']), array(
-            'password' => Sunlight\Util\Password::create($newpass)->build(),
+            'password' => Password::create($newpass)->build(),
             'security_hash' => null,
             'security_hash_expires' => 0,
         ));
@@ -102,7 +108,7 @@ if (isset($_GET['user'], $_GET['hash'])) {
         }
 
         // vygenerovani hashe
-        $hash = hash_hmac('sha256', uniqid('', true), Sunlight\Core::$secret);
+        $hash = hash_hmac('sha256', uniqid('', true), Core::$secret);
         DB::update(_users_table, 'id=' . DB::val($userdata['id']), array(
             'security_hash' => $hash,
             'security_hash_expires' => time() + 3600,
@@ -113,9 +119,9 @@ if (isset($_GET['user'], $_GET['hash'])) {
 
         if (!_mail(
             $userdata['email'],
-            _lang('mod.lostpass.mail.subject', array('*domain*' => Sunlight\Util\Url::base()->getFullHost())),
+            _lang('mod.lostpass.mail.subject', array('*domain*' => Url::base()->getFullHost())),
             _lang('mod.lostpass.mail.text', array(
-                '*domain*' => Sunlight\Util\Url::base()->getFullHost(),
+                '*domain*' => Url::base()->getFullHost(),
                 '*username*' => $userdata['username'],
                 '*link*' => $link,
                 '*date*' => _formatTime(time()),

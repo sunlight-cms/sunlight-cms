@@ -1,5 +1,8 @@
 <?php
 
+use Sunlight\Core;
+use Sunlight\Database\Database as DB;
+
 if (!defined('_root')) {
     exit;
 }
@@ -31,7 +34,7 @@ function _HCM_poll($id = null)
         }
 
         if ($rallowvote) {
-            $ranswers_code = "<form action='" . _link('system/script/hcm/pvote.php?_return=' . rawurlencode($GLOBALS['_index']['url']) . "#hcm_poll_" . Sunlight\Core::$hcmUid) . "' method='post'>\n<input type='hidden' name='pid' value='" . $vpolldata['id'] . "'>";
+            $ranswers_code = "<form action='" . _link('system/script/hcm/pvote.php?_return=' . rawurlencode($GLOBALS['_index']['url']) . "#hcm_poll_" . Core::$hcmUid) . "' method='post'>\n<input type='hidden' name='pid' value='" . $vpolldata['id'] . "'>";
         } else {
             $ranswers_code = "";
         }
@@ -62,7 +65,7 @@ function _HCM_poll($id = null)
         }
 
         return "
-<div id='hcm_poll_" . Sunlight\Core::$hcmUid . "' class='poll'>
+<div id='hcm_poll_" . Core::$hcmUid . "' class='poll'>
 <div class='poll-content'>
 
 <div class='poll-question'>

@@ -2,7 +2,7 @@
 
 namespace Sunlight\Comment;
 
-use Sunlight\Database\Database;
+use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 
 class CommentService
@@ -423,7 +423,7 @@ class CommentService
         $sql .= " ORDER BY " . ($is_topic_list ? 'p.sticky DESC,' : '') . $ordercol . ' ' . $desc . $paging['sql_limit'];
 
         // query
-        $query = Database::query($sql);
+        $query = DB::query($sql);
         unset($sql);
 
         // load all items into an array
@@ -431,19 +431,19 @@ class CommentService
         if ($is_topic_list) {
             $item_ids_with_answers = array();
         }
-        while ($item = Database::row($query)) {
+        while ($item = DB::row($query)) {
             $items[$item['id']] = $item;
             if ($is_topic_list && $item['answer_count'] != 0) $item_ids_with_answers[] = $item['id'];
         }
 
         // free query
-        Database::free($query);
+        DB::free($query);
 
         if ($is_topic_list) {
             // last post (for topic lists)
             if (!empty($item_ids_with_answers)) {
-                $topicextra = Database::query("SELECT * FROM (SELECT p.id,p.xhome,p.author,p.guest," . $userQuery['column_list'] . " FROM " . _posts_table . " AS p " . $userQuery['joins'] . " WHERE p.type=" . _post_forum_topic . " AND p.home=" . $home . " AND p.xhome IN(" . implode(',', $item_ids_with_answers) . ") ORDER BY p.id DESC) AS replies GROUP BY xhome");
-                while ($item = Database::row($topicextra)) {
+                $topicextra = DB::query("SELECT * FROM (SELECT p.id,p.xhome,p.author,p.guest," . $userQuery['column_list'] . " FROM " . _posts_table . " AS p " . $userQuery['joins'] . " WHERE p.type=" . _post_forum_topic . " AND p.home=" . $home . " AND p.xhome IN(" . implode(',', $item_ids_with_answers) . ") ORDER BY p.id DESC) AS replies GROUP BY xhome");
+                while ($item = DB::row($topicextra)) {
                     if (!isset($items[$item['xhome']])) {
                         if (_dev) {
                             throw new \RuntimeException('Could not find parent post of reply #' . $item['id']);
@@ -455,15 +455,15 @@ class CommentService
             }
         } elseif (!empty($items)) {
             // answers (to comments)
-            $answers = Database::query("SELECT p.id,p.xhome,p.text,p.author,p.guest,p.time,p.ip," . $userQuery['column_list'] . " FROM " . _posts_table . " p " . $userQuery['joins'] . " WHERE p.type=" . $posttype . " AND p.home=" . $home . (isset($pluginflag) ? " AND p.flag=" . $pluginflag : '') . " AND p.xhome IN(" . implode(',', array_keys($items)) . ") ORDER BY p.id");
-            while ($item = Database::row($answers)) {
+            $answers = DB::query("SELECT p.id,p.xhome,p.text,p.author,p.guest,p.time,p.ip," . $userQuery['column_list'] . " FROM " . _posts_table . " p " . $userQuery['joins'] . " WHERE p.type=" . $posttype . " AND p.home=" . $home . (isset($pluginflag) ? " AND p.flag=" . $pluginflag : '') . " AND p.xhome IN(" . implode(',', array_keys($items)) . ") ORDER BY p.id");
+            while ($item = DB::row($answers)) {
                 if (!isset($items[$item['xhome']])) {
                     continue;
                 }
                 if (!isset($items[$item['xhome']]['_answers'])) $items[$item['xhome']]['_answers'] = array();
                 $items[$item['xhome']]['_answers'][] = $item;
             }
-            Database::free($answers);
+            DB::free($answers);
         }
 
         // vypis
@@ -620,10 +620,10 @@ class CommentService
 
                 // latest answers
                 $output .= "\n<div class='post-answer-list'>\n<h3>" . _lang('posts.forum.lastact') . "</h3>\n";
-                $query = Database::query("SELECT topic.id AS topic_id,topic.subject AS topic_subject,p.author,p.guest,p.time," . $userQuery['column_list'] . " FROM " . _posts_table . " AS p JOIN " . _posts_table . " AS topic ON(topic.type=" . _post_forum_topic . " AND topic.id=p.xhome) " . $userQuery['joins'] . " WHERE p.type=" . _post_forum_topic . " AND p.home=" . $home . " AND p.xhome!=-1 ORDER BY p.id DESC LIMIT " . _extratopicslimit);
-                if (Database::size($query) != 0) {
+                $query = DB::query("SELECT topic.id AS topic_id,topic.subject AS topic_subject,p.author,p.guest,p.time," . $userQuery['column_list'] . " FROM " . _posts_table . " AS p JOIN " . _posts_table . " AS topic ON(topic.type=" . _post_forum_topic . " AND topic.id=p.xhome) " . $userQuery['joins'] . " WHERE p.type=" . _post_forum_topic . " AND p.home=" . $home . " AND p.xhome!=-1 ORDER BY p.id DESC LIMIT " . _extratopicslimit);
+                if (DB::size($query) != 0) {
                     $output .= "<table class='topic-latest'>\n";
-                    while ($item = Database::row($query)) {
+                    while ($item = DB::row($query)) {
                         if ($item['guest'] == "") $author = _linkUserFromQuery($userQuery, $item);
                         else $author = "<span class='post-author-guest'>" . $item['guest'] . "</span>";
                         $output .= "<tr><td><a href='" . _linkTopic($item['topic_id'], $forum_slug) . "'>" . $item['topic_subject'] . "</a></td><td>" . $author . "</td><td>" . _formatTime($item['time'], 'post') . "</td></tr>\n";
@@ -668,9 +668,9 @@ class CommentService
 
         // delete or count
         if ($get_count) {
-            return Database::count(_posts_table, $cond);
+            return DB::count(_posts_table, $cond);
         }
 
-        Database::delete(_posts_table, $cond);
+        DB::delete(_posts_table, $cond);
     }
 }

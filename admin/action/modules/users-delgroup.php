@@ -1,5 +1,8 @@
 <?php
 
+use Sunlight\Core;
+use Sunlight\Database\Database as DB;
+
 if (!defined('_root')) {
     exit;
 }
@@ -40,7 +43,7 @@ if ($continue) {
 
         // zmena vychozi skupiny
         if (!$systemgroup && $id == _defaultgroup) {
-            \Sunlight\Core::updateSetting('defaultgroup', 3);
+            Core::updateSetting('defaultgroup', 3);
         }
 
         // smazani uzivatelu

@@ -1,5 +1,8 @@
 <?php
 
+use Sunlight\Admin\PageLister;
+use Sunlight\Database\Database as DB;
+
 if (!defined('_root')) {
     exit;
 }
@@ -30,8 +33,8 @@ $output .= $message . "
 <form action='index.php?p=content-titles' method='post'>
 ";
 
-$output .= Sunlight\Admin\PageLister::render(array(
-    'mode' => Sunlight\Admin\PageLister::MODE_SINGLE_LEVEL,
+$output .= PageLister::render(array(
+    'mode' => PageLister::MODE_SINGLE_LEVEL,
     'links' => false,
     'actions' => false,
     'breadcrumbs' => false,

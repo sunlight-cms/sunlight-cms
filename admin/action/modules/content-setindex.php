@@ -1,5 +1,7 @@
 <?php
 
+use Sunlight\Core;
+
 if (!defined('_root')) {
     exit;
 }
@@ -11,7 +13,7 @@ $message = "";
 /* ---  akce  --- */
 
 if (isset($_POST['index'])) {
-    \Sunlight\Core::updateSetting('index_page_id', ($index_id = (int) _post('index')));
+    Core::updateSetting('index_page_id', ($index_id = (int) _post('index')));
     $message = _msg(_msg_ok, _lang('global.done'));
 
 } else {

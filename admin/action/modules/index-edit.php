@@ -1,5 +1,7 @@
 <?php
 
+use Sunlight\Core;
+
 if (!defined('_root')) {
     exit;
 }
@@ -7,14 +9,14 @@ if (!defined('_root')) {
 /* ---  zpracovani ulozeni  --- */
 
 if (isset($_POST['text'])) {
-    Sunlight\Core::updateSetting('admin_index_custom', trim(_post('text')));
-    Sunlight\Core::updateSetting('admin_index_custom_pos', (_post('pos') == 0) ? '0' : '1');
+    Core::updateSetting('admin_index_custom', trim(_post('text')));
+    Core::updateSetting('admin_index_custom_pos', (_post('pos') == 0) ? '0' : '1');
     $admin_redirect_to = 'index.php?p=index-edit&saved';
 
     return;
 }
 
-$admin_index_cfg = Sunlight\Core::loadSettings(array('admin_index_custom', 'admin_index_custom_pos'));
+$admin_index_cfg = Core::loadSettings(array('admin_index_custom', 'admin_index_custom_pos'));
 
 /* ---  vystup  --- */
 

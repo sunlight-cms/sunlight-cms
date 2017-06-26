@@ -1,8 +1,8 @@
 <?php
 
-use Sunlight\Message;
+use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
-use Sunlight\Database\Database;
+use Sunlight\Message;
 use Sunlight\Plugin\TemplateService;
 use Sunlight\Util\Math;
 
@@ -17,7 +17,7 @@ $id = _get('id');
 $new = $id === null;
 
 if (!$new) {
-    $box = Database::queryRow('SELECT * FROM ' . _boxes_table . ' WHERE id = ' . DB::val($id));
+    $box = DB::queryRow('SELECT * FROM ' . _boxes_table . ' WHERE id = ' . DB::val($id));
     $new = false;
 } else {
     $box = array(
@@ -101,7 +101,7 @@ if (isset($_POST['box_edit'])) do {
 
     // auto order
     if ($changeset['ord'] === '') {
-        $max_ord = Database::queryRow('SELECT MAX(ord) AS max_ord FROM ' . _boxes_table . ' WHERE template=' . Database::val($changeset['template']) . ' AND layout=' . Database::val($changeset['layout']));
+        $max_ord = DB::queryRow('SELECT MAX(ord) AS max_ord FROM ' . _boxes_table . ' WHERE template=' . DB::val($changeset['template']) . ' AND layout=' . DB::val($changeset['layout']));
 
         if ($max_ord && $max_ord['max_ord']) {
             $changeset['ord'] = $max_ord['max_ord'] + 1;
@@ -112,9 +112,9 @@ if (isset($_POST['box_edit'])) do {
 
     // save or create
     if (!$new) {
-        Database::update(_boxes_table, 'id=' . Database::val($id), $changeset);
+        DB::update(_boxes_table, 'id=' . DB::val($id), $changeset);
     } else {
-        $id = Database::insert(_boxes_table, $changeset, true);
+        $id = DB::insert(_boxes_table, $changeset, true);
     }
 
     // redirect to form

@@ -1,6 +1,8 @@
 <?php
 
 use Sunlight\Comment\CommentService;
+use Sunlight\Database\Database as DB;
+use Sunlight\Extend;
 
 if (!defined('_root')) {
     exit;
@@ -29,7 +31,7 @@ $_index['crumbs'][] = array(
 $continue = true;
 $extend_args['article'] = &$_article;
 
-Sunlight\Extend::call('article.before', Sunlight\Extend::args($output, array(
+Extend::call('article.before', Extend::args($output, array(
     'article' => &$_article,
     'continue' => &$continue,
     'page' => $_page,
@@ -73,9 +75,9 @@ if (isset($_article['picture_uid'])) {
 }
 
 //  perex
-Sunlight\Extend::call('article.perex.before', $extend_args);
+Extend::call('article.perex.before', $extend_args);
 $output .= "<div class='article-perex'>" . ($thumbnail !== null ? "<img class='article-perex-image' src='" . _e(_linkFile($thumbnail)) . "' alt='" . $_article['title'] . "'>" : '') . $_article['perex'] . "</div>\n";
-Sunlight\Extend::call('article.perex.after', $extend_args);
+Extend::call('article.perex.after', $extend_args);
 
 //  obsah
 $output .= "<div class='article-content'>\n" . _parseHCM($_article['content']) . "\n</div>\n";
@@ -162,7 +164,7 @@ if ($_article['rateon'] && _ratemode != 0 && _priv_artrate && _iplogCheck(_iplog
 }
 
 // sestaveni kodu
-Sunlight\Extend::call('article.infos', array('article' => $_article, 'infos' => &$infos));
+Extend::call('article.infos', array('article' => $_article, 'infos' => &$infos));
 
 if ($rateform !== null || !empty($infos)) {
     // zacatek tabulky
@@ -186,11 +188,11 @@ if ($rateform !== null || !empty($infos)) {
 }
 
 // komentare
-Sunlight\Extend::call('article.comments.before', $extend_args);
+Extend::call('article.comments.before', $extend_args);
 if ($_article['comments'] && _comments) {
     $output .= CommentService::render(CommentService::RENDER_ARTICLE_COMMENTS, $_article['id'], $_article['commentslocked']);
 }
-Sunlight\Extend::call('article.comments.after', $extend_args);
+Extend::call('article.comments.after', $extend_args);
 
 // zapocteni precteni
 if ($_article['confirmed'] && $_article['time'] <= time() && _iplogCheck(_iplog_article_read, $_article['id'])) {

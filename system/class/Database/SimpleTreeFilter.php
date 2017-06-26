@@ -2,6 +2,8 @@
 
 namespace Sunlight\Database;
 
+use Sunlight\Database\Database as DB;
+
 /**
  * Simple filter
  *
@@ -105,7 +107,7 @@ class SimpleTreeFilter implements TreeFilterInterface
                     '%%__node__%%.`%s`%s=%s',
                     $cond[0],
                     $cond[2] ? '!' : '',
-                    Database::val($cond[1])
+                    DB::val($cond[1])
                 );
             } else {
                 // null

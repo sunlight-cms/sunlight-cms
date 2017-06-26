@@ -1,5 +1,8 @@
 <?php
 
+use Sunlight\Database\Database as DB;
+use Sunlight\Extend;
+
 if (!defined('_root')) {
     exit;
 }
@@ -198,7 +201,7 @@ if ($search_query != '') {
         }
 
         // extend
-        Sunlight\Extend::call('mod.search.results', array(
+        Extend::call('mod.search.results', array(
             'results' => &$results,
             'query' => $search_query,
             'query_sql' => $search_query_sql,

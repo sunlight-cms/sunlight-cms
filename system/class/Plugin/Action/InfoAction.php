@@ -2,9 +2,9 @@
 
 namespace Sunlight\Plugin\Action;
 
+use Kuria\Debug\Dumper;
 use Sunlight\Action\ActionResult;
 use Sunlight\Plugin\PluginLoader;
-use Kuria\Debug\Dumper;
 
 /**
  * Show information about a plugin

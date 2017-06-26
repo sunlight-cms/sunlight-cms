@@ -2,11 +2,9 @@
 
 namespace Sunlight\Plugin;
 
-use Sunlight\Core;
 use Sunlight\Database\Database as DB;
 use Sunlight\Localization\LocalizationDictionary;
 use Sunlight\Localization\LocalizationDirectory;
-use Sunlight\Localization\LocalizationSubDictionary;
 
 class TemplatePlugin extends Plugin
 {

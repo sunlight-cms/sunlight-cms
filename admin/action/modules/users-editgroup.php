@@ -1,5 +1,10 @@
 <?php
 
+use Sunlight\Core;
+use Sunlight\Database\Database as DB;
+use Sunlight\Extend;
+use Sunlight\Util\Math;
+
 if (!defined('_root')) {
     exit;
 }
@@ -119,7 +124,7 @@ if ($continue) {
         ),
     );
 
-    Sunlight\Extend::call('admin.editgroup.rights', array(
+    Extend::call('admin.editgroup.rights', array(
         'rights' => &$rights_array,
         'unregistered_rights' => &$unregistered_useable,
     ));
@@ -180,7 +185,7 @@ if ($continue) {
 
         // uroven, blokovani
         if ($id > _group_guests) {
-            $changeset['level'] = Sunlight\Util\Math::range((int) _post('level'), 0, min(_priv_level, _priv_max_assignable_level));
+            $changeset['level'] = Math::range((int) _post('level'), 0, min(_priv_level, _priv_max_assignable_level));
         }
 
         // prava
@@ -202,7 +207,7 @@ if ($continue) {
         }
 
         // extend
-        Sunlight\Extend::call('admin.editgroup.save', array('changeset' => &$changeset));
+        Extend::call('admin.editgroup.save', array('changeset' => &$changeset));
 
         // ulozeni
         DB::update(_groups_table, 'id=' . $id, $changeset);
@@ -226,7 +231,7 @@ if ($continue) {
                 $file === '.'
                 || $file === '..'
                 || !is_file($icon_dir . '/' . $file)
-                || !in_array(strtolower(pathinfo($file, PATHINFO_EXTENSION)), Sunlight\Core::$imageExt, true)
+                || !in_array(strtolower(pathinfo($file, PATHINFO_EXTENSION)), Core::$imageExt, true)
             ) {
                 continue;
             }
@@ -274,7 +279,7 @@ if ($continue) {
 
   " . _msg(_msg_ok, _lang('admin.users.groups.dangernotice')) . "
   " . $rights . "
-  " . Sunlight\Extend::buffer('admin.editgroup.form') . "
+  " . Extend::buffer('admin.editgroup.form') . "
 
   <input type='submit' value='" . _lang('global.save') . "'> <small>" . _lang('admin.content.form.thisid') . " " . $id . "</small>
 

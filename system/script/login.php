@@ -1,7 +1,9 @@
 <?php
 
+use Sunlight\Core;
+
 require '../bootstrap.php';
-Sunlight\Core::init('../../', array(
+Core::init('../../', array(
     'session_regenerate' => true,
 ));
 

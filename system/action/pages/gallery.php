@@ -1,5 +1,8 @@
 <?php
 
+use Sunlight\Database\Database as DB;
+use Sunlight\Extend;
+
 if (!defined('_root')) {
     exit;
 }
@@ -22,9 +25,9 @@ if ($_page['var4'] === null) {
 $_index['title'] = $_page['title'];
 
 // obsah
-Sunlight\Extend::call('page.gallery.content.before', $extend_args);
+Extend::call('page.gallery.content.before', $extend_args);
 if ($_page['content'] != "") $output .= _parseHCM($_page['content']) . "\n\n<div class='hr gallery-hr'><hr></div>\n\n";
-Sunlight\Extend::call('page.gallery.content.after', $extend_args);
+Extend::call('page.gallery.content.after', $extend_args);
 
 // obrazky
 $paging = _resultPaging($_index['url'], $_page['var2'], _images_table, "home=" . $id);

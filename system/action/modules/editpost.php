@@ -1,5 +1,9 @@
 <?php
 
+use Sunlight\Core;
+use Sunlight\Database\Database as DB;
+use Sunlight\Extend;
+
 if (!defined('_root')) {
     exit;
 }
@@ -22,7 +26,7 @@ $query = DB::queryRow("SELECT " . $columns . " FROM " . _posts_table . " post " 
 if ($query !== false) {
     if (_postAccess($userQuery, $query)) {
         $bbcode = true;
-        Sunlight\Extend::call('mod.editpost.backlink', array('backlink' => &$_index['backlink'], 'post' => $query));
+        Extend::call('mod.editpost.backlink', array('backlink' => &$_index['backlink'], 'post' => $query));
 
         if ($_index['backlink'] === null) {
             list($url) = _linkPost($query, false);
@@ -68,7 +72,7 @@ if ($query !== false) {
                     }
                     break;
                 default:
-                    $_index['backlink'] = Sunlight\Core::$url;
+                    $_index['backlink'] = Core::$url;
                     break;
             }
         }
@@ -119,7 +123,7 @@ if (isset($_POST['text'])) {
 
         // ulozeni
         if ($text != "") {
-            Sunlight\Extend::call('posts.edit', array(
+            Extend::call('posts.edit', array(
                 'id' => $id,
                 'post' => $query,
                 'message' => &$message,
@@ -146,7 +150,7 @@ if (isset($_POST['text'])) {
         /* -  odstraneni  - */
         if ($query['type'] != _post_pm || $query['xhome'] != -1) {
 
-            Sunlight\Extend::call('posts.delete', array(
+            Extend::call('posts.delete', array(
                 'id' => $id,
                 'post' => $query,
             ));

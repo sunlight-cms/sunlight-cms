@@ -1,10 +1,14 @@
 <?php
 
+use Sunlight\Database\Database as DB;
+use Sunlight\Page\PageManager;
+use Sunlight\Page\PageManipulator;
+
 if (!defined('_root')) {
     exit;
 }
 
-$type_array = Sunlight\Page\PageManager::getTypes();
+$type_array = PageManager::getTypes();
 
 /* ---  priprava promennych  --- */
 
@@ -23,7 +27,7 @@ if ($continue) {
 
     // opravneni k mazani podstranek = pravo na vsechny typy
     $recursive = true;
-    foreach (Sunlight\Page\PageManager::getTypes() as $type) {
+    foreach (PageManager::getTypes() as $type) {
         if (!_userHasPriv('admin' . $type)) {
             $recursive = false;
             break;
@@ -35,7 +39,7 @@ if ($continue) {
 
         // smazani
         $error = null;
-        if (!Sunlight\Page\PageManipulator::delete($query, $recursive, $error)) {
+        if (!PageManipulator::delete($query, $recursive, $error)) {
             // selhani
             $output .= _msg(_msg_err, $error);
 
@@ -52,7 +56,7 @@ if ($continue) {
     /* ---  vystup  --- */
 
     // pole souvisejicich polozek
-    $content_array = Sunlight\Page\PageManipulator::listDependencies($query, $recursive);
+    $content_array = PageManipulator::listDependencies($query, $recursive);
 
     $output .= "
     <p class='bborder'>" . _lang('admin.content.delete.p') . "</p>

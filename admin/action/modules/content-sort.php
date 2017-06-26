@@ -1,5 +1,7 @@
 <?php
 
+use Sunlight\Admin\PageLister;
+
 if (!defined('_root')) {
     exit;
 }
@@ -7,8 +9,8 @@ if (!defined('_root')) {
 
 $output .= "<p class='bborder'>" . _lang('admin.content.sort.p') . "</p>";
 
-$output .= Sunlight\Admin\PageLister::render(array(
-    'mode' => Sunlight\Admin\PageLister::MODE_SINGLE_LEVEL,
+$output .= PageLister::render(array(
+    'mode' => PageLister::MODE_SINGLE_LEVEL,
     'sortable' => true,
     'actions' => false,
     'type' => true,

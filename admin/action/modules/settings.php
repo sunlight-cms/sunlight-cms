@@ -1,5 +1,11 @@
 <?php
 
+use Sunlight\Admin\PageLister;
+use Sunlight\Core;
+use Sunlight\Database\Database as DB;
+use Sunlight\Extend;
+use Sunlight\Plugin\PluginManager;
+
 if (!defined('_root')) {
     exit;
 }
@@ -49,10 +55,10 @@ for ($x = 1; $x < 4; ++$x) {
 $editable_settings = array(
     'main' => array(
         'items' => array(
-            array('name' => 'default_template', 'choices' => Sunlight\Core::$pluginManager->choices(Sunlight\Plugin\PluginManager::TEMPLATE)),
+            array('name' => 'default_template', 'choices' => Core::$pluginManager->choices(PluginManager::TEMPLATE)),
             array('name' => 'time_format', 'input_class' => 'inputsmall'),
             array('name' => 'cacheid', 'input_class' => 'inputsmall'),
-            array('name' => 'language', 'choices' => Sunlight\Core::$pluginManager->choices(Sunlight\Plugin\PluginManager::LANGUAGE), 'reload_on_update' => true),
+            array('name' => 'language', 'choices' => Core::$pluginManager->choices(PluginManager::LANGUAGE), 'reload_on_update' => true),
             array('name' => 'language_allowcustom'),
             array('name' => 'notpublicsite'),
             array('name' => 'proxy_mode', 'help_attrs' => array('*ip*' => _userip, '*link*' => 'https://sunlight-cms.org/resource/ip-compare?with=' . rawurlencode(_userip))),
@@ -77,8 +83,8 @@ $editable_settings = array(
             array('name' => 'adminscheme', 'choices' => $adminscheme_choices, 'reload_on_update' => true),
             array('name' => 'adminscheme_mode', 'choices' => $adminscheme_mode_choices, 'reload_on_update' => true),
             array('name' => 'adminpagelist_mode', 'choices' => array(
-                Sunlight\Admin\PageLister::MODE_FULL_TREE => mb_strtolower(_lang('admin.content.mode.tree')),
-                Sunlight\Admin\PageLister::MODE_SINGLE_LEVEL => mb_strtolower(_lang('admin.content.mode.single')),
+                PageLister::MODE_FULL_TREE => mb_strtolower(_lang('admin.content.mode.tree')),
+                PageLister::MODE_SINGLE_LEVEL => mb_strtolower(_lang('admin.content.mode.single')),
             )),
         ),
     ),
@@ -177,7 +183,7 @@ $editable_settings = array(
 );
 
 // extend
-Sunlight\Extend::call('admin.settings', array(
+Extend::call('admin.settings', array(
     'editable' => &$editable_settings,
     'current' => &$settings,
 ));
@@ -246,7 +252,7 @@ if (!empty($_POST)) {
 
             // update
             if ($value != $settings[$item['name']]['val']) {
-                Sunlight\Core::updateSetting($item['name'], $value);
+                Core::updateSetting($item['name'], $value);
                 $settings[$item['name']]['val'] = $value;
 
                 if (isset($item['reload_on_update']) && $item['reload_on_update']) {
@@ -266,7 +272,7 @@ if (!empty($_POST)) {
         $admin_redirect_to = 'index.php?p=settings&saved';
     }
     if ($forceInstallCheck) {
-        Sunlight\Core::updateSetting('install_check', 1);
+        Core::updateSetting('install_check', 1);
     }
 }
 

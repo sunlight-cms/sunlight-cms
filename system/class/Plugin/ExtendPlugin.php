@@ -5,7 +5,6 @@ namespace Sunlight\Plugin;
 use Sunlight\Core;
 use Sunlight\Extend;
 use Sunlight\Localization\LocalizationDirectory;
-use Sunlight\Localization\LocalizationSubDictionary;
 
 class ExtendPlugin extends Plugin
 {

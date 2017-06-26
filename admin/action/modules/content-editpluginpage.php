@@ -1,5 +1,8 @@
 <?php
 
+use Sunlight\Extend;
+use Sunlight\Page\PageManager;
+
 if (!defined('_root')) {
     exit;
 }
@@ -15,7 +18,7 @@ if (!$continue) {
 }
 
 // nacist typy pluginu
-$ppages = Sunlight\Page\PageManager::getPluginTypes();
+$ppages = PageManager::getPluginTypes();
 
 // overit dostupnost pluginu
 if (!isset($ppages[$type_idt])) {
@@ -31,7 +34,7 @@ $custom_save_array = array();
 
 // udalost pripravy editace
 $script = null;
-Sunlight\Extend::call('ppage.' . $type_idt . '.edit', Sunlight\Extend::args($output, array(
+Extend::call('ppage.' . $type_idt . '.edit', Extend::args($output, array(
     'page' => $query,
     'new' => $new,
 )));

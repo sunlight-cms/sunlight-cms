@@ -1,5 +1,11 @@
 <?php
 
+use Sunlight\Admin\PageLister;
+use Sunlight\Database\Database as DB;
+use Sunlight\Extend;
+use Sunlight\Page\PageManager;
+use Sunlight\Page\PageManipulator;
+
 if (!defined('_root')) {
     exit;
 }
@@ -22,8 +28,8 @@ $editscript_enable_access = true;
 $editscript_extra_row = '';
 $editscript_extra_row2 = '';
 $editscript_extra = '';
-$type_array = Sunlight\Page\PageManager::getTypes();
-$plugin_type_array = Sunlight\Page\PageManager::getPluginTypes();
+$type_array = PageManager::getTypes();
+$plugin_type_array = PageManager::getPluginTypes();
 
 if (isset($_GET['id'])) {
     $id = (int) _get('id');
@@ -61,7 +67,7 @@ if (isset($_GET['id'])) {
     }
 
     /* ---  vychozi data pro novou polozku --- */
-    $default_parent = Sunlight\Admin\PageLister::getConfig('current_page');
+    $default_parent = PageLister::getConfig('current_page');
 
     if ($type == _page_plugin) {
         $default_title = $plugin_type_array[$type_idt];
@@ -78,9 +84,9 @@ if (isset($_GET['id'])) {
         'ord' => null,
     );
 
-    $query += Sunlight\Page\PageManipulator::getInitialData($type, $type_idt);
+    $query += PageManipulator::getInitialData($type, $type_idt);
 }
 
 if ($continue) {
-    Sunlight\Extend::call('admin.root.editscript');
+    Extend::call('admin.root.editscript');
 }

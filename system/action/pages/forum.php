@@ -1,6 +1,7 @@
 <?php
 
 use Sunlight\Comment\CommentService;
+use Sunlight\Extend;
 
 if (!defined('_root')) {
     exit;
@@ -24,11 +25,11 @@ $_index['title'] = $_page['title'];
 $_index['rsslink'] = _linkRSS($id, _rss_latest_topics, false);
 
 // obsah
-Sunlight\Extend::call('page.forum.content.before', $extend_args);
+Extend::call('page.forum.content.before', $extend_args);
 if ($_page['content'] != "") {
     $output .= _parseHCM($_page['content']);
 }
-Sunlight\Extend::call('page.forum.content.after', $extend_args);
+Extend::call('page.forum.content.after', $extend_args);
 
 // temata
 $output .= CommentService::render(CommentService::RENDER_FORUM_TOPIC_LIST, $id, array(

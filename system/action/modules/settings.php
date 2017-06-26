@@ -1,7 +1,10 @@
 <?php
 
 use Sunlight\Core;
+use Sunlight\Database\Database as DB;
+use Sunlight\Extend;
 use Sunlight\Plugin\PluginManager;
+use Sunlight\Util\Password;
 
 if (!defined('_root')) {
     exit;
@@ -15,7 +18,7 @@ if (!_login) {
 /* ---  priprava promennych  --- */
 
 $message = "";
-$userdata = Sunlight\Core::$userData;
+$userdata = Core::$userData;
 
 // cesta k avataru
 $avatar_path = _getAvatar($userdata, array('get_url' => true, 'extend' => false));
@@ -28,7 +31,7 @@ if (isset($_POST['username'])) {
 
     // smazani vlastniho uctu
     if (_priv_selfremove && _checkboxLoad('selfremove')) {
-        if (Sunlight\Util\Password::load($userdata['password'])->match(_post('selfremove-confirm'))) {
+        if (Password::load($userdata['password'])->match(_post('selfremove-confirm'))) {
             if (_loginid != 0) {
                 _deleteUser(_loginid);
                 $_SESSION = array();
@@ -88,7 +91,7 @@ if (isset($_POST['username'])) {
         if ($email != _loginemail) {
             if (_post('currentpassword') === '') {
                 $errors[] = _lang('mod.settings.error.emailchangenopass');
-            } elseif (!Sunlight\Util\Password::load($userdata['password'])->match(_post('currentpassword'))) {
+            } elseif (!Password::load($userdata['password'])->match(_post('currentpassword'))) {
                 $errors[] = _lang('mod.settings.error.badcurrentpass');
             }
             if (DB::count(_users_table, 'email=' . DB::val($email) . ' AND id!=' . _loginid) !== 0) {
@@ -150,11 +153,11 @@ if (isset($_POST['username'])) {
     if (_post('newpassword') != "" || _post('newpassword-confirm') != "") {
         $newpassword = _post('newpassword');
         $newpassword_confirm = _post('newpassword-confirm');
-        if (Sunlight\Util\Password::load($userdata['password'])->match(_post('currentpassword'))) {
+        if (Password::load($userdata['password'])->match(_post('currentpassword'))) {
             if ($newpassword == $newpassword_confirm) {
                 if ($newpassword != "") {
                     $passwordchange = true;
-                    $newpassword = Sunlight\Util\Password::create($newpassword)->build();
+                    $newpassword = Password::create($newpassword)->build();
                 } else {
                     $errors[] = _lang('mod.settings.error.badnewpass');
                 }
@@ -201,7 +204,7 @@ if (isset($_POST['username'])) {
     }
 
     // extend
-    Sunlight\Extend::call('mod.settings.submit', array(
+    Extend::call('mod.settings.submit', array(
         'changeset' => &$changeset,
         'current' => $userdata,
         'errors' => &$errors,
@@ -216,14 +219,14 @@ if (isset($_POST['username'])) {
         }
 
         // extend
-        Sunlight\Extend::call('mod.settings.save', array(
+        Extend::call('mod.settings.save', array(
             'changeset' => &$changeset,
             'current' => $userdata,
         ));
 
         // update
         DB::update(_users_table, 'id=' . _loginid, $changeset);
-        Sunlight\Extend::call('user.edit', array('id' => _loginid, 'username' => $username, 'email' => $email));
+        Extend::call('user.edit', array('id' => _loginid, 'username' => $username, 'email' => $email));
         $_index['redirect_to'] = _linkModule('settings', 'saved', false, true);
 
         return;
@@ -328,14 +331,14 @@ $output .= "
   </table>
   </fieldset>
 
-  " . Sunlight\Extend::buffer('mod.settings.form') . "
+  " . Extend::buffer('mod.settings.form') . "
 
   <fieldset>
   <legend>" . _lang('mod.settings.info') . "</legend>
 
   <table class='profiletable'>
   
-   " . Sunlight\Extend::buffer('mod.settings.form.info') . "
+   " . Extend::buffer('mod.settings.form.info') . "
 
   <tr class='valign-top'>
   <th>" . _lang('global.note') . "</th>
@@ -355,7 +358,7 @@ if (_uploadavatar) {
     $output .= "
   <fieldset>
   <legend>" . _lang('mod.settings.avatar') . "</legend>
-  " . Sunlight\Extend::buffer('mod.settings.avatar', array('user' => $userdata)) . "
+  " . Extend::buffer('mod.settings.avatar', array('user' => $userdata)) . "
   <p><strong>" . _lang('mod.settings.avatar.upload') . ":</strong> <input type='file' name='avatar'></p>
     <table>
     <tr class='valign-top'>
