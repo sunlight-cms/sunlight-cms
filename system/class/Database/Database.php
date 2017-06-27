@@ -563,7 +563,7 @@ class Database
      *
      * Priklad:
      *
-     * DB::insertMulti('tabulka', array(
+     * Database::insertMulti('tabulka', array(
      *      array('jmeno' => 'Jan', 'prijmeni' => 'Novak'),
      *      array('jmeno' => 'Pepa', 'prijmeni' => 'Zdepa'),
      * ));
@@ -679,7 +679,7 @@ class Database
     /**
      * Aktualizovat radky v databazi dle mapy zmen pro kazdy radek
      *
-     * Pro popis formatu mapy, viz {@see DB::changesetMapToList}
+     * Pro popis formatu mapy, viz {@see Database::changesetMapToList}
      *
      * @param string $table        nazev tabulky s prefixem
      * @param string $idColumn     nazev sloupce, ktery obsahuje identifikator
