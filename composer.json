@@ -13,7 +13,10 @@
         "composer/semver": "^1.4.0"
     },
     "config": {
-        "vendor-dir": "system/vendor"
+        "vendor-dir": "system/vendor",
+        "platform": {
+            "php": "5.3.29"
+        }
     },
     "autoload": {
         "psr-4": {

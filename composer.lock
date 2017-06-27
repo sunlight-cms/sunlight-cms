@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "a91f481ba50b7d68a461f3d19bc40395",
+    "content-hash": "5b00ca3d82c7ee8fd3872d9ab451d64c",
     "packages": [
         {
             "name": "composer/semver",
@@ -121,16 +121,16 @@
         },
         {
             "name": "kuria/cache",
-            "version": "v1.0.0",
+            "version": "v1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kuria/cache.git",
-                "reference": "df920a6360313140838e40edc6d7ab16647d476d"
+                "reference": "121dd4b349fe7ef456e23dc8c51e1ac3cf092bcf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kuria/cache/zipball/df920a6360313140838e40edc6d7ab16647d476d",
-                "reference": "df920a6360313140838e40edc6d7ab16647d476d",
+                "url": "https://api.github.com/repos/kuria/cache/zipball/121dd4b349fe7ef456e23dc8c51e1ac3cf092bcf",
+                "reference": "121dd4b349fe7ef456e23dc8c51e1ac3cf092bcf",
                 "shasum": ""
             },
             "require": {
@@ -163,20 +163,20 @@
                 "wincache",
                 "xcache"
             ],
-            "time": "2017-05-08T12:48:44+00:00"
+            "time": "2017-06-27T09:48:02+00:00"
         },
         {
             "name": "kuria/class-loader",
-            "version": "v1.0.0",
+            "version": "v1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kuria/class-loader.git",
-                "reference": "6f5648ab93459b3eed94603abad4cd3943f2077e"
+                "reference": "315d4a9237a0628db705311a74e56475e0ade992"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kuria/class-loader/zipball/6f5648ab93459b3eed94603abad4cd3943f2077e",
-                "reference": "6f5648ab93459b3eed94603abad4cd3943f2077e",
+                "url": "https://api.github.com/repos/kuria/class-loader/zipball/315d4a9237a0628db705311a74e56475e0ade992",
+                "reference": "315d4a9237a0628db705311a74e56475e0ade992",
                 "shasum": ""
             },
             "require": {
@@ -202,7 +202,7 @@
                 "class loader",
                 "psr-0"
             ],
-            "time": "2017-05-08T21:57:30+00:00"
+            "time": "2017-06-27T09:52:25+00:00"
         },
         {
             "name": "kuria/debug",
@@ -247,16 +247,16 @@
         },
         {
             "name": "kuria/error",
-            "version": "v1.0.0",
+            "version": "v1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kuria/error.git",
-                "reference": "3db6cd7541ab7543b6c4cb212448c175863c9c58"
+                "reference": "885ed5aa5a355f51a802256ea1ed85bc45e6787a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kuria/error/zipball/3db6cd7541ab7543b6c4cb212448c175863c9c58",
-                "reference": "3db6cd7541ab7543b6c4cb212448c175863c9c58",
+                "url": "https://api.github.com/repos/kuria/error/zipball/885ed5aa5a355f51a802256ea1ed85bc45e6787a",
+                "reference": "885ed5aa5a355f51a802256ea1ed85bc45e6787a",
                 "shasum": ""
             },
             "require": {
@@ -285,22 +285,23 @@
                 "error handler",
                 "exception",
                 "exception handler",
-                "fatal"
+                "fatal",
+                "stack-trace"
             ],
-            "time": "2017-05-23T17:43:21+00:00"
+            "time": "2017-06-27T09:56:21+00:00"
         },
         {
             "name": "kuria/event",
-            "version": "v1.0.0",
+            "version": "v1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kuria/event.git",
-                "reference": "a33582dd57cd969debcf5f9e667643e92237c9e4"
+                "reference": "38cfd92f0d38fe86e283a81d3d6cec24044edb7f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kuria/event/zipball/a33582dd57cd969debcf5f9e667643e92237c9e4",
-                "reference": "a33582dd57cd969debcf5f9e667643e92237c9e4",
+                "url": "https://api.github.com/repos/kuria/event/zipball/38cfd92f0d38fe86e283a81d3d6cec24044edb7f",
+                "reference": "38cfd92f0d38fe86e283a81d3d6cec24044edb7f",
                 "shasum": ""
             },
             "require": {
@@ -330,20 +331,20 @@
                 "observer",
                 "subscriber"
             ],
-            "time": "2017-05-08T00:08:18+00:00"
+            "time": "2017-06-27T09:57:49+00:00"
         },
         {
             "name": "kuria/parser",
-            "version": "v1.0.0",
+            "version": "v1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kuria/parser.git",
-                "reference": "ef6e307d6eecc05f8c353dbf60ff0472eaa3d30d"
+                "reference": "2b9d8fc0d390dd896f9f1035c779f7a8fe3e9f5d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kuria/parser/zipball/ef6e307d6eecc05f8c353dbf60ff0472eaa3d30d",
-                "reference": "ef6e307d6eecc05f8c353dbf60ff0472eaa3d30d",
+                "url": "https://api.github.com/repos/kuria/parser/zipball/2b9d8fc0d390dd896f9f1035c779f7a8fe3e9f5d",
+                "reference": "2b9d8fc0d390dd896f9f1035c779f7a8fe3e9f5d",
                 "shasum": ""
             },
             "require": {
@@ -368,7 +369,7 @@
                 "lexer",
                 "parser"
             ],
-            "time": "2017-05-08T22:43:37+00:00"
+            "time": "2017-06-27T09:43:04+00:00"
         }
     ],
     "packages-dev": [],
@@ -380,5 +381,8 @@
     "platform": {
         "php": ">=5.3.0"
     },
-    "platform-dev": []
+    "platform-dev": [],
+    "platform-overrides": {
+        "php": "5.3.29"
+    }
 }
