@@ -232,7 +232,9 @@ class ToolbarRenderer
 
         ?>
 <div class="devkit-section devkit-lang devkit-toggleable">
-    <span class="devkit-<?php echo $totalMissingLocalizations > 0 ? 'blood-badge' : 'leaf' ?>"><?php echo $totalMissingLocalizations ?></span>
+    <?php if ($totalMissingLocalizations > 0): ?><span class="devkit-blood-badge"><?php endif ?>
+        <?php echo $totalMissingLocalizations ?>
+    <?php if ($totalMissingLocalizations > 0): ?></span><?php endif ?>
 </div>
 
 <div class="devkit-content">
