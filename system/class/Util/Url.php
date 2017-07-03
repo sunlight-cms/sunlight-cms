@@ -1,6 +1,7 @@
 <?php
 
 namespace Sunlight\Util;
+
 use Sunlight\Core;
 
 /**

@@ -392,7 +392,7 @@ class Core
         // ensure correct encoding for mb_*() functions
         mb_internal_encoding('UTF-8');
 
-        // // make sure $_SERVER['REQUEST_URI'] is defined
+        // make sure $_SERVER['REQUEST_URI'] is defined
         if (!isset($_SERVER['REQUEST_URI'])) {
             if (isset($_SERVER['HTTP_X_REWRITE_URL'])) {
                 $_SERVER['REQUEST_URI'] = $_SERVER['HTTP_X_REWRITE_URL']; // ISAPI_Rewrite 3.x
