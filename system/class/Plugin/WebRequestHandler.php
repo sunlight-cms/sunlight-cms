@@ -144,7 +144,7 @@ abstract class WebRequestHandler
      * @param array $index
      * @param int   $code  see RequestHandler::OUTPUT_* constants
      */
-    protected function handleOutputCode(array $index, $code)
+    protected function handleOutputCode(array &$index, $code)
     {
         switch ($code) {
             case static::OUTPUT_NOT_FOUND: $index['is_found'] = false; break;
