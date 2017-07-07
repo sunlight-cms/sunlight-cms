@@ -135,6 +135,7 @@ class PluginLoader
                         } else {
                             $options = array(
                                 'id' => $item,
+                                'name' => $item,
                                 'version' => '0.0.0',
                                 'api' => '0.0.0',
                             );
