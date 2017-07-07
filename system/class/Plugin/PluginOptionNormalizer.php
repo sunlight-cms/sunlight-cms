@@ -179,7 +179,7 @@ class PluginOptionNormalizer
         $normalized = array();
         foreach ($events as $key => $entry) {
             if (!is_array($entry) || !isset($entry[0], $entry[1])) {
-                throw new OptionSetNormalizerException(sprintf('[%s] is invalid', $key));
+                throw new OptionSetNormalizerException(sprintf('[%s] invalid event entry (expected an array with 2 elements)', $key));
             }
 
             list($event, $callback) = $entry;
