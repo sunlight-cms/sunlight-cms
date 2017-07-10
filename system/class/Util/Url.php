@@ -36,7 +36,7 @@ class Url
     }
 
     /**
-     * Creeate instance from a string
+     * Create instance from a string
      *
      * @param string $url
      * @throws \InvalidArgumentException if the URL is invalid
