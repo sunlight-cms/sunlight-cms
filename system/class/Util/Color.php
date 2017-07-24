@@ -4,20 +4,20 @@ namespace Sunlight\Util;
 
 class Color
 {
-    protected $r, $g, $b, $h, $l, $s;
+    protected $r, $g, $b, $h, $s, $l;
 
     /**
      * @param array $color color segments
-     * @param int   $type  color model (0 = rgb, 1 = hls)
+     * @param int   $type  color model (0 = rgb, 1 = hsl)
      */
     public function __construct($color = array(0, 0, 0), $type = 0)
     {
         if ($type === 0) {
             list($this->r, $this->g, $this->b) = $color;
-            list($this->h, $this->l, $this->s) = $this->rgbToHls($color[0], $color[1], $color[2]);
+            list($this->h, $this->s, $this->l) = $this->rgbToHsl($color[0], $color[2], $color[1]);
         } else {
-            list($this->h, $this->l, $this->s) = $color;
-            list($this->r, $this->g, $this->b) = $this->hlsToRgb($color[0], $color[1], $color[2]);
+            list($this->h, $this->s, $this->l) = $color;
+            list($this->r, $this->g, $this->b) = $this->hslToRgb($color[0], $color[1], $color[2]);
         }
     }
 
@@ -28,29 +28,29 @@ class Color
      * @param int $g green channel
      * @param int $b blue channel
      */
-    public function setRGB($r, $g, $b)
+    public function setRgb($r, $g, $b)
     {
-        list($this->h, $this->l, $this->s) = $this->rgbToHls($r, $g, $b);
+        list($this->h, $this->s, $this->l) = $this->rgbToHsl($r, $g, $b);
         list($this->r, $this->g, $this->b) = func_get_args();
     }
 
     /**
-     * Set HLS channels
+     * Set HSL channels
      *
      * @param int $h hue
-     * @param int $l lightness
      * @param int $s saturation
+     * @param int $l lightness
      */
-    public function setHLS($h, $l, $s)
+    public function setHsl($h, $s, $l)
     {
-        list($this->r, $this->g, $this->b) = $this->hlsToRgb($h, $l, $s);
-        list($this->h, $this->l, $this->s) = func_get_args();
+        list($this->r, $this->g, $this->b) = $this->hslToRgb($h, $s, $l);
+        list($this->h, $this->s, $this->l) = func_get_args();
     }
 
     /**
      * Change color channel value
      *
-     * @param string $channel channel name - r/g/b/h/l/s
+     * @param string $channel channel name - r/g/b/h/s/l
      * @param int    $value   new value (0-255)
      * @return bool
      */
@@ -65,9 +65,9 @@ class Color
         // update channel
         $this->$channel = $value;
         if ($channel === 'r' || $channel === 'g' || $channel === 'b') {
-            list($this->h, $this->l, $this->s) = $this->rgbToHls($this->r, $this->g, $this->b);
+            list($this->h, $this->s, $this->l) = $this->rgbToHsl($this->r, $this->g, $this->b);
         } else {
-            list($this->r, $this->g, $this->b) = $this->hlsToRgb($this->h, $this->l, $this->s);
+            list($this->r, $this->g, $this->b) = $this->hslToRgb($this->h, $this->s, $this->l);
         }
         return true;
     }
@@ -75,7 +75,7 @@ class Color
     /**
      * Get color channel value
      *
-     * @param string $channel channel name - r/g/b/h/l/s
+     * @param string $channel channel name - r/g/b/h/s/l
      * @return int|null 0-255 or null for unknown channel
      */
     public function getChannel($channel)
@@ -90,7 +90,7 @@ class Color
      *
      * @return array array(r,g,b)
      */
-    public function getRGB()
+    public function getRgb()
     {
         return array($this->r, $this->g, $this->b);
     }
@@ -100,33 +100,33 @@ class Color
      *
      * @return string #rrggbb
      */
-    public function getRGBStr()
+    public function getRgbStr()
     {
         return sprintf('#%02x%02x%02x', $this->r, $this->g, $this->b);
     }
 
     /**
-     * Get HLS channels
+     * Get HSL channels
      *
-     * @return array array(h,l,s)
+     * @return array array(h,s,l)
      */
-    public function getHLS()
+    public function getHsl()
     {
-        array($this->h, $this->l, $this->s);
+        return array($this->h, $this->s, $this->l);
     }
 
     /**
-     * Get RGB values of HLS color
+     * Get RGB values of HSL color
      *
      * @param int   $h hue (0-255)
-     * @param float $l lightness (0-255)
      * @param float $s saturation (0-255)
+     * @param float $l lightness (0-255)
      * @return array array(r,g,b)
      */
-    protected function hlsToRgb($h, $l, $s)
+    protected function hslToRgb($h, $s, $l)
     {
         // normalize args
-        $args = array('h', 'l', 's');
+        $args = array('h', 's', 'l');
         for($i = 0; $i < 3; ++$i) {
             if (${$args[$i]} < 0) {
                 ${$args[$i]} = 0;
@@ -137,8 +137,8 @@ class Color
 
         // convert
         $h = 360 * $h / 255;
-        $l = ($l - 127) / 255;
         $s = $s / 255;
+        $l = ($l - 127) / 255;
         $c = (1 - abs(2 * $l)) * $s;
         $hx = $h / 60;
         $x = $c * (1 - abs(fmod($hx, 2) - 1));
@@ -164,14 +164,14 @@ class Color
     }
 
     /**
-     * Get HLS values of RGB color
+     * Get HSL values of RGB color
      *
      * @param int $r red channel (0-255)
      * @param int $g green channel (0-255)
      * @param int $b blue channel (0-255)
-     * @return array array(h,l,s)
+     * @return array array(h,s,l)
      */
-    protected function rgbToHls($r, $g, $b)
+    protected function rgbToHsl($r, $g, $b)
     {
         // normalize args
         $args = array('r', 'g', 'b');
@@ -199,9 +199,9 @@ class Color
             $hx = ($r - $g) / $c + 4;
         }
         $h = round($hx * 60 / 360 * 255);
-        $s = round($c / (1 - abs(2 * ($l - 127) / 255)));
         $l = round($l);
+        $s = round($c / (1 - abs(2 * ($l - 127) / 255)));
 
-        return array($h, $l, $s);
+        return array($h, $s, $l);
     }
 }
