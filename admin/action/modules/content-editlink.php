@@ -21,7 +21,7 @@ if ($continue) {
 <input class='inputmax' type='url' name='link_url' value='" . _e($query['link_url']) . "'>
 </td>
 </tr>";
-    $custom_settings = "<label><input type='checkbox' name='link_new_window' value='1'" . _checkboxActivate($query['link_new_window']) . "> " . _lang('admin.content.form.newwindow') . "</label>";
+    $custom_settings = "<tr><td colspan='2'><label><input type='checkbox' name='link_new_window' value='1'" . _checkboxActivate($query['link_new_window']) . "> " . _lang('admin.content.form.newwindow') . "</label></td></tr>";
     $custom_save_array = array(
         'link_url' => array('type' => 'raw', 'nullable' => true),
         'link_new_window' => array('type' => 'bool', 'nullable' => false),

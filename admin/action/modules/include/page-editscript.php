@@ -431,20 +431,9 @@ if (!empty($_POST)) {
 
 /* ---  vystup  --- */
 
-// radky na celou sirku formulare
-if (
-    $editscript_enable_slug
-    || $editscript_enable_meta
-    || $editscript_enable_events
-) {
-    $colspan = " colspan='3'";
-} else {
-    $colspan = '';
-}
-
 // vyber rodice
 if (_priv_adminroot) {
-    $parent_row = "<tr>\n<th>" . _lang('admin.content.form.node_parent') . "</th><td" . $colspan . ">";
+    $parent_row = "<tr>\n<th>" . _lang('admin.content.form.node_parent') . "</th><td>";
     $parent_row .= _adminRootSelect('node_parent', array(
         'empty_item' => _lang('admin.content.form.node_parent.none'),
         'disabled_branches' => $new ? null : array($id),
@@ -452,14 +441,9 @@ if (_priv_adminroot) {
         'attrs' => 'class="inputmax"',
         'selected' => $query['node_parent'],
     ));
-    $parent_row .=  "</td>\n</tr>\n";
+    $parent_row .= "</td>\n</tr>\n";
 } else {
     $parent_row = '';
-}
-
-// stylove oddeleni individualniho nastaveni
-if ($custom_settings != "") {
-    $custom_settings = "<span class='customsettings'>" . $custom_settings . "</span>";
 }
 
 // editacni pole
@@ -481,114 +465,138 @@ if (!$new && $id == _index_page_id) {
     $output .= _adminNote(_lang('admin.content.form.indexnote'));
 }
 
-// formular
 $output .= "<form class='cform' action='index.php?p=content-edit" . $type_array[$type] . (!$new ? "&amp;id=" . $id : '') . (($type == _page_plugin && $new) ? '&amp;idt=' . $type_idt : '') . "' method='post'>
+" . $editscript_extra . "  
+    <table class='formtable edittable'>
+        <tbody>
+            <tr class='valign-top'>
+                <td class='contenttable-box' style='width: 70%; padding-bottom: 0px;'>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <th>" . _lang('admin.content.form.title') . "</th>
+                                <td><input type='text' name='title' value='" . $query['title'] . "' class='inputmax' maxlength='255'></td>
+                            </tr>"
 
-" . $editscript_extra . "
+                            . ($editscript_enable_slug ?
+                            "<tr>
+                                <th>" . _lang('admin.content.form.slug') . "</th>
+                                <td><input type='text' name='slug' value='" . $editable_slug . "' maxlength='1024' class='inputmax'></td>
+                            </tr>" : '')
 
-<table class='formtable'>
+                            . ($editscript_enable_slug ?
+                            "<tr>
+                                <th></th>
+                                <td><label><input type='checkbox' name='slug_abs'" . _checkboxActivate($query['slug_abs']) . "> " . _lang('admin.content.form.slug_abs.label') . "</label></td>
+                            </tr>" : '')
 
-<tr>
-<th>" . _lang('admin.content.form.title') . "</th>
-<td><input type='text' name='title' value='" . $query['title'] . "' class='inputmax' maxlength='255'></td>
+                            . ($editscript_enable_meta ?
+                            "<tr>
+                                <th>" . _lang('admin.content.form.description') . "</th>
+                                <td><input type='text' name='description' value='" . $query['description'] . "' maxlength='255' class='inputmax'></td>
+                            </tr>
+                            <tr>
+                                <th>" . _lang('admin.content.form.keywords') . "</th>
+                                <td><input type='text' name='keywords' value='" . $query['keywords'] . "' maxlength='255' class='inputmax'></td>
+                            </tr>" : '')
 
-" . ($editscript_enable_slug ? "<th>" . _lang('admin.content.form.slug') . "</th>
-<td><input type='text' name='slug' value='" . $editable_slug . "' maxlength='1024' class='inputmax'></td>" : '') . "
-</tr>
+                            . $parent_row
 
-<tr>
-<th>" . _lang('admin.content.form.ord') . "</th>
-<td><input type='number' name='ord'" . _inputDisableUnless(_priv_adminroot) ." value='" . $query['ord'] . "' class='inputmax'></td>
+                            . ($editscript_enable_perex ?
+                            "<tr class='valign-top'>
+                                <th>" . _lang('admin.content.form.perex') . "</th>
+                                <td><textarea name='perex' rows='2' cols='94' class='arealine editor' data-editor-mode='lite'>" . _e($query['perex']) . "</textarea></td>
+                            </tr>" : '')
 
-" . ($editscript_enable_slug ? "<td></td><td><label><input type='checkbox' name='slug_abs'" . _checkboxActivate($query['slug_abs']) . "> " . _lang('admin.content.form.slug_abs.label') . "</label></td>" : '') . "
-</tr>
+                            . ($editscript_enable_heading ?
+                            "<tr>
+                                <th>" . _lang('admin.content.form.heading') . "</th>
+                                <td><input type='text' name='heading' value='" . $query['heading'] . "' class='inputmax' maxlength='255'></td>
+                            </tr>" : '')
 
-" . ($editscript_enable_meta ? "
-<tr>
-<th>" . _lang('admin.content.form.description') . "</th>
-<td><input type='text' name='description' value='" . $query['description'] . "' maxlength='255' class='inputmax'></td>
+                            . ($editscript_enable_content ?
+                            "<tr class='valign-top'>
+                                <th>" . _lang('admin.content.form.content') . (!$new ? " <a href='" . _linkRoot($query['id'], $query['slug']) . "' target='_blank'><img src='images/icons/loupe.png' alt='prev'></a>" : '') . "</th>
+                                <td>" . $editor . "</td>
+                            </tr>" : '')
 
-<th>" . _lang('admin.content.form.keywords') . "</th>
-<td><input type='text' name='keywords' value='" . $query['keywords'] . "' maxlength='255' class='inputmax'></td>
-</tr>
-" : '') . "
+                            . $editscript_extra_row
 
-" . $parent_row . "
+                            . ($editscript_enable_events ?
+                            "<tr>
+                                <th>" . _lang('admin.content.form.events') . "</th>
+                                <td><input type='text' name='events' value='" . (isset($query['events']) ? _e($query['events']) : '') . "' class='inputmax' maxlength='255'></td>
+                            </tr>" : '')
 
-" . ($editscript_enable_layout ? "
-<tr>
-<th>" . _lang('admin.content.form.layout') . "</th>
-<td " . $colspan . ">" . _adminTemplateLayoutSelect(
-            'layout',
-            $query['layout_inherit'] ? null : $query['layout'],
-            $query['layout_inherit']
-                ? sprintf(_lang('admin.content.form.layout.inherited'), TemplateService::getComponentLabelByUid($query['layout'], TemplateService::UID_TEMPLATE_LAYOUT))
-                : _lang('admin.content.form.layout.inherit'),
-            null,
-            'inputmax'
-        ) . "</td>
-</tr>
-" : '') . "
+                            . $editscript_extra_row2
 
-" . ($editscript_enable_perex ? "
-<tr class='valign-top'>
-<th>" . _lang('admin.content.form.perex') . "</th>
-<td" . $colspan . "><textarea name='perex' rows='2' cols='94' class='arealine editor' data-editor-mode='lite'>" . _e($query['perex']) . "</textarea></td>
-</tr>
-" : '') . "
+                        . "</tbody>
+                       <tfoot>
+                        <tr><td></td><td></td></tr>
+                        <tr><td></td><td><input type='submit' class='button big' value='" . ($new ? _lang('global.create') : _lang('global.savechanges')) . "'></td></tr>
+                       </tfoot>     
+                    </table>                
+                </td> 
+                <td class='contenttable-box'>
 
-" . ($editscript_enable_heading ? "
-<tr>
-<th>" . _lang('admin.content.form.heading') . "</th>
-<td" . $colspan . "><input type='text' name='heading' value='" . $query['heading'] . "' class='inputmax' maxlength='255'></td>
-</tr>
-" : '') . "
+                    <div id='settingseditform'>"
 
-" . ($editscript_enable_content ? "
-<tr class='valign-top'>
-<th>" . _lang('admin.content.form.content') . (!$new ? " <a href='" . _linkRoot($query['id'], $query['slug']) . "' target='_blank'><img src='images/icons/loupe.png' alt='prev'></a>" : '') . "</th>
-<td" . $colspan . ">
-" . $editor . "
-</td>
-</tr>
-" : '') . "
+                    ."<fieldset>
+                        <legend>" . _lang('admin.content.form.settings') . "</legend>
+                        <table>
+                        <tbody>
+                            <tr>
+                                <td colspan='2'>
+                                    <label>" . _lang('admin.content.form.ord') . "</label>
+                                    <input type='number' name='ord'" . _inputDisableUnless(_priv_adminroot) . " value='" . $query['ord'] . "' class='inputmax'>
+                                </td>
+                            </tr>"
+                            . ((!empty($custom_settings) || $editscript_enable_show_heading || $editscript_enable_visible) ?
+                                ($editscript_enable_visible ? "<tr><td colspan='2'><label><input type='checkbox' name='visible' value='1'" . _checkboxActivate($query['visible']) . "> " . _lang('admin.content.form.visible') . "</label></td></tr>" : '')
+                                . ($editscript_enable_show_heading ? "<tr><td colspan='2'><label><input type='checkbox' name='show_heading' value='1'" . _checkboxActivate($query['show_heading']) . "> " . _lang('admin.content.form.show_heading') . "</label></td></tr>" : '')
+                                . $custom_settings : '')
 
-" . $editscript_extra_row . "
+                        ."</tbody>
+                        </table>
+                    </fieldset>"
 
-" . ($editscript_enable_events ? "<tr>
-<th>" . _lang('admin.content.form.events') . "</th>
-<td" . $colspan . "><input type='text' name='events' value='" . (isset($query['events']) ? _e($query['events']) : '') . "' class='inputmax' maxlength='255'></td>
-</tr>
-" : '') . "
+                    . ($editscript_enable_layout ?
+                    "<fieldset>
+                        <legend>" . _lang('admin.content.form.layout') . "</legend>"
+                        . _adminTemplateLayoutSelect(
+                            'layout',
+                            $query['layout_inherit'] ? null : $query['layout'],
+                            $query['layout_inherit']
+                                ? sprintf(_lang('admin.content.form.layout.inherited'), TemplateService::getComponentLabelByUid($query['layout'], TemplateService::UID_TEMPLATE_LAYOUT))
+                                : _lang('admin.content.form.layout.inherit'),
+                            null,
+                            'inputmax')
+                    ."</fieldset>" : '')
 
-" . $editscript_extra_row2 . "
-
-" . ((!empty($custom_settings) || $editscript_enable_show_heading || $editscript_enable_visible) ? "
-<tr>
-<th>" . _lang('admin.content.form.settings') . "</th>
-<td" . $colspan . ">
-" . ($editscript_enable_visible ? "<label><input type='checkbox' name='visible' value='1'" . _checkboxActivate($query['visible']) . "> " . _lang('admin.content.form.visible') . "</label> " : '') . "
-" . ($editscript_enable_show_heading ? "<label><input type='checkbox' name='show_heading' value='1'" . _checkboxActivate($query['show_heading']) . "> " . _lang('admin.content.form.show_heading') . "</label> " : '') . "
-" . $custom_settings . "
-</td>
-</tr>
-" : '') . "
-
-" . ($editscript_enable_access ? "
-<tr>
-<th>" . _lang('global.access') . "</th>
-<td" . $colspan . ">
-<label><input type='checkbox' name='public' value='1'" . _checkboxActivate($query['public']) . "> " . _lang('admin.content.form.public') . "</label> 
-<input type='number' min='0' max='" . _priv_max_level . "' name='level' value='" . ($query['level_inherit'] ? '' : $query['level']) . "' class='inputsmaller' maxlength='5'> " . _lang('admin.content.form.level') . "
-" . ($query['level_inherit'] ? '<small>(' . _lang('admin.content.form.inherited') . ': ' . $query['level'] . ')</small>' : '') . "
-</td>
-</tr>
-" : '') . "
-
-<tr><td></td><td" . $colspan . "><br>
-<input type='submit' value='" . ($new ? _lang('global.create') : _lang('global.savechanges')) . "'>" . (!$new ? " <small>" . _lang('admin.content.form.thisid') . " " . $query['id'] . "</small>" : '') . "
-</td></tr>
-
-</table>
-" . _xsrfProtect() . "</form>
-";
+                    . ($editscript_enable_access ?
+                    "<fieldset>
+                        <legend>" . _lang('global.access') . "</legend>
+                        <table>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <input type='number' min='0' max='" . _priv_max_level . "' name='level' value='" . ($query['level_inherit'] ? '' : $query['level']) . "' class='inputmax' maxlength='5'>
+                                </td>
+                                <td>"
+                                    . _lang('admin.content.form.level')
+                                    . ($query['level_inherit'] ? '<br><small>(' . _lang('admin.content.form.inherited') . ': ' . $query['level'] . ')</small>' : '')
+                                ."</td>
+                            </tr>
+                            <tr>
+                                <td colspan='2'><input type='checkbox' name='public' value='1'" . _checkboxActivate($query['public']) . "> " . _lang('admin.content.form.public') . "</td>
+                            </tr>
+                        </tbody>
+                        </table>
+                    </fieldset>" : '')
+                . "</div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    " . _xsrfProtect() . "
+</form>";

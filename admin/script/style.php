@@ -41,12 +41,12 @@ function _admin_color($loff = 0, $satc = null, $sat_abs = false, $light_abs = fa
     $s = (isset($satc) ? ($sat_abs ? $satc :  $GLOBALS['sat'] * $satc) : $GLOBALS['sat']);
 
     // vytvoreni hex kodu barvy
-    $color = new Color(array($h, $l, $s), 1);
+    $color = new Color(array($h, $s, $l), 1);
 
-    return $color->getRGBStr();
+    return $color->getRgbStr();
 }
 
-// vychozi HLS hodnoty
+// vychozi HSL hodnoty
 $hue = 0;
 $light = 127;
 $sat = 255;
@@ -394,6 +394,12 @@ ul.page-list-breadcrumbs li:not(:last-child):after {content: ">"; display: inlin
 ul.page-list-breadcrumbs a {color: <?php echo $scheme_text; ?>; font-weight: bold; vertical-align: middle;}
 ul.page-list-breadcrumbs a:hover {color: <?php echo $scheme_link; ?>;}
 
+/* editpages settings */
+#settingseditform fieldset label{display: block;}
+#settingseditform fieldset:first-child {margin: 0 0 25px 0;}
+#settingseditform table td { padding: 4px 8px;border-bottom: 1px solid #d9d9d9;}
+#settingseditform table tr:last-child td {border-bottom: none;}
+
 /* box management */
 .module-content-boxes .list {margin-bottom: 32px;}
 .module-content-boxes td {white-space: nowrap;}
@@ -553,6 +559,7 @@ tr.odd td {background-color: <?php echo $scheme_smoke_lightest; ?>;}
 .inputfat {padding: 8px 16px !important;}
 .selectmedium {width: 294px;}
 .selectbig {width: 753px;}
+.selectmax {width: 100%;}
 
 /* horizontal rule */
 .hr {height: 10px; background-image: url("../images/hr<?php echo $dark_suffix; ?>.gif"); background-position: left center; background-repeat: repeat-x;}
@@ -609,7 +616,7 @@ a.button img.icon {margin: -1px 0 -1px 0; padding: 0 6px 0 0;}
 a.button.block {display: block; margin: 6px;}
 a.button.block img.icon {float: none; margin: 0; padding: 0 10px 0 0;}
 a.button:hover {background: <?php echo $scheme_lightest; ?>; background: linear-gradient(to bottom, <?php echo $scheme_lightest; ?>, <?php echo $scheme_lighter; ?>); border-color: <?php echo $scheme_lighter; ?>;}
-a.button.big {padding: 8px 12px; font-size: 13px;}
+a.button.big, input[type=submit].button.big, input[type=button].button.big, input[type=reset].button.big, button.button.big {padding: 8px 12px; font-size: 13px;}
 input[type=submit].button, input[type=button].button, input[type=reset].button, button.button {padding: 6px; font-size: 12px;}
 
 /* inline separator */
@@ -627,8 +634,6 @@ span.inline-separator {margin-left: 0.5em; padding-right: 0.5em; border-left: 1p
 .bborder {padding-bottom: 8px; margin-bottom: 12px; border-bottom: 1px solid <?php echo $scheme_smoke; ?>;}
 fieldset .bborder {border-color: <?php echo $scheme_smoke_text; ?>;}
 fieldset fieldset .bborder {border-color: <?php echo $scheme_smoke; ?>;}
-.customsettings {border-left: 1px solid <?php echo $scheme_smoke; ?>; padding-left: 8px;}
-.customsettings strong, .customsettings span {border-left: 1px solid <?php echo $scheme_white; ?>;}
 .backlink {display: block; font-weight: bold; padding-bottom: 10px;}
 .icon {margin: -1px 0 0 0; padding-right: 5px; vertical-align: middle;}
 .groupicon {vertical-align: middle; margin-top: -1px;}
@@ -650,6 +655,7 @@ fieldset fieldset .bborder {border-color: <?php echo $scheme_smoke; ?>;}
 .clickable {cursor: pointer;}
 .strike {text-decoration: line-through;}
 .em {font-style: italic;}
+.big-text {font: style: larger;}
 .left {float: left; margin: 1px 10px 5px 1px;}
 .right {float: right; margin: 1px 1px 5px 10px;}
 tr.valign-top > *, table.valign-top > * > tr > * {vertical-align: top;}

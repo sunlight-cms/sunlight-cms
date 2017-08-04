@@ -745,7 +745,7 @@ if ($continue) {
     <strong>" . _lang('admin.fman.selected') . ":</strong>
     <a href='#' onclick='return Sunlight.admin.fmanMoveSelected()'>" . _lang('admin.fman.selected.move') . "</a>
     <a href='#' onclick='return Sunlight.admin.fmanDeleteSelected()'>" . _lang('admin.fman.selected.delete') . "</a>
-    <a href='#top'><big>&uarr;</big></a>
+    <a href='#top'><span class='big-text'>&uarr;</span></a>
     </p>
     ";
 
