@@ -20,8 +20,8 @@ if (!_xsrfCheck(true)) {
 // nacist plugin a akci
 if (
     !Core::$pluginManager->isValidType($type)
-    || ($plugin = Core::$pluginManager->find($type, $name, false)) === (null)
-    || ($action = $plugin->getAction($action)) === (null)
+    || ($plugin = Core::$pluginManager->find($type, $name, false)) === null
+    || ($action = $plugin->getAction($action)) === null
 ) {
     $output .= _msg(_msg_err, _lang('global.badinput'));
 

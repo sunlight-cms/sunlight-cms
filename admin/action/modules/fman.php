@@ -636,7 +636,7 @@ if ($continue) {
     // adresare
     $handle = opendir($dir);
     $items = array();
-    while (($item = readdir($handle)) !== (false)) {
+    while (($item = readdir($handle)) !== false) {
         if (is_dir($dir . $item) && $item != "." && $item != "..") {
             $items[] = $item;
         }
@@ -648,7 +648,7 @@ if ($continue) {
 
         // adresar nebo odkaz na nadrazeny adresar
         if ($item == "..") {
-            if (($dirhref = _userCheckPath($dir . $item, false, true)) === (false)) {
+            if (($dirhref = _userCheckPath($dir . $item, false, true)) === false) {
                 continue;
             }
         } else {
@@ -681,7 +681,7 @@ if ($continue) {
     // soubory
     rewinddir($handle);
     $items = array();
-    while (($item = readdir($handle)) !== (false)) {
+    while (($item = readdir($handle)) !== false) {
         if (!is_dir($dir . $item) && $item != "..") {
             $items[] = $item;
         }

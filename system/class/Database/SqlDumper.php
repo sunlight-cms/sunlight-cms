@@ -289,7 +289,7 @@ class SqlDumper
         $result = DB::query('SHOW COLUMNS FROM `' . $table . '`');
 
         while ($row = DB::row($result)) {
-            if (($parentPos = strpos($row['Type'], '(')) !== (false)) {
+            if (($parentPos = strpos($row['Type'], '(')) !== false) {
                 $type = substr($row['Type'], 0, $parentPos);
             } else {
                 $type = $row['Type'];

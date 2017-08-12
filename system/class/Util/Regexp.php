@@ -52,7 +52,7 @@ class Regexp
         // match the subject
         while (
             (-1 === $limit || $count < $limit)
-            && ($result = preg_match($pattern, $subject, $matches, PREG_OFFSET_CAPTURE, $offset)) !== (0)
+            && ($result = preg_match($pattern, $subject, $matches, PREG_OFFSET_CAPTURE, $offset)) !== 0
         ) {
             // evaluate the result
             if ($result === false) {

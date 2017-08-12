@@ -349,9 +349,9 @@ class PageManipulator
      */
     public static function deleteDependencies(array $page, $flags, &$error = null)
     {
-        $deleteChildPages = (($flags & static::DEPEND_CHILD_PAGES) !== (0));
-        $deleteDirect = (($flags & static::DEPEND_DIRECT) !== (0));
-        $deleteDirectForce = (($flags & static::DEPEND_DIRECT_FORCE) !== (0));
+        $deleteChildPages = (($flags & static::DEPEND_CHILD_PAGES) !== 0);
+        $deleteDirect = (($flags & static::DEPEND_DIRECT) !== 0);
+        $deleteDirectForce = (($flags & static::DEPEND_DIRECT_FORCE) !== 0);
 
         // kontrola podstranek
         if ($page['node_depth'] > 0 && !$deleteChildPages && !$deleteDirectForce) {

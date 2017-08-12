@@ -68,7 +68,7 @@ class Backup
      */
     public function create()
     {
-        if (($errorCode = $this->zip->open($this->path, ZipArchive::CREATE | ZipArchive::OVERWRITE)) !== (true)) {
+        if (($errorCode = $this->zip->open($this->path, ZipArchive::CREATE | ZipArchive::OVERWRITE)) !== true) {
             throw new \RuntimeException(sprintf('Could not create ZIP archive at "%s" (code %d)', $this->path, $errorCode));
         }
 
@@ -85,7 +85,7 @@ class Backup
     {
         _ensureFileExists($this->path);
 
-        if (($errorCode = $this->zip->open($this->path, ZipArchive::CREATE)) !== (true)) {
+        if (($errorCode = $this->zip->open($this->path, ZipArchive::CREATE)) !== true) {
             throw new \RuntimeException(sprintf('Could not open ZIP archive at "%s" (code %d)', $this->path, $errorCode));
         }
 

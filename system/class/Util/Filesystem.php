@@ -130,7 +130,7 @@ class Filesystem
         $isEmpty = true;
         
         $handle = opendir($path);
-        while (($item = readdir($handle)) !== (false)) {
+        while (($item = readdir($handle)) !== false) {
             if ($item !== '.' && $item !== '..') {
                 $isEmpty = false;
                 break;

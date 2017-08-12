@@ -1902,7 +1902,7 @@ function _userNormalizeDir($dirPath)
     if (
         $dirPath !== null
         && $dirPath !== ''
-        && ($dirPath = _userCheckPath($dirPath, false, true)) !== (false)
+        && ($dirPath = _userCheckPath($dirPath, false, true)) !== false
         && is_dir($dirPath)
     ) {
         return $dirPath;

@@ -197,7 +197,7 @@ class PluginOptionNormalizer
                 $callback = $callback[1];
                 $useThis = true;
             } elseif (
-                ($doubleColonPos = strpos($callback, '::')) !== (false)
+                ($doubleColonPos = strpos($callback, '::')) !== false
                 && substr($callback, 0, $doubleColonPos) === '$this'
             ) {
                 $callback = substr($callback, $doubleColonPos + 2);
