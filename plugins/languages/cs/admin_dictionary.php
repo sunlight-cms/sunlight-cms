@@ -18,7 +18,7 @@ return array(
     'admin.menu.fman' => 'Souborový manažer',
     'admin.menu.settings' => 'Nastavení',
     'admin.menu.plugins' => 'Rozšíření',
-    'admin.menu.other' => 'Ostatní funkce',
+    'admin.menu.other' => 'Ostatní',
     'admin.index.p' => 'Vítejte v administraci! Z menu výše si vyberte, s čím chcete pracovat.',
     'admin.index.box' => 'Informace o prostředí',
     'admin.index.box.dev' => 'vývojový režim',

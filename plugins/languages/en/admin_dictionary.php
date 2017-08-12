@@ -18,7 +18,7 @@ return array(
     'admin.menu.fman' => 'File manager',
     'admin.menu.settings' => 'Settings',
     'admin.menu.plugins' => 'Plugins',
-    'admin.menu.other' => 'Other functions',
+    'admin.menu.other' => 'Other',
     'admin.index.p' => 'Welcome to the administration! Please choose an item from the menu above.',
     'admin.index.box' => 'Environment info',
     'admin.index.box.dev' => 'development mode',
