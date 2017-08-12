@@ -400,14 +400,14 @@ class Core
                 $_SERVER['REQUEST_URI'] = $_SERVER['HTTP_REQUEST_URI']; // ISAPI_Rewrite 2.x
             } else {
                 if (isset($_SERVER['SCRIPT_NAME'])) {
-                    $_SERVER['HTTP_REQUEST_URI'] = $_SERVER['SCRIPT_NAME'];
+                    $requestUri = $_SERVER['SCRIPT_NAME'];
                 } else {
-                    $_SERVER['HTTP_REQUEST_URI'] = $_SERVER['PHP_SELF'];
+                    $requestUri = $_SERVER['PHP_SELF'];
                 }
                 if (!empty($_SERVER['QUERY_STRING'])) {
-                    $_SERVER['HTTP_REQUEST_URI'] .= '?' . $_SERVER['QUERY_STRING'];
+                    $requestUri .= '?' . $_SERVER['QUERY_STRING'];
                 }
-                $_SERVER['REQUEST_URI'] = $_SERVER['HTTP_REQUEST_URI'];
+                $_SERVER['REQUEST_URI'] = $requestUri;
             }
         }
 
