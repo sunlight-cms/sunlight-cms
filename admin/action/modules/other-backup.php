@@ -39,6 +39,16 @@ foreach (scandir($backup_dir) as $item) {
     }
 }
 
+// stazeni zalohy
+if (isset($_GET['download'])) {
+    $download = _get('download');
+
+    if (isset($backup_files[$download])) {
+        _downloadFile($backup_dir . '/' . $download, $download);
+        exit;
+    }
+}
+
 // pripravit backup builder
 $backup_builder = new BackupBuilder();
 
@@ -207,8 +217,8 @@ if (!empty($_POST)) {
         ' . _msg(_msg_warn, _lang('admin.other.backup.restore.warning')) . '
 
         <p>
-            <input type="submit" name="do_restore[restore]" onclick="return Sunlight.confirm()" value="' . _lang('admin.other.backup.restore.title') . '">
-            <input type="submit" value="' . _lang('global.cancel2') . '">
+            <input class="button small" type="submit" name="do_restore[restore]" onclick="return Sunlight.confirm()" value="' . _lang('admin.other.backup.restore.title') . '">
+            <input class="button small" type="submit" value="' . _lang('global.cancel2') . '">
         </p>
     ' . _xsrfProtect() . '
     </form>
@@ -265,7 +275,7 @@ if (!empty($backup_files)) {
     <td><label><input type="radio" name="backup_file" value="' . _e($backup_file) . '"> ' . _e($displayed_backup_name) . '</label></td>
     <td>' . _formatFilesize(filesize($backup_dir . '/' . $backup_file)) . '</td>
     <td>' . _formatTime($backup_ctime) . '</td>
-    <td><a href="' . _e($backup_dir . '/' . $backup_file) . '"><img src="images/icons/floppy.png" alt="' . _lang('global.download') . '"></a></td>
+    <td><a href="index.php?p=other-backup&download=' . _e($backup_file) . '" title="' . _lang('global.download') . '"><img src="images/icons/floppy.png" alt="' . _lang('global.download') . '"></a></td>
 </tr>
 ';
     }
@@ -300,9 +310,9 @@ $output .= $message . '
             <tr>
                 <td></td>
                 <td>
-                    <input type="submit" name="do_create[download]" formtarget="_blank" value="' . _lang('global.download') . '">
+                    <input class="button small" type="submit" name="do_create[download]" formtarget="_blank" value="' . _lang('global.download') . '">
                     ' . _lang('global.or') . '
-                    <input type="submit" name="do_create[store]" value="' . _lang('admin.other.backup.store') . '">
+                    <input class="button small" type="submit" name="do_create[store]" value="' . _lang('admin.other.backup.store') . '">
                 </td>
             </tr>
         </table>
@@ -339,9 +349,9 @@ $output .= $message . '
             <tr>
                 <td></td>
                 <td>
-                    <input type="submit" name="do_package[download]" formtarget="_blank" value="' . _lang('global.download') . '">
+                    <input class="button small" type="submit" name="do_package[download]" formtarget="_blank" value="' . _lang('global.download') . '">
                     ' . _lang('global.or') . '
-                    <input type="submit" name="do_package[store]" value="' . _lang('admin.other.backup.store') . '">
+                    <input class="button small" type="submit" name="do_package[store]" value="' . _lang('admin.other.backup.store') . '">
                 </td>
             </tr>
         </table>
@@ -365,7 +375,7 @@ $output .= $message . '
             </tr>
             <tr>
                 <td></td>
-                <td><input type="submit" name="do_upload" value="' . _lang('global.upload') . '"></td>
+                <td><input class="button small" type="submit" name="do_upload" value="' . _lang('global.upload') . '"></td>
             </tr>
         </table>
     ' . _xsrfProtect() . '
@@ -391,9 +401,9 @@ $output .= $message . '
         </table>
 
         <p>
-            <input type="submit" name="do_restore[load]" value="' . _lang('admin.other.backup.restore.submit.load') . '">
+            <input class="button small" type="submit" name="do_restore[load]" value="' . _lang('admin.other.backup.restore.submit.load') . '">
             ' . _lang('global.or') . '
-            <input onclick="return Sunlight.confirm()" type="submit" name="do_restore[delete]" value="' . _lang('admin.other.backup.restore.submit.delete') . '">
+            <input class="button small" onclick="return Sunlight.confirm()" type="submit" name="do_restore[delete]" value="' . _lang('admin.other.backup.restore.submit.delete') . '">
         </p>
     ' . _xsrfProtect() . '
     </form>

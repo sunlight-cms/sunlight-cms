@@ -1,3 +1,4 @@
+
 /upload/*
 !/upload/.gitkeep
 
@@ -13,10 +14,13 @@
 
 /system/backup/*
 !/system/backup/.gitkeep
+!/system/backup/.htaccess
 /system/tmp/*
 !/system/tmp/.gitkeep
+!/system/tmp/.htaccess
 /system/cache/*
 !/system/cache/.gitkeep
+!/system/cache/.htaccess
 /system/vendor/*
 !/system/vendor/.htaccess
 
