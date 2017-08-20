@@ -646,9 +646,11 @@ function _templateUserMenu($profileLink = true)
     $output = Extend::buffer('tpl.usermenu', array('items' => &$items));
     if ($output === '' && !empty($items)) {
         $output = "<ul class=\"user-menu " . (_login ? 'logged-in' : 'not-logged-in') . "\">\n";
+        $output .= Extend::buffer('tpl.usermenu.start');
         foreach ($items as $id => $item) {
             $output .= "<li class=\"user-menu-{$id}\"><a href=\"{$item[0]}\">{$item[1]}</a></li>\n";
         }
+        $output .= Extend::buffer('tpl.usermenu.end');
         $output .= "</ul>\n";
     }
 
