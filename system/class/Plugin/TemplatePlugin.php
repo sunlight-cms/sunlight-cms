@@ -61,6 +61,13 @@ class TemplatePlugin extends Plugin
     }
 
     /**
+     * Notify the template plugin that it is going to be used to render a front end page
+     */
+    public function begin()
+    {
+    }
+
+    /**
      * Get the localization dictionary
      *
      * @return LocalizationDictionary
