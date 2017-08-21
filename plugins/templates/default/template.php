@@ -10,11 +10,11 @@
         <?php echo _templateUserMenu() ?>
     </div>
 
-	<div id="menu">
-		<?php echo _templateMenu() ?>
-	</div>
+    <div id="menu">
+        <?php echo _templateMenu() ?>
+    </div>
 
-	<div id="page">
+    <div id="page">
         <div id="content">
             <?php echo _templateContent() ?>
 
@@ -24,7 +24,7 @@
             <?php echo _templateBoxes('right') ?>
         </div>
         <div class="cleaner"></div>
-	</div>
+    </div>
 </div>
 <div id="footer">
     <ul>
