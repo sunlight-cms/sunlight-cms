@@ -196,7 +196,7 @@ Extend::call('index.ready', array('index' => &$_index));
 // vlozeni motivu
 if ($_index['template_enabled']) {
     // nacist prvky motivu
-    $_template->begin();
+    $_template->begin($_template_layout);
     $_template_boxes = $_template->getBoxes($_template_layout);
     $_template_path = $_template->getTemplate($_template_layout);
 

@@ -62,8 +62,10 @@ class TemplatePlugin extends Plugin
 
     /**
      * Notify the template plugin that it is going to be used to render a front end page
+     *
+     * @param string $layout
      */
-    public function begin()
+    public function begin($layout)
     {
     }
 
