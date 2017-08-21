@@ -1302,13 +1302,13 @@ function _articlePreview(array $art, array $userQuery, $info = true, $perex = tr
     if ($info == true) {
 
         $infos = array(
-            array(_lang('article.author'), _linkUserFromQuery($userQuery, $art)),
-            array(_lang('article.posted'), _formatTime($art['time'], 'article')),
-            array(_lang('article.readnum'), $art['readnum'] . 'x'),
+            'author' => array(_lang('article.author'), _linkUserFromQuery($userQuery, $art)),
+            'posted' => array(_lang('article.posted'), _formatTime($art['time'], 'article')),
+            'readnum' => array(_lang('article.readnum'), $art['readnum'] . 'x'),
         );
 
         if ($art['comments'] == 1 && _comments && $comment_count !== null) {
-            $infos[] = array(_lang('article.comments'), $comment_count);
+            $infos['comments'] = array(_lang('article.comments'), $comment_count);
         }
 
         Extend::call('article.preview.infos', array(
