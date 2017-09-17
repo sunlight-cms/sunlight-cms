@@ -135,7 +135,7 @@ return array(
   'nologin.msg' => 'This page is available to guests only.',
   'usermenu.login' => 'log in',
   'usermenu.logout' => 'log out',
-  'usermenu.guest' => 'unlogged',
+  'usermenu.guest' => 'not logged in',
   'usermenu.ulist' => 'users',
   'usermenu.profile' => 'profile',
   'usermenu.registration' => 'registration',
