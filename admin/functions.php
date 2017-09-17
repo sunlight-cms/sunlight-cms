@@ -506,7 +506,7 @@ function _adminDeleteGalleryStorage($sql_cond)
  *
  * @return bool
  */
-function _adminIsDarkScheme()
+function _adminThemeIsDark()
 {
     if (_adminscheme_mode == 0) {
         // vzdy svetle
@@ -522,4 +522,43 @@ function _adminIsDarkScheme()
         }
         return false;
     }
+}
+
+/**
+ * @param int $scheme
+ * @param bool $dark
+ * @return array
+ */
+function _adminThemeAssets($scheme, $dark)
+{
+    return array(
+        'extend_event' => 'admin.head',
+        'css' => array(
+            'admin' => _link('admin/script/style.php?s=' . rawurlencode($scheme) . ($dark ? '&d' : '')),
+        ),
+        'css_after' => "
+<!--[if lte IE 7]><link rel=\"stylesheet\" type=\"text/css\" href=\"css/ie7.css\"><![endif]-->
+<!--[if IE 8]><link rel=\"stylesheet\" type=\"text/css\" href=\"css/ie8-9.css\"><![endif]-->
+<!--[if IE 9]><link rel=\"stylesheet\" type=\"text/css\" href=\"css/ie8-9.css\"><![endif]-->",
+        'js' => array(
+            'jquery' => _link('system/js/jquery.js'),
+            'sunlight' => _link('system/js/sunlight.js'),
+            'rangyinputs' => _link('system/js/rangyinputs.js'),
+            'scrollwatch' => _link('system/js/scrollwatch.js'),
+            'scrollfix' => _link('system/js/scrollfix.js'),
+            'jquery_ui_sortable' => _link('admin/js/jquery-ui-sortable.min.js'),
+            'admin' => _link('admin/js/admin.js'),
+        ),
+        'js_before' => "\n" . Core::getJavascript(array(
+                'admin' => array(
+                    'themeIsDark' => $dark,
+                ),
+                'labels' => array(
+                    'cancel' => _lang('global.cancel'),
+                    'fmanMovePrompt' => _lang('admin.fman.selected.move.prompt'),
+                    'fmanDeleteConfirm' => _lang('admin.fman.selected.delete.confirm'),
+                    'busyOverlayText' => _lang('admin.busy_overlay.text'),
+                ),
+            )),
+    );
 }

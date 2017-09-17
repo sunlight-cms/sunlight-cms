@@ -15,8 +15,11 @@ if (!_priv_super_admin) {
 require _root . "system/html_start.php";
 require _root . "admin/functions.php";
 
+$assets = _adminThemeAssets(_adminscheme, _adminThemeIsDark()) + array('extend_event' => null);
+
+echo _headAssets($assets);
+
 ?>
-<link href="style.php?s=<?php echo _adminscheme . (_adminIsDarkScheme() ? '&amp;d' : '') . '&amp;' . _cacheid; ?>" type="text/css" rel="stylesheet">
 <title><?php echo _lang('admin.other.php.title'); ?></title>
 </head>
 
@@ -39,7 +42,7 @@ if (isset($_POST['code'])) {
 <h1><?php echo _lang('admin.other.php.title'); ?></h1>
 
 <form action="php.php" method="post">
-<textarea name="code" rows="25" cols="94" class="areabig"><?php if (isset($code)) echo _e($code); ?></textarea><br>
+<textarea name="code" rows="25" cols="94" class="areabig editor" data-editor-mode="code" data-editor-format="php-raw"><?php if (isset($code)) echo _e($code); ?></textarea><br>
 <p><input class="inputfat" type="submit" value="<?php echo _lang('global.do'); ?>">  <label><input type="checkbox" name="html" value="1"<?php echo _checkboxActivate(isset($_POST['html']) ? 1 : 0); ?>> <?php echo _lang('admin.other.php.html'); ?></label></p>
 <?php echo _xsrfProtect(); ?>
 </form>

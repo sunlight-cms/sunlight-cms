@@ -40,6 +40,7 @@ if(!$.browser.msie || $.browser.version >= 8) {
                     case 'css': mode = 'text/css'; break;
                     case 'js': case 'json': mode = 'text/javascript'; break;
                     case 'php': mode = 'application/x-httpd-php'; break;
+                    case 'php-raw': mode = 'text/x-php'; break;
                     case 'html': mode = {name: 'hcm', backdrop: 'text/html'}; break;
                 }
             } else {
