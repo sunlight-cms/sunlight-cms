@@ -93,7 +93,7 @@ $_index['segment'] = $segment;
 
 // udalosti stranky
 if ($_page['events'] !== null) {
-    foreach (_parseStr($_page['events']) as $page_event) {
+    foreach (_parseArguments($_page['events']) as $page_event) {
         $page_event_parts = explode(':', $page_event, 2);
         Extend::call('page.event.' . $page_event_parts[0], array(
             'arg' => isset($page_event_parts[1]) ? $page_event_parts[1] : null,

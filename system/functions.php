@@ -471,7 +471,7 @@ function _isAbsoluteUrl($path)
  * @param string $input vstupni retezec
  * @return array
  */
-function _parseStr($input)
+function _parseArguments($input)
 {
     // nastaveni funkce
     static
@@ -2884,7 +2884,7 @@ function _parseHCM($input, $handler = '_parseHCM_module')
  */
 function _parseHCM_module($match)
 {
-    $params = _parseStr($match[1]);
+    $params = _parseArguments($match[1]);
     if (isset($params[0])) {
         return _runHCM($params[0], array_splice($params, 1));
     } else {
@@ -2971,7 +2971,7 @@ function _filterHCM($content, $exception = false)
 
     // filtrovat
     return _parseHCM($content, function ($match) use ($blacklistMap, $whitelistMap, $exception) {
-        $params = _parseStr($match[1]);
+        $params = _parseArguments($match[1]);
         $module = isset($params[0]) ? mb_strtolower($params[0]) : '';
 
         if (
@@ -4453,12 +4453,19 @@ function _getAvatar(array $data, array $options = array())
         'class' => null,
     );
 
+    if ($options['extend']) {
+        Extend::call('user.avatar', array(
+            'data' => &$data,
+            'options' => $options,
+        ));
+    }
+
     $hasAvatar = ($data['avatar'] !== null);
     $url = _link('images/avatars/' . ($hasAvatar ? $data['avatar'] : 'no-avatar' . (_getCurrentTemplate()->getOption('dark') ? '-dark' : '')) . '.jpg');
 
-    // zpracovani rozsirenim
+    // vykresleni rozsirenim
     if ($options['extend']) {
-        $extendOutput = Extend::buffer('user.avatar', array(
+        $extendOutput = Extend::buffer('user.avatar.render', array(
             'data' => $data,
             'url' => &$url,
             'options' => $options,
