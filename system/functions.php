@@ -3026,7 +3026,7 @@ function _parseBBCode($s, $get_tags = false)
             'hr' => array(false, false, false, false, 1), // horizontal rule
             'color' => array(true, true, true, true, null), // color
             'size' => array(true, true, true, true, null), // size
-            'noformat' => array(true, false, true, false, null), //no format
+            'noformat' => array(true, false, true, false, null), // no format
         ),
         $syntax = array('[', ']', '/', '=', '"'), // syntax
         $extended = false;
