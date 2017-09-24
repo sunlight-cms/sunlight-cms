@@ -2901,7 +2901,7 @@ function _parseHCM_module($match)
  */
 function _runHCM($name, array $args)
 {
-    if (!_env !== Core::ENV_WEB) {
+    if (_env !== Core::ENV_WEB) {
         // HCM moduly vyzaduji frontendove prostredi
         return '';
     }
