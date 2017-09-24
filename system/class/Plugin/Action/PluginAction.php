@@ -4,6 +4,7 @@ namespace Sunlight\Plugin\Action;
 
 use Sunlight\Action\Action;
 use Sunlight\Action\ActionResult;
+use Sunlight\Core;
 use Sunlight\Plugin\Plugin;
 
 /**
@@ -20,7 +21,7 @@ abstract class PluginAction extends Action
      */
     public function __construct(Plugin $plugin)
     {
-        if (!_env_admin) {
+        if (_env !== Core::ENV_ADMIN) {
             throw new \RuntimeException('Plugin actions require administration environment');
         }
 

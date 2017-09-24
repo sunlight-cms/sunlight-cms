@@ -6,7 +6,7 @@ use Sunlight\Extend;
 
 require '../system/bootstrap.php';
 Core::init('../', array(
-    'env' => 'admin',
+    'env' => Core::ENV_ADMIN,
 ));
 require _root . 'admin/functions.php';
 

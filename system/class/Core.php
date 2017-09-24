@@ -27,6 +27,12 @@ class Core
     const VERSION = '8.0.0';
     /** CMS distribution type */
     const DIST = 'GIT'; // GIT / STABLE / BETA
+    /** Web environment (frontend - index.php) */
+    const ENV_WEB = 'web';
+    /** Administration environment (backend) */
+    const ENV_ADMIN = 'admin';
+    /** Script environment */
+    const ENV_SCRIPT = 'script';
 
     /** @var float */
     public static $start;
@@ -91,7 +97,7 @@ class Core
      * session_regenerate   force new session ID 1/0
      * run_cron             automatically run cron tasks 1/0
      * content_type         content type, FALSE = disabled (default is "text/html; charset=UTF-8")
-     * env                  environment identifier, "web" or "admin"
+     * env                  environment identifier, see Core::ENV_* constants
      *
      * @param string $root    relative path to the system root directory
      * @param array  $options
@@ -167,7 +173,7 @@ class Core
             'session_regenerate' => false,
             'run_cron' => true,
             'content_type' => null,
-            'env' => 'web',
+            'env' => static::ENV_SCRIPT,
         );
 
         // check required options
@@ -189,14 +195,6 @@ class Core
             }
         }
 
-        // check environment
-        if ($options['env'] !== 'admin' && $options['env'] !== 'web') {
-            static::systemFailure(
-                'Konfigurační volba "env" musí být "admin" nebo "web".',
-                'The configuration option "env" must be either "admin" or "web".'
-            );
-        }
-
         // define variables
         static::$appId = $options['app_id'];
         static::$secret = $options['secret'];
@@ -209,8 +207,6 @@ class Core
         // define constants
         define('_root', $root);
         define('_env', $options['env']);
-        define('_env_web', $options['env'] === 'web');
-        define('_env_admin', $options['env'] === 'admin');
         define('_dev', (bool) $options['dev']);
         define('_dbprefix', $options['db.prefix'] . '_');
         define('_dbname', $options['db.name']);
@@ -241,9 +237,9 @@ class Core
             static::$cache = new Cache(
                 $options['cache']
                     ? new FilesystemDriver(
-                        _root . 'system/cache/' . (_dev ? 'dev' : 'prod'),
-                        _root . 'system/tmp'
-                    )
+                    _root . 'system/cache/' . (_dev ? 'dev' : 'prod'),
+                    _root . 'system/tmp'
+                )
                     : new MemoryDriver()
 
             );
@@ -292,7 +288,13 @@ class Core
     private static function initSettings()
     {
         // fetch from database
-        $query = DB::query('SELECT var,val,constant FROM ' . _settings_table . ' WHERE preload=1 AND ' . _env . '=1', true);
+        if (_env === static::ENV_ADMIN) {
+            $preloadCond = 'admin=1';
+        } else {
+            $preloadCond = 'web=1';
+        }
+
+        $query = DB::query('SELECT var,val,constant FROM ' . _settings_table . ' WHERE preload=1 AND ' . $preloadCond, true);
 
         if (DB::error()) {
             static::systemFailure(
@@ -317,7 +319,7 @@ class Core
                 static::$settings[$setting['var']] = $setting['val'];
             }
         }
-        
+
         // define maintenance cron interval
         static::$cronIntervals['maintenance'] = _maintenance_interval;
 

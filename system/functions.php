@@ -2745,7 +2745,7 @@ function _linkUser(array $data, array $options = array())
         'color' => true,
         'icon' => true,
         'publicname' => true,
-        'new_window' => _env_admin,
+        'new_window' => _env === Core::ENV_ADMIN,
         'max_len' => null,
         'class' => null,
         'title' => null,
@@ -2901,8 +2901,8 @@ function _parseHCM_module($match)
  */
 function _runHCM($name, array $args)
 {
-    if (!_env_web) {
-        // HCM moduly zavisi na prostredi webu
+    if (!_env !== Core::ENV_WEB) {
+        // HCM moduly vyzaduji frontendove prostredi
         return '';
     }
 
@@ -4083,7 +4083,7 @@ function _userLoginForm($title = false, $required = false, $return = null, $embe
     // titulek
     if ($title) {
         $title_text = _lang($required ? 'login.required.title' : 'login.title');
-        if (_env_admin) {
+        if (_env === Core::ENV_ADMIN) {
             $output .= '<h1>' . $title_text . "</h1>\n";
         } else {
             $GLOBALS['_index']['title'] = $title_text;
@@ -4159,7 +4159,7 @@ function _userLoginForm($title = false, $required = false, $return = null, $embe
         // odkazy
         if (!$embedded) {
             $links = array();
-            if (_registration && _env_web) {
+            if (_registration && _env === Core::ENV_WEB) {
                 $links['reg'] = array('url' => _linkModule('reg'), 'text' => _lang('mod.reg'));
             }
             if (_lostpass) {
@@ -5581,7 +5581,7 @@ function _getCurrentTemplate()
 {
     // pouzit globalni promennou
     // (index)
-    if (_env_web && isset($GLOBALS['_template']) && $GLOBALS['_template'] instanceof TemplatePlugin) {
+    if (_env === Core::ENV_WEB && isset($GLOBALS['_template']) && $GLOBALS['_template'] instanceof TemplatePlugin) {
         return $GLOBALS['_template'];
     }
 

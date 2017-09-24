@@ -6,7 +6,7 @@ use Sunlight\Util\Color;
 
 require '../../system/bootstrap.php';
 Core::init('../../', array(
-    'env' => 'admin',
+    'env' => Core::ENV_ADMIN,
     'session_enabled' => false,
     'content_type' => 'text/css; charset=UTF-8',
 ));

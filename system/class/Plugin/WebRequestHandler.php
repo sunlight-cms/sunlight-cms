@@ -2,6 +2,7 @@
 
 namespace Sunlight\Plugin;
 
+use Sunlight\Core;
 use Sunlight\Extend;
 use Sunlight\Util\Url;
 
@@ -28,11 +29,8 @@ abstract class WebRequestHandler
      */
     public function register()
     {
-        if (_env !== 'web') {
-            throw new \LogicException(sprintf(
-                'Request handlers are meant for the "web" environment, current environment is "%s"',
-                _env
-            ));
+        if (_env !== Core::ENV_WEB) {
+            throw new \LogicException('Request handlers are meant for the web environment');
         }
 
         Extend::reg('index.plugin', array($this, 'onIndexPlugin'));

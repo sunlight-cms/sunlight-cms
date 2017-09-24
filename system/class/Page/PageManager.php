@@ -2,6 +2,7 @@
 
 namespace Sunlight\Page;
 
+use Sunlight\Core;
 use Sunlight\Database\Database as DB;
 use Sunlight\Database\TreeFilterInterface;
 use Sunlight\Database\TreeManager;
@@ -45,7 +46,7 @@ class PageManager
         $id = null;
         $data = null;
 
-        if (_env_web) {
+        if (_env === Core::ENV_WEB) {
             global $_index;
 
             if ($_index['is_page']) {

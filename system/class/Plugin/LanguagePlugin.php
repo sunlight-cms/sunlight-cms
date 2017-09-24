@@ -36,11 +36,15 @@ class LanguagePlugin extends Plugin
     /**
      * Get localization entries
      *
-     * @param bool $admin load administration dictionary as well 1/0
+     * @param bool|null $admin load administration dictionary as well 1/0 (null = auto)
      * @return array|bool false on failure
      */
-    public function getLocalizationEntries($admin = _env_admin)
+    public function getLocalizationEntries($admin = null)
     {
+        if ($admin === null) {
+            $admin = _env === Core::ENV_ADMIN;
+        }
+
         // base dictionary
         $fileName = sprintf('%s/dictionary.php', $this->dir);
         if (is_file($fileName)) {

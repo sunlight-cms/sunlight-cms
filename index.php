@@ -7,7 +7,9 @@ use Sunlight\Plugin\TemplateService;
 use Sunlight\Util\Url;
 
 require './system/bootstrap.php';
-Core::init('./');
+Core::init('./', array(
+    'env' => Core::ENV_WEB,
+));
 
 // funkce motivu
 require _root . 'system/functions-template.php';

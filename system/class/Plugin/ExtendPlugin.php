@@ -38,14 +38,16 @@ class ExtendPlugin extends Plugin
                 $subscriber['priority']
             );
         }
-        foreach ($this->options['events.' . _env] as $subscriber) {
-            Extend::reg(
-                $subscriber['event'],
-                $subscriber['use_this']
-                    ? array($this, $subscriber['callback'])
-                    : $subscriber['callback'],
-                $subscriber['priority']
-            );
+        if (_env === Core::ENV_WEB || _env === Core::ENV_ADMIN) {
+            foreach ($this->options['events.' . _env] as $subscriber) {
+                Extend::reg(
+                    $subscriber['event'],
+                    $subscriber['use_this']
+                        ? array($this, $subscriber['callback'])
+                        : $subscriber['callback'],
+                    $subscriber['priority']
+                );
+            }
         }
 
         // register language packs
@@ -57,8 +59,10 @@ class ExtendPlugin extends Plugin
         foreach ($this->options['scripts'] as $script) {
             $this->loadScript($script);
         }
-        foreach ($this->options['scripts.' . _env] as $script) {
-            $this->loadScript($script);
+        if (_env === Core::ENV_WEB || _env === Core::ENV_ADMIN) {
+            foreach ($this->options['scripts.' . _env] as $script) {
+                $this->loadScript($script);
+            }
         }
     }
 
