@@ -172,7 +172,6 @@ if ($continue) {
             $changeset = array(
                 'email' => $email,
                 'avatar' => $avatar,
-                'web' => $web,
                 'note' => $note,
                 'publicname' => $publicname,
                 'group_id' => $group,
