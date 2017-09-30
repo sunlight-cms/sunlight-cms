@@ -6,6 +6,7 @@ use Kuria\Debug\Dumper;
 use Sunlight\Core;
 use Sunlight\Extend;
 use Sunlight\Localization\LocalizationDirectory;
+use Sunlight\Plugin\InactivePlugin;
 
 /**
  * Devkit toolbar renderer
@@ -63,6 +64,7 @@ class ToolbarRenderer
                 $that->renderMemory();
                 $that->renderDatabase();
                 $that->renderEvents();
+                $that->renderPluginErrors();
                 $that->renderLang();
 
                 Extend::call('devkit.toolbar.render');
@@ -128,35 +130,37 @@ class ToolbarRenderer
 </div>
 
 <div class="devkit-content">
-    <div class="devkit-heading">SQL log</div>
+    <div>
+        <div class="devkit-heading">SQL log</div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Time</th>
-                <th>Trace</th>
-                <th>SQL</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($this->sqlLog as $index => $entry): ?>
+        <table>
+            <thead>
                 <tr>
-                    <td><?php echo $index + 1 ?></td>
-                    <td><?php echo round($entry['time'] * 1000) ?>ms</td>
-                    <td>
-                        <a href="#" class="devkit-hideshow" data-target="#devkit-db-trace-<?php echo $index ?>">show</a>
-                    </td>
-                    <td class="break-all"><?php echo _e($entry['query']) ?></td>
+                    <th>#</th>
+                    <th>Time</th>
+                    <th>Trace</th>
+                    <th>SQL</th>
                 </tr>
-                <tr id="devkit-db-trace-<?php echo $index ?>" class="devkit-hidden">
-                    <td colspan="4">
-                        <pre><?php echo _e($entry['trace']) ?></pre>
-                    </td>
-                </tr>
-            <?php endforeach ?>
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                <?php foreach ($this->sqlLog as $index => $entry): ?>
+                    <tr>
+                        <td><?php echo $index + 1 ?></td>
+                        <td><?php echo round($entry['time'] * 1000) ?>ms</td>
+                        <td>
+                            <a href="#" class="devkit-hideshow" data-target="#devkit-db-trace-<?php echo $index ?>">show</a>
+                        </td>
+                        <td class="break-all"><?php echo _e($entry['query']) ?></td>
+                    </tr>
+                    <tr id="devkit-db-trace-<?php echo $index ?>" class="devkit-hidden">
+                        <td colspan="4">
+                            <pre><?php echo _e($entry['trace']) ?></pre>
+                        </td>
+                    </tr>
+                <?php endforeach ?>
+            </tbody>
+        </table>
+    </div>
 </div>
 <?php
     }
@@ -193,6 +197,58 @@ class ToolbarRenderer
                 <?php endforeach ?>
             </tbody>
         </table>
+    </div>
+</div>
+<?php
+    }
+
+    /**
+     * Render the  plugin errors section
+     */
+    public function renderPluginErrors()
+    {
+        $pluginErrors = array();
+
+        foreach (Core::$pluginManager->allInactive() as $type => $inactivePlugins) {
+            foreach ($inactivePlugins as $name => $inactivePlugin) {
+                /** @var InactivePlugin $inactivePlugin */
+
+                foreach ($inactivePlugin->getErrors() as $error) {
+                    $pluginErrors["{$type}/{$name}"][] = $error;
+                }
+
+                foreach ($inactivePlugin->getConfigurationErrors() as $path => $error) {
+                    $pluginErrors["{$type}/{$name}"][] = "[at {$path}] $error";
+                }
+            }
+        }
+
+        if (empty($pluginErrors)) {
+            return;
+        }
+
+        $pluginErrorCount = sizeof($pluginErrors);
+
+        ?>
+<div class="devkit-section devkit-plugin-errors devkit-toggleable">
+    <?php echo $pluginErrorCount ?> plugin <?php echo $pluginErrorCount > 1 ? 'errors' : 'error' ?>
+</div>
+
+<div class="devkit-content">
+    <div>
+        <div class="devkit-heading">Plugin errors</div>
+
+        <ul>
+            <?php foreach ($pluginErrors as $pluginIdentifier => $errors): ?>
+                <li><?php echo _e($pluginIdentifier) ?>
+                    <ol>
+                        <?php foreach ($errors as $error): ?>
+                            <li><?php echo _e($error) ?></li>
+                        <?php endforeach ?>
+                    </ol>
+                </li>
+            <?php endforeach ?>
+        </ul>
     </div>
 </div>
 <?php

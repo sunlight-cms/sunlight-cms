@@ -62,6 +62,7 @@
 #devkit-toolbar .devkit-memory {background-image: url("images/memory.png");}
 #devkit-toolbar .devkit-database {background-image: url("images/database.png");}
 #devkit-toolbar .devkit-extend {background-image: url("images/plugin.png");}
+#devkit-toolbar .devkit-plugin-errors {background-image: url("images/error.png");}
 #devkit-toolbar .devkit-request {background-image: url("images/blocks.png");}
 #devkit-toolbar .devkit-login {background-image: url("images/key.png");}
 #devkit-toolbar .devkit-lang {background-image: url("images/lang.png");}
@@ -149,7 +150,6 @@ body.devkit-content-open {
 }
 #devkit-toolbar th {
     background-color: #fff;
-    white-space: nowrap;
 }
 #devkit-toolbar th,
 #devkit-toolbar td {
