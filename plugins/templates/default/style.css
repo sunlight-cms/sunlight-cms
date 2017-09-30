@@ -593,7 +593,7 @@ ul.list-info strong {
 
 /* Topic list */
 .topic-hl,
-.topic-table thead td {
+.topic-table thead th {
     background-color: #F7F7F7;
 }
 .topic-icon-cell {
