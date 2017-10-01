@@ -81,7 +81,7 @@ class Url
             $url = sprintf(
                 '%s://%s%s',
                 !empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off' ? 'https' : 'http',
-                $_SERVER['HTTP_HOST'] ?: 'localhost',
+                !empty($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost',
                 $_SERVER['REQUEST_URI']
             );
 
