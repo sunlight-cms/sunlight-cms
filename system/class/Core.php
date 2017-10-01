@@ -366,21 +366,23 @@ class Core
         }
 
         // verify current URL
-        $currentUrl = Url::current();
-        $baseUrl = Url::base();
+        if ('cli' !== PHP_SAPI) {
+            $currentUrl = Url::current();
+            $baseUrl = Url::base();
 
-        if ($currentUrl->host !== $baseUrl->host) {
-            // invalid hostname
-            $currentUrl->host = $baseUrl->host;
-            _redirectHeader($currentUrl->generateAbsolute());
-            exit;
-        }
+            if ($currentUrl->host !== $baseUrl->host) {
+                // invalid hostname
+                $currentUrl->host = $baseUrl->host;
+                _redirectHeader($currentUrl->generateAbsolute());
+                exit;
+            }
 
-        if ($currentUrl->scheme !== $baseUrl->scheme) {
-            // invalid protocol
-            $currentUrl->scheme = $baseUrl->scheme;
-            _redirectHeader($currentUrl->generateAbsolute());
-            exit;
+            if ($currentUrl->scheme !== $baseUrl->scheme) {
+                // invalid protocol
+                $currentUrl->scheme = $baseUrl->scheme;
+                _redirectHeader($currentUrl->generateAbsolute());
+                exit;
+            }
         }
     }
 
