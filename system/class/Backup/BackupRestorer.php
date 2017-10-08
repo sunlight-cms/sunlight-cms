@@ -44,12 +44,15 @@ class BackupRestorer
      *
      * @param bool       $database    restore the database 1/0
      * @param array      $directories directory paths to restore (from backup's metadata), null = all
+     * @param array      $files       file paths to restore (from backup's metadata), null = all
      * @param array|null &$errors
      * @return bool
      */
-    public function restore($database, array $directories = null, &$errors = null)
+    public function restore($database, array $directories = null, array $files = null, &$errors = null)
     {
         $errors = array();
+
+        $isPatch = $this->backup->getMetaData('is_patch');
 
         // normalize arguments
         $database = $database && $this->backup->hasDatabaseDump();
@@ -60,12 +63,37 @@ class BackupRestorer
             $directories = array_intersect($this->backup->getMetaData('directory_list'), $directories);
         }
 
+        if ($files === null) {
+            $files = $this->backup->getMetaData('file_list');
+        } else {
+            $files = array_intersect($this->backup->getMetaData('file_list'), $files);
+        }
+
+        if ($isPatch) {
+            $filesToRemove = $this->backup->getMetaData('files_to_remove');
+            $directoriesToRemove = $this->backup->getMetaData('directories_to_remove');
+            $directoriesToPurge = $this->backup->getMetaData('directories_to_purge');
+        } else {
+            $filesToRemove = array();
+            $directoriesToRemove = array();
+            $directoriesToPurge = $directories;
+        }
+
         // verify what we are restoring
-        if (!$database && empty($directories)) {
+        if (!$database && empty($directories) && empty($files)) {
             $errors[] = 'nothing to restore';
         } else {
+            // verify files
+            foreach (array_merge($files, $filesToRemove) as $file) {
+                $fullPath = _root . $file;
+
+                if (is_file($fullPath) && !is_writable($fullPath)) {
+                    $errors[] = sprintf('cannot write to "%s", please check privileges (%s)', $fullPath);
+                }
+            }
+
             // verify directories
-            foreach ($directories as $directory) {
+            foreach (array_merge($directoriesToRemove, $directoriesToPurge) as $directory) {
                 if (!Filesystem::checkDirectory(_root . $directory, true, $failedPaths)) {
                     $failedPathsString = implode(', ', array_slice($failedPaths, 0, 3));
                     if (sizeof($failedPaths) > 3) {
@@ -81,7 +109,10 @@ class BackupRestorer
         if (empty($errors)) {
             // load database
             if ($database) {
-                DatabaseLoader::dropTables(DB::getTablesByPrefix());
+                if (!$this->backup->getMetaData('is_patch')) {
+                    DatabaseLoader::dropTables(DB::getTablesByPrefix());
+                }
+
                 DatabaseLoader::load(
                     SqlReader::fromStream($this->backup->getDatabaseDump()),
                     $this->backup->getMetaData('db_prefix'),
@@ -89,13 +120,26 @@ class BackupRestorer
                 );
             }
 
-            // empty directories
-            foreach ($directories as $directory) {
+            // filesystem cleanup
+            foreach ($directoriesToPurge as $directory) {
                 Filesystem::purgeDirectory(_root . $directory, array('keep_dir' => true));
+            }
+            foreach ($directoriesToRemove as $directory) {
+                Filesystem::purgeDirectory(_root . $directory);
+            }
+            foreach ($filesToRemove as $file) {
+                unlink($file);
             }
 
             // extract directories
-            $this->backup->extract($directories, _root);
+            if (!empty($directories)) {
+                $this->backup->extractDirectories($directories, _root);
+            }
+
+            // extract files
+            if (!empty($files)) {
+                $this->backup->extractFiles($files, _root);
+            }
             
             // clear cache
             Core::$cache->clear();

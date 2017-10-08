@@ -34,10 +34,6 @@ class BackupBuilder
         'images/thumb',
         'system/tmp',
     );
-    /** @var string[] */
-    protected $generatedPathMap = array(
-        'config.php' => array(__CLASS__, 'generateConfigFile'),
-    );
     /** @var array[] name => paths */
     protected $dynamicPathMap = array(
         'plugins' => array('plugins'),
@@ -308,20 +304,6 @@ class BackupBuilder
     }
 
     /**
-     * Add a generated path
-     *
-     * @param string   $path     relative archive path
-     * @param callable $callback callback(): string
-     * @return static
-     */
-    public function addGeneratedPath($path, $callback)
-    {
-        $this->generatedPathMap[$path] = $callback;
-
-        return $this;
-    }
-
-    /**
      * Make a path included
      *
      * @param string $regexp
@@ -452,9 +434,8 @@ class BackupBuilder
                     }
                 }
             }
-            foreach ($this->generatedPathMap as $path => $callback) {
-                $backup->addFileFromString($path, call_user_func($callback));
-            }
+
+            $backup->addFileFromString('config.php', static::generateConfigFile(), false);
 
             $backup->close();
         } catch (\Exception $e) {

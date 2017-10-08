@@ -728,6 +728,7 @@ return array(
     'admin.other.backup.restore.warning' => 'Warning! Restoring a backup will overwrite / remove current data (database, files) depending on what the backup contains!',
     'admin.other.backup.restore.contents' => 'Backup contents',
     'admin.other.backup.restore.contents.dir' => 'directory',
+    'admin.other.backup.restore.contents.file' => 'file',
     'admin.other.backup.restore.errors.validate' => 'The backup is not compatible with the current version of the system.',
     'admin.other.backup.restore.complete' => 'The backup was restored. You may need to log in again.',
     'admin.other.backup.restore.submit.load' => 'Load the backup',

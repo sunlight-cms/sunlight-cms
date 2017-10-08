@@ -68,7 +68,7 @@ class PluginArchive
         }
 
         // extract plugins
-        Zip::extractPaths($this->zip, $toExtract, _root);
+        Zip::extractDirectories($this->zip, $toExtract, _root);
 
         return $toExtract;
     }

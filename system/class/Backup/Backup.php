@@ -39,6 +39,8 @@ class Backup
     protected $metadataCache;
     /** @var string|null */
     protected $addedDbDumpPrefix;
+    /** @var string[] */
+    protected $fileList = array();
 
     /**
      * @param string $path
@@ -174,10 +176,11 @@ class Backup
     /**
      * Add file or directory to the archive (recursively)
      *
-     * @param string        $path   relative to the system root
-     * @param callable|null $filter callback(data_path): bool
+     * @param string        $path                  relative to the system root
+     * @param callable|null $filter                callback(data_path): bool
+     * @param bool          $addRootFileToFileList automatically add root files to the file list 1/0
      */
-    public function addPath($path, $filter = null)
+    public function addPath($path, $filter = null, $addRootFileToFileList = true)
     {
         $realPath = _root . $path;
 
@@ -185,7 +188,7 @@ class Backup
             if (is_dir($realPath)) {
                 $this->addDirectory($path, $filter);
             } else {
-                $this->addFile($path, $realPath, $filter);
+                $this->addFile($path, $realPath, $filter, $addRootFileToFileList);
             }
         }
     }
@@ -243,15 +246,21 @@ class Backup
     /**
      * Add a file to the archive
      *
-     * @param string        $dataPath path within the backup's data directory (e.g. "foo.txt")
-     * @param string        $realPath real path to the file
-     * @param callable|null $filter   callback(data_path): bool
+     * @param string        $dataPath              path within the backup's data directory (e.g. "foo.txt")
+     * @param string        $realPath              real path to the file
+     * @param callable|null $filter                callback(data_path): bool
+     * @param bool          $addRootFileToFileList automatically add root files to the file list 1/0
      */
-    public function addFile($dataPath, $realPath, $filter = null)
+    public function addFile($dataPath, $realPath, $filter = null, $addRootFileToFileList = true)
     {
         $this->ensureOpenAndNew();
 
         if ($filter === null || call_user_func($filter, $dataPath)) {
+            // add files that are not in any directory to the file list
+            if ($addRootFileToFileList && strpos($dataPath, '/') === false) {
+                $this->fileList[] = $dataPath;
+            }
+
             $this->zip->addFile(
                 $realPath,
                 static::DATA_PATH . "/{$dataPath}"
@@ -262,12 +271,17 @@ class Backup
     /**
      * Add file to the archive from a string
      *
-     * @param string $dataPath path within the backup's data directory (e.g. "foo.txt)
-     * @param string $data     the file's contents
+     * @param string $dataPath              path within the backup's data directory (e.g. "foo.txt)
+     * @param string $data                  the file's contents
+     * @param bool   $addRootFileToFileList automatically add root files to the file list 1/0
      */
-    public function addFileFromString($dataPath, $data)
+    public function addFileFromString($dataPath, $data, $addRootFileToFileList = true)
     {
         $this->ensureOpenAndNew();
+
+        if ($addRootFileToFileList && strpos($dataPath, '/') === false) {
+            $this->fileList[] = $dataPath;
+        }
 
         $this->zip->addFromString(static::DATA_PATH . "/{$dataPath}", $data);
     }
@@ -312,28 +326,42 @@ class Backup
     }
 
     /**
-     * Extract one or more directories to the given path
+     * Extract one or more files into the given directory path
+     *
+     * @param $files
+     * @param $targetPath
+     */
+    public function extractFiles($files, $targetPath)
+    {
+        $this->ensureOpenAndNotNew();
+
+        foreach ((array) $files as $file) {
+            Zip::extractFile(
+                $this->zip,
+                $this->dataPathToArchivePath($file),
+                "{$targetPath}/{$file}"
+            );
+        }
+    }
+
+    /**
+     * Extract one or more directories into the given directory path
      *
      * The entire path is preserved.
      * Existing files will be overwritten.
      *
-     * @param array|string $dataPaths  one or more archive paths relative to the data directory (e.g. "upload")
-     * @param string       $targetPath path where to extract the directories to
+     * @param array|string $directories one or more archive paths relative to the data directory (e.g. "upload")
+     * @param string       $targetPath  path where to extract the directories to
      */
-    public function extract($dataPaths, $targetPath)
+    public function extractDirectories($directories, $targetPath)
     {
         $this->ensureOpenAndNotNew();
-        
-        $prefix = static::DATA_PATH . '/';
 
-        $archivePaths = array();
-        foreach ((array) $dataPaths as $dataPath) {
-            $archivePaths[] = $prefix . $dataPath;
-        }
-
-        Zip::extractPaths($this->zip, $archivePaths, $targetPath, array(
-            'exclude_prefix' => $prefix,
-        ));
+        Zip::extractDirectories(
+            $this->zip,
+            array_map(array($this, 'dataPathToArchivePath'), $directories),
+            $targetPath
+        );
     }
 
     /**
@@ -391,7 +419,12 @@ class Backup
             }),
             'created_at' => array('type' => 'integer', 'required' => true),
             'directory_list' => array('type' => 'array', 'required' => true),
+            'file_list' => array('type' => 'array', 'required' => true),
             'db_prefix' => array('type' => 'string', 'nullable' => true, 'required' => true),
+            'is_patch' => array('type' => 'boolean', 'required' => false, 'default' => false),
+            'files_to_remove' => array('type' => 'array', 'required' => false, 'default' => array()),
+            'directories_to_remove' => array('type' => 'array', 'required' => false, 'default' => array()),
+            'directories_to_purge' => array('type' => 'array', 'required' => false, 'default' => array()),
         ));
 
         return $optionSet->process($metaData, $errors);
@@ -407,10 +440,11 @@ class Backup
             'system_dist' => Core::DIST,
             'created_at' => time(),
             'directory_list' => $this->directoryList,
+            'file_list' => $this->fileList,
             'db_prefix' => $this->addedDbDumpPrefix,
         );
 
-        $this->zip->addFromString(static::METADATA_PATH, Json::encode($metaData));
+        $this->zip->addFromString(static::METADATA_PATH, Json::encode($metaData, true));
     }
 
     /**
@@ -441,5 +475,14 @@ class Backup
         if ($this->new) {
             throw new \LogicException('The backup has not been saved yet');
         }
+    }
+
+    /**
+     * @param string $dataPath
+     * @return string
+     */
+    protected function dataPathToArchivePath($dataPath)
+    {
+        return static::DATA_PATH . '/' . $dataPath;
     }
 }

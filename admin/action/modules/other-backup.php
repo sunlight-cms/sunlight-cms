@@ -167,8 +167,9 @@ if (!empty($_POST)) {
                         if ($restoring) {
                             // obnovit
                             $directories = _arrayFilter($_POST, 'directory_');
+                            $files = _arrayFilter($_POST, 'file_');
                             $database = isset($_POST['database']);
-                            $success = $backup_restorer->restore($database, $directories, $errors);
+                            $success = $backup_restorer->restore($database, $directories, $files, $errors);
 
                             if ($success) {
                                 $message = _msg(_msg_ok, _lang('admin.other.backup.restore.complete'));
@@ -208,6 +209,11 @@ if (!empty($_POST)) {
                                 foreach ($backup_metadata['directory_list'] as $index => $directory) {
                                     echo '<li><label><input type="checkbox"' . _restoreCheckedAndName('backup_loaded', 'directory_' . $index, true) . ' value="' . _e($directory) . '"> ' . _lang('admin.other.backup.restore.contents.dir') . ' <code>' . _e($directory) . "</code></label></li>\n";
                                 }
+                        }) . '
+                        ' . _buffer(function () use ($backup_metadata) {
+                            foreach ($backup_metadata['file_list'] as $index => $file) {
+                                echo '<li><label><input type="checkbox"' . _restoreCheckedAndName('backup_loaded', 'file_' . $index, true) . ' value="' . _e($file) . '"> ' . _lang('admin.other.backup.restore.contents.file') . ' <code>' . _e($file) . "</code></label></li>\n";
+                            }
                         }) . '
                     </ul>
                 </td>

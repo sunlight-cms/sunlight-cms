@@ -728,6 +728,7 @@ return array(
     'admin.other.backup.restore.warning' => 'Pozor! Obnovou zálohy dojde k přepsání / smazání stávajících dat (databáze, soubory) podle toho, co daná záloha obsahuje!',
     'admin.other.backup.restore.contents' => 'Obsah zálohy',
     'admin.other.backup.restore.contents.dir' => 'adresář',
+    'admin.other.backup.restore.contents.file' => 'soubor',
     'admin.other.backup.restore.errors.validate' => 'Záloha není kompatibilní s aktuální verzí systému.',
     'admin.other.backup.restore.complete' => 'Záloha byla obnovena. Je možné, že se budete muset znovu přihlásit.',
     'admin.other.backup.restore.submit.load' => 'Načíst zálohu',

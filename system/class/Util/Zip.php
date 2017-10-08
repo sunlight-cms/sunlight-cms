@@ -32,7 +32,7 @@ class Zip
      * @throws \InvalidArgumentException if archive path is not valid
      * @return bool
      */
-    public static function extract(ZipArchive $zip, $archivePath, $targetPath)
+    public static function extractFile(ZipArchive $zip, $archivePath, $targetPath)
     {
         if (substr($archivePath, -1) !== '/') {
             $source = $zip->getStream($archivePath);
@@ -65,11 +65,11 @@ class Zip
      *                          (the trailing slash is important)
      *
      * @param ZipArchive      $zip
-     * @param string[]|string $archivePaths archive directory paths (e.g. "foo", "foo/bar" or "" for root)
-     * @param string          $targetPath   path where to extract the files to
+     * @param string[]|string $directories archive directory paths (e.g. "foo", "foo/bar" or "" for root)
+     * @param string          $targetPath  path where to extract the files to
      * @param array           $options
      */
-    public static function extractPaths(ZipArchive $zip, $archivePaths, $targetPath, array $options = array())
+    public static function extractDirectories(ZipArchive $zip, $directories, $targetPath, array $options = array())
     {
         $options += array(
             'path_mode' => static::PATH_FULL,
@@ -84,7 +84,7 @@ class Zip
 
         // build archive path prefix map
         $archivePathPrefixMap = array();
-        foreach ((array) $archivePaths as $archivePath) {
+        foreach ((array) $directories as $archivePath) {
             if ($archivePath !== '') {
                 $archivePathPrefix = "{$archivePath}/";
                 $archivePathPrefixMap[$archivePathPrefix] = strlen($archivePathPrefix);
@@ -124,7 +124,7 @@ class Zip
                         }
 
                         // extract the file
-                        static::extract($zip, $stat['name'], "{$targetDir}/{$fileName}");
+                        static::extractFile($zip, $stat['name'], "{$targetDir}/{$fileName}");
                     }
                 }
             }
