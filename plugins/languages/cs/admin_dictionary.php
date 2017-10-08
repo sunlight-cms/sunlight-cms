@@ -25,7 +25,6 @@ return array(
     'admin.index.box.latest' => 'Nejnovější',
     'admin.index.logoutwarn' => 'Budete automaticky odhlášeni po %s minutách neaktivity',
     'admin.index.messages' => 'Systémové zprávy',
-    'admin.index.statewarn' => 'Toto je *state* verze systému, která není určena do ostrého provozu!',
     'admin.index.devwarn' => 'Systém se nachází ve vývojovém režimu.',
     'admin.index.version.latest' => 'Používáte nejnovější verzi systému.',
     'admin.index.version.old' => 'Je k dispozici nová verze <strong>*version*</strong>. Je doporučeno <a href="*link*">aktualizovat</a>.',

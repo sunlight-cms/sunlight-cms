@@ -1043,7 +1043,7 @@ class ImportDatabaseStep extends Step
                 'root' => array(
                     1 => array(
                         'title' => 'Úvod',
-                        'content' => '<p>Instalace redakčního systému SunLight CMS ' . Core::VERSION . ' ' . Core::DIST . ' byla úspěšně dokončena!<br />
+                        'content' => '<p>Instalace redakčního systému SunLight CMS ' . Core::VERSION . ' byla úspěšně dokončena!<br />
 Nyní se již můžete <a href="admin/">přihlásit do administrace</a> (jméno a heslo bylo zvoleno při instalaci).</p>
 <p>Podporu, diskusi a doplňky ke stažení naleznete na oficiálních webových stránkách <a href="https://sunlight-cms.org/">sunlight-cms.org</a>.</p>',
                     ),
@@ -1066,7 +1066,7 @@ Nyní se již můžete <a href="admin/">přihlásit do administrace</a> (jméno 
                 'root' => array(
                     1 => array(
                         'title' => 'Home',
-                        'content' => '<p>Installation of SunLight CMS ' . Core::VERSION . ' ' . Core::DIST . ' has been a success!<br />
+                        'content' => '<p>Installation of SunLight CMS ' . Core::VERSION . ' has been a success!<br />
 Now you can <a href="admin/">log in to the administration</a> (username and password has been setup during installation).</p>
 <p>Support, forums and plugins are available at the official website <a href="https://sunlight-cms.org/">sunlight-cms.org</a>.</p>',
                     ),
@@ -1305,7 +1305,7 @@ $step = $stepRunner->getCurrent();
                 <?php echo _e($step->getTitle()) ?>
             </span>
             <span id="system-name">
-                SunLight CMS <?php echo Core::VERSION ?> <small><?php echo Core::DIST ?></small>
+                SunLight CMS <?php echo Core::VERSION ?>
             </span>
         </h1>
 

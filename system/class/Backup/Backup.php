@@ -412,11 +412,6 @@ class Backup
                     throw new OptionSetNormalizerException('incompatible system version');
                 }
             }),
-            'system_dist' => array('type' => 'string', 'required' => true, 'normalizer' => function ($value) {
-                if (Core::DIST !== $value) {
-                    throw new OptionSetNormalizerException('incompatible system state');
-                }
-            }),
             'created_at' => array('type' => 'integer', 'required' => true),
             'directory_list' => array('type' => 'array', 'required' => true),
             'file_list' => array('type' => 'array', 'required' => true),
@@ -437,7 +432,6 @@ class Backup
     {
         $metaData = array(
             'system_version' => Core::VERSION,
-            'system_dist' => Core::DIST,
             'created_at' => time(),
             'directory_list' => $this->directoryList,
             'file_list' => $this->fileList,

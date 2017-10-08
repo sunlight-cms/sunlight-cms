@@ -405,10 +405,7 @@ class PluginManager
         // invalidate stale data
         if (
             $data !== false
-            && (
-                $data['system_version'] !== Core::VERSION
-                || $data['system_dist'] !== Core::DIST
-            )
+            && $data['system_version'] !== Core::VERSION
         ) {
             $data = false;
         }
@@ -421,7 +418,6 @@ class PluginManager
             $data = array(
                 'plugins' => $plugins,
                 'system_version' => Core::VERSION,
-                'system_dist' => Core::DIST,
             );
 
             $this->cache->set('plugin_data', $data, 0, array('bound_files' => $boundFiles));
