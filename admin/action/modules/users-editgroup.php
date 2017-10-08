@@ -68,8 +68,9 @@ if ($continue) {
                 array('name' => 'administration'),
                 array('name' => 'adminusers'),
                 array('name' => 'admingroups'),
-                array('name' => 'adminsettings', 'dangerous' => true),
                 array('name' => 'adminplugins', 'dangerous' => true),
+                array('name' => 'adminsettings', 'dangerous' => true),
+                array('name' => 'adminbackup', 'dangerous' => true),
             ),
         ),
         array(
@@ -77,7 +78,6 @@ if ($continue) {
             'rights' => array(
                 array('name' => 'adminother'),
                 array('name' => 'adminmassemail'),
-                array('name' => 'adminbackup', 'dangerous' => true),
             ),
         ),
         array(
@@ -146,7 +146,7 @@ if ($continue) {
             $isText = isset($item['text']) && $item['text'];
 
             $rights .= "<tr>
-    <th" . (isset($item['dangerous']) && $item['dangerous'] ? ' class="highlight-alt"' : '') . ">
+    <th" . (isset($item['dangerous']) && $item['dangerous'] ? ' class="important"' : '') . ">
         <label for='setting_" . $item['name'] . "'>" . (isset($item['label']) ? $item['label'] : _lang('admin.users.groups.' . $item['name'])) . "</label>
     </th>
     <td>

@@ -282,23 +282,23 @@ return array(
         'menu_order' => 50,
     ),
 
+    // backup
+    'backup' => array(
+        'title' => _lang('admin.backup.title'),
+        'access' => _priv_adminbackup,
+        'parent' => null,
+        'menu' => true,
+        'menu_order' => 60,
+    ),
+
     // other
     'other' => array(
         'title' => _lang('admin.menu.other'),
         'access' => _priv_adminother,
         'parent' => null,
-        'children' => array('other-backup', 'other-massemail', 'other-cleanup', 'other-sqlex'),
+        'children' => array('other-massemail', 'other-cleanup', 'other-sqlex'),
         'menu' => true,
-        'menu_order' => 60,
-    ),
-    'other-backup' => array(
-        'title' => _lang('admin.other.backup.title'),
-        'access' => _priv_adminother && _priv_adminbackup,
-        'parent' => 'other',
-        'other' => true,
-        'other_system' => true,
-        'other_order' => 0,
-        'other_icon' => 'images/icons/big-floppy.png',
+        'menu_order' => 70,
     ),
     'other-cleanup' => array(
         'title' => _lang('admin.other.cleanup.title'),

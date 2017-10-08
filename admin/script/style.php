@@ -648,7 +648,6 @@ fieldset fieldset .bborder {border-color: <?php echo $scheme_smoke; ?>;}
 .minwidth {min-width: 700px;}
 .important {color: red;}
 .highlight {color: <?php echo $scheme_link; ?>;}
-.highlight-alt {font-style: italic; text-decoration: underline;}
 .max-area {width: 100%; height: 100%;}
 .max-width {width: 100%;}
 .separated {margin-top: 1em;}
