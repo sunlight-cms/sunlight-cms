@@ -124,14 +124,14 @@ if ($admin_index_cfg['latest_version_check']) {
     $versionApiUrl->add(array(
         'ver' => Core::VERSION,
         'php' => PHP_VERSION_ID,
-        'referer' => sprintf('%s@%s', sha1(Core::$appId . '$' . Core::$secret), Url::current()->host),
+        'checksum' => sha1(Core::$appId . '$' . Core::$secret),
         'lang' => _lang('langcode.iso639'),
     ));
 
     $output .= "<script type='text/javascript'>
 $.ajax({
     url: " . json_encode($versionApiUrl->generate(true)) . ",
-    dataType: 'jsonp',
+    dataType: 'json',
     cache: false,
     success: function (response) {
         // update #latest-version
