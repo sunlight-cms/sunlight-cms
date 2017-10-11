@@ -48,30 +48,28 @@ class BackupRestorer
         $errors = array();
 
         $isPatch = $this->backup->getMetaData('is_patch');
-
-        // normalize arguments
         $database = $database && $this->backup->hasDatabaseDump();
 
+        // defaults
         if ($directories === null) {
             $directories = $this->backup->getMetaData('directory_list');
-        } else {
-            $directories = array_intersect($this->backup->getMetaData('directory_list'), $directories);
         }
-
         if ($files === null) {
             $files = $this->backup->getMetaData('file_list');
-        } else {
-            $files = array_intersect($this->backup->getMetaData('file_list'), $files);
         }
 
+        // normalize lists
+        $files = $this->normalizePathList($files, $this->backup->getMetaData('file_list'));
+        $directories = $this->normalizePathList($directories, $this->backup->getMetaData('directory_list'));
+
         if ($isPatch) {
-            $filesToRemove = $this->backup->getMetaData('files_to_remove');
-            $directoriesToRemove = $this->backup->getMetaData('directories_to_remove');
-            $directoriesToPurge = $this->backup->getMetaData('directories_to_purge');
+            $filesToRemove = $this->normalizePathList($this->backup->getMetaData('files_to_remove'), null, true, true);
+            $directoriesToRemove = $this->normalizePathList($this->backup->getMetaData('directories_to_remove'), null, true, true);
+            $directoriesToPurge = $this->normalizePathList($this->backup->getMetaData('directories_to_purge'), null, true, true);
         } else {
             $filesToRemove = array();
             $directoriesToRemove = array();
-            $directoriesToPurge = $directories;
+            $directoriesToPurge = $this->normalizePathList($directories, null, true, true);
         }
 
         // verify what we are restoring
@@ -80,17 +78,20 @@ class BackupRestorer
         }
 
         // verify files
-        foreach (array_merge($files, $filesToRemove) as $file) {
-            $fullPath = _root . $file;
-
-            if (is_file($fullPath) && !is_writable($fullPath)) {
-                $errors[] = sprintf('cannot write to "%s", please check privileges (%s)', $fullPath);
+        foreach ($files as $file) {
+            if (is_file($file) && !is_writable(_root . $file)) {
+                $errors[] = sprintf('cannot write to "%s", please check privileges (%s)', $file);
+            }
+        }
+        foreach ($filesToRemove as $file) {
+            if (!is_writable($file)) {
+                $errors[] = sprintf('cannot write to "%s", please check privileges (%s)', $file);
             }
         }
 
         // verify directories
         foreach (array_merge($directoriesToRemove, $directoriesToPurge) as $directory) {
-            if (!Filesystem::checkDirectory(_root . $directory, true, $failedPaths)) {
+            if (!Filesystem::checkDirectory($directory, true, $failedPaths)) {
                 $failedPathsString = implode(', ', array_slice($failedPaths, 0, 3));
                 if (sizeof($failedPaths) > 3) {
                     $failedPathsString .= sprintf(' and %d more', sizeof($failedPaths) - 3);
@@ -119,13 +120,15 @@ class BackupRestorer
 
         // filesystem cleanup
         foreach ($directoriesToPurge as $directory) {
-            Filesystem::purgeDirectory(_root . $directory, array('keep_dir' => true));
+            Filesystem::purgeDirectory($directory, array('keep_dir' => true));
         }
         foreach ($directoriesToRemove as $directory) {
-            Filesystem::purgeDirectory(_root . $directory);
+            Filesystem::purgeDirectory($directory);
         }
         foreach ($filesToRemove as $file) {
-            unlink($file);
+            if (is_file($file)) {
+                unlink($file);
+            }
         }
 
         // extract directories
@@ -145,5 +148,37 @@ class BackupRestorer
         Core::updateSetting('install_check', 1);
 
         return true;
+    }
+
+    /**
+     * @param string[]      $paths
+     * @param string[]|null $allowedValues      list of allowed values in $paths
+     * @param bool          $addRootPath        prefix normalized paths with _root 1/0
+     * @param bool          $excludeNonexistent skip nonexistent paths 1/0
+     * @return array
+     */
+    protected function normalizePathList(array $paths, array $allowedValues = null, $addRootPath = false, $excludeNonexistent = false)
+    {
+        if ($allowedValues) {
+            $paths = array_intersect($allowedValues, $paths);
+        }
+
+        $normalizedPaths = array();
+
+        foreach ($paths as $path) {
+            if ($excludeNonexistent && !file_exists(_root . $path)) {
+                continue;
+            }
+
+            $normalizedPath = $path;
+
+            if ($addRootPath) {
+                $normalizedPath = _root . $normalizedPath;
+            }
+
+            $normalizedPaths[] = $normalizedPath;
+        }
+
+        return $normalizedPaths;
     }
 }
