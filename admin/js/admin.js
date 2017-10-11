@@ -46,7 +46,8 @@ Sunlight.admin = (function ($) {
         $(document.body).on('submit', 'form', function (e) {
             var usedSubmitButton =  $('.clicked-submit', e.target);
             if (
-                !e.target.target
+                !e.isDefaultPrevented()
+                && !e.target.target
                 && (0 === usedSubmitButton.length || !usedSubmitButton.attr('formtarget'))
                 && !$(e.target).hasClass('no-busy-overlay')
             ) {
