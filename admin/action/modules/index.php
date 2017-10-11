@@ -128,7 +128,7 @@ if ($admin_index_cfg['latest_version_check']) {
         'lang' => _lang('langcode.iso639'),
     ));
 
-    $output .= "<script type='text/javascript'>
+    $output .= "<script>
 $.ajax({
     url: " . json_encode($versionApiUrl->generate(true)) . ",
     dataType: 'json',
@@ -167,7 +167,7 @@ $.ajax({
                 message = " . json_encode(_lang('admin.index.version.old')) . ";
                 message = message
                     .replace('*version*', Sunlight.escapeHtml(response.latestVersion))
-                    .replace('*link*', 'https://sunlight-cms.org/resource/update');
+                    .replace('*link*', 'https://sunlight-cms.org/resource/update?from=" . rawurlencode(Core::VERSION) . "');
             }
             
             $(Sunlight.msg(messageType, message, true)).insertAfter('#index-messages > h2:first-child');
