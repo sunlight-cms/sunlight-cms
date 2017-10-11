@@ -41,7 +41,7 @@ if ($valid && $login && !_login) {
 <html>
 <head>
     <meta charset="UTF-8">
-    <style type="text/css">
+    <style>
         body {font-family: sans-serif; background-color: #ccc;}
         input[type=submit] {padding: 10px; cursor: pointer;}
         #wrapper {max-width: 600px; margin: 0 auto; padding: 0 20px; border: 1px solid #ddd; background-color: #fff;}

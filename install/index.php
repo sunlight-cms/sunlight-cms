@@ -1253,7 +1253,7 @@ $step = $stepRunner->getCurrent();
 <html>
 <head>
     <meta charset="UTF-8">
-    <style type="text/css">
+    <style>
         * {margin: 0; padding: 0;}
         body {margin: 1em; background-color: #ededed; font-family: sans-serif; font-size: 13px; color: #000;}
         a {color: #f60; text-decoration: none;}

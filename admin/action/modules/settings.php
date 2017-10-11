@@ -425,7 +425,7 @@ $output .= '
 
 ' . _xsrfProtect() . '</form>
 
-<script type="text/javascript">
+<script>
 (function () {
     $("#settingsnav").scrollFix({
         style: false,

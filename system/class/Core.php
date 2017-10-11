@@ -912,7 +912,7 @@ class Core
 
         // opening script tag
         if ($scriptTags) {
-            $output .= "<script type=\"text/javascript\">";
+            $output .= "<script>";
         }
 
         // prepare variables

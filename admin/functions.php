@@ -537,9 +537,9 @@ function _adminThemeAssets($scheme, $dark)
             'admin' => _link('admin/script/style.php?s=' . rawurlencode($scheme) . ($dark ? '&d' : '')),
         ),
         'css_after' => "
-<!--[if lte IE 7]><link rel=\"stylesheet\" type=\"text/css\" href=\"css/ie7.css\"><![endif]-->
-<!--[if IE 8]><link rel=\"stylesheet\" type=\"text/css\" href=\"css/ie8-9.css\"><![endif]-->
-<!--[if IE 9]><link rel=\"stylesheet\" type=\"text/css\" href=\"css/ie8-9.css\"><![endif]-->",
+<!--[if lte IE 7]><link rel=\"stylesheet\" href=\"css/ie7.css\"><![endif]-->
+<!--[if IE 8]><link rel=\"stylesheet\" href=\"css/ie8-9.css\"><![endif]-->
+<!--[if IE 9]><link rel=\"stylesheet\" href=\"css/ie8-9.css\"><![endif]-->",
         'js' => array(
             'jquery' => _link('system/js/jquery.js'),
             'sunlight' => _link('system/js/sunlight.js'),

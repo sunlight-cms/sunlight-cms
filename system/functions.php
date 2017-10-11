@@ -1213,7 +1213,7 @@ function _headAssets(array $assets)
     // javascript
     $html .= $assets['js_before'];
     foreach ($assets['js'] as $item) {
-        $html .= "\n<script type=\"text/javascript\" src=\"" . _addGetToLink($item, $cacheParam) . "\"></script>";
+        $html .= "\n<script src=\"" . _addGetToLink($item, $cacheParam) . "\"></script>";
     }
     $html .= $assets['js_after'];
 
@@ -2321,7 +2321,7 @@ function _iplogUpdate($type, $var = null)
 function _jsLimitLength($maxlength, $form, $name)
 {
     return "
-<script type='text/javascript'>
+<script>
 //<![CDATA[
 $(document).ready(function(){
     var events = ['keyup', 'mouseup', 'mousedown'];
