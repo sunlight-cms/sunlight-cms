@@ -450,6 +450,18 @@ Sunlight.admin = (function ($) {
                 }
                 odd = !odd;
             });
+        },
+
+        /**
+         * @param {NodeList} checkboxes
+         * @param {Boolean}  checked
+         */
+        toggleCheckboxes: function (checkboxes, checked) {
+            for (var i = 0; i < checkboxes.length; ++i) {
+                if (!checkboxes[i].disabled) {
+                    checkboxes[i].checked = checked;
+                }
+            }
         }
     };
     

@@ -203,19 +203,21 @@ if (!empty($_POST)) {
             <tr class="valign-top">
                 <th>' . _lang('admin.backup.restore.contents') . '</th>
                 <td>
-                    <ul class="no-bullets">
-                        <li><label><input type="checkbox"' . _restoreCheckedAndName('backup_loaded', 'database', $backup->hasDatabaseDump()) . _inputDisableUnless($backup->hasDatabaseDump()) . '> ' . _lang('admin.backup.opt.db') . '</label></li>
+                    <ul id="backup-contents" class="no-bullets">
+                        <li><label><input type="checkbox"' . _restoreCheckedAndName('backup_loaded', 'database') . _inputDisableUnless($backup->hasDatabaseDump()) . '> ' . _lang('admin.backup.opt.db') . '</label></li>
                         ' . _buffer(function () use ($backup_metadata) {
                                 foreach ($backup_metadata['directory_list'] as $index => $directory) {
-                                    echo '<li><label><input type="checkbox"' . _restoreCheckedAndName('backup_loaded', 'directory_' . $index, true) . ' value="' . _e($directory) . '"> ' . _lang('admin.backup.restore.contents.dir') . ' <code>' . _e($directory) . "</code></label></li>\n";
+                                    echo '<li><label><input type="checkbox"' . _restoreCheckedAndName('backup_loaded', 'directory_' . $index) . ' value="' . _e($directory) . '"> ' . _lang('admin.backup.restore.contents.dir') . ' <code>' . _e($directory) . "</code></label></li>\n";
                                 }
                         }) . '
                         ' . _buffer(function () use ($backup_metadata) {
                             foreach ($backup_metadata['file_list'] as $index => $file) {
-                                echo '<li><label><input type="checkbox"' . _restoreCheckedAndName('backup_loaded', 'file_' . $index, true) . ' value="' . _e($file) . '"> ' . _lang('admin.backup.restore.contents.file') . ' <code>' . _e($file) . "</code></label></li>\n";
+                                echo '<li><label><input type="checkbox"' . _restoreCheckedAndName('backup_loaded', 'file_' . $index) . ' value="' . _e($file) . '"> ' . _lang('admin.backup.restore.contents.file') . ' <code>' . _e($file) . "</code></label></li>\n";
                             }
                         }) . '
                     </ul>
+                    
+                    <label class="right"><input type="checkbox" onchange="Sunlight.admin.toggleCheckboxes(document.querySelectorAll(\'#backup-contents input[type=checkbox]\'), this.checked)"> <em>' . _lang('global.all') . '</em></label>
                 </td>
             </tr>
         </table>

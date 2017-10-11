@@ -37,6 +37,8 @@ class Backup
     protected $new = false;
     /** @var array|null */
     protected $metadataCache;
+    /** @var array|null */
+    protected $metadataErrors;
     /** @var string|null */
     protected $addedDbDumpPrefix;
     /** @var string[] */
@@ -101,7 +103,7 @@ class Backup
     public function close()
     {
         if ($this->new) {
-            $this->addMetaData();
+            $this->setMetaData();
         }
 
         $this->zip->close();
@@ -360,13 +362,12 @@ class Backup
         Zip::extractDirectories(
             $this->zip,
             array_map(array($this, 'dataPathToArchivePath'), $directories),
-            $targetPath
+            $targetPath,
+            array('exclude_prefix' => $this->dataPathToArchivePath(''))
         );
     }
 
     /**
-     * Get metadata
-     *
      * @param string $key key to get from the metadata (null = all)
      * @throws \OutOfBoundsException if the key is invalid
      * @return mixed
@@ -374,17 +375,7 @@ class Backup
     public function getMetaData($key = null)
     {
         $this->ensureOpenAndNotNew();
-
-        if ($this->metadataCache === null) {
-            $stream = $this->zip->getStream(static::METADATA_PATH);
-            try {
-                $this->metadataCache = Json::decode(stream_get_contents($stream));
-            } catch (\Exception $e) {
-                fclose($stream);
-
-                throw $e;
-            }
-        }
+        $this->ensureMetaDataLoaded();
 
         if ($key !== null) {
             if (!array_key_exists($key, $this->metadataCache)) {
@@ -398,13 +389,42 @@ class Backup
     }
 
     /**
-     * Validate meta data
-     *
+     * @return array
+     */
+    public function getMetaDataErrors()
+    {
+        $this->ensureMetaDataLoaded();
+
+        return $this->metadataErrors;
+    }
+
+    protected function ensureMetaDataLoaded()
+    {
+        if ($this->metadataCache === null) {
+            $this->loadMetaData();
+        }
+    }
+
+    protected function loadMetaData()
+    {
+        $stream = $this->zip->getStream(static::METADATA_PATH);
+
+        try {
+            $this->metadataCache = Json::decode(stream_get_contents($stream));
+            $this->validateMetaData($this->metadataCache, $this->metadataErrors);
+        } catch (\Exception $e) {
+            fclose($stream);
+
+            throw $e;
+        }
+    }
+
+    /**
      * @param array      $metaData
      * @param array|null &$errors
      * @return bool
      */
-    public function validateMetaData(array $metaData, &$errors = null)
+    protected function validateMetaData(array &$metaData, &$errors = null)
     {
         $optionSet = new OptionSet(array(
             'system_version' => array('type' => 'string', 'required' => true, 'normalizer' => function ($value) {
@@ -425,10 +445,7 @@ class Backup
         return $optionSet->process($metaData, $errors);
     }
 
-    /**
-     * Add meta data
-     */
-    protected function addMetaData()
+    protected function setMetaData()
     {
         $metaData = array(
             'system_version' => Core::VERSION,

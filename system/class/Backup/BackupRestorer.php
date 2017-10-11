@@ -29,12 +29,7 @@ class BackupRestorer
      */
     public function validate(&$errors = null)
     {
-        $errors = array();
-
-        $this->backup->validateMetaData(
-            $this->backup->getMetaData(),
-            $errors
-        );
+        $errors = $this->backup->getMetaDataErrors();
 
         return empty($errors);
     }
@@ -82,72 +77,73 @@ class BackupRestorer
         // verify what we are restoring
         if (!$database && empty($directories) && empty($files)) {
             $errors[] = 'nothing to restore';
-        } else {
-            // verify files
-            foreach (array_merge($files, $filesToRemove) as $file) {
-                $fullPath = _root . $file;
+        }
 
-                if (is_file($fullPath) && !is_writable($fullPath)) {
-                    $errors[] = sprintf('cannot write to "%s", please check privileges (%s)', $fullPath);
-                }
-            }
+        // verify files
+        foreach (array_merge($files, $filesToRemove) as $file) {
+            $fullPath = _root . $file;
 
-            // verify directories
-            foreach (array_merge($directoriesToRemove, $directoriesToPurge) as $directory) {
-                if (!Filesystem::checkDirectory(_root . $directory, true, $failedPaths)) {
-                    $failedPathsString = implode(', ', array_slice($failedPaths, 0, 3));
-                    if (sizeof($failedPaths) > 3) {
-                        $failedPathsString .= sprintf(' and %d more', sizeof($failedPaths) - 3);
-                    }
-
-                    $errors[] = sprintf('cannot write to "%s", please check privileges (%s)', $failedPathsString);
-                }
+            if (is_file($fullPath) && !is_writable($fullPath)) {
+                $errors[] = sprintf('cannot write to "%s", please check privileges (%s)', $fullPath);
             }
         }
 
-        // restore
-        if (empty($errors)) {
-            // load database
-            if ($database) {
-                if (!$this->backup->getMetaData('is_patch')) {
-                    DatabaseLoader::dropTables(DB::getTablesByPrefix());
+        // verify directories
+        foreach (array_merge($directoriesToRemove, $directoriesToPurge) as $directory) {
+            if (!Filesystem::checkDirectory(_root . $directory, true, $failedPaths)) {
+                $failedPathsString = implode(', ', array_slice($failedPaths, 0, 3));
+                if (sizeof($failedPaths) > 3) {
+                    $failedPathsString .= sprintf(' and %d more', sizeof($failedPaths) - 3);
                 }
 
-                DatabaseLoader::load(
-                    SqlReader::fromStream($this->backup->getDatabaseDump()),
-                    $this->backup->getMetaData('db_prefix'),
-                    _dbprefix
-                );
+                $errors[] = sprintf('cannot write to "%s", please check privileges (%s)', $failedPathsString);
             }
-
-            // filesystem cleanup
-            foreach ($directoriesToPurge as $directory) {
-                Filesystem::purgeDirectory(_root . $directory, array('keep_dir' => true));
-            }
-            foreach ($directoriesToRemove as $directory) {
-                Filesystem::purgeDirectory(_root . $directory);
-            }
-            foreach ($filesToRemove as $file) {
-                unlink($file);
-            }
-
-            // extract directories
-            if (!empty($directories)) {
-                $this->backup->extractDirectories($directories, _root);
-            }
-
-            // extract files
-            if (!empty($files)) {
-                $this->backup->extractFiles($files, _root);
-            }
-            
-            // clear cache
-            Core::$cache->clear();
-
-            // force install check
-            Core::updateSetting('install_check', 1);
         }
 
-        return empty($errors);
+        if ($errors) {
+            return false;
+        }
+
+        // load database
+        if ($database) {
+            if (!$this->backup->getMetaData('is_patch')) {
+                DatabaseLoader::dropTables(DB::getTablesByPrefix());
+            }
+
+            DatabaseLoader::load(
+                SqlReader::fromStream($this->backup->getDatabaseDump()),
+                $this->backup->getMetaData('db_prefix'),
+                _dbprefix
+            );
+        }
+
+        // filesystem cleanup
+        foreach ($directoriesToPurge as $directory) {
+            Filesystem::purgeDirectory(_root . $directory, array('keep_dir' => true));
+        }
+        foreach ($directoriesToRemove as $directory) {
+            Filesystem::purgeDirectory(_root . $directory);
+        }
+        foreach ($filesToRemove as $file) {
+            unlink($file);
+        }
+
+        // extract directories
+        if (!empty($directories)) {
+            $this->backup->extractDirectories($directories, _root);
+        }
+
+        // extract files
+        if (!empty($files)) {
+            $this->backup->extractFiles($files, _root);
+        }
+
+        // clear cache
+        Core::$cache->clear();
+
+        // force install check
+        Core::updateSetting('install_check', 1);
+
+        return true;
     }
 }

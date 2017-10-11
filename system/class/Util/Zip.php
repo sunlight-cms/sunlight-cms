@@ -78,6 +78,12 @@ class Zip
             'exclude_prefix' => null,
         );
 
+        $targetPath = realpath($targetPath);
+
+        if ($targetPath === false) {
+            throw new \InvalidArgumentException('Target path does not exist or is inaccessible');
+        }
+
         $excludePrefixLen = $options['exclude_prefix'] !== null
             ? strlen($options['exclude_prefix'])
             : 0;
@@ -111,7 +117,7 @@ class Zip
                         // determine target directory
                         $targetDir = $targetPath;
                         if ($subpath !== null) {
-                            $targetDir .= "/{$subpath}";
+                            $targetDir .= $subpath;
                         }
 
                         // create target directory
@@ -124,7 +130,7 @@ class Zip
                         }
 
                         // extract the file
-                        static::extractFile($zip, $stat['name'], "{$targetDir}/{$fileName}");
+                        static::extractFile($zip, $stat['name'], $targetDir . $fileName);
                     }
                 }
             }
@@ -133,6 +139,8 @@ class Zip
 
     /**
      * Determine a subpath
+     *
+     * If a string is returned it will always begin with a slash.
      *
      * @param int         $mode
      * @param string      $path
@@ -145,6 +153,7 @@ class Zip
      */
     protected static function getSubpath($mode, $path, $lastSlashPos, $prefixLen, $excludePrefix, $excludePrefixLen)
     {
+        // determine subpath
         switch ($mode) {
             case static::PATH_FULL:
                 $subpath = $lastSlashPos !== false
@@ -163,16 +172,22 @@ class Zip
                 throw new \InvalidArgumentException('Invalid mode');
         }
 
+        // exclude prefix
         if (
             $subpath !== null
             && $excludePrefix !== null
             && strncmp($excludePrefix, $subpath, $excludePrefixLen) === 0
         ) {
             $subpath = substr($subpath, $excludePrefixLen);
+        }
 
-            if ($subpath === '') {
-                $subpath = null;
-            }
+        // normalize the value
+        if ($subpath === '') {
+            $subpath = null;
+        }
+
+        if ($subpath !== null && $subpath[0] !== '/') {
+            $subpath = "/{$subpath}";
         }
 
         return $subpath;
