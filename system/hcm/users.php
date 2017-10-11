@@ -6,25 +6,29 @@ if (!defined('_root')) {
     exit;
 }
 
-function _HCM_users($razeni = 1, $pocet = 5)
+function _HCM_users($razeni = 'new', $pocet = 5)
 {
     $pocet = abs((int) $pocet);
 
     $rcond = "";
     switch ($razeni) {
+        case 'activity':
         case 2:
             $rorder = "activitytime DESC";
             $rcond = " WHERE " . time() . "-activitytime<1800";
             break;
+        case 'comment-count':
         case 3:
             $rorder = "(SELECT COUNT(*) FROM " . _posts_table . " WHERE author=" . _users_table . ".id) DESC";
             break;
+        case 'article-rating':
         case 4:
             $rcond = " WHERE (SELECT COUNT(*) FROM " . _articles_table . " WHERE author=" . _users_table . ".id AND rateon=1 AND ratenum!=0)!=0";
             $rorder = "(SELECT ROUND(SUM(ratesum)/SUM(ratenum)) FROM " . _articles_table . " WHERE rateon=1 AND ratenum!=0 AND author=" . _users_table . ".id) DESC";
             break;
+        case 'new':
         default:
-            $rorder = "id DESC";
+            $rorder = "registertime DESC";
             break;
     }
 
@@ -41,7 +45,7 @@ function _HCM_users($razeni = 1, $pocet = 5)
         // pridani doplnujicich informaci
         switch ($razeni) {
 
-                // pocet prispevku
+            case 'comment-count':
             case 3:
                 $rvar = DB::count(_posts_table, 'author=' . DB::val($item['id']));
                 if ($rvar == 0) {
@@ -51,7 +55,7 @@ function _HCM_users($razeni = 1, $pocet = 5)
                 }
                 break;
 
-                // hodnoceni autora
+            case 'article-rating':
             case 4:
                 $rvar = DB::queryRow("SELECT ROUND(SUM(ratesum)/SUM(ratenum)),COUNT(*) FROM " . _articles_table . " WHERE rateon=1 AND ratenum!=0 AND author=" . $item['id']);
                 $rext = " - " . $rvar[0] . "%, " . _lang('global.articlesnum') . ": " . $rvar[1];

@@ -6,7 +6,7 @@ if (!defined('_root')) {
     exit;
 }
 
-function _HCM_randomfile($cesta = "", $typ = 1, $pocet = 1, $rozmery_nahledu = null)
+function _HCM_randomfile($cesta = "", $typ = 'text', $pocet = 1, $rozmery_nahledu = null)
 {
     $result = "";
     $cesta = _root . $cesta;
@@ -19,10 +19,12 @@ function _HCM_randomfile($cesta = "", $typ = 1, $pocet = 1, $rozmery_nahledu = n
         $handle = opendir($cesta);
 
         switch ($typ) {
+            case 'image':
             case 2:
                 $allowed_extensions = Core::$imageExt;
                 $resize_opts = _pictureResizeOptions($rozmery_nahledu);
                 break;
+            case 'text':
             default:
                 $allowed_extensions = array("txt", "htm", "html");
                 break;

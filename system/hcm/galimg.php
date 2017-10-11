@@ -7,7 +7,7 @@ if (!defined('_root')) {
     exit;
 }
 
-function _HCM_galimg($galerie = "", $typ = 1, $rozmery = null, $limit = null)
+function _HCM_galimg($galerie = "", $typ = 'new', $rozmery = null, $limit = null)
 {
     // nacteni parametru
     $result = "";
@@ -38,9 +38,15 @@ function _HCM_galimg($galerie = "", $typ = 1, $rozmery = null, $limit = null)
 
     // urceni razeni
     switch ($typ) {
+        case 'random':
         case 2:
             $razeni = "RAND()";
             break;
+        case 'order':
+        case 3:
+            $razeni = "ord ASC";
+            break;
+        case 'new':
         default:
             $razeni = "id DESC";
     }

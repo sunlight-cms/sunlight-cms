@@ -15,12 +15,19 @@ function _HCM_recentposts($limit = null, $stranky = "", $typ = null)
     } else {
         $limit = 10;
     }
-    $post_types =  array(_post_section_comment, _post_article_comment, _post_book_entry, _post_forum_topic, _post_plugin);
+    $post_types =  array(
+        'section' => _post_section_comment,
+        'article' => _post_article_comment,
+        'book' => _post_book_entry,
+        'topic' => _post_forum_topic,
+        'plugin' => _post_plugin,
+    );
 
     // nastaveni filtru
     if (isset($stranky) && isset($typ)) {
-        $typ = (int) $typ;
-        if (!in_array($typ, $post_types)) {
+        if (isset($post_types[$typ])) {
+            $typ = $post_types[$typ];
+        } elseif (!in_array($typ, $post_types)) {
             $typ = _post_section_comment;
         }
         $types = array($typ);
