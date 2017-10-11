@@ -27,7 +27,7 @@ class BackupRestorer
      * @param array|null &$errors
      * @return bool
      */
-    public function validate(&$errors = null)
+    public function validate(array &$errors = null)
     {
         $errors = $this->backup->getMetaDataErrors();
 
@@ -43,7 +43,7 @@ class BackupRestorer
      * @param array|null &$errors
      * @return bool
      */
-    public function restore($database, array $directories = null, array $files = null, &$errors = null)
+    public function restore($database, array $directories = null, array $files = null, array &$errors = null)
     {
         $errors = array();
 

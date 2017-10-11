@@ -422,7 +422,7 @@ class Backup
      * @param array|null &$errors
      * @return bool
      */
-    protected function validateMetaData(array &$metaData, &$errors = null)
+    protected function validateMetaData(array &$metaData, array &$errors = null)
     {
         $optionSet = new OptionSet(array(
             'system_version' => array('type' => 'string', 'required' => true, 'normalizer' => function ($value) {
@@ -431,16 +431,16 @@ class Backup
                 }
             }),
             'created_at' => array('type' => 'integer', 'required' => true),
-            'directory_list' => array('type' => 'array', 'required' => true),
-            'file_list' => array('type' => 'array', 'required' => true),
-            'db_prefix' => array('type' => 'string', 'nullable' => true, 'required' => true),
+            'directory_list' => array('type' => 'array', 'required' => false, 'default' => array()),
+            'file_list' => array('type' => 'array', 'required' => false, 'default' => array()),
+            'db_prefix' => array('type' => 'string', 'nullable' => true, 'required' => false, 'default' => null),
             'is_patch' => array('type' => 'boolean', 'required' => false, 'default' => false),
             'files_to_remove' => array('type' => 'array', 'required' => false, 'default' => array()),
             'directories_to_remove' => array('type' => 'array', 'required' => false, 'default' => array()),
             'directories_to_purge' => array('type' => 'array', 'required' => false, 'default' => array()),
         ));
 
-        return $optionSet->process($metaData, $errors);
+        return $optionSet->process($metaData, null, $errors);
     }
 
     protected function setMetaData()

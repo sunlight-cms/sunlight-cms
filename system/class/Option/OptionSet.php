@@ -105,7 +105,7 @@ class OptionSet
      * @param array|null &$errors variable for error messages
      * @return bool true on success, false if there are errors
      */
-    public function process(&$data, $context = null, &$errors = null)
+    public function process(&$data, $context = null, array &$errors = null)
     {
         $errors = array();
 
@@ -169,6 +169,6 @@ class OptionSet
             }
         }
 
-        return sizeof($errors) === 0;
+        return empty($errors);
     }
 }

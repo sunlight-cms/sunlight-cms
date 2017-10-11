@@ -233,7 +233,7 @@ if (!empty($_POST)) {
     </div>';
                         }
                     } else {
-                        $message = _msg(_msg_err, _msgList(_htmlEscapeArrayItems($errors), _lang('admin.backup.restore.errors.validate')));
+                        $message = _msg(_msg_warn, _msgList(_htmlEscapeArrayItems($errors), _lang('admin.backup.restore.errors.validate')));
                     }
 
                 } elseif (isset($_POST['do_restore']['delete'])) {

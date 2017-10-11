@@ -300,6 +300,15 @@ return array(
         'menu' => true,
         'menu_order' => 70,
     ),
+    'other-patch' => array(
+        'title' => _lang('admin.other.patch.title'),
+        'access' => _priv_adminother && _priv_super_admin,
+        'parent' => 'other',
+        'other' => true,
+        'other_system' => true,
+        'other_order' => 0,
+        'other_icon' => 'images/icons/big-update.png',
+    ),
     'other-cleanup' => array(
         'title' => _lang('admin.other.cleanup.title'),
         'access' => _priv_adminother && _priv_super_admin,

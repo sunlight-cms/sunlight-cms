@@ -338,12 +338,12 @@ body.login-layout #footer, body.login-layout #footer a {color: <?php echo $schem
 #index-table table {width: 100%;}
 #index-table table th, #index-table table td {text-align: left; padding: 0.2em; border-bottom: 1px solid <?php echo $scheme_smoke_med; ?>;}
 #index-table table tr:last-child th, #index-table table tr:last-child td {border-bottom: none;}
-#latest-version {font-weight: bold;}
-#latest-version .version-latest {color: #009800;}
-#latest-version .version-patch {color: #cda869;}
-#latest-version .version-minor {color: #f06c00;}
-#latest-version .version-major {color: #e60000;}
-#latest-version .version-unk {color: #0077a7;}
+.module-index #latest-version {font-weight: bold;}
+.module-index #latest-version .version-latest {color: #009800;}
+.module-index #latest-version .version-patch {color: #cda869;}
+.module-index #latest-version .version-minor {color: #f06c00;}
+.module-index #latest-version .version-major {color: #e60000;}
+.module-index #latest-version .version-unk {color: #0077a7;}
 
 /* content management */
 #contenttable {width: 100%; border: 1px solid <?php echo $scheme_smoke; ?>; line-height: 140%;}
