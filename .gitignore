@@ -1,4 +1,3 @@
-
 /upload/*
 !/upload/.gitkeep
 
@@ -21,8 +20,6 @@
 /system/cache/*
 !/system/cache/.gitkeep
 !/system/cache/.htaccess
-/system/vendor/*
-!/system/vendor/.htaccess
 
 /plugins/extend/*
 !/plugins/extend/devkit
@@ -36,6 +33,9 @@
 /plugins/templates/*
 !/plugins/templates/default
 !/plugins/templates/classic
+
+/vendor/*
+!/vendor/.htaccess
 
 /.htaccess
 /config.php

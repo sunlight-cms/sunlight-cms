@@ -22,6 +22,7 @@ class BackupBuilder
     protected $staticPathList = array(
         'admin',
         'system',
+        'vendor',
         'index.php',
         'composer.json',
         'robots.txt',

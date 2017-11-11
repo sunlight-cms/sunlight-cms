@@ -4,7 +4,7 @@ use Kuria\ClassLoader\ClassLoader;
 use Kuria\ClassLoader\ComposerBridge;
 use Sunlight\Core;
 
-$vendorDir = __DIR__ . '/vendor';
+$vendorDir = dirname(__DIR__) . '/vendor';
 $classDir = __DIR__ . '/class';
 
 // load classes

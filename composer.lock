@@ -206,16 +206,16 @@
         },
         {
             "name": "kuria/debug",
-            "version": "v1.0.2",
+            "version": "v1.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kuria/debug.git",
-                "reference": "715a8e5efef950b8a6b557ffd78ba5ebb2e58d32"
+                "reference": "bd06d5850b039a6ec2591aa190a2f0727f5bcef6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kuria/debug/zipball/715a8e5efef950b8a6b557ffd78ba5ebb2e58d32",
-                "reference": "715a8e5efef950b8a6b557ffd78ba5ebb2e58d32",
+                "url": "https://api.github.com/repos/kuria/debug/zipball/bd06d5850b039a6ec2591aa190a2f0727f5bcef6",
+                "reference": "bd06d5850b039a6ec2591aa190a2f0727f5bcef6",
                 "shasum": ""
             },
             "require": {
@@ -243,7 +243,7 @@
                 "hex",
                 "var_dump"
             ],
-            "time": "2017-06-24T00:26:45+00:00"
+            "time": "2017-07-18T16:24:48+00:00"
         },
         {
             "name": "kuria/error",
