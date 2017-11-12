@@ -2,8 +2,11 @@
 
 namespace SunlightExtend\Devkit;
 
+use Sunlight\Core;
+use Sunlight\Extend;
 use Sunlight\Plugin\ExtendPlugin;
 use Sunlight\Plugin\PluginManager;
+use Kuria\Error\Screen\WebErrorScreen;
 
 /**
  * Devkit plugin
@@ -26,6 +29,13 @@ class DevkitPlugin extends ExtendPlugin
         $this->sqlLogger = new Component\SqlLogger();
         $this->eventLogger = new Component\EventLogger();
         $this->missingLocalizationLogger = new Component\MissingLocalizationLogger();
+
+        Extend::regGlobal(array($this->eventLogger, 'log'), 10000);
+
+        $exceptionHandler = Core::$errorHandler->getExceptionHandler();
+        if ($exceptionHandler instanceof WebErrorScreen) {
+            $exceptionHandler->on('render.debug', array($this->sqlLogger, 'showInDebugScreen'));
+        }
     }
 
     /**
@@ -57,7 +67,7 @@ class DevkitPlugin extends ExtendPlugin
     }
 
     /**
-     * Interecpt and log emails
+     * Intercept and log emails
      *
      * @param array $args
      */

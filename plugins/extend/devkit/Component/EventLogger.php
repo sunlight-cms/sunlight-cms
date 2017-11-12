@@ -29,15 +29,21 @@ class EventLogger
      * Log extend event
      *
      * @param string $event
-     * @param array  $args
      */
-    public function log($event, array $args)
+    public function log($event)
     {
+        $eventArgs = array_slice(func_get_args(), 1);
+
+        if (sizeof($eventArgs) === 1 && is_array($eventArgs[0])) {
+            // standard extend arguments
+            $eventArgs = $eventArgs[0];
+        }
+
         if (isset($this->log[$event])) {
             ++$this->log[$event][0];
         } else {
             $argsInfo = array();
-            foreach ($args as $argName => $argValue) {
+            foreach ($eventArgs as $argName => $argValue) {
                 $argsInfo[$argName] = gettype($argValue);
             }
             $this->log[$event] = array(1, $argsInfo);

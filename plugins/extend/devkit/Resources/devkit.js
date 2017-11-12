@@ -1,6 +1,6 @@
-$(document).ready(function () {
+jQuery(document).ready(function ($) {
 
-    var toolbarHeight = 34;
+    var toolbarHeight = 32;
 
     /**
      * Show content

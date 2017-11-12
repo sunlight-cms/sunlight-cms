@@ -19,8 +19,5 @@
     "events.admin": [
         ["admin.head", "$this::onHead"],
         ["admin.end", "$this::onEnd"]
-    ],
-    "scripts": [
-        "init.php"
     ]
 }

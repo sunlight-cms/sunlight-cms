@@ -7,6 +7,7 @@ use Sunlight\Core;
 use Sunlight\Extend;
 use Sunlight\Localization\LocalizationDirectory;
 use Sunlight\Plugin\InactivePlugin;
+use SunlightExtend\Devkit\DevkitPlugin;
 
 /**
  * Devkit toolbar renderer
@@ -150,7 +151,7 @@ class ToolbarRenderer
                         <td>
                             <a href="#" class="devkit-hideshow" data-target="#devkit-db-trace-<?php echo $index ?>">show</a>
                         </td>
-                        <td class="break-all"><?php echo _e($entry['query']) ?></td>
+                        <td class="break-all"><code><?php echo _e($entry['query']) ?></code></td>
                     </tr>
                     <tr id="devkit-db-trace-<?php echo $index ?>" class="devkit-hidden">
                         <td colspan="4">
@@ -170,6 +171,17 @@ class ToolbarRenderer
      */
     public function renderEvents()
     {
+        $listeners = Core::$eventEmitter->getListeners();
+        $eventListenerRows = array();
+
+        ksort($listeners, defined('SORT_NATURAL') ? SORT_NATURAL : SORT_STRING);
+
+        foreach ($listeners as $event => $eventListeners) {
+            foreach ($eventListeners as $eventListener) {
+                $eventListenerRows[] = array($event, Dumper::dump($eventListener));
+            }
+        }
+
         ?>
 <div class="devkit-section devkit-extend devkit-toggleable">
     <?php echo sizeof($this->eventLog) ?>
@@ -195,6 +207,25 @@ class ToolbarRenderer
                         <td><?php $this->renderEventArgs($data[1]) ?></td>
                     </tr>
                 <?php endforeach ?>
+            </tbody>
+        </table>
+
+        <div class="devkit-heading">Event listeners</div>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Event</th>
+                <th>Listener</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($eventListenerRows as $row): ?>
+                <tr>
+                    <td><?php echo _e($row[0]) ?></td>
+                    <td><code><?php echo _e($row[1]) ?></code></td>
+                </tr>
+            <?php endforeach ?>
             </tbody>
         </table>
     </div>
@@ -364,7 +395,7 @@ class ToolbarRenderer
                 $<?php echo $globalVarName, ' (', sizeof($GLOBALS[$globalVarName]), ')' ?>
             </div>
 
-            <div class="devkit-request-dump devkit-hideshow-target"><?php echo Dumper::dump($GLOBALS[$globalVarName]) ?></div>
+            <div class="devkit-request-dump devkit-hideshow-target"><pre><?php echo Dumper::dump($GLOBALS[$globalVarName]) ?></pre></div>
             <?php endif ?>
         <?php endforeach ?>
     </div>
