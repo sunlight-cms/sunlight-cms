@@ -348,18 +348,24 @@ class BackupBuilder
         }
 
         $tmpFile = _tmpFile();
+        $backup = new Backup($tmpFile->getPathname());
 
         try {
+            $backup->create();
+
             switch ($type) {
                 case static::TYPE_PARTIAL:
-                    $this->writePartial($tmpFile);
+                    $this->writePartial($backup);
                     break;
 
                 case static::TYPE_FULL:
-                    $this->writeFull($tmpFile);
+                    $this->writeFull($backup);
                     break;
             }
+
+            $backup->close();
         } catch (\Exception $e) {
+            $backup->discard();
             $tmpFile->discard();
 
             throw $e;
@@ -371,79 +377,57 @@ class BackupBuilder
     /**
      * Write a partial ZIP backup
      *
-     * @param TemporaryFile $tmpFile
+     * @param Backup $backup
      */
-    protected function writePartial(TemporaryFile $tmpFile)
+    protected function writePartial(Backup $backup)
     {
-        $backup = new Backup($tmpFile->getPathname());
-        $backup->create();
+        if ($this->databaseDumpEnabled) {
+            $backup->addDatabaseDump($this->dumpDatabase(), _dbprefix);
+        }
 
-        try {
-            if ($this->databaseDumpEnabled) {
-                $backup->addDatabaseDump($this->dumpDatabase(), _dbprefix);
-            }
-
-            foreach ($this->dynamicPathMap as $name => $paths) {
-                if ($this->isDynamicPathEnabled($name)) {
-                    foreach ($paths as $path) {
-                        $backup->addPath($path);
-                    }
+        foreach ($this->dynamicPathMap as $name => $paths) {
+            if ($this->isDynamicPathEnabled($name)) {
+                foreach ($paths as $path) {
+                    $backup->addPath($path);
                 }
             }
-
-            $backup->close();
-        } catch (\Exception $e) {
-            $backup->discard();
-
-            throw $e;
         }
     }
 
     /**
      * Write a full ZIP backup
      *
-     * @param TemporaryFile $tmpFile
+     * @param Backup $backup
      */
-    protected function writeFull(TemporaryFile $tmpFile)
+    protected function writeFull(Backup $backup)
     {
-        $backup = new Backup($tmpFile->getPathname());
-        $backup->create();
+        $that = $this;
 
-        try {
-            $that = $this;
+        $backup->addDatabaseDump($this->dumpDatabase(), _dbprefix);
 
-            $backup->addDatabaseDump($this->dumpDatabase(), _dbprefix);
+        foreach ($this->staticPathList as $path) {
+            $backup->addPath($path, function ($dataPath) use ($that) {
+                return $that->filterPath($dataPath, true, false);
+            });
+        }
+        foreach ($this->emptyDirPathList as $path) {
+            $backup->addEmptyDirectory($path);
+        }
+        foreach ($this->dynamicPathMap as $name => $paths) {
+            $enabled = !$this->isDynamicPathOptional($name) || $this->isDynamicPathEnabled($name);
 
-            foreach ($this->staticPathList as $path) {
-                $backup->addPath($path, function ($dataPath) use ($that) {
-                    return $that->filterPath($dataPath, true, false);
-                });
-            }
-            foreach ($this->emptyDirPathList as $path) {
-                $backup->addEmptyDirectory($path);
-            }
-            foreach ($this->dynamicPathMap as $name => $paths) {
-                $enabled = !$this->isDynamicPathOptional($name) || $this->isDynamicPathEnabled($name);
-                
-                foreach ($paths as $path) {
-                    if ($enabled) {
-                        $backup->addPath($path, function ($dataPath) use ($that) {
-                            return $that->filterPath($dataPath, false, true);
-                        });
-                    } elseif (is_dir(_root . $path)) {
-                        $backup->addEmptyDirectory($path);
-                    }
+            foreach ($paths as $path) {
+                if ($enabled) {
+                    $backup->addPath($path, function ($dataPath) use ($that) {
+                        return $that->filterPath($dataPath, false, true);
+                    });
+                } elseif (is_dir(_root . $path)) {
+                    $backup->addEmptyDirectory($path);
                 }
             }
-
-            $backup->addFileFromString('config.php', static::generateConfigFile(), false);
-
-            $backup->close();
-        } catch (\Exception $e) {
-            $backup->discard();
-
-            throw $e;
         }
+
+        $backup->addFileFromString('config.php', static::generateConfigFile(), false);
     }
 
     /**
