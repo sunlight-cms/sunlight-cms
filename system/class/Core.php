@@ -95,7 +95,8 @@ class Core
      *
      * Supported $options keys:
      * ------------------------
-     * config_file          path to the configuration file or null (= default)
+     * config_file          path to the configuration file, null (= default) or false (= skip)
+     * minimal_mode         stop after initializing base components and environment (= no plugins, db, settings, session, etc.)
      * session_enabled      initialize session 1/0
      * session_regenerate   force new session ID 1/0
      * run_cron             automatically run cron tasks 1/0
@@ -113,6 +114,11 @@ class Core
         static::initConfiguration($root, $options);
         static::initComponents($options);
         static::initEnvironment($options);
+
+        if ($options['minimal_mode']) {
+            return;
+        }
+
         static::initDatabase($options);
         static::initPlugins();
         static::initSettings();
@@ -142,6 +148,17 @@ class Core
      */
     private static function initConfiguration($root, array &$options)
     {
+        // defaults
+        $options += array(
+            'config_file' => null,
+            'minimal_mode' => false,
+            'session_enabled' => true,
+            'session_regenerate' => false,
+            'run_cron' => true,
+            'content_type' => null,
+            'env' => static::ENV_SCRIPT,
+        );
+
         // load config file
         if (!isset($options['config_file'])) {
             $configFile = $root . 'config.php';
@@ -149,9 +166,11 @@ class Core
             $configFile = $options['config_file'];
         }
 
-        $options += require $configFile;
+        if ($configFile !== false) {
+            $options += require $configFile;
+        }
 
-        // defaults
+        // config defaults
         $options += array(
             'db.server' => null,
             'db.port' => null,
@@ -170,31 +189,26 @@ class Core
             'geo.latitude' => 50.5,
             'geo.longitude' => 14.26,
             'geo.zenith' => 90.583333,
-            'config_file' => null,
-            'light_mode' => false,
-            'session_enabled' => true,
-            'session_regenerate' => false,
-            'run_cron' => true,
-            'content_type' => null,
-            'env' => static::ENV_SCRIPT,
         );
 
         // check required options
-        $requiredOptions = array(
-            'db.server',
-            'db.name',
-            'db.prefix',
-            'url',
-            'secret',
-            'app_id',
-        );
+        if (!$options['minimal_mode']) {
+            $requiredOptions = array(
+                'db.server',
+                'db.name',
+                'db.prefix',
+                'url',
+                'secret',
+                'app_id',
+            );
 
-        foreach ($requiredOptions as $requiredOption) {
-            if (empty($options[$requiredOption])) {
-                static::systemFailure(
-                    "Konfigurační volba \"{$requiredOption}\" nesmí být prázdná.",
-                    "The configuration option \"{$requiredOption}\" must not be empty."
-                );
+            foreach ($requiredOptions as $requiredOption) {
+                if (empty($options[$requiredOption])) {
+                    static::systemFailure(
+                        "Konfigurační volba \"{$requiredOption}\" nesmí být prázdná.",
+                        "The configuration option \"{$requiredOption}\" must not be empty."
+                    );
+                }
             }
         }
 
