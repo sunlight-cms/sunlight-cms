@@ -403,7 +403,9 @@ class BackupBuilder
     {
         $that = $this;
 
-        $backup->addDatabaseDump($this->dumpDatabase(), _dbprefix);
+        if ($this->databaseDumpEnabled) {
+            $backup->addDatabaseDump($this->dumpDatabase(), _dbprefix);
+        }
 
         foreach ($this->staticPathList as $path) {
             $backup->addPath($path, function ($dataPath) use ($that) {

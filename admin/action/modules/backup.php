@@ -109,7 +109,9 @@ if (!empty($_POST)) {
             }
 
             // nastaveni zalohy
-            $backup_builder->setDatabaseDumpEnabled(isset($_POST['opt_db']));
+            if ($type === BackupBuilder::TYPE_PARTIAL) {
+                $backup_builder->setDatabaseDumpEnabled(isset($_POST['opt_db']));
+            }
 
             $enabled_dynpaths = _arrayFilter($_POST, 'dynpath_');
             foreach ($backup_builder->getDynamicPathNames() as $name) {
