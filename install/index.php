@@ -3,7 +3,6 @@
 namespace Sunlight\Installer;
 
 use Kuria\Debug\Output;
-use Kuria\Error\ErrorHandler;
 use Sunlight\Core;
 use Sunlight\Database\Database as DB;
 use Sunlight\Database\DatabaseLoader;
@@ -13,7 +12,6 @@ use Sunlight\Util\PhpTemplate;
 use Sunlight\Util\StringGenerator;
 use Sunlight\Util\Url;
 
-define('_dev', true);
 define(__NAMESPACE__ . '\CONFIG_PATH', __DIR__ . '/../config.php');
 define(__NAMESPACE__ . '\DEFAULT_TIMEZONE', @date_default_timezone_get());
 
@@ -22,14 +20,10 @@ date_default_timezone_set(DEFAULT_TIMEZONE);
 
 // bootstrap
 require __DIR__ . '/../system/bootstrap.php';
-
-// load functions
-require __DIR__ . '/../system/functions.php';
-
-// set error handler
-$errorHandler = new ErrorHandler();
-$errorHandler->setDebug(true);
-$errorHandler->register();
+Core::init('../', array(
+    'minimal_mode' => true,
+    'config_file' => false,
+));
 
 /**
  * Configuration
