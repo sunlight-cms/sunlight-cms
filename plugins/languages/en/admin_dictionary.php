@@ -742,7 +742,7 @@ return array(
     'admin.backup.restore.errors.validate' => 'The backup is not compatible with the current version of the system.',
     'admin.backup.restore.complete' => 'The backup was restored. You may need to log in again.',
     'admin.backup.restore.submit.load' => 'Load the backup',
-    'admin.backup.restore.submit.delete' => 'Remove the selected backup',
+    'admin.backup.restore.submit.delete' => 'Remove the backup',
     'admin.other.php.title' => 'Execute PHP code',
     'admin.other.php.html' => 'Show output as HTML',
 );
