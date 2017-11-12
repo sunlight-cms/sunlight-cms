@@ -376,9 +376,10 @@ class Core
             $currentUrl = Url::current();
             $baseUrl = Url::base();
 
-            if ($currentUrl->host !== $baseUrl->host) {
-                // invalid hostname
+            if ($currentUrl->host !== $baseUrl->host || $currentUrl->scheme !== $baseUrl->scheme) {
+                // invalid hostname or scheme
                 $currentUrl->host = $baseUrl->host;
+                $currentUrl->scheme = $baseUrl->scheme;
                 _redirectHeader($currentUrl->generateAbsolute());
                 exit;
             }
