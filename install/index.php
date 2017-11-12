@@ -23,6 +23,7 @@ require __DIR__ . '/../system/bootstrap.php';
 Core::init('../', array(
     'minimal_mode' => true,
     'config_file' => false,
+    'dev' => true,
 ));
 
 /**
