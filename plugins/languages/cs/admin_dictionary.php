@@ -512,6 +512,7 @@ return array(
     'admin.plugins.upload.extracted' => 'Následující pluginy byly nahrány:',
     'admin.plugins.upload.failed' => 'Následující pluginy již existují a byly přeskočeny:',
     'admin.plugins.upload.failed.no_merge' => 'Žádný plugin nebyl nahrán, protože následující pluginy již existují:',
+    'admin.plugins.doctrine-console' => 'Doctrine konzole',
     'admin.plugins.clear_cache' => 'Znovu načíst rozšíření',
     'admin.plugins.get' => 'Získat rozšíření',
     'admin.users.groups' => 'Skupiny',

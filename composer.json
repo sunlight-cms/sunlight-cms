@@ -3,14 +3,16 @@
     "license": "MIT",
     "require": {
         "php": ">=5.3.0",
-        "kuria/class-loader": "^1.0.0",
-        "kuria/error": "^1.0.0",
-        "kuria/debug": "^1.0.0",
-        "kuria/event": "^1.0.0",
-        "kuria/cache": "^1.0.0",
-        "kuria/parser": "^1.0.0",
+        "kuria/class-loader": "^1.0",
+        "kuria/error": "^1.0",
+        "kuria/debug": "^1.0",
+        "kuria/event": "^1.0",
+        "kuria/cache": "^1.0",
+        "kuria/parser": "^1.0",
         "eloquent/pbkdf2-compat": "^1.0.1",
-        "composer/semver": "^1.4.0"
+        "composer/semver": "^1.4.0",
+        "doctrine/orm": "^2.0",
+        "symfony/yaml": "^2.0"
     },
     "config": {
         "platform": {
@@ -22,5 +24,8 @@
             "Sunlight\\Admin\\": "admin/class",
             "Sunlight\\": "system/class"
         }
+    },
+    "scripts": {
+        "doctrine": "Sunlight\\Database\\Doctrine\\Console::runAsComposerScript"
     }
 }

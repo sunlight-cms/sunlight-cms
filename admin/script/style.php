@@ -518,8 +518,10 @@ a.active-link {text-decoration: underline !important;}
 .message-warn {background-color: <?php echo $scheme_bg_alert; ?>; background-image: url("../images/icons/warning.png");}
 .message-err {background-color: <?php echo $scheme_bg_danger; ?>; background-image: url("../images/icons/error.png");}
 
-/* exceptions */
+/* preformatted */
+pre {white-space: -moz-pre-wrap; white-space: -pre-wrap; white-space: -o-pre-wrap; white-space: pre-wrap; word-break: break-all; word-wrap: break-word;}
 pre.exception {max-height: 300px; margin: 1em 0; padding: 13px; overflow: auto; background-color: <?php echo $scheme_bg_danger; ?>;}
+pre.cli-output {background-color: #000; color: #fff; padding: 10px;}
 
 /* form tables */
 .formtable {border: 1px dotted <?php echo $scheme_smoke; ?>; background-color: <?php echo $scheme_smoke_lightest; ?>;}
@@ -555,7 +557,7 @@ tr.odd td {background-color: <?php echo $scheme_smoke_lightest; ?>;}
 .inputmedium {width: 290px;}
 .inputbig {width: 750px;}
 .inputmax {width: 100%;}
-/*select.inputmax {width: 100% !important;}*/
+.cli-input {font-family: monospace; background-color: #000; color: #fff;}
 .inputfat {padding: 8px 16px !important;}
 .selectmedium {width: 294px;}
 .selectbig {width: 753px;}

@@ -253,22 +253,23 @@ return array(
         'title' => _lang('admin.menu.plugins'),
         'access' => _priv_adminplugins,
         'parent' => null,
-        'children' => array('plugins-action', 'plugins-upload'),
+        'children' => array('plugins-action', 'plugins-upload', 'plugins-doctrine-console'),
         'menu' => true,
         'menu_order' => 40,
     ),
-
-    // plugin action
     'plugins-action' => array(
         'title' => _lang('admin.plugins.action'),
         'access' => _priv_adminplugins,
         'parent' => 'plugins',
         'custom_header' => true,
     ),
-
-    // plugin upload
     'plugins-upload' => array(
         'title' => _lang('admin.plugins.upload'),
+        'access' => _priv_adminplugins,
+        'parent' => 'plugins',
+    ),
+    'plugins-doctrine-console' => array(
+        'title' => _lang('admin.plugins.doctrine-console'),
         'access' => _priv_adminplugins,
         'parent' => 'plugins',
     ),

@@ -2,17 +2,21 @@
 
 namespace Sunlight\Database;
 
+use Doctrine\ORM\EntityManager;
+use Sunlight\Database\Doctrine\DoctrineBridge;
 use Sunlight\Extend;
 
 /**
  * Databazova trida
  *
- * Staticky se pouziva pro praci se sytemovym pripojenim
+ * Staticky se pouziva pro praci se sytemovym pripojenim.
  */
 class Database
 {
     /** @var \mysqli|null */
     private static $mysqli;
+    /** @var EntityManager|null */
+    private static $entityManager;
 
     /**
      * Staticka trida
@@ -54,8 +58,6 @@ class Database
     }
 
     /**
-     * Ziskat mysqli instanci
-     *
      * @return \mysqli|null
      */
     public static function getMysqli()
@@ -64,13 +66,23 @@ class Database
     }
 
     /**
-     * Nastavit mysqli instanci
-     *
      * @param \mysqli $mysqli
      */
     public static function setMysqli(\mysqli $mysqli)
     {
         static::$mysqli = $mysqli;
+    }
+
+    /**
+     * @return EntityManager
+     */
+    public static function getEntityManager()
+    {
+        if (static::$entityManager === null) {
+            static::$entityManager = DoctrineBridge::createEntityManager(static::$mysqli);
+        }
+
+        return static::$entityManager;
     }
 
     /**
