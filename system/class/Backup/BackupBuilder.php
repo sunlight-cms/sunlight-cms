@@ -348,7 +348,7 @@ class BackupBuilder
         }
 
         $tmpFile = _tmpFile();
-        $backup = new Backup($tmpFile->getPathname());
+        $backup =  $this->createBackup($tmpFile->getPathname());
 
         try {
             $backup->create();
@@ -498,6 +498,15 @@ class BackupBuilder
 
         // no match - allow
         return true;
+    }
+
+    /**
+     * @param string $path
+     * @return Backup
+     */
+    protected function createBackup($path)
+    {
+        return new Backup($path);
     }
 
     /**
