@@ -44,7 +44,7 @@ if (isset($_GET['download'])) {
     $download = _get('download');
 
     if (isset($backup_files[$download])) {
-        _downloadFile($backup_dir . '/' . $download, $download);
+        _downloadFile($backup_dir . '/' . $download, $remove_hash_suffix($download));
         exit;
     }
 }
