@@ -156,6 +156,18 @@ class Backup
     }
 
     /**
+     * Get the underlying ZIP archive for external modification
+     *
+     * @return ZipArchive
+     */
+    public function getArchive()
+    {
+        $this->ensureOpenAndNew();
+
+        return $this->zip;
+    }
+
+    /**
      * See if the backup is open
      *
      * @return bool
