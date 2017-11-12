@@ -12,7 +12,7 @@ return array(
 
     // abs. adresa bez lomitka na konci
     // absolute URL without a trailing slash
-    'url' => '@@url|http://example.com@@',
+    'url' => '@@url@@',
 
     // nahodny tajny hash (pouzivano pro XSRF ochranu aj.)
     // random secret hash (used for XSRF protection etc.)

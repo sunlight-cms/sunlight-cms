@@ -30,10 +30,7 @@ class BackupBuilder
     );
     /** @var string[] */
     protected $emptyDirPathList = array(
-        'system/backup',
-        'system/cache',
         'images/thumb',
-        'system/tmp',
     );
     /** @var array[] name => paths */
     protected $dynamicPathMap = array(
@@ -62,6 +59,7 @@ class BackupBuilder
     /** @var array[] regex list */
     protected $includedPathMap = array(
         '~^images/[^/]+$~' => array('static' => true, 'dynamic' => true),
+        '~^system/(backup|tmp|cache)/\.htaccess$~' => array('static' => true, 'dynamic' => false),
     );
     /** @var array[] regex list */
     protected $excludedPathMap = array(
@@ -520,7 +518,6 @@ class BackupBuilder
 
         return $phpFileBuilder->compile(array(
             'db.prefix' => substr(_dbprefix, 0, -1),
-            'url' => Core::$url,
             'app_id' => Core::$appId,
             'fallback_lang' => Core::$fallbackLang,
         ));
