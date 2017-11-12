@@ -10,6 +10,7 @@ use Kuria\ClassLoader\ClassLoader;
 use Kuria\Debug\Error;
 use Kuria\Error\ErrorHandler;
 use Kuria\Error\Screen\WebErrorScreen;
+use Kuria\Event\EventEmitter;
 use Sunlight\Database\Database as DB;
 use Sunlight\Localization\LocalizationDictionary;
 use Sunlight\Plugin\PluginManager;
@@ -55,6 +56,8 @@ class Core
     public static $classLoader;
     /** @var ErrorHandler */
     public static $errorHandler;
+    /** @var EventEmitter */
+    public static $eventEmitter;
     /** @var PluginManager */
     public static $pluginManager;
     /** @var Cache */
@@ -231,6 +234,9 @@ class Core
         if (($exceptionHandler = static::$errorHandler->getExceptionHandler()) instanceof WebErrorScreen) {
             static::configureWebExceptionHandler($exceptionHandler);
         }
+
+        // event emitter
+        static::$eventEmitter = new EventEmitter();
 
         // cache
         if (static::$cache === null) {
@@ -970,12 +976,12 @@ class Core
     /**
      * Render an exception
      *
-     * @param \Exception $e
-     * @param bool       $showTrace
-     * @param bool       $showPrevious
+     * @param object $e
+     * @param bool   $showTrace
+     * @param bool   $showPrevious
      * @return string
      */
-    public static function renderException(\Exception $e, $showTrace = true, $showPrevious = true)
+    public static function renderException($e, $showTrace = true, $showPrevious = true)
     {
         return '<pre class="exception">' . _e(Error::renderException($e, $showTrace, $showPrevious)) . "</pre>\n";
     }
