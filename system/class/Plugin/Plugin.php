@@ -24,6 +24,24 @@ abstract class Plugin
     const AUTOLOAD_CLASSMAP = 2;
 
     /** @var array */
+    public static $commonOptions = array(
+        'name' => array('type' => 'string', 'required' => true),
+        'description' => array('type' => 'string', 'required' => false),
+        'author' => array('type' => 'string', 'required' => false),
+        'url' => array('type' => 'string', 'required' => false),
+        'version' => array('type' => 'string', 'required' => true),
+        'api' => array('type' => 'string', 'required' => true),
+        'php' => array('type' => 'string', 'required' => false),
+        'extensions' => array('type' => 'array', 'required' => false, 'default' => array()),
+        'requires' => array('type' => 'array', 'required' => false, 'default' => array()),
+        'installer' => array('type' => 'boolean', 'required' => false, 'nullable' => true, 'default' => false),
+        'autoload' => array('type' => 'array', 'required' => false, 'default' => array(), 'normalizer' => array('Sunlight\Plugin\PluginOptionNormalizer', 'normalizeAutoload')),
+        'dev' => array('type' => 'boolean', 'required' => false, 'nullable' => true),
+        'class' => array('type' => 'string', 'required' => false),
+        'namespace' => array('type' => 'string', 'required' => false, 'normalizer' => array('Sunlight\Plugin\PluginOptionNormalizer', 'normalizeNamespace')),
+    );
+
+    /** @var array */
     protected static $typeDefinition = array();
 
     /** @var string */

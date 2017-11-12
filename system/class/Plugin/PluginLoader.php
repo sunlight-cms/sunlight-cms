@@ -18,23 +18,6 @@ class PluginLoader
 
     /** @var array */
     private $types;
-    /** @var array */
-    private $commonOptions = array(
-        'name' => array('type' => 'string', 'required' => true),
-        'description' => array('type' => 'string', 'required' => false),
-        'author' => array('type' => 'string', 'required' => false),
-        'url' => array('type' => 'string', 'required' => false),
-        'version' => array('type' => 'string', 'required' => true),
-        'api' => array('type' => 'string', 'required' => true),
-        'php' => array('type' => 'string', 'required' => false),
-        'extensions' => array('type' => 'array', 'required' => false, 'default' => array()),
-        'requires' => array('type' => 'array', 'required' => false, 'default' => array()),
-        'installer' => array('type' => 'boolean', 'required' => false, 'nullable' => true, 'default' => false),
-        'autoload' => array('type' => 'array', 'required' => false, 'default' => array(), 'normalizer' => array('Sunlight\Plugin\PluginOptionNormalizer', 'normalizeAutoload')),
-        'dev' => array('type' => 'boolean', 'required' => false, 'nullable' => true),
-        'class' => array('type' => 'string', 'required' => false),
-        'namespace' => array('type' => 'string', 'required' => false, 'normalizer' => array('Sunlight\Plugin\PluginOptionNormalizer', 'normalizeNamespace')),
-    );
 
     /**
      * @param array $types
@@ -56,7 +39,7 @@ class PluginLoader
 
         $pluginNamePattern = '/^' . static::PLUGIN_NAME_PATTERN . '$/';
 
-        $commonOptionSet = new OptionSet($this->commonOptions);
+        $commonOptionSet = new OptionSet(Plugin::$commonOptions);
         $commonOptionSet->setIgnoreExtraIndexes(true);
 
         // load
