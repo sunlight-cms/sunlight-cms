@@ -111,6 +111,7 @@ class Core
         static::$start = microtime(true);
 
         // first initialization phase
+        static::initBaseComponents();
         static::initConfiguration($root, $options);
         static::initComponents($options);
         static::initEnvironment($options);
@@ -146,7 +147,7 @@ class Core
      * @param string $root
      * @param array  &$options
      */
-    private static function initConfiguration($root, array &$options)
+    protected static function initConfiguration($root, array &$options)
     {
         // defaults
         $options += array(
@@ -167,7 +168,16 @@ class Core
         }
 
         if ($configFile !== false) {
-            $options += require $configFile;
+            $configFileOptions = @include $configFile;
+
+            if ($configFileOptions === false) {
+                static::systemFailure(
+                    'Chybí soubor "config.php". Otevřete /install pro instalaci.',
+                    'The "config.php" file is missing. Open /install to create it.'
+                );
+            }
+
+            $options += $configFileOptions;
         }
 
         // config defaults
@@ -234,16 +244,13 @@ class Core
     }
 
     /**
-     * Initialize components
-     *
-     * @param array $options
+     * Init base components that don't depend on configuration
      */
-    private static function initComponents(array $options)
+    protected static function initBaseComponents()
     {
         // error handler
         static::$errorHandler = new ErrorHandler();
         static::$errorHandler->register();
-        static::$errorHandler->setDebug(_dev);
 
         if (($exceptionHandler = static::$errorHandler->getExceptionHandler()) instanceof WebErrorScreen) {
             static::configureWebExceptionHandler($exceptionHandler);
@@ -251,6 +258,20 @@ class Core
 
         // event emitter
         static::$eventEmitter = new EventEmitter();
+
+        // functions
+        require __DIR__ . '/../functions.php';
+    }
+
+    /**
+     * Initialize components
+     *
+     * @param array $options
+     */
+    protected static function initComponents(array $options)
+    {
+        // error handler
+        static::$errorHandler->setDebug(_dev || 'cli' === PHP_SAPI);
 
         // cache
         if (static::$cache === null) {
@@ -277,10 +298,7 @@ class Core
         static::$lang = new LocalizationDictionary();
 
         // constants
-        require _root . 'system/constants.php';
-
-        // functions
-        require _root . 'system/functions.php';
+        require __DIR__ . '/../constants.php';
     }
 
     /**
@@ -288,7 +306,7 @@ class Core
      *
      * @param array $options
      */
-    private static function initDatabase(array $options)
+    protected static function initDatabase(array $options)
     {
         $connectError = DB::connect($options['db.server'], $options['db.user'], $options['db.password'], $options['db.name'], $options['db.port']);
 
@@ -305,7 +323,7 @@ class Core
     /**
      * Initialize settings
      */
-    private static function initSettings()
+    protected static function initSettings()
     {
         // fetch from database
         if (_env === static::ENV_ADMIN) {
@@ -358,7 +376,7 @@ class Core
     /**
      * Check system state after first initialization phase
      */
-    private static function initCheck()
+    protected static function initCheck()
     {
         // check database version
         if (!defined('_dbversion') || Core::VERSION !== _dbversion) {
@@ -412,7 +430,7 @@ class Core
      *
      * @param array $options
      */
-    private static function initEnvironment(array $options)
+    protected static function initEnvironment(array $options)
     {
         // ensure correct encoding for mb_*() functions
         mb_internal_encoding('UTF-8');
@@ -492,7 +510,7 @@ class Core
     /**
      * Initialize plugins
      */
-    private static function initPlugins()
+    protected static function initPlugins()
     {
         foreach (static::$pluginManager->getAllExtends() as $extendPlugin) {
             $extendPlugin->initialize();
@@ -504,7 +522,7 @@ class Core
     /**
      * Initialize session
      */
-    private static function initSession()
+    protected static function initSession()
     {
         // start session
         if (static::$sessionEnabled) {
@@ -714,7 +732,7 @@ class Core
     /**
      * Initialize localization
      */
-    private static function initLocalization()
+    protected static function initLocalization()
     {
         // language choice
         if (_login && _language_allowcustom && static::$userData['language'] !== '') {
@@ -975,17 +993,21 @@ class Core
      */
     public static function systemFailure($msgCs, $msgEn, array $msgArgs = null, $msgExtra = null)
     {
-        if (static::$fallbackLang === 'cs') {
-            $message = !empty($msgArgs) ? vsprintf($msgCs, $msgArgs) : $msgCs;
-        } else {
-            $message = !empty($msgArgs) ? vsprintf($msgEn, $msgArgs) : $msgEn;
+        $messages = array();
+
+        if (static::$fallbackLang === 'cs' || empty(static::$fallbackLang)) {
+            $messages[] = !empty($msgArgs) ? vsprintf($msgCs, $msgArgs) : $msgCs;
+        }
+
+        if (static::$fallbackLang !== 'cs' || empty(static::$fallbackLang)) {
+            $messages[] = !empty($msgArgs) ? vsprintf($msgEn, $msgArgs) : $msgEn;
         }
 
         if (!empty($msgExtra)) {
-            $message .= "\n\n" . $msgExtra;
+            $messages[] = $msgExtra;
         }
 
-        throw new CoreException($message);
+        throw new CoreException(implode("\n\n", $messages));
     }
 
     /**
@@ -1012,7 +1034,7 @@ a {color: #ff6600;}
 CSS;
         });
 
-        if (!_dev) {
+        if (!static::$errorHandler->getDebug()) {
             $errorScreen->on('render', function ($view) {
                 $view['title'] = $view['heading'] = Core::$fallbackLang === 'cs'
                     ? 'Chyba serveru'
