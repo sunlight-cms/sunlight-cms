@@ -5,12 +5,16 @@ use Kuria\ClassLoader\ComposerBridge;
 use Sunlight\Core;
 
 $vendorDir = dirname(__DIR__) . '/vendor';
-$classDir = __DIR__ . '/class';
 
 // load classes
-require $vendorDir . '/kuria/class-loader/src/ClassLoader.php';
-require $vendorDir . '/kuria/class-loader/src/ComposerBridge.php';
-require $classDir . '/Core.php';
+foreach (array('/kuria/class-loader/src/ClassLoader.php', '/kuria/class-loader/src/ComposerBridge.php') as $pathToInclude) {
+    if (!@include $vendorDir . $pathToInclude) {
+        echo "Missing dependencies in the vendor directory. Did you run composer install?\n";
+        exit(1);
+    }
+}
+
+unset($pathToInclude);
 
 // init class loader
 $classLoader = new ClassLoader();
@@ -19,4 +23,4 @@ $classLoader->register();
 ComposerBridge::configure($classLoader, $vendorDir);
 Core::$classLoader = $classLoader;
 
-unset($classLoader);
+unset($vendorDir, $classLoader);
