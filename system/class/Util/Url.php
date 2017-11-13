@@ -215,7 +215,7 @@ class Url
         if ($this->components['host'] !== null) {
             $fullHost = $this->components['host'];
 
-            if (!empty($this->components['port'])) {
+            if (!empty($this->components['port']) && $this->components['port'] != 80) {
                 $fullHost .= ':' . $this->components['port'];
             }
 
