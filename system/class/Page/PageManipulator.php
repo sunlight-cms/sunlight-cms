@@ -466,7 +466,7 @@ class PageManipulator
      * @param mixed  $value
      * @return int
      */
-    private static function findFirstTreeMatch($currentId, $column, $value)
+    protected static function findFirstTreeMatch($currentId, $column, $value)
     {
         $path = PageManager::getTreeReader()->getPath(array($column), $currentId);
 

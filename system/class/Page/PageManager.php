@@ -13,13 +13,13 @@ use Sunlight\Extend;
 class PageManager
 {
     /** @var TreeManager|null */
-    private static $treeManager;
+    protected static $treeManager;
     /** @var TreeReader|null */
-    private static $treeReader;
+    protected static $treeReader;
     /** @var array */
-    private static $pathCache = array();
+    protected static $pathCache = array();
     /** @var array */
-    private static $childrenCache = array();
+    protected static $childrenCache = array();
 
     /**
      * This is a static class
@@ -366,7 +366,7 @@ class PageManager
      * @param array|null               $extraColumns
      * @return TreeReaderOptions
      */
-    private static function getTreeReaderOptions($nodeId, $nodeDepth, TreeFilterInterface $filter = null, array $extraColumns = null)
+    protected static function getTreeReaderOptions($nodeId, $nodeDepth, TreeFilterInterface $filter = null, array $extraColumns = null)
     {
         $options = new TreeReaderOptions();
 

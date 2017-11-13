@@ -125,7 +125,7 @@ abstract class WebRequestHandler
         if (self::$currentHandler !== null) {
             throw new \LogicException(sprintf(
                 'The request is already being handled by another handler - %s',
-                get_class(static::$currentHandler)
+                get_class(self::$currentHandler)
             ));
         }
 
