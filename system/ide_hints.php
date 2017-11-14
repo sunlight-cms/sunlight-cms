@@ -36,8 +36,6 @@ const _commentsperpage = 10;
 const _smileys = 1;
 /** Allow editing/removing comments this number of seconds after they're created by the author */
 const _postadmintime = 172800;
-/** Site keywords */
-const _keywords = '';
 /** Admin skin variation */
 const _adminscheme = 0;
 /** Database version */

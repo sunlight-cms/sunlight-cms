@@ -139,8 +139,6 @@ class Labels
             'import.settings.title.help' => 'hlavní titulek stránek',
             'import.settings.description' => 'Popis webu',
             'import.settings.description.help' => 'krátký popis stránek',
-            'import.settings.keywords' => 'Klíčová slova',
-            'import.settings.keywords.help' => 'klíčová slova oddělená čárkou',
             'import.settings.latest_version_check' => 'Kontrola verze',
             'import.settings.latest_version_check.help' => 'kontrolovat, zda je verze systému aktuální (pouze na hlavní straně administrace)',
             'import.admin' => 'Účet administrátora',
@@ -222,8 +220,6 @@ class Labels
             'import.settings.title.help' => 'main website title',
             'import.settings.description' => 'Description',
             'import.settings.description.help' => 'brief site description',
-            'import.settings.keywords' => 'Keywords',
-            'import.settings.keywords.help' => 'comma-separated list of keywords',
             'import.settings.latest_version_check' => 'Check version',
             'import.settings.latest_version_check.help' => 'check whether the system is up to date (only on the administration home page)',
             'import.admin' => 'Admin account',
@@ -944,7 +940,6 @@ class ImportDatabaseStep extends Step
         $settings = array(
             'title' => trim(_post('import_settings_title')),
             'description' => trim(_post('import_settings_description')),
-            'keywords' => trim(_post('import_settings_keywords')),
             'language' => $this->vars['language'],
             'atreplace' => $this->vars['language'] === 'cs' ? '[zavinac]' : '[at]',
             'latest_version_check' => _post('import_settings_latest_version_check') ? 1 : 0,
@@ -1092,11 +1087,6 @@ Now you can <a href="admin/">log in to the administration</a> (username and pass
             <th><?php Labels::render('import.settings.description') ?></th>
             <td><input type="text"<?php echo _restorePostValueAndName('import_settings_description') ?>></td>
             <td class="help"><?php Labels::render('import.settings.description.help') ?></td>
-        </tr>
-        <tr>
-            <th><?php Labels::render('import.settings.keywords') ?></th>
-            <td><input type="text"<?php echo _restorePostValueAndName('import_settings_keywords') ?>></td>
-            <td class="help"><?php Labels::render('import.settings.keywords.help') ?></td>
         </tr>
         <tr>
             <th><?php Labels::render('import.settings.latest_version_check') ?></th>

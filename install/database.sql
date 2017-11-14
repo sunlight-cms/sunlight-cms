@@ -2,7 +2,6 @@ CREATE TABLE `sunlight_articles` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
   `slug` varchar(255) NOT NULL,
-  `keywords` varchar(255) NOT NULL DEFAULT '',
   `description` varchar(255) NOT NULL DEFAULT '',
   `perex` text NOT NULL,
   `picture_uid` varchar(13) DEFAULT NULL,
@@ -237,7 +236,6 @@ CREATE TABLE `sunlight_root` (
   `heading` varchar(255) NOT NULL DEFAULT '',
   `slug` text NOT NULL,
   `slug_abs` tinyint(1) NOT NULL DEFAULT '0',
-  `keywords` varchar(255) NOT NULL DEFAULT '',
   `description` varchar(255) NOT NULL DEFAULT '',
   `type` tinyint(4) NOT NULL,
   `type_idt` varchar(16) DEFAULT NULL,
@@ -277,8 +275,8 @@ CREATE TABLE `sunlight_root` (
   KEY `node_parent` (`node_parent`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `sunlight_root` (`id`, `title`, `heading`, `slug`, `slug_abs`, `keywords`, `description`, `type`, `type_idt`, `node_parent`, `node_level`, `node_depth`, `perex`, `ord`, `content`, `visible`, `public`, `level`, `level_inherit`, `show_heading`, `events`, `link_new_window`, `link_url`, `layout`, `layout_inherit`, `var1`, `var2`, `var3`, `var4`) VALUES
-(1,	'',	'',	'index',	0,	'',	'',	1,	NULL,	NULL,	0,	0,	'',	1,	'',	1,	1,	0,	1,	1,	NULL,	0,	NULL,	'',	0,	0,	0,	0,	0);
+INSERT INTO `sunlight_root` (`id`, `title`, `heading`, `slug`, `slug_abs`, `description`, `type`, `type_idt`, `node_parent`, `node_level`, `node_depth`, `perex`, `ord`, `content`, `visible`, `public`, `level`, `level_inherit`, `show_heading`, `events`, `link_new_window`, `link_url`, `layout`, `layout_inherit`, `var1`, `var2`, `var3`, `var4`) VALUES
+(1,	'',	'',	'index',	0,	'',	1,	NULL,	NULL,	0,	0,	'',	1,	'',	1,	1,	0,	1,	1,	NULL,	0,	NULL,	'',	0,	0,	0,	0,	0);
 
 CREATE TABLE `sunlight_sboxes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -319,7 +317,6 @@ INSERT INTO `sunlight_settings` (`var`, `val`, `format`, `constant`, `preload`, 
 ('commentsperpage',	'10',	'int',	1,	1,	1,	1),
 ('smileys',	'1',	'bool',	1,	1,	1,	1),
 ('postadmintime',	'172800',	'int',	1,	1,	1,	1),
-('keywords',	'',	'html',	1,	1,	1,	1),
 ('adminscheme',	'0',	'int',	1,	1,	0,	1),
 ('dbversion',	'8.0.0',	NULL,	1,	1,	1,	1),
 ('atreplace',	'',	'html',	1,	1,	1,	1),

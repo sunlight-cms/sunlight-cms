@@ -81,7 +81,6 @@ class PageManipulator
             'heading' => '',
             'slug' => '',
             'slug_abs' => 0,
-            'keywords' => '',
             'description' => '',
             'type' => $type,
             'type_idt' => null,

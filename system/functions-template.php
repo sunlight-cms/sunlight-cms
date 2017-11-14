@@ -80,8 +80,7 @@ function _templateHead()
     if (_pretty_urls) {
         echo "<base href=\"" . Core::$url . "/\">\n";
     }
-    echo '<meta name="keywords" content="' . (isset($_index['keywords']) ? $_index['keywords'] : _keywords) . '">
-<meta name="description" content="' . (isset($_index['description']) ? $_index['description'] : _description) . '">' . ((_author !== '') ? '
+    echo '<meta name="description" content="' . (isset($_index['description']) ? $_index['description'] : _description) . '">' . ((_author !== '') ? '
 <meta name="author" content="' . _author . '">' : '') . '
 <meta name="robots" content="index, follow">'
  . Extend::buffer('tpl.head.meta')

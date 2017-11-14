@@ -27,6 +27,11 @@ $_index['crumbs'][] = array(
     'url' => _linkArticle(null, $_article['slug'], $_page['slug'])
 );
 
+// meta
+if ($_article['description'] !== '') {
+    $_index['description'] = $_article['description'];
+}
+
 // extend
 $continue = true;
 $extend_args['article'] = &$_article;

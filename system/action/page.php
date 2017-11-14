@@ -24,6 +24,11 @@ if ($_index['slug'] !== null && ($slug_length = strlen($_page['slug'])) < strlen
     $segment = null;
 }
 
+// meta
+if ($_page['description'] !== '') {
+    $_index['description'] = $_page['description'];
+}
+
 // motiv
 if ($_page['layout'] !== null) {
     _templateSwitch($_page['layout']);

@@ -49,7 +49,6 @@ if (!empty($_POST)) {
         'heading' => array('type' => 'escaped_plaintext', 'length' => 255, 'nullable' => false, 'enabled' => $editscript_enable_heading),
         'slug_abs' => array('type' => 'bool', 'nullable' => false, 'enabled' => $editscript_enable_slug),
         'slug' => array('type' => 'raw', 'nullable' => false, 'enabled' => $editscript_enable_slug),
-        'keywords' => array('type' => 'escaped_plaintext', 'nullable' => false, 'enabled' => $editscript_enable_meta),
         'description' => array('type' => 'escaped_plaintext', 'nullable' => false, 'enabled' => $editscript_enable_meta),
         'node_parent' => array('type' => 'int', 'nullable' => true, 'enabled' => _priv_adminroot),
         'ord' => array('type' => 'raw', 'nullable' => false, 'enabled' => _priv_adminroot),
@@ -494,10 +493,6 @@ $output .= "<form class='cform' action='index.php?p=content-edit" . $type_array[
                             "<tr>
                                 <th>" . _lang('admin.content.form.description') . "</th>
                                 <td><input type='text' name='description' value='" . $query['description'] . "' maxlength='255' class='inputmax'></td>
-                            </tr>
-                            <tr>
-                                <th>" . _lang('admin.content.form.keywords') . "</th>
-                                <td><input type='text' name='keywords' value='" . $query['keywords'] . "' maxlength='255' class='inputmax'></td>
                             </tr>" : '')
 
                             . $parent_row

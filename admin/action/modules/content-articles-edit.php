@@ -43,7 +43,6 @@ if (isset($_GET['id']) && isset($_GET['returnid']) && isset($_GET['returnpage'])
         'id' => -1,
         'title' => '',
         'slug' => '',
-        'keywords' => '',
         'description' => '',
         'perex' => '<p></p>',
         'picture_uid' => null,
@@ -79,7 +78,6 @@ if (isset($_POST['title'])) {
         $_POST['slug'] = _post('title');
     }
     $newdata['slug'] = _slugify(_post('slug'), true);
-    $newdata['keywords'] = _cutHtml(_e(trim(_post('keywords'))), 255);
     $newdata['description'] = _cutHtml(_e(trim(_post('description'))), 255);
     $newdata['home1'] = (int) _post('home1');
     $newdata['home2'] = (int) _post('home2');
@@ -185,7 +183,6 @@ if (isset($_POST['title'])) {
         $changeset = array(
             'title' => $newdata['title'],
             'slug' => $newdata['slug'],
-            'keywords' => $newdata['keywords'],
             'description' => $newdata['description'],
             'home1' => $newdata['home1'],
             'home2' => $newdata['home2'],
@@ -367,11 +364,7 @@ if ($continue) {
 <tr>
 <th>" . _lang('admin.content.form.description') . "</th>
 <td>
-    <table class='ae-twoi'><tr>
-    <td><input type='text' name='description' value='" . $query['description'] . "' maxlength='255' class='inputmedium'></td>
-    <th>" . _lang('admin.content.form.keywords') . "</th>
-    <td><input type='text' name='keywords' value='" . $query['keywords'] . "' maxlength='255' class='inputmedium'></td>
-    </tr></table>
+    <input type='text' name='description' value='" . $query['description'] . "' maxlength='255' class='inputmax'>
 </td>
 </tr>
 

@@ -86,7 +86,7 @@ if ($search_query != '') {
 
         // vyhledani stranek
         if ($root) {
-            $q = DB::query('SELECT id,title,slug,perex FROM ' . _root_table . ' WHERE level<=' . _priv_level . ' AND ' . ($public ? 'public=1 AND ' : '') . $searchQuery(null, array('title', 'slug', 'keywords', 'description', 'perex', 'content')) . ' LIMIT 50');
+            $q = DB::query('SELECT id,title,slug,perex FROM ' . _root_table . ' WHERE level<=' . _priv_level . ' AND ' . ($public ? 'public=1 AND ' : '') . $searchQuery(null, array('title', 'slug', 'description', 'perex', 'content')) . ' LIMIT 50');
             while($r = DB::row($q)) {
                 $results[] = array(
                     _linkRoot($r['id'], $r['slug']),
@@ -100,7 +100,7 @@ if ($search_query != '') {
         // vyhledani clanku
         if ($art) {
             // zakladni dostaz
-            list($joins, $cond) = _articleFilter('art', array(), $searchQuery('art', array('title', 'slug', 'perex', 'keywords', 'description', 'content')));
+            list($joins, $cond) = _articleFilter('art', array(), $searchQuery('art', array('title', 'slug', 'perex', 'description', 'content')));
 
             // vykonani a nacteni vysledku
             $q = DB::query('SELECT art.id,art.title,art.slug,art.perex,cat1.slug AS cat_slug FROM ' . _articles_table . ' art ' . $joins . ' WHERE ' . $cond . 'ORDER BY time DESC LIMIT 100');

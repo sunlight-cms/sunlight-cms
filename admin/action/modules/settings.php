@@ -71,7 +71,6 @@ $editable_settings = array(
             array('name' => 'titletype', 'choices' => $titletype_choices),
             array('name' => 'titleseparator'),
             array('name' => 'description'),
-            array('name' => 'keywords'),
             array('name' => 'author'),
             array('name' => 'favicon'),
         ),
