@@ -9,6 +9,7 @@ use Sunlight\Extend;
 use Sunlight\Message;
 use Sunlight\Plugin\TemplatePlugin;
 use Sunlight\Plugin\TemplateService;
+use Sunlight\Twig\TwigBridge;
 use Sunlight\Util\Filesystem;
 use Sunlight\Util\Password;
 use Sunlight\Util\StringGenerator;
@@ -435,6 +436,20 @@ function _unescapeHtml($input)
     $output = strtr($input, $map);
 
     return $output;
+}
+
+/**
+ * Render a Twig template
+ *
+ * @see TwigBridge
+ *
+ * @param string $template
+ * @param array $parameters
+ * @return string
+ */
+function _render($template, array $parameters)
+{
+    return TwigBridge::getEnvironment()->load($template)->render($parameters);
 }
 
 /**
