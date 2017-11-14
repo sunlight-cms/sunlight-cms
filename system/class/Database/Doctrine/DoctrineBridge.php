@@ -12,8 +12,6 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\SimplifiedXmlDriver;
 use Doctrine\ORM\Mapping\Driver\SimplifiedYamlDriver;
-use Doctrine\ORM\Mapping\Driver\XmlDriver;
-use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Doctrine\ORM\Tools\Setup;
 use Sunlight\Core;
 use Sunlight\Extend;
@@ -33,6 +31,10 @@ class DoctrineBridge
      */
     public static function createEntityManager(\mysqli $mysqli)
     {
+        if (!Core::isReady()) {
+            throw new \LogicException('Cannot use Doctrine bridge before full system initialization');
+        }
+
         $mysqliConnection = new ReusedMysqliConnection($mysqli);
         $connection = new Connection(array('pdo' => $mysqliConnection), new Driver());
         $connection->getConfiguration()->setSQLLogger(new SunlightSqlLogger());

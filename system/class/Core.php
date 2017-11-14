@@ -83,6 +83,9 @@ class Core
     /** @var array id => seconds */
     public static $cronIntervals = array();
 
+    /** @var bool */
+    protected static $ready = false;
+
     /**
      * This is a static class
      */
@@ -117,6 +120,8 @@ class Core
         static::initEnvironment($options);
 
         if ($options['minimal_mode']) {
+            static::finalize();
+
             return;
         }
 
@@ -131,8 +136,8 @@ class Core
         static::initSession();
         static::initLocalization();
 
-        // event
-        Extend::call('core.ready');
+        // finalize
+        static::finalize();
 
         // cron tasks
         Extend::reg('cron.maintenance', array(__CLASS__, 'doMaintenance'));
@@ -850,6 +855,23 @@ class Core
             fclose($cronLockFileHandle);
             $cronLockFileHandle = null;
         }
+    }
+
+    /**
+     * Finalize core intialization
+     */
+    protected static function finalize()
+    {
+        static::$ready = true;
+        Extend::call('core.ready');
+    }
+
+    /**
+     * @return bool
+     */
+    public static function isReady()
+    {
+        return static::$ready;
     }
 
     /**
