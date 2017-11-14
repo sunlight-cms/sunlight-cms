@@ -283,11 +283,10 @@ class Core
             static::$cache = new Cache(
                 $options['cache']
                     ? new FilesystemDriver(
-                    _root . 'system/cache/' . (_dev ? 'dev' : 'prod'),
-                    _root . 'system/tmp'
-                )
+                        _root . 'system/cache/',
+                        _root . 'system/tmp'
+                    )
                     : new MemoryDriver()
-
             );
 
             $boundFileExtension = new BoundFileExtension();
