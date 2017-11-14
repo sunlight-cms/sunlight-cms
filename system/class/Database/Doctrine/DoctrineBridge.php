@@ -6,6 +6,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\Persistence\Mapping\Driver\MappingDriver;
 use Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain;
+use Doctrine\Common\Proxy\AbstractProxyFactory;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\Mysqli\Driver;
 use Doctrine\ORM\EntityManager;
@@ -43,6 +44,7 @@ class DoctrineBridge
         $metadataDriver = new MappingDriverChain();
         $config->setMetadataDriverImpl($metadataDriver);
         $config->setNamingStrategy(new SunlightNamingStrategy());
+        $config->setAutoGenerateProxyClasses(AbstractProxyFactory::AUTOGENERATE_FILE_NOT_EXISTS);
 
         Extend::call('doctrine.init', array(
             'connection' => $connection,
