@@ -4,15 +4,18 @@ namespace Sunlight\Database\Doctrine;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
+use Doctrine\Common\EventManager;
 use Doctrine\Common\Persistence\Mapping\Driver\MappingDriver;
 use Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain;
 use Doctrine\Common\Proxy\AbstractProxyFactory;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\Mysqli\Driver;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\SimplifiedXmlDriver;
 use Doctrine\ORM\Mapping\Driver\SimplifiedYamlDriver;
+use Doctrine\ORM\Mapping\UnderscoreNamingStrategy;
 use Doctrine\ORM\Tools\Setup;
 use Sunlight\Core;
 use Sunlight\Extend;
@@ -36,24 +39,30 @@ class DoctrineBridge
             throw new \LogicException('Cannot use Doctrine bridge before full system initialization');
         }
 
+        $eventManager = new EventManager();
+        $eventManager->addEventListener(Events::loadClassMetadata, new ClassMetadataListener());
+
         $mysqliConnection = new ReusedMysqliConnection($mysqli);
-        $connection = new Connection(array('pdo' => $mysqliConnection), new Driver());
+        $connection = new Connection(array('pdo' => $mysqliConnection), new Driver(), null, $eventManager);
         $connection->getConfiguration()->setSQLLogger(new SunlightSqlLogger());
+
         $cache = new SunlightCacheAdapter(Core::$cache->getNamespace('doctrine.'));
-        $config = Setup::createConfiguration(false, _root . 'system/cache/doctrine-proxy', $cache);
         $metadataDriver = new MappingDriverChain();
+
+        $config = Setup::createConfiguration(false, _root . 'system/cache/doctrine-proxy', $cache);
         $config->setMetadataDriverImpl($metadataDriver);
-        $config->setNamingStrategy(new SunlightNamingStrategy());
+        $config->setNamingStrategy(new UnderscoreNamingStrategy());
         $config->setAutoGenerateProxyClasses(AbstractProxyFactory::AUTOGENERATE_FILE_NOT_EXISTS);
 
         Extend::call('doctrine.init', array(
             'connection' => $connection,
             'config' => $config,
             'metadata_driver' => $metadataDriver,
+            'event_manager' => $eventManager,
         ));
 
         $mapping = array();
-        Extend::call("doctrine.map_entities", array('mapping' => &$mapping));
+        Extend::call('doctrine.map_entities', array('mapping' => &$mapping));
 
         $drivers = array();
 
@@ -71,7 +80,7 @@ class DoctrineBridge
             $metadataDriver->addDriver($driver, $namespace);
         }
 
-        return EntityManager::create($connection, $config);
+        return EntityManager::create($connection, $config, $eventManager);
     }
 
     /**
