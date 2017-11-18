@@ -585,6 +585,7 @@ table.two-columns > tbody > tr > td > form:last-child {margin-bottom: 0;}
 /* list */
 table.list {margin: 10px 0; border-collapse: collapse; border: 1px solid <?php echo $scheme_smoke; ?>; background-color: <?php echo $scheme_white ?>;}
 table.list.list-max {width: 100%;}
+table.list.list-half {min-width: 50%;}
 table.list caption {padding: 15px; border-bottom: 3px double <?php echo $scheme_smoke_lightest; ?>; background-color: <?php echo $scheme_smoke; ?>; text-align: left;}
 table.list thead th, .list thead td {font-weight: bold; background-color: <?php echo $scheme_smoke; ?>;}
 table.list td, .list th {padding: 7px 15px; border-bottom: 1px solid <?php echo $scheme_smoke; ?>;}

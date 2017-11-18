@@ -14,7 +14,7 @@ if (!defined('_root')) {
 $output .= "
 <p><a class='button' href='index.php?p=content-articles-edit'><img src='images/icons/new.png' alt='new' class='icon'>" . _lang('admin.content.articles.create') . "</a></p>
 
-<table class='list list-noborder'>
+<table class='list list-noborder list-hover list-half'>
 <thead>
 <tr><th>" . _lang('article.category') . "</th><th>" . _lang('global.articlesnum') . "</th></tr>
 </thead>
