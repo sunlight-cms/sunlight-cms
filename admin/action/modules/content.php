@@ -144,6 +144,12 @@ $content_modules = array(
                 'icon' => 'images/icons/big-new.png',
                 'access' => _priv_adminart,
             ),
+            'manage' => array(
+                'url' => 'index.php?p=content-articles',
+                'icon' => 'images/icons/big-list.png',
+                'access' => _priv_adminart,
+                'label' => _lang('admin.content.manage'),
+            ),
             'confirm' => array(
                 'url' => 'index.php?p=content-confirm',
                 'icon' => 'images/icons/big-check.png',
