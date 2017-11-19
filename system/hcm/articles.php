@@ -15,9 +15,12 @@ function _HCM_articles($typ = 'new', $pocet = null, $perex = 'perex', $info = tr
         $pocet = 1;
     }
 
+    if ($perex === '0' || $perex === 0) {
+        $perex = 'no-perex';
+    }
+
     switch ($perex) {
         case 'no-perex':
-        case 0:
             $show_perex = false;
             $show_image = false;
             break;
