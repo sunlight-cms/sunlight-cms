@@ -96,7 +96,7 @@ class PageMenu
                     'classes' => &$classes,
                     'url' => &$url,
                     'attrs' => &$attrs,
-                ))) === ('')
+                ))) === ''
             ) {
                 // vychozi implementace
                 if ($url === null) {
