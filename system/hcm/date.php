@@ -6,5 +6,13 @@ if (!defined('_root')) {
 
 function _HCM_date($format = _time_format, $time = null)
 {
-    return date($format, $time !== null ? $time : time());
+    if ($time === null) {
+        $time = time();
+    } elseif (ctype_digit($time) || is_int($time)) {
+        $time = (int) $time;
+    } else {
+        $time = strtotime($time);
+    }
+
+    return date($format, $time);
 }
