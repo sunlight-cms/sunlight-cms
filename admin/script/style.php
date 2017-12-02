@@ -657,7 +657,7 @@ fieldset fieldset .bborder {border-color: <?php echo $scheme_smoke; ?>;}
 .clickable {cursor: pointer;}
 .strike {text-decoration: line-through;}
 .em {font-style: italic;}
-.big-text {font: style: larger;}
+.big-text {font-size: larger;}
 .left {float: left; margin: 1px 10px 5px 1px;}
 .right {float: right; margin: 1px 1px 5px 10px;}
 tr.valign-top > *, table.valign-top > * > tr > * {vertical-align: top;}
