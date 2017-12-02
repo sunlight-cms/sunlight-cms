@@ -526,7 +526,7 @@ ul.list-info strong {
 }
 .post {
     padding: 5px 5px 0 5px;
-    margin: 20px 0;
+    margin: 10px 0;
     clear: both;
 }
 .post-author {
@@ -572,6 +572,7 @@ ul.list-info strong {
 .post-body {
     margin: 0;
     padding: 8px 0;
+    border-bottom: 1px solid #dcdcdc;
 }
 .post-body-text {
     line-height: 150%;
@@ -637,6 +638,9 @@ ul.list-info strong {
 }
 .topic .post {
     margin: 0;
+}
+.topic .post-body {
+    border: 0;
 }
 
 /* Poll and shoutbox */
