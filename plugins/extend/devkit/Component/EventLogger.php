@@ -44,7 +44,7 @@ class EventLogger
         } else {
             $argsInfo = array();
             foreach ($eventArgs as $argName => $argValue) {
-                $argsInfo[$argName] = gettype($argValue);
+                $argsInfo[$argName] = is_object($argValue) ? get_class($argValue) : gettype($argValue);
             }
             $this->log[$event] = array(1, $argsInfo);
         }
