@@ -2127,18 +2127,7 @@ function _getPostFormPreviewButton($form, $area)
 /**
  * Zkontrolovat log IP adres
  *
- * Typ  Popis                   Var
- *
- * 1    prihlasení              -
- * 2    prectení clanku         id clanku
- * 3    hodnoceni clanku        id clanku
- * 4    hlasování v ankete      id ankety
- * 5    zaslani pozadavku       -
- * 6    pokus o aktivaci uctu   -
- * 7    zadost o obnovu hesla   -
- * 8+   vlastni typ             hodnota, ktera ma byt nalezena
- *
- * @param int      $type    typ zaznamu
+ * @param int      $type    typ zaznamu, viz _iplog_* konstanty
  * @param mixed    $var     promenny argument dle typu
  * @param int|null $expires doba expirace zaznamu v sekundach pro typ 8+
  * @return bool

@@ -149,7 +149,7 @@ CREATE TABLE `sunlight_images` (
 CREATE TABLE `sunlight_iplog` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `ip` varchar(45) NOT NULL,
-  `type` tinyint(4) NOT NULL,
+  `type` int(11) NOT NULL,
   `time` int(11) NOT NULL,
   `var` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
