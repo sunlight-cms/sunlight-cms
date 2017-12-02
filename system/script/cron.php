@@ -5,7 +5,6 @@ use Sunlight\Extend;
 
 require '../bootstrap.php';
 Core::init('../../', array(
-    'run_cron' => false,
     'content_type' => 'text/plain; charset=UTF-8',
 ));
 
@@ -35,4 +34,4 @@ Extend::reg('cron', function ($args) use (&$names) {
 Core::runCronTasks();
 
 // vysledek
-echo 'OK(', round((microtime(true) - $start) * 1000), 'ms) ', implode(', ', $names);
+echo date('Y-m-d H:i:s'), ' [', round((microtime(true) - $start) * 1000), 'ms] ', implode(', ', $names), "\n";

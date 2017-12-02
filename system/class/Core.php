@@ -102,7 +102,7 @@ class Core
      * minimal_mode         stop after initializing base components and environment (= no plugins, db, settings, session, etc.)
      * session_enabled      initialize session 1/0
      * session_regenerate   force new session ID 1/0
-     * run_cron             automatically run cron tasks 1/0
+     * allow_cron_auto      allow running cron tasks automatically 1/0
      * content_type         content type, FALSE = disabled (default is "text/html; charset=UTF-8")
      * env                  environment identifier, see Core::ENV_* constants
      *
@@ -141,7 +141,7 @@ class Core
 
         // cron tasks
         Extend::reg('cron.maintenance', array(__CLASS__, 'doMaintenance'));
-        if (_cron_auto && $options['run_cron']) {
+        if (_cron_auto && $options['allow_cron_auto']) {
             static::runCronTasks();
         }
     }
@@ -160,8 +160,8 @@ class Core
             'minimal_mode' => false,
             'session_enabled' => true,
             'session_regenerate' => false,
-            'run_cron' => true,
             'content_type' => null,
+            'allow_cron_auto' => isset($options['env']) && $options['env'] !== static::ENV_SCRIPT,
             'env' => static::ENV_SCRIPT,
         );
 
