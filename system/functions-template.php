@@ -577,7 +577,7 @@ function _templateSiteUrl()
  * @param bool $profileLink vykreslit odkaz na profil 1/0
  * @return string
  */
-function _templateUserMenu($profileLink = true)
+function _templateUserMenu($profileLink = true, $adminLink = true)
 {
     // pripravit polozky
     $items = array();
@@ -623,6 +623,14 @@ function _templateUserMenu($profileLink = true)
             _linkModule('settings'),
             _lang('usermenu.settings'),
         );
+
+        // administrace
+        if ($adminLink && _priv_administration) {
+            $items['admin'] = array(
+                _link('admin/'),
+                _lang('global.adminlink')
+            );
+        }
     }
 
     if (_ulist && (!_notpublicsite || _login)) {
