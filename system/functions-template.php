@@ -340,12 +340,13 @@ function _templateImage($path)
 /**
  * Vykreslit menu
  *
- * @param int|null $ordStart minimalni poradove cislo
- * @param int|null $ordEnd   maximalni poradove cislo
- * @param string   $cssClass trida hlavniho tagu menu
+ * @param int|null $ordStart    minimalni poradove cislo
+ * @param int|null $ordEnd      maximalni poradove cislo
+ * @param string   $cssClass    trida hlavniho tagu menu
+ * @param string   $extendEvent extend udalost pro polozky menu
  * @return string
  */
-function _templateMenu($ordStart = null, $ordEnd = null, $cssClass = null)
+function _templateMenu($ordStart = null, $ordEnd = null, $cssClass = null, $extendEvent = 'tpl.menu.item')
 {
     // kontrola prihlaseni v pripade neverejnych stranek
     if (!_login && _notpublicsite) {
@@ -369,7 +370,7 @@ function _templateMenu($ordStart = null, $ordEnd = null, $cssClass = null)
         $pages,
         $activeId,
         $cssClass,
-        'tpl.menu.item',
+        $extendEvent,
         'simple'
     );
 
