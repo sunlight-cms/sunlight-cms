@@ -480,6 +480,7 @@ ul.list-info strong {
 .messages-table a.notread {
     font-weight: bold;
 }
+.messages-table th,
 .messages-table td {
     padding: 5px 15px;
 }
@@ -546,10 +547,13 @@ ul.list-info strong {
     right: 5px;
     text-decoration: none;
 }
+.post-actions {
+    
+}
 .post-actions a {
     font-size: 12px;
-    padding-left: 4px;
     text-decoration: none;
+    margin: 0 3px;
 }
 .post-actions a:hover {
     text-decoration: underline;
@@ -628,21 +632,11 @@ ul.list-info strong {
 }
 
 /* Single topic */
-.topic {
-    border-top: 1px solid #dcdcdc;
-}
 .topic h2 {
     margin-bottom: 0;
 }
-.topic-info,
-.topic-admin {
-    margin: 5px 0;
-}
-.topic-withavatar img.avatar {
-    float: left;
-    margin: 0 1em 1em 0;
-    max-width: 50px;
-    vertical-align: top;
+.topic .post {
+    margin: 0;
 }
 
 /* Poll and shoutbox */

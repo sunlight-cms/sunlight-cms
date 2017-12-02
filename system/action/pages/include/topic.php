@@ -58,51 +58,25 @@ $topic_admin = array();
 
 if ($topic_access) {
     if (_priv_locktopics) {
-        $topic_admin[] = "<a class='button' href='" . _linkModule('locktopic', 'id=' . $id) . "'><img src='" . _templateImage("icons/" . (($query['locked'] == 1) ? 'un' : '') . "lock.png") . "' alt='lock' class='icon'>" . (_lang('mod.locktopic' . (($query['locked'] == 1) ? '2' : ''))) . "</a>";
+        $topic_admin[] = "<a href='" . _linkModule('locktopic', 'id=' . $id) . "'>" . (_lang('mod.locktopic.link' . (($query['locked'] == 1) ? '2' : ''))) . "</a>";
     }
     if (_priv_stickytopics) {
-        $topic_admin[] = "<a class='button' href='" . _linkModule('stickytopic', 'id=' . $id) . "'><img src='" . _templateImage("icons/" . (($query['sticky'] == 1) ? 'un' : '') . "stick.png") . "' alt='sticky' class='icon'>" . (_lang('mod.stickytopic' . (($query['sticky'] == 1) ? '2' : ''))) . "</a>";
+        $topic_admin[] = "<a href='" . _linkModule('stickytopic', 'id=' . $id) . "'>" . (_lang('mod.stickytopic.link' . (($query['sticky'] == 1) ? '2' : ''))) . "</a>";
     }
     if (_priv_movetopics) {
-        $topic_admin[] = "<a class='button' href='" . _linkModule('movetopic', 'id=' . $id) . "'><img src='" . _templateImage("icons/move.png") . "' alt='move' class='icon'>" . (_lang('mod.movetopic')) . "</a>";
+        $topic_admin[] = "<a href='" . _linkModule('movetopic', 'id=' . $id) . "'>" . (_lang('mod.movetopic.link')) . "</a>";
     }
-}
-
-// nacteni autora a avataru
-$avatar = '';
-if ($query['guest'] == "") {
-    $author = _linkUserFromQuery($userQuery, $query, array('class' => 'post-author'));
-    if (_show_avatars) {
-        $avatar = _getAvatarFromQuery($userQuery, $query, array('default' => false));
-    }
-} else {
-    $author = "<span class='post-author-guest' title='" . _showIP($query['ip']) . "'>" . $query['guest'] . "</span>";
 }
 
 // vystup
-$extend_buffer = Extend::buffer('topic.render', array(
-    'topic' => &$query,
-    'access' => $topic_access,
-    'admin' => &$topic_admin,
+$output .= "<div class=\"topic\">\n";
+$output .= "<h2>" . _lang('posts.topic') . ": " . $query['subject'] . ' ' . _templateRssLink(_linkRSS($id, 6, false), true) . "</h2>\n";
+$output .= CommentService::renderPost($query, $userQuery, array(
+    'post_link' => false,
+    'allow_reply' => false,
+    'extra_actions' => $topic_admin,
 ));
-if ($extend_buffer === '') {
-    $output .= (!empty($topic_admin) ? "<p class='topic-admin'>\n" . implode(' ', $topic_admin) . "</p>\n" : '') . "
-<div id='post-" . $id . "' class='topic" . ($avatar !== '' ? ' topic-withavatar' : '') . "'>
-<h2>" . _lang('posts.topic') . ": " . $query['subject'] . ' ' . _templateRssLink(_linkRSS($id, 6, false), true) . "</h2>
-<p class='topic-info'>"
-    . _lang('global.postauthor')
-    . ' ' . $author
-    . ' <span class="post-info">(' . _formatTime($query['time'], 'post') . ')</span>'
-    . ($topic_access ? " <span class='post-actions'><a class='post-action-edit' href='" . _linkModule('editpost', 'id=' . $id) . "'>" . _lang('global.edit') . "</a></span>" : '')
-    . "</p>
-" . $avatar . "
-<p class='topic-body'>" . _parsePost($query['text']) . "</p>
-</div>
-<div class='cleaner'></div>
-";
-} else {
-    $output .= $extend_buffer;
-}
+$output .= "</div>\n";
 
 // odpovedi
 $output .= CommentService::render(

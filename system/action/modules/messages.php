@@ -184,7 +184,7 @@ switch ($a) {
             // nacist data
             $senderUserQuery = _userQuery('pm.sender', 'sender_', 'su');
             $receiverUserQuery = _userQuery('pm.receiver', 'receiver_', 'ru');
-            $q = DB::queryRow('SELECT pm.*,post.id post_id,post.subject,post.time,post.text,' . $senderUserQuery['column_list'] . ',' . $receiverUserQuery['column_list'] . ' FROM ' . _pm_table . ' AS pm JOIN ' . _posts_table . ' AS post ON (post.type=' . _post_pm . ' AND post.home=pm.id AND post.xhome=-1) ' . $senderUserQuery['joins'] . ' ' . $receiverUserQuery['joins'] . ' WHERE pm.id=' . $id . ' AND (sender=' . _loginid . ' AND sender_deleted=0 OR receiver=' . _loginid . ' AND receiver_deleted=0)');
+            $q = DB::queryRow('SELECT pm.*,post.id post_id,post.subject,post.time,post.text,post.guest,post.ip,' . $senderUserQuery['column_list'] . ',' . $receiverUserQuery['column_list'] . ' FROM ' . _pm_table . ' AS pm JOIN ' . _posts_table . ' AS post ON (post.type=' . _post_pm . ' AND post.home=pm.id AND post.xhome=-1) ' . $senderUserQuery['joins'] . ' ' . $receiverUserQuery['joins'] . ' WHERE pm.id=' . $id . ' AND (sender=' . _loginid . ' AND sender_deleted=0 OR receiver=' . _loginid . ' AND receiver_deleted=0)');
             if ($q === false) {
                 $output .= _msg(_msg_err, _lang('global.badinput'));
                 break;
@@ -197,35 +197,19 @@ switch ($a) {
             $locked = ($q['sender_deleted'] || $q['receiver_deleted']);
             list($role, $role_other) = (($q['sender'] == _loginid) ? array('sender', 'receiver') : array('receiver', 'sender'));
 
-            // citace neprectenych zprav
-            $counter = DB::count(_posts_table, 'home=' . DB::val($q['id']) . ' AND type=' . _post_pm . ' AND time>' . $q[$role_other . '_readtime']);
-            $counter_s = array('', '');
-            $counter_s[($role === 'sender' ? 1 : 0)] = ' <span class="post-info">(' . $counter . ' ' . _lang('mod.messages.unreadcount') . ')</span>';
-
-            // odkazy na spravu
-            if (_postAccess($senderUserQuery, $q)) {
-                $pm_admin = " <span class='post-actions'><a class='post-action-edit' href='" . _linkModule('editpost', 'id=' . $q['post_id']) . "'>" . _lang('global.edit') . "</a></span>";
-            } else {
-                $pm_admin = '';
-            }
+            // spocitat neprectene zpravy
+            $unread_count = DB::count(_posts_table, 'home=' . DB::val($q['id']) . ' AND type=' . _post_pm . ' AND time>' . $q[$role_other . '_readtime']);
 
             // vystup
-            $output .= "<div id='post-" . $id . "' class='topic'>
-<h2>" . _lang('mod.messages.message') . ": " . $q['subject'] . "</h2>
-<p class='topic-info'>"
-        . _lang('global.postauthor')
-        . ' ' . _linkUserFromQuery($senderUserQuery, $q)
-        . ' <span class="post-info">(' . _formatTime($q['time'], 'post') . ')</span>'
-        . $counter_s[0]
-        . ' ' . _lang('mod.messages.receiver.inview')
-        . ' ' . _linkUserFromQuery($receiverUserQuery, $q)
-        . $counter_s[1]
-        . $pm_admin
-        . "</p>
-<p class='topic-body'>" . _parsePost($q['text']) . "</p>
-</div>";
+            $output .= "<div class=\"topic\">\n";
+            $output .= "<h2>" . _lang('mod.messages.message') . ": " . $q['subject'] . "</h2>\n";
+            $output .= CommentService::renderPost($q, $senderUserQuery, array(
+                'post_link' => false,
+                'allow_reply' => false,
+            ));
+            $output .= "</div>\n";
 
-            $output .= CommentService::render(CommentService::RENDER_PM_LIST, $q['id'], array($locked), false, $_SERVER['REQUEST_URI']);
+            $output .= CommentService::render(CommentService::RENDER_PM_LIST, $q['id'], array($locked, $unread_count), false, _linkModule('messages', 'a=list&read=' . $q['id'], false));
 
             // aktualizace casu precteni
             DB::update(_pm_table, 'id=' . DB::val($id), array($role . '_readtime' => time()));

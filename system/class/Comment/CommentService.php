@@ -61,6 +61,7 @@ class CommentService
      *
      * $vars: [
      *      (bool) locked,
+     *      (int) unread count,
      * ]
      */
     const RENDER_PM_LIST = 7;
@@ -79,57 +80,6 @@ class CommentService
      * ]
      */
     const RENDER_PLUGIN_POSTS = 8;
-
-    /**
-     * Render post form
-     *
-     * $vars structure:
-     * ----------------
-     * url          return URL
-     * posttype     post type (see _post_* constants)
-     * posttarget   id_home
-     * xhome        id_xhome
-     * subject      show subject field 1/0
-     * is_topic     the new post is a forum topic 1/0
-     * pluginflag   plugin flag (only for posttype == _post_plugin)
-     *
-     * @param array $vars
-     * @return string
-     */
-    public static function renderForm(array $vars)
-    {
-        $inputs = array();
-
-        $captcha = _captchaInit();
-        $output = _jsLimitLength(16384, "postform", "text");
-        if (!_login) {
-            $inputs[] = array('label' => _lang('posts.guestname'), 'content' => "<input type='text' name='guest' maxlength='24' class='inputsmall'" . _restoreValue($_SESSION, 'post_form_guest') . ">");
-        }
-        if ($vars['xhome'] == -1 && $vars['subject']) {
-            $inputs[] = array('label' => _lang($vars['is_topic'] ? 'posts.topic' : 'posts.subject'), 'content' => "<input type='text' name='subject' class='input" . ($vars['is_topic'] ? 'medium' : 'small') . "' maxlength='48'" . _restoreValue($_SESSION, 'post_form_subject') . ">");
-        }
-        $inputs[] = $captcha;
-        $inputs[] = array('label' => _lang('posts.text'), 'content' => "<textarea name='text' class='areamedium' rows='5' cols='33'>" . _restoreValue($_SESSION, 'post_form_text', null, false) . "</textarea><input type='hidden' name='_posttype' value='" . $vars['posttype'] . "'><input type='hidden' name='_posttarget' value='" . $vars['posttarget'] . "'><input type='hidden' name='_xhome' value='" . $vars['xhome'] . "'>" . (isset($vars['pluginflag']) ? "<input type='hidden' name='_pluginflag' value='" . $vars['pluginflag'] . "'>" : ''), 'top' => true);
-        $inputs[] = array('label' => '', 'content' => _getPostFormControls('postform', 'text'));
-
-        unset(
-            $_SESSION['post_form_guest'],
-            $_SESSION['post_form_subject'],
-            $_SESSION['post_form_text']
-        );
-
-        // form
-        $output .= _formOutput(
-            array(
-                'name' => 'postform',
-                'action' => _addGetToLink(_link('system/script/post.php'), '_return=' . rawurlencode($vars['url']), false),
-                'submit_append' => ' ' . _getPostFormPreviewButton('postform', 'text'),
-            ),
-            $inputs
-        );
-
-        return $output;
-    }
 
     /**
      * Render post list
@@ -160,6 +110,7 @@ class CommentService
         $page_param = null;
         $is_topic_list = ($style == static::RENDER_FORUM_TOPIC_LIST);
         $replies_enabled = null;
+        $unread_count = null;
 
         // url
         if (!isset($url)) {
@@ -253,9 +204,10 @@ class CommentService
                 $postsperpage = _messagesperpage;
                 $canpost = true;
                 $locked = (bool) $vars[0];
+                $unread_count = (int) $vars[1];
                 $replynote = false;
                 $desc = "";
-                $countcond = "type=" . _post_pm . " AND home=" . $home;
+                $countcond = "type=" . _post_pm . " AND home=" . $home . " AND xhome!=-1";
                 $locked_textid = '4';
                 $autolast = true;
                 $replies_enabled = false;
@@ -473,83 +425,40 @@ class CommentService
             if (!$is_topic_list) {
                 $output .= "<div class='post-list'>\n";
 
-                $hl = true;
+                $extra_info = '';
+                $item_offset = ($paging['current'] - 1) * $paging['per_page'];
+
                 foreach ($items as $item) {
-
-                    // fetch author
-                    if ($item['guest'] == "") $author = _linkUserFromQuery($userQuery, $item, array('class' => 'post-author'));
-                    else $author = "<span class='post-author-guest' title='" . _showIP($item['ip']) . "'>" . $item['guest'] . "</span>";
-
-                    // admin links
-                    $post_access = _postAccess($userQuery, $item);
-                    if ($replies_enabled || $post_access) {
-                        $actlinks = " <span class='post-actions'>";
-                        if ($replies_enabled) $actlinks .= "<a class='post-action-reply' href='" . _addGetToLink($url_html, "replyto=" . $item['id']) . "#posts'>" . _lang('posts.reply') . "</a>";
-                        if ($post_access) $actlinks .= ($replies_enabled ? ' ' : '') . "<a class='post-action-edit' href='" . _linkModule('editpost', 'id=' . $item['id']) . "'>" . _lang('global.edit') . "</a>";
-                        $actlinks .= "</span>";
-                    } else {
-                        $actlinks = "";
+                    if ($unread_count !== null) {
+                        if ($item_offset >= $paging['count'] - $unread_count) {
+                            $extra_info = ', ' . _lang('posts.unread');
+                        } else {
+                            $extra_info = '';
+                        }
                     }
 
-                    // avatar
-                    if (_show_avatars) {
-                        $avatar = _getAvatarFromQuery($userQuery, $item);
-                    } else {
-                        $avatar = null;
-                    }
-
-                    // post
-                    $hl = !$hl;
-                    Extend::call('posts.post', array('item' => &$item, 'avatar' => &$avatar, 'actlinks' => &$actlinks, 'type' => $style));
-                    if ($callback === null) {
-                        $output .= "<div id='post-" . $item['id'] . "' class='post" . ($hl ? ' post-hl' : '') . (isset($avatar) ? ' post-withavatar' : '') . "'><div class='post-head'>" . $author;
-                        $output .= " <span class='post-info'>(" . _formatTime($item['time'], 'post') . ")</span>" . $actlinks . ($postlink ? "<a class='post-postlink' href='" . _addGetToLink($url_html, 'page=' . $paging['current']) . "#post-" . $item['id'] . "'><span>#" . str_pad($item['id'], 6, '0', STR_PAD_LEFT) . "</span></a>" : '') . "</div><div class='post-body" . (isset($avatar) ? ' post-body-withavatar' : '') . "'>" . $avatar . '<div class="post-body-text">' . _parsePost($item['text']) . "</div></div></div>\n";
-                    } else {
-                        $output .= call_user_func($callback, array(
-                            'item' => $item,
-                            'avatar' => $avatar,
-                            'author' => $author,
-                            'actlinks' => $actlinks,
-                            'page' => $paging['current'],
-                            'postlink' => $postlink,
-                        ));
-                    }
+                    $output .= static::renderPost($item, $userQuery, array(
+                        'current_url' => $url,
+                        'current_page' => $paging['current'],
+                        'post_link' => $postlink,
+                        'allow_reply' => $replies_enabled,
+                        'extra_info' => $extra_info,
+                    ));
 
                     // answers
                     if ($replies_enabled && isset($item['_answers'])) {
                         foreach ($item['_answers'] as $answer) {
-
-                            // author name
-                            if ($answer['guest'] == "") $author = _linkUserFromQuery($userQuery, $answer, array('class' => 'post-author'));
-                            else $author = "<span class='post-author-guest' title='" . _showIP($answer['ip']) . "'>" . $answer['guest'] . "</span>";
-
-                            // post admin links
-                            if (_postAccess($userQuery, $answer)) $actlinks = " <span class='post-actions'><a class='post-action-edit' href='" . _linkModule('editpost', 'id=' . $answer['id']) . "'>" . _lang('global.edit') . "</a></span>";
-                            else $actlinks = "";
-
-                            // avatar
-                            if (_show_avatars) {
-                                $avatar = _getAvatarFromQuery($userQuery, $answer);
-                            } else {
-                                $avatar = null;
-                            }
-
-                            Extend::call('posts.post', array('item' => &$answer, 'avatar' => &$avatar, 'actlinks' => &$actlinks, 'type' => $style));
-                            if ($callback === null) {
-                                $output .= "<div id='post-" . $answer['id'] . "' class='post-answer" . (isset($avatar) ? ' post-answer-withavatar' : '') . "'><div class='post-head'>" . $author . " <span class='post-info'>(" . _formatTime($answer['time'], 'post') . ")</span>" . $actlinks . "</div><div class='post-body" . (isset($avatar) ? ' post-body-withavatar' : '') . "'>" . $avatar . '<div class="post-body-text">' . _parsePost($answer['text']) . "</div></div></div>\n";
-                            } else {
-                                $output .= call_user_func($callback, array(
-                                    'item' => $answer,
-                                    'avatar' => $avatar,
-                                    'author' => $author,
-                                    'actlinks' => $actlinks,
-                                    'page' => $paging['current'],
-                                    'postlink' => $postlink,
-                                ));
-                            }
+                            $output .= static::renderPost($answer, $userQuery, array(
+                                'current_url' => $url,
+                                'current_page' => $paging['current'],
+                                'post_link' => $postlink,
+                                'is_answer' => true,
+                                'allow_reply' => false,
+                            ));
                         }
                     }
 
+                    ++$item_offset;
                 }
 
                 $output .= "</div>\n";
@@ -646,6 +555,130 @@ class CommentService
         }
 
         $output .= "</div>";
+
+        return $output;
+    }
+
+
+
+    /**
+     * Render post form
+     *
+     * $vars structure:
+     * ----------------
+     * url          return URL
+     * posttype     post type (see _post_* constants)
+     * posttarget   id_home
+     * xhome        id_xhome
+     * subject      show subject field 1/0
+     * is_topic     the new post is a forum topic 1/0
+     * pluginflag   plugin flag (only for posttype == _post_plugin)
+     *
+     * @param array $vars
+     * @return string
+     */
+    public static function renderForm(array $vars)
+    {
+        $inputs = array();
+
+        $captcha = _captchaInit();
+        $output = _jsLimitLength(16384, "postform", "text");
+        if (!_login) {
+            $inputs[] = array('label' => _lang('posts.guestname'), 'content' => "<input type='text' name='guest' maxlength='24' class='inputsmall'" . _restoreValue($_SESSION, 'post_form_guest') . ">");
+        }
+        if ($vars['xhome'] == -1 && $vars['subject']) {
+            $inputs[] = array('label' => _lang($vars['is_topic'] ? 'posts.topic' : 'posts.subject'), 'content' => "<input type='text' name='subject' class='input" . ($vars['is_topic'] ? 'medium' : 'small') . "' maxlength='48'" . _restoreValue($_SESSION, 'post_form_subject') . ">");
+        }
+        $inputs[] = $captcha;
+        $inputs[] = array('label' => _lang('posts.text'), 'content' => "<textarea name='text' class='areamedium' rows='5' cols='33'>" . _restoreValue($_SESSION, 'post_form_text', null, false) . "</textarea><input type='hidden' name='_posttype' value='" . $vars['posttype'] . "'><input type='hidden' name='_posttarget' value='" . $vars['posttarget'] . "'><input type='hidden' name='_xhome' value='" . $vars['xhome'] . "'>" . (isset($vars['pluginflag']) ? "<input type='hidden' name='_pluginflag' value='" . $vars['pluginflag'] . "'>" : ''), 'top' => true);
+        $inputs[] = array('label' => '', 'content' => _getPostFormControls('postform', 'text'));
+
+        unset(
+            $_SESSION['post_form_guest'],
+            $_SESSION['post_form_subject'],
+            $_SESSION['post_form_text']
+        );
+
+        // form
+        $output .= _formOutput(
+            array(
+                'name' => 'postform',
+                'action' => _addGetToLink(_link('system/script/post.php'), '_return=' . rawurlencode($vars['url']), false),
+                'submit_append' => ' ' . _getPostFormPreviewButton('postform', 'text'),
+            ),
+            $inputs
+        );
+
+        return $output;
+    }
+
+    /**
+     * Render a single post
+     *
+     * @param array $post
+     * @param array $userQuery
+     * @param array $options
+     * @return string
+     */
+    public static function renderPost(
+        array $post,
+        array $userQuery,
+        array $options
+    ) {
+        $options += array(
+            'current_url' => '',
+            'current_page' => 1,
+            'is_answer' => false,
+            'post_link' => true,
+            'allow_reply' => true,
+            'extra_actions' => array(),
+            'extra_info' => '',
+        );
+
+        $postAccess = _postAccess($userQuery, $post);
+
+        // fetch author
+        if ($post['guest'] == "") $author = _linkUserFromQuery($userQuery, $post, array('class' => 'post-author'));
+        else $author = "<span class='post-author-guest' title='" . _showIP($post['ip']) . "'>" . $post['guest'] . "</span>";
+
+        // action links
+        $actlinks = array();
+        if ($options['allow_reply']) $actlinks[] = "<a class='post-action-reply' href='" . _e(_addGetToLink($options['current_url'], "replyto=" . $post['id'], false)) . "#posts'>" . _lang('posts.reply') . "</a>";
+        if ($postAccess) $actlinks[] = "<a class='post-action-edit' href='" . _linkModule('editpost', 'id=' . $post['id']) . "'>" . _lang('global.edit') . "</a>";
+        $actlinks = array_merge($actlinks, $options['extra_actions']);
+
+        // avatar
+        if (_show_avatars) {
+            $avatar = _getAvatarFromQuery($userQuery, $post);
+        } else {
+            $avatar = null;
+        }
+
+        // post
+        $output = Extend::buffer('posts.post', array(
+            'item' => &$post,
+            'avatar' => &$avatar,
+            'author' => $author,
+            'actlinks' => &$actlinks,
+            'options' => $options,
+        ));
+
+        if ($output === '') {
+            $output .= "<div id='post-" . $post['id'] . "' class='post" . ($options['is_answer'] ? ' post-answer' : '') . (isset($avatar) ? ' post-withavatar' : '') . "'>"
+                . "<div class='post-head'>"
+                    . $author
+                    . " <span class='post-info'>(" . _formatTime($post['time'], 'post') . $options['extra_info'] . ")</span>"
+                    . ($actlinks ? " <span class='post-actions'>" . implode(' ', $actlinks) . '</span>' : '')
+                    . ($options['post_link'] ? "<a class='post-postlink' href='" . _e(_addGetToLink($options['current_url'], 'page=' . $options['current_page'], false)) . "#post-" . $post['id'] . "'><span>#" . str_pad($post['id'], 6, '0', STR_PAD_LEFT) . "</span></a>" : '')
+                . "</div>"
+                . "<div class='post-body" . (isset($avatar) ? ' post-body-withavatar' : '') . "'>"
+                    . $avatar
+                    . '<div class="post-body-text">'
+                        . _parsePost($post['text'])
+                    . "</div>"
+                . "</div>"
+                . "</div>\n";
+        }
 
         return $output;
     }

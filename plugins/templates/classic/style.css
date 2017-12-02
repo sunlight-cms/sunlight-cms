@@ -411,6 +411,7 @@ ul.list-info a {
 .messages-table a.notread {
     font-weight: bold;
 }
+.messages-table th,
 .messages-table td {
     padding: 5px 15px;
 }
@@ -565,18 +566,11 @@ ul.list-info a {
 }
 
 /* Single topic */
-.topic {
-    border-top: 1px solid #dcdcdc;
+.topic .post {
+    margin: 0;
 }
-.topic-info,
-.topic-admin {
-    margin-bottom: 5px;
-}
-.topic-withavatar img.avatar {
-    float: left;
-    margin: 0 1em 1em 0;
-    max-width: 50px;
-    vertical-align: top;
+.topic .post-body {
+    border: 0;
 }
 
 /* Poll and shoutbox */
