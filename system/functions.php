@@ -2899,7 +2899,7 @@ function _parseHCM_module($match)
  * @param array  $args pole s argumenty
  * @return mixed vystup HCM modulu
  */
-function _runHCM($name, array $args)
+function _runHCM($name, array $args = array())
 {
     if (_env !== Core::ENV_WEB) {
         // HCM moduly vyzaduji frontendove prostredi

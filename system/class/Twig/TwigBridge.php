@@ -63,6 +63,7 @@ class TwigBridge
 
         $env->addFunction(new \Twig_SimpleFunction('link', '_link'));
         $env->addFunction(new \Twig_SimpleFunction('lang', '_lang'));
+        $env->addFunction(new \Twig_SimpleFunction('hcm', '_runHCM', array('is_variadic' => true, 'is_safe' => array('html'))));
         $env->addFunction(new \Twig_SimpleFunction('dump', array(get_called_class(), 'dump'), array('needs_context' => true)));
 
         Extend::call('twig.init', array('env' => $env, 'loader' => $loader));
