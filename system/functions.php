@@ -2359,11 +2359,7 @@ $(document).ready(function(){
  */
 function _levelCheck($targetUserId, $targetUserLevel)
 {
-    if (_login && (_priv_level > $targetUserLevel || $targetUserId == _loginid)) {
-        return true;
-    } else {
-        return false;
-    }
+    return _login && (_priv_level > $targetUserLevel || $targetUserId == _loginid);
 }
 
 /**
@@ -4097,7 +4093,7 @@ function _userLoginForm($title = false, $required = false, $return = null, $embe
 
     // titulek
     if ($title) {
-        $title_text = _lang($required ? 'login.required.title' : 'login.title');
+        $title_text = _lang($required ? (_login ? 'global.accessdenied' : 'login.required.title') : 'login.title');
         if (_env === Core::ENV_ADMIN) {
             $output .= '<h1>' . $title_text . "</h1>\n";
         } else {

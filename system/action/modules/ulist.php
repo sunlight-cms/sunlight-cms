@@ -20,12 +20,13 @@ $_index['title'] = _lang('user.list.title');
 
 $output .= "<p class='bborder'>" . _lang('mod.ulist.p') . "</p>";
 
-// filtr skupiny
-$group_cond = '1';
+// filtry
+$cond = 'u.public=1';
+
 if (isset($_REQUEST['group_id'])) {
     $group = (int) $_REQUEST['group_id'];
     if ($group != -1) {
-        $group_cond = 'u.group_id=' . $group;
+        $cond .= ' AND u.group_id=' . $group;
     }
 } else {
     $group = -1;
@@ -50,13 +51,13 @@ while ($item = DB::row($query)) {
 $output .= '</select> <input type="submit" value="' . _lang('global.apply') . '"></form>';
 
 // tabulka
-$paging = _resultPaging(_linkModule('ulist', 'group=' . $group, false), 50, _users_table . ':u', $group_cond);
+$paging = _resultPaging(_linkModule('ulist', 'group=' . $group, false), 50, _users_table . ':u', $cond);
 if (_showPagingAtTop()) {
     $output .= $paging['paging'];
 }
 if ($paging['count'] > 0) {
     $userQuery = _userQuery(null);
-    $query = DB::query('SELECT ' . $userQuery['column_list'] . ' FROM ' . _users_table . ' u ' . $userQuery['joins'] . ' WHERE ' . $group_cond . ' ORDER BY ug.level DESC ' . $paging['sql_limit']);
+    $query = DB::query('SELECT ' . $userQuery['column_list'] . ' FROM ' . _users_table . ' u ' . $userQuery['joins'] . ' WHERE ' . $cond . ' ORDER BY ug.level DESC ' . $paging['sql_limit']);
 
     $output .= "<table class='widetable'>\n<tr><th>" . _lang('login.username') . "</th><th>" . _lang('global.group') . "</th></tr>\n";
     while ($item = DB::row($query)) {

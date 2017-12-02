@@ -10,12 +10,12 @@ function _HCM_users($razeni = 'new', $pocet = 5)
 {
     $pocet = abs((int) $pocet);
 
-    $rcond = "";
+    $rcond = "public=1";
     switch ($razeni) {
         case 'activity':
         case 2:
             $rorder = "activitytime DESC";
-            $rcond = " WHERE " . time() . "-activitytime<1800";
+            $rcond .= " AND " . time() . "-activitytime<1800";
             break;
         case 'comment-count':
         case 3:
@@ -23,7 +23,7 @@ function _HCM_users($razeni = 'new', $pocet = 5)
             break;
         case 'article-rating':
         case 4:
-            $rcond = " WHERE (SELECT COUNT(*) FROM " . _articles_table . " WHERE author=" . _users_table . ".id AND rateon=1 AND ratenum!=0)!=0";
+            $rcond .= " AND (SELECT COUNT(*) FROM " . _articles_table . " WHERE author=" . _users_table . ".id AND rateon=1 AND ratenum!=0)!=0";
             $rorder = "(SELECT ROUND(SUM(ratesum)/SUM(ratenum)) FROM " . _articles_table . " WHERE rateon=1 AND ratenum!=0 AND author=" . _users_table . ".id) DESC";
             break;
         case 'new':
@@ -39,7 +39,7 @@ function _HCM_users($razeni = 'new', $pocet = 5)
     }
 
     $userQuery = _userQuery(null, '');
-    $query = DB::query("SELECT " . $userQuery['column_list'] . " FROM " . _users_table . " u " . $userQuery['joins'] . $rcond . " ORDER BY " . $rorder . " LIMIT " . $pocet);
+    $query = DB::query("SELECT " . $userQuery['column_list'] . " FROM " . _users_table . " u " . $userQuery['joins'] . ' WHERE ' . $rcond . " ORDER BY " . $rorder . " LIMIT " . $pocet);
     while ($item = DB::row($query)) {
 
         // pridani doplnujicich informaci

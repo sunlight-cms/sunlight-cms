@@ -399,6 +399,7 @@ CREATE TABLE `sunlight_users` (
   `blocked` tinyint(1) NOT NULL DEFAULT '0',
   `massemail` tinyint(1) NOT NULL DEFAULT '1',
   `wysiwyg` tinyint(1) NOT NULL DEFAULT '1',
+  `public` tinyint(1) NOT NULL DEFAULT '1',
   `language` varchar(12) NOT NULL DEFAULT '',
   `ip` varchar(45) NOT NULL DEFAULT '',
   `email` varchar(255) NOT NULL,
@@ -416,8 +417,8 @@ CREATE TABLE `sunlight_users` (
   KEY `massemail` (`massemail`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `sunlight_users` (`id`, `group_id`, `levelshift`, `username`, `publicname`, `password`, `security_hash`, `security_hash_expires`, `logincounter`, `registertime`, `activitytime`, `blocked`, `massemail`, `wysiwyg`, `language`, `ip`, `email`, `avatar`, `note`) VALUES
-(0,	1,	1,	'',	NULL,	'',	NULL,	0,	0,	0,	0,	0,	1,	0,	'',	'',	'',	NULL,	'');
+INSERT INTO `sunlight_users` (`id`, `group_id`, `levelshift`, `username`, `publicname`, `password`, `security_hash`, `security_hash_expires`, `logincounter`, `registertime`, `activitytime`, `blocked`, `massemail`, `wysiwyg`, `public`, `language`, `ip`, `email`, `avatar`, `note`) VALUES
+(0,	1,	1,	'',	NULL,	'',	NULL,	0,	0,	0,	0,	0,	1,	1,	1, '',	'',	'',	NULL,	'');
 
 CREATE TABLE `sunlight_user_activation` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

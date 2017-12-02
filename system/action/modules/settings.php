@@ -100,11 +100,12 @@ if (isset($_POST['username'])) {
         }
     }
 
-    // massemail, wysiwyg
+    // massemail, wysiwyg, public
     $massemail = _checkboxLoad('massemail');
     if (_priv_administration) {
         $wysiwyg = _checkboxLoad('wysiwyg');
     }
+    $public = _checkboxLoad('public');
 
     // avatar
     $avatar = $userdata['avatar'];
@@ -186,6 +187,7 @@ if (isset($_POST['username'])) {
         'email' => $email,
         'avatar' => $avatar,
         'massemail' => $massemail,
+        'public' => $public,
         'note' => $note,
         'publicname' => $publicname,
     );
@@ -302,6 +304,11 @@ $output .= "
   <tr>
   <th>" . _lang('mod.settings.massemail') . "</th>
   <td><label><input type='checkbox' name='massemail' value='1'" . _checkboxActivate($userdata['massemail']) . "> " . _lang('mod.settings.massemail.label') . "</label></td>
+  </tr>
+  
+  <tr>
+  <th>" . _lang('mod.settings.public') . "</th>
+  <td><label><input type='checkbox' name='public' value='1'" . _checkboxActivate($userdata['public']) . "> " . _lang('mod.settings.public.label') . "</label></td>
   </tr>
 
   " . $admin . "

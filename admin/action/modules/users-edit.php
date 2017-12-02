@@ -52,6 +52,7 @@ if (isset($_GET['id'])) {
         'avatar' => null,
         'note' => '',
         'wysiwyg' => '1',
+        'public' => '1',
         'massemail' => '1',
     );
 }
@@ -118,6 +119,9 @@ if ($continue) {
         // hromadny email
         $massemail = _checkboxLoad('massemail');
 
+        // verejny profil
+        $public = _checkboxLoad('public');
+
         // avatar
         if (isset($query['avatar']) && _checkboxLoad("removeavatar")) {
             @unlink(_root . 'images/avatars/' . $query['avatar'] . '.jpg');
@@ -178,6 +182,7 @@ if ($continue) {
                 'blocked' => $blocked,
                 'levelshift' => $levelshift,
                 'massemail' => $massemail,
+                'public' => $public,
                 'wysiwyg' => $wysiwyg,
             );
             if ($id === null || $passwordchange) {
@@ -284,6 +289,11 @@ if ($continue) {
 <tr>
 <th>" . _lang('mod.settings.massemail') . "</th>
 <td><input type='checkbox' name='massemail' value='1'" . _checkboxActivate($query['massemail'] || isset($_POST['massemail'])) . "></td>
+</tr>
+
+<tr>
+<th>" . _lang('mod.settings.public') . "</th>
+<td><input type='checkbox' name='public' value='1'" . _checkboxActivate($query['public'] || isset($_POST['public'])) . "></td>
 </tr>
 
 <tr>

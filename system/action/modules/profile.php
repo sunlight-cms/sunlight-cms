@@ -16,46 +16,49 @@ if (!_login && _notpublicsite) {
 
 $id = _slugify(_get('id'));
 $query = DB::queryRow("SELECT * FROM " . _users_table . " WHERE username=" . DB::val($id));
+$public = true;
 if ($query !== false) {
-    $groupdata = DB::queryRow("SELECT title,descr,icon,color,blocked FROM " . _groups_table . " WHERE id=" . $query['group_id']);
+    $groupdata = DB::queryRow("SELECT title,descr,icon,color,blocked,level FROM " . _groups_table . " WHERE id=" . $query['group_id']);
+    $public = $query['public'] || _levelCheck($query['id'], $groupdata['level']);
 
-    // promenne
-    if ($query['note'] == "") {
-        $note = "";
-    } else {
-        $note = "<tr class='valign-top'><th>" . _lang('global.note') . "</th><td><div class='note'>" . _parsePost($query['note']) . "</div></td></tr>";
-    }
-
-    // clanky autora
-    list(, , $arts) = _articleFilter('art', array(), "author=" . $query['id'], true, false, false);
-    if ($arts != 0) {
-
-        // zjisteni prumerneho hodnoceni
-        $avgrate = DB::result(DB::query("SELECT ROUND(SUM(ratesum)/SUM(ratenum)) FROM " . _articles_table . " WHERE rateon=1 AND ratenum!=0 AND confirmed=1 AND author=" . $query['id']), 0);
-        if ($avgrate === null) {
-            $avgrate = _lang('article.rate.nodata');
+    if ($public) {
+        // promenne
+        if ($query['note'] == "") {
+            $note = "";
         } else {
-            $avgrate = "&Oslash; " . $avgrate . "%";
+            $note = "<tr class='valign-top'><th>" . _lang('global.note') . "</th><td><div class='note'>" . _parsePost($query['note']) . "</div></td></tr>";
         }
 
-        // sestaveni kodu
-        $arts = "\n<tr><th>" . _lang('global.articlesnum') . "</th><td>" . $arts . ", <a href='" . _linkModule('profile-arts', 'id=' . $id) . "'>" . _lang('global.show') . " &gt;</a></td></tr>\n";
-        if (_ratemode != 0) {
-            $arts .= "\n<tr><th>" . _lang('article.rate') . "</th><td>" . $avgrate . "</td></tr>\n";
+        // clanky autora
+        list(, , $arts) = _articleFilter('art', array(), "author=" . $query['id'], true, false, false);
+        if ($arts != 0) {
+
+            // zjisteni prumerneho hodnoceni
+            $avgrate = DB::result(DB::query("SELECT ROUND(SUM(ratesum)/SUM(ratenum)) FROM " . _articles_table . " WHERE rateon=1 AND ratenum!=0 AND confirmed=1 AND author=" . $query['id']), 0);
+            if ($avgrate === null) {
+                $avgrate = _lang('article.rate.nodata');
+            } else {
+                $avgrate = "&Oslash; " . $avgrate . "%";
+            }
+
+            // sestaveni kodu
+            $arts = "\n<tr><th>" . _lang('global.articlesnum') . "</th><td>" . $arts . ", <a href='" . _linkModule('profile-arts', 'id=' . $id) . "'>" . _lang('global.show') . " &gt;</a></td></tr>\n";
+            if (_ratemode != 0) {
+                $arts .= "\n<tr><th>" . _lang('article.rate') . "</th><td>" . $avgrate . "</td></tr>\n";
+            }
+
+        } else {
+            $arts = "";
         }
 
-    } else {
-        $arts = "";
+        // odkaz na prispevky uzivatele
+        $posts_count = DB::count(_posts_table, 'author=' . DB::val($query['id']) . ' AND type!=' . _post_pm . ' AND type!=' . _post_shoutbox_entry);
+        if ($posts_count > 0) {
+            $posts_viewlink = ", <a href='" . _linkModule('profile-posts', 'id=' . $id) . "'>" . _lang('global.show') . " &gt;</a>";
+        } else {
+            $posts_viewlink = "";
+        }
     }
-
-    // odkaz na prispevky uzivatele
-    $posts_count = DB::count(_posts_table, 'author=' . DB::val($query['id']) . ' AND type!=' . _post_pm . ' AND type!=' . _post_shoutbox_entry);
-    if ($posts_count > 0) {
-        $posts_viewlink = ", <a href='" . _linkModule('profile-posts', 'id=' . $id) . "'>" . _lang('global.show') . " &gt;</a>";
-    } else {
-        $posts_viewlink = "";
-    }
-
 } else {
     $_index['is_found'] = false;
     return;
@@ -70,7 +73,12 @@ if ($query['blocked'] == 1 || $groupdata['blocked'] == 1) {
     $output .= _msg(_msg_err, _lang('mod.profile.blockednote'));
 }
 
-$output .= "
+if ($public) {
+    if (!$query['public'] && _loginid == $query['id']) {
+        $output .= _msg(_msg_ok, _lang('mod.profile.private.selfnote'));
+    }
+
+    $output .= "
 <table>
 
 <tr class='valign-top'>
@@ -133,6 +141,9 @@ $output .= "
 </table>
 </div>
 ";
+} else {
+    $output .= _msg(_msg_ok, _lang('mod.profile.private'));
+}
 
 // odkaz na zaslani vzkazu
 if (_login && _messages && $query['id'] != _loginid && $query['blocked'] == 0 && $groupdata['blocked'] == 0) {

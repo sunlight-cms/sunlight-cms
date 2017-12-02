@@ -14,9 +14,15 @@ if (!_login && _notpublicsite) {
 /* ---  priprava  --- */
 
 $id = _slugify(_get('id'), false);
-$query = DB::queryRow("SELECT id,username,publicname FROM " . _users_table . " WHERE username=" . DB::val($id));
+$query = DB::queryRow("SELECT u.id,u.username,u.publicname,u.public,g.level FROM " . _users_table . " u JOIN " . _groups_table . " g ON u.group_id=g.id WHERE u.username=" . DB::val($id));
+
 if ($query === false) {
     $_index['is_found'] = false;
+    return;
+}
+
+if (!$query['public'] && !_levelCheck($query['id'], $query['level'])) {
+    $_index['is_accessible'] = false;
     return;
 }
 
