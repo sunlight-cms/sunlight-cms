@@ -24,7 +24,7 @@ class ComposerBridge
             Filesystem::purgeDirectory($packageCachePath, array('keep_dir' => true));
         }
 
-        // generate packages
+        // create packages for plugins with specified composer dependecies
         $rootRequirements = array();
         $pluginLoader = new PluginLoader(PluginManager::getTypeDefinitions());
 
@@ -38,35 +38,52 @@ class ComposerBridge
                     continue;
                 }
 
-                $pluginComposerName = sprintf('sunlight-local-plugins/%s-%s', $pluginType, $pluginId);
+                $pluginRequirements = $plugin['options']['requires.composer'];
+                $pluginComposerName = sprintf('sunlight-cms/plugin-%s-%s', $pluginType, $pluginId);
+                $pluginVersion = sprintf(
+                    '%s-p%s',
+                    $plugin['options']['version'],
+                    // dynamic patch number makes composer notice requirement changes
+                    crc32(json_encode($pluginRequirements))
+                );
 
                 static::createDummyPackage(
                     sprintf('%s/%s.%s', $packageCachePath, $pluginType, $pluginId),
                     $pluginComposerName,
-                    $plugin['options']['requires.composer']
+                    $pluginVersion,
+                    $pluginRequirements
                 );
 
-                $rootRequirements[$pluginComposerName] = 'dev-master';
+                $rootRequirements[$pluginComposerName] = $pluginVersion;
             }
         }
 
-        // generate root package
+        // create root package that requires above packages
         static::createDummyPackage(
             $packageCachePath . '/all',
-            'sunlight-local-plugins/root',
+            'sunlight-cms/plugin-root',
+            'dev-master',
             $rootRequirements
         );
 
+        Filesystem::denyAccessToDirectory($packageCachePath);
+
         // done
-        echo 'Linked dependencies of ', sizeof($rootRequirements), " local plugins\n";
+        echo 'Found ', sizeof($rootRequirements), " local plugins with Composer dependencies\n";
+    }
+
+    public static function denyAccessToVendorDirectory()
+    {
+        Filesystem::denyAccessToDirectory(__DIR__ . '/../../../vendor');
     }
 
     /**
      * @param string $path
      * @param string $name
+     * @param string $version
      * @param array $requirements
      */
-    protected static function createDummyPackage($path, $name, array $requirements)
+    protected static function createDummyPackage($path, $name, $version, array $requirements)
     {
         if (!is_dir($path)) {
             @mkdir($path, 0777, true);
@@ -77,6 +94,7 @@ class ComposerBridge
             Json::encode(array(
                 'name' => $name,
                 'description' => 'THIS FILE IS GENERATED AUTOMATICALLY, DO NOT EDIT!',
+                'version' => $version,
                 'require' => $requirements,
             ))
         );

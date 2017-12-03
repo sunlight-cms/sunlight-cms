@@ -51,7 +51,15 @@ class PluginManager
     {
         $this->cache = $pluginCache;
         
-        $this->types = array(
+        $this->types = static::getTypeDefinitions();
+    }
+
+    /**
+     * @return array
+     */
+    public static function getTypeDefinitions()
+    {
+        return array(
             static::LANGUAGE => LanguagePlugin::getTypeDefinition(),
             static::TEMPLATE => TemplatePlugin::getTypeDefinition(),
             static::EXTEND => ExtendPlugin::getTypeDefinition(),
@@ -403,24 +411,21 @@ class PluginManager
         $data = $this->cache->get('plugin_data');
 
         // invalidate stale data
-        if (
-            $data !== false
-            && $data['system_version'] !== Core::VERSION
-        ) {
+        if ($data !== false && $data['system_version'] !== Core::VERSION) {
             $data = false;
         }
 
         // if data could not be loaded from cache, use plugin loader
         if ($data === false) {
             $pluginLoader = new PluginLoader($this->types);
-            list($plugins, $boundFiles) = $pluginLoader->load();
+            list($plugins, $pluginFiles) = $pluginLoader->load();
 
             $data = array(
                 'plugins' => $plugins,
                 'system_version' => Core::VERSION,
             );
 
-            $this->cache->set('plugin_data', $data, 0, array('bound_files' => $boundFiles));
+            $this->cache->set('plugin_data', $data, 0, array('bound_files' => $pluginFiles));
         }
 
         // initialize plugins

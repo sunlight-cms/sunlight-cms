@@ -18,6 +18,7 @@ class PluginLoader
 
     /** @var array */
     private $types;
+    private $pluginDirectoryPattern;
 
     /**
      * @param array $types
@@ -25,19 +26,20 @@ class PluginLoader
     public function __construct(array $types)
     {
         $this->types = $types;
+        $this->pluginDirectoryPattern = '/^' . static::PLUGIN_NAME_PATTERN . '$/';
     }
 
     /**
      * Load plugin data from the filesystem
      *
-     * @return array plugins, bound files
+     * @param bool $checkDevMode
+     * @param bool $resolveInstallationStatus
+     * @return array plugins, plugin files
      */
-    public function load()
+    public function load($checkDevMode = true, $resolveInstallationStatus = true)
     {
         $plugins = array();
-        $boundFiles = array();
-
-        $pluginNamePattern = '/^' . static::PLUGIN_NAME_PATTERN . '$/';
+        $pluginFiles = array();
 
         $commonOptionSet = new OptionSet(Plugin::$commonOptions);
         $commonOptionSet->setIgnoreExtraIndexes(true);
@@ -55,34 +57,17 @@ class PluginLoader
             foreach (scandir($dir) as $item) {
                 // validate item
                 if (
-                    preg_match($pluginNamePattern, $item) // skips dots and invalid names
+                    preg_match($this->pluginDirectoryPattern, $item) // skips dots and invalid names
                     && is_dir($pluginDir = $dir . '/' . $item)
                     && is_file($pluginFile = $pluginDir . '/' . static::PLUGIN_FILE)
                 ) {
-                    $boundFiles[] = $pluginFile;
-                    $pluginDir = str_replace('\\', '/', realpath($pluginDir));
-                    $camelCasedId = _camelCase($item);
+                    $pluginFiles[] = $pluginFile;
 
-                    $plugin = array(
-                        'id' => $item,
-                        'camel_id' => $camelCasedId,
-                        'type' => $typeName,
-                        'status' => null,
-                        'installed' => null,
-                        'dir' => $pluginDir,
-                        'web_path' => $type['dir'] . '/' . $item,
-                        'errors' => array(),
-                        'configuration_errors' => array(),
-                        'options' => null,
-                    );
-
-                    $context = array(
-                        'plugin' => &$plugin,
-                        'type' => $type,
-                    );
+                    $plugin = $this->createPluginData($item, $type);
+                    $context = $this->createPluginOptionContext($plugin, $type);
 
                     // check state
-                    $isDisabled = is_file($pluginDir . '/' . static::PLUGIN_DEACTIVATING_FILE);
+                    $isDisabled = is_file($plugin['dir'] . '/' . static::PLUGIN_DEACTIVATING_FILE);
 
                     // load options
                     try {
@@ -102,7 +87,7 @@ class PluginLoader
                             $typeOptionSet->process($options, $context, $plugin['configuration_errors']);
                         }
 
-                        $this->validateOptions($options, $plugin['configuration_errors'], $plugin['errors']);
+                        $this->validateOptions($options, $plugin['configuration_errors'], $checkDevMode, $plugin['errors']);
                     }
 
                     // handle result
@@ -147,11 +132,13 @@ class PluginLoader
         }
 
         // resolve installation status
-        foreach ($this->types as $typeName => $type) {
-            $this->resolveInstallationStatus($plugins[$typeName]);
+        if ($resolveInstallationStatus) {
+            foreach ($this->types as $typeName => $type) {
+                $this->resolveInstallationStatus($plugins[$typeName]);
+            }
         }
 
-        return array($plugins, $boundFiles);
+        return array($plugins, $pluginFiles);
     }
 
     /**
@@ -159,9 +146,10 @@ class PluginLoader
      *
      * @param array $options
      * @param array $configurationErrors
+     * @param bool $checkDevMode
      * @param array &$errors
      */
-    private function validateOptions(array $options, array $configurationErrors, array &$errors)
+    private function validateOptions(array $options, array $configurationErrors, $checkDevMode, array &$errors)
     {
         // api version
         if (!isset($configurationErrors['api']) && !$this->checkVersion($options['api'], Core::VERSION)) {
@@ -183,7 +171,7 @@ class PluginLoader
         }
 
         // dev mode
-        if (!isset($configurationErrors['dev']) && $options['dev'] !== null && $options['dev'] !== _dev) {
+        if ($checkDevMode && !isset($configurationErrors['dev']) && $options['dev'] !== null && $options['dev'] !== _dev) {
             $errors[] = $options['dev']
                 ? 'development mode is required'
                 : 'production mode is required';
@@ -223,6 +211,40 @@ class PluginLoader
     public function checkVersion($requiredVersion, $actualVersion)
     {
         return Semver::satisfies($actualVersion, $requiredVersion);
+    }
+
+    /**
+     * @param string $id
+     * @param array $type
+     * @return array
+     */
+    private function createPluginData($id, array $type)
+    {
+        return array(
+            'id' => $id,
+            'camel_id' => _camelCase($id),
+            'type' => $type,
+            'status' => null,
+            'installed' => null,
+            'dir' => realpath(_root . $type['dir'] . '/' . $id),
+            'web_path' => $type['dir'] . '/' . $id,
+            'errors' => array(),
+            'configuration_errors' => array(),
+            'options' => null,
+        );
+    }
+
+    /**
+     * @param array $plugin
+     * @param array $type
+     * @return array
+     */
+    private function createPluginOptionContext(array &$plugin, array $type)
+    {
+        return array(
+            'plugin' => &$plugin,
+            'type' => $type,
+        );
     }
 
     /**

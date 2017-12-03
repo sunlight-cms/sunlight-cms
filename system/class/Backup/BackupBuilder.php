@@ -65,8 +65,9 @@ class BackupBuilder
     protected $excludedPathMap = array(
         '~^system/backup/~' => array('static' => true, 'dynamic' => true),
         '~^system/cache/~' => array('static' => true, 'dynamic' => true),
-        '~^images/~' => array('static' => true, 'dynamic' => false),
         '~^system/tmp/~' => array('static' => true, 'dynamic' => true),
+        '~^plugins/.composer/~' => array('static' => true, 'dynamic' => true),
+        '~^images/~' => array('static' => true, 'dynamic' => false),
     );
     /* @var bool */
     protected $databaseDumpEnabled = true;

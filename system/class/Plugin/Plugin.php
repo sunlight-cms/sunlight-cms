@@ -34,6 +34,7 @@ abstract class Plugin
         'php' => array('type' => 'string', 'required' => false),
         'extensions' => array('type' => 'array', 'required' => false, 'default' => array()),
         'requires' => array('type' => 'array', 'required' => false, 'default' => array()),
+        'requires.composer' => array('type' => 'array', 'required' => false, 'default' => array()),
         'installer' => array('type' => 'boolean', 'required' => false, 'nullable' => true, 'default' => false),
         'autoload' => array('type' => 'array', 'required' => false, 'default' => array(), 'normalizer' => array('Sunlight\Plugin\PluginOptionNormalizer', 'normalizeAutoload')),
         'dev' => array('type' => 'boolean', 'required' => false, 'nullable' => true),

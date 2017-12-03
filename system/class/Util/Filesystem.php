@@ -251,4 +251,24 @@ class Filesystem
 
         return $success;
     }
+
+    /**
+     * Deny access to a directory using a .htaccess file
+     *
+     * @param string $path
+     */
+    public static function denyAccessToDirectory($path)
+    {
+        file_put_contents($path . '/.htaccess', <<<HTACCESS
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Order deny,allow
+    Deny from all
+</IfModule>
+
+HTACCESS
+);
+    }
 }

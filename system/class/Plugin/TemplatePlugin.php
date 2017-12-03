@@ -11,6 +11,7 @@ class TemplatePlugin extends Plugin
     const DEFAULT_LAYOUT = 'default';
 
     protected static $typeDefinition = array(
+        'type' => 'template',
         'dir' => 'plugins/templates',
         'class' => __CLASS__,
         'default_base_namespace' => 'SunlightTemplate',

@@ -9,6 +9,7 @@ use Sunlight\Localization\LocalizationDirectory;
 class ExtendPlugin extends Plugin
 {
     protected static $typeDefinition = array(
+        'type' => 'extend',
         'dir' => 'plugins/extend',
         'class' => __CLASS__,
         'default_base_namespace' => 'SunlightExtend',
