@@ -334,6 +334,8 @@ class PluginLoader
      */
     private function createPluginData($id, $file, $webPath, $typeName, $source, array $defaultOptions = array())
     {
+        $file = realpath($file);
+
         return array(
             'id' => $id,
             'camel_id' => _camelCase($id),

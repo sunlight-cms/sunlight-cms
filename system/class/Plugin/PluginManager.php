@@ -50,7 +50,6 @@ class PluginManager
     public function __construct(CacheInterface $pluginCache)
     {
         $this->cache = $pluginCache;
-        
         $this->types = static::getTypeDefinitions();
     }
 
