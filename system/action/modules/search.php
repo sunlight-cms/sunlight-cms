@@ -7,7 +7,7 @@ if (!defined('_root')) {
     exit;
 }
 
-if (!_login && _notpublicsite) {
+if (!_logged_in && _notpublicsite) {
     $_index['is_accessible'] = false;
     return;
 }
@@ -63,7 +63,7 @@ if ($search_query != '') {
         // priprava
         $search_query_sql = DB::esc('%' . $search_query . '%');
         $results = array(); // polozka: array(link, titulek, perex)
-        $public = !_login;
+        $public = !_logged_in;
 
         // funkce na skladani vyhledavaciho dotazu
         $searchQuery = function ($alias, $cols) {

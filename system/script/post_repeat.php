@@ -8,7 +8,7 @@ Core::init('../../');
 
 // priprava
 $login = (bool) _get('login');
-$allow_login = $login && !_login;
+$allow_login = $login && !_logged_in;
 $login_message = null;
 $target = _get('target');
 $do_repeat = true;
@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' || empty($target)) {
 }
 
 // prihlaseni
-if ($valid && $login && !_login) {
+if ($valid && $login && !_logged_in) {
     $username = _post('login_username');
     $password = _post('login_password');
     $persistent = _checkboxLoad('login_persistent');

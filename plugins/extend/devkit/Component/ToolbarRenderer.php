@@ -408,9 +408,9 @@ class ToolbarRenderer
      */
     public function renderLogin()
     {
-        if (_login) {
+        if (_logged_in) {
             $loginInfo = sprintf('level %d', _priv_level);
-            $loginName = _loginname;
+            $loginName = _user_name;
         } else {
             $loginInfo = 'not logged in';
             $loginName = '---';

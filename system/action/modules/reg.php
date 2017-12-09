@@ -16,7 +16,7 @@ if (!_registration) {
     return;
 }
 
-if (_login) {
+if (_logged_in) {
     $_index['is_guest_only'] = true;
     return;
 }
@@ -141,7 +141,7 @@ if (isset($_GET['confirm'])) {
             $errors[] = _lang('mod.reg.rules.disagreed');
         }
 
-        $user_data['ip'] = _userip;
+        $user_data['ip'] = _user_ip;
 
         Extend::call('mod.reg.submit', array(
             'user_data' => &$user_data,
@@ -261,7 +261,7 @@ if (!$user_data_valid && $show_form) {
                     $user_data['username'],
                     $domain,
                     _linkModule('reg', 'confirm=' . $code, false, true),
-                    _userip,
+                    _user_ip,
                     _formatTime(time()),
                 ),
                 _lang('mod.reg.confirm.text')

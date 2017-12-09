@@ -116,7 +116,7 @@ function _templateBoxes($slot, array $overrides = array())
 {
     $output = '';
 
-    if (!_notpublicsite || _login) {
+    if (!_notpublicsite || _logged_in) {
         global $_template, $_template_boxes;
 
         // nacist boxy
@@ -323,7 +323,7 @@ function _templateLinks()
 {
     return
         "<li><a href=\"https://sunlight-cms.org/\">SunLight CMS</a></li>\n"
-        . ((!_adminlinkprivate || (_login && _priv_administration)) ? '<li><a href="' . _link('admin/') . '">' . _lang('global.adminlink') . "</a></li>\n" : '');
+        . ((!_adminlinkprivate || (_logged_in && _priv_administration)) ? '<li><a href="' . _link('admin/') . '">' . _lang('global.adminlink') . "</a></li>\n" : '');
 }
 
 /**
@@ -349,7 +349,7 @@ function _templateImage($path)
 function _templateMenu($ordStart = null, $ordEnd = null, $cssClass = null, $extendEvent = 'tpl.menu.item')
 {
     // kontrola prihlaseni v pripade neverejnych stranek
-    if (!_login && _notpublicsite) {
+    if (!_logged_in && _notpublicsite) {
         return '';
     }
 
@@ -411,7 +411,7 @@ function _templateTreeMenu(array $options)
     );
 
     // kontrola prihlaseni v pripade neverejnych stranek
-    if (!_login && _notpublicsite) {
+    if (!_logged_in && _notpublicsite) {
         return '';
     }
 
@@ -583,7 +583,7 @@ function _templateUserMenu($profileLink = true, $adminLink = true)
     // pripravit polozky
     $items = array();
 
-    if (!_login) {
+    if (!_logged_in) {
         // prihlaseni
         $items['login'] = array(
             _linkModule('login', 'login_form_return=' . rawurlencode($_SERVER['REQUEST_URI'])),
@@ -600,7 +600,7 @@ function _templateUserMenu($profileLink = true, $adminLink = true)
         // profil
         if ($profileLink) {
             $items['profile'] = array(
-                _linkModule('profile', 'id=' . _loginname),
+                _linkModule('profile', 'id=' . _user_name),
                 _lang('usermenu.profile'),
             );
         }
@@ -634,7 +634,7 @@ function _templateUserMenu($profileLink = true, $adminLink = true)
         }
     }
 
-    if (_ulist && (!_notpublicsite || _login)) {
+    if (_ulist && (!_notpublicsite || _logged_in)) {
         // seznam uzivatelu
         $items['ulist'] = array(
             _linkModule('ulist'),
@@ -643,7 +643,7 @@ function _templateUserMenu($profileLink = true, $adminLink = true)
     }
 
     // odhlaseni
-    if (_login) {
+    if (_logged_in) {
         $items['logout'] = array(
             _xsrfLink(_link("system/script/logout.php?_return=" . rawurlencode($_SERVER['REQUEST_URI']))),
             _lang('usermenu.logout'),
@@ -653,7 +653,7 @@ function _templateUserMenu($profileLink = true, $adminLink = true)
     // vykreslit
     $output = Extend::buffer('tpl.usermenu', array('items' => &$items));
     if ($output === '' && !empty($items)) {
-        $output = "<ul class=\"user-menu " . (_login ? 'logged-in' : 'not-logged-in') . "\">\n";
+        $output = "<ul class=\"user-menu " . (_logged_in ? 'logged-in' : 'not-logged-in') . "\">\n";
         $output .= Extend::buffer('tpl.usermenu.start');
         foreach ($items as $id => $item) {
             $output .= "<li class=\"user-menu-{$id}\"><a href=\"{$item[0]}\">{$item[1]}</a></li>\n";

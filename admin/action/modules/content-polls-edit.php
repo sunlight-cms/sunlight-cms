@@ -21,7 +21,7 @@ if (isset($_GET['id'])) {
     }
 } else {
     $id = -1;
-    $query = array('author' => _loginid, 'question' => "", 'answers' => "", 'locked' => 0);
+    $query = array('author' => _user_id, 'question' => "", 'answers' => "", 'locked' => 0);
     $new = true;
     $actionbonus = "";
     $submitcaption = _lang('global.create');
@@ -50,7 +50,7 @@ if (isset($_POST['question'])) {
     if (_priv_adminpollall) {
         $author = (int) _post('author');
     } else {
-        $author = _loginid;
+        $author = _user_id;
     }
     $locked = _checkboxLoad("locked");
     $reset = _checkboxLoad("reset");
@@ -66,7 +66,7 @@ if (isset($_POST['question'])) {
     if ($answers_count > 20) {
         $errors[] = _lang('admin.content.polls.edit.error3');
     }
-    if (_priv_adminpollall && DB::result(DB::query("SELECT COUNT(*) FROM " . _users_table . " WHERE id=" . $author . " AND (id=" . _loginid . " OR (SELECT level FROM " . _groups_table . " WHERE id=" . _users_table . ".group_id)<" . _priv_level . ")"), 0) == 0) {
+    if (_priv_adminpollall && DB::result(DB::query("SELECT COUNT(*) FROM " . _users_table . " WHERE id=" . $author . " AND (id=" . _user_id . " OR (SELECT level FROM " . _groups_table . " WHERE id=" . _users_table . ".group_id)<" . _priv_level . ")"), 0) == 0) {
         $errors[] = _lang('admin.content.articles.edit.error3');
     }
 

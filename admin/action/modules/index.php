@@ -114,7 +114,7 @@ $output .= join($messages);
 $output .= "</div>\n";
 
 // editace
-if (_logingroup == _group_admin) {
+if (_user_group == _group_admin) {
     $output .= '<p align="right"><a class="button" href="index.php?p=index-edit"><img src="images/icons/edit.png" alt="edit" class="icon">' . _lang('admin.index.edit.link') . '</a></p>';
 }
 

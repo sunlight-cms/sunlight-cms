@@ -8,7 +8,7 @@ if (!defined('_root')) {
     exit;
 }
 
-if (!_login) {
+if (!_logged_in) {
     $_index['is_accessible'] = false;
     return;
 }

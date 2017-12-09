@@ -49,7 +49,7 @@ return array(
     ),
     'index-edit' => array(
         'title' => _lang('admin.menu.index.edit.title'),
-        'access' => _logingroup == 1,
+        'access' => _user_group == 1,
         'parent' => 'index',
     ),
 

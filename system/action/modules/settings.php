@@ -10,7 +10,7 @@ if (!defined('_root')) {
     exit;
 }
 
-if (!_login) {
+if (!_logged_in) {
     $_index['is_accessible'] = false;
     return;
 }
@@ -32,8 +32,8 @@ if (isset($_POST['username'])) {
     // smazani vlastniho uctu
     if (_priv_selfremove && _checkboxLoad('selfremove')) {
         if (Password::load($userdata['password'])->match(_post('selfremove-confirm'))) {
-            if (_loginid != 0) {
-                _deleteUser(_loginid);
+            if (_user_id != 0) {
+                _deleteUser(_user_id);
                 $_SESSION = array();
                 session_destroy();
                 $_index['redirect_to'] = _linkModule('login', 'login_form_result=4', false, true);
@@ -57,9 +57,9 @@ if (isset($_POST['username'])) {
         $errors[] = _lang('user.msg.badusername');
     } else {
         $usernamechange = false;
-        if ($username != _loginname) {
-            if (_priv_changeusername || mb_strtolower($username) == mb_strtolower(_loginname)) {
-                if (DB::count(_users_table, '(username=' . DB::val($username) . ' OR publicname=' . DB::val($username) . ') AND id!=' . _loginid) === 0) {
+        if ($username != _user_name) {
+            if (_priv_changeusername || mb_strtolower($username) == mb_strtolower(_user_name)) {
+                if (DB::count(_users_table, '(username=' . DB::val($username) . ' OR publicname=' . DB::val($username) . ') AND id!=' . _user_id) === 0) {
                     $usernamechange = true;
                 } else {
                     $errors[] = _lang('user.msg.userexists');
@@ -75,7 +75,7 @@ if (isset($_POST['username'])) {
     if (mb_strlen($publicname) > 24) {
         $errors[] = _lang('user.msg.publicnametoolong');
     } elseif ($publicname != $userdata['publicname'] && $publicname != "") {
-        if (DB::count(_users_table, '(publicname=' . DB::val($publicname) . ' OR username=' . DB::val($publicname) . ') AND id!=' . _loginid) !== 0) {
+        if (DB::count(_users_table, '(publicname=' . DB::val($publicname) . ' OR username=' . DB::val($publicname) . ') AND id!=' . _user_id) !== 0) {
             $errors[] = _lang('user.msg.publicnameexists');
         }
     }
@@ -88,13 +88,13 @@ if (isset($_POST['username'])) {
     if (!_validateEmail($email)) {
         $errors[] = _lang('user.msg.bademail');
     } else {
-        if ($email != _loginemail) {
+        if ($email != _user_email) {
             if (_post('currentpassword') === '') {
                 $errors[] = _lang('mod.settings.error.emailchangenopass');
             } elseif (!Password::load($userdata['password'])->match(_post('currentpassword'))) {
                 $errors[] = _lang('mod.settings.error.badcurrentpass');
             }
-            if (DB::count(_users_table, 'email=' . DB::val($email) . ' AND id!=' . _loginid) !== 0) {
+            if (DB::count(_users_table, 'email=' . DB::val($email) . ' AND id!=' . _user_id) !== 0) {
                 $errors[] = _lang('user.msg.emailexists');
             }
         }
@@ -227,8 +227,8 @@ if (isset($_POST['username'])) {
         ));
 
         // update
-        DB::update(_users_table, 'id=' . _loginid, $changeset);
-        Extend::call('user.edit', array('id' => _loginid, 'username' => $username, 'email' => $email));
+        DB::update(_users_table, 'id=' . _user_id, $changeset);
+        Extend::call('user.edit', array('id' => _user_id, 'username' => $username, 'email' => $email));
         $_index['redirect_to'] = _linkModule('settings', 'saved', false, true);
 
         return;
@@ -274,7 +274,7 @@ if (_priv_administration) {
 }
 
 $output .= "
-<p><a href='" . _linkModule('profile', 'id=' . _loginname) . "'>" . _lang('mod.settings.profilelink') . " &gt;</a></p>
+<p><a href='" . _linkModule('profile', 'id=' . _user_name) . "'>" . _lang('mod.settings.profilelink') . " &gt;</a></p>
 <p>" . _lang('mod.settings.p') . "</p>" . $message . "
 <form action='" . _linkModule('settings') . "' method='post' name='setform' enctype='multipart/form-data'>
 
@@ -286,7 +286,7 @@ $output .= "
 
   <tr>
   <th>" . _lang('login.username') . " <span class='important'>*</span></th>
-  <td><input type='text'" . _restorePostValueAndName('username', _loginname) . " class='inputsmall' maxlength='24'>" . (!_priv_changeusername ? "<span class='hint'>(" . _lang('mod.settings.namechangenote') . ")</span>" : '') . "</td>
+  <td><input type='text'" . _restorePostValueAndName('username', _user_name) . " class='inputsmall' maxlength='24'>" . (!_priv_changeusername ? "<span class='hint'>(" . _lang('mod.settings.namechangenote') . ")</span>" : '') . "</td>
   </tr>
 
   <tr>
@@ -377,7 +377,7 @@ if (_uploadavatar) {
 ";
 }
 
-if (_priv_selfremove && _loginid != 0) {
+if (_priv_selfremove && _user_id != 0) {
     $output .= "
 
   <fieldset>

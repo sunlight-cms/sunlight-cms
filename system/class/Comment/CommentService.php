@@ -583,7 +583,7 @@ class CommentService
 
         $captcha = _captchaInit();
         $output = _jsLimitLength(16384, "postform", "text");
-        if (!_login) {
+        if (!_logged_in) {
             $inputs[] = array('label' => _lang('posts.guestname'), 'content' => "<input type='text' name='guest' maxlength='24' class='inputsmall'" . _restoreValue($_SESSION, 'post_form_guest') . ">");
         }
         if ($vars['xhome'] == -1 && $vars['subject']) {

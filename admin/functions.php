@@ -50,15 +50,15 @@ function _adminMenu()
 function _adminUserMenu()
 {
     $output = '<span id="usermenu">';
-    if (_login && _priv_administration) {
-        $profile_link = _linkModule('profile', 'id=' . _loginname);
+    if (_logged_in && _priv_administration) {
+        $profile_link = _linkModule('profile', 'id=' . _user_name);
         $avatar = _getAvatar(Core::$userData, array('get_url' => true, 'default' => false));
         if ($avatar !== null) {
-            $output .= '<a id="usermenu-avatar" href="' . $profile_link . '"><img src="' . $avatar . '" alt="' . _loginname . '"></a>';
+            $output .= '<a id="usermenu-avatar" href="' . $profile_link . '"><img src="' . $avatar . '" alt="' . _user_name . '"></a>';
         }
-        $output .= '<a id="usermenu-username" href="' . $profile_link . '">' . _loginpublicname . '</a> [';
+        $output .= '<a id="usermenu-username" href="' . $profile_link . '">' . _user_public_name . '</a> [';
         if (_messages) {
-            $messages_count = DB::count(_pm_table, '(receiver=' . _loginid . ' AND receiver_deleted=0 AND receiver_readtime<update_time) OR (sender=' . _loginid . ' AND sender_deleted=0 AND sender_readtime<update_time)');
+            $messages_count = DB::count(_pm_table, '(receiver=' . _user_id . ' AND receiver_deleted=0 AND receiver_readtime<update_time) OR (sender=' . _user_id . ' AND sender_deleted=0 AND sender_readtime<update_time)');
             if ($messages_count != 0) {
                 $messages_count = " <span class='highlight'>(" . $messages_count . ")</span>";
             } else {
@@ -132,7 +132,7 @@ function _adminPollAccess($csep = true, $alias = 'p.')
         $csep = "";
     }
 
-    return ((!_priv_adminallart) ? $csep . "{$alias}author=" . _loginid : $csep . "({$alias}author=" . _loginid . " OR (SELECT level FROM " . _groups_table . " WHERE id=(SELECT group_id FROM " . _users_table . " WHERE id={$alias}author))<" . _priv_level . ")");
+    return ((!_priv_adminallart) ? $csep . "{$alias}author=" . _user_id : $csep . "({$alias}author=" . _user_id . " OR (SELECT level FROM " . _groups_table . " WHERE id=(SELECT group_id FROM " . _users_table . " WHERE id={$alias}author))<" . _priv_level . ")");
 }
 
 /**
@@ -147,9 +147,9 @@ function _adminArticleAccess($alias = '')
         $alias .= '.';
     }
     if (_priv_adminallart) {
-        return " AND (" . $alias . "author=" . _loginid . " OR (SELECT level FROM " . _groups_table . " WHERE id=(SELECT group_id FROM " . _users_table . " WHERE id=" . (($alias === '') ? "" . _articles_table . "." : $alias) . "author))<" . _priv_level . ")";
+        return " AND (" . $alias . "author=" . _user_id . " OR (SELECT level FROM " . _groups_table . " WHERE id=(SELECT group_id FROM " . _users_table . " WHERE id=" . (($alias === '') ? "" . _articles_table . "." : $alias) . "author))<" . _priv_level . ")";
     } else {
-        return " AND " . $alias . "author=" . _loginid;
+        return " AND " . $alias . "author=" . _user_id;
     }
 }
 
@@ -329,7 +329,7 @@ function _adminUserSelect($name, $selected, $gcond, $class = null, $extraoption 
 
     if (!$groupmode) {
         while ($item = DB::row($query)) {
-            $users = DB::query("SELECT id,username,publicname FROM " . _users_table . " WHERE group_id=" . $item['id'] . " AND (" . $item['level'] . "<" . _priv_level . " OR id=" . _loginid . ") ORDER BY id");
+            $users = DB::query("SELECT id,username,publicname FROM " . _users_table . " WHERE group_id=" . $item['id'] . " AND (" . $item['level'] . "<" . _priv_level . " OR id=" . _user_id . ") ORDER BY id");
             if (DB::size($users) != 0) {
                 $output .= "<optgroup label='" . $item['title'] . "'>";
                 while ($user = DB::row($users)) {

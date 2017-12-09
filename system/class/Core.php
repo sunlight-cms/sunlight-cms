@@ -386,7 +386,7 @@ class Core
         } else {
             $ip = $_SERVER['REMOTE_ADDR'];
         }
-        define('_userip', trim((($addr_comma = strrpos($ip, ',')) === false) ? $ip : substr($ip, $addr_comma + 1)));
+        define('_user_ip', trim((($addr_comma = strrpos($ip, ',')) === false) ? $ip : substr($ip, $addr_comma + 1)));
     }
 
     /**
@@ -694,7 +694,7 @@ class Core
             if (time() - $userData['activitytime'] > 30) {
                 DB::update(_users_table, 'id=' . DB::val($userData['id']), array(
                     'activitytime' => time(),
-                    'ip' => _userip,
+                    'ip' => _user_ip,
                 ));
             }
 
@@ -733,12 +733,12 @@ class Core
         }
 
         // define constants
-        define('_login', $authorized);
-        define('_loginid', $userData['id']);
-        define('_loginname', $userData['username']);
-        define('_loginpublicname', $userData[$userData['publicname'] !== null ? 'publicname' : 'username']);
-        define('_loginemail', $userData['email']);
-        define('_logingroup', $groupData['id']);
+        define('_logged_in', $authorized);
+        define('_user_id', $userData['id']);
+        define('_user_name', $userData['username']);
+        define('_user_public_name', $userData[$userData['publicname'] !== null ? 'publicname' : 'username']);
+        define('_user_email', $userData['email']);
+        define('_user_group', $groupData['id']);
 
         foreach(_getPrivileges() as $item) {
             define('_priv_' . $item, $groupData[$item]);
@@ -753,7 +753,7 @@ class Core
     protected static function initLocalization()
     {
         // language choice
-        if (_login && _language_allowcustom && static::$userData['language'] !== '') {
+        if (_logged_in && _language_allowcustom && static::$userData['language'] !== '') {
             $language = static::$userData['language'];
             $usedLoginLanguage = true;
         } else {
@@ -778,7 +778,7 @@ class Core
         } else {
             // language plugin was not found
             if ($usedLoginLanguage) {
-                DB::update(_users_table, 'id=' . _loginid, array('language' => ''));
+                DB::update(_users_table, 'id=' . _user_id, array('language' => ''));
             } else {
                 static::updateSetting('language', static::$fallbackLang);
             }

@@ -56,7 +56,7 @@ class TwigBridge
             'debug' => _debug,
             'root' => _root,
             'url' => Url::current(),
-            'login' => _login,
+            'logged_in' => _logged_in,
             'user' => Core::$userData,
             'group' => Core::$groupData,
         ));

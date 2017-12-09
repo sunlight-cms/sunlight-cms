@@ -38,8 +38,8 @@ function _HCM_mailform($adresa = "", $predmet = null)
     }
 
     // predvyplneni odesilatele
-    if (_login) {
-        $sender = _loginemail;
+    if (_logged_in) {
+        $sender = _user_email;
     } else {
         $sender = "&#64;";
     }

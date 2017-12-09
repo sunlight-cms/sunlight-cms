@@ -8,9 +8,9 @@ require '../bootstrap.php';
 Core::init('../../');
 
 // jmeno hosta nebo ID uzivatele
-if (_login) {
+if (_logged_in) {
     $guest = '';
-    $author = _loginid;
+    $author = _user_id;
 } else {
     if (isset($_POST['guest'])) {
         $guest = _slugify(_post('guest'), false);
@@ -51,7 +51,7 @@ if ($posttype == _post_plugin) {
 }
 
 // vyplneni prazdnych poli
-if ($guest === '' && !_login) {
+if ($guest === '' && !_logged_in) {
     $guest = _lang('posts.anonym');
 }
 
@@ -112,8 +112,8 @@ switch ($posttype) {
 
         // zprava
     case _post_pm:
-        if (_messages && _login) {
-            $tdata = DB::queryRow('SELECT sender,receiver FROM ' . _pm_table . ' WHERE id=' . $posttarget . ' AND (sender=' . _loginid . ' OR receiver=' . _loginid . ') AND sender_deleted=0 AND receiver_deleted=0');
+        if (_messages && _logged_in) {
+            $tdata = DB::queryRow('SELECT sender,receiver FROM ' . _pm_table . ' WHERE id=' . $posttarget . ' AND (sender=' . _user_id . ' OR receiver=' . _user_id . ') AND sender_deleted=0 AND receiver_deleted=0');
             if ($tdata !== false) {
                 $continue = true;
                 $xhome = $posttarget;
@@ -166,7 +166,7 @@ if ($continue && $continue2 && $text != '' && ($posttype == _post_shoutbox_entry
                         'author' => $author,
                         'guest' => $guest,
                         'time' => time(),
-                        'ip' => _userip,
+                        'ip' => _user_ip,
                         'bumptime' => (($posttype == _post_forum_topic && $xhome == -1) ? time() : '0'),
                         'flag' => $pluginflag
                     ), true);
@@ -183,7 +183,7 @@ if ($continue && $continue2 && $text != '' && ($posttype == _post_shoutbox_entry
 
                     // zpravy - aktualizace casu zmeny a precteni
                     if ($posttype == _post_pm) {
-                        $role = (($tdata['sender'] == _loginid) ? 'sender' : 'receiver');
+                        $role = (($tdata['sender'] == _user_id) ? 'sender' : 'receiver');
                         DB::update(_pm_table, 'id=' . $posttarget, array(
                             'update_time' => time(),
                             $role . '_readtime' => time()

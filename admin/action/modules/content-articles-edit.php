@@ -47,7 +47,7 @@ if (isset($_GET['id']) && isset($_GET['returnid']) && isset($_GET['returnpage'])
         'perex' => '<p></p>',
         'picture_uid' => null,
         'content' => '',
-        'author' => _loginid,
+        'author' => _user_id,
         'home1' => -2,
         'home2' => -1,
         'home3' => -1,
@@ -91,7 +91,7 @@ if (isset($_POST['title'])) {
     $newdata['content'] = _filterUserContent(_post('content'));
     $newdata['public'] = _checkboxLoad('public');
     $newdata['visible'] = _checkboxLoad('visible');
-    if (_priv_adminconfirm || (_priv_adminautoconfirm && $newdata['author'] == _loginid)) {
+    if (_priv_adminconfirm || (_priv_adminautoconfirm && $newdata['author'] == _user_id)) {
         $newdata['confirmed'] = _checkboxLoad('confirmed');
     } else {
         $newdata['confirmed'] = $query['confirmed'];
@@ -132,7 +132,7 @@ if (isset($_POST['title'])) {
     }
 
     // autor
-    if (DB::result(DB::query("SELECT COUNT(*) FROM " . _users_table . " WHERE id=" . DB::val($newdata['author']) . " AND (id=" . _loginid . " OR (SELECT level FROM " . _groups_table . " WHERE id=" . _users_table . ".group_id)<" . _priv_level . ")"), 0) == 0) {
+    if (DB::result(DB::query("SELECT COUNT(*) FROM " . _users_table . " WHERE id=" . DB::val($newdata['author']) . " AND (id=" . _user_id . " OR (SELECT level FROM " . _groups_table . " WHERE id=" . _users_table . ".group_id)<" . _priv_level . ")"), 0) == 0) {
         $error_log[] = _lang('admin.content.articles.edit.error3');
     }
 
@@ -393,7 +393,7 @@ if ($continue) {
       <p id='is-settings'>
       <label><input type='checkbox' name='public' value='1'" . _checkboxActivate($query['public']) . "> " . _lang('admin.content.form.public') . "</label>
       <label><input type='checkbox' name='visible' value='1'" . _checkboxActivate($query['visible']) . "> " . _lang('admin.content.form.visible') . "</label>
-      " . ((_priv_adminconfirm || (_priv_adminautoconfirm && $query['author'] == _loginid)) ? "<label><input type='checkbox' name='confirmed' value='1'" . _checkboxActivate($query['confirmed']) . "> " . _lang('admin.content.form.confirmed') . "</label>" : '') . "
+      " . ((_priv_adminconfirm || (_priv_adminautoconfirm && $query['author'] == _user_id)) ? "<label><input type='checkbox' name='confirmed' value='1'" . _checkboxActivate($query['confirmed']) . "> " . _lang('admin.content.form.confirmed') . "</label>" : '') . "
       <label><input type='checkbox' name='comments' value='1'" . _checkboxActivate($query['comments']) . "> " . _lang('admin.content.form.comments') . "</label>
       <label><input type='checkbox' name='commentslocked' value='1'" . _checkboxActivate($query['commentslocked']) . "> " . _lang('admin.content.form.commentslocked') . "</label>
       <label><input type='checkbox' name='rateon' value='1'" . _checkboxActivate($query['rateon']) . "> " . _lang('admin.content.form.artrate') . "</label>

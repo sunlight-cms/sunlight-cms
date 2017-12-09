@@ -7,7 +7,7 @@ if (!defined('_root')) {
     exit;
 }
 
-if (!_login && _notpublicsite) {
+if (!_logged_in && _notpublicsite) {
     $_index['is_accessible'] = false;
     return;
 }
@@ -74,7 +74,7 @@ if ($query['blocked'] == 1 || $groupdata['blocked'] == 1) {
 }
 
 if ($public) {
-    if (!$query['public'] && _loginid == $query['id']) {
+    if (!$query['public'] && _user_id == $query['id']) {
         $output .= _msg(_msg_ok, _lang('mod.profile.private.selfnote'));
     }
 
@@ -107,7 +107,7 @@ if ($public) {
 <td>" . $groupdata['descr'] . "</td>
 </tr>" : '') . "
 
-" . ($query['id'] == _loginid || _priv_administration && _priv_adminusers ? "<tr>
+" . ($query['id'] == _user_id || _priv_administration && _priv_adminusers ? "<tr>
 <th>" . _lang('mod.profile.lastact') . "</th>
 <td>" . _formatTime($query['activitytime'], 'activity') . "</td>
 </tr>
@@ -146,6 +146,6 @@ if ($public) {
 }
 
 // odkaz na zaslani vzkazu
-if (_login && _messages && $query['id'] != _loginid && $query['blocked'] == 0 && $groupdata['blocked'] == 0) {
+if (_logged_in && _messages && $query['id'] != _user_id && $query['blocked'] == 0 && $groupdata['blocked'] == 0) {
     $output .= "<p><a class='button' href='" . _linkModule('messages', 'a=new&receiver=' . $query['username']) . "'><img src='" . _templateImage("icons/bubble.png") . "' alt='msg' class='icon'>" . _lang('mod.messages.new') . "</a></p>";
 }

@@ -115,7 +115,7 @@ if (empty($_POST) || _xsrfCheck()) {
 
         require _root . 'system/action/module.php';
 
-    } elseif (!_login && _notpublicsite) {
+    } elseif (!_logged_in && _notpublicsite) {
 
         // neverejne stranky
         $_index['is_rewritten'] = _pretty_urls;

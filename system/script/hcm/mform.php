@@ -53,9 +53,9 @@ if (_xsrfCheck()) {
         }
 
         // pridani informacniho textu do tela
-        $info_ip = _userip;
-        if (_login) {
-            $info_ip .= ' (' . _loginname . ')';
+        $info_ip = _user_ip;
+        if (_logged_in) {
+            $info_ip .= ' (' . _user_name . ')';
         }
         $text .= "\n\n" . str_repeat('-', 16) . "\n" . _lang('hcm.mailform.info', array(
             '*domain*' => Url::base()->getFullHost(),

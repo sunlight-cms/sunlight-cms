@@ -15,7 +15,7 @@ if (!_lostpass) {
     return;
 }
 
-if (_login) {
+if (_logged_in) {
     $_index['is_guest_only'] = true;
     return;
 }
@@ -60,7 +60,7 @@ if (isset($_GET['user'], $_GET['hash'])) {
                 '*username*' =>  $userdata['username'],
                 '*newpass*' => $newpass,
                 '*date*' => _formatTime(time()),
-                '*ip*' => _userip,
+                '*ip*' => _user_ip,
             ))
         )) {
             $output .= _msg(_msg_err, _lang('global.emailerror'));
@@ -125,7 +125,7 @@ if (isset($_GET['user'], $_GET['hash'])) {
                 '*username*' => $userdata['username'],
                 '*link*' => $link,
                 '*date*' => _formatTime(time()),
-                '*ip*' => _userip,
+                '*ip*' => _user_ip,
             ))
         )) {
             $output .= _msg(_msg_err, _lang('global.emailerror'));

@@ -21,7 +21,7 @@ if (isset($_GET['id'])) {
     if ($query !== false) {
 
         // test pristupu
-        if ($query['id'] != _loginid) {
+        if ($query['id'] != _user_id) {
             if (_levelCheck($query['id'], $query['group_level'])) {
                 if ($query['id'] != 0) {
                     $continue = true;
@@ -163,7 +163,7 @@ if ($continue) {
         }
 
         // levelshift
-        if (_loginid == _super_admin_id) {
+        if (_user_id == _super_admin_id) {
             $levelshift = _checkboxLoad('levelshift');
         } else {
             $levelshift = $query['levelshift'];
@@ -278,7 +278,7 @@ if ($continue) {
 
 <tr>
 <th>" . _lang('global.levelshift') . "</th>
-<td><input type='checkbox' name='levelshift' value='1'" . _checkboxActivate($query['levelshift'] || isset($_POST['levelshift'])) . _inputDisableUnless(_loginid == _super_admin_id) . "></td>
+<td><input type='checkbox' name='levelshift' value='1'" . _checkboxActivate($query['levelshift'] || isset($_POST['levelshift'])) . _inputDisableUnless(_user_id == _super_admin_id) . "></td>
 </tr>
 
 <tr>

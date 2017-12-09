@@ -29,7 +29,7 @@ if (isset($_GET['id'])) {
 if ($continue) {
 
     /* ---  odstraneni  --- */
-    if ($query['id'] != 0 && $query['id'] != _loginid) {
+    if ($query['id'] != 0 && $query['id'] != _user_id) {
         if (isset($_POST['confirmed'])) {
             if (_deleteUser($id)) {
                 $output .= _msg(_msg_ok, _lang('global.done'));

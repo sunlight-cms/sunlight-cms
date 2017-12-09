@@ -22,7 +22,7 @@ $template = _getCurrentTemplate();
 // cast sql dotazu - pristup ke strance
 $root_cond = 'level<=' . _priv_level;
 $root_joined_cond = 'root.level<=' . _priv_level;
-if (!_login) {
+if (!_logged_in) {
     if (_notpublicsite) {
         exit;
     } else {

@@ -6,7 +6,7 @@ if (!defined('_root')) {
     exit;
 }
 
-if (!_login && _notpublicsite) {
+if (!_logged_in && _notpublicsite) {
     $_index['is_accessible'] = false;
     return;
 }

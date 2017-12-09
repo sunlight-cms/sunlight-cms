@@ -20,7 +20,7 @@ class CodemirrorPlugin extends ExtendPlugin
     public function onCoreJavascript(array $args)
     {
         $args['variables']['pluginCodemirror'] = array(
-            'userWysiwygEnabled' => _login ? (bool) Core::$userData['wysiwyg'] : false,
+            'userWysiwygEnabled' => _logged_in ? (bool) Core::$userData['wysiwyg'] : false,
         );
     }
 

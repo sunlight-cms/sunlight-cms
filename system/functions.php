@@ -1409,7 +1409,7 @@ function _captchaInit()
         return $output;
     }
 
-    if (_captcha && !_login) {
+    if (_captcha && !_logged_in) {
         ++$captchaCounter;
         if (!isset($_SESSION['captcha_code']) || !is_array($_SESSION['captcha_code'])) {
             $_SESSION['captcha_code'] = array();
@@ -1447,7 +1447,7 @@ function _captchaCheck()
         );
 
         // kontrola
-        if (_captcha and !_login) {
+        if (_captcha and !_logged_in) {
             $enteredCode = _post('_cp');
             $captchaId = _post('_cn');
 
@@ -1898,7 +1898,7 @@ function _userHomeDir($getTopmost = false)
             $homeDir = _upload_dir;
         }
     } else {
-        $subPath = 'home/' . _loginname . '/';
+        $subPath = 'home/' . _user_name . '/';
         Extend::call('user.home_dir', array('subpath' => &$subPath));
         $homeDir = _upload_dir . $subPath;
     }
@@ -2159,7 +2159,7 @@ function _iplogCheck($type, $var = null, $expires = null)
 
     // priprava
     $result = true;
-    $querybasic = "SELECT * FROM " . _iplog_table . " WHERE ip=" . DB::val(_userip) . " AND type=" . $type;
+    $querybasic = "SELECT * FROM " . _iplog_table . " WHERE ip=" . DB::val(_user_ip) . " AND type=" . $type;
 
     switch ($type) {
 
@@ -2229,7 +2229,7 @@ function _iplogUpdate($type, $var = null)
         $var = (int) $var;
     }
 
-    $querybasic = "SELECT * FROM " . _iplog_table . " WHERE ip=" . DB::val(_userip) . " AND type=" . $type;
+    $querybasic = "SELECT * FROM " . _iplog_table . " WHERE ip=" . DB::val(_user_ip) . " AND type=" . $type;
 
     switch ($type) {
 
@@ -2239,7 +2239,7 @@ function _iplogUpdate($type, $var = null)
                 DB::update(_iplog_table, 'id=' . $query['id'], array('var' => ($query['var'] + 1)));
             } else {
                 DB::insert(_iplog_table, array(
-                    'ip' => _userip,
+                    'ip' => _user_ip,
                     'type' => _iplog_failed_login_attempt,
                     'time' => time(),
                     'var' => 1
@@ -2249,7 +2249,7 @@ function _iplogUpdate($type, $var = null)
 
         case _iplog_article_read:
             DB::insert(_iplog_table, array(
-                'ip' => _userip,
+                'ip' => _user_ip,
                 'type' => _iplog_article_read,
                 'time' => time(),
                 'var' => $var
@@ -2258,7 +2258,7 @@ function _iplogUpdate($type, $var = null)
 
         case _iplog_article_rated:
             DB::insert(_iplog_table, array(
-                'ip' => _userip,
+                'ip' => _user_ip,
                 'type' => _iplog_article_rated,
                 'time' => time(),
                 'var' => $var
@@ -2267,7 +2267,7 @@ function _iplogUpdate($type, $var = null)
 
         case _iplog_poll_vote:
             DB::insert(_iplog_table, array(
-                'ip' => _userip,
+                'ip' => _user_ip,
                 'type' => _iplog_poll_vote,
                 'time' => time(),
                 'var' => $var
@@ -2277,7 +2277,7 @@ function _iplogUpdate($type, $var = null)
         case _iplog_anti_spam:
         case _iplog_password_reset_requested:
             DB::insert(_iplog_table, array(
-                'ip' => _userip,
+                'ip' => _user_ip,
                 'type' => $type,
                 'time' => time(),
                 'var' => 0
@@ -2290,7 +2290,7 @@ function _iplogUpdate($type, $var = null)
                 DB::update(_iplog_table, 'id=' . $query['id'], array('var' => ($query['var'] + 1)));
             } else {
                 DB::insert(_iplog_table, array(
-                    'ip' => _userip,
+                    'ip' => _user_ip,
                     'type' => _iplog_failed_account_activation,
                     'time' => time(),
                     'var' => 1
@@ -2304,7 +2304,7 @@ function _iplogUpdate($type, $var = null)
                 DB::update(_iplog_table, 'id=' . $query['id'], array('time' => time()));
             } else {
                 DB::insert(_iplog_table, array(
-                    'ip' => _userip,
+                    'ip' => _user_ip,
                     'type' => $type,
                     'time' => time(),
                     'var' => $var
@@ -2348,7 +2348,7 @@ $(document).ready(function(){
  */
 function _levelCheck($targetUserId, $targetUserLevel)
 {
-    return _login && (_priv_level > $targetUserLevel || $targetUserId == _loginid);
+    return _logged_in && (_priv_level > $targetUserLevel || $targetUserId == _user_id);
 }
 
 /**
@@ -3397,7 +3397,7 @@ function _articleAccess($article, $check_categories = true)
 {
     // nevydany / neschvaleny clanek
     if (!$article['confirmed'] || $article['time'] > time()) {
-        return _priv_adminconfirm || $article['author'] == _loginid;
+        return _priv_adminconfirm || $article['author'] == _user_id;
     }
 
     // pristup k clanku
@@ -3441,7 +3441,7 @@ function _articleAccess($article, $check_categories = true)
 function _postAccess(array $userQuery, array $post)
 {
     // uzivatel je prihlasen
-    if (_login) {
+    if (_logged_in) {
         // extend
         $access = Extend::fetch('posts.access', array(
             'post' => $post,
@@ -3452,7 +3452,7 @@ function _postAccess(array $userQuery, array $post)
         }
 
         // je uzivatel autorem prispevku?
-        if ($post[$userQuery['prefix'] . 'id'] == _loginid && ($post['time'] + _postadmintime > time() || _priv_unlimitedpostaccess)) {
+        if ($post[$userQuery['prefix'] . 'id'] == _user_id && ($post['time'] + _postadmintime > time() || _priv_unlimitedpostaccess)) {
             return true;
         } elseif (_priv_adminposts && _priv_level > $post[$userQuery['prefix'] . 'group_level']) {
             // uzivatel ma pravo spravovat cizi prispevky
@@ -3472,7 +3472,7 @@ function _postAccess(array $userQuery, array $post)
  */
 function _publicAccess($public, $level = 0)
 {
-    return (_login || $public) && _priv_level >= $level;
+    return (_logged_in || $public) && _priv_level >= $level;
 }
 
 /**
@@ -3871,10 +3871,10 @@ home_post.subject xhome_subject";
         $conditions[] = "{$alias}.home IN(" . DB::arr($homes) . ")";
     }
 
-    $conditions[] = "(home_root.id IS NULL OR " . (_login ? '' : 'home_root.public=1 AND ') . "home_root.level<=" . _priv_level . ")
-AND (home_art.id IS NULL OR " . (_login ? '' : 'home_art.public=1 AND ') . "home_art.time<=" . time() . " AND home_art.confirmed=1)
+    $conditions[] = "(home_root.id IS NULL OR " . (_logged_in ? '' : 'home_root.public=1 AND ') . "home_root.level<=" . _priv_level . ")
+AND (home_art.id IS NULL OR " . (_logged_in ? '' : 'home_art.public=1 AND ') . "home_art.time<=" . time() . " AND home_art.confirmed=1)
 AND ({$alias}.type!=" . _post_article_comment . " OR (
-    " . (_login ? '' : '(home_cat1.public=1 OR home_cat2.public=1 OR home_cat3.public=1) AND') . "
+    " . (_logged_in ? '' : '(home_cat1.public=1 OR home_cat2.public=1 OR home_cat3.public=1) AND') . "
     (home_cat1.level<=" . _priv_level . " OR home_cat2.level<=" . _priv_level . " OR home_cat3.level<=" . _priv_level . ")
 ))";
 
@@ -3973,7 +3973,7 @@ function _articleFilter($alias, array $categories = array(), $sqlConditions = nu
     }
 
     // neverejnost
-    if ($checkPublic && !_login) {
+    if ($checkPublic && !_logged_in) {
         $conditions[] = "{$alias}.public=1";
         $conditions[] = "(cat1.public=1 OR cat2.public=1 OR cat3.public=1)";
     }
@@ -4051,7 +4051,7 @@ function _userLogin($id, $storedPassword, $email, $persistent = false)
 
     $_SESSION['user_id'] = $id;
     $_SESSION['user_auth'] = $authHash;
-    $_SESSION['user_ip'] = _userip;
+    $_SESSION['user_ip'] = _user_ip;
 
     if ($persistent && !headers_sent()) {
         $cookie_data = array();
@@ -4082,7 +4082,7 @@ function _userLoginForm($title = false, $required = false, $return = null, $embe
 
     // titulek
     if ($title) {
-        $title_text = _lang($required ? (_login ? 'global.accessdenied' : 'login.required.title') : 'login.title');
+        $title_text = _lang($required ? (_logged_in ? 'global.accessdenied' : 'login.required.title') : 'login.title');
         if (_env === Core::ENV_ADMIN) {
             $output .= '<h1>' . $title_text . "</h1>\n";
         } else {
@@ -4104,7 +4104,7 @@ function _userLoginForm($title = false, $required = false, $return = null, $embe
     }
 
     // obsah
-    if (!_login) {
+    if (!_logged_in) {
 
         $form_append = '';
 
@@ -4177,7 +4177,7 @@ function _userLoginForm($title = false, $required = false, $return = null, $embe
         }
 
     } else {
-        $output .= "<p>" . _lang('login.ininfo') . " <em>" . _loginname . "</em> - <a href='" . _xsrfLink(_link('system/script/logout.php')) . "'>" . _lang('usermenu.logout') . "</a>.</p>";
+        $output .= "<p>" . _lang('login.ininfo') . " <em>" . _user_name . "</em> - <a href='" . _xsrfLink(_link('system/script/logout.php')) . "'>" . _lang('usermenu.logout') . "</a>.</p>";
     }
 
     return $output;
@@ -4232,7 +4232,7 @@ function _userLoginMessage($code)
 function _userLoginSubmit($username, $plainPassword, $persistent = false)
 {
     // jiz prihlasen?
-    if (_login) {
+    if (_logged_in) {
         return 0;
     }
 
@@ -4295,7 +4295,7 @@ function _userLoginSubmit($username, $plainPassword, $persistent = false)
 
     // aktualizace dat uzivatele
     $changeset = array(
-        'ip' => _userip,
+        'ip' => _user_ip,
         'activitytime' => time(),
         'logincounter' => $query['logincounter'] + 1,
         'security_hash' => null,
@@ -4346,27 +4346,27 @@ function _userPersistentLoginHash($id, $authHash, $email)
  */
 function _userLogout($destroy = true)
 {
-    if (!defined('_login') || _login == 1) {
-        Extend::call('user.logout');
-
-        $_SESSION = array();
-
-        if ($destroy) {
-            session_destroy();
-
-            if (!headers_sent()) {
-                setcookie(session_name(), '', time() - 3600, '/');
-            }
-        }
-
-        if (!headers_sent() && isset($_COOKIE[Core::$appId . '_persistent_key'])) {
-            setcookie(Core::$appId . '_persistent_key', '', (time() - 3600), '/');
-        }
-
-        return true;
+    if (!_logged_in) {
+        return false;
     }
 
-    return false;
+    Extend::call('user.logout');
+
+    $_SESSION = array();
+
+    if ($destroy) {
+        session_destroy();
+
+        if (!headers_sent()) {
+            setcookie(session_name(), '', time() - 3600, '/');
+        }
+    }
+
+    if (!headers_sent() && isset($_COOKIE[Core::$appId . '_persistent_key'])) {
+        setcookie(Core::$appId . '_persistent_key', '', (time() - 3600), '/');
+    }
+
+    return true;
 }
 
 /**
@@ -4381,7 +4381,7 @@ function _userGetUnreadPmCount()
     static $result = null;
 
     if ($result === null) {
-        $result = DB::count(_pm_table, "(receiver=" . _loginid . " AND receiver_deleted=0 AND receiver_readtime<update_time) OR (sender=" . _loginid . " AND sender_deleted=0 AND sender_readtime<update_time)");
+        $result = DB::count(_pm_table, "(receiver=" . _user_id . " AND receiver_deleted=0 AND receiver_readtime<update_time) OR (sender=" . _user_id . " AND sender_deleted=0 AND sender_readtime<update_time)");
     }
 
     return $result;
@@ -5428,7 +5428,7 @@ function _postRepeatForm($allow_login = true, Message $login_message = null, $ta
     $output = "<form name='post_repeat' method='post' action='" . _e($action) . "'>\n";
     $output .= _renderHiddenPostInputs(null, $allow_login ? 'login_' : null);
 
-    if ($allow_login && !_login) {
+    if ($allow_login && !_logged_in) {
         if ($login_message === null) {
             $login_message = Message::ok(_lang('post_repeat.login'));
         }
@@ -5454,7 +5454,7 @@ function _postRepeatForm($allow_login = true, Message $login_message = null, $ta
  */
 function _showIP($ip, $repl = 'x')
 {
-    if (_logingroup == 1) {
+    if (_user_group == 1) {
         // hlavni administratori vidi vzdy puvodni IP
         return $ip;
     }

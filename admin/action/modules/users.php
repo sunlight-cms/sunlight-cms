@@ -65,7 +65,7 @@ if (isset($_POST['type']) && _priv_admingroups) {
 }
 
 // prepnuti uzivatele
-if (_super_admin_id == _loginid && isset($_POST['switch_user'])) {
+if (_super_admin_id == _user_id && isset($_POST['switch_user'])) {
     $user = trim(_post('switch_user'));
     $query = DB::queryRow("SELECT id,password,email FROM " . _users_table . " WHERE username=" . DB::val($user));
     if ($query !== false) {
@@ -167,7 +167,7 @@ $output .= $message . "
     <input class='button' type='submit' value='" . _lang('global.do') . "'>
     </form>
 
-    " . ((_super_admin_id == _loginid) ? "
+    " . ((_super_admin_id == _user_id) ? "
 
     <form action='index.php?p=users' method='post'>
     <h3>" . _lang('admin.users.switchuser') . "</h3>

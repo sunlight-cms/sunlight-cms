@@ -44,7 +44,7 @@ class PageTreeFilter implements TreeFilterInterface
         return
             /* visibility */        $node['visible']
             /* page level */        && (!$this->options['check_level'] || $node['level'] <= _priv_level)
-            /* page public */       && (!$this->options['check_public'] || _login || $node['public'])
+            /* page public */       && (!$this->options['check_public'] || _logged_in || $node['public'])
             /* separator  check */  && $node['type'] != _page_separator
             /* order from */        && (
                                         $this->options['ord_start'] === null
