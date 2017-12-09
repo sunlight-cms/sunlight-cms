@@ -17,6 +17,8 @@ class PluginLoader
     private $commonOptionSet;
     /** @var OptionSet[] */
     private $typeOptionSets;
+    /** @var array[]|null */
+    private $composerPackages;
 
     /**
      * @param array $types
@@ -107,13 +109,7 @@ class PluginLoader
      */
     private function loadComposerPlugins(array &$plugins, $checkDevMode)
     {
-        $installedJson = _root . '/vendor/composer/installed.json';
-
-        if (!is_file($installedJson)) {
-            return;
-        }
-
-        foreach (Json::decode(file_get_contents($installedJson)) as $package) {
+        foreach ($this->getComposerPackages() as $package) {
             if (!isset($package['extra']['sunlight-cms-8-plugins']) || !is_array($package['extra']['sunlight-cms-8-plugins'])) {
                 continue;
             }
@@ -273,6 +269,22 @@ class PluginLoader
             $errors[] = $options['dev']
                 ? 'development mode is required'
                 : 'production mode is required';
+        }
+
+        // composer dependencies
+        $composerPackages = $this->getComposerPackages();
+
+        foreach ($options['requires.composer'] as $requiredPackage => $requiredPackageVersion) {
+            if (!isset($composerPackages[$requiredPackage])) {
+                $errors[] = sprintf('required Composer package "%s" is not installed', $requiredPackage);
+            } elseif (!$this->checkVersion($requiredPackageVersion, $composerPackages[$requiredPackage]['version'])) {
+                $errors[] = sprintf(
+                    'required Composer package "%s" is installed in version "%s", but version "%s" is required',
+                    $requiredPackage,
+                    $composerPackages[$requiredPackage]['version'],
+                    $requiredPackageVersion
+                );
+            }
         }
     }
 
@@ -520,5 +532,25 @@ class PluginLoader
                 $plugin['installed'] = $isInstalled;
             }
         }
+    }
+
+    /**
+     * @return array[]
+     */
+    private function getComposerPackages()
+    {
+        if ($this->composerPackages !== null) {
+            return $this->composerPackages;
+        }
+
+        $this->composerPackages = array();
+
+        if (is_file($installedJson = _root . '/vendor/composer/installed.json')) {
+            foreach (Json::decode(file_get_contents($installedJson)) as $package) {
+                $this->composerPackages[$package['name']] = $package;
+            }
+        }
+
+        return $this->composerPackages;
     }
 }
