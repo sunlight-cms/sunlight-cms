@@ -245,11 +245,11 @@ class ToolbarRenderer
                 /** @var InactivePlugin $inactivePlugin */
 
                 foreach ($inactivePlugin->getErrors() as $error) {
-                    $pluginErrors["{$type}/{$name}"][] = $error;
+                    $pluginErrors["{$type}/{$name} ({$inactivePlugin->getFile()})"][] = $error;
                 }
 
                 foreach ($inactivePlugin->getConfigurationErrors() as $path => $error) {
-                    $pluginErrors["{$type}/{$name}"][] = "[at {$path}] $error";
+                    $pluginErrors["{$type}/{$name} ({$inactivePlugin->getFile()})"][] = "[at {$path}] $error";
                 }
             }
         }

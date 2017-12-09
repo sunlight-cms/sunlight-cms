@@ -111,6 +111,10 @@ class Core
      */
     public static function init($root, array $options = array())
     {
+        if (static::$ready) {
+            throw new \LogicException('Cannot init multiple times');
+        }
+
         static::$start = microtime(true);
 
         // first initialization phase
@@ -253,6 +257,11 @@ class Core
      */
     protected static function initBaseComponents()
     {
+        // class loader
+        if (static::$classLoader === null) {
+            static::$classLoader = new ClassLoader();
+        }
+
         // error handler
         static::$errorHandler = new ErrorHandler();
         static::$errorHandler->register();
@@ -275,6 +284,9 @@ class Core
      */
     protected static function initComponents(array $options)
     {
+        // class loader
+        static::$classLoader->setDebug(_dev);
+
         // error handler
         static::$errorHandler->setDebug(_dev || 'cli' === PHP_SAPI);
 
@@ -408,7 +420,7 @@ class Core
         }
 
         // verify current URL
-        if ('cli' !== PHP_SAPI) {
+        if (!_isCli()) {
             $currentUrl = Url::current();
             $baseUrl = Url::base();
 
@@ -502,12 +514,14 @@ class Core
         }
 
         // send default headers
-        if ($options['content_type'] === null) {
-            // vychozi hlavicky
-            header('Content-Type: text/html; charset=UTF-8');
-            header('Expires: ' . _httpDate(-604800, true));
-        } elseif ($options['content_type'] !== false) {
-            header('Content-Type: ' . $options['content_type']);
+        if (!_isCli()) {
+            if ($options['content_type'] === null) {
+                // vychozi hlavicky
+                header('Content-Type: text/html; charset=UTF-8');
+                header('Expires: ' . _httpDate(-604800, true));
+            } elseif ($options['content_type'] !== false) {
+                header('Content-Type: ' . $options['content_type']);
+            }
         }
     }
 

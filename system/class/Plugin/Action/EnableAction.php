@@ -4,7 +4,7 @@ namespace Sunlight\Plugin\Action;
 
 use Sunlight\Action\ActionResult;
 use Sunlight\Message;
-use Sunlight\Plugin\PluginLoader;
+use Sunlight\Plugin\Plugin;
 
 /**
  * Enable a plugin
@@ -19,7 +19,7 @@ class EnableAction extends PluginAction
     protected function execute()
     {
         if ($this->plugin->isDisabled()) {
-            $file = $this->plugin->getDirectory() . '/' . PluginLoader::PLUGIN_DEACTIVATING_FILE;
+            $file = $this->plugin->getDirectory() . '/' . Plugin::DEACTIVATING_FILE;
 
             if (is_file($file) && @unlink($file)) {
                 return ActionResult::success(

@@ -17,7 +17,7 @@ class OptionSet
      * array(
      *      index1 => array(
      *          type            => scalar / boolean / integer / double / string / array / object / resource / NULL
-     *          required        => true / false
+     *          [required]      => true / false (false)
      *          [nullable]      => true / false (false)
      *          [default]       => anything (null)
      *          [normalizer]    => callback(mixed value, mixed context): mixed that should return the normalized value
@@ -142,7 +142,7 @@ class OptionSet
                     );
                     $indexIsValid = false;
                 }
-            } elseif ($entry['required']) {
+            } elseif (!empty($entry['required'])) {
                 // missing required
                 $errors[$index] = sprintf('"%s" is required', $index);
                 $indexIsValid = false;

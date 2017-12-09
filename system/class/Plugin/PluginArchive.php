@@ -52,13 +52,13 @@ class PluginArchive
         $failedPlugins = array();
 
         // get and check plugins
-        foreach ($this->getPlugins() as $pluginPath) {
-            $pluginExists = file_exists(_root . $pluginPath);
-
-            if (!$pluginExists) {
-                $toExtract[] = $pluginPath;
-            } else {
-                $failedPlugins[] = $pluginPath;
+        foreach ($this->getPlugins() as $type => $plugins) {
+            foreach ($plugins as $pluginId => $pluginParams) {
+                if ($this->manager->exists($type, $pluginId)) {
+                    $failedPlugins[] = $pluginParams['path'];
+                } else {
+                    $toExtract[] = $pluginParams['path'];
+                }
             }
         }
 
@@ -86,25 +86,13 @@ class PluginArchive
     }
 
     /**
-     * Get list of plugin paths
-     *
-     * @return string[]
+     * @return array
      */
     public function getPlugins()
     {
         $this->ensureOpen();
 
-        $pluginPaths = array();
-        
-        foreach ($this->plugins as $plugins) {
-            foreach ($plugins as $plugin) {
-                if ($plugin['valid']) {
-                    $pluginPaths[] = $plugin['path'];
-                }
-            }
-        }
-
-        return $pluginPaths;
+        return $this->plugins;
     }
 
     /**
@@ -142,7 +130,7 @@ class PluginArchive
             $dirPatterns[] = preg_quote($definition['dir'], '~');
             $typeDir2Type[$definition['dir']] = $type;
         }
-        $regex = '~^(' . implode('|', $dirPatterns) . ')/(' . PluginLoader::PLUGIN_NAME_PATTERN . ')/(.+)$~';
+        $regex = '~^(' . implode('|', $dirPatterns) . ')/(' . Plugin::ID_PATTERN . ')/(.+)$~';
 
         // iterate all files in the archive
         for ($i = 0; $i < $this->zip->numFiles; ++$i) {
@@ -159,7 +147,7 @@ class PluginArchive
                     );
                 }
 
-                if (PluginLoader::PLUGIN_FILE === $subpath) {
+                if (Plugin::FILE === $subpath) {
                     $this->plugins[$type][$name]['valid'] = true;
                 }
             }

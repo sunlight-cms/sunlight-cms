@@ -7,6 +7,18 @@ use Sunlight\Plugin\Action\PluginAction;
 
 abstract class Plugin
 {
+    /** ID pattern */
+    const ID_PATTERN = '[a-zA-Z][a-zA-Z0-9_.\-]*';
+    /** Name of the plugin definition file */
+    const FILE = 'plugin.json';
+    /** Name of the plugin deactivating file */
+    const DEACTIVATING_FILE = 'DISABLED';
+
+    /** Plugin source - local plugins directory */
+    const SOURCE_LOCAL = 'local';
+    /** Plugin source - composer vendor directory */
+    const SOURCE_COMPOSER = 'composer';
+
     /** Plugin status - OK */
     const STATUS_OK = 0;
     /** Plugin status - has error messages */
@@ -26,20 +38,20 @@ abstract class Plugin
     /** @var array */
     public static $commonOptions = array(
         'name' => array('type' => 'string', 'required' => true),
-        'description' => array('type' => 'string', 'required' => false),
-        'author' => array('type' => 'string', 'required' => false),
-        'url' => array('type' => 'string', 'required' => false),
+        'description' => array('type' => 'string'),
+        'author' => array('type' => 'string'),
+        'url' => array('type' => 'string'),
         'version' => array('type' => 'string', 'required' => true),
         'api' => array('type' => 'string', 'required' => true),
-        'php' => array('type' => 'string', 'required' => false),
-        'extensions' => array('type' => 'array', 'required' => false, 'default' => array()),
-        'requires' => array('type' => 'array', 'required' => false, 'default' => array()),
-        'requires.composer' => array('type' => 'array', 'required' => false, 'default' => array()),
-        'installer' => array('type' => 'boolean', 'required' => false, 'nullable' => true, 'default' => false),
-        'autoload' => array('type' => 'array', 'required' => false, 'default' => array(), 'normalizer' => array('Sunlight\Plugin\PluginOptionNormalizer', 'normalizeAutoload')),
-        'dev' => array('type' => 'boolean', 'required' => false, 'nullable' => true),
-        'class' => array('type' => 'string', 'required' => false),
-        'namespace' => array('type' => 'string', 'required' => false, 'normalizer' => array('Sunlight\Plugin\PluginOptionNormalizer', 'normalizeNamespace')),
+        'php' => array('type' => 'string'),
+        'extensions' => array('type' => 'array', 'default' => array()),
+        'requires' => array('type' => 'array', 'default' => array()),
+        'requires.composer' => array('type' => 'array', 'default' => array()),
+        'installer' => array('type' => 'boolean', 'nullable' => true, 'default' => false),
+        'autoload' => array('type' => 'array', 'default' => array(), 'normalizer' => array('Sunlight\Plugin\PluginOptionNormalizer', 'normalizeAutoload')),
+        'dev' => array('type' => 'boolean', 'nullable' => true),
+        'class' => array('type' => 'string'),
+        'namespace' => array('type' => 'string', 'normalizer' => array('Sunlight\Plugin\PluginOptionNormalizer', 'normalizeNamespace')),
     );
 
     /** @var array */
@@ -47,6 +59,8 @@ abstract class Plugin
 
     /** @var string */
     protected $type;
+    /** @var string */
+    protected $source;
     /** @var string */
     protected $id;
     /** @var string */
@@ -62,6 +76,8 @@ abstract class Plugin
     /** @var string */
     protected $dir;
     /** @var string */
+    protected $file;
+    /** @var string */
     protected $webPath;
     /** @var array */
     protected $options;
@@ -75,6 +91,7 @@ abstract class Plugin
     public function __construct(array $data, PluginManager $manager)
     {
         $this->type = $data['type'];
+        $this->source = $data['source'];
         $this->id = $data['id'];
         $this->camelId = $data['camel_id'];
         $this->status = $data['status'];
@@ -82,14 +99,13 @@ abstract class Plugin
         $this->errors = $data['errors'];
         $this->configurationErrors = $data['configuration_errors'];
         $this->dir = $data['dir'];
+        $this->file = $data['file'];
         $this->webPath = $data['web_path'];
         $this->options = $data['options'];
         $this->manager = $manager;
     }
 
     /**
-     * Get plugin type definition
-     *
      * @return array
      */
     public static function getTypeDefinition()
@@ -118,8 +134,6 @@ abstract class Plugin
     }
 
     /**
-     * Get type
-     *
      * @return string
      */
     public function getType()
@@ -128,8 +142,14 @@ abstract class Plugin
     }
 
     /**
-     * Get status
-     *
+     * @return string
+     */
+    public function getSource()
+    {
+        return $this->source;
+    }
+
+    /**
      * @return int
      */
     public function getStatus()
@@ -229,6 +249,10 @@ abstract class Plugin
      */
     public function canBeRemoved()
     {
+        if ($this->source === static::SOURCE_COMPOSER) {
+            return false;
+        }
+
         return !$this->hasInstaller() || $this->installed === false;
     }
 
@@ -243,8 +267,6 @@ abstract class Plugin
     }
 
     /**
-     * Get errors
-     *
      * @return string[]
      */
     public function getErrors()
@@ -253,8 +275,6 @@ abstract class Plugin
     }
 
     /**
-     * Get configuration errors
-     *
      * @return string[]
      */
     public function getConfigurationErrors()
@@ -263,8 +283,6 @@ abstract class Plugin
     }
 
     /**
-     * Get directory
-     *
      * @return string
      */
     public function getDirectory()
@@ -273,8 +291,14 @@ abstract class Plugin
     }
 
     /**
-     * Get web path
-     *
+     * @return string
+     */
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+    /**
      * @param bool $absolute
      * @return string
      */
@@ -284,8 +308,6 @@ abstract class Plugin
     }
 
     /**
-     * Get option
-     *
      * @param string $name
      * @throws \OutOfBoundsException if the option does not exist
      * @return mixed
@@ -300,8 +322,6 @@ abstract class Plugin
     }
 
     /**
-     * Get all options
-     *
      * @return array
      */
     public function getOptions()
@@ -310,8 +330,6 @@ abstract class Plugin
     }
 
     /**
-     * Get action instance
-     *
      * @param string $name
      * @return PluginAction|null
      */

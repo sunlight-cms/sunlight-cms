@@ -443,13 +443,13 @@ class Backup
                 }
             }),
             'created_at' => array('type' => 'integer', 'required' => true),
-            'directory_list' => array('type' => 'array', 'required' => false, 'default' => array()),
-            'file_list' => array('type' => 'array', 'required' => false, 'default' => array()),
-            'db_prefix' => array('type' => 'string', 'nullable' => true, 'required' => false, 'default' => null),
-            'is_patch' => array('type' => 'boolean', 'required' => false, 'default' => false),
-            'files_to_remove' => array('type' => 'array', 'required' => false, 'default' => array()),
-            'directories_to_remove' => array('type' => 'array', 'required' => false, 'default' => array()),
-            'directories_to_purge' => array('type' => 'array', 'required' => false, 'default' => array()),
+            'directory_list' => array('type' => 'array', 'default' => array()),
+            'file_list' => array('type' => 'array', 'default' => array()),
+            'db_prefix' => array('type' => 'string', 'nullable' => true, 'default' => null),
+            'is_patch' => array('type' => 'boolean', 'default' => false),
+            'files_to_remove' => array('type' => 'array', 'default' => array()),
+            'directories_to_remove' => array('type' => 'array', 'default' => array()),
+            'directories_to_purge' => array('type' => 'array', 'default' => array()),
         ));
 
         return $optionSet->process($metaData, null, $errors);

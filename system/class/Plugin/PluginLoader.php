@@ -9,16 +9,14 @@ use Sunlight\Util\Json;
 
 class PluginLoader
 {
-    /** Plugin name pattern */
-    const PLUGIN_NAME_PATTERN = '[a-zA-Z][a-zA-Z0-9_.\-]*';
-    /** Name of the plugin definition file */
-    const PLUGIN_FILE = 'plugin.json';
-    /** Name of the plugin deactivating file */
-    const PLUGIN_DEACTIVATING_FILE = 'DISABLED';
-
     /** @var array */
     private $types;
-    private $pluginDirectoryPattern;
+    /** @var string */
+    private $pluginIdPattern;
+    /** @var OptionSet */
+    private $commonOptionSet;
+    /** @var OptionSet[] */
+    private $typeOptionSets;
 
     /**
      * @param array $types
@@ -26,7 +24,16 @@ class PluginLoader
     public function __construct(array $types)
     {
         $this->types = $types;
-        $this->pluginDirectoryPattern = '/^' . static::PLUGIN_NAME_PATTERN . '$/';
+        $this->pluginIdPattern = '/^' . Plugin::ID_PATTERN . '$/';
+
+        $this->commonOptionSet = new OptionSet(Plugin::$commonOptions);
+        $this->commonOptionSet->setIgnoreExtraIndexes(true);
+
+        $this->typeOptionSets = array();
+        foreach ($types as $type => $typeDefinition) {
+            $this->typeOptionSets[$type] = new OptionSet($typeDefinition['options']);
+            $this->typeOptionSets[$type]->addKnownIndexes($this->commonOptionSet->getIndexes());
+        }
     }
 
     /**
@@ -34,97 +41,14 @@ class PluginLoader
      *
      * @param bool $checkDevMode
      * @param bool $resolveInstallationStatus
-     * @return array plugins, plugin files
+     * @return array
      */
     public function load($checkDevMode = true, $resolveInstallationStatus = true)
     {
         $plugins = array();
-        $pluginFiles = array();
 
-        $commonOptionSet = new OptionSet(Plugin::$commonOptions);
-        $commonOptionSet->setIgnoreExtraIndexes(true);
-
-        // load
-        foreach ($this->types as $typeName => $type) {
-            $plugins[$typeName] = array();
-
-            $dir = _root . $type['dir'];
-
-            $typeOptionSet = new OptionSet($type['options']);
-            $typeOptionSet->addKnownIndexes($commonOptionSet->getIndexes());
-
-            // scan directory
-            foreach (scandir($dir) as $item) {
-                // validate item
-                if (
-                    preg_match($this->pluginDirectoryPattern, $item) // skips dots and invalid names
-                    && is_dir($pluginDir = $dir . '/' . $item)
-                    && is_file($pluginFile = $pluginDir . '/' . static::PLUGIN_FILE)
-                ) {
-                    $pluginFiles[] = $pluginFile;
-
-                    $plugin = $this->createPluginData($item, $type);
-                    $context = $this->createPluginOptionContext($plugin, $type);
-
-                    // check state
-                    $isDisabled = is_file($plugin['dir'] . '/' . static::PLUGIN_DEACTIVATING_FILE);
-
-                    // load options
-                    try {
-                        $options = Json::decode(file_get_contents($pluginFile));
-                    } catch (\RuntimeException $e) {
-                        $options = null;
-                        $plugin['errors'][] = sprintf('could not parse %s - %s', static::PLUGIN_FILE, $e->getMessage());
-                    }
-
-                    // process options
-                    if ($options !== null) {
-                        // common options
-                        $commonOptionSet->process($options, $context, $plugin['configuration_errors']);
-
-                        // type-specific options
-                        if (empty($plugin['configuration_errors'])) {
-                            $typeOptionSet->process($options, $context, $plugin['configuration_errors']);
-                        }
-
-                        $this->validateOptions($options, $plugin['configuration_errors'], $checkDevMode, $plugin['errors']);
-                    }
-
-                    // handle result
-                    if (empty($plugin['errors']) && empty($plugin['configuration_errors'])) {
-                        // ok
-                        $plugin['status'] = Plugin::STATUS_OK;
-                        $plugin['options'] = $options;
-                    } else {
-                        // there are errors
-                        $plugin['status'] = Plugin::STATUS_HAS_ERRORS;
-                        if ($options !== null && empty($plugin['configuration_errors'])) {
-                            $plugin['options'] = $options;
-                        } else {
-                            $options = array(
-                                'id' => $item,
-                                'name' => $item,
-                                'version' => '0.0.0',
-                                'api' => '0.0.0',
-                            );
-                            $commonOptionSet->process($options, $context);
-                            $plugin['options'] = $options;
-                        }
-                    }
-
-                    // resolve plugin class
-                    $plugin['options']['class'] = $this->resolvePluginClass($plugin, $type);
-
-                    // override status if the plugin is disabled
-                    if ($isDisabled) {
-                        $plugin['status'] = Plugin::STATUS_DISABLED;
-                    }
-
-                    // add plugin
-                    $plugins[$typeName][$item] = $plugin;
-                }
-            }
-        }
+        $this->loadLocalPlugins($plugins, $checkDevMode);
+        $this->loadComposerPlugins($plugins, $checkDevMode);
 
         // resolve dependencies
         foreach ($this->types as $typeName => $type) {
@@ -138,7 +62,181 @@ class PluginLoader
             }
         }
 
-        return array($plugins, $pluginFiles);
+        return $plugins;
+    }
+
+    /**
+     * @param array $plugins
+     * @param bool $checkDevMode
+     */
+    private function loadLocalPlugins(array &$plugins, $checkDevMode)
+    {
+        // load plugins from standard paths
+        foreach ($this->types as $typeName => $type) {
+            $plugins[$typeName] = array();
+
+            $dir = _root . $type['dir'];
+
+            // scan directory
+            foreach (scandir($dir) as $item) {
+                // validate item
+                if (
+                    preg_match($this->pluginIdPattern, $item) // skips dots and invalid names
+                    && is_dir("{$dir}/{$item}")
+                    && is_file($pluginFile = "{$dir}/{$item}/" . Plugin::FILE)
+                ) {
+                    // load plugin
+                    $plugins[$typeName][$item] = $this->loadPlugin(
+                        $this->createPluginData(
+                            $item,
+                            $pluginFile,
+                            $type['dir'] . '/' . $item,
+                            $typeName,
+                            Plugin::SOURCE_LOCAL
+                        ),
+                        $checkDevMode
+                    );
+                }
+            }
+        }
+    }
+
+    /**
+     * @param array $plugins
+     * @param bool $checkDevMode
+     */
+    private function loadComposerPlugins(array &$plugins, $checkDevMode)
+    {
+        $installedJson = _root . '/vendor/composer/installed.json';
+
+        if (!is_file($installedJson)) {
+            return;
+        }
+
+        foreach (Json::decode(file_get_contents($installedJson)) as $package) {
+            if (!isset($package['extra']['sunlight-cms-8-plugins']) || !is_array($package['extra']['sunlight-cms-8-plugins'])) {
+                continue;
+            }
+
+            foreach ($package['extra']['sunlight-cms-8-plugins'] as $pluginId => $pluginParams) {
+                $pluginFile = sprintf('%svendor/%s/%s/%s', _root, $package['name'], $pluginParams['path'], Plugin::FILE);
+
+                if (!is_file($pluginFile)) {
+                    continue;
+                }
+
+                $plugin = $this->createPluginData(
+                    $pluginId,
+                    $pluginFile,
+                    "vendor/{$package['name']}/{$pluginParams['path']}",
+                    $pluginParams['type'],
+                    Plugin::SOURCE_COMPOSER,
+                    array('version' => $package['version'])
+                );
+
+                if (!preg_match($this->pluginIdPattern, $pluginId)) {
+                    $plugin['id'] = $this->generateTemporaryComposerPluginId($pluginFile);
+
+                    $plugin['errors'][] = sprintf(
+                        'plugin ID "%s" specified by Composer package "%s" does not match "%s"',
+                        $pluginId,
+                        $package['name'],
+                        $this->pluginIdPattern
+                    );
+                } elseif (isset($plugins[$pluginParams['type']][$pluginId])) {
+                    $plugin['id'] = $this->generateTemporaryComposerPluginId($pluginFile);
+
+                    $plugin['errors'][] = sprintf(
+                        'cannot load plugin "%s/%s" from Composer package "%s" because such plugin already exists at "%s"',
+                        $pluginParams['type'],
+                        $pluginId,
+                        $package['name'],
+                        $plugins[$pluginParams['type']][$pluginId]['file']
+                    );
+                }
+
+                $plugins[$pluginParams['type']][$plugin['id']] = $this->loadPlugin($plugin, $checkDevMode);
+            }
+        }
+    }
+
+    /**
+     * @param string $pluginFile
+     * @return string
+     */
+    private function generateTemporaryComposerPluginId($pluginFile)
+    {
+        return sprintf('composer__invalid_plugin_%x', crc32($pluginFile));
+    }
+
+    /**
+     * @param array $plugin
+     * @param bool $checkDevMode
+     * @return array
+     */
+    public function loadPlugin(array $plugin, $checkDevMode = true)
+    {
+        $type = $this->types[$plugin['type']];
+        $context = $this->createPluginOptionContext($plugin, $type);
+
+        // check state
+        $isDisabled = is_file($plugin['dir'] . '/' . Plugin::DEACTIVATING_FILE);
+
+        // load options
+        try {
+            $options = Json::decode(file_get_contents($plugin['file']));
+        } catch (\RuntimeException $e) {
+            $options = null;
+            $plugin['errors'][] = sprintf('could not parse %s - %s', $plugin['file'], $e->getMessage());
+        }
+
+        // process options
+        if ($options !== null) {
+            // set defaults
+            $options += $plugin['options'];
+
+            // common options
+            $this->commonOptionSet->process($options, $context, $plugin['configuration_errors']);
+
+            // type-specific options
+            if (empty($plugin['configuration_errors'])) {
+                $this->typeOptionSets[$plugin['type']]->process($options, $context, $plugin['configuration_errors']);
+            }
+
+            $this->validateOptions($options, $plugin['configuration_errors'], $checkDevMode, $plugin['errors']);
+        }
+
+        // handle result
+        if (empty($plugin['errors']) && empty($plugin['configuration_errors'])) {
+            // ok
+            $plugin['status'] = Plugin::STATUS_OK;
+            $plugin['options'] = $options;
+        } else {
+            // there are errors
+            $plugin['status'] = Plugin::STATUS_HAS_ERRORS;
+            if ($options !== null && empty($plugin['configuration_errors'])) {
+                $plugin['options'] = $options;
+            } else {
+                $options = array(
+                    'id' => $plugin['id'],
+                    'name' => $plugin['id'],
+                    'version' => '0.0.0',
+                    'api' => '0.0.0',
+                );
+                $this->commonOptionSet->process($options, $context);
+                $plugin['options'] = $options;
+            }
+        }
+
+        // resolve plugin class
+        $plugin['options']['class'] = $this->resolvePluginClass($plugin, $type);
+
+        // override status if the plugin is disabled
+        if ($isDisabled) {
+            $plugin['status'] = Plugin::STATUS_DISABLED;
+        }
+
+        return $plugin;
     }
 
     /**
@@ -215,22 +313,28 @@ class PluginLoader
 
     /**
      * @param string $id
-     * @param array $type
+     * @param string $file
+     * @param string|null $webPath
+     * @param string $typeName
+     * @param string $source
+     * @param array $defaultOptions
      * @return array
      */
-    private function createPluginData($id, array $type)
+    private function createPluginData($id, $file, $webPath, $typeName, $source, array $defaultOptions = array())
     {
         return array(
             'id' => $id,
             'camel_id' => _camelCase($id),
-            'type' => $type,
+            'type' => $typeName,
+            'source' => $source,
             'status' => null,
             'installed' => null,
-            'dir' => realpath(_root . $type['dir'] . '/' . $id),
-            'web_path' => $type['dir'] . '/' . $id,
+            'dir' => dirname($file),
+            'file' => $file,
+            'web_path' => $webPath,
             'errors' => array(),
             'configuration_errors' => array(),
-            'options' => null,
+            'options' => $defaultOptions + array('name' => $id),
         );
     }
 

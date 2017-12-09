@@ -39,7 +39,13 @@
     "scripts": {
         "doctrine": "Sunlight\\Database\\Doctrine\\Console::runAsComposerScript",
         "pre-update-cmd": "Sunlight\\Plugin\\ComposerBridge::linkPluginDependencies",
-        "post-update-cmd": "Sunlight\\Plugin\\ComposerBridge::denyAccessToVendorDirectory",
-        "post-install-cmd": "Sunlight\\Plugin\\ComposerBridge::denyAccessToVendorDirectory"
+        "post-update-cmd": [
+            "Sunlight\\Composer\\ComposerBridge::clearCache",
+            "Sunlight\\Composer\\ComposerBridge::denyAccessToVendorDirectory"
+        ],
+        "post-install-cmd": [
+            "Sunlight\\Composer\\ComposerBridge::clearCache",
+            "Sunlight\\Composer\\ComposerBridge::denyAccessToVendorDirectory"
+        ]
     }
 }

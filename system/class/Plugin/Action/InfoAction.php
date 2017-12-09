@@ -4,7 +4,6 @@ namespace Sunlight\Plugin\Action;
 
 use Kuria\Debug\Dumper;
 use Sunlight\Action\ActionResult;
-use Sunlight\Plugin\PluginLoader;
 
 /**
  * Show information about a plugin
@@ -23,13 +22,18 @@ class InfoAction extends PluginAction
         return ActionResult::output(_buffer(function () use ($plugin) { ?>
 <table class="list valign-top">
     <tr>
+        <th><?php echo _lang('global.id') ?></th>
+        <td><?php echo _e($plugin->getId()) ?></td>
+    </tr>
+
+    <tr>
         <th><?php echo _lang('global.type') ?></th>
         <td><?php echo _e($plugin->getType()) ?></td>
     </tr>
 
     <tr>
-        <th><?php echo _lang('global.id') ?></th>
-        <td><?php echo _e($plugin->getId()) ?></td>
+        <th><?php echo _lang('global.source') ?></th>
+        <td><?php echo _e($plugin->getSource()) ?></td>
     </tr>
 
     <tr>
@@ -62,7 +66,7 @@ class InfoAction extends PluginAction
     <tr>
         <th><?php echo _lang('admin.plugins.data') ?></th>
         <td>
-            <pre><?php echo _e(file_get_contents($plugin->getDirectory() . '/' . PluginLoader::PLUGIN_FILE)) ?></pre>
+            <pre><?php echo _e(file_get_contents($plugin->getFile())) ?></pre>
         </td>
     </tr>
 

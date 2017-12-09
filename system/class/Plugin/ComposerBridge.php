@@ -2,8 +2,6 @@
 
 namespace Sunlight\Plugin;
 
-use Sunlight\Plugin\PluginLoader;
-use Sunlight\Plugin\PluginManager;
 use Sunlight\Util\Filesystem;
 use Sunlight\Util\Json;
 
@@ -11,11 +9,7 @@ class ComposerBridge
 {
     public static function linkPluginDependencies()
     {
-        // init stuff necessary to use the plugin loader
-        if (!defined('_root')) {
-            define('_root', __DIR__ . '/../../../');
-            require __DIR__ . '/../../functions.php';
-        }
+        \Sunlight\Composer\ComposerBridge::initMinimalCore();
 
         // prepare plugin package cache
         $packageCachePath = _root . 'plugins/.composer';
@@ -28,9 +22,9 @@ class ComposerBridge
         $rootRequirements = array();
         $pluginLoader = new PluginLoader(PluginManager::getTypeDefinitions());
 
-        foreach (current($pluginLoader->load(false, false)) as $pluginType => $plugins) {
+        foreach ($pluginLoader->load(false, false) as $pluginType => $plugins) {
             foreach ($plugins as $pluginId => $plugin) {
-                if ($plugin['status'] !== Plugin::STATUS_OK) {
+                if ($plugin['status'] !== Plugin::STATUS_OK || $plugin['source'] !== Plugin::SOURCE_LOCAL) {
                     continue;
                 }
 
@@ -70,11 +64,6 @@ class ComposerBridge
 
         // done
         echo 'Found ', sizeof($rootRequirements), " local plugins with Composer dependencies\n";
-    }
-
-    public static function denyAccessToVendorDirectory()
-    {
-        Filesystem::denyAccessToDirectory(__DIR__ . '/../../../vendor');
     }
 
     /**

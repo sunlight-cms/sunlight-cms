@@ -4,7 +4,7 @@ namespace Sunlight\Plugin\Action;
 
 use Sunlight\Action\ActionResult;
 use Sunlight\Message;
-use Sunlight\Plugin\PluginLoader;
+use Sunlight\Plugin\Plugin;
 
 /**
  * Disable a plugin
@@ -19,7 +19,7 @@ class DisableAction extends PluginAction
     protected function execute()
     {
         if ($this->plugin->canBeDisabled()) {
-            if (touch($this->plugin->getDirectory() . '/' . PluginLoader::PLUGIN_DEACTIVATING_FILE)) {
+            if (touch($this->plugin->getDirectory() . '/' . Plugin::DEACTIVATING_FILE)) {
                 return ActionResult::success(
                     Message::ok(sprintf(_lang('admin.plugins.action.disable.success'), $this->plugin->getOption('name')))
                 );

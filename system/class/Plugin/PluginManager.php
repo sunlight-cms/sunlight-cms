@@ -114,7 +114,7 @@ class PluginManager
     }
 
     /**
-     * See if the given plugin exists
+     * See if the given plugin exists and is active
      *
      * @param string $type
      * @param string $name
@@ -127,6 +127,18 @@ class PluginManager
         }
 
         return isset($this->plugins[$type][$name]);
+    }
+
+    /**
+     * See if the given plugin exists (either active or inactive)
+     *
+     * @param string $type
+     * @param string $name
+     * @return bool
+     */
+    public function exists($type, $name)
+    {
+        return $this->has($type, $name) || $this->hasInactive($type, $name);
     }
 
     /**
@@ -417,15 +429,7 @@ class PluginManager
 
         // if data could not be loaded from cache, use plugin loader
         if ($data === false) {
-            $pluginLoader = new PluginLoader($this->types);
-            list($plugins, $pluginFiles) = $pluginLoader->load();
-
-            $data = array(
-                'plugins' => $plugins,
-                'system_version' => Core::VERSION,
-            );
-
-            $this->cache->set('plugin_data', $data, 0, array('bound_files' => $pluginFiles));
+            $data = $this->loadPlugins();
         }
 
         // initialize plugins
@@ -460,6 +464,31 @@ class PluginManager
 
         // set variables
         $this->initialized = true;
+    }
+
+    /**
+     * @return array
+     */
+    private function loadPlugins()
+    {
+        $pluginLoader = new PluginLoader($this->types);
+        $loadedPlugins = $pluginLoader->load();
+
+        $pluginFiles = array();
+        foreach ($loadedPlugins as $type => $plugins) {
+            foreach ($plugins as $plugin) {
+                $pluginFiles[] = $plugin['file'];
+            }
+        }
+
+        $data = array(
+            'plugins' => $loadedPlugins,
+            'system_version' => Core::VERSION,
+        );
+
+        $this->cache->set('plugin_data', $data, 0, array('bound_files' => $pluginFiles));
+
+        return $data;
     }
 
     /**

@@ -5595,3 +5595,13 @@ function _getCurrentTemplate()
     // pouzit vychozi
     return TemplateService::getDefaultTemplate();
 }
+
+/**
+ * Zjistit zda-li je aktualni prostredi konzole
+ *
+ * @return bool
+ */
+function _isCli()
+{
+    return PHP_SAPI === 'cli';
+}
