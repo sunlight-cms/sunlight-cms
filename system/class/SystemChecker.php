@@ -94,7 +94,7 @@ class SystemChecker
      */
     private function checkInstallFiles()
     {
-        if (@is_dir(_root . 'install') && !_dev) {
+        if (@is_dir(_root . 'install') && !_debug) {
             $this->errors[] = array(
                 'Adresář install se stále nachází na serveru - po instalaci je třeba jej odstranit',
                 'The install directory must be removed after installation',

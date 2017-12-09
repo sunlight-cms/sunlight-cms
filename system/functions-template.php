@@ -435,7 +435,7 @@ function _templateTreeMenu(array $options)
         }
     } catch (RuntimeException $e) {
         // stranka nenalezena
-        return _dev ? _e($e->getMessage()) : '';
+        return _debug ? _e($e->getMessage()) : '';
     }
 
     // nacist stranky

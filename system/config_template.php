@@ -28,8 +28,8 @@ return array(
     'fallback_lang' => '@@fallback_lang|cs@@',
 
     // vyvojovy rezim (nepouzivat v produkci)
-    // development mode (do not use in production)
-    'dev' => '@@dev|false@@',
+    // debug mode (do not use in production)
+    'debug' => '@@debug|false@@',
 
     // pouzivat cache (doporuceno)
     // use cache (recommended)

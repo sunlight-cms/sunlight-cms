@@ -201,7 +201,7 @@ class Core
             'secret' => null,
             'app_id' => null,
             'fallback_lang' => 'en',
-            'dev' => false,
+            'debug' => false,
             'cache' => true,
             'locale' => null,
             'timezone' => 'Europe/Prague',
@@ -243,7 +243,7 @@ class Core
         // define constants
         define('_root', $root);
         define('_env', $options['env']);
-        define('_dev', (bool) $options['dev']);
+        define('_debug', (bool) $options['debug']);
         define('_dbprefix', $options['db.prefix'] . '_');
         define('_dbname', $options['db.name']);
         define('_upload_dir', _root . 'upload/');
@@ -285,10 +285,10 @@ class Core
     protected static function initComponents(array $options)
     {
         // class loader
-        static::$classLoader->setDebug(_dev);
+        static::$classLoader->setDebug(_debug);
 
         // error handler
-        static::$errorHandler->setDebug(_dev || 'cli' === PHP_SAPI);
+        static::$errorHandler->setDebug(_debug || 'cli' === PHP_SAPI);
 
         // cache
         if (static::$cache === null) {
@@ -500,7 +500,7 @@ class Core
 
         // set error_reporting
         $err_rep = E_ALL | E_STRICT;
-        if (!_dev) {
+        if (!_debug) {
             $err_rep &= ~(E_NOTICE | E_USER_NOTICE | E_DEPRECATED | E_STRICT);
         }
         error_reporting($err_rep);

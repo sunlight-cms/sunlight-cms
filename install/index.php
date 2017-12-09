@@ -23,7 +23,7 @@ require __DIR__ . '/../system/bootstrap.php';
 Core::init('../', array(
     'minimal_mode' => true,
     'config_file' => false,
-    'dev' => true,
+    'debug' => true,
 ));
 
 /**
@@ -123,8 +123,8 @@ class Labels
             'config.geo.latitude' => 'Zeměpisná šířka',
             'config.geo.longitude' => 'Zeměpisná délka',
             'config.geo.zenith' => 'Zenit',
-            'config.dev' => 'Vývojový režim',
-            'config.dev.help' => 'aktivovat vývojový režim (zobrazování chyb - nepoužívat na ostrém webu!)',
+            'config.debug' => 'Vývojový režim',
+            'config.debug.help' => 'aktivovat vývojový režim (zobrazování chyb - nepoužívat na ostrém webu!)',
 
             'import.title' => 'Vytvoření databáze',
             'import.text' => 'Tento krok vytvoří potřebné tabulky a účet hlavního administrátora v databázi.',
@@ -155,7 +155,7 @@ class Labels
             'complete.title' => 'Hotovo',
             'complete.success' => 'Instalace byla úspěšně dokončena!',
             'complete.installdir_warning' => 'Pozor! Než budete pokračovat, je potřeba odstranit adresář install ze serveru.',
-            'complete.installdir_warning.dev' => 'Vývojový režim je aktivní - není nutné odstranit adresář install. Ale MĚLI BYSTE jej odstranit, pokud bude tato instalace systému přístupná ostatním.',
+            'complete.installdir_warning.debug' => 'Vývojový režim je aktivní - není nutné odstranit adresář install. Ale MĚLI BYSTE jej odstranit, pokud bude tato instalace systému přístupná ostatním.',
             'complete.goto.web' => 'zobrazit stránky',
             'complete.goto.admin' => 'přihlásit se do administrace',
         ),
@@ -204,8 +204,8 @@ class Labels
             'config.geo.latitude' => 'Latitude',
             'config.geo.longitude' => 'Longitude',
             'config.geo.zenith' => 'Zenith',
-            'config.dev' => 'Dev mode',
-            'config.dev.help' => 'enable development mode (displays errors - do not use in production!)',
+            'config.debug' => 'Debug mode',
+            'config.debug.help' => 'enable debug mode (displays errors - do not use in production!)',
 
             'import.title' => 'Create database',
             'import.text' => 'This step will create system tables and the admin account.',
@@ -236,7 +236,7 @@ class Labels
             'complete.title' => 'Complete',
             'complete.success' => 'Installation has been completed successfully!',
             'complete.installdir_warning' => 'Warning! Before you continue, remove the install directory.',
-            'complete.installdir_warning.dev' => 'Dev mode is enabled - removing the install directory is not neccessary. But you SHOULD remove it if this installation is accessible by others.',
+            'complete.installdir_warning.debug' => 'Debug mode is enabled - removing the install directory is not neccessary. But you SHOULD remove it if this installation is accessible by others.',
             'complete.goto.web' => 'open the website',
             'complete.goto.admin' => 'log into administration',
         ),
@@ -687,7 +687,7 @@ class ConfigurationStep extends Step
             'secret' => trim(_post('config_secret', '')),
             'app_id' => trim(_post('config_app_id', '')),
             'fallback_lang' => $this->vars['language'],
-            'dev' => (bool) _checkboxLoad('config_dev'),
+            'debug' => (bool) _checkboxLoad('config_debug'),
             'locale' => $this->getArrayConfigFromString(trim(_post('config_locale', ''))),
             'timezone' => trim(_post('config_timezone', '')) ?: null,
             'geo.latitude' => (float) trim(_post('config_geo_latitude')),
@@ -768,7 +768,7 @@ class ConfigurationStep extends Step
         $defaultGeoLatitude = 50.5;
         $defaultGeoLongitude = 14.26;
         $defaultGeoZenith = 90.583333;
-        $defaultDev = $this->getConfig('dev', false);
+        $defaultDebug = $this->getConfig('debug', false);
 
         ?>
 
@@ -855,9 +855,9 @@ class ConfigurationStep extends Step
             <td colspan="2"><input type="text"<?php echo _restorePostValueAndName('config_geo_zenith', $this->getConfig('geo.zenith', $defaultGeoZenith)) ?>></td>
         </tr>
         <tr>
-            <th><?php Labels::render('config.dev') ?></th>
-            <td><input type="checkbox"<?php echo _restoreCheckedAndName($this->getFormKeyVar(), 'config_dev', $this->getConfig('dev', $defaultDev)) ?>></td>
-            <td class="help"><?php Labels::render('config.dev.help') ?></td>
+            <th><?php Labels::render('config.debug') ?></th>
+            <td><input type="checkbox"<?php echo _restoreCheckedAndName($this->getFormKeyVar(), 'config_debug', $this->getConfig('debug', $defaultDebug)) ?>></td>
+            <td class="help"><?php Labels::render('config.debug.help') ?></td>
         </tr>
     </table>
 </fieldset>
@@ -1192,12 +1192,12 @@ class CompleteStep extends Step
 
     public function run()
     {
-        $isDev = Config::$config['dev'];
+        $isDebug = Config::$config['debug'];
 
         ?>
 <p class="msg success"><?php Labels::render('complete.success') ?></p>
 
-<p class="msg <?php echo $isDev ? 'notice' : 'warning' ?>"><?php Labels::render('complete.installdir_warning' . ($isDev ? '.dev' : '')) ?></p>
+<p class="msg <?php echo $isDebug ? 'notice' : 'warning' ?>"><?php Labels::render('complete.installdir_warning' . ($isDebug ? '.debug' : '')) ?></p>
 
 <ul class="major">
     <li><a href="<?php echo _e(Config::$config['url']) ?>" target="_blank"><?php Labels::render('complete.goto.web') ?></a></li>

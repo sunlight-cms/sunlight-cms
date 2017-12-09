@@ -46,14 +46,14 @@ class TwigBridge
         $env = new \Twig_Environment(
             $loader,
             array(
-                'debug' => _dev,
-                'strict_variables' => _dev,
+                'debug' => _debug,
+                'strict_variables' => _debug,
                 'cache' => _root . 'system/cache/twig',
             )
         );
 
         $env->addGlobal('sl', array(
-            'dev' => _dev,
+            'debug' => _debug,
             'root' => _root,
             'url' => Url::current(),
             'login' => _login,

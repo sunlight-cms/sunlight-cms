@@ -49,7 +49,7 @@ abstract class Plugin
         'requires.composer' => array('type' => 'array', 'default' => array()),
         'installer' => array('type' => 'boolean', 'nullable' => true, 'default' => false),
         'autoload' => array('type' => 'array', 'default' => array(), 'normalizer' => array('Sunlight\Plugin\PluginOptionNormalizer', 'normalizeAutoload')),
-        'dev' => array('type' => 'boolean', 'nullable' => true),
+        'debug' => array('type' => 'boolean', 'nullable' => true),
         'class' => array('type' => 'string'),
         'namespace' => array('type' => 'string', 'normalizer' => array('Sunlight\Plugin\PluginOptionNormalizer', 'normalizeNamespace')),
     );

@@ -4,7 +4,7 @@
     "version": "8.0",
     "api": "^8.0",
     "url": "https://sunlight-cms.org/",
-    "dev": true,
+    "debug": true,
     "class": "DevkitPlugin",
     "events": [
         ["db.query", "$this::onDbQuery"],

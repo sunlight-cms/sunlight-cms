@@ -99,9 +99,9 @@ $output .= Extend::buffer('admin.index.after_table');
 // zpravy
 $messages = array();
 
-if (_dev) {
+if (_debug) {
     // vyvojovy rezim
-    $messages[] = Message::warning(_lang('admin.index.devwarn'));
+    $messages[] = Message::warning(_lang('admin.index.debugwarn'));
 }
 
 Extend::call('admin.index.messages', array(

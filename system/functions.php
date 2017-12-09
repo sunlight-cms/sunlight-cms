@@ -927,7 +927,7 @@ function _validateEmail($email)
                                     // character not valid in local part
                                     $isValid = false;
                                 }
-        if (!_dev && function_exists('checkdnsrr')) {
+        if (!_debug && function_exists('checkdnsrr')) {
             if ($isValid && !checkdnsrr($domain . '.', 'ANY')) {
                 // no DNS record for the given domain
                 $isValid = false;
@@ -2489,7 +2489,7 @@ function _linkFile($filePath, $absolute = false)
     if ($realFilePath !== false && substr($realFilePath, 0, $realRootPathLength) === $realRootPath) {
         $path = str_replace('\\', '/', substr($realFilePath, $realRootPathLength));
     } else {
-        if (_dev) {
+        if (_debug) {
             if ($realFilePath === false) {
                 throw new \InvalidArgumentException(sprintf('File "%s" does not exist or is not accessible', $filePath));
             } else {

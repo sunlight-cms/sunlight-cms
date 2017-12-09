@@ -41,16 +41,16 @@ class PluginLoader
     /**
      * Load plugin data from the filesystem
      *
-     * @param bool $checkDevMode
+     * @param bool $checkDebugMode
      * @param bool $resolveInstallationStatus
      * @return array
      */
-    public function load($checkDevMode = true, $resolveInstallationStatus = true)
+    public function load($checkDebugMode = true, $resolveInstallationStatus = true)
     {
         $plugins = array();
 
-        $this->loadLocalPlugins($plugins, $checkDevMode);
-        $this->loadComposerPlugins($plugins, $checkDevMode);
+        $this->loadLocalPlugins($plugins, $checkDebugMode);
+        $this->loadComposerPlugins($plugins, $checkDebugMode);
 
         // resolve dependencies
         foreach ($this->types as $typeName => $type) {
@@ -69,9 +69,9 @@ class PluginLoader
 
     /**
      * @param array $plugins
-     * @param bool $checkDevMode
+     * @param bool  $checkDebugMode
      */
-    private function loadLocalPlugins(array &$plugins, $checkDevMode)
+    private function loadLocalPlugins(array &$plugins, $checkDebugMode)
     {
         // load plugins from standard paths
         foreach ($this->types as $typeName => $type) {
@@ -96,7 +96,7 @@ class PluginLoader
                             $typeName,
                             Plugin::SOURCE_LOCAL
                         ),
-                        $checkDevMode
+                        $checkDebugMode
                     );
                 }
             }
@@ -105,9 +105,9 @@ class PluginLoader
 
     /**
      * @param array $plugins
-     * @param bool $checkDevMode
+     * @param bool  $checkDebugMode
      */
-    private function loadComposerPlugins(array &$plugins, $checkDevMode)
+    private function loadComposerPlugins(array &$plugins, $checkDebugMode)
     {
         foreach ($this->getComposerPackages() as $package) {
             if (!isset($package['extra']['sunlight-cms-8-plugins']) || !is_array($package['extra']['sunlight-cms-8-plugins'])) {
@@ -151,7 +151,7 @@ class PluginLoader
                     );
                 }
 
-                $plugins[$pluginParams['type']][$plugin['id']] = $this->loadPlugin($plugin, $checkDevMode);
+                $plugins[$pluginParams['type']][$plugin['id']] = $this->loadPlugin($plugin, $checkDebugMode);
             }
         }
     }
@@ -167,10 +167,10 @@ class PluginLoader
 
     /**
      * @param array $plugin
-     * @param bool $checkDevMode
+     * @param bool  $checkDebugMode
      * @return array
      */
-    public function loadPlugin(array $plugin, $checkDevMode = true)
+    public function loadPlugin(array $plugin, $checkDebugMode = true)
     {
         $type = $this->types[$plugin['type']];
         $context = $this->createPluginOptionContext($plugin, $type);
@@ -199,7 +199,7 @@ class PluginLoader
                 $this->typeOptionSets[$plugin['type']]->process($options, $context, $plugin['configuration_errors']);
             }
 
-            $this->validateOptions($options, $plugin['configuration_errors'], $checkDevMode, $plugin['errors']);
+            $this->validateOptions($options, $plugin['configuration_errors'], $checkDebugMode, $plugin['errors']);
         }
 
         // handle result
@@ -240,10 +240,10 @@ class PluginLoader
      *
      * @param array $options
      * @param array $configurationErrors
-     * @param bool $checkDevMode
+     * @param bool  $checkDebugMode
      * @param array &$errors
      */
-    private function validateOptions(array $options, array $configurationErrors, $checkDevMode, array &$errors)
+    private function validateOptions(array $options, array $configurationErrors, $checkDebugMode, array &$errors)
     {
         // api version
         if (!isset($configurationErrors['api']) && !$this->checkVersion($options['api'], Core::VERSION)) {
@@ -264,10 +264,10 @@ class PluginLoader
             }
         }
 
-        // dev mode
-        if ($checkDevMode && !isset($configurationErrors['dev']) && $options['dev'] !== null && $options['dev'] !== _dev) {
-            $errors[] = $options['dev']
-                ? 'development mode is required'
+        // debug mode
+        if ($checkDebugMode && !isset($configurationErrors['debug']) && $options['debug'] !== null && $options['debug'] !== _debug) {
+            $errors[] = $options['debug']
+                ? 'debug mode is required'
                 : 'production mode is required';
         }
 
