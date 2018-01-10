@@ -16,7 +16,14 @@ class PluginManager
     const EXTEND = 'extend';
 
     /**
-     * Array of plugins
+     * Plugin list
+     *
+     * @var Plugin[] class => instance
+     */
+    private $plugins;
+
+    /**
+     * Plugin map
      *
      * array(
      *      type => array(name1 => instance1, ...),
@@ -25,7 +32,8 @@ class PluginManager
      *
      * @var Plugin[][]
      */
-    private $plugins;
+    private $pluginMap;
+
     /**
      * Array of inactive plugins
      *
@@ -37,10 +45,13 @@ class PluginManager
      * @var InactivePlugin[][]
      */
     private $inactivePlugins;
+
     /** @var array[] */
     private $types;
+
     /** @var CacheInterface */
     private $cache;
+
     /** @var bool */
     private $initialized = false;
 
@@ -113,6 +124,55 @@ class PluginManager
     }
 
     /**
+     * See if the given plugin class is active
+     *
+     * @param string $class
+     * @return bool
+     */
+    public function hasInstance($class)
+    {
+        if (!$this->initialized) {
+            $this->initialize();
+        }
+
+        return isset($this->plugins[$class]);
+    }
+
+    /**
+     * Get plugin instance
+     *
+     * @param string $class
+     * @throws \OutOfBoundsException if the plugin does not exist
+     * @return Plugin|ExtendPlugin|TemplatePlugin|LanguagePlugin
+     */
+    public function getInstance($class)
+    {
+        if (!$this->initialized) {
+            $this->initialize();
+        }
+
+        if (isset($this->plugins[$class])) {
+            return $this->plugins[$class];
+        } else {
+            throw new \OutOfBoundsException(sprintf('Plugin instance of class "%s/%s" does not exist', $class));
+        }
+    }
+
+    /**
+     * Get all plugin instances
+     *
+     * @return Plugin[]|ExtendPlugin[]|TemplatePlugin[]|LanguagePlugin[]
+     */
+    public function getInstances()
+    {
+        if (!$this->initialized) {
+            $this->initialize();
+        }
+
+        return $this->plugins;
+    }
+
+    /**
      * See if the given plugin exists and is active
      *
      * @param string $type
@@ -125,7 +185,7 @@ class PluginManager
             $this->initialize();
         }
 
-        return isset($this->plugins[$type][$name]);
+        return isset($this->pluginMap[$type][$name]);
     }
 
     /**
@@ -146,7 +206,7 @@ class PluginManager
      * @param string $type
      * @param string $name
      * @throws \OutOfBoundsException if the plugin does not exist
-     * @return Plugin
+     * @return Plugin|ExtendPlugin|TemplatePlugin|LanguagePlugin
      */
     public function get($type, $name)
     {
@@ -154,8 +214,8 @@ class PluginManager
             $this->initialize();
         }
 
-        if (isset($this->plugins[$type][$name])) {
-            return $this->plugins[$type][$name];
+        if (isset($this->pluginMap[$type][$name])) {
+            return $this->pluginMap[$type][$name];
         } else {
             throw new \OutOfBoundsException(sprintf('Plugin "%s/%s" does not exist', $type, $name));
         }
@@ -224,9 +284,9 @@ class PluginManager
                 throw new \InvalidArgumentException(sprintf('Invalid plugin type "%s"', $type));
             }
 
-            return $this->plugins[$type];
+            return $this->pluginMap[$type];
         } else {
-            return $this->plugins;
+            return $this->pluginMap;
         }
     }
 
@@ -340,8 +400,8 @@ class PluginManager
             throw new \InvalidArgumentException(sprintf('Invalid plugin type "%s"', $type));
         }
 
-        if (isset($this->plugins[$type][$name])) {
-            $plugin = $this->plugins[$type][$name];
+        if (isset($this->pluginMap[$type][$name])) {
+            $plugin = $this->pluginMap[$type][$name];
         } elseif (isset($this->inactivePlugins[$type][$name])) {
             $plugin = $this->inactivePlugins[$type][$name];
         } else {
@@ -369,7 +429,7 @@ class PluginManager
         }
 
         $choices = array();
-        foreach ($this->plugins[$type] as $name => $instance) {
+        foreach ($this->pluginMap[$type] as $name => $instance) {
             $choices[$name] = $instance->getOption('name');
         }
 
@@ -432,11 +492,11 @@ class PluginManager
         }
 
         // initialize plugins
-        $this->plugins = array();
+        $this->pluginMap = array();
         $this->inactivePlugins = array();
 
         foreach ($data['plugins'] as $type => $plugins) {
-            $this->plugins[$type] = array();
+            $this->pluginMap[$type] = array();
             $this->inactivePlugins[$type] = array();
 
             foreach ($plugins as $name => $plugin) {
@@ -451,7 +511,8 @@ class PluginManager
                         throw new \LogicException(sprintf('Plugin class "%s" of plugin type "%s" must extend "%s"', get_class($pluginInstance), $type, $this->types[$type]['class']));
                     }
 
-                    $this->plugins[$type][$name] = $pluginInstance;
+                    $this->plugins[$plugin['options']['class']] = $pluginInstance;
+                    $this->pluginMap[$type][$name] = $pluginInstance;
                 } else {
                     $this->inactivePlugins[$type][$name] = new InactivePlugin(
                         $plugin,
