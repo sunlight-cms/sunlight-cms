@@ -20,9 +20,15 @@ class ConfigAction extends PluginAction
     {
         $messages = array();
 
+        if (isset($_POST['reset'])) {
+            $this->plugin->getConfig()->reset();
+            $this->plugin->getConfig()->save();
+            $messages[] = Message::ok(_lang('global.done'));
+        }
+
         $fields = $this->getFields();
 
-        if (isset($_POST['config']) && is_array($_POST['config'])) {
+        if (isset($_POST['save'], $_POST['config']) && is_array($_POST['config'])) {
             foreach ($fields as $key => $field) {
                 if (isset($_POST['config'][$key])) {
                     $submittedValue = $_POST['config'][$key];
@@ -49,7 +55,10 @@ class ConfigAction extends PluginAction
         <?php endforeach ?>
         <tr>
             <th></th>
-            <td><input type="submit" value="<?php echo _lang('global.save') ?>"></td>
+            <td>
+                <input type="submit" name="save" value="<?php echo _lang('global.save') ?>">
+                <input type="submit" name="reset" value="<?php echo _lang('global.default') ?>" onclick="return Sunlight.confirm();">
+            </td>
         </tr>
     </table>
 
