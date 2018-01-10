@@ -58,7 +58,7 @@ class InfoAction extends PluginAction
         <th><?php echo _lang('admin.plugins.errors') ?></th>
         <td class="text-danger">
             <?php echo _msgList($plugin->getErrors()) ?>
-            <?php echo _msgList($plugin->getConfigurationErrors(), null, true) ?>
+            <?php echo _msgList($plugin->getDefinitionErrors(), null, true) ?>
         </td>
     </tr>
     <?php endif ?>

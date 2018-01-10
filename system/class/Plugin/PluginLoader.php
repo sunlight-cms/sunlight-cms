@@ -192,25 +192,25 @@ class PluginLoader
             $options += $plugin['options'];
 
             // common options
-            $this->commonOptionSet->process($options, $context, $plugin['configuration_errors']);
+            $this->commonOptionSet->process($options, $context, $plugin['definition_errors']);
 
             // type-specific options
-            if (empty($plugin['configuration_errors'])) {
-                $this->typeOptionSets[$plugin['type']]->process($options, $context, $plugin['configuration_errors']);
+            if (empty($plugin['definition_errors'])) {
+                $this->typeOptionSets[$plugin['type']]->process($options, $context, $plugin['definition_errors']);
             }
 
-            $this->validateOptions($options, $plugin['configuration_errors'], $checkDebugMode, $plugin['errors']);
+            $this->validateOptions($options, $plugin['definition_errors'], $checkDebugMode, $plugin['errors']);
         }
 
         // handle result
-        if (empty($plugin['errors']) && empty($plugin['configuration_errors'])) {
+        if (empty($plugin['errors']) && empty($plugin['definition_errors'])) {
             // ok
             $plugin['status'] = Plugin::STATUS_OK;
             $plugin['options'] = $options;
         } else {
             // there are errors
             $plugin['status'] = Plugin::STATUS_HAS_ERRORS;
-            if ($options !== null && empty($plugin['configuration_errors'])) {
+            if ($options !== null && empty($plugin['definition_errors'])) {
                 $plugin['options'] = $options;
             } else {
                 $options = array(
@@ -347,7 +347,7 @@ class PluginLoader
             'file' => $file,
             'web_path' => $webPath,
             'errors' => array(),
-            'configuration_errors' => array(),
+            'definition_errors' => array(),
             'options' => $defaultOptions + array('name' => $id),
         );
     }

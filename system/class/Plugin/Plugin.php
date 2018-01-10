@@ -73,7 +73,7 @@ abstract class Plugin
     /** @var string[] */
     protected $errors;
     /** @var string[] */
-    protected $configurationErrors;
+    protected $definitionErrors;
     /** @var string */
     protected $dir;
     /** @var string */
@@ -100,7 +100,7 @@ abstract class Plugin
         $this->status = $data['status'];
         $this->installed = $data['installed'];
         $this->errors = $data['errors'];
-        $this->configurationErrors = $data['configuration_errors'];
+        $this->definitionErrors = $data['definition_errors'];
         $this->dir = $data['dir'];
         $this->file = $data['file'];
         $this->webPath = $data['web_path'];
@@ -280,9 +280,9 @@ abstract class Plugin
     /**
      * @return string[]
      */
-    public function getConfigurationErrors()
+    public function getDefinitionErrors()
     {
-        return $this->configurationErrors;
+        return $this->definitionErrors;
     }
 
     /**
