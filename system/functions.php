@@ -2932,7 +2932,7 @@ function _runHCM($name, array $args = array())
         ++Core::$hcmUid;
 
         return Extend::buffer("hcm.{$module[0]}.{$module[1]}", array(
-            'arg_list' => $args,
+            'args' => $args,
         ));
     }
 
