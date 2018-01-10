@@ -34,11 +34,11 @@ class LocalizationDirectory extends LocalizationDictionary
         return $this->dir;
     }
 
-    public function get($key, array $replacements = null)
+    public function get($key, array $replacements = null, $fallback = null)
     {
         $this->isLoaded or $this->load();
 
-        return parent::get($key, $replacements);
+        return parent::get($key, $replacements, $fallback);
     }
 
     /**

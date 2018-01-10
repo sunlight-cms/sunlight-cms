@@ -18,13 +18,14 @@ use Sunlight\Util\Url;
 /**
  * Ziskat preklad
  *
- * @param string     $key
- * @param array|null $replacements
+ * @param string      $key
+ * @param array|null  $replacements
+ * @param string|null $fallback
  * @return string
  */
-function _lang($key, array $replacements = null)
+function _lang($key, array $replacements = null, $fallback = null)
 {
-    return Core::$lang->get($key, $replacements);
+    return Core::$lang->get($key, $replacements, $fallback);
 }
 
 /**

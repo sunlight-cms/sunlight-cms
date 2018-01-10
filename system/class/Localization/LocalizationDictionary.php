@@ -14,11 +14,12 @@ class LocalizationDictionary
     /**
      * Get a localization string
      *
-     * @param string     $key
-     * @param array|null $replacements replacement map
+     * @param string      $key
+     * @param array|null  $replacements replacement map
+     * @param string|null $fallback
      * @return string
      */
-    public function get($key, array $replacements = null)
+    public function get($key, array $replacements = null, $fallback = null)
     {
         // check local entries
         if (isset($this->entries[$key])) {
@@ -32,6 +33,11 @@ class LocalizationDictionary
 
         if (isset($keyParts[1], $this->subDictionaries[$keyParts[0]])) {
             return $this->subDictionaries[$keyParts[0]]->get($keyParts[1], $replacements);
+        }
+
+        // use fallback if provided
+        if ($fallback !== null) {
+            return $fallback;
         }
 
         // entry not found
