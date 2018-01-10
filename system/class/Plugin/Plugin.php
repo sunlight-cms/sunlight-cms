@@ -340,10 +340,10 @@ abstract class Plugin
     public function getConfig()
     {
         if ($this->config === null) {
-            $defaults = $this->getDefaultConfig();
+            $defaults = $this->getConfigDefaults();
 
             if (empty($defaults)) {
-                throw new \LogicException('To use the configuration file, defaults must be specified by overriding the getDefaultConfig() method');
+                throw new \LogicException('To use the configuration file, defaults must be specified by overriding the getConfigDefaults() method');
             }
 
             $this->config = new ConfigurationFile($this->getConfigPath(), $defaults);
@@ -364,7 +364,7 @@ abstract class Plugin
     /**
      * @return array
      */
-    protected function getDefaultConfig()
+    protected function getConfigDefaults()
     {
         return array();
     }
@@ -417,7 +417,7 @@ abstract class Plugin
 
         $actions['info'] = _lang('admin.plugins.action.do.info');
         $actions += $this->getCustomActionList();
-        if (sizeof($this->getDefaultConfig())) {
+        if (sizeof($this->getConfigDefaults())) {
             $actions['config'] = _lang('admin.plugins.action.do.config');
         }
         if ($this->canBeInstalled()) {
