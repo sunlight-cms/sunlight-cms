@@ -37,11 +37,12 @@ class ActionResult
      * Create an intermediate result
      *
      * @param string|null $output
+     * @param Message|Message[]|null $messages
      * @return static
      */
-    public static function output($output)
+    public static function output($output, $messages = null)
     {
-        return new static(null, array(), $output);
+        return new static(null, $messages, $output);
     }
 
     /**

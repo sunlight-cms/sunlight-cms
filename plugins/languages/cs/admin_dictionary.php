@@ -483,6 +483,7 @@ return array(
     'admin.plugins.action' => 'Akce rozšíření',
     'admin.plugins.action.do.info' => 'Detail',
     'admin.plugins.action.do.install' => 'Nainstalovat',
+    'admin.plugins.action.do.config' => 'Konfigurovat',
     'admin.plugins.action.do.uninstall' => 'Odinstalovat',
     'admin.plugins.action.do.enable' => 'Aktivovat',
     'admin.plugins.action.do.disable' => 'Deaktivovat',

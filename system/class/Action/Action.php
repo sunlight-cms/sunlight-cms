@@ -59,8 +59,6 @@ abstract class Action
                     get_called_class()
                 ));
             }
-
-            return $result;
         } catch (\Exception $e) {
         } catch (\Throwable $e) {
         }
@@ -76,6 +74,8 @@ abstract class Action
                 throw $e;
             }
         }
+
+        return $result;
     }
 
     /**

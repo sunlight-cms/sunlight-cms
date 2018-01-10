@@ -482,6 +482,7 @@ return array(
     'admin.plugins.status.3' => 'deactivated',
     'admin.plugins.action' => 'Plugin action',
     'admin.plugins.action.do.info' => 'Info',
+    'admin.plugins.action.do.config' => 'Configure',
     'admin.plugins.action.do.install' => 'Install',
     'admin.plugins.action.do.uninstall' => 'Uninstall',
     'admin.plugins.action.do.enable' => 'Activate',

@@ -4,6 +4,7 @@ namespace Sunlight\Plugin;
 
 use Sunlight\Core;
 use Sunlight\Plugin\Action\PluginAction;
+use Sunlight\Util\ConfigurationFile;
 
 abstract class Plugin
 {
@@ -83,6 +84,8 @@ abstract class Plugin
     protected $options;
     /** @var PluginManager */
     protected $manager;
+    /** @var ConfigurationFile|null */
+    private $config;
 
     /**
      * @param array         $data
@@ -330,6 +333,51 @@ abstract class Plugin
     }
 
     /**
+     * Get plugin configuration
+     *
+     * @return ConfigurationFile
+     */
+    public function getConfig()
+    {
+        if ($this->config === null) {
+            $defaults = $this->getDefaultConfig();
+
+            if (empty($defaults)) {
+                throw new \LogicException('To use the configuration file, defaults must be specified by overriding the getDefaultConfig() method');
+            }
+
+            $this->config = new ConfigurationFile($this->getConfigPath(), $defaults);
+        }
+
+        return $this->config;
+    }
+
+    /**
+     * @param string $key
+     * @return string
+     */
+    public function getConfigLabel($key)
+    {
+        return $key;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getDefaultConfig()
+    {
+        return array();
+    }
+
+    /**
+     * @return string
+     */
+    protected function getConfigPath()
+    {
+        return $this->dir . '/config.php';
+    }
+
+    /**
      * @param string $name
      * @return PluginAction|null
      */
@@ -338,6 +386,8 @@ abstract class Plugin
         switch ($name) {
             case 'info':
                 return new Action\InfoAction($this);
+            case 'config':
+                return new Action\ConfigAction($this);
             case 'install':
                 return new Action\InstallAction($this);
             case 'uninstall':
@@ -348,8 +398,6 @@ abstract class Plugin
                 return new Action\EnableAction($this);
             case 'remove':
                 return new Action\RemoveAction($this);
-            default:
-                return $this->getCustomAction($name);
         }
     }
 
@@ -369,6 +417,9 @@ abstract class Plugin
 
         $actions['info'] = _lang('admin.plugins.action.do.info');
         $actions += $this->getCustomActionList();
+        if (sizeof($this->getDefaultConfig())) {
+            $actions['config'] = _lang('admin.plugins.action.do.config');
+        }
         if ($this->canBeInstalled()) {
             $actions['install'] = _lang('admin.plugins.action.do.install');
         }
@@ -386,16 +437,6 @@ abstract class Plugin
         }
 
         return $actions;
-    }
-
-    /**
-     * Get custom action instance
-     *
-     * @param string $name
-     * @return PluginAction|null
-     */
-    protected function getCustomAction($name)
-    {
     }
 
     /**

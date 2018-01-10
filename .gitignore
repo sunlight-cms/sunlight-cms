@@ -21,11 +21,13 @@
 !/system/cache/.gitkeep
 !/system/cache/.htaccess
 
+/plugins/.composer
+/plugins/*/*/config.php
+
 /plugins/extend/*
 !/plugins/extend/devkit
 !/plugins/extend/codemirror
 !/plugins/extend/fancybox
-/plugins/.composer
 
 /plugins/languages/*
 !/plugins/languages/cs
