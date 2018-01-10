@@ -117,6 +117,27 @@ abstract class Plugin
     }
 
     /**
+     * See if this plugin is currently active
+     *
+     * @return bool
+     */
+    public static function isActive()
+    {
+        return Core::$pluginManager->hasInstance(get_called_class());
+    }
+
+    /**
+     * Get plugin instance
+     *
+     * @throws \OutOfBoundsException if the plugin is not currently active
+     * @return static
+     */
+    public static function getInstance()
+    {
+        return Core::$pluginManager->getInstance(get_called_class());
+    }
+
+    /**
      * Get plugin identifier
      *
      * @return string
