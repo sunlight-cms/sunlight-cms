@@ -448,7 +448,7 @@ function _unescapeHtml($input)
  * @param array $parameters
  * @return string
  */
-function _render($template, array $parameters)
+function _render($template, array $parameters = array())
 {
     return TwigBridge::getEnvironment()->load($template)->render($parameters);
 }

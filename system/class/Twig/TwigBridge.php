@@ -37,8 +37,9 @@ class TwigBridge
             throw new \LogicException('Cannot use Twig bridge before full system initialization');
         }
 
-        $loader = new \Twig_Loader_Filesystem(array(), _root);
+        $loader = new TemplateLoader(array(), _root);
 
+        $loader->setPaths(array(''));
         $loader->setPaths(array('plugins/extend'), 'extend');
         $loader->setPaths(array('plugins/languages'), 'languages');
         $loader->setPaths(array('plugins/templates'), 'templates');
