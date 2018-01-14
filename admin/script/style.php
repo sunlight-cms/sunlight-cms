@@ -409,7 +409,7 @@ ul.page-list-breadcrumbs a:hover {color: <?php echo $scheme_link; ?>;}
 #ae-table {width: 99.1%; table-layout: fixed; border-collapse: collapse; float: left;}
 #ae-table, #ae-table td {margin: 0; padding: 0;}
 #content-cell {width: 75%;}
-#content-cell textarea {width: 99%; height: 480px;}
+#content-cell textarea {width: 100%; height: 480px;}
 #is-cell {width: 25%;}
 #is-cell textarea {width: 213px; height: 179px;}
 #is-cell label {display: block;}
@@ -543,13 +543,13 @@ tr.even td {background-color: <?php echo $scheme_smoke; ?>;}
 tr.odd td {background-color: <?php echo $scheme_smoke_lightest; ?>;}
 
 /* form element sizes */
-.arealine {width: 99%; height: 100px;}
+.arealine {width: 100%; height: 100px;}
 .areasmall {width: 290px; height: 150px;}
 .areasmall_100pwidth {width: 100%; height: 200px;}
 .areasmallwide {width: 620px; height: 150px;}
 .areamedium {width: 600px; height: 350px;}
-.areabig {width: 99%; height: 400px;}
-.areabigperex {width: 99%; height: 150px;}
+.areabig {width: 100%; height: 400px;}
+.areabigperex {width: 100%; height: 150px;}
 .inputmini {width: 38px;}
 .inputmini[type=number] {width:50px;}
 .inputsmaller {width: 80px;}
