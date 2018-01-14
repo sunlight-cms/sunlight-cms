@@ -38,6 +38,13 @@ class DevkitPlugin extends ExtendPlugin
         }
     }
 
+    protected function getConfigDefaults()
+    {
+        return array(
+            'mail_log_enabled' => true,
+        );
+    }
+
     /**
      * Handle database query
      */
@@ -73,10 +80,15 @@ class DevkitPlugin extends ExtendPlugin
      */
     public function onMail(array $args)
     {
-        $time = _formatTime(time());
-        $args['handled'] = true;
+        if (!$this->getConfig()->offsetGet('mail_log_enabled')) {
+            return;
+        }
 
+        $args['result'] = true;
+
+        $time = _formatTime(time());
         $headerString = '';
+
         foreach ($args['headers'] as $headerName => $headerValue) {
             $headerString .= sprintf("%s: %s\n", $headerName, $headerValue);
         }
@@ -92,7 +104,7 @@ Subject: {$args['subject']}
 =====================================
 
 ENTRY
-        , FILE_APPEND);
+        , FILE_APPEND | LOCK_EX);
     }
 
     /**

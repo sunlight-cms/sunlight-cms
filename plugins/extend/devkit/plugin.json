@@ -1,6 +1,6 @@
 {
     "name": "Devkit",
-    "description": "Developer toolbar. Only active in dev mode.",
+    "description": "Developer toolbar. Only active in debug mode.",
     "version": "8.0",
     "api": "^8.0",
     "url": "https://sunlight-cms.org/",
