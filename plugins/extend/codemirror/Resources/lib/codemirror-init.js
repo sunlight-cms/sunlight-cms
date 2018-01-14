@@ -24,7 +24,13 @@ if(!$.browser.msie || $.browser.version >= 8) {
             var textarea = $(this);
 
             // abort if a wysiwyg editor should be used instead
-            if (SunlightVars.pluginCodemirror.userWysiwygEnabled && 'code' !== textarea.data('editorMode')) {
+            if (
+                'code' !== textarea.data('editorMode')
+                && (
+                    SunlightVars.pluginCodemirror.userWysiwygEnabled
+                    && SunlightVars.admin.wysiwygAvailable
+                )
+            ) {
                 return;
             }
 

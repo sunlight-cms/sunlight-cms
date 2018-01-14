@@ -531,6 +531,10 @@ function _adminThemeIsDark()
  */
 function _adminThemeAssets($scheme, $dark)
 {
+    $wysiwygAvailable = false;
+
+    Extend::call('admin.wysiwyg', array('available' => &$wysiwygAvailable));
+
     return array(
         'extend_event' => 'admin.head',
         'css' => array(
@@ -552,6 +556,7 @@ function _adminThemeAssets($scheme, $dark)
         'js_before' => "\n" . Core::getJavascript(array(
                 'admin' => array(
                     'themeIsDark' => $dark,
+                    'wysiwygAvailable' => $wysiwygAvailable,
                 ),
                 'labels' => array(
                     'cancel' => _lang('global.cancel'),
