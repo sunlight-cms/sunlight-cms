@@ -28,10 +28,14 @@ class ConfigAction extends PluginAction
 
         $fields = $this->getFields();
 
-        if (isset($_POST['save'], $_POST['config']) && is_array($_POST['config'])) {
+        if (isset($_POST['save'])) {
+            $submittedConfig = isset($_POST['config']) && is_array($_POST['config'])
+                ? $_POST['config']
+                : array();
+
             foreach ($fields as $key => $field) {
-                if (isset($_POST['config'][$key])) {
-                    $submittedValue = $_POST['config'][$key];
+                if (isset($submittedConfig[$key])) {
+                    $submittedValue = $submittedConfig[$key];
                 } else {
                     $submittedValue = null;
                 }
