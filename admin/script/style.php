@@ -473,7 +473,7 @@ ul.page-list-breadcrumbs a:hover {color: <?php echo $scheme_link; ?>;}
 #settingsnav {width: 20%; float: left; margin-right: 1em;}
 #settingsnav, #settingsnav a {font-size: 12px;}
 #settingsnav.scrollfix-top {position: fixed; top: 10px; height: calc(100% - 60px); overflow: auto; z-index: 100;}
-#settingsnav input {width: 100%; padding: 0.5em;}
+#settingsnav input[type=submit] {width: 100%;}
 #settingsnav ul {padding: 0; margin: 0.5em 0 0 0; border: 1px solid <?php echo $scheme_smoke; ?>; background-color: <?php echo $scheme_smoke_lighter; ?>;}
 #settingsnav li {display: block; list-style-type: none;}
 #settingsnav li a {display: block; padding: 6px 11px; border-bottom: 1px solid <?php echo $scheme_smoke_light;?>; color: <?php echo $scheme_text; ?>;}
@@ -620,6 +620,7 @@ a.button.block {display: block; margin: 6px;}
 a.button.block img.icon {float: none; margin: 0; padding: 0 10px 0 0;}
 a.button:hover {background: <?php echo $scheme_lightest; ?>; background: linear-gradient(to bottom, <?php echo $scheme_lightest; ?>, <?php echo $scheme_lighter; ?>); border-color: <?php echo $scheme_lighter; ?>;}
 a.button.big, input[type=submit].button.big, input[type=button].button.big, input[type=reset].button.big, button.button.big {padding: 8px 12px; font-size: 13px;}
+a.button.bigger, input[type=submit].button.bigger, input[type=button].button.bigger, input[type=reset].button.bigger, button.button.bigger {padding: 12px 18px; font-size: 14px;}
 input[type=submit].button, input[type=button].button, input[type=reset].button, button.button {padding: 6px; font-size: 12px;}
 
 /* inline separator */

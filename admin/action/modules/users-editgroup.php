@@ -281,7 +281,7 @@ if ($continue) {
   " . $rights . "
   " . Extend::buffer('admin.editgroup.form') . "
 
-  <input type='submit' value='" . _lang('global.save') . "'> <small>" . _lang('admin.content.form.thisid') . " " . $id . "</small>
+  <input type='submit' class='button bigger' value='" . _lang('global.save') . "'> <small>" . _lang('admin.content.form.thisid') . " " . $id . "</small>
 
   " . _xsrfProtect() . "</form>
   ";

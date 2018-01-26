@@ -180,7 +180,7 @@ $output .= _buffer(function () use ($id, $box, $new, $templates_to_choose_slot_f
             <tr>
                 <td></td>
                 <td>
-                    <input type="submit" name="box_edit" value="<?php echo _lang('global.savechanges') ?>">
+                    <input type="submit" class="button bigger" name="box_edit" value="<?php echo _lang('global.savechanges') ?>">
                 </td>
             </tr>
         </table>

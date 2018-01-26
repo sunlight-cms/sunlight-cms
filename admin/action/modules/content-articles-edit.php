@@ -421,7 +421,7 @@ if ($continue) {
 
 <tr>
 <td></td>
-<td id='ae-lastrow'><br><input type='submit' value='" . _lang($submittext) . "'>
+<td id='ae-lastrow'><br><input type='submit' class='button bigger' value='" . _lang($submittext) . "'>
 " . (!$new ? "
 <span class='customsettings'><a href='index.php?p=content-articles-delete&amp;id=" . $query['id'] . "&amp;returnid=" . $query['home1'] . "&amp;returnpage=1'><span><img src='images/icons/delete.png' alt='del' class='icon'>" . _lang('global.delete') . "</span></a></span>
 <span class='customsettings'><small>" . _lang('admin.content.form.thisid') . " " . $query['id'] . "</small></span>

@@ -528,7 +528,7 @@ $output .= "<form class='cform' action='index.php?p=content-edit" . $type_array[
                         . "</tbody>
                        <tfoot>
                         <tr><td></td><td></td></tr>
-                        <tr><td></td><td><input type='submit' class='button big' value='" . ($new ? _lang('global.create') : _lang('global.savechanges')) . "'></td></tr>
+                        <tr><td></td><td><input type='submit' class='button bigger' value='" . ($new ? _lang('global.create') : _lang('global.savechanges')) . "'></td></tr>
                        </tfoot>     
                     </table>                
                 </td> 
