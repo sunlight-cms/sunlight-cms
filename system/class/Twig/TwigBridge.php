@@ -53,6 +53,16 @@ class TwigBridge
             )
         );
 
+        static::addGlobals($env);
+        static::addFunctions($env);
+
+        Extend::call('twig.init', array('env' => $env, 'loader' => $loader));
+
+        return $env;
+    }
+
+    protected static function addGlobals(\Twig_Environment $env)
+    {
         $env->addGlobal('sl', array(
             'debug' => _debug,
             'root' => _root,
@@ -61,15 +71,17 @@ class TwigBridge
             'user' => Core::$userData,
             'group' => Core::$groupData,
         ));
+    }
 
+    protected static function addFunctions(\Twig_Environment $env)
+    {
         $env->addFunction(new \Twig_SimpleFunction('link', '_link'));
         $env->addFunction(new \Twig_SimpleFunction('lang', '_lang'));
         $env->addFunction(new \Twig_SimpleFunction('hcm', '_runHCM', array('is_variadic' => true, 'is_safe' => array('html'))));
-        $env->addFunction(new \Twig_SimpleFunction('dump', array(get_called_class(), 'dump'), array('needs_context' => true)));
-
-        Extend::call('twig.init', array('env' => $env, 'loader' => $loader));
-
-        return $env;
+        $env->addFunction(new \Twig_SimpleFunction('extend_call', array('Sunlight\\Extend', 'call')));
+        $env->addFunction(new \Twig_SimpleFunction('extend_buffer', array('Sunlight\\Extend', 'buffer')));
+        $env->addFunction(new \Twig_SimpleFunction('extend_fetch', array('Sunlight\\Extend', 'fetch')));
+        $env->addFunction(new \Twig_SimpleFunction('dump', array(__CLASS__, 'dump'), array('needs_context' => true)));
     }
 
     /**
