@@ -136,6 +136,11 @@ abstract class WebRequestHandler
 
         Extend::reg('index.prepare', array($this, 'onIndexPrepare'));
         Extend::reg('index.ready', array($this, 'onIndexReady'));
+        Extend::call('index.request_handler.prepare', array(
+            'handler' => $this,
+            'path' => $path,
+            'segments' => $segments,
+        ));
     }
 
     /**
