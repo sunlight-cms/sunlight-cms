@@ -21,10 +21,17 @@ class TemplateLoader extends \Twig_Loader_Filesystem
     {
         $name = parent::normalizeName($name);
 
+        // bypass overrides if template name starts with a "!"
+        if (isset($name[0]) && $name[0] === '!') {
+            return substr($name, 1);
+        }
+
+        // check overrides
         if (isset($this->overrides[$name])) {
             return $this->overrides[$name];
         }
 
+        // use original name
         return $name;
     }
 }
