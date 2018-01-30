@@ -75,12 +75,29 @@ class TwigBridge
 
     protected static function addFunctions(\Twig_Environment $env)
     {
+        // link functions
         $env->addFunction(new \Twig_SimpleFunction('link', '_link'));
+        $env->addFunction(new \Twig_SimpleFunction('linkFile', '_linkFile'));
+        $env->addFunction(new \Twig_SimpleFunction('linkPage', '_linkPage'));
+        $env->addFunction(new \Twig_SimpleFunction('linkRoot', '_linkRoot'));
+        $env->addFunction(new \Twig_SimpleFunction('linkArticle', '_linkArticle'));
+        $env->addFunction(new \Twig_SimpleFunction('linkTopic', '_linkTopic'));
+        $env->addFunction(new \Twig_SimpleFunction('linkModule', function ($module, $params = null, $absolute = false) {
+            return _linkModule($module, $params, false, $absolute);
+        }));
+
+        // localization
         $env->addFunction(new \Twig_SimpleFunction('lang', '_lang'));
+
+        // hcm
         $env->addFunction(new \Twig_SimpleFunction('hcm', '_runHCM', array('is_variadic' => true, 'is_safe' => array('html'))));
+
+        // extend
         $env->addFunction(new \Twig_SimpleFunction('extend_call', array('Sunlight\\Extend', 'call')));
         $env->addFunction(new \Twig_SimpleFunction('extend_buffer', array('Sunlight\\Extend', 'buffer')));
         $env->addFunction(new \Twig_SimpleFunction('extend_fetch', array('Sunlight\\Extend', 'fetch')));
+
+        // debugging
         $env->addFunction(new \Twig_SimpleFunction('dump', array(__CLASS__, 'dump'), array('needs_context' => true)));
     }
 
