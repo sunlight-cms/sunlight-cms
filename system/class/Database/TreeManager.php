@@ -176,9 +176,6 @@ class TreeManager
      */
     public function refreshOnParentUpdate($nodeId, $newParent, $oldParent)
     {
-        if ($oldParent === false) {
-            $oldParent = $this->getParent($nodeId);
-        }
         if ($oldParent != $newParent) {
             $this->doRefresh($nodeId);
             $this->doRefreshDepth($oldParent);
@@ -255,9 +252,9 @@ class TreeManager
 
         if ($getChangesetMap) {
             return $changesetMap;
-        } else {
-            DB::updateSetMulti($this->table, $this->idColumn, $changesetMap);
         }
+
+        DB::updateSetMulti($this->table, $this->idColumn, $changesetMap);
     }
 
     /**

@@ -135,9 +135,11 @@ class PageManipulator
             null,
             function ($baseSlug, $currentPage) {
                 if (!$currentPage['slug_abs']) {
-                    $slug = $baseSlug !== null
-                        ? "{$baseSlug}/" . PageManipulator::getBaseSlug($currentPage['slug'])
-                        : $currentPage['slug'];
+                    $slug = PageManipulator::getBaseSlug($currentPage['slug']);
+
+                    if ($baseSlug !== null) {
+                        $slug = "{$baseSlug}/{$slug}";
+                    }
 
                     if ($currentPage['slug'] !== $slug) {
                         return array('slug' => $slug);
