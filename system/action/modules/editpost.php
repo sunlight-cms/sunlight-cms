@@ -33,17 +33,17 @@ if ($query !== false) {
 
             switch ($query['type']) {
                 case _post_section_comment:
-                    $_index['backlink'] = _addGetToLink($url, "page=" . _resultPagingGetItemPage(_commentsperpage, _posts_table, "id>" . $query['id'] . " AND type=" . _post_section_comment . " AND xhome=-1 AND home=" . $query['home']), false) . "#post-" . $query['id'];
+                    $_index['backlink'] = _addParamsToUrl($url, "page=" . _resultPagingGetItemPage(_commentsperpage, _posts_table, "id>" . $query['id'] . " AND type=" . _post_section_comment . " AND xhome=-1 AND home=" . $query['home']), false) . "#post-" . $query['id'];
                     break;
                 case _post_article_comment:
-                    $_index['backlink'] = _addGetToLink($url, "page=" . _resultPagingGetItemPage(_commentsperpage, _posts_table, "id>" . $query['id'] . " AND type=" . _post_article_comment . " AND xhome=-1 AND home=" . $query['home']), false) . "#post-" . $query['id'];
+                    $_index['backlink'] = _addParamsToUrl($url, "page=" . _resultPagingGetItemPage(_commentsperpage, _posts_table, "id>" . $query['id'] . " AND type=" . _post_article_comment . " AND xhome=-1 AND home=" . $query['home']), false) . "#post-" . $query['id'];
                     break;
                 case _post_book_entry:
                     $postsperpage = DB::queryRow("SELECT var2 FROM " . _root_table . " WHERE id=" . $query['home']);
                     if ($postsperpage['var2'] === null) {
                         $postsperpage['var2'] = _commentsperpage;
                     }
-                    $_index['backlink'] = _addGetToLink($url, "page=" . _resultPagingGetItemPage($postsperpage['var2'], _posts_table, "id>" . $query['id'] . " AND type=" . _post_book_entry . " AND xhome=-1 AND home=" . $query['home']), false) . "#post-" . $query['id'];
+                    $_index['backlink'] = _addParamsToUrl($url, "page=" . _resultPagingGetItemPage($postsperpage['var2'], _posts_table, "id>" . $query['id'] . " AND type=" . _post_book_entry . " AND xhome=-1 AND home=" . $query['home']), false) . "#post-" . $query['id'];
                     break;
                 case _post_shoutbox_entry:
                     $bbcode = false;
@@ -56,12 +56,12 @@ if ($query !== false) {
                             $_index['backlink'] = _linkRoot($query['home'], $query['root_slug']);
                         }
                     } else {
-                        $_index['backlink'] = _addGetToLink($url, "page=" . _resultPagingGetItemPage(_commentsperpage, _posts_table, "id<" . $query['id'] . " AND type=" . _post_forum_topic . " AND xhome=" . $query['xhome'] . " AND home=" . $query['home']), false) . "#post-" . $query['id'];
+                        $_index['backlink'] = _addParamsToUrl($url, "page=" . _resultPagingGetItemPage(_commentsperpage, _posts_table, "id<" . $query['id'] . " AND type=" . _post_forum_topic . " AND xhome=" . $query['xhome'] . " AND home=" . $query['home']), false) . "#post-" . $query['id'];
                     }
                     break;
 
                 case _post_pm:
-                    $_index['backlink'] = _addGetToLink($url, 'page=' . _resultPagingGetItemPage(_messagesperpage, _posts_table, 'id<' . $query['id'] . ' AND type=' . _post_pm . ' AND home=' . $query['home']), false) . '#post-' . $query['id'];
+                    $_index['backlink'] = _addParamsToUrl($url, 'page=' . _resultPagingGetItemPage(_messagesperpage, _posts_table, 'id<' . $query['id'] . ' AND type=' . _post_pm . ' AND home=' . $query['home']), false) . '#post-' . $query['id'];
                     break;
 
                 case _post_plugin:

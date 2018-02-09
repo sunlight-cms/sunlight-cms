@@ -49,7 +49,7 @@ $_index['url'] = _linkTopic($id, $_page['slug']);
 // priprava zpetneho odkazu
 $_index['backlink'] = _linkRoot($_page['id'], $_page['slug']);
 if (!$query['sticky']) {
-    $_index['backlink'] = _addGetToLink($_index['backlink'], 'page=' . _resultPagingGetItemPage($_page['var1'], _posts_table, "bumptime>" . $query['bumptime'] . " AND xhome=-1 AND type=" . _post_forum_topic . " AND home=" . $_page['id']), false);
+    $_index['backlink'] = _addParamsToUrl($_index['backlink'], 'page=' . _resultPagingGetItemPage($_page['var1'], _posts_table, "bumptime>" . $query['bumptime'] . " AND xhome=-1 AND type=" . _post_forum_topic . " AND home=" . $_page['id']), false);
 }
 
 // sprava tematu

@@ -31,27 +31,27 @@ function _lang($key, array $replacements = null, $fallback = null)
 /**
  * Vlozeni GET promenne do odkazu
  *
- * @param string $link   adresa
+ * @param string $url    adresa
  * @param string $params cisty query retezec
  * @param bool   $entity pouzit &amp; pro oddeleni 1/0
  * @return string
  */
-function _addGetToLink($link, $params, $entity = true)
+function _addParamsToUrl($url, $params, $entity = true)
 {
     // oddelovaci znak
     if ($params !== '') {
-        if (strpos($link, '?') === false) {
-            $link .= '?';
+        if (strpos($url, '?') === false) {
+            $url .= '?';
         } else {
             if ($entity) {
-                $link .= '&amp;';
+                $url .= '&amp;';
             } else {
-                $link .= '&';
+                $url .= '&';
             }
         }
     }
 
-    return $link . ($entity ? _e($params) : $params);
+    return $url . ($entity ? _e($params) : $params);
 }
 
 /**
@@ -60,7 +60,7 @@ function _addGetToLink($link, $params, $entity = true)
  * @param string $url
  * @return string
  */
-function _addSchemeToURL($url)
+function _addSchemeToUrl($url)
 {
     if (mb_substr($url, 0, 7) !== 'http://' && mb_substr($url, 0, 8) !== 'https://' && $url[0] !== '/' && mb_substr($url, 0, 2) !== './') {
         $url = 'http://' . $url;
@@ -1222,14 +1222,14 @@ function _headAssets(array $assets)
     // css
     $html .= $assets['css_before'];
     foreach ($assets['css'] as $item) {
-        $html .= "\n<link rel=\"stylesheet\" href=\"" . _addGetToLink($item, $cacheParam) . "\" type=\"text/css\">";
+        $html .= "\n<link rel=\"stylesheet\" href=\"" . _addParamsToUrl($item, $cacheParam) . "\" type=\"text/css\">";
     }
     $html .= $assets['css_after'];
 
     // javascript
     $html .= $assets['js_before'];
     foreach ($assets['js'] as $item) {
-        $html .= "\n<script src=\"" . _addGetToLink($item, $cacheParam) . "\"></script>";
+        $html .= "\n<script src=\"" . _addParamsToUrl($item, $cacheParam) . "\"></script>";
     }
     $html .= $assets['js_after'];
 
@@ -2712,7 +2712,7 @@ function _linkModule($module, $params = null, $entity = true, $absolute = false)
 function _linkRSS($id, $type, $entity = true)
 {
     if (_rss) {
-        return _addGetToLink(_root . 'system/script/rss.php', 'tp=' . $type . '&id=' . $id, $entity);
+        return _addParamsToUrl(_root . 'system/script/rss.php', 'tp=' . $type . '&id=' . $id, $entity);
     } else {
         return '';
     }
@@ -3300,7 +3300,7 @@ function _parseBBCode_processTag($tag, $arg = '', $buffer = null)
         case 'url':
             if ($buffer !== '') {
                 $url = trim($arg !== '' ? $arg : $buffer);
-                $url = _isSafeUrl($url) ? _addSchemeToURL($url) : '#';
+                $url = _isSafeUrl($url) ? _addSchemeToUrl($url) : '#';
 
                 return '<a href="' . $url . '" rel="nofollow" target="_blank">' . $buffer . '</a>';
             }
@@ -3336,7 +3336,7 @@ function _parseBBCode_processTag($tag, $arg = '', $buffer = null)
         case 'img':
             $buffer = trim($buffer);
             if ($buffer !== '' && _isSafeUrl($buffer)) {
-                return '<img src="' . _addSchemeToURL($buffer) . '" alt="img" class="bbcode-img">';
+                return '<img src="' . _addSchemeToUrl($buffer) . '" alt="img" class="bbcode-img">';
             }
             break;
 
@@ -4127,7 +4127,7 @@ function _userLoginForm($title = false, $required = false, $return = null, $embe
             $action = null;
         }
         if (!empty($return)) {
-            $action = _addGetToLink($action, '_return=' . rawurlencode($return), false);
+            $action = _addParamsToUrl($action, '_return=' . rawurlencode($return), false);
         }
 
         // adresa formulare
@@ -5330,7 +5330,7 @@ function _xsrfProtect()
  */
 function _xsrfLink($url, $entity = true)
 {
-    return _addGetToLink($url, '_security_token=' . rawurlencode(_xsrfToken()), $entity);
+    return _addParamsToUrl($url, '_security_token=' . rawurlencode(_xsrfToken()), $entity);
 }
 
 /**

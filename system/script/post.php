@@ -228,10 +228,10 @@ if ($posttype != _post_shoutbox_entry) {
         $_SESSION['post_form_subject'] = $subject;
         $_SESSION['post_form_text'] = $text;
 
-        $returnUrl = _addGetToLink($returnUrl, 'replyto=' . $xhome, false) . '&addpost';
+        $returnUrl = _addParamsToUrl($returnUrl, 'replyto=' . $xhome, false) . '&addpost';
     }
 
-    $returnUrl = _addGetToLink(
+    $returnUrl = _addParamsToUrl(
         $returnUrl,
         "r=" . $return
             . (($posttype == _post_forum_topic) ? '&autolast' : '')

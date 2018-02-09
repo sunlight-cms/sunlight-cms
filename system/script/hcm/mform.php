@@ -79,4 +79,4 @@ if (_xsrfCheck()) {
 }
 
 // presmerovani zpet
-_returnHeader(_addGetToLink(_returnUrl(), "hcm_mr_" . $fid . "=" . $return, false) . "#hcm_mform_" . $fid);
+_returnHeader(_addParamsToUrl(_returnUrl(), "hcm_mr_" . $fid . "=" . $return, false) . "#hcm_mform_" . $fid);

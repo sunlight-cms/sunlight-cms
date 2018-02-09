@@ -44,7 +44,7 @@ if (
         $_url->remove('p');
     }
 
-    $_index['redirect_to'] = _addGetToLink(
+    $_index['redirect_to'] = _addParamsToUrl(
         _linkRoot($_page['id'], $_page['slug'], null, true),
         $_url->getQueryString(),
         false

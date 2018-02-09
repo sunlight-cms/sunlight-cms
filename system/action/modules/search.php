@@ -163,7 +163,7 @@ if ($search_query != '') {
 
                 // pridani do vysledku
                 $results[] = array(
-                    (isset($pagenum) ? _addGetToLink($link, 'page=' . $pagenum) : $link) . ($post_anchor ? '#post-' . $r['id'] : ''),
+                    (isset($pagenum) ? _addParamsToUrl($link, 'page=' . $pagenum) : $link) . ($post_anchor ? '#post-' . $r['id'] : ''),
                     $title,
                     _cutText(strip_tags(_parsePost($r['text'])), 255),
                     $infos
@@ -190,7 +190,7 @@ if ($search_query != '') {
             // vykonani a nacteni vysledku
             $q = DB::query($sql . ' LIMIT 100');
             while ($r = DB::row($q)) {
-                $link = _addGetToLink(_linkRoot($r['home'], $r['slug']), 'page=' . _resultPagingGetItemPage($r['var2'] ?: _galdefault_per_page, _images_table, "ord<" . $r['ord'] . " AND home=" . $r['home']));
+                $link = _addParamsToUrl(_linkRoot($r['home'], $r['slug']), 'page=' . _resultPagingGetItemPage($r['var2'] ?: _galdefault_per_page, _images_table, "ord<" . $r['ord'] . " AND home=" . $r['home']));
                 $results[] = array(
                     $link,
                     $r['gal_title'],

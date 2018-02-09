@@ -341,7 +341,7 @@ class CommentService
 
         } else {
             if (!$locked) {
-                $form_output .= "<a class='button' href='" . _addGetToLink($url_html, "addpost&page=" . $paging['current']) . "#post-form'><img class='icon' src='" . _templateImage('icons/bubble.png') . "' alt='post'>" . $addlink . "</a>";
+                $form_output .= "<a class='button' href='" . _addParamsToUrl($url_html, "addpost&page=" . $paging['current']) . "#post-form'><img class='icon' src='" . _templateImage('icons/bubble.png') . "' alt='post'>" . $addlink . "</a>";
             } else {
                 $form_output .= "<img src='" . _templateImage("icons/lock.png") . "' alt='stop' class='icon'><strong>" . _lang('posts.locked' . $locked_textid) . "</strong>";
             }
@@ -506,9 +506,9 @@ class CommentService
                     if ($tpages_num > 1) {
                         $tpages .= '<span class=\'topic-pages\'>';
                         for ($i = 1; $i <= 3 && $i <= $tpages_num; ++$i) {
-                            $tpages .= "<a href='" . _addGetToLink(_linkTopic($item['id'], $forum_slug), 'page=' . $i) . "#posts'>" . $i . '</a>';
+                            $tpages .= "<a href='" . _addParamsToUrl(_linkTopic($item['id'], $forum_slug), 'page=' . $i) . "#posts'>" . $i . '</a>';
                         }
-                        if ($tpages_num > 3) $tpages .= "<a href='" . _addGetToLink(_linkTopic($item['id'], $forum_slug), 'page=' . $tpages_num) . "'>" . $tpages_num . ' &rarr;</a>';
+                        if ($tpages_num > 3) $tpages .= "<a href='" . _addParamsToUrl(_linkTopic($item['id'], $forum_slug), 'page=' . $tpages_num) . "'>" . $tpages_num . ' &rarr;</a>';
                         $tpages .= '</span>';
                     }
 
@@ -603,7 +603,7 @@ class CommentService
         $output .= _formOutput(
             array(
                 'name' => 'postform',
-                'action' => _addGetToLink(_link('system/script/post.php'), '_return=' . rawurlencode($vars['url']), false),
+                'action' => _addParamsToUrl(_link('system/script/post.php'), '_return=' . rawurlencode($vars['url']), false),
                 'submit_append' => ' ' . _getPostFormPreviewButton('postform', 'text'),
             ),
             $inputs
@@ -643,7 +643,7 @@ class CommentService
 
         // action links
         $actlinks = array();
-        if ($options['allow_reply']) $actlinks[] = "<a class='post-action-reply' href='" . _e(_addGetToLink($options['current_url'], "replyto=" . $post['id'], false)) . "#posts'>" . _lang('posts.reply') . "</a>";
+        if ($options['allow_reply']) $actlinks[] = "<a class='post-action-reply' href='" . _e(_addParamsToUrl($options['current_url'], "replyto=" . $post['id'], false)) . "#posts'>" . _lang('posts.reply') . "</a>";
         if ($postAccess) $actlinks[] = "<a class='post-action-edit' href='" . _linkModule('editpost', 'id=' . $post['id']) . "'>" . _lang('global.edit') . "</a>";
         $actlinks = array_merge($actlinks, $options['extra_actions']);
 
@@ -669,7 +669,7 @@ class CommentService
                     . $author
                     . " <span class='post-info'>(" . _formatTime($post['time'], 'post') . $options['extra_info'] . ")</span>"
                     . ($actlinks ? " <span class='post-actions'>" . implode(' ', $actlinks) . '</span>' : '')
-                    . ($options['post_link'] ? "<a class='post-postlink' href='" . _e(_addGetToLink($options['current_url'], 'page=' . $options['current_page'], false)) . "#post-" . $post['id'] . "'><span>#" . str_pad($post['id'], 6, '0', STR_PAD_LEFT) . "</span></a>" : '')
+                    . ($options['post_link'] ? "<a class='post-postlink' href='" . _e(_addParamsToUrl($options['current_url'], 'page=' . $options['current_page'], false)) . "#post-" . $post['id'] . "'><span>#" . str_pad($post['id'], 6, '0', STR_PAD_LEFT) . "</span></a>" : '')
                 . "</div>"
                 . "<div class='post-body" . (isset($avatar) ? ' post-body-withavatar' : '') . "'>"
                     . $avatar
