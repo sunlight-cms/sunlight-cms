@@ -32,7 +32,24 @@ class Url
      */
     protected function __construct(array $components)
     {
-        $this->components = $components;
+        $this->components = $components + array(
+            'scheme' => null,
+            'host' => null,
+            'port' => null,
+            'user' => null,
+            'pass' => null,
+            'path' => null,
+            'query' => array(),
+            'fragment' => null,
+        );
+    }
+
+    /**
+     * Create a blank instance
+     */
+    public static function create()
+    {
+        return new static(array());
     }
 
     /**
@@ -53,17 +70,6 @@ class Url
         if (isset($components['query'])) {
             parse_str($components['query'], $components['query']);
         }
-
-        $components += array(
-            'scheme' => null,
-            'host' => null,
-            'port' => null,
-            'user' => null,
-            'pass' => null,
-            'path' => null,
-            'query' => array(),
-            'fragment' => null,
-        );
 
         return new static($components);
     }
