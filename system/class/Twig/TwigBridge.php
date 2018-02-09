@@ -66,7 +66,6 @@ class TwigBridge
         $env->addGlobal('sl', array(
             'debug' => _debug,
             'root' => _root,
-            'url' => Url::current(),
             'logged_in' => _logged_in,
             'user' => Core::$userData,
             'group' => Core::$groupData,
@@ -77,13 +76,23 @@ class TwigBridge
     {
         // link functions
         $env->addFunction(new \Twig_SimpleFunction('link', '_link'));
-        $env->addFunction(new \Twig_SimpleFunction('linkFile', '_linkFile'));
-        $env->addFunction(new \Twig_SimpleFunction('linkPage', '_linkPage'));
-        $env->addFunction(new \Twig_SimpleFunction('linkRoot', '_linkRoot'));
-        $env->addFunction(new \Twig_SimpleFunction('linkArticle', '_linkArticle'));
-        $env->addFunction(new \Twig_SimpleFunction('linkTopic', '_linkTopic'));
-        $env->addFunction(new \Twig_SimpleFunction('linkModule', function ($module, $params = null, $absolute = false) {
+        $env->addFunction(new \Twig_SimpleFunction('link_file', '_linkFile'));
+        $env->addFunction(new \Twig_SimpleFunction('link_page', '_linkPage'));
+        $env->addFunction(new \Twig_SimpleFunction('link_root', '_linkRoot'));
+        $env->addFunction(new \Twig_SimpleFunction('link_article', '_linkArticle'));
+        $env->addFunction(new \Twig_SimpleFunction('link_topic', '_linkTopic'));
+        $env->addFunction(new \Twig_SimpleFunction('link_module', function ($module, $params = null, $absolute = false) {
             return _linkModule($module, $params, false, $absolute);
+        }));
+
+        // urls
+        $env->addFunction(new \Twig_SimpleFunction('url', function ($url = null) {
+            return $url === null ? Url::create() : Url::parse($url);
+        }));
+        $env->addFunction(new \Twig_SimpleFunction('url_current', array('Sunlight\\Util\\Url', 'current')));
+        $env->addFunction(new \Twig_SimpleFunction('url_base', array('Sunlight\\Util\\Url', 'base')));
+        $env->addFunction(new \Twig_SimpleFunction('url_add_params', function ($url, $params) {
+            return _addParamsToUrl($url, $params, false);
         }));
 
         // localization
@@ -96,6 +105,13 @@ class TwigBridge
         $env->addFunction(new \Twig_SimpleFunction('extend_call', array('Sunlight\\Extend', 'call')));
         $env->addFunction(new \Twig_SimpleFunction('extend_buffer', array('Sunlight\\Extend', 'buffer')));
         $env->addFunction(new \Twig_SimpleFunction('extend_fetch', array('Sunlight\\Extend', 'fetch')));
+
+        // forms
+        $env->addFunction(new \Twig_SimpleFunction('xsrf_protect', '_xsrfProtect', array('is_safe' => array('html'))));
+        $env->addFunction(new \Twig_SimpleFunction('xsrf_token', '_xsrfToken'));
+        $env->addFunction(new \Twig_SimpleFunction('xsrf_link', function ($url) {
+            return _xsrfLink($url, false);
+        }));
 
         // debugging
         $env->addFunction(new \Twig_SimpleFunction('dump', array(__CLASS__, 'dump'), array('needs_context' => true)));
