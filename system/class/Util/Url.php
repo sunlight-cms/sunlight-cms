@@ -121,7 +121,7 @@ class Url
      */
     public function __toString()
     {
-        return $this->generate(!empty($this->components['host']) && !empty($this->components['scheme']));
+        return $this->generate();
     }
 
     /**
@@ -131,9 +131,13 @@ class Url
      * @throws \LogicException if the URL could not be generated
      * @return string
      */
-    public function generate($absolute)
+    public function generate($absolute = null)
     {
         $output = '';
+
+        if ($absolute === null) {
+            $absolute = !empty($this->components['host']) && !empty($this->components['scheme']);
+        }
 
         if ($absolute) {
             if (empty($this->components['host']) || empty($this->components['scheme'])) {
