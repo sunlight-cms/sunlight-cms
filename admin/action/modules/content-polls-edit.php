@@ -190,7 +190,7 @@ if ($continue) {
   </tr>
 
   <tr><td></td>
-  <td><input type='submit' value='" . $submitcaption . "'>" . (!$new ? " <small>" . _lang('admin.content.form.thisid') . " " . $id . "</small> <span class='customsettings'><a class='button' href='" . _xsrfLink("index.php?p=content-polls&amp;del=" . $id) . "' onclick='return Sunlight.confirm();'><img src='images/icons/delete.png' class='icon' alt='del'> " . _lang('global.delete') . "</a>" : '') . "</span></td>
+  <td><input type='submit' value='" . $submitcaption . "' accesskey='s'>" . (!$new ? " <small>" . _lang('admin.content.form.thisid') . " " . $id . "</small> <span class='customsettings'><a class='button' href='" . _xsrfLink("index.php?p=content-polls&amp;del=" . $id) . "' onclick='return Sunlight.confirm();'><img src='images/icons/delete.png' class='icon' alt='del'> " . _lang('global.delete') . "</a>" : '') . "</span></td>
   </tr>
 
   </table>

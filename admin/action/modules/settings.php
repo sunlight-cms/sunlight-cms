@@ -282,7 +282,7 @@ $output .= ($saved ? _msg(_msg_ok, _lang('admin.settings.saved')) : '') . '
 <form action="index.php?p=settings" method="post">
 
 <div id="settingsnav">
-<input type="submit"  class="button bigger" value="' . _lang('global.savechanges') . '">
+<input type="submit"  class="button bigger" value="' . _lang('global.savechanges') . '" accesskey="s">
 <ul>
 ';
 

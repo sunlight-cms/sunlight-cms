@@ -437,7 +437,7 @@ if ($continue) {
         $output .= "
 </div>
 <div class='cleaner'></div>
-<input type='submit' value='" . _lang('admin.content.manageimgs.savechanges') . "' class='gallery-savebutton'>";
+<input type='submit' value='" . _lang('admin.content.manageimgs.savechanges') . "' class='gallery-savebutton' accesskey='s'>";
     } else {
         $output .= '<p>' . _lang('global.nokit') . '</p>';
     }
