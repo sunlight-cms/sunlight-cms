@@ -101,7 +101,7 @@ foreach ($boxes as $template_idt => $template_boxes) {
         <tfoot>
             <tr>
                 <td colspan="5">
-                    <button name="action" value="save_ord"><?php echo _lang('global.savechanges') ?></button>
+                    <button name="action" value="save_ord" accesskey="s"><?php echo _lang('global.savechanges') ?></button>
                     <a class="button right big" href="index.php?p=content-boxes-edit&amp;template=<?php echo _e(rawurlencode($template->getId())) ?>"><img class="icon" src="images/icons/new.png" alt="new"><?php echo _lang('admin.content.boxes.new.for_template') ?></a>
                 </td>
             </tr>

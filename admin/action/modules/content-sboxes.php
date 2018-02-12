@@ -157,7 +157,7 @@ $output .= "
 <form class='cform' action='index.php?p=content-sboxes' method='post'>
 <input type='hidden' name='action' value='2'>
 
-<input type='submit' value='" . _lang('global.savechanges') . "'>
+<input type='submit' value='" . _lang('global.savechanges') . "' accesskey='s'>
 <div class='hr'><hr></div>
 ";
 

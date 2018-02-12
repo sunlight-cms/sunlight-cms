@@ -294,7 +294,7 @@ class PageLister
         $output .= "</tbody>\n</table>\n";
         if ($options['sortable']) {
             $output .= "<p class=\"separated\">
-                <input type=\"submit\" value=\"" . _lang('global.savechanges') . "\">
+                <input type=\"submit\" value=\"" . _lang('global.savechanges') . "\" accesskey=\"s\">
                 <input type=\"submit\" name=\"reset\" value=\"" . _lang('global.reset') . "\">
             </p>";
 

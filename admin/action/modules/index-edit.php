@@ -45,7 +45,7 @@ $output .= "
 
 <tr>
     <td></td>
-    <td><input type='submit' class='button bigger' value='" . _lang('global.savechanges') . "'></td>
+    <td><input type='submit' class='button bigger' value='" . _lang('global.savechanges') . "' accesskey='s'></td>
 </tr>
 
 </table>

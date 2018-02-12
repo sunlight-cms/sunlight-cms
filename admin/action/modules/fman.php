@@ -594,7 +594,7 @@ if ($continue) {
 
   <tr>
   <td></td>
-  <td><input type='submit' value='" . _lang($action_submit) . "'> <a href='" . $url . "'>" . _lang('global.cancel') . "</a></td>
+  <td><input type='submit' value='" . _lang($action_submit) . "' accesskey='s'> <a href='" . $url . "'>" . _lang('global.cancel') . "</a></td>
   </tr>
 
 </table>

@@ -44,7 +44,7 @@ $output .= PageLister::render(array(
 
 $output .= "
     <p>
-        <input type='submit' value='" . _lang('global.save') . "'>
+        <input type='submit' value='" . _lang('global.save') . "' accesskey='s'>
         <input type='reset' value='" . _lang('global.reset') . "' onclick='return Sunlight.confirm();'>
     </p>
 " . _xsrfProtect() . "</form>";
