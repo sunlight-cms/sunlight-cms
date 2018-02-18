@@ -11,7 +11,9 @@ class ComposerBridge
     {
         static::initMinimalCore();
 
-        Core::$cache->clear();
+        if (Core::$cache) {
+            Core::$cache->clear();
+        }
     }
 
     public static function denyAccessToVendorDirectory()
@@ -22,8 +24,11 @@ class ComposerBridge
     public static function initMinimalCore()
     {
         if (!Core::isReady()) {
-            Core::init(__DIR__ . '/../../../', array(
+            $root = __DIR__ . '/../../../';
+
+            Core::init($root, array(
                 'minimal_mode' => true,
+                'skip_components' => !is_dir($root . 'vendor'),
                 'config_file' => false,
             ));
         }
