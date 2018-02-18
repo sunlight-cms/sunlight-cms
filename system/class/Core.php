@@ -99,7 +99,8 @@ class Core
      * Supported $options keys:
      * ------------------------
      * config_file          path to the configuration file, null (= default) or false (= skip)
-     * minimal_mode         stop after initializing base components and environment (= no plugins, db, settings, session, etc.)
+     * minimal_mode         stop after initializing base components and environment (= no plugins, db, settings, session, etc.) 1/0
+     * skip_components      do not initalize any components 1/0
      * session_enabled      initialize session 1/0
      * session_regenerate   force new session ID 1/0
      * allow_cron_auto      allow running cron tasks automatically 1/0
@@ -116,32 +117,52 @@ class Core
         }
 
         static::$start = microtime(true);
+        $initComponents = empty($options['skip_components']);
 
-        // first initialization phase
-        static::initBaseComponents();
+        // functions
+        require __DIR__ . '/../functions.php';
+
+        // base components
+        if ($initComponents) {
+            static::initBaseComponents();
+        }
+
+        // configuration
         static::initConfiguration($root, $options);
-        static::initComponents($options);
+
+        // constants
+        require __DIR__ . '/../constants.php';
+
+        // components
+        if ($initComponents) {
+            static::initComponents($options);
+        }
+
+        // environment
         static::initEnvironment($options);
 
+        // stop when minimal mode is enabled
         if ($options['minimal_mode']) {
-            static::finalize();
+            static::$ready = true;
 
             return;
         }
 
+        // first init phase
         static::initDatabase($options);
         static::initPlugins();
         static::initSettings();
 
-        // check
-        static::initCheck();
+        // check system phase
+        static::checkSystemState();
 
-        // second initialization phase
+        // second init phase
         static::initSession();
         static::initLocalization();
 
         // finalize
-        static::finalize();
+        static::$ready = true;
+        Extend::call('core.ready');
 
         // cron tasks
         Extend::reg('cron.maintenance', array(__CLASS__, 'doMaintenance'));
@@ -272,9 +293,6 @@ class Core
 
         // event emitter
         static::$eventEmitter = new EventEmitter();
-
-        // functions
-        require __DIR__ . '/../functions.php';
     }
 
     /**
@@ -312,9 +330,6 @@ class Core
 
         // localization
         static::$lang = new LocalizationDictionary();
-
-        // constants
-        require __DIR__ . '/../constants.php';
     }
 
     /**
@@ -390,9 +405,9 @@ class Core
     }
 
     /**
-     * Check system state after first initialization phase
+     * Check system state after initialization
      */
-    protected static function initCheck()
+    protected static function checkSystemState()
     {
         // check database version
         if (!defined('_dbversion') || Core::VERSION !== _dbversion) {
@@ -868,15 +883,6 @@ class Core
             fclose($cronLockFileHandle);
             $cronLockFileHandle = null;
         }
-    }
-
-    /**
-     * Finalize core intialization
-     */
-    protected static function finalize()
-    {
-        static::$ready = true;
-        Extend::call('core.ready');
     }
 
     /**
