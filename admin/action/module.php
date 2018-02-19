@@ -38,14 +38,14 @@ if (isset($admin_modules[$admin_current_module])) {
             'script' => &$script,
         ));
         Extend::call('admin.mod.init', $extend_args);
-        Extend::call('admin.mod.' . $admin_current_module . '.pre', $extend_args);
+        Extend::call('admin.mod.' . $admin_current_module . '.before', $extend_args);
 
         if ($script !== false && file_exists($script)) {
             require $script;
 
             $extend_args = Extend::args($output);
-            Extend::call('admin.mod.' . $admin_current_module . '.post', $extend_args);
-            Extend::call('admin.mod.post', $extend_args);
+            Extend::call('admin.mod.' . $admin_current_module . '.after', $extend_args);
+            Extend::call('admin.mod.after', $extend_args);
         } else {
             $output .= _msg(_msg_warn, _lang('admin.moduleunavailable'));
         }

@@ -22,7 +22,7 @@ class SunlightSqlLogger implements SQLLogger
         $sql = $this->currentQuery;
         $this->currentQuery = null;
 
-        Extend::call('db.query.post', array(
+        Extend::call('db.query.after', array(
             'sql' => $sql,
             'result' => 'unknown',
             'exception' => null,

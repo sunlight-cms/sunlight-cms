@@ -9,7 +9,7 @@ if (!defined('_root')) {
 
 // udalost pred
 $continue = true;
-Extend::call('index.not_found.pre', array(
+Extend::call('index.not_found.before', array(
     'index' => &$_index,
     'continue' => &$continue,
 ));

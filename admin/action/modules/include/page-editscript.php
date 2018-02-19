@@ -377,7 +377,7 @@ if (!empty($_POST)) {
 
     // vlozeni / ulozeni
     $action = ($new ? 'new' : 'edit');
-    Extend::call('admin.root.' . $action . '.pre', array(
+    Extend::call('admin.root.' . $action . '.before', array(
         'id' => $id,
         'page' => $new ? null : $query,
         'changeset' => &$changeset,

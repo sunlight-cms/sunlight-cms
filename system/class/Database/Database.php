@@ -118,7 +118,7 @@ class Database
         }
 
         if ($log) {
-            Extend::call('db.query.post', array(
+            Extend::call('db.query.after', array(
                 'sql' => $sql,
                 'result' => $result,
                 'exception' => $e,

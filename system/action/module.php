@@ -37,14 +37,14 @@ if (preg_match('/^[a-zA-Z_\-.]+$/', $_index['slug'])) {
 
         $extend_args = Extend::args($output, array('id' => $_index['slug'], 'script' => &$script));
 
-        Extend::call('mod.all.pre', $extend_args);
-        Extend::call('mod.' . $_index['slug'] . '.pre', $extend_args);
+        Extend::call('mod.all.before', $extend_args);
+        Extend::call('mod.' . $_index['slug'] . '.before', $extend_args);
 
         $extend_args = Extend::args($output, array('id' => $_index['slug']));
 
         require $script;
         
-        Extend::call('mod.' . $_index['slug'] . '.post', $extend_args);
-        Extend::call('mod.all.post', $extend_args);
+        Extend::call('mod.' . $_index['slug'] . '.after', $extend_args);
+        Extend::call('mod.all.after', $extend_args);
     }
 }

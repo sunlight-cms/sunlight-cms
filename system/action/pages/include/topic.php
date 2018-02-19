@@ -31,7 +31,7 @@ $_index['crumbs'][] = array(
 // extend
 $continue = true;
 
-Extend::call('topic.pre', Extend::args($output, array(
+Extend::call('topic.before', Extend::args($output, array(
     'topic' => &$query,
     'continue' => &$continue,
     'page' => $_page,

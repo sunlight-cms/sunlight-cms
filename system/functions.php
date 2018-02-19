@@ -1463,7 +1463,7 @@ function _captchaCheck()
         }
     }
 
-    Extend::call('captcha.check.post', array('output' => &$result));
+    Extend::call('captcha.check.after', array('output' => &$result));
 
     return $result;
 }
@@ -4255,7 +4255,7 @@ function _userLoginSubmit($username, $plainPassword, $persistent = false)
 
     // udalost
     $extend_result = null;
-    Extend::call('user.login.pre', array(
+    Extend::call('user.login.before', array(
         'username' => $username,
         'password' => $plainPassword,
         'persistent' => $persistent,

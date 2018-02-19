@@ -133,12 +133,12 @@ if ($_page['type'] == _page_plugin) {
 // vykresleni stranky
 $extend_args = Extend::args($output, array('page' => &$_page, 'script' => &$script));
 
-Extend::call('page.all.pre', $extend_args);
-Extend::call('page.' . $type_name . '.pre', $extend_args);
+Extend::call('page.all.before', $extend_args);
+Extend::call('page.' . $type_name . '.before', $extend_args);
 
 $extend_args = Extend::args($output, array('page' => &$_page));
 
 require $script;
 
-Extend::call('page.' . $type_name . '.post', $extend_args);
-Extend::call('page.all.post', $extend_args);
+Extend::call('page.' . $type_name . '.after', $extend_args);
+Extend::call('page.all.after', $extend_args);

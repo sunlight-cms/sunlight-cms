@@ -8,7 +8,7 @@
     "class": "DevkitPlugin",
     "events": [
         ["db.query", "$this::onDbQuery"],
-        ["db.query.post", "$this::onDbQueryPost"],
+        ["db.query.after", "$this::onDbQueryPost"],
         ["localization.missing", "$this::onMissingLocalization"],
         ["mail.send", "$this::onMail"]
     ],

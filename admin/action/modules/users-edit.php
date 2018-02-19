@@ -193,7 +193,7 @@ if ($continue) {
             }
 
             $action = ($id === null ? 'new' : 'edit');
-            Extend::call('admin.user.' . $action . '.pre', array(
+            Extend::call('admin.user.' . $action . '.before', array(
                 'id' => $id,
                 'user' => $id === null ? null : $query,
                 'changeset' => &$changeset,

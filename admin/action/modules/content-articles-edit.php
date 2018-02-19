@@ -212,7 +212,7 @@ if (isset($_POST['title'])) {
             $action = 'edit';
         }
 
-        Extend::call('admin.article.' . $action . '.pre', array(
+        Extend::call('admin.article.' . $action . '.before', array(
             'id' => $id,
             'article' => $new ? null : $query,
             'changeset' => &$changeset,
