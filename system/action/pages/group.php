@@ -21,15 +21,23 @@ Extend::call('page.group.content.after', $extend_args);
 $items = DB::query("SELECT id,title,slug,type,type_idt,perex,var1 FROM " . _root_table . " WHERE node_parent=" . $id . " AND visible=1 ORDER BY ord");
 if (DB::size($items) != 0) {
     while ($item = DB::row($items)) {
+        $extendArgs = Extend::args($output, array('item' => &$item));
+
         $output .= "<div class='list-item'>\n";
+
+        Extend::call('page.group.item.start', $extendArgs);
 
         // titulek
         $output .= "<h2 class='list-title'><a href='" . _linkRoot($item['id'], $item['slug']) . "'" . (($item['type'] == _page_link && $item['var1'] == 1) ? " target='_blank'" : '') . ">" . $item['title'] . "</a></h2>\n";
+
+        Extend::call('page.group.item.title.after', $extendArgs);
 
         // perex
         if ($item['perex'] != "") {
             $output .= "<p class='list-perex'>" . $item['perex'] . "</p>\n";
         }
+
+        Extend::call('page.group.item.perex.after', $extendArgs);
 
         // informace
         if ($_page['var1'] == 1) {
@@ -88,6 +96,8 @@ if (DB::size($items) != 0) {
             Extend::call('page.group.item_infos', array('item' => $item, 'infos' => &$iteminfos));
 
             $output .= _renderInfos($iteminfos);
+
+            Extend::call('page.group.item.end', $extendArgs);
         }
 
         $output .= "</div>\n";

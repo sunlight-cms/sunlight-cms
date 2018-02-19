@@ -55,13 +55,15 @@ class Extend
     /**
      * Create normalized event arguments
      *
-     * @param string &$output output variable reference
-     * @param array  $args    array with additional arguments
+     * @param string     &$output output variable reference
+     * @param array|null $args    array with additional arguments
      * @return array
      */
-    public static function args(&$output, $args = array())
+    public static function args(&$output, array $args = array())
     {
-        return array('output' => &$output) + $args;
+        $args['output'] = &$output;
+
+        return $args;
     }
 
     /**
