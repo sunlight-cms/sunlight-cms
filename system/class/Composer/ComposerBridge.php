@@ -28,7 +28,7 @@ class ComposerBridge
 
             Core::init($root, array(
                 'minimal_mode' => true,
-                'skip_components' => !is_dir($root . 'vendor'),
+                'skip_components' => !is_dir($root . 'vendor/composer'),
                 'config_file' => false,
             ));
         }
