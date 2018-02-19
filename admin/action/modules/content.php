@@ -13,7 +13,7 @@ if (!defined('_root')) {
 $message = "";
 
 // vypis stranek
-$ppages = PageManager::getPluginTypes();
+$plugin_types = PageManager::getPluginTypes();
 $type_array = PageManager::getTypes();
 
 if (_priv_adminsection || _priv_admincategory || _priv_adminbook || _priv_adminseparator || _priv_admingallery || _priv_adminlink || _priv_admingroup || _priv_adminforum || _priv_adminpluginpage) {
@@ -25,20 +25,20 @@ if (_priv_adminsection || _priv_admincategory || _priv_adminbook || _priv_admins
         switch ($ac) {
             // vytvoreni stranky
             case 'new':
-                $is_ppage = false;
+                $is_plugin_page = false;
                 if (is_numeric(_post('type'))) {
                     $type = (int) _post('type');
                 } else {
                     $type = _page_plugin;
                     $type_idt = strval(_post('type'));
-                    if (!isset($ppages[$type_idt])) {
+                    if (!isset($plugin_types[$type_idt])) {
                         break;
                     }
-                    $is_ppage = true;
+                    $is_plugin_page = true;
                 }
                 if (isset($type_array[$type])) {
                     if (_userHasPriv('admin' . $type_array[$type])) {
-                        $admin_redirect_to = 'index.php?p=content-edit' . $type_array[$type] . ($is_ppage ? '&idt=' . rawurlencode($type_idt) : '');
+                        $admin_redirect_to = 'index.php?p=content-edit' . $type_array[$type] . ($is_plugin_page ? '&idt=' . rawurlencode($type_idt) : '');
 
                         return;
                     }
@@ -59,10 +59,10 @@ if (_priv_adminsection || _priv_admincategory || _priv_adminbook || _priv_admins
         }
 
         // seznam pluginovych typu stranek
-        if (_priv_adminpluginpage && !empty($ppages)) {
+        if (_priv_adminpluginpage && !empty($plugin_types)) {
             $create_list .= "<option value='' disabled>---</option>\n";
-            foreach($ppages as $ppage_idt => $ppage_label) {
-                $create_list .= "<option value='" . $ppage_idt . "'>" . $ppage_label . "</option>\n";
+            foreach($plugin_types as $plugin_type => $plugin_label) {
+                $create_list .= "<option value='" . $plugin_type . "'>" . $plugin_label . "</option>\n";
             }
         }
     }

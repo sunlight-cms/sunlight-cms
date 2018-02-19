@@ -22,7 +22,7 @@ class PageLister
     /** @var array|null */
     private static $pageTypes;
     /** @var array|null */
-    private static $ppageTypes;
+    private static $pluginTypes;
 
     /**
      * This is a static class
@@ -56,7 +56,7 @@ class PageLister
 
         // fetch types
         static::$pageTypes = PageManager::getTypes();
-        static::$ppageTypes = PageManager::getPluginTypes();
+        static::$pluginTypes = PageManager::getPluginTypes();
 
         // setup
         static::setup();
@@ -452,11 +452,11 @@ class PageLister
         }
         $class .= 'page-' . static::$pageTypes[$page['type']];
 
-        if ($page['type'] == _page_plugin && isset(static::$ppageTypes[$page['type_idt']])) {
+        if ($page['type'] == _page_plugin && isset(static::$pluginTypes[$page['type_idt']])) {
             $class .= ' page-'
                 . $typeName
                 . '-'
-                . static::$ppageTypes[$page['type_idt']];
+                . static::$pluginTypes[$page['type_idt']];
         }
 
         if (!$isAccessible) {
@@ -500,8 +500,8 @@ class PageLister
         if ($options['type']) {
             if ($isSeparator) {
                 $typeLabel = '';
-            } elseif ($page['type'] == _page_plugin && isset(static::$ppageTypes[$page['type_idt']])) {
-                $typeLabel = static::$ppageTypes[$page['type_idt']];
+            } elseif ($page['type'] == _page_plugin && isset(static::$pluginTypes[$page['type_idt']])) {
+                $typeLabel = static::$pluginTypes[$page['type_idt']];
             } else {
                 $typeLabel = _lang('page.type.' . static::$pageTypes[$page['type']]);
             }

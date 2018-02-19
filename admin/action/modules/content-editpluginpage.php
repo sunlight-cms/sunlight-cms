@@ -18,15 +18,15 @@ if (!$continue) {
 }
 
 // nacist typy pluginu
-$ppages = PageManager::getPluginTypes();
+$plugin_types = PageManager::getPluginTypes();
 
 // overit dostupnost pluginu
-if (!isset($ppages[$type_idt])) {
+if (!isset($plugin_types[$type_idt])) {
     $output .= _msg(_msg_err, sprintf(_lang('plugin.error'), $type_idt));
 
     return;
 }
-$ppage = $ppages[$type_idt];
+$plugin_type = $plugin_types[$type_idt];
 
 // promenne editscriptu
 $custom_settings = '';
