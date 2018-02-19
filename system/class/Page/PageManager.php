@@ -132,7 +132,7 @@ class PageManager
         
         if ($cache === null) {
             $cache = array();
-            Extend::call('ppage.reg', array('infos' => &$cache));
+            Extend::call('page.plugin.reg', array('infos' => &$cache));
         }
 
         return $cache;

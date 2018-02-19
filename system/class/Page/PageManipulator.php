@@ -306,7 +306,7 @@ class PageManipulator
                 $dependencies[] = DB::count(_posts_table, 'type=' . _post_forum_topic . ' AND home=' . DB::val($page['id'])) . " " . _lang('count.posts');
                 break;
             case _page_plugin:
-                Extend::call('ppage.' . $page['type_idt'] . '.delete.confirm', array(
+                Extend::call('page.plugin.' . $page['type_idt'] . '.delete.confirm', array(
                     'contents' => &$dependencies,
                     'page' => array(
                         'id' => $page['id'],
@@ -364,7 +364,7 @@ class PageManipulator
         // specialni pripad: plugin stranka
         if ($deleteDirect && $page['type'] == _page_plugin) {
             $handled = false;
-            Extend::call('ppage.' . $page['type_idt'] . '.delete.do', array(
+            Extend::call('page.plugin.' . $page['type_idt'] . '.delete.do', array(
                 'handled' => &$handled,
                 'page' => array(
                     'id' => $page['id'],

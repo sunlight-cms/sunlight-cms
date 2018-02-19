@@ -81,7 +81,7 @@ if (DB::size($items) != 0) {
 
                     // plugin stranka
                 case _page_plugin:
-                    Extend::call('ppage.' . $item['type_idt'] . '.group_infos', array('item' => $item, 'infos' => &$iteminfos));
+                    Extend::call('page.plugin.' . $item['type_idt'] . '.group_infos', array('item' => $item, 'infos' => &$iteminfos));
                     break;
             }
 
