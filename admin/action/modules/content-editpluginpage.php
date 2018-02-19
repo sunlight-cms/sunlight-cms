@@ -34,9 +34,11 @@ $custom_save_array = array();
 
 // udalost pripravy editace
 $script = null;
-Extend::call('ppage.' . $type_idt . '.edit', Extend::args($output, array(
+Extend::call('admin.root.plugin_page.' . $type_idt . '.edit', Extend::args($output, array(
     'page' => $query,
     'new' => $new,
+    'custom_settings' => &$custom_settings,
+    'custom_save_array' => &$custom_save_array,
 )));
 
 // vlozeni skriptu
