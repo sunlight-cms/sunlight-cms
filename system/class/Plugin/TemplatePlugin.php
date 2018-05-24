@@ -18,6 +18,7 @@ class TemplatePlugin extends Plugin
         'options' => array(
             'css' => array('type' => 'array', 'default' => array('template_style' => 'style.css'), 'normalizer' => array('Sunlight\Plugin\PluginOptionNormalizer', 'normalizeWebPathArray')),
             'js' => array('type' => 'array', 'default' => array(), 'normalizer' => array('Sunlight\Plugin\PluginOptionNormalizer', 'normalizeWebPathArray')),
+            'responsive' => array('type' => 'boolean', 'default' => false),
             'dark' => array('type' => 'boolean', 'default' => false),
             'smiley.count' => array('type' => 'integer', 'default' => 10),
             'smiley.format' => array('type' => 'string', 'default' => 'gif'),
