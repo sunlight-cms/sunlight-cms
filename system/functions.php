@@ -5453,14 +5453,14 @@ function _postRepeatForm($allow_login = true, Message $login_message = null, $ta
  * @param string $repl retezec, kterym se ma nahradit posledni sekvence
  * @return string
  */
-function _showIP($ip, $repl = 'x')
+function _showIP($ip)
 {
     if (_user_group == 1) {
         // hlavni administratori vidi vzdy puvodni IP
         return $ip;
     }
     
-    return substr($ip, 0, strrpos($ip, '.') + 1) . $repl;
+    return sha1(Core::$secret . $ip);
 }
 
 /**
