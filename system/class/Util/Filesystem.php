@@ -17,14 +17,25 @@ class Filesystem
     /**
      * Normalize a path
      *
+     * @param string $path
+     * @return string
+     */
+    public static function normalizePath($path)
+    {
+        return strtr($path, '\\', '/');
+    }
+
+    /**
+     * Normalize a path and add a base, if the path is not absolute
+     *
      * @param string $basePath
      * @param string $path
      * @return string
      */
-    public static function normalizePath($basePath, $path)
+    public static function normalizeWithBasePath($basePath, $path)
     {
-        $basePath = str_replace('\\', '/', $basePath);
-        $path = str_replace('\\', '/', $path);
+        $basePath = static::normalizePath($basePath);
+        $path = static::normalizePath($path);
 
         return
             $path === ''
@@ -51,13 +62,18 @@ class Filesystem
     /**
      * Evaluate relative parts of a path
      *
-     * @param string $path   the path
-     * @param bool   $isFile it is a file path 1/0
-     * @return string a path always without a leading slash and with trailing slash (unless $isFile = true)
+     * The returned path will have a trailing slash if $isFile = FALSE.
+     *
+     * The returned path may have a leading slash if $allowLeadingSlash = TRUE.
+     *
+     * @param string $path              the path
+     * @param bool   $isFile            it is a file path 1/0
+     * @param bool   $allowLeadingSlash allow slash at the beginning of the resulting path
+     * @return string
      */
-    public static function parsePath($path, $isFile = false)
+    public static function parsePath($path, $isFile = false, $allowLeadingSlash = false)
     {
-        $segments = explode('/', trim(str_replace('\\', '/', $path), '/'));
+        $segments = explode('/', static::normalizePath($path));
         $parentJumps = 0;
 
         for ($i = sizeof($segments) - 1; $i >= 0; --$i) {
@@ -69,7 +85,7 @@ class Filesystem
             if ($isParent) {
                 ++$parentJumps;
             }
-            if ($isDot || $isEmpty || $parentJumps > 0) {
+            if ($isDot || $isEmpty && (!$allowLeadingSlash || $i > 0) || $parentJumps > 0) {
                 unset($segments[$i]);
 
                 if ($parentJumps > 0 && !$isDot && !$isEmpty) {
@@ -146,7 +162,7 @@ class Filesystem
      *
      * @param string     $path         path to the directory
      * @param bool       $checkWrite   test write access as well 1/0 (false = test only read access)
-     * @param array|null &$failedPaths an array variable to put failed paths to (null = do not track)
+     * @param array|null $failedPaths  an array variable to put failed paths to (null = do not track)
      * @return bool
      */
     public static function checkDirectory($path, $checkWrite = true, &$failedPaths = null)
@@ -201,9 +217,9 @@ class Filesystem
      * file_callback (-)    callback(\SplFileInfo file): bool - decide, whether to remove a file or not
      *                      (this option is active only if files_only = 1)
      *
-     * @param string $path        path to the directory
-     * @param array  $options     option array (see above)
-     * @param string &$failedPath variable that will contain a path that could not be removed
+     * @param string $path       path to the directory
+     * @param array  $options    option array (see above)
+     * @param string $failedPath variable that will contain a path that could not be removed
      * @return bool
      */
     public static function purgeDirectory($path, array $options = array(), &$failedPath = null)

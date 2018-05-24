@@ -36,7 +36,7 @@ class PluginOptionNormalizer
     public static function normalizePath($path, array $context)
     {
         if ($path !== null) {
-            return Filesystem::normalizePath($context['plugin']['dir'], $path);
+            return Filesystem::normalizeWithBasePath($context['plugin']['dir'], $path);
         }
     }
 
@@ -55,7 +55,7 @@ class PluginOptionNormalizer
                 throw new OptionSetNormalizerException(sprintf('[%s] must be a string', $key));
             }
 
-            $normalized[$key] = Filesystem::normalizePath($context['plugin']['dir'], $path);
+            $normalized[$key] = Filesystem::normalizeWithBasePath($context['plugin']['dir'], $path);
         }
 
         return $normalized;
@@ -141,12 +141,12 @@ class PluginOptionNormalizer
                                     throw new OptionSetNormalizerException(sprintf('[%s][%s][%s] must be a string', $typeName, $key, $pathKey));
                                 }
 
-                                $normalizedEntry[] = Filesystem::normalizePath($context['plugin']['dir'], $path);
+                                $normalizedEntry[] = Filesystem::normalizeWithBasePath($context['plugin']['dir'], $path);
                             }
 
                             $normalized[$type][$key] = $normalizedEntry;
                         } elseif (is_string($entry)) {
-                            $normalized[$type][$key] = Filesystem::normalizePath($context['plugin']['dir'], $entry);
+                            $normalized[$type][$key] = Filesystem::normalizeWithBasePath($context['plugin']['dir'], $entry);
                         } else {
 
                         }
@@ -157,7 +157,7 @@ class PluginOptionNormalizer
                             throw new OptionSetNormalizerException(sprintf('[%s][%s] must be a string', $typeName, $key));
                         }
 
-                        $normalized[$type][$key] = Filesystem::normalizePath($context['plugin']['dir'], $entry);
+                        $normalized[$type][$key] = Filesystem::normalizeWithBasePath($context['plugin']['dir'], $entry);
                         break;
 
                     default:
@@ -255,7 +255,7 @@ class PluginOptionNormalizer
                 throw new OptionSetNormalizerException(sprintf('[%s][template] invalid value (expected string)', $layout));
             }
 
-            $entry['template'] = Filesystem::normalizePath($context['plugin']['dir'], $entry['template']);
+            $entry['template'] = Filesystem::normalizeWithBasePath($context['plugin']['dir'], $entry['template']);
 
             if (!is_file($entry['template'])) {
                 throw new OptionSetNormalizerException(sprintf('[%s][template] the template file "%s" was not found', $layout, $entry['template']));

@@ -52,7 +52,6 @@ return array(
   'global.action' => 'Akce',
   'global.language' => 'Jazyk',
   'global.result' => 'Výsledek',
-  'global.source' => 'Zdroj',
   'global.edit' => 'upravit',
   'global.delete' => 'odstranit',
   'global.show' => 'zobrazit',

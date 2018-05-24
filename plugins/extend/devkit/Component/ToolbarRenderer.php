@@ -240,7 +240,7 @@ class ToolbarRenderer
     {
         $pluginErrors = array();
 
-        foreach (Core::$pluginManager->allInactive() as $type => $inactivePlugins) {
+        foreach (Core::$pluginManager->getAllInactive() as $type => $inactivePlugins) {
             foreach ($inactivePlugins as $name => $inactivePlugin) {
                 /** @var InactivePlugin $inactivePlugin */
 

@@ -102,7 +102,7 @@ class OptionSet
      *
      * @param array      &$data   data to process
      * @param mixed      $context normalizer context
-     * @param array|null &$errors variable for error messages
+     * @param array|null $errors  variable for error messages
      * @return bool true on success, false if there are errors
      */
     public function process(&$data, $context = null, array &$errors = null)

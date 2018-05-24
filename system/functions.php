@@ -5089,7 +5089,7 @@ function _pictureStorageGet($path, $home_path, $uid, $format)
  * @param array         $opt       volby zpracovani
  * @param string        &$error    promenna pro ulozeni chybove hlasky v pripade neuspechu
  * @param string        &$format   promenna pro ulozeni formatu nacteneho obrazku
- * @param resource|null &$resource promenna pro ulozeni resource vysledneho obrazku (pouze pokud 'destroy' = false)
+ * @param resource|null $resource promenna pro ulozeni resource vysledneho obrazku (pouze pokud 'destroy' = false)
  * @return mixed viz popis funkce
  */
 function _pictureProcess(array $opt, &$error = null, &$format = null, &$resource = null)
@@ -5211,7 +5211,7 @@ function _pictureProcess(array $opt, &$error = null, &$format = null, &$resource
  * @param string $source          cesta ke zdrojovemu obrazku
  * @param array  $resize_opts     volby pro zmenu velikosti, {@see _pictureResize()} (mode je prednastaven na zoom)
  * @param bool   $use_error_image vratit chybovy obrazek pri neuspechu namisto false
- * @param string &$error          promenna, kam bude ulozena pripadna chybova hlaska
+ * @param string $error          promenna, kam bude ulozena pripadna chybova hlaska
  * @return string|bool cesta k miniature nebo chybovemu obrazku nebo false pri neuspechu
  */
 function _pictureThumb($source, array $resize_opts, $use_error_image = true, &$error = null)

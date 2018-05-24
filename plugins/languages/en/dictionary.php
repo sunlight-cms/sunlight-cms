@@ -52,7 +52,6 @@ return array(
   'global.action' => 'Action',
   'global.language' => 'Language',
   'global.result' => 'Result',
-  'global.source' => 'Source',
   'global.edit' => 'edit',
   'global.delete' => 'remove',
   'global.show' => 'show',

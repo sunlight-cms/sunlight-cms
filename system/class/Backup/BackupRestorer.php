@@ -24,7 +24,7 @@ class BackupRestorer
     /**
      * Validate the backup
      *
-     * @param array|null &$errors
+     * @param array|null $errors
      * @return bool
      */
     public function validate(array &$errors = null)
@@ -40,7 +40,7 @@ class BackupRestorer
      * @param bool       $database    restore the database 1/0
      * @param array      $directories directory paths to restore (from backup's metadata), null = all
      * @param array      $files       file paths to restore (from backup's metadata), null = all
-     * @param array|null &$errors
+     * @param array|null $errors
      * @return bool
      */
     public function restore($database, array $directories = null, array $files = null, array &$errors = null)

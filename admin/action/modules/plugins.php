@@ -52,7 +52,7 @@ $output .= '<p>
 
 // seznam pluginu
 foreach (Core::$pluginManager->all() as $pluginType => $plugins) {
-    $inactivePlugins = Core::$pluginManager->allInactive($pluginType);
+    $inactivePlugins = Core::$pluginManager->getAllInactive($pluginType);
 
     $output .= "<fieldset>\n";
     $output .= '<legend>' . _lang('admin.plugins.title.' . $pluginType) . ' (' . (sizeof($plugins) + sizeof($inactivePlugins)) . ")</legend>\n";

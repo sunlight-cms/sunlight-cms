@@ -243,7 +243,7 @@ class PageManipulator
      *
      * @param array  $page      stranka, ktera ma byt smazana (id, node_depth, node_parent, type, type_idt)
      * @param bool   $recursive mazat i podstranky 1/0
-     * @param string &$error    promenna, kam ulozit pripadnou chybovou hlasku
+     * @param string $error     promenna, kam ulozit pripadnou chybovou hlasku
      * @return bool
      */
     public static function delete(array $page, $recursive = false, &$error = null)
@@ -345,7 +345,7 @@ class PageManipulator
      *
      * @param array  $page   stranka, ktera ma byt smazana (id, node_depth, type, type_idt)
      * @param int    $flags  viz konstanty PageManipulator::DEPEND_X
-     * @param string &$error promenna, kam ulozit pripadnou chybovou hlasku
+     * @param string $error  promenna, kam ulozit pripadnou chybovou hlasku
      * @return bool
      */
     public static function deleteDependencies(array $page, $flags, &$error = null)

@@ -32,11 +32,6 @@ class InfoAction extends PluginAction
     </tr>
 
     <tr>
-        <th><?php echo _lang('global.source') ?></th>
-        <td><?php echo _e($plugin->getSource()) ?></td>
-    </tr>
-
-    <tr>
         <th><?php echo _lang('global.dir') ?></th>
         <td><?php echo _e($plugin->getDirectory()) ?></td>
     </tr>

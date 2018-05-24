@@ -1,16 +1,8 @@
 {
     "type": "project",
     "license": "MIT",
-    "repositories": [
-        {
-            "type": "path",
-            "url": "./plugins/.composer/*",
-            "options": {"symlink": false}
-        }
-    ],
     "require": {
         "php": ">=5.3.0",
-        "sunlight-cms/plugin-root": "dev-master",
         "kuria/class-loader": "^1.0",
         "kuria/error": "^1.0",
         "kuria/debug": "^1.0",
@@ -39,7 +31,6 @@
     "scripts": {
         "sunlight:doctrine": "Sunlight\\Database\\Doctrine\\Console::runAsComposerScript",
         "sunlight:clear-cache": "Sunlight\\Composer\\ComposerBridge::clearCache",
-        "pre-update-cmd": "Sunlight\\Plugin\\ComposerBridge::linkPluginDependencies",
         "post-update-cmd": [
             "Sunlight\\Composer\\ComposerBridge::clearCache",
             "Sunlight\\Composer\\ComposerBridge::denyAccessToVendorDirectory"

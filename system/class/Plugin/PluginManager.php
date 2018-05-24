@@ -367,7 +367,7 @@ class PluginManager
      * @throws \InvalidArgumentException if the plugin type is not valid
      * @return InactivePlugin[]|InactivePlugin[][] name indexed (if type is specified) or type and name indexed array of plugin arrays
      */
-    public function allInactive($type = null)
+    public function getAllInactive($type = null)
     {
         if (!$this->initialized) {
             $this->initialize();
@@ -479,16 +479,31 @@ class PluginManager
         }
 
         // load data
-        $data = $this->cache->get('plugin_data');
+        $data = $this->cache->get('plugins');
 
         // invalidate stale data
-        if ($data !== false && $data['system_version'] !== Core::VERSION) {
+        if (
+            $data !== false
+            && (
+                $data['system_version'] !== Core::VERSION   // core updated
+                || $data['root'] !== realpath(_root)        // root moved (cache contains absolute paths)
+            )
+        ) {
             $data = false;
         }
 
         // if data could not be loaded from cache, use plugin loader
         if ($data === false) {
             $data = $this->loadPlugins();
+        }
+
+        // setup autoload
+        Core::$classLoader->addPrefixes($data['autoload']['psr-0'], ClassLoader::PSR0);
+        Core::$classLoader->addPrefixes($data['autoload']['psr-4']);
+        Core::$classLoader->addClassMap($data['autoload']['classmap']);
+
+        foreach ($data['autoload']['files'] as $path) {
+            require $path;
         }
 
         // initialize plugins
@@ -501,10 +516,6 @@ class PluginManager
 
             foreach ($plugins as $name => $plugin) {
                 if (Plugin::STATUS_OK === $plugin['status']) {
-                    // setup autoloading
-                    $this->setupAutoload($plugin);
-
-                    // create instance
                     $pluginInstance = new $plugin['options']['class']($plugin, $this);
 
                     if (!is_a($pluginInstance, $this->types[$type]['class'])) {
@@ -532,53 +543,15 @@ class PluginManager
     private function loadPlugins()
     {
         $pluginLoader = new PluginLoader($this->types);
-        $loadedPlugins = $pluginLoader->load();
+        $result = $pluginLoader->load();
 
-        $pluginFiles = array();
-        foreach ($loadedPlugins as $type => $plugins) {
-            foreach ($plugins as $plugin) {
-                $pluginFiles[] = $plugin['file'];
-            }
-        }
-
-        $data = array(
-            'plugins' => $loadedPlugins,
+        $data = $result + array(
             'system_version' => Core::VERSION,
+            'root' => realpath(_root),
         );
 
-        $this->cache->set('plugin_data', $data, 0, array('bound_files' => $pluginFiles));
+        $this->cache->set('plugins', $data, 0, array('bound_files' => $result['bound_files']));
 
         return $data;
-    }
-
-    /**
-     * Setup autoloading
-     *
-     * @param array $plugin
-     */
-    private function setupAutoload(array $plugin)
-    {
-        // plugin namespace
-        Core::$classLoader->addPrefix($plugin['options']['namespace'] . '\\', $plugin['dir']);
-
-        // custom
-        foreach ($plugin['options']['autoload'] as $type => $entries) {
-            switch ($type) {
-                case Plugin::AUTOLOAD_PSR0:
-                    Core::$classLoader->addPrefixes($entries, ClassLoader::PSR0);
-                    break;
-
-                case Plugin::AUTOLOAD_PSR4:
-                    Core::$classLoader->addPrefixes($entries, ClassLoader::PSR4);
-                    break;
-
-                case Plugin::AUTOLOAD_CLASSMAP:
-                    Core::$classLoader->addClassMap($entries);
-                    break;
-
-                default:
-                    throw new \LogicException('Invalid autoload type');
-            }
-        }
     }
 }

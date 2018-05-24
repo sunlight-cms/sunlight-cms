@@ -212,7 +212,7 @@ class PageLister
     /**
      * Render breadcrumbs
      *
-     * @param string &$output
+     * @param string $output
      */
     private static function renderBreadcrumbs(&$output)
     {
@@ -230,7 +230,7 @@ class PageLister
     /**
      * Render list
      *
-     * @param string &$output
+     * @param string $output
      * @param array  $options
      */
     private static function renderList(&$output, array $options)
@@ -305,7 +305,7 @@ class PageLister
     /**
      * Render full tree
      *
-     * @param string &$output
+     * @param string $output
      * @param array  $tree
      * @param array  $options
      */
@@ -332,7 +332,7 @@ class PageLister
     /**
      * Render single level
      *
-     * @param string &$output
+     * @param string $output
      * @param array  $tree
      * @param array  $options
      */
@@ -418,7 +418,7 @@ class PageLister
     /**
      * Render page
      *
-     * @param string &$output
+     * @param string $output
      * @param array  $page
      * @param array  $options
      * @param string $class

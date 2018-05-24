@@ -431,7 +431,7 @@ class Backup
 
     /**
      * @param array      $metaData
-     * @param array|null &$errors
+     * @param array|null $errors
      * @return bool
      */
     protected function validateMetaData(array &$metaData, array &$errors = null)

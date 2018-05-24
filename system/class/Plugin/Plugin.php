@@ -15,11 +15,6 @@ abstract class Plugin
     /** Name of the plugin deactivating file */
     const DEACTIVATING_FILE = 'DISABLED';
 
-    /** Plugin source - local plugins directory */
-    const SOURCE_LOCAL = 'local';
-    /** Plugin source - composer vendor directory */
-    const SOURCE_COMPOSER = 'composer';
-
     /** Plugin status - OK */
     const STATUS_OK = 0;
     /** Plugin status - has error messages */
@@ -47,12 +42,12 @@ abstract class Plugin
         'php' => array('type' => 'string'),
         'extensions' => array('type' => 'array', 'default' => array()),
         'requires' => array('type' => 'array', 'default' => array()),
-        'requires.composer' => array('type' => 'array', 'default' => array()),
         'installer' => array('type' => 'boolean', 'nullable' => true, 'default' => false),
         'autoload' => array('type' => 'array', 'default' => array(), 'normalizer' => array('Sunlight\Plugin\PluginOptionNormalizer', 'normalizeAutoload')),
         'debug' => array('type' => 'boolean', 'nullable' => true),
         'class' => array('type' => 'string'),
         'namespace' => array('type' => 'string', 'normalizer' => array('Sunlight\Plugin\PluginOptionNormalizer', 'normalizeNamespace')),
+        'inject_composer' => array('type' => 'boolean', 'default' => true),
     );
 
     /** @var array */
@@ -60,8 +55,6 @@ abstract class Plugin
 
     /** @var string */
     protected $type;
-    /** @var string */
-    protected $source;
     /** @var string */
     protected $id;
     /** @var string */
@@ -94,7 +87,6 @@ abstract class Plugin
     public function __construct(array $data, PluginManager $manager)
     {
         $this->type = $data['type'];
-        $this->source = $data['source'];
         $this->id = $data['id'];
         $this->camelId = $data['camel_id'];
         $this->status = $data['status'];
@@ -163,14 +155,6 @@ abstract class Plugin
     public function getType()
     {
         return $this->type;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSource()
-    {
-        return $this->source;
     }
 
     /**
@@ -273,10 +257,6 @@ abstract class Plugin
      */
     public function canBeRemoved()
     {
-        if ($this->source === static::SOURCE_COMPOSER) {
-            return false;
-        }
-
         return !$this->hasInstaller() || $this->installed === false;
     }
 

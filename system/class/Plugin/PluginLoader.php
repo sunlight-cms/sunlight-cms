@@ -3,8 +3,11 @@
 namespace Sunlight\Plugin;
 
 use Composer\Semver\Semver;
+use Sunlight\Composer\Repository;
+use Sunlight\Composer\RepositoryInjector;
 use Sunlight\Core;
 use Sunlight\Option\OptionSet;
+use Sunlight\Util\Filesystem;
 use Sunlight\Util\Json;
 
 class PluginLoader
@@ -17,8 +20,6 @@ class PluginLoader
     private $commonOptionSet;
     /** @var OptionSet[] */
     private $typeOptionSets;
-    /** @var array[]|null */
-    private $composerPackages;
 
     /**
      * @param array $types
@@ -41,21 +42,51 @@ class PluginLoader
     /**
      * Load plugin data from the filesystem
      *
-     * @param bool $checkDebugMode
+     * Returns an array with the following structure:
+     *
+     *      array(
+     *          plugins => array(
+     *              type => array(name => data, ...)
+     *              ...
+     *          )
+     *          autoload => array(
+     *              psr-0 => array(prefix => paths, ...)
+     *              psr-4 => array(prefix => paths, ...)
+     *              classmap => array(className => path, ...)
+     *              files => array(path, ...)
+     *          )
+     *          bound_files => array(path, ...)
+     *      )
+     *
      * @param bool $resolveInstallationStatus
      * @return array
      */
-    public function load($checkDebugMode = true, $resolveInstallationStatus = true)
+    public function load($resolveInstallationStatus = true)
     {
         $plugins = array();
+        $autoload = array_fill_keys(array('psr-0', 'psr-4', 'classmap', 'files'), array());
+        $boundFiles = array();
 
-        $this->loadLocalPlugins($plugins, $checkDebugMode);
-        $this->loadComposerPlugins($plugins, $checkDebugMode);
+        $composerInjector = new RepositoryInjector(new Repository(realpath(_root . '/composer.json')));
+        $typeNames = array_keys($this->types);
+
+        $this->findPlugins($plugins, $boundFiles);
 
         // resolve dependencies
-        foreach ($this->types as $typeName => $type) {
+        foreach ($typeNames as $typeName) {
             $plugins[$typeName] = $this->resolveDependencies($plugins[$typeName]);
         }
+
+        // resolve autoload
+        foreach ($typeNames as $typeName) {
+            $this->resolveAutoload($plugins[$typeName], $autoload);
+        }
+
+        foreach ($typeNames as $typeName) {
+            $this->injectComposerRepositories($plugins[$typeName], $boundFiles, $composerInjector);
+        }
+
+        $this->resolveAutoloadForInjectedComposerPackages($autoload, $composerInjector);
 
         // resolve installation status
         if ($resolveInstallationStatus) {
@@ -64,14 +95,14 @@ class PluginLoader
             }
         }
 
-        return $plugins;
+        return array(
+            'plugins' => $plugins,
+            'autoload' => $autoload,
+            'bound_files' => $boundFiles,
+        );
     }
 
-    /**
-     * @param array $plugins
-     * @param bool  $checkDebugMode
-     */
-    private function loadLocalPlugins(array &$plugins, $checkDebugMode)
+    private function findPlugins(array &$plugins, array &$boundFiles)
     {
         // load plugins from standard paths
         foreach ($this->types as $typeName => $type) {
@@ -88,89 +119,26 @@ class PluginLoader
                     && is_file($pluginFile = "{$dir}/{$item}/" . Plugin::FILE)
                 ) {
                     // load plugin
+                    $boundFiles[] = $pluginFile;
+
                     $plugins[$typeName][$item] = $this->loadPlugin(
                         $this->createPluginData(
                             $item,
                             $pluginFile,
                             $type['dir'] . '/' . $item,
-                            $typeName,
-                            Plugin::SOURCE_LOCAL
-                        ),
-                        $checkDebugMode
+                            $typeName
+                        )
                     );
                 }
             }
         }
-    }
-
-    /**
-     * @param array $plugins
-     * @param bool  $checkDebugMode
-     */
-    private function loadComposerPlugins(array &$plugins, $checkDebugMode)
-    {
-        foreach ($this->getComposerPackages() as $package) {
-            if (!isset($package['extra']['sunlight-cms-8-plugins']) || !is_array($package['extra']['sunlight-cms-8-plugins'])) {
-                continue;
-            }
-
-            foreach ($package['extra']['sunlight-cms-8-plugins'] as $pluginId => $pluginParams) {
-                $pluginFile = sprintf('%svendor/%s/%s/%s', _root, $package['name'], $pluginParams['path'], Plugin::FILE);
-
-                if (!is_file($pluginFile)) {
-                    continue;
-                }
-
-                $plugin = $this->createPluginData(
-                    $pluginId,
-                    $pluginFile,
-                    "vendor/{$package['name']}/{$pluginParams['path']}",
-                    $pluginParams['type'],
-                    Plugin::SOURCE_COMPOSER,
-                    array('version' => $package['version'])
-                );
-
-                if (!preg_match($this->pluginIdPattern, $pluginId)) {
-                    $plugin['id'] = $this->generateTemporaryComposerPluginId($pluginFile);
-
-                    $plugin['errors'][] = sprintf(
-                        'plugin ID "%s" specified by Composer package "%s" does not match "%s"',
-                        $pluginId,
-                        $package['name'],
-                        $this->pluginIdPattern
-                    );
-                } elseif (isset($plugins[$pluginParams['type']][$pluginId])) {
-                    $plugin['id'] = $this->generateTemporaryComposerPluginId($pluginFile);
-
-                    $plugin['errors'][] = sprintf(
-                        'cannot load plugin "%s/%s" from Composer package "%s" because such plugin already exists at "%s"',
-                        $pluginParams['type'],
-                        $pluginId,
-                        $package['name'],
-                        $plugins[$pluginParams['type']][$pluginId]['file']
-                    );
-                }
-
-                $plugins[$pluginParams['type']][$plugin['id']] = $this->loadPlugin($plugin, $checkDebugMode);
-            }
-        }
-    }
-
-    /**
-     * @param string $pluginFile
-     * @return string
-     */
-    private function generateTemporaryComposerPluginId($pluginFile)
-    {
-        return sprintf('composer__invalid_plugin_%x', crc32($pluginFile));
     }
 
     /**
      * @param array $plugin
-     * @param bool  $checkDebugMode
      * @return array
      */
-    public function loadPlugin(array $plugin, $checkDebugMode = true)
+    public function loadPlugin(array $plugin)
     {
         $type = $this->types[$plugin['type']];
         $context = $this->createPluginOptionContext($plugin, $type);
@@ -199,11 +167,11 @@ class PluginLoader
                 $this->typeOptionSets[$plugin['type']]->process($options, $context, $plugin['definition_errors']);
             }
 
-            $this->validateOptions($options, $plugin['definition_errors'], $checkDebugMode, $plugin['errors']);
+            $this->validateOptions($options, $plugin['definition_errors'], $plugin['errors']);
         }
 
         // handle result
-        if (empty($plugin['errors']) && empty($plugin['definition_errors'])) {
+        if (!$this->hasErrors($plugin)) {
             // ok
             $plugin['status'] = Plugin::STATUS_OK;
             $plugin['options'] = $options;
@@ -239,24 +207,23 @@ class PluginLoader
      * Validate options
      *
      * @param array $options
-     * @param array $configurationErrors
-     * @param bool  $checkDebugMode
-     * @param array &$errors
+     * @param array $definitionErrors
+     * @param array $errors
      */
-    private function validateOptions(array $options, array $configurationErrors, $checkDebugMode, array &$errors)
+    private function validateOptions(array $options, array $definitionErrors, array &$errors)
     {
         // api version
-        if (!isset($configurationErrors['api']) && !$this->checkVersion($options['api'], Core::VERSION)) {
+        if (!isset($definitionErrors['api']) && !$this->checkVersion($options['api'], Core::VERSION)) {
             $errors[] = sprintf('API version "%s" is not compatible with system version "%s"', $options['api'], Core::VERSION);
         }
 
         // PHP version
-        if (!isset($configurationErrors['php']) && $options['php'] !== null && !version_compare($options['php'], PHP_VERSION, '<=')) {
+        if (!isset($definitionErrors['php']) && $options['php'] !== null && !version_compare($options['php'], PHP_VERSION, '<=')) {
             $errors[] = sprintf('PHP version "%s" or newer is required', $options['php']);
         }
 
         // extensions
-        if (!isset($configurationErrors['extensions'])) {
+        if (!isset($definitionErrors['extensions'])) {
             foreach ($options['extensions'] as $extension) {
                 if (!extension_loaded($extension)) {
                     $errors[] = sprintf('PHP extension "%s" is required', $extension);
@@ -265,27 +232,20 @@ class PluginLoader
         }
 
         // debug mode
-        if ($checkDebugMode && !isset($configurationErrors['debug']) && $options['debug'] !== null && $options['debug'] !== _debug) {
+        if (!isset($definitionErrors['debug']) && $options['debug'] !== null && $options['debug'] !== _debug) {
             $errors[] = $options['debug']
                 ? 'debug mode is required'
                 : 'production mode is required';
         }
+    }
 
-        // composer dependencies
-        $composerPackages = $this->getComposerPackages();
-
-        foreach ($options['requires.composer'] as $requiredPackage => $requiredPackageVersion) {
-            if (!isset($composerPackages[$requiredPackage])) {
-                $errors[] = sprintf('required Composer package "%s" is not installed', $requiredPackage);
-            } elseif (!$this->checkVersion($requiredPackageVersion, $composerPackages[$requiredPackage]['version'])) {
-                $errors[] = sprintf(
-                    'required Composer package "%s" is installed in version "%s", but version "%s" is required',
-                    $requiredPackage,
-                    $composerPackages[$requiredPackage]['version'],
-                    $requiredPackageVersion
-                );
-            }
-        }
+    /**
+     * @param array $plugin
+     * @return bool
+     */
+    private function hasErrors(array $plugin)
+    {
+        return $plugin['errors'] || $plugin['definition_errors'];
     }
 
     /**
@@ -328,11 +288,10 @@ class PluginLoader
      * @param string $file
      * @param string|null $webPath
      * @param string $typeName
-     * @param string $source
      * @param array $defaultOptions
      * @return array
      */
-    private function createPluginData($id, $file, $webPath, $typeName, $source, array $defaultOptions = array())
+    private function createPluginData($id, $file, $webPath, $typeName, array $defaultOptions = array())
     {
         $file = realpath($file);
 
@@ -340,7 +299,6 @@ class PluginLoader
             'id' => $id,
             'camel_id' => _camelCase($id),
             'type' => $typeName,
-            'source' => $source,
             'status' => null,
             'installed' => null,
             'dir' => dirname($file),
@@ -363,6 +321,16 @@ class PluginLoader
             'plugin' => &$plugin,
             'type' => $type,
         );
+    }
+
+    /**
+     * @param array $plugin
+     * @param array $errors
+     * @return array
+     */
+    private function convertPluginToErrorState(array $plugin, array $errors)
+    {
+        return array('status' => Plugin::STATUS_HAS_ERRORS, 'errors' => $errors) + $plugin;
     }
 
     /**
@@ -413,10 +381,7 @@ class PluginLoader
                 if ($canBeAdded) {
                     $sorted[$name] = $plugin;
                 } elseif (!empty($errors)) {
-                    $sorted[$name] = array(
-                        'status' => Plugin::STATUS_HAS_ERRORS,
-                        'errors' => $errors
-                    ) + $plugin;
+                    $sorted[$name] = $this->convertPluginToErrorState($plugin, $errors);
                 }
 
                 if ($canBeAdded || !empty($errors)) {
@@ -496,7 +461,9 @@ class PluginLoader
             $errors[] = sprintf('dependency "%s" is not available', $plugin['id']);
             
             return false;
-        } elseif (!$this->checkVersion($requiredVersion, $plugin['options']['version'])) {
+        }
+
+        if (!$this->checkVersion($requiredVersion, $plugin['options']['version'])) {
             $errors[] = sprintf(
                 'dependency "%s" (version "%s") is not compatible, version "%s" is required',
                 $plugin['id'],
@@ -510,10 +477,147 @@ class PluginLoader
         return true;
     }
 
+    private function resolveAutoload(array &$plugins, array &$autoload)
+    {
+        foreach ($plugins as &$plugin) {
+            if (Plugin::STATUS_OK !== $plugin['status']) {
+                continue;
+            }
+
+            $autoload['psr-4'][$plugin['options']['namespace'] . '\\'] = $plugin['dir'];
+
+            foreach ($plugin['options']['autoload'] as $type => $entries) {
+                $autoload[$type] += $entries;
+            }
+        }
+    }
+
+    private function injectComposerRepositories(array &$plugins, array &$boundFiles, RepositoryInjector $injector)
+    {
+        foreach ($plugins as &$plugin) {
+            if (!$plugin['options']['inject_composer']) {
+                continue;
+            }
+
+            $composerJsonPath = $plugin['dir'] . '/composer.json';
+
+            if (is_file($composerJsonPath)) {
+                $repository = new Repository($composerJsonPath);
+
+                if ($injector->inject($repository, $errors)) {
+                    $boundFiles[] = $repository->getComposerJsonPath();
+
+                    if (is_file($installedJsonPath = $repository->getInstalledJsonPath())) {
+                        $boundFiles[] = $installedJsonPath;
+                    }
+                } else {
+                    $plugin = $this->convertPluginToErrorState($plugin, $errors);
+                }
+            }
+        }
+    }
+
+    private function resolveAutoloadForInjectedComposerPackages(array &$autoload, RepositoryInjector $injector)
+    {
+        $uniqueSources = array();
+        $injectedPackages = $injector->getInjectedPackages();
+
+        foreach ($injectedPackages as $package) {
+            $source = $injector->getSource($package->name);
+            $uniqueSources[spl_object_hash($source)] = $source;
+        }
+
+        // resolve for all unique sources
+        foreach ($uniqueSources as $source) {
+            $this->resolveAutoloadForComposerPackage(
+                $autoload,
+                $source->getDefinition(),
+                $source->getDirectory(),
+                $source->getClassMap()
+            );
+        }
+
+        // resolve for all injected packages
+        foreach ($injectedPackages as $package) {
+            $source = $injector->getSource($package->name);
+
+            $this->resolveAutoloadForComposerPackage(
+                $autoload,
+                $package,
+                $source->getPackagePath($package),
+                $source->getClassMap()
+            );
+        }
+    }
+
+    private function resolveAutoloadForComposerPackage(array &$autoload, \stdClass $package, $packagePath, array $generatedClassMap)
+    {
+        // PSR-0, PSR-4
+        foreach (array('psr-0', 'psr-4') as $type) {
+            if (empty($package->autoload->{$type})) {
+                continue;
+            }
+
+            foreach ($package->autoload->{$type} as $prefix => $paths) {
+                foreach ((array) $paths as $path) {
+                    $autoload[$type][$prefix][] = Filesystem::normalizeWithBasePath($packagePath, $path);
+                }
+            }
+        }
+
+        // class map
+        if (!empty($package->autoload->classmap)) {
+            $this->resolveAutoloadForComposerPackageClassmap(
+                $autoload,
+                $packagePath,
+                $package->autoload->classmap,
+                $generatedClassMap
+            );
+        }
+
+        // files
+        if (!empty($package->autoload->files)) {
+            foreach($package->autoload->files as $path) {
+                $autoload['files'][] = Filesystem::normalizeWithBasePath($packagePath, $path);
+            }
+        }
+    }
+
+    private function resolveAutoloadForComposerPackageClassmap(array &$autoload, $packageDir, array $classMap, array $generatedClassMap)
+    {
+        $prefixes = array_map(
+            function ($path) use ($packageDir) {
+                return Filesystem::parsePath(Filesystem::normalizeWithBasePath($packageDir, $path), true, true);
+            },
+            $classMap
+        );
+
+        $prefixLengths = array_map('strlen', $prefixes);
+
+        foreach ($generatedClassMap as $className => $path) {
+            $normalizedPath = Filesystem::normalizePath($path);
+
+            foreach ($prefixes as $index => $prefix) {
+                $prefixLength = $prefixLengths[$index];
+
+                if (
+                    // prefix matches
+                    strncmp($prefix, $normalizedPath, $prefixLength) === 0
+                    && (
+                        !isset($normalizedPath[$prefixLength])      // path is equal to prefix
+                        || $normalizedPath[$prefixLength] === '/'   // or continues into a directory
+                    )
+                ) {
+                    $autoload['classmap'][$className] = $path;
+                }
+            }
+        }
+    }
+
     /**
      * Resolve installation status
      *
-     * @param array &$plugins
+     * @param array $plugins
      */
     private function resolveInstallationStatus(array &$plugins)
     {
@@ -534,25 +638,5 @@ class PluginLoader
                 $plugin['installed'] = $isInstalled;
             }
         }
-    }
-
-    /**
-     * @return array[]
-     */
-    private function getComposerPackages()
-    {
-        if ($this->composerPackages !== null) {
-            return $this->composerPackages;
-        }
-
-        $this->composerPackages = array();
-
-        if (is_file($installedJson = _root . '/vendor/composer/installed.json')) {
-            foreach (Json::decode(file_get_contents($installedJson)) as $package) {
-                $this->composerPackages[$package['name']] = $package;
-            }
-        }
-
-        return $this->composerPackages;
     }
 }
