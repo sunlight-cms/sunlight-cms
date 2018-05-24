@@ -208,7 +208,7 @@ if (!$user_data_valid && $show_form) {
             array('label' => _lang('login.password'), 'content' => "<input type='password' name='password' class='inputsmall'>"),
             array('label' => _lang('login.password') . " (" . _lang('global.check') . ")", 'content' => "<input type='password' name='password2' class='inputsmall'>"),
             array('label' => _lang('global.email'), 'content' => "<input type='email' class='inputsmall' " . _restorePostValueAndName('email', '@') . ">"),
-            array('label' => _lang('mod.settings.massemail'), 'content' => "<label><input type='checkbox' value='1'" . _restoreCheckedAndName('regform', 'massemail', true) . "> " . _lang('mod.settings.massemail.label') . '</label>'),
+            array('label' => _lang('mod.settings.massemail'), 'content' => "<label><input type='checkbox' value='1'" . _restoreCheckedAndName('regform', 'massemail') . "> " . _lang('mod.settings.massemail.label') . '</label>'),
             $groupselect,
             $captcha,
             $rules,
@@ -220,7 +220,7 @@ if (!$user_data_valid && $show_form) {
     if ($confirmed) {
 
         // potvrzeno
-        $user_id = DB::insert(_users_table, $user_data, true);
+        $user_id = DB::insert(_users_table, $user_data + array('registertime' => time()), true);
 
         // udalost
         Extend::call('user.new', array('id' => $user_id, 'username' => $user_data['username'], 'email' => $user_data['email']));

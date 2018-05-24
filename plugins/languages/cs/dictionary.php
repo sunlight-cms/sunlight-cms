@@ -239,7 +239,7 @@ Platnost tohoto odkazu je 1 hodina.
   'mod.settings.namechangenote' => 'lze změnit pouze velikost písmen',
   'mod.settings.emailchangenote' => 'pro změnu je třeba vyplnit pole &quot;současné heslo&quot; níže',
   'mod.settings.massemail' => 'Informační e-maily',
-  'mod.settings.massemail.label' => 'zasílat informační e-maily',
+  'mod.settings.massemail.label' => 'mám zájem o informační e-maily a novinky',
   'mod.settings.avatar' => 'Avatar (uživatelský obrázek)',
   'mod.settings.avatar.upload' => 'Nahrát avatar',
   'mod.settings.avatar.hint' => 'Maximální velikost nahraného obrázku je <strong>1MB</strong> a rozměry <strong>1400x1400 pixelů</strong>. Obrázek bude zmenšen a ořezán na rozměr 96x128 pixelů. Povolené formáty jsou JPG, GIF nebo PNG.',
