@@ -5,6 +5,7 @@ use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\Plugin\PluginManager;
 use Sunlight\Util\Password;
+use Sunlight\Util\Url;
 
 if (!defined('_root')) {
     exit;
@@ -25,7 +26,7 @@ $avatar_path = _getAvatar($userdata, array('get_url' => true, 'extend' => false)
 
 /* ---  ulozeni  --- */
 
-if (isset($_POST['username'])) {
+if (isset($_POST['save'])) {
 
     $errors = array();
 
@@ -234,9 +235,50 @@ if (isset($_POST['username'])) {
         return;
 
     } else {
-        $message = _msg(_msg_warn, _msgList($errors, 'errors'));
+        $message .= _msg(_msg_warn, _msgList($errors, 'errors'));
     }
 
+} elseif (isset($_POST['download_personal_data'])) {
+    if (Password::load($userdata['password'])->match(_post('currentpassword'))) {
+        $ips = DB::queryRows('SELECT DISTINCT ip FROM ' . _posts_table . ' WHERE author = ' . $userdata['id'], null, 'ip');
+        $ips[] = $userdata['ip'];
+
+        $personal_data = array(
+            _lang('login.username') => $userdata['username'],
+            _lang('mod.settings.publicname') => (string) $userdata['publicname'],
+            _lang('global.email') => $userdata['email'],
+            _lang('mod.profile.regtime') => date(DATE_ISO8601, $userdata['registertime']),
+            _lang('mod.profile.logincounter') => $userdata['logincounter'],
+            _lang('global.ip') => $ips,
+        );
+
+        Extend::call('mod.settings.download_personal_data', array('data' => &$personal_data));
+
+        _downloadHeaders(sprintf('%s_%s.csv', Url::current()->host, $userdata['username']));
+
+        $outputHandle = fopen('php://output', 'a');
+
+        foreach ($personal_data as $label => $values) {
+            $first = true;
+
+            foreach ((array) $values as $value) {
+                if ($first) {
+                    $fields = array($label, (string) $value);
+                    $first = false;
+                } else {
+                    $fields = array('', (string) $value);
+                }
+
+                fputcsv($outputHandle, $fields);
+            }
+        }
+
+        Extend::call('mod.settings.download_personal_data.output');
+
+        exit;
+    } else {
+        $message .= _msg(_msg_warn, _lang('mod.settings.download_personal_data') . ' - ' . _lang('mod.settings.error.badcurrentpass'));
+    }
 }
 
 /* ---  modul  --- */
@@ -244,7 +286,7 @@ if (isset($_POST['username'])) {
 $_index['title'] = _lang('mod.settings');
 
 if (isset($_GET['saved'])) {
-    $message = _msg(_msg_ok, _lang('global.saved'));
+    $message .= _msg(_msg_ok, _lang('global.saved'));
 }
 
 // vyber jazyka
@@ -337,6 +379,12 @@ $output .= "
 
   </table>
   </fieldset>
+  
+  <fieldset>
+  <legend>" . _lang('mod.settings.download_personal_data') . "</legend>
+  <p>" . _lang('mod.settings.download_personal_data.hint') . "</p>
+  <input type='submit' name='download_personal_data' value='" . _lang('mod.settings.download_personal_data.action') . "'>
+  </fieldset>
 
   " . Extend::buffer('mod.settings.form') . "
 
@@ -391,7 +439,7 @@ if (_priv_selfremove && _user_id != 0) {
 
 $output .= "
 <br>
-<input type='submit' value='" . _lang('mod.settings.submit') . "'>
+<input type='submit' name='save' value='" . _lang('mod.settings.submit') . "'>
 <input type='reset' value='" . _lang('global.reset') . "' onclick='return Sunlight.confirm();'>
 
 " . _xsrfProtect() . "</form>
