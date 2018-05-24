@@ -1496,8 +1496,8 @@ function _deleteUser($id)
     DB::delete(_users_table, 'id=' . $id);
     DB::query("DELETE " . _pm_table . ",post FROM " . _pm_table . " LEFT JOIN " . _posts_table . " AS post ON (post.type=" . _post_pm . " AND post.home=" . _pm_table . ".id) WHERE receiver=" . $id . " OR sender=" . $id);
     DB::update(_posts_table, 'author=' . $id, array(
-        'guest' => $udata['username'],
-        'author' => -1
+        'guest' => sprintf('%x', crc32((string) $id)),
+        'author' => -1,
     ));
     DB::update(_articles_table, 'author=' . $id, array('author' => 0));
     DB::update(_polls_table, 'author=' . $id, array('author' => 0));
