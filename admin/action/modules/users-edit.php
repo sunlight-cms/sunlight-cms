@@ -53,7 +53,7 @@ if (isset($_GET['id'])) {
         'note' => '',
         'wysiwyg' => '1',
         'public' => '1',
-        'massemail' => '1',
+        'massemail' => '0',
     );
 }
 
