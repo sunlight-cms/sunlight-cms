@@ -1419,7 +1419,7 @@ function _captchaInit()
 
         return array(
             'label' => _lang('captcha.input'),
-            'content' => "<input type='text' name='_cp' class='inputc'><img src='" . _link('system/script/captcha/image.php?n=' . $captchaCounter) . "' alt='captcha' title='" . _lang('captcha.help') . "' class='cimage'><input type='hidden' name='_cn' value='" . $captchaCounter . "'>",
+            'content' => "<input type='text' name='_cp' class='inputc' autocomplete='off'><img src='" . _link('system/script/captcha/image.php?n=' . $captchaCounter) . "' alt='captcha' title='" . _lang('captcha.help') . "' class='cimage'><input type='hidden' name='_cn' value='" . $captchaCounter . "'>",
             'top' => true,
             'class' => 'captcha-row',
         );
