@@ -77,7 +77,7 @@ class DatabaseLoader
      */
     public static function replacePrefix($query, array $queryMap, $currentPrefix, $newPrefix)
     {
-        return Regexp::replace('/`' . preg_quote($currentPrefix, '/') . '([a-zA-Z_]+)`/', $query, function (array $matches, $offset) use ($queryMap, $newPrefix) {
+        return Regexp::replace('{`' . preg_quote($currentPrefix) . '([a-zA-Z_]+)`}', $query, function (array $matches, $offset) use ($queryMap, $newPrefix) {
             // determine where we are in the query
             $segment = null;
             for ($i = 0; isset($queryMap[$i]); ++$i) {

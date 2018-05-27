@@ -57,7 +57,7 @@ class PhpTemplate
     {
         $that = $this;
 
-        return preg_replace_callback('~\'@@([a-zA-Z._\-]+)(?:\|(".+"|.+))?@@\'~', function (array $matches) use ($vars, $that) {
+        return preg_replace_callback('{\'@@([a-zA-Z._\-]+)(?:\|(".+"|.+))?@@\'}', function (array $matches) use ($vars, $that) {
             return $that->compilePlaceholder(
                 $matches[1],
                 isset($matches[2]) ? $matches[2] : null,
@@ -103,14 +103,14 @@ class PhpTemplate
             $default === 'true'
             || $default === 'false'
             || $default === 'null'
-            || preg_match('/^(0x)?[0-9]+(\.[0-9]+)?$/', $default)
+            || preg_match('{(0x)?[0-9]+(\.[0-9]+)?$}AD', $default)
         ) {
             // keywords, numbers
             return $default;
         } elseif (strncmp($default, 'array(', 6) === 0) {
             // arrays
             return str_replace("\\'", "'", $default);
-        } elseif (preg_match('/^"(.+)"$/', $default, $match)) {
+        } elseif (preg_match('{"(.+)"$}AD', $default, $match)) {
             // quoted string
             return var_export($match[1], true);
         } else {

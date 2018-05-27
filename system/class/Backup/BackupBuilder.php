@@ -58,16 +58,16 @@ class BackupBuilder
     );
     /** @var array[] regex list */
     protected $includedPathMap = array(
-        '~^images/[^/]+$~' => array('static' => true, 'dynamic' => true),
-        '~^system/(backup|tmp|cache)/\.htaccess$~' => array('static' => true, 'dynamic' => false),
+        '{images/[^/]+$}AD' => array('static' => true, 'dynamic' => true),
+        '{system/(backup|tmp|cache)/\.htaccess$}AD' => array('static' => true, 'dynamic' => false),
     );
     /** @var array[] regex list */
     protected $excludedPathMap = array(
-        '~^system/backup/~' => array('static' => true, 'dynamic' => true),
-        '~^system/cache/~' => array('static' => true, 'dynamic' => true),
-        '~^system/tmp/~' => array('static' => true, 'dynamic' => true),
-        '~^plugins/.composer/~' => array('static' => true, 'dynamic' => true),
-        '~^images/~' => array('static' => true, 'dynamic' => false),
+        '{system/backup/}A' => array('static' => true, 'dynamic' => true),
+        '{system/cache/}A' => array('static' => true, 'dynamic' => true),
+        '{system/tmp/}A' => array('static' => true, 'dynamic' => true),
+        '{plugins/.composer/}A' => array('static' => true, 'dynamic' => true),
+        '{images/}A' => array('static' => true, 'dynamic' => false),
     );
     /* @var bool */
     protected $databaseDumpEnabled = true;
@@ -186,7 +186,7 @@ class BackupBuilder
      */
     public function addDynamicPath($name, array $paths)
     {
-        if (!preg_match('/^[a-zA-Z0-9_]+$/', $name)) {
+        if (!preg_match('{[a-zA-Z0-9_]+$}AD', $name)) {
             throw new \InvalidArgumentException('The name is empty or contains illegal characters');
         }
 

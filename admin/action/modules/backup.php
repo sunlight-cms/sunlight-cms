@@ -15,14 +15,14 @@ if (!defined('_root')) {
 $message = '';
 
 $remove_hash_suffix = function ($filename) {
-    return preg_replace('/(.+)__[0-9a-f]{64}(\.zip)$/i', '$1$2', $filename);
+    return preg_replace('{(.+)__[0-9a-f]{64}(\.zip)$}Di', '$1$2', $filename);
 };
 
 $add_hash_suffix = function ($filename) use ($remove_hash_suffix) {
     $filename = $remove_hash_suffix($filename);
     $hash = hash_hmac('sha256', uniqid($filename, true), Core::$secret);
 
-    return preg_replace('/(.+)(\.zip)$/i', '${1}__' . $hash . '${2}', $filename);
+    return preg_replace('{(.+)(\.zip)$}Di', '${1}__' . $hash . '${2}', $filename);
 };
 
 // nacteni existujicich zaloh
@@ -32,7 +32,7 @@ foreach (scandir($backup_dir) as $item) {
     if (
         $item !== '.'
         && $item !== '..'
-        && preg_match('/\.zip$/i', $item)
+        && preg_match('{\.zip$}Di', $item)
         && is_file($backup_path = $backup_dir . '/' . $item)
     ) {
         $backup_files[$item] = filectime($backup_path);
@@ -252,7 +252,7 @@ if (!empty($_POST)) {
 
                 $backup_name = _slugify($_FILES['backup']['name'], false);
 
-                if (preg_match('/\.zip$/i', $backup_name) && _isSafeFile($backup_name)) {
+                if (preg_match('{\.zip$}Di', $backup_name) && _isSafeFile($backup_name)) {
                     $stored_backup_name = $add_hash_suffix($backup_name);
 
                     _userMoveUploadedFile($_FILES['backup']['tmp_name'], $backup_dir . '/' . $stored_backup_name);

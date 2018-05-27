@@ -116,11 +116,11 @@ function _slugify($input, $lower = true, $extra = null)
     }
 
     // dvojite symboly
-    $from = array('|--+|', '|\.\.+|', '|\.-+|', '|-\.+|');
+    $from = array('{--+}', '{\.\.+}', '{\.-+}', '{-\.+}');
     $to = array('-', '.', '.', '-');
     if ($extra !== null) {
         foreach ($extra as $extra_char => $i) {
-            $from[] = '|' . preg_quote($extra_char . $extra_char) . '+|';
+            $from[] = '{' . preg_quote($extra_char . $extra_char) . '+}';
             $to[] = $extra_char;
         }
     }
@@ -147,7 +147,7 @@ function _slugify($input, $lower = true, $extra = null)
 function _camelCase($input, $firstLetterLower = false)
 {
     $output = '';
-    $parts = preg_split('/[^a-zA-Z0-9\x80-\xFF]+/', $input, null, PREG_SPLIT_NO_EMPTY);
+    $parts = preg_split('{[^a-zA-Z0-9\x80-\xFF]+}', $input, null, PREG_SPLIT_NO_EMPTY);
 
     for ($i = 0; isset($parts[$i]); ++$i) {
         $part = mb_strtolower($parts[$i]);
@@ -386,7 +386,7 @@ function _cutHtml($html, $length)
  */
 function _fixTrailingHtmlEntity($string)
 {
-    return preg_replace('/\\s*&[^;]*$/', '', $string);
+    return preg_replace('{\\s*&[^;]*$}D', '', $string);
 }
 
 /**
@@ -645,7 +645,7 @@ function _parseArguments($input)
  */
 function _isSafeUrl($url)
 {
-    return preg_match('/^[\s\0-\32a-z0-9_\-]+:/i', $url) === 0;
+    return preg_match('{[\s\0-\32a-z0-9_\-]+:}Ai', $url) === 0;
 }
 
 /**
@@ -912,19 +912,19 @@ function _validateEmail($email)
                     // local part starts or ends with '.'
                     $isValid = false;
                 } else
-                    if (preg_match('/\\.\\./', $local)) {
+                    if (preg_match('{\\.\\.}', $local)) {
                         // local part has two consecutive dots
                         $isValid = false;
                     } else
-                        if (!preg_match('/^[A-Za-z0-9\\-\\.]+$/', $domain)) {
+                        if (!preg_match('{[A-Za-z0-9\\-\\.]+$}AD', $domain)) {
                             // character not valid in domain part
                             $isValid = false;
                         } else
-                            if (preg_match('/\\.\\./', $domain)) {
+                            if (preg_match('{\\.\\.}', $domain)) {
                                 // domain part has two consecutive dots
                                 $isValid = false;
                             } else
-                                if (!preg_match('/^[A-Za-z0-9\\-\\._]+$/', $local)) {
+                                if (!preg_match('{[A-Za-z0-9\\-\\._]+$}AD', $local)) {
                                     // character not valid in local part
                                     $isValid = false;
                                 }
@@ -947,8 +947,8 @@ function _validateEmail($email)
  */
 function _wsTrim($string)
 {
-    $from = array("|(\r\n){3,}|s", "|  +|s");
-    $to = array("\r\n\r\n", " ");
+    $from = array("{(\r\n){3,}}s", "{  +}s");
+    $to = array("\r\n\r\n", ' ');
 
     return preg_replace($from, $to, trim($string));
 }
@@ -1092,7 +1092,7 @@ function _isDayTime($time = null, $get_times = false)
  */
 function _isSafeFile($fname)
 {
-    if (preg_match('/\.([^.]+)(?:\..+)?$/s', trim($fname), $match)) {
+    if (preg_match('{\.([^.]+)(?:\..+)?$}Ds', trim($fname), $match)) {
         return !in_array(mb_strtolower($match[1]), Core::$dangerousServerSideExt, true);
     }
 
@@ -2874,7 +2874,7 @@ function _filterUserContent($content, $isHtml = true, $hasHcm = true)
  */
 function _parseHCM($input, $handler = '_parseHCM_module')
 {
-    return preg_replace_callback('|\[hcm\](.*?)\[/hcm\]|s', $handler, $input);
+    return preg_replace_callback('{\[hcm\](.*?)\[/hcm\]}s', $handler, $input);
 }
 
 /**
@@ -2956,7 +2956,7 @@ function _filterHCM($content, $exception = false)
         $blacklist[] = 'php';
     }
 
-    $whitelist = preg_split('/\s*,\s*/', _priv_adminhcm);
+    $whitelist = preg_split('{\s*,\s*}', _priv_adminhcm);
     if (sizeof($whitelist) === 1 && $whitelist[0] === '*') {
         $whitelist = null; // vsechny HCM moduly povoleny
     }
@@ -3312,7 +3312,7 @@ function _parseBBCode_processTag($tag, $arg = '', $buffer = null)
         case 'color':
             static $colors = array('aqua' => 0, 'black' => 1, 'blue' => 2, 'fuchsia' => 3, 'gray' => 4, 'green' => 5, 'lime' => 6, 'maroon' => 7, 'navy' => 8, 'olive' => 9, 'orange' => 10, 'purple' => 11, 'red' => 12, 'silver' => 13, 'teal' => 14, 'white' => 15, 'yellow' => 16);
             if ($buffer !== '') {
-                if (preg_match('/^#[0-9A-Fa-f]{3,6}$/', $arg) !== 1) {
+                if (preg_match('{#[0-9A-Fa-f]{3,6}$}AD', $arg) !== 1) {
                     $arg = mb_strtolower($arg);
                     if (!isset($colors[$arg])) {
                         return $buffer;
@@ -3370,7 +3370,7 @@ function _parsePost($input, $smileys = true, $bbcode = true, $nl2br = true)
     if (_smileys && $smileys) {
         $template = _getCurrentTemplate();
 
-        $input = preg_replace('/\*(\d{1,3})\*/s', '<img src=\'' . $template->getWebPath() . '/images/smileys/$1.' . $template->getOption('smiley.format') . '\' alt=\'$1\' class=\'post-smiley\'>', $input, 32);
+        $input = preg_replace('{\*(\d{1,3})\*}s', '<img src=\'' . $template->getWebPath() . '/images/smileys/$1.' . $template->getOption('smiley.format') . '\' alt=\'$1\' class=\'post-smiley\'>', $input, 32);
     }
 
     // vyhodnoceni BBCode

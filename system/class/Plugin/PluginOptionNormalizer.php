@@ -244,7 +244,7 @@ class PluginOptionNormalizer
 
             $entry = array();
 
-            if (!preg_match('/^[a-zA-Z0-9_.]+$/', $layout)) {
+            if (!preg_match('{[a-zA-Z0-9_.]+$}AD', $layout)) {
                 throw new OptionSetNormalizerException(sprintf('[%s] the layout name is empty or contains invalid characters', $layout));
             }
 
@@ -272,7 +272,7 @@ class PluginOptionNormalizer
                 if (!is_string($slot)) {
                     throw new OptionSetNormalizerException(sprintf('[%s][slots][%s] invalid value (expected string)', $layout, $index));
                 }
-                if (!preg_match('/^[a-zA-Z0-9_.]+$/', $slot)) {
+                if (!preg_match('{[a-zA-Z0-9_.]+$}AD', $slot)) {
                     throw new OptionSetNormalizerException(sprintf('[%s][slots][%s] the slot name is empty or contains invalid characters', $layout, $index));
                 }
             }

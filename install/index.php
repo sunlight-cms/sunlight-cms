@@ -698,7 +698,7 @@ class ConfigurationStep extends Step
 
         if ($config['db.prefix'] === '') {
             $this->errors[] = 'db.prefix.empty';
-        } elseif (!preg_match('/^[a-zA-Z0-9_]+$/', $config['db.prefix'])) {
+        } elseif (!preg_match('{[a-zA-Z0-9_]+$}AD', $config['db.prefix'])) {
             $this->errors[] = 'db.prefix.invalid';
         }
 
@@ -746,7 +746,7 @@ class ConfigurationStep extends Step
         // prepare defaults
         $url = Url::current();
 
-        if (preg_match('~(/.+/)install/?$~', $url->path, $match)) {
+        if (preg_match('{(/.+/)install/?$}AD', $url->path, $match)) {
             $defaultUrl = $match[1];
         } else {
             $defaultUrl = '/';

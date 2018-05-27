@@ -41,7 +41,7 @@ if (isset($_GET['confirm'])) {
     }
 
     $code = _get('confirm');
-    if (preg_match('/^[a-z0-9]{48}$/', $code)) {
+    if (preg_match('{[a-z0-9]{48}$}AD', $code)) {
         // kontrola omezeni
         if (_iplogCheck(_iplog_failed_account_activation)) {
             // smazani expirovanych

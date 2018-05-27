@@ -82,7 +82,7 @@ class Json
         if (
             $jsonpCallbackParam !== null
             && isset($_GET[$jsonpCallbackParam])
-            && preg_match('{^[a-z_$]\w+$}i', $callback = _get($jsonpCallbackParam))
+            && preg_match('{[a-z_$]\w+$}ADi', $callback = _get($jsonpCallbackParam))
         ) {
             $contentType = static::CONTENT_TYPE_JSONP;
             $encodedData = static::encodeJsonp($callback, $data, $pretty, $escapedUnicode, $escapedSlashes);

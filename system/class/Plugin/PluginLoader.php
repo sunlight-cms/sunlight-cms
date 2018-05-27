@@ -27,7 +27,7 @@ class PluginLoader
     public function __construct(array $types)
     {
         $this->types = $types;
-        $this->pluginIdPattern = '/^' . Plugin::ID_PATTERN . '$/';
+        $this->pluginIdPattern = '{' . Plugin::ID_PATTERN . '$}AD';
 
         $this->commonOptionSet = new OptionSet(Plugin::$commonOptions);
         $this->commonOptionSet->setIgnoreExtraIndexes(true);

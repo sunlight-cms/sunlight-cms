@@ -127,10 +127,10 @@ class PluginArchive
         foreach ($this->manager->getTypes() as $type) {
             $definition = $this->manager->getTypeDefinition($type);
 
-            $dirPatterns[] = preg_quote($definition['dir'], '~');
+            $dirPatterns[] = preg_quote($definition['dir']);
             $typeDir2Type[$definition['dir']] = $type;
         }
-        $regex = '~^(' . implode('|', $dirPatterns) . ')/(' . Plugin::ID_PATTERN . ')/(.+)$~';
+        $regex = '{(' . implode('|', $dirPatterns) . ')/(' . Plugin::ID_PATTERN . ')/(.+)$}AD';
 
         // iterate all files in the archive
         for ($i = 0; $i < $this->zip->numFiles; ++$i) {

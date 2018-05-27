@@ -18,7 +18,7 @@ if (_pretty_urls && !$_index['is_rewritten']) {
 
 // nalezeni modulu
 $_index['is_found'] = false;
-if (preg_match('/^[a-zA-Z_\-.]+$/', $_index['slug'])) {
+if (preg_match('{[a-zA-Z_\-.]+$}AD', $_index['slug'])) {
 
     // test, zda se jedna o systemovy modul
     $script = _root . 'system/action/modules/' . $_index['slug'] . '.php';
