@@ -218,7 +218,7 @@ class Core
             'db.password' => null,
             'db.name' => null,
             'db.prefix' => null,
-            'url' => null,
+            'url' => '',
             'secret' => null,
             'app_id' => null,
             'fallback_lang' => 'en',
@@ -237,7 +237,6 @@ class Core
                 'db.server',
                 'db.name',
                 'db.prefix',
-                'url',
                 'secret',
                 'app_id',
             );
@@ -255,7 +254,7 @@ class Core
         // define variables
         static::$appId = $options['app_id'];
         static::$secret = $options['secret'];
-        static::$url = $options['url'];
+        static::$url = static::resolveUrl($options['url']);
         static::$fallbackLang = $options['fallback_lang'];
         static::$sessionEnabled = $options['session_enabled'];
         static::$sessionRegenerate = $options['session_regenerate'] || isset($_POST['_session_force_regenerate']);
@@ -271,6 +270,31 @@ class Core
         define('_geo_latitude', $options['geo.latitude']);
         define('_geo_longitude', $options['geo.longitude']);
         define('_geo_zenith', $options['geo.zenith']);
+    }
+
+    /**
+     * @param string $url
+     * @return string
+     */
+    protected static function resolveUrl($url)
+    {
+        $baseUrl = Url::parse($url);
+        $currentUrl = Url::current();
+
+        // set missing base absolute URL components from the current URL
+        if ($baseUrl->scheme === null) {
+            $baseUrl->scheme = $currentUrl->scheme;
+        }
+
+        if ($baseUrl->host === null) {
+            $baseUrl->host = $currentUrl->host;
+        }
+
+        if ($baseUrl->port === null) {
+            $baseUrl->port = $currentUrl->port;
+        }
+
+        return $baseUrl->generateAbsolute();
     }
 
     /**

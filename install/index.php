@@ -91,8 +91,6 @@ class Labels
             'config.error.db.prefix.empty' => 'prefix nesmí být prázdný',
             'config.error.db.prefix.invalid' => 'prefix obsahuje nepovolené znaky',
             'config.error.db.connect.error' => 'nepodařilo se připojit k databázi, chyba: %error%',
-            'config.error.url.empty' => 'adresa webu nesmí být prázdná',
-            'config.error.url.invalid' => 'adresa webu nemá platný formát',
             'config.error.secret.empty' => 'tajný hash nesmí být prázdný',
             'config.error.app_id.empty' => 'ID aplikace nesmí být prázdné',
             'config.error.app_id.invalid' => 'ID aplikace obsahuje nepovolené znaky',
@@ -111,7 +109,7 @@ class Labels
             'config.db.prefix.help' => 'předpona názvu tabulek',
             'config.system' => 'Nastavení systému',
             'config.url' => 'Adresa webu',
-            'config.url.help' => 'absolutní URL ke stránkám',
+            'config.url.help' => 'absolutní cesta nebo URL ke stránkám',
             'config.secret' => 'Tajný hash',
             'config.secret.help' => 'náhodný tajný hash (používáno mj. jako součást XSRF ochrany)',
             'config.app_id' => 'ID aplikace',
@@ -172,8 +170,6 @@ class Labels
             'config.error.db.prefix.empty' => 'prefix must not be empty',
             'config.error.db.prefix.invalid' => 'prefix contains invalid characters',
             'config.error.db.connect.error' => 'could not connect to the database, error: %error%',
-            'config.error.url.empty' => 'web URL must not be empty',
-            'config.error.url.invalid' => 'invalid web URL',
             'config.error.secret.empty' => 'secret hash must not be empty',
             'config.error.app_id.empty' => 'app ID must not be empty',
             'config.error.app_id.invalid' => 'app ID contains invalid characters',
@@ -192,7 +188,7 @@ class Labels
             'config.db.prefix.help' => 'table name prefix',
             'config.system' => 'System configuration',
             'config.url' => 'Web URL',
-            'config.url.help' => 'absolute URL of the website',
+            'config.url.help' => 'absolute path or URL of the website',
             'config.secret' => 'Secret hash',
             'config.secret.help' => 'random secret hash (used for XSRF protection etc.)',
             'config.app_id' => 'App ID',
@@ -706,12 +702,6 @@ class ConfigurationStep extends Step
             $this->errors[] = 'db.prefix.invalid';
         }
 
-        if ($config['url'] === '') {
-            $this->errors[] = 'url.empty';
-        } elseif (!preg_match('~^https?://[a-zA-Z0-9_.\-]+(:\d+)?((?:/[^/]+)*)$~', $config['url'])) {
-            $this->errors[] = 'url.invalid';
-        }
-
         if ($config['secret'] === '') {
             $this->errors[] = 'secret.empty';
         }
@@ -756,13 +746,12 @@ class ConfigurationStep extends Step
         // prepare defaults
         $url = Url::current();
 
-        if (preg_match('~(/.+)/install/?$~', $url->path, $match)) {
-            $path = $match[1];
+        if (preg_match('~(/.+/)install/?$~', $url->path, $match)) {
+            $defaultUrl = $match[1];
         } else {
-            $path = '/';
+            $defaultUrl = '/';
         }
 
-        $defaultUrl = sprintf('%s://%s%s', $url->scheme, $url->getFullHost(), $path);
         $defaultSecret = StringGenerator::generateHash(64);
         $defaultTimezone = date_default_timezone_get();
         $defaultGeoLatitude = 50.5;

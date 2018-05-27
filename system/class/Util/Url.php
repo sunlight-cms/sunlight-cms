@@ -167,8 +167,6 @@ class Url
         // path
         if (!empty($this->components['path'])) {
             $output .= (($this->components['path'][0] !== '/') ? '/' : '') . $this->components['path'];
-        } else {
-            $output .= '/';
         }
 
         // query
