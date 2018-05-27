@@ -394,7 +394,7 @@ class CommentService
         if ($is_topic_list) {
             // last post (for topic lists)
             if (!empty($item_ids_with_answers)) {
-                $topicextra = DB::query("SELECT * FROM (SELECT p.id,p.xhome,p.author,p.guest," . $userQuery['column_list'] . " FROM " . _posts_table . " AS p " . $userQuery['joins'] . " WHERE p.type=" . _post_forum_topic . " AND p.home=" . $home . " AND p.xhome IN(" . implode(',', $item_ids_with_answers) . ") ORDER BY p.id DESC) AS replies GROUP BY xhome");
+                $topicextra = DB::query("SELECT * FROM (SELECT p.id,p.xhome,p.author,p.guest," . $userQuery['column_list'] . " FROM " . _posts_table . " AS p " . $userQuery['joins'] . " WHERE p.type=" . _post_forum_topic . " AND p.home=" . $home . " AND p.xhome IN(" . implode(',', $item_ids_with_answers) . ") ORDER BY p.id DESC LIMIT 1) AS replies GROUP BY xhome");
                 while ($item = DB::row($topicextra)) {
                     if (!isset($items[$item['xhome']])) {
                         if (_debug) {
