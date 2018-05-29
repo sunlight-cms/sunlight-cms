@@ -5,9 +5,9 @@ use Sunlight\Database\Database as DB;
 
 if (!defined('_root')) {
     exit;
-}
+};
 
-function _HCM_sbox($id = null)
+return function ($id = null)
 {
     // priprava
     $result = "";
@@ -92,4 +92,4 @@ function _HCM_sbox($id = null)
     }
 
     return $result;
-}
+};

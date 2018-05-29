@@ -4,9 +4,9 @@ use Sunlight\Database\Database as DB;
 
 if (!defined('_root')) {
     exit;
-}
+};
 
-function _HCM_linkroot($id = null, $text = null, $nove_okno = false)
+return function ($id = null, $text = null, $nove_okno = false)
 {
     $is_id = is_numeric($id);
     if ($is_id) {
@@ -27,4 +27,4 @@ function _HCM_linkroot($id = null, $text = null, $nove_okno = false)
 
         return "<a href='" . _linkRoot($id, $query['slug']) . "'" . $target . ">" . $query['title'] . "</a>";
     }
-}
+};

@@ -4,9 +4,9 @@ use Sunlight\Core;
 
 if (!defined('_root')) {
     exit;
-}
+};
 
-function _HCM_img($cesta = "", $rozmery = null, $titulek = null, $lightbox = null)
+return function ($cesta = "", $rozmery = null, $titulek = null, $lightbox = null)
 {
     $cesta = _root . $cesta;
 
@@ -21,4 +21,4 @@ function _HCM_img($cesta = "", $rozmery = null, $titulek = null, $lightbox = nul
     $thumb = _pictureThumb($cesta, $resize_opts);
 
     return "<a href='" . _e(_linkFile($cesta)) . "' target='_blank' class='lightbox' data-gallery-group='lb_hcm" . _e($lightbox) . "'" . (($titulek != "") ? ' title=\'' . _e($titulek) . '\'' : '') . "><img src='" . _e(_linkFile($thumb)) . "' alt='" . _e($titulek ?: basename($cesta)) . "'></a>\n";
-}
+};

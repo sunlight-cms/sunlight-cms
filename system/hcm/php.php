@@ -2,9 +2,9 @@
 
 if (!defined('_root')) {
     exit;
-}
+};
 
-function _HCM_php($kod = "", $ze_souboru = false)
+return function ($kod = "", $ze_souboru = false)
 {
     return _buffer(function () use ($kod, $ze_souboru) {
         if ($ze_souboru) {
@@ -21,4 +21,4 @@ function _HCM_php($kod = "", $ze_souboru = false)
             eval($kod);
         }
     });
-}
+};

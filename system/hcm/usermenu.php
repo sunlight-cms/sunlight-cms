@@ -2,9 +2,9 @@
 
 if (!defined('_root')) {
     exit;
-}
+};
 
-function _HCM_usermenu()
+return function ()
 {
     return \Sunlight\Template::userMenu();
-}
+};

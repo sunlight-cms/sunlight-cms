@@ -4,9 +4,9 @@ use Sunlight\Database\Database as DB;
 
 if (!defined('_root')) {
     exit;
-}
+};
 
-function _HCM_countusers($group_id = null)
+return function ($group_id = null)
 {
     if (isset($group_id)) {
         $cond = _sqlWhereColumn("group_id", $group_id);
@@ -15,4 +15,4 @@ function _HCM_countusers($group_id = null)
     }
 
     return DB::count(_users_table, $cond);
-}
+};

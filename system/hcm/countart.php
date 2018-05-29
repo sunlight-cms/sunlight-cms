@@ -4,9 +4,9 @@ use Sunlight\Database\Database as DB;
 
 if (!defined('_root')) {
     exit;
-}
+};
 
-function _HCM_countart($kategorie = null)
+return function ($kategorie = null)
 {
     if (!empty($kategorie)) {
         $kategorie = _arrayRemoveValue(explode('-', $kategorie), '');
@@ -17,4 +17,4 @@ function _HCM_countart($kategorie = null)
     list($joins, $cond) = _articleFilter('art', $kategorie);
 
     return DB::result(DB::query("SELECT COUNT(*) FROM " . _articles_table . " AS art " . $joins . " WHERE " . $cond), 0);
-}
+};

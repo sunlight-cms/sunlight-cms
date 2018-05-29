@@ -4,9 +4,9 @@ use Sunlight\Core;
 
 if (!defined('_root')) {
     exit;
-}
+};
 
-function _HCM_gallery($cesta = "", $rozmery = null, $strankovani = null, $lightbox = true)
+return function ($cesta = "", $rozmery = null, $strankovani = null, $lightbox = true)
 {
     global $_index;
 
@@ -77,4 +77,4 @@ function _HCM_gallery($cesta = "", $rozmery = null, $strankovani = null, $lightb
     }
 
     return $result;
-}
+};

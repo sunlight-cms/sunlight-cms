@@ -4,9 +4,9 @@ use Sunlight\Database\Database as DB;
 
 if (!defined('_root')) {
     exit;
-}
+};
 
-function _HCM_recentposts($limit = null, $stranky = "", $typ = null)
+return function ($limit = null, $stranky = "", $typ = null)
 {
     // priprava
     $result = "";
@@ -64,4 +64,4 @@ function _HCM_recentposts($limit = null, $stranky = "", $typ = null)
     }
 
     return $result;
-}
+};

@@ -4,9 +4,9 @@ use Sunlight\Database\Database as DB;
 
 if (!defined('_root')) {
     exit;
-}
+};
 
-function _HCM_articles($typ = 'new', $pocet = null, $perex = 'perex', $info = true, $kategorie = null)
+return function ($typ = 'new', $pocet = null, $perex = 'perex', $info = true, $kategorie = null)
 {
     // priprava
     $result = "";
@@ -106,4 +106,4 @@ function _HCM_articles($typ = 'new', $pocet = null, $perex = 'perex', $info = tr
     }
 
     return $result;
-}
+};

@@ -2,9 +2,9 @@
 
 if (!defined('_root')) {
     exit;
-}
+};
 
-function _HCM_date($format = _time_format, $time = null)
+return function ($format = _time_format, $time = null)
 {
     if ($time === null) {
         $time = time();
@@ -15,4 +15,4 @@ function _HCM_date($format = _time_format, $time = null)
     }
 
     return date($format, $time);
-}
+};

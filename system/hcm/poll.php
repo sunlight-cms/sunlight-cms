@@ -5,9 +5,9 @@ use Sunlight\Database\Database as DB;
 
 if (!defined('_root')) {
     exit;
-}
+};
 
-function _HCM_poll($id = null)
+return function ($id = null)
 {
     // nacteni promennych
     $id = (int) $id;
@@ -80,4 +80,4 @@ function _HCM_poll($id = null)
 ";
 
     }
-}
+};

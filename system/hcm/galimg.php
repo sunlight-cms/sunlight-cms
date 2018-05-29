@@ -5,9 +5,9 @@ use Sunlight\Database\Database as DB;
 
 if (!defined('_root')) {
     exit;
-}
+};
 
-function _HCM_galimg($galerie = "", $typ = 'new', $rozmery = null, $limit = null)
+return function ($galerie = "", $typ = 'new', $rozmery = null, $limit = null)
 {
     // nacteni parametru
     $result = "";
@@ -58,4 +58,4 @@ function _HCM_galimg($galerie = "", $typ = 'new', $rozmery = null, $limit = null
     }
 
     return $result;
-}
+};

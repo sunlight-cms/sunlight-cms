@@ -2,9 +2,9 @@
 
 if (!defined('_root')) {
     exit;
-}
+};
 
-function _HCM_file($soubor = '')
+return function ($soubor = '')
 {
     $soubor = _root . $soubor;
 
@@ -14,4 +14,4 @@ function _HCM_file($soubor = '')
     ) {
         return file_get_contents($soubor);
     }
-}
+};

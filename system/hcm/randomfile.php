@@ -4,9 +4,9 @@ use Sunlight\Core;
 
 if (!defined('_root')) {
     exit;
-}
+};
 
-function _HCM_randomfile($cesta = "", $typ = 'text', $pocet = 1, $rozmery_nahledu = null)
+return function ($cesta = "", $typ = 'text', $pocet = 1, $rozmery_nahledu = null)
 {
     $result = "";
     $cesta = _root . $cesta;
@@ -71,4 +71,4 @@ function _HCM_randomfile($cesta = "", $typ = 'text', $pocet = 1, $rozmery_nahled
     }
 
     return $result;
-}
+};

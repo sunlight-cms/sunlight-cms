@@ -2,9 +2,9 @@
 
 if (!defined('_root')) {
     exit;
-}
+};
 
-function _HCM_mailto($email = "")
+return function ($email = "")
 {
     return _mailto($email);
-}
+};

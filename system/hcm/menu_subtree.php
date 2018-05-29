@@ -2,9 +2,9 @@
 
 if (!defined('_root')) {
     exit;
-}
+};
 
-function _HCM_menu_subtree($id_stranky = null, $od = null, $do = null, $max_hloubka = null, $class = null)
+return function ($id_stranky = null, $od = null, $do = null, $max_hloubka = null, $class = null)
 {
     _normalize($id_stranky, 'int');
     _normalize($od, 'int');
@@ -19,4 +19,4 @@ function _HCM_menu_subtree($id_stranky = null, $od = null, $do = null, $max_hlou
         'ord_end' => $do,
         'css_class' => $class,
     ));
-}
+};

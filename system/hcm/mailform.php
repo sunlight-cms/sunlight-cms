@@ -4,9 +4,9 @@ use Sunlight\Core;
 
 if (!defined('_root')) {
     exit;
-}
+};
 
-function _HCM_mailform($adresa = "", $predmet = null)
+return function ($adresa = "", $predmet = null)
 {
     // priprava
     $result = "";
@@ -61,4 +61,4 @@ function _HCM_mailform($adresa = "", $predmet = null)
         );
 
     return $result;
-}
+};

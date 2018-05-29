@@ -4,9 +4,9 @@ use Sunlight\Database\Database as DB;
 
 if (!defined('_root')) {
     exit;
-}
+};
 
-function _HCM_users($razeni = 'new', $pocet = 5)
+return function ($razeni = 'new', $pocet = 5)
 {
     $pocet = abs((int) $pocet);
 
@@ -77,4 +77,4 @@ function _HCM_users($razeni = 'new', $pocet = 5)
     }
 
     return $result;
-}
+};

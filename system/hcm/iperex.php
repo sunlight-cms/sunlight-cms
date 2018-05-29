@@ -2,9 +2,9 @@
 
 if (!defined('_root')) {
     exit;
-}
+};
 
-function _HCM_iperex($odstavec = true)
+return function ($odstavec = true)
 {
     if ($GLOBALS['_index']['is_page'] && $GLOBALS['_page']['perex'] !== '') {
         if ($odstavec) {
@@ -15,4 +15,4 @@ function _HCM_iperex($odstavec = true)
     }
 
     return '';
-}
+};

@@ -2,9 +2,9 @@
 
 if (!defined('_root')) {
     exit;
-}
+};
 
-function _HCM_search()
+return function ()
 {
     if (_search) {
         return "<form action='" . _linkModule('search') . "' method='get' class='searchform'>
@@ -18,4 +18,4 @@ function _HCM_search()
 </form>
 ";
     }
-}
+};

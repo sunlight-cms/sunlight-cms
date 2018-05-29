@@ -2,9 +2,9 @@
 
 if (!defined('_root')) {
     exit;
-}
+};
 
-function _HCM_path()
+return function ()
 {
     return _e(Sunlight\Util\Url::current()->path);
-}
+};

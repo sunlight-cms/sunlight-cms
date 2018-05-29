@@ -2,9 +2,9 @@
 
 if (!defined('_root')) {
     exit;
-}
+};
 
-function _HCM_menu_tree($od = null, $do = null, $max_hloubka = null, $class = null)
+return function ($od = null, $do = null, $max_hloubka = null, $class = null)
 {
     _normalize($od, 'int');
     _normalize($do, 'int');
@@ -17,4 +17,4 @@ function _HCM_menu_tree($od = null, $do = null, $max_hloubka = null, $class = nu
         'ord_end' => $do,
         'css_class' => $class,
     ));
-}
+};
