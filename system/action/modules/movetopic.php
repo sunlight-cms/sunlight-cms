@@ -4,9 +4,7 @@ use Sunlight\Database\Database as DB;
 use Sunlight\Database\SimpleTreeFilter;
 use Sunlight\Page\PageManager;
 
-if (!defined('_root')) {
-    exit;
-}
+defined('_root') or exit;
 
 if (!_logged_in) {
     $_index['is_accessible'] = false;

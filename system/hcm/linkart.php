@@ -2,9 +2,7 @@
 
 use Sunlight\Database\Database as DB;
 
-if (!defined('_root')) {
-    exit;
-};
+defined('_root') or exit;
 
 return function ($id = null, $text = null, $nove_okno = false)
 {

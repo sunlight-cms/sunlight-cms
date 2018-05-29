@@ -5,9 +5,7 @@ use Sunlight\Backup\Backup;
 use Sunlight\Backup\BackupRestorer;
 use Sunlight\Message;
 
-if (!defined('_root')) {
-    exit;
-}
+defined('_root') or exit;
 
 if (isset($_POST['apply_patch'])) do {
     // check upload

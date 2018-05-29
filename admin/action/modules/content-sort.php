@@ -2,9 +2,7 @@
 
 use Sunlight\Admin\PageLister;
 
-if (!defined('_root')) {
-    exit;
-}
+defined('_root') or exit;
 /* ---  vystup  --- */
 
 $output .= "<p class='bborder'>" . _lang('admin.content.sort.p') . "</p>";

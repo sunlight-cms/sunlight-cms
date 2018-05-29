@@ -5,9 +5,7 @@ use Sunlight\Message;
 use Sunlight\Plugin\TemplatePlugin;
 use Sunlight\Plugin\TemplateService;
 
-if (!defined('_root')) {
-    exit;
-}
+defined('_root') or exit;
 
 $message = null;
 

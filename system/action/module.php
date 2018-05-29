@@ -2,9 +2,7 @@
 
 use Sunlight\Extend;
 
-if (!defined('_root')) {
-    exit;
-}
+defined('_root') or exit;
 
 $_index['url'] = _linkModule($_index['slug'], $_url->getQueryString(), false);
 

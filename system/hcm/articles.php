@@ -2,9 +2,7 @@
 
 use Sunlight\Database\Database as DB;
 
-if (!defined('_root')) {
-    exit;
-};
+defined('_root') or exit;
 
 return function ($typ = 'new', $pocet = null, $perex = 'perex', $info = true, $kategorie = null)
 {

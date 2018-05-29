@@ -6,9 +6,7 @@ use Sunlight\Extend;
 use Sunlight\Message;
 use Sunlight\Util\Url;
 
-if (!defined('_root')) {
-    exit;
-}
+defined('_root') or exit;
 
 /* ---  priprava promennych  --- */
 

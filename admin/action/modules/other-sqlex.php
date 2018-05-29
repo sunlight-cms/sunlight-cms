@@ -3,9 +3,7 @@
 use Sunlight\Database\Database as DB;
 use Sunlight\Database\SqlReader;
 
-if (!defined('_root')) {
-    exit;
-}
+defined('_root') or exit;
 
 /* ---  priprava  --- */
 

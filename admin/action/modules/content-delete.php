@@ -4,9 +4,7 @@ use Sunlight\Database\Database as DB;
 use Sunlight\Page\PageManager;
 use Sunlight\Page\PageManipulator;
 
-if (!defined('_root')) {
-    exit;
-}
+defined('_root') or exit;
 
 $type_array = PageManager::getTypes();
 

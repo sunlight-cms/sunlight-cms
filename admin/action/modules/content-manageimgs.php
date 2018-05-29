@@ -4,9 +4,7 @@ use Sunlight\Core;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 
-if (!defined('_root')) {
-    exit;
-}
+defined('_root') or exit;
 
 /* ---  priprava promennych  --- */
 

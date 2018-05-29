@@ -5,9 +5,7 @@ use Sunlight\Database\Doctrine\Console;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 
-if (!defined('_root')) {
-    exit;
-}
+defined('_root') or exit;
 
 $output .= _buffer(function () { ?>
     <form method="post">

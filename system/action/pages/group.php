@@ -3,9 +3,7 @@
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 
-if (!defined('_root')) {
-    exit;
-}
+defined('_root') or exit;
 
 // titulek
 $_index['title'] = $_page['title'];

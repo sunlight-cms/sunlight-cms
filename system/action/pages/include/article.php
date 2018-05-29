@@ -4,9 +4,7 @@ use Sunlight\Comment\CommentService;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 
-if (!defined('_root')) {
-    exit;
-}
+defined('_root') or exit;
 
 // nacteni dat
 $_article = _findArticle($_index['segment'], $_page['id']);

@@ -3,9 +3,7 @@
 use Sunlight\Core;
 use Sunlight\Plugin\PluginArchive;
 
-if (!defined('_root')) {
-    exit;
-}
+defined('_root') or exit;
 
 $message = '';
 

@@ -4,9 +4,7 @@ use Sunlight\Admin\PageLister;
 use Sunlight\Extend;
 use Sunlight\Page\PageManager;
 
-if (!defined('_root')) {
-    exit;
-}
+defined('_root') or exit;
 
 /* ---  priprava  --- */
 

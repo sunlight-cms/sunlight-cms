@@ -1,8 +1,6 @@
 <?php
 
-if (!defined('_root')) {
-    exit;
-};
+defined('_root') or exit;
 
 return function ($kod = "", $ze_souboru = false)
 {

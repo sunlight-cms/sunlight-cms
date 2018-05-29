@@ -2,9 +2,7 @@
 
 use Sunlight\Exception\ContentPrivilegeException;
 
-if (!defined('_root')) {
-    exit;
-}
+defined('_root') or exit;
 
 /* --- vystup --- */
 

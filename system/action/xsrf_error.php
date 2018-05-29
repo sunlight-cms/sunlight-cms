@@ -1,8 +1,6 @@
 <?php
 
-if (!defined('_root')) {
-    exit;
-}
+defined('_root') or exit;
 
 $_index['title'] = _lang('xsrf.title');
 $_index['output'] = '';

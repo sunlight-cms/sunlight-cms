@@ -7,9 +7,7 @@ use Sunlight\Util\Password;
 use Sunlight\Util\StringGenerator;
 use Sunlight\Util\Url;
 
-if (!defined('_root')) {
-    exit;
-}
+defined('_root') or exit;
 
 if (!_registration) {
     $_index['found'] = false;

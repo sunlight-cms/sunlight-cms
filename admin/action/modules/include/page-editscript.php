@@ -6,9 +6,7 @@ use Sunlight\Page\PageManager;
 use Sunlight\Page\PageManipulator;
 use Sunlight\Plugin\TemplateService;
 
-if (!defined('_root')) {
-    exit;
-}
+defined('_root') or exit;
 
 /* --- kontrola pristupu --- */
 

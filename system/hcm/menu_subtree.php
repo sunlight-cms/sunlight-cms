@@ -1,8 +1,6 @@
 <?php
 
-if (!defined('_root')) {
-    exit;
-};
+defined('_root') or exit;
 
 return function ($id_stranky = null, $od = null, $do = null, $max_hloubka = null, $class = null)
 {

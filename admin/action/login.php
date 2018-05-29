@@ -2,9 +2,7 @@
 
 use Sunlight\Message;
 
-if (!defined('_root')) {
-    exit;
-}
+defined('_root') or exit;
 
 /* --- vystup --- */
 

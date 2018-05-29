@@ -6,9 +6,7 @@ use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\Plugin\PluginManager;
 
-if (!defined('_root')) {
-    exit;
-}
+defined('_root') or exit;
 
 /* --- priprava --- */
 

@@ -1,8 +1,6 @@
 <?php
 
-if (!defined('_root')) {
-    exit;
-}
+defined('_root') or exit;
 
 // vystup
 $_index['title'] = $_page['title'];

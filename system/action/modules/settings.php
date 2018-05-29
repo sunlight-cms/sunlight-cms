@@ -7,9 +7,7 @@ use Sunlight\Plugin\PluginManager;
 use Sunlight\Util\Password;
 use Sunlight\Util\Url;
 
-if (!defined('_root')) {
-    exit;
-}
+defined('_root') or exit;
 
 if (!_logged_in) {
     $_index['is_accessible'] = false;

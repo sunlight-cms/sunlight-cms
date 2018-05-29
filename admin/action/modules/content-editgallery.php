@@ -1,8 +1,6 @@
 <?php
 
-if (!defined('_root')) {
-    exit;
-}
+defined('_root') or exit;
 
 /* ---  nastaveni a vlozeni skriptu pro upravu stranky  --- */
 

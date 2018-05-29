@@ -6,9 +6,7 @@ use Sunlight\Extend;
 use Sunlight\Page\PageManager;
 use Sunlight\Page\PageManipulator;
 
-if (!defined('_root')) {
-    exit;
-}
+defined('_root') or exit;
 
 /* ----  nacteni promennych  ---- */
 

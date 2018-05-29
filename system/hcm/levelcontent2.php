@@ -1,8 +1,6 @@
 <?php
 
-if (!defined('_root')) {
-    exit;
-};
+defined('_root') or exit;
 
 return function ($min_uroven = 0, $max_uroven = _priv_max_level, $vyhovujici_text = "", $nevyhovujici_text = "")
 {

@@ -5,9 +5,7 @@ use Sunlight\Database\SimpleTreeFilter;
 use Sunlight\Page\PageManager;
 use Sunlight\Extend;
 
-if (!defined('_root')) {
-    exit;
-}
+defined('_root') or exit;
 
 /* ---  vystup  --- */
 

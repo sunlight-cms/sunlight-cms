@@ -5,9 +5,7 @@ use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\Util\Filesystem;
 
-if (!defined('_root')) {
-    exit;
-}
+defined('_root') or exit;
 
 /* ----  priprava funkci  ---- */
 

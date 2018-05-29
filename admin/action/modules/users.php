@@ -3,9 +3,7 @@
 use Sunlight\Database\Database as DB;
 use Sunlight\Util\Math;
 
-if (!defined('_root')) {
-    exit;
-}
+defined('_root') or exit;
 
 /* ---  akce  --- */
 

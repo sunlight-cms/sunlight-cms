@@ -2,9 +2,7 @@
 
 use Sunlight\Util\Url;
 
-if (!defined('_root')) {
-    exit;
-};
+defined('_root') or exit;
 
 return function ($nazev = '')
 {

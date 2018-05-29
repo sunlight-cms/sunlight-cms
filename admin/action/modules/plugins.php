@@ -4,9 +4,7 @@ use Sunlight\Core;
 use Sunlight\Plugin\InactivePlugin;
 use Sunlight\Plugin\Plugin;
 
-if (!defined('_root')) {
-    exit;
-}
+defined('_root') or exit;
 
 // vycisteni cache
 if (isset($_GET['clear'])) {

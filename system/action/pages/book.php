@@ -3,9 +3,7 @@
 use Sunlight\Comment\CommentService;
 use Sunlight\Extend;
 
-if (!defined('_root')) {
-    exit;
-}
+defined('_root') or exit;
 
 // vychozi nastaveni
 if ($_page['var2'] === null) {

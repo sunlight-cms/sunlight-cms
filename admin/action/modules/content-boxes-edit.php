@@ -6,9 +6,7 @@ use Sunlight\Message;
 use Sunlight\Plugin\TemplateService;
 use Sunlight\Util\Math;
 
-if (!defined('_root')) {
-    exit;
-}
+defined('_root') or exit;
 
 $templates_to_choose_slot_from = null;
 

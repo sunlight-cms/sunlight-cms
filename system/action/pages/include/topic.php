@@ -4,9 +4,7 @@ use Sunlight\Comment\CommentService;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 
-if (!defined('_root')) {
-    exit;
-}
+defined('_root') or exit;
 
 if (!ctype_digit($_index['segment'])) {
     $_index['is_found'] = false;

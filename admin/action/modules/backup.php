@@ -8,9 +8,7 @@ use Sunlight\Extend;
 use Sunlight\Util\Filesystem;
 use Sunlight\Util\Url;
 
-if (!defined('_root')) {
-    exit;
-}
+defined('_root') or exit;
 
 $message = '';
 

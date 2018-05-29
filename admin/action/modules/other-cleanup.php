@@ -5,9 +5,7 @@ use Sunlight\Database\DatabaseLoader;
 use Sunlight\Extend;
 use Sunlight\Util\Password;
 
-if (!defined('_root')) {
-    exit;
-}
+defined('_root') or exit;
 
 /* ---  priprava  --- */
 

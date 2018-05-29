@@ -2,9 +2,7 @@
 
 use Sunlight\Core;
 
-if (!defined('_root')) {
-    exit;
-};
+defined('_root') or exit;
 
 return function ($cesta = "", $typ = 'text', $pocet = 1, $rozmery_nahledu = null)
 {
