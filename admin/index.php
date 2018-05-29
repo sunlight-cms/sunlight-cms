@@ -77,7 +77,7 @@ if ($admin_redirect_to !== null) {
 }
 
 // hlavicka a sablona
-require _root . 'system/html_start.php';
+echo Sunlight\Generic::renderHead();
 
 // body tridy
 if ($admin_login_layout) {

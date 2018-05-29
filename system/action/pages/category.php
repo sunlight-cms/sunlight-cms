@@ -42,7 +42,7 @@ $_index['rsslink'] = _linkRSS($id, _rss_latest_articles, false);
 // obsah
 Extend::call('page.category.content.before', $extend_args);
 if ($_page['content'] != '') {
-    $output .= \Sunlight\HCM::parse($_page['content']) . "\n\n<div class='hr category-hr'><hr></div>\n\n";
+    $output .= Sunlight\Hcm::parse($_page['content']) . "\n\n<div class='hr category-hr'><hr></div>\n\n";
 }
 Extend::call('page.category.content.after', $extend_args);
 

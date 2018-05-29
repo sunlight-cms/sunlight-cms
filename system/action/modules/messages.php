@@ -298,7 +298,7 @@ switch ($a) {
         $output .= $message . "
         <form method='post' action=''>
 <p class='messages-menu'>
-    <a class='button' href='" . _linkModule('messages', 'a=new') . "'><img src='" . \Sunlight\Template::image('icons/bubble.png') . "' alt='new' class='icon'>" . _lang('mod.messages.new') . "</a>
+    <a class='button' href='" . _linkModule('messages', 'a=new') . "'><img src='" . Sunlight\Template::image('icons/bubble.png') . "' alt='new' class='icon'>" . _lang('mod.messages.new') . "</a>
 </p>
 
 <table class='messages-table'>

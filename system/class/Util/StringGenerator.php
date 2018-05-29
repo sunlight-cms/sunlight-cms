@@ -63,26 +63,4 @@ abstract class StringGenerator
 
         return $output;
     }
-
-    /**
-     * Generate CAPTCHA code
-     *
-     * @param int $length
-     * @return string
-     */
-    static function generateCaptchaCode($length)
-    {
-        $word = strtoupper(static::generateWordMarkov($length));
-
-        $maxNumbers = max(ceil($length / 3), 1);
-
-        for ($i = 0; $i < $maxNumbers; ++$i) {
-            $word[mt_rand(0, $length - 1)] = (string) mt_rand(2, 9);
-        }
-
-        return strtr($word, array(
-            'W' => 'X',
-            'Q' => 'O',
-        ));
-    }
 }

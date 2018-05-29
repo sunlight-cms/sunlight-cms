@@ -4,5 +4,5 @@ defined('_root') or exit;
 
 return function ()
 {
-    return \Sunlight\Template::userMenu();
+    return Sunlight\Template::userMenu();
 };

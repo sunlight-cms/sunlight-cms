@@ -48,7 +48,7 @@ return function ($id = null)
             if ($sboxdata['locked'] != 1) {
                 $result .= _lang('posts.loginrequired');
             } else {
-                $result .= "<img src='" . \Sunlight\Template::image("icons/lock.png") . "' alt='locked' class='icon'>" . _lang('posts.locked2');
+                $result .= "<img src='" . Sunlight\Template::image("icons/lock.png") . "' alt='locked' class='icon'>" . _lang('posts.locked2');
             }
         }
 
@@ -68,7 +68,7 @@ return function ($id = null)
 
                 // odkaz na spravu
                 if (_postAccess($userQuery, $spost)) {
-                    $alink = " <a href='" . _linkModule('editpost', 'id=' . $spost['id']) . "'><img src='" . \Sunlight\Template::image("icons/edit.png") . "' alt='edit' class='icon'></a>";
+                    $alink = " <a href='" . _linkModule('editpost', 'id=' . $spost['id']) . "'><img src='" . Sunlight\Template::image("icons/edit.png") . "' alt='edit' class='icon'></a>";
                 } else {
                     $alink = "";
                 }

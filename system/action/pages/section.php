@@ -10,7 +10,7 @@ $_index['title'] = $_page['title'];
 
 // obsah
 Extend::call('page.section.content.before', $extend_args);
-$output .= \Sunlight\HCM::parse($_page['content']);
+$output .= Sunlight\Hcm::parse($_page['content']);
 Extend::call('page.section.content.after', $extend_args);
 
 // komentare

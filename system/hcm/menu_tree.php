@@ -9,7 +9,7 @@ return function ($od = null, $do = null, $max_hloubka = null, $class = null)
     _normalize($max_hloubka, 'int');
     _normalize($class, 'string');
 
-    return \Sunlight\Template::treeMenu(array(
+    return Sunlight\Template::treeMenu(array(
         'max_depth' => $max_hloubka,
         'ord_start' => $od,
         'ord_end' => $do,

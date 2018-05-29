@@ -24,7 +24,7 @@ $_index['title'] = $_page['title'];
 
 // obsah
 Extend::call('page.gallery.content.before', $extend_args);
-if ($_page['content'] != "") $output .= \Sunlight\HCM::parse($_page['content']) . "\n\n<div class='hr gallery-hr'><hr></div>\n\n";
+if ($_page['content'] != "") $output .= Sunlight\Hcm::parse($_page['content']) . "\n\n<div class='hr gallery-hr'><hr></div>\n\n";
 Extend::call('page.gallery.content.after', $extend_args);
 
 // obrazky

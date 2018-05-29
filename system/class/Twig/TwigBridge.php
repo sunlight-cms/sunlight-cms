@@ -13,6 +13,18 @@ abstract class TwigBridge
     protected static $env;
 
     /**
+     * Render a Twig template
+     *
+     * @param string $template
+     * @param array $parameters
+     * @return string
+     */
+    static function render($template, array $parameters = array())
+    {
+        return static::getEnvironment()->load($template)->render($parameters);
+    }
+
+    /**
      * @return \Twig_Environment
      */
     static function getEnvironment()

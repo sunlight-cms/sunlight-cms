@@ -22,6 +22,63 @@ abstract class PageManager
     protected static $childrenCache = array();
 
     /**
+     * Nalezt stranku a nacist jeji data
+     *
+     * Oddelovace jsou ignorovany.
+     *
+     * @param array  $segments      segmenty
+     * @param string $extra_columns sloupce navic (automaticky oddeleno carkou)
+     * @param string $extra_joins   joiny navic (automaticky oddeleno mezerou)
+     * @param string $extra_conds   podminky navic (automaticky oddeleno pomoci " AND (*conds*)")
+     * @return array|bool false pri nenalezeni
+     */
+    static function find(array $segments, $extra_columns = null, $extra_joins = null, $extra_conds = null)
+    {
+        // zaklad dotazu
+        $sql = 'SELECT page.*';
+        if ($extra_columns !== null) {
+            $sql .= ',' . $extra_columns;
+        }
+        $sql .= ' FROM ' . _root_table . ' AS page';
+        if ($extra_joins !== null) {
+            $sql .= ' ' . $extra_joins;
+        }
+
+        // podminky
+        $conds = array();
+
+        // ignorovat oddelovace
+        $conds[] = 'page.type!=' . _page_separator;
+
+        // predane podminky
+        if ($extra_conds !== null) {
+            $extra_conds[] = '(' . $conds . ')';
+        }
+
+        // identifikator
+        if (!empty($segments)) {
+            $slugs = array();
+            for ($i = sizeof($segments); $i > 0; --$i) {
+                $slugs[] = implode('/', array_slice($segments, 0, $i));
+            }
+            $conds[] = 'page.slug IN(' . DB::arr($slugs) . ')';
+        } else {
+            $indexPageId = Extend::fetch('page.find.index', array(), _index_page_id);
+            $conds[] = 'page.id=' . DB::val($indexPageId);
+        }
+
+        // dokoncit dotaz
+        $sql .= ' WHERE ' . implode(' AND ', $conds);
+        if (!empty($segments)) {
+            $sql .= ' ORDER BY LENGTH(page.slug) DESC';
+        }
+        $sql .= ' LIMIT 1';
+
+        // nacist data
+        return DB::queryRow($sql);
+    }
+
+    /**
      * Ziskat data aktivni stranky
      *
      * Pouzitelne v kontextu webu.

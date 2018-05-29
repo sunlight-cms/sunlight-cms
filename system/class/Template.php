@@ -5,10 +5,35 @@ namespace Sunlight;
 use Sunlight\Page\PageManager;
 use Sunlight\Page\PageMenu;
 use Sunlight\Page\PageTreeFilter;
+use Sunlight\Plugin\TemplatePlugin;
 use Sunlight\Plugin\TemplateService;
 
 abstract class Template
 {
+    /**
+     * Ziskat instanci aktualniho motivu
+     *
+     * @return TemplatePlugin
+     */
+    static function getCurrent()
+    {
+        // pouzit globalni promennou
+        // (index)
+        if (_env === Core::ENV_WEB && isset($GLOBALS['_template']) && $GLOBALS['_template'] instanceof TemplatePlugin) {
+            return $GLOBALS['_template'];
+        }
+
+        // pouzit argument z GET
+        // (moznost pro skripty mimo index)
+        $request_template = _get('current_template');
+        if ($request_template !== null && TemplateService::templateExists($request_template)) {
+            return TemplateService::getTemplate($request_template);
+        }
+
+        // pouzit vychozi
+        return TemplateService::getDefaultTemplate();
+    }
+
     /**
      * Zmenit aktivni sablonu a layout
      *
@@ -174,7 +199,7 @@ abstract class Template
                 }
 
                 // obsah
-                $output .= \Sunlight\HCM::parse($item['content']);
+                $output .= \Sunlight\Hcm::parse($item['content']);
 
                 // endtag polozky
                 if ($options['box.item']) {

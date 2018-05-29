@@ -3,11 +3,12 @@
 namespace Sunlight;
 
 use Sunlight\Exception\ContentPrivilegeException;
+use Sunlight\Util\ArgList;
+use Sunlight\Database\Database as DB;
 
-abstract class HCM
+abstract class Hcm
 {
-    /** @var array loaded system modules */
-    protected static $modules;
+    protected static $systemModuleCache;
 
     /**
      * Vyhodnotit HCM moduly v retezci
@@ -29,7 +30,7 @@ abstract class HCM
      */
     static function evaluateMatch($match)
     {
-        $params = _parseArguments($match[1]);
+        $params = ArgList::parse($match[1]);
         if (isset($params[0])) {
             return static::run($params[0], array_splice($params, 1));
         } else {
@@ -55,16 +56,16 @@ abstract class HCM
 
         if (!isset($module[1])) {
             // systemovy modul
-            if (!isset(static::$modules[$name])) {
+            if (!isset(static::$systemModuleCache[$name])) {
                 $file = _root . 'system/hcm/' . basename($module[0]) . '.php';
 
-                static::$modules[$name] = is_file($file) ? require $file : false;
+                static::$systemModuleCache[$name] = is_file($file) ? require $file : false;
             }
 
-            if (static::$modules[$name] !== false) {
+            if (static::$systemModuleCache[$name] !== false) {
                 ++Core::$hcmUid;
 
-                return call_user_func_array(static::$modules[$name], $args);
+                return call_user_func_array(static::$systemModuleCache[$name], $args);
             }
 
             return '';
@@ -110,7 +111,7 @@ abstract class HCM
 
         // filtrovat
         return static::parse($content, function ($match) use ($blacklistMap, $whitelistMap, $exception) {
-            $params = _parseArguments($match[1]);
+            $params = ArgList::parse($match[1]);
             $module = isset($params[0]) ? mb_strtolower($params[0]) : '';
 
             if (
@@ -140,5 +141,43 @@ abstract class HCM
         return static::parse($content, function () {
             return '';
         });
+    }
+
+    /**
+     * Sestaveni casti SQL dotazu po WHERE pro filtrovani zaznamu podle moznych hodnot daneho sloupce
+     *
+     * @param string       $column nazev sloupce v tabulce
+     * @param string|array $values mozne hodnoty sloupce v poli, oddelene pomlckami nebo "all" pro vypnuti limitu
+     * @return string
+     */
+    static function createColumnInSqlCondition($column, $values)
+    {
+        if ($values !== 'all') {
+            if (!is_array($values)) {
+                $values = explode('-', $values);
+            }
+            return $column . ' IN(' . DB::val($values, true) . ')';
+        } else {
+            return '1';
+        }
+    }
+
+    /**
+     * Normalizovat promennou
+     *
+     * V pripade chyby bude promenna nastavena na null.
+     *
+     * @param &mixed $variable    promenna
+     * @param string $type        pozadovany typ, viz PHP funkce settype()
+     * @param bool   $emptyToNull je-li hodnota prazdna ("" nebo null), nastavit na null 1/0
+     */
+    static function normalizeArgument(&$variable, $type, $emptyToNull = true)
+    {
+        if (
+            $emptyToNull && ($variable === null || $variable === '')
+            || !settype($variable, $type)
+        ) {
+            $variable = null;
+        }
     }
 }

@@ -19,7 +19,7 @@ $_index['rsslink'] = _linkRSS($id, _rss_book_posts, false);
 // obsah
 Extend::call('page.book.content.before', $extend_args);
 if ($_page['content'] != "") {
-    $output .= \Sunlight\HCM::parse($_page['content']);
+    $output .= Sunlight\Hcm::parse($_page['content']);
 }
 Extend::call('page.book.content.after', $extend_args);
 

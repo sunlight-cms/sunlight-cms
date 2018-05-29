@@ -29,7 +29,7 @@ if ($_page['description'] !== '') {
 
 // motiv
 if ($_page['layout'] !== null) {
-    \Sunlight\Template::change($_page['layout']);
+    Sunlight\Template::change($_page['layout']);
 }
 
 // kontrola typu pristupu k hlavni strane

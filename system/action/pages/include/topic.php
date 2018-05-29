@@ -68,7 +68,7 @@ if ($topic_access) {
 
 // vystup
 $output .= "<div class=\"topic\">\n";
-$output .= "<h2>" . _lang('posts.topic') . ": " . $query['subject'] . ' ' . \Sunlight\Template::rssLink(_linkRSS($id, 6, false), true) . "</h2>\n";
+$output .= "<h2>" . _lang('posts.topic') . ": " . $query['subject'] . ' ' . Sunlight\Template::rssLink(_linkRSS($id, 6, false), true) . "</h2>\n";
 $output .= CommentService::renderPost($query, $userQuery, array(
     'post_link' => false,
     'allow_reply' => false,

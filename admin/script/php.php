@@ -12,7 +12,7 @@ Core::init('../../', array(
 if (!_priv_super_admin) {
     exit;
 }
-require _root . "system/html_start.php";
+echo Sunlight\Generic::renderHead();
 
 $assets = \Sunlight\Admin\Admin::themeAssets(_adminscheme, \Sunlight\Admin\Admin::themeIsDark()) + array('extend_event' => null);
 

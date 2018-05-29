@@ -27,6 +27,52 @@ class Message
     }
 
     /**
+     * Render a message
+     *
+     * @see Message::__construct()
+     */
+    static function render($type, $message, $isHtml = false)
+    {
+        $message = new Message($type, $message, $isHtml);
+
+        return $message->__toString();
+    }
+
+    /**
+     * Render a formatted list of messages
+     *
+     * @param array       $messages    the messages
+     * @param string|null $description description ("errors" = _lang('misc.errorlog.intro'), null = none, anything else = custom)
+     * @param bool        $showKeys    render $message keys as well
+     * @return string
+     */
+    static function renderList($messages, $description = null, $showKeys = false)
+    {
+        $output = '';
+
+        if (!empty($messages)) {
+            // description
+            if ($description != null) {
+                if ($description !== 'errors') {
+                    $output .= $description;
+                } else {
+                    $output .= _lang('misc.errorlog.intro');
+                }
+                $output .= "\n";
+            }
+
+            // messages
+            $output .= "<ul>\n";
+            foreach($messages as $key => $item) {
+                $output .= '<li>' . ($showKeys ? '<strong>' . _e($key) . '</strong>: ' : '') . $item . "</li>\n";
+            }
+            $output .= "</ul>\n";
+        }
+
+        return $output;
+    }
+
+    /**
      * Create an informational message
      *
      * @param string $message the message

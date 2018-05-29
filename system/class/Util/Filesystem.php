@@ -2,11 +2,52 @@
 
 namespace Sunlight\Util;
 
+use Kuria\Cache\Util\TemporaryFile;
+use Sunlight\Core;
+
 /**
  * Filesystem utilities
  */
 abstract class Filesystem
 {
+    /**
+     * Vytvorit docasny soubor v system/tmp
+     *
+     * @return TemporaryFile
+     */
+    static function createTmpFile()
+    {
+        return new TemporaryFile(null, _root . 'system/tmp');
+    }
+
+    /**
+     * Zjistit, zda je nazev souboru bezpecny
+     *
+     * @param string $fname nazev souboru
+     * @return bool
+     */
+    static function isSafeFile($fname)
+    {
+        if (preg_match('{\.([^.]+)(?:\..+)?$}Ds', trim($fname), $match)) {
+            return !in_array(mb_strtolower($match[1]), Core::$dangerousServerSideExt, true);
+        }
+
+        return true;
+    }
+
+    /**
+     * Ujistit se, ze existuje dany soubor
+     *
+     * @param string $filepath
+     * @throws \RuntimeException pokud soubor neexistuje
+     */
+    static function ensureFileExists($filepath)
+    {
+        if (!is_file($filepath)) {
+            throw new \RuntimeException(sprintf('File "%s" does not exist', $filepath));
+        }
+    }
+
     /**
      * Normalize a path
      *
