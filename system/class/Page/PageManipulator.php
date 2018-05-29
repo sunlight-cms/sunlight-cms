@@ -441,7 +441,7 @@ class PageManipulator
 
                     // obrazky v galerii
                 case _page_gallery:
-                    _adminDeleteGalleryStorage('home=' . $page['id']);
+                    \Sunlight\Admin\Admin::deleteGalleryStorage('home=' . $page['id']);
                     DB::delete(_images_table, 'home=' . $page['id']);
                     @rmdir(_root . 'images/galleries/' . $page['id']);
                     break;

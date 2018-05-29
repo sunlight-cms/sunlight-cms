@@ -25,7 +25,7 @@ $s = (int) _get('s', 0);
  * @param bool       $light_abs
  * @return string
  */
-function _admin_color($loff = 0, $satc = null, $sat_abs = false, $light_abs = false)
+function admin_color($loff = 0, $satc = null, $sat_abs = false, $light_abs = false)
 {
     // nacteni a uprava barev
     if ($satc === 0) {
@@ -183,27 +183,27 @@ switch ($s) {
 Extend::call('admin.style.init');
 
 // vypocet barev
-$scheme = _admin_color(($dark ? 40 : 0));
-$scheme_lighter = _admin_color(80);
-$scheme_lightest = _admin_color(100);
-$scheme_smoke = _admin_color(115, 0);
-$scheme_smoke_text = _admin_color($light * 0.2, 0);
-$scheme_smoke_text_dark = _admin_color(10, 0);
-$scheme_smoke_text_darker = _admin_color(-30, 0);
-$scheme_smoke = _admin_color(110, 0);
-$scheme_smoke_med = _admin_color(90, 0);
-$scheme_smoke_dark = _admin_color(60, 0);
-$scheme_smoke_darker = _admin_color($dark ? -20 : -10, 0);
-$scheme_smoke_light = _admin_color(110, 0);
-$scheme_smoke_lighter = _admin_color(118, 0);
-$scheme_smoke_lightest = _admin_color(125, 0);
-$scheme_smoke_lightest_colored = _admin_color(125);
-$scheme_med = _admin_color(30);
-$scheme_dark = _admin_color(-10);
-$scheme_bar = _admin_color($scheme_bar_loff);
+$scheme = admin_color(($dark ? 40 : 0));
+$scheme_lighter = admin_color(80);
+$scheme_lightest = admin_color(100);
+$scheme_smoke = admin_color(115, 0);
+$scheme_smoke_text = admin_color($light * 0.2, 0);
+$scheme_smoke_text_dark = admin_color(10, 0);
+$scheme_smoke_text_darker = admin_color(-30, 0);
+$scheme_smoke = admin_color(110, 0);
+$scheme_smoke_med = admin_color(90, 0);
+$scheme_smoke_dark = admin_color(60, 0);
+$scheme_smoke_darker = admin_color($dark ? -20 : -10, 0);
+$scheme_smoke_light = admin_color(110, 0);
+$scheme_smoke_lighter = admin_color(118, 0);
+$scheme_smoke_lightest = admin_color(125, 0);
+$scheme_smoke_lightest_colored = admin_color(125);
+$scheme_med = admin_color(30);
+$scheme_dark = admin_color(-10);
+$scheme_bar = admin_color($scheme_bar_loff);
 
 if ($scheme_link == null) {
-    $scheme_link = _admin_color($scheme_link_loff, 255, true);
+    $scheme_link = admin_color($scheme_link_loff, 255, true);
 }
 if ($scheme_bar_shadow === null) {
     $scheme_bar_shadow = ($scheme_bar_flip ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.3)');

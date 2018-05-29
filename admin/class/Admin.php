@@ -24,7 +24,7 @@ abstract class Admin
         $output = "<div id=\"menu\">\n";
         if ($admin_access) {
             foreach ($admin_menu_items as $module => $order) {
-                if (_adminModuleAccess($module)) {
+                if (static::moduleAccess($module)) {
                     $active = (
                         $admin_current_module === $module
                         || !empty($admin_modules[$module]['children']) && in_array($admin_current_module, $admin_modules[$module]['children'])

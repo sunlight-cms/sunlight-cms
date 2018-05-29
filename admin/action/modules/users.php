@@ -183,7 +183,7 @@ $output .= $message . "
     <h2>" . _lang('admin.users.groups') . "</h2>
     <form action='index.php?p=users' method='post'>
         <p class='bborder'><strong>" . _lang('admin.users.groups.new') . ":</strong> "
-        . _adminUserSelect("type", -1, "1", null, _lang('admin.users.groups.new.empty'), true)
+        . \Sunlight\Admin\Admin::userSelect("type", -1, "1", null, _lang('admin.users.groups.new.empty'), true)
         . " <input class='button' type='submit' value='" . _lang('global.do') . "'>
         </p>"
         . _xsrfProtect() . "</form>

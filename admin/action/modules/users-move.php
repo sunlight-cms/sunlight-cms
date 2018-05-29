@@ -36,6 +36,6 @@ if (isset($_POST['sourcegroup'])) {
 
 $output .= $message . "
 <form class='cform' action='index.php?p=users-move' method='post'>
-" . _lang('admin.users.move.text1') . " " . _adminUserSelect("sourcegroup", -1, "id!=" . _group_guests, null, null, true) . " " . _lang('admin.users.move.text2') . " " . _adminUserSelect("targetgroup", -1, "id!=2", null, null, true) . " <input class='button' type='submit' value='" . _lang('global.do') . "' onclick='return Sunlight.confirm();'>
+" . _lang('admin.users.move.text1') . " " . \Sunlight\Admin\Admin::userSelect("sourcegroup", -1, "id!=" . _group_guests, null, null, true) . " " . _lang('admin.users.move.text2') . " " . \Sunlight\Admin\Admin::userSelect("targetgroup", -1, "id!=2", null, null, true) . " <input class='button' type='submit' value='" . _lang('global.do') . "' onclick='return Sunlight.confirm();'>
 " . _xsrfProtect() . "</form>
 ";

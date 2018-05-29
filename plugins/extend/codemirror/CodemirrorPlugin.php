@@ -34,7 +34,7 @@ class CodemirrorPlugin extends ExtendPlugin
         $basePath = $this->getWebPath() . '/Resources';
 
         $args['css']['codemirror'] = $basePath . '/lib/codemirror.css';
-        $args['css']['codemirror_theme'] = $basePath . '/theme/' . (_adminThemeIsDark() ? 'ambiance' : 'eclipse') . '.css';
+        $args['css']['codemirror_theme'] = $basePath . '/theme/' . (\Sunlight\Admin\Admin::themeIsDark() ? 'ambiance' : 'eclipse') . '.css';
         $args['css']['codemirror_dialog'] = $basePath . '/addon/dialog/dialog.css';
 
         $args['js']['codemirror'] = $basePath . '/lib/codemirror.js';

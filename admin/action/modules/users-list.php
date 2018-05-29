@@ -72,7 +72,7 @@ $output .= '
 <form class="cform" action="index.php" method="get">
 <input type="hidden" name="p" value="users-list">
 <input type="hidden" name="search"' . _restoreGetValue('search', '') . '>
-<strong>' . _lang('admin.users.list.groupfilter') . ':</strong> ' . _adminUserSelect("group_id", $group, "id!=" . _group_guests, null, _lang('global.all'), true) . '
+<strong>' . _lang('admin.users.list.groupfilter') . ':</strong> ' . \Sunlight\Admin\Admin::userSelect("group_id", $group, "id!=" . _group_guests, null, _lang('global.all'), true) . '
 <input class="button" type="submit" value="' . _lang('global.apply') . '">
 </form>
 </td>

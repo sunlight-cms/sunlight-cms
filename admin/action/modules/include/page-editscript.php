@@ -433,7 +433,7 @@ if (!empty($_POST)) {
 // vyber rodice
 if (_priv_adminroot) {
     $parent_row = "<tr>\n<th>" . _lang('admin.content.form.node_parent') . "</th><td>";
-    $parent_row .= _adminRootSelect('node_parent', array(
+    $parent_row .= \Sunlight\Admin\Admin::rootSelect('node_parent', array(
         'empty_item' => _lang('admin.content.form.node_parent.none'),
         'disabled_branches' => $new ? null : array($id),
         'maxlength' => null,
@@ -461,7 +461,7 @@ if (!$new && $editscript_enable_slug && DB::count(_root_table, 'id!=' . DB::val(
     $output .= _msg(_msg_warn, _lang('admin.content.form.slug.collision'));
 }
 if (!$new && $id == _index_page_id) {
-    $output .= _adminNote(_lang('admin.content.form.indexnote'));
+    $output .= \Sunlight\Admin\Admin::note(_lang('admin.content.form.indexnote'));
 }
 
 $output .= "<form class='cform' action='index.php?p=content-edit" . $type_array[$type] . (!$new ? "&amp;id=" . $id : '') . (($type == _page_plugin && $new) ? '&amp;idt=' . $type_idt : '') . "' method='post'>
@@ -558,7 +558,7 @@ $output .= "<form class='cform' action='index.php?p=content-edit" . $type_array[
                     . ($editscript_enable_layout ?
                     "<fieldset>
                         <legend>" . _lang('admin.content.form.layout') . "</legend>"
-                        . _adminTemplateLayoutSelect(
+                        . \Sunlight\Admin\Admin::templateLayoutSelect(
                             'layout',
                             $query['layout_inherit'] ? null : $query['layout'],
                             $query['layout_inherit']

@@ -11,7 +11,7 @@ $other_modules = array(
     'plugin' => array(),
 );
 foreach ($admin_modules as $module => $module_options) {
-    if (isset($module_options['other']) && $module_options['other'] && _adminModuleAccess($module)) {
+    if (isset($module_options['other']) && $module_options['other'] && \Sunlight\Admin\Admin::moduleAccess($module)) {
         $type = isset($module_options['other_system']) && $module_options['other_system'] ? 'system' : 'plugin';
         $other_modules[$type][$module] = (isset($module_options['other_order']) ? $module_options['other_order'] : 0);
     }

@@ -140,7 +140,7 @@ $output .= _buffer(function () use ($id, $box, $new, $templates_to_choose_slot_f
             </tr>
             <tr>
                 <th><?php echo _lang('admin.content.boxes.slot') ?></th>
-                <td><?php echo _adminTemplateLayoutSlotSelect('slot_uid', TemplateService::composeUid($box['template'], $box['layout'], $box['slot']), '', 'inputbig', $templates_to_choose_slot_from) ?></td>
+                <td><?php echo \Sunlight\Admin\Admin::templateLayoutSlotSelect('slot_uid', TemplateService::composeUid($box['template'], $box['layout'], $box['slot']), '', 'inputbig', $templates_to_choose_slot_from) ?></td>
             </tr>
             <tr>
                 <th><?php echo _lang('admin.content.form.ord') ?></th>
@@ -165,7 +165,7 @@ $output .= _buffer(function () use ($id, $box, $new, $templates_to_choose_slot_f
             <tr class="valign-top">
                 <th><?php echo _lang('admin.content.form.pages') ?></th>
                 <td>
-                    <?php echo _adminRootSelect('page_ids[]', array(
+                    <?php echo \Sunlight\Admin\Admin::rootSelect('page_ids[]', array(
                         'multiple' => true,
                         'selected' => $box['page_ids'] !== null ? explode(',', $box['page_ids']) : array(),
                         'attrs' => 'size="10" class="inputmax"',

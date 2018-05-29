@@ -11,7 +11,7 @@ if (!defined('_root')) {
 $message = "";
 $infopage = false;
 
-function _admin_boolSelect($name, $type2 = false)
+$boolSelect = function ($name, $type2 = false)
 {
     return "
 <select name='" . $name . "'>
@@ -19,7 +19,7 @@ function _admin_boolSelect($name, $type2 = false)
 <option value='1'>" . _lang('admin.content.artfilter.f1.bool.mustbe') . "</option>
 <option value='0'>" . _lang('admin.content.artfilter.f1.bool.mustntbe') . "</option>
 </select> \n";
-}
+};
 
 /* ---  akce  --- */
 
@@ -227,12 +227,12 @@ if (!$infopage) {
 
 <tr>
 <th>" . _lang('article.category') . "</th>
-<td>" . _adminRootSelect("category", array('type' => _page_category, 'empty_item' => _lang('global.any2'))) . "</td>
+<td>" . \Sunlight\Admin\Admin::rootSelect("category", array('type' => _page_category, 'empty_item' => _lang('global.any2'))) . "</td>
 </tr>
 
 <tr>
 <th>" . _lang('article.author') . "</th>
-<td>" . _adminUserSelect("author", -1, "adminart=1", "selectmedium", _lang('global.any')) . "</td>
+<td>" . \Sunlight\Admin\Admin::userSelect("author", -1, "adminart=1", "selectmedium", _lang('global.any')) . "</td>
 </tr>
 
 <tr>
@@ -254,12 +254,12 @@ if (!$infopage) {
 <tr class='valign-top'>
 <th>" . _lang('admin.content.form.settings') . "</th>
 <td>
-" . _admin_boolSelect("public") . _lang('admin.content.form.public') . "<br>
-" . _admin_boolSelect("visible") . _lang('admin.content.form.visible') . "<br>
-" . _admin_boolSelect("confirmed") . _lang('admin.content.form.confirmed') . "<br>
-" . _admin_boolSelect("comments") . _lang('admin.content.form.comments') . "<br>
-" . _admin_boolSelect("rateon") . _lang('admin.content.form.artrate') . "<br>
-" . _admin_boolSelect("showinfo") . _lang('admin.content.form.showinfo') . "
+" . $boolSelect("public") . _lang('admin.content.form.public') . "<br>
+" . $boolSelect("visible") . _lang('admin.content.form.visible') . "<br>
+" . $boolSelect("confirmed") . _lang('admin.content.form.confirmed') . "<br>
+" . $boolSelect("comments") . _lang('admin.content.form.comments') . "<br>
+" . $boolSelect("rateon") . _lang('admin.content.form.artrate') . "<br>
+" . $boolSelect("showinfo") . _lang('admin.content.form.showinfo') . "
 </td>
 </tr>
 
@@ -273,23 +273,23 @@ if (!$infopage) {
 
 <tr>
 <th>" . _lang('article.category') . "</th>
-<td>" . _adminRootSelect("new_category", array('type' => _page_category, 'empty_item' => _lang('global.nochange'))) . "</td>
+<td>" . \Sunlight\Admin\Admin::rootSelect("new_category", array('type' => _page_category, 'empty_item' => _lang('global.nochange'))) . "</td>
 </tr>
 
 <tr>
 <th>" . _lang('article.author') . "</th>
-<td>" . _adminUserSelect("new_author", -1, "adminart=1", "selectmedium", _lang('global.nochange')) . "</td>
+<td>" . \Sunlight\Admin\Admin::userSelect("new_author", -1, "adminart=1", "selectmedium", _lang('global.nochange')) . "</td>
 </tr>
 
 <tr class='valign-top'>
 <th>" . _lang('admin.content.form.settings') . "</th>
 <td>
-" . _admin_boolSelect("new_public", true) . _lang('admin.content.form.public') . "<br>
-" . _admin_boolSelect("new_visible", true) . _lang('admin.content.form.visible') . "<br>
-" . (_priv_adminconfirm ? _admin_boolSelect("new_confirmed", true) . _lang('admin.content.form.confirmed') . "<br>" : '') . "
-" . _admin_boolSelect("new_comments", true) . _lang('admin.content.form.comments') . "<br>
-" . _admin_boolSelect("new_rateon", true) . _lang('admin.content.form.artrate') . "<br>
-" . _admin_boolSelect("new_showinfo", true) . _lang('admin.content.form.showinfo') . "
+" . $boolSelect("new_public", true) . _lang('admin.content.form.public') . "<br>
+" . $boolSelect("new_visible", true) . _lang('admin.content.form.visible') . "<br>
+" . (_priv_adminconfirm ? $boolSelect("new_confirmed", true) . _lang('admin.content.form.confirmed') . "<br>" : '') . "
+" . $boolSelect("new_comments", true) . _lang('admin.content.form.comments') . "<br>
+" . $boolSelect("new_rateon", true) . _lang('admin.content.form.artrate') . "<br>
+" . $boolSelect("new_showinfo", true) . _lang('admin.content.form.showinfo') . "
 </td>
 </tr>
 

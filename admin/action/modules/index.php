@@ -44,7 +44,7 @@ Extend::call('admin.index.custom', array(
 $logout_warning = '';
 $maxltime = ini_get('session.gc_maxlifetime');
 if (!empty($maxltime) && !isset($_COOKIE[Core::$appId . '_persistent_key'])) {
-    $logout_warning = _adminNote(sprintf(_lang('admin.index.logoutwarn'), round($maxltime / 60)));
+    $logout_warning = \Sunlight\Admin\Admin::note(sprintf(_lang('admin.index.logoutwarn'), round($maxltime / 60)));
 }
 
 // vystup

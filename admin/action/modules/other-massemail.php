@@ -146,7 +146,7 @@ $output .= "
 
 <tr class='valign-top'>
 <th>" . _lang('admin.other.massemail.receivers') . "</th>
-<td>" . _adminUserSelect("receivers", -1, "1", "selectbig", null, true, 4) . "</td>
+<td>" . \Sunlight\Admin\Admin::userSelect("receivers", -1, "1", "selectbig", null, true, 4) . "</td>
 </tr>
 
 <tr>

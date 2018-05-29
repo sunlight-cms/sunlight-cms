@@ -189,7 +189,7 @@ if (isset($_POST['xaction']) && $continue) {
             /* -  odstraneni vsech obrazku  - */
         case 6:
             if (_checkboxLoad("confirm")) {
-                _adminDeleteGalleryStorage('home=' . $g);
+                \Sunlight\Admin\Admin::deleteGalleryStorage('home=' . $g);
                 DB::delete(_images_table, 'home=' . $g);
                 $message = _msg(_msg_ok, _lang('global.done'));
             }
@@ -300,7 +300,7 @@ if (isset($_POST['xaction']) && $continue) {
 
 if (isset($_GET['del']) && _xsrfCheck(true) && $continue) {
     $del = (int) _get('del');
-    _adminDeleteGalleryStorage('id=' . $del . ' AND home=' . $g);
+    \Sunlight\Admin\Admin::deleteGalleryStorage('id=' . $del . ' AND home=' . $g);
     DB::delete(_images_table, 'id=' . $del . ' AND home=' . $g);
     if (DB::affectedRows() === 1) {
         $message = _msg(_msg_ok, _lang('global.done'));
@@ -310,7 +310,7 @@ if (isset($_GET['del']) && _xsrfCheck(true) && $continue) {
 /* ---  vystup  --- */
 
 if ($continue) {
-    $output .= _adminBacklink('index.php?p=content-editgallery&id=' . $g) . "
+    $output .= \Sunlight\Admin\Admin::backlink('index.php?p=content-editgallery&id=' . $g) . "
 <h1>" . _lang('admin.content.manageimgs.title') . "</h1>
 <p class='bborder'>" . _lang('admin.content.manageimgs.p', array("*galtitle*" => $galdata['title'])) . "</p>
 
@@ -455,7 +455,7 @@ if ($continue) {
 
   <form class='cform' action='index.php?p=content-manageimgs&amp;g=" . $g . "' method='post'>
   <input type='hidden' name='xaction' value='5'>
-  " . _adminRootSelect("newhome", array('type' => _page_gallery)) . " <input class='button' type='submit' value='" . _lang('global.do') . "' onclick='return Sunlight.confirm();'><br><br>
+  " . \Sunlight\Admin\Admin::rootSelect("newhome", array('type' => _page_gallery)) . " <input class='button' type='submit' value='" . _lang('global.do') . "' onclick='return Sunlight.confirm();'><br><br>
   <label><input type='checkbox' name='moveords' value='1' checked> " . _lang('admin.content.manageimgs.moveords') . "</label>
   " . _xsrfProtect() . "</form>
 

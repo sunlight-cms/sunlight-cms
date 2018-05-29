@@ -11,7 +11,7 @@ if (!defined('_root')) {
 $message = "";
 if (isset($_GET['del']) && _xsrfCheck(true)) {
     $del = (int) _get('del');
-    DB::query("DELETE FROM p USING " . _polls_table . " AS p WHERE p.id=" . $del . _adminPollAccess());
+    DB::query("DELETE FROM p USING " . _polls_table . " AS p WHERE p.id=" . $del . \Sunlight\Admin\Admin::pollAccess());
     if (DB::affectedRows() != 0) {
         $message = _msg(_msg_ok, _lang('global.done'));
     }
@@ -40,13 +40,13 @@ if (_priv_adminpollall) {
     $output .= "
   <form class='cform' action='index.php' method='get'>
   <input type='hidden' name='p' value='content-polls'>
-  <strong>" . _lang('admin.content.polls.filter') . ":</strong> " . _adminUserSelect("author", $author_filter_id, "adminpoll=1", null, _lang('global.all2')) . " <input class='button' type='submit' value='" . _lang('global.apply') . "'>
+  <strong>" . _lang('admin.content.polls.filter') . ":</strong> " . \Sunlight\Admin\Admin::userSelect("author", $author_filter_id, "adminpoll=1", null, _lang('global.all2')) . " <input class='button' type='submit' value='" . _lang('global.apply') . "'>
   </form>
   ";
 }
 
 // strankovani
-$paging = _resultPaging("index.php?p=content-polls", 20, _posts_table . ':p', $author_filter . _adminPollAccess($pasep), "&amp;filter=" . $author_filter_id);
+$paging = _resultPaging("index.php?p=content-polls", 20, _posts_table . ':p', $author_filter . \Sunlight\Admin\Admin::pollAccess($pasep), "&amp;filter=" . $author_filter_id);
 $output .= $paging['paging'];
 
 $output .= $message . "
@@ -57,7 +57,7 @@ $output .= $message . "
 
 // vypis anket
 $userQuery = _userQuery('p.author');
-$query = DB::query("SELECT p.id,p.question,p.locked," . $userQuery['column_list'] . " FROM " . _polls_table . " p " . $userQuery['joins'] . " WHERE " . $author_filter . _adminPollAccess($pasep) . " ORDER BY p.id DESC " . $paging['sql_limit']);
+$query = DB::query("SELECT p.id,p.question,p.locked," . $userQuery['column_list'] . " FROM " . _polls_table . " p " . $userQuery['joins'] . " WHERE " . $author_filter . \Sunlight\Admin\Admin::pollAccess($pasep) . " ORDER BY p.id DESC " . $paging['sql_limit']);
 if (DB::size($query) != 0) {
     while ($item = DB::row($query)) {
         if (_priv_adminpollall) {

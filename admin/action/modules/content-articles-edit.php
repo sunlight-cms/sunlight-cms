@@ -18,7 +18,7 @@ if (isset($_GET['id']) && isset($_GET['returnid']) && isset($_GET['returnpage'])
         $returnid = (int) $returnid;
     }
     $returnpage = (int) _get('returnpage');
-    $query = DB::queryRow("SELECT art.*,cat.slug AS cat_slug FROM " . _articles_table . " AS art JOIN " . _root_table . " AS cat ON(cat.id=art.home1) WHERE art.id=" . $id . _adminArticleAccess('art'));
+    $query = DB::queryRow("SELECT art.*,cat.slug AS cat_slug FROM " . _articles_table . " AS art JOIN " . _root_table . " AS cat ON(cat.id=art.home1) WHERE art.id=" . $id . \Sunlight\Admin\Admin::articleAccess('art'));
     if ($query !== false) {
         $read_counter = $query['readnum'];
         if ($returnid == "load") {
@@ -276,7 +276,7 @@ if ($continue) {
 
     // vyber autora
     if (_priv_adminchangeartauthor) {
-        $author_select = _adminUserSelect("author", $query['author'], "adminart=1", "selectmedium");
+        $author_select = \Sunlight\Admin\Admin::userSelect("author", $query['author'], "adminart=1", "selectmedium");
     } else {
         $author_select = "";
     }
@@ -322,12 +322,12 @@ if ($continue) {
     }
 
     // formular
-    $output .= _adminBacklink($backlink) . "
+    $output .= \Sunlight\Admin\Admin::backlink($backlink) . "
 <h1>" . _lang('admin.content.articles.edit.title') . "</h1>
 " . $message . "
 
-" . (($new && !_priv_adminautoconfirm) ? _adminNote(_lang('admin.content.articles.edit.newconfnote')) : '') . "
-" . ((!$new && $query['confirmed'] != 1) ? _adminNote(_lang('admin.content.articles.edit.confnote')) : '') . "
+" . (($new && !_priv_adminautoconfirm) ? \Sunlight\Admin\Admin::note(_lang('admin.content.articles.edit.newconfnote')) : '') . "
+" . ((!$new && $query['confirmed'] != 1) ? \Sunlight\Admin\Admin::note(_lang('admin.content.articles.edit.confnote')) : '') . "
 
 " . ((!$new && DB::count(_articles_table, 'id!=' . DB::val($query['id']) . ' AND home1=' . DB::val($query['home1']) . ' AND slug=' . DB::val($query['slug'])) !== 0) ? _msg(_msg_warn, _lang('admin.content.form.slug.collision')) : '') . "
 
@@ -338,9 +338,9 @@ if ($continue) {
 <tr>
 <th>" . _lang('article.category') . "</th>
 <td>"
-    . _adminRootSelect("home1", array('type' => _page_category, 'selected' => $query['home1']))
-    . _adminRootSelect("home2", array('type' => _page_category, 'selected' => $query['home2'], 'empty_item' => _lang('admin.content.form.category.none')))
-    . _adminRootSelect("home3", array('type' => _page_category, 'selected' => $query['home3'], 'empty_item' => _lang('admin.content.form.category.none')))
+    . \Sunlight\Admin\Admin::rootSelect("home1", array('type' => _page_category, 'selected' => $query['home1']))
+    . \Sunlight\Admin\Admin::rootSelect("home2", array('type' => _page_category, 'selected' => $query['home2'], 'empty_item' => _lang('admin.content.form.category.none')))
+    . \Sunlight\Admin\Admin::rootSelect("home3", array('type' => _page_category, 'selected' => $query['home3'], 'empty_item' => _lang('admin.content.form.category.none')))
     . "
 </td>
 </tr>
@@ -438,7 +438,7 @@ if ($continue) {
 
 } else {
     $output .=
-        _adminBacklink('index.php?p=content-articles')
+        \Sunlight\Admin\Admin::backlink('index.php?p=content-articles')
         . "<h1>" . _lang('admin.content.articles.edit.title') . "</h1>\n"
         . _msg(_msg_err, _lang('global.badinput'));
 }

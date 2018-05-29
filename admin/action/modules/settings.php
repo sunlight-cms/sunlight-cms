@@ -92,7 +92,7 @@ $editable_settings = array(
             array('name' => 'registration'),
             array('name' => 'registration_confirm'),
             array('name' => 'registration_grouplist'),
-            array('name' => 'defaultgroup', 'table_id' => _groups_table, 'input' => _adminUserSelect("defaultgroup", _defaultgroup, "id!=" . _group_guests, null, null, true), 'id' => false),
+            array('name' => 'defaultgroup', 'table_id' => _groups_table, 'input' => \Sunlight\Admin\Admin::userSelect("defaultgroup", _defaultgroup, "id!=" . _group_guests, null, null, true), 'id' => false),
             array('name' => 'rules', 'help' => false, 'extra_help' => _lang('admin.settings.users.rules.help'), 'input' => '<textarea id="setting_rules" name="rules" rows="9" cols="33" class="areasmallwide editor">' . _e($settings['rules']['val']) . '</textarea>'),
             array('name' => 'messages'),
             array('name' => 'lostpass'),

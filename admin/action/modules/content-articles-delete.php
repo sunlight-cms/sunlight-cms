@@ -14,7 +14,7 @@ if (isset($_GET['id']) && isset($_GET['returnid']) && isset($_GET['returnpage'])
     $id = (int) _get('id');
     $returnid = (int) _get('returnid');
     $returnpage = (int) _get('returnpage');
-    $query = DB::queryRow("SELECT title FROM " . _articles_table . " WHERE id=" . $id . _adminArticleAccess());
+    $query = DB::queryRow("SELECT title FROM " . _articles_table . " WHERE id=" . $id . \Sunlight\Admin\Admin::articleAccess());
     if ($query !== false) {
         $continue = true;
     }
@@ -45,7 +45,7 @@ if (isset($_POST['confirm'])) {
 if ($continue) {
 
     $output .=
-_adminBacklink('index.php?p=content-articles-list&cat=' . $returnid . '&page=' . $returnpage) . "
+\Sunlight\Admin\Admin::backlink('index.php?p=content-articles-list&cat=' . $returnid . '&page=' . $returnpage) . "
 <h1>" . _lang('admin.content.articles.delete.title') . "</h1>
 <p class='bborder'>" . _lang('admin.content.articles.delete.p', array("*arttitle*" => $query['title'])) . "</p>
 <form class='cform' action='index.php?p=content-articles-delete&amp;id=" . $id . "&amp;returnid=" . $returnid . "&amp;returnpage=" . $returnpage . "' method='post'>

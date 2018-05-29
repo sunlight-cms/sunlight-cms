@@ -55,10 +55,10 @@ if (empty($_POST) || _xsrfCheck()) {
 // assets
 if ($admin_login_layout) {
     $theme_dark = false;
-    $assets = _adminThemeAssets(0, false);
+    $assets = \Sunlight\Admin\Admin::themeAssets(0, false);
 } else {
-    $theme_dark = _adminThemeIsDark();
-    $assets = _adminThemeAssets(_adminscheme, $theme_dark);
+    $theme_dark = \Sunlight\Admin\Admin::themeIsDark();
+    $assets = \Sunlight\Admin\Admin::themeAssets(_adminscheme, $theme_dark);
 }
 
 if (!empty($admin_extra_css)) {
@@ -97,7 +97,7 @@ $admin_body_classes[] = $theme_dark ? 'dark' : 'light';
     <div id="top">
         <div class="wrapper">
             <div id="header">
-                <?php echo _adminUserMenu() ?>
+                <?php echo \Sunlight\Admin\Admin::userMenu() ?>
                 <div id="title">
                     <?php echo _title, ' - ', _lang('global.admintitle') ?>
                 </div>
@@ -105,7 +105,7 @@ $admin_body_classes[] = $theme_dark ? 'dark' : 'light';
 
             <hr class="hidden">
 
-            <?php echo _adminMenu() ?>
+            <?php echo \Sunlight\Admin\Admin::menu() ?>
         </div>
     </div>
 

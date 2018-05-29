@@ -36,6 +36,6 @@ if ($result->isComplete()) {
 }
 
 // zobrazit vysledek
-$output .= _adminBacklink('index.php?p=plugins');
+$output .= \Sunlight\Admin\Admin::backlink('index.php?p=plugins');
 $output .= '<h1>' . _e($action->getTitle()) . ': ' . _e($plugin->getOption('name')) . "</h1>\n";
 $output .= $result;

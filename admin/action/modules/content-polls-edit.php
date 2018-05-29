@@ -12,7 +12,7 @@ $continue = false;
 $message = "";
 if (isset($_GET['id'])) {
     $id = (int) _get('id');
-    $query = DB::queryRow("SELECT p.* FROM " . _polls_table . " p WHERE p.id=" . $id . _adminPollAccess());
+    $query = DB::queryRow("SELECT p.* FROM " . _polls_table . " p WHERE p.id=" . $id . \Sunlight\Admin\Admin::pollAccess());
     if ($query !== false) {
         $new = false;
         $actionbonus = "&amp;id=" . $id;
@@ -146,7 +146,7 @@ if ($continue) {
         $author_select = "
     <tr>
     <th>" . _lang('article.author') . "</th>
-    <td>" . _adminUserSelect("author", $query['author'], "adminpoll=1", "selectmedium") . "</td></tr>
+    <td>" . \Sunlight\Admin\Admin::userSelect("author", $query['author'], "adminpoll=1", "selectmedium") . "</td></tr>
     ";
     } else {
         $author_select = "";

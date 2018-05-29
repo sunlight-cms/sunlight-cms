@@ -9,14 +9,14 @@ if (!defined('_root')) {
 /* --- vystup --- */
 
 if (isset($admin_modules[$admin_current_module])) {
-    if (_adminModuleAccess($admin_current_module)) {
+    if (\Sunlight\Admin\Admin::moduleAccess($admin_current_module)) {
 
         $module = $admin_modules[$admin_current_module];
         $module_custom_header = (isset($module['custom_header']) && $module['custom_header']);
 
         // zpetny odkaz
         if (isset($module['parent']) && !$module_custom_header) {
-            $output .= _adminBacklink('index.php?p=' . $module['parent']);
+            $output .= \Sunlight\Admin\Admin::backlink('index.php?p=' . $module['parent']);
         }
 
         // titulek

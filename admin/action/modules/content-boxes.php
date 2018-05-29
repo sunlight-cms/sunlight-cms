@@ -117,7 +117,7 @@ if (!empty($unassigned_boxes)) $output .= _buffer(function () use ($unassigned_b
     <table class="list list-hover">
         <caption>
             <h2><?php echo _lang('admin.content.boxes.unassigned') ?></h2>
-            <?php echo _adminNote(_lang('admin.content.boxes.unassigned.note')) ?>
+            <?php echo \Sunlight\Admin\Admin::note(_lang('admin.content.boxes.unassigned.note')) ?>
         </caption>
         <thead>
         <tr>

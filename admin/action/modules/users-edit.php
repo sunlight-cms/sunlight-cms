@@ -60,7 +60,7 @@ if (isset($_GET['id'])) {
 if ($continue) {
     
     // vyber skupiny
-    $group_select = _adminUserSelect('group_id', (isset($_POST['group_id']) ? (int) _post('group_id') : $query['group_id']), "id!=2 AND level<" . _priv_level, null, null, true);
+    $group_select = \Sunlight\Admin\Admin::userSelect('group_id', (isset($_POST['group_id']) ? (int) _post('group_id') : $query['group_id']), "id!=2 AND level<" . _priv_level, null, null, true);
 
     /* ---  ulozeni  --- */
     if (isset($_POST['username'])) {

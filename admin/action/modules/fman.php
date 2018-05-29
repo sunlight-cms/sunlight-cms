@@ -564,7 +564,7 @@ if ($continue) {
       <tr>
       <th>" . _lang('admin.fman.addtogallery.galllery') . "</th>
       <td>
-      " . _adminRootSelect("gallery", array('type' => _page_gallery)) . "
+      " . \Sunlight\Admin\Admin::rootSelect("gallery", array('type' => _page_gallery)) . "
       " . $images . "
       </td>
       </tr>

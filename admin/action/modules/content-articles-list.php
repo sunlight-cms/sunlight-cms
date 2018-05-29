@@ -49,7 +49,7 @@ if ($continue) {
         $message = _msg(_msg_ok, _lang('admin.content.articles.delete.done'));
     }
 
-    $cond = "(art.home1=" . $cid . " OR art.home2=" . $cid . " OR art.home3=" . $cid . ")" . _adminArticleAccess('art');
+    $cond = "(art.home1=" . $cid . " OR art.home2=" . $cid . " OR art.home3=" . $cid . ")" . \Sunlight\Admin\Admin::articleAccess('art');
     $paging = _resultPaging("index.php?p=content-articles-list&cat=" . $cid, $catdata['var2'] ?: _articlesperpage, _articles_table . ':art', $cond);
     $s = $paging['current'];
     $output .= $paging['paging'] . $message . "\n<table class='list list-hover list-max'>\n<thead><tr><td>" . _lang('global.article') . "</td><td>" . _lang('article.author') . "</td><td>" . _lang('article.posted') . "</td><td>" . _lang('global.action') . "</td></tr></thead>\n<tbody>";
@@ -58,7 +58,7 @@ if ($continue) {
     if (DB::size($arts) != 0) {
         while ($art = DB::row($arts)) {
             $output .= "<tr>
-    <td>" . _adminArticleEditLink($art) . "</td>
+    <td>" . \Sunlight\Admin\Admin::articleEditLink($art) . "</td>
     <td>" . _linkUserFromQuery($userQuery, $art) . "</td>
     <td>" . _formatTime($art['time']) . "</td>
     <td class='actions'>

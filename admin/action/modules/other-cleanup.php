@@ -224,7 +224,7 @@ $output .= $message . "
 
   <tr>
   <th>" . _lang('admin.other.cleanup.users.group') . "</th>
-  <td>" . _adminUserSelect("users-group", (isset($_POST['users-group']) ? (int) _post('users-group') : -1), "1", null, _lang('global.all'), true) . "</td>
+  <td>" . \Sunlight\Admin\Admin::userSelect("users-group", (isset($_POST['users-group']) ? (int) _post('users-group') : -1), "1", null, _lang('global.all'), true) . "</td>
   </tr>
 
   </table>
@@ -266,7 +266,7 @@ $output .= $message . "
 <form class='cform' action='index.php?p=other-cleanup' method='post' autocomplete='off'>
 <input type='hidden' name='action' value='2'>
 <p class='bborder'>" . _lang('admin.other.cleanup.uninstall.p') . "</p>
-" . _adminNote(_lang('admin.other.cleanup.uninstall.note', array('*prefix*' => _dbprefix)), true, 'warn') . "
+" . \Sunlight\Admin\Admin::note(_lang('admin.other.cleanup.uninstall.note', array('*prefix*' => _dbprefix)), true, 'warn') . "
 <p><label><input type='checkbox' name='confirm' value='1'> " . _lang('admin.other.cleanup.uninstall.confirm', array('*dbname*' => _dbname)) . "</label></p>
 <p><strong>" . _lang('admin.other.cleanup.uninstall.pass') . ":</strong>  <input type='password' class='inputsmall' name='pass' autocomplete='off'></p>
 <input type='submit' value='" . _lang('global.do') . "' onclick='return Sunlight.confirm();'>

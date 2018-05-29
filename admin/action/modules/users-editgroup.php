@@ -175,7 +175,7 @@ if ($continue) {
         if ($id != _group_guests) {
             $changeset['icon'] = _cutHtml(_e(trim(_post('icon'))), 16);
         }
-        $changeset['color'] = _adminFormatHtmlColor(_post('color', ''), false, '');
+        $changeset['color'] = \Sunlight\Admin\Admin::formatHtmlColor(_post('color', ''), false, '');
         if ($id > _group_guests) {
             $changeset['blocked'] = _checkboxLoad('blocked');
         }
@@ -245,7 +245,7 @@ if ($continue) {
     $output .= "
   <p class='bborder'>" . _lang('admin.users.groups.editp') . "</p>
   " . (isset($_GET['saved']) ? _msg(_msg_ok, _lang('global.saved')) : '') . "
-  " . ($systemitem ? _adminNote(_lang('admin.users.groups.specialgroup.editnotice')) : '') . "
+  " . ($systemitem ? \Sunlight\Admin\Admin::note(_lang('admin.users.groups.specialgroup.editnotice')) : '') . "
   <form action='index.php?p=users-editgroup&amp;id=" . $id . "' method='post'>
   <table>
 
@@ -266,7 +266,7 @@ if ($continue) {
 
   " . (($id != _group_guests) ? "
   <tr><th><dfn title='" . _lang('admin.users.groups.icon.help', array('%dir%' => $icon_dir)) . "'>" . _lang('admin.users.groups.icon') . "</dfn></th><td>" . $icons . "</td></tr>
-  <tr><th>" . _lang('admin.users.groups.color') . "</th><td><input type='text' name='color' class='inputsmall' value='" . $query['color'] . "' maxlength='16'> <input type='color' value='" . _adminFormatHtmlColor($query['color']) . "' onchange='this.form.elements.color.value=this.value'></td></tr>
+  <tr><th>" . _lang('admin.users.groups.color') . "</th><td><input type='text' name='color' class='inputsmall' value='" . $query['color'] . "' maxlength='16'> <input type='color' value='" . \Sunlight\Admin\Admin::formatHtmlColor($query['color']) . "' onchange='this.form.elements.color.value=this.value'></td></tr>
   <tr><th>" . _lang('admin.users.groups.reglist') . "</th><td><input type='checkbox' name='reglist' value='1'" . _checkboxActivate($query['reglist']) . "></td></tr>
   " : '') . "
 

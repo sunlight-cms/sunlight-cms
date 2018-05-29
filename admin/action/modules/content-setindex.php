@@ -24,7 +24,7 @@ if (isset($_POST['index'])) {
 
 $output .= $message . "
 <form class='cform' action='index.php?p=content-setindex' method='post'>
-" . _adminRootSelect('index', array('selected' => $index_id, 'maxlength' => null)) . "
+" . \Sunlight\Admin\Admin::rootSelect('index', array('selected' => $index_id, 'maxlength' => null)) . "
 <input class='button' type='submit' value='" . _lang('global.do') . "'>
 " . _xsrfProtect() . "</form>
 ";

@@ -85,9 +85,9 @@ if (isset($_POST['source'])) {
 $output .= $message . "
 <form class='cform' action='index.php?p=content-movearts' method='post'>"
     . _lang('admin.content.movearts.text1')
-    . " " . _adminRootSelect("source", array('type' => _page_category))
+    . " " . \Sunlight\Admin\Admin::rootSelect("source", array('type' => _page_category))
     . _lang('admin.content.movearts.text2')
-    . " " . _adminRootSelect("target", array('type' => _page_category))
+    . " " . \Sunlight\Admin\Admin::rootSelect("target", array('type' => _page_category))
     . " <input class='button' type='submit' value='" . _lang('global.do') . "'>
 <br><br>
 <label><input type='checkbox' name='fullmove' value='1'> " . _lang('admin.content.movearts.fullmove') . "</label>

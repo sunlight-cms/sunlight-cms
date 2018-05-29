@@ -14,7 +14,7 @@ if (!_priv_super_admin) {
 }
 require _root . "system/html_start.php";
 
-$assets = _adminThemeAssets(_adminscheme, _adminThemeIsDark()) + array('extend_event' => null);
+$assets = \Sunlight\Admin\Admin::themeAssets(_adminscheme, \Sunlight\Admin\Admin::themeIsDark()) + array('extend_event' => null);
 
 echo _headAssets($assets);
 

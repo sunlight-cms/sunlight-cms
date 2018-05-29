@@ -29,7 +29,7 @@ $output .= "
 <form class='cform' action='index.php' method='get'>
     <input type='hidden' name='p' value='content-confirm'>"
     . _lang('admin.content.confirm.filter') . ": "
-    . _adminRootSelect("limit", array('type' => _page_category, 'selected' => $catlimit, 'empty_item' => _lang('global.all')))
+    . \Sunlight\Admin\Admin::rootSelect("limit", array('type' => _page_category, 'selected' => $catlimit, 'empty_item' => _lang('global.all')))
     . "
     <input type='submit' value='" . _lang('global.do') . "'>
 </form>
@@ -60,7 +60,7 @@ if (DB::size($query) != 0) {
         }
 
         $output .= "<tr>
-            <td>" . _adminArticleEditLink($item, false) . "</td>
+            <td>" . \Sunlight\Admin\Admin::articleEditLink($item, false) . "</td>
             <td>" . $cats . "</td><td>" . _formatTime($item['time']) . "</td>
             <td>" . _linkUserFromQuery($userQuery, $item) . "</td>
             <td class='actions'>
