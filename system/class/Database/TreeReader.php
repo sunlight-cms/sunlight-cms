@@ -32,7 +32,7 @@ class TreeReader
      * @param string|null $levelColumn   nazev sloupce pro uroven
      * @param string|null $depthColumn   nazev sloupce pro hloubku
      */
-    public function __construct($table, $childrenIndex = null, $idColumn = null, $parentColumn = null, $levelColumn = null, $depthColumn = null)
+    function __construct($table, $childrenIndex = null, $idColumn = null, $parentColumn = null, $levelColumn = null, $depthColumn = null)
     {
         $this->table = $table;
         $this->childrenIndex = $childrenIndex ?: 'children';
@@ -50,7 +50,7 @@ class TreeReader
      * @param int|null $nodeLevel uroven uzlu, je-li znama (usetri 1 dotaz)
      * @return array
      */
-    public function getPath(array $columns, $nodeId, $nodeLevel = null)
+    function getPath(array $columns, $nodeId, $nodeLevel = null)
     {
         return $this->loadPath($columns, $nodeId, $nodeLevel);
     }
@@ -61,7 +61,7 @@ class TreeReader
      * @param TreeReaderOptions $options
      * @return array
      */
-    public function getTree(TreeReaderOptions $options)
+    function getTree(TreeReaderOptions $options)
     {
         return $this->structureTree(
             $this->loadTree($options),
@@ -76,7 +76,7 @@ class TreeReader
      * @param bool               $flat   true = vratit plochy strom (vypis uzlu v poradi hierarchie), false = strukturovane pole
      * @return array
      */
-    public function getChildren(TreeReaderOptions $options, $flat = true) {
+    function getChildren(TreeReaderOptions $options, $flat = true) {
         if ($flat) {
             $tree = $this->getFlatTree($options);
         } else {
@@ -94,7 +94,7 @@ class TreeReader
      * @param bool     $flat       zda se jedna o plochy strom 1/0
      * @return array
      */
-    public function extractChildren(array $tree, $rootNodeId, $flat)
+    function extractChildren(array $tree, $rootNodeId, $flat)
     {
         if ($flat) {
             if ($rootNodeId !== null && !empty($tree)) {
@@ -116,7 +116,7 @@ class TreeReader
      * @param TreeReaderOptions $options
      * @return array
      */
-    public function getFlatTree(TreeReaderOptions $options)
+    function getFlatTree(TreeReaderOptions $options)
     {
         return $this->sortTree(
             $this->loadTree($options),
@@ -130,7 +130,7 @@ class TreeReader
      * @param array $tree strukturovany strom
      * @return array
      */
-    public function flattenTree(array $tree)
+    function flattenTree(array $tree)
     {
         if (empty($tree)) {
             return array();
@@ -172,7 +172,7 @@ class TreeReader
      * @param int|null $rootId ID korenoveho uzlu
      * @return array
      */
-    public function structureTree(array $nodes, $rootId = null)
+    function structureTree(array $nodes, $rootId = null)
     {
         $tree = array();
         $childrenMap = array();
@@ -205,7 +205,7 @@ class TreeReader
      * @param int|null $rootId ID korenoveho uzlu
      * @return array
      */
-    public function sortTree(array $nodes, $rootId = null)
+    function sortTree(array $nodes, $rootId = null)
     {
         $output = array();
 
@@ -259,7 +259,7 @@ class TreeReader
      * @param TreeReaderOptions $options
      * @return array seznam uzlu serazeny dle urovne vzestupne
      */
-    public function loadTree(TreeReaderOptions $options)
+    function loadTree(TreeReaderOptions $options)
     {
         // zjistit hloubku stromu
         if ($options->nodeDepth !== null) {
@@ -428,7 +428,7 @@ class TreeReader
      *
      * @return string
      */
-    public function getTable()
+    function getTable()
     {
         return $this->table;
     }
@@ -438,7 +438,7 @@ class TreeReader
      *
      * @return array
      */
-    public function getSystemColumns()
+    function getSystemColumns()
     {
         return array(
             $this->idColumn,
@@ -453,7 +453,7 @@ class TreeReader
      *
      * @return string
      */
-    public function getIdColumn()
+    function getIdColumn()
     {
         return $this->idColumn;
     }
@@ -463,7 +463,7 @@ class TreeReader
      *
      * @return string
      */
-    public function getParentColumn()
+    function getParentColumn()
     {
         return $this->parentColumn;
     }
@@ -473,7 +473,7 @@ class TreeReader
      *
      * @return string
      */
-    public function getLevelColumn()
+    function getLevelColumn()
     {
         return $this->levelColumn;
     }
@@ -483,7 +483,7 @@ class TreeReader
      *
      * @return string
      */
-    public function getDepthColumn()
+    function getDepthColumn()
     {
         return $this->depthColumn;
     }
@@ -496,7 +496,7 @@ class TreeReader
      * @param int|null $nodeLevel
      * @return array
      */
-    public function loadPath(array $columns, $nodeId, $nodeLevel = null)
+    function loadPath(array $columns, $nodeId, $nodeLevel = null)
     {
         // zjistit uroven uzlu
         if ($nodeLevel === null) {
@@ -549,7 +549,7 @@ class TreeReader
      * @param int|null $nodeId
      * @return array level, depth
      */
-    public function getLevelAndDepth($nodeId)
+    function getLevelAndDepth($nodeId)
     {
         if ($nodeId === null) {
             // koren
@@ -577,7 +577,7 @@ class TreeReader
      * @param int|null $nodeId
      * @return int
      */
-    public function getLevel($nodeId)
+    function getLevel($nodeId)
     {
         if ($nodeId === null) {
             return 0;
@@ -597,7 +597,7 @@ class TreeReader
      * @param int|null $nodeId
      * @return int|null
      */
-    public function getDepth($nodeId)
+    function getDepth($nodeId)
     {
         if ($nodeId === null) {
             $nodeDepth = DB::queryRow('SELECT MAX(' . $this->depthColumn . ') ' . $this->depthColumn . ' FROM `' . $this->table . '` WHERE ' . $this->levelColumn . '=0');

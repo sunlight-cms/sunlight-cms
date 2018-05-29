@@ -84,7 +84,7 @@ abstract class Plugin
      * @param array         $data
      * @param PluginManager $manager
      */
-    public function __construct(array $data, PluginManager $manager)
+    function __construct(array $data, PluginManager $manager)
     {
         $this->type = $data['type'];
         $this->id = $data['id'];
@@ -103,7 +103,7 @@ abstract class Plugin
     /**
      * @return array
      */
-    public static function getTypeDefinition()
+    static function getTypeDefinition()
     {
         return static::$typeDefinition;
     }
@@ -113,7 +113,7 @@ abstract class Plugin
      *
      * @return bool
      */
-    public static function isActive()
+    static function isActive()
     {
         return Core::$pluginManager->hasInstance(get_called_class());
     }
@@ -124,7 +124,7 @@ abstract class Plugin
      * @throws \OutOfBoundsException if the plugin is not currently active
      * @return static
      */
-    public static function getInstance()
+    static function getInstance()
     {
         return Core::$pluginManager->getInstance(get_called_class());
     }
@@ -134,7 +134,7 @@ abstract class Plugin
      *
      * @return string
      */
-    public function getId()
+    function getId()
     {
         return $this->id;
     }
@@ -144,7 +144,7 @@ abstract class Plugin
      *
      * @return string
      */
-    public function getCamelId()
+    function getCamelId()
     {
         return $this->camelId;
     }
@@ -152,7 +152,7 @@ abstract class Plugin
     /**
      * @return string
      */
-    public function getType()
+    function getType()
     {
         return $this->type;
     }
@@ -160,7 +160,7 @@ abstract class Plugin
     /**
      * @return int
      */
-    public function getStatus()
+    function getStatus()
     {
         return $this->status;
     }
@@ -170,7 +170,7 @@ abstract class Plugin
      *
      * @return bool
      */
-    public function isDisabled()
+    function isDisabled()
     {
         return static::STATUS_DISABLED === $this->status;
     }
@@ -180,7 +180,7 @@ abstract class Plugin
      *
      * @return bool
      */
-    public function canBeDisabled()
+    function canBeDisabled()
     {
         return !$this->isDisabled();
     }
@@ -190,7 +190,7 @@ abstract class Plugin
      *
      * @return bool|null null if the plugin has no installer
      */
-    public function isInstalled()
+    function isInstalled()
     {
         return $this->installed;
     }
@@ -200,7 +200,7 @@ abstract class Plugin
      *
      * @return bool
      */
-    public function hasInstaller()
+    function hasInstaller()
     {
         return $this->options['installer'];
     }
@@ -211,7 +211,7 @@ abstract class Plugin
      * @throws \LogicException if the plugin has no installer
      * @return PluginInstaller
      */
-    public function getInstaller()
+    function getInstaller()
     {
         if (!$this->hasInstaller()) {
             throw new \LogicException('Plugin has no installer');
@@ -225,7 +225,7 @@ abstract class Plugin
      *
      * @return bool
      */
-    public function needsInstallation()
+    function needsInstallation()
     {
         return static::STATUS_NEEDS_INSTALLATION === $this->status;
     }
@@ -235,7 +235,7 @@ abstract class Plugin
      *
      * @return bool
      */
-    public function canBeInstalled()
+    function canBeInstalled()
     {
         return $this->hasInstaller() && $this->installed === false;
     }
@@ -245,7 +245,7 @@ abstract class Plugin
      *
      * @return bool
      */
-    public function canBeUninstalled()
+    function canBeUninstalled()
     {
         return $this->hasInstaller() && $this->installed === true;
     }
@@ -255,7 +255,7 @@ abstract class Plugin
      *
      * @return bool
      */
-    public function canBeRemoved()
+    function canBeRemoved()
     {
         return !$this->hasInstaller() || $this->installed === false;
     }
@@ -265,7 +265,7 @@ abstract class Plugin
      *
      * @return bool
      */
-    public function hasErrors()
+    function hasErrors()
     {
         return static::STATUS_HAS_ERRORS === $this->status;
     }
@@ -273,7 +273,7 @@ abstract class Plugin
     /**
      * @return string[]
      */
-    public function getErrors()
+    function getErrors()
     {
         return $this->errors;
     }
@@ -281,7 +281,7 @@ abstract class Plugin
     /**
      * @return string[]
      */
-    public function getDefinitionErrors()
+    function getDefinitionErrors()
     {
         return $this->definitionErrors;
     }
@@ -289,7 +289,7 @@ abstract class Plugin
     /**
      * @return string
      */
-    public function getDirectory()
+    function getDirectory()
     {
         return $this->dir;
     }
@@ -297,7 +297,7 @@ abstract class Plugin
     /**
      * @return string
      */
-    public function getFile()
+    function getFile()
     {
         return $this->file;
     }
@@ -306,7 +306,7 @@ abstract class Plugin
      * @param bool $absolute
      * @return string
      */
-    public function getWebPath($absolute = false)
+    function getWebPath($absolute = false)
     {
         return _link($this->webPath, $absolute);
     }
@@ -316,7 +316,7 @@ abstract class Plugin
      * @throws \OutOfBoundsException if the option does not exist
      * @return mixed
      */
-    public function getOption($name)
+    function getOption($name)
     {
         if (!array_key_exists($name, $this->options)) {
             throw new \OutOfBoundsException(sprintf('Option "%s" does not exist', $name));
@@ -328,7 +328,7 @@ abstract class Plugin
     /**
      * @return array
      */
-    public function getOptions()
+    function getOptions()
     {
         return $this->options;
     }
@@ -338,7 +338,7 @@ abstract class Plugin
      *
      * @return ConfigurationFile
      */
-    public function getConfig()
+    function getConfig()
     {
         if ($this->config === null) {
             $defaults = $this->getConfigDefaults();
@@ -357,7 +357,7 @@ abstract class Plugin
      * @param string $key
      * @return string
      */
-    public function getConfigLabel($key)
+    function getConfigLabel($key)
     {
         return $key;
     }
@@ -382,7 +382,7 @@ abstract class Plugin
      * @param string $name
      * @return PluginAction|null
      */
-    public function getAction($name)
+    function getAction($name)
     {
         switch ($name) {
             case 'info':
@@ -408,7 +408,7 @@ abstract class Plugin
      * @throws \RuntimeException if run outside of administration environment
      * @return string[] name => label
      */
-    public function getActionList()
+    function getActionList()
     {
         if (_env !== Core::ENV_ADMIN) {
             throw new \RuntimeException('Plugin actions require administration environment');

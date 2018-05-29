@@ -47,7 +47,7 @@ class Backup
     /**
      * @param string $path
      */
-    public function __construct($path)
+    function __construct($path)
     {
         $this->zip = new ZipArchive();
         $this->path = $path;
@@ -56,7 +56,7 @@ class Backup
     /**
      * Destructor
      */
-    public function __destruct()
+    function __destruct()
     {
         if ($this->open) {
             $this->revertAndClose();
@@ -70,7 +70,7 @@ class Backup
      *
      * @throws \RuntimeException on failure
      */
-    public function create()
+    function create()
     {
         if (($errorCode = $this->zip->open($this->path, ZipArchive::CREATE | ZipArchive::OVERWRITE)) !== true) {
             throw new \RuntimeException(sprintf('Could not create ZIP archive at "%s" (code %d)', $this->path, $errorCode));
@@ -85,7 +85,7 @@ class Backup
      *
      * @throws \RuntimeException if the file is not found or is not a valid ZIP file
      */
-    public function open()
+    function open()
     {
         _ensureFileExists($this->path);
 
@@ -100,7 +100,7 @@ class Backup
     /**
      * Close the backup
      */
-    public function close()
+    function close()
     {
         if ($this->new) {
             $this->setMetaData();
@@ -115,7 +115,7 @@ class Backup
     /**
      * Revert the backup to its original state
      */
-    public function revert()
+    function revert()
     {
         $this->zip->unchangeAll();
     }
@@ -123,7 +123,7 @@ class Backup
     /**
      * Revert the backup to its original state and close it
      */
-    public function revertAndClose()
+    function revertAndClose()
     {
         $this->revert();
         $this->close();
@@ -132,7 +132,7 @@ class Backup
     /**
      * Discard the backup
      */
-    public function discard()
+    function discard()
     {
         if ($this->open) {
             $this->revertAndClose();
@@ -160,7 +160,7 @@ class Backup
      *
      * @return ZipArchive
      */
-    public function getArchive()
+    function getArchive()
     {
         $this->ensureOpenAndNew();
 
@@ -172,7 +172,7 @@ class Backup
      *
      * @return bool
      */
-    public function isOpen()
+    function isOpen()
     {
         return $this->open;
     }
@@ -182,7 +182,7 @@ class Backup
      *
      * @return bool
      */
-    public function isNew()
+    function isNew()
     {
         return $this->new;
     }
@@ -194,7 +194,7 @@ class Backup
      * @param callable|null $filter                callback(data_path): bool
      * @param bool          $addRootFileToFileList automatically add root files to the file list 1/0
      */
-    public function addPath($path, $filter = null, $addRootFileToFileList = true)
+    function addPath($path, $filter = null, $addRootFileToFileList = true)
     {
         $realPath = _root . $path;
 
@@ -213,7 +213,7 @@ class Backup
      * @param string        $path   relative to the system root
      * @param callable|null $filter callback(data_path): bool
      */
-    public function addDirectory($path, $filter = null)
+    function addDirectory($path, $filter = null)
     {
         $this->ensureOpenAndNew();
 
@@ -250,7 +250,7 @@ class Backup
      *
      * @param string $dataPath path within the backup's data directory (e.g. "foo/bar")
      */
-    public function addEmptyDirectory($dataPath)
+    function addEmptyDirectory($dataPath)
     {
         $this->ensureOpenAndNew();
 
@@ -265,7 +265,7 @@ class Backup
      * @param callable|null $filter                callback(data_path): bool
      * @param bool          $addRootFileToFileList automatically add root files to the file list 1/0
      */
-    public function addFile($dataPath, $realPath, $filter = null, $addRootFileToFileList = true)
+    function addFile($dataPath, $realPath, $filter = null, $addRootFileToFileList = true)
     {
         $this->ensureOpenAndNew();
 
@@ -289,7 +289,7 @@ class Backup
      * @param string $data                  the file's contents
      * @param bool   $addRootFileToFileList automatically add root files to the file list 1/0
      */
-    public function addFileFromString($dataPath, $data, $addRootFileToFileList = true)
+    function addFileFromString($dataPath, $data, $addRootFileToFileList = true)
     {
         $this->ensureOpenAndNew();
 
@@ -305,7 +305,7 @@ class Backup
      *
      * @return bool
      */
-    public function hasDatabaseDump()
+    function hasDatabaseDump()
     {
         $this->ensureOpenAndNotNew();
 
@@ -317,7 +317,7 @@ class Backup
      *
      * @return resource|bool
      */
-    public function getDatabaseDump()
+    function getDatabaseDump()
     {
         $this->ensureOpenAndNotNew();
 
@@ -330,7 +330,7 @@ class Backup
      * @param TemporaryFile $databaseDump
      * @param string        $prefix
      */
-    public function addDatabaseDump(TemporaryFile $databaseDump, $prefix)
+    function addDatabaseDump(TemporaryFile $databaseDump, $prefix)
     {
         $this->ensureOpenAndNew();
 
@@ -345,7 +345,7 @@ class Backup
      * @param $files
      * @param $targetPath
      */
-    public function extractFiles($files, $targetPath)
+    function extractFiles($files, $targetPath)
     {
         $this->ensureOpenAndNotNew();
 
@@ -367,7 +367,7 @@ class Backup
      * @param array|string $directories one or more archive paths relative to the data directory (e.g. "upload")
      * @param string       $targetPath  path where to extract the directories to
      */
-    public function extractDirectories($directories, $targetPath)
+    function extractDirectories($directories, $targetPath)
     {
         $this->ensureOpenAndNotNew();
 
@@ -384,7 +384,7 @@ class Backup
      * @throws \OutOfBoundsException if the key is invalid
      * @return mixed
      */
-    public function getMetaData($key = null)
+    function getMetaData($key = null)
     {
         $this->ensureOpenAndNotNew();
         $this->ensureMetaDataLoaded();
@@ -403,7 +403,7 @@ class Backup
     /**
      * @return array
      */
-    public function getMetaDataErrors()
+    function getMetaDataErrors()
     {
         $this->ensureMetaDataLoaded();
 

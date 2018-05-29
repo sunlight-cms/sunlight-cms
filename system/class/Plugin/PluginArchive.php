@@ -32,7 +32,7 @@ class PluginArchive
      * @param PluginManager $manager
      * @param string        $path
      */
-    public function __construct(PluginManager $manager, $path)
+    function __construct(PluginManager $manager, $path)
     {
         $this->manager = $manager;
         $this->zip = new ZipArchive();
@@ -46,7 +46,7 @@ class PluginArchive
      * @param string[]|null &$failedPlugins
      * @return string[] list of successfully extracted plugins
      */
-    public function extract($merge = false, array &$failedPlugins = null)
+    function extract($merge = false, array &$failedPlugins = null)
     {
         $toExtract = array();
         $failedPlugins = array();
@@ -78,7 +78,7 @@ class PluginArchive
      *
      * @return bool
      */
-    public function hasPlugins()
+    function hasPlugins()
     {
         $this->ensureOpen();
 
@@ -88,7 +88,7 @@ class PluginArchive
     /**
      * @return array
      */
-    public function getPlugins()
+    function getPlugins()
     {
         $this->ensureOpen();
 

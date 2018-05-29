@@ -14,12 +14,12 @@ class LanguagePlugin extends Plugin
         'options' => array(),
     );
 
-    public function canBeDisabled()
+    function canBeDisabled()
     {
         return !$this->isFallback() && parent::canBeDisabled();
     }
     
-    public function canBeRemoved()
+    function canBeRemoved()
     {
         return !$this->isFallback() && parent::canBeRemoved();
     }
@@ -29,7 +29,7 @@ class LanguagePlugin extends Plugin
      *
      * @return bool
      */
-    public function isFallback()
+    function isFallback()
     {
         return $this->id === Core::$fallbackLang;
     }
@@ -40,7 +40,7 @@ class LanguagePlugin extends Plugin
      * @param bool|null $admin load administration dictionary as well 1/0 (null = auto)
      * @return array|bool false on failure
      */
-    public function getLocalizationEntries($admin = null)
+    function getLocalizationEntries($admin = null)
     {
         if ($admin === null) {
             $admin = _env === Core::ENV_ADMIN;

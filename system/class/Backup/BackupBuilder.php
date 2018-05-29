@@ -77,7 +77,7 @@ class BackupBuilder
      *
      * @return bool
      */
-    public function isDatabaseDumpEnabled()
+    function isDatabaseDumpEnabled()
     {
         return $this->databaseDumpEnabled;
     }
@@ -88,7 +88,7 @@ class BackupBuilder
      * @param bool $databaseDumpEnabled
      * @return static
      */
-    public function setDatabaseDumpEnabled($databaseDumpEnabled)
+    function setDatabaseDumpEnabled($databaseDumpEnabled)
     {
         $this->databaseDumpEnabled = $databaseDumpEnabled;
 
@@ -100,7 +100,7 @@ class BackupBuilder
      *
      * @return array
      */
-    public function getStaticPaths()
+    function getStaticPaths()
     {
         return $this->staticPathList;
     }
@@ -111,7 +111,7 @@ class BackupBuilder
      * @param string $path path to a file or a directory, relative to system root
      * @return static
      */
-    public function addStaticPath($path)
+    function addStaticPath($path)
     {
         $this->staticPathList[] = $path;
 
@@ -123,7 +123,7 @@ class BackupBuilder
      *
      * @return array
      */
-    public function getEmptyDirectories()
+    function getEmptyDirectories()
     {
         return $this->emptyDirPathList;
     }
@@ -134,7 +134,7 @@ class BackupBuilder
      * @param string $path path to a directory, relative to system root
      * @return static
      */
-    public function addEmptyDirectory($path)
+    function addEmptyDirectory($path)
     {
         $this->emptyDirPathList[] = $path;
 
@@ -147,7 +147,7 @@ class BackupBuilder
      * @param string $name dynamic path name
      * @return bool
      */
-    public function hasDynamicPath($name)
+    function hasDynamicPath($name)
     {
         return isset($this->dynamicPathMap[$name]);
     }
@@ -159,7 +159,7 @@ class BackupBuilder
      * @throws \OutOfBoundsException if no such dynamic path exists
      * @return array
      */
-    public function getDynamicPath($name)
+    function getDynamicPath($name)
     {
         $this->ensureDynamicPathNameIsValid($name);
 
@@ -171,7 +171,7 @@ class BackupBuilder
      *
      * @return array
      */
-    public function getDynamicPathNames()
+    function getDynamicPathNames()
     {
         return array_keys($this->dynamicPathMap);
     }
@@ -184,7 +184,7 @@ class BackupBuilder
      * @throws \InvalidArgumentException if the name is empty or contains illegal characters
      * @return static
      */
-    public function addDynamicPath($name, array $paths)
+    function addDynamicPath($name, array $paths)
     {
         if (!preg_match('{[a-zA-Z0-9_]+$}AD', $name)) {
             throw new \InvalidArgumentException('The name is empty or contains illegal characters');
@@ -203,7 +203,7 @@ class BackupBuilder
      * @param string $name dynamic path name
      * @return static
      */
-    public function removeDynamicPath($name)
+    function removeDynamicPath($name)
     {
         unset($this->dynamicPathMap[$name]);
         unset($this->disabledDynamicPathMap[$name]);
@@ -218,7 +218,7 @@ class BackupBuilder
      * @throws \OutOfBoundsException if no such dynamic path exists
      * @return bool
      */
-    public function isDynamicPathEnabled($name)
+    function isDynamicPathEnabled($name)
     {
         $this->ensureDynamicPathNameIsValid($name);
 
@@ -232,7 +232,7 @@ class BackupBuilder
      * @throws \OutOfBoundsException if no such dynamic path exists
      * @return static
      */
-    public function disableDynamicPath($name)
+    function disableDynamicPath($name)
     {
         $this->ensureDynamicPathNameIsValid($name);
 
@@ -248,7 +248,7 @@ class BackupBuilder
      * @throws \OutOfBoundsException if no such dynamic path exists
      * @return static
      */
-    public function enableDynamicPath($name)
+    function enableDynamicPath($name)
     {
         $this->ensureDynamicPathNameIsValid($name);
 
@@ -264,7 +264,7 @@ class BackupBuilder
      * @throws \OutOfBoundsException if no such dynamic path exists
      * @return bool
      */
-    public function isDynamicPathOptional($name)
+    function isDynamicPathOptional($name)
     {
         $this->ensureDynamicPathNameIsValid($name);
 
@@ -278,7 +278,7 @@ class BackupBuilder
      * @throws \OutOfBoundsException if no such dynamic path exists
      * @return static
      */
-    public function makeDynamicPathOptional($name)
+    function makeDynamicPathOptional($name)
     {
         $this->ensureDynamicPathNameIsValid($name);
 
@@ -294,7 +294,7 @@ class BackupBuilder
      * @throws \OutOfBoundsException if no such dynamic path exists
      * @return static
      */
-    public function makeDynamicPathRequired($name)
+    function makeDynamicPathRequired($name)
     {
         $this->ensureDynamicPathNameIsValid($name);
 
@@ -311,7 +311,7 @@ class BackupBuilder
      * @param bool   $dynamic affect dynamic paths 1/0
      * @return static
      */
-    public function includePath($regexp, $static = true, $dynamic = true)
+    function includePath($regexp, $static = true, $dynamic = true)
     {
         $this->includedPathMap[$regexp] = array('static' => $static, 'dynamic' => $dynamic);
 
@@ -326,7 +326,7 @@ class BackupBuilder
      * @param bool   $dynamic affect dynamic paths 1/0
      * @return static
      */
-    public function excludePath($regexp, $static = true, $dynamic = true)
+    function excludePath($regexp, $static = true, $dynamic = true)
     {
         $this->excludedPathMap[$regexp] = array('static' => $static, 'dynamic' => $dynamic);
 
@@ -340,7 +340,7 @@ class BackupBuilder
      * @throws \InvalidArgumentException on invalid type
      * @return TemporaryFile
      */
-    public function build($type)
+    function build($type)
     {
         if (static::TYPE_PARTIAL !== $type && static::TYPE_FULL !== $type) {
             throw new \InvalidArgumentException('Invalid type');
@@ -465,7 +465,7 @@ class BackupBuilder
      * @param bool   $isDynamic
      * @return bool
      */
-    public function filterPath($dataPath, $isStatic = false, $isDynamic = false)
+    function filterPath($dataPath, $isStatic = false, $isDynamic = false)
     {
         foreach ($this->includedPathMap as $regex => $options) {
             if (
@@ -513,7 +513,7 @@ class BackupBuilder
      *
      * @return string
      */
-    public static function generateConfigFile()
+    static function generateConfigFile()
     {
         $phpFileBuilder = PhpTemplate::fromFile(_root . 'system/config_template.php');
 

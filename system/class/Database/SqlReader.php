@@ -31,7 +31,7 @@ class SqlReader
     /**
      * @param Input $input
      */
-    public function __construct(Input $input)
+    function __construct(Input $input)
     {
         $this->input = $input;
     }
@@ -42,7 +42,7 @@ class SqlReader
      * @param string $string
      * @return static
      */
-    public static function fromString($string)
+    static function fromString($string)
     {
         return new static(new MemoryInput($string));
     }
@@ -55,7 +55,7 @@ class SqlReader
      * @param int|null $chunkSize
      * @return static
      */
-    public static function fromStream($stream, $length = null, $chunkSize = null)
+    static function fromStream($stream, $length = null, $chunkSize = null)
     {
         return new static(new StreamInput($stream, $length, $chunkSize ?: 262144));
     }
@@ -67,7 +67,7 @@ class SqlReader
      * @param int|null $chunkSize
      * @return static
      */
-    public static function fromFile($filepath, $chunkSize = null)
+    static function fromFile($filepath, $chunkSize = null)
     {
         _ensureFileExists($filepath);
 
@@ -83,7 +83,7 @@ class SqlReader
      *
      * @return string
      */
-    public function getDelimiter()
+    function getDelimiter()
     {
         return $this->delimiter;
     }
@@ -94,7 +94,7 @@ class SqlReader
      * @param string $delimiter single character
      * @return SqlReader
      */
-    public function setDelimiter($delimiter)
+    function setDelimiter($delimiter)
     {
         $this->delimiter = $delimiter;
         return $this;
@@ -113,7 +113,7 @@ class SqlReader
      * @param callable|null $callback callback(string query, array queryMap): void to invoke for each query
      * @return string[]|int array or number of queries (if callback is used)
      */
-    public function read($callback = null)
+    function read($callback = null)
     {
         $query = null;
         $queries = $callback === null ? array() : 0;

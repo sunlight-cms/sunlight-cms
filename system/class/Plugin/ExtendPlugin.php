@@ -27,7 +27,7 @@ class ExtendPlugin extends Plugin
     /**
      * Initialize the plugin
      */
-    public function initialize()
+    function initialize()
     {
         // register events
         foreach ($this->options['events'] as $subscriber) {

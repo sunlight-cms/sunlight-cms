@@ -16,7 +16,7 @@ abstract class PageMenu
      * @param string      $menuType     identifikator typu menu
      * @return string
      */
-    public static function render(array $flatPageTree, $activeId = null, $rootClass = null, $pageEvent = null, $menuType = null)
+    static function render(array $flatPageTree, $activeId = null, $rootClass = null, $pageEvent = null, $menuType = null)
     {
         if (empty($flatPageTree)) {
             return '';
@@ -132,7 +132,7 @@ abstract class PageMenu
      *
      * @return array
      */
-    public static function getRequiredExtraColumns()
+    static function getRequiredExtraColumns()
     {
         $extraColumns = array('link_url', 'link_new_window');
 

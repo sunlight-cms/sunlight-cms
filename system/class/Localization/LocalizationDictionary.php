@@ -19,7 +19,7 @@ class LocalizationDictionary
      * @param string|null $fallback
      * @return string
      */
-    public function get($key, array $replacements = null, $fallback = null)
+    function get($key, array $replacements = null, $fallback = null)
     {
         // check local entries
         if (isset($this->entries[$key])) {
@@ -56,7 +56,7 @@ class LocalizationDictionary
      *
      * @param array $entries
      */
-    public function add(array $entries)
+    function add(array $entries)
     {
         $this->entries += $entries;
     }
@@ -73,7 +73,7 @@ class LocalizationDictionary
      * @param string                 $prefix
      * @param LocalizationDictionary $subDictionary
      */
-    public function registerSubDictionary($prefix, LocalizationDictionary $subDictionary)
+    function registerSubDictionary($prefix, LocalizationDictionary $subDictionary)
     {
         if (_debug && strpos($prefix, '.') !== false) {
             throw new \InvalidArgumentException(sprintf('Sub-dictionary prefix "%s" must not contain a dot', $prefix));

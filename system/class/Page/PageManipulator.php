@@ -29,7 +29,7 @@ class PageManipulator
      * @param string $type_idt
      * @return array
      */
-    public static function getInitialData($type, $type_idt)
+    static function getInitialData($type, $type_idt)
     {
         switch ($type) {
             case _page_section:
@@ -120,7 +120,7 @@ class PageManipulator
      * @param bool     $getChangesetMap pouze vratit mapu zmen, nezasahovat do databaze 1/0
      * @return array|null
      */
-    public static function refreshSlugs($id, $getChangesetMap = false)
+    static function refreshSlugs($id, $getChangesetMap = false)
     {
         if ($id !== null) {
             $id = static::findFirstTreeMatch($id, 'slug_abs', 1);
@@ -162,7 +162,7 @@ class PageManipulator
      * @param bool     $getChangesetMap pouze vratit mapu zmen, nezasahovat do databaze 1/0
      * @return array|null
      */
-    public static function refreshLevels($id, $getChangesetMap = false)
+    static function refreshLevels($id, $getChangesetMap = false)
     {
         if ($id !== null) {
             $id = static::findFirstTreeMatch($id, 'level_inherit', 0);
@@ -196,7 +196,7 @@ class PageManipulator
      * @param bool     $getChangesetMap pouze vratit mapu zmen, nezasahovat do databaze 1/0
      * @return array|null
      */
-    public static function refreshLayouts($id, $getChangesetMap = false)
+    static function refreshLayouts($id, $getChangesetMap = false)
     {
         if ($id !== null) {
             $id = static::findFirstTreeMatch($id, 'layout_inherit', 0);
@@ -229,7 +229,7 @@ class PageManipulator
      * @param string $slug
      * @return string
      */
-    public static function getBaseSlug($slug)
+    static function getBaseSlug($slug)
     {
         $slugLastSlashPos = mb_strrpos($slug, '/');
 
@@ -246,7 +246,7 @@ class PageManipulator
      * @param string $error     promenna, kam ulozit pripadnou chybovou hlasku
      * @return bool
      */
-    public static function delete(array $page, $recursive = false, &$error = null)
+    static function delete(array $page, $recursive = false, &$error = null)
     {
         // zavislosti
         $flags = static::DEPEND_DIRECT;
@@ -284,7 +284,7 @@ class PageManipulator
      * @param bool  $childPages vypisat podstranky 1/0
      * @return array
      */
-    public static function listDependencies(array $page, $childPages = false)
+    static function listDependencies(array $page, $childPages = false)
     {
         $dependencies = array();
 
@@ -348,7 +348,7 @@ class PageManipulator
      * @param string $error  promenna, kam ulozit pripadnou chybovou hlasku
      * @return bool
      */
-    public static function deleteDependencies(array $page, $flags, &$error = null)
+    static function deleteDependencies(array $page, $flags, &$error = null)
     {
         $deleteChildPages = (($flags & static::DEPEND_CHILD_PAGES) !== 0);
         $deleteDirect = (($flags & static::DEPEND_DIRECT) !== 0);

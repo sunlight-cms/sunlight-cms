@@ -27,7 +27,7 @@ class TreeManager
      * @param string|null $levelColumn  nazev sloupce pro uroven
      * @param string|null $depthColumn  nazev sloupce pro hloubku
      */
-    public function __construct($table, $idColumn = null, $parentColumn = null, $levelColumn = null, $depthColumn = null)
+    function __construct($table, $idColumn = null, $parentColumn = null, $levelColumn = null, $depthColumn = null)
     {
         $this->table = $table;
         $this->idColumn = $idColumn ?: 'id';
@@ -43,7 +43,7 @@ class TreeManager
      * @param int|null $parentNodeId ID nadrazeneho uzlu
      * @return bool
      */
-    public function checkParent($nodeId, $parentNodeId)
+    function checkParent($nodeId, $parentNodeId)
     {
         if (
             $parentNodeId === null
@@ -63,7 +63,7 @@ class TreeManager
      * @param bool  $refresh
      * @return int id noveho uzlu
      */
-    public function create(array $data, $refresh = true)
+    function create(array $data, $refresh = true)
     {
         if (array_key_exists($this->levelColumn, $data) || array_key_exists( $this->depthColumn, $data)) {
             throw new \InvalidArgumentException(sprintf('Columns "%s" and "%s" cannot be specified manually', $this->levelColumn, $this->depthColumn));
@@ -91,7 +91,7 @@ class TreeManager
      * @param bool  $refresh
      * @return static
      */
-    public function update($nodeId, $parentNodeId, array $changeset, $refresh = true)
+    function update($nodeId, $parentNodeId, array $changeset, $refresh = true)
     {
         if (array_key_exists($this->levelColumn, $changeset) || array_key_exists($this->depthColumn, $changeset)) {
             throw new \InvalidArgumentException(sprintf('Columns "%s" and "%s" cannnot be changed manually', $this->levelColumn, $this->depthColumn));
@@ -124,7 +124,7 @@ class TreeManager
      * @param bool $orphanRemoval
      * @return static
      */
-    public function delete($nodeId, $orphanRemoval = true)
+    function delete($nodeId, $orphanRemoval = true)
     {
         if ($orphanRemoval) {
             $children = $this->getChildren($nodeId);
@@ -145,7 +145,7 @@ class TreeManager
      * @param int $nodeId
      * @return static
      */
-    public function purge($nodeId)
+    function purge($nodeId)
     {
         $this->deleteSet($this->idColumn, $this->getChildren($nodeId));
         $this->doRefreshDepth($nodeId);
@@ -159,7 +159,7 @@ class TreeManager
      * @param int|null $nodeId
      * @return static
      */
-    public function refresh($nodeId = null)
+    function refresh($nodeId = null)
     {
         $this->doRefresh($nodeId);
 
@@ -174,7 +174,7 @@ class TreeManager
      * @param int|null $newParent
      * @param int|null $oldParent
      */
-    public function refreshOnParentUpdate($nodeId, $newParent, $oldParent)
+    function refreshOnParentUpdate($nodeId, $newParent, $oldParent)
     {
         if ($oldParent != $newParent) {
             $this->doRefresh($nodeId);
@@ -188,7 +188,7 @@ class TreeManager
      * @param bool $refresh
      * @return static
      */
-    public function purgeOrphaned($refresh = true)
+    function purgeOrphaned($refresh = true)
     {
         do {
             $orphaned = DB::query('SELECT n.' . $this->idColumn . ',n.' . $this->parentColumn . ' FROM `' . $this->table . '` n LEFT JOIN `' . $this->table . '` p ON(n.' . $this->parentColumn . '=p.' . $this->idColumn . ') WHERE n.' . $this->parentColumn . ' IS NOT NULL AND p.id IS NULL');
@@ -222,7 +222,7 @@ class TreeManager
      * @param bool     $getChangesetMap vratit mapu zmen namisto volani {@see DB::updateSetMulti()}
      * @return array|null
      */
-    public function propagate(array $flatTree, $context, $propagator, $contextUpdater, $getChangesetMap = false)
+    function propagate(array $flatTree, $context, $propagator, $contextUpdater, $getChangesetMap = false)
     {
         $stack = array();
         $contextLevel = 0;

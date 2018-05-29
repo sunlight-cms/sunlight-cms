@@ -12,7 +12,7 @@ class TemplateLoader extends \Twig_Loader_Filesystem
      * @param string $name
      * @param string $newName
      */
-    public function override($name, $newName)
+    function override($name, $newName)
     {
         $this->overrides[$name] = $newName;
     }

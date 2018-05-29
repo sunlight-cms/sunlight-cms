@@ -9,7 +9,7 @@ class ConstraintMap
     /** @var array package => array(array(Repository[, package]), ...] corresponding to $constraintMap */
     private $sourceMap;
 
-    public function __construct(Repository $repository)
+    function __construct(Repository $repository)
     {
         foreach ($repository->getDefinition()->require as $requiredPackage => $constraints) {
             $this->constraintMap[$requiredPackage][] = $constraints;
@@ -27,7 +27,7 @@ class ConstraintMap
     /**
      * Add all constraints from another map
      */
-    public function add(self $constraintMap)
+    function add(self $constraintMap)
     {
         $this->constraintMap = array_merge_recursive($this->constraintMap, $constraintMap->constraintMap);
         $this->sourceMap = array_merge_recursive($this->sourceMap, $constraintMap->sourceMap);
@@ -39,7 +39,7 @@ class ConstraintMap
      * @param string $packageName
      * @return bool
      */
-    public function has($packageName)
+    function has($packageName)
     {
         return isset($this->constraintMap[$packageName]);
     }
@@ -51,7 +51,7 @@ class ConstraintMap
      * @throws \OutOfBoundsException if no such package is known
      * @return string[]
      */
-    public function getConstraints($packageName)
+    function getConstraints($packageName)
     {
         if (!isset($this->constraintMap[$packageName])) {
             throw new \OutOfBoundsException(sprintf('Package "%s" is not known', $packageName));
@@ -78,7 +78,7 @@ class ConstraintMap
      * @throws \OutOfBoundsException if no such package is known
      * @return array[]
      */
-    public function getSources($packageName)
+    function getSources($packageName)
     {
         $sources = array();
 

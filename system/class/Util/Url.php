@@ -47,7 +47,7 @@ class Url
     /**
      * Create a blank instance
      */
-    public static function create()
+    static function create()
     {
         return new static(array());
     }
@@ -59,7 +59,7 @@ class Url
      * @throws \InvalidArgumentException if the URL is invalid
      * @return static
      */
-    public static function parse($url)
+    static function parse($url)
     {
         $components = parse_url($url);
 
@@ -81,7 +81,7 @@ class Url
      *
      * @return static
      */
-    public static function current()
+    static function current()
     {
         if (static::$current === null) {
             $url = sprintf(
@@ -104,7 +104,7 @@ class Url
      *
      * @return static
      */
-    public static function base()
+    static function base()
     {
         if (static::$base === null || static::$cachedBaseUrl !== Core::$url) {
             static::$base = static::parse(Core::$url);
@@ -119,7 +119,7 @@ class Url
      *
      * @return string
      */
-    public function __toString()
+    function __toString()
     {
         return $this->generate();
     }
@@ -131,7 +131,7 @@ class Url
      * @throws \LogicException if the URL could not be generated
      * @return string
      */
-    public function generate($absolute = null)
+    function generate($absolute = null)
     {
         $output = '';
 
@@ -188,7 +188,7 @@ class Url
      *
      * @return string
      */
-    public function generateRelative()
+    function generateRelative()
     {
         return $this->generate(false);
     }
@@ -198,7 +198,7 @@ class Url
      *
      * @return string
      */
-    public function generateAbsolute()
+    function generateAbsolute()
     {
         return $this->generate(true);
     }
@@ -208,7 +208,7 @@ class Url
      *
      * @return string
      */
-    public function getQueryString()
+    function getQueryString()
     {
         return http_build_query($this->components['query'], '', '&');
     }
@@ -218,7 +218,7 @@ class Url
      *
      * @return string|null
      */
-    public function getFullHost()
+    function getFullHost()
     {
         if ($this->components['host'] !== null) {
             $fullHost = $this->components['host'];
@@ -237,7 +237,7 @@ class Url
      * @param string $name
      * @return bool
      */
-    public function __isset($name)
+    function __isset($name)
     {
         return isset($this->components[$name]) && !empty($this->components[$name]);
     }
@@ -249,7 +249,7 @@ class Url
      * @throws \OutOfBoundsException
      * @return mixed
      */
-    public function __get($name)
+    function __get($name)
     {
         if (!array_key_exists($name, $this->components)) {
             throw new \OutOfBoundsException(sprintf('Unknown URL component "%s"', $name));
@@ -265,7 +265,7 @@ class Url
      * @param mixed  $value
      * @throws \OutOfBoundsException
      */
-    public function __set($name, $value)
+    function __set($name, $value)
     {
         if (!array_key_exists($name, $this->components)) {
             throw new \OutOfBoundsException(sprintf('Unknown URL component "%s"', $name));
@@ -286,7 +286,7 @@ class Url
      * @param string $name
      * @return bool
      */
-    public function has($name)
+    function has($name)
     {
         return isset($this->components['query'][$name]);
     }
@@ -298,7 +298,7 @@ class Url
      * @param mixed  $default
      * @return mixed
      */
-    public function get($name, $default = null)
+    function get($name, $default = null)
     {
         return
             isset($this->components['query'][$name])
@@ -313,7 +313,7 @@ class Url
      * @param mixed  $value
      * @return static
      */
-    public function set($name, $value)
+    function set($name, $value)
     {
         if ($value === null) {
             unset($this->components['query'][$name]);
@@ -330,7 +330,7 @@ class Url
      * @param string $name
      * @return static
      */
-    public function remove($name)
+    function remove($name)
     {
         unset($this->components['query'][$name]);
 
@@ -343,7 +343,7 @@ class Url
      * @param array $names
      * @return static
      */
-    public function removeArr(array $names)
+    function removeArr(array $names)
     {
         foreach ($names as $name) {
             unset($this->components['query'][$name]);
@@ -358,7 +358,7 @@ class Url
      * @param array $query
      * @return static
      */
-    public function add(array $query)
+    function add(array $query)
     {
         $this->components['query'] = $query + $this->components['query'];
 

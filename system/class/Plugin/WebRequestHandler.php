@@ -27,7 +27,7 @@ abstract class WebRequestHandler
     /**
      * Register the request handler
      */
-    public function register()
+    function register()
     {
         if (_env !== Core::ENV_WEB) {
             throw new \LogicException('Request handlers are meant for the web environment');
@@ -41,7 +41,7 @@ abstract class WebRequestHandler
      *
      * @param array $args
      */
-    public final function onIndexPlugin(array $args)
+    final function onIndexPlugin(array $args)
     {
         $path = (string) $args['index']['slug'];
 
@@ -56,7 +56,7 @@ abstract class WebRequestHandler
      *
      * @param array $args
      */
-    public final function onIndexPrepare(array $args)
+    final function onIndexPrepare(array $args)
     {
         $output = $this->getOutput();
 
@@ -74,7 +74,7 @@ abstract class WebRequestHandler
      *
      * @param array $args
      */
-    public final function onIndexReady(array $args)
+    final function onIndexReady(array $args)
     {
         if ($args['index']['redirect_to'] !== null) {
             // do not output if a redirect has been set up

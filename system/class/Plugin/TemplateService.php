@@ -16,7 +16,7 @@ abstract class TemplateService
      * @param string $idt
      * @return bool
      */
-    public static function templateExists($idt)
+    static function templateExists($idt)
     {
         return Core::$pluginManager->has(PluginManager::TEMPLATE, $idt);
     }
@@ -27,7 +27,7 @@ abstract class TemplateService
      * @param string $id
      * @return TemplatePlugin
      */
-    public static function getTemplate($id)
+    static function getTemplate($id)
     {
         return Core::$pluginManager->getTemplate($id);
     }
@@ -37,7 +37,7 @@ abstract class TemplateService
      *
      * @return TemplatePlugin
      */
-    public static function getDefaultTemplate()
+    static function getDefaultTemplate()
     {
         return static::getTemplate(_default_template);
     }
@@ -50,7 +50,7 @@ abstract class TemplateService
      * @param string|null           $slot
      * @return string
      */
-    public static function composeUid($template, $layout = null, $slot = null)
+    static function composeUid($template, $layout = null, $slot = null)
     {
         $uid = $template instanceof TemplatePlugin
             ? $template->getId()
@@ -73,7 +73,7 @@ abstract class TemplateService
      * @param int    $type see TemplateHelper::UID_* constants
      * @return string[] template, [layout], [slot]
      */
-    public static function parseUid($uid, $type)
+    static function parseUid($uid, $type)
     {
         $expectedComponentCount = $type + 1;
 
@@ -88,7 +88,7 @@ abstract class TemplateService
      * @param int    $type see TemplateHelper::UID_* constants
      * @return bool
      */
-    public static function validateUid($uid, $type)
+    static function validateUid($uid, $type)
     {
         return static::getComponentsByUid($uid, $type) !== null;
     }
@@ -100,7 +100,7 @@ abstract class TemplateService
      * @param int    $type see TemplateHelper::UID_* constants
      * @return array|null array or null if the given identifier is not valid
      */
-    public static function getComponentsByUid($uid, $type)
+    static function getComponentsByUid($uid, $type)
     {
         return call_user_func_array(
             array(get_called_class(), 'getComponents'),
@@ -123,7 +123,7 @@ abstract class TemplateService
      * @param string|null $slot
      * @return array|null array or null if the given combination does not exist
      */
-    public static function getComponents($template, $layout = null, $slot = null)
+    static function getComponents($template, $layout = null, $slot = null)
     {
         if (!static::templateExists($template)) {
             return null;
@@ -163,7 +163,7 @@ abstract class TemplateService
      * @param bool           $includeTemplateName
      * @return string
      */
-    public static function getComponentLabel(TemplatePlugin $template, $layout = null, $slot = null, $includeTemplateName = true)
+    static function getComponentLabel(TemplatePlugin $template, $layout = null, $slot = null, $includeTemplateName = true)
     {
         $parts = array();
 
@@ -189,7 +189,7 @@ abstract class TemplateService
      * @param bool  $includeTemplateName
      * @return string
      */
-    public static function getComponentLabelFromArray(array $components, $includeTemplateName = true)
+    static function getComponentLabelFromArray(array $components, $includeTemplateName = true)
     {
         return static::getComponentLabel(
             $components['template'],
@@ -207,7 +207,7 @@ abstract class TemplateService
      * @param bool        $includeTemplateName
      * @return string
      */
-    public static function getComponentLabelByUid($uid, $type, $includeTemplateName = true)
+    static function getComponentLabelByUid($uid, $type, $includeTemplateName = true)
     {
         if ($uid !== null) {
             $components = static::getComponentsByUid($uid, $type);

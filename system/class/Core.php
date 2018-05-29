@@ -103,7 +103,7 @@ abstract class Core
      * @param string $root    relative path to the system root directory
      * @param array  $options
      */
-    public static function init($root, array $options = array())
+    static function init($root, array $options = array())
     {
         if (static::$ready) {
             throw new \LogicException('Cannot init multiple times');
@@ -828,7 +828,7 @@ abstract class Core
     /**
      * Run CRON tasks
      */
-    public static function runCronTasks()
+    static function runCronTasks()
     {
         $cronNow = time();
         $cronUpdate = false;
@@ -905,7 +905,7 @@ abstract class Core
     /**
      * @return bool
      */
-    public static function isReady()
+    static function isReady()
     {
         return static::$ready;
     }
@@ -913,7 +913,7 @@ abstract class Core
     /**
      * Run system maintenance
      */
-    public static function doMaintenance()
+    static function doMaintenance()
     {
         // clean thumbnails
         _pictureThumbClean(_thumb_cleanup_threshold);
@@ -939,7 +939,7 @@ abstract class Core
      * @param mixed  $default
      * @return mixed
      */
-    public static function loadSetting($name, $default = null)
+    static function loadSetting($name, $default = null)
     {
         $result = DB::queryRow('SELECT val FROM ' . _settings_table . ' WHERE var=' . DB::val($name));
         if ($result !== false) {
@@ -955,7 +955,7 @@ abstract class Core
      * @param string|string[] $names
      * @return array
      */
-    public static function loadSettings(array $names)
+    static function loadSettings(array $names)
     {
         $names = (array) $names;
 
@@ -974,7 +974,7 @@ abstract class Core
      * @param string|null $type
      * @return array
      */
-    public static function loadSettingsByType($type)
+    static function loadSettingsByType($type)
     {
         $settings = array();
         $query = DB::query('SELECT var,val FROM ' . _settings_table . ' WHERE type' . ($type === null ? ' IS NULL' : '=' . DB::val($type)));
@@ -991,7 +991,7 @@ abstract class Core
      * @param string $name
      * @param string $newValue
      */
-    public static function updateSetting($name, $newValue)
+    static function updateSetting($name, $newValue)
     {
         DB::update(_settings_table, 'var=' . DB::val($name), array('val' => (string) $newValue));
     }
@@ -1003,7 +1003,7 @@ abstract class Core
      * @param bool  $scriptTags      obalit do <script> tagu 1/0
      * @return string
      */
-    public static function getJavascript(array $customVariables = array(), $scriptTags = true)
+    static function getJavascript(array $customVariables = array(), $scriptTags = true)
     {
         $output = '';
 
@@ -1049,7 +1049,7 @@ abstract class Core
      * @param string|null $msgExtra extra obsah pod zpravou (nelokalizovany)
      * @throws CoreException
      */
-    public static function systemFailure($msgCs, $msgEn, array $msgArgs = null, $msgExtra = null)
+    static function systemFailure($msgCs, $msgEn, array $msgArgs = null, $msgExtra = null)
     {
         $messages = array();
 
@@ -1076,7 +1076,7 @@ abstract class Core
      * @param bool   $showPrevious
      * @return string
      */
-    public static function renderException($e, $showTrace = true, $showPrevious = true)
+    static function renderException($e, $showTrace = true, $showPrevious = true)
     {
         return '<pre class="exception">' . _e(Error::renderException($e, $showTrace, $showPrevious)) . "</pre>\n";
     }

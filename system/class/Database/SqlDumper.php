@@ -27,7 +27,7 @@ class SqlDumper
      * @throws DatabaseException on failure
      * @return TemporaryFile
      */
-    public function dump()
+    function dump()
     {
         $tmpFile = _tmpFile();
         $handle = null;
@@ -62,7 +62,7 @@ class SqlDumper
      * @param string $table
      * @return static
      */
-    public function addTable($table)
+    function addTable($table)
     {
         $this->tables[] = $table;
 
@@ -75,7 +75,7 @@ class SqlDumper
      * @param string[] $tables
      * @return static
      */
-    public function addTables(array $tables)
+    function addTables(array $tables)
     {
         foreach ($tables as $table) {
             $this->tables[] = $table;
@@ -90,7 +90,7 @@ class SqlDumper
      * @param bool $dumpData
      * @return static
      */
-    public function setDumpData($dumpData)
+    function setDumpData($dumpData)
     {
         $this->dumpData = $dumpData;
 
@@ -103,7 +103,7 @@ class SqlDumper
      * @param bool $dumpTables
      * @return static
      */
-    public function setDumpTables($dumpTables)
+    function setDumpTables($dumpTables)
     {
         $this->dumpTables = $dumpTables;
 
@@ -115,7 +115,7 @@ class SqlDumper
      *
      * @return int
      */
-    public function getMaxPacketSize()
+    function getMaxPacketSize()
     {
         if ($this->maxPacketSize === null) {
             // determine max packet size
@@ -137,7 +137,7 @@ class SqlDumper
      * @param int|null $maxPacketSize
      * @return static
      */
-    public function setMaxPacketSize($maxPacketSize)
+    function setMaxPacketSize($maxPacketSize)
     {
         $this->maxPacketSize = $maxPacketSize;
 

@@ -27,7 +27,7 @@ abstract class PageLister
     /**
      * Initialize
      */
-    public static function init()
+    static function init()
     {
         if (static::$initialized) {
             return;
@@ -92,7 +92,7 @@ abstract class PageLister
      * @param string $name
      * @param mixed  $value
      */
-    public static function setConfig($name, $value)
+    static function setConfig($name, $value)
     {
         if (!array_key_exists($name, static::$config)) {
             throw new \OutOfBoundsException(sprintf('Unknown option "%s"', $name));
@@ -108,7 +108,7 @@ abstract class PageLister
      * @param string $name
      * @return mixed
      */
-    public static function getConfig($name)
+    static function getConfig($name)
     {
         if (!array_key_exists($name, static::$config)) {
             throw new \OutOfBoundsException(sprintf('Unknown option "%s"', $name));
@@ -122,7 +122,7 @@ abstract class PageLister
      *
      * @return bool
      */
-    public static function saveOrd()
+    static function saveOrd()
     {
         if (isset($_POST['ord']) && is_array($_POST['ord']) && !isset($_POST['reset'])) {
             $changeset = array();
@@ -165,7 +165,7 @@ abstract class PageLister
      * @param array $options
      * @return string
      */
-    public static function render(array $options = array())
+    static function render(array $options = array())
     {
         // default options
         $options += array(
@@ -602,7 +602,7 @@ abstract class PageLister
      * @param array $b
      * @return int
      */
-    public static function sortActions(array $a, array $b)
+    static function sortActions(array $a, array $b)
     {
         return $a['order'] > $b['order'] ? 1 : -1;
     }

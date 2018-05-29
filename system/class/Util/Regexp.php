@@ -31,7 +31,7 @@ abstract class Regexp
      * @param int      &$count   variable to store the number of replacements into
      * @return string|bool false on failure
      */
-    public static function replace($pattern, $subject, $callback, $limit = -1, $offset = 0, &$count = null)
+    static function replace($pattern, $subject, $callback, $limit = -1, $offset = 0, &$count = null)
     {
         $count = 0;
         $matches = null;

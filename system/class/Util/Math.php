@@ -15,7 +15,7 @@ abstract class Math
      * @param number|null $max maximal value or null (= unlimited)
      * @return number
      */
-    public static function range($num, $min, $max)
+    static function range($num, $min, $max)
     {
         if (isset($min) && $num < $min) {
             return $min;

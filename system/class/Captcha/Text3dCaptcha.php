@@ -31,7 +31,7 @@ class Text3dCaptcha
     /**
      * @param float $scale
      */
-    public function setScale($scale)
+    function setScale($scale)
     {
         $this->scale = $scale;
     }
@@ -39,7 +39,7 @@ class Text3dCaptcha
     /**
      * @param float $projectionAngle axonometric projection angle (rad)
      */
-    public function setProjectionAngle($projectionAngle)
+    function setProjectionAngle($projectionAngle)
     {
         $this->projectionAngle = $projectionAngle;
     }
@@ -47,7 +47,7 @@ class Text3dCaptcha
     /**
      * @param int $font font identifier {@see imageloadfont()}
      */
-    public function setFont($font)
+    function setFont($font)
     {
         $this->font = $font;
     }
@@ -55,7 +55,7 @@ class Text3dCaptcha
     /**
      * @param int $foregroundColor
      */
-    public function setForegroundColor($foregroundColor)
+    function setForegroundColor($foregroundColor)
     {
         $this->foregroundColor = $foregroundColor;
     }
@@ -63,7 +63,7 @@ class Text3dCaptcha
     /**
      * @param int $horizontalPadding
      */
-    public function setHorizontalPadding($horizontalPadding)
+    function setHorizontalPadding($horizontalPadding)
     {
         $this->horizontalPadding = $horizontalPadding;
     }
@@ -71,7 +71,7 @@ class Text3dCaptcha
     /**
      * @param int $verticalPadding
      */
-    public function setVerticalPadding($verticalPadding)
+    function setVerticalPadding($verticalPadding)
     {
         $this->verticalPadding = $verticalPadding;
     }
@@ -79,7 +79,7 @@ class Text3dCaptcha
     /**
      * @param int $letterSpacing
      */
-    public function setLetterSpacing($letterSpacing)
+    function setLetterSpacing($letterSpacing)
     {
         $this->letterSpacing = $letterSpacing;
     }
@@ -87,7 +87,7 @@ class Text3dCaptcha
     /**
      * @param int $backgroundColor
      */
-    public function setBackgroundColor($backgroundColor)
+    function setBackgroundColor($backgroundColor)
     {
         $this->backgroundColor = $backgroundColor;
     }
@@ -95,7 +95,7 @@ class Text3dCaptcha
     /**
      * @param int $noise noise intensity (0 - 255)
      */
-    public function setNoise($noise)
+    function setNoise($noise)
     {
         $this->noise = $noise;
     }
@@ -106,7 +106,7 @@ class Text3dCaptcha
      * @param string $text
      * @return resource
      */
-    public function draw($text)
+    function draw($text)
     {
         if ($text === '') {
             throw new \InvalidArgumentException('No text given');

@@ -28,7 +28,7 @@ class Repository
     /**
      * @param string $composerJsonPath
      */
-    public function __construct($composerJsonPath)
+    function __construct($composerJsonPath)
     {
         $this->composerJsonPath = $composerJsonPath;
     }
@@ -36,7 +36,7 @@ class Repository
     /**
      * @return string
      */
-    public function getComposerJsonPath()
+    function getComposerJsonPath()
     {
         return $this->composerJsonPath;
     }
@@ -46,7 +46,7 @@ class Repository
      *
      * @return \stdClass
      */
-    public function getDefinition()
+    function getDefinition()
     {
         if ($this->package === null) {
             $this->package = Json::decode(file_get_contents($this->composerJsonPath), false);
@@ -60,7 +60,7 @@ class Repository
      *
      * @return string
      */
-    public function getDirectory()
+    function getDirectory()
     {
         if ($this->directory === null) {
             $this->directory = dirname($this->composerJsonPath);
@@ -72,7 +72,7 @@ class Repository
     /**
      * @return string
      */
-    public function getVendorPath()
+    function getVendorPath()
     {
         if ($this->vendorPath === null) {
             $package = $this->getDefinition();
@@ -96,7 +96,7 @@ class Repository
     /**
      * @return string
      */
-    public function getPackagePath(\stdClass $package)
+    function getPackagePath(\stdClass $package)
     {
         return $this->getVendorPath() . '/' . $package->name;
     }
@@ -104,7 +104,7 @@ class Repository
     /**
      * @return string
      */
-    public function getPackageComposerJsonPath(\stdClass $package)
+    function getPackageComposerJsonPath(\stdClass $package)
     {
         return $this->getPackagePath($package) . '/composer.json';
     }
@@ -112,7 +112,7 @@ class Repository
     /**
      * @return string
      */
-    public function getInstalledJsonPath()
+    function getInstalledJsonPath()
     {
         return $this->getVendorPath() . '/composer/installed.json';
     }
@@ -120,7 +120,7 @@ class Repository
     /**
      * @return \stdClass[] name-indexed
      */
-    public function getInstalledPackages()
+    function getInstalledPackages()
     {
         if ($this->installedPackages === null) {
             $this->installedPackages = array();
@@ -138,7 +138,7 @@ class Repository
     /**
      * @return array
      */
-    public function getClassMap()
+    function getClassMap()
     {
         if ($this->classMap === null) {
             $classMapPath = $this->getVendorPath() . '/composer/autoload_classmap.php';

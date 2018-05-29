@@ -12,12 +12,12 @@ class RawSqlValue
     /** @var string */
     private $safeSqlString;
 
-    public function __construct($safeSqlString)
+    function __construct($safeSqlString)
     {
         $this->safeSqlString = (string) $safeSqlString;
     }
 
-    public function getSql()
+    function getSql()
     {
         return $this->safeSqlString;
     }

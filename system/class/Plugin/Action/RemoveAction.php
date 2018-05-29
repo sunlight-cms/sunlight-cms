@@ -11,7 +11,7 @@ use Sunlight\Util\Filesystem;
  */
 class RemoveAction extends PluginAction
 {
-    public function getTitle()
+    function getTitle()
     {
         return _lang('admin.plugins.action.do.remove');
     }

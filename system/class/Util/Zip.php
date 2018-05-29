@@ -25,7 +25,7 @@ abstract class Zip
      * @throws \InvalidArgumentException if archive path is not valid
      * @return bool
      */
-    public static function extractFile(ZipArchive $zip, $archivePath, $targetPath)
+    static function extractFile(ZipArchive $zip, $archivePath, $targetPath)
     {
         if (substr($archivePath, -1) !== '/') {
             $source = $zip->getStream($archivePath);
@@ -62,7 +62,7 @@ abstract class Zip
      * @param string          $targetPath  path where to extract the files to
      * @param array           $options
      */
-    public static function extractDirectories(ZipArchive $zip, $directories, $targetPath, array $options = array())
+    static function extractDirectories(ZipArchive $zip, $directories, $targetPath, array $options = array())
     {
         $options += array(
             'path_mode' => static::PATH_FULL,

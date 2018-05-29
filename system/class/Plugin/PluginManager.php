@@ -58,7 +58,7 @@ class PluginManager
     /**
      * @param CacheInterface $pluginCache
      */
-    public function __construct(CacheInterface $pluginCache)
+    function __construct(CacheInterface $pluginCache)
     {
         $this->cache = $pluginCache;
         $this->types = static::getTypeDefinitions();
@@ -67,7 +67,7 @@ class PluginManager
     /**
      * @return array
      */
-    public static function getTypeDefinitions()
+    static function getTypeDefinitions()
     {
         return array(
             static::LANGUAGE => LanguagePlugin::getTypeDefinition(),
@@ -81,7 +81,7 @@ class PluginManager
      *
      * @return bool
      */
-    public function purgeCache()
+    function purgeCache()
     {
         return $this->cache->clear();
     }
@@ -92,7 +92,7 @@ class PluginManager
      * @param string $type
      * @return bool
      */
-    public function isValidType($type)
+    function isValidType($type)
     {
         return isset($this->types[$type]);
     }
@@ -102,7 +102,7 @@ class PluginManager
      *
      * @return string[]
      */
-    public function getTypes()
+    function getTypes()
     {
         return array_keys($this->types);
     }
@@ -114,7 +114,7 @@ class PluginManager
      * @throws \InvalidArgumentException if the plugin type is not valid
      * @return array
      */
-    public function getTypeDefinition($type)
+    function getTypeDefinition($type)
     {
         if (!isset($this->types[$type])) {
             throw new \InvalidArgumentException(sprintf('Invalid plugin type "%s"', $type));
@@ -129,7 +129,7 @@ class PluginManager
      * @param string $class
      * @return bool
      */
-    public function hasInstance($class)
+    function hasInstance($class)
     {
         if (!$this->initialized) {
             $this->initialize();
@@ -145,7 +145,7 @@ class PluginManager
      * @throws \OutOfBoundsException if the plugin does not exist
      * @return Plugin|ExtendPlugin|TemplatePlugin|LanguagePlugin
      */
-    public function getInstance($class)
+    function getInstance($class)
     {
         if (!$this->initialized) {
             $this->initialize();
@@ -163,7 +163,7 @@ class PluginManager
      *
      * @return Plugin[]|ExtendPlugin[]|TemplatePlugin[]|LanguagePlugin[]
      */
-    public function getInstances()
+    function getInstances()
     {
         if (!$this->initialized) {
             $this->initialize();
@@ -179,7 +179,7 @@ class PluginManager
      * @param string $name
      * @return bool
      */
-    public function has($type, $name)
+    function has($type, $name)
     {
         if (!$this->initialized) {
             $this->initialize();
@@ -195,7 +195,7 @@ class PluginManager
      * @param string $name
      * @return bool
      */
-    public function exists($type, $name)
+    function exists($type, $name)
     {
         return $this->has($type, $name) || $this->hasInactive($type, $name);
     }
@@ -208,7 +208,7 @@ class PluginManager
      * @throws \OutOfBoundsException if the plugin does not exist
      * @return Plugin|ExtendPlugin|TemplatePlugin|LanguagePlugin
      */
-    public function get($type, $name)
+    function get($type, $name)
     {
         if (!$this->initialized) {
             $this->initialize();
@@ -228,7 +228,7 @@ class PluginManager
      * @throws \OutOfBoundsException if the plugin does not exist
      * @return TemplatePlugin
      */
-    public function getTemplate($name)
+    function getTemplate($name)
     {
         /** @var TemplatePlugin $plugin */
         $plugin = $this->get(static::TEMPLATE, $name);
@@ -243,7 +243,7 @@ class PluginManager
      * @throws \OutOfBoundsException if the plugin does not exist
      * @return ExtendPlugin
      */
-    public function getExtend($name)
+    function getExtend($name)
     {
         /** @var ExtendPlugin $plugin */
         $plugin = $this->get(static::EXTEND, $name);
@@ -258,7 +258,7 @@ class PluginManager
      * @throws \OutOfBoundsException if the plugin does not exist
      * @return LanguagePlugin
      */
-    public function getLanguage($name)
+    function getLanguage($name)
     {
         /** @var LanguagePlugin $plugin */
         $plugin = $this->get(static::LANGUAGE, $name);
@@ -273,7 +273,7 @@ class PluginManager
      * @throws \InvalidArgumentException if the plugin type is not valid
      * @return Plugin[]|Plugin[][] name indexed (if type is specified) or type and name indexed array of Plugin instances
      */
-    public function all($type = null)
+    function all($type = null)
     {
         if (!$this->initialized) {
             $this->initialize();
@@ -293,7 +293,7 @@ class PluginManager
     /**
      * @return LanguagePlugin[]
      */
-    public function getAllLanguages()
+    function getAllLanguages()
     {
         /** @var LanguagePlugin[] $languages */
         $languages = $this->all(static::LANGUAGE);
@@ -304,7 +304,7 @@ class PluginManager
     /**
      * @return TemplatePlugin[]
      */
-    public function getAllTemplates()
+    function getAllTemplates()
     {
         /** @var TemplatePlugin[] $templates */
         $templates = $this->all(static::TEMPLATE);
@@ -315,7 +315,7 @@ class PluginManager
     /**
      * @return ExtendPlugin[]
      */
-    public function getAllExtends()
+    function getAllExtends()
     {
         /** @var ExtendPlugin[] $extends */
         $extends = $this->all(static::EXTEND);
@@ -330,7 +330,7 @@ class PluginManager
      * @param string $name
      * @return bool
      */
-    public function hasInactive($type, $name)
+    function hasInactive($type, $name)
     {
         if (!$this->initialized) {
             $this->initialize();
@@ -347,7 +347,7 @@ class PluginManager
      * @throws \OutOfBoundsException if the plugin does not exist
      * @return InactivePlugin
      */
-    public function getInactive($type, $name)
+    function getInactive($type, $name)
     {
         if (!$this->initialized) {
             $this->initialize();
@@ -367,7 +367,7 @@ class PluginManager
      * @throws \InvalidArgumentException if the plugin type is not valid
      * @return InactivePlugin[]|InactivePlugin[][] name indexed (if type is specified) or type and name indexed array of plugin arrays
      */
-    public function getAllInactive($type = null)
+    function getAllInactive($type = null)
     {
         if (!$this->initialized) {
             $this->initialize();
@@ -394,7 +394,7 @@ class PluginManager
      * @throws \OutOfBoundsException     if the plugin does not exist
      * @return Plugin|null
      */
-    public function find($type, $name, $exceptionOnFailure = true)
+    function find($type, $name, $exceptionOnFailure = true)
     {
         if (!isset($this->types[$type])) {
             throw new \InvalidArgumentException(sprintf('Invalid plugin type "%s"', $type));
@@ -422,7 +422,7 @@ class PluginManager
      * @throws \InvalidArgumentException if the plugin type is not valid
      * @return array
      */
-    public function choices($type)
+    function choices($type)
     {
         if (!isset($this->types[$type])) {
             throw new \InvalidArgumentException(sprintf('Invalid plugin type "%s"', $type));
@@ -445,7 +445,7 @@ class PluginManager
      * @throws \InvalidArgumentException if the plugin type is not valid
      * @return string
      */
-    public function select($pluginType, $active = null, $inputName = null)
+    function select($pluginType, $active = null, $inputName = null)
     {
         if (!isset($this->types[$pluginType])) {
             throw new \InvalidArgumentException(sprintf('Invalid plugin type "%s"', $pluginType));

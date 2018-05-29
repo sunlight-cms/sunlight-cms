@@ -20,7 +20,7 @@ class LocalizationDirectory extends LocalizationDictionary
      * @param string     $dir                path to the directory containing the localization dictionaries (without a trailing slash)
      * @param array|null $availableLanguages list of available languages (saves a is_file() check)
      */
-    public function __construct($dir, array $availableLanguages = null)
+    function __construct($dir, array $availableLanguages = null)
     {
         $this->dir = $dir;
         $this->availableLanguages = $availableLanguages;
@@ -29,12 +29,12 @@ class LocalizationDirectory extends LocalizationDictionary
     /**
      * @return string
      */
-    public function getDir()
+    function getDir()
     {
         return $this->dir;
     }
 
-    public function get($key, array $replacements = null, $fallback = null)
+    function get($key, array $replacements = null, $fallback = null)
     {
         $this->isLoaded or $this->load();
 
@@ -45,7 +45,7 @@ class LocalizationDirectory extends LocalizationDictionary
      * @param string $language
      * @return string
      */
-    public function getPathForLanguage($language)
+    function getPathForLanguage($language)
     {
         return $this->dir . '/' . $language . '.php';
     }
@@ -54,7 +54,7 @@ class LocalizationDirectory extends LocalizationDictionary
      * @param string $language
      * @return bool
      */
-    public function hasDictionaryForLanguage($language)
+    function hasDictionaryForLanguage($language)
     {
         return $this->availableLanguages !== null && in_array($language, $this->availableLanguages, true)
             || $this->availableLanguages === null && is_file($this->getPathForLanguage($language));

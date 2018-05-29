@@ -16,7 +16,7 @@ class BackupRestorer
     /**
      * @param Backup $backup
      */
-    public function __construct(Backup $backup)
+    function __construct(Backup $backup)
     {
         $this->backup = $backup;
     }
@@ -27,7 +27,7 @@ class BackupRestorer
      * @param array|null $errors
      * @return bool
      */
-    public function validate(array &$errors = null)
+    function validate(array &$errors = null)
     {
         $errors = $this->backup->getMetaDataErrors();
 
@@ -43,7 +43,7 @@ class BackupRestorer
      * @param array|null $errors
      * @return bool
      */
-    public function restore($database, array $directories = null, array $files = null, array &$errors = null)
+    function restore($database, array $directories = null, array $files = null, array &$errors = null)
     {
         $errors = array();
 

@@ -15,7 +15,7 @@ abstract class TwigBridge
     /**
      * @return \Twig_Environment
      */
-    public static function getEnvironment()
+    static function getEnvironment()
     {
         if (static::$env === null) {
             static::$env = static::createEnvironment();
@@ -113,7 +113,7 @@ abstract class TwigBridge
     /**
      * @internal
      */
-    public static function dump($context)
+    static function dump($context)
     {
         if (func_num_args() > 1) {
             return call_user_func_array(

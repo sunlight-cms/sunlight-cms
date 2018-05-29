@@ -11,7 +11,7 @@ use Sunlight\Message;
  */
 class ConfigAction extends PluginAction
 {
-    public function getTitle()
+    function getTitle()
     {
         return _lang('admin.plugins.action.do.config');
     }

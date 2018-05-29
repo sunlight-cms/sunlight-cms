@@ -19,7 +19,7 @@ class Message
      * @param string $message the message
      * @param bool   $isHtml  display the message should be rendered as html (unescaped) 1/0
      */
-    public function __construct($type, $message, $isHtml = false)
+    function __construct($type, $message, $isHtml = false)
     {
         $this->type = $type;
         $this->message = $message;
@@ -33,7 +33,7 @@ class Message
      * @param bool   $isHtml  display the message should be rendered as html (unescaped) 1/0
      * @return static
      */
-    public static function ok($message, $isHtml = false)
+    static function ok($message, $isHtml = false)
     {
         return new static(_msg_ok, $message, $isHtml);
     }
@@ -45,7 +45,7 @@ class Message
      * @param bool   $isHtml  display the message should be rendered as html (unescaped) 1/0
      * @return static
      */
-    public static function warning($message, $isHtml = false)
+    static function warning($message, $isHtml = false)
     {
         return new static(_msg_warn, $message, $isHtml);
     }
@@ -57,7 +57,7 @@ class Message
      * @param bool   $isHtml  display the message should be rendered as html (unescaped) 1/0
      * @return static
      */
-    public static function error($message, $isHtml = false)
+    static function error($message, $isHtml = false)
     {
         return new static(_msg_err, $message, $isHtml);
     }
@@ -67,7 +67,7 @@ class Message
      *
      * @return string
      */
-    public function __toString()
+    function __toString()
     {
         $output = Extend::buffer('message.render', array('message' => $this));
 
@@ -85,7 +85,7 @@ class Message
      *
      * @return string
      */
-    public function getType()
+    function getType()
     {
         return $this->type;
     }
@@ -95,7 +95,7 @@ class Message
      *
      * @return string
      */
-    public function getMessage()
+    function getMessage()
     {
         return $this->message;
     }
@@ -105,7 +105,7 @@ class Message
      *
      * @return string
      */
-    public function isHtml()
+    function isHtml()
     {
         return $this->isHtml;
     }
@@ -118,7 +118,7 @@ class Message
      * @param string $str
      * @param bool   $isHtml
      */
-    public function append($str, $isHtml = false)
+    function append($str, $isHtml = false)
     {
         if ($this->isHtml) {
             // append to current HTML

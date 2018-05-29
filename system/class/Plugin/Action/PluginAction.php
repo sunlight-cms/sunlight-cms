@@ -19,7 +19,7 @@ abstract class PluginAction extends Action
      * @param Plugin $plugin
      * @throws \RuntimeException if instantiated outside of administration environment
      */
-    public function __construct(Plugin $plugin)
+    function __construct(Plugin $plugin)
     {
         if (_env !== Core::ENV_ADMIN) {
             throw new \RuntimeException('Plugin actions require administration environment');
@@ -35,7 +35,7 @@ abstract class PluginAction extends Action
      *
      * @return string
      */
-    abstract public function getTitle();
+    abstract function getTitle();
 
     /**
      * See if the action has been confirmed

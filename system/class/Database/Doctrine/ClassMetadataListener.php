@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 class ClassMetadataListener
 {
-    public function loadClassMetadata(LoadClassMetadataEventArgs $args)
+    function loadClassMetadata(LoadClassMetadataEventArgs $args)
     {
         /** @var ClassMetadataInfo $classMetadata */
         $classMetadata = $args->getClassMetadata();

@@ -12,7 +12,7 @@ interface TreeFilterInterface
      * @param TreeReader $reader
      * @return string
      */
-    public function getNodeSql(TreeReader $reader);
+    function getNodeSql(TreeReader $reader);
 
     /**
      * Filter a node at runtime
@@ -21,7 +21,7 @@ interface TreeFilterInterface
      * @param TreeReader $reader
      * @return bool
      */
-    public function filterNode(array $node, TreeReader $reader);
+    function filterNode(array $node, TreeReader $reader);
 
     /**
      * Choose whether to accept an invalid node which contains a valid child (at any level)
@@ -31,5 +31,5 @@ interface TreeFilterInterface
      * @param TreeReader $reader
      * @return bool
      */
-    public function acceptInvalidNodeWithValidChild(array $invalidNode, array $validChildNode, TreeReader $reader);
+    function acceptInvalidNodeWithValidChild(array $invalidNode, array $validChildNode, TreeReader $reader);
 }

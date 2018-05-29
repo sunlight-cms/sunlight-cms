@@ -26,7 +26,7 @@ abstract class DoctrineBridge
      * @param \mysqli $mysqli
      * @return EntityManager
      */
-    public static function createEntityManager(\mysqli $mysqli)
+    static function createEntityManager(\mysqli $mysqli)
     {
         if (!Core::isReady()) {
             throw new \LogicException('Cannot use Doctrine bridge before full system initialization');

@@ -91,7 +91,7 @@ class CommentService
      * @param string|null $url          custom URL or null (= automatic)
      * @return string
      */
-    public static function render($style, $home, $vars, $force_locked = false, $url = null)
+    static function render($style, $home, $vars, $force_locked = false, $url = null)
     {
         global $_index;
 
@@ -577,7 +577,7 @@ class CommentService
      * @param array $vars
      * @return string
      */
-    public static function renderForm(array $vars)
+    static function renderForm(array $vars)
     {
         $inputs = array();
 
@@ -620,7 +620,7 @@ class CommentService
      * @param array $options
      * @return string
      */
-    public static function renderPost(
+    static function renderPost(
         array $post,
         array $userQuery,
         array $options
@@ -691,7 +691,7 @@ class CommentService
      * @param bool     $get_count do not remove, return count only 1/0
      * @return int|null
      */
-    public static function deleteByPluginFlag($flag, $home, $get_count = true)
+    static function deleteByPluginFlag($flag, $home, $get_count = true)
     {
         // condition
         $cond = "type=" . _post_plugin . " AND flag=" . $flag;

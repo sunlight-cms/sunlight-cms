@@ -30,7 +30,7 @@ class SystemChecker
      *
      * @return bool
      */
-    public function check()
+    function check()
     {
         $this->errors = array();
 
@@ -48,7 +48,7 @@ class SystemChecker
      *
      * @return bool
      */
-    public function hasErrors()
+    function hasErrors()
     {
         return !empty($this->errors);
     }
@@ -58,7 +58,7 @@ class SystemChecker
      *
      * @return string
      */
-    public function renderErrors()
+    function renderErrors()
     {
         $errors_str = '';
         for($i = 0; isset($this->errors[$i]); ++$i) {
@@ -142,7 +142,7 @@ class SystemChecker
      *
      * @return string
      */
-    public static function generateHtaccess()
+    static function generateHtaccess()
     {
         $baseUrl = Url::base();
 

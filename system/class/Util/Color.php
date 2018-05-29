@@ -10,7 +10,7 @@ class Color
      * @param array $color color segments
      * @param int   $type  color model (0 = rgb, 1 = hsl)
      */
-    public function __construct($color = array(0, 0, 0), $type = 0)
+    function __construct($color = array(0, 0, 0), $type = 0)
     {
         if ($type === 0) {
             list($this->r, $this->g, $this->b) = $color;
@@ -28,7 +28,7 @@ class Color
      * @param int $g green channel
      * @param int $b blue channel
      */
-    public function setRgb($r, $g, $b)
+    function setRgb($r, $g, $b)
     {
         list($this->h, $this->s, $this->l) = $this->rgbToHsl($r, $g, $b);
         list($this->r, $this->g, $this->b) = func_get_args();
@@ -41,7 +41,7 @@ class Color
      * @param int $s saturation
      * @param int $l lightness
      */
-    public function setHsl($h, $s, $l)
+    function setHsl($h, $s, $l)
     {
         list($this->r, $this->g, $this->b) = $this->hslToRgb($h, $s, $l);
         list($this->h, $this->s, $this->l) = func_get_args();
@@ -54,7 +54,7 @@ class Color
      * @param int    $value   new value (0-255)
      * @return bool
      */
-    public function setChannel($channel, $value)
+    function setChannel($channel, $value)
     {
         // check arguments
         if (!isset($this->$channel)) {
@@ -78,7 +78,7 @@ class Color
      * @param string $channel channel name - r/g/b/h/s/l
      * @return int|null 0-255 or null for unknown channel
      */
-    public function getChannel($channel)
+    function getChannel($channel)
     {
         if (isset($this->$channel)) {
             return $this->$channel;
@@ -90,7 +90,7 @@ class Color
      *
      * @return array array(r,g,b)
      */
-    public function getRgb()
+    function getRgb()
     {
         return array($this->r, $this->g, $this->b);
     }
@@ -100,7 +100,7 @@ class Color
      *
      * @return string #rrggbb
      */
-    public function getRgbStr()
+    function getRgbStr()
     {
         return sprintf('#%02x%02x%02x', $this->r, $this->g, $this->b);
     }
@@ -110,7 +110,7 @@ class Color
      *
      * @return array array(h,s,l)
      */
-    public function getHsl()
+    function getHsl()
     {
         return array($this->h, $this->s, $this->l);
     }

@@ -18,7 +18,7 @@ class ConfigurationFile implements \ArrayAccess
      * @param string $path
      * @param array $defaults
      */
-    public function __construct($path, array $defaults = array())
+    function __construct($path, array $defaults = array())
     {
         $this->path = $path;
         $this->defaults = $defaults;
@@ -27,7 +27,7 @@ class ConfigurationFile implements \ArrayAccess
     /**
      * Save configuration to the file
      */
-    public function save()
+    function save()
     {
         if ($this->data === null) {
             return;
@@ -43,7 +43,7 @@ class ConfigurationFile implements \ArrayAccess
     /**
      * Clear any modified values, leaving only the defaults
      */
-    public function reset()
+    function reset()
     {
         $this->data = array();
     }
@@ -53,21 +53,21 @@ class ConfigurationFile implements \ArrayAccess
      *
      * @return array
      */
-    public function toArray()
+    function toArray()
     {
         $this->ensureLoaded();
 
         return $this->data + $this->defaults;
     }
 
-    public function offsetExists($offset)
+    function offsetExists($offset)
     {
         $this->ensureLoaded();
 
         return isset($this->data[$offset]);
     }
 
-    public function offsetGet($offset)
+    function offsetGet($offset)
     {
         $this->ensureLoaded();
 
@@ -84,14 +84,14 @@ class ConfigurationFile implements \ArrayAccess
         return $value;
     }
 
-    public function offsetSet($offset, $value)
+    function offsetSet($offset, $value)
     {
         $this->ensureLoaded();
 
         $this->data[$offset] = $value;
     }
 
-    public function offsetUnset($offset)
+    function offsetUnset($offset)
     {
         $this->ensureLoaded();
 

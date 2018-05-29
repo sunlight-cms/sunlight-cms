@@ -31,7 +31,7 @@ class Password
      * @param string $salt
      * @param string $hash
      */
-    public function __construct($algo, $iterations, $salt, $hash)
+    function __construct($algo, $iterations, $salt, $hash)
     {
         $this->algo = $algo;
         $this->iterations = $iterations;
@@ -46,7 +46,7 @@ class Password
      * @throws \InvalidArgumentException if the value is not valid
      * @return static
      */
-    public static function load($storedPassword)
+    static function load($storedPassword)
     {
         $segments = explode(':', $storedPassword, 4);
 
@@ -68,7 +68,7 @@ class Password
      * @param string $plainPassword
      * @return static
      */
-    public static function create($plainPassword)
+    static function create($plainPassword)
     {
         $algo = static::PREFERRED_ALGO;
         $iterations = static::PBKDF2_ITERATIONS;
@@ -118,7 +118,7 @@ class Password
      *
      * @return string
      */
-    public function __toString()
+    function __toString()
     {
         return $this->build();
     }
@@ -128,7 +128,7 @@ class Password
      *
      * @return string
      */
-    public function build()
+    function build()
     {
         return sprintf(
             '%s:%d:%s:%s',
@@ -145,7 +145,7 @@ class Password
      * @param string $plainPassword
      * @return bool
      */
-    public function match($plainPassword)
+    function match($plainPassword)
     {
         if ($plainPassword === '') {
             return false;
@@ -166,7 +166,7 @@ class Password
      *
      * @return bool
      */
-    public function shouldUpdate()
+    function shouldUpdate()
     {
         return
             static::PREFERRED_ALGO !== $this->algo
@@ -180,7 +180,7 @@ class Password
      *
      * @param string $plainPassword
      */
-    public function update($plainPassword)
+    function update($plainPassword)
     {
         $this->algo = static::PREFERRED_ALGO;
         $this->iterations = max(static::PBKDF2_ITERATIONS, $this->iterations);

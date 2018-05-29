@@ -11,7 +11,7 @@ use Sunlight\Plugin\Plugin;
  */
 class DisableAction extends PluginAction
 {
-    public function getTitle()
+    function getTitle()
     {
         return _lang('admin.plugins.action.do.disable');
     }

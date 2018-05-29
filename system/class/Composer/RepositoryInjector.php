@@ -16,7 +16,7 @@ class RepositoryInjector
     /** @var ConstraintMap */
     private $constraintMap;
 
-    public function __construct(Repository $rootRepository)
+    function __construct(Repository $rootRepository)
     {
         $this->packages = $rootRepository->getInstalledPackages();
         $this->rootMap = array_flip(array_keys($this->packages));
@@ -31,7 +31,7 @@ class RepositoryInjector
      * @param string[] $errors
      * @return bool
      */
-    public function inject(Repository $repository, array &$errors = null)
+    function inject(Repository $repository, array &$errors = null)
     {
         $errors = array();
         $toInject = array();
@@ -121,7 +121,7 @@ class RepositoryInjector
      *
      * @return \stdClass[]
      */
-    public function getInjectedPackages()
+    function getInjectedPackages()
     {
         $packages = array();
 
@@ -141,7 +141,7 @@ class RepositoryInjector
      * @throws \OutOfBoundsException if no such package is known
      * @return Repository
      */
-    public function getSource($packageName)
+    function getSource($packageName)
     {
         if (!isset($this->sourceMap[$packageName])) {
             throw new \OutOfBoundsException(sprintf('Package "%s" is not known', $packageName));
@@ -155,7 +155,7 @@ class RepositoryInjector
      *
      * @return ConstraintMap
      */
-    public function getConstraintMap()
+    function getConstraintMap()
     {
         return $this->constraintMap;
     }

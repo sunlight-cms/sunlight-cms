@@ -17,7 +17,7 @@ abstract class Console
      * @param EntityManager $em
      * @return Application
      */
-    public static function createApplication(EntityManager $em)
+    static function createApplication(EntityManager $em)
     {
         $cli = new Application('Doctrine Command Line Interface', sprintf('%s (SunLight CMS %s)', Version::VERSION, Core::VERSION));
 
@@ -28,7 +28,7 @@ abstract class Console
         return $cli;
     }
 
-    public static function runAsComposerScript(Event $e)
+    static function runAsComposerScript(Event $e)
     {
         require __DIR__ . '/../../../bootstrap.php';
         Core::init('./', array('content_type' => false, 'session_enabled' => false));

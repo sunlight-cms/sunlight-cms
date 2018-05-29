@@ -19,7 +19,7 @@ abstract class PluginInstaller
      * @param string $camelCasedName
      * @return static
      */
-    public static function load($dir, $namespace, $camelCasedName)
+    static function load($dir, $namespace, $camelCasedName)
     {
         $fileName = "{$dir}/{$camelCasedName}Installer.php";
         $className = "{$namespace}\\{$camelCasedName}Installer";
@@ -34,7 +34,7 @@ abstract class PluginInstaller
      *
      * @return bool
      */
-    public function isInstalled()
+    function isInstalled()
     {
         if ($this->installed === null) {
             $this->installed = (bool) $this->verify();
@@ -49,7 +49,7 @@ abstract class PluginInstaller
      * @throws \LogicException if the plugin is already installed
      * @return bool
      */
-    public function install()
+    function install()
     {
         if ($this->isInstalled()) {
             throw new \LogicException('The plugin is already installed');
@@ -67,7 +67,7 @@ abstract class PluginInstaller
      * @throws \LogicException if the plugin is not installed
      * @return bool
      */
-    public function uninstall()
+    function uninstall()
     {
         if (!$this->isInstalled()) {
             throw new \LogicException('The plugin is not installed');

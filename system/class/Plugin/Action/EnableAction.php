@@ -11,7 +11,7 @@ use Sunlight\Plugin\Plugin;
  */
 class EnableAction extends PluginAction
 {
-    public function getTitle()
+    function getTitle()
     {
         return _lang('admin.plugins.action.do.enable');
     }

@@ -24,7 +24,7 @@ class PluginLoader
     /**
      * @param array $types
      */
-    public function __construct(array $types)
+    function __construct(array $types)
     {
         $this->types = $types;
         $this->pluginIdPattern = '{' . Plugin::ID_PATTERN . '$}AD';
@@ -61,7 +61,7 @@ class PluginLoader
      * @param bool $resolveInstallationStatus
      * @return array
      */
-    public function load($resolveInstallationStatus = true)
+    function load($resolveInstallationStatus = true)
     {
         $plugins = array();
         $autoload = array_fill_keys(array('psr-0', 'psr-4', 'classmap', 'files'), array());
@@ -138,7 +138,7 @@ class PluginLoader
      * @param array $plugin
      * @return array
      */
-    public function loadPlugin(array $plugin)
+    function loadPlugin(array $plugin)
     {
         $type = $this->types[$plugin['type']];
         $context = $this->createPluginOptionContext($plugin, $type);
@@ -278,7 +278,7 @@ class PluginLoader
      * @param string $actualVersion   the version to match the pattern against
      * @return bool
      */
-    public function checkVersion($requiredVersion, $actualVersion)
+    function checkVersion($requiredVersion, $actualVersion)
     {
         return Semver::satisfies($actualVersion, $requiredVersion);
     }

@@ -12,7 +12,7 @@ abstract class PluginOptionNormalizer
      * @param array       $context
      * @return string
      */
-    public static function normalizeNamespace($namespace, array $context)
+    static function normalizeNamespace($namespace, array $context)
     {
         if ($namespace === null) {
             return $context['type']['default_base_namespace'] . '\\' . $context['plugin']['camel_id'];
@@ -26,7 +26,7 @@ abstract class PluginOptionNormalizer
      * @param array       $context
      * @return string
      */
-    public static function normalizePath($path, array $context)
+    static function normalizePath($path, array $context)
     {
         if ($path !== null) {
             return Filesystem::normalizeWithBasePath($context['plugin']['dir'], $path);
@@ -39,7 +39,7 @@ abstract class PluginOptionNormalizer
      * @throws OptionSetNormalizerException
      * @return array
      */
-    public static function normalizePathArray(array $paths, array $context)
+    static function normalizePathArray(array $paths, array $context)
     {
         $normalized = array();
 
@@ -59,7 +59,7 @@ abstract class PluginOptionNormalizer
      * @param array       $context
      * @return string
      */
-    public static function normalizeWebPath($path, array $context)
+    static function normalizeWebPath($path, array $context)
     {
         if ($path !== null) {
             return $context['plugin']['web_path'] . '/' . $path;
@@ -72,7 +72,7 @@ abstract class PluginOptionNormalizer
      * @throws OptionSetNormalizerException
      * @return array
      */
-    public static function normalizeWebPathArray(array $paths, array $context)
+    static function normalizeWebPathArray(array $paths, array $context)
     {
         $normalized = array();
 
@@ -93,7 +93,7 @@ abstract class PluginOptionNormalizer
      * @throws OptionSetNormalizerException
      * @return array
      */
-    public static function normalizeAutoload(array $autoload, array $context)
+    static function normalizeAutoload(array $autoload, array $context)
     {
         $normalized = array();
 
@@ -167,7 +167,7 @@ abstract class PluginOptionNormalizer
      * @throws OptionSetNormalizerException
      * @return array
      */
-    public static function normalizeEvents(array $events)
+    static function normalizeEvents(array $events)
     {
         $normalized = array();
         foreach ($events as $key => $entry) {
@@ -226,7 +226,7 @@ abstract class PluginOptionNormalizer
      * @param array $context
      * @return array
      */
-    public static function normalizeTemplateLayouts(array $layouts, array $context)
+    static function normalizeTemplateLayouts(array $layouts, array $context)
     {
         $normalized = array();
 

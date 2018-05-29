@@ -10,7 +10,7 @@ use Sunlight\Action\ActionResult;
  */
 class InfoAction extends PluginAction
 {
-    public function getTitle()
+    function getTitle()
     {
         return _lang('admin.plugins.action.do.info');
     }

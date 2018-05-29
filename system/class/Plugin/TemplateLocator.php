@@ -19,7 +19,7 @@ abstract class TemplateLocator
      * @param string $idt
      * @return bool
      */
-    public static function templateExists($idt)
+    static function templateExists($idt)
     {
         return Core::$pluginManager->has(PluginManager::TEMPLATE, $idt);
     }
@@ -30,7 +30,7 @@ abstract class TemplateLocator
      * @param string $name
      * @return TemplatePlugin
      */
-    public static function getTemplate($name)
+    static function getTemplate($name)
     {
         return Core::$pluginManager->getTemplate($name);
     }
@@ -40,7 +40,7 @@ abstract class TemplateLocator
      *
      * @return TemplatePlugin
      */
-    public static function getDefaultTemplate()
+    static function getDefaultTemplate()
     {
         return static::getTemplate(_default_template);
     }
@@ -53,7 +53,7 @@ abstract class TemplateLocator
      * @param string|null $slot
      * @return string
      */
-    public static function composeUid($template, $layout = null, $slot = null)
+    static function composeUid($template, $layout = null, $slot = null)
     {
         $uid = $template;
 
@@ -74,7 +74,7 @@ abstract class TemplateLocator
      * @param int    $type see TemplateHelper::UID_* constants
      * @return string[] template, [layout], [slot]
      */
-    public static function parseUid($uid, $type)
+    static function parseUid($uid, $type)
     {
         $expectedComponentCount = $type + 1;
 
@@ -88,7 +88,7 @@ abstract class TemplateLocator
      * @param int    $type see TemplateHelper::UID_* constants
      * @return array|null array or null if the given identifier is not valid
      */
-    public static function getComponentsByUid($uid, $type)
+    static function getComponentsByUid($uid, $type)
     {
         return call_user_func_array(
             array(get_called_class(), 'getComponents'),
@@ -111,7 +111,7 @@ abstract class TemplateLocator
      * @param string|null $slot
      * @return array|null array or null if the given combination does not exist
      */
-    public static function getComponents($template, $layout = null, $slot = null)
+    static function getComponents($template, $layout = null, $slot = null)
     {
         if (!static::templateExists($template)) {
             return null;
@@ -150,7 +150,7 @@ abstract class TemplateLocator
      * @param array $components
      * @return string
      */
-    public static function getComponentLabel(array $components)
+    static function getComponentLabel(array $components)
     {
         $label = $components['template']->getOption('name');
 
@@ -171,7 +171,7 @@ abstract class TemplateLocator
      * @param string $layoutUid
      * @return bool
      */
-    public static function validateLayoutUid($layoutUid)
+    static function validateLayoutUid($layoutUid)
     {
         list($template, $layout) = static::parseLayoutUid($layoutUid);
 
@@ -187,7 +187,7 @@ abstract class TemplateLocator
      * @param string $layoutUid
      * @return array TemplatePlugin, layout name
      */
-    public static function getTemplateAndLayout($layoutUid)
+    static function getTemplateAndLayout($layoutUid)
     {
         list($template, $layout) = static::parseLayoutUid($layoutUid);
 
@@ -204,7 +204,7 @@ abstract class TemplateLocator
      * @param string|null $layoutUid
      * @return string
      */
-    public static function getLayoutUidLabel($layoutUid)
+    static function getLayoutUidLabel($layoutUid)
     {
         if ($layoutUid === null) {
             return static::getLayoutUidLabel(_default_template);

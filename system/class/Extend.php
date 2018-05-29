@@ -16,7 +16,7 @@ abstract class Extend
      * @param callable $callback
      * @param int      $priority
      */
-    public static function reg($event, $callback, $priority = 0)
+    static function reg($event, $callback, $priority = 0)
     {
         Core::$eventEmitter->on($event, $callback, $priority);
     }
@@ -27,7 +27,7 @@ abstract class Extend
      * @param array $callbacks array(event1 => callback1, ...)
      * @param int   $priority
      */
-    public static function regm(array $callbacks, $priority = 0)
+    static function regm(array $callbacks, $priority = 0)
     {
         foreach ($callbacks as $event => $callback) {
             Core::$eventEmitter->on($event, $callback, $priority);
@@ -40,7 +40,7 @@ abstract class Extend
      * @param callable $callback callback(event, args)
      * @param int      $priority
      */
-    public static function regGlobal($callback, $priority = 0)
+    static function regGlobal($callback, $priority = 0)
     {
         Core::$eventEmitter->on(EventEmitterInterface::ANY_EVENT, $callback, $priority);
     }
@@ -52,7 +52,7 @@ abstract class Extend
      * @param array|null $args    array with additional arguments
      * @return array
      */
-    public static function args(&$output, array $args = array())
+    static function args(&$output, array $args = array())
     {
         $args['output'] = &$output;
 
@@ -65,7 +65,7 @@ abstract class Extend
      * @param string $event
      * @param array  $args
      */
-    public static function call($event, array $args = array())
+    static function call($event, array $args = array())
     {
         Core::$eventEmitter->emit($event, $args);
     }
@@ -78,7 +78,7 @@ abstract class Extend
      * @param mixed  $value initial value
      * @return mixed
      */
-    public static function fetch($event, array $args = array(), $value = null)
+    static function fetch($event, array $args = array(), $value = null)
     {
         $args['value'] = &$value;
         static::call($event, $args);
@@ -93,7 +93,7 @@ abstract class Extend
      * @param array  $args  ('output' is added automatically)
      * @return string
      */
-    public static function buffer($event, array $args = array())
+    static function buffer($event, array $args = array())
     {
         $output = '';
         $args['output'] = &$output;

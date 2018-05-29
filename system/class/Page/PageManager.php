@@ -34,7 +34,7 @@ abstract class PageManager
      *
      * @return array id, [data]
      */
-    public static function getActive()
+    static function getActive()
     {
         $id = null;
         $data = null;
@@ -58,7 +58,7 @@ abstract class PageManager
      * @param bool  $children kontrolovat take potomky danych stranek
      * @return bool
      */
-    public static function isActive(array $ids, $children = false)
+    static function isActive(array $ids, $children = false)
     {
         $result = false;
 
@@ -99,7 +99,7 @@ abstract class PageManager
      *
      * @return array pole nazvu
      */
-    public static function getTypes()
+    static function getTypes()
     {
         return array(
             _page_section => 'section',
@@ -119,7 +119,7 @@ abstract class PageManager
      *
      * @return array idt => label
      */
-    public static function getPluginTypes()
+    static function getPluginTypes()
     {
         static $cache = null;
         
@@ -139,7 +139,7 @@ abstract class PageManager
      * @param bool  $addTreeColumns pridat vychozi sloupce pro strom
      * @return array|bool false pri selhani
      */
-    public static function getData($id, array $columns, $addTreeColumns = false)
+    static function getData($id, array $columns, $addTreeColumns = false)
     {
         if ($id === null || $id < 1) {
             return false;
@@ -157,7 +157,7 @@ abstract class PageManager
      *
      * @return TreeManager
      */
-    public static function getTreeManager()
+    static function getTreeManager()
     {
         if (static::$treeManager === null) {
             static::$treeManager = new TreeManager(_root_table);
@@ -171,7 +171,7 @@ abstract class PageManager
      *
      * @return TreeReader
      */
-    public static function getTreeReader()
+    static function getTreeReader()
     {
         if (static::$treeReader === null) {
             static::$treeReader = new TreeReader(_root_table);
@@ -188,7 +188,7 @@ abstract class PageManager
      * @param array|null $extraColumns pole s extra sloupci, ktere se maji nacist
      * @return array
      */
-    public static function getSingleLevel($parentNodeId, $sqlCond = null, array $extraColumns = null)
+    static function getSingleLevel($parentNodeId, $sqlCond = null, array $extraColumns = null)
     {
         if ($parentNodeId === null) {
             $where = 'node_parent IS NULL';
@@ -221,7 +221,7 @@ abstract class PageManager
      * @param array|null               $extraColumns pole s extra sloupci, ktere se maji nacist
      * @return array
      */
-    public static function getTree(
+    static function getTree(
         $nodeId = null,
         $nodeDepth = null,
         TreeFilterInterface $filter = null,
@@ -241,7 +241,7 @@ abstract class PageManager
      * @param array|null               $extraColumns pole s extra sloupci, ktere se maji nacist
      * @return array
      */
-    public static function getFlatTree(
+    static function getFlatTree(
         $nodeId = null,
         $nodeDepth = null,
         TreeFilterInterface $filter = null,
@@ -262,7 +262,7 @@ abstract class PageManager
      * @param array|null $extraColumns pole s extra sloupci, ktere se maji nacist
      * @return array
      */
-    public static function getChildren(
+    static function getChildren(
         $nodeId,
         $nodeDepth = null,
         $flat = true,
@@ -294,7 +294,7 @@ abstract class PageManager
      * @param array|null               $extraColumns pole s extra sloupci, ktere se maji nacist
      * @return array
      */
-    public static function getRootPages(TreeFilterInterface $filter = null, array $extraColumns = null)
+    static function getRootPages(TreeFilterInterface $filter = null, array $extraColumns = null)
     {
         $options = static::getTreeReaderOptions(null, 0, $filter, $extraColumns);
 
@@ -309,7 +309,7 @@ abstract class PageManager
      * @param array|null $extraColumns pole s extra sloupci, ktere se maji nacist
      * @return array
      */
-    public static function getPath($id, $level = null, array $extraColumns = null)
+    static function getPath($id, $level = null, array $extraColumns = null)
     {
         $canBeCached = $extraColumns === null;
 
@@ -336,7 +336,7 @@ abstract class PageManager
      * @param array|null $extraColumns
      * @return array
      */
-    public static function prepareTreeColumns(array $extraColumns = null)
+    static function prepareTreeColumns(array $extraColumns = null)
     {
         if ($extraColumns === null) {
             $extraColumns = array();

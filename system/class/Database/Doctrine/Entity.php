@@ -15,7 +15,7 @@ class Entity
     /**
      * Make this entity managed and persistent
      */
-    public function persist()
+    function persist()
     {
         static::getEntityManager()->persist($this);
     }
@@ -23,7 +23,7 @@ class Entity
     /**
      * Persist and flush this entity to the database
      */
-    public function save()
+    function save()
     {
         $this->persist();
         static::getEntityManager()->flush($this);
@@ -32,7 +32,7 @@ class Entity
     /**
      * Delete and flush this entity from the database
      */
-    public function delete()
+    function delete()
     {
         static::getEntityManager()->remove($this);
         static::getEntityManager()->flush($this);
@@ -42,7 +42,7 @@ class Entity
      * @param mixed $id
      * @return static|null
      */
-    public static function find($id)
+    static function find($id)
     {
         return static::getEntityManager()->find(get_called_class(), $id);
     }
@@ -52,7 +52,7 @@ class Entity
      *
      * @return EntityRepository
      */
-    public static function getRepository()
+    static function getRepository()
     {
         return static::getEntityManager()->getRepository(get_called_class());
     }

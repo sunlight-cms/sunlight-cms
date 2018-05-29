@@ -10,7 +10,7 @@ use Sunlight\Message;
  */
 class InstallAction extends PluginAction
 {
-    public function getTitle()
+    function getTitle()
     {
         return _lang('admin.plugins.action.do.install');
     }

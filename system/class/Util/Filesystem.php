@@ -13,7 +13,7 @@ abstract class Filesystem
      * @param string $path
      * @return string
      */
-    public static function normalizePath($path)
+    static function normalizePath($path)
     {
         return strtr($path, '\\', '/');
     }
@@ -25,7 +25,7 @@ abstract class Filesystem
      * @param string $path
      * @return string
      */
-    public static function normalizeWithBasePath($basePath, $path)
+    static function normalizeWithBasePath($basePath, $path)
     {
         $basePath = static::normalizePath($basePath);
         $path = static::normalizePath($path);
@@ -45,7 +45,7 @@ abstract class Filesystem
      * @param string $path
      * @return bool
      */
-    public static function isAbsolutePath($path)
+    static function isAbsolutePath($path)
     {
         return
             isset($path[0]) && ($path[0] === '/' || $path[0] === '\\')
@@ -64,7 +64,7 @@ abstract class Filesystem
      * @param bool   $allowLeadingSlash allow slash at the beginning of the resulting path
      * @return string
      */
-    public static function parsePath($path, $isFile = false, $allowLeadingSlash = false)
+    static function parsePath($path, $isFile = false, $allowLeadingSlash = false)
     {
         $segments = explode('/', static::normalizePath($path));
         $parentJumps = 0;
@@ -113,7 +113,7 @@ abstract class Filesystem
      * @param int    $flags
      * @return \RecursiveIteratorIterator
      */
-    public static function createRecursiveIterator($path, $flags = \RecursiveIteratorIterator::SELF_FIRST)
+    static function createRecursiveIterator($path, $flags = \RecursiveIteratorIterator::SELF_FIRST)
     {
         $directoryIterator = new \RecursiveDirectoryIterator(
             $path,
@@ -134,7 +134,7 @@ abstract class Filesystem
      * @param string $path path to the directory
      * @return bool
      */
-    public static function isDirectoryEmpty($path)
+    static function isDirectoryEmpty($path)
     {
         $isEmpty = true;
         
@@ -158,7 +158,7 @@ abstract class Filesystem
      * @param array|null $failedPaths  an array variable to put failed paths to (null = do not track)
      * @return bool
      */
-    public static function checkDirectory($path, $checkWrite = true, &$failedPaths = null)
+    static function checkDirectory($path, $checkWrite = true, &$failedPaths = null)
     {
         $iterator = static::createRecursiveIterator($path);
 
@@ -186,7 +186,7 @@ abstract class Filesystem
      * @param string $path path to the directory
      * @return int total size in bytes
      */
-    public static function getDirectorySize($path)
+    static function getDirectorySize($path)
     {
         $totalSize = 0;
 
@@ -215,7 +215,7 @@ abstract class Filesystem
      * @param string $failedPath variable that will contain a path that could not be removed
      * @return bool
      */
-    public static function purgeDirectory($path, array $options = array(), &$failedPath = null)
+    static function purgeDirectory($path, array $options = array(), &$failedPath = null)
     {
         $options += array(
             'keep_dir' => false,
@@ -266,7 +266,7 @@ abstract class Filesystem
      *
      * @param string $path
      */
-    public static function denyAccessToDirectory($path)
+    static function denyAccessToDirectory($path)
     {
         file_put_contents($path . '/.htaccess', <<<HTACCESS
 <IfModule mod_authz_core.c>

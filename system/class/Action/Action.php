@@ -20,7 +20,7 @@ abstract class Action
      * @param bool $catchExceptions
      * @return static
      */
-    public function setCatchExceptions($catchExceptions)
+    function setCatchExceptions($catchExceptions)
     {
         $this->catchExceptions = $catchExceptions;
 
@@ -33,7 +33,7 @@ abstract class Action
      * @param bool $renderExceptions
      * @return static
      */
-    public function setRenderExceptions($renderExceptions)
+    function setRenderExceptions($renderExceptions)
     {
         $this->renderExceptions = $renderExceptions;
 
@@ -45,7 +45,7 @@ abstract class Action
      *
      * @return ActionResult
      */
-    public function run()
+    function run()
     {
         $this->result = null;
 

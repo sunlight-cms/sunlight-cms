@@ -29,13 +29,13 @@ class SimpleTreeFilter implements TreeFilterInterface
      *
      * @param array $filter
      */
-    public function __construct(array $filter)
+    function __construct(array $filter)
     {
         $this->filter = $this->compileFilter($filter);
         $this->sql = $this->compileSql($this->filter);
     }
 
-    public function filterNode(array $node, TreeReader $reader)
+    function filterNode(array $node, TreeReader $reader)
     {
         foreach ($this->filter as $cond) {
             $isInvalid = ($cond[1] === null && $node[$cond[0]] !== null || $node[$cond[0]] != $cond[1]);
@@ -52,12 +52,12 @@ class SimpleTreeFilter implements TreeFilterInterface
         return true;
     }
 
-    public function acceptInvalidNodeWithValidChild(array $invalidNode, array $validChildNode, TreeReader $reader)
+    function acceptInvalidNodeWithValidChild(array $invalidNode, array $validChildNode, TreeReader $reader)
     {
         return true;
     }
 
-    public function getNodeSql(TreeReader $reader)
+    function getNodeSql(TreeReader $reader)
     {
         return $this->sql;
     }
