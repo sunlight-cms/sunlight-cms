@@ -277,7 +277,7 @@ class CommentService
   ";
 
         if ($title != null) {
-            $output .= "<h2>" . $title . ' ' . _templateRssLink(_linkRSS($home, $posttype, false), true) . "</h2>\n";
+            $output .= "<h2>" . $title . ' ' . \Sunlight\Template::rssLink(_linkRSS($home, $posttype, false), true) . "</h2>\n";
         }
 
         $form_output = "<div class='posts-form' id='post-form'>\n";
@@ -341,9 +341,9 @@ class CommentService
 
         } else {
             if (!$locked) {
-                $form_output .= "<a class='button' href='" . _addParamsToUrl($url_html, "addpost&page=" . $paging['current']) . "#post-form'><img class='icon' src='" . _templateImage('icons/bubble.png') . "' alt='post'>" . $addlink . "</a>";
+                $form_output .= "<a class='button' href='" . _addParamsToUrl($url_html, "addpost&page=" . $paging['current']) . "#post-form'><img class='icon' src='" . \Sunlight\Template::image('icons/bubble.png') . "' alt='post'>" . $addlink . "</a>";
             } else {
-                $form_output .= "<img src='" . _templateImage("icons/lock.png") . "' alt='stop' class='icon'><strong>" . _lang('posts.locked' . $locked_textid) . "</strong>";
+                $form_output .= "<img src='" . \Sunlight\Template::image("icons/lock.png") . "' alt='stop' class='icon'><strong>" . _lang('posts.locked' . $locked_textid) . "</strong>";
             }
         }
 
@@ -513,7 +513,7 @@ class CommentService
                     }
 
                     // render row
-                    $output .= "<tr class='topic-" . $icon . ($hl ? ' topic-hl' : '') . "'><td class='topic-icon-cell'><a href='" . _linkTopic($item['id'], $forum_slug) . "'><img src='" . _templateImage('icons/topic-' . $icon . '.png') . "' alt='" . _lang('posts.topic.' . $icon) . "'></a></td><td class='topic-main-cell'><a href='" . _linkTopic($item['id'], $forum_slug) . "'>" . $item['subject'] . "</a>" . $tpages . "<br>" . $author . " <small class='post-info'>(" . _formatTime($item['time'], 'post') . ")</small></td><td>" . $item['answer_count'] . "</td><td>" . $lastpost . (($item['answer_count'] != 0) ? "<br><small class='post-info'>(" . _formatTime($item['bumptime'], 'post') . ")</small>" : '') . "</td></tr>\n";
+                    $output .= "<tr class='topic-" . $icon . ($hl ? ' topic-hl' : '') . "'><td class='topic-icon-cell'><a href='" . _linkTopic($item['id'], $forum_slug) . "'><img src='" . \Sunlight\Template::image('icons/topic-' . $icon . '.png') . "' alt='" . _lang('posts.topic.' . $icon) . "'></a></td><td class='topic-main-cell'><a href='" . _linkTopic($item['id'], $forum_slug) . "'>" . $item['subject'] . "</a>" . $tpages . "<br>" . $author . " <small class='post-info'>(" . _formatTime($item['time'], 'post') . ")</small></td><td>" . $item['answer_count'] . "</td><td>" . $lastpost . (($item['answer_count'] != 0) ? "<br><small class='post-info'>(" . _formatTime($item['bumptime'], 'post') . ")</small>" : '') . "</td></tr>\n";
                     $hl = !$hl;
                 }
                 $output .= "</tbody></table>\n\n";

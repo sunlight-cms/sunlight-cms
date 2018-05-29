@@ -92,7 +92,7 @@ $output .= "<div class='cleaner'></div>\n";
 $infos = array();
 
 if (_priv_adminart) {
-    $infos['idlink'] = array(_lang('global.id'), "<a href='admin/index.php?p=content-articles-edit&amp;id=" . $_article['id'] . "&amp;returnid=load&amp;returnpage=1'>" . $_article['id'] . " <img src='" . _templateImage("icons/edit.png") . "' alt='edit' class='icon'></a>");
+    $infos['idlink'] = array(_lang('global.id'), "<a href='admin/index.php?p=content-articles-edit&amp;id=" . $_article['id'] . "&amp;returnid=load&amp;returnpage=1'>" . $_article['id'] . " <img src='" . \Sunlight\Template::image("icons/edit.png") . "' alt='edit' class='icon'></a>");
 }
 
 if ($_article['showinfo']) {
@@ -145,7 +145,7 @@ if ($_article['rateon'] && _ratemode != 0 && _priv_artrate && _iplogCheck(_iplog
         for ($i = 0; $i < 2; $i++) {
             $rateform .= "<tr class='r" . $i . "'>\n";
             if ($i == 0) {
-                $rateform .= "<td rowspan='2'><img src='" . _templateImage("icons/rate-good.png") . "' alt='good' class='icon'></td>\n";
+                $rateform .= "<td rowspan='2'><img src='" . \Sunlight\Template::image("icons/rate-good.png") . "' alt='good' class='icon'></td>\n";
             }
             for ($x = 1; $x < 6; $x++) {
                 if ($i == 0) {
@@ -155,7 +155,7 @@ if ($_article['rateon'] && _ratemode != 0 && _priv_artrate && _iplogCheck(_iplog
                 }
             }
             if ($i == 0) {
-                $rateform .= "<td rowspan='2'><img src='" . _templateImage("icons/rate-bad.png") . "' alt='bad' class='icon'></td>\n";
+                $rateform .= "<td rowspan='2'><img src='" . \Sunlight\Template::image("icons/rate-bad.png") . "' alt='bad' class='icon'></td>\n";
             }
             $rateform .= "</tr>\n";
         }

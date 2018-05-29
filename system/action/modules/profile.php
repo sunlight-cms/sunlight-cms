@@ -147,5 +147,5 @@ if ($public) {
 
 // odkaz na zaslani vzkazu
 if (_logged_in && _messages && $query['id'] != _user_id && $query['blocked'] == 0 && $groupdata['blocked'] == 0) {
-    $output .= "<p><a class='button' href='" . _linkModule('messages', 'a=new&receiver=' . $query['username']) . "'><img src='" . _templateImage("icons/bubble.png") . "' alt='msg' class='icon'>" . _lang('mod.messages.new') . "</a></p>";
+    $output .= "<p><a class='button' href='" . _linkModule('messages', 'a=new&receiver=' . $query['username']) . "'><img src='" . \Sunlight\Template::image("icons/bubble.png") . "' alt='msg' class='icon'>" . _lang('mod.messages.new') . "</a></p>";
 }

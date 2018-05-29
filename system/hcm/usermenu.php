@@ -6,5 +6,5 @@ if (!defined('_root')) {
 
 function _HCM_usermenu()
 {
-    return _templateUserMenu();
+    return \Sunlight\Template::userMenu();
 }

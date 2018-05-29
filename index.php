@@ -20,7 +20,7 @@ $_template = null;
 $_template_layout = null;
 
 // nacist vychozi motiv
-if (!_templateSwitch(TemplateService::composeUid(_default_template, TemplatePlugin::DEFAULT_LAYOUT))) {
+if (!\Sunlight\Template::change(TemplateService::composeUid(_default_template, TemplatePlugin::DEFAULT_LAYOUT))) {
     Core::updateSetting('default_template', 'default');
 
     Core::systemFailure(
@@ -206,7 +206,7 @@ if ($_index['template_enabled']) {
 
     // hlavicka
     require _root . 'system/html_start.php';
-    _templateHead();
+    \Sunlight\Template::head();
 
     ?>
 </head>

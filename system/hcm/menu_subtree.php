@@ -12,7 +12,7 @@ function _HCM_menu_subtree($id_stranky = null, $od = null, $do = null, $max_hlou
     _normalize($max_hloubka, 'int');
     _normalize($class, 'string');
 
-    return _templateTreeMenu(array(
+    return \Sunlight\Template::treeMenu(array(
         'page_id' => $id_stranky,
         'max_depth' => $max_hloubka,
         'ord_start' => $od,

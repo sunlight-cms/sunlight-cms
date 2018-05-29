@@ -31,7 +31,7 @@ if ($_page['description'] !== '') {
 
 // motiv
 if ($_page['layout'] !== null) {
-    _templateSwitch($_page['layout']);
+    \Sunlight\Template::change($_page['layout']);
 }
 
 // kontrola typu pristupu k hlavni strane

@@ -3,25 +3,25 @@
 <div id="wrapper">
     <div id="header">
         <div id="logo">
-            <a href="<?php echo _templateSiteUrl() ?>"><?php echo _templateSiteTitle() ?></a>
-            <p><?php echo _templateSiteDescription() ?></p>
+            <a href="<?php echo \Sunlight\Template::siteUrl() ?>"><?php echo \Sunlight\Template::siteTitle() ?></a>
+            <p><?php echo \Sunlight\Template::siteDescription() ?></p>
         </div>
 
-        <?php echo _templateUserMenu() ?>
+        <?php echo \Sunlight\Template::userMenu() ?>
     </div>
 
     <div id="menu">
-        <?php echo _templateMenu() ?>
+        <?php echo \Sunlight\Template::menu() ?>
     </div>
 
     <div id="page">
         <div id="content">
-            <?php echo _templateContent() ?>
+            <?php echo \Sunlight\Template::content() ?>
 
             <div class="cleaner"></div>
         </div>
         <div id="sidebar">
-            <?php echo _templateBoxes('right') ?>
+            <?php echo \Sunlight\Template::boxes('right') ?>
         </div>
         <div class="cleaner"></div>
     </div>
@@ -29,6 +29,6 @@
 <div id="footer">
     <ul>
         <li><a href="http://templated.co/" rel="nofollow">TEMPLATED</a></li>
-        <?php echo _templateLinks() ?>
+        <?php echo \Sunlight\Template::links() ?>
     </ul>
 </div>
