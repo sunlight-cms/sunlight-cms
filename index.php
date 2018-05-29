@@ -11,9 +11,6 @@ Core::init('./', array(
     'env' => Core::ENV_WEB,
 ));
 
-// funkce motivu
-require _root . 'system/functions-template.php';
-
 /* ----  priprava  ---- */
 
 // motiv
