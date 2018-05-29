@@ -12,6 +12,7 @@ use Kuria\Error\ErrorHandler;
 use Kuria\Error\Screen\WebErrorScreen;
 use Kuria\Event\EventEmitter;
 use Sunlight\Database\Database as DB;
+use Sunlight\Exception\CoreException;
 use Sunlight\Localization\LocalizationDictionary;
 use Sunlight\Plugin\PluginManager;
 use Sunlight\Util\Filesystem;

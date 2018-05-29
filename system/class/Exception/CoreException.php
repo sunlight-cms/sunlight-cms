@@ -1,6 +1,6 @@
 <?php
 
-namespace Sunlight;
+namespace Sunlight\Exception;
 
 /**
  * Core exception
