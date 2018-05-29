@@ -11,15 +11,8 @@ use Symfony\Component\Console\Input\ArgvInput;
 use Doctrine\ORM\Tools\Console\ConsoleRunner as DoctrineConsole;
 use Composer\Script\Event;
 
-class Console
+abstract class Console
 {
-    /**
-     * This is a static class
-     */
-    private function __construct()
-    {
-    }
-
     /**
      * @param EntityManager $em
      * @return Application

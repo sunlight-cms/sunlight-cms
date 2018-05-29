@@ -8,7 +8,7 @@ use Sunlight\Page\PageManager;
 use Sunlight\Plugin\TemplateService;
 use Sunlight\Util\Url;
 
-class PageLister
+abstract class PageLister
 {
     /** Mode - full tree */
     const MODE_FULL_TREE = 0;
@@ -23,13 +23,6 @@ class PageLister
     private static $pageTypes;
     /** @var array|null */
     private static $pluginTypes;
-
-    /**
-     * This is a static class
-     */
-    private function __construct()
-    {
-    }
 
     /**
      * Initialize

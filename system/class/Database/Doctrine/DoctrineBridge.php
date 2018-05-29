@@ -20,15 +20,8 @@ use Doctrine\ORM\Tools\Setup;
 use Sunlight\Core;
 use Sunlight\Extend;
 
-class DoctrineBridge
+abstract class DoctrineBridge
 {
-    /**
-     * This is a static class
-     */
-    private function __construct()
-    {
-    }
-
     /**
      * @param \mysqli $mysqli
      * @return EntityManager

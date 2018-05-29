@@ -10,7 +10,7 @@ use Sunlight\Database\TreeReader;
 use Sunlight\Database\TreeReaderOptions;
 use Sunlight\Extend;
 
-class PageManager
+abstract class PageManager
 {
     /** @var TreeManager|null */
     protected static $treeManager;
@@ -20,13 +20,6 @@ class PageManager
     protected static $pathCache = array();
     /** @var array */
     protected static $childrenCache = array();
-
-    /**
-     * This is a static class
-     */
-    private function __construct()
-    {
-    }
 
     /**
      * Ziskat data aktivni stranky

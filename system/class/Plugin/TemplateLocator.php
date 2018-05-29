@@ -7,18 +7,11 @@ use Sunlight\Core;
 /**
  * Template plugin locator
  */
-class TemplateLocator
+abstract class TemplateLocator
 {
     const UID_TEMPLATE = 0;
     const UID_TEMPLATE_LAYOUT = 1;
     const UID_TEMPLATE_LAYOUT_SLOT = 2;
-
-    /**
-     * This is a static class
-     */
-    private function __construct()
-    {
-    }
 
     /**
      * Check if a template exists

@@ -7,15 +7,8 @@ use Kuria\Event\EventEmitterInterface;
 /**
  * Extend event system
  */
-class Extend
+abstract class Extend
 {
-    /**
-     * This is a static class
-     */
-    private function __construct()
-    {
-    }
-
     /**
      * Register callback for an event
      *

@@ -5,15 +5,8 @@ namespace Sunlight\Util;
 /**
  * String generator
  */
-class StringGenerator
+abstract class StringGenerator
 {
-    /**
-     * This is a static class
-     */
-    private function __construct()
-    {
-    }
-
     /**
      * Generate a random hash
      *

@@ -7,7 +7,7 @@ use ZipArchive;
 /**
  * Zip archive helper
  */
-class Zip
+abstract class Zip
 {
     /** Path mode - full paths */
     const PATH_FULL = 0;
@@ -15,13 +15,6 @@ class Zip
     const PATH_SUB = 1;
     /** Path mode - none (files only, no directories) */
     const PATH_NONE = 2;
-
-    /**
-     * This is a static class
-     */
-    private function __construct()
-    {
-    }
 
     /**
      * Extract a single file

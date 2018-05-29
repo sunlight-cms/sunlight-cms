@@ -5,15 +5,8 @@ namespace Sunlight\Util;
 /**
  * Filesystem utilities
  */
-class Filesystem
+abstract class Filesystem
 {
-    /**
-     * This is a static class
-     */
-    private function __construct()
-    {
-    }
-
     /**
      * Normalize a path
      *

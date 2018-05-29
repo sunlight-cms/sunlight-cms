@@ -5,15 +5,8 @@ namespace Sunlight\Util;
 /**
  * Math helper
  */
-class Math
+abstract class Math
 {
-    /**
-     * This is a static class
-     */
-    private function __construct()
-    {
-    }
-
     /**
      * Limit number range
      *

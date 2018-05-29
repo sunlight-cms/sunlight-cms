@@ -7,17 +7,10 @@ use Sunlight\Core;
 use Sunlight\Extend;
 use Sunlight\Util\Url;
 
-class TwigBridge
+abstract class TwigBridge
 {
     /** @var \Twig_Environment|null */
     protected static $env;
-
-    /**
-     * This is a static class
-     */
-    private function __construct()
-    {
-    }
 
     /**
      * @return \Twig_Environment

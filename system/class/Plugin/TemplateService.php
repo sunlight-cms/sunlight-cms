@@ -4,18 +4,11 @@ namespace Sunlight\Plugin;
 
 use Sunlight\Core;
 
-class TemplateService
+abstract class TemplateService
 {
     const UID_TEMPLATE = 0;
     const UID_TEMPLATE_LAYOUT = 1;
     const UID_TEMPLATE_LAYOUT_SLOT = 2;
-
-    /**
-     * This is a static class
-     */
-    private function __construct()
-    {
-    }
 
     /**
      * Check if a template exists

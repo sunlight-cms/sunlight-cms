@@ -5,17 +5,10 @@ namespace Sunlight\Util;
 /**
  * JSON helper
  */
-class Json
+abstract class Json
 {
     const CONTENT_TYPE_JSON = 'application/json; charset=UTF-8';
     const CONTENT_TYPE_JSONP = 'application/javascript; charset=UTF-8';
-
-    /**
-     * This is a static class
-     */
-    private function __construct()
-    {
-    }
 
     /**
      * Encode data as JSON

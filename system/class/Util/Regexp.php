@@ -5,15 +5,8 @@ namespace Sunlight\Util;
 /**
  * Regexp helper
  */
-class Regexp
+abstract class Regexp
 {
-    /**
-     * This is a static class
-     */
-    private function __construct()
-    {
-    }
-
     /**
      * Replace substrings using a regular expression
      *

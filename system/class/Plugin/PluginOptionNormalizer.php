@@ -5,15 +5,8 @@ namespace Sunlight\Plugin;
 use Sunlight\Option\OptionSetNormalizerException;
 use Sunlight\Util\Filesystem;
 
-class PluginOptionNormalizer
+abstract class PluginOptionNormalizer
 {
-    /**
-     * This is a static class
-     */
-    private function __construct()
-    {
-    }
-
     /**
      * @param string|null $namespace
      * @param array       $context

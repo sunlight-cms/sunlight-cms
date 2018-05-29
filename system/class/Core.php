@@ -22,7 +22,7 @@ use Sunlight\Util\Url;
  *
  * Manages core components and configuration.
  */
-class Core
+abstract class Core
 {
     /** CMS version */
     const VERSION = '8.0.0';
@@ -85,13 +85,6 @@ class Core
 
     /** @var bool */
     protected static $ready = false;
-
-    /**
-     * This is a static class
-     */
-    private function __construct()
-    {
-    }
 
     /**
      * Initialize the system

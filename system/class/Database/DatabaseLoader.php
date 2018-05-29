@@ -5,15 +5,8 @@ namespace Sunlight\Database;
 use Sunlight\Database\Database as DB;
 use Sunlight\Util\Regexp;
 
-class DatabaseLoader
+abstract class DatabaseLoader
 {
-    /**
-     * This is a static class
-     */
-    private function __construct()
-    {
-    }
-
     /**
      * Remove tables from the database
      *

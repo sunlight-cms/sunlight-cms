@@ -4,15 +4,8 @@ namespace Sunlight\Page;
 
 use Sunlight\Extend;
 
-class PageMenu
+abstract class PageMenu
 {
-    /**
-     * This is a static class
-     */
-    private function __construct()
-    {
-    }
-
     /**
      * Vykreslit menu
      *
