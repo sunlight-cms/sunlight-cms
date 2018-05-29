@@ -21,7 +21,7 @@ if (isset($_POST['title']) && is_array($_POST['title'])) {
         DB::update(_root_table, 'id=' . DB::val($id), array('title' => $title));
     }
 
-    $message = _msg(_msg_ok, _lang('global.saved'));
+    $message = \Sunlight\Message::render(_msg_ok, _lang('global.saved'));
 }
 
 /* ---  vystup  --- */
@@ -45,4 +45,4 @@ $output .= "
         <input type='submit' value='" . _lang('global.save') . "' accesskey='s'>
         <input type='reset' value='" . _lang('global.reset') . "' onclick='return Sunlight.confirm();'>
     </p>
-" . _xsrfProtect() . "</form>";
+" . \Sunlight\Xsrf::getInput() . "</form>";

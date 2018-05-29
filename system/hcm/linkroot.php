@@ -23,6 +23,6 @@ return function ($id = null, $text = null, $nove_okno = false)
             $query['title'] = _e($text);
         }
 
-        return "<a href='" . _linkRoot($id, $query['slug']) . "'" . $target . ">" . $query['title'] . "</a>";
+        return "<a href='" . \Sunlight\Router::root($id, $query['slug']) . "'" . $target . ">" . $query['title'] . "</a>";
     }
 };

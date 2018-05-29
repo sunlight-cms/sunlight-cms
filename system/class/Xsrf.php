@@ -11,7 +11,7 @@ class Xsrf
      */
     static function getInput()
     {
-        return '<input type="hidden" name="_security_token" value="' . _xsrfToken() . '">';
+        return '<input type="hidden" name="_security_token" value="' . \Sunlight\Xsrf::getToken() . '">';
     }
 
     /**
@@ -23,7 +23,7 @@ class Xsrf
      */
     static function addToUrl($url, $entity = true)
     {
-        return _addParamsToUrl($url, '_security_token=' . rawurlencode(_xsrfToken()), $entity);
+        return \Sunlight\Util\UrlHelper::appendParams($url, '_security_token=' . rawurlencode(\Sunlight\Xsrf::getToken()), $entity);
     }
 
     /**
@@ -91,7 +91,7 @@ class Xsrf
         }
 
         // check
-        if ($test !== null && _xsrfToken(true) === $test) {
+        if ($test !== null && \Sunlight\Xsrf::getToken(true) === $test) {
             return true;
         }
 

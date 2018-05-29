@@ -42,7 +42,7 @@ class PhpTemplate
      */
     static function fromFile($path)
     {
-        _ensureFileExists($path);
+        \Sunlight\Util\Filesystem::ensureFileExists($path);
 
         return new static(file_get_contents($path));
     }

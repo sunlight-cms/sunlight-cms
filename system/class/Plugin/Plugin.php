@@ -308,7 +308,7 @@ abstract class Plugin
      */
     function getWebPath($absolute = false)
     {
-        return _link($this->webPath, $absolute);
+        return \Sunlight\Router::link($this->webPath, $absolute);
     }
 
     /**

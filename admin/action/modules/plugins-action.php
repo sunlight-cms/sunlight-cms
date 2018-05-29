@@ -5,12 +5,12 @@ use Sunlight\Core;
 defined('_root') or exit;
 
 // parametry
-$type = _get('type');
-$name = _get('name');
-$action = _get('action');
+$type = \Sunlight\Util\Request::get('type');
+$name = \Sunlight\Util\Request::get('name');
+$action = \Sunlight\Util\Request::get('action');
 
-if (!_xsrfCheck(true)) {
-    $output .= _msg(_msg_err, _lang('global.badinput'));
+if (!\Sunlight\Xsrf::check(true)) {
+    $output .= \Sunlight\Message::render(_msg_err, _lang('global.badinput'));
 
     return;
 }
@@ -21,7 +21,7 @@ if (
     || ($plugin = Core::$pluginManager->find($type, $name, false)) === null
     || ($action = $plugin->getAction($action)) === null
 ) {
-    $output .= _msg(_msg_err, _lang('global.badinput'));
+    $output .= \Sunlight\Message::render(_msg_err, _lang('global.badinput'));
 
     return;
 }

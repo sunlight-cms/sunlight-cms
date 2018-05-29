@@ -61,7 +61,7 @@ abstract class PageLister
     private static function setup()
     {
         // set current page
-        $pageId = _get('page_id', null);
+        $pageId = \Sunlight\Util\Request::get('page_id', null);
         if ($pageId !== null) {
             if ($pageId === 'root') {
                 $pageId = null;
@@ -73,7 +73,7 @@ abstract class PageLister
         }
 
         // set mode
-        $mode = _get('list_mode', null);
+        $mode = \Sunlight\Util\Request::get('list_mode', null);
         if ($mode !== null) {
             switch ($mode) {
                 case 'tree':
@@ -233,7 +233,7 @@ abstract class PageLister
         if ($options['sortable']) {
             $output .= "<form method=\"post\">\n";
             if (static::saveOrd()) {
-                $output .= _msg(_msg_ok, _lang('admin.content.form.ord.saved'));
+                $output .= \Sunlight\Message::render(_msg_ok, _lang('admin.content.form.ord.saved'));
             }
         }
         if (static::MODE_SINGLE_LEVEL == $options['mode']) {
@@ -291,7 +291,7 @@ abstract class PageLister
                 <input type=\"submit\" name=\"reset\" value=\"" . _lang('global.reset') . "\">
             </p>";
 
-            $output .= _xsrfProtect() . "</form>";
+            $output .= \Sunlight\Xsrf::getInput() . "</form>";
         }
     }
 
@@ -396,7 +396,7 @@ abstract class PageLister
      */
     private static function isAccessible(array $page)
     {
-        $userHasRight = _userHasPriv('admin' . static::$pageTypes[$page['type']]);
+        $userHasRight = \Sunlight\User::hasPrivilege('admin' . static::$pageTypes[$page['type']]);
         $isAccessible = $userHasRight;
 
         Extend::call('admin.root.list.access', array(
@@ -545,7 +545,7 @@ abstract class PageLister
         // show
         if ($page['type'] != _page_separator) {
             $actions['show'] = array(
-                'url' => _linkRoot($page['id'], $page['slug']),
+                'url' => \Sunlight\Router::root($page['id'], $page['slug']),
                 'new_window' => true,
                 'icon' => 'images/icons/show.png',
                 'label' => _lang('global.show'),

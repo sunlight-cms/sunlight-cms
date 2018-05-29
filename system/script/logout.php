@@ -5,7 +5,7 @@ use Sunlight\Core;
 require '../bootstrap.php';
 Core::init('../../');
 
-if (_xsrfCheck(true)) {
-    _userLogout();
+if (\Sunlight\Xsrf::check(true)) {
+    \Sunlight\User::logout();
 }
-_returnHeader();
+\Sunlight\Response::redirectBack();

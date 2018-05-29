@@ -115,7 +115,7 @@ class SystemChecker
     {
         // auto-generate .htaccess file if pretty urls are enabled
         // and the server is apache
-        if (_isApache()) {
+        if (\Sunlight\Util\Environment::isApache()) {
             $generatedHtaccess = static::generateHtaccess();
 
             $htaccessPath = _root . '.htaccess';

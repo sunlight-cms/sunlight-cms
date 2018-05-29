@@ -8,15 +8,15 @@ defined('_root') or exit;
 
 $message = "";
 if (isset($_GET['id'])) {
-    DB::update(_articles_table, 'id=' . DB::val(_get('id')), array('confirmed' => 1));
-    $message = _msg(_msg_ok, _lang('global.done'));
+    DB::update(_articles_table, 'id=' . DB::val(\Sunlight\Util\Request::get('id')), array('confirmed' => 1));
+    $message = \Sunlight\Message::render(_msg_ok, _lang('global.done'));
 }
 
 /* ---  vystup  --- */
 
 // nacteni filtru
 if (isset($_GET['limit'])) {
-    $catlimit = (int) _get('limit');
+    $catlimit = (int) \Sunlight\Util\Request::get('limit');
     $condplus = " AND (art.home1=" . $catlimit . " OR art.home2=" . $catlimit . " OR art.home3=" . $catlimit . ")";
 } else {
     $catlimit = -1;
@@ -40,7 +40,7 @@ $output .= "
 <tbody>";
 
 // vypis
-$userQuery = _userQuery('art.author');
+$userQuery = \Sunlight\User::createQuery('art.author');
 $query = DB::query("SELECT art.id,art.title,art.slug,art.home1,art.home2,art.home3,art.time,art.visible,art.confirmed,art.public,cat.slug AS cat_slug," . $userQuery['column_list'] . " FROM " . _articles_table . " AS art JOIN " . _root_table . " AS cat ON(cat.id=art.home1) " . $userQuery['joins'] . " WHERE art.confirmed=0" . $condplus . " ORDER BY art.time DESC");
 if (DB::size($query) != 0) {
     while ($item = DB::row($query)) {
@@ -59,8 +59,8 @@ if (DB::size($query) != 0) {
 
         $output .= "<tr>
             <td>" . \Sunlight\Admin\Admin::articleEditLink($item, false) . "</td>
-            <td>" . $cats . "</td><td>" . _formatTime($item['time']) . "</td>
-            <td>" . _linkUserFromQuery($userQuery, $item) . "</td>
+            <td>" . $cats . "</td><td>" . \Sunlight\Generic::renderTime($item['time']) . "</td>
+            <td>" . \Sunlight\Router::userFromQuery($userQuery, $item) . "</td>
             <td class='actions'>
                 <a class='button' href='index.php?p=content-confirm&amp;id=" . $item['id'] . "&amp;limit=" . $catlimit . "'><img src='images/icons/check.png' alt='confirm' class='icon'>" . _lang('admin.content.confirm.confirm') . "</a>
                 <a class='button' href='index.php?p=content-articles-edit&amp;id=" . $item['id'] . "&amp;returnid=load&amp;returnpage=1'><img src='images/icons/edit.png' alt='edit' class='icon'>" . _lang('global.edit') . "</a>"

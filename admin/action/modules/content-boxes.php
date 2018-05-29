@@ -11,7 +11,7 @@ $message = null;
 
 // process action
 if (isset($_POST['action'])) {
-    list($action, $param) = explode(':', _post('action', '')) + array(1 => null);
+    list($action, $param) = explode(':', \Sunlight\Util\Request::post('action', '')) + array(1 => null);
 
     switch ($action) {
         case 'save_ord':
@@ -142,4 +142,4 @@ if (!empty($unassigned_boxes)) $output .= _buffer(function () use ($unassigned_b
 <?php });
 
 // main form end
-$output .= _xsrfProtect() . "</form>\n";
+$output .= \Sunlight\Xsrf::getInput() . "</form>\n";

@@ -13,9 +13,9 @@ $message = "";
 if (isset($_POST['source'])) {
 
     // nacteni promennych
-    $source = (int) _post('source');
-    $target = (int) _post('target');
-    $fullmove = _checkboxLoad("fullmove");
+    $source = (int) \Sunlight\Util\Request::post('source');
+    $target = (int) \Sunlight\Util\Request::post('target');
+    $fullmove = \Sunlight\Util\Form::loadCheckbox("fullmove");
 
     // kontrola promennych
     $error_log = array();
@@ -71,9 +71,9 @@ if (isset($_POST['source'])) {
             $counter = DB::affectedRows();
         }
 
-        $message = _msg(_msg_ok, _lang('admin.content.movearts.done', array("*moved*" => $counter)));
+        $message = \Sunlight\Message::render(_msg_ok, _lang('admin.content.movearts.done', array("*moved*" => $counter)));
     } else {
-        $message = _msg(_msg_warn, _msgList($error_log, 'errors'));
+        $message = \Sunlight\Message::render(_msg_warn, \Sunlight\Message::renderList($error_log, 'errors'));
     }
 
 }
@@ -89,5 +89,5 @@ $output .= $message . "
     . " <input class='button' type='submit' value='" . _lang('global.do') . "'>
 <br><br>
 <label><input type='checkbox' name='fullmove' value='1'> " . _lang('admin.content.movearts.fullmove') . "</label>
-" . _xsrfProtect() . "</form>
+" . \Sunlight\Xsrf::getInput() . "</form>
 ";

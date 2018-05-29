@@ -7,5 +7,5 @@ defined('_root') or exit;
 $admin_title = _lang('xsrf.title');
 
 $admin_output .= "<h1>" . _lang('xsrf.title') . "</h1>\n";
-$admin_output .= _msg(_msg_err, _lang('xsrf.msg'));
-$admin_output .= _postRepeatForm();
+$admin_output .= \Sunlight\Message::render(_msg_err, _lang('xsrf.msg'));
+$admin_output .= \Sunlight\User::renderPostRepeatForm();

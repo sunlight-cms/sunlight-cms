@@ -20,7 +20,7 @@ if ($_index['segment'] !== null) {
 $_index['title'] = $_page['title'];
 
 // rss
-$_index['rsslink'] = _linkRSS($id, _rss_latest_topics, false);
+$_index['rsslink'] = \Sunlight\Router::rss($id, _rss_latest_topics, false);
 
 // obsah
 Extend::call('page.forum.content.before', $extend_args);
@@ -32,7 +32,7 @@ Extend::call('page.forum.content.after', $extend_args);
 // temata
 $output .= CommentService::render(CommentService::RENDER_FORUM_TOPIC_LIST, $id, array(
     $_page['var1'],
-    _publicAccess($_page['var3']),
+    \Sunlight\User::checkPublicAccess($_page['var3']),
     $_page['var2'],
     $_page['slug'],
 ));

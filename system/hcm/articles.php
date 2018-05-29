@@ -85,9 +85,9 @@ return function ($typ = 'new', $pocet = null, $perex = 'perex', $info = true, $k
     }
 
     // omezeni vypisu
-    list($joins, $cond) = _articleFilter(
+    list($joins, $cond) = \Sunlight\Article::createFilter(
         'art',
-        _arrayRemoveValue(explode('-', $kategorie), ''),
+        \Sunlight\Util\Arr::removeValue(explode('-', $kategorie), ''),
         $rcond
     );
 
@@ -97,10 +97,10 @@ return function ($typ = 'new', $pocet = null, $perex = 'perex', $info = true, $k
     }
 
     // vypis
-    $userQuery = _userQuery('art.author');
+    $userQuery = \Sunlight\User::createQuery('art.author');
     $query = DB::query("SELECT art.id,art.title,art.slug,art.perex," . ($show_image ? 'art.picture_uid,' : '') . "art.time,art.readnum,art.comments,cat1.slug AS cat_slug," . $userQuery['column_list'] . (($info !== 0) ? ",(SELECT COUNT(*) FROM " . _posts_table . " AS post WHERE home=art.id AND post.type=" . _post_article_comment . ") AS comment_count" : '') . " FROM " . _articles_table . " AS art " . $joins . ' ' . $userQuery['joins'] . " WHERE " . $cond . " ORDER BY " . $rorder . " LIMIT " . $pocet);
     while ($item = DB::row($query)) {
-        $result .= _articlePreview($item, $userQuery, $info, $show_perex, (($info !== 0) ? $item['comment_count'] : null));
+        $result .= \Sunlight\Article::renderPreview($item, $userQuery, $info, $show_perex, (($info !== 0) ? $item['comment_count'] : null));
     }
 
     return $result;

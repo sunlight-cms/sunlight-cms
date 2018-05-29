@@ -11,10 +11,10 @@ Core::init('../../', array(
     'content_type' => 'text/css; charset=UTF-8',
 ));
 
-header('Expires: ' . _httpDate(2592000, true));
+header('Expires: ' . \Sunlight\Util\DateTime::formatForHttp(2592000, true));
 
 $dark = isset($_GET['d']);
-$s = (int) _get('s', 0);
+$s = (int) \Sunlight\Util\Request::get('s', 0);
 
 /**
  * Vypocet barvy

@@ -15,4 +15,4 @@ $message = sprintf(
     _e($privException->getMessage())
 );
 
-$admin_output .= _msg(_msg_err, $message);
+$admin_output .= \Sunlight\Message::render(_msg_err, $message);

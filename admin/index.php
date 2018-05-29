@@ -17,7 +17,7 @@ $admin_extra_js = array();
 $admin_login_layout = false;
 $admin_body_classes = array();
 $admin_access = (_logged_in && _priv_administration);
-$admin_current_module = _get('p', 'index');
+$admin_current_module = \Sunlight\Util\Request::get('p', 'index');
 $admin_redirect_to = null;
 $admin_output = '';
 $output = '';
@@ -38,7 +38,7 @@ asort($admin_menu_items, SORT_NUMERIC);
 /* ---- priprava obsahu ---- */
 
 // vystup
-if (empty($_POST) || _xsrfCheck()) {
+if (empty($_POST) || \Sunlight\Xsrf::check()) {
     if ($admin_access) {
         try {
             require _root . 'admin/action/module.php';
@@ -86,7 +86,7 @@ if ($admin_login_layout) {
 $admin_body_classes[] = $theme_dark ? 'dark' : 'light';
 
 ?>
-<meta name="robots" content="noindex,follow"><?php echo _headAssets($assets), "\n" ?>
+<meta name="robots" content="noindex,follow"><?php echo \Sunlight\Generic::renderHeadAssets($assets), "\n" ?>
 <title><?php echo _title, ' - ', _lang('global.admintitle'), (!empty($admin_title) ? ' - ' . $admin_title : '') ?></title>
 </head>
 
@@ -120,10 +120,10 @@ $admin_body_classes[] = $theme_dark ? 'dark' : 'light';
         <div id="footer">
             <div id="footer-links">
                 <?php if ($admin_access): ?>
-                    <a href="<?php echo _link('') ?>" target="_blank"><?php echo _lang('admin.link.site') ?></a>
-                    <a href="<?php echo _link('admin/') ?>" target="_blank"><?php echo _lang('admin.link.newwin') ?></a>
+                    <a href="<?php echo \Sunlight\Router::link('') ?>" target="_blank"><?php echo _lang('admin.link.site') ?></a>
+                    <a href="<?php echo \Sunlight\Router::link('admin/') ?>" target="_blank"><?php echo _lang('admin.link.newwin') ?></a>
                 <?php else: ?>
-                    <a href="<?php echo _link('') ?>">&lt; <?php echo _lang('admin.link.home') ?></a>
+                    <a href="<?php echo \Sunlight\Router::link('') ?>">&lt; <?php echo _lang('admin.link.home') ?></a>
                 <?php endif ?>
             </div>
 

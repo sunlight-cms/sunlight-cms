@@ -11,7 +11,7 @@ defined('_root') or exit;
 $templates_to_choose_slot_from = null;
 
 // fetch box data
-$id = _get('id');
+$id = \Sunlight\Util\Request::get('id');
 $new = $id === null;
 
 if (!$new) {
@@ -34,7 +34,7 @@ if (!$new) {
         'class' => null,
     );
 
-    if (($template = _get('template')) !== null && TemplateService::templateExists($template)) {
+    if (($template = \Sunlight\Util\Request::get('template')) !== null && TemplateService::templateExists($template)) {
         $templates_to_choose_slot_from = array(TemplateService::getTemplate($template));
     }
 }
@@ -53,18 +53,18 @@ if (isset($_POST['box_edit'])) do {
     $errors = array();
 
     $changeset = array(
-        'title' => _cutHtml(_e(_wsTrim(_post('title'))), 255),
-        'content' => _wsTrim(_post('content')),
-        'visible' => _checkboxLoad('visible'),
-        'public' => _checkboxLoad('public'),
-        'level' => Math::range((int) _post('level'), 0, _priv_max_level),
-        'page_ids' => implode(',', array_filter(array_map('intval', (array) _post('page_ids', array(), true)), function ($id) { return $id >= 1; })) ?: null,
-        'page_children' => _checkboxLoad('page_children'),
-        'class' => _cutText(_wsTrim(_post('class')), 255, false),
+        'title' => \Sunlight\Util\Html::cut(_e(\Sunlight\Util\StringManipulator::trimExtraWhitespace(\Sunlight\Util\Request::post('title'))), 255),
+        'content' => \Sunlight\Util\StringManipulator::trimExtraWhitespace(\Sunlight\Util\Request::post('content')),
+        'visible' => \Sunlight\Util\Form::loadCheckbox('visible'),
+        'public' => \Sunlight\Util\Form::loadCheckbox('public'),
+        'level' => Math::range((int) \Sunlight\Util\Request::post('level'), 0, _priv_max_level),
+        'page_ids' => implode(',', array_filter(array_map('intval', (array) \Sunlight\Util\Request::post('page_ids', array(), true)), function ($id) { return $id >= 1; })) ?: null,
+        'page_children' => \Sunlight\Util\Form::loadCheckbox('page_children'),
+        'class' => \Sunlight\Util\StringManipulator::ellipsis(\Sunlight\Util\StringManipulator::trimExtraWhitespace(\Sunlight\Util\Request::post('class')), 255, false),
     );
 
     // slot uid
-    $template_components = TemplateService::getComponentsByUid(_post('slot_uid'), TemplateService::UID_TEMPLATE_LAYOUT_SLOT);
+    $template_components = TemplateService::getComponentsByUid(\Sunlight\Util\Request::post('slot_uid'), TemplateService::UID_TEMPLATE_LAYOUT_SLOT);
 
     if ($template_components !== null) {
         $changeset += array(
@@ -77,10 +77,10 @@ if (isset($_POST['box_edit'])) do {
     }
 
     // ord
-    $new_ord = trim(_post('ord'));
+    $new_ord = trim(\Sunlight\Util\Request::post('ord'));
 
     if ($new_ord !== '') {
-        $new_ord = Math::range((int) _post('ord'), 0, null);
+        $new_ord = Math::range((int) \Sunlight\Util\Request::post('ord'), 0, null);
     }
 
     $changeset['ord'] = $new_ord;
@@ -93,7 +93,7 @@ if (isset($_POST['box_edit'])) do {
 
     // check for errors
     if ($errors) {
-        $output .= Message::error(_msgList($errors, 'errors'), true);
+        $output .= Message::error(\Sunlight\Message::renderList($errors, 'errors'), true);
         break;
     }
 
@@ -134,7 +134,7 @@ $output .= _buffer(function () use ($id, $box, $new, $templates_to_choose_slot_f
         <table class="formtable">
             <tr>
                 <th><?php echo _lang('admin.content.form.title') ?></th>
-                <td><input type="text" class="inputbig" maxlength="255"<?php echo _restorePostValueAndName('title', $box['title'], false) ?>></td>
+                <td><input type="text" class="inputbig" maxlength="255"<?php echo \Sunlight\Util\Form::restorePostValueAndName('title', $box['title'], false) ?>></td>
             </tr>
             <tr>
                 <th><?php echo _lang('admin.content.boxes.slot') ?></th>
@@ -142,22 +142,22 @@ $output .= _buffer(function () use ($id, $box, $new, $templates_to_choose_slot_f
             </tr>
             <tr>
                 <th><?php echo _lang('admin.content.form.ord') ?></th>
-                <td><input type="number" min="0" class="inputsmall"<?php echo _restorePostValueAndName('ord', $box['ord']) ?>></td>
+                <td><input type="number" min="0" class="inputsmall"<?php echo \Sunlight\Util\Form::restorePostValueAndName('ord', $box['ord']) ?>></td>
             </tr>
             <tr>
                 <th><?php echo _lang('admin.content.form.content') ?></th>
-                <td><textarea class="areasmallwide editor" name="content" rows="9" cols="33"><?php echo _restorePostValue('content', $box['content'], false) ?></textarea></td>
+                <td><textarea class="areasmallwide editor" name="content" rows="9" cols="33"><?php echo \Sunlight\Util\Form::restorePostValue('content', $box['content'], false) ?></textarea></td>
             </tr>
             <tr>
                 <th><?php echo _lang('admin.content.form.class') ?></th>
-                <td><input type="text" class="inputbig" maxlength="255"<?php echo _restorePostValueAndName('class', $box['class']) ?>></td>
+                <td><input type="text" class="inputbig" maxlength="255"<?php echo \Sunlight\Util\Form::restorePostValueAndName('class', $box['class']) ?>></td>
             </tr>
             <tr>
                 <th><?php echo _lang('admin.content.form.settings') ?></th>
                 <td>
-                    <label><input type="checkbox"<?php echo _restoreCheckedAndName('box_edit', 'visible', $box['visible']) ?>> <?php echo _lang('admin.content.form.visible') ?></label>
-                    <label><input type="checkbox"<?php echo _restoreCheckedAndName('box_edit', 'public', $box['public']) ?>> <?php echo _lang('admin.content.form.public') ?></label>
-                    <label><input type="number" min="0" max="<?php echo _priv_max_level ?>" class="inputsmaller"<?php echo _restorePostValueAndName('level', $box['level']) ?>> <?php echo _lang('admin.content.form.level') ?></label>
+                    <label><input type="checkbox"<?php echo \Sunlight\Util\Form::restoreCheckedAndName('box_edit', 'visible', $box['visible']) ?>> <?php echo _lang('admin.content.form.visible') ?></label>
+                    <label><input type="checkbox"<?php echo \Sunlight\Util\Form::restoreCheckedAndName('box_edit', 'public', $box['public']) ?>> <?php echo _lang('admin.content.form.public') ?></label>
+                    <label><input type="number" min="0" max="<?php echo _priv_max_level ?>" class="inputsmaller"<?php echo \Sunlight\Util\Form::restorePostValueAndName('level', $box['level']) ?>> <?php echo _lang('admin.content.form.level') ?></label>
                 </td>
             </tr>
             <tr class="valign-top">
@@ -169,7 +169,7 @@ $output .= _buffer(function () use ($id, $box, $new, $templates_to_choose_slot_f
                         'attrs' => 'size="10" class="inputmax"',
                         'empty_item' => _lang('global.all'),
                     )) ?>
-                    <p><label><input type="checkbox"<?php echo _restoreCheckedAndName('box_edit', 'page_children', $box['page_children']) ?>> <?php echo _lang('admin.content.form.include_subpages') ?></label>
+                    <p><label><input type="checkbox"<?php echo \Sunlight\Util\Form::restoreCheckedAndName('box_edit', 'page_children', $box['page_children']) ?>> <?php echo _lang('admin.content.form.include_subpages') ?></label>
                 </td>
             </tr>
 
@@ -183,6 +183,6 @@ $output .= _buffer(function () use ($id, $box, $new, $templates_to_choose_slot_f
             </tr>
         </table>
 
-        <?php echo _xsrfProtect() ?>
+        <?php echo \Sunlight\Xsrf::getInput() ?>
     </form>
 <?php });

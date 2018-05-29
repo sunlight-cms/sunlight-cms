@@ -12,5 +12,5 @@ Extend::call('index.login_required', array(
 ));
 
 if ($_index['output'] === '') {
-    $_index['output'] = _userLoginForm(true, true);
+    $_index['output'] = \Sunlight\User::renderLoginForm(true, true);
 }

@@ -18,24 +18,24 @@ if (_priv_adminsection || _priv_admincategory || _priv_adminbook || _priv_admins
 
     // akce
     if (isset($_POST['ac'])) {
-        $ac = (int) _post('ac');
+        $ac = (int) \Sunlight\Util\Request::post('ac');
 
         switch ($ac) {
             // vytvoreni stranky
             case 'new':
                 $is_plugin_page = false;
-                if (is_numeric(_post('type'))) {
-                    $type = (int) _post('type');
+                if (is_numeric(\Sunlight\Util\Request::post('type'))) {
+                    $type = (int) \Sunlight\Util\Request::post('type');
                 } else {
                     $type = _page_plugin;
-                    $type_idt = strval(_post('type'));
+                    $type_idt = strval(\Sunlight\Util\Request::post('type'));
                     if (!isset($plugin_types[$type_idt])) {
                         break;
                     }
                     $is_plugin_page = true;
                 }
                 if (isset($type_array[$type])) {
-                    if (_userHasPriv('admin' . $type_array[$type])) {
+                    if (\Sunlight\User::hasPrivilege('admin' . $type_array[$type])) {
                         $admin_redirect_to = 'index.php?p=content-edit' . $type_array[$type] . ($is_plugin_page ? '&idt=' . rawurlencode($type_idt) : '');
 
                         return;
@@ -51,7 +51,7 @@ if (_priv_adminsection || _priv_admincategory || _priv_adminbook || _priv_admins
     $create_list = "";
     if (_priv_adminroot) {
         foreach ($type_array as $type => $name) {
-            if ($type != _page_plugin && _userHasPriv('admin' . $name)) {
+            if ($type != _page_plugin && \Sunlight\User::hasPrivilege('admin' . $name)) {
                 $create_list .= "<option value='" . $type . "'>" . _lang('page.type.' . $name) . "</option>\n";
             }
         }
@@ -76,7 +76,7 @@ if (_priv_adminsection || _priv_admincategory || _priv_adminbook || _priv_admins
     ' . $create_list . '
     </select>
     <input class="button" type="submit" value="' . _lang('global.create') . '">
-    ' . _xsrfProtect() . '</form>
+    ' . \Sunlight\Xsrf::getInput() . '</form>
 
     <span class="inline-separator"></span>
     ' : '' ) . '
@@ -205,7 +205,7 @@ foreach ($content_modules as $category_alias => $category_data) {
 
 // zprava
 if (isset($_GET['done'])) {
-    $message = _msg(_msg_ok, _lang('global.done'));
+    $message = \Sunlight\Message::render(_msg_ok, _lang('global.done'));
 }
 
 $output .= $message . '

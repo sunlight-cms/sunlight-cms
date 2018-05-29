@@ -6,7 +6,7 @@ defined('_root') or exit;
 
 $_index['title'] = _lang('login.title');
 
-$output .= _userLoginForm(true);
+$output .= \Sunlight\User::renderLoginForm(true);
 
 // moznosti
 if (_logged_in) {
@@ -15,9 +15,9 @@ if (_logged_in) {
     // pole polozek (adresa, titulek, podminky pro zobrazeni)
     $items = array(
         array("admin/", _lang('global.admintitle'), _priv_administration),
-        array(_linkModule('profile', 'id=' . _user_name), _lang('mod.profile'), true),
-        array(_linkModule('settings'), _lang('mod.settings'), true),
-        array(_linkModule('messages'), _lang('mod.messages') . " [" . _userGetUnreadPmCount() . "]", _messages),
+        array(\Sunlight\Router::module('profile', 'id=' . _user_name), _lang('mod.profile'), true),
+        array(\Sunlight\Router::module('settings'), _lang('mod.settings'), true),
+        array(\Sunlight\Router::module('messages'), _lang('mod.messages') . " [" . \Sunlight\User::getUnreadPmCount() . "]", _messages),
     );
 
     // vypis

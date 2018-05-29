@@ -32,8 +32,8 @@ if (isset($_REQUEST['group_id'])) {
 
 // vyber skupiny
 $output .= '
-  <form action="' . _linkModule('ulist') . '" method="get">
-  ' . (!_pretty_urls ? _renderHiddenInputs(_arrayFilter($_GET, null, null, array('group_id'))) : '') . '
+  <form action="' . \Sunlight\Router::module('ulist') . '" method="get">
+  ' . (!_pretty_urls ? \Sunlight\Util\Form::renderHiddenInputs(\Sunlight\Util\Arr::filterKeys($_GET, null, null, array('group_id'))) : '') . '
   <strong>' . _lang('user.list.groupfilter') . ':</strong> <select name="group_id">
   <option value="-1">' . _lang('global.all') . '</option>
   ';
@@ -49,25 +49,25 @@ while ($item = DB::row($query)) {
 $output .= '</select> <input type="submit" value="' . _lang('global.apply') . '"></form>';
 
 // tabulka
-$paging = _resultPaging(_linkModule('ulist', 'group=' . $group, false), 50, _users_table . ':u', $cond);
-if (_showPagingAtTop()) {
+$paging = \Sunlight\Paginator::render(\Sunlight\Router::module('ulist', 'group=' . $group, false), 50, _users_table . ':u', $cond);
+if (\Sunlight\Paginator::atTop()) {
     $output .= $paging['paging'];
 }
 if ($paging['count'] > 0) {
-    $userQuery = _userQuery(null);
+    $userQuery = \Sunlight\User::createQuery(null);
     $query = DB::query('SELECT ' . $userQuery['column_list'] . ' FROM ' . _users_table . ' u ' . $userQuery['joins'] . ' WHERE ' . $cond . ' ORDER BY ug.level DESC ' . $paging['sql_limit']);
 
     $output .= "<table class='widetable'>\n<tr><th>" . _lang('login.username') . "</th><th>" . _lang('global.group') . "</th></tr>\n";
     while ($item = DB::row($query)) {
         $output .= "<tr>
-    <td>" . _linkUserFromQuery($userQuery, $item) . "</td>
+    <td>" . \Sunlight\Router::userFromQuery($userQuery, $item) . "</td>
     <td>" . $item['user_group_title'] . "</td>
 </tr>";
     }
     $output .= "</table>";
 }
 
-if (_showPagingAtBottom()) {
+if (\Sunlight\Paginator::atBottom()) {
     $output .= $paging['paging'];
 }
 

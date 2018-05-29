@@ -9,7 +9,7 @@ defined('_root') or exit;
 $continue = false;
 $message = "";
 if (isset($_GET['id'])) {
-    $id = (int) _get('id');
+    $id = (int) \Sunlight\Util\Request::get('id');
     $query = DB::queryRow("SELECT p.* FROM " . _polls_table . " p WHERE p.id=" . $id . \Sunlight\Admin\Admin::pollAccess());
     if ($query !== false) {
         $new = false;
@@ -31,27 +31,27 @@ if (isset($_GET['id'])) {
 if (isset($_POST['question'])) {
 
     // nacteni promennych
-    $question = _cutHtml(_e(trim(_post('question'))), 255);
+    $question = \Sunlight\Util\Html::cut(_e(trim(\Sunlight\Util\Request::post('question'))), 255);
     $query['question'] = $question;
 
     // odpovedi
-    $answers = explode("\n", _post('answers'));
+    $answers = explode("\n", \Sunlight\Util\Request::post('answers'));
     $answers_new = array();
     foreach ($answers as $answer) {
         $answers_new[] = _e(trim($answer));
     }
-    $answers = _arrayRemoveValue($answers_new, "");
+    $answers = \Sunlight\Util\Arr::removeValue($answers_new, "");
     $answers_count = count($answers);
     $answers = implode("\n", $answers);
     $query['answers'] = $answers;
 
     if (_priv_adminpollall) {
-        $author = (int) _post('author');
+        $author = (int) \Sunlight\Util\Request::post('author');
     } else {
         $author = _user_id;
     }
-    $locked = _checkboxLoad("locked");
-    $reset = _checkboxLoad("reset");
+    $locked = \Sunlight\Util\Form::loadCheckbox("locked");
+    $reset = \Sunlight\Util\Form::loadCheckbox("reset");
 
     // kontrola promennych
     $errors = array();
@@ -130,7 +130,7 @@ if (isset($_POST['question'])) {
         }
 
     } else {
-        $message = _msg(_msg_warn, _msgList($errors, 'errors'));
+        $message = \Sunlight\Message::render(_msg_warn, \Sunlight\Message::renderList($errors, 'errors'));
     }
 
 }
@@ -152,10 +152,10 @@ if ($continue) {
 
     // zprava
     if (isset($_GET['saved'])) {
-        $message = _msg(_msg_ok, _lang('global.saved'));
+        $message = \Sunlight\Message::render(_msg_ok, _lang('global.saved'));
     }
     if (isset($_GET['created'])) {
-        $message = _msg(_msg_ok, _lang('global.created'));
+        $message = \Sunlight\Message::render(_msg_ok, _lang('global.created'));
     }
 
     $output .= $message . "
@@ -182,19 +182,19 @@ if ($continue) {
   <tr>
   <th>" . _lang('admin.content.form.settings') . "</th>
   <td>
-  <label><input type='checkbox' name='locked' value='1'" . _checkboxActivate($query['locked']) . "> " . _lang('admin.content.form.locked') . "</label> 
+  <label><input type='checkbox' name='locked' value='1'" . \Sunlight\Util\Form::activateCheckbox($query['locked']) . "> " . _lang('admin.content.form.locked') . "</label> 
   " . (!$new ? "<label><input type='checkbox' name='reset' value='1'> " . _lang('admin.content.polls.reset') . "</label>" : '') . "
   </td>
   </tr>
 
   <tr><td></td>
-  <td><input type='submit' value='" . $submitcaption . "' accesskey='s'>" . (!$new ? " <small>" . _lang('admin.content.form.thisid') . " " . $id . "</small> <span class='customsettings'><a class='button' href='" . _xsrfLink("index.php?p=content-polls&amp;del=" . $id) . "' onclick='return Sunlight.confirm();'><img src='images/icons/delete.png' class='icon' alt='del'> " . _lang('global.delete') . "</a>" : '') . "</span></td>
+  <td><input type='submit' value='" . $submitcaption . "' accesskey='s'>" . (!$new ? " <small>" . _lang('admin.content.form.thisid') . " " . $id . "</small> <span class='customsettings'><a class='button' href='" . \Sunlight\Xsrf::addToUrl("index.php?p=content-polls&amp;del=" . $id) . "' onclick='return Sunlight.confirm();'><img src='images/icons/delete.png' class='icon' alt='del'> " . _lang('global.delete') . "</a>" : '') . "</span></td>
   </tr>
 
   </table>
-  " . _xsrfProtect() . "</form>
+  " . \Sunlight\Xsrf::getInput() . "</form>
   ";
 
 } else {
-    $output .= _msg(_msg_err, _lang('global.badinput'));
+    $output .= \Sunlight\Message::render(_msg_err, _lang('global.badinput'));
 }

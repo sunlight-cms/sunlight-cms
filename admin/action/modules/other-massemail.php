@@ -10,16 +10,16 @@ defined('_root') or exit;
 if (isset($_POST['text'])) {
 
     // nacteni promennych
-    $text = _post('text');
-    $subject = _post('subject');
-    $sender = _post('sender');
+    $text = \Sunlight\Util\Request::post('text');
+    $subject = \Sunlight\Util\Request::post('subject');
+    $sender = \Sunlight\Util\Request::post('sender');
     if (isset($_POST['receivers'])) {
         $receivers = (array) $_POST['receivers'];
     } else {
         $receivers = array();
     }
-    $ctype = _post('ctype');
-    $maillist = _checkboxLoad("maillist");
+    $ctype = \Sunlight\Util\Request::post('ctype');
+    $maillist = \Sunlight\Util\Form::loadCheckbox("maillist");
 
     // kontrola promennych
     $errors = array();
@@ -32,7 +32,7 @@ if (isset($_POST['text'])) {
     if ($subject == "" && !$maillist) {
         $errors[] = _lang('admin.other.massemail.nosubject');
     }
-    if (!_validateEmail($sender) && !$maillist) {
+    if (!\Sunlight\Email::validate($sender) && !$maillist) {
         $errors[] = _lang('admin.other.massemail.badsender');
     }
 
@@ -45,7 +45,7 @@ if (isset($_POST['text'])) {
         $headers = array(
             'Content-Type' => 'text/' . ($ctype == 2 ? 'html' : 'plain') . '; charset=UTF-8',
         );
-        _setMailSender($headers, $sender);
+        \Sunlight\Email::defineSender($headers, $sender);
 
         // nacteni prijemcu
         $query = DB::query("SELECT email FROM " . _users_table . " WHERE massemail=1 AND (" . $groups . ")");
@@ -77,7 +77,7 @@ if (isset($_POST['text'])) {
                 ++$item_counter;
                 if ($rec_buffer_counter === $rec_buffer_size || $item_counter === $item_total) {
                     // odeslani emailu
-                    if (_mail('', $subject, $text, $headers + array('Bcc' => implode(",", $rec_buffer)))) {
+                    if (\Sunlight\Email::send('', $subject, $text, $headers + array('Bcc' => implode(",", $rec_buffer)))) {
                         $done += sizeof($rec_buffer);
                     }
                     $rec_buffer = array();
@@ -87,12 +87,12 @@ if (isset($_POST['text'])) {
 
             // zprava
             if ($done != 0) {
-                $output .= _msg(_msg_ok, _lang('admin.other.massemail.send', array(
+                $output .= \Sunlight\Message::render(_msg_ok, _lang('admin.other.massemail.send', array(
                     '*done*' => $done,
                     '*total*' => $item_total,
                 )));
             } else {
-                $output .= _msg(_msg_warn, _lang('admin.other.massemail.noreceiversfound'));
+                $output .= \Sunlight\Message::render(_msg_warn, _lang('admin.other.massemail.noreceiversfound'));
             }
 
         } else {
@@ -111,16 +111,16 @@ if (isset($_POST['text'])) {
                     }
                 }
 
-                $output .= _msg(_msg_ok, "<textarea class='areasmallwide' rows='9' cols='33' name='list'>" . $emails . "</textarea>");
+                $output .= \Sunlight\Message::render(_msg_ok, "<textarea class='areasmallwide' rows='9' cols='33' name='list'>" . $emails . "</textarea>");
 
             } else {
-                $output .= _msg(_msg_warn, _lang('admin.other.massemail.noreceiversfound'));
+                $output .= \Sunlight\Message::render(_msg_warn, _lang('admin.other.massemail.noreceiversfound'));
             }
 
         }
 
     } else {
-        $output .= _msg(_msg_warn, _msgList($errors, 'errors'));
+        $output .= \Sunlight\Message::render(_msg_warn, \Sunlight\Message::renderList($errors, 'errors'));
     }
 
 }
@@ -134,12 +134,12 @@ $output .= "
 
 <tr>
 <th>" . _lang('admin.other.massemail.sender') . "</th>
-<td><input type='email'" . _restorePostValueAndName('sender', _sysmail) . " class='inputbig'></td>
+<td><input type='email'" . \Sunlight\Util\Form::restorePostValueAndName('sender', _sysmail) . " class='inputbig'></td>
 </tr>
 
 <tr>
 <th>" . _lang('posts.subject') . "</th>
-<td><input type='text' class='inputbig'" . _restorePostValueAndName('subject') . "></td>
+<td><input type='text' class='inputbig'" . \Sunlight\Util\Form::restorePostValueAndName('subject') . "></td>
 </tr>
 
 <tr class='valign-top'>
@@ -152,20 +152,20 @@ $output .= "
 <td>
   <select name='ctype' class='selectbig'>
   <option value='1'>" . _lang('admin.other.massemail.ctype.1') . "</option>
-  <option value='2'" . (_post('ctype') == 2 ? " selected" : '') . ">" . _lang('admin.other.massemail.ctype.2') . "</option>
+  <option value='2'" . (\Sunlight\Util\Request::post('ctype') == 2 ? " selected" : '') . ">" . _lang('admin.other.massemail.ctype.2') . "</option>
   </select>
 </td>
 </tr>
 
 <tr class='valign-top'>
 <th>" . _lang('admin.other.massemail.text') . "</th>
-<td><textarea name='text' class='areabig editor' rows='9' cols='94' data-editor-mode='code'>" . _restorePostValue('text', null, false) . "</textarea></td>
+<td><textarea name='text' class='areabig editor' rows='9' cols='94' data-editor-mode='code'>" . \Sunlight\Util\Form::restorePostValue('text', null, false) . "</textarea></td>
 </tr>
 
 <tr><td></td>
-<td><input type='submit' value='" . _lang('global.send') . "'> <label><input type='checkbox' name='maillist' value='1'" . _checkboxActivate(_checkboxLoad("maillist")) . "> " . _lang('admin.other.massemail.maillist') . "</label></td>
+<td><input type='submit' value='" . _lang('global.send') . "'> <label><input type='checkbox' name='maillist' value='1'" . \Sunlight\Util\Form::activateCheckbox(\Sunlight\Util\Form::loadCheckbox("maillist")) . "> " . _lang('admin.other.massemail.maillist') . "</label></td>
 </tr>
 
 </table>
-" . _xsrfProtect() . "</form>
+" . \Sunlight\Xsrf::getInput() . "</form>
 ";

@@ -4,10 +4,10 @@ defined('_root') or exit;
 
 return function ($od = null, $do = null, $max_hloubka = null, $class = null)
 {
-    _normalize($od, 'int');
-    _normalize($do, 'int');
-    _normalize($max_hloubka, 'int');
-    _normalize($class, 'string');
+    \Sunlight\Hcm::normalizeArgument($od, 'int');
+    \Sunlight\Hcm::normalizeArgument($do, 'int');
+    \Sunlight\Hcm::normalizeArgument($max_hloubka, 'int');
+    \Sunlight\Hcm::normalizeArgument($class, 'string');
 
     return Sunlight\Template::treeMenu(array(
         'max_depth' => $max_hloubka,

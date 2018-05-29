@@ -7,6 +7,6 @@ return function ($soubor = '')
     $soubor = _root . $soubor;
 
     if (file_exists($soubor)) {
-        return _formatFilesize(filesize($soubor));
+        return \Sunlight\Generic::renderFileSize(filesize($soubor));
     }
 };

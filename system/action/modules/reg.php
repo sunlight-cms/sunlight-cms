@@ -38,10 +38,10 @@ if (isset($_GET['confirm'])) {
         return;
     }
 
-    $code = _get('confirm');
+    $code = \Sunlight\Util\Request::get('confirm');
     if (preg_match('{[a-z0-9]{48}$}AD', $code)) {
         // kontrola omezeni
-        if (_iplogCheck(_iplog_failed_account_activation)) {
+        if (\Sunlight\IpLog::check(_iplog_failed_account_activation)) {
             // smazani expirovanych
             DB::delete(_user_activation_table, 'expire<' . time(), null);
 
@@ -62,17 +62,17 @@ if (isset($_GET['confirm'])) {
 
                     DB::delete(_user_activation_table, 'id=' . DB::val($activation['id']));
                 } else {
-                    $message .= _msg(_msg_warn, _lang('mod.reg.confirm.emailornametaken'));
+                    $message .= \Sunlight\Message::render(_msg_warn, _lang('mod.reg.confirm.emailornametaken'));
                 }
             } else {
-                _iplogUpdate(_iplog_failed_account_activation);
-                $message = _msg(_msg_warn, _lang('mod.reg.confirm.notfound'));
+                \Sunlight\IpLog::update(_iplog_failed_account_activation);
+                $message = \Sunlight\Message::render(_msg_warn, _lang('mod.reg.confirm.notfound'));
             }
         } else {
-            $message = _msg(_msg_warn, _lang('mod.reg.confirm.limit', array('*limit*' => _accactexpire)));
+            $message = \Sunlight\Message::render(_msg_warn, _lang('mod.reg.confirm.limit', array('*limit*' => _accactexpire)));
         }
     } else {
-        $message = _msg(_msg_err, _lang('mod.reg.confirm.badcode'));
+        $message = \Sunlight\Message::render(_msg_err, _lang('mod.reg.confirm.badcode'));
     }
 
 } else {
@@ -84,24 +84,24 @@ if (isset($_GET['confirm'])) {
         $errors = array();
 
         // kontrola iplogu
-        if (!_iplogCheck(_iplog_anti_spam)) {
+        if (!\Sunlight\IpLog::check(_iplog_anti_spam)) {
             $errors[] = _lang('misc.requestlimit', array("*postsendexpire*" => _postsendexpire));
         }
 
         // nacteni a kontrola promennych
-        $user_data['username'] = _post('username');
+        $user_data['username'] = \Sunlight\Util\Request::post('username');
         if (mb_strlen($user_data['username']) > 24) {
             $user_data['username'] = mb_substr($user_data['username'], 0, 24);
         }
-        $user_data['username'] = _slugify($user_data['username'], false);
+        $user_data['username'] = \Sunlight\Util\StringManipulator::slugify($user_data['username'], false);
         if ($user_data['username'] == "") {
             $errors[] = _lang('user.msg.badusername');
         } elseif (DB::count(_users_table, 'username=' . DB::val($user_data['username']) . ' OR publicname=' . DB::val($user_data['username'])) !== 0) {
             $errors[] = _lang('user.msg.userexists');
         }
 
-        $password = _post('password');
-        $password2 = _post('password2');
+        $password = \Sunlight\Util\Request::post('password');
+        $password2 = \Sunlight\Util\Request::post('password2');
         if ($password != $password2) {
             $errors[] = _lang('mod.reg.nosame');
         }
@@ -111,22 +111,22 @@ if (isset($_GET['confirm'])) {
             $errors[] = _lang('mod.reg.passwordneeded');
         }
 
-        $user_data['email'] = trim(_post('email'));
-        if (!_validateEmail($user_data['email'])) {
+        $user_data['email'] = trim(\Sunlight\Util\Request::post('email'));
+        if (!\Sunlight\Email::validate($user_data['email'])) {
             $errors[] = _lang('user.msg.bademail');
         }
         if (DB::count(_users_table, 'email=' . DB::val($user_data['email'])) !== 0) {
             $errors[] = _lang('user.msg.emailexists');
         }
 
-        if (!_captchaCheck()) {
+        if (!\Sunlight\Captcha::check()) {
             $errors[] = _lang('captcha.failure');
         }
 
-        $user_data['massemail'] = _checkboxLoad('massemail');
+        $user_data['massemail'] = \Sunlight\Util\Form::loadCheckbox('massemail');
 
         if (_registration_grouplist && isset($_POST['group_id'])) {
-            $user_data['group_id'] = (int) _post('group_id');
+            $user_data['group_id'] = (int) \Sunlight\Util\Request::post('group_id');
             $groupdata = DB::query("SELECT id FROM " . _groups_table . " WHERE id=" . $user_data['group_id'] . " AND blocked=0 AND reglist=1");
             if (DB::size($groupdata) == 0) {
                 $errors[] = _lang('global.badinput');
@@ -135,7 +135,7 @@ if (isset($_GET['confirm'])) {
             $user_data['group_id'] = _defaultgroup;
         }
 
-        if ($rules !== '' && !_checkboxLoad('agreement')) {
+        if ($rules !== '' && !\Sunlight\Util\Form::loadCheckbox('agreement')) {
             $errors[] = _lang('mod.reg.rules.disagreed');
         }
 
@@ -148,10 +148,10 @@ if (isset($_GET['confirm'])) {
 
         // validace
         if (empty($errors)) {
-            _iplogUpdate(_iplog_anti_spam);
+            \Sunlight\IpLog::update(_iplog_anti_spam);
             $user_data_valid = true;
         } else {
-            $message = _msg(_msg_warn, _msgList($errors, 'errors'));
+            $message = \Sunlight\Message::render(_msg_warn, \Sunlight\Message::renderList($errors, 'errors'));
         }
 
     }
@@ -181,32 +181,32 @@ if (!$user_data_valid && $show_form) {
 
     // priprava podminek
     if ($rules !== '') {
-        $rules = array('content' => "<h2>" . _lang('mod.reg.rules') . "</h2>" . $rules . "<p><label><input type='checkbox' name='agreement' value='1'" . _checkboxActivate(isset($_POST['agreement'])) . "> " . _lang('mod.reg.rules.agreement') . "</label></p>", 'top' => true);
+        $rules = array('content' => "<h2>" . _lang('mod.reg.rules') . "</h2>" . $rules . "<p><label><input type='checkbox' name='agreement' value='1'" . \Sunlight\Util\Form::activateCheckbox(isset($_POST['agreement'])) . "> " . _lang('mod.reg.rules.agreement') . "</label></p>", 'top' => true);
     } else {
         $rules = array();
     }
 
     // captcha
-    $captcha = _captchaInit();
+    $captcha = \Sunlight\Captcha::init();
 
     // formular
     $output .= "<p class='bborder'>" . _lang('mod.reg.p') . (_registration_confirm ? ' ' . _lang('mod.reg.confirm.extratext') : '') . "</p>\n";
 
-    $output .= _formOutput(
+    $output .= \Sunlight\Util\Form::render(
         array(
             'name' => 'regform',
-            'action' => _linkModule('reg'),
+            'action' => \Sunlight\Router::module('reg'),
             'submit_text' => _lang('mod.reg.submit' . (_registration_confirm ? '2' : '')),
             'submit_span' => $rules !== '',
             'submit_name' => 'regform',
             'autocomplete' => 'off',
         ),
         array(
-            array('label' => _lang('login.username'), 'content' => "<input type='text' class='inputsmall' maxlength='24'" . _restorePostValueAndName('username') . ">"),
+            array('label' => _lang('login.username'), 'content' => "<input type='text' class='inputsmall' maxlength='24'" . \Sunlight\Util\Form::restorePostValueAndName('username') . ">"),
             array('label' => _lang('login.password'), 'content' => "<input type='password' name='password' class='inputsmall'>"),
             array('label' => _lang('login.password') . " (" . _lang('global.check') . ")", 'content' => "<input type='password' name='password2' class='inputsmall'>"),
-            array('label' => _lang('global.email'), 'content' => "<input type='email' class='inputsmall' " . _restorePostValueAndName('email', '@') . ">"),
-            array('label' => _lang('mod.settings.massemail'), 'content' => "<label><input type='checkbox' value='1'" . _restoreCheckedAndName('regform', 'massemail') . "> " . _lang('mod.settings.massemail.label') . '</label>'),
+            array('label' => _lang('global.email'), 'content' => "<input type='email' class='inputsmall' " . \Sunlight\Util\Form::restorePostValueAndName('email', '@') . ">"),
+            array('label' => _lang('mod.settings.massemail'), 'content' => "<label><input type='checkbox' value='1'" . \Sunlight\Util\Form::restoreCheckedAndName('regform', 'massemail') . "> " . _lang('mod.settings.massemail.label') . '</label>'),
             $groupselect,
             $captcha,
             $rules,
@@ -226,9 +226,9 @@ if (!$user_data_valid && $show_form) {
         // hlaska
         $_SESSION['login_form_username'] = $user_data['username'];
 
-        $output .= _msg(_msg_ok, str_replace(
+        $output .= \Sunlight\Message::render(_msg_ok, str_replace(
             '*login_link*',
-            _linkModule('login'),
+            \Sunlight\Router::module('login'),
             _lang('mod.reg.done')
         ));
 
@@ -244,7 +244,7 @@ if (!$user_data_valid && $show_form) {
 
         // potvrzovaci zprava
         $domain = Url::base()->getFullHost();
-        $mail = _mail(
+        $mail = \Sunlight\Email::send(
             $user_data['email'],
             _lang('mod.reg.confirm.subject', array('*domain*' => $domain)),
             str_replace(
@@ -258,9 +258,9 @@ if (!$user_data_valid && $show_form) {
                 array(
                     $user_data['username'],
                     $domain,
-                    _linkModule('reg', 'confirm=' . $code, false, true),
+                    \Sunlight\Router::module('reg', 'confirm=' . $code, false, true),
                     _user_ip,
-                    _formatTime(time()),
+                    \Sunlight\Generic::renderTime(time()),
                 ),
                 _lang('mod.reg.confirm.text')
             )
@@ -268,9 +268,9 @@ if (!$user_data_valid && $show_form) {
 
         // hlaska
         if ($mail) {
-            $output .= _msg(_msg_ok, _lang('mod.reg.confirm.sent', array('*email*' => $user_data['email'])));
+            $output .= \Sunlight\Message::render(_msg_ok, _lang('mod.reg.confirm.sent', array('*email*' => $user_data['email'])));
         } else {
-            $output .= _msg(_msg_err, _lang('global.emailerror'));
+            $output .= \Sunlight\Message::render(_msg_err, _lang('global.emailerror'));
             DB::delete(_user_activation_table, 'id=' . DB::val($insert_id));
         }
 

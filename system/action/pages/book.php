@@ -14,7 +14,7 @@ if ($_page['var2'] === null) {
 $_index['title'] = $_page['title'];
 
 // rss
-$_index['rsslink'] = _linkRSS($id, _rss_book_posts, false);
+$_index['rsslink'] = \Sunlight\Router::rss($id, _rss_book_posts, false);
 
 // obsah
 Extend::call('page.book.content.before', $extend_args);
@@ -26,6 +26,6 @@ Extend::call('page.book.content.after', $extend_args);
 // prispevky
 $output .= CommentService::render(CommentService::RENDER_BOOK_POSTS, $id, array(
     $_page['var2'],
-    _publicAccess($_page['var1']),
+    \Sunlight\User::checkPublicAccess($_page['var1']),
     $_page['var3'],
 ));

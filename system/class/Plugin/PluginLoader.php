@@ -297,7 +297,7 @@ class PluginLoader
 
         return array(
             'id' => $id,
-            'camel_id' => _camelCase($id),
+            'camel_id' => \Sunlight\Util\StringManipulator::toCamelCase($id),
             'type' => $typeName,
             'status' => null,
             'installed' => null,

@@ -26,7 +26,7 @@ if (DB::size($items) != 0) {
         Extend::call('page.group.item.start', $extendArgs);
 
         // titulek
-        $output .= "<h2 class='list-title'><a href='" . _linkRoot($item['id'], $item['slug']) . "'" . (($item['type'] == _page_link && $item['var1'] == 1) ? " target='_blank'" : '') . ">" . $item['title'] . "</a></h2>\n";
+        $output .= "<h2 class='list-title'><a href='" . \Sunlight\Router::root($item['id'], $item['slug']) . "'" . (($item['type'] == _page_link && $item['var1'] == 1) ? " target='_blank'" : '') . ">" . $item['title'] . "</a></h2>\n";
 
         Extend::call('page.group.item.title.after', $extendArgs);
 
@@ -51,18 +51,18 @@ if (DB::size($items) != 0) {
 
                     // kategorie
                 case _page_category:
-                    list(, , $art_count) = _articleFilter('art', array($item['id']), null, true);
+                    list(, , $art_count) = \Sunlight\Article::createFilter('art', array($item['id']), null, true);
                     $iteminfos['article_num'] = array(_lang('global.articlesnum'), $art_count);
                     break;
 
                     // kniha
                 case _page_book:
                     // nacteni jmena autora posledniho prispevku
-                    $userQuery = _userQuery('p.author');
+                    $userQuery = \Sunlight\User::createQuery('p.author');
                     $lastpost = DB::query("SELECT p.author,p.guest," . $userQuery['column_list'] . " FROM " . _posts_table . " p " . $userQuery['joins'] . " WHERE p.home=" . $item['id'] . " ORDER BY p.id DESC LIMIT 1");
                     if ($lastpost !== false) {
                         if ($lastpost['author'] != -1) {
-                            $lastpost = _linkUserFromQuery($userQuery, $lastpost);
+                            $lastpost = \Sunlight\Router::userFromQuery($userQuery, $lastpost);
                         } else {
                             $lastpost = $lastpost['guest'];
                         }
@@ -93,7 +93,7 @@ if (DB::size($items) != 0) {
 
             Extend::call('page.group.item_infos', array('item' => $item, 'infos' => &$iteminfos));
 
-            $output .= _renderInfos($iteminfos);
+            $output .= \Sunlight\Frontend::renderInfos($iteminfos);
 
             Extend::call('page.group.item.end', $extendArgs);
         }

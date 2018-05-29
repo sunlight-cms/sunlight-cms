@@ -14,15 +14,15 @@ if (!_logged_in) {
 $success = false;
 $message = '';
 $unstick = '';
-$id = (int) _get('id');
-$userQuery = _userQuery('p.author');
+$id = (int) \Sunlight\Util\Request::get('id');
+$userQuery = \Sunlight\User::createQuery('p.author');
 $query = DB::queryRow("SELECT p.id,p.time,p.subject,p.sticky,r.slug forum_slug," . $userQuery['column_list'] . " FROM " . _posts_table . " p JOIN " . _root_table . " r ON(p.home=r.id) " . $userQuery['joins'] . " WHERE p.id=" . $id . " AND p.type=" . _post_forum_topic . " AND p.xhome=-1");
 if ($query !== false) {
-    $_index['backlink'] = _linkTopic($query['id'], $query['forum_slug']);
+    $_index['backlink'] = \Sunlight\Router::topic($query['id'], $query['forum_slug']);
     if ($query['sticky']) {
         $unstick = '2';
     }
-    if (!_postAccess($userQuery, $query) || !_priv_stickytopics) {
+    if (!\Sunlight\Post::checkAccess($userQuery, $query) || !_priv_stickytopics) {
         $_index['is_accessible'] = false;
         return;
     }
@@ -35,7 +35,7 @@ if ($query !== false) {
 
 if (isset($_POST['doit'])) {
     DB::update(_posts_table, 'id=' . DB::val($id), array('sticky' => (($query['sticky'] == 1) ? 0 : 1)));
-    $message = _msg(_msg_ok, _lang('mod.stickytopic.ok' . $unstick));
+    $message = \Sunlight\Message::render(_msg_ok, _lang('mod.stickytopic.ok' . $unstick));
     $success = true;
 }
 
@@ -48,12 +48,12 @@ $output .= $message;
 
 // formular
 if (!$success) {
-    $furl = _linkModule('stickytopic', 'id=' . $id);
+    $furl = \Sunlight\Router::module('stickytopic', 'id=' . $id);
 
     $output .= '
     <form action="' . $furl . '" method="post">
-    ' . _msg(_msg_warn, sprintf(_lang('mod.stickytopic.text' . $unstick), $query['subject'])) . '
+    ' . \Sunlight\Message::render(_msg_warn, sprintf(_lang('mod.stickytopic.text' . $unstick), $query['subject'])) . '
     <input type="submit" name="doit" value="' . _lang('mod.stickytopic.submit' . $unstick) . '">
-    ' . _xsrfProtect() . '</form>
+    ' . \Sunlight\Xsrf::getInput() . '</form>
     ';
 }

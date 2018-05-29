@@ -2,7 +2,6 @@
 
 namespace Sunlight\Plugin\Action;
 
-use Kuria\Debug\Dumper;
 use Sunlight\Action\ActionResult;
 use Sunlight\Message;
 
@@ -66,7 +65,7 @@ class ConfigAction extends PluginAction
         </tr>
     </table>
 
-    <?php echo _xsrfProtect() ?>
+    <?php echo \Sunlight\Xsrf::getInput() ?>
 </form>
 <?php
         }), $messages);
@@ -85,7 +84,7 @@ class ConfigAction extends PluginAction
             }
 
             if (is_bool($value)) {
-                $input = '<input type="checkbox" name="config[' . _e($key) . ']" value="1"' . _checkboxActivate($value) . '>';
+                $input = '<input type="checkbox" name="config[' . _e($key) . ']" value="1"' . \Sunlight\Util\Form::activateCheckbox($value) . '>';
                 $type = 'checkbox';
             } else {
                 $input = '<input type="text" name="config[' . _e($key) . ']" class="inputmedium" value="' . _e($value) . '">';

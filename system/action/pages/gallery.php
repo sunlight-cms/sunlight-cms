@@ -28,14 +28,14 @@ if ($_page['content'] != "") $output .= Sunlight\Hcm::parse($_page['content']) .
 Extend::call('page.gallery.content.after', $extend_args);
 
 // obrazky
-$paging = _resultPaging($_index['url'], $_page['var2'], _images_table, "home=" . $id);
+$paging = \Sunlight\Paginator::render($_index['url'], $_page['var2'], _images_table, "home=" . $id);
 $images = DB::query("SELECT * FROM " . _images_table . " WHERE home=" . $id . " ORDER BY ord " . $paging['sql_limit']);
 $images_number = DB::size($images);
 
 if ($images_number != 0) {
 
     $usetable = $_page['var1'] != -1;
-    if (_showPagingAtTop()) {
+    if (\Sunlight\Paginator::atTop()) {
         $output .= $paging['paging'];
     }
     if ($usetable) {
@@ -56,7 +56,7 @@ if ($images_number != 0) {
         if ($usetable) {
             $output .= "<td>";
         }
-        $output .= _galleryImage($img, $id, $_page['var4'], $_page['var3']);
+        $output .= \Sunlight\Gallery::renderImage($img, $id, $_page['var4'], $_page['var3']);
         if ($usetable) {
             $output .= "</td>";
         }
@@ -75,7 +75,7 @@ if ($images_number != 0) {
     } else {
         $output .= "</div>";
     }
-    if (_showPagingAtBottom()) {
+    if (\Sunlight\Paginator::atBottom()) {
         $output .= $paging['paging'];
     }
 

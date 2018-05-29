@@ -11,7 +11,7 @@ if (!_logged_in && _notpublicsite) {
 
 /* ---  priprava  --- */
 
-$id = _slugify(_get('id'), false);
+$id = \Sunlight\Util\StringManipulator::slugify(\Sunlight\Util\Request::get('id'), false);
 $query = DB::queryRow("SELECT u.id,u.username,u.publicname,u.public,g.level FROM " . _users_table . " u JOIN " . _groups_table . " g ON u.group_id=g.id WHERE u.username=" . DB::val($id));
 
 if ($query === false) {
@@ -19,7 +19,7 @@ if ($query === false) {
     return;
 }
 
-if (!$query['public'] && !_levelCheck($query['id'], $query['level'])) {
+if (!$query['public'] && !\Sunlight\User::checkLevel($query['id'], $query['level'])) {
     $_index['is_accessible'] = false;
     return;
 }
@@ -33,29 +33,29 @@ $_index['title'] = str_replace(
 );
 
 // odkaz zpet na profil
-$_index['backlink'] = _linkModule('profile', 'id=' . $id, false);
+$_index['backlink'] = \Sunlight\Router::module('profile', 'id=' . $id, false);
 
 // tabulka
-list($columns, $joins, $cond, $count) = _postFilter('post', array(_post_section_comment, _post_article_comment, _post_book_entry, _post_forum_topic, _post_plugin), array(), "post.author=" . $query['id'], true);
+list($columns, $joins, $cond, $count) = \Sunlight\Post::createFilter('post', array(_post_section_comment, _post_article_comment, _post_book_entry, _post_forum_topic, _post_plugin), array(), "post.author=" . $query['id'], true);
 
-$paging = _resultPaging(_linkModule('profile-posts', 'id=' . $id, false), 15, $count);
-if (_showPagingAtTop()) {
+$paging = \Sunlight\Paginator::render(\Sunlight\Router::module('profile-posts', 'id=' . $id, false), 15, $count);
+if (\Sunlight\Paginator::atTop()) {
     $output .= $paging['paging'];
 }
 
 $posts = DB::query("SELECT " . $columns . " FROM " . _posts_table . " post " . $joins . " WHERE " . $cond . " ORDER BY post.time DESC " . $paging['sql_limit']);
 if (DB::size($posts) != 0) {
     while ($post = DB::row($posts)) {
-        list($homelink, $hometitle) = _linkPost($post);
+        list($homelink, $hometitle) = \Sunlight\Router::post($post);
         $output .= "<div class='post'>
 <div class='post-head'>
     <a href='" . $homelink . "#post-" . $post['id'] . "' class='post-author'>" . $hometitle . "</a>
-    <span class='post-info'>(" . _formatTime($post['time'], 'post') . ")</span>
+    <span class='post-info'>(" . \Sunlight\Generic::renderTime($post['time'], 'post') . ")</span>
 </div>
-<div class='post-body'>" . _parsePost($post['text']) . "</div>
+<div class='post-body'>" . \Sunlight\Post::render($post['text']) . "</div>
 </div>";
     }
-    if (_showPagingAtBottom()) {
+    if (\Sunlight\Paginator::atBottom()) {
         $output .= $paging['paging'];
     }
 } else {

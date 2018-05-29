@@ -36,7 +36,7 @@ return function ($razeni = 'new', $pocet = 5)
         $result = "<ol>\n";
     }
 
-    $userQuery = _userQuery(null, '');
+    $userQuery = \Sunlight\User::createQuery(null, '');
     $query = DB::query("SELECT " . $userQuery['column_list'] . " FROM " . _users_table . " u " . $userQuery['joins'] . ' WHERE ' . $rcond . " ORDER BY " . $rorder . " LIMIT " . $pocet);
     while ($item = DB::row($query)) {
 
@@ -66,7 +66,7 @@ return function ($razeni = 'new', $pocet = 5)
 
         }
 
-        $result .= "<li>" . _linkUserFromQuery($userQuery, $item) . $rext . "</li>\n";
+        $result .= "<li>" . \Sunlight\Router::userFromQuery($userQuery, $item) . $rext . "</li>\n";
     }
     if ($razeni != 4) {
         $result .= "</ul>\n";

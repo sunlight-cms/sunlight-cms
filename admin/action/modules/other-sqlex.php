@@ -10,7 +10,7 @@ defined('_root') or exit;
 $tables = DB::getTablesByPrefix();
 
 // nacist zaslany sql kod
-$sql = _post('sql', '');
+$sql = \Sunlight\Util\Request::post('sql', '');
 
 /* --- formular --- */
 
@@ -44,7 +44,7 @@ $output .= '
         </td>
     </tr>
 </table>
-' . _xsrfProtect() . '
+' . \Sunlight\Xsrf::getInput() . '
 </form>';
 
 /* --- vysledek --- */
@@ -92,7 +92,7 @@ if (!empty($queries)) {
 
     // vypis vysledku
     if ($error) {
-        $output .= _msg(_msg_err, _e(DB::error()));
+        $output .= \Sunlight\Message::render(_msg_err, _e(DB::error()));
     } elseif ($lastResource !== null) {
 
         $columns = DB::columns($lastResource);

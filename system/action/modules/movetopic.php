@@ -14,12 +14,12 @@ if (!_logged_in) {
 /* ---  priprava promennych  --- */
 
 $message = "";
-$id = (int) _get('id');
-$userQuery = _userQuery('p.author');
+$id = (int) \Sunlight\Util\Request::get('id');
+$userQuery = \Sunlight\User::createQuery('p.author');
 $query = DB::queryRow("SELECT p.id,p.home,p.time,p.subject,p.sticky,r.slug forum_slug," . $userQuery['column_list'] . " FROM " . _posts_table . " p JOIN " . _root_table . " r ON(p.home=r.id) " . $userQuery['joins'] . " WHERE p.id=" . $id . " AND p.type=" . _post_forum_topic . " AND p.xhome=-1");
 if ($query !== false) {
-    $_index['backlink'] = _linkTopic($query['id'], $query['forum_slug']);
-    if (!_postAccess($userQuery, $query) || !_priv_movetopics) {
+    $_index['backlink'] = \Sunlight\Router::topic($query['id'], $query['forum_slug']);
+    if (!\Sunlight\Post::checkAccess($userQuery, $query) || !_priv_movetopics) {
         $_index['is_accessible'] = false;
         return;
     }
@@ -33,14 +33,14 @@ $forums = PageManager::getFlatTree(null, null, new SimpleTreeFilter(array('type'
 /* ---  ulozeni  --- */
 
 if (isset($_POST['new_forum'])) {
-    $new_forum_id = (int) _post('new_forum');
+    $new_forum_id = (int) \Sunlight\Util\Request::post('new_forum');
     if (isset($forums[$new_forum_id]) && $forums[$new_forum_id]['type'] == _page_forum) {
         DB::update(_posts_table, 'id=' . DB::val($id) . ' OR (type=' . _post_forum_topic . ' AND xhome=' . $id . ')', array('home' => $new_forum_id));
         $query['home'] = $new_forum_id;
-        $_index['backlink'] = _linkTopic($query['id']);
-        $message = _msg(_msg_ok, _lang('mod.movetopic.ok'));
+        $_index['backlink'] = \Sunlight\Router::topic($query['id']);
+        $message = \Sunlight\Message::render(_msg_ok, _lang('mod.movetopic.ok'));
     } else {
-        $message = _msg(_msg_err, _lang('global.badinput'));
+        $message = \Sunlight\Message::render(_msg_err, _lang('global.badinput'));
     }
 }
 
@@ -52,11 +52,11 @@ $_index['title'] = _lang('mod.movetopic');
 $output .= $message;
 
 // formular
-$furl = _linkModule('movetopic', 'id=' . $id);
+$furl = \Sunlight\Router::module('movetopic', 'id=' . $id);
 
 $output .= '
 <form action="' . $furl . '" method="post">
-' . _msg(_msg_warn, sprintf(_lang('mod.movetopic.text'), $query['subject'])) . '
+' . \Sunlight\Message::render(_msg_warn, sprintf(_lang('mod.movetopic.text'), $query['subject'])) . '
 <p>
 <select name="new_forum"' . (empty($forums) ? " disabled" : '') . '>
 ';
@@ -79,5 +79,5 @@ if (empty($forums)) {
 $output .= '</select>
 <input type="submit" value="' . _lang('mod.movetopic.submit') . '">
 </p>
-' . _xsrfProtect() . '</form>
+' . \Sunlight\Xsrf::getInput() . '</form>
 ';

@@ -96,7 +96,7 @@ abstract class PageMenu
                     if ($page['type'] == _page_link) {
                         $url = _e($page['link_url']);
                     } else {
-                        $url = _linkRoot($page['id'], $page['slug']);
+                        $url = \Sunlight\Router::root($page['id'], $page['slug']);
                     }
                 }
                 if ($page['type'] == _page_link && $page['link_new_window']) {

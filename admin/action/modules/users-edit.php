@@ -14,13 +14,13 @@ $errno = 0;
 // id
 $continue = false;
 if (isset($_GET['id'])) {
-    $id = _get('id');
+    $id = \Sunlight\Util\Request::get('id');
     $query = DB::queryRow("SELECT u.*,g.level group_level FROM " . _users_table . " u JOIN " . _groups_table . " g ON(u.group_id=g.id) WHERE u.username=" . DB::val($id));
     if ($query !== false) {
 
         // test pristupu
         if ($query['id'] != _user_id) {
-            if (_levelCheck($query['id'], $query['group_level'])) {
+            if (\Sunlight\User::checkLevel($query['id'], $query['group_level'])) {
                 if ($query['id'] != 0) {
                     $continue = true;
                 } else {
@@ -28,7 +28,7 @@ if (isset($_GET['id'])) {
                 }
             }
         } else {
-            $admin_redirect_to = _linkModule('settings');
+            $admin_redirect_to = \Sunlight\Router::module('settings');
 
             return;
         }
@@ -58,7 +58,7 @@ if (isset($_GET['id'])) {
 if ($continue) {
     
     // vyber skupiny
-    $group_select = \Sunlight\Admin\Admin::userSelect('group_id', (isset($_POST['group_id']) ? (int) _post('group_id') : $query['group_id']), "id!=2 AND level<" . _priv_level, null, null, true);
+    $group_select = \Sunlight\Admin\Admin::userSelect('group_id', (isset($_POST['group_id']) ? (int) \Sunlight\Util\Request::post('group_id') : $query['group_id']), "id!=2 AND level<" . _priv_level, null, null, true);
 
     /* ---  ulozeni  --- */
     if (isset($_POST['username'])) {
@@ -68,11 +68,11 @@ if ($continue) {
         // nacteni a kontrola promennych
 
         // username
-        $username = _post('username');
+        $username = \Sunlight\Util\Request::post('username');
         if (mb_strlen($username) > 24) {
             $username = mb_substr($username, 0, 24);
         }
-        $username = _slugify($username, false);
+        $username = \Sunlight\Util\StringManipulator::slugify($username, false);
         if ($username == "") {
             $errors[] = _lang('user.msg.badusername');
         } else {
@@ -87,7 +87,7 @@ if ($continue) {
         }
 
         // publicname
-        $publicname = _e(_wsTrim(_post('publicname')));
+        $publicname = _e(\Sunlight\Util\StringManipulator::trimExtraWhitespace(\Sunlight\Util\Request::post('publicname')));
         if (mb_strlen($publicname) > 24) {
             $errors[] = _lang('user.msg.publicnametoolong');
         } elseif ($publicname != $query['publicname'] && $publicname != "") {
@@ -100,8 +100,8 @@ if ($continue) {
         }
 
         // email
-        $email = trim(_post('email'));
-        if (!_validateEmail($email)) {
+        $email = trim(\Sunlight\Util\Request::post('email'));
+        if (!\Sunlight\Email::validate($email)) {
             $errors[] = _lang('user.msg.bademail');
         } else {
             if ($email != $query['email']) {
@@ -112,16 +112,16 @@ if ($continue) {
         }
 
         // wysiwyg
-        $wysiwyg = _checkboxLoad('wysiwyg');
+        $wysiwyg = \Sunlight\Util\Form::loadCheckbox('wysiwyg');
 
         // hromadny email
-        $massemail = _checkboxLoad('massemail');
+        $massemail = \Sunlight\Util\Form::loadCheckbox('massemail');
 
         // verejny profil
-        $public = _checkboxLoad('public');
+        $public = \Sunlight\Util\Form::loadCheckbox('public');
 
         // avatar
-        if (isset($query['avatar']) && _checkboxLoad("removeavatar")) {
+        if (isset($query['avatar']) && \Sunlight\Util\Form::loadCheckbox("removeavatar")) {
             @unlink(_root . 'images/avatars/' . $query['avatar'] . '.jpg');
             $avatar = null;
         } else {
@@ -130,7 +130,7 @@ if ($continue) {
 
         // password
         $passwordchange = false;
-        $password = _post('password');
+        $password = \Sunlight\Util\Request::post('password');
         if ($id == null && $password == "") {
             $errors[] = _lang('admin.users.edit.passwordneeded');
         }
@@ -140,14 +140,14 @@ if ($continue) {
         }
 
         // note
-        $note = _e(trim(_cutString(_post('note'), 1024)));
+        $note = _e(trim(\Sunlight\Util\StringManipulator::cut(\Sunlight\Util\Request::post('note'), 1024)));
 
         // blocked
-        $blocked = _checkboxLoad("blocked");
+        $blocked = \Sunlight\Util\Form::loadCheckbox("blocked");
 
         // group
         if (isset($_POST['group_id'])) {
-            $group = (int) _post('group_id');
+            $group = (int) \Sunlight\Util\Request::post('group_id');
             $group_test = DB::queryRow("SELECT level FROM " . _groups_table . " WHERE id=" . $group . " AND id!=2 AND level<" . _priv_level);
             if ($group_test !== false) {
                 if ($group_test['level'] > _priv_level) {
@@ -162,7 +162,7 @@ if ($continue) {
 
         // levelshift
         if (_user_id == _super_admin_id) {
-            $levelshift = _checkboxLoad('levelshift');
+            $levelshift = \Sunlight\Util\Form::loadCheckbox('levelshift');
         } else {
             $levelshift = $query['levelshift'];
         }
@@ -218,7 +218,7 @@ if ($continue) {
             }
 
         } else {
-            $message = _msgList($errors, 'errors');
+            $message = \Sunlight\Message::renderList($errors, 'errors');
         }
 
     }
@@ -229,18 +229,18 @@ if ($continue) {
     $messages_code = "";
 
     if (isset($_GET['r'])) {
-        switch (_get('r')) {
+        switch (\Sunlight\Util\Request::get('r')) {
             case 1:
-                $messages_code .= _msg(_msg_ok, _lang('global.saved'));
+                $messages_code .= \Sunlight\Message::render(_msg_ok, _lang('global.saved'));
                 break;
             case 2:
-                $messages_code .= _msg(_msg_ok, _lang('global.created'));
+                $messages_code .= \Sunlight\Message::render(_msg_ok, _lang('global.created'));
                 break;
         }
     }
 
     if ($message != "") {
-        $messages_code .= _msg(_msg_warn, $message);
+        $messages_code .= \Sunlight\Message::render(_msg_warn, $message);
     }
 
     $output .= "
@@ -251,12 +251,12 @@ if ($continue) {
 
 <tr>
 <th>" . _lang('login.username') . "</th>
-<td><input type='text' class='inputsmall'" . _restorePostValueAndName('username', $query['username']) . " maxlength='24'></td>
+<td><input type='text' class='inputsmall'" . \Sunlight\Util\Form::restorePostValueAndName('username', $query['username']) . " maxlength='24'></td>
 </tr>
 
 <tr>
 <th>" . _lang('mod.settings.publicname') . "</th>
-<td><input type='text' class='inputsmall'" . _restorePostValueAndName('publicname', $query['publicname'], true) . " maxlength='24'></td>
+<td><input type='text' class='inputsmall'" . \Sunlight\Util\Form::restorePostValueAndName('publicname', $query['publicname'], true) . " maxlength='24'></td>
 </tr>
 
 <tr>
@@ -271,32 +271,32 @@ if ($continue) {
 
 <tr>
 <th>" . _lang('login.blocked') . "</th>
-<td><input type='checkbox' name='blocked' value='1'" . _checkboxActivate($query['blocked'] || isset($_POST['blocked'])) . "></td>
+<td><input type='checkbox' name='blocked' value='1'" . \Sunlight\Util\Form::activateCheckbox($query['blocked'] || isset($_POST['blocked'])) . "></td>
 </tr>
 
 <tr>
 <th>" . _lang('global.levelshift') . "</th>
-<td><input type='checkbox' name='levelshift' value='1'" . _checkboxActivate($query['levelshift'] || isset($_POST['levelshift'])) . _inputDisableUnless(_user_id == _super_admin_id) . "></td>
+<td><input type='checkbox' name='levelshift' value='1'" . \Sunlight\Util\Form::activateCheckbox($query['levelshift'] || isset($_POST['levelshift'])) . \Sunlight\Util\Form::disableInputUnless(_user_id == _super_admin_id) . "></td>
 </tr>
 
 <tr>
 <th>" . _lang('mod.settings.wysiwyg') . "</th>
-<td><input type='checkbox' name='wysiwyg' value='1'" . _checkboxActivate($query['wysiwyg'] || isset($_POST['wysiwyg'])) . "></td>
+<td><input type='checkbox' name='wysiwyg' value='1'" . \Sunlight\Util\Form::activateCheckbox($query['wysiwyg'] || isset($_POST['wysiwyg'])) . "></td>
 </tr>
 
 <tr>
 <th>" . _lang('mod.settings.massemail') . "</th>
-<td><input type='checkbox' name='massemail' value='1'" . _checkboxActivate($query['massemail'] || isset($_POST['massemail'])) . "></td>
+<td><input type='checkbox' name='massemail' value='1'" . \Sunlight\Util\Form::activateCheckbox($query['massemail'] || isset($_POST['massemail'])) . "></td>
 </tr>
 
 <tr>
 <th>" . _lang('mod.settings.public') . "</th>
-<td><input type='checkbox' name='public' value='1'" . _checkboxActivate($query['public'] || isset($_POST['public'])) . "></td>
+<td><input type='checkbox' name='public' value='1'" . \Sunlight\Util\Form::activateCheckbox($query['public'] || isset($_POST['public'])) . "></td>
 </tr>
 
 <tr>
 <th>" . _lang('global.email') . "</th>
-<td><input type='email' class='inputsmall'" . _restorePostValueAndName('email', $query['email']) . "></td>
+<td><input type='email' class='inputsmall'" . \Sunlight\Util\Form::restorePostValueAndName('email', $query['email']) . "></td>
 </tr>
 
 <tr>
@@ -306,7 +306,7 @@ if ($continue) {
 
 <tr class='valign-top'>
 <th>" . _lang('global.note') . "</th>
-<td><textarea class='areasmall' rows='9' cols='33' name='note'>" . _restorePostValue('note', $query['note'], false, false) . "</textarea></td>
+<td><textarea class='areasmall' rows='9' cols='33' name='note'>" . \Sunlight\Util\Form::restorePostValue('note', $query['note'], false, false) . "</textarea></td>
 </tr>
 
 " . Extend::buffer('admin.user.form', array('user' => $query)) . "
@@ -316,14 +316,14 @@ if ($continue) {
 </tr>
 
 </table>
-" . _xsrfProtect() . "</form>
+" . \Sunlight\Xsrf::getInput() . "</form>
 ";
 
     // odkaz na profil a zjisteni ip
     if ($id != null) {
         $output .= "
   <p>
-    <a href='" . _linkModule('profile', 'id=' . $query['username']) . "' target='_blank'>" . _lang('mod.settings.profilelink') . " &gt;</a>
+    <a href='" . \Sunlight\Router::module('profile', 'id=' . $query['username']) . "' target='_blank'>" . _lang('mod.settings.profilelink') . " &gt;</a>
   </p>
   ";
     }
@@ -331,13 +331,13 @@ if ($continue) {
 } else {
     switch ($errno) {
         case 1:
-            $output .= _msg(_msg_warn, _lang('global.baduser'));
+            $output .= \Sunlight\Message::render(_msg_warn, _lang('global.baduser'));
             break;
         case 2:
-            $output .= _msg(_msg_warn, _lang('global.rootnote'));
+            $output .= \Sunlight\Message::render(_msg_warn, _lang('global.rootnote'));
             break;
         default:
-            $output .= _msg(_msg_err, _lang('global.disallowed'));
+            $output .= \Sunlight\Message::render(_msg_err, _lang('global.disallowed'));
             break;
     }
 }

@@ -27,41 +27,41 @@ if (isset($_GET['user'], $_GET['hash'])) {
     do {
 
         // kontrola limitu
-        if (!_iplogCheck(_iplog_failed_login_attempt)) {
-            $output .= _msg(_msg_err, _lang('login.attemptlimit', array('*1*' => _maxloginattempts, '*2*' => _maxloginexpire / 60)));
+        if (!\Sunlight\IpLog::check(_iplog_failed_login_attempt)) {
+            $output .= \Sunlight\Message::render(_msg_err, _lang('login.attemptlimit', array('*1*' => _maxloginattempts, '*2*' => _maxloginexpire / 60)));
             break;
         }
 
         // data uzivatele
-        $user = _get('user');
-        $hash = _get('hash');
+        $user = \Sunlight\Util\Request::get('user');
+        $hash = \Sunlight\Util\Request::get('hash');
         $userdata = DB::queryRow("SELECT id,email,username,security_hash,security_hash_expires FROM " . _users_table . " WHERE username=" . DB::val($user));
         if (
             $userdata === false
             || $hash !== $userdata['security_hash']
             || time() >= $userdata['security_hash_expires']
         ) {
-            _iplogUpdate(_iplog_failed_login_attempt);
-            $output .= _msg(_msg_warn, _lang('mod.lostpass.badlink'));
-            $output .= '<p><a href="' . _linkModule('lostpass') . '">' . _lang('global.tryagain') . ' &gt;</a></p>';
+            \Sunlight\IpLog::update(_iplog_failed_login_attempt);
+            $output .= \Sunlight\Message::render(_msg_warn, _lang('mod.lostpass.badlink'));
+            $output .= '<p><a href="' . \Sunlight\Router::module('lostpass') . '">' . _lang('global.tryagain') . ' &gt;</a></p>';
             break;
         }
 
         // vygenerovat heslo a odeslat na email
         $newpass = StringGenerator::generateHash(12);
 
-        if (!_mail(
+        if (!\Sunlight\Email::send(
             $userdata['email'],
             _lang('mod.lostpass.mail.subject', array('*domain*' => Url::base()->getFullHost())),
             _lang('mod.lostpass.mail.text2', array(
                 '*domain*' => Url::base()->getFullHost(),
                 '*username*' =>  $userdata['username'],
                 '*newpass*' => $newpass,
-                '*date*' => _formatTime(time()),
+                '*date*' => \Sunlight\Generic::renderTime(time()),
                 '*ip*' => _user_ip,
             ))
         )) {
-            $output .= _msg(_msg_err, _lang('global.emailerror'));
+            $output .= \Sunlight\Message::render(_msg_err, _lang('global.emailerror'));
             break;
         }
 
@@ -73,7 +73,7 @@ if (isset($_GET['user'], $_GET['hash'])) {
         ));
 
         // vse ok! email s heslem byl odeslan
-        $output .= _msg(_msg_ok, _lang('mod.lostpass.generated'));
+        $output .= \Sunlight\Message::render(_msg_ok, _lang('mod.lostpass.generated'));
 
     } while (false);
 } else {
@@ -85,23 +85,23 @@ if (isset($_GET['user'], $_GET['hash'])) {
     if (isset($_POST['username'])) do {
 
         // kontrola limitu
-        if (!_iplogCheck(_iplog_password_reset_requested)) {
-            $output .= _msg(_msg_err, _lang('mod.lostpass.limit', array('*limit*' => _lostpassexpire / 60)));
+        if (!\Sunlight\IpLog::check(_iplog_password_reset_requested)) {
+            $output .= \Sunlight\Message::render(_msg_err, _lang('mod.lostpass.limit', array('*limit*' => _lostpassexpire / 60)));
             break;
         }
 
         // kontrolni obrazek
-        if (!_captchaCheck()) {
-            $output .= _msg(_msg_warn, _lang('captcha.failure2'));
+        if (!\Sunlight\Captcha::check()) {
+            $output .= \Sunlight\Message::render(_msg_warn, _lang('captcha.failure2'));
             break;
         }
 
         // data uzivatele
-        $username = _post('username');
-        $email = _post('email');
+        $username = \Sunlight\Util\Request::post('username');
+        $email = \Sunlight\Util\Request::post('email');
         $userdata = DB::queryRow("SELECT id,email,username FROM " . _users_table . " WHERE username=" . DB::val($username) . " AND email=" . DB::val($email));
         if ($userdata === false) {
-            $output .= _msg(_msg_warn, _lang('mod.lostpass.notfound'));
+            $output .= \Sunlight\Message::render(_msg_warn, _lang('mod.lostpass.notfound'));
             break;
         }
 
@@ -113,44 +113,44 @@ if (isset($_GET['user'], $_GET['hash'])) {
         ));
 
         // odeslani emailu
-        $link = _linkModule('lostpass', 'user=' . $username . '&hash=' . $hash, false, true);
+        $link = \Sunlight\Router::module('lostpass', 'user=' . $username . '&hash=' . $hash, false, true);
 
-        if (!_mail(
+        if (!\Sunlight\Email::send(
             $userdata['email'],
             _lang('mod.lostpass.mail.subject', array('*domain*' => Url::base()->getFullHost())),
             _lang('mod.lostpass.mail.text', array(
                 '*domain*' => Url::base()->getFullHost(),
                 '*username*' => $userdata['username'],
                 '*link*' => $link,
-                '*date*' => _formatTime(time()),
+                '*date*' => \Sunlight\Generic::renderTime(time()),
                 '*ip*' => _user_ip,
             ))
         )) {
-            $output .= _msg(_msg_err, _lang('global.emailerror'));
+            $output .= \Sunlight\Message::render(_msg_err, _lang('global.emailerror'));
             break;
         }
 
         // vse ok! email byl odeslan
-        _iplogUpdate(_iplog_password_reset_requested);
-        $output .= _msg(_msg_ok, _lang('mod.lostpass.mailsent'));
+        \Sunlight\IpLog::update(_iplog_password_reset_requested);
+        $output .= \Sunlight\Message::render(_msg_ok, _lang('mod.lostpass.mailsent'));
         $sent = true;
 
     } while (false);
 
     // formular
     if (!$sent) {
-        $captcha = _captchaInit();
+        $captcha = \Sunlight\Captcha::init();
 
-        $output .= _formOutput(
+        $output .= \Sunlight\Util\Form::render(
             array(
                 'name' => 'lostpassform',
-                'action' => _linkModule('lostpass'),
+                'action' => \Sunlight\Router::module('lostpass'),
                 'submit_text' => _lang('global.send'),
                 'autocomplete' => 'off',
             ),
             array(
-                array('label' => _lang('login.username'), 'content' => "<input type='text' class='inputsmall' maxlength='24'" . _restorePostValueAndName('username') . ">"),
-                array('label' => _lang('global.email'), 'content' => "<input type='email' class='inputsmall' " . _restorePostValueAndName('email', '@') . ">"),
+                array('label' => _lang('login.username'), 'content' => "<input type='text' class='inputsmall' maxlength='24'" . \Sunlight\Util\Form::restorePostValueAndName('username') . ">"),
+                array('label' => _lang('global.email'), 'content' => "<input type='email' class='inputsmall' " . \Sunlight\Util\Form::restorePostValueAndName('email', '@') . ">"),
                 $captcha
             )
         );

@@ -7,7 +7,7 @@ defined('_root') or exit;
 return function ($group_id = null)
 {
     if (isset($group_id)) {
-        $cond = _sqlWhereColumn("group_id", $group_id);
+        $cond = \Sunlight\Hcm::createColumnInSqlCondition("group_id", $group_id);
     } else {
         $cond = "";
     }

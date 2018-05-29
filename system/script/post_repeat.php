@@ -7,10 +7,10 @@ require '../bootstrap.php';
 Core::init('../../');
 
 // priprava
-$login = (bool) _get('login');
+$login = (bool) \Sunlight\Util\Request::get('login');
 $allow_login = $login && !_logged_in;
 $login_message = null;
-$target = _get('target');
+$target = \Sunlight\Util\Request::get('target');
 $do_repeat = true;
 $valid = true;
 
@@ -21,12 +21,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' || empty($target)) {
 
 // prihlaseni
 if ($valid && $login && !_logged_in) {
-    $username = _post('login_username');
-    $password = _post('login_password');
-    $persistent = _checkboxLoad('login_persistent');
+    $username = \Sunlight\Util\Request::post('login_username');
+    $password = \Sunlight\Util\Request::post('login_password');
+    $persistent = \Sunlight\Util\Form::loadCheckbox('login_persistent');
 
-    $login_result = _userLoginSubmit($username, $password, $persistent);
-    $login_message = _userLoginMessage($login_result);
+    $login_result = \Sunlight\User::submitLogin($username, $password, $persistent);
+    $login_message = \Sunlight\User::getLoginMessage($login_result);
 
     if ($login_result === 1) {
         $allow_login = false;
@@ -66,7 +66,7 @@ if ($valid && $login && !_logged_in) {
                 <?php echo _lang('xsrf.warning', array('*domain*' => Url::base()->getFullHost())) ?>
             </p>
 
-            <?php echo _postRepeatForm(
+            <?php echo \Sunlight\User::renderPostRepeatForm(
                 $allow_login,
                 $login_message,
                 $target,

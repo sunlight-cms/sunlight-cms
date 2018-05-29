@@ -16,7 +16,7 @@ $unregistered_useable = array('postcomments', 'artrate', 'pollvote');
 // id
 $continue = false;
 if (isset($_GET['id'])) {
-    $id = (int) _get('id');
+    $id = (int) \Sunlight\Util\Request::get('id');
     $query = DB::queryRow("SELECT * FROM " . _groups_table . " WHERE id=" . $id);
     if ($query !== false) {
         $systemitem = in_array($query['id'], $sysgroups_array);
@@ -134,7 +134,7 @@ if ($continue) {
             if (
                 $id == _group_admin
                 || $id == _group_guests && !in_array($item['name'], $unregistered_useable, true)
-                || !_userHasPriv($item['name'])
+                || !\Sunlight\User::hasPrivilege($item['name'])
             ) {
                 $disabled = true;
             } else {
@@ -149,7 +149,7 @@ if ($continue) {
     </th>
     <td>
         <label>
-            <input type='" . ($isText ? 'text' : 'checkbox') . "' id='setting_" . $item['name'] . "' name='" . $item['name'] . "'" . ($isText ? " value='" . _e($query[$item['name']]) . "'" : " value='1'" . _checkboxActivate($query[$item['name']])) . _inputDisableUnless(!$disabled) . ">
+            <input type='" . ($isText ? 'text' : 'checkbox') . "' id='setting_" . $item['name'] . "' name='" . $item['name'] . "'" . ($isText ? " value='" . _e($query[$item['name']]) . "'" : " value='1'" . \Sunlight\Util\Form::activateCheckbox($query[$item['name']])) . \Sunlight\Util\Form::disableInputUnless(!$disabled) . ">
             " . (isset($item['help']) ? $item['help'] : _lang('admin.users.groups.' . $item['name'] . '.help')) . "
         </label>
     </td>
@@ -165,25 +165,25 @@ if ($continue) {
         $changeset = array();
 
         // zakladni atributy
-        $changeset['title'] = _cutHtml(_e(trim(_post('title'))), 128);
+        $changeset['title'] = \Sunlight\Util\Html::cut(_e(trim(\Sunlight\Util\Request::post('title'))), 128);
         if ($changeset['title'] == "") {
             $changeset['title'] = _lang('global.novalue');
         }
-        $changeset['descr'] = _cutHtml(_e(trim(_post('descr'))), 255);
+        $changeset['descr'] = \Sunlight\Util\Html::cut(_e(trim(\Sunlight\Util\Request::post('descr'))), 255);
         if ($id != _group_guests) {
-            $changeset['icon'] = _cutHtml(_e(trim(_post('icon'))), 16);
+            $changeset['icon'] = \Sunlight\Util\Html::cut(_e(trim(\Sunlight\Util\Request::post('icon'))), 16);
         }
-        $changeset['color'] = \Sunlight\Admin\Admin::formatHtmlColor(_post('color', ''), false, '');
+        $changeset['color'] = \Sunlight\Admin\Admin::formatHtmlColor(\Sunlight\Util\Request::post('color', ''), false, '');
         if ($id > _group_guests) {
-            $changeset['blocked'] = _checkboxLoad('blocked');
+            $changeset['blocked'] = \Sunlight\Util\Form::loadCheckbox('blocked');
         }
         if ($id != _group_guests) {
-            $changeset['reglist'] = _checkboxLoad('reglist');
+            $changeset['reglist'] = \Sunlight\Util\Form::loadCheckbox('reglist');
         }
 
         // uroven, blokovani
         if ($id > _group_guests) {
-            $changeset['level'] = Math::range((int) _post('level'), 0, min(_priv_level, _priv_max_assignable_level));
+            $changeset['level'] = Math::range((int) \Sunlight\Util\Request::post('level'), 0, min(_priv_level, _priv_max_assignable_level));
         }
 
         // prava
@@ -192,14 +192,14 @@ if ($continue) {
                 foreach ($section['rights'] as $item) {
                     if (
                         $id == _group_guests && !in_array($item['name'], $unregistered_useable, true)
-                        || !_userHasPriv($item['name'])
+                        || !\Sunlight\User::hasPrivilege($item['name'])
                     ) {
                         continue;
                     }
 
                     $isText = isset($item['text']) && $item['text'];
 
-                    $changeset[$item['name']] = $isText ? trim(_post($item['name'])) : _checkboxLoad($item['name']);
+                    $changeset[$item['name']] = $isText ? trim(\Sunlight\Util\Request::post($item['name'])) : \Sunlight\Util\Form::loadCheckbox($item['name']);
                 }
             }
         }
@@ -221,7 +221,7 @@ if ($continue) {
 
     if ($id != _group_guests) {
         $icons = "<div class='radio-group'>\n";
-        $icons .= "<label><input" . _checkboxActivate($query['icon'] === '') . " type='radio' name='icon' value=''> " . _lang('global.undefined') . "</label>\n";
+        $icons .= "<label><input" . \Sunlight\Util\Form::activateCheckbox($query['icon'] === '') . " type='radio' name='icon' value=''> " . _lang('global.undefined') . "</label>\n";
 
         $icon_dir = _root . 'images/groupicons';
         foreach (scandir($icon_dir) as $file) {
@@ -234,7 +234,7 @@ if ($continue) {
                 continue;
             }
 
-            $icons .= "<label><input" . _checkboxActivate($file === $query['icon']) . " type='radio' name='icon' value='" . _e($file) . "'> <img class='icon' src='" . $icon_dir . '/' . _e($file) . "' alt='" . _e($file) . "'></label>\n";
+            $icons .= "<label><input" . \Sunlight\Util\Form::activateCheckbox($file === $query['icon']) . " type='radio' name='icon' value='" . _e($file) . "'> <img class='icon' src='" . $icon_dir . '/' . _e($file) . "' alt='" . _e($file) . "'></label>\n";
         }
         $icons .= "<div class='cleaner'></div></div>\n";
     }
@@ -242,7 +242,7 @@ if ($continue) {
     /* ---  vystup  --- */
     $output .= "
   <p class='bborder'>" . _lang('admin.users.groups.editp') . "</p>
-  " . (isset($_GET['saved']) ? _msg(_msg_ok, _lang('global.saved')) : '') . "
+  " . (isset($_GET['saved']) ? \Sunlight\Message::render(_msg_ok, _lang('global.saved')) : '') . "
   " . ($systemitem ? \Sunlight\Admin\Admin::note(_lang('admin.users.groups.specialgroup.editnotice')) : '') . "
   <form action='index.php?p=users-editgroup&amp;id=" . $id . "' method='post'>
   <table>
@@ -259,35 +259,35 @@ if ($continue) {
 
   <tr>
   <th>" . _lang('admin.users.groups.level') . "</th>
-  <td><input type='number' min='0' max='" . min(_priv_level -1, _priv_max_assignable_level) . "' name='level' class='inputmedium' value='" . $query['level'] . "'" . _inputDisableUnless(!$systemitem) . "></td>
+  <td><input type='number' min='0' max='" . min(_priv_level -1, _priv_max_assignable_level) . "' name='level' class='inputmedium' value='" . $query['level'] . "'" . \Sunlight\Util\Form::disableInputUnless(!$systemitem) . "></td>
   </tr>
 
   " . (($id != _group_guests) ? "
   <tr><th><dfn title='" . _lang('admin.users.groups.icon.help', array('%dir%' => $icon_dir)) . "'>" . _lang('admin.users.groups.icon') . "</dfn></th><td>" . $icons . "</td></tr>
   <tr><th>" . _lang('admin.users.groups.color') . "</th><td><input type='text' name='color' class='inputsmall' value='" . $query['color'] . "' maxlength='16'> <input type='color' value='" . \Sunlight\Admin\Admin::formatHtmlColor($query['color']) . "' onchange='this.form.elements.color.value=this.value'></td></tr>
-  <tr><th>" . _lang('admin.users.groups.reglist') . "</th><td><input type='checkbox' name='reglist' value='1'" . _checkboxActivate($query['reglist']) . "></td></tr>
+  <tr><th>" . _lang('admin.users.groups.reglist') . "</th><td><input type='checkbox' name='reglist' value='1'" . \Sunlight\Util\Form::activateCheckbox($query['reglist']) . "></td></tr>
   " : '') . "
 
   <tr>
   <th>" . _lang('admin.users.groups.blocked') . "</th>
-  <td><input type='checkbox' name='blocked' value='1'" . _checkboxActivate($query['blocked']) . _inputDisableUnless($id != _group_admin && $id != _group_guests) . "></td>
+  <td><input type='checkbox' name='blocked' value='1'" . \Sunlight\Util\Form::activateCheckbox($query['blocked']) . \Sunlight\Util\Form::disableInputUnless($id != _group_admin && $id != _group_guests) . "></td>
   </tr>
 
   </table>
 
-  " . _msg(_msg_ok, _lang('admin.users.groups.dangernotice')) . "
+  " . \Sunlight\Message::render(_msg_ok, _lang('admin.users.groups.dangernotice')) . "
   " . $rights . "
   " . Extend::buffer('admin.editgroup.form') . "
 
   <input type='submit' class='button bigger' value='" . _lang('global.save') . "' accesskey='s'> <small>" . _lang('admin.content.form.thisid') . " " . $id . "</small>
 
-  " . _xsrfProtect() . "</form>
+  " . \Sunlight\Xsrf::getInput() . "</form>
   ";
 
 } else {
     if ($levelconflict == false) {
-        $output .= _msg(_msg_err, _lang('global.badinput'));
+        $output .= \Sunlight\Message::render(_msg_err, _lang('global.badinput'));
     } else {
-        $output .= _msg(_msg_err, _lang('global.disallowed'));
+        $output .= \Sunlight\Message::render(_msg_err, _lang('global.disallowed'));
     }
 }

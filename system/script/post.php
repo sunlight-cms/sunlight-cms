@@ -13,7 +13,7 @@ if (_logged_in) {
     $author = _user_id;
 } else {
     if (isset($_POST['guest'])) {
-        $guest = _slugify(_post('guest'), false);
+        $guest = \Sunlight\Util\StringManipulator::slugify(\Sunlight\Util\Request::post('guest'), false);
         if (mb_strlen($guest) > 24) {
             $guest = mb_substr($guest, 0, 24);
         }
@@ -25,27 +25,27 @@ if (_logged_in) {
 }
 
 // typ, domov, text
-$posttarget = (int) _post('_posttarget');
-$posttype = (int) _post('_posttype');
-$text = _cutHtml(_e(trim(_post('text'))), ($posttype != 4) ? 16384 : 255);
+$posttarget = (int) \Sunlight\Util\Request::post('_posttarget');
+$posttype = (int) \Sunlight\Util\Request::post('_posttype');
+$text = \Sunlight\Util\Html::cut(_e(trim(\Sunlight\Util\Request::post('text'))), ($posttype != 4) ? 16384 : 255);
 
 // domovsky prispevek
 if ($posttype != _post_shoutbox_entry) {
-    $xhome = (int) _post('_xhome');
+    $xhome = (int) \Sunlight\Util\Request::post('_xhome');
 } else {
     $xhome = -1;
 }
 
 // predmet
 if ($xhome == -1 && in_array($posttype, array(_post_forum_topic, _post_pm))) {
-    $subject = _cutHtml(_e(_wsTrim(_post('subject'))), 48);
+    $subject = \Sunlight\Util\Html::cut(_e(\Sunlight\Util\StringManipulator::trimExtraWhitespace(\Sunlight\Util\Request::post('subject'))), 48);
 } else {
     $subject = '';
 }
 
 // plugin flag
 if ($posttype == _post_plugin) {
-    $pluginflag = (int) _post('_pluginflag');
+    $pluginflag = (int) \Sunlight\Util\Request::post('_pluginflag');
 } else {
     $pluginflag = 0;
 }
@@ -63,7 +63,7 @@ switch ($posttype) {
     case _post_section_comment:
         $tdata = DB::queryRow("SELECT public,var1,var3,level FROM " . _root_table . " WHERE id=" . $posttarget . " AND type=" . _page_section);
         if ($tdata !== false) {
-            if (_publicAccess($tdata['public'], $tdata['level']) && $tdata['var1'] == 1 && $tdata['var3'] != 1) {
+            if (\Sunlight\User::checkPublicAccess($tdata['public'], $tdata['level']) && $tdata['var1'] == 1 && $tdata['var3'] != 1) {
                 $continue = true;
             }
         }
@@ -73,7 +73,7 @@ switch ($posttype) {
     case _post_article_comment:
         $tdata = DB::queryRow("SELECT id,time,confirmed,author,public,home1,home2,home3,comments,commentslocked FROM " . _articles_table . " WHERE id=" . $posttarget);
         if ($tdata !== false) {
-            if (_articleAccess($tdata) && $tdata['comments'] == 1 && $tdata['commentslocked'] == 0) {
+            if (\Sunlight\Article::checkAccess($tdata) && $tdata['comments'] == 1 && $tdata['commentslocked'] == 0) {
                 $continue = true;
             }
         }
@@ -83,7 +83,7 @@ switch ($posttype) {
     case _post_book_entry:
         $tdata = DB::queryRow("SELECT public,var1,var3,level FROM " . _root_table . " WHERE id=" . $posttarget . " AND type=" . _page_book);
         if ($tdata !== false) {
-            if (_publicAccess($tdata['public'], $tdata['level']) && _publicAccess($tdata['var1']) && $tdata['var3'] != 1) {
+            if (\Sunlight\User::checkPublicAccess($tdata['public'], $tdata['level']) && \Sunlight\User::checkPublicAccess($tdata['var1']) && $tdata['var3'] != 1) {
                 $continue = true;
             }
         }
@@ -94,7 +94,7 @@ switch ($posttype) {
     case _post_shoutbox_entry:
         $tdata = DB::queryRow("SELECT public,locked FROM " . _sboxes_table . " WHERE id=" . $posttarget);
         if ($tdata !== false) {
-            if (_publicAccess($tdata['public']) && $tdata['locked'] != 1) {
+            if (\Sunlight\User::checkPublicAccess($tdata['public']) && $tdata['locked'] != 1) {
                 $continue = true;
             }
         }
@@ -104,7 +104,7 @@ switch ($posttype) {
     case _post_forum_topic:
         $tdata = DB::queryRow("SELECT public,var2,var3,level FROM " . _root_table . " WHERE id=" . $posttarget . " AND type=" . _page_forum);
         if ($tdata !== false) {
-            if (_publicAccess($tdata['public'], $tdata['level']) && _publicAccess($tdata['var3']) && $tdata['var2'] != 1) {
+            if (\Sunlight\User::checkPublicAccess($tdata['public'], $tdata['level']) && \Sunlight\User::checkPublicAccess($tdata['var3']) && $tdata['var2'] != 1) {
                 $continue = true;
             }
         }
@@ -146,9 +146,9 @@ if ($xhome != -1 && $posttype != _post_pm) {
 }
 
 //  ulozeni prispevku
-if ($continue && $continue2 && $text != '' && ($posttype == _post_shoutbox_entry || _captchaCheck())) {
-    if (_xsrfCheck()) {
-        if ($posttype == _post_shoutbox_entry || _priv_unlimitedpostaccess || _iplogCheck(_iplog_anti_spam)) {
+if ($continue && $continue2 && $text != '' && ($posttype == _post_shoutbox_entry || \Sunlight\Captcha::check())) {
+    if (\Sunlight\Xsrf::check()) {
+        if ($posttype == _post_shoutbox_entry || _priv_unlimitedpostaccess || \Sunlight\IpLog::check(_iplog_anti_spam)) {
             if ($guest === '' || DB::count(_users_table, 'username=' . DB::val($guest) . ' OR publicname=' . DB::val($guest)) === 0) {
 
                 // zpracovani pluginem
@@ -171,7 +171,7 @@ if ($continue && $continue2 && $text != '' && ($posttype == _post_shoutbox_entry
                         'flag' => $pluginflag
                     ), true);
                     if (!_priv_unlimitedpostaccess && $posttype != _post_shoutbox_entry) {
-                        _iplogUpdate(_iplog_anti_spam);
+                        \Sunlight\IpLog::update(_iplog_anti_spam);
                     }
                     $return = 1;
                     Extend::call('posts.new', array('id' => $insert_id, 'posttype' => $posttype));
@@ -221,17 +221,17 @@ if ($continue && $continue2 && $text != '' && ($posttype == _post_shoutbox_entry
 
 $returnUrl = null;
 if ($posttype != _post_shoutbox_entry) {
-    $returnUrl = _returnUrl();
+    $returnUrl = \Sunlight\Response::getReturnUrl();
 
     if ($return != 1) {
         $_SESSION['post_form_guest'] = $guest;
         $_SESSION['post_form_subject'] = $subject;
         $_SESSION['post_form_text'] = $text;
 
-        $returnUrl = _addParamsToUrl($returnUrl, 'replyto=' . $xhome, false) . '&addpost';
+        $returnUrl = \Sunlight\Util\UrlHelper::appendParams($returnUrl, 'replyto=' . $xhome, false) . '&addpost';
     }
 
-    $returnUrl = _addParamsToUrl(
+    $returnUrl = \Sunlight\Util\UrlHelper::appendParams(
         $returnUrl,
         "r=" . $return
             . (($posttype == _post_forum_topic) ? '&autolast' : '')
@@ -240,4 +240,4 @@ if ($posttype != _post_shoutbox_entry) {
     );
 }
 
-_returnHeader($returnUrl);
+\Sunlight\Response::redirectBack($returnUrl);

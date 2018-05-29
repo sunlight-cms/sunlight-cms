@@ -402,7 +402,7 @@ abstract class User
         if ($persistent && !headers_sent()) {
             $cookie_data = array();
             $cookie_data[] = $id;
-            $cookie_data[] = _userPersistentLoginHash($id, $authHash, $email);
+            $cookie_data[] = \Sunlight\User::getPersistentLoginHash($id, $authHash, $email);
 
             setcookie(
                 Core::$appId . '_persistent_key',
@@ -443,7 +443,7 @@ abstract class User
 
         // zpravy
         if (isset($_GET['login_form_result'])) {
-            $login_result = _userLoginMessage(_get('login_form_result'));
+            $login_result = \Sunlight\User::getLoginMessage(\Sunlight\Util\Request::get('login_form_result'));
             if ($login_result !== null) {
                 $output .= $login_result;
             }
@@ -457,7 +457,7 @@ abstract class User
             // adresa pro navrat
             if ($return === null && !$embedded) {
                 if (isset($_GET['login_form_return'])) {
-                    $return = _get('login_form_return');
+                    $return = \Sunlight\Util\Request::get('login_form_return');
                 } else  {
                     $return = $_SERVER['REQUEST_URI'];
                 }
@@ -466,13 +466,13 @@ abstract class User
             // akce formulare
             if (!$embedded) {
                 // systemovy skript
-                $action = _link('system/script/login.php');
+                $action = \Sunlight\Router::link('system/script/login.php');
             } else {
                 // vlozeny formular
                 $action = null;
             }
             if (!empty($return)) {
-                $action = _addParamsToUrl($action, '_return=' . rawurlencode($return), false);
+                $action = \Sunlight\Util\UrlHelper::appendParams($action, '_return=' . rawurlencode($return), false);
             }
 
             // adresa formulare
@@ -483,7 +483,7 @@ abstract class User
             $form_append .= "<input type='hidden' name='login_form_url' value='" . _e($form_url) . "'>\n";
 
             // kod formulare
-            $output .= _formOutput(
+            $output .= \Sunlight\Util\Form::render(
                 array(
                     'name' => 'login_form',
                     'action' => $action,
@@ -493,7 +493,7 @@ abstract class User
                     'form_append' => $form_append,
                 ),
                 array(
-                    array('label' => _lang('login.username'), 'content' => "<input type='text' name='login_username' class='inputmedium'" . _restoreValue($_SESSION, 'login_form_username') . " maxlength='24'>"),
+                    array('label' => _lang('login.username'), 'content' => "<input type='text' name='login_username' class='inputmedium'" . \Sunlight\Util\Form::restoreValue($_SESSION, 'login_form_username') . " maxlength='24'>"),
                     array('label' => _lang('login.password'), 'content' => "<input type='password' name='login_password' class='inputmedium'>")
                 )
             );
@@ -506,10 +506,10 @@ abstract class User
             if (!$embedded) {
                 $links = array();
                 if (_registration && _env === Core::ENV_WEB) {
-                    $links['reg'] = array('url' => _linkModule('reg'), 'text' => _lang('mod.reg'));
+                    $links['reg'] = array('url' => \Sunlight\Router::module('reg'), 'text' => _lang('mod.reg'));
                 }
                 if (_lostpass) {
-                    $links['lostpass'] = array('url' => _linkModule('lostpass'), 'text' => _lang('mod.lostpass'));
+                    $links['lostpass'] = array('url' => \Sunlight\Router::module('lostpass'), 'text' => _lang('mod.lostpass'));
                 }
                 Extend::call('user.login.links', array('links' => &$links));
 
@@ -523,7 +523,7 @@ abstract class User
             }
 
         } else {
-            $output .= "<p>" . _lang('login.ininfo') . " <em>" . _user_name . "</em> - <a href='" . _xsrfLink(_link('system/script/logout.php')) . "'>" . _lang('usermenu.logout') . "</a>.</p>";
+            $output .= "<p>" . _lang('login.ininfo') . " <em>" . _user_name . "</em> - <a href='" . \Sunlight\Xsrf::addToUrl(\Sunlight\Router::link('system/script/logout.php')) . "'>" . _lang('usermenu.logout') . "</a>.</p>";
         }
 
         return $output;
@@ -583,12 +583,12 @@ abstract class User
         }
 
         // XSRF kontrola
-        if (!_xsrfCheck()) {
+        if (!\Sunlight\Xsrf::check()) {
             return 6;
         }
 
         // kontrola limitu
-        if (!_iplogCheck(_iplog_failed_login_attempt)) {
+        if (!\Sunlight\IpLog::check(_iplog_failed_login_attempt)) {
             return 5;
         }
 
@@ -628,7 +628,7 @@ abstract class User
 
         if (!$password->match($plainPassword)) {
             // nespravne heslo
-            _iplogUpdate(_iplog_failed_login_attempt);
+            \Sunlight\IpLog::update(_iplog_failed_login_attempt);
 
             return 0;
         }
@@ -661,7 +661,7 @@ abstract class User
         Extend::call('user.login', array('user' => $query));
 
         // prihlaseni
-        _userLogin($query['id'], $query['password'], $query['email'], $persistent);
+        \Sunlight\User::login($query['id'], $query['password'], $query['email'], $persistent);
 
         // vse ok, uzivatel byl prihlasen
         return 1;
@@ -768,7 +768,7 @@ abstract class User
         }
 
         $hasAvatar = ($data['avatar'] !== null);
-        $url = _link('images/avatars/' . ($hasAvatar ? $data['avatar'] : 'no-avatar' . (_getCurrentTemplate()->getOption('dark') ? '-dark' : '')) . '.jpg');
+        $url = \Sunlight\Router::link('images/avatars/' . ($hasAvatar ? $data['avatar'] : 'no-avatar' . (\Sunlight\Template::getCurrent()->getOption('dark') ? '-dark' : '')) . '.jpg');
 
         // vykresleni rozsirenim
         if ($options['extend']) {
@@ -795,7 +795,7 @@ abstract class User
         // vykreslit obrazek
         $out = '';
         if ($options['link']) {
-            $out .= '<a href="' . _linkModule('profile', 'id=' .  $data['username']) . '">';
+            $out .= '<a href="' . \Sunlight\Router::module('profile', 'id=' .  $data['username']) . '">';
         }
         $out .= "<img class=\"avatar" . ($options['class'] !== null ? " {$options['class']}" : '') . "\" src=\"{$url}\" alt=\"" . $data[$data['publicname'] !== null ? 'publicname' : 'username'] . "\">";
         if ($options['link']) {
@@ -815,9 +815,9 @@ abstract class User
      */
     static function renderAvatarFromQuery(array $userQuery, array $row, array $options = array())
     {
-        $userData = _arrayGetSubset($row, $userQuery['columns'], strlen($userQuery['prefix']));
+        $userData = \Sunlight\Util\Arr::getSubset($row, $userQuery['columns'], strlen($userQuery['prefix']));
 
-        return _getAvatar($userData, $options);
+        return \Sunlight\User::renderAvatar($userData, $options);
     }
 
     /**
@@ -838,17 +838,17 @@ abstract class User
         if ($do_repeat) {
             $action = $target_url;
         } else {
-            $action = _link('system/script/post_repeat.php?login=' . ($allow_login ? '1' : '0') . '&target=' . rawurlencode($target_url));
+            $action = \Sunlight\Router::link('system/script/post_repeat.php?login=' . ($allow_login ? '1' : '0') . '&target=' . rawurlencode($target_url));
         }
 
         $output = "<form name='post_repeat' method='post' action='" . _e($action) . "'>\n";
-        $output .= _renderHiddenPostInputs(null, $allow_login ? 'login_' : null);
+        $output .= \Sunlight\Util\Form::renderHiddenPostInputs(null, $allow_login ? 'login_' : null);
 
         if ($allow_login && !_logged_in) {
             if ($login_message === null) {
                 $login_message = Message::ok(_lang('post_repeat.login'));
             }
-            $login_message->append('<div class="hr"><hr></div>' . _userLoginForm(false, false, null, true), true);
+            $login_message->append('<div class="hr"><hr></div>' . \Sunlight\User::renderLoginForm(false, false, null, true), true);
 
             $output .= $login_message;
         } elseif ($login_message !== null) {
@@ -856,7 +856,7 @@ abstract class User
         }
 
         $output .= "<p><input type='submit' value='" . _lang($do_repeat ? 'post_repeat.submit' : 'global.continue') . "'></p>";
-        $output .= _xsrfProtect() . "</form>\n";
+        $output .= \Sunlight\Xsrf::getInput() . "</form>\n";
 
         return $output;
     }

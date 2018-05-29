@@ -30,7 +30,7 @@ $type_array = PageManager::getTypes();
 $plugin_type_array = PageManager::getPluginTypes();
 
 if (isset($_GET['id'])) {
-    $id = (int) _get('id');
+    $id = (int) \Sunlight\Util\Request::get('id');
     $query = DB::queryRow("SELECT * FROM " . _root_table . " WHERE id=" . $id . " AND type=" . $type);
     if ($query !== false) {
         $continue = true;
@@ -52,7 +52,7 @@ if (isset($_GET['id'])) {
             $continue = false;
             return;
         } else {
-            $type_idt = (string) _get('idt');
+            $type_idt = (string) \Sunlight\Util\Request::get('idt');
         }
     } else {
         $type_idt = null;

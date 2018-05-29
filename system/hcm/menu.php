@@ -4,8 +4,8 @@ defined('_root') or exit;
 
 return function ($od = null, $do = null, $class = null)
 {
-    _normalize($od, 'int');
-    _normalize($do, 'int');
+    \Sunlight\Hcm::normalizeArgument($od, 'int');
+    \Sunlight\Hcm::normalizeArgument($do, 'int');
 
     return Sunlight\Template::menu($od, $do, $class);
 };

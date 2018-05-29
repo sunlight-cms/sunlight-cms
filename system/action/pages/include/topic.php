@@ -13,7 +13,7 @@ if (!ctype_digit($_index['segment'])) {
 
 // nacteni dat
 $id = (int) $_index['segment'];
-$userQuery = _userQuery('p.author');
+$userQuery = \Sunlight\User::createQuery('p.author');
 $query = DB::queryRow("SELECT p.*," . $userQuery['column_list'] . " FROM " . _posts_table . " p " . $userQuery['joins'] . " WHERE p.id=" . $id . " AND p.type=" . _post_forum_topic . " AND p.home=" . $_page['id'] . " AND p.xhome=-1");
 if ($query === false) {
     $_index['is_found'] = false;
@@ -23,7 +23,7 @@ if ($query === false) {
 // drobecek
 $_index['crumbs'][] = array(
     'title' => $query['subject'],
-    'url' => _linkTopic($id, $_page['slug'])
+    'url' => \Sunlight\Router::topic($id, $_page['slug'])
 );
 
 // extend
@@ -42,33 +42,33 @@ if (!$continue) {
 // atributy
 $_index['title'] = $_page['title'] . ' ' . _titleseparator . ' ' . $query['subject'];
 $_index['heading'] = $_page['title'];
-$_index['url'] = _linkTopic($id, $_page['slug']);
+$_index['url'] = \Sunlight\Router::topic($id, $_page['slug']);
 
 // priprava zpetneho odkazu
-$_index['backlink'] = _linkRoot($_page['id'], $_page['slug']);
+$_index['backlink'] = \Sunlight\Router::root($_page['id'], $_page['slug']);
 if (!$query['sticky']) {
-    $_index['backlink'] = _addParamsToUrl($_index['backlink'], 'page=' . _resultPagingGetItemPage($_page['var1'], _posts_table, "bumptime>" . $query['bumptime'] . " AND xhome=-1 AND type=" . _post_forum_topic . " AND home=" . $_page['id']), false);
+    $_index['backlink'] = \Sunlight\Util\UrlHelper::appendParams($_index['backlink'], 'page=' . \Sunlight\Paginator::getItemPage($_page['var1'], _posts_table, "bumptime>" . $query['bumptime'] . " AND xhome=-1 AND type=" . _post_forum_topic . " AND home=" . $_page['id']), false);
 }
 
 // sprava tematu
-$topic_access = _postAccess($userQuery, $query);
+$topic_access = \Sunlight\Post::checkAccess($userQuery, $query);
 $topic_admin = array();
 
 if ($topic_access) {
     if (_priv_locktopics) {
-        $topic_admin[] = "<a href='" . _linkModule('locktopic', 'id=' . $id) . "'>" . (_lang('mod.locktopic.link' . (($query['locked'] == 1) ? '2' : ''))) . "</a>";
+        $topic_admin[] = "<a href='" . \Sunlight\Router::module('locktopic', 'id=' . $id) . "'>" . (_lang('mod.locktopic.link' . (($query['locked'] == 1) ? '2' : ''))) . "</a>";
     }
     if (_priv_stickytopics) {
-        $topic_admin[] = "<a href='" . _linkModule('stickytopic', 'id=' . $id) . "'>" . (_lang('mod.stickytopic.link' . (($query['sticky'] == 1) ? '2' : ''))) . "</a>";
+        $topic_admin[] = "<a href='" . \Sunlight\Router::module('stickytopic', 'id=' . $id) . "'>" . (_lang('mod.stickytopic.link' . (($query['sticky'] == 1) ? '2' : ''))) . "</a>";
     }
     if (_priv_movetopics) {
-        $topic_admin[] = "<a href='" . _linkModule('movetopic', 'id=' . $id) . "'>" . (_lang('mod.movetopic.link')) . "</a>";
+        $topic_admin[] = "<a href='" . \Sunlight\Router::module('movetopic', 'id=' . $id) . "'>" . (_lang('mod.movetopic.link')) . "</a>";
     }
 }
 
 // vystup
 $output .= "<div class=\"topic\">\n";
-$output .= "<h2>" . _lang('posts.topic') . ": " . $query['subject'] . ' ' . Sunlight\Template::rssLink(_linkRSS($id, 6, false), true) . "</h2>\n";
+$output .= "<h2>" . _lang('posts.topic') . ": " . $query['subject'] . ' ' . Sunlight\Template::rssLink(\Sunlight\Router::rss($id, 6, false), true) . "</h2>\n";
 $output .= CommentService::renderPost($query, $userQuery, array(
     'post_link' => false,
     'allow_reply' => false,
@@ -82,7 +82,7 @@ $output .= CommentService::render(
     $_page['id'],
     array(
         _commentsperpage,
-        _publicAccess($_page['var3']),
+        \Sunlight\User::checkPublicAccess($_page['var3']),
         $_page['var2'],
         $id
     ),

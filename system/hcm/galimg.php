@@ -9,7 +9,7 @@ return function ($galerie = "", $typ = 'new', $rozmery = null, $limit = null)
 {
     // nacteni parametru
     $result = "";
-    $galerie = _sqlWhereColumn("home", $galerie);
+    $galerie = \Sunlight\Hcm::createColumnInSqlCondition("home", $galerie);
     if (isset($limit)) {
         $limit = abs((int) $limit);
     } else {
@@ -52,7 +52,7 @@ return function ($galerie = "", $typ = 'new', $rozmery = null, $limit = null)
     // vypis obrazku
     $rimgs = DB::query("SELECT id,title,prev,full FROM " . _images_table . " WHERE " . $galerie . " ORDER BY " . $razeni . " LIMIT " . $limit);
     while($rimg = DB::row($rimgs)) {
-        $result .= _galleryImage($rimg, "hcm" . Core::$hcmUid, $x, $y);
+        $result .= \Sunlight\Gallery::renderImage($rimg, "hcm" . Core::$hcmUid, $x, $y);
     }
 
     return $result;

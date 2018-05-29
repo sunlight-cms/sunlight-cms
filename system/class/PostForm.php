@@ -15,7 +15,7 @@ abstract class PostForm
      */
     static function renderControls($form, $area, $bbcode = true, $smileys = true)
     {
-        $template = _getCurrentTemplate();
+        $template = \Sunlight\Template::getCurrent();
 
         $output = '';
 
@@ -23,7 +23,7 @@ abstract class PostForm
         if ($bbcode && _bbcode && $template->getOption('bbcode.buttons')) {
 
             // nacteni tagu
-            $bbtags = _parseBBCode(null, true);
+            $bbtags = \Sunlight\Bbcode::parse(null, true);
 
             // pridani kodu
             $output .= '<span class="post-form-bbcode">';

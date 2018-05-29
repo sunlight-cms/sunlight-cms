@@ -4,12 +4,12 @@ use Sunlight\Extend;
 
 defined('_root') or exit;
 
-$_index['url'] = _linkModule($_index['slug'], $_url->getQueryString(), false);
+$_index['url'] = \Sunlight\Router::module($_index['slug'], $_url->getQueryString(), false);
 
 // presmerovani na hezkou verzi adresy
 if (_pretty_urls && !$_index['is_rewritten']) {
     $_url->remove('m');
-    $_index['redirect_to'] = _linkModule($_index['slug'], $_url->getQueryString(), false, true);
+    $_index['redirect_to'] = \Sunlight\Router::module($_index['slug'], $_url->getQueryString(), false, true);
     $_index['redirect_to_permanent'] = true;
     return;
 }

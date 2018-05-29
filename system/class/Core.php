@@ -452,7 +452,7 @@ abstract class Core
         }
 
         // verify current URL
-        if (!_isCli()) {
+        if (!\Sunlight\Util\Environment::isCli()) {
             $currentUrl = Url::current();
             $baseUrl = Url::base();
 
@@ -460,14 +460,14 @@ abstract class Core
                 // invalid hostname or scheme
                 $currentUrl->host = $baseUrl->host;
                 $currentUrl->scheme = $baseUrl->scheme;
-                _redirectHeader($currentUrl->generateAbsolute());
+                \Sunlight\Response::redirect($currentUrl->generateAbsolute());
                 exit;
             }
 
             if ($currentUrl->scheme !== $baseUrl->scheme) {
                 // invalid protocol
                 $currentUrl->scheme = $baseUrl->scheme;
-                _redirectHeader($currentUrl->generateAbsolute());
+                \Sunlight\Response::redirect($currentUrl->generateAbsolute());
                 exit;
             }
         }
@@ -546,11 +546,11 @@ abstract class Core
         }
 
         // send default headers
-        if (!_isCli()) {
+        if (!\Sunlight\Util\Environment::isCli()) {
             if ($options['content_type'] === null) {
                 // vychozi hlavicky
                 header('Content-Type: text/html; charset=UTF-8');
-                header('Expires: ' . _httpDate(-604800, true));
+                header('Expires: ' . \Sunlight\Util\DateTime::formatForHttp(-604800, true));
             } elseif ($options['content_type'] !== false) {
                 header('Content-Type: ' . $options['content_type']);
             }
@@ -636,22 +636,22 @@ abstract class Core
                         }
 
                         // check failed login attempt limit
-                        if (!_iplogCheck(_iplog_failed_login_attempt)) {
+                        if (!\Sunlight\IpLog::check(_iplog_failed_login_attempt)) {
                             // limit exceeded
                             $errorCode = 3;
                             break;
                         }
 
-                        $validHash = _userPersistentLoginHash($cookie['id'], _userAuthHash($userData['password']), $userData['email']);
+                        $validHash = \Sunlight\User::getPersistentLoginHash($cookie['id'], \Sunlight\User::getAuthHash($userData['password']), $userData['email']);
                         if ($validHash !== $cookie['hash']) {
                             // invalid hash
-                            _iplogUpdate(_iplog_failed_login_attempt);
+                            \Sunlight\IpLog::update(_iplog_failed_login_attempt);
                             $errorCode = 4;
                             break;
                         }
 
                         // all is well! use cookie data to login the user
-                        _userLogin($cookie['id'], $userData['password'], $userData['email']);
+                        \Sunlight\User::login($cookie['id'], $userData['password'], $userData['email']);
                         $loginDataExist = true;
                         $isPersistentLogin = true;
                     } while (false);
@@ -683,7 +683,7 @@ abstract class Core
             }
 
             // check user authentication hash
-            if ($_SESSION['user_auth'] !== _userAuthHash($userData['password'])) {
+            if ($_SESSION['user_auth'] !== \Sunlight\User::getAuthHash($userData['password'])) {
                 // neplatny hash
                 $errorCode = 7;
                 break;
@@ -772,7 +772,7 @@ abstract class Core
         define('_user_email', $userData['email']);
         define('_user_group', $groupData['id']);
 
-        foreach(_getPrivileges() as $item) {
+        foreach(\Sunlight\User::listPrivileges() as $item) {
             define('_priv_' . $item, $groupData[$item]);
         }
 
@@ -916,7 +916,7 @@ abstract class Core
     static function doMaintenance()
     {
         // clean thumbnails
-        _pictureThumbClean(_thumb_cleanup_threshold);
+        \Sunlight\Picture::cleanThumbnails(_thumb_cleanup_threshold);
 
         // remove old files in the temporary directory
         Filesystem::purgeDirectory(_root . 'system/tmp', array(
@@ -1015,7 +1015,7 @@ abstract class Core
         // prepare variables
         $variables = array(
             'basePath' => Url::base()->path . '/',
-            'currentTemplate' => _getCurrentTemplate()->getId(),
+            'currentTemplate' => \Sunlight\Template::getCurrent()->getId(),
             'labels' => array(
                 'alertConfirm' => _lang('javascript.alert.confirm'),
                 'loading' => _lang('javascript.loading'),

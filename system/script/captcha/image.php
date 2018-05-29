@@ -1,8 +1,8 @@
 <?php
 
+use Sunlight\Captcha\Text3dCaptcha;
 use Sunlight\Core;
 use Sunlight\Extend;
-use Sunlight\Captcha\Text3dCaptcha;
 
 require '../../bootstrap.php';
 Core::init('../../../', array(
@@ -10,7 +10,7 @@ Core::init('../../../', array(
 ));
 
 // check GD
-if (!_checkGD('jpg')) {
+if (!\Sunlight\Picture::checkFormatSupport('jpg')) {
     Core::systemFailure(
         'Není dostupná GD knihovna pro generování obrázků nebo nepodporuje JPG formát.',
         'The GD library needed to generate JPG images is not available or does not support this format.'
@@ -18,7 +18,7 @@ if (!_checkGD('jpg')) {
 }
 
 // fetch code
-$captchaNumber = _get('n');
+$captchaNumber = \Sunlight\Util\Request::get('n');
 
 if (!empty($captchaNumber) && isset($_SESSION['captcha_code'][$captchaNumber])) {
     list($captchaCode, $captchaDrawn) = $_SESSION['captcha_code'][$captchaNumber];
@@ -55,7 +55,7 @@ Extend::call('captcha.render.resize', array(
     'options' => &$captchaResizeOptions,
 ));
 
-$resizedCaptcha = _pictureResize($captcha, $captchaResizeOptions);
+$resizedCaptcha = \Sunlight\Picture::resize($captcha, $captchaResizeOptions);
 
 if (!$resizedCaptcha['status']) {
     throw new \RuntimeException('Could not resize CAPTCHA image');

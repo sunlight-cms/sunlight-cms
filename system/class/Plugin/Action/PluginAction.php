@@ -44,7 +44,7 @@ abstract class PluginAction extends Action
      */
     protected function isConfirmed()
     {
-        return _post('_plugin_action_confirmation') === md5(get_called_class());
+        return \Sunlight\Util\Request::post('_plugin_action_confirmation') === md5(get_called_class());
     }
 
     /**
@@ -74,7 +74,7 @@ abstract class PluginAction extends Action
     <p class="bborder"><?php echo $message ?></p>
 
     <input type="submit" value="<?php echo $buttonText ?>">
-    <?php echo _xsrfProtect() ?>
+    <?php echo \Sunlight\Xsrf::getInput() ?>
 </form>
 <?php
         }));

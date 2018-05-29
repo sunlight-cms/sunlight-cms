@@ -17,5 +17,5 @@ return function ($id = null, $text = null, $nove_okno = false)
         $query = array('slug' => null, 'cat_slug' => null);
     }
 
-    return "<a href='" . _linkArticle($id, $query['slug'], $query['cat_slug']) . "'" . ($nove_okno ? ' target="_blank"' : '') . ">" . $text . "</a>";
+    return "<a href='" . \Sunlight\Router::article($id, $query['slug'], $query['cat_slug']) . "'" . ($nove_okno ? ' target="_blank"' : '') . ">" . $text . "</a>";
 };

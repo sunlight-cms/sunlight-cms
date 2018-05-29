@@ -448,7 +448,7 @@ abstract class Form
         // konec formulare
         $output .= $options['form_append'];
         if (!$options['embedded']) {
-            $output .= _xsrfProtect();
+            $output .= \Sunlight\Xsrf::getInput();
             $output .= "\n</form>\n";
         }
 

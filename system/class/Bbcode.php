@@ -298,7 +298,7 @@ abstract class Bbcode
             case 'url':
                 if ($buffer !== '') {
                     $url = trim($arg !== '' ? $arg : $buffer);
-                    $url = _isSafeUrl($url) ? _addSchemeToUrl($url) : '#';
+                    $url = \Sunlight\Util\UrlHelper::isSafe($url) ? \Sunlight\Util\UrlHelper::addScheme($url) : '#';
 
                     return '<a href="' . $url . '" rel="nofollow" target="_blank">' . $buffer . '</a>';
                 }
@@ -333,8 +333,8 @@ abstract class Bbcode
 
             case 'img':
                 $buffer = trim($buffer);
-                if ($buffer !== '' && _isSafeUrl($buffer)) {
-                    return '<img src="' . _addSchemeToUrl($buffer) . '" alt="img" class="bbcode-img">';
+                if ($buffer !== '' && \Sunlight\Util\UrlHelper::isSafe($buffer)) {
+                    return '<img src="' . \Sunlight\Util\UrlHelper::addScheme($buffer) . '" alt="img" class="bbcode-img">';
                 }
                 break;
 

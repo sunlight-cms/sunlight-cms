@@ -45,13 +45,13 @@ if (isset($admin_modules[$admin_current_module])) {
             Extend::call('admin.mod.' . $admin_current_module . '.after', $extend_args);
             Extend::call('admin.mod.after', $extend_args);
         } else {
-            $output .= _msg(_msg_warn, _lang('admin.moduleunavailable'));
+            $output .= \Sunlight\Message::render(_msg_warn, _lang('admin.moduleunavailable'));
         }
     } else {
         // pristup odepren
-        $output .= '<h1>' . _lang('global.error') . "</h1>\n" . _msg(_msg_warn, _lang('global.accessdenied'));
+        $output .= '<h1>' . _lang('global.error') . "</h1>\n" . \Sunlight\Message::render(_msg_warn, _lang('global.accessdenied'));
     }
 } else {
     // modul neexistuje
-    $output .= '<h1>' . _lang('global.error404.title') . "</h1>\n" . _msg(_msg_warn, _lang('global.error404'));
+    $output .= '<h1>' . _lang('global.error404.title') . "</h1>\n" . \Sunlight\Message::render(_msg_warn, _lang('global.error404'));
 }

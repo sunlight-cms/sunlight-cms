@@ -22,7 +22,7 @@ class Gallery
             $fullUrl = $img['full'];
             $fullFile = null;
         } else {
-            $fullUrl = _link($img['full']);
+            $fullUrl = \Sunlight\Router::link($img['full']);
             $fullFile = _root . $img['full'];
         }
 
@@ -30,10 +30,10 @@ class Gallery
             if (UrlHelper::isAbsolute($img['prev'])) {
                 $prevUrl = $img['prev'];
             } else {
-                $prevUrl = _link($img['prev']);
+                $prevUrl = \Sunlight\Router::link($img['prev']);
             }
         } elseif ($fullFile !== null) {
-            $prevUrl = _linkFile(_pictureThumb($fullFile, array('x' => $width, 'y' => $height)));
+            $prevUrl = \Sunlight\Router::file(\Sunlight\Picture::getThumbnail($fullFile, array('x' => $width, 'y' => $height)));
         } else {
             $prevUrl = $fullUrl;
         }

@@ -13,7 +13,7 @@ $message = "";
 
 $selectTime = function ($name) {
     $opts = array(1, 2, 4, 8, 25, 52, 104);
-    $active = (isset($_POST[$name]) ? (int) _post($name) : 25);
+    $active = (isset($_POST[$name]) ? (int) \Sunlight\Util\Request::post($name) : 25);
     $output = "<select name='" . $name . "'>\n";
     for($i = 0; isset($opts[$i]); ++$i) {
         $output .= "<option value='" . $opts[$i] . "'" . (($active === $opts[$i]) ? " selected" : '') . ">" . _lang('admin.other.cleanup.time.' . $opts[$i]) . "</option>\n";
@@ -27,7 +27,7 @@ $selectTime = function ($name) {
 
 if (isset($_POST['action'])) {
 
-    switch (_post('action')) {
+    switch (\Sunlight\Util\Request::post('action')) {
 
             // cistka
         case 1:
@@ -41,11 +41,11 @@ if (isset($_POST['action'])) {
             }
 
             // vzkazy
-            $messages = _post('messages');
+            $messages = \Sunlight\Util\Request::post('messages');
             switch ($messages) {
 
                 case 1:
-                    $messages_time = time() - (_post('messages-time') * 7 * 24 * 60 * 60);
+                    $messages_time = time() - (\Sunlight\Util\Request::post('messages-time') * 7 * 24 * 60 * 60);
                     if ($prev) {
                         $prev_count['mod.messages'] = DB::count(_pm_table, 'update_time<' . $messages_time);
                     } else {
@@ -65,14 +65,14 @@ if (isset($_POST['action'])) {
             }
 
             // komentare, prispevky, iplog
-            if (_checkboxLoad("comments")) {
+            if (\Sunlight\Util\Form::loadCheckbox("comments")) {
                 if ($prev) {
                     $prev_count['admin.settings.functions.comments'] = DB::count(_posts_table, 'type=' . _post_section_comment . ' OR type=' . _post_article_comment);
                 } else {
                     DB::delete(_posts_table, 'type=' . _post_section_comment . ' OR type=' . _post_article_comment);
                 }
             }
-            if (_checkboxLoad("posts")) {
+            if (\Sunlight\Util\Form::loadCheckbox("posts")) {
                 if ($prev) {
                     $prev_count['global.posts'] = DB::count(_posts_table, 'type IN(' . DB::arr(array(_post_book_entry, _post_shoutbox_entry, _post_forum_topic)) . ')');
                 } else {
@@ -83,21 +83,21 @@ if (isset($_POST['action'])) {
                     ));
                 }
             }
-            if (_checkboxLoad("plugin_posts")) {
+            if (\Sunlight\Util\Form::loadCheckbox("plugin_posts")) {
                 if ($prev) {
                     $prev_count['admin.other.cleanup.other.plugin_posts.label'] = DB::count(_posts_table, 'type=' . _post_plugin);
                 } else {
                     DB::delete(_posts_table, 'type=' . _post_plugin);
                 }
             }
-            if (_checkboxLoad("iplog")) {
+            if (\Sunlight\Util\Form::loadCheckbox("iplog")) {
                 if ($prev) {
                     $prev_count['admin.iplog'] = DB::count(_iplog_table);
                 } else {
                     DB::query("TRUNCATE TABLE " . _iplog_table);
                 }
             }
-            if (_checkboxLoad("user_activation")) {
+            if (\Sunlight\Util\Form::loadCheckbox("user_activation")) {
                 if ($prev) {
                     $prev_count['mod.reg.confirm'] = DB::count(_user_activation_table);
                 } else {
@@ -106,10 +106,10 @@ if (isset($_POST['action'])) {
             }
 
             // uzivatele
-            if (_checkboxLoad("users")) {
+            if (\Sunlight\Util\Form::loadCheckbox("users")) {
 
-                $users_time = time() - (_post('users-time') * 7 * 24 * 60 * 60);
-                $users_group = (int) _post('users-group');
+                $users_time = time() - (\Sunlight\Util\Request::post('users-time') * 7 * 24 * 60 * 60);
+                $users_group = (int) \Sunlight\Util\Request::post('users-group');
                 if ($users_group == -1) {
                     $users_group = "";
                 } else {
@@ -121,7 +121,7 @@ if (isset($_POST['action'])) {
                 } else {
                     $userids = DB::query("SELECT id FROM " . _users_table . " WHERE id!=0 AND activitytime<" . $users_time . $users_group);
                     while($userid = DB::row($userids)) {
-                        _deleteUser($userid['id']);
+                        \Sunlight\User::delete($userid['id']);
                     }
                     DB::free($userids);
                 }
@@ -129,7 +129,7 @@ if (isset($_POST['action'])) {
             }
 
             // udrzba
-            if (_checkboxLoad('maintenance') && !$prev) {
+            if (\Sunlight\Util\Form::loadCheckbox('maintenance') && !$prev) {
                 Extend::call('cron.maintenance', array(
                     'last' => null,
                     'name' => 'maintenance',
@@ -139,7 +139,7 @@ if (isset($_POST['action'])) {
             }
 
             // optimalizace
-            if (_checkboxLoad('optimize') && !$prev) {
+            if (\Sunlight\Util\Form::loadCheckbox('optimize') && !$prev) {
                 foreach (DB::getTablesByPrefix() as $table) {
                     DB::query('OPTIMIZE TABLE `' . $table . '`');
                 }
@@ -148,7 +148,7 @@ if (isset($_POST['action'])) {
             // zprava
             if ($prev) {
                 if (empty($prev_count)) {
-                    $message = _msg(_msg_warn, _lang('global.noaction'));
+                    $message = \Sunlight\Message::render(_msg_warn, _lang('global.noaction'));
                     break;
                 }
                 $message = "<br><ul>\n";
@@ -157,21 +157,21 @@ if (isset($_POST['action'])) {
                 }
                 $message .= "</ul>";
             } else {
-                $message = _msg(_msg_ok, _lang('global.done'));
+                $message = \Sunlight\Message::render(_msg_ok, _lang('global.done'));
             }
 
             break;
 
             // deinstalace
         case 2:
-            $pass = _post('pass');
-            $confirm = _checkboxLoad("confirm");
+            $pass = \Sunlight\Util\Request::post('pass');
+            $confirm = \Sunlight\Util\Form::loadCheckbox("confirm");
             if ($confirm) {
                 $right_pass = DB::queryRow("SELECT password FROM " . _users_table . " WHERE id=0");
                 if (Password::load($right_pass['password'])->match($pass)) {
 
                     // odhlaseni
-                    _userLogout();
+                    \Sunlight\User::logout();
 
                     // odstraneni tabulek
                     DatabaseLoader::dropTables(DB::getTablesByPrefix());
@@ -181,7 +181,7 @@ if (isset($_POST['action'])) {
                     exit;
 
                 } else {
-                    $message = _msg(_msg_warn, _lang('admin.other.cleanup.uninstall.badpass'));
+                    $message = \Sunlight\Message::render(_msg_warn, _lang('admin.other.cleanup.uninstall.badpass'));
                 }
             }
             break;
@@ -205,14 +205,14 @@ $output .= $message . "
 <td rowspan='2'>
   <fieldset>
   <legend>" . _lang('mod.messages') . "</legend>
-  <label><input type='radio' name='messages' value='0'" . _checkboxActivate(!isset($_POST['messages']) || _post('messages') == 0) . "> " . _lang('global.noaction') . "</label><br>
-  <label><input type='radio' name='messages' value='1'" . _checkboxActivate(isset($_POST['messages']) && _post('messages') == 1) . "> " . _lang('admin.other.cleanup.messages.1') . "</label> " . $selectTime("messages-time") . "<br>
-  <label><input type='radio' name='messages' value='2'" . _checkboxActivate(isset($_POST['messages']) && _post('messages') == 2) . "> " . _lang('admin.other.cleanup.messages.2') . "</label>
+  <label><input type='radio' name='messages' value='0'" . \Sunlight\Util\Form::activateCheckbox(!isset($_POST['messages']) || \Sunlight\Util\Request::post('messages') == 0) . "> " . _lang('global.noaction') . "</label><br>
+  <label><input type='radio' name='messages' value='1'" . \Sunlight\Util\Form::activateCheckbox(isset($_POST['messages']) && \Sunlight\Util\Request::post('messages') == 1) . "> " . _lang('admin.other.cleanup.messages.1') . "</label> " . $selectTime("messages-time") . "<br>
+  <label><input type='radio' name='messages' value='2'" . \Sunlight\Util\Form::activateCheckbox(isset($_POST['messages']) && \Sunlight\Util\Request::post('messages') == 2) . "> " . _lang('admin.other.cleanup.messages.2') . "</label>
   </fieldset>
 
   <fieldset>
   <legend>" . _lang('admin.users.users') . "</legend>
-  <p class='bborder'><label><input type='checkbox' name='users' value='1'" . _checkboxActivate(isset($_POST['users'])) . "> " . _lang('admin.other.cleanup.users') . "</label></p>
+  <p class='bborder'><label><input type='checkbox' name='users' value='1'" . \Sunlight\Util\Form::activateCheckbox(isset($_POST['users'])) . "> " . _lang('admin.other.cleanup.users') . "</label></p>
   <table>
 
   <tr>
@@ -222,7 +222,7 @@ $output .= $message . "
 
   <tr>
   <th>" . _lang('admin.other.cleanup.users.group') . "</th>
-  <td>" . \Sunlight\Admin\Admin::userSelect("users-group", (isset($_POST['users-group']) ? (int) _post('users-group') : -1), "1", null, _lang('global.all'), true) . "</td>
+  <td>" . \Sunlight\Admin\Admin::userSelect("users-group", (isset($_POST['users-group']) ? (int) \Sunlight\Util\Request::post('users-group') : -1), "1", null, _lang('global.all'), true) . "</td>
   </tr>
 
   </table>
@@ -234,11 +234,11 @@ $output .= $message . "
   <legend>" . _lang('global.other') . "</legend>
   <label><input type='checkbox' name='maintenance' value='1' checked> " . _lang('admin.other.cleanup.other.maintenance') . "</label><br>
   <label><input type='checkbox' name='optimize' value='1' checked> " . _lang('admin.other.cleanup.other.optimize') . "</label><br>
-  <label><input type='checkbox' name='comments' value='1'" . _checkboxActivate(isset($_POST['comments'])) . "> " . _lang('admin.other.cleanup.other.comments') . "</label><br>
-  <label><input type='checkbox' name='posts' value='1'" . _checkboxActivate(isset($_POST['posts'])) . "> " . _lang('admin.other.cleanup.other.posts') . "</label><br>
-  <label><input type='checkbox' name='plugin_posts' value='1'" . _checkboxActivate(isset($_POST['plugin_posts'])) . "> " . _lang('admin.other.cleanup.other.plugin_posts') . "</label><br>
-  <label><input type='checkbox' name='iplog' value='1'" . _checkboxActivate(isset($_POST['iplog'])) . "> " . _lang('admin.other.cleanup.other.iplog') . "</label><br>
-  <label><input type='checkbox' name='user_activation' value='1'" . _checkboxActivate(isset($_POST['user_activation'])) . "> " . _lang('admin.other.cleanup.other.user_activation') . "</label>
+  <label><input type='checkbox' name='comments' value='1'" . \Sunlight\Util\Form::activateCheckbox(isset($_POST['comments'])) . "> " . _lang('admin.other.cleanup.other.comments') . "</label><br>
+  <label><input type='checkbox' name='posts' value='1'" . \Sunlight\Util\Form::activateCheckbox(isset($_POST['posts'])) . "> " . _lang('admin.other.cleanup.other.posts') . "</label><br>
+  <label><input type='checkbox' name='plugin_posts' value='1'" . \Sunlight\Util\Form::activateCheckbox(isset($_POST['plugin_posts'])) . "> " . _lang('admin.other.cleanup.other.plugin_posts') . "</label><br>
+  <label><input type='checkbox' name='iplog' value='1'" . \Sunlight\Util\Form::activateCheckbox(isset($_POST['iplog'])) . "> " . _lang('admin.other.cleanup.other.iplog') . "</label><br>
+  <label><input type='checkbox' name='user_activation' value='1'" . \Sunlight\Util\Form::activateCheckbox(isset($_POST['user_activation'])) . "> " . _lang('admin.other.cleanup.other.user_activation') . "</label>
   </fieldset>
 </td>
 
@@ -255,7 +255,7 @@ $output .= $message . "
 
 </table>
 
-" . _xsrfProtect() . "</form>
+" . \Sunlight\Xsrf::getInput() . "</form>
 </fieldset>
 <br>
 
@@ -268,6 +268,6 @@ $output .= $message . "
 <p><label><input type='checkbox' name='confirm' value='1'> " . _lang('admin.other.cleanup.uninstall.confirm', array('*dbname*' => _dbname)) . "</label></p>
 <p><strong>" . _lang('admin.other.cleanup.uninstall.pass') . ":</strong>  <input type='password' class='inputsmall' name='pass' autocomplete='off'></p>
 <input type='submit' value='" . _lang('global.do') . "' onclick='return Sunlight.confirm();'>
-" . _xsrfProtect() . "</form>
+" . \Sunlight\Xsrf::getInput() . "</form>
 </fieldset>
 ";

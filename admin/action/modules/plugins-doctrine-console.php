@@ -12,7 +12,7 @@ $output .= _buffer(function () { ?>
         <input type="text" name="input" class="inputbig cli-input">
         <input type="submit" value="<?php echo _lang('global.send') ?>" class="button">
         <a href="index.php?p=plugins-doctrine-console"><?php echo _lang('global.reset') ?></a>
-        <?php echo _xsrfProtect() ?>
+        <?php echo \Sunlight\Xsrf::getInput() ?>
     </form>
 <?php });
 
@@ -21,7 +21,7 @@ $cli->setAutoExit(false);
 $cli->setTerminalDimensions(160, 1000);
 $cli->setCatchExceptions(false);
 
-$cliInput = new StringInput(_post('input', ''));
+$cliInput = new StringInput(\Sunlight\Util\Request::post('input', ''));
 $cliOutput = new BufferedOutput();
 
 $e = null;

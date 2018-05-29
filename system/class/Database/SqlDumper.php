@@ -29,7 +29,7 @@ class SqlDumper
      */
     function dump()
     {
-        $tmpFile = _tmpFile();
+        $tmpFile = \Sunlight\Util\Filesystem::createTmpFile();
         $handle = null;
 
         try {

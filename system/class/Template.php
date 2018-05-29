@@ -25,7 +25,7 @@ abstract class Template
 
         // pouzit argument z GET
         // (moznost pro skripty mimo index)
-        $request_template = _get('current_template');
+        $request_template = \Sunlight\Util\Request::get('current_template');
         if ($request_template !== null && TemplateService::templateExists($request_template)) {
             return TemplateService::getTemplate($request_template);
         }
@@ -71,17 +71,17 @@ abstract class Template
         // pripravit css
         $css = array();
         foreach ($_template->getOption('css') as $key => $path) {
-            $css[$key] = _link($path);
+            $css[$key] = \Sunlight\Router::link($path);
         }
 
         // pripravit js
         $js = array(
-            'jquery' => _link('system/js/jquery.js'),
-            'sunlight' => _link('system/js/sunlight.js'),
-            'rangyinputs' => _link('system/js/rangyinputs.js'),
+            'jquery' => \Sunlight\Router::link('system/js/jquery.js'),
+            'sunlight' => \Sunlight\Router::link('system/js/sunlight.js'),
+            'rangyinputs' => \Sunlight\Router::link('system/js/rangyinputs.js'),
         );
         foreach ($_template->getOption('js') as $key => $path) {
-            $js[$key] = _link($path);
+            $js[$key] = \Sunlight\Router::link($path);
         }
 
         // titulek
@@ -112,14 +112,14 @@ abstract class Template
 <meta name="robots" content="index, follow">'
             . Extend::buffer('tpl.head.meta')
             . ($_template->getOption('responsive') ? "\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">" : '')
-            . _headAssets($assets);
+            . \Sunlight\Generic::renderHeadAssets($assets);
 
         if (_rss) {
             echo '
-<link rel="alternate" type="application/rss+xml" href="' . _linkRSS(-1, _rss_latest_articles) . '" title="' . _lang('rss.recentarticles') . '">';
+<link rel="alternate" type="application/rss+xml" href="' . \Sunlight\Router::rss(-1, _rss_latest_articles) . '" title="' . _lang('rss.recentarticles') . '">';
             if (_comments) {
                 echo '
-<link rel="alternate" type="application/rss+xml" href="' . _linkRSS(-1, _rss_latest_comments) . '" title="' . _lang('rss.recentcomments') . '">';
+<link rel="alternate" type="application/rss+xml" href="' . \Sunlight\Router::rss(-1, _rss_latest_comments) . '" title="' . _lang('rss.recentcomments') . '">';
             }
         }
 
@@ -351,7 +351,7 @@ abstract class Template
     {
         return
             "<li><a href=\"https://sunlight-cms.org/\">SunLight CMS</a></li>\n"
-            . ((!_adminlinkprivate || (_logged_in && _priv_administration)) ? '<li><a href="' . _link('admin/') . '">' . _lang('global.adminlink') . "</a></li>\n" : '');
+            . ((!_adminlinkprivate || (_logged_in && _priv_administration)) ? '<li><a href="' . \Sunlight\Router::link('admin/') . '">' . _lang('global.adminlink') . "</a></li>\n" : '');
     }
 
     /**
@@ -518,7 +518,7 @@ abstract class Template
             foreach (PageManager::getPath($rootId, $rootLevel) as $page) {
                 $breadcrumbs[] = array(
                     'title' => $page['title'],
-                    'url' => _linkRoot($page['id'], $page['slug']),
+                    'url' => \Sunlight\Router::root($page['id'], $page['slug']),
                 );
             }
         }
@@ -614,13 +614,13 @@ abstract class Template
         if (!_logged_in) {
             // prihlaseni
             $items['login'] = array(
-                _linkModule('login', 'login_form_return=' . rawurlencode($_SERVER['REQUEST_URI'])),
+                \Sunlight\Router::module('login', 'login_form_return=' . rawurlencode($_SERVER['REQUEST_URI'])),
                 _lang('usermenu.login'),
             );
             if (_registration) {
                 // registrace
                 $items['reg'] = array(
-                    _linkModule('reg'),
+                    \Sunlight\Router::module('reg'),
                     _lang('usermenu.registration'),
                 );
             }
@@ -628,35 +628,35 @@ abstract class Template
             // profil
             if ($profileLink) {
                 $items['profile'] = array(
-                    _linkModule('profile', 'id=' . _user_name),
+                    \Sunlight\Router::module('profile', 'id=' . _user_name),
                     _lang('usermenu.profile'),
                 );
             }
 
             // vzkazy
             if (_messages) {
-                $messages_count = _userGetUnreadPmCount();
+                $messages_count = \Sunlight\User::getUnreadPmCount();
                 if ($messages_count != 0) {
                     $messages_count = " [{$messages_count}]";
                 } else {
                     $messages_count = '';
                 }
                 $items['messages'] = array(
-                    _linkModule('messages'),
+                    \Sunlight\Router::module('messages'),
                     _lang('usermenu.messages') . $messages_count,
                 );
             }
 
             // nastaveni
             $items['settings'] = array(
-                _linkModule('settings'),
+                \Sunlight\Router::module('settings'),
                 _lang('usermenu.settings'),
             );
 
             // administrace
             if ($adminLink && _priv_administration) {
                 $items['admin'] = array(
-                    _link('admin/'),
+                    \Sunlight\Router::link('admin/'),
                     _lang('global.adminlink')
                 );
             }
@@ -665,7 +665,7 @@ abstract class Template
         if (_ulist && (!_notpublicsite || _logged_in)) {
             // seznam uzivatelu
             $items['ulist'] = array(
-                _linkModule('ulist'),
+                \Sunlight\Router::module('ulist'),
                 _lang('usermenu.ulist'),
             );
         }
@@ -673,7 +673,7 @@ abstract class Template
         // odhlaseni
         if (_logged_in) {
             $items['logout'] = array(
-                _xsrfLink(_link("system/script/logout.php?_return=" . rawurlencode($_SERVER['REQUEST_URI']))),
+                \Sunlight\Xsrf::addToUrl(\Sunlight\Router::link("system/script/logout.php?_return=" . rawurlencode($_SERVER['REQUEST_URI']))),
                 _lang('usermenu.logout'),
             );
         }

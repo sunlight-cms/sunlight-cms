@@ -346,7 +346,7 @@ class BackupBuilder
             throw new \InvalidArgumentException('Invalid type');
         }
 
-        $tmpFile = _tmpFile();
+        $tmpFile = \Sunlight\Util\Filesystem::createTmpFile();
         $backup =  $this->createBackup($tmpFile->getPathname());
 
         try {

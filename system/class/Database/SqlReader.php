@@ -69,7 +69,7 @@ class SqlReader
      */
     static function fromFile($filepath, $chunkSize = null)
     {
-        _ensureFileExists($filepath);
+        \Sunlight\Util\Filesystem::ensureFileExists($filepath);
 
         return static::fromStream(
             fopen($filepath, 'r'),

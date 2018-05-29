@@ -63,7 +63,7 @@ abstract class Environment
     {
         $limit = static::getUploadLimit();
         if ($limit !== null) {
-            return '<small>' . _lang('global.uploadlimit') . ': <em>' . _formatFilesize($limit) . '</em></small>';
+            return '<small>' . _lang('global.uploadlimit') . ': <em>' . \Sunlight\Generic::renderFileSize($limit) . '</em></small>';
         } else {
             return '';
         }

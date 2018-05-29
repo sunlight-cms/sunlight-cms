@@ -42,13 +42,13 @@ if (strncmp($_url_path, $_system_url_path, strlen($_system_url_path)) === 0) {
 
     // presmerovat /index.php na /
     if ($_subpath === '/index.php' && empty($_url->query)) {
-        _redirectHeader(Core::$url . '/');
+        \Sunlight\Response::redirect(Core::$url . '/');
         exit;
     }
 } else {
     // neplatna cesta
     header('Content-Type: text/plain; charset=UTF-8');
-    _notFoundHeader();
+    \Sunlight\Response::notFound();
 
     echo _lang('global.error404.title');
     exit;
@@ -60,7 +60,7 @@ $_index = array(
     'id' => null, // ciselne ID
     'slug' => null, // identifikator (string)
     'segment' => null, // cast identifikatoru, ktera byla rozpoznana jako segment (string)
-    'url' => _link(''), // zakladni adresa
+    'url' => \Sunlight\Router::link(''), // zakladni adresa
     'title' => null, // titulek - <title>
     'heading' => null, // nadpis - <h1> (pokud je null, pouzije se title)
     'heading_enabled' => true, // vykreslit nadpis 1/0
@@ -99,12 +99,12 @@ Extend::call('index.init', array('index' => &$_index));
 
 $output = &$_index['output'];
 
-if (empty($_POST) || _xsrfCheck()) {
+if (empty($_POST) || \Sunlight\Xsrf::check()) {
     // zjisteni typu
     if (isset($_GET['m'])) {
 
         // modul
-        $_index['slug'] = _get('m');
+        $_index['slug'] = \Sunlight\Util\Request::get('m');
         $_index['is_rewritten'] = !$_url->has('m');
         $_index['is_module'] = true;
 
@@ -123,11 +123,11 @@ if (empty($_POST) || _xsrfCheck()) {
         // stranka / plugin
         if (_pretty_urls && isset($_GET['_rwp'])) {
             // hezka adresa
-            $_index['slug'] = _get('_rwp');
+            $_index['slug'] = \Sunlight\Util\Request::get('_rwp');
             $_index['is_rewritten'] = true;
         } elseif (isset($_GET['p'])) {
             // parametr
-            $_index['slug'] = _get('p');
+            $_index['slug'] = \Sunlight\Util\Request::get('p');
         }
 
         if ($_index['slug'] !== null) {
@@ -174,13 +174,13 @@ Extend::call('index.prepare', array('index' => &$_index));
 if ($_index['redirect_to'] !== null) {
     // presmerovani
     $_index['template_enabled'] = false;
-    _redirectHeader($_index['redirect_to'], $_index['redirect_to_permanent']);
+    \Sunlight\Response::redirect($_index['redirect_to'], $_index['redirect_to_permanent']);
 } elseif (!$_index['is_found']) {
     // stranka nenelezena
     require _root . 'system/action/not_found.php';
 } elseif (!$_index['is_accessible']) {
     // pristup odepren
-    _unauthorizedHeader();
+    \Sunlight\Response::unauthorized();
     require _root . 'system/action/login_required.php';
 } elseif ($_index['is_guest_only']) {
     // pristup pouze pro neprihl. uziv

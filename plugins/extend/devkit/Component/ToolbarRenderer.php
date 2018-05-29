@@ -417,7 +417,7 @@ class ToolbarRenderer
         }
 
         ?>
-<a href="<?php echo _linkModule('login') ?>">
+<a href="<?php echo \Sunlight\Router::module('login') ?>">
     <div class="devkit-section devkit-login" title="<?php echo $loginInfo ?>">
         <?php echo _e($loginName) ?>
     </div>

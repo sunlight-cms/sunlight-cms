@@ -10,7 +10,7 @@ defined('_root') or exit;
 
 /* --- priprava --- */
 
-$saved = (bool) _get('saved');
+$saved = (bool) \Sunlight\Util\Request::get('saved');
 
 // nacteni nastaveni
 $settings = array();
@@ -202,10 +202,10 @@ if (!empty($_POST)) {
             // nacist odeslanou hodnotu
             if ($settings[$item['name']]['format'] === 'bool') {
                 // checkbox
-                $value = _checkboxLoad($item['name']) ? '1' : '0';
+                $value = \Sunlight\Util\Form::loadCheckbox($item['name']) ? '1' : '0';
             } else {
                 // hodnota
-                $value = trim(_post($item['name'], ''));
+                $value = trim(\Sunlight\Util\Request::post($item['name'], ''));
                 switch ($settings[$item['name']]['format']) {
                     case 'int':
                         $value = (int) $value;
@@ -275,7 +275,7 @@ if (!empty($_POST)) {
 
 /* ---  vystup  --- */
 
-$output .= ($saved ? _msg(_msg_ok, _lang('admin.settings.saved')) : '') . '
+$output .= ($saved ? \Sunlight\Message::render(_msg_ok, _lang('admin.settings.saved')) : '') . '
 
 <form action="index.php?p=settings" method="post">
 
@@ -365,7 +365,7 @@ foreach ($editable_settings as $settings_category => $settings_category_data) {
                         $input = "<input type=\"number\"{$inputAttrs} value=\"" . _e($value) . "\">";
                         break;
                     case 'bool':
-                        $input = "<input type=\"checkbox\"{$inputAttrs} value=\"1\"" . _checkboxActivate($value) . ">";
+                        $input = "<input type=\"checkbox\"{$inputAttrs} value=\"1\"" . \Sunlight\Util\Form::activateCheckbox($value) . ">";
                         break;
                     case 'html':
                     default:
@@ -420,7 +420,7 @@ foreach ($editable_settings as $settings_category => $settings_category_data) {
 $output .= '
 </div>
 
-' . _xsrfProtect() . '</form>
+' . \Sunlight\Xsrf::getInput() . '</form>
 
 <script>
 (function () {

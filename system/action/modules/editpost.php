@@ -15,56 +15,56 @@ if (!_logged_in) {
 
 $message = '';
 $form = true;
-$id = (int) _get('id');
-list($columns, $joins, $cond) = _postFilter('post');
-$userQuery = _userQuery('post.author');
+$id = (int) \Sunlight\Util\Request::get('id');
+list($columns, $joins, $cond) = \Sunlight\Post::createFilter('post');
+$userQuery = \Sunlight\User::createQuery('post.author');
 $columns .= ',' . $userQuery['column_list'];
 $joins .= ' ' . $userQuery['joins'];
 $query = DB::queryRow("SELECT " . $columns . " FROM " . _posts_table . " post " . $joins . " WHERE post.id=" . $id . " AND " . $cond);
 if ($query !== false) {
-    if (_postAccess($userQuery, $query)) {
+    if (\Sunlight\Post::checkAccess($userQuery, $query)) {
         $bbcode = true;
         Extend::call('mod.editpost.backlink', array('backlink' => &$_index['backlink'], 'post' => $query));
 
         if ($_index['backlink'] === null) {
-            list($url) = _linkPost($query, false);
+            list($url) = \Sunlight\Router::post($query, false);
 
             switch ($query['type']) {
                 case _post_section_comment:
-                    $_index['backlink'] = _addParamsToUrl($url, "page=" . _resultPagingGetItemPage(_commentsperpage, _posts_table, "id>" . $query['id'] . " AND type=" . _post_section_comment . " AND xhome=-1 AND home=" . $query['home']), false) . "#post-" . $query['id'];
+                    $_index['backlink'] = \Sunlight\Util\UrlHelper::appendParams($url, "page=" . \Sunlight\Paginator::getItemPage(_commentsperpage, _posts_table, "id>" . $query['id'] . " AND type=" . _post_section_comment . " AND xhome=-1 AND home=" . $query['home']), false) . "#post-" . $query['id'];
                     break;
                 case _post_article_comment:
-                    $_index['backlink'] = _addParamsToUrl($url, "page=" . _resultPagingGetItemPage(_commentsperpage, _posts_table, "id>" . $query['id'] . " AND type=" . _post_article_comment . " AND xhome=-1 AND home=" . $query['home']), false) . "#post-" . $query['id'];
+                    $_index['backlink'] = \Sunlight\Util\UrlHelper::appendParams($url, "page=" . \Sunlight\Paginator::getItemPage(_commentsperpage, _posts_table, "id>" . $query['id'] . " AND type=" . _post_article_comment . " AND xhome=-1 AND home=" . $query['home']), false) . "#post-" . $query['id'];
                     break;
                 case _post_book_entry:
                     $postsperpage = DB::queryRow("SELECT var2 FROM " . _root_table . " WHERE id=" . $query['home']);
                     if ($postsperpage['var2'] === null) {
                         $postsperpage['var2'] = _commentsperpage;
                     }
-                    $_index['backlink'] = _addParamsToUrl($url, "page=" . _resultPagingGetItemPage($postsperpage['var2'], _posts_table, "id>" . $query['id'] . " AND type=" . _post_book_entry . " AND xhome=-1 AND home=" . $query['home']), false) . "#post-" . $query['id'];
+                    $_index['backlink'] = \Sunlight\Util\UrlHelper::appendParams($url, "page=" . \Sunlight\Paginator::getItemPage($postsperpage['var2'], _posts_table, "id>" . $query['id'] . " AND type=" . _post_book_entry . " AND xhome=-1 AND home=" . $query['home']), false) . "#post-" . $query['id'];
                     break;
                 case _post_shoutbox_entry:
                     $bbcode = false;
                     break;
                 case _post_forum_topic:
                     if ($query['xhome'] == -1) {
-                        if (!_checkboxLoad("delete")) {
+                        if (!\Sunlight\Util\Form::loadCheckbox("delete")) {
                             $_index['backlink'] = $url;
                         } else {
-                            $_index['backlink'] = _linkRoot($query['home'], $query['root_slug']);
+                            $_index['backlink'] = \Sunlight\Router::root($query['home'], $query['root_slug']);
                         }
                     } else {
-                        $_index['backlink'] = _addParamsToUrl($url, "page=" . _resultPagingGetItemPage(_commentsperpage, _posts_table, "id<" . $query['id'] . " AND type=" . _post_forum_topic . " AND xhome=" . $query['xhome'] . " AND home=" . $query['home']), false) . "#post-" . $query['id'];
+                        $_index['backlink'] = \Sunlight\Util\UrlHelper::appendParams($url, "page=" . \Sunlight\Paginator::getItemPage(_commentsperpage, _posts_table, "id<" . $query['id'] . " AND type=" . _post_forum_topic . " AND xhome=" . $query['xhome'] . " AND home=" . $query['home']), false) . "#post-" . $query['id'];
                     }
                     break;
 
                 case _post_pm:
-                    $_index['backlink'] = _addParamsToUrl($url, 'page=' . _resultPagingGetItemPage(_messagesperpage, _posts_table, 'id<' . $query['id'] . ' AND type=' . _post_pm . ' AND home=' . $query['home']), false) . '#post-' . $query['id'];
+                    $_index['backlink'] = \Sunlight\Util\UrlHelper::appendParams($url, 'page=' . \Sunlight\Paginator::getItemPage(_messagesperpage, _posts_table, 'id<' . $query['id'] . ' AND type=' . _post_pm . ' AND home=' . $query['home']), false) . '#post-' . $query['id'];
                     break;
 
                 case _post_plugin:
                     if ($url === '') {
-                        $output .= _msg(_msg_err, sprintf(_lang('plugin.error'), $query['flag']));
+                        $output .= \Sunlight\Message::render(_msg_err, sprintf(_lang('plugin.error'), $query['flag']));
 
                         return;
                     }
@@ -88,7 +88,7 @@ if ($query !== false) {
 
 if (isset($_POST['text'])) {
 
-    if (!_checkboxLoad("delete")) {
+    if (!\Sunlight\Util\Form::loadCheckbox("delete")) {
 
         /* -  uprava  - */
 
@@ -96,7 +96,7 @@ if (isset($_POST['text'])) {
 
         // jmeno hosta
         if ($query['guest'] != '') {
-            $guest = _slugify(_post('guest'), false);
+            $guest = \Sunlight\Util\StringManipulator::slugify(\Sunlight\Util\Request::post('guest'), false);
             if (mb_strlen($guest) > 24) {
                 $guest = mb_substr($guest, 0, 24);
             }
@@ -104,9 +104,9 @@ if (isset($_POST['text'])) {
             $guest = "";
         }
 
-        $text = _cutHtml(_e(trim(_post('text'))), ($query['type'] != _post_shoutbox_entry) ? 16384 : 255);
+        $text = \Sunlight\Util\Html::cut(_e(trim(\Sunlight\Util\Request::post('text'))), ($query['type'] != _post_shoutbox_entry) ? 16384 : 255);
         if ($query['xhome'] == -1 && in_array($query['type'], array(_post_forum_topic, _post_pm))) {
-            $subject = _cutHtml(_e(_wsTrim(_post('subject'))), 48);
+            $subject = \Sunlight\Util\Html::cut(_e(\Sunlight\Util\StringManipulator::trimExtraWhitespace(\Sunlight\Util\Request::post('subject'))), 48);
             if ($subject === '')  {
                 $subject = '-';
             }
@@ -135,12 +135,12 @@ if (isset($_POST['text'])) {
                     $update_data['guest'] = $guest;
                 }
                 DB::update(_posts_table, 'id=' . DB::val($id), $update_data);
-                $_index['redirect_to'] = _linkModule('editpost', 'id=' . $id . '&saved', false, true);
+                $_index['redirect_to'] = \Sunlight\Router::module('editpost', 'id=' . $id . '&saved', false, true);
 
                 return;
             }
         } else {
-            $message = _msg(_msg_warn, _lang('mod.editpost.failed'));
+            $message = \Sunlight\Message::render(_msg_warn, _lang('mod.editpost.failed'));
         }
 
     } else {
@@ -170,7 +170,7 @@ if (isset($_POST['text'])) {
             }
 
             // info
-            $message = _msg(_msg_ok, _lang('mod.editpost.deleted'));
+            $message = \Sunlight\Message::render(_msg_ok, _lang('mod.editpost.deleted'));
             $form = false;
 
        }
@@ -185,7 +185,7 @@ $_index['title'] = _lang('mod.editpost');
 
 // zprava
 if (isset($_GET['saved']) && $message == '') {
-    $message = _msg(_msg_ok, _lang('global.saved'));
+    $message = \Sunlight\Message::render(_msg_ok, _lang('global.saved'));
 }
 $output .= $message;
 
@@ -200,18 +200,18 @@ if ($form) {
         $inputs[] = array('label' => _lang((($query['type'] != _post_forum_topic) ? 'posts.subject' : 'posts.topic')), 'content' => "<input type='text' name='subject' class='inputmedium' maxlength='48' value='" . $query['subject'] . "'>");
     }
     $inputs[] = array('label' => _lang('posts.text'), 'content' => "<textarea name='text' class='areamedium' rows='5' cols='33'>" . $query['text'] . "</textarea>", 'top' => true);
-    $inputs[] = array('label' => '', 'content' => _getPostFormControls('postform', 'text', $bbcode));
+    $inputs[] = array('label' => '', 'content' => \Sunlight\PostForm::renderControls('postform', 'text', $bbcode));
 
-    $output .= _formOutput(
+    $output .= \Sunlight\Util\Form::render(
         array(
             'name' => 'postform',
-            'action' => _linkModule('editpost', 'id=' . $id, false),
+            'action' => \Sunlight\Router::module('editpost', 'id=' . $id, false),
             'submit_text' => _lang('global.save'),
-            'submit_append' => ' ' . _getPostFormPreviewButton('postform', 'text')
+            'submit_append' => ' ' . \Sunlight\PostForm::renderPreviewButton('postform', 'text')
                 . (($query['type'] != _post_pm || $query['xhome'] != -1) ? "<br><br><label><input type='checkbox' name='delete' value='1'> " . _lang('mod.editpost.delete') . "</label>" : ''),
         ),
         $inputs
     );
 
-    $output .= _jsLimitLength((($query['type'] != _post_shoutbox_entry) ? 16384 : 255), "postform", "text");
+    $output .= \Sunlight\Generic::jsLimitLength((($query['type'] != _post_shoutbox_entry) ? 16384 : 255), "postform", "text");
 }

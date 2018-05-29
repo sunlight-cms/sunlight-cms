@@ -5,5 +5,5 @@ defined('_root') or exit;
 $_index['title'] = _lang('xsrf.title');
 $_index['output'] = '';
 
-$_index['output'] .= _msg(_msg_err, _lang('xsrf.msg'));
-$_index['output'] .= _postRepeatForm();
+$_index['output'] .= \Sunlight\Message::render(_msg_err, _lang('xsrf.msg'));
+$_index['output'] .= \Sunlight\User::renderPostRepeatForm();

@@ -11,10 +11,10 @@ Core::init('../../../', array(
 /* ---  send  --- */
 
 // nacteni promennych
-$subject = trim(_post('subject'));
-$sender = trim(_post('sender'));
-$text = trim(_post('text'));
-$fid = (int) _post('fid');
+$subject = trim(\Sunlight\Util\Request::post('subject'));
+$sender = trim(\Sunlight\Util\Request::post('sender'));
+$text = trim(\Sunlight\Util\Request::post('text'));
+$fid = (int) \Sunlight\Util\Request::post('fid');
 
 // nacteni prijemce
 $skey = 'hcm_' . $fid . '_mail_receiver';
@@ -26,9 +26,9 @@ if (isset($_SESSION[$skey])) {
 }
 
 // casove omezeni
-if (_iplogCheck(_iplog_anti_spam)) {
+if (\Sunlight\IpLog::check(_iplog_anti_spam)) {
     // zaznamenat
-    _iplogUpdate(_iplog_anti_spam);
+    \Sunlight\IpLog::update(_iplog_anti_spam);
 } else {
     // prekroceno
     echo _lang('misc.requestlimit', array('*postsendexpire*' => _postsendexpire));
@@ -36,14 +36,14 @@ if (_iplogCheck(_iplog_anti_spam)) {
 }
 
 // odeslani
-if (_xsrfCheck()) {
-    if (_validateEmail($sender) && $text != '' && _captchaCheck()) {
+if (\Sunlight\Xsrf::check()) {
+    if (\Sunlight\Email::validate($sender) && $text != '' && \Sunlight\Captcha::check()) {
 
         // hlavicky
         $headers = array(
             'Content-Type' => 'text/plain; charset=UTF-8',
         );
-        _setMailSender($headers, $sender);
+        \Sunlight\Email::defineSender($headers, $sender);
 
         // uprava predmetu
         if ($subject === '') {
@@ -59,13 +59,13 @@ if (_xsrfCheck()) {
         }
         $text .= "\n\n" . str_repeat('-', 16) . "\n" . _lang('hcm.mailform.info', array(
             '*domain*' => Url::base()->getFullHost(),
-            '*time*' => _formatTime(time()),
+            '*time*' => \Sunlight\Generic::renderTime(time()),
             '*ip*' => $info_ip,
             '*sender*' => $sender,
         ));
 
         // odeslani
-        if (_mail($receiver, $subject, $text, $headers)) {
+        if (\Sunlight\Email::send($receiver, $subject, $text, $headers)) {
             $return = 1;
         } else {
             $return = 3;
@@ -79,4 +79,4 @@ if (_xsrfCheck()) {
 }
 
 // presmerovani zpet
-_returnHeader(_addParamsToUrl(_returnUrl(), "hcm_mr_" . $fid . "=" . $return, false) . "#hcm_mform_" . $fid);
+\Sunlight\Response::redirectBack(\Sunlight\Util\UrlHelper::appendParams(\Sunlight\Response::getReturnUrl(), "hcm_mr_" . $fid . "=" . $return, false) . "#hcm_mform_" . $fid);

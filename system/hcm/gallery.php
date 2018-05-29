@@ -26,7 +26,7 @@ return function ($cesta = "", $rozmery = null, $strankovani = null, $lightbox = 
     
     $lightbox = (bool) $lightbox;
 
-    $resize_opts = _pictureResizeOptions($rozmery);
+    $resize_opts = \Sunlight\Picture::parseResizeOptions($rozmery);
 
     if (file_exists($cesta) && is_dir($cesta)) {
         $handle = opendir($cesta);
@@ -51,7 +51,7 @@ return function ($cesta = "", $rozmery = null, $strankovani = null, $lightbox = 
         // priprava strankovani
         if ($strankovat) {
             $count = count($items);
-            $paging = _resultPaging($_index['url'], $strankovani, $count, "", "#hcm_gal" . Core::$hcmUid, "hcm_gal" . Core::$hcmUid . "p");
+            $paging = \Sunlight\Paginator::render($_index['url'], $strankovani, $count, "", "#hcm_gal" . Core::$hcmUid, "hcm_gal" . Core::$hcmUid . "p");
         }
 
         // vypis
@@ -61,9 +61,9 @@ return function ($cesta = "", $rozmery = null, $strankovani = null, $lightbox = 
             if ($strankovat && $counter > $paging['last']) {
                 break;
             }
-            if (!$strankovat || ($strankovat && _resultPagingIsItemInRange($paging, $counter))) {
-                $thumb = _pictureThumb($cesta . $item, $resize_opts);
-                $result .= "<a href='" . _e(_linkFile($cesta . $item)) . "' target='_blank'" . ($lightbox ? " class='lightbox' data-gallery-group='lb_hcm" . Core::$hcmUid . "'" : '') . "><img src='" . _e(_linkFile($thumb)) . "' alt='" . _e($item) . "'></a>\n";
+            if (!$strankovat || ($strankovat && \Sunlight\Paginator::isItemInRange($paging, $counter))) {
+                $thumb = \Sunlight\Picture::getThumbnail($cesta . $item, $resize_opts);
+                $result .= "<a href='" . _e(\Sunlight\Router::file($cesta . $item)) . "' target='_blank'" . ($lightbox ? " class='lightbox' data-gallery-group='lb_hcm" . Core::$hcmUid . "'" : '') . "><img src='" . _e(\Sunlight\Router::file($thumb)) . "' alt='" . _e($item) . "'></a>\n";
             }
             $counter++;
         }

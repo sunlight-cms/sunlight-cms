@@ -22,7 +22,7 @@ asort($other_modules['plugin'], SORT_NUMERIC);
 $output .= "<p>" . _lang('admin.other.p') . "</p>";
 
 if (empty($other_modules['system']) && empty($other_modules['plugin'])) {
-    $output .= _msg(_msg_ok, _lang('global.nokit'));
+    $output .= \Sunlight\Message::render(_msg_ok, _lang('global.nokit'));
     return;
 }
 

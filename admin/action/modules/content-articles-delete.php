@@ -9,9 +9,9 @@ defined('_root') or exit;
 
 $continue = false;
 if (isset($_GET['id']) && isset($_GET['returnid']) && isset($_GET['returnpage'])) {
-    $id = (int) _get('id');
-    $returnid = (int) _get('returnid');
-    $returnpage = (int) _get('returnpage');
+    $id = (int) \Sunlight\Util\Request::get('id');
+    $returnid = (int) \Sunlight\Util\Request::get('returnid');
+    $returnpage = (int) \Sunlight\Util\Request::get('returnpage');
     $query = DB::queryRow("SELECT title FROM " . _articles_table . " WHERE id=" . $id . \Sunlight\Admin\Admin::articleAccess());
     if ($query !== false) {
         $continue = true;
@@ -49,9 +49,9 @@ if ($continue) {
 <form class='cform' action='index.php?p=content-articles-delete&amp;id=" . $id . "&amp;returnid=" . $returnid . "&amp;returnpage=" . $returnpage . "' method='post'>
 <input type='hidden' name='confirm' value='1'>
 <input type='submit' value='" . _lang('admin.content.articles.delete.confirmbox') . "'>
-" . _xsrfProtect() . "</form>
+" . \Sunlight\Xsrf::getInput() . "</form>
 ";
 
 } else {
-    $output .= _msg(_msg_err, _lang('global.badinput'));
+    $output .= \Sunlight\Message::render(_msg_err, _lang('global.badinput'));
 }

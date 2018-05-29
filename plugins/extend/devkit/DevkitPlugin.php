@@ -86,7 +86,7 @@ class DevkitPlugin extends ExtendPlugin
 
         $args['result'] = true;
 
-        $time = _formatTime(time());
+        $time = \Sunlight\Generic::renderTime(time());
         $headerString = '';
 
         foreach ($args['headers'] as $headerName => $headerValue) {

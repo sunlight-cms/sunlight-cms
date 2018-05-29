@@ -14,15 +14,15 @@ if (!_logged_in) {
 $success = false;
 $message = '';
 $unlock = '';
-$id = (int) _get('id');
-$userQuery = _userQuery('p.author');
+$id = (int) \Sunlight\Util\Request::get('id');
+$userQuery = \Sunlight\User::createQuery('p.author');
 $query = DB::queryRow("SELECT p.id,p.time,p.subject,p.locked,r.slug forum_slug," . $userQuery['column_list'] . " FROM " . _posts_table . " p JOIN " . _root_table . " r ON(p.home=r.id) " . $userQuery['joins'] . " WHERE p.id=" . $id . " AND p.type=" . _post_forum_topic . " AND p.xhome=-1");
 if ($query !== false) {
-    $_index['backlink'] = _linkTopic($query['id'], $query['forum_slug']);
+    $_index['backlink'] = \Sunlight\Router::topic($query['id'], $query['forum_slug']);
     if ($query['locked']) {
         $unlock = '2';
     }
-    if (!_postAccess($userQuery, $query) || !_priv_locktopics) {
+    if (!\Sunlight\Post::checkAccess($userQuery, $query) || !_priv_locktopics) {
         $_index['is_accessible'] = false;
         return;
     }
@@ -35,7 +35,7 @@ if ($query !== false) {
 
 if (isset($_POST['doit'])) {
     DB::update(_posts_table, 'id=' . DB::val($id), array('locked' => (($query['locked'] == 1) ? 0 : 1)));
-    $message = _msg(_msg_ok, _lang('mod.locktopic.ok' . $unlock));
+    $message = \Sunlight\Message::render(_msg_ok, _lang('mod.locktopic.ok' . $unlock));
     $success = true;
 }
 
@@ -48,12 +48,12 @@ $output .= $message;
 
 // formular
 if (!$success) {
-    $furl = _linkModule('locktopic', 'id=' . $id);
+    $furl = \Sunlight\Router::module('locktopic', 'id=' . $id);
 
     $output .= '
     <form action="' . $furl . '" method="post">
-    ' . _msg(_msg_warn, sprintf(_lang('mod.locktopic.text' . $unlock), $query['subject'])) . '
+    ' . \Sunlight\Message::render(_msg_warn, sprintf(_lang('mod.locktopic.text' . $unlock), $query['subject'])) . '
     <input type="submit" name="doit" value="' . _lang('mod.locktopic.submit' . $unlock) . '">
-    ' . _xsrfProtect() . '</form>
+    ' . \Sunlight\Xsrf::getInput() . '</form>
     ';
 }

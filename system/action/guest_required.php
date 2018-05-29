@@ -12,5 +12,5 @@ Extend::call('index.guest_required', array(
 ));
 
 if ($_index['output'] === '') {
-    $_index['output'] =_msg(_msg_ok, _lang('nologin.msg'));
+    $_index['output'] =\Sunlight\Message::render(_msg_ok, _lang('nologin.msg'));
 }

@@ -12,7 +12,7 @@ $msg = 0;
 
 // vytvoreni skupiny
 if (isset($_POST['type']) && _priv_admingroups) {
-    $type = (int) _post('type');
+    $type = (int) \Sunlight\Util\Request::post('type');
     if ($type == -1) {
         // prazdna skupina
         DB::insert(_groups_table, array(
@@ -26,7 +26,7 @@ if (isset($_POST['type']) && _priv_admingroups) {
         $source_group = DB::queryRow("SELECT * FROM " . _groups_table . " WHERE id=" . $type);
         if ($source_group !== false) {
             $new_group = array();
-            $privilege_map = array_flip(_getPrivileges());
+            $privilege_map = array_flip(\Sunlight\User::listPrivileges());
 
             // sesbirani dat
             foreach ($source_group as $column => $val) {
@@ -43,7 +43,7 @@ if (isset($_POST['type']) && _priv_admingroups) {
                         break;
 
                     default:
-                        if (isset($privilege_map[$column]) && !_userHasPriv($column)) {
+                        if (isset($privilege_map[$column]) && !\Sunlight\User::hasPrivilege($column)) {
                             $val = 0;
                         }
                         break;
@@ -64,13 +64,13 @@ if (isset($_POST['type']) && _priv_admingroups) {
 
 // prepnuti uzivatele
 if (_super_admin_id == _user_id && isset($_POST['switch_user'])) {
-    $user = trim(_post('switch_user'));
+    $user = trim(\Sunlight\Util\Request::post('switch_user'));
     $query = DB::queryRow("SELECT id,password,email FROM " . _users_table . " WHERE username=" . DB::val($user));
     if ($query !== false) {
 
-        _userLogin($query['id'], $query['password'], $query['email']);
+        \Sunlight\User::login($query['id'], $query['password'], $query['email']);
 
-        $admin_redirect_to = _linkModule('login');
+        $admin_redirect_to = \Sunlight\Router::module('login');
 
         return;
     } else {
@@ -93,7 +93,7 @@ if (_priv_admingroups) {
     <td>
         <span class='" . ($is_sys ? 'em' : '') . (($item['blocked'] == 1) ? ' strike' : '') . "'" . (($item['color'] !== '') ? " style='color:" . $item['color'] . ";'" : '') . ">"
             . (($item['reglist'] == 1) ? "<img src='images/icons/action.png' alt='reglist' class='icon' title='" . _lang('admin.users.groups.reglist') . "'>" : '')
-            . (($item['icon'] != "") ? "<img src='" . _link('images/groupicons/' . $item['icon']) . "' alt='icon' class='groupicon'> " : '')
+            . (($item['icon'] != "") ? "<img src='" . \Sunlight\Router::link('images/groupicons/' . $item['icon']) . "' alt='icon' class='groupicon'> " : '')
             . $item['title']
         . "</span>
     </td>
@@ -113,19 +113,19 @@ if (_priv_admingroups) {
 // zprava
 switch ($msg) {
     case 1:
-        $message = _msg(_msg_ok, _lang('global.done'));
+        $message = \Sunlight\Message::render(_msg_ok, _lang('global.done'));
         break;
     case 2:
-        $message = _msg(_msg_warn, _lang('admin.users.groups.specialgroup.delnotice'));
+        $message = \Sunlight\Message::render(_msg_warn, _lang('admin.users.groups.specialgroup.delnotice'));
         break;
     case 3:
-        $message = _msg(_msg_err, _lang('global.disallowed'));
+        $message = \Sunlight\Message::render(_msg_err, _lang('global.disallowed'));
         break;
     case 4:
-        $message = _msg(_msg_err, _lang('global.badgroup'));
+        $message = \Sunlight\Message::render(_msg_err, _lang('global.badgroup'));
         break;
     case 5:
-        $message = _msg(_msg_warn, _lang('global.baduser'));
+        $message = \Sunlight\Message::render(_msg_warn, _lang('global.baduser'));
         break;
     default:
         $message = "";
@@ -159,7 +159,7 @@ $output .= $message . "
 
     <form class='cform' action='index.php' method='get' name='deleteuserform'>
     <input type='hidden' name='p' value='users-delete'>
-    " . _xsrfProtect() . "
+    " . \Sunlight\Xsrf::getInput() . "
     <h3>" . _lang('admin.users.deleteuser') . "</h3>
     <input type='text' name='id' class='inputsmall'>
     <input class='button' type='submit' value='" . _lang('global.do') . "'>
@@ -171,7 +171,7 @@ $output .= $message . "
     <h3>" . _lang('admin.users.switchuser') . "</h3>
     <input type='text' name='switch_user' class='inputsmall'>
     <input class='button' type='submit' value='" . _lang('global.do') . "'>
-    " . _xsrfProtect() . "</form>
+    " . \Sunlight\Xsrf::getInput() . "</form>
     " : '') . "
 
   </td>
@@ -184,7 +184,7 @@ $output .= $message . "
         . \Sunlight\Admin\Admin::userSelect("type", -1, "1", null, _lang('admin.users.groups.new.empty'), true)
         . " <input class='button' type='submit' value='" . _lang('global.do') . "'>
         </p>"
-        . _xsrfProtect() . "</form>
+        . \Sunlight\Xsrf::getInput() . "</form>
     " . $groups . "
     </td>" : '') . "
 </tr>

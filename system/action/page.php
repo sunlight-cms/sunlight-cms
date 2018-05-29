@@ -6,14 +6,14 @@ use Sunlight\Page\PageManager;
 defined('_root') or exit;
 
 // nacteni dat stranky
-$_page = _findPage($segments);
+$_page = \Sunlight\Page\PageManager::find($segments);
 if ($_page === false) {
     $_index['is_found'] = false;
     return;
 }
 
 // url stranky
-$_index['url'] = _linkRoot($_page['id'], $_index['slug']);
+$_index['url'] = \Sunlight\Router::root($_page['id'], $_index['slug']);
 
 // segment stranky
 if ($_index['slug'] !== null && ($slug_length = strlen($_page['slug'])) < strlen($_index['slug'])) {
@@ -42,8 +42,8 @@ if (
         $_url->remove('p');
     }
 
-    $_index['redirect_to'] = _addParamsToUrl(
-        _linkRoot($_page['id'], $_page['slug'], null, true),
+    $_index['redirect_to'] = \Sunlight\Util\UrlHelper::appendParams(
+        \Sunlight\Router::root($_page['id'], $_page['slug'], null, true),
         $_url->getQueryString(),
         false
     );
@@ -80,7 +80,7 @@ if (_pretty_urls && !$_index['is_rewritten'] && !empty($segments)) {
 }
 
 // test pristupu
-if (!_publicAccess($_page['public'], $_page['level'])) {
+if (!\Sunlight\User::checkPublicAccess($_page['public'], $_page['level'])) {
     $_index['is_accessible'] = false;
     return;
 }
@@ -96,7 +96,7 @@ $_index['segment'] = $segment;
 
 // udalosti stranky
 if ($_page['events'] !== null) {
-    foreach (_parseArguments($_page['events']) as $page_event) {
+    foreach (\Sunlight\Util\ArgList::parse($_page['events']) as $page_event) {
         $page_event_parts = explode(':', $page_event, 2);
         Extend::call('page.event.' . $page_event_parts[0], array(
             'arg' => isset($page_event_parts[1]) ? $page_event_parts[1] : null,

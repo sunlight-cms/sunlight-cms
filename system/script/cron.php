@@ -13,8 +13,8 @@ Core::init('../../', array(
 $auth = explode(':', Core::loadSetting('cron_auth'), 2);
 if (
     sizeof($auth) !== 2
-    || _get('user') !== $auth[0]
-    || _get('password') !== $auth[1]
+    || \Sunlight\Util\Request::get('user') !== $auth[0]
+    || \Sunlight\Util\Request::get('password') !== $auth[1]
 ) {
     header('HTTP/1.0 401 Unauthorized');
     echo 'Unauthorized';

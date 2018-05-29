@@ -4,5 +4,5 @@ defined('_root') or exit;
 
 return function ($email = "")
 {
-    return _mailto($email);
+    return \Sunlight\Email::link($email);
 };

@@ -7,8 +7,8 @@ defined('_root') or exit;
 /* ---  zpracovani ulozeni  --- */
 
 if (isset($_POST['text'])) {
-    Core::updateSetting('admin_index_custom', trim(_post('text')));
-    Core::updateSetting('admin_index_custom_pos', (_post('pos') == 0) ? '0' : '1');
+    Core::updateSetting('admin_index_custom', trim(\Sunlight\Util\Request::post('text')));
+    Core::updateSetting('admin_index_custom_pos', (\Sunlight\Util\Request::post('pos') == 0) ? '0' : '1');
     $admin_redirect_to = 'index.php?p=index-edit&saved';
 
     return;
@@ -22,7 +22,7 @@ $output .= "
 
 <p class='bborder'>" . _lang('admin.menu.index.edit.p') . "</p>
 
-" . (isset($_GET['saved']) ? _msg(_msg_ok, _lang('global.saved')) : '') . "
+" . (isset($_GET['saved']) ? \Sunlight\Message::render(_msg_ok, _lang('global.saved')) : '') . "
 
 <form method='post'>
 
@@ -48,5 +48,5 @@ $output .= "
 
 </table>
 
-" . _xsrfProtect() . "</form>
+" . \Sunlight\Xsrf::getInput() . "</form>
 ";
