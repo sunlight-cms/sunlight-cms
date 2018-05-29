@@ -2853,7 +2853,7 @@ function _filterUserContent($content, $isHtml = true, $hasHcm = true)
             throw new LogicException('Content that supports HCM modules is always HTML');
         }
 
-        $content = _filterHCM($content, true);
+        $content = \Sunlight\HCM::filter($content, true);
     }
 
     Extend::call('user.filter_content', array(

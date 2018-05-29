@@ -13,7 +13,7 @@ $_index['title'] = $_page['title'];
 // obsah
 Extend::call('page.group.content.before', $extend_args);
 if ($_page['content'] != "") {
-    $output .= _parseHCM($_page['content']) . "\n\n<div class='hr group-hr'><hr></div>\n\n";
+    $output .= \Sunlight\HCM::parse($_page['content']) . "\n\n<div class='hr group-hr'><hr></div>\n\n";
 }
 Extend::call('page.group.content.after', $extend_args);
 

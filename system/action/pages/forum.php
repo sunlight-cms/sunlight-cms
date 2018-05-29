@@ -27,7 +27,7 @@ $_index['rsslink'] = _linkRSS($id, _rss_latest_topics, false);
 // obsah
 Extend::call('page.forum.content.before', $extend_args);
 if ($_page['content'] != "") {
-    $output .= _parseHCM($_page['content']);
+    $output .= \Sunlight\HCM::parse($_page['content']);
 }
 Extend::call('page.forum.content.after', $extend_args);
 

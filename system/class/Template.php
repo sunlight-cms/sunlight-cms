@@ -174,7 +174,7 @@ abstract class Template
                 }
 
                 // obsah
-                $output .= _parseHCM($item['content']);
+                $output .= \Sunlight\HCM::parse($item['content']);
 
                 // endtag polozky
                 if ($options['box.item']) {

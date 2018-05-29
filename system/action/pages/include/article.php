@@ -85,7 +85,7 @@ $output .= "<div class='article-perex'>" . ($thumbnail !== null ? "<img class='a
 Extend::call('article.perex.after', $extend_args);
 
 //  obsah
-$output .= "<div class='article-content'>\n" . _parseHCM($_article['content']) . "\n</div>\n";
+$output .= "<div class='article-content'>\n" . \Sunlight\HCM::parse($_article['content']) . "\n</div>\n";
 $output .= "<div class='cleaner'></div>\n";
 
 // informace
