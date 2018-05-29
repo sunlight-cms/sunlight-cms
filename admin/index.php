@@ -8,7 +8,6 @@ require '../system/bootstrap.php';
 Core::init('../', array(
     'env' => Core::ENV_ADMIN,
 ));
-require _root . 'admin/functions.php';
 
 /* ----  priprava  ---- */
 

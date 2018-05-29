@@ -13,7 +13,6 @@ if (!_priv_super_admin) {
     exit;
 }
 require _root . "system/html_start.php";
-require _root . "admin/functions.php";
 
 $assets = _adminThemeAssets(_adminscheme, _adminThemeIsDark()) + array('extend_event' => null);
 
