@@ -183,7 +183,7 @@ class Paginator
     /**
      * Zjisteni, zda je polozka s urcitym cislem v rozsahu aktualni strany strankovani
      *
-     * @param array $pagingdata pole, ktere vraci funkce {@see _resultPaging()}
+     * @param array $pagingdata pole, ktere vraci funkce {@see \Sunlight\Paginator::render()}
      * @param int   $itemnumber poradove cislo polozky (poradi zacina nulou)
      * @return bool
      */

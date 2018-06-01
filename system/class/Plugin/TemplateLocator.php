@@ -71,7 +71,7 @@ abstract class TemplateLocator
      * Parse the given unique template component identifier
      *
      * @param string $uid
-     * @param int    $type see TemplateHelper::UID_* constants
+     * @param int    $type see \Sunlight\Plugin\TemplateLocator::UID_* constants
      * @return string[] template, [layout], [slot]
      */
     static function parseUid($uid, $type)
@@ -85,7 +85,7 @@ abstract class TemplateLocator
      * Get components identified by the given unique template component identifier
      *
      * @param string $uid
-     * @param int    $type see TemplateHelper::UID_* constants
+     * @param int    $type see \Sunlight\Plugin\TemplateLocator::UID_* constants
      * @return array|null array or null if the given identifier is not valid
      */
     static function getComponentsByUid($uid, $type)
@@ -145,7 +145,7 @@ abstract class TemplateLocator
     /**
      * Get label for the given components
      *
-     * @see TemplateLocator::getComponents()
+     * @see \Sunlight\Plugin\TemplateLocator::getComponents()
      *
      * @param array $components
      * @return string

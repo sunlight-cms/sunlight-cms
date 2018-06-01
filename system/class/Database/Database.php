@@ -691,7 +691,7 @@ class Database
     /**
      * Aktualizovat radky v databazi dle mapy zmen pro kazdy radek
      *
-     * Pro popis formatu mapy, viz {@see Database::changesetMapToList}
+     * Pro popis formatu mapy, viz {@see \Sunlight\Database\Database::changesetMapToList()}
      *
      * @param string $table        nazev tabulky s prefixem
      * @param string $idColumn     nazev sloupce, ktery obsahuje identifikator

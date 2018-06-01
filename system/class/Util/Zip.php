@@ -51,7 +51,7 @@ abstract class Zip
      *
      * Supported $options:
      * ==========================================================
-     * path_mode (PATH_FULL)    see ZipHelper::PATH_* constants
+     * path_mode (PATH_FULL)    (see \Sunlight\Util\Zip::PATH_* constants)
      * dir_mode (0777)          mode of newly created directories
      * recursive (1)            extract subdirectories 1/0
      * exclude_prefix (-)       a common prefix to exclude from subpaths (e.g. "foo/")

@@ -337,7 +337,7 @@ class BackupBuilder
     /**
      * Build a backup file
      *
-     * @param int $type see BackupBuilder::TYPE_*
+     * @param int $type see \Sunlight\Backup\BackupBuilder::TYPE_*
      * @throws \InvalidArgumentException on invalid type
      * @return TemporaryFile
      */

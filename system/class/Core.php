@@ -102,7 +102,7 @@ abstract class Core
      * session_regenerate   force new session ID 1/0
      * allow_cron_auto      allow running cron tasks automatically 1/0
      * content_type         content type, FALSE = disabled (default is "text/html; charset=UTF-8")
-     * env                  environment identifier, see Core::ENV_* constants
+     * env                  environment identifier, see \Sunlight\Core::ENV_* constants
      *
      * @param string $root    relative path to the system root directory
      * @param array  $options

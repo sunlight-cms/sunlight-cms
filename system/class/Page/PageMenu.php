@@ -10,7 +10,7 @@ abstract class PageMenu
     /**
      * Vykreslit menu
      *
-     * @param array       $flatPageTree plochy strom stranek, musi obsahovat sloupce z {@see PageMenu::getRequiredExtraColumns()}
+     * @param array       $flatPageTree plochy strom stranek, musi obsahovat sloupce z {@see \Sunlight\Page\PageMenu::getRequiredExtraColumns()}
      * @param int|null    $activeId     ID aktivni stranky nebo null
      * @param string|null $rootClass    CSS trida korenoveho kontejneru
      * @param string|null $pageEvent    nazev extend udalosti pro jednotlive stranky

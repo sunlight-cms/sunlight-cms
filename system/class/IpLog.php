@@ -99,7 +99,7 @@ abstract class IpLog
 
     /**
      * Aktualizace logu IP adres
-     * Pro info o argumentech viz {@see _ipLogCheck()}
+     * Pro info o argumentech viz {@see \Sunlight\IpLog::check()}
      *
      * @param int   $type typ zaznamu
      * @param mixed $var  promenny argument dle typu

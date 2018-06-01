@@ -219,7 +219,7 @@ class TreeManager
      * @param mixed    $context         pocatecti kontext
      * @param callable $propagator      callback(context, current_node), mel by vratit pole se zmenami nebo null
      * @param callable $contextUpdater  callback(context, current_node, current_changeset), mel by vratit novy kontext nebo null
-     * @param bool     $getChangesetMap vratit mapu zmen namisto volani {@see DB::updateSetMulti()}
+     * @param bool     $getChangesetMap vratit mapu zmen namisto volani {@see \Sunlight\Database\Database::updateSetMulti()}
      * @return array|null
      */
     function propagate(array $flatTree, $context, $propagator, $contextUpdater, $getChangesetMap = false)

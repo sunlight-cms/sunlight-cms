@@ -184,8 +184,8 @@ abstract class Article
     /**
      * Vytvoreni nahledu clanku pro vypis
      *
-     * @param array    $art       pole s daty clanku vcetne cat_slug a data uzivatele z {@see _userQuery()}
-     * @param array    $userQuery vystup funkce {@see _userQuery()}
+     * @param array    $art       pole s daty clanku vcetne cat_slug a data uzivatele z {@see \Sunlight\User::createQuery()}
+     * @param array    $userQuery vystup funkce {@see \Sunlight\User::createQuery()}
      * @param bool     $info      vypisovat radek s informacemi 1/0
      * @param bool     $perex     vypisovat perex 1/0
      * @param int|null pocet      komentaru (null = nezobrazi se)

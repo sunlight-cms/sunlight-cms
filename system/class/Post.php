@@ -9,7 +9,7 @@ abstract class Post
     /**
      * Vyhodnotit pravo uzivatele na pristup k prispevku
      *
-     * @param array $userQuery vystup z {@see _userQuery()}
+     * @param array $userQuery vystup z {@see \Sunlight\User::createQuery()}
      * @param array $post      data prispevku (potreba data uzivatele a post.time)
      * @return bool
      */

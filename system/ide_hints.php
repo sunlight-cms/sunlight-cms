@@ -136,7 +136,7 @@ const _cron_auto = 1;
 const _thumb_cleanup_threshold = 604800;
 /** Touch generated thumbnials this often */
 const _thumb_touch_threshold = 43200;
-/** Default admin page lister mode (see PageLister::MODE_* constants) */
+/** Default admin page lister mode (see \Sunlight\Admin\PageLister::MODE_* constants) */
 const _adminpagelist_mode = 0;
 /** Default number of images per row setting for galleries */
 const _galdefault_per_row = 3;
