@@ -2,6 +2,7 @@
 
 use Sunlight\Comment\CommentService;
 use Sunlight\Extend;
+use Sunlight\Hcm;
 
 defined('_root') or exit;
 
@@ -10,7 +11,7 @@ $_index['title'] = $_page['title'];
 
 // obsah
 Extend::call('page.section.content.before', $extend_args);
-$output .= Sunlight\Hcm::parse($_page['content']);
+$output .= Hcm::parse($_page['content']);
 Extend::call('page.section.content.after', $extend_args);
 
 // komentare

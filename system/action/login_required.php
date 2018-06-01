@@ -1,6 +1,7 @@
 <?php
 
 use Sunlight\Extend;
+use Sunlight\User;
 
 defined('_root') or exit;
 
@@ -12,5 +13,5 @@ Extend::call('index.login_required', array(
 ));
 
 if ($_index['output'] === '') {
-    $_index['output'] = \Sunlight\User::renderLoginForm(true, true);
+    $_index['output'] = User::renderLoginForm(true, true);
 }

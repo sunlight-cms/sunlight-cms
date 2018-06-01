@@ -3,6 +3,7 @@
 namespace Sunlight;
 
 use Sunlight\Database\Database as DB;
+use Sunlight\Util\Request;
 
 class Paginator
 {
@@ -53,7 +54,7 @@ class Paginator
 
         $pages = max(1, ceil($count / $limit));
         if (isset($_GET[$param])) {
-            $s = abs((int) \Sunlight\Util\Request::get($param) - 1);
+            $s = abs((int) Request::get($param) - 1);
         } elseif ($autolast) {
             $s = $pages - 1;
         } else {

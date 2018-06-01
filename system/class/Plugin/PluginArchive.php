@@ -2,6 +2,7 @@
 
 namespace Sunlight\Plugin;
 
+use Sunlight\Util\Filesystem;
 use Sunlight\Util\Zip;
 use ZipArchive;
 
@@ -101,7 +102,7 @@ class PluginArchive
     protected function ensureOpen()
     {
         if (!$this->open) {
-            \Sunlight\Util\Filesystem::ensureFileExists($this->path);
+            Filesystem::ensureFileExists($this->path);
 
             if (($errorCode = $this->zip->open($this->path, ZipArchive::CREATE)) !== true) {
                 throw new \RuntimeException(sprintf('Could not open ZIP archive at "%s" (code %d)', $this->path, $errorCode));

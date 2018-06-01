@@ -2,6 +2,8 @@
 
 namespace Sunlight\Util;
 
+use Sunlight\Generic;
+
 abstract class Environment
 {
     /**
@@ -63,7 +65,7 @@ abstract class Environment
     {
         $limit = static::getUploadLimit();
         if ($limit !== null) {
-            return '<small>' . _lang('global.uploadlimit') . ': <em>' . \Sunlight\Generic::renderFileSize($limit) . '</em></small>';
+            return '<small>' . _lang('global.uploadlimit') . ': <em>' . Generic::renderFileSize($limit) . '</em></small>';
         } else {
             return '';
         }

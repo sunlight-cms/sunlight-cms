@@ -1,6 +1,7 @@
 <?php
 
 use Sunlight\Database\Database as DB;
+use Sunlight\Util\Form;
 
 defined('_root') or exit;
 
@@ -10,8 +11,8 @@ $type = _page_book;
 require _root . 'admin/action/modules/include/page-editscript-init.php';
 if ($continue) {
     $custom_settings = "
-  <tr><td colspan='2'><label><input type='checkbox' name='var3' value='1'" . \Sunlight\Util\Form::activateCheckbox($query['var3']) . "> " . _lang('admin.content.form.locked') . "</label></td></tr> 
-  <tr><td colspan='2'><label><input type='checkbox' name='var1' value='1'" . \Sunlight\Util\Form::activateCheckbox($query['var1']) . "> " . _lang('admin.content.form.unregpost') . "</label></td></tr>
+  <tr><td colspan='2'><label><input type='checkbox' name='var3' value='1'" . Form::activateCheckbox($query['var3']) . "> " . _lang('admin.content.form.locked') . "</label></td></tr> 
+  <tr><td colspan='2'><label><input type='checkbox' name='var1' value='1'" . Form::activateCheckbox($query['var1']) . "> " . _lang('admin.content.form.unregpost') . "</label></td></tr>
   ";
     if (!$new) {
         $custom_settings .= "<tr><td colspan='2'><label><input type='checkbox' name='delposts' value='1'> " . _lang('admin.content.form.delposts') . " <small>(" . DB::count(_posts_table, 'home=' . DB::val($id) . ' AND type=' . _post_book_entry) . ")</small></label></td></tr>";

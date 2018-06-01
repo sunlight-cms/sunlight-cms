@@ -3,6 +3,7 @@
 namespace Sunlight\Page;
 
 use Sunlight\Extend;
+use Sunlight\Router;
 
 abstract class PageMenu
 {
@@ -96,7 +97,7 @@ abstract class PageMenu
                     if ($page['type'] == _page_link) {
                         $url = _e($page['link_url']);
                     } else {
-                        $url = \Sunlight\Router::root($page['id'], $page['slug']);
+                        $url = Router::root($page['id'], $page['slug']);
                     }
                 }
                 if ($page['type'] == _page_link && $page['link_new_window']) {

@@ -1,8 +1,13 @@
 <?php
 
+use Sunlight\Admin\Admin;
 use Sunlight\Core;
 use Sunlight\Exception\PrivilegeException;
 use Sunlight\Extend;
+use Sunlight\Generic;
+use Sunlight\Router;
+use Sunlight\Util\Request;
+use Sunlight\Xsrf;
 
 require '../system/bootstrap.php';
 Core::init('../', array(
@@ -17,7 +22,7 @@ $admin_extra_js = array();
 $admin_login_layout = false;
 $admin_body_classes = array();
 $admin_access = (_logged_in && _priv_administration);
-$admin_current_module = \Sunlight\Util\Request::get('p', 'index');
+$admin_current_module = Request::get('p', 'index');
 $admin_redirect_to = null;
 $admin_output = '';
 $output = '';
@@ -38,7 +43,7 @@ asort($admin_menu_items, SORT_NUMERIC);
 /* ---- priprava obsahu ---- */
 
 // vystup
-if (empty($_POST) || \Sunlight\Xsrf::check()) {
+if (empty($_POST) || Xsrf::check()) {
     if ($admin_access) {
         try {
             require _root . 'admin/action/module.php';
@@ -55,10 +60,10 @@ if (empty($_POST) || \Sunlight\Xsrf::check()) {
 // assets
 if ($admin_login_layout) {
     $theme_dark = false;
-    $assets = \Sunlight\Admin\Admin::themeAssets(0, false);
+    $assets = Admin::themeAssets(0, false);
 } else {
-    $theme_dark = \Sunlight\Admin\Admin::themeIsDark();
-    $assets = \Sunlight\Admin\Admin::themeAssets(_adminscheme, $theme_dark);
+    $theme_dark = Admin::themeIsDark();
+    $assets = Admin::themeAssets(_adminscheme, $theme_dark);
 }
 
 if (!empty($admin_extra_css)) {
@@ -77,7 +82,7 @@ if ($admin_redirect_to !== null) {
 }
 
 // hlavicka a sablona
-echo Sunlight\Generic::renderHead();
+echo Generic::renderHead();
 
 // body tridy
 if ($admin_login_layout) {
@@ -86,7 +91,7 @@ if ($admin_login_layout) {
 $admin_body_classes[] = $theme_dark ? 'dark' : 'light';
 
 ?>
-<meta name="robots" content="noindex,follow"><?php echo \Sunlight\Generic::renderHeadAssets($assets), "\n" ?>
+<meta name="robots" content="noindex,follow"><?php echo Generic::renderHeadAssets($assets), "\n" ?>
 <title><?php echo _title, ' - ', _lang('global.admintitle'), (!empty($admin_title) ? ' - ' . $admin_title : '') ?></title>
 </head>
 
@@ -97,7 +102,7 @@ $admin_body_classes[] = $theme_dark ? 'dark' : 'light';
     <div id="top">
         <div class="wrapper">
             <div id="header">
-                <?php echo \Sunlight\Admin\Admin::userMenu() ?>
+                <?php echo Admin::userMenu() ?>
                 <div id="title">
                     <?php echo _title, ' - ', _lang('global.admintitle') ?>
                 </div>
@@ -105,7 +110,7 @@ $admin_body_classes[] = $theme_dark ? 'dark' : 'light';
 
             <hr class="hidden">
 
-            <?php echo \Sunlight\Admin\Admin::menu() ?>
+            <?php echo Admin::menu() ?>
         </div>
     </div>
 
@@ -120,10 +125,10 @@ $admin_body_classes[] = $theme_dark ? 'dark' : 'light';
         <div id="footer">
             <div id="footer-links">
                 <?php if ($admin_access): ?>
-                    <a href="<?php echo \Sunlight\Router::link('') ?>" target="_blank"><?php echo _lang('admin.link.site') ?></a>
-                    <a href="<?php echo \Sunlight\Router::link('admin/') ?>" target="_blank"><?php echo _lang('admin.link.newwin') ?></a>
+                    <a href="<?php echo Router::link('') ?>" target="_blank"><?php echo _lang('admin.link.site') ?></a>
+                    <a href="<?php echo Router::link('admin/') ?>" target="_blank"><?php echo _lang('admin.link.newwin') ?></a>
                 <?php else: ?>
-                    <a href="<?php echo \Sunlight\Router::link('') ?>">&lt; <?php echo _lang('admin.link.home') ?></a>
+                    <a href="<?php echo Router::link('') ?>">&lt; <?php echo _lang('admin.link.home') ?></a>
                 <?php endif ?>
             </div>
 

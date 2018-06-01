@@ -1,5 +1,8 @@
 <?php
 
+use Sunlight\Admin\Admin;
+use Sunlight\Message;
+
 defined('_root') or exit;
 
 /* --- priprava --- */
@@ -9,7 +12,7 @@ $other_modules = array(
     'plugin' => array(),
 );
 foreach ($admin_modules as $module => $module_options) {
-    if (isset($module_options['other']) && $module_options['other'] && \Sunlight\Admin\Admin::moduleAccess($module)) {
+    if (isset($module_options['other']) && $module_options['other'] && Admin::moduleAccess($module)) {
         $type = isset($module_options['other_system']) && $module_options['other_system'] ? 'system' : 'plugin';
         $other_modules[$type][$module] = (isset($module_options['other_order']) ? $module_options['other_order'] : 0);
     }
@@ -22,7 +25,7 @@ asort($other_modules['plugin'], SORT_NUMERIC);
 $output .= "<p>" . _lang('admin.other.p') . "</p>";
 
 if (empty($other_modules['system']) && empty($other_modules['plugin'])) {
-    $output .= \Sunlight\Message::render(_msg_ok, _lang('global.nokit'));
+    $output .= Message::render(_msg_ok, _lang('global.nokit'));
     return;
 }
 

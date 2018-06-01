@@ -3,6 +3,8 @@
 use Sunlight\Core;
 use Sunlight\Extend;
 use Sunlight\Util\Color;
+use Sunlight\Util\DateTime;
+use Sunlight\Util\Request;
 
 require '../../system/bootstrap.php';
 Core::init('../../', array(
@@ -11,10 +13,10 @@ Core::init('../../', array(
     'content_type' => 'text/css; charset=UTF-8',
 ));
 
-header('Expires: ' . \Sunlight\Util\DateTime::formatForHttp(2592000, true));
+header('Expires: ' . DateTime::formatForHttp(2592000, true));
 
 $dark = isset($_GET['d']);
-$s = (int) \Sunlight\Util\Request::get('s', 0);
+$s = (int) Request::get('s', 0);
 
 /**
  * Vypocet barvy

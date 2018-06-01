@@ -2,6 +2,8 @@
 
 use Sunlight\Core;
 use Sunlight\Database\Database as DB;
+use Sunlight\Gallery;
+use Sunlight\Hcm;
 
 defined('_root') or exit;
 
@@ -9,7 +11,7 @@ return function ($galerie = "", $typ = 'new', $rozmery = null, $limit = null)
 {
     // nacteni parametru
     $result = "";
-    $galerie = \Sunlight\Hcm::createColumnInSqlCondition("home", $galerie);
+    $galerie = Hcm::createColumnInSqlCondition("home", $galerie);
     if (isset($limit)) {
         $limit = abs((int) $limit);
     } else {
@@ -52,7 +54,7 @@ return function ($galerie = "", $typ = 'new', $rozmery = null, $limit = null)
     // vypis obrazku
     $rimgs = DB::query("SELECT id,title,prev,full FROM " . _images_table . " WHERE " . $galerie . " ORDER BY " . $razeni . " LIMIT " . $limit);
     while($rimg = DB::row($rimgs)) {
-        $result .= \Sunlight\Gallery::renderImage($rimg, "hcm" . Core::$hcmUid, $x, $y);
+        $result .= Gallery::renderImage($rimg, "hcm" . Core::$hcmUid, $x, $y);
     }
 
     return $result;

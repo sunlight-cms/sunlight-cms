@@ -1,6 +1,11 @@
 <?php
 
 use Sunlight\Database\Database as DB;
+use Sunlight\Message;
+use Sunlight\Util\Form;
+use Sunlight\Util\Request;
+use Sunlight\Util\StringManipulator;
+use Sunlight\Xsrf;
 
 defined('_root') or exit;
 
@@ -24,7 +29,7 @@ if (isset($_GET['new']) || isset($_GET['edit'])) {
         // priprava
         $new = isset($_GET['new']);
         if (!$new) {
-            $edit_id = (int) \Sunlight\Util\Request::get('edit');
+            $edit_id = (int) Request::get('edit');
         }
 
         // zpracovani
@@ -32,24 +37,24 @@ if (isset($_GET['new']) || isset($_GET['edit'])) {
 
             // nacteni dat
             $q = array();
-            $q['old'] = \Sunlight\Util\StringManipulator::slugify(trim(\Sunlight\Util\Request::post('old')), true, array('/' => 0));
-            $q['new'] = \Sunlight\Util\StringManipulator::slugify(trim(\Sunlight\Util\Request::post('new')), true, array('/' => 0));
-            $q['permanent'] = \Sunlight\Util\Form::loadCheckbox('permanent');
-            $q['active'] = \Sunlight\Util\Form::loadCheckbox('act');
+            $q['old'] = StringManipulator::slugify(trim(Request::post('old')), true, array('/' => 0));
+            $q['new'] = StringManipulator::slugify(trim(Request::post('new')), true, array('/' => 0));
+            $q['permanent'] = Form::loadCheckbox('permanent');
+            $q['active'] = Form::loadCheckbox('act');
 
             // kontrola
             if ($q['old'] === '' || $q['new'] === '') {
-                $message = \Sunlight\Message::render(_msg_warn, _lang('admin.content.redir.emptyidt'));
+                $message = Message::render(_msg_warn, _lang('admin.content.redir.emptyidt'));
             } elseif ($new) {
                 // vytvoreni
                 DB::insert(_redir_table, $q);
                 $new = false;
-                $message = \Sunlight\Message::render(_msg_ok, _lang('global.created'));
+                $message = Message::render(_msg_ok, _lang('global.created'));
                 break;
             } else {
                 // ulozeni
                 DB::update(_redir_table, 'id=' . DB::val($edit_id), $q);
-                $message = \Sunlight\Message::render(_msg_ok, _lang('global.saved'));
+                $message = Message::render(_msg_ok, _lang('global.saved'));
             }
 
         }
@@ -83,12 +88,12 @@ if (isset($_GET['new']) || isset($_GET['edit'])) {
 
 <tr>
     <th>" . _lang('admin.content.redir.permanent') . "</th>
-    <td><input type='checkbox' name='permanent' value='1'" . \Sunlight\Util\Form::activateCheckbox($q['permanent']) . "></td>
+    <td><input type='checkbox' name='permanent' value='1'" . Form::activateCheckbox($q['permanent']) . "></td>
 </tr>
 
 <tr>
     <th>" . _lang('admin.content.redir.act') . "</th>
-    <td><input type='checkbox' name='act' value='1'" . \Sunlight\Util\Form::activateCheckbox($q['active']) . "></td>
+    <td><input type='checkbox' name='act' value='1'" . Form::activateCheckbox($q['active']) . "></td>
 </tr>
 
 <tr>
@@ -97,26 +102,26 @@ if (isset($_GET['new']) || isset($_GET['edit'])) {
 </tr>
 
 </table>
-" . \Sunlight\Xsrf::getInput() . "</form>";
+" . Xsrf::getInput() . "</form>";
     } while (false);
-} elseif (isset($_GET['del']) && \Sunlight\Xsrf::check(true)) {
+} elseif (isset($_GET['del']) && Xsrf::check(true)) {
 
     // smazani
-    DB::delete(_redir_table, 'id=' . DB::val(\Sunlight\Util\Request::get('del')));
-    $output .= \Sunlight\Message::render(_msg_ok, _lang('global.done'));
+    DB::delete(_redir_table, 'id=' . DB::val(Request::get('del')));
+    $output .= Message::render(_msg_ok, _lang('global.done'));
 
 } elseif (isset($_GET['wipe'])) {
 
     // smazani vsech
     if (isset($_POST['wipe_confirm'])) {
         DB::query('TRUNCATE TABLE ' . _redir_table);
-        $output .= \Sunlight\Message::render(_msg_ok, _lang('global.done'));
+        $output .= Message::render(_msg_ok, _lang('global.done'));
     } else {
         $output .= "
 <form method='post' class='well'>
-" . \Sunlight\Message::render(_msg_warn, _lang('admin.content.redir.act.wipe.confirm')) . "
+" . Message::render(_msg_warn, _lang('admin.content.redir.act.wipe.confirm')) . "
 <input type='submit' name='wipe_confirm' value='" . _lang('global.confirmdelete') . "'>
-" . \Sunlight\Xsrf::getInput() . "</form>
+" . Xsrf::getInput() . "</form>
 ";
     }
 
@@ -147,7 +152,7 @@ while ($r = DB::row($q)) {
         <td class='text-" . ($r['active'] ? 'success' : 'danger') . "'>" . _lang('global.' . ($r['active'] ? 'yes' : 'no')) . "</td>
         <td class='actions'>
             <a class='button' href='index.php?p=content-redir&amp;edit=" . $r['id'] . "'><img src='images/icons/edit.png' alt='edit' class='icon'>" . _lang('global.edit') . "</a>
-            <a class='button' href='" . \Sunlight\Xsrf::addToUrl("index.php?p=content-redir&amp;del=" . $r['id']) . "' onclick='return Sunlight.confirm();'><img src='images/icons/delete.png' alt='del' class='icon'>" . _lang('global.delete') . "</a>
+            <a class='button' href='" . Xsrf::addToUrl("index.php?p=content-redir&amp;del=" . $r['id']) . "' onclick='return Sunlight.confirm();'><img src='images/icons/delete.png' alt='del' class='icon'>" . _lang('global.delete') . "</a>
         </td>
     </tr>";
     ++$counter;

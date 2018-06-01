@@ -21,7 +21,7 @@ abstract class Article
         }
 
         // pristup k clanku
-        if (!\Sunlight\User::checkPublicAccess($article['public'])) {
+        if (!User::checkPublicAccess($article['public'])) {
             return false;
         }
 
@@ -37,7 +37,7 @@ abstract class Article
             }
             $result = DB::query('SELECT public,level FROM ' . _root_table . ' WHERE id IN(' . implode(',', $homes) . ')');
             while ($r = DB::row($result)) {
-                if (\Sunlight\User::checkPublicAccess($r['public'], $r['level'])) {
+                if (User::checkPublicAccess($r['public'], $r['level'])) {
                     // do kategorie je pristup (staci alespon 1)
                     return true;
                 }
@@ -61,7 +61,7 @@ abstract class Article
      */
     static function find($slug, $cat_id = null)
     {
-        $author_user_query = \Sunlight\User::createQuery('a.author');
+        $author_user_query = User::createQuery('a.author');
 
         $sql = 'SELECT a.*';
         for ($i = 1; $i <= 3; ++$i) {
@@ -208,14 +208,14 @@ abstract class Article
         $output = "<div class='list-item article-preview'>\n";
 
         // titulek
-        $link = \Sunlight\Router::article($art['id'], $art['slug'], $art['cat_slug']);
+        $link = Router::article($art['id'], $art['slug'], $art['cat_slug']);
         $output .= "<h2 class='list-title'><a href='" . $link . "'>" . $art['title'] . "</a></h2>\n";
 
         // perex a obrazek
         if ($perex == true) {
             if (isset($art['picture_uid'])) {
-                $thumbnail = \Sunlight\Picture::getThumbnail(
-                    \Sunlight\Picture::get(_root . 'images/articles/', null, $art['picture_uid'], 'jpg'),
+                $thumbnail = Picture::getThumbnail(
+                    Picture::get(_root . 'images/articles/', null, $art['picture_uid'], 'jpg'),
                     array(
                         'mode' => 'fit',
                         'x' => _article_pic_thumb_w,
@@ -226,15 +226,15 @@ abstract class Article
                 $thumbnail = null;
             }
 
-            $output .= "<div class='list-perex'>" . ($thumbnail !== null ? "<a href='" . _e($link) . "'><img class='list-perex-image' src='" . _e(\Sunlight\Router::file($thumbnail)) . "' alt='" . $art['title'] . "'></a>" : '') . $art['perex'] . "</div>\n";
+            $output .= "<div class='list-perex'>" . ($thumbnail !== null ? "<a href='" . _e($link) . "'><img class='list-perex-image' src='" . _e(Router::file($thumbnail)) . "' alt='" . $art['title'] . "'></a>" : '') . $art['perex'] . "</div>\n";
         }
 
         // info
         if ($info == true) {
 
             $infos = array(
-                'author' => array(_lang('article.author'), \Sunlight\Router::userFromQuery($userQuery, $art)),
-                'posted' => array(_lang('article.posted'), \Sunlight\Generic::renderTime($art['time'], 'article')),
+                'author' => array(_lang('article.author'), Router::userFromQuery($userQuery, $art)),
+                'posted' => array(_lang('article.posted'), Generic::renderTime($art['time'], 'article')),
                 'readnum' => array(_lang('article.readnum'), $art['readnum'] . 'x'),
             );
 

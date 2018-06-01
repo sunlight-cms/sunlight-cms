@@ -2,6 +2,7 @@
 
 namespace Sunlight\Page;
 
+use Sunlight\Admin\Admin;
 use Sunlight\Database\Database as DB;
 use Sunlight\Database\TreeReaderOptions;
 use Sunlight\Extend;
@@ -441,7 +442,7 @@ class PageManipulator
 
                     // obrazky v galerii
                 case _page_gallery:
-                    \Sunlight\Admin\Admin::deleteGalleryStorage('home=' . $page['id']);
+                    Admin::deleteGalleryStorage('home=' . $page['id']);
                     DB::delete(_images_table, 'home=' . $page['id']);
                     @rmdir(_root . 'images/galleries/' . $page['id']);
                     break;

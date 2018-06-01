@@ -1,6 +1,8 @@
 <?php
 
 use Sunlight\Core;
+use Sunlight\Picture;
+use Sunlight\Router;
 
 defined('_root') or exit;
 
@@ -20,7 +22,7 @@ return function ($cesta = "", $typ = 'text', $pocet = 1, $rozmery_nahledu = null
             case 'image':
             case 2:
                 $allowed_extensions = Core::$imageExt;
-                $resize_opts = \Sunlight\Picture::parseResizeOptions($rozmery_nahledu);
+                $resize_opts = Picture::parseResizeOptions($rozmery_nahledu);
                 break;
             case 'text':
             default:
@@ -55,8 +57,8 @@ return function ($cesta = "", $typ = 'text', $pocet = 1, $rozmery_nahledu = null
                 $item = $items[$item];
                 switch ($typ) {
                     case 2:
-                        $thumb = \Sunlight\Picture::getThumbnail($cesta . $item, $resize_opts);
-                        $result .= "<a href='" . _e(\Sunlight\Router::file($cesta . $item)) . "' target='_blank' class='lightbox' data-gallery-group='lb_hcm" . Core::$hcmUid . "'><img src='" . _e(\Sunlight\Router::file($thumb)) . "' alt='" . _e($item) . "'></a>\n";
+                        $thumb = Picture::getThumbnail($cesta . $item, $resize_opts);
+                        $result .= "<a href='" . _e(Router::file($cesta . $item)) . "' target='_blank' class='lightbox' data-gallery-group='lb_hcm" . Core::$hcmUid . "'><img src='" . _e(Router::file($thumb)) . "' alt='" . _e($item) . "'></a>\n";
                         break;
                     default:
                         $result .= file_get_contents($cesta . $item);

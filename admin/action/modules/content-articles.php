@@ -2,8 +2,8 @@
 
 use Sunlight\Database\Database as DB;
 use Sunlight\Database\SimpleTreeFilter;
-use Sunlight\Page\PageManager;
 use Sunlight\Extend;
+use Sunlight\Page\PageManager;
 
 defined('_root') or exit;
 

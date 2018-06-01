@@ -1,6 +1,13 @@
 <?php
 
+use Sunlight\Admin\Admin;
 use Sunlight\Database\Database as DB;
+use Sunlight\Message;
+use Sunlight\Util\Arr;
+use Sunlight\Util\Form;
+use Sunlight\Util\Html;
+use Sunlight\Util\Request;
+use Sunlight\Xsrf;
 
 defined('_root') or exit;
 
@@ -9,8 +16,8 @@ defined('_root') or exit;
 $continue = false;
 $message = "";
 if (isset($_GET['id'])) {
-    $id = (int) \Sunlight\Util\Request::get('id');
-    $query = DB::queryRow("SELECT p.* FROM " . _polls_table . " p WHERE p.id=" . $id . \Sunlight\Admin\Admin::pollAccess());
+    $id = (int) Request::get('id');
+    $query = DB::queryRow("SELECT p.* FROM " . _polls_table . " p WHERE p.id=" . $id . Admin::pollAccess());
     if ($query !== false) {
         $new = false;
         $actionbonus = "&amp;id=" . $id;
@@ -31,27 +38,27 @@ if (isset($_GET['id'])) {
 if (isset($_POST['question'])) {
 
     // nacteni promennych
-    $question = \Sunlight\Util\Html::cut(_e(trim(\Sunlight\Util\Request::post('question'))), 255);
+    $question = Html::cut(_e(trim(Request::post('question'))), 255);
     $query['question'] = $question;
 
     // odpovedi
-    $answers = explode("\n", \Sunlight\Util\Request::post('answers'));
+    $answers = explode("\n", Request::post('answers'));
     $answers_new = array();
     foreach ($answers as $answer) {
         $answers_new[] = _e(trim($answer));
     }
-    $answers = \Sunlight\Util\Arr::removeValue($answers_new, "");
+    $answers = Arr::removeValue($answers_new, "");
     $answers_count = count($answers);
     $answers = implode("\n", $answers);
     $query['answers'] = $answers;
 
     if (_priv_adminpollall) {
-        $author = (int) \Sunlight\Util\Request::post('author');
+        $author = (int) Request::post('author');
     } else {
         $author = _user_id;
     }
-    $locked = \Sunlight\Util\Form::loadCheckbox("locked");
-    $reset = \Sunlight\Util\Form::loadCheckbox("reset");
+    $locked = Form::loadCheckbox("locked");
+    $reset = Form::loadCheckbox("reset");
 
     // kontrola promennych
     $errors = array();
@@ -130,7 +137,7 @@ if (isset($_POST['question'])) {
         }
 
     } else {
-        $message = \Sunlight\Message::render(_msg_warn, \Sunlight\Message::renderList($errors, 'errors'));
+        $message = Message::render(_msg_warn, Message::renderList($errors, 'errors'));
     }
 
 }
@@ -144,7 +151,7 @@ if ($continue) {
         $author_select = "
     <tr>
     <th>" . _lang('article.author') . "</th>
-    <td>" . \Sunlight\Admin\Admin::userSelect("author", $query['author'], "adminpoll=1", "selectmedium") . "</td></tr>
+    <td>" . Admin::userSelect("author", $query['author'], "adminpoll=1", "selectmedium") . "</td></tr>
     ";
     } else {
         $author_select = "";
@@ -152,10 +159,10 @@ if ($continue) {
 
     // zprava
     if (isset($_GET['saved'])) {
-        $message = \Sunlight\Message::render(_msg_ok, _lang('global.saved'));
+        $message = Message::render(_msg_ok, _lang('global.saved'));
     }
     if (isset($_GET['created'])) {
-        $message = \Sunlight\Message::render(_msg_ok, _lang('global.created'));
+        $message = Message::render(_msg_ok, _lang('global.created'));
     }
 
     $output .= $message . "
@@ -182,19 +189,19 @@ if ($continue) {
   <tr>
   <th>" . _lang('admin.content.form.settings') . "</th>
   <td>
-  <label><input type='checkbox' name='locked' value='1'" . \Sunlight\Util\Form::activateCheckbox($query['locked']) . "> " . _lang('admin.content.form.locked') . "</label> 
+  <label><input type='checkbox' name='locked' value='1'" . Form::activateCheckbox($query['locked']) . "> " . _lang('admin.content.form.locked') . "</label> 
   " . (!$new ? "<label><input type='checkbox' name='reset' value='1'> " . _lang('admin.content.polls.reset') . "</label>" : '') . "
   </td>
   </tr>
 
   <tr><td></td>
-  <td><input type='submit' value='" . $submitcaption . "' accesskey='s'>" . (!$new ? " <small>" . _lang('admin.content.form.thisid') . " " . $id . "</small> <span class='customsettings'><a class='button' href='" . \Sunlight\Xsrf::addToUrl("index.php?p=content-polls&amp;del=" . $id) . "' onclick='return Sunlight.confirm();'><img src='images/icons/delete.png' class='icon' alt='del'> " . _lang('global.delete') . "</a>" : '') . "</span></td>
+  <td><input type='submit' value='" . $submitcaption . "' accesskey='s'>" . (!$new ? " <small>" . _lang('admin.content.form.thisid') . " " . $id . "</small> <span class='customsettings'><a class='button' href='" . Xsrf::addToUrl("index.php?p=content-polls&amp;del=" . $id) . "' onclick='return Sunlight.confirm();'><img src='images/icons/delete.png' class='icon' alt='del'> " . _lang('global.delete') . "</a>" : '') . "</span></td>
   </tr>
 
   </table>
-  " . \Sunlight\Xsrf::getInput() . "</form>
+  " . Xsrf::getInput() . "</form>
   ";
 
 } else {
-    $output .= \Sunlight\Message::render(_msg_err, _lang('global.badinput'));
+    $output .= Message::render(_msg_err, _lang('global.badinput'));
 }

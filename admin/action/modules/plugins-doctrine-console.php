@@ -1,7 +1,10 @@
 <?php
 
+use Sunlight\Core;
 use Sunlight\Database\Database;
 use Sunlight\Database\Doctrine\Console;
+use Sunlight\Util\Request;
+use Sunlight\Xsrf;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 
@@ -12,7 +15,7 @@ $output .= _buffer(function () { ?>
         <input type="text" name="input" class="inputbig cli-input">
         <input type="submit" value="<?php echo _lang('global.send') ?>" class="button">
         <a href="index.php?p=plugins-doctrine-console"><?php echo _lang('global.reset') ?></a>
-        <?php echo \Sunlight\Xsrf::getInput() ?>
+        <?php echo Xsrf::getInput() ?>
     </form>
 <?php });
 
@@ -21,7 +24,7 @@ $cli->setAutoExit(false);
 $cli->setTerminalDimensions(160, 1000);
 $cli->setCatchExceptions(false);
 
-$cliInput = new StringInput(\Sunlight\Util\Request::post('input', ''));
+$cliInput = new StringInput(Request::post('input', ''));
 $cliOutput = new BufferedOutput();
 
 $e = null;
@@ -38,5 +41,5 @@ if ($cliOutputString !== '') {
 }
 
 if ($e !== null) {
-    $output .= \Sunlight\Core::renderException($e);
+    $output .= Core::renderException($e);
 }

@@ -1,6 +1,11 @@
 <?php
 
 use Sunlight\Database\Database as DB;
+use Sunlight\Message;
+use Sunlight\Util\Form;
+use Sunlight\Util\Html;
+use Sunlight\Util\Request;
+use Sunlight\Xsrf;
 
 defined('_root') or exit;
 
@@ -9,14 +14,14 @@ defined('_root') or exit;
 $message = "";
 if (isset($_POST['action'])) {
 
-    switch (\Sunlight\Util\Request::post('action')) {
+    switch (Request::post('action')) {
 
             // vytvoreni
         case 1:
             // nacteni zakladnich promennych
-            $title = \Sunlight\Util\Html::cut(_e(\Sunlight\Util\Request::post('title')), 64);
-            $public = \Sunlight\Util\Form::loadCheckbox("public");
-            $locked = \Sunlight\Util\Form::loadCheckbox("lockedc");
+            $title = Html::cut(_e(Request::post('title')), 64);
+            $public = Form::loadCheckbox("public");
+            $locked = Form::loadCheckbox("lockedc");
 
             // vlozeni
             DB::insert(_sboxes_table, array(
@@ -24,7 +29,7 @@ if (isset($_POST['action'])) {
                 'locked' => $locked,
                 'public' => $public
             ));
-            $message = \Sunlight\Message::render(_msg_ok, _lang('global.created'));
+            $message = Message::render(_msg_ok, _lang('global.created'));
             break;
 
             // ulozeni
@@ -46,16 +51,16 @@ if (isset($_POST['action'])) {
                     $skip = false;
                     switch ($var) {
                         case "title":
-                            $val = \Sunlight\Util\Html::cut(_e(trim($val)), 64);
+                            $val = Html::cut(_e(trim($val)), 64);
                             break;
                         case "lockedtrigger":
                             $var = "locked";
-                            $val = \Sunlight\Util\Form::loadCheckbox("s" . $id . "_locked");
+                            $val = Form::loadCheckbox("s" . $id . "_locked");
                             $quotes = false;
                             break;
                         case "publictrigger":
                             $var = "public";
-                            $val = \Sunlight\Util\Form::loadCheckbox("s" . $id . "_public");
+                            $val = Form::loadCheckbox("s" . $id . "_public");
                             $quotes = false;
                             break;
                         case "delposts":
@@ -97,7 +102,7 @@ if (isset($_POST['action'])) {
                 DB::query("UPDATE " . _sboxes_table . " SET " . $sql . " WHERE id=" . $id);
             }
 
-            $message = \Sunlight\Message::render(_msg_ok, _lang('global.saved'));
+            $message = Message::render(_msg_ok, _lang('global.saved'));
             break;
 
     }
@@ -106,11 +111,11 @@ if (isset($_POST['action'])) {
 
 /* ---  odstraneni shoutboxu  --- */
 
-if (isset($_GET['del']) && \Sunlight\Xsrf::check(true)) {
-    $del = (int) \Sunlight\Util\Request::get('del');
+if (isset($_GET['del']) && Xsrf::check(true)) {
+    $del = (int) Request::get('del');
     DB::delete(_sboxes_table, 'id=' . $del);
     DB::delete(_posts_table, 'home=' . $del . ' AND type=' . _post_shoutbox_entry);
-    $message = \Sunlight\Message::render(_msg_ok, _lang('global.done'));
+    $message = Message::render(_msg_ok, _lang('global.done'));
 }
 
 /* ---  vystup  --- */
@@ -147,7 +152,7 @@ $output .= "
 
 </table>
 
-" . \Sunlight\Xsrf::getInput() . "</form>
+" . Xsrf::getInput() . "</form>
 </fieldset>
 
 <fieldset>
@@ -185,10 +190,10 @@ if (DB::size($shoutboxes) != 0) {
     <th>" . _lang('admin.content.form.settings') . "</th>
     <td>
     <input type='hidden' name='s" . $shoutbox['id'] . "_publictrigger' value='1'><input type='hidden' name='s" . $shoutbox['id'] . "_lockedtrigger' value='1'>
-    <label><input type='checkbox' name='s" . $shoutbox['id'] . "_public' value='1'" . \Sunlight\Util\Form::activateCheckbox($shoutbox['public']) . "> " . _lang('admin.content.form.unregpost') . "</label><br>
-    <label><input type='checkbox' name='s" . $shoutbox['id'] . "_locked' value='1'" . \Sunlight\Util\Form::activateCheckbox($shoutbox['locked']) . "> " . _lang('admin.content.form.locked2') . "</label><br>
+    <label><input type='checkbox' name='s" . $shoutbox['id'] . "_public' value='1'" . Form::activateCheckbox($shoutbox['public']) . "> " . _lang('admin.content.form.unregpost') . "</label><br>
+    <label><input type='checkbox' name='s" . $shoutbox['id'] . "_locked' value='1'" . Form::activateCheckbox($shoutbox['locked']) . "> " . _lang('admin.content.form.locked2') . "</label><br>
     <label><input type='checkbox' name='s" . $shoutbox['id'] . "_delposts' value='1'> " . _lang('admin.content.form.delposts') . "</label><br><br>
-    <a class='button' href='" . \Sunlight\Xsrf::addToUrl("index.php?p=content-sboxes&amp;del=" . $shoutbox['id']) . "' onclick='return Sunlight.confirm();'><img src='images/icons/delete.png' alt='del' class='icon'>" . _lang('global.delete') . "</a>
+    <a class='button' href='" . Xsrf::addToUrl("index.php?p=content-sboxes&amp;del=" . $shoutbox['id']) . "' onclick='return Sunlight.confirm();'><img src='images/icons/delete.png' alt='del' class='icon'>" . _lang('global.delete') . "</a>
     </td>
     </tr>
 
@@ -201,7 +206,7 @@ if (DB::size($shoutboxes) != 0) {
 }
 
 $output .= "
-" . \Sunlight\Xsrf::getInput() . "</form>
+" . Xsrf::getInput() . "</form>
 </fieldset>
 
 ";

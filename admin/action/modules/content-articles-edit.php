@@ -1,7 +1,18 @@
 <?php
 
+use Sunlight\Admin\Admin;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
+use Sunlight\Generic;
+use Sunlight\Message;
+use Sunlight\Picture;
+use Sunlight\Router;
+use Sunlight\User;
+use Sunlight\Util\Form;
+use Sunlight\Util\Html;
+use Sunlight\Util\Request;
+use Sunlight\Util\StringManipulator;
+use Sunlight\Xsrf;
 
 defined('_root') or exit;
 
@@ -10,13 +21,13 @@ defined('_root') or exit;
 $message = "";
 $continue = false;
 if (isset($_GET['id']) && isset($_GET['returnid']) && isset($_GET['returnpage'])) {
-    $id = (int) \Sunlight\Util\Request::get('id');
-    $returnid = \Sunlight\Util\Request::get('returnid');
+    $id = (int) Request::get('id');
+    $returnid = Request::get('returnid');
     if ($returnid != "load") {
         $returnid = (int) $returnid;
     }
-    $returnpage = (int) \Sunlight\Util\Request::get('returnpage');
-    $query = DB::queryRow("SELECT art.*,cat.slug AS cat_slug FROM " . _articles_table . " AS art JOIN " . _root_table . " AS cat ON(cat.id=art.home1) WHERE art.id=" . $id . \Sunlight\Admin\Admin::articleAccess('art'));
+    $returnpage = (int) Request::get('returnpage');
+    $query = DB::queryRow("SELECT art.*,cat.slug AS cat_slug FROM " . _articles_table . " AS art JOIN " . _root_table . " AS cat ON(cat.id=art.home1) WHERE art.id=" . $id . Admin::articleAccess('art'));
     if ($query !== false) {
         $read_counter = $query['readnum'];
         if ($returnid == "load") {
@@ -25,7 +36,7 @@ if (isset($_GET['id']) && isset($_GET['returnid']) && isset($_GET['returnpage'])
         $backlink = "index.php?p=content-articles-list&cat=" . $returnid . "&page=" . $returnpage;
         $actionplus = "&amp;id=" . $id . "&amp;returnid=" . $returnid . "&amp;returnpage=" . $returnpage;
         $submittext = "global.savechanges";
-        $artlink = " <a href='" . \Sunlight\Router::article($query['id'], $query['slug'], $query['cat_slug']) . "' target='_blank'><img src='images/icons/loupe.png' alt='prev'></a>";
+        $artlink = " <a href='" . Router::article($query['id'], $query['slug'], $query['cat_slug']) . "' target='_blank'><img src='images/icons/loupe.png' alt='prev'></a>";
         $new = false;
         $continue = true;
     }
@@ -61,7 +72,7 @@ if (isset($_GET['id']) && isset($_GET['returnid']) && isset($_GET['returnpage'])
     );
     Extend::call('admin.article.default', array('data' => &$query));
     if (isset($_GET['new_cat'])) {
-        $query['home1'] = (int) \Sunlight\Util\Request::get('new_cat');
+        $query['home1'] = (int) Request::get('new_cat');
     }
     $continue = true;
 }
@@ -71,37 +82,37 @@ if (isset($_GET['id']) && isset($_GET['returnid']) && isset($_GET['returnpage'])
 if (isset($_POST['title'])) {
 
     // nacteni promennych
-    $newdata['title'] = \Sunlight\Util\Html::cut(_e(\Sunlight\Util\Request::post('title')), 255);
-    if (\Sunlight\Util\Request::post('slug') === '') {
-        $_POST['slug'] = \Sunlight\Util\Request::post('title');
+    $newdata['title'] = Html::cut(_e(Request::post('title')), 255);
+    if (Request::post('slug') === '') {
+        $_POST['slug'] = Request::post('title');
     }
-    $newdata['slug'] = \Sunlight\Util\StringManipulator::slugify(\Sunlight\Util\Request::post('slug'), true);
-    $newdata['description'] = \Sunlight\Util\Html::cut(_e(trim(\Sunlight\Util\Request::post('description'))), 255);
-    $newdata['home1'] = (int) \Sunlight\Util\Request::post('home1');
-    $newdata['home2'] = (int) \Sunlight\Util\Request::post('home2');
-    $newdata['home3'] = (int) \Sunlight\Util\Request::post('home3');
+    $newdata['slug'] = StringManipulator::slugify(Request::post('slug'), true);
+    $newdata['description'] = Html::cut(_e(trim(Request::post('description'))), 255);
+    $newdata['home1'] = (int) Request::post('home1');
+    $newdata['home2'] = (int) Request::post('home2');
+    $newdata['home3'] = (int) Request::post('home3');
     if (_priv_adminchangeartauthor) {
-        $newdata['author'] = (int) \Sunlight\Util\Request::post('author');
+        $newdata['author'] = (int) Request::post('author');
     } else {
         $newdata['author'] = $query['author'];
     }
-    $newdata['perex'] = \Sunlight\Util\Request::post('perex');
-    $newdata['content'] = \Sunlight\User::filterContent(\Sunlight\Util\Request::post('content'));
-    $newdata['public'] = \Sunlight\Util\Form::loadCheckbox('public');
-    $newdata['visible'] = \Sunlight\Util\Form::loadCheckbox('visible');
+    $newdata['perex'] = Request::post('perex');
+    $newdata['content'] = User::filterContent(Request::post('content'));
+    $newdata['public'] = Form::loadCheckbox('public');
+    $newdata['visible'] = Form::loadCheckbox('visible');
     if (_priv_adminconfirm || (_priv_adminautoconfirm && $newdata['author'] == _user_id)) {
-        $newdata['confirmed'] = \Sunlight\Util\Form::loadCheckbox('confirmed');
+        $newdata['confirmed'] = Form::loadCheckbox('confirmed');
     } else {
         $newdata['confirmed'] = $query['confirmed'];
     }
-    $newdata['comments'] = \Sunlight\Util\Form::loadCheckbox('comments');
-    $newdata['commentslocked'] = \Sunlight\Util\Form::loadCheckbox('commentslocked');
-    $newdata['rateon'] = \Sunlight\Util\Form::loadCheckbox('rateon');
-    $newdata['showinfo'] = \Sunlight\Util\Form::loadCheckbox('showinfo');
-    $newdata['resetrate'] = \Sunlight\Util\Form::loadCheckbox('resetrate');
-    $newdata['delcomments'] = \Sunlight\Util\Form::loadCheckbox('delcomments');
-    $newdata['resetread'] = \Sunlight\Util\Form::loadCheckbox('resetread');
-    $newdata['time'] = \Sunlight\Util\Form::loadTime('time', $query['time']);
+    $newdata['comments'] = Form::loadCheckbox('comments');
+    $newdata['commentslocked'] = Form::loadCheckbox('commentslocked');
+    $newdata['rateon'] = Form::loadCheckbox('rateon');
+    $newdata['showinfo'] = Form::loadCheckbox('showinfo');
+    $newdata['resetrate'] = Form::loadCheckbox('resetrate');
+    $newdata['delcomments'] = Form::loadCheckbox('delcomments');
+    $newdata['resetread'] = Form::loadCheckbox('resetread');
+    $newdata['time'] = Form::loadTime('time', $query['time']);
 
     // kontrola promennych
     $error_log = array();
@@ -154,13 +165,13 @@ if (isset($_POST['title'])) {
         Extend::call('admin.article.picture', array('opts' => &$picOpts));
 
         // zpracovani
-        $picUid = \Sunlight\Picture::process($picOpts, $picError);
+        $picUid = Picture::process($picOpts, $picError);
 
         if ($picUid !== false) {
             // uspech
             if (isset($query['picture_uid'])) {
                 // odstraneni stareho
-                @unlink(\Sunlight\Picture::get(_root . 'images/articles/', null, $query['picture_uid'], 'jpg'));
+                @unlink(Picture::get(_root . 'images/articles/', null, $query['picture_uid'], 'jpg'));
             }
             $newdata['picture_uid'] = $picUid;
         } else {
@@ -168,9 +179,9 @@ if (isset($_POST['title'])) {
             $error_log[] = _lang('admin.content.form.picture') . ' - ' . $picError;
         }
 
-    } elseif (isset($query['picture_uid']) && \Sunlight\Util\Form::loadCheckbox('picture-delete')) {
+    } elseif (isset($query['picture_uid']) && Form::loadCheckbox('picture-delete')) {
         // smazani obrazku
-        @unlink(\Sunlight\Picture::get(_root . 'images/articles/', null, $query['picture_uid'], 'jpg'));
+        @unlink(Picture::get(_root . 'images/articles/', null, $query['picture_uid'], 'jpg'));
         $newdata['picture_uid'] = null;
     }
 
@@ -262,7 +273,7 @@ if (isset($_POST['title'])) {
         return;
 
     } else {
-        $message = \Sunlight\Message::render(_msg_warn, \Sunlight\Message::renderList($error_log, 'errors'));
+        $message = Message::render(_msg_warn, Message::renderList($error_log, 'errors'));
         $query = $newdata + $query;
     }
 
@@ -274,17 +285,17 @@ if ($continue) {
 
     // vyber autora
     if (_priv_adminchangeartauthor) {
-        $author_select = \Sunlight\Admin\Admin::userSelect("author", $query['author'], "adminart=1", "selectmedium");
+        $author_select = Admin::userSelect("author", $query['author'], "adminart=1", "selectmedium");
     } else {
         $author_select = "";
     }
 
     // zprava
     if (isset($_GET['saved'])) {
-        $message = \Sunlight\Message::render(_msg_ok, _lang('global.saved') . " <small>(" . \Sunlight\Generic::renderTime(time()) . ")</small>");
+        $message = Message::render(_msg_ok, _lang('global.saved') . " <small>(" . Generic::renderTime(time()) . ")</small>");
     }
     if (isset($_GET['created'])) {
-        $message = \Sunlight\Message::render(_msg_ok, _lang('global.created'));
+        $message = Message::render(_msg_ok, _lang('global.created'));
     }
 
     // vypocet hodnoceni
@@ -304,7 +315,7 @@ if ($continue) {
     // obrazek
     $picture = '';
     if (isset($query['picture_uid'])) {
-        $picture .= "<img src='" . _e(\Sunlight\Router::file(\Sunlight\Picture::get(_root . 'images/articles/', null, $query['picture_uid'], 'jpg'))) . "' alt='article picture' id='is-picture-file'>
+        $picture .= "<img src='" . _e(Router::file(Picture::get(_root . 'images/articles/', null, $query['picture_uid'], 'jpg'))) . "' alt='article picture' id='is-picture-file'>
 <label id='is-picture-delete'><input type='checkbox' name='picture-delete' value='1'> <img src='images/icons/delete3.png' class='icon' alt='" . _lang('global.delete') . "'></label>";
     } else {
         $picture .= "<img src='images/art-no-pic.png' alt='no picture'>\n";
@@ -320,14 +331,14 @@ if ($continue) {
     }
 
     // formular
-    $output .= \Sunlight\Admin\Admin::backlink($backlink) . "
+    $output .= Admin::backlink($backlink) . "
 <h1>" . _lang('admin.content.articles.edit.title') . "</h1>
 " . $message . "
 
-" . (($new && !_priv_adminautoconfirm) ? \Sunlight\Admin\Admin::note(_lang('admin.content.articles.edit.newconfnote')) : '') . "
-" . ((!$new && $query['confirmed'] != 1) ? \Sunlight\Admin\Admin::note(_lang('admin.content.articles.edit.confnote')) : '') . "
+" . (($new && !_priv_adminautoconfirm) ? Admin::note(_lang('admin.content.articles.edit.newconfnote')) : '') . "
+" . ((!$new && $query['confirmed'] != 1) ? Admin::note(_lang('admin.content.articles.edit.confnote')) : '') . "
 
-" . ((!$new && DB::count(_articles_table, 'id!=' . DB::val($query['id']) . ' AND home1=' . DB::val($query['home1']) . ' AND slug=' . DB::val($query['slug'])) !== 0) ? \Sunlight\Message::render(_msg_warn, _lang('admin.content.form.slug.collision')) : '') . "
+" . ((!$new && DB::count(_articles_table, 'id!=' . DB::val($query['id']) . ' AND home1=' . DB::val($query['home1']) . ' AND slug=' . DB::val($query['slug'])) !== 0) ? Message::render(_msg_warn, _lang('admin.content.form.slug.collision')) : '') . "
 
 <form class='cform' action='index.php?p=content-articles-edit" . $actionplus . "' method='post' enctype='multipart/form-data' name='artform'>
 
@@ -336,9 +347,9 @@ if ($continue) {
 <tr>
 <th>" . _lang('article.category') . "</th>
 <td>"
-    . \Sunlight\Admin\Admin::rootSelect("home1", array('type' => _page_category, 'selected' => $query['home1']))
-    . \Sunlight\Admin\Admin::rootSelect("home2", array('type' => _page_category, 'selected' => $query['home2'], 'empty_item' => _lang('admin.content.form.category.none')))
-    . \Sunlight\Admin\Admin::rootSelect("home3", array('type' => _page_category, 'selected' => $query['home3'], 'empty_item' => _lang('admin.content.form.category.none')))
+    . Admin::rootSelect("home1", array('type' => _page_category, 'selected' => $query['home1']))
+    . Admin::rootSelect("home2", array('type' => _page_category, 'selected' => $query['home2'], 'empty_item' => _lang('admin.content.form.category.none')))
+    . Admin::rootSelect("home3", array('type' => _page_category, 'selected' => $query['home3'], 'empty_item' => _lang('admin.content.form.category.none')))
     . "
 </td>
 </tr>
@@ -389,13 +400,13 @@ if ($continue) {
 
       <h2>" . _lang('admin.content.form.settings') . "</h2>
       <p id='is-settings'>
-      <label><input type='checkbox' name='public' value='1'" . \Sunlight\Util\Form::activateCheckbox($query['public']) . "> " . _lang('admin.content.form.public') . "</label>
-      <label><input type='checkbox' name='visible' value='1'" . \Sunlight\Util\Form::activateCheckbox($query['visible']) . "> " . _lang('admin.content.form.visible') . "</label>
-      " . ((_priv_adminconfirm || (_priv_adminautoconfirm && $query['author'] == _user_id)) ? "<label><input type='checkbox' name='confirmed' value='1'" . \Sunlight\Util\Form::activateCheckbox($query['confirmed']) . "> " . _lang('admin.content.form.confirmed') . "</label>" : '') . "
-      <label><input type='checkbox' name='comments' value='1'" . \Sunlight\Util\Form::activateCheckbox($query['comments']) . "> " . _lang('admin.content.form.comments') . "</label>
-      <label><input type='checkbox' name='commentslocked' value='1'" . \Sunlight\Util\Form::activateCheckbox($query['commentslocked']) . "> " . _lang('admin.content.form.commentslocked') . "</label>
-      <label><input type='checkbox' name='rateon' value='1'" . \Sunlight\Util\Form::activateCheckbox($query['rateon']) . "> " . _lang('admin.content.form.artrate') . "</label>
-      <label><input type='checkbox' name='showinfo' value='1'" . \Sunlight\Util\Form::activateCheckbox($query['showinfo']) . "> " . _lang('admin.content.form.showinfo') . "</label>
+      <label><input type='checkbox' name='public' value='1'" . Form::activateCheckbox($query['public']) . "> " . _lang('admin.content.form.public') . "</label>
+      <label><input type='checkbox' name='visible' value='1'" . Form::activateCheckbox($query['visible']) . "> " . _lang('admin.content.form.visible') . "</label>
+      " . ((_priv_adminconfirm || (_priv_adminautoconfirm && $query['author'] == _user_id)) ? "<label><input type='checkbox' name='confirmed' value='1'" . Form::activateCheckbox($query['confirmed']) . "> " . _lang('admin.content.form.confirmed') . "</label>" : '') . "
+      <label><input type='checkbox' name='comments' value='1'" . Form::activateCheckbox($query['comments']) . "> " . _lang('admin.content.form.comments') . "</label>
+      <label><input type='checkbox' name='commentslocked' value='1'" . Form::activateCheckbox($query['commentslocked']) . "> " . _lang('admin.content.form.commentslocked') . "</label>
+      <label><input type='checkbox' name='rateon' value='1'" . Form::activateCheckbox($query['rateon']) . "> " . _lang('admin.content.form.artrate') . "</label>
+      <label><input type='checkbox' name='showinfo' value='1'" . Form::activateCheckbox($query['showinfo']) . "> " . _lang('admin.content.form.showinfo') . "</label>
       " . (!$new ? "<label><input type='checkbox' name='resetrate' value='1'> " . _lang('admin.content.form.resetartrate') . " <small>(" . $rate . ")</small></label>" : '') . "
       " . (!$new ? "<label><input type='checkbox' name='delcomments' value='1'> " . _lang('admin.content.form.delcomments') . " <small>(" . DB::count(_posts_table, 'home=' . DB::val($query['id']) . ' AND type=' . _post_article_comment) . ")</small></label>" : '') . "
       " . (!$new ? "<label><input type='checkbox' name='resetread' value='1'> " . _lang('admin.content.form.resetartread') . " <small>(" . $read_counter . ")</small></label>" : '') . "
@@ -412,7 +423,7 @@ if ($continue) {
 
 <tr id='time-cell'>
 <th>" . _lang('article.posted') . "</th>
-<td>" . \Sunlight\Util\Form::editTime('time', $query['time'], true, $new) . "</td>
+<td>" . Form::editTime('time', $query['time'], true, $new) . "</td>
 </tr>
 
 " . Extend::buffer('admin.article.form', array('article' => $query)) . "
@@ -430,13 +441,13 @@ if ($continue) {
 
 </table>
 
-" . \Sunlight\Xsrf::getInput() . "</form>
+" . Xsrf::getInput() . "</form>
 
 ";
 
 } else {
     $output .=
-        \Sunlight\Admin\Admin::backlink('index.php?p=content-articles')
+        Admin::backlink('index.php?p=content-articles')
         . "<h1>" . _lang('admin.content.articles.edit.title') . "</h1>\n"
-        . \Sunlight\Message::render(_msg_err, _lang('global.badinput'));
+        . Message::render(_msg_err, _lang('global.badinput'));
 }

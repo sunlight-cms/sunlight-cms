@@ -2,6 +2,10 @@
 
 use Sunlight\Core;
 use Sunlight\Database\Database as DB;
+use Sunlight\Message;
+use Sunlight\User;
+use Sunlight\Util\Request;
+use Sunlight\Xsrf;
 
 defined('_root') or exit;
 
@@ -13,7 +17,7 @@ $sysgroups_array = array(_group_admin, _group_guests, _group_registered);
 // id
 $continue = false;
 if (isset($_GET['id'])) {
-    $id = (int) \Sunlight\Util\Request::get('id');
+    $id = (int) Request::get('id');
     $systemgroup = in_array($id, $sysgroups_array);
     $query = DB::queryRow("SELECT id,title,level FROM " . _groups_table . " WHERE id=" . $id);
     if ($query !== false) {
@@ -47,7 +51,7 @@ if ($continue) {
         // smazani uzivatelu
         $users = DB::query("SELECT id FROM " . _users_table . " WHERE group_id=" . $id . " AND id!=0");
         while ($user = DB::row($users)) {
-            \Sunlight\User::delete($user['id']);
+            User::delete($user['id']);
         }
 
         $done = true;
@@ -57,10 +61,10 @@ if ($continue) {
     /* ---  vystup  --- */
     if (!$done) {
         if ($systemgroup) {
-            $output .= \Sunlight\Message::render(_msg_ok, _lang('admin.users.groups.specialgroup.delnotice'));
+            $output .= Message::render(_msg_ok, _lang('admin.users.groups.specialgroup.delnotice'));
         }
         if ($user_count > 0) {
-            $output .= \Sunlight\Message::render(_msg_warn, _lang('admin.users.groups.delwarning', array('%user_count%' => $user_count)));
+            $output .= Message::render(_msg_warn, _lang('admin.users.groups.delwarning', array('%user_count%' => $user_count)));
         }
 
         $output .= "
@@ -69,16 +73,16 @@ if ($continue) {
 
     <p>" . _lang('admin.users.groups.delconfirm', array('%group%' => $query['title'])) . "</p>
     <input type='submit' value='" . _lang('global.confirmdelete') . "'>
-    " . \Sunlight\Xsrf::getInput() . "</form>
+    " . Xsrf::getInput() . "</form>
     ";
     } else {
-        $output .= \Sunlight\Message::render(_msg_ok, _lang('global.done'));
+        $output .= Message::render(_msg_ok, _lang('global.done'));
     }
 
 } else {
     if ($levelconflict == false) {
-        $output .= \Sunlight\Message::render(_msg_err, _lang('global.badinput'));
+        $output .= Message::render(_msg_err, _lang('global.badinput'));
     } else {
-        $output .= \Sunlight\Message::render(_msg_err, _lang('global.disallowed'));
+        $output .= Message::render(_msg_err, _lang('global.disallowed'));
     }
 }

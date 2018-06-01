@@ -1,8 +1,17 @@
 <?php
 
+use Sunlight\Admin\Admin;
 use Sunlight\Core;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
+use Sunlight\Gallery;
+use Sunlight\Message;
+use Sunlight\Picture;
+use Sunlight\Util\Environment;
+use Sunlight\Util\Form;
+use Sunlight\Util\Html;
+use Sunlight\Util\Request;
+use Sunlight\Xsrf;
 
 defined('_root') or exit;
 
@@ -11,7 +20,7 @@ defined('_root') or exit;
 $message = "";
 $continue = false;
 if (isset($_GET['g'])) {
-    $g = (int) \Sunlight\Util\Request::get('g');
+    $g = (int) Request::get('g');
     $galdata = DB::queryRow("SELECT title,var2,var3,var4 FROM " . _root_table . " WHERE id=" . $g . " AND type=" . _page_gallery);
     if ($galdata !== false) {
         if ($galdata['var2'] === null) {
@@ -31,22 +40,22 @@ if (isset($_GET['g'])) {
 
 if (isset($_POST['xaction']) && $continue) {
 
-    switch (\Sunlight\Util\Request::post('xaction')) {
+    switch (Request::post('xaction')) {
 
             /* -  vlozeni obrazku  - */
         case 1:
 
             // nacteni zakladnich promennych
-            $title = \Sunlight\Util\Html::cut(_e(trim(\Sunlight\Util\Request::post('title'))), 255);
-            if (!\Sunlight\Util\Form::loadCheckbox("autoprev")) {
-                $prev = \Sunlight\Util\Html::cut(_e(\Sunlight\Util\Request::post('prev')), 255);
+            $title = Html::cut(_e(trim(Request::post('title'))), 255);
+            if (!Form::loadCheckbox("autoprev")) {
+                $prev = Html::cut(_e(Request::post('prev')), 255);
             } else {
                 $prev = "";
             }
-            $full = \Sunlight\Util\Html::cut(_e(\Sunlight\Util\Request::post('full')), 255);
+            $full = Html::cut(_e(Request::post('full')), 255);
 
             // vlozeni na zacatek nebo nacteni poradoveho cisla
-            if (\Sunlight\Util\Form::loadCheckbox("moveords")) {
+            if (Form::loadCheckbox("moveords")) {
                 $smallerord = DB::queryRow("SELECT ord FROM " . _images_table . " WHERE home=" . $g . " ORDER BY ord LIMIT 1");
                 if ($smallerord !== false) {
                     $ord = $smallerord['ord'];
@@ -55,7 +64,7 @@ if (isset($_POST['xaction']) && $continue) {
                 }
                 DB::update(_images_table, 'home=' . $g, array('ord' => DB::raw('ord+1')));
             } else {
-                $ord = floatval(\Sunlight\Util\Request::post('ord'));
+                $ord = floatval(Request::post('ord'));
             }
 
             // kontrola a vlozeni
@@ -67,9 +76,9 @@ if (isset($_POST['xaction']) && $continue) {
                     'prev' => $prev,
                     'full' => $full
                 ));
-                $message = \Sunlight\Message::render(_msg_ok, _lang('global.inserted'));
+                $message = Message::render(_msg_ok, _lang('global.inserted'));
             } else {
-                $message = \Sunlight\Message::render(_msg_warn, _lang('admin.content.manageimgs.insert.error'));
+                $message = Message::render(_msg_warn, _lang('admin.content.manageimgs.insert.error'));
             }
 
             break;
@@ -101,8 +110,8 @@ if (isset($_POST['xaction']) && $continue) {
                             break;
                         case "prevtrigger":
                             $var = "prev";
-                            if (!\Sunlight\Util\Form::loadCheckbox('i' . $id . '_autoprev')) {
-                                $val = \Sunlight\Util\Html::cut(_e(\Sunlight\Util\Request::post('i' . $id . '_prev')), 255);
+                            if (!Form::loadCheckbox('i' . $id . '_autoprev')) {
+                                $val = Html::cut(_e(Request::post('i' . $id . '_prev')), 255);
                             } else {
                                 $val = '';
                             }
@@ -146,18 +155,18 @@ if (isset($_POST['xaction']) && $continue) {
                 DB::query("UPDATE " . _images_table . " SET " . $sql . " WHERE id=" . $id . " AND home=" . $g);
             }
 
-            $message = \Sunlight\Message::render(_msg_ok, _lang('global.saved'));
+            $message = Message::render(_msg_ok, _lang('global.saved'));
             break;
 
             /* -  presunuti obrazku  - */
         case 5:
-            $newhome = (int) \Sunlight\Util\Request::post('newhome');
+            $newhome = (int) Request::post('newhome');
             if ($newhome != $g) {
                 if (DB::count(_root_table, 'id=' . DB::val($newhome) . ' AND type=' . _page_gallery) !== 0) {
                     if (DB::count(_images_table, 'home=' . DB::val($g)) !== 0) {
 
                         // posunuti poradovych cisel v cilove galerii
-                        $moveords = \Sunlight\Util\Form::loadCheckbox("moveords");
+                        $moveords = Form::loadCheckbox("moveords");
                         if ($moveords) {
 
                             // nacteni nejvetsiho poradoveho cisla v teto galerii
@@ -171,25 +180,25 @@ if (isset($_POST['xaction']) && $continue) {
                         DB::update(_images_table, 'home=' . $g, array('home' => $newhome));
 
                         // zprava
-                        $message = \Sunlight\Message::render(_msg_ok, _lang('global.done'));
+                        $message = Message::render(_msg_ok, _lang('global.done'));
 
                     } else {
-                        $message = \Sunlight\Message::render(_msg_warn, _lang('admin.content.manageimgs.moveimgs.nokit'));
+                        $message = Message::render(_msg_warn, _lang('admin.content.manageimgs.moveimgs.nokit'));
                     }
                 } else {
-                    $message = \Sunlight\Message::render(_msg_warn, _lang('global.badinput'));
+                    $message = Message::render(_msg_warn, _lang('global.badinput'));
                 }
             } else {
-                $message = \Sunlight\Message::render(_msg_warn, _lang('admin.content.manageimgs.moveimgs.samegal'));
+                $message = Message::render(_msg_warn, _lang('admin.content.manageimgs.moveimgs.samegal'));
             }
             break;
 
             /* -  odstraneni vsech obrazku  - */
         case 6:
-            if (\Sunlight\Util\Form::loadCheckbox("confirm")) {
-                \Sunlight\Admin\Admin::deleteGalleryStorage('home=' . $g);
+            if (Form::loadCheckbox("confirm")) {
+                Admin::deleteGalleryStorage('home=' . $g);
                 DB::delete(_images_table, 'home=' . $g);
-                $message = \Sunlight\Message::render(_msg_ok, _lang('global.done'));
+                $message = Message::render(_msg_ok, _lang('global.done'));
             }
             break;
 
@@ -206,7 +215,7 @@ if (isset($_POST['xaction']) && $continue) {
             if (($nostor = !is_dir($stor)) || !is_writeable($stor)) {
                 // try to create or chmod
                 if ($nostor && !mkdir($stor, 0777) || !$nostor && !chmod($stor, 0777)) {
-                    $message = \Sunlight\Message::render(_msg_err, sprintf(_lang('admin.content.manageimgs.upload.acerr'), $stor));
+                    $message = Message::render(_msg_err, sprintf(_lang('admin.content.manageimgs.upload.acerr'), $stor));
                     break;
                 }
             }
@@ -242,7 +251,7 @@ if (isset($_POST['xaction']) && $continue) {
                     Extend::call('admin.gallery.picture', array('opts' => &$picOpts));
 
                     // process
-                    $picUid = \Sunlight\Picture::process($picOpts, $picError, $picFormat);
+                    $picUid = Picture::process($picOpts, $picError, $picFormat);
 
                     if ($picUid === false) {
                         continue;
@@ -287,7 +296,7 @@ if (isset($_POST['xaction']) && $continue) {
 
             // message
             $done = count($done);
-            $message = \Sunlight\Message::render(($done === $total) ? _msg_ok : _msg_warn, sprintf(_lang('admin.content.manageimgs.upload.msg'), $done, $total));
+            $message = Message::render(($done === $total) ? _msg_ok : _msg_warn, sprintf(_lang('admin.content.manageimgs.upload.msg'), $done, $total));
             break;
 
     }
@@ -296,19 +305,19 @@ if (isset($_POST['xaction']) && $continue) {
 
 /* ---  odstraneni obrazku  --- */
 
-if (isset($_GET['del']) && \Sunlight\Xsrf::check(true) && $continue) {
-    $del = (int) \Sunlight\Util\Request::get('del');
-    \Sunlight\Admin\Admin::deleteGalleryStorage('id=' . $del . ' AND home=' . $g);
+if (isset($_GET['del']) && Xsrf::check(true) && $continue) {
+    $del = (int) Request::get('del');
+    Admin::deleteGalleryStorage('id=' . $del . ' AND home=' . $g);
     DB::delete(_images_table, 'id=' . $del . ' AND home=' . $g);
     if (DB::affectedRows() === 1) {
-        $message = \Sunlight\Message::render(_msg_ok, _lang('global.done'));
+        $message = Message::render(_msg_ok, _lang('global.done'));
     }
 }
 
 /* ---  vystup  --- */
 
 if ($continue) {
-    $output .= \Sunlight\Admin\Admin::backlink('index.php?p=content-editgallery&id=' . $g) . "
+    $output .= Admin::backlink('index.php?p=content-editgallery&id=' . $g) . "
 <h1>" . _lang('admin.content.manageimgs.title') . "</h1>
 <p class='bborder'>" . _lang('admin.content.manageimgs.p', array("*galtitle*" => $galdata['title'])) . "</p>
 
@@ -324,10 +333,10 @@ if ($continue) {
     <p>
         <input type='submit' value='" . _lang('admin.content.manageimgs.upload.submit') . "'>
         <label><input type='checkbox' value='1' name='moveords' checked> " . _lang('admin.content.manageimgs.moveords') . "</label>"
-        . \Sunlight\Util\Environment::renderUploadLimit()
+        . Environment::renderUploadLimit()
         . ' <small>' . _lang('global.uploadext') . ": <em>" . implode(', ', Core::$imageExt) . "</em></small>
     </p>
-" . \Sunlight\Xsrf::getInput() . "</form>
+" . Xsrf::getInput() . "</form>
 </fieldset>
 
 <fieldset class='hs_fieldset'>
@@ -363,7 +372,7 @@ if ($continue) {
 
 </table>
 
-" . \Sunlight\Xsrf::getInput() . "</form>
+" . Xsrf::getInput() . "</form>
 </fieldset>
 
 ";
@@ -395,7 +404,7 @@ if ($continue) {
 >';
         while ($image = DB::row($images)) {
             // kod nahledu
-            $preview = \Sunlight\Gallery::renderImage($image, "1", $galdata['var4'], $galdata['var3']);
+            $preview = Gallery::renderImage($image, "1", $galdata['var4'], $galdata['var3']);
 
             // kod formulare
             $output .= "
@@ -414,7 +423,7 @@ if ($continue) {
 
 " . (!$image['in_storage'] ? "<tr>
 <th>" . _lang('admin.content.manageimgs.prev') . "</th>
-<td><input type='hidden' name='i" . $image['id'] . "_prevtrigger' value='1'><input type='text' name='i" . $image['id'] . "_prev' class='inputsmall' value='" . $image['prev'] . "'" . \Sunlight\Util\Form::disableInputUnless($image['prev'] != "") . "> <label><input type='checkbox' name='i" . $image['id'] . "_autoprev' value='1' onclick=\"Sunlight.toggleFormField(checked, 'editform', 'i" . $image['id'] . "_prev');\"" . \Sunlight\Util\Form::activateCheckbox($image['prev'] == "") . "> " . _lang('admin.content.manageimgs.autoprev') . "</label></td>
+<td><input type='hidden' name='i" . $image['id'] . "_prevtrigger' value='1'><input type='text' name='i" . $image['id'] . "_prev' class='inputsmall' value='" . $image['prev'] . "'" . Form::disableInputUnless($image['prev'] != "") . "> <label><input type='checkbox' name='i" . $image['id'] . "_autoprev' value='1' onclick=\"Sunlight.toggleFormField(checked, 'editform', 'i" . $image['id'] . "_prev');\"" . Form::activateCheckbox($image['prev'] == "") . "> " . _lang('admin.content.manageimgs.autoprev') . "</label></td>
 </tr>
 
 <tr>
@@ -424,7 +433,7 @@ if ($continue) {
 
 <tr class='valign-top'>
 <th>" . _lang('global.preview') . "</th>
-<td>" . $preview . "<br><br><a class='button' href='" . \Sunlight\Xsrf::addToUrl("index.php?p=content-manageimgs&amp;g=" . $g . "&amp;del=" . $image['id']) . "' onclick='return Sunlight.confirm();'><img src='images/icons/delete.png' alt='del' class='icon'>" . _lang('admin.content.manageimgs.delete') . "</a></td>
+<td>" . $preview . "<br><br><a class='button' href='" . Xsrf::addToUrl("index.php?p=content-manageimgs&amp;g=" . $g . "&amp;del=" . $image['id']) . "' onclick='return Sunlight.confirm();'><img src='images/icons/delete.png' alt='del' class='icon'>" . _lang('admin.content.manageimgs.delete') . "</a></td>
 </tr>
 
 </table>
@@ -441,7 +450,7 @@ if ($continue) {
     }
 
     $output .= "
-" . \Sunlight\Xsrf::getInput() . "</form>
+" . Xsrf::getInput() . "</form>
 </fieldset>
 
 <table width='100%'>
@@ -453,9 +462,9 @@ if ($continue) {
 
   <form class='cform' action='index.php?p=content-manageimgs&amp;g=" . $g . "' method='post'>
   <input type='hidden' name='xaction' value='5'>
-  " . \Sunlight\Admin\Admin::rootSelect("newhome", array('type' => _page_gallery)) . " <input class='button' type='submit' value='" . _lang('global.do') . "' onclick='return Sunlight.confirm();'><br><br>
+  " . Admin::rootSelect("newhome", array('type' => _page_gallery)) . " <input class='button' type='submit' value='" . _lang('global.do') . "' onclick='return Sunlight.confirm();'><br><br>
   <label><input type='checkbox' name='moveords' value='1' checked> " . _lang('admin.content.manageimgs.moveords') . "</label>
-  " . \Sunlight\Xsrf::getInput() . "</form>
+  " . Xsrf::getInput() . "</form>
 
   </fieldset>
 </td>
@@ -467,7 +476,7 @@ if ($continue) {
   <form class='cform' action='index.php?p=content-manageimgs&amp;g=" . $g . "' method='post'>
   <input type='hidden' name='xaction' value='6'>
   <label><input type='checkbox' name='confirm' value='1'> " . _lang('admin.content.manageimgs.delimgs.confirm') . "</label> <input class='button' type='submit' value='" . _lang('global.do') . "' onclick='return Sunlight.confirm();'>
-  " . \Sunlight\Xsrf::getInput() . "</form>
+  " . Xsrf::getInput() . "</form>
 
   </fieldset>
 </td>
@@ -477,5 +486,5 @@ if ($continue) {
 
 ";
 } else {
-    $output .= \Sunlight\Message::render(_msg_err, _lang('global.badinput'));
+    $output .= Message::render(_msg_err, _lang('global.badinput'));
 }

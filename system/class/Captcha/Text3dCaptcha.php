@@ -1,6 +1,7 @@
 <?php
 
 namespace Sunlight\Captcha;
+use Sunlight\Util\Math;
 
 /**
  * Simple axonometric 3D text CAPTCHA
@@ -181,7 +182,7 @@ class Text3dCaptcha
 
         for ($x = 0; $x < imagesx($image); $x++) {
             for ($y = 0; $y < imagesy($image); $y++) {
-                imagesetpixel($image, $x, $y, imagecolorat($image, $x, $y) + \Sunlight\Util\Math::randomInt(0, $intensity));
+                imagesetpixel($image, $x, $y, imagecolorat($image, $x, $y) + Math::randomInt(0, $intensity));
             }
         }
     }

@@ -1,6 +1,7 @@
 <?php
 
 use Sunlight\Database\Database as DB;
+use Sunlight\Router;
 
 defined('_root') or exit;
 
@@ -23,6 +24,6 @@ return function ($id = null, $text = null, $nove_okno = false)
             $query['title'] = _e($text);
         }
 
-        return "<a href='" . \Sunlight\Router::root($id, $query['slug']) . "'" . $target . ">" . $query['title'] . "</a>";
+        return "<a href='" . Router::root($id, $query['slug']) . "'" . $target . ">" . $query['title'] . "</a>";
     }
 };

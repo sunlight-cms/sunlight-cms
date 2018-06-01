@@ -1,7 +1,16 @@
 <?php
 
+use Sunlight\Article;
 use Sunlight\Core;
 use Sunlight\Database\Database as DB;
+use Sunlight\Picture;
+use Sunlight\Post;
+use Sunlight\Router;
+use Sunlight\Template;
+use Sunlight\User;
+use Sunlight\Util\Html;
+use Sunlight\Util\Request;
+use Sunlight\Util\Response;
 
 require '../bootstrap.php';
 Core::init('../../', array(
@@ -15,9 +24,9 @@ if (!_rss) {
 /* ---  priprava promennych  --- */
 
 $continue = false;
-$type = (int) \Sunlight\Util\Request::get('tp');
-$id = (int) \Sunlight\Util\Request::get('id');
-$template = \Sunlight\Template::getCurrent();
+$type = (int) Request::get('tp');
+$id = (int) Request::get('id');
+$template = Template::getCurrent();
 
 // cast sql dotazu - pristup ke strance
 $root_cond = 'level<=' . _priv_level;
@@ -63,16 +72,16 @@ switch ($type) {
         // test pristupu k clanku
         $custom_cond = false;
         if ($query !== false) {
-            $custom_cond = \Sunlight\Article::checkAccess($query);
+            $custom_cond = Article::checkAccess($query);
 
             // obrazek clanku
             if ($query['picture_uid']) {
-                $image_url = \Sunlight\Router::file(\Sunlight\Picture::get(_root . 'images/articles/', null, $query['picture_uid'], 'jpg'));
+                $image_url = Router::file(Picture::get(_root . 'images/articles/', null, $query['picture_uid'], 'jpg'));
                 $image_w = _article_pic_w;
                 $image_h = _article_pic_h;
             }
 
-            $feed_url = \Sunlight\Router::article($id, $query['slug'], $query['cat_slug'], true);
+            $feed_url = Router::article($id, $query['slug'], $query['cat_slug'], true);
             $feed_title = _lang('rss.recentcomments');
             $post_types = array(_post_article_comment);
         }
@@ -125,7 +134,7 @@ switch ($type) {
 
         // nelegalni typ
     default:
-        \Sunlight\Response::notFound();
+        Response::notFound();
         exit;
 }
 
@@ -145,8 +154,8 @@ if ($custom_cond && ($donottestsource || DB::size($query) != 0)) {
         case _rss_latest_topics:
         case _rss_latest_topic_answers:
         case _rss_latest_comments:
-            list($columns, $joins, $cond) = \Sunlight\Post::createFilter('post', $post_types, $post_homes);
-            $userQuery = \Sunlight\User::createQuery('post.author');
+            list($columns, $joins, $cond) = Post::createFilter('post', $post_types, $post_homes);
+            $userQuery = User::createQuery('post.author');
             $columns .= ',' . $userQuery['column_list'];
             $joins .= ' ' . $userQuery['joins'];
             if ($post_cond !== null) {
@@ -157,13 +166,13 @@ if ($custom_cond && ($donottestsource || DB::size($query) != 0)) {
 
                 // nacteni jmena autora
                 if ($item['author'] != -1) {
-                    $author = \Sunlight\Router::userFromQuery($userQuery, $item, array('plain' => true));
+                    $author = Router::userFromQuery($userQuery, $item, array('plain' => true));
                 } else {
                     $author = $item['guest'];
                 }
 
                 // odkaz na stranku
-                list($homelink, $hometitle) = \Sunlight\Router::post($item, true, true);
+                list($homelink, $hometitle) = Router::post($item, true, true);
 
                 // sestaveni titulku
                 if ($type == _rss_latest_comments) {
@@ -179,7 +188,7 @@ if ($custom_cond && ($donottestsource || DB::size($query) != 0)) {
                 $feeditems[] = array(
                     $title,
                     $homelink . "#posts",
-                    \Sunlight\Util\Html::cut(strip_tags(\Sunlight\Post::render($item['text'])), 255),
+                    Html::cut(strip_tags(Post::render($item['text'])), 255),
                     $item['time']
                 );
 
@@ -188,12 +197,12 @@ if ($custom_cond && ($donottestsource || DB::size($query) != 0)) {
 
             // nejnovejsi clanky
         case _rss_latest_articles:
-            list($joins, $cond) = \Sunlight\Article::createFilter('art', $categories);
+            list($joins, $cond) = Article::createFilter('art', $categories);
             $items = DB::query("SELECT art.id,art.time,art.confirmed,art.public,art.home1,art.home2,art.home3,art.title,art.slug,art.perex,cat1.slug AS cat_slug FROM " . _articles_table . " AS art " . $joins . " WHERE " . $cond . " ORDER BY art.time DESC LIMIT " . _rsslimit);
             while ($item = DB::row($items)) {
                 $feeditems[] = array(
                     $item['title'],
-                    \Sunlight\Router::article($item['id'], $item['slug'], $item['cat_slug'], true),
+                    Router::article($item['id'], $item['slug'], $item['cat_slug'], true),
                     strip_tags($item['perex']),
                     $item['time']
                 );

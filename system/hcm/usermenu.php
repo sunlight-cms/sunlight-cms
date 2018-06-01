@@ -1,8 +1,10 @@
 <?php
 
+use Sunlight\Template;
+
 defined('_root') or exit;
 
 return function ()
 {
-    return Sunlight\Template::userMenu();
+    return Template::userMenu();
 };

@@ -5,7 +5,10 @@ namespace Sunlight\Twig;
 use Kuria\Debug\Dumper;
 use Sunlight\Core;
 use Sunlight\Extend;
+use Sunlight\Router;
 use Sunlight\Util\Url;
+use Sunlight\Util\UrlHelper;
+use Sunlight\Xsrf;
 
 abstract class TwigBridge
 {
@@ -87,7 +90,7 @@ abstract class TwigBridge
         $env->addFunction(new \Twig_SimpleFunction('link_article', '_linkArticle'));
         $env->addFunction(new \Twig_SimpleFunction('link_topic', '_linkTopic'));
         $env->addFunction(new \Twig_SimpleFunction('link_module', function ($module, $params = null, $absolute = false) {
-            return \Sunlight\Router::module($module, $params, false, $absolute);
+            return Router::module($module, $params, false, $absolute);
         }));
 
         // urls
@@ -97,7 +100,7 @@ abstract class TwigBridge
         $env->addFunction(new \Twig_SimpleFunction('url_current', array('Sunlight\\Util\\Url', 'current')));
         $env->addFunction(new \Twig_SimpleFunction('url_base', array('Sunlight\\Util\\Url', 'base')));
         $env->addFunction(new \Twig_SimpleFunction('url_add_params', function ($url, $params) {
-            return \Sunlight\Util\UrlHelper::appendParams($url, $params, false);
+            return UrlHelper::appendParams($url, $params, false);
         }));
 
         // localization
@@ -115,7 +118,7 @@ abstract class TwigBridge
         $env->addFunction(new \Twig_SimpleFunction('xsrf_protect', '_xsrfProtect', array('is_safe' => array('html'))));
         $env->addFunction(new \Twig_SimpleFunction('xsrf_token', '_xsrfToken'));
         $env->addFunction(new \Twig_SimpleFunction('xsrf_link', function ($url) {
-            return \Sunlight\Xsrf::addToUrl($url, false);
+            return Xsrf::addToUrl($url, false);
         }));
 
         // debugging

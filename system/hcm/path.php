@@ -1,8 +1,10 @@
 <?php
 
+use Sunlight\Util\Url;
+
 defined('_root') or exit;
 
 return function ()
 {
-    return _e(Sunlight\Util\Url::current()->path);
+    return _e(Url::current()->path);
 };

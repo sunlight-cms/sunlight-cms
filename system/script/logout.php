@@ -1,11 +1,14 @@
 <?php
 
 use Sunlight\Core;
+use Sunlight\User;
+use Sunlight\Util\Response;
+use Sunlight\Xsrf;
 
 require '../bootstrap.php';
 Core::init('../../');
 
-if (\Sunlight\Xsrf::check(true)) {
-    \Sunlight\User::logout();
+if (Xsrf::check(true)) {
+    User::logout();
 }
-\Sunlight\Response::redirectBack();
+Response::redirectBack();

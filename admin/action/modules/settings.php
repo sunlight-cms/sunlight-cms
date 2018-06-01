@@ -1,16 +1,21 @@
 <?php
 
+use Sunlight\Admin\Admin;
 use Sunlight\Admin\PageLister;
 use Sunlight\Core;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
+use Sunlight\Message;
 use Sunlight\Plugin\PluginManager;
+use Sunlight\Util\Form;
+use Sunlight\Util\Request;
+use Sunlight\Xsrf;
 
 defined('_root') or exit;
 
 /* --- priprava --- */
 
-$saved = (bool) \Sunlight\Util\Request::get('saved');
+$saved = (bool) Request::get('saved');
 
 // nacteni nastaveni
 $settings = array();
@@ -90,7 +95,7 @@ $editable_settings = array(
             array('name' => 'registration'),
             array('name' => 'registration_confirm'),
             array('name' => 'registration_grouplist'),
-            array('name' => 'defaultgroup', 'table_id' => _groups_table, 'input' => \Sunlight\Admin\Admin::userSelect("defaultgroup", _defaultgroup, "id!=" . _group_guests, null, null, true), 'id' => false),
+            array('name' => 'defaultgroup', 'table_id' => _groups_table, 'input' => Admin::userSelect("defaultgroup", _defaultgroup, "id!=" . _group_guests, null, null, true), 'id' => false),
             array('name' => 'rules', 'help' => false, 'extra_help' => _lang('admin.settings.users.rules.help'), 'input' => '<textarea id="setting_rules" name="rules" rows="9" cols="33" class="areasmallwide editor">' . _e($settings['rules']['val']) . '</textarea>'),
             array('name' => 'messages'),
             array('name' => 'lostpass'),
@@ -202,10 +207,10 @@ if (!empty($_POST)) {
             // nacist odeslanou hodnotu
             if ($settings[$item['name']]['format'] === 'bool') {
                 // checkbox
-                $value = \Sunlight\Util\Form::loadCheckbox($item['name']) ? '1' : '0';
+                $value = Form::loadCheckbox($item['name']) ? '1' : '0';
             } else {
                 // hodnota
-                $value = trim(\Sunlight\Util\Request::post($item['name'], ''));
+                $value = trim(Request::post($item['name'], ''));
                 switch ($settings[$item['name']]['format']) {
                     case 'int':
                         $value = (int) $value;
@@ -275,7 +280,7 @@ if (!empty($_POST)) {
 
 /* ---  vystup  --- */
 
-$output .= ($saved ? \Sunlight\Message::render(_msg_ok, _lang('admin.settings.saved')) : '') . '
+$output .= ($saved ? Message::render(_msg_ok, _lang('admin.settings.saved')) : '') . '
 
 <form action="index.php?p=settings" method="post">
 
@@ -365,7 +370,7 @@ foreach ($editable_settings as $settings_category => $settings_category_data) {
                         $input = "<input type=\"number\"{$inputAttrs} value=\"" . _e($value) . "\">";
                         break;
                     case 'bool':
-                        $input = "<input type=\"checkbox\"{$inputAttrs} value=\"1\"" . \Sunlight\Util\Form::activateCheckbox($value) . ">";
+                        $input = "<input type=\"checkbox\"{$inputAttrs} value=\"1\"" . Form::activateCheckbox($value) . ">";
                         break;
                     case 'html':
                     default:
@@ -420,7 +425,7 @@ foreach ($editable_settings as $settings_category => $settings_category_data) {
 $output .= '
 </div>
 
-' . \Sunlight\Xsrf::getInput() . '</form>
+' . Xsrf::getInput() . '</form>
 
 <script>
 (function () {

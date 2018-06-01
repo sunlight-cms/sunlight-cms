@@ -1,6 +1,12 @@
 <?php
 
+use Sunlight\Captcha;
 use Sunlight\Core;
+use Sunlight\Message;
+use Sunlight\Router;
+use Sunlight\Util\Arr;
+use Sunlight\Util\Form;
+use Sunlight\Util\Request;
 
 defined('_root') or exit;
 
@@ -8,29 +14,29 @@ return function ($adresa = "", $predmet = null)
 {
     // priprava
     $result = "";
-    $_SESSION['hcm_' . Core::$hcmUid . '_mail_receiver'] = implode(",", \Sunlight\Util\Arr::removeValue(explode(";", trim($adresa)), ""));
+    $_SESSION['hcm_' . Core::$hcmUid . '_mail_receiver'] = implode(",", Arr::removeValue(explode(";", trim($adresa)), ""));
     if (isset($predmet)) {
         $rsubject = " value='" . _e($predmet) . "'";
     } else {
         $rsubject = "";
     }
-    $rcaptcha = \Sunlight\Captcha::init();
+    $rcaptcha = Captcha::init();
 
     // zprava
     $msg = '';
     if (isset($_GET['hcm_mr_' . Core::$hcmUid])) {
-        switch (\Sunlight\Util\Request::get('hcm_mr_' . Core::$hcmUid)) {
+        switch (Request::get('hcm_mr_' . Core::$hcmUid)) {
             case 1:
-                $msg = \Sunlight\Message::render(_msg_ok, _lang('hcm.mailform.msg.done'));
+                $msg = Message::render(_msg_ok, _lang('hcm.mailform.msg.done'));
                 break;
             case 2:
-                $msg = \Sunlight\Message::render(_msg_warn, _lang('hcm.mailform.msg.failure'));
+                $msg = Message::render(_msg_warn, _lang('hcm.mailform.msg.failure'));
                 break;
             case 3:
-                $msg = \Sunlight\Message::render(_msg_err, _lang('global.emailerror'));
+                $msg = Message::render(_msg_err, _lang('global.emailerror'));
                 break;
             case 4:
-                $msg = \Sunlight\Message::render(_msg_err, _lang('xsrf.msg'));
+                $msg = Message::render(_msg_err, _lang('xsrf.msg'));
                 break;
         }
     }
@@ -43,11 +49,11 @@ return function ($adresa = "", $predmet = null)
     }
 
     $result .= $msg
-        . \Sunlight\Util\Form::render(
+        . Form::render(
             array(
                 'id' =>  'hcm_mform_' . Core::$hcmUid,
                 'name' => 'mform' . Core::$hcmUid,
-                'action' => \Sunlight\Router::link('system/script/hcm/mform.php?_return=' . rawurlencode($GLOBALS['_index']['url'])),
+                'action' => Router::link('system/script/hcm/mform.php?_return=' . rawurlencode($GLOBALS['_index']['url'])),
                 'submit_text' => _lang('hcm.mailform.send'),
             ),
             array(

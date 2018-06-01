@@ -6,6 +6,7 @@ use Kuria\Cache\Util\TemporaryFile;
 use Sunlight\Core;
 use Sunlight\Database\Database as DB;
 use Sunlight\Database\SqlDumper;
+use Sunlight\Util\Filesystem;
 use Sunlight\Util\PhpTemplate;
 
 /**
@@ -346,7 +347,7 @@ class BackupBuilder
             throw new \InvalidArgumentException('Invalid type');
         }
 
-        $tmpFile = \Sunlight\Util\Filesystem::createTmpFile();
+        $tmpFile = Filesystem::createTmpFile();
         $backup =  $this->createBackup($tmpFile->getPathname());
 
         try {

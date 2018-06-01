@@ -2,18 +2,23 @@
 
 use Sunlight\Extend;
 use Sunlight\Page\PageManager;
+use Sunlight\Router;
+use Sunlight\Template;
+use Sunlight\User;
+use Sunlight\Util\ArgList;
+use Sunlight\Util\UrlHelper;
 
 defined('_root') or exit;
 
 // nacteni dat stranky
-$_page = \Sunlight\Page\PageManager::find($segments);
+$_page = PageManager::find($segments);
 if ($_page === false) {
     $_index['is_found'] = false;
     return;
 }
 
 // url stranky
-$_index['url'] = \Sunlight\Router::root($_page['id'], $_index['slug']);
+$_index['url'] = Router::root($_page['id'], $_index['slug']);
 
 // segment stranky
 if ($_index['slug'] !== null && ($slug_length = strlen($_page['slug'])) < strlen($_index['slug'])) {
@@ -29,7 +34,7 @@ if ($_page['description'] !== '') {
 
 // motiv
 if ($_page['layout'] !== null) {
-    Sunlight\Template::change($_page['layout']);
+    Template::change($_page['layout']);
 }
 
 // kontrola typu pristupu k hlavni strane
@@ -42,8 +47,8 @@ if (
         $_url->remove('p');
     }
 
-    $_index['redirect_to'] = \Sunlight\Util\UrlHelper::appendParams(
-        \Sunlight\Router::root($_page['id'], $_page['slug'], null, true),
+    $_index['redirect_to'] = UrlHelper::appendParams(
+        Router::root($_page['id'], $_page['slug'], null, true),
         $_url->getQueryString(),
         false
     );
@@ -80,7 +85,7 @@ if (_pretty_urls && !$_index['is_rewritten'] && !empty($segments)) {
 }
 
 // test pristupu
-if (!\Sunlight\User::checkPublicAccess($_page['public'], $_page['level'])) {
+if (!User::checkPublicAccess($_page['public'], $_page['level'])) {
     $_index['is_accessible'] = false;
     return;
 }
@@ -96,7 +101,7 @@ $_index['segment'] = $segment;
 
 // udalosti stranky
 if ($_page['events'] !== null) {
-    foreach (\Sunlight\Util\ArgList::parse($_page['events']) as $page_event) {
+    foreach (ArgList::parse($_page['events']) as $page_event) {
         $page_event_parts = explode(':', $page_event, 2);
         Extend::call('page.event.' . $page_event_parts[0], array(
             'arg' => isset($page_event_parts[1]) ? $page_event_parts[1] : null,
@@ -121,7 +126,7 @@ if ($_page['type'] == _page_plugin) {
     ));
 
     if ($script === null) {
-        throw new RuntimeException(sprintf('No handler for plugin page type "%s"', $_page['type_idt']));
+        throw new \RuntimeException(sprintf('No handler for plugin page type "%s"', $_page['type_idt']));
     }
 } else {
     // ostatni typy

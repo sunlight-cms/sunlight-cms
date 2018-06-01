@@ -2,6 +2,9 @@
 
 namespace Sunlight;
 
+use Sunlight\Util\Environment;
+use Sunlight\Util\Filesystem;
+
 class Picture
 {
     /**
@@ -45,7 +48,7 @@ class Picture
             $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
 
             // kontrola pripony
-            if (!in_array($ext, Core::$imageExt) || !\Sunlight\Util\Filesystem::isSafeFile($filepath) || !\Sunlight\Util\Filesystem::isSafeFile($filename)) {
+            if (!in_array($ext, Core::$imageExt) || !Filesystem::isSafeFile($filepath) || !Filesystem::isSafeFile($filename)) {
                 // nepovolena pripona
                 $code = 1;
                 break;
@@ -65,7 +68,7 @@ class Picture
             }
 
             // kontrola podpory formatu
-            if (!\Sunlight\Picture::checkFormatSupport($ext)) {
+            if (!Picture::checkFormatSupport($ext)) {
                 // nepodporovany format
                 $code = 4;
                 break;
@@ -90,7 +93,7 @@ class Picture
             }
 
             // kontrola dostupne pameti
-            if ($memlimit = \Sunlight\Util\Environment::phpIniLimit('memory_limit')) {
+            if ($memlimit = Environment::phpIniLimit('memory_limit')) {
                 $availMem = floor($limit['memory'] * ($memlimit - memory_get_usage()));
                 $requiredMem = ceil(($imageInfo[0] * $imageInfo[1] * $imageInfo['bits'] * $channels / 8 + 65536) * 1.65);
 
@@ -146,7 +149,7 @@ class Picture
         // uprava vystupu
         switch ($code) {
             case 3:
-                $output['msg'] = str_replace('*maxsize*', \Sunlight\Generic::renderFileSize($limit['filesize']), $output['msg']);
+                $output['msg'] = str_replace('*maxsize*', Generic::renderFileSize($limit['filesize']), $output['msg']);
                 break;
 
             case 5:
@@ -292,7 +295,7 @@ class Picture
         // prekresleni pozadi
         if ($opt['trans'] && $opt['trans_format'] !== null) {
             // pruhledne
-            \Sunlight\Picture::enableAlpha($output, $opt['trans_format'], $res);
+            Picture::enableAlpha($output, $opt['trans_format'], $res);
         } else {
             // nepruhledne
             if ($opt['mode'] === 'fit' && $opt['bgcolor'] !== null) {
@@ -488,7 +491,7 @@ class Picture
             }
 
             // kontrola formatu
-            if (!\Sunlight\Picture::checkFormatSupport($format)) {
+            if (!Picture::checkFormatSupport($format)) {
                 $code = 2;
                 break;
             }
@@ -602,7 +605,7 @@ class Picture
         try {
 
             // nacteni
-            $load = \Sunlight\Picture::load(
+            $load = Picture::load(
                 $opt['file_path'],
                 $opt['limit'],
                 $opt['file_name']
@@ -626,7 +629,7 @@ class Picture
                 }
 
                 // zmenit velikost
-                $resize = \Sunlight\Picture::resize($load['resource'], $opt['resize']);
+                $resize = Picture::resize($load['resource'], $opt['resize']);
                 if (!$resize['status']) {
                     throw new \RuntimeException($resize['msg']);
                 }
@@ -662,7 +665,7 @@ class Picture
             // akce s vysledkem
             if ($opt['target_path'] !== null) {
                 // ulozeni
-                $put = \Sunlight\Picture::store(
+                $put = Picture::store(
                     $load['resource'],
                     $opt['target_path'],
                     null,
@@ -769,7 +772,7 @@ class Picture
             Extend::call('picture.thumb.process', array('options' => &$options));
 
             // vygenerovat
-            if (\Sunlight\Picture::process($options, $error) !== false) {
+            if (Picture::process($options, $error) !== false) {
                 // uspech
                 return $image_path;
             } else {

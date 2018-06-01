@@ -5,6 +5,7 @@ namespace Sunlight\Database;
 use Kuria\Parser\Input\Input;
 use Kuria\Parser\Input\MemoryInput;
 use Kuria\Parser\Input\StreamInput;
+use Sunlight\Util\Filesystem;
 
 class SqlReader
 {
@@ -69,7 +70,7 @@ class SqlReader
      */
     static function fromFile($filepath, $chunkSize = null)
     {
-        \Sunlight\Util\Filesystem::ensureFileExists($filepath);
+        Filesystem::ensureFileExists($filepath);
 
         return static::fromStream(
             fopen($filepath, 'r'),

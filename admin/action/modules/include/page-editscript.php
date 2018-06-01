@@ -1,17 +1,27 @@
 <?php
 
+use Sunlight\Admin\Admin;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
+use Sunlight\Generic;
+use Sunlight\Message;
 use Sunlight\Page\PageManager;
 use Sunlight\Page\PageManipulator;
 use Sunlight\Plugin\TemplateService;
+use Sunlight\Router;
+use Sunlight\User;
+use Sunlight\Util\Form;
+use Sunlight\Util\Html;
+use Sunlight\Util\Request;
+use Sunlight\Util\StringManipulator;
+use Sunlight\Xsrf;
 
 defined('_root') or exit;
 
 /* --- kontrola pristupu --- */
 
 if (!$continue) {
-    $output .= \Sunlight\Message::render(_msg_err, _lang('global.badinput'));
+    $output .= Message::render(_msg_err, _lang('global.badinput'));
     return;
 }
 
@@ -75,7 +85,7 @@ if (!empty($_POST)) {
 
         // nacteni a zpracovani hodnoty
         if (!isset($item_opts['enabled']) || $item_opts['enabled']) {
-            $val = \Sunlight\Util\Request::post($item);
+            $val = Request::post($item);
             if ($val !== null) {
                 $val = trim($val);
             } elseif (!$item_opts['nullable']) {
@@ -113,7 +123,7 @@ if (!empty($_POST)) {
         switch ($item) {
             // content
             case 'content':
-                $val = \Sunlight\User::filterContent($val);
+                $val = User::filterContent($val);
                 break;
 
             // node_parent
@@ -187,10 +197,10 @@ if (!empty($_POST)) {
                 }
                 if ($slug_abs) {
                     // absolutni slug
-                    $val = \Sunlight\Util\StringManipulator::slugify($val, true, array('/' => 0));
+                    $val = StringManipulator::slugify($val, true, array('/' => 0));
                 } else {
                     // pouze segment
-                    $val = ($base_slug !== '' ? $base_slug . '/' : '') . \Sunlight\Util\StringManipulator::slugify($val);
+                    $val = ($base_slug !== '' ? $base_slug . '/' : '') . StringManipulator::slugify($val);
                 }
                 if ($query['slug'] !== $val || $query['slug_abs'] != $slug_abs) {
                     $refresh_slug = true;
@@ -362,9 +372,9 @@ if (!empty($_POST)) {
         if (!$skip) {
             if (isset($item_opts['length'])) {
                 if ($item_opts['type'] === 'escaped_plaintext') {
-                    $val = \Sunlight\Util\Html::cut($val, $item_opts['length']);
+                    $val = Html::cut($val, $item_opts['length']);
                 } else {
-                    $val = \Sunlight\Util\StringManipulator::ellipsis($val, $item_opts['length'], false);
+                    $val = StringManipulator::ellipsis($val, $item_opts['length'], false);
                 }
             }
 
@@ -431,7 +441,7 @@ if (!empty($_POST)) {
 // vyber rodice
 if (_priv_adminroot) {
     $parent_row = "<tr>\n<th>" . _lang('admin.content.form.node_parent') . "</th><td>";
-    $parent_row .= \Sunlight\Admin\Admin::rootSelect('node_parent', array(
+    $parent_row .= Admin::rootSelect('node_parent', array(
         'empty_item' => _lang('admin.content.form.node_parent.none'),
         'disabled_branches' => $new ? null : array($id),
         'maxlength' => null,
@@ -453,13 +463,13 @@ if ($editor === '') {
 
 // zpravy
 if (isset($_GET['saved'])) {
-    $output .= \Sunlight\Message::render(_msg_ok, _lang('global.saved') . " <small>(" . \Sunlight\Generic::renderTime(time()) . ")</small>");
+    $output .= Message::render(_msg_ok, _lang('global.saved') . " <small>(" . Generic::renderTime(time()) . ")</small>");
 }
 if (!$new && $editscript_enable_slug && DB::count(_root_table, 'id!=' . DB::val($query['id']) . ' AND slug=' . DB::val($query['slug'])) !== 0) {
-    $output .= \Sunlight\Message::render(_msg_warn, _lang('admin.content.form.slug.collision'));
+    $output .= Message::render(_msg_warn, _lang('admin.content.form.slug.collision'));
 }
 if (!$new && $id == _index_page_id) {
-    $output .= \Sunlight\Admin\Admin::note(_lang('admin.content.form.indexnote'));
+    $output .= Admin::note(_lang('admin.content.form.indexnote'));
 }
 
 $output .= "<form class='cform' action='index.php?p=content-edit" . $type_array[$type] . (!$new ? "&amp;id=" . $id : '') . (($type == _page_plugin && $new) ? '&amp;idt=' . $type_idt : '') . "' method='post'>
@@ -484,7 +494,7 @@ $output .= "<form class='cform' action='index.php?p=content-edit" . $type_array[
                             . ($editscript_enable_slug ?
                             "<tr>
                                 <th></th>
-                                <td><label><input type='checkbox' name='slug_abs'" . \Sunlight\Util\Form::activateCheckbox($query['slug_abs']) . "> " . _lang('admin.content.form.slug_abs.label') . "</label></td>
+                                <td><label><input type='checkbox' name='slug_abs'" . Form::activateCheckbox($query['slug_abs']) . "> " . _lang('admin.content.form.slug_abs.label') . "</label></td>
                             </tr>" : '')
 
                             . ($editscript_enable_meta ?
@@ -509,7 +519,7 @@ $output .= "<form class='cform' action='index.php?p=content-edit" . $type_array[
 
                             . ($editscript_enable_content ?
                             "<tr class='valign-top'>
-                                <th>" . _lang('admin.content.form.content') . (!$new ? " <a href='" . \Sunlight\Router::root($query['id'], $query['slug']) . "' target='_blank'><img src='images/icons/loupe.png' alt='prev'></a>" : '') . "</th>
+                                <th>" . _lang('admin.content.form.content') . (!$new ? " <a href='" . Router::root($query['id'], $query['slug']) . "' target='_blank'><img src='images/icons/loupe.png' alt='prev'></a>" : '') . "</th>
                                 <td>" . $editor . "</td>
                             </tr>" : '')
 
@@ -541,12 +551,12 @@ $output .= "<form class='cform' action='index.php?p=content-edit" . $type_array[
                             <tr>
                                 <td colspan='2'>
                                     <label>" . _lang('admin.content.form.ord') . "</label>
-                                    <input type='number' name='ord'" . \Sunlight\Util\Form::disableInputUnless(_priv_adminroot) . " value='" . $query['ord'] . "' class='inputmax'>
+                                    <input type='number' name='ord'" . Form::disableInputUnless(_priv_adminroot) . " value='" . $query['ord'] . "' class='inputmax'>
                                 </td>
                             </tr>"
                             . ((!empty($custom_settings) || $editscript_enable_show_heading || $editscript_enable_visible) ?
-                                ($editscript_enable_visible ? "<tr><td colspan='2'><label><input type='checkbox' name='visible' value='1'" . \Sunlight\Util\Form::activateCheckbox($query['visible']) . "> " . _lang('admin.content.form.visible') . "</label></td></tr>" : '')
-                                . ($editscript_enable_show_heading ? "<tr><td colspan='2'><label><input type='checkbox' name='show_heading' value='1'" . \Sunlight\Util\Form::activateCheckbox($query['show_heading']) . "> " . _lang('admin.content.form.show_heading') . "</label></td></tr>" : '')
+                                ($editscript_enable_visible ? "<tr><td colspan='2'><label><input type='checkbox' name='visible' value='1'" . Form::activateCheckbox($query['visible']) . "> " . _lang('admin.content.form.visible') . "</label></td></tr>" : '')
+                                . ($editscript_enable_show_heading ? "<tr><td colspan='2'><label><input type='checkbox' name='show_heading' value='1'" . Form::activateCheckbox($query['show_heading']) . "> " . _lang('admin.content.form.show_heading') . "</label></td></tr>" : '')
                                 . $custom_settings : '')
 
                         ."</tbody>
@@ -556,7 +566,7 @@ $output .= "<form class='cform' action='index.php?p=content-edit" . $type_array[
                     . ($editscript_enable_layout ?
                     "<fieldset>
                         <legend>" . _lang('admin.content.form.layout') . "</legend>"
-                        . \Sunlight\Admin\Admin::templateLayoutSelect(
+                        . Admin::templateLayoutSelect(
                             'layout',
                             $query['layout_inherit'] ? null : $query['layout'],
                             $query['layout_inherit']
@@ -581,7 +591,7 @@ $output .= "<form class='cform' action='index.php?p=content-edit" . $type_array[
                                 ."</td>
                             </tr>
                             <tr>
-                                <td colspan='2'><input type='checkbox' name='public' value='1'" . \Sunlight\Util\Form::activateCheckbox($query['public']) . "> " . _lang('admin.content.form.public') . "</td>
+                                <td colspan='2'><input type='checkbox' name='public' value='1'" . Form::activateCheckbox($query['public']) . "> " . _lang('admin.content.form.public') . "</td>
                             </tr>
                         </tbody>
                         </table>
@@ -591,5 +601,5 @@ $output .= "<form class='cform' action='index.php?p=content-edit" . $type_array[
             </tr>
         </tbody>
     </table>
-    " . \Sunlight\Xsrf::getInput() . "
+    " . Xsrf::getInput() . "
 </form>";

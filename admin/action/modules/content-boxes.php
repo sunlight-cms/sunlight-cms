@@ -1,9 +1,6 @@
 <?php
 
-use Sunlight\Database\Database as DB;
-use Sunlight\Message;
-use Sunlight\Plugin\TemplatePlugin;
-use Sunlight\Plugin\TemplateService;
+use Sunlight\Admin\Admin;use Sunlight\Database\Database as DB;use Sunlight\Message;use Sunlight\Plugin\TemplatePlugin;use Sunlight\Plugin\TemplateService;use Sunlight\Util\Request;use Sunlight\Xsrf;
 
 defined('_root') or exit;
 
@@ -11,7 +8,7 @@ $message = null;
 
 // process action
 if (isset($_POST['action'])) {
-    list($action, $param) = explode(':', \Sunlight\Util\Request::post('action', '')) + array(1 => null);
+    list($action, $param) = explode(':', Request::post('action', '')) + array(1 => null);
 
     switch ($action) {
         case 'save_ord':
@@ -115,7 +112,7 @@ if (!empty($unassigned_boxes)) $output .= _buffer(function () use ($unassigned_b
     <table class="list list-hover">
         <caption>
             <h2><?php echo _lang('admin.content.boxes.unassigned') ?></h2>
-            <?php echo \Sunlight\Admin\Admin::note(_lang('admin.content.boxes.unassigned.note')) ?>
+            <?php echo Admin::note(_lang('admin.content.boxes.unassigned.note')) ?>
         </caption>
         <thead>
         <tr>
@@ -142,4 +139,4 @@ if (!empty($unassigned_boxes)) $output .= _buffer(function () use ($unassigned_b
 <?php });
 
 // main form end
-$output .= \Sunlight\Xsrf::getInput() . "</form>\n";
+$output .= Xsrf::getInput() . "</form>\n";

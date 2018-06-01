@@ -3,6 +3,19 @@
 use Sunlight\Comment\CommentService;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
+use Sunlight\Generic;
+use Sunlight\IpLog;
+use Sunlight\Message;
+use Sunlight\Paginator;
+use Sunlight\PostForm;
+use Sunlight\Router;
+use Sunlight\Template;
+use Sunlight\User;
+use Sunlight\Util\Form;
+use Sunlight\Util\Html;
+use Sunlight\Util\Request;
+use Sunlight\Util\StringManipulator;
+use Sunlight\Xsrf;
 
 defined('_root') or exit;
 
@@ -19,7 +32,7 @@ if (!_messages) {
 /* ---  priprava promennych  --- */
 
 if (isset($_GET['a'])) {
-    $a = strval(\Sunlight\Util\Request::get('a'));
+    $a = strval(Request::get('a'));
 } else {
     $a = 'list';
 }
@@ -44,9 +57,9 @@ switch ($a) {
         if (isset($_POST['receiver'])) {
 
             // nacteni dat
-            $receiver = \Sunlight\Util\Request::post('receiver');
-            $subject = \Sunlight\Util\Html::cut(_e(\Sunlight\Util\StringManipulator::trimExtraWhitespace(\Sunlight\Util\Request::post('subject'))), 48);
-            $text = \Sunlight\Util\Html::cut(_e(trim(\Sunlight\Util\Request::post('text'))), 16384);
+            $receiver = Request::post('receiver');
+            $subject = Html::cut(_e(StringManipulator::trimExtraWhitespace(Request::post('subject'))), 48);
+            $text = Html::cut(_e(trim(Request::post('text'))), 16384);
 
             // kontrola a odeslani
             do {
@@ -55,13 +68,13 @@ switch ($a) {
 
                 // text
                 if ($text === '') {
-                    $message = \Sunlight\Message::render(_msg_warn, _lang('mod.messages.error.notext'));
+                    $message = Message::render(_msg_warn, _lang('mod.messages.error.notext'));
                     break;
                 }
 
                 // predmet
                 if ($subject === '') {
-                    $message = \Sunlight\Message::render(_msg_warn, _lang('mod.messages.error.nosubject'));
+                    $message = Message::render(_msg_warn, _lang('mod.messages.error.nosubject'));
                     break;
                 }
 
@@ -72,16 +85,16 @@ switch ($a) {
                     $rq = false;
                 }
                 if ($rq === false || $rq['usr_id'] == _user_id) {
-                    $message = \Sunlight\Message::render(_msg_warn, _lang('mod.messages.error.badreceiver'));
+                    $message = Message::render(_msg_warn, _lang('mod.messages.error.badreceiver'));
                     break;
                 } elseif ($rq['usr_blocked'] || $rq['ugrp_blocked']) {
-                    $message = \Sunlight\Message::render(_msg_warn, _lang('mod.messages.error.blockedreceiver'));
+                    $message = Message::render(_msg_warn, _lang('mod.messages.error.blockedreceiver'));
                     break;
                 }
 
                 // anti spam limit
-                if (!\Sunlight\IpLog::check(_iplog_anti_spam)) {
-                    $message = \Sunlight\Message::render(_msg_warn, _lang('misc.requestlimit', array('*postsendexpire*' => _postsendexpire)));
+                if (!IpLog::check(_iplog_anti_spam)) {
+                    $message = Message::render(_msg_warn, _lang('misc.requestlimit', array('*postsendexpire*' => _postsendexpire)));
                     break;
                 }
 
@@ -89,7 +102,7 @@ switch ($a) {
 
                 // zaznam v logu
                 if (!_priv_unlimitedpostaccess) {
-                    \Sunlight\IpLog::update(_iplog_anti_spam);
+                    IpLog::update(_iplog_anti_spam);
                 }
 
                 // extend
@@ -125,7 +138,7 @@ switch ($a) {
                 ));
 
                 // presmerovani a konec
-                $_index['redirect_to'] = \Sunlight\Router::module('messages', 'a=list&read=' . $pm_id, false, true);
+                $_index['redirect_to'] = Router::module('messages', 'a=list&read=' . $pm_id, false, true);
 
                 return;
 
@@ -139,34 +152,34 @@ switch ($a) {
 
 <tr>
     <th>" . _lang('mod.messages.receiver') . "</th>
-    <td><input type='text' class='inputsmall' maxlength='24'" . \Sunlight\Util\Form::restorePostValueAndName('receiver', \Sunlight\Util\Request::get('receiver')) . "></td>
+    <td><input type='text' class='inputsmall' maxlength='24'" . Form::restorePostValueAndName('receiver', Request::get('receiver')) . "></td>
 </tr>
 
 <tr>
     <th>" . _lang('posts.subject') . "</th>
-    <td><input type='text' class='inputmedium' maxlength='48'" . \Sunlight\Util\Form::restorePostValueAndName('subject', \Sunlight\Util\Request::get('subject')) . "></td>
+    <td><input type='text' class='inputmedium' maxlength='48'" . Form::restorePostValueAndName('subject', Request::get('subject')) . "></td>
 </tr>
 
 <tr class='valign-top'>
     <th>" . _lang('mod.messages.message') . "</th>
-    <td><textarea class='areamedium' rows='5' cols='33' name='text'>" . \Sunlight\Util\Form::restorePostValue('text', null, false) . "</textarea></td>
+    <td><textarea class='areamedium' rows='5' cols='33' name='text'>" . Form::restorePostValue('text', null, false) . "</textarea></td>
 </tr>
 
 <tr>
     <td></td>
-    <td>" . \Sunlight\PostForm::renderControls('newmsg', 'text') . "</td>
+    <td>" . PostForm::renderControls('newmsg', 'text') . "</td>
 </tr>
 
 <tr>
     <td></td>
-    <td><input type='submit' value='" . _lang('global.send') . "'> " . \Sunlight\PostForm::renderPreviewButton('newmsg', 'text') . "</td>
+    <td><input type='submit' value='" . _lang('global.send') . "'> " . PostForm::renderPreviewButton('newmsg', 'text') . "</td>
 </tr>
 
 </table>
 
-" . \Sunlight\Generic::jsLimitLength(16384, 'newmsg', 'text') . "
+" . Generic::jsLimitLength(16384, 'newmsg', 'text') . "
 
-" . \Sunlight\Xsrf::getInput() . "</form>\n";
+" . Xsrf::getInput() . "</form>\n";
 
         break;
 
@@ -177,14 +190,14 @@ switch ($a) {
         if (isset($_GET['read'])) {
 
             // promenne
-            $id = (int) \Sunlight\Util\Request::get('read');
+            $id = (int) Request::get('read');
 
             // nacist data
-            $senderUserQuery = \Sunlight\User::createQuery('pm.sender', 'sender_', 'su');
-            $receiverUserQuery = \Sunlight\User::createQuery('pm.receiver', 'receiver_', 'ru');
+            $senderUserQuery = User::createQuery('pm.sender', 'sender_', 'su');
+            $receiverUserQuery = User::createQuery('pm.receiver', 'receiver_', 'ru');
             $q = DB::queryRow('SELECT pm.*,post.id post_id,post.subject,post.time,post.text,post.guest,post.ip,' . $senderUserQuery['column_list'] . ',' . $receiverUserQuery['column_list'] . ' FROM ' . _pm_table . ' AS pm JOIN ' . _posts_table . ' AS post ON (post.type=' . _post_pm . ' AND post.home=pm.id AND post.xhome=-1) ' . $senderUserQuery['joins'] . ' ' . $receiverUserQuery['joins'] . ' WHERE pm.id=' . $id . ' AND (sender=' . _user_id . ' AND sender_deleted=0 OR receiver=' . _user_id . ' AND receiver_deleted=0)');
             if ($q === false) {
-                $output .= \Sunlight\Message::render(_msg_err, _lang('global.badinput'));
+                $output .= Message::render(_msg_err, _lang('global.badinput'));
                 break;
             }
 
@@ -207,7 +220,7 @@ switch ($a) {
             ));
             $output .= "</div>\n";
 
-            $output .= CommentService::render(CommentService::RENDER_PM_LIST, $q['id'], array($locked, $unread_count), false, \Sunlight\Router::module('messages', 'a=list&read=' . $q['id'], false));
+            $output .= CommentService::render(CommentService::RENDER_PM_LIST, $q['id'], array($locked, $unread_count), false, Router::module('messages', 'a=list&read=' . $q['id'], false));
 
             // aktualizace casu precteni
             DB::update(_pm_table, 'id=' . DB::val($id), array($role . '_readtime' => time()));
@@ -226,7 +239,7 @@ switch ($a) {
             $delcond = null;
             $delcond_sadd = null;
             $delcond_radd = null;
-            $selected_ids = (array) \Sunlight\Util\Request::post('msg', array(), true);
+            $selected_ids = (array) Request::post('msg', array(), true);
 
             // funkce
             $deletePms = function ($cond = null, $sender_cond = null, $receiver_cond = null) {
@@ -254,11 +267,11 @@ switch ($a) {
             };
 
             // akce
-            switch (\Sunlight\Util\Request::post('action')) {
+            switch (Request::post('action')) {
                 case 1:
                     if (!empty($selected_ids)) {
                         $deletePms('id IN(' . DB::arr($selected_ids) . ')');
-                        $message = \Sunlight\Message::render(_msg_ok, _lang('mod.messages.delete.done'));
+                        $message = Message::render(_msg_ok, _lang('mod.messages.delete.done'));
                     }
                     break;
 
@@ -272,25 +285,25 @@ switch ($a) {
                             $changesets[$r['id']][$role . '_readtime'] = 0;
                         }
                         DB::updateSetMulti(_pm_table, 'id', $changesets);
-                        $message = \Sunlight\Message::render(_msg_ok, _lang('global.done'));
+                        $message = Message::render(_msg_ok, _lang('global.done'));
                     }
                     break;
 
                 case 3:
                     $deletePms(null, 'sender_readtime>=update_time', 'receiver_readtime>=update_time');
-                    $message = \Sunlight\Message::render(_msg_ok, _lang('mod.messages.delete.done'));
+                    $message = Message::render(_msg_ok, _lang('mod.messages.delete.done'));
                     break;
 
                 case 4:
                     $deletePms();
-                    $message = \Sunlight\Message::render(_msg_ok, _lang('mod.messages.delete.done'));
+                    $message = Message::render(_msg_ok, _lang('mod.messages.delete.done'));
                     break;
             }
         }
 
         // strankovani
-        $paging = \Sunlight\Paginator::render($_index['url'], _messagesperpage, _pm_table, 'sender=' . _user_id . ' OR receiver=' . _user_id, '&amp;a=' . $a);
-        if (\Sunlight\Paginator::atTop()) {
+        $paging = Paginator::render($_index['url'], _messagesperpage, _pm_table, 'sender=' . _user_id . ' OR receiver=' . _user_id, '&amp;a=' . $a);
+        if (Paginator::atTop()) {
             $output .= $paging['paging'];
         }
 
@@ -298,17 +311,17 @@ switch ($a) {
         $output .= $message . "
         <form method='post' action=''>
 <p class='messages-menu'>
-    <a class='button' href='" . \Sunlight\Router::module('messages', 'a=new') . "'><img src='" . Sunlight\Template::image('icons/bubble.png') . "' alt='new' class='icon'>" . _lang('mod.messages.new') . "</a>
+    <a class='button' href='" . Router::module('messages', 'a=new') . "'><img src='" . Template::image('icons/bubble.png') . "' alt='new' class='icon'>" . _lang('mod.messages.new') . "</a>
 </p>
 
 <table class='messages-table'>
 <tr><td width='10'><input type='checkbox' name='selector' onchange=\"var that=this;$('table.messages-table input').each(function(){this.checked=that.checked;});\"></td><th>" . _lang('mod.messages.message') . "</th><th>" . _lang('global.user') . "</th><th>" . _lang('mod.messages.time.update') . "</th></tr>\n";
-        $senderUserQuery = \Sunlight\User::createQuery('pm.sender', 'sender_', 'su');
-        $receiverUserQuery = \Sunlight\User::createQuery('pm.receiver', 'receiver_', 'ru');
+        $senderUserQuery = User::createQuery('pm.sender', 'sender_', 'su');
+        $receiverUserQuery = User::createQuery('pm.receiver', 'receiver_', 'ru');
         $q = DB::query('SELECT pm.id,pm.sender,pm.receiver,pm.sender_readtime,pm.receiver_readtime,pm.update_time,post.subject,' . $senderUserQuery['column_list'] . ',' . $receiverUserQuery['column_list'] . ',(SELECT COUNT(*) FROM ' . _posts_table . ' AS countpost WHERE countpost.home=pm.id AND countpost.type=' . _post_pm . ' AND (pm.sender=' . _user_id . ' AND countpost.time>pm.receiver_readtime OR pm.receiver=' . _user_id . ' AND countpost.time>pm.sender_readtime)) AS unread_counter FROM ' . _pm_table . ' AS pm JOIN ' . _posts_table . ' AS post ON (post.home=pm.id AND post.type=' . _post_pm . ' AND post.xhome=-1) ' . $senderUserQuery['joins'] . ' ' . $receiverUserQuery['joins'] . ' WHERE pm.sender=' . _user_id . ' AND pm.sender_deleted=0 OR pm.receiver=' . _user_id . ' AND pm.receiver_deleted=0 ORDER BY pm.update_time DESC ' . $paging['sql_limit']);
         while ($r = DB::row($q)) {
             $read = ($r['sender'] == _user_id && $r['sender_readtime'] >= $r['update_time'] || $r['receiver'] == _user_id && $r['receiver_readtime'] >= $r['update_time']);
-            $output .= "<tr><td><input type='checkbox' name='msg[]' value='" . $r['id'] . "'></td><td><a href='" . \Sunlight\Router::module('messages', 'a=list&read=' . $r['id']) . "'" . ($read ? '' : ' class="notread"') . ">" . $r['subject'] . "</a></td><td>" . \Sunlight\Router::userFromQuery($r['sender'] == _user_id ? $receiverUserQuery : $senderUserQuery, $r) . " <small>(" . $r['unread_counter'] . ")</small></td><td>" . \Sunlight\Generic::renderTime($r['update_time'], 'post') . "</td></tr>\n";
+            $output .= "<tr><td><input type='checkbox' name='msg[]' value='" . $r['id'] . "'></td><td><a href='" . Router::module('messages', 'a=list&read=' . $r['id']) . "'" . ($read ? '' : ' class="notread"') . ">" . $r['subject'] . "</a></td><td>" . Router::userFromQuery($r['sender'] == _user_id ? $receiverUserQuery : $senderUserQuery, $r) . " <small>(" . $r['unread_counter'] . ")</small></td><td>" . Generic::renderTime($r['update_time'], 'post') . "</td></tr>\n";
         }
         if (!isset($read)) {
             $output .= "<tr><td colspan='4'>" . _lang('mod.messages.nokit') . "</td></tr>\n";
@@ -327,10 +340,10 @@ switch ($a) {
 </td></tr>
 
 </table>
-" . \Sunlight\Xsrf::getInput() . "</form>\n";
+" . Xsrf::getInput() . "</form>\n";
 
         // strankovani dole
-        if (\Sunlight\Paginator::atBottom()) {
+        if (Paginator::atBottom()) {
             $output .= $paging['paging'];
         }
 
@@ -340,5 +353,5 @@ switch ($a) {
 
 // zpetny odkaz
 if (!$list) {
-    $_index['backlink'] = \Sunlight\Router::module('messages', null, false);
+    $_index['backlink'] = Router::module('messages', null, false);
 }

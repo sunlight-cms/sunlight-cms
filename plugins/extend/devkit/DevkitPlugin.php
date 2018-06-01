@@ -4,6 +4,7 @@ namespace SunlightExtend\Devkit;
 
 use Sunlight\Core;
 use Sunlight\Extend;
+use Sunlight\Generic;
 use Sunlight\Plugin\ExtendPlugin;
 use Sunlight\Plugin\PluginManager;
 use Kuria\Error\Screen\WebErrorScreen;
@@ -86,7 +87,7 @@ class DevkitPlugin extends ExtendPlugin
 
         $args['result'] = true;
 
-        $time = \Sunlight\Generic::renderTime(time());
+        $time = Generic::renderTime(time());
         $headerString = '';
 
         foreach ($args['headers'] as $headerName => $headerValue) {

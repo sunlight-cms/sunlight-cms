@@ -3,6 +3,7 @@
 namespace Sunlight\Util;
 
 use Sunlight\Extend;
+use Sunlight\Xsrf;
 
 abstract class Form
 {
@@ -448,7 +449,7 @@ abstract class Form
         // konec formulare
         $output .= $options['form_append'];
         if (!$options['embedded']) {
-            $output .= \Sunlight\Xsrf::getInput();
+            $output .= Xsrf::getInput();
             $output .= "\n</form>\n";
         }
 

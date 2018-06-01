@@ -75,7 +75,7 @@ abstract class Json
         if (
             $jsonpCallbackParam !== null
             && isset($_GET[$jsonpCallbackParam])
-            && preg_match('{[a-z_$]\w+$}ADi', $callback = \Sunlight\Util\Request::get($jsonpCallbackParam))
+            && preg_match('{[a-z_$]\w+$}ADi', $callback = Request::get($jsonpCallbackParam))
         ) {
             $contentType = static::CONTENT_TYPE_JSONP;
             $encodedData = static::encodeJsonp($callback, $data, $pretty, $escapedUnicode, $escapedSlashes);

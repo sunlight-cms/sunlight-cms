@@ -2,6 +2,7 @@
 
 namespace Sunlight;
 
+use Sunlight\Util\Environment;
 use Sunlight\Util\Url;
 
 class SystemChecker
@@ -115,7 +116,7 @@ class SystemChecker
     {
         // auto-generate .htaccess file if pretty urls are enabled
         // and the server is apache
-        if (\Sunlight\Util\Environment::isApache()) {
+        if (Environment::isApache()) {
             $generatedHtaccess = static::generateHtaccess();
 
             $htaccessPath = _root . '.htaccess';

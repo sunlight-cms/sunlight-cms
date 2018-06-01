@@ -1,6 +1,11 @@
 <?php
 
+use Sunlight\Admin\Admin;
 use Sunlight\Database\Database as DB;
+use Sunlight\Message;
+use Sunlight\Util\Form;
+use Sunlight\Util\Request;
+use Sunlight\Xsrf;
 
 defined('_root') or exit;
 
@@ -13,9 +18,9 @@ $message = "";
 if (isset($_POST['source'])) {
 
     // nacteni promennych
-    $source = (int) \Sunlight\Util\Request::post('source');
-    $target = (int) \Sunlight\Util\Request::post('target');
-    $fullmove = \Sunlight\Util\Form::loadCheckbox("fullmove");
+    $source = (int) Request::post('source');
+    $target = (int) Request::post('target');
+    $fullmove = Form::loadCheckbox("fullmove");
 
     // kontrola promennych
     $error_log = array();
@@ -71,9 +76,9 @@ if (isset($_POST['source'])) {
             $counter = DB::affectedRows();
         }
 
-        $message = \Sunlight\Message::render(_msg_ok, _lang('admin.content.movearts.done', array("*moved*" => $counter)));
+        $message = Message::render(_msg_ok, _lang('admin.content.movearts.done', array("*moved*" => $counter)));
     } else {
-        $message = \Sunlight\Message::render(_msg_warn, \Sunlight\Message::renderList($error_log, 'errors'));
+        $message = Message::render(_msg_warn, Message::renderList($error_log, 'errors'));
     }
 
 }
@@ -83,11 +88,11 @@ if (isset($_POST['source'])) {
 $output .= $message . "
 <form class='cform' action='index.php?p=content-movearts' method='post'>"
     . _lang('admin.content.movearts.text1')
-    . " " . \Sunlight\Admin\Admin::rootSelect("source", array('type' => _page_category))
+    . " " . Admin::rootSelect("source", array('type' => _page_category))
     . _lang('admin.content.movearts.text2')
-    . " " . \Sunlight\Admin\Admin::rootSelect("target", array('type' => _page_category))
+    . " " . Admin::rootSelect("target", array('type' => _page_category))
     . " <input class='button' type='submit' value='" . _lang('global.do') . "'>
 <br><br>
 <label><input type='checkbox' name='fullmove' value='1'> " . _lang('admin.content.movearts.fullmove') . "</label>
-" . \Sunlight\Xsrf::getInput() . "</form>
+" . Xsrf::getInput() . "</form>
 ";

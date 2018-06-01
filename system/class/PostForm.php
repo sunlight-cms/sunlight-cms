@@ -15,7 +15,7 @@ abstract class PostForm
      */
     static function renderControls($form, $area, $bbcode = true, $smileys = true)
     {
-        $template = \Sunlight\Template::getCurrent();
+        $template = Template::getCurrent();
 
         $output = '';
 
@@ -23,7 +23,7 @@ abstract class PostForm
         if ($bbcode && _bbcode && $template->getOption('bbcode.buttons')) {
 
             // nacteni tagu
-            $bbtags = \Sunlight\Bbcode::parse(null, true);
+            $bbtags = Bbcode::parse(null, true);
 
             // pridani kodu
             $output .= '<span class="post-form-bbcode">';
@@ -32,7 +32,7 @@ abstract class PostForm
                     // tag bez tlacitka
                     continue;
                 }
-                $icon = (($vars[4] === 1) ? \Sunlight\Template::image("bbcode/" . $tag . ".png") : $vars[4]);
+                $icon = (($vars[4] === 1) ? Template::image("bbcode/" . $tag . ".png") : $vars[4]);
                 $output .= "<a class=\"bbcode-button post-form-bbcode-{$tag}\" href=\"#\" onclick=\"return Sunlight.addBBCode('" . $form . "','" . $area . "','" . $tag . "', " . ($vars[0] ? 'true' : 'false') . ");\" class='bbcode-button'><img src=\"" . $icon . "\" alt=\"" . $tag . "\"></a>\n";
             }
             $output .= '</span>';

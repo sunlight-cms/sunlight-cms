@@ -1,8 +1,12 @@
 <?php
 
 use Sunlight\Database\Database as DB;
+use Sunlight\Message;
 use Sunlight\Page\PageManager;
 use Sunlight\Page\PageManipulator;
+use Sunlight\User;
+use Sunlight\Util\Request;
+use Sunlight\Xsrf;
 
 defined('_root') or exit;
 
@@ -12,10 +16,10 @@ $type_array = PageManager::getTypes();
 
 $continue = false;
 if (isset($_GET['id'])) {
-    $id = (int) \Sunlight\Util\Request::get('id');
+    $id = (int) Request::get('id');
     $query = DB::queryRow("SELECT id,node_level,node_depth,node_parent,title,type,type_idt,ord FROM " . _root_table . " WHERE id=" . $id);
     if ($query !== false) {
-        if (\Sunlight\User::hasPrivilege('admin' . $type_array[$query['type']])) {
+        if (User::hasPrivilege('admin' . $type_array[$query['type']])) {
             $continue = true;
         }
     }
@@ -26,7 +30,7 @@ if ($continue) {
     // opravneni k mazani podstranek = pravo na vsechny typy
     $recursive = true;
     foreach (PageManager::getTypes() as $type) {
-        if (!\Sunlight\User::hasPrivilege('admin' . $type)) {
+        if (!User::hasPrivilege('admin' . $type)) {
             $recursive = false;
             break;
         }
@@ -39,7 +43,7 @@ if ($continue) {
         $error = null;
         if (!PageManipulator::delete($query, $recursive, $error)) {
             // selhani
-            $output .= \Sunlight\Message::render(_msg_err, $error);
+            $output .= Message::render(_msg_err, $error);
 
             return;
         }
@@ -59,14 +63,14 @@ if ($continue) {
     $output .= "
     <p class='bborder'>" . _lang('admin.content.delete.p') . "</p>
     <h2>" . _lang('global.item') . " <em>" . $query['title'] . "</em></h2><br>
-    " . (!empty($content_array) ? "<p>" . _lang('admin.content.delete.contentlist') . ":</p>" . \Sunlight\Message::renderList($content_array) . "<div class='hr'><hr></div>" : '') . "
+    " . (!empty($content_array) ? "<p>" . _lang('admin.content.delete.contentlist') . ":</p>" . Message::renderList($content_array) . "<div class='hr'><hr></div>" : '') . "
 
     <form class='cform' action='index.php?p=content-delete&amp;id=" . $id . "' method='post'>
     <input type='hidden' name='confirm' value='1'>
     <input type='submit' value='" . _lang('admin.content.delete.confirm') . "'>
-    " . \Sunlight\Xsrf::getInput() . "</form>
+    " . Xsrf::getInput() . "</form>
     ";
 
 } else {
-    $output .= \Sunlight\Message::render(_msg_err, _lang('global.badinput'));
+    $output .= Message::render(_msg_err, _lang('global.badinput'));
 }

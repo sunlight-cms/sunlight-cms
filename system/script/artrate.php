@@ -1,7 +1,12 @@
 <?php
 
+use Sunlight\Article;
 use Sunlight\Core;
 use Sunlight\Database\Database as DB;
+use Sunlight\IpLog;
+use Sunlight\Router;
+use Sunlight\Util\Request;
+use Sunlight\Xsrf;
 
 require '../bootstrap.php';
 Core::init('../../');
@@ -13,7 +18,7 @@ if (_ratemode == 0) {
 /* ---  hodnoceni  --- */
 
 // nacteni promennych
-$id = (int) \Sunlight\Util\Request::post('id');
+$id = (int) Request::post('id');
 
 $article_exists = false;
 
@@ -23,8 +28,8 @@ $query = DB::queryRow("SELECT art.id,art.slug,art.time,art.confirmed,art.author,
 if ($query !== false) {
     $article_exists = true;
     if (isset($_POST['r'])) {
-        $r = round(\Sunlight\Util\Request::post('r') / 10) * 10;
-        if (\Sunlight\IpLog::check(_iplog_article_rated, $id) && \Sunlight\Xsrf::check() && $query['rateon'] == 1 && \Sunlight\Article::checkAccess($query) && $r <= 100 && $r >= 0) {
+        $r = round(Request::post('r') / 10) * 10;
+        if (IpLog::check(_iplog_article_rated, $id) && Xsrf::check() && $query['rateon'] == 1 && Article::checkAccess($query) && $r <= 100 && $r >= 0) {
             $continue = true;
         }
     }
@@ -36,12 +41,12 @@ if ($continue) {
         'ratenum' => DB::raw('ratenum+1'),
         'ratesum' => DB::raw('ratesum+' . $r)
     ));
-    \Sunlight\IpLog::update(_iplog_article_rated, $id);
+    IpLog::update(_iplog_article_rated, $id);
 }
 
 // presmerovani
 if ($article_exists) {
-    $aurl = \Sunlight\Router::article($id, $query['slug'], null, true) . "#article-info";
+    $aurl = Router::article($id, $query['slug'], null, true) . "#article-info";
 } else {
     $aurl = _url;
 }

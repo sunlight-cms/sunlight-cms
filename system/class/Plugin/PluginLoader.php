@@ -9,6 +9,7 @@ use Sunlight\Core;
 use Sunlight\Option\OptionSet;
 use Sunlight\Util\Filesystem;
 use Sunlight\Util\Json;
+use Sunlight\Util\StringManipulator;
 
 class PluginLoader
 {
@@ -297,7 +298,7 @@ class PluginLoader
 
         return array(
             'id' => $id,
-            'camel_id' => \Sunlight\Util\StringManipulator::toCamelCase($id),
+            'camel_id' => StringManipulator::toCamelCase($id),
             'type' => $typeName,
             'status' => null,
             'installed' => null,

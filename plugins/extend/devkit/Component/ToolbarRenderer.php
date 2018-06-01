@@ -7,7 +7,7 @@ use Sunlight\Core;
 use Sunlight\Extend;
 use Sunlight\Localization\LocalizationDirectory;
 use Sunlight\Plugin\InactivePlugin;
-use SunlightExtend\Devkit\DevkitPlugin;
+use Sunlight\Router;
 
 /**
  * Devkit toolbar renderer
@@ -417,7 +417,7 @@ class ToolbarRenderer
         }
 
         ?>
-<a href="<?php echo \Sunlight\Router::module('login') ?>">
+<a href="<?php echo Router::module('login') ?>">
     <div class="devkit-section devkit-login" title="<?php echo $loginInfo ?>">
         <?php echo _e($loginName) ?>
     </div>

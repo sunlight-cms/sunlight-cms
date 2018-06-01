@@ -1,6 +1,7 @@
 <?php
 
 use Sunlight\Exception\ContentPrivilegeException;
+use Sunlight\Message;
 
 defined('_root') or exit;
 
@@ -15,4 +16,4 @@ $message = sprintf(
     _e($privException->getMessage())
 );
 
-$admin_output .= \Sunlight\Message::render(_msg_err, $message);
+$admin_output .= Message::render(_msg_err, $message);

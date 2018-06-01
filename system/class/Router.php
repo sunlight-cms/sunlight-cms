@@ -2,10 +2,10 @@
 
 namespace Sunlight;
 
+use Sunlight\Database\Database as DB;
 use Sunlight\Util\Arr;
 use Sunlight\Util\Html;
 use Sunlight\Util\Url;
-use Sunlight\Database\Database as DB;
 use Sunlight\Util\UrlHelper;
 
 abstract class Router

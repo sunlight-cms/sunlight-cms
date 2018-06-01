@@ -4,6 +4,7 @@ namespace Sunlight\Database;
 
 use Kuria\Cache\Util\TemporaryFile;
 use Sunlight\Database\Database as DB;
+use Sunlight\Util\Filesystem;
 
 /**
  * Database dumper
@@ -29,7 +30,7 @@ class SqlDumper
      */
     function dump()
     {
-        $tmpFile = \Sunlight\Util\Filesystem::createTmpFile();
+        $tmpFile = Filesystem::createTmpFile();
         $handle = null;
 
         try {

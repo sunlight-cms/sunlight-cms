@@ -1,6 +1,10 @@
 <?php
 
+use Sunlight\Admin\Admin;
 use Sunlight\Core;
+use Sunlight\Message;
+use Sunlight\Util\Request;
+use Sunlight\Xsrf;
 
 defined('_root') or exit;
 
@@ -11,8 +15,8 @@ $message = "";
 /* ---  akce  --- */
 
 if (isset($_POST['index'])) {
-    Core::updateSetting('index_page_id', ($index_id = (int) \Sunlight\Util\Request::post('index')));
-    $message = \Sunlight\Message::render(_msg_ok, _lang('global.done'));
+    Core::updateSetting('index_page_id', ($index_id = (int) Request::post('index')));
+    $message = Message::render(_msg_ok, _lang('global.done'));
 
 } else {
     $index_id = _index_page_id;
@@ -22,7 +26,7 @@ if (isset($_POST['index'])) {
 
 $output .= $message . "
 <form class='cform' action='index.php?p=content-setindex' method='post'>
-" . \Sunlight\Admin\Admin::rootSelect('index', array('selected' => $index_id, 'maxlength' => null)) . "
+" . Admin::rootSelect('index', array('selected' => $index_id, 'maxlength' => null)) . "
 <input class='button' type='submit' value='" . _lang('global.do') . "'>
-" . \Sunlight\Xsrf::getInput() . "</form>
+" . Xsrf::getInput() . "</form>
 ";

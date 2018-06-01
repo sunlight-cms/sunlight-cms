@@ -1,6 +1,9 @@
 <?php
 
 use Sunlight\Core;
+use Sunlight\Paginator;
+use Sunlight\Picture;
+use Sunlight\Router;
 
 defined('_root') or exit;
 
@@ -26,7 +29,7 @@ return function ($cesta = "", $rozmery = null, $strankovani = null, $lightbox = 
     
     $lightbox = (bool) $lightbox;
 
-    $resize_opts = \Sunlight\Picture::parseResizeOptions($rozmery);
+    $resize_opts = Picture::parseResizeOptions($rozmery);
 
     if (file_exists($cesta) && is_dir($cesta)) {
         $handle = opendir($cesta);
@@ -51,7 +54,7 @@ return function ($cesta = "", $rozmery = null, $strankovani = null, $lightbox = 
         // priprava strankovani
         if ($strankovat) {
             $count = count($items);
-            $paging = \Sunlight\Paginator::render($_index['url'], $strankovani, $count, "", "#hcm_gal" . Core::$hcmUid, "hcm_gal" . Core::$hcmUid . "p");
+            $paging = Paginator::render($_index['url'], $strankovani, $count, "", "#hcm_gal" . Core::$hcmUid, "hcm_gal" . Core::$hcmUid . "p");
         }
 
         // vypis
@@ -61,9 +64,9 @@ return function ($cesta = "", $rozmery = null, $strankovani = null, $lightbox = 
             if ($strankovat && $counter > $paging['last']) {
                 break;
             }
-            if (!$strankovat || ($strankovat && \Sunlight\Paginator::isItemInRange($paging, $counter))) {
-                $thumb = \Sunlight\Picture::getThumbnail($cesta . $item, $resize_opts);
-                $result .= "<a href='" . _e(\Sunlight\Router::file($cesta . $item)) . "' target='_blank'" . ($lightbox ? " class='lightbox' data-gallery-group='lb_hcm" . Core::$hcmUid . "'" : '') . "><img src='" . _e(\Sunlight\Router::file($thumb)) . "' alt='" . _e($item) . "'></a>\n";
+            if (!$strankovat || ($strankovat && Paginator::isItemInRange($paging, $counter))) {
+                $thumb = Picture::getThumbnail($cesta . $item, $resize_opts);
+                $result .= "<a href='" . _e(Router::file($cesta . $item)) . "' target='_blank'" . ($lightbox ? " class='lightbox' data-gallery-group='lb_hcm" . Core::$hcmUid . "'" : '') . "><img src='" . _e(Router::file($thumb)) . "' alt='" . _e($item) . "'></a>\n";
             }
             $counter++;
         }

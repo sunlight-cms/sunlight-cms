@@ -1,6 +1,7 @@
 <?php
 
 use Sunlight\Core;
+use Sunlight\Util\Html;
 
 /**
  * Bufferovat a vratit vystup daneho callbacku
@@ -37,7 +38,7 @@ function _buffer($callback, array $arguments = array())
  */
 function _e($input, $doubleEncode = true)
 {
-    return \Sunlight\Util\Html::escape($input, $doubleEncode);
+    return Html::escape($input, $doubleEncode);
 }
 
 /**

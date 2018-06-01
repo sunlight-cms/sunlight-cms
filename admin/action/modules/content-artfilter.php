@@ -1,6 +1,13 @@
 <?php
 
+use Sunlight\Admin\Admin;
+use Sunlight\Article;
 use Sunlight\Database\Database as DB;
+use Sunlight\Message;
+use Sunlight\Router;
+use Sunlight\Util\Form;
+use Sunlight\Util\Request;
+use Sunlight\Xsrf;
 
 defined('_root') or exit;
 
@@ -24,30 +31,30 @@ $boolSelect = function ($name, $type2 = false)
 if (isset($_POST['category'])) {
 
     // nacteni promennych
-    $category = (int) \Sunlight\Util\Request::post('category');
-    $author = (int) \Sunlight\Util\Request::post('author');
-    $time = \Sunlight\Util\Form::loadTime('time', time());
-    $ba = (int) \Sunlight\Util\Request::post('ba');
-    $public = (int) \Sunlight\Util\Request::post('public');
-    $visible = (int) \Sunlight\Util\Request::post('visible');
-    $confirmed = (int) \Sunlight\Util\Request::post('confirmed');
-    $comments = (int) \Sunlight\Util\Request::post('comments');
-    $rateon = (int) \Sunlight\Util\Request::post('rateon');
-    $showinfo = (int) \Sunlight\Util\Request::post('showinfo');
-    $new_category = (int) \Sunlight\Util\Request::post('new_category');
-    $new_author = (int) \Sunlight\Util\Request::post('new_author');
-    $new_public = (int) \Sunlight\Util\Request::post('new_public');
-    $new_visible = (int) \Sunlight\Util\Request::post('new_visible');
+    $category = (int) Request::post('category');
+    $author = (int) Request::post('author');
+    $time = Form::loadTime('time', time());
+    $ba = (int) Request::post('ba');
+    $public = (int) Request::post('public');
+    $visible = (int) Request::post('visible');
+    $confirmed = (int) Request::post('confirmed');
+    $comments = (int) Request::post('comments');
+    $rateon = (int) Request::post('rateon');
+    $showinfo = (int) Request::post('showinfo');
+    $new_category = (int) Request::post('new_category');
+    $new_author = (int) Request::post('new_author');
+    $new_public = (int) Request::post('new_public');
+    $new_visible = (int) Request::post('new_visible');
     if (_priv_adminconfirm) {
-        $new_confirmed = (int) \Sunlight\Util\Request::post('new_confirmed');
+        $new_confirmed = (int) Request::post('new_confirmed');
     }
-    $new_comments = (int) \Sunlight\Util\Request::post('new_comments');
-    $new_rateon = (int) \Sunlight\Util\Request::post('new_rateon');
-    $new_showinfo = (int) \Sunlight\Util\Request::post('new_showinfo');
-    $new_delete = \Sunlight\Util\Form::loadCheckbox("new_delete");
-    $new_resetrate = \Sunlight\Util\Form::loadCheckbox("new_resetrate");
-    $new_delcomments = \Sunlight\Util\Form::loadCheckbox("new_delcomments");
-    $new_resetread = \Sunlight\Util\Form::loadCheckbox("new_resetread");
+    $new_comments = (int) Request::post('new_comments');
+    $new_rateon = (int) Request::post('new_rateon');
+    $new_showinfo = (int) Request::post('new_showinfo');
+    $new_delete = Form::loadCheckbox("new_delete");
+    $new_resetrate = Form::loadCheckbox("new_resetrate");
+    $new_delcomments = Form::loadCheckbox("new_delcomments");
+    $new_resetread = Form::loadCheckbox("new_resetread");
 
     // kontrola promennych
     if ($new_category != -1) {
@@ -75,7 +82,7 @@ if (isset($_POST['category'])) {
 
                 case "category":
                     if ($$param != "-1") {
-                        $cond .= \Sunlight\Article::createCategoryFilter(array($$param), 'art');
+                        $cond .= Article::createCategoryFilter(array($$param), 'art');
                     } else {
                         $skip = true;
                     }
@@ -143,7 +150,7 @@ if (isset($_POST['category'])) {
     $query = DB::query("SELECT art.id,art.title,art.slug,cat.slug AS cat_slug FROM " . _articles_table . " AS art JOIN " . _root_table . " AS cat ON(cat.id=art.home1) WHERE " . $cond);
     $found = DB::size($query);
     if ($found != 0) {
-        if (!\Sunlight\Util\Form::loadCheckbox("_process")) {
+        if (!Form::loadCheckbox("_process")) {
             $infopage = true;
         } else {
             $boolparams = array("public", "visible", "comments", "rateon", "showinfo");
@@ -203,10 +210,10 @@ if (isset($_POST['category'])) {
                 DB::update(_articles_table, 'id=' . $item['id'], $updatedata);
 
             }
-            $message = \Sunlight\Message::render(_msg_ok, _lang('global.done'));
+            $message = Message::render(_msg_ok, _lang('global.done'));
         }
     } else {
-        $message = \Sunlight\Message::render(_msg_warn, _lang('admin.content.artfilter.f1.noresult'));
+        $message = Message::render(_msg_warn, _lang('admin.content.artfilter.f1.noresult'));
     }
 
 }
@@ -225,12 +232,12 @@ if (!$infopage) {
 
 <tr>
 <th>" . _lang('article.category') . "</th>
-<td>" . \Sunlight\Admin\Admin::rootSelect("category", array('type' => _page_category, 'empty_item' => _lang('global.any2'))) . "</td>
+<td>" . Admin::rootSelect("category", array('type' => _page_category, 'empty_item' => _lang('global.any2'))) . "</td>
 </tr>
 
 <tr>
 <th>" . _lang('article.author') . "</th>
-<td>" . \Sunlight\Admin\Admin::userSelect("author", -1, "adminart=1", "selectmedium", _lang('global.any')) . "</td>
+<td>" . Admin::userSelect("author", -1, "adminart=1", "selectmedium", _lang('global.any')) . "</td>
 </tr>
 
 <tr>
@@ -244,7 +251,7 @@ if (!$infopage) {
 <option value='3'>" . _lang('admin.content.artfilter.f1.time3') . "</option>
 </select>
 
-" . \Sunlight\Util\Form::editTime('time', -1) . "
+" . Form::editTime('time', -1) . "
 
 </td>
 </tr>
@@ -271,12 +278,12 @@ if (!$infopage) {
 
 <tr>
 <th>" . _lang('article.category') . "</th>
-<td>" . \Sunlight\Admin\Admin::rootSelect("new_category", array('type' => _page_category, 'empty_item' => _lang('global.nochange'))) . "</td>
+<td>" . Admin::rootSelect("new_category", array('type' => _page_category, 'empty_item' => _lang('global.nochange'))) . "</td>
 </tr>
 
 <tr>
 <th>" . _lang('article.author') . "</th>
-<td>" . \Sunlight\Admin\Admin::userSelect("new_author", -1, "adminart=1", "selectmedium", _lang('global.nochange')) . "</td>
+<td>" . Admin::userSelect("new_author", -1, "adminart=1", "selectmedium", _lang('global.nochange')) . "</td>
 </tr>
 
 <tr class='valign-top'>
@@ -308,9 +315,9 @@ if (!$infopage) {
 <input type='submit' value='" . _lang('mod.search.submit') . "'>
 ";
 } else {
-    $output .= \Sunlight\Util\Form::renderHiddenPostInputs(null, null, array('_process')) . "
+    $output .= Form::renderHiddenPostInputs(null, null, array('_process')) . "
 <input type='hidden' name='_process' value='1'>
-" . \Sunlight\Message::render(_msg_ok, _lang('admin.content.artfilter.f1.infotext', array("*found*" => $found))) . "
+" . Message::render(_msg_ok, _lang('admin.content.artfilter.f1.infotext', array("*found*" => $found))) . "
 <ul>";
 
     $counter = 0;
@@ -319,7 +326,7 @@ if (!$infopage) {
             $output .= "<li><em>... (+" . ($found - $counter) . ")</em></li>\n";
             break;
         }
-        $output .= "<li><a href='" . \Sunlight\Router::article($r['id'], $r['slug'], $r['cat_slug']) . "' target='_blank'>" . $r['title'] . "</a></li>\n";
+        $output .= "<li><a href='" . Router::article($r['id'], $r['slug'], $r['cat_slug']) . "' target='_blank'>" . $r['title'] . "</a></li>\n";
         ++$counter;
     }
 
@@ -328,4 +335,4 @@ if (!$infopage) {
 ";
 }
 
-$output .= \Sunlight\Xsrf::getInput() . "</form>";
+$output .= Xsrf::getInput() . "</form>";

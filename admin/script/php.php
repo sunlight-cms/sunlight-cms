@@ -1,6 +1,11 @@
 <?php
 
+use Sunlight\Admin\Admin;
 use Sunlight\Core;
+use Sunlight\Generic;
+use Sunlight\Util\Form;
+use Sunlight\Util\Request;
+use Sunlight\Xsrf;
 
 require '../../system/bootstrap.php';
 Core::init('../../', array(
@@ -12,11 +17,11 @@ Core::init('../../', array(
 if (!_priv_super_admin) {
     exit;
 }
-echo Sunlight\Generic::renderHead();
+echo \Sunlight\Generic::renderHead();
 
-$assets = \Sunlight\Admin\Admin::themeAssets(_adminscheme, \Sunlight\Admin\Admin::themeIsDark()) + array('extend_event' => null);
+$assets = Admin::themeAssets(_adminscheme, Admin::themeIsDark()) + array('extend_event' => null);
 
-echo \Sunlight\Generic::renderHeadAssets($assets);
+echo Generic::renderHeadAssets($assets);
 
 ?>
 <title><?php echo _lang('admin.other.php.title'); ?></title>
@@ -30,8 +35,8 @@ echo \Sunlight\Generic::renderHeadAssets($assets);
 // nacteni postdat
 $process = false;
 if (isset($_POST['code'])) {
-    $code = \Sunlight\Util\Request::post('code');
-    if (\Sunlight\Xsrf::check()) {
+    $code = Request::post('code');
+    if (Xsrf::check()) {
         $process = true;
     }
 }
@@ -42,8 +47,8 @@ if (isset($_POST['code'])) {
 
 <form action="php.php" method="post">
 <textarea name="code" rows="25" cols="94" class="areabig editor" data-editor-mode="code" data-editor-format="php-raw"><?php if (isset($code)) echo _e($code); ?></textarea><br>
-<p><input class="inputfat" type="submit" value="<?php echo _lang('global.do'); ?>">  <label><input type="checkbox" name="html" value="1"<?php echo \Sunlight\Util\Form::activateCheckbox(isset($_POST['html']) ? 1 : 0); ?>> <?php echo _lang('admin.other.php.html'); ?></label></p>
-<?php echo \Sunlight\Xsrf::getInput(); ?>
+<p><input class="inputfat" type="submit" value="<?php echo _lang('global.do'); ?>">  <label><input type="checkbox" name="html" value="1"<?php echo Form::activateCheckbox(isset($_POST['html']) ? 1 : 0); ?>> <?php echo _lang('admin.other.php.html'); ?></label></p>
+<?php echo Xsrf::getInput(); ?>
 </form>
 
 <?php

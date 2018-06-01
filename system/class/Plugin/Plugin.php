@@ -4,6 +4,7 @@ namespace Sunlight\Plugin;
 
 use Sunlight\Core;
 use Sunlight\Plugin\Action\PluginAction;
+use Sunlight\Router;
 use Sunlight\Util\ConfigurationFile;
 
 abstract class Plugin
@@ -308,7 +309,7 @@ abstract class Plugin
      */
     function getWebPath($absolute = false)
     {
-        return \Sunlight\Router::link($this->webPath, $absolute);
+        return Router::link($this->webPath, $absolute);
     }
 
     /**

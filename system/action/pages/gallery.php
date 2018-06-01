@@ -2,6 +2,9 @@
 
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
+use Sunlight\Gallery;
+use Sunlight\Hcm;
+use Sunlight\Paginator;
 
 defined('_root') or exit;
 
@@ -24,18 +27,18 @@ $_index['title'] = $_page['title'];
 
 // obsah
 Extend::call('page.gallery.content.before', $extend_args);
-if ($_page['content'] != "") $output .= Sunlight\Hcm::parse($_page['content']) . "\n\n<div class='hr gallery-hr'><hr></div>\n\n";
+if ($_page['content'] != "") $output .= Hcm::parse($_page['content']) . "\n\n<div class='hr gallery-hr'><hr></div>\n\n";
 Extend::call('page.gallery.content.after', $extend_args);
 
 // obrazky
-$paging = \Sunlight\Paginator::render($_index['url'], $_page['var2'], _images_table, "home=" . $id);
+$paging = Paginator::render($_index['url'], $_page['var2'], _images_table, "home=" . $id);
 $images = DB::query("SELECT * FROM " . _images_table . " WHERE home=" . $id . " ORDER BY ord " . $paging['sql_limit']);
 $images_number = DB::size($images);
 
 if ($images_number != 0) {
 
     $usetable = $_page['var1'] != -1;
-    if (\Sunlight\Paginator::atTop()) {
+    if (Paginator::atTop()) {
         $output .= $paging['paging'];
     }
     if ($usetable) {
@@ -56,7 +59,7 @@ if ($images_number != 0) {
         if ($usetable) {
             $output .= "<td>";
         }
-        $output .= \Sunlight\Gallery::renderImage($img, $id, $_page['var4'], $_page['var3']);
+        $output .= Gallery::renderImage($img, $id, $_page['var4'], $_page['var3']);
         if ($usetable) {
             $output .= "</td>";
         }
@@ -75,7 +78,7 @@ if ($images_number != 0) {
     } else {
         $output .= "</div>";
     }
-    if (\Sunlight\Paginator::atBottom()) {
+    if (Paginator::atBottom()) {
         $output .= $paging['paging'];
     }
 

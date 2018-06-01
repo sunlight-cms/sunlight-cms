@@ -1,6 +1,8 @@
 <?php
 
 use Sunlight\Database\Database as DB;
+use Sunlight\Router;
+use Sunlight\User;
 
 defined('_root') or exit;
 
@@ -36,7 +38,7 @@ return function ($razeni = 'new', $pocet = 5)
         $result = "<ol>\n";
     }
 
-    $userQuery = \Sunlight\User::createQuery(null, '');
+    $userQuery = User::createQuery(null, '');
     $query = DB::query("SELECT " . $userQuery['column_list'] . " FROM " . _users_table . " u " . $userQuery['joins'] . ' WHERE ' . $rcond . " ORDER BY " . $rorder . " LIMIT " . $pocet);
     while ($item = DB::row($query)) {
 
@@ -66,7 +68,7 @@ return function ($razeni = 'new', $pocet = 5)
 
         }
 
-        $result .= "<li>" . \Sunlight\Router::userFromQuery($userQuery, $item) . $rext . "</li>\n";
+        $result .= "<li>" . Router::userFromQuery($userQuery, $item) . $rext . "</li>\n";
     }
     if ($razeni != 4) {
         $result .= "</ul>\n";

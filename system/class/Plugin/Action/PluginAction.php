@@ -6,6 +6,8 @@ use Sunlight\Action\Action;
 use Sunlight\Action\ActionResult;
 use Sunlight\Core;
 use Sunlight\Plugin\Plugin;
+use Sunlight\Util\Request;
+use Sunlight\Xsrf;
 
 /**
  * Plugin action
@@ -44,7 +46,7 @@ abstract class PluginAction extends Action
      */
     protected function isConfirmed()
     {
-        return \Sunlight\Util\Request::post('_plugin_action_confirmation') === md5(get_called_class());
+        return Request::post('_plugin_action_confirmation') === md5(get_called_class());
     }
 
     /**
@@ -74,7 +76,7 @@ abstract class PluginAction extends Action
     <p class="bborder"><?php echo $message ?></p>
 
     <input type="submit" value="<?php echo $buttonText ?>">
-    <?php echo \Sunlight\Xsrf::getInput() ?>
+    <?php echo Xsrf::getInput() ?>
 </form>
 <?php
         }));

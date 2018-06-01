@@ -7,6 +7,7 @@ use Sunlight\Page\PageMenu;
 use Sunlight\Page\PageTreeFilter;
 use Sunlight\Plugin\TemplatePlugin;
 use Sunlight\Plugin\TemplateService;
+use Sunlight\Util\Request;
 
 abstract class Template
 {
@@ -25,7 +26,7 @@ abstract class Template
 
         // pouzit argument z GET
         // (moznost pro skripty mimo index)
-        $request_template = \Sunlight\Util\Request::get('current_template');
+        $request_template = Request::get('current_template');
         if ($request_template !== null && TemplateService::templateExists($request_template)) {
             return TemplateService::getTemplate($request_template);
         }
@@ -71,17 +72,17 @@ abstract class Template
         // pripravit css
         $css = array();
         foreach ($_template->getOption('css') as $key => $path) {
-            $css[$key] = \Sunlight\Router::link($path);
+            $css[$key] = Router::link($path);
         }
 
         // pripravit js
         $js = array(
-            'jquery' => \Sunlight\Router::link('system/js/jquery.js'),
-            'sunlight' => \Sunlight\Router::link('system/js/sunlight.js'),
-            'rangyinputs' => \Sunlight\Router::link('system/js/rangyinputs.js'),
+            'jquery' => Router::link('system/js/jquery.js'),
+            'sunlight' => Router::link('system/js/sunlight.js'),
+            'rangyinputs' => Router::link('system/js/rangyinputs.js'),
         );
         foreach ($_template->getOption('js') as $key => $path) {
-            $js[$key] = \Sunlight\Router::link($path);
+            $js[$key] = Router::link($path);
         }
 
         // titulek
@@ -112,14 +113,14 @@ abstract class Template
 <meta name="robots" content="index, follow">'
             . Extend::buffer('tpl.head.meta')
             . ($_template->getOption('responsive') ? "\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">" : '')
-            . \Sunlight\Generic::renderHeadAssets($assets);
+            . Generic::renderHeadAssets($assets);
 
         if (_rss) {
             echo '
-<link rel="alternate" type="application/rss+xml" href="' . \Sunlight\Router::rss(-1, _rss_latest_articles) . '" title="' . _lang('rss.recentarticles') . '">';
+<link rel="alternate" type="application/rss+xml" href="' . Router::rss(-1, _rss_latest_articles) . '" title="' . _lang('rss.recentarticles') . '">';
             if (_comments) {
                 echo '
-<link rel="alternate" type="application/rss+xml" href="' . \Sunlight\Router::rss(-1, _rss_latest_comments) . '" title="' . _lang('rss.recentcomments') . '">';
+<link rel="alternate" type="application/rss+xml" href="' . Router::rss(-1, _rss_latest_comments) . '" title="' . _lang('rss.recentcomments') . '">';
             }
         }
 
@@ -199,7 +200,7 @@ abstract class Template
                 }
 
                 // obsah
-                $output .= \Sunlight\Hcm::parse($item['content']);
+                $output .= Hcm::parse($item['content']);
 
                 // endtag polozky
                 if ($options['box.item']) {
@@ -351,7 +352,7 @@ abstract class Template
     {
         return
             "<li><a href=\"https://sunlight-cms.org/\">SunLight CMS</a></li>\n"
-            . ((!_adminlinkprivate || (_logged_in && _priv_administration)) ? '<li><a href="' . \Sunlight\Router::link('admin/') . '">' . _lang('global.adminlink') . "</a></li>\n" : '');
+            . ((!_adminlinkprivate || (_logged_in && _priv_administration)) ? '<li><a href="' . Router::link('admin/') . '">' . _lang('global.adminlink') . "</a></li>\n" : '');
     }
 
     /**
@@ -518,7 +519,7 @@ abstract class Template
             foreach (PageManager::getPath($rootId, $rootLevel) as $page) {
                 $breadcrumbs[] = array(
                     'title' => $page['title'],
-                    'url' => \Sunlight\Router::root($page['id'], $page['slug']),
+                    'url' => Router::root($page['id'], $page['slug']),
                 );
             }
         }
@@ -614,13 +615,13 @@ abstract class Template
         if (!_logged_in) {
             // prihlaseni
             $items['login'] = array(
-                \Sunlight\Router::module('login', 'login_form_return=' . rawurlencode($_SERVER['REQUEST_URI'])),
+                Router::module('login', 'login_form_return=' . rawurlencode($_SERVER['REQUEST_URI'])),
                 _lang('usermenu.login'),
             );
             if (_registration) {
                 // registrace
                 $items['reg'] = array(
-                    \Sunlight\Router::module('reg'),
+                    Router::module('reg'),
                     _lang('usermenu.registration'),
                 );
             }
@@ -628,35 +629,35 @@ abstract class Template
             // profil
             if ($profileLink) {
                 $items['profile'] = array(
-                    \Sunlight\Router::module('profile', 'id=' . _user_name),
+                    Router::module('profile', 'id=' . _user_name),
                     _lang('usermenu.profile'),
                 );
             }
 
             // vzkazy
             if (_messages) {
-                $messages_count = \Sunlight\User::getUnreadPmCount();
+                $messages_count = User::getUnreadPmCount();
                 if ($messages_count != 0) {
                     $messages_count = " [{$messages_count}]";
                 } else {
                     $messages_count = '';
                 }
                 $items['messages'] = array(
-                    \Sunlight\Router::module('messages'),
+                    Router::module('messages'),
                     _lang('usermenu.messages') . $messages_count,
                 );
             }
 
             // nastaveni
             $items['settings'] = array(
-                \Sunlight\Router::module('settings'),
+                Router::module('settings'),
                 _lang('usermenu.settings'),
             );
 
             // administrace
             if ($adminLink && _priv_administration) {
                 $items['admin'] = array(
-                    \Sunlight\Router::link('admin/'),
+                    Router::link('admin/'),
                     _lang('global.adminlink')
                 );
             }
@@ -665,7 +666,7 @@ abstract class Template
         if (_ulist && (!_notpublicsite || _logged_in)) {
             // seznam uzivatelu
             $items['ulist'] = array(
-                \Sunlight\Router::module('ulist'),
+                Router::module('ulist'),
                 _lang('usermenu.ulist'),
             );
         }
@@ -673,7 +674,7 @@ abstract class Template
         // odhlaseni
         if (_logged_in) {
             $items['logout'] = array(
-                \Sunlight\Xsrf::addToUrl(\Sunlight\Router::link("system/script/logout.php?_return=" . rawurlencode($_SERVER['REQUEST_URI']))),
+                Xsrf::addToUrl(Router::link("system/script/logout.php?_return=" . rawurlencode($_SERVER['REQUEST_URI']))),
                 _lang('usermenu.logout'),
             );
         }

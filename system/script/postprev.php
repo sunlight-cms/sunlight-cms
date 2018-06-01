@@ -1,10 +1,12 @@
 <?php
 
 use Sunlight\Core;
+use Sunlight\Post;
+use Sunlight\Util\Request;
 
 chdir('../../'); // nasimulovat skript v rootu
 
 require './system/bootstrap.php';
 Core::init('./');
 
-echo \Sunlight\Post::render(_e(\Sunlight\Util\Request::post('content')));
+echo Post::render(_e(Request::post('content')));

@@ -4,6 +4,7 @@ namespace Sunlight\Plugin\Action;
 
 use Kuria\Debug\Dumper;
 use Sunlight\Action\ActionResult;
+use Sunlight\Message;
 
 /**
  * Show information about a plugin
@@ -52,8 +53,8 @@ class InfoAction extends PluginAction
     <tr>
         <th><?php echo _lang('admin.plugins.errors') ?></th>
         <td class="text-danger">
-            <?php echo \Sunlight\Message::renderList($plugin->getErrors()) ?>
-            <?php echo \Sunlight\Message::renderList($plugin->getDefinitionErrors(), null, true) ?>
+            <?php echo Message::renderList($plugin->getErrors()) ?>
+            <?php echo Message::renderList($plugin->getDefinitionErrors(), null, true) ?>
         </td>
     </tr>
     <?php endif ?>

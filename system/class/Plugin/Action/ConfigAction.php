@@ -4,6 +4,8 @@ namespace Sunlight\Plugin\Action;
 
 use Sunlight\Action\ActionResult;
 use Sunlight\Message;
+use Sunlight\Util\Form;
+use Sunlight\Xsrf;
 
 /**
  * Modify plugin configuration
@@ -65,7 +67,7 @@ class ConfigAction extends PluginAction
         </tr>
     </table>
 
-    <?php echo \Sunlight\Xsrf::getInput() ?>
+    <?php echo Xsrf::getInput() ?>
 </form>
 <?php
         }), $messages);
@@ -84,7 +86,7 @@ class ConfigAction extends PluginAction
             }
 
             if (is_bool($value)) {
-                $input = '<input type="checkbox" name="config[' . _e($key) . ']" value="1"' . \Sunlight\Util\Form::activateCheckbox($value) . '>';
+                $input = '<input type="checkbox" name="config[' . _e($key) . ']" value="1"' . Form::activateCheckbox($value) . '>';
                 $type = 'checkbox';
             } else {
                 $input = '<input type="text" name="config[' . _e($key) . ']" class="inputmedium" value="' . _e($value) . '">';

@@ -1,8 +1,10 @@
 <?php
 
 use Sunlight\Core;
+use Sunlight\Message;
 use Sunlight\Plugin\InactivePlugin;
 use Sunlight\Plugin\Plugin;
+use Sunlight\Xsrf;
 
 defined('_root') or exit;
 
@@ -13,7 +15,7 @@ if (isset($_GET['clear'])) {
 
     return;
 } elseif (isset($_GET['cleared'])) {
-    $output .= \Sunlight\Message::render(_msg_ok, _lang('global.done'));
+    $output .= Message::render(_msg_ok, _lang('global.done'));
 }
 
 // pomocne funkce
@@ -96,7 +98,7 @@ foreach (Core::$pluginManager->all() as $pluginType => $plugins) {
             <p>
                 ' . _buffer(function () use ($plugin) {
                     foreach ($plugin->getActionList() as $action => $label) {
-                        echo '<a class="button" href="' . \Sunlight\Xsrf::addToUrl('index.php?p=plugins-action&amp;type=' . _e($plugin->getType()) . '&amp;name=' . _e($plugin->getId()) . '&amp;action=' . _e($action)) . '">' . _e($label) . "</a>\n";
+                        echo '<a class="button" href="' . Xsrf::addToUrl('index.php?p=plugins-action&amp;type=' . _e($plugin->getType()) . '&amp;name=' . _e($plugin->getId()) . '&amp;action=' . _e($action)) . '">' . _e($label) . "</a>\n";
                     }
                 }) . '
             </p>

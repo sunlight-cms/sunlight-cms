@@ -1,20 +1,22 @@
 <?php
 
+use Sunlight\Admin\Admin;
 use Sunlight\Extend;
+use Sunlight\Message;
 
 defined('_root') or exit;
 
 /* --- vystup --- */
 
 if (isset($admin_modules[$admin_current_module])) {
-    if (\Sunlight\Admin\Admin::moduleAccess($admin_current_module)) {
+    if (Admin::moduleAccess($admin_current_module)) {
 
         $module = $admin_modules[$admin_current_module];
         $module_custom_header = (isset($module['custom_header']) && $module['custom_header']);
 
         // zpetny odkaz
         if (isset($module['parent']) && !$module_custom_header) {
-            $output .= \Sunlight\Admin\Admin::backlink('index.php?p=' . $module['parent']);
+            $output .= Admin::backlink('index.php?p=' . $module['parent']);
         }
 
         // titulek
@@ -45,13 +47,13 @@ if (isset($admin_modules[$admin_current_module])) {
             Extend::call('admin.mod.' . $admin_current_module . '.after', $extend_args);
             Extend::call('admin.mod.after', $extend_args);
         } else {
-            $output .= \Sunlight\Message::render(_msg_warn, _lang('admin.moduleunavailable'));
+            $output .= Message::render(_msg_warn, _lang('admin.moduleunavailable'));
         }
     } else {
         // pristup odepren
-        $output .= '<h1>' . _lang('global.error') . "</h1>\n" . \Sunlight\Message::render(_msg_warn, _lang('global.accessdenied'));
+        $output .= '<h1>' . _lang('global.error') . "</h1>\n" . Message::render(_msg_warn, _lang('global.accessdenied'));
     }
 } else {
     // modul neexistuje
-    $output .= '<h1>' . _lang('global.error404.title') . "</h1>\n" . \Sunlight\Message::render(_msg_warn, _lang('global.error404'));
+    $output .= '<h1>' . _lang('global.error404.title') . "</h1>\n" . Message::render(_msg_warn, _lang('global.error404'));
 }

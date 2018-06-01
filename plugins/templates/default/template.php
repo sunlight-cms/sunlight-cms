@@ -1,27 +1,30 @@
-<?php defined('_root') or exit ?>
+<?php
+use Sunlight\Template;
+defined('_root') or exit
+?>
 
 <div id="wrapper">
     <div id="header">
         <div id="logo">
-            <a href="<?php echo Sunlight\Template::siteUrl() ?>"><?php echo Sunlight\Template::siteTitle() ?></a>
-            <p><?php echo Sunlight\Template::siteDescription() ?></p>
+            <a href="<?php echo Template::siteUrl() ?>"><?php echo Template::siteTitle() ?></a>
+            <p><?php echo Template::siteDescription() ?></p>
         </div>
 
-        <?php echo Sunlight\Template::userMenu() ?>
+        <?php echo Template::userMenu() ?>
     </div>
 
     <div id="menu">
-        <?php echo Sunlight\Template::menu() ?>
+        <?php echo Template::menu() ?>
     </div>
 
     <div id="page">
         <div id="content">
-            <?php echo Sunlight\Template::content() ?>
+            <?php echo Template::content() ?>
 
             <div class="cleaner"></div>
         </div>
         <div id="sidebar">
-            <?php echo Sunlight\Template::boxes('right') ?>
+            <?php echo Template::boxes('right') ?>
         </div>
         <div class="cleaner"></div>
     </div>
@@ -29,6 +32,6 @@
 <div id="footer">
     <ul>
         <li><a href="http://templated.co/" rel="nofollow">TEMPLATED</a></li>
-        <?php echo Sunlight\Template::links() ?>
+        <?php echo Template::links() ?>
     </ul>
 </div>

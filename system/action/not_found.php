@@ -2,6 +2,9 @@
 
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
+use Sunlight\Message;
+use Sunlight\Router;
+use Sunlight\Util\Response;
 
 defined('_root') or exit;
 
@@ -20,14 +23,14 @@ if ($_index['is_page'] && $_index['slug'] !== null) {
     $redirect = DB::queryRow('SELECT new,permanent FROM ' . _redir_table . ' WHERE old=' . DB::val($_index['slug']) . ' AND active=1');
     if ($redirect !== false) {
         header('HTTP/1.1 ' . ($redirect['permanent'] ? '301 Moved Permanently' : '302 Found'));
-        header('Location: ' . \Sunlight\Router::page($redirect['new'], true));
+        header('Location: ' . Router::page($redirect['new'], true));
 
         return;
     }
 }
 
 // hlavicka a vychozi obsah
-\Sunlight\Response::notFound();
+Response::notFound();
 
 $_index['title'] = _lang('global.error404.title');
 $_index['output'] = '';
@@ -37,5 +40,5 @@ Extend::call('index.not_found', array(
 ));
 
 if ($_index['output'] === '') {
-    $_index['output'] = \Sunlight\Message::render(_msg_warn, _lang('global.error404'));
+    $_index['output'] = Message::render(_msg_warn, _lang('global.error404'));
 }

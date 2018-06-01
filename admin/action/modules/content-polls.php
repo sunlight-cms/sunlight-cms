@@ -1,27 +1,35 @@
 <?php
 
+use Sunlight\Admin\Admin;
 use Sunlight\Database\Database as DB;
+use Sunlight\Message;
+use Sunlight\Paginator;
+use Sunlight\Router;
+use Sunlight\User;
+use Sunlight\Util\Request;
+use Sunlight\Util\StringManipulator;
+use Sunlight\Xsrf;
 
 defined('_root') or exit;
 
 /* ---  odstraneni ankety  --- */
 
 $message = "";
-if (isset($_GET['del']) && \Sunlight\Xsrf::check(true)) {
-    $del = (int) \Sunlight\Util\Request::get('del');
-    DB::query("DELETE FROM p USING " . _polls_table . " AS p WHERE p.id=" . $del . \Sunlight\Admin\Admin::pollAccess());
+if (isset($_GET['del']) && Xsrf::check(true)) {
+    $del = (int) Request::get('del');
+    DB::query("DELETE FROM p USING " . _polls_table . " AS p WHERE p.id=" . $del . Admin::pollAccess());
     if (DB::affectedRows() != 0) {
-        $message = \Sunlight\Message::render(_msg_ok, _lang('global.done'));
+        $message = Message::render(_msg_ok, _lang('global.done'));
     }
 }
 
 /* ---  vystup  --- */
 
 // filtr autoru
-if (_priv_adminpollall && isset($_GET['author']) && \Sunlight\Util\Request::get('author') != -1) {
+if (_priv_adminpollall && isset($_GET['author']) && Request::get('author') != -1) {
     $pasep = true;
-    $author_filter_id = (int) \Sunlight\Util\Request::get('author');
-    $author_filter = "p.author=" . (int) \Sunlight\Util\Request::get('author');
+    $author_filter_id = (int) Request::get('author');
+    $author_filter = "p.author=" . (int) Request::get('author');
 } else {
     $pasep = false;
     $author_filter = "";
@@ -38,13 +46,13 @@ if (_priv_adminpollall) {
     $output .= "
   <form class='cform' action='index.php' method='get'>
   <input type='hidden' name='p' value='content-polls'>
-  <strong>" . _lang('admin.content.polls.filter') . ":</strong> " . \Sunlight\Admin\Admin::userSelect("author", $author_filter_id, "adminpoll=1", null, _lang('global.all2')) . " <input class='button' type='submit' value='" . _lang('global.apply') . "'>
+  <strong>" . _lang('admin.content.polls.filter') . ":</strong> " . Admin::userSelect("author", $author_filter_id, "adminpoll=1", null, _lang('global.all2')) . " <input class='button' type='submit' value='" . _lang('global.apply') . "'>
   </form>
   ";
 }
 
 // strankovani
-$paging = \Sunlight\Paginator::render("index.php?p=content-polls", 20, _posts_table . ':p', $author_filter . \Sunlight\Admin\Admin::pollAccess($pasep), "&amp;filter=" . $author_filter_id);
+$paging = Paginator::render("index.php?p=content-polls", 20, _posts_table . ':p', $author_filter . Admin::pollAccess($pasep), "&amp;filter=" . $author_filter_id);
 $output .= $paging['paging'];
 
 $output .= $message . "
@@ -54,22 +62,22 @@ $output .= $message . "
 ";
 
 // vypis anket
-$userQuery = \Sunlight\User::createQuery('p.author');
-$query = DB::query("SELECT p.id,p.question,p.locked," . $userQuery['column_list'] . " FROM " . _polls_table . " p " . $userQuery['joins'] . " WHERE " . $author_filter . \Sunlight\Admin\Admin::pollAccess($pasep) . " ORDER BY p.id DESC " . $paging['sql_limit']);
+$userQuery = User::createQuery('p.author');
+$query = DB::query("SELECT p.id,p.question,p.locked," . $userQuery['column_list'] . " FROM " . _polls_table . " p " . $userQuery['joins'] . " WHERE " . $author_filter . Admin::pollAccess($pasep) . " ORDER BY p.id DESC " . $paging['sql_limit']);
 if (DB::size($query) != 0) {
     while ($item = DB::row($query)) {
         if (_priv_adminpollall) {
-            $username = "<td>" . \Sunlight\Router::userFromQuery($userQuery, $item) . "</td>";
+            $username = "<td>" . Router::userFromQuery($userQuery, $item) . "</td>";
         } else {
             $username = "";
         }
         $output .= "<tr>"
-            . "<td>" . \Sunlight\Util\StringManipulator::ellipsis($item['question'], 64) . (($item['locked'] == 1) ? " (" . _lang('admin.content.form.locked') . ")" : '') . "</td>"
+            . "<td>" . StringManipulator::ellipsis($item['question'], 64) . (($item['locked'] == 1) ? " (" . _lang('admin.content.form.locked') . ")" : '') . "</td>"
             . $username
             . "<td>" . $item['id'] . "</td>"
             . "<td class='actions'>
                 <a class='button' href='index.php?p=content-polls-edit&amp;id=" . $item['id'] . "'><img src='images/icons/edit.png' class='icon' alt='edit'> " . _lang('global.edit') . "</a>
-                <a class='button' href='" . \Sunlight\Xsrf::addToUrl("index.php?p=content-polls&amp;author=" . $author_filter_id . "&amp;page=" . $paging['current'] . "&amp;del=" . $item['id']) . "' onclick='return Sunlight.confirm();'><img src='images/icons/delete.png' class='icon' alt='del'> " . _lang('global.delete') . "</a>
+                <a class='button' href='" . Xsrf::addToUrl("index.php?p=content-polls&amp;author=" . $author_filter_id . "&amp;page=" . $paging['current'] . "&amp;del=" . $item['id']) . "' onclick='return Sunlight.confirm();'><img src='images/icons/delete.png' class='icon' alt='del'> " . _lang('global.delete') . "</a>
             </td>"
             . "</tr>\n";
     }

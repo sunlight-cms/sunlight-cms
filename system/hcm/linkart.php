@@ -1,6 +1,7 @@
 <?php
 
 use Sunlight\Database\Database as DB;
+use Sunlight\Router;
 
 defined('_root') or exit;
 
@@ -17,5 +18,5 @@ return function ($id = null, $text = null, $nove_okno = false)
         $query = array('slug' => null, 'cat_slug' => null);
     }
 
-    return "<a href='" . \Sunlight\Router::article($id, $query['slug'], $query['cat_slug']) . "'" . ($nove_okno ? ' target="_blank"' : '') . ">" . $text . "</a>";
+    return "<a href='" . Router::article($id, $query['slug'], $query['cat_slug']) . "'" . ($nove_okno ? ' target="_blank"' : '') . ">" . $text . "</a>";
 };

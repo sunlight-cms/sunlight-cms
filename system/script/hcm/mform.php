@@ -1,7 +1,15 @@
 <?php
 
+use Sunlight\Captcha;
 use Sunlight\Core;
+use Sunlight\Email;
+use Sunlight\Generic;
+use Sunlight\IpLog;
+use Sunlight\Util\Response;
+use Sunlight\Util\Request;
 use Sunlight\Util\Url;
+use Sunlight\Util\UrlHelper;
+use Sunlight\Xsrf;
 
 require '../../bootstrap.php';
 Core::init('../../../', array(
@@ -11,10 +19,10 @@ Core::init('../../../', array(
 /* ---  send  --- */
 
 // nacteni promennych
-$subject = trim(\Sunlight\Util\Request::post('subject'));
-$sender = trim(\Sunlight\Util\Request::post('sender'));
-$text = trim(\Sunlight\Util\Request::post('text'));
-$fid = (int) \Sunlight\Util\Request::post('fid');
+$subject = trim(Request::post('subject'));
+$sender = trim(Request::post('sender'));
+$text = trim(Request::post('text'));
+$fid = (int) Request::post('fid');
 
 // nacteni prijemce
 $skey = 'hcm_' . $fid . '_mail_receiver';
@@ -26,9 +34,9 @@ if (isset($_SESSION[$skey])) {
 }
 
 // casove omezeni
-if (\Sunlight\IpLog::check(_iplog_anti_spam)) {
+if (IpLog::check(_iplog_anti_spam)) {
     // zaznamenat
-    \Sunlight\IpLog::update(_iplog_anti_spam);
+    IpLog::update(_iplog_anti_spam);
 } else {
     // prekroceno
     echo _lang('misc.requestlimit', array('*postsendexpire*' => _postsendexpire));
@@ -36,14 +44,14 @@ if (\Sunlight\IpLog::check(_iplog_anti_spam)) {
 }
 
 // odeslani
-if (\Sunlight\Xsrf::check()) {
-    if (\Sunlight\Email::validate($sender) && $text != '' && \Sunlight\Captcha::check()) {
+if (Xsrf::check()) {
+    if (Email::validate($sender) && $text != '' && Captcha::check()) {
 
         // hlavicky
         $headers = array(
             'Content-Type' => 'text/plain; charset=UTF-8',
         );
-        \Sunlight\Email::defineSender($headers, $sender);
+        Email::defineSender($headers, $sender);
 
         // uprava predmetu
         if ($subject === '') {
@@ -59,13 +67,13 @@ if (\Sunlight\Xsrf::check()) {
         }
         $text .= "\n\n" . str_repeat('-', 16) . "\n" . _lang('hcm.mailform.info', array(
             '*domain*' => Url::base()->getFullHost(),
-            '*time*' => \Sunlight\Generic::renderTime(time()),
+            '*time*' => Generic::renderTime(time()),
             '*ip*' => $info_ip,
             '*sender*' => $sender,
         ));
 
         // odeslani
-        if (\Sunlight\Email::send($receiver, $subject, $text, $headers)) {
+        if (Email::send($receiver, $subject, $text, $headers)) {
             $return = 1;
         } else {
             $return = 3;
@@ -79,4 +87,4 @@ if (\Sunlight\Xsrf::check()) {
 }
 
 // presmerovani zpet
-\Sunlight\Response::redirectBack(\Sunlight\Util\UrlHelper::appendParams(\Sunlight\Response::getReturnUrl(), "hcm_mr_" . $fid . "=" . $return, false) . "#hcm_mform_" . $fid);
+Response::redirectBack(UrlHelper::appendParams(Response::getReturnUrl(), "hcm_mr_" . $fid . "=" . $return, false) . "#hcm_mform_" . $fid);

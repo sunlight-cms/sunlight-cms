@@ -1,8 +1,10 @@
 <?php
 
+use Sunlight\Email;
+
 defined('_root') or exit;
 
 return function ($email = "")
 {
-    return \Sunlight\Email::link($email);
+    return Email::link($email);
 };

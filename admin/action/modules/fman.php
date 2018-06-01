@@ -1,9 +1,18 @@
 <?php
 
+use Sunlight\Admin\Admin;
 use Sunlight\Core;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
+use Sunlight\Generic;
+use Sunlight\Message;
+use Sunlight\User;
+use Sunlight\Util\Arr;
+use Sunlight\Util\Environment;
 use Sunlight\Util\Filesystem;
+use Sunlight\Util\Request;
+use Sunlight\Util\StringManipulator;
+use Sunlight\Xsrf;
 
 defined('_root') or exit;
 
@@ -150,15 +159,15 @@ $continue = true;
 $message = "";
 $action_code = "";
 
-$defdir = \Sunlight\User::getHomeDir();
-$dir = \Sunlight\User::normalizeDir(\Sunlight\Util\Request::get('dir'));
+$defdir = User::getHomeDir();
+$dir = User::normalizeDir(Request::get('dir'));
 
 // vytvoreni vychoziho adresare
 if (!(file_exists($defdir) && is_dir($defdir))) {
     $test = mkdir($defdir, 0777, true);
     if (!$test) {
         $continue = false;
-        $output .= \Sunlight\Message::render(_msg_err, _lang('admin.fman.msg.defdircreationfailure'));
+        $output .= Message::render(_msg_err, _lang('admin.fman.msg.defdircreationfailure'));
     } else {
         chmod($defdir, 0777);
     }
@@ -175,7 +184,7 @@ if ($continue) {
     /* ---  post akce  --- */
     if (isset($_POST['action'])) {
 
-        switch (\Sunlight\Util\Request::post('action')) {
+        switch (Request::post('action')) {
 
                 // upload
             case "upload":
@@ -184,11 +193,11 @@ if ($continue) {
                 foreach ($_FILES as $item) {
                     if (!is_array($item['name'])) continue;
                     for ($i = 0; isset($item['name'][$i]); ++$i) {
-                        $name = \Sunlight\Util\StringManipulator::slugify($decodeFilename($item['name'][$i], false), false);
+                        $name = StringManipulator::slugify($decodeFilename($item['name'][$i], false), false);
                         $tmp_name = $item['tmp_name'][$i];
                         $exists = file_exists($dir . $name);
-                        if (is_uploaded_file($tmp_name) && \Sunlight\User::checkFilename($name) && (!$exists || isset($_POST['upload_rewrite']) && unlink($dir . $name))) {
-                            if (\Sunlight\User::moveUploadedFile($tmp_name, $dir . $name)) {
+                        if (is_uploaded_file($tmp_name) && User::checkFilename($name) && (!$exists || isset($_POST['upload_rewrite']) && unlink($dir . $name))) {
+                            if (User::moveUploadedFile($tmp_name, $dir . $name)) {
                                 ++$done;
                                 $uploaded[$name] = true;
                             }
@@ -198,44 +207,44 @@ if ($continue) {
                 }
                 if ($done == $total) $micon = _msg_ok;
                 else $micon = _msg_warn;
-                $message = \Sunlight\Message::render($micon, _lang('admin.fman.msg.upload.done', array('*done*' => $done, '*total*' => $total)));
+                $message = Message::render($micon, _lang('admin.fman.msg.upload.done', array('*done*' => $done, '*total*' => $total)));
                 break;
 
                 // novy adresar
             case "newfolder":
-                $name = $decodeFilename(\Sunlight\Util\Request::post('name'), false);
+                $name = $decodeFilename(Request::post('name'), false);
                 if (!file_exists($dir . $name)) {
                     $test = mkdir($dir . $name);
                     if ($test) {
-                        $message = \Sunlight\Message::render(_msg_ok, _lang('admin.fman.msg.newfolder.done'));
+                        $message = Message::render(_msg_ok, _lang('admin.fman.msg.newfolder.done'));
                         chmod($dir . $name, 0777);
                     } else {
-                        $message = \Sunlight\Message::render(_msg_warn, _lang('admin.fman.msg.newfolder.failure'));
+                        $message = Message::render(_msg_warn, _lang('admin.fman.msg.newfolder.failure'));
                     }
                 } else {
-                    $message = \Sunlight\Message::render(_msg_warn, _lang('admin.fman.msg.newfolder.failure2'));
+                    $message = Message::render(_msg_warn, _lang('admin.fman.msg.newfolder.failure2'));
                 }
                 break;
 
                 // odstraneni
             case "delete":
-                $name = $decodeFilename(\Sunlight\Util\Request::post('name'));
+                $name = $decodeFilename(Request::post('name'));
                 if (file_exists($dir . $name)) {
                     if (!is_dir($dir . $name)) {
-                        if (\Sunlight\User::checkFilename($name)) {
+                        if (User::checkFilename($name)) {
                             if (unlink($dir . $name)) {
-                                $message = \Sunlight\Message::render(_msg_ok, _lang('admin.fman.msg.delete.done'));
+                                $message = Message::render(_msg_ok, _lang('admin.fman.msg.delete.done'));
                             } else {
-                                $message = \Sunlight\Message::render(_msg_warn, _lang('admin.fman.msg.delete.failure'));
+                                $message = Message::render(_msg_warn, _lang('admin.fman.msg.delete.failure'));
                             }
                         } else {
-                            $message = \Sunlight\Message::render(_msg_warn, _lang('admin.fman.msg.disallowedextension'));
+                            $message = Message::render(_msg_warn, _lang('admin.fman.msg.disallowedextension'));
                         }
                     } else {
                         if (Filesystem::purgeDirectory($dir . $name, array(), $failedPath)) {
-                            $message = \Sunlight\Message::render(_msg_ok, _lang('admin.fman.msg.delete.done'));
+                            $message = Message::render(_msg_ok, _lang('admin.fman.msg.delete.done'));
                         } else {
-                            $message = \Sunlight\Message::render(_msg_warn, _lang('admin.fman.msg.delete.failure', array('*failed_path*' => _e($failedPath))));
+                            $message = Message::render(_msg_warn, _lang('admin.fman.msg.delete.failure', array('*failed_path*' => _e($failedPath))));
                         }
                     }
                 }
@@ -243,52 +252,52 @@ if ($continue) {
 
                 // prejmenovani
             case "rename":
-                $name = $decodeFilename(\Sunlight\Util\Request::post('name'));
-                $newname = $decodeFilename(\Sunlight\Util\Request::post('newname'), false);
+                $name = $decodeFilename(Request::post('name'));
+                $newname = $decodeFilename(Request::post('newname'), false);
                 if (file_exists($dir . $name)) {
                     if (!file_exists($dir . $newname)) {
-                        if (\Sunlight\User::checkFilename($newname) && \Sunlight\User::checkFilename($name)) {
+                        if (User::checkFilename($newname) && User::checkFilename($name)) {
                             if (rename($dir . $name, $dir . $newname)) {
-                                $message = \Sunlight\Message::render(_msg_ok, _lang('admin.fman.msg.rename.done'));
+                                $message = Message::render(_msg_ok, _lang('admin.fman.msg.rename.done'));
                             } else {
-                                $message = \Sunlight\Message::render(_msg_warn, _lang('admin.fman.msg.rename.failure'));
+                                $message = Message::render(_msg_warn, _lang('admin.fman.msg.rename.failure'));
                             }
                         } else {
-                            $message = \Sunlight\Message::render(_msg_warn, _lang('admin.fman.msg.disallowedextension'));
+                            $message = Message::render(_msg_warn, _lang('admin.fman.msg.disallowedextension'));
                         }
                     } else {
-                        $message = \Sunlight\Message::render(_msg_warn, _lang('admin.fman.msg.exists'));
+                        $message = Message::render(_msg_warn, _lang('admin.fman.msg.exists'));
                     }
                 }
                 break;
 
                 // uprava
             case "edit":
-                $name = $decodeFilename(\Sunlight\Util\Request::post('name'), false);
-                $content = \Sunlight\Util\Request::post('content');
-                if (\Sunlight\User::checkFilename($name)) {
+                $name = $decodeFilename(Request::post('name'), false);
+                $content = Request::post('content');
+                if (User::checkFilename($name)) {
                     $file = fopen($dir . $name, "w");
                     if ($file) {
                         fwrite($file, $content);
                         fclose($file);
-                        $message = \Sunlight\Message::render(_msg_ok, _lang('admin.fman.msg.edit.done') . " <small>(" . \Sunlight\Generic::renderTime(time()) . ")</small>");
+                        $message = Message::render(_msg_ok, _lang('admin.fman.msg.edit.done') . " <small>(" . Generic::renderTime(time()) . ")</small>");
                     } else {
-                        $message = \Sunlight\Message::render(_msg_warn, _lang('admin.fman.msg.edit.failure'));
+                        $message = Message::render(_msg_warn, _lang('admin.fman.msg.edit.failure'));
                     }
                 } else {
-                    $message = \Sunlight\Message::render(_msg_warn, _lang('admin.fman.msg.disallowedextension'));
+                    $message = Message::render(_msg_warn, _lang('admin.fman.msg.disallowedextension'));
                 }
                 break;
 
                 // presun
             case "move":
-                $newdir = \Sunlight\Util\Arr::removeValue(explode("/", \Sunlight\Util\Request::post('param')), "");
+                $newdir = Arr::removeValue(explode("/", Request::post('param')), "");
                 $newdir = implode("/", $newdir);
                 if (substr($newdir, -1, 1) != "/") {
                     $newdir .= "/";
                 }
                 $newdir = Filesystem::parsePath($dir . $newdir);
-                if (\Sunlight\User::checkPath($newdir, false)) {
+                if (User::checkPath($newdir, false)) {
                     $done = 0;
                     $total = 0;
 
@@ -297,7 +306,7 @@ if ($continue) {
                             continue;
                         }
                         $val = $decodeFilename($val);
-                        if (file_exists($dir . $val) && !file_exists($newdir . $val) && !is_dir($dir . $val) && \Sunlight\User::checkFilename($val)) {
+                        if (file_exists($dir . $val) && !file_exists($newdir . $val) && !is_dir($dir . $val) && User::checkFilename($val)) {
                             if (rename($dir . $val, $newdir . $val)) {
                                 $done++;
                             }
@@ -311,9 +320,9 @@ if ($continue) {
                     } else {
                         $micon = _msg_warn;
                     }
-                    $message = \Sunlight\Message::render($micon, _lang('admin.fman.msg.move.done', array('*done*' => $done, '*total*' => $total)));
+                    $message = Message::render($micon, _lang('admin.fman.msg.move.done', array('*done*' => $done, '*total*' => $total)));
                 } else {
-                    $message = \Sunlight\Message::render(_msg_warn, _lang('admin.fman.msg.rootlimit'));
+                    $message = Message::render(_msg_warn, _lang('admin.fman.msg.rootlimit'));
                 }
                 break;
 
@@ -327,7 +336,7 @@ if ($continue) {
                         continue;
                     }
                     $val = $decodeFilename($val);
-                    if (file_exists($dir . $val) && !is_dir($dir . $val) && \Sunlight\User::checkFilename($val)) {
+                    if (file_exists($dir . $val) && !is_dir($dir . $val) && User::checkFilename($val)) {
                         if (unlink($dir . $val)) {
                             $done++;
                         }
@@ -341,7 +350,7 @@ if ($continue) {
                 } else {
                     $micon = _msg_warn;
                 }
-                $message = \Sunlight\Message::render($micon, _lang('admin.fman.msg.deleteselected.done', array('*done*' => $done, '*total*' => $total)));
+                $message = Message::render($micon, _lang('admin.fman.msg.deleteselected.done', array('*done*' => $done, '*total*' => $total)));
                 break;
 
                 // pridani vyberu do galerie - formular pro vyber galerie
@@ -357,7 +366,7 @@ if ($continue) {
 
                     // priprava promennych
                     $counter = 0;
-                    $galid = (int) \Sunlight\Util\Request::post('gallery');
+                    $galid = (int) Request::post('gallery');
 
                     // vlozeni obrazku
                     if (DB::count(_root_table, 'id=' . DB::val($galid) . ' AND type=' . _page_gallery) !== 0) {
@@ -399,10 +408,10 @@ if ($continue) {
                         }
 
                         // zprava
-                        $message = \Sunlight\Message::render(_msg_ok, _lang('admin.fman.addtogallery.done', array("*done*" => $counter)));
+                        $message = Message::render(_msg_ok, _lang('admin.fman.addtogallery.done', array("*done*" => $counter)));
 
                     } else {
-                        $message = \Sunlight\Message::render(_msg_warn, _lang('global.badinput'));
+                        $message = Message::render(_msg_warn, _lang('global.badinput'));
                     }
 
                 }
@@ -419,7 +428,7 @@ if ($continue) {
         $action_form_class = null;
 
         // vyber akce
-        switch (\Sunlight\Util\Request::get('a')) {
+        switch (Request::get('a')) {
 
                 // novy adresar
             case "newfolder":
@@ -436,7 +445,7 @@ if ($continue) {
                 // odstraneni
             case "delete":
                 if (isset($_GET['name'])) {
-                    $name = \Sunlight\Util\Request::get('name');
+                    $name = Request::get('name');
                     $action_submit = "global.do";
                     $action_title = "admin.fman.delete.title";
                     $action_code = "
@@ -450,7 +459,7 @@ if ($continue) {
                 // prejmenovani
             case "rename":
                 if (isset($_GET['name'])) {
-                    $name = \Sunlight\Util\Request::get('name');
+                    $name = Request::get('name');
                     $action_submit = "global.do";
                     $action_title = "admin.fman.rename.title";
                     $action_code = "
@@ -468,16 +477,16 @@ if ($continue) {
                 // priprava
                 $continue = false;
                 if (isset($_GET['name'])) {
-                    $name = \Sunlight\Util\Request::get('name');
+                    $name = Request::get('name');
                     $dname = $decodeFilename($name);
                     $ext = strtolower(pathinfo($dname, PATHINFO_EXTENSION));
                     if (file_exists($dir . $dname)) {
-                        if (\Sunlight\User::checkFilename($dname)) {
+                        if (User::checkFilename($dname)) {
                             $new = false;
                             $continue = true;
                             $content = file_get_contents($dir . $dname);
                         } else {
-                            $message = \Sunlight\Message::render(_msg_warn, _lang('admin.fman.msg.disallowedextension'));
+                            $message = Message::render(_msg_warn, _lang('admin.fman.msg.disallowedextension'));
                         }
                     }
                 } else {
@@ -525,7 +534,7 @@ if ($continue) {
       <td></td>
       <td>
           <label><input type='checkbox' name='upload_rewrite' value='1'> " . _lang('global.uploadrewrite') . "</label>
-          " . \Sunlight\Util\Environment::renderUploadLimit() . "
+          " . Environment::renderUploadLimit() . "
       </td>
       </tr>
       ";
@@ -562,7 +571,7 @@ if ($continue) {
       <tr>
       <th>" . _lang('admin.fman.addtogallery.galllery') . "</th>
       <td>
-      " . \Sunlight\Admin\Admin::rootSelect("gallery", array('type' => _page_gallery)) . "
+      " . Admin::rootSelect("gallery", array('type' => _page_gallery)) . "
       " . $images . "
       </td>
       </tr>
@@ -573,7 +582,7 @@ if ($continue) {
       </tr>
       ";
                 } else {
-                    $message = \Sunlight\Message::render(_msg_warn, _lang('admin.fman.addtogallery.noimages'));
+                    $message = Message::render(_msg_warn, _lang('admin.fman.addtogallery.noimages'));
                 }
                 break;
 
@@ -586,7 +595,7 @@ if ($continue) {
 <div id='fman-action'>
 <h2>" . _lang($action_title) . "</h2>
 <form action='" . $url . $action_acbonus . "'" . (($action_form_class !== null) ? " class='" . $action_form_class . "'" : '') . " method='post' enctype='multipart/form-data'>
-<input type='hidden' name='action' value='" . _e(\Sunlight\Util\Request::get('a')) . "'>
+<input type='hidden' name='action' value='" . _e(Request::get('a')) . "'>
 <table class='formtable'>
 " . $action_code . "
 
@@ -596,7 +605,7 @@ if ($continue) {
   </tr>
 
 </table>
-" . \Sunlight\Xsrf::getInput() . "</form>
+" . Xsrf::getInput() . "</form>
 </div>
 ";
 
@@ -646,7 +655,7 @@ if ($continue) {
 
         // adresar nebo odkaz na nadrazeny adresar
         if ($item == "..") {
-            if (($dirhref = \Sunlight\User::checkPath($dir . $item, false, true)) === false) {
+            if (($dirhref = User::checkPath($dir . $item, false, true)) === false) {
                 continue;
             }
         } else {
@@ -661,7 +670,7 @@ if ($continue) {
 
         $output .= "
         <tr" . $hl_class . ">
-        <td colspan='" . (($item == "..") ? "3" : "2") . "'><a href='" . $url_base . "dir=" . rawurlencode($dirhref) . "/'><img src='images/icons/fman/dir.png' alt='dir' class='icon'>" . _e(\Sunlight\Util\StringManipulator::ellipsis($item, 64, false)) . "</a></td>
+        <td colspan='" . (($item == "..") ? "3" : "2") . "'><a href='" . $url_base . "dir=" . rawurlencode($dirhref) . "/'><img src='images/icons/fman/dir.png' alt='dir' class='icon'>" . _e(StringManipulator::ellipsis($item, 64, false)) . "</a></td>
         " . (($item != "..") ? "<td class='actions'>
             <a class='button' href='" . $url . "&amp;a=delete&amp;name=" . $encodeFilename($item) . "'><img src='images/icons/delete.png' alt='del' class='icon'>" . _lang('global.delete') . "</a>
             <a class='button' href='" . $url . "&amp;a=rename&amp;name=" . $encodeFilename($item) . "'><img src='images/icons/rename.png' alt='rename' class='icon'>" . _lang('admin.fman.rename') . "</a>
@@ -713,9 +722,9 @@ if ($continue) {
 
         $output .= "
         <tr class='" . implode(' ', $row_classes) . "'>
-        <td><input type='checkbox' name='f" . $filecounter . "' id='f" . $filecounter . "' value='" . $encodeFilename($item, false) . "'> <a href='" . _e($dir . $item) . "' target='_blank'" . ($image ? ' class="lightbox" data-gallery-group="fman"' : '') . "><img src='images/icons/fman/" . $icon . ".png' alt='file' class='icon'>" . _e(\Sunlight\Util\StringManipulator::ellipsis($item, 64, false)) . "</a></td>
-        <td>" . \Sunlight\Generic::renderFileSize($filesize) . "</td>
-        <td class='actions'>". (\Sunlight\User::checkFilename($item) ?
+        <td><input type='checkbox' name='f" . $filecounter . "' id='f" . $filecounter . "' value='" . $encodeFilename($item, false) . "'> <a href='" . _e($dir . $item) . "' target='_blank'" . ($image ? ' class="lightbox" data-gallery-group="fman"' : '') . "><img src='images/icons/fman/" . $icon . ".png' alt='file' class='icon'>" . _e(StringManipulator::ellipsis($item, 64, false)) . "</a></td>
+        <td>" . Generic::renderFileSize($filesize) . "</td>
+        <td class='actions'>". (User::checkFilename($item) ?
             "<a class='button' href='" . $url . "&amp;a=delete&amp;name=" . $encodeFilename($item) . "'><img src='images/icons/delete.png' alt='del' class='icon'>" . _lang('global.delete') . "</a>  "
             . "<a class='button' href='" . $url . "&amp;a=rename&amp;name=" . $encodeFilename($item) . "'><img src='images/icons/rename.png' alt='rename' class='icon'>" . _lang('admin.fman.rename') . "</a>  "
             . (($icon == "editable") ? "<a class='button' href='" . $url . "&amp;a=edit&amp;name=" . $encodeFilename($item) . "'><img src='images/icons/edit.png' alt='edit' class='icon'>" . _lang('admin.fman.edit') . "</a>" : '')
@@ -733,10 +742,10 @@ if ($continue) {
 
     $output .= "
     </table>
-    " . \Sunlight\Xsrf::getInput() . "</form>
+    " . Xsrf::getInput() . "</form>
 
     <p class='fman-menu'>
-    <span><strong>" . _lang('admin.fman.filecounter') . ":</strong> " . $filecounter . " <small>(" . \Sunlight\Generic::renderFileSize($sizecounter) . ")</small></span>
+    <span><strong>" . _lang('admin.fman.filecounter') . ":</strong> " . $filecounter . " <small>(" . Generic::renderFileSize($sizecounter) . ")</small></span>
     <a href='#' onclick='return Sunlight.admin.fmanSelect(" . $filecounter . ", 1)'>" . _lang('admin.fman.selectall') . "</a>
     <a href='#' onclick='return Sunlight.admin.fmanSelect(" . $filecounter . ", 2)'>" . _lang('admin.fman.deselectall') . "</a>
     <a href='#' onclick='return Sunlight.admin.fmanSelect(" . $filecounter . ", 3)'>" . _lang('admin.fman.inverse') . "</a>

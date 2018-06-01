@@ -2,6 +2,7 @@
 
 use Sunlight\Core;
 use Sunlight\Extend;
+use Sunlight\Util\Request;
 
 require '../bootstrap.php';
 Core::init('../../', array(
@@ -13,8 +14,8 @@ Core::init('../../', array(
 $auth = explode(':', Core::loadSetting('cron_auth'), 2);
 if (
     sizeof($auth) !== 2
-    || \Sunlight\Util\Request::get('user') !== $auth[0]
-    || \Sunlight\Util\Request::get('password') !== $auth[1]
+    || Request::get('user') !== $auth[0]
+    || Request::get('password') !== $auth[1]
 ) {
     header('HTTP/1.0 401 Unauthorized');
     echo 'Unauthorized';

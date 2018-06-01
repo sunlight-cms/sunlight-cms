@@ -1,11 +1,14 @@
 <?php
 
+use Sunlight\Hcm;
+use Sunlight\Template;
+
 defined('_root') or exit;
 
 return function ($od = null, $do = null, $class = null)
 {
-    \Sunlight\Hcm::normalizeArgument($od, 'int');
-    \Sunlight\Hcm::normalizeArgument($do, 'int');
+    Hcm::normalizeArgument($od, 'int');
+    Hcm::normalizeArgument($do, 'int');
 
-    return Sunlight\Template::menu($od, $do, $class);
+    return Template::menu($od, $do, $class);
 };

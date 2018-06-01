@@ -4,9 +4,14 @@ namespace Sunlight\Admin;
 
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
+use Sunlight\Message;
 use Sunlight\Page\PageManager;
 use Sunlight\Plugin\TemplateService;
+use Sunlight\Router;
+use Sunlight\User;
+use Sunlight\Util\Request;
 use Sunlight\Util\Url;
+use Sunlight\Xsrf;
 
 abstract class PageLister
 {
@@ -61,7 +66,7 @@ abstract class PageLister
     private static function setup()
     {
         // set current page
-        $pageId = \Sunlight\Util\Request::get('page_id', null);
+        $pageId = Request::get('page_id', null);
         if ($pageId !== null) {
             if ($pageId === 'root') {
                 $pageId = null;
@@ -73,7 +78,7 @@ abstract class PageLister
         }
 
         // set mode
-        $mode = \Sunlight\Util\Request::get('list_mode', null);
+        $mode = Request::get('list_mode', null);
         if ($mode !== null) {
             switch ($mode) {
                 case 'tree':
@@ -233,7 +238,7 @@ abstract class PageLister
         if ($options['sortable']) {
             $output .= "<form method=\"post\">\n";
             if (static::saveOrd()) {
-                $output .= \Sunlight\Message::render(_msg_ok, _lang('admin.content.form.ord.saved'));
+                $output .= Message::render(_msg_ok, _lang('admin.content.form.ord.saved'));
             }
         }
         if (static::MODE_SINGLE_LEVEL == $options['mode']) {
@@ -291,7 +296,7 @@ abstract class PageLister
                 <input type=\"submit\" name=\"reset\" value=\"" . _lang('global.reset') . "\">
             </p>";
 
-            $output .= \Sunlight\Xsrf::getInput() . "</form>";
+            $output .= Xsrf::getInput() . "</form>";
         }
     }
 
@@ -396,7 +401,7 @@ abstract class PageLister
      */
     private static function isAccessible(array $page)
     {
-        $userHasRight = \Sunlight\User::hasPrivilege('admin' . static::$pageTypes[$page['type']]);
+        $userHasRight = User::hasPrivilege('admin' . static::$pageTypes[$page['type']]);
         $isAccessible = $userHasRight;
 
         Extend::call('admin.root.list.access', array(
@@ -545,7 +550,7 @@ abstract class PageLister
         // show
         if ($page['type'] != _page_separator) {
             $actions['show'] = array(
-                'url' => \Sunlight\Router::root($page['id'], $page['slug']),
+                'url' => Router::root($page['id'], $page['slug']),
                 'new_window' => true,
                 'icon' => 'images/icons/show.png',
                 'label' => _lang('global.show'),

@@ -1,9 +1,12 @@
 <?php
 
-use Sunlight\Core;
 use Sunlight\Backup\Backup;
 use Sunlight\Backup\BackupRestorer;
+use Sunlight\Core;
 use Sunlight\Message;
+use Sunlight\Util\Environment;
+use Sunlight\Util\Html;
+use Sunlight\Xsrf;
 
 defined('_root') or exit;
 
@@ -23,7 +26,7 @@ if (isset($_POST['apply_patch'])) do {
         $restorer = new BackupRestorer($patch);
 
         if (!$restorer->validate($errors)) {
-            $output .= Message::error(\Sunlight\Message::renderList(\Sunlight\Util\Html::escapeArrayItems($errors), _lang('admin.other.patch.incompatible')), true);
+            $output .= Message::error(Message::renderList(Html::escapeArrayItems($errors), _lang('admin.other.patch.incompatible')), true);
             break;
         }
 
@@ -39,7 +42,7 @@ if (isset($_POST['apply_patch'])) do {
 
             return;
         } else {
-            $output .= Message::error(\Sunlight\Message::renderList(\Sunlight\Util\Html::escapeArrayItems($errors), 'errors'), true);
+            $output .= Message::error(Message::renderList(Html::escapeArrayItems($errors), 'errors'), true);
         }
 
     } catch (\Exception $e) {
@@ -64,7 +67,7 @@ $output .= _buffer(function () { ?>
                 <th><?php echo _lang('admin.other.patch.file') ?></th>
                 <td>
                     <input type="file" name="patch" id="patch-input">
-                    <?php echo \Sunlight\Util\Environment::renderUploadLimit() ?>
+                    <?php echo Environment::renderUploadLimit() ?>
                 </td>
             </tr>
             <tr>
@@ -77,7 +80,7 @@ $output .= _buffer(function () { ?>
             </tr>
         </table>
 
-        <?php echo \Sunlight\Xsrf::getInput() ?>
+        <?php echo Xsrf::getInput() ?>
     </form>
 
     <script>

@@ -2,6 +2,8 @@
 
 namespace Sunlight;
 
+use Sunlight\Util\UrlHelper;
+
 abstract class Bbcode
 {
     protected static $tags = array(
@@ -298,7 +300,7 @@ abstract class Bbcode
             case 'url':
                 if ($buffer !== '') {
                     $url = trim($arg !== '' ? $arg : $buffer);
-                    $url = \Sunlight\Util\UrlHelper::isSafe($url) ? \Sunlight\Util\UrlHelper::addScheme($url) : '#';
+                    $url = UrlHelper::isSafe($url) ? UrlHelper::addScheme($url) : '#';
 
                     return '<a href="' . $url . '" rel="nofollow" target="_blank">' . $buffer . '</a>';
                 }
@@ -333,8 +335,8 @@ abstract class Bbcode
 
             case 'img':
                 $buffer = trim($buffer);
-                if ($buffer !== '' && \Sunlight\Util\UrlHelper::isSafe($buffer)) {
-                    return '<img src="' . \Sunlight\Util\UrlHelper::addScheme($buffer) . '" alt="img" class="bbcode-img">';
+                if ($buffer !== '' && UrlHelper::isSafe($buffer)) {
+                    return '<img src="' . UrlHelper::addScheme($buffer) . '" alt="img" class="bbcode-img">';
                 }
                 break;
 

@@ -2,6 +2,9 @@
 
 use Sunlight\Database\Database as DB;
 use Sunlight\Database\SqlReader;
+use Sunlight\Message;
+use Sunlight\Util\Request;
+use Sunlight\Xsrf;
 
 defined('_root') or exit;
 
@@ -10,7 +13,7 @@ defined('_root') or exit;
 $tables = DB::getTablesByPrefix();
 
 // nacist zaslany sql kod
-$sql = \Sunlight\Util\Request::post('sql', '');
+$sql = Request::post('sql', '');
 
 /* --- formular --- */
 
@@ -44,7 +47,7 @@ $output .= '
         </td>
     </tr>
 </table>
-' . \Sunlight\Xsrf::getInput() . '
+' . Xsrf::getInput() . '
 </form>';
 
 /* --- vysledek --- */
@@ -92,7 +95,7 @@ if (!empty($queries)) {
 
     // vypis vysledku
     if ($error) {
-        $output .= \Sunlight\Message::render(_msg_err, _e(DB::error()));
+        $output .= Message::render(_msg_err, _e(DB::error()));
     } elseif ($lastResource !== null) {
 
         $columns = DB::columns($lastResource);

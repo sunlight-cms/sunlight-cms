@@ -5,8 +5,19 @@ use Sunlight\Backup\BackupBuilder;
 use Sunlight\Backup\BackupRestorer;
 use Sunlight\Core;
 use Sunlight\Extend;
+use Sunlight\Generic;
+use Sunlight\Message;
+use Sunlight\User;
+use Sunlight\Util\Arr;
+use Sunlight\Util\Environment;
 use Sunlight\Util\Filesystem;
+use Sunlight\Util\Form;
+use Sunlight\Util\Html;
+use Sunlight\Util\Request;
+use Sunlight\Util\Response;
+use Sunlight\Util\StringManipulator;
 use Sunlight\Util\Url;
+use Sunlight\Xsrf;
 
 defined('_root') or exit;
 
@@ -39,10 +50,10 @@ foreach (scandir($backup_dir) as $item) {
 
 // stazeni zalohy
 if (isset($_GET['download'])) {
-    $download = \Sunlight\Util\Request::get('download');
+    $download = Request::get('download');
 
     if (isset($backup_files[$download])) {
-        \Sunlight\Response::downloadFile($backup_dir . '/' . $download, $remove_hash_suffix($download));
+        Response::downloadFile($backup_dir . '/' . $download, $remove_hash_suffix($download));
         exit;
     }
 }
@@ -111,7 +122,7 @@ if (!empty($_POST)) {
                 $backup_builder->setDatabaseDumpEnabled(isset($_POST['opt_db']));
             }
 
-            $enabled_dynpaths = \Sunlight\Util\Arr::filterKeys($_POST, 'dynpath_');
+            $enabled_dynpaths = Arr::filterKeys($_POST, 'dynpath_');
             foreach ($backup_builder->getDynamicPathNames() as $name) {
                 if (
                     isset($backup_dynpath_choices[$name])
@@ -139,17 +150,17 @@ if (!empty($_POST)) {
                 $backup->move($backup_dir . '/' . $stored_backup_name);
                 $backup_files[$stored_backup_name] = time();
 
-                $message = \Sunlight\Message::render(_msg_ok, _lang('admin.backup.store.success'));
+                $message = Message::render(_msg_ok, _lang('admin.backup.store.success'));
             } else {
                 // stahnout
-                \Sunlight\Response::downloadFile($backup, $backup_name);
+                Response::downloadFile($backup, $backup_name);
                 $backup->discard();
                 exit;
             }
 
         } elseif (isset($_POST['do_restore'])) {
 
-            $backup_file = \Sunlight\Util\Request::post('backup_file');
+            $backup_file = Request::post('backup_file');
 
             if (isset($backup_files[$backup_file])) {
                 if (($restoring = isset($_POST['do_restore']['restore'])) || isset($_POST['do_restore']['load'])) {
@@ -166,15 +177,15 @@ if (!empty($_POST)) {
 
                         if ($restoring) {
                             // obnovit
-                            $directories = \Sunlight\Util\Arr::filterKeys($_POST, 'directory_');
-                            $files = \Sunlight\Util\Arr::filterKeys($_POST, 'file_');
+                            $directories = Arr::filterKeys($_POST, 'directory_');
+                            $files = Arr::filterKeys($_POST, 'file_');
                             $database = isset($_POST['database']);
                             $success = $backup_restorer->restore($database, $directories, $files, $errors);
 
                             if ($success) {
-                                $message = \Sunlight\Message::render(_msg_ok, _lang('admin.backup.restore.complete'));
+                                $message = Message::render(_msg_ok, _lang('admin.backup.restore.complete'));
                             } else {
-                                $message = \Sunlight\Message::render(_msg_err, \Sunlight\Message::renderList(\Sunlight\Util\Html::escapeArrayItems($errors), 'errors'));
+                                $message = Message::render(_msg_err, Message::renderList(Html::escapeArrayItems($errors), 'errors'));
                             }
                         }
 
@@ -194,25 +205,25 @@ if (!empty($_POST)) {
             </tr>
             <tr>
                 <th>' . _lang('global.size') . '</th>
-                <td>' . \Sunlight\Generic::renderFileSize(filesize($backup_dir . '/' . $backup_file)) . '</td>
+                <td>' . Generic::renderFileSize(filesize($backup_dir . '/' . $backup_file)) . '</td>
             </tr>
             <tr>
                 <th>' . _lang('global.created_at') . '</th>
-                <td>' . \Sunlight\Generic::renderTime($backup_metadata['created_at']) . '</td>
+                <td>' . Generic::renderTime($backup_metadata['created_at']) . '</td>
             </tr>
             <tr class="valign-top">
                 <th>' . _lang('admin.backup.restore.contents') . '</th>
                 <td>
                     <ul id="backup-contents" class="no-bullets">
-                        <li><label><input type="checkbox"' . \Sunlight\Util\Form::restoreCheckedAndName('backup_loaded', 'database') . \Sunlight\Util\Form::disableInputUnless($backup->hasDatabaseDump()) . '> ' . _lang('admin.backup.opt.db') . '</label></li>
+                        <li><label><input type="checkbox"' . Form::restoreCheckedAndName('backup_loaded', 'database') . Form::disableInputUnless($backup->hasDatabaseDump()) . '> ' . _lang('admin.backup.opt.db') . '</label></li>
                         ' . _buffer(function () use ($backup_metadata) {
                                 foreach ($backup_metadata['directory_list'] as $index => $directory) {
-                                    echo '<li><label><input type="checkbox"' . \Sunlight\Util\Form::restoreCheckedAndName('backup_loaded', 'directory_' . $index) . ' value="' . _e($directory) . '"> ' . _lang('admin.backup.restore.contents.dir') . ' <code>' . _e($directory) . "</code></label></li>\n";
+                                    echo '<li><label><input type="checkbox"' . Form::restoreCheckedAndName('backup_loaded', 'directory_' . $index) . ' value="' . _e($directory) . '"> ' . _lang('admin.backup.restore.contents.dir') . ' <code>' . _e($directory) . "</code></label></li>\n";
                                 }
                         }) . '
                         ' . _buffer(function () use ($backup_metadata) {
                             foreach ($backup_metadata['file_list'] as $index => $file) {
-                                echo '<li><label><input type="checkbox"' . \Sunlight\Util\Form::restoreCheckedAndName('backup_loaded', 'file_' . $index) . ' value="' . _e($file) . '"> ' . _lang('admin.backup.restore.contents.file') . ' <code>' . _e($file) . "</code></label></li>\n";
+                                echo '<li><label><input type="checkbox"' . Form::restoreCheckedAndName('backup_loaded', 'file_' . $index) . ' value="' . _e($file) . '"> ' . _lang('admin.backup.restore.contents.file') . ' <code>' . _e($file) . "</code></label></li>\n";
                             }
                         }) . '
                     </ul>
@@ -222,25 +233,25 @@ if (!empty($_POST)) {
             </tr>
         </table>
 
-        ' . \Sunlight\Message::render(_msg_warn, _lang('admin.backup.restore.warning')) . '
+        ' . Message::render(_msg_warn, _lang('admin.backup.restore.warning')) . '
 
         <p>
             <input class="button small" type="submit" name="do_restore[restore]" onclick="return Sunlight.confirm()" value="' . _lang('admin.backup.restore.title') . '">
             <input class="button small" type="submit" value="' . _lang('global.cancel2') . '">
         </p>
-    ' . \Sunlight\Xsrf::getInput() . '
+    ' . Xsrf::getInput() . '
     </form>
     </div>';
                         }
                     } else {
-                        $message = \Sunlight\Message::render(_msg_warn, \Sunlight\Message::renderList(\Sunlight\Util\Html::escapeArrayItems($errors), _lang('admin.backup.restore.errors.validate')));
+                        $message = Message::render(_msg_warn, Message::renderList(Html::escapeArrayItems($errors), _lang('admin.backup.restore.errors.validate')));
                     }
 
                 } elseif (isset($_POST['do_restore']['delete'])) {
                     unlink($backup_dir . '/' . $backup_file);
                     unset($backup_files[$backup_file]);
 
-                    $message = \Sunlight\Message::render(_msg_ok, _lang('global.done'));
+                    $message = Message::render(_msg_ok, _lang('global.done'));
                 }
             }
 
@@ -248,26 +259,26 @@ if (!empty($_POST)) {
 
             if (isset($_FILES['backup']) && is_uploaded_file($_FILES['backup']['tmp_name'])) {
 
-                $backup_name = \Sunlight\Util\StringManipulator::slugify($_FILES['backup']['name'], false);
+                $backup_name = StringManipulator::slugify($_FILES['backup']['name'], false);
 
-                if (preg_match('{\.zip$}Di', $backup_name) && \Sunlight\Util\Filesystem::isSafeFile($backup_name)) {
+                if (preg_match('{\.zip$}Di', $backup_name) && Filesystem::isSafeFile($backup_name)) {
                     $stored_backup_name = $add_hash_suffix($backup_name);
 
-                    \Sunlight\User::moveUploadedFile($_FILES['backup']['tmp_name'], $backup_dir . '/' . $stored_backup_name);
+                    User::moveUploadedFile($_FILES['backup']['tmp_name'], $backup_dir . '/' . $stored_backup_name);
                     $backup_files[$stored_backup_name] = time();
 
-                    $message = \Sunlight\Message::render(_msg_ok, _lang('global.done'));
+                    $message = Message::render(_msg_ok, _lang('global.done'));
                 } else {
-                    $message = \Sunlight\Message::render(_msg_warn, _lang('admin.backup.upload.error'));
+                    $message = Message::render(_msg_warn, _lang('admin.backup.upload.error'));
                 }
 
             } else {
-                $message = \Sunlight\Message::render(_msg_warn, _lang('global.noupload'));
+                $message = Message::render(_msg_warn, _lang('global.noupload'));
             }
 
         }
     } catch (\Exception $e) {
-        $message = \Sunlight\Message::render(_msg_err, _lang('global.error')) . Core::renderException($e);
+        $message = Message::render(_msg_err, _lang('global.error')) . Core::renderException($e);
     }
 }
 
@@ -281,8 +292,8 @@ if (!empty($backup_files)) {
 
         $backup_list .= '<tr>
     <td><label><input type="radio" name="backup_file" value="' . _e($backup_file) . '"> ' . _e($displayed_backup_name) . '</label></td>
-    <td>' . \Sunlight\Generic::renderFileSize(filesize($backup_dir . '/' . $backup_file)) . '</td>
-    <td>' . \Sunlight\Generic::renderTime($backup_ctime) . '</td>
+    <td>' . Generic::renderFileSize(filesize($backup_dir . '/' . $backup_file)) . '</td>
+    <td>' . Generic::renderTime($backup_ctime) . '</td>
     <td><a href="index.php?p=backup&download=' . _e($backup_file) . '" title="' . _lang('global.download') . '"><img src="images/icons/floppy.png" alt="' . _lang('global.download') . '"></a></td>
 </tr>
 ';
@@ -305,10 +316,10 @@ $output .= $message . '
                 <th>' . _lang('admin.backup.opts') . '</th>
                 <td>
                     <ul class="no-bullets">
-                        <li><label><input type="checkbox" value="1"' . \Sunlight\Util\Form::restoreCheckedAndName('do_create', 'opt_db', true) . '> ' . _lang('admin.backup.opt.db') . '</label></li>
+                        <li><label><input type="checkbox" value="1"' . Form::restoreCheckedAndName('do_create', 'opt_db', true) . '> ' . _lang('admin.backup.opt.db') . '</label></li>
                         ' . _buffer(function () use ($backup_dynpath_choices) {
                             foreach ($backup_dynpath_choices as $name => $options) {
-                                echo '<li><label><input type="checkbox" value="' . $name . '"' . \Sunlight\Util\Form::restoreCheckedAndName('do_create', 'dynpath_' . $name, true) . '> ' . _e($options['label']) . ' <small>(' . \Sunlight\Generic::renderFileSize($options['size']) . ')</small></label></li>';
+                                echo '<li><label><input type="checkbox" value="' . $name . '"' . Form::restoreCheckedAndName('do_create', 'dynpath_' . $name, true) . '> ' . _e($options['label']) . ' <small>(' . Generic::renderFileSize($options['size']) . ')</small></label></li>';
                             }
                         }) . '
                         ' . Extend::buffer('admin.backup.options', array('type' => 'partial')) . '
@@ -324,7 +335,7 @@ $output .= $message . '
                 </td>
             </tr>
         </table>
-    ' . \Sunlight\Xsrf::getInput() . '
+    ' . Xsrf::getInput() . '
     </form>
 
 
@@ -337,7 +348,7 @@ $output .= $message . '
                 <td>
                     <ul class="no-bullets">
                         <li><label><input type="checkbox" checked disabled> ' . _lang('admin.backup.opt.db') . '</label></li>
-                        <li><label><input type="checkbox" checked disabled> ' . _lang('admin.backup.opt.sys') . ' <small>(' . \Sunlight\Generic::renderFileSize($static_size) . ')</small></label></li>
+                        <li><label><input type="checkbox" checked disabled> ' . _lang('admin.backup.opt.sys') . ' <small>(' . Generic::renderFileSize($static_size) . ')</small></label></li>
                         ' . _buffer(function () use ($backup_dynpath_choices, $backup_builder) {
                             foreach ($backup_dynpath_choices as $name => $options) {
                                 $optional = $backup_builder->isDynamicPathOptional($name);
@@ -347,7 +358,7 @@ $output .= $message . '
                                 } else {
                                     $checked = true;
                                 }
-                                echo '<li><label><input type="checkbox" value="' . $name . '" name="dynpath_' . $name . '"' . \Sunlight\Util\Form::disableInputUnless($optional) . \Sunlight\Util\Form::activateCheckbox($checked) . '> ' . _e($options['label']) . ' <small>(' . \Sunlight\Generic::renderFileSize($options['size']) . ')</small></label></li>';
+                                echo '<li><label><input type="checkbox" value="' . $name . '" name="dynpath_' . $name . '"' . Form::disableInputUnless($optional) . Form::activateCheckbox($checked) . '> ' . _e($options['label']) . ' <small>(' . Generic::renderFileSize($options['size']) . ')</small></label></li>';
                             }
                         }) . '
                         ' . Extend::buffer('admin.backup.options', array('type' => 'full')) . '
@@ -363,7 +374,7 @@ $output .= $message . '
                 </td>
             </tr>
         </table>
-    ' . \Sunlight\Xsrf::getInput() . '
+    ' . Xsrf::getInput() . '
     </form>
 
 </td>
@@ -378,7 +389,7 @@ $output .= $message . '
                 <th>' . _lang('global.file') . '</th>
                 <td>
                     <input type="file" name="backup">
-                    ' . \Sunlight\Util\Environment::renderUploadLimit() . '
+                    ' . Environment::renderUploadLimit() . '
                 </td>
             </tr>
             <tr>
@@ -386,7 +397,7 @@ $output .= $message . '
                 <td><input class="button small" type="submit" name="do_upload" value="' . _lang('global.upload') . '"></td>
             </tr>
         </table>
-    ' . \Sunlight\Xsrf::getInput() . '
+    ' . Xsrf::getInput() . '
     </form>
 
 
@@ -413,7 +424,7 @@ $output .= $message . '
             ' . _lang('global.or') . '
             <input class="button small" onclick="return Sunlight.confirm()" type="submit" name="do_restore[delete]" value="' . _lang('admin.backup.restore.submit.delete') . '">
         </p>
-    ' . \Sunlight\Xsrf::getInput() . '
+    ' . Xsrf::getInput() . '
     </form>
 
 </td>

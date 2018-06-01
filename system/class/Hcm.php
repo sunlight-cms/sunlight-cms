@@ -2,9 +2,9 @@
 
 namespace Sunlight;
 
+use Sunlight\Database\Database as DB;
 use Sunlight\Exception\ContentPrivilegeException;
 use Sunlight\Util\ArgList;
-use Sunlight\Database\Database as DB;
 
 abstract class Hcm
 {

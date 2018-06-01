@@ -2,8 +2,21 @@
 
 namespace Sunlight\Comment;
 
+use Sunlight\Captcha;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
+use Sunlight\Generic;
+use Sunlight\Message;
+use Sunlight\Paginator;
+use Sunlight\Post;
+use Sunlight\PostForm;
+use Sunlight\Router;
+use Sunlight\Template;
+use Sunlight\User;
+use Sunlight\Util\Form;
+use Sunlight\Util\Request;
+use Sunlight\Util\StringManipulator;
+use Sunlight\Util\UrlHelper;
 
 class CommentService
 {
@@ -277,31 +290,31 @@ class CommentService
   ";
 
         if ($title != null) {
-            $output .= "<h2>" . $title . ' ' . \Sunlight\Template::rssLink(\Sunlight\Router::rss($home, $posttype, false), true) . "</h2>\n";
+            $output .= "<h2>" . $title . ' ' . Template::rssLink(Router::rss($home, $posttype, false), true) . "</h2>\n";
         }
 
         $form_output = "<div class='posts-form' id='post-form'>\n";
 
         /* --- init pager --- */
-        $paging = \Sunlight\Paginator::render($url, $postsperpage, _posts_table, $countcond, "#posts", $page_param, $autolast);
+        $paging = Paginator::render($url, $postsperpage, _posts_table, $countcond, "#posts", $page_param, $autolast);
 
         /* --- message --- */
         if (isset($_GET['r'])) {
-            switch (\Sunlight\Util\Request::get('r')) {
+            switch (Request::get('r')) {
                 case 0:
-                    $form_output .= \Sunlight\Message::render(_msg_err, _lang('posts.failed'));
+                    $form_output .= Message::render(_msg_err, _lang('posts.failed'));
                     break;
                 case 1:
-                    $form_output .= \Sunlight\Message::render(_msg_ok, _lang((($style != 5) ? 'posts.added' : 'posts.topicadded')));
+                    $form_output .= Message::render(_msg_ok, _lang((($style != 5) ? 'posts.added' : 'posts.topicadded')));
                     break;
                 case 2:
-                    $form_output .= \Sunlight\Message::render(_msg_warn, _lang('misc.requestlimit', array("*postsendexpire*" => _postsendexpire)));
+                    $form_output .= Message::render(_msg_warn, _lang('misc.requestlimit', array("*postsendexpire*" => _postsendexpire)));
                     break;
                 case 3:
-                    $form_output .= \Sunlight\Message::render(_msg_warn, _lang('posts.guestnamedenied'));
+                    $form_output .= Message::render(_msg_warn, _lang('posts.guestnamedenied'));
                     break;
                 case 4:
-                    $form_output .= \Sunlight\Message::render(_msg_warn, _lang('xsrf.msg'));
+                    $form_output .= Message::render(_msg_warn, _lang('xsrf.msg'));
                     break;
             }
         }
@@ -311,8 +324,8 @@ class CommentService
 
             // fetch reply to ID
             if ($xhome == -1) {
-                if (isset($_GET['replyto']) && \Sunlight\Util\Request::get('replyto') != -1) {
-                    $reply = (int) \Sunlight\Util\Request::get('replyto');
+                if (isset($_GET['replyto']) && Request::get('replyto') != -1) {
+                    $reply = (int) Request::get('replyto');
                     if ($replynote) {
                         $form_output .= "<p>" . _lang('posts.replynote') . " (<a href='" . $url_html . "#posts'>" . _lang('global.cancel') . "</a>).</p>";
                     }
@@ -336,14 +349,14 @@ class CommentService
                 ));
             } else {
                 $form_output .= "<p>" . _lang('posts.loginrequired') . "</p>\n";
-                $form_output .= \Sunlight\User::renderLoginForm();
+                $form_output .= User::renderLoginForm();
             }
 
         } else {
             if (!$locked) {
-                $form_output .= "<a class='button' href='" . \Sunlight\Util\UrlHelper::appendParams($url_html, "addpost&page=" . $paging['current']) . "#post-form'><img class='icon' src='" . \Sunlight\Template::image('icons/bubble.png') . "' alt='post'>" . $addlink . "</a>";
+                $form_output .= "<a class='button' href='" . UrlHelper::appendParams($url_html, "addpost&page=" . $paging['current']) . "#post-form'><img class='icon' src='" . Template::image('icons/bubble.png') . "' alt='post'>" . $addlink . "</a>";
             } else {
-                $form_output .= "<img src='" . \Sunlight\Template::image("icons/lock.png") . "' alt='stop' class='icon'><strong>" . _lang('posts.locked' . $locked_textid) . "</strong>";
+                $form_output .= "<img src='" . Template::image("icons/lock.png") . "' alt='stop' class='icon'><strong>" . _lang('posts.locked' . $locked_textid) . "</strong>";
             }
         }
 
@@ -355,12 +368,12 @@ class CommentService
         }
 
         /* ---  list  --- */
-        if (\Sunlight\Paginator::atTop()) {
+        if (Paginator::atTop()) {
             $output .= $paging['paging'];
         }
 
         // base query
-        $userQuery = \Sunlight\User::createQuery('p.author');
+        $userQuery = User::createQuery('p.author');
         if ($is_topic_list) {
             $sql = "SELECT p.id,p.author,p.guest,p.subject,p.time,p.ip,p.locked,p.bumptime,p.sticky,(SELECT COUNT(*) FROM " . _posts_table . " WHERE type=" . _post_forum_topic . " AND xhome=p.id) AS answer_count";
         } else {
@@ -463,7 +476,7 @@ class CommentService
 
                 $output .= "</div>\n";
 
-                if (\Sunlight\Paginator::atBottom()) {
+                if (Paginator::atBottom()) {
                     $output .= $paging['paging'];
                 }
 
@@ -481,13 +494,13 @@ class CommentService
                 foreach ($items as $item) {
 
                     // fetch author
-                    if ($item['guest'] == "") $author = \Sunlight\Router::userFromQuery($userQuery, $item, array('max_len' => 16));
-                    else $author = "<span class='post-author-guest' title='" . \Sunlight\Generic::renderIp($item['ip']) . "'>" . \Sunlight\Util\StringManipulator::ellipsis($item['guest'], 16) . "</span>";
+                    if ($item['guest'] == "") $author = Router::userFromQuery($userQuery, $item, array('max_len' => 16));
+                    else $author = "<span class='post-author-guest' title='" . Generic::renderIp($item['ip']) . "'>" . StringManipulator::ellipsis($item['guest'], 16) . "</span>";
 
                     // fetch last post author
                     if (isset($item['_lastpost'])) {
-                        if ($item['_lastpost']['author'] != -1) $lastpost = \Sunlight\Router::userFromQuery($userQuery, $item['_lastpost'], array('class' => 'post-author', 'max_len' => 16));
-                        else $lastpost = "<span class='post-author-guest'>" . \Sunlight\Util\StringManipulator::ellipsis($item['_lastpost']['guest'], 16) . "</span>";
+                        if ($item['_lastpost']['author'] != -1) $lastpost = Router::userFromQuery($userQuery, $item['_lastpost'], array('class' => 'post-author', 'max_len' => 16));
+                        else $lastpost = "<span class='post-author-guest'>" . StringManipulator::ellipsis($item['_lastpost']['guest'], 16) . "</span>";
                     } else {
                         $lastpost = "-";
                     }
@@ -506,18 +519,18 @@ class CommentService
                     if ($tpages_num > 1) {
                         $tpages .= '<span class=\'topic-pages\'>';
                         for ($i = 1; $i <= 3 && $i <= $tpages_num; ++$i) {
-                            $tpages .= "<a href='" . \Sunlight\Util\UrlHelper::appendParams(\Sunlight\Router::topic($item['id'], $forum_slug), 'page=' . $i) . "#posts'>" . $i . '</a>';
+                            $tpages .= "<a href='" . UrlHelper::appendParams(Router::topic($item['id'], $forum_slug), 'page=' . $i) . "#posts'>" . $i . '</a>';
                         }
-                        if ($tpages_num > 3) $tpages .= "<a href='" . \Sunlight\Util\UrlHelper::appendParams(\Sunlight\Router::topic($item['id'], $forum_slug), 'page=' . $tpages_num) . "'>" . $tpages_num . ' &rarr;</a>';
+                        if ($tpages_num > 3) $tpages .= "<a href='" . UrlHelper::appendParams(Router::topic($item['id'], $forum_slug), 'page=' . $tpages_num) . "'>" . $tpages_num . ' &rarr;</a>';
                         $tpages .= '</span>';
                     }
 
                     // render row
-                    $output .= "<tr class='topic-" . $icon . ($hl ? ' topic-hl' : '') . "'><td class='topic-icon-cell'><a href='" . \Sunlight\Router::topic($item['id'], $forum_slug) . "'><img src='" . \Sunlight\Template::image('icons/topic-' . $icon . '.png') . "' alt='" . _lang('posts.topic.' . $icon) . "'></a></td><td class='topic-main-cell'><a href='" . \Sunlight\Router::topic($item['id'], $forum_slug) . "'>" . $item['subject'] . "</a>" . $tpages . "<br>" . $author . " <small class='post-info'>(" . \Sunlight\Generic::renderTime($item['time'], 'post') . ")</small></td><td>" . $item['answer_count'] . "</td><td>" . $lastpost . (($item['answer_count'] != 0) ? "<br><small class='post-info'>(" . \Sunlight\Generic::renderTime($item['bumptime'], 'post') . ")</small>" : '') . "</td></tr>\n";
+                    $output .= "<tr class='topic-" . $icon . ($hl ? ' topic-hl' : '') . "'><td class='topic-icon-cell'><a href='" . Router::topic($item['id'], $forum_slug) . "'><img src='" . Template::image('icons/topic-' . $icon . '.png') . "' alt='" . _lang('posts.topic.' . $icon) . "'></a></td><td class='topic-main-cell'><a href='" . Router::topic($item['id'], $forum_slug) . "'>" . $item['subject'] . "</a>" . $tpages . "<br>" . $author . " <small class='post-info'>(" . Generic::renderTime($item['time'], 'post') . ")</small></td><td>" . $item['answer_count'] . "</td><td>" . $lastpost . (($item['answer_count'] != 0) ? "<br><small class='post-info'>(" . Generic::renderTime($item['bumptime'], 'post') . ")</small>" : '') . "</td></tr>\n";
                     $hl = !$hl;
                 }
                 $output .= "</tbody></table>\n\n";
-                if (\Sunlight\Paginator::atBottom()) {
+                if (Paginator::atBottom()) {
                     $output .= $paging['paging'];
                 }
 
@@ -533,9 +546,9 @@ class CommentService
                 if (DB::size($query) != 0) {
                     $output .= "<table class='topic-latest'>\n";
                     while ($item = DB::row($query)) {
-                        if ($item['guest'] == "") $author = \Sunlight\Router::userFromQuery($userQuery, $item);
+                        if ($item['guest'] == "") $author = Router::userFromQuery($userQuery, $item);
                         else $author = "<span class='post-author-guest'>" . $item['guest'] . "</span>";
-                        $output .= "<tr><td><a href='" . \Sunlight\Router::topic($item['topic_id'], $forum_slug) . "'>" . $item['topic_subject'] . "</a></td><td>" . $author . "</td><td>" . \Sunlight\Generic::renderTime($item['time'], 'post') . "</td></tr>\n";
+                        $output .= "<tr><td><a href='" . Router::topic($item['topic_id'], $forum_slug) . "'>" . $item['topic_subject'] . "</a></td><td>" . $author . "</td><td>" . Generic::renderTime($item['time'], 'post') . "</td></tr>\n";
                     }
                     $output .= "</table>\n\n";
 
@@ -581,17 +594,17 @@ class CommentService
     {
         $inputs = array();
 
-        $captcha = \Sunlight\Captcha::init();
-        $output = \Sunlight\Generic::jsLimitLength(16384, "postform", "text");
+        $captcha = Captcha::init();
+        $output = Generic::jsLimitLength(16384, "postform", "text");
         if (!_logged_in) {
-            $inputs[] = array('label' => _lang('posts.guestname'), 'content' => "<input type='text' name='guest' maxlength='24' class='inputsmall'" . \Sunlight\Util\Form::restoreValue($_SESSION, 'post_form_guest') . ">");
+            $inputs[] = array('label' => _lang('posts.guestname'), 'content' => "<input type='text' name='guest' maxlength='24' class='inputsmall'" . Form::restoreValue($_SESSION, 'post_form_guest') . ">");
         }
         if ($vars['xhome'] == -1 && $vars['subject']) {
-            $inputs[] = array('label' => _lang($vars['is_topic'] ? 'posts.topic' : 'posts.subject'), 'content' => "<input type='text' name='subject' class='input" . ($vars['is_topic'] ? 'medium' : 'small') . "' maxlength='48'" . \Sunlight\Util\Form::restoreValue($_SESSION, 'post_form_subject') . ">");
+            $inputs[] = array('label' => _lang($vars['is_topic'] ? 'posts.topic' : 'posts.subject'), 'content' => "<input type='text' name='subject' class='input" . ($vars['is_topic'] ? 'medium' : 'small') . "' maxlength='48'" . Form::restoreValue($_SESSION, 'post_form_subject') . ">");
         }
         $inputs[] = $captcha;
-        $inputs[] = array('label' => _lang('posts.text'), 'content' => "<textarea name='text' class='areamedium' rows='5' cols='33'>" . \Sunlight\Util\Form::restoreValue($_SESSION, 'post_form_text', null, false) . "</textarea><input type='hidden' name='_posttype' value='" . $vars['posttype'] . "'><input type='hidden' name='_posttarget' value='" . $vars['posttarget'] . "'><input type='hidden' name='_xhome' value='" . $vars['xhome'] . "'>" . (isset($vars['pluginflag']) ? "<input type='hidden' name='_pluginflag' value='" . $vars['pluginflag'] . "'>" : ''), 'top' => true);
-        $inputs[] = array('label' => '', 'content' => \Sunlight\PostForm::renderControls('postform', 'text'));
+        $inputs[] = array('label' => _lang('posts.text'), 'content' => "<textarea name='text' class='areamedium' rows='5' cols='33'>" . Form::restoreValue($_SESSION, 'post_form_text', null, false) . "</textarea><input type='hidden' name='_posttype' value='" . $vars['posttype'] . "'><input type='hidden' name='_posttarget' value='" . $vars['posttarget'] . "'><input type='hidden' name='_xhome' value='" . $vars['xhome'] . "'>" . (isset($vars['pluginflag']) ? "<input type='hidden' name='_pluginflag' value='" . $vars['pluginflag'] . "'>" : ''), 'top' => true);
+        $inputs[] = array('label' => '', 'content' => PostForm::renderControls('postform', 'text'));
 
         unset(
             $_SESSION['post_form_guest'],
@@ -600,11 +613,11 @@ class CommentService
         );
 
         // form
-        $output .= \Sunlight\Util\Form::render(
+        $output .= Form::render(
             array(
                 'name' => 'postform',
-                'action' => \Sunlight\Util\UrlHelper::appendParams(\Sunlight\Router::link('system/script/post.php'), '_return=' . rawurlencode($vars['url']), false),
-                'submit_append' => ' ' . \Sunlight\PostForm::renderPreviewButton('postform', 'text'),
+                'action' => UrlHelper::appendParams(Router::link('system/script/post.php'), '_return=' . rawurlencode($vars['url']), false),
+                'submit_append' => ' ' . PostForm::renderPreviewButton('postform', 'text'),
             ),
             $inputs
         );
@@ -635,21 +648,21 @@ class CommentService
             'extra_info' => '',
         );
 
-        $postAccess = \Sunlight\Post::checkAccess($userQuery, $post);
+        $postAccess = Post::checkAccess($userQuery, $post);
 
         // fetch author
-        if ($post['guest'] == "") $author = \Sunlight\Router::userFromQuery($userQuery, $post, array('class' => 'post-author'));
-        else $author = "<span class='post-author-guest' title='" . \Sunlight\Generic::renderIp($post['ip']) . "'>" . $post['guest'] . "</span>";
+        if ($post['guest'] == "") $author = Router::userFromQuery($userQuery, $post, array('class' => 'post-author'));
+        else $author = "<span class='post-author-guest' title='" . Generic::renderIp($post['ip']) . "'>" . $post['guest'] . "</span>";
 
         // action links
         $actlinks = array();
-        if ($options['allow_reply']) $actlinks[] = "<a class='post-action-reply' href='" . _e(\Sunlight\Util\UrlHelper::appendParams($options['current_url'], "replyto=" . $post['id'], false)) . "#posts'>" . _lang('posts.reply') . "</a>";
-        if ($postAccess) $actlinks[] = "<a class='post-action-edit' href='" . \Sunlight\Router::module('editpost', 'id=' . $post['id']) . "'>" . _lang('global.edit') . "</a>";
+        if ($options['allow_reply']) $actlinks[] = "<a class='post-action-reply' href='" . _e(UrlHelper::appendParams($options['current_url'], "replyto=" . $post['id'], false)) . "#posts'>" . _lang('posts.reply') . "</a>";
+        if ($postAccess) $actlinks[] = "<a class='post-action-edit' href='" . Router::module('editpost', 'id=' . $post['id']) . "'>" . _lang('global.edit') . "</a>";
         $actlinks = array_merge($actlinks, $options['extra_actions']);
 
         // avatar
         if (_show_avatars) {
-            $avatar = \Sunlight\User::renderAvatarFromQuery($userQuery, $post);
+            $avatar = User::renderAvatarFromQuery($userQuery, $post);
         } else {
             $avatar = null;
         }
@@ -667,14 +680,14 @@ class CommentService
             $output .= "<div id='post-" . $post['id'] . "' class='post" . ($options['is_answer'] ? ' post-answer' : '') . (isset($avatar) ? ' post-withavatar' : '') . "'>"
                 . "<div class='post-head'>"
                     . $author
-                    . " <span class='post-info'>(" . \Sunlight\Generic::renderTime($post['time'], 'post') . $options['extra_info'] . ")</span>"
+                    . " <span class='post-info'>(" . Generic::renderTime($post['time'], 'post') . $options['extra_info'] . ")</span>"
                     . ($actlinks ? " <span class='post-actions'>" . implode(' ', $actlinks) . '</span>' : '')
-                    . ($options['post_link'] ? "<a class='post-postlink' href='" . _e(\Sunlight\Util\UrlHelper::appendParams($options['current_url'], 'page=' . $options['current_page'], false)) . "#post-" . $post['id'] . "'><span>#" . str_pad($post['id'], 6, '0', STR_PAD_LEFT) . "</span></a>" : '')
+                    . ($options['post_link'] ? "<a class='post-postlink' href='" . _e(UrlHelper::appendParams($options['current_url'], 'page=' . $options['current_page'], false)) . "#post-" . $post['id'] . "'><span>#" . str_pad($post['id'], 6, '0', STR_PAD_LEFT) . "</span></a>" : '')
                 . "</div>"
                 . "<div class='post-body" . (isset($avatar) ? ' post-body-withavatar' : '') . "'>"
                     . $avatar
                     . '<div class="post-body-text">'
-                        . \Sunlight\Post::render($post['text'])
+                        . Post::render($post['text'])
                     . "</div>"
                 . "</div>"
                 . "</div>\n";

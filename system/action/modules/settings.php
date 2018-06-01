@@ -2,10 +2,22 @@
 
 use Sunlight\Core;
 use Sunlight\Database\Database as DB;
+use Sunlight\Email;
 use Sunlight\Extend;
+use Sunlight\Generic;
+use Sunlight\Message;
+use Sunlight\Picture;
 use Sunlight\Plugin\PluginManager;
+use Sunlight\PostForm;
+use Sunlight\Util\Response;
+use Sunlight\Router;
+use Sunlight\User;
+use Sunlight\Util\Form;
 use Sunlight\Util\Password;
+use Sunlight\Util\Request;
+use Sunlight\Util\StringManipulator;
 use Sunlight\Util\Url;
+use Sunlight\Xsrf;
 
 defined('_root') or exit;
 
@@ -20,7 +32,7 @@ $message = "";
 $userdata = Core::$userData;
 
 // cesta k avataru
-$avatar_path = \Sunlight\User::renderAvatar($userdata, array('get_url' => true, 'extend' => false));
+$avatar_path = User::renderAvatar($userdata, array('get_url' => true, 'extend' => false));
 
 /* ---  ulozeni  --- */
 
@@ -29,13 +41,13 @@ if (isset($_POST['save'])) {
     $errors = array();
 
     // smazani vlastniho uctu
-    if (_priv_selfremove && \Sunlight\Util\Form::loadCheckbox('selfremove')) {
-        if (Password::load($userdata['password'])->match(\Sunlight\Util\Request::post('selfremove-confirm'))) {
+    if (_priv_selfremove && Form::loadCheckbox('selfremove')) {
+        if (Password::load($userdata['password'])->match(Request::post('selfremove-confirm'))) {
             if (_user_id != 0) {
-                \Sunlight\User::delete(_user_id);
+                User::delete(_user_id);
                 $_SESSION = array();
                 session_destroy();
-                $_index['redirect_to'] = \Sunlight\Router::module('login', 'login_form_result=4', false, true);
+                $_index['redirect_to'] = Router::module('login', 'login_form_result=4', false, true);
 
                 return;
             } else {
@@ -47,11 +59,11 @@ if (isset($_POST['save'])) {
     }
 
     // username
-    $username = \Sunlight\Util\Request::post('username');
+    $username = Request::post('username');
     if (mb_strlen($username) > 24) {
         $username = mb_substr($username, 0, 24);
     }
-    $username = \Sunlight\Util\StringManipulator::slugify($username, false);
+    $username = StringManipulator::slugify($username, false);
     if ($username == "") {
         $errors[] = _lang('user.msg.badusername');
     } else {
@@ -70,7 +82,7 @@ if (isset($_POST['save'])) {
     }
 
     // publicname
-    $publicname = _e(\Sunlight\Util\StringManipulator::trimExtraWhitespace(\Sunlight\Util\Request::post('publicname')));
+    $publicname = _e(StringManipulator::trimExtraWhitespace(Request::post('publicname')));
     if (mb_strlen($publicname) > 24) {
         $errors[] = _lang('user.msg.publicnametoolong');
     } elseif ($publicname != $userdata['publicname'] && $publicname != "") {
@@ -83,14 +95,14 @@ if (isset($_POST['save'])) {
     }
 
     // email
-    $email = trim(\Sunlight\Util\Request::post('email'));
-    if (!\Sunlight\Email::validate($email)) {
+    $email = trim(Request::post('email'));
+    if (!Email::validate($email)) {
         $errors[] = _lang('user.msg.bademail');
     } else {
         if ($email != _user_email) {
-            if (\Sunlight\Util\Request::post('currentpassword') === '') {
+            if (Request::post('currentpassword') === '') {
                 $errors[] = _lang('mod.settings.error.emailchangenopass');
-            } elseif (!Password::load($userdata['password'])->match(\Sunlight\Util\Request::post('currentpassword'))) {
+            } elseif (!Password::load($userdata['password'])->match(Request::post('currentpassword'))) {
                 $errors[] = _lang('mod.settings.error.badcurrentpass');
             }
             if (DB::count(_users_table, 'email=' . DB::val($email) . ' AND id!=' . _user_id) !== 0) {
@@ -100,18 +112,18 @@ if (isset($_POST['save'])) {
     }
 
     // massemail, wysiwyg, public
-    $massemail = \Sunlight\Util\Form::loadCheckbox('massemail');
+    $massemail = Form::loadCheckbox('massemail');
     if (_priv_administration) {
-        $wysiwyg = \Sunlight\Util\Form::loadCheckbox('wysiwyg');
+        $wysiwyg = Form::loadCheckbox('wysiwyg');
     }
-    $public = \Sunlight\Util\Form::loadCheckbox('public');
+    $public = Form::loadCheckbox('public');
 
     // avatar
     $avatar = $userdata['avatar'];
     if (_uploadavatar) {
 
         // smazani avataru
-        if (\Sunlight\Util\Form::loadCheckbox("removeavatar") && isset($avatar)) {
+        if (Form::loadCheckbox("removeavatar") && isset($avatar)) {
             @unlink(_root . 'images/avatars/' . $avatar . '.jpg');
             $avatar = null;
         }
@@ -120,7 +132,7 @@ if (isset($_POST['save'])) {
         if (isset($_FILES['avatar']) && is_uploaded_file($_FILES['avatar']['tmp_name'])) {
 
             // zpracovani
-            $avatarUid = \Sunlight\Picture::process(array(
+            $avatarUid = Picture::process(array(
                 'file_path' => $_FILES['avatar']['tmp_name'],
                 'file_name' => $_FILES['avatar']['name'],
                 'limit' => array('filesize' => 1048576, 'dimensions' => array('x' => 1400, 'y' => 1400)),
@@ -150,10 +162,10 @@ if (isset($_POST['save'])) {
 
     // password
     $passwordchange = false;
-    if (\Sunlight\Util\Request::post('newpassword') != "" || \Sunlight\Util\Request::post('newpassword-confirm') != "") {
-        $newpassword = \Sunlight\Util\Request::post('newpassword');
-        $newpassword_confirm = \Sunlight\Util\Request::post('newpassword-confirm');
-        if (Password::load($userdata['password'])->match(\Sunlight\Util\Request::post('currentpassword'))) {
+    if (Request::post('newpassword') != "" || Request::post('newpassword-confirm') != "") {
+        $newpassword = Request::post('newpassword');
+        $newpassword_confirm = Request::post('newpassword-confirm');
+        if (Password::load($userdata['password'])->match(Request::post('currentpassword'))) {
             if ($newpassword == $newpassword_confirm) {
                 if ($newpassword != "") {
                     $passwordchange = true;
@@ -170,11 +182,11 @@ if (isset($_POST['save'])) {
     }
 
     // note
-    $note = _e(trim(mb_substr(\Sunlight\Util\Request::post('note'), 0, 1024)));
+    $note = _e(trim(mb_substr(Request::post('note'), 0, 1024)));
 
     // language
     if (_language_allowcustom) {
-        $language = \Sunlight\Util\Request::post('language');
+        $language = Request::post('language');
 
         if (!Core::$pluginManager->has(PluginManager::LANGUAGE, $language)) {
             $language = '';
@@ -216,7 +228,7 @@ if (isset($_POST['save'])) {
 
         // uprava session pri zmene hesla
         if ($passwordchange == true) {
-            $_SESSION['user_auth'] = \Sunlight\User::getAuthHash($newpassword);
+            $_SESSION['user_auth'] = User::getAuthHash($newpassword);
         }
 
         // extend
@@ -228,16 +240,16 @@ if (isset($_POST['save'])) {
         // update
         DB::update(_users_table, 'id=' . _user_id, $changeset);
         Extend::call('user.edit', array('id' => _user_id, 'username' => $username, 'email' => $email));
-        $_index['redirect_to'] = \Sunlight\Router::module('settings', 'saved', false, true);
+        $_index['redirect_to'] = Router::module('settings', 'saved', false, true);
 
         return;
 
     } else {
-        $message .= \Sunlight\Message::render(_msg_warn, \Sunlight\Message::renderList($errors, 'errors'));
+        $message .= Message::render(_msg_warn, Message::renderList($errors, 'errors'));
     }
 
 } elseif (isset($_POST['download_personal_data'])) {
-    if (Password::load($userdata['password'])->match(\Sunlight\Util\Request::post('currentpassword'))) {
+    if (Password::load($userdata['password'])->match(Request::post('currentpassword'))) {
         $ips = DB::queryRows('SELECT DISTINCT ip FROM ' . _posts_table . ' WHERE author = ' . $userdata['id'], null, 'ip');
         $ips[] = $userdata['ip'];
 
@@ -252,7 +264,7 @@ if (isset($_POST['save'])) {
 
         Extend::call('mod.settings.download_personal_data', array('data' => &$personal_data));
 
-        \Sunlight\Response::download(sprintf('%s_%s.csv', Url::current()->host, $userdata['username']));
+        Response::download(sprintf('%s_%s.csv', Url::current()->host, $userdata['username']));
 
         $outputHandle = fopen('php://output', 'a');
 
@@ -275,7 +287,7 @@ if (isset($_POST['save'])) {
 
         exit;
     } else {
-        $message .= \Sunlight\Message::render(_msg_warn, _lang('mod.settings.download_personal_data') . ' - ' . _lang('mod.settings.error.badcurrentpass'));
+        $message .= Message::render(_msg_warn, _lang('mod.settings.download_personal_data') . ' - ' . _lang('mod.settings.error.badcurrentpass'));
     }
 }
 
@@ -284,7 +296,7 @@ if (isset($_POST['save'])) {
 $_index['title'] = _lang('mod.settings');
 
 if (isset($_GET['saved'])) {
-    $message .= \Sunlight\Message::render(_msg_ok, _lang('global.saved'));
+    $message .= Message::render(_msg_ok, _lang('global.saved'));
 }
 
 // vyber jazyka
@@ -305,7 +317,7 @@ if (_priv_administration) {
 
   <tr>
   <th>" . _lang('mod.settings.wysiwyg') . "</th>
-  <td><label><input type='checkbox' name='wysiwyg' value='1'" . \Sunlight\Util\Form::activateCheckbox($userdata['wysiwyg']) . "> " . _lang('mod.settings.wysiwyg.label') . "</label></td>
+  <td><label><input type='checkbox' name='wysiwyg' value='1'" . Form::activateCheckbox($userdata['wysiwyg']) . "> " . _lang('mod.settings.wysiwyg.label') . "</label></td>
   </tr>
 
   ";
@@ -314,11 +326,11 @@ if (_priv_administration) {
 }
 
 $output .= "
-<p><a href='" . \Sunlight\Router::module('profile', 'id=' . _user_name) . "'>" . _lang('mod.settings.profilelink') . " &gt;</a></p>
+<p><a href='" . Router::module('profile', 'id=' . _user_name) . "'>" . _lang('mod.settings.profilelink') . " &gt;</a></p>
 <p>" . _lang('mod.settings.p') . "</p>" . $message . "
-<form action='" . \Sunlight\Router::module('settings') . "' method='post' name='setform' enctype='multipart/form-data'>
+<form action='" . Router::module('settings') . "' method='post' name='setform' enctype='multipart/form-data'>
 
-" . \Sunlight\Generic::jsLimitLength(1024, "setform", "note") . "
+" . Generic::jsLimitLength(1024, "setform", "note") . "
 
   <fieldset>
   <legend>" . _lang('mod.settings.userdata') . "</legend>
@@ -326,29 +338,29 @@ $output .= "
 
   <tr>
   <th>" . _lang('login.username') . " <span class='important'>*</span></th>
-  <td><input type='text'" . \Sunlight\Util\Form::restorePostValueAndName('username', _user_name) . " class='inputsmall' maxlength='24'>" . (!_priv_changeusername ? "<span class='hint'>(" . _lang('mod.settings.namechangenote') . ")</span>" : '') . "</td>
+  <td><input type='text'" . Form::restorePostValueAndName('username', _user_name) . " class='inputsmall' maxlength='24'>" . (!_priv_changeusername ? "<span class='hint'>(" . _lang('mod.settings.namechangenote') . ")</span>" : '') . "</td>
   </tr>
 
   <tr>
   <th>" . _lang('mod.settings.publicname') . "</th>
-  <td><input type='text'" . \Sunlight\Util\Form::restorePostValueAndName('publicname', $userdata['publicname'], true) . " class='inputsmall' maxlength='24'></td>
+  <td><input type='text'" . Form::restorePostValueAndName('publicname', $userdata['publicname'], true) . " class='inputsmall' maxlength='24'></td>
   </tr>
 
   <tr class='valign-top'>
   <th>" . _lang('global.email') . " <span class='important'>*</span></th>
-  <td><input type='email'" . \Sunlight\Util\Form::restorePostValueAndName('email', $userdata['email']) . " class='inputsmall'/> <span class='hint'>(" . _lang('mod.settings.emailchangenote') . ")</span></td>
+  <td><input type='email'" . Form::restorePostValueAndName('email', $userdata['email']) . " class='inputsmall'/> <span class='hint'>(" . _lang('mod.settings.emailchangenote') . ")</span></td>
   </tr>
 
   " . $language_select . "
 
   <tr>
   <th>" . _lang('mod.settings.massemail') . "</th>
-  <td><label><input type='checkbox' name='massemail' value='1'" . \Sunlight\Util\Form::activateCheckbox($userdata['massemail']) . "> " . _lang('mod.settings.massemail.label') . "</label></td>
+  <td><label><input type='checkbox' name='massemail' value='1'" . Form::activateCheckbox($userdata['massemail']) . "> " . _lang('mod.settings.massemail.label') . "</label></td>
   </tr>
   
   <tr>
   <th>" . _lang('mod.settings.public') . "</th>
-  <td><label><input type='checkbox' name='public' value='1'" . \Sunlight\Util\Form::activateCheckbox($userdata['public']) . "> " . _lang('mod.settings.public.label') . "</label></td>
+  <td><label><input type='checkbox' name='public' value='1'" . Form::activateCheckbox($userdata['public']) . "> " . _lang('mod.settings.public.label') . "</label></td>
   </tr>
 
   " . $admin . "
@@ -395,11 +407,11 @@ $output .= "
 
   <tr class='valign-top'>
   <th>" . _lang('global.note') . "</th>
-  <td><textarea class='areasmall' rows='9' cols='33' name='note'>" . \Sunlight\Util\Form::restorePostValue('note', $userdata['note'], false, false) . "</textarea></td>
+  <td><textarea class='areasmall' rows='9' cols='33' name='note'>" . Form::restorePostValue('note', $userdata['note'], false, false) . "</textarea></td>
   </tr>
 
   <tr><td></td>
-  <td>" . \Sunlight\PostForm::renderControls('setform', 'note') . "</td>
+  <td>" . PostForm::renderControls('setform', 'note') . "</td>
   </tr>
 
   </table>
@@ -440,5 +452,5 @@ $output .= "
 <input type='submit' name='save' value='" . _lang('mod.settings.submit') . "'>
 <input type='reset' value='" . _lang('global.reset') . "' onclick='return Sunlight.confirm();'>
 
-" . \Sunlight\Xsrf::getInput() . "</form>
+" . Xsrf::getInput() . "</form>
 ";

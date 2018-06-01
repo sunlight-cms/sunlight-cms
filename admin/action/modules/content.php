@@ -2,7 +2,11 @@
 
 use Sunlight\Admin\PageLister;
 use Sunlight\Extend;
+use Sunlight\Message;
 use Sunlight\Page\PageManager;
+use Sunlight\User;
+use Sunlight\Util\Request;
+use Sunlight\Xsrf;
 
 defined('_root') or exit;
 
@@ -18,24 +22,24 @@ if (_priv_adminsection || _priv_admincategory || _priv_adminbook || _priv_admins
 
     // akce
     if (isset($_POST['ac'])) {
-        $ac = (int) \Sunlight\Util\Request::post('ac');
+        $ac = (int) Request::post('ac');
 
         switch ($ac) {
             // vytvoreni stranky
             case 'new':
                 $is_plugin_page = false;
-                if (is_numeric(\Sunlight\Util\Request::post('type'))) {
-                    $type = (int) \Sunlight\Util\Request::post('type');
+                if (is_numeric(Request::post('type'))) {
+                    $type = (int) Request::post('type');
                 } else {
                     $type = _page_plugin;
-                    $type_idt = strval(\Sunlight\Util\Request::post('type'));
+                    $type_idt = strval(Request::post('type'));
                     if (!isset($plugin_types[$type_idt])) {
                         break;
                     }
                     $is_plugin_page = true;
                 }
                 if (isset($type_array[$type])) {
-                    if (\Sunlight\User::hasPrivilege('admin' . $type_array[$type])) {
+                    if (User::hasPrivilege('admin' . $type_array[$type])) {
                         $admin_redirect_to = 'index.php?p=content-edit' . $type_array[$type] . ($is_plugin_page ? '&idt=' . rawurlencode($type_idt) : '');
 
                         return;
@@ -51,7 +55,7 @@ if (_priv_adminsection || _priv_admincategory || _priv_adminbook || _priv_admins
     $create_list = "";
     if (_priv_adminroot) {
         foreach ($type_array as $type => $name) {
-            if ($type != _page_plugin && \Sunlight\User::hasPrivilege('admin' . $name)) {
+            if ($type != _page_plugin && User::hasPrivilege('admin' . $name)) {
                 $create_list .= "<option value='" . $type . "'>" . _lang('page.type.' . $name) . "</option>\n";
             }
         }
@@ -76,7 +80,7 @@ if (_priv_adminsection || _priv_admincategory || _priv_adminbook || _priv_admins
     ' . $create_list . '
     </select>
     <input class="button" type="submit" value="' . _lang('global.create') . '">
-    ' . \Sunlight\Xsrf::getInput() . '</form>
+    ' . Xsrf::getInput() . '</form>
 
     <span class="inline-separator"></span>
     ' : '' ) . '
@@ -93,8 +97,8 @@ if (_priv_adminsection || _priv_admincategory || _priv_adminbook || _priv_admins
     <span class="inline-separator"></span>
     ' : '' ) . '
 
-    <a class="button" href="index.php?p=content&amp;list_mode=tree"' . (PageLister::MODE_FULL_TREE == Sunlight\Admin\PageLister::getConfig('mode') ? ' class="active-link"' : '') . '><img src="images/icons/tree.png" alt="move" class="icon">' . _lang('admin.content.mode.tree') . '</a>
-    <a class="button" href="index.php?p=content&amp;list_mode=single"' . (PageLister::MODE_SINGLE_LEVEL == Sunlight\Admin\PageLister::getConfig('mode') ? ' class="active-link"' : '') . '><img src="images/icons/list.png" alt="move" class="icon">' . _lang('admin.content.mode.single') . '</a>
+    <a class="button" href="index.php?p=content&amp;list_mode=tree"' . (PageLister::MODE_FULL_TREE == PageLister::getConfig('mode') ? ' class="active-link"' : '') . '><img src="images/icons/tree.png" alt="move" class="icon">' . _lang('admin.content.mode.tree') . '</a>
+    <a class="button" href="index.php?p=content&amp;list_mode=single"' . (PageLister::MODE_SINGLE_LEVEL == PageLister::getConfig('mode') ? ' class="active-link"' : '') . '><img src="images/icons/list.png" alt="move" class="icon">' . _lang('admin.content.mode.single') . '</a>
 
     <div class="hr"><hr></div>
 
@@ -205,7 +209,7 @@ foreach ($content_modules as $category_alias => $category_data) {
 
 // zprava
 if (isset($_GET['done'])) {
-    $message = \Sunlight\Message::render(_msg_ok, _lang('global.done'));
+    $message = Message::render(_msg_ok, _lang('global.done'));
 }
 
 $output .= $message . '

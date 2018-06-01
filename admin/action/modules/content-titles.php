@@ -2,6 +2,8 @@
 
 use Sunlight\Admin\PageLister;
 use Sunlight\Database\Database as DB;
+use Sunlight\Message;
+use Sunlight\Xsrf;
 
 defined('_root') or exit;
 
@@ -21,7 +23,7 @@ if (isset($_POST['title']) && is_array($_POST['title'])) {
         DB::update(_root_table, 'id=' . DB::val($id), array('title' => $title));
     }
 
-    $message = \Sunlight\Message::render(_msg_ok, _lang('global.saved'));
+    $message = Message::render(_msg_ok, _lang('global.saved'));
 }
 
 /* ---  vystup  --- */
@@ -45,4 +47,4 @@ $output .= "
         <input type='submit' value='" . _lang('global.save') . "' accesskey='s'>
         <input type='reset' value='" . _lang('global.reset') . "' onclick='return Sunlight.confirm();'>
     </p>
-" . \Sunlight\Xsrf::getInput() . "</form>";
+" . Xsrf::getInput() . "</form>";

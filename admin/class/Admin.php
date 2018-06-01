@@ -9,6 +9,11 @@ use Sunlight\Extend;
 use Sunlight\Page\PageManager;
 use Sunlight\Plugin\TemplatePlugin;
 use Sunlight\Plugin\TemplateService;
+use Sunlight\Router;
+use Sunlight\User;
+use Sunlight\Util\DateTime;
+use Sunlight\Util\StringManipulator;
+use Sunlight\Xsrf;
 
 abstract class Admin
 {
@@ -55,8 +60,8 @@ abstract class Admin
     {
         $output = '<span id="usermenu">';
         if (_logged_in && _priv_administration) {
-            $profile_link = \Sunlight\Router::module('profile', 'id=' . _user_name);
-            $avatar = \Sunlight\User::renderAvatar(Core::$userData, array('get_url' => true, 'default' => false));
+            $profile_link = Router::module('profile', 'id=' . _user_name);
+            $avatar = User::renderAvatar(Core::$userData, array('get_url' => true, 'default' => false));
             if ($avatar !== null) {
                 $output .= '<a id="usermenu-avatar" href="' . $profile_link . '"><img src="' . $avatar . '" alt="' . _user_name . '"></a>';
             }
@@ -68,9 +73,9 @@ abstract class Admin
                 } else {
                     $messages_count = "";
                 }
-                $output .= "<a href='" . \Sunlight\Router::module('messages') . "'>" . _lang('usermenu.messages') . $messages_count . "</a>, ";
+                $output .= "<a href='" . Router::module('messages') . "'>" . _lang('usermenu.messages') . $messages_count . "</a>, ";
             }
-            $output .= '<a href="' . \Sunlight\Router::module('settings') . '">' . _lang('usermenu.settings') . '</a>, <a href="' . \Sunlight\Xsrf::addToUrl(\Sunlight\Router::link('system/script/logout.php?_return=admin/')) . '">' . _lang('usermenu.logout') . '</a>]';
+            $output .= '<a href="' . Router::module('settings') . '">' . _lang('usermenu.settings') . '</a>, <a href="' . Xsrf::addToUrl(Router::link('system/script/logout.php?_return=admin/')) . '">' . _lang('usermenu.logout') . '</a>]';
             $output .= '<a href="' . Core::$url . '/" target="_blank" class="usermenu-web-link" title="' . _lang('admin.link.site') . '"><img class="icon" src="images/icons/guide.png" alt="' . _lang('admin.link.site') . '"></a>';
         } else {
             $output .= '<a href="./">' . _lang('usermenu.guest') . '</a>';
@@ -181,7 +186,7 @@ abstract class Admin
         }
 
         // odkaz
-        $output .= "<a href='" . \Sunlight\Router::article($art['id'], $art['slug'], $art['cat_slug']) . "' target='_blank'" . $class . ">";
+        $output .= "<a href='" . Router::article($art['id'], $art['slug'], $art['cat_slug']) . "' target='_blank'" . $class . ">";
         if ($art['time'] <= time()) {
             $output .= "<strong>";
         }
@@ -286,7 +291,7 @@ abstract class Admin
                     . (($options['type'] !== null && $page['type'] != $options['type'] || !$options['allow_separators'] && $page['type'] == _page_separator) ? " disabled" : '')
                     . '>'
                     . str_repeat('&nbsp;&nbsp;&nbsp;│&nbsp;', $page['node_level'])
-                    . \Sunlight\Util\StringManipulator::ellipsis($page['title'], $options['maxlength'])
+                    . StringManipulator::ellipsis($page['title'], $options['maxlength'])
                     . "</option>\n";
             }
         }
@@ -520,7 +525,7 @@ abstract class Admin
             return true;
         } else {
             // podle zapadu a vychodu slunce
-            $isday = \Sunlight\Util\DateTime::isDayTime();
+            $isday = DateTime::isDayTime();
             if ($isday === false) {
                 return true;
             }
@@ -542,20 +547,20 @@ abstract class Admin
         return array(
             'extend_event' => 'admin.head',
             'css' => array(
-                'admin' => \Sunlight\Router::link('admin/script/style.php?s=' . rawurlencode($scheme) . ($dark ? '&d' : '')),
+                'admin' => Router::link('admin/script/style.php?s=' . rawurlencode($scheme) . ($dark ? '&d' : '')),
             ),
             'css_after' => "
 <!--[if lte IE 7]><link rel=\"stylesheet\" href=\"css/ie7.css\"><![endif]-->
 <!--[if IE 8]><link rel=\"stylesheet\" href=\"css/ie8-9.css\"><![endif]-->
 <!--[if IE 9]><link rel=\"stylesheet\" href=\"css/ie8-9.css\"><![endif]-->",
             'js' => array(
-                'jquery' => \Sunlight\Router::link('system/js/jquery.js'),
-                'sunlight' => \Sunlight\Router::link('system/js/sunlight.js'),
-                'rangyinputs' => \Sunlight\Router::link('system/js/rangyinputs.js'),
-                'scrollwatch' => \Sunlight\Router::link('system/js/scrollwatch.js'),
-                'scrollfix' => \Sunlight\Router::link('system/js/scrollfix.js'),
-                'jquery_ui_sortable' => \Sunlight\Router::link('admin/js/jquery-ui-sortable.min.js'),
-                'admin' => \Sunlight\Router::link('admin/js/admin.js'),
+                'jquery' => Router::link('system/js/jquery.js'),
+                'sunlight' => Router::link('system/js/sunlight.js'),
+                'rangyinputs' => Router::link('system/js/rangyinputs.js'),
+                'scrollwatch' => Router::link('system/js/scrollwatch.js'),
+                'scrollfix' => Router::link('system/js/scrollfix.js'),
+                'jquery_ui_sortable' => Router::link('admin/js/jquery-ui-sortable.min.js'),
+                'admin' => Router::link('admin/js/admin.js'),
             ),
             'js_before' => "\n" . Core::getJavascript(array(
                     'admin' => array(

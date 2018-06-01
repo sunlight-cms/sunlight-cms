@@ -1,13 +1,14 @@
 <?php
 
 use Sunlight\Database\Database as DB;
+use Sunlight\Hcm;
 
 defined('_root') or exit;
 
 return function ($group_id = null)
 {
     if (isset($group_id)) {
-        $cond = \Sunlight\Hcm::createColumnInSqlCondition("group_id", $group_id);
+        $cond = Hcm::createColumnInSqlCondition("group_id", $group_id);
     } else {
         $cond = "";
     }

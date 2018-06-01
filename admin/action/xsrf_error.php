@@ -1,5 +1,8 @@
 <?php
 
+use Sunlight\Message;
+use Sunlight\User;
+
 defined('_root') or exit;
 
 /* --- vystup --- */
@@ -7,5 +10,5 @@ defined('_root') or exit;
 $admin_title = _lang('xsrf.title');
 
 $admin_output .= "<h1>" . _lang('xsrf.title') . "</h1>\n";
-$admin_output .= \Sunlight\Message::render(_msg_err, _lang('xsrf.msg'));
-$admin_output .= \Sunlight\User::renderPostRepeatForm();
+$admin_output .= Message::render(_msg_err, _lang('xsrf.msg'));
+$admin_output .= User::renderPostRepeatForm();

@@ -1,6 +1,14 @@
 <?php
 
+use Sunlight\Admin\Admin;
 use Sunlight\Database\Database as DB;
+use Sunlight\Message;
+use Sunlight\Paginator;
+use Sunlight\Router;
+use Sunlight\User;
+use Sunlight\Util\Form;
+use Sunlight\Util\Request;
+use Sunlight\Xsrf;
 
 defined('_root') or exit;
 
@@ -9,21 +17,21 @@ $message = '';
 /* --- hromadne akce --- */
 
 if (isset($_POST['bulk_action'])) {
-    switch (\Sunlight\Util\Request::post('bulk_action')) {
+    switch (Request::post('bulk_action')) {
         // smazani
         case 'del':
-            $user_ids = (array) \Sunlight\Util\Request::post('user', array(), true);
+            $user_ids = (array) Request::post('user', array(), true);
             $user_delete_counter = 0;
             foreach ($user_ids as $user_id) {
                 $user_id = (int) $user_id;
                 if ($user_id !== 0 && $user_id != _user_id) {
-                    if (\Sunlight\User::delete($user_id)) {
+                    if (User::delete($user_id)) {
                         ++$user_delete_counter;
                     }
                 }
             }
 
-            $message = \Sunlight\Message::render(
+            $message = Message::render(
                 $user_delete_counter === sizeof($user_ids) ? 1 : 2,
                 str_replace(
                     array('%done%', '%total%'),
@@ -41,7 +49,7 @@ if (isset($_POST['bulk_action'])) {
 $grouplimit = "";
 $list_conds = array();
 if (isset($_GET['group_id'])) {
-    $group = (int) \Sunlight\Util\Request::get('group_id');
+    $group = (int) Request::get('group_id');
     if ($group != -1) {
         $list_conds[] = 'u.group_id=' . $group;
     }
@@ -50,7 +58,7 @@ if (isset($_GET['group_id'])) {
 }
 
 // aktivace vyhledavani
-$search = trim(\Sunlight\Util\Request::get('search'));
+$search = trim(Request::get('search'));
 if ($search !== '') {
     $wildcard = DB::val('%' . $search . '%');
     $list_conds[] = "(u.id=" . DB::val($search) . " OR u.username LIKE {$wildcard} OR u.publicname LIKE {$wildcard} OR u.email LIKE {$wildcard} OR u.ip LIKE {$wildcard})";
@@ -69,8 +77,8 @@ $output .= '
 <td>
 <form class="cform" action="index.php" method="get">
 <input type="hidden" name="p" value="users-list">
-<input type="hidden" name="search"' . \Sunlight\Util\Form::restoreGetValue('search', '') . '>
-<strong>' . _lang('admin.users.list.groupfilter') . ':</strong> ' . \Sunlight\Admin\Admin::userSelect("group_id", $group, "id!=" . _group_guests, null, _lang('global.all'), true) . '
+<input type="hidden" name="search"' . Form::restoreGetValue('search', '') . '>
+<strong>' . _lang('admin.users.list.groupfilter') . ':</strong> ' . Admin::userSelect("group_id", $group, "id!=" . _group_guests, null, _lang('global.all'), true) . '
 <input class="button" type="submit" value="' . _lang('global.apply') . '">
 </form>
 </td>
@@ -79,7 +87,7 @@ $output .= '
 <form class="cform" action="index.php" method="get">
 <input type="hidden" name="p" value="users-list">
 <input type="hidden" name="group_id" value="' . $group . '">
-<strong>' . _lang('admin.users.list.search') . ':</strong> <input type="text" name="search" class="inputsmall"' . \Sunlight\Util\Form::restoreGetValue('search') . '> <input class="button" type="submit" value="' . _lang('mod.search.submit') . '">
+<strong>' . _lang('admin.users.list.search') . ':</strong> <input type="text" name="search" class="inputsmall"' . Form::restoreGetValue('search') . '> <input class="button" type="submit" value="' . _lang('mod.search.submit') . '">
 ' . ($search ? ' <a href="index.php?p=users-list&amp;group=' . $group . '">' . _lang('global.cancel') . '</a>' : '') . '
 </form>
 </td>
@@ -89,7 +97,7 @@ $output .= '
 ';
 
 // priprava strankovani
-$paging = \Sunlight\Paginator::render("index.php?p=users-list&group=" . $group . ($search !== false ? '&search=' . rawurlencode($search) : ''), 50, _users_table . ':u', $list_conds_sql);
+$paging = Paginator::render("index.php?p=users-list&group=" . $group . ($search !== false ? '&search=' . rawurlencode($search) : ''), 50, _users_table . ':u', $list_conds_sql);
 $output .= $paging['paging'];
 
 // tabulka
@@ -108,7 +116,7 @@ $output .= $message . "
 ";
 
 // dotaz na db
-$userQuery = \Sunlight\User::createQuery(null);
+$userQuery = User::createQuery(null);
 $query = DB::query('SELECT ' . $userQuery['column_list'] . ',u.email user_email FROM ' . _users_table . ' u ' . $userQuery['joins'] . ' WHERE ' . $list_conds_sql . ' ORDER BY ug.level DESC ' . $paging['sql_limit']);
 
 // vypis
@@ -117,7 +125,7 @@ if (DB::size($query) != 0) {
         $output .= "<tr>
             <td><input type='checkbox' name='user[]' value='" . $item['user_id'] . "'></td>
             <td>" . $item['user_id'] . "</td>
-            <td>" . \Sunlight\Router::userFromQuery($userQuery, $item, array('new_window' => true, 'publicname' => false)) . "</td>
+            <td>" . Router::userFromQuery($userQuery, $item, array('new_window' => true, 'publicname' => false)) . "</td>
             <td>" . $item['user_email'] . "</td><td>" . (($item['user_publicname'] != '') ? $item['user_publicname'] : "-") . "</td>
             <td>" . $item['user_group_title'] . "</td>
             <td class='actions'>
@@ -147,7 +155,7 @@ $output .= "
         <input class='button' type='submit' onclick='return Sunlight.confirm()' value='" . _lang('global.do') . "'>
     </p>
 
-" . \Sunlight\Xsrf::getInput() . "</form>";
+" . Xsrf::getInput() . "</form>";
 
 // strankovani
 $output .= $paging['paging'];

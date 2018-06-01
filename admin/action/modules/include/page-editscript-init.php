@@ -5,6 +5,7 @@ use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\Page\PageManager;
 use Sunlight\Page\PageManipulator;
+use Sunlight\Util\Request;
 
 defined('_root') or exit;
 
@@ -30,7 +31,7 @@ $type_array = PageManager::getTypes();
 $plugin_type_array = PageManager::getPluginTypes();
 
 if (isset($_GET['id'])) {
-    $id = (int) \Sunlight\Util\Request::get('id');
+    $id = (int) Request::get('id');
     $query = DB::queryRow("SELECT * FROM " . _root_table . " WHERE id=" . $id . " AND type=" . $type);
     if ($query !== false) {
         $continue = true;
@@ -52,7 +53,7 @@ if (isset($_GET['id'])) {
             $continue = false;
             return;
         } else {
-            $type_idt = (string) \Sunlight\Util\Request::get('idt');
+            $type_idt = (string) Request::get('idt');
         }
     } else {
         $type_idt = null;

@@ -1,7 +1,11 @@
 <?php
 
 use Sunlight\Core;
+use Sunlight\Message;
 use Sunlight\Plugin\PluginArchive;
+use Sunlight\Util\Form;
+use Sunlight\Util\Html;
+use Sunlight\Xsrf;
 
 defined('_root') or exit;
 
@@ -16,18 +20,18 @@ if (isset($_FILES['archive']) && is_uploaded_file($_FILES['archive']['tmp_name']
             $extractedPlugins = $archive->extract($merge, $failedPlugins);
 
             if (!empty($extractedPlugins)) {
-                $message .= \Sunlight\Message::render(_msg_ok, \Sunlight\Message::renderList(\Sunlight\Util\Html::escapeArrayItems($extractedPlugins), _lang('admin.plugins.upload.extracted')));
+                $message .= Message::render(_msg_ok, Message::renderList(Html::escapeArrayItems($extractedPlugins), _lang('admin.plugins.upload.extracted')));
 
                 Core::$pluginManager->purgeCache();
             }
             if (!empty($failedPlugins)) {
-                $message .= \Sunlight\Message::render(_msg_warn, \Sunlight\Message::renderList(\Sunlight\Util\Html::escapeArrayItems($failedPlugins), _lang('admin.plugins.upload.failed' . (!$merge ? '.no_merge' : ''))));
+                $message .= Message::render(_msg_warn, Message::renderList(Html::escapeArrayItems($failedPlugins), _lang('admin.plugins.upload.failed' . (!$merge ? '.no_merge' : ''))));
             }
         } else {
-            $message = \Sunlight\Message::render(_msg_warn, _lang('admin.plugins.upload.no_plugins'));
+            $message = Message::render(_msg_warn, _lang('admin.plugins.upload.no_plugins'));
         }
     } catch (\Exception $e) {
-        $message = \Sunlight\Message::render(_msg_err, _lang('global.error')) . Core::renderException($e);
+        $message = Message::render(_msg_err, _lang('global.error')) . Core::renderException($e);
     }
 }
 
@@ -45,8 +49,8 @@ $output .= $message . '
             <td></td>
             <td>
                 <input class="button" name="do_upload" type="submit" value="' . _lang('global.upload') . '">
-                <label><input type="checkbox" value="1"' . \Sunlight\Util\Form::restoreCheckedAndName('do_upload', 'merge') . '> ' . _lang('admin.plugins.upload.skip_existing') . '</label>
+                <label><input type="checkbox" value="1"' . Form::restoreCheckedAndName('do_upload', 'merge') . '> ' . _lang('admin.plugins.upload.skip_existing') . '</label>
             </td>
         </tr>
     </table>
-' . \Sunlight\Xsrf::getInput() . '</form>';
+' . Xsrf::getInput() . '</form>';

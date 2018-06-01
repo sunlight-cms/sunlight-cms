@@ -2,6 +2,9 @@
 
 use Sunlight\Core;
 use Sunlight\Database\Database as DB;
+use Sunlight\IpLog;
+use Sunlight\Router;
+use Sunlight\Xsrf;
 
 defined('_root') or exit;
 
@@ -25,14 +28,14 @@ return function ($id = null)
         $ranswers = explode("\n", $vpolldata['answers']);
         $rvotes = explode("-", $vpolldata['votes']);
         $rvotes_sum = array_sum($rvotes);
-        if (_priv_pollvote == 1 && $vpolldata['locked'] != 1 && \Sunlight\IpLog::check(_iplog_poll_vote, $id)) {
+        if (_priv_pollvote == 1 && $vpolldata['locked'] != 1 && IpLog::check(_iplog_poll_vote, $id)) {
             $rallowvote = true;
         } else {
             $rallowvote = false;
         }
 
         if ($rallowvote) {
-            $ranswers_code = "<form action='" . \Sunlight\Router::link('system/script/hcm/pvote.php?_return=' . rawurlencode($GLOBALS['_index']['url']) . "#hcm_poll_" . Core::$hcmUid) . "' method='post'>\n<input type='hidden' name='pid' value='" . $vpolldata['id'] . "'>";
+            $ranswers_code = "<form action='" . Router::link('system/script/hcm/pvote.php?_return=' . rawurlencode($GLOBALS['_index']['url']) . "#hcm_poll_" . Core::$hcmUid) . "' method='post'>\n<input type='hidden' name='pid' value='" . $vpolldata['id'] . "'>";
         } else {
             $ranswers_code = "";
         }
@@ -59,7 +62,7 @@ return function ($id = null)
         }
         $ranswers_code .= _lang('hcm.poll.votes') . ": " . $rvotes_sum . "</div>";
         if ($rallowvote) {
-            $ranswers_code .= \Sunlight\Xsrf::getInput() . "</form>\n";
+            $ranswers_code .= Xsrf::getInput() . "</form>\n";
         }
 
         return "
