@@ -36,7 +36,7 @@ if (isset($_GET['user'], $_GET['hash'])) {
 
         // kontrola limitu
         if (!IpLog::check(_iplog_failed_login_attempt)) {
-            $output .= Message::render(_msg_err, _lang('login.attemptlimit', array('*1*' => _maxloginattempts, '*2*' => _maxloginexpire / 60)));
+            $output .= Message::error(_lang('login.attemptlimit', array('*1*' => _maxloginattempts, '*2*' => _maxloginexpire / 60)));
             break;
         }
 
@@ -50,7 +50,7 @@ if (isset($_GET['user'], $_GET['hash'])) {
             || time() >= $userdata['security_hash_expires']
         ) {
             IpLog::update(_iplog_failed_login_attempt);
-            $output .= Message::render(_msg_warn, _lang('mod.lostpass.badlink'));
+            $output .= Message::warning(_lang('mod.lostpass.badlink'));
             $output .= '<p><a href="' . Router::module('lostpass') . '">' . _lang('global.tryagain') . ' &gt;</a></p>';
             break;
         }
@@ -69,7 +69,7 @@ if (isset($_GET['user'], $_GET['hash'])) {
                 '*ip*' => _user_ip,
             ))
         )) {
-            $output .= Message::render(_msg_err, _lang('global.emailerror'));
+            $output .= Message::error(_lang('global.emailerror'));
             break;
         }
 
@@ -81,7 +81,7 @@ if (isset($_GET['user'], $_GET['hash'])) {
         ));
 
         // vse ok! email s heslem byl odeslan
-        $output .= Message::render(_msg_ok, _lang('mod.lostpass.generated'));
+        $output .= Message::ok(_lang('mod.lostpass.generated'));
 
     } while (false);
 } else {
@@ -94,13 +94,13 @@ if (isset($_GET['user'], $_GET['hash'])) {
 
         // kontrola limitu
         if (!IpLog::check(_iplog_password_reset_requested)) {
-            $output .= Message::render(_msg_err, _lang('mod.lostpass.limit', array('*limit*' => _lostpassexpire / 60)));
+            $output .= Message::error(_lang('mod.lostpass.limit', array('*limit*' => _lostpassexpire / 60)));
             break;
         }
 
         // kontrolni obrazek
         if (!Captcha::check()) {
-            $output .= Message::render(_msg_warn, _lang('captcha.failure2'));
+            $output .= Message::warning(_lang('captcha.failure2'));
             break;
         }
 
@@ -109,7 +109,7 @@ if (isset($_GET['user'], $_GET['hash'])) {
         $email = Request::post('email');
         $userdata = DB::queryRow("SELECT id,email,username FROM " . _users_table . " WHERE username=" . DB::val($username) . " AND email=" . DB::val($email));
         if ($userdata === false) {
-            $output .= Message::render(_msg_warn, _lang('mod.lostpass.notfound'));
+            $output .= Message::warning(_lang('mod.lostpass.notfound'));
             break;
         }
 
@@ -134,13 +134,13 @@ if (isset($_GET['user'], $_GET['hash'])) {
                 '*ip*' => _user_ip,
             ))
         )) {
-            $output .= Message::render(_msg_err, _lang('global.emailerror'));
+            $output .= Message::error(_lang('global.emailerror'));
             break;
         }
 
         // vse ok! email byl odeslan
         IpLog::update(_iplog_password_reset_requested);
-        $output .= Message::render(_msg_ok, _lang('mod.lostpass.mailsent'));
+        $output .= Message::ok(_lang('mod.lostpass.mailsent'));
         $sent = true;
 
     } while (false);

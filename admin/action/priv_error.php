@@ -16,4 +16,4 @@ $message = sprintf(
     _e($privException->getMessage())
 );
 
-$admin_output .= Message::render(_msg_err, $message);
+$admin_output .= Message::error($message);

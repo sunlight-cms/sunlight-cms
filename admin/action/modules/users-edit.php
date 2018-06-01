@@ -240,16 +240,16 @@ if ($continue) {
     if (isset($_GET['r'])) {
         switch (Request::get('r')) {
             case 1:
-                $messages_code .= Message::render(_msg_ok, _lang('global.saved'));
+                $messages_code .= Message::ok(_lang('global.saved'));
                 break;
             case 2:
-                $messages_code .= Message::render(_msg_ok, _lang('global.created'));
+                $messages_code .= Message::ok(_lang('global.created'));
                 break;
         }
     }
 
     if ($message != "") {
-        $messages_code .= Message::render(_msg_warn, $message);
+        $messages_code .= Message::warning($message);
     }
 
     $output .= "
@@ -340,13 +340,13 @@ if ($continue) {
 } else {
     switch ($errno) {
         case 1:
-            $output .= Message::render(_msg_warn, _lang('global.baduser'));
+            $output .= Message::warning(_lang('global.baduser'));
             break;
         case 2:
-            $output .= Message::render(_msg_warn, _lang('global.rootnote'));
+            $output .= Message::warning(_lang('global.rootnote'));
             break;
         default:
-            $output .= Message::render(_msg_err, _lang('global.disallowed'));
+            $output .= Message::error(_lang('global.disallowed'));
             break;
     }
 }

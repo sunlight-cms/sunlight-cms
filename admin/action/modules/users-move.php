@@ -21,15 +21,15 @@ if (isset($_POST['sourcegroup'])) {
         if ($source != $target) {
             if (_priv_level > $source_data['level'] && _priv_level > $target_data['level']) {
                 DB::update(_users_table, 'group_id=' . $source . ' AND id!=0', array('group_id' => $target));
-                $message = Message::render(_msg_ok, _lang('global.done'));
+                $message = Message::ok(_lang('global.done'));
             } else {
-                $message = Message::render(_msg_warn, _lang('admin.users.move.failed'));
+                $message = Message::warning(_lang('admin.users.move.failed'));
             }
         } else {
-            $message = Message::render(_msg_warn, _lang('admin.users.move.same'));
+            $message = Message::warning(_lang('admin.users.move.same'));
         }
     } else {
-        $message = Message::render(_msg_err, _lang('global.badinput'));
+        $message = Message::error(_lang('global.badinput'));
     }
 
 }

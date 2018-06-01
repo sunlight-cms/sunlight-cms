@@ -15,7 +15,7 @@ defined('_root') or exit;
 $message = "";
 if (isset($_GET['id'])) {
     DB::update(_articles_table, 'id=' . DB::val(Request::get('id')), array('confirmed' => 1));
-    $message = Message::render(_msg_ok, _lang('global.done'));
+    $message = Message::ok(_lang('global.done'));
 }
 
 /* ---  vystup  --- */

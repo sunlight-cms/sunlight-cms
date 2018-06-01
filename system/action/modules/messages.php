@@ -68,13 +68,13 @@ switch ($a) {
 
                 // text
                 if ($text === '') {
-                    $message = Message::render(_msg_warn, _lang('mod.messages.error.notext'));
+                    $message = Message::warning(_lang('mod.messages.error.notext'));
                     break;
                 }
 
                 // predmet
                 if ($subject === '') {
-                    $message = Message::render(_msg_warn, _lang('mod.messages.error.nosubject'));
+                    $message = Message::warning(_lang('mod.messages.error.nosubject'));
                     break;
                 }
 
@@ -85,16 +85,16 @@ switch ($a) {
                     $rq = false;
                 }
                 if ($rq === false || $rq['usr_id'] == _user_id) {
-                    $message = Message::render(_msg_warn, _lang('mod.messages.error.badreceiver'));
+                    $message = Message::warning(_lang('mod.messages.error.badreceiver'));
                     break;
                 } elseif ($rq['usr_blocked'] || $rq['ugrp_blocked']) {
-                    $message = Message::render(_msg_warn, _lang('mod.messages.error.blockedreceiver'));
+                    $message = Message::warning(_lang('mod.messages.error.blockedreceiver'));
                     break;
                 }
 
                 // anti spam limit
                 if (!IpLog::check(_iplog_anti_spam)) {
-                    $message = Message::render(_msg_warn, _lang('misc.requestlimit', array('*postsendexpire*' => _postsendexpire)));
+                    $message = Message::warning(_lang('misc.requestlimit', array('*postsendexpire*' => _postsendexpire)));
                     break;
                 }
 
@@ -197,7 +197,7 @@ switch ($a) {
             $receiverUserQuery = User::createQuery('pm.receiver', 'receiver_', 'ru');
             $q = DB::queryRow('SELECT pm.*,post.id post_id,post.subject,post.time,post.text,post.guest,post.ip,' . $senderUserQuery['column_list'] . ',' . $receiverUserQuery['column_list'] . ' FROM ' . _pm_table . ' AS pm JOIN ' . _posts_table . ' AS post ON (post.type=' . _post_pm . ' AND post.home=pm.id AND post.xhome=-1) ' . $senderUserQuery['joins'] . ' ' . $receiverUserQuery['joins'] . ' WHERE pm.id=' . $id . ' AND (sender=' . _user_id . ' AND sender_deleted=0 OR receiver=' . _user_id . ' AND receiver_deleted=0)');
             if ($q === false) {
-                $output .= Message::render(_msg_err, _lang('global.badinput'));
+                $output .= Message::error(_lang('global.badinput'));
                 break;
             }
 
@@ -271,7 +271,7 @@ switch ($a) {
                 case 1:
                     if (!empty($selected_ids)) {
                         $deletePms('id IN(' . DB::arr($selected_ids) . ')');
-                        $message = Message::render(_msg_ok, _lang('mod.messages.delete.done'));
+                        $message = Message::ok(_lang('mod.messages.delete.done'));
                     }
                     break;
 
@@ -285,18 +285,18 @@ switch ($a) {
                             $changesets[$r['id']][$role . '_readtime'] = 0;
                         }
                         DB::updateSetMulti(_pm_table, 'id', $changesets);
-                        $message = Message::render(_msg_ok, _lang('global.done'));
+                        $message = Message::ok(_lang('global.done'));
                     }
                     break;
 
                 case 3:
                     $deletePms(null, 'sender_readtime>=update_time', 'receiver_readtime>=update_time');
-                    $message = Message::render(_msg_ok, _lang('mod.messages.delete.done'));
+                    $message = Message::ok(_lang('mod.messages.delete.done'));
                     break;
 
                 case 4:
                     $deletePms();
-                    $message = Message::render(_msg_ok, _lang('mod.messages.delete.done'));
+                    $message = Message::ok(_lang('mod.messages.delete.done'));
                     break;
             }
         }

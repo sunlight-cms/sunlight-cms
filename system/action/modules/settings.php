@@ -245,7 +245,7 @@ if (isset($_POST['save'])) {
         return;
 
     } else {
-        $message .= Message::render(_msg_warn, Message::renderList($errors, 'errors'));
+        $message .= Message::warning(Message::renderList($errors, 'errors'));
     }
 
 } elseif (isset($_POST['download_personal_data'])) {
@@ -287,7 +287,7 @@ if (isset($_POST['save'])) {
 
         exit;
     } else {
-        $message .= Message::render(_msg_warn, _lang('mod.settings.download_personal_data') . ' - ' . _lang('mod.settings.error.badcurrentpass'));
+        $message .= Message::warning(_lang('mod.settings.download_personal_data') . ' - ' . _lang('mod.settings.error.badcurrentpass'));
     }
 }
 
@@ -296,7 +296,7 @@ if (isset($_POST['save'])) {
 $_index['title'] = _lang('mod.settings');
 
 if (isset($_GET['saved'])) {
-    $message .= Message::render(_msg_ok, _lang('global.saved'));
+    $message .= Message::ok(_lang('global.saved'));
 }
 
 // vyber jazyka

@@ -20,18 +20,18 @@ if (isset($_FILES['archive']) && is_uploaded_file($_FILES['archive']['tmp_name']
             $extractedPlugins = $archive->extract($merge, $failedPlugins);
 
             if (!empty($extractedPlugins)) {
-                $message .= Message::render(_msg_ok, Message::renderList(Html::escapeArrayItems($extractedPlugins), _lang('admin.plugins.upload.extracted')));
+                $message .= Message::ok(Message::renderList(Html::escapeArrayItems($extractedPlugins), _lang('admin.plugins.upload.extracted')));
 
                 Core::$pluginManager->purgeCache();
             }
             if (!empty($failedPlugins)) {
-                $message .= Message::render(_msg_warn, Message::renderList(Html::escapeArrayItems($failedPlugins), _lang('admin.plugins.upload.failed' . (!$merge ? '.no_merge' : ''))));
+                $message .= Message::warning(Message::renderList(Html::escapeArrayItems($failedPlugins), _lang('admin.plugins.upload.failed' . (!$merge ? '.no_merge' : ''))));
             }
         } else {
-            $message = Message::render(_msg_warn, _lang('admin.plugins.upload.no_plugins'));
+            $message = Message::warning(_lang('admin.plugins.upload.no_plugins'));
         }
     } catch (\Exception $e) {
-        $message = Message::render(_msg_err, _lang('global.error')) . Core::renderException($e);
+        $message = Message::error(_lang('global.error')) . Core::renderException($e);
     }
 }
 

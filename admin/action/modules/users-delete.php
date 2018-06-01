@@ -34,9 +34,9 @@ if ($continue) {
     if ($query['id'] != 0 && $query['id'] != _user_id) {
         if (isset($_POST['confirmed'])) {
             if (User::delete($id)) {
-                $output .= Message::render(_msg_ok, _lang('global.done'));
+                $output .= Message::ok(_lang('global.done'));
             } else {
-                $output .= Message::render(_msg_warn, _lang('global.error'));
+                $output .= Message::warning(_lang('global.error'));
             }
         } else {
             $output .= "
@@ -47,16 +47,16 @@ if ($continue) {
         }
     } else {
         if ($query['id'] == _super_admin_id) {
-            $output .= Message::render(_msg_warn, _lang('global.rootnote'));
+            $output .= Message::warning(_lang('global.rootnote'));
         } else {
-            $output .= Message::render(_msg_warn, _lang('admin.users.deleteuser.selfnote'));
+            $output .= Message::warning(_lang('admin.users.deleteuser.selfnote'));
         }
     }
 
 } else {
     if ($levelconflict == false) {
-        $output .= Message::render(_msg_err, _lang('global.baduser'));
+        $output .= Message::error(_lang('global.baduser'));
     } else {
-        $output .= Message::render(_msg_err, _lang('global.disallowed'));
+        $output .= Message::error(_lang('global.disallowed'));
     }
 }

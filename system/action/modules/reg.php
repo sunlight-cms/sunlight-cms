@@ -71,17 +71,17 @@ if (isset($_GET['confirm'])) {
 
                     DB::delete(_user_activation_table, 'id=' . DB::val($activation['id']));
                 } else {
-                    $message .= Message::render(_msg_warn, _lang('mod.reg.confirm.emailornametaken'));
+                    $message .= Message::warning(_lang('mod.reg.confirm.emailornametaken'));
                 }
             } else {
                 IpLog::update(_iplog_failed_account_activation);
-                $message = Message::render(_msg_warn, _lang('mod.reg.confirm.notfound'));
+                $message = Message::warning(_lang('mod.reg.confirm.notfound'));
             }
         } else {
-            $message = Message::render(_msg_warn, _lang('mod.reg.confirm.limit', array('*limit*' => _accactexpire)));
+            $message = Message::warning(_lang('mod.reg.confirm.limit', array('*limit*' => _accactexpire)));
         }
     } else {
-        $message = Message::render(_msg_err, _lang('mod.reg.confirm.badcode'));
+        $message = Message::error(_lang('mod.reg.confirm.badcode'));
     }
 
 } else {
@@ -160,7 +160,7 @@ if (isset($_GET['confirm'])) {
             IpLog::update(_iplog_anti_spam);
             $user_data_valid = true;
         } else {
-            $message = Message::render(_msg_warn, Message::renderList($errors, 'errors'));
+            $message = Message::warning(Message::renderList($errors, 'errors'));
         }
 
     }
@@ -235,7 +235,7 @@ if (!$user_data_valid && $show_form) {
         // hlaska
         $_SESSION['login_form_username'] = $user_data['username'];
 
-        $output .= Message::render(_msg_ok, str_replace(
+        $output .= Message::ok(str_replace(
             '*login_link*',
             Router::module('login'),
             _lang('mod.reg.done')
@@ -277,9 +277,9 @@ if (!$user_data_valid && $show_form) {
 
         // hlaska
         if ($mail) {
-            $output .= Message::render(_msg_ok, _lang('mod.reg.confirm.sent', array('*email*' => $user_data['email'])));
+            $output .= Message::ok(_lang('mod.reg.confirm.sent', array('*email*' => $user_data['email'])));
         } else {
-            $output .= Message::render(_msg_err, _lang('global.emailerror'));
+            $output .= Message::error(_lang('global.emailerror'));
             DB::delete(_user_activation_table, 'id=' . DB::val($insert_id));
         }
 

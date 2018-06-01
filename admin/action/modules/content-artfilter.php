@@ -210,10 +210,10 @@ if (isset($_POST['category'])) {
                 DB::update(_articles_table, 'id=' . $item['id'], $updatedata);
 
             }
-            $message = Message::render(_msg_ok, _lang('global.done'));
+            $message = Message::ok(_lang('global.done'));
         }
     } else {
-        $message = Message::render(_msg_warn, _lang('admin.content.artfilter.f1.noresult'));
+        $message = Message::warning(_lang('admin.content.artfilter.f1.noresult'));
     }
 
 }
@@ -317,7 +317,7 @@ if (!$infopage) {
 } else {
     $output .= Form::renderHiddenPostInputs(null, null, array('_process')) . "
 <input type='hidden' name='_process' value='1'>
-" . Message::render(_msg_ok, _lang('admin.content.artfilter.f1.infotext', array("*found*" => $found))) . "
+" . Message::ok(_lang('admin.content.artfilter.f1.infotext', array("*found*" => $found))) . "
 <ul>";
 
     $counter = 0;

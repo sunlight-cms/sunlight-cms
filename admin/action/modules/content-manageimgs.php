@@ -76,9 +76,9 @@ if (isset($_POST['xaction']) && $continue) {
                     'prev' => $prev,
                     'full' => $full
                 ));
-                $message = Message::render(_msg_ok, _lang('global.inserted'));
+                $message = Message::ok(_lang('global.inserted'));
             } else {
-                $message = Message::render(_msg_warn, _lang('admin.content.manageimgs.insert.error'));
+                $message = Message::warning(_lang('admin.content.manageimgs.insert.error'));
             }
 
             break;
@@ -155,7 +155,7 @@ if (isset($_POST['xaction']) && $continue) {
                 DB::query("UPDATE " . _images_table . " SET " . $sql . " WHERE id=" . $id . " AND home=" . $g);
             }
 
-            $message = Message::render(_msg_ok, _lang('global.saved'));
+            $message = Message::ok(_lang('global.saved'));
             break;
 
             /* -  presunuti obrazku  - */
@@ -180,16 +180,16 @@ if (isset($_POST['xaction']) && $continue) {
                         DB::update(_images_table, 'home=' . $g, array('home' => $newhome));
 
                         // zprava
-                        $message = Message::render(_msg_ok, _lang('global.done'));
+                        $message = Message::ok(_lang('global.done'));
 
                     } else {
-                        $message = Message::render(_msg_warn, _lang('admin.content.manageimgs.moveimgs.nokit'));
+                        $message = Message::warning(_lang('admin.content.manageimgs.moveimgs.nokit'));
                     }
                 } else {
-                    $message = Message::render(_msg_warn, _lang('global.badinput'));
+                    $message = Message::warning(_lang('global.badinput'));
                 }
             } else {
-                $message = Message::render(_msg_warn, _lang('admin.content.manageimgs.moveimgs.samegal'));
+                $message = Message::warning(_lang('admin.content.manageimgs.moveimgs.samegal'));
             }
             break;
 
@@ -198,7 +198,7 @@ if (isset($_POST['xaction']) && $continue) {
             if (Form::loadCheckbox("confirm")) {
                 Admin::deleteGalleryStorage('home=' . $g);
                 DB::delete(_images_table, 'home=' . $g);
-                $message = Message::render(_msg_ok, _lang('global.done'));
+                $message = Message::ok(_lang('global.done'));
             }
             break;
 
@@ -215,7 +215,7 @@ if (isset($_POST['xaction']) && $continue) {
             if (($nostor = !is_dir($stor)) || !is_writeable($stor)) {
                 // try to create or chmod
                 if ($nostor && !mkdir($stor, 0777) || !$nostor && !chmod($stor, 0777)) {
-                    $message = Message::render(_msg_err, sprintf(_lang('admin.content.manageimgs.upload.acerr'), $stor));
+                    $message = Message::error(sprintf(_lang('admin.content.manageimgs.upload.acerr'), $stor));
                     break;
                 }
             }
@@ -310,7 +310,7 @@ if (isset($_GET['del']) && Xsrf::check(true) && $continue) {
     Admin::deleteGalleryStorage('id=' . $del . ' AND home=' . $g);
     DB::delete(_images_table, 'id=' . $del . ' AND home=' . $g);
     if (DB::affectedRows() === 1) {
-        $message = Message::render(_msg_ok, _lang('global.done'));
+        $message = Message::ok(_lang('global.done'));
     }
 }
 
@@ -486,5 +486,5 @@ if ($continue) {
 
 ";
 } else {
-    $output .= Message::render(_msg_err, _lang('global.badinput'));
+    $output .= Message::error(_lang('global.badinput'));
 }

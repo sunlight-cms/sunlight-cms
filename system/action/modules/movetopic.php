@@ -44,9 +44,9 @@ if (isset($_POST['new_forum'])) {
         DB::update(_posts_table, 'id=' . DB::val($id) . ' OR (type=' . _post_forum_topic . ' AND xhome=' . $id . ')', array('home' => $new_forum_id));
         $query['home'] = $new_forum_id;
         $_index['backlink'] = Router::topic($query['id']);
-        $message = Message::render(_msg_ok, _lang('mod.movetopic.ok'));
+        $message = Message::ok(_lang('mod.movetopic.ok'));
     } else {
-        $message = Message::render(_msg_err, _lang('global.badinput'));
+        $message = Message::error(_lang('global.badinput'));
     }
 }
 
@@ -62,7 +62,7 @@ $furl = Router::module('movetopic', 'id=' . $id);
 
 $output .= '
 <form action="' . $furl . '" method="post">
-' . Message::render(_msg_warn, sprintf(_lang('mod.movetopic.text'), $query['subject'])) . '
+' . Message::warning(sprintf(_lang('mod.movetopic.text'), $query['subject'])) . '
 <p>
 <select name="new_forum"' . (empty($forums) ? " disabled" : '') . '>
 ';

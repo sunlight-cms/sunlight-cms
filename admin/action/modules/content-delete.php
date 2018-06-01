@@ -43,7 +43,7 @@ if ($continue) {
         $error = null;
         if (!PageManipulator::delete($query, $recursive, $error)) {
             // selhani
-            $output .= Message::render(_msg_err, $error);
+            $output .= Message::error($error);
 
             return;
         }
@@ -72,5 +72,5 @@ if ($continue) {
     ";
 
 } else {
-    $output .= Message::render(_msg_err, _lang('global.badinput'));
+    $output .= Message::error(_lang('global.badinput'));
 }

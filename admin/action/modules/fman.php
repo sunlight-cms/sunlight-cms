@@ -167,7 +167,7 @@ if (!(file_exists($defdir) && is_dir($defdir))) {
     $test = mkdir($defdir, 0777, true);
     if (!$test) {
         $continue = false;
-        $output .= Message::render(_msg_err, _lang('admin.fman.msg.defdircreationfailure'));
+        $output .= Message::error(_lang('admin.fman.msg.defdircreationfailure'));
     } else {
         chmod($defdir, 0777);
     }
@@ -216,13 +216,13 @@ if ($continue) {
                 if (!file_exists($dir . $name)) {
                     $test = mkdir($dir . $name);
                     if ($test) {
-                        $message = Message::render(_msg_ok, _lang('admin.fman.msg.newfolder.done'));
+                        $message = Message::ok(_lang('admin.fman.msg.newfolder.done'));
                         chmod($dir . $name, 0777);
                     } else {
-                        $message = Message::render(_msg_warn, _lang('admin.fman.msg.newfolder.failure'));
+                        $message = Message::warning(_lang('admin.fman.msg.newfolder.failure'));
                     }
                 } else {
-                    $message = Message::render(_msg_warn, _lang('admin.fman.msg.newfolder.failure2'));
+                    $message = Message::warning(_lang('admin.fman.msg.newfolder.failure2'));
                 }
                 break;
 
@@ -233,18 +233,18 @@ if ($continue) {
                     if (!is_dir($dir . $name)) {
                         if (User::checkFilename($name)) {
                             if (unlink($dir . $name)) {
-                                $message = Message::render(_msg_ok, _lang('admin.fman.msg.delete.done'));
+                                $message = Message::ok(_lang('admin.fman.msg.delete.done'));
                             } else {
-                                $message = Message::render(_msg_warn, _lang('admin.fman.msg.delete.failure'));
+                                $message = Message::warning(_lang('admin.fman.msg.delete.failure'));
                             }
                         } else {
-                            $message = Message::render(_msg_warn, _lang('admin.fman.msg.disallowedextension'));
+                            $message = Message::warning(_lang('admin.fman.msg.disallowedextension'));
                         }
                     } else {
                         if (Filesystem::purgeDirectory($dir . $name, array(), $failedPath)) {
-                            $message = Message::render(_msg_ok, _lang('admin.fman.msg.delete.done'));
+                            $message = Message::ok(_lang('admin.fman.msg.delete.done'));
                         } else {
-                            $message = Message::render(_msg_warn, _lang('admin.fman.msg.delete.failure', array('*failed_path*' => _e($failedPath))));
+                            $message = Message::warning(_lang('admin.fman.msg.delete.failure', array('*failed_path*' => _e($failedPath))));
                         }
                     }
                 }
@@ -258,15 +258,15 @@ if ($continue) {
                     if (!file_exists($dir . $newname)) {
                         if (User::checkFilename($newname) && User::checkFilename($name)) {
                             if (rename($dir . $name, $dir . $newname)) {
-                                $message = Message::render(_msg_ok, _lang('admin.fman.msg.rename.done'));
+                                $message = Message::ok(_lang('admin.fman.msg.rename.done'));
                             } else {
-                                $message = Message::render(_msg_warn, _lang('admin.fman.msg.rename.failure'));
+                                $message = Message::warning(_lang('admin.fman.msg.rename.failure'));
                             }
                         } else {
-                            $message = Message::render(_msg_warn, _lang('admin.fman.msg.disallowedextension'));
+                            $message = Message::warning(_lang('admin.fman.msg.disallowedextension'));
                         }
                     } else {
-                        $message = Message::render(_msg_warn, _lang('admin.fman.msg.exists'));
+                        $message = Message::warning(_lang('admin.fman.msg.exists'));
                     }
                 }
                 break;
@@ -280,12 +280,12 @@ if ($continue) {
                     if ($file) {
                         fwrite($file, $content);
                         fclose($file);
-                        $message = Message::render(_msg_ok, _lang('admin.fman.msg.edit.done') . " <small>(" . Generic::renderTime(time()) . ")</small>");
+                        $message = Message::ok(_lang('admin.fman.msg.edit.done') . " <small>(" . Generic::renderTime(time()) . ")</small>", true);
                     } else {
-                        $message = Message::render(_msg_warn, _lang('admin.fman.msg.edit.failure'));
+                        $message = Message::warning(_lang('admin.fman.msg.edit.failure'));
                     }
                 } else {
-                    $message = Message::render(_msg_warn, _lang('admin.fman.msg.disallowedextension'));
+                    $message = Message::warning(_lang('admin.fman.msg.disallowedextension'));
                 }
                 break;
 
@@ -322,7 +322,7 @@ if ($continue) {
                     }
                     $message = Message::render($micon, _lang('admin.fman.msg.move.done', array('*done*' => $done, '*total*' => $total)));
                 } else {
-                    $message = Message::render(_msg_warn, _lang('admin.fman.msg.rootlimit'));
+                    $message = Message::warning(_lang('admin.fman.msg.rootlimit'));
                 }
                 break;
 
@@ -408,10 +408,10 @@ if ($continue) {
                         }
 
                         // zprava
-                        $message = Message::render(_msg_ok, _lang('admin.fman.addtogallery.done', array("*done*" => $counter)));
+                        $message = Message::ok(_lang('admin.fman.addtogallery.done', array("*done*" => $counter)));
 
                     } else {
-                        $message = Message::render(_msg_warn, _lang('global.badinput'));
+                        $message = Message::warning(_lang('global.badinput'));
                     }
 
                 }
@@ -486,7 +486,7 @@ if ($continue) {
                             $continue = true;
                             $content = file_get_contents($dir . $dname);
                         } else {
-                            $message = Message::render(_msg_warn, _lang('admin.fman.msg.disallowedextension'));
+                            $message = Message::warning(_lang('admin.fman.msg.disallowedextension'));
                         }
                     }
                 } else {
@@ -582,7 +582,7 @@ if ($continue) {
       </tr>
       ";
                 } else {
-                    $message = Message::render(_msg_warn, _lang('admin.fman.addtogallery.noimages'));
+                    $message = Message::warning(_lang('admin.fman.addtogallery.noimages'));
                 }
                 break;
 

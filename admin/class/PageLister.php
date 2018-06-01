@@ -238,7 +238,7 @@ abstract class PageLister
         if ($options['sortable']) {
             $output .= "<form method=\"post\">\n";
             if (static::saveOrd()) {
-                $output .= Message::render(_msg_ok, _lang('admin.content.form.ord.saved'));
+                $output .= Message::ok(_lang('admin.content.form.ord.saved'));
             }
         }
         if (static::MODE_SINGLE_LEVEL == $options['mode']) {

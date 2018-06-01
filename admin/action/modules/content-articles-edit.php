@@ -273,7 +273,7 @@ if (isset($_POST['title'])) {
         return;
 
     } else {
-        $message = Message::render(_msg_warn, Message::renderList($error_log, 'errors'));
+        $message = Message::warning(Message::renderList($error_log, 'errors'));
         $query = $newdata + $query;
     }
 
@@ -292,10 +292,10 @@ if ($continue) {
 
     // zprava
     if (isset($_GET['saved'])) {
-        $message = Message::render(_msg_ok, _lang('global.saved') . " <small>(" . Generic::renderTime(time()) . ")</small>");
+        $message = Message::ok(_lang('global.saved') . " <small>(" . Generic::renderTime(time()) . ")</small>", true);
     }
     if (isset($_GET['created'])) {
-        $message = Message::render(_msg_ok, _lang('global.created'));
+        $message = Message::ok(_lang('global.created'));
     }
 
     // vypocet hodnoceni
@@ -338,7 +338,7 @@ if ($continue) {
 " . (($new && !_priv_adminautoconfirm) ? Admin::note(_lang('admin.content.articles.edit.newconfnote')) : '') . "
 " . ((!$new && $query['confirmed'] != 1) ? Admin::note(_lang('admin.content.articles.edit.confnote')) : '') . "
 
-" . ((!$new && DB::count(_articles_table, 'id!=' . DB::val($query['id']) . ' AND home1=' . DB::val($query['home1']) . ' AND slug=' . DB::val($query['slug'])) !== 0) ? Message::render(_msg_warn, _lang('admin.content.form.slug.collision')) : '') . "
+" . ((!$new && DB::count(_articles_table, 'id!=' . DB::val($query['id']) . ' AND home1=' . DB::val($query['home1']) . ' AND slug=' . DB::val($query['slug'])) !== 0) ? Message::warning(_lang('admin.content.form.slug.collision')) : '') . "
 
 <form class='cform' action='index.php?p=content-articles-edit" . $actionplus . "' method='post' enctype='multipart/form-data' name='artform'>
 
@@ -449,5 +449,5 @@ if ($continue) {
     $output .=
         Admin::backlink('index.php?p=content-articles')
         . "<h1>" . _lang('admin.content.articles.edit.title') . "</h1>\n"
-        . Message::render(_msg_err, _lang('global.badinput'));
+        . Message::error(_lang('global.badinput'));
 }

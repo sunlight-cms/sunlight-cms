@@ -78,12 +78,12 @@ $_index['title'] = _lang('mod.profile') . ': ' . $query[$query['publicname'] !==
 
 // poznamka o blokovani
 if ($query['blocked'] == 1 || $groupdata['blocked'] == 1) {
-    $output .= Message::render(_msg_err, _lang('mod.profile.blockednote'));
+    $output .= Message::error(_lang('mod.profile.blockednote'));
 }
 
 if ($public) {
     if (!$query['public'] && _user_id == $query['id']) {
-        $output .= Message::render(_msg_ok, _lang('mod.profile.private.selfnote'));
+        $output .= Message::ok(_lang('mod.profile.private.selfnote'));
     }
 
     $output .= "
@@ -150,7 +150,7 @@ if ($public) {
 </div>
 ";
 } else {
-    $output .= Message::render(_msg_ok, _lang('mod.profile.private'));
+    $output .= Message::ok(_lang('mod.profile.private'));
 }
 
 // odkaz na zaslani vzkazu

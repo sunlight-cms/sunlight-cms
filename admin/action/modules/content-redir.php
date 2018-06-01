@@ -44,17 +44,17 @@ if (isset($_GET['new']) || isset($_GET['edit'])) {
 
             // kontrola
             if ($q['old'] === '' || $q['new'] === '') {
-                $message = Message::render(_msg_warn, _lang('admin.content.redir.emptyidt'));
+                $message = Message::warning(_lang('admin.content.redir.emptyidt'));
             } elseif ($new) {
                 // vytvoreni
                 DB::insert(_redir_table, $q);
                 $new = false;
-                $message = Message::render(_msg_ok, _lang('global.created'));
+                $message = Message::ok(_lang('global.created'));
                 break;
             } else {
                 // ulozeni
                 DB::update(_redir_table, 'id=' . DB::val($edit_id), $q);
-                $message = Message::render(_msg_ok, _lang('global.saved'));
+                $message = Message::ok(_lang('global.saved'));
             }
 
         }
@@ -108,18 +108,18 @@ if (isset($_GET['new']) || isset($_GET['edit'])) {
 
     // smazani
     DB::delete(_redir_table, 'id=' . DB::val(Request::get('del')));
-    $output .= Message::render(_msg_ok, _lang('global.done'));
+    $output .= Message::ok(_lang('global.done'));
 
 } elseif (isset($_GET['wipe'])) {
 
     // smazani vsech
     if (isset($_POST['wipe_confirm'])) {
         DB::query('TRUNCATE TABLE ' . _redir_table);
-        $output .= Message::render(_msg_ok, _lang('global.done'));
+        $output .= Message::ok(_lang('global.done'));
     } else {
         $output .= "
 <form method='post' class='well'>
-" . Message::render(_msg_warn, _lang('admin.content.redir.act.wipe.confirm')) . "
+" . Message::warning(_lang('admin.content.redir.act.wipe.confirm')) . "
 <input type='submit' name='wipe_confirm' value='" . _lang('global.confirmdelete') . "'>
 " . Xsrf::getInput() . "</form>
 ";

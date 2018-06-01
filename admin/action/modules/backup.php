@@ -150,7 +150,7 @@ if (!empty($_POST)) {
                 $backup->move($backup_dir . '/' . $stored_backup_name);
                 $backup_files[$stored_backup_name] = time();
 
-                $message = Message::render(_msg_ok, _lang('admin.backup.store.success'));
+                $message = Message::ok(_lang('admin.backup.store.success'));
             } else {
                 // stahnout
                 Response::downloadFile($backup, $backup_name);
@@ -183,9 +183,9 @@ if (!empty($_POST)) {
                             $success = $backup_restorer->restore($database, $directories, $files, $errors);
 
                             if ($success) {
-                                $message = Message::render(_msg_ok, _lang('admin.backup.restore.complete'));
+                                $message = Message::ok(_lang('admin.backup.restore.complete'));
                             } else {
-                                $message = Message::render(_msg_err, Message::renderList(Html::escapeArrayItems($errors), 'errors'));
+                                $message = Message::error(Message::renderList(Html::escapeArrayItems($errors), 'errors'));
                             }
                         }
 
@@ -233,7 +233,7 @@ if (!empty($_POST)) {
             </tr>
         </table>
 
-        ' . Message::render(_msg_warn, _lang('admin.backup.restore.warning')) . '
+        ' . Message::warning(_lang('admin.backup.restore.warning')) . '
 
         <p>
             <input class="button small" type="submit" name="do_restore[restore]" onclick="return Sunlight.confirm()" value="' . _lang('admin.backup.restore.title') . '">
@@ -244,14 +244,14 @@ if (!empty($_POST)) {
     </div>';
                         }
                     } else {
-                        $message = Message::render(_msg_warn, Message::renderList(Html::escapeArrayItems($errors), _lang('admin.backup.restore.errors.validate')));
+                        $message = Message::warning(Message::renderList(Html::escapeArrayItems($errors), _lang('admin.backup.restore.errors.validate')));
                     }
 
                 } elseif (isset($_POST['do_restore']['delete'])) {
                     unlink($backup_dir . '/' . $backup_file);
                     unset($backup_files[$backup_file]);
 
-                    $message = Message::render(_msg_ok, _lang('global.done'));
+                    $message = Message::ok(_lang('global.done'));
                 }
             }
 
@@ -267,18 +267,18 @@ if (!empty($_POST)) {
                     User::moveUploadedFile($_FILES['backup']['tmp_name'], $backup_dir . '/' . $stored_backup_name);
                     $backup_files[$stored_backup_name] = time();
 
-                    $message = Message::render(_msg_ok, _lang('global.done'));
+                    $message = Message::ok(_lang('global.done'));
                 } else {
-                    $message = Message::render(_msg_warn, _lang('admin.backup.upload.error'));
+                    $message = Message::warning(_lang('admin.backup.upload.error'));
                 }
 
             } else {
-                $message = Message::render(_msg_warn, _lang('global.noupload'));
+                $message = Message::warning(_lang('global.noupload'));
             }
 
         }
     } catch (\Exception $e) {
-        $message = Message::render(_msg_err, _lang('global.error')) . Core::renderException($e);
+        $message = Message::error(_lang('global.error')) . Core::renderException($e);
     }
 }
 

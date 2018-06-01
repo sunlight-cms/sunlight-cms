@@ -27,16 +27,16 @@ return function ($adresa = "", $predmet = null)
     if (isset($_GET['hcm_mr_' . Core::$hcmUid])) {
         switch (Request::get('hcm_mr_' . Core::$hcmUid)) {
             case 1:
-                $msg = Message::render(_msg_ok, _lang('hcm.mailform.msg.done'));
+                $msg = Message::ok(_lang('hcm.mailform.msg.done'));
                 break;
             case 2:
-                $msg = Message::render(_msg_warn, _lang('hcm.mailform.msg.failure'));
+                $msg = Message::warning(_lang('hcm.mailform.msg.failure'));
                 break;
             case 3:
-                $msg = Message::render(_msg_err, _lang('global.emailerror'));
+                $msg = Message::error(_lang('global.emailerror'));
                 break;
             case 4:
-                $msg = Message::render(_msg_err, _lang('xsrf.msg'));
+                $msg = Message::error(_lang('xsrf.msg'));
                 break;
         }
     }

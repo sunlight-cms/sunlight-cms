@@ -19,7 +19,7 @@ if (isset($_GET['del']) && Xsrf::check(true)) {
     $del = (int) Request::get('del');
     DB::query("DELETE FROM p USING " . _polls_table . " AS p WHERE p.id=" . $del . Admin::pollAccess());
     if (DB::affectedRows() != 0) {
-        $message = Message::render(_msg_ok, _lang('global.done'));
+        $message = Message::ok(_lang('global.done'));
     }
 }
 

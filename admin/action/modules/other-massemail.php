@@ -93,12 +93,12 @@ if (isset($_POST['text'])) {
 
             // zprava
             if ($done != 0) {
-                $output .= Message::render(_msg_ok, _lang('admin.other.massemail.send', array(
+                $output .= Message::ok(_lang('admin.other.massemail.send', array(
                     '*done*' => $done,
                     '*total*' => $item_total,
                 )));
             } else {
-                $output .= Message::render(_msg_warn, _lang('admin.other.massemail.noreceiversfound'));
+                $output .= Message::warning(_lang('admin.other.massemail.noreceiversfound'));
             }
 
         } else {
@@ -117,16 +117,16 @@ if (isset($_POST['text'])) {
                     }
                 }
 
-                $output .= Message::render(_msg_ok, "<textarea class='areasmallwide' rows='9' cols='33' name='list'>" . $emails . "</textarea>");
+                $output .= Message::ok("<textarea class='areasmallwide' rows='9' cols='33' name='list'>" . $emails . "</textarea>", true);
 
             } else {
-                $output .= Message::render(_msg_warn, _lang('admin.other.massemail.noreceiversfound'));
+                $output .= Message::warning(_lang('admin.other.massemail.noreceiversfound'));
             }
 
         }
 
     } else {
-        $output .= Message::render(_msg_warn, Message::renderList($errors, 'errors'));
+        $output .= Message::warning(Message::renderList($errors, 'errors'));
     }
 
 }

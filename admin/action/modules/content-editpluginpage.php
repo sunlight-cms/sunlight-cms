@@ -12,7 +12,7 @@ defined('_root') or exit;
 $type = _page_plugin;
 require _root . 'admin/action/modules/include/page-editscript-init.php';
 if (!$continue) {
-    $output .= Message::render(_msg_err, _lang('global.badinput'));
+    $output .= Message::error(_lang('global.badinput'));
     return;
 }
 
@@ -21,7 +21,7 @@ $plugin_types = PageManager::getPluginTypes();
 
 // overit dostupnost pluginu
 if (!isset($plugin_types[$type_idt])) {
-    $output .= Message::render(_msg_err, sprintf(_lang('plugin.error'), $type_idt));
+    $output .= Message::error(sprintf(_lang('plugin.error'), $type_idt));
 
     return;
 }

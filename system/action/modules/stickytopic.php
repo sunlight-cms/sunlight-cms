@@ -41,7 +41,7 @@ if ($query !== false) {
 
 if (isset($_POST['doit'])) {
     DB::update(_posts_table, 'id=' . DB::val($id), array('sticky' => (($query['sticky'] == 1) ? 0 : 1)));
-    $message = Message::render(_msg_ok, _lang('mod.stickytopic.ok' . $unstick));
+    $message = Message::ok(_lang('mod.stickytopic.ok' . $unstick));
     $success = true;
 }
 
@@ -58,7 +58,7 @@ if (!$success) {
 
     $output .= '
     <form action="' . $furl . '" method="post">
-    ' . Message::render(_msg_warn, sprintf(_lang('mod.stickytopic.text' . $unstick), $query['subject'])) . '
+    ' . Message::warning(sprintf(_lang('mod.stickytopic.text' . $unstick), $query['subject'])) . '
     <input type="submit" name="doit" value="' . _lang('mod.stickytopic.submit' . $unstick) . '">
     ' . Xsrf::getInput() . '</form>
     ';

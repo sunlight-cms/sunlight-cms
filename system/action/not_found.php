@@ -40,5 +40,5 @@ Extend::call('index.not_found', array(
 ));
 
 if ($_index['output'] === '') {
-    $_index['output'] = Message::render(_msg_warn, _lang('global.error404'));
+    $_index['output'] = Message::warning(_lang('global.error404'));
 }

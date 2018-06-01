@@ -25,7 +25,7 @@ $output .= "
 
 <p class='bborder'>" . _lang('admin.menu.index.edit.p') . "</p>
 
-" . (isset($_GET['saved']) ? Message::render(_msg_ok, _lang('global.saved')) : '') . "
+" . (isset($_GET['saved']) ? Message::ok(_lang('global.saved')) : '') . "
 
 <form method='post'>
 

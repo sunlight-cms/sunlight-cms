@@ -234,9 +234,9 @@ if ($search_query != '') {
                 $output .= "</div>\n";
             }
         } else {
-            $output .= Message::render(_msg_ok, _lang('mod.search.noresult'));
+            $output .= Message::ok(_lang('mod.search.noresult'));
         }
     } else {
-        $output .= Message::render(_msg_warn, _lang('mod.search.minlength'));
+        $output .= Message::warning(_lang('mod.search.minlength'));
     }
 }

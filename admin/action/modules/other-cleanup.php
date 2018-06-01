@@ -154,7 +154,7 @@ if (isset($_POST['action'])) {
             // zprava
             if ($prev) {
                 if (empty($prev_count)) {
-                    $message = Message::render(_msg_warn, _lang('global.noaction'));
+                    $message = Message::warning(_lang('global.noaction'));
                     break;
                 }
                 $message = "<br><ul>\n";
@@ -163,7 +163,7 @@ if (isset($_POST['action'])) {
                 }
                 $message .= "</ul>";
             } else {
-                $message = Message::render(_msg_ok, _lang('global.done'));
+                $message = Message::ok(_lang('global.done'));
             }
 
             break;
@@ -187,7 +187,7 @@ if (isset($_POST['action'])) {
                     exit;
 
                 } else {
-                    $message = Message::render(_msg_warn, _lang('admin.other.cleanup.uninstall.badpass'));
+                    $message = Message::warning(_lang('admin.other.cleanup.uninstall.badpass'));
                 }
             }
             break;

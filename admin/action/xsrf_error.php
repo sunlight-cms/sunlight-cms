@@ -10,5 +10,5 @@ defined('_root') or exit;
 $admin_title = _lang('xsrf.title');
 
 $admin_output .= "<h1>" . _lang('xsrf.title') . "</h1>\n";
-$admin_output .= Message::render(_msg_err, _lang('xsrf.msg'));
+$admin_output .= Message::error(_lang('xsrf.msg'));
 $admin_output .= User::renderPostRepeatForm();

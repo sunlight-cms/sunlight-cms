@@ -14,7 +14,7 @@ $name = Request::get('name');
 $action = Request::get('action');
 
 if (!Xsrf::check(true)) {
-    $output .= Message::render(_msg_err, _lang('global.badinput'));
+    $output .= Message::error(_lang('global.badinput'));
 
     return;
 }
@@ -25,7 +25,7 @@ if (
     || ($plugin = Core::$pluginManager->find($type, $name, false)) === null
     || ($action = $plugin->getAction($action)) === null
 ) {
-    $output .= Message::render(_msg_err, _lang('global.badinput'));
+    $output .= Message::error(_lang('global.badinput'));
 
     return;
 }

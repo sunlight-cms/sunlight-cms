@@ -29,7 +29,7 @@ if (isset($_POST['action'])) {
                 'locked' => $locked,
                 'public' => $public
             ));
-            $message = Message::render(_msg_ok, _lang('global.created'));
+            $message = Message::ok(_lang('global.created'));
             break;
 
             // ulozeni
@@ -102,7 +102,7 @@ if (isset($_POST['action'])) {
                 DB::query("UPDATE " . _sboxes_table . " SET " . $sql . " WHERE id=" . $id);
             }
 
-            $message = Message::render(_msg_ok, _lang('global.saved'));
+            $message = Message::ok(_lang('global.saved'));
             break;
 
     }
@@ -115,7 +115,7 @@ if (isset($_GET['del']) && Xsrf::check(true)) {
     $del = (int) Request::get('del');
     DB::delete(_sboxes_table, 'id=' . $del);
     DB::delete(_posts_table, 'home=' . $del . ' AND type=' . _post_shoutbox_entry);
-    $message = Message::render(_msg_ok, _lang('global.done'));
+    $message = Message::ok(_lang('global.done'));
 }
 
 /* ---  vystup  --- */

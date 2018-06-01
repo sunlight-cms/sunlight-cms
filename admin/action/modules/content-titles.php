@@ -23,7 +23,7 @@ if (isset($_POST['title']) && is_array($_POST['title'])) {
         DB::update(_root_table, 'id=' . DB::val($id), array('title' => $title));
     }
 
-    $message = Message::render(_msg_ok, _lang('global.saved'));
+    $message = Message::ok(_lang('global.saved'));
 }
 
 /* ---  vystup  --- */

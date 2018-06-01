@@ -119,19 +119,19 @@ if (_priv_admingroups) {
 // zprava
 switch ($msg) {
     case 1:
-        $message = Message::render(_msg_ok, _lang('global.done'));
+        $message = Message::ok(_lang('global.done'));
         break;
     case 2:
-        $message = Message::render(_msg_warn, _lang('admin.users.groups.specialgroup.delnotice'));
+        $message = Message::warning(_lang('admin.users.groups.specialgroup.delnotice'));
         break;
     case 3:
-        $message = Message::render(_msg_err, _lang('global.disallowed'));
+        $message = Message::error(_lang('global.disallowed'));
         break;
     case 4:
-        $message = Message::render(_msg_err, _lang('global.badgroup'));
+        $message = Message::error(_lang('global.badgroup'));
         break;
     case 5:
-        $message = Message::render(_msg_warn, _lang('global.baduser'));
+        $message = Message::warning(_lang('global.baduser'));
         break;
     default:
         $message = "";

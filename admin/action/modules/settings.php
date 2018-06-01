@@ -280,7 +280,7 @@ if (!empty($_POST)) {
 
 /* ---  vystup  --- */
 
-$output .= ($saved ? Message::render(_msg_ok, _lang('admin.settings.saved')) : '') . '
+$output .= ($saved ? Message::ok(_lang('admin.settings.saved')) : '') . '
 
 <form action="index.php?p=settings" method="post">
 

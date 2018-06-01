@@ -209,7 +209,7 @@ foreach ($content_modules as $category_alias => $category_data) {
 
 // zprava
 if (isset($_GET['done'])) {
-    $message = Message::render(_msg_ok, _lang('global.done'));
+    $message = Message::ok(_lang('global.done'));
 }
 
 $output .= $message . '

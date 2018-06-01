@@ -137,7 +137,7 @@ if (isset($_POST['question'])) {
         }
 
     } else {
-        $message = Message::render(_msg_warn, Message::renderList($errors, 'errors'));
+        $message = Message::warning(Message::renderList($errors, 'errors'));
     }
 
 }
@@ -159,10 +159,10 @@ if ($continue) {
 
     // zprava
     if (isset($_GET['saved'])) {
-        $message = Message::render(_msg_ok, _lang('global.saved'));
+        $message = Message::ok(_lang('global.saved'));
     }
     if (isset($_GET['created'])) {
-        $message = Message::render(_msg_ok, _lang('global.created'));
+        $message = Message::ok(_lang('global.created'));
     }
 
     $output .= $message . "
@@ -203,5 +203,5 @@ if ($continue) {
   ";
 
 } else {
-    $output .= Message::render(_msg_err, _lang('global.badinput'));
+    $output .= Message::error(_lang('global.badinput'));
 }

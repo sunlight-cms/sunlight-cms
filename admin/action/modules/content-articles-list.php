@@ -51,7 +51,7 @@ if ($continue) {
     // zprava
     $message = "";
     if (isset($_GET['artdeleted'])) {
-        $message = Message::render(_msg_ok, _lang('admin.content.articles.delete.done'));
+        $message = Message::ok(_lang('admin.content.articles.delete.done'));
     }
 
     $cond = "(art.home1=" . $cid . " OR art.home2=" . $cid . " OR art.home3=" . $cid . ")" . Admin::articleAccess('art');
@@ -79,5 +79,5 @@ if ($continue) {
     $output .= $paging['paging'];
 
 } else {
-    $output .= Message::render(_msg_err, _lang('global.badinput'));
+    $output .= Message::error(_lang('global.badinput'));
 }

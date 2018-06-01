@@ -15,7 +15,7 @@ if (isset($_GET['clear'])) {
 
     return;
 } elseif (isset($_GET['cleared'])) {
-    $output .= Message::render(_msg_ok, _lang('global.done'));
+    $output .= Message::ok(_lang('global.done'));
 }
 
 // pomocne funkce

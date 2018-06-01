@@ -302,19 +302,19 @@ class CommentService
         if (isset($_GET['r'])) {
             switch (Request::get('r')) {
                 case 0:
-                    $form_output .= Message::render(_msg_err, _lang('posts.failed'));
+                    $form_output .= Message::error(_lang('posts.failed'));
                     break;
                 case 1:
-                    $form_output .= Message::render(_msg_ok, _lang((($style != 5) ? 'posts.added' : 'posts.topicadded')));
+                    $form_output .= Message::ok(_lang((($style != 5) ? 'posts.added' : 'posts.topicadded')));
                     break;
                 case 2:
-                    $form_output .= Message::render(_msg_warn, _lang('misc.requestlimit', array("*postsendexpire*" => _postsendexpire)));
+                    $form_output .= Message::warning(_lang('misc.requestlimit', array("*postsendexpire*" => _postsendexpire)));
                     break;
                 case 3:
-                    $form_output .= Message::render(_msg_warn, _lang('posts.guestnamedenied'));
+                    $form_output .= Message::warning(_lang('posts.guestnamedenied'));
                     break;
                 case 4:
-                    $form_output .= Message::render(_msg_warn, _lang('xsrf.msg'));
+                    $form_output .= Message::warning(_lang('xsrf.msg'));
                     break;
             }
         }

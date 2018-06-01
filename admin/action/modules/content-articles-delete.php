@@ -57,5 +57,5 @@ Admin::backlink('index.php?p=content-articles-list&cat=' . $returnid . '&page=' 
 ";
 
 } else {
-    $output .= Message::render(_msg_err, _lang('global.badinput'));
+    $output .= Message::error(_lang('global.badinput'));
 }

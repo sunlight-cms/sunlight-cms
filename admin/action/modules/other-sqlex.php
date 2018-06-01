@@ -95,7 +95,7 @@ if (!empty($queries)) {
 
     // vypis vysledku
     if ($error) {
-        $output .= Message::render(_msg_err, _e(DB::error()));
+        $output .= Message::error(_e(DB::error()));
     } elseif ($lastResource !== null) {
 
         $columns = DB::columns($lastResource);

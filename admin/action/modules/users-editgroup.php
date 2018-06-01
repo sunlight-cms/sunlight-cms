@@ -249,7 +249,7 @@ if ($continue) {
     /* ---  vystup  --- */
     $output .= "
   <p class='bborder'>" . _lang('admin.users.groups.editp') . "</p>
-  " . (isset($_GET['saved']) ? Message::render(_msg_ok, _lang('global.saved')) : '') . "
+  " . (isset($_GET['saved']) ? Message::ok(_lang('global.saved')) : '') . "
   " . ($systemitem ? Admin::note(_lang('admin.users.groups.specialgroup.editnotice')) : '') . "
   <form action='index.php?p=users-editgroup&amp;id=" . $id . "' method='post'>
   <table>
@@ -282,7 +282,7 @@ if ($continue) {
 
   </table>
 
-  " . Message::render(_msg_ok, _lang('admin.users.groups.dangernotice')) . "
+  " . Message::ok(_lang('admin.users.groups.dangernotice')) . "
   " . $rights . "
   " . Extend::buffer('admin.editgroup.form') . "
 
@@ -293,8 +293,8 @@ if ($continue) {
 
 } else {
     if ($levelconflict == false) {
-        $output .= Message::render(_msg_err, _lang('global.badinput'));
+        $output .= Message::error(_lang('global.badinput'));
     } else {
-        $output .= Message::render(_msg_err, _lang('global.disallowed'));
+        $output .= Message::error(_lang('global.disallowed'));
     }
 }

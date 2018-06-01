@@ -76,7 +76,7 @@ if ($query !== false) {
 
                 case _post_plugin:
                     if ($url === '') {
-                        $output .= Message::render(_msg_err, sprintf(_lang('plugin.error'), $query['flag']));
+                        $output .= Message::error(sprintf(_lang('plugin.error'), $query['flag']));
 
                         return;
                     }
@@ -152,7 +152,7 @@ if (isset($_POST['text'])) {
                 return;
             }
         } else {
-            $message = Message::render(_msg_warn, _lang('mod.editpost.failed'));
+            $message = Message::warning(_lang('mod.editpost.failed'));
         }
 
     } else {
@@ -182,7 +182,7 @@ if (isset($_POST['text'])) {
             }
 
             // info
-            $message = Message::render(_msg_ok, _lang('mod.editpost.deleted'));
+            $message = Message::ok(_lang('mod.editpost.deleted'));
             $form = false;
 
        }
@@ -197,7 +197,7 @@ $_index['title'] = _lang('mod.editpost');
 
 // zprava
 if (isset($_GET['saved']) && $message == '') {
-    $message = Message::render(_msg_ok, _lang('global.saved'));
+    $message = Message::ok(_lang('global.saved'));
 }
 $output .= $message;
 

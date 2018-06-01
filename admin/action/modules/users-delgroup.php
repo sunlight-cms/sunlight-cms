@@ -61,10 +61,10 @@ if ($continue) {
     /* ---  vystup  --- */
     if (!$done) {
         if ($systemgroup) {
-            $output .= Message::render(_msg_ok, _lang('admin.users.groups.specialgroup.delnotice'));
+            $output .= Message::ok(_lang('admin.users.groups.specialgroup.delnotice'));
         }
         if ($user_count > 0) {
-            $output .= Message::render(_msg_warn, _lang('admin.users.groups.delwarning', array('%user_count%' => $user_count)));
+            $output .= Message::warning(_lang('admin.users.groups.delwarning', array('%user_count%' => $user_count)));
         }
 
         $output .= "
@@ -76,13 +76,13 @@ if ($continue) {
     " . Xsrf::getInput() . "</form>
     ";
     } else {
-        $output .= Message::render(_msg_ok, _lang('global.done'));
+        $output .= Message::ok(_lang('global.done'));
     }
 
 } else {
     if ($levelconflict == false) {
-        $output .= Message::render(_msg_err, _lang('global.badinput'));
+        $output .= Message::error(_lang('global.badinput'));
     } else {
-        $output .= Message::render(_msg_err, _lang('global.disallowed'));
+        $output .= Message::error(_lang('global.disallowed'));
     }
 }

@@ -21,7 +21,7 @@ defined('_root') or exit;
 /* --- kontrola pristupu --- */
 
 if (!$continue) {
-    $output .= Message::render(_msg_err, _lang('global.badinput'));
+    $output .= Message::error(_lang('global.badinput'));
     return;
 }
 
@@ -463,10 +463,10 @@ if ($editor === '') {
 
 // zpravy
 if (isset($_GET['saved'])) {
-    $output .= Message::render(_msg_ok, _lang('global.saved') . " <small>(" . Generic::renderTime(time()) . ")</small>");
+    $output .= Message::ok(_lang('global.saved') . " <small>(" . Generic::renderTime(time()) . ")</small>", true);
 }
 if (!$new && $editscript_enable_slug && DB::count(_root_table, 'id!=' . DB::val($query['id']) . ' AND slug=' . DB::val($query['slug'])) !== 0) {
-    $output .= Message::render(_msg_warn, _lang('admin.content.form.slug.collision'));
+    $output .= Message::warning(_lang('admin.content.form.slug.collision'));
 }
 if (!$new && $id == _index_page_id) {
     $output .= Admin::note(_lang('admin.content.form.indexnote'));
