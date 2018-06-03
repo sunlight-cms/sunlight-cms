@@ -7,6 +7,7 @@ use Sunlight\Extend;
 use Sunlight\GenericTemplates;
 use Sunlight\Router;
 use Sunlight\Util\Request;
+use Sunlight\Util\Response;
 use Sunlight\Xsrf;
 
 require '../system/bootstrap.php';
@@ -77,7 +78,7 @@ if (!empty($admin_extra_js)) {
 
 // presmerovani?
 if ($admin_redirect_to !== null) {
-    header('Location: ' . $admin_redirect_to);
+    Response::redirect($admin_redirect_to);
     exit;
 }
 

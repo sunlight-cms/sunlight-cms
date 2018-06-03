@@ -3,6 +3,7 @@
 use Sunlight\Core;
 use Sunlight\Extend;
 use Sunlight\Util\Request;
+use Sunlight\Util\Response;
 
 require '../bootstrap.php';
 Core::init('../../', array(
@@ -17,7 +18,7 @@ if (
     || Request::get('user') !== $auth[0]
     || Request::get('password') !== $auth[1]
 ) {
-    header('HTTP/1.0 401 Unauthorized');
+    Response::unauthorized();
     echo 'Unauthorized';
     exit(1);
 }

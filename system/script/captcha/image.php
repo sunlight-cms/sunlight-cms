@@ -5,6 +5,7 @@ use Sunlight\Core;
 use Sunlight\Extend;
 use Sunlight\Picture;
 use Sunlight\Util\Request;
+use Sunlight\Util\Response;
 
 require '../../bootstrap.php';
 Core::init('../../../', array(
@@ -26,12 +27,12 @@ if (!empty($captchaNumber) && isset($_SESSION['captcha_code'][$captchaNumber])) 
     list($captchaCode, $captchaDrawn) = $_SESSION['captcha_code'][$captchaNumber];
 
     if ($captchaDrawn) {
-        header('HTTP/1.0 403 Forbidden');
+        Response::forbidden();
         exit;
     }
-    //$_SESSION['captcha_code'][$captchaNumber][1] = true;
+    $_SESSION['captcha_code'][$captchaNumber][1] = true;
 } else {
-    header('HTTP/1.0 403 Forbidden');
+    Response::forbidden();
     exit;
 }
 

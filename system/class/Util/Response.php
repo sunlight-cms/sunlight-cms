@@ -6,20 +6,19 @@ use Kuria\Debug\Output;
 
 abstract class Response
 {
-    /**
-     * Odeslat 404 hlavicku
-     */
     static function notFound()
     {
         header('HTTP/1.1 404 Not Found');
     }
 
-    /**
-     * Odeslat 401 hlavicku
-     */
     static function unauthorized()
     {
         header('HTTP/1.1 401 Unauthorized');
+    }
+
+    static function forbidden()
+    {
+        header('HTTP/1.1 403 Forbidden');
     }
 
     /**
