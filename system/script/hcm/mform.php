@@ -3,7 +3,7 @@
 use Sunlight\Captcha;
 use Sunlight\Core;
 use Sunlight\Email;
-use Sunlight\Generic;
+use Sunlight\GenericTemplates;
 use Sunlight\IpLog;
 use Sunlight\Util\Response;
 use Sunlight\Util\Request;
@@ -67,7 +67,7 @@ if (Xsrf::check()) {
         }
         $text .= "\n\n" . str_repeat('-', 16) . "\n" . _lang('hcm.mailform.info', array(
             '*domain*' => Url::base()->getFullHost(),
-            '*time*' => Generic::renderTime(time()),
+            '*time*' => GenericTemplates::renderTime(time()),
             '*ip*' => $info_ip,
             '*sender*' => $sender,
         ));

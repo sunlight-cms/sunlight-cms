@@ -4,7 +4,7 @@ use Sunlight\Captcha;
 use Sunlight\Core;
 use Sunlight\Database\Database as DB;
 use Sunlight\Email;
-use Sunlight\Generic;
+use Sunlight\GenericTemplates;
 use Sunlight\IpLog;
 use Sunlight\Message;
 use Sunlight\Router;
@@ -65,7 +65,7 @@ if (isset($_GET['user'], $_GET['hash'])) {
                 '*domain*' => Url::base()->getFullHost(),
                 '*username*' =>  $userdata['username'],
                 '*newpass*' => $newpass,
-                '*date*' => Generic::renderTime(time()),
+                '*date*' => GenericTemplates::renderTime(time()),
                 '*ip*' => _user_ip,
             ))
         )) {
@@ -130,7 +130,7 @@ if (isset($_GET['user'], $_GET['hash'])) {
                 '*domain*' => Url::base()->getFullHost(),
                 '*username*' => $userdata['username'],
                 '*link*' => $link,
-                '*date*' => Generic::renderTime(time()),
+                '*date*' => GenericTemplates::renderTime(time()),
                 '*ip*' => _user_ip,
             ))
         )) {

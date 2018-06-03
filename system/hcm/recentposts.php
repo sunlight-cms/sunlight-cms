@@ -2,7 +2,7 @@
 
 use Sunlight\Database\Database as DB;
 use Sunlight\Frontend;
-use Sunlight\Generic;
+use Sunlight\GenericTemplates;
 use Sunlight\Post;
 use Sunlight\Router;
 use Sunlight\User;
@@ -63,7 +63,7 @@ return function ($limit = null, $stranky = "", $typ = null) {
 <p class='list-perex'>" . StringManipulator::ellipsis(strip_tags(Post::render($item['text'])), 256) . "</p>
 " . Frontend::renderInfos(array(
     array(_lang('global.postauthor'), $authorname),
-    array(_lang('global.time'), Generic::renderTime($item['time'], 'post')),
+    array(_lang('global.time'), GenericTemplates::renderTime($item['time'], 'post')),
 )) . "</div>\n";
     }
 

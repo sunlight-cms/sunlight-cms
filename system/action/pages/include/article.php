@@ -5,7 +5,7 @@ use Sunlight\Comment\CommentService;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\Frontend;
-use Sunlight\Generic;
+use Sunlight\GenericTemplates;
 use Sunlight\Hcm;
 use Sunlight\IpLog;
 use Sunlight\Picture;
@@ -104,7 +104,7 @@ if (_priv_adminart) {
 
 if ($_article['showinfo']) {
     $infos['author'] = array(_lang('article.author'), Router::userFromQuery($_article['author_query'], $_article));
-    $infos['posted'] = array(_lang('article.posted'), Generic::renderTime($_article['time'], 'article'));
+    $infos['posted'] = array(_lang('article.posted'), GenericTemplates::renderTime($_article['time'], 'article'));
     $infos['readnum'] = array(_lang('article.readnum'), $_article['readnum'] . 'x');
 }
 

@@ -4,10 +4,7 @@ namespace Sunlight;
 
 use Sunlight\Util\UrlHelper;
 
-/**
- * Generic renderers
- */
-abstract class Generic
+abstract class GenericTemplates
 {
     /**
      * Zformatovat ciselnout hodnotu na zaklade aktualni lokalizace
@@ -210,7 +207,7 @@ HTML;
      */
     static function jsLimitLength($maxlength, $form, $name)
     {
-        return <<<'HTML'
+        return <<<HTML
 <script>
 $(document).ready(function(){
     var events = ['keyup', 'mouseup', 'mousedown'];

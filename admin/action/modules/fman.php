@@ -4,7 +4,7 @@ use Sunlight\Admin\Admin;
 use Sunlight\Core;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
-use Sunlight\Generic;
+use Sunlight\GenericTemplates;
 use Sunlight\Message;
 use Sunlight\User;
 use Sunlight\Util\Arr;
@@ -280,7 +280,7 @@ if ($continue) {
                     if ($file) {
                         fwrite($file, $content);
                         fclose($file);
-                        $message = Message::ok(_lang('admin.fman.msg.edit.done') . " <small>(" . Generic::renderTime(time()) . ")</small>", true);
+                        $message = Message::ok(_lang('admin.fman.msg.edit.done') . " <small>(" . GenericTemplates::renderTime(time()) . ")</small>", true);
                     } else {
                         $message = Message::warning(_lang('admin.fman.msg.edit.failure'));
                     }
@@ -723,7 +723,7 @@ if ($continue) {
         $output .= "
         <tr class='" . implode(' ', $row_classes) . "'>
         <td><input type='checkbox' name='f" . $filecounter . "' id='f" . $filecounter . "' value='" . $encodeFilename($item, false) . "'> <a href='" . _e($dir . $item) . "' target='_blank'" . ($image ? ' class="lightbox" data-gallery-group="fman"' : '') . "><img src='images/icons/fman/" . $icon . ".png' alt='file' class='icon'>" . _e(StringManipulator::ellipsis($item, 64, false)) . "</a></td>
-        <td>" . Generic::renderFileSize($filesize) . "</td>
+        <td>" . GenericTemplates::renderFileSize($filesize) . "</td>
         <td class='actions'>". (User::checkFilename($item) ?
             "<a class='button' href='" . $url . "&amp;a=delete&amp;name=" . $encodeFilename($item) . "'><img src='images/icons/delete.png' alt='del' class='icon'>" . _lang('global.delete') . "</a>  "
             . "<a class='button' href='" . $url . "&amp;a=rename&amp;name=" . $encodeFilename($item) . "'><img src='images/icons/rename.png' alt='rename' class='icon'>" . _lang('admin.fman.rename') . "</a>  "
@@ -745,7 +745,7 @@ if ($continue) {
     " . Xsrf::getInput() . "</form>
 
     <p class='fman-menu'>
-    <span><strong>" . _lang('admin.fman.filecounter') . ":</strong> " . $filecounter . " <small>(" . Generic::renderFileSize($sizecounter) . ")</small></span>
+    <span><strong>" . _lang('admin.fman.filecounter') . ":</strong> " . $filecounter . " <small>(" . GenericTemplates::renderFileSize($sizecounter) . ")</small></span>
     <a href='#' onclick='return Sunlight.admin.fmanSelect(" . $filecounter . ", 1)'>" . _lang('admin.fman.selectall') . "</a>
     <a href='#' onclick='return Sunlight.admin.fmanSelect(" . $filecounter . ", 2)'>" . _lang('admin.fman.deselectall') . "</a>
     <a href='#' onclick='return Sunlight.admin.fmanSelect(" . $filecounter . ", 3)'>" . _lang('admin.fman.inverse') . "</a>

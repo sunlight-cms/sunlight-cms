@@ -113,7 +113,7 @@ abstract class Template
 <meta name="robots" content="index, follow">'
             . Extend::buffer('tpl.head.meta')
             . ($_template->getOption('responsive') ? "\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">" : '')
-            . Generic::renderHeadAssets($assets);
+            . GenericTemplates::renderHeadAssets($assets);
 
         if (_rss) {
             echo '

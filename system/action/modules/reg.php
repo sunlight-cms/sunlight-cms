@@ -5,7 +5,7 @@ use Sunlight\Core;
 use Sunlight\Database\Database as DB;
 use Sunlight\Email;
 use Sunlight\Extend;
-use Sunlight\Generic;
+use Sunlight\GenericTemplates;
 use Sunlight\IpLog;
 use Sunlight\Message;
 use Sunlight\Router;
@@ -269,7 +269,7 @@ if (!$user_data_valid && $show_form) {
                     $domain,
                     Router::module('reg', 'confirm=' . $code, false, true),
                     _user_ip,
-                    Generic::renderTime(time()),
+                    GenericTemplates::renderTime(time()),
                 ),
                 _lang('mod.reg.confirm.text')
             )

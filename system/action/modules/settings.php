@@ -4,7 +4,7 @@ use Sunlight\Core;
 use Sunlight\Database\Database as DB;
 use Sunlight\Email;
 use Sunlight\Extend;
-use Sunlight\Generic;
+use Sunlight\GenericTemplates;
 use Sunlight\Message;
 use Sunlight\Picture;
 use Sunlight\Plugin\PluginManager;
@@ -330,7 +330,7 @@ $output .= "
 <p>" . _lang('mod.settings.p') . "</p>" . $message . "
 <form action='" . Router::module('settings') . "' method='post' name='setform' enctype='multipart/form-data'>
 
-" . Generic::jsLimitLength(1024, "setform", "note") . "
+" . GenericTemplates::jsLimitLength(1024, "setform", "note") . "
 
   <fieldset>
   <legend>" . _lang('mod.settings.userdata') . "</legend>

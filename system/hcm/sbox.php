@@ -2,7 +2,7 @@
 
 use Sunlight\Core;
 use Sunlight\Database\Database as DB;
-use Sunlight\Generic;
+use Sunlight\GenericTemplates;
 use Sunlight\Post;
 use Sunlight\Router;
 use Sunlight\Template;
@@ -66,9 +66,9 @@ return function ($id = null) {
 
                 // nacteni autora
                 if ($spost['author'] != -1) {
-                    $author = Router::userFromQuery($userQuery, $spost, array('class' => 'post_author', 'max_len' => 16, 'title' => Generic::renderTime($spost['time'], 'post')));
+                    $author = Router::userFromQuery($userQuery, $spost, array('class' => 'post_author', 'max_len' => 16, 'title' => GenericTemplates::renderTime($spost['time'], 'post')));
                 } else {
-                    $author = "<span class='post-author-guest' title='" . Generic::renderTime($spost['time'], 'post') . ", ip=" . Generic::renderIp($spost['ip']) . "'>" . $spost['guest'] . "</span>";
+                    $author = "<span class='post-author-guest' title='" . GenericTemplates::renderTime($spost['time'], 'post') . ", ip=" . GenericTemplates::renderIp($spost['ip']) . "'>" . $spost['guest'] . "</span>";
                 }
 
                 // odkaz na spravu

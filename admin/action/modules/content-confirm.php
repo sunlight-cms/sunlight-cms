@@ -2,7 +2,7 @@
 
 use Sunlight\Admin\Admin;
 use Sunlight\Database\Database as DB;
-use Sunlight\Generic;
+use Sunlight\GenericTemplates;
 use Sunlight\Message;
 use Sunlight\Router;
 use Sunlight\User;
@@ -65,7 +65,7 @@ if (DB::size($query) != 0) {
 
         $output .= "<tr>
             <td>" . Admin::articleEditLink($item, false) . "</td>
-            <td>" . $cats . "</td><td>" . Generic::renderTime($item['time']) . "</td>
+            <td>" . $cats . "</td><td>" . GenericTemplates::renderTime($item['time']) . "</td>
             <td>" . Router::userFromQuery($userQuery, $item) . "</td>
             <td class='actions'>
                 <a class='button' href='index.php?p=content-confirm&amp;id=" . $item['id'] . "&amp;limit=" . $catlimit . "'><img src='images/icons/check.png' alt='confirm' class='icon'>" . _lang('admin.content.confirm.confirm') . "</a>

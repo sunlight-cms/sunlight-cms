@@ -5,7 +5,7 @@ use Sunlight\Backup\BackupBuilder;
 use Sunlight\Backup\BackupRestorer;
 use Sunlight\Core;
 use Sunlight\Extend;
-use Sunlight\Generic;
+use Sunlight\GenericTemplates;
 use Sunlight\Message;
 use Sunlight\User;
 use Sunlight\Util\Arr;
@@ -205,11 +205,11 @@ if (!empty($_POST)) {
             </tr>
             <tr>
                 <th>' . _lang('global.size') . '</th>
-                <td>' . Generic::renderFileSize(filesize($backup_dir . '/' . $backup_file)) . '</td>
+                <td>' . GenericTemplates::renderFileSize(filesize($backup_dir . '/' . $backup_file)) . '</td>
             </tr>
             <tr>
                 <th>' . _lang('global.created_at') . '</th>
-                <td>' . Generic::renderTime($backup_metadata['created_at']) . '</td>
+                <td>' . GenericTemplates::renderTime($backup_metadata['created_at']) . '</td>
             </tr>
             <tr class="valign-top">
                 <th>' . _lang('admin.backup.restore.contents') . '</th>
@@ -292,8 +292,8 @@ if (!empty($backup_files)) {
 
         $backup_list .= '<tr>
     <td><label><input type="radio" name="backup_file" value="' . _e($backup_file) . '"> ' . _e($displayed_backup_name) . '</label></td>
-    <td>' . Generic::renderFileSize(filesize($backup_dir . '/' . $backup_file)) . '</td>
-    <td>' . Generic::renderTime($backup_ctime) . '</td>
+    <td>' . GenericTemplates::renderFileSize(filesize($backup_dir . '/' . $backup_file)) . '</td>
+    <td>' . GenericTemplates::renderTime($backup_ctime) . '</td>
     <td><a href="index.php?p=backup&download=' . _e($backup_file) . '" title="' . _lang('global.download') . '"><img src="images/icons/floppy.png" alt="' . _lang('global.download') . '"></a></td>
 </tr>
 ';
@@ -319,7 +319,7 @@ $output .= $message . '
                         <li><label><input type="checkbox" value="1"' . Form::restoreCheckedAndName('do_create', 'opt_db', true) . '> ' . _lang('admin.backup.opt.db') . '</label></li>
                         ' . _buffer(function () use ($backup_dynpath_choices) {
                             foreach ($backup_dynpath_choices as $name => $options) {
-                                echo '<li><label><input type="checkbox" value="' . $name . '"' . Form::restoreCheckedAndName('do_create', 'dynpath_' . $name, true) . '> ' . _e($options['label']) . ' <small>(' . Generic::renderFileSize($options['size']) . ')</small></label></li>';
+                                echo '<li><label><input type="checkbox" value="' . $name . '"' . Form::restoreCheckedAndName('do_create', 'dynpath_' . $name, true) . '> ' . _e($options['label']) . ' <small>(' . GenericTemplates::renderFileSize($options['size']) . ')</small></label></li>';
                             }
                         }) . '
                         ' . Extend::buffer('admin.backup.options', array('type' => 'partial')) . '
@@ -348,7 +348,7 @@ $output .= $message . '
                 <td>
                     <ul class="no-bullets">
                         <li><label><input type="checkbox" checked disabled> ' . _lang('admin.backup.opt.db') . '</label></li>
-                        <li><label><input type="checkbox" checked disabled> ' . _lang('admin.backup.opt.sys') . ' <small>(' . Generic::renderFileSize($static_size) . ')</small></label></li>
+                        <li><label><input type="checkbox" checked disabled> ' . _lang('admin.backup.opt.sys') . ' <small>(' . GenericTemplates::renderFileSize($static_size) . ')</small></label></li>
                         ' . _buffer(function () use ($backup_dynpath_choices, $backup_builder) {
                             foreach ($backup_dynpath_choices as $name => $options) {
                                 $optional = $backup_builder->isDynamicPathOptional($name);
@@ -358,7 +358,7 @@ $output .= $message . '
                                 } else {
                                     $checked = true;
                                 }
-                                echo '<li><label><input type="checkbox" value="' . $name . '" name="dynpath_' . $name . '"' . Form::disableInputUnless($optional) . Form::activateCheckbox($checked) . '> ' . _e($options['label']) . ' <small>(' . Generic::renderFileSize($options['size']) . ')</small></label></li>';
+                                echo '<li><label><input type="checkbox" value="' . $name . '" name="dynpath_' . $name . '"' . Form::disableInputUnless($optional) . Form::activateCheckbox($checked) . '> ' . _e($options['label']) . ' <small>(' . GenericTemplates::renderFileSize($options['size']) . ')</small></label></li>';
                             }
                         }) . '
                         ' . Extend::buffer('admin.backup.options', array('type' => 'full')) . '

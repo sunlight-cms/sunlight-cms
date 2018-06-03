@@ -4,7 +4,7 @@ use Sunlight\Admin\Admin;
 use Sunlight\Core;
 use Sunlight\Exception\PrivilegeException;
 use Sunlight\Extend;
-use Sunlight\Generic;
+use Sunlight\GenericTemplates;
 use Sunlight\Router;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
@@ -82,7 +82,7 @@ if ($admin_redirect_to !== null) {
 }
 
 // hlavicka a sablona
-echo Generic::renderHead();
+echo GenericTemplates::renderHead();
 
 // body tridy
 if ($admin_login_layout) {
@@ -91,7 +91,7 @@ if ($admin_login_layout) {
 $admin_body_classes[] = $theme_dark ? 'dark' : 'light';
 
 ?>
-<meta name="robots" content="noindex,follow"><?php echo Generic::renderHeadAssets($assets), "\n" ?>
+<meta name="robots" content="noindex,follow"><?php echo GenericTemplates::renderHeadAssets($assets), "\n" ?>
 <title><?php echo _title, ' - ', _lang('global.admintitle'), (!empty($admin_title) ? ' - ' . $admin_title : '') ?></title>
 </head>
 

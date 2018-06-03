@@ -3,7 +3,7 @@
 use Sunlight\Admin\Admin;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
-use Sunlight\Generic;
+use Sunlight\GenericTemplates;
 use Sunlight\Message;
 use Sunlight\Page\PageManager;
 use Sunlight\Page\PageManipulator;
@@ -463,7 +463,7 @@ if ($editor === '') {
 
 // zpravy
 if (isset($_GET['saved'])) {
-    $output .= Message::ok(_lang('global.saved') . " <small>(" . Generic::renderTime(time()) . ")</small>", true);
+    $output .= Message::ok(_lang('global.saved') . " <small>(" . GenericTemplates::renderTime(time()) . ")</small>", true);
 }
 if (!$new && $editscript_enable_slug && DB::count(_root_table, 'id!=' . DB::val($query['id']) . ' AND slug=' . DB::val($query['slug'])) !== 0) {
     $output .= Message::warning(_lang('admin.content.form.slug.collision'));

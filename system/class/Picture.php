@@ -149,7 +149,7 @@ class Picture
         // uprava vystupu
         switch ($code) {
             case 3:
-                $output['msg'] = str_replace('*maxsize*', Generic::renderFileSize($limit['filesize']), $output['msg']);
+                $output['msg'] = str_replace('*maxsize*', GenericTemplates::renderFileSize($limit['filesize']), $output['msg']);
                 break;
 
             case 5:

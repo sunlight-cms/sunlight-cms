@@ -3,7 +3,7 @@
 use Sunlight\Admin\Admin;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
-use Sunlight\Generic;
+use Sunlight\GenericTemplates;
 use Sunlight\Message;
 use Sunlight\Picture;
 use Sunlight\Router;
@@ -292,7 +292,7 @@ if ($continue) {
 
     // zprava
     if (isset($_GET['saved'])) {
-        $message = Message::ok(_lang('global.saved') . " <small>(" . Generic::renderTime(time()) . ")</small>", true);
+        $message = Message::ok(_lang('global.saved') . " <small>(" . GenericTemplates::renderTime(time()) . ")</small>", true);
     }
     if (isset($_GET['created'])) {
         $message = Message::ok(_lang('global.created'));

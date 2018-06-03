@@ -5,7 +5,7 @@ namespace Sunlight\Comment;
 use Sunlight\Captcha;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
-use Sunlight\Generic;
+use Sunlight\GenericTemplates;
 use Sunlight\Message;
 use Sunlight\Paginator;
 use Sunlight\Post;
@@ -495,7 +495,7 @@ class CommentService
 
                     // fetch author
                     if ($item['guest'] == "") $author = Router::userFromQuery($userQuery, $item, array('max_len' => 16));
-                    else $author = "<span class='post-author-guest' title='" . Generic::renderIp($item['ip']) . "'>" . StringManipulator::ellipsis($item['guest'], 16) . "</span>";
+                    else $author = "<span class='post-author-guest' title='" . GenericTemplates::renderIp($item['ip']) . "'>" . StringManipulator::ellipsis($item['guest'], 16) . "</span>";
 
                     // fetch last post author
                     if (isset($item['_lastpost'])) {
@@ -526,7 +526,7 @@ class CommentService
                     }
 
                     // render row
-                    $output .= "<tr class='topic-" . $icon . ($hl ? ' topic-hl' : '') . "'><td class='topic-icon-cell'><a href='" . Router::topic($item['id'], $forum_slug) . "'><img src='" . Template::image('icons/topic-' . $icon . '.png') . "' alt='" . _lang('posts.topic.' . $icon) . "'></a></td><td class='topic-main-cell'><a href='" . Router::topic($item['id'], $forum_slug) . "'>" . $item['subject'] . "</a>" . $tpages . "<br>" . $author . " <small class='post-info'>(" . Generic::renderTime($item['time'], 'post') . ")</small></td><td>" . $item['answer_count'] . "</td><td>" . $lastpost . (($item['answer_count'] != 0) ? "<br><small class='post-info'>(" . Generic::renderTime($item['bumptime'], 'post') . ")</small>" : '') . "</td></tr>\n";
+                    $output .= "<tr class='topic-" . $icon . ($hl ? ' topic-hl' : '') . "'><td class='topic-icon-cell'><a href='" . Router::topic($item['id'], $forum_slug) . "'><img src='" . Template::image('icons/topic-' . $icon . '.png') . "' alt='" . _lang('posts.topic.' . $icon) . "'></a></td><td class='topic-main-cell'><a href='" . Router::topic($item['id'], $forum_slug) . "'>" . $item['subject'] . "</a>" . $tpages . "<br>" . $author . " <small class='post-info'>(" . GenericTemplates::renderTime($item['time'], 'post') . ")</small></td><td>" . $item['answer_count'] . "</td><td>" . $lastpost . (($item['answer_count'] != 0) ? "<br><small class='post-info'>(" . GenericTemplates::renderTime($item['bumptime'], 'post') . ")</small>" : '') . "</td></tr>\n";
                     $hl = !$hl;
                 }
                 $output .= "</tbody></table>\n\n";
@@ -548,7 +548,7 @@ class CommentService
                     while ($item = DB::row($query)) {
                         if ($item['guest'] == "") $author = Router::userFromQuery($userQuery, $item);
                         else $author = "<span class='post-author-guest'>" . $item['guest'] . "</span>";
-                        $output .= "<tr><td><a href='" . Router::topic($item['topic_id'], $forum_slug) . "'>" . $item['topic_subject'] . "</a></td><td>" . $author . "</td><td>" . Generic::renderTime($item['time'], 'post') . "</td></tr>\n";
+                        $output .= "<tr><td><a href='" . Router::topic($item['topic_id'], $forum_slug) . "'>" . $item['topic_subject'] . "</a></td><td>" . $author . "</td><td>" . GenericTemplates::renderTime($item['time'], 'post') . "</td></tr>\n";
                     }
                     $output .= "</table>\n\n";
 
@@ -595,7 +595,7 @@ class CommentService
         $inputs = array();
 
         $captcha = Captcha::init();
-        $output = Generic::jsLimitLength(16384, "postform", "text");
+        $output = GenericTemplates::jsLimitLength(16384, "postform", "text");
         if (!_logged_in) {
             $inputs[] = array('label' => _lang('posts.guestname'), 'content' => "<input type='text' name='guest' maxlength='24' class='inputsmall'" . Form::restoreValue($_SESSION, 'post_form_guest') . ">");
         }
@@ -652,7 +652,7 @@ class CommentService
 
         // fetch author
         if ($post['guest'] == "") $author = Router::userFromQuery($userQuery, $post, array('class' => 'post-author'));
-        else $author = "<span class='post-author-guest' title='" . Generic::renderIp($post['ip']) . "'>" . $post['guest'] . "</span>";
+        else $author = "<span class='post-author-guest' title='" . GenericTemplates::renderIp($post['ip']) . "'>" . $post['guest'] . "</span>";
 
         // action links
         $actlinks = array();
@@ -680,7 +680,7 @@ class CommentService
             $output .= "<div id='post-" . $post['id'] . "' class='post" . ($options['is_answer'] ? ' post-answer' : '') . (isset($avatar) ? ' post-withavatar' : '') . "'>"
                 . "<div class='post-head'>"
                     . $author
-                    . " <span class='post-info'>(" . Generic::renderTime($post['time'], 'post') . $options['extra_info'] . ")</span>"
+                    . " <span class='post-info'>(" . GenericTemplates::renderTime($post['time'], 'post') . $options['extra_info'] . ")</span>"
                     . ($actlinks ? " <span class='post-actions'>" . implode(' ', $actlinks) . '</span>' : '')
                     . ($options['post_link'] ? "<a class='post-postlink' href='" . _e(UrlHelper::appendParams($options['current_url'], 'page=' . $options['current_page'], false)) . "#post-" . $post['id'] . "'><span>#" . str_pad($post['id'], 6, '0', STR_PAD_LEFT) . "</span></a>" : '')
                 . "</div>"

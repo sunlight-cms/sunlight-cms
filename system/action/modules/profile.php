@@ -4,7 +4,7 @@ use Sunlight\Article;
 use Sunlight\Database\Database as DB;
 use Sunlight\Email;
 use Sunlight\Extend;
-use Sunlight\Generic;
+use Sunlight\GenericTemplates;
 use Sunlight\Message;
 use Sunlight\Post;
 use Sunlight\Router;
@@ -117,7 +117,7 @@ if ($public) {
 
 " . ($query['id'] == _user_id || _priv_administration && _priv_adminusers ? "<tr>
 <th>" . _lang('mod.profile.lastact') . "</th>
-<td>" . Generic::renderTime($query['activitytime'], 'activity') . "</td>
+<td>" . GenericTemplates::renderTime($query['activitytime'], 'activity') . "</td>
 </tr>
 
 <tr>
@@ -138,7 +138,7 @@ if ($public) {
 <div class='wlimiter'>
 <table class='profiletable'>
 
-<tr><th>" . _lang('mod.profile.regtime') . "</th><td>" . Generic::renderTime($query['registertime']) . "</td></tr>
+<tr><th>" . _lang('mod.profile.regtime') . "</th><td>" . GenericTemplates::renderTime($query['registertime']) . "</td></tr>
 " . (_profileemail ? "<tr><th>" . _lang('global.email') . "</th><td>" . Email::link($query['email']) . "</td></tr>" : '') . "
 <tr><th>" . _lang('global.postsnum') . "</th><td>" . $posts_count . $posts_viewlink . "</td></tr>
 

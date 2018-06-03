@@ -5,7 +5,7 @@ use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\Frontend;
 use Sunlight\Gallery;
-use Sunlight\Generic;
+use Sunlight\GenericTemplates;
 use Sunlight\Message;
 use Sunlight\Paginator;
 use Sunlight\Post;
@@ -172,7 +172,7 @@ if ($search_query != '') {
                 } else {
                     $infos[] = array(_lang('global.postauthor'), Router::userFromQuery($userQuery, $r));
                 }
-                $infos[] = array(_lang('global.time'), Generic::renderTime($r['time'], 'post'));
+                $infos[] = array(_lang('global.time'), GenericTemplates::renderTime($r['time'], 'post'));
 
                 // pridani do vysledku
                 $results[] = array(

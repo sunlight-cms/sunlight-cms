@@ -2,7 +2,7 @@
 
 use Sunlight\Core;
 use Sunlight\Extend;
-use Sunlight\Generic;
+use Sunlight\GenericTemplates;
 use Sunlight\Plugin\TemplatePlugin;
 use Sunlight\Plugin\TemplateService;
 use Sunlight\Router;
@@ -211,7 +211,7 @@ if ($_index['template_enabled']) {
     ));
 
     // hlavicka
-    echo Generic::renderHead();
+    echo GenericTemplates::renderHead();
     Template::head();
 
     ?>

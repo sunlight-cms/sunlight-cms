@@ -2,7 +2,7 @@
 
 use Sunlight\Admin\Admin;
 use Sunlight\Database\Database as DB;
-use Sunlight\Generic;
+use Sunlight\GenericTemplates;
 use Sunlight\Message;
 use Sunlight\Paginator;
 use Sunlight\Router;
@@ -65,7 +65,7 @@ if ($continue) {
             $output .= "<tr>
     <td>" . Admin::articleEditLink($art) . "</td>
     <td>" . Router::userFromQuery($userQuery, $art) . "</td>
-    <td>" . Generic::renderTime($art['time']) . "</td>
+    <td>" . GenericTemplates::renderTime($art['time']) . "</td>
     <td class='actions'>
             <a class='button' href='index.php?p=content-articles-edit&amp;id=" . $art['id'] . "&amp;returnid=" . $cid . "&amp;returnpage=" . $s . "'><img src='images/icons/edit.png' alt='edit' class='icon'>" . _lang('global.edit') . "</a>
         <a class='button' href='index.php?p=content-articles-delete&amp;id=" . $art['id'] . "&amp;returnid=" . $cid . "&amp;returnpage=" . $s . "'><img src='images/icons/delete.png' alt='del' class='icon'>" . _lang('global.delete') . "</a>

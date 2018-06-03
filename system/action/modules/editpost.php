@@ -3,7 +3,7 @@
 use Sunlight\Core;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
-use Sunlight\Generic;
+use Sunlight\GenericTemplates;
 use Sunlight\Message;
 use Sunlight\Paginator;
 use Sunlight\Post;
@@ -225,5 +225,5 @@ if ($form) {
         $inputs
     );
 
-    $output .= Generic::jsLimitLength((($query['type'] != _post_shoutbox_entry) ? 16384 : 255), "postform", "text");
+    $output .= GenericTemplates::jsLimitLength((($query['type'] != _post_shoutbox_entry) ? 16384 : 255), "postform", "text");
 }

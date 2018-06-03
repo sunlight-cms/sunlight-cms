@@ -234,7 +234,7 @@ abstract class Article
 
             $infos = array(
                 'author' => array(_lang('article.author'), Router::userFromQuery($userQuery, $art)),
-                'posted' => array(_lang('article.posted'), Generic::renderTime($art['time'], 'article')),
+                'posted' => array(_lang('article.posted'), GenericTemplates::renderTime($art['time'], 'article')),
                 'readnum' => array(_lang('article.readnum'), $art['readnum'] . 'x'),
             );
 
@@ -250,7 +250,7 @@ abstract class Article
                 'infos' => &$infos,
             ));
 
-            $output .= Generic::renderInfos($infos);
+            $output .= GenericTemplates::renderInfos($infos);
         } elseif ($perex && isset($art['picture_uid'])) {
             $output .= "<div class='cleaner'></div>\n";
         }

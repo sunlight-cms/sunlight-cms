@@ -2,7 +2,7 @@
 
 use Sunlight\Admin\Admin;
 use Sunlight\Core;
-use Sunlight\Generic;
+use Sunlight\GenericTemplates;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
@@ -17,11 +17,11 @@ Core::init('../../', array(
 if (!_priv_super_admin) {
     exit;
 }
-echo \Sunlight\Generic::renderHead();
+echo \Sunlight\GenericTemplates::renderHead();
 
 $assets = Admin::themeAssets(_adminscheme, Admin::themeIsDark()) + array('extend_event' => null);
 
-echo Generic::renderHeadAssets($assets);
+echo GenericTemplates::renderHeadAssets($assets);
 
 ?>
 <title><?php echo _lang('admin.other.php.title'); ?></title>

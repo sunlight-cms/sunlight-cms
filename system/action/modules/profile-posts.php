@@ -1,7 +1,7 @@
 <?php
 
 use Sunlight\Database\Database as DB;
-use Sunlight\Generic;
+use Sunlight\GenericTemplates;
 use Sunlight\Paginator;
 use Sunlight\Post;
 use Sunlight\Router;
@@ -57,7 +57,7 @@ if (DB::size($posts) != 0) {
         $output .= "<div class='post'>
 <div class='post-head'>
     <a href='" . $homelink . "#post-" . $post['id'] . "' class='post-author'>" . $hometitle . "</a>
-    <span class='post-info'>(" . Generic::renderTime($post['time'], 'post') . ")</span>
+    <span class='post-info'>(" . GenericTemplates::renderTime($post['time'], 'post') . ")</span>
 </div>
 <div class='post-body'>" . Post::render($post['text']) . "</div>
 </div>";

@@ -3,7 +3,7 @@
 use Sunlight\Comment\CommentService;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
-use Sunlight\Generic;
+use Sunlight\GenericTemplates;
 use Sunlight\IpLog;
 use Sunlight\Message;
 use Sunlight\Paginator;
@@ -177,7 +177,7 @@ switch ($a) {
 
 </table>
 
-" . Generic::jsLimitLength(16384, 'newmsg', 'text') . "
+" . GenericTemplates::jsLimitLength(16384, 'newmsg', 'text') . "
 
 " . Xsrf::getInput() . "</form>\n";
 
@@ -321,7 +321,7 @@ switch ($a) {
         $q = DB::query('SELECT pm.id,pm.sender,pm.receiver,pm.sender_readtime,pm.receiver_readtime,pm.update_time,post.subject,' . $senderUserQuery['column_list'] . ',' . $receiverUserQuery['column_list'] . ',(SELECT COUNT(*) FROM ' . _posts_table . ' AS countpost WHERE countpost.home=pm.id AND countpost.type=' . _post_pm . ' AND (pm.sender=' . _user_id . ' AND countpost.time>pm.receiver_readtime OR pm.receiver=' . _user_id . ' AND countpost.time>pm.sender_readtime)) AS unread_counter FROM ' . _pm_table . ' AS pm JOIN ' . _posts_table . ' AS post ON (post.home=pm.id AND post.type=' . _post_pm . ' AND post.xhome=-1) ' . $senderUserQuery['joins'] . ' ' . $receiverUserQuery['joins'] . ' WHERE pm.sender=' . _user_id . ' AND pm.sender_deleted=0 OR pm.receiver=' . _user_id . ' AND pm.receiver_deleted=0 ORDER BY pm.update_time DESC ' . $paging['sql_limit']);
         while ($r = DB::row($q)) {
             $read = ($r['sender'] == _user_id && $r['sender_readtime'] >= $r['update_time'] || $r['receiver'] == _user_id && $r['receiver_readtime'] >= $r['update_time']);
-            $output .= "<tr><td><input type='checkbox' name='msg[]' value='" . $r['id'] . "'></td><td><a href='" . Router::module('messages', 'a=list&read=' . $r['id']) . "'" . ($read ? '' : ' class="notread"') . ">" . $r['subject'] . "</a></td><td>" . Router::userFromQuery($r['sender'] == _user_id ? $receiverUserQuery : $senderUserQuery, $r) . " <small>(" . $r['unread_counter'] . ")</small></td><td>" . Generic::renderTime($r['update_time'], 'post') . "</td></tr>\n";
+            $output .= "<tr><td><input type='checkbox' name='msg[]' value='" . $r['id'] . "'></td><td><a href='" . Router::module('messages', 'a=list&read=' . $r['id']) . "'" . ($read ? '' : ' class="notread"') . ">" . $r['subject'] . "</a></td><td>" . Router::userFromQuery($r['sender'] == _user_id ? $receiverUserQuery : $senderUserQuery, $r) . " <small>(" . $r['unread_counter'] . ")</small></td><td>" . GenericTemplates::renderTime($r['update_time'], 'post') . "</td></tr>\n";
         }
         if (!isset($read)) {
             $output .= "<tr><td colspan='4'>" . _lang('mod.messages.nokit') . "</td></tr>\n";
