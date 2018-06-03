@@ -25,7 +25,7 @@ abstract class UrlHelper
      */
     static function isSafe($url)
     {
-        return preg_match('{[\s\0-\32a-z0-9_\-]+:}Ai', $url) === 0;
+        return preg_match('{https?://}Ai', $url) || !preg_match('{[\s\0-\32a-z0-9_\-]+:}Ai', $url);
     }
 
     /**
@@ -55,7 +55,7 @@ abstract class UrlHelper
     }
 
     /**
-     * Pridat schema do URL, pokud jej neobsahuje nebo neni relativni
+     * Pridat HTTP schema do URL, pokud jej neobsahuje nebo neni relativni
      *
      * @param string $url
      * @return string
@@ -67,5 +67,20 @@ abstract class UrlHelper
         }
 
         return $url;
+    }
+
+    /**
+     * Pridat/zmenit schema v URL, pokud jej neobsahuje nebo neni HTTPS (pouziva-li web HTTPS)
+     */
+    static function ensureValidScheme($url)
+    {
+        $parsedUrl = Url::parse($url);
+        $baseScheme = Url::base()->scheme;
+
+        if ($parsedUrl->scheme === null || $baseScheme === 'https' && $parsedUrl->scheme !== $baseScheme) {
+            $parsedUrl->scheme = $baseScheme;
+        }
+
+        return $parsedUrl->generateAbsolute();
     }
 }
