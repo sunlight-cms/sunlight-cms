@@ -11,12 +11,20 @@ class ConstraintMap
 
     function __construct(Repository $repository)
     {
-        foreach ($repository->getDefinition()->require as $requiredPackage => $constraints) {
-            $this->constraintMap[$requiredPackage][] = $constraints;
-            $this->sourceMap[$requiredPackage][] = array($repository);
+        $definition = $repository->getDefinition();
+
+        if (!empty($definition->require)) {
+            foreach ($repository->getDefinition()->require as $requiredPackage => $constraints) {
+                $this->constraintMap[$requiredPackage][] = $constraints;
+                $this->sourceMap[$requiredPackage][] = array($repository);
+            }
         }
 
         foreach ($repository->getInstalledPackages() as $package) {
+            if (empty($package->require)) {
+                continue;
+            }
+
             foreach ($package->require as $requiredPackage => $constraints) {
                 $this->constraintMap[$requiredPackage][] = $constraints;
                 $this->sourceMap[$requiredPackage][] = array($repository, $package);
