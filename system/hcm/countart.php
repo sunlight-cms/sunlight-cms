@@ -6,8 +6,7 @@ use Sunlight\Util\Arr;
 
 defined('_root') or exit;
 
-return function ($kategorie = null)
-{
+return function ($kategorie = null) {
     if (!empty($kategorie)) {
         $kategorie = Arr::removeValue(explode('-', $kategorie), '');
     } else {

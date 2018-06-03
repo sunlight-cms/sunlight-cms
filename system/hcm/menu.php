@@ -5,8 +5,7 @@ use Sunlight\Template;
 
 defined('_root') or exit;
 
-return function ($od = null, $do = null, $class = null)
-{
+return function ($od = null, $do = null, $class = null) {
     Hcm::normalizeArgument($od, 'int');
     Hcm::normalizeArgument($do, 'int');
 

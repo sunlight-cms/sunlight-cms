@@ -10,8 +10,7 @@ use Sunlight\Util\Request;
 
 defined('_root') or exit;
 
-return function ($adresa = "", $predmet = null)
-{
+return function ($adresa = "", $predmet = null) {
     // priprava
     $result = "";
     $_SESSION['hcm_' . Core::$hcmUid . '_mail_receiver'] = implode(",", Arr::removeValue(explode(";", trim($adresa)), ""));

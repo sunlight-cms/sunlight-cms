@@ -7,8 +7,7 @@ use Sunlight\Util\Arr;
 
 defined('_root') or exit;
 
-return function ($typ = 'new', $pocet = null, $perex = 'perex', $info = true, $kategorie = null)
-{
+return function ($typ = 'new', $pocet = null, $perex = 'perex', $info = true, $kategorie = null) {
     // priprava
     $result = "";
     $pocet = (int) $pocet;

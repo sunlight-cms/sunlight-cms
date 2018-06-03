@@ -5,8 +5,7 @@ use Sunlight\Xsrf;
 
 defined('_root') or exit;
 
-return function ()
-{
+return function () {
     if (_search) {
         return "<form action='" . Router::module('search') . "' method='get' class='searchform'>
 " . (!_pretty_urls ? "<input type='hidden' name='m' value='search'>" : '') . "

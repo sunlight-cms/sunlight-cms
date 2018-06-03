@@ -6,8 +6,7 @@ use Sunlight\Router;
 
 defined('_root') or exit;
 
-return function ($cesta = "", $rozmery = null, $titulek = null, $lightbox = null)
-{
+return function ($cesta = "", $rozmery = null, $titulek = null, $lightbox = null) {
     $cesta = _root . $cesta;
 
     $resize_opts = Picture::parseResizeOptions($rozmery);

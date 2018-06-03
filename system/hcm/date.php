@@ -2,8 +2,7 @@
 
 defined('_root') or exit;
 
-return function ($format = _time_format, $time = null)
-{
+return function ($format = _time_format, $time = null) {
     if ($time === null) {
         $time = time();
     } elseif (ctype_digit($time) || is_int($time)) {

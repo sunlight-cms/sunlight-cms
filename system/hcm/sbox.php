@@ -11,8 +11,7 @@ use Sunlight\Util\Form;
 
 defined('_root') or exit;
 
-return function ($id = null)
-{
+return function ($id = null) {
     // priprava
     $result = "";
     $id = (int) $id;

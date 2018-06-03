@@ -6,8 +6,7 @@ use Sunlight\User;
 
 defined('_root') or exit;
 
-return function ($razeni = 'new', $pocet = 5)
-{
+return function ($razeni = 'new', $pocet = 5) {
     $pocet = abs((int) $pocet);
 
     $rcond = "public=1";

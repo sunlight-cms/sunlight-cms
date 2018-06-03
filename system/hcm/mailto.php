@@ -4,7 +4,6 @@ use Sunlight\Email;
 
 defined('_root') or exit;
 
-return function ($email = "")
-{
+return function ($email = "") {
     return Email::link($email);
 };

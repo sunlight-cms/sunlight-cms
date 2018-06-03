@@ -7,8 +7,7 @@ use Sunlight\Router;
 
 defined('_root') or exit;
 
-return function ($cesta = "", $rozmery = null, $strankovani = null, $lightbox = true)
-{
+return function ($cesta = "", $rozmery = null, $strankovani = null, $lightbox = true) {
     global $_index;
 
     // priprava

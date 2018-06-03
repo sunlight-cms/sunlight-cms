@@ -8,8 +8,7 @@ use Sunlight\Xsrf;
 
 defined('_root') or exit;
 
-return function ($id = null)
-{
+return function ($id = null) {
     // nacteni promennych
     $id = (int) $id;
 

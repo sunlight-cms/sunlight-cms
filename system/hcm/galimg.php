@@ -7,8 +7,7 @@ use Sunlight\Hcm;
 
 defined('_root') or exit;
 
-return function ($galerie = "", $typ = 'new', $rozmery = null, $limit = null)
-{
+return function ($galerie = "", $typ = 'new', $rozmery = null, $limit = null) {
     // nacteni parametru
     $result = "";
     $galerie = Hcm::createColumnInSqlCondition("home", $galerie);

@@ -6,8 +6,7 @@ use Sunlight\Router;
 
 defined('_root') or exit;
 
-return function ($cesta = "", $typ = 'text', $pocet = 1, $rozmery_nahledu = null)
-{
+return function ($cesta = "", $typ = 'text', $pocet = 1, $rozmery_nahledu = null) {
     $result = "";
     $cesta = _root . $cesta;
     if (mb_substr($cesta, -1, 1) != "/") {

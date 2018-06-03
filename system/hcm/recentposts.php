@@ -11,8 +11,7 @@ use Sunlight\Util\StringManipulator;
 
 defined('_root') or exit;
 
-return function ($limit = null, $stranky = "", $typ = null)
-{
+return function ($limit = null, $stranky = "", $typ = null) {
     // priprava
     $result = "";
     if (isset($limit) && (int) $limit >= 1) {
