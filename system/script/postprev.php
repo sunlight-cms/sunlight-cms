@@ -4,7 +4,7 @@ use Sunlight\Core;
 use Sunlight\Post;
 use Sunlight\Util\Request;
 
-chdir('../../'); // nasimulovat skript v rootu
+chdir(__DIR__ . '/../../'); // nasimulovat skript v rootu
 
 require './system/bootstrap.php';
 Core::init('./');

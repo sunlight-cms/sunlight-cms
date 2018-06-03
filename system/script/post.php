@@ -37,7 +37,7 @@ if (_logged_in) {
 // typ, domov, text
 $posttarget = (int) Request::post('_posttarget');
 $posttype = (int) Request::post('_posttype');
-$text = Html::cut(_e(trim(Request::post('text'))), ($posttype != 4) ? 16384 : 255);
+$text = Html::cut(_e(trim(Request::post('text'))), ($posttype != _post_shoutbox_entry) ? 16384 : 255);
 
 // domovsky prispevek
 if ($posttype != _post_shoutbox_entry) {

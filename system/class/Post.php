@@ -116,7 +116,7 @@ LEFT JOIN " . _posts_table . " home_post ON({$alias}.type=" . _post_forum_topic 
     /**
      * Vykreslit text prispevku
      *
-     * @param string $input   vstupni text
+     * @param string $input   vstupni text (HTML)
      * @param bool   $smileys vyhodnotit smajliky 1/0
      * @param bool   $bbcode  vyhodnotit bbcode 1/0
      * @param bool   $nl2br   prevest odrakovani na <br>
