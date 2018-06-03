@@ -138,6 +138,9 @@ abstract class Core
         // environment
         static::initEnvironment($options);
 
+        // resolve URL
+        static::$url = static::resolveUrl($options['url']);
+
         // stop when minimal mode is enabled
         if ($options['minimal_mode']) {
             static::$ready = true;
@@ -251,7 +254,6 @@ abstract class Core
         // define variables
         static::$appId = $options['app_id'];
         static::$secret = $options['secret'];
-        static::$url = static::resolveUrl($options['url']);
         static::$fallbackLang = $options['fallback_lang'];
         static::$sessionEnabled = $options['session_enabled'];
         static::$sessionRegenerate = $options['session_regenerate'] || isset($_POST['_session_force_regenerate']);
