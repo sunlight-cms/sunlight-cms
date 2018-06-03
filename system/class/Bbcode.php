@@ -6,13 +6,24 @@ use Sunlight\Util\UrlHelper;
 
 abstract class Bbcode
 {
+    /**
+     * Entry format:
+     *
+     *      array(
+     *           (bool) is pair tag
+     *           (bool) has argument
+     *           (bool) is nestable
+     *           (bool) parse children
+     *           (null|int|string) button icon (null = none, 1 = template, string = custom path)
+     *      )
+     */
     protected static $tags = array(
         'b' => array(true, false, true, true, 1), // bold
         'i' => array(true, false, true, true, 1), // italic
         'u' => array(true, false, true, true, 1), // underline
         'q' => array(true, false, true, true, null), // quote
         's' => array(true, false, true, true, 1), // strike
-        'img' => array(true, false, false, false, 1), // image
+        'img' => array(true, true, false, false, 1), // image
         'code' => array(true, true, false, true, 1), // code
         'c' => array(true, false, true, true, null), // inline code
         'url' => array(true, true, true, false, 1), // link
@@ -27,24 +38,26 @@ abstract class Bbcode
     protected static $extended = false;
 
     /**
-     * Vyhodnotit BBCode tagy
+     * Get known BBCode tags
      *
-     * @param string $s        vstupni retezec (HTML)
-     * @param bool   $get_tags navratit seznam tagu namisto parsovani 1/0
-     * @return string|array
+     * @return array
      */
-    static function parse($s, $get_tags = false)
+    static function getTags()
     {
-        // merge tags with _extend
-        if (!static::$extended) {
-            Extend::call('bbcode.init.tags', array('tags' => &static::$tags));
-            static::$extended = true;
-        }
+        self::$extended || static::extendTags();
 
-        // get tags only?
-        if ($get_tags) {
-            return static::$tags;
-        }
+        return static::$tags;
+    }
+
+    /**
+     * Parse BBCode tags in string
+     *
+     * @param string $s input string (HTML)
+     * @return string
+     */
+    static function parse($s)
+    {
+        self::$extended || static::extendTags();
 
         // prepare
         $mode = 0;
@@ -84,7 +97,7 @@ abstract class Bbcode
                 ########## scan tag ##########
                 case 1:
                     if (($ord = ord($char)) > 47 && $ord < 59 || $ord > 64 && $ord < 91 || $ord > 96 && $ord < 123) {
-                        // tag charaxter
+                        // tag character
                         $tag .= $char;
                     } elseif ($tag === '' && $char === static::$syntax[2]) {
                         // closing tag
@@ -336,7 +349,12 @@ abstract class Bbcode
             case 'img':
                 $buffer = trim($buffer);
                 if ($buffer !== '' && UrlHelper::isSafe($buffer)) {
-                    return '<img src="' . UrlHelper::addScheme($buffer) . '" alt="img" class="bbcode-img">';
+                    $src = UrlHelper::ensureValidScheme($buffer);
+                    $link = ($arg !== '' && UrlHelper::isSafe($arg)) ? UrlHelper::addScheme($arg) : $src;
+
+                    return '<a href="' . $link . '" rel="nofollow" target="_blank">'
+                        . '<img src="' . $src . '" alt="img" class="bbcode-img">'
+                        . '</a>';
                 }
                 break;
 
@@ -345,5 +363,11 @@ abstract class Bbcode
         }
 
         return '';
+    }
+
+    protected static function extendTags()
+    {
+        Extend::call('bbcode.init.tags', array('tags' => &static::$tags));
+        static::$extended = true;
     }
 }

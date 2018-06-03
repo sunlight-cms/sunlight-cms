@@ -23,7 +23,7 @@ abstract class PostForm
         if ($bbcode && _bbcode && $template->getOption('bbcode.buttons')) {
 
             // nacteni tagu
-            $bbtags = Bbcode::parse(null, true);
+            $bbtags = Bbcode::getTags();
 
             // pridani kodu
             $output .= '<span class="post-form-bbcode">';
