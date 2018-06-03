@@ -7,6 +7,10 @@ namespace Sunlight;
  */
 class Message
 {
+    const OK = 'ok';
+    const WARNING = 'warn';
+    const ERROR = 'err';
+
     /** @var string */
     protected $type;
     /** @var string */
@@ -15,7 +19,7 @@ class Message
     protected $isHtml;
 
     /**
-     * @param string $type    see _msg_* constants
+     * @param string $type    see Message class constants
      * @param string $message the message
      * @param bool   $isHtml  display the message should be rendered as html (unescaped) 1/0
      */
@@ -81,7 +85,7 @@ class Message
      */
     static function ok($message, $isHtml = false)
     {
-        return new static(_msg_ok, $message, $isHtml);
+        return new static(static::OK, $message, $isHtml);
     }
 
     /**
@@ -93,7 +97,7 @@ class Message
      */
     static function warning($message, $isHtml = false)
     {
-        return new static(_msg_warn, $message, $isHtml);
+        return new static(static::WARNING, $message, $isHtml);
     }
 
     /**
@@ -105,7 +109,7 @@ class Message
      */
     static function error($message, $isHtml = false)
     {
-        return new static(_msg_err, $message, $isHtml);
+        return new static(static::ERROR, $message, $isHtml);
     }
 
     /**

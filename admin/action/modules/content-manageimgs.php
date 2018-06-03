@@ -296,7 +296,7 @@ if (isset($_POST['xaction']) && $continue) {
 
             // message
             $done = count($done);
-            $message = Message::render(($done === $total) ? _msg_ok : _msg_warn, sprintf(_lang('admin.content.manageimgs.upload.msg'), $done, $total));
+            $message = Message::render(($done === $total) ? Message::OK : Message::WARNING, sprintf(_lang('admin.content.manageimgs.upload.msg'), $done, $total));
             break;
 
     }

@@ -49,18 +49,6 @@ define('_users_table', _dbprefix . 'users');
 define('_user_activation_table', _dbprefix . 'user_activation');
 
 
-// Message types
-
-/** OK message (success) */
-const _msg_ok = 'ok';
-
-/** Warning message */
-const _msg_warn = 'warn';
-
-/** * Error message */
-const _msg_err = 'err';
-
-
 // RSS feed types
 
 /**

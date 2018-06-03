@@ -205,9 +205,8 @@ if ($continue) {
                         ++$total;
                     }
                 }
-                if ($done == $total) $micon = _msg_ok;
-                else $micon = _msg_warn;
-                $message = Message::render($micon, _lang('admin.fman.msg.upload.done', array('*done*' => $done, '*total*' => $total)));
+
+                $message = Message::render($done == $total ? Message::OK : Message::WARNING, _lang('admin.fman.msg.upload.done', array('*done*' => $done, '*total*' => $total)));
                 break;
 
                 // novy adresar
@@ -315,12 +314,7 @@ if ($continue) {
                         $total++;
                     }
 
-                    if ($done == $total) {
-                        $micon = _msg_ok;
-                    } else {
-                        $micon = _msg_warn;
-                    }
-                    $message = Message::render($micon, _lang('admin.fman.msg.move.done', array('*done*' => $done, '*total*' => $total)));
+                    $message = Message::render($done == $total ? Message::OK : Message::WARNING, _lang('admin.fman.msg.move.done', array('*done*' => $done, '*total*' => $total)));
                 } else {
                     $message = Message::warning(_lang('admin.fman.msg.rootlimit'));
                 }
@@ -345,12 +339,7 @@ if ($continue) {
                     $total++;
                 }
 
-                if ($done == $total) {
-                    $micon = _msg_ok;
-                } else {
-                    $micon = _msg_warn;
-                }
-                $message = Message::render($micon, _lang('admin.fman.msg.deleteselected.done', array('*done*' => $done, '*total*' => $total)));
+                $message = Message::render($done == $total ? Message::OK : Message::WARNING, _lang('admin.fman.msg.deleteselected.done', array('*done*' => $done, '*total*' => $total)));
                 break;
 
                 // pridani vyberu do galerie - formular pro vyber galerie
