@@ -37,7 +37,7 @@ abstract class Response
      * Navrat na predchozi stranku
      * Po provedeni presmerovani je skript ukoncen.
      *
-     * @param string|null $url adresa pro navrat, null = {@see \Sunlight\Util\Response::getReturnUrl()}
+     * @param string|null $url adresa pro navrat, null = {@see Response::getReturnUrl()}
      */
     static function redirectBack($url = null)
     {

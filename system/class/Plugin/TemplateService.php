@@ -70,7 +70,7 @@ abstract class TemplateService
      * Parse the given unique template component identifier
      *
      * @param string $uid
-     * @param int    $type see \Sunlight\Plugin\TemplateService::UID_* constants
+     * @param int    $type see TemplateService::UID_* constants
      * @return string[] template, [layout], [slot]
      */
     static function parseUid($uid, $type)
@@ -85,7 +85,7 @@ abstract class TemplateService
      * and points to existing components
      *
      * @param string $uid
-     * @param int    $type see \Sunlight\Plugin\TemplateService::UID_* constants
+     * @param int    $type see TemplateService::UID_* constants
      * @return bool
      */
     static function validateUid($uid, $type)
@@ -97,7 +97,7 @@ abstract class TemplateService
      * Get components identified by the given unique template component identifier
      *
      * @param string $uid
-     * @param int    $type see \Sunlight\Plugin\TemplateService::UID_* constants
+     * @param int    $type see TemplateService::UID_* constants
      * @return array|null array or null if the given identifier is not valid
      */
     static function getComponentsByUid($uid, $type)
@@ -183,7 +183,7 @@ abstract class TemplateService
     /**
      * Get label for the given component array
      *
-     * @see \Sunlight\Plugin\TemplateService::getComponents()
+     * @see TemplateService::getComponents()
      *
      * @param array $components
      * @param bool  $includeTemplateName
@@ -203,7 +203,7 @@ abstract class TemplateService
      * Get label for the given unique template component identifier
      *
      * @param string|null $uid
-     * @param int         $type see \Sunlight\Plugin\TemplateService::UID_* constants
+     * @param int         $type see TemplateService::UID_* constants
      * @param bool        $includeTemplateName
      * @return string
      */

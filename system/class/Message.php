@@ -29,7 +29,7 @@ class Message
     /**
      * Render a message
      *
-     * @see \Sunlight\Message::__construct()
+     * @see Message::__construct()
      */
     static function render($type, $message, $isHtml = false)
     {

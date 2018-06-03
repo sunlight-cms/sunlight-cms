@@ -375,10 +375,10 @@ class Picture
      * zk:320x?
      *
      * @param string   $input         vstupni retezec
-     * @param string   $defaultMode   vychozi "mode" pro {@see \Sunlight\Picture::resize()}
+     * @param string   $defaultMode   vychozi "mode" pro {@see Picture::resize()}
      * @param int|null $defaultWidth  vychozi sirka
      * @param int|null $defaultHeight vychozi vyska
-     * @return array pole pro {@see \Sunlight\Picture::resize()}
+     * @return array pole pro {@see Picture::resize()}
      */
     static function parseResizeOptions($input, $defaultMode = 'fit', $defaultWidth = 96, $defaultHeight = null)
     {
@@ -703,7 +703,7 @@ class Picture
      * Vygenerovat cachovanou miniaturu obrazku
      *
      * @param string $source          cesta ke zdrojovemu obrazku
-     * @param array  $resize_opts     volby pro zmenu velikosti, {@see \Sunlight\Picture::resize()} (mode je prednastaven na zoom)
+     * @param array  $resize_opts     volby pro zmenu velikosti, {@see Picture::resize()} (mode je prednastaven na zoom)
      * @param bool   $use_error_image vratit chybovy obrazek pri neuspechu namisto false
      * @param string $error          promenna, kam bude ulozena pripadna chybova hlaska
      * @return string|bool cesta k miniature nebo chybovemu obrazku nebo false pri neuspechu

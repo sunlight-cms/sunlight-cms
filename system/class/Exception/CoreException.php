@@ -7,7 +7,7 @@ namespace Sunlight\Exception;
  *
  * Its message is publicly displayed to the user even in production mode (unlike other exceptions).
  *
- * Created by {@see \Sunlight\Core::systemFailure()}
+ * @see Core::systemFailure()
  */
 class CoreException extends \Exception
 {

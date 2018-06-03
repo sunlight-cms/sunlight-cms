@@ -97,7 +97,7 @@ class CommentService
     /**
      * Render post list
      *
-     * @param int         $style        rendering style (see \Sunlight\Comment\CommentService::RENDER_* constants)
+     * @param int         $style        rendering style (see CommentService::RENDER_* constants)
      * @param int         $home         home ID (depends on underlying post type)
      * @param mixed       $vars         rendering options
      * @param bool        $force_locked force locked state 1/0

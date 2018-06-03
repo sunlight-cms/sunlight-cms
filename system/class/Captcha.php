@@ -10,7 +10,9 @@ class Captcha
     /**
      * Inicializace captchy
      *
-     * @return array radek pro funkci {@see \Sunlight\Util\Form::render()}
+     * @see \Sunlight\Util\Form::render()
+     *
+     * @return array radek formulare
      */
     static function init()
     {

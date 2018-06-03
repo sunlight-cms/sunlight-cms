@@ -173,7 +173,7 @@ abstract class Form
      *
      * XSRF token je automaticky vynechan.
      *
-     * Pro vysvetleni parametru viz {@see \Sunlight\Util\Arr::filterKeys()}
+     * @see \Sunlight\Util\Arr::filterKeys()
      *
      * @param string|null $include
      * @param string|null $exclude
@@ -280,7 +280,7 @@ abstract class Form
     }
 
     /**
-     * Nacist casovou hodnotu vytvorenou a odeslanou pomoci {@see \Sunlight\Util\Form::editTime()}
+     * Nacist casovou hodnotu vytvorenou a odeslanou pomoci {@see Form::editTime()}
      *
      * @param string $name    identifikator casove hodnoty
      * @param int    $default vychozi casova hodnota pro pripad chyby

@@ -214,7 +214,7 @@ abstract class User
      * Zjistit, zda ma uzivatel pravo pracovat s danym nazvem souboru
      *
      * Tato funkce kontroluje NAZEV souboru, nikoliv cestu!
-     * Pro cesty je funkce {@see \Sunlight\User::checkPath()}.
+     * Pro cesty je funkce {@see User::checkPath()}.
      *
      * @param string $filename
      * @return bool
@@ -578,7 +578,7 @@ abstract class User
      * @param string $username
      * @param string $plainPassword
      * @param bool   $persistent
-     * @return int kod {@see \Sunlight\User::getLoginMessage())
+     * @return int kod {@see User::getLoginMessage())
      */
     static function submitLogin($username, $plainPassword, $persistent = false)
     {
@@ -811,11 +811,11 @@ abstract class User
     }
 
     /**
-     * Ziskat kod avataru daneho uzivatele na zaklade dat z funkce {@see \Sunlight\User::createQuery()}
+     * Ziskat kod avataru daneho uzivatele na zaklade dat z funkce {@see User::createQuery()}
      *
-     * @param array $userQuery vystup z {@see \Sunlight\User::createQuery()}
+     * @param array $userQuery vystup z {@see User::createQuery()}
      * @param array $row       radek z vysledku dotazu
-     * @param array $options   nastaveni vykresleni, viz {@see \Sunlight\User::renderAvatar()}
+     * @param array $options   nastaveni vykresleni, viz {@see User::renderAvatar()}
      * @return string
      */
     static function renderAvatarFromQuery(array $userQuery, array $row, array $options = array())

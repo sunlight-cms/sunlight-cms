@@ -148,7 +148,7 @@ abstract class Router
     /**
      * Sestavit adresu a titulek komentare
      *
-     * @param array $post     data komentare (potreba sloupce z {@see \Sunlight\Post::createFilter()}
+     * @param array $post     data komentare (potreba sloupce z {@see Post::createFilter()}
      * @param bool  $entity   formatovat vystup pro HTML 1/0
      * @param bool  $absolute sestavit absolutni adresu 1/0
      * @return array adresa, titulek
@@ -298,7 +298,7 @@ abstract class Router
      * class (-)        vlastni CSS trida
      * title (-)        titulek
      *
-     * @param array $data    samostatna data uzivatele viz {@see \Sunlight\User::createQuery()}
+     * @param array $data    samostatna data uzivatele viz {@see User::createQuery()}
      * @param array $options moznosti vykresleni, viz popis funkce
      * @return string HTML kod
      */
@@ -368,11 +368,11 @@ abstract class Router
     }
 
     /**
-     * Sestaveni kodu odkazu na uzivatele na zaklade dat z funkce {@see \Sunlight\User::createQuery()}
+     * Sestaveni kodu odkazu na uzivatele na zaklade dat z funkce {@see User::createQuery()}
      *
-     * @param array $userQuery vystup z {@see \Sunlight\User::createQuery()}
+     * @param array $userQuery vystup z {@see User::createQuery()}
      * @param array $row       radek z vysledku dotazu
-     * @param array $options   nastaveni vykresleni, viz {@see \Sunlight\User::user()}
+     * @param array $options   nastaveni vykresleni, viz {@see Router::user()}
      * @return string
      */
     static function userFromQuery(array $userQuery, array $row, array $options = array())

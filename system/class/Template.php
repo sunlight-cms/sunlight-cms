@@ -218,9 +218,9 @@ abstract class Template
     /**
      * Vykreslit obsah
      *
-     * @param bool $heading  vykreslit nadpis 1/0 {@see \Sunlight\Template::heading()}
-     * @param bool $backlink vykreslit zpetny odkaz 1/0 {@see \Sunlight\Template::backlink()}
-     * @param bool $rsslink  vykreslit RSS odkaz 1/0 {@see \Sunlight\Template::rssLink()}
+     * @param bool $heading  vykreslit nadpis 1/0 {@see Template::heading()}
+     * @param bool $backlink vykreslit zpetny odkaz 1/0 {@see Template::backlink()}
+     * @param bool $rsslink  vykreslit RSS odkaz 1/0 {@see Template::rssLink()}
      * @return string
      */
     static function content($heading = true, $backlink = true, $rsslink = true)
@@ -419,7 +419,7 @@ abstract class Template
      * css_class (-)                    trida hlavniho tagu menu
      * extend_event ("tpl.menu.item")   extend udalost pro polozky menu
      * type ("tree")                    identifikator typu menu
-     * filter (-)                       pole s nastavenim pro {@see \Sunlight\Page\PageManager::getFilter()}
+     * filter (-)                       pole s nastavenim pro {@see PageManager::getFilter()}
      *
      * @param array $options pole s nastavenim
      * @return string

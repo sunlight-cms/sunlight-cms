@@ -145,7 +145,7 @@ abstract class WebRequestHandler
 
     /**
      * @param array $index
-     * @param int   $code  see \Sunlight\Plugin\WebRequestHandler::OUTPUT_* constants
+     * @param int   $code  see WebRequestHandler::OUTPUT_* constants
      */
     protected function handleOutputCode(array &$index, $code)
     {
