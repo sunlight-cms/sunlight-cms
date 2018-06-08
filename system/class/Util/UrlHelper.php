@@ -61,8 +61,8 @@ abstract class UrlHelper
      * @return string
      */
     static function addScheme($url)
-    {
-        if (mb_substr($url, 0, 7) !== 'http://' && mb_substr($url, 0, 8) !== 'https://' && $url[0] !== '/' && mb_substr($url, 0, 2) !== './') {
+    {   
+        if ($url !== '' && mb_substr($url, 0, 7) !== 'http://' && mb_substr($url, 0, 8) !== 'https://' && $url[0] !== '/' && mb_substr($url, 0, 2) !== './') {
             $url = 'http://' . $url;
         }
 
@@ -70,14 +70,25 @@ abstract class UrlHelper
     }
 
     /**
-     * Pridat/zmenit schema v URL, pokud jej neobsahuje nebo neni HTTPS (pouziva-li web HTTPS)
+     * Pridat/zmenit schema v absolutni URL, pokud jej neobsahuje nebo neni HTTPS (pouziva-li web HTTPS)
      */
     static function ensureValidScheme($url)
     {
+        if ($url === '' || $url[0] === '/' || mb_substr($url, 0, 2) === './') {
+            // relativni URL
+            return $url;
+        }
+    
         $parsedUrl = Url::parse($url);
         $baseScheme = Url::base()->scheme;
+        
+        if ($parsedUrl->scheme === null) {
+            // absolutni URL bez schematu
+            return $baseScheme . '://' . $url;
+        }
 
-        if ($parsedUrl->scheme === null || $baseScheme === 'https' && $parsedUrl->scheme !== $baseScheme) {
+        if ($baseScheme === 'https' && $parsedUrl->scheme !== $baseScheme) {
+            // http => https
             $parsedUrl->scheme = $baseScheme;
         }
 
