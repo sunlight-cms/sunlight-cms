@@ -3,7 +3,7 @@
 use Sunlight\Article;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
-use Sunlight\Frontend;
+use Sunlight\GenericTemplates;
 use Sunlight\Hcm;
 use Sunlight\Router;
 use Sunlight\User;
@@ -98,7 +98,7 @@ if (DB::size($items) != 0) {
 
             Extend::call('page.group.item_infos', array('item' => $item, 'infos' => &$iteminfos));
 
-            $output .= Frontend::renderInfos($iteminfos);
+            $output .= GenericTemplates::renderInfos($iteminfos);
 
             Extend::call('page.group.item.end', $extendArgs);
         }

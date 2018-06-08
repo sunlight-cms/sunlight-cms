@@ -3,7 +3,6 @@
 use Sunlight\Article;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
-use Sunlight\Frontend;
 use Sunlight\Gallery;
 use Sunlight\GenericTemplates;
 use Sunlight\Message;
@@ -228,7 +227,7 @@ if ($search_query != '') {
 <p class='list-perex'>" . $item[2] . "</p>
 ";
                 if (isset($item[3])) {
-                    $output .= Frontend::renderInfos($item[3]);
+                    $output .= GenericTemplates::renderInfos($item[3]);
                 }
 
                 $output .= "</div>\n";

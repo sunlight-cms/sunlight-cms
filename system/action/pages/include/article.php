@@ -4,7 +4,6 @@ use Sunlight\Article;
 use Sunlight\Comment\CommentService;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
-use Sunlight\Frontend;
 use Sunlight\GenericTemplates;
 use Sunlight\Hcm;
 use Sunlight\IpLog;
@@ -187,7 +186,7 @@ if ($rateform !== null || !empty($infos)) {
     
     // informace
     if (!empty($infos)) {
-        $output .= '<td>' . Frontend::renderInfos($infos, 'article-info') . "</td>\n";
+        $output .= '<td>' . GenericTemplates::renderInfos($infos, 'article-info') . "</td>\n";
     }
     
     // hodnoceni
