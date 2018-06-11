@@ -187,7 +187,7 @@ class Paginator
      * @param int   $itemnumber poradove cislo polozky (poradi zacina nulou)
      * @return bool
      */
-    static function isItemInRnage($pagingdata, $itemnumber)
+    static function isItemInRange($pagingdata, $itemnumber)
     {
         return $itemnumber >= $pagingdata['first'] && $itemnumber <= $pagingdata['last'];
     }
