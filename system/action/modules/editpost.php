@@ -76,7 +76,7 @@ if ($query !== false) {
 
                 case _post_plugin:
                     if ($url === '') {
-                        $output .= Message::error(sprintf(_lang('plugin.error'), $query['flag']));
+                        $output .= Message::error(sprintf(_lang('plugin.error'), $query['flag']), true);
 
                         return;
                     }

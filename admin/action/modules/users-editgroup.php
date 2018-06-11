@@ -282,7 +282,7 @@ if ($continue) {
 
   </table>
 
-  " . Message::ok(_lang('admin.users.groups.dangernotice')) . "
+  " . Message::ok(_lang('admin.users.groups.dangernotice'), true) . "
   " . $rights . "
   " . Extend::buffer('admin.editgroup.form') . "
 

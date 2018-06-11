@@ -21,7 +21,7 @@ $plugin_types = PageManager::getPluginTypes();
 
 // overit dostupnost pluginu
 if (!isset($plugin_types[$type_idt])) {
-    $output .= Message::error(sprintf(_lang('plugin.error'), $type_idt));
+    $output .= Message::error(sprintf(_lang('plugin.error'), $type_idt), true);
 
     return;
 }

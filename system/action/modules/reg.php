@@ -239,7 +239,7 @@ if (!$user_data_valid && $show_form) {
             '*login_link*',
             Router::module('login'),
             _lang('mod.reg.done')
-        ));
+        ), true);
 
     } else {
 
@@ -277,7 +277,7 @@ if (!$user_data_valid && $show_form) {
 
         // hlaska
         if ($mail) {
-            $output .= Message::ok(_lang('mod.reg.confirm.sent', array('*email*' => $user_data['email'])));
+            $output .= Message::ok(_lang('mod.reg.confirm.sent', array('*email*' => $user_data['email'])), true);
         } else {
             $output .= Message::error(_lang('global.emailerror'));
             DB::delete(_user_activation_table, 'id=' . DB::val($insert_id));

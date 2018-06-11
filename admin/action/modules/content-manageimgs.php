@@ -215,7 +215,7 @@ if (isset($_POST['xaction']) && $continue) {
             if (($nostor = !is_dir($stor)) || !is_writeable($stor)) {
                 // try to create or chmod
                 if ($nostor && !mkdir($stor, 0777) || !$nostor && !chmod($stor, 0777)) {
-                    $message = Message::error(sprintf(_lang('admin.content.manageimgs.upload.acerr'), $stor));
+                    $message = Message::error(sprintf(_lang('admin.content.manageimgs.upload.acerr'), $stor), true);
                     break;
                 }
             }
