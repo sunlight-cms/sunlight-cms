@@ -260,9 +260,6 @@ abstract class Bbcode
             Extend::call('bbcode.init.proc', array('tags' => &$ext));
         }
 
-        // make sure the buffer is always safe
-        $buffer = _e($buffer, false);
-
         // process
         if (isset($ext[$tag])) {
             return call_user_func($ext[$tag], $arg, $buffer);
