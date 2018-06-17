@@ -14,7 +14,7 @@ class Color
     {
         if ($type === 0) {
             list($this->r, $this->g, $this->b) = $color;
-            list($this->h, $this->s, $this->l) = $this->rgbToHsl($color[0], $color[2], $color[1]);
+            list($this->h, $this->s, $this->l) = $this->rgbToHsl($color[0], $color[1], $color[2]);
         } else {
             list($this->h, $this->s, $this->l) = $color;
             list($this->r, $this->g, $this->b) = $this->hslToRgb($color[0], $color[1], $color[2]);
