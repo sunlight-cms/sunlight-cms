@@ -257,7 +257,7 @@ abstract class Core
         static::$fallbackLang = $options['fallback_lang'];
         static::$sessionEnabled = $options['session_enabled'];
         static::$sessionRegenerate = $options['session_regenerate'] || isset($_POST['_session_force_regenerate']);
-        static::$imageError = $root . 'images/image_error.png';
+        static::$imageError = $root . 'system/image_error.png';
 
         // define constants
         define('_root', $root);
