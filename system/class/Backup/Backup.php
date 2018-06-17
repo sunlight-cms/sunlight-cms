@@ -9,7 +9,6 @@ use Sunlight\Option\OptionSetNormalizerException;
 use Sunlight\Util\Filesystem;
 use Sunlight\Util\Json;
 use Sunlight\Util\Zip;
-use ZipArchive;
 
 /**
  * Backup archive
@@ -23,11 +22,11 @@ class Backup
     /** Data path (prefix) */
     const DATA_PATH = 'data';
 
-    /** @var ZipArchive */
+    /** @var \ZipArchive */
     protected $zip;
     /** @var string */
     protected $path;
-    /** @var array */
+    /** @var string[] */
     protected $directoryList = array();
     /** @var TemporaryFile[] */
     protected $temporaryFiles = array();
@@ -49,7 +48,7 @@ class Backup
      */
     function __construct($path)
     {
-        $this->zip = new ZipArchive();
+        $this->zip = new \ZipArchive();
         $this->path = $path;
     }
 
@@ -72,7 +71,7 @@ class Backup
      */
     function create()
     {
-        if (($errorCode = $this->zip->open($this->path, ZipArchive::CREATE | ZipArchive::OVERWRITE)) !== true) {
+        if (($errorCode = $this->zip->open($this->path, \ZipArchive::CREATE | \ZipArchive::OVERWRITE)) !== true) {
             throw new \RuntimeException(sprintf('Could not create ZIP archive at "%s" (code %d)', $this->path, $errorCode));
         }
 
@@ -89,7 +88,7 @@ class Backup
     {
         Filesystem::ensureFileExists($this->path);
 
-        if (($errorCode = $this->zip->open($this->path, ZipArchive::CREATE)) !== true) {
+        if (($errorCode = $this->zip->open($this->path, \ZipArchive::CREATE)) !== true) {
             throw new \RuntimeException(sprintf('Could not open ZIP archive at "%s" (code %d)', $this->path, $errorCode));
         }
 
@@ -158,7 +157,7 @@ class Backup
     /**
      * Get the underlying ZIP archive for external modification
      *
-     * @return ZipArchive
+     * @return \ZipArchive
      */
     function getArchive()
     {

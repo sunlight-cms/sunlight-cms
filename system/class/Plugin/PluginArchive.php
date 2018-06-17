@@ -4,13 +4,12 @@ namespace Sunlight\Plugin;
 
 use Sunlight\Util\Filesystem;
 use Sunlight\Util\Zip;
-use ZipArchive;
 
 class PluginArchive
 {
     /** @var PluginManager */
     protected $manager;
-    /** @var ZipArchive */
+    /** @var \ZipArchive */
     protected $zip;
     /** @var string */
     protected $path;
@@ -36,7 +35,7 @@ class PluginArchive
     function __construct(PluginManager $manager, $path)
     {
         $this->manager = $manager;
-        $this->zip = new ZipArchive();
+        $this->zip = new \ZipArchive();
         $this->path = $path;
     }
 
@@ -104,7 +103,7 @@ class PluginArchive
         if (!$this->open) {
             Filesystem::ensureFileExists($this->path);
 
-            if (($errorCode = $this->zip->open($this->path, ZipArchive::CREATE)) !== true) {
+            if (($errorCode = $this->zip->open($this->path, \ZipArchive::CREATE)) !== true) {
                 throw new \RuntimeException(sprintf('Could not open ZIP archive at "%s" (code %d)', $this->path, $errorCode));
             }
 

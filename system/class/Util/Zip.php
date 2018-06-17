@@ -2,8 +2,6 @@
 
 namespace Sunlight\Util;
 
-use ZipArchive;
-
 /**
  * Zip archive helper
  */
@@ -15,34 +13,70 @@ abstract class Zip
     const PATH_SUB = 1;
     /** Path mode - none (files only, no directories) */
     const PATH_NONE = 2;
+    /** Default big file treshold */
+    const DEFAULT_BIG_FILE_THRESHOLD = 500000;
 
     /**
      * Extract a single file
      *
-     * @param ZipArchive $zip
-     * @param string     $archivePath
-     * @param string     $targetPath
+     * @param \ZipArchive $zip
+     * @param string      $archivePath
+     * @param string      $targetPath
+     * @param int|null    $bigFileThreshold
      * @throws \InvalidArgumentException if archive path is not valid
      * @return bool
      */
-    static function extractFile(ZipArchive $zip, $archivePath, $targetPath)
+    static function extractFile(\ZipArchive $zip, $archivePath, $targetPath, $bigFileThreshold = null)
     {
-        if (substr($archivePath, -1) !== '/') {
-            $source = $zip->getStream($archivePath);
+        $stat = $zip->statName($archivePath);
+
+        if ($stat === false) {
+            throw new \InvalidArgumentException(sprintf('Entry "%s" was not found in the archive', $archivePath));
+        }
+
+        return static::extractFileEntry($zip, $stat, $targetPath, $bigFileThreshold);
+    }
+
+    /**
+     * Extract a single entry
+     *
+     * @param \ZipArchive $zip
+     * @param array       $stat
+     * @param string      $targetPath
+     * @param int|null    $bigFileThreshold
+     * @return bool
+     */
+    static function extractFileEntry(\ZipArchive $zip, array $stat, $targetPath, $bigFileThreshold = null)
+    {
+        if (substr($stat['name'], -1) === '/') {
+            // empty dir
+            return false;
+        }
+
+        if ($stat['size'] > ($bigFileThreshold ?: static::DEFAULT_BIG_FILE_THRESHOLD)) {
+            // extract big files using streams
+            // (this is slower but also less memory intensive)
+            $source = $zip->getStream($stat['name']);
             if ($source === false) {
-                throw new \InvalidArgumentException(sprintf('Could not get stream for "%s"', $archivePath));
+                throw new \InvalidArgumentException(sprintf('Could not get stream for "%s"', $stat['name']));
             }
 
             $targetPath = fopen($targetPath, 'w');
 
-            stream_copy_to_stream($source, $targetPath);
+            $bytesWritten = stream_copy_to_stream($source, $targetPath);
 
             fclose($source);
             fclose($targetPath);
 
-            return true;
+            return $bytesWritten = $stat['size'];
         } else {
-            return false;
+            // extract small files by getting all the data at once
+            $data = $zip->getFromIndex($stat['index']);
+            if ($data === false) {
+                throw new \InvalidArgumentException(sprintf('Could not get data for "%s"', $stat['name']));
+            }
+
+            return file_put_contents($targetPath, $data) === $stat['size'];
         }
     }
 
@@ -56,19 +90,21 @@ abstract class Zip
      * recursive (1)            extract subdirectories 1/0
      * exclude_prefix (-)       a common prefix to exclude from subpaths (e.g. "foo/")
      *                          (the trailing slash is important)
+     * big_file_threshold (-)
      *
-     * @param ZipArchive      $zip
+     * @param \ZipArchive     $zip
      * @param string[]|string $directories archive directory paths (e.g. "foo", "foo/bar" or "" for root)
      * @param string          $targetPath  path where to extract the files to
      * @param array           $options
      */
-    static function extractDirectories(ZipArchive $zip, $directories, $targetPath, array $options = array())
+    static function extractDirectories(\ZipArchive $zip, $directories, $targetPath, array $options = array())
     {
         $options += array(
             'path_mode' => static::PATH_FULL,
             'dir_mode' => 0777,
             'recursive' => true,
             'exclude_prefix' => null,
+            'big_file_threshold' => null,
         );
 
         $targetPath = realpath($targetPath);
@@ -123,7 +159,7 @@ abstract class Zip
                         }
 
                         // extract the file
-                        static::extractFile($zip, $stat['name'], $targetDir . $fileName);
+                        static::extractFileEntry($zip, $stat, $targetDir . $fileName, $options['big_file_threshold']);
                     }
                 }
             }
