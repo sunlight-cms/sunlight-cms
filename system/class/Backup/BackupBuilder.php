@@ -29,10 +29,12 @@ class BackupBuilder
         'robots.txt',
         'favicon.ico',
     );
+
     /** @var string[] */
     protected $emptyDirPathList = array(
         'images/thumb',
     );
+
     /** @var array[] name => paths */
     protected $dynamicPathMap = array(
         'plugins' => array('plugins'),
@@ -48,8 +50,10 @@ class BackupBuilder
             'images/galleries',
         ),
     );
+
     /** @var bool[] name => true */
     protected $disabledDynamicPathMap = array();
+
     /** @var bool[] name => true */
     protected $optionalDynamicPathMap = array(
         'upload' => true,
@@ -57,19 +61,24 @@ class BackupBuilder
         'images_articles' => true,
         'images_galleries' => true,
     );
-    /** @var array[] regex list */
+
+    /** @var array[] pattern list */
     protected $includedPathMap = array(
-        '{images/[^/]+$}AD' => array('static' => true, 'dynamic' => true),
-        '{system/(backup|tmp|cache)/\.htaccess$}AD' => array('static' => true, 'dynamic' => false),
+        'system/backup/.htaccess' => array('static' => true, 'dynamic' => false),
+        'system/backup/.gitkeep' => array('static' => true, 'dynamic' => false),
+        'system/cache/.htaccess' => array('static' => true, 'dynamic' => false),
+        'system/cache/.gitkeep' => array('static' => true, 'dynamic' => false),
+        'system/tmp/.htaccess' => array('static' => true, 'dynamic' => false),
+        'system/tmp/.gitkeep' => array('static' => true, 'dynamic' => false),
     );
-    /** @var array[] regex list */
+
+    /** @var array[] pattern list */
     protected $excludedPathMap = array(
-        '{system/backup/}A' => array('static' => true, 'dynamic' => true),
-        '{system/cache/}A' => array('static' => true, 'dynamic' => true),
-        '{system/tmp/}A' => array('static' => true, 'dynamic' => true),
-        '{plugins/.composer/}A' => array('static' => true, 'dynamic' => true),
-        '{images/}A' => array('static' => true, 'dynamic' => false),
+        'system/backup/*' => array('static' => true, 'dynamic' => true),
+        'system/cache/*' => array('static' => true, 'dynamic' => true),
+        'system/tmp/*' => array('static' => true, 'dynamic' => true),
     );
+
     /* @var bool */
     protected $databaseDumpEnabled = true;
 
@@ -122,7 +131,7 @@ class BackupBuilder
     /**
      * Get list of empty directories
      *
-     * @return array
+     * @return string[]
      */
     function getEmptyDirectories()
     {
@@ -307,14 +316,14 @@ class BackupBuilder
     /**
      * Make a path included
      *
-     * @param string $regexp
+     * @param string $pattern
      * @param bool   $static  affect static paths 1/0
      * @param bool   $dynamic affect dynamic paths 1/0
      * @return static
      */
-    function includePath($regexp, $static = true, $dynamic = true)
+    function includePath($pattern, $static = true, $dynamic = true)
     {
-        $this->includedPathMap[$regexp] = array('static' => $static, 'dynamic' => $dynamic);
+        $this->includedPathMap[$pattern] = array('static' => $static, 'dynamic' => $dynamic);
 
         return $this;
     }
@@ -322,14 +331,14 @@ class BackupBuilder
     /**
      * Make a path excluded
      *
-     * @param string $regexp
+     * @param string $pattern
      * @param bool   $static  affect static paths 1/0
      * @param bool   $dynamic affect dynamic paths 1/0
      * @return static
      */
-    function excludePath($regexp, $static = true, $dynamic = true)
+    function excludePath($pattern, $static = true, $dynamic = true)
     {
-        $this->excludedPathMap[$regexp] = array('static' => $static, 'dynamic' => $dynamic);
+        $this->excludedPathMap[$pattern] = array('static' => $static, 'dynamic' => $dynamic);
 
         return $this;
     }
@@ -412,9 +421,11 @@ class BackupBuilder
                 return $that->filterPath($dataPath, true, false);
             });
         }
+
         foreach ($this->emptyDirPathList as $path) {
             $backup->addEmptyDirectory($path);
         }
+
         foreach ($this->dynamicPathMap as $name => $paths) {
             $enabled = !$this->isDynamicPathOptional($name) || $this->isDynamicPathEnabled($name);
 
@@ -468,28 +479,28 @@ class BackupBuilder
      */
     function filterPath($dataPath, $isStatic = false, $isDynamic = false)
     {
-        foreach ($this->includedPathMap as $regex => $options) {
+        foreach ($this->includedPathMap as $pattern => $options) {
             if (
                 (
                     $isStatic && $options['static']
                     || $isDynamic && $options['dynamic']
                     || !$isDynamic && !$isStatic
                 )
-                && preg_match($regex, $dataPath)
+                && fnmatch($pattern, $dataPath)
             ) {
                 // included path matched - allow
                 return true;
             }
         }
 
-        foreach ($this->excludedPathMap as $regex => $options) {
+        foreach ($this->excludedPathMap as $pattern => $options) {
             if (
                 (
                     $isStatic && $options['static']
                     || $isDynamic && $options['dynamic']
                     || !$isDynamic && !$isStatic
                 )
-                && preg_match($regex, $dataPath)
+                && fnmatch($pattern, $dataPath)
             ) {
                 // exluded path matched - skip
                 return false;

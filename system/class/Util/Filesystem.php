@@ -146,13 +146,29 @@ abstract class Filesystem
 
         return $result;
     }
+
+    /**
+     * Create directory iterator
+     *
+     * @param string $path
+     * @return \FilesystemIterator|\SplFileInfo[]
+     */
+    static function createIterator($path)
+    {
+        return new \FilesystemIterator(
+            $path,
+            \FilesystemIterator::CURRENT_AS_FILEINFO
+            | \FilesystemIterator::SKIP_DOTS
+            | \FilesystemIterator::UNIX_PATHS
+        );
+    }
     
     /**
      * Create recursive directory iterator
      *
      * @param string $path
      * @param int    $flags
-     * @return \RecursiveIteratorIterator
+     * @return \RecursiveIteratorIterator|\SplFileInfo[]
      */
     static function createRecursiveIterator($path, $flags = \RecursiveIteratorIterator::SELF_FIRST)
     {

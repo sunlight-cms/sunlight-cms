@@ -77,13 +77,12 @@ Extend::call('admin.backup.builder', array(
 // spocitat velikosti
 $computePathSize = function ($path) {
     $size = 0;
-    $fullPath = _root . $path;
 
-    if (file_exists($fullPath)) {
-        if (is_dir($fullPath)) {
-            $size = Filesystem::getDirectorySize($fullPath);
+    if (file_exists($path)) {
+        if (is_dir($path)) {
+            $size = Filesystem::getDirectorySize($path);
         } else {
-            $size = filesize($fullPath);
+            $size = filesize($path);
         }
     }
 
@@ -92,13 +91,13 @@ $computePathSize = function ($path) {
 
 $static_size = 0;
 foreach ($backup_builder->getStaticPaths() as $path) {
-    $static_size += $computePathSize($path);
+    $static_size += $computePathSize(_root . $path);
 }
 
 foreach ($backup_dynpath_choices as $name => &$options) {
     $size = 0;
     foreach ($backup_builder->getDynamicPath($name) as $path) {
-        $size += $computePathSize($path);
+        $size += $computePathSize(_root . $path);
     }
 
     $options['size'] = $size;

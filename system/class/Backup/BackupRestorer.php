@@ -105,6 +105,11 @@ class BackupRestorer
             return false;
         }
 
+        // preload all system classes before any directories are restored
+        if(!empty($directories)) {
+            $this->preloadAllSystemClasses();
+        }
+
         // load database
         if ($database) {
             if (!$this->backup->getMetaData('is_patch')) {
@@ -119,12 +124,22 @@ class BackupRestorer
         }
 
         // filesystem cleanup
+        $systemRealPath = realpath(_root . 'system');
+
         foreach ($directoriesToPurge as $directory) {
-            Filesystem::purgeDirectory($directory, array('keep_dir' => true));
+            if (realpath($directory) === $systemRealPath) {
+                // the "system" directory needs special handling because backups are stored in it
+                $this->purgeSystemDirectory();
+            } else {
+                // other dirs
+                Filesystem::purgeDirectory($directory, array('keep_dir' => true));
+            }
         }
+
         foreach ($directoriesToRemove as $directory) {
             Filesystem::purgeDirectory($directory);
         }
+
         foreach ($filesToRemove as $file) {
             if (is_file($file)) {
                 unlink($file);
@@ -180,5 +195,41 @@ class BackupRestorer
         }
 
         return $normalizedPaths;
+    }
+
+    protected function preloadAllSystemClasses()
+    {
+        $paths = array(
+            _root . 'system/class',
+            _root . 'vendor/kuria/debug/src',
+            _root . 'vendor/kuria/error/src',
+            _root . 'vendor/kuria/event/src',
+        );
+
+        foreach ($paths as $path) {
+            foreach (Filesystem::createRecursiveIterator($path) as $file) {
+                if ($file->getExtension() === 'php') {
+                    include_once $file->getPathname();
+                }
+            }
+        }
+    }
+
+    protected function purgeSystemDirectory()
+    {
+        $preservedDirMap = array(
+            'backup' => true, // has the backups in it, including the current one
+            'cache' => true, // will be cleared at the end of restore()
+        );
+
+        foreach (Filesystem::createIterator(_root . 'system') as $item) {
+            if ($item->isDir()) {
+                if (!isset($preservedDirMap[$item->getFilename()])) {
+                    Filesystem::purgeDirectory($item->getPathname());
+                }
+            } else {
+                unlink($item->getPathname());
+            }
+        }
     }
 }
