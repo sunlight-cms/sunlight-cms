@@ -249,7 +249,7 @@ if ($continue) {
     }
 
     if ($message != "") {
-        $messages_code .= Message::warning($message);
+        $messages_code .= Message::warning($message, true);
     }
 
     $output .= "

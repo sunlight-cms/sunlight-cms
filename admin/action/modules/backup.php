@@ -185,7 +185,7 @@ if (!empty($_POST)) {
                             if ($success) {
                                 $message = Message::ok(_lang('admin.backup.restore.complete'));
                             } else {
-                                $message = Message::error(Message::renderList(Html::escapeArrayItems($errors), 'errors'));
+                                $message = Message::error(Message::renderList(Html::escapeArrayItems($errors), 'errors'), true);
                             }
                         }
 
@@ -244,7 +244,7 @@ if (!empty($_POST)) {
     </div>';
                         }
                     } else {
-                        $message = Message::warning(Message::renderList(Html::escapeArrayItems($errors), _lang('admin.backup.restore.errors.validate')));
+                        $message = Message::warning(Message::renderList(Html::escapeArrayItems($errors), _lang('admin.backup.restore.errors.validate')), true);
                     }
 
                 } elseif (isset($_POST['do_restore']['delete'])) {

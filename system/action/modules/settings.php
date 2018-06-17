@@ -245,7 +245,7 @@ if (isset($_POST['save'])) {
         return;
 
     } else {
-        $message .= Message::warning(Message::renderList($errors, 'errors'));
+        $message .= Message::warning(Message::renderList($errors, 'errors'), true);
     }
 
 } elseif (isset($_POST['download_personal_data'])) {

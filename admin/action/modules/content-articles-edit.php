@@ -273,7 +273,7 @@ if (isset($_POST['title'])) {
         return;
 
     } else {
-        $message = Message::warning(Message::renderList($error_log, 'errors'));
+        $message = Message::warning(Message::renderList($error_log, 'errors'), true);
         $query = $newdata + $query;
     }
 

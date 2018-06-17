@@ -20,12 +20,12 @@ if (isset($_FILES['archive']) && is_uploaded_file($_FILES['archive']['tmp_name']
             $extractedPlugins = $archive->extract($merge, $failedPlugins);
 
             if (!empty($extractedPlugins)) {
-                $message .= Message::ok(Message::renderList(Html::escapeArrayItems($extractedPlugins), _lang('admin.plugins.upload.extracted')));
+                $message .= Message::ok(Message::renderList(Html::escapeArrayItems($extractedPlugins), _lang('admin.plugins.upload.extracted')), true);
 
                 Core::$pluginManager->purgeCache();
             }
             if (!empty($failedPlugins)) {
-                $message .= Message::warning(Message::renderList(Html::escapeArrayItems($failedPlugins), _lang('admin.plugins.upload.failed' . (!$merge ? '.no_merge' : ''))));
+                $message .= Message::warning(Message::renderList(Html::escapeArrayItems($failedPlugins), _lang('admin.plugins.upload.failed' . (!$merge ? '.no_merge' : ''))), true);
             }
         } else {
             $message = Message::warning(_lang('admin.plugins.upload.no_plugins'));

@@ -160,7 +160,7 @@ if (isset($_GET['confirm'])) {
             IpLog::update(_iplog_anti_spam);
             $user_data_valid = true;
         } else {
-            $message = Message::warning(Message::renderList($errors, 'errors'));
+            $message = Message::warning(Message::renderList($errors, 'errors'), true);
         }
 
     }

@@ -137,7 +137,7 @@ if (isset($_POST['question'])) {
         }
 
     } else {
-        $message = Message::warning(Message::renderList($errors, 'errors'));
+        $message = Message::warning(Message::renderList($errors, 'errors'), true);
     }
 
 }
