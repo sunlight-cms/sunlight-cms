@@ -40,52 +40,52 @@ abstract class Core
     const ENV_SCRIPT = 'script';
 
     /** @var float */
-    public static $start;
+    static $start;
     /** @var string */
-    public static $appId;
+    static $appId;
     /** @var string */
-    public static $secret;
+    static $secret;
     /** @var string */
-    public static $url;
+    static $url;
     /** @var string */
-    public static $fallbackLang;
+    static $fallbackLang;
     /** @var bool */
-    public static $sessionEnabled;
+    static $sessionEnabled;
     /** @var bool */
-    public static $sessionRegenerate;
+    static $sessionRegenerate;
     /** @var string|null */
-    public static $sessionPreviousId;
+    static $sessionPreviousId;
 
     /** @var ClassLoader */
-    public static $classLoader;
+    static $classLoader;
     /** @var ErrorHandler */
-    public static $errorHandler;
+    static $errorHandler;
     /** @var EventEmitter */
-    public static $eventEmitter;
+    static $eventEmitter;
     /** @var PluginManager */
-    public static $pluginManager;
+    static $pluginManager;
     /** @var Cache */
-    public static $cache;
+    static $cache;
     /** @var LocalizationDictionary */
-    public static $lang;
+    static $lang;
 
     /** @var array|null */
-    public static $userData;
+    static $userData;
     /** @var array|null */
-    public static $groupData;
+    static $groupData;
 
     /** @var array */
-    public static $dangerousServerSideExt = array('php', 'php3', 'php4', 'php5', 'phtml', 'shtml', 'asp', 'py', 'cgi', 'htaccess');
+    static $dangerousServerSideExt = array('php', 'php3', 'php4', 'php5', 'phtml', 'shtml', 'asp', 'py', 'cgi', 'htaccess');
     /** @var array */
-    public static $imageExt = array('png', 'jpeg', 'jpg', 'gif');
+    static $imageExt = array('png', 'jpeg', 'jpg', 'gif');
     /** @var string */
-    public static $imageError;
+    static $imageError;
     /** @var int */
-    public static $hcmUid = 0;
+    static $hcmUid = 0;
     /** @var array */
-    public static $settings = array();
+    static $settings = array();
     /** @var array id => seconds */
-    public static $cronIntervals = array();
+    static $cronIntervals = array();
 
     /** @var bool */
     protected static $ready = false;

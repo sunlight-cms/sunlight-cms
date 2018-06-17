@@ -33,7 +33,7 @@ abstract class Plugin
     const AUTOLOAD_CLASSMAP = 2;
 
     /** @var array */
-    public static $commonOptions = array(
+    static $commonOptions = array(
         'name' => array('type' => 'string', 'required' => true),
         'description' => array('type' => 'string'),
         'author' => array('type' => 'string'),
