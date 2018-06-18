@@ -107,6 +107,10 @@ abstract class Zip
             'big_file_threshold' => null,
         );
 
+        if ($options['big_file_threshold'] === null && ($availMem = Environment::getAvailableMemory()) !== null) {
+            $options['big_file_threshold'] = (int) ($availMem * 0.75);
+        }
+
         $targetPath = realpath($targetPath);
 
         if ($targetPath === false) {

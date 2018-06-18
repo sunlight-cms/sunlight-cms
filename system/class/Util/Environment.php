@@ -75,7 +75,7 @@ abstract class Environment
      * Zjistit datovy limit dane konfiguracni volby PHP
      *
      * @param string $opt nazev option
-     * @return number|null cislo v bajtech nebo null (= neomezeno)
+     * @return int|null cislo v bajtech nebo null (= neomezeno)
      */
     static function phpIniLimit($opt)
     {
@@ -110,5 +110,21 @@ abstract class Environment
 
         // return
         return $value;
+    }
+
+    /**
+     * Zjistit dostupnou pamet
+     *
+     * @return int|null cislo v bajtech nebo null (= neomezeno)
+     */
+    static function getAvailableMemory()
+    {
+        $memlimit = static::phpIniLimit('memory_limit');
+
+        if ($memlimit === null) {
+            return null;
+        }
+
+        return $memlimit - memory_get_usage();
     }
 }

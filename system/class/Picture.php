@@ -93,15 +93,13 @@ class Picture
             }
 
             // kontrola dostupne pameti
-            if ($memlimit = Environment::phpIniLimit('memory_limit')) {
-                $availMem = floor($limit['memory'] * ($memlimit - memory_get_usage()));
-                $requiredMem = ceil(($imageInfo[0] * $imageInfo[1] * $imageInfo['bits'] * $channels / 8 + 65536) * 1.65);
+            $availMem = Environment::getAvailableMemory();
+            $requiredMem = ceil(($imageInfo[0] * $imageInfo[1] * $imageInfo['bits'] * $channels / 8 + 65536) * 1.65);
 
-                if ($requiredMem > $availMem) {
-                    // nedostatek pameti
-                    $code = 5;
-                    break;
-                }
+            if ($availMem !== null && $requiredMem > $limit['memory'] * $availMem) {
+                // nedostatek pameti
+                $code = 5;
+                break;
             }
 
             // nacteni rozmeru
