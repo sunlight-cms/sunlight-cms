@@ -324,6 +324,20 @@ class Backup
     }
 
     /**
+     * Get size of the database dump, if any
+     *
+     * @return int|null
+     */
+    function getDatabaseDumpSize()
+    {
+        $this->ensureOpenAndNotNew();
+
+        if ($this->hasDatabaseDump() && ($stat = $this->zip->statName(static::DB_DUMP_PATH))) {
+            return $stat['size'];
+        }
+    }
+
+    /**
      * Add database dump
      *
      * @param TemporaryFile $databaseDump
@@ -376,6 +390,26 @@ class Backup
             $targetPath,
             array('exclude_prefix' => $this->dataPathToArchivePath(''))
         );
+    }
+
+    /**
+     * Get total size of files and directories (excluding the database dump)
+     */
+    function getTotalDataSize()
+    {
+        $totalSize = 0;
+        $dataPathPrefix = $this->dataPathToArchivePath('');
+        $dataPathPrefixLength = strlen($dataPathPrefix);
+
+        for ($i = 0; $i < $this->zip->numFiles; ++$i) {
+            $stat = $this->zip->statIndex($i);
+
+            if (strncmp($stat['name'], $dataPathPrefix, $dataPathPrefixLength) === 0) {
+                $totalSize += $stat['size'];
+            }
+        }
+
+        return $totalSize;
     }
 
     /**

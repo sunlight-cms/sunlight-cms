@@ -1,5 +1,6 @@
 <?php
 
+use Sunlight\Admin\Admin;
 use Sunlight\Backup\Backup;
 use Sunlight\Backup\BackupBuilder;
 use Sunlight\Backup\BackupRestorer;
@@ -174,6 +175,17 @@ if (!empty($_POST)) {
                     if (empty($errors)) {
                         $success = false;
 
+                        $avail_mem = Environment::getAvailableMemory();
+                        $max_exec_time = ini_get('max_execution_time');
+                        $estimated_time = $backup_restorer->estimateFullRestorationTime();
+
+                        if ($max_exec_time && $max_exec_time < $estimated_time && !@set_time_limit($estimated_time)) {
+                            $modified_time_limit = true;
+                        } else {
+                            $modified_time_limit = false;
+                        }
+
+
                         if ($restoring) {
                             // obnovit
                             $directories = Arr::filterKeys($_POST, 'directory_');
@@ -190,6 +202,31 @@ if (!empty($_POST)) {
 
                         // zobrazit info
                         if (!$success) {
+                            $backup_size = filesize($backup_dir . '/' . $backup_file);
+                            $backup_size_display = GenericTemplates::renderFileSize($backup_size);
+                            $backup_size_warning = '';
+
+                            if (
+                                $avail_mem !== null && $avail_mem < 5000000 // 5MB
+                                || $max_exec_time && $max_exec_time < $estimated_time && !$modified_time_limit
+                            ) {
+                                $config_info = array();
+
+                                if ($memory_limit = Environment::phpIniLimit('memory_limit')) {
+                                    $config_info['memory_limit'] = GenericTemplates::renderFilesize($memory_limit);
+                                    $config_info['avail_mem'] = GenericTemplates::renderFilesize($avail_mem);
+                                }
+
+                                if ($max_exec_time) {
+                                    $config_info['max_execution_time'] = $max_exec_time . 's';
+                                }
+
+                                $config_info['estimated_time'] = $estimated_time;
+
+                                $backup_size_display .= ' <img src="images/icons/warn.png" class="icon" alt="warn">';
+                                $backup_size_warning = Message::warning(_lang('admin.backup.restore.size_warning', array('%config_info%' => json_encode($config_info))));
+                            }
+
                             $backup_metadata = $backup->getMetaData();
 
                             $message .= '<div class="well">
@@ -204,7 +241,7 @@ if (!empty($_POST)) {
             </tr>
             <tr>
                 <th>' . _lang('global.size') . '</th>
-                <td>' . GenericTemplates::renderFileSize(filesize($backup_dir . '/' . $backup_file)) . '</td>
+                <td>' . $backup_size_display . '</td>
             </tr>
             <tr>
                 <th>' . _lang('global.created_at') . '</th>
@@ -232,7 +269,8 @@ if (!empty($_POST)) {
             </tr>
         </table>
 
-        ' . Message::warning(_lang('admin.backup.restore.warning')) . '
+        ' . Admin::note(_lang('admin.backup.restore.notice')) . '
+        ' . $backup_size_warning . '
 
         <p>
             <input class="button small" type="submit" name="do_restore[restore]" onclick="return Sunlight.confirm()" value="' . _lang('admin.backup.restore.title') . '">

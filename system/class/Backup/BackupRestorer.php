@@ -166,6 +166,26 @@ class BackupRestorer
     }
 
     /**
+     * Get a pessimistic restoration time estimate
+     *
+     * @return int
+     */
+    function estimateFullRestorationTime()
+    {
+        $requiredTime = 2;
+
+        if ($this->backup->hasDatabaseDump()) {
+            // approx 500kB/s
+            $requiredTime += $this->backup->getDatabaseDumpSize() / 500000;
+        }
+
+        // approx 2M/s
+        $requiredTime += $this->backup->getTotalDataSize() / 2000000;
+
+        return (int) ceil($requiredTime);
+    }
+
+    /**
      * @param string[]      $paths
      * @param string[]|null $allowedValues      list of allowed values in $paths
      * @param bool          $addRootPath        prefix normalized paths with _root 1/0
