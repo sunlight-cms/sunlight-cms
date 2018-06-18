@@ -208,7 +208,7 @@ class BackupRestorer
 
         foreach ($paths as $path) {
             foreach (Filesystem::createRecursiveIterator($path) as $file) {
-                if ($file->getExtension() === 'php') {
+                if ($file->getExtension() === 'php' && substr($file->getFilename(), -9) !== 'Trait.php') {
                     include_once $file->getPathname();
                 }
             }
