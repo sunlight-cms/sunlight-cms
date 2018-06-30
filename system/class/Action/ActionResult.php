@@ -119,7 +119,7 @@ class ActionResult
      * Set result
      *
      * @param bool|null $result
-     * @return static
+     * @return $this
      */
     function setResult($result)
     {
@@ -152,7 +152,7 @@ class ActionResult
      * Set the messages
      *
      * @param Message[] $messages
-     * @return static
+     * @return $this
      */
     function setMessages(array $messages)
     {
@@ -165,7 +165,7 @@ class ActionResult
      * Add a message
      *
      * @param Message $message
-     * @return static
+     * @return $this
      */
     function addMessage(Message $message)
     {
@@ -198,7 +198,7 @@ class ActionResult
      * Set output
      *
      * @param string|null $output
-     * @return static
+     * @return $this
      */
     function setOutput($output)
     {

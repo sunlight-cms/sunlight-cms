@@ -89,7 +89,7 @@ class TreeManager
      * @param int   $parentNodeId
      * @param array $changeset
      * @param bool  $refresh
-     * @return static
+     * @return $this
      */
     function update($nodeId, $parentNodeId, array $changeset, $refresh = true)
     {
@@ -122,7 +122,7 @@ class TreeManager
      *
      * @param int  $nodeId
      * @param bool $orphanRemoval
-     * @return static
+     * @return $this
      */
     function delete($nodeId, $orphanRemoval = true)
     {
@@ -143,7 +143,7 @@ class TreeManager
      * Odstranit vsechny potomky uzlu
      *
      * @param int $nodeId
-     * @return static
+     * @return $this
      */
     function purge($nodeId)
     {
@@ -157,7 +157,7 @@ class TreeManager
      * Obnovit urovne stromu
      *
      * @param int|null $nodeId
-     * @return static
+     * @return $this
      */
     function refresh($nodeId = null)
     {
@@ -186,7 +186,7 @@ class TreeManager
      * Odstranit osirele uzly
      *
      * @param bool $refresh
-     * @return static
+     * @return $this
      */
     function purgeOrphaned($refresh = true)
     {

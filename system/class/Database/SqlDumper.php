@@ -61,7 +61,7 @@ class SqlDumper
      * Add table to dump
      *
      * @param string $table
-     * @return static
+     * @return $this
      */
     function addTable($table)
     {
@@ -74,7 +74,7 @@ class SqlDumper
      * Add tables to dump
      *
      * @param string[] $tables
-     * @return static
+     * @return $this
      */
     function addTables(array $tables)
     {
@@ -89,7 +89,7 @@ class SqlDumper
      * Set whether data should be dumped
      *
      * @param bool $dumpData
-     * @return static
+     * @return $this
      */
     function setDumpData($dumpData)
     {
@@ -102,7 +102,7 @@ class SqlDumper
      * Set whether table definitions should be dumped
      *
      * @param bool $dumpTables
-     * @return static
+     * @return $this
      */
     function setDumpTables($dumpTables)
     {
@@ -136,7 +136,7 @@ class SqlDumper
      * Set max packet size
      *
      * @param int|null $maxPacketSize
-     * @return static
+     * @return $this
      */
     function setMaxPacketSize($maxPacketSize)
     {

@@ -328,7 +328,7 @@ class Url
      * Remove query parameter
      *
      * @param string $name
-     * @return static
+     * @return $this
      */
     function remove($name)
     {
@@ -341,7 +341,7 @@ class Url
      * Remove multiple query parameters
      *
      * @param array $names
-     * @return static
+     * @return $this
      */
     function removeArr(array $names)
     {
@@ -356,7 +356,7 @@ class Url
      * Merge set of query parameters
      *
      * @param array $query
-     * @return static
+     * @return $this
      */
     function add(array $query)
     {

@@ -18,7 +18,7 @@ abstract class Action
      * Set whether exceptions should be catched
      *
      * @param bool $catchExceptions
-     * @return static
+     * @return $this
      */
     function setCatchExceptions($catchExceptions)
     {
@@ -31,7 +31,7 @@ abstract class Action
      * Set whether exceptions should be rendered
      *
      * @param bool $renderExceptions
-     * @return static
+     * @return $this
      */
     function setRenderExceptions($renderExceptions)
     {

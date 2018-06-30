@@ -96,7 +96,7 @@ class BackupBuilder
      * Toggle database dump
      *
      * @param bool $databaseDumpEnabled
-     * @return static
+     * @return $this
      */
     function setDatabaseDumpEnabled($databaseDumpEnabled)
     {
@@ -119,7 +119,7 @@ class BackupBuilder
      * Add a static path
      *
      * @param string $path path to a file or a directory, relative to system root
-     * @return static
+     * @return $this
      */
     function addStaticPath($path)
     {
@@ -142,7 +142,7 @@ class BackupBuilder
      * Add empty directory
      *
      * @param string $path path to a directory, relative to system root
-     * @return static
+     * @return $this
      */
     function addEmptyDirectory($path)
     {
@@ -192,7 +192,7 @@ class BackupBuilder
      * @param string $name  dynamic path name (consisting of [a-zA-Z0-9_] only)
      * @param array  $paths array of relative directory/file paths
      * @throws \InvalidArgumentException if the name is empty or contains illegal characters
-     * @return static
+     * @return $this
      */
     function addDynamicPath($name, array $paths)
     {
@@ -211,7 +211,7 @@ class BackupBuilder
      * Remove a dynamic path
      *
      * @param string $name dynamic path name
-     * @return static
+     * @return $this
      */
     function removeDynamicPath($name)
     {
@@ -240,7 +240,7 @@ class BackupBuilder
      *
      * @param string $name dynamic path name
      * @throws \OutOfBoundsException if no such dynamic path exists
-     * @return static
+     * @return $this
      */
     function disableDynamicPath($name)
     {
@@ -256,7 +256,7 @@ class BackupBuilder
      *
      * @param string $name dynamic path name
      * @throws \OutOfBoundsException if no such dynamic path exists
-     * @return static
+     * @return $this
      */
     function enableDynamicPath($name)
     {
@@ -286,7 +286,7 @@ class BackupBuilder
      *
      * @param string $name dynamic path name
      * @throws \OutOfBoundsException if no such dynamic path exists
-     * @return static
+     * @return $this
      */
     function makeDynamicPathOptional($name)
     {
@@ -302,7 +302,7 @@ class BackupBuilder
      *
      * @param string $name dynamic path name
      * @throws \OutOfBoundsException if no such dynamic path exists
-     * @return static
+     * @return $this
      */
     function makeDynamicPathRequired($name)
     {
@@ -319,7 +319,7 @@ class BackupBuilder
      * @param string $pattern
      * @param bool   $static  affect static paths 1/0
      * @param bool   $dynamic affect dynamic paths 1/0
-     * @return static
+     * @return $this
      */
     function includePath($pattern, $static = true, $dynamic = true)
     {
@@ -334,7 +334,7 @@ class BackupBuilder
      * @param string $pattern
      * @param bool   $static  affect static paths 1/0
      * @param bool   $dynamic affect dynamic paths 1/0
-     * @return static
+     * @return $this
      */
     function excludePath($pattern, $static = true, $dynamic = true)
     {

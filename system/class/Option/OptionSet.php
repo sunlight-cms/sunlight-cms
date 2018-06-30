@@ -50,7 +50,7 @@ class OptionSet
      * Add known indexes (additional allowed indexes)
      *
      * @param string[] $knownIndexes
-     * @return static
+     * @return $this
      */
     function addKnownIndexes(array $knownIndexes)
     {
@@ -63,7 +63,7 @@ class OptionSet
      * Set or replace known indexes (additional allowed indexes)
      *
      * @param string[] $knownIndexes
-     * @return static
+     * @return $this
      */
     function setKnownIndexes(array $knownIndexes)
     {
@@ -86,7 +86,7 @@ class OptionSet
      * Set whether to ignore unknown indexes
      *
      * @param bool $ignoreExtraIndexes
-     * @return static
+     * @return $this
      */
     function setIgnoreExtraIndexes($ignoreExtraIndexes)
     {
