@@ -58,7 +58,7 @@ if (!$success) {
 
     $output .= '
     <form action="' . $furl . '" method="post">
-    ' . Message::warning(sprintf(_lang('mod.stickytopic.text' . $unstick), $query['subject'])) . '
+    ' . Message::warning(sprintf(_lang('mod.stickytopic.text' . $unstick), $query['subject']), true) . '
     <input type="submit" name="doit" value="' . _lang('mod.stickytopic.submit' . $unstick) . '">
     ' . Xsrf::getInput() . '</form>
     ';

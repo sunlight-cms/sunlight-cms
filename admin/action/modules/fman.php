@@ -234,7 +234,7 @@ if ($continue) {
                             if (unlink($dir . $name)) {
                                 $message = Message::ok(_lang('admin.fman.msg.delete.done'));
                             } else {
-                                $message = Message::warning(_lang('admin.fman.msg.delete.failure'));
+                                $message = Message::warning(_lang('admin.fman.msg.delete.failure'), true);
                             }
                         } else {
                             $message = Message::warning(_lang('admin.fman.msg.disallowedextension'));
@@ -243,7 +243,7 @@ if ($continue) {
                         if (Filesystem::purgeDirectory($dir . $name, array(), $failedPath)) {
                             $message = Message::ok(_lang('admin.fman.msg.delete.done'));
                         } else {
-                            $message = Message::warning(_lang('admin.fman.msg.delete.failure', array('*failed_path*' => _e($failedPath))));
+                            $message = Message::warning(_lang('admin.fman.msg.delete.failure', array('*failed_path*' => _e($failedPath))), true);
                         }
                     }
                 }

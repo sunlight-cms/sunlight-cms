@@ -62,7 +62,7 @@ $furl = Router::module('movetopic', 'id=' . $id);
 
 $output .= '
 <form action="' . $furl . '" method="post">
-' . Message::warning(sprintf(_lang('mod.movetopic.text'), $query['subject'])) . '
+' . Message::warning(sprintf(_lang('mod.movetopic.text'), $query['subject']), true) . '
 <p>
 <select name="new_forum"' . (empty($forums) ? " disabled" : '') . '>
 ';

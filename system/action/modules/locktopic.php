@@ -58,7 +58,7 @@ if (!$success) {
 
     $output .= '
     <form action="' . $furl . '" method="post">
-    ' . Message::warning(sprintf(_lang('mod.locktopic.text' . $unlock), $query['subject'])) . '
+    ' . Message::warning(sprintf(_lang('mod.locktopic.text' . $unlock), $query['subject']), true) . '
     <input type="submit" name="doit" value="' . _lang('mod.locktopic.submit' . $unlock) . '">
     ' . Xsrf::getInput() . '</form>
     ';
