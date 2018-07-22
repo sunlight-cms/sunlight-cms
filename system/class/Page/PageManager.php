@@ -39,7 +39,7 @@ abstract class PageManager
         if ($extra_columns !== null) {
             $sql .= ',' . $extra_columns;
         }
-        $sql .= ' FROM ' . _root_table . ' AS page';
+        $sql .= ' FROM ' . _page_table . ' AS page';
         if ($extra_joins !== null) {
             $sql .= ' ' . $extra_joins;
         }
@@ -206,7 +206,7 @@ abstract class PageManager
             $columns = static::prepareTreeColumns($columns);
         }
 
-        return DB::queryRow('SELECT ' . DB::idtList($columns) . '  FROM ' . _root_table . ' WHERE id=' . DB::val($id));
+        return DB::queryRow('SELECT ' . DB::idtList($columns) . '  FROM ' . _page_table . ' WHERE id=' . DB::val($id));
     }
 
     /**
@@ -217,7 +217,7 @@ abstract class PageManager
     static function getTreeManager()
     {
         if (static::$treeManager === null) {
-            static::$treeManager = new TreeManager(_root_table);
+            static::$treeManager = new TreeManager(_page_table);
         }
 
         return static::$treeManager;
@@ -231,7 +231,7 @@ abstract class PageManager
     static function getTreeReader()
     {
         if (static::$treeReader === null) {
-            static::$treeReader = new TreeReader(_root_table);
+            static::$treeReader = new TreeReader(_page_table);
         }
 
         return static::$treeReader;
@@ -258,7 +258,7 @@ abstract class PageManager
         }
 
         $columns = DB::idtList(array_merge(static::getTreeReader()->getSystemColumns(), static::prepareTreeColumns($extraColumns)));
-        $query = DB::query('SELECT ' . $columns . ' FROM ' . _root_table . ' WHERE ' . $where . ' ORDER BY ord');
+        $query = DB::query('SELECT ' . $columns . ' FROM ' . _page_table . ' WHERE ' . $where . ' ORDER BY ord');
 
         $pages = array();
         while ($page = DB::row($query)) {

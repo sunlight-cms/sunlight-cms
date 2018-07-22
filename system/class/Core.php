@@ -386,7 +386,7 @@ abstract class Core
             $preloadCond = 'web=1';
         }
 
-        $query = DB::query('SELECT var,val,constant FROM ' . _settings_table . ' WHERE preload=1 AND ' . $preloadCond, true);
+        $query = DB::query('SELECT var,val,constant FROM ' . _setting_table . ' WHERE preload=1 AND ' . $preloadCond, true);
 
         if (DB::error()) {
             static::systemFailure(
@@ -634,7 +634,7 @@ abstract class Core
                         );
 
                         // fetch user data
-                        $userData = DB::queryRow('SELECT * FROM ' . _users_table . ' WHERE id=' . DB::val($cookie['id']));
+                        $userData = DB::queryRow('SELECT * FROM ' . _user_table . ' WHERE id=' . DB::val($cookie['id']));
                         if ($userData === false) {
                             // user not found
                             $errorCode = 2;
@@ -680,7 +680,7 @@ abstract class Core
 
             // fetch user data
             if (!$userData) {
-                $userData = DB::queryRow('SELECT * FROM ' . _users_table . ' WHERE id=' . DB::val($_SESSION['user_id']));
+                $userData = DB::queryRow('SELECT * FROM ' . _user_table . ' WHERE id=' . DB::val($_SESSION['user_id']));
                 if ($userData === false) {
                     // user not found
                     $errorCode = 6;
@@ -703,7 +703,7 @@ abstract class Core
             }
 
             // fetch group data
-            $groupData = DB::queryRow('SELECT * FROM ' . _groups_table . ' WHERE id=' . DB::val($userData['group_id']));
+            $groupData = DB::queryRow('SELECT * FROM ' . _user_group_table . ' WHERE id=' . DB::val($userData['group_id']));
             if ($groupData === false) {
                 // group data not found
                 $errorCode = 9;
@@ -730,7 +730,7 @@ abstract class Core
 
             // record activity time (max once per 30 seconds)
             if (time() - $userData['activitytime'] > 30) {
-                DB::update(_users_table, 'id=' . DB::val($userData['id']), array(
+                DB::update(_user_table, 'id=' . DB::val($userData['id']), array(
                     'activitytime' => time(),
                     'ip' => _user_ip,
                 ));
@@ -757,7 +757,7 @@ abstract class Core
             );
 
             // fetch anonymous group data
-            $groupData = DB::queryRow('SELECT * FROM ' . _groups_table . ' WHERE id=' . _group_guests);
+            $groupData = DB::queryRow('SELECT * FROM ' . _user_group_table . ' WHERE id=' . _group_guests);
             if ($groupData === false) {
                 throw new \RuntimeException(sprintf('Anonymous user group was not found (id=%s)', _group_guests));
             }
@@ -816,7 +816,7 @@ abstract class Core
         } else {
             // language plugin was not found
             if ($usedLoginLanguage) {
-                DB::update(_users_table, 'id=' . _user_id, array('language' => ''));
+                DB::update(_user_table, 'id=' . _user_id, array('language' => ''));
             } else {
                 static::updateSetting('language', static::$fallbackLang);
             }
@@ -947,7 +947,7 @@ abstract class Core
      */
     static function loadSetting($name, $default = null)
     {
-        $result = DB::queryRow('SELECT val FROM ' . _settings_table . ' WHERE var=' . DB::val($name));
+        $result = DB::queryRow('SELECT val FROM ' . _setting_table . ' WHERE var=' . DB::val($name));
         if ($result !== false) {
             return $result['val'];
         } else {
@@ -966,7 +966,7 @@ abstract class Core
         $names = (array) $names;
 
         $settings = array();
-        $query = DB::query('SELECT var,val FROM ' . _settings_table . ' WHERE var IN(' . DB::arr($names) . ')');
+        $query = DB::query('SELECT var,val FROM ' . _setting_table . ' WHERE var IN(' . DB::arr($names) . ')');
         while ($row = DB::row($query)) {
             $settings[$row['var']] = $row['val'];
         }
@@ -983,7 +983,7 @@ abstract class Core
     static function loadSettingsByType($type)
     {
         $settings = array();
-        $query = DB::query('SELECT var,val FROM ' . _settings_table . ' WHERE type' . ($type === null ? ' IS NULL' : '=' . DB::val($type)));
+        $query = DB::query('SELECT var,val FROM ' . _setting_table . ' WHERE type' . ($type === null ? ' IS NULL' : '=' . DB::val($type)));
         while ($row = DB::row($query)) {
             $settings[$row['var']] = $row['val'];
         }
@@ -999,7 +999,7 @@ abstract class Core
      */
     static function updateSetting($name, $newValue)
     {
-        DB::update(_settings_table, 'var=' . DB::val($name), array('val' => (string) $newValue));
+        DB::update(_setting_table, 'var=' . DB::val($name), array('val' => (string) $newValue));
     }
 
     /**

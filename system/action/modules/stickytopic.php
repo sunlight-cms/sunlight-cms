@@ -2,7 +2,7 @@
 
 use Sunlight\Database\Database as DB;
 use Sunlight\Message;
-use Sunlight\Post;
+use Sunlight\Comment\Comment;
 use Sunlight\Router;
 use Sunlight\User;
 use Sunlight\Util\Request;
@@ -22,13 +22,13 @@ $message = '';
 $unstick = '';
 $id = (int) Request::get('id');
 $userQuery = User::createQuery('p.author');
-$query = DB::queryRow("SELECT p.id,p.time,p.subject,p.sticky,r.slug forum_slug," . $userQuery['column_list'] . " FROM " . _posts_table . " p JOIN " . _root_table . " r ON(p.home=r.id) " . $userQuery['joins'] . " WHERE p.id=" . $id . " AND p.type=" . _post_forum_topic . " AND p.xhome=-1");
+$query = DB::queryRow("SELECT p.id,p.time,p.subject,p.sticky,r.slug forum_slug," . $userQuery['column_list'] . " FROM " . _comment_table . " p JOIN " . _page_table . " r ON(p.home=r.id) " . $userQuery['joins'] . " WHERE p.id=" . $id . " AND p.type=" . _post_forum_topic . " AND p.xhome=-1");
 if ($query !== false) {
     $_index['backlink'] = Router::topic($query['id'], $query['forum_slug']);
     if ($query['sticky']) {
         $unstick = '2';
     }
-    if (!Post::checkAccess($userQuery, $query) || !_priv_stickytopics) {
+    if (!Comment::checkAccess($userQuery, $query) || !_priv_stickytopics) {
         $_index['is_accessible'] = false;
         return;
     }
@@ -40,7 +40,7 @@ if ($query !== false) {
 /* ---  ulozeni  --- */
 
 if (isset($_POST['doit'])) {
-    DB::update(_posts_table, 'id=' . DB::val($id), array('sticky' => (($query['sticky'] == 1) ? 0 : 1)));
+    DB::update(_comment_table, 'id=' . DB::val($id), array('sticky' => (($query['sticky'] == 1) ? 0 : 1)));
     $message = Message::ok(_lang('mod.stickytopic.ok' . $unstick));
     $success = true;
 }

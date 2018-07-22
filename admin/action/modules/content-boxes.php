@@ -18,12 +18,12 @@ if (isset($_POST['action'])) {
                 $changeset[$boxId] = array('ord' => (int) $boxOrd);
             }
 
-            DB::updateSetMulti(_boxes_table, 'id', $changeset);
+            DB::updateSetMulti(_box_table, 'id', $changeset);
             $message = Message::ok(_lang('admin.content.form.ord.saved'));
             break;
 
         case 'delete':
-            DB::delete(_boxes_table, 'id=' . DB::val($param));
+            DB::delete(_box_table, 'id=' . DB::val($param));
             $message = Message::ok(_lang('global.deleted'));
             break;
     }
@@ -32,7 +32,7 @@ if (isset($_POST['action'])) {
 // fetch boxes
 $boxes = array();
 $unassigned_boxes = array();
-$query = DB::query('SELECT id, ord, title, visible, public, level, template, layout, slot, page_ids, page_children, class FROM ' . _boxes_table . ' ORDER BY template ASC, layout ASC, ord ASC');
+$query = DB::query('SELECT id, ord, title, visible, public, level, template, layout, slot, page_ids, page_children, class FROM ' . _box_table . ' ORDER BY template ASC, layout ASC, ord ASC');
 
 while ($box = DB::row($query)) {
     if (

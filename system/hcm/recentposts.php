@@ -2,7 +2,7 @@
 
 use Sunlight\Database\Database as DB;
 use Sunlight\GenericTemplates;
-use Sunlight\Post;
+use Sunlight\Comment\Comment;
 use Sunlight\Router;
 use Sunlight\User;
 use Sunlight\Util\Arr;
@@ -41,11 +41,11 @@ return function ($limit = null, $stranky = "", $typ = null) {
     }
 
     // dotaz
-    list($columns, $joins, $cond) = Post::createFilter('post', $types, $homes);
+    list($columns, $joins, $cond) = Comment::createFilter('post', $types, $homes);
     $userQuery = User::createQuery('post.author');
     $columns .= ',' . $userQuery['column_list'];
     $joins .= ' ' . $userQuery['joins'];
-    $query = DB::query("SELECT " . $columns . " FROM " . _posts_table . " post " . $joins . " WHERE " . $cond . " ORDER BY id DESC LIMIT " . $limit);
+    $query = DB::query("SELECT " . $columns . " FROM " . _comment_table . " post " . $joins . " WHERE " . $cond . " ORDER BY id DESC LIMIT " . $limit);
 
     while ($item = DB::row($query)) {
         list($homelink, $hometitle) = Router::post($item);
@@ -59,7 +59,7 @@ return function ($limit = null, $stranky = "", $typ = null) {
         $result .= "
 <div class='list-item'>
 <h2 class='list-title'><a href='" . $homelink . "'>" . $hometitle . "</a></h2>
-<p class='list-perex'>" . StringManipulator::ellipsis(strip_tags(Post::render($item['text'])), 256) . "</p>
+<p class='list-perex'>" . StringManipulator::ellipsis(strip_tags(Comment::render($item['text'])), 256) . "</p>
 " . GenericTemplates::renderInfos(array(
     array(_lang('global.postauthor'), $authorname),
     array(_lang('global.time'), GenericTemplates::renderTime($item['time'], 'post')),

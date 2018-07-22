@@ -358,10 +358,10 @@ if ($continue) {
                     $galid = (int) Request::post('gallery');
 
                     // vlozeni obrazku
-                    if (DB::count(_root_table, 'id=' . DB::val($galid) . ' AND type=' . _page_gallery) !== 0) {
+                    if (DB::count(_page_table, 'id=' . DB::val($galid) . ' AND type=' . _page_gallery) !== 0) {
 
                         // nacteni nejmensiho poradoveho cisla
-                        $smallestord = DB::queryRow("SELECT ord FROM " . _images_table . " WHERE home=" . $galid . " ORDER BY ord LIMIT 1");
+                        $smallestord = DB::queryRow("SELECT ord FROM " . _gallery_image_table . " WHERE home=" . $galid . " ORDER BY ord LIMIT 1");
                         if ($smallestord !== false) {
                             $smallestord = $smallestord['ord'];
                         } else {
@@ -369,7 +369,7 @@ if ($continue) {
                         }
 
                         // posunuti poradovych cisel
-                        DB::update(_images_table, 'home=' . $galid, array('ord' => DB::raw('ord+' . (count($_POST) - 2))));
+                        DB::update(_gallery_image_table, 'home=' . $galid, array('ord' => DB::raw('ord+' . (count($_POST) - 2))));
 
                         // cyklus
                         $sql = "";
@@ -393,7 +393,7 @@ if ($continue) {
                         // vlozeni
                         if ($counter != 0) {
                             $sql = trim($sql, ",");
-                            DB::query("INSERT INTO " . _images_table . " (home,ord,title,prev,full) VALUES " . $sql);
+                            DB::query("INSERT INTO " . _gallery_image_table . " (home,ord,title,prev,full) VALUES " . $sql);
                         }
 
                         // zprava
@@ -560,7 +560,7 @@ if ($continue) {
       <tr>
       <th>" . _lang('admin.fman.addtogallery.galllery') . "</th>
       <td>
-      " . Admin::rootSelect("gallery", array('type' => _page_gallery)) . "
+      " . Admin::pageSelect("gallery", array('type' => _page_gallery)) . "
       " . $images . "
       </td>
       </tr>

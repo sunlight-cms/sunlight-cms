@@ -136,7 +136,7 @@ abstract class PageLister
                 $changeset[$id] = array('ord' => (int) $ord);
             }
 
-            DB::updateSetMulti(_root_table, 'id', $changeset);
+            DB::updateSetMulti(_page_table, 'id', $changeset);
 
             return true;
         } else {
@@ -186,7 +186,7 @@ abstract class PageLister
         );
 
         // check current page
-        if (static::$config['current_page'] !== null && !DB::count(_root_table, 'id=' . DB::val(static::$config['current_page']))) {
+        if (static::$config['current_page'] !== null && !DB::count(_page_table, 'id=' . DB::val(static::$config['current_page']))) {
             static::$config['current_page'] = null;
         }
 
@@ -404,7 +404,7 @@ abstract class PageLister
         $userHasRight = User::hasPrivilege('admin' . static::$pageTypes[$page['type']]);
         $isAccessible = $userHasRight;
 
-        Extend::call('admin.root.list.access', array(
+        Extend::call('admin.page.list.access', array(
             'page' => $page,
             'user_has_right' => $userHasRight,
             'is_accessible' => &$isAccessible,
@@ -427,7 +427,7 @@ abstract class PageLister
         // prepare
         $typeName = static::$pageTypes[$page['type']];
         $isAccessible = $page['_is_accessible'];
-        Extend::call('admin.root.list.item', array(
+        Extend::call('admin.page.list.item', array(
             'item' => &$page,
             'options' => &$options,
             'is_accessible' => $isAccessible,
@@ -550,7 +550,7 @@ abstract class PageLister
         // show
         if ($page['type'] != _page_separator) {
             $actions['show'] = array(
-                'url' => Router::root($page['id'], $page['slug']),
+                'url' => Router::page($page['id'], $page['slug']),
                 'new_window' => true,
                 'icon' => 'images/icons/show.png',
                 'label' => _lang('global.show'),
@@ -589,7 +589,7 @@ abstract class PageLister
             );
         }
 
-        Extend::call('admin.root.list.actions', array(
+        Extend::call('admin.page.list.actions', array(
             'page' => $page,
             'has_access' => $hasAccess,
             'actions' => &$actions

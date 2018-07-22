@@ -70,7 +70,7 @@ if (isset($_POST['save'])) {
         $usernamechange = false;
         if ($username != _user_name) {
             if (_priv_changeusername || mb_strtolower($username) == mb_strtolower(_user_name)) {
-                if (DB::count(_users_table, '(username=' . DB::val($username) . ' OR publicname=' . DB::val($username) . ') AND id!=' . _user_id) === 0) {
+                if (DB::count(_user_table, '(username=' . DB::val($username) . ' OR publicname=' . DB::val($username) . ') AND id!=' . _user_id) === 0) {
                     $usernamechange = true;
                 } else {
                     $errors[] = _lang('user.msg.userexists');
@@ -86,7 +86,7 @@ if (isset($_POST['save'])) {
     if (mb_strlen($publicname) > 24) {
         $errors[] = _lang('user.msg.publicnametoolong');
     } elseif ($publicname != $userdata['publicname'] && $publicname != "") {
-        if (DB::count(_users_table, '(publicname=' . DB::val($publicname) . ' OR username=' . DB::val($publicname) . ') AND id!=' . _user_id) !== 0) {
+        if (DB::count(_user_table, '(publicname=' . DB::val($publicname) . ' OR username=' . DB::val($publicname) . ') AND id!=' . _user_id) !== 0) {
             $errors[] = _lang('user.msg.publicnameexists');
         }
     }
@@ -105,7 +105,7 @@ if (isset($_POST['save'])) {
             } elseif (!Password::load($userdata['password'])->match(Request::post('currentpassword'))) {
                 $errors[] = _lang('mod.settings.error.badcurrentpass');
             }
-            if (DB::count(_users_table, 'email=' . DB::val($email) . ' AND id!=' . _user_id) !== 0) {
+            if (DB::count(_user_table, 'email=' . DB::val($email) . ' AND id!=' . _user_id) !== 0) {
                 $errors[] = _lang('user.msg.emailexists');
             }
         }
@@ -238,7 +238,7 @@ if (isset($_POST['save'])) {
         ));
 
         // update
-        DB::update(_users_table, 'id=' . _user_id, $changeset);
+        DB::update(_user_table, 'id=' . _user_id, $changeset);
         Extend::call('user.edit', array('id' => _user_id, 'username' => $username, 'email' => $email));
         $_index['redirect_to'] = Router::module('settings', 'saved', false, true);
 
@@ -250,7 +250,7 @@ if (isset($_POST['save'])) {
 
 } elseif (isset($_POST['download_personal_data'])) {
     if (Password::load($userdata['password'])->match(Request::post('currentpassword'))) {
-        $ips = DB::queryRows('SELECT DISTINCT ip FROM ' . _posts_table . ' WHERE author = ' . $userdata['id'], null, 'ip');
+        $ips = DB::queryRows('SELECT DISTINCT ip FROM ' . _comment_table . ' WHERE author = ' . $userdata['id'], null, 'ip');
         $ips[] = $userdata['ip'];
 
         $personal_data = array(

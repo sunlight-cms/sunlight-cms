@@ -21,7 +21,7 @@ if (isset($_POST['type']) && _priv_admingroups) {
     $type = (int) Request::post('type');
     if ($type == -1) {
         // prazdna skupina
-        DB::insert(_groups_table, array(
+        DB::insert(_user_group_table, array(
             'title' => _lang('admin.users.groups.new.empty'),
             'level' => 0,
             'icon' => ''
@@ -29,7 +29,7 @@ if (isset($_POST['type']) && _priv_admingroups) {
         $msg = 1;
     } else {
         // kopirovat skupinu
-        $source_group = DB::queryRow("SELECT * FROM " . _groups_table . " WHERE id=" . $type);
+        $source_group = DB::queryRow("SELECT * FROM " . _user_group_table . " WHERE id=" . $type);
         if ($source_group !== false) {
             $new_group = array();
             $privilege_map = array_flip(User::listPrivileges());
@@ -59,7 +59,7 @@ if (isset($_POST['type']) && _priv_admingroups) {
             }
 
             // sql dotaz
-            DB::insert(_groups_table, $new_group);
+            DB::insert(_user_group_table, $new_group);
             $msg = 1;
 
         } else {
@@ -71,7 +71,7 @@ if (isset($_POST['type']) && _priv_admingroups) {
 // prepnuti uzivatele
 if (_super_admin_id == _user_id && isset($_POST['switch_user'])) {
     $user = trim(Request::post('switch_user'));
-    $query = DB::queryRow("SELECT id,password,email FROM " . _users_table . " WHERE username=" . DB::val($user));
+    $query = DB::queryRow("SELECT id,password,email FROM " . _user_table . " WHERE username=" . DB::val($user));
     if ($query !== false) {
 
         User::login($query['id'], $query['password'], $query['email']);
@@ -91,7 +91,7 @@ if (_priv_admingroups) {
     $groups = "<table class='list list-hover list-max'>
 <thead><tr><td>" . _lang('global.name') . "</td><td>" . _lang('admin.users.groups.level') . "</td><td>" . _lang('admin.users.groups.members') . "</td><td>" . _lang('global.action') . "</td></tr></thead>
 <tbody>";
-    $query = DB::query("SELECT id,title,icon,color,blocked,level,reglist,(SELECT COUNT(*) FROM " . _users_table . " WHERE group_id=" . _groups_table . ".id) AS user_count FROM " . _groups_table . " ORDER BY level DESC");
+    $query = DB::query("SELECT id,title,icon,color,blocked,level,reglist,(SELECT COUNT(*) FROM " . _user_table . " WHERE group_id=" . _user_group_table . ".id) AS user_count FROM " . _user_group_table . " ORDER BY level DESC");
     while ($item = DB::row($query)) {
         $is_sys = in_array($item['id'], $sysgroups_array);
         $groups .= "
@@ -99,7 +99,7 @@ if (_priv_admingroups) {
     <td>
         <span class='" . ($is_sys ? 'em' : '') . (($item['blocked'] == 1) ? ' strike' : '') . "'" . (($item['color'] !== '') ? " style='color:" . $item['color'] . ";'" : '') . ">"
             . (($item['reglist'] == 1) ? "<img src='images/icons/action.png' alt='reglist' class='icon' title='" . _lang('admin.users.groups.reglist') . "'>" : '')
-            . (($item['icon'] != "") ? "<img src='" . Router::link('images/groupicons/' . $item['icon']) . "' alt='icon' class='groupicon'> " : '')
+            . (($item['icon'] != "") ? "<img src='" . Router::generate('images/groupicons/' . $item['icon']) . "' alt='icon' class='groupicon'> " : '')
             . $item['title']
         . "</span>
     </td>

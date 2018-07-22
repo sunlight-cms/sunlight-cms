@@ -83,12 +83,12 @@ abstract class TwigBridge
     protected static function addFunctions(\Twig_Environment $env)
     {
         // link functions
-        $env->addFunction(new \Twig_SimpleFunction('link', '_link'));
-        $env->addFunction(new \Twig_SimpleFunction('link_file', '_linkFile'));
-        $env->addFunction(new \Twig_SimpleFunction('link_page', '_linkPage'));
-        $env->addFunction(new \Twig_SimpleFunction('link_root', '_linkRoot'));
-        $env->addFunction(new \Twig_SimpleFunction('link_article', '_linkArticle'));
-        $env->addFunction(new \Twig_SimpleFunction('link_topic', '_linkTopic'));
+        $env->addFunction(new \Twig_SimpleFunction('link', array('Sunlight\\Router', 'generate')));
+        $env->addFunction(new \Twig_SimpleFunction('link_file', array('Sunlight\\Router', 'file')));
+        $env->addFunction(new \Twig_SimpleFunction('link_path', array('Sunlight\\Router', 'path')));
+        $env->addFunction(new \Twig_SimpleFunction('link_page', array('Sunlight\\Router', 'page')));
+        $env->addFunction(new \Twig_SimpleFunction('link_article', array('Sunlight\\Router', 'article')));
+        $env->addFunction(new \Twig_SimpleFunction('link_topic', array('Sunlight\\Router', 'topic')));
         $env->addFunction(new \Twig_SimpleFunction('link_module', function ($module, $params = null, $absolute = false) {
             return Router::module($module, $params, false, $absolute);
         }));
@@ -107,7 +107,7 @@ abstract class TwigBridge
         $env->addFunction(new \Twig_SimpleFunction('lang', '_lang'));
 
         // hcm
-        $env->addFunction(new \Twig_SimpleFunction('hcm', '_runHCM', array('is_variadic' => true, 'is_safe' => array('html'))));
+        $env->addFunction(new \Twig_SimpleFunction('hcm', array('Sunlight\\Hcm', 'run'), array('is_variadic' => true, 'is_safe' => array('html'))));
 
         // extend
         $env->addFunction(new \Twig_SimpleFunction('extend_call', array('Sunlight\\Extend', 'call')));
@@ -115,8 +115,8 @@ abstract class TwigBridge
         $env->addFunction(new \Twig_SimpleFunction('extend_fetch', array('Sunlight\\Extend', 'fetch')));
 
         // forms
-        $env->addFunction(new \Twig_SimpleFunction('xsrf_protect', '_xsrfProtect', array('is_safe' => array('html'))));
-        $env->addFunction(new \Twig_SimpleFunction('xsrf_token', '_xsrfToken'));
+        $env->addFunction(new \Twig_SimpleFunction('xsrf_protect', array('Sunlight\\Xsrf', 'getInput'), array('is_safe' => array('html'))));
+        $env->addFunction(new \Twig_SimpleFunction('xsrf_token', array('Sunlight\\Xsrf', 'getToken')));
         $env->addFunction(new \Twig_SimpleFunction('xsrf_link', function ($url) {
             return Xsrf::addToUrl($url, false);
         }));

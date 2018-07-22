@@ -903,20 +903,20 @@ class ImportDatabaseStep extends Step
 {
     /** @var string[] */
     private static $baseTableNames = array(
-        'articles',
-        'boxes',
-        'groups',
-        'images',
+        'article',
+        'box',
+        'user_group',
+        'gallery_image',
         'iplog',
         'pm',
-        'polls',
-        'posts',
-        'root',
-        'sboxes',
-        'settings',
-        'users',
+        'poll',
+        'comment',
+        'page',
+        'shoutbox',
+        'setting',
+        'user',
         'user_activation',
-        'redir',
+        'redirect',
     );
     /** @var array|null */
     private $existingTableNames;
@@ -986,11 +986,11 @@ class ImportDatabaseStep extends Step
             
             // update settings
             foreach ($settings as $name => $value) {
-                DB::update($prefix . 'settings', 'var=' . DB::val($name), array('val' => _e($value)));
+                DB::update($prefix . 'setting', 'var=' . DB::val($name), array('val' => _e($value)));
             }
             
             // update admin account
-            DB::update($prefix . 'users', 'id=0', array(
+            DB::update($prefix . 'user', 'id=0', array(
                 'username' => $admin['username'],
                 'password' => Password::create($admin['password'])->build(),
                 'email' => $admin['email'],
@@ -1011,11 +1011,11 @@ class ImportDatabaseStep extends Step
     {
         if ($this->vars['language'] === 'cs') {
             return array(
-                'boxes' => array(
+                'box' => array(
                     1 => array('title' => 'Menu'),
                     2 => array('title' => 'Vyhledávání'),
                 ),
-                'groups' => array(
+                'user_group' => array(
                     1 => array('title' => 'Hlavní administrátoři'),
                     2 => array('title' => 'Neregistrovaní'),
                     3 => array('title' => 'Registrovaní'),
@@ -1023,7 +1023,7 @@ class ImportDatabaseStep extends Step
                     5 => array('title' => 'Moderátoři'),
                     6 => array('title' => 'Redaktoři'),
                 ),
-                'root' => array(
+                'page' => array(
                     1 => array(
                         'title' => 'Úvod',
                         'content' => '<p>Instalace redakčního systému SunLight CMS ' . Core::VERSION . ' byla úspěšně dokončena!<br />
@@ -1034,11 +1034,11 @@ Nyní se již můžete <a href="admin/">přihlásit do administrace</a> (jméno 
             );
         } else {
             return array(
-                'boxes' => array(
+                'box' => array(
                     1 => array('title' => 'Menu'),
                     2 => array('title' => 'Search'),
                 ),
-                'groups' => array(
+                'user_group' => array(
                     1 => array('title' => 'Super administrators'),
                     2 => array('title' => 'Guests'),
                     3 => array('title' => 'Registered'),
@@ -1046,7 +1046,7 @@ Nyní se již můžete <a href="admin/">přihlásit do administrace</a> (jméno 
                     5 => array('title' => 'Moderators'),
                     6 => array('title' => 'Editors'),
                 ),
-                'root' => array(
+                'page' => array(
                     1 => array(
                         'title' => 'Home',
                         'content' => '<p>Installation of SunLight CMS ' . Core::VERSION . ' has been a success!<br />

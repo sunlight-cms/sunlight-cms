@@ -58,8 +58,8 @@ if (!empty($_POST)) {
         'slug_abs' => array('type' => 'bool', 'nullable' => false, 'enabled' => $editscript_enable_slug),
         'slug' => array('type' => 'raw', 'nullable' => false, 'enabled' => $editscript_enable_slug),
         'description' => array('type' => 'escaped_plaintext', 'nullable' => false, 'enabled' => $editscript_enable_meta),
-        'node_parent' => array('type' => 'int', 'nullable' => true, 'enabled' => _priv_adminroot),
-        'ord' => array('type' => 'raw', 'nullable' => false, 'enabled' => _priv_adminroot),
+        'node_parent' => array('type' => 'int', 'nullable' => true, 'enabled' => _priv_adminpages),
+        'ord' => array('type' => 'raw', 'nullable' => false, 'enabled' => _priv_adminpages),
         'visible' => array('type' => 'bool', 'nullable' => false, 'enabled' => $editscript_enable_visible),
         'public' => array('type' => 'bool', 'nullable' => false, 'enabled' => $editscript_enable_access),
         'level' => array('type' => 'raw', 'nullable' => false, 'enabled' => $editscript_enable_access),
@@ -166,7 +166,7 @@ if (!empty($_POST)) {
             // ord
             case 'ord':
                 if ($val === '') {
-                    $maxOrd = DB::queryRow('SELECT MAX(ord) max_ord FROM ' . _root_table . ' WHERE node_parent' . ($actual_parent_id === null ? ' IS NULL' : '=' . DB::val($actual_parent_id)));
+                    $maxOrd = DB::queryRow('SELECT MAX(ord) max_ord FROM ' . _page_table . ' WHERE node_parent' . ($actual_parent_id === null ? ' IS NULL' : '=' . DB::val($actual_parent_id)));
                     if ($maxOrd && $maxOrd['max_ord'] !== null) {
                         $val = $maxOrd['max_ord'] + 1;
                     } else {
@@ -311,7 +311,7 @@ if (!empty($_POST)) {
             // smazani komentaru v sekcich
             case 'delcomments':
                 if ($type == _page_section && $val == 1 && !$new) {
-                    DB::delete(_posts_table, 'home=' . $id . ' AND type=' . _post_section_comment);
+                    DB::delete(_comment_table, 'home=' . $id . ' AND type=' . _post_section_comment);
                 }
                 $skip = true;
                 break;
@@ -329,7 +329,7 @@ if (!empty($_POST)) {
                             break;
                     }
                     if ($ptype != null) {
-                        DB::delete(_posts_table, 'home=' . $id . ' AND type=' . $ptype);
+                        DB::delete(_comment_table, 'home=' . $id . ' AND type=' . $ptype);
                     }
                 }
                 $skip = true;
@@ -385,7 +385,7 @@ if (!empty($_POST)) {
 
     // vlozeni / ulozeni
     $action = ($new ? 'new' : 'edit');
-    Extend::call('admin.root.' . $action . '.before', array(
+    Extend::call('admin.page.' . $action . '.before', array(
         'id' => $id,
         'page' => $new ? null : $query,
         'changeset' => &$changeset,
@@ -393,15 +393,15 @@ if (!empty($_POST)) {
 
     if (!$new) {
         // ulozeni
-        DB::update(_root_table, 'id=' . $id, $changeset);
+        DB::update(_page_table, 'id=' . $id, $changeset);
 
     } else {
         // vytvoreni
         $changeset['type'] = $type;
-        $id = $query['id'] = DB::insert(_root_table, $changeset, true);
+        $id = $query['id'] = DB::insert(_page_table, $changeset, true);
     }
 
-    Extend::call('admin.root.' . $action, array(
+    Extend::call('admin.page.' . $action, array(
         'id' => $id,
         'page' => $query,
         'changeset' => $changeset,
@@ -439,9 +439,9 @@ if (!empty($_POST)) {
 /* ---  vystup  --- */
 
 // vyber rodice
-if (_priv_adminroot) {
+if (_priv_adminpages) {
     $parent_row = "<tr>\n<th>" . _lang('admin.content.form.node_parent') . "</th><td>";
-    $parent_row .= Admin::rootSelect('node_parent', array(
+    $parent_row .= Admin::pageSelect('node_parent', array(
         'empty_item' => _lang('admin.content.form.node_parent.none'),
         'disabled_branches' => $new ? null : array($id),
         'maxlength' => null,
@@ -454,7 +454,7 @@ if (_priv_adminroot) {
 }
 
 // editacni pole
-$editor = Extend::buffer('admin.root.editor');
+$editor = Extend::buffer('admin.page.editor');
 
 if ($editor === '') {
     // vychozi implementace
@@ -465,7 +465,7 @@ if ($editor === '') {
 if (isset($_GET['saved'])) {
     $output .= Message::ok(_lang('global.saved') . " <small>(" . GenericTemplates::renderTime(time()) . ")</small>", true);
 }
-if (!$new && $editscript_enable_slug && DB::count(_root_table, 'id!=' . DB::val($query['id']) . ' AND slug=' . DB::val($query['slug'])) !== 0) {
+if (!$new && $editscript_enable_slug && DB::count(_page_table, 'id!=' . DB::val($query['id']) . ' AND slug=' . DB::val($query['slug'])) !== 0) {
     $output .= Message::warning(_lang('admin.content.form.slug.collision'));
 }
 if (!$new && $id == _index_page_id) {
@@ -519,7 +519,7 @@ $output .= "<form class='cform' action='index.php?p=content-edit" . $type_array[
 
                             . ($editscript_enable_content ?
                             "<tr class='valign-top'>
-                                <th>" . _lang('admin.content.form.content') . (!$new ? " <a href='" . Router::root($query['id'], $query['slug']) . "' target='_blank'><img src='images/icons/loupe.png' alt='prev'></a>" : '') . "</th>
+                                <th>" . _lang('admin.content.form.content') . (!$new ? " <a href='" . Router::page($query['id'], $query['slug']) . "' target='_blank'><img src='images/icons/loupe.png' alt='prev'></a>" : '') . "</th>
                                 <td>" . $editor . "</td>
                             </tr>" : '')
 
@@ -551,7 +551,7 @@ $output .= "<form class='cform' action='index.php?p=content-edit" . $type_array[
                             <tr>
                                 <td colspan='2'>
                                     <label>" . _lang('admin.content.form.ord') . "</label>
-                                    <input type='number' name='ord'" . Form::disableInputUnless(_priv_adminroot) . " value='" . $query['ord'] . "' class='inputmax'>
+                                    <input type='number' name='ord'" . Form::disableInputUnless(_priv_adminpages) . " value='" . $query['ord'] . "' class='inputmax'>
                                 </td>
                             </tr>"
                             . ((!empty($custom_settings) || $editscript_enable_show_heading || $editscript_enable_visible) ?

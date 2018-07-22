@@ -71,7 +71,7 @@ switch ($posttype) {
 
         // sekce
     case _post_section_comment:
-        $tdata = DB::queryRow("SELECT public,var1,var3,level FROM " . _root_table . " WHERE id=" . $posttarget . " AND type=" . _page_section);
+        $tdata = DB::queryRow("SELECT public,var1,var3,level FROM " . _page_table . " WHERE id=" . $posttarget . " AND type=" . _page_section);
         if ($tdata !== false) {
             if (User::checkPublicAccess($tdata['public'], $tdata['level']) && $tdata['var1'] == 1 && $tdata['var3'] != 1) {
                 $continue = true;
@@ -81,7 +81,7 @@ switch ($posttype) {
 
         // clanek
     case _post_article_comment:
-        $tdata = DB::queryRow("SELECT id,time,confirmed,author,public,home1,home2,home3,comments,commentslocked FROM " . _articles_table . " WHERE id=" . $posttarget);
+        $tdata = DB::queryRow("SELECT id,time,confirmed,author,public,home1,home2,home3,comments,commentslocked FROM " . _article_table . " WHERE id=" . $posttarget);
         if ($tdata !== false) {
             if (Article::checkAccess($tdata) && $tdata['comments'] == 1 && $tdata['commentslocked'] == 0) {
                 $continue = true;
@@ -91,7 +91,7 @@ switch ($posttype) {
 
         // kniha
     case _post_book_entry:
-        $tdata = DB::queryRow("SELECT public,var1,var3,level FROM " . _root_table . " WHERE id=" . $posttarget . " AND type=" . _page_book);
+        $tdata = DB::queryRow("SELECT public,var1,var3,level FROM " . _page_table . " WHERE id=" . $posttarget . " AND type=" . _page_book);
         if ($tdata !== false) {
             if (User::checkPublicAccess($tdata['public'], $tdata['level']) && User::checkPublicAccess($tdata['var1']) && $tdata['var3'] != 1) {
                 $continue = true;
@@ -102,7 +102,7 @@ switch ($posttype) {
 
         // shoutbox
     case _post_shoutbox_entry:
-        $tdata = DB::queryRow("SELECT public,locked FROM " . _sboxes_table . " WHERE id=" . $posttarget);
+        $tdata = DB::queryRow("SELECT public,locked FROM " . _shoutbox_table . " WHERE id=" . $posttarget);
         if ($tdata !== false) {
             if (User::checkPublicAccess($tdata['public']) && $tdata['locked'] != 1) {
                 $continue = true;
@@ -112,7 +112,7 @@ switch ($posttype) {
 
         // forum
     case _post_forum_topic:
-        $tdata = DB::queryRow("SELECT public,var2,var3,level FROM " . _root_table . " WHERE id=" . $posttarget . " AND type=" . _page_forum);
+        $tdata = DB::queryRow("SELECT public,var2,var3,level FROM " . _page_table . " WHERE id=" . $posttarget . " AND type=" . _page_forum);
         if ($tdata !== false) {
             if (User::checkPublicAccess($tdata['public'], $tdata['level']) && User::checkPublicAccess($tdata['var3']) && $tdata['var2'] != 1) {
                 $continue = true;
@@ -145,7 +145,7 @@ switch ($posttype) {
 //  kontrola prispevku pro odpoved
 if ($xhome != -1 && $posttype != _post_pm) {
     $continue2 = false;
-    $tdata = DB::queryRow("SELECT xhome FROM " . _posts_table . " WHERE id=" . $xhome . " AND home=" . $posttarget . " AND locked=0");
+    $tdata = DB::queryRow("SELECT xhome FROM " . _comment_table . " WHERE id=" . $xhome . " AND home=" . $posttarget . " AND locked=0");
     if ($tdata !== false) {
         if ($tdata['xhome'] == -1) {
             $continue2 = true;
@@ -159,7 +159,7 @@ if ($xhome != -1 && $posttype != _post_pm) {
 if ($continue && $continue2 && $text != '' && ($posttype == _post_shoutbox_entry || Captcha::check())) {
     if (Xsrf::check()) {
         if ($posttype == _post_shoutbox_entry || _priv_unlimitedpostaccess || IpLog::check(_iplog_anti_spam)) {
-            if ($guest === '' || DB::count(_users_table, 'username=' . DB::val($guest) . ' OR publicname=' . DB::val($guest)) === 0) {
+            if ($guest === '' || DB::count(_user_table, 'username=' . DB::val($guest) . ' OR publicname=' . DB::val($guest)) === 0) {
 
                 // zpracovani pluginem
                 $allow = true;
@@ -167,7 +167,7 @@ if ($continue && $continue2 && $text != '' && ($posttype == _post_shoutbox_entry
                 if ($allow) {
 
                     // ulozeni
-                    $insert_id = DB::insert(_posts_table, array(
+                    $insert_id = DB::insert(_comment_table, array(
                         'type' => $posttype,
                         'home' => $posttarget,
                         'xhome' => $xhome,
@@ -188,7 +188,7 @@ if ($continue && $continue2 && $text != '' && ($posttype == _post_shoutbox_entry
 
                     // topicy - aktualizace bumptime
                     if ($posttype == _post_forum_topic && $xhome != -1) {
-                        DB::update(_posts_table, 'id=' . $xhome, array('bumptime' => time()));
+                        DB::update(_comment_table, 'id=' . $xhome, array('bumptime' => time()));
                     }
 
                     // zpravy - aktualizace casu zmeny a precteni
@@ -202,11 +202,11 @@ if ($continue && $continue2 && $text != '' && ($posttype == _post_shoutbox_entry
 
                     // shoutboxy - odstraneni prispevku za hranici limitu
                     if ($posttype == _post_shoutbox_entry) {
-                        $pnum = DB::count(_posts_table, 'type=' . _post_shoutbox_entry . ' AND home=' . DB::val($posttarget));
+                        $pnum = DB::count(_comment_table, 'type=' . _post_shoutbox_entry . ' AND home=' . DB::val($posttarget));
                         if ($pnum > _sboxmemory) {
                             $dnum = $pnum - _sboxmemory;
-                            $dposts = DB::queryRows("SELECT id FROM " . _posts_table . " WHERE type=" . _post_shoutbox_entry . " AND home=" . $posttarget . " ORDER BY id LIMIT " . $dnum, null, 'id');
-                            DB::deleteSet(_posts_table, 'id', $dpost);
+                            $dposts = DB::queryRows("SELECT id FROM " . _comment_table . " WHERE type=" . _post_shoutbox_entry . " AND home=" . $posttarget . " ORDER BY id LIMIT " . $dnum, null, 'id');
+                            DB::deleteSet(_comment_table, 'id', $dpost);
                         }
                     }
 

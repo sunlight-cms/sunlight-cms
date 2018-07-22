@@ -75,7 +75,7 @@ abstract class Admin
                 }
                 $output .= "<a href='" . Router::module('messages') . "'>" . _lang('usermenu.messages') . $messages_count . "</a>, ";
             }
-            $output .= '<a href="' . Router::module('settings') . '">' . _lang('usermenu.settings') . '</a>, <a href="' . Xsrf::addToUrl(Router::link('system/script/logout.php?_return=admin/')) . '">' . _lang('usermenu.logout') . '</a>]';
+            $output .= '<a href="' . Router::module('settings') . '">' . _lang('usermenu.settings') . '</a>, <a href="' . Xsrf::addToUrl(Router::generate('system/script/logout.php?_return=admin/')) . '">' . _lang('usermenu.logout') . '</a>]';
             $output .= '<a href="' . Core::$url . '/" target="_blank" class="usermenu-web-link" title="' . _lang('admin.link.site') . '"><img class="icon" src="images/icons/guide.png" alt="' . _lang('admin.link.site') . '"></a>';
         } else {
             $output .= '<a href="./">' . _lang('usermenu.guest') . '</a>';
@@ -141,7 +141,7 @@ abstract class Admin
             $csep = "";
         }
 
-        return ((!_priv_adminallart) ? $csep . "{$alias}author=" . _user_id : $csep . "({$alias}author=" . _user_id . " OR (SELECT level FROM " . _groups_table . " WHERE id=(SELECT group_id FROM " . _users_table . " WHERE id={$alias}author))<" . _priv_level . ")");
+        return ((!_priv_adminallart) ? $csep . "{$alias}author=" . _user_id : $csep . "({$alias}author=" . _user_id . " OR (SELECT level FROM " . _user_group_table . " WHERE id=(SELECT group_id FROM " . _user_table . " WHERE id={$alias}author))<" . _priv_level . ")");
     }
 
     /**
@@ -156,7 +156,7 @@ abstract class Admin
             $alias .= '.';
         }
         if (_priv_adminallart) {
-            return " AND (" . $alias . "author=" . _user_id . " OR (SELECT level FROM " . _groups_table . " WHERE id=(SELECT group_id FROM " . _users_table . " WHERE id=" . (($alias === '') ? "" . _articles_table . "." : $alias) . "author))<" . _priv_level . ")";
+            return " AND (" . $alias . "author=" . _user_id . " OR (SELECT level FROM " . _user_group_table . " WHERE id=(SELECT group_id FROM " . _user_table . " WHERE id=" . (($alias === '') ? "" . _article_table . "." : $alias) . "author))<" . _priv_level . ")";
         } else {
             return " AND " . $alias . "author=" . _user_id;
         }
@@ -222,7 +222,7 @@ abstract class Admin
      * @param array  $options
      * @return string
      */
-    static function rootSelect($name, array $options)
+    static function pageSelect($name, array $options)
     {
         // vychozi volby
         $options += array(
@@ -244,7 +244,7 @@ abstract class Admin
         }
 
         // extend
-        Extend::call('admin.root.select', array(
+        Extend::call('admin.page.select', array(
             'options' => &$options,
             'filter' => &$filter,
         ));
@@ -331,14 +331,14 @@ abstract class Admin
             $multiple = "";
         }
         $output = "<select name='" . $name . "'" . $class . $multiple . ">";
-        $query = DB::query("SELECT id,title,level FROM " . _groups_table . " WHERE " . $gcond . " AND id!=2 ORDER BY level DESC");
+        $query = DB::query("SELECT id,title,level FROM " . _user_group_table . " WHERE " . $gcond . " AND id!=2 ORDER BY level DESC");
         if ($extraoption != null) {
             $output .= "<option value='-1' class='special'>" . $extraoption . "</option>";
         }
 
         if (!$groupmode) {
             while ($item = DB::row($query)) {
-                $users = DB::query("SELECT id,username,publicname FROM " . _users_table . " WHERE group_id=" . $item['id'] . " AND (" . $item['level'] . "<" . _priv_level . " OR id=" . _user_id . ") ORDER BY id");
+                $users = DB::query("SELECT id,username,publicname FROM " . _user_table . " WHERE group_id=" . $item['id'] . " AND (" . $item['level'] . "<" . _priv_level . " OR id=" . _user_id . ") ORDER BY id");
                 if (DB::size($users) != 0) {
                     $output .= "<optgroup label='" . $item['title'] . "'>";
                     while ($user = DB::row($users)) {
@@ -359,7 +359,7 @@ abstract class Admin
                 } else {
                     $sel = "";
                 }
-                $output .= "<option value='" . $item['id'] . "'" . $sel . ">" . $item['title'] . " (" . DB::count(_users_table, 'group_id=' . $item['id']) . ")</option>\n";
+                $output .= "<option value='" . $item['id'] . "'" . $sel . ">" . $item['title'] . " (" . DB::count(_user_table, 'group_id=' . $item['id']) . ")</option>\n";
             }
         }
 
@@ -504,7 +504,7 @@ abstract class Admin
      */
     static function deleteGalleryStorage($sql_cond)
     {
-        $result = DB::query("SELECT full,(SELECT COUNT(*) FROM " . _images_table . " WHERE full=toptable.full) AS counter FROM " . _images_table . " AS toptable WHERE in_storage=1 AND (" . $sql_cond . ") HAVING counter=1");
+        $result = DB::query("SELECT full,(SELECT COUNT(*) FROM " . _gallery_image_table . " WHERE full=toptable.full) AS counter FROM " . _gallery_image_table . " AS toptable WHERE in_storage=1 AND (" . $sql_cond . ") HAVING counter=1");
         while($r = DB::row($result)) {
             @unlink(_root . $r['full']);
         }
@@ -547,20 +547,20 @@ abstract class Admin
         return array(
             'extend_event' => 'admin.head',
             'css' => array(
-                'admin' => Router::link('admin/script/style.php?s=' . rawurlencode($scheme) . ($dark ? '&d' : '')),
+                'admin' => Router::generate('admin/script/style.php?s=' . rawurlencode($scheme) . ($dark ? '&d' : '')),
             ),
             'css_after' => "
 <!--[if lte IE 7]><link rel=\"stylesheet\" href=\"css/ie7.css\"><![endif]-->
 <!--[if IE 8]><link rel=\"stylesheet\" href=\"css/ie8-9.css\"><![endif]-->
 <!--[if IE 9]><link rel=\"stylesheet\" href=\"css/ie8-9.css\"><![endif]-->",
             'js' => array(
-                'jquery' => Router::link('system/js/jquery.js'),
-                'sunlight' => Router::link('system/js/sunlight.js'),
-                'rangyinputs' => Router::link('system/js/rangyinputs.js'),
-                'scrollwatch' => Router::link('system/js/scrollwatch.js'),
-                'scrollfix' => Router::link('system/js/scrollfix.js'),
-                'jquery_ui_sortable' => Router::link('admin/js/jquery-ui-sortable.min.js'),
-                'admin' => Router::link('admin/js/admin.js'),
+                'jquery' => Router::generate('system/js/jquery.js'),
+                'sunlight' => Router::generate('system/js/sunlight.js'),
+                'rangyinputs' => Router::generate('system/js/rangyinputs.js'),
+                'scrollwatch' => Router::generate('system/js/scrollwatch.js'),
+                'scrollfix' => Router::generate('system/js/scrollfix.js'),
+                'jquery_ui_sortable' => Router::generate('admin/js/jquery-ui-sortable.min.js'),
+                'admin' => Router::generate('admin/js/admin.js'),
             ),
             'js_before' => "\n" . Core::getJavascript(array(
                     'admin' => array(

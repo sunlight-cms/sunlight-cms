@@ -14,7 +14,7 @@ defined('_root') or exit;
 
 $message = "";
 if (isset($_GET['id'])) {
-    DB::update(_articles_table, 'id=' . DB::val(Request::get('id')), array('confirmed' => 1));
+    DB::update(_article_table, 'id=' . DB::val(Request::get('id')), array('confirmed' => 1));
     $message = Message::ok(_lang('global.done'));
 }
 
@@ -33,7 +33,7 @@ $output .= "
 <form class='cform' action='index.php' method='get'>
     <input type='hidden' name='p' value='content-confirm'>"
     . _lang('admin.content.confirm.filter') . ": "
-    . Admin::rootSelect("limit", array('type' => _page_category, 'selected' => $catlimit, 'empty_item' => _lang('global.all')))
+    . Admin::pageSelect("limit", array('type' => _page_category, 'selected' => $catlimit, 'empty_item' => _lang('global.all')))
     . "
     <input type='submit' value='" . _lang('global.do') . "'>
 </form>
@@ -47,7 +47,7 @@ $output .= "
 
 // vypis
 $userQuery = User::createQuery('art.author');
-$query = DB::query("SELECT art.id,art.title,art.slug,art.home1,art.home2,art.home3,art.time,art.visible,art.confirmed,art.public,cat.slug AS cat_slug," . $userQuery['column_list'] . " FROM " . _articles_table . " AS art JOIN " . _root_table . " AS cat ON(cat.id=art.home1) " . $userQuery['joins'] . " WHERE art.confirmed=0" . $condplus . " ORDER BY art.time DESC");
+$query = DB::query("SELECT art.id,art.title,art.slug,art.home1,art.home2,art.home3,art.time,art.visible,art.confirmed,art.public,cat.slug AS cat_slug," . $userQuery['column_list'] . " FROM " . _article_table . " AS art JOIN " . _page_table . " AS cat ON(cat.id=art.home1) " . $userQuery['joins'] . " WHERE art.confirmed=0" . $condplus . " ORDER BY art.time DESC");
 if (DB::size($query) != 0) {
     while ($item = DB::row($query)) {
 
@@ -55,7 +55,7 @@ if (DB::size($query) != 0) {
         $cats = "";
         for ($i = 1; $i <= 3; $i++) {
             if ($item['home' . $i] != -1) {
-                $hometitle = DB::queryRow("SELECT title FROM " . _root_table . " WHERE id=" . $item['home' . $i]);
+                $hometitle = DB::queryRow("SELECT title FROM " . _page_table . " WHERE id=" . $item['home' . $i]);
                 $cats .= $hometitle['title'];
             }
             if ($i != 3 && $item['home' . ($i + 1)] != -1) {

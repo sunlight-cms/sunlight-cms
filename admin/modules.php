@@ -62,22 +62,22 @@ return array(
     ),
     'content-setindex' => array(
         'title' => _lang('admin.content.setindex.title'),
-        'access' => _priv_admincontent && _priv_adminroot,
+        'access' => _priv_admincontent && _priv_adminpages,
         'parent' => 'content',
     ),
     'content-sort' => array(
         'title' => _lang('admin.content.sort.title'),
-        'access' => _priv_admincontent && _priv_adminroot,
+        'access' => _priv_admincontent && _priv_adminpages,
         'parent' => 'content',
     ),
     'content-titles' => array(
         'title' => _lang('admin.content.titles.title'),
-        'access' => _priv_admincontent && _priv_adminroot,
+        'access' => _priv_admincontent && _priv_adminpages,
         'parent' => 'content',
     ),
     'content-redir' => array(
         'title' => _lang('admin.content.redir.title'),
-        'access' => _priv_admincontent && _priv_adminroot,
+        'access' => _priv_admincontent && _priv_adminpages,
         'parent' => 'content',
     ),
     'content-articles' => array(

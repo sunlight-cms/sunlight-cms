@@ -31,8 +31,8 @@ if ($_page['content'] != "") $output .= Hcm::parse($_page['content']) . "\n\n<di
 Extend::call('page.gallery.content.after', $extend_args);
 
 // obrazky
-$paging = Paginator::render($_index['url'], $_page['var2'], _images_table, "home=" . $id);
-$images = DB::query("SELECT * FROM " . _images_table . " WHERE home=" . $id . " ORDER BY ord " . $paging['sql_limit']);
+$paging = Paginator::render($_index['url'], $_page['var2'], _gallery_image_table, "home=" . $id);
+$images = DB::query("SELECT * FROM " . _gallery_image_table . " WHERE home=" . $id . " ORDER BY ord " . $paging['sql_limit']);
 $images_number = DB::size($images);
 
 if ($images_number != 0) {

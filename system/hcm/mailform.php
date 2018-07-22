@@ -52,7 +52,7 @@ return function ($adresa = "", $predmet = null) {
             array(
                 'id' =>  'hcm_mform_' . Core::$hcmUid,
                 'name' => 'mform' . Core::$hcmUid,
-                'action' => Router::link('system/script/hcm/mform.php?_return=' . rawurlencode($GLOBALS['_index']['url'])),
+                'action' => Router::generate('system/script/hcm/mform.php?_return=' . rawurlencode($GLOBALS['_index']['url'])),
                 'submit_text' => _lang('hcm.mailform.send'),
             ),
             array(

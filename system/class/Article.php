@@ -35,7 +35,7 @@ abstract class Article
             if ($article['home3'] != -1) {
                 $homes[] = $article['home3'];
             }
-            $result = DB::query('SELECT public,level FROM ' . _root_table . ' WHERE id IN(' . implode(',', $homes) . ')');
+            $result = DB::query('SELECT public,level FROM ' . _page_table . ' WHERE id IN(' . implode(',', $homes) . ')');
             while ($r = DB::row($result)) {
                 if (User::checkPublicAccess($r['public'], $r['level'])) {
                     // do kategorie je pristup (staci alespon 1)
@@ -68,9 +68,9 @@ abstract class Article
             $sql .= ",cat{$i}.id cat{$i}_id,cat{$i}.title cat{$i}_title,cat{$i}.slug cat{$i}_slug,cat{$i}.public cat{$i}_public,cat{$i}.level cat{$i}_level";
         }
         $sql .= ',' . $author_user_query['column_list'];
-        $sql .= ' FROM ' . _articles_table . ' a';
+        $sql .= ' FROM ' . _article_table . ' a';
         for ($i = 1; $i <= 3; ++$i) {
-            $sql .= ' LEFT JOIN ' . _root_table . " cat{$i} ON(a.home{$i}=cat{$i}.id)";
+            $sql .= ' LEFT JOIN ' . _page_table . " cat{$i} ON(a.home{$i}=cat{$i}.id)";
         }
         $sql .= ' ' . $author_user_query['joins'];
         $sql .= ' WHERE a.slug=' . DB::val($slug);
@@ -134,7 +134,7 @@ abstract class Article
             if ($i > 1) {
                 $joins .= ' ';
             }
-            $joins .= 'LEFT JOIN ' . _root_table . " cat{$i} ON({$alias}.home{$i}!=-1 AND cat{$i}.id={$alias}.home{$i})";
+            $joins .= 'LEFT JOIN ' . _page_table . " cat{$i} ON({$alias}.home{$i}!=-1 AND cat{$i}.id={$alias}.home{$i})";
         }
 
         // spojit podminky
@@ -145,7 +145,7 @@ abstract class Article
 
         // pridat pocet
         if ($doCount) {
-            $result[] = (int) DB::result(DB::query("SELECT COUNT({$alias}.id) FROM " . _articles_table . " {$alias} {$joins} WHERE {$conditions}"), 0);
+            $result[] = (int) DB::result(DB::query("SELECT COUNT({$alias}.id) FROM " . _article_table . " {$alias} {$joins} WHERE {$conditions}"), 0);
         }
 
         return $result;

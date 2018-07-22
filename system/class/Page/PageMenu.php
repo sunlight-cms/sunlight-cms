@@ -97,7 +97,7 @@ abstract class PageMenu
                     if ($page['type'] == _page_link) {
                         $url = _e($page['link_url']);
                     } else {
-                        $url = Router::root($page['id'], $page['slug']);
+                        $url = Router::page($page['id'], $page['slug']);
                     }
                 }
                 if ($page['type'] == _page_link && $page['link_new_window']) {

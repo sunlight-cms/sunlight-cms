@@ -18,7 +18,7 @@ if ($_page === false) {
 }
 
 // url stranky
-$_index['url'] = Router::root($_page['id'], $_index['slug']);
+$_index['url'] = Router::page($_page['id'], $_index['slug']);
 
 // segment stranky
 if ($_index['slug'] !== null && ($slug_length = strlen($_page['slug'])) < strlen($_index['slug'])) {
@@ -48,7 +48,7 @@ if (
     }
 
     $_index['redirect_to'] = UrlHelper::appendParams(
-        Router::root($_page['id'], $_page['slug'], null, true),
+        Router::page($_page['id'], $_page['slug'], null, true),
         $_url->getQueryString(),
         false
     );

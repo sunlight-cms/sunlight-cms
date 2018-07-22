@@ -3,7 +3,7 @@
 use Sunlight\Core;
 use Sunlight\Database\Database as DB;
 use Sunlight\GenericTemplates;
-use Sunlight\Post;
+use Sunlight\Comment\Comment;
 use Sunlight\Router;
 use Sunlight\Template;
 use Sunlight\User;
@@ -17,7 +17,7 @@ return function ($id = null) {
     $id = (int) $id;
 
     // nacteni dat shoutboxu
-    $sboxdata = DB::queryRow("SELECT * FROM " . _sboxes_table . " WHERE id=" . $id);
+    $sboxdata = DB::queryRow("SELECT * FROM " . _shoutbox_table . " WHERE id=" . $id);
     if ($sboxdata !== false) {
         $rcontinue = true;
     } else {
@@ -44,7 +44,7 @@ return function ($id = null) {
             $result .= Form::render(
                 array(
                     'name' => 'hcm_sboxform_' . Core::$hcmUid,
-                    'action' => Router::link('system/script/post.php?_return=' . rawurlencode($GLOBALS['_index']['url']) . "#hcm_sbox_" . Core::$hcmUid),
+                    'action' => Router::generate('system/script/post.php?_return=' . rawurlencode($GLOBALS['_index']['url']) . "#hcm_sbox_" . Core::$hcmUid),
                 ),
                 $inputs
             );
@@ -60,7 +60,7 @@ return function ($id = null) {
         $result .= "\n</div>\n<div class='sbox-posts'>";
         // vypis prispevku
         $userQuery = User::createQuery('p.author');
-        $sposts = DB::query("SELECT p.id,p.text,p.author,p.guest,p.time,p.ip," . $userQuery['column_list'] . " FROM " . _posts_table . " p " . $userQuery['joins'] . " WHERE p.home=" . $id . " AND p.type=" . _post_shoutbox_entry . " ORDER BY p.id DESC");
+        $sposts = DB::query("SELECT p.id,p.text,p.author,p.guest,p.time,p.ip," . $userQuery['column_list'] . " FROM " . _comment_table . " p " . $userQuery['joins'] . " WHERE p.home=" . $id . " AND p.type=" . _post_shoutbox_entry . " ORDER BY p.id DESC");
         if (DB::size($sposts) != 0) {
             while ($spost = DB::row($sposts)) {
 
@@ -72,14 +72,14 @@ return function ($id = null) {
                 }
 
                 // odkaz na spravu
-                if (Post::checkAccess($userQuery, $spost)) {
+                if (Comment::checkAccess($userQuery, $spost)) {
                     $alink = " <a href='" . Router::module('editpost', 'id=' . $spost['id']) . "'><img src='" . Template::image("icons/edit.png") . "' alt='edit' class='icon'></a>";
                 } else {
                     $alink = "";
                 }
 
                 // kod polozky
-                $result .= "<div class='sbox-item'>" . $author . ':' . $alink . " " . Post::render($spost['text'], true, false, false) . "</div>\n";
+                $result .= "<div class='sbox-item'>" . $author . ':' . $alink . " " . Comment::render($spost['text'], true, false, false) . "</div>\n";
 
             }
         } else {

@@ -177,7 +177,7 @@ const _priv_admincontent = true;
 /** Allow access to the admin other module */
 const _priv_adminother = true;
 /** Allow managing pages within the admin content module */
-const _priv_adminroot = true;
+const _priv_adminpages = true;
 /** Allow managing section pages within the admin content module */
 const _priv_adminsection = true;
 /** Allow managing category pages within the admin content module */

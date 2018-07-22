@@ -62,8 +62,8 @@ if (isset($_GET['confirm'])) {
 
                 // kontrola dostupnosti uziv. jmena a emailu
                 if (
-                    DB::count(_users_table, 'username=' . DB::val($user_data['username']) . ' OR publicname=' . DB::val($user_data['username'])) == 0
-                    && DB::count(_users_table, 'email=' . DB::val($user_data['email'])) == 0
+                    DB::count(_user_table, 'username=' . DB::val($user_data['username']) . ' OR publicname=' . DB::val($user_data['username'])) == 0
+                    && DB::count(_user_table, 'email=' . DB::val($user_data['email'])) == 0
                 ) {
                     // vse ok
                     $user_data_valid = true;
@@ -105,7 +105,7 @@ if (isset($_GET['confirm'])) {
         $user_data['username'] = StringManipulator::slugify($user_data['username'], false);
         if ($user_data['username'] == "") {
             $errors[] = _lang('user.msg.badusername');
-        } elseif (DB::count(_users_table, 'username=' . DB::val($user_data['username']) . ' OR publicname=' . DB::val($user_data['username'])) !== 0) {
+        } elseif (DB::count(_user_table, 'username=' . DB::val($user_data['username']) . ' OR publicname=' . DB::val($user_data['username'])) !== 0) {
             $errors[] = _lang('user.msg.userexists');
         }
 
@@ -124,7 +124,7 @@ if (isset($_GET['confirm'])) {
         if (!Email::validate($user_data['email'])) {
             $errors[] = _lang('user.msg.bademail');
         }
-        if (DB::count(_users_table, 'email=' . DB::val($user_data['email'])) !== 0) {
+        if (DB::count(_user_table, 'email=' . DB::val($user_data['email'])) !== 0) {
             $errors[] = _lang('user.msg.emailexists');
         }
 
@@ -136,7 +136,7 @@ if (isset($_GET['confirm'])) {
 
         if (_registration_grouplist && isset($_POST['group_id'])) {
             $user_data['group_id'] = (int) Request::post('group_id');
-            $groupdata = DB::query("SELECT id FROM " . _groups_table . " WHERE id=" . $user_data['group_id'] . " AND blocked=0 AND reglist=1");
+            $groupdata = DB::query("SELECT id FROM " . _user_group_table . " WHERE id=" . $user_data['group_id'] . " AND blocked=0 AND reglist=1");
             if (DB::size($groupdata) == 0) {
                 $errors[] = _lang('global.badinput');
             }
@@ -178,7 +178,7 @@ if (!$user_data_valid && $show_form) {
     // priprava vyberu skupiny
     $groupselect = array();
     if (_registration_grouplist) {
-        $groupselect_items = DB::query("SELECT id,title FROM " . _groups_table . " WHERE blocked=0 AND reglist=1 ORDER BY title");
+        $groupselect_items = DB::query("SELECT id,title FROM " . _user_group_table . " WHERE blocked=0 AND reglist=1 ORDER BY title");
         if (DB::size($groupselect_items) != 0) {
             $groupselect_content = "";
             while ($groupselect_item = DB::row($groupselect_items)) {
@@ -227,7 +227,7 @@ if (!$user_data_valid && $show_form) {
     if ($confirmed) {
 
         // potvrzeno
-        $user_id = DB::insert(_users_table, $user_data + array('registertime' => time()), true);
+        $user_id = DB::insert(_user_table, $user_data + array('registertime' => time()), true);
 
         // udalost
         Extend::call('user.new', array('id' => $user_id, 'username' => $user_data['username'], 'email' => $user_data['email']));

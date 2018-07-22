@@ -62,7 +62,7 @@ if ($_article['visible']) {
         if ($i > 1) {
             $output .= ', ';
         }
-        $output .= "<a href='" . Router::root($_article["cat{$i}_id"], $_article["cat{$i}_slug"]) . "'>" . $_article["cat{$i}_title"] . "</a>";
+        $output .= "<a href='" . Router::page($_article["cat{$i}_id"], $_article["cat{$i}_slug"]) . "'>" . $_article["cat{$i}_title"] . "</a>";
     }
     $output .= "</div>\n";
 }
@@ -129,7 +129,7 @@ $rateform = null;
 if ($_article['rateon'] && _ratemode != 0 && _priv_artrate && IpLog::check(_iplog_article_rated, $_article['id'])) {
     $rateform = "
 <strong>" . _lang('article.rate.title') . ":</strong>
-<form action='" . Router::link('system/script/artrate.php') . "' method='post'>
+<form action='" . Router::generate('system/script/artrate.php') . "' method='post'>
 <input type='hidden' name='id' value='" . $_article['id'] . "'>
 ";
 
@@ -207,6 +207,6 @@ Extend::call('article.comments.after', $extend_args);
 
 // zapocteni precteni
 if ($_article['confirmed'] && $_article['time'] <= time() && IpLog::check(_iplog_article_read, $_article['id'])) {
-    DB::update(_articles_table, 'id=' . $_article['id'], array('readnum' => DB::raw('readnum+1')));
+    DB::update(_article_table, 'id=' . $_article['id'], array('readnum' => DB::raw('readnum+1')));
     IpLog::update(_iplog_article_read, $_article['id']);
 }

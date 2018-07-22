@@ -1,4 +1,4 @@
-CREATE TABLE `sunlight_articles` (
+CREATE TABLE `sunlight_article` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
   `slug` varchar(255) NOT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE `sunlight_articles` (
   KEY `slug` (`slug`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `sunlight_boxes` (
+CREATE TABLE `sunlight_box` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `ord` int(11) NOT NULL DEFAULT '0',
   `title` varchar(255) NOT NULL DEFAULT '',
@@ -59,12 +59,12 @@ CREATE TABLE `sunlight_boxes` (
   KEY `layout` (`layout`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `sunlight_boxes` (`id`, `ord`, `title`, `content`, `visible`, `public`, `level`, `template`, `layout`, `slot`, `page_ids`, `page_children`, `class`) VALUES
+INSERT INTO `sunlight_box` (`id`, `ord`, `title`, `content`, `visible`, `public`, `level`, `template`, `layout`, `slot`, `page_ids`, `page_children`, `class`) VALUES
 (1,	1,	'Menu',	'[hcm]menu_subtree,-1,null,null,1[/hcm]',	1,	1,	0,	'default',	'default',	'right',	NULL,	0,	NULL),
 (2,	2,	'Vyhledávání',	'[hcm]search[/hcm]',	1,	1,	0,	'default',	'default',	'right',	NULL,	0,	NULL),
 (3,	3,	'',	'<br /><p class=\"center\"><a href=\'https://sunlight-cms.org/\' title=\'SunLight CMS - open source redakční systém zdarma\'><img src=\'https://sunlight-cms.org/icon.png\' alt=\'SunLight CMS - open source redakční systém zdarma\' style=\'width:88px;height:31px;border:0;\' /></a></p>',	1,	1,	0,	'default',	'default',	'right',	NULL,	0,	NULL);
 
-CREATE TABLE `sunlight_groups` (
+CREATE TABLE `sunlight_user_group` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(128) NOT NULL,
   `descr` varchar(255) NOT NULL DEFAULT '',
@@ -80,7 +80,7 @@ CREATE TABLE `sunlight_groups` (
   `admingroups` tinyint(1) NOT NULL DEFAULT '0',
   `admincontent` tinyint(1) NOT NULL DEFAULT '0',
   `adminother` tinyint(1) NOT NULL DEFAULT '0',
-  `adminroot` tinyint(1) NOT NULL DEFAULT '0',
+  `adminpages` tinyint(1) NOT NULL DEFAULT '0',
   `adminsection` tinyint(1) NOT NULL DEFAULT '0',
   `admincategory` tinyint(1) NOT NULL DEFAULT '0',
   `adminbook` tinyint(1) NOT NULL DEFAULT '0',
@@ -122,7 +122,7 @@ CREATE TABLE `sunlight_groups` (
   KEY `reglist` (`reglist`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `sunlight_groups` (`id`, `title`, `descr`, `level`, `icon`, `color`, `blocked`, `reglist`, `administration`, `adminsettings`, `adminplugins`, `adminusers`, `admingroups`, `admincontent`, `adminother`, `adminroot`, `adminsection`, `admincategory`, `adminbook`, `adminseparator`, `admingallery`, `adminlink`, `admingroup`, `adminforum`, `adminpluginpage`, `adminart`, `adminallart`, `adminchangeartauthor`, `adminconfirm`, `adminautoconfirm`, `adminpoll`, `adminpollall`, `adminsbox`, `adminbox`, `fileaccess`, `fileglobalaccess`, `fileadminaccess`, `adminhcm`, `adminhcmphp`, `adminbackup`, `adminmassemail`, `adminposts`, `changeusername`, `postcomments`, `unlimitedpostaccess`, `locktopics`, `stickytopics`, `movetopics`, `artrate`, `pollvote`, `selfremove`) VALUES
+INSERT INTO `sunlight_user_group` (`id`, `title`, `descr`, `level`, `icon`, `color`, `blocked`, `reglist`, `administration`, `adminsettings`, `adminplugins`, `adminusers`, `admingroups`, `admincontent`, `adminother`, `adminpages`, `adminsection`, `admincategory`, `adminbook`, `adminseparator`, `admingallery`, `adminlink`, `admingroup`, `adminforum`, `adminpluginpage`, `adminart`, `adminallart`, `adminchangeartauthor`, `adminconfirm`, `adminautoconfirm`, `adminpoll`, `adminpollall`, `adminsbox`, `adminbox`, `fileaccess`, `fileglobalaccess`, `fileadminaccess`, `adminhcm`, `adminhcmphp`, `adminbackup`, `adminmassemail`, `adminposts`, `changeusername`, `postcomments`, `unlimitedpostaccess`, `locktopics`, `stickytopics`, `movetopics`, `artrate`, `pollvote`, `selfremove`) VALUES
 (1,	'SUPER_ADMIN',	'',	10000,	'redstar.png',	'',	0,	0,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	'*',	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1),
 (2,	'GUESTS',	'',	0,	'',	'',	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	'',	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	1,	1,	0),
 (3,	'REGISTERED',	'',	1,	'',	'',	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	0,	1,	0,	'',	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	1,	1,	1),
@@ -130,7 +130,7 @@ INSERT INTO `sunlight_groups` (`id`, `title`, `descr`, `level`, `icon`, `color`,
 (5,	'MODERATORS',	'',	600,	'greenstar.png',	'',	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	0,	1,	0,	'',	0,	0,	0,	1,	0,	1,	1,	1,	1,	1,	1,	1,	0),
 (6,	'EDITOR',	'',	500,	'bluestar.png',	'',	0,	0,	1,	0,	0,	0,	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	1,	0,	0,	0,	1,	0,	0,	'poll, gallery, linkart, linkroot',	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	1,	1,	0);
 
-CREATE TABLE `sunlight_images` (
+CREATE TABLE `sunlight_gallery_image` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `home` int(11) NOT NULL,
   `ord` int(11) NOT NULL DEFAULT '0',
@@ -178,7 +178,7 @@ CREATE TABLE `sunlight_pm` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-CREATE TABLE `sunlight_polls` (
+CREATE TABLE `sunlight_poll` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `author` int(11) NOT NULL,
   `question` varchar(96) NOT NULL,
@@ -190,7 +190,7 @@ CREATE TABLE `sunlight_polls` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-CREATE TABLE `sunlight_posts` (
+CREATE TABLE `sunlight_comment` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `type` tinyint(4) NOT NULL,
   `home` int(11) NOT NULL,
@@ -217,7 +217,7 @@ CREATE TABLE `sunlight_posts` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-CREATE TABLE `sunlight_redir` (
+CREATE TABLE `sunlight_redirect` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `old` varchar(255) NOT NULL,
   `new` varchar(255) NOT NULL,
@@ -230,7 +230,7 @@ CREATE TABLE `sunlight_redir` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-CREATE TABLE `sunlight_root` (
+CREATE TABLE `sunlight_page` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
   `heading` varchar(255) NOT NULL DEFAULT '',
@@ -275,10 +275,10 @@ CREATE TABLE `sunlight_root` (
   KEY `node_parent` (`node_parent`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `sunlight_root` (`id`, `title`, `heading`, `slug`, `slug_abs`, `description`, `type`, `type_idt`, `node_parent`, `node_level`, `node_depth`, `perex`, `ord`, `content`, `visible`, `public`, `level`, `level_inherit`, `show_heading`, `events`, `link_new_window`, `link_url`, `layout`, `layout_inherit`, `var1`, `var2`, `var3`, `var4`) VALUES
+INSERT INTO `sunlight_page` (`id`, `title`, `heading`, `slug`, `slug_abs`, `description`, `type`, `type_idt`, `node_parent`, `node_level`, `node_depth`, `perex`, `ord`, `content`, `visible`, `public`, `level`, `level_inherit`, `show_heading`, `events`, `link_new_window`, `link_url`, `layout`, `layout_inherit`, `var1`, `var2`, `var3`, `var4`) VALUES
 (1,	'',	'',	'index',	0,	'',	1,	NULL,	NULL,	0,	0,	'',	1,	'',	1,	1,	0,	1,	1,	NULL,	0,	NULL,	'',	0,	0,	0,	0,	0);
 
-CREATE TABLE `sunlight_sboxes` (
+CREATE TABLE `sunlight_shoutbox` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(64) NOT NULL,
   `locked` tinyint(1) NOT NULL DEFAULT '0',
@@ -287,7 +287,7 @@ CREATE TABLE `sunlight_sboxes` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-CREATE TABLE `sunlight_settings` (
+CREATE TABLE `sunlight_setting` (
   `var` varchar(24) NOT NULL,
   `val` text NOT NULL,
   `format` varchar(16) DEFAULT NULL,
@@ -302,7 +302,7 @@ CREATE TABLE `sunlight_settings` (
   KEY `admin` (`admin`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `sunlight_settings` (`var`, `val`, `format`, `constant`, `preload`, `web`, `admin`) VALUES
+INSERT INTO `sunlight_setting` (`var`, `val`, `format`, `constant`, `preload`, `web`, `admin`) VALUES
 ('postsendexpire',	'50',	'int',	1,	1,	1,	1),
 ('pollvoteexpire',	'604800',	'int',	1,	1,	1,	1),
 ('artreadexpire',	'18000',	'int',	1,	1,	1,	1),
@@ -384,7 +384,7 @@ INSERT INTO `sunlight_settings` (`var`, `val`, `format`, `constant`, `preload`, 
 ('article_pic_thumb_w',	'200',	'int',	1,	1,	1,	1),
 ('latest_version_check',	'1',	'bool',	0,	0,	0,	0);
 
-CREATE TABLE `sunlight_users` (
+CREATE TABLE `sunlight_user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `group_id` int(11) NOT NULL,
   `levelshift` tinyint(1) NOT NULL DEFAULT '0',
@@ -417,7 +417,7 @@ CREATE TABLE `sunlight_users` (
   KEY `massemail` (`massemail`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `sunlight_users` (`id`, `group_id`, `levelshift`, `username`, `publicname`, `password`, `security_hash`, `security_hash_expires`, `logincounter`, `registertime`, `activitytime`, `blocked`, `massemail`, `wysiwyg`, `public`, `language`, `ip`, `email`, `avatar`, `note`) VALUES
+INSERT INTO `sunlight_user` (`id`, `group_id`, `levelshift`, `username`, `publicname`, `password`, `security_hash`, `security_hash_expires`, `logincounter`, `registertime`, `activitytime`, `blocked`, `massemail`, `wysiwyg`, `public`, `language`, `ip`, `email`, `avatar`, `note`) VALUES
 (0,	1,	1,	'',	NULL,	'',	NULL,	0,	0,	0,	0,	0,	1,	1,	1, '',	'',	'',	NULL,	'');
 
 CREATE TABLE `sunlight_user_activation` (

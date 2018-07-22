@@ -17,7 +17,7 @@ defined('_root') or exit;
 $message = "";
 if (isset($_GET['del']) && Xsrf::check(true)) {
     $del = (int) Request::get('del');
-    DB::query("DELETE FROM p USING " . _polls_table . " AS p WHERE p.id=" . $del . Admin::pollAccess());
+    DB::query("DELETE FROM p USING " . _poll_table . " AS p WHERE p.id=" . $del . Admin::pollAccess());
     if (DB::affectedRows() != 0) {
         $message = Message::ok(_lang('global.done'));
     }
@@ -52,7 +52,7 @@ if (_priv_adminpollall) {
 }
 
 // strankovani
-$paging = Paginator::render("index.php?p=content-polls", 20, _posts_table . ':p', $author_filter . Admin::pollAccess($pasep), "&amp;filter=" . $author_filter_id);
+$paging = Paginator::render("index.php?p=content-polls", 20, _comment_table . ':p', $author_filter . Admin::pollAccess($pasep), "&amp;filter=" . $author_filter_id);
 $output .= $paging['paging'];
 
 $output .= $message . "
@@ -63,7 +63,7 @@ $output .= $message . "
 
 // vypis anket
 $userQuery = User::createQuery('p.author');
-$query = DB::query("SELECT p.id,p.question,p.locked," . $userQuery['column_list'] . " FROM " . _polls_table . " p " . $userQuery['joins'] . " WHERE " . $author_filter . Admin::pollAccess($pasep) . " ORDER BY p.id DESC " . $paging['sql_limit']);
+$query = DB::query("SELECT p.id,p.question,p.locked," . $userQuery['column_list'] . " FROM " . _poll_table . " p " . $userQuery['joins'] . " WHERE " . $author_filter . Admin::pollAccess($pasep) . " ORDER BY p.id DESC " . $paging['sql_limit']);
 if (DB::size($query) != 0) {
     while ($item = DB::row($query)) {
         if (_priv_adminpollall) {

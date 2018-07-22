@@ -486,7 +486,7 @@ class BackupBuilder
                     || $isDynamic && $options['dynamic']
                     || !$isDynamic && !$isStatic
                 )
-                && fnmatch($pattern, $dataPath)
+                && fnmatch($pattern, $dataPath, FNM_CASEFOLD)
             ) {
                 // included path matched - allow
                 return true;
@@ -500,7 +500,7 @@ class BackupBuilder
                     || $isDynamic && $options['dynamic']
                     || !$isDynamic && !$isStatic
                 )
-                && fnmatch($pattern, $dataPath)
+                && fnmatch($pattern, $dataPath, FNM_CASEFOLD)
             ) {
                 // exluded path matched - skip
                 return false;

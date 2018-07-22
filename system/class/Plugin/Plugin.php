@@ -309,7 +309,7 @@ abstract class Plugin
      */
     function getWebPath($absolute = false)
     {
-        return Router::link($this->webPath, $absolute);
+        return Router::generate($this->webPath, $absolute);
     }
 
     /**

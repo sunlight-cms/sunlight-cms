@@ -24,7 +24,7 @@ $unregistered_useable = array('postcomments', 'artrate', 'pollvote');
 $continue = false;
 if (isset($_GET['id'])) {
     $id = (int) Request::get('id');
-    $query = DB::queryRow("SELECT * FROM " . _groups_table . " WHERE id=" . $id);
+    $query = DB::queryRow("SELECT * FROM " . _user_group_table . " WHERE id=" . $id);
     if ($query !== false) {
         $systemitem = in_array($query['id'], $sysgroups_array);
         if (_priv_level > $query['level']) {
@@ -96,7 +96,7 @@ if ($continue) {
             'title' => _lang('admin.users.groups.admincontentrights'),
             'rights' => array(
                 array('name' => 'admincontent'),
-                array('name' => 'adminroot'),
+                array('name' => 'adminpages'),
                 array('name' => 'adminsection'),
                 array('name' => 'admincategory'),
                 array('name' => 'adminbook'),
@@ -215,7 +215,7 @@ if ($continue) {
         Extend::call('admin.editgroup.save', array('changeset' => &$changeset));
 
         // ulozeni
-        DB::update(_groups_table, 'id=' . $id, $changeset);
+        DB::update(_user_group_table, 'id=' . $id, $changeset);
 
         // reload stranky
         $admin_redirect_to = 'index.php?p=users-editgroup&id=' . $id . '&saved';

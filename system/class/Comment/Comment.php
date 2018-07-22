@@ -1,10 +1,13 @@
 <?php
 
-namespace Sunlight;
+namespace Sunlight\Comment;
 
+use Sunlight\Bbcode;
 use Sunlight\Database\Database as DB;
+use Sunlight\Extend;
+use Sunlight\Template;
 
-abstract class Post
+abstract class Comment
 {
     /**
      * Vyhodnotit pravo uzivatele na pristup k prispevku
@@ -41,8 +44,8 @@ abstract class Post
     /**
      * Sestavit casti SQL dotazu pro vypis komentaru
      *
-     * Join aliasy: home_root, home_art, home_cat1..3, home_post
-     * Sloupce: data postu + (root|cat|art)_(title|slug), xhome_subject
+     * Join aliasy: home_page, home_art, home_cat1..3, home_post
+     * Sloupce: data postu + (page|cat|art)_(title|slug), xhome_subject
      *
      * @param string $alias         alias tabulky komentaru pouzity v dotazu
      * @param array  $types         pole s typy prispevku, ktere maji byt nacteny
@@ -56,7 +59,7 @@ abstract class Post
         // sloupce
         $columns = "{$alias}.id,{$alias}.type,{$alias}.home,{$alias}.xhome,{$alias}.subject,
 {$alias}.author,{$alias}.guest,{$alias}.time,{$alias}.text,{$alias}.flag,
-home_root.title root_title,home_root.slug root_slug,
+home_page.title page_title,home_page.slug page_slug,
 home_cat1.title cat_title,home_cat1.slug cat_slug,
 home_art.title art_title,home_art.slug art_slug,
 home_post.subject xhome_subject";
@@ -71,7 +74,7 @@ home_post.subject xhome_subject";
             $conditions[] = "{$alias}.home IN(" . DB::arr($homes) . ")";
         }
 
-        $conditions[] = "(home_root.id IS NULL OR " . (_logged_in ? '' : 'home_root.public=1 AND ') . "home_root.level<=" . _priv_level . ")
+        $conditions[] = "(home_page.id IS NULL OR " . (_logged_in ? '' : 'home_page.public=1 AND ') . "home_page.level<=" . _priv_level . ")
 AND (home_art.id IS NULL OR " . (_logged_in ? '' : 'home_art.public=1 AND ') . "home_art.time<=" . time() . " AND home_art.confirmed=1)
 AND ({$alias}.type!=" . _post_article_comment . " OR (
     " . (_logged_in ? '' : '(home_cat1.public=1 OR home_cat2.public=1 OR home_cat3.public=1) AND') . "
@@ -84,12 +87,12 @@ AND ({$alias}.type!=" . _post_article_comment . " OR (
         }
 
         // joiny
-        $joins = "LEFT JOIN " . _root_table . " home_root ON({$alias}.type IN(1,3,5) AND {$alias}.home=home_root.id)
-LEFT JOIN " . _articles_table . " home_art ON({$alias}.type=" . _post_article_comment . " AND {$alias}.home=home_art.id)
-LEFT JOIN " . _root_table . " home_cat1 ON({$alias}.type=" . _post_article_comment . " AND home_art.home1=home_cat1.id)
-LEFT JOIN " . _root_table . " home_cat2 ON({$alias}.type=" . _post_article_comment . " AND home_art.home2!=-1 AND home_art.home2=home_cat2.id)
-LEFT JOIN " . _root_table . " home_cat3 ON({$alias}.type=" . _post_article_comment . " AND home_art.home3!=-1 AND home_art.home3=home_cat3.id)
-LEFT JOIN " . _posts_table . " home_post ON({$alias}.type=" . _post_forum_topic . " AND {$alias}.xhome!=-1 AND {$alias}.xhome=home_post.id)";
+        $joins = "LEFT JOIN " . _page_table . " home_page ON({$alias}.type IN(1,3,5) AND {$alias}.home=home_page.id)
+LEFT JOIN " . _article_table . " home_art ON({$alias}.type=" . _post_article_comment . " AND {$alias}.home=home_art.id)
+LEFT JOIN " . _page_table . " home_cat1 ON({$alias}.type=" . _post_article_comment . " AND home_art.home1=home_cat1.id)
+LEFT JOIN " . _page_table . " home_cat2 ON({$alias}.type=" . _post_article_comment . " AND home_art.home2!=-1 AND home_art.home2=home_cat2.id)
+LEFT JOIN " . _page_table . " home_cat3 ON({$alias}.type=" . _post_article_comment . " AND home_art.home3!=-1 AND home_art.home3=home_cat3.id)
+LEFT JOIN " . _comment_table . " home_post ON({$alias}.type=" . _post_forum_topic . " AND {$alias}.xhome!=-1 AND {$alias}.xhome=home_post.id)";
 
         // extend
         Extend::call('posts.filter', array(
@@ -107,7 +110,7 @@ LEFT JOIN " . _posts_table . " home_post ON({$alias}.type=" . _post_forum_topic 
 
         // pridat pocet
         if ($doCount) {
-            $result[] = (int) DB::result(DB::query("SELECT COUNT({$alias}.id) FROM " . _posts_table . " {$alias} {$joins} WHERE {$result[2]}"), 0);
+            $result[] = (int) DB::result(DB::query("SELECT COUNT({$alias}.id) FROM " . _comment_table . " {$alias} {$joins} WHERE {$result[2]}"), 0);
         }
 
         return $result;

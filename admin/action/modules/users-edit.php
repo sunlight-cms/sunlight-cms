@@ -24,7 +24,7 @@ $errno = 0;
 $continue = false;
 if (isset($_GET['id'])) {
     $id = Request::get('id');
-    $query = DB::queryRow("SELECT u.*,g.level group_level FROM " . _users_table . " u JOIN " . _groups_table . " g ON(u.group_id=g.id) WHERE u.username=" . DB::val($id));
+    $query = DB::queryRow("SELECT u.*,g.level group_level FROM " . _user_table . " u JOIN " . _user_group_table . " g ON(u.group_id=g.id) WHERE u.username=" . DB::val($id));
     if ($query !== false) {
 
         // test pristupu
@@ -87,7 +87,7 @@ if ($continue) {
         } else {
             $usernamechange = false;
             if ($username != $query['username']) {
-                if (DB::count(_users_table, '(username=' . DB::val($username) . ' OR publicname=' . DB::val($username) . ') AND id!=' . DB::val($query['id'])) === 0) {
+                if (DB::count(_user_table, '(username=' . DB::val($username) . ' OR publicname=' . DB::val($username) . ') AND id!=' . DB::val($query['id'])) === 0) {
                     $usernamechange = true;
                 } else {
                     $errors[] = _lang('user.msg.userexists');
@@ -100,7 +100,7 @@ if ($continue) {
         if (mb_strlen($publicname) > 24) {
             $errors[] = _lang('user.msg.publicnametoolong');
         } elseif ($publicname != $query['publicname'] && $publicname != "") {
-            if (DB::count(_users_table, '(publicname=' . DB::val($publicname) . ' OR username=' . DB::val($publicname) . ') AND id!=' . DB::val($query['id'])) !== 0) {
+            if (DB::count(_user_table, '(publicname=' . DB::val($publicname) . ' OR username=' . DB::val($publicname) . ') AND id!=' . DB::val($query['id'])) !== 0) {
                 $errors[] = _lang('user.msg.publicnameexists');
             }
         }
@@ -114,7 +114,7 @@ if ($continue) {
             $errors[] = _lang('user.msg.bademail');
         } else {
             if ($email != $query['email']) {
-                if (DB::count(_users_table, 'email=' . DB::val($email) . ' AND id!=' . DB::val($query['id'])) !== 0) {
+                if (DB::count(_user_table, 'email=' . DB::val($email) . ' AND id!=' . DB::val($query['id'])) !== 0) {
                     $errors[] = _lang('user.msg.emailexists');
                 }
             }
@@ -157,7 +157,7 @@ if ($continue) {
         // group
         if (isset($_POST['group_id'])) {
             $group = (int) Request::post('group_id');
-            $group_test = DB::queryRow("SELECT level FROM " . _groups_table . " WHERE id=" . $group . " AND id!=2 AND level<" . _priv_level);
+            $group_test = DB::queryRow("SELECT level FROM " . _user_group_table . " WHERE id=" . $group . " AND id!=2 AND level<" . _priv_level);
             if ($group_test !== false) {
                 if ($group_test['level'] > _priv_level) {
                     $errors[] = _lang('global.badinput');
@@ -208,7 +208,7 @@ if ($continue) {
 
             if ($id !== null) {
                 // uprava
-                DB::update(_users_table, 'id=' . DB::val($query['id']), $changeset);
+                DB::update(_user_table, 'id=' . DB::val($query['id']), $changeset);
                 Extend::call('user.edit', array('id' => $query['id'], 'username' => $username, 'email' => $email));
                 $admin_redirect_to = 'index.php?p=users-edit&r=1&id=' . $username;
 
@@ -219,7 +219,7 @@ if ($continue) {
                     'registertime' => time(),
                     'activitytime' => time(),
                 );
-                $id = DB::insert(_users_table, $changeset, true);
+                $id = DB::insert(_user_table, $changeset, true);
                 Extend::call('user.new', array('id' => $id, 'username' => $username, 'email' => $email));
                 $admin_redirect_to = 'index.php?p=users-edit&r=2&id=' . $username;
 

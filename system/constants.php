@@ -1,52 +1,48 @@
 <?php
 
-/**
- * Static constant values
- */
-
 // Database tables
 
-/** Articles table name */
-define('_articles_table', _dbprefix . 'articles');
+/** Article table name */
+define('_article_table', _dbprefix . 'article');
 
-/** Boxes table name */
-define('_boxes_table', _dbprefix . 'boxes');
+/** Box table name */
+define('_box_table', _dbprefix . 'box');
 
-/** Groups table name */
-define('_groups_table', _dbprefix . 'groups');
+/** Comment table name */
+define('_comment_table', _dbprefix . 'comment');
 
-/** Images table name */
-define('_images_table', _dbprefix . 'images');
+/** Gallery image table name */
+define('_gallery_image_table', _dbprefix . 'gallery_image');
 
 /** IP log table name */
 define('_iplog_table', _dbprefix . 'iplog');
 
+/** Page table name */
+define('_page_table', _dbprefix . 'page');
+
 /** Private messages table name */
 define('_pm_table', _dbprefix . 'pm');
 
-/** Polls table name */
-define('_polls_table', _dbprefix . 'polls');
-
-/** Posts table name */
-define('_posts_table', _dbprefix . 'posts');
+/** Poll table name */
+define('_poll_table', _dbprefix . 'poll');
 
 /** Redirection table name */
-define('_redir_table', _dbprefix . 'redir');
+define('_redirect_table', _dbprefix . 'redirect');
 
-/** Root table name (pages) */
-define('_root_table', _dbprefix . 'root');
+/** Setting table name */
+define('_setting_table', _dbprefix . 'setting');
 
-/** Shoutboxes table name */
-define('_sboxes_table', _dbprefix . 'sboxes');
+/** Shoutbox table name */
+define('_shoutbox_table', _dbprefix . 'shoutbox');
 
-/** Settings table name */
-define('_settings_table', _dbprefix . 'settings');
-
-/** Users table name */
-define('_users_table', _dbprefix . 'users');
+/** User table name */
+define('_user_table', _dbprefix . 'user');
 
 /** User activation table name */
 define('_user_activation_table', _dbprefix . 'user_activation');
+
+/** User group table name */
+define('_user_group_table', _dbprefix . 'user_group');
 
 
 // RSS feed types

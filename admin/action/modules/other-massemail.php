@@ -54,7 +54,7 @@ if (isset($_POST['text'])) {
         Email::defineSender($headers, $sender);
 
         // nacteni prijemcu
-        $query = DB::query("SELECT email FROM " . _users_table . " WHERE massemail=1 AND (" . $groups . ")");
+        $query = DB::query("SELECT email FROM " . _user_table . " WHERE massemail=1 AND (" . $groups . ")");
 
         // odeslani nebo zobrazeni adres
         if (!$maillist) {

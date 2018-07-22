@@ -97,7 +97,7 @@ $output .= '
 ';
 
 // priprava strankovani
-$paging = Paginator::render("index.php?p=users-list&group=" . $group . ($search !== false ? '&search=' . rawurlencode($search) : ''), 50, _users_table . ':u', $list_conds_sql);
+$paging = Paginator::render("index.php?p=users-list&group=" . $group . ($search !== false ? '&search=' . rawurlencode($search) : ''), 50, _user_table . ':u', $list_conds_sql);
 $output .= $paging['paging'];
 
 // tabulka
@@ -117,7 +117,7 @@ $output .= $message . "
 
 // dotaz na db
 $userQuery = User::createQuery(null);
-$query = DB::query('SELECT ' . $userQuery['column_list'] . ',u.email user_email FROM ' . _users_table . ' u ' . $userQuery['joins'] . ' WHERE ' . $list_conds_sql . ' ORDER BY ug.level DESC ' . $paging['sql_limit']);
+$query = DB::query('SELECT ' . $userQuery['column_list'] . ',u.email user_email FROM ' . _user_table . ' u ' . $userQuery['joins'] . ' WHERE ' . $list_conds_sql . ' ORDER BY ug.level DESC ' . $paging['sql_limit']);
 
 // vypis
 if (DB::size($query) != 0) {
@@ -141,7 +141,7 @@ if (DB::size($query) != 0) {
 $output .= "</tbody></table>\n";
 
 // pocet uzivatelu
-$totalusers = DB::count(_users_table);
+$totalusers = DB::count(_user_table);
 $output .= '<p class="right">' . _lang('admin.users.list.totalusers') . ": " . $totalusers . '</p>';
 
 // hromadna akce

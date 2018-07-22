@@ -19,7 +19,7 @@ abstract class Router
      * @param bool   $absolute
      * @return string
      */
-    static function link($path, $absolute = false)
+    static function generate($path, $absolute = false)
     {
         $url = ($absolute ? Core::$url : Url::base()->path) . '/' . $path;
 
@@ -66,7 +66,7 @@ abstract class Router
             $path = '';
         }
 
-        return static::link($path, $absolute);
+        return static::generate($path, $absolute);
     }
 
     /**
@@ -82,7 +82,7 @@ abstract class Router
     {
         if ($id !== null) {
             if ($slug === null || $category_slug === null) {
-                $slug = DB::queryRow("SELECT art.slug AS art_ts, cat.slug AS cat_ts FROM " . _articles_table . " AS art JOIN " . _root_table . " AS cat ON(cat.id=art.home1) WHERE art.id=" . $id);
+                $slug = DB::queryRow("SELECT art.slug AS art_ts, cat.slug AS cat_ts FROM " . _article_table . " AS art JOIN " . _page_table . " AS cat ON(cat.id=art.home1) WHERE art.id=" . $id);
                 if ($slug === false) {
                     $slug = array('---', '---');
                 } else {
@@ -95,17 +95,17 @@ abstract class Router
             $slug = array($slug, $category_slug);
         }
 
-        return static::root(null, $slug[1], $slug[0], $absolute);
+        return static::page(null, $slug[1], $slug[0], $absolute);
     }
 
     /**
-     * Sestavit adresu stranky
+     * Sestavit cestu ke strance
      *
      * @param string $slug     cely identifikator stranky (prazdny pro hlavni stranu)
      * @param bool   $absolute sestavit absolutni adresu 1/0
      * @return string
      */
-    static function page($slug, $absolute = false)
+    static function path($slug, $absolute = false)
     {
         if (_pretty_urls) {
             $path = $slug;
@@ -117,7 +117,7 @@ abstract class Router
             }
         }
 
-        return static::link($path, $absolute);
+        return static::generate($path, $absolute);
     }
 
     /**
@@ -129,10 +129,10 @@ abstract class Router
      * @param bool        $absolute sestavit absolutni adresu 1/0
      * @return string
      */
-    static function root($id, $slug = null, $segment = null, $absolute = false)
+    static function page($id, $slug = null, $segment = null, $absolute = false)
     {
         if ($id !== null && $slug === null) {
-            $slug = DB::queryRow("SELECT slug FROM " . _root_table . " WHERE id=" . DB::val($id));
+            $slug = DB::queryRow("SELECT slug FROM " . _page_table . " WHERE id=" . DB::val($id));
             $slug = ($slug !== false ? $slug['slug'] : '---');
         }
 
@@ -142,7 +142,7 @@ abstract class Router
             $slug = '';
         }
 
-        return static::page($slug, $absolute);
+        return static::path($slug, $absolute);
     }
 
     /**
@@ -159,8 +159,8 @@ abstract class Router
             case _post_section_comment:
             case _post_book_entry:
                 return array(
-                    static::root($post['home'], $post['root_slug'], null, $absolute),
-                    $post['root_title'],
+                    static::page($post['home'], $post['page_slug'], null, $absolute),
+                    $post['page_title'],
                 );
             case _post_article_comment:
                 return array(
@@ -175,7 +175,7 @@ abstract class Router
                     $topicId = $post['xhome'];
                 }
                 if ($post['type'] == _post_forum_topic) {
-                    $url = static::topic($topicId, $post['root_slug'], $absolute);
+                    $url = static::topic($topicId, $post['page_slug'], $absolute);
                 } else {
                     $url = static::module('messages', "a=list&read={$topicId}", $entity, $absolute);
                 }
@@ -216,7 +216,7 @@ abstract class Router
     static function topic($topic_id, $forum_slug = null, $absolute = false)
     {
         if ($forum_slug === null) {
-            $forum_slug = DB::queryRow('SELECT r.slug FROM ' . _root_table . ' r WHERE type=' . _page_forum . ' AND id=(SELECT p.home FROM ' . _posts_table . ' p WHERE p.id=' . DB::val($topic_id) . ')');
+            $forum_slug = DB::queryRow('SELECT r.slug FROM ' . _page_table . ' r WHERE type=' . _page_forum . ' AND id=(SELECT p.home FROM ' . _comment_table . ' p WHERE p.id=' . DB::val($topic_id) . ')');
             if ($forum_slug !== false) {
                 $forum_slug = $forum_slug['slug'];
             } else {
@@ -224,7 +224,7 @@ abstract class Router
             }
         }
 
-        return static::root(null, $forum_slug, $topic_id, $absolute);
+        return static::page(null, $forum_slug, $topic_id, $absolute);
     }
 
     /**
@@ -253,7 +253,7 @@ abstract class Router
             $path .= ($entity ? _e($params) : $params);
         }
 
-        return static::link($path, $absolute);
+        return static::generate($path, $absolute);
     }
 
     /**
@@ -351,7 +351,7 @@ abstract class Router
 
         // ikona skupiny
         if ($options['icon'] && $data['group_icon'] !== '') {
-            $out .= "<img src=\"" . static::link('images/groupicons/' . $data['group_icon']) . "\" title=\"{$data['group_title']}\" alt=\"{$data['group_title']}\" class=\"icon\">";
+            $out .= "<img src=\"" . static::generate('images/groupicons/' . $data['group_icon']) . "\" title=\"{$data['group_title']}\" alt=\"{$data['group_title']}\" class=\"icon\">";
         }
 
         // jmeno uzivatele

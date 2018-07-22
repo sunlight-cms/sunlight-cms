@@ -53,7 +53,7 @@ if (_priv_adminsection || _priv_admincategory || _priv_adminbook || _priv_admins
 
     // seznam typu stranek
     $create_list = "";
-    if (_priv_adminroot) {
+    if (_priv_adminpages) {
         foreach ($type_array as $type => $name) {
             if ($type != _page_plugin && User::hasPrivilege('admin' . $name)) {
                 $create_list .= "<option value='" . $type . "'>" . _lang('page.type.' . $name) . "</option>\n";
@@ -69,10 +69,10 @@ if (_priv_adminsection || _priv_admincategory || _priv_adminbook || _priv_admins
         }
     }
 
-    $rootitems = '
+    $pageitems = '
     <td class="contenttable-box" style="' . ((_priv_adminart || _priv_adminconfirm || _priv_admincategory || _priv_adminpoll || _priv_adminsbox || _priv_adminbox) ? 'width: 75%; ' : 'border-right: none;') . 'padding-bottom: 0px;">
 
-    ' . (_priv_adminroot ? '
+    ' . (_priv_adminpages ? '
     <form action="index.php?p=content" method="post" class="inline">
     <input type="hidden" name="ac" value="new">
     <img src="images/icons/new.png" alt="new" class="icon">
@@ -85,7 +85,7 @@ if (_priv_adminsection || _priv_admincategory || _priv_adminbook || _priv_admins
     <span class="inline-separator"></span>
     ' : '' ) . '
 
-    ' . (_priv_adminroot ? '
+    ' . (_priv_adminpages ? '
     <a class="button" href="index.php?p=content-setindex"><img src="images/icons/home.png" alt="act" class="icon">' . _lang('admin.content.setindex') . '</a>
 
     <span class="inline-separator"></span>
@@ -106,7 +106,7 @@ if (_priv_adminsection || _priv_admincategory || _priv_adminbook || _priv_admins
 
     // tabulka polozek
     if (
-        _priv_adminroot
+        _priv_adminpages
         && PageLister::getConfig('mode') == PageLister::MODE_SINGLE_LEVEL
     ) {
         $sortable = true;
@@ -114,17 +114,17 @@ if (_priv_adminsection || _priv_admincategory || _priv_adminbook || _priv_admins
         $sortable = false;
     }
 
-    $rootitems .= PageLister::render(array(
+    $pageitems .= PageLister::render(array(
         'type' => true,
         'flags' => true,
         'sortable' => $sortable,
     ));
 
-    $rootitems .= '
+    $pageitems .= '
 </td>
 ';
 } else {
-    $rootitems = '';
+    $pageitems = '';
 }
 
 // nabidka modulu
@@ -215,7 +215,7 @@ if (isset($_GET['done'])) {
 $output .= $message . '
 <table id="contenttable">
 <tr class="valign-top">
-  ' . $rootitems . '
+  ' . $pageitems . '
   ' . ($content_modules_str !== '' ? "<td class=\"contenttable-box\" id=\"content-modules\">{$content_modules_str}</td>" : '') . '
 </tr>
 </table>

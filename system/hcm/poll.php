@@ -13,7 +13,7 @@ return function ($id = null) {
     $id = (int) $id;
 
     // nacteni dat ankety
-    $vpolldata = DB::queryRow("SELECT * FROM " . _polls_table . " WHERE id=" . DB::val($id));
+    $vpolldata = DB::queryRow("SELECT * FROM " . _poll_table . " WHERE id=" . DB::val($id));
     if ($vpolldata !== false) {
         $rcontinue = true;
     } else {
@@ -34,7 +34,7 @@ return function ($id = null) {
         }
 
         if ($rallowvote) {
-            $ranswers_code = "<form action='" . Router::link('system/script/hcm/pvote.php?_return=' . rawurlencode($GLOBALS['_index']['url']) . "#hcm_poll_" . Core::$hcmUid) . "' method='post'>\n<input type='hidden' name='pid' value='" . $vpolldata['id'] . "'>";
+            $ranswers_code = "<form action='" . Router::generate('system/script/hcm/pvote.php?_return=' . rawurlencode($GLOBALS['_index']['url']) . "#hcm_poll_" . Core::$hcmUid) . "' method='post'>\n<input type='hidden' name='pid' value='" . $vpolldata['id'] . "'>";
         } else {
             $ranswers_code = "";
         }

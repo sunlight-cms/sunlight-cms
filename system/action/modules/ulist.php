@@ -42,7 +42,7 @@ $output .= '
   <strong>' . _lang('user.list.groupfilter') . ':</strong> <select name="group_id">
   <option value="-1">' . _lang('global.all') . '</option>
   ';
-$query = DB::query("SELECT id,title FROM " . _groups_table . " WHERE id!=2 ORDER BY level DESC");
+$query = DB::query("SELECT id,title FROM " . _user_group_table . " WHERE id!=2 ORDER BY level DESC");
 while ($item = DB::row($query)) {
     if ($item['id'] == $group) {
         $selected = ' selected';
@@ -54,13 +54,13 @@ while ($item = DB::row($query)) {
 $output .= '</select> <input type="submit" value="' . _lang('global.apply') . '"></form>';
 
 // tabulka
-$paging = Paginator::render(Router::module('ulist', 'group=' . $group, false), 50, _users_table . ':u', $cond);
+$paging = Paginator::render(Router::module('ulist', 'group=' . $group, false), 50, _user_table . ':u', $cond);
 if (Paginator::atTop()) {
     $output .= $paging['paging'];
 }
 if ($paging['count'] > 0) {
     $userQuery = User::createQuery(null);
-    $query = DB::query('SELECT ' . $userQuery['column_list'] . ' FROM ' . _users_table . ' u ' . $userQuery['joins'] . ' WHERE ' . $cond . ' ORDER BY ug.level DESC ' . $paging['sql_limit']);
+    $query = DB::query('SELECT ' . $userQuery['column_list'] . ' FROM ' . _user_table . ' u ' . $userQuery['joins'] . ' WHERE ' . $cond . ' ORDER BY ug.level DESC ' . $paging['sql_limit']);
 
     $output .= "<table class='widetable'>\n<tr><th>" . _lang('login.username') . "</th><th>" . _lang('global.group') . "</th></tr>\n";
     while ($item = DB::row($query)) {

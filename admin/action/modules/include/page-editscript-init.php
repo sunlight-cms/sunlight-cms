@@ -32,7 +32,7 @@ $plugin_type_array = PageManager::getPluginTypes();
 
 if (isset($_GET['id'])) {
     $id = (int) Request::get('id');
-    $query = DB::queryRow("SELECT * FROM " . _root_table . " WHERE id=" . $id . " AND type=" . $type);
+    $query = DB::queryRow("SELECT * FROM " . _page_table . " WHERE id=" . $id . " AND type=" . $type);
     if ($query !== false) {
         $continue = true;
         $new = false;
@@ -60,7 +60,7 @@ if (isset($_GET['id'])) {
     }
 
     // zkontrolovat opravneni pro tvorbu stranek
-    if (!_priv_adminroot) {
+    if (!_priv_adminpages) {
         $continue = false;
         return;
     }
@@ -87,5 +87,5 @@ if (isset($_GET['id'])) {
 }
 
 if ($continue) {
-    Extend::call('admin.root.editscript');
+    Extend::call('admin.page.editscript');
 }

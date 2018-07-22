@@ -105,7 +105,7 @@ class PageManipulator
             'var4' => $var4,
         );
 
-        Extend::call('admin.root.initial', array(
+        Extend::call('admin.page.initial', array(
             'type' => $type,
             'type_idt' => $type_idt,
             'data' => &$data,
@@ -256,13 +256,13 @@ class PageManipulator
         }
         if (static::deleteDependencies($page, $flags, $error)) {
             // stranka
-            DB::delete(_root_table, 'id=' . $page['id']);
+            DB::delete(_page_table, 'id=' . $page['id']);
 
             // obnova stromu od nadrazeneho uzlu / rootu
             PageManager::getTreeManager()->refresh($page['node_parent']);
 
             // udalost
-            Extend::call('admin.root.delete', array('id' => $page['id'], 'page' => array(
+            Extend::call('admin.page.delete', array('id' => $page['id'], 'page' => array(
                 'id' => $page['id'],
                 'type' => $page['type'],
                 'type_idt' => $page['type_idt'],
@@ -292,19 +292,19 @@ class PageManipulator
         // dle typu
         switch ($page['type']) {
             case _page_section:
-                $dependencies[] = DB::count(_posts_table, 'type=' . _post_section_comment . ' AND home=' . DB::val($page['id'])) . " " . _lang('count.comments');
+                $dependencies[] = DB::count(_comment_table, 'type=' . _post_section_comment . ' AND home=' . DB::val($page['id'])) . " " . _lang('count.comments');
                 break;
             case _page_category:
-                $dependencies[] = DB::count(_articles_table, 'home1=' . DB::val($page['id']) . ' AND home2=-1 AND home3=-1') . " " . _lang('count.articles');
+                $dependencies[] = DB::count(_article_table, 'home1=' . DB::val($page['id']) . ' AND home2=-1 AND home3=-1') . " " . _lang('count.articles');
                 break;
             case _page_book:
-                $dependencies[] = DB::count(_posts_table, 'type=' . _post_book_entry . ' AND home=' . DB::val($page['id'])) . " " . _lang('count.posts');
+                $dependencies[] = DB::count(_comment_table, 'type=' . _post_book_entry . ' AND home=' . DB::val($page['id'])) . " " . _lang('count.posts');
                 break;
             case _page_gallery:
-                $dependencies[] = DB::count(_images_table, 'home=' . DB::val($page['id'])) . " " . _lang('count.images');
+                $dependencies[] = DB::count(_gallery_image_table, 'home=' . DB::val($page['id'])) . " " . _lang('count.images');
                 break;
             case _page_forum:
-                $dependencies[] = DB::count(_posts_table, 'type=' . _post_forum_topic . ' AND home=' . DB::val($page['id'])) . " " . _lang('count.posts');
+                $dependencies[] = DB::count(_comment_table, 'type=' . _post_forum_topic . ' AND home=' . DB::val($page['id'])) . " " . _lang('count.posts');
                 break;
             case _page_plugin:
                 Extend::call('page.plugin.' . $page['type_idt'] . '.delete.confirm', array(
@@ -395,41 +395,41 @@ class PageManipulator
             switch ($page['type']) {
                     // komentare v sekcich
                 case _page_section:
-                    DB::delete(_posts_table, 'type=' . _post_section_comment . ' AND home=' . $page['id']);
+                    DB::delete(_comment_table, 'type=' . _post_section_comment . ' AND home=' . $page['id']);
                     break;
 
                     // clanky v kategoriich a jejich komentare
                 case _page_category:
-                    $rquery = DB::query("SELECT id,home1,home2,home3 FROM " . _articles_table . " WHERE home1=" . $page['id'] . " OR home2=" . $page['id'] . " OR home3=" . $page['id']);
+                    $rquery = DB::query("SELECT id,home1,home2,home3 FROM " . _article_table . " WHERE home1=" . $page['id'] . " OR home2=" . $page['id'] . " OR home3=" . $page['id']);
                     while ($item = DB::row($rquery)) {
                         if ($item['home1'] == $page['id'] && $item['home2'] == -1 && $item['home3'] == -1) {
-                            DB::delete(_posts_table, 'type=' . _post_article_comment . ' AND home=' . $item['id']);
-                            DB::delete(_articles_table, 'id=' . $item['id']);
+                            DB::delete(_comment_table, 'type=' . _post_article_comment . ' AND home=' . $item['id']);
+                            DB::delete(_article_table, 'id=' . $item['id']);
                             continue;
                         } // delete
                         if ($item['home1'] == $page['id'] && $item['home2'] != -1 && $item['home3'] == -1) {
-                            DB::update(_articles_table, 'id=' . $item['id'], array('home1' => DB::raw('home2')));
-                            DB::update(_articles_table, 'id=' . $item['id'], array('home2' => -1));
+                            DB::update(_article_table, 'id=' . $item['id'], array('home1' => DB::raw('home2')));
+                            DB::update(_article_table, 'id=' . $item['id'], array('home2' => -1));
                             continue;
                         } // 2->1
                         if ($item['home1'] == $page['id'] && $item['home2'] != -1 && $item['home3'] != -1) {
-                            DB::update(_articles_table, 'id=' . $item['id'], array('home1' => DB::raw('home2')));
-                            DB::update(_articles_table, 'id=' . $item['id'], array('home2' => DB::raw('home3')));
-                            DB::update(_articles_table, 'id=' . $item['id'], array('home3' => -1));
+                            DB::update(_article_table, 'id=' . $item['id'], array('home1' => DB::raw('home2')));
+                            DB::update(_article_table, 'id=' . $item['id'], array('home2' => DB::raw('home3')));
+                            DB::update(_article_table, 'id=' . $item['id'], array('home3' => -1));
                             continue;
                         } // 2->1,3->2
                         if ($item['home1'] == $page['id'] && $item['home2'] == -1 && $item['home3'] != -1) {
-                            DB::update(_articles_table, 'id=' . $item['id'], array('home1' => DB::raw('home3')));
-                            DB::update(_articles_table, 'id=' . $item['id'], array('home3' => -1));
+                            DB::update(_article_table, 'id=' . $item['id'], array('home1' => DB::raw('home3')));
+                            DB::update(_article_table, 'id=' . $item['id'], array('home3' => -1));
 
                             continue;
                         } // 3->1
                         if ($item['home1'] != -1 && $item['home2'] == $page['id']) {
-                            DB::update(_articles_table, 'id=' . $item['id'], array('home2' => -1));
+                            DB::update(_article_table, 'id=' . $item['id'], array('home2' => -1));
                             continue;
                         } // 2->x
                         if ($item['home1'] != -1 && $item['home3'] == $page['id']) {
-                            DB::update(_articles_table, 'id=' . $item['id'], array('home3' => -1));
+                            DB::update(_article_table, 'id=' . $item['id'], array('home3' => -1));
                             continue;
                         } // 3->x
                     }
@@ -437,19 +437,19 @@ class PageManipulator
 
                     // prispevky v knihach
                 case _page_book:
-                    DB::delete(_posts_table, 'type=' . _post_book_entry . ' AND home=' . $page['id']);
+                    DB::delete(_comment_table, 'type=' . _post_book_entry . ' AND home=' . $page['id']);
                     break;
 
                     // obrazky v galerii
                 case _page_gallery:
                     Admin::deleteGalleryStorage('home=' . $page['id']);
-                    DB::delete(_images_table, 'home=' . $page['id']);
+                    DB::delete(_gallery_image_table, 'home=' . $page['id']);
                     @rmdir(_root . 'images/galleries/' . $page['id']);
                     break;
 
                     // prispevky ve forech
                 case _page_forum:
-                    DB::delete(_posts_table, 'type=' . _post_forum_topic . ' AND home=' . $page['id']);
+                    DB::delete(_comment_table, 'type=' . _post_forum_topic . ' AND home=' . $page['id']);
                     break;
             }
         }

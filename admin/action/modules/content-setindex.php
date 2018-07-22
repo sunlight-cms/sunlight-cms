@@ -26,7 +26,7 @@ if (isset($_POST['index'])) {
 
 $output .= $message . "
 <form class='cform' action='index.php?p=content-setindex' method='post'>
-" . Admin::rootSelect('index', array('selected' => $index_id, 'maxlength' => null)) . "
+" . Admin::pageSelect('index', array('selected' => $index_id, 'maxlength' => null)) . "
 <input class='button' type='submit' value='" . _lang('global.do') . "'>
 " . Xsrf::getInput() . "</form>
 ";

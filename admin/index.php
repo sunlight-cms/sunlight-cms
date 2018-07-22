@@ -126,10 +126,10 @@ $admin_body_classes[] = $theme_dark ? 'dark' : 'light';
         <div id="footer">
             <div id="footer-links">
                 <?php if ($admin_access): ?>
-                    <a href="<?php echo Router::link('') ?>" target="_blank"><?php echo _lang('admin.link.site') ?></a>
-                    <a href="<?php echo Router::link('admin/') ?>" target="_blank"><?php echo _lang('admin.link.newwin') ?></a>
+                    <a href="<?php echo Router::generate('') ?>" target="_blank"><?php echo _lang('admin.link.site') ?></a>
+                    <a href="<?php echo Router::generate('admin/') ?>" target="_blank"><?php echo _lang('admin.link.newwin') ?></a>
                 <?php else: ?>
-                    <a href="<?php echo Router::link('') ?>">&lt; <?php echo _lang('admin.link.home') ?></a>
+                    <a href="<?php echo Router::generate('') ?>">&lt; <?php echo _lang('admin.link.home') ?></a>
                 <?php endif ?>
             </div>
 

@@ -72,17 +72,17 @@ abstract class Template
         // pripravit css
         $css = array();
         foreach ($_template->getOption('css') as $key => $path) {
-            $css[$key] = Router::link($path);
+            $css[$key] = Router::generate($path);
         }
 
         // pripravit js
         $js = array(
-            'jquery' => Router::link('system/js/jquery.js'),
-            'sunlight' => Router::link('system/js/sunlight.js'),
-            'rangyinputs' => Router::link('system/js/rangyinputs.js'),
+            'jquery' => Router::generate('system/js/jquery.js'),
+            'sunlight' => Router::generate('system/js/sunlight.js'),
+            'rangyinputs' => Router::generate('system/js/rangyinputs.js'),
         );
         foreach ($_template->getOption('js') as $key => $path) {
-            $js[$key] = Router::link($path);
+            $js[$key] = Router::generate($path);
         }
 
         // titulek
@@ -352,7 +352,7 @@ abstract class Template
     {
         return
             "<li><a href=\"https://sunlight-cms.org/\">SunLight CMS</a></li>\n"
-            . ((!_adminlinkprivate || (_logged_in && _priv_administration)) ? '<li><a href="' . Router::link('admin/') . '">' . _lang('global.adminlink') . "</a></li>\n" : '');
+            . ((!_adminlinkprivate || (_logged_in && _priv_administration)) ? '<li><a href="' . Router::generate('admin/') . '">' . _lang('global.adminlink') . "</a></li>\n" : '');
     }
 
     /**
@@ -507,19 +507,19 @@ abstract class Template
         global $_index;
 
         // zjistit aktivni stranku a jeji uroven
-        list($rootId, $rootData) = PageManager::getActive();
-        if ($rootData !== null) {
-            $rootLevel = $rootData['node_level'];
+        list($pageId, $pageData) = PageManager::getActive();
+        if ($pageData !== null) {
+            $rootLevel = $pageData['node_level'];
         } else {
             $rootLevel = null;
         }
 
         // pridat stranky
-        if ($rootId !== null) {
-            foreach (PageManager::getPath($rootId, $rootLevel) as $page) {
+        if ($pageId !== null) {
+            foreach (PageManager::getPath($pageId, $rootLevel) as $page) {
                 $breadcrumbs[] = array(
                     'title' => $page['title'],
-                    'url' => Router::root($page['id'], $page['slug']),
+                    'url' => Router::page($page['id'], $page['slug']),
                 );
             }
         }
@@ -657,7 +657,7 @@ abstract class Template
             // administrace
             if ($adminLink && _priv_administration) {
                 $items['admin'] = array(
-                    Router::link('admin/'),
+                    Router::generate('admin/'),
                     _lang('global.adminlink')
                 );
             }
@@ -674,7 +674,7 @@ abstract class Template
         // odhlaseni
         if (_logged_in) {
             $items['logout'] = array(
-                Xsrf::addToUrl(Router::link("system/script/logout.php?_return=" . rawurlencode($_SERVER['REQUEST_URI']))),
+                Xsrf::addToUrl(Router::generate("system/script/logout.php?_return=" . rawurlencode($_SERVER['REQUEST_URI']))),
                 _lang('usermenu.logout'),
             );
         }

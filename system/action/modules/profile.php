@@ -6,7 +6,7 @@ use Sunlight\Email;
 use Sunlight\Extend;
 use Sunlight\GenericTemplates;
 use Sunlight\Message;
-use Sunlight\Post;
+use Sunlight\Comment\Comment;
 use Sunlight\Router;
 use Sunlight\Template;
 use Sunlight\User;
@@ -23,10 +23,10 @@ if (!_logged_in && _notpublicsite) {
 /* ---  priprava  --- */
 
 $id = StringManipulator::slugify(Request::get('id'));
-$query = DB::queryRow("SELECT * FROM " . _users_table . " WHERE username=" . DB::val($id));
+$query = DB::queryRow("SELECT * FROM " . _user_table . " WHERE username=" . DB::val($id));
 $public = true;
 if ($query !== false) {
-    $groupdata = DB::queryRow("SELECT title,descr,icon,color,blocked,level FROM " . _groups_table . " WHERE id=" . $query['group_id']);
+    $groupdata = DB::queryRow("SELECT title,descr,icon,color,blocked,level FROM " . _user_group_table . " WHERE id=" . $query['group_id']);
     $public = $query['public'] || User::checkLevel($query['id'], $groupdata['level']);
 
     if ($public) {
@@ -34,7 +34,7 @@ if ($query !== false) {
         if ($query['note'] == "") {
             $note = "";
         } else {
-            $note = "<tr class='valign-top'><th>" . _lang('global.note') . "</th><td><div class='note'>" . Post::render($query['note']) . "</div></td></tr>";
+            $note = "<tr class='valign-top'><th>" . _lang('global.note') . "</th><td><div class='note'>" . Comment::render($query['note']) . "</div></td></tr>";
         }
 
         // clanky autora
@@ -42,7 +42,7 @@ if ($query !== false) {
         if ($arts != 0) {
 
             // zjisteni prumerneho hodnoceni
-            $avgrate = DB::result(DB::query("SELECT ROUND(SUM(ratesum)/SUM(ratenum)) FROM " . _articles_table . " WHERE rateon=1 AND ratenum!=0 AND confirmed=1 AND author=" . $query['id']), 0);
+            $avgrate = DB::result(DB::query("SELECT ROUND(SUM(ratesum)/SUM(ratenum)) FROM " . _article_table . " WHERE rateon=1 AND ratenum!=0 AND confirmed=1 AND author=" . $query['id']), 0);
             if ($avgrate === null) {
                 $avgrate = _lang('article.rate.nodata');
             } else {
@@ -60,7 +60,7 @@ if ($query !== false) {
         }
 
         // odkaz na prispevky uzivatele
-        $posts_count = DB::count(_posts_table, 'author=' . DB::val($query['id']) . ' AND type!=' . _post_pm . ' AND type!=' . _post_shoutbox_entry);
+        $posts_count = DB::count(_comment_table, 'author=' . DB::val($query['id']) . ' AND type!=' . _post_pm . ' AND type!=' . _post_shoutbox_entry);
         if ($posts_count > 0) {
             $posts_viewlink = ", <a href='" . Router::module('profile-posts', 'id=' . $id) . "'>" . _lang('global.show') . " &gt;</a>";
         } else {
@@ -107,7 +107,7 @@ if ($public) {
 
 <tr>
 <th>" . _lang('global.group') . "</th>
-<td><span class='text-icon'>" . (($groupdata['icon'] != "") ? "<img src='" . Router::link('images/groupicons/' . $groupdata['icon']) . "' alt='icon' class='icon'>" : '') . (($groupdata['color'] !== '') ? '<span style="color:' . $groupdata['color'] . ';">' . $groupdata['title'] . '</span>' : $groupdata['title']) . "</span></td>
+<td><span class='text-icon'>" . (($groupdata['icon'] != "") ? "<img src='" . Router::generate('images/groupicons/' . $groupdata['icon']) . "' alt='icon' class='icon'>" : '') . (($groupdata['color'] !== '') ? '<span style="color:' . $groupdata['color'] . ';">' . $groupdata['title'] . '</span>' : $groupdata['title']) . "</span></td>
 </tr>
 
 " . (($groupdata['descr'] !== '') ? "<tr>
@@ -139,7 +139,7 @@ if ($public) {
 <table class='profiletable'>
 
 <tr><th>" . _lang('mod.profile.regtime') . "</th><td>" . GenericTemplates::renderTime($query['registertime']) . "</td></tr>
-" . (_profileemail ? "<tr><th>" . _lang('global.email') . "</th><td>" . Email::link($query['email']) . "</td></tr>" : '') . "
+" . (_profileemail ? "<tr><th>" . _lang('global.email') . "</th><td>" . Email::generate($query['email']) . "</td></tr>" : '') . "
 <tr><th>" . _lang('global.postsnum') . "</th><td>" . $posts_count . $posts_viewlink . "</td></tr>
 
 " . $arts . "

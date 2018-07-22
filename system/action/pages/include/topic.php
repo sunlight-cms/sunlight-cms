@@ -4,7 +4,7 @@ use Sunlight\Comment\CommentService;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\Paginator;
-use Sunlight\Post;
+use Sunlight\Comment\Comment;
 use Sunlight\Router;
 use Sunlight\Template;
 use Sunlight\User;
@@ -20,7 +20,7 @@ if (!ctype_digit($_index['segment'])) {
 // nacteni dat
 $id = (int) $_index['segment'];
 $userQuery = User::createQuery('p.author');
-$query = DB::queryRow("SELECT p.*," . $userQuery['column_list'] . " FROM " . _posts_table . " p " . $userQuery['joins'] . " WHERE p.id=" . $id . " AND p.type=" . _post_forum_topic . " AND p.home=" . $_page['id'] . " AND p.xhome=-1");
+$query = DB::queryRow("SELECT p.*," . $userQuery['column_list'] . " FROM " . _comment_table . " p " . $userQuery['joins'] . " WHERE p.id=" . $id . " AND p.type=" . _post_forum_topic . " AND p.home=" . $_page['id'] . " AND p.xhome=-1");
 if ($query === false) {
     $_index['is_found'] = false;
     return;
@@ -51,13 +51,13 @@ $_index['heading'] = $_page['title'];
 $_index['url'] = Router::topic($id, $_page['slug']);
 
 // priprava zpetneho odkazu
-$_index['backlink'] = Router::root($_page['id'], $_page['slug']);
+$_index['backlink'] = Router::page($_page['id'], $_page['slug']);
 if (!$query['sticky']) {
-    $_index['backlink'] = UrlHelper::appendParams($_index['backlink'], 'page=' . Paginator::getItemPage($_page['var1'], _posts_table, "bumptime>" . $query['bumptime'] . " AND xhome=-1 AND type=" . _post_forum_topic . " AND home=" . $_page['id']), false);
+    $_index['backlink'] = UrlHelper::appendParams($_index['backlink'], 'page=' . Paginator::getItemPage($_page['var1'], _comment_table, "bumptime>" . $query['bumptime'] . " AND xhome=-1 AND type=" . _post_forum_topic . " AND home=" . $_page['id']), false);
 }
 
 // sprava tematu
-$topic_access = Post::checkAccess($userQuery, $query);
+$topic_access = Comment::checkAccess($userQuery, $query);
 $topic_admin = array();
 
 if ($topic_access) {

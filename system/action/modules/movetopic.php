@@ -4,7 +4,7 @@ use Sunlight\Database\Database as DB;
 use Sunlight\Database\SimpleTreeFilter;
 use Sunlight\Message;
 use Sunlight\Page\PageManager;
-use Sunlight\Post;
+use Sunlight\Comment\Comment;
 use Sunlight\Router;
 use Sunlight\User;
 use Sunlight\Util\Request;
@@ -22,10 +22,10 @@ if (!_logged_in) {
 $message = "";
 $id = (int) Request::get('id');
 $userQuery = User::createQuery('p.author');
-$query = DB::queryRow("SELECT p.id,p.home,p.time,p.subject,p.sticky,r.slug forum_slug," . $userQuery['column_list'] . " FROM " . _posts_table . " p JOIN " . _root_table . " r ON(p.home=r.id) " . $userQuery['joins'] . " WHERE p.id=" . $id . " AND p.type=" . _post_forum_topic . " AND p.xhome=-1");
+$query = DB::queryRow("SELECT p.id,p.home,p.time,p.subject,p.sticky,r.slug forum_slug," . $userQuery['column_list'] . " FROM " . _comment_table . " p JOIN " . _page_table . " r ON(p.home=r.id) " . $userQuery['joins'] . " WHERE p.id=" . $id . " AND p.type=" . _post_forum_topic . " AND p.xhome=-1");
 if ($query !== false) {
     $_index['backlink'] = Router::topic($query['id'], $query['forum_slug']);
-    if (!Post::checkAccess($userQuery, $query) || !_priv_movetopics) {
+    if (!Comment::checkAccess($userQuery, $query) || !_priv_movetopics) {
         $_index['is_accessible'] = false;
         return;
     }
@@ -41,7 +41,7 @@ $forums = PageManager::getFlatTree(null, null, new SimpleTreeFilter(array('type'
 if (isset($_POST['new_forum'])) {
     $new_forum_id = (int) Request::post('new_forum');
     if (isset($forums[$new_forum_id]) && $forums[$new_forum_id]['type'] == _page_forum) {
-        DB::update(_posts_table, 'id=' . DB::val($id) . ' OR (type=' . _post_forum_topic . ' AND xhome=' . $id . ')', array('home' => $new_forum_id));
+        DB::update(_comment_table, 'id=' . DB::val($id) . ' OR (type=' . _post_forum_topic . ' AND xhome=' . $id . ')', array('home' => $new_forum_id));
         $query['home'] = $new_forum_id;
         $_index['backlink'] = Router::topic($query['id']);
         $message = Message::ok(_lang('mod.movetopic.ok'));

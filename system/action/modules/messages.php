@@ -80,7 +80,7 @@ switch ($a) {
 
                 // prijemce
                 if ($receiver !== '') {
-                    $rq = DB::queryRow('SELECT usr.id AS usr_id,usr.blocked AS usr_blocked, ugrp.blocked AS ugrp_blocked FROM ' . _users_table . ' AS usr JOIN ' . _groups_table . ' AS ugrp ON (usr.group_id=ugrp.id) WHERE usr.username=' . DB::val($receiver) . ' OR usr.publicname=' . DB::val($receiver));
+                    $rq = DB::queryRow('SELECT usr.id AS usr_id,usr.blocked AS usr_blocked, ugrp.blocked AS ugrp_blocked FROM ' . _user_table . ' AS usr JOIN ' . _user_group_table . ' AS ugrp ON (usr.group_id=ugrp.id) WHERE usr.username=' . DB::val($receiver) . ' OR usr.publicname=' . DB::val($receiver));
                 } else {
                     $rq = false;
                 }
@@ -124,7 +124,7 @@ switch ($a) {
                 ), true);
 
                 // vlozeni do posts tabulky
-                DB::insert(_posts_table, array(
+                DB::insert(_comment_table, array(
                     'type' => _post_pm,
                     'home' => $pm_id,
                     'xhome' => -1,
@@ -195,7 +195,7 @@ switch ($a) {
             // nacist data
             $senderUserQuery = User::createQuery('pm.sender', 'sender_', 'su');
             $receiverUserQuery = User::createQuery('pm.receiver', 'receiver_', 'ru');
-            $q = DB::queryRow('SELECT pm.*,post.id post_id,post.subject,post.time,post.text,post.guest,post.ip,' . $senderUserQuery['column_list'] . ',' . $receiverUserQuery['column_list'] . ' FROM ' . _pm_table . ' AS pm JOIN ' . _posts_table . ' AS post ON (post.type=' . _post_pm . ' AND post.home=pm.id AND post.xhome=-1) ' . $senderUserQuery['joins'] . ' ' . $receiverUserQuery['joins'] . ' WHERE pm.id=' . $id . ' AND (sender=' . _user_id . ' AND sender_deleted=0 OR receiver=' . _user_id . ' AND receiver_deleted=0)');
+            $q = DB::queryRow('SELECT pm.*,post.id post_id,post.subject,post.time,post.text,post.guest,post.ip,' . $senderUserQuery['column_list'] . ',' . $receiverUserQuery['column_list'] . ' FROM ' . _pm_table . ' AS pm JOIN ' . _comment_table . ' AS post ON (post.type=' . _post_pm . ' AND post.home=pm.id AND post.xhome=-1) ' . $senderUserQuery['joins'] . ' ' . $receiverUserQuery['joins'] . ' WHERE pm.id=' . $id . ' AND (sender=' . _user_id . ' AND sender_deleted=0 OR receiver=' . _user_id . ' AND receiver_deleted=0)');
             if ($q === false) {
                 $output .= Message::error(_lang('global.badinput'));
                 break;
@@ -209,7 +209,7 @@ switch ($a) {
             list($role, $role_other) = (($q['sender'] == _user_id) ? array('sender', 'receiver') : array('receiver', 'sender'));
 
             // spocitat neprectene zpravy
-            $unread_count = DB::count(_posts_table, 'home=' . DB::val($q['id']) . ' AND type=' . _post_pm . ' AND author=' . _user_id . ' AND time>' . $q[$role_other . '_readtime']);
+            $unread_count = DB::count(_comment_table, 'home=' . DB::val($q['id']) . ' AND type=' . _post_pm . ' AND author=' . _user_id . ' AND time>' . $q[$role_other . '_readtime']);
 
             // vystup
             $output .= "<div class=\"topic\">\n";
@@ -262,7 +262,7 @@ switch ($a) {
 
                 // fyzicke vymazani
                 if (!empty($del_list)) {
-                    DB::query('DELETE ' . _pm_table . ',post FROM ' . _pm_table . ' JOIN ' . _posts_table . ' AS post ON (post.type=' . _post_pm . ' AND post.home=' . _pm_table . '.id) WHERE ' . _pm_table . '.id IN(' . DB::arr($del_list) . ')');
+                    DB::query('DELETE ' . _pm_table . ',post FROM ' . _pm_table . ' JOIN ' . _comment_table . ' AS post ON (post.type=' . _post_pm . ' AND post.home=' . _pm_table . '.id) WHERE ' . _pm_table . '.id IN(' . DB::arr($del_list) . ')');
                 }
             };
 
@@ -280,7 +280,7 @@ switch ($a) {
                         $q = DB::query(
                             'SELECT pm.id,pm.sender,pm.receiver,last_post.time AS last_post_time'
                             . ' FROM ' . _pm_table . ' AS pm'
-                            . ' JOIN ' . _posts_table . ' AS last_post ON (last_post.id = (SELECT id FROM ' . _posts_table . ' WHERE type=' . _post_pm . ' AND home=pm.id ORDER BY id DESC LIMIT 1))'
+                            . ' JOIN ' . _comment_table . ' AS last_post ON (last_post.id = (SELECT id FROM ' . _comment_table . ' WHERE type=' . _post_pm . ' AND home=pm.id ORDER BY id DESC LIMIT 1))'
                             . ' WHERE pm.id IN(' . DB::arr($selected_ids) . ') AND (pm.sender=' . _user_id . ' AND pm.sender_deleted=0 OR pm.receiver=' . _user_id . ' AND pm.receiver_deleted=0)'
                             . ' AND last_post.author!=' . _user_id
                         );
@@ -327,9 +327,9 @@ switch ($a) {
         $q = DB::query(
             'SELECT pm.id,pm.sender,pm.receiver,pm.sender_readtime,pm.receiver_readtime,pm.update_time,post.subject'
             . ',' . $senderUserQuery['column_list'] . ',' . $receiverUserQuery['column_list']
-            . ',(SELECT COUNT(*) FROM ' . _posts_table . ' AS countpost WHERE countpost.home=pm.id AND countpost.type=' . _post_pm . ' AND countpost.author=' . _user_id . ' AND (pm.sender=' . _user_id . ' AND countpost.time>pm.receiver_readtime OR pm.receiver=' . _user_id . ' AND countpost.time>pm.sender_readtime)) AS unread_counter'
+            . ',(SELECT COUNT(*) FROM ' . _comment_table . ' AS countpost WHERE countpost.home=pm.id AND countpost.type=' . _post_pm . ' AND countpost.author=' . _user_id . ' AND (pm.sender=' . _user_id . ' AND countpost.time>pm.receiver_readtime OR pm.receiver=' . _user_id . ' AND countpost.time>pm.sender_readtime)) AS unread_counter'
             . ' FROM ' . _pm_table . ' AS pm'
-            . ' JOIN ' . _posts_table . ' AS post ON (post.home=pm.id AND post.type=' . _post_pm . ' AND post.xhome=-1)'
+            . ' JOIN ' . _comment_table . ' AS post ON (post.home=pm.id AND post.type=' . _post_pm . ' AND post.xhome=-1)'
             . ' ' . $senderUserQuery['joins']
             . ' ' . $receiverUserQuery['joins']
             . ' WHERE pm.sender=' . _user_id . ' AND pm.sender_deleted=0 OR pm.receiver=' . _user_id . ' AND pm.receiver_deleted=0'.

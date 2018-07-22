@@ -58,12 +58,12 @@ if (isset($_POST['category'])) {
 
     // kontrola promennych
     if ($new_category != -1) {
-        if (DB::count(_root_table, 'id=' . DB::val($new_category) . ' AND type=' . _page_category) === 0) {
+        if (DB::count(_page_table, 'id=' . DB::val($new_category) . ' AND type=' . _page_category) === 0) {
             $new_category = -1;
         }
     }
     if ($new_author != -1) {
-        if (DB::count( _users_table, 'id=' . DB::val($new_author)) === 0) {
+        if (DB::count( _user_table, 'id=' . DB::val($new_author)) === 0) {
             $new_author = -1;
         }
     }
@@ -147,7 +147,7 @@ if (isset($_POST['category'])) {
     }
 
     // vyhledani clanku
-    $query = DB::query("SELECT art.id,art.title,art.slug,cat.slug AS cat_slug FROM " . _articles_table . " AS art JOIN " . _root_table . " AS cat ON(cat.id=art.home1) WHERE " . $cond);
+    $query = DB::query("SELECT art.id,art.title,art.slug,cat.slug AS cat_slug FROM " . _article_table . " AS art JOIN " . _page_table . " AS cat ON(cat.id=art.home1) WHERE " . $cond);
     $found = DB::size($query);
     if ($found != 0) {
         if (!Form::loadCheckbox("_process")) {
@@ -161,18 +161,18 @@ if (isset($_POST['category'])) {
 
                 // smazani komentaru
                 if ($new_delcomments || $new_delete) {
-                    DB::delete(_posts_table, 'type=' . _post_article_comment . ' AND home=' . $item['id']);
+                    DB::delete(_comment_table, 'type=' . _post_article_comment . ' AND home=' . $item['id']);
                 }
 
                 // smazani clanku
                 if ($new_delete) {
-                    DB::delete(_articles_table, 'id=' . $item['id']);
+                    DB::delete(_article_table, 'id=' . $item['id']);
                     continue;
                 }
 
                 // vynulovani hodnoceni
                 if ($new_resetrate) {
-                    DB::update(_articles_table, 'id=' . $item['id'], array(
+                    DB::update(_article_table, 'id=' . $item['id'], array(
                         'ratenum' => 0,
                         'ratesum' => 0
                     ));
@@ -181,12 +181,12 @@ if (isset($_POST['category'])) {
 
                 // vynulovani poctu precteni
                 if ($new_resetread) {
-                    DB::update(_articles_table, 'id=' . $item['id'], array('readnum' => 0));
+                    DB::update(_article_table, 'id=' . $item['id'], array('readnum' => 0));
                 }
 
                 // zmena kategorie
                 if ($new_category != -1) {
-                    DB::update(_articles_table, 'id=' . $item['id'], array(
+                    DB::update(_article_table, 'id=' . $item['id'], array(
                         'home1' => $new_category,
                         'home2' => -1,
                         'home3' => -1
@@ -195,7 +195,7 @@ if (isset($_POST['category'])) {
 
                 // zmena autora
                 if ($new_author != -1) {
-                    DB::update(_articles_table, 'id=' . $item['id'], array('author' => $new_author));
+                    DB::update(_article_table, 'id=' . $item['id'], array('author' => $new_author));
                 }
 
                 // konfigurace
@@ -207,7 +207,7 @@ if (isset($_POST['category'])) {
                         $updatedata[$param] = $paramval;
                     }
                 }
-                DB::update(_articles_table, 'id=' . $item['id'], $updatedata);
+                DB::update(_article_table, 'id=' . $item['id'], $updatedata);
 
             }
             $message = Message::ok(_lang('global.done'));
@@ -232,7 +232,7 @@ if (!$infopage) {
 
 <tr>
 <th>" . _lang('article.category') . "</th>
-<td>" . Admin::rootSelect("category", array('type' => _page_category, 'empty_item' => _lang('global.any2'))) . "</td>
+<td>" . Admin::pageSelect("category", array('type' => _page_category, 'empty_item' => _lang('global.any2'))) . "</td>
 </tr>
 
 <tr>
@@ -278,7 +278,7 @@ if (!$infopage) {
 
 <tr>
 <th>" . _lang('article.category') . "</th>
-<td>" . Admin::rootSelect("new_category", array('type' => _page_category, 'empty_item' => _lang('global.nochange'))) . "</td>
+<td>" . Admin::pageSelect("new_category", array('type' => _page_category, 'empty_item' => _lang('global.nochange'))) . "</td>
 </tr>
 
 <tr>

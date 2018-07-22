@@ -21,7 +21,7 @@ $id = Request::get('id');
 $new = $id === null;
 
 if (!$new) {
-    $box = DB::queryRow('SELECT * FROM ' . _boxes_table . ' WHERE id = ' . DB::val($id));
+    $box = DB::queryRow('SELECT * FROM ' . _box_table . ' WHERE id = ' . DB::val($id));
     $new = false;
 } else {
     $box = array(
@@ -105,7 +105,7 @@ if (isset($_POST['box_edit'])) do {
 
     // auto order
     if ($changeset['ord'] === '') {
-        $max_ord = DB::queryRow('SELECT MAX(ord) AS max_ord FROM ' . _boxes_table . ' WHERE template=' . DB::val($changeset['template']) . ' AND layout=' . DB::val($changeset['layout']));
+        $max_ord = DB::queryRow('SELECT MAX(ord) AS max_ord FROM ' . _box_table . ' WHERE template=' . DB::val($changeset['template']) . ' AND layout=' . DB::val($changeset['layout']));
 
         if ($max_ord && $max_ord['max_ord']) {
             $changeset['ord'] = $max_ord['max_ord'] + 1;
@@ -116,9 +116,9 @@ if (isset($_POST['box_edit'])) do {
 
     // save or create
     if (!$new) {
-        DB::update(_boxes_table, 'id=' . DB::val($id), $changeset);
+        DB::update(_box_table, 'id=' . DB::val($id), $changeset);
     } else {
-        $id = DB::insert(_boxes_table, $changeset, true);
+        $id = DB::insert(_box_table, $changeset, true);
     }
 
     // redirect to form
@@ -169,7 +169,7 @@ $output .= _buffer(function () use ($id, $box, $new, $templates_to_choose_slot_f
             <tr class="valign-top">
                 <th><?php echo _lang('admin.content.form.pages') ?></th>
                 <td>
-                    <?php echo Admin::rootSelect('page_ids[]', array(
+                    <?php echo Admin::pageSelect('page_ids[]', array(
                         'multiple' => true,
                         'selected' => $box['page_ids'] !== null ? explode(',', $box['page_ids']) : array(),
                         'attrs' => 'size="10" class="inputmax"',

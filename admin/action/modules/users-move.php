@@ -14,13 +14,13 @@ $message = "";
 if (isset($_POST['sourcegroup'])) {
     $source = (int) Request::post('sourcegroup');
     $target = (int) Request::post('targetgroup');
-    $source_data = DB::queryRow("SELECT level FROM " . _groups_table . " WHERE id=" . $source);
-    $target_data = DB::queryRow("SELECT level FROM " . _groups_table . " WHERE id=" . $target);
+    $source_data = DB::queryRow("SELECT level FROM " . _user_group_table . " WHERE id=" . $source);
+    $target_data = DB::queryRow("SELECT level FROM " . _user_group_table . " WHERE id=" . $target);
 
     if ($source_data !== false && $target_data !== false && $source != 2 && $target != 2) {
         if ($source != $target) {
             if (_priv_level > $source_data['level'] && _priv_level > $target_data['level']) {
-                DB::update(_users_table, 'group_id=' . $source . ' AND id!=0', array('group_id' => $target));
+                DB::update(_user_table, 'group_id=' . $source . ' AND id!=0', array('group_id' => $target));
                 $message = Message::ok(_lang('global.done'));
             } else {
                 $message = Message::warning(_lang('admin.users.move.failed'));

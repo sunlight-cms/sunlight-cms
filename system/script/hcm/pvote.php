@@ -19,14 +19,14 @@ if (isset($_POST['pid']) && isset($_POST['option']) && Xsrf::check()) {
     $option = (int) Request::post('option');
 
     // ulozeni hlasu
-    $query = DB::queryRow("SELECT locked,answers,votes FROM " . _polls_table . " WHERE id=" . $pid);
+    $query = DB::queryRow("SELECT locked,answers,votes FROM " . _poll_table . " WHERE id=" . $pid);
     if ($query !== false) {
         $answers = explode("#", $query['answers']);
         $votes = explode("-", $query['votes']);
         if (_priv_pollvote && $query['locked'] == 0 && IpLog::check(_iplog_poll_vote, $pid) && isset($votes[$option])) {
             $votes[$option] += 1;
             $votes = implode("-", $votes);
-            DB::update(_polls_table, 'id=' . $pid, array('votes' => $votes));
+            DB::update(_poll_table, 'id=' . $pid, array('votes' => $votes));
             IpLog::update(_iplog_poll_vote, $pid);
             Extend::call('poll.voted', array('id' => $pid, 'option' => $option));
         }

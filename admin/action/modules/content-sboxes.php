@@ -24,7 +24,7 @@ if (isset($_POST['action'])) {
             $locked = Form::loadCheckbox("lockedc");
 
             // vlozeni
-            DB::insert(_sboxes_table, array(
+            DB::insert(_shoutbox_table, array(
                 'title' => $title,
                 'locked' => $locked,
                 'public' => $public
@@ -65,7 +65,7 @@ if (isset($_POST['action'])) {
                             break;
                         case "delposts":
                             $skip = true;
-                            DB::delete(_posts_table, 'home=' . $id . ' AND type=' . _post_shoutbox_entry);
+                            DB::delete(_comment_table, 'home=' . $id . ' AND type=' . _post_shoutbox_entry);
                             break;
                         default:
                             $skip = true;
@@ -77,7 +77,7 @@ if (isset($_POST['action'])) {
 
                         // ulozeni
                         if ($lastid != $id) {
-                            DB::query("UPDATE " . _sboxes_table . " SET " . $sql . " WHERE id=" . $lastid);
+                            DB::query("UPDATE " . _shoutbox_table . " SET " . $sql . " WHERE id=" . $lastid);
                             $sql = '';
                             $lastid = $id;
                         }
@@ -99,7 +99,7 @@ if (isset($_POST['action'])) {
             // ulozeni posledniho nebo jedineho shoutboxu
             if ($sql != "") {
                 $sql = trim($sql, ",");
-                DB::query("UPDATE " . _sboxes_table . " SET " . $sql . " WHERE id=" . $id);
+                DB::query("UPDATE " . _shoutbox_table . " SET " . $sql . " WHERE id=" . $id);
             }
 
             $message = Message::ok(_lang('global.saved'));
@@ -113,8 +113,8 @@ if (isset($_POST['action'])) {
 
 if (isset($_GET['del']) && Xsrf::check(true)) {
     $del = (int) Request::get('del');
-    DB::delete(_sboxes_table, 'id=' . $del);
-    DB::delete(_posts_table, 'home=' . $del . ' AND type=' . _post_shoutbox_entry);
+    DB::delete(_shoutbox_table, 'id=' . $del);
+    DB::delete(_comment_table, 'home=' . $del . ' AND type=' . _post_shoutbox_entry);
     $message = Message::ok(_lang('global.done'));
 }
 
@@ -165,7 +165,7 @@ $output .= "
 ";
 
 // vypis shoutboxu
-$shoutboxes = DB::query("SELECT * FROM " . _sboxes_table . " ORDER BY id DESC");
+$shoutboxes = DB::query("SELECT * FROM " . _shoutbox_table . " ORDER BY id DESC");
 if (DB::size($shoutboxes) != 0) {
     while ($shoutbox = DB::row($shoutboxes)) {
 

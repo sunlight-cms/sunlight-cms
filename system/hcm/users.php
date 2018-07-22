@@ -18,12 +18,12 @@ return function ($razeni = 'new', $pocet = 5) {
             break;
         case 'comment-count':
         case 3:
-            $rorder = "(SELECT COUNT(*) FROM " . _posts_table . " WHERE author=" . _users_table . ".id) DESC";
+            $rorder = "(SELECT COUNT(*) FROM " . _comment_table . " WHERE author=" . _user_table . ".id) DESC";
             break;
         case 'article-rating':
         case 4:
-            $rcond .= " AND (SELECT COUNT(*) FROM " . _articles_table . " WHERE author=" . _users_table . ".id AND rateon=1 AND ratenum!=0)!=0";
-            $rorder = "(SELECT ROUND(SUM(ratesum)/SUM(ratenum)) FROM " . _articles_table . " WHERE rateon=1 AND ratenum!=0 AND author=" . _users_table . ".id) DESC";
+            $rcond .= " AND (SELECT COUNT(*) FROM " . _article_table . " WHERE author=" . _user_table . ".id AND rateon=1 AND ratenum!=0)!=0";
+            $rorder = "(SELECT ROUND(SUM(ratesum)/SUM(ratenum)) FROM " . _article_table . " WHERE rateon=1 AND ratenum!=0 AND author=" . _user_table . ".id) DESC";
             break;
         case 'new':
         default:
@@ -38,7 +38,7 @@ return function ($razeni = 'new', $pocet = 5) {
     }
 
     $userQuery = User::createQuery(null, '');
-    $query = DB::query("SELECT " . $userQuery['column_list'] . " FROM " . _users_table . " u " . $userQuery['joins'] . ' WHERE ' . $rcond . " ORDER BY " . $rorder . " LIMIT " . $pocet);
+    $query = DB::query("SELECT " . $userQuery['column_list'] . " FROM " . _user_table . " u " . $userQuery['joins'] . ' WHERE ' . $rcond . " ORDER BY " . $rorder . " LIMIT " . $pocet);
     while ($item = DB::row($query)) {
 
         // pridani doplnujicich informaci
@@ -46,7 +46,7 @@ return function ($razeni = 'new', $pocet = 5) {
 
             case 'comment-count':
             case 3:
-                $rvar = DB::count(_posts_table, 'author=' . DB::val($item['id']));
+                $rvar = DB::count(_comment_table, 'author=' . DB::val($item['id']));
                 if ($rvar == 0) {
                     continue;
                 } else {
@@ -56,7 +56,7 @@ return function ($razeni = 'new', $pocet = 5) {
 
             case 'article-rating':
             case 4:
-                $rvar = DB::queryRow("SELECT ROUND(SUM(ratesum)/SUM(ratenum)),COUNT(*) FROM " . _articles_table . " WHERE rateon=1 AND ratenum!=0 AND author=" . $item['id']);
+                $rvar = DB::queryRow("SELECT ROUND(SUM(ratesum)/SUM(ratenum)),COUNT(*) FROM " . _article_table . " WHERE rateon=1 AND ratenum!=0 AND author=" . $item['id']);
                 $rext = " - " . $rvar[0] . "%, " . _lang('global.articlesnum') . ": " . $rvar[1];
                 break;
 

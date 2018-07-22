@@ -20,7 +20,7 @@ if (isset($_POST['title']) && is_array($_POST['title'])) {
         if ($title == "") {
             $title = _lang('global.novalue');
         }
-        DB::update(_root_table, 'id=' . DB::val($id), array('title' => $title));
+        DB::update(_page_table, 'id=' . DB::val($id), array('title' => $title));
     }
 
     $message = Message::ok(_lang('global.saved'));

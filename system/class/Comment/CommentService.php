@@ -8,7 +8,7 @@ use Sunlight\Extend;
 use Sunlight\GenericTemplates;
 use Sunlight\Message;
 use Sunlight\Paginator;
-use Sunlight\Post;
+use Sunlight\Comment\Comment;
 use Sunlight\PostForm;
 use Sunlight\Router;
 use Sunlight\Template;
@@ -296,7 +296,7 @@ class CommentService
         $form_output = "<div class='posts-form' id='post-form'>\n";
 
         /* --- init pager --- */
-        $paging = Paginator::render($url, $postsperpage, _posts_table, $countcond, "#posts", $page_param, $autolast);
+        $paging = Paginator::render($url, $postsperpage, _comment_table, $countcond, "#posts", $page_param, $autolast);
 
         /* --- message --- */
         if (isset($_GET['r'])) {
@@ -375,12 +375,12 @@ class CommentService
         // base query
         $userQuery = User::createQuery('p.author');
         if ($is_topic_list) {
-            $sql = "SELECT p.id,p.author,p.guest,p.subject,p.time,p.ip,p.locked,p.bumptime,p.sticky,(SELECT COUNT(*) FROM " . _posts_table . " WHERE type=" . _post_forum_topic . " AND xhome=p.id) AS answer_count";
+            $sql = "SELECT p.id,p.author,p.guest,p.subject,p.time,p.ip,p.locked,p.bumptime,p.sticky,(SELECT COUNT(*) FROM " . _comment_table . " WHERE type=" . _post_forum_topic . " AND xhome=p.id) AS answer_count";
         } else {
             $sql = "SELECT p.id,p.xhome,p.subject,p.text,p.author,p.guest,p.time,p.ip" . Extend::buffer('posts.columns');
         }
         $sql .= ',' . $userQuery['column_list'];
-        $sql .= " FROM " . _posts_table . " AS p";
+        $sql .= " FROM " . _comment_table . " AS p";
         $sql .= ' ' . $userQuery['joins'];
 
         // conditions and sorting
@@ -407,7 +407,7 @@ class CommentService
         if ($is_topic_list) {
             // last post (for topic lists)
             if (!empty($item_ids_with_answers)) {
-                $topicextra = DB::query('SELECT p.id,p.xhome,p.author,p.guest,' . $userQuery['column_list'] . ' FROM ' . _posts_table . ' AS p ' . $userQuery['joins'] . ' WHERE p.id IN (SELECT MAX(id) FROM ' . _posts_table . ' WHERE type=' . _post_forum_topic . ' AND home=' . $home . ' AND xhome IN(' . implode(',', $item_ids_with_answers) . ') GROUP BY xhome)');
+                $topicextra = DB::query('SELECT p.id,p.xhome,p.author,p.guest,' . $userQuery['column_list'] . ' FROM ' . _comment_table . ' AS p ' . $userQuery['joins'] . ' WHERE p.id IN (SELECT MAX(id) FROM ' . _comment_table . ' WHERE type=' . _post_forum_topic . ' AND home=' . $home . ' AND xhome IN(' . implode(',', $item_ids_with_answers) . ') GROUP BY xhome)');
                 while ($item = DB::row($topicextra)) {
                     if (!isset($items[$item['xhome']])) {
                         if (_debug) {
@@ -420,7 +420,7 @@ class CommentService
             }
         } elseif (!empty($items)) {
             // answers (to comments)
-            $answers = DB::query("SELECT p.id,p.xhome,p.text,p.author,p.guest,p.time,p.ip," . $userQuery['column_list'] . " FROM " . _posts_table . " p " . $userQuery['joins'] . " WHERE p.type=" . $posttype . " AND p.home=" . $home . (isset($pluginflag) ? " AND p.flag=" . $pluginflag : '') . " AND p.xhome IN(" . implode(',', array_keys($items)) . ") ORDER BY p.id");
+            $answers = DB::query("SELECT p.id,p.xhome,p.text,p.author,p.guest,p.time,p.ip," . $userQuery['column_list'] . " FROM " . _comment_table . " p " . $userQuery['joins'] . " WHERE p.type=" . $posttype . " AND p.home=" . $home . (isset($pluginflag) ? " AND p.flag=" . $pluginflag : '') . " AND p.xhome IN(" . implode(',', array_keys($items)) . ") ORDER BY p.id");
             while ($item = DB::row($answers)) {
                 if (!isset($items[$item['xhome']])) {
                     continue;
@@ -542,7 +542,7 @@ class CommentService
 
                 // latest answers
                 $output .= "\n<div class='post-answer-list'>\n<h3>" . _lang('posts.forum.lastact') . "</h3>\n";
-                $query = DB::query("SELECT topic.id AS topic_id,topic.subject AS topic_subject,p.author,p.guest,p.time," . $userQuery['column_list'] . " FROM " . _posts_table . " AS p JOIN " . _posts_table . " AS topic ON(topic.type=" . _post_forum_topic . " AND topic.id=p.xhome) " . $userQuery['joins'] . " WHERE p.type=" . _post_forum_topic . " AND p.home=" . $home . " AND p.xhome!=-1 ORDER BY p.id DESC LIMIT " . _extratopicslimit);
+                $query = DB::query("SELECT topic.id AS topic_id,topic.subject AS topic_subject,p.author,p.guest,p.time," . $userQuery['column_list'] . " FROM " . _comment_table . " AS p JOIN " . _comment_table . " AS topic ON(topic.type=" . _post_forum_topic . " AND topic.id=p.xhome) " . $userQuery['joins'] . " WHERE p.type=" . _post_forum_topic . " AND p.home=" . $home . " AND p.xhome!=-1 ORDER BY p.id DESC LIMIT " . _extratopicslimit);
                 if (DB::size($query) != 0) {
                     $output .= "<table class='topic-latest'>\n";
                     while ($item = DB::row($query)) {
@@ -616,7 +616,7 @@ class CommentService
         $output .= Form::render(
             array(
                 'name' => 'postform',
-                'action' => UrlHelper::appendParams(Router::link('system/script/post.php'), '_return=' . rawurlencode($vars['url']), false),
+                'action' => UrlHelper::appendParams(Router::generate('system/script/post.php'), '_return=' . rawurlencode($vars['url']), false),
                 'submit_append' => ' ' . PostForm::renderPreviewButton('postform', 'text'),
             ),
             $inputs
@@ -648,7 +648,7 @@ class CommentService
             'extra_info' => '',
         );
 
-        $postAccess = Post::checkAccess($userQuery, $post);
+        $postAccess = Comment::checkAccess($userQuery, $post);
 
         // fetch author
         if ($post['guest'] == "") $author = Router::userFromQuery($userQuery, $post, array('class' => 'post-author'));
@@ -687,7 +687,7 @@ class CommentService
                 . "<div class='post-body" . (isset($avatar) ? ' post-body-withavatar' : '') . "'>"
                     . $avatar
                     . '<div class="post-body-text">'
-                        . Post::render($post['text'])
+                        . Comment::render($post['text'])
                     . "</div>"
                 . "</div>"
                 . "</div>\n";
@@ -714,9 +714,9 @@ class CommentService
 
         // delete or count
         if ($get_count) {
-            return DB::count(_posts_table, $cond);
+            return DB::count(_comment_table, $cond);
         }
 
-        DB::delete(_posts_table, $cond);
+        DB::delete(_comment_table, $cond);
     }
 }

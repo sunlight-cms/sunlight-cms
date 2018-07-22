@@ -28,8 +28,8 @@ $tree = PageManager::getFlatTree(null, null, $filter);
 $art_counts = array();
 $art_count_query = DB::query('SELECT
     c.id,
-    (SELECT COUNT(*) FROM ' . _articles_table . ' a WHERE a.home1=c.id OR a.home2=c.id OR a.home3=c.id) art_count
-FROM ' . _root_table . ' c
+    (SELECT COUNT(*) FROM ' . _article_table . ' a WHERE a.home1=c.id OR a.home2=c.id OR a.home3=c.id) art_count
+FROM ' . _page_table . ' c
 WHERE c.type=' . _page_category);
 while ($art_count = DB::row($art_count_query)) {
     $art_counts[$art_count['id']] = $art_count['art_count'];

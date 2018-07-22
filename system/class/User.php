@@ -31,7 +31,7 @@ abstract class User
             'admingroups',
             'admincontent',
             'adminother',
-            'adminroot',
+            'adminpages',
             'adminsection',
             'admincategory',
             'adminbook',
@@ -299,9 +299,9 @@ abstract class User
         // joiny
         $joins = array();
         if ($joinUserIdColumn !== null) {
-            $joins[] = 'LEFT JOIN ' . _users_table . " {$alias} ON({$joinUserIdColumn}" . DB::notEqual($emptyValue) . " AND {$joinUserIdColumn}={$alias}.id)";
+            $joins[] = 'LEFT JOIN ' . _user_table . " {$alias} ON({$joinUserIdColumn}" . DB::notEqual($emptyValue) . " AND {$joinUserIdColumn}={$alias}.id)";
         }
-        $joins[] = 'LEFT JOIN ' . _groups_table . " {$groupAlias} ON({$groupAlias}.id={$alias}.group_id)";
+        $joins[] = 'LEFT JOIN ' . _user_group_table . " {$groupAlias} ON({$groupAlias}.id={$alias}.group_id)";
 
         // extend
         Extend::call('user.query', array(
@@ -346,7 +346,7 @@ abstract class User
         if ($id == _super_admin_id) {
             return false;
         }
-        $udata = DB::queryRow("SELECT username,avatar FROM " . _users_table . " WHERE id=" . $id);
+        $udata = DB::queryRow("SELECT username,avatar FROM " . _user_table . " WHERE id=" . $id);
         if ($udata === false) {
             return false;
         }
@@ -359,14 +359,14 @@ abstract class User
         }
 
         // vyresit vazby
-        DB::delete(_users_table, 'id=' . $id);
-        DB::query("DELETE " . _pm_table . ",post FROM " . _pm_table . " LEFT JOIN " . _posts_table . " AS post ON (post.type=" . _post_pm . " AND post.home=" . _pm_table . ".id) WHERE receiver=" . $id . " OR sender=" . $id);
-        DB::update(_posts_table, 'author=' . $id, array(
+        DB::delete(_user_table, 'id=' . $id);
+        DB::query("DELETE " . _pm_table . ",post FROM " . _pm_table . " LEFT JOIN " . _comment_table . " AS post ON (post.type=" . _post_pm . " AND post.home=" . _pm_table . ".id) WHERE receiver=" . $id . " OR sender=" . $id);
+        DB::update(_comment_table, 'author=' . $id, array(
             'guest' => sprintf('%x', crc32((string) $id)),
             'author' => -1,
         ));
-        DB::update(_articles_table, 'author=' . $id, array('author' => 0));
-        DB::update(_polls_table, 'author=' . $id, array('author' => 0));
+        DB::update(_article_table, 'author=' . $id, array('author' => 0));
+        DB::update(_poll_table, 'author=' . $id, array('author' => 0));
 
         // odstraneni uploadovaneho avataru
         if (isset($udata['avatar'])) {
@@ -471,7 +471,7 @@ abstract class User
             // akce formulare
             if (!$embedded) {
                 // systemovy skript
-                $action = Router::link('system/script/login.php');
+                $action = Router::generate('system/script/login.php');
             } else {
                 // vlozeny formular
                 $action = null;
@@ -528,7 +528,7 @@ abstract class User
             }
 
         } else {
-            $output .= "<p>" . _lang('login.ininfo') . " <em>" . _user_name . "</em> - <a href='" . Xsrf::addToUrl(Router::link('system/script/logout.php')) . "'>" . _lang('usermenu.logout') . "</a>.</p>";
+            $output .= "<p>" . _lang('login.ininfo') . " <em>" . _user_name . "</em> - <a href='" . Xsrf::addToUrl(Router::generate('system/script/logout.php')) . "'>" . _lang('usermenu.logout') . "</a>.</p>";
         }
 
         return $output;
@@ -622,7 +622,7 @@ abstract class User
             $cond = 'u.username=' . DB::val($username) . ' OR u.publicname=' . DB::val($username);
         }
 
-        $query = DB::queryRow("SELECT u.id,u.username,u.email,u.logincounter,u.password,u.blocked,g.blocked group_blocked FROM " . _users_table . " u JOIN " . _groups_table . " g ON(u.group_id=g.id) WHERE " . $cond);
+        $query = DB::queryRow("SELECT u.id,u.username,u.email,u.logincounter,u.password,u.blocked,g.blocked group_blocked FROM " . _user_table . " u JOIN " . _user_group_table . " g ON(u.group_id=g.id) WHERE " . $cond);
         if ($query === false) {
             // uzivatel nenalezen
             return 0;
@@ -660,7 +660,7 @@ abstract class User
             $changeset['password'] = $query['password'] = $password->build();
         }
 
-        DB::update(_users_table, 'id=' . DB::val($query['id']), $changeset);
+        DB::update(_user_table, 'id=' . DB::val($query['id']), $changeset);
 
         // extend udalost
         Extend::call('user.login', array('user' => $query));
@@ -773,7 +773,7 @@ abstract class User
         }
 
         $hasAvatar = ($data['avatar'] !== null);
-        $url = Router::link('images/avatars/' . ($hasAvatar ? $data['avatar'] : 'no-avatar' . (Template::getCurrent()->getOption('dark') ? '-dark' : '')) . '.jpg');
+        $url = Router::generate('images/avatars/' . ($hasAvatar ? $data['avatar'] : 'no-avatar' . (Template::getCurrent()->getOption('dark') ? '-dark' : '')) . '.jpg');
 
         // vykresleni rozsirenim
         if ($options['extend']) {
@@ -843,7 +843,7 @@ abstract class User
         if ($do_repeat) {
             $action = $target_url;
         } else {
-            $action = Router::link('system/script/post_repeat.php?login=' . ($allow_login ? '1' : '0') . '&target=' . rawurlencode($target_url));
+            $action = Router::generate('system/script/post_repeat.php?login=' . ($allow_login ? '1' : '0') . '&target=' . rawurlencode($target_url));
         }
 
         $output = "<form name='post_repeat' method='post' action='" . _e($action) . "'>\n";

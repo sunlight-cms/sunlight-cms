@@ -71,13 +71,13 @@ return function ($typ = 'new', $pocet = null, $perex = 'perex', $info = true, $k
             break;
         case 'commented':
         case 8:
-            $rorder = "(SELECT time FROM " . _posts_table . " WHERE home=art.id AND type=" . _post_article_comment . " ORDER BY time DESC LIMIT 1) DESC";
-            $rcond = "(SELECT COUNT(*) FROM " . _posts_table . " WHERE home=art.id AND type=" . _post_article_comment . ")!=0";
+            $rorder = "(SELECT time FROM " . _comment_table . " WHERE home=art.id AND type=" . _post_article_comment . " ORDER BY time DESC LIMIT 1) DESC";
+            $rcond = "(SELECT COUNT(*) FROM " . _comment_table . " WHERE home=art.id AND type=" . _post_article_comment . ")!=0";
             break;
         case 'most-comments':
         case 9:
-            $rorder = "(SELECT COUNT(*) FROM " . _posts_table . " WHERE home=art.id AND type=" . _post_article_comment . ") DESC";
-            $rcond = "(SELECT COUNT(*) FROM " . _posts_table . " WHERE home=art.id AND type=" . _post_article_comment . ")!=0";
+            $rorder = "(SELECT COUNT(*) FROM " . _comment_table . " WHERE home=art.id AND type=" . _post_article_comment . ") DESC";
+            $rcond = "(SELECT COUNT(*) FROM " . _comment_table . " WHERE home=art.id AND type=" . _post_article_comment . ")!=0";
             break;
         case 'new':
         default:
@@ -100,7 +100,7 @@ return function ($typ = 'new', $pocet = null, $perex = 'perex', $info = true, $k
 
     // vypis
     $userQuery = User::createQuery('art.author');
-    $query = DB::query("SELECT art.id,art.title,art.slug,art.perex," . ($show_image ? 'art.picture_uid,' : '') . "art.time,art.readnum,art.comments,cat1.slug AS cat_slug," . $userQuery['column_list'] . (($info !== 0) ? ",(SELECT COUNT(*) FROM " . _posts_table . " AS post WHERE home=art.id AND post.type=" . _post_article_comment . ") AS comment_count" : '') . " FROM " . _articles_table . " AS art " . $joins . ' ' . $userQuery['joins'] . " WHERE " . $cond . " ORDER BY " . $rorder . " LIMIT " . $pocet);
+    $query = DB::query("SELECT art.id,art.title,art.slug,art.perex," . ($show_image ? 'art.picture_uid,' : '') . "art.time,art.readnum,art.comments,cat1.slug AS cat_slug," . $userQuery['column_list'] . (($info !== 0) ? ",(SELECT COUNT(*) FROM " . _comment_table . " AS post WHERE home=art.id AND post.type=" . _post_article_comment . ") AS comment_count" : '') . " FROM " . _article_table . " AS art " . $joins . ' ' . $userQuery['joins'] . " WHERE " . $cond . " ORDER BY " . $rorder . " LIMIT " . $pocet);
     while ($item = DB::row($query)) {
         $result .= Article::renderPreview($item, $userQuery, $info, $show_perex, (($info !== 0) ? $item['comment_count'] : null));
     }

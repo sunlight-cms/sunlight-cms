@@ -55,16 +55,16 @@ if (isset($_POST['action'])) {
                     if ($prev) {
                         $prev_count['mod.messages'] = DB::count(_pm_table, 'update_time<' . $messages_time);
                     } else {
-                        DB::query("DELETE " . _pm_table . ",post FROM " . _pm_table . " LEFT JOIN " . _posts_table . " AS post ON (post.type=" . _post_pm . " AND post.home=" . _pm_table . ".id) WHERE update_time<" . $messages_time);
+                        DB::query("DELETE " . _pm_table . ",post FROM " . _pm_table . " LEFT JOIN " . _comment_table . " AS post ON (post.type=" . _post_pm . " AND post.home=" . _pm_table . ".id) WHERE update_time<" . $messages_time);
                     }
                     break;
 
                 case 2:
                     if ($prev) {
-                        $prev_count['mod.messages'] = DB::count(_posts_table, 'type=' . _post_pm);
+                        $prev_count['mod.messages'] = DB::count(_comment_table, 'type=' . _post_pm);
                     } else {
                         DB::query("TRUNCATE TABLE " . _pm_table);
-                        DB::delete(_posts_table, 'type=' . _post_pm);
+                        DB::delete(_comment_table, 'type=' . _post_pm);
                     }
                     break;
 
@@ -73,16 +73,16 @@ if (isset($_POST['action'])) {
             // komentare, prispevky, iplog
             if (Form::loadCheckbox("comments")) {
                 if ($prev) {
-                    $prev_count['admin.settings.functions.comments'] = DB::count(_posts_table, 'type=' . _post_section_comment . ' OR type=' . _post_article_comment);
+                    $prev_count['admin.settings.functions.comments'] = DB::count(_comment_table, 'type=' . _post_section_comment . ' OR type=' . _post_article_comment);
                 } else {
-                    DB::delete(_posts_table, 'type=' . _post_section_comment . ' OR type=' . _post_article_comment);
+                    DB::delete(_comment_table, 'type=' . _post_section_comment . ' OR type=' . _post_article_comment);
                 }
             }
             if (Form::loadCheckbox("posts")) {
                 if ($prev) {
-                    $prev_count['global.posts'] = DB::count(_posts_table, 'type IN(' . DB::arr(array(_post_book_entry, _post_shoutbox_entry, _post_forum_topic)) . ')');
+                    $prev_count['global.posts'] = DB::count(_comment_table, 'type IN(' . DB::arr(array(_post_book_entry, _post_shoutbox_entry, _post_forum_topic)) . ')');
                 } else {
-                    DB::deleteSet(_posts_table, 'type', array(
+                    DB::deleteSet(_comment_table, 'type', array(
                         _post_book_entry,
                         _post_shoutbox_entry,
                         _post_forum_topic
@@ -91,9 +91,9 @@ if (isset($_POST['action'])) {
             }
             if (Form::loadCheckbox("plugin_posts")) {
                 if ($prev) {
-                    $prev_count['admin.other.cleanup.other.plugin_posts.label'] = DB::count(_posts_table, 'type=' . _post_plugin);
+                    $prev_count['admin.other.cleanup.other.plugin_posts.label'] = DB::count(_comment_table, 'type=' . _post_plugin);
                 } else {
-                    DB::delete(_posts_table, 'type=' . _post_plugin);
+                    DB::delete(_comment_table, 'type=' . _post_plugin);
                 }
             }
             if (Form::loadCheckbox("iplog")) {
@@ -123,9 +123,9 @@ if (isset($_POST['action'])) {
                 }
 
                 if ($prev) {
-                    $prev_count['admin.users.users'] = DB::count(_users_table, 'id!=0 AND activitytime<' . $users_time . $users_group);
+                    $prev_count['admin.users.users'] = DB::count(_user_table, 'id!=0 AND activitytime<' . $users_time . $users_group);
                 } else {
-                    $userids = DB::query("SELECT id FROM " . _users_table . " WHERE id!=0 AND activitytime<" . $users_time . $users_group);
+                    $userids = DB::query("SELECT id FROM " . _user_table . " WHERE id!=0 AND activitytime<" . $users_time . $users_group);
                     while($userid = DB::row($userids)) {
                         User::delete($userid['id']);
                     }
@@ -173,7 +173,7 @@ if (isset($_POST['action'])) {
             $pass = Request::post('pass');
             $confirm = Form::loadCheckbox("confirm");
             if ($confirm) {
-                $right_pass = DB::queryRow("SELECT password FROM " . _users_table . " WHERE id=0");
+                $right_pass = DB::queryRow("SELECT password FROM " . _user_table . " WHERE id=0");
                 if (Password::load($right_pass['password'])->match($pass)) {
 
                     // odhlaseni

@@ -15,7 +15,7 @@ if ($continue) {
   <tr><td colspan='2'><label><input type='checkbox' name='var1' value='1'" . Form::activateCheckbox($query['var1']) . "> " . _lang('admin.content.form.unregpost') . "</label></td></tr>
   ";
     if (!$new) {
-        $custom_settings .= "<tr><td colspan='2'><label><input type='checkbox' name='delposts' value='1'> " . _lang('admin.content.form.delposts') . " <small>(" . DB::count(_posts_table, 'home=' . DB::val($id) . ' AND type=' . _post_book_entry) . ")</small></label></td></tr>";
+        $custom_settings .= "<tr><td colspan='2'><label><input type='checkbox' name='delposts' value='1'> " . _lang('admin.content.form.delposts') . " <small>(" . DB::count(_comment_table, 'home=' . DB::val($id) . ' AND type=' . _post_book_entry) . ")</small></label></td></tr>";
     }
     $custom_settings .= "<tr><td><input type='number' min='1' name='var2' value='" . $query['var2'] . "' class='inputmax'></td><td>" . _lang('admin.content.form.postsperpage') . "</td></tr>";
     $custom_save_array = array(

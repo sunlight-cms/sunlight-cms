@@ -19,7 +19,7 @@ $continue = false;
 if (isset($_GET['id'])) {
     $id = (int) Request::get('id');
     $systemgroup = in_array($id, $sysgroups_array);
-    $query = DB::queryRow("SELECT id,title,level FROM " . _groups_table . " WHERE id=" . $id);
+    $query = DB::queryRow("SELECT id,title,level FROM " . _user_group_table . " WHERE id=" . $id);
     if ($query !== false) {
         if (_priv_level > $query['level']) {
             $continue = true;
@@ -32,7 +32,7 @@ if (isset($_GET['id'])) {
 if ($continue) {
 
     /* --- spocitani uzivatelu --- */
-    $user_count = DB::count(_users_table, 'group_id=' . DB::val($id));
+    $user_count = DB::count(_user_table, 'group_id=' . DB::val($id));
 
     /* ---  odstraneni  --- */
     $done = false;
@@ -40,7 +40,7 @@ if ($continue) {
 
         // smazani skupiny
         if (!$systemgroup) {
-            DB::delete(_groups_table, 'id=' . $id);
+            DB::delete(_user_group_table, 'id=' . $id);
         }
 
         // zmena vychozi skupiny
@@ -49,7 +49,7 @@ if ($continue) {
         }
 
         // smazani uzivatelu
-        $users = DB::query("SELECT id FROM " . _users_table . " WHERE group_id=" . $id . " AND id!=0");
+        $users = DB::query("SELECT id FROM " . _user_table . " WHERE group_id=" . $id . " AND id!=0");
         while ($user = DB::row($users)) {
             User::delete($user['id']);
         }
