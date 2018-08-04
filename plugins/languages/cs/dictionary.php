@@ -195,7 +195,7 @@ Platnost tohoto odkazu je 1 hodina.
   'mod.search.p' => 'Do pole níže zadejte frázi, kterou chcete vyhledat (můžete použít zástupné znaky <em>_</em> a <em>%</em>).',
   'mod.search.submit' => 'Vyhledat',
   'mod.search.where' => 'Prohledávat',
-  'mod.search.where.root' => 'stránky',
+  'mod.search.where.page' => 'stránky',
   'mod.search.where.articles' => 'články',
   'mod.search.where.posts' => 'příspěvky',
   'mod.search.where.images' => 'galerie',
