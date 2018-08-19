@@ -108,7 +108,7 @@ class Labels
             'config.db.password' => 'Heslo',
             'config.db.password.help' => 'heslo (je-li vyžadováno)',
             'config.db.name' => 'Databáze',
-            'config.db.name.help' => 'název databáze',
+            'config.db.name.help' => 'název databáze (pokud neexistuje, bude vytvořena)',
             'config.db.prefix' => 'Prefix',
             'config.db.prefix.help' => 'předpona názvu tabulek',
             'config.system' => 'Nastavení systému',
@@ -187,7 +187,7 @@ class Labels
             'config.db.password' => 'Password',
             'config.db.password.help' => 'password (if required)',
             'config.db.name' => 'Database',
-            'config.db.name.help' => 'name of the database',
+            'config.db.name.help' => 'name of the database (if it doesn\'t exist, it will be created)',
             'config.db.prefix' => 'Prefix',
             'config.db.prefix.help' => 'table name prefix',
             'config.system' => 'System configuration',
@@ -718,7 +718,7 @@ class ConfigurationStep extends Step
 
         // connect to the database
         if (empty($this->errors)) {
-            $connectError = DB::connect($config['db.server'], $config['db.user'], $config['db.password'], $config['db.name'], $config['db.port']);
+            $connectError = DB::connect($config['db.server'], $config['db.user'], $config['db.password'], '', $config['db.port']);
 
             if ($connectError !== null) {
                 $this->errors[] = array('db.connect.error', array('%error%' => $connectError));
@@ -742,7 +742,7 @@ class ConfigurationStep extends Step
             parent::isComplete()
             && is_file(CONFIG_PATH)
             && Config::isLoaded()
-            && DB::connect(Config::$config['db.server'], Config::$config['db.user'], Config::$config['db.password'], Config::$config['db.name'], Config::$config['db.port']) === null;
+            && DB::connect(Config::$config['db.server'], Config::$config['db.user'], Config::$config['db.password'], '', Config::$config['db.port']) === null;
     }
 
     function run()
@@ -969,6 +969,9 @@ class ImportDatabaseStep extends Step
 
         // import the database
         if (empty($this->errors)) {
+            // create and use database
+            DB::query('CREATE DATABASE IF NOT EXISTS ' . DB::escIdt(Config::$config['db.name']) . ' COLLATE \'utf8_general_ci\'');
+            DB::query('USE '. DB::escIdt(Config::$config['db.name']));
 
             // drop existing tables
             DatabaseLoader::dropTables($this->getExistingTableNames());
@@ -1135,11 +1138,12 @@ Now you can <a href="admin/">log in to the administration</a> (username and pass
     {
         if ($this->existingTableNames === null) {
             $this->existingTableNames = DB::queryRows(
-                'SHOW TABLES LIKE ' . DB::val(Config::$config['db.prefix'] . '_%'),
+                'SHOW TABLES FROM ' . DB::escIdt(Config::$config['db.name']) . ' LIKE ' . DB::val(Config::$config['db.prefix'] . '_%'),
                 null,
                 0,
-                false
-            );
+                false,
+                true
+            ) ?: array();
         }
 
         return $this->existingTableNames;
