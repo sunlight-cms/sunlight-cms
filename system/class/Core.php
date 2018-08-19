@@ -491,21 +491,15 @@ abstract class Core
 
         // make sure $_SERVER['REQUEST_URI'] is defined
         if (!isset($_SERVER['REQUEST_URI'])) {
-            if (isset($_SERVER['HTTP_X_REWRITE_URL'])) {
-                $_SERVER['REQUEST_URI'] = $_SERVER['HTTP_X_REWRITE_URL']; // ISAPI_Rewrite 3.x
-            } elseif (isset($_SERVER['HTTP_REQUEST_URI'])) {
-                $_SERVER['REQUEST_URI'] = $_SERVER['HTTP_REQUEST_URI']; // ISAPI_Rewrite 2.x
+            if (isset($_SERVER['SCRIPT_NAME'])) {
+                $requestUri = $_SERVER['SCRIPT_NAME'];
             } else {
-                if (isset($_SERVER['SCRIPT_NAME'])) {
-                    $requestUri = $_SERVER['SCRIPT_NAME'];
-                } else {
-                    $requestUri = $_SERVER['PHP_SELF'];
-                }
-                if (!empty($_SERVER['QUERY_STRING'])) {
-                    $requestUri .= '?' . $_SERVER['QUERY_STRING'];
-                }
-                $_SERVER['REQUEST_URI'] = $requestUri;
+                $requestUri = $_SERVER['PHP_SELF'];
             }
+            if (!empty($_SERVER['QUERY_STRING'])) {
+                $requestUri .= '?' . $_SERVER['QUERY_STRING'];
+            }
+            $_SERVER['REQUEST_URI'] = $requestUri;
         }
 
         // undo register_globals
