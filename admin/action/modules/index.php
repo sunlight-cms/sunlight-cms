@@ -107,10 +107,12 @@ Extend::call('admin.index.messages', array(
    'messages' => &$messages,
 ));
 
-$output .= "<div id='index-messages' class='well'>\n";
-$output .= '<h2>' . _lang('admin.index.messages') . "</h2>\n";
-$output .= join($messages);
-$output .= "</div>\n";
+if (!empty($messages)) {
+    $output .= "<div id='index-messages' class='well'>\n";
+    $output .= '<h2>' . _lang('admin.index.messages') . "</h2>\n";
+    $output .= join($messages);
+    $output .= "</div>\n";
+}
 
 // editace
 if (_user_group == _group_admin) {
