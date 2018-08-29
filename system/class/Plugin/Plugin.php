@@ -25,13 +25,6 @@ abstract class Plugin
     /** Plugin status - disabled */
     const STATUS_DISABLED = 3;
 
-    /** Autoload type - PSR0 */
-    const AUTOLOAD_PSR0 = 0;
-    /** Autoload type - PSR4 */
-    const AUTOLOAD_PSR4 = 1;
-    /** Autload type - class map */
-    const AUTOLOAD_CLASSMAP = 2;
-
     /** @var array */
     static $commonOptions = array(
         'name' => array('type' => 'string', 'required' => true),

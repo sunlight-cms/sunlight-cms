@@ -98,22 +98,20 @@ abstract class PluginOptionNormalizer
         $normalized = array();
 
         $validTypes = array(
-            'psr-0' => Plugin::AUTOLOAD_PSR0,
-            'psr-4' => Plugin::AUTOLOAD_PSR4,
-            'classmap' => Plugin::AUTOLOAD_CLASSMAP,
+            'psr-0' => true,
+            'psr-4' => true,
+            'classmap' => true,
         );
 
-        foreach ($autoload as $typeName => $entries) {
+        foreach ($autoload as $type => $entries) {
             // check type
-            if (!isset($validTypes[$typeName])) {
-                throw new OptionSetNormalizerException(sprintf('[%s] is not a valid key', $typeName));
+            if (!isset($validTypes[$type])) {
+                throw new OptionSetNormalizerException(sprintf('[%s] is not a valid key', $type));
             }
-
-            $type = $validTypes[$typeName];
 
             // check entries
             if (!is_array($entries)) {
-                throw new OptionSetNormalizerException(sprintf('[%s] must be an array', $typeName));
+                throw new OptionSetNormalizerException(sprintf('[%s] must be an array', $type));
             }
 
             $normalized[$type] = array();
@@ -121,17 +119,17 @@ abstract class PluginOptionNormalizer
             // iterate entires
             foreach ($entries as $key => $entry) {
                 if (!is_string($key)) {
-                    throw new OptionSetNormalizerException(sprintf('[%s][%s] is not a valid key (expected a string key)', $typeName, $key));
+                    throw new OptionSetNormalizerException(sprintf('[%s][%s] is not a valid key (expected a string key)', $type, $key));
                 }
 
                 switch ($type) {
-                    case Plugin::AUTOLOAD_PSR0:
-                    case Plugin::AUTOLOAD_PSR4:
+                    case 'psr-0':
+                    case 'psr-4':
                         if (is_array($entry)) {
                             $normalizedEntry = array();
                             foreach ($entry as $pathKey => $path) {
                                 if (!is_string($path)) {
-                                    throw new OptionSetNormalizerException(sprintf('[%s][%s][%s] must be a string', $typeName, $key, $pathKey));
+                                    throw new OptionSetNormalizerException(sprintf('[%s][%s][%s] must be a string', $type, $key, $pathKey));
                                 }
 
                                 $normalizedEntry[] = Filesystem::normalizeWithBasePath($context['plugin']['dir'], $path);
@@ -141,13 +139,13 @@ abstract class PluginOptionNormalizer
                         } elseif (is_string($entry)) {
                             $normalized[$type][$key] = Filesystem::normalizeWithBasePath($context['plugin']['dir'], $entry);
                         } else {
-
+                            throw new OptionSetNormalizerException(sprintf('[%s][%s] must be a string or an array of strings', $type, $key));
                         }
                         break;
 
-                    case Plugin::AUTOLOAD_CLASSMAP:
+                    case 'classmap':
                         if (!is_string($entry)) {
-                            throw new OptionSetNormalizerException(sprintf('[%s][%s] must be a string', $typeName, $key));
+                            throw new OptionSetNormalizerException(sprintf('[%s][%s] must be a string', $type, $key));
                         }
 
                         $normalized[$type][$key] = Filesystem::normalizeWithBasePath($context['plugin']['dir'], $entry);
