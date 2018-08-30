@@ -32,10 +32,10 @@ if (isset($_POST['bulk_action'])) {
             }
 
             $message = Message::render(
-                $user_delete_counter === sizeof($user_ids) ? 1 : 2,
+                $user_delete_counter === count($user_ids) ? 1 : 2,
                 str_replace(
                     array('%done%', '%total%'),
-                    array($user_delete_counter, sizeof($user_ids)),
+                    array($user_delete_counter, count($user_ids)),
                     _lang('admin.users.list.bulkdelete.msg')
                 )
             );

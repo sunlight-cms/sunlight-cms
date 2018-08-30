@@ -423,7 +423,7 @@ class Backup
         $this->ensureMetaDataLoaded();
 
         if ($key !== null) {
-            if (!array_key_exists($key, $this->metadataCache)) {
+            if (!key_exists($key, $this->metadataCache)) {
                 throw new \OutOfBoundsException(sprintf('Unknown metadata key "%s"', $key));
             }
             

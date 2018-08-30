@@ -85,7 +85,7 @@ if ($search_query != '') {
                 $alias = $alias . '.';
             }
             $output = '(';
-            for ($i = 0, $last = (sizeof($cols) - 1); isset($cols[$i]); ++$i) {
+            for ($i = 0, $last = (count($cols) - 1); isset($cols[$i]); ++$i) {
                 $output .= $alias . $cols[$i] . ' LIKE \'' . $GLOBALS['search_query_sql'] . '\'';
                 if ($i !== $last) {
                     $output .= ' OR ';

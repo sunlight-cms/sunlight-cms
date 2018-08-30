@@ -99,7 +99,7 @@ abstract class PageLister
      */
     static function setConfig($name, $value)
     {
-        if (!array_key_exists($name, static::$config)) {
+        if (!key_exists($name, static::$config)) {
             throw new \OutOfBoundsException(sprintf('Unknown option "%s"', $name));
         }
 
@@ -115,7 +115,7 @@ abstract class PageLister
      */
     static function getConfig($name)
     {
-        if (!array_key_exists($name, static::$config)) {
+        if (!key_exists($name, static::$config)) {
             throw new \OutOfBoundsException(sprintf('Unknown option "%s"', $name));
         }
 

@@ -110,7 +110,7 @@ abstract class Filesystem
         $segments = explode('/', static::normalizePath($path));
         $parentJumps = 0;
 
-        for ($i = sizeof($segments) - 1; $i >= 0; --$i) {
+        for ($i = count($segments) - 1; $i >= 0; --$i) {
             $isCurrent = $segments[$i] === '.';
             $isParent = $segments[$i] === '..';
             $isEmpty = $segments[$i] === '';

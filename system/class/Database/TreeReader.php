@@ -270,7 +270,7 @@ class TreeReader
 
         // pripravit sloupce
         $columns = array_merge($this->getSystemColumns(), $options->columns);
-        $columnCount = sizeof($columns);
+        $columnCount = count($columns);
 
         // pripravit filtr
         $filterSql = $options->filter ? "%__node__%.`{$this->depthColumn}`>0 OR ({$options->filter->getNodeSql($this)})" : null;
@@ -507,7 +507,7 @@ class TreeReader
         $columns = array_merge(
             array($this->idColumn, $this->parentColumn, $this->levelColumn, $this->depthColumn), $columns
         );
-        $columnCount = sizeof($columns);
+        $columnCount = count($columns);
 
         // sestavit dotaz
         $sql = 'SELECT ';

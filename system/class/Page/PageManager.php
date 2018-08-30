@@ -58,7 +58,7 @@ abstract class PageManager
         // identifikator
         if (!empty($segments)) {
             $slugs = array();
-            for ($i = sizeof($segments); $i > 0; --$i) {
+            for ($i = count($segments); $i > 0; --$i) {
                 $slugs[] = implode('/', array_slice($segments, 0, $i));
             }
             $conds[] = 'page.slug IN(' . DB::arr($slugs) . ')';

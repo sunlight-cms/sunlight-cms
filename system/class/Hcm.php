@@ -96,7 +96,7 @@ abstract class Hcm
         }
 
         $whitelist = preg_split('{\s*,\s*}', _priv_adminhcm);
-        if (sizeof($whitelist) === 1 && $whitelist[0] === '*') {
+        if (count($whitelist) === 1 && $whitelist[0] === '*') {
             $whitelist = null; // vsechny HCM moduly povoleny
         }
 

@@ -408,7 +408,7 @@ class StepRunner
      */
     function getTotal()
     {
-        return sizeof($this->steps);
+        return count($this->steps);
     }
 
     /**
@@ -616,7 +616,7 @@ abstract class Step
      */
     protected function getConfig($key, $default = null)
     {
-        if (Config::isLoaded() && array_key_exists($key, Config::$config)) {
+        if (Config::isLoaded() && key_exists($key, Config::$config)) {
             return Config::$config[$key];
         } else {
             return $default;
@@ -963,7 +963,7 @@ class ImportDatabaseStep extends Step
             $this->errors[] = 'admin.email.invalid';
         }
 
-        if (!$overwrite && sizeof($this->getExistingTableNames()) > 0) {
+        if (!$overwrite && count($this->getExistingTableNames()) > 0) {
             $this->errors[] = 'overwrite.required';
         }
 
@@ -1113,7 +1113,7 @@ Now you can <a href="admin/">log in to the administration</a> (username and pass
     </table>
 </fieldset>
 
-<?php if (sizeof($this->getExistingTableNames()) > 0): ?>
+<?php if (count($this->getExistingTableNames()) > 0): ?>
 <fieldset>
     <legend><?php Labels::render('import.overwrite') ?></legend>
     <p class="msg warning"><?php Labels::render('import.overwrite.text', array('%prefix%' => Config::$config['db.prefix'] . '_')) ?></p>
@@ -1128,7 +1128,7 @@ Now you can <a href="admin/">log in to the administration</a> (username and pass
      */
     private function isDatabaseInstalled()
     {
-        return sizeof(array_diff($this->getTableNames(), $this->getExistingTableNames())) === 0;
+        return count(array_diff($this->getTableNames(), $this->getExistingTableNames())) === 0;
     }
 
     /**

@@ -34,7 +34,7 @@ class EventLogger
     {
         $eventArgs = array_slice(func_get_args(), 1);
 
-        if (sizeof($eventArgs) === 1 && is_array($eventArgs[0])) {
+        if (count($eventArgs) === 1 && is_array($eventArgs[0])) {
             // standard extend arguments
             $eventArgs = $eventArgs[0];
         }

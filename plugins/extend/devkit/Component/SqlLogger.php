@@ -58,7 +58,7 @@ class SqlLogger
     public function showInDebugScreen(array $view)
     {
         $log = $this->getLog();
-        $logSize = sizeof($log);
+        $logSize = count($log);
 
         $logHtml = _buffer(function () use ($log) {
             ?>

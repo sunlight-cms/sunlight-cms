@@ -93,8 +93,8 @@ class BackupRestorer
         foreach (array_merge($directoriesToRemove, $directoriesToPurge) as $directory) {
             if (!Filesystem::checkDirectory($directory, true, $failedPaths)) {
                 $failedPathsString = implode(', ', array_slice($failedPaths, 0, 3));
-                if (sizeof($failedPaths) > 3) {
-                    $failedPathsString .= sprintf(' and %d more', sizeof($failedPaths) - 3);
+                if (count($failedPaths) > 3) {
+                    $failedPathsString .= sprintf(' and %d more', count($failedPaths) - 3);
                 }
 
                 $errors[] = sprintf('cannot write to "%s", please check privileges (%s)', $failedPathsString);

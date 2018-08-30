@@ -127,7 +127,7 @@ class ToolbarRenderer
     {
         ?>
 <div class="devkit-section devkit-database devkit-toggleable">
-    <?php echo sizeof($this->sqlLog) ?>
+    <?php echo count($this->sqlLog) ?>
 </div>
 
 <div class="devkit-content">
@@ -184,7 +184,7 @@ class ToolbarRenderer
 
         ?>
 <div class="devkit-section devkit-extend devkit-toggleable">
-    <?php echo sizeof($this->eventLog) ?>
+    <?php echo count($this->eventLog) ?>
 </div>
 
 <div class="devkit-content">
@@ -258,7 +258,7 @@ class ToolbarRenderer
             return;
         }
 
-        $pluginErrorCount = sizeof($pluginErrors);
+        $pluginErrorCount = count($pluginErrors);
 
         ?>
 <div class="devkit-section devkit-plugin-errors devkit-toggleable">
@@ -315,7 +315,7 @@ class ToolbarRenderer
             }
         }
 
-        $totalMissingLocalizations = sizeof($missingLocalizationRows);
+        $totalMissingLocalizations = count($missingLocalizationRows);
 
         ?>
 <div class="devkit-section devkit-lang devkit-toggleable">
@@ -392,7 +392,7 @@ class ToolbarRenderer
         <?php foreach (array('_GET', '_POST', '_COOKIE', '_SESSION') as $globalVarName): ?>
             <?php if (!empty($GLOBALS[$globalVarName])): ?>
             <div class="devkit-heading devkit-hideshow">
-                $<?php echo $globalVarName, ' (', sizeof($GLOBALS[$globalVarName]), ')' ?>
+                $<?php echo $globalVarName, ' (', count($GLOBALS[$globalVarName]), ')' ?>
             </div>
 
             <div class="devkit-request-dump devkit-hideshow-target"><pre><?php echo Dumper::dump($GLOBALS[$globalVarName]) ?></pre></div>

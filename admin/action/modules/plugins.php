@@ -55,7 +55,7 @@ foreach (Core::$pluginManager->all() as $pluginType => $plugins) {
     $inactivePlugins = Core::$pluginManager->getAllInactive($pluginType);
 
     $output .= "<fieldset>\n";
-    $output .= '<legend>' . _lang('admin.plugins.title.' . $pluginType) . ' (' . (sizeof($plugins) + sizeof($inactivePlugins)) . ")</legend>\n";
+    $output .= '<legend>' . _lang('admin.plugins.title.' . $pluginType) . ' (' . (count($plugins) + count($inactivePlugins)) . ")</legend>\n";
     $output .= '<table class="list list-hover plugin-list">
 <thead>
     <tr>

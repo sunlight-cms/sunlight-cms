@@ -51,7 +51,7 @@ class Password
         $segments = explode(':', $storedPassword, 4);
 
         if (
-            sizeof($segments) !== 4
+            count($segments) !== 4
             || !ctype_digit($segments[1])
             || $segments[2] === ''
             || $segments[3] === ''

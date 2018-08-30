@@ -312,7 +312,7 @@ abstract class Plugin
      */
     function getOption($name)
     {
-        if (!array_key_exists($name, $this->options)) {
+        if (!key_exists($name, $this->options)) {
             throw new \OutOfBoundsException(sprintf('Option "%s" does not exist', $name));
         }
 
@@ -412,7 +412,7 @@ abstract class Plugin
 
         $actions['info'] = _lang('admin.plugins.action.do.info');
         $actions += $this->getCustomActionList();
-        if (sizeof($this->getConfigDefaults())) {
+        if (count($this->getConfigDefaults())) {
             $actions['config'] = _lang('admin.plugins.action.do.config');
         }
         if ($this->canBeInstalled()) {

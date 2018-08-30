@@ -617,7 +617,7 @@ abstract class Core
                     do {
                         // parse cookie
                         $cookie = explode('$', $_COOKIE[$persistentCookieName], 2);
-                        if (sizeof($cookie) !== 2) {
+                        if (count($cookie) !== 2) {
                             // invalid cookie format
                             $errorCode = 1;
                             break;

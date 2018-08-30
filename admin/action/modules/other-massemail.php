@@ -84,7 +84,7 @@ if (isset($_POST['text'])) {
                 if ($rec_buffer_counter === $rec_buffer_size || $item_counter === $item_total) {
                     // odeslani emailu
                     if (Email::send('', $subject, $text, $headers + array('Bcc' => implode(",", $rec_buffer)))) {
-                        $done += sizeof($rec_buffer);
+                        $done += count($rec_buffer);
                     }
                     $rec_buffer = array();
                     $rec_buffer_counter = 0;

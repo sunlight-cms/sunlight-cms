@@ -472,7 +472,7 @@ class PageManipulator
     {
         $path = PageManager::getTreeReader()->getPath(array($column), $currentId);
 
-        for ($i = sizeof($path) - 1; $i >= 0; --$i) {
+        for ($i = count($path) - 1; $i >= 0; --$i) {
             if ($path[$i][$column] == $value || $i === 0) {
                 return $path[$i]['id'];
             }

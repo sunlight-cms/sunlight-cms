@@ -20,7 +20,7 @@ return function ($galerie = "", $typ = 'new', $rozmery = null, $limit = null) {
     // rozmery
     if (isset($rozmery)) {
         $rozmery = explode('/', $rozmery, 2);
-        if (sizeof($rozmery) === 2) {
+        if (count($rozmery) === 2) {
             // sirka i vyska
             $x = (int) $rozmery[0];
             $y = (int) $rozmery[1];

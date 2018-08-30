@@ -142,7 +142,7 @@ if (empty($_POST) || Xsrf::check()) {
             $segments = array();
         }
 
-        if (!empty($segments) && $segments[sizeof($segments) - 1] === '') {
+        if (!empty($segments) && $segments[count($segments) - 1] === '') {
             // presmerovat identifikator/ na identifikator
             $_url->path = rtrim($_url_path, '/');
 

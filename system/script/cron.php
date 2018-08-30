@@ -14,7 +14,7 @@ Core::init('../../', array(
 
 $auth = explode(':', Core::loadSetting('cron_auth'), 2);
 if (
-    sizeof($auth) !== 2
+    count($auth) !== 2
     || Request::get('user') !== $auth[0]
     || Request::get('password') !== $auth[1]
 ) {
