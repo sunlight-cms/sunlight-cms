@@ -64,7 +64,7 @@ $output .= "
   <table>
     <tr>
       <th>" . _lang('global.version') . ":</th>
-      <td>" . Core::VERSION . "</small></td>
+      <td>" . Core::VERSION . " <small>(" . Core::DIST . ")</small></td>
     </tr>
 
     " . ($admin_index_cfg['latest_version_check'] ? "
@@ -98,6 +98,10 @@ $output .= Extend::buffer('admin.index.after_table');
 // zpravy
 $messages = array();
 
+if (Core::DIST === 'BETA') {
+    $messages[] = Message::warning(_lang('admin.index.betawarn'));
+}
+
 if (_debug) {
     // vyvojovy rezim
     $messages[] = Message::warning(_lang('admin.index.debugwarn'));
@@ -107,12 +111,10 @@ Extend::call('admin.index.messages', array(
    'messages' => &$messages,
 ));
 
-if (!empty($messages)) {
-    $output .= "<div id='index-messages' class='well'>\n";
-    $output .= '<h2>' . _lang('admin.index.messages') . "</h2>\n";
-    $output .= join($messages);
-    $output .= "</div>\n";
-}
+$output .= "<div id='index-messages' class='well" . (empty($messages) ? ' hidden' : '') . "'>\n";
+$output .= '<h2>' . _lang('admin.index.messages') . "</h2>\n";
+$output .= join($messages);
+$output .= "</div>\n";
 
 // editace
 if (_user_group == _group_admin) {
@@ -124,6 +126,7 @@ if ($admin_index_cfg['latest_version_check']) {
     $versionApiUrl = Url::parse('https://sunlight-cms.org/api/v2/version');
     $versionApiUrl->add(array(
         'ver' => Core::VERSION,
+        'dist' => Core::DIST,
         'php' => PHP_VERSION_ID,
         'checksum' => sha1(Core::$appId . '$' . Core::$secret),
         'lang' => _lang('langcode.iso639'),
@@ -172,6 +175,7 @@ $.ajax({
             }
             
             $(Sunlight.msg(messageType, message, true)).insertAfter('#index-messages > h2:first-child');
+            $('#index-messages').show();
         }
     }
 });
