@@ -104,7 +104,7 @@ abstract class Core
      * content_type         content type, FALSE = disabled (default is "text/html; charset=UTF-8")
      * env                  environment identifier, see Core::ENV_* constants
      *
-     * @param string $root    relative path to the system root directory
+     * @param string $root relative path to the system root directory (with a trailing slash)
      * @param array  $options
      */
     static function init($root, array $options = array())
