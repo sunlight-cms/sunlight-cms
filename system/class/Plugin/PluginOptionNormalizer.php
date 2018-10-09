@@ -4,6 +4,7 @@ namespace Sunlight\Plugin;
 
 use Sunlight\Option\OptionSetNormalizerException;
 use Sunlight\Util\Filesystem;
+use Sunlight\Util\UrlHelper;
 
 abstract class PluginOptionNormalizer
 {
@@ -81,7 +82,9 @@ abstract class PluginOptionNormalizer
                 throw new OptionSetNormalizerException(sprintf('[%s] must be a string', $key));
             }
 
-            $normalized[$key] = $context['plugin']['web_path'] . '/' . $path;
+            $normalized[$key] = UrlHelper::isAbsolute($path)
+                ? $path
+                : $context['plugin']['web_path'] . '/' . $path;
         }
 
         return $normalized;

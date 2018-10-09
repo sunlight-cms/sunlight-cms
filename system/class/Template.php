@@ -8,6 +8,7 @@ use Sunlight\Page\PageTreeFilter;
 use Sunlight\Plugin\TemplatePlugin;
 use Sunlight\Plugin\TemplateService;
 use Sunlight\Util\Request;
+use Sunlight\Util\UrlHelper;
 
 abstract class Template
 {
@@ -72,7 +73,7 @@ abstract class Template
         // pripravit css
         $css = array();
         foreach ($_template->getOption('css') as $key => $path) {
-            $css[$key] = Router::generate($path);
+            $css[$key] = UrlHelper::isAbsolute($path) ? $path : Router::generate($path);
         }
 
         // pripravit js
@@ -82,7 +83,7 @@ abstract class Template
             'rangyinputs' => Router::generate('system/js/rangyinputs.js'),
         );
         foreach ($_template->getOption('js') as $key => $path) {
-            $js[$key] = Router::generate($path);
+            $js[$key] = UrlHelper::isAbsolute($path) ? $path : Router::generate($path);
         }
 
         // titulek

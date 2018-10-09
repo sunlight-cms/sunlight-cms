@@ -5,16 +5,18 @@ namespace Sunlight\Util;
 abstract class UrlHelper
 {
     /**
-     * Rozpoznat, zda se jedna o URL v absolutnim tvaru
+     * Rozpoznat, zda se jedna o URL v absolutnim tvaru, tj. obsahuje schema nebo zacina "/"
      *
      * @param string $url adresa
      * @return bool
      */
     static function isAbsolute($url)
     {
-        $url = @parse_url($url);
+        if ($url === '') {
+            return false;
+        }
 
-        return isset($url['scheme']);
+        return $url[0] === '/' || preg_match('{\w+://}A', $url);
     }
 
     /**
@@ -55,14 +57,20 @@ abstract class UrlHelper
     }
 
     /**
-     * Pridat HTTP schema do URL, pokud jej neobsahuje nebo neni relativni
+     * Pridat HTTP schema do URL, pokud jej neobsahuje a neni relativni
      *
      * @param string $url
      * @return string
      */
     static function addScheme($url)
     {   
-        if ($url !== '' && mb_substr($url, 0, 7) !== 'http://' && mb_substr($url, 0, 8) !== 'https://' && $url[0] !== '/' && mb_substr($url, 0, 2) !== './') {
+        if (
+            $url !== ''
+            && $url[0] !== '/'
+            && strncmp($url, 'http://', 7) !== 0
+            && strncmp($url, 'https://', 8) !== 0
+            && strncmp($url, './', 2) !== 0
+        ) {
             $url = 'http://' . $url;
         }
 
@@ -74,7 +82,7 @@ abstract class UrlHelper
      */
     static function ensureValidScheme($url)
     {
-        if ($url === '' || $url[0] === '/' || mb_substr($url, 0, 2) === './') {
+        if ($url === '' || $url[0] === '/' || strncmp($url, './', 2) === 0) {
             // relativni URL
             return $url;
         }
