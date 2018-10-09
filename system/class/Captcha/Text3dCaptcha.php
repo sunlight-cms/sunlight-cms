@@ -123,7 +123,9 @@ class Text3dCaptcha
         $this->drawNoise($matrix, $this->noise);
 
         $captcha = imagecreatetruecolor($w * $this->scale + $pad, $h * sin($this->projectionAngle) * $this->scale);
-        imageantialias($captcha, true);
+        if (function_exists('imageantialias')) {
+            imageantialias($captcha, true);
+        }
         imagefill($captcha, 0, 0, $this->backgroundColor);
 
         for ($x = 1; $x < $w - 1; $x++)
