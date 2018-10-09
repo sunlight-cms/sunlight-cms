@@ -5,6 +5,7 @@ namespace Sunlight\Installer;
 use Kuria\Debug\Output;
 use Sunlight\Core;
 use Sunlight\Database\Database as DB;
+use Sunlight\Database\DatabaseException;
 use Sunlight\Database\DatabaseLoader;
 use Sunlight\Database\SqlReader;
 use Sunlight\Email;
@@ -95,6 +96,7 @@ class Labels
             'config.error.db.prefix.empty' => 'prefix nesmí být prázdný',
             'config.error.db.prefix.invalid' => 'prefix obsahuje nepovolené znaky',
             'config.error.db.connect.error' => 'nepodařilo se připojit k databázi, chyba: %error%',
+            'config.error.db.create.error' => 'nepodařilo se vytvořit databázi (možná ji bude nutné vytvořit manuálně ve správě vašeho webhostingu): %error%',
             'config.error.secret.empty' => 'tajný hash nesmí být prázdný',
             'config.error.app_id.empty' => 'ID aplikace nesmí být prázdné',
             'config.error.app_id.invalid' => 'ID aplikace obsahuje nepovolené znaky',
@@ -174,6 +176,7 @@ class Labels
             'config.error.db.prefix.empty' => 'prefix must not be empty',
             'config.error.db.prefix.invalid' => 'prefix contains invalid characters',
             'config.error.db.connect.error' => 'could not connect to the database, error: %error%',
+            'config.error.db.create.error' => 'could not create database (perhaps you need to create it manually via your webhosting\'s management page): %error%',
             'config.error.secret.empty' => 'secret hash must not be empty',
             'config.error.app_id.empty' => 'app ID must not be empty',
             'config.error.app_id.invalid' => 'app ID contains invalid characters',
@@ -720,7 +723,14 @@ class ConfigurationStep extends Step
         if (empty($this->errors)) {
             $connectError = DB::connect($config['db.server'], $config['db.user'], $config['db.password'], '', $config['db.port']);
 
-            if ($connectError !== null) {
+            if ($connectError === null) {
+                // attempt to create the database if it does not exist
+                try {
+                    DB::query('CREATE DATABASE IF NOT EXISTS ' . DB::escIdt($config['db.name']) . ' COLLATE \'utf8_general_ci\'');
+                } catch (DatabaseException $e) {
+                    $this->errors[] = array('db.create.error', array('%error%' => $e->getMessage()));
+                }
+            } else {
                 $this->errors[] = array('db.connect.error', array('%error%' => $connectError));
             }
         }
@@ -969,8 +979,7 @@ class ImportDatabaseStep extends Step
 
         // import the database
         if (empty($this->errors)) {
-            // create and use database
-            DB::query('CREATE DATABASE IF NOT EXISTS ' . DB::escIdt(Config::$config['db.name']) . ' COLLATE \'utf8_general_ci\'');
+            // use database
             DB::query('USE '. DB::escIdt(Config::$config['db.name']));
 
             // drop existing tables
@@ -1197,7 +1206,7 @@ class CompleteStep extends Step
 <p class="msg <?php echo $isDebug ? 'notice' : 'warning' ?>"><?php Labels::render('complete.installdir_warning' . ($isDebug ? '.debug' : '')) ?></p>
 
 <ul class="major">
-    <li><a href="<?php echo _e(Config::$config['url']) ?>" target="_blank"><?php Labels::render('complete.goto.web') ?></a></li>
+    <li><a href="<?php echo _e(Config::$config['url'] ?: '/') ?>" target="_blank"><?php Labels::render('complete.goto.web') ?></a></li>
     <li><a href="<?php echo _e(Config::$config['url']) ?>/admin/" target="_blank"><?php Labels::render('complete.goto.admin') ?></a></li>
 </ul>
 <?php
