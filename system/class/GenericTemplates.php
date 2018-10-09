@@ -96,8 +96,8 @@ abstract class GenericTemplates
 <!DOCTYPE html>
 <html lang="{$lang}">
 <head>
-    <meta charset="UTF-8">
-    <meta name="generator" content="{$generator}">
+<meta charset="UTF-8">
+<meta name="generator" content="{$generator}">
 
 HTML;
     }

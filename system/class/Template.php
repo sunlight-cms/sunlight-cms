@@ -109,8 +109,7 @@ abstract class Template
             echo "<base href=\"" . Core::$url . "/\">\n";
         }
         echo '<meta name="description" content="' . (isset($_index['description']) ? $_index['description'] : _description) . '">' . ((_author !== '') ? '
-<meta name="author" content="' . _author . '">' : '') . '
-<meta name="robots" content="index, follow">'
+<meta name="author" content="' . _author . '">' : '')
             . Extend::buffer('tpl.head.meta')
             . ($_template->getOption('responsive') ? "\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">" : '')
             . GenericTemplates::renderHeadAssets($assets);

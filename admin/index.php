@@ -92,7 +92,7 @@ if ($admin_login_layout) {
 $admin_body_classes[] = $theme_dark ? 'dark' : 'light';
 
 ?>
-<meta name="robots" content="noindex,follow"><?php echo GenericTemplates::renderHeadAssets($assets), "\n" ?>
+<meta name="robots" content="noindex,nofollow"><?php echo GenericTemplates::renderHeadAssets($assets), "\n" ?>
 <title><?php echo _title, ' - ', _lang('global.admintitle'), (!empty($admin_title) ? ' - ' . $admin_title : '') ?></title>
 </head>
 
