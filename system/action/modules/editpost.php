@@ -9,6 +9,7 @@ use Sunlight\Paginator;
 use Sunlight\Comment\Comment;
 use Sunlight\PostForm;
 use Sunlight\Router;
+use Sunlight\Template;
 use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Html;
@@ -30,10 +31,15 @@ $form = true;
 $id = (int) Request::get('id');
 list($columns, $joins, $cond) = Comment::createFilter('post');
 $userQuery = User::createQuery('post.author');
-$columns .= ',' . $userQuery['column_list'];
+$columns .= ',home_page.layout page_layout,' . $userQuery['column_list'];
 $joins .= ' ' . $userQuery['joins'];
 $query = DB::queryRow("SELECT " . $columns . " FROM " . _comment_table . " post " . $joins . " WHERE post.id=" . $id . " AND " . $cond);
+
 if ($query !== false) {
+    if (isset($query['page_layout'])) {
+        Template::change($query['page_layout']);
+    }
+
     if (Comment::checkAccess($userQuery, $query)) {
         $bbcode = true;
         Extend::call('mod.editpost.backlink', array('backlink' => &$_index['backlink'], 'post' => $query));
