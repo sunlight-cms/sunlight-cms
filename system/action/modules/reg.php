@@ -244,7 +244,7 @@ if (!$user_data_valid && $show_form) {
     } else {
 
         // nepotvrzeno
-        $code = StringGenerator::generateHash(35);
+        $code = StringGenerator::generateHash(48);
         $insert_id = DB::insert(_user_activation_table, array(
             'code' => $code,
             'expire' => time() + 3600,
