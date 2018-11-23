@@ -32,7 +32,6 @@ abstract class ArgList
 
         // vyhodnoceni
         for ($i = 0; isset($input[$i]); ++$i) {
-
             $char = $input[$i];
             switch ($mode) {
 
@@ -91,7 +90,7 @@ abstract class ArgList
                                 $escaped = false;
                             } else {
                                 // konec hodnoty
-                                $output[] = $val;
+                                $output[] = trim($val);
                                 $mode = 2; // najit konec
                             }
 
@@ -124,7 +123,7 @@ abstract class ArgList
                                 }
                             }
 
-                            $output[] = $val;
+                            $output[] = trim($val);
                             $mode = 0;
                         } elseif (isset($ws[$char])) {
                             // bile znaky
