@@ -27,17 +27,21 @@ return function ($limit = null, $stranky = "", $typ = null) {
     );
 
     // nastaveni filtru
-    if (isset($stranky) && isset($typ)) {
+    if (!empty($stranky)) {
+        $homes = Arr::removeValue(explode('-', $stranky), '');
+    } else {
+        $homes = array();
+    }
+
+    if (!empty($typ)) {
         if (isset($post_types[$typ])) {
             $typ = $post_types[$typ];
         } elseif (!in_array($typ, $post_types)) {
             $typ = _post_section_comment;
         }
         $types = array($typ);
-        $homes = Arr::removeValue(explode('-', $stranky), '');
     } else {
         $types = $post_types;
-        $homes = array();
     }
 
     // dotaz
