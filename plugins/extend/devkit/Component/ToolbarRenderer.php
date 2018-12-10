@@ -88,8 +88,9 @@ class ToolbarRenderer
     public function renderInfo()
     {
         ?>
-<div class="devkit-section devkit-info">
+<div class="devkit-section devkit-sl">
     <?php echo Core::VERSION ?>
+    <?php echo Core::DIST ?>
 </div>
 <?php
     }
@@ -261,7 +262,7 @@ class ToolbarRenderer
         $pluginErrorCount = count($pluginErrors);
 
         ?>
-<div class="devkit-section devkit-plugin-errors devkit-toggleable">
+<div class="devkit-section devkit-section-error devkit-plugin-errors devkit-toggleable">
     <?php echo $pluginErrorCount ?> plugin <?php echo $pluginErrorCount > 1 ? 'errors' : 'error' ?>
 </div>
 
@@ -317,39 +318,37 @@ class ToolbarRenderer
 
         $totalMissingLocalizations = count($missingLocalizationRows);
 
+        if ($totalMissingLocalizations === 0) {
+            return;
+        }
+
         ?>
-<div class="devkit-section devkit-lang devkit-toggleable">
-    <?php if ($totalMissingLocalizations > 0): ?><span class="devkit-blood-badge"><?php endif ?>
-        <?php echo $totalMissingLocalizations ?>
-    <?php if ($totalMissingLocalizations > 0): ?></span><?php endif ?>
+<div class="devkit-section devkit-section-error devkit-lang devkit-toggleable">
+    <?php echo $totalMissingLocalizations ?> missing
 </div>
 
 <div class="devkit-content">
     <div>
         <div class="devkit-heading">Missing localizations for language <em><?php echo _e(_language) ?></em> (<?php echo $totalMissingLocalizations ?>)</div>
 
-        <?php if ($totalMissingLocalizations > 0): ?>
-            <table>
-                <thead>
+        <table>
+            <thead>
+                <tr>
+                    <th>Dictionary</th>
+                    <th>Key</th>
+                    <th>Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($missingLocalizationRows as $row): ?>
                     <tr>
-                        <th>Dictionary</th>
-                        <th>Key</th>
-                        <th>Count</th>
+                        <td><code><?php echo _e($row['dict']) ?></code></td>
+                        <td><?php echo _e($row['key']) ?></td>
+                        <td><?php echo _e($row['count']) ?></td>
                     </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($missingLocalizationRows as $row): ?>
-                        <tr>
-                            <td><code><?php echo _e($row['dict']) ?></code></td>
-                            <td><?php echo _e($row['key']) ?></td>
-                            <td><?php echo _e($row['count']) ?></td>
-                        </tr>
-                    <?php endforeach ?>
-                </tbody>
-            </table>
-        <?php else: ?>
-            <p>None</p>
-        <?php endif ?>
+                <?php endforeach ?>
+            </tbody>
+        </table>
     </div>
 </div>
     <?php
