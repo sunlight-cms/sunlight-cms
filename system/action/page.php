@@ -17,10 +17,15 @@ if ($_page === false) {
     return;
 }
 
-// url stranky
+// parametry stranky
 $_index['url'] = Router::page($_page['id'], $_index['slug']);
+$_index['body_classes'][] = 't-page';
+if ($_index['slug'] !== null) {
+    $_index['body_classes'][] = 'p-' . $_index['slug'];
+} elseif ($_page['id'] == _index_page_id) {
+    $_index['body_classes'][] = 'homepage';
+}
 
-// segment stranky
 if ($_index['slug'] !== null && ($slug_length = strlen($_page['slug'])) < strlen($_index['slug'])) {
     $segment = substr($_index['slug'], $slug_length + 1);
 } else {

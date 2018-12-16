@@ -33,6 +33,8 @@ Response::notFound();
 
 $_index['title'] = _lang('global.error404.title');
 $_index['output'] = '';
+$_index['body_classes'][] = 't-error';
+$_index['body_classes'][] = 'e-not-found';
 
 Extend::call('index.not_found', array(
     'index' => &$_index,

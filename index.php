@@ -7,6 +7,7 @@ use Sunlight\Plugin\TemplatePlugin;
 use Sunlight\Plugin\TemplateService;
 use Sunlight\Router;
 use Sunlight\Template;
+use Sunlight\Util\Html;
 use Sunlight\Util\Request;
 use Sunlight\Util\Response;
 use Sunlight\Util\Url;
@@ -96,6 +97,7 @@ $_index = array(
 
     // motiv
     'template_enabled' => true, // pouzit motiv
+    'body_classes' => array(),
 );
 
 
@@ -186,7 +188,6 @@ if ($_index['redirect_to'] !== null) {
     require _root . 'system/action/not_found.php';
 } elseif (!$_index['is_accessible']) {
     // pristup odepren
-    Response::unauthorized();
     require _root . 'system/action/login_required.php';
 } elseif ($_index['is_guest_only']) {
     // pristup pouze pro neprihl. uziv
@@ -216,7 +217,7 @@ if ($_index['template_enabled']) {
 
     ?>
 </head>
-<body<?php echo Extend::buffer('tpl.body_tag') ?>>
+<body<?php if ($_index['body_classes']): ?> class="<?php echo implode(' ', Html::escapeArrayItems($_index['body_classes'])) ?>"<?php endif ?><?php echo Extend::buffer('tpl.body_tag') ?>>
 
 <?php require $_template_path ?>
 <?php echo Extend::buffer('tpl.end') ?>

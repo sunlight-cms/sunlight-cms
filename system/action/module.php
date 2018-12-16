@@ -33,6 +33,8 @@ if (preg_match('{[a-zA-Z_\-.]+$}AD', $_index['slug'])) {
     // spusteni modulu
     if ($script !== null) {
         $_index['is_found'] = true;
+        $_index['body_classes'][] = 't-module';
+        $_index['body_classes'][] = 'm-' . $_index['slug'];
 
         $extend_args = Extend::args($output, array('id' => $_index['slug'], 'script' => &$script));
 
