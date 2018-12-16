@@ -379,7 +379,9 @@ abstract class Form
             'submit_span' => false,
             'submit_name' => null,
             'submit_row' => null,
+            'table_prepend' => '',
             'table_append' => '',
+            'form_prepend' => '',
             'form_append' => '',
         );
         if ($options['multipart']) {
@@ -412,9 +414,11 @@ abstract class Form
 
             $output .= ">\n";
         }
+        $output .= $options['form_prepend'];
 
         // zacatek tabulky
         $output .= "<table>\n";
+        $output .= $options['table_prepend'];
 
         // radky
         foreach ($rows as $row) {
