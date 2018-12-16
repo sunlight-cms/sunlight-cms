@@ -52,7 +52,7 @@ $_index['title'] = _lang('mod.search');
 $output .= "
 <p class='bborder'>" . _lang('mod.search.p') . "</p>
 
-<form action='" . Router::module('search') . "' method='get'>
+<form action='" . Router::module('search') . "' method='get' class='fullsearchform'>
 " . (!_pretty_urls ? Form::renderHiddenInputs(Arr::filterKeys($_GET, null, null, array('q', 'page', 'art', 'post', 'img'))) : '') . "
 <p><input type='search' name='q' class='inputmedium' value='" . _e($search_query) . "'> <input type='submit' value='" . _lang('mod.search.submit') . "'></p>
 <p>
