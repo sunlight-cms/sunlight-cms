@@ -5,18 +5,6 @@ namespace Sunlight\Util;
 abstract class Html
 {
     /**
-     * Prevest HTML znaky na entity
-     *
-     * @param string $input        vstupni retezec
-     * @param bool   $doubleEncode prevadet i jiz existujici entity 1/0
-     * @return string
-     */
-    static function escape($input, $doubleEncode = true)
-    {
-        return htmlspecialchars($input, ENT_QUOTES, 'UTF-8', $doubleEncode);
-    }
-
-    /**
      * Prevest entity zpet na HTML znaky
      *
      * @param string $input vstupni retezec
@@ -77,7 +65,7 @@ abstract class Html
         $output = array();
 
         foreach ($input as $key => $value) {
-            $output[$key] = static::escape((string) $value, $double_encode);
+            $output[$key] = _e((string) $value, $double_encode);
         }
 
         return $output;

@@ -38,7 +38,7 @@ function _buffer($callback, array $arguments = array())
  */
 function _e($input, $doubleEncode = true)
 {
-    return Html::escape($input, $doubleEncode);
+    return htmlspecialchars($input, ENT_QUOTES, 'UTF-8', $doubleEncode);
 }
 
 /**
