@@ -372,7 +372,7 @@ abstract class Form
             'enctype' => null,
             'multipart' => false,
             'id' => null,
-            'class' => null,
+            'class' => isset($options['name']) ? $options['name'] : null,
             'embedded' => false,
             'submit_text' => _lang('global.send'),
             'submit_append' => '',
