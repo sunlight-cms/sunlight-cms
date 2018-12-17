@@ -321,7 +321,10 @@ switch ($a) {
 </p>
 
 <table class='messages-table'>
-<tr><td width='10'><input type='checkbox' name='selector' onchange=\"var that=this;$('table.messages-table input').each(function(){this.checked=that.checked;});\"></td><th>" . _lang('mod.messages.message') . "</th><th>" . _lang('global.user') . "</th><th>" . _lang('mod.messages.time.update') . "</th></tr>\n";
+<thead>
+<tr><td width='10'><input type='checkbox' name='selector' onchange=\"var that=this;$('table.messages-table input').each(function(){this.checked=that.checked;});\"></td><th>" . _lang('mod.messages.message') . "</th><th>" . _lang('global.user') . "</th><th>" . _lang('mod.messages.time.update') . "</th></tr>
+</thead>
+<tbody>\n";
         $senderUserQuery = User::createQuery('pm.sender', 'sender_', 'su');
         $receiverUserQuery = User::createQuery('pm.receiver', 'receiver_', 'ru');
         $q = DB::query(
@@ -344,7 +347,7 @@ switch ($a) {
             $output .= "<tr><td colspan='4'>" . _lang('mod.messages.nokit') . "</td></tr>\n";
         }
 
-        $output .= "
+        $output .= "</tbody><tfoot>
 <tr><td colspan='4'>
     <div class='hr messages-hr'><hr></div>
     <select name='action'>
@@ -355,7 +358,7 @@ switch ($a) {
     </select>
     <input type='submit' value='" . _lang('global.do') . "' onclick='return Sunlight.confirm();'>
 </td></tr>
-
+</tfoot>
 </table>
 " . Xsrf::getInput() . "</form>\n";
 
