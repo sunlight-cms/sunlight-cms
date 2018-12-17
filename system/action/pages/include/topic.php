@@ -62,13 +62,13 @@ $topic_admin = array();
 
 if ($topic_access) {
     if (_priv_locktopics) {
-        $topic_admin[] = "<a href='" . Router::module('locktopic', 'id=' . $id) . "'>" . (_lang('mod.locktopic.link' . (($query['locked'] == 1) ? '2' : ''))) . "</a>";
+        $topic_admin[] = "<a class=\"post-action-" . (($query['locked'] == 1) ? 'unlock' : 'lock') . "\" href='" . Router::module('locktopic', 'id=' . $id) . "'>" . (_lang('mod.locktopic.link' . (($query['locked'] == 1) ? '2' : ''))) . "</a>";
     }
     if (_priv_stickytopics) {
-        $topic_admin[] = "<a href='" . Router::module('stickytopic', 'id=' . $id) . "'>" . (_lang('mod.stickytopic.link' . (($query['sticky'] == 1) ? '2' : ''))) . "</a>";
+        $topic_admin[] = "<a class=\"post-action-" . (($query['sticky'] == 1) ? 'unsticky' : 'sticky') . "\"  href='" . Router::module('stickytopic', 'id=' . $id) . "'>" . (_lang('mod.stickytopic.link' . (($query['sticky'] == 1) ? '2' : ''))) . "</a>";
     }
     if (_priv_movetopics) {
-        $topic_admin[] = "<a href='" . Router::module('movetopic', 'id=' . $id) . "'>" . (_lang('mod.movetopic.link')) . "</a>";
+        $topic_admin[] = "<a class=\"post-action-move\"  href='" . Router::module('movetopic', 'id=' . $id) . "'>" . (_lang('mod.movetopic.link')) . "</a>";
     }
 }
 
