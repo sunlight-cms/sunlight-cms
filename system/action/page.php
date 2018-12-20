@@ -6,6 +6,7 @@ use Sunlight\Router;
 use Sunlight\Template;
 use Sunlight\User;
 use Sunlight\Util\ArgList;
+use Sunlight\Util\StringManipulator;
 use Sunlight\Util\UrlHelper;
 
 defined('_root') or exit;
@@ -21,7 +22,7 @@ if ($_page === false) {
 $_index['url'] = Router::page($_page['id'], $_index['slug']);
 $_index['body_classes'][] = 't-page';
 if ($_index['slug'] !== null) {
-    $_index['body_classes'][] = 'p-' . $_index['slug'];
+    $_index['body_classes'][] = 'p-' . StringManipulator::slugify($_index['slug'], true, '_');
 } elseif ($_page['id'] == _index_page_id) {
     $_index['body_classes'][] = 'homepage';
 }

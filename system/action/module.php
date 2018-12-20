@@ -2,6 +2,7 @@
 
 use Sunlight\Extend;
 use Sunlight\Router;
+use Sunlight\Util\StringManipulator;
 
 defined('_root') or exit;
 
@@ -34,7 +35,7 @@ if (preg_match('{[a-zA-Z_\-.]+$}AD', $_index['slug'])) {
     if ($script !== null) {
         $_index['is_found'] = true;
         $_index['body_classes'][] = 't-module';
-        $_index['body_classes'][] = 'm-' . $_index['slug'];
+        $_index['body_classes'][] = 'm-' . StringManipulator::slugify($_index['slug'], true, '_');
 
         $extend_args = Extend::args($output, array('id' => $_index['slug'], 'script' => &$script));
 
