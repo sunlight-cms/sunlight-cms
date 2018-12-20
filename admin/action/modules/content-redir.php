@@ -37,8 +37,8 @@ if (isset($_GET['new']) || isset($_GET['edit'])) {
 
             // nacteni dat
             $q = array();
-            $q['old'] = StringManipulator::slugify(trim(Request::post('old')), true, array('/' => 0));
-            $q['new'] = StringManipulator::slugify(trim(Request::post('new')), true, array('/' => 0));
+            $q['old'] = StringManipulator::slugify(trim(Request::post('old')), true, '._/');
+            $q['new'] = StringManipulator::slugify(trim(Request::post('new')), true,'._/');
             $q['permanent'] = Form::loadCheckbox('permanent');
             $q['active'] = Form::loadCheckbox('act');
 

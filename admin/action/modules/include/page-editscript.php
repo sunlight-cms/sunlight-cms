@@ -197,7 +197,7 @@ if (!empty($_POST)) {
                 }
                 if ($slug_abs) {
                     // absolutni slug
-                    $val = StringManipulator::slugify($val, true, array('/' => 0));
+                    $val = StringManipulator::slugify($val, true, '._/');
                 } else {
                     // pouze segment
                     $val = ($base_slug !== '' ? $base_slug . '/' : '') . StringManipulator::slugify($val);
