@@ -64,7 +64,7 @@ if (DB::size($items) != 0) {
                 case _page_book:
                     // nacteni jmena autora posledniho prispevku
                     $userQuery = User::createQuery('p.author');
-                    $lastpost = DB::query("SELECT p.author,p.guest," . $userQuery['column_list'] . " FROM " . _comment_table . " p " . $userQuery['joins'] . " WHERE p.home=" . $item['id'] . " ORDER BY p.id DESC LIMIT 1");
+                    $lastpost = DB::queryRow("SELECT p.author,p.guest," . $userQuery['column_list'] . " FROM " . _comment_table . " p " . $userQuery['joins'] . " WHERE p.home=" . $item['id'] . " ORDER BY p.id DESC LIMIT 1");
                     if ($lastpost !== false) {
                         if ($lastpost['author'] != -1) {
                             $lastpost = Router::userFromQuery($userQuery, $lastpost);
