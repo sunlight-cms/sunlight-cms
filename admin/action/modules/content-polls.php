@@ -52,7 +52,7 @@ if (_priv_adminpollall) {
 }
 
 // strankovani
-$paging = Paginator::render("index.php?p=content-polls", 20, _comment_table . ':p', $author_filter . Admin::pollAccess($pasep), "&amp;filter=" . $author_filter_id);
+$paging = Paginator::render("index.php?p=content-polls", 20, _poll_table . ':p', $author_filter . Admin::pollAccess($pasep), "&amp;filter=" . $author_filter_id);
 $output .= $paging['paging'];
 
 $output .= $message . "
