@@ -43,6 +43,20 @@ jQuery(document).ready(function ($) {
     }
 
     /**
+     * Update body margins
+     */
+    function updateBodyMargins()
+    {
+        var body = $(document.body);
+
+        if (isOpen()) {
+            body.css('marginBottom', (toolbarHeight + parseInt($(body).css('marginBottom'))) + 'px');
+        } else {
+            body.css('marginBottom', '');
+        }
+    }
+
+    /**
      * Set cookie
      *
      * @param name
@@ -70,6 +84,8 @@ jQuery(document).ready(function ($) {
         $('#devkit-toolbar')
             .addClass('devkit-toolbar-closed')
             .removeClass('devkit-toolbar-open');
+
+        updateBodyMargins();
     }
 
     /**
@@ -81,6 +97,16 @@ jQuery(document).ready(function ($) {
         $('#devkit-toolbar')
             .addClass('devkit-toolbar-open')
             .removeClass('devkit-toolbar-closed');
+
+        updateBodyMargins();
+    }
+
+    /**
+     * See if the toolbar is open
+     */
+    function isOpen()
+    {
+        return $('#devkit-toolbar').hasClass('devkit-toolbar-open');
     }
 
     // toggleable
@@ -132,5 +158,8 @@ jQuery(document).ready(function ($) {
             close();
         }
     });
+
+    // initial margin update
+    updateBodyMargins();
 
 });
