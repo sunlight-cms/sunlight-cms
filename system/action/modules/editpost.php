@@ -184,7 +184,7 @@ if (isset($_POST['text'])) {
             // smazani prispevku a odpovedi
             DB::delete(_comment_table, 'id=' . DB::val($id));
             if ($query['xhome'] == -1) {
-                DB::delete(_comment_table, 'xhome=' . DB::val($id) . ' AND home=' . DB::val($query['home']) . ' AND type=' . DB::val($query['type']), null);
+                DB::delete(_comment_table, 'xhome=' . DB::val($id) . ' AND home=' . DB::val($query['home']) . ' AND type=' . DB::val($query['type']));
             }
 
             // info

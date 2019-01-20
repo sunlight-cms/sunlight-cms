@@ -52,7 +52,7 @@ if (isset($_GET['confirm'])) {
         // kontrola omezeni
         if (IpLog::check(_iplog_failed_account_activation)) {
             // smazani expirovanych
-            DB::delete(_user_activation_table, 'expire<' . time(), null);
+            DB::delete(_user_activation_table, 'expire<' . time());
 
             // nalezeni zaznamu
             $activation = DB::queryRow('SELECT * FROM ' . _user_activation_table . ' WHERE code=' . DB::val($code));

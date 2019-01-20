@@ -763,12 +763,11 @@ class Database
      *
      * @param string   $table nazev tabulky s prefixem
      * @param string   $cond  podminka WHERE
-     * @param int|null $limit limit smazanych radku (null = bez limitu)
      * @return bool
      */
-    static function delete($table, $cond, $limit = 1)
+    static function delete($table, $cond)
     {
-        return static::query('DELETE FROM ' . static::escIdt($table) . " WHERE {$cond}" . (($limit === null) ? '' : " LIMIT {$limit}"));
+        return static::query('DELETE FROM ' . static::escIdt($table) . " WHERE {$cond}");
     }
 
     /**
