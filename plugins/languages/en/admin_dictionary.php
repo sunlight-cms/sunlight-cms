@@ -510,7 +510,6 @@ return array(
     'admin.plugins.upload.extracted' => 'The following plugins were uploaded:',
     'admin.plugins.upload.failed' => 'The following plugins already exist and were skipped:',
     'admin.plugins.upload.failed.no_merge' => 'No plugins were uploaded, because the following plugins already exist:',
-    'admin.plugins.doctrine-console' => 'Doctrine console',
     'admin.plugins.clear_cache' => 'Reload plugins',
     'admin.plugins.get' => 'Get plugins',
     'admin.users.groups' => 'Groups',

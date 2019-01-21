@@ -2,8 +2,6 @@
 
 namespace Sunlight\Database;
 
-use Doctrine\ORM\EntityManager;
-use Sunlight\Database\Doctrine\DoctrineBridge;
 use Sunlight\Extend;
 
 /**
@@ -71,18 +69,6 @@ class Database
     static function setMysqli(\mysqli $mysqli)
     {
         static::$mysqli = $mysqli;
-    }
-
-    /**
-     * @return EntityManager
-     */
-    static function getEntityManager()
-    {
-        if (static::$entityManager === null) {
-            static::$entityManager = DoctrineBridge::createEntityManager(static::$mysqli);
-        }
-
-        return static::$entityManager;
     }
 
     /**

@@ -1,7 +1,6 @@
 <?php
 
 use Sunlight\Core;
-use Sunlight\Util\Html;
 
 /**
  * Bufferovat a vratit vystup daneho callbacku

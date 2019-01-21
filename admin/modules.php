@@ -251,7 +251,7 @@ return array(
         'title' => _lang('admin.menu.plugins'),
         'access' => _priv_adminplugins,
         'parent' => null,
-        'children' => array('plugins-action', 'plugins-upload', 'plugins-doctrine-console'),
+        'children' => array('plugins-action', 'plugins-upload'),
         'menu' => true,
         'menu_order' => 40,
     ),
@@ -263,11 +263,6 @@ return array(
     ),
     'plugins-upload' => array(
         'title' => _lang('admin.plugins.upload'),
-        'access' => _priv_adminplugins,
-        'parent' => 'plugins',
-    ),
-    'plugins-doctrine-console' => array(
-        'title' => _lang('admin.plugins.doctrine-console'),
         'access' => _priv_adminplugins,
         'parent' => 'plugins',
     ),
