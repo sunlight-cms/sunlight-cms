@@ -37,7 +37,7 @@ class Database
      * @param string|null $sqlMode
      * @return string|null null on success, error message on failure
      */
-    static function connect($server, $user, $password, $database, $port, $charset = 'utf8', $sqlMode = '')
+    static function connect($server, $user, $password, $database, $port, $charset = 'utf8mb4', $sqlMode = '')
     {
         $mysqli = @mysqli_connect($server, $user, $password, $database, $port);
         $connectError = mysqli_connect_error();

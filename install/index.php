@@ -726,7 +726,7 @@ class ConfigurationStep extends Step
             if ($connectError === null) {
                 // attempt to create the database if it does not exist
                 try {
-                    DB::query('CREATE DATABASE IF NOT EXISTS ' . DB::escIdt($config['db.name']) . ' COLLATE \'utf8_general_ci\'');
+                    DB::query('CREATE DATABASE IF NOT EXISTS ' . DB::escIdt($config['db.name']) . ' COLLATE \'utf8mb4_general_ci\'');
                 } catch (DatabaseException $e) {
                     $this->errors[] = array('db.create.error', array('%error%' => $e->getMessage()));
                 }
@@ -1116,7 +1116,7 @@ Now you can <a href="admin/">log in to the administration</a> (username and pass
         </tr>
         <tr>
             <th><?php Labels::render('import.admin.email') ?></th>
-            <td><input type="text"<?php echo Form::restorePostValueAndName('import_admin_email', '@') ?>></td>
+            <td><input type="text"<?php echo Form::restorePostValueAndName('import_admin_email', Config::$config['debug'] ? 'admin@localhost' : '@') ?>></td>
             <td class="help"><?php Labels::render('import.admin.email.help') ?></td>
         </tr>
     </table>
