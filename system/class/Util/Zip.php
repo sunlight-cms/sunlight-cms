@@ -68,7 +68,7 @@ abstract class Zip
             fclose($source);
             fclose($targetPath);
 
-            return $bytesWritten = $stat['size'];
+            return $bytesWritten == $stat['size'];
         } else {
             // extract small files by getting all the data at once
             $data = $zip->getFromIndex($stat['index']);

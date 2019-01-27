@@ -13,8 +13,6 @@ class Database
 {
     /** @var \mysqli|null */
     private static $mysqli;
-    /** @var EntityManager|null */
-    private static $entityManager;
 
     /**
      * Staticka trida

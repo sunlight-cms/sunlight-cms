@@ -18,12 +18,12 @@ return function ($razeni = 'new', $pocet = 5) {
             break;
         case 'comment-count':
         case 3:
-            $rorder = "(SELECT COUNT(*) FROM " . _comment_table . " WHERE author=" . _user_table . ".id) DESC";
+            $rorder = "(SELECT COUNT(*) FROM " . _comment_table . " WHERE author=u.id) DESC";
             break;
         case 'article-rating':
         case 4:
-            $rcond .= " AND (SELECT COUNT(*) FROM " . _article_table . " WHERE author=" . _user_table . ".id AND rateon=1 AND ratenum!=0)!=0";
-            $rorder = "(SELECT ROUND(SUM(ratesum)/SUM(ratenum)) FROM " . _article_table . " WHERE rateon=1 AND ratenum!=0 AND author=" . _user_table . ".id) DESC";
+            $rcond .= " AND (SELECT COUNT(*) FROM " . _article_table . " WHERE author=u.id AND rateon=1 AND ratenum!=0)!=0";
+            $rorder = "(SELECT ROUND(SUM(ratesum)/SUM(ratenum)) FROM " . _article_table . " WHERE rateon=1 AND ratenum!=0 AND author=u.id) DESC";
             break;
         case 'new':
         default:
@@ -56,8 +56,8 @@ return function ($razeni = 'new', $pocet = 5) {
 
             case 'article-rating':
             case 4:
-                $rvar = DB::queryRow("SELECT ROUND(SUM(ratesum)/SUM(ratenum)),COUNT(*) FROM " . _article_table . " WHERE rateon=1 AND ratenum!=0 AND author=" . $item['id']);
-                $rext = " - " . $rvar[0] . "%, " . _lang('global.articlesnum') . ": " . $rvar[1];
+                $rvar = DB::queryRow("SELECT ROUND(SUM(ratesum)/SUM(ratenum)) AS pct,COUNT(*) AS cnt FROM " . _article_table . " WHERE rateon=1 AND ratenum!=0 AND author=" . $item['id']);
+                $rext = " - " . $rvar['pct'] . "%, " . _lang('global.articlesnum') . ": " . $rvar['cnt'];
                 break;
 
                 // nic

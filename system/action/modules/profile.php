@@ -139,7 +139,7 @@ if ($public) {
 <table class='profiletable'>
 
 <tr><th>" . _lang('mod.profile.regtime') . "</th><td>" . GenericTemplates::renderTime($query['registertime']) . "</td></tr>
-" . (_profileemail ? "<tr><th>" . _lang('global.email') . "</th><td>" . Email::generate($query['email']) . "</td></tr>" : '') . "
+" . (_profileemail ? "<tr><th>" . _lang('global.email') . "</th><td>" . Email::link($query['email']) . "</td></tr>" : '') . "
 <tr><th>" . _lang('global.postsnum') . "</th><td>" . $posts_count . $posts_viewlink . "</td></tr>
 
 " . $arts . "

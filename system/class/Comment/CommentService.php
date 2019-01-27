@@ -8,7 +8,6 @@ use Sunlight\Extend;
 use Sunlight\GenericTemplates;
 use Sunlight\Message;
 use Sunlight\Paginator;
-use Sunlight\Comment\Comment;
 use Sunlight\PostForm;
 use Sunlight\Router;
 use Sunlight\Template;
