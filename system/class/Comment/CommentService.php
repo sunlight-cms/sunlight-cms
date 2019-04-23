@@ -259,7 +259,6 @@ class CommentService
         }
 
         // extend
-        $callback = null;
         $extend_output = Extend::buffer('posts.output', array(
             'type' => $style,
             'home' => $home,
@@ -275,7 +274,6 @@ class CommentService
             'sql_desc' => &$desc,
             'sql_ordercol' => &$ordercol,
             'sql_countcond' => &$countcond,
-            'callback' => &$callback,
             'form_position' => &$form_position,
         ));
 
@@ -429,6 +427,16 @@ class CommentService
             }
             DB::free($answers);
         }
+
+        Extend::call('posts.items', array(
+            'type' => $style,
+            'home' => $home,
+            'xhome' => $xhome,
+            'vars' => $vars,
+            'post_type' => $posttype,
+            'plugin_flag' => $pluginflag,
+            'items' => &$items,
+        ));
 
         // vypis
         if (!empty($items)) {
