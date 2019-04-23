@@ -123,7 +123,7 @@ LEFT JOIN " . _comment_table . " home_post ON({$alias}.type=" . _post_forum_topi
      * @param bool   $smileys vyhodnotit smajliky 1/0
      * @param bool   $bbcode  vyhodnotit bbcode 1/0
      * @param bool   $nl2br   prevest odrakovani na <br>
-     * @returns string
+     * @return string
      */
     static function render($input, $smileys = true, $bbcode = true, $nl2br = true)
     {
