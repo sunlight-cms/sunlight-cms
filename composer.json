@@ -34,7 +34,6 @@
         }
     },
     "scripts": {
-        "sunlight:doctrine": "Sunlight\\Database\\Doctrine\\Console::runAsComposerScript",
         "sunlight:clear-cache": "Sunlight\\Composer\\ComposerBridge::clearCache",
         "post-update-cmd": [
             "Sunlight\\Composer\\ComposerBridge::clearCache",
