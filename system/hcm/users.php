@@ -48,7 +48,7 @@ return function ($razeni = 'new', $pocet = 5) {
             case 3:
                 $rvar = DB::count(_comment_table, 'author=' . DB::val($item['id']));
                 if ($rvar == 0) {
-                    continue;
+                    continue 2;
                 } else {
                     $rext = " (" . $rvar . ")";
                 }
