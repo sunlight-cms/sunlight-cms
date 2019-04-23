@@ -726,7 +726,7 @@ class ConfigurationStep extends Step
             if ($connectError === null) {
                 // attempt to create the database if it does not exist
                 try {
-                    DB::query('CREATE DATABASE IF NOT EXISTS ' . DB::escIdt($config['db.name']) . ' COLLATE \'utf8mb4_general_ci\'');
+                    DB::query('CREATE DATABASE IF NOT EXISTS ' . DB::escIdt($config['db.name']) . ' COLLATE \'utf8mb4_unicode_ci\'');
                 } catch (DatabaseException $e) {
                     $this->errors[] = array('db.create.error', array('%error%' => $e->getMessage()));
                 }

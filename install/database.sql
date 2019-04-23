@@ -33,7 +33,7 @@ CREATE TABLE `sunlight_article` (
   KEY `ratenum` (`ratenum`),
   KEY `ratesum` (`ratesum`),
   KEY `slug` (`slug`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `sunlight_box` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -57,7 +57,7 @@ CREATE TABLE `sunlight_box` (
   KEY `level` (`level`),
   KEY `template` (`template`),
   KEY `layout` (`layout`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `sunlight_box` (`id`, `ord`, `title`, `content`, `visible`, `public`, `level`, `template`, `layout`, `slot`, `page_ids`, `page_children`, `class`) VALUES
 (1,	1,	'Menu',	'[hcm]menu_subtree,-1,null,null,1[/hcm]',	1,	1,	0,	'default',	'default',	'right',	NULL,	0,	NULL),
@@ -120,7 +120,7 @@ CREATE TABLE `sunlight_user_group` (
   KEY `level` (`level`),
   KEY `blocked` (`blocked`),
   KEY `reglist` (`reglist`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `sunlight_user_group` (`id`, `title`, `descr`, `level`, `icon`, `color`, `blocked`, `reglist`, `administration`, `adminsettings`, `adminplugins`, `adminusers`, `admingroups`, `admincontent`, `adminother`, `adminpages`, `adminsection`, `admincategory`, `adminbook`, `adminseparator`, `admingallery`, `adminlink`, `admingroup`, `adminforum`, `adminpluginpage`, `adminart`, `adminallart`, `adminchangeartauthor`, `adminconfirm`, `adminautoconfirm`, `adminpoll`, `adminpollall`, `adminsbox`, `adminbox`, `fileaccess`, `fileglobalaccess`, `fileadminaccess`, `adminhcm`, `adminhcmphp`, `adminbackup`, `adminmassemail`, `adminposts`, `changeusername`, `postcomments`, `unlimitedpostaccess`, `locktopics`, `stickytopics`, `movetopics`, `artrate`, `pollvote`, `selfremove`) VALUES
 (1,	'SUPER_ADMIN',	'',	10000,	'redstar.png',	'',	0,	0,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	'*',	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1),
@@ -143,7 +143,7 @@ CREATE TABLE `sunlight_gallery_image` (
   KEY `full` (`full`(8)),
   KEY `in_storage` (`in_storage`),
   KEY `ord` (`ord`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 CREATE TABLE `sunlight_iplog` (
@@ -157,7 +157,7 @@ CREATE TABLE `sunlight_iplog` (
   KEY `type` (`type`),
   KEY `time` (`time`),
   KEY `var` (`var`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 CREATE TABLE `sunlight_pm` (
@@ -175,7 +175,9 @@ CREATE TABLE `sunlight_pm` (
   KEY `update_time` (`update_time`),
   KEY `sender_deleted` (`sender_deleted`),
   KEY `receiver_deleted` (`receiver_deleted`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+ALTER TABLE `sunlight_pm` COLLATE 'utf8mb4_unicode_ci';
 
 
 CREATE TABLE `sunlight_poll` (
@@ -187,7 +189,7 @@ CREATE TABLE `sunlight_poll` (
   `votes` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `author` (`author`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 CREATE TABLE `sunlight_comment` (
@@ -214,7 +216,7 @@ CREATE TABLE `sunlight_comment` (
   KEY `time` (`time`),
   KEY `sticky` (`sticky`),
   KEY `flag` (`flag`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 CREATE TABLE `sunlight_redirect` (
@@ -227,7 +229,7 @@ CREATE TABLE `sunlight_redirect` (
   KEY `old` (`old`),
   KEY `active` (`active`),
   KEY `permanent` (`permanent`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 CREATE TABLE `sunlight_page` (
@@ -273,7 +275,7 @@ CREATE TABLE `sunlight_page` (
   KEY `slug_seo_abs` (`slug_abs`),
   KEY `slug_seo` (`slug`(16)),
   KEY `node_parent` (`node_parent`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `sunlight_page` (`id`, `title`, `heading`, `slug`, `slug_abs`, `description`, `type`, `type_idt`, `node_parent`, `node_level`, `node_depth`, `perex`, `ord`, `content`, `visible`, `public`, `level`, `level_inherit`, `show_heading`, `events`, `link_new_window`, `link_url`, `layout`, `layout_inherit`, `var1`, `var2`, `var3`, `var4`) VALUES
 (1,	'',	'',	'index',	0,	'',	1,	NULL,	NULL,	0,	0,	'',	1,	'',	1,	1,	0,	1,	1,	NULL,	0,	NULL,	'',	0,	0,	0,	0,	0);
@@ -284,7 +286,7 @@ CREATE TABLE `sunlight_shoutbox` (
   `locked` tinyint(1) NOT NULL DEFAULT '0',
   `public` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 CREATE TABLE `sunlight_setting` (
@@ -300,7 +302,7 @@ CREATE TABLE `sunlight_setting` (
   KEY `preload` (`preload`),
   KEY `web` (`web`),
   KEY `admin` (`admin`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `sunlight_setting` (`var`, `val`, `format`, `constant`, `preload`, `web`, `admin`) VALUES
 ('postsendexpire',	'50',	'int',	1,	1,	1,	1),
@@ -415,7 +417,7 @@ CREATE TABLE `sunlight_user` (
   KEY `activitytime` (`activitytime`),
   KEY `blocked` (`blocked`),
   KEY `massemail` (`massemail`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `sunlight_user` (`id`, `group_id`, `levelshift`, `username`, `publicname`, `password`, `security_hash`, `security_hash_expires`, `logincounter`, `registertime`, `activitytime`, `blocked`, `massemail`, `wysiwyg`, `public`, `language`, `ip`, `email`, `avatar`, `note`) VALUES
 (0,	1,	1,	'',	NULL,	'',	NULL,	0,	0,	0,	0,	0,	1,	1,	1, '',	'',	'',	NULL,	'');
@@ -428,4 +430,4 @@ CREATE TABLE `sunlight_user_activation` (
   PRIMARY KEY (`id`),
   KEY `code` (`code`),
   KEY `expire` (`expire`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
