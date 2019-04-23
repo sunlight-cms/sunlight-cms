@@ -74,7 +74,7 @@ class Labels
 {
     /** @var string */
     private static $language = '_none';
-    /** @var string[] */
+    /** @var string[][] */
     private static $labels = array(
         // no language set
         '_none' => array(
@@ -157,9 +157,9 @@ class Labels
             'import.overwrite.confirmation' => 'ano, nenávratně odstranit existující tabulky',
 
             'complete.title' => 'Hotovo',
+            'complete.whats_next' => 'Co dál?',
             'complete.success' => 'Instalace byla úspěšně dokončena!',
-            'complete.installdir_warning' => 'Pozor! Než budete pokračovat, je potřeba odstranit adresář install ze serveru.',
-            'complete.installdir_warning.debug' => 'Vývojový režim je aktivní - není nutné odstranit adresář install. Ale MĚLI BYSTE jej odstranit, pokud bude tato instalace systému přístupná ostatním.',
+            'complete.installdir_warning' => 'Než budete pokračovat, je potřeba odstranit adresář install ze serveru.',
             'complete.goto.web' => 'zobrazit stránky',
             'complete.goto.admin' => 'přihlásit se do administrace',
         ),
@@ -237,9 +237,9 @@ class Labels
             'import.overwrite.confirmation' => 'yes, remove the tables permanently',
             
             'complete.title' => 'Complete',
+            'complete.whats_next' => 'What\'s next?',
             'complete.success' => 'Installation has been completed successfully!',
-            'complete.installdir_warning' => 'Warning! Before you continue, remove the install directory.',
-            'complete.installdir_warning.debug' => 'Debug mode is enabled - removing the install directory is not neccessary. But you SHOULD remove it if this installation is accessible by others.',
+            'complete.installdir_warning' => 'Before you continue, you must remove the install directory.',
             'complete.goto.web' => 'open the website',
             'complete.goto.admin' => 'log into administration',
         ),
@@ -653,7 +653,7 @@ class ChooseLanguageStep extends Step
     function run()
     {
         ?>
-<ul class="major nobullets">
+<ul class="big-list nobullets">
     <li><label><input type="radio" name="language" value="cs"> Čeština</label></li>
     <li><label><input type="radio" name="language" value="en"> English</label></li>
 </ul>
@@ -1198,14 +1198,16 @@ class CompleteStep extends Step
 
     function run()
     {
-        $isDebug = Config::$config['debug'];
-
         ?>
 <p class="msg success"><?php Labels::render('complete.success') ?></p>
 
-<p class="msg <?php echo $isDebug ? 'notice' : 'warning' ?>"><?php Labels::render('complete.installdir_warning' . ($isDebug ? '.debug' : '')) ?></p>
+<?php if (!Config::$config['debug']): ?>
+    <p class="msg warning"><?php Labels::render('complete.installdir_warning') ?></p>
+<?php endif ?>
 
-<ul class="major">
+<h2><?php Labels::render('complete.whats_next') ?></h2>
+
+<ul class="big-list">
     <li><a href="<?php echo _e(Config::$config['url'] ?: '/') ?>" target="_blank"><?php Labels::render('complete.goto.web') ?></a></li>
     <li><a href="<?php echo _e(Config::$config['url']) ?>/admin/" target="_blank"><?php Labels::render('complete.goto.admin') ?></a></li>
 </ul>
@@ -1249,15 +1251,17 @@ $step = $stepRunner->getCurrent();
         body {margin: 1em; background-color: #ededed; font-family: sans-serif; font-size: 13px; color: #000;}
         a {color: #f60; text-decoration: none;}
         a:hover {color: #000;}
-        h1, h2, h3, p, ol, ul, pre {margin: 1em 0; line-height: 1.5;}
+        h1, h2, h3, p, ol, ul, pre {line-height: 1.5;}
         h1 {margin: 0; padding: 0.5em 1em; font-size: 1.5em;}
+        h2, h3 {margin: 0.5em 0;}
+        p, ol, ul, pre {margin: 1em 0;}
         #step span {padding: 0 0.3em; margin-right: 0.2em; background-color: #fff;}
         #system-name {float: right; color: #f60;}
         h2 {font-size: 1.3em;}
         h3 {font-size: 1.1em;}
         h2:first-child, h3:first-child {margin-top: 0;}
         ul, ol {padding-left: 40px;}
-        .major {font-size: 1.5em;}
+        .big-list {margin: 0.5em 0; font-size: 1.5em;}
         .nobullets {list-style-type: none; padding-left: 0;}
         ul.errors {padding-top: 10px; padding-bottom: 10px; background-color: #eee;}
         ul.errors li {font-size: 1.1em; color: red;}
