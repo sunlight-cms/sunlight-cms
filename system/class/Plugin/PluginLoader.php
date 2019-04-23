@@ -84,7 +84,7 @@ class PluginLoader
         }
 
         foreach ($typeNames as $typeName) {
-            $this->injectComposerRepositories($plugins[$typeName], $boundFiles, $composerInjector);
+            $this->handleComposerRepositories($plugins[$typeName], $boundFiles, $composerInjector);
         }
 
         $this->resolveAutoloadForInjectedComposerPackages($autoload, $composerInjector);
@@ -493,7 +493,7 @@ class PluginLoader
         }
     }
 
-    private function injectComposerRepositories(array &$plugins, array &$boundFiles, RepositoryInjector $injector)
+    private function handleComposerRepositories(array &$plugins, array &$boundFiles, RepositoryInjector $injector)
     {
         foreach ($plugins as &$plugin) {
             if (!$plugin['options']['inject_composer']) {
@@ -505,6 +505,8 @@ class PluginLoader
             if (is_file($composerJsonPath)) {
                 $repository = new Repository($composerJsonPath);
 
+                $this->ensureComposerRepositoryAccessControl($repository);
+
                 if ($injector->inject($repository, $errors)) {
                     $boundFiles[] = $repository->getComposerJsonPath();
 
@@ -515,6 +517,13 @@ class PluginLoader
                     $plugin = $this->convertPluginToErrorState($plugin, $errors);
                 }
             }
+        }
+    }
+
+    private function ensureComposerRepositoryAccessControl(Repository $repository)
+    {
+        if (!is_file($repository->getVendorPath() . '/.htaccess')) {
+            Filesystem::denyAccessToDirectory($repository->getVendorPath());
         }
     }
 
