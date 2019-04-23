@@ -149,11 +149,10 @@ abstract class Router
      * Sestavit adresu a titulek komentare
      *
      * @param array $post     data komentare (potreba sloupce z {@see Post::createFilter()}
-     * @param bool  $entity   formatovat vystup pro HTML 1/0
      * @param bool  $absolute sestavit absolutni adresu 1/0
      * @return array adresa, titulek
      */
-    static function post(array $post, $entity = true, $absolute = false)
+    static function post(array $post, $absolute = false)
     {
         switch ($post['type']) {
             case _post_section_comment:
@@ -177,7 +176,7 @@ abstract class Router
                 if ($post['type'] == _post_forum_topic) {
                     $url = static::topic($topicId, $post['page_slug'], $absolute);
                 } else {
-                    $url = static::module('messages', "a=list&read={$topicId}", $entity, $absolute);
+                    $url = static::module('messages', "a=list&read={$topicId}", $absolute);
                 }
 
                 return array(
@@ -195,7 +194,6 @@ abstract class Router
                     'post' => $post,
                     'url' => &$url,
                     'title' => &$title,
-                    'entity' => $entity,
                     'absolute' => $absolute,
                 ));
 
@@ -232,11 +230,10 @@ abstract class Router
      *
      * @param string      $module   jmeno modulu
      * @param string|null $params   standartni querystring
-     * @param bool        $entity   formatovat vystup pro HTML 1/0
      * @param bool        $absolute sestavit absolutni adresu 1/0
      * @return string
      */
-    static function module($module, $params = null, $entity = true, $absolute = false)
+    static function module($module, $params = null, $absolute = false)
     {
         if (_pretty_urls) {
             $path = 'm/' . $module;
@@ -245,12 +242,7 @@ abstract class Router
         }
 
         if (!empty($params)) {
-            if (_pretty_urls) {
-                $path .= '?';
-            } else {
-                $path .= ($entity ? '&amp;' : '&');
-            }
-            $path .= ($entity ? _e($params) : $params);
+            $path .= (_pretty_urls ? '?' : '&') . $params;
         }
 
         return static::generate($path, $absolute);
@@ -271,13 +263,12 @@ abstract class Router
      *
      * @param int  $id     id polozky
      * @param int  $type   typ
-     * @param bool $entity formatovat vystup pro HTML 1/0
      * @return string
      */
-    static function rss($id, $type, $entity = true)
+    static function rss($id, $type)
     {
         if (_rss) {
-            return UrlHelper::appendParams(_root . 'system/script/rss.php', 'tp=' . $type . '&id=' . $id, $entity);
+            return UrlHelper::appendParams(_root . 'system/script/rss.php', 'tp=' . $type . '&id=' . $id);
         } else {
             return '';
         }
@@ -342,7 +333,7 @@ abstract class Router
 
         // oteviraci tag
         $out = "<{$tag}"
-            . ($options['link'] ? ' href="' . static::module('profile', 'id=' .  $data['username']) . '"' : '')
+            . ($options['link'] ? ' href="' . _e(static::module('profile', 'id=' .  $data['username'])) . '"' : '')
             . ($options['link'] && $options['new_window'] ? ' target="_blank"' : '')
             . " class=\"user-link user-link-{$data['id']} user-link-group-{$data['group_id']}" . ($options['class'] !== null ? " {$options['class']}" : '') . "\""
             . ($options['color'] && $data['group_color'] !== '' ? " style=\"color:{$data['group_color']}\"" : '')

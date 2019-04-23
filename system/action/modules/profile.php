@@ -50,7 +50,7 @@ if ($query !== false) {
             }
 
             // sestaveni kodu
-            $arts = "\n<tr><th>" . _lang('global.articlesnum') . "</th><td>" . $arts . ", <a href='" . Router::module('profile-arts', 'id=' . $id) . "'>" . _lang('global.show') . " &gt;</a></td></tr>\n";
+            $arts = "\n<tr><th>" . _lang('global.articlesnum') . "</th><td>" . $arts . ", <a href='" . _e(Router::module('profile-arts', 'id=' . $id)) . "'>" . _lang('global.show') . " &gt;</a></td></tr>\n";
             if (_ratemode != 0) {
                 $arts .= "\n<tr><th>" . _lang('article.rate') . "</th><td>" . $avgrate . "</td></tr>\n";
             }
@@ -62,7 +62,7 @@ if ($query !== false) {
         // odkaz na prispevky uzivatele
         $posts_count = DB::count(_comment_table, 'author=' . DB::val($query['id']) . ' AND type!=' . _post_pm . ' AND type!=' . _post_shoutbox_entry);
         if ($posts_count > 0) {
-            $posts_viewlink = ", <a href='" . Router::module('profile-posts', 'id=' . $id) . "'>" . _lang('global.show') . " &gt;</a>";
+            $posts_viewlink = ", <a href='" . _e(Router::module('profile-posts', 'id=' . $id)) . "'>" . _lang('global.show') . " &gt;</a>";
         } else {
             $posts_viewlink = "";
         }
@@ -155,5 +155,5 @@ if ($public) {
 
 // odkaz na zaslani vzkazu
 if (_logged_in && _messages && $query['id'] != _user_id && $query['blocked'] == 0 && $groupdata['blocked'] == 0) {
-    $output .= "<p><a class='button' href='" . Router::module('messages', 'a=new&receiver=' . $query['username']) . "'><img src='" . Template::image("icons/bubble.png") . "' alt='msg' class='icon'>" . _lang('mod.messages.new') . "</a></p>";
+    $output .= "<p><a class='button' href='" . _e(Router::module('messages', 'a=new&receiver=' . $query['username'])) . "'><img src='" . Template::image("icons/bubble.png") . "' alt='msg' class='icon'>" . _lang('mod.messages.new') . "</a></p>";
 }

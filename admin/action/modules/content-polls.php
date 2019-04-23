@@ -77,7 +77,7 @@ if (DB::size($query) != 0) {
             . "<td>" . $item['id'] . "</td>"
             . "<td class='actions'>
                 <a class='button' href='index.php?p=content-polls-edit&amp;id=" . $item['id'] . "'><img src='images/icons/edit.png' class='icon' alt='edit'> " . _lang('global.edit') . "</a>
-                <a class='button' href='" . Xsrf::addToUrl("index.php?p=content-polls&amp;author=" . $author_filter_id . "&amp;page=" . $paging['current'] . "&amp;del=" . $item['id']) . "' onclick='return Sunlight.confirm();'><img src='images/icons/delete.png' class='icon' alt='del'> " . _lang('global.delete') . "</a>
+                <a class='button' href='" . _e(Xsrf::addToUrl("index.php?p=content-polls&author=" . $author_filter_id . "&page=" . $paging['current'] . "&del=" . $item['id'])) . "' onclick='return Sunlight.confirm();'><img src='images/icons/delete.png' class='icon' alt='del'> " . _lang('global.delete') . "</a>
             </td>"
             . "</tr>\n";
     }

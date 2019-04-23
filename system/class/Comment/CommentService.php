@@ -289,7 +289,7 @@ class CommentService
   ";
 
         if ($title != null) {
-            $output .= "<h2>" . $title . ' ' . Template::rssLink(Router::rss($home, $posttype, false), true) . "</h2>\n";
+            $output .= "<h2>" . $title . ' ' . Template::rssLink(Router::rss($home, $posttype), true) . "</h2>\n";
         }
 
         $form_output = "<div class='posts-form' id='post-form'>\n";
@@ -353,7 +353,7 @@ class CommentService
 
         } else {
             if (!$locked) {
-                $form_output .= "<a class='button' href='" . UrlHelper::appendParams($url_html, "addpost&page=" . $paging['current']) . "#post-form'><img class='icon' src='" . Template::image('icons/bubble.png') . "' alt='post'>" . $addlink . "</a>";
+                $form_output .= "<a class='button' href='" . _e(UrlHelper::appendParams($url, "addpost&page=" . $paging['current'])) . "#post-form'><img class='icon' src='" . Template::image('icons/bubble.png') . "' alt='post'>" . $addlink . "</a>";
             } else {
                 $form_output .= "<img src='" . Template::image("icons/lock.png") . "' alt='stop' class='icon'><strong>" . _lang('posts.locked' . $locked_textid) . "</strong>";
             }
@@ -518,9 +518,9 @@ class CommentService
                     if ($tpages_num > 1) {
                         $tpages .= '<span class=\'topic-pages\'>';
                         for ($i = 1; $i <= 3 && $i <= $tpages_num; ++$i) {
-                            $tpages .= "<a href='" . UrlHelper::appendParams(Router::topic($item['id'], $forum_slug), 'page=' . $i) . "#posts'>" . $i . '</a>';
+                            $tpages .= "<a href='" . _e(UrlHelper::appendParams(Router::topic($item['id'], $forum_slug), 'page=' . $i)) . "#posts'>" . $i . '</a>';
                         }
-                        if ($tpages_num > 3) $tpages .= "<a href='" . UrlHelper::appendParams(Router::topic($item['id'], $forum_slug), 'page=' . $tpages_num) . "'>" . $tpages_num . ' &rarr;</a>';
+                        if ($tpages_num > 3) $tpages .= "<a href='" . _e(UrlHelper::appendParams(Router::topic($item['id'], $forum_slug), 'page=' . $tpages_num)) . "'>" . $tpages_num . ' &rarr;</a>';
                         $tpages .= '</span>';
                     }
 
@@ -615,7 +615,7 @@ class CommentService
         $output .= Form::render(
             array(
                 'name' => 'postform',
-                'action' => UrlHelper::appendParams(Router::generate('system/script/post.php'), '_return=' . rawurlencode($vars['url']), false),
+                'action' => UrlHelper::appendParams(Router::generate('system/script/post.php'), '_return=' . rawurlencode($vars['url'])),
                 'submit_append' => ' ' . PostForm::renderPreviewButton('postform', 'text'),
             ),
             $inputs
@@ -655,8 +655,8 @@ class CommentService
 
         // action links
         $actlinks = array();
-        if ($options['allow_reply']) $actlinks[] = "<a class='post-action-reply' href='" . _e(UrlHelper::appendParams($options['current_url'], "replyto=" . $post['id'], false)) . "#posts'>" . _lang('posts.reply') . "</a>";
-        if ($postAccess) $actlinks[] = "<a class='post-action-edit' href='" . Router::module('editpost', 'id=' . $post['id']) . "'>" . _lang('global.edit') . "</a>";
+        if ($options['allow_reply']) $actlinks[] = "<a class='post-action-reply' href='" . _e(UrlHelper::appendParams($options['current_url'], "replyto=" . $post['id'])) . "#posts'>" . _lang('posts.reply') . "</a>";
+        if ($postAccess) $actlinks[] = "<a class='post-action-edit' href='" . _e(Router::module('editpost', 'id=' . $post['id'])) . "'>" . _lang('global.edit') . "</a>";
         $actlinks = array_merge($actlinks, $options['extra_actions']);
 
         // avatar
@@ -681,7 +681,7 @@ class CommentService
                     . $author
                     . " <span class='post-info'>(" . GenericTemplates::renderTime($post['time'], 'post') . $options['extra_info'] . ")</span>"
                     . ($actlinks ? " <span class='post-actions'>" . implode(' ', $actlinks) . '</span>' : '')
-                    . ($options['post_link'] ? "<a class='post-postlink' href='" . _e(UrlHelper::appendParams($options['current_url'], 'page=' . $options['current_page'], false)) . "#post-" . $post['id'] . "'><span>#" . str_pad($post['id'], 6, '0', STR_PAD_LEFT) . "</span></a>" : '')
+                    . ($options['post_link'] ? "<a class='post-postlink' href='" . _e(UrlHelper::appendParams($options['current_url'], 'page=' . $options['current_page'])) . "#post-" . $post['id'] . "'><span>#" . str_pad($post['id'], 6, '0', STR_PAD_LEFT) . "</span></a>" : '')
                 . "</div>"
                 . "<div class='post-body" . (isset($avatar) ? ' post-body-withavatar' : '') . "'>"
                     . $avatar

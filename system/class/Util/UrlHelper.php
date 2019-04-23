@@ -35,25 +35,17 @@ abstract class UrlHelper
      *
      * @param string $url    adresa
      * @param string $params cisty query retezec
-     * @param bool   $entity pouzit &amp; pro oddeleni 1/0
      * @return string
      */
-    static function appendParams($url, $params, $entity = true)
+    static function appendParams($url, $params)
     {
-        // oddelovaci znak
-        if ($params !== '') {
-            if (strpos($url, '?') === false) {
-                $url .= '?';
-            } else {
-                if ($entity) {
-                    $url .= '&amp;';
-                } else {
-                    $url .= '&';
-                }
-            }
+        if ($params === '') {
+            return $url;
         }
 
-        return $url . ($entity ? _e($params) : $params);
+        return $url
+            . (strpos($url, '?') === false ? '?' : '&')
+            . $params;
     }
 
     /**

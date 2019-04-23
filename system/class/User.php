@@ -477,7 +477,7 @@ abstract class User
                 $action = null;
             }
             if (!empty($return)) {
-                $action = UrlHelper::appendParams($action, '_return=' . rawurlencode($return), false);
+                $action = UrlHelper::appendParams($action, '_return=' . rawurlencode($return));
             }
 
             // adresa formulare
@@ -521,14 +521,14 @@ abstract class User
                 if (!empty($links)) {
                     $output .= "<ul class=\"login-form-links\">\n";
                     foreach ($links as $link_id => $link) {
-                        $output .= "<li class=\"login-form-link-{$link_id}\"><a href=\"{$link['url']}\">{$link['text']}</a></li>\n";
+                        $output .= "<li class=\"login-form-link-{$link_id}\"><a href=\"" . _e($link['url']) . "\">{$link['text']}</a></li>\n";
                     }
                     $output .= "</ul>\n";
                 }
             }
 
         } else {
-            $output .= "<p>" . _lang('login.ininfo') . " <em>" . _user_name . "</em> - <a href='" . Xsrf::addToUrl(Router::generate('system/script/logout.php')) . "'>" . _lang('usermenu.logout') . "</a>.</p>";
+            $output .= "<p>" . _lang('login.ininfo') . " <em>" . _user_name . "</em> - <a href='" . _e(Xsrf::addToUrl(Router::generate('system/script/logout.php'))) . "'>" . _lang('usermenu.logout') . "</a>.</p>";
         }
 
         return $output;
@@ -800,7 +800,7 @@ abstract class User
         // vykreslit obrazek
         $out = '';
         if ($options['link']) {
-            $out .= '<a href="' . Router::module('profile', 'id=' .  $data['username']) . '">';
+            $out .= '<a href="' . _e(Router::module('profile', 'id=' .  $data['username'])) . '">';
         }
         $out .= "<img class=\"avatar" . ($options['class'] !== null ? " {$options['class']}" : '') . "\" src=\"{$url}\" alt=\"" . $data[$data['publicname'] !== null ? 'publicname' : 'username'] . "\">";
         if ($options['link']) {

@@ -52,7 +52,7 @@ $_index['title'] = _lang('mod.search');
 $output .= "
 <p class='bborder'>" . _lang('mod.search.p') . "</p>
 
-<form action='" . Router::module('search') . "' method='get' class='fullsearchform'>
+<form action='" . _e(Router::module('search')) . "' method='get' class='fullsearchform'>
 " . (!_pretty_urls ? Form::renderHiddenInputs(Arr::filterKeys($_GET, null, null, array('q', 'page', 'art', 'post', 'img'))) : '') . "
 <p><input type='search' name='q' class='inputmedium' value='" . _e($search_query) . "'> <input type='submit' value='" . _lang('mod.search.submit') . "'></p>
 <p>
@@ -223,7 +223,7 @@ if ($search_query != '') {
         if (count($results) != 0) {
             foreach ($results as $item) {
                 $output .= "<div class='list-item'>
-<h2 class='list-title'><a href='" . $item[0] . "'>" . $item[1] . "</a></h2>
+<h2 class='list-title'><a href='" . _e($item[0]) . "'>" . $item[1] . "</a></h2>
 <p class='list-perex'>" . $item[2] . "</p>
 ";
                 if (isset($item[3])) {

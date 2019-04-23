@@ -26,7 +26,7 @@ if (_logged_in) {
     // vypis
     foreach ($items as $item) {
         if ($item[2]) {
-            $output .= "<li><a href='" . $item[0] . "'>" . $item[1] . "</a></li>\n";
+            $output .= "<li><a href='" . _e($item[0]) . "'>" . $item[1] . "</a></li>\n";
         }
     }
 

@@ -433,7 +433,7 @@ if ($continue) {
 
 <tr class='valign-top'>
 <th>" . _lang('global.preview') . "</th>
-<td>" . $preview . "<br><br><a class='button' href='" . Xsrf::addToUrl("index.php?p=content-manageimgs&amp;g=" . $g . "&amp;del=" . $image['id']) . "' onclick='return Sunlight.confirm();'><img src='images/icons/delete.png' alt='del' class='icon'>" . _lang('admin.content.manageimgs.delete') . "</a></td>
+<td>" . $preview . "<br><br><a class='button' href='" . _e(Xsrf::addToUrl("index.php?p=content-manageimgs&g=" . $g . "&del=" . $image['id'])) . "' onclick='return Sunlight.confirm();'><img src='images/icons/delete.png' alt='del' class='icon'>" . _lang('admin.content.manageimgs.delete') . "</a></td>
 </tr>
 
 </table>

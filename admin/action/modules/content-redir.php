@@ -152,7 +152,7 @@ while ($r = DB::row($q)) {
         <td class='text-" . ($r['active'] ? 'success' : 'danger') . "'>" . _lang('global.' . ($r['active'] ? 'yes' : 'no')) . "</td>
         <td class='actions'>
             <a class='button' href='index.php?p=content-redir&amp;edit=" . $r['id'] . "'><img src='images/icons/edit.png' alt='edit' class='icon'>" . _lang('global.edit') . "</a>
-            <a class='button' href='" . Xsrf::addToUrl("index.php?p=content-redir&amp;del=" . $r['id']) . "' onclick='return Sunlight.confirm();'><img src='images/icons/delete.png' alt='del' class='icon'>" . _lang('global.delete') . "</a>
+            <a class='button' href='" . _e(Xsrf::addToUrl("index.php?p=content-redir&del=" . $r['id'])) . "' onclick='return Sunlight.confirm();'><img src='images/icons/delete.png' alt='del' class='icon'>" . _lang('global.delete') . "</a>
         </td>
     </tr>";
     ++$counter;

@@ -39,12 +39,12 @@ $_index['title'] = str_replace(
 );
 
 // odkaz zpet na profil
-$_index['backlink'] = Router::module('profile', 'id=' . $id, false);
+$_index['backlink'] = Router::module('profile', 'id=' . $id);
 
 // tabulka
 list($joins, $cond, $count) = Article::createFilter('art', array(), "art.author=" . $query['id'], true);
 
-$paging = Paginator::render(Router::module('profile-arts', 'id=' . $id, false), 10, $count);
+$paging = Paginator::render(Router::module('profile-arts', 'id=' . $id), 10, $count);
 if (Paginator::atTop()) {
     $output .= $paging['paging'];
 }

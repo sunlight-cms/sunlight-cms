@@ -17,7 +17,7 @@ if ($_page['var2'] === null) {
 $_index['title'] = $_page['title'];
 
 // rss
-$_index['rsslink'] = Router::rss($id, _rss_book_posts, false);
+$_index['rsslink'] = Router::rss($id, _rss_book_posts);
 
 // obsah
 Extend::call('page.book.content.before', $extend_args);

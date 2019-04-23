@@ -59,10 +59,8 @@ $output .= $message;
 
 // formular
 if (!$success) {
-    $furl = Router::module('stickytopic', 'id=' . $id);
-
     $output .= '
-    <form action="' . $furl . '" method="post">
+    <form action="' . _e(Router::module('stickytopic', 'id=' . $id)) . '" method="post">
     ' . Message::warning(sprintf(_lang('mod.stickytopic.text' . $unstick), $query['subject']), true) . '
     <input type="submit" name="doit" value="' . _lang('mod.stickytopic.submit' . $unstick) . '">
     ' . Xsrf::getInput() . '</form>

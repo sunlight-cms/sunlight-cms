@@ -37,7 +37,7 @@ if (isset($_GET['id'])) {
                 }
             }
         } else {
-            $admin_redirect_to = Router::module('settings');
+            $admin_redirect_to = Router::module('settings', null, true);
 
             return;
         }
@@ -332,7 +332,7 @@ if ($continue) {
     if ($id != null) {
         $output .= "
   <p>
-    <a href='" . Router::module('profile', 'id=' . $query['username']) . "' target='_blank'>" . _lang('mod.settings.profilelink') . " &gt;</a>
+    <a href='" . _e(Router::module('profile', 'id=' . $query['username'])) . "' target='_blank'>" . _lang('mod.settings.profilelink') . " &gt;</a>
   </p>
   ";
     }

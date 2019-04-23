@@ -267,7 +267,7 @@ if (!$user_data_valid && $show_form) {
                 array(
                     $user_data['username'],
                     $domain,
-                    Router::module('reg', 'confirm=' . $code, false, true),
+                    Router::module('reg', 'confirm=' . $code, true),
                     _user_ip,
                     GenericTemplates::renderTime(time()),
                 ),

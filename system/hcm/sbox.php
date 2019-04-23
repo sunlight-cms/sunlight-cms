@@ -73,7 +73,7 @@ return function ($id = null) {
 
                 // odkaz na spravu
                 if (Comment::checkAccess($userQuery, $spost)) {
-                    $alink = " <a href='" . Router::module('editpost', 'id=' . $spost['id']) . "'><img src='" . Template::image("icons/edit.png") . "' alt='edit' class='icon'></a>";
+                    $alink = " <a href='" . _e(Router::module('editpost', 'id=' . $spost['id'])) . "'><img src='" . Template::image("icons/edit.png") . "' alt='edit' class='icon'></a>";
                 } else {
                     $alink = "";
                 }

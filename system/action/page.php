@@ -55,8 +55,7 @@ if (
 
     $_index['redirect_to'] = UrlHelper::appendParams(
         Router::page($_page['id'], $_page['slug'], null, true),
-        $_url->getQueryString(),
-        false
+        $_url->getQueryString()
     );
     return;
 }

@@ -7,7 +7,7 @@ defined('_root') or exit;
 
 return function () {
     if (_search) {
-        return "<form action='" . Router::module('search') . "' method='get' class='searchform'>
+        return "<form action='" . _e(Router::module('search')) . "' method='get' class='searchform'>
 " . (!_pretty_urls ? "<input type='hidden' name='m' value='search'>" : '') . "
 <input type='hidden' name='page' value='1'>
 <input type='hidden' name='art' value='1'>

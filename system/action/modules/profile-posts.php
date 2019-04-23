@@ -40,12 +40,12 @@ $_index['title'] = str_replace(
 );
 
 // odkaz zpet na profil
-$_index['backlink'] = Router::module('profile', 'id=' . $id, false);
+$_index['backlink'] = Router::module('profile', 'id=' . $id);
 
 // tabulka
 list($columns, $joins, $cond, $count) = Comment::createFilter('post', array(_post_section_comment, _post_article_comment, _post_book_entry, _post_forum_topic, _post_plugin), array(), "post.author=" . $query['id'], true);
 
-$paging = Paginator::render(Router::module('profile-posts', 'id=' . $id, false), 15, $count);
+$paging = Paginator::render(Router::module('profile-posts', 'id=' . $id), 15, $count);
 if (Paginator::atTop()) {
     $output .= $paging['paging'];
 }
@@ -56,7 +56,7 @@ if (DB::size($posts) != 0) {
         list($homelink, $hometitle) = Router::post($post);
         $output .= "<div class='post'>
 <div class='post-head'>
-    <a href='" . $homelink . "#post-" . $post['id'] . "' class='post-author'>" . $hometitle . "</a>
+    <a href='" . _e($homelink) . "#post-" . $post['id'] . "' class='post-author'>" . $hometitle . "</a>
     <span class='post-info'>(" . GenericTemplates::renderTime($post['time'], 'post') . ")</span>
 </div>
 <div class='post-body'>" . Comment::render($post['text']) . "</div>

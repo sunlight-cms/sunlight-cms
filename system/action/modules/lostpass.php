@@ -51,7 +51,7 @@ if (isset($_GET['user'], $_GET['hash'])) {
         ) {
             IpLog::update(_iplog_failed_login_attempt);
             $output .= Message::warning(_lang('mod.lostpass.badlink'));
-            $output .= '<p><a href="' . Router::module('lostpass') . '">' . _lang('global.tryagain') . ' &gt;</a></p>';
+            $output .= '<p><a href="' . _e(Router::module('lostpass')) . '">' . _lang('global.tryagain') . ' &gt;</a></p>';
             break;
         }
 
@@ -121,7 +121,7 @@ if (isset($_GET['user'], $_GET['hash'])) {
         ));
 
         // odeslani emailu
-        $link = Router::module('lostpass', 'user=' . $username . '&hash=' . $hash, false, true);
+        $link = Router::module('lostpass', 'user=' . $username . '&hash=' . $hash, true);
 
         if (!Email::send(
             $userdata['email'],

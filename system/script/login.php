@@ -26,8 +26,7 @@ if ($result !== 1 && isset($_POST['login_form_url'])) {
 
     Response::redirectBack(UrlHelper::appendParams(
         Request::post('login_form_url'),
-        'login_form_result=' . $result,
-        false
+        'login_form_result=' . $result
     ));
 } else {
     Response::redirectBack();

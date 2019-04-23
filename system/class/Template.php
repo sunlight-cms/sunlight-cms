@@ -117,10 +117,10 @@ abstract class Template
 
         if (_rss) {
             echo '
-<link rel="alternate" type="application/rss+xml" href="' . Router::rss(-1, _rss_latest_articles) . '" title="' . _lang('rss.recentarticles') . '">';
+<link rel="alternate" type="application/rss+xml" href="' . _e(Router::rss(-1, _rss_latest_articles)) . '" title="' . _lang('rss.recentarticles') . '">';
             if (_comments) {
                 echo '
-<link rel="alternate" type="application/rss+xml" href="' . Router::rss(-1, _rss_latest_comments) . '" title="' . _lang('rss.recentcomments') . '">';
+<link rel="alternate" type="application/rss+xml" href="' . _e(Router::rss(-1, _rss_latest_comments)) . '" title="' . _lang('rss.recentcomments') . '">';
             }
         }
 
@@ -685,7 +685,7 @@ abstract class Template
             $output = "<ul class=\"user-menu " . (_logged_in ? 'logged-in' : 'not-logged-in') . "\">\n";
             $output .= Extend::buffer('tpl.usermenu.start');
             foreach ($items as $id => $item) {
-                $output .= "<li class=\"user-menu-{$id}\"><a href=\"{$item[0]}\">{$item[1]}</a></li>\n";
+                $output .= "<li class=\"user-menu-{$id}\"><a href=\"" . _e($item[0]) . "\">{$item[1]}</a></li>\n";
             }
             $output .= Extend::buffer('tpl.usermenu.end');
             $output .= "</ul>\n";

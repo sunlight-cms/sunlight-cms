@@ -238,15 +238,14 @@ if ($posttype != _post_shoutbox_entry) {
         $_SESSION['post_form_subject'] = $subject;
         $_SESSION['post_form_text'] = $text;
 
-        $returnUrl = UrlHelper::appendParams($returnUrl, 'replyto=' . $xhome, false) . '&addpost';
+        $returnUrl = UrlHelper::appendParams($returnUrl, 'replyto=' . $xhome) . '&addpost';
     }
 
     $returnUrl = UrlHelper::appendParams(
         $returnUrl,
         "r=" . $return
             . (($posttype == _post_forum_topic) ? '&autolast' : '')
-            . (($posttype != _post_shoutbox_entry && isset($insert_id)) ? '#post-' . $insert_id : (($return != 1) ? '#post-form' : '')),
-        false
+            . (($posttype != _post_shoutbox_entry && isset($insert_id)) ? '#post-' . $insert_id : (($return != 1) ? '#post-form' : ''))
     );
 }
 

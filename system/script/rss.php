@@ -172,7 +172,7 @@ if ($custom_cond && ($donottestsource || DB::size($query) != 0)) {
                 }
 
                 // odkaz na stranku
-                list($homelink, $hometitle) = Router::post($item, true, true);
+                list($homelink, $hometitle) = Router::post($item, true);
 
                 // sestaveni titulku
                 if ($type == _rss_latest_comments) {

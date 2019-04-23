@@ -63,10 +63,8 @@ $_index['title'] = _lang('mod.movetopic');
 $output .= $message;
 
 // formular
-$furl = Router::module('movetopic', 'id=' . $id);
-
 $output .= '
-<form action="' . $furl . '" method="post">
+<form action="' . _e(Router::module('movetopic', 'id=' . $id)) . '" method="post">
 ' . Message::warning(sprintf(_lang('mod.movetopic.text'), $query['subject']), true) . '
 <p>
 <select name="new_forum"' . (empty($forums) ? " disabled" : '') . '>

@@ -138,7 +138,7 @@ switch ($a) {
                 ));
 
                 // presmerovani a konec
-                $_index['redirect_to'] = Router::module('messages', 'a=list&read=' . $pm_id, false, true);
+                $_index['redirect_to'] = Router::module('messages', 'a=list&read=' . $pm_id, true);
 
                 return;
 
@@ -220,7 +220,7 @@ switch ($a) {
             ));
             $output .= "</div>\n";
 
-            $output .= CommentService::render(CommentService::RENDER_PM_LIST, $q['id'], array($locked, $unread_count), false, Router::module('messages', 'a=list&read=' . $q['id'], false));
+            $output .= CommentService::render(CommentService::RENDER_PM_LIST, $q['id'], array($locked, $unread_count), false, Router::module('messages', 'a=list&read=' . $q['id']));
 
             // aktualizace casu precteni
             DB::update(_pm_table, 'id=' . DB::val($id), array($role . '_readtime' => time()));
@@ -317,7 +317,7 @@ switch ($a) {
         $output .= $message . "
         <form method='post' action=''>
 <p class='messages-menu'>
-    <a class='button' href='" . Router::module('messages', 'a=new') . "'><img src='" . Template::image('icons/bubble.png') . "' alt='new' class='icon'>" . _lang('mod.messages.new') . "</a>
+    <a class='button' href='" . _e(Router::module('messages', 'a=new')) . "'><img src='" . Template::image('icons/bubble.png') . "' alt='new' class='icon'>" . _lang('mod.messages.new') . "</a>
 </p>
 
 <table class='messages-table'>
@@ -338,7 +338,7 @@ switch ($a) {
         );
         while ($r = DB::row($q)) {
             $read = ($r['sender'] == _user_id && $r['sender_readtime'] >= $r['update_time'] || $r['receiver'] == _user_id && $r['receiver_readtime'] >= $r['update_time']);
-            $output .= "<tr><td><input type='checkbox' name='msg[]' value='" . $r['id'] . "'></td><td><a href='" . Router::module('messages', 'a=list&read=' . $r['id']) . "'" . ($read ? '' : ' class="notread"') . ">" . $r['subject'] . "</a></td><td>" . Router::userFromQuery($r['sender'] == _user_id ? $receiverUserQuery : $senderUserQuery, $r) . " <small>(" . $r['unread_counter'] . ")</small></td><td>" . GenericTemplates::renderTime($r['update_time'], 'post') . "</td></tr>\n";
+            $output .= "<tr><td><input type='checkbox' name='msg[]' value='" . $r['id'] . "'></td><td><a href='" . _e(Router::module('messages', 'a=list&read=' . $r['id'])) . "'" . ($read ? '' : ' class="notread"') . ">" . $r['subject'] . "</a></td><td>" . Router::userFromQuery($r['sender'] == _user_id ? $receiverUserQuery : $senderUserQuery, $r) . " <small>(" . $r['unread_counter'] . ")</small></td><td>" . GenericTemplates::renderTime($r['update_time'], 'post') . "</td></tr>\n";
         }
         if (!isset($read)) {
             $output .= "<tr><td colspan='4'>" . _lang('mod.messages.nokit') . "</td></tr>\n";
@@ -370,5 +370,5 @@ switch ($a) {
 
 // zpetny odkaz
 if (!$list) {
-    $_index['backlink'] = Router::module('messages', null, false);
+    $_index['backlink'] = Router::module('messages');
 }

@@ -63,9 +63,9 @@ abstract class Admin
             $profile_link = Router::module('profile', 'id=' . _user_name);
             $avatar = User::renderAvatar(Core::$userData, array('get_url' => true, 'default' => false));
             if ($avatar !== null) {
-                $output .= '<a id="usermenu-avatar" href="' . $profile_link . '"><img src="' . $avatar . '" alt="' . _user_name . '"></a>';
+                $output .= '<a id="usermenu-avatar" href="' . _e($profile_link) . '"><img src="' . $avatar . '" alt="' . _user_name . '"></a>';
             }
-            $output .= '<a id="usermenu-username" href="' . $profile_link . '">' . _user_public_name . '</a> [';
+            $output .= '<a id="usermenu-username" href="' . _e($profile_link) . '">' . _user_public_name . '</a> [';
             if (_messages) {
                 $messages_count = DB::count(_pm_table, '(receiver=' . _user_id . ' AND receiver_deleted=0 AND receiver_readtime<update_time) OR (sender=' . _user_id . ' AND sender_deleted=0 AND sender_readtime<update_time)');
                 if ($messages_count != 0) {
@@ -73,10 +73,10 @@ abstract class Admin
                 } else {
                     $messages_count = "";
                 }
-                $output .= "<a href='" . Router::module('messages') . "'>" . _lang('usermenu.messages') . $messages_count . "</a>, ";
+                $output .= "<a href='" . _e(Router::module('messages')) . "'>" . _lang('usermenu.messages') . $messages_count . "</a>, ";
             }
-            $output .= '<a href="' . Router::module('settings') . '">' . _lang('usermenu.settings') . '</a>, <a href="' . Xsrf::addToUrl(Router::generate('system/script/logout.php?_return=admin/')) . '">' . _lang('usermenu.logout') . '</a>]';
-            $output .= '<a href="' . Core::$url . '/" target="_blank" class="usermenu-web-link" title="' . _lang('admin.link.site') . '"><img class="icon" src="images/icons/guide.png" alt="' . _lang('admin.link.site') . '"></a>';
+            $output .= '<a href="' . _e(Router::module('settings')) . '">' . _lang('usermenu.settings') . '</a>, <a href="' . _e(Xsrf::addToUrl(Router::generate('system/script/logout.php?_return=admin/'))) . '">' . _lang('usermenu.logout') . '</a>]';
+            $output .= '<a href="' . _e(Core::$url) . '/" target="_blank" class="usermenu-web-link" title="' . _lang('admin.link.site') . '"><img class="icon" src="images/icons/guide.png" alt="' . _lang('admin.link.site') . '"></a>';
         } else {
             $output .= '<a href="./">' . _lang('usermenu.guest') . '</a>';
         }

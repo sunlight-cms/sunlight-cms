@@ -45,21 +45,21 @@ if ($query !== false) {
         Extend::call('mod.editpost.backlink', array('backlink' => &$_index['backlink'], 'post' => $query));
 
         if ($_index['backlink'] === null) {
-            list($url) = Router::post($query, false);
+            list($url) = Router::post($query);
 
             switch ($query['type']) {
                 case _post_section_comment:
-                    $_index['backlink'] = UrlHelper::appendParams($url, "page=" . Paginator::getItemPage(_commentsperpage, _comment_table, "id>" . $query['id'] . " AND type=" . _post_section_comment . " AND xhome=-1 AND home=" . $query['home']), false) . "#post-" . $query['id'];
+                    $_index['backlink'] = UrlHelper::appendParams($url, "page=" . Paginator::getItemPage(_commentsperpage, _comment_table, "id>" . $query['id'] . " AND type=" . _post_section_comment . " AND xhome=-1 AND home=" . $query['home'])) . "#post-" . $query['id'];
                     break;
                 case _post_article_comment:
-                    $_index['backlink'] = UrlHelper::appendParams($url, "page=" . Paginator::getItemPage(_commentsperpage, _comment_table, "id>" . $query['id'] . " AND type=" . _post_article_comment . " AND xhome=-1 AND home=" . $query['home']), false) . "#post-" . $query['id'];
+                    $_index['backlink'] = UrlHelper::appendParams($url, "page=" . Paginator::getItemPage(_commentsperpage, _comment_table, "id>" . $query['id'] . " AND type=" . _post_article_comment . " AND xhome=-1 AND home=" . $query['home'])) . "#post-" . $query['id'];
                     break;
                 case _post_book_entry:
                     $postsperpage = DB::queryRow("SELECT var2 FROM " . _page_table . " WHERE id=" . $query['home']);
                     if ($postsperpage['var2'] === null) {
                         $postsperpage['var2'] = _commentsperpage;
                     }
-                    $_index['backlink'] = UrlHelper::appendParams($url, "page=" . Paginator::getItemPage($postsperpage['var2'], _comment_table, "id>" . $query['id'] . " AND type=" . _post_book_entry . " AND xhome=-1 AND home=" . $query['home']), false) . "#post-" . $query['id'];
+                    $_index['backlink'] = UrlHelper::appendParams($url, "page=" . Paginator::getItemPage($postsperpage['var2'], _comment_table, "id>" . $query['id'] . " AND type=" . _post_book_entry . " AND xhome=-1 AND home=" . $query['home'])) . "#post-" . $query['id'];
                     break;
                 case _post_shoutbox_entry:
                     $bbcode = false;
@@ -72,12 +72,12 @@ if ($query !== false) {
                             $_index['backlink'] = Router::page($query['home'], $query['page_slug']);
                         }
                     } else {
-                        $_index['backlink'] = UrlHelper::appendParams($url, "page=" . Paginator::getItemPage(_commentsperpage, _comment_table, "id<" . $query['id'] . " AND type=" . _post_forum_topic . " AND xhome=" . $query['xhome'] . " AND home=" . $query['home']), false) . "#post-" . $query['id'];
+                        $_index['backlink'] = UrlHelper::appendParams($url, "page=" . Paginator::getItemPage(_commentsperpage, _comment_table, "id<" . $query['id'] . " AND type=" . _post_forum_topic . " AND xhome=" . $query['xhome'] . " AND home=" . $query['home'])) . "#post-" . $query['id'];
                     }
                     break;
 
                 case _post_pm:
-                    $_index['backlink'] = UrlHelper::appendParams($url, 'page=' . Paginator::getItemPage(_messagesperpage, _comment_table, 'id<' . $query['id'] . ' AND type=' . _post_pm . ' AND home=' . $query['home']), false) . '#post-' . $query['id'];
+                    $_index['backlink'] = UrlHelper::appendParams($url, 'page=' . Paginator::getItemPage(_messagesperpage, _comment_table, 'id<' . $query['id'] . ' AND type=' . _post_pm . ' AND home=' . $query['home'])) . '#post-' . $query['id'];
                     break;
 
                 case _post_plugin:
@@ -153,7 +153,7 @@ if (isset($_POST['text'])) {
                     $update_data['guest'] = $guest;
                 }
                 DB::update(_comment_table, 'id=' . DB::val($id), $update_data);
-                $_index['redirect_to'] = Router::module('editpost', 'id=' . $id . '&saved', false, true);
+                $_index['redirect_to'] = Router::module('editpost', 'id=' . $id . '&saved', true);
 
                 return;
             }
@@ -223,7 +223,7 @@ if ($form) {
     $output .= Form::render(
         array(
             'name' => 'postform',
-            'action' => Router::module('editpost', 'id=' . $id, false),
+            'action' => Router::module('editpost', 'id=' . $id),
             'submit_text' => _lang('global.save'),
             'submit_append' => ' ' . PostForm::renderPreviewButton('postform', 'text')
                 . (($query['type'] != _post_pm || $query['xhome'] != -1) ? "<br><br><label><input type='checkbox' name='delete' value='1'> " . _lang('mod.editpost.delete') . "</label>" : ''),

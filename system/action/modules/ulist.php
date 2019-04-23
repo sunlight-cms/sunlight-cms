@@ -37,7 +37,7 @@ if (isset($_REQUEST['group_id'])) {
 
 // vyber skupiny
 $output .= '
-  <form action="' . Router::module('ulist') . '" method="get">
+  <form action="' . _e(Router::module('ulist')) . '" method="get">
   ' . (!_pretty_urls ? Form::renderHiddenInputs(Arr::filterKeys($_GET, null, null, array('group_id'))) : '') . '
   <strong>' . _lang('user.list.groupfilter') . ':</strong> <select name="group_id">
   <option value="-1">' . _lang('global.all') . '</option>

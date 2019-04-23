@@ -47,7 +47,7 @@ if (isset($_POST['save'])) {
                 User::delete(_user_id);
                 $_SESSION = array();
                 session_destroy();
-                $_index['redirect_to'] = Router::module('login', 'login_form_result=4', false, true);
+                $_index['redirect_to'] = Router::module('login', 'login_form_result=4', true);
 
                 return;
             } else {
@@ -240,7 +240,7 @@ if (isset($_POST['save'])) {
         // update
         DB::update(_user_table, 'id=' . _user_id, $changeset);
         Extend::call('user.edit', array('id' => _user_id, 'username' => $username, 'email' => $email));
-        $_index['redirect_to'] = Router::module('settings', 'saved', false, true);
+        $_index['redirect_to'] = Router::module('settings', 'saved', true);
 
         return;
 
@@ -326,9 +326,9 @@ if (_priv_administration) {
 }
 
 $output .= "
-<p><a href='" . Router::module('profile', 'id=' . _user_name) . "'>" . _lang('mod.settings.profilelink') . " &gt;</a></p>
+<p><a href='" . _e(Router::module('profile', 'id=' . _user_name)) . "'>" . _lang('mod.settings.profilelink') . " &gt;</a></p>
 <p>" . _lang('mod.settings.p') . "</p>" . $message . "
-<form action='" . Router::module('settings') . "' method='post' name='setform' enctype='multipart/form-data'>
+<form action='" . _e(Router::module('settings')) . "' method='post' name='setform' enctype='multipart/form-data'>
 
 " . GenericTemplates::jsLimitLength(1024, "setform", "note") . "
 

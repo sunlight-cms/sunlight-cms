@@ -416,7 +416,7 @@ class ToolbarRenderer
         }
 
         ?>
-<a href="<?php echo Router::module('login') ?>">
+<a href="<?php echo _e(Router::module('login')) ?>">
     <div class="devkit-section devkit-login" title="<?php echo $loginInfo ?>">
         <?php echo _e($loginName) ?>
     </div>

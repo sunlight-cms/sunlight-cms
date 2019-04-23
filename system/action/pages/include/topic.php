@@ -53,7 +53,7 @@ $_index['url'] = Router::topic($id, $_page['slug']);
 // priprava zpetneho odkazu
 $_index['backlink'] = Router::page($_page['id'], $_page['slug']);
 if (!$query['sticky']) {
-    $_index['backlink'] = UrlHelper::appendParams($_index['backlink'], 'page=' . Paginator::getItemPage($_page['var1'], _comment_table, "bumptime>" . $query['bumptime'] . " AND xhome=-1 AND type=" . _post_forum_topic . " AND home=" . $_page['id']), false);
+    $_index['backlink'] = UrlHelper::appendParams($_index['backlink'], 'page=' . Paginator::getItemPage($_page['var1'], _comment_table, "bumptime>" . $query['bumptime'] . " AND xhome=-1 AND type=" . _post_forum_topic . " AND home=" . $_page['id']));
 }
 
 // sprava tematu
@@ -62,19 +62,19 @@ $topic_admin = array();
 
 if ($topic_access) {
     if (_priv_locktopics) {
-        $topic_admin[] = "<a class=\"post-action-" . (($query['locked'] == 1) ? 'unlock' : 'lock') . "\" href='" . Router::module('locktopic', 'id=' . $id) . "'>" . (_lang('mod.locktopic.link' . (($query['locked'] == 1) ? '2' : ''))) . "</a>";
+        $topic_admin[] = "<a class=\"post-action-" . (($query['locked'] == 1) ? 'unlock' : 'lock') . "\" href='" . _e(Router::module('locktopic', 'id=' . $id)) . "'>" . (_lang('mod.locktopic.link' . (($query['locked'] == 1) ? '2' : ''))) . "</a>";
     }
     if (_priv_stickytopics) {
-        $topic_admin[] = "<a class=\"post-action-" . (($query['sticky'] == 1) ? 'unsticky' : 'sticky') . "\"  href='" . Router::module('stickytopic', 'id=' . $id) . "'>" . (_lang('mod.stickytopic.link' . (($query['sticky'] == 1) ? '2' : ''))) . "</a>";
+        $topic_admin[] = "<a class=\"post-action-" . (($query['sticky'] == 1) ? 'unsticky' : 'sticky') . "\"  href='" . _e(Router::module('stickytopic', 'id=' . $id)) . "'>" . (_lang('mod.stickytopic.link' . (($query['sticky'] == 1) ? '2' : ''))) . "</a>";
     }
     if (_priv_movetopics) {
-        $topic_admin[] = "<a class=\"post-action-move\"  href='" . Router::module('movetopic', 'id=' . $id) . "'>" . (_lang('mod.movetopic.link')) . "</a>";
+        $topic_admin[] = "<a class=\"post-action-move\"  href='" . _e(Router::module('movetopic', 'id=' . $id)) . "'>" . (_lang('mod.movetopic.link')) . "</a>";
     }
 }
 
 // vystup
 $output .= "<div class=\"topic\">\n";
-$output .= "<h2>" . _lang('posts.topic') . ": " . $query['subject'] . ' ' . Template::rssLink(Router::rss($id, 6, false), true) . "</h2>\n";
+$output .= "<h2>" . _lang('posts.topic') . ": " . $query['subject'] . ' ' . Template::rssLink(Router::rss($id, 6), true) . "</h2>\n";
 $output .= CommentService::renderPost($query, $userQuery, array(
     'post_link' => false,
     'allow_reply' => false,

@@ -17,15 +17,14 @@ class Xsrf
     }
 
     /**
-     * Pridat XSRF ochranu do URL
+     * Pridat XSRF parametr do URL
      *
-     * @param string $url    adresa
-     * @param bool   $entity oddelit argument pomoci &amp; namisto & 1/0
+     * @param string $url adresa
      * @return string
      */
-    static function addToUrl($url, $entity = true)
+    static function addToUrl($url)
     {
-        return UrlHelper::appendParams($url, '_security_token=' . rawurlencode(Xsrf::getToken()), $entity);
+        return UrlHelper::appendParams($url, '_security_token=' . rawurlencode(Xsrf::getToken()));
     }
 
     /**

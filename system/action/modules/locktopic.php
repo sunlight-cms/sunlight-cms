@@ -59,10 +59,8 @@ $output .= $message;
 
 // formular
 if (!$success) {
-    $furl = Router::module('locktopic', 'id=' . $id);
-
     $output .= '
-    <form action="' . $furl . '" method="post">
+    <form action="' . _e(Router::module('locktopic', 'id=' . $id)) . '" method="post">
     ' . Message::warning(sprintf(_lang('mod.locktopic.text' . $unlock), $query['subject']), true) . '
     <input type="submit" name="doit" value="' . _lang('mod.locktopic.submit' . $unlock) . '">
     ' . Xsrf::getInput() . '</form>

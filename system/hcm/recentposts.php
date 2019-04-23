@@ -62,7 +62,7 @@ return function ($limit = null, $stranky = "", $typ = null) {
 
         $result .= "
 <div class='list-item'>
-<h2 class='list-title'><a href='" . $homelink . "'>" . $hometitle . "</a></h2>
+<h2 class='list-title'><a href='" . _e($homelink) . "'>" . $hometitle . "</a></h2>
 <p class='list-perex'>" . StringManipulator::ellipsis(strip_tags(Comment::render($item['text'])), 256) . "</p>
 " . GenericTemplates::renderInfos(array(
     array(_lang('global.postauthor'), $authorname),
