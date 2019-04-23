@@ -176,6 +176,83 @@ Sunlight.admin = (function ($) {
         },
 
         /**
+         * Index - add a message
+         *
+         * @param {HTMLElement} msg
+         */
+        indexAddMessage: function (msg) {
+            $(msg).insertAfter('#index-messages > h2:first-child');
+            $('#index-messages').show();
+        },
+
+        /**
+         * Index - check latest version
+         *
+         * @param {String} versionApiUrl
+         * @param {String} coreVersion
+         * @param {String} latestMessage
+         * @param {String} oldMessage
+         */
+        indexCheckLatestVersion: function (versionApiUrl, coreVersion, latestMessage, oldMessage) {
+            $.ajax({
+                url: versionApiUrl,
+                dataType: 'json',
+                cache: false,
+                success: function (response) {
+                    // update #latest-version
+                    var elem = document.createElement(response.url ? 'a' : 'span');
+                    var ageClass;
+
+                    switch (response.localAge) {
+                        case 0: ageClass = 'latest'; break;
+                        case 1: ageClass = 'patch';  break;
+                        case 2: ageClass = 'minor'; break;
+                        case 3: ageClass = 'major'; break;
+                        default: ageClass = 'unk'; break;
+                    }
+
+                    if (response.url) {
+                        elem.href = response.url;
+                        elem.target = '_blank';
+                    }
+                    elem.className = 'version-' + ageClass;
+                    elem.appendChild(document.createTextNode(response.latestVersion));
+
+                    $('#latest-version').empty().append(elem);
+
+                    // add message to #index-messages
+                    if (response.localAge >= 0) {
+                        var messageType, message;
+
+                        if (response.localAge <= 0) {
+                            messageType = 'ok';
+                            message = latestMessage;
+                        } else {
+                            messageType = 'warn';
+                            message = oldMessage;
+                            message = message
+                                .replace('*version*', Sunlight.escapeHtml(response.latestVersion))
+                                .replace('*link*', 'https://sunlight-cms.org/resource/update?from=' + coreVersion);
+                        }
+
+                        self.indexAddMessage(Sunlight.msg(messageType, message, true));
+                    }
+                }
+            });
+        },
+
+        indexCheckHtaccess: function (testUrl, failureMessage) {
+            $.ajax({
+                url: testUrl,
+                dataType: 'text',
+                cache: false,
+                success: function () {
+                    self.indexAddMessage(Sunlight.msg('err', failureMessage, true));
+                }
+            });
+        },
+
+        /**
          * File manager - select / unselect / invert file selections
          *
          * @param {Number} number total number of files

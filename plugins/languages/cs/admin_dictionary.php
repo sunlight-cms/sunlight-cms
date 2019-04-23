@@ -26,6 +26,7 @@ return array(
     'admin.index.messages' => 'Systémové zprávy',
     'admin.index.betawarn' => 'Toto je betaverze určena pouze pro testovací účely',
     'admin.index.debugwarn' => 'Systém se nachází ve vývojovém režimu',
+    'admin.index.htaccess_check_failure' => 'Pozor! Zdá se, že Váš webový server nepodporuje soubory .htaccess. To představuje možné bezpečnostní riziko.<br><br>Viz <a href="*link*">*link*</a>',
     'admin.index.version.latest' => 'Používáte nejnovější verzi systému.',
     'admin.index.version.old' => 'Je k dispozici nová verze <strong>*version*</strong>. Je doporučeno <a href="*link*">aktualizovat</a>.',
     'admin.menu.index.edit.title' => 'Úprava hlavní strany',

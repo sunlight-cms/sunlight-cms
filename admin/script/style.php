@@ -516,6 +516,7 @@ a.active-link {text-decoration: underline !important;}
 /* messages */
 .message {margin: 1em 0; padding: 13px 5px 13px 48px; background-color: <?php echo $scheme_smoke; ?>; background-position: 5px 5px; background-repeat: no-repeat;}
 .message ul {margin: 0; padding: 5px 0 0 15px;}
+.message a {color: inherit; text-decoration: underline;}
 .message-ok {background-color: <?php echo $scheme_bg_info; ?>; background-image: url("../images/icons/info.png");}
 .message-warn {background-color: <?php echo $scheme_bg_alert; ?>; background-image: url("../images/icons/warning.png");}
 .message-err {background-color: <?php echo $scheme_bg_danger; ?>; background-image: url("../images/icons/error.png");}

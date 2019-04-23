@@ -121,6 +121,16 @@ if (_user_group == _group_admin) {
     $output .= '<p align="right"><a class="button" href="index.php?p=index-edit"><img src="images/icons/edit.png" alt="edit" class="icon">' . _lang('admin.index.edit.link') . '</a></p>';
 }
 
+// kontrola funcknosti htaccess
+if (!_debug) {
+    $output .= "<script>
+Sunlight.admin.indexCheckHtaccess(
+    " . json_encode(Core::$url . '/vendor/autoload.php?_why=this_is_a_test_if_htaccess_works') . ",
+    " . json_encode(_lang('admin.index.htaccess_check_failure', array('*link*' => 'https://sunlight-cms.org/resource/no-htaccess'))) . ",
+);
+</script>\n";
+}
+
 // nacteni a zobrazeni aktualni verze
 if ($admin_index_cfg['latest_version_check']) {
     $versionApiUrl = Url::parse('https://sunlight-cms.org/api/v2/version');
@@ -133,51 +143,11 @@ if ($admin_index_cfg['latest_version_check']) {
     ));
 
     $output .= "<script>
-$.ajax({
-    url: " . json_encode($versionApiUrl->generate(true)) . ",
-    dataType: 'json',
-    cache: false,
-    success: function (response) {
-        // update #latest-version
-        var elem = document.createElement(response.url ? 'a' : 'span');
-        var ageClass;
-
-        switch (response.localAge) {
-            case 0: ageClass = 'latest'; break;
-            case 1: ageClass = 'patch';  break;
-            case 2: ageClass = 'minor'; break;
-            case 3: ageClass = 'major'; break;
-            default: ageClass = 'unk'; break;
-        }
-        
-        if (response.url) {
-            elem.href = response.url;
-            elem.target = '_blank';
-        }
-        elem.className = 'version-' + ageClass;
-        elem.appendChild(document.createTextNode(response.latestVersion));
-
-        $('#latest-version').empty().append(elem);
-        
-        // add message to #index-messages
-        if (response.localAge >= 0) {
-            var messageType, message;
-            
-            if (response.localAge <= 0) {
-                messageType = 'ok';
-                message = " . json_encode(_lang('admin.index.version.latest')) . ";
-            } else {
-                messageType = 'warn';
-                message = " . json_encode(_lang('admin.index.version.old')) . ";
-                message = message
-                    .replace('*version*', Sunlight.escapeHtml(response.latestVersion))
-                    .replace('*link*', 'https://sunlight-cms.org/resource/update?from=" . rawurlencode(Core::VERSION) . "');
-            }
-            
-            $(Sunlight.msg(messageType, message, true)).insertAfter('#index-messages > h2:first-child');
-            $('#index-messages').show();
-        }
-    }
-});
+Sunlight.admin.indexCheckLatestVersion(
+    " . json_encode($versionApiUrl->generate(true)) . ",
+    " . json_encode(Core::VERSION) . ",
+    " . json_encode(_lang('admin.index.version.latest')) . ",
+    " . json_encode(_lang('admin.index.version.old')) . "
+);
 </script>\n";
 }
