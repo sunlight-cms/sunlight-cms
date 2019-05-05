@@ -52,4 +52,3 @@ function _lang($key, array $replacements = null, $fallback = null)
 {
     return Core::$lang->get($key, $replacements, $fallback);
 }
-
