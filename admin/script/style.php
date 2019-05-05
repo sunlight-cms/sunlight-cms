@@ -524,7 +524,6 @@ a.active-link {text-decoration: underline !important;}
 /* preformatted */
 pre {white-space: -moz-pre-wrap; white-space: -pre-wrap; white-space: -o-pre-wrap; white-space: pre-wrap; word-break: break-all; word-wrap: break-word;}
 pre.exception {max-height: 300px; margin: 1em 0; padding: 13px; overflow: auto; background-color: <?php echo $scheme_bg_danger; ?>;}
-pre.cli-output {background-color: #000; color: #fff; padding: 10px;}
 
 /* form tables */
 .formtable {border: 1px dotted <?php echo $scheme_smoke; ?>; background-color: <?php echo $scheme_smoke_lightest; ?>;}
