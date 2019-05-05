@@ -60,12 +60,12 @@ abstract class WebRequestHandler
     {
         $output = $this->getOutput();
 
-        if (is_string($output)) {
-            $args['index']['output'] = $output;
-        } elseif (is_int($output)) {
+        if (is_int($output)) {
             $this->handleOutputCode($args['index'], $output);
         } elseif ($output instanceof Url) {
             $args['index']['redirect_to'] = $output->generateAbsolute();
+        } else {
+            $args['index']['output'] = (string) $output;
         }
     }
 
@@ -108,11 +108,11 @@ abstract class WebRequestHandler
      *
      * The resulting behavior depends on the returned type:
      *
-     *  - string: use the given string as the output
      *  - int: one of RequestHandler::OUTPUT_* codes
      *  - Url instance: redirect to the given url
+     *  - other: cast to a string and use as output
      *
-     * @return Url|string|int
+     * @return Url|int|mixed
      */
     abstract protected function getOutput();
 
