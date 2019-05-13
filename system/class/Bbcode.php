@@ -23,10 +23,10 @@ abstract class Bbcode
         'u' => array(true, false, true, true, 1), // underline
         'q' => array(true, false, true, true, null), // quote
         's' => array(true, false, true, true, 1), // strike
-        'img' => array(true, true, true, false, 1), // image
+        'img' => array(true, true, false, false, 1), // image
         'code' => array(true, true, false, true, 1), // code
         'c' => array(true, false, true, true, null), // inline code
-        'url' => array(true, true, true, true, 1), // link
+        'url' => array(true, true, true, false, 1), // link
         'hr' => array(false, false, false, false, 1), // horizontal rule
         'color' => array(true, true, true, true, null), // color
         'size' => array(true, true, true, true, null), // size
