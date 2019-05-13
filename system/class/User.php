@@ -498,7 +498,7 @@ abstract class User
                     'form_append' => $form_append,
                 ),
                 array(
-                    array('label' => _lang('login.username'), 'content' => "<input type='text' name='login_username' class='inputmedium'" . Form::restoreValue($_SESSION, 'login_form_username') . " maxlength='24'>"),
+                    array('label' => _lang('login.username'), 'content' => "<input type='text' name='login_username' class='inputmedium'" . Form::restoreValue($_SESSION, 'login_form_username') . " maxlength='24' autofocus>"),
                     array('label' => _lang('login.password'), 'content' => "<input type='password' name='login_password' class='inputmedium'>")
                 )
             );
