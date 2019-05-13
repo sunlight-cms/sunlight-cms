@@ -505,16 +505,25 @@ class PluginLoader
             if (is_file($composerJsonPath)) {
                 $repository = new Repository($composerJsonPath);
 
+                if (!is_dir($repository->getVendorPath())) {
+                    $plugin = $this->convertPluginToErrorState(
+                        $plugin,
+                        array(sprintf('missing dependencies, please run "composer install" in %s', $repository->getDirectory()))
+                    );
+                    continue;
+                }
+
                 $this->ensureComposerRepositoryAccessControl($repository);
 
-                if ($injector->inject($repository, $errors)) {
-                    $boundFiles[] = $repository->getComposerJsonPath();
-
-                    if (is_file($installedJsonPath = $repository->getInstalledJsonPath())) {
-                        $boundFiles[] = $installedJsonPath;
-                    }
-                } else {
+                if (!$injector->inject($repository, $errors)) {
                     $plugin = $this->convertPluginToErrorState($plugin, $errors);
+                    continue;
+                }
+
+                $boundFiles[] = $repository->getComposerJsonPath();
+
+                if (is_file($installedJsonPath = $repository->getInstalledJsonPath())) {
+                    $boundFiles[] = $installedJsonPath;
                 }
             }
         }
