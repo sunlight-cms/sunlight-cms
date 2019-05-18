@@ -1,6 +1,12 @@
 <?php
 
-use Sunlight\Admin\Admin;use Sunlight\Database\Database as DB;use Sunlight\Message;use Sunlight\Plugin\TemplatePlugin;use Sunlight\Plugin\TemplateService;use Sunlight\Util\Request;use Sunlight\Xsrf;
+use Sunlight\Admin\Admin;
+use Sunlight\Database\Database as DB;
+use Sunlight\Message;
+use Sunlight\Plugin\TemplatePlugin;
+use Sunlight\Plugin\TemplateService;
+use Sunlight\Util\Request;
+use Sunlight\Xsrf;
 
 defined('_root') or exit;
 
