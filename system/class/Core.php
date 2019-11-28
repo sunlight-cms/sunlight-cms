@@ -510,7 +510,7 @@ abstract class Core
         }
 
         // undo magic_quotes
-        if (get_magic_quotes_gpc()) {
+        if (PHP_VERSION_ID < 50400 && get_magic_quotes_gpc()) {
             $search = array(&$_GET, &$_POST, &$_COOKIE);
             for ($i = 0; isset($search[$i]); ++$i) {
                 foreach ($search[$i] as &$value) {
