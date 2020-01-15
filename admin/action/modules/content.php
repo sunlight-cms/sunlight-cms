@@ -114,11 +114,15 @@ if (_priv_adminsection || _priv_admincategory || _priv_adminbook || _priv_admins
         $sortable = false;
     }
 
+    $pageitems .= Extend::buffer('admin.content.pagelist.before');
+
     $pageitems .= PageLister::render(array(
         'type' => true,
         'flags' => true,
         'sortable' => $sortable,
     ));
+
+    $pageitems .= Extend::buffer('admin.content.pagelist.after');
 
     $pageitems .= '
 </td>
