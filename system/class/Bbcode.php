@@ -297,7 +297,8 @@ abstract class Bbcode
 
             case 'code':
                 if ($buffer !== '') {
-                    return '<span class="pre">' . str_replace(' ', '&nbsp;', $buffer) . '</span>';
+                    $language = ($arg !== '' ? ' language-' . _e(trim($arg)) : '');
+                    return '<span class="pre' . $language . '">' . str_replace(' ', '&nbsp;', $buffer) . '</span>';
                 }
                 break;
 
