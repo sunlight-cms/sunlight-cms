@@ -272,8 +272,8 @@ CREATE TABLE `sunlight_page` (
   KEY `var2` (`var2`),
   KEY `var3` (`var3`),
   KEY `var4` (`var4`),
-  KEY `slug_seo_abs` (`slug_abs`),
-  KEY `slug_seo` (`slug`(16)),
+  KEY `slug_abs` (`slug_abs`),
+  KEY `slug` (`slug`(16)),
   KEY `node_parent` (`node_parent`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
