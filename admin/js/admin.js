@@ -305,6 +305,16 @@ Sunlight.admin = (function ($) {
         },
 
         /**
+         * File manager - download selected files
+         */
+        fmanDownloadSelected: function () {
+                document.filelist.action.value = 'downloadselected';
+                document.filelist.submit();
+
+            return false;
+        },
+
+        /**
          * File manager - add selected files to a gallery
          */
         fmanAddSelectedToGallery: function () {

@@ -11,7 +11,9 @@ use Sunlight\Util\Arr;
 use Sunlight\Util\Environment;
 use Sunlight\Util\Filesystem;
 use Sunlight\Util\Request;
+use Sunlight\Util\Response;
 use Sunlight\Util\StringManipulator;
+use Sunlight\Util\Url;
 use Sunlight\Xsrf;
 
 defined('_root') or exit;
@@ -305,7 +307,7 @@ if ($continue) {
                             continue;
                         }
                         $val = $decodeFilename($val);
-                        if (file_exists($dir . $val) && !file_exists($newdir . $val) && !is_dir($dir . $val) && User::checkFilename($val)) {
+                        if(is_file($dir . $val) && !is_file($newdir . $val) && User::checkFilename($val)) {
                             if (rename($dir . $val, $newdir . $val)) {
                                 $done++;
                             }
@@ -320,7 +322,43 @@ if ($continue) {
                 }
                 break;
 
-                // odstraneni vyberu
+            // stazeni souboru
+            case "downloadselected":
+                // ziskani vybranych souboru
+                $selected = array();
+                foreach ($_POST as $var => $val) {
+                    if ($var == "action" || $var == "param") {
+                        continue;
+                    }
+                    $val = $decodeFilename($val);
+                    if(is_file($dir . $val) && User::checkFilename($val)) {
+                        $selected[] = $val;
+                    }
+                }
+
+                if(count($selected) > 0) {
+                    $tmpFile = Filesystem::createTmpFile();
+                    $zip = new \ZipArchive();
+
+                    try {
+                        $zip->open($tmpFile->getPathname(), \ZipArchive::CREATE);
+                        foreach ($selected as $sel){
+                            $zip->addFile($dir.$sel, $sel);
+                        }
+                        $zip->close();
+                    } catch (\Exception $e) {
+                        $zip->close();
+                        $tmpFile->discard();
+                        throw $e;
+                    }
+
+                    Response::downloadFile($tmpFile->getPathname(), sprintf('%s.zip', basename($dir)));
+                    // uklid
+                    $tmpFile->discard();
+                }
+                break;
+
+            // odstraneni vyberu
             case "deleteselected":
                 $done = 0;
                 $total = 0;
@@ -330,7 +368,7 @@ if ($continue) {
                         continue;
                     }
                     $val = $decodeFilename($val);
-                    if (file_exists($dir . $val) && !is_dir($dir . $val) && User::checkFilename($val)) {
+                    if (is_file($dir . $val) && User::checkFilename($val)) {
                         if (unlink($dir . $val)) {
                             $done++;
                         }
@@ -384,7 +422,7 @@ if ($continue) {
                             } else {
                                 $ext = "";
                             }
-                            if (file_exists($dir . $val) && !is_dir($dir . $val) && in_array($ext, Core::$imageExt)) {
+                            if (is_file($dir . $val) && in_array($ext, Core::$imageExt)) {
                                 $sql .= "(" . $galid . "," . ($smallestord + $counter) . ",'','','" . substr($dir . $val, 3) . "'),";
                                 ++$counter;
                             }
@@ -741,6 +779,7 @@ if ($continue) {
     <strong>" . _lang('admin.fman.selected') . ":</strong>
     <a href='#' onclick='return Sunlight.admin.fmanMoveSelected()'>" . _lang('admin.fman.selected.move') . "</a>
     <a href='#' onclick='return Sunlight.admin.fmanDeleteSelected()'>" . _lang('admin.fman.selected.delete') . "</a>
+    <a href='#' onclick='return Sunlight.admin.fmanDownloadSelected()'>" . _lang('admin.fman.selected.download') . "</a>
     <a href='#top'><span class='big-text'>&uarr;</span></a>
     </p>
     ";

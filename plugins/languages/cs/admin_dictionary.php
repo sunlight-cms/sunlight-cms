@@ -81,6 +81,7 @@ return array(
     'admin.fman.selected.move.prompt' => 'Zadejte nové umístění (relativně k aktuálnímu adresáři)',
     'admin.fman.selected.delete' => 'Odstranit',
     'admin.fman.selected.delete.confirm' => 'Opravdu chcete odstranit zaškrtnuté soubory?',
+    'admin.fman.selected.download' => 'Stáhnout (ZIP)',
     'admin.fman.upload.addfile' => 'další soubor',
     'admin.content.mode.single' => '1 úroveň',
     'admin.content.mode.tree' => 'Strom',

@@ -81,6 +81,7 @@ return array(
     'admin.fman.selected.move.prompt' => 'Enter the new location (relative to the current directory)',
     'admin.fman.selected.delete' => 'Remove',
     'admin.fman.selected.delete.confirm' => 'Do you really want to delete the selected files?',
+    'admin.fman.selected.download' => 'Download (ZIP)',
     'admin.fman.upload.addfile' => 'add file',
     'admin.content.mode.single' => '1 level',
     'admin.content.mode.tree' => 'Tree',
