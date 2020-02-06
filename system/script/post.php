@@ -167,7 +167,7 @@ if ($continue && $continue2 && $text != '' && ($posttype == _post_shoutbox_entry
                 if ($allow) {
 
                     // ulozeni
-                    $insert_id = DB::insert(_comment_table, array(
+                    $insert_id = DB::insert(_comment_table, $post_data = array(
                         'type' => $posttype,
                         'home' => $posttarget,
                         'xhome' => $xhome,
@@ -184,7 +184,7 @@ if ($continue && $continue2 && $text != '' && ($posttype == _post_shoutbox_entry
                         IpLog::update(_iplog_anti_spam);
                     }
                     $return = 1;
-                    Extend::call('posts.new', array('id' => $insert_id, 'posttype' => $posttype));
+                    Extend::call('posts.new', array('id' => $insert_id, 'posttype' => $posttype, 'post' => $post_data));
 
                     // topicy - aktualizace bumptime
                     if ($posttype == _post_forum_topic && $xhome != -1) {
