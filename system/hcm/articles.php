@@ -31,6 +31,7 @@ return function ($typ = 'new', $pocet = null, $perex = 'perex', $info = true, $k
             $show_image = false;
             break;
         case 'perex-image':
+        case 2:
             $show_perex = true;
             $show_image = true;
             break;
