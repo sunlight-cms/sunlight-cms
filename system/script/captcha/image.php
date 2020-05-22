@@ -65,5 +65,5 @@ if (!$resizedCaptcha['status']) {
 }
 
 // output image
-header('Content-Type: image/jpg');
+header('Content-Type: image/jpeg');
 imagejpeg($resizedCaptcha['resource'], null, 50);
