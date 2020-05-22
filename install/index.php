@@ -654,7 +654,7 @@ class ChooseLanguageStep extends Step
     {
         ?>
 <ul class="big-list nobullets">
-    <li><label><input type="radio" name="language" value="cs"> Čeština</label></li>
+    <li><label><input type="radio" name="language" value="cs" checked> Čeština</label></li>
     <li><label><input type="radio" name="language" value="en"> English</label></li>
 </ul>
 <?php
