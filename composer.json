@@ -18,7 +18,7 @@
         "kuria/cache": "^1.0",
         "kuria/parser": "^1.0",
         "eloquent/pbkdf2-compat": "^1.0.1",
-        "composer/semver": "^1.4.0"
+        "composer/semver": "^2.1"
     },
     "config": {
         "platform": {
