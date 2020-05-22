@@ -135,7 +135,7 @@ if (isset($_POST['save'])) {
             $avatarUid = Picture::process(array(
                 'file_path' => $_FILES['avatar']['tmp_name'],
                 'file_name' => $_FILES['avatar']['name'],
-                'limit' => array('filesize' => 1048576, 'dimensions' => array('x' => 1400, 'y' => 1400)),
+                'limit' => array('filesize' => 1000000, 'dimensions' => array('x' => 1400, 'y' => 1400)),
                 'resize' => array('mode' => 'zoom', 'x' => 96, 'y' => 128),
                 'target_path' => _root . 'images/avatars/',
                 'target_format' => 'jpg',
