@@ -147,39 +147,22 @@ switch ($a) {
         }
 
         // formular
-        $output .= $message . "<form method='post' name='newmsg'>
-<table>
+        $inputs = array();
+        $inputs[] = array('label' => _lang('mod.messages.receiver'), 'content' => "<input type='text' class='inputsmall' maxlength='24'" . Form::restorePostValueAndName('receiver', Request::get('receiver')) . ">");
+        $inputs[] = array('label' => _lang('posts.subject'), 'content' => "<input type='text' class='inputmedium' maxlength='48'" . Form::restorePostValueAndName('subject', Request::get('subject')) . ">");
+        $inputs[] = array('label' => _lang('mod.messages.message'), 'content' => "<textarea class='areamedium' rows='5' cols='33' name='text'>" . Form::restorePostValue('text', null, false) . "</textarea>", 'top' => true);
+        $inputs[] = array('label' => '', 'content' => PostForm::renderControls('newmsg', 'text'));
 
-<tr>
-    <th>" . _lang('mod.messages.receiver') . "</th>
-    <td><input type='text' class='inputsmall' maxlength='24'" . Form::restorePostValueAndName('receiver', Request::get('receiver')) . "></td>
-</tr>
-
-<tr>
-    <th>" . _lang('posts.subject') . "</th>
-    <td><input type='text' class='inputmedium' maxlength='48'" . Form::restorePostValueAndName('subject', Request::get('subject')) . "></td>
-</tr>
-
-<tr class='valign-top'>
-    <th>" . _lang('mod.messages.message') . "</th>
-    <td><textarea class='areamedium' rows='5' cols='33' name='text'>" . Form::restorePostValue('text', null, false) . "</textarea></td>
-</tr>
-
-<tr>
-    <td></td>
-    <td>" . PostForm::renderControls('newmsg', 'text') . "</td>
-</tr>
-
-<tr>
-    <td></td>
-    <td><input type='submit' value='" . _lang('global.send') . "'> " . PostForm::renderPreviewButton('newmsg', 'text') . "</td>
-</tr>
-
-</table>
-
-" . GenericTemplates::jsLimitLength(16384, 'newmsg', 'text') . "
-
-" . Xsrf::getInput() . "</form>\n";
+        // form
+        $output .= $message. Form::render(
+            array(
+                'name' => 'newmsg',
+                'action' => '',
+                'submit_append' => ' ' . PostForm::renderPreviewButton('newmsg', 'text'),
+                'form_append' => GenericTemplates::jsLimitLength(16384, 'newmsg', 'text')
+            ),
+            $inputs
+        );
 
         break;
 
