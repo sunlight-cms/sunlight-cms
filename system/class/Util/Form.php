@@ -384,15 +384,16 @@ abstract class Form
             'form_prepend' => '',
             'form_append' => '',
         );
-        if ($options['multipart']) {
-            $options['enctype'] = 'multipart/form-data';
-        }
-
+        
         // extend
         $extend_buffer = Extend::buffer('form.output', array(
             'options' => &$options,
             'rows' => &$rows,
         ));
+        
+        if ($options['multipart']) {
+            $options['enctype'] = 'multipart/form-data';
+        }
 
         if ($extend_buffer !== '') {
             // vykresleni pretizeno
