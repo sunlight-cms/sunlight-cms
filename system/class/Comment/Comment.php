@@ -99,6 +99,7 @@ LEFT JOIN " . _comment_table . " home_post ON({$alias}.type=" . _post_forum_topi
             'columns' => &$columns,
             'joins' => &$joins,
             'conditions' => &$conditions,
+            'alias' => $alias,
         ));
 
         // sestaveni vysledku
