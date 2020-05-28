@@ -417,7 +417,7 @@ class CommentService
             }
         } elseif (!empty($items)) {
             // answers (to comments)
-            $answers = DB::query("SELECT p.id,p.xhome,p.text,p.author,p.guest,p.time,p.ip," . $userQuery['column_list'] . " FROM " . _comment_table . " p " . $userQuery['joins'] . " WHERE p.type=" . $posttype . " AND p.home=" . $home . (isset($pluginflag) ? " AND p.flag=" . $pluginflag : '') . " AND p.xhome IN(" . implode(',', array_keys($items)) . ") ORDER BY p.id");
+            $answers = DB::query("SELECT p.id,p.xhome,p.text,p.author,p.guest,p.time,p.ip" . Extend::buffer('posts.columns') . ',' . $userQuery['column_list']  . " FROM " . _comment_table . " p " . $userQuery['joins'] . " WHERE p.type=" . $posttype . " AND p.home=" . $home . (isset($pluginflag) ? " AND p.flag=" . $pluginflag : '') . " AND p.xhome IN(" . implode(',', array_keys($items)) . ") ORDER BY p.id");
             while ($item = DB::row($answers)) {
                 if (!isset($items[$item['xhome']])) {
                     continue;
