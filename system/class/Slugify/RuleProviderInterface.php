@@ -8,5 +8,5 @@ interface RuleProviderInterface
      * @param $ruleset
      * @return array
      */
-    public function getRules($ruleset);
+    function getRules($ruleset);
 }

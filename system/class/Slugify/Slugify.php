@@ -26,6 +26,7 @@ class Slugify
             // Languages are preferred if they appear later, list is ordered by number of
             // websites in that language
             // https://en.wikipedia.org/wiki/Languages_used_on_the_Internet#Content_languages_for_websites
+            'armenian',
             'azerbaijani',
             'burmese',
             'hindi',
@@ -38,11 +39,12 @@ class Slugify
             'greek',
             'czech',
             'arabic',
+            'slovak',
             'turkish',
             'polish',
             'german',
             'russian',
-            'romanian',
+            'romanian'
         ),
     );
 
@@ -73,7 +75,7 @@ class Slugify
      * @param string|array|null $options
      * @return string
      */
-    public function slugify($string, $options = null)
+    function slugify($string, $options = null)
     {
         $options = array_merge($this->options, (array) $options);
 
@@ -102,7 +104,7 @@ class Slugify
      * @param string $character character
      * @param string $replacement replacement character
      */
-    public function addRule($character, $replacement)
+    function addRule($character, $replacement)
     {
         $this->rules[$character] = $replacement;
     }
@@ -110,7 +112,7 @@ class Slugify
     /**
      * @param string[] $rules
      */
-    public function addRules(array $rules)
+    function addRules(array $rules)
     {
         foreach ($rules as $character => $replacement) {
             $this->addRule($character, $replacement);
@@ -120,7 +122,7 @@ class Slugify
     /**
      * @param string $ruleSet
      */
-    public function activateRuleSet($ruleSet)
+    function activateRuleSet($ruleSet)
     {
         $this->addRules($this->provider->getRules($ruleSet));
     }
