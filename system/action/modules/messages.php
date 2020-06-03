@@ -124,7 +124,7 @@ switch ($a) {
                 ), true);
 
                 // vlozeni do posts tabulky
-                DB::insert(_comment_table, array(
+                $insert_id = DB::insert(_comment_table, $post_data = array(
                     'type' => _post_pm,
                     'home' => $pm_id,
                     'xhome' => -1,
@@ -135,7 +135,8 @@ switch ($a) {
                     'time' => time(),
                     'ip' => _user_ip,
                     'bumptime' => 0
-                ));
+                ), true);
+                Extend::call('posts.new', array('id' => $insert_id, 'posttype' => _post_pm, 'post' => $post_data));
 
                 // presmerovani a konec
                 $_index['redirect_to'] = Router::module('messages', 'a=list&read=' . $pm_id, true);
@@ -178,7 +179,7 @@ switch ($a) {
             // nacist data
             $senderUserQuery = User::createQuery('pm.sender', 'sender_', 'su');
             $receiverUserQuery = User::createQuery('pm.receiver', 'receiver_', 'ru');
-            $q = DB::queryRow('SELECT pm.*,post.id post_id,post.subject,post.time,post.text,post.guest,post.ip,' . $senderUserQuery['column_list'] . ',' . $receiverUserQuery['column_list'] . ' FROM ' . _pm_table . ' AS pm JOIN ' . _comment_table . ' AS post ON (post.type=' . _post_pm . ' AND post.home=pm.id AND post.xhome=-1) ' . $senderUserQuery['joins'] . ' ' . $receiverUserQuery['joins'] . ' WHERE pm.id=' . $id . ' AND (sender=' . _user_id . ' AND sender_deleted=0 OR receiver=' . _user_id . ' AND receiver_deleted=0)');
+            $q = DB::queryRow('SELECT pm.*,p.id post_id,p.subject,p.time,p.text,p.guest,p.ip' . Extend::buffer('posts.columns') . ',' . $senderUserQuery['column_list'] . ',' . $receiverUserQuery['column_list'] . ' FROM ' . _pm_table . ' AS pm JOIN ' . _comment_table . ' AS p ON (p.type=' . _post_pm . ' AND p.home=pm.id AND p.xhome=-1) ' . $senderUserQuery['joins'] . ' ' . $receiverUserQuery['joins'] . ' WHERE pm.id=' . $id . ' AND (sender=' . _user_id . ' AND sender_deleted=0 OR receiver=' . _user_id . ' AND receiver_deleted=0)');
             if ($q === false) {
                 $output .= Message::error(_lang('global.badinput'));
                 break;
