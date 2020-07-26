@@ -134,7 +134,7 @@ $admin_body_classes[] = $theme_dark ? 'dark' : 'light';
             </div>
 
             <div id="footer-powered-by">
-                <?php echo _lang('system.poweredby') ?> <a href="https://sunlight-cms.org/" target="_blank">SunLight CMS</a>
+                <?php echo _lang('system.poweredby') ?> <a href="https://sunlight-cms.cz/" target="_blank">SunLight CMS</a>
             </div>
         </div>
     </div>

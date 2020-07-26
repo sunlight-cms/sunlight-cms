@@ -45,7 +45,7 @@ $renderPluginAuthor = function ($author, $url) {
 $output .= '<p>
         <a class="button" href="index.php?p=plugins-upload"><img src="images/icons/plugin.png" alt="upload" class="icon">' . _lang('admin.plugins.upload') . '</a>
         <a class="button" href="index.php?p=plugins&amp;clear"><img src="images/icons/refresh.png" alt="clear" class="icon">' . _lang('admin.plugins.clear_cache') . '</a>
-        <a class="button right" href="https://sunlight-cms.org/resource/get-plugins" target="_blank"><img src="images/icons/show.png" alt="get" class="icon">' . _lang('admin.plugins.get') . '</a>
+        <a class="button right" href="https://sunlight-cms.cz/resource/get-plugins" target="_blank"><img src="images/icons/show.png" alt="get" class="icon">' . _lang('admin.plugins.get') . '</a>
 </p>
 ';
 

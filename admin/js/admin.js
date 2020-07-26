@@ -232,7 +232,7 @@ Sunlight.admin = (function ($) {
                             message = oldMessage;
                             message = message
                                 .replace('*version*', Sunlight.escapeHtml(response.latestVersion))
-                                .replace('*link*', 'https://sunlight-cms.org/resource/update?from=' + coreVersion);
+                                .replace('*link*', 'https://sunlight-cms.cz/resource/update?from=' + coreVersion);
                         }
 
                         self.indexAddMessage(Sunlight.msg(messageType, message, true));

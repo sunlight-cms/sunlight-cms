@@ -3,7 +3,7 @@ SunLight CMS 8
 
 This is the official GIT repository of SunLight CMS (8.x branch).
 
-Documentation, support and stable downloads are available at `sunlight-cms.org <https://sunlight-cms.org/>`_.
+Documentation, support and stable downloads are available at `sunlight-cms.cz <https://sunlight-cms.cz/>`_.
 
 
 Requirements

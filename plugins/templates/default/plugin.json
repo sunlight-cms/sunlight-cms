@@ -3,7 +3,7 @@
     "description": "8.x default template.",
     "version": "8.0",
     "api": "^8.0",
-    "url": "https://sunlight-cms.org/",
+    "url": "https://sunlight-cms.cz/",
     "layouts": {
         "default": {
             "template": "template.php",

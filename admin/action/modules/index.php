@@ -126,14 +126,14 @@ if (!_debug) {
     $output .= "<script>
 Sunlight.admin.indexCheckHtaccess(
     " . json_encode(Core::$url . '/vendor/autoload.php?_why=this_is_a_test_if_htaccess_works') . ",
-    " . json_encode(_lang('admin.index.htaccess_check_failure', array('*link*' => 'https://sunlight-cms.org/resource/no-htaccess'))) . ",
+    " . json_encode(_lang('admin.index.htaccess_check_failure', array('*link*' => 'https://sunlight-cms.cz/resource/no-htaccess'))) . ",
 );
 </script>\n";
 }
 
 // nacteni a zobrazeni aktualni verze
 if ($admin_index_cfg['latest_version_check']) {
-    $versionApiUrl = Url::parse('https://sunlight-cms.org/api/v2/version');
+    $versionApiUrl = Url::parse('https://api.sunlight-cms.cz/version');
     $versionApiUrl->add(array(
         'ver' => Core::VERSION,
         'dist' => Core::DIST,

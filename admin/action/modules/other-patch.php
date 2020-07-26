@@ -51,7 +51,7 @@ if (isset($_POST['apply_patch'])) do {
 } while (false);
 
 $output .= _buffer(function () { ?>
-    <p><?php echo _lang('admin.other.patch.text', array('*link*' => 'https://sunlight-cms.org/resource/update?from=' . rawurlencode(Core::VERSION))) ?></p>
+    <p><?php echo _lang('admin.other.patch.text', array('*link*' => 'https://sunlight-cms.cz/resource/update?from=' . rawurlencode(Core::VERSION))) ?></p>
 
     <form method="post" enctype="multipart/form-data" onsubmit="return Sunlight.confirm()">
         <table class="formtable">
@@ -85,7 +85,7 @@ $output .= _buffer(function () { ?>
 
     <script>
         $.ajax({
-            url: 'https://sunlight-cms.org/api/v2/latest-version',
+            url: 'https://api.sunlight-cms.cz/version',
             dataType: 'json',
             cache: false,
             success: function (response) {

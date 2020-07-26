@@ -351,7 +351,7 @@ abstract class Template
     static function links()
     {
         return
-            "<li><a href=\"https://sunlight-cms.org/\">SunLight CMS</a></li>\n"
+            "<li><a href=\"https://sunlight-cms.cz/\">SunLight CMS</a></li>\n"
             . ((!_adminlinkprivate || (_logged_in && _priv_administration)) ? '<li><a href="' . Router::generate('admin/') . '">' . _lang('global.adminlink') . "</a></li>\n" : '');
     }
 
