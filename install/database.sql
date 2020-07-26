@@ -278,7 +278,7 @@ CREATE TABLE `sunlight_page` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `sunlight_page` (`id`, `title`, `heading`, `slug`, `slug_abs`, `description`, `type`, `type_idt`, `node_parent`, `node_level`, `node_depth`, `perex`, `ord`, `content`, `visible`, `public`, `level`, `level_inherit`, `show_heading`, `events`, `link_new_window`, `link_url`, `layout`, `layout_inherit`, `var1`, `var2`, `var3`, `var4`) VALUES
-(1,	'',	'',	'index',	0,	'',	1,	NULL,	NULL,	0,	0,	'',	1,	'',	1,	1,	0,	1,	1,	NULL,	0,	NULL,	'',	0,	0,	0,	0,	0);
+(1,	'',	'',	'index',	0,	'',	1,	NULL,	NULL,	0,	0,	'',	1,	'',	1,	1,	0,	1,	1,	NULL,	0,	NULL,	NULL,	0,	0,	0,	0,	0);
 
 CREATE TABLE `sunlight_shoutbox` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
