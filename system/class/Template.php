@@ -525,7 +525,7 @@ abstract class Template
         }
 
         // pridat modul
-        if ($_index['is_module']) {
+        if (self::currentIsModule()) {
             $breadcrumbs[] = array(
                 'title' => $_index['title'],
                 'url' => $_index['url'],
@@ -711,7 +711,7 @@ abstract class Template
      */
     static function currentIsPage()
     {
-        return $GLOBALS['_index']['is_page'];
+        return $GLOBALS['_index']['is_page'] && $GLOBALS['_index']['is_successful'];
     }
 
     /**
@@ -723,6 +723,7 @@ abstract class Template
     {
         return
             $GLOBALS['_index']['is_page']
+            && $GLOBALS['_index']['is_successful']
             && $GLOBALS['_page']['type'] == _page_category
             && $GLOBALS['_index']['segment'] !== null;
     }
@@ -736,6 +737,7 @@ abstract class Template
     {
         return
             $GLOBALS['_index']['is_page']
+            && $GLOBALS['_index']['is_successful']
             && $GLOBALS['_page']['type'] == _page_forum
             && $GLOBALS['_index']['segment'] !== null;
     }
@@ -747,7 +749,7 @@ abstract class Template
      */
     static function currentIsModule()
     {
-        return $GLOBALS['_index']['is_module'];
+        return $GLOBALS['_index']['is_module'] && $GLOBALS['_index']['is_successful'];
     }
 
     /**
