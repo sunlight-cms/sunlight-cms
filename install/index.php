@@ -18,10 +18,6 @@ use Sunlight\Util\StringManipulator;
 use Sunlight\Util\Url;
 
 define(__NAMESPACE__ . '\CONFIG_PATH', __DIR__ . '/../config.php');
-define(__NAMESPACE__ . '\DEFAULT_TIMEZONE', @date_default_timezone_get());
-
-// set timezone
-date_default_timezone_set(DEFAULT_TIMEZONE);
 
 // bootstrap
 require __DIR__ . '/../system/bootstrap.php';
@@ -767,7 +763,6 @@ class ConfigurationStep extends Step
         }
 
         $defaultSecret = StringGenerator::generateHash(64);
-        $defaultTimezone = date_default_timezone_get();
         $defaultGeoLatitude = 50.5;
         $defaultGeoLongitude = 14.26;
         $defaultGeoZenith = 90.583333;
@@ -831,7 +826,7 @@ class ConfigurationStep extends Step
         </tr>
         <tr>
             <th><?php Labels::render('config.timezone') ?></th>
-            <td><input type="text"<?php echo Form::restorePostValueAndName('config_timezone', $this->getConfig('timezone', $defaultTimezone)) ?>></td>
+            <td><input type="text"<?php echo Form::restorePostValueAndName('config_timezone', $this->getConfig('timezone')) ?>></td>
             <td class="help">
                 <?php Labels::render('config.timezone.help') ?>
                 <a href="http://php.net/timezones" target="_blank">PHP timezones</a>
