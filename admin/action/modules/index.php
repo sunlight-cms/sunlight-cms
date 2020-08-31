@@ -76,7 +76,11 @@ $output .= "
 
     <tr>
       <th>PHP:</th>
-      <td>" . PHP_VERSION . "</td>
+      <td>
+        " . (_priv_super_admin ? '<a href="script/phpinfo.php" target="_blank">' : '') . "
+        " . PHP_VERSION . "
+        " . (_priv_super_admin ? '</a>' :'') . "
+    </td>
     </tr>
     <tr>
       <th>MySQL:</th>
