@@ -154,6 +154,8 @@ const _topicsperpage = 30;
 const _article_pic_thumb_h = 200;
 /** Article thumbnail width */
 const _article_pic_thumb_w = 200;
+/** Enable version checking */
+const _version_check = 1;
 
 
 // user privileges

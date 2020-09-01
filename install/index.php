@@ -139,8 +139,8 @@ class Labels
             'import.settings.title.help' => 'hlavní titulek stránek',
             'import.settings.description' => 'Popis webu',
             'import.settings.description.help' => 'krátký popis stránek',
-            'import.settings.latest_version_check' => 'Kontrola verze',
-            'import.settings.latest_version_check.help' => 'kontrolovat, zda je verze systému aktuální (pouze na hlavní straně administrace)',
+            'import.settings.version_check' => 'Kontrola verze',
+            'import.settings.version_check.help' => 'kontrolovat, zda je verze systému aktuální',
             'import.admin' => 'Účet administrátora',
             'import.admin.username' => 'Uživ. jméno',
             'import.admin.username.help' => 'povolené znaky jsou: a-z, tečka, pomlčka, podtržítko',
@@ -219,8 +219,8 @@ class Labels
             'import.settings.title.help' => 'main website title',
             'import.settings.description' => 'Description',
             'import.settings.description.help' => 'brief site description',
-            'import.settings.latest_version_check' => 'Check version',
-            'import.settings.latest_version_check.help' => 'check whether the system is up to date (only on the administration home page)',
+            'import.settings.version_check' => 'Check version',
+            'import.settings.version_check.help' => 'check whether the system is up to date',
             'import.admin' => 'Admin account',
             'import.admin.username' => 'Username',
             'import.admin.username.help' => 'allowed characters: a-z, dot, dash, underscore',
@@ -940,7 +940,7 @@ class ImportDatabaseStep extends Step
             'description' => trim(Request::post('import_settings_description')),
             'language' => $this->vars['language'],
             'atreplace' => $this->vars['language'] === 'cs' ? '[zavinac]' : '[at]',
-            'latest_version_check' => Request::post('import_settings_latest_version_check') ? 1 : 0,
+            'version_check' => Request::post('import_settings_version_check') ? 1 : 0,
         );
 
         $admin = array(
@@ -1089,9 +1089,9 @@ Now you can <a href="admin/">log in to the administration</a> (username and pass
             <td class="help"><?php Labels::render('import.settings.description.help') ?></td>
         </tr>
         <tr>
-            <th><?php Labels::render('import.settings.latest_version_check') ?></th>
-            <td><input type="checkbox"<?php echo Form::restoreCheckedAndName($this->getFormKeyVar(), 'import_settings_latest_version_check', true) ?>></td>
-            <td class="help"><?php Labels::render('import.settings.latest_version_check.help') ?></td>
+            <th><?php Labels::render('import.settings.version_check') ?></th>
+            <td><input type="checkbox"<?php echo Form::restoreCheckedAndName($this->getFormKeyVar(), 'import_settings_version_check', true) ?>></td>
+            <td class="help"><?php Labels::render('import.settings.version_check.help') ?></td>
         </tr>
     </table>
 </fieldset>

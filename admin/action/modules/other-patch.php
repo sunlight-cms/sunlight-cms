@@ -6,9 +6,18 @@ use Sunlight\Core;
 use Sunlight\Message;
 use Sunlight\Util\Environment;
 use Sunlight\Util\Html;
+use Sunlight\VersionChecker;
 use Sunlight\Xsrf;
 
 defined('_root') or exit;
+
+$version_data = VersionChecker::check();
+
+if ($version_data !== null) {
+    $latest_version = $version_data['latestVersion'];
+} else {
+    $latest_version = '---';
+}
 
 if (isset($_POST['apply_patch'])) do {
     // check upload
@@ -50,7 +59,7 @@ if (isset($_POST['apply_patch'])) do {
     }
 } while (false);
 
-$output .= _buffer(function () { ?>
+$output .= _buffer(function () use ($latest_version) { ?>
     <p><?php echo _lang('admin.other.patch.text', array('*link*' => 'https://sunlight-cms.cz/resource/update?from=' . rawurlencode(Core::VERSION))) ?></p>
 
     <form method="post" enctype="multipart/form-data" onsubmit="return Sunlight.confirm()">
@@ -61,7 +70,7 @@ $output .= _buffer(function () { ?>
             </tr>
             <tr>
                 <th><?php echo _lang('admin.other.patch.latest_version') ?></th>
-                <td id="latest-version">---</td>
+                <td><?php echo _e($latest_version) ?></td>
             </tr>
             <tr>
                 <th><?php echo _lang('admin.other.patch.file') ?></th>
@@ -82,17 +91,4 @@ $output .= _buffer(function () { ?>
 
         <?php echo Xsrf::getInput() ?>
     </form>
-
-    <script>
-        $.ajax({
-            url: 'https://api.sunlight-cms.cz/version',
-            dataType: 'json',
-            cache: false,
-            success: function (response) {
-                if (response) {
-                    $('#latest-version').text(response.latestVersion);
-                }
-            }
-        });
-    </script>
 <?php });

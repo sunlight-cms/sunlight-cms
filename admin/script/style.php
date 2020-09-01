@@ -335,17 +335,17 @@ body.login-layout #footer, body.login-layout #footer a {color: <?php echo $schem
 /* index */
 #index-table {width: 100%; margin: 0; padding: 0; border-collapse: collapse;}
 #index-table > tbody > tr > td {padding: 10px; border: 1px solid <?php echo $scheme_smoke_med; ?>; background-color: <?php echo $scheme_smoke_lighter; ?>;}
+#index-table > tbody > tr > td:last-child {width: 200px;}
 #index-table h2 {margin-bottom: 6px; border-bottom: 2px solid <?php echo $scheme_smoke_med; ?>; padding-bottom: 6px;}
 #index-table li {padding: 3px;}
 #index-table table {width: 100%;}
 #index-table table th, #index-table table td {text-align: left; padding: 0.2em; border-bottom: 1px solid <?php echo $scheme_smoke_med; ?>;}
 #index-table table tr:last-child th, #index-table table tr:last-child td {border-bottom: none;}
-.module-index #latest-version {font-weight: bold;}
-.module-index #latest-version .version-latest {color: #009800;}
-.module-index #latest-version .version-patch {color: #cda869;}
-.module-index #latest-version .version-minor {color: #f06c00;}
-.module-index #latest-version .version-major {color: #e60000;}
-.module-index #latest-version .version-unk {color: #0077a7;}
+.module-index .latest-version {font-weight: bold; color: #0077a7;}
+.module-index .latest-version.latest-version-age-0 {color: #009800;}
+.module-index .latest-version.latest-version-age-1 {color: #cda869;}
+.module-index .latest-version.latest-version-age-2 {color: #f06c00;}
+.module-index .latest-version.latest-version-age-3 {color: #e60000;}
 
 /* content management */
 #contenttable {width: 100%; border: 1px solid <?php echo $scheme_smoke; ?>; line-height: 140%;}
@@ -663,6 +663,9 @@ fieldset fieldset .bborder {border-color: <?php echo $scheme_smoke; ?>;}
 .big-text {font-size: larger;}
 .left {float: left; margin: 1px 10px 5px 1px;}
 .right {float: right; margin: 1px 1px 5px 10px;}
+.text-left {text-align: right;}
+.text-center {text-align: center;}
+.text-right {text-align: right;}
 tr.valign-top > *, table.valign-top > * > tr > * {vertical-align: top;}
 .no-bullets {list-style-type: none; padding-left: 10px;}
 

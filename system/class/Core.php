@@ -930,6 +930,9 @@ abstract class Core
                     && time() - $file->getMTime() > 86400;
             },
         ));
+
+        // check version
+        VersionChecker::check();
     }
 
     /**

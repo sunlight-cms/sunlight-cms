@@ -384,7 +384,7 @@ INSERT INTO `sunlight_setting` (`var`, `val`, `format`, `constant`, `preload`, `
 ('topicsperpage',	'30',	'int',	1,	1,	1,	1),
 ('article_pic_thumb_h',	'200',	'int',	1,	1,	1,	1),
 ('article_pic_thumb_w',	'200',	'int',	1,	1,	1,	1),
-('latest_version_check',	'1',	'bool',	0,	0,	0,	0);
+('version_check',	'1',	'bool',	1, 1, 1, 1);
 
 CREATE TABLE `sunlight_user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

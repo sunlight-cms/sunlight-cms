@@ -252,7 +252,7 @@ $output .= $message . "
 
 <tr class='valign-top'>
 
-<td align='center'><p>
+<td class='text-center'><p>
 <input type='submit' value='" . _lang('admin.other.cleanup.prev') . "'><br><br>
 <input type='submit' name='do_cleanup' value='" . _lang('admin.other.cleanup.do') . "' onclick='return Sunlight.confirm();'>
 </p></td>
