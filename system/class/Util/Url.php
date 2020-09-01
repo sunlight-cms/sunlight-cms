@@ -84,11 +84,21 @@ class Url
     static function current()
     {
         if (static::$current === null) {
+            try {
+                $path = (string) static::parse(!empty($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '/')->path;
+
+                if ($path === '' || $path[0] !== '/') {
+                    $path = "/{$path}";
+                }
+            } catch (\InvalidArgumentException $e) {
+                $path = '/';
+            }
+
             $url = sprintf(
                 '%s://%s%s',
                 !empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off' ? 'https' : 'http',
                 !empty($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost',
-                $_SERVER['REQUEST_URI']
+                $path
             );
 
             static::$current = static::parse($url);
