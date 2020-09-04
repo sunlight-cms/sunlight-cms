@@ -85,13 +85,17 @@ class Url
     {
         if (static::$current === null) {
             try {
-                $path = (string) static::parse(!empty($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '/')->path;
+                $requestUri = static::parse(!empty($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '/');
+
+                $path = $requestUri->path;
+                $query = $requestUri->query;
 
                 if ($path === '' || $path[0] !== '/') {
                     $path = "/{$path}";
                 }
             } catch (\InvalidArgumentException $e) {
                 $path = '/';
+                $query = array();
             }
 
             $url = sprintf(
@@ -102,6 +106,7 @@ class Url
             );
 
             static::$current = static::parse($url);
+            static::$current->query = $query;
         }
 
         return clone static::$current;
