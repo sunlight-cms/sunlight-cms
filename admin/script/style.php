@@ -441,9 +441,10 @@ ul.page-list-breadcrumbs a:hover {color: <?php echo $scheme_link; ?>;}
 #fman-action {border-bottom: 1px solid <?php echo $scheme_smoke; ?>; margin-bottom: 10px;}
 #fman-action h2 {margin-bottom: 6px;}
 #fman-list {width: 100%; border-collapse: collapse; margin-bottom: 6px;}
-#fman-list.mini {min-width: 0;}
 #fman-list a {color: <?php echo $scheme_text; ?>;}
-#fman-list td:first-child a {display: block;}
+#fman-list .fman-size {width: 15%;}
+#fman-list .actions {width: 25%;}
+#fman-list .fman-item a {display: block;}
 #fman-list td {padding: 2px 4px; border: 1px solid <?php echo $scheme_white; ?>; line-height: 200%;}
 #fman-list tr:hover td {background-color: <?php echo $scheme_lightest; ?>;}
 #fman-list input {margin: 5px 4px 0 0; float: left;}
@@ -452,6 +453,7 @@ ul.page-list-breadcrumbs a:hover {color: <?php echo $scheme_link; ?>;}
 .fman-menu {border-width: 1px 0 1px 0; border-style: solid; border-color: <?php echo $scheme_smoke; ?>;}
 .fman-menu, .fman-menu2 {margin-top: 5px; padding: 5px;}
 .fman-menu a, .fman-menu span, .fman-menu2 a, .fman-menu2 span {border-right: 1px solid <?php echo $scheme_smoke; ?>; padding-right: 8px; margin-right: 8px;}
+.fman-spacer {height: 10px;}
 
 /* galleries */
 .gallery-savebutton {float: left; margin: 0 14px 0 0; display: block;}
@@ -656,6 +658,7 @@ fieldset fieldset .bborder {border-color: <?php echo $scheme_smoke; ?>;}
 .highlight {color: <?php echo $scheme_link; ?>;}
 .max-area {width: 100%; height: 100%;}
 .max-width {width: 100%;}
+.half-width {width: 50%;}
 .separated {margin-top: 1em;}
 .clickable {cursor: pointer;}
 .strike {text-decoration: line-through;}

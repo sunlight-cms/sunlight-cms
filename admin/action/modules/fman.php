@@ -662,7 +662,6 @@ if ($continue) {
     <input type='hidden' name='action' value='-1'>
     <input type='hidden' name='param' value='-1'>
     <table id='fman-list'>
-    <tr><td width='60%'></td><td width='15%'></td><td width='25%'></td></tr>
     ";
 
     $highlight = false;
@@ -697,7 +696,7 @@ if ($continue) {
 
         $output .= "
         <tr" . $hl_class . ">
-        <td colspan='" . (($item == "..") ? "3" : "2") . "'><a href='" . $url_base . "dir=" . rawurlencode($dirhref) . "/'><img src='images/icons/fman/dir.png' alt='dir' class='icon'>" . _e(StringManipulator::ellipsis($item, 64, false)) . "</a></td>
+        <td class='fman-item' colspan='" . (($item == "..") ? "3" : "2") . "'><a href='" . $url_base . "dir=" . rawurlencode($dirhref) . "/'><img src='images/icons/fman/dir.png' alt='dir' class='icon'>" . _e(StringManipulator::ellipsis($item, 64, false)) . "</a></td>
         " . (($item != "..") ? "<td class='actions'>
             <a class='button' href='" . $url . "&amp;a=delete&amp;name=" . $encodeFilename($item) . "'><img src='images/icons/delete.png' alt='del' class='icon'>" . _lang('global.delete') . "</a>
             <a class='button' href='" . $url . "&amp;a=rename&amp;name=" . $encodeFilename($item) . "'><img src='images/icons/rename.png' alt='rename' class='icon'>" . _lang('admin.fman.rename') . "</a>
@@ -709,7 +708,7 @@ if ($continue) {
     }
 
     if ($dircounter !== 0) {
-        $output .= "<tr><td colspan='3'> </td></tr>";
+        $output .= "<tr><td class='fman-spacer' colspan='3'></td></tr>";
     }
 
     // soubory
@@ -749,8 +748,8 @@ if ($continue) {
 
         $output .= "
         <tr class='" . implode(' ', $row_classes) . "'>
-        <td><input type='checkbox' name='f" . $filecounter . "' id='f" . $filecounter . "' value='" . $encodeFilename($item, false) . "'> <a href='" . _e($dir . $item) . "' target='_blank'" . ($image ? ' class="lightbox" data-gallery-group="fman"' : '') . "><img src='images/icons/fman/" . $icon . ".png' alt='file' class='icon'>" . _e(StringManipulator::ellipsis($item, 64, false)) . "</a></td>
-        <td>" . GenericTemplates::renderFileSize($filesize) . "</td>
+        <td class='fman-item'><input type='checkbox' name='f" . $filecounter . "' id='f" . $filecounter . "' value='" . $encodeFilename($item, false) . "'> <a href='" . _e($dir . $item) . "' target='_blank'" . ($image ? ' class="lightbox" data-gallery-group="fman"' : '') . "><img src='images/icons/fman/" . $icon . ".png' alt='file' class='icon'>" . _e(StringManipulator::ellipsis($item, 64, false)) . "</a></td>
+        <td class='fman-size'>" . GenericTemplates::renderFileSize($filesize) . "</td>
         <td class='actions'>". (User::checkFilename($item) ?
             "<a class='button' href='" . $url . "&amp;a=delete&amp;name=" . $encodeFilename($item) . "'><img src='images/icons/delete.png' alt='del' class='icon'>" . _lang('global.delete') . "</a>  "
             . "<a class='button' href='" . $url . "&amp;a=rename&amp;name=" . $encodeFilename($item) . "'><img src='images/icons/rename.png' alt='rename' class='icon'>" . _lang('admin.fman.rename') . "</a>  "

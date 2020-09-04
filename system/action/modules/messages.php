@@ -306,7 +306,12 @@ switch ($a) {
 
 <table class='messages-table'>
 <thead>
-<tr><td width='10'><input type='checkbox' name='selector' onchange=\"var that=this;$('table.messages-table input').each(function(){this.checked=that.checked;});\"></td><th>" . _lang('mod.messages.message') . "</th><th>" . _lang('global.user') . "</th><th>" . _lang('mod.messages.time.update') . "</th></tr>
+<tr>
+    <td><input type='checkbox' name='selector' onchange=\"var that=this;$('table.messages-table input').each(function(){this.checked=that.checked;});\"></td>
+    <th>" . _lang('mod.messages.message') . "</th>
+    <th>" . _lang('global.user') . "</th>
+    <th>" . _lang('mod.messages.time.update') . "</th>
+</tr>
 </thead>
 <tbody>\n";
         $senderUserQuery = User::createQuery('pm.sender', 'sender_', 'su');

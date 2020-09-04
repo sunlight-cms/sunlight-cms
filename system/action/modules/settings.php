@@ -328,11 +328,11 @@ if (_priv_administration) {
 $output .= "
 <p><a href='" . _e(Router::module('profile', 'id=' . _user_name)) . "'>" . _lang('mod.settings.profilelink') . " &gt;</a></p>
 <p>" . _lang('mod.settings.p') . "</p>" . $message . "
-<form action='" . _e(Router::module('settings')) . "' method='post' name='setform' enctype='multipart/form-data'>
+<form class='user-settings' action='" . _e(Router::module('settings')) . "' method='post' name='setform' enctype='multipart/form-data'>
 
 " . GenericTemplates::jsLimitLength(1024, "setform", "note") . "
 
-  <fieldset>
+  <fieldset class='user-settings-account'>
   <legend>" . _lang('mod.settings.userdata') . "</legend>
   <table class='profiletable'>
 
@@ -367,7 +367,7 @@ $output .= "
   </table>
   </fieldset>
 
-  <fieldset>
+  <fieldset class='user-settings-password'>
   <legend>" . _lang('mod.settings.password') . "</legend>
   <p>" . _lang('mod.settings.password.hint') . "</p>
   <table class='profiletable'>
@@ -390,7 +390,7 @@ $output .= "
   </table>
   </fieldset>
   
-  <fieldset>
+  <fieldset class='user-settings-download'>
   <legend>" . _lang('mod.settings.download_personal_data') . "</legend>
   <p>" . _lang('mod.settings.download_personal_data.hint') . "</p>
   <input type='submit' name='download_personal_data' value='" . _lang('mod.settings.download_personal_data.action') . "'>
@@ -398,7 +398,7 @@ $output .= "
 
   " . Extend::buffer('mod.settings.form') . "
 
-  <fieldset>
+  <fieldset class='user-settings-info'>
   <legend>" . _lang('mod.settings.info') . "</legend>
 
   <table class='profiletable'>
@@ -421,13 +421,13 @@ $output .= "
 
 if (_uploadavatar) {
     $output .= "
-  <fieldset>
+  <fieldset class='user-settings-avatar'>
   <legend>" . _lang('mod.settings.avatar') . "</legend>
   " . Extend::buffer('mod.settings.avatar', array('user' => $userdata)) . "
   <p><strong>" . _lang('mod.settings.avatar.upload') . ":</strong> <input type='file' name='avatar'></p>
     <table>
     <tr class='valign-top'>
-    <td width='106'><img src='" . _e($avatar_path) . "' class='avatar' alt='avatar'></td>
+    <td><img src='" . _e($avatar_path) . "' class='avatar' alt='avatar'></td>
     <td><p>" . _lang('mod.settings.avatar.hint') . "</p><p><label><input type='checkbox' name='removeavatar' value='1'> " . _lang('mod.settings.avatar.remove') . "</label></p></td>
     </tr>
     </table>
@@ -438,9 +438,9 @@ if (_uploadavatar) {
 if (_priv_selfremove && _user_id != 0) {
     $output .= "
 
-  <fieldset>
+  <fieldset class='user-settings-remove'>
   <legend>" . _lang('mod.settings.selfremove') . "</legend>
-  <p><label><input type='checkbox' name='selfremove' value='1' onclick='if (this.checked==true) {return Sunlight.confirm();}'> " . _lang('mod.settings.selfremove.box') . "</label></p>
+  <p><label><input type='checkbox' name='selfremove' value='1' onclick='if (this.checked) {return Sunlight.confirm();}'> " . _lang('mod.settings.selfremove.box') . "</label></p>
   <div><strong>" . _lang('mod.settings.selfremove.confirm') . ":</strong> <input type='password' name='selfremove-confirm' class='inputsmall'></div>
   </fieldset>
 
@@ -448,7 +448,6 @@ if (_priv_selfremove && _user_id != 0) {
 }
 
 $output .= "
-<br>
 <input type='submit' name='save' value='" . _lang('mod.settings.submit') . "'>
 <input type='reset' value='" . _lang('global.reset') . "' onclick='return Sunlight.confirm();'>
 

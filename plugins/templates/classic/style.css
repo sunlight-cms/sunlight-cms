@@ -415,6 +415,9 @@ ul.list-info a {
 .messages-table td {
     padding: 5px 15px;
 }
+.messages-table td:first-child {
+    width: 10px;
+}
 
 /* Posts / comments */
 .post {

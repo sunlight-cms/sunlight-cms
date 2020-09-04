@@ -453,10 +453,10 @@ if ($continue) {
 " . Xsrf::getInput() . "</form>
 </fieldset>
 
-<table width='100%'>
+<table class='max-width'>
 <tr class='valign-top'>
 
-<td width='50%'>
+<td class='half-width'>
   <fieldset class='hs_fieldset'>
   <legend>" . _lang('admin.content.manageimgs.moveimgs') . "</legend>
 
