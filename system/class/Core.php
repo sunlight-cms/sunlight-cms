@@ -602,11 +602,7 @@ abstract class Core
 
         if (static::$sessionEnabled) do {
             $userData = null;
-            $loginDataExist = isset(
-                $_SESSION['user_id'],
-                $_SESSION['user_auth'],
-                $_SESSION['user_ip']
-            );
+            $loginDataExist = isset($_SESSION['user_id'], $_SESSION['user_auth']);
 
             // check persistent login cookie if there are no login data
             if (!$loginDataExist) {

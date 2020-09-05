@@ -401,7 +401,6 @@ abstract class User
 
         $_SESSION['user_id'] = $id;
         $_SESSION['user_auth'] = $authHash;
-        $_SESSION['user_ip'] = _user_ip;
 
         if ($persistent && !headers_sent()) {
             $cookie_data = array();
