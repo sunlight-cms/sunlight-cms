@@ -55,9 +55,6 @@ class PluginManager
     /** @var bool */
     private $initialized = false;
 
-    /**
-     * @param CacheInterface $pluginCache
-     */
     function __construct(CacheInterface $pluginCache)
     {
         $this->cache = $pluginCache;
@@ -479,15 +476,12 @@ class PluginManager
         }
 
         // load data
-        $data = $this->cache->get('plugins');
+        $data = $this->cache->get($this->getCacheKey());
 
         // invalidate stale data
         if (
             $data !== false
-            && (
-                $data['system_version'] !== Core::VERSION   // core updated
-                || $data['root'] !== realpath(_root)        // root moved (cache contains absolute paths)
-            )
+            && $data['system_hash'] !== $this->getSystemHash()
         ) {
             $data = false;
         }
@@ -544,14 +538,35 @@ class PluginManager
     {
         $pluginLoader = new PluginLoader($this->types);
         $result = $pluginLoader->load();
-
-        $data = $result + array(
-            'system_version' => Core::VERSION,
-            'root' => realpath(_root),
+        $data = array(
+            'plugins' => $result['plugins'],
+            'autoload' => $result['autoload'],
+            'system_hash' => $this->getSystemHash(),
         );
 
-        $this->cache->set('plugins', $data, 0, array('bound_files' => $result['bound_files']));
+        $this->cache->set(
+            $this->getCacheKey(),
+            $data,
+            0,
+            array('bound_files' => $result['bound_files'])
+        );
 
         return $data;
+    }
+
+    /**
+     * @return string
+     */
+    private function getCacheKey()
+    {
+        return _debug ? 'plugins_debug' : 'plugins';
+    }
+
+    /**
+     * @return string
+     */
+    private function getSystemHash()
+    {
+        return sha1(Core::VERSION . '$' . realpath(_root));
     }
 }
