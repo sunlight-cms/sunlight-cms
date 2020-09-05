@@ -500,9 +500,10 @@ abstract class Template
      * Vykreslit drobeckovou navigaci
      *
      * @param array $breadcrumbs vychozi drobecky
+     * @param bool $onlyWhenMultiple vykreslit pouze 2 a vice drobecku
      * @return string
      */
-    static function breadcrumbs($breadcrumbs = array())
+    static function breadcrumbs($breadcrumbs = array(), $onlyWhenMultiple = false)
     {
         global $_index;
 
@@ -545,7 +546,7 @@ abstract class Template
         ));
 
         // vykreslit
-        if (!empty($breadcrumbs) && $output === '') {
+        if (!empty($breadcrumbs) && (!$onlyWhenMultiple || count($breadcrumbs) >= 2) && $output === '') {
             $output .= "<ul class=\"breadcrumbs\">\n";
             foreach ($breadcrumbs as $crumb) {
                 $output .= "<li><a href=\"" . _e($crumb['url']) . "\">{$crumb['title']}</a></li>\n";
