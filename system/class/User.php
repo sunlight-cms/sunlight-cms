@@ -365,8 +365,8 @@ abstract class User
             'guest' => sprintf('%x', crc32((string) $id)),
             'author' => -1,
         ));
-        DB::update(_article_table, 'author=' . $id, array('author' => 0));
-        DB::update(_poll_table, 'author=' . $id, array('author' => 0));
+        DB::update(_article_table, 'author=' . $id, array('author' => _super_admin_id));
+        DB::update(_poll_table, 'author=' . $id, array('author' => _super_admin_id));
 
         // odstraneni uploadovaneho avataru
         if (isset($udata['avatar'])) {
