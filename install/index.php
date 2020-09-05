@@ -997,7 +997,7 @@ class ImportDatabaseStep extends Step
             }
             
             // update admin account
-            DB::update($prefix . 'user', 'id=0', array(
+            DB::update($prefix . 'user', 'id=1', array(
                 'username' => $admin['username'],
                 'password' => Password::create($admin['password'])->build(),
                 'email' => $admin['email'],

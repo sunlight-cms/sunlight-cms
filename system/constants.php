@@ -300,7 +300,7 @@ const _post_plugin = 7;
 // System user and group IDs
 
 /** Super admin user ID */
-const _super_admin_id = 0;
+const _super_admin_id = 1;
 
 /** Admin group ID */
 const _group_admin = 1;

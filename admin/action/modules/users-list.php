@@ -24,7 +24,7 @@ if (isset($_POST['bulk_action'])) {
             $user_delete_counter = 0;
             foreach ($user_ids as $user_id) {
                 $user_id = (int) $user_id;
-                if ($user_id !== 0 && $user_id != _user_id) {
+                if ($user_id !== _super_admin_id && $user_id != _user_id) {
                     if (User::delete($user_id)) {
                         ++$user_delete_counter;
                     }

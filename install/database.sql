@@ -420,7 +420,7 @@ CREATE TABLE `sunlight_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `sunlight_user` (`id`, `group_id`, `levelshift`, `username`, `publicname`, `password`, `security_hash`, `security_hash_expires`, `logincounter`, `registertime`, `activitytime`, `blocked`, `massemail`, `wysiwyg`, `public`, `language`, `ip`, `email`, `avatar`, `note`) VALUES
-(0,	1,	1,	'',	NULL,	'',	NULL,	0,	0,	0,	0,	0,	1,	1,	1, '',	'',	'',	NULL,	'');
+(1,	1,	1,	'',	NULL,	'',	NULL,	0,	0,	0,	0,	0,	1,	1,	1, '',	'',	'',	NULL,	'');
 
 CREATE TABLE `sunlight_user_activation` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

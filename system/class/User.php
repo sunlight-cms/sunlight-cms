@@ -376,7 +376,6 @@ abstract class User
         return true;
     }
 
-
     /**
      * Sestavit autentifikacni hash uzivatele
      *
