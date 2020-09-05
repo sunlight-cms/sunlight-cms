@@ -17,11 +17,13 @@ use Kuria\Error\Screen\WebErrorScreen;
 class DevkitPlugin extends ExtendPlugin
 {
     /** @var Component\SqlLogger */
-    public $sqlLogger;
+    private $sqlLogger;
     /** @var Component\EventLogger */
-    public $eventLogger;
+    private $eventLogger;
     /** @var Component\MissingLocalizationLogger */
-    public $missingLocalizationLogger;
+    private $missingLocalizationLogger;
+    /** @var array[] */
+    private $dumps = array();
 
     public function __construct(array $data, PluginManager $manager)
     {
@@ -43,6 +45,20 @@ class DevkitPlugin extends ExtendPlugin
     {
         return array(
             'mail_log_enabled' => true,
+        );
+    }
+
+    /**
+     * @param string $file
+     * @param int $line
+     * @param string $dump
+     */
+    public function addDump($file, $line, $dump)
+    {
+        $this->dumps[] = array(
+            'file' => $file,
+            'line' => $line,
+            'dump' => $dump,
         );
     }
 
@@ -129,7 +145,8 @@ ENTRY
         $toolbar = new Component\ToolbarRenderer(
             $this->sqlLogger->getLog(),
             $this->eventLogger->getLog(),
-            $this->missingLocalizationLogger->getMissingEntries()
+            $this->missingLocalizationLogger->getMissingEntries(),
+            $this->dumps
         );
 
         $args['output'] .= $toolbar->render();

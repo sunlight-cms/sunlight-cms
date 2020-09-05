@@ -6,7 +6,7 @@
     height: auto;
     max-width: none;
     max-height: none;
-    font-size: 13px;
+    font-size: 14px;
     font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
     font-weight: normal;
     text-decoration: none;
@@ -54,14 +54,15 @@
 }
 
 #devkit-toolbar .devkit-sl {background-image: url("images/sl.png");}
-#devkit-toolbar .devkit-time {background-image: url("images/clock.png");}
+#devkit-toolbar .devkit-time {background-image: url("images/time.png");}
 #devkit-toolbar .devkit-memory {background-image: url("images/memory.png");}
 #devkit-toolbar .devkit-database {background-image: url("images/database.png");}
 #devkit-toolbar .devkit-extend {background-image: url("images/plugin.png");}
 #devkit-toolbar .devkit-plugin-errors {background-image: url("images/error.png");}
-#devkit-toolbar .devkit-request {background-image: url("images/blocks.png");}
-#devkit-toolbar .devkit-login {background-image: url("images/key.png");}
+#devkit-toolbar .devkit-request {background-image: url("images/request.png");}
+#devkit-toolbar .devkit-login {background-image: url("images/login.png");}
 #devkit-toolbar .devkit-lang {background-image: url("images/lang.png");}
+#devkit-toolbar .devkit-dump {background-image: url("images/dump.png");}
 
 #devkit-toolbar > a:hover .devkit-section,
 #devkit-toolbar .devkit-toggleable:hover {
@@ -144,8 +145,9 @@ body.devkit-content-open {
 }
 #devkit-toolbar th,
 #devkit-toolbar td {
-    padding: 7px;
+    padding: 10px;
     border: 1px solid #3f3f3f;
+    vertical-align: top;
 }
 #devkit-toolbar td {
     background-color: #1c1c1c;

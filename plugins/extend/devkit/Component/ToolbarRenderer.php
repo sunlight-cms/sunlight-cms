@@ -22,17 +22,25 @@ class ToolbarRenderer
     private $eventLog;
     /** @var \SplObjectStorage */
     private $missingLocalizations;
+    /** @var array[] */
+    private $dumps;
 
     /**
-     * @param array             $sqlLog
-     * @param array             $eventLog
+     * @param array $sqlLog
+     * @param array $eventLog
      * @param \SplObjectStorage $missingLocalizations
+     * @param array[] $dumps
      */
-    public function __construct(array $sqlLog, array $eventLog, \SplObjectStorage $missingLocalizations)
-    {
+    public function __construct(
+        array $sqlLog,
+        array $eventLog,
+        \SplObjectStorage $missingLocalizations,
+        array $dumps
+    ) {
         $this->sqlLog = $sqlLog;
         $this->eventLog = $eventLog;
         $this->missingLocalizations = $missingLocalizations;
+        $this->dumps = $dumps;
     }
 
     /**
@@ -67,6 +75,7 @@ class ToolbarRenderer
                 $that->renderEvents();
                 $that->renderPluginErrors();
                 $that->renderLang();
+                $that->renderDumps();
 
                 Extend::call('devkit.toolbar.render');
 
@@ -350,6 +359,42 @@ class ToolbarRenderer
             </tbody>
         </table>
     </div>
+</div>
+    <?php
+    }
+
+    public function renderDumps()
+    {
+        ?>
+<div class="devkit-section devkit-dump devkit-toggleable">
+    <?php echo count($this->dumps) ?>
+</div>
+
+<div class="devkit-content">
+    <div class="devkit-heading">Dumped values</div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Location</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php if (!empty($this->dumps)): ?>
+                <?php foreach ($this->dumps as $dump): ?>
+                    <tr>
+                        <td title="<?php echo _e($dump['file']) ?>"><?php echo _e(basename($dump['file'])), ':', $dump['line'] ?></td>
+                        <td><pre><?php echo _e($dump['dump']) ?></pre></td>
+                    </tr>
+                <?php endforeach ?>
+            <?php else: ?>
+                <tr>
+                    <td colspan="2">None</td>
+                </tr>
+            <?php endif ?>
+        </tbody>
+    </table>
 </div>
     <?php
     }

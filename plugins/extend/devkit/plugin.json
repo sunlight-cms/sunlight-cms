@@ -6,6 +6,9 @@
     "url": "https://sunlight-cms.cz/",
     "debug": true,
     "class": "DevkitPlugin",
+    "scripts": [
+        "functions.php"
+    ],
     "events": [
         ["db.query", "$this::onDbQuery"],
         ["db.query.after", "$this::onDbQueryPost"],
