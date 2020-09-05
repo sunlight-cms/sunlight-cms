@@ -32,7 +32,7 @@ if (isset($_POST['bulk_action'])) {
             }
 
             $message = Message::render(
-                $user_delete_counter === count($user_ids) ? 1 : 2,
+                $user_delete_counter === count($user_ids) ? Message::OK : Message::WARNING,
                 str_replace(
                     array('%done%', '%total%'),
                     array($user_delete_counter, count($user_ids)),
