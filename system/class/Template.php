@@ -542,6 +542,7 @@ abstract class Template
         $output = '';
         Extend::call('tpl.breadcrumbs', array(
             'breadcrumbs' => &$breadcrumbs,
+            'only_when_multiple' => $onlyWhenMultiple,
             'output' => &$output,
         ));
 
