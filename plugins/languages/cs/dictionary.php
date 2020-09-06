@@ -154,7 +154,7 @@ return array(
 
 *confirm_link*
 
-Pokud není možné na tento odkaz kliknout, zkopírujte jej prosím do adresního řádku Vašeho prohlížeče a na tuto adresu přejděte.
+Pokud není možné na tento odkaz kliknout, zkopírujte jej prosím do adresního řádku vašeho prohlížeče a na tuto adresu přejděte.
 
 ----------------
 Žádost byla odeslána *date* z počítače *ip*.',
@@ -170,7 +170,7 @@ Pokud není možné na tento odkaz kliknout, zkopírujte jej prosím do adresní
   'mod.reg.rules.agreement' => 'souhlasím s podmínkami',
   'mod.reg.rules.disagreed' => 'pro registraci musíte souhlasit s podmínkami',
   'mod.lostpass' => 'Ztracené heslo',
-  'mod.lostpass.p' => 'Do pole níže zadejte své uživatelské jméno a e-mailovou adresu přiřazenou k Vašemu účtu, na kterou bude odeslána potvrzující e-mailová zpráva.',
+  'mod.lostpass.p' => 'Do pole níže zadejte své uživatelské jméno a e-mailovou adresu přiřazenou k vašemu účtu, na kterou bude odeslána potvrzující e-mailová zpráva.',
   'mod.lostpass.notfound' => 'Uživatelské jméno není platné nebo nesouhlasí e-mailová adresa.',
   'mod.lostpass.mailsent' => 'Potvrzující e-mail byl odeslán.',
   'mod.lostpass.badlink' => 'Tento odkaz je nesprávný nebo již vypršela jeho platnost',
@@ -183,13 +183,13 @@ Platnost tohoto odkazu je 1 hodina.
 
 ----------------
 Žádost byla odeslána *date* z počítače *ip*.',
-  'mod.lostpass.mail.text2' => 'Na *domain* bylo pro Váš uživatelský účet "*username*" vygenerováno nové heslo:
+  'mod.lostpass.mail.text2' => 'Na *domain* bylo pro váš uživatelský účet "*username*" vygenerováno nové heslo:
 
 *newpass*
 
 ----------------
 Žádost byla odeslána *date* z počítače *ip*.',
-  'mod.lostpass.generated' => 'Nové heslo bylo vygenerováno a odesláno na Vaši e-mailovou adresu.',
+  'mod.lostpass.generated' => 'Nové heslo bylo vygenerováno a odesláno na vaši e-mailovou adresu.',
   'mod.lostpass.limit' => 'Je povolena pouze jedna žádost o obnovu hesla za dobu *limit* minut.',
   'mod.search' => 'Vyhledávání',
   'mod.search.p' => 'Do pole níže zadejte frázi, kterou chcete vyhledat (můžete použít zástupné znaky <em>_</em> a <em>%</em>).',
@@ -393,7 +393,7 @@ Odesílatel uvedl svou adresu jako: *sender*',
   'pic.resize.2' => 'Nepodařilo se změnit velikost obrázku.',
   'xsrf.title' => 'Neplatný token',
   'xsrf.msg' => 'Formulář nebyl odeslán s platným autorizačním tokenem.',
-  'xsrf.warning' => 'Pozor! Pokud jste se na tuto stránku dostali aniž byste osobně vyplnili formulář na této doméně (*domain*), akci neopakujte! Může se jednat o pokus zneužít Vaši relaci.',
+  'xsrf.warning' => 'Pozor! Pokud jste se na tuto stránku dostali aniž byste osobně vyplnili formulář na této doméně (*domain*), akci neopakujte! Může se jednat o pokus zneužít vaši relaci.',
   'post_repeat.title' => 'Opakování akce',
   'post_repeat.submit' => 'Opakovat akci',
   'post_repeat.login' => 'Pokud došlo k odhlášení, máte možnost se znovu přihlásit.',
