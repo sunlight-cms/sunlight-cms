@@ -450,7 +450,7 @@ class Picture
      *
      * @param resource    $res         resource obrazku
      * @param string      $path        cesta k adresari uloziste vcetne lomitka
-     * @param string|null subcesta     v adresari uloziste vcetne lomitka nebo null
+     * @param string|null $home_path   subcesta v adresari uloziste vcetne lomitka nebo null
      * @param string      $format      pozadovany format obrazku
      * @param int         $jpg_quality kvalita JPG obrazku
      * @param string|null $uid         UID obrazku nebo null (= vygeneruje se automaticky)
@@ -618,7 +618,7 @@ class Picture
 
                 // zachovat pruhlednost, neni-li uvedeno jinak
                 if (
-                    !isset($opt['resize']['trans'], $opt['resize']['trans_format'])
+                    !isset($opt['resize']['trans'])
                     && ($format === 'png' || $format === 'gif')
                     && ($opt['target_format'] === null || $opt['target_format'] === $format)
                 ) {
