@@ -406,7 +406,7 @@ class Picture
                         case 'f': $mode = 'fit'; break;
                         case 'k': $keepSmaller = true; break;
                         case 'p': $pad = true; break;
-                        case 'w': $bgColor = array(255, 255, 255); break;
+                        case 'w': $pad = true; $bgColor = array(255, 255, 255); break;
                         case 's': $trans = false; break;
                     }
                 }
