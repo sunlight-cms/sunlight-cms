@@ -1,6 +1,7 @@
 <?php
 
 use Sunlight\Article;
+use Sunlight\Comment\CommentService;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\Gallery;
@@ -167,7 +168,7 @@ if ($search_query != '') {
                 // sestaveni infa
                 $infos = array();
                 if ($r['author'] == -1) {
-                    $infos[] = array(_lang('global.postauthor'), "<span class='post-author-guest'>" . $r['guest'] . '</span>');
+                    $infos[] = array(_lang('global.postauthor'), "<span class='post-author-guest'>" . CommentService::renderGuestName($r['guest']) . '</span>');
                 } else {
                     $infos[] = array(_lang('global.postauthor'), Router::userFromQuery($userQuery, $r));
                 }

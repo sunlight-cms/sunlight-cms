@@ -1,6 +1,7 @@
 <?php
 
 use Sunlight\Core;
+use Sunlight\Comment\CommentService;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\GenericTemplates;
@@ -113,13 +114,10 @@ if (isset($_POST['text'])) {
         // nacteni promennych
 
         // jmeno hosta
-        if ($query['guest'] != '') {
-            $guest = StringManipulator::slugify(Request::post('guest'), false);
-            if (mb_strlen($guest) > 24) {
-                $guest = mb_substr($guest, 0, 24);
-            }
+        if ($query['author'] == -1) {
+            $guest = CommentService::normalizeGuestName(Request::post('guest', ''));
         } else {
-            $guest = "";
+            $guest = '';
         }
 
         $text = Html::cut(_e(trim(Request::post('text'))), ($query['type'] != _post_shoutbox_entry) ? 16384 : 255);
@@ -130,11 +128,6 @@ if (isset($_POST['text'])) {
             }
         } else {
             $subject = '';
-        }
-
-        // vyplneni prazdnych poli
-        if ($guest == null && $query['guest'] != "") {
-            $guest = _lang('posts.anonym');
         }
 
         // ulozeni
@@ -211,8 +204,8 @@ $output .= $message;
 if ($form) {
     $inputs = array();
 
-    if ($query['guest'] != '') {
-        $inputs[] = array('label' => _lang('posts.guestname'), 'content' => "<input type='text' name='guest' class='inputsmall' value='" . $query['guest'] . "'>");
+    if ($query['author'] == -1) {
+        $inputs[] = array('label' => _lang('posts.guestname'), 'content' => "<input type='text' name='guest' class='inputsmall' value='" . $query['guest'] . "' maxlength='24'>");
     }
     if ($query['xhome'] == -1 && in_array($query['type'], array(_post_forum_topic, _post_pm))) {
         $inputs[] = array('label' => _lang((($query['type'] != _post_forum_topic) ? 'posts.subject' : 'posts.topic')), 'content' => "<input type='text' name='subject' class='inputmedium' maxlength='48' value='" . $query['subject'] . "'>");

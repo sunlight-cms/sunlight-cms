@@ -1,6 +1,7 @@
 <?php
 
 use Sunlight\Core;
+use Sunlight\Comment\CommentService;
 use Sunlight\Database\Database as DB;
 use Sunlight\GenericTemplates;
 use Sunlight\Comment\Comment;
@@ -37,7 +38,7 @@ return function ($id = null) {
 
             // priprava bunek
             if (!_logged_in) {
-                $inputs[] = array('label' => _lang('posts.guestname'), 'content' => "<input type='text' name='guest' class='sbox-input' maxlength='22'>");
+                $inputs[] = array('label' => _lang('posts.guestname'), 'content' => "<input type='text' name='guest' class='sbox-input' maxlength='24'>");
             }
             $inputs[] = array('label' => _lang('posts.text'), 'content' => "<input type='text' name='text' class='sbox-input' maxlength='255'><input type='hidden' name='_posttype' value='4'><input type='hidden' name='_posttarget' value='" . $id . "'>");
 
@@ -68,7 +69,9 @@ return function ($id = null) {
                 if ($spost['author'] != -1) {
                     $author = Router::userFromQuery($userQuery, $spost, array('class' => 'post_author', 'max_len' => 16, 'title' => GenericTemplates::renderTime($spost['time'], 'post')));
                 } else {
-                    $author = "<span class='post-author-guest' title='" . GenericTemplates::renderTime($spost['time'], 'post') . ", ip=" . GenericTemplates::renderIp($spost['ip']) . "'>" . $spost['guest'] . "</span>";
+                    $author = "<span class='post-author-guest' title='" . GenericTemplates::renderTime($spost['time'], 'post') . ", ip=" . GenericTemplates::renderIp($spost['ip']) . "'>"
+                        . CommentService::renderGuestName($spost['guest'])
+                        . "</span>";
                 }
 
                 // odkaz na spravu

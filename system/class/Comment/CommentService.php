@@ -501,13 +501,18 @@ class CommentService
                 foreach ($items as $item) {
 
                     // fetch author
-                    if ($item['guest'] == "") $author = Router::userFromQuery($userQuery, $item, array('max_len' => 16));
-                    else $author = "<span class='post-author-guest' title='" . GenericTemplates::renderIp($item['ip']) . "'>" . StringManipulator::ellipsis($item['guest'], 16) . "</span>";
+                    if ($item['author'] != -1) {
+                        $author = Router::userFromQuery($userQuery, $item, array('max_len' => 16));
+                    } else {
+                        $author = "<span class='post-author-guest' title='" . GenericTemplates::renderIp($item['ip']) . "'>"
+                            . StringManipulator::ellipsis(static::renderGuestName($item['guest']), 16)
+                            . "</span>";
+                    }
 
                     // fetch last post author
                     if (isset($item['_lastpost'])) {
                         if ($item['_lastpost']['author'] != -1) $lastpost = Router::userFromQuery($userQuery, $item['_lastpost'], array('class' => 'post-author', 'max_len' => 16));
-                        else $lastpost = "<span class='post-author-guest'>" . StringManipulator::ellipsis($item['_lastpost']['guest'], 16) . "</span>";
+                        else $lastpost = "<span class='post-author-guest'>" . StringManipulator::ellipsis(static::renderGuestName($item['_lastpost']['guest']), 16) . "</span>";
                     } else {
                         $lastpost = "-";
                     }
@@ -553,8 +558,11 @@ class CommentService
                 if (DB::size($query) != 0) {
                     $output .= "<table class='topic-latest'>\n";
                     while ($item = DB::row($query)) {
-                        if ($item['guest'] == "") $author = Router::userFromQuery($userQuery, $item);
-                        else $author = "<span class='post-author-guest'>" . $item['guest'] . "</span>";
+                        if ($item['author'] != -1) {
+                            $author = Router::userFromQuery($userQuery, $item);
+                        } else {
+                            $author = "<span class='post-author-guest'>" . static::renderGuestName($item['guest']) . "</span>";
+                        }
                         $output .= "<tr><td><a href='" . Router::topic($item['topic_id'], $forum_slug) . "'>" . $item['topic_subject'] . "</a></td><td>" . $author . "</td><td>" . GenericTemplates::renderTime($item['time'], 'post') . "</td></tr>\n";
                     }
                     $output .= "</table>\n\n";
@@ -658,8 +666,13 @@ class CommentService
         $postAccess = Comment::checkAccess($userQuery, $post);
 
         // fetch author
-        if ($post['guest'] == "") $author = Router::userFromQuery($userQuery, $post, array('class' => 'post-author'));
-        else $author = "<span class='post-author-guest' title='" . GenericTemplates::renderIp($post['ip']) . "'>" . $post['guest'] . "</span>";
+        if ($post['author'] != -1) {
+            $author = Router::userFromQuery($userQuery, $post, array('class' => 'post-author'));
+        } else {
+            $author = "<span class='post-author-guest' title='" . GenericTemplates::renderIp($post['ip']) . "'>"
+                . static::renderGuestName($post['guest'])
+                . "</span>";
+        }
 
         // action links
         $actlinks = array();
@@ -725,5 +738,30 @@ class CommentService
         }
 
         DB::delete(_comment_table, $cond);
+    }
+
+    /**
+     * @param string $guest
+     * @return string
+     */
+    static function normalizeGuestName($guest)
+    {
+        return StringManipulator::cut(
+            StringManipulator::slugify($guest, false, '._', ''),
+            24
+        );
+    }
+
+    /**
+     * @param string $guest
+     * @return string
+     */
+    static function renderGuestName($guest)
+    {
+        if ($guest === '') {
+            return _lang('posts.anonym');
+        }
+
+        return $guest;
     }
 }

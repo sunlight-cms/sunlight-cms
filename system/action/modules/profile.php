@@ -22,7 +22,7 @@ if (!_logged_in && _notpublicsite) {
 
 /* ---  priprava  --- */
 
-$id = StringManipulator::slugify(Request::get('id'));
+$id = StringManipulator::slugify(Request::get('id'), false);
 $query = DB::queryRow("SELECT * FROM " . _user_table . " WHERE username=" . DB::val($id));
 $public = true;
 if ($query !== false) {

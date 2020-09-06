@@ -2,6 +2,7 @@
 
 use Sunlight\Article;
 use Sunlight\Core;
+use Sunlight\Comment\CommentService;
 use Sunlight\Database\Database as DB;
 use Sunlight\Picture;
 use Sunlight\Comment\Comment;
@@ -168,7 +169,7 @@ if ($custom_cond && ($donottestsource || DB::size($query) != 0)) {
                 if ($item['author'] != -1) {
                     $author = Router::userFromQuery($userQuery, $item, array('plain' => true));
                 } else {
-                    $author = $item['guest'];
+                    $author = CommentService::renderGuestName($item['guest']);
                 }
 
                 // odkaz na stranku

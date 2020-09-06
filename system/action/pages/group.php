@@ -1,6 +1,7 @@
 <?php
 
 use Sunlight\Article;
+use Sunlight\Comment\CommentService;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\GenericTemplates;
@@ -69,7 +70,7 @@ if (DB::size($items) != 0) {
                         if ($lastpost['author'] != -1) {
                             $lastpost = Router::userFromQuery($userQuery, $lastpost);
                         } else {
-                            $lastpost = $lastpost['guest'];
+                            $lastpost = CommentService::renderGuestName($lastpost['guest']);
                         }
                     } else {
                         $lastpost = "-";

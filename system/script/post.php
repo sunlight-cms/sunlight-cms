@@ -3,6 +3,7 @@
 use Sunlight\Article;
 use Sunlight\Captcha;
 use Sunlight\Core;
+use Sunlight\Comment\CommentService;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\IpLog;
@@ -22,15 +23,7 @@ if (_logged_in) {
     $guest = '';
     $author = _user_id;
 } else {
-    if (isset($_POST['guest'])) {
-        $guest = StringManipulator::slugify(Request::post('guest'), false);
-        if (mb_strlen($guest) > 24) {
-            $guest = mb_substr($guest, 0, 24);
-        }
-    } else {
-        $guest = '';
-    }
-
+    $guest = CommentService::normalizeGuestName(Request::post('guest', ''));
     $author = -1;
 }
 
@@ -58,11 +51,6 @@ if ($posttype == _post_plugin) {
     $pluginflag = (int) Request::post('_pluginflag');
 } else {
     $pluginflag = 0;
-}
-
-// vyplneni prazdnych poli
-if ($guest === '' && !_logged_in) {
-    $guest = _lang('posts.anonym');
 }
 
 //  kontrola cile
@@ -163,9 +151,18 @@ if ($continue && $continue2 && $text != '' && ($posttype == _post_shoutbox_entry
 
                 // zpracovani pluginem
                 $allow = true;
-                Extend::call('posts.submit', array('allow' => &$allow, 'posttype' => $posttype, 'posttarget' => $posttarget, 'xhome' => $xhome, 'subject' => &$subject, 'text' => &$text, 'author' => $author, 'guest' => $guest));
-                if ($allow) {
+                Extend::call('posts.submit', array(
+                    'allow' => &$allow,
+                    'posttype' => $posttype,
+                    'posttarget' => $posttarget,
+                    'xhome' => $xhome,
+                    'subject' => &$subject,
+                    'text' => &$text,
+                    'author' => $author,
+                    'guest' => $guest
+                ));
 
+                if ($allow) {
                     // ulozeni
                     $insert_id = DB::insert(_comment_table, $post_data = array(
                         'type' => $posttype,

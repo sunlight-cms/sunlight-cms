@@ -1,5 +1,6 @@
 <?php
 
+use Sunlight\Comment\CommentService;
 use Sunlight\Database\Database as DB;
 use Sunlight\GenericTemplates;
 use Sunlight\Comment\Comment;
@@ -57,7 +58,7 @@ return function ($limit = null, $stranky = "", $typ = null) {
         if ($item['author'] != -1) {
             $authorname = Router::userFromQuery($userQuery, $item);
         } else {
-            $authorname = $item['guest'];
+            $authorname = CommentService::renderGuestName($item['guest']);
         }
 
         $result .= "
