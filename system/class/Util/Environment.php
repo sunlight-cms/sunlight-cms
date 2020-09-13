@@ -28,7 +28,6 @@ abstract class Environment
         return PHP_SAPI === 'cli';
     }
 
-
     /**
      * Zjistit maximalni moznou celkovou velikost uploadu
      *

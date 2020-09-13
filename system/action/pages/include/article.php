@@ -74,7 +74,7 @@ $_index['heading'] = null;
 // obrazek
 if (isset($_article['picture_uid'])) {
     $thumbnail = Picture::getThumbnail(
-        Picture::get(_root . 'images/articles/', null, $_article['picture_uid'], 'jpg'),
+        Picture::get('images/articles/', $_article['picture_uid'], 'jpg', 1),
         array(
             'mode' => 'fit',
             'x' => _article_pic_thumb_w,

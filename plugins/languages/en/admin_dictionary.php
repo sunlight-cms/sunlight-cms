@@ -268,7 +268,6 @@ return array(
     'admin.content.manageimgs.upload.text' => 'Images are automatically adjusted to the maximum size of %sx%s pixels.',
     'admin.content.manageimgs.upload.submit' => 'Upload to gallery',
     'admin.content.manageimgs.upload.msg' => '%s images out of %s were inserted into the gallery.',
-    'admin.content.manageimgs.upload.acerr' => 'Error - directory <code>%s</code> is not writable!',
     'admin.content.manageimgs.insert' => 'Add existing image',
     'admin.content.manageimgs.insert.tip' => 'tip - insert multiple images at once using function <em>Add images to gallery</em> in the file manager',
     'admin.content.manageimgs.insert.error' => 'No path to the original selected!',

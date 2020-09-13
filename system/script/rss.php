@@ -77,7 +77,7 @@ switch ($type) {
 
             // obrazek clanku
             if ($query['picture_uid']) {
-                $image_url = Router::file(Picture::get(_root . 'images/articles/', null, $query['picture_uid'], 'jpg'));
+                $image_url = Router::file(Picture::get('images/articles/', $query['picture_uid'], 'jpg', 1));
                 $image_w = _article_pic_w;
                 $image_h = _article_pic_h;
             }

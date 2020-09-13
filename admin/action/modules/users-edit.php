@@ -5,6 +5,7 @@ use Sunlight\Database\Database as DB;
 use Sunlight\Email;
 use Sunlight\Extend;
 use Sunlight\Message;
+use Sunlight\Picture;
 use Sunlight\Router;
 use Sunlight\User;
 use Sunlight\Util\Form;
@@ -131,7 +132,7 @@ if ($continue) {
 
         // avatar
         if (isset($query['avatar']) && Form::loadCheckbox("removeavatar")) {
-            @unlink(_root . 'images/avatars/' . $query['avatar'] . '.jpg');
+            @unlink(Picture::get('images/avatars/', $query['avatar'], 'jpg', 1));
             $avatar = null;
         } else {
             $avatar = $query['avatar'];

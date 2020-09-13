@@ -587,8 +587,6 @@ class CommentService
         return $output;
     }
 
-
-
     /**
      * Render post form
      *

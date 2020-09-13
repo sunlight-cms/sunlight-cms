@@ -229,8 +229,6 @@ abstract class User
             );
     }
 
-
-
     /**
      * Filtrovat uzivatelsky obsah na zaklade opravneni
      *
@@ -370,7 +368,7 @@ abstract class User
 
         // odstraneni uploadovaneho avataru
         if (isset($udata['avatar'])) {
-            @unlink(_root . 'images/avatars/' . $udata['avatar'] . '.jpg');
+            @unlink(Picture::get('images/avatars/', $udata['avatar'], 'jpg', 1));
         }
 
         return true;
@@ -736,7 +734,6 @@ abstract class User
         return $result;
     }
 
-
     /**
      * Ziskat kod avataru daneho uzivatele
      *
@@ -771,7 +768,14 @@ abstract class User
         }
 
         $hasAvatar = ($data['avatar'] !== null);
-        $url = Router::generate('images/avatars/' . ($hasAvatar ? $data['avatar'] : 'no-avatar' . (Template::getCurrent()->getOption('dark') ? '-dark' : '')) . '.jpg');
+
+        if ($hasAvatar) {
+            $avatarPath = Picture::get('images/avatars/', $data['avatar'], 'jpg', 1, false);
+        } else {
+            $avatarPath = 'images/avatars/no-avatar' . (Template::getCurrent()->getOption('dark') ? '-dark' : '') . '.jpg';
+        }
+
+        $url = Router::generate($avatarPath);
 
         // vykresleni rozsirenim
         if ($options['extend']) {

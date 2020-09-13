@@ -140,7 +140,12 @@ LEFT JOIN " . _comment_table . " home_post ON({$alias}.type=" . _post_forum_topi
         if (_smileys && $smileys) {
             $template = Template::getCurrent();
 
-            $input = preg_replace('{\*(\d{1,3})\*}s', '<img src=\'' . $template->getWebPath() . '/images/smileys/$1.' . $template->getOption('smiley.format') . '\' alt=\'$1\' class=\'post-smiley\'>', $input, 32);
+            $input = preg_replace(
+                '{\*(\d{1,3})\*}s',
+                '<img src=\'' . $template->getWebPath() . '/images/smileys/$1.' . $template->getOption('smiley.format') . '\' alt=\'$1\' class=\'post-smiley\'>',
+                $input,
+                32
+            );
         }
 
         // vyhodnoceni BBCode

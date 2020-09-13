@@ -444,83 +444,34 @@ class Picture
         );
     }
 
-
     /**
      * Ulozit obrazek do uloziste
      *
-     * @param resource    $res         resource obrazku
-     * @param string      $path        cesta k adresari uloziste vcetne lomitka
-     * @param string|null $home_path   subcesta v adresari uloziste vcetne lomitka nebo null
-     * @param string      $format      pozadovany format obrazku
-     * @param int         $jpg_quality kvalita JPG obrazku
-     * @param string|null $uid         UID obrazku nebo null (= vygeneruje se automaticky)
-     * @return array pole s klici (bool)status, (int)code, (string)path, (string)uid
+     * @param resource $res         resource obrazku
+     * @param string   $target_path kompletni cesta k obrazku {@see Picture::get()}
+     * @param string   $format      pozadovany format obrazku
+     * @param int      $jpg_quality kvalita JPG obrazku
+     * @return array
      */
-    static function store($res, $path, $home_path, $format, $jpg_quality = 80, $uid = null)
+    static function store($res, $target_path, $format, $jpg_quality)
     {
-        // vygenerovani uid
-        if (!isset($uid)) {
-            $uid = uniqid('');
-        }
-
-        // udalost
-        Extend::call('picture.storage.put', array(
-            'res' => &$res,
-            'path' => $path,
-            'home_path' => $home_path,
-            'uid' => &$uid,
-            'format' => &$format,
-            'jpg_quality' => &$jpg_quality,
-        ));
-
-        // sestaveni cesty
-        if (isset($home_path)) {
-            $path .= $home_path;
-        }
-
         // proces
         $code = 0;
         do {
-
-            // kontrola adresare
-            if (!is_dir($path) && !@mkdir($path, 0777, true)) {
+            // kontrola formatu
+            if (!static::checkFormatSupport($format)) {
                 $code = 1;
                 break;
             }
 
-            // kontrola formatu
-            if (!static::checkFormatSupport($format)) {
-                $code = 2;
-                break;
-            }
-
-            // sestaveni nazvu
-            $fname = $path . $uid . '.' . $format;
-
             // zapsani souboru
-            switch ($format) {
-
-                case 'jpg':
-                case 'jpeg':
-                    $write = @imagejpeg($res, $fname, $jpg_quality);
-                    break;
-
-                case 'png':
-                    $write = @imagepng($res, $fname);
-                    break;
-
-                case 'gif':
-                    $write = @imagegif($res, $fname);
-                    break;
-
-            }
+            $result = static::write($res, $format, $target_path, $jpg_quality);
 
             // uspech?
-            if ($write) {
-                return array('status' => true, 'code' => $code, 'path' => $fname, 'uid' => $uid); // jo
+            if ($result) {
+                return array('status' => true, 'code' => $code, 'path' => $target_path);
             }
-            $code = 3; // ne
-
+            $code = 2;
         } while (false);
 
         // chyba
@@ -528,24 +479,39 @@ class Picture
     }
 
     /**
-     * Ziskat cestu k obrazku v ulozisti
+     * Ziskat uplnou cestu k obrazku v ulozisti
      *
-     * @param string      $path    cesta k adresari uloziste vcetne lomitka
-     * @param string|null subcesta v adresari uloziste vcetne lomitka nebo null
-     * @param string      $uid     UID obrazku
-     * @param string      $format  format ulozeneho obrazku
+     * @param string $dir         cesta k adresari uloziste (relativne k _root) vcetne lomitka na konci
+     * @param string $uid         UID obrazku
+     * @param string $format      format ulozeneho obrazku
+     * @param int    $partitions  pocet 2-znakovych subadresaru z $uid
+     * @param bool   $root_prefix vratit cestu vcetne _root prefixu
      * @return string
      */
-    static function get($path, $home_path, $uid, $format)
+    static function get($dir, $uid, $format, $partitions = 0, $root_prefix = true)
     {
-        Extend::call('picture.storage.get', array(
-            'path' => $path,
-            'home_path' => $home_path,
-            'uid' => &$uid,
+        Extend::call('picture.get', array(
+            'dir' => &$dir,
+            'uid' => $uid,
             'format' => &$format,
+            'partitions' => &$partitions,
         ));
 
-        return $path . (isset($home_path) ? $home_path : '') . $uid . '.' . $format;
+        $full_path = '';
+
+        if ($root_prefix) {
+            $full_path .= _root;
+        }
+
+        $full_path .= $dir;
+
+        for ($i = 0; $i < $partitions; ++$i) {
+            $full_path .= mb_substr($uid, $i * 2, 2) . '/';
+        }
+
+        $full_path .= $uid . '.' . $format;
+
+        return $full_path;
     }
 
     /**
@@ -555,7 +521,7 @@ class Picture
      * -----------------
      * false        je vraceno v pripade neuspechu
      * string       UID je vraceno v pripade uspesneho ulozeni
-     * resource     je vraceno v pripade uspesneho zpracovani bez ulozeni (target_path je null)
+     * resource     je vraceno v pripade uspesneho zpracovani bez ulozeni (target_dir je null)
      * mixed        pokud je uveden target_callback a vrati jinou hodnotu nez null
      *
      * Dostupne klice v $args :
@@ -573,14 +539,15 @@ class Picture
      *
      * Ukladani
      *
-     *  [target_path]       cesta do adresare, kam ma byt obrazek ulozen, s lomitkem na konci (!) nebo null (neukladat)
-     *  [target_format]     cilovy format (JPG/JPEG, PNG, GIF), pokud neni uveden, je zachovan stavajici format
+     *  [target_dir]        cesta k adresari uloziste (relativne k _root) vcetne lomitka na konci (null = neukladat)
+     *  [target_format]     cilovy format (jpg, jpeg, png, gif), pokud neni uveden, je zachovan stavajici format
      *  [target_uid]        vlastni unikatni identifikator, jinak bude vygenerovan automaticky
+     *  [target_partitions] pocet 2-znakovych subadresaru z $uid
      *  [jpg_quality]       kvalita pro ukladani JPG/JPEG formatu
      *
-     * @param array         $opt       volby zpracovani
-     * @param string        &$error    promenna pro ulozeni chybove hlasky v pripade neuspechu
-     * @param string        &$format   promenna pro ulozeni formatu nacteneho obrazku
+     * @param array         $opt      volby zpracovani
+     * @param string        &$error   promenna pro ulozeni chybove hlasky v pripade neuspechu
+     * @param string        &$format  promenna pro ulozeni formatu nacteneho obrazku
      * @param resource|null $resource promenna pro ulozeni resource vysledneho obrazku (pouze pokud 'destroy' = false)
      * @return mixed viz popis funkce
      */
@@ -592,16 +559,16 @@ class Picture
             'resize' => null,
             'callback' => null,
             'destroy' =>  true,
-            'target_path' => null,
+            'target_dir' => null,
             'target_format' => null,
             'target_uid' => null,
+            'target_partitions' => 0,
             'jpg_quality' => 90,
         );
 
         Extend::call('picture.process', array('options' => &$opt));
 
         try {
-
             // nacteni
             $load = static::load(
                 $opt['file_path'],
@@ -615,7 +582,6 @@ class Picture
 
             // zmena velikosti
             if ($opt['resize'] !== null) {
-
                 // zachovat pruhlednost, neni-li uvedeno jinak
                 if (
                     !isset($opt['resize']['trans'])
@@ -640,7 +606,6 @@ class Picture
                 }
 
                 $resize = null;
-
             }
 
             // callback
@@ -661,15 +626,23 @@ class Picture
             }
 
             // akce s vysledkem
-            if ($opt['target_path'] !== null) {
+            if ($opt['target_dir'] !== null) {
                 // ulozeni
+                $uid = isset($opt['target_uid']) ? $opt['target_uid'] : uniqid('');
+                $target_format = $opt['target_format'] !== null ? $opt['target_format'] : $load['ext'];
+
+                $target_path = static::get(
+                    $opt['target_dir'],
+                    $uid,
+                    $target_format,
+                    $opt['target_partitions']
+                );
+
                 $put = static::store(
                     $load['resource'],
-                    $opt['target_path'],
-                    null,
-                    $opt['target_format'] !== null ? $opt['target_format'] : $load['ext'],
-                    $opt['jpg_quality'],
-                    $opt['target_uid']
+                    $target_path,
+                    $target_format,
+                    $opt['jpg_quality']
                 );
                 if (!$put['status']) {
                     throw new \RuntimeException($put['msg']);
@@ -684,12 +657,11 @@ class Picture
                 }
 
                 // vratit UID
-                return $put['uid'];
+                return $uid;
             } else {
                 // vratit resource
                 return $load['resource'];
             }
-
         } catch (\RuntimeException $e) {
             $error = $e->getMessage();
 
@@ -715,7 +687,7 @@ class Picture
         }
 
         // sestavit cestu do adresare
-        $path = _root . 'images/thumb/';
+        $dir = 'images/thumb/';
 
         // extend pro nastaveni velikosti
         Extend::call('picture.thumb.resize', array('options' => &$resize_opts));
@@ -747,7 +719,7 @@ class Picture
         $hash = md5(realpath($source) . '$' . serialize($resize_opts));
 
         // sestavit cestu k obrazku
-        $image_path = $path . $hash . '.' . $ext;
+        $image_path = static::get($dir, $hash, $ext, 1);
 
         // zkontrolovat cache
         if (file_exists($image_path)) {
@@ -762,8 +734,9 @@ class Picture
             $options = array(
                 'file_path' => $source,
                 'resize' => $resize_opts,
-                'target_path' => $path,
+                'target_dir' => $dir,
                 'target_uid' => $hash,
+                'target_partitions' => 1,
             );
 
             // extend
@@ -787,22 +760,15 @@ class Picture
      */
     static function cleanThumbnails($threshold)
     {
-        $dir = _root . 'images/thumb/';
-        $handle = opendir($dir);
-        while ($item = readdir($handle)) {
+        foreach (Filesystem::createRecursiveIterator(_root . 'images/thumb', \RecursiveIteratorIterator::LEAVES_ONLY) as $thumb) {
             if (
-                $item !== '.'
-                && $item !== '..'
-                && is_file($dir . $item)
-                && in_array(strtolower(pathinfo($item, PATHINFO_EXTENSION)), Core::$imageExt)
-                && time() - filemtime($dir . $item) > $threshold
+                in_array(strtolower($thumb->getExtension()), Core::$imageExt)
+                && time() - $thumb->getMTime() > $threshold
             ) {
-                unlink($dir . $item);
+                unlink($thumb->getPathname());
             }
         }
-        closedir($handle);
     }
-
 
     /**
      * Kontrola podpory formatu GD knihovnou
@@ -844,4 +810,39 @@ class Picture
         return false;
     }
 
+    /**
+     * @param resource $res
+     * @param string $format
+     * @param string $target_path
+     * @param int $jpg_quality
+     * @return bool
+     */
+    protected static function write($res, $format, $target_path, $jpg_quality)
+    {
+        $tmpfile = Filesystem::createTmpFile();
+        $result = false;
+
+        switch ($format) {
+            case 'jpg':
+            case 'jpeg':
+                $result = @imagejpeg($res, $tmpfile->getPathname(), $jpg_quality);
+                break;
+
+            case 'png':
+                $result = @imagepng($res, $tmpfile->getPathname());
+                break;
+
+            case 'gif':
+                $result = @imagegif($res, $tmpfile->getPathname());
+                break;
+        }
+
+        if ($result && $tmpfile->move($target_path)) {
+            return true;
+        }
+
+        $tmpfile->discard();
+
+        return is_file($target_path);
+    }
 }

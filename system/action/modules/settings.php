@@ -124,7 +124,7 @@ if (isset($_POST['save'])) {
 
         // smazani avataru
         if (Form::loadCheckbox("removeavatar") && isset($avatar)) {
-            @unlink(_root . 'images/avatars/' . $avatar . '.jpg');
+            @unlink(Picture::get('images/avatars/', $avatar, 'jpg', 1));
             $avatar = null;
         }
 
@@ -137,8 +137,9 @@ if (isset($_POST['save'])) {
                 'file_name' => $_FILES['avatar']['name'],
                 'limit' => array('filesize' => 1000000, 'dimensions' => array('x' => 1400, 'y' => 1400)),
                 'resize' => array('mode' => 'zoom', 'x' => 96, 'y' => 128),
-                'target_path' => _root . 'images/avatars/',
+                'target_dir' => 'images/avatars/',
                 'target_format' => 'jpg',
+                'target_partitions' => 1,
                 'jpg_quality' => 95,
             ), $avatarError);
 
@@ -146,7 +147,7 @@ if (isset($_POST['save'])) {
 
                 // smazani stareho avataru
                 if ($avatar !== null) {
-                    @unlink(_root . 'images/avatars/' . $avatar . '.jpg');
+                    @unlink(Picture::get('images/avatars/', $avatar, 'jpg', 1));
                 }
 
                 // ok

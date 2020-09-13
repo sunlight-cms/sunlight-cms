@@ -215,7 +215,7 @@ abstract class Article
         if ($perex == true) {
             if (isset($art['picture_uid'])) {
                 $thumbnail = Picture::getThumbnail(
-                    Picture::get(_root . 'images/articles/', null, $art['picture_uid'], 'jpg'),
+                    Picture::get('images/articles/', $art['picture_uid'], 'jpg', 1),
                     array(
                         'mode' => 'fit',
                         'x' => _article_pic_thumb_w,

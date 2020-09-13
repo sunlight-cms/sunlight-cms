@@ -153,8 +153,9 @@ if (isset($_POST['title'])) {
         $picOpts = array(
             'file_path' => $_FILES['picture']['tmp_name'],
             'file_name' => $_FILES['picture']['name'],
-            'target_path' => _root . 'images/articles/',
+            'target_dir' => 'images/articles/',
             'target_format' => 'jpg',
+            'target_partitions' => 1,
             'resize' => array(
                 'mode' => 'fit',
                 'keep_smaller' => true,
@@ -171,7 +172,7 @@ if (isset($_POST['title'])) {
             // uspech
             if (isset($query['picture_uid'])) {
                 // odstraneni stareho
-                @unlink(Picture::get(_root . 'images/articles/', null, $query['picture_uid'], 'jpg'));
+                @unlink(Picture::get('images/articles/', $query['picture_uid'], 'jpg', 1));
             }
             $newdata['picture_uid'] = $picUid;
         } else {
@@ -181,7 +182,7 @@ if (isset($_POST['title'])) {
 
     } elseif (isset($query['picture_uid']) && Form::loadCheckbox('picture-delete')) {
         // smazani obrazku
-        @unlink(Picture::get(_root . 'images/articles/', null, $query['picture_uid'], 'jpg'));
+        @unlink(Picture::get('images/articles/', $query['picture_uid'], 'jpg', 1));
         $newdata['picture_uid'] = null;
     }
 
@@ -315,7 +316,7 @@ if ($continue) {
     // obrazek
     $picture = '';
     if (isset($query['picture_uid'])) {
-        $picture .= "<img src='" . _e(Router::file(Picture::get(_root . 'images/articles/', null, $query['picture_uid'], 'jpg'))) . "' alt='article picture' id='is-picture-file'>
+        $picture .= "<img src='" . _e(Router::file(Picture::get('images/articles/', $query['picture_uid'], 'jpg', 1))) . "' alt='article picture' id='is-picture-file'>
 <label id='is-picture-delete'><input type='checkbox' name='picture-delete' value='1'> <img src='images/icons/delete3.png' class='icon' alt='" . _lang('global.delete') . "'></label>";
     } else {
         $picture .= "<img src='images/art-no-pic.png' alt='no picture'>\n";

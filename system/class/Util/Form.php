@@ -44,7 +44,6 @@ abstract class Form
         return '';
     }
 
-
     /**
      * Obnovit stav zaskrtnuti na zaklade POST/GET dat
      *
