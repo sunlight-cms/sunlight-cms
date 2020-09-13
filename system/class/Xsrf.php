@@ -13,7 +13,7 @@ class Xsrf
      */
     static function getInput()
     {
-        return '<input type="hidden" name="_security_token" value="' .Xsrf::getToken() . '">';
+        return '<input type="hidden" name="_security_token" value="' .static::getToken() . '">';
     }
 
     /**
@@ -24,7 +24,7 @@ class Xsrf
      */
     static function addToUrl($url)
     {
-        return UrlHelper::appendParams($url, '_security_token=' . rawurlencode(Xsrf::getToken()));
+        return UrlHelper::appendParams($url, '_security_token=' . rawurlencode(static::getToken()));
     }
 
     /**
@@ -92,7 +92,7 @@ class Xsrf
         }
 
         // check
-        if ($test !== null && Xsrf::getToken(true) === $test) {
+        if ($test !== null && static::getToken(true) === $test) {
             return true;
         }
 

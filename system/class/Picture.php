@@ -68,7 +68,7 @@ class Picture
             }
 
             // kontrola podpory formatu
-            if (!Picture::checkFormatSupport($ext)) {
+            if (!static::checkFormatSupport($ext)) {
                 // nepodporovany format
                 $code = 4;
                 break;
@@ -293,7 +293,7 @@ class Picture
         // prekresleni pozadi
         if ($opt['trans'] && $opt['trans_format'] !== null) {
             // pruhledne
-            Picture::enableAlpha($output, $opt['trans_format'], $res);
+            static::enableAlpha($output, $opt['trans_format'], $res);
         } else {
             // nepruhledne
             if ($opt['mode'] === 'fit' && $opt['bgcolor'] !== null) {
@@ -489,7 +489,7 @@ class Picture
             }
 
             // kontrola formatu
-            if (!Picture::checkFormatSupport($format)) {
+            if (!static::checkFormatSupport($format)) {
                 $code = 2;
                 break;
             }
@@ -510,7 +510,7 @@ class Picture
                     break;
 
                 case 'gif':
-                    $write = @imagegif ($res, $fname);
+                    $write = @imagegif($res, $fname);
                     break;
 
             }
@@ -603,7 +603,7 @@ class Picture
         try {
 
             // nacteni
-            $load = Picture::load(
+            $load = static::load(
                 $opt['file_path'],
                 $opt['limit'],
                 $opt['file_name']
@@ -627,7 +627,7 @@ class Picture
                 }
 
                 // zmenit velikost
-                $resize = Picture::resize($load['resource'], $opt['resize']);
+                $resize = static::resize($load['resource'], $opt['resize']);
                 if (!$resize['status']) {
                     throw new \RuntimeException($resize['msg']);
                 }
@@ -663,7 +663,7 @@ class Picture
             // akce s vysledkem
             if ($opt['target_path'] !== null) {
                 // ulozeni
-                $put = Picture::store(
+                $put = static::store(
                     $load['resource'],
                     $opt['target_path'],
                     null,
@@ -770,7 +770,7 @@ class Picture
             Extend::call('picture.thumb.process', array('options' => &$options));
 
             // vygenerovat
-            if (Picture::process($options, $error) !== false) {
+            if (static::process($options, $error) !== false) {
                 // uspech
                 return $image_path;
             } else {

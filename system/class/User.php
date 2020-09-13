@@ -405,7 +405,7 @@ abstract class User
         if ($persistent && !headers_sent()) {
             $cookie_data = array();
             $cookie_data[] = $id;
-            $cookie_data[] = User::getPersistentLoginHash($id, $authHash, $email);
+            $cookie_data[] = static::getPersistentLoginHash($id, $authHash, $email);
 
             setcookie(
                 Core::$appId . '_persistent_key',
@@ -446,7 +446,7 @@ abstract class User
 
         // zpravy
         if (isset($_GET['login_form_result'])) {
-            $login_result = User::getLoginMessage(Request::get('login_form_result'));
+            $login_result = static::getLoginMessage(Request::get('login_form_result'));
             if ($login_result !== null) {
                 $output .= $login_result;
             }
@@ -664,7 +664,7 @@ abstract class User
         Extend::call('user.login', array('user' => $query));
 
         // prihlaseni
-        User::login($query['id'], $query['password'], $query['email'], $persistent);
+        static::login($query['id'], $query['password'], $query['email'], $persistent);
 
         // vse ok, uzivatel byl prihlasen
         return 1;
@@ -820,14 +820,14 @@ abstract class User
     {
         $userData = Arr::getSubset($row, $userQuery['columns'], strlen($userQuery['prefix']));
 
-        return User::renderAvatar($userData, $options);
+        return static::renderAvatar($userData, $options);
     }
 
     /**
      * Ziskat kod formulare pro opakovani POST requestu
      *
      * @param bool         $allow_login   umoznit znovuprihlaseni, neni-li uzivatel prihlasen 1/0
-     * @param \Sunlight\Message|null $login_message vlastni hlaska
+     * @param Message|null $login_message vlastni hlaska
      * @param string|null  $target_url    cil formulare (null = aktualni URL)
      * @param bool         $do_repeat     odeslat na cilovou adresu 1/0
      * @return string
@@ -851,7 +851,7 @@ abstract class User
             if ($login_message === null) {
                 $login_message = Message::ok(_lang('post_repeat.login'));
             }
-            $login_message->append('<div class="hr"><hr></div>' . User::renderLoginForm(false, false, null, true), true);
+            $login_message->append('<div class="hr"><hr></div>' . static::renderLoginForm(false, false, null, true), true);
 
             $output .= $login_message;
         } elseif ($login_message !== null) {
