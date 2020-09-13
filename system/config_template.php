@@ -10,8 +10,8 @@ return array(
     'db.name' => '@@db.name@@',
     'db.prefix' => '@@db.prefix@@',
 
-    // abs. adresa bez lomitka na konci
-    // absolute URL without a trailing slash
+    // abs. cesta nebo URL bez lomitka na konci
+    // absolute path or URL without a trailing slash
     'url' => '@@url@@',
 
     // nahodny tajny hash (pouzivano pro XSRF ochranu aj.)
