@@ -2,6 +2,7 @@
 
 namespace Sunlight;
 
+use Sunlight\Util\Color;
 use Sunlight\Util\Environment;
 use Sunlight\Util\Filesystem;
 
@@ -348,29 +349,25 @@ class Picture
     /**
      * Rozebrat definici rozmeru pro zmenu velikosti obrazku
      *
-     * Format je: FLAGS:WIDTHxHEIGHT
+     * Vstupni retezec je seznam parametru oddelenych lomitkem.
      *
-     * FLAGS je nepovinna cast slozena z jednotlivych znaku:
+     * Podporovane casti:
      *
-     *      z   'zoom' rezim
-     *      f   'fit' rezim
-     *      k   zachovat mensi obrazky
-     *      p   vyplnit zbyvajici misto cernou barvou (pouze v rezimu 'fit')
-     *      w   pouzit bilou barvu pro vypln
-     *      s   nezachovavat pruhlednost obrazku
-     *
-     * WIDTH je pozadovana sirka nebo "?" (bez uvozovek)
-     * HEIGHT je pozadovana vyska nebo "?" (bez uvozovek)
-     *
-     * (pokud jsou oba rozmery "?", je pouzita vychozi hodnota)
+     *      NxN         sirka a vyska obrazku (jeden rozmer muze byt "?" pro automaticky prepocet)
+     *      zoom        zoom rezim
+     *      fit         fit rezim
+     *      keep        zachovat mensi obrazky
+     *      solid       nezachovavat pruhlednost obrazku
+     *      pad         vyplnit zbyvajici misto barvou (pouze v rezimu fit)
+     *      #xxxxxx     barva pozadi (pouze v rezimu fit + pad)
+     *      #xxx        barva pozadi (zkracena verze; pouze v rezimu fit + pad)
      *
      * Priklady:
-     * ---------
-     * 128x96
-     * 128x?
-     * ?x96
-     * z:640x480
-     * zk:320x?
+     *
+     *      128x96
+     *      128x?
+     *      640x480/zoom
+     *      320x?/fit/pad/#fff
      *
      * @param string   $input         vstupni retezec
      * @param string   $defaultMode   vychozi "mode" pro {@see Picture::resize()}
@@ -388,48 +385,54 @@ class Picture
         $height = null;
         $trans = true;
 
-        if ($input) {
-            // rozdelit nastaveni a rozmery
-            $parts = explode(':', $input, 2);
-            if (isset($parts[1])) {
-                list($flags, $size) = $parts;
-            } else {
-                $flags = null;
-                $size = $parts[0];
-            }
+        foreach (explode('/', $input) as $part) {
+            switch ($part) {
+                case 'zoom':
+                    $mode = 'zoom';
+                    break;
 
-            // zpracovat nastaveni
-            if ($flags) {
-                for ($i = 0; isset($flags[$i]); ++$i) {
-                    switch ($flags[$i]) {
-                        case 'z': $mode = 'zoom'; break;
-                        case 'f': $mode = 'fit'; break;
-                        case 'k': $keepSmaller = true; break;
-                        case 'p': $pad = true; break;
-                        case 'w': $pad = true; $bgColor = array(255, 255, 255); break;
-                        case 's': $trans = false; break;
+                case 'fit':
+                    $mode = 'fit';
+                    break;
+
+                case 'keep':
+                    $keepSmaller = true;
+                    break;
+
+                case 'solid':
+                    $trans = false;
+                    break;
+
+                case 'pad':
+                    $pad = true;
+                    break;
+
+                default:
+                    if ($part === '') {
+                        break;
                     }
-                }
-            }
 
-            // zpracovat rozmery
-            $sizes = explode('x', $size, 2);
-            $width = ($sizes[0] === '?' ? null : (int) $sizes[0]);
-            $height = (isset($sizes[1]) ? ($sizes[1] === '?' ? null : (int) $sizes[1]) : $defaultHeight);
+                    if ($part[0] === '#') {
+                        // bg color
+                        $bgColor = Color::fromString($part);
+
+                        if ($bgColor !== null) {
+                            $bgColor = $bgColor->getRgb();
+                        }
+                    }
+
+                    if (preg_match('{(\d++|\?)x(\d++|\?)$}AD', $part, $match)) {
+                        // size
+                        $width = $match[1] === '?' ? null : (int) $match[1];
+                        $height = $match[2] === '?' ? null : (int) $match[2];
+                    }
+                    break;
+            }
         }
 
         if ($width === null && $height === null) {
-            // vychozi rozmery pokud jsou oba null
             $width = $defaultWidth;
             $height = $defaultHeight;
-        } else {
-            // minimalni hodnoty rozmeru
-            if ($width !== null && $width < 1) {
-                $width = 1;
-            }
-            if ($height !== null && $height < 1) {
-                $height = 1;
-            }
         }
 
         return array(
@@ -440,7 +443,6 @@ class Picture
             'bgcolor' => $bgColor,
             'keep_smaller' => $keepSmaller,
             'trans' => $trans,
-            'trans_format' => null,
         );
     }
 

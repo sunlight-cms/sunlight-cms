@@ -22,6 +22,34 @@ class Color
     }
 
     /**
+     * Create color from a RGB HEX string.
+     *
+     * Supported formats are #xxxxxx or #xxx (shorthand).
+     *
+     * @return static|null
+     */
+    static function fromString($color)
+    {
+        if (preg_match('{#([0-9a-f]{3,6})$}ADi', $color, $match)) {
+            return new static(
+                strlen($match[1]) === 3
+                    ? array_map(function ($hexit) { return hexdec($hexit . $hexit); }, str_split($match[1]))
+                    : array_map('hexdec', str_split($match[1], 2))
+            );
+        }
+
+        return null;
+    }
+
+    /**
+     * Get the color as a RGB HEX string
+     */
+    function __toString()
+    {
+        return $this->getRgbStr();
+    }
+
+    /**
      * Set RGB channels
      *
      * @param int $r red channel
@@ -157,7 +185,7 @@ class Color
         }
         $m = $l - $c * .5;
         for($i = 0; $i < 3; ++$i) {
-            $rgb[$i] = Math::range(floor(($rgb[$i] + $m) * 255 + 127), 0, 255);
+            $rgb[$i] = (int) Math::range(floor(($rgb[$i] + $m) * 255 + 127), 0, 255);
         }
 
         return $rgb;
@@ -189,7 +217,7 @@ class Color
         $l = .5 * ($M + $m);
         $c = $M - $m;
         if ($c === 0) {
-            return array(0, $l, 0);
+            return array(0, (int) $l, 0);
         }
         if ($M === $r) {
             $hx = fmod(($g - $b) / $c, 6);
@@ -198,9 +226,9 @@ class Color
         } else {
             $hx = ($r - $g) / $c + 4;
         }
-        $h = round($hx * 60 / 360 * 255);
-        $l = round($l);
-        $s = round($c / (1 - abs(2 * ($l - 127) / 255)));
+        $h = (int) round($hx * 60 / 360 * 255);
+        $l = (int) round($l);
+        $s = (int) round($c / (1 - abs(2 * ($l - 127) / 255)));
 
         return array($h, $s, $l);
     }
