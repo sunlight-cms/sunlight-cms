@@ -136,7 +136,7 @@ if (isset($_POST['save'])) {
                 'file_path' => $_FILES['avatar']['tmp_name'],
                 'file_name' => $_FILES['avatar']['name'],
                 'limit' => array('filesize' => 1000000, 'dimensions' => array('x' => 1400, 'y' => 1400)),
-                'resize' => array('mode' => 'zoom', 'x' => 96, 'y' => 128),
+                'resize' => array('mode' => 'fill', 'x' => 96, 'y' => 128),
                 'target_dir' => 'images/avatars/',
                 'target_format' => 'jpg',
                 'target_partitions' => 1,

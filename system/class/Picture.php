@@ -171,16 +171,22 @@ class Picture
      * Zmena velikosti obrazku
      *
      * Mozne klice v $opt:
-     * -----------------------------------------------------
+     * -------------------------------------------------------------------------------
      * x (-)            pozadovana sirka obrazku (nepovinne pokud je uvedeno y)
      * y (-)            pozadovana vyska obrazku (nepovinne pokud je uvedeno x)
-     * mode (-)         mod zpracovani - 'zoom', 'fit' nebo 'none' (zadna operace)
+     * mode (-)         mod zpracovani - viz tabulka nize
      * keep_smaller (0) zachovat mensi obrazky 1/0
-     * bgcolor (-)      barva pozadi ve formatu array(r, g, b) (pouze mod 'fit')
-     * pad (0)          doplnit rozmer obrazku prazdnym mistem 1/0 (pouze mod 'fit')
-     *
+     * bgcolor (-)      barva pozadi ve formatu array(r, g, b)
+     * pad (0)          doplnit rozmer obrazku prazdnym mistem 1/0
      * trans            zachovat pruhlednost obrazku (ignoruje klic bgcolor) 1/0
      * trans_format     format obrazku (png/gif), vyzadovano pro trans = 1
+     *
+     * Mody zpracovani:
+     * -------------------------------------------------------------------------------
+     * fill             vyplnit cele rozmery danym obrazkem
+     * fit              zmensit obrazek tak, aby se kompletne vesel do danych rozmeru
+     * fit-x            zmensit obrazek tak, aby se se horizontalne vesel do danych rozmeru
+     * fit-y            zmensit obrazek tak, aby se vertikalne vesel do danych rozmeru
      *
      * @param resource   $res  resource obrazku
      * @param array      $opt  pole s volbami procesu
@@ -260,7 +266,7 @@ class Picture
 
         // volba finalnich rozmeru
         $xoff = $yoff = 0;
-        if ($opt['mode'] === 'zoom') {
+        if ($opt['mode'] === 'fill') {
             if ($newy < $opt['y']) {
                 $newx = max(round($x / $y * $opt['y']), 1);
                 $newy = $opt['y'];
@@ -268,14 +274,8 @@ class Picture
             } elseif ($newy > $opt['y']) {
                 $yoff = round(($opt['y'] - $newy) / 2);
             }
-        } elseif ($opt['mode'] === 'fit') {
-            if ($newy < $opt['y']) {
-                if ($opt['pad']) {
-                    $yoff = round(($opt['y'] - $newy) / 2);
-                } else {
-                    $opt['y'] = $newy;
-                }
-            } elseif ($newy > $opt['y']) {
+        } elseif ($opt['mode'] === 'fit' || $opt['mode'] === 'fit-y') {
+            if ($newy > $opt['y'] || $opt['mode'] === 'fit-y') {
                 $newy = $opt['y'];
                 $newx = max(round($x / $y * $opt['y']), 1);
                 if ($opt['pad']) {
@@ -283,6 +283,16 @@ class Picture
                 } else {
                     $opt['x'] = $newx;
                 }
+            } elseif ($newy < $opt['y']) {
+                if ($opt['pad']) {
+                    $yoff = round(($opt['y'] - $newy) / 2);
+                } else {
+                    $opt['y'] = $newy;
+                }
+            }
+        } elseif ($opt['mode'] === 'fit-x') {
+            if ($newy < $opt['y'] && !$opt['pad']) {
+                $opt['y'] = $newy;
             }
         } else {
             return array('status' => false, 'code' => 1, 'msg' => _lang('pic.resize.1'));
@@ -354,8 +364,10 @@ class Picture
      * Podporovane casti:
      *
      *      NxN         sirka a vyska obrazku (jeden rozmer muze byt "?" pro automaticky prepocet)
-     *      zoom        zoom rezim
+     *      fill        fill rezim
      *      fit         fit rezim
+     *      fit-x       fit-x rezim
+     *      fit-y       fit-y rezim
      *      keep        zachovat mensi obrazky
      *      pad         vyplnit zbyvajici misto barvou (pouze v rezimu fit)
      *      #xxxxxx     barva pozadi (pouze v rezimu fit + pad)
@@ -365,7 +377,7 @@ class Picture
      *
      *      128x96
      *      128x?
-     *      640x480/zoom
+     *      640x480/fill
      *      320x?/fit/pad/#fff
      *
      * @param string $input    vstupni retezec
@@ -386,12 +398,20 @@ class Picture
 
         foreach (explode('/', $input) as $part) {
             switch ($part) {
-                case 'zoom':
-                    $opts['mode'] = 'zoom';
+                case 'fill':
+                    $opts['mode'] = 'fill';
                     break;
 
                 case 'fit':
                     $opts['mode'] = 'fit';
+                    break;
+
+                case 'fit-x':
+                    $opts['mode'] = 'fit-x';
+                    break;
+
+                case 'fit-y':
+                    $opts['mode'] = 'fit-y';
                     break;
 
                 case 'keep':
@@ -660,7 +680,7 @@ class Picture
      * Vygenerovat cachovanou miniaturu obrazku
      *
      * @param string $source          cesta ke zdrojovemu obrazku
-     * @param array  $resize_opts     volby pro zmenu velikosti, {@see Picture::resize()} (mode je prednastaven na zoom)
+     * @param array  $resize_opts     volby pro zmenu velikosti, {@see Picture::resize()} (mode je prednastaven na fill)
      * @param bool   $use_error_image vratit chybovy obrazek pri neuspechu namisto false
      * @param string $error          promenna, kam bude ulozena pripadna chybova hlaska
      * @return string|bool cesta k miniature nebo chybovemu obrazku nebo false pri neuspechu
@@ -681,7 +701,7 @@ class Picture
 
         // vychozi nastaveni zmenseni
         $resize_opts += array(
-            'mode' => 'zoom',
+            'mode' => 'fill',
             'trans' => $ext === 'png' || $ext === 'gif',
             'trans_format' => $ext,
         );
