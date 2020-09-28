@@ -369,42 +369,42 @@ class Picture
      *      640x480/zoom
      *      320x?/fit/pad/#fff
      *
-     * @param string   $input         vstupni retezec
-     * @param string   $defaultMode   vychozi "mode" pro {@see Picture::resize()}
-     * @param int|null $defaultWidth  vychozi sirka
-     * @param int|null $defaultHeight vychozi vyska
-     * @return array pole pro {@see Picture::resize()}
+     * @param string $input    vstupni retezec
+     * @param array  $defaults vychozi parametry pro {@see Picture::resize()}
+     * @return array parametry pro {@see Picture::resize()}
      */
-    static function parseResizeOptions($input, $defaultMode = 'fit', $defaultWidth = 96, $defaultHeight = null)
+    static function parseResizeOptions($input, array $defaults = array())
     {
-        $mode = $defaultMode;
-        $pad = false;
-        $bgColor = null;
-        $keepSmaller = false;
-        $width = null;
-        $height = null;
-        $trans = true;
+        $opts = $defaults + array(
+            'x' => 96,
+            'y' => null,
+            'mode' => 'fit',
+            'pad' => false,
+            'bgcolor' => null,
+            'keep_smaller' => false,
+            'trans' => true,
+        );
 
         foreach (explode('/', $input) as $part) {
             switch ($part) {
                 case 'zoom':
-                    $mode = 'zoom';
+                    $opts['mode'] = 'zoom';
                     break;
 
                 case 'fit':
-                    $mode = 'fit';
+                    $opts['mode'] = 'fit';
                     break;
 
                 case 'keep':
-                    $keepSmaller = true;
+                    $opts['keep_smaller'] = true;
                     break;
 
                 case 'solid':
-                    $trans = false;
+                    $opts['trans'] = false;
                     break;
 
                 case 'pad':
-                    $pad = true;
+                    $opts['pad'] = true;
                     break;
 
                 default:
@@ -417,33 +417,22 @@ class Picture
                         $bgColor = Color::fromString($part);
 
                         if ($bgColor !== null) {
-                            $bgColor = $bgColor->getRgb();
+                            $opts['bgcolor'] = $bgColor->getRgb();
                         }
+
+                        break;
                     }
 
                     if (preg_match('{(\d++|\?)x(\d++|\?)$}AD', $part, $match)) {
                         // size
-                        $width = $match[1] === '?' ? null : (int) $match[1];
-                        $height = $match[2] === '?' ? null : (int) $match[2];
+                        $opts['x'] = $match[1] === '?' ? null : (int) $match[1];
+                        $opts['y'] = $match[2] === '?' ? null : (int) $match[2];
                     }
                     break;
             }
         }
 
-        if ($width === null && $height === null) {
-            $width = $defaultWidth;
-            $height = $defaultHeight;
-        }
-
-        return array(
-            'x' => $width,
-            'y' => $height,
-            'mode' => $mode,
-            'pad' => $pad,
-            'bgcolor' => $bgColor,
-            'keep_smaller' => $keepSmaller,
-            'trans' => $trans,
-        );
+        return $opts;
     }
 
     /**
