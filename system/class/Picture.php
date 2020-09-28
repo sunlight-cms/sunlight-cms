@@ -357,7 +357,6 @@ class Picture
      *      zoom        zoom rezim
      *      fit         fit rezim
      *      keep        zachovat mensi obrazky
-     *      solid       nezachovavat pruhlednost obrazku
      *      pad         vyplnit zbyvajici misto barvou (pouze v rezimu fit)
      *      #xxxxxx     barva pozadi (pouze v rezimu fit + pad)
      *      #xxx        barva pozadi (zkracena verze; pouze v rezimu fit + pad)
@@ -399,10 +398,6 @@ class Picture
                     $opts['keep_smaller'] = true;
                     break;
 
-                case 'solid':
-                    $opts['trans'] = false;
-                    break;
-
                 case 'pad':
                     $opts['pad'] = true;
                     break;
@@ -418,6 +413,7 @@ class Picture
 
                         if ($bgColor !== null) {
                             $opts['bgcolor'] = $bgColor->getRgb();
+                            $opts['trans'] = false;
                         }
 
                         break;
