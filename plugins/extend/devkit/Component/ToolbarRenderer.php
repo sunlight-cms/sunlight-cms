@@ -439,7 +439,7 @@ class ToolbarRenderer
                 $<?php echo $globalVarName, ' (', count($GLOBALS[$globalVarName]), ')' ?>
             </div>
 
-            <div class="devkit-request-dump devkit-hideshow-target"><pre><?php echo Dumper::dump($GLOBALS[$globalVarName]) ?></pre></div>
+            <div class="devkit-request-dump devkit-hideshow-target"><pre><?php echo _e(Dumper::dump($GLOBALS[$globalVarName])) ?></pre></div>
             <?php endif ?>
         <?php endforeach ?>
     </div>
