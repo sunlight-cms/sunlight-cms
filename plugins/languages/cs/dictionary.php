@@ -281,7 +281,7 @@ Platnost tohoto odkazu je 1 hodina.
   'mod.locktopic.ok' => 'Téma uzamčeno',
   'mod.locktopic.ok2' => 'Téma odemčeno',
   'mod.stickytopic' => 'Připnout téma',
-  'mod.stickytopic2' => 'Zrušení připnutí tématu',
+  'mod.stickytopic2' => 'Odepnout téma',
   'mod.stickytopic.link' => 'připnout',
   'mod.stickytopic.link2' => 'odepnout',
   'mod.stickytopic.text' => 'Chystáte se připnout téma &quot;%s&quot; - chcete pokračovat?',
