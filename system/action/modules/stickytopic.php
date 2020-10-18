@@ -52,7 +52,7 @@ if (isset($_POST['doit'])) {
 
 /* ---  vystup  --- */
 
-$_index['title'] = _lang('mod.stickytopic');
+$_index['title'] = _lang('mod.stickytopic' . $unstick);
 
 // zprava
 $output .= $message;
