@@ -308,6 +308,12 @@ abstract class Router
             'title' => null,
         );
 
+        // extend
+        $extendOutput = Extend::buffer('user.link', array('user' => $data, 'options' => &$options));
+        if ($extendOutput !== '') {
+            return $extendOutput;
+        }
+        
         $tag = ($options['link'] ? 'a' : 'span');
         $name = $data[$options['publicname'] && $data['publicname'] !== null ? 'publicname' : 'username'];
         $nameIsTooLong = ($options['max_len'] !== null && mb_strlen($name) > $options['max_len']);
