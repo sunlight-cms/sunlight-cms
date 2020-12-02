@@ -17,7 +17,7 @@ if (_logged_in) {
 
     // pole polozek (adresa, titulek, podminky pro zobrazeni)
     $items = array(
-        array("admin/", _lang('global.admintitle'), _priv_administration),
+        array(Router::generate('admin/'), _lang('global.admintitle'), _priv_administration),
         array(Router::module('profile', 'id=' . _user_name), _lang('mod.profile'), true),
         array(Router::module('settings'), _lang('mod.settings'), true),
         array(Router::module('messages'), _lang('mod.messages') . " [" . User::getUnreadPmCount() . "]", _messages),

@@ -106,9 +106,6 @@ abstract class Template
         );
 
         // sestaveni
-        if (_pretty_urls) {
-            echo "<base href=\"" . Core::$url . "/\">\n";
-        }
         echo '<meta name="description" content="' . (isset($_index['description']) ? $_index['description'] : _description) . '">' . ((_author !== '') ? '
 <meta name="author" content="' . _author . '">' : '')
             . Extend::buffer('tpl.head.meta')

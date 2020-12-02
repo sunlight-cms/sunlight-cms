@@ -10,6 +10,7 @@ use Sunlight\IpLog;
 use Sunlight\Picture;
 use Sunlight\Router;
 use Sunlight\Template;
+use Sunlight\Util\UrlHelper;
 use Sunlight\Xsrf;
 
 defined('_root') or exit;
@@ -98,7 +99,7 @@ $output .= "<div class='cleaner'></div>\n";
 $infos = array();
 
 if (_priv_adminart) {
-    $infos['idlink'] = array(_lang('global.id'), "<a href='admin/index.php?p=content-articles-edit&amp;id=" . $_article['id'] . "&amp;returnid=load&amp;returnpage=1'>" . $_article['id'] . " <img src='" . Template::image("icons/edit.png") . "' alt='edit' class='icon'></a>");
+    $infos['idlink'] = array(_lang('global.id'), "<a href='" . _e(UrlHelper::appendParams(Router::generate('admin/index.php'),"p=content-articles-edit&id=" . $_article['id'] . "&returnid=load&returnpage=1")) . "'>" . $_article['id'] . " <img src='" . Template::image("icons/edit.png") . "' alt='edit' class='icon'></a>");
 }
 
 if ($_article['showinfo']) {
