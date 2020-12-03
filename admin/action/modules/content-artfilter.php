@@ -69,7 +69,7 @@ if (isset($_POST['category'])) {
     }
 
     // sestaveni casti sql dotazu - 'where'
-    $params = array("category", "author", "time", "public", "visible", "confirmed", "comments", "rateon", "showinfo");
+    $params = ["category", "author", "time", "public", "visible", "confirmed", "comments", "rateon", "showinfo"];
     $cond = "";
 
     // cyklus
@@ -82,7 +82,7 @@ if (isset($_POST['category'])) {
 
                 case "category":
                     if ($$param != "-1") {
-                        $cond .= Article::createCategoryFilter(array($$param), 'art');
+                        $cond .= Article::createCategoryFilter([$$param], 'art');
                     } else {
                         $skip = true;
                     }
@@ -153,7 +153,7 @@ if (isset($_POST['category'])) {
         if (!Form::loadCheckbox("_process")) {
             $infopage = true;
         } else {
-            $boolparams = array("public", "visible", "comments", "rateon", "showinfo");
+            $boolparams = ["public", "visible", "comments", "rateon", "showinfo"];
             if (_priv_adminconfirm) {
                 $boolparams[] = "confirmed";
             }
@@ -172,34 +172,34 @@ if (isset($_POST['category'])) {
 
                 // vynulovani hodnoceni
                 if ($new_resetrate) {
-                    DB::update(_article_table, 'id=' . $item['id'], array(
+                    DB::update(_article_table, 'id=' . $item['id'], [
                         'ratenum' => 0,
                         'ratesum' => 0
-                    ));
+                    ]);
                     DB::delete(_iplog_table, 'type=' . _iplog_article_rated . ' AND var=' . $item['id']);
                 }
 
                 // vynulovani poctu precteni
                 if ($new_resetread) {
-                    DB::update(_article_table, 'id=' . $item['id'], array('readnum' => 0));
+                    DB::update(_article_table, 'id=' . $item['id'], ['readnum' => 0]);
                 }
 
                 // zmena kategorie
                 if ($new_category != -1) {
-                    DB::update(_article_table, 'id=' . $item['id'], array(
+                    DB::update(_article_table, 'id=' . $item['id'], [
                         'home1' => $new_category,
                         'home2' => -1,
                         'home3' => -1
-                    ));
+                    ]);
                 }
 
                 // zmena autora
                 if ($new_author != -1) {
-                    DB::update(_article_table, 'id=' . $item['id'], array('author' => $new_author));
+                    DB::update(_article_table, 'id=' . $item['id'], ['author' => $new_author]);
                 }
 
                 // konfigurace
-                $updatedata = array();
+                $updatedata = [];
                 foreach ($boolparams as $param) {
                     $paramvar = "new_" . $param;
                     $paramval = $$paramvar;
@@ -232,7 +232,7 @@ if (!$infopage) {
 
 <tr>
 <th>" . _lang('article.category') . "</th>
-<td>" . Admin::pageSelect("category", array('type' => _page_category, 'empty_item' => _lang('global.any2'))) . "</td>
+<td>" . Admin::pageSelect("category", ['type' => _page_category, 'empty_item' => _lang('global.any2')]) . "</td>
 </tr>
 
 <tr>
@@ -278,7 +278,7 @@ if (!$infopage) {
 
 <tr>
 <th>" . _lang('article.category') . "</th>
-<td>" . Admin::pageSelect("new_category", array('type' => _page_category, 'empty_item' => _lang('global.nochange'))) . "</td>
+<td>" . Admin::pageSelect("new_category", ['type' => _page_category, 'empty_item' => _lang('global.nochange')]) . "</td>
 </tr>
 
 <tr>
@@ -315,9 +315,9 @@ if (!$infopage) {
 <input type='submit' value='" . _lang('mod.search.submit') . "'>
 ";
 } else {
-    $output .= Form::renderHiddenPostInputs(null, null, array('_process')) . "
+    $output .= Form::renderHiddenPostInputs(null, null, ['_process']) . "
 <input type='hidden' name='_process' value='1'>
-" . Message::ok(_lang('admin.content.artfilter.f1.infotext', array("*found*" => $found))) . "
+" . Message::ok(_lang('admin.content.artfilter.f1.infotext', ["*found*" => $found])) . "
 <ul>";
 
     $counter = 0;

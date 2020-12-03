@@ -12,7 +12,7 @@ defined('_root') or exit;
 /* ----  nacteni promennych  ---- */
 
 $continue = false;
-$custom_save_array = array();
+$custom_save_array = [];
 $custom_settings = "";
 $editscript_enable_content = true;
 $editscript_enable_heading = true;
@@ -74,14 +74,14 @@ if (isset($_GET['id'])) {
         $default_title = _lang('page.type.' . $type_array[$type]);
     }
 
-    $query = array(
+    $query = [
         'id' => -1,
         'title' => $default_title,
         'type' => $type,
         'type_idt' => null,
         'node_parent' => $default_parent,
         'ord' => null,
-    );
+    ];
 
     $query += PageManipulator::getInitialData($type, $type_idt);
 }

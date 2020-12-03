@@ -179,7 +179,7 @@ abstract class Form
      * @param array       $excludeList
      * @return string
      */
-    static function renderHiddenPostInputs($include = null, $exclude = null, array $excludeList = array())
+    static function renderHiddenPostInputs($include = null, $exclude = null, array $excludeList = [])
     {
         $excludeList[] = '_security_token';
 
@@ -216,7 +216,7 @@ abstract class Form
      * @param array  $pkeys nadrazene klice
      * @return string
      */
-    static function renderHiddenInput($key, $value, array $pkeys = array())
+    static function renderHiddenInput($key, $value, array $pkeys = [])
     {
         if (is_array($value)) {
             // pole
@@ -227,7 +227,7 @@ abstract class Form
                 if ($counter > 0) {
                     $output .= "\n";
                 }
-                $output .= static::renderHiddenInput($key, $vvalue, array_merge($pkeys, array($vkey)));
+                $output .= static::renderHiddenInput($key, $vvalue, array_merge($pkeys, [$vkey]));
                 ++$counter;
             }
 
@@ -254,11 +254,11 @@ abstract class Form
      */
     static function editTime($name, $timestamp = null, $updatebox = false, $updateboxchecked = false)
     {
-        $output = Extend::buffer('time.edit', array(
+        $output = Extend::buffer('time.edit', [
             'timestamp' => $timestamp,
             'updatebox' => $updatebox,
             'updatebox_checked' => $updateboxchecked,
-        ));
+        ]);
 
         if ($output === '') {
             if (-1 === $timestamp) {
@@ -267,7 +267,7 @@ abstract class Form
             if ($timestamp !== null) {
                 $timestamp = getdate($timestamp);
             } else {
-                $timestamp = array('seconds' => '', 'minutes' => '', 'hours' => '', 'mday' => '', 'mon' => '', 'year' => '');
+                $timestamp = ['seconds' => '', 'minutes' => '', 'hours' => '', 'mday' => '', 'mon' => '', 'year' => ''];
             }
             $output .= "<input type='text' size='2' maxlength='2' name='{$name}[tday]' value='" . $timestamp['mday'] . "'>.<input type='text' size='2' maxlength='2' name='{$name}[tmonth]' value='" . $timestamp['mon'] . "'> <input type='text' size='4' maxlength='4' name='{$name}[tyear]' value='" . $timestamp['year'] . "'> <input type='text' size='2' maxlength='2' name='{$name}[thour]' value='" . $timestamp['hours'] . "'>:<input type='text' size='2' maxlength='2' name='{$name}[tminute]' value='" . $timestamp['minutes'] . "'>:<input type='text' size='2' maxlength='2' name='{$name}[tsecond]' value='" . $timestamp['seconds'] . "'> <small>" . _lang('time.help') . "</small>";
             if ($updatebox) {
@@ -287,10 +287,10 @@ abstract class Form
      */
     static function loadTime($name, $default = null)
     {
-        $result = Extend::fetch('time.load', array(
+        $result = Extend::fetch('time.load', [
             'name' => $name,
             'default' => $default,
-        ));
+        ]);
 
         if ($result === null) {
             if (!isset($_POST[$name]) || !is_array($_POST[$name])) {
@@ -363,7 +363,7 @@ abstract class Form
     static function render(array $options, array $rows)
     {
         // vychozi parametry
-        $options += array(
+        $options += [
             'name' => null,
             'method' => 'post',
             'action' => null,
@@ -382,13 +382,13 @@ abstract class Form
             'table_append' => '',
             'form_prepend' => '',
             'form_append' => '',
-        );
+        ];
         
         // extend
-        $extend_buffer = Extend::buffer('form.output', array(
+        $extend_buffer = Extend::buffer('form.output', [
             'options' => &$options,
             'rows' => &$rows,
-        ));
+        ]);
         
         if ($options['multipart']) {
             $options['enctype'] = 'multipart/form-data';
@@ -406,7 +406,7 @@ abstract class Form
         if (!$options['embedded']) {
             $output .= '<form';
 
-            foreach (array('name', 'method', 'action', 'enctype', 'id', 'class', 'autocomplete') as $attr) {
+            foreach (['name', 'method', 'action', 'enctype', 'id', 'class', 'autocomplete'] as $attr) {
                 if ($options[$attr] !== null) {
                     $output .= ' ' . $attr . '="' . _e($options[$attr]) . '"';
                 }
@@ -430,20 +430,20 @@ abstract class Form
             if ($options['submit_row'] !== null) {
                 $submit_row = $options['submit_row'];
             } else {
-                $submit_row = array(
+                $submit_row = [
                     'label' => $options['submit_span'] ? null : '',
                     'content' => '<input type="submit"' . (!empty($options['submit_name']) ? ' name="' . _e($options['submit_name']) . '"' : '') . ' value="' . _e($options['submit_text']) . '">',
-                );
+                ];
             }
             if (isset($submit_row['content'])) {
                 $submit_row['content'] .= $options['submit_append'];
             }
             $output .= static::renderRow($submit_row);
         } elseif (!empty($options['submit_append'])) {
-            $output .= static::renderRow(array(
+            $output .= static::renderRow([
                 'label' => $options['submit_span'] ? null : '',
                 'content' => $options['submit_append'],
-            ));
+            ]);
         }
 
         // konec tabulky
@@ -467,12 +467,12 @@ abstract class Form
      */
     protected static function renderRow(array $row)
     {
-        $row += array(
+        $row += [
             'label' => null,
             'content' => null,
             'top' => false,
             'class' => '',
-        );
+        ];
         if ($row['top']) {
             $row['class'] .= ($row['class'] !== '' ? ' ' : '') . 'valign-top';
         }

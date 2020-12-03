@@ -25,11 +25,11 @@ return function ($cesta = "", $typ = 'text', $pocet = 1, $rozmery_nahledu = null
                 break;
             case 'text':
             default:
-                $allowed_extensions = array("txt", "htm", "html");
+                $allowed_extensions = ["txt", "htm", "html"];
                 break;
         }
 
-        $items = array();
+        $items = [];
         while (($item = readdir($handle)) !== false) {
             $ext = pathinfo($item);
             if (isset($ext['extension'])) {
@@ -49,7 +49,7 @@ return function ($cesta = "", $typ = 'text', $pocet = 1, $rozmery_nahledu = null
             }
             $randitems = array_rand($items, $pocet);
             if (!is_array($randitems)) {
-                $randitems = array($randitems);
+                $randitems = [$randitems];
             }
 
             foreach ($randitems as $item) {

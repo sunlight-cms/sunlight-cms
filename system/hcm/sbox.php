@@ -38,15 +38,15 @@ return function ($id = null) {
 
             // priprava bunek
             if (!_logged_in) {
-                $inputs[] = array('label' => _lang('posts.guestname'), 'content' => "<input type='text' name='guest' class='sbox-input' maxlength='24'>");
+                $inputs[] = ['label' => _lang('posts.guestname'), 'content' => "<input type='text' name='guest' class='sbox-input' maxlength='24'>"];
             }
-            $inputs[] = array('label' => _lang('posts.text'), 'content' => "<input type='text' name='text' class='sbox-input' maxlength='255'><input type='hidden' name='_posttype' value='4'><input type='hidden' name='_posttarget' value='" . $id . "'>");
+            $inputs[] = ['label' => _lang('posts.text'), 'content' => "<input type='text' name='text' class='sbox-input' maxlength='255'><input type='hidden' name='_posttype' value='4'><input type='hidden' name='_posttarget' value='" . $id . "'>"];
 
             $result .= Form::render(
-                array(
+                [
                     'name' => 'hcm_sboxform_' . Core::$hcmUid,
                     'action' => Router::generate('system/script/post.php?_return=' . rawurlencode($GLOBALS['_index']['url']) . "#hcm_sbox_" . Core::$hcmUid),
-                ),
+                ],
                 $inputs
             );
 
@@ -67,7 +67,7 @@ return function ($id = null) {
 
                 // nacteni autora
                 if ($spost['author'] != -1) {
-                    $author = Router::userFromQuery($userQuery, $spost, array('class' => 'post_author', 'max_len' => 16, 'title' => GenericTemplates::renderTime($spost['time'], 'post')));
+                    $author = Router::userFromQuery($userQuery, $spost, ['class' => 'post_author', 'max_len' => 16, 'title' => GenericTemplates::renderTime($spost['time'], 'post')]);
                 } else {
                     $author = "<span class='post-author-guest' title='" . GenericTemplates::renderTime($spost['time'], 'post') . ", ip=" . GenericTemplates::renderIp($spost['ip']) . "'>"
                         . CommentService::renderGuestName($spost['guest'])

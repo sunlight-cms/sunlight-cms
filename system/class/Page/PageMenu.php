@@ -24,7 +24,7 @@ abstract class PageMenu
         }
 
         // sestavit mapu drobecku
-        $trailMap = array();
+        $trailMap = [];
         if ($activeId !== null) {
             foreach ($flatPageTree as $pageId => $page) {
                 if ($page['id'] == $activeId) {
@@ -71,7 +71,7 @@ abstract class PageMenu
             }
 
             // priprava trid
-            $classes = array('item', "level-{$visualLevel}");
+            $classes = ['item', "level-{$visualLevel}"];
             if ($page['id'] == $activeId) {
                 $classes[] = 'active';
             }
@@ -84,13 +84,13 @@ abstract class PageMenu
             $attrs = '';
             if (
                 $pageEvent === null
-                || ($link = Extend::buffer($pageEvent, array(
+                || ($link = Extend::buffer($pageEvent, [
                     'type' => $menuType,
                     'page' => &$page,
                     'classes' => &$classes,
                     'url' => &$url,
                     'attrs' => &$attrs,
-                ))) === ''
+                ])) === ''
             ) {
                 // vychozi implementace
                 if ($url === null) {
@@ -135,9 +135,9 @@ abstract class PageMenu
      */
     static function getRequiredExtraColumns()
     {
-        $extraColumns = array('link_url', 'link_new_window');
+        $extraColumns = ['link_url', 'link_new_window'];
 
-        Extend::call('page.menu_columns', array('extra_columns' => &$extraColumns));
+        Extend::call('page.menu_columns', ['extra_columns' => &$extraColumns]);
 
         return $extraColumns;
     }

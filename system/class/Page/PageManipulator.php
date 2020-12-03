@@ -77,7 +77,7 @@ class PageManipulator
                 break;
         }
 
-        $data = array(
+        $data = [
             'title' => '',
             'heading' => '',
             'slug' => '',
@@ -103,13 +103,13 @@ class PageManipulator
             'var2' => $var2,
             'var3' => $var3,
             'var4' => $var4,
-        );
+        ];
 
-        Extend::call('admin.page.initial', array(
+        Extend::call('admin.page.initial', [
             'type' => $type,
             'type_idt' => $type_idt,
             'data' => &$data,
-        ));
+        ]);
 
         return $data;
     }
@@ -129,7 +129,7 @@ class PageManipulator
 
         $options = new TreeReaderOptions();
         $options->nodeId = $id;
-        $options->columns = array('slug', 'slug_abs');
+        $options->columns = ['slug', 'slug_abs'];
 
         return PageManager::getTreeManager()->propagate(
             PageManager::getTreeReader()->getFlatTree($options),
@@ -143,7 +143,7 @@ class PageManipulator
                     }
 
                     if ($currentPage['slug'] !== $slug) {
-                        return array('slug' => $slug);
+                        return ['slug' => $slug];
                     }
                 }
             },
@@ -171,14 +171,14 @@ class PageManipulator
 
         $options = new TreeReaderOptions();
         $options->nodeId = $id;
-        $options->columns = array('level', 'level_inherit');
+        $options->columns = ['level', 'level_inherit'];
 
         return PageManager::getTreeManager()->propagate(
             PageManager::getTreeReader()->getFlatTree($options),
             0,
             function ($contextLevel, $currentPage) {
                 if ($currentPage['level_inherit'] && $currentPage['level'] != $contextLevel) {
-                    return array('level' => $contextLevel);
+                    return ['level' => $contextLevel];
                 }
             },
             function ($contextLevel, $currentPage) {
@@ -205,14 +205,14 @@ class PageManipulator
 
         $options = new TreeReaderOptions();
         $options->nodeId = $id;
-        $options->columns = array('layout', 'layout_inherit');
+        $options->columns = ['layout', 'layout_inherit'];
 
         return PageManager::getTreeManager()->propagate(
             PageManager::getTreeReader()->getFlatTree($options),
             null,
             function ($contextLayout, $currentPage) {
                 if ($currentPage['layout_inherit'] && $currentPage['layout'] !== $contextLayout) {
-                    return array('layout' => $contextLayout);
+                    return ['layout' => $contextLayout];
                 }
             },
             function ($contextLayout, $currentPage) {
@@ -262,11 +262,11 @@ class PageManipulator
             PageManager::getTreeManager()->refresh($page['node_parent']);
 
             // udalost
-            Extend::call('admin.page.delete', array('id' => $page['id'], 'page' => array(
+            Extend::call('admin.page.delete', ['id' => $page['id'], 'page' => [
                 'id' => $page['id'],
                 'type' => $page['type'],
                 'type_idt' => $page['type_idt'],
-            )));
+            ]]);
 
             return true;
         } else {
@@ -287,7 +287,7 @@ class PageManipulator
      */
     static function listDependencies(array $page, $childPages = false)
     {
-        $dependencies = array();
+        $dependencies = [];
 
         // dle typu
         switch ($page['type']) {
@@ -307,14 +307,14 @@ class PageManipulator
                 $dependencies[] = DB::count(_comment_table, 'type=' . _post_forum_topic . ' AND home=' . DB::val($page['id'])) . " " . _lang('count.posts');
                 break;
             case _page_plugin:
-                Extend::call('page.plugin.' . $page['type_idt'] . '.delete.confirm', array(
+                Extend::call('page.plugin.' . $page['type_idt'] . '.delete.confirm', [
                     'contents' => &$dependencies,
-                    'page' => array(
+                    'page' => [
                         'id' => $page['id'],
                         'type' => $page['type'],
                         'type_idt' => $page['type_idt'],
-                    ),
-                ));
+                    ],
+                ]);
                 break;
         }
 
@@ -365,14 +365,14 @@ class PageManipulator
         // specialni pripad: plugin stranka
         if ($deleteDirect && $page['type'] == _page_plugin) {
             $handled = false;
-            Extend::call('page.plugin.' . $page['type_idt'] . '.delete.do', array(
+            Extend::call('page.plugin.' . $page['type_idt'] . '.delete.do', [
                 'handled' => &$handled,
-                'page' => array(
+                'page' => [
                     'id' => $page['id'],
                     'type' => $page['type'],
                     'type_idt' => $page['type_idt'],
-                ),
-            ));
+                ],
+            ]);
 
             if ($handled !== true) {
                 $error = sprintf(_lang('plugin.error'), $page['type_idt']);
@@ -408,28 +408,28 @@ class PageManipulator
                             continue;
                         } // delete
                         if ($item['home1'] == $page['id'] && $item['home2'] != -1 && $item['home3'] == -1) {
-                            DB::update(_article_table, 'id=' . $item['id'], array('home1' => DB::raw('home2')));
-                            DB::update(_article_table, 'id=' . $item['id'], array('home2' => -1));
+                            DB::update(_article_table, 'id=' . $item['id'], ['home1' => DB::raw('home2')]);
+                            DB::update(_article_table, 'id=' . $item['id'], ['home2' => -1]);
                             continue;
                         } // 2->1
                         if ($item['home1'] == $page['id'] && $item['home2'] != -1 && $item['home3'] != -1) {
-                            DB::update(_article_table, 'id=' . $item['id'], array('home1' => DB::raw('home2')));
-                            DB::update(_article_table, 'id=' . $item['id'], array('home2' => DB::raw('home3')));
-                            DB::update(_article_table, 'id=' . $item['id'], array('home3' => -1));
+                            DB::update(_article_table, 'id=' . $item['id'], ['home1' => DB::raw('home2')]);
+                            DB::update(_article_table, 'id=' . $item['id'], ['home2' => DB::raw('home3')]);
+                            DB::update(_article_table, 'id=' . $item['id'], ['home3' => -1]);
                             continue;
                         } // 2->1,3->2
                         if ($item['home1'] == $page['id'] && $item['home2'] == -1 && $item['home3'] != -1) {
-                            DB::update(_article_table, 'id=' . $item['id'], array('home1' => DB::raw('home3')));
-                            DB::update(_article_table, 'id=' . $item['id'], array('home3' => -1));
+                            DB::update(_article_table, 'id=' . $item['id'], ['home1' => DB::raw('home3')]);
+                            DB::update(_article_table, 'id=' . $item['id'], ['home3' => -1]);
 
                             continue;
                         } // 3->1
                         if ($item['home1'] != -1 && $item['home2'] == $page['id']) {
-                            DB::update(_article_table, 'id=' . $item['id'], array('home2' => -1));
+                            DB::update(_article_table, 'id=' . $item['id'], ['home2' => -1]);
                             continue;
                         } // 2->x
                         if ($item['home1'] != -1 && $item['home3'] == $page['id']) {
-                            DB::update(_article_table, 'id=' . $item['id'], array('home3' => -1));
+                            DB::update(_article_table, 'id=' . $item['id'], ['home3' => -1]);
                             continue;
                         } // 3->x
                     }
@@ -470,7 +470,7 @@ class PageManipulator
      */
     protected static function findFirstTreeMatch($currentId, $column, $value)
     {
-        $path = PageManager::getTreeReader()->getPath(array($column), $currentId);
+        $path = PageManager::getTreeReader()->getPath([$column], $currentId);
 
         for ($i = count($path) - 1; $i >= 0; --$i) {
             if ($path[$i][$column] == $value || $i === 0) {

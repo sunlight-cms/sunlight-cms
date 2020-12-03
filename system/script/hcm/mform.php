@@ -12,9 +12,9 @@ use Sunlight\Util\UrlHelper;
 use Sunlight\Xsrf;
 
 require '../../bootstrap.php';
-Core::init('../../../', array(
+Core::init('../../../', [
     'content_type' => 'text/plain; charset=UTF-8',
-));
+]);
 
 /* ---  send  --- */
 
@@ -39,7 +39,7 @@ if (IpLog::check(_iplog_anti_spam)) {
     IpLog::update(_iplog_anti_spam);
 } else {
     // prekroceno
-    echo _lang('misc.requestlimit', array('*postsendexpire*' => _postsendexpire));
+    echo _lang('misc.requestlimit', ['*postsendexpire*' => _postsendexpire]);
     exit;
 }
 
@@ -48,9 +48,9 @@ if (Xsrf::check()) {
     if (Email::validate($sender) && $text != '' && Captcha::check()) {
 
         // hlavicky
-        $headers = array(
+        $headers = [
             'Content-Type' => 'text/plain; charset=UTF-8',
-        );
+        ];
         Email::defineSender($headers, $sender);
 
         // uprava predmetu
@@ -65,12 +65,12 @@ if (Xsrf::check()) {
         if (_logged_in) {
             $info_ip .= ' (' . _user_name . ')';
         }
-        $text .= "\n\n" . str_repeat('-', 16) . "\n" . _lang('hcm.mailform.info', array(
+        $text .= "\n\n" . str_repeat('-', 16) . "\n" . _lang('hcm.mailform.info', [
             '*domain*' => Url::base()->getFullHost(),
             '*time*' => GenericTemplates::renderTime(time()),
             '*ip*' => $info_ip,
             '*sender*' => $sender,
-        ));
+        ]);
 
         // odeslani
         if (Email::send($receiver, $subject, $text, $headers)) {

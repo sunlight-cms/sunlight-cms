@@ -24,7 +24,7 @@ class HttpClient
      * @throws HttpClientException on failure
      * @return string
      */
-    static function get($url, array $options = array())
+    static function get($url, array $options = [])
     {
         return self::request($url, null, $options);
     }
@@ -38,7 +38,7 @@ class HttpClient
      * @return string
      * @throws HttpClientException on failure
      */
-    static function post($url, $body, array $options = array())
+    static function post($url, $body, array $options = [])
     {
         return self::request($url, (string) $body, $options);
     }
@@ -53,11 +53,11 @@ class HttpClient
     {
         self::validateUrl($url);
 
-        $options += array(
+        $options += [
             'timeout' => 60,
             'user_agent' => 'SLHttpClient/' . Core::VERSION,
-            'headers' => array(),
-        );
+            'headers' => [],
+        ];
 
         if (isset($options['timeout']) && $options['timeout'] <= 0) {
             $options['timeout'] = null;
@@ -101,14 +101,14 @@ class HttpClient
     private static function curlRequest($url, $body, array $options)
     {
         $timeout = isset($options['timeout']) ? (int) $options['timeout'] * 1000 : 0;
-        $curlOptions = array(
+        $curlOptions = [
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_FAILONERROR => true,
             CURLOPT_CONNECTTIMEOUT_MS => $timeout,
             CURLOPT_TIMEOUT_MS => $timeout,
             CURLOPT_USERAGENT => $options['user_agent'],
             CURLOPT_HTTPHEADER => $options['headers'],
-        );
+        ];
 
         if ($body !== null) {
             $curlOptions[CURLOPT_CUSTOMREQUEST] = 'POST';
@@ -138,19 +138,19 @@ class HttpClient
      */
     private static function nativeRequest($url, $body, array $options)
     {
-        $contextOptions = array(
-            'http' => array(
+        $contextOptions = [
+            'http' => [
                 'timeout' => isset($options['timeout']) ? (float) $options['timeout'] : -1,
                 'user_agent' => $options['user_agent'],
                 'header' => $options['headers'],
-            ),
-        );
+            ],
+        ];
 
         if ($body !== null) {
-            $contextOptions['http'] += array(
+            $contextOptions['http'] += [
                 'method' => 'POST',
                 'content' => $body,
-            );
+            ];
         }
 
         $response = @file_get_contents(

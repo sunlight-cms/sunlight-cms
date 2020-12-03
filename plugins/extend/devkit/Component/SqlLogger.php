@@ -5,7 +5,7 @@ namespace SunlightExtend\Devkit\Component;
 class SqlLogger
 {
     /** @var array[] */
-    private $log = array();
+    private $log = [];
     /** @var float|null */
     private $timerStartedAt = 0;
 
@@ -26,11 +26,11 @@ class SqlLogger
     {
         $dummyException = new \Exception();
 
-        $this->log[] = array(
+        $this->log[] = [
             'query' => $query,
             'time' => microtime(true) - $this->timerStartedAt,
             'trace' => $dummyException->getTraceAsString(),
-        );
+        ];
 
         $this->timerStartedAt = 0;
     }

@@ -39,7 +39,7 @@ $encodeFilename = function ($value, $urlencode = true) {
 
 /* ----  priprava promennych  ---- */
 
-$extensions = array(
+$extensions = [
     // archives
     'rar' => 'archive',
     'zip' => 'archive',
@@ -151,11 +151,11 @@ $extensions = array(
     'exe' => 'executable',
     'com' => 'executable',
     'dll' => 'executable',
-);
+];
 
-Extend::call('admin.fman.extensions', array(
+Extend::call('admin.fman.extensions', [
     'extensions' => &$extensions,
-));
+]);
 
 $continue = true;
 $message = "";
@@ -177,7 +177,7 @@ if (!(file_exists($defdir) && is_dir($defdir))) {
 
 $url_base = "index.php?p=fman&amp;";
 $url = $url_base . "dir=" . rawurlencode($dir);
-$uploaded = array();
+$uploaded = [];
 
 /* ----  akce, vystup  ---- */
 
@@ -208,7 +208,7 @@ if ($continue) {
                     }
                 }
 
-                $message = Message::render($done == $total ? Message::OK : Message::WARNING, _lang('admin.fman.msg.upload.done', array('*done*' => $done, '*total*' => $total)));
+                $message = Message::render($done == $total ? Message::OK : Message::WARNING, _lang('admin.fman.msg.upload.done', ['*done*' => $done, '*total*' => $total]));
                 break;
 
                 // novy adresar
@@ -242,10 +242,10 @@ if ($continue) {
                             $message = Message::warning(_lang('admin.fman.msg.disallowedextension'));
                         }
                     } else {
-                        if (Filesystem::purgeDirectory($dir . $name, array(), $failedPath)) {
+                        if (Filesystem::purgeDirectory($dir . $name, [], $failedPath)) {
                             $message = Message::ok(_lang('admin.fman.msg.delete.done'));
                         } else {
-                            $message = Message::warning(_lang('admin.fman.msg.delete.failure', array('*failed_path*' => _e($failedPath))), true);
+                            $message = Message::warning(_lang('admin.fman.msg.delete.failure', ['*failed_path*' => _e($failedPath)]), true);
                         }
                     }
                 }
@@ -316,7 +316,7 @@ if ($continue) {
                         $total++;
                     }
 
-                    $message = Message::render($done == $total ? Message::OK : Message::WARNING, _lang('admin.fman.msg.move.done', array('*done*' => $done, '*total*' => $total)));
+                    $message = Message::render($done == $total ? Message::OK : Message::WARNING, _lang('admin.fman.msg.move.done', ['*done*' => $done, '*total*' => $total]));
                 } else {
                     $message = Message::warning(_lang('admin.fman.msg.rootlimit'));
                 }
@@ -325,7 +325,7 @@ if ($continue) {
             // stazeni souboru
             case "downloadselected":
                 // ziskani vybranych souboru
-                $selected = array();
+                $selected = [];
                 foreach ($_POST as $var => $val) {
                     if ($var == "action" || $var == "param") {
                         continue;
@@ -377,7 +377,7 @@ if ($continue) {
                     $total++;
                 }
 
-                $message = Message::render($done == $total ? Message::OK : Message::WARNING, _lang('admin.fman.msg.deleteselected.done', array('*done*' => $done, '*total*' => $total)));
+                $message = Message::render($done == $total ? Message::OK : Message::WARNING, _lang('admin.fman.msg.deleteselected.done', ['*done*' => $done, '*total*' => $total]));
                 break;
 
                 // pridani vyberu do galerie - formular pro vyber galerie
@@ -407,7 +407,7 @@ if ($continue) {
                         }
 
                         // posunuti poradovych cisel
-                        DB::update(_gallery_image_table, 'home=' . $galid, array('ord' => DB::raw('ord+' . (count($_POST) - 2))));
+                        DB::update(_gallery_image_table, 'home=' . $galid, ['ord' => DB::raw('ord+' . (count($_POST) - 2))]);
 
                         // cyklus
                         $sql = "";
@@ -435,7 +435,7 @@ if ($continue) {
                         }
 
                         // zprava
-                        $message = Message::ok(_lang('admin.fman.addtogallery.done', array("*done*" => $counter)));
+                        $message = Message::ok(_lang('admin.fman.addtogallery.done', ["*done*" => $counter]));
 
                     } else {
                         $message = Message::warning(_lang('global.badinput'));
@@ -477,7 +477,7 @@ if ($continue) {
                     $action_title = "admin.fman.delete.title";
                     $action_code = "
         <tr>
-        <td colspan='2'>" . _lang('admin.fman.delask', array("*name*" => _e($decodeFilename($name)))) . "<input type='hidden' name='name' value='" . _e($name) . "'></td>
+        <td colspan='2'>" . _lang('admin.fman.delask', ["*name*" => _e($decodeFilename($name))]) . "<input type='hidden' name='name' value='" . _e($name) . "'></td>
         </tr>
         ";
                 }
@@ -574,7 +574,7 @@ if ($continue) {
                 $action_title = "admin.fman.menu.addtogallery";
 
                 // load and check images
-                $images_load = array();
+                $images_load = [];
                 foreach ($_POST as $var => $val) {
                     if ($var == "action" || $var == "param") {
                         continue;
@@ -598,7 +598,7 @@ if ($continue) {
       <tr>
       <th>" . _lang('admin.fman.addtogallery.galllery') . "</th>
       <td>
-      " . Admin::pageSelect("gallery", array('type' => _page_gallery)) . "
+      " . Admin::pageSelect("gallery", ['type' => _page_gallery]) . "
       " . $images . "
       </td>
       </tr>
@@ -668,14 +668,14 @@ if ($continue) {
 
     // adresare
     $handle = opendir($dir);
-    $items = array();
+    $items = [];
     while (($item = readdir($handle)) !== false) {
         if (is_dir($dir . $item) && $item != "." && $item != "..") {
             $items[] = $item;
         }
     }
     natsort($items);
-    $items = array_merge(array(".."), $items);
+    $items = array_merge([".."], $items);
     $dircounter = 0;
     foreach ($items as $item) {
 
@@ -713,7 +713,7 @@ if ($continue) {
 
     // soubory
     rewinddir($handle);
-    $items = array();
+    $items = [];
     while (($item = readdir($handle)) !== false) {
         if (!is_dir($dir . $item) && $item != "..") {
             $items[] = $item;
@@ -724,7 +724,7 @@ if ($continue) {
     $sizecounter = 0;
     foreach ($items as $item) {
         ++$filecounter;
-        $row_classes = array();
+        $row_classes = [];
 
         // ikona
         $iteminfo = pathinfo($item);

@@ -27,19 +27,19 @@ if ($query === false) {
 }
 
 // drobecek
-$_index['crumbs'][] = array(
+$_index['crumbs'][] = [
     'title' => $query['subject'],
     'url' => Router::topic($id, $_page['slug'])
-);
+];
 
 // extend
 $continue = true;
 
-Extend::call('topic.before', Extend::args($output, array(
+Extend::call('topic.before', Extend::args($output, [
     'topic' => &$query,
     'continue' => &$continue,
     'page' => $_page,
-)));
+]));
 
 if (!$continue) {
     return;
@@ -58,7 +58,7 @@ if (!$query['sticky']) {
 
 // sprava tematu
 $topic_access = Comment::checkAccess($userQuery, $query);
-$topic_admin = array();
+$topic_admin = [];
 
 if ($topic_access) {
     if (_priv_locktopics) {
@@ -75,22 +75,22 @@ if ($topic_access) {
 // vystup
 $output .= "<div class=\"topic\">\n";
 $output .= "<h2>" . _lang('posts.topic') . ": " . $query['subject'] . ' ' . Template::rssLink(Router::rss($id, 6), true) . "</h2>\n";
-$output .= CommentService::renderPost($query, $userQuery, array(
+$output .= CommentService::renderPost($query, $userQuery, [
     'post_link' => false,
     'allow_reply' => false,
     'extra_actions' => $topic_admin,
-));
+]);
 $output .= "</div>\n";
 
 // odpovedi
 $output .= CommentService::render(
     CommentService::RENDER_FORUM_TOPIC,
     $_page['id'],
-    array(
+    [
         _commentsperpage,
         User::checkPublicAccess($_page['var3']),
         $_page['var2'],
         $id
-    ),
+    ],
     $query['locked'] == 1
 );

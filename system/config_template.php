@@ -1,6 +1,6 @@
 <?php
 
-return array(
+return [
     // pristup k databazi
     // database access
     'db.server' => '@@db.server@@',
@@ -42,4 +42,4 @@ return array(
     'geo.latitude' => '@@geo.latitude|50.5@@',
     'geo.longitude' => '@@geo.longitude|14.26@@',
     'geo.zenith' => '@@geo.zenith|90.583333@@',
-);
+];

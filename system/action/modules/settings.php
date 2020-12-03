@@ -32,20 +32,20 @@ $message = "";
 $userdata = Core::$userData;
 
 // cesta k avataru
-$avatar_path = User::renderAvatar($userdata, array('get_url' => true, 'extend' => false));
+$avatar_path = User::renderAvatar($userdata, ['get_url' => true, 'extend' => false]);
 
 /* ---  ulozeni  --- */
 
 if (isset($_POST['save'])) {
 
-    $errors = array();
+    $errors = [];
 
     // smazani vlastniho uctu
     if (_priv_selfremove && Form::loadCheckbox('selfremove')) {
         if (Password::load($userdata['password'])->match(Request::post('selfremove-confirm'))) {
             if (_user_id != 0) {
                 User::delete(_user_id);
-                $_SESSION = array();
+                $_SESSION = [];
                 session_destroy();
                 $_index['redirect_to'] = Router::module('login', 'login_form_result=4', true);
 
@@ -132,16 +132,16 @@ if (isset($_POST['save'])) {
         if (isset($_FILES['avatar']) && is_uploaded_file($_FILES['avatar']['tmp_name'])) {
 
             // zpracovani
-            $avatarUid = Picture::process(array(
+            $avatarUid = Picture::process([
                 'file_path' => $_FILES['avatar']['tmp_name'],
                 'file_name' => $_FILES['avatar']['name'],
-                'limit' => array('filesize' => 1000000, 'dimensions' => array('x' => 1400, 'y' => 1400)),
-                'resize' => array('mode' => 'fill', 'x' => 96, 'y' => 128),
+                'limit' => ['filesize' => 1000000, 'dimensions' => ['x' => 1400, 'y' => 1400]],
+                'resize' => ['mode' => 'fill', 'x' => 96, 'y' => 128],
                 'target_dir' => 'images/avatars/',
                 'target_format' => 'jpg',
                 'target_partitions' => 1,
                 'jpg_quality' => 95,
-            ), $avatarError);
+            ], $avatarError);
 
             if ($avatarUid !== false) {
 
@@ -195,14 +195,14 @@ if (isset($_POST['save'])) {
     }
 
     // changeset
-    $changeset = array(
+    $changeset = [
         'email' => $email,
         'avatar' => $avatar,
         'massemail' => $massemail,
         'public' => $public,
         'note' => $note,
         'publicname' => $publicname,
-    );
+    ];
 
     if (_priv_administration) {
         $changeset['wysiwyg'] = $wysiwyg;
@@ -218,11 +218,11 @@ if (isset($_POST['save'])) {
     }
 
     // extend
-    Extend::call('mod.settings.submit', array(
+    Extend::call('mod.settings.submit', [
         'changeset' => &$changeset,
         'current' => $userdata,
         'errors' => &$errors,
-    ));
+    ]);
 
     //  ulozeni nebo seznam chyb
     if (count($errors) == 0) {
@@ -233,14 +233,14 @@ if (isset($_POST['save'])) {
         }
 
         // extend
-        Extend::call('mod.settings.save', array(
+        Extend::call('mod.settings.save', [
             'changeset' => &$changeset,
             'current' => $userdata,
-        ));
+        ]);
 
         // update
         DB::update(_user_table, 'id=' . _user_id, $changeset);
-        Extend::call('user.edit', array('id' => _user_id, 'username' => $username, 'email' => $email));
+        Extend::call('user.edit', ['id' => _user_id, 'username' => $username, 'email' => $email]);
         $_index['redirect_to'] = Router::module('settings', 'saved', true);
 
         return;
@@ -254,16 +254,16 @@ if (isset($_POST['save'])) {
         $ips = DB::queryRows('SELECT DISTINCT ip FROM ' . _comment_table . ' WHERE author = ' . $userdata['id'], null, 'ip');
         $ips[] = $userdata['ip'];
 
-        $personal_data = array(
+        $personal_data = [
             _lang('login.username') => $userdata['username'],
             _lang('mod.settings.publicname') => (string) $userdata['publicname'],
             _lang('global.email') => $userdata['email'],
             _lang('mod.profile.regtime') => date(DATE_ISO8601, $userdata['registertime']),
             _lang('mod.profile.logincounter') => $userdata['logincounter'],
             _lang('global.ip') => $ips,
-        );
+        ];
 
-        Extend::call('mod.settings.download_personal_data', array('data' => &$personal_data));
+        Extend::call('mod.settings.download_personal_data', ['data' => &$personal_data]);
 
         Response::download(sprintf('%s_%s.csv', Url::current()->host, $userdata['username']));
 
@@ -274,10 +274,10 @@ if (isset($_POST['save'])) {
 
             foreach ((array) $values as $value) {
                 if ($first) {
-                    $fields = array($label, (string) $value);
+                    $fields = [$label, (string) $value];
                     $first = false;
                 } else {
-                    $fields = array('', (string) $value);
+                    $fields = ['', (string) $value];
                 }
 
                 fputcsv($outputHandle, $fields);
@@ -424,7 +424,7 @@ if (_uploadavatar) {
     $output .= "
   <fieldset class='user-settings-avatar'>
   <legend>" . _lang('mod.settings.avatar') . "</legend>
-  " . Extend::buffer('mod.settings.avatar', array('user' => $userdata)) . "
+  " . Extend::buffer('mod.settings.avatar', ['user' => $userdata]) . "
   <p><strong>" . _lang('mod.settings.avatar.upload') . ":</strong> <input type='file' name='avatar'></p>
     <table>
     <tr class='valign-top'>

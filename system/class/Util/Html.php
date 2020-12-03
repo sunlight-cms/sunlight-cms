@@ -62,7 +62,7 @@ abstract class Html
      */
     static function escapeArrayItems(array $input, $double_encode = true)
     {
-        $output = array();
+        $output = [];
 
         foreach ($input as $key => $value) {
             $output[$key] = _e((string) $value, $double_encode);

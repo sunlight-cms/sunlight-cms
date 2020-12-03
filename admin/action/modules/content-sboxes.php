@@ -24,11 +24,11 @@ if (isset($_POST['action'])) {
             $locked = Form::loadCheckbox("lockedc");
 
             // vlozeni
-            DB::insert(_shoutbox_table, array(
+            DB::insert(_shoutbox_table, [
                 'title' => $title,
                 'locked' => $locked,
                 'public' => $public
-            ));
+            ]);
             $message = Message::ok(_lang('global.created'));
             break;
 

@@ -40,7 +40,7 @@ if ($continue) {
             }
         } else {
             $output .= "
-<p class='bborder'>" . _lang('admin.users.deleteuser.confirmation', array('%user%' => $query['username'])) . "
+<p class='bborder'>" . _lang('admin.users.deleteuser.confirmation', ['%user%' => $query['username']]) . "
 <form method='post'>
     <input type='submit' name='confirmed' value='" . _lang('admin.users.deleteuser') . "'>
 " . Xsrf::getInput() . "</form>";

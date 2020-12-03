@@ -81,7 +81,7 @@ class Database
     static function query($sql, $expectError = false, $log = true)
     {
         if ($log) {
-            Extend::call('db.query', array('sql' => $sql));
+            Extend::call('db.query', ['sql' => $sql]);
         }
 
         $e = null;
@@ -102,11 +102,11 @@ class Database
         }
 
         if ($log) {
-            Extend::call('db.query.after', array(
+            Extend::call('db.query.after', [
                 'sql' => $sql,
                 'result' => $result,
                 'exception' => $e,
-            ));
+            ]);
         }
 
         if ($e !== null) {
@@ -185,7 +185,7 @@ class Database
      */
     static function getTablesByPrefix($prefix = _dbprefix)
     {
-        $tables = array();
+        $tables = [];
         $query = static::query('SHOW TABLES LIKE \'' . static::escWildcard($prefix) . '%\'');
         while ($row = static::rown($query)) {
             $tables[] = $row[0];
@@ -234,7 +234,7 @@ class Database
     static function rows(\mysqli_result $result, $indexBy = null, $fetchColumn = null, $assoc = true)
     {
         $type = $assoc ? MYSQLI_ASSOC : MYSQLI_NUM;
-        $rows = array();
+        $rows = [];
 
         while ($row = $result->fetch_array($type)) {
             if ($indexBy !== null) {
@@ -290,7 +290,7 @@ class Database
      */
     static function columns(\mysqli_result $result)
     {
-        $columns = array();
+        $columns = [];
         $fields = $result->fetch_fields();
         for ($i = 0; isset($fields[$i]); ++$i) {
             $columns[] = $fields[$i]->name;
@@ -420,8 +420,8 @@ class Database
     static function escWildcard($string)
     {
         return str_replace(
-            array('%', '_'),
-            array('\\%', '\\_'),
+            ['%', '_'],
+            ['\\%', '\\_'],
             $string
         );
     }
@@ -578,7 +578,7 @@ class Database
         }
 
         // ziskat vsechny uvedene sloupce
-        $columns = array();
+        $columns = [];
         foreach ($rows as $row) {
             $columns += array_flip(array_keys($row));
         }
@@ -706,7 +706,7 @@ class Database
      */
     static function changesetMapToList(array $changesetMap)
     {
-        $commonChanges = array();
+        $commonChanges = [];
         $ids = array_keys($changesetMap);
 
         foreach ($ids as $id) {
@@ -715,7 +715,7 @@ class Database
             }
         }
 
-        $changeList = array();
+        $changeList = [];
 
         foreach ($commonChanges as $column => $valueMap) {
             foreach ($valueMap as $value => $idMap) {
@@ -731,10 +731,10 @@ class Database
                 }
 
                 if (!$merged) {
-                    $changeList[] = array(
+                    $changeList[] = [
                         'set' => $set,
-                        'changeset' => array($column => $value),
-                    );
+                        'changeset' => [$column => $value],
+                    ];
                 }
             }
         }

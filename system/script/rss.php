@@ -14,9 +14,9 @@ use Sunlight\Util\Request;
 use Sunlight\Util\Response;
 
 require '../bootstrap.php';
-Core::init('../../', array(
+Core::init('../../', [
     'content_type' => false,
-));
+]);
 
 if (!_rss) {
     exit;
@@ -50,7 +50,7 @@ $feed_descr = _description;
 
 // promenne
 $donottestsource = false;
-$post_homes = array($id);
+$post_homes = [$id];
 $post_cond = null;
 $pagetitle_column = 'title';
 $custom_cond = true;
@@ -62,7 +62,7 @@ switch ($type) {
     case _rss_book_posts:
         $query = DB::query("SELECT title,slug FROM " . _page_table . " WHERE type=" . $type . ($type == _rss_section_comments ? " AND var1=1" : '') . ' AND ' . $page_cond . " AND id=" . $id);
         $feed_title = _lang($type == _rss_section_comments ? 'rss.recentcomments' : 'rss.recentposts');
-        $post_types = array($type);
+        $post_types = [$type];
         break;
 
         // komentare u clanku
@@ -84,7 +84,7 @@ switch ($type) {
 
             $feed_url = Router::article($id, $query['slug'], $query['cat_slug'], true);
             $feed_title = _lang('rss.recentcomments');
-            $post_types = array(_post_article_comment);
+            $post_types = [_post_article_comment];
         }
 
         break;
@@ -93,11 +93,11 @@ switch ($type) {
     case _rss_latest_articles:
         if ($id != -1) {
             $query = DB::query("SELECT title,slug FROM " . _page_table . " WHERE type=" . _page_category . " AND " . $page_cond . " AND id=" . $id);
-            $categories = array($id);
+            $categories = [$id];
         } else {
             $donottestsource = true;
-            $query = array("title" => null);
-            $categories = array();
+            $query = ["title" => null];
+            $categories = [];
         }
 
         $feed_title = _lang('rss.recentarticles');
@@ -107,7 +107,7 @@ switch ($type) {
     case _rss_latest_topics:
         $query = DB::query("SELECT title,slug FROM " . _page_table . " WHERE type=" . _page_forum . " AND " . $page_cond . " AND id=" . $id);
         $feed_title = _lang('rss.recenttopics');
-        $post_types = array(_post_forum_topic);
+        $post_types = [_post_forum_topic];
         $post_cond = "post.xhome=-1";
         break;
 
@@ -116,8 +116,8 @@ switch ($type) {
         $query = DB::query("SELECT topic.subject FROM " . _comment_table . " topic JOIN " . _page_table . " page ON(page.id=topic.home) WHERE topic.type=" . _post_forum_topic . " AND topic.id=" . $id . " AND " . $page_joined_cond);
         $feed_title = _lang('rss.recentanswers');
         $post_cond = "post.xhome=" . $id;
-        $post_types = array(_post_forum_topic);
-        $post_homes = array();
+        $post_types = [_post_forum_topic];
+        $post_homes = [];
         $pagetitle_column = "subject";
         break;
 
@@ -126,10 +126,10 @@ switch ($type) {
         if (!_comments) {
             exit;
         }
-        $query = array("title" => null);
+        $query = ["title" => null];
         $feed_title = _lang('rss.recentcomments');
-        $post_types = array(_post_section_comment, _post_article_comment, _post_book_entry, _post_forum_topic, _post_plugin);
-        $post_homes = array();
+        $post_types = [_post_section_comment, _post_article_comment, _post_book_entry, _post_forum_topic, _post_plugin];
+        $post_homes = [];
         $donottestsource = true;
         break;
 
@@ -141,7 +141,7 @@ switch ($type) {
 
 // nacteni polozek
 if ($custom_cond && ($donottestsource || DB::size($query) != 0)) {
-    $feeditems = array();
+    $feeditems = [];
     if (!$donottestsource) {
         $query = DB::row($query);
     }
@@ -167,7 +167,7 @@ if ($custom_cond && ($donottestsource || DB::size($query) != 0)) {
 
                 // nacteni jmena autora
                 if ($item['author'] != -1) {
-                    $author = Router::userFromQuery($userQuery, $item, array('plain' => true));
+                    $author = Router::userFromQuery($userQuery, $item, ['plain' => true]);
                 } else {
                     $author = CommentService::renderGuestName($item['guest']);
                 }
@@ -186,12 +186,12 @@ if ($custom_cond && ($donottestsource || DB::size($query) != 0)) {
                 }
 
                 // ulozeni zaznamu
-                $feeditems[] = array(
+                $feeditems[] = [
                     $title,
                     $homelink . "#posts",
                     Html::cut(strip_tags(Comment::render($item['text'])), 255),
                     $item['time']
-                );
+                ];
 
             }
             break;
@@ -201,12 +201,12 @@ if ($custom_cond && ($donottestsource || DB::size($query) != 0)) {
             list($joins, $cond) = Article::createFilter('art', $categories);
             $items = DB::query("SELECT art.id,art.time,art.confirmed,art.public,art.home1,art.home2,art.home3,art.title,art.slug,art.perex,cat1.slug AS cat_slug FROM " . _article_table . " AS art " . $joins . " WHERE " . $cond . " ORDER BY art.time DESC LIMIT " . _rsslimit);
             while ($item = DB::row($items)) {
-                $feeditems[] = array(
+                $feeditems[] = [
                     $item['title'],
                     Router::article($item['id'], $item['slug'], $item['cat_slug'], true),
                     strip_tags($item['perex']),
                     $item['time']
-                );
+                ];
             }
             break;
     }

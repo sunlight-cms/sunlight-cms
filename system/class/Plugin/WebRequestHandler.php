@@ -33,7 +33,7 @@ abstract class WebRequestHandler
             throw new \LogicException('Request handlers are meant for the web environment');
         }
 
-        Extend::reg('index.plugin', array($this, 'onIndexPlugin'));
+        Extend::reg('index.plugin', [$this, 'onIndexPlugin']);
     }
 
     /**
@@ -134,13 +134,13 @@ abstract class WebRequestHandler
         $this->path = $path;
         $this->segments = $segments;
 
-        Extend::reg('index.prepare', array($this, 'onIndexPrepare'));
-        Extend::reg('index.ready', array($this, 'onIndexReady'));
-        Extend::call('index.request_handler.prepare', array(
+        Extend::reg('index.prepare', [$this, 'onIndexPrepare']);
+        Extend::reg('index.ready', [$this, 'onIndexReady']);
+        Extend::call('index.request_handler.prepare', [
             'handler' => $this,
             'path' => $path,
             'segments' => $segments,
-        ));
+        ]);
     }
 
     /**

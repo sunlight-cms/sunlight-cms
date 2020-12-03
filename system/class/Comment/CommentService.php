@@ -259,7 +259,7 @@ class CommentService
         }
 
         // extend
-        $extend_output = Extend::buffer('posts.output', array(
+        $extend_output = Extend::buffer('posts.output', [
             'type' => $style,
             'home' => $home,
             'xhome' => $xhome,
@@ -275,7 +275,7 @@ class CommentService
             'sql_ordercol' => &$ordercol,
             'sql_countcond' => &$countcond,
             'form_position' => &$form_position,
-        ));
+        ]);
 
         if ($extend_output !== '') {
             return $extend_output;
@@ -305,7 +305,7 @@ class CommentService
                     $form_output .= Message::ok(_lang((($style != 5) ? 'posts.added' : 'posts.topicadded')));
                     break;
                 case 2:
-                    $form_output .= Message::warning(_lang('misc.requestlimit', array("*postsendexpire*" => _postsendexpire)));
+                    $form_output .= Message::warning(_lang('misc.requestlimit', ["*postsendexpire*" => _postsendexpire]));
                     break;
                 case 3:
                     $form_output .= Message::warning(_lang('posts.guestnamedenied'));
@@ -335,7 +335,7 @@ class CommentService
 
             // post form or login form
             if ($canpost) {
-                $form_output .= static::renderForm(array(
+                $form_output .= static::renderForm([
                     'posttype' => $posttype,
                     'pluginflag' => $pluginflag,
                     'posttarget' => $home,
@@ -343,7 +343,7 @@ class CommentService
                     'subject' => $subject_enabled,
                     'is_topic' => static::RENDER_FORUM_TOPIC_LIST == $style,
                     'url' => $url,
-                ));
+                ]);
             } else {
                 $form_output .= "<p>" . _lang('posts.loginrequired') . "</p>\n";
                 $form_output .= User::renderLoginForm();
@@ -389,9 +389,9 @@ class CommentService
         unset($sql);
 
         // load all items into an array
-        $items = array();
+        $items = [];
         if ($is_topic_list) {
-            $item_ids_with_answers = array();
+            $item_ids_with_answers = [];
         }
         while ($item = DB::row($query)) {
             $items[$item['id']] = $item;
@@ -422,13 +422,13 @@ class CommentService
                 if (!isset($items[$item['xhome']])) {
                     continue;
                 }
-                if (!isset($items[$item['xhome']]['_answers'])) $items[$item['xhome']]['_answers'] = array();
+                if (!isset($items[$item['xhome']]['_answers'])) $items[$item['xhome']]['_answers'] = [];
                 $items[$item['xhome']]['_answers'][] = $item;
             }
             DB::free($answers);
         }
 
-        Extend::call('posts.items', array(
+        Extend::call('posts.items', [
             'type' => $style,
             'home' => $home,
             'xhome' => $xhome,
@@ -436,7 +436,7 @@ class CommentService
             'post_type' => $posttype,
             'plugin_flag' => $pluginflag,
             'items' => &$items,
-        ));
+        ]);
 
         // vypis
         if (!empty($items)) {
@@ -457,24 +457,24 @@ class CommentService
                         }
                     }
 
-                    $output .= static::renderPost($item, $userQuery, array(
+                    $output .= static::renderPost($item, $userQuery, [
                         'current_url' => $url,
                         'current_page' => $paging['current'],
                         'post_link' => $postlink,
                         'allow_reply' => $replies_enabled,
                         'extra_info' => $extra_info,
-                    ));
+                    ]);
 
                     // answers
                     if ($replies_enabled && isset($item['_answers'])) {
                         foreach ($item['_answers'] as $answer) {
-                            $output .= static::renderPost($answer, $userQuery, array(
+                            $output .= static::renderPost($answer, $userQuery, [
                                 'current_url' => $url,
                                 'current_page' => $paging['current'],
                                 'post_link' => $postlink,
                                 'is_answer' => true,
                                 'allow_reply' => false,
-                            ));
+                            ]);
                         }
                     }
 
@@ -502,7 +502,7 @@ class CommentService
 
                     // fetch author
                     if ($item['author'] != -1) {
-                        $author = Router::userFromQuery($userQuery, $item, array('max_len' => 16));
+                        $author = Router::userFromQuery($userQuery, $item, ['max_len' => 16]);
                     } else {
                         $author = "<span class='post-author-guest' title='" . GenericTemplates::renderIp($item['ip']) . "'>"
                             . StringManipulator::ellipsis(static::renderGuestName($item['guest']), 16)
@@ -511,7 +511,7 @@ class CommentService
 
                     // fetch last post author
                     if (isset($item['_lastpost'])) {
-                        if ($item['_lastpost']['author'] != -1) $lastpost = Router::userFromQuery($userQuery, $item['_lastpost'], array('class' => 'post-author', 'max_len' => 16));
+                        if ($item['_lastpost']['author'] != -1) $lastpost = Router::userFromQuery($userQuery, $item['_lastpost'], ['class' => 'post-author', 'max_len' => 16]);
                         else $lastpost = "<span class='post-author-guest'>" . StringManipulator::ellipsis(static::renderGuestName($item['_lastpost']['guest']), 16) . "</span>";
                     } else {
                         $lastpost = "-";
@@ -605,19 +605,19 @@ class CommentService
      */
     static function renderForm(array $vars)
     {
-        $inputs = array();
+        $inputs = [];
 
         $captcha = Captcha::init();
         $output = GenericTemplates::jsLimitLength(16384, "postform", "text");
         if (!_logged_in) {
-            $inputs[] = array('label' => _lang('posts.guestname'), 'content' => "<input type='text' name='guest' maxlength='24' class='inputsmall'" . Form::restoreValue($_SESSION, 'post_form_guest') . ">");
+            $inputs[] = ['label' => _lang('posts.guestname'), 'content' => "<input type='text' name='guest' maxlength='24' class='inputsmall'" . Form::restoreValue($_SESSION, 'post_form_guest') . ">"];
         }
         if ($vars['xhome'] == -1 && $vars['subject']) {
-            $inputs[] = array('label' => _lang($vars['is_topic'] ? 'posts.topic' : 'posts.subject'), 'content' => "<input type='text' name='subject' class='input" . ($vars['is_topic'] ? 'medium' : 'small') . "' maxlength='48'" . Form::restoreValue($_SESSION, 'post_form_subject') . ">");
+            $inputs[] = ['label' => _lang($vars['is_topic'] ? 'posts.topic' : 'posts.subject'), 'content' => "<input type='text' name='subject' class='input" . ($vars['is_topic'] ? 'medium' : 'small') . "' maxlength='48'" . Form::restoreValue($_SESSION, 'post_form_subject') . ">"];
         }
         $inputs[] = $captcha;
-        $inputs[] = array('label' => _lang('posts.text'), 'content' => "<textarea name='text' class='areamedium' rows='5' cols='33'>" . Form::restoreValue($_SESSION, 'post_form_text', null, false) . "</textarea><input type='hidden' name='_posttype' value='" . $vars['posttype'] . "'><input type='hidden' name='_posttarget' value='" . $vars['posttarget'] . "'><input type='hidden' name='_xhome' value='" . $vars['xhome'] . "'>" . (isset($vars['pluginflag']) ? "<input type='hidden' name='_pluginflag' value='" . $vars['pluginflag'] . "'>" : ''), 'top' => true);
-        $inputs[] = array('label' => '', 'content' => PostForm::renderControls('postform', 'text'));
+        $inputs[] = ['label' => _lang('posts.text'), 'content' => "<textarea name='text' class='areamedium' rows='5' cols='33'>" . Form::restoreValue($_SESSION, 'post_form_text', null, false) . "</textarea><input type='hidden' name='_posttype' value='" . $vars['posttype'] . "'><input type='hidden' name='_posttarget' value='" . $vars['posttarget'] . "'><input type='hidden' name='_xhome' value='" . $vars['xhome'] . "'>" . (isset($vars['pluginflag']) ? "<input type='hidden' name='_pluginflag' value='" . $vars['pluginflag'] . "'>" : ''), 'top' => true];
+        $inputs[] = ['label' => '', 'content' => PostForm::renderControls('postform', 'text')];
 
         unset(
             $_SESSION['post_form_guest'],
@@ -627,11 +627,11 @@ class CommentService
 
         // form
         $output .= Form::render(
-            array(
+            [
                 'name' => 'postform',
                 'action' => UrlHelper::appendParams(Router::generate('system/script/post.php'), '_return=' . rawurlencode($vars['url'])),
                 'submit_append' => ' ' . PostForm::renderPreviewButton('postform', 'text'),
-            ),
+            ],
             $inputs
         );
 
@@ -651,21 +651,21 @@ class CommentService
         array $userQuery,
         array $options
     ) {
-        $options += array(
+        $options += [
             'current_url' => '',
             'current_page' => 1,
             'is_answer' => false,
             'post_link' => true,
             'allow_reply' => true,
-            'extra_actions' => array(),
+            'extra_actions' => [],
             'extra_info' => '',
-        );
+        ];
 
         $postAccess = Comment::checkAccess($userQuery, $post);
 
         // fetch author
         if ($post['author'] != -1) {
-            $author = Router::userFromQuery($userQuery, $post, array('class' => 'post-author'));
+            $author = Router::userFromQuery($userQuery, $post, ['class' => 'post-author']);
         } else {
             $author = "<span class='post-author-guest' title='" . GenericTemplates::renderIp($post['ip']) . "'>"
                 . static::renderGuestName($post['guest'])
@@ -673,7 +673,7 @@ class CommentService
         }
 
         // action links
-        $actlinks = array();
+        $actlinks = [];
         if ($options['allow_reply']) $actlinks[] = "<a class='post-action-reply' href='" . _e(UrlHelper::appendParams($options['current_url'], "replyto=" . $post['id'])) . "#posts'>" . _lang('posts.reply') . "</a>";
         if ($postAccess) $actlinks[] = "<a class='post-action-edit' href='" . _e(Router::module('editpost', 'id=' . $post['id'])) . "'>" . _lang('global.edit') . "</a>";
         $actlinks = array_merge($actlinks, $options['extra_actions']);
@@ -686,13 +686,13 @@ class CommentService
         }
 
         // post
-        $output = Extend::buffer('posts.post', array(
+        $output = Extend::buffer('posts.post', [
             'item' => &$post,
             'avatar' => &$avatar,
             'author' => $author,
             'actlinks' => &$actlinks,
             'options' => $options,
-        ));
+        ]);
 
         if ($output === '') {
             $output .= "<div id='post-" . $post['id'] . "' class='post" . ($options['is_answer'] ? ' post-answer' : '') . (isset($avatar) ? ' post-withavatar' : '') . "'>"

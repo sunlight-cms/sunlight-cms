@@ -21,11 +21,11 @@ define(__NAMESPACE__ . '\CONFIG_PATH', __DIR__ . '/../config.php');
 
 // bootstrap
 require __DIR__ . '/../system/bootstrap.php';
-Core::init('../', array(
+Core::init('../', [
     'minimal_mode' => true,
     'config_file' => false,
     'debug' => true,
-));
+]);
 
 /**
  * Configuration
@@ -71,17 +71,17 @@ class Labels
     /** @var string */
     private static $language = '_none';
     /** @var string[][] */
-    private static $labels = array(
+    private static $labels = [
         // no language set
-        '_none' => array(
+        '_none' => [
             'step.submit' => 'Pokračovat / Continue',
             
             'language.title' => 'Jazyk / Language',
             'language.text' => 'Choose a language / zvolte jazyk:',
-        ),
+        ],
 
         // czech
-        'cs' => array(
+        'cs' => [
             'step.submit' => 'Pokračovat',
             'step.reset' => 'Začít znovu',
             'step.exception' => 'Chyba',
@@ -158,10 +158,10 @@ class Labels
             'complete.installdir_warning' => 'Než budete pokračovat, je potřeba odstranit adresář install ze serveru.',
             'complete.goto.web' => 'zobrazit stránky',
             'complete.goto.admin' => 'přihlásit se do administrace',
-        ),
+        ],
 
         // english
-        'en' => array(
+        'en' => [
             'step.submit' => 'Continue',
             'step.reset' => 'Start over',
             'step.exception' => 'Error',
@@ -238,8 +238,8 @@ class Labels
             'complete.installdir_warning' => 'Before you continue, you must remove the install directory.',
             'complete.goto.web' => 'open the website',
             'complete.goto.admin' => 'log into administration',
-        ),
-    );
+        ],
+    ];
 
     /**
      * This is a static class
@@ -364,7 +364,7 @@ class StepRunner
         $submittedNumber = (int) Request::post('step_number', 0);
 
         // gather vars
-        $vars = array();
+        $vars = [];
         foreach ($this->steps as $step) {
             foreach ($step->getVarNames() as $varName) {
                 $vars[$varName] = Request::post($varName, null, true);
@@ -462,11 +462,11 @@ abstract class Step
     /** @var int */
     protected $submittedNumber;
     /** @var array */
-    protected $vars = array();
+    protected $vars = [];
     /** @var bool */
     protected $submitted = false;
     /** @var array */
-    protected $errors = array();
+    protected $errors = [];
 
     /**
      * @return string
@@ -486,7 +486,7 @@ abstract class Step
      */
     function getVarNames()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -635,7 +635,7 @@ class ChooseLanguageStep extends Step
 
     function getVarNames()
     {
-        return array('language');
+        return ['language'];
     }
 
     function isComplete()
@@ -643,7 +643,7 @@ class ChooseLanguageStep extends Step
         return
             parent::isComplete()
             && isset($this->vars['language'])
-            && in_array($this->vars['language'], array('cs', 'en'), true);
+            && in_array($this->vars['language'], ['cs', 'en'], true);
     }
 
     function run()
@@ -675,7 +675,7 @@ class ConfigurationStep extends Step
     protected function doSubmit()
     {
         // load data
-        $config = array(
+        $config = [
             'db.server' => trim(Request::post('config_db_server', '')),
             'db.port' => (int) trim(Request::post('config_db_port', '')) ?: null,
             'db.user' => trim(Request::post('config_db_user', '')),
@@ -692,7 +692,7 @@ class ConfigurationStep extends Step
             'geo.latitude' => (float) trim(Request::post('config_geo_latitude')),
             'geo.longitude' => (float) trim(Request::post('config_geo_longitude')),
             'geo.zenith' => (float) trim(Request::post('config_geo_zenith')),
-        );
+        ];
 
         // validate
         if ($config['db.port'] !== null && $config['db.port'] <= 0) {
@@ -724,10 +724,10 @@ class ConfigurationStep extends Step
                 try {
                     DB::query('CREATE DATABASE IF NOT EXISTS ' . DB::escIdt($config['db.name']) . ' COLLATE \'utf8mb4_unicode_ci\'');
                 } catch (DatabaseException $e) {
-                    $this->errors[] = array('db.create.error', array('%error%' => $e->getMessage()));
+                    $this->errors[] = ['db.create.error', ['%error%' => $e->getMessage()]];
                 }
             } else {
-                $this->errors[] = array('db.connect.error', array('%error%' => $connectError));
+                $this->errors[] = ['db.connect.error', ['%error%' => $connectError]];
             }
         }
 
@@ -907,7 +907,7 @@ class ConfigurationStep extends Step
 class ImportDatabaseStep extends Step
 {
     /** @var string[] */
-    private static $baseTableNames = array(
+    private static $baseTableNames = [
         'article',
         'box',
         'user_group',
@@ -922,7 +922,7 @@ class ImportDatabaseStep extends Step
         'user',
         'user_activation',
         'redirect',
-    );
+    ];
     /** @var array|null */
     private $existingTableNames;
 
@@ -935,19 +935,19 @@ class ImportDatabaseStep extends Step
     {
         $overwrite = (bool) Request::post('import_overwrite', false);
         
-        $settings = array(
+        $settings = [
             'title' => trim(Request::post('import_settings_title')),
             'description' => trim(Request::post('import_settings_description')),
             'language' => $this->vars['language'],
             'atreplace' => $this->vars['language'] === 'cs' ? '[zavinac]' : '[at]',
             'version_check' => Request::post('import_settings_version_check') ? 1 : 0,
-        );
+        ];
 
-        $admin = array(
+        $admin = [
             'username' => StringManipulator::slugify(Request::post('import_admin_username'), false),
             'password' => Request::post('import_admin_password'),
             'email' => trim(Request::post('import_admin_email')),
-        );
+        ];
 
         // validate
         if ($settings['title'] === '') {
@@ -993,17 +993,17 @@ class ImportDatabaseStep extends Step
             
             // update settings
             foreach ($settings as $name => $value) {
-                DB::update($prefix . 'setting', 'var=' . DB::val($name), array('val' => _e($value)));
+                DB::update($prefix . 'setting', 'var=' . DB::val($name), ['val' => _e($value)]);
             }
             
             // update admin account
-            DB::update($prefix . 'user', 'id=1', array(
+            DB::update($prefix . 'user', 'id=1', [
                 'username' => $admin['username'],
                 'password' => Password::create($admin['password'])->build(),
                 'email' => $admin['email'],
                 'activitytime' => time(),
                 'registertime' => time(),
-            ));
+            ]);
 
             // alter initial content
             foreach ($this->getInitialContent() as $table => $rowMap) {
@@ -1017,51 +1017,51 @@ class ImportDatabaseStep extends Step
     private function getInitialContent()
     {
         if ($this->vars['language'] === 'cs') {
-            return array(
-                'box' => array(
-                    1 => array('title' => 'Menu'),
-                    2 => array('title' => 'Vyhledávání'),
-                ),
-                'user_group' => array(
-                    1 => array('title' => 'Hlavní administrátoři'),
-                    2 => array('title' => 'Neregistrovaní'),
-                    3 => array('title' => 'Registrovaní'),
-                    4 => array('title' => 'Administrátoři'),
-                    5 => array('title' => 'Moderátoři'),
-                    6 => array('title' => 'Redaktoři'),
-                ),
-                'page' => array(
-                    1 => array(
+            return [
+                'box' => [
+                    1 => ['title' => 'Menu'],
+                    2 => ['title' => 'Vyhledávání'],
+                ],
+                'user_group' => [
+                    1 => ['title' => 'Hlavní administrátoři'],
+                    2 => ['title' => 'Neregistrovaní'],
+                    3 => ['title' => 'Registrovaní'],
+                    4 => ['title' => 'Administrátoři'],
+                    5 => ['title' => 'Moderátoři'],
+                    6 => ['title' => 'Redaktoři'],
+                ],
+                'page' => [
+                    1 => [
                         'title' => 'Úvod',
                         'content' => '<p>Instalace redakčního systému SunLight CMS ' . Core::VERSION . ' byla úspěšně dokončena!<br />
 Nyní se již můžete <a href="admin/">přihlásit do administrace</a> (jméno a heslo bylo zvoleno při instalaci).</p>
 <p>Podporu, diskusi a doplňky ke stažení naleznete na oficiálních webových stránkách <a href="https://sunlight-cms.cz/">sunlight-cms.cz</a>.</p>',
-                    ),
-                ),
-            );
+                    ],
+                ],
+            ];
         } else {
-            return array(
-                'box' => array(
-                    1 => array('title' => 'Menu'),
-                    2 => array('title' => 'Search'),
-                ),
-                'user_group' => array(
-                    1 => array('title' => 'Super administrators'),
-                    2 => array('title' => 'Guests'),
-                    3 => array('title' => 'Registered'),
-                    4 => array('title' => 'Administrators'),
-                    5 => array('title' => 'Moderators'),
-                    6 => array('title' => 'Editors'),
-                ),
-                'page' => array(
-                    1 => array(
+            return [
+                'box' => [
+                    1 => ['title' => 'Menu'],
+                    2 => ['title' => 'Search'],
+                ],
+                'user_group' => [
+                    1 => ['title' => 'Super administrators'],
+                    2 => ['title' => 'Guests'],
+                    3 => ['title' => 'Registered'],
+                    4 => ['title' => 'Administrators'],
+                    5 => ['title' => 'Moderators'],
+                    6 => ['title' => 'Editors'],
+                ],
+                'page' => [
+                    1 => [
                         'title' => 'Home',
                         'content' => '<p>Installation of SunLight CMS ' . Core::VERSION . ' has been a success!<br />
 Now you can <a href="admin/">log in to the administration</a> (username and password has been setup during installation).</p>
 <p>Support, forums and plugins are available at the official website <a href="https://sunlight-cms.cz/">sunlight-cms.cz</a>.</p>',
-                    ),
-                ),
-            );
+                    ],
+                ],
+            ];
         }
     }
 
@@ -1120,7 +1120,7 @@ Now you can <a href="admin/">log in to the administration</a> (username and pass
 <?php if (count($this->getExistingTableNames()) > 0): ?>
 <fieldset>
     <legend><?php Labels::render('import.overwrite') ?></legend>
-    <p class="msg warning"><?php Labels::render('import.overwrite.text', array('%prefix%' => Config::$config['db.prefix'] . '_')) ?></p>
+    <p class="msg warning"><?php Labels::render('import.overwrite.text', ['%prefix%' => Config::$config['db.prefix'] . '_']) ?></p>
     <p><label><input type="checkbox"<?php echo Form::restoreCheckedAndName($this->getFormKeyVar(), 'import_overwrite') ?>> <?php Labels::render('import.overwrite.confirmation') ?></label></p>
 </fieldset>
 <?php endif ?>
@@ -1147,7 +1147,7 @@ Now you can <a href="admin/">log in to the administration</a> (username and pass
                 0,
                 false,
                 true
-            ) ?: array();
+            ) ?: [];
         }
 
         return $this->existingTableNames;
@@ -1214,12 +1214,12 @@ class CompleteStep extends Step
 Config::load();
 
 // create step runner
-$stepRunner= new StepRunner(array(
+$stepRunner= new StepRunner([
     new ChooseLanguageStep(),
     new ConfigurationStep(),
     new ImportDatabaseStep(),
     new CompleteStep(),
-));
+]);
 
 // run
 try {

@@ -13,7 +13,7 @@ defined('_root') or exit;
 
 /* ---  akce  --- */
 
-$sysgroups_array = array(_group_admin, _group_guests, _group_registered);
+$sysgroups_array = [_group_admin, _group_guests, _group_registered];
 $msg = 0;
 
 // vytvoreni skupiny
@@ -21,17 +21,17 @@ if (isset($_POST['type']) && _priv_admingroups) {
     $type = (int) Request::post('type');
     if ($type == -1) {
         // prazdna skupina
-        DB::insert(_user_group_table, array(
+        DB::insert(_user_group_table, [
             'title' => _lang('admin.users.groups.new.empty'),
             'level' => 0,
             'icon' => ''
-        ));
+        ]);
         $msg = 1;
     } else {
         // kopirovat skupinu
         $source_group = DB::queryRow("SELECT * FROM " . _user_group_table . " WHERE id=" . $type);
         if ($source_group !== false) {
-            $new_group = array();
+            $new_group = [];
             $privilege_map = array_flip(User::listPrivileges());
 
             // sesbirani dat

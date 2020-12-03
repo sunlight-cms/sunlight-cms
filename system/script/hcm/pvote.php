@@ -26,9 +26,9 @@ if (isset($_POST['pid']) && isset($_POST['option']) && Xsrf::check()) {
         if (_priv_pollvote && $query['locked'] == 0 && IpLog::check(_iplog_poll_vote, $pid) && isset($votes[$option])) {
             $votes[$option] += 1;
             $votes = implode("-", $votes);
-            DB::update(_poll_table, 'id=' . $pid, array('votes' => $votes));
+            DB::update(_poll_table, 'id=' . $pid, ['votes' => $votes]);
             IpLog::update(_iplog_poll_vote, $pid);
-            Extend::call('poll.voted', array('id' => $pid, 'option' => $option));
+            Extend::call('poll.voted', ['id' => $pid, 'option' => $option]);
         }
     }
 

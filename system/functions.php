@@ -9,7 +9,7 @@ use Sunlight\Core;
  * @param array    $arguments
  * @return string
  */
-function _buffer($callback, array $arguments = array())
+function _buffer($callback, array $arguments = [])
 {
     ob_start();
 

@@ -107,7 +107,7 @@ abstract class PluginInstaller
      */
     protected function checkTables(array $tables)
     {
-        $foundTables = array();
+        $foundTables = [];
 
         foreach ($tables as $table) {
             if (DB::queryRow('SHOW TABLES LIKE ' . DB::val($table)) !== false) {
@@ -127,7 +127,7 @@ abstract class PluginInstaller
      */
     protected function checkColumns($table, array $columns)
     {
-        $foundColumns = array();
+        $foundColumns = [];
 
         foreach ($columns as $column) {
             if (DB::queryRow('SHOW COLUMNS FROM ' . DB::escIdt($table) . ' LIKE ' . DB::val($column)) !== false) {

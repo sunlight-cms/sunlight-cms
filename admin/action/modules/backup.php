@@ -37,7 +37,7 @@ $add_hash_suffix = function ($filename) use ($remove_hash_suffix) {
 
 // nacteni existujicich zaloh
 $backup_dir = _root . 'system/backup';
-$backup_files = array();
+$backup_files = [];
 foreach (scandir($backup_dir) as $item) {
     if (
         $item !== '.'
@@ -63,17 +63,17 @@ if (isset($_GET['download'])) {
 $backup_builder = new BackupBuilder();
 
 // pripravit volby dynamickych cest
-$backup_dynpath_choices = array();
+$backup_dynpath_choices = [];
 foreach ($backup_builder->getDynamicPathNames() as $name) {
-    $backup_dynpath_choices[$name] = array(
+    $backup_dynpath_choices[$name] = [
         'label' => _lang('admin.backup.dynpath.' . $name),
-    );
+    ];
 }
 
-Extend::call('admin.backup.builder', array(
+Extend::call('admin.backup.builder', [
     'builder' => $backup_builder,
     'dynpath_choices' => &$backup_dynpath_choices,
-));
+]);
 
 // spocitat velikosti
 $computePathSize = function ($path) {
@@ -169,7 +169,7 @@ if (!empty($_POST)) {
                     $backup->open();
                     $backup_restorer = new BackupRestorer($backup);
 
-                    $errors = array();
+                    $errors = [];
                     $backup_restorer->validate($errors);
 
                     if (empty($errors)) {
@@ -210,7 +210,7 @@ if (!empty($_POST)) {
                                 $avail_mem !== null && $avail_mem < 5000000 // 5MB
                                 || $max_exec_time && $max_exec_time < $estimated_time && !$modified_time_limit
                             ) {
-                                $config_info = array();
+                                $config_info = [];
 
                                 if ($memory_limit = Environment::phpIniLimit('memory_limit')) {
                                     $config_info['memory_limit'] = GenericTemplates::renderFilesize($memory_limit);
@@ -224,7 +224,7 @@ if (!empty($_POST)) {
                                 $config_info['estimated_time'] = $estimated_time;
 
                                 $backup_size_display .= ' <img src="images/icons/warn.png" class="icon" alt="warn">';
-                                $backup_size_warning = Message::warning(_lang('admin.backup.restore.size_warning', array('%config_info%' => json_encode($config_info))));
+                                $backup_size_warning = Message::warning(_lang('admin.backup.restore.size_warning', ['%config_info%' => json_encode($config_info)]));
                             }
 
                             $backup_metadata = $backup->getMetaData();
@@ -359,7 +359,7 @@ $output .= $message . '
                                 echo '<li><label><input type="checkbox" value="' . $name . '"' . Form::restoreCheckedAndName('do_create', 'dynpath_' . $name, true) . '> ' . _e($options['label']) . ' <small>(' . GenericTemplates::renderFileSize($options['size']) . ')</small></label></li>';
                             }
                         }) . '
-                        ' . Extend::buffer('admin.backup.options', array('type' => 'partial')) . '
+                        ' . Extend::buffer('admin.backup.options', ['type' => 'partial']) . '
                     </ul>
                 </td>
             </tr>
@@ -398,7 +398,7 @@ $output .= $message . '
                                 echo '<li><label><input type="checkbox" value="' . $name . '" name="dynpath_' . $name . '"' . Form::disableInputUnless($optional) . Form::activateCheckbox($checked) . '> ' . _e($options['label']) . ' <small>(' . GenericTemplates::renderFileSize($options['size']) . ')</small></label></li>';
                             }
                         }) . '
-                        ' . Extend::buffer('admin.backup.options', array('type' => 'full')) . '
+                        ' . Extend::buffer('admin.backup.options', ['type' => 'full']) . '
                     </ul>
                 </td>
             </tr>

@@ -36,7 +36,7 @@ if (isset($_GET['user'], $_GET['hash'])) {
 
         // kontrola limitu
         if (!IpLog::check(_iplog_failed_login_attempt)) {
-            $output .= Message::error(_lang('login.attemptlimit', array('*1*' => _maxloginattempts, '*2*' => _maxloginexpire / 60)));
+            $output .= Message::error(_lang('login.attemptlimit', ['*1*' => _maxloginattempts, '*2*' => _maxloginexpire / 60]));
             break;
         }
 
@@ -60,25 +60,25 @@ if (isset($_GET['user'], $_GET['hash'])) {
 
         if (!Email::send(
             $userdata['email'],
-            _lang('mod.lostpass.mail.subject', array('*domain*' => Url::base()->getFullHost())),
-            _lang('mod.lostpass.mail.text2', array(
+            _lang('mod.lostpass.mail.subject', ['*domain*' => Url::base()->getFullHost()]),
+            _lang('mod.lostpass.mail.text2', [
                 '*domain*' => Url::base()->getFullHost(),
                 '*username*' =>  $userdata['username'],
                 '*newpass*' => $newpass,
                 '*date*' => GenericTemplates::renderTime(time()),
                 '*ip*' => _user_ip,
-            ))
+            ])
         )) {
             $output .= Message::error(_lang('global.emailerror'));
             break;
         }
 
         // zmenit heslo
-        DB::update(_user_table, 'id=' . DB::val($userdata['id']), array(
+        DB::update(_user_table, 'id=' . DB::val($userdata['id']), [
             'password' => Password::create($newpass)->build(),
             'security_hash' => null,
             'security_hash_expires' => 0,
-        ));
+        ]);
 
         // vse ok! email s heslem byl odeslan
         $output .= Message::ok(_lang('mod.lostpass.generated'));
@@ -94,7 +94,7 @@ if (isset($_GET['user'], $_GET['hash'])) {
 
         // kontrola limitu
         if (!IpLog::check(_iplog_password_reset_requested)) {
-            $output .= Message::error(_lang('mod.lostpass.limit', array('*limit*' => _lostpassexpire / 60)));
+            $output .= Message::error(_lang('mod.lostpass.limit', ['*limit*' => _lostpassexpire / 60]));
             break;
         }
 
@@ -115,24 +115,24 @@ if (isset($_GET['user'], $_GET['hash'])) {
 
         // vygenerovani hashe
         $hash = hash_hmac('sha256', uniqid('', true), Core::$secret);
-        DB::update(_user_table, 'id=' . DB::val($userdata['id']), array(
+        DB::update(_user_table, 'id=' . DB::val($userdata['id']), [
             'security_hash' => $hash,
             'security_hash_expires' => time() + 3600,
-        ));
+        ]);
 
         // odeslani emailu
         $link = Router::module('lostpass', 'user=' . $username . '&hash=' . $hash, true);
 
         if (!Email::send(
             $userdata['email'],
-            _lang('mod.lostpass.mail.subject', array('*domain*' => Url::base()->getFullHost())),
-            _lang('mod.lostpass.mail.text', array(
+            _lang('mod.lostpass.mail.subject', ['*domain*' => Url::base()->getFullHost()]),
+            _lang('mod.lostpass.mail.text', [
                 '*domain*' => Url::base()->getFullHost(),
                 '*username*' => $userdata['username'],
                 '*link*' => $link,
                 '*date*' => GenericTemplates::renderTime(time()),
                 '*ip*' => _user_ip,
-            ))
+            ])
         )) {
             $output .= Message::error(_lang('global.emailerror'));
             break;
@@ -150,17 +150,17 @@ if (isset($_GET['user'], $_GET['hash'])) {
         $captcha = Captcha::init();
 
         $output .= Form::render(
-            array(
+            [
                 'name' => 'lostpassform',
                 'action' => Router::module('lostpass'),
                 'submit_text' => _lang('global.send'),
                 'autocomplete' => 'off',
-            ),
-            array(
-                array('label' => _lang('login.username'), 'content' => "<input type='text' class='inputsmall' maxlength='24'" . Form::restorePostValueAndName('username') . ">"),
-                array('label' => _lang('global.email'), 'content' => "<input type='email' class='inputsmall' " . Form::restorePostValueAndName('email', '@') . ">"),
+            ],
+            [
+                ['label' => _lang('login.username'), 'content' => "<input type='text' class='inputsmall' maxlength='24'" . Form::restorePostValueAndName('username') . ">"],
+                ['label' => _lang('global.email'), 'content' => "<input type='email' class='inputsmall' " . Form::restorePostValueAndName('email', '@') . ">"],
                 $captcha
-            )
+            ]
         );
     }
 }

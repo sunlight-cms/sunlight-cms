@@ -22,13 +22,13 @@ if (isset($_POST['text'])) {
     if (isset($_POST['receivers'])) {
         $receivers = (array) $_POST['receivers'];
     } else {
-        $receivers = array();
+        $receivers = [];
     }
     $ctype = Request::post('ctype');
     $maillist = Form::loadCheckbox("maillist");
 
     // kontrola promennych
-    $errors = array();
+    $errors = [];
     if ($text == "" && !$maillist) {
         $errors[] = _lang('admin.other.massemail.notext');
     }
@@ -48,9 +48,9 @@ if (isset($_POST['text'])) {
         $groups = 'group_id IN(' . DB::arr($receivers) . ')';
 
         // hlavicky
-        $headers = array(
+        $headers = [
             'Content-Type' => 'text/' . ($ctype == 2 ? 'html' : 'plain') . '; charset=UTF-8',
-        );
+        ];
         Email::defineSender($headers, $sender);
 
         // nacteni prijemcu
@@ -60,14 +60,14 @@ if (isset($_POST['text'])) {
         if (!$maillist) {
 
             // priprava
-            $rec_buffer = array();
+            $rec_buffer = [];
             $rec_buffer_size = 20;
             $rec_buffer_counter = 0;
             $item_counter = 0;
             $item_total = DB::size($query);
 
             // poznamka na konci zpravy
-            $notice = _lang('admin.other.massemail.emailnotice', array('*domain*' => Url::base()->getFullHost()));
+            $notice = _lang('admin.other.massemail.emailnotice', ['*domain*' => Url::base()->getFullHost()]);
             if ($ctype == 1) {
                 $notice = "\n\n\n-------------------------------------\n" . $notice;
             } else {
@@ -83,20 +83,20 @@ if (isset($_POST['text'])) {
                 ++$item_counter;
                 if ($rec_buffer_counter === $rec_buffer_size || $item_counter === $item_total) {
                     // odeslani emailu
-                    if (Email::send('', $subject, $text, $headers + array('Bcc' => implode(",", $rec_buffer)))) {
+                    if (Email::send('', $subject, $text, $headers + ['Bcc' => implode(",", $rec_buffer)])) {
                         $done += count($rec_buffer);
                     }
-                    $rec_buffer = array();
+                    $rec_buffer = [];
                     $rec_buffer_counter = 0;
                 }
             }
 
             // zprava
             if ($done != 0) {
-                $output .= Message::ok(_lang('admin.other.massemail.send', array(
+                $output .= Message::ok(_lang('admin.other.massemail.send', [
                     '*done*' => $done,
                     '*total*' => $item_total,
-                )));
+                ]));
             } else {
                 $output .= Message::warning(_lang('admin.other.massemail.noreceiversfound'));
             }

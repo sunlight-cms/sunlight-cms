@@ -52,7 +52,7 @@ if ($_page['content'] != '') {
 Extend::call('page.category.content.after', $extend_args);
 
 // vypis clanku
-list($art_joins, $art_cond, $art_count) = Article::createFilter('art', array($id), null, true);
+list($art_joins, $art_cond, $art_count) = Article::createFilter('art', [$id], null, true);
 $paging = Paginator::render($_index['url'], $artsperpage, $art_count);
 $userQuery = User::createQuery('art.author');
 $arts = DB::query("SELECT art.id,art.title,art.slug,art.perex," . $userQuery['column_list'] . "," . ($_page['var4'] ? 'art.picture_uid,' : '') . "art.time,art.comments,art.readnum,cat1.slug AS cat_slug,(SELECT COUNT(*) FROM " . _comment_table . " AS post WHERE home=art.id AND post.type=" . _post_article_comment . ") AS comment_count FROM " . _article_table . " AS art " . $art_joins . ' ' . $userQuery['joins'] . " WHERE " . $art_cond . " ORDER BY " . $artorder . " " . $paging['sql_limit']);
@@ -62,7 +62,7 @@ if (DB::size($arts) != 0) {
         $output .= $paging['paging'];
     }
     while ($art = DB::row($arts)) {
-        $extend_item_args = Extend::args($output, array('page' => $_page, 'item-query' => &$art));
+        $extend_item_args = Extend::args($output, ['page' => $_page, 'item-query' => &$art]);
         Extend::call('page.category.item.before', $extend_item_args);
         $output .= Article::renderPreview($art, $userQuery, $_page['var3'] == 1, true, $art['comment_count']);
         Extend::call('page.category.item.after', $extend_item_args);

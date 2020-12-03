@@ -1,6 +1,6 @@
 <?php
 
-return array(
+return [
     'admin.link.site' => 'Zobrazit stránky',
     'admin.link.newwin' => 'Nové okno',
     'admin.link.home' => 'zpět na hlavní stranu',
@@ -744,4 +744,4 @@ return array(
     'admin.backup.restore.submit.delete' => 'Odstranit zálohu',
     'admin.other.php.title' => 'Vyhodnocení PHP kódu',
     'admin.other.php.html' => 'Vyhodnotit výstup jako HTML kód',
-);
+];

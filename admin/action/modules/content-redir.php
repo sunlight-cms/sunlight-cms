@@ -36,7 +36,7 @@ if (isset($_GET['new']) || isset($_GET['edit'])) {
         if (isset($_POST['old'])) {
 
             // nacteni dat
-            $q = array();
+            $q = [];
             $q['old'] = StringManipulator::slugify(trim(Request::post('old')), true, '._/');
             $q['new'] = StringManipulator::slugify(trim(Request::post('new')), true,'._/');
             $q['permanent'] = Form::loadCheckbox('permanent');
@@ -62,9 +62,9 @@ if (isset($_GET['new']) || isset($_GET['edit'])) {
         // nacteni dat
         if ($new) {
             if (!isset($q)) {
-                $q = array();
+                $q = [];
             }
-            $q += array('id' => null, 'old' => '', 'new' => '', 'permanent' => '0', 'active' => '1');
+            $q += ['id' => null, 'old' => '', 'new' => '', 'permanent' => '0', 'active' => '1'];
         } else {
             $q = DB::queryRow('SELECT * FROM ' . _redirect_table . ' WHERE id=' . $edit_id);
             if ($q === false) {

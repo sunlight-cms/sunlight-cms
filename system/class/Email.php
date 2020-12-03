@@ -13,10 +13,10 @@ abstract class Email
      * @param array  $headers asociativni pole s hlavickami
      * @return bool
      */
-    static function send($to, $subject, $message, array $headers = array())
+    static function send($to, $subject, $message, array $headers = [])
     {
         // zjistit veskere hlavicky, ktere byly uvedeny
-        $definedHeaderMap = array();
+        $definedHeaderMap = [];
         foreach (array_keys($headers) as $headerName) {
             $definedHeaderMap[strtolower($headerName)] = true;
         }
@@ -34,13 +34,13 @@ abstract class Email
 
         // udalost
         $result = null;
-        Extend::call('mail.send', array(
+        Extend::call('mail.send', [
             'to' => &$to,
             'subject' => &$subject,
             'message' => &$message,
             'headers' => &$headers,
             'result' => &$result,
-        ));
+        ]);
         if ($result !== null) {
             // odchyceno rozsirenim
             return $result;
@@ -52,7 +52,7 @@ abstract class Email
         // zpracovani hlavicek
         $headerString = '';
         foreach ($headers as $headerName => $headerValue) {
-            $headerString .= sprintf("%s: %s\n", $headerName, strtr($headerValue, array("\r" => '', "\n" => '')));
+            $headerString .= sprintf("%s: %s\n", $headerName, strtr($headerValue, ["\r" => '', "\n" => '']));
         }
 
         // odeslani

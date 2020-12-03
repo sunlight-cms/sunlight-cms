@@ -6,13 +6,13 @@ use Sunlight\Core;
 
 class LanguagePlugin extends Plugin
 {
-    protected static $typeDefinition = array(
+    protected static $typeDefinition = [
         'type' => 'language',
         'dir' => 'plugins/languages',
         'class' => __CLASS__,
         'default_base_namespace' => 'SunlightLanguage',
-        'options' => array(),
-    );
+        'options' => [],
+    ];
 
     function canBeDisabled()
     {

@@ -2,7 +2,7 @@
     "type": "project",
     "license": "MIT",
     "require": {
-        "php": ">=5.3.0",
+        "php": ">=5.4",
         "ext-ctype": "*",
         "ext-gd": "*",
         "ext-hash": "*",
@@ -22,7 +22,7 @@
     },
     "config": {
         "platform": {
-            "php": "5.3.29"
+            "php": "5.4"
         }
     },
     "minimum-stability": "dev",

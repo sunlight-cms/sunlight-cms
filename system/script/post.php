@@ -40,7 +40,7 @@ if ($posttype != _post_shoutbox_entry) {
 }
 
 // predmet
-if ($xhome == -1 && in_array($posttype, array(_post_forum_topic, _post_pm))) {
+if ($xhome == -1 && in_array($posttype, [_post_forum_topic, _post_pm])) {
     $subject = Html::cut(_e(StringManipulator::trimExtraWhitespace(Request::post('subject'))), 48);
 } else {
     $subject = '';
@@ -121,7 +121,7 @@ switch ($posttype) {
 
         // plugin post
     case _post_plugin:
-        Extend::call('posts.' . $pluginflag . '.validate', array('home' => $posttarget, 'valid' => &$continue));
+        Extend::call('posts.' . $pluginflag . '.validate', ['home' => $posttarget, 'valid' => &$continue]);
         break;
 
         // blbost
@@ -151,7 +151,7 @@ if ($continue && $continue2 && $text != '' && ($posttype == _post_shoutbox_entry
 
                 // zpracovani pluginem
                 $allow = true;
-                Extend::call('posts.submit', array(
+                Extend::call('posts.submit', [
                     'allow' => &$allow,
                     'posttype' => $posttype,
                     'posttarget' => $posttarget,
@@ -160,11 +160,11 @@ if ($continue && $continue2 && $text != '' && ($posttype == _post_shoutbox_entry
                     'text' => &$text,
                     'author' => $author,
                     'guest' => $guest
-                ));
+                ]);
 
                 if ($allow) {
                     // ulozeni
-                    $insert_id = DB::insert(_comment_table, $post_data = array(
+                    $insert_id = DB::insert(_comment_table, $post_data = [
                         'type' => $posttype,
                         'home' => $posttarget,
                         'xhome' => $xhome,
@@ -176,25 +176,25 @@ if ($continue && $continue2 && $text != '' && ($posttype == _post_shoutbox_entry
                         'ip' => _user_ip,
                         'bumptime' => (($posttype == _post_forum_topic && $xhome == -1) ? time() : '0'),
                         'flag' => $pluginflag
-                    ), true);
+                    ], true);
                     if (!_priv_unlimitedpostaccess && $posttype != _post_shoutbox_entry) {
                         IpLog::update(_iplog_anti_spam);
                     }
                     $return = 1;
-                    Extend::call('posts.new', array('id' => $insert_id, 'posttype' => $posttype, 'post' => $post_data));
+                    Extend::call('posts.new', ['id' => $insert_id, 'posttype' => $posttype, 'post' => $post_data]);
 
                     // topicy - aktualizace bumptime
                     if ($posttype == _post_forum_topic && $xhome != -1) {
-                        DB::update(_comment_table, 'id=' . $xhome, array('bumptime' => time()));
+                        DB::update(_comment_table, 'id=' . $xhome, ['bumptime' => time()]);
                     }
 
                     // zpravy - aktualizace casu zmeny a precteni
                     if ($posttype == _post_pm) {
                         $role = (($tdata['sender'] == _user_id) ? 'sender' : 'receiver');
-                        DB::update(_pm_table, 'id=' . $posttarget, array(
+                        DB::update(_pm_table, 'id=' . $posttarget, [
                             'update_time' => time(),
                             $role . '_readtime' => time()
-                        ));
+                        ]);
                     }
 
                     // shoutboxy - odstraneni prispevku za hranici limitu

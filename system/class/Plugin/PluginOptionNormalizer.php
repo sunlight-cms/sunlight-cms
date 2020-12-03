@@ -42,7 +42,7 @@ abstract class PluginOptionNormalizer
      */
     static function normalizePathArray(array $paths, array $context)
     {
-        $normalized = array();
+        $normalized = [];
 
         foreach ($paths as $key => $path) {
             if (!is_string($path)) {
@@ -75,7 +75,7 @@ abstract class PluginOptionNormalizer
      */
     static function normalizeWebPathArray(array $paths, array $context)
     {
-        $normalized = array();
+        $normalized = [];
 
         foreach ($paths as $key => $path) {
             if (!is_string($path)) {
@@ -98,13 +98,13 @@ abstract class PluginOptionNormalizer
      */
     static function normalizeAutoload(array $autoload, array $context)
     {
-        $normalized = array();
+        $normalized = [];
 
-        $validTypes = array(
+        $validTypes = [
             'psr-0' => true,
             'psr-4' => true,
             'classmap' => true,
-        );
+        ];
 
         foreach ($autoload as $type => $entries) {
             // check type
@@ -117,7 +117,7 @@ abstract class PluginOptionNormalizer
                 throw new OptionSetNormalizerException(sprintf('[%s] must be an array', $type));
             }
 
-            $normalized[$type] = array();
+            $normalized[$type] = [];
 
             // iterate entires
             foreach ($entries as $key => $entry) {
@@ -129,7 +129,7 @@ abstract class PluginOptionNormalizer
                     case 'psr-0':
                     case 'psr-4':
                         if (is_array($entry)) {
-                            $normalizedEntry = array();
+                            $normalizedEntry = [];
                             foreach ($entry as $pathKey => $path) {
                                 if (!is_string($path)) {
                                     throw new OptionSetNormalizerException(sprintf('[%s][%s][%s] must be a string', $type, $key, $pathKey));
@@ -170,7 +170,7 @@ abstract class PluginOptionNormalizer
      */
     static function normalizeEvents(array $events)
     {
-        $normalized = array();
+        $normalized = [];
         foreach ($events as $key => $entry) {
             if (!is_array($entry) || !isset($entry[0], $entry[1])) {
                 throw new OptionSetNormalizerException(sprintf('[%s] invalid event entry (expected an array with 2 elements)', $key));
@@ -211,12 +211,12 @@ abstract class PluginOptionNormalizer
                 $priority = 0;
             }
 
-            $normalized[] = array(
+            $normalized[] = [
                 'event' => $event,
                 'use_this' => $useThis,
                 'callback' => $callback,
                 'priority' => $priority,
-            );
+            ];
         }
 
         return $normalized;
@@ -229,14 +229,14 @@ abstract class PluginOptionNormalizer
      */
     static function normalizeTemplateLayouts(array $layouts, array $context)
     {
-        $normalized = array();
+        $normalized = [];
 
         foreach ($layouts as $layout => $options) {
             if (!is_array($options)) {
                 throw new OptionSetNormalizerException(sprintf('[%s] invalid entry (expected array)', $layout));
             }
 
-            $entry = array();
+            $entry = [];
 
             if (!preg_match('{[a-zA-Z0-9_.]+$}AD', $layout)) {
                 throw new OptionSetNormalizerException(sprintf('[%s] the layout name is empty or contains invalid characters', $layout));
@@ -256,7 +256,7 @@ abstract class PluginOptionNormalizer
             }
 
             // slots
-            $entry['slots'] = isset($options['slots']) ? array_values($options['slots']) : array();
+            $entry['slots'] = isset($options['slots']) ? array_values($options['slots']) : [];
 
             if (!is_array($entry['slots'])) {
                 throw new OptionSetNormalizerException(sprintf('[%s][slots] invalid value (expected array)', $layout));

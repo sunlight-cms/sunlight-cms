@@ -20,12 +20,12 @@ $output .= "
 ";
 
 // nacist strom kategorii
-$filter = new SimpleTreeFilter(array('type' => _page_category));
-Extend::call('admin.article.catfilter', array('filter' => &$filter));
+$filter = new SimpleTreeFilter(['type' => _page_category]);
+Extend::call('admin.article.catfilter', ['filter' => &$filter]);
 $tree = PageManager::getFlatTree(null, null, $filter);
 
 // nacist pocty clanku
-$art_counts = array();
+$art_counts = [];
 $art_count_query = DB::query('SELECT
     c.id,
     (SELECT COUNT(*) FROM ' . _article_table . ' a WHERE a.home1=c.id OR a.home2=c.id OR a.home3=c.id) art_count

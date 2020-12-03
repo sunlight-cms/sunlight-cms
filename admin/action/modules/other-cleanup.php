@@ -18,7 +18,7 @@ defined('_root') or exit;
 $message = "";
 
 $selectTime = function ($name) {
-    $opts = array(1, 2, 4, 8, 25, 52, 104);
+    $opts = [1, 2, 4, 8, 25, 52, 104];
     $active = (isset($_POST[$name]) ? (int) Request::post($name) : 25);
     $output = "<select name='" . $name . "'>\n";
     for($i = 0; isset($opts[$i]); ++$i) {
@@ -43,7 +43,7 @@ if (isset($_POST['action'])) {
                 $prev = false;
             } else {
                 $prev = true;
-                $prev_count = array();
+                $prev_count = [];
             }
 
             // vzkazy
@@ -80,13 +80,13 @@ if (isset($_POST['action'])) {
             }
             if (Form::loadCheckbox("posts")) {
                 if ($prev) {
-                    $prev_count['global.posts'] = DB::count(_comment_table, 'type IN(' . DB::arr(array(_post_book_entry, _post_shoutbox_entry, _post_forum_topic)) . ')');
+                    $prev_count['global.posts'] = DB::count(_comment_table, 'type IN(' . DB::arr([_post_book_entry, _post_shoutbox_entry, _post_forum_topic]) . ')');
                 } else {
-                    DB::deleteSet(_comment_table, 'type', array(
+                    DB::deleteSet(_comment_table, 'type', [
                         _post_book_entry,
                         _post_shoutbox_entry,
                         _post_forum_topic
-                    ));
+                    ]);
                 }
             }
             if (Form::loadCheckbox("plugin_posts")) {
@@ -136,12 +136,12 @@ if (isset($_POST['action'])) {
 
             // udrzba
             if (Form::loadCheckbox('maintenance') && !$prev) {
-                Extend::call('cron.maintenance', array(
+                Extend::call('cron.maintenance', [
                     'last' => null,
                     'name' => 'maintenance',
                     'seconds' => null,
                     'delay' => null,
-                ));
+                ]);
             }
 
             // optimalizace
@@ -270,8 +270,8 @@ $output .= $message . "
 <form class='cform' action='index.php?p=other-cleanup' method='post' autocomplete='off'>
 <input type='hidden' name='action' value='2'>
 <p class='bborder'>" . _lang('admin.other.cleanup.uninstall.p') . "</p>
-" . Admin::note(_lang('admin.other.cleanup.uninstall.note', array('*prefix*' => _dbprefix)), true, 'warn') . "
-<p><label><input type='checkbox' name='confirm' value='1'> " . _lang('admin.other.cleanup.uninstall.confirm', array('*dbname*' => _dbname)) . "</label></p>
+" . Admin::note(_lang('admin.other.cleanup.uninstall.note', ['*prefix*' => _dbprefix]), true, 'warn') . "
+<p><label><input type='checkbox' name='confirm' value='1'> " . _lang('admin.other.cleanup.uninstall.confirm', ['*dbname*' => _dbname]) . "</label></p>
 <p><strong>" . _lang('admin.other.cleanup.uninstall.pass') . ":</strong>  <input type='password' class='inputsmall' name='pass' autocomplete='off'></p>
 <input type='submit' value='" . _lang('global.do') . "' onclick='return Sunlight.confirm();'>
 " . Xsrf::getInput() . "</form>

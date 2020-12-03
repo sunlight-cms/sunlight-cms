@@ -10,27 +10,27 @@ class TemplatePlugin extends Plugin
 {
     const DEFAULT_LAYOUT = 'default';
 
-    protected static $typeDefinition = array(
+    protected static $typeDefinition = [
         'type' => 'template',
         'dir' => 'plugins/templates',
         'class' => __CLASS__,
         'default_base_namespace' => 'SunlightTemplate',
-        'options' => array(
-            'css' => array('type' => 'array', 'default' => array('template_style' => 'style.css'), 'normalizer' => array('Sunlight\Plugin\PluginOptionNormalizer', 'normalizeWebPathArray')),
-            'js' => array('type' => 'array', 'default' => array(), 'normalizer' => array('Sunlight\Plugin\PluginOptionNormalizer', 'normalizeWebPathArray')),
-            'responsive' => array('type' => 'boolean', 'default' => false),
-            'dark' => array('type' => 'boolean', 'default' => false),
-            'smiley.count' => array('type' => 'integer', 'default' => 10),
-            'smiley.format' => array('type' => 'string', 'default' => 'gif'),
-            'bbcode.buttons' => array('type' => 'boolean', 'default' => true),
-            'box.parent' => array('type' => 'string', 'default' => ''),
-            'box.item' => array('type' => 'string', 'default' => 'div'),
-            'box.title' => array('type' => 'string', 'default' => 'h3'),
-            'box.title.inside' => array('type' => 'boolean', 'default' => false),
-            'layouts' => array('type' => 'array', 'required' => true, 'normalizer' => array('Sunlight\Plugin\PluginOptionNormalizer', 'normalizeTemplateLayouts')),
-            'lang_dir' => array('type' => 'string', 'default' => 'labels', 'normalizer' => array('Sunlight\Plugin\PluginOptionNormalizer', 'normalizePath')),
-        ),
-    );
+        'options' => [
+            'css' => ['type' => 'array', 'default' => ['template_style' => 'style.css'], 'normalizer' => ['Sunlight\Plugin\PluginOptionNormalizer', 'normalizeWebPathArray']],
+            'js' => ['type' => 'array', 'default' => [], 'normalizer' => ['Sunlight\Plugin\PluginOptionNormalizer', 'normalizeWebPathArray']],
+            'responsive' => ['type' => 'boolean', 'default' => false],
+            'dark' => ['type' => 'boolean', 'default' => false],
+            'smiley.count' => ['type' => 'integer', 'default' => 10],
+            'smiley.format' => ['type' => 'string', 'default' => 'gif'],
+            'bbcode.buttons' => ['type' => 'boolean', 'default' => true],
+            'box.parent' => ['type' => 'string', 'default' => ''],
+            'box.item' => ['type' => 'string', 'default' => 'div'],
+            'box.title' => ['type' => 'string', 'default' => 'h3'],
+            'box.title.inside' => ['type' => 'boolean', 'default' => false],
+            'layouts' => ['type' => 'array', 'required' => true, 'normalizer' => ['Sunlight\Plugin\PluginOptionNormalizer', 'normalizeTemplateLayouts']],
+            'lang_dir' => ['type' => 'string', 'default' => 'labels', 'normalizer' => ['Sunlight\Plugin\PluginOptionNormalizer', 'normalizePath']],
+        ],
+    ];
 
     /** @var LocalizationDictionary */
     protected $lang;
@@ -153,7 +153,7 @@ class TemplatePlugin extends Plugin
 
         }
 
-        return array();
+        return [];
     }
 
     /**
@@ -180,7 +180,7 @@ class TemplatePlugin extends Plugin
             $layout = static::DEFAULT_LAYOUT;
         }
 
-        $boxes = array();
+        $boxes = [];
         $query = DB::query('SELECT id,title,content,slot,page_ids,page_children,class FROM ' . _box_table . ' WHERE template=' . DB::val($this->id) . ' AND layout=' . DB::val($layout) . ' AND visible=1' . (!_logged_in ? ' AND public=1' : '') . ' AND level <= ' . _priv_level . ' ORDER BY ord');
 
         while ($box = DB::row($query)) {

@@ -7,11 +7,11 @@ use Sunlight\Util\DateTime;
 use Sunlight\Util\Request;
 
 require '../../system/bootstrap.php';
-Core::init('../../', array(
+Core::init('../../', [
     'env' => Core::ENV_ADMIN,
     'session_enabled' => false,
     'content_type' => 'text/css; charset=UTF-8',
-));
+]);
 
 header('Expires: ' . DateTime::formatForHttp(2592000, true));
 
@@ -43,7 +43,7 @@ function admin_color($loff = 0, $satc = null, $sat_abs = false, $light_abs = fal
     $s = (isset($satc) ? ($sat_abs ? $satc :  $GLOBALS['sat'] * $satc) : $GLOBALS['sat']);
 
     // vytvoreni hex kodu barvy
-    $color = new Color(array($h, $s, $l), 1);
+    $color = new Color([$h, $s, $l], 1);
 
     return $color->getRgbStr();
 }

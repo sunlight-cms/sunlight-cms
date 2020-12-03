@@ -27,13 +27,13 @@ class PageTreeFilter implements TreeFilterInterface
     function __construct(array $options)
     {
         // defaults
-        $options += array(
+        $options += [
             'ord_start' => null,
             'ord_end' => null,
             'ord_level' => 0,
             'check_level' => true,
             'check_public' => true,
-        );
+        ];
 
         $this->options = $options;
         $this->sql = $this->compileSql($options);

@@ -17,7 +17,7 @@ abstract class Hcm
      * @param string $handler callback vyhodnocovace modulu
      * @return string
      */
-    static function parse($input, $handler = array(__CLASS__, 'evaluateMatch'))
+    static function parse($input, $handler = [__CLASS__, 'evaluateMatch'])
     {
         return preg_replace_callback('{\[hcm\](.*?)\[/hcm\]}s', $handler, $input);
     }
@@ -45,7 +45,7 @@ abstract class Hcm
      * @param array  $args pole s argumenty
      * @return mixed vystup HCM modulu
      */
-    static function run($name, array $args = array())
+    static function run($name, array $args = [])
     {
         if (_env !== Core::ENV_WEB) {
             // HCM moduly vyzaduji frontendove prostredi
@@ -73,9 +73,9 @@ abstract class Hcm
             // extend modul
             ++Core::$hcmUid;
 
-            return Extend::buffer("hcm.{$module[0]}.{$module[1]}", array(
+            return Extend::buffer("hcm.{$module[0]}.{$module[1]}", [
                 'args' => $args,
-            ));
+            ]);
         }
     }
 
@@ -90,7 +90,7 @@ abstract class Hcm
     static function filter($content, $exception = false)
     {
         // pripravit seznamy
-        $blacklist = array();
+        $blacklist = [];
         if (!_priv_adminhcmphp) {
             $blacklist[] = 'php';
         }
@@ -100,10 +100,10 @@ abstract class Hcm
             $whitelist = null; // vsechny HCM moduly povoleny
         }
 
-        Extend::call('hcm.filter', array(
+        Extend::call('hcm.filter', [
             'blacklist' => &$blacklist,
             'whitelist' => &$blacklist,
-        ));
+        ]);
 
         // pripravit mapy
         $blacklistMap = $blacklist !== null ? array_flip($blacklist) : null;

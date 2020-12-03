@@ -8,9 +8,9 @@ use Sunlight\Util\Request;
 use Sunlight\Util\Response;
 
 require '../../bootstrap.php';
-Core::init('../../../', array(
+Core::init('../../../', [
     'content_type' => false,
-));
+]);
 
 // check GD
 if (!Picture::checkFormatSupport('jpg')) {
@@ -40,23 +40,23 @@ if (!empty($captchaNumber) && isset($_SESSION['captcha_code'][$captchaNumber])) 
 $captchaRenderer = new Text3dCaptcha();
 $captchaRenderer->setLetterSpacing(2);
 
-Extend::call('captcha.render', array(
+Extend::call('captcha.render', [
     'renderer' => &$captchaRenderer,
     'code' => &$captchaCode,
-));
+]);
 
 $captcha = $captchaRenderer->draw($captchaCode);
 
-$captchaResizeOptions = array(
+$captchaResizeOptions = [
     'x' => floor(imagesx($captcha) / 2),
     'y' => floor(imagesy($captcha) / 2),
     'mode' => 'fit',
-);
+];
 
-Extend::call('captcha.render.resize', array(
+Extend::call('captcha.render.resize', [
     'captcha' => $captcha,
     'options' => &$captchaResizeOptions,
-));
+]);
 
 $resizedCaptcha = Picture::resize($captcha, $captchaResizeOptions);
 

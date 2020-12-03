@@ -49,18 +49,18 @@ return function ($adresa = "", $predmet = null) {
 
     $result .= $msg
         . Form::render(
-            array(
+            [
                 'id' =>  'hcm_mform_' . Core::$hcmUid,
                 'name' => 'mform' . Core::$hcmUid,
                 'action' => Router::generate('system/script/hcm/mform.php?_return=' . rawurlencode($GLOBALS['_index']['url'])),
                 'submit_text' => _lang('hcm.mailform.send'),
-            ),
-            array(
-                array('label' => _lang('hcm.mailform.sender'), 'content' => "<input type='text' class='inputsmall' name='sender' value='" . $sender . "'><input type='hidden' name='fid' value='" . Core::$hcmUid . "'>"),
-                array('label' => _lang('posts.subject'), 'content' => "<input type='text' class='inputsmall' name='subject'" . $rsubject . ">"),
+            ],
+            [
+                ['label' => _lang('hcm.mailform.sender'), 'content' => "<input type='text' class='inputsmall' name='sender' value='" . $sender . "'><input type='hidden' name='fid' value='" . Core::$hcmUid . "'>"],
+                ['label' => _lang('posts.subject'), 'content' => "<input type='text' class='inputsmall' name='subject'" . $rsubject . ">"],
                 $rcaptcha,
-                array('label' => _lang('hcm.mailform.text'), 'content' => "<textarea class='areasmall' name='text' rows='9' cols='33'></textarea>", 'top' => true),
-            )
+                ['label' => _lang('hcm.mailform.text'), 'content' => "<textarea class='areasmall' name='text' rows='9' cols='33'></textarea>", 'top' => true],
+            ]
         );
 
     return $result;

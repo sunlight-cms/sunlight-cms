@@ -94,7 +94,7 @@ switch ($a) {
 
                 // anti spam limit
                 if (!IpLog::check(_iplog_anti_spam)) {
-                    $message = Message::warning(_lang('misc.requestlimit', array('*postsendexpire*' => _postsendexpire)));
+                    $message = Message::warning(_lang('misc.requestlimit', ['*postsendexpire*' => _postsendexpire]));
                     break;
                 }
 
@@ -106,14 +106,14 @@ switch ($a) {
                 }
 
                 // extend
-                Extend::call('mod.messages.new', array(
+                Extend::call('mod.messages.new', [
                     'receiver' => $rq['usr_id'],
                     'subject' => &$subject,
                     'text' => &$text,
-                ));
+                ]);
 
                 // vlozeni do pm tabulky
-                $pm_id = DB::insert(_pm_table, array(
+                $pm_id = DB::insert(_pm_table, [
                     'sender' => _user_id,
                     'sender_readtime' => time(),
                     'sender_deleted' => 0,
@@ -121,10 +121,10 @@ switch ($a) {
                     'receiver_readtime' => 0,
                     'receiver_deleted' => 0,
                     'update_time' => time()
-                ), true);
+                ], true);
 
                 // vlozeni do posts tabulky
-                $insert_id = DB::insert(_comment_table, $post_data = array(
+                $insert_id = DB::insert(_comment_table, $post_data = [
                     'type' => _post_pm,
                     'home' => $pm_id,
                     'xhome' => -1,
@@ -135,8 +135,8 @@ switch ($a) {
                     'time' => time(),
                     'ip' => _user_ip,
                     'bumptime' => 0
-                ), true);
-                Extend::call('posts.new', array('id' => $insert_id, 'posttype' => _post_pm, 'post' => $post_data));
+                ], true);
+                Extend::call('posts.new', ['id' => $insert_id, 'posttype' => _post_pm, 'post' => $post_data]);
 
                 // presmerovani a konec
                 $_index['redirect_to'] = Router::module('messages', 'a=list&read=' . $pm_id, true);
@@ -148,20 +148,20 @@ switch ($a) {
         }
 
         // formular
-        $inputs = array();
-        $inputs[] = array('label' => _lang('mod.messages.receiver'), 'content' => "<input type='text' class='inputsmall' maxlength='24'" . Form::restorePostValueAndName('receiver', Request::get('receiver')) . ">");
-        $inputs[] = array('label' => _lang('posts.subject'), 'content' => "<input type='text' class='inputmedium' maxlength='48'" . Form::restorePostValueAndName('subject', Request::get('subject')) . ">");
-        $inputs[] = array('label' => _lang('mod.messages.message'), 'content' => "<textarea class='areamedium' rows='5' cols='33' name='text'>" . Form::restorePostValue('text', null, false) . "</textarea>", 'top' => true);
-        $inputs[] = array('label' => '', 'content' => PostForm::renderControls('newmsg', 'text'));
+        $inputs = [];
+        $inputs[] = ['label' => _lang('mod.messages.receiver'), 'content' => "<input type='text' class='inputsmall' maxlength='24'" . Form::restorePostValueAndName('receiver', Request::get('receiver')) . ">"];
+        $inputs[] = ['label' => _lang('posts.subject'), 'content' => "<input type='text' class='inputmedium' maxlength='48'" . Form::restorePostValueAndName('subject', Request::get('subject')) . ">"];
+        $inputs[] = ['label' => _lang('mod.messages.message'), 'content' => "<textarea class='areamedium' rows='5' cols='33' name='text'>" . Form::restorePostValue('text', null, false) . "</textarea>", 'top' => true];
+        $inputs[] = ['label' => '', 'content' => PostForm::renderControls('newmsg', 'text')];
 
         // form
         $output .= $message. Form::render(
-            array(
+            [
                 'name' => 'newmsg',
                 'action' => '',
                 'submit_append' => ' ' . PostForm::renderPreviewButton('newmsg', 'text'),
                 'form_append' => GenericTemplates::jsLimitLength(16384, 'newmsg', 'text')
-            ),
+            ],
             $inputs
         );
 
@@ -190,7 +190,7 @@ switch ($a) {
 
             // stavy
             $locked = ($q['sender_deleted'] || $q['receiver_deleted']);
-            list($role, $role_other) = (($q['sender'] == _user_id) ? array('sender', 'receiver') : array('receiver', 'sender'));
+            list($role, $role_other) = (($q['sender'] == _user_id) ? ['sender', 'receiver'] : ['receiver', 'sender']);
 
             // spocitat neprectene zpravy
             $unread_count = DB::count(_comment_table, 'home=' . DB::val($q['id']) . ' AND type=' . _post_pm . ' AND author=' . _user_id . ' AND time>' . $q[$role_other . '_readtime']);
@@ -198,16 +198,16 @@ switch ($a) {
             // vystup
             $output .= "<div class=\"topic\">\n";
             $output .= "<h2>" . _lang('mod.messages.message') . ": " . $q['subject'] . "</h2>\n";
-            $output .= CommentService::renderPost(array('id' => $q['post_id']) + $q, $senderUserQuery, array(
+            $output .= CommentService::renderPost(['id' => $q['post_id']] + $q, $senderUserQuery, [
                 'post_link' => false,
                 'allow_reply' => false,
-            ));
+            ]);
             $output .= "</div>\n";
 
-            $output .= CommentService::render(CommentService::RENDER_PM_LIST, $q['id'], array($locked, $unread_count), false, Router::module('messages', 'a=list&read=' . $q['id']));
+            $output .= CommentService::render(CommentService::RENDER_PM_LIST, $q['id'], [$locked, $unread_count], false, Router::module('messages', 'a=list&read=' . $q['id']));
 
             // aktualizace casu precteni
-            DB::update(_pm_table, 'id=' . DB::val($id), array($role . '_readtime' => time()));
+            DB::update(_pm_table, 'id=' . DB::val($id), [$role . '_readtime' => time()]);
 
             break;
         }
@@ -223,16 +223,16 @@ switch ($a) {
             $delcond = null;
             $delcond_sadd = null;
             $delcond_radd = null;
-            $selected_ids = (array) Request::post('msg', array(), true);
+            $selected_ids = (array) Request::post('msg', [], true);
 
             // funkce
             $deletePms = function ($cond = null, $sender_cond = null, $receiver_cond = null) {
                 $q = DB::query('SELECT id,sender,sender_deleted,receiver,receiver_deleted FROM ' . _pm_table . ' WHERE (sender=' . _user_id . ' AND sender_deleted=0' . (isset($sender_cond) ? ' AND ' . $sender_cond : '') . ' OR receiver=' . _user_id . ' AND receiver_deleted=0' . (isset($receiver_cond) ? ' AND ' . $receiver_cond : '') . ')' . ((isset($cond)) ? ' AND ' . $cond : ''));
-                $del_list = array();
+                $del_list = [];
 
                 while ($r = DB::row($q)) {
                     // zjisteni roli
-                    list($role, $role_other) = (($r['sender'] == _user_id) ? array('sender', 'receiver') : array('receiver', 'sender'));
+                    list($role, $role_other) = (($r['sender'] == _user_id) ? ['sender', 'receiver'] : ['receiver', 'sender']);
 
                     // smazani nebo oznaceni
                     if ($r[$role_other . '_deleted']) {
@@ -240,7 +240,7 @@ switch ($a) {
                         $del_list[] = $r['id'];
                     } else {
                         // pouze oznacit
-                        DB::update(_pm_table, 'id=' . $r['id'], array($role . '_deleted' => 1));
+                        DB::update(_pm_table, 'id=' . $r['id'], [$role . '_deleted' => 1]);
                     }
                 }
 
@@ -268,7 +268,7 @@ switch ($a) {
                             . ' WHERE pm.id IN(' . DB::arr($selected_ids) . ') AND (pm.sender=' . _user_id . ' AND pm.sender_deleted=0 OR pm.receiver=' . _user_id . ' AND pm.receiver_deleted=0)'
                             . ' AND last_post.author!=' . _user_id
                         );
-                        $changesets = array();
+                        $changesets = [];
                         $now = time();
                         while ($r = DB::row($q)) {
                             $role = $r['sender'] == _user_id ? 'sender' : 'receiver';

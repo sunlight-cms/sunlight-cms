@@ -40,17 +40,17 @@ abstract class PageLister
         static::$initialized = true;
 
         // load config
-        static::$config = array();
+        static::$config = [];
         $sessionKey = static::getSessionKey();
         if (isset($_SESSION[$sessionKey]) && is_array($_SESSION[$sessionKey])) {
             static::$config = $_SESSION[$sessionKey];
         }
 
         // set defaults
-        static::$config += array(
+        static::$config += [
             'mode' => _adminpagelist_mode,
             'current_page' => null,
-        );
+        ];
 
         // fetch types
         static::$pageTypes = PageManager::getTypes();
@@ -130,10 +130,10 @@ abstract class PageLister
     static function saveOrd()
     {
         if (isset($_POST['ord']) && is_array($_POST['ord']) && !isset($_POST['reset'])) {
-            $changeset = array();
+            $changeset = [];
 
             foreach ($_POST['ord'] as $id => $ord) {
-                $changeset[$id] = array('ord' => (int) $ord);
+                $changeset[$id] = ['ord' => (int) $ord];
             }
 
             DB::updateSetMulti(_page_table, 'id', $changeset);
@@ -170,10 +170,10 @@ abstract class PageLister
      * @param array $options
      * @return string
      */
-    static function render(array $options = array())
+    static function render(array $options = [])
     {
         // default options
-        $options += array(
+        $options += [
             'mode' => static::$config['mode'],
             'actions' => true,
             'links' => true,
@@ -183,7 +183,7 @@ abstract class PageLister
             'title_editable' => false,
             'level_class' => null,
             'breadcrumbs' => true,
-        );
+        ];
 
         // check current page
         if (static::$config['current_page'] !== null && !DB::count(_page_table, 'id=' . DB::val(static::$config['current_page']))) {
@@ -218,7 +218,7 @@ abstract class PageLister
 
         $output .= "<ul class=\"page-list-breadcrumbs\">\n";
         $output .= "<li><a href=\"" . _e($url->set('page_id', 'root')->generateRelative()) . "\">" . _lang('global.all') . "</a></li>\n";
-        $path = PageManager::getPath(static::$config['current_page'], null, array('level_inherit', 'layout', 'layout_inherit'));
+        $path = PageManager::getPath(static::$config['current_page'], null, ['level_inherit', 'layout', 'layout_inherit']);
         foreach ($path as $page) {
             $output .= "<li>" . static::renderPageFlags($page) . "<a href=\"" . _e($url->set('page_id', $page['id'])->generateRelative()) . "\" title=\"ID: {$page['id']}, " . _lang('admin.content.form.ord') . " {$page['ord']}\">{$page['title']}</a></li>\n";
         }
@@ -265,7 +265,7 @@ abstract class PageLister
                     : null,
                 true,
                 null,
-                array('layout', 'layout_inherit', 'level_inherit', 'ord')
+                ['layout', 'layout_inherit', 'level_inherit', 'ord']
             ),
             $options
         );
@@ -354,7 +354,7 @@ abstract class PageLister
     {
         $ids = array_keys($tree);
         $current = 0;
-        $filteredTree = array();
+        $filteredTree = [];
         $isFullTree = (static::MODE_FULL_TREE == static::$config['mode']);
 
         // iterate pages
@@ -384,7 +384,7 @@ abstract class PageLister
             }
 
             if ($keep) {
-                $filteredTree[$id] = array('_is_accessible' => $isAccessible) + $page;
+                $filteredTree[$id] = ['_is_accessible' => $isAccessible] + $page;
             }
 
             ++$current;
@@ -404,11 +404,11 @@ abstract class PageLister
         $userHasRight = User::hasPrivilege('admin' . static::$pageTypes[$page['type']]);
         $isAccessible = $userHasRight;
 
-        Extend::call('admin.page.list.access', array(
+        Extend::call('admin.page.list.access', [
             'page' => $page,
             'user_has_right' => $userHasRight,
             'is_accessible' => &$isAccessible,
-        ));
+        ]);
 
         return $isAccessible;
     }
@@ -427,11 +427,11 @@ abstract class PageLister
         // prepare
         $typeName = static::$pageTypes[$page['type']];
         $isAccessible = $page['_is_accessible'];
-        Extend::call('admin.page.list.item', array(
+        Extend::call('admin.page.list.item', [
             'item' => &$page,
             'options' => &$options,
             'is_accessible' => $isAccessible,
-        ));
+        ]);
 
         // detect separator, compose link
         $isSeparator = ($page['type'] == _page_separator);
@@ -535,67 +535,67 @@ abstract class PageLister
      */
     private static function getPageActions(array $page, $hasAccess)
     {
-        $actions = array();
+        $actions = [];
 
         // edit
         if ($hasAccess) {
-            $actions['edit'] = array(
+            $actions['edit'] = [
                 'url' => 'index.php?p=content-edit' . static::$pageTypes[$page['type']] . '&id=' . $page['id'],
                 'icon' => 'images/icons/edit.png',
                 'label' => _lang('global.edit'),
                 'order' => 50,
-            );
+            ];
         }
 
         // show
         if ($page['type'] != _page_separator) {
-            $actions['show'] = array(
+            $actions['show'] = [
                 'url' => Router::page($page['id'], $page['slug']),
                 'new_window' => true,
                 'icon' => 'images/icons/show.png',
                 'label' => _lang('global.show'),
                 'order' => 100,
-            );
+            ];
         }
 
         // special actions
         switch ($page['type']) {
             case _page_gallery:
-                $actions['gallery_images'] = array(
+                $actions['gallery_images'] = [
                     'url' => 'index.php?p=content-manageimgs&g=' . $page['id'],
                     'icon' => 'images/icons/img.png',
                     'label' => _lang('admin.content.form.showpics'),
                     'order' => 150,
-                );
+                ];
                 break;
 
             case _page_category:
-                $actions['category_articles'] = array(
+                $actions['category_articles'] = [
                     'url' => 'index.php?p=content-articles-list&cat=' . $page['id'],
                     'icon' => 'images/icons/list.png',
                     'label' => _lang('admin.content.form.showarticles'),
                     'order' => 150,
-                );
+                ];
                 break;
         }
 
         // delete
         if ($hasAccess) {
-            $actions['delete'] = array(
+            $actions['delete'] = [
                 'url' => 'index.php?p=content-delete&id=' . $page['id'],
                 'icon' => 'images/icons/delete.png',
                 'label' => _lang('global.delete'),
                 'order' => 200,
-            );
+            ];
         }
 
-        Extend::call('admin.page.list.actions', array(
+        Extend::call('admin.page.list.actions', [
             'page' => $page,
             'has_access' => $hasAccess,
             'actions' => &$actions
-        ));
+        ]);
 
-        uasort($actions, array(__CLASS__, 'sortActions'));
+        uasort($actions, [__CLASS__, 'sortActions']);
 
         return $actions;
     }

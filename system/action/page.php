@@ -69,11 +69,11 @@ if ($segment !== null) {
     }
 
     // umoznit pluginum urcit stav podpory segmentu
-    Extend::call('page.segment', array(
+    Extend::call('page.segment', [
         'segment' => $segment,
         'page' => $_page,
         'support' => &$segment_support,
-    ));
+    ]);
 
     // stranka nenalezena, pokud nepodporuje segment
     if (!$segment_support) {
@@ -108,10 +108,10 @@ $_index['segment'] = $segment;
 if ($_page['events'] !== null) {
     foreach (ArgList::parse($_page['events']) as $page_event) {
         $page_event_parts = explode(':', $page_event, 2);
-        Extend::call('page.event.' . $page_event_parts[0], array(
+        Extend::call('page.event.' . $page_event_parts[0], [
             'arg' => isset($page_event_parts[1]) ? $page_event_parts[1] : null,
             'page' => &$_page,
-        ));
+        ]);
     }
 }
 
@@ -125,10 +125,10 @@ $script = null;
 if ($_page['type'] == _page_plugin) {
     // plugin stranka
     $script = null;
-    Extend::call('page.plugin.' . $_page['type_idt'], array(
+    Extend::call('page.plugin.' . $_page['type_idt'], [
         'page' => &$_page,
         'script' => &$script,
-    ));
+    ]);
 
     if ($script === null) {
         throw new \RuntimeException(sprintf('No handler for plugin page type "%s"', $_page['type_idt']));
@@ -139,12 +139,12 @@ if ($_page['type'] == _page_plugin) {
 }
 
 // vykresleni stranky
-$extend_args = Extend::args($output, array('page' => &$_page, 'script' => &$script));
+$extend_args = Extend::args($output, ['page' => &$_page, 'script' => &$script]);
 
 Extend::call('page.all.before', $extend_args);
 Extend::call('page.' . $type_name . '.before', $extend_args);
 
-$extend_args = Extend::args($output, array('page' => &$_page));
+$extend_args = Extend::args($output, ['page' => &$_page]);
 
 require $script;
 

@@ -30,7 +30,7 @@ if (_logged_in) {
 
 // priprava
 $message = '';
-$user_data = array();
+$user_data = [];
 $user_data_valid = false;
 $show_form = true;
 $rules = Core::loadSetting('rules');
@@ -78,7 +78,7 @@ if (isset($_GET['confirm'])) {
                 $message = Message::warning(_lang('mod.reg.confirm.notfound'));
             }
         } else {
-            $message = Message::warning(_lang('mod.reg.confirm.limit', array('*limit*' => _accactexpire)));
+            $message = Message::warning(_lang('mod.reg.confirm.limit', ['*limit*' => _accactexpire]));
         }
     } else {
         $message = Message::error(_lang('mod.reg.confirm.badcode'));
@@ -90,11 +90,11 @@ if (isset($_GET['confirm'])) {
     // zpracovani odeslani
     if (!empty($_POST)) {
 
-        $errors = array();
+        $errors = [];
 
         // kontrola iplogu
         if (!IpLog::check(_iplog_anti_spam)) {
-            $errors[] = _lang('misc.requestlimit', array("*postsendexpire*" => _postsendexpire));
+            $errors[] = _lang('misc.requestlimit', ["*postsendexpire*" => _postsendexpire]);
         }
 
         // nacteni a kontrola promennych
@@ -150,10 +150,10 @@ if (isset($_GET['confirm'])) {
 
         $user_data['ip'] = _user_ip;
 
-        Extend::call('mod.reg.submit', array(
+        Extend::call('mod.reg.submit', [
             'user_data' => &$user_data,
             'errors' => &$errors,
-        ));
+        ]);
 
         // validace
         if (empty($errors)) {
@@ -176,7 +176,7 @@ if (!$user_data_valid && $show_form) {
     /* ----- formular ----- */
 
     // priprava vyberu skupiny
-    $groupselect = array();
+    $groupselect = [];
     if (_registration_grouplist) {
         $groupselect_items = DB::query("SELECT id,title FROM " . _user_group_table . " WHERE blocked=0 AND reglist=1 ORDER BY title");
         if (DB::size($groupselect_items) != 0) {
@@ -184,15 +184,15 @@ if (!$user_data_valid && $show_form) {
             while ($groupselect_item = DB::row($groupselect_items)) {
                 $groupselect_content .= "<option value='" . $groupselect_item['id'] . "'" . (($groupselect_item['id'] == _defaultgroup) ? " selected" : '') . ">" . $groupselect_item['title'] . "</option>\n";
             }
-            $groupselect = array('label' => _lang('global.group'), 'content' => "<select name='group_id'>" . $groupselect_content . "</select>");
+            $groupselect = ['label' => _lang('global.group'), 'content' => "<select name='group_id'>" . $groupselect_content . "</select>"];
         }
     }
 
     // priprava podminek
     if ($rules !== '') {
-        $rules = array('content' => "<h2>" . _lang('mod.reg.rules') . "</h2>" . $rules . "<p><label><input type='checkbox' name='agreement' value='1'" . Form::activateCheckbox(isset($_POST['agreement'])) . "> " . _lang('mod.reg.rules.agreement') . "</label></p>", 'top' => true);
+        $rules = ['content' => "<h2>" . _lang('mod.reg.rules') . "</h2>" . $rules . "<p><label><input type='checkbox' name='agreement' value='1'" . Form::activateCheckbox(isset($_POST['agreement'])) . "> " . _lang('mod.reg.rules.agreement') . "</label></p>", 'top' => true];
     } else {
-        $rules = array();
+        $rules = [];
     }
 
     // captcha
@@ -202,24 +202,24 @@ if (!$user_data_valid && $show_form) {
     $output .= "<p class='bborder'>" . _lang('mod.reg.p') . (_registration_confirm ? ' ' . _lang('mod.reg.confirm.extratext') : '') . "</p>\n";
 
     $output .= Form::render(
-        array(
+        [
             'name' => 'regform',
             'action' => Router::module('reg'),
             'submit_text' => _lang('mod.reg.submit' . (_registration_confirm ? '2' : '')),
             'submit_span' => $rules !== '',
             'submit_name' => 'regform',
             'autocomplete' => 'off',
-        ),
-        array(
-            array('label' => _lang('login.username'), 'content' => "<input type='text' class='inputsmall' maxlength='24'" . Form::restorePostValueAndName('username') . ">"),
-            array('label' => _lang('login.password'), 'content' => "<input type='password' name='password' class='inputsmall'>"),
-            array('label' => _lang('login.password') . " (" . _lang('global.check') . ")", 'content' => "<input type='password' name='password2' class='inputsmall'>"),
-            array('label' => _lang('global.email'), 'content' => "<input type='email' class='inputsmall' " . Form::restorePostValueAndName('email', '@') . ">"),
-            array('label' => _lang('mod.settings.massemail'), 'content' => "<label><input type='checkbox' value='1'" . Form::restoreCheckedAndName('regform', 'massemail') . "> " . _lang('mod.settings.massemail.label') . '</label>'),
+        ],
+        [
+            ['label' => _lang('login.username'), 'content' => "<input type='text' class='inputsmall' maxlength='24'" . Form::restorePostValueAndName('username') . ">"],
+            ['label' => _lang('login.password'), 'content' => "<input type='password' name='password' class='inputsmall'>"],
+            ['label' => _lang('login.password') . " (" . _lang('global.check') . ")", 'content' => "<input type='password' name='password2' class='inputsmall'>"],
+            ['label' => _lang('global.email'), 'content' => "<input type='email' class='inputsmall' " . Form::restorePostValueAndName('email', '@') . ">"],
+            ['label' => _lang('mod.settings.massemail'), 'content' => "<label><input type='checkbox' value='1'" . Form::restoreCheckedAndName('regform', 'massemail') . "> " . _lang('mod.settings.massemail.label') . '</label>'],
             $groupselect,
             $captcha,
             $rules,
-        )
+        ]
     );
 } elseif ($user_data_valid) {
     /* ----- zpracovani dat ----- */
@@ -227,10 +227,10 @@ if (!$user_data_valid && $show_form) {
     if ($confirmed) {
 
         // potvrzeno
-        $user_id = DB::insert(_user_table, $user_data + array('registertime' => time()), true);
+        $user_id = DB::insert(_user_table, $user_data + ['registertime' => time()], true);
 
         // udalost
-        Extend::call('user.new', array('id' => $user_id, 'username' => $user_data['username'], 'email' => $user_data['email']));
+        Extend::call('user.new', ['id' => $user_id, 'username' => $user_data['username'], 'email' => $user_data['email']]);
 
         // hlaska
         $_SESSION['login_form_username'] = $user_data['username'];
@@ -245,39 +245,39 @@ if (!$user_data_valid && $show_form) {
 
         // nepotvrzeno
         $code = StringGenerator::generateHash(48);
-        $insert_id = DB::insert(_user_activation_table, array(
+        $insert_id = DB::insert(_user_activation_table, [
             'code' => $code,
             'expire' => time() + 3600,
             'data' => serialize($user_data),
-        ), true);
+        ], true);
 
         // potvrzovaci zprava
         $domain = Url::base()->getFullHost();
         $mail = Email::send(
             $user_data['email'],
-            _lang('mod.reg.confirm.subject', array('*domain*' => $domain)),
+            _lang('mod.reg.confirm.subject', ['*domain*' => $domain]),
             str_replace(
-                array(
+                [
                     '*username*',
                     '*domain*',
                     '*confirm_link*',
                     '*ip*',
                     '*date*'
-                ),
-                array(
+                ],
+                [
                     $user_data['username'],
                     $domain,
                     Router::module('reg', 'confirm=' . $code, true),
                     _user_ip,
                     GenericTemplates::renderTime(time()),
-                ),
+                ],
                 _lang('mod.reg.confirm.text')
             )
         );
 
         // hlaska
         if ($mail) {
-            $output .= Message::ok(_lang('mod.reg.confirm.sent', array('*email*' => $user_data['email'])), true);
+            $output .= Message::ok(_lang('mod.reg.confirm.sent', ['*email*' => $user_data['email']]), true);
         } else {
             $output .= Message::error(_lang('global.emailerror'));
             DB::delete(_user_activation_table, 'id=' . DB::val($insert_id));

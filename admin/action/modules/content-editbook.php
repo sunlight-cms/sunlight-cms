@@ -18,11 +18,11 @@ if ($continue) {
         $custom_settings .= "<tr><td colspan='2'><label><input type='checkbox' name='delposts' value='1'> " . _lang('admin.content.form.delposts') . " <small>(" . DB::count(_comment_table, 'home=' . DB::val($id) . ' AND type=' . _post_book_entry) . ")</small></label></td></tr>";
     }
     $custom_settings .= "<tr><td><input type='number' min='1' name='var2' value='" . $query['var2'] . "' class='inputmax'></td><td>" . _lang('admin.content.form.postsperpage') . "</td></tr>";
-    $custom_save_array = array(
-        'var1' => array('type' => 'bool', 'nullable' => false),
-        'var2' => array('type' => 'int', 'nullable' => true),
-        'var3' => array('type' => 'bool', 'nullable' => false),
-        'delposts' => array('type' => 'bool', 'nullable' => true),
-    );
+    $custom_save_array = [
+        'var1' => ['type' => 'bool', 'nullable' => false],
+        'var2' => ['type' => 'int', 'nullable' => true],
+        'var3' => ['type' => 'bool', 'nullable' => false],
+        'delposts' => ['type' => 'bool', 'nullable' => true],
+    ];
 }
 require _root . 'admin/action/modules/include/page-editscript.php';

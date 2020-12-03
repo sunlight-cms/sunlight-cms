@@ -22,7 +22,7 @@ abstract class User
     static function listPrivileges()
     {
         static $extended = false;
-        static $privileges = array(
+        static $privileges = [
             'level',
             'administration',
             'adminsettings',
@@ -67,10 +67,10 @@ abstract class User
             'artrate',
             'pollvote',
             'selfremove',
-        );
+        ];
 
         if (!$extended) {
-            Extend::call('user.privileges', array('privileges' => &$privileges));
+            Extend::call('user.privileges', ['privileges' => &$privileges]);
             $extended = true;
         }
 
@@ -137,7 +137,7 @@ abstract class User
             }
         } else {
             $subPath = 'home/' . _user_name . '/';
-            Extend::call('user.home_dir', array('subpath' => &$subPath));
+            Extend::call('user.home_dir', ['subpath' => &$subPath]);
             $homeDir = _upload_dir . $subPath;
         }
 
@@ -201,11 +201,11 @@ abstract class User
     {
         $handled = false;
 
-        Extend::call('user.move_uploaded_file', array(
+        Extend::call('user.move_uploaded_file', [
             'path' => $path,
             'new_path' => $newPath,
             'handled' => &$handled,
-        ));
+        ]);
 
         return $handled || move_uploaded_file($path, $newPath);
     }
@@ -249,11 +249,11 @@ abstract class User
             $content = Hcm::filter($content, true);
         }
 
-        Extend::call('user.filter_content', array(
+        Extend::call('user.filter_content', [
             'content' => &$content,
             'is_html' => $isHtml,
             'has_hcm' => $hasHcm,
-        ));
+        ]);
 
         return $content;
     }
@@ -282,7 +282,7 @@ abstract class User
         $groupAlias = "{$alias}g";
 
         // pole sloupcu
-        $columns = array(
+        $columns = [
             "{$alias}.id" => "{$prefix}id",
             "{$alias}.username" => "{$prefix}username",
             "{$alias}.publicname" => "{$prefix}publicname",
@@ -292,23 +292,23 @@ abstract class User
             "{$groupAlias}.icon" => "{$prefix}group_icon",
             "{$groupAlias}.level" => "{$prefix}group_level",
             "{$groupAlias}.color" => "{$prefix}group_color",
-        );
+        ];
 
         // joiny
-        $joins = array();
+        $joins = [];
         if ($joinUserIdColumn !== null) {
             $joins[] = 'LEFT JOIN ' . _user_table . " {$alias} ON({$joinUserIdColumn}" . DB::notEqual($emptyValue) . " AND {$joinUserIdColumn}={$alias}.id)";
         }
         $joins[] = 'LEFT JOIN ' . _user_group_table . " {$groupAlias} ON({$groupAlias}.id={$alias}.group_id)";
 
         // extend
-        Extend::call('user.query', array(
+        Extend::call('user.query', [
             'columns' => &$columns,
             'joins' => &$joins,
             'empty_value' => $emptyValue,
             'prefix' => $prefix,
             'alias' => $alias,
-        ));
+        ]);
 
         // sestavit seznam sloupcu
         $columnList = '';
@@ -323,13 +323,13 @@ abstract class User
             $columnList .= "{$columnName} {$columnAlias}";
         }
 
-        return array(
+        return [
             'columns' => array_values($columns),
             'column_list' => $columnList,
             'joins' => implode(' ', $joins),
             'alias' => $alias,
             'prefix' => $prefix,
-        );
+        ];
     }
 
     /**
@@ -351,7 +351,7 @@ abstract class User
 
         // udalost
         $allow = true;
-        Extend::call('user.delete', array('id' => $id, 'username' => $udata['username'], 'allow' => &$allow));
+        Extend::call('user.delete', ['id' => $id, 'username' => $udata['username'], 'allow' => &$allow]);
         if (!$allow) {
             return false;
         }
@@ -359,12 +359,12 @@ abstract class User
         // vyresit vazby
         DB::delete(_user_table, 'id=' . $id);
         DB::query("DELETE " . _pm_table . ",post FROM " . _pm_table . " LEFT JOIN " . _comment_table . " AS post ON (post.type=" . _post_pm . " AND post.home=" . _pm_table . ".id) WHERE receiver=" . $id . " OR sender=" . $id);
-        DB::update(_comment_table, 'author=' . $id, array(
+        DB::update(_comment_table, 'author=' . $id, [
             'guest' => sprintf('%x', crc32((string) $id)),
             'author' => -1,
-        ));
-        DB::update(_article_table, 'author=' . $id, array('author' => _super_admin_id));
-        DB::update(_poll_table, 'author=' . $id, array('author' => _super_admin_id));
+        ]);
+        DB::update(_article_table, 'author=' . $id, ['author' => _super_admin_id]);
+        DB::update(_poll_table, 'author=' . $id, ['author' => _super_admin_id]);
 
         // odstraneni uploadovaneho avataru
         if (isset($udata['avatar'])) {
@@ -401,7 +401,7 @@ abstract class User
         $_SESSION['user_auth'] = $authHash;
 
         if ($persistent && !headers_sent()) {
-            $cookie_data = array();
+            $cookie_data = [];
             $cookie_data[] = $id;
             $cookie_data[] = static::getPersistentLoginHash($id, $authHash, $email);
 
@@ -485,18 +485,18 @@ abstract class User
 
             // kod formulare
             $output .= Form::render(
-                array(
+                [
                     'name' => 'login_form',
                     'action' => $action,
                     'embedded' => $embedded,
                     'submit_text' => _lang('global.login'),
                     'submit_append' => " <label><input type='checkbox' name='login_persistent' value='1'> " . _lang('login.persistent') . "</label>",
                     'form_append' => $form_append,
-                ),
-                array(
-                    array('label' => _lang('login.username'), 'content' => "<input type='text' name='login_username' class='inputmedium'" . Form::restoreValue($_SESSION, 'login_form_username') . " maxlength='24' autofocus>"),
-                    array('label' => _lang('login.password'), 'content' => "<input type='password' name='login_password' class='inputmedium'>")
-                )
+                ],
+                [
+                    ['label' => _lang('login.username'), 'content' => "<input type='text' name='login_username' class='inputmedium'" . Form::restoreValue($_SESSION, 'login_form_username') . " maxlength='24' autofocus>"],
+                    ['label' => _lang('login.password'), 'content' => "<input type='password' name='login_password' class='inputmedium'>"]
+                ]
             );
 
             if (isset($_SESSION['login_form_username'])) {
@@ -505,14 +505,14 @@ abstract class User
 
             // odkazy
             if (!$embedded) {
-                $links = array();
+                $links = [];
                 if (_registration && _env === Core::ENV_WEB) {
-                    $links['reg'] = array('url' => Router::module('reg'), 'text' => _lang('mod.reg'));
+                    $links['reg'] = ['url' => Router::module('reg'), 'text' => _lang('mod.reg')];
                 }
                 if (_lostpass) {
-                    $links['lostpass'] = array('url' => Router::module('lostpass'), 'text' => _lang('mod.lostpass'));
+                    $links['lostpass'] = ['url' => Router::module('lostpass'), 'text' => _lang('mod.lostpass')];
                 }
-                Extend::call('user.login.links', array('links' => &$links));
+                Extend::call('user.login.links', ['links' => &$links]);
 
                 if (!empty($links)) {
                     $output .= "<ul class=\"login-form-links\">\n";
@@ -560,11 +560,11 @@ abstract class User
             case 4:
                 return Message::ok(_lang('login.selfremove'));
             case 5:
-                return Message::warning(_lang('login.attemptlimit', array('*1*' => _maxloginattempts, '*2*' => _maxloginexpire / 60)));
+                return Message::warning(_lang('login.attemptlimit', ['*1*' => _maxloginattempts, '*2*' => _maxloginexpire / 60]));
             case 6:
                 return Message::error(_lang('xsrf.msg'));
             default:
-                return Extend::fetch('user.login.message', array('code' => $code));
+                return Extend::fetch('user.login.message', ['code' => $code]);
         }
     }
 
@@ -601,12 +601,12 @@ abstract class User
 
         // udalost
         $extend_result = null;
-        Extend::call('user.login.before', array(
+        Extend::call('user.login.before', [
             'username' => $username,
             'password' => $plainPassword,
             'persistent' => $persistent,
             'result' => &$extend_result,
-        ));
+        ]);
         if ($extend_result !== null) {
             return $extend_result;
         }
@@ -641,13 +641,13 @@ abstract class User
         }
 
         // aktualizace dat uzivatele
-        $changeset = array(
+        $changeset = [
             'ip' => _user_ip,
             'activitytime' => time(),
             'logincounter' => $query['logincounter'] + 1,
             'security_hash' => null,
             'security_hash_expires' => 0,
-        );
+        ];
 
         if ($password->shouldUpdate()) {
             // aktualizace formatu hesla
@@ -659,7 +659,7 @@ abstract class User
         DB::update(_user_table, 'id=' . DB::val($query['id']), $changeset);
 
         // extend udalost
-        Extend::call('user.login', array('user' => $query));
+        Extend::call('user.login', ['user' => $query]);
 
         // prihlaseni
         static::login($query['id'], $query['password'], $query['email'], $persistent);
@@ -699,7 +699,7 @@ abstract class User
 
         Extend::call('user.logout');
 
-        $_SESSION = array();
+        $_SESSION = [];
 
         if ($destroy) {
             session_destroy();
@@ -749,22 +749,22 @@ abstract class User
      * @param array $options moznosti vykresleni, viz popis funkce
      * @return string|null HTML kod s obrazkem nebo URL
      */
-    static function renderAvatar(array $data, array $options = array())
+    static function renderAvatar(array $data, array $options = [])
     {
         // vychozi nastaveni
-        $options += array(
+        $options += [
             'get_url' => false,
             'default' => true,
             'link' => true,
             'extend' => true,
             'class' => null,
-        );
+        ];
 
         if ($options['extend']) {
-            Extend::call('user.avatar', array(
+            Extend::call('user.avatar', [
                 'data' => &$data,
                 'options' => $options,
-            ));
+            ]);
         }
 
         $hasAvatar = ($data['avatar'] !== null);
@@ -779,11 +779,11 @@ abstract class User
 
         // vykresleni rozsirenim
         if ($options['extend']) {
-            $extendOutput = Extend::buffer('user.avatar.render', array(
+            $extendOutput = Extend::buffer('user.avatar.render', [
                 'data' => $data,
                 'url' => &$url,
                 'options' => $options,
-            ));
+            ]);
             if ($extendOutput !== '') {
                 return $extendOutput;
             }
@@ -820,7 +820,7 @@ abstract class User
      * @param array $options   nastaveni vykresleni, viz {@see User::renderAvatar()}
      * @return string
      */
-    static function renderAvatarFromQuery(array $userQuery, array $row, array $options = array())
+    static function renderAvatarFromQuery(array $userQuery, array $row, array $options = [])
     {
         $userData = Arr::getSubset($row, $userQuery['columns'], strlen($userQuery['prefix']));
 

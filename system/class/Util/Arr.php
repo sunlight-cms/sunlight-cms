@@ -14,7 +14,7 @@ abstract class Arr
      */
     static function removeValue($array, $value_remove, $preserve_keys = false)
     {
-        $output = array();
+        $output = [];
         if (is_array($array)) {
             foreach ($array as $key => $value) {
                 if ($value != $value_remove) {
@@ -41,7 +41,7 @@ abstract class Arr
      */
     static function getSubset(array $array, array $keys, $prefixLen = null, $exceptionOnMissing = true)
     {
-        $out = array();
+        $out = [];
         foreach ($keys as $key) {
             if (key_exists($key, $array)) {
                 $out[$prefixLen === null ? $key : substr($key, $prefixLen)] = $array[$key];
@@ -64,7 +64,7 @@ abstract class Arr
      * @param array       $excludeList pole s klici, ktere maji byt VYRAZENY
      * @return array
      */
-    static function filterKeys(array $array, $include = null, $exclude = null, array $excludeList = array())
+    static function filterKeys(array $array, $include = null, $exclude = null, array $excludeList = [])
     {
         if ($include !== null) {
             $includeLength = strlen($include);
@@ -76,7 +76,7 @@ abstract class Arr
             $excludeList = array_flip($excludeList);
         }
 
-        $output = array();
+        $output = [];
         foreach ($array as $key => $value) {
             if (
                 $include !== null && strncmp($key, $include, $includeLength) !== 0

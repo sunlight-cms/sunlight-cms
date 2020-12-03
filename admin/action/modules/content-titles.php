@@ -20,7 +20,7 @@ if (isset($_POST['title']) && is_array($_POST['title'])) {
         if ($title == "") {
             $title = _lang('global.novalue');
         }
-        DB::update(_page_table, 'id=' . DB::val($id), array('title' => $title));
+        DB::update(_page_table, 'id=' . DB::val($id), ['title' => $title]);
     }
 
     $message = Message::ok(_lang('global.saved'));
@@ -33,14 +33,14 @@ $output .= $message . "
 <form action='index.php?p=content-titles' method='post'>
 ";
 
-$output .= PageLister::render(array(
+$output .= PageLister::render([
     'mode' => PageLister::MODE_SINGLE_LEVEL,
     'links' => false,
     'actions' => false,
     'breadcrumbs' => false,
     'title_editable' => true,
     'type' => true,
-));
+]);
 
 $output .= "
     <p>

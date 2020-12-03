@@ -29,17 +29,17 @@ $plugin_type = $plugin_types[$type_idt];
 
 // promenne editscriptu
 $custom_settings = '';
-$custom_save_array = array();
+$custom_save_array = [];
 
 // udalost pripravy editace
 $script = null;
-Extend::call('admin.page.plugin.' . $type_idt . '.edit', Extend::args($output, array(
+Extend::call('admin.page.plugin.' . $type_idt . '.edit', Extend::args($output, [
     'page' => $query,
     'new' => $new,
     'custom_settings' => &$custom_settings,
     'custom_save_array' => &$custom_save_array,
-)));
+]));
 
 // vlozeni skriptu
-$custom_save_array['type_idt'] = array('type' => 'raw', 'nullable' => false);
+$custom_save_array['type_idt'] = ['type' => 'raw', 'nullable' => false];
 require _root . 'admin/action/modules/include/page-editscript.php';

@@ -220,7 +220,7 @@ abstract class Filesystem
         $iterator = static::createRecursiveIterator($path);
 
         if ($failedPaths !== null) {
-            $failedPaths = array();
+            $failedPaths = [];
         }
 
         foreach ($iterator as $item) {
@@ -272,13 +272,13 @@ abstract class Filesystem
      * @param string $failedPath variable that will contain a path that could not be removed
      * @return bool
      */
-    static function purgeDirectory($path, array $options = array(), &$failedPath = null)
+    static function purgeDirectory($path, array $options = [], &$failedPath = null)
     {
-        $options += array(
+        $options += [
             'keep_dir' => false,
             'files_only' => false,
             'file_callback' => null,
-        );
+        ];
 
         // create iterator
         $iterator = static::createRecursiveIterator($path, \RecursiveIteratorIterator::CHILD_FIRST);

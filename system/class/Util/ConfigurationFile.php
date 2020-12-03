@@ -18,7 +18,7 @@ class ConfigurationFile implements \ArrayAccess
      * @param string $path
      * @param array $defaults
      */
-    function __construct($path, array $defaults = array())
+    function __construct($path, array $defaults = [])
     {
         $this->path = $path;
         $this->defaults = $defaults;
@@ -45,7 +45,7 @@ class ConfigurationFile implements \ArrayAccess
      */
     function reset()
     {
-        $this->data = array();
+        $this->data = [];
     }
 
     /**
@@ -107,7 +107,7 @@ class ConfigurationFile implements \ArrayAccess
         if (is_file($this->path)) {
             $this->data = (array) include $this->path;
         } else {
-            $this->data = array();
+            $this->data = [];
         }
     }
 }

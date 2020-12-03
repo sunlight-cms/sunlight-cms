@@ -66,11 +66,11 @@ class PluginManager
      */
     static function getTypeDefinitions()
     {
-        return array(
+        return [
             static::LANGUAGE => LanguagePlugin::getTypeDefinition(),
             static::TEMPLATE => TemplatePlugin::getTypeDefinition(),
             static::EXTEND => ExtendPlugin::getTypeDefinition(),
-        );
+        ];
     }
 
     /**
@@ -425,7 +425,7 @@ class PluginManager
             throw new \InvalidArgumentException(sprintf('Invalid plugin type "%s"', $type));
         }
 
-        $choices = array();
+        $choices = [];
         foreach ($this->pluginMap[$type] as $name => $instance) {
             $choices[$name] = $instance->getOption('name');
         }
@@ -501,12 +501,12 @@ class PluginManager
         }
 
         // initialize plugins
-        $this->pluginMap = array();
-        $this->inactivePlugins = array();
+        $this->pluginMap = [];
+        $this->inactivePlugins = [];
 
         foreach ($data['plugins'] as $type => $plugins) {
-            $this->pluginMap[$type] = array();
-            $this->inactivePlugins[$type] = array();
+            $this->pluginMap[$type] = [];
+            $this->inactivePlugins[$type] = [];
 
             foreach ($plugins as $name => $plugin) {
                 if (Plugin::STATUS_OK === $plugin['status']) {
@@ -538,17 +538,17 @@ class PluginManager
     {
         $pluginLoader = new PluginLoader($this->types);
         $result = $pluginLoader->load();
-        $data = array(
+        $data = [
             'plugins' => $result['plugins'],
             'autoload' => $result['autoload'],
             'system_hash' => $this->getSystemHash(),
-        );
+        ];
 
         $this->cache->set(
             $this->getCacheKey(),
             $data,
             0,
-            array('bound_files' => $result['bound_files'])
+            ['bound_files' => $result['bound_files']]
         );
 
         return $data;

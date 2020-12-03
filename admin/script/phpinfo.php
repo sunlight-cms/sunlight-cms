@@ -3,9 +3,9 @@
 use Sunlight\Core;
 
 require '../../system/bootstrap.php';
-Core::init('../../', array(
+Core::init('../../', [
     'env' => Core::ENV_ADMIN,
-));
+]);
 
 /* ---  vystup  --- */
 

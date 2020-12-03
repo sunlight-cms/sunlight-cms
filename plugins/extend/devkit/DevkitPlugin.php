@@ -18,7 +18,7 @@ class DevkitPlugin extends ExtendPlugin
     /** @var Component\MissingLocalizationLogger */
     private $missingLocalizationLogger;
     /** @var array[] */
-    private $dumps = array();
+    private $dumps = [];
 
     public function __construct(array $data, PluginManager $manager)
     {
@@ -28,19 +28,19 @@ class DevkitPlugin extends ExtendPlugin
         $this->eventLogger = new Component\EventLogger();
         $this->missingLocalizationLogger = new Component\MissingLocalizationLogger();
 
-        Extend::regGlobal(array($this->eventLogger, 'log'), 10000);
+        Extend::regGlobal([$this->eventLogger, 'log'], 10000);
 
         $exceptionHandler = Core::$errorHandler->getExceptionHandler();
         if ($exceptionHandler instanceof WebErrorScreen) {
-            $exceptionHandler->on('render.debug', array($this->sqlLogger, 'showInDebugScreen'));
+            $exceptionHandler->on('render.debug', [$this->sqlLogger, 'showInDebugScreen']);
         }
     }
 
     protected function getConfigDefaults()
     {
-        return array(
+        return [
             'mail_log_enabled' => true,
-        );
+        ];
     }
 
     /**
@@ -50,11 +50,11 @@ class DevkitPlugin extends ExtendPlugin
      */
     public function addDump($file, $line, $dump)
     {
-        $this->dumps[] = array(
+        $this->dumps[] = [
             'file' => $file,
             'line' => $line,
             'dump' => $dump,
-        );
+        ];
     }
 
     /**

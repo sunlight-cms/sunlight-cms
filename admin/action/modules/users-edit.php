@@ -49,7 +49,7 @@ if (isset($_GET['id'])) {
 } else {
     $continue = true;
     $id = null;
-    $query = array(
+    $query = [
         'id' => '-1',
         'group_id' => _defaultgroup,
         'levelshift' => 0,
@@ -62,7 +62,7 @@ if (isset($_GET['id'])) {
         'wysiwyg' => '1',
         'public' => '1',
         'massemail' => '0',
-    );
+    ];
 }
 
 if ($continue) {
@@ -73,7 +73,7 @@ if ($continue) {
     /* ---  ulozeni  --- */
     if (isset($_POST['username'])) {
 
-        $errors = array();
+        $errors = [];
 
         // nacteni a kontrola promennych
 
@@ -181,7 +181,7 @@ if ($continue) {
         if (count($errors) == 0) {
 
             // changeset
-            $changeset = array(
+            $changeset = [
                 'email' => $email,
                 'avatar' => $avatar,
                 'note' => $note,
@@ -192,7 +192,7 @@ if ($continue) {
                 'massemail' => $massemail,
                 'public' => $public,
                 'wysiwyg' => $wysiwyg,
-            );
+            ];
             if ($id === null || $passwordchange) {
                 $changeset['password'] = $password;
             }
@@ -201,27 +201,27 @@ if ($continue) {
             }
 
             $action = ($id === null ? 'new' : 'edit');
-            Extend::call('admin.user.' . $action . '.before', array(
+            Extend::call('admin.user.' . $action . '.before', [
                 'id' => $id,
                 'user' => $id === null ? null : $query,
                 'changeset' => &$changeset,
-            ));
+            ]);
 
             if ($id !== null) {
                 // uprava
                 DB::update(_user_table, 'id=' . DB::val($query['id']), $changeset);
-                Extend::call('user.edit', array('id' => $query['id'], 'username' => $username, 'email' => $email));
+                Extend::call('user.edit', ['id' => $query['id'], 'username' => $username, 'email' => $email]);
                 $admin_redirect_to = 'index.php?p=users-edit&r=1&id=' . $username;
 
                 return;
             } else {
                 // vytvoreni
-                $changeset += array(
+                $changeset += [
                     'registertime' => time(),
                     'activitytime' => time(),
-                );
+                ];
                 $id = DB::insert(_user_table, $changeset, true);
-                Extend::call('user.new', array('id' => $id, 'username' => $username, 'email' => $email));
+                Extend::call('user.new', ['id' => $id, 'username' => $username, 'email' => $email]);
                 $admin_redirect_to = 'index.php?p=users-edit&r=2&id=' . $username;
 
                 return;
@@ -319,7 +319,7 @@ if ($continue) {
 <td><textarea class='areasmall' rows='9' cols='33' name='note'>" . Form::restorePostValue('note', $query['note'], false, false) . "</textarea></td>
 </tr>
 
-" . Extend::buffer('admin.user.form', array('user' => $query)) . "
+" . Extend::buffer('admin.user.form', ['user' => $query]) . "
 
 <tr><td></td>
 <td><input type='submit' class='button bigger' value='" . _lang((isset($_GET['id']) ? 'global.save' : 'global.create')) . "' accesskey='s'>" . (($id != null) ? " <small>" . _lang('admin.content.form.thisid') . " " . $query['id'] . "</small>" : '') . "</td>

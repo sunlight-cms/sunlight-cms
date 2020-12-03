@@ -11,10 +11,10 @@ return function ($od = null, $do = null, $max_hloubka = null, $class = null) {
     Hcm::normalizeArgument($max_hloubka, 'int');
     Hcm::normalizeArgument($class, 'string');
 
-    return Template::treeMenu(array(
+    return Template::treeMenu([
         'max_depth' => $max_hloubka,
         'ord_start' => $od,
         'ord_end' => $do,
         'css_class' => $class,
-    ));
+    ]);
 };

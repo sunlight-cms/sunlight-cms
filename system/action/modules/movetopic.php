@@ -39,14 +39,14 @@ if ($query !== false) {
     return;
 }
 
-$forums = PageManager::getFlatTree(null, null, new SimpleTreeFilter(array('type' => _page_forum)));
+$forums = PageManager::getFlatTree(null, null, new SimpleTreeFilter(['type' => _page_forum]));
 
 /* ---  ulozeni  --- */
 
 if (isset($_POST['new_forum'])) {
     $new_forum_id = (int) Request::post('new_forum');
     if (isset($forums[$new_forum_id]) && $forums[$new_forum_id]['type'] == _page_forum) {
-        DB::update(_comment_table, 'id=' . DB::val($id) . ' OR (type=' . _post_forum_topic . ' AND xhome=' . $id . ')', array('home' => $new_forum_id));
+        DB::update(_comment_table, 'id=' . DB::val($id) . ' OR (type=' . _post_forum_topic . ' AND xhome=' . $id . ')', ['home' => $new_forum_id]);
         $query['home'] = $new_forum_id;
         $_index['backlink'] = Router::topic($query['id']);
         $message = Message::ok(_lang('mod.movetopic.ok'));

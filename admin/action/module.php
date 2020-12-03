@@ -33,10 +33,10 @@ if (isset($admin_modules[$admin_current_module])) {
         }
 
         // vlozeni
-        $extend_args = Extend::args($output, array(
+        $extend_args = Extend::args($output, [
             'name' => $admin_current_module,
             'script' => &$script,
-        ));
+        ]);
         Extend::call('admin.mod.init', $extend_args);
         Extend::call('admin.mod.' . $admin_current_module . '.before', $extend_args);
 

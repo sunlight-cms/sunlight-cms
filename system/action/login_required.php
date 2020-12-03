@@ -13,9 +13,9 @@ $_index['body_classes'][] = 'e-unauthorized';
 
 Response::unauthorized();
 
-Extend::call('index.login_required', array(
+Extend::call('index.login_required', [
     'index' => &$_index,
-));
+]);
 
 if ($_index['output'] === '') {
     $_index['output'] = User::renderLoginForm(true, true);

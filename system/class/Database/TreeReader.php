@@ -133,12 +133,12 @@ class TreeReader
     function flattenTree(array $tree)
     {
         if (empty($tree)) {
-            return array();
+            return [];
         }
 
-        $list = array();
-        $stack = array();
-        $frame = array($tree, 0);
+        $list = [];
+        $stack = [];
+        $frame = [$tree, 0];
         do {
 
             for ($i = $frame[1]; isset($frame[0][$i]); ++$i) {
@@ -153,8 +153,8 @@ class TreeReader
                 // traverzovat potomky?
                 if (!empty($children)) {
                     // prerusit tok a pokracovat potomky
-                    $stack[] = array($frame[0], $i + 1);
-                    $frame = array($children, 0);
+                    $stack[] = [$frame[0], $i + 1];
+                    $frame = [$children, 0];
                     continue 2;
                 }
             }
@@ -174,11 +174,11 @@ class TreeReader
      */
     function structureTree(array $nodes, $rootId = null)
     {
-        $tree = array();
-        $childrenMap = array();
+        $tree = [];
+        $childrenMap = [];
         foreach ($nodes as &$node) {
 
-            $node[$this->childrenIndex] = array();
+            $node[$this->childrenIndex] = [];
 
             // pridat uzel
             if ($node[$this->parentColumn] !== null && ($rootId === null || $rootId != $node[$this->idColumn])) {
@@ -207,9 +207,9 @@ class TreeReader
      */
     function sortTree(array $nodes, $rootId = null)
     {
-        $output = array();
+        $output = [];
 
-        $stack = array();
+        $stack = [];
         $parentId = $rootId;
 
         if ($rootId !== null) {
@@ -317,12 +317,12 @@ class TreeReader
         }
 
         // nacist uzly
-        $nodeMap = array();
+        $nodeMap = [];
         $query = DB::query($sql);
         while ($row = DB::rown($query)) {
             for ($i = 0; isset($row[$i]); $i += $columnCount) {
                 if (!isset($nodeMap[$row[$i]])) {
-                    $nodeMap[$row[$i]] = array();
+                    $nodeMap[$row[$i]] = [];
                     for ($j = 0; $j < $columnCount; ++$j) {
                         $nodeMap[$row[$i]][$columns[$j]] = $row[$i + $j];
                     }
@@ -354,7 +354,7 @@ class TreeReader
         // aplikovat filtr
         if ($options->filter) {
             // vyhledat nevalidni uzly
-            $invalidNodes = array();
+            $invalidNodes = [];
             foreach ($nodeMap as $id => $node) {
                 if (!$options->filter->filterNode($node, $this)) {
                     // zpracovat nevalidni uzel
@@ -440,12 +440,12 @@ class TreeReader
      */
     function getSystemColumns()
     {
-        return array(
+        return [
             $this->idColumn,
             $this->parentColumn,
             $this->levelColumn,
             $this->depthColumn,
-        );
+        ];
     }
 
     /**
@@ -505,7 +505,7 @@ class TreeReader
 
         // pripravit sloupce
         $columns = array_merge(
-            array($this->idColumn, $this->parentColumn, $this->levelColumn, $this->depthColumn), $columns
+            [$this->idColumn, $this->parentColumn, $this->levelColumn, $this->depthColumn], $columns
         );
         $columnCount = count($columns);
 
@@ -528,7 +528,7 @@ class TreeReader
         $sql .= ' WHERE n0.' . $this->idColumn . '=' . DB::val($nodeId);
 
         // nacist uzly
-        $nodes = array();
+        $nodes = [];
         $nodeIndex = 0;
         $query = DB::query($sql);
         $row = DB::rown($query);
@@ -553,10 +553,10 @@ class TreeReader
     {
         if ($nodeId === null) {
             // koren
-            return array(
+            return [
                 0,
                 $this->getDepth(null),
-            );
+            ];
         } else {
             // uzel
             $data = DB::queryRow('SELECT ' . $this->levelColumn . ',' . $this->depthColumn . ' FROM `' . $this->table . '` WHERE ' . $this->idColumn . '=' . DB::val($nodeId));
@@ -564,10 +564,10 @@ class TreeReader
                 throw new \RuntimeException(sprintf('Node "%s" does not exist', $nodeId));
             }
 
-            return array(
+            return [
                 $data[$this->levelColumn],
                 $data[$this->depthColumn],
-            );
+            ];
         }
     }
 

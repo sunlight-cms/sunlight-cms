@@ -52,27 +52,27 @@ if (!empty($_POST)) {
     }
 
     // pole vstupu array(nazev => typ)
-    $save_array = array(
-        'title' => array('type' => 'escaped_plaintext', 'length' => 255, 'nullable' => false),
-        'heading' => array('type' => 'escaped_plaintext', 'length' => 255, 'nullable' => false, 'enabled' => $editscript_enable_heading),
-        'slug_abs' => array('type' => 'bool', 'nullable' => false, 'enabled' => $editscript_enable_slug),
-        'slug' => array('type' => 'raw', 'nullable' => false, 'enabled' => $editscript_enable_slug),
-        'description' => array('type' => 'escaped_plaintext', 'nullable' => false, 'enabled' => $editscript_enable_meta),
-        'node_parent' => array('type' => 'int', 'nullable' => true, 'enabled' => _priv_adminpages),
-        'ord' => array('type' => 'raw', 'nullable' => false, 'enabled' => _priv_adminpages),
-        'visible' => array('type' => 'bool', 'nullable' => false, 'enabled' => $editscript_enable_visible),
-        'public' => array('type' => 'bool', 'nullable' => false, 'enabled' => $editscript_enable_access),
-        'level' => array('type' => 'raw', 'nullable' => false, 'enabled' => $editscript_enable_access),
-        'show_heading' => array('type' => 'bool', 'nullable' => false, 'enabled' => $editscript_enable_show_heading),
-        'perex' => array('type' => 'raw', 'nullable' => false, 'enabled' => $editscript_enable_perex),
-        'content' => array('type' => 'raw', 'nullable' => false, 'enabled' => $editscript_enable_content),
-        'events' => array('type' => 'raw', 'length' => 255, 'nullable' => true, 'enabled' => $editscript_enable_events),
-        'layout' => array('type' => 'raw', 'nullable' => true, 'enabled' => $editscript_enable_layout),
-    );
+    $save_array = [
+        'title' => ['type' => 'escaped_plaintext', 'length' => 255, 'nullable' => false],
+        'heading' => ['type' => 'escaped_plaintext', 'length' => 255, 'nullable' => false, 'enabled' => $editscript_enable_heading],
+        'slug_abs' => ['type' => 'bool', 'nullable' => false, 'enabled' => $editscript_enable_slug],
+        'slug' => ['type' => 'raw', 'nullable' => false, 'enabled' => $editscript_enable_slug],
+        'description' => ['type' => 'escaped_plaintext', 'nullable' => false, 'enabled' => $editscript_enable_meta],
+        'node_parent' => ['type' => 'int', 'nullable' => true, 'enabled' => _priv_adminpages],
+        'ord' => ['type' => 'raw', 'nullable' => false, 'enabled' => _priv_adminpages],
+        'visible' => ['type' => 'bool', 'nullable' => false, 'enabled' => $editscript_enable_visible],
+        'public' => ['type' => 'bool', 'nullable' => false, 'enabled' => $editscript_enable_access],
+        'level' => ['type' => 'raw', 'nullable' => false, 'enabled' => $editscript_enable_access],
+        'show_heading' => ['type' => 'bool', 'nullable' => false, 'enabled' => $editscript_enable_show_heading],
+        'perex' => ['type' => 'raw', 'nullable' => false, 'enabled' => $editscript_enable_perex],
+        'content' => ['type' => 'raw', 'nullable' => false, 'enabled' => $editscript_enable_content],
+        'events' => ['type' => 'raw', 'length' => 255, 'nullable' => true, 'enabled' => $editscript_enable_events],
+        'layout' => ['type' => 'raw', 'nullable' => true, 'enabled' => $editscript_enable_layout],
+    ];
     $save_array += $custom_save_array;
 
     // ulozeni
-    $changeset = array();
+    $changeset = [];
     $refresh_tree = null;
     $refresh_slug = false;
     $refresh_levels = false;
@@ -138,7 +138,7 @@ if (!empty($_POST)) {
 
                     if ($val !== null) {
                         // novy rodic
-                        $parentData = PageManager::getData($val, array('id', 'type'));
+                        $parentData = PageManager::getData($val, ['id', 'type']);
                         if (
                             $parentData !== false
                             && $parentData['type'] != _page_separator
@@ -385,11 +385,11 @@ if (!empty($_POST)) {
 
     // vlozeni / ulozeni
     $action = ($new ? 'new' : 'edit');
-    Extend::call('admin.page.' . $action . '.before', array(
+    Extend::call('admin.page.' . $action . '.before', [
         'id' => $id,
         'page' => $new ? null : $query,
         'changeset' => &$changeset,
-    ));
+    ]);
 
     if (!$new) {
         // ulozeni
@@ -401,11 +401,11 @@ if (!empty($_POST)) {
         $id = $query['id'] = DB::insert(_page_table, $changeset, true);
     }
 
-    Extend::call('admin.page.' . $action, array(
+    Extend::call('admin.page.' . $action, [
         'id' => $id,
         'page' => $query,
         'changeset' => $changeset,
-    ));
+    ]);
 
     // obnovit urovne stromu
     if ($refresh_tree) {
@@ -441,13 +441,13 @@ if (!empty($_POST)) {
 // vyber rodice
 if (_priv_adminpages) {
     $parent_row = "<tr>\n<th>" . _lang('admin.content.form.node_parent') . "</th><td>";
-    $parent_row .= Admin::pageSelect('node_parent', array(
+    $parent_row .= Admin::pageSelect('node_parent', [
         'empty_item' => _lang('admin.content.form.node_parent.none'),
-        'disabled_branches' => $new ? null : array($id),
+        'disabled_branches' => $new ? null : [$id],
         'maxlength' => null,
         'attrs' => 'class="inputmax"',
         'selected' => $query['node_parent'],
-    ));
+    ]);
     $parent_row .= "</td>\n</tr>\n";
 } else {
     $parent_row = '';

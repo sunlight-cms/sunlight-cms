@@ -26,7 +26,7 @@ if (isset($_GET['id'])) {
     }
 } else {
     $id = -1;
-    $query = array('author' => _user_id, 'question' => "", 'answers' => "", 'locked' => 0);
+    $query = ['author' => _user_id, 'question' => "", 'answers' => "", 'locked' => 0];
     $new = true;
     $actionbonus = "";
     $submitcaption = _lang('global.create');
@@ -43,7 +43,7 @@ if (isset($_POST['question'])) {
 
     // odpovedi
     $answers = explode("\n", Request::post('answers'));
-    $answers_new = array();
+    $answers_new = [];
     foreach ($answers as $answer) {
         $answers_new[] = _e(trim($answer));
     }
@@ -61,7 +61,7 @@ if (isset($_POST['question'])) {
     $reset = Form::loadCheckbox("reset");
 
     // kontrola promennych
-    $errors = array();
+    $errors = [];
     if ($question == "") {
         $errors[] = _lang('admin.content.polls.edit.error1');
     }
@@ -79,12 +79,12 @@ if (isset($_POST['question'])) {
     if (count($errors) == 0) {
 
         if (!$new) {
-            DB::update(_poll_table, 'id=' . $id, array(
+            DB::update(_poll_table, 'id=' . $id, [
                 'question' => $question,
                 'answers' => $answers,
                 'author' => $author,
                 'locked' => $locked
-            ));
+            ]);
 
             // korekce seznamu hlasu
             if (!$reset) {
@@ -107,14 +107,14 @@ if (isset($_POST['question'])) {
 
                 // ulozeni korekci
                 if ($newvotes != "") {
-                    DB::update(_poll_table, 'id=' . $id, array('votes' => $newvotes));
+                    DB::update(_poll_table, 'id=' . $id, ['votes' => $newvotes]);
                 }
 
             }
 
             // vynulovani
             if ($reset) {
-                DB::update(_poll_table, 'id=' . $id, array('votes' => trim(str_repeat("0-", $answers_count), "-")));
+                DB::update(_poll_table, 'id=' . $id, ['votes' => trim(str_repeat("0-", $answers_count), "-")]);
                 DB::delete(_iplog_table, 'type=' . _iplog_poll_vote . ' AND var=' . $id);
             }
 
@@ -124,13 +124,13 @@ if (isset($_POST['question'])) {
             return;
 
         } else {
-            $newid = DB::insert(_poll_table, array(
+            $newid = DB::insert(_poll_table, [
                 'author' => $author,
                 'question' => $question,
                 'answers' => $answers,
                 'locked' => $locked,
                 'votes' => trim(str_repeat("0-", $answers_count), "-")
-            ), true);
+            ], true);
             $admin_redirect_to = 'index.php?p=content-polls-edit&id=' . $newid . '&created';
 
             return;

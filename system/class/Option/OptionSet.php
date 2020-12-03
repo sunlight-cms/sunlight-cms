@@ -7,7 +7,7 @@ class OptionSet
     /** @var array */
     private $definition;
     /** @var array */
-    private $knownIndexMap = array();
+    private $knownIndexMap = [];
     /** @var bool */
     private $ignoreExtraIndexes = false;
 
@@ -107,7 +107,7 @@ class OptionSet
      */
     function process(&$data, $context = null, array &$errors = null)
     {
-        $errors = array();
+        $errors = [];
 
         if (!is_array($data)) {
             $errors['_'] = sprintf('option data must be an array (got %s)', gettype($data));

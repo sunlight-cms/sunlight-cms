@@ -16,7 +16,7 @@ class ConstraintMap
         if (!empty($definition->require)) {
             foreach ($repository->getDefinition()->require as $requiredPackage => $constraints) {
                 $this->constraintMap[$requiredPackage][] = $constraints;
-                $this->sourceMap[$requiredPackage][] = array($repository);
+                $this->sourceMap[$requiredPackage][] = [$repository];
             }
         }
 
@@ -27,7 +27,7 @@ class ConstraintMap
 
             foreach ($package->require as $requiredPackage => $constraints) {
                 $this->constraintMap[$requiredPackage][] = $constraints;
-                $this->sourceMap[$requiredPackage][] = array($repository, $package);
+                $this->sourceMap[$requiredPackage][] = [$repository, $package];
             }
         }
     }
@@ -88,18 +88,18 @@ class ConstraintMap
      */
     function getSources($packageName)
     {
-        $sources = array();
+        $sources = [];
 
         if (!isset($this->sourceMap[$packageName])) {
             throw new \OutOfBoundsException(sprintf('Package "%s" is not known', $packageName));
         }
 
         foreach ($this->sourceMap[$packageName] as $index => $source) {
-            $sources[] = array(
+            $sources[] = [
                 'repository' => $source[0],
                 'package' => isset($source[1]) ? $source[1] : null,
                 'constraints' => $this->constraintMap[$packageName][$index],
-            );
+            ];
         }
 
         return $sources;

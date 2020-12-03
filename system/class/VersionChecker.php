@@ -39,19 +39,19 @@ class VersionChecker
             $ttl = 7 * 24 * 60 * 60;
 
             $versionApiUrl = Url::parse('https://api.sunlight-cms.cz/version');
-            $versionApiUrl->add(array(
+            $versionApiUrl->add([
                 'ver' => Core::VERSION,
                 'dist' => Core::DIST,
                 'php' => PHP_VERSION_ID,
                 'checksum' => sha1(Core::$appId . '$' . Core::$secret),
                 'lang' => _lang('langcode.iso639'),
-            ));
+            ]);
 
             try {
-                $response = HttpClient::get($versionApiUrl->generate(), array(
-                    'headers' => array(sprintf('Referer: %s', Core::$url)),
+                $response = HttpClient::get($versionApiUrl->generate(), [
+                    'headers' => [sprintf('Referer: %s', Core::$url)],
                     'timeout' => 1,
-                ));
+                ]);
             } catch (HttpClientException $e) {
                 return null;
             }

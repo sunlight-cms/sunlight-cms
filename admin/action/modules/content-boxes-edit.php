@@ -24,7 +24,7 @@ if (!$new) {
     $box = DB::queryRow('SELECT * FROM ' . _box_table . ' WHERE id = ' . DB::val($id));
     $new = false;
 } else {
-    $box = array(
+    $box = [
         'id' => null,
         'ord' => '',
         'title' => '',
@@ -38,10 +38,10 @@ if (!$new) {
         'page_ids' => null,
         'page_children' => 0,
         'class' => null,
-    );
+    ];
 
     if (($template = Request::get('template')) !== null && TemplateService::templateExists($template)) {
-        $templates_to_choose_slot_from = array(TemplateService::getTemplate($template));
+        $templates_to_choose_slot_from = [TemplateService::getTemplate($template)];
     }
 }
 
@@ -52,32 +52,32 @@ if ($box === false) {
 }
 
 // event
-Extend::call('admin.box.edit', array('box' => &$box));
+Extend::call('admin.box.edit', ['box' => &$box]);
 
 // update or create box
 if (isset($_POST['box_edit'])) do {
-    $errors = array();
+    $errors = [];
 
-    $changeset = array(
+    $changeset = [
         'title' => Html::cut(_e(StringManipulator::trimExtraWhitespace(Request::post('title'))), 255),
         'content' => StringManipulator::trimExtraWhitespace(Request::post('content')),
         'visible' => Form::loadCheckbox('visible'),
         'public' => Form::loadCheckbox('public'),
         'level' => Math::range((int) Request::post('level'), 0, _priv_max_level),
-        'page_ids' => implode(',', array_filter(array_map('intval', (array) Request::post('page_ids', array(), true)), function ($id) { return $id >= 1; })) ?: null,
+        'page_ids' => implode(',', array_filter(array_map('intval', (array) Request::post('page_ids', [], true)), function ($id) { return $id >= 1; })) ?: null,
         'page_children' => Form::loadCheckbox('page_children'),
         'class' => StringManipulator::ellipsis(StringManipulator::trimExtraWhitespace(Request::post('class')), 255, false),
-    );
+    ];
 
     // slot uid
     $template_components = TemplateService::getComponentsByUid(Request::post('slot_uid'), TemplateService::UID_TEMPLATE_LAYOUT_SLOT);
 
     if ($template_components !== null) {
-        $changeset += array(
+        $changeset += [
             'template' => $template_components['template']->getId(),
             'layout' => $template_components['layout'],
             'slot' => $template_components['slot'],
-        );
+        ];
     } else {
         $errors[] = _lang('admin.content.boxes.edit.badslot');
     }
@@ -92,7 +92,7 @@ if (isset($_POST['box_edit'])) do {
     $changeset['ord'] = $new_ord;
 
     // event
-    Extend::call('admin.box.save', array('changeset' => &$changeset, 'errors' => &$errors));
+    Extend::call('admin.box.save', ['changeset' => &$changeset, 'errors' => &$errors]);
 
     // merge changeset into runtime box data
     $box = $changeset + $box;
@@ -169,12 +169,12 @@ $output .= _buffer(function () use ($id, $box, $new, $templates_to_choose_slot_f
             <tr class="valign-top">
                 <th><?php echo _lang('admin.content.form.pages') ?></th>
                 <td>
-                    <?php echo Admin::pageSelect('page_ids[]', array(
+                    <?php echo Admin::pageSelect('page_ids[]', [
                         'multiple' => true,
-                        'selected' => $box['page_ids'] !== null ? explode(',', $box['page_ids']) : array(),
+                        'selected' => $box['page_ids'] !== null ? explode(',', $box['page_ids']) : [],
                         'attrs' => 'size="10" class="inputmax"',
                         'empty_item' => _lang('global.all'),
-                    )) ?>
+                    ]) ?>
                     <p><label><input type="checkbox"<?php echo Form::restoreCheckedAndName('box_edit', 'page_children', $box['page_children']) ?>> <?php echo _lang('admin.content.form.include_subpages') ?></label>
                 </td>
             </tr>

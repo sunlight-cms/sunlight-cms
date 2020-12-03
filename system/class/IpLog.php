@@ -22,10 +22,10 @@ abstract class IpLog
         }
 
         // vycisteni iplogu
-        static $cleaned = array(
+        static $cleaned = [
             'system' => false,
-            'custom' => array(),
-        );
+            'custom' => [],
+        ];
         if ($type <= _iplog_password_reset_requested) {
             if (!$cleaned['system']) {
                 DB::query("DELETE FROM " . _iplog_table . " WHERE (type=1 AND " . time() . "-time>" . _maxloginexpire . ") OR (type=2 AND " . time() . "-time>" . _artreadexpire . ") OR (type=3 AND " . time() . "-time>" . _artrateexpire . ") OR (type=4 AND " . time() . "-time>" . _pollvoteexpire . ") OR (type=5 AND " . time() . "-time>" . _postsendexpire . ") OR (type=6 AND " . time() . "-time>" . _accactexpire . ") OR (type=7 AND " . time() . "-time>" . _lostpassexpire . ")");
@@ -88,11 +88,11 @@ abstract class IpLog
                 break;
         }
 
-        Extend::call('iplog.check', array(
+        Extend::call('iplog.check', [
             'type' => $type,
             'var' => $var,
             'result' => &$result,
-        ));
+        ]);
 
         return $result;
     }
@@ -119,79 +119,79 @@ abstract class IpLog
             case _iplog_failed_login_attempt:
                 $query = DB::queryRow($querybasic);
                 if ($query !== false) {
-                    DB::update(_iplog_table, 'id=' . $query['id'], array('var' => ($query['var'] + 1)));
+                    DB::update(_iplog_table, 'id=' . $query['id'], ['var' => ($query['var'] + 1)]);
                 } else {
-                    DB::insert(_iplog_table, array(
+                    DB::insert(_iplog_table, [
                         'ip' => _user_ip,
                         'type' => _iplog_failed_login_attempt,
                         'time' => time(),
                         'var' => 1
-                    ));
+                    ]);
                 }
                 break;
 
             case _iplog_article_read:
-                DB::insert(_iplog_table, array(
+                DB::insert(_iplog_table, [
                     'ip' => _user_ip,
                     'type' => _iplog_article_read,
                     'time' => time(),
                     'var' => $var
-                ));
+                ]);
                 break;
 
             case _iplog_article_rated:
-                DB::insert(_iplog_table, array(
+                DB::insert(_iplog_table, [
                     'ip' => _user_ip,
                     'type' => _iplog_article_rated,
                     'time' => time(),
                     'var' => $var
-                ));
+                ]);
                 break;
 
             case _iplog_poll_vote:
-                DB::insert(_iplog_table, array(
+                DB::insert(_iplog_table, [
                     'ip' => _user_ip,
                     'type' => _iplog_poll_vote,
                     'time' => time(),
                     'var' => $var
-                ));
+                ]);
                 break;
 
             case _iplog_anti_spam:
             case _iplog_password_reset_requested:
-                DB::insert(_iplog_table, array(
+                DB::insert(_iplog_table, [
                     'ip' => _user_ip,
                     'type' => $type,
                     'time' => time(),
                     'var' => 0
-                ));
+                ]);
                 break;
 
             case _iplog_failed_account_activation:
                 $query = DB::queryRow($querybasic);
                 if ($query !== false) {
-                    DB::update(_iplog_table, 'id=' . $query['id'], array('var' => ($query['var'] + 1)));
+                    DB::update(_iplog_table, 'id=' . $query['id'], ['var' => ($query['var'] + 1)]);
                 } else {
-                    DB::insert(_iplog_table, array(
+                    DB::insert(_iplog_table, [
                         'ip' => _user_ip,
                         'type' => _iplog_failed_account_activation,
                         'time' => time(),
                         'var' => 1
-                    ));
+                    ]);
                 }
                 break;
 
             default:
                 $query = DB::queryRow($querybasic . (($var !== null) ? " AND var=" . $var : ''));
                 if ($query !== false) {
-                    DB::update(_iplog_table, 'id=' . $query['id'], array('time' => time()));
+                    DB::update(_iplog_table, 'id=' . $query['id'], ['time' => time()]);
                 } else {
-                    DB::insert(_iplog_table, array(
+                    DB::insert(_iplog_table, [
                         'ip' => _user_ip,
                         'type' => $type,
                         'time' => time(),
                         'var' => $var
-                    ));
+                    ]);
                 }
                 break;
         }

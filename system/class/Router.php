@@ -23,11 +23,11 @@ abstract class Router
     {
         $url = ($absolute ? Core::$url : Url::base()->path) . '/' . $path;
 
-        Extend::call('link', array(
+        Extend::call('link', [
             'path' => $path,
             'absolute' => $absolute,
             'output' => &$url,
-        ));
+        ]);
 
         return $url;
     }
@@ -84,15 +84,15 @@ abstract class Router
             if ($slug === null || $category_slug === null) {
                 $slug = DB::queryRow("SELECT art.slug AS art_ts, cat.slug AS cat_ts FROM " . _article_table . " AS art JOIN " . _page_table . " AS cat ON(cat.id=art.home1) WHERE art.id=" . $id);
                 if ($slug === false) {
-                    $slug = array('---', '---');
+                    $slug = ['---', '---'];
                 } else {
-                    $slug = array($slug['art_ts'], $slug['cat_ts']);
+                    $slug = [$slug['art_ts'], $slug['cat_ts']];
                 }
             } else {
-                $slug = array($slug, $category_slug);
+                $slug = [$slug, $category_slug];
             }
         } else {
-            $slug = array($slug, $category_slug);
+            $slug = [$slug, $category_slug];
         }
 
         return static::page(null, $slug[1], $slug[0], $absolute);
@@ -157,15 +157,15 @@ abstract class Router
         switch ($post['type']) {
             case _post_section_comment:
             case _post_book_entry:
-                return array(
+                return [
                     static::page($post['home'], $post['page_slug'], null, $absolute),
                     $post['page_title'],
-                );
+                ];
             case _post_article_comment:
-                return array(
+                return [
                     static::article(null, $post['art_slug'], $post['cat_slug'], $absolute),
                     $post['art_title'],
-                );
+                ];
             case _post_forum_topic:
             case _post_pm:
                 if (-1 == $post['xhome']) {
@@ -179,27 +179,27 @@ abstract class Router
                     $url = static::module('messages', "a=list&read={$topicId}", $absolute);
                 }
 
-                return array(
+                return [
                     $url,
                     (-1 == $post['xhome'])
                         ? $post['subject']
                         : $post['xhome_subject']
                 ,
-                );
+                ];
             case _post_plugin:
                 $url = '';
                 $title = '';
 
-                Extend::call("posts.{$post['flag']}.link", array(
+                Extend::call("posts.{$post['flag']}.link", [
                     'post' => $post,
                     'url' => &$url,
                     'title' => &$title,
                     'absolute' => $absolute,
-                ));
+                ]);
 
-                return array($url, $title);
+                return [$url, $title];
             default:
-                return array('', '');
+                return ['', ''];
         }
     }
 
@@ -293,10 +293,10 @@ abstract class Router
      * @param array $options moznosti vykresleni, viz popis funkce
      * @return string HTML kod
      */
-    static function user(array $data, array $options = array())
+    static function user(array $data, array $options = [])
     {
         // vychozi nastaveni
-        $options += array(
+        $options += [
             'plain' => false,
             'link' => true,
             'color' => true,
@@ -306,7 +306,7 @@ abstract class Router
             'max_len' => null,
             'class' => null,
             'title' => null,
-        );
+        ];
 
         // extend
         $extendOutput = Extend::buffer('user.link', array('user' => $data, 'options' => &$options));
@@ -372,7 +372,7 @@ abstract class Router
      * @param array $options   nastaveni vykresleni, viz {@see Router::user()}
      * @return string
      */
-    static function userFromQuery(array $userQuery, array $row, array $options = array())
+    static function userFromQuery(array $userQuery, array $row, array $options = [])
     {
         $userData = Arr::getSubset($row, $userQuery['columns'], strlen($userQuery['prefix']));
 

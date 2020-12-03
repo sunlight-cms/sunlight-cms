@@ -66,7 +66,7 @@ if ($valid && $login && !_logged_in) {
             </p>
 
             <p id="warning">
-                <?php echo _lang('xsrf.warning', array('*domain*' => Url::base()->getFullHost())) ?>
+                <?php echo _lang('xsrf.warning', ['*domain*' => Url::base()->getFullHost()]) ?>
             </p>
 
             <?php echo User::renderPostRepeatForm(

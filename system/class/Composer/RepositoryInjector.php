@@ -33,8 +33,8 @@ class RepositoryInjector
      */
     function inject(Repository $repository, array &$errors = null)
     {
-        $errors = array();
-        $toInject = array();
+        $errors = [];
+        $toInject = [];
         $constraintMap = new ConstraintMap($repository);
 
         // check PHP version
@@ -123,7 +123,7 @@ class RepositoryInjector
      */
     function getInjectedPackages()
     {
-        $packages = array();
+        $packages = [];
 
         foreach ($this->packages as $name => $package) {
             if (!isset($this->rootMap[$name])) {
@@ -189,7 +189,7 @@ class RepositoryInjector
     {
         $success = true;
 
-        $failedIndexes = array();
+        $failedIndexes = [];
 
         foreach ($constraints as $index => $constraint) {
             if (!Semver::satisfies($version, $constraint)) {

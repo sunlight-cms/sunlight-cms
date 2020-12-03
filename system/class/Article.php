@@ -28,7 +28,7 @@ abstract class Article
         // pristup ke kategoriim
         if ($check_categories) {
             // nacist
-            $homes = array($article['home1']);
+            $homes = [$article['home1']];
             if ($article['home2'] != -1) {
                 $homes[] = $article['home2'];
             }
@@ -100,7 +100,7 @@ abstract class Article
      * @param bool   $hideInvisible nevypisovat neviditelne clanky
      * @return array joiny, where podminka, [pocet clanku]
      */
-    static function createFilter($alias, array $categories = array(), $sqlConditions = null, $doCount = false, $checkPublic = true, $hideInvisible = true)
+    static function createFilter($alias, array $categories = [], $sqlConditions = null, $doCount = false, $checkPublic = true, $hideInvisible = true)
     {
         //kategorie
         if (!empty($categories)) {
@@ -141,7 +141,7 @@ abstract class Article
         $conditions = implode(' AND ', $conditions);
 
         // sestaveni vysledku
-        $result = array($joins, $conditions);
+        $result = [$joins, $conditions];
 
         // pridat pocet
         if ($doCount) {
@@ -194,13 +194,13 @@ abstract class Article
     static function renderPreview(array $art, array $userQuery, $info = true, $perex = true, $comment_count = null)
     {
         // extend
-        $extendOutput = Extend::buffer('article.preview', array(
+        $extendOutput = Extend::buffer('article.preview', [
             'art' => $art,
             'user_query' => $userQuery,
             'info' => $info,
             'perex' => $perex,
             'comment_count' => $comment_count,
-        ));
+        ]);
         if ($extendOutput !== '') {
             return $extendOutput;
         }
@@ -216,11 +216,11 @@ abstract class Article
             if (isset($art['picture_uid'])) {
                 $thumbnail = Picture::getThumbnail(
                     Picture::get('images/articles/', $art['picture_uid'], 'jpg', 1),
-                    array(
+                    [
                         'mode' => 'fit',
                         'x' => _article_pic_thumb_w,
                         'y' => _article_pic_thumb_h,
-                    )
+                    ]
                 );
             } else {
                 $thumbnail = null;
@@ -232,23 +232,23 @@ abstract class Article
         // info
         if ($info == true) {
 
-            $infos = array(
-                'author' => array(_lang('article.author'), Router::userFromQuery($userQuery, $art)),
-                'posted' => array(_lang('article.posted'), GenericTemplates::renderTime($art['time'], 'article')),
-                'readnum' => array(_lang('article.readnum'), $art['readnum'] . 'x'),
-            );
+            $infos = [
+                'author' => [_lang('article.author'), Router::userFromQuery($userQuery, $art)],
+                'posted' => [_lang('article.posted'), GenericTemplates::renderTime($art['time'], 'article')],
+                'readnum' => [_lang('article.readnum'), $art['readnum'] . 'x'],
+            ];
 
             if ($art['comments'] == 1 && _comments && $comment_count !== null) {
-                $infos['comments'] = array(_lang('article.comments'), $comment_count);
+                $infos['comments'] = [_lang('article.comments'), $comment_count];
             }
 
-            Extend::call('article.preview.infos', array(
+            Extend::call('article.preview.infos', [
                 'art' => $art,
                 'user_query' => $userQuery,
                 'perex' => $perex,
                 'comment_count' => $comment_count,
                 'infos' => &$infos,
-            ));
+            ]);
 
             $output .= GenericTemplates::renderInfos($infos);
         } elseif ($perex && isset($art['picture_uid'])) {

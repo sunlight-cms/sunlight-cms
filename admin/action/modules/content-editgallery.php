@@ -20,12 +20,12 @@ if ($continue) {
   <tr><td><label><input type='number' min='10' max='1024' name='var3' value='" . $query['var3'] . "' class='inputmax'></td><td>" . _lang('admin.content.form.prevheight') . "</td></tr>
 ";
 
-    $custom_save_array = array(
-        'var1' => array('type' => 'int', 'nullable' => true),
-        'var2' => array('type' => 'int', 'nullable' => true),
-        'var3' => array('type' => 'int', 'nullable' => true),
-        'var4' => array('type' => 'int', 'nullable' => true),
-    );
+    $custom_save_array = [
+        'var1' => ['type' => 'int', 'nullable' => true],
+        'var2' => ['type' => 'int', 'nullable' => true],
+        'var3' => ['type' => 'int', 'nullable' => true],
+        'var4' => ['type' => 'int', 'nullable' => true],
+    ];
 
 }
 require _root . 'admin/action/modules/include/page-editscript.php';

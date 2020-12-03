@@ -16,12 +16,12 @@ if (_logged_in) {
     $output .= "<h2>" . _lang('login.links') . "</h2>\n<ul>\n";
 
     // pole polozek (adresa, titulek, podminky pro zobrazeni)
-    $items = array(
-        array(Router::generate('admin/'), _lang('global.admintitle'), _priv_administration),
-        array(Router::module('profile', 'id=' . _user_name), _lang('mod.profile'), true),
-        array(Router::module('settings'), _lang('mod.settings'), true),
-        array(Router::module('messages'), _lang('mod.messages') . " [" . User::getUnreadPmCount() . "]", _messages),
-    );
+    $items = [
+        [Router::generate('admin/'), _lang('global.admintitle'), _priv_administration],
+        [Router::module('profile', 'id=' . _user_name), _lang('mod.profile'), true],
+        [Router::module('settings'), _lang('mod.settings'), true],
+        [Router::module('messages'), _lang('mod.messages') . " [" . User::getUnreadPmCount() . "]", _messages],
+    ];
 
     // vypis
     foreach ($items as $item) {

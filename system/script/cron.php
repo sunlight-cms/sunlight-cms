@@ -6,9 +6,9 @@ use Sunlight\Util\Request;
 use Sunlight\Util\Response;
 
 require '../bootstrap.php';
-Core::init('../../', array(
+Core::init('../../', [
     'content_type' => 'text/plain; charset=UTF-8',
-));
+]);
 
 /* --- autorizace --- */
 
@@ -27,7 +27,7 @@ if (
 
 // priprava
 $start = microtime(true);
-$names = array();
+$names = [];
 Extend::reg('cron', function ($args) use (&$names) {
     $names[] = $args['name'];
 });

@@ -1,6 +1,6 @@
 <?php
 
-return array(
+return [
   'langcode.iso639' => 'cs',
   'numbers.dec_point' => '.',
   'numbers.thousands_sep' => ' ',
@@ -413,4 +413,4 @@ Odesílatel uvedl svou adresu jako: *sender*',
   'misc.errorlog.intro' => 'Během zpracovávání požadavku došlo k chybám:',
   'misc.category.noarts' => 'Tato kategorie neobsahuje žádné články.',
   'misc.gallery.noimages' => 'Tato galerie neobsahuje žádné obrázky.',
-);
+];

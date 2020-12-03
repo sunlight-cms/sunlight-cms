@@ -7,7 +7,7 @@ use Sunlight\Core;
 $vendorDir = dirname(__DIR__) . '/vendor';
 
 // load classes
-foreach (array('/kuria/class-loader/src/ClassLoader.php', '/kuria/class-loader/src/ComposerBridge.php') as $pathToInclude) {
+foreach (['/kuria/class-loader/src/ClassLoader.php', '/kuria/class-loader/src/ComposerBridge.php'] as $pathToInclude) {
     if (!@include $vendorDir . $pathToInclude) {
         echo "Missing dependencies in the vendor directory. Did you run composer install?\n";
         exit(1);

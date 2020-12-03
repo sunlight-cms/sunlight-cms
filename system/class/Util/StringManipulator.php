@@ -57,8 +57,8 @@ abstract class StringManipulator
      */
     static function trimExtraWhitespace($string)
     {
-        $from = array("{(\r\n){3,}}s", "{  +}s");
-        $to = array("\r\n\r\n", ' ');
+        $from = ["{(\r\n){3,}}s", "{  +}s"];
+        $to = ["\r\n\r\n", ' '];
 
         return preg_replace($from, $to, trim($string));
     }
@@ -76,10 +76,10 @@ abstract class StringManipulator
     {
         $slug = Slugify::getInstance()->slugify(
             $input,
-            array(
+            [
                 'lowercase' => $lower,
                 'regexp' => sprintf('{(?:[^A-Za-z0-9%s]|-)++}', preg_quote($extraAllowedChars)),
-            )
+            ]
         );
 
         if ($slug !== '') {

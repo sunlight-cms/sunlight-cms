@@ -27,8 +27,8 @@ if ($_page['content'] != "") {
 Extend::call('page.book.content.after', $extend_args);
 
 // prispevky
-$output .= CommentService::render(CommentService::RENDER_BOOK_POSTS, $id, array(
+$output .= CommentService::render(CommentService::RENDER_BOOK_POSTS, $id, [
     $_page['var2'],
     User::checkPublicAccess($_page['var1']),
     $_page['var3'],
-));
+]);

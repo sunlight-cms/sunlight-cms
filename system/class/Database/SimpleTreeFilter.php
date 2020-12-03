@@ -75,13 +75,13 @@ class SimpleTreeFilter implements TreeFilterInterface
             throw new \InvalidArgumentException('The filter must not be empty');
         }
 
-        $compiledFilter = array();
+        $compiledFilter = [];
 
         foreach ($filter as $prop => $val) {
             if ($prop[0] === '!') {
-                $compiledFilter[] = array(substr($prop, 1), $val, true);
+                $compiledFilter[] = [substr($prop, 1), $val, true];
             } else {
-                $compiledFilter[] = array($prop, $val, false);
+                $compiledFilter[] = [$prop, $val, false];
             }
         }
 

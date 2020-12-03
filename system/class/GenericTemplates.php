@@ -33,10 +33,10 @@ abstract class GenericTemplates
      */
     static function renderTime($timestamp, $category = null)
     {
-        $extend = Extend::buffer('time.format', array(
+        $extend = Extend::buffer('time.format', [
             'timestamp' => $timestamp,
             'category' => $category
-        ));
+        ]);
 
         if ($extend !== '') {
             return $extend;
@@ -53,7 +53,7 @@ abstract class GenericTemplates
      */
     static function renderFilesize($bytes)
     {
-        $units = array('B', 'kB', 'MB');
+        $units = ['B', 'kB', 'MB'];
 
         for ($i = 2; $i >= 0; --$i) {
             $bytesPerUnit = pow(1000, $i);
@@ -124,19 +124,19 @@ HTML;
         $cacheParam = '_' . _cacheid;
 
         // vychozi hodnoty
-        $assets += array(
+        $assets += [
             'meta' => '',
-            'css' => array(),
-            'js' => array(),
+            'css' => [],
+            'js' => [],
             'css_before' => '',
             'css_after' => '',
             'js_before' => '',
             'js_after' => '',
-        );
+        ];
 
         // extend udalost
         if (isset($assets['extend_event'])) {
-            Extend::call($assets['extend_event'], array(
+            Extend::call($assets['extend_event'], [
                 'meta' => &$assets['meta'],
                 'css' => &$assets['css'],
                 'js' => &$assets['js'],
@@ -144,7 +144,7 @@ HTML;
                 'css_after' => &$assets['css_after'],
                 'js_before' => &$assets['js_before'],
                 'js_after' => &$assets['js_after'],
-            ));
+            ]);
         }
 
         // meta

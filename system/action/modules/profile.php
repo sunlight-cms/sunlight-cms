@@ -38,7 +38,7 @@ if ($query !== false) {
         }
 
         // clanky autora
-        list(, , $arts) = Article::createFilter('art', array(), "author=" . $query['id'], true, false, false);
+        list(, , $arts) = Article::createFilter('art', [], "author=" . $query['id'], true, false, false);
         if ($arts != 0) {
 
             // zjisteni prumerneho hodnoceni
@@ -125,7 +125,7 @@ if ($public) {
 <td>" . $query['logincounter'] . "</td>
 </tr>" : '') . "
 
-" . Extend::buffer('mod.profile.table.main', array('user' => $query)) . "
+" . Extend::buffer('mod.profile.table.main', ['user' => $query]) . "
 
 </table>
 </td>
@@ -143,7 +143,7 @@ if ($public) {
 <tr><th>" . _lang('global.postsnum') . "</th><td>" . $posts_count . $posts_viewlink . "</td></tr>
 
 " . $arts . "
-" . Extend::buffer('mod.profile.table.extra', array('user' => $query)) . "
+" . Extend::buffer('mod.profile.table.extra', ['user' => $query]) . "
 " . $note . "
 
 </table>

@@ -27,9 +27,9 @@ class Backup
     /** @var string */
     protected $path;
     /** @var string[] */
-    protected $directoryList = array();
+    protected $directoryList = [];
     /** @var TemporaryFile[] */
-    protected $temporaryFiles = array();
+    protected $temporaryFiles = [];
     /** @var bool */
     protected $open = false;
     /** @var bool */
@@ -41,7 +41,7 @@ class Backup
     /** @var string|null */
     protected $addedDbDumpPrefix;
     /** @var string[] */
-    protected $fileList = array();
+    protected $fileList = [];
 
     /**
      * @param string $path
@@ -151,7 +151,7 @@ class Backup
             $tmpFile->discard();
         }
 
-        $this->temporaryFiles = array();
+        $this->temporaryFiles = [];
     }
 
     /**
@@ -386,9 +386,9 @@ class Backup
 
         Zip::extractDirectories(
             $this->zip,
-            array_map(array($this, 'dataPathToArchivePath'), $directories),
+            array_map([$this, 'dataPathToArchivePath'], $directories),
             $targetPath,
-            array('exclude_prefix' => $this->dataPathToArchivePath(''))
+            ['exclude_prefix' => $this->dataPathToArchivePath('')]
         );
     }
 
@@ -469,34 +469,34 @@ class Backup
      */
     protected function validateMetaData(array &$metaData, array &$errors = null)
     {
-        $optionSet = new OptionSet(array(
-            'system_version' => array('type' => 'string', 'required' => true, 'normalizer' => function ($value) {
+        $optionSet = new OptionSet([
+            'system_version' => ['type' => 'string', 'required' => true, 'normalizer' => function ($value) {
                 if (Core::VERSION !== $value) {
                     throw new OptionSetNormalizerException('incompatible system version');
                 }
-            }),
-            'created_at' => array('type' => 'integer', 'required' => true),
-            'directory_list' => array('type' => 'array', 'default' => array()),
-            'file_list' => array('type' => 'array', 'default' => array()),
-            'db_prefix' => array('type' => 'string', 'nullable' => true, 'default' => null),
-            'is_patch' => array('type' => 'boolean', 'default' => false),
-            'files_to_remove' => array('type' => 'array', 'default' => array()),
-            'directories_to_remove' => array('type' => 'array', 'default' => array()),
-            'directories_to_purge' => array('type' => 'array', 'default' => array()),
-        ));
+            }],
+            'created_at' => ['type' => 'integer', 'required' => true],
+            'directory_list' => ['type' => 'array', 'default' => []],
+            'file_list' => ['type' => 'array', 'default' => []],
+            'db_prefix' => ['type' => 'string', 'nullable' => true, 'default' => null],
+            'is_patch' => ['type' => 'boolean', 'default' => false],
+            'files_to_remove' => ['type' => 'array', 'default' => []],
+            'directories_to_remove' => ['type' => 'array', 'default' => []],
+            'directories_to_purge' => ['type' => 'array', 'default' => []],
+        ]);
 
         return $optionSet->process($metaData, null, $errors);
     }
 
     protected function setMetaData()
     {
-        $metaData = array(
+        $metaData = [
             'system_version' => Core::VERSION,
             'created_at' => time(),
             'directory_list' => $this->directoryList,
             'file_list' => $this->fileList,
             'db_prefix' => $this->addedDbDumpPrefix,
-        );
+        ];
 
         $this->zip->addFromString(static::METADATA_PATH, Json::encode($metaData, true));
     }

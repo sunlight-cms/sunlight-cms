@@ -7,7 +7,7 @@ use Sunlight\Extend;
 class LocalizationDictionary
 {
     /** @var array */
-    protected $entries = array();
+    protected $entries = [];
     /** @var LocalizationDictionary[] prefix => dict */
     protected $subDictionaries;
 
@@ -41,10 +41,10 @@ class LocalizationDictionary
         }
 
         // entry not found
-        Extend::call('localization.missing', array(
+        Extend::call('localization.missing', [
             'key' => $key,
             'dict' => $this,
-        ));
+        ]);
 
         return $key;
     }

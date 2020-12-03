@@ -97,15 +97,15 @@ abstract class Zip
      * @param string          $targetPath  path where to extract the files to
      * @param array           $options
      */
-    static function extractDirectories(\ZipArchive $zip, $directories, $targetPath, array $options = array())
+    static function extractDirectories(\ZipArchive $zip, $directories, $targetPath, array $options = [])
     {
-        $options += array(
+        $options += [
             'path_mode' => static::PATH_FULL,
             'dir_mode' => 0777,
             'recursive' => true,
             'exclude_prefix' => null,
             'big_file_threshold' => null,
-        );
+        ];
 
         if ($options['big_file_threshold'] === null && ($availMem = Environment::getAvailableMemory()) !== null) {
             $options['big_file_threshold'] = (int) ($availMem * 0.75);
@@ -122,7 +122,7 @@ abstract class Zip
             : 0;
 
         // build archive path prefix map
-        $archivePathPrefixMap = array();
+        $archivePathPrefixMap = [];
         foreach ((array) $directories as $archivePath) {
             if ($archivePath !== '') {
                 $archivePathPrefix = "{$archivePath}/";

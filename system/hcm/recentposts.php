@@ -19,19 +19,19 @@ return function ($limit = null, $stranky = "", $typ = null) {
     } else {
         $limit = 10;
     }
-    $post_types =  array(
+    $post_types =  [
         'section' => _post_section_comment,
         'article' => _post_article_comment,
         'book' => _post_book_entry,
         'topic' => _post_forum_topic,
         'plugin' => _post_plugin,
-    );
+    ];
 
     // nastaveni filtru
     if (!empty($stranky)) {
         $homes = Arr::removeValue(explode('-', $stranky), '');
     } else {
-        $homes = array();
+        $homes = [];
     }
 
     if (!empty($typ)) {
@@ -40,7 +40,7 @@ return function ($limit = null, $stranky = "", $typ = null) {
         } elseif (!in_array($typ, $post_types)) {
             $typ = _post_section_comment;
         }
-        $types = array($typ);
+        $types = [$typ];
     } else {
         $types = $post_types;
     }
@@ -65,10 +65,10 @@ return function ($limit = null, $stranky = "", $typ = null) {
 <div class='list-item'>
 <h2 class='list-title'><a href='" . _e($homelink) . "'>" . $hometitle . "</a></h2>
 <p class='list-perex'>" . StringManipulator::ellipsis(strip_tags(Comment::render($item['text'])), 256) . "</p>
-" . GenericTemplates::renderInfos(array(
-    array(_lang('global.postauthor'), $authorname),
-    array(_lang('global.time'), GenericTemplates::renderTime($item['time'], 'post')),
-)) . "</div>\n";
+" . GenericTemplates::renderInfos([
+    [_lang('global.postauthor'), $authorname],
+    [_lang('global.time'), GenericTemplates::renderTime($item['time'], 'post')],
+]) . "</div>\n";
     }
 
     return $result;

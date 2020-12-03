@@ -26,11 +26,11 @@ class ComposerBridge
         if (!Core::isReady()) {
             $root = __DIR__ . '/../../../';
 
-            Core::init($root, array(
+            Core::init($root, [
                 'minimal_mode' => true,
                 'skip_components' => !is_dir($root . 'vendor/composer'),
                 'config_file' => false,
-            ));
+            ]);
         }
     }
 }

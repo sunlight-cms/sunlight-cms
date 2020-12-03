@@ -22,14 +22,14 @@ class Picture
      * @param string|null $filename pouzity nazev souboru (pokud se lisi od $filepath)
      * @return array pole s klici (bool)status, (int)code, (string)msg, (resource)resource, (string)ext
      */
-    static function load($filepath, $limit = array(), $filename = null)
+    static function load($filepath, $limit = [], $filename = null)
     {
         // vychozi nastaveni
-        static $limit_default = array(
+        static $limit_default = [
             'filesize' => null,
             'dimensions' => null,
             'memory' => 0.75,
-        );
+        ];
 
         // vlozeni vychoziho nastaveni
         $limit += $limit_default;
@@ -138,12 +138,12 @@ class Picture
             }
 
             // vsechno je ok, vratit vysledek
-            return array('status' => true, 'code' => $code, 'resource' => $res, 'ext' => $ext);
+            return ['status' => true, 'code' => $code, 'resource' => $res, 'ext' => $ext];
 
         } while (false);
 
         // chyba
-        $output = array('status' => false, 'code' => $code, 'msg' => _lang('pic.load.' . $code), 'ext' => $ext);
+        $output = ['status' => false, 'code' => $code, 'msg' => _lang('pic.load.' . $code), 'ext' => $ext];
 
         // uprava vystupu
         switch ($code) {
@@ -159,7 +159,7 @@ class Picture
                 break;
 
             case 6:
-                $output['msg'] = str_replace(array('*maxw*', '*maxh*'), array($limit['dimensions']['x'], $limit['dimensions']['y']), $output['msg']);
+                $output['msg'] = str_replace(['*maxw*', '*maxh*'], [$limit['dimensions']['x'], $limit['dimensions']['y']], $output['msg']);
                 break;
         }
 
@@ -196,7 +196,7 @@ class Picture
     static function resize($res, array $opt, $size = null)
     {
         // vychozi nastaveni
-        $opt += array(
+        $opt += [
             'x' => null,
             'y' => null,
             'mode' => null,
@@ -205,15 +205,15 @@ class Picture
             'pad' => false,
             'trans' => false,
             'trans_format' => null,
-        );
+        ];
 
         $extend_output = null;
 
-        Extend::call('picture.resize', array(
+        Extend::call('picture.resize', [
             'res' => &$res,
             'options' => &$opt,
             'output' => &$extend_output,
-        ));
+        ]);
 
         if ($extend_output !== null) {
             return $extend_output;
@@ -221,7 +221,7 @@ class Picture
 
         // zadna operace?
         if ($opt['mode'] === 'none') {
-            return array('status' => true, 'code' => 0, 'resource' => $res, 'changed' => false);
+            return ['status' => true, 'code' => 0, 'resource' => $res, 'changed' => false];
         }
 
         // zjisteni rozmeru
@@ -242,7 +242,7 @@ class Picture
 
         // kontrola parametru
         if ($opt['x'] === null && $opt['y'] === null || $opt['y'] !== null && $opt['y'] < 1 || $opt['x'] !== null && $opt['x'] < 1) {
-            return array('status' => false, 'code' => 2, 'msg' => _lang('pic.resize.2'));
+            return ['status' => false, 'code' => 2, 'msg' => _lang('pic.resize.2')];
         }
 
         // proporcionalni dopocet chybejiciho rozmeru
@@ -257,7 +257,7 @@ class Picture
             $opt['keep_smaller'] && $x < $opt['x'] && $y < $opt['y']
             || $x == $opt['x'] && $y == $opt['y']
         ) {
-            return array('status' => true, 'code' => 0, 'resource' => $res, 'changed' => false);
+            return ['status' => true, 'code' => 0, 'resource' => $res, 'changed' => false];
         }
 
         // vypocet novych rozmeru
@@ -295,7 +295,7 @@ class Picture
                 $opt['y'] = $newy;
             }
         } else {
-            return array('status' => false, 'code' => 1, 'msg' => _lang('pic.resize.1'));
+            return ['status' => false, 'code' => 1, 'msg' => _lang('pic.resize.1')];
         }
 
         // priprava obrazku
@@ -315,11 +315,11 @@ class Picture
 
         // zmena rozmeru a navrat
         if (imagecopyresampled($output, $res, $xoff, $yoff, 0, 0, $newx, $newy, $x, $y)) {
-            return array('status' => true, 'code' => 0, 'resource' => $output, 'changed' => true);
+            return ['status' => true, 'code' => 0, 'resource' => $output, 'changed' => true];
         }
         imagedestroy($output);
 
-        return array('status' => false, 'code' => 2, 'msg' => _lang('pic.resize.2'));
+        return ['status' => false, 'code' => 2, 'msg' => _lang('pic.resize.2')];
     }
 
     /**
@@ -384,9 +384,9 @@ class Picture
      * @param array  $defaults vychozi parametry pro {@see Picture::resize()}
      * @return array parametry pro {@see Picture::resize()}
      */
-    static function parseResizeOptions($input, array $defaults = array())
+    static function parseResizeOptions($input, array $defaults = [])
     {
-        $opts = $defaults + array(
+        $opts = $defaults + [
             'x' => 96,
             'y' => null,
             'mode' => 'fit',
@@ -394,7 +394,7 @@ class Picture
             'bgcolor' => null,
             'keep_smaller' => false,
             'trans' => true,
-        );
+        ];
 
         foreach (explode('/', $input) as $part) {
             switch ($part) {
@@ -476,13 +476,13 @@ class Picture
 
             // uspech?
             if ($result) {
-                return array('status' => true, 'code' => $code, 'path' => $target_path);
+                return ['status' => true, 'code' => $code, 'path' => $target_path];
             }
             $code = 2;
         } while (false);
 
         // chyba
-        return array('status' => false, 'code' => $code, 'msg' => _lang('pic.put.' . $code));
+        return ['status' => false, 'code' => $code, 'msg' => _lang('pic.put.' . $code)];
     }
 
     /**
@@ -497,12 +497,12 @@ class Picture
      */
     static function get($dir, $uid, $format, $partitions = 0, $root_prefix = true)
     {
-        Extend::call('picture.get', array(
+        Extend::call('picture.get', [
             'dir' => &$dir,
             'uid' => $uid,
             'format' => &$format,
             'partitions' => &$partitions,
-        ));
+        ]);
 
         $full_path = '';
 
@@ -560,9 +560,9 @@ class Picture
      */
     static function process(array $opt, &$error = null, &$format = null, &$resource = null)
     {
-        $opt += array(
+        $opt += [
             'file_name' => null,
-            'limit' => array(),
+            'limit' => [],
             'resize' => null,
             'callback' => null,
             'destroy' =>  true,
@@ -571,9 +571,9 @@ class Picture
             'target_uid' => null,
             'target_partitions' => 0,
             'jpg_quality' => 90,
-        );
+        ];
 
-        Extend::call('picture.process', array('options' => &$opt));
+        Extend::call('picture.process', ['options' => &$opt]);
 
         try {
             // nacteni
@@ -697,14 +697,14 @@ class Picture
         $dir = 'images/thumb/';
 
         // extend pro nastaveni velikosti
-        Extend::call('picture.thumb.resize', array('options' => &$resize_opts));
+        Extend::call('picture.thumb.resize', ['options' => &$resize_opts]);
 
         // vychozi nastaveni zmenseni
-        $resize_opts += array(
+        $resize_opts += [
             'mode' => 'fill',
             'trans' => $ext === 'png' || $ext === 'gif',
             'trans_format' => $ext,
-        );
+        ];
 
         // normalizovani nastaveni zmenseni
         if (!isset($resize_opts['x']) || $resize_opts['x'] == 0) {
@@ -738,16 +738,16 @@ class Picture
             return $image_path;
         } else {
             // obrazek neexistuje
-            $options = array(
+            $options = [
                 'file_path' => $source,
                 'resize' => $resize_opts,
                 'target_dir' => $dir,
                 'target_uid' => $hash,
                 'target_partitions' => 1,
-            );
+            ];
 
             // extend
-            Extend::call('picture.thumb.process', array('options' => &$options));
+            Extend::call('picture.thumb.process', ['options' => &$options]);
 
             // vygenerovat
             if (static::process($options, $error) !== false) {

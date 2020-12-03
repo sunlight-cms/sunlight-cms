@@ -1,6 +1,6 @@
 <?php
 
-return array(
+return [
   'langcode.iso639' => 'en',
   'numbers.dec_point' => '.',
   'numbers.thousands_sep' => ' ',
@@ -413,4 +413,4 @@ The sender entered his address as: *sender*',
   'misc.errorlog.intro' => 'The following errors have occured:',
   'misc.category.noarts' => 'This category does not contain any articles.',
   'misc.gallery.noimages' => 'This gallery does not contain any images.',
-);
+];

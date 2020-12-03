@@ -48,7 +48,7 @@ if (isset($_GET['id']) && isset($_GET['returnid']) && isset($_GET['returnpage'])
     $new = true;
     $id = -1;
     $read_counter = 0;
-    $query = array(
+    $query = [
         'id' => -1,
         'title' => '',
         'slug' => '',
@@ -69,8 +69,8 @@ if (isset($_GET['id']) && isset($_GET['returnid']) && isset($_GET['returnpage'])
         'confirmed' => 0,
         'rateon' => 1,
         'readnum' => 0,
-    );
-    Extend::call('admin.article.default', array('data' => &$query));
+    ];
+    Extend::call('admin.article.default', ['data' => &$query]);
     if (isset($_GET['new_cat'])) {
         $query['home1'] = (int) Request::get('new_cat');
     }
@@ -115,7 +115,7 @@ if (isset($_POST['title'])) {
     $newdata['time'] = Form::loadTime('time', $query['time']);
 
     // kontrola promennych
-    $error_log = array();
+    $error_log = [];
 
     // titulek
     if ($newdata['title'] == "") {
@@ -123,7 +123,7 @@ if (isset($_POST['title'])) {
     }
 
     // kategorie
-    $homechecks = array("home1", "home2", "home2");
+    $homechecks = ["home1", "home2", "home2"];
     foreach ($homechecks as $homecheck) {
         if ($newdata[$homecheck] != -1 || $homecheck == "home1") {
             if (DB::count(_page_table, 'type=' . _page_category . ' AND id=' . DB::val($newdata[$homecheck])) === 0) {
@@ -150,20 +150,20 @@ if (isset($_POST['title'])) {
     if (empty($error_log) && isset($_FILES['picture']) && is_uploaded_file($_FILES['picture']['tmp_name'])) {
 
         // priprava moznosti zmeny velikosti
-        $picOpts = array(
+        $picOpts = [
             'file_path' => $_FILES['picture']['tmp_name'],
             'file_name' => $_FILES['picture']['name'],
             'target_dir' => 'images/articles/',
             'target_format' => 'jpg',
             'target_partitions' => 1,
-            'resize' => array(
+            'resize' => [
                 'mode' => 'fit',
                 'keep_smaller' => true,
                 'x' => _article_pic_w,
                 'y' => _article_pic_h,
-            ),
-        );
-        Extend::call('admin.article.picture', array('opts' => &$picOpts));
+            ],
+        ];
+        Extend::call('admin.article.picture', ['opts' => &$picOpts]);
 
         // zpracovani
         $picUid = Picture::process($picOpts, $picError);
@@ -190,7 +190,7 @@ if (isset($_POST['title'])) {
     if (count($error_log) == 0) {
 
         // changeset
-        $changeset = array(
+        $changeset = [
             'title' => $newdata['title'],
             'slug' => $newdata['slug'],
             'description' => $newdata['description'],
@@ -209,24 +209,24 @@ if (isset($_POST['title'])) {
             'rateon' => $newdata['rateon'],
             'showinfo' => $newdata['showinfo'],
             'time' => $newdata['time'],
-        );
+        ];
 
         if ($new) {
             $action = 'new';
-            $changeset += array(
+            $changeset += [
                 'readnum' => 0,
                 'ratenum' => 0,
                 'ratesum' => 0,
-            );
+            ];
         } else {
             $action = 'edit';
         }
 
-        Extend::call('admin.article.' . $action . '.before', array(
+        Extend::call('admin.article.' . $action . '.before', [
             'id' => $id,
             'article' => $new ? null : $query,
             'changeset' => &$changeset,
-        ));
+        ]);
 
         if (!$new) {
 
@@ -240,15 +240,15 @@ if (isset($_POST['title'])) {
 
             // vynulovani poctu precteni
             if ($newdata['resetread'] == 1) {
-                DB::update(_article_table, 'id=' . $id, array('readnum' => 0));
+                DB::update(_article_table, 'id=' . $id, ['readnum' => 0]);
             }
 
             // vynulovani hodnoceni
             if ($newdata['resetrate'] == 1) {
-                DB::update(_article_table, 'id=' . $id, array(
+                DB::update(_article_table, 'id=' . $id, [
                     'ratenum' => 0,
                     'ratesum' => 0
-                ));
+                ]);
                 DB::delete(_iplog_table, 'type=' . _iplog_article_rated . ' AND var=' . $id);
             }
 
@@ -265,11 +265,11 @@ if (isset($_POST['title'])) {
 
         }
 
-        Extend::call('admin.article.' . $action, array(
+        Extend::call('admin.article.' . $action, [
             'id' => $id,
             'article' => $query,
             'changeset' => &$changeset,
-        ));
+        ]);
 
         return;
 
@@ -348,9 +348,9 @@ if ($continue) {
 <tr>
 <th>" . _lang('article.category') . "</th>
 <td>"
-    . Admin::pageSelect("home1", array('type' => _page_category, 'selected' => $query['home1']))
-    . Admin::pageSelect("home2", array('type' => _page_category, 'selected' => $query['home2'], 'empty_item' => _lang('admin.content.form.category.none')))
-    . Admin::pageSelect("home3", array('type' => _page_category, 'selected' => $query['home3'], 'empty_item' => _lang('admin.content.form.category.none')))
+    . Admin::pageSelect("home1", ['type' => _page_category, 'selected' => $query['home1']])
+    . Admin::pageSelect("home2", ['type' => _page_category, 'selected' => $query['home2'], 'empty_item' => _lang('admin.content.form.category.none')])
+    . Admin::pageSelect("home3", ['type' => _page_category, 'selected' => $query['home3'], 'empty_item' => _lang('admin.content.form.category.none')])
     . "
 </td>
 </tr>
@@ -427,7 +427,7 @@ if ($continue) {
 <td>" . Form::editTime('time', $query['time'], true, $new) . "</td>
 </tr>
 
-" . Extend::buffer('admin.article.form', array('article' => $query)) . "
+" . Extend::buffer('admin.article.form', ['article' => $query]) . "
 
 <tr>
 <td></td>

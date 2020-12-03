@@ -26,26 +26,26 @@ abstract class Plugin
     const STATUS_DISABLED = 3;
 
     /** @var array */
-    static $commonOptions = array(
-        'name' => array('type' => 'string', 'required' => true),
-        'description' => array('type' => 'string'),
-        'author' => array('type' => 'string'),
-        'url' => array('type' => 'string'),
-        'version' => array('type' => 'string', 'required' => true),
-        'api' => array('type' => 'string', 'required' => true),
-        'php' => array('type' => 'string'),
-        'extensions' => array('type' => 'array', 'default' => array()),
-        'requires' => array('type' => 'array', 'default' => array()),
-        'installer' => array('type' => 'boolean', 'nullable' => true, 'default' => false),
-        'autoload' => array('type' => 'array', 'default' => array(), 'normalizer' => array('Sunlight\Plugin\PluginOptionNormalizer', 'normalizeAutoload')),
-        'debug' => array('type' => 'boolean', 'nullable' => true),
-        'class' => array('type' => 'string'),
-        'namespace' => array('type' => 'string', 'normalizer' => array('Sunlight\Plugin\PluginOptionNormalizer', 'normalizeNamespace')),
-        'inject_composer' => array('type' => 'boolean', 'default' => true),
-    );
+    static $commonOptions = [
+        'name' => ['type' => 'string', 'required' => true],
+        'description' => ['type' => 'string'],
+        'author' => ['type' => 'string'],
+        'url' => ['type' => 'string'],
+        'version' => ['type' => 'string', 'required' => true],
+        'api' => ['type' => 'string', 'required' => true],
+        'php' => ['type' => 'string'],
+        'extensions' => ['type' => 'array', 'default' => []],
+        'requires' => ['type' => 'array', 'default' => []],
+        'installer' => ['type' => 'boolean', 'nullable' => true, 'default' => false],
+        'autoload' => ['type' => 'array', 'default' => [], 'normalizer' => ['Sunlight\Plugin\PluginOptionNormalizer', 'normalizeAutoload']],
+        'debug' => ['type' => 'boolean', 'nullable' => true],
+        'class' => ['type' => 'string'],
+        'namespace' => ['type' => 'string', 'normalizer' => ['Sunlight\Plugin\PluginOptionNormalizer', 'normalizeNamespace']],
+        'inject_composer' => ['type' => 'boolean', 'default' => true],
+    ];
 
     /** @var array */
-    protected static $typeDefinition = array();
+    protected static $typeDefinition = [];
 
     /** @var string */
     protected $type;
@@ -361,7 +361,7 @@ abstract class Plugin
      */
     protected function getConfigDefaults()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -408,7 +408,7 @@ abstract class Plugin
             throw new \RuntimeException('Plugin actions require administration environment');
         }
 
-        $actions = array();
+        $actions = [];
 
         $actions['info'] = _lang('admin.plugins.action.do.info');
         $actions += $this->getCustomActionList();
@@ -441,6 +441,6 @@ abstract class Plugin
      */
     protected function getCustomActionList()
     {
-        return array();
+        return [];
     }
 }

@@ -43,7 +43,7 @@ if ($query !== false) {
 
     if (Comment::checkAccess($userQuery, $query)) {
         $bbcode = true;
-        Extend::call('mod.editpost.backlink', array('backlink' => &$_index['backlink'], 'post' => $query));
+        Extend::call('mod.editpost.backlink', ['backlink' => &$_index['backlink'], 'post' => $query]);
 
         if ($_index['backlink'] === null) {
             list($url) = Router::post($query);
@@ -121,7 +121,7 @@ if (isset($_POST['text'])) {
         }
 
         $text = Html::cut(_e(trim(Request::post('text'))), ($query['type'] != _post_shoutbox_entry) ? 16384 : 255);
-        if ($query['xhome'] == -1 && in_array($query['type'], array(_post_forum_topic, _post_pm))) {
+        if ($query['xhome'] == -1 && in_array($query['type'], [_post_forum_topic, _post_pm])) {
             $subject = Html::cut(_e(StringManipulator::trimExtraWhitespace(Request::post('subject'))), 48);
             if ($subject === '')  {
                 $subject = '-';
@@ -132,16 +132,16 @@ if (isset($_POST['text'])) {
 
         // ulozeni
         if ($text != "") {
-            Extend::call('posts.edit', array(
+            Extend::call('posts.edit', [
                 'id' => $id,
                 'post' => $query,
                 'message' => &$message,
-            ));
+            ]);
             if ($message === '') {
-                $update_data = array(
+                $update_data = [
                     'text' => $text,
                     'subject' => $subject
-                );
+                ];
                 if(isset($guest)) {
                     $update_data['guest'] = $guest;
                 }
@@ -159,10 +159,10 @@ if (isset($_POST['text'])) {
         /* -  odstraneni  - */
         if ($query['type'] != _post_pm || $query['xhome'] != -1) {
 
-            Extend::call('posts.delete', array(
+            Extend::call('posts.delete', [
                 'id' => $id,
                 'post' => $query,
-            ));
+            ]);
 
             // debump topicu
             if ($query['type'] == _post_forum_topic && $query['xhome'] != -1) {
@@ -170,7 +170,7 @@ if (isset($_POST['text'])) {
                 $chr = DB::queryRow('SELECT id,time FROM ' . _comment_table . ' WHERE type=' . _post_forum_topic . ' AND xhome=' . $query['xhome'] . ' ORDER BY id DESC LIMIT 2');
                 if ($chr !== false && $chr['id'] == $id) {
                     // ano, debump podle casu predchoziho postu nebo samotneho topicu (pokud se smazala jedina odpoved)
-                    DB::update(_comment_table, 'id=' . $query['xhome'], array('bumptime' => (($chr !== false) ? $chr['time'] : DB::raw('time'))));
+                    DB::update(_comment_table, 'id=' . $query['xhome'], ['bumptime' => (($chr !== false) ? $chr['time'] : DB::raw('time'))]);
                 }
             }
 
@@ -202,25 +202,25 @@ $output .= $message;
 
 // formular
 if ($form) {
-    $inputs = array();
+    $inputs = [];
 
     if ($query['author'] == -1) {
-        $inputs[] = array('label' => _lang('posts.guestname'), 'content' => "<input type='text' name='guest' class='inputsmall' value='" . $query['guest'] . "' maxlength='24'>");
+        $inputs[] = ['label' => _lang('posts.guestname'), 'content' => "<input type='text' name='guest' class='inputsmall' value='" . $query['guest'] . "' maxlength='24'>"];
     }
-    if ($query['xhome'] == -1 && in_array($query['type'], array(_post_forum_topic, _post_pm))) {
-        $inputs[] = array('label' => _lang((($query['type'] != _post_forum_topic) ? 'posts.subject' : 'posts.topic')), 'content' => "<input type='text' name='subject' class='inputmedium' maxlength='48' value='" . $query['subject'] . "'>");
+    if ($query['xhome'] == -1 && in_array($query['type'], [_post_forum_topic, _post_pm])) {
+        $inputs[] = ['label' => _lang((($query['type'] != _post_forum_topic) ? 'posts.subject' : 'posts.topic')), 'content' => "<input type='text' name='subject' class='inputmedium' maxlength='48' value='" . $query['subject'] . "'>"];
     }
-    $inputs[] = array('label' => _lang('posts.text'), 'content' => "<textarea name='text' class='areamedium' rows='5' cols='33'>" . $query['text'] . "</textarea>", 'top' => true);
-    $inputs[] = array('label' => '', 'content' => PostForm::renderControls('postform', 'text', $bbcode));
+    $inputs[] = ['label' => _lang('posts.text'), 'content' => "<textarea name='text' class='areamedium' rows='5' cols='33'>" . $query['text'] . "</textarea>", 'top' => true];
+    $inputs[] = ['label' => '', 'content' => PostForm::renderControls('postform', 'text', $bbcode)];
 
     $output .= Form::render(
-        array(
+        [
             'name' => 'postform',
             'action' => Router::module('editpost', 'id=' . $id),
             'submit_text' => _lang('global.save'),
             'submit_append' => ' ' . PostForm::renderPreviewButton('postform', 'text')
                 . (($query['type'] != _post_pm || $query['xhome'] != -1) ? "<br><br><label><input type='checkbox' name='delete' value='1'> " . _lang('mod.editpost.delete') . "</label>" : ''),
-        ),
+        ],
         $inputs
     );
 

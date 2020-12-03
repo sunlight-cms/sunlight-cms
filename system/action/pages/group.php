@@ -25,7 +25,7 @@ Extend::call('page.group.content.after', $extend_args);
 $items = DB::query("SELECT id,title,slug,type,type_idt,perex,var1 FROM " . _page_table . " WHERE node_parent=" . $id . " AND visible=1 ORDER BY ord");
 if (DB::size($items) != 0) {
     while ($item = DB::row($items)) {
-        $extendArgs = Extend::args($output, array('item' => &$item));
+        $extendArgs = Extend::args($output, ['item' => &$item]);
 
         $output .= "<div class='list-item'>\n";
 
@@ -45,20 +45,20 @@ if (DB::size($items) != 0) {
 
         // informace
         if ($_page['var1'] == 1) {
-            $iteminfos = array();
+            $iteminfos = [];
 
             switch ($item['type']) {
                     // sekce
                 case _page_section:
                     if ($item['var1'] == 1) {
-                        $iteminfos['comment_num'] = array(_lang('article.comments'), DB::count(_comment_table, 'type=' . _post_section_comment . ' AND home=' . DB::val($item['id'])));
+                        $iteminfos['comment_num'] = [_lang('article.comments'), DB::count(_comment_table, 'type=' . _post_section_comment . ' AND home=' . DB::val($item['id']))];
                     }
                     break;
 
                     // kategorie
                 case _page_category:
-                    list(, , $art_count) = Article::createFilter('art', array($item['id']), null, true);
-                    $iteminfos['article_num'] = array(_lang('global.articlesnum'), $art_count);
+                    list(, , $art_count) = Article::createFilter('art', [$item['id']], null, true);
+                    $iteminfos['article_num'] = [_lang('global.articlesnum'), $art_count];
                     break;
 
                     // kniha
@@ -76,28 +76,28 @@ if (DB::size($items) != 0) {
                         $lastpost = "-";
                     }
 
-                    $iteminfos['post_num'] = array(_lang('global.postsnum'), DB::count(_comment_table, 'type=' . _post_book_entry . ' AND home=' . DB::val($item['id'])));
-                    $iteminfos['last_post'] = array(_lang('global.lastpost'), $lastpost);
+                    $iteminfos['post_num'] = [_lang('global.postsnum'), DB::count(_comment_table, 'type=' . _post_book_entry . ' AND home=' . DB::val($item['id']))];
+                    $iteminfos['last_post'] = [_lang('global.lastpost'), $lastpost];
                     break;
 
                     // galerie
                 case _page_gallery:
-                    $iteminfos['image_num'] = array(_lang('global.imgsnum'), DB::count(_gallery_image_table, 'home=' . DB::val($item['id'])));
+                    $iteminfos['image_num'] = [_lang('global.imgsnum'), DB::count(_gallery_image_table, 'home=' . DB::val($item['id']))];
                     break;
 
                     // forum
                 case _page_forum:
-                    $iteminfos['topic_num'] = array(_lang('global.topicsnum'), DB::count(_comment_table, 'type=' . _post_forum_topic . ' AND home=' . DB::val($item['id']) . ' AND xhome=-1'));
-                    $iteminfos['answer_num'] = array(_lang('global.answersnum'), DB::count(_comment_table, 'type=' . _post_forum_topic . ' AND home=' . DB::val($item['id']) . ' AND xhome!=-1'));
+                    $iteminfos['topic_num'] = [_lang('global.topicsnum'), DB::count(_comment_table, 'type=' . _post_forum_topic . ' AND home=' . DB::val($item['id']) . ' AND xhome=-1')];
+                    $iteminfos['answer_num'] = [_lang('global.answersnum'), DB::count(_comment_table, 'type=' . _post_forum_topic . ' AND home=' . DB::val($item['id']) . ' AND xhome!=-1')];
                     break;
 
                     // plugin stranka
                 case _page_plugin:
-                    Extend::call('page.plugin.' . $item['type_idt'] . '.group_infos', array('item' => $item, 'infos' => &$iteminfos));
+                    Extend::call('page.plugin.' . $item['type_idt'] . '.group_infos', ['item' => $item, 'infos' => &$iteminfos]);
                     break;
             }
 
-            Extend::call('page.group.item_infos', array('item' => $item, 'infos' => &$iteminfos));
+            Extend::call('page.group.item_infos', ['item' => $item, 'infos' => &$iteminfos]);
 
             $output .= GenericTemplates::renderInfos($iteminfos);
 

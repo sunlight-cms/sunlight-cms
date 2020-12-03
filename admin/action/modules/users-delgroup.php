@@ -12,7 +12,7 @@ defined('_root') or exit;
 /* ---  priprava promennych  --- */
 
 $levelconflict = false;
-$sysgroups_array = array(_group_admin, _group_guests, _group_registered);
+$sysgroups_array = [_group_admin, _group_guests, _group_registered];
 
 // id
 $continue = false;
@@ -64,14 +64,14 @@ if ($continue) {
             $output .= Message::ok(_lang('admin.users.groups.specialgroup.delnotice'));
         }
         if ($user_count > 0) {
-            $output .= Message::warning(_lang('admin.users.groups.delwarning', array('%user_count%' => $user_count)));
+            $output .= Message::warning(_lang('admin.users.groups.delwarning', ['%user_count%' => $user_count]));
         }
 
         $output .= "
     <form class='cform' method='post'>
     <input type='hidden' name='doit' value='1'>
 
-    <p>" . _lang('admin.users.groups.delconfirm', array('%group%' => $query['title'])) . "</p>
+    <p>" . _lang('admin.users.groups.delconfirm', ['%group%' => $query['title']]) . "</p>
     <input type='submit' value='" . _lang('global.confirmdelete') . "'>
     " . Xsrf::getInput() . "</form>
     ";

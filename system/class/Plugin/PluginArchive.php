@@ -48,8 +48,8 @@ class PluginArchive
      */
     function extract($merge = false, array &$failedPlugins = null)
     {
-        $toExtract = array();
-        $failedPlugins = array();
+        $toExtract = [];
+        $failedPlugins = [];
 
         // get and check plugins
         foreach ($this->getPlugins() as $type => $plugins) {
@@ -64,7 +64,7 @@ class PluginArchive
 
         // abort if there are failed plugins and we are not merging
         if (!$merge && !empty($failedPlugins)) {
-            return array();
+            return [];
         }
 
         // extract plugins
@@ -118,12 +118,12 @@ class PluginArchive
      */
     protected function load()
     {
-        $this->plugins = array();
+        $this->plugins = [];
 
         // map types
         // build the regex
-        $dirPatterns = array();
-        $typeDir2Type = array();
+        $dirPatterns = [];
+        $typeDir2Type = [];
         foreach ($this->manager->getTypes() as $type) {
             $definition = $this->manager->getTypeDefinition($type);
 
@@ -141,10 +141,10 @@ class PluginArchive
                 $type = $typeDir2Type[$dir];
 
                 if (!isset($this->plugins[$type][$name])) {
-                    $this->plugins[$type][$name] = array(
+                    $this->plugins[$type][$name] = [
                         'path' => $dir . '/' . $name,
                         'valid' => false,
-                    );
+                    ];
                 }
 
                 if (Plugin::FILE === $subpath) {

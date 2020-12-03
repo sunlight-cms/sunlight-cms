@@ -10,7 +10,7 @@ class Color
      * @param array $color color segments
      * @param int   $type  color model (0 = rgb, 1 = hsl)
      */
-    function __construct($color = array(0, 0, 0), $type = 0)
+    function __construct($color = [0, 0, 0], $type = 0)
     {
         if ($type === 0) {
             list($this->r, $this->g, $this->b) = $color;
@@ -120,7 +120,7 @@ class Color
      */
     function getRgb()
     {
-        return array($this->r, $this->g, $this->b);
+        return [$this->r, $this->g, $this->b];
     }
 
     /**
@@ -140,7 +140,7 @@ class Color
      */
     function getHsl()
     {
-        return array($this->h, $this->s, $this->l);
+        return [$this->h, $this->s, $this->l];
     }
 
     /**
@@ -154,7 +154,7 @@ class Color
     protected function hslToRgb($h, $s, $l)
     {
         // normalize args
-        $args = array('h', 's', 'l');
+        $args = ['h', 's', 'l'];
         for($i = 0; $i < 3; ++$i) {
             if (${$args[$i]} < 0) {
                 ${$args[$i]} = 0;
@@ -171,17 +171,17 @@ class Color
         $hx = $h / 60;
         $x = $c * (1 - abs(fmod($hx, 2) - 1));
         if ($hx >= 0 && $hx < 1) {
-            $rgb = array($c, $x, 0);
+            $rgb = [$c, $x, 0];
         } elseif ($hx >= 1 && $hx < 2) {
-            $rgb = array($x, $c, 0);
+            $rgb = [$x, $c, 0];
         } elseif ($hx >= 2 && $hx < 3) {
-            $rgb = array(0, $c, $x);
+            $rgb = [0, $c, $x];
         } elseif ($hx >= 3 && $hx < 4) {
-            $rgb = array(0, $x, $c);
+            $rgb = [0, $x, $c];
         } elseif ($hx >= 4 && $hx < 5) {
-            $rgb = array($x, 0, $c);
+            $rgb = [$x, 0, $c];
         } else {
-            $rgb = array($c, 0, $x);
+            $rgb = [$c, 0, $x];
         }
         $m = $l - $c * .5;
         for($i = 0; $i < 3; ++$i) {
@@ -202,7 +202,7 @@ class Color
     protected function rgbToHsl($r, $g, $b)
     {
         // normalize args
-        $args = array('r', 'g', 'b');
+        $args = ['r', 'g', 'b'];
         for($i = 0; $i < 3; ++$i) {
             if (${$args[$i]} < 0) {
                 ${$args[$i]} = 0;
@@ -217,7 +217,7 @@ class Color
         $l = .5 * ($M + $m);
         $c = $M - $m;
         if ($c === 0) {
-            return array(0, (int) $l, 0);
+            return [0, (int) $l, 0];
         }
         if ($M === $r) {
             $hx = fmod(($g - $b) / $c, 6);
@@ -230,6 +230,6 @@ class Color
         $l = (int) round($l);
         $s = (int) round($c / (1 - abs(2 * ($l - 127) / 255)));
 
-        return array($h, $s, $l);
+        return [$h, $s, $l];
     }
 }

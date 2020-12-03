@@ -38,7 +38,7 @@ abstract class DateTime
 
         // navrat vysledku
         if ($get_times) {
-            return array($time, $sunrise, $sunset);
+            return [$time, $sunrise, $sunset];
         }
 
         if ($time >= $sunrise && $time < $sunset) {

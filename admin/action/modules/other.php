@@ -7,10 +7,10 @@ defined('_root') or exit;
 
 /* --- priprava --- */
 
-$other_modules = array(
-    'system' => array(),
-    'plugin' => array(),
-);
+$other_modules = [
+    'system' => [],
+    'plugin' => [],
+];
 foreach ($admin_modules as $module => $module_options) {
     if (isset($module_options['other']) && $module_options['other'] && Admin::moduleAccess($module)) {
         $type = isset($module_options['other_system']) && $module_options['other_system'] ? 'system' : 'plugin';

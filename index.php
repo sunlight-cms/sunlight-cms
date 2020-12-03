@@ -14,9 +14,9 @@ use Sunlight\Util\Url;
 use Sunlight\Xsrf;
 
 require './system/bootstrap.php';
-Core::init('./', array(
+Core::init('./', [
     'env' => Core::ENV_WEB,
-));
+]);
 
 /* ----  priprava  ---- */
 
@@ -33,7 +33,7 @@ if (!Sunlight\Template::change(TemplateService::composeUid(_default_template, Te
     Core::systemFailure(
         'Motiv "%s" nebyl nalezen.',
         'Template "%s" was not found.',
-        array(_default_template)
+        [_default_template]
     );
 }
 
@@ -62,7 +62,7 @@ if (strncmp($_url_path, $_system_url_path, strlen($_system_url_path)) === 0) {
 }
 
 // konfiguracni pole webu
-$_index = array(
+$_index = [
     // atributy
     'id' => null, // ciselne ID
     'slug' => null, // identifikator (string)
@@ -77,7 +77,7 @@ $_index = array(
 
     // drobecky spadajici POD aktualni stranku
     // format je: array(array('title' => 'titulek', 'url' => 'url'), ...)
-    'crumbs' => array(),
+    'crumbs' => [],
 
     // typ stranky
     'is_module' => false,
@@ -97,13 +97,13 @@ $_index = array(
 
     // motiv
     'template_enabled' => true, // pouzit motiv
-    'body_classes' => array(),
-);
+    'body_classes' => [],
+];
 
 
 /* ---- priprava obsahu ---- */
 
-Extend::call('index.init', array('index' => &$_index));
+Extend::call('index.init', ['index' => &$_index]);
 
 $output = &$_index['output'];
 
@@ -141,7 +141,7 @@ if (empty($_POST) || Xsrf::check()) {
         if ($_index['slug'] !== null) {
             $segments = explode('/', $_index['slug']);
         } else {
-            $segments = array();
+            $segments = [];
         }
 
         if (!empty($segments) && $segments[count($segments) - 1] === '') {
@@ -153,10 +153,10 @@ if (empty($_POST) || Xsrf::check()) {
         }
 
         // extend
-        Extend::call('index.plugin', array(
+        Extend::call('index.plugin', [
             'index' => &$_index,
             'segments' => $segments,
-        ));
+        ]);
 
         Extend::call('page.init');
 
@@ -176,7 +176,7 @@ if (empty($_POST) || Xsrf::check()) {
 
 /* ----  vystup  ---- */
 
-Extend::call('index.prepare', array('index' => &$_index));
+Extend::call('index.prepare', ['index' => &$_index]);
 
 // zpracovani stavu
 if ($_index['redirect_to'] !== null) {
@@ -197,7 +197,7 @@ if ($_index['redirect_to'] !== null) {
     $_index['is_successful'] = true;
 }
 
-Extend::call('index.ready', array('index' => &$_index));
+Extend::call('index.ready', ['index' => &$_index]);
 
 // vlozeni motivu
 if ($_index['template_enabled']) {
@@ -206,10 +206,10 @@ if ($_index['template_enabled']) {
     $_template_boxes = $_template->getBoxes($_template_layout);
     $_template_path = $_template->getTemplate($_template_layout);
 
-    Extend::call('index.template', array(
+    Extend::call('index.template', [
         'path' => &$_template_path,
         'boxes' => &$_template_boxes,
-    ));
+    ]);
 
     // hlavicka
     echo GenericTemplates::renderHead();
@@ -227,4 +227,4 @@ if ($_index['template_enabled']) {
 <?php
 }
 
-Extend::call('index.finish', array('index' => $_index));
+Extend::call('index.finish', ['index' => $_index]);

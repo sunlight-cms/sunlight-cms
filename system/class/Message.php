@@ -119,7 +119,7 @@ class Message
      */
     function __toString()
     {
-        $output = Extend::buffer('message.render', array('message' => $this));
+        $output = Extend::buffer('message.render', ['message' => $this]);
 
         if ($output === '') {
             $output = "\n<div class='message message-" . _e($this->type) . "'>"

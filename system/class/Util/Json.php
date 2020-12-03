@@ -84,7 +84,7 @@ abstract class Json
             $encodedData = static::encode($data, $pretty, $escapedUnicode, $escapedSlashes);
         }
 
-        return array($contentType, $encodedData);
+        return [$contentType, $encodedData];
     }
 
     /**
@@ -123,13 +123,13 @@ abstract class Json
             $errorCode = json_last_error();
         }
 
-        $errorCodes = array(
+        $errorCodes = [
             JSON_ERROR_NONE => 'No error has occurred',
             JSON_ERROR_DEPTH => 'The maximum stack depth has been exceeded',
             JSON_ERROR_STATE_MISMATCH => 'Invalid or malformed JSON',
             JSON_ERROR_CTRL_CHAR => 'Control character error, possibly incorrectly encoded',
             JSON_ERROR_SYNTAX => 'Syntax error',
-        );
+        ];
 
         if (defined('JSON_ERROR_UTF8')) {
             $errorCodes[JSON_ERROR_UTF8] = 'Malformed UTF-8 characters, possibly incorrectly encoded';

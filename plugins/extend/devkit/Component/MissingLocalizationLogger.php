@@ -21,7 +21,7 @@ class MissingLocalizationLogger
     public function log(LocalizationDictionary $dict, $key)
     {
         if (!isset($this->missingEntries[$dict])) {
-            $this->missingEntries[$dict] = array();
+            $this->missingEntries[$dict] = [];
         }
 
         $missingEntries = $this->missingEntries[$dict];

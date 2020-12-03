@@ -68,11 +68,11 @@ class TreeManager
         if (key_exists($this->levelColumn, $data) || key_exists( $this->depthColumn, $data)) {
             throw new \InvalidArgumentException(sprintf('Columns "%s" and "%s" cannot be specified manually', $this->levelColumn, $this->depthColumn));
         }
-        $data += array(
+        $data += [
             $this->parentColumn => null,
             $this->levelColumn => 0,
             $this->depthColumn => 0,
-        );
+        ];
 
         $nodeId = DB::insert($this->table, $data, true);
         if ($refresh) {
@@ -224,9 +224,9 @@ class TreeManager
      */
     function propagate(array $flatTree, $context, $propagator, $contextUpdater, $getChangesetMap = false)
     {
-        $stack = array();
+        $stack = [];
         $contextLevel = 0;
-        $changesetMap = array();
+        $changesetMap = [];
 
         foreach ($flatTree as $node) {
             // aktualizovat aktualni kontext
@@ -243,7 +243,7 @@ class TreeManager
             // zavolat aktualizator kontextu (pro potomky)
             $newContext = call_user_func($contextUpdater, $context, $node, $changeset);
             if ($newContext !== null) {
-                $stack[] = array($context, $contextLevel);
+                $stack[] = [$context, $contextLevel];
                 $context = $newContext;
                 $contextLevel = $node[$this->levelColumn] + 1;
                 $newContext = null;
@@ -267,7 +267,7 @@ class TreeManager
     protected function getLevel($nodeId, &$parents = null)
     {
         $level = 0;
-        $parents = array();
+        $parents = [];
         if ($nodeId === null) {
             return 0;
         }
@@ -314,7 +314,7 @@ class TreeManager
      */
     protected function getRoot($nodeId)
     {
-        $parents = array();
+        $parents = [];
         $this->getLevel($nodeId, $parents);
         if (!empty($parents)) {
             return end($parents);
@@ -336,13 +336,13 @@ class TreeManager
         $node = DB::queryRow('SELECT ' . $this->depthColumn . ' FROM `' . $this->table . '` WHERE id=' . DB::val($nodeId));
         if ($node === false) {
             if ($emptyArrayOnFailure) {
-                return array();
+                return [];
             }
             throw new \RuntimeException(sprintf('Node "%s" does not exist', $nodeId));
         }
         if ($node[$this->depthColumn] == 0) {
             // nulova hloubka
-            return array();
+            return [];
         }
 
         // sestavit dotaz
@@ -372,7 +372,7 @@ class TreeManager
 
         // nacist potomky
         $query = DB::query($sql);
-        $childrenMap = array();
+        $childrenMap = [];
         while ($row = DB::rown($query)) {
             for ($i = 0; isset($row[$i]); ++$i) {
                 $childrenMap[$row[$i]] = true;
@@ -391,19 +391,19 @@ class TreeManager
     protected function doRefresh($currentNodeId)
     {
         // zjistit level a rodice aktualniho nodu
-        $currentNodeParents = array();
+        $currentNodeParents = [];
         $currentNodeLevel = $this->getLevel($currentNodeId, $currentNodeParents);
 
         // pripravit frontu a level set
-        $queue = array(
-            array(
+        $queue = [
+            [
                 $currentNodeId, // id uzlu
                 $currentNodeLevel, // uroven uzlu
-            ),
-        );
-        $levelset = array();
+            ],
+        ];
+        $levelset = [];
         if ($currentNodeId !== null) {
-            $levelset[$currentNodeLevel] = array($currentNodeId => true);
+            $levelset[$currentNodeLevel] = [$currentNodeId => true];
         }
 
         // traverzovat frontu
@@ -425,7 +425,7 @@ class TreeManager
                     }
                     $levelset[$childrenLevel][$child[$this->idColumn]] = true;
                 }
-                $queue[] = array($child[$this->idColumn], $childrenLevel);
+                $queue[] = [$child[$this->idColumn], $childrenLevel];
             }
 
             DB::free($children);
@@ -435,7 +435,7 @@ class TreeManager
 
         // aplikovat level set
         foreach ($levelset as $newLevel => $childrenMap) {
-            $this->updateSet($this->idColumn, array_keys($childrenMap), array($this->levelColumn => $newLevel));
+            $this->updateSet($this->idColumn, array_keys($childrenMap), [$this->levelColumn => $newLevel]);
         }
 
         // aktualizovat hloubku cele vetve
@@ -461,14 +461,14 @@ class TreeManager
         }
 
         // pripravit frontu a depth mapu
-        $queue = array(
-            array(
+        $queue = [
+            [
                 $rootNodeId, // id uzlu
                 0, // uroven uzlu
-                array(), // seznam nadrazenych uzlu
-            ),
-        );
-        $depthmap = array();
+                [], // seznam nadrazenych uzlu
+            ],
+        ];
+        $depthmap = [];
 
         // traverzovat frontu
         for ($i = 0; isset($queue[$i]); ++$i) {
@@ -483,13 +483,13 @@ class TreeManager
             if (DB::size($children) > 0) {
                 // uzel ma potomky, pridat do fronty
                 if ($queue[$i][0] !== null) {
-                    $childParents = array_merge(array($queue[$i][0]), $queue[$i][2]);
+                    $childParents = array_merge([$queue[$i][0]], $queue[$i][2]);
                 } else {
-                    $childParents = array();
+                    $childParents = [];
                 }
 
                 while ($child = DB::row($children)) {
-                    $queue[] = array($child[$this->idColumn], $child[$this->depthColumn], $childParents);
+                    $queue[] = [$child[$this->idColumn], $child[$this->depthColumn], $childParents];
                 }
             }
             DB::free($children);
@@ -509,14 +509,14 @@ class TreeManager
         }
 
         // konvertovat depth mapu na sety
-        $depthsets = array();
+        $depthsets = [];
         foreach ($depthmap as $nodeId => $newDepth) {
             $depthsets[$newDepth][] = $nodeId;
         }
 
         // aplikovat depth sety
         foreach ($depthsets as $newDepth => $nodeIds) {
-            $this->updateSet($this->idColumn, $nodeIds, array($this->depthColumn => $newDepth));
+            $this->updateSet($this->idColumn, $nodeIds, [$this->depthColumn => $newDepth]);
         }
     }
 

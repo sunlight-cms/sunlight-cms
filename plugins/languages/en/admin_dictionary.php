@@ -1,6 +1,6 @@
 <?php
 
-return array(
+return [
     'admin.link.site' => 'Show website',
     'admin.link.newwin' => 'New window',
     'admin.link.home' => 'back to main page',
@@ -744,4 +744,4 @@ return array(
     'admin.backup.restore.submit.delete' => 'Remove the backup',
     'admin.other.php.title' => 'Execute PHP code',
     'admin.other.php.html' => 'Show output as HTML',
-);
+];

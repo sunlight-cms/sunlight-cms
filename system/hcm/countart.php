@@ -10,7 +10,7 @@ return function ($kategorie = null) {
     if (!empty($kategorie)) {
         $kategorie = Arr::removeValue(explode('-', $kategorie), '');
     } else {
-        $kategorie = array();
+        $kategorie = [];
     }
 
     list($joins, $cond) = Article::createFilter('art', $kategorie);

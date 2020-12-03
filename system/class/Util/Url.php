@@ -32,16 +32,16 @@ class Url
      */
     protected function __construct(array $components)
     {
-        $this->components = $components + array(
+        $this->components = $components + [
             'scheme' => null,
             'host' => null,
             'port' => null,
             'user' => null,
             'pass' => null,
             'path' => null,
-            'query' => array(),
+            'query' => [],
             'fragment' => null,
-        );
+        ];
     }
 
     /**
@@ -49,7 +49,7 @@ class Url
      */
     static function create()
     {
-        return new static(array());
+        return new static([]);
     }
 
     /**
@@ -95,7 +95,7 @@ class Url
                 }
             } catch (\InvalidArgumentException $e) {
                 $path = '/';
-                $query = array();
+                $query = [];
             }
 
             $url = sprintf(

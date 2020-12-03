@@ -20,7 +20,7 @@ class BackupBuilder
     const TYPE_FULL = 1;
 
     /** @var string[] */
-    protected $staticPathList = array(
+    protected $staticPathList = [
         'admin',
         'system',
         'vendor',
@@ -28,56 +28,56 @@ class BackupBuilder
         'composer.json',
         'robots.txt',
         'favicon.ico',
-    );
+    ];
 
     /** @var string[] */
-    protected $emptyDirPathList = array(
+    protected $emptyDirPathList = [
         'images/thumb',
-    );
+    ];
 
     /** @var array[] name => paths */
-    protected $dynamicPathMap = array(
-        'plugins' => array('plugins'),
-        'upload' => array('upload'),
-        'images_user' => array(
+    protected $dynamicPathMap = [
+        'plugins' => ['plugins'],
+        'upload' => ['upload'],
+        'images_user' => [
             'images/avatars',
             'images/groupicons',
-        ),
-        'images_articles' => array(
+        ],
+        'images_articles' => [
             'images/articles',
-        ),
-        'images_galleries' => array(
+        ],
+        'images_galleries' => [
             'images/galleries',
-        ),
-    );
+        ],
+    ];
 
     /** @var bool[] name => true */
-    protected $disabledDynamicPathMap = array();
+    protected $disabledDynamicPathMap = [];
 
     /** @var bool[] name => true */
-    protected $optionalDynamicPathMap = array(
+    protected $optionalDynamicPathMap = [
         'upload' => true,
         'images_user' => true,
         'images_articles' => true,
         'images_galleries' => true,
-    );
+    ];
 
     /** @var array[] pattern list */
-    protected $includedPathMap = array(
-        'system/backup/.htaccess' => array('static' => true, 'dynamic' => false),
-        'system/backup/.gitkeep' => array('static' => true, 'dynamic' => false),
-        'system/cache/.htaccess' => array('static' => true, 'dynamic' => false),
-        'system/cache/.gitkeep' => array('static' => true, 'dynamic' => false),
-        'system/tmp/.htaccess' => array('static' => true, 'dynamic' => false),
-        'system/tmp/.gitkeep' => array('static' => true, 'dynamic' => false),
-    );
+    protected $includedPathMap = [
+        'system/backup/.htaccess' => ['static' => true, 'dynamic' => false],
+        'system/backup/.gitkeep' => ['static' => true, 'dynamic' => false],
+        'system/cache/.htaccess' => ['static' => true, 'dynamic' => false],
+        'system/cache/.gitkeep' => ['static' => true, 'dynamic' => false],
+        'system/tmp/.htaccess' => ['static' => true, 'dynamic' => false],
+        'system/tmp/.gitkeep' => ['static' => true, 'dynamic' => false],
+    ];
 
     /** @var array[] pattern list */
-    protected $excludedPathMap = array(
-        'system/backup/*' => array('static' => true, 'dynamic' => true),
-        'system/cache/*' => array('static' => true, 'dynamic' => true),
-        'system/tmp/*' => array('static' => true, 'dynamic' => true),
-    );
+    protected $excludedPathMap = [
+        'system/backup/*' => ['static' => true, 'dynamic' => true],
+        'system/cache/*' => ['static' => true, 'dynamic' => true],
+        'system/tmp/*' => ['static' => true, 'dynamic' => true],
+    ];
 
     /* @var bool */
     protected $databaseDumpEnabled = true;
@@ -323,7 +323,7 @@ class BackupBuilder
      */
     function includePath($pattern, $static = true, $dynamic = true)
     {
-        $this->includedPathMap[$pattern] = array('static' => $static, 'dynamic' => $dynamic);
+        $this->includedPathMap[$pattern] = ['static' => $static, 'dynamic' => $dynamic];
 
         return $this;
     }
@@ -338,7 +338,7 @@ class BackupBuilder
      */
     function excludePath($pattern, $static = true, $dynamic = true)
     {
-        $this->excludedPathMap[$pattern] = array('static' => $static, 'dynamic' => $dynamic);
+        $this->excludedPathMap[$pattern] = ['static' => $static, 'dynamic' => $dynamic];
 
         return $this;
     }
@@ -529,10 +529,10 @@ class BackupBuilder
     {
         $phpFileBuilder = PhpTemplate::fromFile(_root . 'system/config_template.php');
 
-        return $phpFileBuilder->compile(array(
+        return $phpFileBuilder->compile([
             'db.prefix' => substr(_dbprefix, 0, -1),
             'app_id' => Core::$appId,
             'fallback_lang' => Core::$fallbackLang,
-        ));
+        ]);
     }
 }

@@ -34,7 +34,7 @@ return function ($cesta = "", $rozmery = null, $strankovani = null, $lightbox = 
         $handle = opendir($cesta);
 
         // nacteni polozek
-        $items = array();
+        $items = [];
         while (($item = readdir($handle)) !== false) {
             $ext = pathinfo($item);
             if (isset($ext['extension'])) {

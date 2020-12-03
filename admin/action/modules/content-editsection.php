@@ -10,12 +10,12 @@ defined('_root') or exit;
 $type = _page_section;
 require _root . 'admin/action/modules/include/page-editscript-init.php';
 if ($continue) {
-    $custom_save_array = array(
-        'var1' => array('type' => 'bool', 'nullable' => false),
-        'var2' => array('type' => 'bool', 'nullable' => false),
-        'var3' => array('type' => 'bool', 'nullable' => false),
-        'delcomments' => array('type' => 'bool', 'nullable' => true),
-    );
+    $custom_save_array = [
+        'var1' => ['type' => 'bool', 'nullable' => false],
+        'var2' => ['type' => 'bool', 'nullable' => false],
+        'var3' => ['type' => 'bool', 'nullable' => false],
+        'delcomments' => ['type' => 'bool', 'nullable' => true],
+    ];
     $custom_settings = "
   <tr><td colspan='2'><label><input type='checkbox' name='var1' value='1'" . Form::activateCheckbox($query['var1']) . "> " . _lang('admin.content.form.comments') . "</label></td></td></td></tr>
   <tr><td colspan='2'><label><input type='checkbox' name='var3' value='1'" . Form::activateCheckbox($query['var3']) . "> " . _lang('admin.content.form.commentslocked') . "</label></td></td></td></tr>

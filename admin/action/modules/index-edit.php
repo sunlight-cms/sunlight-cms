@@ -17,7 +17,7 @@ if (isset($_POST['text'])) {
     return;
 }
 
-$admin_index_cfg = Core::loadSettings(array('admin_index_custom', 'admin_index_custom_pos'));
+$admin_index_cfg = Core::loadSettings(['admin_index_custom', 'admin_index_custom_pos']);
 
 /* ---  vystup  --- */
 

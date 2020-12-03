@@ -21,10 +21,10 @@ abstract class Comment
         // uzivatel je prihlasen
         if (_logged_in) {
             // extend
-            $access = Extend::fetch('posts.access', array(
+            $access = Extend::fetch('posts.access', [
                 'post' => $post,
                 'user_query' => $userQuery,
-            ));
+            ]);
             if ($access !== null) {
                 return $access;
             }
@@ -54,7 +54,7 @@ abstract class Comment
      * @param bool   $doCount       vracet take pocet odpovidajicich prispevku 1/0
      * @return array sloupce, joiny, where podminka, [pocet]
      */
-    static function createFilter($alias, array $types = array(), array $homes = array(), $sqlConditions = null, $doCount = false)
+    static function createFilter($alias, array $types = [], array $homes = [], $sqlConditions = null, $doCount = false)
     {
         // sloupce
         $columns = "{$alias}.id,{$alias}.type,{$alias}.home,{$alias}.xhome,{$alias}.subject,
@@ -65,7 +65,7 @@ home_art.title art_title,home_art.slug art_slug,
 home_post.subject xhome_subject";
 
         // podminky
-        $conditions = array();
+        $conditions = [];
 
         if (!empty($types)) {
             $conditions[] = "{$alias}.type IN(" . DB::arr($types) . ")";
@@ -95,19 +95,19 @@ LEFT JOIN " . _page_table . " home_cat3 ON({$alias}.type=" . _post_article_comme
 LEFT JOIN " . _comment_table . " home_post ON({$alias}.type=" . _post_forum_topic . " AND {$alias}.xhome!=-1 AND {$alias}.xhome=home_post.id)";
 
         // extend
-        Extend::call('posts.filter', array(
+        Extend::call('posts.filter', [
             'columns' => &$columns,
             'joins' => &$joins,
             'conditions' => &$conditions,
             'alias' => $alias,
-        ));
+        ]);
 
         // sestaveni vysledku
-        $result = array(
+        $result = [
             $columns,
             $joins,
             implode(' AND ', $conditions),
-        );
+        ];
 
         // pridat pocet
         if ($doCount) {
@@ -129,12 +129,12 @@ LEFT JOIN " . _comment_table . " home_post ON({$alias}.type=" . _post_forum_topi
     static function render($input, $smileys = true, $bbcode = true, $nl2br = true)
     {
         // event
-        Extend::call('post.parse', array(
+        Extend::call('post.parse', [
             'content' => &$input,
             'smileys' => $smileys,
             'bbcode' => $bbcode,
             'nl2br' => $nl2br,
-        ));
+        ]);
 
         // vyhodnoceni smajlu
         if (_smileys && $smileys) {

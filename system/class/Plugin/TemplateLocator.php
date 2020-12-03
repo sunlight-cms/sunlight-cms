@@ -91,7 +91,7 @@ abstract class TemplateLocator
     static function getComponentsByUid($uid, $type)
     {
         return call_user_func_array(
-            array(get_called_class(), 'getComponents'),
+            [get_called_class(), 'getComponents'],
             static::parseUid($uid, $type)
         );
     }
@@ -119,9 +119,9 @@ abstract class TemplateLocator
 
         $template = static::getTemplate($template);
 
-        $components = array(
+        $components = [
             'template' => $template,
-        );
+        ];
 
         if ($layout !== null) {
             if (!$template->hasLayout($layout)) {

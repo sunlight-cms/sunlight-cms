@@ -116,11 +116,11 @@ if (_priv_adminsection || _priv_admincategory || _priv_adminbook || _priv_admins
 
     $pageitems .= Extend::buffer('admin.content.pagelist.before');
 
-    $pageitems .= PageLister::render(array(
+    $pageitems .= PageLister::render([
         'type' => true,
         'flags' => true,
         'sortable' => $sortable,
-    ));
+    ]);
 
     $pageitems .= Extend::buffer('admin.content.pagelist.after');
 
@@ -132,65 +132,65 @@ if (_priv_adminsection || _priv_admincategory || _priv_adminbook || _priv_admins
 }
 
 // nabidka modulu
-$content_modules = array(
-    'layout' => array(
-        'modules' => array(
-            'boxes' => array(
+$content_modules = [
+    'layout' => [
+        'modules' => [
+            'boxes' => [
                 'url' => 'index.php?p=content-boxes',
                 'icon' => 'images/icons/big-layout.png',
                 'access' => _priv_adminbox,
-            ),
-        ),
-    ),
+            ],
+        ],
+    ],
 
-    'articles' => array(
-        'modules' => array(
-            'newart' => array(
+    'articles' => [
+        'modules' => [
+            'newart' => [
                 'url' => 'index.php?p=content-articles-edit',
                 'icon' => 'images/icons/big-new.png',
                 'access' => _priv_adminart,
-            ),
-            'manage' => array(
+            ],
+            'manage' => [
                 'url' => 'index.php?p=content-articles',
                 'icon' => 'images/icons/big-list.png',
                 'access' => _priv_adminart,
                 'label' => _lang('admin.content.manage'),
-            ),
-            'confirm' => array(
+            ],
+            'confirm' => [
                 'url' => 'index.php?p=content-confirm',
                 'icon' => 'images/icons/big-check.png',
                 'access' => _priv_adminconfirm,
-            ),
-            'movearts' => array(
+            ],
+            'movearts' => [
                 'url' => 'index.php?p=content-movearts',
                 'icon' => 'images/icons/big-move.png',
                 'access' => _priv_admincategory,
-            ),
-            'artfilter' => array(
+            ],
+            'artfilter' => [
                 'url' => 'index.php?p=content-artfilter',
                 'icon' => 'images/icons/big-filter.png',
                 'access' => _priv_admincategory,
-            ),
-        ),
-    ),
+            ],
+        ],
+    ],
 
-    'widgets' => array(
-        'modules' => array(
-            'polls' => array(
+    'widgets' => [
+        'modules' => [
+            'polls' => [
                 'url' => 'index.php?p=content-polls',
                 'icon' => 'images/icons/big-bars.png',
                 'access' => _priv_adminpoll,
-            ),
-            'sboxes' => array(
+            ],
+            'sboxes' => [
                 'url' => 'index.php?p=content-sboxes',
                 'icon' => 'images/icons/big-bubbles.png',
                 'access' => _priv_adminsbox,
-            ),
-        ),
-    ),
-);
+            ],
+        ],
+    ],
+];
 
-Extend::call('admin.content.modules', array('modules' => &$content_modules));
+Extend::call('admin.content.modules', ['modules' => &$content_modules]);
 
 $content_modules_str = '';
 foreach ($content_modules as $category_alias => $category_data) {

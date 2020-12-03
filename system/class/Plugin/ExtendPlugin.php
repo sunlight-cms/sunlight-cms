@@ -8,21 +8,21 @@ use Sunlight\Localization\LocalizationDirectory;
 
 class ExtendPlugin extends Plugin
 {
-    protected static $typeDefinition = array(
+    protected static $typeDefinition = [
         'type' => 'extend',
         'dir' => 'plugins/extend',
         'class' => __CLASS__,
         'default_base_namespace' => 'SunlightExtend',
-        'options' => array(
-            'events' => array('type' => 'array', 'default' => array(), 'normalizer' => array('Sunlight\Plugin\PluginOptionNormalizer', 'normalizeEvents')),
-            'events.web' => array('type' => 'array', 'default' => array(), 'normalizer' => array('Sunlight\Plugin\PluginOptionNormalizer', 'normalizeEvents')),
-            'events.admin' => array('type' => 'array', 'default' => array(), 'normalizer' => array('Sunlight\Plugin\PluginOptionNormalizer', 'normalizeEvents')),
-            'scripts' => array('type' => 'array', 'default' => array(), 'normalizer' => array('Sunlight\Plugin\PluginOptionNormalizer', 'normalizePathArray')),
-            'scripts.web' => array('type' => 'array', 'default' => array(), 'normalizer' => array('Sunlight\Plugin\PluginOptionNormalizer', 'normalizePathArray')),
-            'scripts.admin' => array('type' => 'array', 'default' => array(), 'normalizer' => array('Sunlight\Plugin\PluginOptionNormalizer', 'normalizePathArray')),
-            'langs' => array('type' => 'array', 'default' => array(), 'normalizer' => array('Sunlight\Plugin\PluginOptionNormalizer', 'normalizePathArray')),
-        ),
-    );
+        'options' => [
+            'events' => ['type' => 'array', 'default' => [], 'normalizer' => ['Sunlight\Plugin\PluginOptionNormalizer', 'normalizeEvents']],
+            'events.web' => ['type' => 'array', 'default' => [], 'normalizer' => ['Sunlight\Plugin\PluginOptionNormalizer', 'normalizeEvents']],
+            'events.admin' => ['type' => 'array', 'default' => [], 'normalizer' => ['Sunlight\Plugin\PluginOptionNormalizer', 'normalizeEvents']],
+            'scripts' => ['type' => 'array', 'default' => [], 'normalizer' => ['Sunlight\Plugin\PluginOptionNormalizer', 'normalizePathArray']],
+            'scripts.web' => ['type' => 'array', 'default' => [], 'normalizer' => ['Sunlight\Plugin\PluginOptionNormalizer', 'normalizePathArray']],
+            'scripts.admin' => ['type' => 'array', 'default' => [], 'normalizer' => ['Sunlight\Plugin\PluginOptionNormalizer', 'normalizePathArray']],
+            'langs' => ['type' => 'array', 'default' => [], 'normalizer' => ['Sunlight\Plugin\PluginOptionNormalizer', 'normalizePathArray']],
+        ],
+    ];
 
     /**
      * Initialize the plugin
@@ -34,7 +34,7 @@ class ExtendPlugin extends Plugin
             Extend::reg(
                 $subscriber['event'],
                 $subscriber['use_this']
-                    ? array($this, $subscriber['callback'])
+                    ? [$this, $subscriber['callback']]
                     : $subscriber['callback'],
                 $subscriber['priority']
             );
@@ -44,7 +44,7 @@ class ExtendPlugin extends Plugin
                 Extend::reg(
                     $subscriber['event'],
                     $subscriber['use_this']
-                        ? array($this, $subscriber['callback'])
+                        ? [$this, $subscriber['callback']]
                         : $subscriber['callback'],
                     $subscriber['priority']
                 );

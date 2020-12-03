@@ -103,7 +103,7 @@ abstract class TemplateService
     static function getComponentsByUid($uid, $type)
     {
         return call_user_func_array(
-            array(get_called_class(), 'getComponents'),
+            [get_called_class(), 'getComponents'],
             static::parseUid($uid, $type)
         );
     }
@@ -131,9 +131,9 @@ abstract class TemplateService
 
         $template = static::getTemplate($template);
 
-        $components = array(
+        $components = [
             'template' => $template,
-        );
+        ];
 
         if ($layout !== null) {
             if (!$template->hasLayout($layout)) {
@@ -165,7 +165,7 @@ abstract class TemplateService
      */
     static function getComponentLabel(TemplatePlugin $template, $layout = null, $slot = null, $includeTemplateName = true)
     {
-        $parts = array();
+        $parts = [];
 
         if ($includeTemplateName) {
             $parts[] = $template->getOption('name');
@@ -212,9 +212,9 @@ abstract class TemplateService
         if ($uid !== null) {
             $components = static::getComponentsByUid($uid, $type);
         } else {
-            $components = array(
+            $components = [
                 'template' => static::getDefaultTemplate(),
-            );
+            ];
 
             if ($type >= static::UID_TEMPLATE_LAYOUT) {
                 $components['layout'] = TemplatePlugin::DEFAULT_LAYOUT;

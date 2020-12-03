@@ -33,7 +33,7 @@ class PluginLoader
         $this->commonOptionSet = new OptionSet(Plugin::$commonOptions);
         $this->commonOptionSet->setIgnoreExtraIndexes(true);
 
-        $this->typeOptionSets = array();
+        $this->typeOptionSets = [];
         foreach ($types as $type => $typeDefinition) {
             $this->typeOptionSets[$type] = new OptionSet($typeDefinition['options']);
             $this->typeOptionSets[$type]->addKnownIndexes($this->commonOptionSet->getIndexes());
@@ -64,9 +64,9 @@ class PluginLoader
      */
     function load($resolveInstallationStatus = true)
     {
-        $plugins = array();
-        $autoload = array_fill_keys(array('psr-0', 'psr-4', 'classmap', 'files'), array());
-        $boundFiles = array();
+        $plugins = [];
+        $autoload = array_fill_keys(['psr-0', 'psr-4', 'classmap', 'files'], []);
+        $boundFiles = [];
 
         $composerInjector = new RepositoryInjector(new Repository(realpath(_root . '/composer.json')));
         $typeNames = array_keys($this->types);
@@ -96,18 +96,18 @@ class PluginLoader
             }
         }
 
-        return array(
+        return [
             'plugins' => $plugins,
             'autoload' => $autoload,
             'bound_files' => $boundFiles,
-        );
+        ];
     }
 
     private function findPlugins(array &$plugins, array &$boundFiles)
     {
         // load plugins from standard paths
         foreach ($this->types as $typeName => $type) {
-            $plugins[$typeName] = array();
+            $plugins[$typeName] = [];
 
             $dir = _root . $type['dir'];
 
@@ -182,12 +182,12 @@ class PluginLoader
             if ($options !== null && empty($plugin['definition_errors'])) {
                 $plugin['options'] = $options;
             } else {
-                $options = array(
+                $options = [
                     'id' => $plugin['id'],
                     'name' => $plugin['id'],
                     'version' => '0.0.0',
                     'api' => '0.0.0',
-                );
+                ];
                 $this->commonOptionSet->process($options, $context);
                 $plugin['options'] = $options;
             }
@@ -292,11 +292,11 @@ class PluginLoader
      * @param array $defaultOptions
      * @return array
      */
-    private function createPluginData($id, $file, $webPath, $typeName, array $defaultOptions = array())
+    private function createPluginData($id, $file, $webPath, $typeName, array $defaultOptions = [])
     {
         $file = realpath($file);
 
-        return array(
+        return [
             'id' => $id,
             'camel_id' => StringManipulator::toCamelCase($id),
             'type' => $typeName,
@@ -305,10 +305,10 @@ class PluginLoader
             'dir' => dirname($file),
             'file' => $file,
             'web_path' => $webPath,
-            'errors' => array(),
-            'definition_errors' => array(),
-            'options' => $defaultOptions + array('name' => $id),
-        );
+            'errors' => [],
+            'definition_errors' => [],
+            'options' => $defaultOptions + ['name' => $id],
+        ];
     }
 
     /**
@@ -318,10 +318,10 @@ class PluginLoader
      */
     private function createPluginOptionContext(array &$plugin, array $type)
     {
-        return array(
+        return [
             'plugin' => &$plugin,
             'type' => $type,
-        );
+        ];
     }
 
     /**
@@ -331,7 +331,7 @@ class PluginLoader
      */
     private function convertPluginToErrorState(array $plugin, array $errors)
     {
-        return array('status' => Plugin::STATUS_HAS_ERRORS, 'errors' => $errors) + $plugin;
+        return ['status' => Plugin::STATUS_HAS_ERRORS, 'errors' => $errors] + $plugin;
     }
 
     /**
@@ -343,14 +343,14 @@ class PluginLoader
      */
     private function resolveDependencies(array $plugins)
     {
-        $sorted = array();
+        $sorted = [];
         $circularDependencyMap = $this->findCircularDependencies($plugins);
 
         while (!empty($plugins)) {
             $numAdded = 0;
             foreach ($plugins as $name => $plugin) {
                 $canBeAdded = true;
-                $errors = array();
+                $errors = [];
 
                 if (Plugin::STATUS_OK === $plugin['status']) {
                     if (isset($circularDependencyMap[$name])) {
@@ -415,13 +415,13 @@ class PluginLoader
      */
     private function findCircularDependencies(array $plugins)
     {
-        $circularDependencyMap = array();
+        $circularDependencyMap = [];
 
-        $checkQueue = array();
+        $checkQueue = [];
         foreach ($plugins as $name => $plugin) {
             if (Plugin::STATUS_OK === $plugin['status']) {
                 foreach (array_keys($plugin['options']['requires']) as $dependency) {
-                    $checkQueue[] = array($dependency, array($name => true, $dependency => true));
+                    $checkQueue[] = [$dependency, [$name => true, $dependency => true]];
                 }
             }
         }
@@ -439,7 +439,7 @@ class PluginLoader
 
                         $circularDependencyMap[$name] = $pathString;
                     } else {
-                        $checkQueue[] = array($dependency, $pathMap + array($dependency => true));
+                        $checkQueue[] = [$dependency, $pathMap + [$dependency => true]];
                     }
                 }
             }
@@ -508,7 +508,7 @@ class PluginLoader
                 if (!is_dir($repository->getVendorPath())) {
                     $plugin = $this->convertPluginToErrorState(
                         $plugin,
-                        array(sprintf('missing dependencies, please run "composer install" in %s', $repository->getDirectory()))
+                        [sprintf('missing dependencies, please run "composer install" in %s', $repository->getDirectory())]
                     );
                     continue;
                 }
@@ -538,7 +538,7 @@ class PluginLoader
 
     private function resolveAutoloadForInjectedComposerPackages(array &$autoload, RepositoryInjector $injector)
     {
-        $uniqueSources = array();
+        $uniqueSources = [];
         $injectedPackages = $injector->getInjectedPackages();
 
         foreach ($injectedPackages as $package) {
@@ -572,7 +572,7 @@ class PluginLoader
     private function resolveAutoloadForComposerPackage(array &$autoload, \stdClass $package, $packagePath, array $generatedClassMap)
     {
         // PSR-0, PSR-4
-        foreach (array('psr-0', 'psr-4') as $type) {
+        foreach (['psr-0', 'psr-4'] as $type) {
             if (empty($package->autoload->{$type})) {
                 continue;
             }

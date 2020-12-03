@@ -155,10 +155,10 @@ class Text3dCaptcha
      */
     protected function to2d($x, $y, $z)
     {
-        return array(
+        return [
             $x * $this->scale - $y * $this->scale * cos($this->projectionAngle),
             $y * $this->scale * sin($this->projectionAngle) - $z * $this->scale,
-        );
+        ];
     }
 
     protected function drawText($image, $text, $x, $y)

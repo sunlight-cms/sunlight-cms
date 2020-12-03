@@ -19,15 +19,15 @@ class SqlReader
     /** @var string */
     protected $delimiter = ';';
     /** @var array */
-    protected $quoteMap = array('"' => 0, '\'' => 1, '`' => 2);
+    protected $quoteMap = ['"' => 0, '\'' => 1, '`' => 2];
     /** @var array */
-    protected $whitespaceMap = array(' ' => 0, "\n" => 1, "\r" => 2, "\t" => 3, "\h" => 4);
+    protected $whitespaceMap = [' ' => 0, "\n" => 1, "\r" => 2, "\t" => 3, "\h" => 4];
     /** @var array */
-    protected $commentSyntaxMap = array(
-        array('#', "\n"),
-        array('-- ', "\n"),
-        array('/*', '*/'),
-    );
+    protected $commentSyntaxMap = [
+        ['#', "\n"],
+        ['-- ', "\n"],
+        ['/*', '*/'],
+    ];
 
     /**
      * @param Input $input
@@ -117,8 +117,8 @@ class SqlReader
     function read($callback = null)
     {
         $query = null;
-        $queries = $callback === null ? array() : 0;
-        $queryMap = array();
+        $queries = $callback === null ? [] : 0;
+        $queryMap = [];
         $queryOffset = 0;
 
         $inQuotes = false;
@@ -144,7 +144,7 @@ class SqlReader
                 }
 
                 $query = null;
-                $queryMap = array();
+                $queryMap = [];
             }
         };
 
@@ -172,7 +172,7 @@ class SqlReader
 
                         if ($quoteFound) {
                             $inQuotes = false;
-                            $queryMap[] = array(static::QUOTED, $segmentOffset - $queryOffset, $i - $queryOffset);
+                            $queryMap[] = [static::QUOTED, $segmentOffset - $queryOffset, $i - $queryOffset];
                         }
                         break;
                 }
@@ -184,7 +184,7 @@ class SqlReader
                 ) {
                     if (!isset($commentEndSyntax[++$commentEndMatch])) {
                         $inComment = false;
-                        $queryMap[] = array(static::COMMENT, $segmentOffset - $queryOffset, $i - $queryOffset);
+                        $queryMap[] = [static::COMMENT, $segmentOffset - $queryOffset, $i - $queryOffset];
                     }
                 } else {
                     $commentEndMatch = 0;

@@ -10,18 +10,18 @@ class Slugify
     private static $inst;
 
     /** @var string[] */
-    protected $rules = array();
+    protected $rules = [];
 
     /** @var RuleProviderInterface */
     protected $provider;
 
     /** @var array */
-    protected $options = array(
+    protected $options = [
         'regexp' => self::LOWERCASE_NUMBERS_DASHES,
         'separator' => '-',
         'lowercase' => true,
         'trim' => true,
-        'rulesets' => array(
+        'rulesets' => [
             'default',
             // Languages are preferred if they appear later, list is ordered by number of
             // websites in that language
@@ -45,10 +45,10 @@ class Slugify
             'german',
             'russian',
             'romanian'
-        ),
-    );
+        ],
+    ];
 
-    protected function __construct(array $options = array(), RuleProviderInterface $provider = null)
+    protected function __construct(array $options = [], RuleProviderInterface $provider = null)
     {
         $this->options = array_merge($this->options, $options);
         $this->provider = $provider ? $provider : new DefaultRuleProvider();

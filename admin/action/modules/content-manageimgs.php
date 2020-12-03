@@ -62,20 +62,20 @@ if (isset($_POST['xaction']) && $continue) {
                 } else {
                     $ord = 1;
                 }
-                DB::update(_gallery_image_table, 'home=' . $galid, array('ord' => DB::raw('ord+1')));
+                DB::update(_gallery_image_table, 'home=' . $galid, ['ord' => DB::raw('ord+1')]);
             } else {
                 $ord = floatval(Request::post('ord'));
             }
 
             // kontrola a vlozeni
             if ($full != '') {
-                DB::insert(_gallery_image_table, array(
+                DB::insert(_gallery_image_table, [
                     'home' => $galid,
                     'ord' => $ord,
                     'title' => $title,
                     'prev' => $prev,
                     'full' => $full
-                ));
+                ]);
                 $message = Message::ok(_lang('global.inserted'));
             } else {
                 $message = Message::warning(_lang('admin.content.manageimgs.insert.error'));
@@ -173,11 +173,11 @@ if (isset($_POST['xaction']) && $continue) {
                             $greatestord = DB::queryRow("SELECT ord FROM " . _gallery_image_table . " WHERE home=" . $galid . " ORDER BY ord DESC LIMIT 1");
                             $greatestord = $greatestord['ord'];
 
-                            DB::update(_gallery_image_table, 'home=' . $newhome, array('ord' => DB::raw('ord+' . $greatestord)));
+                            DB::update(_gallery_image_table, 'home=' . $newhome, ['ord' => DB::raw('ord+' . $greatestord)]);
                         }
 
                         // presun obrazku
-                        DB::update(_gallery_image_table, 'home=' . $galid, array('home' => $newhome));
+                        DB::update(_gallery_image_table, 'home=' . $galid, ['home' => $newhome]);
 
                         // zprava
                         $message = Message::ok(_lang('global.done'));
@@ -206,7 +206,7 @@ if (isset($_POST['xaction']) && $continue) {
         case 7:
 
             // prepare vars
-            $done = array();
+            $done = [];
             $total = 0;
 
             // prepare and check image storage
@@ -228,19 +228,19 @@ if (isset($_POST['xaction']) && $continue) {
                     }
 
                     // prepare options
-                    $picOpts = array(
+                    $picOpts = [
                         'file_path' => $file['tmp_name'][$i],
                         'file_name' => $file['name'][$i],
                         'target_dir' => $storage_dir,
                         'jpg_quality' => 95,
-                        'resize' => array(
+                        'resize' => [
                             'mode' => 'fit',
                             'keep_smaller' => true,
                             'x' => _galuploadresize_w,
                             'y' => _galuploadresize_h,
-                        ),
-                    );
-                    Extend::call('admin.gallery.picture', array('opts' => &$picOpts));
+                        ],
+                    ];
+                    Extend::call('admin.gallery.picture', ['opts' => &$picOpts]);
 
                     // process
                     $picUid = Picture::process($picOpts, $picError, $picFormat);
@@ -262,7 +262,7 @@ if (isset($_POST['xaction']) && $continue) {
                 if (isset($_POST['moveords'])) {
                     // move
                     $ord = 0;
-                    DB::update(_gallery_image_table, 'home=' . $galid, array('ord' => DB::raw('ord+' . count($done))));
+                    DB::update(_gallery_image_table, 'home=' . $galid, ['ord' => DB::raw('ord+' . count($done))]);
                 } else {
                     // get max + 1
                     $ord = DB::queryRow("SELECT ord FROM " . _gallery_image_table . " WHERE home=" . $galid . " ORDER BY ord DESC LIMIT 1");
@@ -270,16 +270,16 @@ if (isset($_POST['xaction']) && $continue) {
                 }
 
                 // query
-                $insertdata = array();
+                $insertdata = [];
                 foreach ($done as $name) {
-                    $insertdata[] = array(
+                    $insertdata[] = [
                         'home' => $galid,
                         'ord' => $ord,
                         'title' => '',
                         'prev' => '',
                         'full' => $storage_dir . $name,
                         'in_storage' => 1
-                    );
+                    ];
                     ++$ord;
                 }
                 DB::insertMulti(_gallery_image_table, $insertdata);
@@ -311,7 +311,7 @@ if (isset($_GET['del']) && Xsrf::check(true) && $continue) {
 if ($continue) {
     $output .= Admin::backlink('index.php?p=content-editgallery&id=' . $galid) . "
 <h1>" . _lang('admin.content.manageimgs.title') . "</h1>
-<p class='bborder'>" . _lang('admin.content.manageimgs.p', array("*galtitle*" => $galdata['title'])) . "</p>
+<p class='bborder'>" . _lang('admin.content.manageimgs.p', ["*galtitle*" => $galdata['title']]) . "</p>
 
 " . $message . "
 
@@ -381,7 +381,7 @@ if ($continue) {
 
     // vypis
     $images = DB::query("SELECT * FROM " . _gallery_image_table . " WHERE home=" . $galid . " ORDER BY ord");
-    $images_forms = array();
+    $images_forms = [];
     if (DB::size($images) != 0) {
         // sestaveni formularu
         $output .= '<div
@@ -454,7 +454,7 @@ if ($continue) {
 
   <form class='cform' action='index.php?p=content-manageimgs&amp;g=" . $galid . "' method='post'>
   <input type='hidden' name='xaction' value='5'>
-  " . Admin::pageSelect("newhome", array('type' => _page_gallery)) . " <input class='button' type='submit' value='" . _lang('global.do') . "' onclick='return Sunlight.confirm();'><br><br>
+  " . Admin::pageSelect("newhome", ['type' => _page_gallery]) . " <input class='button' type='submit' value='" . _lang('global.do') . "' onclick='return Sunlight.confirm();'><br><br>
   <label><input type='checkbox' name='moveords' value='1' checked> " . _lang('admin.content.manageimgs.moveords') . "</label>
   " . Xsrf::getInput() . "</form>
 

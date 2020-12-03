@@ -29,10 +29,10 @@ if (!Article::checkAccess($_article, false)) {
 }
 
 // drobecek
-$_index['crumbs'][] = array(
+$_index['crumbs'][] = [
     'title' => $_article['title'],
     'url' => Router::article(null, $_article['slug'], $_page['slug'])
-);
+];
 
 // meta
 if ($_article['description'] !== '') {
@@ -43,11 +43,11 @@ if ($_article['description'] !== '') {
 $continue = true;
 $extend_args['article'] = &$_article;
 
-Extend::call('article.before', Extend::args($output, array(
+Extend::call('article.before', Extend::args($output, [
     'article' => &$_article,
     'continue' => &$continue,
     'page' => $_page,
-)));
+]));
 
 if (!$continue) {
     return;
@@ -76,11 +76,11 @@ $_index['heading'] = null;
 if (isset($_article['picture_uid'])) {
     $thumbnail = Picture::getThumbnail(
         Picture::get('images/articles/', $_article['picture_uid'], 'jpg', 1),
-        array(
+        [
             'mode' => 'fit',
             'x' => _article_pic_thumb_w,
             'y' => _article_pic_thumb_h,
-        )
+        ]
     );
 } else {
     $thumbnail = null;
@@ -96,16 +96,16 @@ $output .= "<div class='article-content'>\n" . Hcm::parse($_article['content']) 
 $output .= "<div class='cleaner'></div>\n";
 
 // informace
-$infos = array();
+$infos = [];
 
 if (_priv_adminart) {
-    $infos['idlink'] = array(_lang('global.id'), "<a href='" . _e(UrlHelper::appendParams(Router::generate('admin/index.php'),"p=content-articles-edit&id=" . $_article['id'] . "&returnid=load&returnpage=1")) . "'>" . $_article['id'] . " <img src='" . Template::image("icons/edit.png") . "' alt='edit' class='icon'></a>");
+    $infos['idlink'] = [_lang('global.id'), "<a href='" . _e(UrlHelper::appendParams(Router::generate('admin/index.php'),"p=content-articles-edit&id=" . $_article['id'] . "&returnid=load&returnpage=1")) . "'>" . $_article['id'] . " <img src='" . Template::image("icons/edit.png") . "' alt='edit' class='icon'></a>"];
 }
 
 if ($_article['showinfo']) {
-    $infos['author'] = array(_lang('article.author'), Router::userFromQuery($_article['author_query'], $_article));
-    $infos['posted'] = array(_lang('article.posted'), GenericTemplates::renderTime($_article['time'], 'article'));
-    $infos['readnum'] = array(_lang('article.readnum'), $_article['readnum'] . 'x');
+    $infos['author'] = [_lang('article.author'), Router::userFromQuery($_article['author_query'], $_article)];
+    $infos['posted'] = [_lang('article.posted'), GenericTemplates::renderTime($_article['time'], 'article')];
+    $infos['readnum'] = [_lang('article.readnum'), $_article['readnum'] . 'x'];
 }
 
 if ($_article['rateon'] && _ratemode != 0) {
@@ -122,7 +122,7 @@ if ($_article['rateon'] && _ratemode != 0) {
         $rate = _lang('article.rate.nodata');
     }
 
-    $infos['rating'] = array(_lang('article.rate'), $rate);
+    $infos['rating'] = [_lang('article.rate'), $rate];
 }
 
 // formular hodnoceni
@@ -176,7 +176,7 @@ if ($_article['rateon'] && _ratemode != 0 && _priv_artrate && IpLog::check(_iplo
 }
 
 // sestaveni kodu
-Extend::call('article.infos', array('article' => $_article, 'infos' => &$infos));
+Extend::call('article.infos', ['article' => $_article, 'infos' => &$infos]);
 
 if ($rateform !== null || !empty($infos)) {
     // zacatek tabulky
@@ -208,6 +208,6 @@ Extend::call('article.comments.after', $extend_args);
 
 // zapocteni precteni
 if ($_article['confirmed'] && $_article['time'] <= time() && IpLog::check(_iplog_article_read, $_article['id'])) {
-    DB::update(_article_table, 'id=' . $_article['id'], array('readnum' => DB::raw('readnum+1')));
+    DB::update(_article_table, 'id=' . $_article['id'], ['readnum' => DB::raw('readnum+1')]);
     IpLog::update(_iplog_article_read, $_article['id']);
 }

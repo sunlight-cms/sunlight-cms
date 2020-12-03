@@ -75,17 +75,17 @@ abstract class Core
     static $groupData;
 
     /** @var array */
-    static $dangerousServerSideExt = array('php', 'php3', 'php4', 'php5', 'phtml', 'shtml', 'asp', 'py', 'cgi', 'htaccess');
+    static $dangerousServerSideExt = ['php', 'php3', 'php4', 'php5', 'phtml', 'shtml', 'asp', 'py', 'cgi', 'htaccess'];
     /** @var array */
-    static $imageExt = array('png', 'jpeg', 'jpg', 'gif');
+    static $imageExt = ['png', 'jpeg', 'jpg', 'gif'];
     /** @var string */
     static $imageError;
     /** @var int */
     static $hcmUid = 0;
     /** @var array */
-    static $settings = array();
+    static $settings = [];
     /** @var array id => seconds */
-    static $cronIntervals = array();
+    static $cronIntervals = [];
 
     /** @var bool */
     protected static $ready = false;
@@ -107,7 +107,7 @@ abstract class Core
      * @param string $root relative path to the system root directory (with a trailing slash)
      * @param array  $options
      */
-    static function init($root, array $options = array())
+    static function init($root, array $options = [])
     {
         if (static::$ready) {
             throw new \LogicException('Cannot init multiple times');
@@ -165,7 +165,7 @@ abstract class Core
         Extend::call('core.ready');
 
         // cron tasks
-        Extend::reg('cron.maintenance', array(__CLASS__, 'doMaintenance'));
+        Extend::reg('cron.maintenance', [__CLASS__, 'doMaintenance']);
         if (_cron_auto && $options['allow_cron_auto']) {
             static::runCronTasks();
         }
@@ -180,7 +180,7 @@ abstract class Core
     protected static function initConfiguration($root, array &$options)
     {
         // defaults
-        $options += array(
+        $options += [
             'config_file' => null,
             'minimal_mode' => false,
             'session_enabled' => true,
@@ -188,7 +188,7 @@ abstract class Core
             'content_type' => null,
             'allow_cron_auto' => isset($options['env']) && $options['env'] !== static::ENV_SCRIPT,
             'env' => static::ENV_SCRIPT,
-        );
+        ];
 
         // load config file
         if (!isset($options['config_file'])) {
@@ -211,7 +211,7 @@ abstract class Core
         }
 
         // config defaults
-        $options += array(
+        $options += [
             'db.server' => null,
             'db.port' => null,
             'db.user' => null,
@@ -229,17 +229,17 @@ abstract class Core
             'geo.latitude' => 50.5,
             'geo.longitude' => 14.26,
             'geo.zenith' => 90.583333,
-        );
+        ];
 
         // check required options
         if (!$options['minimal_mode']) {
-            $requiredOptions = array(
+            $requiredOptions = [
                 'db.server',
                 'db.name',
                 'db.prefix',
                 'secret',
                 'app_id',
-            );
+            ];
 
             foreach ($requiredOptions as $requiredOption) {
                 if (empty($options[$requiredOption])) {
@@ -401,7 +401,7 @@ abstract class Core
         DB::free($query);
 
         // event
-        Extend::call('core.settings', array('settings' => &$settings));
+        Extend::call('core.settings', ['settings' => &$settings]);
 
         // apply settings
         foreach ($settings as $setting) {
@@ -511,7 +511,7 @@ abstract class Core
 
         // undo magic_quotes
         if (PHP_VERSION_ID < 50400 && get_magic_quotes_gpc()) {
-            $search = array(&$_GET, &$_POST, &$_COOKIE);
+            $search = [&$_GET, &$_POST, &$_COOKIE];
             for ($i = 0; isset($search[$i]); ++$i) {
                 foreach ($search[$i] as &$value) {
                     if (is_array($value)) {
@@ -592,7 +592,7 @@ abstract class Core
             }
         } else {
             // no session
-            $_SESSION = array();
+            $_SESSION = [];
         }
 
         // authorization process
@@ -618,10 +618,10 @@ abstract class Core
                             $errorCode = 1;
                             break;
                         }
-                        $cookie = array(
+                        $cookie = [
                             'id' => (int) $cookie[0],
                             'hash' => $cookie[1],
-                        );
+                        ];
 
                         // fetch user data
                         $userData = DB::queryRow('SELECT * FROM ' . _user_table . ' WHERE id=' . DB::val($cookie['id']));
@@ -720,31 +720,31 @@ abstract class Core
 
             // record activity time (max once per 30 seconds)
             if (time() - $userData['activitytime'] > 30) {
-                DB::update(_user_table, 'id=' . DB::val($userData['id']), array(
+                DB::update(_user_table, 'id=' . DB::val($userData['id']), [
                     'activitytime' => time(),
                     'ip' => _user_ip,
-                ));
+                ]);
             }
 
             // event
-            Extend::call('user.auth.success', array(
+            Extend::call('user.auth.success', [
                 'user' => &$userData,
                 'group' => &$groupData,
                 'persistent_session' => $isPersistentLogin,
-            ));
+            ]);
 
             // set variables
             static::$userData = $userData;
             static::$groupData = $groupData;
         } else {
             // anonymous user
-            $userData = array(
+            $userData = [
                 'id' => -1,
                 'username' => '',
                 'publicname' => null,
                 'email' => '',
                 'levelshift' => false,
-            );
+            ];
 
             // fetch anonymous group data
             $groupData = DB::queryRow('SELECT * FROM ' . _user_group_table . ' WHERE id=' . _group_guests);
@@ -753,11 +753,11 @@ abstract class Core
             }
 
             // event
-            Extend::call('user.auth.failure', array(
+            Extend::call('user.auth.failure', [
                 'error_code' => $errorCode,
                 'user' => &$userData,
                 'group' => &$groupData,
-            ));
+            ]);
         }
 
         // define constants
@@ -806,7 +806,7 @@ abstract class Core
         } else {
             // language plugin was not found
             if ($usedLoginLanguage) {
-                DB::update(_user_table, 'id=' . _user_id, array('language' => ''));
+                DB::update(_user_table, 'id=' . _user_id, ['language' => '']);
             } else {
                 static::updateSetting('language', static::$fallbackLang);
             }
@@ -814,7 +814,7 @@ abstract class Core
             static::systemFailure(
                 'Jazykový balíček "%s" nebyl nalezen.',
                 'Language plugin "%s" was not found.',
-                array($language)
+                [$language]
             );
         }
 
@@ -835,7 +835,7 @@ abstract class Core
             $cronTimes = false;
         }
         if ($cronTimes === false) {
-            $cronTimes = array();
+            $cronTimes = [];
             $cronUpdate = true;
         }
 
@@ -857,12 +857,12 @@ abstract class Core
                     }
 
                     // event
-                    $cronEventArgs = array(
+                    $cronEventArgs = [
                         'last' => $cronTimes[$cronIntervalName],
                         'name' => $cronIntervalName,
                         'seconds' => $cronIntervalSeconds,
                         'delay' => $cronNow - $cronTimes[$cronIntervalName],
-                    );
+                    ];
                     Extend::call('cron', $cronEventArgs);
                     Extend::call('cron.' . $cronIntervalName, $cronEventArgs);
 
@@ -915,7 +915,7 @@ abstract class Core
         Picture::cleanThumbnails(_thumb_cleanup_threshold);
 
         // remove old files in the temporary directory
-        Filesystem::purgeDirectory(_root . 'system/tmp', array(
+        Filesystem::purgeDirectory(_root . 'system/tmp', [
             'keep_dir' => true,
             'files_only' => true,
             'file_callback' => function (\SplFileInfo $file) {
@@ -925,7 +925,7 @@ abstract class Core
                     substr($file->getFilename(), 0, 1) !== '.'
                     && time() - $file->getMTime() > 86400;
             },
-        ));
+        ]);
 
         // check version
         VersionChecker::check();
@@ -958,7 +958,7 @@ abstract class Core
     {
         $names = (array) $names;
 
-        $settings = array();
+        $settings = [];
         $query = DB::query('SELECT var,val FROM ' . _setting_table . ' WHERE var IN(' . DB::arr($names) . ')');
         while ($row = DB::row($query)) {
             $settings[$row['var']] = $row['val'];
@@ -975,7 +975,7 @@ abstract class Core
      */
     static function loadSettingsByType($type)
     {
-        $settings = array();
+        $settings = [];
         $query = DB::query('SELECT var,val FROM ' . _setting_table . ' WHERE type' . ($type === null ? ' IS NULL' : '=' . DB::val($type)));
         while ($row = DB::row($query)) {
             $settings[$row['var']] = $row['val'];
@@ -992,7 +992,7 @@ abstract class Core
      */
     static function updateSetting($name, $newValue)
     {
-        DB::update(_setting_table, 'var=' . DB::val($name), array('val' => (string) $newValue));
+        DB::update(_setting_table, 'var=' . DB::val($name), ['val' => (string) $newValue]);
     }
 
     /**
@@ -1002,7 +1002,7 @@ abstract class Core
      * @param bool  $scriptTags      obalit do <script> tagu 1/0
      * @return string
      */
-    static function getJavascript(array $customVariables = array(), $scriptTags = true)
+    static function getJavascript(array $customVariables = [], $scriptTags = true)
     {
         $output = '';
 
@@ -1012,21 +1012,21 @@ abstract class Core
         }
 
         // prepare variables
-        $variables = array(
+        $variables = [
             'basePath' => Url::base()->path . '/',
             'currentTemplate' => Template::getCurrent()->getId(),
-            'labels' => array(
+            'labels' => [
                 'alertConfirm' => _lang('javascript.alert.confirm'),
                 'loading' => _lang('javascript.loading'),
-            ),
-            'settings' => array(
+            ],
+            'settings' => [
                 'atReplace' => _atreplace,
-            ),
-        );
+            ],
+        ];
         if (!empty($customVariables)) {
             $variables = array_merge_recursive($variables, $customVariables);
         }
-        Extend::call('core.javascript', array('variables' => &$variables));
+        Extend::call('core.javascript', ['variables' => &$variables]);
 
         // output variables
         $output .= 'var SunlightVars = ' . json_encode($variables) . ';';
@@ -1050,7 +1050,7 @@ abstract class Core
      */
     static function systemFailure($msgCs, $msgEn, array $msgArgs = null, $msgExtra = null)
     {
-        $messages = array();
+        $messages = [];
 
         if (static::$fallbackLang === 'cs' || empty(static::$fallbackLang)) {
             $messages[] = !empty($msgArgs) ? vsprintf($msgCs, $msgArgs) : $msgCs;

@@ -33,7 +33,7 @@ if (isset($_POST['confirm'])) {
     DB::delete(_article_table, 'id=' . $id);
 
     // udalost
-    Extend::call('admin.article.delete', array('id' => $id));
+    Extend::call('admin.article.delete', ['id' => $id]);
 
     // presmerovani
     $admin_redirect_to = 'index.php?p=content-articles-list&cat=' . $returnid . '&page=' . $returnpage . '&artdeleted';
@@ -49,7 +49,7 @@ if ($continue) {
     $output .=
 Admin::backlink('index.php?p=content-articles-list&cat=' . $returnid . '&page=' . $returnpage) . "
 <h1>" . _lang('admin.content.articles.delete.title') . "</h1>
-<p class='bborder'>" . _lang('admin.content.articles.delete.p', array("*arttitle*" => $query['title'])) . "</p>
+<p class='bborder'>" . _lang('admin.content.articles.delete.p', ["*arttitle*" => $query['title']]) . "</p>
 <form class='cform' action='index.php?p=content-articles-delete&amp;id=" . $id . "&amp;returnid=" . $returnid . "&amp;returnpage=" . $returnpage . "' method='post'>
 <input type='hidden' name='confirm' value='1'>
 <input type='submit' value='" . _lang('admin.content.articles.delete.confirmbox') . "'>

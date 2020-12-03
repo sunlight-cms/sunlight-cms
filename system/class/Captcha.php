@@ -26,18 +26,18 @@ class Captcha
         if (_captcha && !_logged_in) {
             ++$captchaCounter;
             if (!isset($_SESSION['captcha_code']) || !is_array($_SESSION['captcha_code'])) {
-                $_SESSION['captcha_code'] = array();
+                $_SESSION['captcha_code'] = [];
             }
-            $_SESSION['captcha_code'][$captchaCounter] = array(static::generateCode(8), false);
+            $_SESSION['captcha_code'][$captchaCounter] = [static::generateCode(8), false];
 
-            return array(
+            return [
                 'label' => _lang('captcha.input'),
                 'content' => "<input type='text' name='_cp' class='inputc' autocomplete='off'><img src='" . Router::generate('system/script/captcha/image.php?n=' . $captchaCounter) . "' alt='captcha' title='" . _lang('captcha.help') . "' class='cimage'><input type='hidden' name='_cn' value='" . $captchaCounter . "'>",
                 'top' => true,
                 'class' => 'captcha-row',
-            );
+            ];
         } else {
-            return array();
+            return [];
         }
     }
 
@@ -52,13 +52,13 @@ class Captcha
 
         if ($result === null) {
             // pole pro nahradu matoucich znaku
-            $disambiguation = array(
+            $disambiguation = [
                 '0' => 'O',
                 'Q' => 'O',
                 'D' => 'O',
                 '1' => 'I',
                 '6' => 'G',
-            );
+            ];
 
             // kontrola
             if (_captcha and !_logged_in) {
@@ -76,7 +76,7 @@ class Captcha
             }
         }
 
-        Extend::call('captcha.check.after', array('output' => &$result));
+        Extend::call('captcha.check.after', ['output' => &$result]);
 
         return $result;
     }
@@ -95,9 +95,9 @@ class Captcha
             $word[mt_rand(0, $length - 1)] = (string) mt_rand(2, 9);
         }
 
-        return strtr($word, array(
+        return strtr($word, [
             'W' => 'X',
             'Q' => 'O',
-        ));
+        ]);
     }
 }

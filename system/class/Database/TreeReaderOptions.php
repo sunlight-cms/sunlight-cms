@@ -8,7 +8,7 @@ namespace Sunlight\Database;
 class TreeReaderOptions
 {
     /** @var string[] sloupce, ktera maji byt nacteny (systemove sloupce jsou nacteny vzdy) */
-    public $columns = array();
+    public $columns = [];
     /** @var int|null nacist pouze tento uzel a jeho potomky */
     public $nodeId = null;
     /** @var int|null hloubka uzlu, je-li znama, pripadne limit hloubky */

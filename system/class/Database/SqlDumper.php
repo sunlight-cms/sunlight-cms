@@ -14,7 +14,7 @@ use Sunlight\Util\Filesystem;
 class SqlDumper
 {
     /** @var array */
-    protected $tables = array();
+    protected $tables = [];
     /** @var bool */
     protected $dumpData = true;
     /** @var bool */
@@ -286,7 +286,7 @@ class SqlDumper
      */
     protected function getTableColumns($table)
     {
-        $columns = array();
+        $columns = [];
         $result = DB::query('SHOW COLUMNS FROM `' . $table . '`');
 
         while ($row = DB::row($result)) {
@@ -306,7 +306,7 @@ class SqlDumper
                     break;
             }
 
-            $columns[$row['Field']] = array($type, $row['Default']);
+            $columns[$row['Field']] = [$type, $row['Default']];
         }
 
         DB::free($result);

@@ -18,7 +18,7 @@ class EventLogger
      *
      * @var array
      */
-    private $log = array();
+    private $log = [];
 
     /**
      * Log extend event
@@ -37,11 +37,11 @@ class EventLogger
         if (isset($this->log[$event])) {
             ++$this->log[$event][0];
         } else {
-            $argsInfo = array();
+            $argsInfo = [];
             foreach ($eventArgs as $argName => $argValue) {
                 $argsInfo[$argName] = is_object($argValue) ? get_class($argValue) : gettype($argValue);
             }
-            $this->log[$event] = array(1, $argsInfo);
+            $this->log[$event] = [1, $argsInfo];
         }
     }
 

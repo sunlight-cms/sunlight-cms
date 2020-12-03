@@ -61,7 +61,7 @@ abstract class Admin
         $output = '<span id="usermenu">';
         if (_logged_in && _priv_administration) {
             $profile_link = Router::module('profile', 'id=' . _user_name);
-            $avatar = User::renderAvatar(Core::$userData, array('get_url' => true, 'default' => false));
+            $avatar = User::renderAvatar(Core::$userData, ['get_url' => true, 'default' => false]);
             if ($avatar !== null) {
                 $output .= '<a id="usermenu-avatar" href="' . _e($profile_link) . '"><img src="' . $avatar . '" alt="' . _user_name . '"></a>';
             }
@@ -225,29 +225,29 @@ abstract class Admin
     static function pageSelect($name, array $options)
     {
         // vychozi volby
-        $options += array(
+        $options += [
             'selected' => -1,
             'multiple' => false,
             'empty_item' => null,
             'type' => null,
             'allow_separators' => false,
-            'disabled_branches' => array(),
+            'disabled_branches' => [],
             'maxlength' => 22,
             'attrs' => null,
-        );
+        ];
 
         // filtr na typ
         if ($options['type'] !== null) {
-            $filter = new SimpleTreeFilter(array('type' => $options['type']));
+            $filter = new SimpleTreeFilter(['type' => $options['type']]);
         } else {
             $filter = null;
         }
 
         // extend
-        Extend::call('admin.page.select', array(
+        Extend::call('admin.page.select', [
             'options' => &$options,
             'filter' => &$filter,
-        ));
+        ]);
 
         // deaktivovane vetve
         if (!empty($options['disabled_branches'])) {
@@ -542,18 +542,18 @@ abstract class Admin
     {
         $wysiwygAvailable = false;
 
-        Extend::call('admin.wysiwyg', array('available' => &$wysiwygAvailable));
+        Extend::call('admin.wysiwyg', ['available' => &$wysiwygAvailable]);
 
-        return array(
+        return [
             'extend_event' => 'admin.head',
-            'css' => array(
+            'css' => [
                 'admin' => Router::generate('admin/script/style.php?s=' . rawurlencode($scheme) . ($dark ? '&d' : '')),
-            ),
+            ],
             'css_after' => "
 <!--[if lte IE 7]><link rel=\"stylesheet\" href=\"css/ie7.css\"><![endif]-->
 <!--[if IE 8]><link rel=\"stylesheet\" href=\"css/ie8-9.css\"><![endif]-->
 <!--[if IE 9]><link rel=\"stylesheet\" href=\"css/ie8-9.css\"><![endif]-->",
-            'js' => array(
+            'js' => [
                 'jquery' => Router::generate('system/js/jquery.js'),
                 'sunlight' => Router::generate('system/js/sunlight.js'),
                 'rangyinputs' => Router::generate('system/js/rangyinputs.js'),
@@ -561,20 +561,20 @@ abstract class Admin
                 'scrollfix' => Router::generate('system/js/scrollfix.js'),
                 'jquery_ui_sortable' => Router::generate('admin/js/jquery-ui-sortable.min.js'),
                 'admin' => Router::generate('admin/js/admin.js'),
-            ),
-            'js_before' => "\n" . Core::getJavascript(array(
-                    'admin' => array(
+            ],
+            'js_before' => "\n" . Core::getJavascript([
+                    'admin' => [
                         'themeIsDark' => $dark,
                         'wysiwygAvailable' => $wysiwygAvailable,
-                    ),
-                    'labels' => array(
+                    ],
+                    'labels' => [
                         'cancel' => _lang('global.cancel'),
                         'fmanMovePrompt' => _lang('admin.fman.selected.move.prompt'),
                         'fmanDeleteConfirm' => _lang('admin.fman.selected.delete.confirm'),
                         'busyOverlayText' => _lang('admin.busy_overlay.text'),
-                    ),
-                )),
-        );
+                    ],
+                ]),
+        ];
     }
 
 }

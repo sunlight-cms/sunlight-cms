@@ -52,7 +52,7 @@ abstract class Extend
      * @param array|null $args    array with additional arguments
      * @return array
      */
-    static function args(&$output, array $args = array())
+    static function args(&$output, array $args = [])
     {
         $args['output'] = &$output;
 
@@ -65,7 +65,7 @@ abstract class Extend
      * @param string $event
      * @param array  $args
      */
-    static function call($event, array $args = array())
+    static function call($event, array $args = [])
     {
         Core::$eventEmitter->emit($event, $args);
     }
@@ -78,7 +78,7 @@ abstract class Extend
      * @param mixed  $value initial value
      * @return mixed
      */
-    static function fetch($event, array $args = array(), $value = null)
+    static function fetch($event, array $args = [], $value = null)
     {
         $args['value'] = &$value;
         static::call($event, $args);
@@ -93,7 +93,7 @@ abstract class Extend
      * @param array  $args  ('output' is added automatically)
      * @return string
      */
-    static function buffer($event, array $args = array())
+    static function buffer($event, array $args = [])
     {
         $output = '';
         $args['output'] = &$output;

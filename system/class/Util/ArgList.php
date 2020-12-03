@@ -4,8 +4,8 @@ namespace Sunlight\Util;
 
 abstract class ArgList
 {
-    protected static $keywordMap = array('null' => true, 'true' => true, 'false' => true);
-    protected static $keywordValues = array('null' => null, 'true' => true, 'false' => false);
+    protected static $keywordMap = ['null' => true, 'true' => true, 'false' => true];
+    protected static $keywordValues = ['null' => null, 'true' => true, 'false' => false];
 
     /**
      * Parse an argument list
@@ -15,7 +15,7 @@ abstract class ArgList
      */
     static function parse($input)
     {
-        $args = array();
+        $args = [];
 
         $length = strlen($input);
         $offset = 0;

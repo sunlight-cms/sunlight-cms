@@ -10,10 +10,10 @@ defined('_root') or exit;
 
 // udalost pred
 $continue = true;
-Extend::call('index.not_found.before', array(
+Extend::call('index.not_found.before', [
     'index' => &$_index,
     'continue' => &$continue,
-));
+]);
 if (!$continue) {
     return;
 }
@@ -36,9 +36,9 @@ $_index['output'] = '';
 $_index['body_classes'][] = 't-error';
 $_index['body_classes'][] = 'e-not-found';
 
-Extend::call('index.not_found', array(
+Extend::call('index.not_found', [
     'index' => &$_index,
-));
+]);
 
 if ($_index['output'] === '') {
     $_index['output'] = Message::warning(_lang('global.error404'));

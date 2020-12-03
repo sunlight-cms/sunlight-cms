@@ -11,10 +11,10 @@ defined('_root') or exit;
 
 /* ---  priprava promennych  --- */
 
-$admin_index_cfg = Core::loadSettings(array(
+$admin_index_cfg = Core::loadSettings([
     'admin_index_custom',
     'admin_index_custom_pos',
-));
+]);
 
 $version_data = VersionChecker::check();
 
@@ -35,10 +35,10 @@ $custom = '';
 if ($admin_index_cfg['admin_index_custom'] !== '') {
     $custom = $admin_index_cfg['admin_index_custom'];
 }
-Extend::call('admin.index.custom', array(
+Extend::call('admin.index.custom', [
     'custom' => &$custom,
     'position' => &$admin_index_cfg['admin_index_custom_pos'],
-));
+]);
 
 // upozorneni na logout
 $logout_warning = '';
@@ -109,7 +109,7 @@ $output .= "
 $output .= Extend::buffer('admin.index.after_table');
 
 // zpravy
-$messages = array();
+$messages = [];
 
 if (Core::DIST === 'BETA') {
     $messages[] = Message::warning(_lang('admin.index.betawarn'));
@@ -126,16 +126,16 @@ if ($version_data !== null) {
             $messages[] = Message::ok(_lang('admin.index.version.latest'));
         } else {
             $messages[] = Message::warning(
-                _lang('admin.index.version.old', array('*version*' => $version_data['latestVersion'], '*link*' => $version_data['url'])),
+                _lang('admin.index.version.old', ['*version*' => $version_data['latestVersion'], '*link*' => $version_data['url']]),
                 true
             );
         }
     }
 }
 
-Extend::call('admin.index.messages', array(
+Extend::call('admin.index.messages', [
    'messages' => &$messages,
-));
+]);
 
 $output .= "<div id='index-messages' class='well" . (empty($messages) ? ' hidden' : '') . "'>\n";
 $output .= '<h2>' . _lang('admin.index.messages') . "</h2>\n";
@@ -152,7 +152,7 @@ if (!_debug) {
     $output .= "<script>
 Sunlight.admin.indexCheckHtaccess(
     " . json_encode(Core::$url . '/vendor/autoload.php?_why=this_is_a_test_if_htaccess_works') . ",
-    " . json_encode(_lang('admin.index.htaccess_check_failure', array('*link*' => 'https://sunlight-cms.cz/resource/no-htaccess'))) . ",
+    " . json_encode(_lang('admin.index.htaccess_check_failure', ['*link*' => 'https://sunlight-cms.cz/resource/no-htaccess'])) . ",
 );
 </script>\n";
 }

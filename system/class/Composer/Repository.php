@@ -123,7 +123,7 @@ class Repository
     function getInstalledPackages()
     {
         if ($this->installedPackages === null) {
-            $this->installedPackages = array();
+            $this->installedPackages = [];
 
             if (is_file($installedJson = $this->getInstalledJsonPath())) {
                 foreach (Json::decode(file_get_contents($installedJson), false) as $package) {
@@ -146,7 +146,7 @@ class Repository
             if (is_file($classMapPath)) {
                 $this->classMap = require $classMapPath;
             } else {
-                $this->classMap = array();
+                $this->classMap = [];
             }
         }
 

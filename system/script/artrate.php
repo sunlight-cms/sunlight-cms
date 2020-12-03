@@ -37,10 +37,10 @@ if ($query !== false) {
 
 // zapocteni hodnoceni
 if ($continue) {
-    DB::update(_article_table, 'id=' . $id, array(
+    DB::update(_article_table, 'id=' . $id, [
         'ratenum' => DB::raw('ratenum+1'),
         'ratesum' => DB::raw('ratesum+' . $r)
-    ));
+    ]);
     IpLog::update(_iplog_article_rated, $id);
 }
 

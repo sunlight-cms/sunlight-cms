@@ -19,7 +19,7 @@ class ConfigAction extends PluginAction
 
     protected function execute()
     {
-        $messages = array();
+        $messages = [];
 
         if (isset($_POST['reset'])) {
             $this->plugin->getConfig()->reset();
@@ -32,7 +32,7 @@ class ConfigAction extends PluginAction
         if (isset($_POST['save'])) {
             $submittedConfig = isset($_POST['config']) && is_array($_POST['config'])
                 ? $_POST['config']
-                : array();
+                : [];
 
             foreach ($fields as $key => $field) {
                 if (isset($submittedConfig[$key])) {
@@ -78,7 +78,7 @@ class ConfigAction extends PluginAction
      */
     protected function getFields()
     {
-        $fields = array();
+        $fields = [];
 
         foreach ($this->plugin->getConfig()->toArray() as $key => $value) {
             if (!is_scalar($value) && !is_null($value)) {
@@ -93,11 +93,11 @@ class ConfigAction extends PluginAction
                 $type = 'text';
             }
 
-            $fields[$key] = array(
+            $fields[$key] = [
                 'label' => $this->plugin->getConfigLabel($key),
                 'input' => $input,
                 'type' => $type,
-            );
+            ];
         }
 
         return $fields;

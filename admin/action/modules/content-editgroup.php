@@ -12,8 +12,8 @@ if ($continue) {
     $custom_settings = "
   <tr><td colspan='2'><label><input type='checkbox' name='var1' value='1'" . Form::activateCheckbox($query['var1']) . "> " . _lang('admin.content.form.showinfo') . "</label></td></tr>
   ";
-    $custom_save_array = array(
-        'var1' => array('type' => 'bool', 'nullable' => false),
-    );
+    $custom_save_array = [
+        'var1' => ['type' => 'bool', 'nullable' => false],
+    ];
 }
 require _root . 'admin/action/modules/include/page-editscript.php';

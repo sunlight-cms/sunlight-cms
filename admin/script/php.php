@@ -8,9 +8,9 @@ use Sunlight\Util\Request;
 use Sunlight\Xsrf;
 
 require '../../system/bootstrap.php';
-Core::init('../../', array(
+Core::init('../../', [
     'env' => Core::ENV_ADMIN,
-));
+]);
 
 /* ---  vystup  --- */
 
@@ -19,7 +19,7 @@ if (!_priv_super_admin) {
 }
 echo \Sunlight\GenericTemplates::renderHead();
 
-$assets = Admin::themeAssets(_adminscheme, Admin::themeIsDark()) + array('extend_event' => null);
+$assets = Admin::themeAssets(_adminscheme, Admin::themeIsDark()) + ['extend_event' => null];
 
 echo GenericTemplates::renderHeadAssets($assets);
 

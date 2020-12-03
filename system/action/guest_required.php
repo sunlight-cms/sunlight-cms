@@ -10,9 +10,9 @@ $_index['output'] = '';
 $_index['body_classes'][] = 't-error';
 $_index['body_classes'][] = 'e-guest-only';
 
-Extend::call('index.guest_required', array(
+Extend::call('index.guest_required', [
     'index' => &$_index,
-));
+]);
 
 if ($_index['output'] === '') {
     $_index['output'] = Message::ok(_lang('nologin.msg'));

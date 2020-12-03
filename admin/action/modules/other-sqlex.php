@@ -56,7 +56,7 @@ $queries = SqlReader::fromString($sql)->read();
 if (!empty($queries)) {
 
     // zpracovat dotazy
-    $log = array();
+    $log = [];
     $lastResource = null;
     $error = false;
     for ($i = 0; isset($queries[$i]); ++$i) {

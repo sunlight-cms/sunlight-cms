@@ -83,7 +83,7 @@ class Paginator
 
         // vypis stran
         $paging = null;
-        Extend::call('paging.render', array(
+        Extend::call('paging.render', [
             'url' => $url,
             'param' => $param,
             'autolast' => $autolast,
@@ -96,7 +96,7 @@ class Paginator
             'begin' => $beginpage,
             'end' => $endpage,
             'paging' => &$paging,
-        ));
+        ]);
 
         if ($paging === null) {
             if ($pages > 1) {
@@ -153,7 +153,7 @@ class Paginator
         // return
         $end_item = ($start + $limit - 1);
 
-        return array(
+        return [
             'paging' => $paging,
             'sql_limit' => 'LIMIT ' . $start . ', ' . $limit,
             'current' => ($s + 1),
@@ -162,7 +162,7 @@ class Paginator
             'first' => $start,
             'last' => (($end_item > $count - 1) ? $count - 1 : $end_item),
             'per_page' => $limit,
-        );
+        ];
     }
 
     /**

@@ -45,7 +45,7 @@ if ($query !== false) {
 /* ---  ulozeni  --- */
 
 if (isset($_POST['doit'])) {
-    DB::update(_comment_table, 'id=' . DB::val($id), array('sticky' => (($query['sticky'] == 1) ? 0 : 1)));
+    DB::update(_comment_table, 'id=' . DB::val($id), ['sticky' => (($query['sticky'] == 1) ? 0 : 1)]);
     $message = Message::ok(_lang('mod.stickytopic.ok' . $unstick));
     $success = true;
 }

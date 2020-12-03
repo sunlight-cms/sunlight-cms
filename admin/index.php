@@ -11,17 +11,17 @@ use Sunlight\Util\Response;
 use Sunlight\Xsrf;
 
 require '../system/bootstrap.php';
-Core::init('../', array(
+Core::init('../', [
     'env' => Core::ENV_ADMIN,
-));
+]);
 
 /* ----  priprava  ---- */
 
 $admin_title = null;
-$admin_extra_css = array();
-$admin_extra_js = array();
+$admin_extra_css = [];
+$admin_extra_js = [];
 $admin_login_layout = false;
-$admin_body_classes = array();
+$admin_body_classes = [];
 $admin_access = (_logged_in && _priv_administration);
 $admin_current_module = Request::get('p', 'index');
 $admin_redirect_to = null;
@@ -30,10 +30,10 @@ $output = '';
 
 // nacteni modulu
 $admin_modules = require _root . 'admin/modules.php';
-Extend::call('admin.init', array(
+Extend::call('admin.init', [
     'modules' => &$admin_modules,
-));
-$admin_menu_items = array();
+]);
+$admin_menu_items = [];
 foreach ($admin_modules as $module => $module_options) {
     if (isset($module_options['menu']) && $module_options['menu']) {
         $admin_menu_items[$module] = isset($module_options['menu_order']) ? $module_options['menu_order'] : 15;

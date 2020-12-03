@@ -8,7 +8,7 @@ use Sunlight\Util\Url;
 class SystemChecker
 {
     /** @var array */
-    private $paths = array(
+    private $paths = [
         'upload',
         'plugins',
         'plugins/extend',
@@ -22,9 +22,9 @@ class SystemChecker
         'images/avatars',
         'images/galleries',
         'images/thumb',
-    );
+    ];
     /** @var array */
-    private $errors = array();
+    private $errors = [];
 
     /**
      * Run system checks
@@ -33,13 +33,13 @@ class SystemChecker
      */
     function check()
     {
-        $this->errors = array();
+        $this->errors = [];
 
         $this->checkPaths();
         $this->checkInstallFiles();
         $this->checkHtaccess();
 
-        Extend::call('core.check', array('errors' => &$this->errors));
+        Extend::call('core.check', ['errors' => &$this->errors]);
 
         return empty($this->errors);
     }
@@ -77,15 +77,15 @@ class SystemChecker
         for ($i = 0; isset($this->paths[$i]); ++$i) {
             $path = _root . $this->paths[$i];
             if (!is_dir($path)) {
-                $this->errors[] = array(
+                $this->errors[] = [
                     'Adresář /' . $this->paths[$i] . ' neexistuje nebo není dostupný ke čtení',
                     'The /' . $this->paths[$i] . ' directory does not exist or is not readable',
-                );
+                ];
             } elseif (!is_writeable($path)) {
-                $this->errors[] = array(
+                $this->errors[] = [
                     'Do adresáře /' . $this->paths[$i] . ' nelze zapisovat',
                     'The /' . $this->paths[$i] . ' directory is not writeable',
-                );
+                ];
             }
         }
     }
@@ -96,16 +96,16 @@ class SystemChecker
     private function checkInstallFiles()
     {
         if (@is_dir(_root . 'install') && !_debug) {
-            $this->errors[] = array(
+            $this->errors[] = [
                 'Adresář install se stále nachází na serveru - po instalaci je třeba jej odstranit',
                 'The install directory must be removed after installation',
-            );
+            ];
         }
         if (file_exists(_root . 'patch.php')) {
-            $this->errors[] = array(
+            $this->errors[] = [
                 'Soubor patch.php se stále nachází na serveru - po aktualizaci databáze je třeba jej odstranit',
                 'The patch.php file must be removed after the update',
-            );
+            ];
         }
     }
 

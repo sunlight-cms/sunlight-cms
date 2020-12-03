@@ -20,7 +20,7 @@ if (isset($_POST['bulk_action'])) {
     switch (Request::post('bulk_action')) {
         // smazani
         case 'del':
-            $user_ids = (array) Request::post('user', array(), true);
+            $user_ids = (array) Request::post('user', [], true);
             $user_delete_counter = 0;
             foreach ($user_ids as $user_id) {
                 $user_id = (int) $user_id;
@@ -34,8 +34,8 @@ if (isset($_POST['bulk_action'])) {
             $message = Message::render(
                 $user_delete_counter === count($user_ids) ? Message::OK : Message::WARNING,
                 str_replace(
-                    array('%done%', '%total%'),
-                    array($user_delete_counter, count($user_ids)),
+                    ['%done%', '%total%'],
+                    [$user_delete_counter, count($user_ids)],
                     _lang('admin.users.list.bulkdelete.msg')
                 )
             );
@@ -47,7 +47,7 @@ if (isset($_POST['bulk_action'])) {
 
 // filtr skupiny
 $grouplimit = "";
-$list_conds = array();
+$list_conds = [];
 if (isset($_GET['group_id'])) {
     $group = (int) Request::get('group_id');
     if ($group != -1) {
@@ -125,7 +125,7 @@ if (DB::size($query) != 0) {
         $output .= "<tr>
             <td><input type='checkbox' name='user[]' value='" . $item['user_id'] . "'></td>
             <td>" . $item['user_id'] . "</td>
-            <td>" . Router::userFromQuery($userQuery, $item, array('new_window' => true, 'publicname' => false)) . "</td>
+            <td>" . Router::userFromQuery($userQuery, $item, ['new_window' => true, 'publicname' => false]) . "</td>
             <td>" . $item['user_email'] . "</td><td>" . (($item['user_publicname'] != '') ? $item['user_publicname'] : "-") . "</td>
             <td>" . $item['user_group_title'] . "</td>
             <td class='actions'>

@@ -17,8 +17,8 @@ defined('_root') or exit;
 /* ---  priprava promennych  --- */
 
 $levelconflict = false;
-$sysgroups_array = array(_group_admin, _group_guests /*,_group_registered is not necessary*/ );
-$unregistered_useable = array('postcomments', 'artrate', 'pollvote');
+$sysgroups_array = [_group_admin, _group_guests /*,_group_registered is not necessary*/ ];
+$unregistered_useable = ['postcomments', 'artrate', 'pollvote'];
 
 // id
 $continue = false;
@@ -38,101 +38,101 @@ if (isset($_GET['id'])) {
 if ($continue) {
 
     // pole prav
-    $rights_array = array(
-        array(
+    $rights_array = [
+        [
             'title' => _lang('admin.users.groups.commonrights'),
-            'rights' => array(
-                array('name' => 'changeusername'),
-                array('name' => 'selfremove'),
-                array('name' => 'artrate'),
-                array('name' => 'pollvote'),
-            ),
-        ),
-        array(
+            'rights' => [
+                ['name' => 'changeusername'],
+                ['name' => 'selfremove'],
+                ['name' => 'artrate'],
+                ['name' => 'pollvote'],
+            ],
+        ],
+        [
             'title' => _lang('admin.users.groups.postrights'),
-            'rights' => array(
-                array('name' => 'postcomments'),
-                array('name' => 'locktopics'),
-                array('name' => 'stickytopics'),
-                array('name' => 'movetopics'),
-                array('name' => 'adminposts'),
-                array('name' => 'unlimitedpostaccess'),
-            ),
-        ),
-        array(
+            'rights' => [
+                ['name' => 'postcomments'],
+                ['name' => 'locktopics'],
+                ['name' => 'stickytopics'],
+                ['name' => 'movetopics'],
+                ['name' => 'adminposts'],
+                ['name' => 'unlimitedpostaccess'],
+            ],
+        ],
+        [
             'title' => _lang('admin.users.groups.filerights'),
-            'rights' => array(
-                array('name' => 'fileaccess'),
-                array('name' => 'fileglobalaccess'),
-                array('name' => 'fileadminaccess', 'dangerous' => true),
-            ),
-        ),
-        array(
+            'rights' => [
+                ['name' => 'fileaccess'],
+                ['name' => 'fileglobalaccess'],
+                ['name' => 'fileadminaccess', 'dangerous' => true],
+            ],
+        ],
+        [
             'title' => _lang('admin.users.groups.adminrights'),
-            'rights' => array(
-                array('name' => 'administration'),
-                array('name' => 'adminusers'),
-                array('name' => 'admingroups'),
-                array('name' => 'adminplugins', 'dangerous' => true),
-                array('name' => 'adminsettings', 'dangerous' => true),
-                array('name' => 'adminbackup', 'dangerous' => true),
-            ),
-        ),
-        array(
+            'rights' => [
+                ['name' => 'administration'],
+                ['name' => 'adminusers'],
+                ['name' => 'admingroups'],
+                ['name' => 'adminplugins', 'dangerous' => true],
+                ['name' => 'adminsettings', 'dangerous' => true],
+                ['name' => 'adminbackup', 'dangerous' => true],
+            ],
+        ],
+        [
             'title' => _lang('admin.users.groups.adminotherrights'),
-            'rights' => array(
-                array('name' => 'adminother'),
-                array('name' => 'adminmassemail'),
-            ),
-        ),
-        array(
+            'rights' => [
+                ['name' => 'adminother'],
+                ['name' => 'adminmassemail'],
+            ],
+        ],
+        [
             'title' => _lang('admin.users.groups.adminhcmrights'),
-            'rights' => array(
-                array('name' => 'adminhcm', 'text' => true, 'dangerous' => true),
-                array('name' => 'adminhcmphp', 'dangerous' => true),
-            ),
-        ),
-        array(
+            'rights' => [
+                ['name' => 'adminhcm', 'text' => true, 'dangerous' => true],
+                ['name' => 'adminhcmphp', 'dangerous' => true],
+            ],
+        ],
+        [
             'title' => _lang('admin.users.groups.admincontentrights'),
-            'rights' => array(
-                array('name' => 'admincontent'),
-                array('name' => 'adminpages'),
-                array('name' => 'adminsection'),
-                array('name' => 'admincategory'),
-                array('name' => 'adminbook'),
-                array('name' => 'adminseparator'),
-                array('name' => 'admingallery'),
-                array('name' => 'adminlink'),
-                array('name' => 'admingroup'),
-                array('name' => 'adminforum'),
-                array('name' => 'adminpluginpage'),
-            ),
-        ),
-        array(
+            'rights' => [
+                ['name' => 'admincontent'],
+                ['name' => 'adminpages'],
+                ['name' => 'adminsection'],
+                ['name' => 'admincategory'],
+                ['name' => 'adminbook'],
+                ['name' => 'adminseparator'],
+                ['name' => 'admingallery'],
+                ['name' => 'adminlink'],
+                ['name' => 'admingroup'],
+                ['name' => 'adminforum'],
+                ['name' => 'adminpluginpage'],
+            ],
+        ],
+        [
             'title' => _lang('admin.users.groups.admincontentarticlerights'),
-            'rights' => array(
-                array('name' => 'adminart'),
-                array('name' => 'adminallart'),
-                array('name' => 'adminchangeartauthor'),
-                array('name' => 'adminconfirm'),
-                array('name' => 'adminautoconfirm'),
-            ),
-        ),
-        array(
+            'rights' => [
+                ['name' => 'adminart'],
+                ['name' => 'adminallart'],
+                ['name' => 'adminchangeartauthor'],
+                ['name' => 'adminconfirm'],
+                ['name' => 'adminautoconfirm'],
+            ],
+        ],
+        [
             'title' => _lang('admin.users.groups.admincontentotherrights'),
-            'rights' => array(
-                array('name' => 'adminpoll'),
-                array('name' => 'adminpollall'),
-                array('name' => 'adminsbox'),
-                array('name' => 'adminbox'),
-            ),
-        ),
-    );
+            'rights' => [
+                ['name' => 'adminpoll'],
+                ['name' => 'adminpollall'],
+                ['name' => 'adminsbox'],
+                ['name' => 'adminbox'],
+            ],
+        ],
+    ];
 
-    Extend::call('admin.editgroup.rights', array(
+    Extend::call('admin.editgroup.rights', [
         'rights' => &$rights_array,
         'unregistered_rights' => &$unregistered_useable,
-    ));
+    ]);
 
     $rights = "";
     foreach ($rights_array as $section) {
@@ -169,7 +169,7 @@ if ($continue) {
     /* ---  ulozeni  --- */
     if (!empty($_POST)) {
 
-        $changeset = array();
+        $changeset = [];
 
         // zakladni atributy
         $changeset['title'] = Html::cut(_e(trim(Request::post('title'))), 128);
@@ -212,7 +212,7 @@ if ($continue) {
         }
 
         // extend
-        Extend::call('admin.editgroup.save', array('changeset' => &$changeset));
+        Extend::call('admin.editgroup.save', ['changeset' => &$changeset]);
 
         // ulozeni
         DB::update(_user_group_table, 'id=' . $id, $changeset);
@@ -270,7 +270,7 @@ if ($continue) {
   </tr>
 
   " . (($id != _group_guests) ? "
-  <tr><th><dfn title='" . _lang('admin.users.groups.icon.help', array('%dir%' => $icon_dir)) . "'>" . _lang('admin.users.groups.icon') . "</dfn></th><td>" . $icons . "</td></tr>
+  <tr><th><dfn title='" . _lang('admin.users.groups.icon.help', ['%dir%' => $icon_dir]) . "'>" . _lang('admin.users.groups.icon') . "</dfn></th><td>" . $icons . "</td></tr>
   <tr><th>" . _lang('admin.users.groups.color') . "</th><td><input type='text' name='color' class='inputsmall' value='" . $query['color'] . "' maxlength='16'> <input type='color' value='" . Admin::formatHtmlColor($query['color']) . "' onchange='this.form.elements.color.value=this.value'></td></tr>
   <tr><th>" . _lang('admin.users.groups.reglist') . "</th><td><input type='checkbox' name='reglist' value='1'" . Form::activateCheckbox($query['reglist']) . "></td></tr>
   " : '') . "

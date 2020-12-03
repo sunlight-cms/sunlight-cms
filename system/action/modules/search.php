@@ -54,7 +54,7 @@ $output .= "
 <p class='bborder'>" . _lang('mod.search.p') . "</p>
 
 <form action='" . _e(Router::module('search')) . "' method='get' class='fullsearchform'>
-" . (!_pretty_urls ? Form::renderHiddenInputs(Arr::filterKeys($_GET, null, null, array('q', 'page', 'art', 'post', 'img'))) : '') . "
+" . (!_pretty_urls ? Form::renderHiddenInputs(Arr::filterKeys($_GET, null, null, ['q', 'page', 'art', 'post', 'img'])) : '') . "
 <p><input type='search' name='q' class='inputmedium' value='" . _e($search_query) . "'> <input type='submit' value='" . _lang('mod.search.submit') . "'></p>
 <p>
     " . _lang('mod.search.where') . ":
@@ -75,7 +75,7 @@ if ($search_query != '') {
     if (mb_strlen($search_query) >= 3) {
         // priprava
         $search_query_sql = DB::esc('%' . $search_query . '%');
-        $results = array(); // polozka: array(link, titulek, perex)
+        $results = []; // polozka: array(link, titulek, perex)
         $public = !_logged_in;
 
         // funkce na skladani vyhledavaciho dotazu
@@ -99,13 +99,13 @@ if ($search_query != '') {
 
         // vyhledani stranek
         if ($page) {
-            $q = DB::query('SELECT id,title,slug,perex FROM ' . _page_table . ' WHERE level<=' . _priv_level . ' AND ' . ($public ? 'public=1 AND ' : '') . $searchQuery(null, array('title', 'slug', 'description', 'perex', 'content')) . ' LIMIT 50');
+            $q = DB::query('SELECT id,title,slug,perex FROM ' . _page_table . ' WHERE level<=' . _priv_level . ' AND ' . ($public ? 'public=1 AND ' : '') . $searchQuery(null, ['title', 'slug', 'description', 'perex', 'content']) . ' LIMIT 50');
             while($r = DB::row($q)) {
-                $results[] = array(
+                $results[] = [
                     Router::page($r['id'], $r['slug']),
                     $r['title'],
                     strip_tags($r['perex'])
-                );
+                ];
             }
             DB::free($q);
         }
@@ -113,16 +113,16 @@ if ($search_query != '') {
         // vyhledani clanku
         if ($art) {
             // zakladni dostaz
-            list($joins, $cond) = Article::createFilter('art', array(), $searchQuery('art', array('title', 'slug', 'perex', 'description', 'content')));
+            list($joins, $cond) = Article::createFilter('art', [], $searchQuery('art', ['title', 'slug', 'perex', 'description', 'content']));
 
             // vykonani a nacteni vysledku
             $q = DB::query('SELECT art.id,art.title,art.slug,art.perex,cat1.slug AS cat_slug FROM ' . _article_table . ' art ' . $joins . ' WHERE ' . $cond . 'ORDER BY time DESC LIMIT 100');
             while($r = DB::row($q)) {
-                $results[] = array(
+                $results[] = [
                     Router::article($r['id'], $r['slug'], $r['cat_slug']),
                     $r['title'],
                     StringManipulator::ellipsis(strip_tags($r['perex']), 255, false)
-                );
+                ];
             }
             DB::free($q);
         }
@@ -130,8 +130,8 @@ if ($search_query != '') {
         // vyhledani prispevku
         if ($post) {
             // priprava
-            $types = array(_post_section_comment, _post_article_comment, _post_book_entry, _post_forum_topic, _post_plugin);
-            list($columns, $joins, $cond) = Comment::createFilter('post', $types, array(), $searchQuery('post', array('subject', 'text')));
+            $types = [_post_section_comment, _post_article_comment, _post_book_entry, _post_forum_topic, _post_plugin];
+            list($columns, $joins, $cond) = Comment::createFilter('post', $types, [], $searchQuery('post', ['subject', 'text']));
             $userQuery = User::createQuery('post.author');
             $columns .= ',' . $userQuery['column_list'];
             $joins .= ' ' . $userQuery['joins'];
@@ -166,21 +166,21 @@ if ($search_query != '') {
                 }
 
                 // sestaveni infa
-                $infos = array();
+                $infos = [];
                 if ($r['author'] == -1) {
-                    $infos[] = array(_lang('global.postauthor'), "<span class='post-author-guest'>" . CommentService::renderGuestName($r['guest']) . '</span>');
+                    $infos[] = [_lang('global.postauthor'), "<span class='post-author-guest'>" . CommentService::renderGuestName($r['guest']) . '</span>'];
                 } else {
-                    $infos[] = array(_lang('global.postauthor'), Router::userFromQuery($userQuery, $r));
+                    $infos[] = [_lang('global.postauthor'), Router::userFromQuery($userQuery, $r)];
                 }
-                $infos[] = array(_lang('global.time'), GenericTemplates::renderTime($r['time'], 'post'));
+                $infos[] = [_lang('global.time'), GenericTemplates::renderTime($r['time'], 'post')];
 
                 // pridani do vysledku
-                $results[] = array(
+                $results[] = [
                     (isset($pagenum) ? UrlHelper::appendParams($link, 'page=' . $pagenum) : $link) . ($post_anchor ? '#post-' . $r['id'] : ''),
                     $title,
                     StringManipulator::ellipsis(strip_tags(Comment::render($r['text'])), 255),
                     $infos
-                );
+                ];
             }
             DB::free($q);
         }
@@ -198,27 +198,27 @@ if ($search_query != '') {
             if ($public) {
                 $sql .= 'gal.public=1 AND ';
             }
-            $sql .= $searchQuery('img', array('title'));
+            $sql .= $searchQuery('img', ['title']);
 
             // vykonani a nacteni vysledku
             $q = DB::query($sql . ' LIMIT 100');
             while ($r = DB::row($q)) {
                 $link = UrlHelper::appendParams(Router::page($r['home'], $r['slug']), 'page=' . Paginator::getItemPage($r['var2'] ?: _galdefault_per_page, _gallery_image_table, "ord<" . $r['ord'] . " AND home=" . $r['home']));
-                $results[] = array(
+                $results[] = [
                     $link,
                     $r['gal_title'],
                     (($r['title'] !== '') ? '<p>' . $r['title'] . '</p>' : '') . Gallery::renderImage($r, 'search', _galdefault_thumb_w, _galdefault_thumb_h)
-                );
+                ];
             }
             DB::free($q);
         }
 
         // extend
-        Extend::call('mod.search.results', array(
+        Extend::call('mod.search.results', [
             'results' => &$results,
             'query' => $search_query,
             'query_sql' => $search_query_sql,
-        ));
+        ]);
 
         // vypis vysledku
         if (count($results) != 0) {

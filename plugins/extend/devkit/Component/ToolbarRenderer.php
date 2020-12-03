@@ -177,13 +177,13 @@ class ToolbarRenderer
     public function renderEvents()
     {
         $listeners = Core::$eventEmitter->getListeners();
-        $eventListenerRows = array();
+        $eventListenerRows = [];
 
         ksort($listeners, defined('SORT_NATURAL') ? SORT_NATURAL : SORT_STRING);
 
         foreach ($listeners as $event => $eventListeners) {
             foreach ($eventListeners as $eventListener) {
-                $eventListenerRows[] = array($event, Dumper::dump($eventListener));
+                $eventListenerRows[] = [$event, Dumper::dump($eventListener)];
             }
         }
 
@@ -243,7 +243,7 @@ class ToolbarRenderer
      */
     public function renderPluginErrors()
     {
-        $pluginErrors = array();
+        $pluginErrors = [];
 
         foreach (Core::$pluginManager->getAllInactive() as $type => $inactivePlugins) {
             foreach ($inactivePlugins as $name => $inactivePlugin) {
@@ -295,7 +295,7 @@ class ToolbarRenderer
      */
     public function renderLang()
     {
-        $missingLocalizationRows = array();
+        $missingLocalizationRows = [];
 
         foreach ($this->missingLocalizations as $dict) {
             foreach ($this->missingLocalizations[$dict] as $missingKey => $missingKeyCount) {
@@ -312,11 +312,11 @@ class ToolbarRenderer
                     $dictDescription = Dumper::dump($dict, 1);
                 }
 
-                $missingLocalizationRows[] = array(
+                $missingLocalizationRows[] = [
                     'dict' => $dictDescription,
                     'key' => $missingKey,
                     'count' => $missingKeyCount,
-                );
+                ];
             }
         }
 
@@ -428,7 +428,7 @@ class ToolbarRenderer
 
 <div class="devkit-content">
     <div>
-        <?php foreach (array('_GET', '_POST', '_COOKIE', '_SESSION') as $globalVarName): ?>
+        <?php foreach (['_GET', '_POST', '_COOKIE', '_SESSION'] as $globalVarName): ?>
             <?php if (!empty($GLOBALS[$globalVarName])): ?>
             <div class="devkit-heading devkit-hideshow">
                 $<?php echo $globalVarName, ' (', count($GLOBALS[$globalVarName]), ')' ?>

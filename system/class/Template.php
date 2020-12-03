@@ -52,10 +52,10 @@ abstract class Template
             $_template = $components['template'];
             $_template_layout = $components['layout'];
 
-            Extend::call('tpl.switch', array(
+            Extend::call('tpl.switch', [
                 'template' => $_template,
                 'layout' => $_template_layout,
-            ));
+            ]);
 
             return true;
         }
@@ -71,24 +71,24 @@ abstract class Template
         global $_index, $_template;
 
         // pripravit css
-        $css = array();
+        $css = [];
         foreach ($_template->getOption('css') as $key => $path) {
             $css[$key] = UrlHelper::isAbsolute($path) ? $path : Router::generate($path);
         }
 
         // pripravit js
-        $js = array(
+        $js = [
             'jquery' => Router::generate('system/js/jquery.js'),
             'sunlight' => Router::generate('system/js/sunlight.js'),
             'rangyinputs' => Router::generate('system/js/rangyinputs.js'),
-        );
+        ];
         foreach ($_template->getOption('js') as $key => $path) {
             $js[$key] = UrlHelper::isAbsolute($path) ? $path : Router::generate($path);
         }
 
         // titulek
         $title = null;
-        Extend::call('tpl.title', array('title' => &$title, 'head' => true));
+        Extend::call('tpl.title', ['title' => &$title, 'head' => true]);
         if (!isset($title)) {
             if (_titletype == 1) {
                 $title = _title . ' ' . _titleseparator . ' ' . $_index['title'];
@@ -98,12 +98,12 @@ abstract class Template
         }
 
         // assety
-        $assets = array(
+        $assets = [
             'extend_event' => 'tpl.head',
             'css' => $css,
             'js' => $js,
             'js_before' => "\n" . Core::getJavascript(),
-        );
+        ];
 
         // sestaveni
         echo '<meta name="description" content="' . (isset($_index['description']) ? $_index['description'] : _description) . '">' . ((_author !== '') ? '
@@ -138,7 +138,7 @@ abstract class Template
      * @param array  $overrides pretizeni konfigurace motivu
      * @return string
      */
-    static function boxes($slot, array $overrides = array())
+    static function boxes($slot, array $overrides = [])
     {
         $output = '';
 
@@ -149,15 +149,15 @@ abstract class Template
             if (isset($_template_boxes[$slot])) {
                 $boxes = $_template_boxes[$slot];
             } else {
-                $boxes = array();
+                $boxes = [];
             }
 
             // extend
-            $output = Extend::buffer('tpl.boxes', array(
+            $output = Extend::buffer('tpl.boxes', [
                 'slot' => $slot,
                 'boxes' => &$boxes,
                 'overrides' => &$overrides,
-            ));
+            ]);
             if ($output !== '') {
                 return $output;
             }
@@ -225,11 +225,11 @@ abstract class Template
         global $_index;
 
         // extend
-        $output = Extend::buffer('tpl.content', array(
+        $output = Extend::buffer('tpl.content', [
             'heading' => &$heading,
             'backlink' => &$backlink,
             'rsslink' => &$rsslink,
-        ));
+        ]);
 
         // vychozi implementace?
         if ($output === '') {
@@ -272,7 +272,7 @@ abstract class Template
             $heading = $_index[($_index['heading'] !== null) ? 'heading' : 'title'];
 
             // extend
-            $output = Extend::buffer('tpl.heading', array('heading' => $heading));
+            $output = Extend::buffer('tpl.heading', ['heading' => $heading]);
 
             // vychozi implementace?
             if ($output === '') {
@@ -321,10 +321,10 @@ abstract class Template
         }
 
         // extend
-        $output = Extend::buffer('tpl.rsslink', array(
+        $output = Extend::buffer('tpl.rsslink', [
             'url' => $url,
             'inline' => $inline,
-        ));
+        ]);
 
         // vychozi implementace?
         if ($output === '') {
@@ -384,10 +384,10 @@ abstract class Template
 
         // nacist stranky
         $pages = PageManager::getRootPages(
-            new PageTreeFilter(array(
+            new PageTreeFilter([
                 'ord_start' => $ordStart,
                 'ord_end' => $ordEnd,
-            )),
+            ]),
             PageMenu::getRequiredExtraColumns()
         );
 
@@ -424,7 +424,7 @@ abstract class Template
     static function treeMenu(array $options)
     {
         // vychozi nastaveni
-        $options += array(
+        $options += [
             'page_id' => null,
             'children_only' => true,
             'max_depth' => null,
@@ -433,8 +433,8 @@ abstract class Template
             'css_class' => null,
             'extend_event' => 'tpl.menu.item',
             'type' => 'tree',
-            'filter' => array(),
-        );
+            'filter' => [],
+        ];
 
         // kontrola prihlaseni v pripade neverejnych stranek
         if (!_logged_in && _notpublicsite) {
@@ -465,11 +465,11 @@ abstract class Template
         }
 
         // nacist stranky
-        $filter = new PageTreeFilter(array(
+        $filter = new PageTreeFilter([
                 'ord_start' => $options['ord_start'],
                 'ord_end' => $options['ord_end'],
                 'ord_level' => $options['page_id'] === null ? $level : $level + 1,
-            ) + $options['filter']);
+            ] + $options['filter']);
 
         $pages = PageManager::getFlatTree(
             $options['page_id'],
@@ -500,7 +500,7 @@ abstract class Template
      * @param bool $onlyWhenMultiple vykreslit pouze 2 a vice drobecku
      * @return string
      */
-    static function breadcrumbs($breadcrumbs = array(), $onlyWhenMultiple = false)
+    static function breadcrumbs($breadcrumbs = [], $onlyWhenMultiple = false)
     {
         global $_index;
 
@@ -515,19 +515,19 @@ abstract class Template
         // pridat stranky
         if ($pageId !== null) {
             foreach (PageManager::getPath($pageId, $rootLevel) as $page) {
-                $breadcrumbs[] = array(
+                $breadcrumbs[] = [
                     'title' => $page['title'],
                     'url' => Router::page($page['id'], $page['slug']),
-                );
+                ];
             }
         }
 
         // pridat modul
         if (self::currentIsModule()) {
-            $breadcrumbs[] = array(
+            $breadcrumbs[] = [
                 'title' => $_index['title'],
                 'url' => $_index['url'],
-            );
+            ];
         }
 
         // pridat drobecky aktualni stranky
@@ -537,11 +537,11 @@ abstract class Template
 
         // extend udalost
         $output = '';
-        Extend::call('tpl.breadcrumbs', array(
+        Extend::call('tpl.breadcrumbs', [
             'breadcrumbs' => &$breadcrumbs,
             'only_when_multiple' => $onlyWhenMultiple,
             'output' => &$output,
-        ));
+        ]);
 
         // vykreslit
         if (!empty($breadcrumbs) && (!$onlyWhenMultiple || count($breadcrumbs) >= 2) && $output === '') {
@@ -564,7 +564,7 @@ abstract class Template
     {
         // overload pluginem
         $title = null;
-        Extend::call('tpl.title', array('title' => &$title, 'head' => false));
+        Extend::call('tpl.title', ['title' => &$title, 'head' => false]);
         if (!isset($title)) {
             $title = $GLOBALS['_index']['title'];
         }
@@ -609,28 +609,28 @@ abstract class Template
     static function userMenu($profileLink = true, $adminLink = true)
     {
         // pripravit polozky
-        $items = array();
+        $items = [];
 
         if (!_logged_in) {
             // prihlaseni
-            $items['login'] = array(
+            $items['login'] = [
                 Router::module('login', 'login_form_return=' . rawurlencode($_SERVER['REQUEST_URI'])),
                 _lang('usermenu.login'),
-            );
+            ];
             if (_registration) {
                 // registrace
-                $items['reg'] = array(
+                $items['reg'] = [
                     Router::module('reg'),
                     _lang('usermenu.registration'),
-                );
+                ];
             }
         } else {
             // profil
             if ($profileLink) {
-                $items['profile'] = array(
+                $items['profile'] = [
                     Router::module('profile', 'id=' . _user_name),
                     _lang('usermenu.profile'),
-                );
+                ];
             }
 
             // vzkazy
@@ -641,45 +641,45 @@ abstract class Template
                 } else {
                     $messages_count = '';
                 }
-                $items['messages'] = array(
+                $items['messages'] = [
                     Router::module('messages'),
                     _lang('usermenu.messages') . $messages_count,
-                );
+                ];
             }
 
             // nastaveni
-            $items['settings'] = array(
+            $items['settings'] = [
                 Router::module('settings'),
                 _lang('usermenu.settings'),
-            );
+            ];
 
             // administrace
             if ($adminLink && _priv_administration) {
-                $items['admin'] = array(
+                $items['admin'] = [
                     Router::generate('admin/'),
                     _lang('global.adminlink')
-                );
+                ];
             }
         }
 
         if (_ulist && (!_notpublicsite || _logged_in)) {
             // seznam uzivatelu
-            $items['ulist'] = array(
+            $items['ulist'] = [
                 Router::module('ulist'),
                 _lang('usermenu.ulist'),
-            );
+            ];
         }
 
         // odhlaseni
         if (_logged_in) {
-            $items['logout'] = array(
+            $items['logout'] = [
                 Xsrf::addToUrl(Router::generate("system/script/logout.php?_return=" . rawurlencode($_SERVER['REQUEST_URI']))),
                 _lang('usermenu.logout'),
-            );
+            ];
         }
 
         // vykreslit
-        $output = Extend::buffer('tpl.usermenu', array('items' => &$items));
+        $output = Extend::buffer('tpl.usermenu', ['items' => &$items]);
         if ($output === '' && !empty($items)) {
             $output = "<ul class=\"user-menu " . (_logged_in ? 'logged-in' : 'not-logged-in') . "\">\n";
             $output .= Extend::buffer('tpl.usermenu.start');

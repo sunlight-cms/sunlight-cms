@@ -28,11 +28,11 @@ if ($continue) {
     <tr><td><input type='number' min='1' name='var2' value='" . $query['var2'] . "' class='inputmax'></span></td><td>" . _lang('admin.content.form.artsperpage') . "</td></tr>
   ";
 
-    $custom_save_array = array(
-        'var1' => array('type' => 'int', 'nullable' => false),
-        'var2' => array('type' => 'int', 'nullable' => true),
-        'var3' => array('type' => 'bool', 'nullable' => false),
-        'var4' => array('type' => 'bool', 'nullable' => false),
-    );
+    $custom_save_array = [
+        'var1' => ['type' => 'int', 'nullable' => false],
+        'var2' => ['type' => 'int', 'nullable' => true],
+        'var3' => ['type' => 'bool', 'nullable' => false],
+        'var4' => ['type' => 'bool', 'nullable' => false],
+    ];
 }
 require _root . 'admin/action/modules/include/page-editscript.php';

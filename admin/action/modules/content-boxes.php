@@ -14,14 +14,14 @@ $message = null;
 
 // process action
 if (isset($_POST['action'])) {
-    list($action, $param) = explode(':', Request::post('action', '')) + array(1 => null);
+    list($action, $param) = explode(':', Request::post('action', '')) + [1 => null];
 
     switch ($action) {
         case 'save_ord':
-            $changeset = array();
+            $changeset = [];
 
             foreach ($_POST['ord'] as $boxId => $boxOrd) {
-                $changeset[$boxId] = array('ord' => (int) $boxOrd);
+                $changeset[$boxId] = ['ord' => (int) $boxOrd];
             }
 
             DB::updateSetMulti(_box_table, 'id', $changeset);
@@ -36,8 +36,8 @@ if (isset($_POST['action'])) {
 }
 
 // fetch boxes
-$boxes = array();
-$unassigned_boxes = array();
+$boxes = [];
+$unassigned_boxes = [];
 $query = DB::query('SELECT id, ord, title, visible, public, level, template, layout, slot, page_ids, page_children, class FROM ' . _box_table . ' ORDER BY template ASC, layout ASC, ord ASC');
 
 while ($box = DB::row($query)) {
@@ -109,7 +109,7 @@ foreach ($boxes as $template_idt => $template_boxes) {
         </tfoot>
     </table>
 <?php },
-        array(TemplateService::getTemplate($template_idt), $template_boxes)
+        [TemplateService::getTemplate($template_idt), $template_boxes]
     );
 }
 

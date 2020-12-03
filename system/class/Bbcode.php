@@ -17,23 +17,23 @@ abstract class Bbcode
      *           (null|int|string) button icon (null = none, 1 = template, string = custom path)
      *      )
      */
-    protected static $tags = array(
-        'b' => array(true, false, true, true, 1), // bold
-        'i' => array(true, false, true, true, 1), // italic
-        'u' => array(true, false, true, true, 1), // underline
-        'q' => array(true, false, true, true, null), // quote
-        's' => array(true, false, true, true, 1), // strike
-        'img' => array(true, true, false, false, 1), // image
-        'code' => array(true, true, false, true, 1), // code
-        'c' => array(true, false, true, true, null), // inline code
-        'url' => array(true, true, true, true, 1), // link
-        'hr' => array(false, false, false, false, 1), // horizontal rule
-        'color' => array(true, true, true, true, null), // color
-        'size' => array(true, true, true, true, null), // size
-        'noformat' => array(true, false, true, false, null), // no format
-    );
+    protected static $tags = [
+        'b' => [true, false, true, true, 1], // bold
+        'i' => [true, false, true, true, 1], // italic
+        'u' => [true, false, true, true, 1], // underline
+        'q' => [true, false, true, true, null], // quote
+        's' => [true, false, true, true, 1], // strike
+        'img' => [true, true, false, false, 1], // image
+        'code' => [true, true, false, true, 1], // code
+        'c' => [true, false, true, true, null], // inline code
+        'url' => [true, true, true, true, 1], // link
+        'hr' => [false, false, false, false, 1], // horizontal rule
+        'color' => [true, true, true, true, null], // color
+        'size' => [true, true, true, true, null], // size
+        'noformat' => [true, false, true, false, null], // no format
+    ];
 
-    protected static $syntax = array('[', ']', '/', '=', '"');
+    protected static $syntax = ['[', ']', '/', '=', '"'];
 
     protected static $extended = false;
 
@@ -63,7 +63,7 @@ abstract class Bbcode
         $mode = 0;
         $submode = 0;
         $closing = false;
-        $parents = array(); // 0 = tag, 1 = arg, 2 = buffer
+        $parents = []; // 0 = tag, 1 = arg, 2 = buffer
         $parents_n = -1;
         $tag = '';
         $output = '';
@@ -128,7 +128,7 @@ abstract class Bbcode
                                         }
                                     } elseif ($parents_n === -1 || static::$tags[$parents[$parents_n][0]][3]) {
                                         // opening tag
-                                        $parents[] = array($tag, $arg, '');
+                                        $parents[] = [$tag, $arg, ''];
                                         ++$parents_n;
                                         $buffer = '';
                                         $char = '';
@@ -256,8 +256,8 @@ abstract class Bbcode
         // load extend tag processors
         static $ext = null;
         if (!isset($ext)) {
-            $ext = array();
-            Extend::call('bbcode.init.proc', array('tags' => &$ext));
+            $ext = [];
+            Extend::call('bbcode.init.proc', ['tags' => &$ext]);
         }
 
         // process
@@ -320,7 +320,7 @@ abstract class Bbcode
                 return '<span class="hr"></span>';
 
             case 'color':
-                static $colors = array('aqua' => 0, 'black' => 1, 'blue' => 2, 'fuchsia' => 3, 'gray' => 4, 'green' => 5, 'lime' => 6, 'maroon' => 7, 'navy' => 8, 'olive' => 9, 'orange' => 10, 'purple' => 11, 'red' => 12, 'silver' => 13, 'teal' => 14, 'white' => 15, 'yellow' => 16);
+                static $colors = ['aqua' => 0, 'black' => 1, 'blue' => 2, 'fuchsia' => 3, 'gray' => 4, 'green' => 5, 'lime' => 6, 'maroon' => 7, 'navy' => 8, 'olive' => 9, 'orange' => 10, 'purple' => 11, 'red' => 12, 'silver' => 13, 'teal' => 14, 'white' => 15, 'yellow' => 16];
                 if ($buffer !== '') {
                     if (preg_match('{#[0-9A-Fa-f]{3,6}$}AD', $arg) !== 1) {
                         $arg = mb_strtolower($arg);
@@ -364,7 +364,7 @@ abstract class Bbcode
 
     protected static function extendTags()
     {
-        Extend::call('bbcode.init.tags', array('tags' => &static::$tags));
+        Extend::call('bbcode.init.tags', ['tags' => &static::$tags]);
         static::$extended = true;
     }
 }

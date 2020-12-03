@@ -14,7 +14,7 @@ defined('_root') or exit;
 
 $message = "";
 if (isset($_GET['id'])) {
-    DB::update(_article_table, 'id=' . DB::val(Request::get('id')), array('confirmed' => 1));
+    DB::update(_article_table, 'id=' . DB::val(Request::get('id')), ['confirmed' => 1]);
     $message = Message::ok(_lang('global.done'));
 }
 
@@ -33,7 +33,7 @@ $output .= "
 <form class='cform' action='index.php' method='get'>
     <input type='hidden' name='p' value='content-confirm'>"
     . _lang('admin.content.confirm.filter') . ": "
-    . Admin::pageSelect("limit", array('type' => _page_category, 'selected' => $catlimit, 'empty_item' => _lang('global.all')))
+    . Admin::pageSelect("limit", ['type' => _page_category, 'selected' => $catlimit, 'empty_item' => _lang('global.all')])
     . "
     <input type='submit' value='" . _lang('global.do') . "'>
 </form>

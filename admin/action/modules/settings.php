@@ -18,177 +18,177 @@ defined('_root') or exit;
 $saved = (bool) Request::get('saved');
 
 // nacteni nastaveni
-$settings = array();
+$settings = [];
 $query = DB::query('SELECT var,val,format FROM ' . _setting_table);
 while ($row = DB::row($query)) {
     $settings[$row['var']] = $row;
 }
 
 // vyber zpusobu zobrazeni titulku
-$titletype_choices = array();
+$titletype_choices = [];
 for ($x = 1; $x < 3; ++$x) {
     $titletype_choices[$x] = _lang('admin.settings.info.titletype.' . $x);
 }
 
 // vyber schematu administrace
-$adminscheme_choices = array();
+$adminscheme_choices = [];
 for ($x = 0; $x < 11; ++$x) {
     $adminscheme_choices[$x] = _lang('admin.settings.admin.adminscheme.' . $x);
 }
 
 // vyber modu schematu administrace
-$adminscheme_mode_choices = array();
+$adminscheme_mode_choices = [];
 for ($x = 0; $x < 3; ++$x) {
     $adminscheme_mode_choices[$x] = _lang('admin.settings.admin.adminscheme_mode.' . $x);
 }
 
 // vyber zpusobu hodnoceni clanku
-$ratemode_choices = array();
+$ratemode_choices = [];
 for ($x = 0; $x < 3; ++$x) {
     $ratemode_choices[$x] = _lang('admin.settings.articles.ratemode.' . $x);
 }
 
 // vyber zobrazeni strankovani
-$pagingmode_choices = array();
+$pagingmode_choices = [];
 for ($x = 1; $x < 4; ++$x) {
     $pagingmode_choices[$x] = _lang('admin.settings.paging.pagingmode.' . $x);
 }
 
 // konfigurace editovatelnych direktiv
-$editable_settings = array(
-    'main' => array(
-        'items' => array(
-            array('name' => 'default_template', 'choices' => Core::$pluginManager->choices(PluginManager::TEMPLATE)),
-            array('name' => 'time_format', 'input_class' => 'inputsmall'),
-            array('name' => 'cacheid', 'input_class' => 'inputsmall'),
-            array('name' => 'language', 'choices' => Core::$pluginManager->choices(PluginManager::LANGUAGE), 'reload_on_update' => true),
-            array('name' => 'language_allowcustom'),
-            array('name' => 'notpublicsite'),
-            array('name' => 'proxy_mode', 'help_attrs' => array('*ip*' => _user_ip, '*link*' => 'https://sunlight-cms.cz/resource/ip-compare?with=' . rawurlencode(_user_ip))),
-            array('name' => 'pretty_urls', 'force_install_check' => true),
-        ),
-    ),
-    'info' => array(
-        'items' => array(
-            array('name' => 'title'),
-            array('name' => 'titletype', 'choices' => $titletype_choices),
-            array('name' => 'titleseparator'),
-            array('name' => 'description'),
-            array('name' => 'author'),
-            array('name' => 'favicon'),
-        ),
-    ),
-    'admin' => array(
-        'items' => array(
-            array('name' => 'adminlinkprivate'),
-            array('name' => 'version_check'),
-            array('name' => 'adminscheme', 'choices' => $adminscheme_choices, 'reload_on_update' => true),
-            array('name' => 'adminscheme_mode', 'choices' => $adminscheme_mode_choices, 'reload_on_update' => true),
-            array('name' => 'adminpagelist_mode', 'choices' => array(
+$editable_settings = [
+    'main' => [
+        'items' => [
+            ['name' => 'default_template', 'choices' => Core::$pluginManager->choices(PluginManager::TEMPLATE)],
+            ['name' => 'time_format', 'input_class' => 'inputsmall'],
+            ['name' => 'cacheid', 'input_class' => 'inputsmall'],
+            ['name' => 'language', 'choices' => Core::$pluginManager->choices(PluginManager::LANGUAGE), 'reload_on_update' => true],
+            ['name' => 'language_allowcustom'],
+            ['name' => 'notpublicsite'],
+            ['name' => 'proxy_mode', 'help_attrs' => ['*ip*' => _user_ip, '*link*' => 'https://sunlight-cms.cz/resource/ip-compare?with=' . rawurlencode(_user_ip)]],
+            ['name' => 'pretty_urls', 'force_install_check' => true],
+        ],
+    ],
+    'info' => [
+        'items' => [
+            ['name' => 'title'],
+            ['name' => 'titletype', 'choices' => $titletype_choices],
+            ['name' => 'titleseparator'],
+            ['name' => 'description'],
+            ['name' => 'author'],
+            ['name' => 'favicon'],
+        ],
+    ],
+    'admin' => [
+        'items' => [
+            ['name' => 'adminlinkprivate'],
+            ['name' => 'version_check'],
+            ['name' => 'adminscheme', 'choices' => $adminscheme_choices, 'reload_on_update' => true],
+            ['name' => 'adminscheme_mode', 'choices' => $adminscheme_mode_choices, 'reload_on_update' => true],
+            ['name' => 'adminpagelist_mode', 'choices' => [
                 PageLister::MODE_FULL_TREE => mb_strtolower(_lang('admin.content.mode.tree')),
                 PageLister::MODE_SINGLE_LEVEL => mb_strtolower(_lang('admin.content.mode.single')),
-            )),
-        ),
-    ),
-    'users' => array(
-        'items' => array(
-            array('name' => 'registration'),
-            array('name' => 'registration_confirm'),
-            array('name' => 'registration_grouplist'),
-            array('name' => 'defaultgroup', 'table_id' => _user_group_table, 'input' => Admin::userSelect("defaultgroup", _defaultgroup, "id!=" . _group_guests, null, null, true), 'id' => false),
-            array('name' => 'rules', 'help' => false, 'extra_help' => _lang('admin.settings.users.rules.help'), 'input' => '<textarea id="setting_rules" name="rules" rows="9" cols="33" class="areasmallwide editor">' . _e($settings['rules']['val']) . '</textarea>'),
-            array('name' => 'messages'),
-            array('name' => 'lostpass'),
-            array('name' => 'ulist'),
-            array('name' => 'uploadavatar'),
-            array('name' => 'show_avatars'),
-        ),
-    ),
-    'emails' => array(
-        'items' => array(
-            array('name' => 'sysmail'),
-            array('name' => 'mailerusefrom'),
-            array('name' => 'profileemail'),
-            array('name' => 'atreplace'),
+            ]],
+        ],
+    ],
+    'users' => [
+        'items' => [
+            ['name' => 'registration'],
+            ['name' => 'registration_confirm'],
+            ['name' => 'registration_grouplist'],
+            ['name' => 'defaultgroup', 'table_id' => _user_group_table, 'input' => Admin::userSelect("defaultgroup", _defaultgroup, "id!=" . _group_guests, null, null, true), 'id' => false],
+            ['name' => 'rules', 'help' => false, 'extra_help' => _lang('admin.settings.users.rules.help'), 'input' => '<textarea id="setting_rules" name="rules" rows="9" cols="33" class="areasmallwide editor">' . _e($settings['rules']['val']) . '</textarea>'],
+            ['name' => 'messages'],
+            ['name' => 'lostpass'],
+            ['name' => 'ulist'],
+            ['name' => 'uploadavatar'],
+            ['name' => 'show_avatars'],
+        ],
+    ],
+    'emails' => [
+        'items' => [
+            ['name' => 'sysmail'],
+            ['name' => 'mailerusefrom'],
+            ['name' => 'profileemail'],
+            ['name' => 'atreplace'],
 
-        ),
-    ),
-    'articles' => array(
-        'items' => array(
-            array('name' => 'ratemode', 'choices' => $ratemode_choices),
-            array('name' => 'article_pic_w', 'min_value' => 10),
-            array('name' => 'article_pic_h', 'min_value' => 10),
-            array('name' => 'article_pic_thumb_w', 'min_value' => 10),
-            array('name' => 'article_pic_thumb_h', 'min_value' => 10),
-        ),
-    ),
-    'forum' => array(
-        'items' => array(
-            array('name' => 'topic_hot_ratio', 'min_value' => 1),
-        ),
-    ),
-    'galleries' => array(
-        'items' => array(
-            array('name' => 'galuploadresize_w', 'min_value' => 10, 'max_value' => 1024),
-            array('name' => 'galuploadresize_h', 'min_value' => 10, 'max_value' => 1024),
-            array('name' => 'galdefault_thumb_w', 'min_value' => 10, 'max_value' => 1024),
-            array('name' => 'galdefault_thumb_h', 'min_value' => 10, 'max_value' => 1024),
-            array('name' => 'galdefault_per_row', 'min_value' => -1),
-            array('name' => 'galdefault_per_page', 'min_value' => 1),
-        ),
-    ),
-    'functions' => array(
-        'items' => array(
-            array('name' => 'comments'),
-            array('name' => 'search'),
-            array('name' => 'rss'),
-            array('name' => 'captcha'),
-            array('name' => 'bbcode'),
-            array('name' => 'smileys'),
-        ),
-    ),
-    'paging' => array(
-        'items' => array(
-            array('name' => 'pagingmode', 'choices' => $pagingmode_choices),
-            array('name' => 'showpages', 'transform_to' => '$value * 2 + 1', 'transform_back' => '(int) max(1, abs(($value - 1) / 2))'),
-            array('name' => 'commentsperpage', 'min_value' => 1),
-            array('name' => 'messagesperpage', 'min_value' => 1),
-            array('name' => 'articlesperpage', 'min_value' => 1),
-            array('name' => 'topicsperpage', 'min_value' => 1),
-            array('name' => 'extratopicslimit', 'min_value' => 1),
-            array('name' => 'rsslimit', 'min_value' => 1),
-            array('name' => 'sboxmemory', 'min_value' => 1),
-        ),
-    ),
-    'iplog' => array(
-        'items' => array(
-            array('name' => 'postsendexpire', 'min_value' => 0),
-            array('name' => 'postadmintime', 'transform_to' => '$value / 60', 'transform_back' => 'max(0, $value * 60)'),
-            array('name' => 'maxloginattempts', 'min_value' => 1),
-            array('name' => 'maxloginexpire', 'transform_to' => '$value / 60', 'transform_back' => 'max(0, $value * 60)'),
-            array('name' => 'artreadexpire', 'transform_to' => '$value / 60', 'transform_back' => 'max(0, $value * 60)'),
-            array('name' => 'artrateexpire', 'transform_to' => '$value / 60', 'transform_back' => 'max(0, $value * 60)'),
-            array('name' => 'pollvoteexpire', 'transform_to' => '$value / 60', 'transform_back' => 'max(0, $value * 60)'),
-            array('name' => 'accactexpire', 'transform_to' => '$value / 60', 'transform_back' => 'max(0, $value * 60)'),
-            array('name' => 'lostpassexpire', 'transform_to' => '$value / 60', 'transform_back' => 'max(0, $value * 60)'),
-        ),
-    ),
-    'cron' => array(
-        'items' => array(
-            array('name' => 'cron_auto'),
-            array('name' => 'cron_auth'),
-            array('name' => 'maintenance_interval'),
-            array('name' => 'thumb_cleanup_threshold'),
-            array('name' => 'thumb_touch_threshold'),
-        ),
-    ),
-);
+        ],
+    ],
+    'articles' => [
+        'items' => [
+            ['name' => 'ratemode', 'choices' => $ratemode_choices],
+            ['name' => 'article_pic_w', 'min_value' => 10],
+            ['name' => 'article_pic_h', 'min_value' => 10],
+            ['name' => 'article_pic_thumb_w', 'min_value' => 10],
+            ['name' => 'article_pic_thumb_h', 'min_value' => 10],
+        ],
+    ],
+    'forum' => [
+        'items' => [
+            ['name' => 'topic_hot_ratio', 'min_value' => 1],
+        ],
+    ],
+    'galleries' => [
+        'items' => [
+            ['name' => 'galuploadresize_w', 'min_value' => 10, 'max_value' => 1024],
+            ['name' => 'galuploadresize_h', 'min_value' => 10, 'max_value' => 1024],
+            ['name' => 'galdefault_thumb_w', 'min_value' => 10, 'max_value' => 1024],
+            ['name' => 'galdefault_thumb_h', 'min_value' => 10, 'max_value' => 1024],
+            ['name' => 'galdefault_per_row', 'min_value' => -1],
+            ['name' => 'galdefault_per_page', 'min_value' => 1],
+        ],
+    ],
+    'functions' => [
+        'items' => [
+            ['name' => 'comments'],
+            ['name' => 'search'],
+            ['name' => 'rss'],
+            ['name' => 'captcha'],
+            ['name' => 'bbcode'],
+            ['name' => 'smileys'],
+        ],
+    ],
+    'paging' => [
+        'items' => [
+            ['name' => 'pagingmode', 'choices' => $pagingmode_choices],
+            ['name' => 'showpages', 'transform_to' => '$value * 2 + 1', 'transform_back' => '(int) max(1, abs(($value - 1) / 2))'],
+            ['name' => 'commentsperpage', 'min_value' => 1],
+            ['name' => 'messagesperpage', 'min_value' => 1],
+            ['name' => 'articlesperpage', 'min_value' => 1],
+            ['name' => 'topicsperpage', 'min_value' => 1],
+            ['name' => 'extratopicslimit', 'min_value' => 1],
+            ['name' => 'rsslimit', 'min_value' => 1],
+            ['name' => 'sboxmemory', 'min_value' => 1],
+        ],
+    ],
+    'iplog' => [
+        'items' => [
+            ['name' => 'postsendexpire', 'min_value' => 0],
+            ['name' => 'postadmintime', 'transform_to' => '$value / 60', 'transform_back' => 'max(0, $value * 60)'],
+            ['name' => 'maxloginattempts', 'min_value' => 1],
+            ['name' => 'maxloginexpire', 'transform_to' => '$value / 60', 'transform_back' => 'max(0, $value * 60)'],
+            ['name' => 'artreadexpire', 'transform_to' => '$value / 60', 'transform_back' => 'max(0, $value * 60)'],
+            ['name' => 'artrateexpire', 'transform_to' => '$value / 60', 'transform_back' => 'max(0, $value * 60)'],
+            ['name' => 'pollvoteexpire', 'transform_to' => '$value / 60', 'transform_back' => 'max(0, $value * 60)'],
+            ['name' => 'accactexpire', 'transform_to' => '$value / 60', 'transform_back' => 'max(0, $value * 60)'],
+            ['name' => 'lostpassexpire', 'transform_to' => '$value / 60', 'transform_back' => 'max(0, $value * 60)'],
+        ],
+    ],
+    'cron' => [
+        'items' => [
+            ['name' => 'cron_auto'],
+            ['name' => 'cron_auth'],
+            ['name' => 'maintenance_interval'],
+            ['name' => 'thumb_cleanup_threshold'],
+            ['name' => 'thumb_touch_threshold'],
+        ],
+    ],
+];
 
 // extend
-Extend::call('admin.settings', array(
+Extend::call('admin.settings', [
     'editable' => &$editable_settings,
     'current' => &$settings,
-));
+]);
 
 /* ---  ulozeni  --- */
 

@@ -22,10 +22,10 @@ class ActionResult
     {
         if ($messages !== null) {
             if (!is_array($messages)) {
-                $messages = array($messages);
+                $messages = [$messages];
             }
         } else {
-            $messages = array();
+            $messages = [];
         }
 
         $this->result = $result;

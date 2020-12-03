@@ -36,7 +36,7 @@ class Xsrf
     static function getToken($forCheck = false)
     {
         // cache tokenu
-        static $tokens = array(null, null);
+        static $tokens = [null, null];
 
         // typ tokenu (aktualni ci pro kontrolu)
         $type = ($forCheck ? 1 : 0);

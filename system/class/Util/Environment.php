@@ -38,7 +38,7 @@ abstract class Environment
         static $result = null;
         if (!isset($result)) {
             $limit_lowest = null;
-            $opts = array('upload_max_filesize', 'post_max_size', 'memory_limit');
+            $opts = ['upload_max_filesize', 'post_max_size', 'memory_limit'];
             for ($i = 0; isset($opts[$i]); ++$i) {
                 $limit = static::phpIniLimit($opts[$i]);
                 if (isset($limit) && (!isset($limit_lowest) || $limit < $limit_lowest)) {

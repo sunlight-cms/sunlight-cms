@@ -17,9 +17,9 @@ abstract class PageManager
     /** @var TreeReader|null */
     protected static $treeReader;
     /** @var array */
-    protected static $pathCache = array();
+    protected static $pathCache = [];
     /** @var array */
-    protected static $childrenCache = array();
+    protected static $childrenCache = [];
 
     /**
      * Nalezt stranku a nacist jeji data
@@ -45,7 +45,7 @@ abstract class PageManager
         }
 
         // podminky
-        $conds = array();
+        $conds = [];
 
         // ignorovat oddelovace
         $conds[] = 'page.type!=' . _page_separator;
@@ -57,13 +57,13 @@ abstract class PageManager
 
         // identifikator
         if (!empty($segments)) {
-            $slugs = array();
+            $slugs = [];
             for ($i = count($segments); $i > 0; --$i) {
                 $slugs[] = implode('/', array_slice($segments, 0, $i));
             }
             $conds[] = 'page.slug IN(' . DB::arr($slugs) . ')';
         } else {
-            $indexPageId = Extend::fetch('page.find.index', array(), _index_page_id);
+            $indexPageId = Extend::fetch('page.find.index', [], _index_page_id);
             $conds[] = 'page.id=' . DB::val($indexPageId);
         }
 
@@ -105,7 +105,7 @@ abstract class PageManager
             }
         }
 
-        return array($id, $data);
+        return [$id, $data];
     }
 
     /**
@@ -158,7 +158,7 @@ abstract class PageManager
      */
     static function getTypes()
     {
-        return array(
+        return [
             _page_section => 'section',
             _page_category => 'category',
             _page_book => 'book',
@@ -168,7 +168,7 @@ abstract class PageManager
             _page_group => 'group',
             _page_forum => 'forum',
             _page_plugin => 'pluginpage',
-        );
+        ];
     }
 
     /**
@@ -181,8 +181,8 @@ abstract class PageManager
         static $cache = null;
         
         if ($cache === null) {
-            $cache = array();
-            Extend::call('page.plugin.reg', array('infos' => &$cache));
+            $cache = [];
+            Extend::call('page.plugin.reg', ['infos' => &$cache]);
         }
 
         return $cache;
@@ -260,7 +260,7 @@ abstract class PageManager
         $columns = DB::idtList(array_merge(static::getTreeReader()->getSystemColumns(), static::prepareTreeColumns($extraColumns)));
         $query = DB::query('SELECT ' . $columns . ' FROM ' . _page_table . ' WHERE ' . $where . ' ORDER BY ord');
 
-        $pages = array();
+        $pages = [];
         while ($page = DB::row($query)) {
             $pages[] = $page;
         }
@@ -396,12 +396,12 @@ abstract class PageManager
     static function prepareTreeColumns(array $extraColumns = null)
     {
         if ($extraColumns === null) {
-            $extraColumns = array();
+            $extraColumns = [];
         }
 
-        $columns = array('title', 'slug', 'type', 'type_idt', 'ord', 'visible', 'public', 'level');
+        $columns = ['title', 'slug', 'type', 'type_idt', 'ord', 'visible', 'public', 'level'];
 
-        Extend::call('page.tree_columns', array('extra_columns' => &$extraColumns));
+        Extend::call('page.tree_columns', ['extra_columns' => &$extraColumns]);
         if (!empty($extraColumns)) {
             $columns = array_merge($columns, $extraColumns);
         }

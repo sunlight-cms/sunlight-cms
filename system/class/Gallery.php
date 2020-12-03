@@ -33,7 +33,7 @@ class Gallery
                 $prevUrl = Router::generate($img['prev']);
             }
         } elseif ($fullFile !== null) {
-            $prevUrl = Router::file(Picture::getThumbnail($fullFile, array('x' => $width, 'y' => $height)));
+            $prevUrl = Router::file(Picture::getThumbnail($fullFile, ['x' => $width, 'y' => $height]));
         } else {
             $prevUrl = $fullUrl;
         }
