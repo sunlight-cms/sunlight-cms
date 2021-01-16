@@ -9,11 +9,6 @@ use Sunlight\Plugin\ExtendPlugin;
 use Sunlight\Plugin\PluginManager;
 use Kuria\Error\Screen\WebErrorScreen;
 
-/**
- * Devkit plugin
- *
- * @author ShiraNai7 <shira.cz>
- */
 class DevkitPlugin extends ExtendPlugin
 {
     /** @var Component\SqlLogger */

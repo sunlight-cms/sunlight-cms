@@ -27,7 +27,6 @@
 /plugins/extend/*
 !/plugins/extend/devkit
 !/plugins/extend/codemirror
-!/plugins/extend/fancybox
 
 /plugins/languages/*
 !/plugins/languages/cs

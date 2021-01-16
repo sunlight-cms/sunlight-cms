@@ -6,11 +6,6 @@ use Sunlight\Admin\Admin;
 use Sunlight\Core;
 use Sunlight\Plugin\ExtendPlugin;
 
-/**
- * Codemirror plugin
- *
- * @author ShiraNai7 <shira.cz>
- */
 class CodemirrorPlugin extends ExtendPlugin
 {
     /**

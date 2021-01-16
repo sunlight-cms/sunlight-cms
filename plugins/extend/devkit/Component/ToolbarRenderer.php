@@ -9,11 +9,6 @@ use Sunlight\Localization\LocalizationDirectory;
 use Sunlight\Plugin\InactivePlugin;
 use Sunlight\Router;
 
-/**
- * Devkit toolbar renderer
- *
- * @author ShiraNai7 <shira.cz>
- */
 class ToolbarRenderer
 {
     /** @var array */

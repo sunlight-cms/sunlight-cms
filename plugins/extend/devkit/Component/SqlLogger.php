@@ -2,11 +2,6 @@
 
 namespace SunlightExtend\Devkit\Component;
 
-/**
- * Devkit SQL logger
- *
- * @author ShiraNai7 <shira.cz>
- */
 class SqlLogger
 {
     /** @var array[] */

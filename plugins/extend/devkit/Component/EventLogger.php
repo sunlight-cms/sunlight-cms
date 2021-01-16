@@ -2,11 +2,6 @@
 
 namespace SunlightExtend\Devkit\Component;
 
-/**
- * Devkit event logger
- *
- * @author ShiraNai7 <shira.cz>
- */
 class EventLogger
 {
     /**
