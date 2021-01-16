@@ -479,15 +479,12 @@ class PluginManager
         $data = $this->cache->get($this->getCacheKey());
 
         // invalidate stale data
-        if (
-            $data !== false
-            && $data['system_hash'] !== $this->getSystemHash()
-        ) {
-            $data = false;
+        if ($data !== null && !$this->validateCachedData($data)) {
+            $data = null;
         }
 
         // if data could not be loaded from cache, use plugin loader
-        if ($data === false) {
+        if ($data === null) {
             $data = $this->loadPlugins();
         }
 
@@ -541,15 +538,11 @@ class PluginManager
         $data = [
             'plugins' => $result['plugins'],
             'autoload' => $result['autoload'],
+            'bound_files' => $this->mapBoundFiles($result['bound_files']),
             'system_hash' => $this->getSystemHash(),
         ];
 
-        $this->cache->set(
-            $this->getCacheKey(),
-            $data,
-            0,
-            ['bound_files' => $result['bound_files']]
-        );
+        $this->cache->set($this->getCacheKey(), $data);
 
         return $data;
     }
@@ -568,5 +561,39 @@ class PluginManager
     private function getSystemHash()
     {
         return sha1(Core::VERSION . '$' . realpath(_root));
+    }
+
+    /**
+     * @param array $boundFiles
+     * @return array
+     */
+    private function mapBoundFiles(array $boundFiles)
+    {
+        $map = [];
+
+        foreach ($boundFiles as $boundFile) {
+            $map[realpath($boundFile)] = filemtime($boundFile);
+        }
+
+        return $map;
+    }
+
+    /**
+     * @param array $data
+     * @return bool
+     */
+    private function validateCachedData(array $data)
+    {
+        if ($data['system_hash'] !== $this->getSystemHash()) {
+            return false;
+        }
+
+        foreach ($data['bound_files'] as $path => $mtime) {
+            if (@filemtime($path) !== $mtime) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

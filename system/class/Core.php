@@ -3,13 +3,14 @@
 namespace Sunlight;
 
 use Kuria\Cache\Cache;
-use Kuria\Cache\Driver\FilesystemDriver;
-use Kuria\Cache\Driver\MemoryDriver;
-use Kuria\Cache\Extension\BoundFile\BoundFileExtension;
+use Kuria\Cache\Driver\Filesystem\Entry\EntryFactory;
+use Kuria\Cache\Driver\Filesystem\FilesystemDriver;
+use Kuria\Cache\Driver\Memory\MemoryDriver;
 use Kuria\ClassLoader\ClassLoader;
-use Kuria\Debug\Error;
+use Kuria\Debug\Exception;
 use Kuria\Error\ErrorHandler;
 use Kuria\Error\Screen\WebErrorScreen;
+use Kuria\Error\Screen\WebErrorScreenEvents;
 use Kuria\Event\EventEmitter;
 use Sunlight\Database\Database as DB;
 use Sunlight\Exception\CoreException;
@@ -310,7 +311,7 @@ abstract class Core
         static::$errorHandler = new ErrorHandler();
         static::$errorHandler->register();
 
-        if (($exceptionHandler = static::$errorHandler->getExceptionHandler()) instanceof WebErrorScreen) {
+        if (($exceptionHandler = static::$errorHandler->getErrorScreen()) instanceof WebErrorScreen) {
             static::configureWebExceptionHandler($exceptionHandler);
         }
 
@@ -337,13 +338,10 @@ abstract class Core
                 $options['cache']
                     ? new FilesystemDriver(
                         _root . 'system/cache/core',
-                        _root . 'system/tmp'
+                        new EntryFactory(null, null, _root . 'system/tmp')
                     )
                     : new MemoryDriver()
             );
-
-            $boundFileExtension = new BoundFileExtension();
-            static::$cache->subscribe($boundFileExtension);
         }
 
         // plugin manager
@@ -500,34 +498,6 @@ abstract class Core
                 $requestUri .= '?' . $_SERVER['QUERY_STRING'];
             }
             $_SERVER['REQUEST_URI'] = $requestUri;
-        }
-
-        // undo register_globals
-        if (ini_get('register_globals')) {
-            foreach (array_keys($_REQUEST) as $key) {
-                unset($GLOBALS[$key]);
-            }
-        }
-
-        // undo magic_quotes
-        if (PHP_VERSION_ID < 50400 && get_magic_quotes_gpc()) {
-            $search = [&$_GET, &$_POST, &$_COOKIE];
-            for ($i = 0; isset($search[$i]); ++$i) {
-                foreach ($search[$i] as &$value) {
-                    if (is_array($value)) {
-                        $search[] = &$value;
-                    } else {
-                        $value = stripslashes($value);
-                    }
-                }
-                unset($search[$i]);
-            }
-
-            if (function_exists('set_magic_quotes_runtime')) {
-                @set_magic_quotes_runtime(0);
-            }
-
-            unset($search, $i, $value);
         }
 
         // set error_reporting
@@ -1070,20 +1040,20 @@ abstract class Core
     /**
      * Render an exception
      *
-     * @param object $e
-     * @param bool   $showTrace
-     * @param bool   $showPrevious
+     * @param \Throwable $e
+     * @param bool $showTrace
+     * @param bool $showPrevious
      * @return string
      */
     static function renderException($e, $showTrace = true, $showPrevious = true)
     {
-        return '<pre class="exception">' . _e(Error::renderException($e, $showTrace, $showPrevious)) . "</pre>\n";
+        return '<pre class="exception">' . _e(Exception::render($e, $showTrace, $showPrevious)) . "</pre>\n";
     }
 
     protected static function configureWebExceptionHandler(WebErrorScreen $errorScreen)
     {
-        $errorScreen->on('layout.css', function ($params) {
-            $params['css'] .= <<<'CSS'
+        $errorScreen->on(WebErrorScreenEvents::CSS, function () {
+            echo <<<'CSS'
 body {background-color: #ededed; color: #000000;}
 a {color: #ff6600;}
 .core-exception-info {opacity: 0.8;}
@@ -1091,8 +1061,9 @@ a {color: #ff6600;}
 CSS;
         });
 
-        if (!static::$errorHandler->getDebug()) {
-            $errorScreen->on('render', function ($view) {
+
+        if (!static::$errorHandler->isDebugEnabled()) {
+            $errorScreen->on(WebErrorScreenEvents::RENDER, function ($view) {
                 $view['title'] = $view['heading'] = Core::$fallbackLang === 'cs'
                     ? 'Chyba serveru'
                     : 'Something went wrong';

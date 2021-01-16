@@ -117,7 +117,7 @@ class BackupRestorer
             }
 
             DatabaseLoader::load(
-                SqlReader::fromStream($this->backup->getDatabaseDump()),
+                new SqlReader($this->backup->getDatabaseDump()),
                 $this->backup->getMetaData('db_prefix'),
                 _dbprefix
             );

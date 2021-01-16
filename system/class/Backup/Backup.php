@@ -2,12 +2,12 @@
 
 namespace Sunlight\Backup;
 
-use Kuria\Cache\Util\TemporaryFile;
 use Sunlight\Core;
 use Sunlight\Option\OptionSet;
 use Sunlight\Option\OptionSetNormalizerException;
 use Sunlight\Util\Filesystem;
 use Sunlight\Util\Json;
+use Sunlight\Util\TemporaryFile;
 use Sunlight\Util\Zip;
 
 /**
@@ -314,13 +314,13 @@ class Backup
     /**
      * Get database dump stream
      *
-     * @return resource|bool
+     * @return string|bool
      */
     function getDatabaseDump()
     {
         $this->ensureOpenAndNotNew();
 
-        return $this->zip->getStream(static::DB_DUMP_PATH);
+        return $this->zip->getFromName(static::DB_DUMP_PATH);
     }
 
     /**

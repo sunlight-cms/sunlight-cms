@@ -8,6 +8,7 @@ use Sunlight\GenericTemplates;
 use Sunlight\Plugin\ExtendPlugin;
 use Sunlight\Plugin\PluginManager;
 use Kuria\Error\Screen\WebErrorScreen;
+use Kuria\Error\Screen\WebErrorScreenEvents;
 
 class DevkitPlugin extends ExtendPlugin
 {
@@ -30,9 +31,9 @@ class DevkitPlugin extends ExtendPlugin
 
         Extend::regGlobal([$this->eventLogger, 'log'], 10000);
 
-        $exceptionHandler = Core::$errorHandler->getExceptionHandler();
+        $exceptionHandler = Core::$errorHandler->getErrorScreen();
         if ($exceptionHandler instanceof WebErrorScreen) {
-            $exceptionHandler->on('render.debug', [$this->sqlLogger, 'showInDebugScreen']);
+            $exceptionHandler->on(WebErrorScreenEvents::RENDER_DEBUG, [$this->sqlLogger, 'showInDebugScreen']);
         }
     }
 

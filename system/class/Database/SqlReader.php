@@ -2,9 +2,6 @@
 
 namespace Sunlight\Database;
 
-use Kuria\Parser\Input\Input;
-use Kuria\Parser\Input\MemoryInput;
-use Kuria\Parser\Input\StreamInput;
 use Sunlight\Util\Filesystem;
 
 class SqlReader
@@ -14,7 +11,7 @@ class SqlReader
     /** Query map item - quoted value */
     const QUOTED = 1;
 
-    /** @var Input */
+    /** @var string */
     protected $input;
     /** @var string */
     protected $delimiter = ';';
@@ -30,53 +27,24 @@ class SqlReader
     ];
 
     /**
-     * @param Input $input
+     * @param string $input
      */
-    function __construct(Input $input)
+    function __construct($input)
     {
         $this->input = $input;
     }
 
     /**
-     * Create from a string
-     *
-     * @param string $string
-     * @return static
-     */
-    static function fromString($string)
-    {
-        return new static(new MemoryInput($string));
-    }
-
-    /**
-     * Create from a stream
-     *
-     * @param resource $stream
-     * @param int|null $length
-     * @param int|null $chunkSize
-     * @return static
-     */
-    static function fromStream($stream, $length = null, $chunkSize = null)
-    {
-        return new static(new StreamInput($stream, $length, $chunkSize ?: 262144));
-    }
-
-    /**
      * Create from a file
      *
-     * @param string   $filepath
-     * @param int|null $chunkSize
+     * @param string $filepath
      * @return static
      */
-    static function fromFile($filepath, $chunkSize = null)
+    static function fromFile($filepath)
     {
         Filesystem::ensureFileExists($filepath);
 
-        return static::fromStream(
-            fopen($filepath, 'r'),
-            filesize($filepath),
-            $chunkSize
-        );
+        return new static(file_get_contents($filepath));
     }
 
     /**
@@ -148,8 +116,10 @@ class SqlReader
             }
         };
 
-        for ($i = 0; isset($this->input->data[$i - $this->input->offset]) || $this->input->loadData($i); ++$i) {
-            $char = $this->input->data[$i - $this->input->offset];
+        $length = strlen($this->input);
+
+        for ($i = 0; $i < $length; ++$i) {
+            $char = $this->input[$i];
 
             // parse character
             if ($inQuotes) {

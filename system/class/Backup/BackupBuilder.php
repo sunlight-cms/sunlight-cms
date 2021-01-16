@@ -2,12 +2,12 @@
 
 namespace Sunlight\Backup;
 
-use Kuria\Cache\Util\TemporaryFile;
 use Sunlight\Core;
 use Sunlight\Database\Database as DB;
 use Sunlight\Database\SqlDumper;
 use Sunlight\Util\Filesystem;
 use Sunlight\Util\PhpTemplate;
+use Sunlight\Util\TemporaryFile;
 
 /**
  * Backup archive builder

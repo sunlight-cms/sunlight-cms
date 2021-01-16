@@ -97,7 +97,6 @@ class Database
                     $sql
                 ));
             }
-        } catch (\Exception $e) {
         } catch (\Throwable $e) {
         }
 

@@ -2,7 +2,6 @@
 
 namespace Sunlight\Util;
 
-use Kuria\Cache\Util\TemporaryFile;
 use Sunlight\Core;
 
 /**

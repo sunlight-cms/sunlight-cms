@@ -2,9 +2,9 @@
 
 namespace Sunlight\Database;
 
-use Kuria\Cache\Util\TemporaryFile;
 use Sunlight\Database\Database as DB;
 use Sunlight\Util\Filesystem;
+use Sunlight\Util\TemporaryFile;
 
 /**
  * Database dumper

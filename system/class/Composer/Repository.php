@@ -126,7 +126,7 @@ class Repository
             $this->installedPackages = [];
 
             if (is_file($installedJson = $this->getInstalledJsonPath())) {
-                foreach (Json::decode(file_get_contents($installedJson), false) as $package) {
+                foreach (Json::decode(file_get_contents($installedJson), false)->packages as $package) {
                     $this->installedPackages[$package->name] = $package;
                 }
             }

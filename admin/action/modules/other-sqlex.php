@@ -52,7 +52,7 @@ $output .= '
 
 /* --- vysledek --- */
 
-$queries = SqlReader::fromString($sql)->read();
+$queries = (new SqlReader($sql))->read();
 if (!empty($queries)) {
 
     // zpracovat dotazy

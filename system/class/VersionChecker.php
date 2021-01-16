@@ -35,9 +35,7 @@ class VersionChecker
             return;
         }
 
-        $data = Core::$cache->cached('version_checker', function (&$ttl) {
-            $ttl = 7 * 24 * 60 * 60;
-
+        $data = Core::$cache->cached('version_checker', 7 * 24 * 60 * 6, function () {
             $versionApiUrl = Url::parse('https://api.sunlight-cms.cz/version');
             $versionApiUrl->add([
                 'ver' => Core::VERSION,

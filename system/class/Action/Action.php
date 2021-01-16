@@ -7,8 +7,6 @@ use Sunlight\Message;
 
 abstract class Action
 {
-    /** @var ActionResult|null */
-    protected $result;
     /** @var bool */
     protected $catchExceptions = false;
     /** @var bool */
@@ -47,9 +45,6 @@ abstract class Action
      */
     function run()
     {
-        $this->result = null;
-
-        $e = null;
         try {
             $result = $this->execute();
 
@@ -59,11 +54,7 @@ abstract class Action
                     get_called_class()
                 ));
             }
-        } catch (\Exception $e) {
         } catch (\Throwable $e) {
-        }
-
-        if ($e !== null) {
             if ($this->catchExceptions) {
                 $result = ActionResult::failure(Message::error(_lang('global.error')));
 
