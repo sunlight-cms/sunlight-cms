@@ -671,6 +671,7 @@ fieldset fieldset .bborder {border-color: <?php echo $scheme_smoke; ?>;}
 .text-right {text-align: right;}
 tr.valign-top > *, table.valign-top > * > tr > * {vertical-align: top;}
 .no-bullets {list-style-type: none; padding-left: 10px;}
+.ui-sortable-handle {-ms-touch-action:none; touch-action:none;}
 
 /* tree */
 .node-level-m0 {margin-left: 0 !important;}

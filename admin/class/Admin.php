@@ -559,7 +559,7 @@ abstract class Admin
                 'rangyinputs' => Router::generate('system/js/rangyinputs.js'),
                 'scrollwatch' => Router::generate('system/js/scrollwatch.js'),
                 'scrollfix' => Router::generate('system/js/scrollfix.js'),
-                'jquery_ui_sortable' => Router::generate('admin/js/jquery-ui-sortable.min.js'),
+                'jquery_ui' => Router::generate('admin/js/jquery-ui.js'),
                 'admin' => Router::generate('admin/js/admin.js'),
             ],
             'js_before' => "\n" . Core::getJavascript([
