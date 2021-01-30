@@ -16,12 +16,11 @@
         "kuria/debug": "^4.0",
         "kuria/event": "^2.0",
         "kuria/cache": "^5.0",
-        "eloquent/pbkdf2-compat": "^1.0.1",
         "composer/semver": "^2.0"
     },
     "config": {
         "platform": {
-            "php": "7.1"
+            "php": "7.1.99"
         }
     },
     "minimum-stability": "dev",
