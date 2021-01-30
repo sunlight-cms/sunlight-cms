@@ -16,7 +16,7 @@
         "kuria/debug": "^4.0",
         "kuria/event": "^2.0",
         "kuria/cache": "^5.0",
-        "composer/semver": "^2.0"
+        "composer/semver": "^3.0"
     },
     "config": {
         "platform": {
