@@ -268,7 +268,7 @@ abstract class Router
     static function rss($id, $type)
     {
         if (_rss) {
-            return UrlHelper::appendParams(_root . 'system/script/rss.php', 'tp=' . $type . '&id=' . $id);
+            return UrlHelper::appendParams(static::generate('system/script/rss.php'), 'tp=' . $type . '&id=' . $id);
         } else {
             return '';
         }
