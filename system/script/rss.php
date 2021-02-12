@@ -217,7 +217,7 @@ if ($custom_cond && ($donottestsource || DB::size($query) != 0)) {
 /* ---  vystup  --- */
 
 if ($continue) {
-    header("Content-Type: application/xml; charset=UTF-8");
+    header("Content-Type: application/rss+xml; charset=UTF-8");
     $main_title = _title . ' ' . _titleseparator . (($pagetitle != null) ? ' ' . $pagetitle . ' ' . _titleseparator : '') . ' ' . $feed_title;
 
     $cdata = function ($string) {
