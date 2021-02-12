@@ -198,7 +198,7 @@ switch ($a) {
             // vystup
             $output .= "<div class=\"topic\">\n";
             $output .= "<h2>" . _lang('mod.messages.message') . ": " . $q['subject'] . "</h2>\n";
-            $output .= CommentService::renderPost(['id' => $q['post_id']] + $q, $senderUserQuery, [
+            $output .= CommentService::renderPost(['id' => $q['post_id'], 'author' => $q['sender']] + $q, $senderUserQuery, [
                 'post_link' => false,
                 'allow_reply' => false,
             ]);
