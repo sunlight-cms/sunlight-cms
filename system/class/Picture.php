@@ -22,7 +22,7 @@ class Picture
      * @param string|null $filename pouzity nazev souboru (pokud se lisi od $filepath)
      * @return array pole s klici (bool)status, (int)code, (string)msg, (resource)resource, (string)ext
      */
-    static function load($filepath, $limit = [], $filename = null)
+    static function load(string $filepath, array $limit = [], ?string $filename = null): array
     {
         // vychozi nastaveni
         static $limit_default = [
@@ -193,7 +193,7 @@ class Picture
      * @param array|null $size pole ve formatu array(sirka, vyska) nebo null (= bude nacteno)
      * @return array pole s klici (bool)status, (int)code, (string)msg, (resource)resource, (bool)changed
      */
-    static function resize($res, array $opt, $size = null)
+    static function resize($res, array $opt, ?array $size = null): array
     {
         // vychozi nastaveni
         $opt += [
@@ -330,7 +330,7 @@ class Picture
      * @param resource|null $colorSource resource obrazku jako zdroj transp. barvy (jinak $resource)
      * @return bool
      */
-    static function enableAlpha($resource, $format, $colorSource = null)
+    static function enableAlpha($resource, string $format, $colorSource = null): bool
     {
         // paleta?
         $trans = imagecolortransparent($colorSource !== null ? $colorSource : $resource);
@@ -380,11 +380,11 @@ class Picture
      *      640x480/fill
      *      320x?/fit/pad/#fff
      *
-     * @param string $input    vstupni retezec
-     * @param array  $defaults vychozi parametry pro {@see Picture::resize()}
+     * @param string|null $input    vstupni retezec
+     * @param array       $defaults vychozi parametry pro {@see Picture::resize()}
      * @return array parametry pro {@see Picture::resize()}
      */
-    static function parseResizeOptions($input, array $defaults = [])
+    static function parseResizeOptions(?string $input, array $defaults = []): array
     {
         $opts = $defaults + [
             'x' => 96,
@@ -460,7 +460,7 @@ class Picture
      * @param int      $jpg_quality kvalita JPG obrazku
      * @return array
      */
-    static function store($res, $target_path, $format, $jpg_quality)
+    static function store($res, string $target_path, string $format, int $jpg_quality): array
     {
         // proces
         $code = 0;
@@ -495,7 +495,7 @@ class Picture
      * @param bool   $root_prefix vratit cestu vcetne _root prefixu
      * @return string
      */
-    static function get($dir, $uid, $format, $partitions = 0, $root_prefix = true)
+    static function get(string $dir, string $uid, string $format, int $partitions = 0, bool $root_prefix = true): string
     {
         Extend::call('picture.get', [
             'dir' => &$dir,
@@ -553,12 +553,12 @@ class Picture
      *  [jpg_quality]       kvalita pro ukladani JPG/JPEG formatu
      *
      * @param array         $opt      volby zpracovani
-     * @param string        &$error   promenna pro ulozeni chybove hlasky v pripade neuspechu
-     * @param string        &$format  promenna pro ulozeni formatu nacteneho obrazku
+     * @param string|null   &$error   promenna pro ulozeni chybove hlasky v pripade neuspechu
+     * @param string|null   &$format  promenna pro ulozeni formatu nacteneho obrazku
      * @param resource|null $resource promenna pro ulozeni resource vysledneho obrazku (pouze pokud 'destroy' = false)
      * @return mixed viz popis funkce
      */
-    static function process(array $opt, &$error = null, &$format = null, &$resource = null)
+    static function process(array $opt, ?string &$error = null, ?string &$format = null, &$resource = null)
     {
         $opt += [
             'file_name' => null,
@@ -679,13 +679,13 @@ class Picture
     /**
      * Vygenerovat cachovanou miniaturu obrazku
      *
-     * @param string $source          cesta ke zdrojovemu obrazku
-     * @param array  $resize_opts     volby pro zmenu velikosti, {@see Picture::resize()} (mode je prednastaven na fill)
-     * @param bool   $use_error_image vratit chybovy obrazek pri neuspechu namisto false
-     * @param string $error          promenna, kam bude ulozena pripadna chybova hlaska
+     * @param string      $source          cesta ke zdrojovemu obrazku
+     * @param array       $resize_opts     volby pro zmenu velikosti, {@see Picture::resize()} (mode je prednastaven na fill)
+     * @param bool        $use_error_image vratit chybovy obrazek pri neuspechu namisto false
+     * @param string|null $error          promenna, kam bude ulozena pripadna chybova hlaska
      * @return string|bool cesta k miniature nebo chybovemu obrazku nebo false pri neuspechu
      */
-    static function getThumbnail($source, array $resize_opts, $use_error_image = true, &$error = null)
+    static function getThumbnail(string $source, array $resize_opts, bool $use_error_image = true, ?string &$error = null)
     {
         // zjistit priponu
         $ext = strtolower(pathinfo($source, PATHINFO_EXTENSION));
@@ -765,7 +765,7 @@ class Picture
      *
      * @param int $threshold minimalni doba v sekundach od posledniho vyzadani miniatury
      */
-    static function cleanThumbnails($threshold)
+    static function cleanThumbnails(int $threshold): void
     {
         foreach (Filesystem::createRecursiveIterator(_root . 'images/thumb', \RecursiveIteratorIterator::LEAVES_ONLY) as $thumb) {
             if (
@@ -783,7 +783,7 @@ class Picture
      * @param string|null $check_format nazev formatu (jpg, jpeg, png , gif) jehoz podpora se ma zkontrolovat nebo null
      * @return bool
      */
-    static function checkFormatSupport($check_format = null)
+    static function checkFormatSupport(?string $check_format = null): bool
     {
         if (function_exists('gd_info')) {
             if (isset($check_format)) {
@@ -824,7 +824,7 @@ class Picture
      * @param int $jpg_quality
      * @return bool
      */
-    protected static function write($res, $format, $target_path, $jpg_quality)
+    protected static function write($res, string $format, string $target_path, int $jpg_quality): bool
     {
         $tmpfile = Filesystem::createTmpFile();
         $result = false;

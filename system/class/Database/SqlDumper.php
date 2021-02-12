@@ -28,7 +28,7 @@ class SqlDumper
      * @throws DatabaseException on failure
      * @return TemporaryFile
      */
-    function dump()
+    function dump(): TemporaryFile
     {
         $tmpFile = Filesystem::createTmpFile();
         $handle = null;
@@ -63,7 +63,7 @@ class SqlDumper
      * @param string $table
      * @return $this
      */
-    function addTable($table)
+    function addTable(string $table): self
     {
         $this->tables[] = $table;
 
@@ -76,7 +76,7 @@ class SqlDumper
      * @param string[] $tables
      * @return $this
      */
-    function addTables(array $tables)
+    function addTables(array $tables): self
     {
         foreach ($tables as $table) {
             $this->tables[] = $table;
@@ -91,7 +91,7 @@ class SqlDumper
      * @param bool $dumpData
      * @return $this
      */
-    function setDumpData($dumpData)
+    function setDumpData(bool $dumpData): self
     {
         $this->dumpData = $dumpData;
 
@@ -104,7 +104,7 @@ class SqlDumper
      * @param bool $dumpTables
      * @return $this
      */
-    function setDumpTables($dumpTables)
+    function setDumpTables(bool $dumpTables): self
     {
         $this->dumpTables = $dumpTables;
 
@@ -116,7 +116,7 @@ class SqlDumper
      *
      * @return int
      */
-    function getMaxPacketSize()
+    function getMaxPacketSize(): int
     {
         if ($this->maxPacketSize === null) {
             // determine max packet size
@@ -138,7 +138,7 @@ class SqlDumper
      * @param int|null $maxPacketSize
      * @return $this
      */
-    function setMaxPacketSize($maxPacketSize)
+    function setMaxPacketSize(?int $maxPacketSize): self
     {
         $this->maxPacketSize = $maxPacketSize;
 
@@ -150,7 +150,7 @@ class SqlDumper
      *
      * @param resource $handle
      */
-    protected function dumpTables($handle)
+    protected function dumpTables($handle): void
     {
         foreach ($this->tables as $table) {
             $createTable = DB::queryRow('SHOW CREATE TABLE `' . $table . '`');
@@ -169,7 +169,7 @@ class SqlDumper
      *
      * @param resource $handle
      */
-    protected function dumpData($handle)
+    protected function dumpData($handle): void
     {
         foreach ($this->tables as $table) {
             $columns = $this->getTableColumns($table);
@@ -189,7 +189,7 @@ class SqlDumper
      * @param array    $columns
      * @param mixed    $result
      */
-    protected function dumpTableData($handle, $table, array $columns, $result)
+    protected function dumpTableData($handle, string $table, array $columns, $result): void
     {
         $columnList = DB::idtList(array_keys($columns));
         $insertStatement = 'INSERT INTO `' . $table . '` (' . $columnList . ') VALUES ';
@@ -284,7 +284,7 @@ class SqlDumper
      * @param string $table
      * @return array
      */
-    protected function getTableColumns($table)
+    protected function getTableColumns(string $table): array
     {
         $columns = [];
         $result = DB::query('SHOW COLUMNS FROM `' . $table . '`');

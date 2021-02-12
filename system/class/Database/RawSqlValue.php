@@ -17,7 +17,7 @@ class RawSqlValue
         $this->safeSqlString = (string) $safeSqlString;
     }
 
-    function getSql()
+    function getSql(): string
     {
         return $this->safeSqlString;
     }

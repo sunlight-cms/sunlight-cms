@@ -27,7 +27,7 @@ class ExtendPlugin extends Plugin
     /**
      * Initialize the plugin
      */
-    function initialize()
+    function initialize(): void
     {
         // register events
         foreach ($this->options['events'] as $subscriber) {
@@ -72,7 +72,7 @@ class ExtendPlugin extends Plugin
      *
      * @param string $script
      */
-    protected function loadScript($script)
+    protected function loadScript(string $script): void
     {
         include $script;
     }

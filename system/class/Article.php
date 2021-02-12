@@ -13,7 +13,7 @@ abstract class Article
      * @param bool  $check_categories kontrolovat kategorie 1/0
      * @return bool
      */
-    static function checkAccess($article, $check_categories = true)
+    static function checkAccess(array $article, bool $check_categories = true): bool
     {
         // nevydany / neschvaleny clanek
         if (!$article['confirmed'] || $article['time'] > time()) {
@@ -59,7 +59,7 @@ abstract class Article
      * @param int|null $cat_id ID hlavni kategorie clanku (home1)
      * @return array|bool false pri nenalezeni
      */
-    static function find($slug, $cat_id = null)
+    static function find(string $slug, ?int $cat_id = null)
     {
         $author_user_query = User::createQuery('a.author');
 
@@ -92,15 +92,15 @@ abstract class Article
      *
      * Join aliasy: cat1, cat2, cat3
      *
-     * @param string $alias         alias tabulky clanku pouzity v dotazu
-     * @param array  $categories    pole s ID kategorii, muze byt prazdne
-     * @param string $sqlConditions SQL s vlastnimi WHERE podminkami
-     * @param bool   $doCount       vracet take pocet odpovidajicich clanku 1/0
-     * @param bool   $checkPublic   nevypisovat neverejne clanky, neni-li uzivatel prihlasen
-     * @param bool   $hideInvisible nevypisovat neviditelne clanky
+     * @param string      $alias         alias tabulky clanku pouzity v dotazu
+     * @param array       $categories    pole s ID kategorii, muze byt prazdne
+     * @param string|null $sqlConditions SQL s vlastnimi WHERE podminkami
+     * @param bool        $doCount       vracet take pocet odpovidajicich clanku 1/0
+     * @param bool        $checkPublic   nevypisovat neverejne clanky, neni-li uzivatel prihlasen
+     * @param bool        $hideInvisible nevypisovat neviditelne clanky
      * @return array joiny, where podminka, [pocet clanku]
      */
-    static function createFilter($alias, array $categories = [], $sqlConditions = null, $doCount = false, $checkPublic = true, $hideInvisible = true)
+    static function createFilter(string $alias, array $categories = [], ?string $sqlConditions = null, bool $doCount = false, bool $checkPublic = true, bool $hideInvisible = true): array
     {
         //kategorie
         if (!empty($categories)) {
@@ -158,7 +158,7 @@ abstract class Article
      * @param string|null $alias      alias tabulky clanku pouzity v dotazu
      * @return string
      */
-    static function createCategoryFilter(array $categories, $alias = null)
+    static function createCategoryFilter(array $categories, ?string $alias = null): string
     {
         if (empty($categories)) {
             return '1';
@@ -191,7 +191,7 @@ abstract class Article
      * @param int|null pocet      komentaru (null = nezobrazi se)
      * @return string
      */
-    static function renderPreview(array $art, array $userQuery, $info = true, $perex = true, $comment_count = null)
+    static function renderPreview(array $art, array $userQuery, bool $info = true, bool $perex = true, ?int $comment_count = null): ?string
     {
         // extend
         $extendOutput = Extend::buffer('article.preview', [

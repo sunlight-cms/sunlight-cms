@@ -27,7 +27,7 @@ abstract class WebRequestHandler
     /**
      * Register the request handler
      */
-    function register()
+    function register(): void
     {
         if (_env !== Core::ENV_WEB) {
             throw new \LogicException('Request handlers are meant for the web environment');
@@ -41,7 +41,7 @@ abstract class WebRequestHandler
      *
      * @param array $args
      */
-    final function onIndexPlugin(array $args)
+    final function onIndexPlugin(array $args): void
     {
         $path = (string) $args['index']['slug'];
 
@@ -56,7 +56,7 @@ abstract class WebRequestHandler
      *
      * @param array $args
      */
-    final function onIndexPrepare(array $args)
+    final function onIndexPrepare(array $args): void
     {
         $output = $this->getOutput();
 
@@ -74,7 +74,7 @@ abstract class WebRequestHandler
      *
      * @param array $args
      */
-    final function onIndexReady(array $args)
+    final function onIndexReady(array $args): void
     {
         if ($args['index']['redirect_to'] !== null) {
             // do not output if a redirect has been set up
@@ -93,12 +93,12 @@ abstract class WebRequestHandler
      * @param string[] $segments
      * @return bool
      */
-    abstract protected function shouldHandle($path, array $segments);
+    abstract protected function shouldHandle(string $path, array $segments): bool;
 
     /**
      * @return bool
      */
-    protected function shouldUseTemplate()
+    protected function shouldUseTemplate(): bool
     {
         return true;
     }
@@ -120,7 +120,7 @@ abstract class WebRequestHandler
      * @param string   $path
      * @param string[] $segments
      */
-    protected function prepareToHandleRequest($path, array $segments)
+    protected function prepareToHandleRequest(string $path, array $segments): void
     {
         if (self::$currentHandler !== null) {
             throw new \LogicException(sprintf(
@@ -147,7 +147,7 @@ abstract class WebRequestHandler
      * @param array $index
      * @param int   $code  see WebRequestHandler::OUTPUT_* constants
      */
-    protected function handleOutputCode(array &$index, $code)
+    protected function handleOutputCode(array &$index, int $code): void
     {
         switch ($code) {
             case static::OUTPUT_NOT_FOUND: $index['is_found'] = false; break;

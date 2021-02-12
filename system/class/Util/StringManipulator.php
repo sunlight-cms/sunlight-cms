@@ -13,7 +13,7 @@ abstract class StringManipulator
      * @param int    $length pozadovana delka
      * @return string
      */
-    static function cut($string, $length)
+    static function cut(string $string, int $length): string
     {
         if (mb_strlen($string) > $length) {
             return mb_substr($string, 0, $length);
@@ -25,13 +25,17 @@ abstract class StringManipulator
     /**
      * Orezat text na pozadovanou delku a pridat "...", pokud je delsi nez limit
      *
-     * @param string $string           vstupni retezec
-     * @param int    $length           pozadovana delka
-     * @param bool   $convert_entities prevest html entity zpet na originalni znaky a po orezani opet zpet
+     * @param string|null $string           vstupni retezec
+     * @param int|null    $length           pozadovana delka
+     * @param bool        $convert_entities prevest html entity zpet na originalni znaky a po orezani opet zpet
      * @return string
      */
-    static function ellipsis($string, $length, $convert_entities = true)
+    static function ellipsis(?string $string, ?int $length, bool $convert_entities = true): string
     {
+        if($string === null){
+            return '';
+        }
+
         if ($length === null || $length <= 0) {
             return $string;
         }
@@ -55,7 +59,7 @@ abstract class StringManipulator
      * @param string $string vstupni retezec
      * @return string
      */
-    static function trimExtraWhitespace($string)
+    static function trimExtraWhitespace(string $string): string
     {
         $from = ["{(\r\n){3,}}s", "{  +}s"];
         $to = ["\r\n\r\n", ' '];
@@ -72,7 +76,7 @@ abstract class StringManipulator
      * @param string|null $fallback fallback pro pripad, ze neni mozne prevest vstup na validni slug
      * @return string
      */
-    static function slugify($input, $lower = true, $extraAllowedChars = '._', $fallback = null)
+    static function slugify(string $input, bool $lower = true, ?string $extraAllowedChars = '._', ?string $fallback = null): string
     {
         $slug = Slugify::getInstance()->slugify(
             $input,
@@ -100,10 +104,10 @@ abstract class StringManipulator
      * @param bool $firstLetterLower
      * @return string
      */
-    static function toCamelCase($input, $firstLetterLower = false)
+    static function toCamelCase(string $input, bool $firstLetterLower = false): string
     {
         $output = '';
-        $parts = preg_split('{[^a-zA-Z0-9\x80-\xFF]+}', $input, null, PREG_SPLIT_NO_EMPTY);
+        $parts = preg_split('{[^a-zA-Z0-9\x80-\xFF]+}', $input, -1, PREG_SPLIT_NO_EMPTY);
 
         for ($i = 0; isset($parts[$i]); ++$i) {
             $part = mb_strtolower($parts[$i]);

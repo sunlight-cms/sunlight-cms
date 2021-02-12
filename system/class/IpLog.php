@@ -14,7 +14,7 @@ abstract class IpLog
      * @param int|null $expires doba expirace zaznamu v sekundach pro typ 8+
      * @return bool
      */
-    static function check($type, $var = null, $expires = null)
+    static function check(int $type, $var = null, $expires = null): bool
     {
         $type = (int) $type;
         if ($var !== null) {
@@ -105,7 +105,7 @@ abstract class IpLog
      * @param int   $type typ zaznamu
      * @param mixed $var  promenny argument dle typu
      */
-    static function update($type, $var = null)
+    static function update(int $type, $var = null): void
     {
         $type = (int) $type;
         if ($var !== null) {

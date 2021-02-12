@@ -10,7 +10,7 @@ abstract class UrlHelper
      * @param string $url adresa
      * @return bool
      */
-    static function isAbsolute($url)
+    static function isAbsolute(string $url): bool
     {
         if ($url === '') {
             return false;
@@ -25,7 +25,7 @@ abstract class UrlHelper
      * @param string $url adresa
      * @return bool
      */
-    static function isSafe($url)
+    static function isSafe(string $url): bool
     {
         return preg_match('{https?://}Ai', $url) || !preg_match('{[\s\0-\32a-z0-9_\-]+:}Ai', $url);
     }
@@ -37,7 +37,7 @@ abstract class UrlHelper
      * @param string $params cisty query retezec
      * @return string
      */
-    static function appendParams($url, $params)
+    static function appendParams(string $url, string $params): string
     {
         if ($params === '') {
             return $url;
@@ -54,7 +54,7 @@ abstract class UrlHelper
      * @param string $url
      * @return string
      */
-    static function addScheme($url)
+    static function addScheme(string $url): string
     {   
         if (
             $url !== ''
@@ -71,8 +71,11 @@ abstract class UrlHelper
 
     /**
      * Pridat/zmenit schema v absolutni URL, pokud jej neobsahuje nebo neni HTTPS (pouziva-li web HTTPS)
+     *
+     * @param string $url
+     * @return string
      */
-    static function ensureValidScheme($url)
+    static function ensureValidScheme(string $url): string
     {
         if ($url === '' || $url[0] === '/' || strncmp($url, './', 2) === 0) {
             // relativni URL

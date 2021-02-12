@@ -103,7 +103,7 @@ class CommentService
      * @param string|null $url          custom URL or null (= automatic)
      * @return string
      */
-    static function render($style, $home, $vars, $force_locked = false, $url = null)
+    static function render(int $style, int $home, $vars, bool $force_locked = false, ?string $url = null): string
     {
         global $_index;
 
@@ -603,7 +603,7 @@ class CommentService
      * @param array $vars
      * @return string
      */
-    static function renderForm(array $vars)
+    static function renderForm(array $vars): string
     {
         $inputs = [];
 
@@ -650,7 +650,7 @@ class CommentService
         array $post,
         array $userQuery,
         array $options
-    ) {
+    ) : string{
         $options += [
             'current_url' => '',
             'current_page' => 1,
@@ -722,7 +722,7 @@ class CommentService
      * @param bool     $get_count do not remove, return count only 1/0
      * @return int|null
      */
-    static function deleteByPluginFlag($flag, $home, $get_count = true)
+    static function deleteByPluginFlag(int $flag, ?int $home, bool $get_count = true): ?int
     {
         // condition
         $cond = "type=" . _post_plugin . " AND flag=" . $flag;
@@ -742,7 +742,7 @@ class CommentService
      * @param string $guest
      * @return string
      */
-    static function normalizeGuestName($guest)
+    static function normalizeGuestName(string $guest): string
     {
         return StringManipulator::cut(
             StringManipulator::slugify($guest, false, '._', ''),
@@ -754,7 +754,7 @@ class CommentService
      * @param string $guest
      * @return string
      */
-    static function renderGuestName($guest)
+    static function renderGuestName(string $guest): string
     {
         if ($guest === '') {
             return _lang('posts.anonym');

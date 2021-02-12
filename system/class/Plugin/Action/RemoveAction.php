@@ -11,12 +11,12 @@ use Sunlight\Util\Filesystem;
  */
 class RemoveAction extends PluginAction
 {
-    function getTitle()
+    function getTitle(): string
     {
         return _lang('admin.plugins.action.do.remove');
     }
 
-    protected function execute()
+    protected function execute(): ActionResult
     {
         if (!$this->isConfirmed()) {
             return $this->confirm(

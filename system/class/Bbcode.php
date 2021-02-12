@@ -42,7 +42,7 @@ abstract class Bbcode
      *
      * @return array
      */
-    static function getTags()
+    static function getTags(): array
     {
         self::$extended || static::extendTags();
 
@@ -55,7 +55,7 @@ abstract class Bbcode
      * @param string $s input string (HTML)
      * @return string
      */
-    static function parse($s)
+    static function parse(string $s): string
     {
         self::$extended || static::extendTags();
 
@@ -251,7 +251,7 @@ abstract class Bbcode
         return $output;
     }
 
-    protected static function processTag($tag, $arg = '', $buffer = null)
+    protected static function processTag(string $tag, string $arg = '', ?string $buffer = null): string
     {
         // load extend tag processors
         static $ext = null;
@@ -362,7 +362,7 @@ abstract class Bbcode
         return '';
     }
 
-    protected static function extendTags()
+    protected static function extendTags(): void
     {
         Extend::call('bbcode.init.tags', ['tags' => &static::$tags]);
         static::$extended = true;

@@ -32,7 +32,7 @@ class PluginArchive
      * @param PluginManager $manager
      * @param string        $path
      */
-    function __construct(PluginManager $manager, $path)
+    function __construct(PluginManager $manager, string $path)
     {
         $this->manager = $manager;
         $this->zip = new \ZipArchive();
@@ -46,7 +46,7 @@ class PluginArchive
      * @param string[]|null &$failedPlugins
      * @return string[] list of successfully extracted plugins
      */
-    function extract($merge = false, array &$failedPlugins = null)
+    function extract(bool $merge = false, ?array &$failedPlugins = null): array
     {
         $toExtract = [];
         $failedPlugins = [];
@@ -78,7 +78,7 @@ class PluginArchive
      *
      * @return bool
      */
-    function hasPlugins()
+    function hasPlugins(): bool
     {
         $this->ensureOpen();
 
@@ -88,7 +88,7 @@ class PluginArchive
     /**
      * @return array
      */
-    function getPlugins()
+    function getPlugins(): array
     {
         $this->ensureOpen();
 
@@ -98,7 +98,7 @@ class PluginArchive
     /**
      * Ensure that the archive is open
      */
-    protected function ensureOpen()
+    protected function ensureOpen(): void
     {
         if (!$this->open) {
             Filesystem::ensureFileExists($this->path);
@@ -116,7 +116,7 @@ class PluginArchive
     /**
      * Load the archive
      */
-    protected function load()
+    protected function load(): void
     {
         $this->plugins = [];
 

@@ -11,7 +11,7 @@ abstract class Environment
      *
      * @return bool
      */
-    static function isApache()
+    static function isApache(): bool
     {
         return
             mb_stripos(php_sapi_name(), 'apache') !== false
@@ -23,7 +23,7 @@ abstract class Environment
      *
      * @return bool
      */
-    static function isCli()
+    static function isCli(): bool
     {
         return PHP_SAPI === 'cli';
     }
@@ -33,7 +33,7 @@ abstract class Environment
      *
      * @return int|null cislo v bajtech nebo null (= neznamo)
      */
-    static function getUploadLimit()
+    static function getUploadLimit(): ?int
     {
         static $result = null;
         if (!isset($result)) {
@@ -60,7 +60,7 @@ abstract class Environment
      *
      * @return string HTML
      */
-    static function renderUploadLimit()
+    static function renderUploadLimit(): string
     {
         $limit = static::getUploadLimit();
         if ($limit !== null) {
@@ -76,7 +76,7 @@ abstract class Environment
      * @param string $opt nazev option
      * @return int|null cislo v bajtech nebo null (= neomezeno)
      */
-    static function phpIniLimit($opt)
+    static function phpIniLimit(string $opt): ?int
     {
         // get ini value
         $value = ini_get($opt);
@@ -116,7 +116,7 @@ abstract class Environment
      *
      * @return int|null cislo v bajtech nebo null (= neomezeno)
      */
-    static function getAvailableMemory()
+    static function getAvailableMemory(): ?int
     {
         $memlimit = static::phpIniLimit('memory_limit');
 

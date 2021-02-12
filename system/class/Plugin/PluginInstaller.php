@@ -19,7 +19,7 @@ abstract class PluginInstaller
      * @param string $camelCasedName
      * @return static
      */
-    static function load($dir, $namespace, $camelCasedName)
+    static function load(string $dir, string $namespace, string $camelCasedName): self
     {
         $fileName = "{$dir}/{$camelCasedName}Installer.php";
         $className = "{$namespace}\\{$camelCasedName}Installer";
@@ -34,7 +34,7 @@ abstract class PluginInstaller
      *
      * @return bool
      */
-    function isInstalled()
+    function isInstalled(): bool
     {
         if ($this->installed === null) {
             $this->installed = (bool) $this->verify();
@@ -49,7 +49,7 @@ abstract class PluginInstaller
      * @throws \LogicException if the plugin is already installed
      * @return bool
      */
-    function install()
+    function install(): bool
     {
         if ($this->isInstalled()) {
             throw new \LogicException('The plugin is already installed');
@@ -67,7 +67,7 @@ abstract class PluginInstaller
      * @throws \LogicException if the plugin is not installed
      * @return bool
      */
-    function uninstall()
+    function uninstall(): bool
     {
         if (!$this->isInstalled()) {
             throw new \LogicException('The plugin is not installed');
@@ -86,17 +86,17 @@ abstract class PluginInstaller
      *
      * @return bool
      */
-    abstract protected function verify();
+    abstract protected function verify(): bool;
 
     /**
      * Install the plugin
      */
-    abstract protected function doInstall();
+    abstract protected function doInstall(): void;
 
     /**
      * Uninstall the plugin
      */
-    abstract protected function doUninstall();
+    abstract protected function doUninstall(): void;
 
     /**
      * Check that all given database tables exist
@@ -105,7 +105,7 @@ abstract class PluginInstaller
      * @throws \RuntimeException if only some of the tables exist
      * @return string[] list of missing tables
      */
-    protected function checkTables(array $tables)
+    protected function checkTables(array $tables): array
     {
         $foundTables = [];
 
@@ -125,7 +125,7 @@ abstract class PluginInstaller
      * @param string[] $columns column names
      * @return string[] list of missing columns
      */
-    protected function checkColumns($table, array $columns)
+    protected function checkColumns(string $table, array $columns): array
     {
         $foundColumns = [];
 
@@ -143,7 +143,7 @@ abstract class PluginInstaller
      *
      * @param string[] $tables list of table names (with prefixes)
      */
-    protected function dropTables(array $tables)
+    protected function dropTables(array $tables): void
     {
         DB::query('DROP TABLE IF EXISTS ' . DB::idtList($tables));
     }
@@ -155,7 +155,7 @@ abstract class PluginInstaller
      * @param string|null $currentPrefix prefix that is used in the dump (null = do not replace)
      * @param string|null $newPrefix     new prefix (null = do not replace)
      */
-    protected function loadSqlDump($path, $currentPrefix = 'sunlight_', $newPrefix = _dbprefix)
+    protected function loadSqlDump(string $path, ?string $currentPrefix = 'sunlight_', ?string $newPrefix = _dbprefix)
     {
         DatabaseLoader::load(
             SqlReader::fromFile($path),

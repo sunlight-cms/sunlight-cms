@@ -23,7 +23,7 @@ class Message
      * @param string $message the message
      * @param bool   $isHtml  display the message should be rendered as html (unescaped) 1/0
      */
-    function __construct($type, $message, $isHtml = false)
+    function __construct(string $type, string $message, bool $isHtml = false)
     {
         $this->type = $type;
         $this->message = $message;
@@ -35,7 +35,7 @@ class Message
      *
      * @see Message::__construct()
      */
-    static function render($type, $message, $isHtml = false)
+    static function render(string $type, string $message, bool $isHtml = false): string
     {
         $message = new Message($type, $message, $isHtml);
 
@@ -50,7 +50,7 @@ class Message
      * @param bool        $showKeys    render $message keys as well
      * @return string
      */
-    static function renderList($messages, $description = null, $showKeys = false)
+    static function renderList(array $messages, ?string $description = null, $showKeys = false): string
     {
         $output = '';
 
@@ -83,7 +83,7 @@ class Message
      * @param bool   $isHtml  display the message should be rendered as html (unescaped) 1/0
      * @return static
      */
-    static function ok($message, $isHtml = false)
+    static function ok(string $message, bool $isHtml = false): self
     {
         return new static(static::OK, $message, $isHtml);
     }
@@ -95,7 +95,7 @@ class Message
      * @param bool   $isHtml  display the message should be rendered as html (unescaped) 1/0
      * @return static
      */
-    static function warning($message, $isHtml = false)
+    static function warning(string $message, bool $isHtml = false): self
     {
         return new static(static::WARNING, $message, $isHtml);
     }
@@ -107,7 +107,7 @@ class Message
      * @param bool   $isHtml  display the message should be rendered as html (unescaped) 1/0
      * @return static
      */
-    static function error($message, $isHtml = false)
+    static function error(string $message, bool $isHtml = false): self
     {
         return new static(static::ERROR, $message, $isHtml);
     }
@@ -117,7 +117,7 @@ class Message
      *
      * @return string
      */
-    function __toString()
+    function __toString(): string
     {
         $output = Extend::buffer('message.render', ['message' => $this]);
 
@@ -135,7 +135,7 @@ class Message
      *
      * @return string
      */
-    function getType()
+    function getType(): string
     {
         return $this->type;
     }
@@ -145,7 +145,7 @@ class Message
      *
      * @return string
      */
-    function getMessage()
+    function getMessage(): string
     {
         return $this->message;
     }
@@ -153,9 +153,9 @@ class Message
     /**
      * See if the message is HTML
      *
-     * @return string
+     * @return bool
      */
-    function isHtml()
+    function isHtml(): bool
     {
         return $this->isHtml;
     }
@@ -168,7 +168,7 @@ class Message
      * @param string $str
      * @param bool   $isHtml
      */
-    function append($str, $isHtml = false)
+    function append(string $str, bool $isHtml = false): void
     {
         if ($this->isHtml) {
             // append to current HTML

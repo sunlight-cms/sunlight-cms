@@ -29,7 +29,7 @@ class SqlReader
     /**
      * @param string $input
      */
-    function __construct($input)
+    function __construct(string $input)
     {
         $this->input = $input;
     }
@@ -40,7 +40,7 @@ class SqlReader
      * @param string $filepath
      * @return static
      */
-    static function fromFile($filepath)
+    static function fromFile(string $filepath): self
     {
         Filesystem::ensureFileExists($filepath);
 
@@ -52,7 +52,7 @@ class SqlReader
      *
      * @return string
      */
-    function getDelimiter()
+    function getDelimiter(): string
     {
         return $this->delimiter;
     }
@@ -61,9 +61,9 @@ class SqlReader
      * Set delimiter
      *
      * @param string $delimiter single character
-     * @return SqlReader
+     * @return $this
      */
-    function setDelimiter($delimiter)
+    function setDelimiter(string $delimiter): self
     {
         $this->delimiter = $delimiter;
         return $this;
@@ -82,7 +82,7 @@ class SqlReader
      * @param callable|null $callback callback(string query, array queryMap): void to invoke for each query
      * @return string[]|int array or number of queries (if callback is used)
      */
-    function read($callback = null)
+    function read(?callable $callback = null)
     {
         $query = null;
         $queries = $callback === null ? [] : 0;

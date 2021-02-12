@@ -31,7 +31,7 @@ class SystemChecker
      *
      * @return bool
      */
-    function check()
+    function check(): bool
     {
         $this->errors = [];
 
@@ -49,7 +49,7 @@ class SystemChecker
      *
      * @return bool
      */
-    function hasErrors()
+    function hasErrors(): bool
     {
         return !empty($this->errors);
     }
@@ -59,7 +59,7 @@ class SystemChecker
      *
      * @return string
      */
-    function renderErrors()
+    function renderErrors(): string
     {
         $errors_str = '';
         for($i = 0; isset($this->errors[$i]); ++$i) {
@@ -72,7 +72,7 @@ class SystemChecker
     /**
      * Check system paths
      */
-    private function checkPaths()
+    private function checkPaths(): void
     {
         for ($i = 0; isset($this->paths[$i]); ++$i) {
             $path = _root . $this->paths[$i];
@@ -93,7 +93,7 @@ class SystemChecker
     /**
      * Check installer / patch files
      */
-    private function checkInstallFiles()
+    private function checkInstallFiles(): void
     {
         if (@is_dir(_root . 'install') && !_debug) {
             $this->errors[] = [
@@ -112,7 +112,7 @@ class SystemChecker
     /**
      * Check .htaccess file
      */
-    private function checkHtaccess()
+    private function checkHtaccess(): void
     {
         // auto-generate .htaccess file if pretty urls are enabled
         // and the server is apache
@@ -143,7 +143,7 @@ class SystemChecker
      *
      * @return string
      */
-    static function generateHtaccess()
+    static function generateHtaccess(): string
     {
         $baseUrl = Url::base();
 

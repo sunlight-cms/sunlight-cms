@@ -6,17 +6,17 @@ use Kuria\Debug\Output;
 
 abstract class Response
 {
-    static function notFound()
+    static function notFound(): void
     {
         header('HTTP/1.1 404 Not Found');
     }
 
-    static function unauthorized()
+    static function unauthorized(): void
     {
         header('HTTP/1.1 401 Unauthorized');
     }
 
-    static function forbidden()
+    static function forbidden(): void
     {
         header('HTTP/1.1 403 Forbidden');
     }
@@ -27,7 +27,7 @@ abstract class Response
      * @param string $url       absolutni URL
      * @param bool   $permanent vytvorit permanentni presmerovani 1/0
      */
-    static function redirect($url, $permanent = false)
+    static function redirect(string $url, bool $permanent = false): void
     {
         header('HTTP/1.1 ' . ($permanent ? '301 Moved Permanently' : '302 Found'));
         header('Location: ' . $url);
@@ -39,7 +39,7 @@ abstract class Response
      *
      * @param string|null $url adresa pro navrat, null = {@see Response::getReturnUrl()}
      */
-    static function redirectBack($url = null)
+    static function redirectBack(?string $url = null): void
     {
         if ($url === null) {
             $url = static::getReturnUrl();
@@ -68,7 +68,7 @@ abstract class Response
      *
      * @return string
      */
-    static function getReturnUrl()
+    static function getReturnUrl(): string
     {
         $specifiedUrl = Request::get('_return', '');
         $baseUrl = Url::base();
@@ -98,7 +98,7 @@ abstract class Response
      * @param string   $filename nazev souboru
      * @param int|null $filesize velikost souboru v bajtech, je-li znama
      */
-    static function download($filename, $filesize = null)
+    static function download(string $filename, ?int $filesize = null): void
     {
         header('Content-Type: application/octet-stream');
         header(sprintf('Content-Disposition: attachment; filename="%s"', $filename));
@@ -116,7 +116,7 @@ abstract class Response
      * @param string      $filepath cesta k souboru
      * @param string|null $filename vlastni nazev souboru nebo null (= zjistit z $filepath)
      */
-    static function downloadFile($filepath, $filename = null)
+    static function downloadFile(string $filepath, ?string $filename = null): void
     {
         static::ensureHeadersNotSent();
         Filesystem::ensureFileExists($filepath);
@@ -141,7 +141,7 @@ abstract class Response
      *
      * @throws \RuntimeException pokud jiz byly hlavicky odeslany
      */
-    static function ensureHeadersNotSent()
+    static function ensureHeadersNotSent(): void
     {
         if (headers_sent($file, $line)) {
             throw new \RuntimeException(sprintf('Headers already sent (output started in "%s" on line %d)', $file, $line));

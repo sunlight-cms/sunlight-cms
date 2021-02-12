@@ -14,7 +14,7 @@ class Captcha
      *
      * @return array radek formulare
      */
-    static function init()
+    static function init(): array
     {
         static $captchaCounter = 0;
 
@@ -46,7 +46,7 @@ class Captcha
      *
      * @return bool
      */
-    static function check()
+    static function check(): bool
     {
         $result = Extend::fetch('captcha.check');
 
@@ -85,7 +85,7 @@ class Captcha
      * @param int $length
      * @return string
      */
-    static function generateCode($length)
+    static function generateCode(int $length): string
     {
         $word = strtoupper(StringGenerator::generateWordMarkov($length));
 

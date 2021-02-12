@@ -31,7 +31,7 @@ class DefaultRuleProvider implements RuleProviderInterface
      * @param string $ruleset
      * @return array
      */
-    function getRules($ruleset)
+    function getRules(string $ruleset): array
     {
         return $this->rules[$ruleset];
     }

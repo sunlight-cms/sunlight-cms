@@ -34,8 +34,9 @@ class ConstraintMap
 
     /**
      * Add all constraints from another map
+     * @param ConstraintMap $constraintMap
      */
-    function add(self $constraintMap)
+    function add(self $constraintMap): void
     {
         $this->constraintMap = array_merge_recursive($this->constraintMap, $constraintMap->constraintMap);
         $this->sourceMap = array_merge_recursive($this->sourceMap, $constraintMap->sourceMap);
@@ -47,7 +48,7 @@ class ConstraintMap
      * @param string $packageName
      * @return bool
      */
-    function has($packageName)
+    function has(string $packageName): bool
     {
         return isset($this->constraintMap[$packageName]);
     }
@@ -59,7 +60,7 @@ class ConstraintMap
      * @throws \OutOfBoundsException if no such package is known
      * @return string[]
      */
-    function getConstraints($packageName)
+    function getConstraints(string $packageName): array
     {
         if (!isset($this->constraintMap[$packageName])) {
             throw new \OutOfBoundsException(sprintf('Package "%s" is not known', $packageName));
@@ -86,7 +87,7 @@ class ConstraintMap
      * @throws \OutOfBoundsException if no such package is known
      * @return array[]
      */
-    function getSources($packageName)
+    function getSources(string $packageName): array
     {
         $sources = [];
 

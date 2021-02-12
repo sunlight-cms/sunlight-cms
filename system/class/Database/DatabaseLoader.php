@@ -12,7 +12,7 @@ abstract class DatabaseLoader
      *
      * @param array $tables
      */
-    static function dropTables(array $tables)
+    static function dropTables(array $tables): void
     {
         foreach ($tables as $table) {
             DB::query('DROP TABLE ' . DB::escIdt($table));
@@ -26,7 +26,7 @@ abstract class DatabaseLoader
      * @param string|null $currentPrefix prefix that is used in the dump (null = do not replace)
      * @param string|null $newPrefix     new prefix (null = do not replace)
      */
-    static function load(SqlReader $reader, $currentPrefix = null, $newPrefix = _dbprefix)
+    static function load(SqlReader $reader, ?string $currentPrefix = null, ?string $newPrefix = _dbprefix): void
     {
         // determine current sql mode
         $oldSqlMode = DB::queryRow('SHOW VARIABLES WHERE Variable_name=\'sql_mode\'');
@@ -68,7 +68,7 @@ abstract class DatabaseLoader
      * @param string $newPrefix
      * @return string
      */
-    static function replacePrefix($query, array $queryMap, $currentPrefix, $newPrefix)
+    static function replacePrefix(string $query, array $queryMap, string $currentPrefix, string $newPrefix): string
     {
         return Regexp::replace('{`' . preg_quote($currentPrefix) . '([a-zA-Z_]+)`}', $query, function (array $matches, $offset) use ($queryMap, $newPrefix) {
             // determine where we are in the query

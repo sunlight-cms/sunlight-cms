@@ -28,10 +28,10 @@ abstract class Regexp
      * @param callback $callback replacement callback(array matches, int offset): string
      * @param int      $limit    maximum number of replacements, -1 = unlimited
      * @param int      $offset   initial matching offset
-     * @param int      &$count   variable to store the number of replacements into
+     * @param int|null &$count   variable to store the number of replacements into
      * @return string|bool false on failure
      */
-    static function replace($pattern, $subject, $callback, $limit = -1, $offset = 0, &$count = null)
+    static function replace(string $pattern, string $subject, callable $callback, int $limit = -1, int $offset = 0, ?int &$count = null)
     {
         $count = 0;
         $matches = null;

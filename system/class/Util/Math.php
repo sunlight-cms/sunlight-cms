@@ -14,7 +14,7 @@ abstract class Math
      * @param int $max
      * @return int
      */
-    static function randomInt($min, $max)
+    static function randomInt(int $min, int $max): int
     {
         static $fc = null;
 

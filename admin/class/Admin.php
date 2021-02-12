@@ -22,7 +22,7 @@ abstract class Admin
      *
      * @return string
      */
-    static function menu()
+    static function menu(): string
     {
         global $admin_access, $admin_modules, $admin_menu_items, $admin_current_module;
 
@@ -56,7 +56,7 @@ abstract class Admin
      *
      * @return string
      */
-    static function userMenu()
+    static function userMenu(): string
     {
         $output = '<span id="usermenu">';
         if (_logged_in && _priv_administration) {
@@ -91,7 +91,7 @@ abstract class Admin
      * @param string $url
      * @return string
      */
-    static function backlink($url)
+    static function backlink(string $url): string
     {
         return '<a href="' . _e($url) . '" class="backlink">&lt; ' . _lang('global.return') . "</a>\n";
     }
@@ -104,7 +104,7 @@ abstract class Admin
      * @param string|null $icon    nazev ikony nebo null (= 'note')
      * @return string
      */
-    static function note($str, $no_gray = false, $icon = null)
+    static function note(string $str, bool $no_gray = false, ?string $icon = null): string
     {
         return "<p" . ($no_gray ? '' : ' class="note"') . "><img src='images/icons/" . (isset($icon) ? $icon : 'note') . ".png' alt='note' class='icon'>" . $str . "</p>";
     }
@@ -115,7 +115,7 @@ abstract class Admin
      * @param string $module nazev modulu
      * @return bool
      */
-    static function moduleAccess($module)
+    static function moduleAccess(string $module): bool
     {
         global $admin_modules;
 
@@ -133,7 +133,7 @@ abstract class Admin
      * @param string $alias alias tabulky s anketami vcetne tecky
      * @return string
      */
-    static function pollAccess($csep = true, $alias = 'p.')
+    static function pollAccess(bool $csep = true, string $alias = 'p.'): string
     {
         if ($csep) {
             $csep = " AND ";
@@ -150,7 +150,7 @@ abstract class Admin
      * @param string|null $alias alias tabulky clanku nebo null
      * @return string
      */
-    static function articleAccess($alias = '')
+    static function articleAccess(?string $alias = ''): string
     {
         if ($alias !== '') {
             $alias .= '.';
@@ -169,7 +169,7 @@ abstract class Admin
      * @param bool  $ucnote zobrazovat poznamku o neschvaleni 1/0
      * @return string
      */
-    static function articleEditLink($art, $ucnote = true)
+    static function articleEditLink(array $art, bool $ucnote = true): string
     {
         $output = "";
 
@@ -222,7 +222,7 @@ abstract class Admin
      * @param array  $options
      * @return string
      */
-    static function pageSelect($name, array $options)
+    static function pageSelect(string $name, array $options): string
     {
         // vychozi volby
         $options += [
@@ -317,7 +317,7 @@ abstract class Admin
      * @param int|null    $multiple    povolit vyber vice polozek (size = $multiple) nebo null (= deaktivovano)
      * @return string
      */
-    static function userSelect($name, $selected, $gcond, $class = null, $extraoption = null, $groupmode = false, $multiple = null)
+    static function userSelect(string $name, int $selected, string $gcond, ?string $class = null, ?string $extraoption = null, bool $groupmode = false, ?int $multiple = null): string
     {
         if ($class != null) {
             $class = " class='" . $class . "'";
@@ -378,7 +378,7 @@ abstract class Admin
      * @param string|null     $class
      * @return string
      */
-    static function templateLayoutSelect($name, $selected, $empty_option = null, $multiple = null, $class = null)
+    static function templateLayoutSelect(string $name, $selected, ?string $empty_option = null, ?int $multiple = null, ?string $class = null): string
     {
         $output = "<select name=\"{$name}\""
             . ($class !== null ? " class=\"{$class}\"" : '')
@@ -419,7 +419,7 @@ abstract class Admin
      * @param TemplatePlugin[]|null $templates
      * @return string
      */
-    static function templateLayoutSlotSelect($name, $selected, $empty_option = null, $class = null, array $templates = null)
+    static function templateLayoutSlotSelect(string $name, ?string $selected, ?string $empty_option = null, ?string $class = null, ?array $templates = null): string
     {
         $output = "<select name=\"{$name}\""
             . ($class !== null ? " class=\"{$class}\"" : '')
@@ -459,7 +459,7 @@ abstract class Admin
      * @param string $default
      * @return string
      */
-    static function formatHtmlColor($value, $expand = true, $default = '#000000')
+    static function formatHtmlColor(string $value, bool $expand = true, string $default = '#000000'): string
     {
         // pripravit hodnotu
         $value = trim($value);
@@ -502,7 +502,7 @@ abstract class Admin
      *
      * @param string $sql_cond SQL podminka pro vyber obrazku
      */
-    static function deleteGalleryStorage($sql_cond)
+    static function deleteGalleryStorage(string $sql_cond): void
     {
         $result = DB::query("SELECT full,(SELECT COUNT(*) FROM " . _gallery_image_table . " WHERE full=toptable.full) AS counter FROM " . _gallery_image_table . " AS toptable WHERE in_storage=1 AND (" . $sql_cond . ") HAVING counter=1");
         while($r = DB::row($result)) {
@@ -515,7 +515,7 @@ abstract class Admin
      *
      * @return bool
      */
-    static function themeIsDark()
+    static function themeIsDark(): bool
     {
         if (_adminscheme_mode == 0) {
             // vzdy svetle
@@ -538,7 +538,7 @@ abstract class Admin
      * @param bool $dark
      * @return array
      */
-    static function themeAssets($scheme, $dark)
+    static function themeAssets(int $scheme, bool $dark): array
     {
         $wysiwygAvailable = false;
 

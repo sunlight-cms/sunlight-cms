@@ -97,7 +97,7 @@ abstract class Plugin
     /**
      * @return array
      */
-    static function getTypeDefinition()
+    static function getTypeDefinition(): array
     {
         return static::$typeDefinition;
     }
@@ -107,7 +107,7 @@ abstract class Plugin
      *
      * @return bool
      */
-    static function isActive()
+    static function isActive(): bool
     {
         return Core::$pluginManager->hasInstance(get_called_class());
     }
@@ -128,7 +128,7 @@ abstract class Plugin
      *
      * @return string
      */
-    function getId()
+    function getId(): string
     {
         return $this->id;
     }
@@ -138,7 +138,7 @@ abstract class Plugin
      *
      * @return string
      */
-    function getCamelId()
+    function getCamelId(): string
     {
         return $this->camelId;
     }
@@ -146,7 +146,7 @@ abstract class Plugin
     /**
      * @return string
      */
-    function getType()
+    function getType(): string
     {
         return $this->type;
     }
@@ -154,7 +154,7 @@ abstract class Plugin
     /**
      * @return int
      */
-    function getStatus()
+    function getStatus(): int
     {
         return $this->status;
     }
@@ -164,7 +164,7 @@ abstract class Plugin
      *
      * @return bool
      */
-    function isDisabled()
+    function isDisabled(): bool
     {
         return static::STATUS_DISABLED === $this->status;
     }
@@ -174,7 +174,7 @@ abstract class Plugin
      *
      * @return bool
      */
-    function canBeDisabled()
+    function canBeDisabled(): bool
     {
         return !$this->isDisabled();
     }
@@ -184,7 +184,7 @@ abstract class Plugin
      *
      * @return bool|null null if the plugin has no installer
      */
-    function isInstalled()
+    function isInstalled(): ?bool
     {
         return $this->installed;
     }
@@ -194,7 +194,7 @@ abstract class Plugin
      *
      * @return bool
      */
-    function hasInstaller()
+    function hasInstaller(): bool
     {
         return $this->options['installer'];
     }
@@ -205,7 +205,7 @@ abstract class Plugin
      * @throws \LogicException if the plugin has no installer
      * @return PluginInstaller
      */
-    function getInstaller()
+    function getInstaller(): PluginInstaller
     {
         if (!$this->hasInstaller()) {
             throw new \LogicException('Plugin has no installer');
@@ -219,7 +219,7 @@ abstract class Plugin
      *
      * @return bool
      */
-    function needsInstallation()
+    function needsInstallation(): bool
     {
         return static::STATUS_NEEDS_INSTALLATION === $this->status;
     }
@@ -229,7 +229,7 @@ abstract class Plugin
      *
      * @return bool
      */
-    function canBeInstalled()
+    function canBeInstalled(): bool
     {
         return $this->hasInstaller() && $this->installed === false;
     }
@@ -239,7 +239,7 @@ abstract class Plugin
      *
      * @return bool
      */
-    function canBeUninstalled()
+    function canBeUninstalled(): bool
     {
         return $this->hasInstaller() && $this->installed === true;
     }
@@ -249,7 +249,7 @@ abstract class Plugin
      *
      * @return bool
      */
-    function canBeRemoved()
+    function canBeRemoved(): bool
     {
         return !$this->hasInstaller() || $this->installed === false;
     }
@@ -259,7 +259,7 @@ abstract class Plugin
      *
      * @return bool
      */
-    function hasErrors()
+    function hasErrors(): bool
     {
         return static::STATUS_HAS_ERRORS === $this->status;
     }
@@ -267,7 +267,7 @@ abstract class Plugin
     /**
      * @return string[]
      */
-    function getErrors()
+    function getErrors(): array
     {
         return $this->errors;
     }
@@ -275,7 +275,7 @@ abstract class Plugin
     /**
      * @return string[]
      */
-    function getDefinitionErrors()
+    function getDefinitionErrors(): array
     {
         return $this->definitionErrors;
     }
@@ -283,7 +283,7 @@ abstract class Plugin
     /**
      * @return string
      */
-    function getDirectory()
+    function getDirectory(): string
     {
         return $this->dir;
     }
@@ -291,7 +291,7 @@ abstract class Plugin
     /**
      * @return string
      */
-    function getFile()
+    function getFile(): string
     {
         return $this->file;
     }
@@ -300,7 +300,7 @@ abstract class Plugin
      * @param bool $absolute
      * @return string
      */
-    function getWebPath($absolute = false)
+    function getWebPath(bool $absolute = false): string
     {
         return Router::generate($this->webPath, $absolute);
     }
@@ -310,7 +310,7 @@ abstract class Plugin
      * @throws \OutOfBoundsException if the option does not exist
      * @return mixed
      */
-    function getOption($name)
+    function getOption(string $name)
     {
         if (!key_exists($name, $this->options)) {
             throw new \OutOfBoundsException(sprintf('Option "%s" does not exist', $name));
@@ -322,7 +322,7 @@ abstract class Plugin
     /**
      * @return array
      */
-    function getOptions()
+    function getOptions(): array
     {
         return $this->options;
     }
@@ -332,7 +332,7 @@ abstract class Plugin
      *
      * @return ConfigurationFile
      */
-    function getConfig()
+    function getConfig(): ConfigurationFile
     {
         if ($this->config === null) {
             $defaults = $this->getConfigDefaults();
@@ -351,7 +351,7 @@ abstract class Plugin
      * @param string $key
      * @return string
      */
-    function getConfigLabel($key)
+    function getConfigLabel(string $key): string
     {
         return $key;
     }
@@ -359,7 +359,7 @@ abstract class Plugin
     /**
      * @return array
      */
-    protected function getConfigDefaults()
+    protected function getConfigDefaults(): array
     {
         return [];
     }
@@ -367,7 +367,7 @@ abstract class Plugin
     /**
      * @return string
      */
-    protected function getConfigPath()
+    protected function getConfigPath(): string
     {
         return $this->dir . '/config.php';
     }
@@ -376,7 +376,7 @@ abstract class Plugin
      * @param string $name
      * @return PluginAction|null
      */
-    function getAction($name)
+    function getAction(string $name): ?PluginAction
     {
         switch ($name) {
             case 'info':
@@ -402,7 +402,7 @@ abstract class Plugin
      * @throws \RuntimeException if run outside of administration environment
      * @return string[] name => label
      */
-    function getActionList()
+    function getActionList(): array
     {
         if (_env !== Core::ENV_ADMIN) {
             throw new \RuntimeException('Plugin actions require administration environment');
@@ -439,7 +439,7 @@ abstract class Plugin
      *
      * @return string[] name => label
      */
-    protected function getCustomActionList()
+    protected function getCustomActionList(): array
     {
         return [];
     }

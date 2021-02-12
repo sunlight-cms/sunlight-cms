@@ -10,12 +10,12 @@ use Sunlight\Message;
  */
 class UninstallAction extends PluginAction
 {
-    function getTitle()
+    function getTitle(): string
     {
         return _lang('admin.plugins.action.do.uninstall');
     }
 
-    protected function execute()
+    protected function execute(): ActionResult
     {
         if (!$this->isConfirmed()) {
             return $this->confirm(

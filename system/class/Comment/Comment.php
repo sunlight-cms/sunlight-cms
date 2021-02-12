@@ -16,7 +16,7 @@ abstract class Comment
      * @param array $post      data prispevku (potreba data uzivatele a post.time)
      * @return bool
      */
-    static function checkAccess(array $userQuery, array $post)
+    static function checkAccess(array $userQuery, array $post): bool
     {
         // uzivatel je prihlasen
         if (_logged_in) {
@@ -47,14 +47,14 @@ abstract class Comment
      * Join aliasy: home_page, home_art, home_cat1..3, home_post
      * Sloupce: data postu + (page|cat|art)_(title|slug), xhome_subject
      *
-     * @param string $alias         alias tabulky komentaru pouzity v dotazu
-     * @param array  $types         pole s typy prispevku, ktere maji byt nacteny
-     * @param array  $homes         pole s ID domovskych polozek
-     * @param string $sqlConditions SQL s vlastnimi WHERE podminkami
-     * @param bool   $doCount       vracet take pocet odpovidajicich prispevku 1/0
+     * @param string      $alias         alias tabulky komentaru pouzity v dotazu
+     * @param array       $types         pole s typy prispevku, ktere maji byt nacteny
+     * @param array       $homes         pole s ID domovskych polozek
+     * @param string|null $sqlConditions SQL s vlastnimi WHERE podminkami
+     * @param bool        $doCount       vracet take pocet odpovidajicich prispevku 1/0
      * @return array sloupce, joiny, where podminka, [pocet]
      */
-    static function createFilter($alias, array $types = [], array $homes = [], $sqlConditions = null, $doCount = false)
+    static function createFilter(string $alias, array $types = [], array $homes = [], ?string $sqlConditions = null, bool $doCount = false): array
     {
         // sloupce
         $columns = "{$alias}.id,{$alias}.type,{$alias}.home,{$alias}.xhome,{$alias}.subject,
@@ -126,7 +126,7 @@ LEFT JOIN " . _comment_table . " home_post ON({$alias}.type=" . _post_forum_topi
      * @param bool   $nl2br   prevest odrakovani na <br>
      * @return string
      */
-    static function render($input, $smileys = true, $bbcode = true, $nl2br = true)
+    static function render(string $input, bool $smileys = true, bool $bbcode = true, bool $nl2br = true): string
     {
         // event
         Extend::call('post.parse', [

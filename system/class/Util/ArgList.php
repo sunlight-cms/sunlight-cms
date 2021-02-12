@@ -13,7 +13,7 @@ abstract class ArgList
      * @param string $input
      * @return array
      */
-    static function parse($input)
+    static function parse(string $input): array
     {
         $args = [];
 

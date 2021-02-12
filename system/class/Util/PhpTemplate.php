@@ -29,7 +29,7 @@ class PhpTemplate
     /**
      * @param string $template
      */
-    function __construct($template)
+    function __construct(string $template)
     {
         $this->template = $template;
     }
@@ -40,7 +40,7 @@ class PhpTemplate
      * @param string $path
      * @return static
      */
-    static function fromFile($path)
+    static function fromFile(string $path): self
     {
         Filesystem::ensureFileExists($path);
 
@@ -53,7 +53,7 @@ class PhpTemplate
      * @param array $vars key => value pairs
      * @return string php code
      */
-    function compile(array $vars)
+    function compile(array $vars): string
     {
         $that = $this;
 
@@ -74,7 +74,7 @@ class PhpTemplate
      * @param array       $vars    variables
      * @return string php code
      */
-    function compilePlaceholder($name, $default, array $vars)
+    function compilePlaceholder(string $name, ?string $default, array $vars): string
     {
         if (key_exists($name, $vars)) {
             // provided value
@@ -97,7 +97,7 @@ class PhpTemplate
      * @param string $default
      * @return string php code
      */
-    protected function compileDefault($default)
+    protected function compileDefault(string $default): string
     {
         if (
             $default === 'true'

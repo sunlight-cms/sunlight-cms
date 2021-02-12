@@ -12,7 +12,7 @@ abstract class Request
      * @param bool   $allow_array povolit pole 1/0
      * @return mixed
      */
-    static function get($key, $default = null, $allow_array = false)
+    static function get(string $key, $default = null, bool $allow_array = false)
     {
         if (isset($_GET[$key]) && ($allow_array || !is_array($_GET[$key]))) {
             return $_GET[$key];
@@ -29,7 +29,7 @@ abstract class Request
      * @param bool   $allow_array povolit pole 1/0
      * @return mixed
      */
-    static function post($key, $default = null, $allow_array = false)
+    static function post(string $key, $default = null, bool $allow_array = false)
     {
         if (isset($_POST[$key]) && ($allow_array || !is_array($_POST[$key]))) {
             return $_POST[$key];

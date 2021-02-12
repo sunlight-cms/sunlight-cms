@@ -31,7 +31,7 @@ class Paginator
      * @param bool        $autolast   posledni strana je vychozi strana 1/0
      * @return array
      */
-    static function render($url, $limit, $table, $conditions = '1', $linksuffix = '', $param = null, $autolast = false)
+    static function render(string $url, int $limit, $table, string $conditions = '1', string $linksuffix = '', ?string $param = null, bool $autolast = false): array
     {
         // alias tabulky
         if (is_string($table)) {
@@ -173,11 +173,11 @@ class Paginator
      * @param string $conditions kod SQL dotazu za WHERE v SQL dotazu pro zjistovani poctu polozek
      * @return int
      */
-    static function getItemPage($limit, $table, $conditions = "1")
+    static function getItemPage(int $limit, string $table, string $conditions = "1"): int
     {
         $count = DB::result(DB::query("SELECT COUNT(*) FROM " .  DB::escIdt($table) . " WHERE " . $conditions), 0);
 
-        return floor($count / $limit + 1);
+        return (int) floor($count / $limit + 1);
     }
 
     /**
@@ -187,7 +187,7 @@ class Paginator
      * @param int   $itemnumber poradove cislo polozky (poradi zacina nulou)
      * @return bool
      */
-    static function isItemInRange($pagingdata, $itemnumber)
+    static function isItemInRange(array $pagingdata, int $itemnumber): bool
     {
         return $itemnumber >= $pagingdata['first'] && $itemnumber <= $pagingdata['last'];
     }
@@ -197,7 +197,7 @@ class Paginator
      *
      * @return bool
      */
-    static function atTop()
+    static function atTop(): bool
     {
         return _pagingmode == 1 || _pagingmode == 2;
     }
@@ -207,7 +207,7 @@ class Paginator
      *
      * @return bool
      */
-    static function atBottom()
+    static function atBottom(): bool
     {
         return _pagingmode == 2 || _pagingmode == 3;
     }

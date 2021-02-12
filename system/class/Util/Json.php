@@ -20,7 +20,7 @@ abstract class Json
      * @throws \RuntimeException in case of an error
      * @return string
      */
-    static function encode($data, $pretty = true, $escapedUnicode = true, $escapedSlashes = false)
+    static function encode($data, bool $pretty = true, bool $escapedUnicode = true, bool $escapedSlashes = false): string
     {
         $options = 0;
 
@@ -54,7 +54,7 @@ abstract class Json
      * @throws \RuntimeException in case of an error
      * @return string
      */
-    static function encodeJsonp($callback, $data, $pretty = true, $escapedUnicode = true, $escapedSlashes = true)
+    static function encodeJsonp(string $callback, $data, bool $pretty = true, bool $escapedUnicode = true, bool $escapedSlashes = true): string
     {
         return sprintf('%s(%s);', $callback, static::encode($data, $pretty, $escapedUnicode, $escapedSlashes));
     }
@@ -70,7 +70,7 @@ abstract class Json
      * @throws \RuntimeException in case of an error
      * @return string[] content type, encoded data
      */
-    static function smartEncode($data, $pretty = true, $escapedUnicode = true, $escapedSlashes = false, $jsonpCallbackParam = 'callback')
+    static function smartEncode($data, bool $pretty = true, bool $escapedUnicode = true, bool $escapedSlashes = false, string $jsonpCallbackParam = 'callback'): array
     {
         if (
             $jsonpCallbackParam !== null
@@ -96,7 +96,7 @@ abstract class Json
      * @throws \RuntimeException in case of an error
      * @return mixed
      */
-    static function decode($json, $assoc = true, $bigIntAsString = false)
+    static function decode(string $json, bool $assoc = true, bool $bigIntAsString = false)
     {
         if (!$bigIntAsString || !defined('JSON_BIGINT_AS_STRING')) {
             $data = json_decode($json, $assoc);
@@ -117,7 +117,7 @@ abstract class Json
      * @param int|null $errorCode if no code is given, json_last_error() is called automatically
      * @return string
      */
-    static function getErrorMessage($errorCode = null)
+    static function getErrorMessage(?int $errorCode = null): string
     {
         if ($errorCode === null) {
             $errorCode = json_last_error();

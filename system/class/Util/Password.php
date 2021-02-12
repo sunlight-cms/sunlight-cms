@@ -31,7 +31,7 @@ class Password
      * @param string $salt
      * @param string $hash
      */
-    function __construct($algo, $iterations, $salt, $hash)
+    function __construct(string $algo, int $iterations, string $salt, string $hash)
     {
         $this->algo = $algo;
         $this->iterations = $iterations;
@@ -46,7 +46,7 @@ class Password
      * @throws \InvalidArgumentException if the value is not valid
      * @return static
      */
-    static function load($storedPassword)
+    static function load(string $storedPassword): self
     {
         $segments = explode(':', $storedPassword, 4);
 
@@ -68,7 +68,7 @@ class Password
      * @param string $plainPassword
      * @return static
      */
-    static function create($plainPassword)
+    static function create(string $plainPassword): self
     {
         $algo = static::PREFERRED_ALGO;
         $iterations = static::PBKDF2_ITERATIONS;
@@ -88,7 +88,7 @@ class Password
      * @throws \InvalidArgumentException on invalid arguments
      * @return string
      */
-    protected static function hash($algo, $iterations, $salt, $plainPassword)
+    protected static function hash(string $algo, int $iterations, string $salt, string $plainPassword): string
     {
         if (!is_string($plainPassword)) {
             throw new \InvalidArgumentException('Password must be a string');
@@ -118,7 +118,7 @@ class Password
      *
      * @return string
      */
-    function __toString()
+    function __toString(): string
     {
         return $this->build();
     }
@@ -128,7 +128,7 @@ class Password
      *
      * @return string
      */
-    function build()
+    function build(): string
     {
         return sprintf(
             '%s:%d:%s:%s',
@@ -145,7 +145,7 @@ class Password
      * @param string $plainPassword
      * @return bool
      */
-    function match($plainPassword)
+    function match(string $plainPassword): bool
     {
         if ($plainPassword === '') {
             return false;
@@ -166,7 +166,7 @@ class Password
      *
      * @return bool
      */
-    function shouldUpdate()
+    function shouldUpdate(): bool
     {
         return
             static::PREFERRED_ALGO !== $this->algo
@@ -180,7 +180,7 @@ class Password
      *
      * @param string $plainPassword
      */
-    function update($plainPassword)
+    function update(string $plainPassword): void
     {
         $this->algo = static::PREFERRED_ALGO;
         $this->iterations = max(static::PBKDF2_ITERATIONS, $this->iterations);

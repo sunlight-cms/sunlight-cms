@@ -45,7 +45,7 @@ class Config
     /**
      * Attempt to load the configuration file
      */
-    static function load()
+    static function load(): void
     {
         if (is_file(CONFIG_PATH)) {
             static::$config = require CONFIG_PATH;
@@ -57,7 +57,7 @@ class Config
      *
      * @return bool
      */
-    static function isLoaded()
+    static function isLoaded(): bool
     {
         return static::$config !== null;
     }
@@ -253,7 +253,7 @@ class Labels
      *
      * @param string $language
      */
-    static function setLanguage($language)
+    static function setLanguage(string $language): void
     {
         static::$language = $language;
     }
@@ -267,7 +267,7 @@ class Labels
      * @throws \OutOfBoundsException if the key is not valid
      * @return string
      */
-    static function get($key, array $replacements = null)
+    static function get(string $key, ?array $replacements = null): string
     {
         if (static::$language === null) {
             throw new \RuntimeException('Language not set');
@@ -291,7 +291,7 @@ class Labels
      * @param string     $key
      * @param array|null $replacements
      */
-    static function render($key, array $replacements = null)
+    static function render(string $key, ?array $replacements = null): void
     {
         echo _e(static::get($key, $replacements));
     }
@@ -313,7 +313,7 @@ class Errors
      * @param array  $errors
      * @param string $mainLabelKey
      */
-    static function render(array $errors, $mainLabelKey)
+    static function render(array $errors, string $mainLabelKey): void
     {
         if (!empty($errors)) {
             ?>
@@ -358,7 +358,7 @@ class StepRunner
      *
      * @return string|null
      */
-    function run()
+    function run(): ?string
     {
         $this->current = null;
         $submittedNumber = (int) Request::post('step_number', 0);
@@ -395,7 +395,7 @@ class StepRunner
      *
      * @return Step|null
      */
-    function getCurrent()
+    function getCurrent(): ?Step
     {
         return $this->current;
     }
@@ -405,7 +405,7 @@ class StepRunner
      *
      * @return int
      */
-    function getTotal()
+    function getTotal(): int
     {
         return count($this->steps);
     }
@@ -415,7 +415,7 @@ class StepRunner
      * @param array $vars
      * @return string
      */
-    private function runStep(Step $step, array $vars)
+    private function runStep(Step $step, array $vars): string
     {
         ob_start();
         
@@ -471,12 +471,12 @@ abstract class Step
     /**
      * @return string
      */
-    abstract function getMainLabelKey();
+    abstract function getMainLabelKey(): string;
 
     /**
      * @return string
      */
-    function getFormKeyVar()
+    function getFormKeyVar(): string
     {
         return "step_submit_{$this->number}";
     }
@@ -484,7 +484,7 @@ abstract class Step
     /**
      * @return string[]
      */
-    function getVarNames()
+    function getVarNames(): array
     {
         return [];
     }
@@ -492,7 +492,7 @@ abstract class Step
     /**
      * @param array $vars
      */
-    function setVars(array $vars)
+    function setVars(array $vars): void
     {
         $this->vars = $vars;
     }
@@ -500,7 +500,7 @@ abstract class Step
     /**
      * @param int $number
      */
-    function setNumber($number)
+    function setNumber(int $number): void
     {
         $this->number = $number;
     }
@@ -508,7 +508,7 @@ abstract class Step
     /**
      * @return int
      */
-    function getNumber()
+    function getNumber(): int
     {
         return $this->number;
     }
@@ -516,7 +516,7 @@ abstract class Step
     /**
      * @param int $submittedNumber
      */
-    function setSubmittedNumber($submittedNumber)
+    function setSubmittedNumber(int $submittedNumber): void
     {
         $this->submittedNumber = $submittedNumber;
     }
@@ -524,7 +524,7 @@ abstract class Step
     /**
      * @return int
      */
-    function getSubmittedNumber()
+    function getSubmittedNumber(): int
     {
         return $this->submittedNumber;
     }
@@ -532,7 +532,7 @@ abstract class Step
     /**
      * @return string
      */
-    function getTitle()
+    function getTitle(): string
     {
         return Labels::get($this->getMainLabelKey() . '.title');
     }
@@ -540,7 +540,7 @@ abstract class Step
     /**
      * @return bool
      */
-    function isComplete()
+    function isComplete(): bool
     {
         return
             (
@@ -554,7 +554,7 @@ abstract class Step
     /**
      * @return bool
      */
-    function hasText()
+    function hasText(): bool
     {
         return true;
     }
@@ -562,7 +562,7 @@ abstract class Step
     /**
      * @return bool
      */
-    function isSubmittable()
+    function isSubmittable(): bool
     {
         return true;
     }
@@ -570,7 +570,7 @@ abstract class Step
     /**
      * @return array
      */
-    function getErrors()
+    function getErrors(): array
     {
         return $this->errors;
     }
@@ -578,7 +578,7 @@ abstract class Step
     /**
      * Handle step submission
      */
-    function handleSubmit()
+    function handleSubmit(): void
     {
         if ($this->isSubmittable()) {
             $this->doSubmit();
@@ -589,20 +589,20 @@ abstract class Step
     /**
      * Process the step form submission
      */
-    protected function doSubmit()
+    protected function doSubmit(): void
     {
     }
 
     /**
      * Run the step
      */
-    abstract function run();
+    abstract function run(): void;
 
     /**
      * Execute some logic after the step has been completed
      * (e.g. before the next step is run)
      */
-    function postComplete()
+    function postComplete(): void
     {
     }
 
@@ -613,7 +613,7 @@ abstract class Step
      * @param mixed  $default
      * @return mixed
      */
-    protected function getConfig($key, $default = null)
+    protected function getConfig(string $key, $default = null)
     {
         if (Config::isLoaded() && key_exists($key, Config::$config)) {
             return Config::$config[$key];
@@ -628,17 +628,17 @@ abstract class Step
  */
 class ChooseLanguageStep extends Step
 {
-    function getMainLabelKey()
+    function getMainLabelKey(): string
     {
         return 'language';
     }
 
-    function getVarNames()
+    function getVarNames(): array
     {
         return ['language'];
     }
 
-    function isComplete()
+    function isComplete(): bool
     {
         return
             parent::isComplete()
@@ -646,7 +646,7 @@ class ChooseLanguageStep extends Step
             && in_array($this->vars['language'], ['cs', 'en'], true);
     }
 
-    function run()
+    function run(): void
     {
         ?>
 <ul class="big-list nobullets">
@@ -656,7 +656,7 @@ class ChooseLanguageStep extends Step
 <?php
     }
 
-    function postComplete()
+    function postComplete(): void
     {
         Labels::setLanguage($this->vars['language']);
     }
@@ -667,12 +667,12 @@ class ChooseLanguageStep extends Step
  */
 class ConfigurationStep extends Step
 {
-    function getMainLabelKey()
+    function getMainLabelKey(): string
     {
         return 'config';
     }
 
-    protected function doSubmit()
+    protected function doSubmit(): void
     {
         // load data
         $config = [
@@ -742,7 +742,7 @@ class ConfigurationStep extends Step
         }
     }
 
-    function isComplete()
+    function isComplete(): bool
     {
         return
             parent::isComplete()
@@ -751,7 +751,7 @@ class ConfigurationStep extends Step
             && DB::connect(Config::$config['db.server'], Config::$config['db.user'], Config::$config['db.password'], '', Config::$config['db.port']) === null;
     }
 
-    function run()
+    function run(): void
     {
         // prepare defaults
         $url = Url::current();
@@ -869,7 +869,7 @@ class ConfigurationStep extends Step
      * @param callable|null $mapper
      * @return array|null
      */
-    private function getArrayConfigFromString($value, $mapper = null)
+    private function getArrayConfigFromString(string $value, ?callable $mapper = null): ?array
     {
         $array = preg_split('/\s*,\s*/', $value, null, PREG_SPLIT_NO_EMPTY);
 
@@ -883,11 +883,11 @@ class ConfigurationStep extends Step
     /**
      * Get string representation of an array config option
      *
-     * @param string $key
-     * @param array  $default
+     * @param string      $key
+     * @param array|null  $default
      * @return string
      */
-    private function getArrayConfigAsString($key, array $default = null)
+    private function getArrayConfigAsString(string $key, ?array $default = null): string
     {
         if (!Config::isLoaded()) {
             $value = $default;
@@ -926,12 +926,12 @@ class ImportDatabaseStep extends Step
     /** @var array|null */
     private $existingTableNames;
 
-    function getMainLabelKey()
+    function getMainLabelKey(): string
     {
         return 'import';
     }
     
-    protected function doSubmit()
+    protected function doSubmit(): void
     {
         $overwrite = (bool) Request::post('import_overwrite', false);
         
@@ -1014,7 +1014,7 @@ class ImportDatabaseStep extends Step
         }
     }
 
-    private function getInitialContent()
+    private function getInitialContent(): array
     {
         if ($this->vars['language'] === 'cs') {
             return [
@@ -1065,14 +1065,14 @@ Now you can <a href="admin/">log in to the administration</a> (username and pass
         }
     }
 
-    function isComplete()
+    function isComplete(): bool
     {
         return
             parent::isComplete()
             && $this->isDatabaseInstalled();
     }
 
-    function run()
+    function run(): void
     {
         ?>
 <fieldset>
@@ -1130,7 +1130,7 @@ Now you can <a href="admin/">log in to the administration</a> (username and pass
     /**
      * @return bool
      */
-    private function isDatabaseInstalled()
+    private function isDatabaseInstalled(): bool
     {
         return count(array_diff($this->getTableNames(), $this->getExistingTableNames())) === 0;
     }
@@ -1138,7 +1138,7 @@ Now you can <a href="admin/">log in to the administration</a> (username and pass
     /**
      * @return string[]
      */
-    private function getExistingTableNames()
+    private function getExistingTableNames(): array
     {
         if ($this->existingTableNames === null) {
             $this->existingTableNames = DB::queryRows(
@@ -1156,7 +1156,7 @@ Now you can <a href="admin/">log in to the administration</a> (username and pass
     /**
      * @return string[]
      */
-    private function getTableNames()
+    private function getTableNames(): array
     {
         $prefix = Config::$config['db.prefix'] . '_';
 
@@ -1171,27 +1171,27 @@ Now you can <a href="admin/">log in to the administration</a> (username and pass
  */
 class CompleteStep extends Step
 {
-    function getMainLabelKey()
+    function getMainLabelKey(): string
     {
         return 'complete';
     }
 
-    function isSubmittable()
+    function isSubmittable(): bool
     {
         return false;
     }
 
-    function hasText()
+    function hasText(): bool
     {
         return false;
     }
 
-    function isComplete()
+    function isComplete(): bool
     {
         return false;
     }
 
-    function run()
+    function run(): void
     {
         ?>
 <p class="msg success"><?php Labels::render('complete.success') ?></p>

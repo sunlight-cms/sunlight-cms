@@ -37,7 +37,7 @@ class DevkitPlugin extends ExtendPlugin
         }
     }
 
-    protected function getConfigDefaults()
+    protected function getConfigDefaults(): array
     {
         return [
             'mail_log_enabled' => true,
@@ -49,7 +49,7 @@ class DevkitPlugin extends ExtendPlugin
      * @param int $line
      * @param string $dump
      */
-    public function addDump($file, $line, $dump)
+    public function addDump(string $file, int $line, string $dump): void
     {
         $this->dumps[] = [
             'file' => $file,
@@ -61,7 +61,7 @@ class DevkitPlugin extends ExtendPlugin
     /**
      * Handle database query
      */
-    public function onDbQuery()
+    public function onDbQuery(): void
     {
         $this->sqlLogger->setTimer();
     }
@@ -71,7 +71,7 @@ class DevkitPlugin extends ExtendPlugin
      *
      * @param array $args
      */
-    public function onDbQueryPost(array $args)
+    public function onDbQueryPost(array $args): void
     {
         $this->sqlLogger->log($args['sql']);
     }
@@ -81,7 +81,7 @@ class DevkitPlugin extends ExtendPlugin
      *
      * @param array $args
      */
-    public function onMissingLocalization(array $args)
+    public function onMissingLocalization(array $args): void
     {
         $this->missingLocalizationLogger->log($args['dict'], $args['key']);
     }
@@ -91,7 +91,7 @@ class DevkitPlugin extends ExtendPlugin
      *
      * @param array $args
      */
-    public function onMail(array $args)
+    public function onMail(array $args): void
     {
         if (!$this->getConfig()->offsetGet('mail_log_enabled')) {
             return;
@@ -125,7 +125,7 @@ ENTRY
      *
      * @param array $args
      */
-    public function onHead(array $args)
+    public function onHead(array $args): void
     {
         $args['css'][] = $this->getWebPath() . '/Resources/devkit.css';
         $args['js'][] = $this->getWebPath() . '/Resources/devkit.js';
@@ -136,7 +136,7 @@ ENTRY
      *
      * @param array $args
      */
-    public function onEnd(array $args)
+    public function onEnd(array $args): void
     {
         $toolbar = new Component\ToolbarRenderer(
             $this->sqlLogger->getLog(),

@@ -18,7 +18,7 @@ abstract class Action
      * @param bool $catchExceptions
      * @return $this
      */
-    function setCatchExceptions($catchExceptions)
+    function setCatchExceptions(bool $catchExceptions): self
     {
         $this->catchExceptions = $catchExceptions;
 
@@ -31,7 +31,7 @@ abstract class Action
      * @param bool $renderExceptions
      * @return $this
      */
-    function setRenderExceptions($renderExceptions)
+    function setRenderExceptions(bool $renderExceptions): self
     {
         $this->renderExceptions = $renderExceptions;
 
@@ -43,7 +43,7 @@ abstract class Action
      *
      * @return ActionResult
      */
-    function run()
+    function run(): ActionResult
     {
         try {
             $result = $this->execute();
@@ -74,5 +74,5 @@ abstract class Action
      *
      * @return ActionResult
      */
-    abstract protected function execute();
+    abstract protected function execute(): ActionResult;
 }

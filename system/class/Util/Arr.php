@@ -12,7 +12,7 @@ abstract class Arr
      * @param bool  $preserve_keys zachovat ciselnou radu klicu 1/0
      * @return array
      */
-    static function removeValue($array, $value_remove, $preserve_keys = false)
+    static function removeValue(array $array, $value_remove, bool $preserve_keys = false): array
     {
         $output = [];
         if (is_array($array)) {
@@ -39,7 +39,7 @@ abstract class Arr
      * @param bool     $exceptionOnMissing vyvolat vyjimku pri chybejicim klici
      * @return array
      */
-    static function getSubset(array $array, array $keys, $prefixLen = null, $exceptionOnMissing = true)
+    static function getSubset(array $array, array $keys, ?int $prefixLen = null, bool $exceptionOnMissing = true): array
     {
         $out = [];
         foreach ($keys as $key) {
@@ -64,7 +64,7 @@ abstract class Arr
      * @param array       $excludeList pole s klici, ktere maji byt VYRAZENY
      * @return array
      */
-    static function filterKeys(array $array, $include = null, $exclude = null, array $excludeList = [])
+    static function filterKeys(array $array, ?string $include = null, ?string $exclude = null, array $excludeList = []): array
     {
         if ($include !== null) {
             $includeLength = strlen($include);

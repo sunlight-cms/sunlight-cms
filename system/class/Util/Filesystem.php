@@ -14,7 +14,7 @@ abstract class Filesystem
      *
      * @return TemporaryFile
      */
-    static function createTmpFile()
+    static function createTmpFile(): TemporaryFile
     {
         return new TemporaryFile(null, _root . 'system/tmp');
     }
@@ -25,7 +25,7 @@ abstract class Filesystem
      * @param string $fname nazev souboru
      * @return bool
      */
-    static function isSafeFile($fname)
+    static function isSafeFile(string $fname): bool
     {
         if (preg_match('{\.([^.]+)(?:\..+)?$}Ds', trim($fname), $match)) {
             return !in_array(mb_strtolower($match[1]), Core::$dangerousServerSideExt, true);
@@ -40,7 +40,7 @@ abstract class Filesystem
      * @param string $filepath
      * @throws \RuntimeException pokud soubor neexistuje
      */
-    static function ensureFileExists($filepath)
+    static function ensureFileExists(string $filepath): void
     {
         if (!is_file($filepath)) {
             throw new \RuntimeException(sprintf('File "%s" does not exist', $filepath));
@@ -53,7 +53,7 @@ abstract class Filesystem
      * @param string $path
      * @return string
      */
-    static function normalizePath($path)
+    static function normalizePath(string $path): string
     {
         return strtr($path, '\\', '/');
     }
@@ -65,7 +65,7 @@ abstract class Filesystem
      * @param string $path
      * @return string
      */
-    static function normalizeWithBasePath($basePath, $path)
+    static function normalizeWithBasePath(string $basePath, string $path): string
     {
         $basePath = static::normalizePath($basePath);
         $path = static::normalizePath($path);
@@ -85,7 +85,7 @@ abstract class Filesystem
      * @param string $path
      * @return bool
      */
-    static function isAbsolutePath($path)
+    static function isAbsolutePath(string $path): bool
     {
         return
             isset($path[0]) && ($path[0] === '/' || $path[0] === '\\')
@@ -104,7 +104,7 @@ abstract class Filesystem
      * @param bool   $allowLeadingSlash allow slash at the beginning of the resulting path
      * @return string
      */
-    static function parsePath($path, $isFile = false, $allowLeadingSlash = false)
+    static function parsePath(string $path, bool $isFile = false, bool $allowLeadingSlash = false): string
     {
         $segments = explode('/', static::normalizePath($path));
         $parentJumps = 0;
@@ -150,9 +150,9 @@ abstract class Filesystem
      * Create directory iterator
      *
      * @param string $path
-     * @return \FilesystemIterator|\SplFileInfo[]
+     * @return \FilesystemIterator
      */
-    static function createIterator($path)
+    static function createIterator(string $path): \FilesystemIterator
     {
         return new \FilesystemIterator(
             $path,
@@ -167,9 +167,9 @@ abstract class Filesystem
      *
      * @param string $path
      * @param int    $flags
-     * @return \RecursiveIteratorIterator|\SplFileInfo[]
+     * @return \RecursiveIteratorIterator
      */
-    static function createRecursiveIterator($path, $flags = \RecursiveIteratorIterator::SELF_FIRST)
+    static function createRecursiveIterator(string $path, int $flags = \RecursiveIteratorIterator::SELF_FIRST): \RecursiveIteratorIterator
     {
         $directoryIterator = new \RecursiveDirectoryIterator(
             $path,
@@ -190,7 +190,7 @@ abstract class Filesystem
      * @param string $path path to the directory
      * @return bool
      */
-    static function isDirectoryEmpty($path)
+    static function isDirectoryEmpty(string $path): bool
     {
         $isEmpty = true;
         
@@ -214,7 +214,7 @@ abstract class Filesystem
      * @param array|null $failedPaths  an array variable to put failed paths to (null = do not track)
      * @return bool
      */
-    static function checkDirectory($path, $checkWrite = true, &$failedPaths = null)
+    static function checkDirectory(string $path, bool $checkWrite = true, ?array &$failedPaths = null): bool
     {
         $iterator = static::createRecursiveIterator($path);
 
@@ -242,7 +242,7 @@ abstract class Filesystem
      * @param string $path path to the directory
      * @return int total size in bytes
      */
-    static function getDirectorySize($path)
+    static function getDirectorySize(string $path): int
     {
         $totalSize = 0;
 
@@ -266,12 +266,12 @@ abstract class Filesystem
      * file_callback (-)    callback(\SplFileInfo file): bool - decide, whether to remove a file or not
      *                      (this option is active only if files_only = 1)
      *
-     * @param string $path       path to the directory
-     * @param array  $options    option array (see above)
-     * @param string $failedPath variable that will contain a path that could not be removed
+     * @param string      $path       path to the directory
+     * @param array       $options    option array (see above)
+     * @param string|null $failedPath variable that will contain a path that could not be removed
      * @return bool
      */
-    static function purgeDirectory($path, array $options = [], &$failedPath = null)
+    static function purgeDirectory(string $path, array $options = [], ?string &$failedPath = null): bool
     {
         $options += [
             'keep_dir' => false,
@@ -322,7 +322,7 @@ abstract class Filesystem
      *
      * @param string $path
      */
-    static function denyAccessToDirectory($path)
+    static function denyAccessToDirectory(string $path): void
     {
         file_put_contents($path . '/.htaccess', <<<HTACCESS
 <IfModule mod_authz_core.c>

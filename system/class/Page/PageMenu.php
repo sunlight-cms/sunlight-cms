@@ -14,10 +14,10 @@ abstract class PageMenu
      * @param int|null    $activeId     ID aktivni stranky nebo null
      * @param string|null $rootClass    CSS trida korenoveho kontejneru
      * @param string|null $pageEvent    nazev extend udalosti pro jednotlive stranky
-     * @param string      $menuType     identifikator typu menu
+     * @param string|null $menuType     identifikator typu menu
      * @return string
      */
-    static function render(array $flatPageTree, $activeId = null, $rootClass = null, $pageEvent = null, $menuType = null)
+    static function render(array $flatPageTree, ?int $activeId = null, ?string $rootClass = null, ?string $pageEvent = null, ?string $menuType = null): string
     {
         if (empty($flatPageTree)) {
             return '';
@@ -133,7 +133,7 @@ abstract class PageMenu
      *
      * @return array
      */
-    static function getRequiredExtraColumns()
+    static function getRequiredExtraColumns(): array
     {
         $extraColumns = ['link_url', 'link_new_window'];
 

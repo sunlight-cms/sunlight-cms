@@ -46,7 +46,7 @@ class Backup
     /**
      * @param string $path
      */
-    function __construct($path)
+    function __construct(string $path)
     {
         $this->zip = new \ZipArchive();
         $this->path = $path;
@@ -69,7 +69,7 @@ class Backup
      *
      * @throws \RuntimeException on failure
      */
-    function create()
+    function create(): void
     {
         if (($errorCode = $this->zip->open($this->path, \ZipArchive::CREATE | \ZipArchive::OVERWRITE)) !== true) {
             throw new \RuntimeException(sprintf('Could not create ZIP archive at "%s" (code %d)', $this->path, $errorCode));
@@ -84,7 +84,7 @@ class Backup
      *
      * @throws \RuntimeException if the file is not found or is not a valid ZIP file
      */
-    function open()
+    function open(): void
     {
         Filesystem::ensureFileExists($this->path);
 
@@ -99,7 +99,7 @@ class Backup
     /**
      * Close the backup
      */
-    function close()
+    function close(): void
     {
         if ($this->new) {
             $this->setMetaData();
@@ -114,7 +114,7 @@ class Backup
     /**
      * Revert the backup to its original state
      */
-    function revert()
+    function revert(): void
     {
         $this->zip->unchangeAll();
     }
@@ -122,7 +122,7 @@ class Backup
     /**
      * Revert the backup to its original state and close it
      */
-    function revertAndClose()
+    function revertAndClose(): void
     {
         $this->revert();
         $this->close();
@@ -131,7 +131,7 @@ class Backup
     /**
      * Discard the backup
      */
-    function discard()
+    function discard(): void
     {
         if ($this->open) {
             $this->revertAndClose();
@@ -145,7 +145,7 @@ class Backup
     /**
      * Discard temporary files
      */
-    protected function discardTemporaryFiles()
+    protected function discardTemporaryFiles(): void
     {
         foreach ($this->temporaryFiles as $tmpFile) {
             $tmpFile->discard();
@@ -159,7 +159,7 @@ class Backup
      *
      * @return \ZipArchive
      */
-    function getArchive()
+    function getArchive(): \ZipArchive
     {
         $this->ensureOpenAndNew();
 
@@ -171,7 +171,7 @@ class Backup
      *
      * @return bool
      */
-    function isOpen()
+    function isOpen(): bool
     {
         return $this->open;
     }
@@ -181,7 +181,7 @@ class Backup
      *
      * @return bool
      */
-    function isNew()
+    function isNew(): bool
     {
         return $this->new;
     }
@@ -193,7 +193,7 @@ class Backup
      * @param callable|null $filter                callback(data_path): bool
      * @param bool          $addRootFileToFileList automatically add root files to the file list 1/0
      */
-    function addPath($path, $filter = null, $addRootFileToFileList = true)
+    function addPath(string $path, ?callable $filter = null, bool $addRootFileToFileList = true)
     {
         $realPath = _root . $path;
 
@@ -212,7 +212,7 @@ class Backup
      * @param string        $path   relative to the system root
      * @param callable|null $filter callback(data_path): bool
      */
-    function addDirectory($path, $filter = null)
+    function addDirectory(string $path, ?callable $filter = null): void
     {
         $this->ensureOpenAndNew();
 
@@ -249,7 +249,7 @@ class Backup
      *
      * @param string $dataPath path within the backup's data directory (e.g. "foo/bar")
      */
-    function addEmptyDirectory($dataPath)
+    function addEmptyDirectory(string $dataPath): void
     {
         $this->ensureOpenAndNew();
 
@@ -264,7 +264,7 @@ class Backup
      * @param callable|null $filter                callback(data_path): bool
      * @param bool          $addRootFileToFileList automatically add root files to the file list 1/0
      */
-    function addFile($dataPath, $realPath, $filter = null, $addRootFileToFileList = true)
+    function addFile(string $dataPath, string $realPath, ?callable $filter = null, bool $addRootFileToFileList = true): void
     {
         $this->ensureOpenAndNew();
 
@@ -288,7 +288,7 @@ class Backup
      * @param string $data                  the file's contents
      * @param bool   $addRootFileToFileList automatically add root files to the file list 1/0
      */
-    function addFileFromString($dataPath, $data, $addRootFileToFileList = true)
+    function addFileFromString(string $dataPath, string $data, bool $addRootFileToFileList = true): void
     {
         $this->ensureOpenAndNew();
 
@@ -304,7 +304,7 @@ class Backup
      *
      * @return bool
      */
-    function hasDatabaseDump()
+    function hasDatabaseDump(): bool
     {
         $this->ensureOpenAndNotNew();
 
@@ -328,7 +328,7 @@ class Backup
      *
      * @return int|null
      */
-    function getDatabaseDumpSize()
+    function getDatabaseDumpSize(): ?int
     {
         $this->ensureOpenAndNotNew();
 
@@ -343,7 +343,7 @@ class Backup
      * @param TemporaryFile $databaseDump
      * @param string        $prefix
      */
-    function addDatabaseDump(TemporaryFile $databaseDump, $prefix)
+    function addDatabaseDump(TemporaryFile $databaseDump, string $prefix): void
     {
         $this->ensureOpenAndNew();
 
@@ -355,10 +355,10 @@ class Backup
     /**
      * Extract one or more files into the given directory path
      *
-     * @param $files
-     * @param $targetPath
+     * @param array|string $files
+     * @param string       $targetPath
      */
-    function extractFiles($files, $targetPath)
+    function extractFiles($files, string $targetPath): void
     {
         $this->ensureOpenAndNotNew();
 
@@ -380,7 +380,7 @@ class Backup
      * @param array|string $directories one or more archive paths relative to the data directory (e.g. "upload")
      * @param string       $targetPath  path where to extract the directories to
      */
-    function extractDirectories($directories, $targetPath)
+    function extractDirectories($directories, string $targetPath): void
     {
         $this->ensureOpenAndNotNew();
 
@@ -394,8 +394,10 @@ class Backup
 
     /**
      * Get total size of files and directories (excluding the database dump)
+     *
+     * @return int
      */
-    function getTotalDataSize()
+    function getTotalDataSize(): int
     {
         $totalSize = 0;
         $dataPathPrefix = $this->dataPathToArchivePath('');
@@ -413,11 +415,11 @@ class Backup
     }
 
     /**
-     * @param string $key key to get from the metadata (null = all)
+     * @param string|null $key key to get from the metadata (null = all)
      * @throws \OutOfBoundsException if the key is invalid
      * @return mixed
      */
-    function getMetaData($key = null)
+    function getMetaData(?string $key = null)
     {
         $this->ensureOpenAndNotNew();
         $this->ensureMetaDataLoaded();
@@ -436,21 +438,21 @@ class Backup
     /**
      * @return array
      */
-    function getMetaDataErrors()
+    function getMetaDataErrors(): array
     {
         $this->ensureMetaDataLoaded();
 
         return $this->metadataErrors;
     }
 
-    protected function ensureMetaDataLoaded()
+    protected function ensureMetaDataLoaded(): void
     {
         if ($this->metadataCache === null) {
             $this->loadMetaData();
         }
     }
 
-    protected function loadMetaData()
+    protected function loadMetaData(): void
     {
         $stream = $this->zip->getStream(static::METADATA_PATH);
 
@@ -467,7 +469,7 @@ class Backup
      * @param array|null $errors
      * @return bool
      */
-    protected function validateMetaData(array &$metaData, array &$errors = null)
+    protected function validateMetaData(array &$metaData, ?array &$errors = null): bool
     {
         $optionSet = new OptionSet([
             'system_version' => ['type' => 'string', 'required' => true, 'normalizer' => function ($value) {
@@ -488,7 +490,7 @@ class Backup
         return $optionSet->process($metaData, null, $errors);
     }
 
-    protected function setMetaData()
+    protected function setMetaData(): void
     {
         $metaData = [
             'system_version' => Core::VERSION,
@@ -506,7 +508,7 @@ class Backup
      *
      * @throws \LogicException if the archive is not open or not new
      */
-    protected function ensureOpenAndNew()
+    protected function ensureOpenAndNew(): void
     {
         if (!$this->open) {
             throw new \LogicException('No archive has been opened');
@@ -521,7 +523,7 @@ class Backup
      *
      * @throws \LogicException if the archive is not open or not new
      */
-    protected function ensureOpenAndNotNew()
+    protected function ensureOpenAndNotNew(): void
     {
         if (!$this->open) {
             throw new \LogicException('No archive has been opened');
@@ -535,7 +537,7 @@ class Backup
      * @param string $dataPath
      * @return string
      */
-    protected function dataPathToArchivePath($dataPath)
+    protected function dataPathToArchivePath(string $dataPath): string
     {
         return static::DATA_PATH . '/' . $dataPath;
     }

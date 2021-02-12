@@ -10,12 +10,12 @@ use Sunlight\Message;
  */
 class InstallAction extends PluginAction
 {
-    function getTitle()
+    function getTitle(): string
     {
         return _lang('admin.plugins.action.do.install');
     }
 
-    protected function execute()
+    protected function execute(): ActionResult
     {
         if (!$this->isConfirmed()) {
             return $this->confirm(

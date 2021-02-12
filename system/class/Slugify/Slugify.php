@@ -48,7 +48,7 @@ class Slugify
         ],
     ];
 
-    protected function __construct(array $options = [], RuleProviderInterface $provider = null)
+    protected function __construct(array $options = [], ?RuleProviderInterface $provider = null)
     {
         $this->options = array_merge($this->options, $options);
         $this->provider = $provider ? $provider : new DefaultRuleProvider();
@@ -61,7 +61,7 @@ class Slugify
     /**
      * @return self
      */
-    public static function getInstance()
+    public static function getInstance(): self
     {
         if (self::$inst === null) {
             self::$inst = new self();
@@ -72,12 +72,12 @@ class Slugify
 
     /**
      * @param string $string
-     * @param string|array|null $options
+     * @param array|null $options
      * @return string
      */
-    function slugify($string, $options = null)
+    function slugify(string $string, ?array $options = null): string
     {
-        $options = array_merge($this->options, (array) $options);
+        $options = array_merge($this->options, $options);
 
         // Add a custom ruleset without touching the default rules
         if (isset($options['ruleset'])) {
@@ -104,7 +104,7 @@ class Slugify
      * @param string $character character
      * @param string $replacement replacement character
      */
-    function addRule($character, $replacement)
+    function addRule(string $character, string $replacement): void
     {
         $this->rules[$character] = $replacement;
     }
@@ -112,7 +112,7 @@ class Slugify
     /**
      * @param string[] $rules
      */
-    function addRules(array $rules)
+    function addRules(array $rules): void
     {
         foreach ($rules as $character => $replacement) {
             $this->addRule($character, $replacement);
@@ -122,7 +122,7 @@ class Slugify
     /**
      * @param string $ruleSet
      */
-    function activateRuleSet($ruleSet)
+    function activateRuleSet(string $ruleSet): void
     {
         $this->addRules($this->provider->getRules($ruleSet));
     }
