@@ -19,7 +19,7 @@ abstract class User
      *
      * @return array
      */
-    static function listPrivileges()
+    static function listPrivileges(): array
     {
         static $extended = false;
         static $privileges = [
@@ -83,7 +83,7 @@ abstract class User
      * @param string $name nazev prava
      * @return bool
      */
-    static function hasPrivilege($name)
+    static function hasPrivilege(string $name): bool
     {
         $constant = '_priv_' . $name;
 
@@ -97,7 +97,7 @@ abstract class User
      * @param int $targetUserLevel uroven skupiny ciloveho uzivatele
      * @return bool
      */
-    static function checkLevel($targetUserId, $targetUserLevel)
+    static function checkLevel(int $targetUserId, int $targetUserLevel): bool
     {
         return _logged_in && (_priv_level > $targetUserLevel || $targetUserId == _user_id);
     }
@@ -109,7 +109,7 @@ abstract class User
      * @param int|null $level  minimalni pozadovana uroven
      * @return bool
      */
-    static function checkPublicAccess($public, $level = 0)
+    static function checkPublicAccess(bool $public, ?int $level = 0): bool
     {
         return (_logged_in || $public) && _priv_level >= $level;
     }
@@ -123,7 +123,7 @@ abstract class User
      * @throws \RuntimeException nejsou-li prava
      * @return string
      */
-    static function getHomeDir($getTopmost = false)
+    static function getHomeDir(bool $getTopmost = false): string
     {
         if (!_priv_fileaccess) {
             throw new \RuntimeException('User has no filesystem access');
@@ -147,10 +147,10 @@ abstract class User
     /**
      * Normalizovat cestu k adresari dle prav uzivatele
      *
-     * @param string $dirPath
+     * @param string|null $dirPath
      * @return string cesta s lomitkem na konci
      */
-    static function normalizeDir($dirPath)
+    static function normalizeDir(?string $dirPath): string
     {
         if (
             $dirPath !== null
@@ -172,7 +172,7 @@ abstract class User
      * @param bool   $getPath vratit zpracovanou cestu v pripade uspechu 1/0
      * @return bool|string true / false nebo cesta, je-li kontrola uspesna a $getPath je true
      */
-    static function checkPath($path, $isFile, $getPath = false)
+    static function checkPath(string $path, bool $isFile, bool $getPath = false)
     {
         if (_priv_fileaccess) {
             $path = Filesystem::parsePath($path, $isFile);
@@ -197,7 +197,7 @@ abstract class User
      * @param string $newPath
      * @return bool
      */
-    static function moveUploadedFile($path, $newPath)
+    static function moveUploadedFile(string $path, string $newPath): bool
     {
         $handled = false;
 
@@ -219,7 +219,7 @@ abstract class User
      * @param string $filename
      * @return bool
      */
-    static function checkFilename($filename)
+    static function checkFilename(string $filename): bool
     {
         return
             _priv_fileaccess
@@ -239,7 +239,7 @@ abstract class User
      * @throws ContentPrivilegeException
      * @return string
      */
-    static function filterContent($content, $isHtml = true, $hasHcm = true)
+    static function filterContent(string $content, bool $isHtml = true, bool $hasHcm = true): string
     {
         if ($hasHcm) {
             if (!$isHtml) {
@@ -277,7 +277,7 @@ abstract class User
      * @param mixed       $emptyValue       hodnota, ktera reprezentuje neurceneho uzivatele
      * @return array viz popis funkce
      */
-    static function createQuery($joinUserIdColumn = null, $prefix = 'user_', $alias = 'u', $emptyValue = -1)
+    static function createQuery(?string $joinUserIdColumn = null, string $prefix = 'user_', string $alias = 'u', $emptyValue = -1): array
     {
         $groupAlias = "{$alias}g";
 
@@ -338,7 +338,7 @@ abstract class User
      * @param int $id id uzivatele
      * @return bool
      */
-    static function delete($id)
+    static function delete(int $id): bool
     {
         // nacist jmeno
         if ($id == _super_admin_id) {
@@ -380,7 +380,7 @@ abstract class User
      * @param string $storedPassword heslo ulozene v databazi
      * @return string
      */
-    static function getAuthHash($storedPassword)
+    static function getAuthHash(string $storedPassword): string
     {
         return hash('sha512', $storedPassword);
     }
@@ -393,7 +393,7 @@ abstract class User
      * @param string $email
      * @param bool   $persistent
      */
-    static function login($id, $storedPassword, $email, $persistent = false)
+    static function login(int $id, string $storedPassword, string $email, bool $persistent = false): void
     {
         $authHash = static::getAuthHash($storedPassword);
 
@@ -423,7 +423,7 @@ abstract class User
      * @param bool        $embedded nevykreslovat <form> tag 1/0
      * @return string
      */
-    static function renderLoginForm($title = false, $required = false, $return = null, $embedded = false)
+    static function renderLoginForm(bool $title = false, bool $required = false, ?string $return = null, bool $embedded = false): string
     {
         $output = '';
 
@@ -481,7 +481,7 @@ abstract class User
             if ($form_url->has('login_form_result')) {
                 $form_url->remove('login_form_result');
             }
-            $form_append .= "<input type='hidden' name='login_form_url' value='" . _e($form_url) . "'>\n";
+            $form_append .= "<input type='hidden' name='login_form_url' value='" . _e($form_url->generate(false)) . "'>\n";
 
             // kod formulare
             $output .= Form::render(
@@ -546,7 +546,7 @@ abstract class User
      * @param int $code
      * @return Message|null
      */
-    static function getLoginMessage($code)
+    static function getLoginMessage(int $code): ?Message
     {
         switch ($code) {
             case 0:
@@ -576,7 +576,7 @@ abstract class User
      * @param bool   $persistent
      * @return int kod {@see User::getLoginMessage())
      */
-    static function submitLogin($username, $plainPassword, $persistent = false)
+    static function submitLogin(string $username, string $plainPassword, bool $persistent = false): int
     {
         // jiz prihlasen?
         if (_logged_in) {
@@ -676,7 +676,7 @@ abstract class User
      * @param string $email
      * @return string
      */
-    static function getPersistentLoginHash($id, $authHash, $email)
+    static function getPersistentLoginHash(int $id, string $authHash, string $email): string
     {
         return hash_hmac(
             'sha512',
@@ -691,7 +691,7 @@ abstract class User
      * @param bool $destroy uplne znicit session
      * @return bool
      */
-    static function logout($destroy = true)
+    static function logout(bool $destroy = true): bool
     {
         if (!_logged_in) {
             return false;
@@ -723,7 +723,7 @@ abstract class User
      *
      * @return int
      */
-    static function getUnreadPmCount()
+    static function getUnreadPmCount(): int
     {
         static $result = null;
 
@@ -731,7 +731,7 @@ abstract class User
             $result = DB::count(_pm_table, "(receiver=" . _user_id . " AND receiver_deleted=0 AND receiver_readtime<update_time) OR (sender=" . _user_id . " AND sender_deleted=0 AND sender_readtime<update_time)");
         }
 
-        return $result;
+        return (int) $result;
     }
 
     /**
@@ -749,7 +749,7 @@ abstract class User
      * @param array $options moznosti vykresleni, viz popis funkce
      * @return string|null HTML kod s obrazkem nebo URL
      */
-    static function renderAvatar(array $data, array $options = [])
+    static function renderAvatar(array $data, array $options = []): ?string
     {
         // vychozi nastaveni
         $options += [
@@ -820,7 +820,7 @@ abstract class User
      * @param array $options   nastaveni vykresleni, viz {@see User::renderAvatar()}
      * @return string
      */
-    static function renderAvatarFromQuery(array $userQuery, array $row, array $options = [])
+    static function renderAvatarFromQuery(array $userQuery, array $row, array $options = []): string
     {
         $userData = Arr::getSubset($row, $userQuery['columns'], strlen($userQuery['prefix']));
 
@@ -836,7 +836,7 @@ abstract class User
      * @param bool         $do_repeat     odeslat na cilovou adresu 1/0
      * @return string
      */
-    static function renderPostRepeatForm($allow_login = true, Message $login_message = null, $target_url = null, $do_repeat = false)
+    static function renderPostRepeatForm(bool $allow_login = true, ?Message $login_message = null, ?string $target_url = null, bool $do_repeat = false): string
     {
         if ($target_url === null) {
             $target_url = $_SERVER['REQUEST_URI'];

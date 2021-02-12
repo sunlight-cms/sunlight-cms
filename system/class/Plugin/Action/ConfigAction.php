@@ -12,12 +12,12 @@ use Sunlight\Xsrf;
  */
 class ConfigAction extends PluginAction
 {
-    function getTitle()
+    function getTitle(): string
     {
         return _lang('admin.plugins.action.do.config');
     }
 
-    protected function execute()
+    protected function execute(): ActionResult
     {
         $messages = [];
 
@@ -76,7 +76,7 @@ class ConfigAction extends PluginAction
     /**
      * @return array
      */
-    protected function getFields()
+    protected function getFields(): array
     {
         $fields = [];
 
@@ -108,7 +108,7 @@ class ConfigAction extends PluginAction
      * @param array $field
      * @param mixed $value
      */
-    protected function mapSubmittedValue($key, array $field, $value)
+    protected function mapSubmittedValue(string $key, array $field, $value): void
     {
         $config = $this->plugin->getConfig();
 

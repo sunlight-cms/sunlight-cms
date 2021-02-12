@@ -39,7 +39,12 @@ class PageTreeFilter implements TreeFilterInterface
         $this->sql = $this->compileSql($options);
     }
 
-    function filterNode(array $node, TreeReader $reader)
+    /**
+     * @param array      $node
+     * @param TreeReader $reader
+     * @return bool
+     */
+    function filterNode(array $node, TreeReader $reader): bool
     {
         return
             /* visibility */        $node['visible']
@@ -62,7 +67,13 @@ class PageTreeFilter implements TreeFilterInterface
                                     );
     }
 
-    function acceptInvalidNodeWithValidChild(array $invalidNode, array $validChildNode, TreeReader $reader)
+    /**
+     * @param array      $invalidNode
+     * @param array      $validChildNode
+     * @param TreeReader $reader
+     * @return bool
+     */
+    function acceptInvalidNodeWithValidChild(array $invalidNode, array $validChildNode, TreeReader $reader): bool
     {
         if (
             ($this->options['ord_start'] !== null || $this->options['ord_end'] !== null)
@@ -75,7 +86,11 @@ class PageTreeFilter implements TreeFilterInterface
         return true;
     }
 
-    function getNodeSql(TreeReader $reader)
+    /**
+     * @param TreeReader $reader
+     * @return string
+     */
+    function getNodeSql(TreeReader $reader): string
     {
         return $this->sql;
     }
@@ -84,7 +99,7 @@ class PageTreeFilter implements TreeFilterInterface
      * @param array $options
      * @return string
      */
-    protected function compileSql(array $options)
+    protected function compileSql(array $options): string
     {
         // base conditions
         $sql = '%__node__%.visible=1 AND %__node__%.type!=' . _page_separator;

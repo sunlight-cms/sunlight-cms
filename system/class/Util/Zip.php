@@ -26,7 +26,7 @@ abstract class Zip
      * @throws \InvalidArgumentException if archive path is not valid
      * @return bool
      */
-    static function extractFile(\ZipArchive $zip, $archivePath, $targetPath, $bigFileThreshold = null)
+    static function extractFile(\ZipArchive $zip, string $archivePath, string $targetPath, ?int $bigFileThreshold = null): bool
     {
         $stat = $zip->statName($archivePath);
 
@@ -46,7 +46,7 @@ abstract class Zip
      * @param int|null    $bigFileThreshold
      * @return bool
      */
-    static function extractFileEntry(\ZipArchive $zip, array $stat, $targetPath, $bigFileThreshold = null)
+    static function extractFileEntry(\ZipArchive $zip, array $stat, string $targetPath, ?int $bigFileThreshold = null): bool
     {
         if (substr($stat['name'], -1) === '/') {
             // empty dir
@@ -97,7 +97,7 @@ abstract class Zip
      * @param string          $targetPath  path where to extract the files to
      * @param array           $options
      */
-    static function extractDirectories(\ZipArchive $zip, $directories, $targetPath, array $options = [])
+    static function extractDirectories(\ZipArchive $zip, ?array $directories, string $targetPath, array $options = []): void
     {
         $options += [
             'path_mode' => static::PATH_FULL,
@@ -184,7 +184,7 @@ abstract class Zip
      * @throws \InvalidArgumentException if the mode is invalid
      * @return string|null
      */
-    protected static function getSubpath($mode, $path, $lastSlashPos, $prefixLen, $excludePrefix, $excludePrefixLen)
+    protected static function getSubpath(int $mode, string $path, $lastSlashPos, int $prefixLen, ?string $excludePrefix, int $excludePrefixLen): ?string
     {
         // determine subpath
         switch ($mode) {

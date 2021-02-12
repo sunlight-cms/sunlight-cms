@@ -27,7 +27,7 @@ class BackupRestorer
      * @param array|null $errors
      * @return bool
      */
-    function validate(array &$errors = null)
+    function validate(?array &$errors = null)
     {
         $errors = $this->backup->getMetaDataErrors();
 
@@ -38,12 +38,12 @@ class BackupRestorer
      * Restore the backup
      *
      * @param bool       $database    restore the database 1/0
-     * @param array      $directories directory paths to restore (from backup's metadata), null = all
-     * @param array      $files       file paths to restore (from backup's metadata), null = all
+     * @param array|null $directories directory paths to restore (from backup's metadata), null = all
+     * @param array|null $files       file paths to restore (from backup's metadata), null = all
      * @param array|null $errors
      * @return bool
      */
-    function restore($database, array $directories = null, array $files = null, array &$errors = null)
+    function restore(bool $database, ?array $directories = null, ?array $files = null, ?array &$errors = null): bool
     {
         $errors = [];
 
@@ -170,7 +170,7 @@ class BackupRestorer
      *
      * @return int
      */
-    function estimateFullRestorationTime()
+    function estimateFullRestorationTime(): int
     {
         $requiredTime = 2;
 
@@ -192,7 +192,7 @@ class BackupRestorer
      * @param bool          $excludeNonexistent skip nonexistent paths 1/0
      * @return array
      */
-    protected function normalizePathList(array $paths, array $allowedValues = null, $addRootPath = false, $excludeNonexistent = false)
+    protected function normalizePathList(array $paths, ?array $allowedValues = null, bool $addRootPath = false, bool $excludeNonexistent = false): array
     {
         if ($allowedValues) {
             $paths = array_intersect($allowedValues, $paths);
@@ -217,7 +217,7 @@ class BackupRestorer
         return $normalizedPaths;
     }
 
-    protected function preloadAllSystemClasses()
+    protected function preloadAllSystemClasses(): void
     {
         $paths = [
             _root . 'system/class',
@@ -235,7 +235,7 @@ class BackupRestorer
         }
     }
 
-    protected function purgeSystemDirectory()
+    protected function purgeSystemDirectory(): void
     {
         $preservedDirMap = [
             'backup' => true, // has the backups in it, including the current one

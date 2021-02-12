@@ -7,7 +7,7 @@ use Sunlight\Util\Filesystem;
 
 class ComposerBridge
 {
-    static function clearCache()
+    static function clearCache(): void
     {
         static::initMinimalCore();
 
@@ -16,12 +16,12 @@ class ComposerBridge
         }
     }
 
-    static function denyAccessToVendorDirectory()
+    static function denyAccessToVendorDirectory(): void
     {
         Filesystem::denyAccessToDirectory(__DIR__ . '/../../../vendor');
     }
 
-    static function initMinimalCore()
+    static function initMinimalCore(): void
     {
         if (!Core::isReady()) {
             $root = __DIR__ . '/../../../';

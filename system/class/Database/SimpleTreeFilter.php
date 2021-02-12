@@ -35,7 +35,7 @@ class SimpleTreeFilter implements TreeFilterInterface
         $this->sql = $this->compileSql($this->filter);
     }
 
-    function filterNode(array $node, TreeReader $reader)
+    function filterNode(array $node, TreeReader $reader): bool
     {
         foreach ($this->filter as $cond) {
             $isInvalid = ($cond[1] === null && $node[$cond[0]] !== null || $node[$cond[0]] != $cond[1]);
@@ -52,12 +52,12 @@ class SimpleTreeFilter implements TreeFilterInterface
         return true;
     }
 
-    function acceptInvalidNodeWithValidChild(array $invalidNode, array $validChildNode, TreeReader $reader)
+    function acceptInvalidNodeWithValidChild(array $invalidNode, array $validChildNode, TreeReader $reader): bool
     {
         return true;
     }
 
-    function getNodeSql(TreeReader $reader)
+    function getNodeSql(TreeReader $reader): string
     {
         return $this->sql;
     }
@@ -69,7 +69,7 @@ class SimpleTreeFilter implements TreeFilterInterface
      * @throws \InvalidArgumentException on empty filter
      * @return array
      */
-    protected function compileFilter(array $filter)
+    protected function compileFilter(array $filter): array
     {
         if (empty($filter)) {
             throw new \InvalidArgumentException('The filter must not be empty');
@@ -92,7 +92,7 @@ class SimpleTreeFilter implements TreeFilterInterface
      * @param array $filter compiled filter
      * @return string
      */
-    protected function compileSql(array $filter)
+    protected function compileSql(array $filter): string
     {
         $sql = '';
 

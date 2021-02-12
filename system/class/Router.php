@@ -19,7 +19,7 @@ abstract class Router
      * @param bool   $absolute
      * @return string
      */
-    static function generate($path, $absolute = false)
+    static function generate(string $path, bool $absolute = false): string
     {
         $url = ($absolute ? Core::$url : Url::base()->path) . '/' . $path;
 
@@ -41,7 +41,7 @@ abstract class Router
      * @param bool   $absolute
      * @return string
      */
-    static function file($filePath, $absolute = false)
+    static function file(string $filePath, bool $absolute = false): string
     {
         static $realRootPath = null, $realRootPathLength = null;
 
@@ -78,7 +78,7 @@ abstract class Router
      * @param bool        $absolute      sestavit absolutni adresu 1/0
      * @return string
      */
-    static function article($id, $slug = null, $category_slug = null, $absolute = false)
+    static function article(?int $id, ?string $slug = null, ?string $category_slug = null, bool $absolute = false): string
     {
         if ($id !== null) {
             if ($slug === null || $category_slug === null) {
@@ -105,7 +105,7 @@ abstract class Router
      * @param bool   $absolute sestavit absolutni adresu 1/0
      * @return string
      */
-    static function path($slug, $absolute = false)
+    static function path(string $slug, bool $absolute = false): string
     {
         if (_pretty_urls) {
             $path = $slug;
@@ -129,7 +129,7 @@ abstract class Router
      * @param bool        $absolute sestavit absolutni adresu 1/0
      * @return string
      */
-    static function page($id, $slug = null, $segment = null, $absolute = false)
+    static function page(?int $id, ?string $slug = null, ?string $segment = null, bool $absolute = false): string
     {
         if ($id !== null && $slug === null) {
             $slug = DB::queryRow("SELECT slug FROM " . _page_table . " WHERE id=" . DB::val($id));
@@ -152,7 +152,7 @@ abstract class Router
      * @param bool  $absolute sestavit absolutni adresu 1/0
      * @return array adresa, titulek
      */
-    static function post(array $post, $absolute = false)
+    static function post(array $post, bool $absolute = false): array
     {
         switch ($post['type']) {
             case _post_section_comment:
@@ -211,7 +211,7 @@ abstract class Router
      * @param bool        $absolute   sestavit absolutni adresu 1/0
      * @return string
      */
-    static function topic($topic_id, $forum_slug = null, $absolute = false)
+    static function topic(int $topic_id, ?string $forum_slug = null, bool $absolute = false): string
     {
         if ($forum_slug === null) {
             $forum_slug = DB::queryRow('SELECT r.slug FROM ' . _page_table . ' r WHERE type=' . _page_forum . ' AND id=(SELECT p.home FROM ' . _comment_table . ' p WHERE p.id=' . DB::val($topic_id) . ')');
@@ -233,7 +233,7 @@ abstract class Router
      * @param bool        $absolute sestavit absolutni adresu 1/0
      * @return string
      */
-    static function module($module, $params = null, $absolute = false)
+    static function module(string $module, ?string $params = null, bool $absolute = false): string
     {
         if (_pretty_urls) {
             $path = 'm/' . $module;
@@ -265,7 +265,7 @@ abstract class Router
      * @param int  $type   typ
      * @return string
      */
-    static function rss($id, $type)
+    static function rss(int $id, int $type): string
     {
         if (_rss) {
             return UrlHelper::appendParams(static::generate('system/script/rss.php'), 'tp=' . $type . '&id=' . $id);
@@ -293,7 +293,7 @@ abstract class Router
      * @param array $options moznosti vykresleni, viz popis funkce
      * @return string HTML kod
      */
-    static function user(array $data, array $options = [])
+    static function user(array $data, array $options = []): string
     {
         // vychozi nastaveni
         $options += [
@@ -372,7 +372,7 @@ abstract class Router
      * @param array $options   nastaveni vykresleni, viz {@see Router::user()}
      * @return string
      */
-    static function userFromQuery(array $userQuery, array $row, array $options = [])
+    static function userFromQuery(array $userQuery, array $row, array $options = []): string
     {
         $userData = Arr::getSubset($row, $userQuery['columns'], strlen($userQuery['prefix']));
 

@@ -353,7 +353,7 @@ if (!empty($_POST)) {
 
             // layout
             case 'layout':
-                if ($val === '' || !TemplateService::validateUid($val, TemplateService::UID_TEMPLATE_LAYOUT)) {
+                if ($val === '' || !TemplateService::validateUid((string)$val, TemplateService::UID_TEMPLATE_LAYOUT)) {
                     if ($query['layout_inherit']) {
                         $skip = true;
                     } else {

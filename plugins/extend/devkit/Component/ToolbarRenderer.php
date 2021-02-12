@@ -43,7 +43,7 @@ class ToolbarRenderer
      *
      * @return string
      */
-    public function render()
+    public function render(): string
     {
         $that = $this;
 
@@ -89,7 +89,7 @@ class ToolbarRenderer
     /**
      * Render the system info section
      */
-    public function renderInfo()
+    public function renderInfo(): void
     {
         ?>
 <div class="devkit-section devkit-sl">
@@ -104,7 +104,7 @@ class ToolbarRenderer
      *
      * @param float $now
      */
-    public function renderTime($now)
+    public function renderTime(float $now): void
     {
         ?>
 <div class="devkit-section devkit-time">
@@ -116,7 +116,7 @@ class ToolbarRenderer
     /**
      * Render the memory section
      */
-    public function renderMemory()
+    public function renderMemory(): void
     {
         ?>
 <div class="devkit-section devkit-memory">
@@ -128,7 +128,7 @@ class ToolbarRenderer
     /**
      * Render the database section
      */
-    public function renderDatabase()
+    public function renderDatabase(): void
     {
         ?>
 <div class="devkit-section devkit-database devkit-toggleable">
@@ -174,7 +174,7 @@ class ToolbarRenderer
     /**
      * Render the event section
      */
-    public function renderEvents()
+    public function renderEvents(): void
     {
         $listeners = Core::$eventEmitter->getListeners();
         $eventListenerRows = [];
@@ -241,7 +241,7 @@ class ToolbarRenderer
     /**
      * Render the  plugin errors section
      */
-    public function renderPluginErrors()
+    public function renderPluginErrors(): void
     {
         $pluginErrors = [];
 
@@ -293,7 +293,7 @@ class ToolbarRenderer
     /**
      * Render the localization section
      */
-    public function renderLang()
+    public function renderLang(): void
     {
         $missingLocalizationRows = [];
 
@@ -358,7 +358,7 @@ class ToolbarRenderer
     <?php
     }
 
-    public function renderDumps()
+    public function renderDumps(): void
     {
         ?>
 <div class="devkit-section devkit-dump devkit-toggleable">
@@ -399,7 +399,7 @@ class ToolbarRenderer
      *
      * @param array $args
      */
-    public function renderEventArgs(array $args)
+    public function renderEventArgs(array $args): void
     {
         if (!empty($args)) {
             $eventArgIsFirst = true;
@@ -419,7 +419,7 @@ class ToolbarRenderer
     /**
      * Render the request section
      */
-    public function renderRequest()
+    public function renderRequest(): void
     {
         ?>
 <div class="devkit-section devkit-request devkit-toggleable">
@@ -445,7 +445,7 @@ class ToolbarRenderer
     /**
      * Render the login section
      */
-    public function renderLogin()
+    public function renderLogin(): void
     {
         if (_logged_in) {
             $loginInfo = sprintf('level %d', _priv_level);

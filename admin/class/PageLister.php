@@ -32,7 +32,7 @@ abstract class PageLister
     /**
      * Initialize
      */
-    static function init()
+    static function init(): void
     {
         if (static::$initialized) {
             return;
@@ -63,7 +63,7 @@ abstract class PageLister
     /**
      * Setup
      */
-    private static function setup()
+    private static function setup(): void
     {
         // set current page
         $pageId = Request::get('page_id', null);
@@ -97,7 +97,7 @@ abstract class PageLister
      * @param string $name
      * @param mixed  $value
      */
-    static function setConfig($name, $value)
+    static function setConfig(string $name, $value): void
     {
         if (!key_exists($name, static::$config)) {
             throw new \OutOfBoundsException(sprintf('Unknown option "%s"', $name));
@@ -113,7 +113,7 @@ abstract class PageLister
      * @param string $name
      * @return mixed
      */
-    static function getConfig($name)
+    static function getConfig(string $name)
     {
         if (!key_exists($name, static::$config)) {
             throw new \OutOfBoundsException(sprintf('Unknown option "%s"', $name));
@@ -127,7 +127,7 @@ abstract class PageLister
      *
      * @return bool
      */
-    static function saveOrd()
+    static function saveOrd(): bool
     {
         if (isset($_POST['ord']) && is_array($_POST['ord']) && !isset($_POST['reset'])) {
             $changeset = [];
@@ -149,7 +149,7 @@ abstract class PageLister
      *
      * @return string
      */
-    private static function getSessionKey()
+    private static function getSessionKey(): string
     {
         return 'admin_page_lister';
     }
@@ -170,7 +170,7 @@ abstract class PageLister
      * @param array $options
      * @return string
      */
-    static function render(array $options = [])
+    static function render(array $options = []): string
     {
         // default options
         $options += [
@@ -212,7 +212,7 @@ abstract class PageLister
      *
      * @param string $output
      */
-    private static function renderBreadcrumbs(&$output)
+    private static function renderBreadcrumbs(string &$output)
     {
         $url = Url::current();
 
@@ -231,7 +231,7 @@ abstract class PageLister
      * @param string $output
      * @param array  $options
      */
-    private static function renderList(&$output, array $options)
+    private static function renderList(string &$output, array $options): void
     {
         // start
         $class = 'page-list';
@@ -307,7 +307,7 @@ abstract class PageLister
      * @param array  $tree
      * @param array  $options
      */
-    private static function renderFullTree(&$output, array $tree, array $options)
+    private static function renderFullTree(string &$output, array $tree, array $options): void
     {
         if (!empty($tree)) {
             // determine level offset
@@ -334,7 +334,7 @@ abstract class PageLister
      * @param array  $tree
      * @param array  $options
      */
-    private static function renderSingleLevel(&$output, array $tree, $options)
+    private static function renderSingleLevel(string &$output, array $tree, array $options): void
     {
         $even = true;
         foreach ($tree as $page) {
@@ -350,7 +350,7 @@ abstract class PageLister
      * @param array $options
      * @return array
      */
-    private static function filterTree(array $tree, array $options)
+    private static function filterTree(array $tree, array $options): array
     {
         $ids = array_keys($tree);
         $current = 0;
@@ -399,7 +399,7 @@ abstract class PageLister
      * @param array $page
      * @return bool
      */
-    private static function isAccessible(array $page)
+    private static function isAccessible(array $page): bool
     {
         $userHasRight = User::hasPrivilege('admin' . static::$pageTypes[$page['type']]);
         $isAccessible = $userHasRight;
@@ -422,7 +422,7 @@ abstract class PageLister
      * @param string $class
      * @param int    $levelOffset
      */
-    private static function renderPage(&$output, array $page, array $options, $class = '', $levelOffset = 0)
+    private static function renderPage(string &$output, array $page, array $options, string $class = '', int $levelOffset = 0): void
     {
         // prepare
         $typeName = static::$pageTypes[$page['type']];
@@ -533,7 +533,7 @@ abstract class PageLister
      * @param bool  $hasAccess
      * @return array
      */
-    private static function getPageActions(array $page, $hasAccess)
+    private static function getPageActions(array $page, bool $hasAccess): array
     {
         $actions = [];
 
@@ -607,7 +607,7 @@ abstract class PageLister
      * @param array $b
      * @return int
      */
-    static function sortActions(array $a, array $b)
+    static function sortActions(array $a, array $b): int
     {
         return $a['order'] > $b['order'] ? 1 : -1;
     }
@@ -618,7 +618,7 @@ abstract class PageLister
      * @param array $page
      * @return string
      */
-    private static function renderPageFlags(array $page)
+    private static function renderPageFlags(array $page): string
     {
         $output = '';
         if ($page['type'] != _page_separator) {

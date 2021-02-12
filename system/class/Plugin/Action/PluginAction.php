@@ -37,14 +37,14 @@ abstract class PluginAction extends Action
      *
      * @return string
      */
-    abstract function getTitle();
+    abstract function getTitle(): string;
 
     /**
      * See if the action has been confirmed
      *
      * @return bool
      */
-    protected function isConfirmed()
+    protected function isConfirmed(): bool
     {
         return Request::post('_plugin_action_confirmation') === md5(get_called_class());
     }
@@ -56,7 +56,7 @@ abstract class PluginAction extends Action
      * @param string|null $buttonText
      * @return ActionResult
      */
-    protected function confirm($message, $buttonText = null)
+    protected function confirm(string $message, ?string $buttonText = null): ActionResult
     {
         if ($buttonText === null) {
             $buttonText = _lang('global.continue');

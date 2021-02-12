@@ -16,7 +16,7 @@ abstract class Extend
      * @param callable $callback
      * @param int      $priority
      */
-    static function reg($event, $callback, $priority = 0)
+    static function reg(string $event, callable $callback, int $priority = 0): void
     {
         Core::$eventEmitter->on($event, $callback, $priority);
     }
@@ -27,7 +27,7 @@ abstract class Extend
      * @param array $callbacks array(event1 => callback1, ...)
      * @param int   $priority
      */
-    static function regm(array $callbacks, $priority = 0)
+    static function regm(array $callbacks, int $priority = 0): void
     {
         foreach ($callbacks as $event => $callback) {
             Core::$eventEmitter->on($event, $callback, $priority);
@@ -40,7 +40,7 @@ abstract class Extend
      * @param callable $callback callback(event, args)
      * @param int      $priority
      */
-    static function regGlobal($callback, $priority = 0)
+    static function regGlobal(callable $callback, int $priority = 0): void
     {
         Core::$eventEmitter->on(EventEmitterInterface::ANY_EVENT, $callback, $priority);
     }
@@ -52,7 +52,7 @@ abstract class Extend
      * @param array|null $args    array with additional arguments
      * @return array
      */
-    static function args(&$output, array $args = [])
+    static function args(string &$output, array $args = []): array
     {
         $args['output'] = &$output;
 
@@ -65,7 +65,7 @@ abstract class Extend
      * @param string $event
      * @param array  $args
      */
-    static function call($event, array $args = [])
+    static function call(string $event, array $args = []): void
     {
         Core::$eventEmitter->emit($event, $args);
     }
@@ -78,7 +78,7 @@ abstract class Extend
      * @param mixed  $value initial value
      * @return mixed
      */
-    static function fetch($event, array $args = [], $value = null)
+    static function fetch(string $event, array $args = [], $value = null)
     {
         $args['value'] = &$value;
         static::call($event, $args);
@@ -93,7 +93,7 @@ abstract class Extend
      * @param array  $args  ('output' is added automatically)
      * @return string
      */
-    static function buffer($event, array $args = [])
+    static function buffer(string $event, array $args = []): string
     {
         $output = '';
         $args['output'] = &$output;

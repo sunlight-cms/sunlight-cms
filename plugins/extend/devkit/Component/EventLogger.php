@@ -25,7 +25,7 @@ class EventLogger
      *
      * @param string $event
      */
-    public function log($event)
+    public function log(string $event): void
     {
         $eventArgs = array_slice(func_get_args(), 1);
 
@@ -50,7 +50,7 @@ class EventLogger
      *
      * @return array
      */
-    public function getLog()
+    public function getLog(): array
     {
         return $this->log;
     }

@@ -11,7 +11,7 @@ abstract class DateTime
      * @param bool $relative relativne k aktualnimu casu 1/0
      * @return string
      */
-    static function formatForHttp($time, $relative = false)
+    static function formatForHttp(int $time, bool $relative = false): string
     {
         if ($relative) {
             $time += time();
@@ -27,7 +27,7 @@ abstract class DateTime
      * @param bool     $get_times navratit casy misto vyhodnoceni, ve formatu array(time, sunrise, sunset)
      * @return bool|array
      */
-    static function isDayTime($time = null, $get_times = false)
+    static function isDayTime(?int $time = null, bool $get_times = false)
     {
         // priprava casu
         if (!isset($time)) {

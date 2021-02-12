@@ -13,7 +13,7 @@ abstract class PostForm
      * @param bool   $smileys zobrazit smajliky 1/0
      * @return string
      */
-    static function renderControls($form, $area, $bbcode = true, $smileys = true)
+    static function renderControls(string $form, string $area, bool $bbcode = true, bool $smileys = true): string
     {
         $template = Template::getCurrent();
 
@@ -58,7 +58,7 @@ abstract class PostForm
      * @param string $area nazev textarey
      * @return string
      */
-    static function renderPreviewButton($form, $area)
+    static function renderPreviewButton(string $form, string $area): string
     {
         return '<button class="post-form-preview" onclick="Sunlight.postPreview(this, \'' . $form . '\', \'' . $area . '\'); return false;">' . _lang('global.preview') . '</button>';
     }

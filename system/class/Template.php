@@ -17,7 +17,7 @@ abstract class Template
      *
      * @return TemplatePlugin
      */
-    static function getCurrent()
+    static function getCurrent(): TemplatePlugin
     {
         // pouzit globalni promennou
         // (index)
@@ -42,7 +42,7 @@ abstract class Template
      * @param string $idt identifikator sablony a layoutu
      * @return bool
      */
-    static function change($idt)
+    static function change(string $idt): bool
     {
         global $_template, $_template_layout;
 
@@ -66,7 +66,7 @@ abstract class Template
     /**
      * Vykreslit HTML hlavicku
      */
-    static function head()
+    static function head(): void
     {
         global $_index, $_template;
 
@@ -138,7 +138,7 @@ abstract class Template
      * @param array  $overrides pretizeni konfigurace motivu
      * @return string
      */
-    static function boxes($slot, array $overrides = [])
+    static function boxes(string $slot, array $overrides = []): string
     {
         $output = '';
 
@@ -220,7 +220,7 @@ abstract class Template
      * @param bool $rsslink  vykreslit RSS odkaz 1/0 {@see Template::rssLink()}
      * @return string
      */
-    static function content($heading = true, $backlink = true, $rsslink = true)
+    static function content(bool $heading = true, bool $backlink = true, bool $rsslink = true): string
     {
         global $_index;
 
@@ -262,7 +262,7 @@ abstract class Template
      *
      * @return string
      */
-    static function heading()
+    static function heading(): string
     {
         global $_index;
 
@@ -288,7 +288,7 @@ abstract class Template
      *
      * @return string
      */
-    static function backlink()
+    static function backlink(): string
     {
         // extend
         $output = Extend::buffer('tpl.backlink');
@@ -308,7 +308,7 @@ abstract class Template
      * @param bool        $inline jedna se o radkovy odkaz 1/0 (napr. v ramci nadpisu / textu)
      * @return string
      */
-    static function rssLink($url = null, $inline = true)
+    static function rssLink(?string $url = null, bool $inline = true): string
     {
         // deaktivovane RSS / nenastavena adresa?
         if (!_rss || $url === null && $GLOBALS['_index']['rsslink'] === null) {
@@ -345,7 +345,7 @@ abstract class Template
      *
      * @return string
      */
-    static function links()
+    static function links(): string
     {
         return
             "<li><a href=\"https://sunlight-cms.cz/\">SunLight CMS</a></li>\n"
@@ -358,7 +358,7 @@ abstract class Template
      * @param string $path subcesta k souboru relativne ke slozce images aktualniho motivu
      * @return string
      */
-    static function image($path)
+    static function image(string $path): string
     {
         return $GLOBALS['_template']->getWebPath() . "/images/{$path}";
     }
@@ -366,13 +366,13 @@ abstract class Template
     /**
      * Vykreslit menu
      *
-     * @param int|null $ordStart    minimalni poradove cislo
-     * @param int|null $ordEnd      maximalni poradove cislo
-     * @param string   $cssClass    trida hlavniho tagu menu
-     * @param string   $extendEvent extend udalost pro polozky menu
+     * @param int|null    $ordStart    minimalni poradove cislo
+     * @param int|null    $ordEnd      maximalni poradove cislo
+     * @param string|null $cssClass    trida hlavniho tagu menu
+     * @param string      $extendEvent extend udalost pro polozky menu
      * @return string
      */
-    static function menu($ordStart = null, $ordEnd = null, $cssClass = null, $extendEvent = 'tpl.menu.item')
+    static function menu(?int $ordStart = null, ?int $ordEnd = null, ?string $cssClass = null, string $extendEvent = 'tpl.menu.item')
     {
         // kontrola prihlaseni v pripade neverejnych stranek
         if (!_logged_in && _notpublicsite) {
@@ -421,7 +421,7 @@ abstract class Template
      * @param array $options pole s nastavenim
      * @return string
      */
-    static function treeMenu(array $options)
+    static function treeMenu(array $options): string
     {
         // vychozi nastaveni
         $options += [
@@ -500,7 +500,7 @@ abstract class Template
      * @param bool $onlyWhenMultiple vykreslit pouze 2 a vice drobecku
      * @return string
      */
-    static function breadcrumbs($breadcrumbs = [], $onlyWhenMultiple = false)
+    static function breadcrumbs(array $breadcrumbs = [], bool $onlyWhenMultiple = false): string
     {
         global $_index;
 
@@ -560,7 +560,7 @@ abstract class Template
      *
      * @return string
      */
-    static function title()
+    static function title(): string
     {
         // overload pluginem
         $title = null;
@@ -577,7 +577,7 @@ abstract class Template
      *
      * @return string
      */
-    static function siteTitle()
+    static function siteTitle(): string
     {
         return _title;
     }
@@ -587,7 +587,7 @@ abstract class Template
      *
      * @return string
      */
-    static function siteDescription()
+    static function siteDescription(): string
     {
         return _description;
     }
@@ -595,7 +595,7 @@ abstract class Template
     /**
      * Ziskat zakladni adresu stranek
      */
-    static function siteUrl()
+    static function siteUrl(): string
     {
         return Core::$url . '/';
     }
@@ -604,9 +604,10 @@ abstract class Template
      * Vykreslit uzivatelske menu
      *
      * @param bool $profileLink vykreslit odkaz na profil 1/0
+     * @param bool $adminLink
      * @return string
      */
-    static function userMenu($profileLink = true, $adminLink = true)
+    static function userMenu(bool $profileLink = true, bool $adminLink = true): string
     {
         // pripravit polozky
         $items = [];
@@ -698,7 +699,7 @@ abstract class Template
      *
      * @return int|null
      */
-    static function currentID()
+    static function currentID(): ?int
     {
         return $GLOBALS['_index']['id'];
     }
@@ -708,7 +709,7 @@ abstract class Template
      *
      * @return bool
      */
-    static function currentIsPage()
+    static function currentIsPage(): bool
     {
         return $GLOBALS['_index']['is_page'] && $GLOBALS['_index']['is_successful'];
     }
@@ -718,7 +719,7 @@ abstract class Template
      *
      * @return bool
      */
-    static function currentIsArticle()
+    static function currentIsArticle(): bool
     {
         return
             $GLOBALS['_index']['is_page']
@@ -732,7 +733,7 @@ abstract class Template
      *
      * @return bool
      */
-    static function currentIsTopic()
+    static function currentIsTopic(): bool
     {
         return
             $GLOBALS['_index']['is_page']
@@ -746,7 +747,7 @@ abstract class Template
      *
      * @return bool
      */
-    static function currentIsModule()
+    static function currentIsModule(): bool
     {
         return $GLOBALS['_index']['is_module'] && $GLOBALS['_index']['is_successful'];
     }
@@ -756,7 +757,7 @@ abstract class Template
      *
      * @return bool
      */
-    static function currentIsIndex()
+    static function currentIsIndex(): bool
     {
         return static::currentIsPage() && $GLOBALS['_index']['id'] == _index_page_id;
     }

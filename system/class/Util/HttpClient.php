@@ -24,7 +24,7 @@ class HttpClient
      * @throws HttpClientException on failure
      * @return string
      */
-    static function get($url, array $options = [])
+    static function get(string $url, array $options = []): string
     {
         return self::request($url, null, $options);
     }
@@ -38,7 +38,7 @@ class HttpClient
      * @return string
      * @throws HttpClientException on failure
      */
-    static function post($url, $body, array $options = [])
+    static function post(string $url, string $body, array $options = []): string
     {
         return self::request($url, (string) $body, $options);
     }
@@ -49,7 +49,7 @@ class HttpClient
      * @param array $options
      * @return string
      */
-    private static function request($url, $body, array $options)
+    private static function request(string $url, ?string $body, array $options): string
     {
         self::validateUrl($url);
 
@@ -75,7 +75,7 @@ class HttpClient
     /**
      * @param string $url
      */
-    private static function validateUrl($url)
+    private static function validateUrl(string $url): void
     {
         try {
             $url = Url::parse($url);
@@ -98,7 +98,7 @@ class HttpClient
      * @param array $options
      * @return string
      */
-    private static function curlRequest($url, $body, array $options)
+    private static function curlRequest(string $url, ?string $body, array $options): string
     {
         $timeout = isset($options['timeout']) ? (int) $options['timeout'] * 1000 : 0;
         $curlOptions = [
@@ -136,7 +136,7 @@ class HttpClient
      * @param array $options
      * @return string
      */
-    private static function nativeRequest($url, $body, array $options)
+    private static function nativeRequest(string $url, ?string $body, array $options): string
     {
         $contextOptions = [
             'http' => [

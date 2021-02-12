@@ -16,7 +16,7 @@ class Gallery
      * @param int|null    $height     pozadovana vyska nahledu
      * @return string
      */
-    static function renderImage($img, $lightboxid, $width, $height)
+    static function renderImage(array $img, ?string $lightboxid, ?int $width, ?int $height): string
     {
         if (UrlHelper::isAbsolute($img['full'])) {
             $fullUrl = $img['full'];

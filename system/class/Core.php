@@ -108,7 +108,7 @@ abstract class Core
      * @param string $root relative path to the system root directory (with a trailing slash)
      * @param array  $options
      */
-    static function init($root, array $options = [])
+    static function init(string $root, array $options = []): void
     {
         if (static::$ready) {
             throw new \LogicException('Cannot init multiple times');
@@ -178,7 +178,7 @@ abstract class Core
      * @param string $root
      * @param array  &$options
      */
-    protected static function initConfiguration($root, array &$options)
+    protected static function initConfiguration(string $root, array &$options): void
     {
         // defaults
         $options += [
@@ -276,7 +276,7 @@ abstract class Core
      * @param string $url
      * @return string
      */
-    protected static function resolveUrl($url)
+    protected static function resolveUrl(string $url): string
     {
         $baseUrl = Url::parse($url);
         $currentUrl = Url::current();
@@ -300,7 +300,7 @@ abstract class Core
     /**
      * Init base components that don't depend on configuration
      */
-    protected static function initBaseComponents()
+    protected static function initBaseComponents(): void
     {
         // class loader
         if (static::$classLoader === null) {
@@ -324,7 +324,7 @@ abstract class Core
      *
      * @param array $options
      */
-    protected static function initComponents(array $options)
+    protected static function initComponents(array $options): void
     {
         // class loader
         static::$classLoader->setDebug(_debug);
@@ -358,7 +358,7 @@ abstract class Core
      *
      * @param array $options
      */
-    protected static function initDatabase(array $options)
+    protected static function initDatabase(array $options): void
     {
         $connectError = DB::connect($options['db.server'], $options['db.user'], $options['db.password'], $options['db.name'], $options['db.port']);
 
@@ -375,7 +375,7 @@ abstract class Core
     /**
      * Initialize settings
      */
-    protected static function initSettings()
+    protected static function initSettings(): void
     {
         // fetch from database
         if (_env === static::ENV_ADMIN) {
@@ -428,7 +428,7 @@ abstract class Core
     /**
      * Check system state after initialization
      */
-    protected static function checkSystemState()
+    protected static function checkSystemState(): void
     {
         // check database version
         if (!defined('_dbversion') || Core::VERSION !== _dbversion) {
@@ -482,7 +482,7 @@ abstract class Core
      *
      * @param array $options
      */
-    protected static function initEnvironment(array $options)
+    protected static function initEnvironment(array $options): void
     {
         // ensure correct encoding for mb_*() functions
         mb_internal_encoding('UTF-8');
@@ -530,7 +530,7 @@ abstract class Core
     /**
      * Initialize plugins
      */
-    protected static function initPlugins()
+    protected static function initPlugins(): void
     {
         foreach (static::$pluginManager->getAllExtends() as $extendPlugin) {
             $extendPlugin->initialize();
@@ -542,7 +542,7 @@ abstract class Core
     /**
      * Initialize session
      */
-    protected static function initSession()
+    protected static function initSession(): void
     {
         // start session
         if (static::$sessionEnabled) {
@@ -748,7 +748,7 @@ abstract class Core
     /**
      * Initialize localization
      */
-    protected static function initLocalization()
+    protected static function initLocalization(): void
     {
         // language choice
         if (_logged_in && _language_allowcustom && static::$userData['language'] !== '') {
@@ -794,7 +794,7 @@ abstract class Core
     /**
      * Run CRON tasks
      */
-    static function runCronTasks()
+    static function runCronTasks(): void
     {
         $cronNow = time();
         $cronUpdate = false;
@@ -871,7 +871,7 @@ abstract class Core
     /**
      * @return bool
      */
-    static function isReady()
+    static function isReady(): bool
     {
         return static::$ready;
     }
@@ -879,7 +879,7 @@ abstract class Core
     /**
      * Run system maintenance
      */
-    static function doMaintenance()
+    static function doMaintenance(): void
     {
         // clean thumbnails
         Picture::cleanThumbnails(_thumb_cleanup_threshold);
@@ -908,7 +908,7 @@ abstract class Core
      * @param mixed  $default
      * @return mixed
      */
-    static function loadSetting($name, $default = null)
+    static function loadSetting(string $name, $default = null)
     {
         $result = DB::queryRow('SELECT val FROM ' . _setting_table . ' WHERE var=' . DB::val($name));
         if ($result !== false) {
@@ -924,7 +924,7 @@ abstract class Core
      * @param string|string[] $names
      * @return array
      */
-    static function loadSettings(array $names)
+    static function loadSettings(array $names): array
     {
         $names = (array) $names;
 
@@ -943,7 +943,7 @@ abstract class Core
      * @param string|null $type
      * @return array
      */
-    static function loadSettingsByType($type)
+    static function loadSettingsByType(?string $type): array
     {
         $settings = [];
         $query = DB::query('SELECT var,val FROM ' . _setting_table . ' WHERE type' . ($type === null ? ' IS NULL' : '=' . DB::val($type)));
@@ -960,7 +960,7 @@ abstract class Core
      * @param string $name
      * @param string $newValue
      */
-    static function updateSetting($name, $newValue)
+    static function updateSetting(string $name, string $newValue): void
     {
         DB::update(_setting_table, 'var=' . DB::val($name), ['val' => (string) $newValue]);
     }
@@ -972,7 +972,7 @@ abstract class Core
      * @param bool  $scriptTags      obalit do <script> tagu 1/0
      * @return string
      */
-    static function getJavascript(array $customVariables = [], $scriptTags = true)
+    static function getJavascript(array $customVariables = [], bool $scriptTags = true): string
     {
         $output = '';
 
@@ -1018,7 +1018,7 @@ abstract class Core
      * @param string|null $msgExtra extra obsah pod zpravou (nelokalizovany)
      * @throws CoreException
      */
-    static function systemFailure($msgCs, $msgEn, array $msgArgs = null, $msgExtra = null)
+    static function systemFailure(string $msgCs, string $msgEn, ?array $msgArgs = null, ?string $msgExtra = null): void
     {
         $messages = [];
 
@@ -1045,12 +1045,12 @@ abstract class Core
      * @param bool $showPrevious
      * @return string
      */
-    static function renderException($e, $showTrace = true, $showPrevious = true)
+    static function renderException($e, bool $showTrace = true, bool $showPrevious = true): string
     {
         return '<pre class="exception">' . _e(Exception::render($e, $showTrace, $showPrevious)) . "</pre>\n";
     }
 
-    protected static function configureWebExceptionHandler(WebErrorScreen $errorScreen)
+    protected static function configureWebExceptionHandler(WebErrorScreen $errorScreen): void
     {
         $errorScreen->on(WebErrorScreenEvents::CSS, function () {
             echo <<<'CSS'

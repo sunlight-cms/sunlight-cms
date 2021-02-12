@@ -10,7 +10,7 @@ class Color
      * @param array $color color segments
      * @param int   $type  color model (0 = rgb, 1 = hsl)
      */
-    function __construct($color = [0, 0, 0], $type = 0)
+    function __construct(array $color = [0, 0, 0], int $type = 0)
     {
         if ($type === 0) {
             list($this->r, $this->g, $this->b) = $color;
@@ -26,9 +26,10 @@ class Color
      *
      * Supported formats are #xxxxxx or #xxx (shorthand).
      *
+     * @param $color
      * @return static|null
      */
-    static function fromString($color)
+    static function fromString($color): ?self
     {
         if (preg_match('{#([0-9a-f]{3,6})$}ADi', $color, $match)) {
             return new static(
@@ -43,8 +44,10 @@ class Color
 
     /**
      * Get the color as a RGB HEX string
+     *
+     * @return string
      */
-    function __toString()
+    function __toString(): string
     {
         return $this->getRgbStr();
     }
@@ -56,7 +59,7 @@ class Color
      * @param int $g green channel
      * @param int $b blue channel
      */
-    function setRgb($r, $g, $b)
+    function setRgb(int $r, int $g, int $b): void
     {
         list($this->h, $this->s, $this->l) = $this->rgbToHsl($r, $g, $b);
         list($this->r, $this->g, $this->b) = func_get_args();
@@ -69,7 +72,7 @@ class Color
      * @param int $s saturation
      * @param int $l lightness
      */
-    function setHsl($h, $s, $l)
+    function setHsl(int $h, int $s, int $l): void
     {
         list($this->r, $this->g, $this->b) = $this->hslToRgb($h, $s, $l);
         list($this->h, $this->s, $this->l) = func_get_args();
@@ -82,7 +85,7 @@ class Color
      * @param int    $value   new value (0-255)
      * @return bool
      */
-    function setChannel($channel, $value)
+    function setChannel(string $channel, int $value): bool
     {
         // check arguments
         if (!isset($this->$channel)) {
@@ -106,7 +109,7 @@ class Color
      * @param string $channel channel name - r/g/b/h/s/l
      * @return int|null 0-255 or null for unknown channel
      */
-    function getChannel($channel)
+    function getChannel(string $channel): ?int
     {
         if (isset($this->$channel)) {
             return $this->$channel;
@@ -118,7 +121,7 @@ class Color
      *
      * @return array array(r,g,b)
      */
-    function getRgb()
+    function getRgb(): array
     {
         return [$this->r, $this->g, $this->b];
     }
@@ -128,7 +131,7 @@ class Color
      *
      * @return string #rrggbb
      */
-    function getRgbStr()
+    function getRgbStr(): string
     {
         return sprintf('#%02x%02x%02x', $this->r, $this->g, $this->b);
     }
@@ -138,7 +141,7 @@ class Color
      *
      * @return array array(h,s,l)
      */
-    function getHsl()
+    function getHsl(): array
     {
         return [$this->h, $this->s, $this->l];
     }
@@ -151,7 +154,7 @@ class Color
      * @param float $l lightness (0-255)
      * @return array array(r,g,b)
      */
-    protected function hslToRgb($h, $s, $l)
+    protected function hslToRgb(int $h, float $s, float $l): array
     {
         // normalize args
         $args = ['h', 's', 'l'];
@@ -199,7 +202,7 @@ class Color
      * @param int $b blue channel (0-255)
      * @return array array(h,s,l)
      */
-    protected function rgbToHsl($r, $g, $b)
+    protected function rgbToHsl(int $r, int $g, int $b): array
     {
         // normalize args
         $args = ['r', 'g', 'b'];

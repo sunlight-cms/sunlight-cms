@@ -27,7 +27,7 @@ class TreeManager
      * @param string|null $levelColumn  nazev sloupce pro uroven
      * @param string|null $depthColumn  nazev sloupce pro hloubku
      */
-    function __construct($table, $idColumn = null, $parentColumn = null, $levelColumn = null, $depthColumn = null)
+    function __construct(string $table, ?string $idColumn = null, ?string $parentColumn = null, ?string $levelColumn = null, ?string $depthColumn = null)
     {
         $this->table = $table;
         $this->idColumn = $idColumn ?: 'id';
@@ -43,7 +43,7 @@ class TreeManager
      * @param int|null $parentNodeId ID nadrazeneho uzlu
      * @return bool
      */
-    function checkParent($nodeId, $parentNodeId)
+    function checkParent(int $nodeId, ?int $parentNodeId): bool
     {
         if (
             $parentNodeId === null
@@ -63,7 +63,7 @@ class TreeManager
      * @param bool  $refresh
      * @return int id noveho uzlu
      */
-    function create(array $data, $refresh = true)
+    function create(array $data, bool $refresh = true): int
     {
         if (key_exists($this->levelColumn, $data) || key_exists( $this->depthColumn, $data)) {
             throw new \InvalidArgumentException(sprintf('Columns "%s" and "%s" cannot be specified manually', $this->levelColumn, $this->depthColumn));
@@ -91,7 +91,7 @@ class TreeManager
      * @param bool  $refresh
      * @return $this
      */
-    function update($nodeId, $parentNodeId, array $changeset, $refresh = true)
+    function update(int $nodeId, int $parentNodeId, array $changeset, bool $refresh = true): self
     {
         if (key_exists($this->levelColumn, $changeset) || key_exists($this->depthColumn, $changeset)) {
             throw new \InvalidArgumentException(sprintf('Columns "%s" and "%s" cannnot be changed manually', $this->levelColumn, $this->depthColumn));
@@ -124,7 +124,7 @@ class TreeManager
      * @param bool $orphanRemoval
      * @return $this
      */
-    function delete($nodeId, $orphanRemoval = true)
+    function delete(int $nodeId, bool $orphanRemoval = true): self
     {
         if ($orphanRemoval) {
             $children = $this->getChildren($nodeId);
@@ -145,7 +145,7 @@ class TreeManager
      * @param int $nodeId
      * @return $this
      */
-    function purge($nodeId)
+    function purge(int $nodeId): self
     {
         $this->deleteSet($this->idColumn, $this->getChildren($nodeId));
         $this->doRefreshDepth($nodeId);
@@ -159,7 +159,7 @@ class TreeManager
      * @param int|null $nodeId
      * @return $this
      */
-    function refresh($nodeId = null)
+    function refresh(?int $nodeId = null): self
     {
         $this->doRefresh($nodeId);
 
@@ -174,7 +174,7 @@ class TreeManager
      * @param int|null $newParent
      * @param int|null $oldParent
      */
-    function refreshOnParentUpdate($nodeId, $newParent, $oldParent)
+    function refreshOnParentUpdate(int $nodeId, ?int $newParent, ?int $oldParent): void
     {
         if ($oldParent != $newParent) {
             $this->doRefresh($nodeId);
@@ -188,7 +188,7 @@ class TreeManager
      * @param bool $refresh
      * @return $this
      */
-    function purgeOrphaned($refresh = true)
+    function purgeOrphaned(bool $refresh = true) :self
     {
         do {
             $orphaned = DB::query('SELECT n.' . $this->idColumn . ',n.' . $this->parentColumn . ' FROM `' . $this->table . '` n LEFT JOIN `' . $this->table . '` p ON(n.' . $this->parentColumn . '=p.' . $this->idColumn . ') WHERE n.' . $this->parentColumn . ' IS NOT NULL AND p.id IS NULL');
@@ -222,7 +222,7 @@ class TreeManager
      * @param bool     $getChangesetMap vratit mapu zmen namisto volani {@see Database::updateSetMulti()}
      * @return array|null
      */
-    function propagate(array $flatTree, $context, $propagator, $contextUpdater, $getChangesetMap = false)
+    function propagate(array $flatTree, $context, callable $propagator, callable $contextUpdater, bool $getChangesetMap = false): ?array
     {
         $stack = [];
         $contextLevel = 0;
@@ -255,16 +255,17 @@ class TreeManager
         }
 
         DB::updateSetMulti($this->table, $this->idColumn, $changesetMap);
+        return null;
     }
 
     /**
      * Ziskat uroven uzlu dle jeho pozice ve stromu
      *
-     * @param int|null $nodeId
-     * @param array    &$parents
+     * @param int|null   $nodeId
+     * @param array|null &$parents
      * @return int
      */
-    protected function getLevel($nodeId, &$parents = null)
+    protected function getLevel(?int $nodeId, ?array &$parents = null): int
     {
         $level = 0;
         $parents = [];
@@ -296,7 +297,7 @@ class TreeManager
      * @param int|null $nodeId
      * @return int|null
      */
-    protected function getParent($nodeId)
+    protected function getParent(?int $nodeId): ?int
     {
         $node = DB::queryRow('SELECT ' . $this->parentColumn . ' FROM `' . $this->table . '` WHERE ' . $this->idColumn . '=' . DB::val($nodeId));
         if ($node === false) {
@@ -312,7 +313,7 @@ class TreeManager
      * @param int $nodeId
      * @return int
      */
-    protected function getRoot($nodeId)
+    protected function getRoot(int $nodeId): int
     {
         $parents = [];
         $this->getLevel($nodeId, $parents);
@@ -330,7 +331,7 @@ class TreeManager
      * @param bool $emptyArrayOnFailure
      * @return array
      */
-    protected function getChildren($nodeId, $emptyArrayOnFailure = false)
+    protected function getChildren(int $nodeId, bool $emptyArrayOnFailure = false): array
     {
         // zjistit hloubku uzlu
         $node = DB::queryRow('SELECT ' . $this->depthColumn . ' FROM `' . $this->table . '` WHERE id=' . DB::val($nodeId));
@@ -388,7 +389,7 @@ class TreeManager
      *
      * @param int|null $currentNodeId
      */
-    protected function doRefresh($currentNodeId)
+    protected function doRefresh(?int $currentNodeId): void
     {
         // zjistit level a rodice aktualniho nodu
         $currentNodeParents = [];
@@ -452,7 +453,7 @@ class TreeManager
      * @param int|null $currentNodeId
      * @param bool|null $isRootNode
      */
-    protected function doRefreshDepth($currentNodeId, $isRootNode = null)
+    protected function doRefreshDepth(?int $currentNodeId, ?bool $isRootNode = null): void
     {
         // zjistit korenovy uzel
         $rootNodeId = $currentNodeId;
@@ -528,7 +529,7 @@ class TreeManager
      * @param array  $changeset
      * @param int    $maxPerQuery
      */
-    protected function updateSet($column, array $set, array $changeset, $maxPerQuery = 100)
+    protected function updateSet(string $column, array $set, array $changeset, int $maxPerQuery = 100): void
     {
         DB::updateSet($this->table, $column, $set, $changeset, $maxPerQuery);
     }
@@ -540,7 +541,7 @@ class TreeManager
      * @param array  $set
      * @param int    $maxPerQuery
      */
-    protected function deleteSet($column, array $set, $maxPerQuery = 100)
+    protected function deleteSet(string $column, array $set, int $maxPerQuery = 100): void
     {
         DB::deleteSet($this->table, $column, $set, $maxPerQuery);
     }

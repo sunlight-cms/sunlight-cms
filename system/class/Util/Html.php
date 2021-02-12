@@ -10,7 +10,7 @@ abstract class Html
      * @param string $input vstupni retezec
      * @return string
      */
-    static function unescape($input)
+    static function unescape(string $input): string
     {
         static $map = null;
 
@@ -31,7 +31,7 @@ abstract class Html
      * @param int    $length pozadovana delka
      * @return string
      */
-    static function cut($html, $length)
+    static function cut(string $html, int $length): string
     {
         if ($length > 0 && mb_strlen($html) > $length) {
             return static::fixTrailingHtmlEntity(mb_substr($html, 0, $length));
@@ -46,7 +46,7 @@ abstract class Html
      * @param string $string vstupni retezec
      * @return string
      */
-    static function fixTrailingHtmlEntity($string)
+    static function fixTrailingHtmlEntity(string $string): string
     {
         return preg_replace('{\\s*&[^;]*$}D', '', $string);
     }
@@ -60,7 +60,7 @@ abstract class Html
      * @param bool  $double_encode prevadet i jiz existujici entity 1/0
      * @return array
      */
-    static function escapeArrayItems(array $input, $double_encode = true)
+    static function escapeArrayItems(array $input, bool $double_encode = true): array
     {
         $output = [];
 

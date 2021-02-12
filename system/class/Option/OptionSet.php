@@ -38,7 +38,7 @@ class OptionSet
      *
      * @return string[]
      */
-    function getIndexes()
+    function getIndexes(): array
     {
         return array_merge(
             array_keys($this->definition),
@@ -52,7 +52,7 @@ class OptionSet
      * @param string[] $knownIndexes
      * @return $this
      */
-    function addKnownIndexes(array $knownIndexes)
+    function addKnownIndexes(array $knownIndexes): self
     {
         $this->knownIndexMap += array_flip($knownIndexes);
 
@@ -65,7 +65,7 @@ class OptionSet
      * @param string[] $knownIndexes
      * @return $this
      */
-    function setKnownIndexes(array $knownIndexes)
+    function setKnownIndexes(array $knownIndexes): self
     {
         $this->knownIndexMap = array_flip($knownIndexes);
 
@@ -77,7 +77,7 @@ class OptionSet
      *
      * @return bool
      */
-    function getIgnoreExtraIndexes()
+    function getIgnoreExtraIndexes(): bool
     {
         return $this->ignoreExtraIndexes;
     }
@@ -88,7 +88,7 @@ class OptionSet
      * @param bool $ignoreExtraIndexes
      * @return $this
      */
-    function setIgnoreExtraIndexes($ignoreExtraIndexes)
+    function setIgnoreExtraIndexes(bool $ignoreExtraIndexes): self
     {
         $this->ignoreExtraIndexes = $ignoreExtraIndexes;
 
@@ -105,7 +105,7 @@ class OptionSet
      * @param array|null $errors  variable for error messages
      * @return bool true on success, false if there are errors
      */
-    function process(&$data, $context = null, array &$errors = null)
+    function process(array &$data, $context = null, ?array &$errors = null): bool
     {
         $errors = [];
 

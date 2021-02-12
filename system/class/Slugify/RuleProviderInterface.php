@@ -5,8 +5,8 @@ namespace Sunlight\Slugify;
 interface RuleProviderInterface
 {
     /**
-     * @param $ruleset
+     * @param string $ruleset
      * @return array
      */
-    function getRules($ruleset);
+    function getRules(string $ruleset): array;
 }

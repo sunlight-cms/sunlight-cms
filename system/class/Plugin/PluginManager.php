@@ -64,7 +64,7 @@ class PluginManager
     /**
      * @return array
      */
-    static function getTypeDefinitions()
+    static function getTypeDefinitions(): array
     {
         return [
             static::LANGUAGE => LanguagePlugin::getTypeDefinition(),
@@ -78,7 +78,7 @@ class PluginManager
      *
      * @return bool
      */
-    function purgeCache()
+    function purgeCache(): bool
     {
         return $this->cache->clear();
     }
@@ -89,7 +89,7 @@ class PluginManager
      * @param string $type
      * @return bool
      */
-    function isValidType($type)
+    function isValidType(string $type): bool
     {
         return isset($this->types[$type]);
     }
@@ -99,7 +99,7 @@ class PluginManager
      *
      * @return string[]
      */
-    function getTypes()
+    function getTypes(): array
     {
         return array_keys($this->types);
     }
@@ -111,7 +111,7 @@ class PluginManager
      * @throws \InvalidArgumentException if the plugin type is not valid
      * @return array
      */
-    function getTypeDefinition($type)
+    function getTypeDefinition(string $type): array
     {
         if (!isset($this->types[$type])) {
             throw new \InvalidArgumentException(sprintf('Invalid plugin type "%s"', $type));
@@ -126,7 +126,7 @@ class PluginManager
      * @param string $class
      * @return bool
      */
-    function hasInstance($class)
+    function hasInstance(string $class): bool
     {
         if (!$this->initialized) {
             $this->initialize();
@@ -142,7 +142,7 @@ class PluginManager
      * @throws \OutOfBoundsException if the plugin does not exist
      * @return Plugin|ExtendPlugin|TemplatePlugin|LanguagePlugin
      */
-    function getInstance($class)
+    function getInstance(string $class)
     {
         if (!$this->initialized) {
             $this->initialize();
@@ -160,7 +160,7 @@ class PluginManager
      *
      * @return Plugin[]|ExtendPlugin[]|TemplatePlugin[]|LanguagePlugin[]
      */
-    function getInstances()
+    function getInstances(): array
     {
         if (!$this->initialized) {
             $this->initialize();
@@ -176,7 +176,7 @@ class PluginManager
      * @param string $name
      * @return bool
      */
-    function has($type, $name)
+    function has(string $type, string $name): bool
     {
         if (!$this->initialized) {
             $this->initialize();
@@ -192,7 +192,7 @@ class PluginManager
      * @param string $name
      * @return bool
      */
-    function exists($type, $name)
+    function exists(string $type, string $name): bool
     {
         return $this->has($type, $name) || $this->hasInactive($type, $name);
     }
@@ -205,7 +205,7 @@ class PluginManager
      * @throws \OutOfBoundsException if the plugin does not exist
      * @return Plugin|ExtendPlugin|TemplatePlugin|LanguagePlugin
      */
-    function get($type, $name)
+    function get(string $type, string $name)
     {
         if (!$this->initialized) {
             $this->initialize();
@@ -225,7 +225,7 @@ class PluginManager
      * @throws \OutOfBoundsException if the plugin does not exist
      * @return TemplatePlugin
      */
-    function getTemplate($name)
+    function getTemplate(string $name): TemplatePlugin
     {
         /** @var TemplatePlugin $plugin */
         $plugin = $this->get(static::TEMPLATE, $name);
@@ -240,7 +240,7 @@ class PluginManager
      * @throws \OutOfBoundsException if the plugin does not exist
      * @return ExtendPlugin
      */
-    function getExtend($name)
+    function getExtend(string $name): ExtendPlugin
     {
         /** @var ExtendPlugin $plugin */
         $plugin = $this->get(static::EXTEND, $name);
@@ -255,7 +255,7 @@ class PluginManager
      * @throws \OutOfBoundsException if the plugin does not exist
      * @return LanguagePlugin
      */
-    function getLanguage($name)
+    function getLanguage(string $name): LanguagePlugin
     {
         /** @var LanguagePlugin $plugin */
         $plugin = $this->get(static::LANGUAGE, $name);
@@ -270,7 +270,7 @@ class PluginManager
      * @throws \InvalidArgumentException if the plugin type is not valid
      * @return Plugin[]|Plugin[][] name indexed (if type is specified) or type and name indexed array of Plugin instances
      */
-    function all($type = null)
+    function all(?string $type = null): array
     {
         if (!$this->initialized) {
             $this->initialize();
@@ -290,7 +290,7 @@ class PluginManager
     /**
      * @return LanguagePlugin[]
      */
-    function getAllLanguages()
+    function getAllLanguages(): array
     {
         /** @var LanguagePlugin[] $languages */
         $languages = $this->all(static::LANGUAGE);
@@ -301,7 +301,7 @@ class PluginManager
     /**
      * @return TemplatePlugin[]
      */
-    function getAllTemplates()
+    function getAllTemplates(): array
     {
         /** @var TemplatePlugin[] $templates */
         $templates = $this->all(static::TEMPLATE);
@@ -312,7 +312,7 @@ class PluginManager
     /**
      * @return ExtendPlugin[]
      */
-    function getAllExtends()
+    function getAllExtends(): array
     {
         /** @var ExtendPlugin[] $extends */
         $extends = $this->all(static::EXTEND);
@@ -327,7 +327,7 @@ class PluginManager
      * @param string $name
      * @return bool
      */
-    function hasInactive($type, $name)
+    function hasInactive(string $type, string $name): bool
     {
         if (!$this->initialized) {
             $this->initialize();
@@ -344,7 +344,7 @@ class PluginManager
      * @throws \OutOfBoundsException if the plugin does not exist
      * @return InactivePlugin
      */
-    function getInactive($type, $name)
+    function getInactive(string $type, string $name): InactivePlugin
     {
         if (!$this->initialized) {
             $this->initialize();
@@ -364,7 +364,7 @@ class PluginManager
      * @throws \InvalidArgumentException if the plugin type is not valid
      * @return InactivePlugin[]|InactivePlugin[][] name indexed (if type is specified) or type and name indexed array of plugin arrays
      */
-    function getAllInactive($type = null)
+    function getAllInactive(?string $type = null): array
     {
         if (!$this->initialized) {
             $this->initialize();
@@ -391,7 +391,7 @@ class PluginManager
      * @throws \OutOfBoundsException     if the plugin does not exist
      * @return Plugin|null
      */
-    function find($type, $name, $exceptionOnFailure = true)
+    function find(string $type, string $name, bool $exceptionOnFailure = true): ?Plugin
     {
         if (!isset($this->types[$type])) {
             throw new \InvalidArgumentException(sprintf('Invalid plugin type "%s"', $type));
@@ -419,7 +419,7 @@ class PluginManager
      * @throws \InvalidArgumentException if the plugin type is not valid
      * @return array
      */
-    function choices($type)
+    function choices(string $type): array
     {
         if (!isset($this->types[$type])) {
             throw new \InvalidArgumentException(sprintf('Invalid plugin type "%s"', $type));
@@ -442,7 +442,7 @@ class PluginManager
      * @throws \InvalidArgumentException if the plugin type is not valid
      * @return string
      */
-    function select($pluginType, $active = null, $inputName = null)
+    function select(string $pluginType, ?string $active = null, ?string $inputName = null): string
     {
         if (!isset($this->types[$pluginType])) {
             throw new \InvalidArgumentException(sprintf('Invalid plugin type "%s"', $pluginType));
@@ -469,7 +469,7 @@ class PluginManager
     /**
      * Initialize the manager if not done yet
      */
-    private function initialize()
+    private function initialize(): void
     {
         if ($this->initialized) {
             return;
@@ -531,7 +531,7 @@ class PluginManager
     /**
      * @return array
      */
-    private function loadPlugins()
+    private function loadPlugins(): array
     {
         $pluginLoader = new PluginLoader($this->types);
         $result = $pluginLoader->load();
@@ -550,7 +550,7 @@ class PluginManager
     /**
      * @return string
      */
-    private function getCacheKey()
+    private function getCacheKey(): string
     {
         return _debug ? 'plugins_debug' : 'plugins';
     }
@@ -558,7 +558,7 @@ class PluginManager
     /**
      * @return string
      */
-    private function getSystemHash()
+    private function getSystemHash(): string
     {
         return sha1(Core::VERSION . '$' . realpath(_root));
     }
@@ -567,7 +567,7 @@ class PluginManager
      * @param array $boundFiles
      * @return array
      */
-    private function mapBoundFiles(array $boundFiles)
+    private function mapBoundFiles(array $boundFiles): array
     {
         $map = [];
 
@@ -582,7 +582,7 @@ class PluginManager
      * @param array $data
      * @return bool
      */
-    private function validateCachedData(array $data)
+    private function validateCachedData(array $data): bool
     {
         if ($data['system_hash'] !== $this->getSystemHash()) {
             return false;

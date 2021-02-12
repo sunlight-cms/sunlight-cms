@@ -18,7 +18,7 @@ class ActionResult
      * @param Message|Message[]|null $messages
      * @param string|null            $output
      */
-    function __construct($result = null, $messages = null, $output = null)
+    function __construct(?bool $result = null, $messages = null, ?string $output = null)
     {
         if ($messages !== null) {
             if (!is_array($messages)) {
@@ -40,7 +40,7 @@ class ActionResult
      * @param Message|Message[]|null $messages
      * @return static
      */
-    static function output($output, $messages = null)
+    static function output(?string $output, $messages = null): self
     {
         return new static(null, $messages, $output);
     }
@@ -51,7 +51,7 @@ class ActionResult
      * @param Message|Message[]|null $messages
      * @return static
      */
-    static function success($messages = null)
+    static function success($messages = null): self
     {
         if (empty($messages)) {
             $messages = Message::ok(_lang('action.success'));
@@ -66,7 +66,7 @@ class ActionResult
      * @param Message|Message[]|null $messages
      * @return static
      */
-    static function failure($messages = null)
+    static function failure($messages = null): self
     {
         if (empty($messages)) {
             $messages = Message::ok(_lang('action.failure'));
@@ -80,7 +80,7 @@ class ActionResult
      *
      * @return string
      */
-    function __toString()
+    function __toString(): string
     {
         return join($this->messages) . $this->output;
     }
@@ -90,7 +90,7 @@ class ActionResult
      *
      * @return bool
      */
-    function isComplete()
+    function isComplete(): bool
     {
         return $this->result !== null;
     }
@@ -100,7 +100,7 @@ class ActionResult
      *
      * @return bool
      */
-    function isSuccessful()
+    function isSuccessful(): bool
     {
         return $this->result === true;
     }
@@ -110,7 +110,7 @@ class ActionResult
      *
      * @return bool|null
      */
-    function getResult()
+    function getResult(): ?bool
     {
         return $this->result;
     }
@@ -121,7 +121,7 @@ class ActionResult
      * @param bool|null $result
      * @return $this
      */
-    function setResult($result)
+    function setResult(?bool $result): self
     {
         $this->result = $result;
 
@@ -133,7 +133,7 @@ class ActionResult
      *
      * @return bool
      */
-    function hasMessages()
+    function hasMessages(): bool
     {
         return !empty($this->messages);
     }
@@ -143,7 +143,7 @@ class ActionResult
      *
      * @return Message[]
      */
-    function getMessages()
+    function getMessages(): array
     {
         return $this->messages;
     }
@@ -154,7 +154,7 @@ class ActionResult
      * @param Message[] $messages
      * @return $this
      */
-    function setMessages(array $messages)
+    function setMessages(array $messages): self
     {
         $this->messages = $messages;
 
@@ -167,7 +167,7 @@ class ActionResult
      * @param Message $message
      * @return $this
      */
-    function addMessage(Message $message)
+    function addMessage(Message $message): self
     {
         $this->messages[] = $message;
 
@@ -179,7 +179,7 @@ class ActionResult
      *
      * @return bool
      */
-    function hasOutput()
+    function hasOutput(): bool
     {
         return $this->output !== null && $this->output !== '';
     }
@@ -189,7 +189,7 @@ class ActionResult
      *
      * @return string|null
      */
-    function getOutput()
+    function getOutput(): ?string
     {
         return $this->output;
     }
@@ -200,7 +200,7 @@ class ActionResult
      * @param string|null $output
      * @return $this
      */
-    function setOutput($output)
+    function setOutput(?string $output): self
     {
         $this->output = $output;
 

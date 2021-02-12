@@ -11,12 +11,12 @@ use Sunlight\Plugin\Plugin;
  */
 class EnableAction extends PluginAction
 {
-    function getTitle()
+    function getTitle(): string
     {
         return _lang('admin.plugins.action.do.enable');
     }
 
-    protected function execute()
+    protected function execute(): ActionResult
     {
         if ($this->plugin->isDisabled()) {
             $file = $this->plugin->getDirectory() . '/' . Plugin::DEACTIVATING_FILE;

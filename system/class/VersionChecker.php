@@ -18,7 +18,7 @@ class VersionChecker
     /**
      * @return array|null
      */
-    static function check()
+    static function check(): ?array
     {
         if (!self::$loaded) {
             self::loadData();

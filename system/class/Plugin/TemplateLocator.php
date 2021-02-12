@@ -19,7 +19,7 @@ abstract class TemplateLocator
      * @param string $idt
      * @return bool
      */
-    static function templateExists($idt)
+    static function templateExists(string $idt): bool
     {
         return Core::$pluginManager->has(PluginManager::TEMPLATE, $idt);
     }
@@ -30,7 +30,7 @@ abstract class TemplateLocator
      * @param string $name
      * @return TemplatePlugin
      */
-    static function getTemplate($name)
+    static function getTemplate(string $name): TemplatePlugin
     {
         return Core::$pluginManager->getTemplate($name);
     }
@@ -40,7 +40,7 @@ abstract class TemplateLocator
      *
      * @return TemplatePlugin
      */
-    static function getDefaultTemplate()
+    static function getDefaultTemplate(): TemplatePlugin
     {
         return static::getTemplate(_default_template);
     }
@@ -53,7 +53,7 @@ abstract class TemplateLocator
      * @param string|null $slot
      * @return string
      */
-    static function composeUid($template, $layout = null, $slot = null)
+    static function composeUid(string $template, ?string $layout = null, ?string $slot = null): string
     {
         $uid = $template;
 
@@ -74,7 +74,7 @@ abstract class TemplateLocator
      * @param int    $type see TemplateLocator::UID_* constants
      * @return string[] template, [layout], [slot]
      */
-    static function parseUid($uid, $type)
+    static function parseUid(string $uid, int $type): array
     {
         $expectedComponentCount = $type + 1;
 
@@ -88,7 +88,7 @@ abstract class TemplateLocator
      * @param int    $type see TemplateLocator::UID_* constants
      * @return array|null array or null if the given identifier is not valid
      */
-    static function getComponentsByUid($uid, $type)
+    static function getComponentsByUid(string $uid, int $type): ?array
     {
         return call_user_func_array(
             [get_called_class(), 'getComponents'],
@@ -111,7 +111,7 @@ abstract class TemplateLocator
      * @param string|null $slot
      * @return array|null array or null if the given combination does not exist
      */
-    static function getComponents($template, $layout = null, $slot = null)
+    static function getComponents(string $template, ?string $layout = null, ?string $slot = null): ?array
     {
         if (!static::templateExists($template)) {
             return null;
@@ -150,7 +150,7 @@ abstract class TemplateLocator
      * @param array $components
      * @return string
      */
-    static function getComponentLabel(array $components)
+    static function getComponentLabel(array $components): string
     {
         $label = $components['template']->getOption('name');
 

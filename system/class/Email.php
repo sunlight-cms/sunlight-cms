@@ -13,7 +13,7 @@ abstract class Email
      * @param array  $headers asociativni pole s hlavickami
      * @return bool
      */
-    static function send($to, $subject, $message, array $headers = [])
+    static function send(string $to, string $subject, string $message, array $headers = []): bool
     {
         // zjistit veskere hlavicky, ktere byly uvedeny
         $definedHeaderMap = [];
@@ -71,7 +71,7 @@ abstract class Email
      * @param string      $sender   emailova adresa odesilatele
      * @param string|null $name     jmeno odesilatele
      */
-    static function defineSender(array &$headers, $sender, $name = null)
+    static function defineSender(array &$headers, string $sender, ?string $name = null)
     {
         if (_mailerusefrom) {
             $headerName = 'From';
@@ -94,7 +94,7 @@ abstract class Email
      * @param string $email e-mailova adresa
      * @return bool
      */
-    static function validate($email)
+    static function validate(string $email): bool
     {
         $isValid = true;
         $atIndex = mb_strrpos($email, '@');
@@ -152,7 +152,7 @@ abstract class Email
      * @param string $email emailova adresa
      * @return string
      */
-    static function link($email)
+    static function link(string $email): string
     {
         if ('' !== _atreplace) {
             $email = str_replace("@", _atreplace, $email);

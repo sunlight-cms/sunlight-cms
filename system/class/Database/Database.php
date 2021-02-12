@@ -33,7 +33,7 @@ class Database
      * @param string|null $sqlMode
      * @return string|null null on success, error message on failure
      */
-    static function connect($server, $user, $password, $database, $port, $charset = 'utf8mb4', $sqlMode = '')
+    static function connect(string $server, string $user, string $password, string $database, ?string $port, ?string $charset = 'utf8mb4', ?string $sqlMode = ''): ?string
     {
         $mysqli = @mysqli_connect($server, $user, $password, $database, $port);
         $connectError = mysqli_connect_error();
@@ -78,7 +78,7 @@ class Database
      * @throws DatabaseException
      * @return \mysqli_result|bool
      */
-    static function query($sql, $expectError = false, $log = true)
+    static function query(string $sql, bool $expectError = false, bool $log = true)
     {
         if ($log) {
             Extend::call('db.query', ['sql' => $sql]);
@@ -122,7 +122,7 @@ class Database
      * @param bool   $expectError deaktivovat DBException v pripade chyby
      * @return array|bool
      */
-    static function queryRow($sql, $expectError = false)
+    static function queryRow(string $sql, bool $expectError = false)
     {
         $result = static::query($sql, $expectError);
         if ($result === false) {
@@ -144,7 +144,7 @@ class Database
      * @param bool            $expectError deaktivovat DBException v pripade chyby
      * @return array[]|bool
      */
-    static function queryRows($sql, $indexBy = null, $fetchColumn = null, $assoc = true, $expectError = false)
+    static function queryRows(string $sql, $indexBy = null, $fetchColumn = null, bool $assoc = true, bool $expectError = false)
     {
         $result = static::query($sql, $expectError);
         if ($result === false) {
@@ -163,7 +163,7 @@ class Database
      * @param string $where podminka
      * @return int
      */
-    static function count($table, $where = '1')
+    static function count(string $table, string $where = '1'): int
     {
         $result = static::query('SELECT COUNT(*) FROM ' . static::escIdt($table) . ' WHERE ' . $where);
         if ($result instanceof \mysqli_result) {
@@ -182,7 +182,7 @@ class Database
      * @param string $prefix
      * @return array
      */
-    static function getTablesByPrefix($prefix = _dbprefix)
+    static function getTablesByPrefix(string $prefix = _dbprefix): array
     {
         $tables = [];
         $query = static::query('SHOW TABLES LIKE \'' . static::escWildcard($prefix) . '%\'');
@@ -199,7 +199,7 @@ class Database
      *
      * @return string prazdny retezec pokud neni chyba
      */
-    static function error()
+    static function error():string
     {
         return static::$mysqli->error;
     }
@@ -230,7 +230,7 @@ class Database
      * @param bool            $assoc       ziskat kazdy radek jako asociativni pole
      * @return array[]
      */
-    static function rows(\mysqli_result $result, $indexBy = null, $fetchColumn = null, $assoc = true)
+    static function rows(\mysqli_result $result, $indexBy = null, $fetchColumn = null, bool $assoc = true): array
     {
         $type = $assoc ? MYSQLI_ASSOC : MYSQLI_NUM;
         $rows = [];
@@ -270,7 +270,7 @@ class Database
      * @param int            $column cislo sloupce
      * @return mixed
      */
-    static function result(\mysqli_result $result, $column = 0)
+    static function result(\mysqli_result $result, int $column = 0)
     {
         $row = $result->fetch_row();
 
@@ -287,7 +287,7 @@ class Database
      * @param \mysqli_result $result
      * @return array
      */
-    static function columns(\mysqli_result $result)
+    static function columns(\mysqli_result $result): array
     {
         $columns = [];
         $fields = $result->fetch_fields();
@@ -304,7 +304,7 @@ class Database
      * @param \mysqli_result $result
      * @return bool
      */
-    static function free(\mysqli_result $result)
+    static function free(\mysqli_result $result): bool
     {
         $result->free();
 
@@ -317,7 +317,7 @@ class Database
      * @param \mysqli_result $result
      * @return int
      */
-    static function size(\mysqli_result $result)
+    static function size(\mysqli_result $result): int
     {
         return $result->num_rows;
     }
@@ -327,7 +327,7 @@ class Database
      *
      * @return int
      */
-    static function insertID()
+    static function insertID(): int
     {
         return static::$mysqli->insert_id;
     }
@@ -337,7 +337,7 @@ class Database
      *
      * @return int
      */
-    static function affectedRows()
+    static function affectedRows(): int
     {
         return static::$mysqli->affected_rows;
     }
@@ -349,7 +349,7 @@ class Database
      * @param bool  $handleArray zpracovavat pole 1/0
      * @return string|array|null
      */
-    static function esc($value, $handleArray = false)
+    static function esc($value, bool $handleArray = false)
     {
         if ($value === null) {
             return null;
@@ -379,7 +379,7 @@ class Database
      * @throws \UnexpectedValueException pokud neni identifikator retezec
      * @return string
      */
-    static function escIdt($identifier)
+    static function escIdt(string $identifier): string
     {
         if (!is_string($identifier)) {
             throw new \UnexpectedValueException('Invalid identifier type, expected a string');
@@ -394,7 +394,7 @@ class Database
      * @param array $identifiers
      * @return string
      */
-    static function idtList(array $identifiers)
+    static function idtList(array $identifiers): string
     {
         $sql = '';
         $first = true;
@@ -416,7 +416,7 @@ class Database
      * @param string $string retezec
      * @return string
      */
-    static function escWildcard($string)
+    static function escWildcard(string $string): string
     {
         return str_replace(
             ['%', '_'],
@@ -432,7 +432,7 @@ class Database
      * @param bool  $handleArray zpracovavat pole 1/0
      * @return string
      */
-    static function val($value, $handleArray = false)
+    static function val($value, bool $handleArray = false): string
     {
         if ($value instanceof RawSqlValue) {
             return $value->getSql();
@@ -464,7 +464,7 @@ class Database
      * @param string $safeSql hodnota
      * @return RawSqlValue
      */
-    static function raw($safeSql)
+    static function raw(string $safeSql): RawSqlValue
     {
         return new RawSqlValue($safeSql);
     }
@@ -475,7 +475,7 @@ class Database
      * @param mixed $value hodnota
      * @return string "=<hodnota>" nebo "IS NULL"
      */
-    static function equal($value)
+    static function equal($value): string
     {
         if ($value === null) {
             return 'IS NULL';
@@ -487,10 +487,10 @@ class Database
     /**
      * Sestavit podminku pro neekvalitu
      *
-     * @param string $value hodnota
+     * @param mixed $value hodnota
      * @return string "!=<hodnota>" nebo "IS NOT NULL"
      */
-    static function notEqual($value)
+    static function notEqual($value): string
     {
         if ($value === null) {
             return 'IS NOT NULL';
@@ -505,7 +505,7 @@ class Database
      * @param array $arr pole
      * @return string ve formatu a,b,c,d
      */
-    static function arr(array $arr)
+    static function arr(array $arr): string
     {
         $sql = '';
 
@@ -528,7 +528,7 @@ class Database
      * @param bool   $getInsertId vratit insert ID 1/0
      * @return bool|int
      */
-    static function insert($table, array $data, $getInsertId = false)
+    static function insert(string $table, array $data, bool $getInsertId = false)
     {
         if (empty($data)) {
             return false;
@@ -570,7 +570,7 @@ class Database
      * @param array  $rows  pole s radky, ktere se maji vlozit (kazdy radek je asociativni pole)
      * @return bool
      */
-    static function insertMulti($table, array $rows)
+    static function insertMulti(string $table, array $rows): bool
     {
         if (empty($rows)) {
             return false;
@@ -630,7 +630,7 @@ class Database
      * @param int|null $limit limit upravenych radku (null = bez limitu)
      * @return bool
      */
-    static function update($table, $cond, array $data, $limit = 1)
+    static function update(string $table, string $cond, array $data, ?int $limit = 1): bool
     {
         if (empty($data)) {
             return false;
@@ -657,7 +657,7 @@ class Database
      * @param array  $changeset   spolecne asociativni pole se zmenami
      * @param int    $maxPerQuery maximalni pocet polozek v 1 dotazu
      */
-    static function updateSet($table, $idColumn, array $set, $changeset, $maxPerQuery = 100)
+    static function updateSet(string $table, string $idColumn, array $set, array $changeset, int $maxPerQuery = 100): void
     {
         if (!empty($set)) {
             foreach (array_chunk($set, $maxPerQuery) as $chunk) {
@@ -681,7 +681,7 @@ class Database
      * @param array  $changesetMap mapa zmen pro kazdy radek: array(id1 => changeset1, ...)
      * @param int    $maxPerQuery  maximalni pocet polozek v 1 dotazu
      */
-    static function updateSetMulti($table, $idColumn, array $changesetMap, $maxPerQuery = 100)
+    static function updateSetMulti(string $table, string $idColumn, array $changesetMap, int $maxPerQuery = 100): void
     {
         foreach (static::changesetMapToList($changesetMap) as $change) {
             static::updateSet($table, $idColumn, $change['set'], $change['changeset'], $maxPerQuery);
@@ -703,7 +703,7 @@ class Database
      * @param array $changesetMap
      * @return array[] pole poli s klici "set" a "changeset"
      */
-    static function changesetMapToList(array $changesetMap)
+    static function changesetMapToList(array $changesetMap): array
     {
         $commonChanges = [];
         $ids = array_keys($changesetMap);
@@ -748,7 +748,7 @@ class Database
      * @param string   $cond  podminka WHERE
      * @return bool
      */
-    static function delete($table, $cond)
+    static function delete(string $table, string $cond): bool
     {
         return static::query('DELETE FROM ' . static::escIdt($table) . " WHERE {$cond}");
     }
@@ -761,7 +761,7 @@ class Database
      * @param array  $set         seznam identifikatoru
      * @param int    $maxPerQuery maximalni pocet polozek v 1 dotazu
      */
-    static function deleteSet($table, $column, array $set, $maxPerQuery = 100)
+    static function deleteSet(string $table, string $column, array $set, int $maxPerQuery = 100): void
     {
         if (!empty($set)) {
             foreach (array_chunk($set, $maxPerQuery) as $chunk) {
@@ -776,7 +776,7 @@ class Database
      * @param int|null $timestamp timestamp (null = time())
      * @return string YY-MM-DD HH:MM:SS (bez uvozovek)
      */
-    static function datetime($timestamp = null)
+    static function datetime(?int $timestamp = null): string
     {
         return date('Y-m-d H:i:s', $timestamp !== null ? $timestamp : time());
     }
@@ -787,7 +787,7 @@ class Database
      * @param int|null $timestamp timestamp (null = time())
      * @return string YY-MM-DD (bez uvozovek)
      */
-    static function date($timestamp = null)
+    static function date(?int $timestamp = null): string
     {
         return date('Y-m-d', $timestamp !== null ? $timestamp : time());
     }

@@ -62,7 +62,7 @@ class PluginLoader
      * @param bool $resolveInstallationStatus
      * @return array
      */
-    function load($resolveInstallationStatus = true)
+    function load(bool $resolveInstallationStatus = true): array
     {
         $plugins = [];
         $autoload = array_fill_keys(['psr-0', 'psr-4', 'classmap', 'files'], []);
@@ -103,7 +103,7 @@ class PluginLoader
         ];
     }
 
-    private function findPlugins(array &$plugins, array &$boundFiles)
+    private function findPlugins(array &$plugins, array &$boundFiles): void
     {
         // load plugins from standard paths
         foreach ($this->types as $typeName => $type) {
@@ -139,7 +139,7 @@ class PluginLoader
      * @param array $plugin
      * @return array
      */
-    function loadPlugin(array $plugin)
+    function loadPlugin(array $plugin): array
     {
         $type = $this->types[$plugin['type']];
         $context = $this->createPluginOptionContext($plugin, $type);
@@ -211,7 +211,7 @@ class PluginLoader
      * @param array $definitionErrors
      * @param array $errors
      */
-    private function validateOptions(array $options, array $definitionErrors, array &$errors)
+    private function validateOptions(array $options, array $definitionErrors, array &$errors): void
     {
         // api version
         if (!isset($definitionErrors['api']) && !$this->checkVersion($options['api'], Core::VERSION)) {
@@ -244,7 +244,7 @@ class PluginLoader
      * @param array $plugin
      * @return bool
      */
-    private function hasErrors(array $plugin)
+    private function hasErrors(array $plugin): bool
     {
         return $plugin['errors'] || $plugin['definition_errors'];
     }
@@ -254,7 +254,7 @@ class PluginLoader
      * @param array $type
      * @return string
      */
-    private function resolvePluginClass(array $plugin, array $type)
+    private function resolvePluginClass(array $plugin, array $type): string
     {
         $specifiedClass = $plugin['options']['class'];
 
@@ -279,7 +279,7 @@ class PluginLoader
      * @param string $actualVersion   the version to match the pattern against
      * @return bool
      */
-    function checkVersion($requiredVersion, $actualVersion)
+    function checkVersion(string $requiredVersion, string $actualVersion): bool
     {
         return Semver::satisfies($actualVersion, $requiredVersion);
     }
@@ -292,7 +292,7 @@ class PluginLoader
      * @param array $defaultOptions
      * @return array
      */
-    private function createPluginData($id, $file, $webPath, $typeName, array $defaultOptions = [])
+    private function createPluginData(string $id, string $file, ?string $webPath, string $typeName, array $defaultOptions = []): array
     {
         $file = realpath($file);
 
@@ -316,7 +316,7 @@ class PluginLoader
      * @param array $type
      * @return array
      */
-    private function createPluginOptionContext(array &$plugin, array $type)
+    private function createPluginOptionContext(array &$plugin, array $type): array
     {
         return [
             'plugin' => &$plugin,
@@ -329,7 +329,7 @@ class PluginLoader
      * @param array $errors
      * @return array
      */
-    private function convertPluginToErrorState(array $plugin, array $errors)
+    private function convertPluginToErrorState(array $plugin, array $errors): array
     {
         return ['status' => Plugin::STATUS_HAS_ERRORS, 'errors' => $errors] + $plugin;
     }
@@ -341,7 +341,7 @@ class PluginLoader
      * @throws \RuntimeException if the dependencies cannot be resolved
      * @return array
      */
-    private function resolveDependencies(array $plugins)
+    private function resolveDependencies(array $plugins): array
     {
         $sorted = [];
         $circularDependencyMap = $this->findCircularDependencies($plugins);
@@ -413,7 +413,7 @@ class PluginLoader
      * @param array $plugins
      * @return array
      */
-    private function findCircularDependencies(array $plugins)
+    private function findCircularDependencies(array $plugins): array
     {
         $circularDependencyMap = [];
 
@@ -456,7 +456,7 @@ class PluginLoader
      * @param array  &$errors
      * @return bool
      */
-    private function checkDependency(array $plugin, $requiredVersion, array &$errors)
+    private function checkDependency(array $plugin, string $requiredVersion, array &$errors): bool
     {
         if (Plugin::STATUS_OK !== $plugin['status']) {
             $errors[] = sprintf('dependency "%s" is not available', $plugin['id']);
@@ -478,7 +478,7 @@ class PluginLoader
         return true;
     }
 
-    private function resolveAutoload(array &$plugins, array &$autoload)
+    private function resolveAutoload(array &$plugins, array &$autoload): void
     {
         foreach ($plugins as &$plugin) {
             if (Plugin::STATUS_OK !== $plugin['status']) {
@@ -493,7 +493,7 @@ class PluginLoader
         }
     }
 
-    private function handleComposerRepositories(array &$plugins, array &$boundFiles, RepositoryInjector $injector)
+    private function handleComposerRepositories(array &$plugins, array &$boundFiles, RepositoryInjector $injector): void
     {
         foreach ($plugins as &$plugin) {
             if (!$plugin['options']['inject_composer']) {
@@ -529,14 +529,14 @@ class PluginLoader
         }
     }
 
-    private function ensureComposerRepositoryAccessControl(Repository $repository)
+    private function ensureComposerRepositoryAccessControl(Repository $repository): void
     {
         if (!is_file($repository->getVendorPath() . '/.htaccess')) {
             Filesystem::denyAccessToDirectory($repository->getVendorPath());
         }
     }
 
-    private function resolveAutoloadForInjectedComposerPackages(array &$autoload, RepositoryInjector $injector)
+    private function resolveAutoloadForInjectedComposerPackages(array &$autoload, RepositoryInjector $injector): void
     {
         $uniqueSources = [];
         $injectedPackages = $injector->getInjectedPackages();
@@ -569,7 +569,7 @@ class PluginLoader
         }
     }
 
-    private function resolveAutoloadForComposerPackage(array &$autoload, \stdClass $package, $packagePath, array $generatedClassMap)
+    private function resolveAutoloadForComposerPackage(array &$autoload, \stdClass $package, string $packagePath, array $generatedClassMap): void
     {
         // PSR-0, PSR-4
         foreach (['psr-0', 'psr-4'] as $type) {
@@ -602,7 +602,7 @@ class PluginLoader
         }
     }
 
-    private function resolveAutoloadForComposerPackageClassmap(array &$autoload, $packageDir, array $classMap, array $generatedClassMap)
+    private function resolveAutoloadForComposerPackageClassmap(array &$autoload, string $packageDir, array $classMap, array $generatedClassMap): void
     {
         $prefixes = array_map(
             function ($path) use ($packageDir) {
@@ -638,7 +638,7 @@ class PluginLoader
      *
      * @param array $plugins
      */
-    private function resolveInstallationStatus(array &$plugins)
+    private function resolveInstallationStatus(array &$plugins): void
     {
         foreach ($plugins as &$plugin) {
             if (Plugin::STATUS_HAS_ERRORS !== $plugin['status'] && $plugin['options']['installer']) {

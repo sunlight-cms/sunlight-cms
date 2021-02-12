@@ -11,9 +11,9 @@ class Xsrf
      *
      * @return string
      */
-    static function getInput()
+    static function getInput(): string
     {
-        return '<input type="hidden" name="_security_token" value="' .static::getToken() . '">';
+        return '<input type="hidden" name="_security_token" value="' . static::getToken() . '">';
     }
 
     /**
@@ -22,7 +22,7 @@ class Xsrf
      * @param string $url adresa
      * @return string
      */
-    static function addToUrl($url)
+    static function addToUrl(string $url): string
     {
         return UrlHelper::appendParams($url, '_security_token=' . rawurlencode(static::getToken()));
     }
@@ -33,7 +33,7 @@ class Xsrf
      * @param bool $forCheck token je ziskavan pro kontrolu (je bran ohled na situaci, ze mohlo zrovna dojit ke zmene ID session) 1/0
      * @return string
      */
-    static function getToken($forCheck = false)
+    static function getToken(bool $forCheck = false): string
     {
         // cache tokenu
         static $tokens = [null, null];
@@ -74,7 +74,7 @@ class Xsrf
      * @param bool $get zkontrolovat token v $_GET namisto $_POST 1/0
      * @return bool
      */
-    static function check($get = false)
+    static function check(bool $get = false): bool
     {
         // determine data source variable
         if ($get) {

@@ -11,12 +11,12 @@ use Sunlight\Message;
  */
 class InfoAction extends PluginAction
 {
-    function getTitle()
+    function getTitle(): string
     {
         return _lang('admin.plugins.action.do.info');
     }
 
-    protected function execute()
+    protected function execute(): ActionResult
     {
         $plugin = $this->plugin;
 

@@ -13,7 +13,7 @@ abstract class Form
      * @param bool $input
      * @return string
      */
-    static function activateCheckbox($input)
+    static function activateCheckbox(bool $input): string
     {
         return $input ? ' checked' : '';
     }
@@ -24,7 +24,7 @@ abstract class Form
      * @param string $name jmeno checkboxu (post)
      * @return int 1/0
      */
-    static function loadCheckbox($name)
+    static function loadCheckbox(string $name): int
     {
         return isset($_POST[$name]) ? 1 : 0;
     }
@@ -35,7 +35,7 @@ abstract class Form
      * @param bool $cond pole je povoleno 1/0
      * @return string
      */
-    static function disableInputUnless($cond)
+    static function disableInputUnless(bool $cond): string
     {
         if (!$cond) {
             return ' disabled';
@@ -53,7 +53,7 @@ abstract class Form
      * @param string $method  POST/GET
      * @return string
      */
-    static function restoreChecked($key_var, $name, $default = false, $method = 'POST')
+    static function restoreChecked(string $key_var, string $name, bool $default = false, string $method = 'POST'): string
     {
         if (
             $method === $_SERVER['REQUEST_METHOD']
@@ -79,7 +79,7 @@ abstract class Form
      * @param string $method  POST/GET
      * @return string
      */
-    static function restoreCheckedAndName($key_var, $name, $default = false, $method = 'POST')
+    static function restoreCheckedAndName(string $key_var, string $name, bool $default = false, string $method = 'POST'): string
     {
         return ' name="' . $name . '"' . static::restoreChecked($key_var, $name, $default, $method);
     }
@@ -93,7 +93,7 @@ abstract class Form
      * @param bool        $else_entities escapovat hodnotu $else 1/0
      * @return string
      */
-    static function restorePostValue($name, $else = null, $param = true, $else_entities = true)
+    static function restorePostValue(string $name, ?string $else = null, bool $param = true, bool $else_entities = true): string
     {
         return static::restoreValue($_POST, $name, $else, $param, $else_entities);
     }
@@ -106,7 +106,7 @@ abstract class Form
      * @param bool        $else_entities escapovat hodnotu $else 1/0
      * @return string
      */
-    static function restorePostValueAndName($name, $else = null, $else_entities = true)
+    static function restorePostValueAndName(string $name, ?string $else = null, bool $else_entities = true): string
     {
         return ' name="' . $name . '"' . static::restorePostValue($name, $else, true, $else_entities);
     }
@@ -120,7 +120,7 @@ abstract class Form
      * @param bool        $else_entities escapovat hodnotu $else 1/0
      * @return string
      */
-    static function restoreGetValue($name, $else = null, $param = true, $else_entities = true)
+    static function restoreGetValue(string $name, ?string $else = null, bool $param = true, bool $else_entities = true): string
     {
         return static::restoreValue($_GET, $name, $else, $param, $else_entities);
     }
@@ -133,7 +133,7 @@ abstract class Form
      * @param bool        $else_entities escapovat hodnotu $else 1/0
      * @return string
      */
-    static function restoreGetValueAndName($name, $else = null, $else_entities = true)
+    static function restoreGetValueAndName(string $name, ?string $else = null, bool $else_entities = true): string
     {
         return ' name="' . $name . '"' . static::restoreGetValue($name, $else, true, $else_entities);
     }
@@ -148,7 +148,7 @@ abstract class Form
      * @param bool        $else_entities escapovat hodnotu $else 1/0
      * @return string
      */
-    static function restoreValue(array $values, $key, $else = null, $param = true, $else_entities = true)
+    static function restoreValue(array $values, string $key, ?string $else = null, bool $param = true, bool $else_entities = true): string
     {
         if (isset($values[$key]) && is_scalar($values[$key])) {
             $value = _e((string) $values[$key]);
@@ -179,7 +179,7 @@ abstract class Form
      * @param array       $excludeList
      * @return string
      */
-    static function renderHiddenPostInputs($include = null, $exclude = null, array $excludeList = [])
+    static function renderHiddenPostInputs(?string $include = null, ?string $exclude = null, array $excludeList = []): string
     {
         $excludeList[] = '_security_token';
 
@@ -192,7 +192,7 @@ abstract class Form
      * @param array $data data
      * @return string
      */
-    static function renderHiddenInputs(array $data)
+    static function renderHiddenInputs(array $data): string
     {
         $output = '';
         $counter = 0;
@@ -216,7 +216,7 @@ abstract class Form
      * @param array  $pkeys nadrazene klice
      * @return string
      */
-    static function renderHiddenInput($key, $value, array $pkeys = [])
+    static function renderHiddenInput(string $key, $value, array $pkeys = []): string
     {
         if (is_array($value)) {
             // pole
@@ -247,12 +247,12 @@ abstract class Form
      * Sestavit kod inputu pro vyber casu
      *
      * @param string        $name             identifikator casove hodnoty
-     * @param int|null|bool $timestamp        cas, -1 (= aktualni) nebo null (= nevyplneno)
+     * @param int|null      $timestamp        cas, -1 (= aktualni) nebo null (= nevyplneno)
      * @param bool          $updatebox        zobrazit checkbox pro nastaveni na aktualni cas pri ulozeni
      * @param bool          $updateboxchecked zaskrtnuti checkboxu 1/0
      * @return string
      */
-    static function editTime($name, $timestamp = null, $updatebox = false, $updateboxchecked = false)
+    static function editTime(string $name, ?int $timestamp = null, bool $updatebox = false, bool $updateboxchecked = false): string
     {
         $output = Extend::buffer('time.edit', [
             'timestamp' => $timestamp,
@@ -281,11 +281,11 @@ abstract class Form
     /**
      * Nacist casovou hodnotu vytvorenou a odeslanou pomoci {@see Form::editTime()}
      *
-     * @param string $name    identifikator casove hodnoty
-     * @param int    $default vychozi casova hodnota pro pripad chyby
+     * @param string   $name    identifikator casove hodnoty
+     * @param int|null $default vychozi casova hodnota pro pripad chyby
      * @return int|null
      */
-    static function loadTime($name, $default = null)
+    static function loadTime(string $name, ?int $default = null): ?int
     {
         $result = Extend::fetch('time.load', [
             'name' => $name,
@@ -360,7 +360,7 @@ abstract class Form
      * @param array $rows    pole s radky (viz popis funkce)
      * @return string
      */
-    static function render(array $options, array $rows)
+    static function render(array $options, array $rows): string
     {
         // vychozi parametry
         $options += [
@@ -463,9 +463,10 @@ abstract class Form
     /**
      * Vykreslit radek tabulky formulare
      *
+     * @param array $row
      * @return string
      */
-    protected static function renderRow(array $row)
+    protected static function renderRow(array $row): string
     {
         $row += [
             'label' => null,

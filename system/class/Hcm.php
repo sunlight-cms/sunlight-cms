@@ -17,7 +17,7 @@ abstract class Hcm
      * @param string $handler callback vyhodnocovace modulu
      * @return string
      */
-    static function parse($input, $handler = [__CLASS__, 'evaluateMatch'])
+    static function parse(string $input, $handler = [__CLASS__, 'evaluateMatch']): string
     {
         return preg_replace_callback('{\[hcm\](.*?)\[/hcm\]}s', $handler, $input);
     }
@@ -28,7 +28,7 @@ abstract class Hcm
      * @param array $match
      * @return string
      */
-    static function evaluateMatch($match)
+    static function evaluateMatch(array $match): string
     {
         $params = ArgList::parse($match[1]);
         if (isset($params[0])) {
@@ -45,7 +45,7 @@ abstract class Hcm
      * @param array  $args pole s argumenty
      * @return mixed vystup HCM modulu
      */
-    static function run($name, array $args = [])
+    static function run(string $name, array $args = [])
     {
         if (_env !== Core::ENV_WEB) {
             // HCM moduly vyzaduji frontendove prostredi
@@ -87,7 +87,7 @@ abstract class Hcm
      * @throws ContentPrivilegeException
      * @return string
      */
-    static function filter($content, $exception = false)
+    static function filter(string $content, bool $exception = false): string
     {
         // pripravit seznamy
         $blacklist = [];
@@ -136,7 +136,7 @@ abstract class Hcm
      * @param string $content
      * @return string
      */
-    static function remove($content)
+    static function remove(string $content): string
     {
         return static::parse($content, function () {
             return '';
@@ -150,7 +150,7 @@ abstract class Hcm
      * @param string|array $values mozne hodnoty sloupce v poli, oddelene pomlckami nebo "all" pro vypnuti limitu
      * @return string
      */
-    static function createColumnInSqlCondition($column, $values)
+    static function createColumnInSqlCondition(string $column, $values): string
     {
         if ($values !== 'all') {
             if (!is_array($values)) {
@@ -167,11 +167,11 @@ abstract class Hcm
      *
      * V pripade chyby bude promenna nastavena na null.
      *
-     * @param &mixed $variable    promenna
+     * @param mixed $variable    promenna
      * @param string $type        pozadovany typ, viz PHP funkce settype()
      * @param bool   $emptyToNull je-li hodnota prazdna ("" nebo null), nastavit na null 1/0
      */
-    static function normalizeArgument(&$variable, $type, $emptyToNull = true)
+    static function normalizeArgument(&$variable, string $type, bool $emptyToNull = true): void
     {
         if (
             $emptyToNull && ($variable === null || $variable === '')

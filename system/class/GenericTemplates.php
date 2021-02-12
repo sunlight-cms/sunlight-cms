@@ -13,7 +13,7 @@ abstract class GenericTemplates
      * @param int    $decimals
      * @return string
      */
-    static function renderNumber($number, $decimals = 2)
+    static function renderNumber($number, int $decimals = 2): string
     {
         if (is_int($number) || $decimals <= 0 || abs(fmod($number, 1)) < pow(0.1, $decimals)) {
             // an integer value
@@ -27,11 +27,11 @@ abstract class GenericTemplates
     /**
      * Zformatovat timestamp na zaklade nastaveni systemu
      *
-     * @param number      $timestamp UNIX timestamp
+     * @param int         $timestamp UNIX timestamp
      * @param string|null $category  kategorie casu (null, article, post, activity)
      * @return string
      */
-    static function renderTime($timestamp, $category = null)
+    static function renderTime(int $timestamp, ?string $category = null): string
     {
         $extend = Extend::buffer('time.format', [
             'timestamp' => $timestamp,
@@ -51,7 +51,7 @@ abstract class GenericTemplates
      * @param int $bytes
      * @return string
      */
-    static function renderFilesize($bytes)
+    static function renderFilesize(int $bytes): string
     {
         $units = ['B', 'kB', 'MB'];
 
@@ -72,7 +72,7 @@ abstract class GenericTemplates
      * @param string $ip ip adresa
      * @return string
      */
-    static function renderIp($ip)
+    static function renderIp(string $ip): string
     {
         if (_user_group == 1) {
             // hlavni administratori vidi vzdy puvodni IP
@@ -87,7 +87,7 @@ abstract class GenericTemplates
      *
      * @return string
      */
-    static function renderHead()
+    static function renderHead(): string
     {
         $lang = _e(_lang('langcode.iso639'));
         $generator = _e('SunLight CMS ' . Core::VERSION);

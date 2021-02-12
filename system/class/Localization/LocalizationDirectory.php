@@ -20,7 +20,7 @@ class LocalizationDirectory extends LocalizationDictionary
      * @param string     $dir                path to the directory containing the localization dictionaries (without a trailing slash)
      * @param array|null $availableLanguages list of available languages (saves a is_file() check)
      */
-    function __construct($dir, array $availableLanguages = null)
+    function __construct(string $dir, array $availableLanguages = null)
     {
         $this->dir = $dir;
         $this->availableLanguages = $availableLanguages;
@@ -29,12 +29,18 @@ class LocalizationDirectory extends LocalizationDictionary
     /**
      * @return string
      */
-    function getDir()
+    function getDir(): string
     {
         return $this->dir;
     }
 
-    function get($key, array $replacements = null, $fallback = null)
+    /**
+     * @param string      $key
+     * @param array|null  $replacements
+     * @param string|null $fallback
+     * @return string
+     */
+    function get(string $key, ?array $replacements = null, ?string $fallback = null): string
     {
         $this->isLoaded or $this->load();
 
@@ -45,7 +51,7 @@ class LocalizationDirectory extends LocalizationDictionary
      * @param string $language
      * @return string
      */
-    function getPathForLanguage($language)
+    function getPathForLanguage(string $language): string
     {
         return $this->dir . '/' . $language . '.php';
     }
@@ -54,7 +60,7 @@ class LocalizationDirectory extends LocalizationDictionary
      * @param string $language
      * @return bool
      */
-    function hasDictionaryForLanguage($language)
+    function hasDictionaryForLanguage(string $language): bool
     {
         return $this->availableLanguages !== null && in_array($language, $this->availableLanguages, true)
             || $this->availableLanguages === null && is_file($this->getPathForLanguage($language));
@@ -64,7 +70,7 @@ class LocalizationDirectory extends LocalizationDictionary
      * @param string $language
      * @return array
      */
-    protected function loadDictionaryForLanguage($language)
+    protected function loadDictionaryForLanguage(string $language): array
     {
         return (array) include $this->getPathForLanguage($language);
     }
@@ -74,7 +80,7 @@ class LocalizationDirectory extends LocalizationDictionary
      *
      * Uses a fallback dictionary if possible.
      */
-    protected function load()
+    protected function load(): void
     {
         if ($this->hasDictionaryForLanguage(_language)) {
             $this->add($this->loadDictionaryForLanguage(_language));
