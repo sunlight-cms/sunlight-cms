@@ -28,7 +28,7 @@ return function ($cesta = "", $rozmery = null, $strankovani = null, $lightbox = 
     
     $lightbox = (bool) $lightbox;
 
-    $resize_opts = Picture::parseResizeOptions($rozmery);
+    $resize_opts = Picture::parseResizeOptions($rozmery ?? "?x128");
 
     if (file_exists($cesta) && is_dir($cesta)) {
         $handle = opendir($cesta);

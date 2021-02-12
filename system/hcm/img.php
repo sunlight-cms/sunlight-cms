@@ -7,9 +7,12 @@ use Sunlight\Router;
 defined('_root') or exit;
 
 return function ($cesta = "", $rozmery = null, $titulek = null, $lightbox = null) {
+    if($cesta === ""){
+        return '{' . _lang('pic.load.2') . '}';
+    }
     $cesta = _root . $cesta;
 
-    $resize_opts = Picture::parseResizeOptions($rozmery);
+    $resize_opts = Picture::parseResizeOptions($rozmery ?? "?x128");
     if (isset($titulek) && $titulek != "") {
         $titulek = _e($titulek);
     }
