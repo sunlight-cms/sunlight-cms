@@ -27,7 +27,7 @@ $_template = null;
 $_template_layout = null;
 
 // nacist vychozi motiv
-if (!Sunlight\Template::change(TemplateService::composeUid(_default_template, TemplatePlugin::DEFAULT_LAYOUT))) {
+if (!Template::change(TemplateService::composeUid(_default_template, TemplatePlugin::DEFAULT_LAYOUT))) {
     Core::updateSetting('default_template', 'default');
 
     Core::systemFailure(
