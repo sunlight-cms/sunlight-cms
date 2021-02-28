@@ -38,7 +38,7 @@ if ($query !== false) {
         }
 
         // clanky autora
-        list(, , $arts) = Article::createFilter('art', [], "author=" . $query['id'], true, false, false);
+        [, , $arts] = Article::createFilter('art', [], "author=" . $query['id'], true, false, false);
         if ($arts != 0) {
 
             // zjisteni prumerneho hodnoceni

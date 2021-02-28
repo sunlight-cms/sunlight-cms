@@ -231,7 +231,7 @@ class TreeManager
         foreach ($flatTree as $node) {
             // aktualizovat aktualni kontext
             while (!empty($stack) && $node[$this->levelColumn] < $contextLevel) {
-                list($context, $contextLevel) = array_pop($stack);
+                [$context, $contextLevel] = array_pop($stack);
             }
             
             // zavolat propagator aktualniho kontextu

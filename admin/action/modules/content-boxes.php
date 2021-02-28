@@ -14,7 +14,7 @@ $message = null;
 
 // process action
 if (isset($_POST['action'])) {
-    list($action, $param) = explode(':', Request::post('action', '')) + [1 => null];
+    [$action, $param] = explode(':', Request::post('action', '')) + [1 => null];
 
     switch ($action) {
         case 'save_ord':

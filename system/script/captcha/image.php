@@ -24,7 +24,7 @@ if (!Picture::checkFormatSupport('jpg')) {
 $captchaNumber = Request::get('n');
 
 if (!empty($captchaNumber) && isset($_SESSION['captcha_code'][$captchaNumber])) {
-    list($captchaCode, $captchaDrawn) = $_SESSION['captcha_code'][$captchaNumber];
+    [$captchaCode, $captchaDrawn] = $_SESSION['captcha_code'][$captchaNumber];
 
     if ($captchaDrawn) {
         Response::forbidden();

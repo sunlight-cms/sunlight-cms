@@ -88,7 +88,7 @@ return function ($typ = 'new', $pocet = null, $perex = 'perex', $info = true, $k
     }
 
     // omezeni vypisu
-    list($joins, $cond) = Article::createFilter(
+    [$joins, $cond] = Article::createFilter(
         'art',
         Arr::removeValue(explode('-', $kategorie), ''),
         $rcond

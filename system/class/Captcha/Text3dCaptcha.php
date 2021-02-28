@@ -130,8 +130,8 @@ class Text3dCaptcha
 
         for ($x = 1; $x < $w - 1; $x++)
             for ($y = 1; $y < $h - 1; $y++) {
-                list($x1, $y1) = $this->to2d($x, $y, imagecolorat($matrix, $x, $y) / 0xFF);
-                list($x2, $y2) = $this->to2d($x - 1, $y + 1, imagecolorat($matrix, $x - 1, $y + 1) / 0xFF);
+                [$x1, $y1] = $this->to2d($x, $y, imagecolorat($matrix, $x, $y) / 0xFF);
+                [$x2, $y2] = $this->to2d($x - 1, $y + 1, imagecolorat($matrix, $x - 1, $y + 1) / 0xFF);
                 imageline($captcha, $x1 + $pad, $y1, $x2 + $pad, $y2, $this->foregroundColor);
             }
 

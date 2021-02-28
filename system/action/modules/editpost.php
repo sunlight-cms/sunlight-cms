@@ -30,7 +30,7 @@ if (!_logged_in) {
 $message = '';
 $form = true;
 $id = (int) Request::get('id');
-list($columns, $joins, $cond) = Comment::createFilter('post');
+[$columns, $joins, $cond] = Comment::createFilter('post');
 $userQuery = User::createQuery('post.author');
 $columns .= ',home_page.layout page_layout,' . $userQuery['column_list'];
 $joins .= ' ' . $userQuery['joins'];
@@ -46,7 +46,7 @@ if ($query !== false) {
         Extend::call('mod.editpost.backlink', ['backlink' => &$_index['backlink'], 'post' => $query]);
 
         if ($_index['backlink'] === null) {
-            list($url) = Router::post($query);
+            [$url] = Router::post($query);
 
             switch ($query['type']) {
                 case _post_section_comment:

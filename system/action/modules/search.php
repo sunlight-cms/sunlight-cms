@@ -113,7 +113,7 @@ if ($search_query != '') {
         // vyhledani clanku
         if ($art) {
             // zakladni dostaz
-            list($joins, $cond) = Article::createFilter('art', [], $searchQuery('art', ['title', 'slug', 'perex', 'description', 'content']));
+            [$joins, $cond] = Article::createFilter('art', [], $searchQuery('art', ['title', 'slug', 'perex', 'description', 'content']));
 
             // vykonani a nacteni vysledku
             $q = DB::query('SELECT art.id,art.title,art.slug,art.perex,cat1.slug AS cat_slug FROM ' . _article_table . ' art ' . $joins . ' WHERE ' . $cond . 'ORDER BY time DESC LIMIT 100');
@@ -131,7 +131,7 @@ if ($search_query != '') {
         if ($post) {
             // priprava
             $types = [_post_section_comment, _post_article_comment, _post_book_entry, _post_forum_topic, _post_plugin];
-            list($columns, $joins, $cond) = Comment::createFilter('post', $types, [], $searchQuery('post', ['subject', 'text']));
+            [$columns, $joins, $cond] = Comment::createFilter('post', $types, [], $searchQuery('post', ['subject', 'text']));
             $userQuery = User::createQuery('post.author');
             $columns .= ',' . $userQuery['column_list'];
             $joins .= ' ' . $userQuery['joins'];
@@ -142,7 +142,7 @@ if ($search_query != '') {
                 // nacteni titulku, odkazu a strany
                 $pagenum = null;
                 $post_anchor = true;
-                list($link, $title) = Router::post($r);
+                [$link, $title] = Router::post($r);
                 switch ($r['type']) {
                         // komentar sekce / prispevek knihy
                     case _post_section_comment:

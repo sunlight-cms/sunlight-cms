@@ -120,7 +120,7 @@ abstract class PageManager
         $result = false;
 
         // zjistit aktualni stranku
-        list($currentId, $currentData) = static::getActive();
+        [$currentId, $currentData] = static::getActive();
 
         if ($currentData !== null) {
             $currentLevel = $currentData['node_level'];

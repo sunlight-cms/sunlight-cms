@@ -13,11 +13,11 @@ class Color
     function __construct(array $color = [0, 0, 0], int $type = 0)
     {
         if ($type === 0) {
-            list($this->r, $this->g, $this->b) = $color;
-            list($this->h, $this->s, $this->l) = $this->rgbToHsl($color[0], $color[1], $color[2]);
+            [$this->r, $this->g, $this->b] = $color;
+            [$this->h, $this->s, $this->l] = $this->rgbToHsl($color[0], $color[1], $color[2]);
         } else {
-            list($this->h, $this->s, $this->l) = $color;
-            list($this->r, $this->g, $this->b) = $this->hslToRgb($color[0], $color[1], $color[2]);
+            [$this->h, $this->s, $this->l] = $color;
+            [$this->r, $this->g, $this->b] = $this->hslToRgb($color[0], $color[1], $color[2]);
         }
     }
 
@@ -61,8 +61,8 @@ class Color
      */
     function setRgb(int $r, int $g, int $b): void
     {
-        list($this->h, $this->s, $this->l) = $this->rgbToHsl($r, $g, $b);
-        list($this->r, $this->g, $this->b) = func_get_args();
+        [$this->h, $this->s, $this->l] = $this->rgbToHsl($r, $g, $b);
+        [$this->r, $this->g, $this->b] = func_get_args();
     }
 
     /**
@@ -74,8 +74,8 @@ class Color
      */
     function setHsl(int $h, int $s, int $l): void
     {
-        list($this->r, $this->g, $this->b) = $this->hslToRgb($h, $s, $l);
-        list($this->h, $this->s, $this->l) = func_get_args();
+        [$this->r, $this->g, $this->b] = $this->hslToRgb($h, $s, $l);
+        [$this->h, $this->s, $this->l] = func_get_args();
     }
 
     /**
@@ -96,9 +96,9 @@ class Color
         // update channel
         $this->$channel = $value;
         if ($channel === 'r' || $channel === 'g' || $channel === 'b') {
-            list($this->h, $this->s, $this->l) = $this->rgbToHsl($this->r, $this->g, $this->b);
+            [$this->h, $this->s, $this->l] = $this->rgbToHsl($this->r, $this->g, $this->b);
         } else {
-            list($this->r, $this->g, $this->b) = $this->hslToRgb($this->h, $this->s, $this->l);
+            [$this->r, $this->g, $this->b] = $this->hslToRgb($this->h, $this->s, $this->l);
         }
         return true;
     }

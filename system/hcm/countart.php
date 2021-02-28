@@ -13,7 +13,7 @@ return function ($kategorie = null) {
         $kategorie = [];
     }
 
-    list($joins, $cond) = Article::createFilter('art', $kategorie);
+    [$joins, $cond] = Article::createFilter('art', $kategorie);
 
     return DB::result(DB::query("SELECT COUNT(*) FROM " . _article_table . " AS art " . $joins . " WHERE " . $cond), 0);
 };

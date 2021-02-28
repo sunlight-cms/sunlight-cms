@@ -427,7 +427,7 @@ class PluginLoader
         }
 
         while (!empty($checkQueue)) {
-            list($name, $pathMap) = array_pop($checkQueue);
+            [$name, $pathMap] = array_pop($checkQueue);
 
             if (isset($plugins[$name])) {
                 foreach (array_keys($plugins[$name]['options']['requires']) as $dependency) {
