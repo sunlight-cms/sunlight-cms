@@ -192,11 +192,7 @@ abstract class Core
         ];
 
         // load config file
-        if (!isset($options['config_file'])) {
-            $configFile = $root . 'config.php';
-        } else {
-            $configFile = $options['config_file'];
-        }
+        $configFile = $options['config_file'] ?? $root . 'config.php';
 
         if ($configFile !== false) {
             $configFileOptions = @include $configFile;
@@ -489,11 +485,7 @@ abstract class Core
 
         // make sure $_SERVER['REQUEST_URI'] is defined
         if (!isset($_SERVER['REQUEST_URI'])) {
-            if (isset($_SERVER['SCRIPT_NAME'])) {
-                $requestUri = $_SERVER['SCRIPT_NAME'];
-            } else {
-                $requestUri = $_SERVER['PHP_SELF'];
-            }
+            $requestUri = $_SERVER['SCRIPT_NAME'] ?? $_SERVER['PHP_SELF'];
             if (!empty($_SERVER['QUERY_STRING'])) {
                 $requestUri .= '?' . $_SERVER['QUERY_STRING'];
             }

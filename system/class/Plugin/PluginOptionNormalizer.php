@@ -15,11 +15,7 @@ abstract class PluginOptionNormalizer
      */
     static function normalizeNamespace(?string $namespace, array $context): string
     {
-        if ($namespace === null) {
-            return $context['type']['default_base_namespace'] . '\\' . $context['plugin']['camel_id'];
-        } else {
-            return $namespace;
-        }
+        return $namespace ?? $context['type']['default_base_namespace'] . '\\' . $context['plugin']['camel_id'];
     }
 
     /**
@@ -243,7 +239,7 @@ abstract class PluginOptionNormalizer
             }
 
             // template
-            $entry['template'] = isset($options['template']) ? $options['template'] : 'template.php';
+            $entry['template'] = $options['template'] ?? 'template.php';
 
             if (!is_string($entry['template'])) {
                 throw new OptionSetNormalizerException(sprintf('[%s][template] invalid value (expected string)', $layout));

@@ -109,7 +109,7 @@ if ($_page['events'] !== null) {
     foreach (ArgList::parse($_page['events']) as $page_event) {
         $page_event_parts = explode(':', $page_event, 2);
         Extend::call('page.event.' . $page_event_parts[0], [
-            'arg' => isset($page_event_parts[1]) ? $page_event_parts[1] : null,
+            'arg' => $page_event_parts[1] ?? null,
             'page' => &$_page,
         ]);
     }

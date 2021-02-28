@@ -35,11 +35,7 @@ class ConfigAction extends PluginAction
                 : [];
 
             foreach ($fields as $key => $field) {
-                if (isset($submittedConfig[$key])) {
-                    $submittedValue = $submittedConfig[$key];
-                } else {
-                    $submittedValue = null;
-                }
+                $submittedValue = $submittedConfig[$key] ?? null;
 
                 $this->mapSubmittedValue($key, $field, $submittedValue);
             }

@@ -148,9 +148,7 @@ class OptionSet
                 $indexIsValid = false;
             } else {
                 // default value
-                $data[$index] = isset($entry['default'])
-                    ? $entry['default']
-                    : null;
+                $data[$index] = $entry['default'] ?? null;
             }
 
             // normalize

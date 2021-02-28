@@ -734,7 +734,7 @@ if ($continue) {
         $ext = strtolower($iteminfo['extension']);
         $image = false;
 
-        $icon = isset($extensions[$ext]) ? $extensions[$ext] : 'other';
+        $icon = $extensions[$ext] ?? 'other';
         $image = $icon === 'image';
 
         $filesize = filesize($dir . $item);

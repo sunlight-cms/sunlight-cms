@@ -60,7 +60,7 @@ class PhpTemplate
         return preg_replace_callback('{\'@@([a-zA-Z._\-]+)(?:\|(".+"|.+))?@@\'}', function (array $matches) use ($vars, $that) {
             return $that->compilePlaceholder(
                 $matches[1],
-                isset($matches[2]) ? $matches[2] : null,
+                $matches[2] ?? null,
                 $vars
             );
         }, $this->template);

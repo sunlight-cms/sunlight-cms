@@ -106,7 +106,7 @@ abstract class Template
         ];
 
         // sestaveni
-        echo '<meta name="description" content="' . (isset($_index['description']) ? $_index['description'] : _description) . '">' . ((_author !== '') ? '
+        echo '<meta name="description" content="' . ($_index['description'] ?? _description) . '">' . ((_author !== '') ? '
 <meta name="author" content="' . _author . '">' : '')
             . Extend::buffer('tpl.head.meta')
             . ($_template->getOption('responsive') ? "\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">" : '')
@@ -146,11 +146,7 @@ abstract class Template
             global $_template, $_template_boxes;
 
             // nacist boxy
-            if (isset($_template_boxes[$slot])) {
-                $boxes = $_template_boxes[$slot];
-            } else {
-                $boxes = [];
-            }
+            $boxes = $_template_boxes[$slot] ?? [];
 
             // extend
             $output = Extend::buffer('tpl.boxes', [

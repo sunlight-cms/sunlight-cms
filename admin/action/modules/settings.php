@@ -290,11 +290,7 @@ $output .= ($saved ? Message::ok(_lang('admin.settings.saved')) : '') . '
 ';
 
 foreach ($editable_settings as $settings_category => $settings_category_data) {
-    if (!isset($settings_category_data['title'])) {
-        $title = _lang('admin.settings.' . $settings_category);
-    } else {
-        $title = $settings_category_data['title'];
-    }
+    $title = $settings_category_data['title'] ?? _lang('admin.settings.' . $settings_category);
 
     $output .= "<li><a href=\"#settings_{$settings_category}\">{$title}</a></li>\n";
 }
@@ -306,11 +302,7 @@ $output .= '</ul>
 ';
 
 foreach ($editable_settings as $settings_category => $settings_category_data) {
-    if (!isset($settings_category_data['title'])) {
-        $title = _lang('admin.settings.' . $settings_category);
-    } else {
-        $title = $settings_category_data['title'];
-    }
+    $title = $settings_category_data['title'] ?? _lang('admin.settings.' . $settings_category);
 
     $output .= "<fieldset id=\"settings_{$settings_category}\">
 <legend>{$title}</legend>
@@ -331,11 +323,7 @@ foreach ($editable_settings as $settings_category => $settings_category_data) {
         }
 
         // popisek
-        if (!isset($item['label'])) {
-            $label = _lang('admin.settings.' . $settings_category . '.' . $item['name']);
-        } else {
-            $label = $item['label'];
-        }
+        $label = $item['label'] ?? _lang('admin.settings.' . $settings_category . '.' . $item['name']);
 
         // input
         if (!isset($item['input'])) {

@@ -333,7 +333,7 @@ class Picture
     static function enableAlpha($resource, string $format, $colorSource = null): bool
     {
         // paleta?
-        $trans = imagecolortransparent($colorSource !== null ? $colorSource : $resource);
+        $trans = imagecolortransparent($colorSource ?? $resource);
         if ($trans >= 0) {
             $transColor = imagecolorsforindex($resource, $trans);
             $transColorAl = imagecolorallocate($resource, $transColor['red'], $transColor['green'], $transColor['blue']);
@@ -635,8 +635,8 @@ class Picture
             // akce s vysledkem
             if ($opt['target_dir'] !== null) {
                 // ulozeni
-                $uid = isset($opt['target_uid']) ? $opt['target_uid'] : uniqid('');
-                $target_format = $opt['target_format'] !== null ? $opt['target_format'] : $load['ext'];
+                $uid = $opt['target_uid'] ?? uniqid('');
+                $target_format = $opt['target_format'] ?? $load['ext'];
 
                 $target_path = static::get(
                     $opt['target_dir'],

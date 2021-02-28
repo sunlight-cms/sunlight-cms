@@ -229,7 +229,7 @@ class CommentService
                 $posttype = _post_plugin;
                 $xhome = -1;
                 $subclass = "plugin";
-                $title = (isset($vars[5]) ? $vars[5] : null);
+                $title = ($vars[5] ?? null);
                 $addlink = _lang('posts.addpost');
                 $nopostsmessage = _lang('posts.noposts');
                 $postsperpage = $vars[0];

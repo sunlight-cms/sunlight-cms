@@ -111,9 +111,7 @@ class Color
      */
     function getChannel(string $channel): ?int
     {
-        if (isset($this->$channel)) {
-            return $this->$channel;
-        }
+        return $this->$channel ?? null;
     }
 
     /**

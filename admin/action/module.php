@@ -26,11 +26,7 @@ if (isset($admin_modules[$admin_current_module])) {
         }
 
         // urceni skriptu
-        if (isset($module['script'])) {
-            $script = $module['script'];
-        } else {
-            $script = _root . 'admin/action/modules/' . $admin_current_module . '.php';
-        }
+        $script = $module['script'] ?? _root . 'admin/action/modules/' . $admin_current_module . '.php';
 
         // vlozeni
         $extend_args = Extend::args($output, [

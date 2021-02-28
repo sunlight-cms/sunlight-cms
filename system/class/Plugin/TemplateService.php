@@ -193,8 +193,8 @@ abstract class TemplateService
     {
         return static::getComponentLabel(
             $components['template'],
-            isset($components['layout']) ? $components['layout'] : null,
-            isset($components['slot']) ? $components['slot'] : null,
+            $components['layout'] ?? null,
+            $components['slot'] ?? null,
             $includeTemplateName
         );
     }
