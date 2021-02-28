@@ -81,7 +81,7 @@ class SystemChecker
                     'Adresář /' . $this->paths[$i] . ' neexistuje nebo není dostupný ke čtení',
                     'The /' . $this->paths[$i] . ' directory does not exist or is not readable',
                 ];
-            } elseif (!is_writeable($path)) {
+            } elseif (!is_writable($path)) {
                 $this->errors[] = [
                     'Do adresáře /' . $this->paths[$i] . ' nelze zapisovat',
                     'The /' . $this->paths[$i] . ' directory is not writeable',

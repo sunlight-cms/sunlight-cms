@@ -615,7 +615,7 @@ abstract class Step
      */
     protected function getConfig(string $key, $default = null)
     {
-        if (Config::isLoaded() && key_exists($key, Config::$config)) {
+        if (Config::isLoaded() && array_key_exists($key, Config::$config)) {
             return Config::$config[$key];
         } else {
             return $default;

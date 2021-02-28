@@ -266,7 +266,7 @@ class Url
      */
     function __get(string $name)
     {
-        if (!key_exists($name, $this->components)) {
+        if (!array_key_exists($name, $this->components)) {
             throw new \OutOfBoundsException(sprintf('Unknown URL component "%s"', $name));
         }
 
@@ -282,7 +282,7 @@ class Url
      */
     function __set(string $name, $value): void
     {
-        if (!key_exists($name, $this->components)) {
+        if (!array_key_exists($name, $this->components)) {
             throw new \OutOfBoundsException(sprintf('Unknown URL component "%s"', $name));
         }
 

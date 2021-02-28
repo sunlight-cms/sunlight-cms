@@ -213,7 +213,7 @@ class SqlDumper
             $isFirstColumn = true;
             foreach ($columns as $column => $columnOptions) {
                 // get value
-                if (key_exists($column, $rowx)) {
+                if (array_key_exists($column, $rowx)) {
                     $value = $rowx[$column];
                 } else {
                     $value = $columnOptions[1];

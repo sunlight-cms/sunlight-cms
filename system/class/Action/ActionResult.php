@@ -82,7 +82,7 @@ class ActionResult
      */
     function __toString(): string
     {
-        return join($this->messages) . $this->output;
+        return implode($this->messages) . $this->output;
     }
 
     /**

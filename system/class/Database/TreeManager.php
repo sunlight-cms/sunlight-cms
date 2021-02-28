@@ -65,7 +65,7 @@ class TreeManager
      */
     function create(array $data, bool $refresh = true): int
     {
-        if (key_exists($this->levelColumn, $data) || key_exists( $this->depthColumn, $data)) {
+        if (array_key_exists($this->levelColumn, $data) || array_key_exists( $this->depthColumn, $data)) {
             throw new \InvalidArgumentException(sprintf('Columns "%s" and "%s" cannot be specified manually', $this->levelColumn, $this->depthColumn));
         }
         $data += [
@@ -93,12 +93,12 @@ class TreeManager
      */
     function update(int $nodeId, int $parentNodeId, array $changeset, bool $refresh = true): self
     {
-        if (key_exists($this->levelColumn, $changeset) || key_exists($this->depthColumn, $changeset)) {
+        if (array_key_exists($this->levelColumn, $changeset) || array_key_exists($this->depthColumn, $changeset)) {
             throw new \InvalidArgumentException(sprintf('Columns "%s" and "%s" cannnot be changed manually', $this->levelColumn, $this->depthColumn));
         }
 
         // kontrola rodice
-        $hasNewParent = key_exists($this->parentColumn, $changeset);
+        $hasNewParent = array_key_exists($this->parentColumn, $changeset);
         if ($hasNewParent) {
             $newParent = $changeset[$this->parentColumn];
             if (!$this->checkParent($nodeId, $newParent)) {
