@@ -312,7 +312,7 @@ abstract class Plugin
      */
     function getOption(string $name)
     {
-        if (!key_exists($name, $this->options)) {
+        if (!array_key_exists($name, $this->options)) {
             throw new \OutOfBoundsException(sprintf('Option "%s" does not exist', $name));
         }
 

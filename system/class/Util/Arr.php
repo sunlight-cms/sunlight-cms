@@ -43,7 +43,7 @@ abstract class Arr
     {
         $out = [];
         foreach ($keys as $key) {
-            if (key_exists($key, $array)) {
+            if (array_key_exists($key, $array)) {
                 $out[$prefixLen === null ? $key : substr($key, $prefixLen)] = $array[$key];
             } elseif ($exceptionOnMissing) {
                 throw new \OutOfBoundsException(sprintf('Missing key "%s"', $key));

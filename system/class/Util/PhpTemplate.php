@@ -76,7 +76,7 @@ class PhpTemplate
      */
     function compilePlaceholder(string $name, ?string $default, array $vars): string
     {
-        if (key_exists($name, $vars)) {
+        if (array_key_exists($name, $vars)) {
             // provided value
             $php = var_export($vars[$name], true);
         } else {

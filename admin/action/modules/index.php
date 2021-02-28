@@ -139,7 +139,7 @@ Extend::call('admin.index.messages', [
 
 $output .= "<div id='index-messages' class='well" . (empty($messages) ? ' hidden' : '') . "'>\n";
 $output .= '<h2>' . _lang('admin.index.messages') . "</h2>\n";
-$output .= join($messages);
+$output .= implode($messages);
 $output .= "</div>\n";
 
 // editace

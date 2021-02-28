@@ -119,7 +119,7 @@ class OptionSet
             $indexIsValid = true;
 
             // validate
-            if (key_exists($index, $data)) {
+            if (array_key_exists($index, $data)) {
                 // type
                 if (
                     $entry['type'] === 'scalar' && !is_scalar($data[$index])
