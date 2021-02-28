@@ -229,7 +229,7 @@ class Picture
             $x = imagesx($res);
             $y = imagesy($res);
         } else {
-            list($x, $y) = $size;
+            [$x, $y] = $size;
         }
 
         // rozmery kompatibilita 0 => null

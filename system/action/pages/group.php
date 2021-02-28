@@ -57,7 +57,7 @@ if (DB::size($items) != 0) {
 
                     // kategorie
                 case _page_category:
-                    list(, , $art_count) = Article::createFilter('art', [$item['id']], null, true);
+                    [, , $art_count] = Article::createFilter('art', [$item['id']], null, true);
                     $iteminfos['article_num'] = [_lang('global.articlesnum'), $art_count];
                     break;
 

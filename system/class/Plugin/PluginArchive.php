@@ -137,7 +137,7 @@ class PluginArchive
             $stat = $this->zip->statIndex($i);
 
             if (preg_match($regex, $stat['name'], $match)) {
-                list(, $dir, $name, $subpath) = $match;
+                [, $dir, $name, $subpath] = $match;
                 $type = $typeDir2Type[$dir];
 
                 if (!isset($this->plugins[$type][$name])) {

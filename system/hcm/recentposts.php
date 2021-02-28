@@ -46,14 +46,14 @@ return function ($limit = null, $stranky = "", $typ = null) {
     }
 
     // dotaz
-    list($columns, $joins, $cond) = Comment::createFilter('post', $types, $homes);
+    [$columns, $joins, $cond] = Comment::createFilter('post', $types, $homes);
     $userQuery = User::createQuery('post.author');
     $columns .= ',' . $userQuery['column_list'];
     $joins .= ' ' . $userQuery['joins'];
     $query = DB::query("SELECT " . $columns . " FROM " . _comment_table . " post " . $joins . " WHERE " . $cond . " ORDER BY id DESC LIMIT " . $limit);
 
     while ($item = DB::row($query)) {
-        list($homelink, $hometitle) = Router::post($item);
+        [$homelink, $hometitle] = Router::post($item);
 
         if ($item['author'] != -1) {
             $authorname = Router::userFromQuery($userQuery, $item);

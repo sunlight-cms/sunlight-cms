@@ -43,7 +43,7 @@ $_index['title'] = str_replace(
 $_index['backlink'] = Router::module('profile', 'id=' . $id);
 
 // tabulka
-list($columns, $joins, $cond, $count) = Comment::createFilter('post', [_post_section_comment, _post_article_comment, _post_book_entry, _post_forum_topic, _post_plugin], [], "post.author=" . $query['id'], true);
+[$columns, $joins, $cond, $count] = Comment::createFilter('post', [_post_section_comment, _post_article_comment, _post_book_entry, _post_forum_topic, _post_plugin], [], "post.author=" . $query['id'], true);
 
 $paging = Paginator::render(Router::module('profile-posts', 'id=' . $id), 15, $count);
 if (Paginator::atTop()) {
@@ -53,7 +53,7 @@ if (Paginator::atTop()) {
 $posts = DB::query("SELECT " . $columns . " FROM " . _comment_table . " post " . $joins . " WHERE " . $cond . " ORDER BY post.time DESC " . $paging['sql_limit']);
 if (DB::size($posts) != 0) {
     while ($post = DB::row($posts)) {
-        list($homelink, $hometitle) = Router::post($post);
+        [$homelink, $hometitle] = Router::post($post);
         $output .= "<div class='post'>
 <div class='post-head'>
     <a href='" . _e($homelink) . "#post-" . $post['id'] . "' class='post-author'>" . $hometitle . "</a>

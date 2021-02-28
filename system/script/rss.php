@@ -155,7 +155,7 @@ if ($custom_cond && ($donottestsource || DB::size($query) != 0)) {
         case _rss_latest_topics:
         case _rss_latest_topic_answers:
         case _rss_latest_comments:
-            list($columns, $joins, $cond) = Comment::createFilter('post', $post_types, $post_homes);
+            [$columns, $joins, $cond] = Comment::createFilter('post', $post_types, $post_homes);
             $userQuery = User::createQuery('post.author');
             $columns .= ',' . $userQuery['column_list'];
             $joins .= ' ' . $userQuery['joins'];
@@ -173,7 +173,7 @@ if ($custom_cond && ($donottestsource || DB::size($query) != 0)) {
                 }
 
                 // odkaz na stranku
-                list($homelink, $hometitle) = Router::post($item, true);
+                [$homelink, $hometitle] = Router::post($item, true);
 
                 // sestaveni titulku
                 if ($type == _rss_latest_comments) {
@@ -198,7 +198,7 @@ if ($custom_cond && ($donottestsource || DB::size($query) != 0)) {
 
             // nejnovejsi clanky
         case _rss_latest_articles:
-            list($joins, $cond) = Article::createFilter('art', $categories);
+            [$joins, $cond] = Article::createFilter('art', $categories);
             $items = DB::query("SELECT art.id,art.time,art.confirmed,art.public,art.home1,art.home2,art.home3,art.title,art.slug,art.perex,cat1.slug AS cat_slug FROM " . _article_table . " AS art " . $joins . " WHERE " . $cond . " ORDER BY art.time DESC LIMIT " . _rsslimit);
             while ($item = DB::row($items)) {
                 $feeditems[] = [

@@ -190,7 +190,7 @@ switch ($a) {
 
             // stavy
             $locked = ($q['sender_deleted'] || $q['receiver_deleted']);
-            list($role, $role_other) = (($q['sender'] == _user_id) ? ['sender', 'receiver'] : ['receiver', 'sender']);
+            [$role, $role_other] = (($q['sender'] == _user_id) ? ['sender', 'receiver'] : ['receiver', 'sender']);
 
             // spocitat neprectene zpravy
             $unread_count = DB::count(_comment_table, 'home=' . DB::val($q['id']) . ' AND type=' . _post_pm . ' AND author=' . _user_id . ' AND time>' . $q[$role_other . '_readtime']);
@@ -232,7 +232,7 @@ switch ($a) {
 
                 while ($r = DB::row($q)) {
                     // zjisteni roli
-                    list($role, $role_other) = (($r['sender'] == _user_id) ? ['sender', 'receiver'] : ['receiver', 'sender']);
+                    [$role, $role_other] = (($r['sender'] == _user_id) ? ['sender', 'receiver'] : ['receiver', 'sender']);
 
                     // smazani nebo oznaceni
                     if ($r[$role_other . '_deleted']) {

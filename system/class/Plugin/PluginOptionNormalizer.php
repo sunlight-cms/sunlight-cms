@@ -172,7 +172,7 @@ abstract class PluginOptionNormalizer
                 throw new OptionSetNormalizerException(sprintf('[%s] invalid event entry (expected an array with 2 elements)', $key));
             }
 
-            list($event, $callback) = $entry;
+            [$event, $callback] = $entry;
 
             // event
             if (!is_string($event)) {

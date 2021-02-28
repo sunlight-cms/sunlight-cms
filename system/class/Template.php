@@ -376,7 +376,7 @@ abstract class Template
         }
 
         // zjisteni aktivni stranky
-        list($activeId) = PageManager::getActive();
+        [$activeId] = PageManager::getActive();
 
         // nacist stranky
         $pages = PageManager::getRootPages(
@@ -438,7 +438,7 @@ abstract class Template
         }
 
         // zjisteni aktivni stranky
-        list($activeId) = PageManager::getActive();
+        [$activeId] = PageManager::getActive();
 
         // pouziti aktivni stranky
         if (-1 == $options['page_id']) {
@@ -451,7 +451,7 @@ abstract class Template
 
         // zjistit uroven a hloubku
         try {
-            list($level, $depth) = PageManager::getTreeReader()->getLevelAndDepth($options['page_id']);
+            [$level, $depth] = PageManager::getTreeReader()->getLevelAndDepth($options['page_id']);
             if ($options['max_depth'] !== null) {
                 $depth = min($options['max_depth'], $depth);
             }
@@ -501,7 +501,7 @@ abstract class Template
         global $_index;
 
         // zjistit aktivni stranku a jeji uroven
-        list($pageId, $pageData) = PageManager::getActive();
+        [$pageId, $pageData] = PageManager::getActive();
         if ($pageData !== null) {
             $rootLevel = $pageData['node_level'];
         } else {
