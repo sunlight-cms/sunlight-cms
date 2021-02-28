@@ -34,9 +34,7 @@ abstract class Admin
                         $admin_current_module === $module
                         || !empty($admin_modules[$module]['children']) && in_array($admin_current_module, $admin_modules[$module]['children'])
                     );
-                    $url = isset($admin_modules[$module]['url'])
-                        ? $admin_modules[$module]['url']
-                        : 'index.php?p=' . $module;
+                    $url = $admin_modules[$module]['url'] ?? 'index.php?p=' . $module;
 
                     $output .= '<a href="' . $url . '"'
                         . ($active ? ' class="act"' : '')
@@ -106,7 +104,7 @@ abstract class Admin
      */
     static function note(string $str, bool $no_gray = false, ?string $icon = null): string
     {
-        return "<p" . ($no_gray ? '' : ' class="note"') . "><img src='images/icons/" . (isset($icon) ? $icon : 'note') . ".png' alt='note' class='icon'>" . $str . "</p>";
+        return "<p" . ($no_gray ? '' : ' class="note"') . "><img src='images/icons/" . ($icon ?? 'note') . ".png' alt='note' class='icon'>" . $str . "</p>";
     }
 
     /**
@@ -319,7 +317,7 @@ abstract class Admin
      */
     static function userSelect(string $name, int $selected, string $gcond, ?string $class = null, ?string $extraoption = null, bool $groupmode = false, ?int $multiple = null): string
     {
-        if ($class != null) {
+        if ($class !== null) {
             $class = " class='" . $class . "'";
         } else {
             $class = "";

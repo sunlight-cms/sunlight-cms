@@ -98,7 +98,7 @@ class ConstraintMap
         foreach ($this->sourceMap[$packageName] as $index => $source) {
             $sources[] = [
                 'repository' => $source[0],
-                'package' => isset($source[1]) ? $source[1] : null,
+                'package' => $source[1] ?? null,
                 'constraints' => $this->constraintMap[$packageName][$index],
             ];
         }

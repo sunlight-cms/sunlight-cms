@@ -46,7 +46,7 @@ foreach ($tree as $page) {
     } else {
         $output .= "<span class='node-level-m{$page['node_level']}'>{$page['title']}</span>";
     }
-    $output .= "</td><td>" . (isset($art_counts[$page['id']]) ? $art_counts[$page['id']] : '') . "</td></tr>\n";
+    $output .= "</td><td>" . ($art_counts[$page['id']] ?? '') . "</td></tr>\n";
 }
 
 if (empty($tree)) {

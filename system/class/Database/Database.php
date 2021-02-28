@@ -213,12 +213,7 @@ class Database
     static function row(\mysqli_result $result)
     {
         $row = $result->fetch_assoc();
-
-        if ($row !== null) {
-            return $row;
-        } else {
-            return false;
-        }
+        return $row ?? false;
     }
 
     /**
@@ -255,12 +250,7 @@ class Database
     static function rown(\mysqli_result $result)
     {
         $row = $result->fetch_row();
-
-        if ($row !== null) {
-            return $row;
-        } else {
-            return false;
-        }
+        return $row ?? false;
     }
 
     /**
@@ -611,7 +601,7 @@ class Database
                 if ($columnCounter !== 0) {
                     $sql .= ',';
                 }
-                $sql .= static::val(isset($row[$column]) ? $row[$column] : null);
+                $sql .= static::val($row[$column] ?? null);
                 ++$columnCounter;
             }
             $sql .= ')';
@@ -778,7 +768,7 @@ class Database
      */
     static function datetime(?int $timestamp = null): string
     {
-        return date('Y-m-d H:i:s', $timestamp !== null ? $timestamp : time());
+        return date('Y-m-d H:i:s', $timestamp ?? time());
     }
 
     /**
@@ -789,6 +779,6 @@ class Database
      */
     static function date(?int $timestamp = null): string
     {
-        return date('Y-m-d', $timestamp !== null ? $timestamp : time());
+        return date('Y-m-d', $timestamp ?? time());
     }
 }

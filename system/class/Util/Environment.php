@@ -45,11 +45,7 @@ abstract class Environment
                     $limit_lowest = $limit;
                 }
             }
-            if (isset($limit_lowest)) {
-                $result = $limit_lowest;
-            } else {
-                $result = null;
-            }
+            $result = $limit_lowest ?? null;
         }
 
         return $result;

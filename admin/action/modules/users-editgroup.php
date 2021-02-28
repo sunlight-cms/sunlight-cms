@@ -152,12 +152,12 @@ if ($continue) {
 
             $rights .= "<tr>
     <th" . (isset($item['dangerous']) && $item['dangerous'] ? ' class="important"' : '') . ">
-        <label for='setting_" . $item['name'] . "'>" . (isset($item['label']) ? $item['label'] : _lang('admin.users.groups.' . $item['name'])) . "</label>
+        <label for='setting_" . $item['name'] . "'>" . ($item['label'] ?? _lang('admin.users.groups.' . $item['name'])) . "</label>
     </th>
     <td>
         <label>
             <input type='" . ($isText ? 'text' : 'checkbox') . "' id='setting_" . $item['name'] . "' name='" . $item['name'] . "'" . ($isText ? " value='" . _e($query[$item['name']]) . "'" : " value='1'" . Form::activateCheckbox($query[$item['name']])) . Form::disableInputUnless(!$disabled) . ">
-            " . (isset($item['help']) ? $item['help'] : _lang('admin.users.groups.' . $item['name'] . '.help')) . "
+            " . ($item['help'] ?? _lang('admin.users.groups.' . $item['name'] . '.help')) . "
         </label>
     </td>
 </tr>\n";

@@ -36,7 +36,7 @@ class Paginator
         // alias tabulky
         if (is_string($table)) {
             $table = explode(':', $table);
-            $alias = (isset($table[1]) ? $table[1] : null);
+            $alias = ($table[1] ?? null);
             $table = $table[0];
         } else {
             $alias = null;

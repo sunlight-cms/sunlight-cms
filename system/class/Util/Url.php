@@ -316,9 +316,7 @@ class Url
     function get(string $name, $default = null)
     {
         return
-            isset($this->components['query'][$name])
-                ? $this->components['query'][$name]
-                : $default;
+            $this->components['query'][$name] ?? $default;
     }
 
     /**

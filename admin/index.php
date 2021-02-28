@@ -36,7 +36,7 @@ Extend::call('admin.init', [
 $admin_menu_items = [];
 foreach ($admin_modules as $module => $module_options) {
     if (isset($module_options['menu']) && $module_options['menu']) {
-        $admin_menu_items[$module] = isset($module_options['menu_order']) ? $module_options['menu_order'] : 15;
+        $admin_menu_items[$module] = $module_options['menu_order'] ?? 15;
     }
 }
 asort($admin_menu_items, SORT_NUMERIC);

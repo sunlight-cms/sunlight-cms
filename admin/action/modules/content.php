@@ -197,14 +197,14 @@ foreach ($content_modules as $category_alias => $category_data) {
     $buttons_str = '';
     foreach ($category_data['modules'] as $module_alias => $module_options) {
         if ($module_options['access']) {
-            $module_label = isset($module_options['label']) ? $module_options['label'] : _lang('admin.content.' . $module_alias);
+            $module_label = $module_options['label'] ?? _lang('admin.content.' . $module_alias);
             $buttons_str .= '<a class="button block" href="' . _e($module_options['url']) . '"><img class="icon" alt="' . _e($module_label) . '" src="' . _e($module_options['icon']) . '">' . $module_label . "</a>\n";
         }
     }
 
     if ($buttons_str !== '') {
         $content_modules_str .= '<div class="content-' . $category_alias . '">
-<h2>' . (isset($category_data['label']) ? $category_data['label'] : _lang('admin.content.' . $category_alias)) . '</h2>
+<h2>' . ($category_data['label'] ?? _lang('admin.content.' . $category_alias)) . '</h2>
 ' . $buttons_str;
     }
 }
