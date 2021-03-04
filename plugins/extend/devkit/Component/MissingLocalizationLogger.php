@@ -18,7 +18,7 @@ class MissingLocalizationLogger
      * @param LocalizationDictionary $dict
      * @param string                 $key
      */
-    public function log(LocalizationDictionary $dict, string $key): string
+    public function log(LocalizationDictionary $dict, string $key): void
     {
         if (!isset($this->missingEntries[$dict])) {
             $this->missingEntries[$dict] = [];
