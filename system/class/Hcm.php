@@ -32,7 +32,7 @@ abstract class Hcm
     {
         $params = ArgList::parse($match[1]);
         if (isset($params[0])) {
-            return static::run($params[0], array_splice($params, 1));
+            return (string) static::run($params[0], array_splice($params, 1));
         } else {
             return '';
         }
@@ -102,7 +102,7 @@ abstract class Hcm
 
         Extend::call('hcm.filter', [
             'blacklist' => &$blacklist,
-            'whitelist' => &$blacklist,
+            'whitelist' => &$whitelist,
         ]);
 
         // pripravit mapy
