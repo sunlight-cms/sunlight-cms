@@ -9,11 +9,8 @@ Documentation, support and stable downloads are available at `sunlight-cms.cz <h
 Requirements
 ************
 
-- web server (apache preferred)
-- PHP 5.3 or newer
-
-  - extensions: mbstring, mysqli
-
+- web server (Apache preferred)
+- PHP 7.1 or newer
 - MySQL (or MariaDB) 5.0 or newer
 - `Composer <https://getcomposer.org/>`_ (to install dependencies)
 
@@ -30,8 +27,4 @@ Installation
 Legacy code notice
 ******************
 
-This codebase is very old. It was originally written in PHP 4 and uses
-very little OOP.
-
-While it is functional and has no known security vulnerabilities, one
-should keep this in mind when browsing through the code.
+This codebase, originally written for PHP 4, is very old. Expect a fair amount of spaghetti code :)
