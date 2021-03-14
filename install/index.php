@@ -1224,7 +1224,7 @@ $stepRunner= new StepRunner([
 // run
 try {
     $content = $stepRunner->run();
-} catch (\Exception $e) {
+} catch (\Throwable $e) {
     Output::cleanBuffers();
 
     ob_start();

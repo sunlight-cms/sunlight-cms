@@ -80,12 +80,12 @@ class BackupRestorer
         // verify files
         foreach ($files as $file) {
             if (is_file($file) && !is_writable(_root . $file)) {
-                $errors[] = sprintf('cannot write to "%s", please check privileges (%s)', $file);
+                $errors[] = sprintf('cannot write to "%s", please check privileges', $file);
             }
         }
         foreach ($filesToRemove as $file) {
             if (!is_writable($file)) {
-                $errors[] = sprintf('cannot write to "%s", please check privileges (%s)', $file);
+                $errors[] = sprintf('cannot write to "%s", please check privileges', $file);
             }
         }
 
@@ -97,7 +97,7 @@ class BackupRestorer
                     $failedPathsString .= sprintf(' and %d more', count($failedPaths) - 3);
                 }
 
-                $errors[] = sprintf('cannot write to "%s", please check privileges (%s)', $failedPathsString);
+                $errors[] = sprintf('cannot write to "%s", please check privileges', $failedPathsString);
             }
         }
 

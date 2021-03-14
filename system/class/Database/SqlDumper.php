@@ -45,7 +45,7 @@ class SqlDumper
             }
 
             fclose($handle);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             if ($handle !== null) {
                 fclose($handle);
             }

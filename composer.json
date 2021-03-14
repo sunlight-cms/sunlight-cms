@@ -1,5 +1,7 @@
 {
     "type": "project",
+    "name": "sunlight-cms/sunlight-cms",
+    "description": "SunLight CMS",
     "license": "MIT",
     "require": {
         "php": ">=7.1",

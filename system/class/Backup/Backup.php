@@ -459,7 +459,7 @@ class Backup
         try {
             $this->metadataCache = Json::decode(stream_get_contents($stream));
             $this->validateMetaData($this->metadataCache, $this->metadataErrors);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             throw new \RuntimeException('Could not load meta data', 0, $e);
         }
     }

@@ -314,7 +314,7 @@ if (!empty($_POST)) {
             }
 
         }
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
         $message = Message::error(_lang('global.error')) . Core::renderException($e);
     }
 }

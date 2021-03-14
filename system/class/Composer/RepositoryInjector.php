@@ -165,7 +165,7 @@ class RepositoryInjector
      * @param array     $failedIndexes
      * @return bool
      */
-    private function packageSatisfiesExistingConstraints(\stdClass $package, array &$failedIndexes): bool
+    private function packageSatisfiesExistingConstraints(\stdClass $package, ?array &$failedIndexes): bool
     {
         return $this->satisfies($package->version, $this->constraintMap->getConstraints($package->name), $failedIndexes);
     }
@@ -176,7 +176,7 @@ class RepositoryInjector
      * @param array $failedIndexes
      * @return bool
      */
-    private function existingPackageSatisfiesConstraints(string $packageName, array $constraints, array &$failedIndexes): bool
+    private function existingPackageSatisfiesConstraints(string $packageName, array $constraints, ?array &$failedIndexes): bool
     {
         return $this->satisfies($this->packages[$packageName]->version, $constraints, $failedIndexes);
     }
@@ -223,8 +223,8 @@ class RepositoryInjector
     }
 
     /**
-     * @param string[] $sources
-     * @param array    $indexesToShow
+     * @param array[] $sources
+     * @param array   $indexesToShow
      * @return string
      */
     private function getConstraintSourceInfo(array $sources, array $indexesToShow): string

@@ -25,17 +25,13 @@ abstract class StringManipulator
     /**
      * Orezat text na pozadovanou delku a pridat "...", pokud je delsi nez limit
      *
-     * @param string|null $string           vstupni retezec
-     * @param int|null    $length           pozadovana delka
-     * @param bool        $convert_entities prevest html entity zpet na originalni znaky a po orezani opet zpet
+     * @param string   $string           vstupni retezec
+     * @param int|null $length           pozadovana delka
+     * @param bool     $convert_entities prevest html entity zpet na originalni znaky a po orezani opet zpet
      * @return string
      */
-    static function ellipsis(?string $string, ?int $length, bool $convert_entities = true): string
+    static function ellipsis(string $string, ?int $length, bool $convert_entities = true): string
     {
-        if($string === null){
-            return '';
-        }
-
         if ($length === null || $length <= 0) {
             return $string;
         }

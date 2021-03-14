@@ -346,7 +346,7 @@ if ($continue) {
                             $zip->addFile($dir.$sel, $sel);
                         }
                         $zip->close();
-                    } catch (\Exception $e) {
+                    } catch (\Throwable $e) {
                         $zip->close();
                         $tmpFile->discard();
                         throw $e;

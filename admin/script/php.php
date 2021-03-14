@@ -63,7 +63,7 @@ if ($process) {
 
     try {
         eval($code);
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
         echo Core::renderException($e);
         $html = true;
     }

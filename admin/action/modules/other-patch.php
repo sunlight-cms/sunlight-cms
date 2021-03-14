@@ -54,7 +54,7 @@ if (isset($_POST['apply_patch'])) do {
             $output .= Message::error(Message::renderList(Html::escapeArrayItems($errors), 'errors'), true);
         }
 
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
         $output .= Message::error(_lang('global.error')) . Core::renderException($e);
     }
 } while (false);

@@ -13,14 +13,9 @@ function _buffer(callable $callback, array $arguments = []): string
 {
     ob_start();
 
-    $e = null;
     try {
         call_user_func_array($callback, $arguments);
-    } catch (Exception $e) {
     } catch (Throwable $e) {
-    }
-    
-    if ($e !== null) {
         ob_end_clean();
         throw $e;
     }
@@ -31,13 +26,13 @@ function _buffer(callable $callback, array $arguments = []): string
 /**
  * Prevest HTML znaky na entity
  *
- * @param string|null $input        vstupni retezec
- * @param bool        $doubleEncode prevadet i jiz existujici entity 1/0
+ * @param string $input        vstupni retezec
+ * @param bool   $doubleEncode prevadet i jiz existujici entity 1/0
  * @return string
  */
-function _e(?string $input, bool $doubleEncode = true): string
+function _e(string $input, bool $doubleEncode = true): string
 {
-    return $input !== null ? htmlspecialchars($input, ENT_QUOTES, 'UTF-8', $doubleEncode) : '';
+    return htmlspecialchars($input, ENT_QUOTES, 'UTF-8', $doubleEncode);
 }
 
 /**

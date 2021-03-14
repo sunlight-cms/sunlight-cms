@@ -153,7 +153,7 @@ abstract class Form
         if (isset($values[$key]) && is_scalar($values[$key])) {
             $value = _e((string) $values[$key]);
         } else {
-            $value = ($else_entities ? _e($else) : $else);
+            $value = ($else_entities && $else !== null ? _e($else) : $else);
         }
 
         if ($param) {

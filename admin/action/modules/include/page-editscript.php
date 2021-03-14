@@ -370,7 +370,7 @@ if (!empty($_POST)) {
         }
 
         if (!$skip) {
-            if (isset($item_opts['length'])) {
+            if (isset($item_opts['length']) && $val !== null) {
                 if ($item_opts['type'] === 'escaped_plaintext') {
                     $val = Html::cut($val, $item_opts['length']);
                 } else {

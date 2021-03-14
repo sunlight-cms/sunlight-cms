@@ -493,7 +493,7 @@ abstract class Core
         }
 
         // set error_reporting
-        $err_rep = E_ALL | E_STRICT;
+        $err_rep = E_ALL;
         if (!_debug) {
             $err_rep &= ~(E_NOTICE | E_USER_NOTICE | E_DEPRECATED | E_STRICT);
         }
