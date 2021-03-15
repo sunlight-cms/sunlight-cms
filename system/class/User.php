@@ -4,11 +4,17 @@ namespace Sunlight;
 
 use Sunlight\Database\Database as DB;
 use Sunlight\Exception\ContentPrivilegeException;
+use Sunlight\Image\ImageException;
+use Sunlight\Image\ImageLoader;
+use Sunlight\Image\ImageService;
+use Sunlight\Image\ImageStorage;
+use Sunlight\Image\ImageTransformer;
 use Sunlight\Util\Arr;
 use Sunlight\Util\Filesystem;
 use Sunlight\Util\Form;
 use Sunlight\Util\Password;
 use Sunlight\Util\Request;
+use Sunlight\Util\StringGenerator;
 use Sunlight\Util\Url;
 use Sunlight\Util\UrlHelper;
 
@@ -368,7 +374,7 @@ abstract class User
 
         // odstraneni uploadovaneho avataru
         if (isset($udata['avatar'])) {
-            @unlink(Picture::get('images/avatars/', $udata['avatar'], 'jpg', 1));
+            self::removeAvatar($udata['avatar']);
         }
 
         return true;
@@ -735,6 +741,49 @@ abstract class User
     }
 
     /**
+     * Upload a new avatar
+     *
+     * Returns avatar UID or NULL on failure.
+     */
+    static function uploadAvatar(
+        string $source,
+        string $originalFilename,
+        ?array $limits = null,
+        ?ImageException &$exception = null
+    ): ?string {
+        $uid = StringGenerator::generateUniqueHash();
+
+        return ImageService::process(
+            'avatar',
+            $source,
+            self::getAvatarPath($uid),
+            [
+                'limits' => $limits,
+                'resize' => [
+                    'mode' => ImageTransformer::RESIZE_FILL,
+                    'w' => 96,
+                    'h' => 128,
+                ],
+                'write' => [
+                    'jpg_quality' => 95,
+                ],
+                'format' => ImageLoader::getFormat($originalFilename),
+            ],
+            $exception
+        )
+            ? $uid
+            : null;
+    }
+
+    /**
+     * Get path to user avatar
+     */
+    static function getAvatarPath(string $avatar): string
+    {
+        return ImageStorage::getPath('images/avatars/', $avatar, 'jpg', 1);
+    }
+
+    /**
      * Ziskat kod avataru daneho uzivatele
      *
      * Mozne klice v $options
@@ -770,12 +819,12 @@ abstract class User
         $hasAvatar = ($data['avatar'] !== null);
 
         if ($hasAvatar) {
-            $avatarPath = Picture::get('images/avatars/', $data['avatar'], 'jpg', 1, false);
+            $avatarPath = self::getAvatarPath($data['avatar']);
         } else {
-            $avatarPath = 'images/avatars/no-avatar' . (Template::getCurrent()->getOption('dark') ? '-dark' : '') . '.jpg';
+            $avatarPath = _root . 'images/avatars/no-avatar' . (Template::getCurrent()->getOption('dark') ? '-dark' : '') . '.jpg';
         }
 
-        $url = Router::generate($avatarPath);
+        $url = Router::file($avatarPath);
 
         // vykresleni rozsirenim
         if ($options['extend']) {
@@ -825,6 +874,14 @@ abstract class User
         $userData = Arr::getSubset($row, $userQuery['columns'], strlen($userQuery['prefix']));
 
         return static::renderAvatar($userData, $options);
+    }
+
+    /**
+     * Remove user avatar
+     */
+    static function removeAvatar(string $avatar): bool
+    {
+        return @unlink(self::getAvatarPath($avatar));
     }
 
     /**

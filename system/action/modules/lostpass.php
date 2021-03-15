@@ -56,7 +56,7 @@ if (isset($_GET['user'], $_GET['hash'])) {
         }
 
         // vygenerovat heslo a odeslat na email
-        $newpass = StringGenerator::generateHash(12);
+        $newpass = StringGenerator::generateString(12);
 
         if (!Email::send(
             $userdata['email'],
@@ -114,7 +114,7 @@ if (isset($_GET['user'], $_GET['hash'])) {
         }
 
         // vygenerovani hashe
-        $hash = hash_hmac('sha256', uniqid('', true), Core::$secret);
+        $hash = StringGenerator::generateString(64);
         DB::update(_user_table, 'id=' . DB::val($userdata['id']), [
             'security_hash' => $hash,
             'security_hash_expires' => time() + 3600,

@@ -50,6 +50,13 @@ abstract class Router
             $realRootPathLength = strlen($realRootPath);
         }
 
+        if (($queryParamPos = strpos($filePath, '?')) !== false) {
+            $filePath = substr($filePath, 0, $queryParamPos);
+            $params = substr($filePath, $queryParamPos);
+        } else {
+            $params = '';
+        }
+
         $realFilePath = realpath($filePath);
 
         if ($realFilePath !== false && substr($realFilePath, 0, $realRootPathLength) === $realRootPath) {
@@ -66,7 +73,7 @@ abstract class Router
             $path = '';
         }
 
-        return static::generate($path, $absolute);
+        return static::generate($path, $absolute) . $params;
     }
 
     /**

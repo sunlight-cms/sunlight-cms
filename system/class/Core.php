@@ -14,6 +14,7 @@ use Kuria\Error\Screen\WebErrorScreenEvents;
 use Kuria\Event\EventEmitter;
 use Sunlight\Database\Database as DB;
 use Sunlight\Exception\CoreException;
+use Sunlight\Image\ImageService;
 use Sunlight\Localization\LocalizationDictionary;
 use Sunlight\Plugin\PluginManager;
 use Sunlight\Util\DateTime;
@@ -75,10 +76,6 @@ abstract class Core
     /** @var array|null */
     static $groupData;
 
-    /** @var array */
-    static $dangerousServerSideExt = ['php', 'php3', 'php4', 'php5', 'phtml', 'shtml', 'asp', 'py', 'cgi', 'htaccess'];
-    /** @var array */
-    static $imageExt = ['png', 'jpeg', 'jpg', 'gif'];
     /** @var string */
     static $imageError;
     /** @var int */
@@ -874,7 +871,7 @@ abstract class Core
     static function doMaintenance(): void
     {
         // clean thumbnails
-        Picture::cleanThumbnails(_thumb_cleanup_threshold);
+        ImageService::cleanThumbnails(_thumb_cleanup_threshold);
 
         // remove old files in the temporary directory
         Filesystem::purgeDirectory(_root . 'system/tmp', [

@@ -1,10 +1,10 @@
 <?php
 
 use Sunlight\Admin\Admin;
-use Sunlight\Core;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\GenericTemplates;
+use Sunlight\Image\ImageService;
 use Sunlight\Message;
 use Sunlight\User;
 use Sunlight\Util\Arr;
@@ -13,7 +13,6 @@ use Sunlight\Util\Filesystem;
 use Sunlight\Util\Request;
 use Sunlight\Util\Response;
 use Sunlight\Util\StringManipulator;
-use Sunlight\Util\Url;
 use Sunlight\Xsrf;
 
 defined('_root') or exit;
@@ -416,13 +415,7 @@ if ($continue) {
                                 continue;
                             }
                             $val = $decodeFilename($val);
-                            $ext = pathinfo($val);
-                            if (isset($ext['extension'])) {
-                                $ext = strtolower($ext['extension']);
-                            } else {
-                                $ext = "";
-                            }
-                            if (is_file($dir . $val) && in_array($ext, Core::$imageExt)) {
+                            if (is_file($dir . $val) && ImageService::isImage($val)) {
                                 $sql .= "(" . $galid . "," . ($smallestord + $counter) . ",'','','" . substr($dir . $val, 3) . "'),";
                                 ++$counter;
                             }
@@ -586,9 +579,9 @@ if ($continue) {
                 $images = "";
                 $counter = 0;
                 foreach ($images_load as $images_load_image) {
-                    $images_load_image = pathinfo(base64_decode($images_load_image));
-                    if (isset($images_load_image['extension']) && in_array(strtolower($images_load_image['extension']), Core::$imageExt)) {
-                        $images .= "<input type='hidden' name='f" . $counter . "' value='" . base64_encode($images_load_image['basename']) . "'>\n";
+                    $images_load_image = $decodeFilename($images_load_image);
+                    if (ImageService::isImage($images_load_image)) {
+                        $images .= "<input type='hidden' name='f" . $counter . "' value='" . $encodeFilename($images_load_image, false) . "'>\n";
                         ++$counter;
                     }
                 }
@@ -748,7 +741,7 @@ if ($continue) {
 
         $output .= "
         <tr class='" . implode(' ', $row_classes) . "'>
-        <td class='fman-item'><input type='checkbox' name='f" . $filecounter . "' id='f" . $filecounter . "' value='" . $encodeFilename($item, false) . "'> <a href='" . _e($dir . $item) . "' target='_blank'" . ($image ? ' class="lightbox" data-gallery-group="fman"' : '') . "><img src='images/icons/fman/" . $icon . ".png' alt='file' class='icon'>" . _e(StringManipulator::ellipsis($item, 64, false)) . "</a></td>
+        <td class='fman-item'><input type='checkbox' name='f" . $filecounter . "' id='f" . $filecounter . "' value='" . $encodeFilename($item, false) . "'> <a href='" . _e($dir . $item) . "' target='_blank'" . ($image ? Extend::buffer('image.lightbox', ['group' => 'fman']) : '') . "><img src='images/icons/fman/" . $icon . ".png' alt='file' class='icon'>" . _e(StringManipulator::ellipsis($item, 64, false)) . "</a></td>
         <td class='fman-size'>" . GenericTemplates::renderFileSize($filesize) . "</td>
         <td class='actions'>". (User::checkFilename($item) ?
             "<a class='button' href='" . $url . "&amp;a=delete&amp;name=" . $encodeFilename($item) . "'><img src='images/icons/delete.png' alt='del' class='icon'>" . _lang('global.delete') . "</a>  "

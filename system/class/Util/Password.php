@@ -72,7 +72,7 @@ class Password
     {
         $algo = static::PREFERRED_ALGO;
         $iterations = static::PBKDF2_ITERATIONS;
-        $salt = StringGenerator::generateHash(static::GENERATED_SALT_LENGTH);
+        $salt = StringGenerator::generateString(static::GENERATED_SALT_LENGTH);
         $hash = static::hash($algo, $iterations, $salt, $plainPassword);
 
         return new static($algo, $iterations, $salt, $hash);
@@ -184,7 +184,7 @@ class Password
     {
         $this->algo = static::PREFERRED_ALGO;
         $this->iterations = max(static::PBKDF2_ITERATIONS, $this->iterations);
-        $this->salt = StringGenerator::generateHash(static::GENERATED_SALT_LENGTH);
+        $this->salt = StringGenerator::generateString(static::GENERATED_SALT_LENGTH);
         $this->hash = static::hash($this->algo, $this->iterations, $this->salt, $plainPassword);
     }
 }

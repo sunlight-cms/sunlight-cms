@@ -762,7 +762,7 @@ class ConfigurationStep extends Step
             $defaultUrl = '/';
         }
 
-        $defaultSecret = StringGenerator::generateHash(64);
+        $defaultSecret = StringGenerator::generateString(64);
         $defaultGeoLatitude = 50.5;
         $defaultGeoLongitude = 14.26;
         $defaultGeoZenith = 90.583333;

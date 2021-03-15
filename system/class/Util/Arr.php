@@ -91,4 +91,53 @@ abstract class Arr
 
         return $output;
     }
+
+    /**
+     * Get a hash of array contents
+     *
+     * - keys are sorted before hashing
+     * - only scalar and nested array values are supported (objects will not be recursed into)
+     */
+    static function hash(array $array, string $algo = 'sha256'): string
+    {
+        $context = hash_init($algo);
+        $queue = [[0, '', $array]];
+        $last = 0;
+
+        while ($last >= 0) {
+            // pop an item off the queue
+            [$level, $path, $value] = $queue[$last];
+            unset($queue[$last]);
+            --$last;
+
+            // process item
+            if (is_array($value)) {
+                // queue sorted array pairs
+                $keys = array_keys($value);
+                sort($keys);
+
+                foreach ($keys as $key) {
+                    $queue[++$last] = [$level + 1, "{$path}.{$key}", $value[$key]];
+                }
+
+                $keys = null;
+            } else {
+                // hash level and path
+                hash_update($context, sprintf("%d\0%s\0", $level, $path));
+
+                // hash value
+                if (is_object($value)) {
+                    // only class name for objects
+                    hash_update($context, get_class($value));
+                } else {
+                    // exported value
+                    hash_update($context, var_export($value, true));
+                }
+
+                hash_update($context, "\0");
+            }
+        }
+
+        return hash_final($context);
+    }
 }

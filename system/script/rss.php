@@ -4,7 +4,6 @@ use Sunlight\Article;
 use Sunlight\Core;
 use Sunlight\Comment\CommentService;
 use Sunlight\Database\Database as DB;
-use Sunlight\Picture;
 use Sunlight\Comment\Comment;
 use Sunlight\Router;
 use Sunlight\Template;
@@ -77,7 +76,7 @@ switch ($type) {
 
             // obrazek clanku
             if ($query['picture_uid']) {
-                $image_url = Router::file(Picture::get('images/articles/', $query['picture_uid'], 'jpg', 1));
+                $image_url = Router::file(Article::getImagePath($query['picture_uid']));
                 $image_w = _article_pic_w;
                 $image_h = _article_pic_h;
             }

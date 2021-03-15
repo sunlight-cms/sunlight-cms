@@ -1,6 +1,8 @@
 <?php
 
 namespace Sunlight\Captcha;
+
+use Sunlight\Image\Image;
 use Sunlight\Util\Math;
 
 /**
@@ -102,12 +104,9 @@ class Text3dCaptcha
     }
 
     /**
-     * Output text as PNG CAPTCHA image
-     *
-     * @param string $text
-     * @return resource
+     * Draw text as PNG CAPTCHA image
      */
-    function draw(string $text)
+    function draw(string $text): Image
     {
         if ($text === '') {
             throw new \InvalidArgumentException('No text given');
@@ -117,25 +116,25 @@ class Text3dCaptcha
         $h = imagefontheight($this->font) + $this->verticalPadding * 2;
         $pad = $this->scale * $h * cos($this->projectionAngle);
 
-        $matrix = imagecreatetruecolor($w, $h);
+        $matrix = Image::blank($w, $h);
 
         $this->drawText($matrix, $text, $this->horizontalPadding, $this->verticalPadding);
         $this->drawNoise($matrix, $this->noise);
 
-        $captcha = imagecreatetruecolor($w * $this->scale + $pad, $h * sin($this->projectionAngle) * $this->scale);
+        $captcha = Image::blank($w * $this->scale + $pad, $h * sin($this->projectionAngle) * $this->scale);
+
         if (function_exists('imageantialias')) {
-            imageantialias($captcha, true);
+            imageantialias($captcha->resource, true);
         }
-        imagefill($captcha, 0, 0, $this->backgroundColor);
+        imagefill($captcha->resource, 0, 0, $this->backgroundColor);
 
-        for ($x = 1; $x < $w - 1; $x++)
+        for ($x = 1; $x < $w - 1; $x++) {
             for ($y = 1; $y < $h - 1; $y++) {
-                [$x1, $y1] = $this->to2d($x, $y, imagecolorat($matrix, $x, $y) / 0xFF);
-                [$x2, $y2] = $this->to2d($x - 1, $y + 1, imagecolorat($matrix, $x - 1, $y + 1) / 0xFF);
-                imageline($captcha, $x1 + $pad, $y1, $x2 + $pad, $y2, $this->foregroundColor);
+                [$x1, $y1] = $this->to2d($x, $y, imagecolorat($matrix->resource, $x, $y) / 0xFF);
+                [$x2, $y2] = $this->to2d($x - 1, $y + 1, imagecolorat($matrix->resource, $x - 1, $y + 1) / 0xFF);
+                imageline($captcha->resource, $x1 + $pad, $y1, $x2 + $pad, $y2, $this->foregroundColor);
             }
-
-        imagedestroy($matrix);
+        }
 
         return $captcha;
     }
@@ -161,36 +160,26 @@ class Text3dCaptcha
         ];
     }
 
-    /**
-     * @param resource $image
-     * @param string   $text
-     * @param int      $x
-     * @param int      $y
-     */
-    protected function drawText($image, string $text, int $x, int $y): void
+    protected function drawText(Image $image, string $text, int $x, int $y): void
     {
         $fontWidth = imagefontwidth($this->font);
 
         for ($i = 0; isset($text[$i]); ++$i) {
-            imagestring($image, $this->font, $x, $y, $text[$i], 0xFF);
+            imagestring($image->resource, $this->font, $x, $y, $text[$i], 0xFF);
 
             $x += $fontWidth + $this->letterSpacing;
         }
     }
 
-    /**
-     * @param resource $image
-     * @param int      $intensity
-     */
-    protected function drawNoise($image, int $intensity): void
+    protected function drawNoise(Image $image, int $intensity): void
     {
         if ($intensity === 0) {
             return;
         }
 
-        for ($x = 0; $x < imagesx($image); $x++) {
-            for ($y = 0; $y < imagesy($image); $y++) {
-                imagesetpixel($image, $x, $y, imagecolorat($image, $x, $y) + Math::randomInt(0, $intensity));
+        for ($x = 0; $x < $image->width; $x++) {
+            for ($y = 0; $y < $image->height; $y++) {
+                imagesetpixel($image->resource, $x, $y, imagecolorat($image->resource, $x, $y) + random_int(0, $intensity));
             }
         }
     }

@@ -7,7 +7,6 @@ use Sunlight\Extend;
 use Sunlight\GenericTemplates;
 use Sunlight\Hcm;
 use Sunlight\IpLog;
-use Sunlight\Picture;
 use Sunlight\Router;
 use Sunlight\Template;
 use Sunlight\Util\UrlHelper;
@@ -74,14 +73,7 @@ $_index['heading'] = null;
 
 // obrazek
 if (isset($_article['picture_uid'])) {
-    $thumbnail = Picture::getThumbnail(
-        Picture::get('images/articles/', $_article['picture_uid'], 'jpg', 1),
-        [
-            'mode' => 'fit',
-            'x' => _article_pic_thumb_w,
-            'y' => _article_pic_thumb_h,
-        ]
-    );
+    $thumbnail = Article::getThumbnail($_article['picture_uid']);
 } else {
     $thumbnail = null;
 }

@@ -2,6 +2,8 @@
 
 namespace Sunlight;
 
+use Sunlight\Util\StringManipulator;
+
 /**
  * System message
  */
@@ -68,7 +70,7 @@ class Message
             // messages
             $output .= "<ul>\n";
             foreach($messages as $key => $item) {
-                $output .= '<li>' . ($showKeys ? '<strong>' . _e($key) . '</strong>: ' : '') . $item . "</li>\n";
+                $output .= '<li>' . ($showKeys ? '<strong>' . _e($key) . '</strong>: ' : '') . StringManipulator::lcfirst($item) . "</li>\n";
             }
             $output .= "</ul>\n";
         }
@@ -110,6 +112,14 @@ class Message
     static function error(string $message, bool $isHtml = false): self
     {
         return new static(static::ERROR, $message, $isHtml);
+    }
+
+    /**
+     * Prefix a message
+     */
+    static function prefix(string $prefix, string $message): string
+    {
+        return $prefix . ': ' . StringManipulator::lcfirst($message);
     }
 
     /**

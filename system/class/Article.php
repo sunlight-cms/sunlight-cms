@@ -3,6 +3,12 @@
 namespace Sunlight;
 
 use Sunlight\Database\Database as DB;
+use Sunlight\Image\ImageException;
+use Sunlight\Image\ImageLoader;
+use Sunlight\Image\ImageService;
+use Sunlight\Image\ImageStorage;
+use Sunlight\Image\ImageTransformer;
+use Sunlight\Util\StringGenerator;
 
 abstract class Article
 {
@@ -214,24 +220,19 @@ abstract class Article
         // perex a obrazek
         if ($perex == true) {
             if (isset($art['picture_uid'])) {
-                $thumbnail = Picture::getThumbnail(
-                    Picture::get('images/articles/', $art['picture_uid'], 'jpg', 1),
-                    [
-                        'mode' => 'fit',
-                        'x' => _article_pic_thumb_w,
-                        'y' => _article_pic_thumb_h,
-                    ]
-                );
+                $thumbnail = self::getThumbnail($art['picture_uid']);
             } else {
                 $thumbnail = null;
             }
 
-            $output .= "<div class='list-perex'>" . ($thumbnail !== null ? "<a href='" . _e($link) . "'><img class='list-perex-image' src='" . _e(Router::file($thumbnail)) . "' alt='" . $art['title'] . "'></a>" : '') . $art['perex'] . "</div>\n";
+            $output .= "<div class='list-perex'>"
+                . ($thumbnail !== null ? "<a href='" . _e($link) . "'><img class='list-perex-image' src='" . _e(Router::file($thumbnail)) . "' alt='" . $art['title'] . "'></a>" : '')
+                . $art['perex']
+                . "</div>\n";
         }
 
         // info
         if ($info == true) {
-
             $infos = [
                 'author' => [_lang('article.author'), Router::userFromQuery($userQuery, $art)],
                 'posted' => [_lang('article.posted'), GenericTemplates::renderTime($art['time'], 'article')],
@@ -258,5 +259,68 @@ abstract class Article
         $output .= "</div>\n";
 
         return $output;
+    }
+
+    /**
+     * Upload a new article image
+     *
+     * Returns image UID or NULL on failure.
+     */
+    static function uploadImage(
+        string $source,
+        string $originalFilename,
+        ?ImageException &$exception = null
+    ): ?string {
+        $uid = StringGenerator::generateUniqueHash();
+
+        return ImageService::process(
+            'article',
+            $source,
+            self::getImagePath($uid),
+            [
+                'resize' => [
+                    'mode' => ImageTransformer::RESIZE_FIT,
+                    'keep_smaller' => true,
+                    'w' => _article_pic_w,
+                    'h' => _article_pic_h,
+                ],
+                'format' => ImageLoader::getFormat($originalFilename),
+            ],
+            $exception
+        )
+            ? $uid
+            : null;
+    }
+
+    /**
+     * Get article image path
+     */
+    static function getImagePath(string $imageUid): string
+    {
+        return ImageStorage::getPath('images/articles/', $imageUid, 'jpg', 1);
+    }
+
+    /**
+     * Get article image thumbnail
+     */
+    static function getThumbnail(string $imageUid): string
+    {
+        return ImageService::getThumbnail(
+            'article',
+            self::getImagePath($imageUid),
+            [
+                'mode' => ImageTransformer::RESIZE_FIT,
+                'w' => _article_pic_thumb_w,
+                'h' => _article_pic_thumb_h,
+            ]
+        );
+    }
+
+    /**
+     * Remove article image
+     */
+    static function removeImage(string $imageUid): bool
+    {
+        return @unlink(self::getImagePath($imageUid));
     }
 }

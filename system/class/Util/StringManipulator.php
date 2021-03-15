@@ -120,4 +120,34 @@ abstract class StringManipulator
 
         return $output;
     }
+
+    /**
+     * Uppercase first letter
+     */
+    static function ucfirst(string $input): string
+    {
+        return preg_replace_callback(
+            '{\p{Ll}}Au',
+            function (array $match) {
+                return mb_strtoupper($match[0]);
+            },
+            $input,
+            1
+        );
+    }
+
+    /**
+     * Lowercase first letter (but try to preserve acronyms)
+     */
+    static function lcfirst(string $input): string
+    {
+        return preg_replace_callback(
+            '{(\p{Lu})([^\p{Lu}])}Au',
+            function (array $match) {
+                return mb_strtolower($match[1]) . $match[2];
+            },
+            $input,
+            1
+        );
+    }
 }

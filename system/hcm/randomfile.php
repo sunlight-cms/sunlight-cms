@@ -1,7 +1,10 @@
 <?php
 
 use Sunlight\Core;
-use Sunlight\Picture;
+use Sunlight\Extend;
+use Sunlight\Image\ImageFormat;
+use Sunlight\Image\ImageService;
+use Sunlight\Image\ImageTransformer;
 use Sunlight\Router;
 
 defined('_root') or exit;
@@ -17,27 +20,23 @@ return function ($cesta = "", $typ = 'text', $pocet = 1, $rozmery_nahledu = null
     if (file_exists($cesta) && is_dir($cesta)) {
         $handle = opendir($cesta);
 
+
         switch ($typ) {
             case 'image':
             case 2:
-                $allowed_extensions = Core::$imageExt;
-                $resize_opts = Picture::parseResizeOptions($rozmery_nahledu);
+                $extension_filter = function ($ext) { return ImageFormat::isValidFormat($ext); };
+                $resize_opts = ImageTransformer::parseResizeOptions($rozmery_nahledu);
                 break;
             case 'text':
             default:
-                $allowed_extensions = ["txt", "htm", "html"];
+                $extension_filter = function ($ext) { return $ext === 'txt' || $ext === 'htm' || $ext === 'html'; };
                 break;
         }
 
         $items = [];
         while (($item = readdir($handle)) !== false) {
-            $ext = pathinfo($item);
-            if (isset($ext['extension'])) {
-                $ext = mb_strtolower($ext['extension']);
-            } else {
-                $ext = "";
-            }
-            if (is_dir($cesta . $item) || $item == "." || $item == ".." || !in_array($ext, $allowed_extensions)) {
+            $ext = strtolower(pathinfo($item, PATHINFO_EXTENSION));
+            if (is_dir($cesta . $item) || $item == "." || $item == ".." || !$extension_filter($ext)) {
                 continue;
             }
             $items[] = $item;
@@ -56,8 +55,13 @@ return function ($cesta = "", $typ = 'text', $pocet = 1, $rozmery_nahledu = null
                 $item = $items[$item];
                 switch ($typ) {
                     case 2:
-                        $thumb = Picture::getThumbnail($cesta . $item, $resize_opts);
-                        $result .= "<a href='" . _e(Router::file($cesta . $item)) . "' target='_blank' class='lightbox' data-gallery-group='lb_hcm" . Core::$hcmUid . "'><img src='" . _e(Router::file($thumb)) . "' alt='" . _e($item) . "'></a>\n";
+                        $thumb = ImageService::getThumbnail('hcm.randomfile', $cesta . $item, $resize_opts);
+                        $result .= "<a href='" . _e(Router::file($cesta . $item)) . "'"
+                            . " target='_blank'"
+                            . Extend::buffer('image.lightbox', ['group' => 'hcm_rnd_' . Core::$hcmUid])
+                            . '>'
+                            . "<img src='" . _e(Router::file($thumb)) . "' alt='" . _e($item) . "'>"
+                            . "</a>\n";
                         break;
                     default:
                         $result .= file_get_contents($cesta . $item);

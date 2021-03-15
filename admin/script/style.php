@@ -155,9 +155,7 @@ switch ($s) {
     // tmave modry
     case 9:
         $hue = 170;
-        if (!$dark) {
-
-        } else {
+        if ($dark) {
             $scheme_link_loff -= 20;
         }
         $sat *= 0.5;

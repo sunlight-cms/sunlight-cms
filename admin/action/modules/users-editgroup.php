@@ -1,9 +1,9 @@
 <?php
 
 use Sunlight\Admin\Admin;
-use Sunlight\Core;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
+use Sunlight\Image\ImageService;
 use Sunlight\Message;
 use Sunlight\User;
 use Sunlight\Util\Form;
@@ -236,7 +236,7 @@ if ($continue) {
                 $file === '.'
                 || $file === '..'
                 || !is_file($icon_dir . '/' . $file)
-                || !in_array(strtolower(pathinfo($file, PATHINFO_EXTENSION)), Core::$imageExt, true)
+                || !ImageService::isImage($file)
             ) {
                 continue;
             }

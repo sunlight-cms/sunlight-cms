@@ -77,13 +77,6 @@ var Sunlight = (function ($) {
         },
 
         /**
-         * Apply lightbox functionality to gallery images
-         */
-        galleryScan: function () {
-            // to be implemented by a plugin
-        },
-
-        /**
          * Activate or deactivate a form field
          *
          * @param {Boolean} disabled

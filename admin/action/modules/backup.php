@@ -16,6 +16,7 @@ use Sunlight\Util\Form;
 use Sunlight\Util\Html;
 use Sunlight\Util\Request;
 use Sunlight\Util\Response;
+use Sunlight\Util\StringGenerator;
 use Sunlight\Util\StringManipulator;
 use Sunlight\Util\Url;
 use Sunlight\Xsrf;
@@ -24,15 +25,15 @@ defined('_root') or exit;
 
 $message = '';
 
-$remove_hash_suffix = function ($filename) {
-    return preg_replace('{(.+)__[0-9a-f]{64}(\.zip)$}Di', '$1$2', $filename);
+$remove_random_suffix = function ($filename) {
+    return preg_replace('{(.+)__[\w\-]{64}(\.zip)$}Di', '$1$2', $filename);
 };
 
-$add_hash_suffix = function ($filename) use ($remove_hash_suffix) {
-    $filename = $remove_hash_suffix($filename);
-    $hash = hash_hmac('sha256', uniqid($filename, true), Core::$secret);
+$add_random_suffix = function ($filename) use ($remove_random_suffix) {
+    $filename = $remove_random_suffix($filename);
+    $suffix = StringGenerator::generateString(64);
 
-    return preg_replace('{(.+)(\.zip)$}Di', '${1}__' . $hash . '${2}', $filename);
+    return preg_replace('{(.+)(\.zip)$}Di', '${1}__' . $suffix . '${2}', $filename);
 };
 
 // nacteni existujicich zaloh
@@ -54,7 +55,7 @@ if (isset($_GET['download'])) {
     $download = Request::get('download');
 
     if (isset($backup_files[$download])) {
-        Response::downloadFile($backup_dir . '/' . $download, $remove_hash_suffix($download));
+        Response::downloadFile($backup_dir . '/' . $download, $remove_random_suffix($download));
         exit;
     }
 }
@@ -146,7 +147,7 @@ if (!empty($_POST)) {
 
             if ($store) {
                 // ulozit na serveru
-                $stored_backup_name = $add_hash_suffix($backup_name);
+                $stored_backup_name = $add_random_suffix($backup_name);
                 $backup->move($backup_dir . '/' . $stored_backup_name);
                 $backup_files[$stored_backup_name] = time();
 
@@ -237,7 +238,7 @@ if (!empty($_POST)) {
         <table class="list">
             <tr>
                 <th>' . _lang('global.name') . '</th>
-                <td>' . _e($remove_hash_suffix($backup_file)) . '</td>
+                <td>' . _e($remove_random_suffix($backup_file)) . '</td>
             </tr>
             <tr>
                 <th>' . _lang('global.size') . '</th>
@@ -299,7 +300,7 @@ if (!empty($_POST)) {
                 $backup_name = StringManipulator::slugify($_FILES['backup']['name'], false);
 
                 if (preg_match('{\.zip$}Di', $backup_name) && Filesystem::isSafeFile($backup_name)) {
-                    $stored_backup_name = $add_hash_suffix($backup_name);
+                    $stored_backup_name = $add_random_suffix($backup_name);
 
                     User::moveUploadedFile($_FILES['backup']['tmp_name'], $backup_dir . '/' . $stored_backup_name);
                     $backup_files[$stored_backup_name] = time();
@@ -325,7 +326,7 @@ arsort($backup_files, SORT_NUMERIC);
 $backup_list = '';
 if (!empty($backup_files)) {
     foreach ($backup_files as $backup_file => $backup_ctime) {
-        $displayed_backup_name = $remove_hash_suffix($backup_file);
+        $displayed_backup_name = $remove_random_suffix($backup_file);
 
         $backup_list .= '<tr>
     <td><label><input type="radio" name="backup_file" value="' . _e($backup_file) . '"> ' . _e($displayed_backup_name) . '</label></td>

@@ -366,15 +366,10 @@ class Database
      * Zpracovat hodnotu pro pouziti jako identifikator (nazev tabulky / sloupce) v dotazu
      *
      * @param string $identifier identifikator
-     * @throws \UnexpectedValueException pokud neni identifikator retezec
      * @return string
      */
     static function escIdt(string $identifier): string
     {
-        if (!is_string($identifier)) {
-            throw new \UnexpectedValueException('Invalid identifier type, expected a string');
-        }
-
         return '`' . str_replace('`', '``', $identifier) . '`';
     }
 

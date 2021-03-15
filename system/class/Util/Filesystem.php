@@ -2,13 +2,13 @@
 
 namespace Sunlight\Util;
 
-use Sunlight\Core;
-
 /**
  * Filesystem utilities
  */
 abstract class Filesystem
 {
+    static $unsafeExtRegex = '{(php\d*?|[ps]html|asp|py|cgi|htaccess)}Ai';
+
     /**
      * Vytvorit docasny soubor v system/tmp
      *
@@ -22,13 +22,18 @@ abstract class Filesystem
     /**
      * Zjistit, zda je nazev souboru bezpecny
      *
-     * @param string $fname nazev souboru
+     * @param string $filepath nazev souboru
      * @return bool
      */
-    static function isSafeFile(string $fname): bool
+    static function isSafeFile(string $filepath): bool
     {
-        if (preg_match('{\.([^.]+)(?:\..+)?$}Ds', trim($fname), $match)) {
-            return !in_array(mb_strtolower($match[1]), Core::$dangerousServerSideExt, true);
+        $parts = explode('.', basename(trim($filepath)));
+
+        // check all extensions since some webservers will evaluate files such as "example.php.html"
+        for ($i = 1; isset($parts[$i]); ++$i) {
+            if (preg_match(static::$unsafeExtRegex, $parts[$i])) {
+                return false;
+            }
         }
 
         return true;

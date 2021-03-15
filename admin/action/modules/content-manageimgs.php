@@ -1,12 +1,9 @@
 <?php
 
 use Sunlight\Admin\Admin;
-use Sunlight\Core;
 use Sunlight\Database\Database as DB;
-use Sunlight\Extend;
 use Sunlight\Gallery;
 use Sunlight\Message;
-use Sunlight\Picture;
 use Sunlight\Util\Environment;
 use Sunlight\Util\Form;
 use Sunlight\Util\Html;
@@ -76,9 +73,9 @@ if (isset($_POST['xaction']) && $continue) {
                     'prev' => $prev,
                     'full' => $full
                 ]);
-                $message = Message::ok(_lang('global.inserted'));
+                $message .= Message::ok(_lang('global.inserted'));
             } else {
-                $message = Message::warning(_lang('admin.content.manageimgs.insert.error'));
+                $message .= Message::warning(_lang('admin.content.manageimgs.insert.error'));
             }
 
             break;
@@ -155,7 +152,7 @@ if (isset($_POST['xaction']) && $continue) {
                 DB::query("UPDATE " . _gallery_image_table . " SET " . $sql . " WHERE id=" . $id . " AND home=" . $galid);
             }
 
-            $message = Message::ok(_lang('global.saved'));
+            $message .= Message::ok(_lang('global.saved'));
             break;
 
             /* -  presunuti obrazku  - */
@@ -180,16 +177,16 @@ if (isset($_POST['xaction']) && $continue) {
                         DB::update(_gallery_image_table, 'home=' . $galid, ['home' => $newhome]);
 
                         // zprava
-                        $message = Message::ok(_lang('global.done'));
+                        $message .= Message::ok(_lang('global.done'));
 
                     } else {
-                        $message = Message::warning(_lang('admin.content.manageimgs.moveimgs.nokit'));
+                        $message .= Message::warning(_lang('admin.content.manageimgs.moveimgs.nokit'));
                     }
                 } else {
-                    $message = Message::warning(_lang('global.badinput'));
+                    $message .= Message::warning(_lang('global.badinput'));
                 }
             } else {
-                $message = Message::warning(_lang('admin.content.manageimgs.moveimgs.samegal'));
+                $message .= Message::warning(_lang('admin.content.manageimgs.moveimgs.samegal'));
             }
             break;
 
@@ -198,7 +195,7 @@ if (isset($_POST['xaction']) && $continue) {
             if (Form::loadCheckbox("confirm")) {
                 Admin::deleteGalleryStorage('home=' . $galid);
                 DB::delete(_gallery_image_table, 'home=' . $galid);
-                $message = Message::ok(_lang('global.done'));
+                $message .= Message::ok(_lang('global.done'));
             }
             break;
 
@@ -214,12 +211,10 @@ if (isset($_POST['xaction']) && $continue) {
 
             // process uploads
             foreach ($_FILES as $file) {
-
                 if (!is_array($file['name'])) {
                     continue;
                 }
                 for ($i = 0; isset($file['name'][$i]); ++$i) {
-
                     ++$total;
 
                     // check file
@@ -227,37 +222,20 @@ if (isset($_POST['xaction']) && $continue) {
                         continue;
                     }
 
-                    // prepare options
-                    $picOpts = [
-                        'file_path' => $file['tmp_name'][$i],
-                        'file_name' => $file['name'][$i],
-                        'target_dir' => $storage_dir,
-                        'jpg_quality' => 95,
-                        'resize' => [
-                            'mode' => 'fit',
-                            'keep_smaller' => true,
-                            'x' => _galuploadresize_w,
-                            'y' => _galuploadresize_h,
-                        ],
-                    ];
-                    Extend::call('admin.gallery.picture', ['opts' => &$picOpts]);
-
                     // process
-                    $picUid = Picture::process($picOpts, $picError, $picFormat);
+                    $imagePath = Gallery::uploadImage($file['tmp_name'][$i], $file['name'][$i], $storage_dir, $imageErr);
 
-                    if ($picUid === false) {
+                    if ($imagePath === null) {
+                        $message .= Message::error($imageErr->getUserFriendlyMessage());
                         continue;
                     }
 
-                    $done[] = $picUid . '.' . $picFormat;
-
+                    $done[] = $imagePath;
                 }
-
             }
 
             // save to database
             if (!empty($done)) {
-
                 // get order number
                 if (isset($_POST['moveords'])) {
                     // move
@@ -271,24 +249,23 @@ if (isset($_POST['xaction']) && $continue) {
 
                 // query
                 $insertdata = [];
-                foreach ($done as $name) {
+                foreach ($done as $path) {
                     $insertdata[] = [
                         'home' => $galid,
                         'ord' => $ord,
                         'title' => '',
                         'prev' => '',
-                        'full' => $storage_dir . $name,
+                        'full' => $path,
                         'in_storage' => 1
                     ];
                     ++$ord;
                 }
                 DB::insertMulti(_gallery_image_table, $insertdata);
-
             }
 
             // message
             $done = count($done);
-            $message = Message::render(($done === $total) ? Message::OK : Message::WARNING, sprintf(_lang('admin.content.manageimgs.upload.msg'), $done, $total));
+            $message .= Message::render(($done === $total) ? Message::OK : Message::WARNING, sprintf(_lang('admin.content.manageimgs.upload.msg'), $done, $total));
             break;
 
     }
@@ -302,7 +279,7 @@ if (isset($_GET['del']) && Xsrf::check(true) && $continue) {
     Admin::deleteGalleryStorage('id=' . $del . ' AND home=' . $galid);
     DB::delete(_gallery_image_table, 'id=' . $del . ' AND home=' . $galid);
     if (DB::affectedRows() === 1) {
-        $message = Message::ok(_lang('global.done'));
+        $message .= Message::ok(_lang('global.done'));
     }
 }
 
@@ -325,8 +302,7 @@ if ($continue) {
     <p>
         <input type='submit' value='" . _lang('admin.content.manageimgs.upload.submit') . "'>
         <label><input type='checkbox' value='1' name='moveords' checked> " . _lang('admin.content.manageimgs.moveords') . "</label>"
-        . Environment::renderUploadLimit()
-        . ' <small>' . _lang('global.uploadext') . ": <em>" . implode(', ', Core::$imageExt) . "</em></small>
+        . Environment::renderUploadLimit() . "
     </p>
 " . Xsrf::getInput() . "</form>
 </fieldset>
@@ -396,7 +372,7 @@ if ($continue) {
 >';
         while ($image = DB::row($images)) {
             // kod nahledu
-            $preview = Gallery::renderImage($image, "1", $galdata['var4'], $galdata['var3']);
+            $preview = Gallery::renderImage($image, 'admin', $galdata['var4'], $galdata['var3']);
 
             // kod formulare
             $output .= "

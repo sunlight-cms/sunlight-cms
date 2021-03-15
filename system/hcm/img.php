@@ -1,23 +1,22 @@
 <?php
 
 use Sunlight\Core;
-use Sunlight\Picture;
+use Sunlight\Extend;
+use Sunlight\Image\ImageService;
+use Sunlight\Image\ImageTransformer;
 use Sunlight\Router;
 
 defined('_root') or exit;
 
-return function ($cesta = "", $rozmery = null, $titulek = null, $lightbox = null) {
+return function ($cesta = '', $rozmery = '', $titulek = null, $lightbox = null) {
     $cesta = _root . $cesta;
+    $thumb = ImageService::getThumbnail('hcm.img', $cesta, ImageTransformer::parseResizeOptions($rozmery));
 
-    $resize_opts = Picture::parseResizeOptions($rozmery ?? "?x128");
-    if (isset($titulek) && $titulek != "") {
-        $titulek = _e($titulek);
-    }
-    if (!isset($lightbox)) {
-        $lightbox = Core::$hcmUid;
-    }
-
-    $thumb = Picture::getThumbnail($cesta, $resize_opts);
-
-    return "<a href='" . _e(Router::file($cesta)) . "' target='_blank' class='lightbox' data-gallery-group='lb_hcm" . _e($lightbox) . "'" . (($titulek != "") ? ' title=\'' . _e($titulek) . '\'' : '') . "><img src='" . _e(Router::file($thumb)) . "' alt='" . _e($titulek ?: basename($cesta)) . "'></a>\n";
+    return "<a href='" . _e(Router::file($cesta)) . "'"
+        . " target='_blank'"
+        . Extend::buffer('image.lightbox', ['group' => 'hcm_img_' . ($lightbox ?? Core::$hcmUid)])
+        . (($titulek != '') ? ' title=\'' . _e($titulek) . '\'' : '')
+        . '>'
+        . "<img src='" . _e(Router::file($thumb)) . "' alt='" . _e($titulek ?: basename($cesta)) . "'>"
+        . "</a>\n";
 };

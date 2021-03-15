@@ -6,7 +6,6 @@ use Sunlight\Email;
 use Sunlight\Extend;
 use Sunlight\GenericTemplates;
 use Sunlight\Message;
-use Sunlight\Picture;
 use Sunlight\Plugin\PluginManager;
 use Sunlight\PostForm;
 use Sunlight\Util\Response;
@@ -30,6 +29,10 @@ if (!_logged_in) {
 
 $message = "";
 $userdata = Core::$userData;
+$avatar_limits = [
+    'filesize' => 3000000,
+    'dimensions' => ['w' => 1000, 'h' => 1000],
+];
 
 // cesta k avataru
 $avatar_path = User::renderAvatar($userdata, ['get_url' => true, 'extend' => false]);
@@ -121,10 +124,9 @@ if (isset($_POST['save'])) {
     // avatar
     $avatar = $userdata['avatar'];
     if (_uploadavatar) {
-
         // smazani avataru
         if (Form::loadCheckbox("removeavatar") && isset($avatar)) {
-            @unlink(Picture::get('images/avatars/', $avatar, 'jpg', 1));
+            User::removeAvatar($avatar);
             $avatar = null;
         }
 
@@ -132,31 +134,24 @@ if (isset($_POST['save'])) {
         if (isset($_FILES['avatar']) && is_uploaded_file($_FILES['avatar']['tmp_name'])) {
 
             // zpracovani
-            $avatarUid = Picture::process([
-                'file_path' => $_FILES['avatar']['tmp_name'],
-                'file_name' => $_FILES['avatar']['name'],
-                'limit' => ['filesize' => 1000000, 'dimensions' => ['x' => 1400, 'y' => 1400]],
-                'resize' => ['mode' => 'fill', 'x' => 96, 'y' => 128],
-                'target_dir' => 'images/avatars/',
-                'target_format' => 'jpg',
-                'target_partitions' => 1,
-                'jpg_quality' => 95,
-            ], $avatarError);
+            $new_avatar = User::uploadAvatar(
+                $_FILES['avatar']['tmp_name'],
+                $_FILES['avatar']['name'],
+                $avatar_limits,
+                $avatar_err
+            );
 
-            if ($avatarUid !== false) {
-
+            if ($new_avatar !== null) {
                 // smazani stareho avataru
                 if ($avatar !== null) {
-                    @unlink(Picture::get('images/avatars/', $avatar, 'jpg', 1));
+                    User::removeAvatar($avatar);
                 }
 
                 // ok
-                $avatar = $avatarUid;
-
+                $avatar = $new_avatar;
             } else {
-                $errors[] = _lang('global.avatar') . ' - ' . $avatarError;
+                $errors[] = Message::prefix(_lang('global.avatar'), $avatar_err->getUserFriendlyMessage());
             }
-
         }
 
     }
@@ -288,7 +283,7 @@ if (isset($_POST['save'])) {
 
         exit;
     } else {
-        $message .= Message::warning(_lang('mod.settings.download_personal_data') . ' - ' . _lang('mod.settings.error.badcurrentpass'));
+        $message .= Message::warning(Message::prefix(_lang('mod.settings.download_personal_data'), _lang('mod.settings.error.badcurrentpass')));
     }
 }
 
@@ -429,7 +424,14 @@ if (_uploadavatar) {
     <table>
     <tr class='valign-top'>
     <td><img src='" . _e($avatar_path) . "' class='avatar' alt='avatar'></td>
-    <td><p>" . _lang('mod.settings.avatar.hint') . "</p><p><label><input type='checkbox' name='removeavatar' value='1'> " . _lang('mod.settings.avatar.remove') . "</label></p></td>
+    <td>
+        <p>" . _lang('mod.settings.avatar.hint', [
+            '%maxsize%' => GenericTemplates::renderFilesize($avatar_limits['filesize']),
+            '%maxw%' => $avatar_limits['dimensions']['w'],
+            '%maxh%' => $avatar_limits['dimensions']['h'],
+        ]) . "</p>
+        <p><label><input type='checkbox' name='removeavatar' value='1'> " . _lang('mod.settings.avatar.remove') . "</label></p>
+    </td>
     </tr>
     </table>
   </fieldset>

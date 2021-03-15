@@ -1,11 +1,11 @@
 <?php
 
 use Sunlight\Admin\Admin;
+use Sunlight\Article;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\GenericTemplates;
 use Sunlight\Message;
-use Sunlight\Picture;
 use Sunlight\Router;
 use Sunlight\User;
 use Sunlight\Util\Form;
@@ -166,23 +166,23 @@ if (isset($_POST['title'])) {
         Extend::call('admin.article.picture', ['opts' => &$picOpts]);
 
         // zpracovani
-        $picUid = Picture::process($picOpts, $picError);
+        $pic_uid = Article::uploadImage( $_FILES['picture']['tmp_name'], $_FILES['picture']['name'], $pic_err);
 
-        if ($picUid !== false) {
+        if ($pic_uid !== null) {
             // uspech
             if (isset($query['picture_uid'])) {
                 // odstraneni stareho
-                @unlink(Picture::get('images/articles/', $query['picture_uid'], 'jpg', 1));
+                Article::removeImage($query['picture_uid']);
             }
-            $newdata['picture_uid'] = $picUid;
+            $newdata['picture_uid'] = $pic_uid;
         } else {
             // chyba
-            $error_log[] = _lang('admin.content.form.picture') . ' - ' . $picError;
+            $error_log[] = Message::prefix(_lang('admin.content.form.picture'), $pic_err->getUserFriendlyMessage());
         }
 
     } elseif (isset($query['picture_uid']) && Form::loadCheckbox('picture-delete')) {
         // smazani obrazku
-        @unlink(Picture::get('images/articles/', $query['picture_uid'], 'jpg', 1));
+        Article::removeImage($query['picture_uid']);
         $newdata['picture_uid'] = null;
     }
 
@@ -316,7 +316,7 @@ if ($continue) {
     // obrazek
     $picture = '';
     if (isset($query['picture_uid'])) {
-        $picture .= "<img src='" . _e(Router::file(Picture::get('images/articles/', $query['picture_uid'], 'jpg', 1))) . "' alt='article picture' id='is-picture-file'>
+        $picture .= "<img src='" . _e(Router::file(Article::getImagePath($query['picture_uid']))) . "' alt='article picture' id='is-picture-file'>
 <label id='is-picture-delete'><input type='checkbox' name='picture-delete' value='1'> <img src='images/icons/delete3.png' class='icon' alt='" . _lang('global.delete') . "'></label>";
     } else {
         $picture .= "<img src='images/art-no-pic.png' alt='no picture'>\n";
