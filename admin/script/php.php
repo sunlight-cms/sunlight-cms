@@ -3,8 +3,10 @@
 use Sunlight\Admin\Admin;
 use Sunlight\Core;
 use Sunlight\GenericTemplates;
+use Sunlight\Router;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
+use Sunlight\Util\Response;
 use Sunlight\Xsrf;
 
 require '../../system/bootstrap.php';
@@ -15,9 +17,11 @@ Core::init('../../', [
 /* ---  vystup  --- */
 
 if (!_priv_super_admin) {
+    Response::redirect(Router::generate('admin/'));
     exit;
 }
-echo \Sunlight\GenericTemplates::renderHead();
+
+echo GenericTemplates::renderHead();
 
 $assets = Admin::themeAssets(_adminscheme, Admin::themeIsDark()) + ['extend_event' => null];
 
