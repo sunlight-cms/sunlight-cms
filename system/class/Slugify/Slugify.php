@@ -4,8 +4,6 @@ namespace Sunlight\Slugify;
 
 class Slugify
 {
-    const LOWERCASE_NUMBERS_DASHES = '/([^A-Za-z0-9]|-)+/';
-
     /** @var self|null */
     private static $inst;
 
@@ -17,7 +15,7 @@ class Slugify
 
     /** @var array */
     private $options = [
-        'regexp' => self::LOWERCASE_NUMBERS_DASHES,
+        'regexp' => '/([^A-Za-z0-9]|-)+/',
         'separator' => '-',
         'lowercase' => true,
         'trim' => true,

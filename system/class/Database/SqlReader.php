@@ -16,10 +16,10 @@ class SqlReader
     const QUOTE_MAP = ['"' => 0, '\'' => 1, '`' => 2];
 
     /** Map of whitespace chars */
-    const WHITESPACE_MAP = [' ' => 0, "\n" => 1, "\r" => 2, "\t" => 3, "\h" => 4];
+    private const WHITESPACE_MAP = [' ' => 0, "\n" => 1, "\r" => 2, "\t" => 3, "\h" => 4];
     
     /** Comment syntaxes */
-    const COMMENT_SYNTAXES = [
+    private const COMMENT_SYNTAXES = [
         ['#', "\n"],
         ['-- ', "\n"],
         ['/*', '*/'],

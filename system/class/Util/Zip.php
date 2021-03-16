@@ -13,8 +13,6 @@ abstract class Zip
     const PATH_SUB = 1;
     /** Path mode - none (files only, no directories) */
     const PATH_NONE = 2;
-    /** Default big file treshold */
-    const DEFAULT_BIG_FILE_THRESHOLD = 500000;
 
     /**
      * Extract a single file
@@ -43,17 +41,17 @@ abstract class Zip
      * @param \ZipArchive $zip
      * @param array       $stat
      * @param string      $targetPath
-     * @param int|null    $bigFileThreshold
+     * @param int         $bigFileThreshold
      * @return bool
      */
-    static function extractFileEntry(\ZipArchive $zip, array $stat, string $targetPath, ?int $bigFileThreshold = null): bool
+    static function extractFileEntry(\ZipArchive $zip, array $stat, string $targetPath, int $bigFileThreshold = 500000): bool
     {
         if (substr($stat['name'], -1) === '/') {
             // empty dir
             return false;
         }
 
-        if ($stat['size'] > ($bigFileThreshold ?: self::DEFAULT_BIG_FILE_THRESHOLD)) {
+        if ($stat['size'] >= $bigFileThreshold) {
             // extract big files using streams
             // (this is slower but also less memory intensive)
             $source = $zip->getStream($stat['name']);
