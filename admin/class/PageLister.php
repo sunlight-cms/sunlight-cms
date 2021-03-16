@@ -627,7 +627,7 @@ abstract class PageLister
                 $output .= "<img src=\"images/icons/home.png\" class=\"icon\" alt=\"{$iconTitle}\" title=\"{$iconTitle}\">";
             }
             if ($page['layout'] !== null && !$page['layout_inherit']) {
-                $iconTitle = sprintf(_lang('admin.content.form.layout.setting'), _e(TemplateService::getComponentLabelByUid($page['layout'], TemplateService::UID_TEMPLATE_LAYOUT)));
+                $iconTitle = _lang('admin.content.form.layout.setting', ['%layout%' => _e(TemplateService::getComponentLabelByUid($page['layout'], TemplateService::UID_TEMPLATE_LAYOUT))]);
                 $output .= "<img src=\"images/icons/template.png\" class=\"icon\" alt=\"{$iconTitle}\" title=\"{$iconTitle}\">";
             }
             if (!$page['public']) {

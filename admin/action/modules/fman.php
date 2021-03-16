@@ -207,7 +207,7 @@ if ($continue) {
                     }
                 }
 
-                $message = Message::render($done == $total ? Message::OK : Message::WARNING, _lang('admin.fman.msg.upload.done', ['*done*' => $done, '*total*' => $total]));
+                $message = Message::render($done == $total ? Message::OK : Message::WARNING, _lang('admin.fman.msg.upload.done', ['%done%' => $done, '%total%' => $total]));
                 break;
 
                 // novy adresar
@@ -244,7 +244,7 @@ if ($continue) {
                         if (Filesystem::purgeDirectory($dir . $name, [], $failedPath)) {
                             $message = Message::ok(_lang('admin.fman.msg.delete.done'));
                         } else {
-                            $message = Message::warning(_lang('admin.fman.msg.delete.failure', ['*failed_path*' => _e($failedPath)]), true);
+                            $message = Message::warning(_lang('admin.fman.msg.delete.failure', ['%failed_path%' => _e($failedPath)]), true);
                         }
                     }
                 }
@@ -315,7 +315,7 @@ if ($continue) {
                         $total++;
                     }
 
-                    $message = Message::render($done == $total ? Message::OK : Message::WARNING, _lang('admin.fman.msg.move.done', ['*done*' => $done, '*total*' => $total]));
+                    $message = Message::render($done == $total ? Message::OK : Message::WARNING, _lang('admin.fman.msg.move.done', ['%done%' => $done, '%total%' => $total]));
                 } else {
                     $message = Message::warning(_lang('admin.fman.msg.rootlimit'));
                 }
@@ -376,7 +376,7 @@ if ($continue) {
                     $total++;
                 }
 
-                $message = Message::render($done == $total ? Message::OK : Message::WARNING, _lang('admin.fman.msg.deleteselected.done', ['*done*' => $done, '*total*' => $total]));
+                $message = Message::render($done == $total ? Message::OK : Message::WARNING, _lang('admin.fman.msg.deleteselected.done', ['%done%' => $done, '%total%' => $total]));
                 break;
 
                 // pridani vyberu do galerie - formular pro vyber galerie
@@ -428,7 +428,7 @@ if ($continue) {
                         }
 
                         // zprava
-                        $message = Message::ok(_lang('admin.fman.addtogallery.done', ["*done*" => $counter]));
+                        $message = Message::ok(_lang('admin.fman.addtogallery.done', ["%done%" => $counter]));
 
                     } else {
                         $message = Message::warning(_lang('global.badinput'));
@@ -470,7 +470,7 @@ if ($continue) {
                     $action_title = "admin.fman.delete.title";
                     $action_code = "
         <tr>
-        <td colspan='2'>" . _lang('admin.fman.delask', ["*name*" => _e($decodeFilename($name))]) . "<input type='hidden' name='name' value='" . _e($name) . "'></td>
+        <td colspan='2'>" . _lang('admin.fman.delask', ["%name%" => _e($decodeFilename($name))]) . "<input type='hidden' name='name' value='" . _e($name) . "'></td>
         </tr>
         ";
                 }

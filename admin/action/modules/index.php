@@ -44,7 +44,7 @@ Extend::call('admin.index.custom', [
 $logout_warning = '';
 $maxltime = ini_get('session.gc_maxlifetime');
 if (!empty($maxltime) && !isset($_COOKIE[Core::$appId . '_persistent_key'])) {
-    $logout_warning = Admin::note(sprintf(_lang('admin.index.logoutwarn'), round($maxltime / 60)));
+    $logout_warning = Admin::note(_lang('admin.index.logoutwarn', ['%minutes%' => round($maxltime / 60)]));
 }
 
 // vystup
@@ -126,7 +126,7 @@ if ($version_data !== null) {
             $messages[] = Message::ok(_lang('admin.index.version.latest'));
         } else {
             $messages[] = Message::warning(
-                _lang('admin.index.version.old', ['*version*' => $version_data['latestVersion'], '*link*' => $version_data['url']]),
+                _lang('admin.index.version.old', ['%version%' => $version_data['latestVersion'], '%link%' => $version_data['url']]),
                 true
             );
         }
@@ -152,7 +152,7 @@ if (!_debug) {
     $output .= "<script>
 Sunlight.admin.indexCheckHtaccess(
     " . json_encode(Core::$url . '/vendor/autoload.php?_why=this_is_a_test_if_htaccess_works') . ",
-    " . json_encode(_lang('admin.index.htaccess_check_failure', ['*link*' => 'https://sunlight-cms.cz/resource/no-htaccess'])) . ",
+    " . json_encode(_lang('admin.index.htaccess_check_failure', ['%link%' => 'https://sunlight-cms.cz/resource/no-htaccess'])) . ",
 );
 </script>\n";
 }

@@ -61,7 +61,7 @@ $output .= $message;
 if (!$success) {
     $output .= '
     <form action="' . _e(Router::module('locktopic', 'id=' . $id)) . '" method="post">
-    ' . Message::warning(sprintf(_lang('mod.locktopic.text' . $unlock), $query['subject']), true) . '
+    ' . Message::warning(_lang('mod.locktopic.text' . $unlock, ['%topic%' => $query['subject']]), true) . '
     <input type="submit" name="doit" value="' . _lang('mod.locktopic.submit' . $unlock) . '">
     ' . Xsrf::getInput() . '</form>
     ';

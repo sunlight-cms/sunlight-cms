@@ -36,7 +36,7 @@ if (isset($_GET['user'], $_GET['hash'])) {
 
         // kontrola limitu
         if (!IpLog::check(_iplog_failed_login_attempt)) {
-            $output .= Message::error(_lang('login.attemptlimit', ['*1*' => _maxloginattempts, '*2*' => _maxloginexpire / 60]));
+            $output .= Message::error(_lang('login.attemptlimit', ['%max_attempts%' => _maxloginattempts, '%minutes%' => _maxloginexpire / 60]));
             break;
         }
 
@@ -60,13 +60,13 @@ if (isset($_GET['user'], $_GET['hash'])) {
 
         if (!Email::send(
             $userdata['email'],
-            _lang('mod.lostpass.mail.subject', ['*domain*' => Url::base()->getFullHost()]),
+            _lang('mod.lostpass.mail.subject', ['%domain%' => Url::base()->getFullHost()]),
             _lang('mod.lostpass.mail.text2', [
-                '*domain*' => Url::base()->getFullHost(),
-                '*username*' =>  $userdata['username'],
-                '*newpass*' => $newpass,
-                '*date*' => GenericTemplates::renderTime(time()),
-                '*ip*' => _user_ip,
+                '%domain%' => Url::base()->getFullHost(),
+                '%username%' =>  $userdata['username'],
+                '%newpass%' => $newpass,
+                '%date%' => GenericTemplates::renderTime(time()),
+                '%ip%' => _user_ip,
             ])
         )) {
             $output .= Message::error(_lang('global.emailerror'));
@@ -94,7 +94,7 @@ if (isset($_GET['user'], $_GET['hash'])) {
 
         // kontrola limitu
         if (!IpLog::check(_iplog_password_reset_requested)) {
-            $output .= Message::error(_lang('mod.lostpass.limit', ['*limit*' => _lostpassexpire / 60]));
+            $output .= Message::error(_lang('mod.lostpass.limit', ['%limit%' => _lostpassexpire / 60]));
             break;
         }
 
@@ -125,13 +125,13 @@ if (isset($_GET['user'], $_GET['hash'])) {
 
         if (!Email::send(
             $userdata['email'],
-            _lang('mod.lostpass.mail.subject', ['*domain*' => Url::base()->getFullHost()]),
+            _lang('mod.lostpass.mail.subject', ['%domain%' => Url::base()->getFullHost()]),
             _lang('mod.lostpass.mail.text', [
-                '*domain*' => Url::base()->getFullHost(),
-                '*username*' => $userdata['username'],
-                '*link*' => $link,
-                '*date*' => GenericTemplates::renderTime(time()),
-                '*ip*' => _user_ip,
+                '%domain%' => Url::base()->getFullHost(),
+                '%username%' => $userdata['username'],
+                '%link%' => $link,
+                '%date%' => GenericTemplates::renderTime(time()),
+                '%ip%' => _user_ip,
             ])
         )) {
             $output .= Message::error(_lang('global.emailerror'));

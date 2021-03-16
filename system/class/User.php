@@ -566,7 +566,7 @@ abstract class User
             case 4:
                 return Message::ok(_lang('login.selfremove'));
             case 5:
-                return Message::warning(_lang('login.attemptlimit', ['*1*' => _maxloginattempts, '*2*' => _maxloginexpire / 60]));
+                return Message::warning(_lang('login.attemptlimit', ['%max_attempts%' => _maxloginattempts, '%minutes%' => _maxloginexpire / 60]));
             case 6:
                 return Message::error(_lang('xsrf.msg'));
             default:

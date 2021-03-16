@@ -265,7 +265,10 @@ if (isset($_POST['xaction']) && $continue) {
 
             // message
             $done = count($done);
-            $message .= Message::render(($done === $total) ? Message::OK : Message::WARNING, sprintf(_lang('admin.content.manageimgs.upload.msg'), $done, $total));
+            $message .= Message::render(
+                ($done === $total) ? Message::OK : Message::WARNING,
+                _lang('admin.content.manageimgs.upload.msg', ['%done%' => $done, '%total%' => $total])
+            );
             break;
 
     }
@@ -288,14 +291,14 @@ if (isset($_GET['del']) && Xsrf::check(true) && $continue) {
 if ($continue) {
     $output .= Admin::backlink('index.php?p=content-editgallery&id=' . $galid) . "
 <h1>" . _lang('admin.content.manageimgs.title') . "</h1>
-<p class='bborder'>" . _lang('admin.content.manageimgs.p', ["*galtitle*" => $galdata['title']]) . "</p>
+<p class='bborder'>" . _lang('admin.content.manageimgs.p', ["%galtitle%" => $galdata['title']]) . "</p>
 
 " . $message . "
 
 <fieldset>
 <legend>" . _lang('admin.content.manageimgs.upload') . "</legend>
 <form action='index.php?p=content-manageimgs&amp;g=" . $galid . "' method='post' enctype='multipart/form-data'>
-    <p>" . sprintf(_lang('admin.content.manageimgs.upload.text'), _galuploadresize_w, _galuploadresize_h) . "</p>
+    <p>" . _lang('admin.content.manageimgs.upload.text', ['%w%' => _galuploadresize_w, '%h%' => _galuploadresize_h]) . "</p>
     <input type='hidden' name='xaction' value='7'>
     <div id='fmanFiles'><input type='file' name='uf0[]' multiple> <a href='#' onclick='return Sunlight.admin.fmanAddFile();'>" . _lang('admin.fman.upload.addfile') . "</a></div>
     <div class='hr'><hr></div>

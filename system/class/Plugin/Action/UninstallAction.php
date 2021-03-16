@@ -29,13 +29,13 @@ class UninstallAction extends PluginAction
 
             if ($installer->uninstall()) {
                 return ActionResult::success(
-                    Message::ok(sprintf(_lang('admin.plugins.action.uninstall.success'), $this->plugin->getOption('name')))
+                    Message::ok(_lang('admin.plugins.action.uninstall.success', ['%plugin%' => $this->plugin->getOption('name')]))
                 );
             }
         }
 
         return ActionResult::failure(
-            Message::error(sprintf(_lang('admin.plugins.action.uninstall.failure'), $this->plugin->getOption('name')))
+            Message::error(_lang('admin.plugins.action.uninstall.failure', ['%plugin%' => $this->plugin->getOption('name')]))
         );
     }
 }

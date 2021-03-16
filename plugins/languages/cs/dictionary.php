@@ -155,24 +155,22 @@ return [
     'usermenu.registration' => 'registrace',
     'usermenu.settings' => 'nastavení',
     'usermenu.messages' => 'vzkazy',
-    'index.pagerr.title' => 'Stránku nelze zobrazit',
-    'index.pagerr.p' => 'Požadovanou stránku nelze zobrazit, jelikož nebylo nalezeno potřebné rozšíření <code>%s</code>.',
     'mod.reg' => 'Registrace',
     'mod.reg.p' => 'Uživatelské jméno může obsahovat pouze písmena (A-Z), tečku (.) a pomlčku (-). Maximální délka je 24 znaků. E-mailová adresa je povinná.',
-    'mod.reg.done' => 'Registrace proběhla úspěšně. Nyní se můžete <a href="*login_link*">přihlásit</a>.',
+    'mod.reg.done' => 'Registrace proběhla úspěšně. Nyní se můžete <a href="%login_link%">přihlásit</a>.',
     'mod.reg.confirm' => 'Potvrzení registrace',
     'mod.reg.confirm.extratext' => 'Potvrzovací zpráva bude zaslána na uvedenou e-mailovou adresu.',
-    'mod.reg.confirm.sent' => 'Potvrzovací zpráva byla odeslána na e-mailovou adresu <em>*email*</em>. Pro aktivaci účtu klikněte prosím na odkaz uvedený ve zprávě. Platnost odkazu je 1 hodina.',
-    'mod.reg.confirm.subject' => 'Potvrzeni registrace na *domain*',
-    'mod.reg.confirm.text' => 'Na *domain* bylo požádáno (pravděpodobně Vámi) o registraci uživatelského účtu "*username*". Pokud s registrací souhlasíte, klikněte prosím na odkaz níže:
+    'mod.reg.confirm.sent' => 'Potvrzovací zpráva byla odeslána na e-mailovou adresu <em>%email%</em>. Pro aktivaci účtu klikněte prosím na odkaz uvedený ve zprávě. Platnost odkazu je 1 hodina.',
+    'mod.reg.confirm.subject' => 'Potvrzeni registrace na %domain%',
+    'mod.reg.confirm.text' => 'Na %domain% bylo požádáno (pravděpodobně Vámi) o registraci uživatelského účtu "%username%". Pokud s registrací souhlasíte, klikněte prosím na odkaz níže:
 
-*confirm_link*
+%confirm_link%
 
 Pokud není možné na tento odkaz kliknout, zkopírujte jej prosím do adresního řádku vašeho prohlížeče a na tuto adresu přejděte.
 
 ----------------
-Žádost byla odeslána *date* z počítače *ip*.',
-    'mod.reg.confirm.limit' => 'Je povoleno maximálně 5 neúspěšných pokusů o aktivaci účtu za *limit* minut.',
+Žádost byla odeslána %date% z počítače %ip%.',
+    'mod.reg.confirm.limit' => 'Je povoleno maximálně 5 neúspěšných pokusů o aktivaci účtu za %limit% minut.',
     'mod.reg.confirm.badcode' => 'Neplatný formát potvrzovacího kódu!',
     'mod.reg.confirm.notfound' => 'Potvrzovací odkaz již expiroval nebo je nesprávný.',
     'mod.reg.confirm.emailornametaken' => 'Uživatelské jméno či e-mailová adresa zvolená při registraci byla zaregistrována jiným uživatelem. Prosíme opakujte registraci.',
@@ -188,23 +186,23 @@ Pokud není možné na tento odkaz kliknout, zkopírujte jej prosím do adresní
     'mod.lostpass.notfound' => 'Uživatelské jméno není platné nebo nesouhlasí e-mailová adresa.',
     'mod.lostpass.mailsent' => 'Potvrzující e-mail byl odeslán.',
     'mod.lostpass.badlink' => 'Tento odkaz je nesprávný nebo již vypršela jeho platnost',
-    'mod.lostpass.mail.subject' => 'Obnoveni ztraceneho hesla na *domain*',
-    'mod.lostpass.mail.text' => 'Na *domain* bylo (pravděpodobně Vámi) požádáno o obnovení ztraceného hesla k uživatelskému účtu "*username*". Pokud si přejete vygenerovat nové heslo, pokračujte kliknutím na odkaz níže. V opačném případě tuto zprávu ignorujte.
+    'mod.lostpass.mail.subject' => 'Obnoveni ztraceneho hesla na %domain%',
+    'mod.lostpass.mail.text' => 'Na %domain% bylo (pravděpodobně Vámi) požádáno o obnovení ztraceného hesla k uživatelskému účtu "%username%". Pokud si přejete vygenerovat nové heslo, pokračujte kliknutím na odkaz níže. V opačném případě tuto zprávu ignorujte.
 
-*link*
+%link%
 
 Platnost tohoto odkazu je 1 hodina.
 
 ----------------
-Žádost byla odeslána *date* z počítače *ip*.',
-    'mod.lostpass.mail.text2' => 'Na *domain* bylo pro váš uživatelský účet "*username*" vygenerováno nové heslo:
+Žádost byla odeslána %date% z počítače %ip%.',
+    'mod.lostpass.mail.text2' => 'Na %domain% bylo pro váš uživatelský účet "%username%" vygenerováno nové heslo:
 
-*newpass*
+%newpass%
 
 ----------------
-Žádost byla odeslána *date* z počítače *ip*.',
+Žádost byla odeslána %date% z počítače %ip%.',
     'mod.lostpass.generated' => 'Nové heslo bylo vygenerováno a odesláno na vaši e-mailovou adresu.',
-    'mod.lostpass.limit' => 'Je povolena pouze jedna žádost o obnovu hesla za dobu *limit* minut.',
+    'mod.lostpass.limit' => 'Je povolena pouze jedna žádost o obnovu hesla za dobu %limit% minut.',
     'mod.search' => 'Vyhledávání',
     'mod.search.p' => 'Do pole níže zadejte frázi, kterou chcete vyhledat (můžete použít zástupné znaky <em>_</em> a <em>%</em>).',
     'mod.search.submit' => 'Vyhledat',
@@ -239,8 +237,8 @@ Platnost tohoto odkazu je 1 hodina.
     'mod.profile.lastact' => 'Naposledy aktivní',
     'mod.profile.logincounter' => 'Počet přihlášení',
     'mod.profile.blockednote' => 'Tento uživatel je zablokován.',
-    'mod.profile.arts' => 'Články uživatele *user*',
-    'mod.profile.posts' => 'Příspěvky uživatele *user*',
+    'mod.profile.arts' => 'Články uživatele %user%',
+    'mod.profile.posts' => 'Příspěvky uživatele %user%',
     'mod.profile.groupdescr' => 'Popis skupiny',
     'mod.profile.private' => 'Tento profil není veřejný',
     'mod.profile.private.selfnote' => 'Tento profil není veřejný. Následující informace vidíte pouze vy a administrátoři.',
@@ -288,8 +286,8 @@ Platnost tohoto odkazu je 1 hodina.
     'mod.locktopic2' => 'Odemknout téma',
     'mod.locktopic.link' => 'zamknout',
     'mod.locktopic.link2' => 'odemknout',
-    'mod.locktopic.text' => 'Chystáte se uzamknout téma &quot;%s&quot; - chcete pokračovat?',
-    'mod.locktopic.text2' => 'Chystáte se odemknout téma &quot;%s&quot; - chcete pokračovat?',
+    'mod.locktopic.text' => 'Chystáte se uzamknout téma &quot;%topic%&quot; - chcete pokračovat?',
+    'mod.locktopic.text2' => 'Chystáte se odemknout téma &quot;%topic%&quot; - chcete pokračovat?',
     'mod.locktopic.submit' => 'Ano, uzamknout téma',
     'mod.locktopic.submit2' => 'Ano, odemknout téma',
     'mod.locktopic.ok' => 'Téma uzamčeno',
@@ -298,15 +296,15 @@ Platnost tohoto odkazu je 1 hodina.
     'mod.stickytopic2' => 'Odepnout téma',
     'mod.stickytopic.link' => 'připnout',
     'mod.stickytopic.link2' => 'odepnout',
-    'mod.stickytopic.text' => 'Chystáte se připnout téma &quot;%s&quot; - chcete pokračovat?',
-    'mod.stickytopic.text2' => 'Chystáte se zrušit připnutí tématu &quot;%s&quot; - chcete pokračovat?',
+    'mod.stickytopic.text' => 'Chystáte se připnout téma &quot;%topic%&quot; - chcete pokračovat?',
+    'mod.stickytopic.text2' => 'Chystáte se zrušit připnutí tématu &quot;%topic%&quot; - chcete pokračovat?',
     'mod.stickytopic.submit' => 'Ano, připnout téma',
     'mod.stickytopic.submit2' => 'Ano, zrušit připnutí tématu',
     'mod.stickytopic.ok' => 'Téma připnuto',
     'mod.stickytopic.ok2' => 'Připnutí zrušeno',
     'mod.movetopic' => 'Přesunout téma',
     'mod.movetopic.link' => 'přesunout',
-    'mod.movetopic.text' => 'Přesouváte téma &quot;%s&quot;',
+    'mod.movetopic.text' => 'Přesouváte téma &quot;%topic%&quot;',
     'mod.movetopic.noforums' => 'Nejsou dostupná jiná fóra',
     'mod.movetopic.submit' => 'Přesunout',
     'mod.movetopic.ok' => 'Téma přesunuto',
@@ -367,7 +365,7 @@ Platnost tohoto odkazu je 1 hodina.
     'login.blocked.message' => 'Váš účet je zablokovaný.',
     'login.securitylogout' => 'Z bezpečnostních důvodů proběhlo automatické odhlášení.',
     'login.selfremove' => 'Váš účet byl zrušen.',
-    'login.attemptlimit' => 'Byl překročen limit počtu nezdařilých pokusů, který je maximálně *1* nezdařilých pokusů za *2* minut.',
+    'login.attemptlimit' => 'Byl překročen limit počtu nezdařilých pokusů, který je maximálně %max_attempts% nezdařilých pokusů za %minutes% minut.',
     'login.persistent' => 'trvalé přihlášení',
     'login.links' => 'Kam dál?',
     'javascript.alert.confirm' => 'Opravdu chcete provést tuto akci?',
@@ -386,8 +384,8 @@ Platnost tohoto odkazu je 1 hodina.
     'hcm.mailform.send' => 'Odeslat e-mail',
     'hcm.mailform.sender' => 'Váš e-mail',
     'hcm.mailform.subjectprefix' => 'Zpráva z formuláře',
-    'hcm.mailform.info' => 'Tato e-mailová zpráva byla odeslána *time* ze stránek *domain* počítačem *ip*.
-Odesílatel uvedl svou adresu jako: *sender*',
+    'hcm.mailform.info' => 'Tato e-mailová zpráva byla odeslána %time% ze stránek %domain% počítačem %ip%.
+Odesílatel uvedl svou adresu jako: %sender%',
     'hcm.mailform.msg.done' => 'Zpráva byla odeslána.',
     'hcm.mailform.msg.failure' => 'Zpráva nebyla odeslána. Pravděpodobně jste nezadali platnou e-mailovou adresu nebo text zprávy.',
     'hcm.poll.vote' => 'Hlasovat',
@@ -395,7 +393,7 @@ Odesílatel uvedl svou adresu jako: *sender*',
     'hcm.poll.locked' => 'hlasování skončilo',
     'xsrf.title' => 'Neplatný token',
     'xsrf.msg' => 'Formulář nebyl odeslán s platným autorizačním tokenem.',
-    'xsrf.warning' => 'Pozor! Pokud jste se na tuto stránku dostali aniž byste osobně vyplnili formulář na této doméně (*domain*), akci neopakujte! Může se jednat o pokus zneužít vaši relaci.',
+    'xsrf.warning' => 'Pozor! Pokud jste se na tuto stránku dostali aniž byste osobně vyplnili formulář na této doméně (%domain%), akci neopakujte! Může se jednat o pokus zneužít vaši relaci.',
     'post_repeat.title' => 'Opakování akce',
     'post_repeat.submit' => 'Opakovat akci',
     'post_repeat.login' => 'Pokud došlo k odhlášení, máte možnost se znovu přihlásit.',
@@ -409,10 +407,10 @@ Odesílatel uvedl svou adresu jako: *sender*',
     'page.type.group' => 'skupina',
     'page.type.forum' => 'fórum',
     'page.type.pluginpage' => 'plugin stránka',
-    'plugin.error' => 'Akci nebylo možné provést, protože nebylo nalezeno potřebné rozšíření <code>%s</code>.',
+    'plugin.error' => 'Akci nebylo možné provést, protože nebylo nalezeno potřebné rozšíření <code>%plugin%</code>.',
     'action.success' => 'Akce byla provedena',
     'action.failure' => 'Akci se nepodařilo provést',
-    'misc.requestlimit' => 'Je možné zaslat maximálně jeden požadavek za *postsendexpire* sekund. Prosíme počkejte.',
+    'misc.requestlimit' => 'Je možné zaslat maximálně jeden požadavek za %postsendexpire% sekund. Prosíme počkejte.',
     'misc.errorlog.intro' => 'Během zpracovávání požadavku došlo k chybám:',
     'misc.category.noarts' => 'Tato kategorie neobsahuje žádné články.',
     'misc.gallery.noimages' => 'Tato galerie neobsahuje žádné obrázky.',

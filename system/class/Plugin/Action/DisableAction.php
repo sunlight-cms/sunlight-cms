@@ -21,13 +21,13 @@ class DisableAction extends PluginAction
         if ($this->plugin->canBeDisabled()) {
             if (touch($this->plugin->getDirectory() . '/' . Plugin::DEACTIVATING_FILE)) {
                 return ActionResult::success(
-                    Message::ok(sprintf(_lang('admin.plugins.action.disable.success'), $this->plugin->getOption('name')))
+                    Message::ok(_lang('admin.plugins.action.disable.success', ['%plugin%' => $this->plugin->getOption('name')]))
                 );
             }
         }
 
         return ActionResult::failure(
-            Message::error(sprintf(_lang('admin.plugins.action.disable.failure'), $this->plugin->getOption('name')))
+            Message::error(_lang('admin.plugins.action.disable.failure', ['%plugin%' => $this->plugin->getOption('name')]))
         );
     }
 }

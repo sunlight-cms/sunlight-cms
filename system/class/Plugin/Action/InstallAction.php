@@ -29,13 +29,13 @@ class InstallAction extends PluginAction
 
             if ($installer->install()) {
                 return ActionResult::success(
-                    Message::ok(sprintf(_lang('admin.plugins.action.install.success'), $this->plugin->getOption('name')))
+                    Message::ok(_lang('admin.plugins.action.install.success', ['%plugin%' => $this->plugin->getOption('name')]))
                 );
             }
         }
 
         return ActionResult::failure(
-            Message::error(sprintf(_lang('admin.plugins.action.install.failure'), $this->plugin->getOption('name')))
+            Message::error(_lang('admin.plugins.action.install.failure', ['%plugin%' => $this->plugin->getOption('name')]))
         );
     }
 }

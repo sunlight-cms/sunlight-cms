@@ -375,7 +375,7 @@ class PageManipulator
             ]);
 
             if ($handled !== true) {
-                $error = sprintf(_lang('plugin.error'), $page['type_idt']);
+                $error = _lang('plugin.error', ['%plugin%' => $page['type_idt']]);
 
                 return false;
             }

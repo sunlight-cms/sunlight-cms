@@ -11,9 +11,9 @@ $admin_title = _lang('global.error');
 
 $output = '';
 
-$message = sprintf(
-    _lang('admin.priv_error.' . ($privException instanceof ContentPrivilegeException ? 'content_message' : 'message')),
-    _e($privException->getMessage())
+$message = _lang(
+    'admin.priv_error.' . ($privException instanceof ContentPrivilegeException ? 'content_message' : 'message'),
+    ['%message%' => _e($privException->getMessage())]
 );
 
 $admin_output .= Message::error($message);

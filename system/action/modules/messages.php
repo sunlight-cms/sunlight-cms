@@ -94,7 +94,7 @@ switch ($a) {
 
                 // anti spam limit
                 if (!IpLog::check(_iplog_anti_spam)) {
-                    $message = Message::warning(_lang('misc.requestlimit', ['*postsendexpire*' => _postsendexpire]));
+                    $message = Message::warning(_lang('misc.requestlimit', ['%postsendexpire%' => _postsendexpire]));
                     break;
                 }
 

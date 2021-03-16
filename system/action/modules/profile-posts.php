@@ -34,7 +34,7 @@ if (!$query['public'] && !User::checkLevel($query['id'], $query['level'])) {
 /* ---  modul  --- */
 
 $_index['title'] = str_replace(
-    '*user*',
+    '%user%',
     $query[$query['publicname'] !== null ? 'publicname' : 'username'],
     _lang('mod.profile.posts')
 );

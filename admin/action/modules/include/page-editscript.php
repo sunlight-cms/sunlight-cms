@@ -570,7 +570,7 @@ $output .= "<form class='cform' action='index.php?p=content-edit" . $type_array[
                             'layout',
                             $query['layout_inherit'] ? null : $query['layout'],
                             $query['layout_inherit']
-                                ? sprintf(_lang('admin.content.form.layout.inherited'), TemplateService::getComponentLabelByUid($query['layout'], TemplateService::UID_TEMPLATE_LAYOUT))
+                                ? _lang('admin.content.form.layout.inherited', ['%layout%' => TemplateService::getComponentLabelByUid($query['layout'], TemplateService::UID_TEMPLATE_LAYOUT)])
                                 : _lang('admin.content.form.layout.inherit'),
                             null,
                             'inputmax')

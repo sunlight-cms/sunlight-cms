@@ -39,7 +39,7 @@ if (IpLog::check(_iplog_anti_spam)) {
     IpLog::update(_iplog_anti_spam);
 } else {
     // prekroceno
-    echo _lang('misc.requestlimit', ['*postsendexpire*' => _postsendexpire]);
+    echo _lang('misc.requestlimit', ['%postsendexpire%' => _postsendexpire]);
     exit;
 }
 
@@ -66,10 +66,10 @@ if (Xsrf::check()) {
             $info_ip .= ' (' . _user_name . ')';
         }
         $text .= "\n\n" . str_repeat('-', 16) . "\n" . _lang('hcm.mailform.info', [
-            '*domain*' => Url::base()->getFullHost(),
-            '*time*' => GenericTemplates::renderTime(time()),
-            '*ip*' => $info_ip,
-            '*sender*' => $sender,
+            '%domain%' => Url::base()->getFullHost(),
+            '%time%' => GenericTemplates::renderTime(time()),
+            '%ip%' => $info_ip,
+            '%sender%' => $sender,
         ]);
 
         // odeslani

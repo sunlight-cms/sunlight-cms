@@ -67,7 +67,7 @@ if (isset($_POST['text'])) {
             $item_total = DB::size($query);
 
             // poznamka na konci zpravy
-            $notice = _lang('admin.other.massemail.emailnotice', ['*domain*' => Url::base()->getFullHost()]);
+            $notice = _lang('admin.other.massemail.emailnotice', ['%domain%' => Url::base()->getFullHost()]);
             if ($ctype == 1) {
                 $notice = "\n\n\n-------------------------------------\n" . $notice;
             } else {
@@ -94,8 +94,8 @@ if (isset($_POST['text'])) {
             // zprava
             if ($done != 0) {
                 $output .= Message::ok(_lang('admin.other.massemail.send', [
-                    '*done*' => $done,
-                    '*total*' => $item_total,
+                    '%done%' => $done,
+                    '%total%' => $item_total,
                 ]));
             } else {
                 $output .= Message::warning(_lang('admin.other.massemail.noreceiversfound'));

@@ -23,13 +23,13 @@ class EnableAction extends PluginAction
 
             if (is_file($file) && @unlink($file)) {
                 return ActionResult::success(
-                    Message::ok(sprintf(_lang('admin.plugins.action.enable.success'), $this->plugin->getOption('name')))
+                    Message::ok(_lang('admin.plugins.action.enable.success', ['%plugin%' => $this->plugin->getOption('name')]))
                 );
             }
         }
 
         return ActionResult::failure(
-            Message::error(sprintf(_lang('admin.plugins.action.enable.failure'), $this->plugin->getOption('name')))
+            Message::error(_lang('admin.plugins.action.enable.failure', ['%plugin%' => $this->plugin->getOption('name')]))
         );
     }
 }

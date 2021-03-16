@@ -61,7 +61,7 @@ $output .= $message;
 if (!$success) {
     $output .= '
     <form action="' . _e(Router::module('stickytopic', 'id=' . $id)) . '" method="post">
-    ' . Message::warning(sprintf(_lang('mod.stickytopic.text' . $unstick), $query['subject']), true) . '
+    ' . Message::warning(_lang('mod.stickytopic.text' . $unstick, ['%topic%' => $query['subject']]), true) . '
     <input type="submit" name="doit" value="' . _lang('mod.stickytopic.submit' . $unstick) . '">
     ' . Xsrf::getInput() . '</form>
     ';

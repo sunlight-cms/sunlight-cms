@@ -30,13 +30,13 @@ class RemoveAction extends PluginAction
 
             if (Filesystem::checkDirectory($dir) && Filesystem::purgeDirectory($dir)) {
                 return ActionResult::success(
-                    Message::ok(sprintf(_lang('admin.plugins.action.remove.success'), $this->plugin->getOption('name')))
+                    Message::ok(_lang('admin.plugins.action.remove.success', ['%plugin%' => $this->plugin->getOption('name')]))
                 );
             }
         }
 
         return ActionResult::failure(
-            Message::error(sprintf(_lang('admin.plugins.action.remove.failure'), $this->plugin->getOption('name')))
+            Message::error(_lang('admin.plugins.action.remove.failure', ['%plugin%' => $this->plugin->getOption('name')]))
         );
     }
 }

@@ -317,7 +317,7 @@ if (!$infopage) {
 } else {
     $output .= Form::renderHiddenPostInputs(null, null, ['_process']) . "
 <input type='hidden' name='_process' value='1'>
-" . Message::ok(_lang('admin.content.artfilter.f1.infotext', ["*found*" => $found])) . "
+" . Message::ok(_lang('admin.content.artfilter.f1.infotext', ["%found%" => $found])) . "
 <ul>";
 
     $counter = 0;

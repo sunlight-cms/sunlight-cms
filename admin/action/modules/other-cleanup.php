@@ -270,8 +270,8 @@ $output .= $message . "
 <form class='cform' action='index.php?p=other-cleanup' method='post' autocomplete='off'>
 <input type='hidden' name='action' value='2'>
 <p class='bborder'>" . _lang('admin.other.cleanup.uninstall.p') . "</p>
-" . Admin::note(_lang('admin.other.cleanup.uninstall.note', ['*prefix*' => _dbprefix]), true, 'warn') . "
-<p><label><input type='checkbox' name='confirm' value='1'> " . _lang('admin.other.cleanup.uninstall.confirm', ['*dbname*' => _dbname]) . "</label></p>
+" . Admin::note(_lang('admin.other.cleanup.uninstall.note', ['%prefix%' => _dbprefix]), true, 'warn') . "
+<p><label><input type='checkbox' name='confirm' value='1'> " . _lang('admin.other.cleanup.uninstall.confirm', ['%dbname%' => _dbname]) . "</label></p>
 <p><strong>" . _lang('admin.other.cleanup.uninstall.pass') . ":</strong>  <input type='password' class='inputsmall' name='pass' autocomplete='off'></p>
 <input type='submit' value='" . _lang('global.do') . "' onclick='return Sunlight.confirm();'>
 " . Xsrf::getInput() . "</form>
