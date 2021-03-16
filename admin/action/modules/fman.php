@@ -340,9 +340,9 @@ if ($continue) {
                     $zip = new \ZipArchive();
 
                     try {
-                        $zip->open($tmpFile->getPathname(), \ZipArchive::CREATE);
+                        $zip->open($tmpFile->getPathname(), \ZipArchive::OVERWRITE);
                         foreach ($selected as $sel){
-                            $zip->addFile($dir.$sel, $sel);
+                            $zip->addFile($dir . $sel, $sel);
                         }
                         $zip->close();
                     } catch (\Throwable $e) {
