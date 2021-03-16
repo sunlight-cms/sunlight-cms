@@ -12,7 +12,7 @@ class SqlLogger
     /**
      * Set the timer
      */
-    public function setTimer(): void
+    function setTimer(): void
     {
         $this->timerStartedAt = microtime(true);
     }
@@ -22,7 +22,7 @@ class SqlLogger
      *
      * @param string $query
      */
-    public function log(string $query): void
+    function log(string $query): void
     {
         $dummyException = new \Exception();
 
@@ -40,7 +40,7 @@ class SqlLogger
      *
      * @return array
      */
-    public function getLog(): array
+    function getLog(): array
     {
         return $this->log;
     }
@@ -50,7 +50,7 @@ class SqlLogger
      *
      * @param array $view
      */
-    public function showInDebugScreen(array $view): void
+    function showInDebugScreen(array $view): void
     {
         $log = $this->getLog();
         $logSize = count($log);

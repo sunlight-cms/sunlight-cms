@@ -13,7 +13,7 @@ class CodemirrorPlugin extends ExtendPlugin
      *
      * @param array $args
      */
-    public function onCoreJavascript(array $args): void
+    function onCoreJavascript(array $args): void
     {
         $args['variables']['pluginCodemirror'] = [
             'userWysiwygEnabled' => _logged_in ? (bool) Core::$userData['wysiwyg'] : false,
@@ -25,7 +25,7 @@ class CodemirrorPlugin extends ExtendPlugin
      *
      * @param array $args
      */
-    public function onAdminHead(array $args): void
+    function onAdminHead(array $args): void
     {
         $basePath = $this->getWebPath() . '/Resources';
 
@@ -47,7 +47,7 @@ class CodemirrorPlugin extends ExtendPlugin
      *
      * @param array $args
      */
-    public function onAdminStyle(array $args): void
+    function onAdminStyle(array $args): void
     {
         $args['output'] .= "/* codemirror */\n";
         $args['output'] .= "div.CodeMirror {\n";

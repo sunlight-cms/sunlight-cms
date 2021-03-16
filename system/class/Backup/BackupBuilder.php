@@ -410,15 +410,13 @@ class BackupBuilder
      */
     private function writeFull(Backup $backup): void
     {
-        $that = $this;
-
         if ($this->databaseDumpEnabled) {
             $backup->addDatabaseDump($this->dumpDatabase(), _dbprefix);
         }
 
         foreach ($this->staticPathList as $path) {
-            $backup->addPath($path, function ($dataPath) use ($that) {
-                return $that->filterPath($dataPath, true, false);
+            $backup->addPath($path, function ($dataPath) {
+                return $this->filterPath($dataPath, true);
             });
         }
 
@@ -431,8 +429,8 @@ class BackupBuilder
 
             foreach ($paths as $path) {
                 if ($enabled) {
-                    $backup->addPath($path, function ($dataPath) use ($that) {
-                        return $that->filterPath($dataPath, false, true);
+                    $backup->addPath($path, function ($dataPath) {
+                        return $this->filterPath($dataPath, false, true);
                     });
                 } elseif (is_dir(_root . $path)) {
                     $backup->addEmptyDirectory($path);
@@ -477,7 +475,7 @@ class BackupBuilder
      * @param bool   $isDynamic
      * @return bool
      */
-    function filterPath(string $dataPath, bool $isStatic = false, bool $isDynamic = false): bool
+    private function filterPath(string $dataPath, bool $isStatic = false, bool $isDynamic = false): bool
     {
         foreach ($this->includedPathMap as $pattern => $options) {
             if (

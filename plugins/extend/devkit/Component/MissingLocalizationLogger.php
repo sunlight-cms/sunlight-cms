@@ -9,7 +9,7 @@ class MissingLocalizationLogger
     /** @var \SplObjectStorage dict => array(key1 => count1, ...) */
     private $missingEntries;
 
-    public function __construct()
+    function __construct()
     {
         $this->missingEntries = new \SplObjectStorage();
     }
@@ -18,7 +18,7 @@ class MissingLocalizationLogger
      * @param LocalizationDictionary $dict
      * @param string                 $key
      */
-    public function log(LocalizationDictionary $dict, string $key): void
+    function log(LocalizationDictionary $dict, string $key): void
     {
         if (!isset($this->missingEntries[$dict])) {
             $this->missingEntries[$dict] = [];
@@ -38,7 +38,7 @@ class MissingLocalizationLogger
     /**
      * @return \SplObjectStorage
      */
-    public function getMissingEntries(): \SplObjectStorage
+    function getMissingEntries(): \SplObjectStorage
     {
         return $this->missingEntries;
     }

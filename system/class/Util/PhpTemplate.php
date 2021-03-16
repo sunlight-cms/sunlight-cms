@@ -55,10 +55,8 @@ class PhpTemplate
      */
     function compile(array $vars): string
     {
-        $that = $this;
-
-        return preg_replace_callback('{\'@@([a-zA-Z._\-]+)(?:\|(".+"|.+))?@@\'}', function (array $matches) use ($vars, $that) {
-            return $that->compilePlaceholder(
+        return preg_replace_callback('{\'@@([a-zA-Z._\-]+)(?:\|(".+"|.+))?@@\'}', function (array $matches) use ($vars) {
+            return $this->compilePlaceholder(
                 $matches[1],
                 $matches[2] ?? null,
                 $vars
@@ -74,7 +72,7 @@ class PhpTemplate
      * @param array       $vars    variables
      * @return string php code
      */
-    function compilePlaceholder(string $name, ?string $default, array $vars): string
+    private function compilePlaceholder(string $name, ?string $default, array $vars): string
     {
         if (array_key_exists($name, $vars)) {
             // provided value
