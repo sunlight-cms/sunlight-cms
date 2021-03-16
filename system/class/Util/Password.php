@@ -12,7 +12,7 @@ class Password
     /** Old MD5 algorithm */
     const MD5_LEGACY_ALGO = 'md5_legacy';
     /** Number of PBKDF2 iterations */
-    const PBKDF2_ITERATIONS = 10000;
+    const PBKDF2_ITERATIONS = 50000;
     /** Length of generated salts */
     const GENERATED_SALT_LENGTH = 64;
 
