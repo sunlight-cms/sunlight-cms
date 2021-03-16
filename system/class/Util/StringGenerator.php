@@ -12,12 +12,12 @@ abstract class StringGenerator
     private static $uid = 0;
 
     /**
-     * Attempt to generate an unique hash (64 characters)
+     * Attempt to generate an unique hash (32 characters)
      */
     static function generateUniqueHash(): string
     {
         return hash_hmac(
-            'sha256',
+            'tiger128,3',
             sprintf('%d:%s', ++self::$uid, random_bytes(44)),
             Core::$secret
         );

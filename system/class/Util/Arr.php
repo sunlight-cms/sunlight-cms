@@ -98,7 +98,7 @@ abstract class Arr
      * - keys are sorted before hashing
      * - only scalar and nested array values are supported (objects will not be recursed into)
      */
-    static function hash(array $array, string $algo = 'sha256'): string
+    static function hash(array $array, string $algo = 'tiger128,3'): string
     {
         $context = hash_init($algo);
         $queue = [[0, '', $array]];
