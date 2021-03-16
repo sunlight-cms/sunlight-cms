@@ -8,27 +8,29 @@ class SqlReader
 {
     /** Query map item - comment */
     const COMMENT = 0;
+
     /** Query map item - quoted value */
     const QUOTED = 1;
 
-    /** @var string */
-    protected $input;
-    /** @var string */
-    protected $delimiter = ';';
-    /** @var array */
-    protected $quoteMap = ['"' => 0, '\'' => 1, '`' => 2];
-    /** @var array */
-    protected $whitespaceMap = [' ' => 0, "\n" => 1, "\r" => 2, "\t" => 3, "\h" => 4];
-    /** @var array */
-    protected $commentSyntaxMap = [
+    /** Map of quote chars */
+    const QUOTE_MAP = ['"' => 0, '\'' => 1, '`' => 2];
+
+    /** Map of whitespace chars */
+    const WHITESPACE_MAP = [' ' => 0, "\n" => 1, "\r" => 2, "\t" => 3, "\h" => 4];
+    
+    /** Comment syntaxes */
+    const COMMENT_SYNTAXES = [
         ['#', "\n"],
         ['-- ', "\n"],
         ['/*', '*/'],
     ];
 
-    /**
-     * @param string $input
-     */
+    /** @var string */
+    private $input;
+
+    /** @var string */
+    private $delimiter = ';';
+
     function __construct(string $input)
     {
         $this->input = $input;
@@ -36,15 +38,12 @@ class SqlReader
 
     /**
      * Create from a file
-     *
-     * @param string $filepath
-     * @return static
      */
     static function fromFile(string $filepath): self
     {
         Filesystem::ensureFileExists($filepath);
 
-        return new static(file_get_contents($filepath));
+        return new self(file_get_contents($filepath));
     }
 
     /**
@@ -95,7 +94,7 @@ class SqlReader
         $escaped = false;
 
         $inComment = false;
-        $commentMatchesInitial = array_fill_keys(array_keys($this->commentSyntaxMap), 0);
+        $commentMatchesInitial = array_fill_keys(array_keys(self::COMMENT_SYNTAXES), 0);
         $commentMatches = $commentMatchesInitial;
         $commentEndSyntax = null;
         $commentEndMatch = 0;
@@ -142,7 +141,7 @@ class SqlReader
 
                         if ($quoteFound) {
                             $inQuotes = false;
-                            $queryMap[] = [static::QUOTED, $segmentOffset - $queryOffset, $i - $queryOffset];
+                            $queryMap[] = [self::QUOTED, $segmentOffset - $queryOffset, $i - $queryOffset];
                         }
                         break;
                 }
@@ -154,7 +153,7 @@ class SqlReader
                 ) {
                     if (!isset($commentEndSyntax[++$commentEndMatch])) {
                         $inComment = false;
-                        $queryMap[] = [static::COMMENT, $segmentOffset - $queryOffset, $i - $queryOffset];
+                        $queryMap[] = [self::COMMENT, $segmentOffset - $queryOffset, $i - $queryOffset];
                     }
                 } else {
                     $commentEndMatch = 0;
@@ -165,11 +164,11 @@ class SqlReader
                 // detect comments
                 if ($commentMatches !== null) {
                     for ($j = 0; isset($commentMatches[$j]); ++$j) {
-                        if ($char === $this->commentSyntaxMap[$j][0][$commentMatches[$j]]) {
-                            if (!isset($this->commentSyntaxMap[$j][0][++$commentMatches[$j]])) {
+                        if ($char === self::COMMENT_SYNTAXES[$j][0][$commentMatches[$j]]) {
+                            if (!isset(self::COMMENT_SYNTAXES[$j][0][++$commentMatches[$j]])) {
                                 $inComment = true;
                                 $segmentOffset = $i;
-                                $commentEndSyntax = $this->commentSyntaxMap[$j][1];
+                                $commentEndSyntax = self::COMMENT_SYNTAXES[$j][1];
                                 $commentEndMatch = 0;
                                 $commentMatches = null;
                             }
@@ -184,7 +183,7 @@ class SqlReader
 
                 // detect quoted strings / delimiter
                 if (!$inComment) {
-                    if (isset($this->quoteMap[$char])) {
+                    if (isset(self::QUOTE_MAP[$char])) {
                         // start of a quoted string
                         $inQuotes = true;
                         $segmentOffset = $i;
@@ -201,7 +200,7 @@ class SqlReader
 
             // append character to the current query
             if ($query === null) {
-                if (!isset($this->whitespaceMap[$char])) {
+                if (!isset(self::WHITESPACE_MAP[$char])) {
                     // first non-whitespace character encountered
                     $query = $char;
                     $queryOffset = $i;

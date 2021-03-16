@@ -124,7 +124,7 @@ class PageManipulator
     static function refreshSlugs(?int $id, bool $getChangesetMap = false): ?array
     {
         if ($id !== null) {
-            $id = static::findFirstTreeMatch($id, 'slug_abs', 1);
+            $id = self::findFirstTreeMatch($id, 'slug_abs', 1);
         }
 
         $options = new TreeReaderOptions();
@@ -166,7 +166,7 @@ class PageManipulator
     static function refreshLevels(?int $id, bool $getChangesetMap = false): ?array
     {
         if ($id !== null) {
-            $id = static::findFirstTreeMatch($id, 'level_inherit', 0);
+            $id = self::findFirstTreeMatch($id, 'level_inherit', 0);
         }
 
         $options = new TreeReaderOptions();
@@ -200,7 +200,7 @@ class PageManipulator
     static function refreshLayouts(?int $id, bool $getChangesetMap = false): ?array
     {
         if ($id !== null) {
-            $id = static::findFirstTreeMatch($id, 'layout_inherit', 0);
+            $id = self::findFirstTreeMatch($id, 'layout_inherit', 0);
         }
 
         $options = new TreeReaderOptions();
@@ -250,11 +250,11 @@ class PageManipulator
     static function delete(array $page, bool $recursive = false, ?string &$error = null): bool
     {
         // zavislosti
-        $flags = static::DEPEND_DIRECT;
+        $flags = self::DEPEND_DIRECT;
         if ($recursive) {
-            $flags |= static::DEPEND_CHILD_PAGES;
+            $flags |= self::DEPEND_CHILD_PAGES;
         }
-        if (static::deleteDependencies($page, $flags, $error)) {
+        if (self::deleteDependencies($page, $flags, $error)) {
             // stranka
             DB::delete(_page_table, 'id=' . $page['id']);
 
@@ -351,9 +351,9 @@ class PageManipulator
      */
     static function deleteDependencies(array $page, int $flags, ?string &$error = null): bool
     {
-        $deleteChildPages = (($flags & static::DEPEND_CHILD_PAGES) !== 0);
-        $deleteDirect = (($flags & static::DEPEND_DIRECT) !== 0);
-        $deleteDirectForce = (($flags & static::DEPEND_DIRECT_FORCE) !== 0);
+        $deleteChildPages = (($flags & self::DEPEND_CHILD_PAGES) !== 0);
+        $deleteDirect = (($flags & self::DEPEND_DIRECT) !== 0);
+        $deleteDirectForce = (($flags & self::DEPEND_DIRECT_FORCE) !== 0);
 
         // kontrola podstranek
         if ($page['node_depth'] > 0 && !$deleteChildPages && !$deleteDirectForce) {
@@ -384,7 +384,7 @@ class PageManipulator
         // podstranky
         if ($deleteChildPages && $page['node_depth'] > 0) {
             foreach (PageManager::getChildren($page['id'], 1) as $childPage) {
-                if (!static::delete($childPage, true, $error)) {
+                if (!self::delete($childPage, true, $error)) {
                     return false;
                 }
             }
@@ -468,7 +468,7 @@ class PageManipulator
      * @param mixed  $value
      * @return int
      */
-    protected static function findFirstTreeMatch(int $currentId, string $column, $value): int
+    private static function findFirstTreeMatch(int $currentId, string $column, $value): int
     {
         $path = PageManager::getTreeReader()->getPath([$column], $currentId);
 

@@ -8,13 +8,13 @@ use Sunlight\Util\Zip;
 class PluginArchive
 {
     /** @var PluginManager */
-    protected $manager;
+    private $manager;
     /** @var \ZipArchive */
-    protected $zip;
+    private $zip;
     /** @var string */
-    protected $path;
+    private $path;
     /** @var bool */
-    protected $open = false;
+    private $open = false;
     /**
      * type => array(
      *      name1 => array(
@@ -26,7 +26,7 @@ class PluginArchive
      *
      * @var array|null
      */
-    protected $plugins;
+    private $plugins;
 
     /**
      * @param PluginManager $manager
@@ -98,7 +98,7 @@ class PluginArchive
     /**
      * Ensure that the archive is open
      */
-    protected function ensureOpen(): void
+    private function ensureOpen(): void
     {
         if (!$this->open) {
             Filesystem::ensureFileExists($this->path);
@@ -116,7 +116,7 @@ class PluginArchive
     /**
      * Load the archive
      */
-    protected function load(): void
+    private function load(): void
     {
         $this->plugins = [];
 

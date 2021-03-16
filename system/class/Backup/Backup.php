@@ -16,32 +16,32 @@ use Sunlight\Util\Zip;
 class Backup
 {
     /** Database dump file path */
-    const DB_DUMP_PATH = 'database.sql';
+    private const DB_DUMP_PATH = 'database.sql';
     /** Metadata file path */
-    const METADATA_PATH = 'backup.json';
+    private const METADATA_PATH = 'backup.json';
     /** Data path (prefix) */
-    const DATA_PATH = 'data';
+    private const DATA_PATH = 'data';
 
     /** @var \ZipArchive */
-    protected $zip;
+    private $zip;
     /** @var string */
-    protected $path;
+    private $path;
     /** @var string[] */
-    protected $directoryList = [];
+    private $directoryList = [];
     /** @var TemporaryFile[] */
-    protected $temporaryFiles = [];
+    private $temporaryFiles = [];
     /** @var bool */
-    protected $open = false;
+    private $open = false;
     /** @var bool */
-    protected $new = false;
+    private $new = false;
     /** @var array|null */
-    protected $metadataCache;
+    private $metadataCache;
     /** @var array|null */
-    protected $metadataErrors;
+    private $metadataErrors;
     /** @var string|null */
-    protected $addedDbDumpPrefix;
+    private $addedDbDumpPrefix;
     /** @var string[] */
-    protected $fileList = [];
+    private $fileList = [];
 
     /**
      * @param string $path
@@ -145,7 +145,7 @@ class Backup
     /**
      * Discard temporary files
      */
-    protected function discardTemporaryFiles(): void
+    private function discardTemporaryFiles(): void
     {
         foreach ($this->temporaryFiles as $tmpFile) {
             $tmpFile->discard();
@@ -253,7 +253,7 @@ class Backup
     {
         $this->ensureOpenAndNew();
 
-        $this->zip->addEmptyDir(static::DATA_PATH . "/{$dataPath}");
+        $this->zip->addEmptyDir(self::DATA_PATH . "/{$dataPath}");
     }
 
     /**
@@ -276,7 +276,7 @@ class Backup
 
             $this->zip->addFile(
                 $realPath,
-                static::DATA_PATH . "/{$dataPath}"
+                self::DATA_PATH . "/{$dataPath}"
             );
         }
     }
@@ -296,7 +296,7 @@ class Backup
             $this->fileList[] = $dataPath;
         }
 
-        $this->zip->addFromString(static::DATA_PATH . "/{$dataPath}", $data);
+        $this->zip->addFromString(self::DATA_PATH . "/{$dataPath}", $data);
     }
 
     /**
@@ -308,7 +308,7 @@ class Backup
     {
         $this->ensureOpenAndNotNew();
 
-        return $this->zip->statName(static::DB_DUMP_PATH) !== false;
+        return $this->zip->statName(self::DB_DUMP_PATH) !== false;
     }
 
     /**
@@ -320,7 +320,7 @@ class Backup
     {
         $this->ensureOpenAndNotNew();
 
-        return $this->zip->getFromName(static::DB_DUMP_PATH);
+        return $this->zip->getFromName(self::DB_DUMP_PATH);
     }
 
     /**
@@ -332,7 +332,7 @@ class Backup
     {
         $this->ensureOpenAndNotNew();
 
-        if ($this->hasDatabaseDump() && ($stat = $this->zip->statName(static::DB_DUMP_PATH))) {
+        if ($this->hasDatabaseDump() && ($stat = $this->zip->statName(self::DB_DUMP_PATH))) {
             return $stat['size'];
         }
     }
@@ -347,7 +347,7 @@ class Backup
     {
         $this->ensureOpenAndNew();
 
-        $this->zip->addFile($databaseDump->getPathname(), static::DB_DUMP_PATH);
+        $this->zip->addFile($databaseDump->getPathname(), self::DB_DUMP_PATH);
         $this->addedDbDumpPrefix = $prefix;
         $this->temporaryFiles[] = $databaseDump;
     }
@@ -445,16 +445,16 @@ class Backup
         return $this->metadataErrors;
     }
 
-    protected function ensureMetaDataLoaded(): void
+    private function ensureMetaDataLoaded(): void
     {
         if ($this->metadataCache === null) {
             $this->loadMetaData();
         }
     }
 
-    protected function loadMetaData(): void
+    private function loadMetaData(): void
     {
-        $stream = $this->zip->getStream(static::METADATA_PATH);
+        $stream = $this->zip->getStream(self::METADATA_PATH);
 
         try {
             $this->metadataCache = Json::decode(stream_get_contents($stream));
@@ -469,7 +469,7 @@ class Backup
      * @param array|null $errors
      * @return bool
      */
-    protected function validateMetaData(array &$metaData, ?array &$errors = null): bool
+    private function validateMetaData(array &$metaData, ?array &$errors = null): bool
     {
         $optionSet = new OptionSet([
             'system_version' => ['type' => 'string', 'required' => true, 'normalizer' => function ($value) {
@@ -490,7 +490,7 @@ class Backup
         return $optionSet->process($metaData, null, $errors);
     }
 
-    protected function setMetaData(): void
+    private function setMetaData(): void
     {
         $metaData = [
             'system_version' => Core::VERSION,
@@ -500,7 +500,7 @@ class Backup
             'db_prefix' => $this->addedDbDumpPrefix,
         ];
 
-        $this->zip->addFromString(static::METADATA_PATH, Json::encode($metaData, true));
+        $this->zip->addFromString(self::METADATA_PATH, Json::encode($metaData, true));
     }
 
     /**
@@ -508,7 +508,7 @@ class Backup
      *
      * @throws \LogicException if the archive is not open or not new
      */
-    protected function ensureOpenAndNew(): void
+    private function ensureOpenAndNew(): void
     {
         if (!$this->open) {
             throw new \LogicException('No archive has been opened');
@@ -523,7 +523,7 @@ class Backup
      *
      * @throws \LogicException if the archive is not open or not new
      */
-    protected function ensureOpenAndNotNew(): void
+    private function ensureOpenAndNotNew(): void
     {
         if (!$this->open) {
             throw new \LogicException('No archive has been opened');
@@ -537,8 +537,8 @@ class Backup
      * @param string $dataPath
      * @return string
      */
-    protected function dataPathToArchivePath(string $dataPath): string
+    private function dataPathToArchivePath(string $dataPath): string
     {
-        return static::DATA_PATH . '/' . $dataPath;
+        return self::DATA_PATH . '/' . $dataPath;
     }
 }

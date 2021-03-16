@@ -81,7 +81,7 @@ abstract class Extend
     static function fetch(string $event, array $args = [], $value = null)
     {
         $args['value'] = &$value;
-        static::call($event, $args);
+        self::call($event, $args);
 
         return $value;
     }
@@ -97,7 +97,7 @@ abstract class Extend
     {
         $output = '';
         $args['output'] = &$output;
-        static::call($event, $args);
+        self::call($event, $args);
 
         return $output;
     }

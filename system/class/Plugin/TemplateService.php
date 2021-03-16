@@ -39,7 +39,7 @@ abstract class TemplateService
      */
     static function getDefaultTemplate(): TemplatePlugin
     {
-        return static::getTemplate(_default_template);
+        return self::getTemplate(_default_template);
     }
 
     /**
@@ -90,7 +90,7 @@ abstract class TemplateService
      */
     static function validateUid(string $uid, int $type): bool
     {
-        return static::getComponentsByUid($uid, $type) !== null;
+        return self::getComponentsByUid($uid, $type) !== null;
     }
 
     /**
@@ -104,7 +104,7 @@ abstract class TemplateService
     {
         return call_user_func_array(
             [get_called_class(), 'getComponents'],
-            static::parseUid($uid, $type)
+            self::parseUid($uid, $type)
         );
     }
 
@@ -125,11 +125,11 @@ abstract class TemplateService
      */
     static function getComponents(string $template, ?string $layout = null, ?string $slot = null): ?array
     {
-        if (!static::templateExists($template)) {
+        if (!self::templateExists($template)) {
             return null;
         }
 
-        $template = static::getTemplate($template);
+        $template = self::getTemplate($template);
 
         $components = [
             'template' => $template,
@@ -191,7 +191,7 @@ abstract class TemplateService
      */
     static function getComponentLabelFromArray(array $components, bool $includeTemplateName = true): string
     {
-        return static::getComponentLabel(
+        return self::getComponentLabel(
             $components['template'],
             $components['layout'] ?? null,
             $components['slot'] ?? null,
@@ -210,22 +210,22 @@ abstract class TemplateService
     static function getComponentLabelByUid(?string $uid, int $type, bool $includeTemplateName = true): string
     {
         if ($uid !== null) {
-            $components = static::getComponentsByUid($uid, $type);
+            $components = self::getComponentsByUid($uid, $type);
         } else {
             $components = [
-                'template' => static::getDefaultTemplate(),
+                'template' => self::getDefaultTemplate(),
             ];
 
-            if ($type >= static::UID_TEMPLATE_LAYOUT) {
+            if ($type >= self::UID_TEMPLATE_LAYOUT) {
                 $components['layout'] = TemplatePlugin::DEFAULT_LAYOUT;
             }
-            if ($type >= static::UID_TEMPLATE_LAYOUT_SLOT) {
+            if ($type >= self::UID_TEMPLATE_LAYOUT_SLOT) {
                 $components['slot'] = '';
             }
         }
 
         if ($components !== null) {
-            return static::getComponentLabelFromArray($components, $includeTemplateName);
+            return self::getComponentLabelFromArray($components, $includeTemplateName);
         }
 
         return $uid;

@@ -17,13 +17,13 @@ class Password
     const GENERATED_SALT_LENGTH = 64;
 
     /** @var string */
-    protected $algo;
+    private $algo;
     /** @var int */
-    protected $iterations;
+    private $iterations;
     /** @var string */
-    protected $salt;
+    private $salt;
     /** @var string */
-    protected $hash;
+    private $hash;
 
     /**
      * @param string $algo
@@ -42,9 +42,7 @@ class Password
     /**
      * Parse a stored password
      *
-     * @param string $storedPassword
      * @throws \InvalidArgumentException if the value is not valid
-     * @return static
      */
     static function load(string $storedPassword): self
     {
@@ -59,23 +57,20 @@ class Password
             throw new \InvalidArgumentException('Invalid password format');
         }
 
-        return new static($segments[0], (int) $segments[1], $segments[2], $segments[3]);
+        return new self($segments[0], (int) $segments[1], $segments[2], $segments[3]);
     }
 
     /**
      * Create new instance from the given plain password
-     *
-     * @param string $plainPassword
-     * @return static
      */
     static function create(string $plainPassword): self
     {
-        $algo = static::PREFERRED_ALGO;
-        $iterations = static::PBKDF2_ITERATIONS;
-        $salt = StringGenerator::generateString(static::GENERATED_SALT_LENGTH);
-        $hash = static::hash($algo, $iterations, $salt, $plainPassword);
+        $algo = self::PREFERRED_ALGO;
+        $iterations = self::PBKDF2_ITERATIONS;
+        $salt = StringGenerator::generateString(self::GENERATED_SALT_LENGTH);
+        $hash = self::hash($algo, $iterations, $salt, $plainPassword);
 
-        return new static($algo, $iterations, $salt, $hash);
+        return new self($algo, $iterations, $salt, $hash);
     }
 
     /**
@@ -88,7 +83,7 @@ class Password
      * @throws \InvalidArgumentException on invalid arguments
      * @return string
      */
-    protected static function hash(string $algo, int $iterations, string $salt, string $plainPassword): string
+    private static function hash(string $algo, int $iterations, string $salt, string $plainPassword): string
     {
         if (!is_string($plainPassword)) {
             throw new \InvalidArgumentException('Password must be a string');
@@ -97,7 +92,7 @@ class Password
             throw new \InvalidArgumentException('Password must not be empty');
         }
 
-        if (static::MD5_LEGACY_ALGO === $algo) {
+        if (self::MD5_LEGACY_ALGO === $algo) {
             // backward compatibility
             if ($iterations !== 0) {
                 throw new \InvalidArgumentException(sprintf('Iterations is expected to be 0 if algo = "%s"', $algo));
@@ -151,7 +146,7 @@ class Password
             return false;
         }
 
-        $hash = static::hash($this->algo, $this->iterations, $this->salt, $plainPassword);
+        $hash = self::hash($this->algo, $this->iterations, $this->salt, $plainPassword);
 
         return
             is_string($this->hash)
@@ -169,8 +164,8 @@ class Password
     function shouldUpdate(): bool
     {
         return
-            static::PREFERRED_ALGO !== $this->algo
-            || static::PBKDF2_ITERATIONS > $this->iterations;
+            self::PREFERRED_ALGO !== $this->algo
+            || self::PBKDF2_ITERATIONS > $this->iterations;
     }
 
     /**
@@ -182,9 +177,9 @@ class Password
      */
     function update(string $plainPassword): void
     {
-        $this->algo = static::PREFERRED_ALGO;
-        $this->iterations = max(static::PBKDF2_ITERATIONS, $this->iterations);
-        $this->salt = StringGenerator::generateString(static::GENERATED_SALT_LENGTH);
-        $this->hash = static::hash($this->algo, $this->iterations, $this->salt, $plainPassword);
+        $this->algo = self::PREFERRED_ALGO;
+        $this->iterations = max(self::PBKDF2_ITERATIONS, $this->iterations);
+        $this->salt = StringGenerator::generateString(self::GENERATED_SALT_LENGTH);
+        $this->hash = self::hash($this->algo, $this->iterations, $this->salt, $plainPassword);
     }
 }

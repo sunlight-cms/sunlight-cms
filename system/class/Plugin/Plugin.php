@@ -25,6 +25,9 @@ abstract class Plugin
     /** Plugin status - disabled */
     const STATUS_DISABLED = 3;
 
+    /** Plugin type definition - defined by children */
+    const TYPE_DEFINITION = [];
+
     /** @var array */
     static $commonOptions = [
         'name' => ['type' => 'string', 'required' => true],
@@ -43,9 +46,6 @@ abstract class Plugin
         'namespace' => ['type' => 'string', 'normalizer' => ['Sunlight\Plugin\PluginOptionNormalizer', 'normalizeNamespace']],
         'inject_composer' => ['type' => 'boolean', 'default' => true],
     ];
-
-    /** @var array */
-    protected static $typeDefinition = [];
 
     /** @var string */
     protected $type;
@@ -95,14 +95,6 @@ abstract class Plugin
     }
 
     /**
-     * @return array
-     */
-    static function getTypeDefinition(): array
-    {
-        return static::$typeDefinition;
-    }
-
-    /**
      * See if this plugin is currently active
      *
      * @return bool
@@ -116,9 +108,8 @@ abstract class Plugin
      * Get plugin instance
      *
      * @throws \OutOfBoundsException if the plugin is not currently active
-     * @return static
      */
-    static function getInstance()
+    static function getInstance(): self
     {
         return Core::$pluginManager->getInstance(get_called_class());
     }
@@ -166,7 +157,7 @@ abstract class Plugin
      */
     function isDisabled(): bool
     {
-        return static::STATUS_DISABLED === $this->status;
+        return self::STATUS_DISABLED === $this->status;
     }
 
     /**
@@ -221,7 +212,7 @@ abstract class Plugin
      */
     function needsInstallation(): bool
     {
-        return static::STATUS_NEEDS_INSTALLATION === $this->status;
+        return self::STATUS_NEEDS_INSTALLATION === $this->status;
     }
 
     /**
@@ -261,7 +252,7 @@ abstract class Plugin
      */
     function hasErrors(): bool
     {
-        return static::STATUS_HAS_ERRORS === $this->status;
+        return self::STATUS_HAS_ERRORS === $this->status;
     }
 
     /**

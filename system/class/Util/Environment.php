@@ -40,7 +40,7 @@ abstract class Environment
             $limit_lowest = null;
             $opts = ['upload_max_filesize', 'post_max_size', 'memory_limit'];
             for ($i = 0; isset($opts[$i]); ++$i) {
-                $limit = static::phpIniLimit($opts[$i]);
+                $limit = self::phpIniLimit($opts[$i]);
                 if (isset($limit) && (!isset($limit_lowest) || $limit < $limit_lowest)) {
                     $limit_lowest = $limit;
                 }
@@ -58,7 +58,7 @@ abstract class Environment
      */
     static function renderUploadLimit(): string
     {
-        $limit = static::getUploadLimit();
+        $limit = self::getUploadLimit();
         if ($limit !== null) {
             return '<small>' . _lang('global.uploadlimit') . ': <em>' . GenericTemplates::renderFileSize($limit) . '</em></small>';
         } else {
@@ -114,7 +114,7 @@ abstract class Environment
      */
     static function getAvailableMemory(): ?int
     {
-        $memlimit = static::phpIniLimit('memory_limit');
+        $memlimit = self::phpIniLimit('memory_limit');
 
         if ($memlimit === null) {
             return null;

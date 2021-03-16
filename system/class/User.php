@@ -161,12 +161,12 @@ abstract class User
         if (
             $dirPath !== null
             && $dirPath !== ''
-            && ($dirPath = static::checkPath($dirPath, false, true)) !== false
+            && ($dirPath = self::checkPath($dirPath, false, true)) !== false
             && is_dir($dirPath)
         ) {
             return $dirPath;
         } else {
-            return static::getHomeDir();
+            return self::getHomeDir();
         }
     }
 
@@ -182,12 +182,12 @@ abstract class User
     {
         if (_priv_fileaccess) {
             $path = Filesystem::parsePath($path, $isFile);
-            $homeDirPath = Filesystem::parsePath(static::getHomeDir(true));
+            $homeDirPath = Filesystem::parsePath(self::getHomeDir(true));
 
             if (
                 /* nepovolit vystup z rootu */                  substr_count($path, '..') <= substr_count(_root, '..')
                 /* nepovolit vystup z domovskeho adresare */    && strncmp($homeDirPath, $path, strlen($homeDirPath)) === 0
-                /* nepovolit praci s nebezpecnymi soubory */    && (!$isFile || static::checkFilename(basename($path)))
+                /* nepovolit praci s nebezpecnymi soubory */    && (!$isFile || self::checkFilename(basename($path)))
             ) {
                 return $getPath ? $path : true;
             }
@@ -401,7 +401,7 @@ abstract class User
      */
     static function login(int $id, string $storedPassword, string $email, bool $persistent = false): void
     {
-        $authHash = static::getAuthHash($storedPassword);
+        $authHash = self::getAuthHash($storedPassword);
 
         $_SESSION['user_id'] = $id;
         $_SESSION['user_auth'] = $authHash;
@@ -409,7 +409,7 @@ abstract class User
         if ($persistent && !headers_sent()) {
             $cookie_data = [];
             $cookie_data[] = $id;
-            $cookie_data[] = static::getPersistentLoginHash($id, $authHash, $email);
+            $cookie_data[] = self::getPersistentLoginHash($id, $authHash, $email);
 
             setcookie(
                 Core::$appId . '_persistent_key',
@@ -450,7 +450,7 @@ abstract class User
 
         // zpravy
         if (isset($_GET['login_form_result'])) {
-            $login_result = static::getLoginMessage(Request::get('login_form_result'));
+            $login_result = self::getLoginMessage(Request::get('login_form_result'));
             if ($login_result !== null) {
                 $output .= $login_result;
             }
@@ -668,7 +668,7 @@ abstract class User
         Extend::call('user.login', ['user' => $query]);
 
         // prihlaseni
-        static::login($query['id'], $query['password'], $query['email'], $persistent);
+        self::login($query['id'], $query['password'], $query['email'], $persistent);
 
         // vse ok, uzivatel byl prihlasen
         return 1;
@@ -873,7 +873,7 @@ abstract class User
     {
         $userData = Arr::getSubset($row, $userQuery['columns'], strlen($userQuery['prefix']));
 
-        return static::renderAvatar($userData, $options);
+        return self::renderAvatar($userData, $options);
     }
 
     /**
@@ -912,7 +912,7 @@ abstract class User
             if ($login_message === null) {
                 $login_message = Message::ok(_lang('post_repeat.login'));
             }
-            $login_message->append('<div class="hr"><hr></div>' . static::renderLoginForm(false, false, null, true), true);
+            $login_message->append('<div class="hr"><hr></div>' . self::renderLoginForm(false, false, null, true), true);
 
             $output .= $login_message;
         } elseif ($login_message !== null) {

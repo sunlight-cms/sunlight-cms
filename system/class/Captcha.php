@@ -28,7 +28,7 @@ class Captcha
             if (!isset($_SESSION['captcha_code']) || !is_array($_SESSION['captcha_code'])) {
                 $_SESSION['captcha_code'] = [];
             }
-            $_SESSION['captcha_code'][$captchaCounter] = [static::generateCode(8), false];
+            $_SESSION['captcha_code'][$captchaCounter] = [self::generateCode(8), false];
 
             return [
                 'label' => _lang('captcha.input'),

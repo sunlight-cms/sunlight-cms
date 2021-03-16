@@ -8,9 +8,7 @@ use Sunlight\Localization\LocalizationDirectory;
 
 class TemplatePlugin extends Plugin
 {
-    const DEFAULT_LAYOUT = 'default';
-
-    protected static $typeDefinition = [
+    const TYPE_DEFINITION = [
         'type' => 'template',
         'dir' => 'plugins/templates',
         'class' => __CLASS__,
@@ -31,6 +29,8 @@ class TemplatePlugin extends Plugin
             'lang_dir' => ['type' => 'string', 'default' => 'labels', 'normalizer' => ['Sunlight\Plugin\PluginOptionNormalizer', 'normalizePath']],
         ],
     ];
+
+    const DEFAULT_LAYOUT = 'default';
 
     /** @var LocalizationDictionary */
     protected $lang;
@@ -90,7 +90,7 @@ class TemplatePlugin extends Plugin
     function getTemplate(string $layout = self::DEFAULT_LAYOUT): string
     {
         if (!isset($this->options['layouts'][$layout])) {
-            $layout = static::DEFAULT_LAYOUT;
+            $layout = self::DEFAULT_LAYOUT;
         }
 
         return $this->options['layouts'][$layout]['template'];
@@ -177,7 +177,7 @@ class TemplatePlugin extends Plugin
     function getBoxes(string $layout = self::DEFAULT_LAYOUT): array
     {
         if (!isset($this->options['layouts'][$layout])) {
-            $layout = static::DEFAULT_LAYOUT;
+            $layout = self::DEFAULT_LAYOUT;
         }
 
         $boxes = [];

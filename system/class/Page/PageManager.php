@@ -13,13 +13,13 @@ use Sunlight\Extend;
 abstract class PageManager
 {
     /** @var TreeManager|null */
-    protected static $treeManager;
+    private static $treeManager;
     /** @var TreeReader|null */
-    protected static $treeReader;
+    private static $treeReader;
     /** @var array */
-    protected static $pathCache = [];
+    private static $pathCache = [];
     /** @var array */
-    protected static $childrenCache = [];
+    private static $childrenCache = [];
 
     /**
      * Nalezt stranku a nacist jeji data
@@ -120,7 +120,7 @@ abstract class PageManager
         $result = false;
 
         // zjistit aktualni stranku
-        [$currentId, $currentData] = static::getActive();
+        [$currentId, $currentData] = self::getActive();
 
         if ($currentData !== null) {
             $currentLevel = $currentData['node_level'];
@@ -140,7 +140,7 @@ abstract class PageManager
         if (!$result && $children) {
             $idMap = array_flip($ids);
 
-            foreach (static::getPath($currentId, $currentLevel) as $page) {
+            foreach (self::getPath($currentId, $currentLevel) as $page) {
                 if (isset($idMap[$page['id']])) {
                     $result = true;
                     break;
@@ -203,7 +203,7 @@ abstract class PageManager
         }
 
         if ($addTreeColumns) {
-            $columns = static::prepareTreeColumns($columns);
+            $columns = self::prepareTreeColumns($columns);
         }
 
         return DB::queryRow('SELECT ' . DB::idtList($columns) . '  FROM ' . _page_table . ' WHERE id=' . DB::val($id));
@@ -216,11 +216,11 @@ abstract class PageManager
      */
     static function getTreeManager(): TreeManager
     {
-        if (static::$treeManager === null) {
-            static::$treeManager = new TreeManager(_page_table);
+        if (self::$treeManager === null) {
+            self::$treeManager = new TreeManager(_page_table);
         }
 
-        return static::$treeManager;
+        return self::$treeManager;
     }
 
     /**
@@ -230,11 +230,11 @@ abstract class PageManager
      */
     static function getTreeReader(): TreeReader
     {
-        if (static::$treeReader === null) {
-            static::$treeReader = new TreeReader(_page_table);
+        if (self::$treeReader === null) {
+            self::$treeReader = new TreeReader(_page_table);
         }
 
-        return static::$treeReader;
+        return self::$treeReader;
     }
 
     /**
@@ -257,7 +257,7 @@ abstract class PageManager
             $where .= ' AND (' . $sqlCond . ')';
         }
 
-        $columns = DB::idtList(array_merge(static::getTreeReader()->getSystemColumns(), static::prepareTreeColumns($extraColumns)));
+        $columns = DB::idtList(array_merge(self::getTreeReader()->getSystemColumns(), self::prepareTreeColumns($extraColumns)));
         $query = DB::query('SELECT ' . $columns . ' FROM ' . _page_table . ' WHERE ' . $where . ' ORDER BY ord');
 
         $pages = [];
@@ -284,8 +284,8 @@ abstract class PageManager
         ?TreeFilterInterface $filter = null,
         ?array $extraColumns = null
     ) : array{
-        return static::getTreeReader()->getTree(
-            static::getTreeReaderOptions($nodeId, $nodeDepth, $filter, $extraColumns)
+        return self::getTreeReader()->getTree(
+            self::getTreeReaderOptions($nodeId, $nodeDepth, $filter, $extraColumns)
         );
     }
 
@@ -304,8 +304,8 @@ abstract class PageManager
         ?TreeFilterInterface $filter = null,
         array $extraColumns = null
     ) : array{
-        return static::getTreeReader()->getFlatTree(
-            static::getTreeReaderOptions($nodeId, $nodeDepth, $filter, $extraColumns)
+        return self::getTreeReader()->getFlatTree(
+            self::getTreeReaderOptions($nodeId, $nodeDepth, $filter, $extraColumns)
         );
     }
 
@@ -328,17 +328,17 @@ abstract class PageManager
     ) : array{
         $canBeCached = $filter === null && $extraColumns === null;
 
-        if ($canBeCached && isset(static::$childrenCache[$nodeId])) {
-            return static::$childrenCache[$nodeId];
+        if ($canBeCached && isset(self::$childrenCache[$nodeId])) {
+            return self::$childrenCache[$nodeId];
         }
 
-        $children = static::getTreeReader()->getChildren(
-            static::getTreeReaderOptions($nodeId, $nodeDepth, $filter, $extraColumns),
+        $children = self::getTreeReader()->getChildren(
+            self::getTreeReaderOptions($nodeId, $nodeDepth, $filter, $extraColumns),
             $flat
         );
         
         if ($canBeCached) {
-            static::$childrenCache[$nodeId] = $children;
+            self::$childrenCache[$nodeId] = $children;
         }
 
         return $children;
@@ -353,9 +353,9 @@ abstract class PageManager
      */
     static function getRootPages(TreeFilterInterface $filter = null, ?array $extraColumns = null): array
     {
-        $options = static::getTreeReaderOptions(null, 0, $filter, $extraColumns);
+        $options = self::getTreeReaderOptions(null, 0, $filter, $extraColumns);
 
-        return static::getTreeReader()->getTree($options);
+        return self::getTreeReader()->getTree($options);
     }
 
     /**
@@ -370,18 +370,18 @@ abstract class PageManager
     {
         $canBeCached = $extraColumns === null;
 
-        if ($canBeCached && isset(static::$pathCache[$id])) {
-            return static::$pathCache[$id];
+        if ($canBeCached && isset(self::$pathCache[$id])) {
+            return self::$pathCache[$id];
         }
 
-        $path = static::getTreeReader()->getPath(
-            static::prepareTreeColumns($extraColumns),
+        $path = self::getTreeReader()->getPath(
+            self::prepareTreeColumns($extraColumns),
             $id,
             $level
         );
 
         if ($canBeCached) {
-            static::$pathCache[$id] = $path;
+            self::$pathCache[$id] = $path;
         }
 
         return $path;
@@ -416,11 +416,11 @@ abstract class PageManager
      * @param array|null               $extraColumns
      * @return TreeReaderOptions
      */
-    protected static function getTreeReaderOptions(?int $nodeId, ?int $nodeDepth, ?TreeFilterInterface $filter = null, ?array $extraColumns = null): TreeReaderOptions
+    private static function getTreeReaderOptions(?int $nodeId, ?int $nodeDepth, ?TreeFilterInterface $filter = null, ?array $extraColumns = null): TreeReaderOptions
     {
         $options = new TreeReaderOptions();
 
-        $options->columns = static::prepareTreeColumns($extraColumns);
+        $options->columns = self::prepareTreeColumns($extraColumns);
         $options->nodeId = $nodeId;
         $options->nodeDepth = $nodeDepth;
         $options->filter = $filter;

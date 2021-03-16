@@ -12,9 +12,9 @@ use Sunlight\Database\Database as DB;
 class SimpleTreeFilter implements TreeFilterInterface
 {
     /** @var array */
-    protected $filter;
-    /** @var string */
-    protected $sql;
+    private $filter;
+    /** @private string */
+    private $sql;
 
     /**
      * Filter example:
@@ -69,7 +69,7 @@ class SimpleTreeFilter implements TreeFilterInterface
      * @throws \InvalidArgumentException on empty filter
      * @return array
      */
-    protected function compileFilter(array $filter): array
+    private function compileFilter(array $filter): array
     {
         if (empty($filter)) {
             throw new \InvalidArgumentException('The filter must not be empty');
@@ -92,7 +92,7 @@ class SimpleTreeFilter implements TreeFilterInterface
      * @param array $filter compiled filter
      * @return string
      */
-    protected function compileSql(array $filter): string
+    private function compileSql(array $filter): string
     {
         $sql = '';
 

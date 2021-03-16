@@ -10,19 +10,19 @@ use Sunlight\Database\Database as DB;
 class TreeReader
 {
     /** @var string */
-    protected $table;
+    private $table;
     /** @var string */
-    protected $childrenIndex;
+    private $childrenIndex;
     /** @var string */
-    protected $idColumn;
+    private $idColumn;
     /** @var string */
-    protected $parentColumn;
+    private $parentColumn;
     /** @var string */
-    protected $levelColumn;
+    private $levelColumn;
     /** @var string */
-    protected $depthColumn;
+    private $depthColumn;
     /** @var TreeManager|null */
-    protected $manager;
+    private $manager;
 
     /**
      * @param string      $table         nazev tabulky (vcetne pripadneho prefixu a bez uvozovek)

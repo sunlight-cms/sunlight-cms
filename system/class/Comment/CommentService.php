@@ -120,7 +120,7 @@ class CommentService
         $subject_enabled = false;
         $form_position = 0;
         $page_param = null;
-        $is_topic_list = ($style == static::RENDER_FORUM_TOPIC_LIST);
+        $is_topic_list = ($style == self::RENDER_FORUM_TOPIC_LIST);
         $replies_enabled = null;
         $unread_count = null;
 
@@ -132,7 +132,7 @@ class CommentService
         $url_html = _e($url);
 
         switch ($style) {
-            case static::RENDER_SECTION_COMMENTS:
+            case self::RENDER_SECTION_COMMENTS:
                 $posttype = _post_section_comment;
                 $xhome = -1;
                 $subclass = "comments";
@@ -145,7 +145,7 @@ class CommentService
                 $replynote = true;
                 break;
 
-            case static::RENDER_ARTICLE_COMMENTS:
+            case self::RENDER_ARTICLE_COMMENTS:
                 $posttype = _post_article_comment;
                 $xhome = -1;
                 $subclass = "comments";
@@ -158,7 +158,7 @@ class CommentService
                 $replynote = true;
                 break;
 
-            case static::RENDER_BOOK_POSTS:
+            case self::RENDER_BOOK_POSTS:
                 $posttype = _post_book_entry;
                 $xhome = -1;
                 $subclass = "book";
@@ -171,7 +171,7 @@ class CommentService
                 $replynote = true;
                 break;
 
-            case static::RENDER_FORUM_TOPIC_LIST:
+            case self::RENDER_FORUM_TOPIC_LIST:
                 $posttype = _post_forum_topic;
                 $xhome = -1;
                 $subclass = "topic";
@@ -188,7 +188,7 @@ class CommentService
                 $subject_enabled = true;
                 break;
 
-            case static::RENDER_FORUM_TOPIC:
+            case self::RENDER_FORUM_TOPIC:
                 $posttype = _post_forum_topic;
                 $xhome = $vars[3];
                 $subclass = "topic-replies";
@@ -206,7 +206,7 @@ class CommentService
                 $replies_enabled = false;
                 break;
 
-            case static::RENDER_PM_LIST:
+            case self::RENDER_PM_LIST:
                 $posttype = _post_pm;
                 $xhome = $home;
                 $subclass = "pm";
@@ -225,7 +225,7 @@ class CommentService
                 $replies_enabled = false;
                 break;
 
-            case static::RENDER_PLUGIN_POSTS:
+            case self::RENDER_PLUGIN_POSTS:
                 $posttype = _post_plugin;
                 $xhome = -1;
                 $subclass = "plugin";
@@ -335,13 +335,13 @@ class CommentService
 
             // post form or login form
             if ($canpost) {
-                $form_output .= static::renderForm([
+                $form_output .= self::renderForm([
                     'posttype' => $posttype,
                     'pluginflag' => $pluginflag,
                     'posttarget' => $home,
                     'xhome' => $reply,
                     'subject' => $subject_enabled,
-                    'is_topic' => static::RENDER_FORUM_TOPIC_LIST == $style,
+                    'is_topic' => self::RENDER_FORUM_TOPIC_LIST == $style,
                     'url' => $url,
                 ]);
             } else {
@@ -457,7 +457,7 @@ class CommentService
                         }
                     }
 
-                    $output .= static::renderPost($item, $userQuery, [
+                    $output .= self::renderPost($item, $userQuery, [
                         'current_url' => $url,
                         'current_page' => $paging['current'],
                         'post_link' => $postlink,
@@ -468,7 +468,7 @@ class CommentService
                     // answers
                     if ($replies_enabled && isset($item['_answers'])) {
                         foreach ($item['_answers'] as $answer) {
-                            $output .= static::renderPost($answer, $userQuery, [
+                            $output .= self::renderPost($answer, $userQuery, [
                                 'current_url' => $url,
                                 'current_page' => $paging['current'],
                                 'post_link' => $postlink,
@@ -505,14 +505,14 @@ class CommentService
                         $author = Router::userFromQuery($userQuery, $item, ['max_len' => 16]);
                     } else {
                         $author = "<span class='post-author-guest' title='" . GenericTemplates::renderIp($item['ip']) . "'>"
-                            . StringManipulator::ellipsis(static::renderGuestName($item['guest']), 16)
+                            . StringManipulator::ellipsis(self::renderGuestName($item['guest']), 16)
                             . "</span>";
                     }
 
                     // fetch last post author
                     if (isset($item['_lastpost'])) {
                         if ($item['_lastpost']['author'] != -1) $lastpost = Router::userFromQuery($userQuery, $item['_lastpost'], ['class' => 'post-author', 'max_len' => 16]);
-                        else $lastpost = "<span class='post-author-guest'>" . StringManipulator::ellipsis(static::renderGuestName($item['_lastpost']['guest']), 16) . "</span>";
+                        else $lastpost = "<span class='post-author-guest'>" . StringManipulator::ellipsis(self::renderGuestName($item['_lastpost']['guest']), 16) . "</span>";
                     } else {
                         $lastpost = "-";
                     }
@@ -561,7 +561,7 @@ class CommentService
                         if ($item['author'] != -1) {
                             $author = Router::userFromQuery($userQuery, $item);
                         } else {
-                            $author = "<span class='post-author-guest'>" . static::renderGuestName($item['guest']) . "</span>";
+                            $author = "<span class='post-author-guest'>" . self::renderGuestName($item['guest']) . "</span>";
                         }
                         $output .= "<tr><td><a href='" . Router::topic($item['topic_id'], $forum_slug) . "'>" . $item['topic_subject'] . "</a></td><td>" . $author . "</td><td>" . GenericTemplates::renderTime($item['time'], 'post') . "</td></tr>\n";
                     }
@@ -668,7 +668,7 @@ class CommentService
             $author = Router::userFromQuery($userQuery, $post, ['class' => 'post-author']);
         } else {
             $author = "<span class='post-author-guest' title='" . GenericTemplates::renderIp($post['ip']) . "'>"
-                . static::renderGuestName($post['guest'])
+                . self::renderGuestName($post['guest'])
                 . "</span>";
         }
 

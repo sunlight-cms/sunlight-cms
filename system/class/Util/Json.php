@@ -37,7 +37,7 @@ abstract class Json
         $json = json_encode($data, $options);
 
         if ($json === false) {
-            throw new \RuntimeException(static::getErrorMessage());
+            throw new \RuntimeException(self::getErrorMessage());
         }
 
         return $json;
@@ -56,7 +56,7 @@ abstract class Json
      */
     static function encodeJsonp(string $callback, $data, bool $pretty = true, bool $escapedUnicode = true, bool $escapedSlashes = true): string
     {
-        return sprintf('%s(%s);', $callback, static::encode($data, $pretty, $escapedUnicode, $escapedSlashes));
+        return sprintf('%s(%s);', $callback, self::encode($data, $pretty, $escapedUnicode, $escapedSlashes));
     }
 
     /**
@@ -77,11 +77,11 @@ abstract class Json
             && isset($_GET[$jsonpCallbackParam])
             && preg_match('{[a-z_$]\w+$}ADi', $callback = Request::get($jsonpCallbackParam))
         ) {
-            $contentType = static::CONTENT_TYPE_JSONP;
-            $encodedData = static::encodeJsonp($callback, $data, $pretty, $escapedUnicode, $escapedSlashes);
+            $contentType = self::CONTENT_TYPE_JSONP;
+            $encodedData = self::encodeJsonp($callback, $data, $pretty, $escapedUnicode, $escapedSlashes);
         } else {
-            $contentType = static::CONTENT_TYPE_JSON;
-            $encodedData = static::encode($data, $pretty, $escapedUnicode, $escapedSlashes);
+            $contentType = self::CONTENT_TYPE_JSON;
+            $encodedData = self::encode($data, $pretty, $escapedUnicode, $escapedSlashes);
         }
 
         return [$contentType, $encodedData];
@@ -105,7 +105,7 @@ abstract class Json
         }
 
         if (($errorCode = json_last_error()) !== (JSON_ERROR_NONE)) {
-            throw new \RuntimeException(static::getErrorMessage($errorCode));
+            throw new \RuntimeException(self::getErrorMessage($errorCode));
         }
 
         return $data;

@@ -9,7 +9,7 @@ class ComposerBridge
 {
     static function clearCache(): void
     {
-        static::initMinimalCore();
+        self::initMinimalCore();
 
         if (Core::$cache) {
             Core::$cache->clear();

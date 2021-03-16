@@ -34,7 +34,7 @@ abstract class Html
     static function cut(string $html, int $length): string
     {
         if ($length > 0 && mb_strlen($html) > $length) {
-            return static::fixTrailingHtmlEntity(mb_substr($html, 0, $length));
+            return self::fixTrailingHtmlEntity(mb_substr($html, 0, $length));
         } else {
             return $html;
         }

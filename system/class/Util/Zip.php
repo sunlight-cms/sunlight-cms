@@ -34,7 +34,7 @@ abstract class Zip
             throw new \InvalidArgumentException(sprintf('Entry "%s" was not found in the archive', $archivePath));
         }
 
-        return static::extractFileEntry($zip, $stat, $targetPath, $bigFileThreshold);
+        return self::extractFileEntry($zip, $stat, $targetPath, $bigFileThreshold);
     }
 
     /**
@@ -53,7 +53,7 @@ abstract class Zip
             return false;
         }
 
-        if ($stat['size'] > ($bigFileThreshold ?: static::DEFAULT_BIG_FILE_THRESHOLD)) {
+        if ($stat['size'] > ($bigFileThreshold ?: self::DEFAULT_BIG_FILE_THRESHOLD)) {
             // extract big files using streams
             // (this is slower but also less memory intensive)
             $source = $zip->getStream($stat['name']);
@@ -100,7 +100,7 @@ abstract class Zip
     static function extractDirectories(\ZipArchive $zip, ?array $directories, string $targetPath, array $options = []): void
     {
         $options += [
-            'path_mode' => static::PATH_FULL,
+            'path_mode' => self::PATH_FULL,
             'dir_mode' => 0777,
             'recursive' => true,
             'exclude_prefix' => null,
@@ -145,7 +145,7 @@ abstract class Zip
                     if ($lastSlashPos === false || $options['recursive'] || $lastSlashPos === $archivePathPrefixLen - 1) {
                         // parse current item
                         $fileName = $lastSlashPos !== false ? substr($stat['name'], $lastSlashPos) : $stat['name'];
-                        $subpath = static::getSubpath($options['path_mode'], $stat['name'], $lastSlashPos, $archivePathPrefixLen, $options['exclude_prefix'], $excludePrefixLen);
+                        $subpath = self::getSubpath($options['path_mode'], $stat['name'], $lastSlashPos, $archivePathPrefixLen, $options['exclude_prefix'], $excludePrefixLen);
 
                         // determine target directory
                         $targetDir = $targetPath;
@@ -163,7 +163,7 @@ abstract class Zip
                         }
 
                         // extract the file
-                        static::extractFileEntry($zip, $stat, $targetDir . $fileName, $options['big_file_threshold']);
+                        self::extractFileEntry($zip, $stat, $targetDir . $fileName, $options['big_file_threshold']);
                     }
                 }
             }
@@ -184,21 +184,21 @@ abstract class Zip
      * @throws \InvalidArgumentException if the mode is invalid
      * @return string|null
      */
-    protected static function getSubpath(int $mode, string $path, $lastSlashPos, int $prefixLen, ?string $excludePrefix, int $excludePrefixLen): ?string
+    private static function getSubpath(int $mode, string $path, $lastSlashPos, int $prefixLen, ?string $excludePrefix, int $excludePrefixLen): ?string
     {
         // determine subpath
         switch ($mode) {
-            case static::PATH_FULL:
+            case self::PATH_FULL:
                 $subpath = $lastSlashPos !== false
                     ? substr($path, 0, $lastSlashPos)
                     : null;
                 break;
-            case static::PATH_SUB:
+            case self::PATH_SUB:
                 $subpath = $lastSlashPos !== false && $lastSlashPos > $prefixLen
                     ? substr($path, $prefixLen, $lastSlashPos - $prefixLen)
                     : null;
                 break;
-            case static::PATH_NONE:
+            case self::PATH_NONE:
                 $subpath = null;
                 break;
             default:

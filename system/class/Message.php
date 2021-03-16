@@ -14,11 +14,11 @@ class Message
     const ERROR = 'err';
 
     /** @var string */
-    protected $type;
+    private $type;
     /** @var string */
-    protected $message;
+    private $message;
     /** @var bool */
-    protected $isHtml;
+    private $isHtml;
 
     /**
      * @param string $type    see Message class constants
@@ -83,11 +83,11 @@ class Message
      *
      * @param string $message the message
      * @param bool   $isHtml  display the message should be rendered as html (unescaped) 1/0
-     * @return static
+     * @return self
      */
     static function ok(string $message, bool $isHtml = false): self
     {
-        return new static(static::OK, $message, $isHtml);
+        return new self(self::OK, $message, $isHtml);
     }
 
     /**
@@ -95,11 +95,11 @@ class Message
      *
      * @param string $message the message
      * @param bool   $isHtml  display the message should be rendered as html (unescaped) 1/0
-     * @return static
+     * @return self
      */
     static function warning(string $message, bool $isHtml = false): self
     {
-        return new static(static::WARNING, $message, $isHtml);
+        return new self(self::WARNING, $message, $isHtml);
     }
 
     /**
@@ -107,11 +107,11 @@ class Message
      *
      * @param string $message the message
      * @param bool   $isHtml  display the message should be rendered as html (unescaped) 1/0
-     * @return static
+     * @return self
      */
     static function error(string $message, bool $isHtml = false): self
     {
-        return new static(static::ERROR, $message, $isHtml);
+        return new self(self::ERROR, $message, $isHtml);
     }
 
     /**

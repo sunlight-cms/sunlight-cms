@@ -10,15 +10,15 @@ use Sunlight\Database\Database as DB;
 class TreeManager
 {
     /** @var string */
-    protected $table;
+    private $table;
     /** @var string */
-    protected $idColumn;
+    private $idColumn;
     /** @var string */
-    protected $parentColumn;
+    private $parentColumn;
     /** @var string */
-    protected $levelColumn;
+    private $levelColumn;
     /** @var string */
-    protected $depthColumn;
+    private $depthColumn;
 
     /**
      * @param string      $table        nazev tabulky (vcetne pripadneho prefixu, jsou-li treba)
@@ -265,7 +265,7 @@ class TreeManager
      * @param array|null &$parents
      * @return int
      */
-    protected function getLevel(?int $nodeId, ?array &$parents = null): int
+    private function getLevel(?int $nodeId, ?array &$parents = null): int
     {
         $level = 0;
         $parents = [];
@@ -297,7 +297,7 @@ class TreeManager
      * @param int|null $nodeId
      * @return int|null
      */
-    protected function getParent(?int $nodeId): ?int
+    private function getParent(?int $nodeId): ?int
     {
         $node = DB::queryRow('SELECT ' . $this->parentColumn . ' FROM `' . $this->table . '` WHERE ' . $this->idColumn . '=' . DB::val($nodeId));
         if ($node === false) {
@@ -313,7 +313,7 @@ class TreeManager
      * @param int $nodeId
      * @return int
      */
-    protected function getRoot(int $nodeId): int
+    private function getRoot(int $nodeId): int
     {
         $parents = [];
         $this->getLevel($nodeId, $parents);
@@ -331,7 +331,7 @@ class TreeManager
      * @param bool $emptyArrayOnFailure
      * @return array
      */
-    protected function getChildren(int $nodeId, bool $emptyArrayOnFailure = false): array
+    private function getChildren(int $nodeId, bool $emptyArrayOnFailure = false): array
     {
         // zjistit hloubku uzlu
         $node = DB::queryRow('SELECT ' . $this->depthColumn . ' FROM `' . $this->table . '` WHERE id=' . DB::val($nodeId));
@@ -389,7 +389,7 @@ class TreeManager
      *
      * @param int|null $currentNodeId
      */
-    protected function doRefresh(?int $currentNodeId): void
+    private function doRefresh(?int $currentNodeId): void
     {
         // zjistit level a rodice aktualniho nodu
         $currentNodeParents = [];
@@ -453,7 +453,7 @@ class TreeManager
      * @param int|null $currentNodeId
      * @param bool|null $isRootNode
      */
-    protected function doRefreshDepth(?int $currentNodeId, ?bool $isRootNode = null): void
+    private function doRefreshDepth(?int $currentNodeId, ?bool $isRootNode = null): void
     {
         // zjistit korenovy uzel
         $rootNodeId = $currentNodeId;
@@ -529,7 +529,7 @@ class TreeManager
      * @param array  $changeset
      * @param int    $maxPerQuery
      */
-    protected function updateSet(string $column, array $set, array $changeset, int $maxPerQuery = 100): void
+    private function updateSet(string $column, array $set, array $changeset, int $maxPerQuery = 100): void
     {
         DB::updateSet($this->table, $column, $set, $changeset, $maxPerQuery);
     }
@@ -541,7 +541,7 @@ class TreeManager
      * @param array  $set
      * @param int    $maxPerQuery
      */
-    protected function deleteSet(string $column, array $set, int $maxPerQuery = 100): void
+    private function deleteSet(string $column, array $set, int $maxPerQuery = 100): void
     {
         DB::deleteSet($this->table, $column, $set, $maxPerQuery);
     }

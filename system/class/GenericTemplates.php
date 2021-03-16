@@ -63,7 +63,7 @@ abstract class GenericTemplates
             }
         }
 
-        return static::renderNumber($i === 2 ? $value : ceil($value)) . ' ' . $units[$i];
+        return self::renderNumber($i === 2 ? $value : ceil($value)) . ' ' . $units[$i];
     }
 
     /**

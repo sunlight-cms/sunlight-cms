@@ -81,7 +81,7 @@ abstract class Form
      */
     static function restoreCheckedAndName(string $key_var, string $name, bool $default = false, string $method = 'POST'): string
     {
-        return ' name="' . $name . '"' . static::restoreChecked($key_var, $name, $default, $method);
+        return ' name="' . $name . '"' . self::restoreChecked($key_var, $name, $default, $method);
     }
 
     /**
@@ -95,7 +95,7 @@ abstract class Form
      */
     static function restorePostValue(string $name, ?string $else = null, bool $param = true, bool $else_entities = true): string
     {
-        return static::restoreValue($_POST, $name, $else, $param, $else_entities);
+        return self::restoreValue($_POST, $name, $else, $param, $else_entities);
     }
 
     /**
@@ -108,7 +108,7 @@ abstract class Form
      */
     static function restorePostValueAndName(string $name, ?string $else = null, bool $else_entities = true): string
     {
-        return ' name="' . $name . '"' . static::restorePostValue($name, $else, true, $else_entities);
+        return ' name="' . $name . '"' . self::restorePostValue($name, $else, true, $else_entities);
     }
 
     /**
@@ -122,7 +122,7 @@ abstract class Form
      */
     static function restoreGetValue(string $name, ?string $else = null, bool $param = true, bool $else_entities = true): string
     {
-        return static::restoreValue($_GET, $name, $else, $param, $else_entities);
+        return self::restoreValue($_GET, $name, $else, $param, $else_entities);
     }
 
     /**
@@ -135,7 +135,7 @@ abstract class Form
      */
     static function restoreGetValueAndName(string $name, ?string $else = null, bool $else_entities = true): string
     {
-        return ' name="' . $name . '"' . static::restoreGetValue($name, $else, true, $else_entities);
+        return ' name="' . $name . '"' . self::restoreGetValue($name, $else, true, $else_entities);
     }
 
     /**
@@ -183,7 +183,7 @@ abstract class Form
     {
         $excludeList[] = '_security_token';
 
-        return static::renderHiddenInputs(Arr::filterKeys($_POST, $include, $exclude, $excludeList));
+        return self::renderHiddenInputs(Arr::filterKeys($_POST, $include, $exclude, $excludeList));
     }
 
     /**
@@ -201,7 +201,7 @@ abstract class Form
             if ($counter > 0) {
                 $output .= "\n";
             }
-            $output .= static::renderHiddenInput($key, $value);
+            $output .= self::renderHiddenInput($key, $value);
             ++$counter;
         }
 
@@ -227,7 +227,7 @@ abstract class Form
                 if ($counter > 0) {
                     $output .= "\n";
                 }
-                $output .= static::renderHiddenInput($key, $vvalue, array_merge($pkeys, [$vkey]));
+                $output .= self::renderHiddenInput($key, $vvalue, array_merge($pkeys, [$vkey]));
                 ++$counter;
             }
 
@@ -271,7 +271,7 @@ abstract class Form
             }
             $output .= "<input type='text' size='2' maxlength='2' name='{$name}[tday]' value='" . $timestamp['mday'] . "'>.<input type='text' size='2' maxlength='2' name='{$name}[tmonth]' value='" . $timestamp['mon'] . "'> <input type='text' size='4' maxlength='4' name='{$name}[tyear]' value='" . $timestamp['year'] . "'> <input type='text' size='2' maxlength='2' name='{$name}[thour]' value='" . $timestamp['hours'] . "'>:<input type='text' size='2' maxlength='2' name='{$name}[tminute]' value='" . $timestamp['minutes'] . "'>:<input type='text' size='2' maxlength='2' name='{$name}[tsecond]' value='" . $timestamp['seconds'] . "'> <small>" . _lang('time.help') . "</small>";
             if ($updatebox) {
-                $output .= " <label><input type='checkbox' name='{$name}[tupdate]' value='1'" . static::activateCheckbox($updateboxchecked) . "> " . _lang('time.update') . "</label>";
+                $output .= " <label><input type='checkbox' name='{$name}[tupdate]' value='1'" . self::activateCheckbox($updateboxchecked) . "> " . _lang('time.update') . "</label>";
             }
         }
 
@@ -422,7 +422,7 @@ abstract class Form
 
         // radky
         foreach ($rows as $row) {
-            $output .= static::renderRow($row);
+            $output .= self::renderRow($row);
         }
 
         // radek s odesilacim tlacitkem
@@ -438,9 +438,9 @@ abstract class Form
             if (isset($submit_row['content'])) {
                 $submit_row['content'] .= $options['submit_append'];
             }
-            $output .= static::renderRow($submit_row);
+            $output .= self::renderRow($submit_row);
         } elseif (!empty($options['submit_append'])) {
-            $output .= static::renderRow([
+            $output .= self::renderRow([
                 'label' => $options['submit_span'] ? null : '',
                 'content' => $options['submit_append'],
             ]);
@@ -466,7 +466,7 @@ abstract class Form
      * @param array $row
      * @return string
      */
-    protected static function renderRow(array $row): string
+    private static function renderRow(array $row): string
     {
         $row += [
             'label' => null,

@@ -19,18 +19,15 @@ use Sunlight\Core;
 class Url
 {
     /** @var Url|null */
-    protected static $current;
+    private static $current;
     /** @var Url|null */
-    protected static $base;
+    private static $base;
     /** @var string|null */
-    protected static $cachedBaseUrl;
+    private static $cachedBaseUrl;
     /** @var array */
-    protected $components;
+    private $components;
 
-    /**
-     * @param array $components
-     */
-    protected function __construct(array $components)
+    private function __construct(array $components)
     {
         $this->components = $components + [
             'scheme' => null,
@@ -49,15 +46,13 @@ class Url
      */
     static function create(): self
     {
-        return new static([]);
+        return new self([]);
     }
 
     /**
      * Create instance from a string
      *
-     * @param string $url
      * @throws \InvalidArgumentException if the URL is invalid
-     * @return static
      */
     static function parse(string $url): self
     {
@@ -71,21 +66,19 @@ class Url
             parse_str($components['query'], $components['query']);
         }
 
-        return new static($components);
+        return new self($components);
     }
 
     /**
      * Get instance of the current URL
      *
      * Returns a different instance each time so it may be modified.
-     *
-     * @return static
      */
     static function current(): self
     {
-        if (static::$current === null) {
+        if (self::$current === null) {
             try {
-                $requestUri = static::parse(!empty($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '/');
+                $requestUri = self::parse(!empty($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '/');
 
                 $path = $requestUri->path;
                 $query = $requestUri->query;
@@ -105,28 +98,26 @@ class Url
                 $path
             );
 
-            static::$current = static::parse($url);
-            static::$current->query = $query;
+            self::$current = self::parse($url);
+            self::$current->query = $query;
         }
 
-        return clone static::$current;
+        return clone self::$current;
     }
 
     /**
      * Get instance of the system base URL
      *
      * Returns a different instance each time so it may be modified.
-     *
-     * @return static
      */
     static function base(): self
     {
-        if (static::$base === null || static::$cachedBaseUrl !== Core::$url) {
-            static::$base = static::parse(Core::$url);
-            static::$cachedBaseUrl = Core::$url;
+        if (self::$base === null || self::$cachedBaseUrl !== Core::$url) {
+            self::$base = self::parse(Core::$url);
+            self::$cachedBaseUrl = Core::$url;
         }
 
-        return clone static::$base;
+        return clone self::$base;
     }
 
     /**
@@ -324,7 +315,6 @@ class Url
      *
      * @param string $name
      * @param mixed  $value
-     * @return static
      */
     function set(string $name, $value): self
     {

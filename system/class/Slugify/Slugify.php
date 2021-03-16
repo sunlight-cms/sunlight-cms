@@ -10,13 +10,13 @@ class Slugify
     private static $inst;
 
     /** @var string[] */
-    protected $rules = [];
+    private $rules = [];
 
     /** @var RuleProviderInterface */
-    protected $provider;
+    private $provider;
 
     /** @var array */
-    protected $options = [
+    private $options = [
         'regexp' => self::LOWERCASE_NUMBERS_DASHES,
         'separator' => '-',
         'lowercase' => true,
@@ -48,7 +48,7 @@ class Slugify
         ],
     ];
 
-    protected function __construct(array $options = [], ?RuleProviderInterface $provider = null)
+    private function __construct(array $options = [], ?RuleProviderInterface $provider = null)
     {
         $this->options = array_merge($this->options, $options);
         $this->provider = $provider ? $provider : new DefaultRuleProvider();
@@ -58,10 +58,7 @@ class Slugify
         }
     }
 
-    /**
-     * @return self
-     */
-    public static function getInstance(): self
+    static function getInstance(): self
     {
         if (self::$inst === null) {
             self::$inst = new self();

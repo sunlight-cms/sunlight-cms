@@ -17,7 +17,7 @@ abstract class Bbcode
      *           (null|int|string) button icon (null = none, 1 = template, string = custom path)
      *      )
      */
-    protected static $tags = [
+    private static $tags = [
         'b' => [true, false, true, true, 1], // bold
         'i' => [true, false, true, true, 1], // italic
         'u' => [true, false, true, true, 1], // underline
@@ -33,9 +33,7 @@ abstract class Bbcode
         'noformat' => [true, false, true, false, null], // no format
     ];
 
-    protected static $syntax = ['[', ']', '/', '=', '"'];
-
-    protected static $extended = false;
+    private static $extended = false;
 
     /**
      * Get known BBCode tags
@@ -44,9 +42,9 @@ abstract class Bbcode
      */
     static function getTags(): array
     {
-        self::$extended || static::extendTags();
+        self::$extended || self::extendTags();
 
-        return static::$tags;
+        return self::$tags;
     }
 
     /**
@@ -57,7 +55,7 @@ abstract class Bbcode
      */
     static function parse(string $s): string
     {
-        self::$extended || static::extendTags();
+        self::$extended || self::extendTags();
 
         // prepare
         $mode = 0;
@@ -82,7 +80,7 @@ abstract class Bbcode
 
                 ########## look for tag ##########
                 case 0:
-                    if ($char === static::$syntax[0]) {
+                    if ($char === '[') {
                         $mode = 1;
                         if ($parents_n === -1) {
                             $output .= $buffer;
@@ -99,16 +97,16 @@ abstract class Bbcode
                     if (($ord = ord($char)) > 47 && $ord < 59 || $ord > 64 && $ord < 91 || $ord > 96 && $ord < 123) {
                         // tag character
                         $tag .= $char;
-                    } elseif ($tag === '' && $char === static::$syntax[2]) {
+                    } elseif ($tag === '' && $char === '/') {
                         // closing tag
                         $closing = true;
                         break;
-                    } elseif ($char === static::$syntax[1]) {
+                    } elseif ($char === ']') {
                         // tag end
                         $tag = mb_strtolower($tag);
-                        if (isset(static::$tags[$tag])) {
-                            if ($parents_n === -1 || static::$tags[$tag][2] || static::$tags[$tag][0] && $closing) {
-                                if (static::$tags[$tag][0]) {
+                        if (isset(self::$tags[$tag])) {
+                            if ($parents_n === -1 || self::$tags[$tag][2] || self::$tags[$tag][0] && $closing) {
+                                if (self::$tags[$tag][0]) {
                                     // paired tag
                                     if ($closing) {
                                         if ($parents_n === -1 || $parents[$parents_n][0] !== $tag) {
@@ -117,7 +115,7 @@ abstract class Bbcode
                                         } else {
                                             --$parents_n;
                                             $pop = array_pop($parents);
-                                            $buffer = static::processTag($pop[0], $pop[1], $pop[2]);
+                                            $buffer = self::processTag($pop[0], $pop[1], $pop[2]);
                                             if ($parents_n === -1) {
                                                 $output .= $buffer;
                                             } else {
@@ -126,7 +124,7 @@ abstract class Bbcode
                                             $reset = 1;
                                             $char = '';
                                         }
-                                    } elseif ($parents_n === -1 || static::$tags[$parents[$parents_n][0]][3]) {
+                                    } elseif ($parents_n === -1 || self::$tags[$parents[$parents_n][0]][3]) {
                                         // opening tag
                                         $parents[] = [$tag, $arg, ''];
                                         ++$parents_n;
@@ -139,7 +137,7 @@ abstract class Bbcode
                                     }
                                 } else {
                                     // standalone tag
-                                    $buffer = static::processTag($tag, $arg);
+                                    $buffer = self::processTag($tag, $arg);
                                     if ($parents_n === -1) {
                                         $output .= $buffer;
                                     } else {
@@ -155,8 +153,8 @@ abstract class Bbcode
                             // reset - bad tag
                             $reset = 4;
                         }
-                    } elseif ($char === static::$syntax[3]) {
-                        if (isset(static::$tags[$tag]) && static::$tags[$tag][1] === true && $arg === '' && !$closing) {
+                    } elseif ($char === '=') {
+                        if (isset(self::$tags[$tag]) && self::$tags[$tag][1] === true && $arg === '' && !$closing) {
                             $mode = 2; // scan tag argument
                         } else {
                             // reset - bad / no argument
@@ -173,7 +171,7 @@ abstract class Bbcode
 
                     // detect submode
                     if ($submode === 0) {
-                        if ($char === static::$syntax[4]) {
+                        if ($char === '"') {
                             // quoted mode
                             $submode = 1;
                             break;
@@ -185,12 +183,12 @@ abstract class Bbcode
 
                     // gather argument
                     if ($submode === 1) {
-                        if ($char !== static::$syntax[4]) {
+                        if ($char !== '"') {
                             // char ok
                             $arg .= $char;
                             break;
                         }
-                    } elseif ($char !== static::$syntax[1]) {
+                    } elseif ($char !== ']') {
                         // char ok
                         $arg .= $char;
                         break;
@@ -204,7 +202,7 @@ abstract class Bbcode
                         --$i;
                     } else {
                         // end of quoted
-                        if (isset($s[$i + 1]) && $s[$i + 1] === static::$syntax[1]) {
+                        if (isset($s[$i + 1]) && $s[$i + 1] === ']') {
                             $mode = 1;
                         } else {
                             // reset - bad syntax
@@ -251,7 +249,7 @@ abstract class Bbcode
         return $output;
     }
 
-    protected static function processTag(string $tag, string $arg = '', ?string $buffer = null): string
+    private static function processTag(string $tag, string $arg = '', ?string $buffer = null): string
     {
         // load extend tag processors
         static $ext = null;
@@ -362,9 +360,9 @@ abstract class Bbcode
         return '';
     }
 
-    protected static function extendTags(): void
+    private static function extendTags(): void
     {
-        Extend::call('bbcode.init.tags', ['tags' => &static::$tags]);
-        static::$extended = true;
+        Extend::call('bbcode.init.tags', ['tags' => &self::$tags]);
+        self::$extended = true;
     }
 }

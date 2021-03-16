@@ -14,13 +14,13 @@ use Sunlight\Util\TemporaryFile;
 class SqlDumper
 {
     /** @var array */
-    protected $tables = [];
+    private $tables = [];
     /** @var bool */
-    protected $dumpData = true;
+    private $dumpData = true;
     /** @var bool */
-    protected $dumpTables = true;
+    private $dumpTables = true;
     /** @var int|null */
-    protected $maxPacketSize;
+    private $maxPacketSize;
 
     /**
      * Dump tables and/or data
@@ -150,7 +150,7 @@ class SqlDumper
      *
      * @param resource $handle
      */
-    protected function dumpTables($handle): void
+    private function dumpTables($handle): void
     {
         foreach ($this->tables as $table) {
             $createTable = DB::queryRow('SHOW CREATE TABLE `' . $table . '`');
@@ -169,7 +169,7 @@ class SqlDumper
      *
      * @param resource $handle
      */
-    protected function dumpData($handle): void
+    private function dumpData($handle): void
     {
         foreach ($this->tables as $table) {
             $columns = $this->getTableColumns($table);
@@ -189,7 +189,7 @@ class SqlDumper
      * @param array    $columns
      * @param mixed    $result
      */
-    protected function dumpTableData($handle, string $table, array $columns, $result): void
+    private function dumpTableData($handle, string $table, array $columns, $result): void
     {
         $columnList = DB::idtList(array_keys($columns));
         $insertStatement = 'INSERT INTO `' . $table . '` (' . $columnList . ') VALUES ';
@@ -199,6 +199,7 @@ class SqlDumper
         $maxPacketSize = $this->getMaxPacketSize();
         $writtenInsertSyntax = false;
         $isFirstRowStatement = false;
+
         while ($rowx = DB::row($result)) {
 
             // write initial insert statement
@@ -284,7 +285,7 @@ class SqlDumper
      * @param string $table
      * @return array
      */
-    protected function getTableColumns(string $table): array
+    private function getTableColumns(string $table): array
     {
         $columns = [];
         $result = DB::query('SHOW COLUMNS FROM `' . $table . '`');

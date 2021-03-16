@@ -110,7 +110,7 @@ abstract class Article
     {
         //kategorie
         if (!empty($categories)) {
-            $conditions[] = static::createCategoryFilter($categories);
+            $conditions[] = self::createCategoryFilter($categories);
         }
 
         // cas vydani

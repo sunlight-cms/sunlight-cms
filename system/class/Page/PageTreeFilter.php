@@ -9,9 +9,9 @@ use Sunlight\Database\TreeReader;
 class PageTreeFilter implements TreeFilterInterface
 {
     /** @var array */
-    protected $options;
+    private $options;
     /** @var string */
-    protected $sql;
+    private $sql;
 
     /**
      * Supported keys in $options:
@@ -99,7 +99,7 @@ class PageTreeFilter implements TreeFilterInterface
      * @param array $options
      * @return string
      */
-    protected function compileSql(array $options): string
+    private function compileSql(array $options): string
     {
         // base conditions
         $sql = '%__node__%.visible=1 AND %__node__%.type!=' . _page_separator;

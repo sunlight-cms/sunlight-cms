@@ -42,7 +42,7 @@ abstract class TemplateLocator
      */
     static function getDefaultTemplate(): TemplatePlugin
     {
-        return static::getTemplate(_default_template);
+        return self::getTemplate(_default_template);
     }
 
     /**
@@ -92,7 +92,7 @@ abstract class TemplateLocator
     {
         return call_user_func_array(
             [get_called_class(), 'getComponents'],
-            static::parseUid($uid, $type)
+            self::parseUid($uid, $type)
         );
     }
 
@@ -113,11 +113,11 @@ abstract class TemplateLocator
      */
     static function getComponents(string $template, ?string $layout = null, ?string $slot = null): ?array
     {
-        if (!static::templateExists($template)) {
+        if (!self::templateExists($template)) {
             return null;
         }
 
-        $template = static::getTemplate($template);
+        $template = self::getTemplate($template);
 
         $components = [
             'template' => $template,

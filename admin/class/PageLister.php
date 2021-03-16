@@ -34,30 +34,30 @@ abstract class PageLister
      */
     static function init(): void
     {
-        if (static::$initialized) {
+        if (self::$initialized) {
             return;
         }
-        static::$initialized = true;
+        self::$initialized = true;
 
         // load config
-        static::$config = [];
-        $sessionKey = static::getSessionKey();
+        self::$config = [];
+        $sessionKey = self::getSessionKey();
         if (isset($_SESSION[$sessionKey]) && is_array($_SESSION[$sessionKey])) {
-            static::$config = $_SESSION[$sessionKey];
+            self::$config = $_SESSION[$sessionKey];
         }
 
         // set defaults
-        static::$config += [
+        self::$config += [
             'mode' => _adminpagelist_mode,
             'current_page' => null,
         ];
 
         // fetch types
-        static::$pageTypes = PageManager::getTypes();
-        static::$pluginTypes = PageManager::getPluginTypes();
+        self::$pageTypes = PageManager::getTypes();
+        self::$pluginTypes = PageManager::getPluginTypes();
 
         // setup
-        static::setup();
+        self::setup();
     }
 
     /**
@@ -74,7 +74,7 @@ abstract class PageLister
                 $pageId = (int) $pageId;
             }
 
-            static::setConfig('current_page', $pageId);
+            self::setConfig('current_page', $pageId);
         }
 
         // set mode
@@ -82,10 +82,10 @@ abstract class PageLister
         if ($mode !== null) {
             switch ($mode) {
                 case 'tree':
-                    static::setConfig('mode', static::MODE_FULL_TREE);
+                    self::setConfig('mode', self::MODE_FULL_TREE);
                     break;
                 case 'single':
-                    static::setConfig('mode', static::MODE_SINGLE_LEVEL);
+                    self::setConfig('mode', self::MODE_SINGLE_LEVEL);
                     break;
             }
         }
@@ -99,12 +99,12 @@ abstract class PageLister
      */
     static function setConfig(string $name, $value): void
     {
-        if (!array_key_exists($name, static::$config)) {
+        if (!array_key_exists($name, self::$config)) {
             throw new \OutOfBoundsException(sprintf('Unknown option "%s"', $name));
         }
 
-        static::$config[$name] = $value;
-        $_SESSION[static::getSessionKey()][$name] = $value;
+        self::$config[$name] = $value;
+        $_SESSION[self::getSessionKey()][$name] = $value;
     }
 
     /**
@@ -115,11 +115,11 @@ abstract class PageLister
      */
     static function getConfig(string $name)
     {
-        if (!array_key_exists($name, static::$config)) {
+        if (!array_key_exists($name, self::$config)) {
             throw new \OutOfBoundsException(sprintf('Unknown option "%s"', $name));
         }
 
-        return static::$config[$name];
+        return self::$config[$name];
     }
 
     /**
@@ -174,7 +174,7 @@ abstract class PageLister
     {
         // default options
         $options += [
-            'mode' => static::$config['mode'],
+            'mode' => self::$config['mode'],
             'actions' => true,
             'links' => true,
             'type' => false,
@@ -186,20 +186,20 @@ abstract class PageLister
         ];
 
         // check current page
-        if (static::$config['current_page'] !== null && !DB::count(_page_table, 'id=' . DB::val(static::$config['current_page']))) {
-            static::$config['current_page'] = null;
+        if (self::$config['current_page'] !== null && !DB::count(_page_table, 'id=' . DB::val(self::$config['current_page']))) {
+            self::$config['current_page'] = null;
         }
 
         // container start
         $output = "<div class=\"page-list-container\">\n";
 
         // breadcrumbs
-        if ($options['breadcrumbs'] && static::$config['current_page'] !== null) {
-            static::renderBreadcrumbs($output);
+        if ($options['breadcrumbs'] && self::$config['current_page'] !== null) {
+            self::renderBreadcrumbs($output);
         }
 
         // list
-        static::renderList($output, $options);
+        self::renderList($output, $options);
 
         // container end
         $output .= "</div>\n";
@@ -218,9 +218,9 @@ abstract class PageLister
 
         $output .= "<ul class=\"page-list-breadcrumbs\">\n";
         $output .= "<li><a href=\"" . _e($url->set('page_id', 'root')->generateRelative()) . "\">" . _lang('global.all') . "</a></li>\n";
-        $path = PageManager::getPath(static::$config['current_page'], null, ['level_inherit', 'layout', 'layout_inherit']);
+        $path = PageManager::getPath(self::$config['current_page'], null, ['level_inherit', 'layout', 'layout_inherit']);
         foreach ($path as $page) {
-            $output .= "<li>" . static::renderPageFlags($page) . "<a href=\"" . _e($url->set('page_id', $page['id'])->generateRelative()) . "\" title=\"ID: {$page['id']}, " . _lang('admin.content.form.ord') . " {$page['ord']}\">{$page['title']}</a></li>\n";
+            $output .= "<li>" . self::renderPageFlags($page) . "<a href=\"" . _e($url->set('page_id', $page['id'])->generateRelative()) . "\" title=\"ID: {$page['id']}, " . _lang('admin.content.form.ord') . " {$page['ord']}\">{$page['title']}</a></li>\n";
         }
         $output .= "</ul>\n";
     }
@@ -237,11 +237,11 @@ abstract class PageLister
         $class = 'page-list';
         if ($options['sortable']) {
             $output .= "<form method=\"post\">\n";
-            if (static::saveOrd()) {
+            if (self::saveOrd()) {
                 $output .= Message::ok(_lang('admin.content.form.ord.saved'));
             }
         }
-        if (static::MODE_SINGLE_LEVEL == $options['mode']) {
+        if (self::MODE_SINGLE_LEVEL == $options['mode']) {
             $class .= ' page-list-single-level';
         } else {
             $class .= ' page-list-full-tree';
@@ -257,11 +257,11 @@ abstract class PageLister
         $output .= ">\n";
 
         // load and filter tree
-        $tree = static::filterTree(
+        $tree = self::filterTree(
             PageManager::getChildren(
-                static::$config['current_page'],
-                static::MODE_SINGLE_LEVEL == $options['mode']
-                    ? (static::$config['current_page'] !== null ? 1 : 0)
+                self::$config['current_page'],
+                self::MODE_SINGLE_LEVEL == $options['mode']
+                    ? (self::$config['current_page'] !== null ? 1 : 0)
                     : null,
                 true,
                 null,
@@ -272,17 +272,17 @@ abstract class PageLister
 
         // render mode
         switch ($options['mode']) {
-            case static::MODE_FULL_TREE:
+            case self::MODE_FULL_TREE:
                 if ($options['level_class'] === null) {
                     $options['level_class'] = true;
                 }
                 if ($options['sortable']) {
                     throw new \RuntimeException('The "sortable" option is not supported in full tree list mode');
                 }
-                static::renderFullTree($output, $tree, $options);
+                self::renderFullTree($output, $tree, $options);
                 break;
-            case static::MODE_SINGLE_LEVEL:
-                static::renderSingleLevel($output, $tree, $options);
+            case self::MODE_SINGLE_LEVEL:
+                self::renderSingleLevel($output, $tree, $options);
                 break;
             default:
                 throw new \OutOfBoundsException('Invalid mode');
@@ -311,7 +311,7 @@ abstract class PageLister
     {
         if (!empty($tree)) {
             // determine level offset
-            if (static::$config['current_page'] !== null) {
+            if (self::$config['current_page'] !== null) {
                 $firstPage = current($tree);
                 $levelOffset = -$firstPage['node_level'];
             } else {
@@ -321,7 +321,7 @@ abstract class PageLister
             // render
             $even = true;
             foreach ($tree as $page) {
-                static::renderPage($output, $page, $options, $even ? 'even' : 'odd', $levelOffset);
+                self::renderPage($output, $page, $options, $even ? 'even' : 'odd', $levelOffset);
                 $even = !$even;
             }
         }
@@ -338,7 +338,7 @@ abstract class PageLister
     {
         $even = true;
         foreach ($tree as $page) {
-            static::renderPage($output, $page, $options, $even ? 'even' : 'odd');
+            self::renderPage($output, $page, $options, $even ? 'even' : 'odd');
             $even = !$even;
         }
     }
@@ -355,14 +355,14 @@ abstract class PageLister
         $ids = array_keys($tree);
         $current = 0;
         $filteredTree = [];
-        $isFullTree = (static::MODE_FULL_TREE == static::$config['mode']);
+        $isFullTree = (self::MODE_FULL_TREE == self::$config['mode']);
 
         // iterate pages
         foreach ($tree as $id => $page) {
-            if (!$isFullTree && $page['node_parent'] != static::$config['current_page']) {
+            if (!$isFullTree && $page['node_parent'] != self::$config['current_page']) {
                 // not in current branch
                 $keep = false;
-            } elseif ($isAccessible = static::isAccessible($page)) {
+            } elseif ($isAccessible = self::isAccessible($page)) {
                 // accessible
                 $keep = true;
             } else {
@@ -375,7 +375,7 @@ abstract class PageLister
                 } elseif ($page['node_depth'] > 0) {
                     // keep if it has accessible children
                     for ($i = $current + 1; isset($ids[$i]) && $tree[$ids[$i]]['node_level'] > $page['node_level']; ++$i) {
-                        if (static::isAccessible($tree[$ids[$i]])) {
+                        if (self::isAccessible($tree[$ids[$i]])) {
                             $keep = true;
                             break;
                         }
@@ -401,7 +401,7 @@ abstract class PageLister
      */
     private static function isAccessible(array $page): bool
     {
-        $userHasRight = User::hasPrivilege('admin' . static::$pageTypes[$page['type']]);
+        $userHasRight = User::hasPrivilege('admin' . self::$pageTypes[$page['type']]);
         $isAccessible = $userHasRight;
 
         Extend::call('admin.page.list.access', [
@@ -425,7 +425,7 @@ abstract class PageLister
     private static function renderPage(string &$output, array $page, array $options, string $class = '', int $levelOffset = 0): void
     {
         // prepare
-        $typeName = static::$pageTypes[$page['type']];
+        $typeName = self::$pageTypes[$page['type']];
         $isAccessible = $page['_is_accessible'];
         Extend::call('admin.page.list.item', [
             'item' => &$page,
@@ -442,19 +442,19 @@ abstract class PageLister
         }
 
         // get actions
-        $actions = static::getPageActions($page, $isAccessible);
+        $actions = self::getPageActions($page, $isAccessible);
 
         // compose class
         if ($class !== '') {
             $class .= ' ';
         }
-        $class .= 'page-' . static::$pageTypes[$page['type']];
+        $class .= 'page-' . self::$pageTypes[$page['type']];
 
-        if ($page['type'] == _page_plugin && isset(static::$pluginTypes[$page['type_idt']])) {
+        if ($page['type'] == _page_plugin && isset(self::$pluginTypes[$page['type_idt']])) {
             $class .= ' page-'
                 . $typeName
                 . '-'
-                . static::$pluginTypes[$page['type_idt']];
+                . self::$pluginTypes[$page['type_idt']];
         }
 
         if (!$isAccessible) {
@@ -490,7 +490,7 @@ abstract class PageLister
 
         if ($options['flags']) {
             $output .= '<td>';
-            $output .= static::renderPageFlags($page);
+            $output .= self::renderPageFlags($page);
             $output .= "</td>\n";
         }
 
@@ -498,10 +498,10 @@ abstract class PageLister
         if ($options['type']) {
             if ($isSeparator) {
                 $typeLabel = '';
-            } elseif ($page['type'] == _page_plugin && isset(static::$pluginTypes[$page['type_idt']])) {
-                $typeLabel = static::$pluginTypes[$page['type_idt']];
+            } elseif ($page['type'] == _page_plugin && isset(self::$pluginTypes[$page['type_idt']])) {
+                $typeLabel = self::$pluginTypes[$page['type_idt']];
             } else {
-                $typeLabel = _lang('page.type.' . static::$pageTypes[$page['type']]);
+                $typeLabel = _lang('page.type.' . self::$pageTypes[$page['type']]);
             }
             $output .= "<td class=\"page-type\">" . $typeLabel . "</td>\n";
         }
@@ -540,7 +540,7 @@ abstract class PageLister
         // edit
         if ($hasAccess) {
             $actions['edit'] = [
-                'url' => 'index.php?p=content-edit' . static::$pageTypes[$page['type']] . '&id=' . $page['id'],
+                'url' => 'index.php?p=content-edit' . self::$pageTypes[$page['type']] . '&id=' . $page['id'],
                 'icon' => 'images/icons/edit.png',
                 'label' => _lang('global.edit'),
                 'order' => 50,

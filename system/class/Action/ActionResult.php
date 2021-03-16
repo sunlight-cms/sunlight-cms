@@ -7,11 +7,11 @@ use Sunlight\Message;
 class ActionResult
 {
     /** @var bool */
-    protected $result;
+    private $result;
     /** @var Message[] */
-    protected $messages;
+    private $messages;
     /** @var string|null */
-    protected $output;
+    private $output;
 
     /**
      * @param bool|null              $result
@@ -38,18 +38,18 @@ class ActionResult
      *
      * @param string|null $output
      * @param Message|Message[]|null $messages
-     * @return static
+     * @return self
      */
     static function output(?string $output, $messages = null): self
     {
-        return new static(null, $messages, $output);
+        return new self(null, $messages, $output);
     }
 
     /**
      * Create a successful result
      *
      * @param Message|Message[]|null $messages
-     * @return static
+     * @return self
      */
     static function success($messages = null): self
     {
@@ -57,14 +57,14 @@ class ActionResult
             $messages = Message::ok(_lang('action.success'));
         }
 
-        return new static(true, $messages);
+        return new self(true, $messages);
     }
 
     /**
      * Create an unsuccessful result
      *
      * @param Message|Message[]|null $messages
-     * @return static
+     * @return self
      */
     static function failure($messages = null): self
     {
@@ -72,7 +72,7 @@ class ActionResult
             $messages = Message::ok(_lang('action.failure'));
         }
 
-        return new static(false, $messages);
+        return new self(false, $messages);
     }
 
     /**

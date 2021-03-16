@@ -24,7 +24,7 @@ namespace Sunlight\Util;
 class PhpTemplate
 {
     /** @var string */
-    protected $template;
+    private $template;
 
     /**
      * @param string $template
@@ -38,13 +38,13 @@ class PhpTemplate
      * Create from file
      *
      * @param string $path
-     * @return static
+     * @return self
      */
     static function fromFile(string $path): self
     {
         Filesystem::ensureFileExists($path);
 
-        return new static(file_get_contents($path));
+        return new self(file_get_contents($path));
     }
 
     /**
@@ -97,7 +97,7 @@ class PhpTemplate
      * @param string $default
      * @return string php code
      */
-    protected function compileDefault(string $default): string
+    private function compileDefault(string $default): string
     {
         if (
             $default === 'true'

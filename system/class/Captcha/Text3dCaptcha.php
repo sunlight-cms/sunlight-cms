@@ -13,23 +13,23 @@ use Sunlight\Util\Math;
 class Text3dCaptcha
 {
     /** @var float */
-    protected $scale = 5.0;
+    private $scale = 5.0;
     /** @var float */
-    protected $projectionAngle = 7.6;
+    private $projectionAngle = 7.6;
     /** @var int */
-    protected $font = 5;
+    private $font = 5;
     /** @var int */
-    protected $foregroundColor = 0;
+    private $foregroundColor = 0;
     /** @var int */
-    protected $horizontalPadding = 3;
+    private $horizontalPadding = 3;
     /** @var int */
-    protected $verticalPadding = 1;
+    private $verticalPadding = 1;
     /** @var int */
-    protected $letterSpacing = 1;
+    private $letterSpacing = 1;
     /** @var int */
-    protected $backgroundColor = 0xffffff;
+    private $backgroundColor = 0xffffff;
     /** @var int */
-    protected $noise = 0x30;
+    private $noise = 0x30;
 
     /**
      * @param float $scale
@@ -139,7 +139,7 @@ class Text3dCaptcha
         return $captcha;
     }
 
-    protected function computeTextWidth(string $text): int
+    private function computeTextWidth(string $text): int
     {
         $numChars = strlen($text);
 
@@ -152,7 +152,7 @@ class Text3dCaptcha
      * @param int $z
      * @return array
      */
-    protected function to2d(int $x, int $y, int $z): array
+    private function to2d(int $x, int $y, int $z): array
     {
         return [
             $x * $this->scale - $y * $this->scale * cos($this->projectionAngle),
@@ -160,7 +160,7 @@ class Text3dCaptcha
         ];
     }
 
-    protected function drawText(Image $image, string $text, int $x, int $y): void
+    private function drawText(Image $image, string $text, int $x, int $y): void
     {
         $fontWidth = imagefontwidth($this->font);
 
@@ -171,7 +171,7 @@ class Text3dCaptcha
         }
     }
 
-    protected function drawNoise(Image $image, int $intensity): void
+    private function drawNoise(Image $image, int $intensity): void
     {
         if ($intensity === 0) {
             return;

@@ -150,9 +150,9 @@ abstract class WebRequestHandler
     protected function handleOutputCode(array &$index, int $code): void
     {
         switch ($code) {
-            case static::OUTPUT_NOT_FOUND: $index['is_found'] = false; break;
-            case static::OUTPUT_UNAUTHORIZED: $index['is_accessible'] = false; break;
-            case static::OUTPUT_GUEST_ONLY: $index['is_guest_only'] = false; break;
+            case self::OUTPUT_NOT_FOUND: $index['is_found'] = false; break;
+            case self::OUTPUT_UNAUTHORIZED: $index['is_accessible'] = false; break;
+            case self::OUTPUT_GUEST_ONLY: $index['is_guest_only'] = false; break;
             default: throw new \OutOfBoundsException('Invalid output code %d', $code);
         }
     }

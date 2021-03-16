@@ -12,21 +12,21 @@ namespace Sunlight\Util;
 class TemporaryFile extends \SplFileInfo
 {
     /** @var array */
-    protected static $registry = [];
+    private static $registry = [];
     /** @var bool */
-    protected static $removalOnShutdown = false;
+    private static $removalOnShutdown = false;
 
     /** @var string */
-    protected $realPath;
+    private $realPath;
     /** @var bool */
-    protected $valid = true;
+    private $valid = true;
 
     /**
      * @param string|null $fileName existing file name or null to generate
      * @param string|null $tmpDir   existing temporary directory or null to use the system's default
      * @throws \RuntimeException if the file cannot be created
      */
-    public function __construct(?string $fileName = null, ?string $tmpDir = null)
+    function __construct(?string $fileName = null, ?string $tmpDir = null)
     {
         // generate a file name
         if ($fileName === null) {
@@ -36,7 +36,7 @@ class TemporaryFile extends \SplFileInfo
         }
 
         // make sure the discardAll method is called on shutdown
-        static::ensureRemovalOnShutdown();
+        self::ensureRemovalOnShutdown();
 
         // call parent constructor
         parent::__construct($fileName);
@@ -44,17 +44,17 @@ class TemporaryFile extends \SplFileInfo
         $this->realPath = $this->getRealPath();
 
         // add path to registry
-        static::$registry[$this->realPath] = true;
+        self::$registry[$this->realPath] = true;
     }
 
     /**
      * Make sure the discardAll method is called on shutdown
      */
-    protected static function ensureRemovalOnShutdown(): void
+    private static function ensureRemovalOnShutdown(): void
     {
-        if (!static::$removalOnShutdown) {
+        if (!self::$removalOnShutdown) {
             register_shutdown_function([__CLASS__, 'discardAll']);
-            static::$removalOnShutdown = true;
+            self::$removalOnShutdown = true;
         }
     }
 
@@ -68,7 +68,7 @@ class TemporaryFile extends \SplFileInfo
      * @param bool   $createPath  create the path if it does not exist 1/0
      * @return bool
      */
-    public function move(string $newFilePath, bool $createPath = true): bool
+    function move(string $newFilePath, bool $createPath = true): bool
     {
         if ($this->valid) {
             if ($createPath && !is_dir($directoryPath = dirname($newFilePath))) {
@@ -93,7 +93,7 @@ class TemporaryFile extends \SplFileInfo
      *
      * @return bool
      */
-    public function discard(): bool
+    function discard(): bool
     {
         if ($this->valid) {
             $removed = is_file($this->realPath)
@@ -117,9 +117,9 @@ class TemporaryFile extends \SplFileInfo
      *  - unregistered temporary files are not automatically removed on shutdown
      *  - calling {@see discard()} will still remove the file if it exists
      */
-    public function unregister(): void
+    function unregister(): void
     {
-        unset(static::$registry[$this->realPath]);
+        unset(self::$registry[$this->realPath]);
     }
 
     /**
@@ -127,14 +127,14 @@ class TemporaryFile extends \SplFileInfo
      *
      * This method is automatically called on shutdown.
      */
-    public static function discardAll(): void
+    static function discardAll(): void
     {
-        foreach (array_keys(static::$registry) as $realPath) {
+        foreach (array_keys(self::$registry) as $realPath) {
             if (is_file($realPath)) {
                 @unlink($realPath);
             }
         }
 
-        static::$registry = [];
+        self::$registry = [];
     }
 }

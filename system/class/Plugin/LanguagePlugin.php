@@ -6,7 +6,7 @@ use Sunlight\Core;
 
 class LanguagePlugin extends Plugin
 {
-    protected static $typeDefinition = [
+    const TYPE_DEFINITION = [
         'type' => 'language',
         'dir' => 'plugins/languages',
         'class' => __CLASS__,

@@ -28,8 +28,8 @@ abstract class PluginAction extends Action
         }
 
         $this->plugin = $plugin;
-        $this->catchExceptions = true;
-        $this->renderExceptions = true;
+        $this->setCatchExceptions(true);
+        $this->setRenderExceptions(true);
     }
 
     /**

@@ -8,7 +8,7 @@ use Sunlight\Localization\LocalizationDirectory;
 
 class ExtendPlugin extends Plugin
 {
-    protected static $typeDefinition = [
+    const TYPE_DEFINITION = [
         'type' => 'extend',
         'dir' => 'plugins/extend',
         'class' => __CLASS__,
@@ -72,7 +72,7 @@ class ExtendPlugin extends Plugin
      *
      * @param string $script
      */
-    protected function loadScript(string $script): void
+    private function loadScript(string $script): void
     {
         include $script;
     }

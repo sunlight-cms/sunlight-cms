@@ -8,7 +8,7 @@ use Sunlight\Util\ArgList;
 
 abstract class Hcm
 {
-    protected static $systemModuleCache;
+    private static $systemModuleCache;
 
     /**
      * Vyhodnotit HCM moduly v retezci
@@ -32,7 +32,7 @@ abstract class Hcm
     {
         $params = ArgList::parse($match[1]);
         if (isset($params[0])) {
-            return (string) static::run($params[0], array_splice($params, 1));
+            return (string) self::run($params[0], array_splice($params, 1));
         } else {
             return '';
         }
@@ -56,16 +56,16 @@ abstract class Hcm
 
         if (!isset($module[1])) {
             // systemovy modul
-            if (!isset(static::$systemModuleCache[$name])) {
+            if (!isset(self::$systemModuleCache[$name])) {
                 $file = _root . 'system/hcm/' . basename($module[0]) . '.php';
 
-                static::$systemModuleCache[$name] = is_file($file) ? require $file : false;
+                self::$systemModuleCache[$name] = is_file($file) ? require $file : false;
             }
 
-            if (static::$systemModuleCache[$name] !== false) {
+            if (self::$systemModuleCache[$name] !== false) {
                 ++Core::$hcmUid;
 
-                return call_user_func_array(static::$systemModuleCache[$name], $args);
+                return call_user_func_array(self::$systemModuleCache[$name], $args);
             }
 
             return '';
@@ -110,7 +110,7 @@ abstract class Hcm
         $whitelistMap = $whitelist !== null ? array_flip($whitelist) : null;
 
         // filtrovat
-        return static::parse($content, function ($match) use ($blacklistMap, $whitelistMap, $exception) {
+        return self::parse($content, function ($match) use ($blacklistMap, $whitelistMap, $exception) {
             $params = ArgList::parse($match[1]);
             $module = isset($params[0]) ? mb_strtolower($params[0]) : '';
 
@@ -138,7 +138,7 @@ abstract class Hcm
      */
     static function remove(string $content): string
     {
-        return static::parse($content, function () {
+        return self::parse($content, function () {
             return '';
         });
     }

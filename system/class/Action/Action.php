@@ -8,9 +8,9 @@ use Sunlight\Message;
 abstract class Action
 {
     /** @var bool */
-    protected $catchExceptions = false;
+    private $catchExceptions = false;
     /** @var bool */
-    protected $renderExceptions = false;
+    private $renderExceptions = false;
 
     /**
      * Set whether exceptions should be catched
@@ -43,7 +43,7 @@ abstract class Action
      *
      * @return ActionResult
      */
-    function run(): ActionResult
+    final function run(): ActionResult
     {
         try {
             $result = $this->execute();

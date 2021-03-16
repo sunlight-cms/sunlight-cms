@@ -8,11 +8,11 @@ namespace Sunlight\Util;
 class ConfigurationFile implements \ArrayAccess
 {
     /** @var string */
-    protected $path;
+    private $path;
     /** @var array */
-    protected $defaults;
+    private $defaults;
     /** @var array|null */
-    protected $data;
+    private $data;
 
     /**
      * @param string $path
@@ -98,7 +98,7 @@ class ConfigurationFile implements \ArrayAccess
         unset($this->data[$offset]);
     }
 
-    protected function ensureLoaded(): void
+    private function ensureLoaded(): void
     {
         if ($this->data !== null) {
             return;

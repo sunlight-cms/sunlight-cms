@@ -10,11 +10,11 @@ use Sunlight\Core;
 class LocalizationDirectory extends LocalizationDictionary
 {
     /** @var string */
-    protected $dir;
+    private $dir;
     /** @var array|null */
-    protected $availableLanguages;
+    private $availableLanguages;
     /** @var bool */
-    protected $isLoaded = false;
+    private $isLoaded = false;
 
     /**
      * @param string     $dir                path to the directory containing the localization dictionaries (without a trailing slash)
@@ -70,7 +70,7 @@ class LocalizationDirectory extends LocalizationDictionary
      * @param string $language
      * @return array
      */
-    protected function loadDictionaryForLanguage(string $language): array
+    private function loadDictionaryForLanguage(string $language): array
     {
         return (array) include $this->getPathForLanguage($language);
     }
@@ -80,7 +80,7 @@ class LocalizationDirectory extends LocalizationDictionary
      *
      * Uses a fallback dictionary if possible.
      */
-    protected function load(): void
+    private function load(): void
     {
         if ($this->hasDictionaryForLanguage(_language)) {
             $this->add($this->loadDictionaryForLanguage(_language));

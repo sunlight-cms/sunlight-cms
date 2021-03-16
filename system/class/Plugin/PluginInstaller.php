@@ -13,11 +13,6 @@ abstract class PluginInstaller
 
     /**
      * Load installer for the given plugin
-     *
-     * @param string $dir
-     * @param string $namespace
-     * @param string $camelCasedName
-     * @return static
      */
     static function load(string $dir, string $namespace, string $camelCasedName): self
     {

@@ -4,8 +4,8 @@ namespace Sunlight\Util;
 
 abstract class ArgList
 {
-    protected static $keywordMap = ['null' => true, 'true' => true, 'false' => true];
-    protected static $keywordValues = ['null' => null, 'true' => true, 'false' => false];
+    private const KEYWORD_MAP = ['null' => true, 'true' => true, 'false' => true];
+    private const KEYWORD_VALUES = ['null' => null, 'true' => true, 'false' => false];
 
     /**
      * Parse an argument list
@@ -36,9 +36,9 @@ REGEX
             $offset += strlen($match[0]);
 
             if (isset($match['p'])) {
-                if (isset(static::$keywordMap[$match['p']])) {
+                if (isset(self::KEYWORD_MAP[$match['p']])) {
                     // keyword
-                    $args[] = static::$keywordValues[$match['p']];
+                    $args[] = self::KEYWORD_VALUES[$match['p']];
                 } else {
                     // plain value
                     $args[] = $match['p'];

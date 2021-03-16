@@ -11,7 +11,7 @@ use Sunlight\Util\Filesystem;
 class BackupRestorer
 {
     /** @var Backup */
-    protected $backup;
+    private $backup;
 
     /**
      * @param Backup $backup
@@ -27,7 +27,7 @@ class BackupRestorer
      * @param array|null $errors
      * @return bool
      */
-    function validate(?array &$errors = null)
+    function validate(?array &$errors = null): bool
     {
         $errors = $this->backup->getMetaDataErrors();
 
@@ -192,7 +192,7 @@ class BackupRestorer
      * @param bool          $excludeNonexistent skip nonexistent paths 1/0
      * @return array
      */
-    protected function normalizePathList(array $paths, ?array $allowedValues = null, bool $addRootPath = false, bool $excludeNonexistent = false): array
+    private function normalizePathList(array $paths, ?array $allowedValues = null, bool $addRootPath = false, bool $excludeNonexistent = false): array
     {
         if ($allowedValues) {
             $paths = array_intersect($allowedValues, $paths);
@@ -217,7 +217,7 @@ class BackupRestorer
         return $normalizedPaths;
     }
 
-    protected function preloadAllSystemClasses(): void
+    private function preloadAllSystemClasses(): void
     {
         $paths = [
             _root . 'system/class',
@@ -235,7 +235,7 @@ class BackupRestorer
         }
     }
 
-    protected function purgeSystemDirectory(): void
+    private function purgeSystemDirectory(): void
     {
         $preservedDirMap = [
             'backup' => true, // has the backups in it, including the current one

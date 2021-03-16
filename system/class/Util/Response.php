@@ -42,11 +42,11 @@ abstract class Response
     static function redirectBack(?string $url = null): void
     {
         if ($url === null) {
-            $url = static::getReturnUrl();
+            $url = self::getReturnUrl();
         }
 
         if (!headers_sent()) {
-            static::redirect($url);
+            self::redirect($url);
         } else {
             ?>
             <meta http-equiv="refresh" content="1;url=<?php echo _e($url) ?>">
@@ -118,7 +118,7 @@ abstract class Response
      */
     static function downloadFile(string $filepath, ?string $filename = null): void
     {
-        static::ensureHeadersNotSent();
+        self::ensureHeadersNotSent();
         Filesystem::ensureFileExists($filepath);
 
         if ($filename === null) {
@@ -126,7 +126,7 @@ abstract class Response
         }
 
         Output::cleanBuffers();
-        static::download($filename, filesize($filepath));
+        self::download($filename, filesize($filepath));
 
         $handle = fopen($filepath, 'rb');
         while (!feof($handle)) {

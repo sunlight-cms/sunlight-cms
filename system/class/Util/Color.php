@@ -4,7 +4,7 @@ namespace Sunlight\Util;
 
 class Color
 {
-    protected $r, $g, $b, $h, $s, $l;
+    private $r, $g, $b, $h, $s, $l;
 
     /**
      * @param array $color color segments
@@ -27,12 +27,12 @@ class Color
      * Supported formats are #xxxxxx or #xxx (shorthand).
      *
      * @param $color
-     * @return static|null
+     * @return self|null
      */
     static function fromString($color): ?self
     {
         if (preg_match('{#([0-9a-f]{3,6})$}ADi', $color, $match)) {
-            return new static(
+            return new self(
                 strlen($match[1]) === 3
                     ? array_map(function ($hexit) { return hexdec($hexit . $hexit); }, str_split($match[1]))
                     : array_map('hexdec', str_split($match[1], 2))
@@ -152,7 +152,7 @@ class Color
      * @param float $l lightness (0-255)
      * @return array array(r,g,b)
      */
-    protected function hslToRgb(int $h, float $s, float $l): array
+    private function hslToRgb(int $h, float $s, float $l): array
     {
         // normalize args
         $args = ['h', 's', 'l'];
@@ -200,7 +200,7 @@ class Color
      * @param int $b blue channel (0-255)
      * @return array array(h,s,l)
      */
-    protected function rgbToHsl(int $r, int $g, int $b): array
+    private function rgbToHsl(int $r, int $g, int $b): array
     {
         // normalize args
         $args = ['r', 'g', 'b'];

@@ -58,7 +58,7 @@ class PluginManager
     function __construct(CacheInterface $pluginCache)
     {
         $this->cache = $pluginCache;
-        $this->types = static::getTypeDefinitions();
+        $this->types = self::getTypeDefinitions();
     }
 
     /**
@@ -67,9 +67,9 @@ class PluginManager
     static function getTypeDefinitions(): array
     {
         return [
-            static::LANGUAGE => LanguagePlugin::getTypeDefinition(),
-            static::TEMPLATE => TemplatePlugin::getTypeDefinition(),
-            static::EXTEND => ExtendPlugin::getTypeDefinition(),
+            self::LANGUAGE => LanguagePlugin::TYPE_DEFINITION,
+            self::TEMPLATE => TemplatePlugin::TYPE_DEFINITION,
+            self::EXTEND => ExtendPlugin::TYPE_DEFINITION,
         ];
     }
 
@@ -228,7 +228,7 @@ class PluginManager
     function getTemplate(string $name): TemplatePlugin
     {
         /** @var TemplatePlugin $plugin */
-        $plugin = $this->get(static::TEMPLATE, $name);
+        $plugin = $this->get(self::TEMPLATE, $name);
 
         return $plugin;
     }
@@ -243,7 +243,7 @@ class PluginManager
     function getExtend(string $name): ExtendPlugin
     {
         /** @var ExtendPlugin $plugin */
-        $plugin = $this->get(static::EXTEND, $name);
+        $plugin = $this->get(self::EXTEND, $name);
 
         return $plugin;
     }
@@ -258,7 +258,7 @@ class PluginManager
     function getLanguage(string $name): LanguagePlugin
     {
         /** @var LanguagePlugin $plugin */
-        $plugin = $this->get(static::LANGUAGE, $name);
+        $plugin = $this->get(self::LANGUAGE, $name);
 
         return $plugin;
     }
@@ -293,7 +293,7 @@ class PluginManager
     function getAllLanguages(): array
     {
         /** @var LanguagePlugin[] $languages */
-        $languages = $this->all(static::LANGUAGE);
+        $languages = $this->all(self::LANGUAGE);
 
         return $languages;
     }
@@ -304,7 +304,7 @@ class PluginManager
     function getAllTemplates(): array
     {
         /** @var TemplatePlugin[] $templates */
-        $templates = $this->all(static::TEMPLATE);
+        $templates = $this->all(self::TEMPLATE);
 
         return $templates;
     }
@@ -315,7 +315,7 @@ class PluginManager
     function getAllExtends(): array
     {
         /** @var ExtendPlugin[] $extends */
-        $extends = $this->all(static::EXTEND);
+        $extends = $this->all(self::EXTEND);
 
         return $extends;
     }

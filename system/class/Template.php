@@ -231,17 +231,17 @@ abstract class Template
         if ($output === '') {
             // rss odkaz
             if ($rsslink) {
-                $output .= static::rssLink(null, false);
+                $output .= self::rssLink(null, false);
             }
 
             // nadpis
             if ($heading) {
-                $output .= static::heading();
+                $output .= self::heading();
             }
 
             // zpetny odkaz
             if ($backlink) {
-                $output .= static::backlink();
+                $output .= self::backlink();
             }
 
             // obsah
@@ -327,7 +327,7 @@ abstract class Template
             if (!$inline) {
                 $output .= '<div class="rsslink">';
             }
-            $output .= '<a' . ($inline ? ' class="rsslink-inline"' : '') . ' href="' . _e($url) . '" title="' . _lang('rss.linktitle') . '"><img src="' . static::image("icons/rss.png") . "\" alt=\"rss\" class=\"icon\"></a>";
+            $output .= '<a' . ($inline ? ' class="rsslink-inline"' : '') . ' href="' . _e($url) . '" title="' . _lang('rss.linktitle') . '"><img src="' . self::image("icons/rss.png") . "\" alt=\"rss\" class=\"icon\"></a>";
             if (!$inline) {
                 $output .= "</div>\n";
             }
@@ -755,6 +755,6 @@ abstract class Template
      */
     static function currentIsIndex(): bool
     {
-        return static::currentIsPage() && $GLOBALS['_index']['id'] == _index_page_id;
+        return self::currentIsPage() && $GLOBALS['_index']['id'] == _index_page_id;
     }
 }

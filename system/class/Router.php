@@ -73,7 +73,7 @@ abstract class Router
             $path = '';
         }
 
-        return static::generate($path, $absolute) . $params;
+        return self::generate($path, $absolute) . $params;
     }
 
     /**
@@ -102,7 +102,7 @@ abstract class Router
             $slug = [$slug, $category_slug];
         }
 
-        return static::page(null, $slug[1], $slug[0], $absolute);
+        return self::page(null, $slug[1], $slug[0], $absolute);
     }
 
     /**
@@ -124,7 +124,7 @@ abstract class Router
             }
         }
 
-        return static::generate($path, $absolute);
+        return self::generate($path, $absolute);
     }
 
     /**
@@ -149,7 +149,7 @@ abstract class Router
             $slug = '';
         }
 
-        return static::path($slug, $absolute);
+        return self::path($slug, $absolute);
     }
 
     /**
@@ -165,12 +165,12 @@ abstract class Router
             case _post_section_comment:
             case _post_book_entry:
                 return [
-                    static::page($post['home'], $post['page_slug'], null, $absolute),
+                    self::page($post['home'], $post['page_slug'], null, $absolute),
                     $post['page_title'],
                 ];
             case _post_article_comment:
                 return [
-                    static::article(null, $post['art_slug'], $post['cat_slug'], $absolute),
+                    self::article(null, $post['art_slug'], $post['cat_slug'], $absolute),
                     $post['art_title'],
                 ];
             case _post_forum_topic:
@@ -181,9 +181,9 @@ abstract class Router
                     $topicId = $post['xhome'];
                 }
                 if ($post['type'] == _post_forum_topic) {
-                    $url = static::topic($topicId, $post['page_slug'], $absolute);
+                    $url = self::topic($topicId, $post['page_slug'], $absolute);
                 } else {
-                    $url = static::module('messages', "a=list&read={$topicId}", $absolute);
+                    $url = self::module('messages', "a=list&read={$topicId}", $absolute);
                 }
 
                 return [
@@ -229,7 +229,7 @@ abstract class Router
             }
         }
 
-        return static::page(null, $forum_slug, $topic_id, $absolute);
+        return self::page(null, $forum_slug, $topic_id, $absolute);
     }
 
     /**
@@ -252,7 +252,7 @@ abstract class Router
             $path .= (_pretty_urls ? '?' : '&') . $params;
         }
 
-        return static::generate($path, $absolute);
+        return self::generate($path, $absolute);
     }
 
     /**
@@ -275,7 +275,7 @@ abstract class Router
     static function rss(int $id, int $type): string
     {
         if (_rss) {
-            return UrlHelper::appendParams(static::generate('system/script/rss.php'), 'tp=' . $type . '&id=' . $id);
+            return UrlHelper::appendParams(self::generate('system/script/rss.php'), 'tp=' . $type . '&id=' . $id);
         } else {
             return '';
         }
@@ -346,7 +346,7 @@ abstract class Router
 
         // oteviraci tag
         $out = "<{$tag}"
-            . ($options['link'] ? ' href="' . _e(static::module('profile', 'id=' .  $data['username'])) . '"' : '')
+            . ($options['link'] ? ' href="' . _e(self::module('profile', 'id=' .  $data['username'])) . '"' : '')
             . ($options['link'] && $options['new_window'] ? ' target="_blank"' : '')
             . " class=\"user-link user-link-{$data['id']} user-link-group-{$data['group_id']}" . ($options['class'] !== null ? " {$options['class']}" : '') . "\""
             . ($options['color'] && $data['group_color'] !== '' ? " style=\"color:{$data['group_color']}\"" : '')
@@ -355,7 +355,7 @@ abstract class Router
 
         // ikona skupiny
         if ($options['icon'] && $data['group_icon'] !== '') {
-            $out .= "<img src=\"" . static::generate('images/groupicons/' . $data['group_icon']) . "\" title=\"{$data['group_title']}\" alt=\"{$data['group_title']}\" class=\"icon\">";
+            $out .= "<img src=\"" . self::generate('images/groupicons/' . $data['group_icon']) . "\" title=\"{$data['group_title']}\" alt=\"{$data['group_title']}\" class=\"icon\">";
         }
 
         // jmeno uzivatele
@@ -387,6 +387,6 @@ abstract class Router
             return '?';
         }
 
-        return static::user($userData, $options);
+        return self::user($userData, $options);
     }
 }

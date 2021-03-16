@@ -43,10 +43,10 @@ class Database
                 mysqli_set_charset($mysqli, $charset);
             }
 
-            static::$mysqli = $mysqli;
+            self::$mysqli = $mysqli;
 
             if ($sqlMode !== null) {
-                static::query('SET SQL_MODE=' . static::val($sqlMode));
+                self::query('SET SQL_MODE=' . self::val($sqlMode));
             }
         }
 
@@ -58,7 +58,7 @@ class Database
      */
     static function getMysqli()
     {
-        return static::$mysqli;
+        return self::$mysqli;
     }
 
     /**
@@ -66,7 +66,7 @@ class Database
      */
     static function setMysqli(\mysqli $mysqli)
     {
-        static::$mysqli = $mysqli;
+        self::$mysqli = $mysqli;
     }
 
     /**
@@ -88,12 +88,12 @@ class Database
         $result = null;
 
         try {
-            $result = static::$mysqli->query($sql);
+            $result = self::$mysqli->query($sql);
 
             if ($result === false && !$expectError) {
                 throw new DatabaseException(sprintf(
                     "%s\n\nSQL: %s",
-                    static::$mysqli->error,
+                    self::$mysqli->error,
                     $sql
                 ));
             }
@@ -124,12 +124,12 @@ class Database
      */
     static function queryRow(string $sql, bool $expectError = false)
     {
-        $result = static::query($sql, $expectError);
+        $result = self::query($sql, $expectError);
         if ($result === false) {
             return false;
         }
-        $row = static::row($result);
-        static::free($result);
+        $row = self::row($result);
+        self::free($result);
 
         return $row;
     }
@@ -146,12 +146,12 @@ class Database
      */
     static function queryRows(string $sql, $indexBy = null, $fetchColumn = null, bool $assoc = true, bool $expectError = false)
     {
-        $result = static::query($sql, $expectError);
+        $result = self::query($sql, $expectError);
         if ($result === false) {
             return false;
         }
-        $rows = static::rows($result, $indexBy, $fetchColumn, $assoc);
-        static::free($result);
+        $rows = self::rows($result, $indexBy, $fetchColumn, $assoc);
+        self::free($result);
 
         return $rows;
     }
@@ -165,10 +165,10 @@ class Database
      */
     static function count(string $table, string $where = '1'): int
     {
-        $result = static::query('SELECT COUNT(*) FROM ' . static::escIdt($table) . ' WHERE ' . $where);
+        $result = self::query('SELECT COUNT(*) FROM ' . self::escIdt($table) . ' WHERE ' . $where);
         if ($result instanceof \mysqli_result) {
-            $count = (int) static::result($result, 0);
-            static::free($result);
+            $count = (int) self::result($result, 0);
+            self::free($result);
 
             return $count;
         }
@@ -185,11 +185,11 @@ class Database
     static function getTablesByPrefix(string $prefix = _dbprefix): array
     {
         $tables = [];
-        $query = static::query('SHOW TABLES LIKE \'' . static::escWildcard($prefix) . '%\'');
-        while ($row = static::rown($query)) {
+        $query = self::query('SHOW TABLES LIKE \'' . self::escWildcard($prefix) . '%\'');
+        while ($row = self::rown($query)) {
             $tables[] = $row[0];
         }
-        static::free($query);
+        self::free($query);
 
         return $tables;
     }
@@ -201,7 +201,7 @@ class Database
      */
     static function error():string
     {
-        return static::$mysqli->error;
+        return self::$mysqli->error;
     }
 
     /**
@@ -319,7 +319,7 @@ class Database
      */
     static function insertID(): int
     {
-        return static::$mysqli->insert_id;
+        return self::$mysqli->insert_id;
     }
 
     /**
@@ -329,7 +329,7 @@ class Database
      */
     static function affectedRows(): int
     {
-        return static::$mysqli->affected_rows;
+        return self::$mysqli->affected_rows;
     }
 
     /**
@@ -347,19 +347,19 @@ class Database
         
         if ($handleArray && is_array($value)) {
             foreach ($value as &$item) {
-                $item = static::esc($item);
+                $item = self::esc($item);
             }
 
             return $value;
         }
         if (is_string($value)) {
-            return static::$mysqli->real_escape_string($value);
+            return self::$mysqli->real_escape_string($value);
         }
         if (is_numeric($value)) {
             return (0 + $value);
         }
 
-        return static::$mysqli->real_escape_string((string) $value);
+        return self::$mysqli->real_escape_string((string) $value);
     }
 
     /**
@@ -389,7 +389,7 @@ class Database
             } else {
                 $sql .= ',';
             }
-            $sql .= static::escIdt($identifier);
+            $sql .= self::escIdt($identifier);
         }
 
         return $sql;
@@ -422,7 +422,7 @@ class Database
         if ($value instanceof RawSqlValue) {
             return $value->getSql();
         }
-        $value = static::esc($value, $handleArray);
+        $value = self::esc($value, $handleArray);
         if ($handleArray && is_array($value)) {
             $out = '';
             $itemCounter = 0;
@@ -430,7 +430,7 @@ class Database
                 if ($itemCounter !== 0) {
                     $out .= ',';
                 }
-                $out .= static::val($item);
+                $out .= self::val($item);
                 ++$itemCounter;
             }
 
@@ -465,7 +465,7 @@ class Database
         if ($value === null) {
             return 'IS NULL';
         } else {
-            return '=' . static::val($value);
+            return '=' . self::val($value);
         }
     }
 
@@ -480,7 +480,7 @@ class Database
         if ($value === null) {
             return 'IS NOT NULL';
         } else {
-            return '!=' . static::val($value);
+            return '!=' . self::val($value);
         }
     }
 
@@ -499,7 +499,7 @@ class Database
                 $sql .= ',';
             }
 
-            $sql .= static::val($item);
+            $sql .= self::val($item);
         }
 
         return $sql;
@@ -526,13 +526,13 @@ class Database
                 $col_list .= ',';
                 $val_list .= ',';
             }
-            $col_list .= static::escIdt($col);
-            $val_list .= static::val($val);
+            $col_list .= self::escIdt($col);
+            $val_list .= self::val($val);
             ++$counter;
         }
-        $result = static::query('INSERT INTO ' . static::escIdt($table) . " ({$col_list}) VALUES({$val_list})");
+        $result = self::query('INSERT INTO ' . self::escIdt($table) . " ({$col_list}) VALUES({$val_list})");
         if ($result !== false && $getInsertId) {
-            return static::insertID();
+            return self::insertID();
         }
         
         return $result;
@@ -572,14 +572,14 @@ class Database
         }
 
         // sestavit dotaz
-        $sql = "INSERT INTO " . static::escIdt($table) . " (";
+        $sql = "INSERT INTO " . self::escIdt($table) . " (";
 
         $columnCounter = 0;
         foreach ($columns as $column) {
             if ($columnCounter !== 0) {
                 $sql .= ',';
             }
-            $sql .= static::escIdt($column);
+            $sql .= self::escIdt($column);
             ++$columnCounter;
         }
 
@@ -596,14 +596,14 @@ class Database
                 if ($columnCounter !== 0) {
                     $sql .= ',';
                 }
-                $sql .= static::val($row[$column] ?? null);
+                $sql .= self::val($row[$column] ?? null);
                 ++$columnCounter;
             }
             $sql .= ')';
             ++$rowCounter;
         }
 
-        return static::query($sql);
+        return self::query($sql);
     }
 
     /**
@@ -626,11 +626,11 @@ class Database
             if ($counter !== 0) {
                 $set_list .= ',';
             }
-            $set_list .= static::escIdt($col) . '=' . static::val($val);
+            $set_list .= self::escIdt($col) . '=' . self::val($val);
             ++$counter;
         }
 
-        return static::query('UPDATE ' . static::escIdt($table) . " SET {$set_list} WHERE {$cond}" . (($limit === null) ? '' : " LIMIT {$limit}"));
+        return self::query('UPDATE ' . self::escIdt($table) . " SET {$set_list} WHERE {$cond}" . (($limit === null) ? '' : " LIMIT {$limit}"));
     }
 
     /**
@@ -646,9 +646,9 @@ class Database
     {
         if (!empty($set)) {
             foreach (array_chunk($set, $maxPerQuery) as $chunk) {
-                static::update(
+                self::update(
                     $table,
-                    static::escIdt($idColumn) . ' IN(' . static::arr($chunk) . ')',
+                    self::escIdt($idColumn) . ' IN(' . self::arr($chunk) . ')',
                     $changeset,
                     null
                 );
@@ -668,8 +668,8 @@ class Database
      */
     static function updateSetMulti(string $table, string $idColumn, array $changesetMap, int $maxPerQuery = 100): void
     {
-        foreach (static::changesetMapToList($changesetMap) as $change) {
-            static::updateSet($table, $idColumn, $change['set'], $change['changeset'], $maxPerQuery);
+        foreach (self::changesetMapToList($changesetMap) as $change) {
+            self::updateSet($table, $idColumn, $change['set'], $change['changeset'], $maxPerQuery);
         }
     }
 
@@ -735,7 +735,7 @@ class Database
      */
     static function delete(string $table, string $cond): bool
     {
-        return static::query('DELETE FROM ' . static::escIdt($table) . " WHERE {$cond}");
+        return self::query('DELETE FROM ' . self::escIdt($table) . " WHERE {$cond}");
     }
 
     /**
@@ -750,7 +750,7 @@ class Database
     {
         if (!empty($set)) {
             foreach (array_chunk($set, $maxPerQuery) as $chunk) {
-                static::query('DELETE FROM ' . static::escIdt($table) . ' WHERE ' . static::escIdt($column) . ' IN(' . static::arr($chunk) . ')');
+                self::query('DELETE FROM ' . self::escIdt($table) . ' WHERE ' . self::escIdt($column) . ' IN(' . self::arr($chunk) . ')');
             }
         }
     }

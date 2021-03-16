@@ -31,7 +31,7 @@ abstract class Filesystem
 
         // check all extensions since some webservers will evaluate files such as "example.php.html"
         for ($i = 1; isset($parts[$i]); ++$i) {
-            if (preg_match(static::$unsafeExtRegex, $parts[$i])) {
+            if (preg_match(self::$unsafeExtRegex, $parts[$i])) {
                 return false;
             }
         }
@@ -72,13 +72,13 @@ abstract class Filesystem
      */
     static function normalizeWithBasePath(string $basePath, string $path): string
     {
-        $basePath = static::normalizePath($basePath);
-        $path = static::normalizePath($path);
+        $basePath = self::normalizePath($basePath);
+        $path = self::normalizePath($path);
 
         return
             $path === ''
                 ? $basePath
-                : (static::isAbsolutePath($path)
+                : (self::isAbsolutePath($path)
                     ? $path
                     : $basePath . '/' . $path
                 );
@@ -111,7 +111,7 @@ abstract class Filesystem
      */
     static function parsePath(string $path, bool $isFile = false, bool $allowLeadingSlash = false): string
     {
-        $segments = explode('/', static::normalizePath($path));
+        $segments = explode('/', self::normalizePath($path));
         $parentJumps = 0;
 
         for ($i = count($segments) - 1; $i >= 0; --$i) {
@@ -221,7 +221,7 @@ abstract class Filesystem
      */
     static function checkDirectory(string $path, bool $checkWrite = true, ?array &$failedPaths = null): bool
     {
-        $iterator = static::createRecursiveIterator($path);
+        $iterator = self::createRecursiveIterator($path);
 
         if ($failedPaths !== null) {
             $failedPaths = [];
@@ -251,7 +251,7 @@ abstract class Filesystem
     {
         $totalSize = 0;
 
-        foreach (static::createRecursiveIterator($path) as $item) {
+        foreach (self::createRecursiveIterator($path) as $item) {
             /* @var $item \SplFileInfo */
             if ($item->isFile()) {
                 $totalSize += $item->getSize();
@@ -285,7 +285,7 @@ abstract class Filesystem
         ];
 
         // create iterator
-        $iterator = static::createRecursiveIterator($path, \RecursiveIteratorIterator::CHILD_FIRST);
+        $iterator = self::createRecursiveIterator($path, \RecursiveIteratorIterator::CHILD_FIRST);
 
         // remove children
         $success = true;

@@ -86,7 +86,7 @@ abstract class Core
     static $cronIntervals = [];
 
     /** @var bool */
-    protected static $ready = false;
+    private static $ready = false;
 
     /**
      * Initialize the system
@@ -107,11 +107,11 @@ abstract class Core
      */
     static function init(string $root, array $options = []): void
     {
-        if (static::$ready) {
+        if (self::$ready) {
             throw new \LogicException('Cannot init multiple times');
         }
 
-        static::$start = microtime(true);
+        self::$start = microtime(true);
         $initComponents = empty($options['skip_components']);
 
         // functions
@@ -119,53 +119,53 @@ abstract class Core
 
         // base components
         if ($initComponents) {
-            static::initBaseComponents();
+            self::initBaseComponents();
         }
 
         // configuration
-        static::initConfiguration($root, $options);
+        self::initConfiguration($root, $options);
 
         // constants
         require __DIR__ . '/../constants.php';
 
         // components
         if ($initComponents) {
-            static::initComponents($options);
+            self::initComponents($options);
         }
 
         // environment
-        static::initEnvironment($options);
+        self::initEnvironment($options);
 
         // resolve URL
-        static::$url = static::resolveUrl($options['url']);
+        self::$url = self::resolveUrl($options['url']);
 
         // stop when minimal mode is enabled
         if ($options['minimal_mode']) {
-            static::$ready = true;
+            self::$ready = true;
 
             return;
         }
 
         // first init phase
-        static::initDatabase($options);
-        static::initPlugins();
-        static::initSettings();
+        self::initDatabase($options);
+        self::initPlugins();
+        self::initSettings();
 
         // check system phase
-        static::checkSystemState();
+        self::checkSystemState();
 
         // second init phase
-        static::initSession();
-        static::initLocalization();
+        self::initSession();
+        self::initLocalization();
 
         // finalize
-        static::$ready = true;
+        self::$ready = true;
         Extend::call('core.ready');
 
         // cron tasks
         Extend::reg('cron.maintenance', [__CLASS__, 'doMaintenance']);
         if (_cron_auto && $options['allow_cron_auto']) {
-            static::runCronTasks();
+            self::runCronTasks();
         }
     }
 
@@ -175,7 +175,7 @@ abstract class Core
      * @param string $root
      * @param array  &$options
      */
-    protected static function initConfiguration(string $root, array &$options): void
+    private static function initConfiguration(string $root, array &$options): void
     {
         // defaults
         $options += [
@@ -184,8 +184,8 @@ abstract class Core
             'session_enabled' => true,
             'session_regenerate' => false,
             'content_type' => null,
-            'allow_cron_auto' => isset($options['env']) && $options['env'] !== static::ENV_SCRIPT,
-            'env' => static::ENV_SCRIPT,
+            'allow_cron_auto' => isset($options['env']) && $options['env'] !== self::ENV_SCRIPT,
+            'env' => self::ENV_SCRIPT,
         ];
 
         // load config file
@@ -195,7 +195,7 @@ abstract class Core
             $configFileOptions = @include $configFile;
 
             if ($configFileOptions === false) {
-                static::systemFailure(
+                self::systemFailure(
                     'Chybí soubor "config.php". Otevřete /install pro instalaci.',
                     'The "config.php" file is missing. Open /install to create it.'
                 );
@@ -237,7 +237,7 @@ abstract class Core
 
             foreach ($requiredOptions as $requiredOption) {
                 if (empty($options[$requiredOption])) {
-                    static::systemFailure(
+                    self::systemFailure(
                         "Konfigurační volba \"{$requiredOption}\" nesmí být prázdná.",
                         "The configuration option \"{$requiredOption}\" must not be empty."
                     );
@@ -246,12 +246,12 @@ abstract class Core
         }
 
         // define variables
-        static::$appId = $options['app_id'];
-        static::$secret = $options['secret'];
-        static::$fallbackLang = $options['fallback_lang'];
-        static::$sessionEnabled = $options['session_enabled'];
-        static::$sessionRegenerate = $options['session_regenerate'] || isset($_POST['_session_force_regenerate']);
-        static::$imageError = $root . 'system/image_error.png';
+        self::$appId = $options['app_id'];
+        self::$secret = $options['secret'];
+        self::$fallbackLang = $options['fallback_lang'];
+        self::$sessionEnabled = $options['session_enabled'];
+        self::$sessionRegenerate = $options['session_regenerate'] || isset($_POST['_session_force_regenerate']);
+        self::$imageError = $root . 'system/image_error.png';
 
         // define constants
         define('_root', $root);
@@ -269,7 +269,7 @@ abstract class Core
      * @param string $url
      * @return string
      */
-    protected static function resolveUrl(string $url): string
+    private static function resolveUrl(string $url): string
     {
         $baseUrl = Url::parse($url);
         $currentUrl = Url::current();
@@ -293,23 +293,23 @@ abstract class Core
     /**
      * Init base components that don't depend on configuration
      */
-    protected static function initBaseComponents(): void
+    private static function initBaseComponents(): void
     {
         // class loader
-        if (static::$classLoader === null) {
-            static::$classLoader = new ClassLoader();
+        if (self::$classLoader === null) {
+            self::$classLoader = new ClassLoader();
         }
 
         // error handler
-        static::$errorHandler = new ErrorHandler();
-        static::$errorHandler->register();
+        self::$errorHandler = new ErrorHandler();
+        self::$errorHandler->register();
 
-        if (($exceptionHandler = static::$errorHandler->getErrorScreen()) instanceof WebErrorScreen) {
-            static::configureWebExceptionHandler($exceptionHandler);
+        if (($exceptionHandler = self::$errorHandler->getErrorScreen()) instanceof WebErrorScreen) {
+            self::configureWebExceptionHandler($exceptionHandler);
         }
 
         // event emitter
-        static::$eventEmitter = new EventEmitter();
+        self::$eventEmitter = new EventEmitter();
     }
 
     /**
@@ -317,17 +317,17 @@ abstract class Core
      *
      * @param array $options
      */
-    protected static function initComponents(array $options): void
+    private static function initComponents(array $options): void
     {
         // class loader
-        static::$classLoader->setDebug(_debug);
+        self::$classLoader->setDebug(_debug);
 
         // error handler
-        static::$errorHandler->setDebug(_debug || 'cli' === PHP_SAPI);
+        self::$errorHandler->setDebug(_debug || 'cli' === PHP_SAPI);
 
         // cache
-        if (static::$cache === null) {
-            static::$cache = new Cache(
+        if (self::$cache === null) {
+            self::$cache = new Cache(
                 $options['cache']
                     ? new FilesystemDriver(
                         _root . 'system/cache/core',
@@ -338,12 +338,12 @@ abstract class Core
         }
 
         // plugin manager
-        static::$pluginManager = new PluginManager(
-            static::$cache->getNamespace('plugins.')
+        self::$pluginManager = new PluginManager(
+            self::$cache->getNamespace('plugins.')
         );
 
         // localization
-        static::$lang = new LocalizationDictionary();
+        self::$lang = new LocalizationDictionary();
     }
 
     /**
@@ -351,12 +351,12 @@ abstract class Core
      *
      * @param array $options
      */
-    protected static function initDatabase(array $options): void
+    private static function initDatabase(array $options): void
     {
         $connectError = DB::connect($options['db.server'], $options['db.user'], $options['db.password'], $options['db.name'], $options['db.port']);
 
         if ($connectError !== null) {
-            static::systemFailure(
+            self::systemFailure(
                 'Připojení k databázi se nezdařilo. Důvodem je pravděpodobně výpadek serveru nebo chybné přístupové údaje. Zkontrolujte přístupové údaje v souboru config.php.',
                 'Could not connect to the database. This may have been caused by the database server being temporarily unavailable or an error in the configuration. Check your config.php file for errors.',
                 null,
@@ -368,10 +368,10 @@ abstract class Core
     /**
      * Initialize settings
      */
-    protected static function initSettings(): void
+    private static function initSettings(): void
     {
         // fetch from database
-        if (_env === static::ENV_ADMIN) {
+        if (_env === self::ENV_ADMIN) {
             $preloadCond = 'admin=1';
         } else {
             $preloadCond = 'web=1';
@@ -380,7 +380,7 @@ abstract class Core
         $query = DB::query('SELECT var,val,constant FROM ' . _setting_table . ' WHERE preload=1 AND ' . $preloadCond, true);
 
         if (DB::error()) {
-            static::systemFailure(
+            self::systemFailure(
                 'Připojení k databázi proběhlo úspěšně, ale dotaz na databázi selhal. Zkontrolujte, zda je databáze správně nainstalovaná.',
                 'Successfully connected to the database, but the database query has failed. Make sure the database is installed correctly.',
                 null,
@@ -399,12 +399,12 @@ abstract class Core
             if ($setting['constant']) {
                 define("_{$setting['var']}", $setting['val']);
             } else {
-                static::$settings[$setting['var']] = $setting['val'];
+                self::$settings[$setting['var']] = $setting['val'];
             }
         }
 
         // define maintenance cron interval
-        static::$cronIntervals['maintenance'] = _maintenance_interval;
+        self::$cronIntervals['maintenance'] = _maintenance_interval;
 
         // determine client IP address
         if (empty($_SERVER['REMOTE_ADDR'])) {
@@ -421,11 +421,11 @@ abstract class Core
     /**
      * Check system state after initialization
      */
-    protected static function checkSystemState(): void
+    private static function checkSystemState(): void
     {
         // check database version
         if (!defined('_dbversion') || Core::VERSION !== _dbversion) {
-            static::systemFailure(
+            self::systemFailure(
                 'Verze nainstalované databáze není kompatibilní s verzí systému.',
                 'Database version is not compatible with the current system version.'
             );
@@ -437,7 +437,7 @@ abstract class Core
             $systemChecker->check();
 
             if ($systemChecker->hasErrors()) {
-                static::systemFailure(
+                self::systemFailure(
                     'Při kontrole instalace byly detekovány následující problémy:',
                     'The installation check has detected the following problems:',
                     null,
@@ -445,7 +445,7 @@ abstract class Core
                 );
             }
 
-            static::updateSetting('install_check', 0);
+            self::updateSetting('install_check', 0);
         }
 
         // verify current URL
@@ -475,7 +475,7 @@ abstract class Core
      *
      * @param array $options
      */
-    protected static function initEnvironment(array $options): void
+    private static function initEnvironment(array $options): void
     {
         // ensure correct encoding for mb_*() functions
         mb_internal_encoding('UTF-8');
@@ -519,9 +519,9 @@ abstract class Core
     /**
      * Initialize plugins
      */
-    protected static function initPlugins(): void
+    private static function initPlugins(): void
     {
-        foreach (static::$pluginManager->getAllExtends() as $extendPlugin) {
+        foreach (self::$pluginManager->getAllExtends() as $extendPlugin) {
             $extendPlugin->initialize();
         }
 
@@ -531,10 +531,10 @@ abstract class Core
     /**
      * Initialize session
      */
-    protected static function initSession(): void
+    private static function initSession(): void
     {
         // start session
-        if (static::$sessionEnabled) {
+        if (self::$sessionEnabled) {
             // cookie parameters
             $cookieParams = session_get_cookie_params();
             $cookieParams['httponly'] = 1;
@@ -542,11 +542,11 @@ abstract class Core
             session_set_cookie_params($cookieParams['lifetime'], $cookieParams['path'], $cookieParams['domain'], $cookieParams['secure'], $cookieParams['httponly']);
 
             // set session name and start it
-            session_name(static::$appId . '_session');
+            session_name(self::$appId . '_session');
             session_start();
 
-            if (static::$sessionRegenerate) {
-                static::$sessionPreviousId = session_id();
+            if (self::$sessionRegenerate) {
+                self::$sessionPreviousId = session_id();
                 session_regenerate_id(true);
             }
         } else {
@@ -559,14 +559,14 @@ abstract class Core
         $isPersistentLogin = false;
         $errorCode = null;
 
-        if (static::$sessionEnabled) do {
+        if (self::$sessionEnabled) do {
             $userData = null;
             $loginDataExist = isset($_SESSION['user_id'], $_SESSION['user_auth']);
 
             // check persistent login cookie if there are no login data
             if (!$loginDataExist) {
                 // check cookie existence
-                $persistentCookieName = static::$appId . '_persistent_key';
+                $persistentCookieName = self::$appId . '_persistent_key';
                 if (isset($_COOKIE[$persistentCookieName]) && is_string($_COOKIE[$persistentCookieName])) {
                     // cookie authorization process
                     do {
@@ -614,7 +614,7 @@ abstract class Core
                     // check result
                     if ($errorCode !== null) {
                         // cookie authoriation has failed, remove the cookie
-                        setcookie(static::$appId . '_persistent_key', '', (time() - 3600), '/');
+                        setcookie(self::$appId . '_persistent_key', '', (time() - 3600), '/');
                         break;
                     }
                 }
@@ -693,8 +693,8 @@ abstract class Core
             ]);
 
             // set variables
-            static::$userData = $userData;
-            static::$groupData = $groupData;
+            self::$userData = $userData;
+            self::$groupData = $groupData;
         } else {
             // anonymous user
             $userData = [
@@ -737,20 +737,20 @@ abstract class Core
     /**
      * Initialize localization
      */
-    protected static function initLocalization(): void
+    private static function initLocalization(): void
     {
         // language choice
-        if (_logged_in && _language_allowcustom && static::$userData['language'] !== '') {
-            $language = static::$userData['language'];
+        if (_logged_in && _language_allowcustom && self::$userData['language'] !== '') {
+            $language = self::$userData['language'];
             $usedLoginLanguage = true;
         } else {
-            $language = static::$settings['language'];
+            $language = self::$settings['language'];
             $usedLoginLanguage = false;
         }
 
         // load language plugin
-        if (static::$pluginManager->has(PluginManager::LANGUAGE, $language)) {
-            $languagePlugin = static::$pluginManager->getLanguage($language);
+        if (self::$pluginManager->has(PluginManager::LANGUAGE, $language)) {
+            $languagePlugin = self::$pluginManager->getLanguage($language);
         } else {
             $languagePlugin = null;
         }
@@ -760,17 +760,17 @@ abstract class Core
             $entries = $languagePlugin->getLocalizationEntries();
 
             if ($entries !== false) {
-                static::$lang->add($entries);
+                self::$lang->add($entries);
             }
         } else {
             // language plugin was not found
             if ($usedLoginLanguage) {
                 DB::update(_user_table, 'id=' . _user_id, ['language' => '']);
             } else {
-                static::updateSetting('language', static::$fallbackLang);
+                self::updateSetting('language', self::$fallbackLang);
             }
 
-            static::systemFailure(
+            self::systemFailure(
                 'Jazykový balíček "%s" nebyl nalezen.',
                 'Language plugin "%s" was not found.',
                 [$language]
@@ -788,8 +788,8 @@ abstract class Core
         $cronNow = time();
         $cronUpdate = false;
         $cronLockFileHandle = null;
-        if (static::$settings['cron_times']) {
-            $cronTimes = unserialize(static::$settings['cron_times']);
+        if (self::$settings['cron_times']) {
+            $cronTimes = unserialize(self::$settings['cron_times']);
         } else {
             $cronTimes = false;
         }
@@ -798,7 +798,7 @@ abstract class Core
             $cronUpdate = true;
         }
 
-        foreach (static::$cronIntervals as $cronIntervalName => $cronIntervalSeconds) {
+        foreach (self::$cronIntervals as $cronIntervalName => $cronIntervalSeconds) {
             if (isset($cronTimes[$cronIntervalName])) {
                 // last run time is known
                 if ($cronNow - $cronTimes[$cronIntervalName] >= $cronIntervalSeconds) {
@@ -840,13 +840,13 @@ abstract class Core
         if ($cronUpdate) {
             // remove unknown intervals
             foreach (array_keys($cronTimes) as $cronTimeKey) {
-                if (!isset(static::$cronIntervals[$cronTimeKey])) {
+                if (!isset(self::$cronIntervals[$cronTimeKey])) {
                     unset($cronTimes[$cronTimeKey]);
                 }
             }
 
             // save
-            static::updateSetting('cron_times', serialize($cronTimes));
+            self::updateSetting('cron_times', serialize($cronTimes));
         }
 
         // free lock file
@@ -862,7 +862,7 @@ abstract class Core
      */
     static function isReady(): bool
     {
-        return static::$ready;
+        return self::$ready;
     }
 
     /**
@@ -1011,11 +1011,11 @@ abstract class Core
     {
         $messages = [];
 
-        if (static::$fallbackLang === 'cs' || empty(static::$fallbackLang)) {
+        if (self::$fallbackLang === 'cs' || empty(self::$fallbackLang)) {
             $messages[] = !empty($msgArgs) ? vsprintf($msgCs, $msgArgs) : $msgCs;
         }
 
-        if (static::$fallbackLang !== 'cs' || empty(static::$fallbackLang)) {
+        if (self::$fallbackLang !== 'cs' || empty(self::$fallbackLang)) {
             $messages[] = !empty($msgArgs) ? vsprintf($msgEn, $msgArgs) : $msgEn;
         }
 
@@ -1039,7 +1039,7 @@ abstract class Core
         return '<pre class="exception">' . _e(Exception::render($e, $showTrace, $showPrevious)) . "</pre>\n";
     }
 
-    protected static function configureWebExceptionHandler(WebErrorScreen $errorScreen): void
+    private static function configureWebExceptionHandler(WebErrorScreen $errorScreen): void
     {
         $errorScreen->on(WebErrorScreenEvents::CSS, function () {
             echo <<<'CSS'
@@ -1051,7 +1051,7 @@ CSS;
         });
 
 
-        if (!static::$errorHandler->isDebugEnabled()) {
+        if (!self::$errorHandler->isDebugEnabled()) {
             $errorScreen->on(WebErrorScreenEvents::RENDER, function ($view) {
                 $view['title'] = $view['heading'] = Core::$fallbackLang === 'cs'
                     ? 'Chyba serveru'
