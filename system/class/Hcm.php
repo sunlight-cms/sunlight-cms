@@ -65,7 +65,7 @@ abstract class Hcm
             if (self::$systemModuleCache[$name] !== false) {
                 ++Core::$hcmUid;
 
-                return call_user_func_array(self::$systemModuleCache[$name], $args);
+                return (self::$systemModuleCache[$name])(...$args);
             }
 
             return '';

@@ -64,7 +64,7 @@ abstract class Regexp
             }
 
             // invoke the callback
-            $output .= call_user_func($callback, $matches, $matches[0][1]);
+            $output .= $callback($matches, $matches[0][1]);
 
             // calculate new offset
             $offset = $matches[0][1] + strlen($matches[0][0]);

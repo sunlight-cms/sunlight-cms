@@ -235,13 +235,13 @@ class TreeManager
             }
             
             // zavolat propagator aktualniho kontextu
-            $changeset = call_user_func($propagator, $context, $node);
+            $changeset = $propagator($context, $node);
             if ($changeset !== null) {
                 $changesetMap[$node[$this->idColumn]] = $changeset;
             }
 
             // zavolat aktualizator kontextu (pro potomky)
-            $newContext = call_user_func($contextUpdater, $context, $node, $changeset);
+            $newContext = $contextUpdater($context, $node, $changeset);
             if ($newContext !== null) {
                 $stack[] = [$context, $contextLevel];
                 $context = $newContext;

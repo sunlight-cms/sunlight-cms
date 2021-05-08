@@ -14,7 +14,7 @@ function _buffer(callable $callback, array $arguments = []): string
     ob_start();
 
     try {
-        call_user_func_array($callback, $arguments);
+        $callback(...$arguments);
     } catch (Throwable $e) {
         ob_end_clean();
         throw $e;

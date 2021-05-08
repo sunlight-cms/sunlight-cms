@@ -104,7 +104,7 @@ class SqlReader
         $handleCompleteQuery = function () use (&$query, &$queries, &$queryMap, $callback) {
             if ($query !== null) {
                 if ($callback !== null) {
-                    call_user_func($callback, $query, $queryMap);
+                    $callback($query, $queryMap);
                     ++$queries;
                 } else {
                     $queries[] = $query;

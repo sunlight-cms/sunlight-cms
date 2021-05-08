@@ -154,7 +154,7 @@ class OptionSet
             // normalize
             if ($indexIsValid && isset($entry['normalizer'])) {
                 try {
-                    $data[$index] = call_user_func($entry['normalizer'], $data[$index], $context);
+                    $data[$index] = $entry['normalizer']($data[$index], $context);
                 } catch (OptionSetNormalizerException $e) {
                     $errors[$index] = $e->getMessage();
                 }

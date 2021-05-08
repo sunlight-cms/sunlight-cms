@@ -102,10 +102,7 @@ abstract class TemplateService
      */
     static function getComponentsByUid(string $uid, int $type): ?array
     {
-        return call_user_func_array(
-            [get_called_class(), 'getComponents'],
-            self::parseUid($uid, $type)
-        );
+        return self::getComponents(...self::parseUid($uid, $type));
     }
 
     /**

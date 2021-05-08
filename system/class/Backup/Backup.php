@@ -225,7 +225,7 @@ class Backup
         foreach ($iterator as $item) {
             $dataPath = substr($item->getPathname(), $filePathNamePrefixLength);
 
-            if ($filter !== null && !call_user_func($filter, $dataPath)) {
+            if ($filter !== null && !$filter($dataPath)) {
                 continue;
             }
 
@@ -268,7 +268,7 @@ class Backup
     {
         $this->ensureOpenAndNew();
 
-        if ($filter === null || call_user_func($filter, $dataPath)) {
+        if ($filter === null || $filter($dataPath)) {
             // add files that are not in any directory to the file list
             if ($addRootFileToFileList && strpos($dataPath, '/') === false) {
                 $this->fileList[] = $dataPath;

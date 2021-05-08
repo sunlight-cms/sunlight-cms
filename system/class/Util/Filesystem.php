@@ -301,7 +301,7 @@ abstract class Filesystem
                 (
                     !$options['files_only']
                     || $options['file_callback'] === null
-                    || call_user_func($options['file_callback'], $item)
+                    || $options['file_callback']($item)
                 )
                 && !@unlink($item)
             ) {

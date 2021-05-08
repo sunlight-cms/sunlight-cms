@@ -260,7 +260,7 @@ abstract class Bbcode
 
         // process
         if (isset($ext[$tag])) {
-            return call_user_func($ext[$tag], $arg, $buffer);
+            return $ext[$tag]($arg, $buffer);
         }
         switch ($tag) {
             case 'b':
