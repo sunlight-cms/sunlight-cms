@@ -39,9 +39,7 @@ if (isset($_GET['a'])) {
 
 /* ---  modul  --- */
 
-$_index['title'] = _lang('mod.messages');
 $list = false;
-$mod_title = 'mod.messages';
 $message = '';
 
 // obsah
@@ -51,7 +49,7 @@ switch ($a) {
     case 'new':
 
         // titulek
-        $mod_title = 'mod.messages.new';
+        $_index['title'] = _lang('mod.messages.new');
 
         // odeslani
         if (isset($_POST['receiver'])) {
@@ -182,12 +180,9 @@ switch ($a) {
             $receiverUserQuery = User::createQuery('pm.receiver', 'receiver_', 'ru');
             $q = DB::queryRow('SELECT pm.*,p.id post_id,p.subject,p.time,p.text,p.guest,p.ip' . Extend::buffer('posts.columns') . ',' . $senderUserQuery['column_list'] . ',' . $receiverUserQuery['column_list'] . ' FROM ' . _pm_table . ' AS pm JOIN ' . _comment_table . ' AS p ON (p.type=' . _post_pm . ' AND p.home=pm.id AND p.xhome=-1) ' . $senderUserQuery['joins'] . ' ' . $receiverUserQuery['joins'] . ' WHERE pm.id=' . $id . ' AND (sender=' . _user_id . ' AND sender_deleted=0 OR receiver=' . _user_id . ' AND receiver_deleted=0)');
             if ($q === false) {
-                $output .= Message::error(_lang('global.badinput'));
+                $_index['type'] = _index_not_found;
                 break;
             }
-
-            // titulek
-            $mod_title = 'mod.messages.read';
 
             // stavy
             $locked = ($q['sender_deleted'] || $q['receiver_deleted']);
@@ -197,8 +192,8 @@ switch ($a) {
             $unread_count = DB::count(_comment_table, 'home=' . DB::val($q['id']) . ' AND type=' . _post_pm . ' AND author=' . _user_id . ' AND time>' . $q[$role_other . '_readtime']);
 
             // vystup
+            $_index['title'] = _lang('mod.messages.message') . ': ' . $q['subject'];
             $output .= "<div class=\"topic\">\n";
-            $output .= "<h2>" . _lang('mod.messages.message') . ": " . $q['subject'] . "</h2>\n";
             $output .= CommentService::renderPost(['id' => $q['post_id'], 'author' => $q['sender']] + $q, $senderUserQuery, [
                 'post_link' => false,
                 'allow_reply' => false,
@@ -214,6 +209,7 @@ switch ($a) {
         }
 
         // je vypis
+        $_index['title'] = _lang('mod.messages');
         $list = true;
 
         // smazani vzkazu

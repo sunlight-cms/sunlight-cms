@@ -215,7 +215,6 @@ Platnost tohoto odkazu je 1 hodina.
     'mod.search.noresult' => 'Nebyly nalezeny žádné stránky.',
     'mod.messages' => 'Vzkazy',
     'mod.messages.new' => 'Napsat vzkaz',
-    'mod.messages.read' => 'Zobrazit vzkaz',
     'mod.messages.message' => 'Vzkaz',
     'mod.messages.sender' => 'Odesílatel',
     'mod.messages.receiver' => 'Příjemce',
