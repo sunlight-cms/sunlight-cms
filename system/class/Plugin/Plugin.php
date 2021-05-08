@@ -101,7 +101,7 @@ abstract class Plugin
      */
     static function isActive(): bool
     {
-        return Core::$pluginManager->hasInstance(get_called_class());
+        return Core::$pluginManager->hasInstance(static::class);
     }
 
     /**
@@ -111,7 +111,7 @@ abstract class Plugin
      */
     static function getInstance(): self
     {
-        return Core::$pluginManager->getInstance(get_called_class());
+        return Core::$pluginManager->getInstance(static::class);
     }
 
     /**

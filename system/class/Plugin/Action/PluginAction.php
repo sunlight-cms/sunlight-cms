@@ -46,7 +46,7 @@ abstract class PluginAction extends Action
      */
     protected function isConfirmed(): bool
     {
-        return Request::post('_plugin_action_confirmation') === md5(get_called_class());
+        return Request::post('_plugin_action_confirmation') === md5(static::class);
     }
 
     /**
@@ -62,7 +62,7 @@ abstract class PluginAction extends Action
             $buttonText = _lang('global.continue');
         }
 
-        $confirmationToken = md5(get_called_class());
+        $confirmationToken = md5(static::class);
 
         return ActionResult::output(_buffer(function () use (
             $message,
