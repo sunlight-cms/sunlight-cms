@@ -92,32 +92,32 @@ if ($admin_login_layout) {
 $admin_body_classes[] = $theme_dark ? 'dark' : 'light';
 
 ?>
-<meta name="robots" content="noindex,nofollow"><?php echo GenericTemplates::renderHeadAssets($assets), "\n" ?>
-<title><?php echo _title, ' - ', _lang('global.admintitle'), (!empty($admin_title) ? ' - ' . $admin_title : '') ?></title>
+<meta name="robots" content="noindex,nofollow"><?= GenericTemplates::renderHeadAssets($assets), "\n" ?>
+<title><?= _title, ' - ', _lang('global.admintitle'), (!empty($admin_title) ? ' - ' . $admin_title : '') ?></title>
 </head>
 
-<body class="<?php echo implode(' ', $admin_body_classes) ?>">
+<body class="<?= implode(' ', $admin_body_classes) ?>">
 
 <div id="container">
 
     <div id="top">
         <div class="wrapper">
             <div id="header">
-                <?php echo Admin::userMenu() ?>
+                <?= Admin::userMenu() ?>
                 <div id="title">
-                    <?php echo _title, ' - ', _lang('global.admintitle') ?>
+                    <?= _title, ' - ', _lang('global.admintitle') ?>
                 </div>
             </div>
 
             <hr class="hidden">
 
-            <?php echo Admin::menu() ?>
+            <?= Admin::menu() ?>
         </div>
     </div>
 
     <div id="page" class="wrapper">
-        <div id="content" class="module-<?php echo _e($admin_current_module) ?>">
-            <?php echo $admin_output, $output; ?>
+        <div id="content" class="module-<?= _e($admin_current_module) ?>">
+            <?= $admin_output, $output ?>
 
             <div class="cleaner"></div>
         </div>
@@ -126,22 +126,22 @@ $admin_body_classes[] = $theme_dark ? 'dark' : 'light';
         <div id="footer">
             <div id="footer-links">
                 <?php if ($admin_access): ?>
-                    <a href="<?php echo Router::generate('') ?>" target="_blank"><?php echo _lang('admin.link.site') ?></a>
-                    <a href="<?php echo Router::generate('admin/') ?>" target="_blank"><?php echo _lang('admin.link.newwin') ?></a>
+                    <a href="<?= Router::generate('') ?>" target="_blank"><?= _lang('admin.link.site') ?></a>
+                    <a href="<?= Router::generate('admin/') ?>" target="_blank"><?= _lang('admin.link.newwin') ?></a>
                 <?php else: ?>
-                    <a href="<?php echo Router::generate('') ?>">&lt; <?php echo _lang('admin.link.home') ?></a>
+                    <a href="<?= Router::generate('') ?>">&lt; <?= _lang('admin.link.home') ?></a>
                 <?php endif ?>
             </div>
 
             <div id="footer-powered-by">
-                <?php echo _lang('system.poweredby') ?> <a href="https://sunlight-cms.cz/" target="_blank">SunLight CMS</a>
+                <?= _lang('system.poweredby') ?> <a href="https://sunlight-cms.cz/" target="_blank">SunLight CMS</a>
             </div>
         </div>
     </div>
 
 </div>
 
-<?php echo Extend::buffer('admin.end') ?>
+<?= Extend::buffer('admin.end') ?>
 
 </body>
 </html>

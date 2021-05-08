@@ -50,26 +50,26 @@ if ($valid && $login && !_logged_in) {
         #wrapper {max-width: 600px; margin: 0 auto; padding: 0 20px; border: 1px solid #ddd; background-color: #fff;}
         #warning {color: #a00;}
     </style>
-    <title><?php echo _lang('post_repeat.title') ?></title>
+    <title><?= _lang('post_repeat.title') ?></title>
 </head>
 
 <body>
 
     <div id="wrapper">
 
-        <h1><?php echo _lang($valid ? 'post_repeat.title' : 'global.badinput') ?></h1>
+        <h1><?= _lang($valid ? 'post_repeat.title' : 'global.badinput') ?></h1>
 
         <?php if ($valid): ?>
             <p>
-                <strong><?php echo _lang('global.action') ?>:</strong>
-                <code><?php echo _e($target) ?></code>
+                <strong><?= _lang('global.action') ?>:</strong>
+                <code><?= _e($target) ?></code>
             </p>
 
             <p id="warning">
-                <?php echo _lang('xsrf.warning', ['%domain%' => Url::base()->getFullHost()]) ?>
+                <?= _lang('xsrf.warning', ['%domain%' => Url::base()->getFullHost()]) ?>
             </p>
 
-            <?php echo User::renderPostRepeatForm(
+            <?= User::renderPostRepeatForm(
                 $allow_login,
                 $login_message,
                 $target,

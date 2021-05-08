@@ -214,10 +214,10 @@ if ($_index['template_enabled']) {
 
     ?>
 </head>
-<body<?php if ($_index['body_classes']): ?> class="<?php echo implode(' ', Html::escapeArrayItems($_index['body_classes'])) ?>"<?php endif ?><?php echo Extend::buffer('tpl.body_tag') ?>>
+<body<?php if ($_index['body_classes']): ?> class="<?= implode(' ', Html::escapeArrayItems($_index['body_classes'])) ?>"<?php endif ?><?= Extend::buffer('tpl.body_tag') ?>>
 
 <?php require $_template_path ?>
-<?php echo Extend::buffer('tpl.end') ?>
+<?= Extend::buffer('tpl.end') ?>
 
 </body>
 </html>

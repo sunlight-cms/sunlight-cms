@@ -70,13 +70,13 @@ $output .= "
 
     " . _buffer(function () use ($version_data) { ?>
         <tr>
-            <th><?php echo _lang('admin.index.box.latest') ?></th>
+            <th><?= _lang('admin.index.box.latest') ?></th>
             <td>
                 <?php if ($version_data === null): ?>
                     ---
                 <?php else: ?>
-                    <a class="latest-version latest-version-age-<?php echo _e($version_data['localAge']) ?>" href="<?php echo _e($version_data['url']) ?>" target="_blank">
-                        <?php echo _e($version_data['latestVersion']) ?>
+                    <a class="latest-version latest-version-age-<?= _e($version_data['localAge']) ?>" href="<?= _e($version_data['url']) ?>" target="_blank">
+                        <?= _e($version_data['latestVersion']) ?>
                     </a>
                 <?php endif ?>
             </td>

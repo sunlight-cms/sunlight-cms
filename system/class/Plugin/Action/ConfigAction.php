@@ -50,20 +50,20 @@ class ConfigAction extends PluginAction
     <table class="list valign-top">
         <?php foreach ($fields as $field): ?>
             <tr>
-                <th><?php echo $field['label'] ?></th>
-                <td><?php echo $field['input'] ?></td>
+                <th><?= $field['label'] ?></th>
+                <td><?= $field['input'] ?></td>
             </tr>
         <?php endforeach ?>
         <tr>
             <th></th>
             <td>
-                <input type="submit" name="save" value="<?php echo _lang('global.save') ?>">
-                <input type="submit" name="reset" value="<?php echo _lang('global.default') ?>" onclick="return Sunlight.confirm();">
+                <input type="submit" name="save" value="<?= _lang('global.save') ?>">
+                <input type="submit" name="reset" value="<?= _lang('global.default') ?>" onclick="return Sunlight.confirm();">
             </td>
         </tr>
     </table>
 
-    <?php echo Xsrf::getInput() ?>
+    <?= Xsrf::getInput() ?>
 </form>
 <?php
         }), $messages);

@@ -59,7 +59,7 @@ $output .= '<form method="post">';
 $output .= _buffer(function () { ?>
     <form method="post">
     <p>
-        <a class="button" href="index.php?p=content-boxes-edit"><img class="icon" src="images/icons/new.png" alt="new"><?php echo _lang('admin.content.boxes.new') ?></a>
+        <a class="button" href="index.php?p=content-boxes-edit"><img class="icon" src="images/icons/new.png" alt="new"><?= _lang('admin.content.boxes.new') ?></a>
     </p>
 <?php });
 
@@ -69,31 +69,31 @@ foreach ($boxes as $template_idt => $template_boxes) {
         function (TemplatePlugin $template, array $boxes) { ?>
     <table class="box-list list list-hover list-max">
         <caption>
-            <h2><?php echo _lang('admin.content.form.template') ?>: <?php echo _e($template->getOption('name')) ?></h2>
+            <h2><?= _lang('admin.content.form.template') ?>: <?= _e($template->getOption('name')) ?></h2>
         </caption>
         <thead>
         <tr>
-            <th class="box-order-cell"><?php echo _lang('admin.content.form.ord') ?></th>
-            <th class="box-slot-cell"><?php echo _lang('admin.content.boxes.slot') ?></th>
-            <th class="box-title-cell"><?php echo _lang('admin.content.form.title') ?></th>
-            <th class="box-settings-cell"><?php echo _lang('admin.content.form.settings') ?></th>
-            <th class="box-action-cell"><?php echo _lang('global.action') ?></th>
+            <th class="box-order-cell"><?= _lang('admin.content.form.ord') ?></th>
+            <th class="box-slot-cell"><?= _lang('admin.content.boxes.slot') ?></th>
+            <th class="box-title-cell"><?= _lang('admin.content.form.title') ?></th>
+            <th class="box-settings-cell"><?= _lang('admin.content.form.settings') ?></th>
+            <th class="box-action-cell"><?= _lang('global.action') ?></th>
         </tr>
         </thead>
         <?php foreach ($boxes as $layout => $layout_boxes): ?>
             <tbody class="sortable" data-input-selector=".box-order-input" data-handle-selector="td.box-sortable-cell, .sortable-handle">
             <?php foreach ($layout_boxes as $box): ?>
                 <tr>
-                    <td class="box-order-cell"><span class="sortable-handle"></span><input class="inputmini box-order-input" type="number" name="ord[<?php echo _e($box['id']) ?>]" value="<?php echo _e($box['ord']) ?>"></td>
-                    <td class="box-slot-cell box-sortable-cell"><?php echo _e(sprintf('%s - %s', $template->getLayoutLabel($box['layout']), $template->getSlotLabel($box['layout'], $box['slot']))) ?></td>
-                    <td class="box-title-cell box-sortable-cell"><?php echo $box['title'] ?></td>
+                    <td class="box-order-cell"><span class="sortable-handle"></span><input class="inputmini box-order-input" type="number" name="ord[<?= _e($box['id']) ?>]" value="<?= _e($box['ord']) ?>"></td>
+                    <td class="box-slot-cell box-sortable-cell"><?= _e(sprintf('%s - %s', $template->getLayoutLabel($box['layout']), $template->getSlotLabel($box['layout'], $box['slot']))) ?></td>
+                    <td class="box-title-cell box-sortable-cell"><?= $box['title'] ?></td>
                     <td class="box-settings-cell">
-                        <?php if ($box['level'] > 0): $iconTitle = _lang('admin.content.form.level') . ' ' . _e($box['level']) . '+'; ?><img src="images/icons/lock3.png" class="icon" alt="<?php echo $iconTitle ?>" title="<?php echo $iconTitle ?>"><?php endif ?>
-                        <?php if ($box['page_ids'] !== null): $iconTitle = _lang('admin.content.boxes.page_ids.icon'); ?><img src="images/icons/tree.png" class="icon" alt="<?php echo $iconTitle ?>" title="<?php echo $iconTitle ?>"><?php endif ?>
+                        <?php if ($box['level'] > 0): $iconTitle = _lang('admin.content.form.level') . ' ' . _e($box['level']) . '+'; ?><img src="images/icons/lock3.png" class="icon" alt="<?= $iconTitle ?>" title="<?= $iconTitle ?>"><?php endif ?>
+                        <?php if ($box['page_ids'] !== null): $iconTitle = _lang('admin.content.boxes.page_ids.icon'); ?><img src="images/icons/tree.png" class="icon" alt="<?= $iconTitle ?>" title="<?= $iconTitle ?>"><?php endif ?>
                     </td>
                     <td class="box-action-cell">
-                        <a class="button" href="index.php?p=content-boxes-edit&amp;id=<?php echo _e($box['id']) ?>"><img src="images/icons/edit.png" alt="edit" class="icon"><?php echo _lang('global.edit') ?></a>
-                        <button onclick="return Sunlight.confirm()" name="action" value="delete:<?php echo _e($box['id']) ?>" class="button"><img src="images/icons/delete.png" alt="delete" class="icon"><?php echo _lang('global.delete') ?></button>
+                        <a class="button" href="index.php?p=content-boxes-edit&amp;id=<?= _e($box['id']) ?>"><img src="images/icons/edit.png" alt="edit" class="icon"><?= _lang('global.edit') ?></a>
+                        <button onclick="return Sunlight.confirm()" name="action" value="delete:<?= _e($box['id']) ?>" class="button"><img src="images/icons/delete.png" alt="delete" class="icon"><?= _lang('global.delete') ?></button>
                     </td>
                 </tr>
             <?php endforeach ?>
@@ -102,8 +102,8 @@ foreach ($boxes as $template_idt => $template_boxes) {
         <tfoot>
             <tr>
                 <td colspan="5">
-                    <button name="action" value="save_ord" accesskey="s"><?php echo _lang('global.savechanges') ?></button>
-                    <a class="button right big" href="index.php?p=content-boxes-edit&amp;template=<?php echo _e(rawurlencode($template->getId())) ?>"><img class="icon" src="images/icons/new.png" alt="new"><?php echo _lang('admin.content.boxes.new.for_template') ?></a>
+                    <button name="action" value="save_ord" accesskey="s"><?= _lang('global.savechanges') ?></button>
+                    <a class="button right big" href="index.php?p=content-boxes-edit&amp;template=<?= _e(rawurlencode($template->getId())) ?>"><img class="icon" src="images/icons/new.png" alt="new"><?= _lang('admin.content.boxes.new.for_template') ?></a>
                 </td>
             </tr>
         </tfoot>
@@ -117,26 +117,26 @@ foreach ($boxes as $template_idt => $template_boxes) {
 if (!empty($unassigned_boxes)) $output .= _buffer(function () use ($unassigned_boxes) { ?>
     <table class="list list-hover">
         <caption>
-            <h2><?php echo _lang('admin.content.boxes.unassigned') ?></h2>
-            <?php echo Admin::note(_lang('admin.content.boxes.unassigned.note')) ?>
+            <h2><?= _lang('admin.content.boxes.unassigned') ?></h2>
+            <?= Admin::note(_lang('admin.content.boxes.unassigned.note')) ?>
         </caption>
         <thead>
         <tr>
-            <th><?php echo _lang('admin.content.boxes.original_template') ?></th>
-            <th><?php echo _lang('admin.content.boxes.slot') ?></th>
-            <th><?php echo _lang('admin.content.form.title') ?></th>
-            <th><?php echo _lang('global.action') ?></th>
+            <th><?= _lang('admin.content.boxes.original_template') ?></th>
+            <th><?= _lang('admin.content.boxes.slot') ?></th>
+            <th><?= _lang('admin.content.form.title') ?></th>
+            <th><?= _lang('global.action') ?></th>
         </tr>
         </thead>
         <tbody>
             <?php foreach ($unassigned_boxes as $box): ?>
                 <tr>
-                    <td><?php echo _e($box['template']) ?></td>
-                    <td><?php echo _e(sprintf('%s - %s', $box['layout'], $box['slot'])) ?></td>
-                    <td><?php echo $box['title'] ?></td>
+                    <td><?= _e($box['template']) ?></td>
+                    <td><?= _e(sprintf('%s - %s', $box['layout'], $box['slot'])) ?></td>
+                    <td><?= $box['title'] ?></td>
                     <td>
-                        <a class="button" href="index.php?p=content-boxes-edit&amp;id=<?php echo _e($box['id']) ?>"><img src="images/icons/edit.png" alt="edit" class="icon"><?php echo _lang('global.edit') ?></a>
-                        <button onclick="return Sunlight.confirm()" name="action" value="delete:<?php echo _e($box['id']) ?>" class="button"><img src="images/icons/delete.png" alt="delete" class="icon"><?php echo _lang('global.delete') ?></button>
+                        <a class="button" href="index.php?p=content-boxes-edit&amp;id=<?= _e($box['id']) ?>"><img src="images/icons/edit.png" alt="edit" class="icon"><?= _lang('global.edit') ?></a>
+                        <button onclick="return Sunlight.confirm()" name="action" value="delete:<?= _e($box['id']) ?>" class="button"><img src="images/icons/delete.png" alt="delete" class="icon"><?= _lang('global.delete') ?></button>
                     </td>
                 </tr>
             <?php endforeach ?>

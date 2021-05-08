@@ -6,25 +6,25 @@ defined('_root') or exit
 <div id="wrapper">
     <div id="header">
         <div id="logo">
-            <a href="<?php echo Template::siteUrl() ?>"><?php echo Template::siteTitle() ?></a>
-            <p><?php echo Template::siteDescription() ?></p>
+            <a href="<?= Template::siteUrl() ?>"><?= Template::siteTitle() ?></a>
+            <p><?= Template::siteDescription() ?></p>
         </div>
 
-        <?php echo Template::userMenu() ?>
+        <?= Template::userMenu() ?>
     </div>
 
     <div id="menu">
-        <?php echo Template::menu() ?>
+        <?= Template::menu() ?>
     </div>
 
     <div id="page">
         <div id="content">
-            <?php echo Template::content() ?>
+            <?= Template::content() ?>
 
             <div class="cleaner"></div>
         </div>
         <div id="sidebar">
-            <?php echo Template::boxes('right') ?>
+            <?= Template::boxes('right') ?>
         </div>
         <div class="cleaner"></div>
     </div>
@@ -32,6 +32,6 @@ defined('_root') or exit
 <div id="footer">
     <ul>
         <li><a href="http://templated.co/" rel="nofollow">TEMPLATED</a></li>
-        <?php echo Template::links() ?>
+        <?= Template::links() ?>
     </ul>
 </div>

@@ -71,12 +71,12 @@ abstract class PluginAction extends Action
         ) {
             ?>
 <form method="post">
-    <input type="hidden" name="_plugin_action_confirmation" value="<?php echo $confirmationToken ?>">
+    <input type="hidden" name="_plugin_action_confirmation" value="<?= $confirmationToken ?>">
 
-    <p class="bborder"><?php echo $message ?></p>
+    <p class="bborder"><?= $message ?></p>
 
-    <input type="submit" value="<?php echo $buttonText ?>">
-    <?php echo Xsrf::getInput() ?>
+    <input type="submit" value="<?= $buttonText ?>">
+    <?= Xsrf::getInput() ?>
 </form>
 <?php
         }));

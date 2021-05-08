@@ -435,14 +435,14 @@ class StepRunner
     <?php endif ?>
     <?php if ($step->isSubmittable()): ?>
         <input id="submit" name="step_submit" type="submit" value="<?php Labels::render('step.submit') ?>">
-        <input type="hidden" name="<?php echo $step->getFormKeyVar() ?>" value="1">
-        <input type="hidden" name="step_number" value="<?php echo $step->getNumber() ?>">
+        <input type="hidden" name="<?= $step->getFormKeyVar() ?>" value="1">
+        <input type="hidden" name="step_number" value="<?= $step->getNumber() ?>">
     <?php endif ?>
     </p>
     
     <?php foreach ($vars as $name => $value): ?>
         <?php if ($value !== null): ?>
-            <input type="hidden" name="<?php echo _e($name) ?>" value="<?php echo _e($value) ?>">
+            <input type="hidden" name="<?= _e($name) ?>" value="<?= _e($value) ?>">
         <?php endif ?>
     <?php endforeach ?>
 </form>
@@ -775,32 +775,32 @@ class ConfigurationStep extends Step
     <table>
         <tr>
             <th><?php Labels::render('config.db.server') ?></th>
-            <td><input type="text"<?php echo Form::restorePostValueAndName('config_db_server', $this->getConfig('db.server', 'localhost')) ?>></td>
+            <td><input type="text"<?= Form::restorePostValueAndName('config_db_server', $this->getConfig('db.server', 'localhost')) ?>></td>
             <td class="help"><?php Labels::render('config.db.server.help') ?></td>
         </tr>
         <tr>
             <th><?php Labels::render('config.db.port') ?></th>
-            <td><input type="text"<?php echo Form::restorePostValueAndName('config_db_port', $this->getConfig('db.port')) ?>></td>
+            <td><input type="text"<?= Form::restorePostValueAndName('config_db_port', $this->getConfig('db.port')) ?>></td>
             <td class="help"><?php Labels::render('config.db.port.help') ?></td>
         </tr>
         <tr>
             <th><?php Labels::render('config.db.user') ?></th>
-            <td><input type="text"<?php echo Form::restorePostValueAndName('config_db_user', $this->getConfig('db.user')) ?>></td>
+            <td><input type="text"<?= Form::restorePostValueAndName('config_db_user', $this->getConfig('db.user')) ?>></td>
             <td class="help"><?php Labels::render('config.db.user.help') ?></td>
         </tr>
         <tr>
             <th><?php Labels::render('config.db.password') ?></th>
-            <td><input type="text"<?php echo Form::restorePostValueAndName('config_db_password') ?>></td>
+            <td><input type="text"<?= Form::restorePostValueAndName('config_db_password') ?>></td>
             <td class="help"><?php Labels::render('config.db.password.help') ?></td>
         </tr>
         <tr>
             <th><?php Labels::render('config.db.name') ?></th>
-            <td><input type="text"<?php echo Form::restorePostValueAndName('config_db_name', $this->getConfig('db.name')) ?>></td>
+            <td><input type="text"<?= Form::restorePostValueAndName('config_db_name', $this->getConfig('db.name')) ?>></td>
             <td class="help"><?php Labels::render('config.db.name.help') ?></td>
         </tr>
         <tr>
             <th><?php Labels::render('config.db.prefix') ?></th>
-            <td><input type="text"<?php echo Form::restorePostValueAndName('config_db_prefix', $this->getConfig('db.prefix', 'sunlight')) ?>></td>
+            <td><input type="text"<?= Form::restorePostValueAndName('config_db_prefix', $this->getConfig('db.prefix', 'sunlight')) ?>></td>
             <td class="help"><?php Labels::render('config.db.prefix.help') ?></td>
         </tr>
     </table>
@@ -811,22 +811,22 @@ class ConfigurationStep extends Step
     <table>
         <tr>
             <th><?php Labels::render('config.url') ?></th>
-            <td><input type="text"<?php echo Form::restorePostValueAndName('config_url', $this->getConfig('url', $defaultUrl)) ?>></td>
+            <td><input type="text"<?= Form::restorePostValueAndName('config_url', $this->getConfig('url', $defaultUrl)) ?>></td>
             <td class="help"><?php Labels::render('config.url.help') ?></td>
         </tr>
         <tr>
             <th><?php Labels::render('config.secret') ?></th>
-            <td><input type="text"<?php echo Form::restorePostValueAndName('config_secret', $this->getConfig('secret', $defaultSecret)) ?>></td>
+            <td><input type="text"<?= Form::restorePostValueAndName('config_secret', $this->getConfig('secret', $defaultSecret)) ?>></td>
             <td class="help"><?php Labels::render('config.secret.help') ?></td>
         </tr>
         <tr>
             <th><?php Labels::render('config.app_id') ?></th>
-            <td><input type="text"<?php echo Form::restorePostValueAndName('config_app_id', $this->getConfig('app_id', 'sunlight')) ?>></td>
+            <td><input type="text"<?= Form::restorePostValueAndName('config_app_id', $this->getConfig('app_id', 'sunlight')) ?>></td>
             <td class="help"><?php Labels::render('config.app_id.help') ?></td>
         </tr>
         <tr>
             <th><?php Labels::render('config.timezone') ?></th>
-            <td><input type="text"<?php echo Form::restorePostValueAndName('config_timezone', $this->getConfig('timezone')) ?>></td>
+            <td><input type="text"<?= Form::restorePostValueAndName('config_timezone', $this->getConfig('timezone')) ?>></td>
             <td class="help">
                 <?php Labels::render('config.timezone.help') ?>
                 <a href="http://php.net/timezones" target="_blank">PHP timezones</a>
@@ -834,7 +834,7 @@ class ConfigurationStep extends Step
         </tr>
         <tr>
             <th><?php Labels::render('config.locale') ?></th>
-            <td><input type="text"<?php echo Form::restorePostValueAndName('config_locale', $this->getArrayConfigAsString('locale')) ?>></td>
+            <td><input type="text"<?= Form::restorePostValueAndName('config_locale', $this->getArrayConfigAsString('locale')) ?>></td>
             <td class="help">
                 <?php Labels::render('config.locale.help') ?>
                 <a href="http://php.net/setlocale" target="_blank">setlocale()</a>
@@ -842,19 +842,19 @@ class ConfigurationStep extends Step
         </tr>
         <tr>
             <th><?php Labels::render('config.geo.latitude') ?></th>
-            <td colspan="2"><input type="text"<?php echo Form::restorePostValueAndName('config_geo_latitude', $this->getConfig('geo.latitude', $defaultGeoLatitude)) ?>></td>
+            <td colspan="2"><input type="text"<?= Form::restorePostValueAndName('config_geo_latitude', $this->getConfig('geo.latitude', $defaultGeoLatitude)) ?>></td>
         </tr>
         <tr>
             <th><?php Labels::render('config.geo.longitude') ?></th>
-            <td colspan="2"><input type="text"<?php echo Form::restorePostValueAndName('config_geo_longitude', $this->getConfig('geo.longitude', $defaultGeoLongitude)) ?>></td>
+            <td colspan="2"><input type="text"<?= Form::restorePostValueAndName('config_geo_longitude', $this->getConfig('geo.longitude', $defaultGeoLongitude)) ?>></td>
         </tr>
         <tr>
             <th><?php Labels::render('config.geo.zenith') ?></th>
-            <td colspan="2"><input type="text"<?php echo Form::restorePostValueAndName('config_geo_zenith', $this->getConfig('geo.zenith', $defaultGeoZenith)) ?>></td>
+            <td colspan="2"><input type="text"<?= Form::restorePostValueAndName('config_geo_zenith', $this->getConfig('geo.zenith', $defaultGeoZenith)) ?>></td>
         </tr>
         <tr>
             <th><?php Labels::render('config.debug') ?></th>
-            <td><input type="checkbox"<?php echo Form::restoreCheckedAndName($this->getFormKeyVar(), 'config_debug', $this->getConfig('debug', $defaultDebug)) ?>></td>
+            <td><input type="checkbox"<?= Form::restoreCheckedAndName($this->getFormKeyVar(), 'config_debug', $this->getConfig('debug', $defaultDebug)) ?>></td>
             <td class="help"><?php Labels::render('config.debug.help') ?></td>
         </tr>
     </table>
@@ -1080,17 +1080,17 @@ Now you can <a href="admin/">log in to the administration</a> (username and pass
     <table>
         <tr>
             <th><?php Labels::render('import.settings.title') ?></th>
-            <td><input type="text"<?php echo Form::restorePostValueAndName('import_settings_title') ?>></td>
+            <td><input type="text"<?= Form::restorePostValueAndName('import_settings_title') ?>></td>
             <td class="help"><?php Labels::render('import.settings.title.help') ?></td>
         </tr>
         <tr>
             <th><?php Labels::render('import.settings.description') ?></th>
-            <td><input type="text"<?php echo Form::restorePostValueAndName('import_settings_description') ?>></td>
+            <td><input type="text"<?= Form::restorePostValueAndName('import_settings_description') ?>></td>
             <td class="help"><?php Labels::render('import.settings.description.help') ?></td>
         </tr>
         <tr>
             <th><?php Labels::render('import.settings.version_check') ?></th>
-            <td><input type="checkbox"<?php echo Form::restoreCheckedAndName($this->getFormKeyVar(), 'import_settings_version_check', true) ?>></td>
+            <td><input type="checkbox"<?= Form::restoreCheckedAndName($this->getFormKeyVar(), 'import_settings_version_check', true) ?>></td>
             <td class="help"><?php Labels::render('import.settings.version_check.help') ?></td>
         </tr>
     </table>
@@ -1101,7 +1101,7 @@ Now you can <a href="admin/">log in to the administration</a> (username and pass
     <table>
         <tr>
             <th><?php Labels::render('import.admin.username') ?></th>
-            <td><input type="text"<?php echo Form::restorePostValueAndName('import_admin_username', 'admin') ?>></td>
+            <td><input type="text"<?= Form::restorePostValueAndName('import_admin_username', 'admin') ?>></td>
             <td class="help"><?php Labels::render('import.admin.username.help') ?></td>
         </tr>
         <tr>
@@ -1111,7 +1111,7 @@ Now you can <a href="admin/">log in to the administration</a> (username and pass
         </tr>
         <tr>
             <th><?php Labels::render('import.admin.email') ?></th>
-            <td><input type="text"<?php echo Form::restorePostValueAndName('import_admin_email', Config::$config['debug'] ? 'admin@localhost' : '@') ?>></td>
+            <td><input type="text"<?= Form::restorePostValueAndName('import_admin_email', Config::$config['debug'] ? 'admin@localhost' : '@') ?>></td>
             <td class="help"><?php Labels::render('import.admin.email.help') ?></td>
         </tr>
     </table>
@@ -1123,7 +1123,7 @@ Now you can <a href="admin/">log in to the administration</a> (username and pass
     <p class="msg warning"><?php Labels::render('import.overwrite.text', ['%prefix%' => Config::$config['db.prefix'] . '_']) ?></p>
     <p>
         <label>
-            <input type="checkbox"<?php echo Form::restoreCheckedAndName($this->getFormKeyVar(), 'import_overwrite') ?>>
+            <input type="checkbox"<?= Form::restoreCheckedAndName($this->getFormKeyVar(), 'import_overwrite') ?>>
             <?php Labels::render('import.overwrite.confirmation') ?>
         </label>
     </p>
@@ -1208,8 +1208,8 @@ class CompleteStep extends Step
 <h2><?php Labels::render('complete.whats_next') ?></h2>
 
 <ul class="big-list">
-    <li><a href="<?php echo _e(Config::$config['url'] ?: '/') ?>" target="_blank"><?php Labels::render('complete.goto.web') ?></a></li>
-    <li><a href="<?php echo _e(Config::$config['url']) ?>/admin/" target="_blank"><?php Labels::render('complete.goto.admin') ?></a></li>
+    <li><a href="<?= _e(Config::$config['url'] ?: '/') ?>" target="_blank"><?php Labels::render('complete.goto.web') ?></a></li>
+    <li><a href="<?= _e(Config::$config['url']) ?>/admin/" target="_blank"><?php Labels::render('complete.goto.admin') ?></a></li>
 </ul>
 <?php
     }
@@ -1235,7 +1235,7 @@ try {
     ob_start();
     ?>
 <h2><?php Labels::render('step.exception') ?></h2>
-<pre><?php echo _e((string) $e) ?></pre>
+<pre><?= _e((string) $e) ?></pre>
 <?php
     $content = ob_get_clean();
 }
@@ -1287,7 +1287,7 @@ $step = $stepRunner->getCurrent();
         #submit {float: right;}
         .cleaner {clear: both;}
     </style>
-    <title><?php echo _e("[{$step->getNumber()}/{$stepRunner->getTotal()}]: {$step->getTitle()}") ?></title>
+    <title><?= _e("[{$step->getNumber()}/{$stepRunner->getTotal()}]: {$step->getTitle()}") ?></title>
 </head>
 
 <body>
@@ -1296,16 +1296,16 @@ $step = $stepRunner->getCurrent();
 
         <h1>
             <span id="step">
-                <span><?php echo $step->getNumber(), '/', $stepRunner->getTotal() ?></span>
-                <?php echo _e($step->getTitle()) ?>
+                <span><?= $step->getNumber(), '/', $stepRunner->getTotal() ?></span>
+                <?= _e($step->getTitle()) ?>
             </span>
             <span id="system-name">
-                SunLight CMS <?php echo Core::VERSION ?>
+                SunLight CMS <?= Core::VERSION ?>
             </span>
         </h1>
 
         <div id="content">
-            <?php echo $content ?>
+            <?= $content ?>
 
             <div class="cleaner"></div>
         </div>

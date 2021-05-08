@@ -49,8 +49,8 @@ abstract class Response
             self::redirect($url);
         } else {
             ?>
-            <meta http-equiv="refresh" content="1;url=<?php echo _e($url) ?>">
-            <p><a href="<?php echo _e($url) ?>"><?php echo _lang('global.continue') ?></a></p>
+            <meta http-equiv="refresh" content="1;url=<?= _e($url) ?>">
+            <p><a href="<?= _e($url) ?>"><?= _lang('global.continue') ?></a></p>
             <?php
         }
 

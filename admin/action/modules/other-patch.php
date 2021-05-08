@@ -60,35 +60,35 @@ if (isset($_POST['apply_patch'])) do {
 } while (false);
 
 $output .= _buffer(function () use ($latest_version) { ?>
-    <p><?php echo _lang('admin.other.patch.text', ['%link%' => 'https://sunlight-cms.cz/resource/update?from=' . rawurlencode(Core::VERSION)]) ?></p>
+    <p><?= _lang('admin.other.patch.text', ['%link%' => 'https://sunlight-cms.cz/resource/update?from=' . rawurlencode(Core::VERSION)]) ?></p>
 
     <form method="post" enctype="multipart/form-data" onsubmit="return Sunlight.confirm()">
         <table class="formtable">
             <tr>
-                <th><?php echo _lang('admin.other.patch.current_version') ?></th>
-                <td><?php echo _e(Core::VERSION) ?></td>
+                <th><?= _lang('admin.other.patch.current_version') ?></th>
+                <td><?= _e(Core::VERSION) ?></td>
             </tr>
             <tr>
-                <th><?php echo _lang('admin.other.patch.latest_version') ?></th>
-                <td><?php echo _e($latest_version) ?></td>
+                <th><?= _lang('admin.other.patch.latest_version') ?></th>
+                <td><?= _e($latest_version) ?></td>
             </tr>
             <tr>
-                <th><?php echo _lang('admin.other.patch.file') ?></th>
+                <th><?= _lang('admin.other.patch.file') ?></th>
                 <td>
                     <input type="file" name="patch" id="patch-input">
-                    <?php echo Environment::renderUploadLimit() ?>
+                    <?= Environment::renderUploadLimit() ?>
                 </td>
             </tr>
             <tr>
                 <td></td>
                 <td>
-                    <?php echo Message::warning(_lang('admin.other.patch.note', ['%link%' => 'index.php?p=backup']), true) ?>
-                    <input type="submit" class="button big" name="apply_patch" value="<?php echo _lang('admin.other.patch.upload') ?>">
+                    <?= Message::warning(_lang('admin.other.patch.note', ['%link%' => 'index.php?p=backup']), true) ?>
+                    <input type="submit" class="button big" name="apply_patch" value="<?= _lang('admin.other.patch.upload') ?>">
 
                 </td>
             </tr>
         </table>
 
-        <?php echo Xsrf::getInput() ?>
+        <?= Xsrf::getInput() ?>
     </form>
 <?php });

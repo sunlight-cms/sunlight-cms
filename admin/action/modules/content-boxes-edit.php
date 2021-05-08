@@ -136,59 +136,59 @@ if (isset($_GET['created'])) {
 
 // form
 $output .= _buffer(function () use ($id, $box, $new, $templates_to_choose_slot_from) { ?>
-    <form method="post" action="index.php?p=content-boxes-edit<?php if (!$new): ?>&amp;id=<?php echo _e($id) ?><?php endif ?>">
+    <form method="post" action="index.php?p=content-boxes-edit<?php if (!$new): ?>&amp;id=<?= _e($id) ?><?php endif ?>">
         <table class="formtable">
             <tr>
-                <th><?php echo _lang('admin.content.form.title') ?></th>
-                <td><input type="text" class="inputbig" maxlength="255"<?php echo Form::restorePostValueAndName('title', $box['title'], false) ?>></td>
+                <th><?= _lang('admin.content.form.title') ?></th>
+                <td><input type="text" class="inputbig" maxlength="255"<?= Form::restorePostValueAndName('title', $box['title'], false) ?>></td>
             </tr>
             <tr>
-                <th><?php echo _lang('admin.content.boxes.slot') ?></th>
-                <td><?php echo Admin::templateLayoutSlotSelect('slot_uid', TemplateService::composeUid($box['template'], $box['layout'], $box['slot']), '', 'inputbig', $templates_to_choose_slot_from) ?></td>
+                <th><?= _lang('admin.content.boxes.slot') ?></th>
+                <td><?= Admin::templateLayoutSlotSelect('slot_uid', TemplateService::composeUid($box['template'], $box['layout'], $box['slot']), '', 'inputbig', $templates_to_choose_slot_from) ?></td>
             </tr>
             <tr>
-                <th><?php echo _lang('admin.content.form.ord') ?></th>
-                <td><input type="number" min="0" class="inputsmall"<?php echo Form::restorePostValueAndName('ord', $box['ord']) ?>></td>
+                <th><?= _lang('admin.content.form.ord') ?></th>
+                <td><input type="number" min="0" class="inputsmall"<?= Form::restorePostValueAndName('ord', $box['ord']) ?>></td>
             </tr>
             <tr>
-                <th><?php echo _lang('admin.content.form.content') ?></th>
-                <td><textarea class="areasmallwide editor" name="content" rows="9" cols="33"><?php echo Form::restorePostValue('content', $box['content'], false) ?></textarea></td>
+                <th><?= _lang('admin.content.form.content') ?></th>
+                <td><textarea class="areasmallwide editor" name="content" rows="9" cols="33"><?= Form::restorePostValue('content', $box['content'], false) ?></textarea></td>
             </tr>
             <tr>
-                <th><?php echo _lang('admin.content.form.class') ?></th>
-                <td><input type="text" class="inputbig" maxlength="255"<?php echo Form::restorePostValueAndName('class', $box['class']) ?>></td>
+                <th><?= _lang('admin.content.form.class') ?></th>
+                <td><input type="text" class="inputbig" maxlength="255"<?= Form::restorePostValueAndName('class', $box['class']) ?>></td>
             </tr>
             <tr>
-                <th><?php echo _lang('admin.content.form.settings') ?></th>
+                <th><?= _lang('admin.content.form.settings') ?></th>
                 <td>
-                    <label><input type="checkbox"<?php echo Form::restoreCheckedAndName('box_edit', 'visible', $box['visible']) ?>> <?php echo _lang('admin.content.form.visible') ?></label>
-                    <label><input type="checkbox"<?php echo Form::restoreCheckedAndName('box_edit', 'public', $box['public']) ?>> <?php echo _lang('admin.content.form.public') ?></label>
-                    <label><input type="number" min="0" max="<?php echo _priv_max_level ?>" class="inputsmaller"<?php echo Form::restorePostValueAndName('level', $box['level']) ?>> <?php echo _lang('admin.content.form.level') ?></label>
+                    <label><input type="checkbox"<?= Form::restoreCheckedAndName('box_edit', 'visible', $box['visible']) ?>> <?= _lang('admin.content.form.visible') ?></label>
+                    <label><input type="checkbox"<?= Form::restoreCheckedAndName('box_edit', 'public', $box['public']) ?>> <?= _lang('admin.content.form.public') ?></label>
+                    <label><input type="number" min="0" max="<?= _priv_max_level ?>" class="inputsmaller"<?= Form::restorePostValueAndName('level', $box['level']) ?>> <?= _lang('admin.content.form.level') ?></label>
                 </td>
             </tr>
             <tr class="valign-top">
-                <th><?php echo _lang('admin.content.form.pages') ?></th>
+                <th><?= _lang('admin.content.form.pages') ?></th>
                 <td>
-                    <?php echo Admin::pageSelect('page_ids[]', [
+                    <?= Admin::pageSelect('page_ids[]', [
                         'multiple' => true,
                         'selected' => $box['page_ids'] !== null ? explode(',', $box['page_ids']) : [],
                         'attrs' => 'size="10" class="inputmax"',
                         'empty_item' => _lang('global.all'),
                     ]) ?>
-                    <p><label><input type="checkbox"<?php echo Form::restoreCheckedAndName('box_edit', 'page_children', $box['page_children']) ?>> <?php echo _lang('admin.content.form.include_subpages') ?></label>
+                    <p><label><input type="checkbox"<?= Form::restoreCheckedAndName('box_edit', 'page_children', $box['page_children']) ?>> <?= _lang('admin.content.form.include_subpages') ?></label>
                 </td>
             </tr>
 
-            <?php echo Extend::buffer('admin.box.form') ?>
+            <?= Extend::buffer('admin.box.form') ?>
 
             <tr>
                 <td></td>
                 <td>
-                    <input type="submit" class="button bigger" name="box_edit" value="<?php echo _lang('global.savechanges') ?>" accesskey="s">
+                    <input type="submit" class="button bigger" name="box_edit" value="<?= _lang('global.savechanges') ?>" accesskey="s">
                 </td>
             </tr>
         </table>
 
-        <?php echo Xsrf::getInput() ?>
+        <?= Xsrf::getInput() ?>
     </form>
 <?php });

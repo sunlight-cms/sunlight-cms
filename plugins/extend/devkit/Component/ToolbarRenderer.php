@@ -57,7 +57,7 @@ class ToolbarRenderer
 
             // start
             ?>
-            <div id="devkit-toolbar" class="<?php echo $class ?>">
+            <div id="devkit-toolbar" class="<?= $class ?>">
                 <?php
 
                 // sections
@@ -91,8 +91,8 @@ class ToolbarRenderer
     {
         ?>
 <div class="devkit-section devkit-sl">
-    <?php echo Core::VERSION ?>
-    <?php echo Core::DIST ?>
+    <?= Core::VERSION ?>
+    <?= Core::DIST ?>
 </div>
 <?php
     }
@@ -106,7 +106,7 @@ class ToolbarRenderer
     {
         ?>
 <div class="devkit-section devkit-time">
-    <?php echo round(($now - Core::$start) * 1000) ?>ms
+    <?= round(($now - Core::$start) * 1000) ?>ms
 </div>
 <?php
     }
@@ -118,7 +118,7 @@ class ToolbarRenderer
     {
         ?>
 <div class="devkit-section devkit-memory">
-    <?php echo number_format(round(memory_get_peak_usage() / 1048576, 1), 1, '.', ',') ?>MB
+    <?= number_format(round(memory_get_peak_usage() / 1048576, 1), 1, '.', ',') ?>MB
 </div>
 <?php
     }
@@ -130,7 +130,7 @@ class ToolbarRenderer
     {
         ?>
 <div class="devkit-section devkit-database devkit-toggleable">
-    <?php echo count($this->sqlLog) ?>
+    <?= count($this->sqlLog) ?>
 </div>
 
 <div class="devkit-content">
@@ -149,16 +149,16 @@ class ToolbarRenderer
             <tbody>
                 <?php foreach ($this->sqlLog as $index => $entry): ?>
                     <tr>
-                        <td><?php echo $index + 1 ?></td>
-                        <td><?php echo round($entry['time'] * 1000) ?>ms</td>
+                        <td><?= $index + 1 ?></td>
+                        <td><?= round($entry['time'] * 1000) ?>ms</td>
                         <td>
-                            <a href="#" class="devkit-hideshow" data-target="#devkit-db-trace-<?php echo $index ?>">show</a>
+                            <a href="#" class="devkit-hideshow" data-target="#devkit-db-trace-<?= $index ?>">show</a>
                         </td>
-                        <td class="break-all"><code><?php echo _e($entry['query']) ?></code></td>
+                        <td class="break-all"><code><?= _e($entry['query']) ?></code></td>
                     </tr>
-                    <tr id="devkit-db-trace-<?php echo $index ?>" class="devkit-hidden">
+                    <tr id="devkit-db-trace-<?= $index ?>" class="devkit-hidden">
                         <td colspan="4">
-                            <pre><?php echo _e($entry['trace']) ?></pre>
+                            <pre><?= _e($entry['trace']) ?></pre>
                         </td>
                     </tr>
                 <?php endforeach ?>
@@ -187,7 +187,7 @@ class ToolbarRenderer
 
         ?>
 <div class="devkit-section devkit-extend devkit-toggleable">
-    <?php echo count($this->eventLog) ?>
+    <?= count($this->eventLog) ?>
 </div>
 
 <div class="devkit-content">
@@ -205,8 +205,8 @@ class ToolbarRenderer
             <tbody>
                 <?php foreach ($this->eventLog as $event => $data): ?>
                     <tr>
-                        <td><?php echo _e($event) ?></td>
-                        <td><?php echo $data[0] ?></td>
+                        <td><?= _e($event) ?></td>
+                        <td><?= $data[0] ?></td>
                         <td><?php $this->renderEventArgs($data[1]) ?></td>
                     </tr>
                 <?php endforeach ?>
@@ -225,8 +225,8 @@ class ToolbarRenderer
             <tbody>
             <?php foreach ($eventListenerRows as $row): ?>
                 <tr>
-                    <td><?php echo _e($row[0]) ?></td>
-                    <td><code><?php echo _e($row[1]) ?></code></td>
+                    <td><?= _e($row[0]) ?></td>
+                    <td><code><?= _e($row[1]) ?></code></td>
                 </tr>
             <?php endforeach ?>
             </tbody>
@@ -265,7 +265,7 @@ class ToolbarRenderer
 
         ?>
 <div class="devkit-section devkit-section-error devkit-plugin-errors devkit-toggleable">
-    <?php echo $pluginErrorCount ?> plugin <?php echo $pluginErrorCount > 1 ? 'errors' : 'error' ?>
+    <?= $pluginErrorCount ?> plugin <?= $pluginErrorCount > 1 ? 'errors' : 'error' ?>
 </div>
 
 <div class="devkit-content">
@@ -274,10 +274,10 @@ class ToolbarRenderer
 
         <ul>
             <?php foreach ($pluginErrors as $pluginIdentifier => $errors): ?>
-                <li><?php echo _e($pluginIdentifier) ?>
+                <li><?= _e($pluginIdentifier) ?>
                     <ol>
                         <?php foreach ($errors as $error): ?>
-                            <li><?php echo _e($error) ?></li>
+                            <li><?= _e($error) ?></li>
                         <?php endforeach ?>
                     </ol>
                 </li>
@@ -326,12 +326,12 @@ class ToolbarRenderer
 
         ?>
 <div class="devkit-section devkit-section-error devkit-lang devkit-toggleable">
-    <?php echo $totalMissingLocalizations ?> missing
+    <?= $totalMissingLocalizations ?> missing
 </div>
 
 <div class="devkit-content">
     <div>
-        <div class="devkit-heading">Missing localizations for language <em><?php echo _e(_language) ?></em> (<?php echo $totalMissingLocalizations ?>)</div>
+        <div class="devkit-heading">Missing localizations for language <em><?= _e(_language) ?></em> (<?= $totalMissingLocalizations ?>)</div>
 
         <table>
             <thead>
@@ -344,9 +344,9 @@ class ToolbarRenderer
             <tbody>
                 <?php foreach ($missingLocalizationRows as $row): ?>
                     <tr>
-                        <td><code><?php echo _e($row['dict']) ?></code></td>
-                        <td><?php echo _e($row['key']) ?></td>
-                        <td><?php echo _e($row['count']) ?></td>
+                        <td><code><?= _e($row['dict']) ?></code></td>
+                        <td><?= _e($row['key']) ?></td>
+                        <td><?= _e($row['count']) ?></td>
                     </tr>
                 <?php endforeach ?>
             </tbody>
@@ -360,7 +360,7 @@ class ToolbarRenderer
     {
         ?>
 <div class="devkit-section devkit-dump devkit-toggleable">
-    <?php echo count($this->dumps) ?>
+    <?= count($this->dumps) ?>
 </div>
 
 <div class="devkit-content">
@@ -377,8 +377,8 @@ class ToolbarRenderer
             <?php if (!empty($this->dumps)): ?>
                 <?php foreach ($this->dumps as $dump): ?>
                     <tr>
-                        <td title="<?php echo _e($dump['file']) ?>"><?php echo _e(basename($dump['file'])), ':', $dump['line'] ?></td>
-                        <td><pre><?php echo _e($dump['dump']) ?></pre></td>
+                        <td title="<?= _e($dump['file']) ?>"><?= _e(basename($dump['file'])), ':', $dump['line'] ?></td>
+                        <td><pre><?= _e($dump['dump']) ?></pre></td>
                     </tr>
                 <?php endforeach ?>
             <?php else: ?>
@@ -421,7 +421,7 @@ class ToolbarRenderer
     {
         ?>
 <div class="devkit-section devkit-request devkit-toggleable">
-    <?php echo _e($_SERVER['REQUEST_METHOD']) ?>
+    <?= _e($_SERVER['REQUEST_METHOD']) ?>
 </div>
 
 <div class="devkit-content">
@@ -429,10 +429,10 @@ class ToolbarRenderer
         <?php foreach (['_GET', '_POST', '_COOKIE', '_SESSION'] as $globalVarName): ?>
             <?php if (!empty($GLOBALS[$globalVarName])): ?>
             <div class="devkit-heading devkit-hideshow">
-                $<?php echo $globalVarName, ' (', count($GLOBALS[$globalVarName]), ')' ?>
+                $<?= $globalVarName, ' (', count($GLOBALS[$globalVarName]), ')' ?>
             </div>
 
-            <div class="devkit-request-dump devkit-hideshow-target"><pre><?php echo _e(Dumper::dump($GLOBALS[$globalVarName])) ?></pre></div>
+            <div class="devkit-request-dump devkit-hideshow-target"><pre><?= _e(Dumper::dump($GLOBALS[$globalVarName])) ?></pre></div>
             <?php endif ?>
         <?php endforeach ?>
     </div>
@@ -454,9 +454,9 @@ class ToolbarRenderer
         }
 
         ?>
-<a href="<?php echo _e(Router::module('login')) ?>">
-    <div class="devkit-section devkit-login" title="<?php echo $loginInfo ?>">
-        <?php echo _e($loginName) ?>
+<a href="<?= _e(Router::module('login')) ?>">
+    <div class="devkit-section devkit-login" title="<?= $loginInfo ?>">
+        <?= _e($loginName) ?>
     </div>
 </a>
 <?php

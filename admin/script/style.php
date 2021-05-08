@@ -228,17 +228,17 @@ Extend::call('admin.style.start');
 /* <style>
 /* tagy */
 * {margin: 0; padding: 0;}
-body {font-family: sans-serif; font-size: 12px; color: <?php echo $scheme_text; ?>; background-color: <?php echo $scheme_smoke_light; ?>; margin: 0 0 1em 0;}
-a {font-size: 12px; color: <?php echo $scheme_link; ?>; text-decoration: none;}
-a:hover {color: <?php echo $scheme_text; ?>; text-decoration: none;}
+body {font-family: sans-serif; font-size: 12px; color: <?= $scheme_text ?>; background-color: <?= $scheme_smoke_light ?>; margin: 0 0 1em 0;}
+a {font-size: 12px; color: <?= $scheme_link ?>; text-decoration: none;}
+a:hover {color: <?= $scheme_text ?>; text-decoration: none;}
 h1 {font-size: 18px; font-weight: normal; margin-bottom: 0.5em;}
 h2 {font-size: 14px; margin: 0.25em 0;}
 h3 {font-size: 12px; margin: 0.25em 0;}
 p {padding: 0; margin: 2px 0 10px 0; line-height: 160%;}
 ul, ol {padding: 2px 0 12px 40px; line-height: 160%;}
-dfn {font-style: normal; border-bottom: 1px dashed <?php echo $scheme_smoke_dark; ?>; cursor: help;}
+dfn {font-style: normal; border-bottom: 1px dashed <?= $scheme_smoke_dark ?>; cursor: help;}
 img {border: 0;}
-small {color: <?php echo $scheme_smoke_text; ?>;}
+small {color: <?= $scheme_smoke_text ?>;}
 td, th {font-size: 12px; padding: 1px;}
 th {text-align: left; font-weight: bold;}
 form td {padding: 2px;}
@@ -247,22 +247,22 @@ form > table > tbody > tr > th, .cform th {padding-right: 10px; text-align: righ
 /* formulare */
 form {margin: 0 0 8px 0;}
 form.inline {line-height: 1;}
-fieldset {margin: 25px 0; padding: 8px; background-color: <?php echo $scheme_smoke_lighter; ?>; border: 1px solid <?php echo $scheme_smoke; ?>;}
-fieldset fieldset {background-color: <?php echo $scheme_white; ?>;}
+fieldset {margin: 25px 0; padding: 8px; background-color: <?= $scheme_smoke_lighter ?>; border: 1px solid <?= $scheme_smoke ?>;}
+fieldset fieldset {background-color: <?= $scheme_white ?>;}
 fieldset.hs_fieldset > legend:hover {text-decoration: underline;}
-legend {font-weight: bold; color: <?php echo $scheme_text; ?>;}
+legend {font-weight: bold; color: <?= $scheme_text ?>;}
 label {padding-right: 0.5em;}
 
 input, button, select, textarea {padding: 6px; margin: 0; box-sizing: border-box; font-size: 12px; line-height: 1 !important; vertical-align: middle;}
 
 input[type=checkbox], input[type=radio] {padding: 0; margin: 3px; border: none; vertical-align: middle;}
-input[type=text], input[type=password], input[type=number], input[type=email], input[type=search], select {height: 26px; border: 1px solid <?php echo $scheme_smoke_dark; ?>; box-shadow: inset 0 0 4px <?php echo $scheme_alpha_shadow2; ?>;}
-input[type=submit], input[type=button], input[type=reset], button {cursor: pointer; padding: 8px 12px; border: 1px solid <?php echo $scheme_smoke_med; ?>; background: <?php echo $scheme_smoke_lighter; ?>; background: linear-gradient(to bottom, <?php echo $scheme_smoke_lightest; ?>, <?php echo $scheme_smoke; ?>); color: <?php echo $scheme_text; ?>; font-size: 13px;}
-input[type=submit]:focus, input[type=button]:focus, input[type=reset]:focus, button:focus {outline: 1px solid <?php echo $scheme_med; ?>;}
-input[type=submit]:hover, input[type=button]:hover, input[type=reset]:hover, button:hover {background: <?php echo $scheme_lightest; ?>; background: linear-gradient(to bottom, <?php echo $scheme_lightest; ?>, <?php echo $scheme_lighter; ?>); border-color: <?php echo $scheme_lighter; ?>; outline: none;}
+input[type=text], input[type=password], input[type=number], input[type=email], input[type=search], select {height: 26px; border: 1px solid <?= $scheme_smoke_dark ?>; box-shadow: inset 0 0 4px <?= $scheme_alpha_shadow2 ?>;}
+input[type=submit], input[type=button], input[type=reset], button {cursor: pointer; padding: 8px 12px; border: 1px solid <?= $scheme_smoke_med ?>; background: <?= $scheme_smoke_lighter ?>; background: linear-gradient(to bottom, <?= $scheme_smoke_lightest ?>, <?= $scheme_smoke ?>); color: <?= $scheme_text ?>; font-size: 13px;}
+input[type=submit]:focus, input[type=button]:focus, input[type=reset]:focus, button:focus {outline: 1px solid <?= $scheme_med ?>;}
+input[type=submit]:hover, input[type=button]:hover, input[type=reset]:hover, button:hover {background: <?= $scheme_lightest ?>; background: linear-gradient(to bottom, <?= $scheme_lightest ?>, <?= $scheme_lighter ?>); border-color: <?= $scheme_lighter ?>; outline: none;}
 input[type=color] {padding: 0;}
 
-select {padding: 0 20px 0 6px; background: <?php echo $scheme_white; ?> url("../images/select_arrow<?php echo $dark ? '_inverted' : ''; ?>.png") right center no-repeat; appearance: none; -webkit-appearance: none; -moz-appearance: none; text-indent: 0.01px; text-overflow: ''; line-height: 2 !important;}
+select {padding: 0 20px 0 6px; background: <?= $scheme_white ?> url("../images/select_arrow<?= $dark ? '_inverted' : '' ?>.png") right center no-repeat; appearance: none; -webkit-appearance: none; -moz-appearance: none; text-indent: 0.01px; text-overflow: ''; line-height: 2 !important;}
 select::-ms-expand {display: none;}
 select[multiple], select[size] {height: auto;}
 optgroup option {padding-left: 16px;}
@@ -274,9 +274,9 @@ optgroup option {padding-left: 16px;}
 
 <?php if ($dark) { ?>
 input, textarea, button, select {
-    background-color: <?php echo $scheme_white; ?>;
-    color: <?php echo $scheme_black; ?>;
-    border: 1px solid <?php echo $scheme_smoke_dark; ?>;
+    background-color: <?= $scheme_white ?>;
+    color: <?= $scheme_black ?>;
+    border: 1px solid <?= $scheme_smoke_dark ?>;
 }
 <?php } ?>
 
@@ -284,60 +284,60 @@ input, textarea, button, select {
 div.wrapper {max-width: 1400px; min-width: 700px; margin: 0 auto;}
 
 /* header */
-#top {background: url("../images/top_bg<?php echo $dark_suffix; ?>.png") left bottom repeat-x;}
+#top {background: url("../images/top_bg<?= $dark_suffix ?>.png") left bottom repeat-x;}
 #header {font-family: Georgia, "Times New Roman", Times, serif; font-size: 24px; padding: 0.7em 16px 0.5em 16px;}
-#title {color: <?php echo $scheme_smoke_darker; ?>;}
+#title {color: <?= $scheme_smoke_darker ?>;}
 #usermenu {float: right; position: relative; top: 6px;}
-#usermenu, #usermenu a {font-size: 14px; color: <?php echo $scheme_smoke_text; ?>;}
+#usermenu, #usermenu a {font-size: 14px; color: <?= $scheme_smoke_text ?>;}
 #usermenu a {text-decoration: none;}
-#usermenu a:hover {color: <?php echo $scheme_link; ?>;}
-a#usermenu-username {margin-right: 0.5em; font-weight: bold; color: <?php echo $scheme_smoke_darker; ?>;}
+#usermenu a:hover {color: <?= $scheme_link ?>;}
+a#usermenu-username {margin-right: 0.5em; font-weight: bold; color: <?= $scheme_smoke_darker ?>;}
 #usermenu a.usermenu-web-link {margin-left: 0.5em;}
-#usermenu-avatar {position: absolute; left: -42px; top: -8px; display: block; width: 32px; height: 32px; overflow: hidden; border: 1px solid <?php echo $scheme_smoke_med; ?>; background-color: <?php echo $scheme_white; ?>;}
+#usermenu-avatar {position: absolute; left: -42px; top: -8px; display: block; width: 32px; height: 32px; overflow: hidden; border: 1px solid <?= $scheme_smoke_med ?>; background-color: <?= $scheme_white ?>;}
 #usermenu-avatar img {max-width: 32px; opacity: 0.9;}
 #usermenu-avatar:hover img {opacity: 1;}
 
 /* menu */
-#menu {position: relative; padding: 5px 0 0 16px; background-color: <?php echo $scheme_bar; ?>; font-size: 0;}
-#menu a {color: <?php echo $scheme_bar_text; ?>; text-decoration: none; display: inline-block;}
-#menu a span {display: inline-block; padding: 7px 16px; background: url("../images/menu_sep<?php echo $dark_suffix; ?>.png") right bottom no-repeat; font-size: 13px; text-shadow: 0 0 5px <?php echo $scheme_bar_shadow; ?>;}
-#menu a:hover span, #menu a.act span {color: <?php echo $scheme_black; ?>; background: <?php echo $scheme_white; ?> url("../images/menu_active<?php echo $dark_suffix; ?>.png") left top repeat-x; text-shadow: none;}
+#menu {position: relative; padding: 5px 0 0 16px; background-color: <?= $scheme_bar ?>; font-size: 0;}
+#menu a {color: <?= $scheme_bar_text ?>; text-decoration: none; display: inline-block;}
+#menu a span {display: inline-block; padding: 7px 16px; background: url("../images/menu_sep<?= $dark_suffix ?>.png") right bottom no-repeat; font-size: 13px; text-shadow: 0 0 5px <?= $scheme_bar_shadow ?>;}
+#menu a:hover span, #menu a.act span {color: <?= $scheme_black ?>; background: <?= $scheme_white ?> url("../images/menu_active<?= $dark_suffix ?>.png") left top repeat-x; text-shadow: none;}
 
 /* content */
-#content {padding: 12px 16px 16px 16px; background-color: <?php echo $scheme_white; ?>;}
+#content {padding: 12px 16px 16px 16px; background-color: <?= $scheme_white ?>;}
 
 /* copyright / footer */
-#footer {margin-bottom: 0.5em; text-align: right; padding: 8px 16px; background-color: <?php echo $scheme_bar; ?>;}
-#footer, #footer a {font-size: 11px; text-decoration: none; color: <?php echo $scheme_bar_text; ?>; text-shadow: 0 0 5px <?php echo $scheme_bar_shadow; ?>;}
+#footer {margin-bottom: 0.5em; text-align: right; padding: 8px 16px; background-color: <?= $scheme_bar ?>;}
+#footer, #footer a {font-size: 11px; text-decoration: none; color: <?= $scheme_bar_text ?>; text-shadow: 0 0 5px <?= $scheme_bar_shadow ?>;}
 #footer a:hover {text-decoration: underline;}
 #footer-links {float: left;}
 #footer-links a {margin-right: 1em;}
 
 /* login layout */
-body.login-layout {background: radial-gradient(at center 270px, <?php echo $scheme_smoke_light; ?>, <?php echo $scheme_smoke_dark; ?>) no-repeat fixed;}
+body.login-layout {background: radial-gradient(at center 270px, <?= $scheme_smoke_light ?>, <?= $scheme_smoke_dark ?>) no-repeat fixed;}
 body.login-layout div.wrapper {width: 500px; min-width: 0;}
 body.login-layout #header, body.login-layout #menu {display: none;}
 body.login-layout #top {padding-top: 140px; background: url("../images/logo.png") center 50px no-repeat;}
-body.login-layout #content {padding: 24px 16px; box-shadow: 0 0 6px 1px <?php echo $scheme_alpha_shadow; ?>; text-align: center;}
+body.login-layout #content {padding: 24px 16px; box-shadow: 0 0 6px 1px <?= $scheme_alpha_shadow ?>; text-align: center;}
 body.login-layout #content form {display: inline-block;}
 body.login-layout ul.login-form-links, body.login-layout #content form {text-align: left;}
 body.login-layout ul.login-form-links {padding: 0 0 0 3px; list-style-type: none;}
 body.login-layout #content .message {text-align: left;}
 body.login-layout #footer {background: none;}
-body.login-layout #footer, body.login-layout #footer a {color: <?php echo $scheme_text; ?>; text-shadow: none;}
+body.login-layout #footer, body.login-layout #footer a {color: <?= $scheme_text ?>; text-shadow: none;}
 
 /* external container */
 #external-container {padding: 10px;}
-#external-container h1 {border-bottom: 3px solid <?php echo $scheme; ?>; padding-bottom: 3px; margin-bottom: 6px;}
+#external-container h1 {border-bottom: 3px solid <?= $scheme ?>; padding-bottom: 3px; margin-bottom: 6px;}
 
 /* index */
 #index-table {width: 100%; margin: 0; padding: 0; border-collapse: collapse;}
-#index-table > tbody > tr > td {padding: 10px; border: 1px solid <?php echo $scheme_smoke_med; ?>; background-color: <?php echo $scheme_smoke_lighter; ?>;}
+#index-table > tbody > tr > td {padding: 10px; border: 1px solid <?= $scheme_smoke_med ?>; background-color: <?= $scheme_smoke_lighter ?>;}
 #index-table > tbody > tr > td:last-child {width: 200px;}
-#index-table h2 {margin-bottom: 6px; border-bottom: 2px solid <?php echo $scheme_smoke_med; ?>; padding-bottom: 6px;}
+#index-table h2 {margin-bottom: 6px; border-bottom: 2px solid <?= $scheme_smoke_med ?>; padding-bottom: 6px;}
 #index-table li {padding: 3px;}
 #index-table table {width: 100%;}
-#index-table table th, #index-table table td {text-align: left; padding: 0.2em; border-bottom: 1px solid <?php echo $scheme_smoke_med; ?>;}
+#index-table table th, #index-table table td {text-align: left; padding: 0.2em; border-bottom: 1px solid <?= $scheme_smoke_med ?>;}
 #index-table table tr:last-child th, #index-table table tr:last-child td {border-bottom: none;}
 .module-index .latest-version {font-weight: bold; color: #0077a7;}
 .module-index .latest-version.latest-version-age-0 {color: #009800;}
@@ -346,11 +346,11 @@ body.login-layout #footer, body.login-layout #footer a {color: <?php echo $schem
 .module-index .latest-version.latest-version-age-3 {color: #e60000;}
 
 /* content management */
-#contenttable {width: 100%; border: 1px solid <?php echo $scheme_smoke; ?>; line-height: 140%;}
+#contenttable {width: 100%; border: 1px solid <?= $scheme_smoke ?>; line-height: 140%;}
 #contenttable a {text-decoration: none;}
-#contenttable h2 {margin: 0 0 8px 0; padding: 4px 0 7px 0; border-bottom: 1px solid <?php echo $scheme_smoke; ?>;}
+#contenttable h2 {margin: 0 0 8px 0; padding: 4px 0 7px 0; border-bottom: 1px solid <?= $scheme_smoke ?>;}
 #contenttable div.pad {padding: 20px 0;}
-td.contenttable-box {padding: 8px; margin: 0; border-right: 1px solid <?php echo $scheme_smoke; ?>;}
+td.contenttable-box {padding: 8px; margin: 0; border-right: 1px solid <?= $scheme_smoke ?>;}
 
 #content-modules {border: none;}
 #content-modules h2 {margin-top: 1em;}
@@ -358,41 +358,41 @@ td.contenttable-box {padding: 8px; margin: 0; border-right: 1px solid <?php echo
 
 /* page list */
 table.page-list {width: 100%; margin-bottom: 0.5em; border-collapse: separate; border-spacing: 0; white-space: nowrap;}
-table.page-list td {min-width: 19px; padding: 0 5px; border-left: 1px solid <?php echo $scheme_white; ?>; line-height: 30px; position: relative;}
+table.page-list td {min-width: 19px; padding: 0 5px; border-left: 1px solid <?= $scheme_white ?>; line-height: 30px; position: relative;}
 table.page-list td:first-child {border-left: none;}
 
-table.page-list a {color: <?php echo $scheme_text; ?>;}
+table.page-list a {color: <?= $scheme_text ?>;}
 
 table.page-list td.page-title {width: 90%;}
 table.page-list td.page-title a, table.page-list td.page-title span {display: block;}
-table.page-list.page-list-full-tree td.page-title > :not(.node-level-p0) span.page-list-title {padding-left: 8px; border-left: 1px solid <?php echo $scheme_smoke_dark; ?>;}
-table.page-list.page-list-full-tree tr.page-separator td.page-title span.page-list-title {border-left-color: <?php echo $scheme_smoke_text; ?>;}
-table.page-list.page-list-full-tree td.page-title a:hover span:after, table.page-list.page-list-single-level td.page-title a span:after {content: url("../images/down<?php echo $dark ? '_inverted' : ''; ?>.png"); position: absolute; margin-left: 0.5em; margin-top: 2px;}
+table.page-list.page-list-full-tree td.page-title > :not(.node-level-p0) span.page-list-title {padding-left: 8px; border-left: 1px solid <?= $scheme_smoke_dark ?>;}
+table.page-list.page-list-full-tree tr.page-separator td.page-title span.page-list-title {border-left-color: <?= $scheme_smoke_text ?>;}
+table.page-list.page-list-full-tree td.page-title a:hover span:after, table.page-list.page-list-single-level td.page-title a span:after {content: url("../images/down<?= $dark ? '_inverted' : '' ?>.png"); position: absolute; margin-left: 0.5em; margin-top: 2px;}
 
-table.page-list tr:hover:not(.page-separator) td {background-color: <?php echo $scheme_lighter; ?>;}
+table.page-list tr:hover:not(.page-separator) td {background-color: <?= $scheme_lighter ?>;}
 
-table.page-list tr.page-separator td {border-top: 24px solid <?php echo $scheme_white; ?>; border-bottom: 2px solid <?php echo $scheme_smoke_dark; ?>; background-color: <?php echo $scheme_lighter; ?>;}
+table.page-list tr.page-separator td {border-top: 24px solid <?= $scheme_white ?>; border-bottom: 2px solid <?= $scheme_smoke_dark ?>; background-color: <?= $scheme_lighter ?>;}
 table.page-list tr.page-separator.sorting td {border-top: none;}
 table.page-list tr.page-separator:first-child td {border: none;}
 table.page-list tr.page-separator td.page-title span.page-list-title span {font-weight: bold;}
 
-table.page-list td.page-type {color: <?php echo $scheme_smoke_text_dark; ?>;}
+table.page-list td.page-type {color: <?= $scheme_smoke_text_dark ?>;}
 table.page-list tr:hover td.page-type {color: inherit;}
 
 table.page-list td.page-actions {text-align: right; white-space: nowrap;}
 table.page-list td.page-actions a {display: inline; padding: 2px 6px;}
-table.page-list tr:hover td.page-actions a {background-color: <?php echo $scheme_smoke; ?>; outline: 1px solid <?php echo $scheme_smoke_dark; ?>;}
+table.page-list tr:hover td.page-actions a {background-color: <?= $scheme_smoke ?>; outline: 1px solid <?= $scheme_smoke_dark ?>;}
 table.page-list td.page-actions a img.icon {margin: 0; padding: 0; vertical-align: middle;}
 table.page-list td.page-actions a span {display: none;}
 
 table.page-list tr.sortable-placeholder td {height: 36px;}
 table.page-list td.page-list-sortcell {width: 1%; vertical-align: bottom;}
 
-ul.page-list-breadcrumbs {margin: 0 0 0.5em 0; padding: 0.5em 1em; border-bottom: 2px solid <?php echo $scheme_smoke_dark; ?>; list-style-type: none; background-color: <?php echo $scheme_lightest; ?>;}
+ul.page-list-breadcrumbs {margin: 0 0 0.5em 0; padding: 0.5em 1em; border-bottom: 2px solid <?= $scheme_smoke_dark ?>; list-style-type: none; background-color: <?= $scheme_lightest ?>;}
 ul.page-list-breadcrumbs li {display: inline; padding-right: 0.5em;}
 ul.page-list-breadcrumbs li:not(:last-child):after {content: ">"; display: inline-block; margin-left: 0.5em;}
-ul.page-list-breadcrumbs a {color: <?php echo $scheme_text; ?>; font-weight: bold; vertical-align: middle;}
-ul.page-list-breadcrumbs a:hover {color: <?php echo $scheme_link; ?>;}
+ul.page-list-breadcrumbs a {color: <?= $scheme_text ?>; font-weight: bold; vertical-align: middle;}
+ul.page-list-breadcrumbs a:hover {color: <?= $scheme_link ?>;}
 
 /* editpages settings */
 #settingseditform fieldset label{display: block;}
@@ -417,14 +417,14 @@ ul.page-list-breadcrumbs a:hover {color: <?php echo $scheme_link; ?>;}
 #is-cell-wrapper {position: relative;}
 #is-cell-content {padding: 0 5px 0 10px; position: absolute; left: 0; top: 0; width: 100%;}
 #is-picture {margin: 10px 0; width: 100%; padding: 5px 0 40px 0; overflow: hidden; position: relative;}
-#is-picture-file {display: block; max-width: 200px; max-height: 200px; margin: 0 auto; border: 1px solid <?php echo $scheme_lighter; ?>;}
+#is-picture-file {display: block; max-width: 200px; max-height: 200px; margin: 0 auto; border: 1px solid <?= $scheme_lighter ?>;}
 #is-picture-upload {position: absolute; left: 10px; bottom: 10px;}
 #is-picture-delete {position: absolute; right: 10px; top: 5px; padding: 3px;}
 #is-picture-delete img, #is-picture-delete input {vertical-align: middle;}
 #ae-lastrow {padding-bottom: 30px;}
 #time-cell {z-index: 1; position: relative;}
 .ae-artselect {width: 249px;}
-.ae-artselect-disoption {color: <?php echo $scheme_smoke_text; ?>;}
+.ae-artselect-disoption {color: <?= $scheme_smoke_text ?>;}
 .ae-twoi {border-collapse: collapse;}
 .ae-twoi input, .ae-twoi select {width: 100% !important;}
 .ae-twoi td {padding-left: 0 !important; padding-right: 16px !important; width: 330px;}
@@ -433,42 +433,42 @@ ul.page-list-breadcrumbs a:hover {color: <?php echo $scheme_link; ?>;}
 /* box manager */
 #boxesedit {width: 100%;}
 #boxesedit td.cell {padding: 10px 20px 25px 10px;}
-#boxesedit td.cell > div {border: 1px solid <?php echo $scheme_smoke; ?>; padding: 20px 15px;}
+#boxesedit td.cell > div {border: 1px solid <?= $scheme_smoke ?>; padding: 20px 15px;}
 
 /* file manager */
-#fman-action {border-bottom: 1px solid <?php echo $scheme_smoke; ?>; margin-bottom: 10px;}
+#fman-action {border-bottom: 1px solid <?= $scheme_smoke ?>; margin-bottom: 10px;}
 #fman-action h2 {margin-bottom: 6px;}
 #fman-list {width: 100%; border-collapse: collapse; margin-bottom: 6px;}
-#fman-list a {color: <?php echo $scheme_text; ?>;}
+#fman-list a {color: <?= $scheme_text ?>;}
 #fman-list .fman-size {width: 15%;}
 #fman-list .actions {width: 25%;}
 #fman-list .fman-item a {display: block;}
-#fman-list td {padding: 2px 4px; border: 1px solid <?php echo $scheme_white; ?>; line-height: 200%;}
-#fman-list tr:hover td {background-color: <?php echo $scheme_lightest; ?>;}
+#fman-list td {padding: 2px 4px; border: 1px solid <?= $scheme_white ?>; line-height: 200%;}
+#fman-list tr:hover td {background-color: <?= $scheme_lightest ?>;}
 #fman-list input {margin: 5px 4px 0 0; float: left;}
-#fman-list tr.fman-uploaded td {background: <?php echo $scheme_lighter; ?>;}
+#fman-list tr.fman-uploaded td {background: <?= $scheme_lighter ?>;}
 #fmanFiles {white-space: nowrap;}
-.fman-menu {border-width: 1px 0 1px 0; border-style: solid; border-color: <?php echo $scheme_smoke; ?>;}
+.fman-menu {border-width: 1px 0 1px 0; border-style: solid; border-color: <?= $scheme_smoke ?>;}
 .fman-menu, .fman-menu2 {margin-top: 5px; padding: 5px;}
-.fman-menu a, .fman-menu span, .fman-menu2 a, .fman-menu2 span {border-right: 1px solid <?php echo $scheme_smoke; ?>; padding-right: 8px; margin-right: 8px;}
+.fman-menu a, .fman-menu span, .fman-menu2 a, .fman-menu2 span {border-right: 1px solid <?= $scheme_smoke ?>; padding-right: 8px; margin-right: 8px;}
 .fman-spacer {height: 10px;}
 
 /* galleries */
 .gallery-savebutton {float: left; margin: 0 14px 0 0; display: block;}
-#gallery-edit {float: left; margin: 14px 0; padding: 5px; border: 1px solid <?php echo $scheme_smoke_light; ?>;}
+#gallery-edit {float: left; margin: 14px 0; padding: 5px; border: 1px solid <?= $scheme_smoke_light ?>;}
 .gallery-edit-image {float: left; margin: 5px;}
 .gallery-edit-image input {cursor: default;}
-.gallery-edit-image table {border: 1px solid <?php echo $scheme_smoke_dark; ?>; padding: 10px; background-color: <?php echo $scheme_smoke; ?>; cursor: move;}
-.gallery-edit-image a {color: <?php echo $scheme_black; ?>; cursor: pointer;}
-.gallery-edit-image a.lightbox img {border: 1px solid <?php echo $scheme_smoke_text; ?>; max-width: 300px;}
+.gallery-edit-image table {border: 1px solid <?= $scheme_smoke_dark ?>; padding: 10px; background-color: <?= $scheme_smoke ?>; cursor: move;}
+.gallery-edit-image a {color: <?= $scheme_black ?>; cursor: pointer;}
+.gallery-edit-image a.lightbox img {border: 1px solid <?= $scheme_smoke_text ?>; max-width: 300px;}
 
 /* sqlex */
 #sqlex {width: 100%; margin-top: 1em; border-collapse: collapse;}
-#sqlex td {padding: 1em; border: 1px solid <?php echo $scheme_smoke; ?>; vertical-align: top;}
+#sqlex td {padding: 1em; border: 1px solid <?= $scheme_smoke ?>; vertical-align: top;}
 #sqlex td:first-child ul {padding: 0; margin: 0; list-style-type: none;}
 #sqlex li, #sqlex-result li {line-height: 160%;}
 #sqlex-result h2 {margin-bottom: 1em;}
-#sqlex-result table.list {width: 100%; background-color: <?php echo $scheme_white; ?>; outline: 6px solid <?php echo $scheme_white; ?>;}
+#sqlex-result table.list {width: 100%; background-color: <?= $scheme_white ?>; outline: 6px solid <?= $scheme_white ?>;}
 #sqlex-result table.list textarea {width: 100%;}
 
 /* settings */
@@ -476,17 +476,17 @@ ul.page-list-breadcrumbs a:hover {color: <?php echo $scheme_link; ?>;}
 #settingsnav, #settingsnav a {font-size: 12px;}
 #settingsnav.scrollfix-top {position: fixed; top: 10px; height: calc(100% - 60px); overflow: auto; z-index: 100;}
 #settingsnav input[type=submit] {width: 100%;}
-#settingsnav ul {padding: 0; margin: 0.5em 0 0 0; border: 1px solid <?php echo $scheme_smoke; ?>; background-color: <?php echo $scheme_smoke_lighter; ?>;}
+#settingsnav ul {padding: 0; margin: 0.5em 0 0 0; border: 1px solid <?= $scheme_smoke ?>; background-color: <?= $scheme_smoke_lighter ?>;}
 #settingsnav li {display: block; list-style-type: none;}
-#settingsnav li a {display: block; padding: 6px 11px; border-bottom: 1px solid <?php echo $scheme_smoke_light;?>; color: <?php echo $scheme_text; ?>;}
-#settingsnav a:hover, #settingsnav li.active a {background-color: <?php echo $scheme_smoke_dark; ?>; color: <?php echo $scheme_black ?>;}
+#settingsnav li a {display: block; padding: 6px 11px; border-bottom: 1px solid <?= $scheme_smoke_light;?>; color: <?= $scheme_text ?>;}
+#settingsnav a:hover, #settingsnav li.active a {background-color: <?= $scheme_smoke_dark ?>; color: <?= $scheme_black ?>;}
 
 #settingsform {float: left; padding-bottom: 30em; width: 78%;}
 #settingsform fieldset {margin: 0 0 5em 0;}
 #settingsform label {font-weight: bold;}
 #settingsform table {border-collapse: collapse;}
-#settingsform table td {padding: 4px 8px; border-bottom: 1px solid <?php echo $scheme_smoke_med; ?>;}
-#settingsform table td:first-child {white-space: nowrap; border-right: 1px solid <?php echo $scheme_smoke_med; ?>;}
+#settingsform table td {padding: 4px 8px; border-bottom: 1px solid <?= $scheme_smoke_med ?>;}
+#settingsform table td:first-child {white-space: nowrap; border-right: 1px solid <?= $scheme_smoke_med ?>;}
 #settingsform table th {padding-right: 8px; padding-left: 4px;}
 #settingsform table tr:last-child td {border-bottom: none;}
 
@@ -504,29 +504,29 @@ body.busy-overlay-active {overflow: hidden;}
 #busy-overlay > div > div > p {color: #fff; font-size: 1.8em;}
 
 /* link styles */
-a.normal {color: <?php echo $scheme_text; ?>;}
-a.invisible {color: <?php echo $scheme_smoke_text; ?>;}
-a.notpublic {font-style: italic; color: <?php echo $scheme_text; ?>;}
-a.invisible-notpublic {color: <?php echo $scheme_smoke_text; ?>; font-style: italic;}
+a.normal {color: <?= $scheme_text ?>;}
+a.invisible {color: <?= $scheme_smoke_text ?>;}
+a.notpublic {font-style: italic; color: <?= $scheme_text ?>;}
+a.invisible-notpublic {color: <?= $scheme_smoke_text ?>; font-style: italic;}
 a.active-link {text-decoration: underline !important;}
 
 /* highlight */
-.hl {background-color: <?php echo $scheme_smoke_lighter; ?>;}
+.hl {background-color: <?= $scheme_smoke_lighter ?>;}
 
 /* messages */
-.message {margin: 1em 0; padding: 13px 5px 13px 48px; background-color: <?php echo $scheme_smoke; ?>; background-position: 5px 5px; background-repeat: no-repeat;}
+.message {margin: 1em 0; padding: 13px 5px 13px 48px; background-color: <?= $scheme_smoke ?>; background-position: 5px 5px; background-repeat: no-repeat;}
 .message ul {margin: 0; padding: 5px 0 0 15px;}
 .message a {color: inherit; text-decoration: underline;}
-.message-ok {background-color: <?php echo $scheme_bg_info; ?>; background-image: url("../images/icons/info.png");}
-.message-warn {background-color: <?php echo $scheme_bg_alert; ?>; background-image: url("../images/icons/warning.png");}
-.message-err {background-color: <?php echo $scheme_bg_danger; ?>; background-image: url("../images/icons/error.png");}
+.message-ok {background-color: <?= $scheme_bg_info ?>; background-image: url("../images/icons/info.png");}
+.message-warn {background-color: <?= $scheme_bg_alert ?>; background-image: url("../images/icons/warning.png");}
+.message-err {background-color: <?= $scheme_bg_danger ?>; background-image: url("../images/icons/error.png");}
 
 /* preformatted */
 pre {white-space: -moz-pre-wrap; white-space: -pre-wrap; white-space: -o-pre-wrap; white-space: pre-wrap; word-break: break-all; word-wrap: break-word;}
-pre.exception {max-height: 300px; margin: 1em 0; padding: 13px; overflow: auto; background-color: <?php echo $scheme_bg_danger; ?>;}
+pre.exception {max-height: 300px; margin: 1em 0; padding: 13px; overflow: auto; background-color: <?= $scheme_bg_danger ?>;}
 
 /* form tables */
-.formtable {border: 1px dotted <?php echo $scheme_smoke; ?>; background-color: <?php echo $scheme_smoke_lightest; ?>;}
+.formtable {border: 1px dotted <?= $scheme_smoke ?>; background-color: <?= $scheme_smoke_lightest ?>;}
 .cform table {width: 100%; table-layout: fixed;}
 .cform th {width: 111px;}
 .cform th:first-child + td {width: 40%;}
@@ -538,11 +538,11 @@ pre.exception {max-height: 300px; margin: 1em 0; padding: 13px; overflow: auto; 
 .text-danger {color: #E71717;}
 
 /* table cell colors */
-.cell-success, .row-success th, .row-success td {background-color: <?php echo $dark ? '#001e00' : '#e1ffe1' ?>;}
-.cell-warning, .row-warning th, .row-warning td {background-color: <?php echo $dark ? '#1e0f00' : '#fff0e1' ?>;}
-.cell-danger, .row-danger th, .row-danger td {background-color: <?php echo $dark ? '#1b0303' : '#fde3e3' ?>;}
-tr.even td {background-color: <?php echo $scheme_smoke; ?>;}
-tr.odd td {background-color: <?php echo $scheme_smoke_lightest; ?>;}
+.cell-success, .row-success th, .row-success td {background-color: <?= $dark ? '#001e00' : '#e1ffe1' ?>;}
+.cell-warning, .row-warning th, .row-warning td {background-color: <?= $dark ? '#1e0f00' : '#fff0e1' ?>;}
+.cell-danger, .row-danger th, .row-danger td {background-color: <?= $dark ? '#1b0303' : '#fde3e3' ?>;}
+tr.even td {background-color: <?= $scheme_smoke ?>;}
+tr.odd td {background-color: <?= $scheme_smoke_lightest ?>;}
 
 /* form element sizes */
 .arealine {width: 100%; height: 100px;}
@@ -566,70 +566,70 @@ tr.odd td {background-color: <?php echo $scheme_smoke_lightest; ?>;}
 .selectmax {width: 100%;}
 
 /* horizontal rule */
-.hr {height: 10px; background-image: url("../images/hr<?php echo $dark_suffix; ?>.gif"); background-position: left center; background-repeat: repeat-x;}
+.hr {height: 10px; background-image: url("../images/hr<?= $dark_suffix ?>.gif"); background-position: left center; background-repeat: repeat-x;}
 .hr hr {display: none;}
 
 .paging {margin: 1em 0;}
 .paging-label {display: none;}
-.paging a {display: inline-block; padding: 0.3em 0.6em; border: 1px solid <?php echo $scheme_smoke; ?>; text-decoration: none;}
-.paging a.act, .paging a:hover {color: <?php echo $scheme_text; ?>; background-color: <?php echo $scheme_smoke_light; ?>;}
-fieldset .paging a {background-color: <?php echo $scheme_white; ?>;}
-fieldset .paging a.act, fieldset .paging a:hover {background-color: <?php echo $scheme_smoke_dark; ?>; color: <?php echo $scheme_white; ?>;}
+.paging a {display: inline-block; padding: 0.3em 0.6em; border: 1px solid <?= $scheme_smoke ?>; text-decoration: none;}
+.paging a.act, .paging a:hover {color: <?= $scheme_text ?>; background-color: <?= $scheme_smoke_light ?>;}
+fieldset .paging a {background-color: <?= $scheme_white ?>;}
+fieldset .paging a.act, fieldset .paging a:hover {background-color: <?= $scheme_smoke_dark ?>; color: <?= $scheme_white ?>;}
 
 /* two-column layout */
-table.two-columns {width: 100%; table-layout: fixed; border: 1px solid <?php echo $scheme_smoke; ?>; border-collapse: collapse;}
+table.two-columns {width: 100%; table-layout: fixed; border: 1px solid <?= $scheme_smoke ?>; border-collapse: collapse;}
 table.two-columns > tbody > tr > td {width: 50%; padding: 5px 15px;}
-table.two-columns > tbody > tr > td:first-child {border-right: 1px solid <?php echo $scheme_smoke; ?>;}
-table.two-columns > tbody > tr > td > h2 {margin: 20px 0 10px 0; padding-bottom: 5px; border-bottom: 1px solid <?php echo $scheme_smoke; ?>;}
+table.two-columns > tbody > tr > td:first-child {border-right: 1px solid <?= $scheme_smoke ?>;}
+table.two-columns > tbody > tr > td > h2 {margin: 20px 0 10px 0; padding-bottom: 5px; border-bottom: 1px solid <?= $scheme_smoke ?>;}
 table.two-columns > tbody > tr > td > h2:first-child {margin-top: 5px;}
 table.two-columns > tbody > tr > td > form:last-child {margin-bottom: 0;}
 
 /* list */
-table.list {margin: 10px 0; border-collapse: collapse; border: 1px solid <?php echo $scheme_smoke; ?>; background-color: <?php echo $scheme_white ?>;}
+table.list {margin: 10px 0; border-collapse: collapse; border: 1px solid <?= $scheme_smoke ?>; background-color: <?= $scheme_white ?>;}
 table.list.list-max {width: 100%;}
 table.list.list-half {min-width: 50%;}
-table.list caption {padding: 15px; border-bottom: 3px double <?php echo $scheme_smoke_lightest; ?>; background-color: <?php echo $scheme_smoke; ?>; text-align: left;}
-table.list thead th, .list thead td {font-weight: bold; background-color: <?php echo $scheme_smoke; ?>;}
-table.list td, .list th {padding: 7px 15px; border-bottom: 1px solid <?php echo $scheme_smoke; ?>;}
-table.list.list-hover tbody tr:hover:not(.nohover) td {background-color: <?php echo $scheme_smoke_lightest_colored; ?>;}
+table.list caption {padding: 15px; border-bottom: 3px double <?= $scheme_smoke_lightest ?>; background-color: <?= $scheme_smoke ?>; text-align: left;}
+table.list thead th, .list thead td {font-weight: bold; background-color: <?= $scheme_smoke ?>;}
+table.list td, .list th {padding: 7px 15px; border-bottom: 1px solid <?= $scheme_smoke ?>;}
+table.list.list-hover tbody tr:hover:not(.nohover) td {background-color: <?= $scheme_smoke_lightest_colored ?>;}
 table.list.list-noborder th, .list.list-noborder td {border: none;}
-table.list tbody + tbody {border-top: 3px double <?php echo $scheme_smoke ?>;}
+table.list tbody + tbody {border-top: 3px double <?= $scheme_smoke ?>;}
 table.list h3 {font-weight: normal; font-size: 16px;}
-fieldset table.list thead td, fieldset table.list thead th {background-color: <?php echo $scheme_smoke_dark; ?>;}
-fieldset table.list td {border-color: <?php echo $scheme_smoke_dark; ?>;}
+fieldset table.list thead td, fieldset table.list thead th {background-color: <?= $scheme_smoke_dark ?>;}
+fieldset table.list td {border-color: <?= $scheme_smoke_dark ?>;}
 
 td.actions {white-space: nowrap;}
 td.actions a {margin-left: 0.5em;}
 td.actions a:first-child {margin-left: 0;}
 
 /* radio group */
-div.radio-group {border: 1px solid <?php echo $scheme_smoke_dark; ?>; background-color: <?php echo $scheme_white; ?>; box-shadow: inset 0 0 4px <?php echo $scheme_alpha_shadow; ?>;}
-div.radio-group label {display: block; float: left; padding: 5px; border-left: 1px solid <?php echo $scheme_smoke_dark; ?>;}
+div.radio-group {border: 1px solid <?= $scheme_smoke_dark ?>; background-color: <?= $scheme_white ?>; box-shadow: inset 0 0 4px <?= $scheme_alpha_shadow ?>;}
+div.radio-group label {display: block; float: left; padding: 5px; border-left: 1px solid <?= $scheme_smoke_dark ?>;}
 div.radio-group label:first-child {border-left: none;}
 
 /* inline list */
 .inline-list {padding-left: 0; padding-right: 0; list-style-type: none;}
 .inline-list > li {display: inline-block; padding-left: 0.5em;}
-.inline-list > li:after {content: "|"; padding-left: 0.5em; color: <?php echo $scheme_smoke_dark; ?>;}
+.inline-list > li:after {content: "|"; padding-left: 0.5em; color: <?= $scheme_smoke_dark ?>;}
 .inline-list > li:first-child {padding-left: 0;}
 .inline-list > li:last-child:after {display: none;}
 .inline-list > li > strong {padding-right: 0.2em;}
 
 /* buttons */
-a.button {display: inline-block; margin: 0; padding: 6px; border: 1px solid <?php echo $scheme_smoke_med; ?>; background: <?php echo $scheme_smoke_lighter; ?>; background: linear-gradient(to bottom, <?php echo $scheme_smoke_lightest; ?>, <?php echo $scheme_smoke; ?>); color: <?php echo $scheme_text; ?>; vertical-align: middle; font-weight: normal; line-height: 1;}
+a.button {display: inline-block; margin: 0; padding: 6px; border: 1px solid <?= $scheme_smoke_med ?>; background: <?= $scheme_smoke_lighter ?>; background: linear-gradient(to bottom, <?= $scheme_smoke_lightest ?>, <?= $scheme_smoke ?>); color: <?= $scheme_text ?>; vertical-align: middle; font-weight: normal; line-height: 1;}
 a.button img.icon {margin: -1px 0 -1px 0; padding: 0 6px 0 0;}
 a.button.block {display: block; margin: 6px;}
 a.button.block img.icon {float: none; margin: 0; padding: 0 10px 0 0;}
-a.button:hover {background: <?php echo $scheme_lightest; ?>; background: linear-gradient(to bottom, <?php echo $scheme_lightest; ?>, <?php echo $scheme_lighter; ?>); border-color: <?php echo $scheme_lighter; ?>;}
+a.button:hover {background: <?= $scheme_lightest ?>; background: linear-gradient(to bottom, <?= $scheme_lightest ?>, <?= $scheme_lighter ?>); border-color: <?= $scheme_lighter ?>;}
 a.button.big, input[type=submit].button.big, input[type=button].button.big, input[type=reset].button.big, button.button.big {padding: 8px 12px; font-size: 13px;}
 a.button.bigger, input[type=submit].button.bigger, input[type=button].button.bigger, input[type=reset].button.bigger, button.button.bigger {padding: 12px 18px; font-size: 14px;}
 input[type=submit].button, input[type=button].button, input[type=reset].button, button.button {padding: 6px; font-size: 12px;}
 
 /* inline separator */
-span.inline-separator {margin-left: 0.5em; padding-right: 0.5em; border-left: 1px solid <?php echo $scheme_smoke_med; ?>;}
+span.inline-separator {margin-left: 0.5em; padding-right: 0.5em; border-left: 1px solid <?= $scheme_smoke_med ?>;}
 
 /* well */
-.well {margin: 10px 0; padding: 10px; border: 1px solid <?php echo $scheme_smoke_med; ?>; background-color: <?php echo $scheme_smoke_lighter; ?>;}
+.well {margin: 10px 0; padding: 10px; border: 1px solid <?= $scheme_smoke_med ?>; background-color: <?= $scheme_smoke_lighter ?>;}
 .well h2 {font-weight: normal;}
 
 /* sortables */
@@ -637,9 +637,9 @@ span.inline-separator {margin-left: 0.5em; padding-right: 0.5em; border-left: 1p
 .sortable-handle {display: inline-block; vertical-align: middle; padding-right: 10px; width: 11px; height: 18px; background: url("../images/icons/drag-handle.png") left top no-repeat; cursor: move;}
 
 /* generic */
-.bborder {padding-bottom: 8px; margin-bottom: 12px; border-bottom: 1px solid <?php echo $scheme_smoke; ?>;}
-fieldset .bborder {border-color: <?php echo $scheme_smoke_text; ?>;}
-fieldset fieldset .bborder {border-color: <?php echo $scheme_smoke; ?>;}
+.bborder {padding-bottom: 8px; margin-bottom: 12px; border-bottom: 1px solid <?= $scheme_smoke ?>;}
+fieldset .bborder {border-color: <?= $scheme_smoke_text ?>;}
+fieldset fieldset .bborder {border-color: <?= $scheme_smoke ?>;}
 .backlink {display: block; font-weight: bold; padding-bottom: 10px;}
 .icon {margin: -1px 0 0 0; padding-right: 5px; vertical-align: middle;}
 .groupicon {vertical-align: middle; margin-top: -1px;}
@@ -647,13 +647,13 @@ fieldset fieldset .bborder {border-color: <?php echo $scheme_smoke; ?>;}
 .hidden {display: none;}
 .cleaner {clear: both;}
 .micon {height: 15px; margin: 0 1px;}
-.special {color: <?php echo $scheme_link; ?>;}
+.special {color: <?= $scheme_link ?>;}
 .small {font-size: 10px;}
 .block {display: block;}
-.note {color: <?php echo $scheme_smoke_text; ?>;}
+.note {color: <?= $scheme_smoke_text ?>;}
 .minwidth {min-width: 700px;}
 .important {color: red;}
-.highlight {color: <?php echo $scheme_link; ?>;}
+.highlight {color: <?= $scheme_link ?>;}
 .max-area {width: 100%; height: 100%;}
 .max-width {width: 100%;}
 .half-width {width: 50%;}
@@ -715,4 +715,4 @@ tr.valign-top > *, table.valign-top > * > tr > * {vertical-align: top;}
 .node-level-m20 {margin-left: 480px !important;}
 .node-level-p20 {padding-left: 480px !important;}
 
-<?php echo Extend::buffer('admin.style') ?>
+<?= Extend::buffer('admin.style') ?>

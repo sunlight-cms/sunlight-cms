@@ -59,7 +59,7 @@ class SqlLogger
             ?>
             <ol>
                 <?php foreach ($log as $entry): ?>
-                    <li><code><?php echo _e($entry['query']) ?></code></li>
+                    <li><code><?= _e($entry['query']) ?></code></li>
                 <?php endforeach ?>
             </ol>
             <?php
