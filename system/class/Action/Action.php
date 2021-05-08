@@ -47,13 +47,6 @@ abstract class Action
     {
         try {
             $result = $this->execute();
-
-            if (!$result instanceof ActionResult) {
-                throw new \UnexpectedValueException(sprintf(
-                    'Invalid return value from %s->execute(), expected ActionResult',
-                    get_called_class()
-                ));
-            }
         } catch (\Throwable $e) {
             if ($this->catchExceptions) {
                 $result = ActionResult::failure(Message::error(_lang('global.error')));
