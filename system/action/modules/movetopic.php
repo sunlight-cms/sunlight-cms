@@ -14,7 +14,7 @@ use Sunlight\Xsrf;
 defined('_root') or exit;
 
 if (!_logged_in) {
-    $_index['is_accessible'] = false;
+    $_index['type'] = _index_unauthorized;
     return;
 }
 
@@ -31,11 +31,11 @@ if ($query !== false) {
 
     $_index['backlink'] = Router::topic($query['id'], $query['forum_slug']);
     if (!Comment::checkAccess($userQuery, $query) || !_priv_movetopics) {
-        $_index['is_accessible'] = false;
+        $_index['type'] = _index_unauthorized;
         return;
     }
 } else {
-    $_index['is_found'] = false;
+    $_index['type'] = _index_not_found;
     return;
 }
 

@@ -99,7 +99,7 @@ abstract class PageManager
         if (_env === Core::ENV_WEB) {
             global $_index;
 
-            if ($_index['is_page'] && $_index['is_successful']) {
+            if ($_index['type'] === _index_page) {
                 $id = $_index['id'];
                 $data = $GLOBALS['_page'];
             }

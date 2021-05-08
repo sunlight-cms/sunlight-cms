@@ -12,7 +12,7 @@ use Sunlight\Util\StringManipulator;
 defined('_root') or exit;
 
 if (!_logged_in && _notpublicsite) {
-    $_index['is_accessible'] = false;
+    $_index['type'] = _index_unauthorized;
     return;
 }
 
@@ -22,12 +22,12 @@ $id = StringManipulator::slugify(Request::get('id'), false);
 $query = DB::queryRow("SELECT u.id,u.username,u.publicname,u.public,g.level FROM " . _user_table . " u JOIN " . _user_group_table . " g ON u.group_id=g.id WHERE u.username=" . DB::val($id));
 
 if ($query === false) {
-    $_index['is_found'] = false;
+    $_index['type'] = _index_not_found;
     return;
 }
 
 if (!$query['public'] && !User::checkLevel($query['id'], $query['level'])) {
-    $_index['is_accessible'] = false;
+    $_index['type'] = _index_unauthorized;
     return;
 }
 

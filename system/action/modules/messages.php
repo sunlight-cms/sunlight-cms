@@ -19,13 +19,13 @@ use Sunlight\Xsrf;
 
 defined('_root') or exit;
 
-if (!_logged_in) {
-    $_index['is_accessible'] = false;
+if (!_messages) {
+    $_index['type'] = _index_not_found;
     return;
 }
 
-if (!_messages) {
-    $_index['is_found'] = false;
+if (!_logged_in) {
+    $_index['type'] = _index_unauthorized;
     return;
 }
 
@@ -139,6 +139,7 @@ switch ($a) {
                 Extend::call('posts.new', ['id' => $insert_id, 'posttype' => _post_pm, 'post' => $post_data]);
 
                 // presmerovani a konec
+                $_index['type'] = _index_redir;
                 $_index['redirect_to'] = Router::module('messages', 'a=list&read=' . $pm_id, true);
 
                 return;

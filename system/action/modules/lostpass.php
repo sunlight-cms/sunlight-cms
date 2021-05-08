@@ -17,12 +17,12 @@ use Sunlight\Util\Url;
 defined('_root') or exit;
 
 if (!_lostpass) {
-    $_index['is_found'] = false;
+    $_index['type'] = _index_not_found;
     return;
 }
 
 if (_logged_in) {
-    $_index['is_guest_only'] = true;
+    $_index['type'] = _index_guest_only;
     return;
 }
 

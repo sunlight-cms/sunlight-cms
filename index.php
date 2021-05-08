@@ -64,6 +64,7 @@ if (strncmp($_url_path, $_system_url_path, strlen($_system_url_path)) === 0) {
 // konfiguracni pole webu
 $_index = [
     // atributy
+    'type' => null, // jedna z _index_* konstant
     'id' => null, // ciselne ID
     'slug' => null, // identifikator (string)
     'segment' => null, // cast identifikatoru, ktera byla rozpoznana jako segment (string)
@@ -79,17 +80,8 @@ $_index = [
     // format je: array(array('title' => 'titulek', 'url' => 'url'), ...)
     'crumbs' => [],
 
-    // typ stranky
-    'is_module' => false,
-    'is_page' => false,
-    'is_plugin' => false,
-
     // stav stranky
-    'is_found' => true, // stranka nebyla nenalezena 1/0
-    'is_accessible' => true, // ke strance je pristup 1/0
-    'is_guest_only' => false, // stranka je pristupna pouze pro neprihl. uziv 1/0
     'is_rewritten' => false, // skutecny stav prepisu URL
-    'is_successful' => false, // uspesny pristup ke strance 1/0
 
     // presmerovani
     'redirect_to' => null, // adresa, kam presmerovat
@@ -114,7 +106,7 @@ if (empty($_POST) || Xsrf::check()) {
         // modul
         $_index['slug'] = Request::get('m');
         $_index['is_rewritten'] = !$_url->has('m');
-        $_index['is_module'] = true;
+        $_index['type'] = _index_module;
 
         Extend::call('mod.init');
 
@@ -124,7 +116,7 @@ if (empty($_POST) || Xsrf::check()) {
 
         // neverejne stranky
         $_index['is_rewritten'] = _pretty_urls;
-        $_index['is_accessible'] = false;
+        $_index['type'] = _index_unauthorized;
 
     } else do {
 
@@ -148,6 +140,7 @@ if (empty($_POST) || Xsrf::check()) {
             // presmerovat identifikator/ na identifikator
             $_url->path = rtrim($_url_path, '/');
 
+            $_index['type'] = _index_redir;
             $_index['redirect_to'] = $_url->generateAbsolute();
             break;
         }
@@ -160,12 +153,12 @@ if (empty($_POST) || Xsrf::check()) {
 
         Extend::call('page.init');
 
-        if ($_index['is_plugin']) {
+        if ($_index['type'] === _index_plugin) {
             break;
         }
 
         // vykreslit stranku
-        $_index['is_page'] = true;
+        $_index['type'] = _index_page;
         require _root . 'system/action/page.php';
 
     } while (false);
@@ -179,22 +172,27 @@ if (empty($_POST) || Xsrf::check()) {
 Extend::call('index.prepare', ['index' => &$_index]);
 
 // zpracovani stavu
-if ($_index['redirect_to'] !== null) {
-    // presmerovani
-    $_index['template_enabled'] = false;
-    Response::redirect($_index['redirect_to'], $_index['redirect_to_permanent']);
-} elseif (!$_index['is_found']) {
-    // stranka nenelezena
-    require _root . 'system/action/not_found.php';
-} elseif (!$_index['is_accessible']) {
-    // pristup odepren
-    require _root . 'system/action/login_required.php';
-} elseif ($_index['is_guest_only']) {
-    // pristup pouze pro neprihl. uziv
-    require _root . 'system/action/guest_required.php';
-} else {
-    // uspesny stav
-    $_index['is_successful'] = true;
+switch ($_index['type']) {
+    case _index_redir:
+        // presmerovani
+        $_index['template_enabled'] = false;
+        Response::redirect($_index['redirect_to'], $_index['redirect_to_permanent']);
+        break;
+
+    case _index_not_found:
+        // stranka nenelezena
+        require _root . 'system/action/not_found.php';
+        break;
+
+    case _index_unauthorized:
+        // pristup odepren
+        require _root . 'system/action/login_required.php';
+        break;
+
+    case _index_guest_only:
+        // pristup pouze pro neprihl. uziv
+        require _root . 'system/action/guest_required.php';
+        break;
 }
 
 Extend::call('index.ready', ['index' => &$_index]);

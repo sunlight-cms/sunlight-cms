@@ -46,7 +46,7 @@ abstract class WebRequestHandler
         $path = (string) $args['index']['slug'];
 
         if ($this->shouldHandle($path, $args['segments'])) {
-            $args['index']['is_plugin'] = true;
+            $args['index']['type'] = _index_plugin;
             $this->prepareToHandleRequest($path, $args['segments']);
         }
     }
@@ -63,6 +63,7 @@ abstract class WebRequestHandler
         if (is_int($output)) {
             $this->handleOutputCode($args['index'], $output);
         } elseif ($output instanceof Url) {
+            $args['index']['type'] = _index_redir;
             $args['index']['redirect_to'] = $output->generateAbsolute();
         } else {
             $args['index']['output'] = (string) $output;
@@ -76,7 +77,7 @@ abstract class WebRequestHandler
      */
     final function onIndexReady(array $args): void
     {
-        if ($args['index']['redirect_to'] !== null) {
+        if ($args['index']['type'] === _index_redir) {
             // do not output if a redirect has been set up
             return;
         }
@@ -150,9 +151,9 @@ abstract class WebRequestHandler
     protected function handleOutputCode(array &$index, int $code): void
     {
         switch ($code) {
-            case self::OUTPUT_NOT_FOUND: $index['is_found'] = false; break;
-            case self::OUTPUT_UNAUTHORIZED: $index['is_accessible'] = false; break;
-            case self::OUTPUT_GUEST_ONLY: $index['is_guest_only'] = false; break;
+            case self::OUTPUT_NOT_FOUND: $index['type'] = _index_not_found; break;
+            case self::OUTPUT_UNAUTHORIZED: $index['type'] = _index_unauthorized; break;
+            case self::OUTPUT_GUEST_ONLY: $index['type'] = _index_guest_only; break;
             default: throw new \OutOfBoundsException('Invalid output code %d', $code);
         }
     }

@@ -21,12 +21,12 @@ use Sunlight\Xsrf;
 defined('_root') or exit;
 
 if (!_logged_in && _notpublicsite) {
-    $_index['is_accessible'] = false;
+    $_index['type'] = _index_unauthorized;
     return;
 }
 
 if (!_search) {
-    $_index['is_found'] = false;
+    $_index['type'] = _index_not_found;
     return;
 }
 

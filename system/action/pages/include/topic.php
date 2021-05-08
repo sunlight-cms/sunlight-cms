@@ -13,7 +13,7 @@ use Sunlight\Util\UrlHelper;
 defined('_root') or exit;
 
 if (!ctype_digit($_index['segment'])) {
-    $_index['is_found'] = false;
+    $_index['type'] = _index_not_found;
     return;
 }
 
@@ -22,7 +22,7 @@ $id = (int) $_index['segment'];
 $userQuery = User::createQuery('p.author');
 $query = DB::queryRow("SELECT p.*," . $userQuery['column_list'] . " FROM " . _comment_table . " p " . $userQuery['joins'] . " WHERE p.id=" . $id . " AND p.type=" . _post_forum_topic . " AND p.home=" . $_page['id'] . " AND p.xhome=-1");
 if ($query === false) {
-    $_index['is_found'] = false;
+    $_index['type'] = _index_not_found;
     return;
 }
 

@@ -21,7 +21,7 @@ use Sunlight\Xsrf;
 defined('_root') or exit;
 
 if (!_logged_in) {
-    $_index['is_accessible'] = false;
+    $_index['type'] = _index_unauthorized;
     return;
 }
 
@@ -50,6 +50,7 @@ if (isset($_POST['save'])) {
                 User::delete(_user_id);
                 $_SESSION = [];
                 session_destroy();
+                $_index['type'] = _index_redir;
                 $_index['redirect_to'] = Router::module('login', 'login_form_result=4', true);
 
                 return;
@@ -236,6 +237,7 @@ if (isset($_POST['save'])) {
         // update
         DB::update(_user_table, 'id=' . _user_id, $changeset);
         Extend::call('user.edit', ['id' => _user_id, 'username' => $username, 'email' => $email]);
+        $_index['type'] = _index_redir;
         $_index['redirect_to'] = Router::module('settings', 'saved', true);
 
         return;

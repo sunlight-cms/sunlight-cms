@@ -707,7 +707,7 @@ abstract class Template
      */
     static function currentIsPage(): bool
     {
-        return $GLOBALS['_index']['is_page'] && $GLOBALS['_index']['is_successful'];
+        return $GLOBALS['_index']['type'] === _index_page;
     }
 
     /**
@@ -718,8 +718,7 @@ abstract class Template
     static function currentIsArticle(): bool
     {
         return
-            $GLOBALS['_index']['is_page']
-            && $GLOBALS['_index']['is_successful']
+            $GLOBALS['_index']['type'] === _index_page
             && $GLOBALS['_page']['type'] == _page_category
             && $GLOBALS['_index']['segment'] !== null;
     }
@@ -732,8 +731,7 @@ abstract class Template
     static function currentIsTopic(): bool
     {
         return
-            $GLOBALS['_index']['is_page']
-            && $GLOBALS['_index']['is_successful']
+            $GLOBALS['_index']['type'] === _index_page
             && $GLOBALS['_page']['type'] == _page_forum
             && $GLOBALS['_index']['segment'] !== null;
     }
@@ -745,7 +743,7 @@ abstract class Template
      */
     static function currentIsModule(): bool
     {
-        return $GLOBALS['_index']['is_module'] && $GLOBALS['_index']['is_successful'];
+        return $GLOBALS['_index']['type'] === _index_module;
     }
 
     /**

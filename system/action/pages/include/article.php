@@ -17,13 +17,13 @@ defined('_root') or exit;
 // nacteni dat
 $_article = Article::find($_index['segment'], $_page['id']);
 if ($_article === false) {
-    $_index['is_found'] = false;
+    $_index['type'] = _index_not_found;
     return;
 }
 
 // kontrola pristupu
 if (!Article::checkAccess($_article, false)) {
-    $_index['is_accessible'] = false;
+    $_index['type'] = _index_unauthorized;
     return;
 }
 

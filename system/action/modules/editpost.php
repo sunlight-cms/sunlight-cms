@@ -21,7 +21,7 @@ use Sunlight\Util\UrlHelper;
 defined('_root') or exit;
 
 if (!_logged_in) {
-    $_index['is_accessible'] = false;
+    $_index['type'] = _index_unauthorized;
     return;
 }
 
@@ -95,11 +95,11 @@ if ($query !== false) {
         }
 
     } else {
-        $_index['is_accessible'] = false;
+        $_index['type'] = _index_unauthorized;
         return;
     }
 } else {
-    $_index['is_found'] = false;
+    $_index['type'] = _index_not_found;
     return;
 }
 
@@ -146,6 +146,7 @@ if (isset($_POST['text'])) {
                     $update_data['guest'] = $guest;
                 }
                 DB::update(_comment_table, 'id=' . DB::val($id), $update_data);
+                $_index['type'] = _index_redir;
                 $_index['redirect_to'] = Router::module('editpost', 'id=' . $id . '&saved', true);
 
                 return;

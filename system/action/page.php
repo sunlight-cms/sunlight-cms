@@ -14,7 +14,7 @@ defined('_root') or exit;
 // nacteni dat stranky
 $_page = PageManager::find($segments);
 if ($_page === false) {
-    $_index['is_found'] = false;
+    $_index['type'] = _index_not_found;
     return;
 }
 
@@ -53,6 +53,7 @@ if (
         $_url->remove('p');
     }
 
+    $_index['type'] = _index_redir;
     $_index['redirect_to'] = UrlHelper::appendParams(
         Router::page($_page['id'], $_page['slug'], null, true),
         $_url->getQueryString()
@@ -77,13 +78,14 @@ if ($segment !== null) {
 
     // stranka nenalezena, pokud nepodporuje segment
     if (!$segment_support) {
-        $_index['is_found'] = false;
+        $_index['type'] = _index_not_found;
         return;
     }
 }
 
 // presmerovani na hezkou adresu
 if (_pretty_urls && !$_index['is_rewritten'] && !empty($segments)) {
+    $_index['type'] = _index_redir;
     $_index['redirect_to'] = $_index['url'];
     $_index['redirect_to_permanent'] = true;
     return;
@@ -91,7 +93,7 @@ if (_pretty_urls && !$_index['is_rewritten'] && !empty($segments)) {
 
 // test pristupu
 if (!User::checkPublicAccess($_page['public'], $_page['level'])) {
-    $_index['is_accessible'] = false;
+    $_index['type'] = _index_unauthorized;
     return;
 }
 

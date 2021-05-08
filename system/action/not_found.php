@@ -19,7 +19,7 @@ if (!$continue) {
 }
 
 // presmerovani
-if ($_index['is_page'] && $_index['slug'] !== null) {
+if ($_index['slug'] !== null) {
     $redirect = DB::queryRow('SELECT new,permanent FROM ' . _redirect_table . ' WHERE old=' . DB::val($_index['slug']) . ' AND active=1');
     if ($redirect !== false) {
         Response::redirect(Router::path($redirect['new'], true), $redirect['permanent']);
