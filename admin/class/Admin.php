@@ -547,10 +547,6 @@ abstract class Admin
             'css' => [
                 'admin' => Router::generate('admin/script/style.php?s=' . rawurlencode($scheme) . ($dark ? '&d' : '')),
             ],
-            'css_after' => "
-<!--[if lte IE 7]><link rel=\"stylesheet\" href=\"css/ie7.css\"><![endif]-->
-<!--[if IE 8]><link rel=\"stylesheet\" href=\"css/ie8-9.css\"><![endif]-->
-<!--[if IE 9]><link rel=\"stylesheet\" href=\"css/ie8-9.css\"><![endif]-->",
             'js' => [
                 'jquery' => Router::generate('system/js/jquery.js'),
                 'sunlight' => Router::generate('system/js/sunlight.js'),
