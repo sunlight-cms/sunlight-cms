@@ -83,10 +83,7 @@ if (isset($_POST['title'])) {
 
     // nacteni promennych
     $newdata['title'] = Html::cut(_e(Request::post('title')), 255);
-    if (Request::post('slug') === '') {
-        $_POST['slug'] = Request::post('title');
-    }
-    $newdata['slug'] = StringManipulator::slugify(Request::post('slug'), true);
+    $newdata['slug'] = StringManipulator::slugify(_fallback(Request::post('slug'), Request::post('title')));
     $newdata['description'] = Html::cut(_e(trim(Request::post('description'))), 255);
     $newdata['home1'] = (int) Request::post('home1');
     $newdata['home2'] = (int) Request::post('home2');
@@ -118,8 +115,13 @@ if (isset($_POST['title'])) {
     $error_log = [];
 
     // titulek
-    if ($newdata['title'] == "") {
+    if ($newdata['title'] === '') {
         $error_log[] = _lang('admin.content.articles.edit.error1');
+    }
+
+    // slug
+    if ($newdata['slug'] === '') {
+        $error_log[] = _lang('admin.content.form.slug.empty');
     }
 
     // kategorie

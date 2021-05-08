@@ -102,6 +102,7 @@ return [
     'admin.content.form.heading' => 'Nadpis',
     'admin.content.form.slug' => 'Identifikátor',
     'admin.content.form.slug.collision' => 'Zvolený identifikátor již používá jiná položka!',
+    'admin.content.form.slug.empty' => 'Identifikátor nesmí být prázdný',
     'admin.content.form.slug_abs' => 'Absolutní',
     'admin.content.form.slug_abs.label' => 'absolutní (ignoruje nadřazené stránky)',
     'admin.content.form.description' => 'Popis <small>(krátký)</small>',

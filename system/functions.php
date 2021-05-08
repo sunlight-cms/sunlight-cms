@@ -3,7 +3,7 @@
 use Sunlight\Core;
 
 /**
- * Bufferovat a vratit vystup daneho callbacku
+ * Buffer and return output of the given callback
  *
  * @param callable $callback
  * @param array    $arguments
@@ -24,7 +24,7 @@ function _buffer(callable $callback, array $arguments = []): string
 }
 
 /**
- * Prevest HTML znaky na entity
+ * Convert special HTML characters to entities
  *
  * @param string $input        vstupni retezec
  * @param bool   $doubleEncode prevadet i jiz existujici entity 1/0
@@ -36,7 +36,7 @@ function _e(string $input, bool $doubleEncode = true): string
 }
 
 /**
- * Ziskat preklad
+ * Get a translation
  *
  * @param string      $key
  * @param array|null  $replacements

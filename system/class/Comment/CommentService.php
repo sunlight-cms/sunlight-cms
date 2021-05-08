@@ -745,7 +745,7 @@ class CommentService
     static function normalizeGuestName(string $guest): string
     {
         return StringManipulator::cut(
-            StringManipulator::slugify($guest, false, '._', ''),
+            StringManipulator::slugify($guest, false),
             24
         );
     }

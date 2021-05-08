@@ -69,10 +69,10 @@ abstract class StringManipulator
      * @param string $input vstupni retezec
      * @param bool $lower prevest na mala pismena 1/0
      * @param string|null $extraAllowedChars seznam extra povolenych znaku nebo null
-     * @param string|null $fallback fallback pro pripad, ze neni mozne prevest vstup na validni slug
+     * @param string $fallback hodnota pouzita v pripade, ze neni mozne vygenerovat slug
      * @return string
      */
-    static function slugify(string $input, bool $lower = true, ?string $extraAllowedChars = '._', ?string $fallback = null): string
+    static function slugify(string $input, bool $lower = true, ?string $extraAllowedChars = '._', string $fallback = ''): string
     {
         $slug = Slugify::getInstance()->slugify(
             $input,
@@ -86,11 +86,7 @@ abstract class StringManipulator
             return $slug;
         }
 
-        if ($fallback !== null) {
-            return $fallback;
-        }
-
-        return sprintf('item-%x', crc32($input));
+        return $fallback;
     }
 
     /**

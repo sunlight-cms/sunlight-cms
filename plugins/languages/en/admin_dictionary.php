@@ -102,6 +102,7 @@ return [
     'admin.content.form.heading' => 'Heading',
     'admin.content.form.slug' => 'Identifier',
     'admin.content.form.slug.collision' => 'The selected identifier is already in use by another item!',
+    'admin.content.form.slug.empty' => 'Identifier must not be empty',
     'admin.content.form.slug_abs' => 'Absolute',
     'admin.content.form.slug_abs.label' => 'absolute (ignores parent pages)',
     'admin.content.form.description' => 'Description <small>(short)</small>',

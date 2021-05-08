@@ -193,14 +193,14 @@ if (!empty($_POST)) {
             // slug
             case 'slug':
                 if ($val === '') {
-                    $val = $title;
+                    $val = Request::post('title');
                 }
                 if ($slug_abs) {
                     // absolutni slug
-                    $val = StringManipulator::slugify($val, true, '._/');
+                    $val = StringManipulator::slugify($val, true, '._/', 'page');
                 } else {
                     // pouze segment
-                    $val = ($base_slug !== '' ? $base_slug . '/' : '') . StringManipulator::slugify($val);
+                    $val = ($base_slug !== '' ? $base_slug . '/' : '') . StringManipulator::slugify($val, true, '._', 'page');
                 }
                 if ($query['slug'] !== $val || $query['slug_abs'] != $slug_abs) {
                     $refresh_slug = true;
