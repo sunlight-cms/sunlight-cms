@@ -18,8 +18,6 @@ class TemplatePlugin extends Plugin
             'js' => ['type' => 'array', 'default' => [], 'normalizer' => ['Sunlight\Plugin\PluginOptionNormalizer', 'normalizeWebPathArray']],
             'responsive' => ['type' => 'boolean', 'default' => false],
             'dark' => ['type' => 'boolean', 'default' => false],
-            'smiley.count' => ['type' => 'integer', 'default' => 10],
-            'smiley.format' => ['type' => 'string', 'default' => 'gif'],
             'bbcode.buttons' => ['type' => 'boolean', 'default' => true],
             'box.parent' => ['type' => 'string', 'default' => ''],
             'box.item' => ['type' => 'string', 'default' => 'div'],
@@ -190,6 +188,11 @@ class TemplatePlugin extends Plugin
         DB::free($query);
 
         return $boxes;
+    }
+
+    function getImagePath(string $name, bool $absolute = false): string
+    {
+        return $this->getWebPath($absolute) . "/images/{$name}";
     }
 
     /**

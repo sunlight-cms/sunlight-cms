@@ -82,7 +82,7 @@ return function ($id = null) {
                 }
 
                 // kod polozky
-                $result .= "<div class='sbox-item'>" . $author . ':' . $alink . " " . Comment::render($spost['text'], true, false, false) . "</div>\n";
+                $result .= "<div class='sbox-item'>" . $author . ':' . $alink . " " . Comment::render($spost['text'], true, false) . "</div>\n";
 
             }
         } else {

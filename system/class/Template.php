@@ -296,12 +296,12 @@ abstract class Template
     /**
      * Sestavit adresu k obrazku aktualniho motivu
      *
-     * @param string $path subcesta k souboru relativne ke slozce images aktualniho motivu
+     * @param string $name subcesta k souboru relativne ke slozce images aktualniho motivu
      * @return string
      */
-    static function image(string $path): string
+    static function image(string $name): string
     {
-        return $GLOBALS['_template']->getWebPath() . "/images/{$path}";
+        return $GLOBALS['_template']->getImagePath($name);
     }
 
     /**

@@ -411,8 +411,6 @@ return [
     'admin.settings.functions.captcha.help' => 'use security codes (CAPTCHA)',
     'admin.settings.functions.bbcode' => 'BBCode',
     'admin.settings.functions.bbcode.help' => 'allow BBCode tags in posts',
-    'admin.settings.functions.smileys' => 'Smileys',
-    'admin.settings.functions.smileys.help' => 'allow use of graphical emoticons in posts',
     'admin.settings.paging' => 'Paging',
     'admin.settings.paging.showpages' => 'Number of pages',
     'admin.settings.paging.showpages.help' => 'maximum number of pages displayed at once in the list (odd number, at least 3)',

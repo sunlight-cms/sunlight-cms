@@ -317,7 +317,6 @@ INSERT INTO `sunlight_setting` (`var`, `val`, `format`, `constant`, `preload`, `
 ('title',	'',	'html',	1,	1,	1,	1),
 ('description',	'',	'html',	1,	1,	1,	1),
 ('commentsperpage',	'10',	'int',	1,	1,	1,	1),
-('smileys',	'1',	'bool',	1,	1,	1,	1),
 ('postadmintime',	'172800',	'int',	1,	1,	1,	1),
 ('adminscheme',	'0',	'int',	1,	1,	0,	1),
 ('dbversion',	'8.0.0',	NULL,	1,	1,	1,	1),

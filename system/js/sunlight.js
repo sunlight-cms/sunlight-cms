@@ -132,25 +132,6 @@ var Sunlight = (function ($) {
         },
 
         /**
-         * Add emoticon code to the given textarea
-         *
-         * @param {String} formName
-         * @param {String} textareaName
-         * @param {Number} smileyId
-         * @returns {Boolean}
-         */
-        addSmiley: function (formName, textareaName, smileyId) {
-            // get textarea, set focus
-            var txtarea = $(document[formName][textareaName]);
-            txtarea.focus();
-
-            // insert text
-            txtarea.replaceSelectedText(' *' + smileyId + '* ');
-
-            return false;
-        },
-
-        /**
          * Add BBCode tag to the given textarea
          *
          * @param {String}  fid

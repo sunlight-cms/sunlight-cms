@@ -121,32 +121,18 @@ LEFT JOIN " . _comment_table . " home_post ON({$alias}.type=" . _post_forum_topi
      * Vykreslit text prispevku
      *
      * @param string $input   vstupni text (HTML)
-     * @param bool   $smileys vyhodnotit smajliky 1/0
      * @param bool   $bbcode  vyhodnotit bbcode 1/0
      * @param bool   $nl2br   prevest odrakovani na <br>
      * @return string
      */
-    static function render(string $input, bool $smileys = true, bool $bbcode = true, bool $nl2br = true): string
+    static function render(string $input, bool $bbcode = true, bool $nl2br = true): string
     {
         // event
         Extend::call('post.parse', [
             'content' => &$input,
-            'smileys' => $smileys,
             'bbcode' => $bbcode,
             'nl2br' => $nl2br,
         ]);
-
-        // vyhodnoceni smajlu
-        if (_smileys && $smileys) {
-            $template = Template::getCurrent();
-
-            $input = preg_replace(
-                '{\*(\d{1,3})\*}s',
-                '<img src=\'' . $template->getWebPath() . '/images/smileys/$1.' . $template->getOption('smiley.format') . '\' alt=\'$1\' class=\'post-smiley\'>',
-                $input,
-                32
-            );
-        }
 
         // vyhodnoceni BBCode
         if (_bbcode && $bbcode) {

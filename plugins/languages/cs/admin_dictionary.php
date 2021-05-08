@@ -411,8 +411,6 @@ return [
     'admin.settings.functions.captcha.help' => 'používat kontrolní obrázek (CAPTCHA)',
     'admin.settings.functions.bbcode' => 'BBCode',
     'admin.settings.functions.bbcode.help' => 'povolit používání formátovacích značek BBCode v příspěvcích',
-    'admin.settings.functions.smileys' => 'Smajlíci',
-    'admin.settings.functions.smileys.help' => 'povolit používání grafických smajlíků v příspěvcích',
     'admin.settings.paging' => 'Stránkování',
     'admin.settings.paging.showpages' => 'Počet stran',
     'admin.settings.paging.showpages.help' => 'maximální počet stran zobrazených najednou v seznamu (liché číslo, minimálně 3)',

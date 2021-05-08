@@ -5,15 +5,14 @@ namespace Sunlight;
 abstract class PostForm
 {
     /**
-     * Sestavit kod ovladaciho panelu na smajliky a BBCode tagy
+     * Sestavit kod ovladaciho panelu
      *
      * @param string $form    nazev formulare
      * @param string $area    nazev textarey
      * @param bool   $bbcode  zobrazit BBCode 1/0
-     * @param bool   $smileys zobrazit smajliky 1/0
      * @return string
      */
-    static function renderControls(string $form, string $area, bool $bbcode = true, bool $smileys = true): string
+    static function renderControls(string $form, string $area, bool $bbcode = true): string
     {
         $template = Template::getCurrent();
 
@@ -21,7 +20,6 @@ abstract class PostForm
 
         // bbcode
         if ($bbcode && _bbcode && $template->getOption('bbcode.buttons')) {
-
             // nacteni tagu
             $bbtags = Bbcode::getTags();
 
@@ -38,17 +36,13 @@ abstract class PostForm
             $output .= '</span>';
         }
 
-        // smajlici
-        if ($smileys && _smileys) {
-            $smiley_count = $template->getOption('smiley.count');
-            $output .= '<span class="post-form-smileys">';
-            for($x = 1; $x <= $smiley_count; ++$x) {
-                $output .= "<a href=\"#\" onclick=\"return Sunlight.addSmiley('" . $form . "','" . $area . "'," . $x . ");\" class='smiley-button'><img src=\"" . $template->getWebPath() . '/images/smileys/' . $x . '.' . $template->getOption('smiley.format') . "\" alt=\"" . $x . "\" title=\"" . $x . "\"></a> ";
-            }
-            $output .= '</span>';
+        Extend::call('posts.form_controls', ['output' => &$output]);
+
+        if ($output !== '') {
+            $output = "<span class='posts-form-buttons'>" . $output . "</span>";
         }
 
-        return "<span class='posts-form-buttons'>" . trim($output) . "</span>";
+        return $output;
     }
 
     /**

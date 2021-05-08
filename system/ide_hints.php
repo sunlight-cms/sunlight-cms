@@ -32,8 +32,6 @@ const _title = '';
 const _description = '';
 /** Number of comments per page */
 const _commentsperpage = 10;
-/** Enable smileys in comments 1/0 */
-const _smileys = 1;
 /** Allow editing/removing comments this number of seconds after they're created by the author */
 const _postadmintime = 172800;
 /** Admin skin variation */

@@ -143,7 +143,6 @@ $editable_settings = [
             ['name' => 'search'],
             ['name' => 'captcha'],
             ['name' => 'bbcode'],
-            ['name' => 'smileys'],
         ],
     ],
     'paging' => [

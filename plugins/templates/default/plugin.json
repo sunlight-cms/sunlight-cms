@@ -11,8 +11,6 @@
         }
     },
     "dark": false,
-    "smiley.count": 10,
-    "smiley.format": "gif",
     "bbcode.buttons": true,
     "box.parent": "ul",
     "box.item": "li",
