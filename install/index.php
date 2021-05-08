@@ -1121,7 +1121,12 @@ Now you can <a href="admin/">log in to the administration</a> (username and pass
 <fieldset>
     <legend><?php Labels::render('import.overwrite') ?></legend>
     <p class="msg warning"><?php Labels::render('import.overwrite.text', ['%prefix%' => Config::$config['db.prefix'] . '_']) ?></p>
-    <p><label><input type="checkbox"<?php echo Form::restoreCheckedAndName($this->getFormKeyVar(), 'import_overwrite') ?>> <?php Labels::render('import.overwrite.confirmation') ?></label></p>
+    <p>
+        <label>
+            <input type="checkbox"<?php echo Form::restoreCheckedAndName($this->getFormKeyVar(), 'import_overwrite') ?>>
+            <?php Labels::render('import.overwrite.confirmation') ?>
+        </label>
+    </p>
 </fieldset>
 <?php endif ?>
 <?php
