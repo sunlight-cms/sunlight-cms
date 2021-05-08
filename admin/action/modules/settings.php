@@ -148,7 +148,7 @@ $editable_settings = [
     'paging' => [
         'items' => [
             ['name' => 'pagingmode', 'choices' => $pagingmode_choices],
-            ['name' => 'showpages', 'transform_to' => '$value * 2 + 1', 'transform_back' => '(int) max(1, abs(($value - 1) / 2))'],
+            ['name' => 'showpages', 'transform_to' => function ($v) { return $v * 2 + 1; }, 'transform_back' => function ($v) { return (int) max(1, abs(($v - 1) / 2)); }],
             ['name' => 'commentsperpage', 'min_value' => 1],
             ['name' => 'messagesperpage', 'min_value' => 1],
             ['name' => 'articlesperpage', 'min_value' => 1],
@@ -160,14 +160,14 @@ $editable_settings = [
     'iplog' => [
         'items' => [
             ['name' => 'postsendexpire', 'min_value' => 0],
-            ['name' => 'postadmintime', 'transform_to' => '$value / 60', 'transform_back' => 'max(0, $value * 60)'],
+            ['name' => 'postadmintime', 'transform_to' => function ($v) { return $v / 60; }, 'transform_back' => function ($v) { return max(0, $v * 60); }],
             ['name' => 'maxloginattempts', 'min_value' => 1],
-            ['name' => 'maxloginexpire', 'transform_to' => '$value / 60', 'transform_back' => 'max(0, $value * 60)'],
-            ['name' => 'artreadexpire', 'transform_to' => '$value / 60', 'transform_back' => 'max(0, $value * 60)'],
-            ['name' => 'artrateexpire', 'transform_to' => '$value / 60', 'transform_back' => 'max(0, $value * 60)'],
-            ['name' => 'pollvoteexpire', 'transform_to' => '$value / 60', 'transform_back' => 'max(0, $value * 60)'],
-            ['name' => 'accactexpire', 'transform_to' => '$value / 60', 'transform_back' => 'max(0, $value * 60)'],
-            ['name' => 'lostpassexpire', 'transform_to' => '$value / 60', 'transform_back' => 'max(0, $value * 60)'],
+            ['name' => 'maxloginexpire', 'transform_to' => function ($v) { return $v / 60; }, 'transform_back' => function ($v) { return max(0, $v * 60); }],
+            ['name' => 'artreadexpire', 'transform_to' => function ($v) { return $v / 60; }, 'transform_back' => function ($v) { return max(0, $v * 60); }],
+            ['name' => 'artrateexpire', 'transform_to' => function ($v) { return $v / 60; }, 'transform_back' => function ($v) { return max(0, $v * 60); }],
+            ['name' => 'pollvoteexpire', 'transform_to' => function ($v) { return $v / 60; }, 'transform_back' => function ($v) { return max(0, $v * 60); }],
+            ['name' => 'accactexpire', 'transform_to' => function ($v) { return $v / 60; }, 'transform_back' => function ($v) { return max(0, $v * 60); }],
+            ['name' => 'lostpassexpire', 'transform_to' => function ($v) { return $v / 60; }, 'transform_back' => function ($v) { return max(0, $v * 60); }],
         ],
     ],
     'cron' => [
@@ -245,7 +245,7 @@ if (!empty($_POST)) {
 
                 // transformace
                 if (isset($item['transform_back'])) {
-                    $value = eval('return ' . $item['transform_back'] . ';');
+                    $value = $item['transform_back']($value);
                 }
             }
 
@@ -316,7 +316,7 @@ foreach ($editable_settings as $settings_category => $settings_category_data) {
 
         // transformace
         if (isset($item['transform_to'])) {
-            $value = eval('return ' . $item['transform_to'] . ';');
+            $value = $item['transform_to']($value);
         }
 
         // popisek
