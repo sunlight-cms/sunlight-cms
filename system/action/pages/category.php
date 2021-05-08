@@ -41,9 +41,6 @@ switch ($_page['var1']) {
 // titulek
 $_index['title'] = $_page['title'];
 
-// rss
-$_index['rsslink'] = Router::rss($id, _rss_latest_articles);
-
 // obsah
 Extend::call('page.category.content.before', $extend_args);
 if ($_page['content'] != '') {

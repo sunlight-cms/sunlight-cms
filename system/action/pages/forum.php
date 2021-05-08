@@ -22,9 +22,6 @@ if ($_index['segment'] !== null) {
 // titulek
 $_index['title'] = $_page['title'];
 
-// rss
-$_index['rsslink'] = Router::rss($id, _rss_latest_topics);
-
 // obsah
 Extend::call('page.forum.content.before', $extend_args);
 if ($_page['content'] != "") {

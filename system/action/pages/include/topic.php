@@ -74,7 +74,7 @@ if ($topic_access) {
 
 // vystup
 $output .= "<div class=\"topic\">\n";
-$output .= "<h2>" . _lang('posts.topic') . ": " . $query['subject'] . ' ' . Template::rssLink(Router::rss($id, 6), true) . "</h2>\n";
+$output .= "<h2>" . _lang('posts.topic') . ": " . $query['subject'] . "</h2>\n";
 $output .= CommentService::renderPost($query, $userQuery, [
     'post_link' => false,
     'allow_reply' => false,

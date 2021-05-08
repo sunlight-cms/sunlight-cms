@@ -793,12 +793,6 @@ ul.list-info strong {
     display: none;
 }
 
-/* RSS */
-.rsslink {
-    float: right;
-    margin: 0 0 0.5em 1em;
-}
-
 /* Backlink */
 .backlink {
     margin: 1em 0;

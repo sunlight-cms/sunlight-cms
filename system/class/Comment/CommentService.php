@@ -287,7 +287,7 @@ class CommentService
   ";
 
         if ($title != null) {
-            $output .= "<h2>" . $title . ' ' . Template::rssLink(Router::rss($home, $posttype), true) . "</h2>\n";
+            $output .= "<h2>" . $title . "</h2>\n";
         }
 
         $form_output = "<div class='posts-form' id='post-form'>\n";

@@ -112,15 +112,6 @@ abstract class Template
             . ($_template->getOption('responsive') ? "\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">" : '')
             . GenericTemplates::renderHeadAssets($assets);
 
-        if (_rss) {
-            echo '
-<link rel="alternate" type="application/rss+xml" href="' . _e(Router::rss(-1, _rss_latest_articles)) . '" title="' . _lang('rss.recentarticles') . '">';
-            if (_comments) {
-                echo '
-<link rel="alternate" type="application/rss+xml" href="' . _e(Router::rss(-1, _rss_latest_comments)) . '" title="' . _lang('rss.recentcomments') . '">';
-            }
-        }
-
         if (_favicon) {
             echo '
 <link rel="shortcut icon" href="favicon.ico?' . _cacheid . '">';
@@ -213,10 +204,9 @@ abstract class Template
      *
      * @param bool $heading  vykreslit nadpis 1/0 {@see Template::heading()}
      * @param bool $backlink vykreslit zpetny odkaz 1/0 {@see Template::backlink()}
-     * @param bool $rsslink  vykreslit RSS odkaz 1/0 {@see Template::rssLink()}
      * @return string
      */
-    static function content(bool $heading = true, bool $backlink = true, bool $rsslink = true): string
+    static function content(bool $heading = true, bool $backlink = true): string
     {
         global $_index;
 
@@ -224,16 +214,10 @@ abstract class Template
         $output = Extend::buffer('tpl.content', [
             'heading' => &$heading,
             'backlink' => &$backlink,
-            'rsslink' => &$rsslink,
         ]);
 
         // vychozi implementace?
         if ($output === '') {
-            // rss odkaz
-            if ($rsslink) {
-                $output .= self::rssLink(null, false);
-            }
-
             // nadpis
             if ($heading) {
                 $output .= self::heading();
@@ -292,45 +276,6 @@ abstract class Template
         // vychozi implementace?
         if ($output === '' && $GLOBALS['_index']['backlink'] !== null) {
             $output = '<div class="backlink"><a href="' . _e($GLOBALS['_index']['backlink']) . '">&lt; ' . _lang('global.return') . "</a></div>\n";
-        }
-
-        return $output;
-    }
-
-    /**
-     * Vykreslit RSS odkaz
-     *
-     * @param string|null $url    URL nebo null (= dle aktualni stranky)
-     * @param bool        $inline jedna se o radkovy odkaz 1/0 (napr. v ramci nadpisu / textu)
-     * @return string
-     */
-    static function rssLink(?string $url = null, bool $inline = true): string
-    {
-        // deaktivovane RSS / nenastavena adresa?
-        if (!_rss || $url === null && $GLOBALS['_index']['rsslink'] === null) {
-            return '';
-        }
-
-        // pouzit RSS adresu aktualni stranky
-        if ($url === null) {
-            $url = $GLOBALS['_index']['rsslink'];
-        }
-
-        // extend
-        $output = Extend::buffer('tpl.rsslink', [
-            'url' => $url,
-            'inline' => $inline,
-        ]);
-
-        // vychozi implementace?
-        if ($output === '') {
-            if (!$inline) {
-                $output .= '<div class="rsslink">';
-            }
-            $output .= '<a' . ($inline ? ' class="rsslink-inline"' : '') . ' href="' . _e($url) . '" title="' . _lang('rss.linktitle') . '"><img src="' . self::image("icons/rss.png") . "\" alt=\"rss\" class=\"icon\"></a>";
-            if (!$inline) {
-                $output .= "</div>\n";
-            }
         }
 
         return $output;

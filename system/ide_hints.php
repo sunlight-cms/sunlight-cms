@@ -64,8 +64,6 @@ const _notpublicsite = 0;
 const _comments = 1;
 /** Article rate lockout for single IP */
 const _artrateexpire = 604800;
-/** Enable RSS generation 1/0 */
-const _rss = 1;
 /** Enable private messaging 1/0 */
 const _messages = 1;
 /** Number of private messages per page */
@@ -88,8 +86,6 @@ const _registration_grouplist = 0;
 const _favicon = 0;
 /** Number of latest answers to show after list of forum topics */
 const _extratopicslimit = 12;
-/** Maximum number of RSS items */
-const _rsslimit = 30;
 /** Number of shoutbox posts to keep */
 const _sboxmemory = 20;
 /** Article rate mode (0 = disabled, 1 = percentages, 2 = marks) */

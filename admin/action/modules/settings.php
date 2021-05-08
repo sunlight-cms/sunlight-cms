@@ -141,7 +141,6 @@ $editable_settings = [
         'items' => [
             ['name' => 'comments'],
             ['name' => 'search'],
-            ['name' => 'rss'],
             ['name' => 'captcha'],
             ['name' => 'bbcode'],
             ['name' => 'smileys'],
@@ -156,7 +155,6 @@ $editable_settings = [
             ['name' => 'articlesperpage', 'min_value' => 1],
             ['name' => 'topicsperpage', 'min_value' => 1],
             ['name' => 'extratopicslimit', 'min_value' => 1],
-            ['name' => 'rsslimit', 'min_value' => 1],
             ['name' => 'sboxmemory', 'min_value' => 1],
         ],
     ],

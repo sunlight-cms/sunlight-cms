@@ -256,32 +256,6 @@ abstract class Router
     }
 
     /**
-     * Sestavit adresu RSS zdroje
-     *
-     * $type    Popis               $id
-     *
-     * 1        komentare sekce     ID sekce
-     * 2        komentare článku    ID článku
-     * 3        prispevky knihy     ID knihy
-     * 4        nejnovejsi články   ID kategorie / -1
-     * 5        nejnovějsi témata   ID fóra
-     * 6        nejnovějsi odpovědi ID příspevku (tématu) ve foru
-     * 7        nejnovejsi koment.  -1
-     *
-     * @param int  $id     id polozky
-     * @param int  $type   typ
-     * @return string
-     */
-    static function rss(int $id, int $type): string
-    {
-        if (_rss) {
-            return UrlHelper::appendParams(self::generate('system/script/rss.php'), 'tp=' . $type . '&id=' . $id);
-        } else {
-            return '';
-        }
-    }
-
-    /**
      * Sestaveni kodu odkazu na uzivatele
      *
      * Mozne klice v $options

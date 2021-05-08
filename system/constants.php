@@ -45,56 +45,6 @@ define('_user_activation_table', _dbprefix . 'user_activation');
 define('_user_group_table', _dbprefix . 'user_group');
 
 
-// RSS feed types
-
-/**
- * RSS feed for section comments
- *
- * Identifier: page ID (section)
- */
-const _rss_section_comments = 1;
-
-/**
- * RSS feed for article comments
- *
- * Identifier: article ID
- */
-const _rss_article_comments = 2;
-
-/**
- * RSS feed for book posts
- *
- * Identifier: page ID (book)
- */
-const _rss_book_posts = 3;
-
-/**
- * RSS feed for latest articles
- *
- * Identifier: page ID (category) or -1 (all)
- */
-const _rss_latest_articles = 4;
-
-/**
- * RSS feed for latest topics
- *
- * Identifier: page ID (forum)
- */
-const _rss_latest_topics = 5;
-
-/**
- * RSS feed for latest answers in a topic
- *
- * Identifier: post ID (topic)
- */
-const _rss_latest_topic_answers = 6;
-
-/**
- * RSS feed for latest comments (global)
- */
-const _rss_latest_comments = 7;
-
-
 // IP log entry types
 
 /**

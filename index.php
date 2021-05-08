@@ -74,7 +74,6 @@ $_index = [
     'heading_enabled' => true, // vykreslit nadpis 1/0
     'output' => '', // obsah
     'backlink' => null, // url zpetneho odkazu
-    'rsslink' => null, // url rss zdroje
 
     // drobecky spadajici POD aktualni stranku
     // format je: array(array('title' => 'titulek', 'url' => 'url'), ...)
