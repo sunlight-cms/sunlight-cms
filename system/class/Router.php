@@ -62,15 +62,7 @@ abstract class Router
         if ($realFilePath !== false && substr($realFilePath, 0, $realRootPathLength) === $realRootPath) {
             $path = str_replace('\\', '/', substr($realFilePath, $realRootPathLength));
         } else {
-            if (_debug) {
-                if ($realFilePath === false) {
-                    throw new \InvalidArgumentException(sprintf('File "%s" does not exist or is not accessible', $filePath));
-                } else {
-                    throw new \InvalidArgumentException(sprintf('File "%s" is outside of the root ("%s")', $realFilePath, $realRootPath));
-                }
-            }
-
-            $path = '';
+            return '#';
         }
 
         return self::generate($path, $absolute) . $params;
