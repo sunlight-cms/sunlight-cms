@@ -503,23 +503,23 @@ ul.list-info a {
 .posts-form {
     padding-bottom: 10px;
 }
-.posts-form-buttons > span {
+.posts-form-controls > span {
     margin-left: 10px;
 }
-.posts-form-buttons > span:first-child {
+.posts-form-controls > span:first-child {
     margin-left: 0;
 }
-.posts-form-buttons a.bbcode-button {
+.posts-form-controls a.bbcode-button {
     background: url("images/bbcode/button-body.png") left top no-repeat;
     display: inline-block;
     height: 16px;
     padding: 3px 4px;
     width: 16px;
 }
-.posts-form-buttons a.bbcode-button img {
+.posts-form-controls a.bbcode-button img {
     vertical-align: top;
 }
-.posts-form-buttons img {
+.posts-form-controls img {
     vertical-align: middle;
 }
 

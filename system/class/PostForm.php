@@ -39,7 +39,7 @@ abstract class PostForm
         Extend::call('posts.form_controls', ['output' => &$output]);
 
         if ($output !== '') {
-            $output = "<span class='posts-form-buttons'>" . $output . "</span>";
+            $output = "<span class='posts-form-controls'>" . $output . "</span>";
         }
 
         return $output;
