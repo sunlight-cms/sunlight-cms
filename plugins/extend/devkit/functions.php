@@ -6,11 +6,7 @@ use Kuria\Debug\Dumper;
 if (!function_exists('dump')) {
     function dump($value, $maxLevel = Dumper::DEFAULT_MAX_LEVEL, $maxStringLen = Dumper::DEFAULT_MAX_STRING_LENGTH)
     {
-        if (PHP_VERSION_ID >= 50306) {
-            $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1);
-        } else {
-            $trace = debug_backtrace(false);
-        }
+        $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1);
 
         if (isset($trace[0]['file'], $trace[0]['line'])) {
             $file = $trace[0]['file'];

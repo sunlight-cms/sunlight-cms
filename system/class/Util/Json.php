@@ -37,7 +37,7 @@ abstract class Json
         $json = json_encode($data, $options);
 
         if ($json === false) {
-            throw new \RuntimeException(self::getErrorMessage());
+            throw new \RuntimeException(json_last_error_msg());
         }
 
         return $json;
@@ -98,66 +98,18 @@ abstract class Json
      */
     static function decode(string $json, bool $assoc = true, bool $bigIntAsString = false)
     {
-        if (!$bigIntAsString || !defined('JSON_BIGINT_AS_STRING')) {
-            $data = json_decode($json, $assoc);
-        } else {
-            $data = json_decode($json, $assoc, 512, JSON_BIGINT_AS_STRING);
+        $flags = 0;
+
+        if ($bigIntAsString) {
+            $flags |= JSON_BIGINT_AS_STRING;
         }
 
-        if (($errorCode = json_last_error()) !== (JSON_ERROR_NONE)) {
-            throw new \RuntimeException(self::getErrorMessage($errorCode));
+        $data = json_decode($json, $assoc, 512, $flags);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new \RuntimeException(json_last_error_msg());
         }
 
         return $data;
-    }
-
-    /**
-     * Get error message for the given code
-     *
-     * @param int|null $errorCode if no code is given, json_last_error() is called automatically
-     * @return string
-     */
-    static function getErrorMessage(?int $errorCode = null): string
-    {
-        if ($errorCode === null) {
-            $errorCode = json_last_error();
-        }
-
-        $errorCodes = [
-            JSON_ERROR_NONE => 'No error has occurred',
-            JSON_ERROR_DEPTH => 'The maximum stack depth has been exceeded',
-            JSON_ERROR_STATE_MISMATCH => 'Invalid or malformed JSON',
-            JSON_ERROR_CTRL_CHAR => 'Control character error, possibly incorrectly encoded',
-            JSON_ERROR_SYNTAX => 'Syntax error',
-        ];
-
-        if (defined('JSON_ERROR_UTF8')) {
-            $errorCodes[JSON_ERROR_UTF8] = 'Malformed UTF-8 characters, possibly incorrectly encoded';
-        }
-        if (defined('JSON_ERROR_RECURSION')) {
-            $errorCodes[JSON_ERROR_RECURSION] = 'One or more recursive references in the value to be encoded';
-        }
-        if (defined('JSON_ERROR_INF_OR_NAN')) {
-            $errorCodes[JSON_ERROR_INF_OR_NAN] = 'One or more NAN or INF values in the value to be encoded ';
-        }
-        if (defined('JSON_ERROR_UNSUPPORTED_TYPE')) {
-            $errorCodes[JSON_ERROR_UNSUPPORTED_TYPE] = 'A value of a type that cannot be encoded was given';
-        }
-        if (defined('JSON_ERROR_INVALID_PROPERTY_NAME')) {
-            $errorCodes[JSON_ERROR_INVALID_PROPERTY_NAME] = 'A property name that cannot be encoded was given';
-        }
-        if (defined('JSON_ERROR_UTF16')) {
-            $errorCodes[JSON_ERROR_UTF16] = 'Malformed UTF-16 characters, possibly incorrectly encoded';
-        }
-
-        if (isset($errorCodes[$errorCode])) {
-            return $errorCodes[$errorCode];
-        }
-
-        if (PHP_VERSION_ID >= 50500) {
-            return json_last_error_msg();
-        }
-
-        return sprintf('Unknown error (%s)', $errorCode);
     }
 }
