@@ -142,18 +142,18 @@ class SystemChecker
      */
     static function generateHtaccess(): string
     {
-        $baseUrl = Url::base();
+        $basePath = preg_quote(Url::base()->path);
 
         return <<<HTACCESS
 RewriteEngine On
 
-RewriteCond %{REQUEST_URI} ^{$baseUrl->path}/m/([0-9a-zA-Z\.\-_]+)$ [NC]
-RewriteRule .* {$baseUrl->path}/index.php?m=%1 [L,QSA]
+RewriteCond %{REQUEST_URI} ^{$basePath}/m/([0-9a-zA-Z\.\-_]+)$ [NC]
+RewriteRule .* {$basePath}/index.php?m=%1 [L,QSA]
 
-RewriteCond %{REQUEST_URI} ^{$baseUrl->path}/([0-9a-zA-Z\.\-_/]+)$ [NC]
+RewriteCond %{REQUEST_URI} ^{$basePath}/([0-9a-zA-Z\.\-_/]+)$ [NC]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule .* {$baseUrl->path}/index.php?_rwp=%1 [L,QSA]
+RewriteRule .* {$basePath}/index.php?_rwp=%1 [L,QSA]
 HTACCESS;
     }
 }
