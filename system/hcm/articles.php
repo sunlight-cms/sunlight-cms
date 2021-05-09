@@ -5,8 +5,6 @@ use Sunlight\Database\Database as DB;
 use Sunlight\User;
 use Sunlight\Util\Arr;
 
-defined('_root') or exit;
-
 return function ($typ = 'new', $pocet = null, $perex = 'perex', $info = true, $kategorie = null) {
     // priprava
     $result = "";

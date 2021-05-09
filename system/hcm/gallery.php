@@ -7,8 +7,6 @@ use Sunlight\Image\ImageTransformer;
 use Sunlight\Paginator;
 use Sunlight\Router;
 
-defined('_root') or exit;
-
 return function ($cesta = '', $rozmery = '', $strankovani = null, $lightbox = true) {
     global $_index;
 

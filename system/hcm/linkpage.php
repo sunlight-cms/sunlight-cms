@@ -3,8 +3,6 @@
 use Sunlight\Database\Database as DB;
 use Sunlight\Router;
 
-defined('_root') or exit;
-
 return function ($id = null, $text = null, $nove_okno = false) {
     $is_id = is_numeric($id);
     if ($is_id) {

@@ -8,8 +8,6 @@ use Sunlight\Util\Arr;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
 
-defined('_root') or exit;
-
 return function ($adresa = "", $predmet = null) {
     // priprava
     $result = "";

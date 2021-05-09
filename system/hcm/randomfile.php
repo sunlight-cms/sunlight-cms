@@ -7,8 +7,6 @@ use Sunlight\Image\ImageService;
 use Sunlight\Image\ImageTransformer;
 use Sunlight\Router;
 
-defined('_root') or exit;
-
 return function ($cesta = "", $typ = 'text', $pocet = 1, $rozmery_nahledu = null) {
     $result = "";
     $cesta = _root . $cesta;

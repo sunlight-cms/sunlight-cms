@@ -1,7 +1,5 @@
 <?php
 
-defined('_root') or exit;
-
 return function ($format = _time_format, $time = null) {
     if ($time === null) {
         $time = time();

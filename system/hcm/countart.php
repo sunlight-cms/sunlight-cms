@@ -4,8 +4,6 @@ use Sunlight\Article;
 use Sunlight\Database\Database as DB;
 use Sunlight\Util\Arr;
 
-defined('_root') or exit;
-
 return function ($kategorie = null) {
     if (!empty($kategorie)) {
         $kategorie = Arr::removeValue(explode('-', $kategorie), '');

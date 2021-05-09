@@ -3,8 +3,6 @@
 use Sunlight\Router;
 use Sunlight\Xsrf;
 
-defined('_root') or exit;
-
 return function () {
     if (_search) {
         return "<form action='" . _e(Router::module('search')) . "' method='get' class='searchform'>

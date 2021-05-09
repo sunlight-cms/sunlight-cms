@@ -9,8 +9,6 @@ use Sunlight\User;
 use Sunlight\Util\Arr;
 use Sunlight\Util\StringManipulator;
 
-defined('_root') or exit;
-
 return function ($limit = null, $stranky = "", $typ = null) {
     // priprava
     $result = "";

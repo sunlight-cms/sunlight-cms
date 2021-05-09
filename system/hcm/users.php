@@ -4,8 +4,6 @@ use Sunlight\Database\Database as DB;
 use Sunlight\Router;
 use Sunlight\User;
 
-defined('_root') or exit;
-
 return function ($razeni = 'new', $pocet = 5) {
     $pocet = abs((int) $pocet);
 

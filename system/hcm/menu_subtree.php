@@ -3,8 +3,6 @@
 use Sunlight\Hcm;
 use Sunlight\Template;
 
-defined('_root') or exit;
-
 return function ($id_stranky = null, $od = null, $do = null, $max_hloubka = null, $class = null) {
     Hcm::normalizeArgument($id_stranky, 'int');
     Hcm::normalizeArgument($od, 'int');

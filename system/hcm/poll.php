@@ -6,8 +6,6 @@ use Sunlight\IpLog;
 use Sunlight\Router;
 use Sunlight\Xsrf;
 
-defined('_root') or exit;
-
 return function ($id = null) {
     // nacteni promennych
     $id = (int) $id;

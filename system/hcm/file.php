@@ -1,7 +1,5 @@
 <?php
 
-defined('_root') or exit;
-
 return function ($soubor = '') {
     $soubor = _root . $soubor;
 
