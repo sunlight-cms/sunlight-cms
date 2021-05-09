@@ -44,7 +44,7 @@ abstract class Regexp
 
         // match the subject
         while (
-            (-1 === $limit || $count < $limit)
+            ($limit === -1 || $count < $limit)
             && ($result = preg_match($pattern, $subject, $matches, PREG_OFFSET_CAPTURE, $offset)) !== 0
         ) {
             // evaluate the result

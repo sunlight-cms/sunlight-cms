@@ -323,7 +323,7 @@ abstract class Core
         self::$classLoader->setDebug(_debug);
 
         // error handler
-        self::$errorHandler->setDebug(_debug || 'cli' === PHP_SAPI);
+        self::$errorHandler->setDebug(_debug || PHP_SAPI === 'cli');
 
         // cache
         if (self::$cache === null) {

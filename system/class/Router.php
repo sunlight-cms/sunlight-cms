@@ -164,7 +164,7 @@ abstract class Router
                 ];
             case _post_forum_topic:
             case _post_pm:
-                if (-1 == $post['xhome']) {
+                if ($post['xhome'] == -1) {
                     $topicId = $post[$post['type'] == _post_pm ? 'home' : 'id'];
                 } else {
                     $topicId = $post['xhome'];
@@ -177,7 +177,7 @@ abstract class Router
 
                 return [
                     $url,
-                    (-1 == $post['xhome'])
+                    ($post['xhome'] == -1)
                         ? $post['subject']
                         : $post['xhome_subject']
                 ,

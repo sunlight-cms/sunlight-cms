@@ -185,7 +185,7 @@ var Sunlight = (function ($) {
             var area = form[areaName];
             var container = $(form).children('p.post-form-preview');
 
-            if (1 !== container.length) {
+            if (container.length !== 1) {
                 // cara
                 var hr = document.createElement('div');
                 hr.className = 'hr';

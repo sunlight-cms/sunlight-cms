@@ -263,7 +263,7 @@ abstract class Form
         ]);
 
         if ($output === '') {
-            if (-1 === $timestamp) {
+            if ($timestamp === -1) {
                 $timestamp = time();
             }
             if ($timestamp !== null) {

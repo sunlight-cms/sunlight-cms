@@ -78,7 +78,7 @@ abstract class Environment
         $value = ini_get($opt);
 
         // check value
-        if (!$value || -1 == $value) {
+        if (!$value || $value == -1) {
             // no limit?
             return null;
         }

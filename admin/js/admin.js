@@ -48,7 +48,7 @@ Sunlight.admin = (function ($) {
             if (
                 !e.isDefaultPrevented()
                 && !e.target.target
-                && (0 === usedSubmitButton.length || !usedSubmitButton.attr('formtarget'))
+                && (usedSubmitButton.length === 0 || !usedSubmitButton.attr('formtarget'))
                 && !$(e.target).hasClass('no-busy-overlay')
             ) {
                 self.showBusyOverlay(true, 1000);
@@ -227,7 +227,7 @@ Sunlight.admin = (function ($) {
          */
         fmanMoveSelected: function () {
             var newdir = prompt(SunlightVars.labels.fmanMovePrompt + ":", '');
-            if ('' !== newdir && null !== null) {
+            if (newdir !== '' && newdir !== null) {
                 document.filelist.action.value = 'move';
                 document.filelist.param.value = newdir;
                 document.filelist.submit();
@@ -391,7 +391,7 @@ Sunlight.admin = (function ($) {
                 if (
                     null === currentOrd
                     || !options.stopperSelector
-                    || 0 !== $(this).parents(options.stopperSelector).length
+                    || $(this).parents(options.stopperSelector).length !== 0
                 ) {
                     if (null === currentOrd) {
                         this.value = currentOrd = options.start;

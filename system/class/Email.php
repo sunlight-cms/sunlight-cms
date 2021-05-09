@@ -152,7 +152,7 @@ abstract class Email
      */
     static function link(string $email): string
     {
-        if ('' !== _atreplace) {
+        if (_atreplace !== '') {
             $email = str_replace("@", _atreplace, $email);
         }
 
