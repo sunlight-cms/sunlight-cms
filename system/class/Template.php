@@ -87,9 +87,8 @@ abstract class Template
         }
 
         // titulek
-        $title = null;
-        Extend::call('tpl.title', ['title' => &$title, 'head' => true]);
-        if (!isset($title)) {
+        $title = Extend::buffer('tpl.title', ['head' => true]);
+        if ($title === '') {
             if (_titletype == 1) {
                 $title = _title . ' ' . _titleseparator . ' ' . $_index['title'];
             } else {
@@ -114,7 +113,7 @@ abstract class Template
 
         if (_favicon) {
             echo '
-<link rel="shortcut icon" href="favicon.ico?' . _cacheid . '">';
+<link rel="shortcut icon" href="' . _e(Router::file('favicon.ico') . '?' . _cacheid) . '">';
         }
 
         echo '
@@ -202,39 +201,15 @@ abstract class Template
     /**
      * Vykreslit obsah
      *
-     * @param bool $heading  vykreslit nadpis 1/0 {@see Template::heading()}
-     * @param bool $backlink vykreslit zpetny odkaz 1/0 {@see Template::backlink()}
      * @return string
      */
-    static function content(bool $heading = true, bool $backlink = true): string
+    static function content(): string
     {
         global $_index;
 
-        // extend
-        $output = Extend::buffer('tpl.content', [
-            'heading' => &$heading,
-            'backlink' => &$backlink,
-        ]);
+        Extend::call('tpl.content', ['content' => &$_index['output']]);
 
-        // vychozi implementace?
-        if ($output === '') {
-            // nadpis
-            if ($heading) {
-                $output .= self::heading();
-            }
-
-            // zpetny odkaz
-            if ($backlink) {
-                $output .= self::backlink();
-            }
-
-            // obsah
-            $output .= Extend::buffer('tpl.content.before');
-            $output .= $_index['output'];
-            $output .= Extend::buffer('tpl.content.after');
-        }
-
-        return $output;
+        return $_index['output'];
     }
 
     /**
@@ -249,12 +224,12 @@ abstract class Template
         $output = '';
 
         if ($_index['heading_enabled']) {
-            $heading = $_index[($_index['heading'] !== null) ? 'heading' : 'title'];
+            $heading = $_index['heading'] ?? $_index['title'];
 
             // extend
-            $output = Extend::buffer('tpl.heading', ['heading' => $heading]);
+            $output = Extend::buffer('tpl.heading', ['heading' => &$heading]);
 
-            // vychozi implementace?
+            // vychozi implementace
             if ($output === '') {
                 $output = "<h1>{$heading}</h1>\n";
             }
@@ -270,12 +245,14 @@ abstract class Template
      */
     static function backlink(): string
     {
-        // extend
-        $output = Extend::buffer('tpl.backlink');
+        global $_index;
 
-        // vychozi implementace?
-        if ($output === '' && $GLOBALS['_index']['backlink'] !== null) {
-            $output = '<div class="backlink"><a href="' . _e($GLOBALS['_index']['backlink']) . '">&lt; ' . _lang('global.return') . "</a></div>\n";
+        // extend
+        $output = Extend::buffer('tpl.backlink', ['backlink' => &$_index['backlink']]);
+
+        // vychozi implementace
+        if ($output === '' && $_index['backlink'] !== null) {
+            $output = '<div class="backlink"><a href="' . _e($_index['backlink']) . '">&lt; ' . _lang('global.return') . "</a></div>\n";
         }
 
         return $output;
@@ -384,7 +361,7 @@ abstract class Template
         [$activeId] = PageManager::getActive();
 
         // pouziti aktivni stranky
-        if (-1 == $options['page_id']) {
+        if ($options['page_id'] == -1) {
             if ($activeId === null) {
                 return '';
             }
@@ -499,14 +476,9 @@ abstract class Template
      */
     static function title(): string
     {
-        // overload pluginem
-        $title = null;
-        Extend::call('tpl.title', ['title' => &$title, 'head' => false]);
-        if (!isset($title)) {
-            $title = $GLOBALS['_index']['title'];
-        }
+        $title = Extend::buffer('tpl.title', ['head' => false]);
 
-        return $title;
+        return $title !== '' ? $title : $GLOBALS['_index']['title'];
     }
 
     /**

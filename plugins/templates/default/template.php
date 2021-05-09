@@ -19,6 +19,8 @@ defined('_root') or exit
 
     <div id="page">
         <div id="content">
+            <?= Template::heading() ?>
+            <?= Template::backlink() ?>
             <?= Template::content() ?>
 
             <div class="cleaner"></div>

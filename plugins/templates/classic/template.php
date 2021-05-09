@@ -22,9 +22,13 @@ defined('_root') or exit
         <?= Template::boxes('left') ?>
     </div>
 
-    <div id="colTwo"><div class="bg2">
-        <?= Template::content() ?>
-    </div></div>
+    <div id="colTwo">
+        <div class="bg2">
+            <?= Template::heading() ?>
+            <?= Template::backlink() ?>
+            <?= Template::content() ?>
+        </div>
+    </div>
 </div>
 
 <div id="footer">
