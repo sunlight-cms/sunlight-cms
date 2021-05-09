@@ -193,7 +193,7 @@ class Backup
      * @param callable|null $filter                callback(data_path): bool
      * @param bool          $addRootFileToFileList automatically add root files to the file list 1/0
      */
-    function addPath(string $path, ?callable $filter = null, bool $addRootFileToFileList = true)
+    function addPath(string $path, ?callable $filter = null, bool $addRootFileToFileList = true): void
     {
         $realPath = _root . $path;
 
@@ -335,6 +335,8 @@ class Backup
         if ($this->hasDatabaseDump() && ($stat = $this->zip->statName(self::DB_DUMP_PATH))) {
             return $stat['size'];
         }
+
+        return null;
     }
 
     /**
@@ -467,9 +469,8 @@ class Backup
     /**
      * @param array      $metaData
      * @param array|null $errors
-     * @return bool
      */
-    private function validateMetaData(array &$metaData, ?array &$errors = null): bool
+    private function validateMetaData(array &$metaData, ?array &$errors = null): void
     {
         $optionSet = new OptionSet([
             'system_version' => ['type' => 'string', 'required' => true, 'normalizer' => function ($value) {
@@ -487,7 +488,7 @@ class Backup
             'directories_to_purge' => ['type' => 'array', 'default' => []],
         ]);
 
-        return $optionSet->process($metaData, null, $errors);
+        $optionSet->process($metaData, null, $errors);
     }
 
     private function setMetaData(): void

@@ -77,13 +77,11 @@ class PhpTemplate
         if (array_key_exists($name, $vars)) {
             // provided value
             $php = var_export($vars[$name], true);
-        } else {
+        } elseif ($default !== null) {
             // no value
-            if ($default !== null) {
-                $php = $this->compileDefault($default);
-            } else {
-                $php = "''";
-            }
+            $php = $this->compileDefault($default);
+        } else {
+            $php = "''";
         }
 
         return $php;
@@ -105,15 +103,19 @@ class PhpTemplate
         ) {
             // keywords, numbers
             return $default;
-        } elseif (strncmp($default, 'array(', 6) === 0) {
+        }
+
+        if (strncmp($default, 'array(', 6) === 0) {
             // arrays
             return str_replace("\\'", "'", $default);
-        } elseif (preg_match('{"(.+)"$}AD', $default, $match)) {
+        }
+
+        if (preg_match('{"(.+)"$}AD', $default, $match)) {
             // quoted string
             return var_export($match[1], true);
-        } else {
-            // everything else is a string
-            return var_export($default, true);
         }
+
+        // everything else is a string
+        return var_export($default, true);
     }
 }

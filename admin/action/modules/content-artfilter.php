@@ -57,15 +57,11 @@ if (isset($_POST['category'])) {
     $new_resetread = Form::loadCheckbox("new_resetread");
 
     // kontrola promennych
-    if ($new_category != -1) {
-        if (DB::count(_page_table, 'id=' . DB::val($new_category) . ' AND type=' . _page_category) === 0) {
-            $new_category = -1;
-        }
+    if ($new_category != -1 && DB::count(_page_table, 'id=' . DB::val($new_category) . ' AND type=' . _page_category) === 0) {
+        $new_category = -1;
     }
-    if ($new_author != -1) {
-        if (DB::count( _user_table, 'id=' . DB::val($new_author)) === 0) {
-            $new_author = -1;
-        }
+    if ($new_author != -1 && DB::count(_user_table, 'id=' . DB::val($new_author)) === 0) {
+        $new_author = -1;
     }
 
     // sestaveni casti sql dotazu - 'where'
@@ -143,7 +139,7 @@ if (isset($_POST['category'])) {
     if ($cond == "") {
         $cond = 1;
     } else {
-        $cond = mb_substr($cond, 0, mb_strlen($cond) - 5);
+        $cond = mb_substr($cond, 0, -5);
     }
 
     // vyhledani clanku

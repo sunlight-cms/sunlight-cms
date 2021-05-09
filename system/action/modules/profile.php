@@ -42,7 +42,7 @@ if ($query !== false) {
         if ($arts != 0) {
 
             // zjisteni prumerneho hodnoceni
-            $avgrate = DB::result(DB::query("SELECT ROUND(SUM(ratesum)/SUM(ratenum)) FROM " . _article_table . " WHERE rateon=1 AND ratenum!=0 AND confirmed=1 AND author=" . $query['id']), 0);
+            $avgrate = DB::result(DB::query("SELECT ROUND(SUM(ratesum)/SUM(ratenum)) FROM " . _article_table . " WHERE rateon=1 AND ratenum!=0 AND confirmed=1 AND author=" . $query['id']));
             if ($avgrate === null) {
                 $avgrate = _lang('article.rate.nodata');
             } else {

@@ -21,13 +21,15 @@ abstract class PluginOptionNormalizer
     /**
      * @param string|null $path
      * @param array       $context
-     * @return string
+     * @return string|null
      */
-    static function normalizePath(?string $path, array $context): string
+    static function normalizePath(?string $path, array $context): ?string
     {
         if ($path !== null) {
             return Filesystem::normalizeWithBasePath($context['plugin']['dir'], $path);
         }
+
+        return null;
     }
 
     /**
@@ -54,13 +56,15 @@ abstract class PluginOptionNormalizer
     /**
      * @param string|null $path
      * @param array       $context
-     * @return string
+     * @return string|null
      */
-    static function normalizeWebPath(?string $path, array $context): string
+    static function normalizeWebPath(?string $path, array $context): ?string
     {
         if ($path !== null) {
             return $context['plugin']['web_path'] . '/' . $path;
         }
+
+        return null;
     }
 
     /**

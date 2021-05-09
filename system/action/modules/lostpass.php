@@ -1,7 +1,6 @@
 <?php
 
 use Sunlight\Captcha;
-use Sunlight\Core;
 use Sunlight\Database\Database as DB;
 use Sunlight\Email;
 use Sunlight\GenericTemplates;

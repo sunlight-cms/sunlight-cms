@@ -120,16 +120,14 @@ if (_debug) {
     $messages[] = Message::warning(_lang('admin.index.debugwarn'));
 }
 
-if ($version_data !== null) {
-    if ($version_data['localAge'] >= 0) {
-        if ($version_data['localAge'] === 0) {
-            $messages[] = Message::ok(_lang('admin.index.version.latest'));
-        } else {
-            $messages[] = Message::warning(
-                _lang('admin.index.version.old', ['%version%' => $version_data['latestVersion'], '%link%' => $version_data['url']]),
-                true
-            );
-        }
+if (($version_data !== null) && $version_data['localAge'] >= 0) {
+    if ($version_data['localAge'] === 0) {
+        $messages[] = Message::ok(_lang('admin.index.version.latest'));
+    } else {
+        $messages[] = Message::warning(
+            _lang('admin.index.version.old', ['%version%' => $version_data['latestVersion'], '%link%' => $version_data['url']]),
+            true
+        );
     }
 }
 

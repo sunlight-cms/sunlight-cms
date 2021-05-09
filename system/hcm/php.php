@@ -8,8 +8,7 @@ return function ($kod = "", $ze_souboru = false) {
             // ze souboru
             $soubor = _root . $kod;
             if (file_exists($soubor)) {
-                $_params = func_get_args();
-                array_slice($_params, 2);
+                $_params = array_slice(func_get_args(), 2);
 
                 include $soubor;
             }

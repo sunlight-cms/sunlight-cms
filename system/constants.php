@@ -3,46 +3,46 @@
 // Database tables
 
 /** Article table name */
-define('_article_table', _dbprefix . 'article');
+const _article_table = _dbprefix . 'article';
 
 /** Box table name */
-define('_box_table', _dbprefix . 'box');
+const _box_table = _dbprefix . 'box';
 
 /** Comment table name */
-define('_comment_table', _dbprefix . 'comment');
+const _comment_table = _dbprefix . 'comment';
 
 /** Gallery image table name */
-define('_gallery_image_table', _dbprefix . 'gallery_image');
+const _gallery_image_table = _dbprefix . 'gallery_image';
 
 /** IP log table name */
-define('_iplog_table', _dbprefix . 'iplog');
+const _iplog_table = _dbprefix . 'iplog';
 
 /** Page table name */
-define('_page_table', _dbprefix . 'page');
+const _page_table = _dbprefix . 'page';
 
 /** Private messages table name */
-define('_pm_table', _dbprefix . 'pm');
+const _pm_table = _dbprefix . 'pm';
 
 /** Poll table name */
-define('_poll_table', _dbprefix . 'poll');
+const _poll_table = _dbprefix . 'poll';
 
 /** Redirection table name */
-define('_redirect_table', _dbprefix . 'redirect');
+const _redirect_table = _dbprefix . 'redirect';
 
 /** Setting table name */
-define('_setting_table', _dbprefix . 'setting');
+const _setting_table = _dbprefix . 'setting';
 
 /** Shoutbox table name */
-define('_shoutbox_table', _dbprefix . 'shoutbox');
+const _shoutbox_table = _dbprefix . 'shoutbox';
 
 /** User table name */
-define('_user_table', _dbprefix . 'user');
+const _user_table = _dbprefix . 'user';
 
 /** User activation table name */
-define('_user_activation_table', _dbprefix . 'user_activation');
+const _user_activation_table = _dbprefix . 'user_activation';
 
 /** User group table name */
-define('_user_group_table', _dbprefix . 'user_group');
+const _user_group_table = _dbprefix . 'user_group';
 
 
 // IP log entry types

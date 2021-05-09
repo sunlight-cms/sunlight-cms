@@ -235,6 +235,8 @@ class Url
 
             return $fullHost;
         }
+
+        return null;
     }
 
     /**

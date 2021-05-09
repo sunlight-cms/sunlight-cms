@@ -80,7 +80,7 @@ foreach ($boxes as $template_idt => $template_boxes) {
             <th class="box-action-cell"><?= _lang('global.action') ?></th>
         </tr>
         </thead>
-        <?php foreach ($boxes as $layout => $layout_boxes): ?>
+        <?php foreach ($boxes as $layout_boxes): ?>
             <tbody class="sortable" data-input-selector=".box-order-input" data-handle-selector="td.box-sortable-cell, .sortable-handle">
             <?php foreach ($layout_boxes as $box): ?>
                 <tr>

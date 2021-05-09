@@ -56,7 +56,7 @@ class Database
     /**
      * @return \mysqli|null
      */
-    static function getMysqli()
+    static function getMysqli(): ?\mysqli
     {
         return self::$mysqli;
     }
@@ -64,7 +64,7 @@ class Database
     /**
      * @param \mysqli $mysqli
      */
-    static function setMysqli(\mysqli $mysqli)
+    static function setMysqli(\mysqli $mysqli): void
     {
         self::$mysqli = $mysqli;
     }
@@ -167,7 +167,7 @@ class Database
     {
         $result = self::query('SELECT COUNT(*) FROM ' . self::escIdt($table) . ' WHERE ' . $where);
         if ($result instanceof \mysqli_result) {
-            $count = (int) self::result($result, 0);
+            $count = (int) self::result($result);
             self::free($result);
 
             return $count;
@@ -212,8 +212,7 @@ class Database
      */
     static function row(\mysqli_result $result)
     {
-        $row = $result->fetch_assoc();
-        return $row ?? false;
+        return $result->fetch_assoc() ?? false;
     }
 
     /**
@@ -249,8 +248,7 @@ class Database
      */
     static function rown(\mysqli_result $result)
     {
-        $row = $result->fetch_row();
-        return $row ?? false;
+        return $result->fetch_row() ?? false;
     }
 
     /**
@@ -266,9 +264,9 @@ class Database
 
         if ($row !== null && isset($row[$column])) {
             return $row[$column];
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**
@@ -435,11 +433,16 @@ class Database
             }
 
             return $out;
-        } elseif (is_string($value)) {
+        }
+
+        if (is_string($value)) {
             return '\'' . $value . '\'';
-        } elseif ($value === null) {
+        }
+
+        if ($value === null) {
             return 'NULL';
         }
+
         return $value;
     }
 
@@ -464,9 +467,9 @@ class Database
     {
         if ($value === null) {
             return 'IS NULL';
-        } else {
-            return '=' . self::val($value);
         }
+
+        return '=' . self::val($value);
     }
 
     /**
@@ -479,9 +482,9 @@ class Database
     {
         if ($value === null) {
             return 'IS NOT NULL';
-        } else {
-            return '!=' . self::val($value);
         }
+
+        return '!=' . self::val($value);
     }
 
     /**

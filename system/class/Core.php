@@ -424,7 +424,7 @@ abstract class Core
     private static function checkSystemState(): void
     {
         // check database version
-        if (!defined('_dbversion') || Core::VERSION !== _dbversion) {
+        if (!defined('_dbversion') || self::VERSION !== _dbversion) {
             self::systemFailure(
                 'Verze nainstalované databáze není kompatibilní s verzí systému.',
                 'Database version is not compatible with the current system version.'
@@ -674,7 +674,7 @@ abstract class Core
         if ($authorized) {
             // increase level for super users
             if ($userData['levelshift']) {
-                $groupData['level'] += 1;
+                ++$groupData['level'];
             }
 
             // record activity time (max once per 30 seconds)
@@ -853,7 +853,6 @@ abstract class Core
         if ($cronLockFileHandle !== null) {
             flock($cronLockFileHandle, LOCK_UN);
             fclose($cronLockFileHandle);
-            $cronLockFileHandle = null;
         }
     }
 
@@ -902,9 +901,9 @@ abstract class Core
         $result = DB::queryRow('SELECT val FROM ' . _setting_table . ' WHERE var=' . DB::val($name));
         if ($result !== false) {
             return $result['val'];
-        } else {
-            return $default;
         }
+
+        return $default;
     }
 
     /**
@@ -951,7 +950,7 @@ abstract class Core
      */
     static function updateSetting(string $name, string $newValue): void
     {
-        DB::update(_setting_table, 'var=' . DB::val($name), ['val' => (string) $newValue]);
+        DB::update(_setting_table, 'var=' . DB::val($name), ['val' => $newValue]);
     }
 
     /**
@@ -1034,7 +1033,7 @@ abstract class Core
      * @param bool $showPrevious
      * @return string
      */
-    static function renderException($e, bool $showTrace = true, bool $showPrevious = true): string
+    static function renderException(\Throwable $e, bool $showTrace = true, bool $showPrevious = true): string
     {
         return '<pre class="exception">' . _e(Exception::render($e, $showTrace, $showPrevious)) . "</pre>\n";
     }

@@ -21,8 +21,6 @@ class TreeReader
     private $levelColumn;
     /** @var string */
     private $depthColumn;
-    /** @var TreeManager|null */
-    private $manager;
 
     /**
      * @param string      $table         nazev tabulky (vcetne pripadneho prefixu a bez uvozovek)
@@ -101,10 +99,8 @@ class TreeReader
                 reset($tree);
                 unset($tree[key($tree)]);
             }
-        } else {
-            if ($rootNodeId !== null && !empty($tree)) {
-                $tree = $tree[0][$this->childrenIndex];
-            }
+        } elseif ($rootNodeId !== null && !empty($tree)) {
+            $tree = $tree[0][$this->childrenIndex];
         }
 
         return $tree;
@@ -262,11 +258,7 @@ class TreeReader
     function loadTree(TreeReaderOptions $options): array
     {
         // zjistit hloubku stromu
-        if ($options->nodeDepth !== null) {
-            $nodeDepth = $options->nodeDepth;
-        } else {
-            $nodeDepth = $this->getDepth($options->nodeId);
-        }
+        $nodeDepth = $options->nodeDepth ?? $this->getDepth($options->nodeId);
 
         // pripravit sloupce
         $columns = array_merge($this->getSystemColumns(), $options->columns);
@@ -342,9 +334,9 @@ class TreeReader
                 if ($a[$levelColumn] == $b[$levelColumn]) {
                     if ($options->sortBy !== null) {
                         return strnatcmp($a[$options->sortBy], $b[$options->sortBy]) * ($options->sortAsc ? 1 : -1);
-                    } else {
-                        return 0;
                     }
+
+                    return 0;
                 }
 
                 return -1;
@@ -390,18 +382,18 @@ class TreeReader
                         if (!isset($nodeMap[$nodeIndexToIdMap[$i]])) {
                             continue;
                         }
-                        if (
-                            $nodeMap[$nodeIndexToIdMap[$i]][$this->parentColumn] == $invalidNodeId
-                            && !isset($invalidNodes[$nodeIndexToIdMap[$i]])
-                            && $options->filter->acceptInvalidNodeWithValidChild(
-                                $nodeMap[$invalidNodeId],
-                                $nodeMap[$nodeIndexToIdMap[$i]],
-                                $this
-                            )
-                        ) {
+                        if ($nodeMap[$nodeIndexToIdMap[$i]][$this->parentColumn] == $invalidNodeId
+                        && !isset($invalidNodes[$nodeIndexToIdMap[$i]])
+                        && $options->filter->acceptInvalidNodeWithValidChild(
+                            $nodeMap[$invalidNodeId],
+                            $nodeMap[$nodeIndexToIdMap[$i]],
+                            $this
+                        )) {
                             $foundValidChild = true;
                             break;
-                        } elseif ($nodeMap[$nodeIndexToIdMap[$i]][$this->levelColumn] > $childLevel) {
+                        }
+
+                        if ($nodeMap[$nodeIndexToIdMap[$i]][$this->levelColumn] > $childLevel) {
                             break;
                         }
                     }
@@ -557,18 +549,18 @@ class TreeReader
                 0,
                 $this->getDepth(null),
             ];
-        } else {
-            // uzel
-            $data = DB::queryRow('SELECT ' . $this->levelColumn . ',' . $this->depthColumn . ' FROM `' . $this->table . '` WHERE ' . $this->idColumn . '=' . DB::val($nodeId));
-            if ($data === false) {
-                throw new \RuntimeException(sprintf('Node "%s" does not exist', $nodeId));
-            }
-
-            return [
-                $data[$this->levelColumn],
-                $data[$this->depthColumn],
-            ];
         }
+
+        // uzel
+        $data = DB::queryRow('SELECT ' . $this->levelColumn . ',' . $this->depthColumn . ' FROM `' . $this->table . '` WHERE ' . $this->idColumn . '=' . DB::val($nodeId));
+        if ($data === false) {
+            throw new \RuntimeException(sprintf('Node "%s" does not exist', $nodeId));
+        }
+
+        return [
+            $data[$this->levelColumn],
+            $data[$this->depthColumn],
+        ];
     }
 
     /**
@@ -581,14 +573,14 @@ class TreeReader
     {
         if ($nodeId === null) {
             return 0;
-        } else {
-            $nodeLevel = DB::queryRow('SELECT ' . $this->levelColumn . ' FROM `' . $this->table . '` WHERE ' . $this->idColumn . '=' . DB::val($nodeId));
-            if ($nodeLevel === false) {
-                throw new \RuntimeException(sprintf('Node "%s" does not exist', $nodeId));
-            }
-
-            return $nodeLevel[$this->levelColumn];
         }
+
+        $nodeLevel = DB::queryRow('SELECT ' . $this->levelColumn . ' FROM `' . $this->table . '` WHERE ' . $this->idColumn . '=' . DB::val($nodeId));
+        if ($nodeLevel === false) {
+            throw new \RuntimeException(sprintf('Node "%s" does not exist', $nodeId));
+        }
+
+        return $nodeLevel[$this->levelColumn];
     }
 
     /**
@@ -612,11 +604,6 @@ class TreeReader
             );
         }
 
-        if ($nodeDepth[$this->depthColumn] === null) {
-            // prazdna tabulka
-            return 0;
-        } else {
-            return $nodeDepth[$this->depthColumn];
-        }
+        return $nodeDepth[$this->depthColumn] ?? 0;
     }
 }

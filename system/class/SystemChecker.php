@@ -128,12 +128,9 @@ class SystemChecker
                     // delete the previously generated one
                     unlink($htaccessPath);
                 }
-            } else {
-                // the .htaccess file does not exist
-                if (_pretty_urls) {
-                    // generate it
-                    file_put_contents(_root . '.htaccess', $generatedHtaccess);
-                }
+            } elseif (_pretty_urls) {
+                // generate it
+                file_put_contents(_root . '.htaccess', $generatedHtaccess);
             }
         }
     }

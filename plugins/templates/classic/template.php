@@ -29,7 +29,7 @@ defined('_root') or exit
 
 <div id="footer">
     <ul>
-        <li><a href="http://www.freecsstemplates.org/" rel="nofollow">Free CSS Templates</a></li>
+        <li><a href="https://www.freecsstemplates.org/" rel="nofollow">Free CSS Templates</a></li>
         <?= Template::links() ?>
     </ul>
 </div>

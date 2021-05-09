@@ -112,12 +112,11 @@ if ($continue) {
         $email = trim(Request::post('email'));
         if (!Email::validate($email)) {
             $errors[] = _lang('user.msg.bademail');
-        } else {
-            if ($email != $query['email']) {
-                if (DB::count(_user_table, 'email=' . DB::val($email) . ' AND id!=' . DB::val($query['id'])) !== 0) {
-                    $errors[] = _lang('user.msg.emailexists');
-                }
-            }
+        } elseif (
+            $email != $query['email']
+            && DB::count(_user_table, 'email=' . DB::val($email) . ' AND id!=' . DB::val($query['id'])) !== 0
+        ) {
+            $errors[] = _lang('user.msg.emailexists');
         }
 
         // wysiwyg
@@ -213,22 +212,22 @@ if ($continue) {
                 $admin_redirect_to = 'index.php?p=users-edit&r=1&id=' . $username;
 
                 return;
-            } else {
-                // vytvoreni
-                $changeset += [
-                    'registertime' => time(),
-                    'activitytime' => time(),
-                ];
-                $id = DB::insert(_user_table, $changeset, true);
-                Extend::call('user.new', ['id' => $id, 'username' => $username, 'email' => $email]);
-                $admin_redirect_to = 'index.php?p=users-edit&r=2&id=' . $username;
-
-                return;
             }
 
-        } else {
-            $message = Message::renderList($errors, 'errors');
+            // vytvoreni
+            $changeset += [
+                'registertime' => time(),
+                'activitytime' => time(),
+            ];
+            $id = DB::insert(_user_table, $changeset, true);
+            Extend::call('user.new', ['id' => $id, 'username' => $username, 'email' => $email]);
+            $admin_redirect_to = 'index.php?p=users-edit&r=2&id=' . $username;
+
+            return;
+
         }
+
+        $message = Message::renderList($errors, 'errors');
 
     }
 

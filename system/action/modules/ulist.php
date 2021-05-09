@@ -59,7 +59,7 @@ if (Paginator::atTop()) {
     $output .= $paging['paging'];
 }
 if ($paging['count'] > 0) {
-    $userQuery = User::createQuery(null);
+    $userQuery = User::createQuery();
     $query = DB::query('SELECT ' . $userQuery['column_list'] . ' FROM ' . _user_table . ' u ' . $userQuery['joins'] . ' WHERE ' . $cond . ' ORDER BY ug.level DESC ' . $paging['sql_limit']);
 
     $output .= "<table class='widetable'>\n<tr><th>" . _lang('login.username') . "</th><th>" . _lang('global.group') . "</th></tr>\n";

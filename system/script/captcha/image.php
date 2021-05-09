@@ -3,7 +3,6 @@
 use Sunlight\Captcha\Text3dCaptcha;
 use Sunlight\Core;
 use Sunlight\Extend;
-use Sunlight\Image\Image;
 use Sunlight\Image\ImageFormat;
 use Sunlight\Image\ImageTransformer;
 use Sunlight\Util\Request;

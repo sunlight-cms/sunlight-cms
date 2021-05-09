@@ -9,7 +9,7 @@ use Sunlight\Database\SqlReader;
 abstract class PluginInstaller
 {
     /** @var bool|null */
-    private $installed = null;
+    private $installed;
 
     /**
      * Load installer for the given plugin
@@ -32,7 +32,7 @@ abstract class PluginInstaller
     function isInstalled(): bool
     {
         if ($this->installed === null) {
-            $this->installed = (bool) $this->verify();
+            $this->installed = $this->verify();
         }
 
         return $this->installed;
@@ -150,7 +150,7 @@ abstract class PluginInstaller
      * @param string|null $currentPrefix prefix that is used in the dump (null = do not replace)
      * @param string|null $newPrefix     new prefix (null = do not replace)
      */
-    protected function loadSqlDump(string $path, ?string $currentPrefix = 'sunlight_', ?string $newPrefix = _dbprefix)
+    protected function loadSqlDump(string $path, ?string $currentPrefix = 'sunlight_', ?string $newPrefix = _dbprefix): void
     {
         DatabaseLoader::load(
             SqlReader::fromFile($path),

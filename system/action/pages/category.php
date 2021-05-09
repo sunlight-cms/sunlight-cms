@@ -5,7 +5,6 @@ use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\Hcm;
 use Sunlight\Paginator;
-use Sunlight\Router;
 use Sunlight\User;
 
 defined('_root') or exit;

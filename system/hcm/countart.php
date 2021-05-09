@@ -15,5 +15,5 @@ return function ($kategorie = null) {
 
     [$joins, $cond] = Article::createFilter('art', $kategorie);
 
-    return DB::result(DB::query("SELECT COUNT(*) FROM " . _article_table . " AS art " . $joins . " WHERE " . $cond), 0);
+    return DB::result(DB::query("SELECT COUNT(*) FROM " . _article_table . " AS art " . $joins . " WHERE " . $cond));
 };

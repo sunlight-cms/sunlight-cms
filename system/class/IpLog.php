@@ -14,9 +14,8 @@ abstract class IpLog
      * @param int|null $expires doba expirace zaznamu v sekundach pro typ 8+
      * @return bool
      */
-    static function check(int $type, $var = null, $expires = null): bool
+    static function check(int $type, $var = null, ?int $expires = null): bool
     {
-        $type = (int) $type;
         if ($var !== null) {
             $var = (int) $var;
         }
@@ -47,10 +46,8 @@ abstract class IpLog
 
             case _iplog_failed_login_attempt:
                 $query = DB::queryRow($querybasic);
-                if ($query !== false) {
-                    if ($query['var'] >= _maxloginattempts) {
-                        $result = false;
-                    }
+                if ($query !== false && $query['var'] >= _maxloginattempts) {
+                    $result = false;
                 }
                 break;
 
@@ -73,10 +70,8 @@ abstract class IpLog
 
             case _iplog_failed_account_activation:
                 $query = DB::queryRow($querybasic);
-                if ($query !== false) {
-                    if ($query['var'] >= 5) {
-                        $result = false;
-                    }
+                if ($query !== false && $query['var'] >= 5) {
+                    $result = false;
                 }
                 break;
 
@@ -107,7 +102,6 @@ abstract class IpLog
      */
     static function update(int $type, $var = null): void
     {
-        $type = (int) $type;
         if ($var !== null) {
             $var = (int) $var;
         }

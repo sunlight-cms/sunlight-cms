@@ -186,9 +186,9 @@ if (isset($_POST['action'])) {
                     echo "<h1>" . _lang('global.done') . "</h1>\n<p>" . _lang('admin.other.cleanup.uninstall.done') . "</p>";
                     exit;
 
-                } else {
-                    $message = Message::warning(_lang('admin.other.cleanup.uninstall.badpass'));
                 }
+
+                $message = Message::warning(_lang('admin.other.cleanup.uninstall.badpass'));
             }
             break;
 

@@ -14,7 +14,7 @@ Core::init('../../../');
 /* ---  hlasovani  --- */
 
 // nacteni promennych
-if (isset($_POST['pid']) && isset($_POST['option']) && Xsrf::check()) {
+if (isset($_POST['pid'], $_POST['option']) && Xsrf::check()) {
     $pid = (int) Request::post('pid');
     $option = (int) Request::post('option');
 
@@ -24,7 +24,7 @@ if (isset($_POST['pid']) && isset($_POST['option']) && Xsrf::check()) {
         $answers = explode("#", $query['answers']);
         $votes = explode("-", $query['votes']);
         if (_priv_pollvote && $query['locked'] == 0 && IpLog::check(_iplog_poll_vote, $pid) && isset($votes[$option])) {
-            $votes[$option] += 1;
+            ++$votes[$option];
             $votes = implode("-", $votes);
             DB::update(_poll_table, 'id=' . $pid, ['votes' => $votes]);
             IpLog::update(_iplog_poll_vote, $pid);

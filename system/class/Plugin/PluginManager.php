@@ -140,9 +140,9 @@ class PluginManager
      *
      * @param string $class
      * @throws \OutOfBoundsException if the plugin does not exist
-     * @return Plugin|ExtendPlugin|TemplatePlugin|LanguagePlugin
+     * @return Plugin
      */
-    function getInstance(string $class)
+    function getInstance(string $class): Plugin
     {
         if (!$this->initialized) {
             $this->initialize();
@@ -150,15 +150,15 @@ class PluginManager
 
         if (isset($this->plugins[$class])) {
             return $this->plugins[$class];
-        } else {
-            throw new \OutOfBoundsException(sprintf('Plugin instance of class "%s/%s" does not exist', $class));
         }
+
+        throw new \OutOfBoundsException(sprintf('Plugin instance of class "%s" does not exist', $class));
     }
 
     /**
      * Get all plugin instances
      *
-     * @return Plugin[]|ExtendPlugin[]|TemplatePlugin[]|LanguagePlugin[]
+     * @return Plugin[]
      */
     function getInstances(): array
     {
@@ -203,9 +203,9 @@ class PluginManager
      * @param string $type
      * @param string $name
      * @throws \OutOfBoundsException if the plugin does not exist
-     * @return Plugin|ExtendPlugin|TemplatePlugin|LanguagePlugin
+     * @return Plugin
      */
-    function get(string $type, string $name)
+    function get(string $type, string $name): Plugin
     {
         if (!$this->initialized) {
             $this->initialize();
@@ -213,9 +213,9 @@ class PluginManager
 
         if (isset($this->pluginMap[$type][$name])) {
             return $this->pluginMap[$type][$name];
-        } else {
-            throw new \OutOfBoundsException(sprintf('Plugin "%s/%s" does not exist', $type, $name));
         }
+
+        throw new \OutOfBoundsException(sprintf('Plugin "%s/%s" does not exist', $type, $name));
     }
 
     /**
@@ -227,10 +227,7 @@ class PluginManager
      */
     function getTemplate(string $name): TemplatePlugin
     {
-        /** @var TemplatePlugin $plugin */
-        $plugin = $this->get(self::TEMPLATE, $name);
-
-        return $plugin;
+        return $this->get(self::TEMPLATE, $name);
     }
 
     /**
@@ -242,10 +239,7 @@ class PluginManager
      */
     function getExtend(string $name): ExtendPlugin
     {
-        /** @var ExtendPlugin $plugin */
-        $plugin = $this->get(self::EXTEND, $name);
-
-        return $plugin;
+        return $this->get(self::EXTEND, $name);
     }
 
     /**
@@ -257,10 +251,7 @@ class PluginManager
      */
     function getLanguage(string $name): LanguagePlugin
     {
-        /** @var LanguagePlugin $plugin */
-        $plugin = $this->get(self::LANGUAGE, $name);
-
-        return $plugin;
+        return $this->get(self::LANGUAGE, $name);
     }
 
     /**
@@ -282,9 +273,9 @@ class PluginManager
             }
 
             return $this->pluginMap[$type];
-        } else {
-            return $this->pluginMap;
         }
+
+        return $this->pluginMap;
     }
 
     /**
@@ -292,10 +283,7 @@ class PluginManager
      */
     function getAllLanguages(): array
     {
-        /** @var LanguagePlugin[] $languages */
-        $languages = $this->all(self::LANGUAGE);
-
-        return $languages;
+        return $this->all(self::LANGUAGE);
     }
 
     /**
@@ -303,10 +291,7 @@ class PluginManager
      */
     function getAllTemplates(): array
     {
-        /** @var TemplatePlugin[] $templates */
-        $templates = $this->all(self::TEMPLATE);
-
-        return $templates;
+        return $this->all(self::TEMPLATE);
     }
 
     /**
@@ -314,10 +299,7 @@ class PluginManager
      */
     function getAllExtends(): array
     {
-        /** @var ExtendPlugin[] $extends */
-        $extends = $this->all(self::EXTEND);
-
-        return $extends;
+        return $this->all(self::EXTEND);
     }
 
     /**
@@ -352,9 +334,9 @@ class PluginManager
 
         if (isset($this->inactivePlugins[$type][$name])) {
             return $this->inactivePlugins[$type][$name];
-        } else {
-            throw new \OutOfBoundsException(sprintf('Inactive plugin "%s/%s" does not exist', $type, $name));
         }
+
+        throw new \OutOfBoundsException(sprintf('Inactive plugin "%s/%s" does not exist', $type, $name));
     }
 
     /**
@@ -376,9 +358,9 @@ class PluginManager
             }
 
             return $this->inactivePlugins[$type];
-        } else {
-            return $this->inactivePlugins;
         }
+
+        return $this->inactivePlugins;
     }
 
     /**
@@ -401,12 +383,10 @@ class PluginManager
             $plugin = $this->pluginMap[$type][$name];
         } elseif (isset($this->inactivePlugins[$type][$name])) {
             $plugin = $this->inactivePlugins[$type][$name];
+        } elseif ($exceptionOnFailure) {
+            throw new \OutOfBoundsException(sprintf('Could not find plugin "%s/%s"', $type, $name));
         } else {
-            if ($exceptionOnFailure) {
-                throw new \OutOfBoundsException(sprintf('Could not find plugin "%s/%s"', $type, $name));
-            } else {
-                $plugin = null;
-            }
+            $plugin = null;
         }
 
         return $plugin;

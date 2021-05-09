@@ -26,7 +26,7 @@ abstract class PageMenu
         // sestavit mapu drobecku
         $trailMap = [];
         if ($activeId !== null) {
-            foreach ($flatPageTree as $pageId => $page) {
+            foreach ($flatPageTree as $page) {
                 if ($page['id'] == $activeId) {
                     $current = $page;
                     while ($current['node_parent'] !== null && isset($flatPageTree[$current['node_parent']])) {

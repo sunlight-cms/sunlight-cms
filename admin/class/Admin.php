@@ -119,9 +119,9 @@ abstract class Admin
 
         if (isset($admin_modules[$module])) {
             return (bool) $admin_modules[$module]['access'];
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -155,9 +155,9 @@ abstract class Admin
         }
         if (_priv_adminallart) {
             return " AND (" . $alias . "author=" . _user_id . " OR (SELECT level FROM " . _user_group_table . " WHERE id=(SELECT group_id FROM " . _user_table . " WHERE id=" . (($alias === '') ? "" . _article_table . "." : $alias) . "author))<" . _priv_level . ")";
-        } else {
-            return " AND " . $alias . "author=" . _user_id;
         }
+
+        return " AND " . $alias . "author=" . _user_id;
     }
 
     /**
@@ -486,13 +486,15 @@ abstract class Admin
             }
 
             return $output;
-        } elseif ($hexLen === 6) {
+        }
+
+        if ($hexLen === 6) {
             // plna verze
             return $value;
-        } else {
-            // neplatny pocet znaku
-            return $default;
         }
+
+        // neplatny pocet znaku
+        return $default;
     }
 
     /**
@@ -518,17 +520,15 @@ abstract class Admin
         if (_adminscheme_mode == 0) {
             // vzdy svetle
             return false;
-        } elseif (_adminscheme_mode == 1) {
+        }
+
+        if (_adminscheme_mode == 1) {
             // vzdy tmave
             return true;
-        } else {
-            // podle zapadu a vychodu slunce
-            $isday = DateTime::isDayTime();
-            if ($isday === false) {
-                return true;
-            }
-            return false;
         }
+
+        // podle zapadu a vychodu slunce
+        return !DateTime::isDayTime();
     }
 
     /**

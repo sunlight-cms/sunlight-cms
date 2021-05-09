@@ -67,15 +67,15 @@ abstract class Zip
             fclose($targetPath);
 
             return $bytesWritten == $stat['size'];
-        } else {
-            // extract small files by getting all the data at once
-            $data = $zip->getFromIndex($stat['index']);
-            if ($data === false) {
-                throw new \InvalidArgumentException(sprintf('Could not get data for "%s"', $stat['name']));
-            }
-
-            return file_put_contents($targetPath, $data) === $stat['size'];
         }
+
+        // extract small files by getting all the data at once
+        $data = $zip->getFromIndex($stat['index']);
+        if ($data === false) {
+            throw new \InvalidArgumentException(sprintf('Could not get data for "%s"', $stat['name']));
+        }
+
+        return file_put_contents($targetPath, $data) === $stat['size'];
     }
 
     /**

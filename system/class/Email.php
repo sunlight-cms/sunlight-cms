@@ -29,7 +29,7 @@ abstract class Email
             $headers['Content-Type'] = 'text/plain; charset=UTF-8';
         }
         if (!isset($definedHeaderMap['x-mailer'])) {
-            $headers['X-Mailer'] = sprintf('PHP/%s', phpversion());
+            $headers['X-Mailer'] = sprintf('PHP/%s', PHP_VERSION);
         }
 
         // udalost
@@ -71,7 +71,7 @@ abstract class Email
      * @param string      $sender   emailova adresa odesilatele
      * @param string|null $name     jmeno odesilatele
      */
-    static function defineSender(array &$headers, string $sender, ?string $name = null)
+    static function defineSender(array &$headers, string $sender, ?string $name = null): void
     {
         if (_mailerusefrom) {
             $headerName = 'From';
@@ -135,11 +135,9 @@ abstract class Email
                                         // character not valid in local part
                                         $isValid = false;
                                     }
-            if (!_debug && function_exists('checkdnsrr')) {
-                if ($isValid && !checkdnsrr($domain . '.', 'ANY')) {
-                    // no DNS record for the given domain
-                    $isValid = false;
-                }
+            if (!_debug && function_exists('checkdnsrr') && $isValid && !checkdnsrr($domain . '.', 'ANY')) {
+                // no DNS record for the given domain
+                $isValid = false;
             }
         }
 

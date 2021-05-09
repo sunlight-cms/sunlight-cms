@@ -312,11 +312,9 @@ abstract class Filesystem
         }
 
         // remove directory
-        if ($success && !$options['keep_dir']) {
-            if (!@rmdir($path)) {
-                $success = false;
-                $failedPath = $path;
-            }
+        if ($success && !$options['keep_dir'] && !@rmdir($path)) {
+            $success = false;
+            $failedPath = $path;
         }
 
         return $success;

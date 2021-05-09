@@ -59,7 +59,7 @@ return function ($cesta = '', $rozmery = '', $strankovani = null, $lightbox = tr
             if ($strankovat && $counter > $paging['last']) {
                 break;
             }
-            if (!$strankovat || ($strankovat && Paginator::isItemInRange($paging, $counter))) {
+            if (!$strankovat || Paginator::isItemInRange($paging, $counter)) {
                 $thumb = ImageService::getThumbnail('gallery', $cesta . $item, $resize_opts);
                 $result .= "<a href='" . _e(Router::file($cesta . $item)) . "' target='_blank'" . ($lightbox ? Extend::buffer('image.lightbox', ['group' => 'hcm_gal_' . Core::$hcmUid]) : '') . "><img src='" . _e(Router::file($thumb)) . "' alt='" . _e($item) . "'></a>\n";
             }

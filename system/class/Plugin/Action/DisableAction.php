@@ -18,12 +18,10 @@ class DisableAction extends PluginAction
 
     protected function execute(): ActionResult
     {
-        if ($this->plugin->canBeDisabled()) {
-            if (touch($this->plugin->getDirectory() . '/' . Plugin::DEACTIVATING_FILE)) {
-                return ActionResult::success(
-                    Message::ok(_lang('admin.plugins.action.disable.success', ['%plugin%' => $this->plugin->getOption('name')]))
-                );
-            }
+        if ($this->plugin->canBeDisabled() && touch($this->plugin->getDirectory() . '/' . Plugin::DEACTIVATING_FILE)) {
+            return ActionResult::success(
+                Message::ok(_lang('admin.plugins.action.disable.success', ['%plugin%' => $this->plugin->getOption('name')]))
+            );
         }
 
         return ActionResult::failure(

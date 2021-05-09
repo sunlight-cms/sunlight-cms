@@ -54,9 +54,9 @@ if (isset($_POST['save'])) {
                 $_index['redirect_to'] = Router::module('login', 'login_form_result=4', true);
 
                 return;
-            } else {
-                $errors[] = _lang('mod.settings.selfremove.denied');
             }
+
+            $errors[] = _lang('mod.settings.selfremove.denied');
         } else {
             $errors[] = _lang('mod.settings.selfremove.failed');
         }
@@ -102,16 +102,14 @@ if (isset($_POST['save'])) {
     $email = trim(Request::post('email'));
     if (!Email::validate($email)) {
         $errors[] = _lang('user.msg.bademail');
-    } else {
-        if ($email != _user_email) {
-            if (Request::post('currentpassword') === '') {
-                $errors[] = _lang('mod.settings.error.emailchangenopass');
-            } elseif (!Password::load($userdata['password'])->match(Request::post('currentpassword'))) {
-                $errors[] = _lang('mod.settings.error.badcurrentpass');
-            }
-            if (DB::count(_user_table, 'email=' . DB::val($email) . ' AND id!=' . _user_id) !== 0) {
-                $errors[] = _lang('user.msg.emailexists');
-            }
+    } elseif ($email != _user_email) {
+        if (Request::post('currentpassword') === '') {
+            $errors[] = _lang('mod.settings.error.emailchangenopass');
+        } elseif (!Password::load($userdata['password'])->match(Request::post('currentpassword'))) {
+            $errors[] = _lang('mod.settings.error.badcurrentpass');
+        }
+        if (DB::count(_user_table, 'email=' . DB::val($email) . ' AND id!=' . _user_id) !== 0) {
+            $errors[] = _lang('user.msg.emailexists');
         }
     }
 
@@ -242,9 +240,9 @@ if (isset($_POST['save'])) {
 
         return;
 
-    } else {
-        $message .= Message::warning(Message::renderList($errors, 'errors'), true);
     }
+
+    $message .= Message::warning(Message::renderList($errors, 'errors'), true);
 
 } elseif (isset($_POST['download_personal_data'])) {
     if (Password::load($userdata['password'])->match(Request::post('currentpassword'))) {
@@ -284,9 +282,9 @@ if (isset($_POST['save'])) {
         Extend::call('mod.settings.download_personal_data.output');
 
         exit;
-    } else {
-        $message .= Message::warning(Message::prefix(_lang('mod.settings.download_personal_data'), _lang('mod.settings.error.badcurrentpass')));
     }
+
+    $message .= Message::warning(Message::prefix(_lang('mod.settings.download_personal_data'), _lang('mod.settings.error.badcurrentpass')));
 }
 
 /* ---  modul  --- */

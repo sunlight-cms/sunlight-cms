@@ -269,13 +269,13 @@ class PageManipulator
             ]]);
 
             return true;
-        } else {
-            if ($error === null) {
-                $error = _lang('global.deletefail');
-            }
-
-            return false;
         }
+
+        if ($error === null) {
+            $error = _lang('global.deletefail');
+        }
+
+        return false;
     }
 
     /**

@@ -56,23 +56,20 @@ class LanguagePlugin extends Plugin
                 $adminFileName = sprintf('%s/admin_dictionary.php', $this->dir);
                 if (is_file($adminFileName)) {
                     $data += (array) include $adminFileName;
-                } else {
-                    // use the fallback language plugin's admin dictionary
-                    if ($this->manager->has($this->type, Core::$fallbackLang)) {
-                        $adminFileName = sprintf(
-                            '%s/admin_dictionary.php',
-                            $this->manager->getLanguage(Core::$fallbackLang)->getDirectory()
-                        );
-                        if (is_file($adminFileName)) {
-                            $data += (array) include $adminFileName;
-                        }
+                } elseif ($this->manager->has($this->type, Core::$fallbackLang)) {
+                    $adminFileName = sprintf(
+                        '%s/admin_dictionary.php',
+                        $this->manager->getLanguage(Core::$fallbackLang)->getDirectory()
+                    );
+                    if (is_file($adminFileName)) {
+                        $data += (array) include $adminFileName;
                     }
                 }
             }
 
             return $data;
-        } else {
-            return false;
         }
+
+        return false;
     }
 }

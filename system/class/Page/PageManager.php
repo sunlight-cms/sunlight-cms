@@ -52,7 +52,7 @@ abstract class PageManager
 
         // predane podminky
         if ($extra_conds !== null) {
-            $extra_conds[] = '(' . $conds . ')';
+            $conds[] = '(' . $conds . ')';
         }
 
         // identifikator

@@ -27,7 +27,7 @@ $s = (int) Request::get('s', 0);
  * @param bool       $light_abs
  * @return string
  */
-function admin_color($loff = 0, $satc = null, $sat_abs = false, $light_abs = false)
+function admin_color(int $loff = 0, ?float $satc = null, bool $sat_abs = false, bool $light_abs = false)
 {
     // nacteni a uprava barev
     if ($satc === 0) {
@@ -478,7 +478,7 @@ ul.page-list-breadcrumbs a:hover {color: <?= $scheme_link ?>;}
 #settingsnav input[type=submit] {width: 100%;}
 #settingsnav ul {padding: 0; margin: 0.5em 0 0 0; border: 1px solid <?= $scheme_smoke ?>; background-color: <?= $scheme_smoke_lighter ?>;}
 #settingsnav li {display: block; list-style-type: none;}
-#settingsnav li a {display: block; padding: 6px 11px; border-bottom: 1px solid <?= $scheme_smoke_light;?>; color: <?= $scheme_text ?>;}
+#settingsnav li a {display: block; padding: 6px 11px; border-bottom: 1px solid <?= $scheme_smoke_light ?>; color: <?= $scheme_text ?>;}
 #settingsnav a:hover, #settingsnav li.active a {background-color: <?= $scheme_smoke_dark ?>; color: <?= $scheme_black ?>;}
 
 #settingsform {float: left; padding-bottom: 30em; width: 78%;}

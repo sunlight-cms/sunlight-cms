@@ -133,7 +133,7 @@ if ($_page['type'] == _page_plugin) {
     ]);
 
     if ($script === null) {
-        throw new \RuntimeException(sprintf('No handler for plugin page type "%s"', $_page['type_idt']));
+        throw new RuntimeException(sprintf('No handler for plugin page type "%s"', $_page['type_idt']));
     }
 } else {
     // ostatni typy

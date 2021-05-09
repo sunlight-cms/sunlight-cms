@@ -40,10 +40,10 @@ abstract class Plugin
         'extensions' => ['type' => 'array', 'default' => []],
         'requires' => ['type' => 'array', 'default' => []],
         'installer' => ['type' => 'boolean', 'nullable' => true, 'default' => false],
-        'autoload' => ['type' => 'array', 'default' => [], 'normalizer' => ['Sunlight\Plugin\PluginOptionNormalizer', 'normalizeAutoload']],
+        'autoload' => ['type' => 'array', 'default' => [], 'normalizer' => [PluginOptionNormalizer::class, 'normalizeAutoload']],
         'debug' => ['type' => 'boolean', 'nullable' => true],
         'class' => ['type' => 'string'],
-        'namespace' => ['type' => 'string', 'normalizer' => ['Sunlight\Plugin\PluginOptionNormalizer', 'normalizeNamespace']],
+        'namespace' => ['type' => 'string', 'normalizer' => [PluginOptionNormalizer::class, 'normalizeNamespace']],
         'inject_composer' => ['type' => 'boolean', 'default' => true],
     ];
 
@@ -385,6 +385,8 @@ abstract class Plugin
             case 'remove':
                 return new Action\RemoveAction($this);
         }
+
+        return null;
     }
 
     /**

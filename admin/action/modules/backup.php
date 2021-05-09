@@ -104,6 +104,7 @@ foreach ($backup_dynpath_choices as $name => &$options) {
 
     $options['size'] = $size;
 }
+unset($options);
 
 // zpracovani
 if (!empty($_POST)) {
@@ -315,7 +316,7 @@ if (!empty($_POST)) {
             }
 
         }
-    } catch (\Throwable $e) {
+    } catch (Throwable $e) {
         $message = Message::error(_lang('global.error')) . Core::renderException($e);
     }
 }

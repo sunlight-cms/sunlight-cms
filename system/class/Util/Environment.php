@@ -61,9 +61,9 @@ abstract class Environment
         $limit = self::getUploadLimit();
         if ($limit !== null) {
             return '<small>' . _lang('global.uploadlimit') . ': <em>' . GenericTemplates::renderFileSize($limit) . '</em></small>';
-        } else {
-            return '';
         }
+
+        return '';
     }
 
     /**

@@ -83,7 +83,7 @@ if ($search_query != '') {
             if ($alias === null) {
                 $alias = '';
             } else {
-                $alias = $alias . '.';
+                $alias .= '.';
             }
             $output = '(';
             for ($i = 0, $last = (count($cols) - 1); isset($cols[$i]); ++$i) {

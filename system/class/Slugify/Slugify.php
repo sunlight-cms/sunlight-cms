@@ -46,10 +46,9 @@ class Slugify
         ],
     ];
 
-    private function __construct(array $options = [], ?RuleProviderInterface $provider = null)
+    private function __construct()
     {
-        $this->options = array_merge($this->options, $options);
-        $this->provider = $provider ? $provider : new DefaultRuleProvider();
+        $this->provider = new DefaultRuleProvider();
 
         foreach ($this->options['rulesets'] as $ruleSet) {
             $this->activateRuleSet($ruleSet);

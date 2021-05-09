@@ -88,10 +88,10 @@ abstract class DatabaseLoader
             ) {
                 // quoted - use new prefix
                 return '`' . $newPrefix . $matches[1][0] . '`';
-            } else {
-                // comment or other - leave as is
-                return $matches[0][0];
             }
+
+            // comment or other - leave as is
+            return $matches[0][0];
         });
     }
 }

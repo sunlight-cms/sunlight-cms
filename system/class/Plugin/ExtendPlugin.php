@@ -14,13 +14,13 @@ class ExtendPlugin extends Plugin
         'class' => __CLASS__,
         'default_base_namespace' => 'SunlightExtend',
         'options' => [
-            'events' => ['type' => 'array', 'default' => [], 'normalizer' => ['Sunlight\Plugin\PluginOptionNormalizer', 'normalizeEvents']],
-            'events.web' => ['type' => 'array', 'default' => [], 'normalizer' => ['Sunlight\Plugin\PluginOptionNormalizer', 'normalizeEvents']],
-            'events.admin' => ['type' => 'array', 'default' => [], 'normalizer' => ['Sunlight\Plugin\PluginOptionNormalizer', 'normalizeEvents']],
-            'scripts' => ['type' => 'array', 'default' => [], 'normalizer' => ['Sunlight\Plugin\PluginOptionNormalizer', 'normalizePathArray']],
-            'scripts.web' => ['type' => 'array', 'default' => [], 'normalizer' => ['Sunlight\Plugin\PluginOptionNormalizer', 'normalizePathArray']],
-            'scripts.admin' => ['type' => 'array', 'default' => [], 'normalizer' => ['Sunlight\Plugin\PluginOptionNormalizer', 'normalizePathArray']],
-            'langs' => ['type' => 'array', 'default' => [], 'normalizer' => ['Sunlight\Plugin\PluginOptionNormalizer', 'normalizePathArray']],
+            'events' => ['type' => 'array', 'default' => [], 'normalizer' => [PluginOptionNormalizer::class, 'normalizeEvents']],
+            'events.web' => ['type' => 'array', 'default' => [], 'normalizer' => [PluginOptionNormalizer::class, 'normalizeEvents']],
+            'events.admin' => ['type' => 'array', 'default' => [], 'normalizer' => [PluginOptionNormalizer::class, 'normalizeEvents']],
+            'scripts' => ['type' => 'array', 'default' => [], 'normalizer' => [PluginOptionNormalizer::class, 'normalizePathArray']],
+            'scripts.web' => ['type' => 'array', 'default' => [], 'normalizer' => [PluginOptionNormalizer::class, 'normalizePathArray']],
+            'scripts.admin' => ['type' => 'array', 'default' => [], 'normalizer' => [PluginOptionNormalizer::class, 'normalizePathArray']],
+            'langs' => ['type' => 'array', 'default' => [], 'normalizer' => [PluginOptionNormalizer::class, 'normalizePathArray']],
         ],
     ];
 

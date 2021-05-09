@@ -2,7 +2,6 @@
 
 namespace Sunlight\Image;
 
-use Sunlight\Core;
 use Sunlight\GenericTemplates;
 use Sunlight\Util\Environment;
 use Sunlight\Util\Filesystem;

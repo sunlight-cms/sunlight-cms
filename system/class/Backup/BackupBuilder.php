@@ -215,8 +215,7 @@ class BackupBuilder
      */
     function removeDynamicPath(string $name): self
     {
-        unset($this->dynamicPathMap[$name]);
-        unset($this->disabledDynamicPathMap[$name]);
+        unset($this->dynamicPathMap[$name], $this->disabledDynamicPathMap[$name]);
 
         return $this;
     }

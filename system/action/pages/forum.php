@@ -3,7 +3,6 @@
 use Sunlight\Comment\CommentService;
 use Sunlight\Extend;
 use Sunlight\Hcm;
-use Sunlight\Router;
 use Sunlight\User;
 
 defined('_root') or exit;

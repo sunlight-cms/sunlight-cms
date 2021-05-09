@@ -175,10 +175,10 @@ abstract class Bbcode
                             // quoted mode
                             $submode = 1;
                             break;
-                        } else {
-                            // unquoted mode
-                            $submode = 2;
                         }
+
+                        // unquoted mode
+                        $submode = 2;
                     }
 
                     // gather argument
@@ -200,14 +200,11 @@ abstract class Bbcode
                         $mode = 1;
                         $char = '';
                         --$i;
+                    } elseif (isset($s[$i + 1]) && $s[$i + 1] === ']') {
+                        $mode = 1;
                     } else {
-                        // end of quoted
-                        if (isset($s[$i + 1]) && $s[$i + 1] === ']') {
-                            $mode = 1;
-                        } else {
-                            // reset - bad syntax
-                            $reset = 6;
-                        }
+                        // reset - bad syntax
+                        $reset = 6;
                     }
 
                     break;

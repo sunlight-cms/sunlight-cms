@@ -14,7 +14,9 @@ if (isset($_GET['clear'])) {
     $admin_redirect_to = 'index.php?p=plugins&cleared';
 
     return;
-} elseif (isset($_GET['cleared'])) {
+}
+
+if (isset($_GET['cleared'])) {
     $output .= Message::ok(_lang('global.done'));
 }
 

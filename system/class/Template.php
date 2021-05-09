@@ -313,7 +313,7 @@ abstract class Template
      * @param string      $extendEvent extend udalost pro polozky menu
      * @return string
      */
-    static function menu(?int $ordStart = null, ?int $ordEnd = null, ?string $cssClass = null, string $extendEvent = 'tpl.menu.item')
+    static function menu(?int $ordStart = null, ?int $ordEnd = null, ?string $cssClass = null, string $extendEvent = 'tpl.menu.item'): string
     {
         // kontrola prihlaseni v pripade neverejnych stranek
         if (!_logged_in && _notpublicsite) {
@@ -333,15 +333,13 @@ abstract class Template
         );
 
         // vykreslit menu
-        $output = PageMenu::render(
+        return PageMenu::render(
             $pages,
             $activeId,
             $cssClass,
             $extendEvent,
             'simple'
         );
-
-        return $output;
     }
 
     /**
@@ -389,9 +387,9 @@ abstract class Template
         if (-1 == $options['page_id']) {
             if ($activeId === null) {
                 return '';
-            } else {
-                $options['page_id'] = $activeId;
             }
+
+            $options['page_id'] = $activeId;
         }
 
         // zjistit uroven a hloubku
@@ -423,15 +421,13 @@ abstract class Template
         }
 
         // vykreslit menu
-        $output = PageMenu::render(
+        return PageMenu::render(
             $pages,
             $activeId,
             $options['css_class'],
             $options['extend_event'],
             $options['type']
         );
-
-        return $output;
     }
 
     /**

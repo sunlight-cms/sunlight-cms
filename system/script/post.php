@@ -60,30 +60,24 @@ switch ($posttype) {
         // sekce
     case _post_section_comment:
         $tdata = DB::queryRow("SELECT public,var1,var3,level FROM " . _page_table . " WHERE id=" . $posttarget . " AND type=" . _page_section);
-        if ($tdata !== false) {
-            if (User::checkPublicAccess($tdata['public'], $tdata['level']) && $tdata['var1'] == 1 && $tdata['var3'] != 1) {
-                $continue = true;
-            }
+        if ($tdata !== false && User::checkPublicAccess($tdata['public'], $tdata['level']) && $tdata['var1'] == 1 && $tdata['var3'] != 1) {
+            $continue = true;
         }
         break;
 
         // clanek
     case _post_article_comment:
         $tdata = DB::queryRow("SELECT id,time,confirmed,author,public,home1,home2,home3,comments,commentslocked FROM " . _article_table . " WHERE id=" . $posttarget);
-        if ($tdata !== false) {
-            if (Article::checkAccess($tdata) && $tdata['comments'] == 1 && $tdata['commentslocked'] == 0) {
-                $continue = true;
-            }
+        if ($tdata !== false && Article::checkAccess($tdata) && $tdata['comments'] == 1 && $tdata['commentslocked'] == 0) {
+            $continue = true;
         }
         break;
 
         // kniha
     case _post_book_entry:
         $tdata = DB::queryRow("SELECT public,var1,var3,level FROM " . _page_table . " WHERE id=" . $posttarget . " AND type=" . _page_book);
-        if ($tdata !== false) {
-            if (User::checkPublicAccess($tdata['public'], $tdata['level']) && User::checkPublicAccess($tdata['var1']) && $tdata['var3'] != 1) {
-                $continue = true;
-            }
+        if ($tdata !== false && User::checkPublicAccess($tdata['public'], $tdata['level']) && User::checkPublicAccess($tdata['var1']) && $tdata['var3'] != 1) {
+            $continue = true;
         }
 
         break;
@@ -91,20 +85,16 @@ switch ($posttype) {
         // shoutbox
     case _post_shoutbox_entry:
         $tdata = DB::queryRow("SELECT public,locked FROM " . _shoutbox_table . " WHERE id=" . $posttarget);
-        if ($tdata !== false) {
-            if (User::checkPublicAccess($tdata['public']) && $tdata['locked'] != 1) {
-                $continue = true;
-            }
+        if ($tdata !== false && User::checkPublicAccess($tdata['public']) && $tdata['locked'] != 1) {
+            $continue = true;
         }
         break;
 
         // forum
     case _post_forum_topic:
         $tdata = DB::queryRow("SELECT public,var2,var3,level FROM " . _page_table . " WHERE id=" . $posttarget . " AND type=" . _page_forum);
-        if ($tdata !== false) {
-            if (User::checkPublicAccess($tdata['public'], $tdata['level']) && User::checkPublicAccess($tdata['var3']) && $tdata['var2'] != 1) {
-                $continue = true;
-            }
+        if ($tdata !== false && User::checkPublicAccess($tdata['public'], $tdata['level']) && User::checkPublicAccess($tdata['var3']) && $tdata['var2'] != 1) {
+            $continue = true;
         }
         break;
 
@@ -134,10 +124,8 @@ switch ($posttype) {
 if ($xhome != -1 && $posttype != _post_pm) {
     $continue2 = false;
     $tdata = DB::queryRow("SELECT xhome FROM " . _comment_table . " WHERE id=" . $xhome . " AND home=" . $posttarget . " AND locked=0");
-    if ($tdata !== false) {
-        if ($tdata['xhome'] == -1) {
-            $continue2 = true;
-        }
+    if ($tdata !== false && $tdata['xhome'] == -1) {
+        $continue2 = true;
     }
 } else {
     $continue2 = true;

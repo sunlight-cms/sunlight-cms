@@ -51,10 +51,10 @@ abstract class Article
 
             // neni pristup k zadne kategorii
             return false;
-        } else {
-            // nekontrolovat
-            return true;
         }
+
+        // nekontrolovat
+        return true;
     }
 
     /**
@@ -151,7 +151,7 @@ abstract class Article
 
         // pridat pocet
         if ($doCount) {
-            $result[] = (int) DB::result(DB::query("SELECT COUNT({$alias}.id) FROM " . _article_table . " {$alias} {$joins} WHERE {$conditions}"), 0);
+            $result[] = (int) DB::result(DB::query("SELECT COUNT({$alias}.id) FROM " . _article_table . " {$alias} {$joins} WHERE {$conditions}"));
         }
 
         return $result;

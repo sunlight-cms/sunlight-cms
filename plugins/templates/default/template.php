@@ -31,7 +31,7 @@ defined('_root') or exit
 </div>
 <div id="footer">
     <ul>
-        <li><a href="http://templated.co/" rel="nofollow">TEMPLATED</a></li>
+        <li><a href="https://templated.co/" rel="nofollow">TEMPLATED</a></li>
         <?= Template::links() ?>
     </ul>
 </div>

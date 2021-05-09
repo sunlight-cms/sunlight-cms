@@ -36,7 +36,6 @@ if (isset($_GET['id'])) {
 /* ---  ulozeni / vytvoreni  --- */
 
 if (isset($_POST['question'])) {
-
     // nacteni promennych
     $question = Html::cut(_e(trim(Request::post('question'))), 255);
     $query['question'] = $question;
@@ -71,7 +70,7 @@ if (isset($_POST['question'])) {
     if ($answers_count > 20) {
         $errors[] = _lang('admin.content.polls.edit.error3');
     }
-    if (_priv_adminpollall && DB::result(DB::query("SELECT COUNT(*) FROM " . _user_table . " WHERE id=" . $author . " AND (id=" . _user_id . " OR (SELECT level FROM " . _user_group_table . " WHERE id=" . _user_table . ".group_id)<" . _priv_level . ")"), 0) == 0) {
+    if (_priv_adminpollall && DB::result(DB::query("SELECT COUNT(*) FROM " . _user_table . " WHERE id=" . $author . " AND (id=" . _user_id . " OR (SELECT level FROM " . _user_group_table . " WHERE id=" . _user_table . ".group_id)<" . _priv_level . ")")) == 0) {
         $errors[] = _lang('admin.content.articles.edit.error3');
     }
 
@@ -123,23 +122,22 @@ if (isset($_POST['question'])) {
 
             return;
 
-        } else {
-            $newid = DB::insert(_poll_table, [
-                'author' => $author,
-                'question' => $question,
-                'answers' => $answers,
-                'locked' => $locked,
-                'votes' => trim(str_repeat("0-", $answers_count), "-")
-            ], true);
-            $admin_redirect_to = 'index.php?p=content-polls-edit&id=' . $newid . '&created';
-
-            return;
         }
 
-    } else {
-        $message = Message::warning(Message::renderList($errors, 'errors'), true);
+        $newid = DB::insert(_poll_table, [
+            'author' => $author,
+            'question' => $question,
+            'answers' => $answers,
+            'locked' => $locked,
+            'votes' => trim(str_repeat("0-", $answers_count), "-")
+        ], true);
+        $admin_redirect_to = 'index.php?p=content-polls-edit&id=' . $newid . '&created';
+
+        return;
+
     }
 
+    $message = Message::warning(Message::renderList($errors, 'errors'), true);
 }
 
 /* ---  vystup  --- */

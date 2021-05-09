@@ -152,10 +152,12 @@ abstract class Json
 
         if (isset($errorCodes[$errorCode])) {
             return $errorCodes[$errorCode];
-        } elseif (PHP_VERSION_ID >= 50500) {
-            return json_last_error_msg();
-        } else {
-            return sprintf('Unknown error (%s)', $errorCode);
         }
+
+        if (PHP_VERSION_ID >= 50500) {
+            return json_last_error_msg();
+        }
+
+        return sprintf('Unknown error (%s)', $errorCode);
     }
 }

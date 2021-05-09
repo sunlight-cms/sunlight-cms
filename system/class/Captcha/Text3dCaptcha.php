@@ -3,7 +3,6 @@
 namespace Sunlight\Captcha;
 
 use Sunlight\Image\Image;
-use Sunlight\Util\Math;
 
 /**
  * Simple axonometric 3D text CAPTCHA

@@ -36,9 +36,9 @@ class Captcha
                 'top' => true,
                 'class' => 'captcha-row',
             ];
-        } else {
-            return [];
         }
+
+        return [];
     }
 
     /**
@@ -92,7 +92,7 @@ class Captcha
         $maxNumbers = max(ceil($length / 3), 1);
 
         for ($i = 0; $i < $maxNumbers; ++$i) {
-            $word[mt_rand(0, $length - 1)] = (string) mt_rand(2, 9);
+            $word[random_int(0, $length - 1)] = (string) random_int(2, 9);
         }
 
         return strtr($word, [

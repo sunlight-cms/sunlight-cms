@@ -14,8 +14,8 @@ class TemplatePlugin extends Plugin
         'class' => __CLASS__,
         'default_base_namespace' => 'SunlightTemplate',
         'options' => [
-            'css' => ['type' => 'array', 'default' => ['template_style' => 'style.css'], 'normalizer' => ['Sunlight\Plugin\PluginOptionNormalizer', 'normalizeWebPathArray']],
-            'js' => ['type' => 'array', 'default' => [], 'normalizer' => ['Sunlight\Plugin\PluginOptionNormalizer', 'normalizeWebPathArray']],
+            'css' => ['type' => 'array', 'default' => ['template_style' => 'style.css'], 'normalizer' => [PluginOptionNormalizer::class, 'normalizeWebPathArray']],
+            'js' => ['type' => 'array', 'default' => [], 'normalizer' => [PluginOptionNormalizer::class, 'normalizeWebPathArray']],
             'responsive' => ['type' => 'boolean', 'default' => false],
             'dark' => ['type' => 'boolean', 'default' => false],
             'bbcode.buttons' => ['type' => 'boolean', 'default' => true],
@@ -23,8 +23,8 @@ class TemplatePlugin extends Plugin
             'box.item' => ['type' => 'string', 'default' => 'div'],
             'box.title' => ['type' => 'string', 'default' => 'h3'],
             'box.title.inside' => ['type' => 'boolean', 'default' => false],
-            'layouts' => ['type' => 'array', 'required' => true, 'normalizer' => ['Sunlight\Plugin\PluginOptionNormalizer', 'normalizeTemplateLayouts']],
-            'lang_dir' => ['type' => 'string', 'default' => 'labels', 'normalizer' => ['Sunlight\Plugin\PluginOptionNormalizer', 'normalizePath']],
+            'layouts' => ['type' => 'array', 'required' => true, 'normalizer' => [PluginOptionNormalizer::class, 'normalizeTemplateLayouts']],
+            'lang_dir' => ['type' => 'string', 'default' => 'labels', 'normalizer' => [PluginOptionNormalizer::class, 'normalizePath']],
         ],
     ];
 
@@ -133,7 +133,7 @@ class TemplatePlugin extends Plugin
      * @param string $slot
      * @return bool
      */
-    function hasSlot(string $layout, string $slot)
+    function hasSlot(string $layout, string $slot): bool
     {
         return in_array($slot, $this->getSlots($layout), true);
     }

@@ -289,7 +289,7 @@ return [
     'admin.settings.main.default_template' => 'Výchozí motiv',
     'admin.settings.main.default_template.help' => 'výchozí motiv pro zobrazení stránek',
     'admin.settings.main.time_format' => 'Formát času',
-    'admin.settings.main.time_format.help' => 'způsob formátování času PHP funkcí <a href=\'http://php.net/date/\' target=\'_blank\'>date()</a>',
+    'admin.settings.main.time_format.help' => 'způsob formátování času PHP funkcí <a href=\'https://php.net/date/\' target=\'_blank\'>date()</a>',
     'admin.settings.main.cacheid' => 'Cache',
     'admin.settings.main.cacheid.help' => 'zvýšením tohoto čísla vynutíte znovunačtení všech systémových stylů a skriptů a také stylů motivu u všech uživatelů',
     'admin.settings.main.language' => 'Jazyk',

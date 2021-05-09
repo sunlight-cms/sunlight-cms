@@ -291,10 +291,8 @@ if ($continue) {
   " . Xsrf::getInput() . "</form>
   ";
 
+} elseif ($levelconflict == false) {
+    $output .= Message::error(_lang('global.badinput'));
 } else {
-    if ($levelconflict == false) {
-        $output .= Message::error(_lang('global.badinput'));
-    } else {
-        $output .= Message::error(_lang('global.disallowed'));
-    }
+    $output .= Message::error(_lang('global.disallowed'));
 }

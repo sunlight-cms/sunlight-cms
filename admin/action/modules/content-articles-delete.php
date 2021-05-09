@@ -12,7 +12,7 @@ defined('_root') or exit;
 /* ---  nacteni promennych  --- */
 
 $continue = false;
-if (isset($_GET['id']) && isset($_GET['returnid']) && isset($_GET['returnpage'])) {
+if (isset($_GET['id'], $_GET['returnid'], $_GET['returnpage'])) {
     $id = (int) Request::get('id');
     $returnid = (int) Request::get('returnid');
     $returnpage = (int) Request::get('returnpage');

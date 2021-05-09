@@ -24,10 +24,8 @@ if (isset($_POST['bulk_action'])) {
             $user_delete_counter = 0;
             foreach ($user_ids as $user_id) {
                 $user_id = (int) $user_id;
-                if ($user_id !== _super_admin_id && $user_id != _user_id) {
-                    if (User::delete($user_id)) {
-                        ++$user_delete_counter;
-                    }
+                if ($user_id !== _super_admin_id && $user_id != _user_id && User::delete($user_id)) {
+                    ++$user_delete_counter;
                 }
             }
 
@@ -116,7 +114,7 @@ $output .= $message . "
 ";
 
 // dotaz na db
-$userQuery = User::createQuery(null);
+$userQuery = User::createQuery();
 $query = DB::query('SELECT ' . $userQuery['column_list'] . ',u.email user_email FROM ' . _user_table . ' u ' . $userQuery['joins'] . ' WHERE ' . $list_conds_sql . ' ORDER BY ug.level DESC ' . $paging['sql_limit']);
 
 // vypis

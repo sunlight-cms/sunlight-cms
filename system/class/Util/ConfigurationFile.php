@@ -73,12 +73,10 @@ class ConfigurationFile implements \ArrayAccess
 
         if (array_key_exists($offset, $this->data)) {
             $value = $this->data[$offset];
+        } elseif (array_key_exists($offset, $this->defaults)) {
+            $value = $this->defaults[$offset];
         } else {
-            if (array_key_exists($offset, $this->defaults)) {
-                $value = $this->defaults[$offset];
-            } else {
-                throw new \OutOfBoundsException(sprintf('The configuration key "%s" is not defined', $offset));
-            }
+            throw new \OutOfBoundsException(sprintf('The configuration key "%s" is not defined', $offset));
         }
 
         return $value;

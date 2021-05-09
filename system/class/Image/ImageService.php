@@ -95,7 +95,7 @@ final class ImageService
     {
         foreach (Filesystem::createRecursiveIterator(_root . 'images/thumb', \RecursiveIteratorIterator::LEAVES_ONLY) as $thumb) {
             if (
-                ImageService::isImage($thumb)
+                self::isImage($thumb)
                 && time() - $thumb->getMTime() >= $minAge
             ) {
                 unlink($thumb->getPathname());

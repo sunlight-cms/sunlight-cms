@@ -78,7 +78,7 @@ abstract class Response
             if ($specifiedUrl[0] === '/') {
                 $returnUrl->path = $specifiedUrl;
             }  elseif ($specifiedUrl !== './') {
-                $returnUrl->path = $returnUrl->path . '/' . $specifiedUrl;
+                $returnUrl->path .= '/' . $specifiedUrl;
             }
         } elseif (!empty($_SERVER['HTTP_REFERER'])) {
             $returnUrl = Url::parse($_SERVER['HTTP_REFERER']);

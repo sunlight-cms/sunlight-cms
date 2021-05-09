@@ -40,7 +40,7 @@ class HttpClient
      */
     static function post(string $url, string $body, array $options = []): string
     {
-        return self::request($url, (string) $body, $options);
+        return self::request($url, $body, $options);
     }
 
     /**
@@ -65,11 +65,13 @@ class HttpClient
 
         if (extension_loaded('curl')) {
             return self::curlRequest($url, $body, $options);
-        } elseif (ini_get('allow_url_fopen')) {
-            return self::nativeRequest($url, $body, $options);
-        } else {
-            throw new HttpClientException('No available transport');
         }
+
+        if (ini_get('allow_url_fopen')) {
+            return self::nativeRequest($url, $body, $options);
+        }
+
+        throw new HttpClientException('No available transport');
     }
 
     /**

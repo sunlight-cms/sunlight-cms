@@ -85,7 +85,9 @@ switch ($a) {
                 if ($rq === false || $rq['usr_id'] == _user_id) {
                     $message = Message::warning(_lang('mod.messages.error.badreceiver'));
                     break;
-                } elseif ($rq['usr_blocked'] || $rq['ugrp_blocked']) {
+                }
+
+                if ($rq['usr_blocked'] || $rq['ugrp_blocked']) {
                     $message = Message::warning(_lang('mod.messages.error.blockedreceiver'));
                     break;
                 }

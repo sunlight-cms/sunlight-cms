@@ -6,7 +6,6 @@ use Sunlight\Database\Database as DB;
 use Sunlight\Util\Arr;
 use Sunlight\Util\Html;
 use Sunlight\Util\Url;
-use Sunlight\Util\UrlHelper;
 
 abstract class Router
 {
@@ -108,12 +107,10 @@ abstract class Router
     {
         if (_pretty_urls) {
             $path = $slug;
+        } elseif ($slug !== '') {
+            $path = 'index.php?p=' . $slug;
         } else {
-            if ($slug !== '') {
-                $path = 'index.php?p=' . $slug;
-            } else {
-                $path = '';
-            }
+            $path = '';
         }
 
         return self::generate($path, $absolute);
@@ -295,9 +292,9 @@ abstract class Router
         if ($options['plain']) {
             if ($nameIsTooLong) {
                 return Html::cut($name, $options['max_len']);
-            } else {
-                return $name;
             }
+
+            return $name;
         }
 
         // titulek

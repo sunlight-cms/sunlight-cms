@@ -15,13 +15,13 @@ abstract class GenericTemplates
      */
     static function renderNumber($number, int $decimals = 2): string
     {
-        if (is_int($number) || $decimals <= 0 || abs(fmod($number, 1)) < pow(0.1, $decimals)) {
+        if (is_int($number) || $decimals <= 0 || abs(fmod($number, 1)) < 0.1 ** $decimals) {
             // an integer value
             return number_format($number, 0, '', _lang('numbers.thousands_sep'));
-        } else {
-            // a float value
-            return number_format($number, $decimals, _lang('numbers.dec_point'), _lang('numbers.thousands_sep'));
         }
+
+        // a float value
+        return number_format($number, $decimals, _lang('numbers.dec_point'), _lang('numbers.thousands_sep'));
     }
 
     /**
@@ -40,9 +40,9 @@ abstract class GenericTemplates
 
         if ($extend !== '') {
             return $extend;
-        } else {
-            return date(_time_format, $timestamp);
         }
+
+        return date(_time_format, $timestamp);
     }
 
     /**
@@ -56,7 +56,7 @@ abstract class GenericTemplates
         $units = ['B', 'kB', 'MB'];
 
         for ($i = 2; $i >= 0; --$i) {
-            $bytesPerUnit = pow(1000, $i);
+            $bytesPerUnit = 1000 ** $i;
             $value = $bytes / $bytesPerUnit;
             if ($value >= 1 || $i === 0) {
                 break;
@@ -118,7 +118,7 @@ HTML;
      * @param array $assets pole s konfiguraci assetu
      * @return string
      */
-    static function renderHeadAssets(array $assets)
+    static function renderHeadAssets(array $assets): string
     {
         $html = '';
         $cacheParam = '_' . _cacheid;
@@ -178,7 +178,7 @@ HTML;
      * @param string  $class
      * @return string
      */
-    static function renderInfos(array $infos, $class = 'list-info')
+    static function renderInfos(array $infos, string $class = 'list-info'): string
     {
         if (!empty($infos)) {
             $output = '<ul class="' . _e($class) . "\"\n>";
@@ -205,7 +205,7 @@ HTML;
      * @param string $name      nazev textarey
      * @return string
      */
-    static function jsLimitLength($maxlength, $form, $name)
+    static function jsLimitLength(int $maxlength, string $form, string $name): string
     {
         return <<<HTML
 <script>

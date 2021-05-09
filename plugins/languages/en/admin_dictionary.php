@@ -289,7 +289,7 @@ return [
     'admin.settings.main.default_template' => 'Default theme',
     'admin.settings.main.default_template.help' => 'default theme used to display pages',
     'admin.settings.main.time_format' => 'Time format',
-    'admin.settings.main.time_format.help' => 'time format for the <a href=\'http://php.net/date/\' target=\'_blank\'>date()</a> PHP function',
+    'admin.settings.main.time_format.help' => 'time format for the <a href=\'https://php.net/date/\' target=\'_blank\'>date()</a> PHP function',
     'admin.settings.main.cacheid' => 'Cache',
     'admin.settings.main.cacheid.help' => 'increase this number to force reloading of all system styles and scripts for all users',
     'admin.settings.main.language' => 'Language',

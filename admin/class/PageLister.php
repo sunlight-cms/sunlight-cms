@@ -66,7 +66,7 @@ abstract class PageLister
     private static function setup(): void
     {
         // set current page
-        $pageId = Request::get('page_id', null);
+        $pageId = Request::get('page_id');
         if ($pageId !== null) {
             if ($pageId === 'root') {
                 $pageId = null;
@@ -78,7 +78,7 @@ abstract class PageLister
         }
 
         // set mode
-        $mode = Request::get('list_mode', null);
+        $mode = Request::get('list_mode');
         if ($mode !== null) {
             switch ($mode) {
                 case 'tree':
@@ -139,9 +139,9 @@ abstract class PageLister
             DB::updateSetMulti(_page_table, 'id', $changeset);
 
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -212,7 +212,7 @@ abstract class PageLister
      *
      * @param string $output
      */
-    private static function renderBreadcrumbs(string &$output)
+    private static function renderBreadcrumbs(string &$output): void
     {
         $url = Url::current();
 

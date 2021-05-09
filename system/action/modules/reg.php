@@ -34,7 +34,7 @@ $user_data = [];
 $user_data_valid = false;
 $show_form = true;
 $rules = Core::loadSetting('rules');
-$confirmed = (_registration_confirm ? false : true);
+$confirmed = !_registration_confirm;
 
 // akce
 if (isset($_GET['confirm'])) {
@@ -206,7 +206,7 @@ if (!$user_data_valid && $show_form) {
             'name' => 'regform',
             'action' => Router::module('reg'),
             'submit_text' => _lang('mod.reg.submit' . (_registration_confirm ? '2' : '')),
-            'submit_span' => $rules !== '',
+            'submit_span' => !empty($rules),
             'submit_name' => 'regform',
             'autocomplete' => 'off',
         ],

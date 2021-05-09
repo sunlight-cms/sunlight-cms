@@ -17,9 +17,8 @@ abstract class Html
         if ($map === null) {
             $map = array_flip(get_html_translation_table(HTML_SPECIALCHARS, ENT_QUOTES));
         }
-        $output = strtr($input, $map);
 
-        return $output;
+        return strtr($input, $map);
     }
 
     /**
@@ -35,9 +34,9 @@ abstract class Html
     {
         if ($length > 0 && mb_strlen($html) > $length) {
             return self::fixTrailingHtmlEntity(mb_substr($html, 0, $length));
-        } else {
-            return $html;
         }
+
+        return $html;
     }
 
     /**

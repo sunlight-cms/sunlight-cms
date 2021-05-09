@@ -50,11 +50,11 @@ if (isset($_POST['apply_patch'])) do {
             $output .= Message::ok(_lang('admin.other.patch.complete'));
 
             return;
-        } else {
-            $output .= Message::error(Message::renderList(Html::escapeArrayItems($errors), 'errors'), true);
         }
 
-    } catch (\Throwable $e) {
+        $output .= Message::error(Message::renderList(Html::escapeArrayItems($errors), 'errors'), true);
+
+    } catch (Throwable $e) {
         $output .= Message::error(_lang('global.error')) . Core::renderException($e);
     }
 } while (false);

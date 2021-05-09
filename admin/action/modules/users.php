@@ -72,16 +72,15 @@ if (isset($_POST['type']) && _priv_admingroups) {
 if (_super_admin_id == _user_id && isset($_POST['switch_user'])) {
     $user = trim(Request::post('switch_user'));
     $query = DB::queryRow("SELECT id,password,email FROM " . _user_table . " WHERE username=" . DB::val($user));
+
     if ($query !== false) {
-
         User::login($query['id'], $query['password'], $query['email']);
-
         $admin_redirect_to = Router::module('login', null, true);
 
         return;
-    } else {
-        $msg = 5;
     }
+
+    $msg = 5;
 }
 
 /* ---  priprava promennych  --- */

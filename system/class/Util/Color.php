@@ -91,7 +91,6 @@ class Color
         if (!isset($this->$channel)) {
             return false;
         }
-        $value = (int) $value;
 
         // update channel
         $this->$channel = $value;
@@ -166,7 +165,7 @@ class Color
 
         // convert
         $h = 360 * $h / 255;
-        $s = $s / 255;
+        $s /= 255;
         $l = ($l - 127) / 255;
         $c = (1 - abs(2 * $l)) * $s;
         $hx = $h / 60;

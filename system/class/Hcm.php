@@ -33,9 +33,9 @@ abstract class Hcm
         $params = ArgList::parse($match[1]);
         if (isset($params[0])) {
             return (string) self::run($params[0], array_splice($params, 1));
-        } else {
-            return '';
         }
+
+        return '';
     }
 
     /**
@@ -69,14 +69,14 @@ abstract class Hcm
             }
 
             return '';
-        } else {
-            // extend modul
-            ++Core::$hcmUid;
-
-            return Extend::buffer("hcm.{$module[0]}.{$module[1]}", [
-                'args' => $args,
-            ]);
         }
+
+        // extend modul
+        ++Core::$hcmUid;
+
+        return Extend::buffer("hcm.{$module[0]}.{$module[1]}", [
+            'args' => $args,
+        ]);
     }
 
     /**
@@ -157,9 +157,9 @@ abstract class Hcm
                 $values = explode('-', $values);
             }
             return $column . ' IN(' . DB::val($values, true) . ')';
-        } else {
-            return '1';
         }
+
+        return '1';
     }
 
     /**

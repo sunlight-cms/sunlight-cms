@@ -27,7 +27,7 @@ class VersionChecker
         return self::$data;
     }
 
-    private static function loadData()
+    private static function loadData(): void
     {
         self::$loaded = true;
 

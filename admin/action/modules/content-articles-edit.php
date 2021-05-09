@@ -20,7 +20,7 @@ defined('_root') or exit;
 
 $message = "";
 $continue = false;
-if (isset($_GET['id']) && isset($_GET['returnid']) && isset($_GET['returnpage'])) {
+if (isset($_GET['id'], $_GET['returnid'], $_GET['returnpage'])) {
     $id = (int) Request::get('id');
     $returnid = Request::get('returnid');
     if ($returnid != "load") {
@@ -82,8 +82,14 @@ if (isset($_GET['id']) && isset($_GET['returnid']) && isset($_GET['returnpage'])
 if (isset($_POST['title'])) {
 
     // nacteni promennych
+    $slug = Request::post('slug', '');
+
+    if ($slug === '') {
+        $slug = Request::post('title', '');
+    }
+
     $newdata['title'] = Html::cut(_e(Request::post('title')), 255);
-    $newdata['slug'] = StringManipulator::slugify(_fallback(Request::post('slug'), Request::post('title')));
+    $newdata['slug'] = StringManipulator::slugify($slug);
     $newdata['description'] = Html::cut(_e(trim(Request::post('description'))), 255);
     $newdata['home1'] = (int) Request::post('home1');
     $newdata['home2'] = (int) Request::post('home2');
@@ -143,7 +149,7 @@ if (isset($_POST['title'])) {
     }
 
     // autor
-    if (DB::result(DB::query("SELECT COUNT(*) FROM " . _user_table . " WHERE id=" . DB::val($newdata['author']) . " AND (id=" . _user_id . " OR (SELECT level FROM " . _user_group_table . " WHERE id=" . _user_table . ".group_id)<" . _priv_level . ")"), 0) == 0) {
+    if (DB::result(DB::query("SELECT COUNT(*) FROM " . _user_table . " WHERE id=" . DB::val($newdata['author']) . " AND (id=" . _user_id . " OR (SELECT level FROM " . _user_group_table . " WHERE id=" . _user_table . ".group_id)<" . _priv_level . ")")) == 0) {
         $error_log[] = _lang('admin.content.articles.edit.error3');
     }
 
@@ -275,10 +281,10 @@ if (isset($_POST['title'])) {
 
         return;
 
-    } else {
-        $message = Message::warning(Message::renderList($error_log, 'errors'), true);
-        $query = $newdata + $query;
     }
+
+    $message = Message::warning(Message::renderList($error_log, 'errors'), true);
+    $query = $newdata + $query;
 
 }
 
@@ -304,7 +310,7 @@ if ($continue) {
     // vypocet hodnoceni
     if (!$new) {
         if ($query['ratenum'] != 0) {
-            $rate = DB::result(DB::query("SELECT ROUND(ratesum/ratenum) FROM " . _article_table . " WHERE id=" . $query['id']), 0) . "%, " . $query['ratenum'] . "x";
+            $rate = DB::result(DB::query("SELECT ROUND(ratesum/ratenum) FROM " . _article_table . " WHERE id=" . $query['id'])) . "%, " . $query['ratenum'] . "x";
         } else {
             $rate = _lang('article.rate.nodata');
         }

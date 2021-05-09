@@ -197,11 +197,14 @@ if ($continue) {
                         $name = StringManipulator::slugify($decodeFilename($item['name'][$i], false), false);
                         $tmp_name = $item['tmp_name'][$i];
                         $exists = file_exists($dir . $name);
-                        if (is_uploaded_file($tmp_name) && User::checkFilename($name) && (!$exists || isset($_POST['upload_rewrite']) && unlink($dir . $name))) {
-                            if (User::moveUploadedFile($tmp_name, $dir . $name)) {
-                                ++$done;
-                                $uploaded[$name] = true;
-                            }
+                        if (
+                            is_uploaded_file($tmp_name)
+                            && User::checkFilename($name)
+                            && (!$exists || isset($_POST['upload_rewrite']) && unlink($dir . $name))
+                            && User::moveUploadedFile($tmp_name, $dir . $name)
+                        ) {
+                            ++$done;
+                            $uploaded[$name] = true;
                         }
                         ++$total;
                     }
@@ -240,12 +243,10 @@ if ($continue) {
                         } else {
                             $message = Message::warning(_lang('admin.fman.msg.disallowedextension'));
                         }
+                    } elseif (Filesystem::purgeDirectory($dir . $name, [], $failedPath)) {
+                        $message = Message::ok(_lang('admin.fman.msg.delete.done'));
                     } else {
-                        if (Filesystem::purgeDirectory($dir . $name, [], $failedPath)) {
-                            $message = Message::ok(_lang('admin.fman.msg.delete.done'));
-                        } else {
-                            $message = Message::warning(_lang('admin.fman.msg.delete.failure', ['%failed_path%' => _e($failedPath)]), true);
-                        }
+                        $message = Message::warning(_lang('admin.fman.msg.delete.failure', ['%failed_path%' => _e($failedPath)]), true);
                     }
                 }
                 break;
@@ -306,10 +307,8 @@ if ($continue) {
                             continue;
                         }
                         $val = $decodeFilename($val);
-                        if(is_file($dir . $val) && !is_file($newdir . $val) && User::checkFilename($val)) {
-                            if (rename($dir . $val, $newdir . $val)) {
-                                $done++;
-                            }
+                        if(is_file($dir . $val) && !is_file($newdir . $val) && User::checkFilename($val) && rename($dir . $val, $newdir . $val)) {
+                            $done++;
                         }
 
                         $total++;
@@ -337,15 +336,15 @@ if ($continue) {
 
                 if(count($selected) > 0) {
                     $tmpFile = Filesystem::createTmpFile();
-                    $zip = new \ZipArchive();
+                    $zip = new ZipArchive();
 
                     try {
-                        $zip->open($tmpFile->getPathname(), \ZipArchive::OVERWRITE);
+                        $zip->open($tmpFile->getPathname(), ZipArchive::OVERWRITE);
                         foreach ($selected as $sel){
                             $zip->addFile($dir . $sel, $sel);
                         }
                         $zip->close();
-                    } catch (\Throwable $e) {
+                    } catch (Throwable $e) {
                         $zip->close();
                         $tmpFile->discard();
                         throw $e;
@@ -367,10 +366,8 @@ if ($continue) {
                         continue;
                     }
                     $val = $decodeFilename($val);
-                    if (is_file($dir . $val) && User::checkFilename($val)) {
-                        if (unlink($dir . $val)) {
-                            $done++;
-                        }
+                    if (is_file($dir . $val) && User::checkFilename($val) && unlink($dir . $val)) {
+                        $done++;
                     }
 
                     $total++;

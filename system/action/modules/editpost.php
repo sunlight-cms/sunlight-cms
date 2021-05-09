@@ -168,6 +168,7 @@ if (isset($_POST['text'])) {
             // debump topicu
             if ($query['type'] == _post_forum_topic && $query['xhome'] != -1) {
                 // kontrola, zda se jedna o posledni odpoved
+                // TODO: fixme
                 $chr = DB::queryRow('SELECT id,time FROM ' . _comment_table . ' WHERE type=' . _post_forum_topic . ' AND xhome=' . $query['xhome'] . ' ORDER BY id DESC LIMIT 2');
                 if ($chr !== false && $chr['id'] == $id) {
                     // ano, debump podle casu predchoziho postu nebo samotneho topicu (pokud se smazala jedina odpoved)

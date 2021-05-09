@@ -17,7 +17,7 @@ use Sunlight\Util\StringGenerator;
 use Sunlight\Util\StringManipulator;
 use Sunlight\Util\Url;
 
-define(__NAMESPACE__ . '\CONFIG_PATH', __DIR__ . '/../config.php');
+const CONFIG_PATH = __DIR__ . '/../config.php';
 
 // bootstrap
 require __DIR__ . '/../system/bootstrap.php';
@@ -384,10 +384,12 @@ class StepRunner
 
             if (!$step->isComplete()) {
                 return $this->runStep($step, $vars);
-            } else {
-                $step->postComplete();
             }
+
+            $step->postComplete();
         }
+
+        return null;
     }
 
     /**
@@ -617,9 +619,9 @@ abstract class Step
     {
         if (Config::isLoaded() && array_key_exists($key, Config::$config)) {
             return Config::$config[$key];
-        } else {
-            return $default;
         }
+
+        return $default;
     }
 }
 
@@ -829,7 +831,7 @@ class ConfigurationStep extends Step
             <td><input type="text"<?= Form::restorePostValueAndName('config_timezone', $this->getConfig('timezone')) ?>></td>
             <td class="help">
                 <?php Labels::render('config.timezone.help') ?>
-                <a href="http://php.net/timezones" target="_blank">PHP timezones</a>
+                <a href="https://php.net/timezones" target="_blank">PHP timezones</a>
             </td>
         </tr>
         <tr>
@@ -837,7 +839,7 @@ class ConfigurationStep extends Step
             <td><input type="text"<?= Form::restorePostValueAndName('config_locale', $this->getArrayConfigAsString('locale')) ?>></td>
             <td class="help">
                 <?php Labels::render('config.locale.help') ?>
-                <a href="http://php.net/setlocale" target="_blank">setlocale()</a>
+                <a href="https://php.net/setlocale" target="_blank">setlocale()</a>
             </td>
         </tr>
         <tr>
@@ -869,15 +871,9 @@ class ConfigurationStep extends Step
      * @param callable|null $mapper
      * @return array|null
      */
-    private function getArrayConfigFromString(string $value, ?callable $mapper = null): ?array
+    private function getArrayConfigFromString(string $value): ?array
     {
-        $array = preg_split('/\s*,\s*/', $value, null, PREG_SPLIT_NO_EMPTY);
-
-        if ($mapper !== null) {
-            $array = array_map($mapper, $array);
-        }
-
-        return empty($array) ? null : $array;
+        return preg_split('/\s*,\s*/', $value, null, PREG_SPLIT_NO_EMPTY) ?: null;
     }
 
     /**
@@ -887,10 +883,10 @@ class ConfigurationStep extends Step
      * @param array|null  $default
      * @return string
      */
-    private function getArrayConfigAsString(string $key, ?array $default = null): string
+    private function getArrayConfigAsString(string $key): string
     {
         if (!Config::isLoaded()) {
-            $value = $default;
+            $value = null;
         } else {
             $value = $this->getConfig($key);
         }

@@ -50,12 +50,10 @@ return function ($id = null) {
                 $inputs
             );
 
+        } elseif ($sboxdata['locked'] != 1) {
+            $result .= _lang('posts.loginrequired');
         } else {
-            if ($sboxdata['locked'] != 1) {
-                $result .= _lang('posts.loginrequired');
-            } else {
-                $result .= "<img src='" . Template::image("icons/lock.png") . "' alt='locked' class='icon'>" . _lang('posts.locked2');
-            }
+            $result .= "<img src='" . Template::image("icons/lock.png") . "' alt='locked' class='icon'>" . _lang('posts.locked2');
         }
 
         $result .= "\n</div>\n<div class='sbox-posts'>";

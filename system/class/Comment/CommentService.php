@@ -349,12 +349,10 @@ class CommentService
                 $form_output .= User::renderLoginForm();
             }
 
+        } elseif (!$locked) {
+            $form_output .= "<a class='button' href='" . _e(UrlHelper::appendParams($url, "addpost&page=" . $paging['current'])) . "#post-form'><img class='icon' src='" . Template::image('icons/bubble.png') . "' alt='post'>" . $addlink . "</a>";
         } else {
-            if (!$locked) {
-                $form_output .= "<a class='button' href='" . _e(UrlHelper::appendParams($url, "addpost&page=" . $paging['current'])) . "#post-form'><img class='icon' src='" . Template::image('icons/bubble.png') . "' alt='post'>" . $addlink . "</a>";
-            } else {
-                $form_output .= "<img src='" . Template::image("icons/lock.png") . "' alt='stop' class='icon'><strong>" . _lang('posts.locked' . $locked_textid) . "</strong>";
-            }
+            $form_output .= "<img src='" . Template::image("icons/lock.png") . "' alt='stop' class='icon'><strong>" . _lang('posts.locked' . $locked_textid) . "</strong>";
         }
 
         $form_output .= "\n</div>\n";
@@ -736,6 +734,8 @@ class CommentService
         }
 
         DB::delete(_comment_table, $cond);
+
+        return null;
     }
 
     /**

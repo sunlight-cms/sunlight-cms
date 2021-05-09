@@ -29,10 +29,8 @@ class TemporaryFile extends \SplFileInfo
     function __construct(?string $fileName = null, ?string $tmpDir = null)
     {
         // generate a file name
-        if ($fileName === null) {
-            if (($fileName = tempnam($tmpDir ?: sys_get_temp_dir(), '')) === (false)) {
-                throw new \RuntimeException('Unable to create temporary file');
-            }
+        if ($fileName === null && ($fileName = tempnam($tmpDir ?: sys_get_temp_dir(), '')) === false) {
+            throw new \RuntimeException('Unable to create temporary file');
         }
 
         // make sure the discardAll method is called on shutdown

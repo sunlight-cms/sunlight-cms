@@ -6,7 +6,6 @@ use Sunlight\Extend;
 use Sunlight\Paginator;
 use Sunlight\Comment\Comment;
 use Sunlight\Router;
-use Sunlight\Template;
 use Sunlight\User;
 use Sunlight\Util\UrlHelper;
 

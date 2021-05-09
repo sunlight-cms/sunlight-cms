@@ -292,22 +292,6 @@ class TreeManager
     }
 
     /**
-     * Ziskat ID rodice uzlu
-     *
-     * @param int|null $nodeId
-     * @return int|null
-     */
-    private function getParent(?int $nodeId): ?int
-    {
-        $node = DB::queryRow('SELECT ' . $this->parentColumn . ' FROM `' . $this->table . '` WHERE ' . $this->idColumn . '=' . DB::val($nodeId));
-        if ($node === false) {
-            throw new \RuntimeException(sprintf('Node "%s" does not exist', $nodeId));
-        }
-
-        return $node[$this->parentColumn];
-    }
-
-    /**
      * Ziskat korenovy uzel pro dany uzel
      *
      * @param int $nodeId
@@ -480,7 +464,7 @@ class TreeManager
             } else {
                 $childCondition = $this->parentColumn . ' IS NULL';
             }
-            $children = DB::query($s = 'SELECT ' . $this->idColumn . ',' . $this->depthColumn . ' FROM `' . $this->table . '` WHERE ' . $childCondition);
+            $children = DB::query('SELECT ' . $this->idColumn . ',' . $this->depthColumn . ' FROM `' . $this->table . '` WHERE ' . $childCondition);
             if (DB::size($children) > 0) {
                 // uzel ma potomky, pridat do fronty
                 if ($queue[$i][0] !== null) {
@@ -529,9 +513,9 @@ class TreeManager
      * @param array  $changeset
      * @param int    $maxPerQuery
      */
-    private function updateSet(string $column, array $set, array $changeset, int $maxPerQuery = 100): void
+    private function updateSet(string $column, array $set, array $changeset): void
     {
-        DB::updateSet($this->table, $column, $set, $changeset, $maxPerQuery);
+        DB::updateSet($this->table, $column, $set, $changeset);
     }
 
     /**
@@ -541,8 +525,8 @@ class TreeManager
      * @param array  $set
      * @param int    $maxPerQuery
      */
-    private function deleteSet(string $column, array $set, int $maxPerQuery = 100): void
+    private function deleteSet(string $column, array $set): void
     {
-        DB::deleteSet($this->table, $column, $set, $maxPerQuery);
+        DB::deleteSet($this->table, $column, $set);
     }
 }

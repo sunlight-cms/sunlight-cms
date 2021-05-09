@@ -165,9 +165,9 @@ abstract class User
             && is_dir($dirPath)
         ) {
             return $dirPath;
-        } else {
-            return self::getHomeDir();
         }
+
+        return self::getHomeDir();
     }
 
     /**

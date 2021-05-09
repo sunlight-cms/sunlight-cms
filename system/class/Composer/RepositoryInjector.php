@@ -42,7 +42,7 @@ class RepositoryInjector
 
         if (
             $constraintMap->has('php')
-            && !$this->satisfies($phpVersion, $phpConstraints = $constraintMap->getConstraints('php'), $failedConstraints)
+            && !$this->satisfies($phpVersion, $constraintMap->getConstraints('php'), $failedConstraints)
         ) {
             $errors[] = sprintf(
                 'current PHP version %s is not compatible with constraints %s',

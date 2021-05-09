@@ -30,7 +30,7 @@ if (isset($_FILES['archive']) && is_uploaded_file($_FILES['archive']['tmp_name']
         } else {
             $message = Message::warning(_lang('admin.plugins.upload.no_plugins'));
         }
-    } catch (\Throwable $e) {
+    } catch (Throwable $e) {
         $message = Message::error(_lang('global.error')) . Core::renderException($e);
     }
 }

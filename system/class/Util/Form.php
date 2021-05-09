@@ -159,12 +159,12 @@ abstract class Form
         if ($param) {
             if ($value !== null && $value !== '') {
                 return ' value="' . $value . '"';
-            } else {
-                return '';
             }
-        } else {
-            return $value;
+
+            return '';
         }
+
+        return $value;
     }
 
     /**
@@ -232,15 +232,15 @@ abstract class Form
             }
 
             return $output;
-        } else {
-            // hodnota
-            $name = _e($key);
-            if (!empty($pkeys)) {
-                $name .= _e('[' . implode('][', $pkeys) . ']');
-            }
-
-            return "<input type='hidden' name='" . $name . "' value='" . _e($value) . "'>";
         }
+
+        // hodnota
+        $name = _e($key);
+        if (!empty($pkeys)) {
+            $name .= _e('[' . implode('][', $pkeys) . ']');
+        }
+
+        return "<input type='hidden' name='" . $name . "' value='" . _e($value) . "'>";
     }
 
     /**

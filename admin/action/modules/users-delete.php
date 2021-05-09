@@ -45,18 +45,14 @@ if ($continue) {
     <input type='submit' name='confirmed' value='" . _lang('admin.users.deleteuser') . "'>
 " . Xsrf::getInput() . "</form>";
         }
+    } elseif ($query['id'] == _super_admin_id) {
+        $output .= Message::warning(_lang('global.rootnote'));
     } else {
-        if ($query['id'] == _super_admin_id) {
-            $output .= Message::warning(_lang('global.rootnote'));
-        } else {
-            $output .= Message::warning(_lang('admin.users.deleteuser.selfnote'));
-        }
+        $output .= Message::warning(_lang('admin.users.deleteuser.selfnote'));
     }
 
+} elseif ($levelconflict == false) {
+    $output .= Message::error(_lang('global.baduser'));
 } else {
-    if ($levelconflict == false) {
-        $output .= Message::error(_lang('global.baduser'));
-    } else {
-        $output .= Message::error(_lang('global.disallowed'));
-    }
+    $output .= Message::error(_lang('global.disallowed'));
 }

@@ -47,7 +47,7 @@ class Paginator
             $param = 'page';
         }
         if (is_string($table)) {
-            $count = DB::result(DB::query("SELECT COUNT(*) FROM " . DB::escIdt($table) . (isset($alias) ? " AS {$alias}" : '') . " WHERE " . $conditions), 0);
+            $count = DB::result(DB::query("SELECT COUNT(*) FROM " . DB::escIdt($table) . (isset($alias) ? " AS {$alias}" : '') . " WHERE " . $conditions));
         } else {
             $count = $table;
         }
@@ -175,7 +175,7 @@ class Paginator
      */
     static function getItemPage(int $limit, string $table, string $conditions = "1"): int
     {
-        $count = DB::result(DB::query("SELECT COUNT(*) FROM " .  DB::escIdt($table) . " WHERE " . $conditions), 0);
+        $count = DB::result(DB::query("SELECT COUNT(*) FROM " .  DB::escIdt($table) . " WHERE " . $conditions));
 
         return (int) floor($count / $limit + 1);
     }

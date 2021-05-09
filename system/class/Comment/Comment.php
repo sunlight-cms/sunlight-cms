@@ -5,7 +5,6 @@ namespace Sunlight\Comment;
 use Sunlight\Bbcode;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
-use Sunlight\Template;
 
 abstract class Comment
 {
@@ -32,7 +31,9 @@ abstract class Comment
             // je uzivatel autorem prispevku?
             if ($post[$userQuery['prefix'] . 'id'] == _user_id && ($post['time'] + _postadmintime > time() || _priv_unlimitedpostaccess)) {
                 return true;
-            } elseif (_priv_adminposts && _priv_level > $post[$userQuery['prefix'] . 'group_level']) {
+            }
+
+            if (_priv_adminposts && _priv_level > $post[$userQuery['prefix'] . 'group_level']) {
                 // uzivatel ma pravo spravovat cizi prispevky
                 return true;
             }
@@ -111,7 +112,7 @@ LEFT JOIN " . _comment_table . " home_post ON({$alias}.type=" . _post_forum_topi
 
         // pridat pocet
         if ($doCount) {
-            $result[] = (int) DB::result(DB::query("SELECT COUNT({$alias}.id) FROM " . _comment_table . " {$alias} {$joins} WHERE {$result[2]}"), 0);
+            $result[] = (int) DB::result(DB::query("SELECT COUNT({$alias}.id) FROM " . _comment_table . " {$alias} {$joins} WHERE {$result[2]}"));
         }
 
         return $result;

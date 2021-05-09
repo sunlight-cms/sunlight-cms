@@ -18,10 +18,8 @@ $continue = false;
 if (isset($_GET['id'])) {
     $id = (int) Request::get('id');
     $query = DB::queryRow("SELECT id,node_level,node_depth,node_parent,title,type,type_idt,ord FROM " . _page_table . " WHERE id=" . $id);
-    if ($query !== false) {
-        if (User::hasPrivilege('admin' . $type_array[$query['type']])) {
-            $continue = true;
-        }
+    if ($query !== false && User::hasPrivilege('admin' . $type_array[$query['type']])) {
+        $continue = true;
     }
 }
 

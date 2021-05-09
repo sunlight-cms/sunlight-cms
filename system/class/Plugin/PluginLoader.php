@@ -179,9 +179,7 @@ class PluginLoader
         } else {
             // there are errors
             $plugin['status'] = Plugin::STATUS_HAS_ERRORS;
-            if ($options !== null && empty($plugin['definition_errors'])) {
-                $plugin['options'] = $options;
-            } else {
+            if ($options === null || !empty($plugin['definition_errors'])) {
                 $options = [
                     'id' => $plugin['id'],
                     'name' => $plugin['id'],
@@ -189,8 +187,8 @@ class PluginLoader
                     'api' => '0.0.0',
                 ];
                 $this->commonOptionSet->process($options, $context);
-                $plugin['options'] = $options;
             }
+            $plugin['options'] = $options;
         }
 
         // resolve plugin class
@@ -292,7 +290,7 @@ class PluginLoader
      * @param array $defaultOptions
      * @return array
      */
-    private function createPluginData(string $id, string $file, ?string $webPath, string $typeName, array $defaultOptions = []): array
+    private function createPluginData(string $id, string $file, ?string $webPath, string $typeName): array
     {
         $file = realpath($file);
 
@@ -307,7 +305,7 @@ class PluginLoader
             'web_path' => $webPath,
             'errors' => [],
             'definition_errors' => [],
-            'options' => $defaultOptions + ['name' => $id],
+            'options' => ['name' => $id],
         ];
     }
 
@@ -478,9 +476,9 @@ class PluginLoader
         return true;
     }
 
-    private function resolveAutoload(array &$plugins, array &$autoload): void
+    private function resolveAutoload(array $plugins, array &$autoload): void
     {
-        foreach ($plugins as &$plugin) {
+        foreach ($plugins as $plugin) {
             if (Plugin::STATUS_OK !== $plugin['status']) {
                 continue;
             }

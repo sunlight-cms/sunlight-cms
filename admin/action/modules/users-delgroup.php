@@ -79,10 +79,8 @@ if ($continue) {
         $output .= Message::ok(_lang('global.done'));
     }
 
+} elseif ($levelconflict == false) {
+    $output .= Message::error(_lang('global.badinput'));
 } else {
-    if ($levelconflict == false) {
-        $output .= Message::error(_lang('global.badinput'));
-    } else {
-        $output .= Message::error(_lang('global.disallowed'));
-    }
+    $output .= Message::error(_lang('global.disallowed'));
 }

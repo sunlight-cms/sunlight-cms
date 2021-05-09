@@ -52,7 +52,7 @@ class Message
      * @param bool        $showKeys    render $message keys as well
      * @return string
      */
-    static function renderList(array $messages, ?string $description = null, $showKeys = false): string
+    static function renderList(array $messages, ?string $description = null, bool $showKeys = false): string
     {
         $output = '';
 
@@ -137,7 +137,7 @@ class Message
                 . "</div>\n";
         }
 
-        return (string) $output;
+        return $output;
     }
 
     /**
@@ -183,16 +183,13 @@ class Message
         if ($this->isHtml) {
             // append to current HTML
             $this->message .= $isHtml ? $str : _e($str);
+        } elseif ($isHtml) {
+            // convert message to HTML
+            $this->message = _e($this->message) . $str;
+            $this->isHtml = true;
         } else {
-            // append to current plaintext
-            if ($isHtml) {
-                // convert message to HTML
-                $this->message = _e($this->message) . $str;
-                $this->isHtml = true;
-            } else {
-                // append as-is
-                $this->message .= $str;
-            }
+            // append as-is
+            $this->message .= $str;
         }
     }
 }

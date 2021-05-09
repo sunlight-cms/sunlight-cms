@@ -52,9 +52,9 @@ if (isset($_GET['id'])) {
         if (!isset($_GET['idt'])) {
             $continue = false;
             return;
-        } else {
-            $type_idt = (string) Request::get('idt');
         }
+
+        $type_idt = (string) Request::get('idt');
     } else {
         $type_idt = null;
     }

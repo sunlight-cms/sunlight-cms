@@ -13,7 +13,7 @@ return function ($id = null, $text = null, $nove_okno = false) {
         $id = DB::val($id);
     }
     $query = DB::queryRow("SELECT title,slug FROM " . _page_table . " WHERE " . ($is_id ? 'id' : 'slug') . "=" . $id);
-    if (isset($nove_okno) && (bool) $nove_okno) {
+    if ($nove_okno) {
         $target = " target='_blank'";
     } else {
         $target = "";
