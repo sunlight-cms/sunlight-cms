@@ -155,15 +155,11 @@ abstract class Form
         } elseif ($else !== null) {
             $value = $else_entities ? _e($else) : $else;
         } else {
-            $value = null;
+            $value = '';
         }
 
-        if ($param) {
-            if ($value !== null && $value !== '') {
-                return ' value="' . $value . '"';
-            }
-
-            return '';
+        if ($param && $value !== '') {
+            return ' value="' . $value . '"';
         }
 
         return $value;
