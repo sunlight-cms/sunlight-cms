@@ -147,7 +147,7 @@ class PluginArchive
                     ];
                 }
 
-                if (Plugin::FILE === $subpath) {
+                if ($subpath === Plugin::FILE) {
                     $this->plugins[$type][$name]['valid'] = true;
                 }
             }

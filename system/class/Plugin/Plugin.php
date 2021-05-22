@@ -158,7 +158,7 @@ abstract class Plugin
      */
     function isDisabled(): bool
     {
-        return self::STATUS_DISABLED === $this->status;
+        return $this->status === self::STATUS_DISABLED;
     }
 
     /**
@@ -213,7 +213,7 @@ abstract class Plugin
      */
     function needsInstallation(): bool
     {
-        return self::STATUS_NEEDS_INSTALLATION === $this->status;
+        return $this->status === self::STATUS_NEEDS_INSTALLATION;
     }
 
     /**
@@ -253,7 +253,7 @@ abstract class Plugin
      */
     function hasErrors(): bool
     {
-        return self::STATUS_HAS_ERRORS === $this->status;
+        return $this->status === self::STATUS_HAS_ERRORS;
     }
 
     /**

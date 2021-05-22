@@ -486,7 +486,7 @@ class PluginManager
             $this->inactivePlugins[$type] = [];
 
             foreach ($plugins as $name => $plugin) {
-                if (Plugin::STATUS_OK === $plugin['status']) {
+                if ($plugin['status'] === Plugin::STATUS_OK) {
                     $pluginInstance = new $plugin['options']['class']($plugin, $this);
 
                     if (!is_a($pluginInstance, $this->types[$type]['class'])) {

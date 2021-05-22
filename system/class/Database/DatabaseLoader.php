@@ -83,7 +83,7 @@ abstract class DatabaseLoader
             // replace the match
             if (
                 $segment !== null
-                && SqlReader::QUOTED === $queryMap[$segment][0]
+                && $queryMap[$segment][0] === SqlReader::QUOTED
                 && $offset === $queryMap[$segment][1]
             ) {
                 // quoted - use new prefix

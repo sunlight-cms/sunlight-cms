@@ -350,7 +350,7 @@ class PluginLoader
                 $canBeAdded = true;
                 $errors = [];
 
-                if (Plugin::STATUS_OK === $plugin['status']) {
+                if ($plugin['status'] === Plugin::STATUS_OK) {
                     if (isset($circularDependencyMap[$name])) {
                         // the plugin is in a circular dependency chain
                         $errors[] = sprintf('circular dependency detected: "%s"', $circularDependencyMap[$name]);
@@ -417,7 +417,7 @@ class PluginLoader
 
         $checkQueue = [];
         foreach ($plugins as $name => $plugin) {
-            if (Plugin::STATUS_OK === $plugin['status']) {
+            if ($plugin['status'] === Plugin::STATUS_OK) {
                 foreach (array_keys($plugin['options']['requires']) as $dependency) {
                     $checkQueue[] = [$dependency, [$name => true, $dependency => true]];
                 }
@@ -456,7 +456,7 @@ class PluginLoader
      */
     private function checkDependency(array $plugin, string $requiredVersion, array &$errors): bool
     {
-        if (Plugin::STATUS_OK !== $plugin['status']) {
+        if ($plugin['status'] !== Plugin::STATUS_OK) {
             $errors[] = sprintf('dependency "%s" is not available', $plugin['id']);
             
             return false;
@@ -479,7 +479,7 @@ class PluginLoader
     private function resolveAutoload(array $plugins, array &$autoload): void
     {
         foreach ($plugins as $plugin) {
-            if (Plugin::STATUS_OK !== $plugin['status']) {
+            if ($plugin['status'] !== Plugin::STATUS_OK) {
                 continue;
             }
 
@@ -639,7 +639,7 @@ class PluginLoader
     private function resolveInstallationStatus(array &$plugins): void
     {
         foreach ($plugins as &$plugin) {
-            if (Plugin::STATUS_HAS_ERRORS !== $plugin['status'] && $plugin['options']['installer']) {
+            if ($plugin['status'] !== Plugin::STATUS_HAS_ERRORS && $plugin['options']['installer']) {
                 $installer = PluginInstaller::load(
                     $plugin['dir'],
                     $plugin['options']['namespace'],
@@ -648,7 +648,7 @@ class PluginLoader
 
                 $isInstalled = $installer->isInstalled();
 
-                if (!$isInstalled && Plugin::STATUS_OK === $plugin['status']) {
+                if (!$isInstalled && $plugin['status'] === Plugin::STATUS_OK) {
                     $plugin['status'] = Plugin::STATUS_NEEDS_INSTALLATION;
                 }
 

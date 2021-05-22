@@ -92,7 +92,7 @@ class Password
             throw new \InvalidArgumentException('Password must not be empty');
         }
 
-        if (self::MD5_LEGACY_ALGO === $algo) {
+        if ($algo === self::MD5_LEGACY_ALGO) {
             // backward compatibility
             if ($iterations !== 0) {
                 throw new \InvalidArgumentException(sprintf('Iterations is expected to be 0 if algo = "%s"', $algo));
@@ -164,8 +164,8 @@ class Password
     function shouldUpdate(): bool
     {
         return
-            self::PREFERRED_ALGO !== $this->algo
-            || self::PBKDF2_ITERATIONS > $this->iterations;
+            $this->algo !== self::PREFERRED_ALGO
+            || $this->iterations < self::PBKDF2_ITERATIONS;
     }
 
     /**

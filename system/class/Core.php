@@ -424,7 +424,7 @@ abstract class Core
     private static function checkSystemState(): void
     {
         // check database version
-        if (!defined('_dbversion') || self::VERSION !== _dbversion) {
+        if (!defined('_dbversion') || _dbversion !== self::VERSION) {
             self::systemFailure(
                 'Verze nainstalované databáze není kompatibilní s verzí systému.',
                 'Database version is not compatible with the current system version.'

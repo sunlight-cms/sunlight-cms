@@ -139,7 +139,7 @@ if (!empty($_POST)) {
 
             $backup_name = sprintf(
                 '%s_%s_%s.zip',
-                BackupBuilder::TYPE_PARTIAL === $type
+                $type === BackupBuilder::TYPE_PARTIAL
                     ? 'backup'
                     : 'full_backup',
                 Url::base()->host,

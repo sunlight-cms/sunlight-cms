@@ -348,7 +348,7 @@ class BackupBuilder
      */
     function build(int $type): TemporaryFile
     {
-        if (self::TYPE_PARTIAL !== $type && self::TYPE_FULL !== $type) {
+        if ($type !== self::TYPE_PARTIAL && $type !== self::TYPE_FULL) {
             throw new \InvalidArgumentException('Invalid type');
         }
 

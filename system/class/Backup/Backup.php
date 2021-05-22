@@ -474,7 +474,7 @@ class Backup
     {
         $optionSet = new OptionSet([
             'system_version' => ['type' => 'string', 'required' => true, 'normalizer' => function ($value) {
-                if (Core::VERSION !== $value) {
+                if ($value !== Core::VERSION) {
                     throw new OptionSetNormalizerException('incompatible system version');
                 }
             }],
