@@ -96,6 +96,7 @@ class Labels
             'config.error.secret.empty' => 'tajný hash nesmí být prázdný',
             'config.error.app_id.empty' => 'ID aplikace nesmí být prázdné',
             'config.error.app_id.invalid' => 'ID aplikace obsahuje nepovolené znaky',
+            'config.error.write_failed' => 'Nepodařilo se zapsat %config_path%. Zkontrolujte přístupová práva.',
             'config.db' => 'Přístup k MySQL databázi',
             'config.db.server' => 'Server',
             'config.db.server.help' => 'host (např. localhost nebo 127.0.0.1)',
@@ -176,6 +177,7 @@ class Labels
             'config.error.secret.empty' => 'secret hash must not be empty',
             'config.error.app_id.empty' => 'app ID must not be empty',
             'config.error.app_id.invalid' => 'app ID contains invalid characters',
+            'config.error.write_failed' => 'Could not write %config_path%. Check filesystem permissions.',
             'config.db' => 'MySQL database access',
             'config.db.server' => 'Server',
             'config.db.server.help' => 'host (e.g. localhost or 127.0.0.1)',
@@ -737,10 +739,12 @@ class ConfigurationStep extends Step
         if (empty($this->errors)) {
             $configTemplate = PhpTemplate::fromFile(__DIR__ . '/../system/config_template.php');
 
-            file_put_contents(CONFIG_PATH, $configTemplate->compile($config));
-
-            // reload
-            Config::load();
+            if (@file_put_contents(CONFIG_PATH, $configTemplate->compile($config)) !== false) {
+                // reload
+                Config::load();
+            } else {
+                $this->errors[] = ['write_failed', ['%config_path%' => CONFIG_PATH]];
+            }
         }
     }
 
