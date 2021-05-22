@@ -30,6 +30,7 @@ abstract class Plugin
 
     /** @var array */
     static $commonOptions = [
+        '$schema' => ['type' => 'string'],
         'name' => ['type' => 'string', 'required' => true],
         'description' => ['type' => 'string'],
         'author' => ['type' => 'string'],
@@ -39,7 +40,7 @@ abstract class Plugin
         'php' => ['type' => 'string'],
         'extensions' => ['type' => 'array', 'default' => []],
         'requires' => ['type' => 'array', 'default' => []],
-        'installer' => ['type' => 'boolean', 'nullable' => true, 'default' => false],
+        'installer' => ['type' => 'boolean', 'default' => false],
         'autoload' => ['type' => 'array', 'default' => [], 'normalizer' => [PluginOptionNormalizer::class, 'normalizeAutoload']],
         'debug' => ['type' => 'boolean', 'nullable' => true],
         'class' => ['type' => 'string'],

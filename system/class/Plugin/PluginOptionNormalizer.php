@@ -190,11 +190,8 @@ abstract class PluginOptionNormalizer
             if (is_array($callback) && $callback[0] === '$this') {
                 $callback = $callback[1];
                 $useThis = true;
-            } elseif (
-                ($doubleColonPos = strpos($callback, '::')) !== false
-                && substr($callback, 0, $doubleColonPos) === '$this'
-            ) {
-                $callback = substr($callback, $doubleColonPos + 2);
+            } elseif (strncmp($callback, '$this::', 7) === 0) {
+                $callback = substr($callback, 7);
                 $useThis = true;
             } else {
                 $useThis = false;

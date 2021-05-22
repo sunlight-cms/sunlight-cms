@@ -1,0 +1,92 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "properties": {
+        "name": {
+            "type": "string"
+        },
+        "description": {
+            "type": "string"
+        },
+        "author": {
+            "type": "string"
+        },
+        "url": {
+            "type": "string"
+        },
+        "version": {
+            "type": "string"
+        },
+        "api": {
+            "type": "string"
+        },
+        "php": {
+            "type": "string"
+        },
+        "extensions": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "requires": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "installer": {
+            "type": "boolean"
+        },
+        "autoload": {
+            "type": "object",
+            "properties": {
+                "psr-0": {
+                    "$ref": "#/definitions/autoload-map"
+                },
+                "psr-4": {
+                    "$ref": "#/definitions/autoload-map"
+                },
+                "classmap": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "debug": {
+            "type": ["boolean", "null"]
+        },
+        "class": {
+            "type": "string"
+        },
+        "namespace": {
+            "type": "string"
+        },
+        "inject_composer": {
+            "type": "boolean"
+        }
+    },
+    "required": [
+        "name",
+        "version",
+        "api"
+    ],
+    "definitions": {
+        "autoload-map": {
+            "type": "object",
+            "patternProperties": {
+                "^": {
+                    "type": [
+                        "string",
+                        "array"
+                    ],
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    }
+}

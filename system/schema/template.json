@@ -1,0 +1,78 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "allOf": [
+        {
+            "$ref": "plugin.json"
+        },
+        {
+            "properties": {
+                "css": {
+                    "$ref": "#/definitions/asset-map"
+                },
+                "js": {
+                    "$ref": "#/definitions/asset-map"
+                },
+                "responsive": {
+                    "type": "boolean"
+                },
+                "dark": {
+                    "type": "boolean"
+                },
+                "bbcode.buttons": {
+                    "type": "boolean"
+                },
+                "box.parent": {
+                    "type": "string"
+                },
+                "box.item": {
+                    "type": "string"
+                },
+                "box.title": {
+                    "type": "string"
+                },
+                "box.title.inside": {
+                    "type": "boolean"
+                },
+                "layouts": {
+                    "type": "object",
+                    "patternProperties": {
+                        "^": {
+                            "type": "object",
+                            "properties": {
+                                "template": {
+                                    "type": "string"
+                                },
+                                "slots": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "additionalProperties": false
+                        }
+                    },
+                    "required": [
+                        "default"
+                    ]
+                },
+                "lang_dir": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "layouts"
+            ]
+        }
+    ],
+    "definitions": {
+        "asset-map": {
+            "type": "object",
+            "patternProperties": {
+                "^": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

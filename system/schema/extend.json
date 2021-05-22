@@ -1,0 +1,49 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "allOf": [
+        {
+            "$ref": "plugin.json"
+        },
+        {
+            "properties": {
+                "events": {
+                    "$ref": "#/definitions/event-subscriber"
+                },
+                "events.web": {
+                    "$ref": "#/definitions/event-subscriber"
+                },
+                "events.admin": {
+                    "$ref": "#/definitions/event-subscriber"
+                },
+                "scripts": {
+                    "$ref": "#/definitions/path-list"
+                },
+                "scripts.web": {
+                    "$ref": "#/definitions/path-list"
+                },
+                "scripts.admin": {
+                    "$ref": "#/definitions/path-list"
+                },
+                "langs": {
+                    "$ref": "#/definitions/path-list"
+                }
+            }
+        }
+    ],
+    "definitions": {
+        "event-subscriber": {
+            "type": "array",
+            "items": {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 3
+            }
+        },
+        "path-list": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        }
+    }
+}

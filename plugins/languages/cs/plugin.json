@@ -1,4 +1,5 @@
 {
+    "$schema": "../../../system/schema/language.json",
     "name": "Čeština",
     "description": "Česká lokalizace systému.",
     "version": "8.0",
