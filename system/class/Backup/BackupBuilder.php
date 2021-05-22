@@ -64,11 +64,8 @@ class BackupBuilder
 
     /** @var array[] pattern list */
     private $includedPathMap = [
-        'system/backup/.htaccess' => ['static' => true, 'dynamic' => false],
         'system/backup/.gitkeep' => ['static' => true, 'dynamic' => false],
-        'system/cache/.htaccess' => ['static' => true, 'dynamic' => false],
         'system/cache/.gitkeep' => ['static' => true, 'dynamic' => false],
-        'system/tmp/.htaccess' => ['static' => true, 'dynamic' => false],
         'system/tmp/.gitkeep' => ['static' => true, 'dynamic' => false],
     ];
 
