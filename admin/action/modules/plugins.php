@@ -29,8 +29,8 @@ $renderPluginAuthor = function ($author, $url) {
     }
     if (!empty($author)) {
         $renderedAuthor .= _e($author);
-    } else {
-        $renderedAuthor .= _e(parse_url($url, PHP_URL_HOST));
+    } elseif (!empty($url)) {
+        $renderedAuthor .= _e(parse_url($url, PHP_URL_HOST) ?? '');
     }
     if (!empty($url)) {
         $renderedAuthor .= '</a>';

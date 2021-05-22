@@ -40,7 +40,7 @@ abstract class Plugin
         'php' => ['type' => 'string'],
         'extensions' => ['type' => 'array', 'default' => []],
         'requires' => ['type' => 'array', 'default' => []],
-        'installer' => ['type' => 'boolean', 'default' => false],
+        'installer' => ['type' => 'string', 'normalizer' => [PluginOptionNormalizer::class, 'normalizePath']],
         'autoload' => ['type' => 'array', 'default' => [], 'normalizer' => [PluginOptionNormalizer::class, 'normalizeAutoload']],
         'debug' => ['type' => 'boolean', 'nullable' => true],
         'class' => ['type' => 'string'],
@@ -188,7 +188,7 @@ abstract class Plugin
      */
     function hasInstaller(): bool
     {
-        return $this->options['installer'];
+        return $this->options['installer'] !== null;
     }
 
     /**
@@ -203,7 +203,7 @@ abstract class Plugin
             throw new \LogicException('Plugin has no installer');
         }
 
-        return PluginInstaller::load($this->dir, $this->options['namespace'], $this->camelId);
+        return require $this->options['installer'];
     }
 
     /**

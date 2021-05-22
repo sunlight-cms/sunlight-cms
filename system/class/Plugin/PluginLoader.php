@@ -639,16 +639,12 @@ class PluginLoader
     private function resolveInstallationStatus(array &$plugins): void
     {
         foreach ($plugins as &$plugin) {
-            if ($plugin['status'] !== Plugin::STATUS_HAS_ERRORS && $plugin['options']['installer']) {
-                $installer = PluginInstaller::load(
-                    $plugin['dir'],
-                    $plugin['options']['namespace'],
-                    $plugin['camel_id']
-                );
-
+            if ($plugin['status'] === Plugin::STATUS_OK && $plugin['options']['installer'] !== null) {
+                /** @var PluginInstaller $installer */
+                $installer = require $plugin['options']['installer'];
                 $isInstalled = $installer->isInstalled();
 
-                if (!$isInstalled && $plugin['status'] === Plugin::STATUS_OK) {
+                if (!$isInstalled) {
                     $plugin['status'] = Plugin::STATUS_NEEDS_INSTALLATION;
                 }
 
