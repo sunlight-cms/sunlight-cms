@@ -24,11 +24,9 @@ class ComposerBridge
     static function initMinimalCore(): void
     {
         if (!Core::isReady()) {
-            $root = __DIR__ . '/../../../';
-
-            Core::init($root, [
+            Core::init('./', [
                 'minimal_mode' => true,
-                'skip_components' => !is_dir($root . 'vendor/composer'),
+                'skip_components' => !is_dir('./vendor/composer'),
                 'config_file' => false,
             ]);
         }

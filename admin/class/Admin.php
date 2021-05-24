@@ -74,7 +74,7 @@ abstract class Admin
                 $output .= "<a href='" . _e(Router::module('messages')) . "'>" . _lang('usermenu.messages') . $messages_count . "</a>, ";
             }
             $output .= '<a href="' . _e(Router::module('settings')) . '">' . _lang('usermenu.settings') . '</a>, <a href="' . _e(Xsrf::addToUrl(Router::generate('system/script/logout.php?_return=admin/'))) . '">' . _lang('usermenu.logout') . '</a>]';
-            $output .= '<a href="' . _e(Core::$url) . '/" target="_blank" class="usermenu-web-link" title="' . _lang('admin.link.site') . '"><img class="icon" src="images/icons/guide.png" alt="' . _lang('admin.link.site') . '"></a>';
+            $output .= '<a href="' . _e(Core::getBaseUrl()->getPath()) . '/" target="_blank" class="usermenu-web-link" title="' . _lang('admin.link.site') . '"><img class="icon" src="images/icons/guide.png" alt="' . _lang('admin.link.site') . '"></a>';
         } else {
             $output .= '<a href="./">' . _lang('usermenu.guest') . '</a>';
         }

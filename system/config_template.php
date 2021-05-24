@@ -10,10 +10,6 @@ return [
     'db.name' => '@@db.name@@',
     'db.prefix' => '@@db.prefix@@',
 
-    // abs. cesta nebo URL bez lomitka na konci
-    // absolute path or URL without a trailing slash
-    'url' => '@@url@@',
-
     // nahodny tajny hash (pouzivano pro XSRF ochranu aj.)
     // random secret hash (used for XSRF protection etc.)
     // https://sunlight-cms.cz/resource/hashgen

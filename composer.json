@@ -13,17 +13,20 @@
         "ext-mysqli": "*",
         "ext-session": "*",
         "ext-zip": "*",
-        "kuria/class-loader": "^4.0",
-        "kuria/error": "^4.2",
-        "kuria/debug": "^4.0",
-        "kuria/event": "^2.0",
+        "composer/semver": "^3.0",
         "kuria/cache": "^5.0",
-        "composer/semver": "^3.0"
+        "kuria/class-loader": "^4.0",
+        "kuria/debug": "^4.0",
+        "kuria/error": "^4.2",
+        "kuria/event": "^2.0",
+        "kuria/request-info": "^1.0",
+        "kuria/url": "^4.0"
     },
     "config": {
         "platform": {
             "php": "7.1.99"
-        }
+        },
+        "sort-packages": true
     },
     "minimum-stability": "dev",
     "prefer-stable": true,

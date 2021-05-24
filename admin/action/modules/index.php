@@ -149,7 +149,7 @@ if (_user_group == _group_admin) {
 if (!_debug) {
     $output .= "<script>
 Sunlight.admin.indexCheckHtaccess(
-    " . json_encode(Core::$url . '/vendor/autoload.php?_why=this_is_a_test_if_htaccess_works') . ",
+    " . json_encode(Core::getBaseUrl()->getPath() . '/vendor/autoload.php?_why=this_is_a_test_if_htaccess_works') . ",
     " . json_encode(_lang('admin.index.htaccess_check_failure', ['%link%' => 'https://sunlight-cms.cz/resource/no-htaccess'])) . ",
 );
 </script>\n";

@@ -1,6 +1,7 @@
 <?php
 
 use Sunlight\Captcha;
+use Sunlight\Core;
 use Sunlight\Database\Database as DB;
 use Sunlight\Email;
 use Sunlight\GenericTemplates;
@@ -11,7 +12,6 @@ use Sunlight\Util\Form;
 use Sunlight\Util\Password;
 use Sunlight\Util\Request;
 use Sunlight\Util\StringGenerator;
-use Sunlight\Util\Url;
 
 defined('_root') or exit;
 
@@ -56,12 +56,13 @@ if (isset($_GET['user'], $_GET['hash'])) {
 
         // vygenerovat heslo a odeslat na email
         $newpass = StringGenerator::generateString(12);
+        $domain = Core::getBaseUrl()->getFullHost();
 
         if (!Email::send(
             $userdata['email'],
-            _lang('mod.lostpass.mail.subject', ['%domain%' => Url::base()->getFullHost()]),
+            _lang('mod.lostpass.mail.subject', ['%domain%' => $domain]),
             _lang('mod.lostpass.mail.text2', [
-                '%domain%' => Url::base()->getFullHost(),
+                '%domain%' => $domain,
                 '%username%' =>  $userdata['username'],
                 '%newpass%' => $newpass,
                 '%date%' => GenericTemplates::renderTime(time()),
@@ -121,12 +122,13 @@ if (isset($_GET['user'], $_GET['hash'])) {
 
         // odeslani emailu
         $link = Router::module('lostpass', 'user=' . $username . '&hash=' . $hash, true);
+        $domain = Core::getBaseUrl()->getFullHost();
 
         if (!Email::send(
             $userdata['email'],
-            _lang('mod.lostpass.mail.subject', ['%domain%' => Url::base()->getFullHost()]),
+            _lang('mod.lostpass.mail.subject', ['%domain%' => $domain]),
             _lang('mod.lostpass.mail.text', [
-                '%domain%' => Url::base()->getFullHost(),
+                '%domain%' => $domain,
                 '%username%' => $userdata['username'],
                 '%link%' => $link,
                 '%date%' => GenericTemplates::renderTime(time()),

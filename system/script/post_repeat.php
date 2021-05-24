@@ -4,7 +4,6 @@ use Sunlight\Core;
 use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
-use Sunlight\Util\Url;
 
 require '../bootstrap.php';
 Core::init('../../');
@@ -66,7 +65,7 @@ if ($valid && $login && !_logged_in) {
             </p>
 
             <p id="warning">
-                <?= _lang('xsrf.warning', ['%domain%' => Url::base()->getFullHost()]) ?>
+                <?= _lang('xsrf.warning', ['%domain%' => Core::getBaseUrl()->getFullHost()]) ?>
             </p>
 
             <?= User::renderPostRepeatForm(

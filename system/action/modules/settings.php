@@ -15,7 +15,6 @@ use Sunlight\Util\Form;
 use Sunlight\Util\Password;
 use Sunlight\Util\Request;
 use Sunlight\Util\StringManipulator;
-use Sunlight\Util\Url;
 use Sunlight\Xsrf;
 
 defined('_root') or exit;
@@ -260,7 +259,7 @@ if (isset($_POST['save'])) {
 
         Extend::call('mod.settings.download_personal_data', ['data' => &$personal_data]);
 
-        Response::download(sprintf('%s_%s.csv', Url::current()->host, $userdata['username']));
+        Response::download(sprintf('%s_%s.csv', Core::getBaseUrl()->getHost(), $userdata['username']));
 
         $outputHandle = fopen('php://output', 'a');
 

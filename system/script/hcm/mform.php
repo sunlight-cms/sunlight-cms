@@ -7,7 +7,6 @@ use Sunlight\GenericTemplates;
 use Sunlight\IpLog;
 use Sunlight\Util\Response;
 use Sunlight\Util\Request;
-use Sunlight\Util\Url;
 use Sunlight\Util\UrlHelper;
 use Sunlight\Xsrf;
 
@@ -66,7 +65,7 @@ if (Xsrf::check()) {
             $info_ip .= ' (' . _user_name . ')';
         }
         $text .= "\n\n" . str_repeat('-', 16) . "\n" . _lang('hcm.mailform.info', [
-            '%domain%' => Url::base()->getFullHost(),
+            '%domain%' => Core::getBaseUrl()->getFullHost(),
             '%time%' => GenericTemplates::renderTime(time()),
             '%ip%' => $info_ip,
             '%sender%' => $sender,

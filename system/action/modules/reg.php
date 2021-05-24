@@ -14,7 +14,6 @@ use Sunlight\Util\Password;
 use Sunlight\Util\Request;
 use Sunlight\Util\StringGenerator;
 use Sunlight\Util\StringManipulator;
-use Sunlight\Util\Url;
 
 defined('_root') or exit;
 
@@ -252,7 +251,7 @@ if (!$user_data_valid && $show_form) {
         ], true);
 
         // potvrzovaci zprava
-        $domain = Url::base()->getFullHost();
+        $domain = Core::getBaseUrl()->getFullHost();
         $mail = Email::send(
             $user_data['email'],
             _lang('mod.reg.confirm.subject', ['%domain%' => $domain]),

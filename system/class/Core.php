@@ -12,6 +12,8 @@ use Kuria\Error\ErrorHandler;
 use Kuria\Error\Screen\WebErrorScreen;
 use Kuria\Error\Screen\WebErrorScreenEvents;
 use Kuria\Event\EventEmitter;
+use Kuria\RequestInfo\RequestInfo;
+use Kuria\Url\Url;
 use Sunlight\Database\Database as DB;
 use Sunlight\Exception\CoreException;
 use Sunlight\Image\ImageService;
@@ -20,8 +22,6 @@ use Sunlight\Plugin\PluginManager;
 use Sunlight\Util\DateTime;
 use Sunlight\Util\Environment;
 use Sunlight\Util\Filesystem;
-use Sunlight\Util\Response;
-use Sunlight\Util\Url;
 
 /**
  * Main system singleton
@@ -47,8 +47,6 @@ abstract class Core
     static $appId;
     /** @var string */
     static $secret;
-    /** @var string */
-    static $url;
     /** @var string */
     static $fallbackLang;
     /** @var bool */
@@ -85,6 +83,10 @@ abstract class Core
     /** @var array id => seconds */
     static $cronIntervals = [];
 
+    /** @var Url */
+    private static $baseUrl;
+    /** @var Url */
+    private static $currentUrl;
     /** @var bool */
     private static $ready = false;
 
@@ -136,8 +138,9 @@ abstract class Core
         // environment
         self::initEnvironment($options);
 
-        // resolve URL
-        self::$url = self::resolveUrl($options['url']);
+        // set URLs
+        self::$baseUrl = self::determineBaseUrl();
+        self::$currentUrl = RequestInfo::getUrl();
 
         // stop when minimal mode is enabled
         if ($options['minimal_mode']) {
@@ -212,7 +215,6 @@ abstract class Core
             'db.password' => null,
             'db.name' => null,
             'db.prefix' => null,
-            'url' => '',
             'secret' => null,
             'app_id' => null,
             'fallback_lang' => 'en',
@@ -266,28 +268,23 @@ abstract class Core
     }
 
     /**
-     * @param string $url
-     * @return string
+     * @return Url
      */
-    private static function resolveUrl(string $url): string
+    private static function determineBaseUrl(): Url
     {
-        $baseUrl = Url::parse($url);
-        $currentUrl = Url::current();
+        $baseDir = RequestInfo::getBaseDir();
 
-        // set missing base absolute URL components from the current URL
-        if ($baseUrl->scheme === null) {
-            $baseUrl->scheme = $currentUrl->scheme;
+        if (_root !== './') {
+            // drop subdirs beyond root
+            $baseDir = implode('/', array_slice(explode('/', $baseDir), 0, -substr_count(_root, '../')));
         }
 
-        if ($baseUrl->host === null) {
-            $baseUrl->host = $currentUrl->host;
-        }
+        $url = RequestInfo::getUrl();
+        $url->setPath($baseDir);
+        $url->setQuery([]);
+        $url->setFragment(null);
 
-        if ($baseUrl->port === null) {
-            $baseUrl->port = $currentUrl->port;
-        }
-
-        return $baseUrl->generateAbsolute();
+        return $url;
     }
 
     /**
@@ -447,27 +444,6 @@ abstract class Core
 
             self::updateSetting('install_check', 0);
         }
-
-        // verify current URL
-        if (!Environment::isCli()) {
-            $currentUrl = Url::current();
-            $baseUrl = Url::base();
-
-            if ($currentUrl->host !== $baseUrl->host || $currentUrl->scheme !== $baseUrl->scheme) {
-                // invalid hostname or scheme
-                $currentUrl->host = $baseUrl->host;
-                $currentUrl->scheme = $baseUrl->scheme;
-                Response::redirect($currentUrl->generateAbsolute());
-                exit;
-            }
-
-            if ($currentUrl->scheme !== $baseUrl->scheme) {
-                // invalid protocol
-                $currentUrl->scheme = $baseUrl->scheme;
-                Response::redirect($currentUrl->generateAbsolute());
-                exit;
-            }
-        }
     }
 
     /**
@@ -538,7 +514,7 @@ abstract class Core
             // cookie parameters
             $cookieParams = session_get_cookie_params();
             $cookieParams['httponly'] = 1;
-            $cookieParams['secure'] = Url::current()->scheme === 'https' ? 1 : 0;
+            $cookieParams['secure'] = self::$currentUrl->getScheme() === 'https' ? 1 : 0;
             session_set_cookie_params($cookieParams['lifetime'], $cookieParams['path'], $cookieParams['domain'], $cookieParams['secure'], $cookieParams['httponly']);
 
             // set session name and start it
@@ -865,6 +841,30 @@ abstract class Core
     }
 
     /**
+     * Get base URL
+     *
+     * The returned instance is a clone which may be modified.
+     *
+     * @return Url
+     */
+    public static function getBaseUrl(): Url
+    {
+        return clone self::$baseUrl;
+    }
+
+    /**
+     * Get current request URL
+     *
+     * The returned instance is a clone which may be modified.
+     *
+     * @return Url
+     */
+    public static function getCurrentUrl(): Url
+    {
+        return clone self::$currentUrl;
+    }
+
+    /**
      * Run system maintenance
      */
     static function doMaintenance(): void
@@ -971,7 +971,7 @@ abstract class Core
 
         // prepare variables
         $variables = [
-            'basePath' => Url::base()->path . '/',
+            'basePath' => self::$baseUrl->getPath() . '/',
             'currentTemplate' => Template::getCurrent()->getId(),
             'labels' => [
                 'alertConfirm' => _lang('javascript.alert.confirm'),

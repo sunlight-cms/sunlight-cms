@@ -3,6 +3,7 @@
 namespace Sunlight\Util;
 
 use Kuria\Debug\Dumper;
+use Kuria\Url\Url;
 use Sunlight\Core;
 
 /**
@@ -85,12 +86,12 @@ class HttpClient
             throw new HttpClientException($e->getMessage(), 0, $e);
         }
 
-        if ($url->host === null) {
+        if (!$url->hasHost()) {
             throw new HttpClientException('URL does not have a host');
         }
 
-        if ($url->scheme !== 'http' && $url->scheme !== 'https') {
-            throw new HttpClientException(sprintf('Expected http or https scheme, got %s', Dumper::dump($url->scheme)));
+        if ($url->getScheme() !== 'http' && $url->getScheme() !== 'https') {
+            throw new HttpClientException(sprintf('Expected http or https scheme, got %s', Dumper::dump($url->getScheme())));
         }
     }
 

@@ -3,9 +3,9 @@
 
 namespace Sunlight;
 
+use Kuria\Url\Url;
 use Sunlight\Util\HttpClient;
 use Sunlight\Util\HttpClientException;
-use Sunlight\Util\Url;
 
 class VersionChecker
 {
@@ -46,8 +46,8 @@ class VersionChecker
             ]);
 
             try {
-                $response = HttpClient::get($versionApiUrl->generate(), [
-                    'headers' => [sprintf('Referer: %s', Core::$url)],
+                $response = HttpClient::get($versionApiUrl->build(), [
+                    'headers' => [sprintf('Referer: %s', Core::getBaseUrl()->build())],
                     'timeout' => 1,
                 ]);
             } catch (HttpClientException $e) {

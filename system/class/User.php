@@ -15,7 +15,6 @@ use Sunlight\Util\Form;
 use Sunlight\Util\Password;
 use Sunlight\Util\Request;
 use Sunlight\Util\StringGenerator;
-use Sunlight\Util\Url;
 use Sunlight\Util\UrlHelper;
 
 abstract class User
@@ -483,11 +482,11 @@ abstract class User
             }
 
             // adresa formulare
-            $form_url = Url::current();
+            $form_url = Core::getCurrentUrl();
             if ($form_url->has('login_form_result')) {
                 $form_url->remove('login_form_result');
             }
-            $form_append .= "<input type='hidden' name='login_form_url' value='" . _e($form_url->generate(false)) . "'>\n";
+            $form_append .= "<input type='hidden' name='login_form_url' value='" . _e($form_url->buildRelative()) . "'>\n";
 
             // kod formulare
             $output .= Form::render(

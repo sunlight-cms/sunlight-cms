@@ -5,7 +5,6 @@ namespace Sunlight;
 use Sunlight\Database\Database as DB;
 use Sunlight\Util\Arr;
 use Sunlight\Util\Html;
-use Sunlight\Util\Url;
 
 abstract class Router
 {
@@ -20,7 +19,7 @@ abstract class Router
      */
     static function generate(string $path, bool $absolute = false): string
     {
-        $url = ($absolute ? Core::$url : Url::base()->path) . '/' . $path;
+        $url = ($absolute ? Core::getBaseUrl()->build() : Core::getBaseUrl()->getPath()) . '/' . $path;
 
         Extend::call('link', [
             'path' => $path,

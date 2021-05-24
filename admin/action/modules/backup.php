@@ -18,7 +18,6 @@ use Sunlight\Util\Request;
 use Sunlight\Util\Response;
 use Sunlight\Util\StringGenerator;
 use Sunlight\Util\StringManipulator;
-use Sunlight\Util\Url;
 use Sunlight\Xsrf;
 
 defined('_root') or exit;
@@ -142,7 +141,7 @@ if (!empty($_POST)) {
                 $type === BackupBuilder::TYPE_PARTIAL
                     ? 'backup'
                     : 'full_backup',
-                Url::base()->host,
+                Core::getBaseUrl()->getHost(),
                 date('Y_m_d')
             );
 

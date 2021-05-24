@@ -48,6 +48,6 @@ if ($continue) {
 if ($article_exists) {
     $aurl = Router::article($id, $query['slug'], null, true) . "#article-info";
 } else {
-    $aurl = Core::$url;
+    $aurl = Core::getBaseUrl()->build();
 }
 header("location: " . $aurl);

@@ -3,7 +3,6 @@
 namespace Sunlight;
 
 use Sunlight\Util\Environment;
-use Sunlight\Util\Url;
 
 class SystemChecker
 {
@@ -142,7 +141,7 @@ class SystemChecker
      */
     static function generateHtaccess(): string
     {
-        $basePath = preg_quote(Url::base()->path);
+        $basePath = preg_quote(Core::getBaseUrl()->getPath());
 
         return <<<HTACCESS
 RewriteEngine On

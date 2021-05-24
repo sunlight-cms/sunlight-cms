@@ -2,6 +2,7 @@
 
 namespace Sunlight\Admin;
 
+use Sunlight\Core;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\Message;
@@ -10,7 +11,6 @@ use Sunlight\Plugin\TemplateService;
 use Sunlight\Router;
 use Sunlight\User;
 use Sunlight\Util\Request;
-use Sunlight\Util\Url;
 use Sunlight\Xsrf;
 
 abstract class PageLister
@@ -214,13 +214,17 @@ abstract class PageLister
      */
     private static function renderBreadcrumbs(string &$output): void
     {
-        $url = Url::current();
+        $rootLink = Core::getCurrentUrl();
+        $rootLink->set('page_id', 'root');
 
         $output .= "<ul class=\"page-list-breadcrumbs\">\n";
-        $output .= "<li><a href=\"" . _e($url->set('page_id', 'root')->generateRelative()) . "\">" . _lang('global.all') . "</a></li>\n";
+        $output .= "<li><a href=\"" . _e($rootLink->buildRelative()) . "\">" . _lang('global.all') . "</a></li>\n";
         $path = PageManager::getPath(self::$config['current_page'], null, ['level_inherit', 'layout', 'layout_inherit']);
         foreach ($path as $page) {
-            $output .= "<li>" . self::renderPageFlags($page) . "<a href=\"" . _e($url->set('page_id', $page['id'])->generateRelative()) . "\" title=\"ID: {$page['id']}, " . _lang('admin.content.form.ord') . " {$page['ord']}\">{$page['title']}</a></li>\n";
+            $pageLink = Core::getCurrentUrl();
+            $pageLink->set('page_id', $page['id']);
+
+            $output .= "<li>" . self::renderPageFlags($page) . "<a href=\"" . _e($pageLink->buildRelative()) . "\" title=\"ID: {$page['id']}, " . _lang('admin.content.form.ord') . " {$page['ord']}\">{$page['title']}</a></li>\n";
         }
         $output .= "</ul>\n";
     }
@@ -436,7 +440,9 @@ abstract class PageLister
         // detect separator, compose link
         $isSeparator = ($page['type'] == _page_separator);
         if (!$isSeparator && $options['links'] && $page['node_depth'] > 0) {
-            $nodeLink = Url::current()->set('page_id', $page['id'])->generateRelative();
+            $nodeLink = Core::getCurrentUrl();
+            $nodeLink->set('page_id', $page['id']);
+            $nodeLink = $nodeLink->buildRelative();
         } else {
             $nodeLink = null;
         }

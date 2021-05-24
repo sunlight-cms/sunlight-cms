@@ -3,6 +3,8 @@
 namespace Sunlight\Util;
 
 use Kuria\Debug\Output;
+use Kuria\Url\Url;
+use Sunlight\Core;
 
 abstract class Response
 {
@@ -71,25 +73,25 @@ abstract class Response
     static function getReturnUrl(): string
     {
         $specifiedUrl = Request::get('_return', '');
-        $baseUrl = Url::base();
+        $baseUrl = Core::getBaseUrl();
         $returnUrl = clone $baseUrl;
 
         if ($specifiedUrl !== '') {
             if ($specifiedUrl[0] === '/') {
-                $returnUrl->path = $specifiedUrl;
+                $returnUrl->setPath($specifiedUrl);
             }  elseif ($specifiedUrl !== './') {
-                $returnUrl->path .= '/' . $specifiedUrl;
+                $returnUrl->setPath($returnUrl->getPath() . '/' . $specifiedUrl);
             }
         } elseif (!empty($_SERVER['HTTP_REFERER'])) {
             $returnUrl = Url::parse($_SERVER['HTTP_REFERER']);
         }
 
         // pouzit vychozi URL, pokud ma zjistena navratova URL jiny hostname (prevence open redirection vulnerability)
-        if ($baseUrl->host !== $returnUrl->host) {
+        if ($baseUrl->getHost() !== $returnUrl->getHost()) {
             $returnUrl = $baseUrl;
         }
 
-        return $returnUrl->generateAbsolute();
+        return $returnUrl->buildAbsolute();
     }
 
     /**

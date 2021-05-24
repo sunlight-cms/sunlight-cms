@@ -2,6 +2,9 @@
 
 namespace Sunlight\Util;
 
+use Kuria\Url\Url;
+use Sunlight\Core;
+
 abstract class UrlHelper
 {
     /**
@@ -83,18 +86,18 @@ abstract class UrlHelper
         }
     
         $parsedUrl = Url::parse($url);
-        $baseScheme = Url::base()->scheme;
+        $baseScheme = Core::getBaseUrl()->getScheme();
         
-        if ($parsedUrl->scheme === null) {
+        if (!$parsedUrl->hasScheme()) {
             // absolutni URL bez schematu
             return $baseScheme . '://' . $url;
         }
 
-        if ($baseScheme === 'https' && $parsedUrl->scheme !== $baseScheme) {
+        if ($baseScheme === 'https' && $parsedUrl->getScheme() !== $baseScheme) {
             // http => https
-            $parsedUrl->scheme = $baseScheme;
+            $parsedUrl->setScheme($baseScheme);
         }
 
-        return $parsedUrl->generateAbsolute();
+        return $parsedUrl->buildAbsolute();
     }
 }

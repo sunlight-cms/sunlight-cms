@@ -15,7 +15,6 @@ use Sunlight\Util\PhpTemplate;
 use Sunlight\Util\Request;
 use Sunlight\Util\StringGenerator;
 use Sunlight\Util\StringManipulator;
-use Sunlight\Util\Url;
 
 const CONFIG_PATH = __DIR__ . '/../config.php';
 
@@ -111,8 +110,6 @@ class Labels
             'config.db.prefix' => 'Prefix',
             'config.db.prefix.help' => 'předpona názvu tabulek',
             'config.system' => 'Nastavení systému',
-            'config.url' => 'Adresa webu',
-            'config.url.help' => 'absolutní cesta nebo URL ke stránkám',
             'config.secret' => 'Tajný hash',
             'config.secret.help' => 'náhodný tajný hash (používáno mj. jako součást XSRF ochrany)',
             'config.app_id' => 'ID aplikace',
@@ -192,8 +189,6 @@ class Labels
             'config.db.prefix' => 'Prefix',
             'config.db.prefix.help' => 'table name prefix',
             'config.system' => 'System configuration',
-            'config.url' => 'Web URL',
-            'config.url.help' => 'absolute path or URL of the website',
             'config.secret' => 'Secret hash',
             'config.secret.help' => 'random secret hash (used for XSRF protection etc.)',
             'config.app_id' => 'App ID',
@@ -686,7 +681,6 @@ class ConfigurationStep extends Step
             'db.password' => trim(Request::post('config_db_password', '')),
             'db.name' => trim(Request::post('config_db_name', '')),
             'db.prefix' => trim(Request::post('config_db_prefix', '')),
-            'url' => rtrim(trim(Request::post('config_url', '')), '/'),
             'secret' => trim(Request::post('config_secret', '')),
             'app_id' => trim(Request::post('config_app_id', '')),
             'fallback_lang' => $this->vars['language'],
@@ -759,15 +753,6 @@ class ConfigurationStep extends Step
 
     function run(): void
     {
-        // prepare defaults
-        $url = Url::current();
-
-        if (preg_match('{(/.+/)install/?$}AD', $url->path, $match)) {
-            $defaultUrl = $match[1];
-        } else {
-            $defaultUrl = '/';
-        }
-
         $defaultSecret = StringGenerator::generateString(64);
         $defaultGeoLatitude = 50.5;
         $defaultGeoLongitude = 14.26;
@@ -815,11 +800,6 @@ class ConfigurationStep extends Step
 <fieldset>
     <legend><?php Labels::render('config.system') ?></legend>
     <table>
-        <tr>
-            <th><?php Labels::render('config.url') ?></th>
-            <td><input type="text"<?= Form::restorePostValueAndName('config_url', $this->getConfig('url', $defaultUrl)) ?>></td>
-            <td class="help"><?php Labels::render('config.url.help') ?></td>
-        </tr>
         <tr>
             <th><?php Labels::render('config.secret') ?></th>
             <td><input type="text"<?= Form::restorePostValueAndName('config_secret', $this->getConfig('secret', $defaultSecret)) ?>></td>
@@ -1208,8 +1188,8 @@ class CompleteStep extends Step
 <h2><?php Labels::render('complete.whats_next') ?></h2>
 
 <ul class="big-list">
-    <li><a href="<?= _e(Config::$config['url'] ?: '/') ?>" target="_blank"><?php Labels::render('complete.goto.web') ?></a></li>
-    <li><a href="<?= _e(Config::$config['url']) ?>/admin/" target="_blank"><?php Labels::render('complete.goto.admin') ?></a></li>
+    <li><a href="<?= _e(Core::getBaseUrl()->getPath()) ?>" target="_blank"><?php Labels::render('complete.goto.web') ?></a></li>
+    <li><a href="<?= _e(Core::getBaseUrl()->getPath()) ?>/admin/" target="_blank"><?php Labels::render('complete.goto.admin') ?></a></li>
 </ul>
 <?php
     }

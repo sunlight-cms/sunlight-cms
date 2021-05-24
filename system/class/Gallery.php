@@ -2,13 +2,13 @@
 
 namespace Sunlight;
 
+use Kuria\Url\Url;
 use Sunlight\Image\ImageException;
 use Sunlight\Image\ImageLoader;
 use Sunlight\Image\ImageService;
 use Sunlight\Image\ImageStorage;
 use Sunlight\Image\ImageTransformer;
 use Sunlight\Util\StringGenerator;
-use Sunlight\Util\Url;
 use Sunlight\Util\UrlHelper;
 
 class Gallery
@@ -49,7 +49,7 @@ class Gallery
         } elseif ($fullFile) {
             $alt = basename($fullFile);
         } else {
-            $alt = basename(Url::parse($fullUrl)->path);
+            $alt = basename(Url::parse($fullUrl)->getPath());
         }
 
         return '<a'

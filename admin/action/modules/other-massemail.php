@@ -1,12 +1,12 @@
 <?php
 
 use Sunlight\Admin\Admin;
+use Sunlight\Core;
 use Sunlight\Database\Database as DB;
 use Sunlight\Email;
 use Sunlight\Message;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
-use Sunlight\Util\Url;
 use Sunlight\Xsrf;
 
 defined('_root') or exit;
@@ -67,7 +67,7 @@ if (isset($_POST['text'])) {
             $item_total = DB::size($query);
 
             // poznamka na konci zpravy
-            $notice = _lang('admin.other.massemail.emailnotice', ['%domain%' => Url::base()->getFullHost()]);
+            $notice = _lang('admin.other.massemail.emailnotice', ['%domain%' => Core::getBaseUrl()->getFullHost()]);
             if ($ctype == 1) {
                 $notice = "\n\n\n-------------------------------------\n" . $notice;
             } else {

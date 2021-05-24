@@ -10,7 +10,6 @@ use Sunlight\Template;
 use Sunlight\Util\Html;
 use Sunlight\Util\Request;
 use Sunlight\Util\Response;
-use Sunlight\Util\Url;
 use Sunlight\Xsrf;
 
 require './system/bootstrap.php';
@@ -37,28 +36,12 @@ if (!Template::change(TemplateService::composeUid(_default_template, TemplatePlu
     );
 }
 
-// nacist adresy
-$_url = Url::current();
-$_system_url = Url::parse(Core::$url);
-$_url_path = $_url->path;
-$_system_url_path = $_system_url->path;
+// aktualni URL
+$_url = Core::getCurrentUrl();
 
-// zkontrolovat aktualni cestu
-if (strncmp($_url_path, $_system_url_path, strlen($_system_url_path)) === 0) {
-    $_subpath = substr($_url_path, strlen($_system_url_path));
-
-    // presmerovat /index.php na /
-    if ($_subpath === '/index.php' && empty($_url->query)) {
-        Response::redirect(Core::$url . '/');
-        exit;
-    }
-} else {
-    // neplatna cesta
-    header('Content-Type: text/plain; charset=UTF-8');
-    Response::notFound();
-
-    echo _lang('global.error404.title');
-    exit;
+// presmerovat /index.php na /
+if (substr($_url->getPath(), strlen(Core::getBaseUrl()->getPath())) === '/index.php' && !$_url->hasQuery()) {
+    Response::redirect(Core::getBaseUrl()->build());
 }
 
 // konfiguracni pole webu
@@ -137,10 +120,10 @@ if (empty($_POST) || Xsrf::check()) {
 
         if (!empty($segments) && $segments[count($segments) - 1] === '') {
             // presmerovat identifikator/ na identifikator
-            $_url->path = rtrim($_url_path, '/');
+            $_url->setPath(rtrim($_url->getPath(), '/'));
 
             $_index['type'] = _index_redir;
-            $_index['redirect_to'] = $_url->generateAbsolute();
+            $_index['redirect_to'] = $_url->build();
             break;
         }
 

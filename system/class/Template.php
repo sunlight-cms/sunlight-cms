@@ -506,7 +506,7 @@ abstract class Template
      */
     static function siteUrl(): string
     {
-        return Core::$url . '/';
+        return Core::getBaseUrl()->build() . '/';
     }
 
     /**

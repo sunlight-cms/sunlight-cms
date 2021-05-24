@@ -1,7 +1,7 @@
 <?php
 
-use Sunlight\Util\Url;
+use Sunlight\Core;
 
 return function () {
-    return _e(Url::current()->path);
+    return _e(Core::getCurrentUrl()->getPath());
 };
