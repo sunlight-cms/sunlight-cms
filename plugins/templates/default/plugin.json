@@ -1,7 +1,7 @@
 {
     "$schema": "../../../system/schema/template.json",
     "name": "Default",
-    "description": "8.x default template.",
+    "description": "8.x default template. Originally by templated.co",
     "version": "8.0",
     "api": "^8.0",
     "url": "https://sunlight-cms.cz/",

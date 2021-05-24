@@ -1,7 +1,7 @@
 {
     "$schema": "../../../system/schema/template.json",
     "name": "Classic",
-    "description": "7.x default template.",
+    "description": "7.x default template. Originally by freecsstemplates.org",
     "version": "8.0",
     "api": "^8.0",
     "url": "https://sunlight-cms.cz/",
