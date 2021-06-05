@@ -25,7 +25,12 @@
                     "$ref": "#/definitions/path-list"
                 },
                 "langs": {
-                    "$ref": "#/definitions/path-list"
+                    "type": "object",
+                    "patternProperties": {
+                        "^": {
+                            "type": "string"
+                        }
+                    }
                 }
             }
         }
