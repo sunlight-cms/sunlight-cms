@@ -333,7 +333,7 @@ $output .= "
 
   <tr>
   <th>" . _lang('login.username') . " <span class='important'>*</span></th>
-  <td><input type='text'" . Form::restorePostValueAndName('username', _user_name) . " class='inputsmall' maxlength='24'>" . (!_priv_changeusername ? "<span class='hint'>(" . _lang('mod.settings.namechangenote') . ")</span>" : '') . "</td>
+  <td><input type='text'" . Form::restorePostValueAndName('username', _user_name) . " class='inputsmall' maxlength='24' autocomplete='username'>" . (!_priv_changeusername ? "<span class='hint'>(" . _lang('mod.settings.namechangenote') . ")</span>" : '') . "</td>
   </tr>
 
   <tr>
@@ -343,7 +343,7 @@ $output .= "
 
   <tr class='valign-top'>
   <th>" . _lang('global.email') . " <span class='important'>*</span></th>
-  <td><input type='email'" . Form::restorePostValueAndName('email', $userdata['email']) . " class='inputsmall'/> <span class='hint'>(" . _lang('mod.settings.emailchangenote') . ")</span></td>
+  <td><input type='email'" . Form::restorePostValueAndName('email', $userdata['email']) . " class='inputsmall' autocomplete='email'> <span class='hint'>(" . _lang('mod.settings.emailchangenote') . ")</span></td>
   </tr>
 
   " . $language_select . "
@@ -355,7 +355,7 @@ $output .= "
   
   <tr>
   <th>" . _lang('mod.settings.public') . "</th>
-  <td><label><input type='checkbox' name='public' value='1'" . Form::activateCheckbox($userdata['public']) . "> " . _lang('mod.settings.public.label') . "</label></td>
+  <td><label><input type='checkbox' name='public' value='1'" . Form::activateCheckbox($userdata['public']) . " autocomplete='nickname'> " . _lang('mod.settings.public.label') . "</label></td>
   </tr>
 
   " . $admin . "
@@ -374,12 +374,12 @@ $output .= "
 
   <tr>
   <th>" . _lang('mod.settings.password.new') . "</th>
-  <td><input type='password' name='newpassword' class='inputsmall' autocomplete='off'></td>
+  <td><input type='password' name='newpassword' class='inputsmall' autocomplete='new-password'></td>
   </tr>
 
   <tr>
   <th>" . _lang('mod.settings.password.new') . " (" . _lang('global.check') . ")</th>
-  <td><input type='password' name='newpassword-confirm' class='inputsmall' autocomplete='off'></td>
+  <td><input type='password' name='newpassword-confirm' class='inputsmall' autocomplete='new-password'></td>
   </tr>
 
   </table>
