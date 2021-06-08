@@ -155,11 +155,10 @@ if (isset($_GET['user'], $_GET['hash'])) {
                 'name' => 'lostpassform',
                 'action' => Router::module('lostpass'),
                 'submit_text' => _lang('global.send'),
-                'autocomplete' => 'off',
             ],
             [
-                ['label' => _lang('login.username'), 'content' => "<input type='text' class='inputsmall' maxlength='24'" . Form::restorePostValueAndName('username') . ">"],
-                ['label' => _lang('global.email'), 'content' => "<input type='email' class='inputsmall' " . Form::restorePostValueAndName('email', '@') . ">"],
+                ['label' => _lang('login.username'), 'content' => "<input type='text' class='inputsmall' maxlength='24'" . Form::restorePostValueAndName('username') . "autocomplete='username'>"],
+                ['label' => _lang('global.email'), 'content' => "<input type='email' class='inputsmall' " . Form::restorePostValueAndName('email', '@') . " autocomplete='email'>"],
                 $captcha
             ]
         );

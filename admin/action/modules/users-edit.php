@@ -269,7 +269,7 @@ if ($continue) {
 
 <tr>
 <th>" . _lang((($id == null) ? 'login.password' : 'mod.settings.password.new')) . "</th>
-<td><input type='password' name='password' class='inputsmall'></td>
+<td><input type='password' name='password' class='inputsmall' autocomplete='new-password'></td>
 </tr>
 
 <tr>
