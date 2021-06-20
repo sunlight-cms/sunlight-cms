@@ -8,7 +8,6 @@
     "class": "CodemirrorPlugin",
     "events.admin": [
         {"event": "admin.head", "method": "onAdminHead"},
-        {"event": "admin.head", "method": "onAdminHead"},
         {"event": "admin.style", "method": "onAdminStyle"},
         {"event": "core.javascript", "method": "onCoreJavascript"}
     ]
