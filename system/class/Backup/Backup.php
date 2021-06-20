@@ -38,7 +38,7 @@ class Backup
     private $new = false;
     /** @var array|null */
     private $metadataCache;
-    /** @var Error[] */
+    /** @var string[] */
     private $metadataErrors = [];
     /** @var string|null */
     private $addedDbDumpPrefix;
@@ -440,7 +440,7 @@ class Backup
     }
 
     /**
-     * @return Error[]
+     * @return string[]
      */
     function getMetaDataErrors(): array
     {
@@ -486,7 +486,7 @@ class Backup
         try {
             $options->resolve($metaData);
         } catch (ResolverException $e) {
-            $errors = $e->getErrors();
+            $errors = array_map('strval', $e->getErrors());
         }
     }
 
