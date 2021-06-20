@@ -8,32 +8,12 @@ use Sunlight\Localization\LocalizationDirectory;
 
 class TemplatePlugin extends Plugin
 {
-    const TYPE_DEFINITION = [
-        'type' => 'template',
-        'dir' => 'plugins/templates',
-        'class' => __CLASS__,
-        'default_base_namespace' => 'SunlightTemplate',
-        'options' => [
-            'css' => ['type' => 'array', 'default' => ['template_style' => 'style.css'], 'normalizer' => [PluginOptionNormalizer::class, 'normalizeWebPathArray']],
-            'js' => ['type' => 'array', 'default' => [], 'normalizer' => [PluginOptionNormalizer::class, 'normalizeWebPathArray']],
-            'responsive' => ['type' => 'boolean', 'default' => false],
-            'dark' => ['type' => 'boolean', 'default' => false],
-            'bbcode.buttons' => ['type' => 'boolean', 'default' => true],
-            'box.parent' => ['type' => 'string', 'default' => ''],
-            'box.item' => ['type' => 'string', 'default' => 'div'],
-            'box.title' => ['type' => 'string', 'default' => 'h3'],
-            'box.title.inside' => ['type' => 'boolean', 'default' => false],
-            'layouts' => ['type' => 'array', 'required' => true, 'normalizer' => [PluginOptionNormalizer::class, 'normalizeTemplateLayouts']],
-            'lang_dir' => ['type' => 'string', 'default' => 'labels', 'normalizer' => [PluginOptionNormalizer::class, 'normalizePath']],
-        ],
-    ];
-
     const DEFAULT_LAYOUT = 'default';
 
     /** @var LocalizationDictionary */
     protected $lang;
 
-    function __construct(array $data, PluginManager $manager)
+    function __construct(PluginData $data, PluginManager $manager)
     {
         parent::__construct($data, $manager);
 

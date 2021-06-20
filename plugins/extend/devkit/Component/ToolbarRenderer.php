@@ -250,10 +250,6 @@ class ToolbarRenderer
                 foreach ($inactivePlugin->getErrors() as $error) {
                     $pluginErrors["{$type}/{$name} ({$inactivePlugin->getFile()})"][] = $error;
                 }
-
-                foreach ($inactivePlugin->getDefinitionErrors() as $path => $error) {
-                    $pluginErrors["{$type}/{$name} ({$inactivePlugin->getFile()})"][] = "[at {$path}] $error";
-                }
             }
         }
 

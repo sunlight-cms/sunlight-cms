@@ -1,14 +1,15 @@
 {
     "$schema": "../../../system/schema/extend.json",
     "name": "Codemirror",
-    "description": "Syntax highlighter for the backend.",
+    "description": "Syntax highlighter for administration.",
     "version": "8.0",
     "api": "^8.0",
     "url": "https://sunlight-cms.cz/",
     "class": "CodemirrorPlugin",
     "events.admin": [
-        ["admin.head", "$this::onAdminHead"],
-        ["admin.style", "$this::onAdminStyle"],
-        ["core.javascript", "$this::onCoreJavascript"]
+        {"event": "admin.head", "method": "onAdminHead"},
+        {"event": "admin.head", "method": "onAdminHead"},
+        {"event": "admin.style", "method": "onAdminStyle"},
+        {"event": "core.javascript", "method": "onCoreJavascript"}
     ]
 }

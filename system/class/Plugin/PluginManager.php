@@ -5,6 +5,7 @@ namespace Sunlight\Plugin;
 use Kuria\Cache\CacheInterface;
 use Kuria\ClassLoader\ClassLoader;
 use Sunlight\Core;
+use Sunlight\Plugin\Type\PluginType;
 
 class PluginManager
 {
@@ -46,7 +47,7 @@ class PluginManager
      */
     private $inactivePlugins;
 
-    /** @var array[] */
+    /** @var Type\PluginType[] */
     private $types;
 
     /** @var CacheInterface */
@@ -57,20 +58,12 @@ class PluginManager
 
     function __construct(CacheInterface $pluginCache)
     {
-        $this->cache = $pluginCache;
-        $this->types = self::getTypeDefinitions();
-    }
-
-    /**
-     * @return array
-     */
-    static function getTypeDefinitions(): array
-    {
-        return [
-            self::LANGUAGE => LanguagePlugin::TYPE_DEFINITION,
-            self::TEMPLATE => TemplatePlugin::TYPE_DEFINITION,
-            self::EXTEND => ExtendPlugin::TYPE_DEFINITION,
+        $this->types = [
+            'extend' => new Type\ExtendPluginType(),
+            'template' => new Type\TemplatePluginType(),
+            'language' => new Type\LanguagePluginType(),
         ];
+        $this->cache = $pluginCache;
     }
 
     /**
@@ -97,11 +90,11 @@ class PluginManager
     /**
      * Get all valid types
      *
-     * @return string[]
+     * @return PluginType[]
      */
     function getTypes(): array
     {
-        return array_keys($this->types);
+        return $this->types;
     }
 
     /**
@@ -109,9 +102,9 @@ class PluginManager
      *
      * @param string $type
      * @throws \InvalidArgumentException if the plugin type is not valid
-     * @return array
+     * @return PluginType
      */
-    function getTypeDefinition(string $type): array
+    function getType(string $type): array
     {
         if (!isset($this->types[$type])) {
             throw new \InvalidArgumentException(sprintf('Invalid plugin type "%s"', $type));
@@ -482,24 +475,22 @@ class PluginManager
         $this->inactivePlugins = [];
 
         foreach ($data['plugins'] as $type => $plugins) {
+            /** @var PluginData[] $plugins */
             $this->pluginMap[$type] = [];
             $this->inactivePlugins[$type] = [];
 
             foreach ($plugins as $name => $plugin) {
-                if ($plugin['status'] === Plugin::STATUS_OK) {
-                    $pluginInstance = new $plugin['options']['class']($plugin, $this);
+                if ($plugin->isOk()) {
+                    $pluginInstance = new $plugin->options['class']($plugin, $this);
 
-                    if (!is_a($pluginInstance, $this->types[$type]['class'])) {
-                        throw new \LogicException(sprintf('Plugin class "%s" of plugin type "%s" must extend "%s"', get_class($pluginInstance), $type, $this->types[$type]['class']));
+                    if (!is_a($pluginInstance, $this->types[$type]->getClass())) {
+                        throw new \LogicException(sprintf('Plugin class "%s" of plugin type "%s" must extend "%s"', get_class($pluginInstance), $type, $this->types[$type]->getClass()));
                     }
 
-                    $this->plugins[$plugin['options']['class']] = $pluginInstance;
+                    $this->plugins[$plugin->options['class']] = $pluginInstance;
                     $this->pluginMap[$type][$name] = $pluginInstance;
                 } else {
-                    $this->inactivePlugins[$type][$name] = new InactivePlugin(
-                        $plugin,
-                        $this
-                    );
+                    $this->inactivePlugins[$type][$name] = new InactivePlugin($plugin, $this);
                 }
             }
         }

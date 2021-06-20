@@ -6,38 +6,23 @@ use Composer\Semver\Semver;
 use Sunlight\Composer\Repository;
 use Sunlight\Composer\RepositoryInjector;
 use Sunlight\Core;
-use Sunlight\Option\OptionSet;
+use Sunlight\Plugin\Type\PluginType;
 use Sunlight\Util\Filesystem;
 use Sunlight\Util\Json;
-use Sunlight\Util\StringManipulator;
 
 class PluginLoader
 {
-    /** @var array */
+    /** @var PluginType[] */
     private $types;
     /** @var string */
     private $pluginIdPattern;
-    /** @var OptionSet */
-    private $commonOptionSet;
-    /** @var OptionSet[] */
-    private $typeOptionSets;
-
     /**
-     * @param array $types
+     * @param PluginType[] $types
      */
     function __construct(array $types)
     {
         $this->types = $types;
         $this->pluginIdPattern = '{' . Plugin::ID_PATTERN . '$}AD';
-
-        $this->commonOptionSet = new OptionSet(Plugin::$commonOptions);
-        $this->commonOptionSet->setIgnoreExtraIndexes(true);
-
-        $this->typeOptionSets = [];
-        foreach ($types as $type => $typeDefinition) {
-            $this->typeOptionSets[$type] = new OptionSet($typeDefinition['options']);
-            $this->typeOptionSets[$type]->addKnownIndexes($this->commonOptionSet->getIndexes());
-        }
     }
 
     /**
@@ -64,14 +49,13 @@ class PluginLoader
      */
     function load(bool $resolveInstallationStatus = true): array
     {
-        $plugins = [];
         $autoload = array_fill_keys(['psr-0', 'psr-4', 'classmap', 'files'], []);
         $boundFiles = [];
 
         $composerInjector = new RepositoryInjector(new Repository(realpath(_root . '/composer.json')));
         $typeNames = array_keys($this->types);
 
-        $this->findPlugins($plugins, $boundFiles);
+        $plugins = $this->findPlugins($boundFiles);
 
         // resolve dependencies
         foreach ($typeNames as $typeName) {
@@ -103,13 +87,18 @@ class PluginLoader
         ];
     }
 
-    private function findPlugins(array &$plugins, array &$boundFiles): void
+    /**
+     * @return PluginData[][]
+     */
+    private function findPlugins(array &$boundFiles): array
     {
+        $plugins = [];
+
         // load plugins from standard paths
         foreach ($this->types as $typeName => $type) {
             $plugins[$typeName] = [];
 
-            $dir = _root . $type['dir'];
+            $dir = _root . $type->getDir();
 
             // scan directory
             foreach (scandir($dir) as $item) {
@@ -122,148 +111,105 @@ class PluginLoader
                     // load plugin
                     $boundFiles[] = $pluginFile;
 
-                    $plugins[$typeName][$item] = $this->loadPlugin(
-                        $this->createPluginData(
-                            $item,
-                            $pluginFile,
-                            $type['dir'] . '/' . $item,
-                            $typeName
-                        )
-                    );
+                    $plugins[$typeName][$item] = $this->loadPlugin($item, $pluginFile, $type);
                 }
             }
         }
+
+        return $plugins;
     }
 
-    /**
-     * @param array $plugin
-     * @return array
-     */
-    function loadPlugin(array $plugin): array
+    function loadPlugin(string $id, string $pluginFile, PluginType $type): PluginData
     {
-        $type = $this->types[$plugin['type']];
-        $context = $this->createPluginOptionContext($plugin, $type);
+        $plugin = new PluginData(
+            $id,
+            $type->getName(),
+            realpath($pluginFile),
+            $type->getDir() . '/' . $id
+        );
 
         // check state
-        $isDisabled = is_file($plugin['dir'] . '/' . Plugin::DEACTIVATING_FILE);
+        $isDisabled = is_file($plugin->dir . '/' . Plugin::DEACTIVATING_FILE);
 
         // load options
         try {
-            $options = Json::decode(file_get_contents($plugin['file']));
+            $options = Json::decode(file_get_contents($plugin->file));
         } catch (\RuntimeException $e) {
             $options = null;
-            $plugin['errors'][] = sprintf('could not parse %s - %s', $plugin['file'], $e->getMessage());
+            $plugin->errors[] = sprintf('could not parse %s - %s', $plugin->file, $e->getMessage());
         }
 
         // process options
         if ($options !== null) {
-            // set defaults
-            $options += $plugin['options'];
+            $type->resolveOptions($plugin, $options);
 
-            // common options
-            $this->commonOptionSet->process($options, $context, $plugin['definition_errors']);
-
-            // type-specific options
-            if (empty($plugin['definition_errors'])) {
-                $this->typeOptionSets[$plugin['type']]->process($options, $context, $plugin['definition_errors']);
+            if (!$plugin->hasErrors()) {
+                $this->validatePlugin($plugin);
             }
-
-            $this->validateOptions($options, $plugin['definition_errors'], $plugin['errors']);
         }
 
         // handle result
-        if (!$this->hasErrors($plugin)) {
+        if (!$plugin->hasErrors()) {
             // ok
-            $plugin['status'] = Plugin::STATUS_OK;
-            $plugin['options'] = $options;
+            $plugin->status = Plugin::STATUS_OK;
         } else {
             // there are errors
-            $plugin['status'] = Plugin::STATUS_HAS_ERRORS;
-            if ($options === null || !empty($plugin['definition_errors'])) {
-                $options = [
-                    'id' => $plugin['id'],
-                    'name' => $plugin['id'],
-                    'version' => '0.0.0',
-                    'api' => '0.0.0',
-                ];
-                $this->commonOptionSet->process($options, $context);
-            }
-            $plugin['options'] = $options;
+            $plugin->status = Plugin::STATUS_HAS_ERRORS;
+            $type->resolveFallbackOptions($plugin);
         }
 
         // resolve plugin class
-        $plugin['options']['class'] = $this->resolvePluginClass($plugin, $type);
+        $plugin->options['class'] = $this->resolvePluginClass($plugin, $type);
 
         // override status if the plugin is disabled
         if ($isDisabled) {
-            $plugin['status'] = Plugin::STATUS_DISABLED;
+            $plugin->status = Plugin::STATUS_DISABLED;
         }
 
         return $plugin;
     }
 
-    /**
-     * Validate options
-     *
-     * @param array $options
-     * @param array $definitionErrors
-     * @param array $errors
-     */
-    private function validateOptions(array $options, array $definitionErrors, array &$errors): void
+    private function validatePlugin(PluginData $plugin): void
     {
         // api version
-        if (!isset($definitionErrors['api']) && !$this->checkVersion($options['api'], Core::VERSION)) {
-            $errors[] = sprintf('API version "%s" is not compatible with system version "%s"', $options['api'], Core::VERSION);
+        if (!$this->checkVersion($plugin->options['api'], Core::VERSION)) {
+            $plugin->addError(sprintf('API version "%s" is not compatible with system version "%s"', $plugin->options['api'], Core::VERSION));
         }
 
         // PHP version
-        if (!isset($definitionErrors['php']) && $options['php'] !== null && !version_compare($options['php'], PHP_VERSION, '<=')) {
-            $errors[] = sprintf('PHP version "%s" or newer is required', $options['php']);
+        if ( $plugin->options['php'] !== null && !version_compare($plugin->options['php'], PHP_VERSION, '<=')) {
+            $plugin->addError(sprintf('PHP version "%s" or newer is required', $plugin->options['php']));
         }
 
         // extensions
-        if (!isset($definitionErrors['extensions'])) {
-            foreach ($options['extensions'] as $extension) {
-                if (!extension_loaded($extension)) {
-                    $errors[] = sprintf('PHP extension "%s" is required', $extension);
-                }
+        foreach ($plugin->options['extensions'] as $extension) {
+            if (!extension_loaded($extension)) {
+                $plugin->addError(sprintf('PHP extension "%s" is required', $extension));
             }
         }
 
         // debug mode
-        if (!isset($definitionErrors['debug']) && $options['debug'] !== null && $options['debug'] !== _debug) {
-            $errors[] = $options['debug']
-                ? 'debug mode is required'
-                : 'production mode is required';
+        if ($plugin->options['debug'] !== null && $plugin->options['debug'] !== _debug) {
+            $plugin->addError(
+                $plugin->options['debug']
+                    ? 'debug mode is required'
+                    : 'production mode is required'
+            );
         }
     }
 
-    /**
-     * @param array $plugin
-     * @return bool
-     */
-    private function hasErrors(array $plugin): bool
+    private function resolvePluginClass(PluginData $plugin, PluginType $type): string
     {
-        return $plugin['errors'] || $plugin['definition_errors'];
-    }
-
-    /**
-     * @param array $plugin
-     * @param array $type
-     * @return string
-     */
-    private function resolvePluginClass(array $plugin, array $type): string
-    {
-        $specifiedClass = $plugin['options']['class'];
+        $specifiedClass = $plugin->options['class'];
 
         if ($specifiedClass === null) {
             // no class specified - use default class of the given type
-            return $type['class'];
+            return $type->getClass();
         }
 
         if (strpos($specifiedClass, '\\') === false) {
             // plain (unnamespaced) class name specified - prefix by plugin namespace
-            return $plugin['options']['namespace'] . '\\' . $specifiedClass;
+            return $plugin->options['namespace'] . '\\' . $specifiedClass;
         }
 
         // fully-qualified class name
@@ -283,59 +229,19 @@ class PluginLoader
     }
 
     /**
-     * @param string $id
-     * @param string $file
-     * @param string|null $webPath
-     * @param string $typeName
-     * @param array $defaultOptions
-     * @return array
+     * @param PluginData $plugin
+     * @param string[] $errors
      */
-    private function createPluginData(string $id, string $file, ?string $webPath, string $typeName): array
+    private function convertPluginToErrorState(PluginData $plugin, array $errors): void
     {
-        $file = realpath($file);
-
-        return [
-            'id' => $id,
-            'camel_id' => StringManipulator::toCamelCase($id),
-            'type' => $typeName,
-            'status' => null,
-            'installed' => null,
-            'dir' => dirname($file),
-            'file' => $file,
-            'web_path' => $webPath,
-            'errors' => [],
-            'definition_errors' => [],
-            'options' => ['name' => $id],
-        ];
-    }
-
-    /**
-     * @param array $plugin
-     * @param array $type
-     * @return array
-     */
-    private function createPluginOptionContext(array &$plugin, array $type): array
-    {
-        return [
-            'plugin' => &$plugin,
-            'type' => $type,
-        ];
-    }
-
-    /**
-     * @param array $plugin
-     * @param array $errors
-     * @return array
-     */
-    private function convertPluginToErrorState(array $plugin, array $errors): array
-    {
-        return ['status' => Plugin::STATUS_HAS_ERRORS, 'errors' => $errors] + $plugin;
+        $plugin->status = Plugin::STATUS_HAS_ERRORS;
+        $plugin->errors = $errors;
     }
 
     /**
      * Resolve plugin dependencies
      *
-     * @param array $plugins
+     * @param PluginData[] $plugins
      * @throws \RuntimeException if the dependencies cannot be resolved
      * @return array
      */
@@ -346,17 +252,17 @@ class PluginLoader
 
         while (!empty($plugins)) {
             $numAdded = 0;
-            foreach ($plugins as $name => $plugin) {
+            foreach ($plugins as $id => $plugin) {
                 $canBeAdded = true;
                 $errors = [];
 
-                if ($plugin['status'] === Plugin::STATUS_OK) {
-                    if (isset($circularDependencyMap[$name])) {
+                if ($plugin->isOk()) {
+                    if (isset($circularDependencyMap[$id])) {
                         // the plugin is in a circular dependency chain
-                        $errors[] = sprintf('circular dependency detected: "%s"', $circularDependencyMap[$name]);
+                        $errors[] = sprintf('circular dependency detected: "%s"', $circularDependencyMap[$id]);
                         $canBeAdded = false;
-                    } elseif (!empty($plugin['options']['requires'])) {
-                        foreach ($plugin['options']['requires'] as $dependency => $requiredVersion) {
+                    } elseif (!empty($plugin->options['requires'])) {
+                        foreach ($plugin->options['requires'] as $dependency => $requiredVersion) {
                             if (isset($sorted[$dependency])) {
                                 // the dependency is already in the sorted map
                                 if (!$this->checkDependency($sorted[$dependency], $requiredVersion, $errors)) {
@@ -376,15 +282,14 @@ class PluginLoader
                     }
                 }
 
-                // add if all dependencies are ok
-                if ($canBeAdded) {
-                    $sorted[$name] = $plugin;
-                } elseif (!empty($errors)) {
-                    $sorted[$name] = $this->convertPluginToErrorState($plugin, $errors);
-                }
-
+                // add if all dependencies are ok or there are errors
                 if ($canBeAdded || !empty($errors)) {
-                    unset($plugins[$name]);
+                    if (!empty($errors)) {
+                        $this->convertPluginToErrorState($plugin, $errors);
+                    }
+
+                    $sorted[$id] = $plugin;
+                    unset($plugins[$id]);
                     ++$numAdded;
                 }
             }
@@ -408,7 +313,7 @@ class PluginLoader
      *      ...
      * )
      *
-     * @param array $plugins
+     * @param PluginData[] $plugins
      * @return array
      */
     private function findCircularDependencies(array $plugins): array
@@ -416,26 +321,26 @@ class PluginLoader
         $circularDependencyMap = [];
 
         $checkQueue = [];
-        foreach ($plugins as $name => $plugin) {
-            if ($plugin['status'] === Plugin::STATUS_OK) {
-                foreach (array_keys($plugin['options']['requires']) as $dependency) {
-                    $checkQueue[] = [$dependency, [$name => true, $dependency => true]];
+        foreach ($plugins as $id => $plugin) {
+            if ($plugin->isOk()) {
+                foreach (array_keys($plugin->options['requires']) as $dependency) {
+                    $checkQueue[] = [$dependency, [$id => true, $dependency => true]];
                 }
             }
         }
 
         while (!empty($checkQueue)) {
-            [$name, $pathMap] = array_pop($checkQueue);
+            [$id, $pathMap] = array_pop($checkQueue);
 
-            if (isset($plugins[$name])) {
-                foreach (array_keys($plugins[$name]['options']['requires']) as $dependency) {
+            if (isset($plugins[$id])) {
+                foreach (array_keys($plugins[$id]['options']['requires']) as $dependency) {
                     if (isset($pathMap[$dependency])) {
-                        $pathString = "{$name}";
+                        $pathString = "{$id}";
                         foreach (array_keys($pathMap) as $segment) {
                             $pathString .= " -> {$segment}";
                         }
 
-                        $circularDependencyMap[$name] = $pathString;
+                        $circularDependencyMap[$id] = $pathString;
                     } else {
                         $checkQueue[] = [$dependency, $pathMap + [$dependency => true]];
                     }
@@ -449,24 +354,24 @@ class PluginLoader
     /**
      * Check plugin dependency version
      *
-     * @param array  $plugin
+     * @param PluginData $plugin
      * @param string $requiredVersion
-     * @param array  &$errors
+     * @param array &$errors
      * @return bool
      */
-    private function checkDependency(array $plugin, string $requiredVersion, array &$errors): bool
+    private function checkDependency(PluginData $plugin, string $requiredVersion, array &$errors): bool
     {
-        if ($plugin['status'] !== Plugin::STATUS_OK) {
-            $errors[] = sprintf('dependency "%s" is not available', $plugin['id']);
+        if ($plugin->status !== Plugin::STATUS_OK) {
+            $errors[] = sprintf('dependency "%s" is not available', $plugin->id);
             
             return false;
         }
 
-        if (!$this->checkVersion($requiredVersion, $plugin['options']['version'])) {
+        if (!$this->checkVersion($requiredVersion, $plugin->options['version'])) {
             $errors[] = sprintf(
                 'dependency "%s" (version "%s") is not compatible, version "%s" is required',
-                $plugin['id'],
-                $plugin['options']['version'],
+                $plugin->id,
+                $plugin->options['version'],
                 $requiredVersion
             );
 
@@ -476,35 +381,38 @@ class PluginLoader
         return true;
     }
 
+    /**
+     * @param PluginData[] $plugins
+     */
     private function resolveAutoload(array $plugins, array &$autoload): void
     {
         foreach ($plugins as $plugin) {
-            if ($plugin['status'] !== Plugin::STATUS_OK) {
+            if ($plugin->status !== Plugin::STATUS_OK) {
                 continue;
             }
 
-            $autoload['psr-4'][$plugin['options']['namespace'] . '\\'] = $plugin['dir'];
+            $autoload['psr-4'][$plugin->options['namespace'] . '\\'] = $plugin->dir;
 
-            foreach ($plugin['options']['autoload'] as $type => $entries) {
+            foreach ($plugin->options['autoload'] as $type => $entries) {
                 $autoload[$type] += $entries;
             }
         }
     }
 
-    private function handleComposerRepositories(array &$plugins, array &$boundFiles, RepositoryInjector $injector): void
+    private function handleComposerRepositories(array $plugins, array &$boundFiles, RepositoryInjector $injector): void
     {
-        foreach ($plugins as &$plugin) {
-            if (!$plugin['options']['inject_composer']) {
+        foreach ($plugins as $plugin) {
+            if (!$plugin->options['inject_composer']) {
                 continue;
             }
 
-            $composerJsonPath = $plugin['dir'] . '/composer.json';
+            $composerJsonPath = $plugin->dir . '/composer.json';
 
             if (is_file($composerJsonPath)) {
                 $repository = new Repository($composerJsonPath);
 
                 if (!is_dir($repository->getVendorPath())) {
-                    $plugin = $this->convertPluginToErrorState(
+                    $this->convertPluginToErrorState(
                         $plugin,
                         [sprintf('missing dependencies, please run "composer install" in %s', $repository->getDirectory())]
                     );
@@ -514,7 +422,7 @@ class PluginLoader
                 $this->ensureComposerRepositoryAccessControl($repository);
 
                 if (!$injector->inject($repository, $errors)) {
-                    $plugin = $this->convertPluginToErrorState($plugin, $errors);
+                    $this->convertPluginToErrorState($plugin, $errors);
                     continue;
                 }
 
@@ -634,21 +542,21 @@ class PluginLoader
     /**
      * Resolve installation status
      *
-     * @param array $plugins
+     * @param PluginData[] $plugins
      */
-    private function resolveInstallationStatus(array &$plugins): void
+    private function resolveInstallationStatus(array $plugins): void
     {
-        foreach ($plugins as &$plugin) {
-            if ($plugin['status'] === Plugin::STATUS_OK && $plugin['options']['installer'] !== null) {
+        foreach ($plugins as $plugin) {
+            if ($plugin->isOk() && $plugin->options['installer'] !== null) {
                 /** @var PluginInstaller $installer */
-                $installer = require $plugin['options']['installer'];
+                $installer = require $plugin->options['installer'];
                 $isInstalled = $installer->isInstalled();
 
                 if (!$isInstalled) {
-                    $plugin['status'] = Plugin::STATUS_NEEDS_INSTALLATION;
+                    $plugin->status = Plugin::STATUS_NEEDS_INSTALLATION;
                 }
 
-                $plugin['installed'] = $isInstalled;
+                $plugin->installed = $isInstalled;
             }
         }
     }

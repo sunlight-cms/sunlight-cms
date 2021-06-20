@@ -2,9 +2,11 @@
 
 namespace Sunlight\Backup;
 
+use Kuria\Options\Error\Error;
+use Kuria\Options\Exception\ResolverException;
+use Kuria\Options\Option;
+use Kuria\Options\Resolver;
 use Sunlight\Core;
-use Sunlight\Option\OptionSet;
-use Sunlight\Option\OptionSetNormalizerException;
 use Sunlight\Util\Filesystem;
 use Sunlight\Util\Json;
 use Sunlight\Util\TemporaryFile;
@@ -36,8 +38,8 @@ class Backup
     private $new = false;
     /** @var array|null */
     private $metadataCache;
-    /** @var array|null */
-    private $metadataErrors;
+    /** @var Error[] */
+    private $metadataErrors = [];
     /** @var string|null */
     private $addedDbDumpPrefix;
     /** @var string[] */
@@ -438,7 +440,7 @@ class Backup
     }
 
     /**
-     * @return array
+     * @return Error[]
      */
     function getMetaDataErrors(): array
     {
@@ -466,29 +468,26 @@ class Backup
         }
     }
 
-    /**
-     * @param array      $metaData
-     * @param array|null $errors
-     */
-    private function validateMetaData(array &$metaData, ?array &$errors = null): void
+    private function validateMetaData(array &$metaData, array &$errors = null): void
     {
-        $optionSet = new OptionSet([
-            'system_version' => ['type' => 'string', 'required' => true, 'normalizer' => function ($value) {
-                if ($value !== Core::VERSION) {
-                    throw new OptionSetNormalizerException('incompatible system version');
-                }
-            }],
-            'created_at' => ['type' => 'integer', 'required' => true],
-            'directory_list' => ['type' => 'array', 'default' => []],
-            'file_list' => ['type' => 'array', 'default' => []],
-            'db_prefix' => ['type' => 'string', 'nullable' => true, 'default' => null],
-            'is_patch' => ['type' => 'boolean', 'default' => false],
-            'files_to_remove' => ['type' => 'array', 'default' => []],
-            'directories_to_remove' => ['type' => 'array', 'default' => []],
-            'directories_to_purge' => ['type' => 'array', 'default' => []],
-        ]);
+        $options = new Resolver();
+        $options->addOption(
+            Option::choice('system_version', Core::VERSION),
+            Option::int('created_at'),
+            Option::list('directory_list', 'string'),
+            Option::list('file_list', 'string'),
+            Option::string('db_prefix')->nullable(),
+            Option::bool('is_patch')->default(false),
+            Option::list('files_to_remove', 'string')->default([]),
+            Option::list('directories_to_remove', 'string')->default([]),
+            Option::list('directories_to_purge', 'string')->default([])
+        );
 
-        $optionSet->process($metaData, null, $errors);
+        try {
+            $options->resolve($metaData);
+        } catch (ResolverException $e) {
+            $errors = $e->getErrors();
+        }
     }
 
     private function setMetaData(): void

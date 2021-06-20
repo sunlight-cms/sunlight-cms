@@ -11,17 +11,17 @@
         "functions.php"
     ],
     "events": [
-        ["db.query", "$this::onDbQuery"],
-        ["db.query.after", "$this::onDbQueryPost"],
-        ["localization.missing", "$this::onMissingLocalization"],
-        ["mail.send", "$this::onMail"]
+        {"event": "db.query", "method": "onDbQuery"},
+        {"event": "db.query.after", "method": "onDbQueryPost"},
+        {"event": "localization.missing", "method": "onMissingLocalization"},
+        {"event": "mail.send", "method": "onMail"}
     ],
     "events.web": [
-        ["tpl.head", "$this::onHead"],
-        ["tpl.end", "$this::onEnd"]
+        {"event": "tpl.head", "method": "onHead"},
+        {"event": "tpl.end", "method": "onEnd"}
     ],
     "events.admin": [
-        ["admin.head", "$this::onHead"],
-        ["admin.end", "$this::onEnd"]
+        {"event": "admin.head", "method": "onHead"},
+        {"event": "admin.end", "method": "onEnd"}
     ]
 }

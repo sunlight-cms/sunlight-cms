@@ -25,49 +25,24 @@ abstract class Plugin
     /** Plugin status - disabled */
     const STATUS_DISABLED = 3;
 
-    /** Plugin type definition - defined by children */
-    const TYPE_DEFINITION = [];
-
-    /** @var array */
-    static $commonOptions = [
-        '$schema' => ['type' => 'string'],
-        'name' => ['type' => 'string', 'required' => true],
-        'description' => ['type' => 'string'],
-        'author' => ['type' => 'string'],
-        'url' => ['type' => 'string'],
-        'version' => ['type' => 'string', 'required' => true],
-        'api' => ['type' => 'string', 'required' => true],
-        'php' => ['type' => 'string'],
-        'extensions' => ['type' => 'array', 'default' => []],
-        'requires' => ['type' => 'array', 'default' => []],
-        'installer' => ['type' => 'string', 'normalizer' => [PluginOptionNormalizer::class, 'normalizePath']],
-        'autoload' => ['type' => 'array', 'default' => [], 'normalizer' => [PluginOptionNormalizer::class, 'normalizeAutoload']],
-        'debug' => ['type' => 'boolean', 'nullable' => true],
-        'class' => ['type' => 'string'],
-        'namespace' => ['type' => 'string', 'normalizer' => [PluginOptionNormalizer::class, 'normalizeNamespace']],
-        'inject_composer' => ['type' => 'boolean', 'default' => true],
-    ];
-
-    /** @var string */
-    protected $type;
     /** @var string */
     protected $id;
     /** @var string */
     protected $camelId;
+    /** @var string */
+    protected $type;
     /** @var int */
     protected $status;
     /** @var bool|null */
     protected $installed;
-    /** @var string[] */
-    protected $errors;
-    /** @var string[] */
-    protected $definitionErrors;
     /** @var string */
     protected $dir;
     /** @var string */
     protected $file;
     /** @var string */
     protected $webPath;
+    /** @var string[] */
+    protected $errors;
     /** @var array */
     protected $options;
     /** @var PluginManager */
@@ -75,23 +50,18 @@ abstract class Plugin
     /** @var ConfigurationFile|null */
     private $config;
 
-    /**
-     * @param array         $data
-     * @param PluginManager $manager
-     */
-    function __construct(array $data, PluginManager $manager)
+    function __construct(PluginData $data, PluginManager $manager)
     {
-        $this->type = $data['type'];
-        $this->id = $data['id'];
-        $this->camelId = $data['camel_id'];
-        $this->status = $data['status'];
-        $this->installed = $data['installed'];
-        $this->errors = $data['errors'];
-        $this->definitionErrors = $data['definition_errors'];
-        $this->dir = $data['dir'];
-        $this->file = $data['file'];
-        $this->webPath = $data['web_path'];
-        $this->options = $data['options'];
+        $this->id = $data->id;
+        $this->camelId = $data->camelId;
+        $this->type = $data->type;
+        $this->status = $data->status;
+        $this->installed = $data->installed;
+        $this->dir = $data->dir;
+        $this->file = $data->file;
+        $this->webPath = $data->webPath;
+        $this->errors = $data->errors;
+        $this->options = $data->options;
         $this->manager = $manager;
     }
 
@@ -262,14 +232,6 @@ abstract class Plugin
     function getErrors(): array
     {
         return $this->errors;
-    }
-
-    /**
-     * @return string[]
-     */
-    function getDefinitionErrors(): array
-    {
-        return $this->definitionErrors;
     }
 
     /**

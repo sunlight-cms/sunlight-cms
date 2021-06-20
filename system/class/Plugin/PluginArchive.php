@@ -125,10 +125,8 @@ class PluginArchive
         $dirPatterns = [];
         $typeDir2Type = [];
         foreach ($this->manager->getTypes() as $type) {
-            $definition = $this->manager->getTypeDefinition($type);
-
-            $dirPatterns[] = preg_quote($definition['dir']);
-            $typeDir2Type[$definition['dir']] = $type;
+            $dirPatterns[] = preg_quote($type->getDir());
+            $typeDir2Type[$type->getDir()] = $type->getName();
         }
         $regex = '{(' . implode('|', $dirPatterns) . ')/(' . Plugin::ID_PATTERN . ')/(.+)$}AD';
 

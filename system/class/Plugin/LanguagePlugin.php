@@ -6,14 +6,6 @@ use Sunlight\Core;
 
 class LanguagePlugin extends Plugin
 {
-    const TYPE_DEFINITION = [
-        'type' => 'language',
-        'dir' => 'plugins/languages',
-        'class' => __CLASS__,
-        'default_base_namespace' => 'SunlightLanguage',
-        'options' => [],
-    ];
-
     function canBeDisabled(): bool
     {
         return !$this->isFallback() && parent::canBeDisabled();

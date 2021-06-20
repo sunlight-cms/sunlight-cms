@@ -6,6 +6,7 @@ use Sunlight\Core;
 use Sunlight\Extend;
 use Sunlight\GenericTemplates;
 use Sunlight\Plugin\ExtendPlugin;
+use Sunlight\Plugin\PluginData;
 use Sunlight\Plugin\PluginManager;
 use Kuria\Error\Screen\WebErrorScreen;
 use Kuria\Error\Screen\WebErrorScreenEvents;
@@ -21,7 +22,7 @@ class DevkitPlugin extends ExtendPlugin
     /** @var array[] */
     private $dumps = [];
 
-    function __construct(array $data, PluginManager $manager)
+    function __construct(PluginData $data, PluginManager $manager)
     {
         parent::__construct($data, $manager);
 

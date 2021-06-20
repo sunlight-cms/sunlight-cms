@@ -39,9 +39,35 @@
         "event-subscriber": {
             "type": "array",
             "items": {
-                "type": "array",
-                "minItems": 2,
-                "maxItems": 3
+                "type": "object",
+                "properties": {
+                    "event": {
+                        "type": "string"
+                    },
+                    "method": {
+                        "type": "string"
+                    },
+                    "callback": {
+                        "type": ["string", "array"]
+                    },
+                    "priority": {
+                        "type": "integer"
+                    }
+                },
+                "oneOf": [
+                    {
+                        "required": [
+                            "event",
+                            "method"
+                        ]
+                    },
+                    {
+                        "required": [
+                            "event",
+                            "callback"
+                        ]
+                    }
+                ]
             }
         },
         "path-list": {

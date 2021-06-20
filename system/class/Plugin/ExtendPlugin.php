@@ -8,22 +8,6 @@ use Sunlight\Localization\LocalizationDirectory;
 
 class ExtendPlugin extends Plugin
 {
-    const TYPE_DEFINITION = [
-        'type' => 'extend',
-        'dir' => 'plugins/extend',
-        'class' => __CLASS__,
-        'default_base_namespace' => 'SunlightExtend',
-        'options' => [
-            'events' => ['type' => 'array', 'default' => [], 'normalizer' => [PluginOptionNormalizer::class, 'normalizeEvents']],
-            'events.web' => ['type' => 'array', 'default' => [], 'normalizer' => [PluginOptionNormalizer::class, 'normalizeEvents']],
-            'events.admin' => ['type' => 'array', 'default' => [], 'normalizer' => [PluginOptionNormalizer::class, 'normalizeEvents']],
-            'scripts' => ['type' => 'array', 'default' => [], 'normalizer' => [PluginOptionNormalizer::class, 'normalizePathArray']],
-            'scripts.web' => ['type' => 'array', 'default' => [], 'normalizer' => [PluginOptionNormalizer::class, 'normalizePathArray']],
-            'scripts.admin' => ['type' => 'array', 'default' => [], 'normalizer' => [PluginOptionNormalizer::class, 'normalizePathArray']],
-            'langs' => ['type' => 'array', 'default' => [], 'normalizer' => [PluginOptionNormalizer::class, 'normalizePathArray']],
-        ],
-    ];
-
     /**
      * Initialize the plugin
      */
@@ -33,8 +17,8 @@ class ExtendPlugin extends Plugin
         foreach ($this->options['events'] as $subscriber) {
             Extend::reg(
                 $subscriber['event'],
-                $subscriber['use_this']
-                    ? [$this, $subscriber['callback']]
+                $subscriber['method'] !== null
+                    ? [$this, $subscriber['method']]
                     : $subscriber['callback'],
                 $subscriber['priority']
             );
@@ -43,8 +27,8 @@ class ExtendPlugin extends Plugin
             foreach ($this->options['events.' . _env] as $subscriber) {
                 Extend::reg(
                     $subscriber['event'],
-                    $subscriber['use_this']
-                        ? [$this, $subscriber['callback']]
+                    $subscriber['method'] !== null
+                        ? [$this, $subscriber['method']]
                         : $subscriber['callback'],
                     $subscriber['priority']
                 );

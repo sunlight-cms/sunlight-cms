@@ -54,7 +54,6 @@ class InfoAction extends PluginAction
         <th><?= _lang('admin.plugins.errors') ?></th>
         <td class="text-danger">
             <?= Message::renderList($plugin->getErrors()) ?>
-            <?= Message::renderList($plugin->getDefinitionErrors(), null, true) ?>
         </td>
     </tr>
     <?php endif ?>
