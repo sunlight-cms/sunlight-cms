@@ -21,7 +21,8 @@ if (!_lostpass) {
 }
 
 if (_logged_in) {
-    $_index['type'] = _index_guest_only;
+    $_index['type'] = _index_redir;
+    $_index['redirect_to'] = Router::module('login', null, true);
     return;
 }
 

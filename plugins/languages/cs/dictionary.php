@@ -144,8 +144,6 @@ return [
     'user.list.title' => 'Seznam uživatelů',
     'user.list.groupfilter' => 'Zobrazit pouze skupinu',
     'user.list.total' => 'Celkový počet uživatelů',
-    'nologin.title' => 'Stránka není dostupná',
-    'nologin.msg' => 'Stránka je určena pouze pro nepřihlášené uživatele.',
     'usermenu.login' => 'přihlásit',
     'usermenu.logout' => 'odhlásit',
     'usermenu.guest' => 'nepřihlášen',

@@ -144,8 +144,6 @@ return [
     'user.list.title' => 'User list',
     'user.list.groupfilter' => 'Show only one group',
     'user.list.total' => 'Total number of users',
-    'nologin.title' => 'Page unavailable',
-    'nologin.msg' => 'This page is available to guests only.',
     'usermenu.login' => 'log in',
     'usermenu.logout' => 'log out',
     'usermenu.guest' => 'not logged in',

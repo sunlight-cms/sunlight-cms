@@ -290,6 +290,3 @@ const _index_not_found = 4;
 
 /** 401 */
 const _index_unauthorized = 5;
-
-/** Guest only */
-const _index_guest_only = 6;

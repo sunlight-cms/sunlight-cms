@@ -170,11 +170,6 @@ switch ($_index['type']) {
         // pristup odepren
         require _root . 'system/action/login_required.php';
         break;
-
-    case _index_guest_only:
-        // pristup pouze pro neprihl. uziv
-        require _root . 'system/action/guest_required.php';
-        break;
 }
 
 Extend::call('index.ready', ['index' => &$_index]);
