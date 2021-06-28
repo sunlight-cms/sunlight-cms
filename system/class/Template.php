@@ -538,7 +538,7 @@ abstract class Template
             // profil
             if ($profileLink) {
                 $items['profile'] = [
-                    Router::module('profile', 'id=' . _user_name),
+                    Router::module('profile', 'id=' . User::getUsername()),
                     _lang('usermenu.profile'),
                 ];
             }

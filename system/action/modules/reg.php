@@ -9,11 +9,11 @@ use Sunlight\GenericTemplates;
 use Sunlight\IpLog;
 use Sunlight\Message;
 use Sunlight\Router;
+use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Password;
 use Sunlight\Util\Request;
 use Sunlight\Util\StringGenerator;
-use Sunlight\Util\StringManipulator;
 
 defined('_root') or exit;
 
@@ -61,8 +61,8 @@ if (isset($_GET['confirm'])) {
 
                 // kontrola dostupnosti uziv. jmena a emailu
                 if (
-                    DB::count(_user_table, 'username=' . DB::val($user_data['username']) . ' OR publicname=' . DB::val($user_data['username'])) == 0
-                    && DB::count(_user_table, 'email=' . DB::val($user_data['email'])) == 0
+                    User::isNameAvailable($user_data['username'])
+                    && User::isEmailAvailable($user_data['email'])
                 ) {
                     // vse ok
                     $user_data_valid = true;
@@ -97,14 +97,10 @@ if (isset($_GET['confirm'])) {
         }
 
         // nacteni a kontrola promennych
-        $user_data['username'] = Request::post('username');
-        if (mb_strlen($user_data['username']) > 24) {
-            $user_data['username'] = mb_substr($user_data['username'], 0, 24);
-        }
-        $user_data['username'] = StringManipulator::slugify($user_data['username'], false);
+        $user_data['username'] = User::normalizeUsername(Request::post('username', ''));
         if ($user_data['username'] == "") {
             $errors[] = _lang('user.msg.badusername');
-        } elseif (DB::count(_user_table, 'username=' . DB::val($user_data['username']) . ' OR publicname=' . DB::val($user_data['username'])) !== 0) {
+        } elseif (!User::isNameAvailable($user_data['username'])) {
             $errors[] = _lang('user.msg.userexists');
         }
 
@@ -123,7 +119,7 @@ if (isset($_GET['confirm'])) {
         if (!Email::validate($user_data['email'])) {
             $errors[] = _lang('user.msg.bademail');
         }
-        if (DB::count(_user_table, 'email=' . DB::val($user_data['email'])) !== 0) {
+        if (!User::isEmailAvailable($user_data['email'])) {
             $errors[] = _lang('user.msg.emailexists');
         }
 
@@ -213,7 +209,7 @@ if (!$user_data_valid && $show_form) {
             ['label' => _lang('login.password'), 'content' => "<input type='password' name='password' class='inputsmall' autocomplete='new-password'>"],
             ['label' => _lang('login.password') . " (" . _lang('global.check') . ")", 'content' => "<input type='password' name='password2' class='inputsmall' autocomplete='new-password'>"],
             ['label' => _lang('global.email'), 'content' => "<input type='email' class='inputsmall' " . Form::restorePostValueAndName('email', '@') . " autocomplete='email'>"],
-            ['label' => _lang('mod.settings.massemail'), 'content' => "<label><input type='checkbox' value='1'" . Form::restoreCheckedAndName('regform', 'massemail') . "> " . _lang('mod.settings.massemail.label') . '</label>'],
+            ['label' => _lang('mod.settings.account.massemail'), 'content' => "<label><input type='checkbox' value='1'" . Form::restoreCheckedAndName('regform', 'massemail') . "> " . _lang('mod.settings.account.massemail.label') . '</label>'],
             $groupselect,
             $captcha,
             $rules,
@@ -228,7 +224,7 @@ if (!$user_data_valid && $show_form) {
         $user_id = DB::insert(_user_table, $user_data + ['registertime' => time()], true);
 
         // udalost
-        Extend::call('user.new', ['id' => $user_id, 'username' => $user_data['username'], 'email' => $user_data['email']]);
+        Extend::call('user.new', ['id' => $user_id]);
 
         // hlaska
         $_SESSION['login_form_username'] = $user_data['username'];

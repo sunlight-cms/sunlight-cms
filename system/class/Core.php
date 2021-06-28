@@ -69,11 +69,6 @@ abstract class Core
     /** @var LocalizationDictionary */
     static $lang;
 
-    /** @var array|null */
-    static $userData;
-    /** @var array|null */
-    static $groupData;
-
     /** @var string */
     static $imageError;
     /** @var int */
@@ -669,8 +664,8 @@ abstract class Core
             ]);
 
             // set variables
-            self::$userData = $userData;
-            self::$groupData = $groupData;
+            User::$data = $userData;
+            User::$group = $groupData;
         } else {
             // anonymous user
             $userData = [
@@ -693,15 +688,13 @@ abstract class Core
                 'user' => &$userData,
                 'group' => &$groupData,
             ]);
+
+            User::$group = $groupData;
         }
 
         // define constants
         define('_logged_in', $authorized);
         define('_user_id', $userData['id']);
-        define('_user_name', $userData['username']);
-        define('_user_public_name', $userData[$userData['publicname'] !== null ? 'publicname' : 'username']);
-        define('_user_email', $userData['email']);
-        define('_user_group', $groupData['id']);
 
         foreach(User::listPrivileges() as $item) {
             define('_priv_' . $item, $groupData[$item]);
@@ -716,8 +709,8 @@ abstract class Core
     private static function initLocalization(): void
     {
         // language choice
-        if (_logged_in && _language_allowcustom && self::$userData['language'] !== '') {
-            $language = self::$userData['language'];
+        if (_logged_in && _language_allowcustom && User::$data['language'] !== '') {
+            $language = User::$data['language'];
             $usedLoginLanguage = true;
         } else {
             $language = self::$settings['language'];

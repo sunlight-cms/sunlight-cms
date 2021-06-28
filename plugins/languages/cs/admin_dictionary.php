@@ -698,7 +698,7 @@ return [
     'admin.other.massemail.noreceivers' => 'nebyli zvoleni žádní příjemci',
     'admin.other.massemail.send' => 'Hromadný e-mail byl odeslán %done% z %total% příjemcům.',
     'admin.other.massemail.noreceiversfound' => 'Nebyli nalezeni žádní příjemci.',
-    'admin.other.massemail.emailnotice' => 'Tento e-mail Vám byl zaslán na základě registrace na %domain%. Nepřejete-li si takovéto zprávy dostávat, deaktivujte prosím volbu "zasílat informační e-maily" v nastavení vašeho účtu.',
+    'admin.other.massemail.emailnotice' => 'Tento e-mail vám byl zaslán na základě registrace na %domain%. Nepřejete-li si takovéto zprávy dostávat, deaktivujte prosím volbu "zasílat informační e-maily" v nastavení vašeho účtu.',
     'admin.other.sqlex.title' => 'Vyhodnocení SQL dotazů',
     'admin.other.sqlex.run' => 'Vyhodnotit',
     'admin.other.sqlex.rows' => 'Počet řádků',

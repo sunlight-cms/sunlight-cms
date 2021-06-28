@@ -106,7 +106,7 @@ $output .= $message . "
     <td><input type='checkbox' onclick='Sunlight.checkAll(event, this.checked, \"#user-list\")'></td>
     <td>ID</td><td>" . _lang('login.username') . "</td>
     <td>" . _lang('global.email') . "</td>
-    <td>" . _lang('mod.settings.publicname') . "</td>
+    <td>" . _lang('mod.settings.account.publicname') . "</td>
     <td>" . _lang('global.group') . "</td>
     <td>" . _lang('global.action') . "</td>
 </tr></thead>

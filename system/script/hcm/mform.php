@@ -5,6 +5,7 @@ use Sunlight\Core;
 use Sunlight\Email;
 use Sunlight\GenericTemplates;
 use Sunlight\IpLog;
+use Sunlight\User;
 use Sunlight\Util\Response;
 use Sunlight\Util\Request;
 use Sunlight\Util\UrlHelper;
@@ -62,7 +63,7 @@ if (Xsrf::check()) {
         // pridani informacniho textu do tela
         $info_ip = _user_ip;
         if (_logged_in) {
-            $info_ip .= ' (' . _user_name . ')';
+            $info_ip .= ' (' . User::getUsername() . ')';
         }
         $text .= "\n\n" . str_repeat('-', 16) . "\n" . _lang('hcm.mailform.info', [
             '%domain%' => Core::getBaseUrl()->getFullHost(),

@@ -58,12 +58,12 @@ abstract class Admin
     {
         $output = '<span id="usermenu">';
         if (_logged_in && _priv_administration) {
-            $profile_link = Router::module('profile', 'id=' . _user_name);
-            $avatar = User::renderAvatar(Core::$userData, ['get_url' => true, 'default' => false]);
+            $profile_link = Router::module('profile', 'id=' . User::getUsername());
+            $avatar = User::renderAvatar(User::$data, ['get_url' => true, 'default' => false]);
             if ($avatar !== null) {
-                $output .= '<a id="usermenu-avatar" href="' . _e($profile_link) . '"><img src="' . $avatar . '" alt="' . _user_name . '"></a>';
+                $output .= '<a id="usermenu-avatar" href="' . _e($profile_link) . '"><img src="' . $avatar . '" alt="' . User::getUsername() . '"></a>';
             }
-            $output .= '<a id="usermenu-username" href="' . _e($profile_link) . '">' . _user_public_name . '</a> [';
+            $output .= '<a id="usermenu-username" href="' . _e($profile_link) . '">' . User::getDisplayName() . '</a> [';
             if (_messages) {
                 $messages_count = DB::count(_pm_table, '(receiver=' . _user_id . ' AND receiver_deleted=0 AND receiver_readtime<update_time) OR (sender=' . _user_id . ' AND sender_deleted=0 AND sender_readtime<update_time)');
                 if ($messages_count != 0) {

@@ -74,7 +74,7 @@ abstract class GenericTemplates
      */
     static function renderIp(string $ip): string
     {
-        if (_user_group == 1) {
+        if (User::$group['id'] == 1) {
             // hlavni administratori vidi vzdy puvodni IP
             return $ip;
         }

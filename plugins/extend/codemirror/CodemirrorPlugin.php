@@ -3,8 +3,8 @@
 namespace SunlightExtend\Codemirror;
 
 use Sunlight\Admin\Admin;
-use Sunlight\Core;
 use Sunlight\Plugin\ExtendPlugin;
+use Sunlight\User;
 
 class CodemirrorPlugin extends ExtendPlugin
 {
@@ -16,7 +16,7 @@ class CodemirrorPlugin extends ExtendPlugin
     function onCoreJavascript(array $args): void
     {
         $args['variables']['pluginCodemirror'] = [
-            'userWysiwygEnabled' => _logged_in && Core::$userData['wysiwyg'],
+            'userWysiwygEnabled' => _logged_in && User::$data['wysiwyg'],
         ];
     }
 

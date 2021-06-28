@@ -1,5 +1,7 @@
 <?php
 
+use Sunlight\User;
+
 defined('_root') or exit;
 
 /* --- definice systemovych modulu --- */
@@ -47,7 +49,7 @@ return [
     ],
     'index-edit' => [
         'title' => _lang('admin.menu.index.edit.title'),
-        'access' => _user_group == 1,
+        'access' => User::$group['id'] == 1,
         'parent' => 'index',
     ],
 

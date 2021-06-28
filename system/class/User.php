@@ -12,13 +12,21 @@ use Sunlight\Image\ImageTransformer;
 use Sunlight\Util\Arr;
 use Sunlight\Util\Filesystem;
 use Sunlight\Util\Form;
+use Sunlight\Util\Html;
 use Sunlight\Util\Password;
 use Sunlight\Util\Request;
 use Sunlight\Util\StringGenerator;
+use Sunlight\Util\StringManipulator;
 use Sunlight\Util\UrlHelper;
 
 abstract class User
 {
+    /** @var array|null data from user table (if logged in) */
+    static $data;
+
+    /** @var array data from group table */
+    static $group;
+
     /**
      * Vratit pole se jmeny vsech existujicich opravneni
      *
@@ -141,7 +149,7 @@ abstract class User
                 $homeDir = _upload_dir;
             }
         } else {
-            $subPath = 'home/' . _user_name . '/';
+            $subPath = 'home/' . self::getUsername() . '/';
             Extend::call('user.home_dir', ['subpath' => &$subPath]);
             $homeDir = _upload_dir . $subPath;
         }
@@ -264,6 +272,78 @@ abstract class User
     }
 
     /**
+     * Ziskat uzivatelske jmeno aktualniho uzivatele
+     */
+    static function getUsername(): string
+    {
+        if (!_logged_in) {
+            return '';
+        }
+
+        return self::$data['username'];
+    }
+
+    /**
+     * Ziskat jmeno aktualniho uzivatele pro zobrazeni
+     */
+    static function getDisplayName(): string
+    {
+        if (!_logged_in) {
+            return '';
+        }
+
+        return self::$data['publicname'] ?? self::$data['username'];
+    }
+
+    /**
+     * Normalizovat format uzivatelskeho jmena
+     *
+     * Muze vratit prazdny string.
+     */
+    static function normalizeUsername(string $username): string
+    {
+        return StringManipulator::slugify(StringManipulator::cut($username, 24), false);
+    }
+
+    /**
+     * Normalizovat format zobrazovaneho jmena
+     *
+     * Muze vratit prazdny string.
+     */
+    static function normalizePublicname(string $publicname): string
+    {
+        return Html::cut(_e(StringManipulator::trimExtraWhitespace($publicname)), 24);
+    }
+
+    /**
+     * Zkontrolovat zda neni dane jmeno obsazene uzivatelskym nebo zobrazovanym jmenem
+     */
+    static function isNameAvailable(string $name, ?int $ignoredUserId = null): bool
+    {
+        $where = '(username=' . DB::val($name) . ' OR publicname=' . DB::val($name) . ')';
+
+        if ($ignoredUserId !== null) {
+            $where .= ' AND id!=' . DB::val($ignoredUserId);
+        }
+
+        return DB::count(_user_table, $where) === 0;
+    }
+
+    /**
+     * Zkontrolovat zda neni dany email obsazeny
+     */
+    static function isEmailAvailable(string $email, ?int $ignoredUserId = null): bool
+    {
+        $where = 'email=' . DB::val($email);
+
+        if ($ignoredUserId !== null) {
+            $where .= ' AND id!=' . DB::val($ignoredUserId);
+        }
+
+        return DB::count(_user_table, $where) === 0;
+    }
+
+    /**
      * Sestavit casti dotazu pro nacteni dat uzivatele
      *
      * Struktura navratove hodnoty:
@@ -349,14 +429,14 @@ abstract class User
         if ($id == _super_admin_id) {
             return false;
         }
-        $udata = DB::queryRow("SELECT username,avatar FROM " . _user_table . " WHERE id=" . $id);
+        $udata = DB::queryRow("SELECT avatar FROM " . _user_table . " WHERE id=" . $id);
         if ($udata === false) {
             return false;
         }
 
         // udalost
         $allow = true;
-        Extend::call('user.delete', ['id' => $id, 'username' => $udata['username'], 'allow' => &$allow]);
+        Extend::call('user.delete', ['id' => $id, 'allow' => &$allow]);
         if (!$allow) {
             return false;
         }
@@ -529,7 +609,7 @@ abstract class User
             }
 
         } else {
-            $output .= "<p>" . _lang('login.ininfo') . " <em>" . _user_name . "</em> - <a href='" . _e(Xsrf::addToUrl(Router::generate('system/script/logout.php'))) . "'>" . _lang('usermenu.logout') . "</a>.</p>";
+            $output .= "<p>" . _lang('login.ininfo') . " <em>" . self::getUsername() . "</em> - <a href='" . _e(Xsrf::addToUrl(Router::generate('system/script/logout.php'))) . "'>" . _lang('usermenu.logout') . "</a>.</p>";
         }
 
         return $output;

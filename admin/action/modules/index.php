@@ -5,6 +5,7 @@ use Sunlight\Core;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\Message;
+use Sunlight\User;
 use Sunlight\VersionChecker;
 
 defined('_root') or exit;
@@ -141,7 +142,7 @@ $output .= implode($messages);
 $output .= "</div>\n";
 
 // editace
-if (_user_group == _group_admin) {
+if (User::$group['id'] == _group_admin) {
     $output .= '<p class="text-right"><a class="button" href="index.php?p=index-edit"><img src="images/icons/edit.png" alt="edit" class="icon">' . _lang('admin.index.edit.link') . '</a></p>';
 }
 

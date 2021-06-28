@@ -103,7 +103,7 @@ if ($public) {
 <td>" . $query['username'] . "</td>
 </tr>
 
-" . (($query['publicname'] !== null) ? "<tr><th>" . _lang('mod.settings.publicname') . "</th><td>" . $query['publicname'] . "</td></tr>" : '') . "
+" . (($query['publicname'] !== null) ? "<tr><th>" . _lang('mod.settings.account.publicname') . "</th><td>" . $query['publicname'] . "</td></tr>" : '') . "
 
 <tr>
 <th>" . _lang('global.group') . "</th>

@@ -9,6 +9,7 @@ use Sunlight\Database\DatabaseException;
 use Sunlight\Database\DatabaseLoader;
 use Sunlight\Database\SqlReader;
 use Sunlight\Email;
+use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Password;
 use Sunlight\Util\PhpTemplate;
@@ -924,7 +925,7 @@ class ImportDatabaseStep extends Step
         ];
 
         $admin = [
-            'username' => StringManipulator::slugify(Request::post('import_admin_username'), false),
+            'username' => User::normalizeUsername(Request::post('import_admin_username', '')),
             'password' => Request::post('import_admin_password'),
             'email' => trim(Request::post('import_admin_email')),
         ];

@@ -77,17 +77,13 @@ if ($continue) {
         // nacteni a kontrola promennych
 
         // username
-        $username = Request::post('username');
-        if (mb_strlen($username) > 24) {
-            $username = mb_substr($username, 0, 24);
-        }
-        $username = StringManipulator::slugify($username, false);
-        if ($username == "") {
+        $username = User::normalizeUsername(Request::post('username', ''));
+        if ($username === '') {
             $errors[] = _lang('user.msg.badusername');
         } else {
             $usernamechange = false;
-            if ($username != $query['username']) {
-                if (DB::count(_user_table, '(username=' . DB::val($username) . ' OR publicname=' . DB::val($username) . ') AND id!=' . DB::val($query['id'])) === 0) {
+            if ($username !== $query['username']) {
+                if (User::isNameAvailable($username, $query['id'])) {
                     $usernamechange = true;
                 } else {
                     $errors[] = _lang('user.msg.userexists');
@@ -96,16 +92,15 @@ if ($continue) {
         }
 
         // publicname
-        $publicname = _e(StringManipulator::trimExtraWhitespace(Request::post('publicname')));
-        if (mb_strlen($publicname) > 24) {
-            $errors[] = _lang('user.msg.publicnametoolong');
-        } elseif ($publicname != $query['publicname'] && $publicname != "") {
-            if (DB::count(_user_table, '(publicname=' . DB::val($publicname) . ' OR username=' . DB::val($publicname) . ') AND id!=' . DB::val($query['id'])) !== 0) {
-                $errors[] = _lang('user.msg.publicnameexists');
+        $publicname = User::normalizePublicname(Request::post('publicname', ''));
+        if ($publicname !== $query['publicname']) {
+            if ($publicname !== '') {
+                if (!User::isNameAvailable($publicname, $query['id'])) {
+                    $errors[] = _lang('user.msg.publicnameexists');
+                }
+            } else {
+                $publicname = null;
             }
-        }
-        if ($publicname === '') {
-            $publicname = null;
         }
 
         // email
@@ -114,7 +109,7 @@ if ($continue) {
             $errors[] = _lang('user.msg.bademail');
         } elseif (
             $email != $query['email']
-            && DB::count(_user_table, 'email=' . DB::val($email) . ' AND id!=' . DB::val($query['id'])) !== 0
+            && !User::isEmailAvailable($email)
         ) {
             $errors[] = _lang('user.msg.emailexists');
         }
@@ -208,7 +203,7 @@ if ($continue) {
             if ($id !== null) {
                 // uprava
                 DB::update(_user_table, 'id=' . DB::val($query['id']), $changeset);
-                Extend::call('user.edit', ['id' => $query['id'], 'username' => $username, 'email' => $email]);
+                Extend::call('user.edit', ['id' => $query['id']]);
                 $admin_redirect_to = 'index.php?p=users-edit&r=1&id=' . $username;
 
                 return;
@@ -220,7 +215,7 @@ if ($continue) {
                 'activitytime' => time(),
             ];
             $id = DB::insert(_user_table, $changeset, true);
-            Extend::call('user.new', ['id' => $id, 'username' => $username, 'email' => $email]);
+            Extend::call('user.new', ['id' => $id]);
             $admin_redirect_to = 'index.php?p=users-edit&r=2&id=' . $username;
 
             return;
@@ -263,8 +258,13 @@ if ($continue) {
 </tr>
 
 <tr>
-<th>" . _lang('mod.settings.publicname') . "</th>
-<td><input type='text' class='inputsmall'" . Form::restorePostValueAndName('publicname', $query['publicname'], true) . " maxlength='24'></td>
+<th>" . _lang('mod.settings.account.publicname') . "</th>
+<td><input type='text' class='inputsmall'" . Form::restorePostValueAndName('publicname', $query['publicname'], false) . " maxlength='24'></td>
+</tr>
+
+<tr>
+<th>" . _lang('global.email') . "</th>
+<td><input type='email' class='inputsmall'" . Form::restorePostValueAndName('email', $query['email']) . "></td>
 </tr>
 
 <tr>
@@ -288,28 +288,23 @@ if ($continue) {
 </tr>
 
 <tr>
-<th>" . _lang('mod.settings.wysiwyg') . "</th>
+<th>" . _lang('mod.settings.account.wysiwyg') . "</th>
 <td><input type='checkbox' name='wysiwyg' value='1'" . Form::activateCheckbox($query['wysiwyg'] || isset($_POST['wysiwyg'])) . "></td>
 </tr>
 
 <tr>
-<th>" . _lang('mod.settings.massemail') . "</th>
+<th>" . _lang('mod.settings.account.massemail') . "</th>
 <td><input type='checkbox' name='massemail' value='1'" . Form::activateCheckbox($query['massemail'] || isset($_POST['massemail'])) . "></td>
 </tr>
 
 <tr>
-<th>" . _lang('mod.settings.public') . "</th>
+<th>" . _lang('mod.settings.account.public') . "</th>
 <td><input type='checkbox' name='public' value='1'" . Form::activateCheckbox($query['public'] || isset($_POST['public'])) . "></td>
 </tr>
 
 <tr>
-<th>" . _lang('global.email') . "</th>
-<td><input type='email' class='inputsmall'" . Form::restorePostValueAndName('email', $query['email']) . "></td>
-</tr>
-
-<tr>
 <th>" . _lang('global.avatar') . "</th>
-<td><label><input type='checkbox' name='removeavatar' value='1'> " . _lang('mod.settings.avatar.remove') . "</label></td>
+<td><label><input type='checkbox' name='removeavatar' value='1'> " . _lang('global.delete') . "</label></td>
 </tr>
 
 <tr class='valign-top'>
@@ -331,7 +326,7 @@ if ($continue) {
     if ($id != null) {
         $output .= "
   <p>
-    <a href='" . _e(Router::module('profile', 'id=' . $query['username'])) . "' target='_blank'>" . _lang('mod.settings.profilelink') . " &gt;</a>
+    <a href='" . _e(Router::module('profile', 'id=' . $query['username'])) . "' target='_blank'>" . _lang('mod.profile') . " &gt;</a>
   </p>
   ";
     }

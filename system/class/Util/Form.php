@@ -336,6 +336,7 @@ abstract class Form
      * submit_row (-)       1 vlastni pole s atributy radku s odesilacim tlacitkem (viz format zaznamu v $rows)
      *                      uvedeni teto volby potlaci submit_text, submit_span a submit_name
      *
+     * table_attrs          vlastni HTML vlozene na konec <table> tagu
      * table_append         vlastni HTML vlozene pred </table>
      * form_append          vlastni HTML vlozene pred </form>
      *
@@ -376,6 +377,7 @@ abstract class Form
             'submit_span' => false,
             'submit_name' => null,
             'submit_row' => null,
+            'table_attrs' => '',
             'table_prepend' => '',
             'table_append' => '',
             'form_prepend' => '',
@@ -415,7 +417,7 @@ abstract class Form
         $output .= $options['form_prepend'];
 
         // zacatek tabulky
-        $output .= "<table>\n";
+        $output .= "<table{$options['table_attrs']}>\n";
         $output .= $options['table_prepend'];
 
         // radky

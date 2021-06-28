@@ -4,6 +4,7 @@ use Sunlight\Captcha;
 use Sunlight\Core;
 use Sunlight\Message;
 use Sunlight\Router;
+use Sunlight\User;
 use Sunlight\Util\Arr;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
@@ -40,7 +41,7 @@ return function ($adresa = "", $predmet = null) {
 
     // predvyplneni odesilatele
     if (_logged_in) {
-        $sender = _user_email;
+        $sender = User::$data['email'];
     } else {
         $sender = "&#64;";
     }

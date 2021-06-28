@@ -8,6 +8,7 @@ use Sunlight\Extend;
 use Sunlight\Localization\LocalizationDirectory;
 use Sunlight\Plugin\InactivePlugin;
 use Sunlight\Router;
+use Sunlight\User;
 
 class ToolbarRenderer
 {
@@ -443,7 +444,7 @@ class ToolbarRenderer
     {
         if (_logged_in) {
             $loginInfo = sprintf('level %d', _priv_level);
-            $loginName = _user_name;
+            $loginName = User::getUsername();
         } else {
             $loginInfo = 'not logged in';
             $loginName = '---';

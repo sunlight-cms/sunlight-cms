@@ -135,7 +135,7 @@ if ($xhome != -1 && $posttype != _post_pm) {
 if ($continue && $continue2 && $text != '' && ($posttype == _post_shoutbox_entry || Captcha::check())) {
     if (Xsrf::check()) {
         if ($posttype == _post_shoutbox_entry || _priv_unlimitedpostaccess || IpLog::check(_iplog_anti_spam)) {
-            if ($guest === '' || DB::count(_user_table, 'username=' . DB::val($guest) . ' OR publicname=' . DB::val($guest)) === 0) {
+            if ($guest === '' || User::isNameAvailable($guest)) {
 
                 // zpracovani pluginem
                 $allow = true;
