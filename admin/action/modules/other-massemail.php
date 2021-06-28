@@ -126,7 +126,7 @@ if (isset($_POST['text'])) {
         }
 
     } else {
-        $output .= Message::warning(Message::renderList($errors, 'errors'), true);
+        $output .= Message::list($errors);
     }
 
 }

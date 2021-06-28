@@ -5,7 +5,6 @@ use Sunlight\Backup\BackupRestorer;
 use Sunlight\Core;
 use Sunlight\Message;
 use Sunlight\Util\Environment;
-use Sunlight\Util\Html;
 use Sunlight\VersionChecker;
 use Sunlight\Xsrf;
 
@@ -35,7 +34,7 @@ if (isset($_POST['apply_patch'])) do {
         $restorer = new BackupRestorer($patch);
 
         if (!$restorer->validate($errors)) {
-            $output .= Message::error(Message::renderList(Html::escapeArrayItems($errors), _lang('admin.other.patch.incompatible')), true);
+            $output .= Message::list($errors, ['type' => Message::ERROR, 'text' => _lang('admin.other.patch.incompatible')]);
             break;
         }
 
@@ -52,7 +51,7 @@ if (isset($_POST['apply_patch'])) do {
             return;
         }
 
-        $output .= Message::error(Message::renderList(Html::escapeArrayItems($errors), 'errors'), true);
+        $output .= Message::list($errors, ['type' => Message::ERROR]);
 
     } catch (Throwable $e) {
         $output .= Message::error(_lang('global.error')) . Core::renderException($e);

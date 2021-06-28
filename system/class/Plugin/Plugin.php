@@ -223,7 +223,7 @@ abstract class Plugin
      */
     function hasErrors(): bool
     {
-        return $this->status === self::STATUS_HAS_ERRORS;
+        return !empty($this->errors);
     }
 
     /**

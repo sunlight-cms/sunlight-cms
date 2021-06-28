@@ -33,7 +33,7 @@ if (isset($_POST['submit'])) {
             $output .= Message::error(_lang('mod.settings.remove.error.failed'));
         }
     } else {
-        $output .= Message::warning(Message::renderList($errors, 'errors'), true);
+        $output .= Message::list($errors);
     }
 }
 

@@ -45,40 +45,6 @@ class Message
     }
 
     /**
-     * Render a formatted list of messages
-     *
-     * @param array       $messages    the messages
-     * @param string|null $description description ("errors" = _lang('misc.errorlog.intro'), null = none, anything else = custom)
-     * @param bool        $showKeys    render $message keys as well
-     * @return string
-     */
-    static function renderList(array $messages, ?string $description = null, bool $showKeys = false): string
-    {
-        $output = '';
-
-        if (!empty($messages)) {
-            // description
-            if ($description != null) {
-                if ($description !== 'errors') {
-                    $output .= $description;
-                } else {
-                    $output .= _lang('misc.errorlog.intro');
-                }
-                $output .= "\n";
-            }
-
-            // messages
-            $output .= "<ul>\n";
-            foreach($messages as $key => $item) {
-                $output .= '<li>' . ($showKeys ? '<strong>' . _e($key) . '</strong>: ' : '') . StringManipulator::lcfirst($item) . "</li>\n";
-            }
-            $output .= "</ul>\n";
-        }
-
-        return $output;
-    }
-
-    /**
      * Create an informational message
      *
      * @param string $message the message
@@ -112,6 +78,31 @@ class Message
     static function error(string $message, bool $isHtml = false): self
     {
         return new self(self::ERROR, $message, $isHtml);
+    }
+
+    /**
+     * List messages
+     *
+     * Supported options:
+     * ------------------------------------------------------------------
+     * type             see Message class constants (defaults to WARNING)
+     * text             text before the list
+     * escape           escape the messages
+     * show_keys (0)    render message keys
+     */
+    static function list(array $messages, array $options = []): self
+    {
+        return new self(
+            $options['type'] ?? self::WARNING,
+            ($options['text'] ?? _lang('misc.error_list'))
+                . "\n"
+                . GenericTemplates::renderMessageList(
+                    $messages,
+                    $options['escape'] ?? true,
+                    $options['show_keys'] ?? false
+                ),
+            true
+        );
     }
 
     /**

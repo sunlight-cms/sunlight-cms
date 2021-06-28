@@ -400,7 +400,7 @@ The sender entered his address as: %sender%',
     'action.success' => 'Action successful',
     'action.failure' => 'Could not perform the action',
     'misc.requestlimit' => 'Only one request can be sent in %postsendexpire% seconds. Please wait.',
-    'misc.errorlog.intro' => 'The following errors have occured:',
+    'misc.error_list' => 'The following errors have occured:',
     'misc.category.noarts' => 'This category does not contain any articles.',
     'misc.gallery.noimages' => 'This gallery does not contain any images.',
 ];

@@ -40,7 +40,7 @@ if (isset($_POST['download'])) {
 
         return;
     } else {
-        $output .= Message::warning(Message::renderList($errors, 'errors'), true);
+        $output .= Message::list($errors);
     }
 }
 

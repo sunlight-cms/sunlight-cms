@@ -4,7 +4,6 @@ use Sunlight\Core;
 use Sunlight\Message;
 use Sunlight\Plugin\PluginArchive;
 use Sunlight\Util\Form;
-use Sunlight\Util\Html;
 use Sunlight\Xsrf;
 
 defined('_root') or exit;
@@ -20,12 +19,12 @@ if (isset($_FILES['archive']) && is_uploaded_file($_FILES['archive']['tmp_name']
             $extractedPlugins = $archive->extract($merge, $failedPlugins);
 
             if (!empty($extractedPlugins)) {
-                $message .= Message::ok(Message::renderList(Html::escapeArrayItems($extractedPlugins), _lang('admin.plugins.upload.extracted')), true);
+                $message .= Message::list($extractedPlugins, ['type' => Message::OK, 'text' => _lang('admin.plugins.upload.extracted')]);
 
                 Core::$pluginManager->purgeCache();
             }
             if (!empty($failedPlugins)) {
-                $message .= Message::warning(Message::renderList(Html::escapeArrayItems($failedPlugins), _lang('admin.plugins.upload.failed' . (!$merge ? '.no_merge' : ''))), true);
+                $message .= Message::list($failedPlugins, ['text' => _lang('admin.plugins.upload.failed' . (!$merge ? '.no_merge' : ''))]);
             }
         } else {
             $message = Message::warning(_lang('admin.plugins.upload.no_plugins'));

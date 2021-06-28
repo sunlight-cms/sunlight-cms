@@ -13,7 +13,6 @@ use Sunlight\Util\Arr;
 use Sunlight\Util\Environment;
 use Sunlight\Util\Filesystem;
 use Sunlight\Util\Form;
-use Sunlight\Util\Html;
 use Sunlight\Util\Request;
 use Sunlight\Util\Response;
 use Sunlight\Util\StringGenerator;
@@ -197,7 +196,7 @@ if (!empty($_POST)) {
                             if ($success) {
                                 $message = Message::ok(_lang('admin.backup.restore.complete'));
                             } else {
-                                $message = Message::error(Message::renderList(Html::escapeArrayItems($errors), 'errors'), true);
+                                $message = Message::list($errors, ['type' => Message::ERROR]);
                             }
                         }
 
@@ -282,7 +281,7 @@ if (!empty($_POST)) {
     </div>';
                         }
                     } else {
-                        $message = Message::warning(Message::renderList(Html::escapeArrayItems($errors), _lang('admin.backup.restore.errors.validate')), true);
+                        $message = Message::list($errors, ['text' => _lang('admin.backup.restore.errors.validate')]);
                     }
 
                 } elseif (isset($_POST['do_restore']['delete'])) {

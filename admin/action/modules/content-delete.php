@@ -1,6 +1,7 @@
 <?php
 
 use Sunlight\Database\Database as DB;
+use Sunlight\GenericTemplates;
 use Sunlight\Message;
 use Sunlight\Page\PageManager;
 use Sunlight\Page\PageManipulator;
@@ -61,7 +62,12 @@ if ($continue) {
     $output .= "
     <p class='bborder'>" . _lang('admin.content.delete.p') . "</p>
     <h2>" . _lang('global.item') . " <em>" . $query['title'] . "</em></h2><br>
-    " . (!empty($content_array) ? "<p>" . _lang('admin.content.delete.contentlist') . ":</p>" . Message::renderList($content_array) . "<div class='hr'><hr></div>" : '') . "
+    " . (!empty($content_array)
+            ? "<p>" . _lang('admin.content.delete.contentlist') . ":</p>"
+                . GenericTemplates::renderMessageList($content_array, false)
+                . "<div class='hr'><hr></div>"
+            : '')
+    . "
 
     <form class='cform' action='index.php?p=content-delete&amp;id=" . $id . "' method='post'>
     <input type='hidden' name='confirm' value='1'>

@@ -78,7 +78,7 @@ if (isset($_POST['source'])) {
 
         $message = Message::ok(_lang('admin.content.movearts.done', ["%moved%" => $counter]));
     } else {
-        $message = Message::warning(Message::renderList($error_log, 'errors'), true);
+        $message = Message::list($error_log);
     }
 
 }

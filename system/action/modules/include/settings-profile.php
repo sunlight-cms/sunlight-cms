@@ -62,7 +62,7 @@ if (isset($_POST['save'])) {
 
         return;
     } else {
-        $output .= Message::warning(Message::renderList($errors, 'errors'), true);
+        $output .= Message::list($errors);
     }
 } elseif (isset($_GET['saved'])) {
     $output .= Message::ok(_lang('global.saved'));

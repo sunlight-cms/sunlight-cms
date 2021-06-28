@@ -35,7 +35,7 @@ if (isset($_POST['save'])) {
         Extend::call('user.edit', ['id' => _user_id]);
         $output .= Message::ok(_lang('global.saved'));
     } else {
-        $output .= Message::warning(Message::renderList($errors, 'errors'), true);
+        $output .= Message::list($errors);
     }
 }
 

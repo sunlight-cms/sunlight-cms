@@ -2,6 +2,7 @@
 
 namespace Sunlight;
 
+use Sunlight\Util\StringManipulator;
 use Sunlight\Util\UrlHelper;
 
 abstract class GenericTemplates
@@ -195,6 +196,29 @@ HTML;
         }
 
         return '';
+    }
+
+    /**
+     * Vykreslit seznam hlasek
+     */
+    static function renderMessageList(array $messages, bool $escapeItems = true, bool $showKeys = false): string
+    {
+        $output = '';
+
+        if (!empty($messages)) {
+            $output .= "<ul>\n";
+            foreach($messages as $key => $item) {
+                $item = StringManipulator::lcfirst($item);
+
+                $output .= '<li>'
+                    . ($showKeys ? '<strong>' . _e($key) . '</strong>: ' : '')
+                    . ($escapeItems ? _e($item) : $item)
+                    . "</li>\n";
+            }
+            $output .= "</ul>\n";
+        }
+
+        return $output;
     }
 
     /**

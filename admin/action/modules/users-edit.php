@@ -222,7 +222,7 @@ if ($continue) {
 
         }
 
-        $message = Message::renderList($errors, 'errors');
+        $message = Message::list($errors);
 
     }
 
@@ -243,7 +243,7 @@ if ($continue) {
     }
 
     if ($message != "") {
-        $messages_code .= Message::warning($message, true);
+        $messages_code .= $message;
     }
 
     $output .= "

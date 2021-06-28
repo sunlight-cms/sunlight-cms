@@ -99,7 +99,7 @@ if (isset($_POST['box_edit'])) do {
 
     // check for errors
     if ($errors) {
-        $output .= Message::error(Message::renderList($errors, 'errors'), true);
+        $output .= Message::list($errors, ['type' => Message::ERROR]);
         break;
     }
 

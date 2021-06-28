@@ -400,7 +400,7 @@ Odesílatel uvedl svou adresu jako: %sender%',
     'action.success' => 'Akce byla provedena',
     'action.failure' => 'Akci se nepodařilo provést',
     'misc.requestlimit' => 'Je možné zaslat maximálně jeden požadavek za %postsendexpire% sekund. Prosíme počkejte.',
-    'misc.errorlog.intro' => 'Během zpracovávání požadavku došlo k chybám:',
+    'misc.error_list' => 'Během zpracovávání požadavku došlo k chybám:',
     'misc.category.noarts' => 'Tato kategorie neobsahuje žádné články.',
     'misc.gallery.noimages' => 'Tato galerie neobsahuje žádné obrázky.',
 ];
