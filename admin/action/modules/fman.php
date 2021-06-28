@@ -344,10 +344,8 @@ if ($continue) {
                             $zip->addFile($dir . $sel, $sel);
                         }
                         $zip->close();
-                    } catch (Throwable $e) {
-                        $zip->close();
+                    } finally {
                         $tmpFile->discard();
-                        throw $e;
                     }
 
                     Response::downloadFile($tmpFile->getPathname(), sprintf('%s.zip', basename($dir)));

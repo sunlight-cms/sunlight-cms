@@ -48,15 +48,10 @@ abstract class DatabaseLoader
                     DB::query($query);
                 }
             });
-        } catch (\Throwable $e) {
-            // restore sql mode in case of an exception
+        } finally {
+            // always restore sql mode
             DB::query('SET SQL_MODE = ' . DB::val($oldSqlMode));
-
-            throw $e;
         }
-
-        // restore sql mode
-        DB::query('SET SQL_MODE = ' . DB::val($oldSqlMode));
     }
 
     /**
