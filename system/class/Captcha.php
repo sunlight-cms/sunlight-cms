@@ -7,6 +7,14 @@ use Sunlight\Util\StringGenerator;
 
 class Captcha
 {
+    const DISAMBIGUATION = [
+        '0' => 'O',
+        'Q' => 'O',
+        'D' => 'O',
+        '1' => 'I',
+        '6' => 'G',
+    ];
+
     /**
      * Inicializace captchy
      *
@@ -51,22 +59,13 @@ class Captcha
         $result = Extend::fetch('captcha.check');
 
         if ($result === null) {
-            // pole pro nahradu matoucich znaku
-            $disambiguation = [
-                '0' => 'O',
-                'Q' => 'O',
-                'D' => 'O',
-                '1' => 'I',
-                '6' => 'G',
-            ];
-
             // kontrola
             if (_captcha and !_logged_in) {
                 $enteredCode = Request::post('_cp');
                 $captchaId = Request::post('_cn');
 
                 if ($enteredCode !== null && isset($_SESSION['captcha_code'][$captchaId])) {
-                    if (strtr($_SESSION['captcha_code'][$captchaId][0], $disambiguation) === strtr(mb_strtoupper($enteredCode), $disambiguation)) {
+                    if (strtr($_SESSION['captcha_code'][$captchaId][0], self::DISAMBIGUATION) === strtr(mb_strtoupper($enteredCode), self::DISAMBIGUATION)) {
                         $result = true;
                     }
                     unset($_SESSION['captcha_code'][$captchaId]);
@@ -85,7 +84,7 @@ class Captcha
      * @param int $length
      * @return string
      */
-    static function generateCode(int $length): string
+    private static function generateCode(int $length): string
     {
         $word = strtoupper(StringGenerator::generateWordMarkov($length));
 

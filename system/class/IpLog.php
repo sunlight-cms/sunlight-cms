@@ -34,7 +34,7 @@ abstract class IpLog
             if ($expires === null) {
                 throw new \InvalidArgumentException('The "expires" argument must be specified for custom types');
             }
-            DB::delete(_iplog_table, 'type=' . $type .(($var !== null) ? ' AND var=' . $var : '') . ' AND ' . time() . '-time>' . ((int) $expires));
+            DB::delete(_iplog_table, 'type=' . $type .(($var !== null) ? ' AND var=' . $var : '') . ' AND ' . time() . '-time>' . $expires);
             $cleaned['custom'][$type] = true;
         }
 
