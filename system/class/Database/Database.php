@@ -62,6 +62,38 @@ class Database
     }
 
     /**
+     * Provest callback v databazove transakci
+     */
+    static function transactional(callable $callback): void
+    {
+        static $inTransaction = false;
+
+        if ($inTransaction) {
+            throw new DatabaseException('Already in a transaction');
+        }
+
+        if (!self::$mysqli->begin_transaction()) {
+            throw new DatabaseException('Could not begin a transaction');
+        }
+
+        try {
+            $callback();
+
+            if (!self::$mysqli->commit()) {
+                throw new DatabaseException('Could not commit the transaction');
+            }
+        } catch (\Throwable $e) {
+            if (!self::$mysqli->rollback()) {
+                throw new DatabaseException('Could not rollback the transaction', 0, $e);
+            }
+
+            throw $e;
+        } finally {
+            $inTransaction = false;
+        }
+    }
+
+    /**
      * @param \mysqli $mysqli
      */
     static function setMysqli(\mysqli $mysqli): void

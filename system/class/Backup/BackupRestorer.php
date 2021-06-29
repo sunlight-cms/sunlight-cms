@@ -112,15 +112,17 @@ class BackupRestorer
 
         // load database
         if ($database) {
-            if (!$this->backup->getMetaData('is_patch')) {
-                DatabaseLoader::dropTables(DB::getTablesByPrefix());
-            }
+            DB::transactional(function () {
+                if (!$this->backup->getMetaData('is_patch')) {
+                    DatabaseLoader::dropTables(DB::getTablesByPrefix());
+                }
 
-            DatabaseLoader::load(
-                new SqlReader($this->backup->getDatabaseDump()),
-                $this->backup->getMetaData('db_prefix'),
-                _dbprefix
-            );
+                DatabaseLoader::load(
+                    new SqlReader($this->backup->getDatabaseDump()),
+                    $this->backup->getMetaData('db_prefix'),
+                    _dbprefix
+                );
+            });
         }
 
         // filesystem cleanup

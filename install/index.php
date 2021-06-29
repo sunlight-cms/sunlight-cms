@@ -958,40 +958,42 @@ class ImportDatabaseStep extends Step
             // use database
             DB::query('USE '. DB::escIdt(Config::$config['db.name']));
 
-            // drop existing tables
-            DatabaseLoader::dropTables($this->getExistingTableNames());
-            $this->existingTableNames = null;
+            DB::transactional(function () use ($settings, $admin) {
+                // drop existing tables
+                DatabaseLoader::dropTables($this->getExistingTableNames());
+                $this->existingTableNames = null;
 
-            // prepare
-            $prefix = Config::$config['db.prefix'] . '_';
+                // prepare
+                $prefix = Config::$config['db.prefix'] . '_';
 
-            // load the dump
-            DatabaseLoader::load(
-                SqlReader::fromFile(__DIR__ . '/database.sql'),
-                'sunlight_',
-                $prefix
-            );
-            
-            // update settings
-            foreach ($settings as $name => $value) {
-                DB::update($prefix . 'setting', 'var=' . DB::val($name), ['val' => _e($value)]);
-            }
-            
-            // update admin account
-            DB::update($prefix . 'user', 'id=1', [
-                'username' => $admin['username'],
-                'password' => Password::create($admin['password'])->build(),
-                'email' => $admin['email'],
-                'activitytime' => time(),
-                'registertime' => time(),
-            ]);
+                // load the dump
+                DatabaseLoader::load(
+                    SqlReader::fromFile(__DIR__ . '/database.sql'),
+                    'sunlight_',
+                    $prefix
+                );
 
-            // alter initial content
-            foreach ($this->getInitialContent() as $table => $rowMap) {
-                foreach ($rowMap as $id => $changeset) {
-                    DB::update($prefix . $table, 'id=' . DB::val($id), $changeset);
+                // update settings
+                foreach ($settings as $name => $value) {
+                    DB::update($prefix . 'setting', 'var=' . DB::val($name), ['val' => _e($value)]);
                 }
-            }
+
+                // update admin account
+                DB::update($prefix . 'user', 'id=1', [
+                    'username' => $admin['username'],
+                    'password' => Password::create($admin['password'])->build(),
+                    'email' => $admin['email'],
+                    'activitytime' => time(),
+                    'registertime' => time(),
+                ]);
+
+                // alter initial content
+                foreach ($this->getInitialContent() as $table => $rowMap) {
+                    foreach ($rowMap as $id => $changeset) {
+                        DB::update($prefix . $table, 'id=' . DB::val($id), $changeset);
+                    }
+                }
+            });
         }
     }
 
