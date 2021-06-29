@@ -17,7 +17,7 @@ if (isset($_POST['download'])) {
     $options = [];
 
     // check current password
-    if (Password::load(User::$data['password'])->match(Request::post('current_password', ''))) {
+    if (!Password::load(User::$data['password'])->match(Request::post('current_password', ''))) {
         $errors[] = _lang('mod.settings.password.error.bad_current');
     }
 
