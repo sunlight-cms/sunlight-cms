@@ -39,7 +39,7 @@ if (IpLog::check(_iplog_anti_spam)) {
     IpLog::update(_iplog_anti_spam);
 } else {
     // prekroceno
-    echo _lang('misc.requestlimit', ['%postsendexpire%' => _postsendexpire]);
+    echo _lang('misc.antispam_error', ['%antispamtimeout%' => _antispamtimeout]);
     exit;
 }
 

@@ -305,7 +305,7 @@ CREATE TABLE `sunlight_setting` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `sunlight_setting` (`var`, `val`, `format`, `constant`, `preload`, `web`, `admin`) VALUES
-('postsendexpire',	'50',	'int',	1,	1,	1,	1),
+('antispamtimeout',	'60',	'int',	1,	1,	1,	1),
 ('pollvoteexpire',	'604800',	'int',	1,	1,	1,	1),
 ('artreadexpire',	'18000',	'int',	1,	1,	1,	1),
 ('maxloginexpire',	'900',	'int',	1,	1,	1,	1),

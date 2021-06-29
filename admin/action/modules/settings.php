@@ -159,7 +159,7 @@ $editable_settings = [
     ],
     'iplog' => [
         'items' => [
-            ['name' => 'postsendexpire', 'min_value' => 0],
+            ['name' => 'antispamtimeout', 'min_value' => 0],
             ['name' => 'postadmintime', 'transform_to' => function ($v) { return $v / 60; }, 'transform_back' => function ($v) { return max(0, $v * 60); }],
             ['name' => 'maxloginattempts', 'min_value' => 1],
             ['name' => 'maxloginexpire', 'transform_to' => function ($v) { return $v / 60; }, 'transform_back' => function ($v) { return max(0, $v * 60); }],

@@ -305,7 +305,7 @@ class CommentService
                     $form_output .= Message::ok(_lang((($style != 5) ? 'posts.added' : 'posts.topicadded')));
                     break;
                 case 2:
-                    $form_output .= Message::warning(_lang('misc.requestlimit', ["%postsendexpire%" => _postsendexpire]));
+                    $form_output .= Message::warning(_lang('misc.antispam_error', ["%antispamtimeout%" => _antispamtimeout]));
                     break;
                 case 3:
                     $form_output .= Message::warning(_lang('posts.guestnamedenied'));

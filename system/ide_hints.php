@@ -8,8 +8,8 @@
 
 // settings
 
-/** Enforced delay between posts for a single IP (seconds) */
-const _postsendexpire = 50;
+/** Enforced delay between posts, registrations etc. for a single IP (seconds) */
+const _antispamtimeout = 60;
 /** Poll vote lockout for a single IP (seconds) */
 const _pollvoteexpire = 604800;
 /** Delay between article read counter update for a single IP (seconds) */
