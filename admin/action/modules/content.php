@@ -22,7 +22,7 @@ if (_priv_adminsection || _priv_admincategory || _priv_adminbook || _priv_admins
 
     // akce
     if (isset($_POST['ac'])) {
-        $ac = (int) Request::post('ac');
+        $ac = Request::post('ac');
 
         switch ($ac) {
             // vytvoreni stranky
