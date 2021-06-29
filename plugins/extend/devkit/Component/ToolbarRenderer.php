@@ -182,7 +182,7 @@ class ToolbarRenderer
 
         foreach ($listeners as $event => $eventListeners) {
             foreach ($eventListeners as $eventListener) {
-                $eventListenerRows[] = [$event, Dumper::dump($eventListener)];
+                $eventListenerRows[] = [$event, Dumper::dump($eventListener->callback), $eventListener->priority];
             }
         }
 
@@ -220,7 +220,8 @@ class ToolbarRenderer
             <thead>
             <tr>
                 <th>Event</th>
-                <th>Listener</th>
+                <th>Callback</th>
+                <th>Priority</th>
             </tr>
             </thead>
             <tbody>
@@ -228,6 +229,7 @@ class ToolbarRenderer
                 <tr>
                     <td><?= _e($row[0]) ?></td>
                     <td><code><?= _e($row[1]) ?></code></td>
+                    <td><code><?= _e($row[2]) ?></code></td>
                 </tr>
             <?php endforeach ?>
             </tbody>
