@@ -380,6 +380,8 @@ ul.list-info a {
 /* User */
 .avatar {
     border: 1px solid #ededed;
+    vertical-align: middle;
+    border-radius: 50%;
 }
 .profiletable .avatartd {
     padding: 5px;

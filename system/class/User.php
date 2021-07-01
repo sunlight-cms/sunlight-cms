@@ -840,7 +840,7 @@ abstract class User
                 'limits' => $limits,
                 'resize' => [
                     'mode' => ImageTransformer::RESIZE_FILL,
-                    'w' => 96,
+                    'w' => 128,
                     'h' => 128,
                 ],
                 'write' => [
