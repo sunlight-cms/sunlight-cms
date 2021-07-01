@@ -98,7 +98,7 @@ $output .= Form::render(
                                     ]) ?>
                                 </p>
                             </td>
-                            <td>
+                            <td class="center">
                                 <?= User::renderAvatar(User::$data, ['link' => false]) ?>
                                 <?php if (User::$data['avatar'] !== null): ?>
                                     <p>

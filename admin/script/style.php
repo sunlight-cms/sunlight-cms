@@ -293,7 +293,7 @@ div.wrapper {max-width: 1400px; min-width: 700px; margin: 0 auto;}
 #usermenu a:hover {color: <?= $scheme_link ?>;}
 a#usermenu-username {margin-right: 0.5em; font-weight: bold; color: <?= $scheme_smoke_darker ?>;}
 #usermenu a.usermenu-web-link {margin-left: 0.5em;}
-#usermenu-avatar {position: absolute; left: -42px; top: -8px; display: block; width: 32px; height: 32px; overflow: hidden; border: 1px solid <?= $scheme_smoke_med ?>; background-color: <?= $scheme_white ?>;}
+#usermenu-avatar {position: absolute; left: -42px; top: -8px; display: block; width: 32px; height: 32px; overflow: hidden; border: 1px solid <?= $scheme_smoke_med ?>; background-color: <?= $scheme_white ?>; vertical-align: middle; border-radius: 50%;}
 #usermenu-avatar img {max-width: 32px; opacity: 0.9;}
 #usermenu-avatar:hover img {opacity: 1;}
 
