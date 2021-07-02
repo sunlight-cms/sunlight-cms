@@ -59,8 +59,10 @@ class Captcha
         $result = Extend::fetch('captcha.check');
 
         if ($result === null) {
+            $result = false;
+
             // kontrola
-            if (_captcha and !_logged_in) {
+            if (_captcha && !_logged_in) {
                 $enteredCode = Request::post('_cp');
                 $captchaId = Request::post('_cn');
 
