@@ -5,6 +5,7 @@ namespace SunlightExtend\Devkit;
 use Sunlight\Core;
 use Sunlight\Extend;
 use Sunlight\GenericTemplates;
+use Sunlight\IpLog;
 use Sunlight\Plugin\ExtendPlugin;
 use Sunlight\Plugin\PluginData;
 use Sunlight\Plugin\PluginManager;
@@ -42,6 +43,7 @@ class DevkitPlugin extends ExtendPlugin
     {
         return [
             'mail_log_enabled' => true,
+            'disable_anti_spam' => true,
         ];
     }
 
@@ -94,7 +96,7 @@ class DevkitPlugin extends ExtendPlugin
      */
     function onMail(array $args): void
     {
-        if (!$this->getConfig()->offsetGet('mail_log_enabled')) {
+        if (!$this->getConfig()['mail_log_enabled']) {
             return;
         }
 
@@ -119,6 +121,20 @@ Subject: {$args['subject']}
 
 ENTRY
         , FILE_APPEND | LOCK_EX);
+    }
+
+    /**
+     * Disable anti-spam in dev mode
+     */
+    function onIpLogCheck(array $args): void
+    {
+        if (!$this->getConfig()['disable_anti_spam']) {
+            return;
+        }
+
+        if ($args['type'] == IpLog::ANTI_SPAM) {
+            $args['result'] = true;
+        }
     }
 
     /**

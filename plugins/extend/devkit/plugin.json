@@ -14,7 +14,8 @@
         {"event": "db.query", "method": "onDbQuery"},
         {"event": "db.query.after", "method": "onDbQueryPost"},
         {"event": "localization.missing", "method": "onMissingLocalization"},
-        {"event": "mail.send", "method": "onMail"}
+        {"event": "mail.send", "method": "onMail"},
+        {"event": "iplog.check", "method":  "onIpLogCheck"}
     ],
     "events.web": [
         {"event": "tpl.head", "method": "onHead"},
