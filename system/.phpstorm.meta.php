@@ -10,7 +10,7 @@ registerArgumentsSet(
     'adminlinkprivate',
     'adminpagelist_mode',
     'adminscheme',
-    'adminscheme_mode',
+    'adminscheme_dark',
     'antispamtimeout',
     'article_pic_h',
     'article_pic_thumb_h',

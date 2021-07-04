@@ -25,7 +25,7 @@ if (!User::isSuperAdmin()) {
 
 echo GenericTemplates::renderHead();
 
-$assets = Admin::themeAssets(Settings::get('adminscheme'), Admin::themeIsDark()) + ['extend_event' => null];
+$assets = Admin::themeAssets(Settings::get('adminscheme'), Settings::get('adminscheme_dark')) + ['extend_event' => null];
 
 echo GenericTemplates::renderHeadAssets($assets);
 

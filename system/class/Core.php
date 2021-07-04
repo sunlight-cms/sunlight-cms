@@ -218,9 +218,6 @@ abstract class Core
             'cache' => true,
             'locale' => null,
             'timezone' => 'Europe/Prague',
-            'geo.latitude' => 50.5,
-            'geo.longitude' => 14.26,
-            'geo.zenith' => 90.583333,
         ];
 
         // check required options
@@ -258,9 +255,6 @@ abstract class Core
         define('_dbprefix', $options['db.prefix'] . '_');
         define('_dbname', $options['db.name']);
         define('_upload_dir', _root . 'upload/');
-        define('_geo_latitude', $options['geo.latitude']);
-        define('_geo_longitude', $options['geo.longitude']);
-        define('_geo_zenith', $options['geo.zenith']);
     }
 
     /**

@@ -118,9 +118,6 @@ class Labels
             'config.timezone.help' => 'časové pásmo (prázdné = spoléhat na nastavení serveru), viz',
             'config.locale' => 'Lokalizace',
             'config.locale.help' => 'nastavení lokalizace (prázdné = spoléhat na nastavení serveru), viz',
-            'config.geo.latitude' => 'Zeměpisná šířka',
-            'config.geo.longitude' => 'Zeměpisná délka',
-            'config.geo.zenith' => 'Zenit',
             'config.debug' => 'Vývojový režim',
             'config.debug.help' => 'aktivovat vývojový režim (zobrazování chyb - nepoužívat na ostrém webu!)',
 
@@ -197,9 +194,6 @@ class Labels
             'config.timezone.help' => 'timezone (empty = rely on server settings), see',
             'config.locale' => 'Localisation',
             'config.locale.help' => 'localisation settings (empty = rely on server settings), see',
-            'config.geo.latitude' => 'Latitude',
-            'config.geo.longitude' => 'Longitude',
-            'config.geo.zenith' => 'Zenith',
             'config.debug' => 'Debug mode',
             'config.debug.help' => 'enable debug mode (displays errors - do not use in production!)',
 
@@ -687,9 +681,6 @@ class ConfigurationStep extends Step
             'debug' => (bool) Form::loadCheckbox('config_debug'),
             'locale' => $this->getArrayConfigFromString(trim(Request::post('config_locale', ''))),
             'timezone' => trim(Request::post('config_timezone', '')) ?: null,
-            'geo.latitude' => (float) trim(Request::post('config_geo_latitude')),
-            'geo.longitude' => (float) trim(Request::post('config_geo_longitude')),
-            'geo.zenith' => (float) trim(Request::post('config_geo_zenith')),
         ];
 
         // validate
@@ -754,9 +745,6 @@ class ConfigurationStep extends Step
     function run(): void
     {
         $defaultSecret = StringGenerator::generateString(64);
-        $defaultGeoLatitude = 50.5;
-        $defaultGeoLongitude = 14.26;
-        $defaultGeoZenith = 90.583333;
         $defaultDebug = $this->getConfig('debug', false);
 
         ?>
@@ -825,18 +813,6 @@ class ConfigurationStep extends Step
                 <?php Labels::render('config.locale.help') ?>
                 <a href="https://php.net/setlocale" target="_blank">setlocale()</a>
             </td>
-        </tr>
-        <tr>
-            <th><?php Labels::render('config.geo.latitude') ?></th>
-            <td colspan="2"><input type="text"<?= Form::restorePostValueAndName('config_geo_latitude', $this->getConfig('geo.latitude', $defaultGeoLatitude)) ?>></td>
-        </tr>
-        <tr>
-            <th><?php Labels::render('config.geo.longitude') ?></th>
-            <td colspan="2"><input type="text"<?= Form::restorePostValueAndName('config_geo_longitude', $this->getConfig('geo.longitude', $defaultGeoLongitude)) ?>></td>
-        </tr>
-        <tr>
-            <th><?php Labels::render('config.geo.zenith') ?></th>
-            <td colspan="2"><input type="text"<?= Form::restorePostValueAndName('config_geo_zenith', $this->getConfig('geo.zenith', $defaultGeoZenith)) ?>></td>
         </tr>
         <tr>
             <th><?php Labels::render('config.debug') ?></th>

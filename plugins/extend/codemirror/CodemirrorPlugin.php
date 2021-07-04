@@ -4,6 +4,7 @@ namespace SunlightExtend\Codemirror;
 
 use Sunlight\Admin\Admin;
 use Sunlight\Plugin\ExtendPlugin;
+use Sunlight\Settings;
 use Sunlight\User;
 
 class CodemirrorPlugin extends ExtendPlugin
@@ -30,7 +31,7 @@ class CodemirrorPlugin extends ExtendPlugin
         $basePath = $this->getWebPath() . '/Resources';
 
         $args['css']['codemirror'] = $basePath . '/lib/codemirror.css';
-        $args['css']['codemirror_theme'] = $basePath . '/theme/' . (Admin::themeIsDark() ? 'ambiance' : 'eclipse') . '.css';
+        $args['css']['codemirror_theme'] = $basePath . '/theme/' . (Settings::get('adminscheme_dark') ? 'ambiance' : 'eclipse') . '.css';
         $args['css']['codemirror_dialog'] = $basePath . '/addon/dialog/dialog.css';
 
         $args['js']['codemirror'] = $basePath . '/lib/codemirror.js';

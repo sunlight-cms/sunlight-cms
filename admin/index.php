@@ -65,7 +65,7 @@ if ($admin_login_layout) {
     $theme_dark = false;
     $assets = Admin::themeAssets(0, false);
 } else {
-    $theme_dark = Admin::themeIsDark();
+    $theme_dark = Settings::get('adminscheme_dark');
     $assets = Admin::themeAssets(Settings::get('adminscheme'), $theme_dark);
 }
 

@@ -39,7 +39,4 @@ return [
     // localisation settings
     'locale' => null, // setlocale()
     'timezone' => null, // date_default_timezone_set()
-    'geo.latitude' => 50.5,
-    'geo.longitude' => 14.26,
-    'geo.zenith' => 90.583333,
 ];

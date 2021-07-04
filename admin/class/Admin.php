@@ -512,27 +512,6 @@ abstract class Admin
     }
 
     /**
-     * Zjisteni, zda ma byt schema tmave
-     *
-     * @return bool
-     */
-    static function themeIsDark(): bool
-    {
-        if (Settings::get('adminscheme_mode') == 0) {
-            // vzdy svetle
-            return false;
-        }
-
-        if (Settings::get('adminscheme_mode') == 1) {
-            // vzdy tmave
-            return true;
-        }
-
-        // podle zapadu a vychodu slunce
-        return !DateTime::isDayTime();
-    }
-
-    /**
      * @param int $scheme
      * @param bool $dark
      * @return array
