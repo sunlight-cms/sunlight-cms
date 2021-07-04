@@ -95,7 +95,7 @@ abstract class Hcm
             $blacklist[] = 'php';
         }
 
-        $whitelist = preg_split('{\s*,\s*}', User::hasPrivilege('adminhcm'));
+        $whitelist = preg_split('{\s*,\s*}', User::$group['adminhcm']);
         if (count($whitelist) === 1 && $whitelist[0] === '*') {
             $whitelist = null; // vsechny HCM moduly povoleny
         }

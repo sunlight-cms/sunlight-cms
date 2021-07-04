@@ -74,7 +74,6 @@ abstract class User
         'fileaccess' => true,
         'fileglobalaccess' => true,
         'fileadminaccess' => true,
-        'adminhcm' => true,
         'adminhcmphp' => true,
         'adminbackup' => true,
         'adminmassemail' => true,

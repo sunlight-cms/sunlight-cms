@@ -116,7 +116,6 @@ registerArgumentsSet(
     'fileaccess',
     'fileglobalaccess',
     'fileadminaccess',
-    'adminhcm',
     'adminhcmphp',
     'adminbackup',
     'adminmassemail',
