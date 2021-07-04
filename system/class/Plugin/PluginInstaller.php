@@ -38,7 +38,10 @@ abstract class PluginInstaller
         }
 
         $this->installed = null;
-        $this->doInstall();
+
+        DB::transactional(function () {
+            $this->doInstall();
+        });
 
         return $this->isInstalled();
     }
