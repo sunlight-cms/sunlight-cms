@@ -133,12 +133,14 @@ if (isset($_POST['text'])) {
 
         // ulozeni
         if ($text != "") {
+            $continue = true;
             Extend::call('posts.edit', [
                 'id' => $id,
                 'post' => $query,
-                'message' => &$message,
+                'continue' => &$continue,
             ]);
-            if ($message === '') {
+
+            if ($continue) {
                 $update_data = [
                     'text' => $text,
                     'subject' => $subject
@@ -160,34 +162,36 @@ if (isset($_POST['text'])) {
 
         /* -  odstraneni  - */
         if ($query['type'] != Post::PRIVATE_MSG || $query['xhome'] != -1) {
-
+            $continue = true;
             Extend::call('posts.delete', [
                 'id' => $id,
                 'post' => $query,
+                'continue' => &$continue,
             ]);
 
-            // debump topicu
-            if ($query['type'] == Post::FORUM_TOPIC && $query['xhome'] != -1) {
-                // kontrola, zda se jedna o posledni odpoved
-                // TODO: fixme
-                $chr = DB::queryRow('SELECT id,time FROM ' . _post_table . ' WHERE type=' . Post::FORUM_TOPIC . ' AND xhome=' . $query['xhome'] . ' ORDER BY id DESC LIMIT 2');
-                if ($chr !== false && $chr['id'] == $id) {
-                    // ano, debump podle casu predchoziho postu nebo samotneho topicu (pokud se smazala jedina odpoved)
-                    DB::update(_post_table, 'id=' . $query['xhome'], ['bumptime' => (($chr !== false) ? $chr['time'] : DB::raw('time'))]);
+            if ($continue) {
+                // debump topicu
+                if ($query['type'] == Post::FORUM_TOPIC && $query['xhome'] != -1) {
+                    // kontrola, zda se jedna o posledni odpoved
+                    // TODO: fixme
+                    $chr = DB::queryRow('SELECT id,time FROM ' . _post_table . ' WHERE type=' . Post::FORUM_TOPIC . ' AND xhome=' . $query['xhome'] . ' ORDER BY id DESC LIMIT 2');
+                    if ($chr !== false && $chr['id'] == $id) {
+                        // ano, debump podle casu predchoziho postu nebo samotneho topicu (pokud se smazala jedina odpoved)
+                        DB::update(_post_table, 'id=' . $query['xhome'], ['bumptime' => (($chr !== false) ? $chr['time'] : DB::raw('time'))]);
+                    }
                 }
+
+                // smazani prispevku a odpovedi
+                DB::delete(_post_table, 'id=' . DB::val($id));
+                if ($query['xhome'] == -1) {
+                    DB::delete(_post_table, 'xhome=' . DB::val($id) . ' AND home=' . DB::val($query['home']) . ' AND type=' . DB::val($query['type']));
+                }
+
+                // info
+                $message = Message::ok(_lang('mod.editpost.deleted'));
+                $form = false;
             }
-
-            // smazani prispevku a odpovedi
-            DB::delete(_post_table, 'id=' . DB::val($id));
-            if ($query['xhome'] == -1) {
-                DB::delete(_post_table, 'xhome=' . DB::val($id) . ' AND home=' . DB::val($query['home']) . ' AND type=' . DB::val($query['type']));
-            }
-
-            // info
-            $message = Message::ok(_lang('mod.editpost.deleted'));
-            $form = false;
-
-       }
+        }
 
     }
 
