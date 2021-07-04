@@ -67,7 +67,10 @@
     ],
     "definitions": {
         "asset-map": {
-            "type": "object",
+            "type": ["array", "object"],
+            "items": {
+                "type": "string"
+            },
             "patternProperties": {
                 "^": {
                     "type": "string"
