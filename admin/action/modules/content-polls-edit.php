@@ -3,6 +3,7 @@
 use Sunlight\Admin\Admin;
 use Sunlight\Database\Database as DB;
 use Sunlight\Message;
+use Sunlight\User;
 use Sunlight\Util\Arr;
 use Sunlight\Util\Form;
 use Sunlight\Util\Html;
@@ -26,7 +27,7 @@ if (isset($_GET['id'])) {
     }
 } else {
     $id = -1;
-    $query = ['author' => _user_id, 'question' => "", 'answers' => "", 'locked' => 0];
+    $query = ['author' => User::getId(), 'question' => "", 'answers' => "", 'locked' => 0];
     $new = true;
     $actionbonus = "";
     $submitcaption = _lang('global.create');
@@ -51,10 +52,10 @@ if (isset($_POST['question'])) {
     $answers = implode("\n", $answers);
     $query['answers'] = $answers;
 
-    if (_priv_adminpollall) {
+    if (User::hasPrivilege('adminpollall')) {
         $author = (int) Request::post('author');
     } else {
-        $author = _user_id;
+        $author = User::getId();
     }
     $locked = Form::loadCheckbox("locked");
     $reset = Form::loadCheckbox("reset");
@@ -70,7 +71,7 @@ if (isset($_POST['question'])) {
     if ($answers_count > 20) {
         $errors[] = _lang('admin.content.polls.edit.error3');
     }
-    if (_priv_adminpollall && DB::result(DB::query("SELECT COUNT(*) FROM " . _user_table . " WHERE id=" . $author . " AND (id=" . _user_id . " OR (SELECT level FROM " . _user_group_table . " WHERE id=" . _user_table . ".group_id)<" . _priv_level . ")")) == 0) {
+    if (User::hasPrivilege('adminpollall') && DB::result(DB::query("SELECT COUNT(*) FROM " . _user_table . " WHERE id=" . $author . " AND (id=" . User::getId() . " OR (SELECT level FROM " . _user_group_table . " WHERE id=" . _user_table . ".group_id)<" . User::getLevel() . ")")) == 0) {
         $errors[] = _lang('admin.content.articles.edit.error3');
     }
 
@@ -145,7 +146,7 @@ if (isset($_POST['question'])) {
 if ($continue) {
 
     // vyber autora
-    if (_priv_adminpollall) {
+    if (User::hasPrivilege('adminpollall')) {
         $author_select = "
     <tr>
     <th>" . _lang('article.author') . "</th>

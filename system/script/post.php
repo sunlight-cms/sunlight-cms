@@ -7,6 +7,7 @@ use Sunlight\Comment\CommentService;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\IpLog;
+use Sunlight\Settings;
 use Sunlight\User;
 use Sunlight\Util\Html;
 use Sunlight\Util\Request;
@@ -19,9 +20,9 @@ require '../bootstrap.php';
 Core::init('../../');
 
 // jmeno hosta nebo ID uzivatele
-if (_logged_in) {
+if (User::isLoggedIn()) {
     $guest = '';
-    $author = _user_id;
+    $author = User::getId();
 } else {
     $guest = CommentService::normalizeGuestName(Request::post('guest', ''));
     $author = -1;
@@ -100,8 +101,8 @@ switch ($posttype) {
 
         // zprava
     case _post_pm:
-        if (_messages && _logged_in) {
-            $tdata = DB::queryRow('SELECT sender,receiver FROM ' . _pm_table . ' WHERE id=' . $posttarget . ' AND (sender=' . _user_id . ' OR receiver=' . _user_id . ') AND sender_deleted=0 AND receiver_deleted=0');
+        if (Settings::get('messages') && User::isLoggedIn()) {
+            $tdata = DB::queryRow('SELECT sender,receiver FROM ' . _pm_table . ' WHERE id=' . $posttarget . ' AND (sender=' . User::getId() . ' OR receiver=' . User::getId() . ') AND sender_deleted=0 AND receiver_deleted=0');
             if ($tdata !== false) {
                 $continue = true;
                 $xhome = $posttarget;
@@ -134,7 +135,7 @@ if ($xhome != -1 && $posttype != _post_pm) {
 //  ulozeni prispevku
 if ($continue && $continue2 && $text != '' && ($posttype == _post_shoutbox_entry || Captcha::check())) {
     if (Xsrf::check()) {
-        if ($posttype == _post_shoutbox_entry || _priv_unlimitedpostaccess || IpLog::check(_iplog_anti_spam)) {
+        if ($posttype == _post_shoutbox_entry || User::hasPrivilege('unlimitedpostaccess') || IpLog::check(_iplog_anti_spam)) {
             if ($guest === '' || User::isNameAvailable($guest)) {
 
                 // zpracovani pluginem
@@ -165,7 +166,7 @@ if ($continue && $continue2 && $text != '' && ($posttype == _post_shoutbox_entry
                         'bumptime' => (($posttype == _post_forum_topic && $xhome == -1) ? time() : '0'),
                         'flag' => $pluginflag
                     ], true);
-                    if (!_priv_unlimitedpostaccess && $posttype != _post_shoutbox_entry) {
+                    if (!User::hasPrivilege('unlimitedpostaccess') && $posttype != _post_shoutbox_entry) {
                         IpLog::update(_iplog_anti_spam);
                     }
                     $return = 1;
@@ -178,7 +179,7 @@ if ($continue && $continue2 && $text != '' && ($posttype == _post_shoutbox_entry
 
                     // zpravy - aktualizace casu zmeny a precteni
                     if ($posttype == _post_pm) {
-                        $role = (($tdata['sender'] == _user_id) ? 'sender' : 'receiver');
+                        $role = (($tdata['sender'] == User::getId()) ? 'sender' : 'receiver');
                         DB::update(_pm_table, 'id=' . $posttarget, [
                             'update_time' => time(),
                             $role . '_readtime' => time()
@@ -188,8 +189,8 @@ if ($continue && $continue2 && $text != '' && ($posttype == _post_shoutbox_entry
                     // shoutboxy - odstraneni prispevku za hranici limitu
                     if ($posttype == _post_shoutbox_entry) {
                         $pnum = DB::count(_comment_table, 'type=' . _post_shoutbox_entry . ' AND home=' . DB::val($posttarget));
-                        if ($pnum > _sboxmemory) {
-                            $dnum = $pnum - _sboxmemory;
+                        if ($pnum > Settings::get('sboxmemory')) {
+                            $dnum = $pnum - Settings::get('sboxmemory');
                             $dposts = DB::queryRows("SELECT id FROM " . _comment_table . " WHERE type=" . _post_shoutbox_entry . " AND home=" . $posttarget . " ORDER BY id LIMIT " . $dnum, null, 'id');
                             DB::deleteSet(_comment_table, 'id', $dpost);
                         }

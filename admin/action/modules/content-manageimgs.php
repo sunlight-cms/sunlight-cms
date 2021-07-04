@@ -4,6 +4,7 @@ use Sunlight\Admin\Admin;
 use Sunlight\Database\Database as DB;
 use Sunlight\Gallery;
 use Sunlight\Message;
+use Sunlight\Settings;
 use Sunlight\Util\Environment;
 use Sunlight\Util\Form;
 use Sunlight\Util\Html;
@@ -21,13 +22,13 @@ if (isset($_GET['g'])) {
     $galdata = DB::queryRow("SELECT title,var2,var3,var4 FROM " . _page_table . " WHERE id=" . $galid . " AND type=" . _page_gallery);
     if ($galdata !== false) {
         if ($galdata['var2'] === null) {
-            $galdata['var2'] = _galdefault_per_page;
+            $galdata['var2'] = Settings::get('galdefault_per_page');
         }
         if ($galdata['var3'] === null) {
-            $galdata['var3'] = _galdefault_thumb_h;
+            $galdata['var3'] = Settings::get('galdefault_thumb_h');
         }
         if ($galdata['var4'] === null) {
-            $galdata['var4'] = _galdefault_thumb_w;
+            $galdata['var4'] = Settings::get('galdefault_thumb_w');
         }
         $continue = true;
     }
@@ -298,7 +299,7 @@ if ($continue) {
 <fieldset>
 <legend>" . _lang('admin.content.manageimgs.upload') . "</legend>
 <form action='index.php?p=content-manageimgs&amp;g=" . $galid . "' method='post' enctype='multipart/form-data'>
-    <p>" . _lang('admin.content.manageimgs.upload.text', ['%w%' => _galuploadresize_w, '%h%' => _galuploadresize_h]) . "</p>
+    <p>" . _lang('admin.content.manageimgs.upload.text', ['%w%' => Settings::get('galuploadresize_w'), '%h%' => Settings::get('galuploadresize_h')]) . "</p>
     <input type='hidden' name='xaction' value='7'>
     <div id='fmanFiles'><input type='file' name='uf0[]' multiple> <a href='#' onclick='return Sunlight.admin.fmanAddFile();'>" . _lang('admin.fman.upload.addfile') . "</a></div>
     <div class='hr'><hr></div>

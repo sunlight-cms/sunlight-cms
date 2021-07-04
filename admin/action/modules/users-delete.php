@@ -31,7 +31,7 @@ if (isset($_GET['id'])) {
 if ($continue) {
 
     /* ---  odstraneni  --- */
-    if ($query['id'] != 0 && $query['id'] != _user_id) {
+    if ($query['id'] != 0 && $query['id'] != User::getId()) {
         if (isset($_POST['confirmed'])) {
             if (User::delete($id)) {
                 $output .= Message::ok(_lang('global.done'));

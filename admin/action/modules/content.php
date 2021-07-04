@@ -18,7 +18,17 @@ $message = "";
 $plugin_types = PageManager::getPluginTypes();
 $type_array = PageManager::getTypes();
 
-if (_priv_adminsection || _priv_admincategory || _priv_adminbook || _priv_adminseparator || _priv_admingallery || _priv_adminlink || _priv_admingroup || _priv_adminforum || _priv_adminpluginpage) {
+if (
+    User::hasPrivilege('adminsection')
+    || User::hasPrivilege('admincategory')
+    || User::hasPrivilege('adminbook')
+    || User::hasPrivilege('adminseparator')
+    || User::hasPrivilege('admingallery')
+    || User::hasPrivilege('adminlink')
+    || User::hasPrivilege('admingroup')
+    || User::hasPrivilege('adminforum')
+    || User::hasPrivilege('adminpluginpage')
+) {
 
     // akce
     if (isset($_POST['ac'])) {
@@ -51,7 +61,7 @@ if (_priv_adminsection || _priv_admincategory || _priv_adminbook || _priv_admins
 
     // seznam typu stranek
     $create_list = "";
-    if (_priv_adminpages) {
+    if (User::hasPrivilege('adminpages')) {
         foreach ($type_array as $type => $name) {
             if ($type != _page_plugin && User::hasPrivilege('admin' . $name)) {
                 $create_list .= "<option value='" . $type . "'>" . _lang('page.type.' . $name) . "</option>\n";
@@ -59,7 +69,7 @@ if (_priv_adminsection || _priv_admincategory || _priv_adminbook || _priv_admins
         }
 
         // seznam pluginovych typu stranek
-        if (_priv_adminpluginpage && !empty($plugin_types)) {
+        if (User::hasPrivilege('adminpluginpage') && !empty($plugin_types)) {
             $create_list .= "<option value='' disabled>---</option>\n";
             foreach($plugin_types as $plugin_type => $plugin_label) {
                 $create_list .= "<option value='" . $plugin_type . "'>" . $plugin_label . "</option>\n";
@@ -68,9 +78,9 @@ if (_priv_adminsection || _priv_admincategory || _priv_adminbook || _priv_admins
     }
 
     $pageitems = '
-    <td class="contenttable-box" style="' . ((_priv_adminart || _priv_adminconfirm || _priv_admincategory || _priv_adminpoll || _priv_adminsbox || _priv_adminbox) ? 'width: 75%; ' : 'border-right: none;') . 'padding-bottom: 0px;">
+    <td class="contenttable-box" style="' . ((User::hasPrivilege('adminart') || User::hasPrivilege('adminconfirm') || User::hasPrivilege('admincategory') || User::hasPrivilege('adminpoll') || User::hasPrivilege('adminsbox') || User::hasPrivilege('adminbox')) ? 'width: 75%; ' : 'border-right: none;') . 'padding-bottom: 0px;">
 
-    ' . (_priv_adminpages ? '
+    ' . (User::hasPrivilege('adminpages') ? '
     <form action="index.php?p=content" method="post" class="inline">
     <input type="hidden" name="ac" value="new">
     <img src="images/icons/new.png" alt="new" class="icon">
@@ -83,7 +93,7 @@ if (_priv_adminsection || _priv_admincategory || _priv_adminbook || _priv_admins
     <span class="inline-separator"></span>
     ' : '' ) . '
 
-    ' . (_priv_adminpages ? '
+    ' . (User::hasPrivilege('adminpages') ? '
     <a class="button" href="index.php?p=content-setindex"><img src="images/icons/home.png" alt="act" class="icon">' . _lang('admin.content.setindex') . '</a>
 
     <span class="inline-separator"></span>
@@ -104,7 +114,7 @@ if (_priv_adminsection || _priv_admincategory || _priv_adminbook || _priv_admins
 
     // tabulka polozek
     if (
-        _priv_adminpages
+        User::hasPrivilege('adminpages')
         && PageLister::getConfig('mode') == PageLister::MODE_SINGLE_LEVEL
     ) {
         $sortable = true;
@@ -136,7 +146,7 @@ $content_modules = [
             'boxes' => [
                 'url' => 'index.php?p=content-boxes',
                 'icon' => 'images/icons/big-layout.png',
-                'access' => _priv_adminbox,
+                'access' => User::hasPrivilege('adminbox'),
             ],
         ],
     ],
@@ -146,28 +156,28 @@ $content_modules = [
             'newart' => [
                 'url' => 'index.php?p=content-articles-edit',
                 'icon' => 'images/icons/big-new.png',
-                'access' => _priv_adminart,
+                'access' => User::hasPrivilege('adminart'),
             ],
             'manage' => [
                 'url' => 'index.php?p=content-articles',
                 'icon' => 'images/icons/big-list.png',
-                'access' => _priv_adminart,
+                'access' => User::hasPrivilege('adminart'),
                 'label' => _lang('admin.content.manage'),
             ],
             'confirm' => [
                 'url' => 'index.php?p=content-confirm',
                 'icon' => 'images/icons/big-check.png',
-                'access' => _priv_adminconfirm,
+                'access' => User::hasPrivilege('adminconfirm'),
             ],
             'movearts' => [
                 'url' => 'index.php?p=content-movearts',
                 'icon' => 'images/icons/big-move.png',
-                'access' => _priv_admincategory,
+                'access' => User::hasPrivilege('admincategory'),
             ],
             'artfilter' => [
                 'url' => 'index.php?p=content-artfilter',
                 'icon' => 'images/icons/big-filter.png',
-                'access' => _priv_admincategory,
+                'access' => User::hasPrivilege('admincategory'),
             ],
         ],
     ],
@@ -177,12 +187,12 @@ $content_modules = [
             'polls' => [
                 'url' => 'index.php?p=content-polls',
                 'icon' => 'images/icons/big-bars.png',
-                'access' => _priv_adminpoll,
+                'access' => User::hasPrivilege('adminpoll'),
             ],
             'sboxes' => [
                 'url' => 'index.php?p=content-sboxes',
                 'icon' => 'images/icons/big-bubbles.png',
-                'access' => _priv_adminsbox,
+                'access' => User::hasPrivilege('adminsbox'),
             ],
         ],
     ],

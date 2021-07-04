@@ -22,8 +22,8 @@ abstract class Email
         }
 
         // vychozi hlavicky
-        if (_mailerusefrom && !isset($definedHeaderMap['from'])) {
-            $headers['From'] = _sysmail;
+        if (Settings::get('mailerusefrom') && !isset($definedHeaderMap['from'])) {
+            $headers['From'] = Settings::get('sysmail');
         }
         if (!isset($definedHeaderMap['content-type'])) {
             $headers['Content-Type'] = 'text/plain; charset=UTF-8';
@@ -73,7 +73,7 @@ abstract class Email
      */
     static function defineSender(array &$headers, string $sender, ?string $name = null): void
     {
-        if (_mailerusefrom) {
+        if (Settings::get('mailerusefrom')) {
             $headerName = 'From';
         } else {
             $headerName = 'Reply-To';
@@ -152,8 +152,8 @@ abstract class Email
      */
     static function link(string $email): string
     {
-        if (_atreplace !== '') {
-            $email = str_replace("@", _atreplace, $email);
+        if (Settings::get('atreplace') !== '') {
+            $email = str_replace("@", Settings::get('atreplace'), $email);
         }
 
         return "<a href='#' onclick='return Sunlight.mai_lto(this);'>" . _e($email) . "</a>";

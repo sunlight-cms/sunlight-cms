@@ -123,11 +123,11 @@ class SystemChecker
 
             if ($htaccessExists) {
                 // the .htaccess file already exists
-                if (!_pretty_urls && file_get_contents($htaccessPath) === $generatedHtaccess) {
+                if (!Settings::get('pretty_urls') && file_get_contents($htaccessPath) === $generatedHtaccess) {
                     // delete the previously generated one
                     unlink($htaccessPath);
                 }
-            } elseif (_pretty_urls) {
+            } elseif (Settings::get('pretty_urls')) {
                 // generate it
                 file_put_contents(_root . '.htaccess', $generatedHtaccess);
             }

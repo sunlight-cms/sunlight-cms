@@ -6,6 +6,7 @@ use Sunlight\GenericTemplates;
 use Sunlight\Message;
 use Sunlight\Paginator;
 use Sunlight\Router;
+use Sunlight\Settings;
 use Sunlight\User;
 use Sunlight\Util\Request;
 
@@ -55,7 +56,7 @@ if ($continue) {
     }
 
     $cond = "(art.home1=" . $cid . " OR art.home2=" . $cid . " OR art.home3=" . $cid . ")" . Admin::articleAccess('art');
-    $paging = Paginator::render("index.php?p=content-articles-list&cat=" . $cid, $catdata['var2'] ?: _articlesperpage, _article_table . ':art', $cond);
+    $paging = Paginator::render("index.php?p=content-articles-list&cat=" . $cid, $catdata['var2'] ?: Settings::get('articlesperpage'), _article_table . ':art', $cond);
     $s = $paging['current'];
     $output .= $paging['paging'] . $message . "\n<table class='list list-hover list-max'>\n<thead><tr><td>" . _lang('global.article') . "</td><td>" . _lang('article.author') . "</td><td>" . _lang('article.posted') . "</td><td>" . _lang('global.action') . "</td></tr></thead>\n<tbody>";
     $userQuery = User::createQuery('art.author');

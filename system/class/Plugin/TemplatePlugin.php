@@ -5,6 +5,8 @@ namespace Sunlight\Plugin;
 use Sunlight\Database\Database as DB;
 use Sunlight\Localization\LocalizationDictionary;
 use Sunlight\Localization\LocalizationDirectory;
+use Sunlight\Settings;
+use Sunlight\User;
 
 class TemplatePlugin extends Plugin
 {
@@ -37,7 +39,7 @@ class TemplatePlugin extends Plugin
      */
     function isDefault(): bool
     {
-        return $this->id === _default_template;
+        return $this->id === Settings::get('default_template');
     }
 
     /**
@@ -159,7 +161,7 @@ class TemplatePlugin extends Plugin
         }
 
         $boxes = [];
-        $query = DB::query('SELECT id,title,content,slot,page_ids,page_children,class FROM ' . _box_table . ' WHERE template=' . DB::val($this->id) . ' AND layout=' . DB::val($layout) . ' AND visible=1' . (!_logged_in ? ' AND public=1' : '') . ' AND level <= ' . _priv_level . ' ORDER BY ord');
+        $query = DB::query('SELECT id,title,content,slot,page_ids,page_children,class FROM ' . _box_table . ' WHERE template=' . DB::val($this->id) . ' AND layout=' . DB::val($layout) . ' AND visible=1' . (!User::isLoggedIn() ? ' AND public=1' : '') . ' AND level <= ' . User::getLevel() . ' ORDER BY ord');
 
         while ($box = DB::row($query)) {
             $boxes[$box['slot']][$box['id']] = $box;

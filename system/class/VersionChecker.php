@@ -31,7 +31,7 @@ class VersionChecker
     {
         self::$loaded = true;
 
-        if (!_version_check) {
+        if (!Settings::get('version_check')) {
             return;
         }
 

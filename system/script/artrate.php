@@ -5,13 +5,14 @@ use Sunlight\Core;
 use Sunlight\Database\Database as DB;
 use Sunlight\IpLog;
 use Sunlight\Router;
+use Sunlight\Settings;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
 
 require '../bootstrap.php';
 Core::init('../../');
 
-if (_ratemode == 0) {
+if (Settings::get('ratemode') == 0) {
     exit;
 }
 

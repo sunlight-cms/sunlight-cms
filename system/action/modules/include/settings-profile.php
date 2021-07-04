@@ -6,6 +6,7 @@ use Sunlight\GenericTemplates;
 use Sunlight\Message;
 use Sunlight\PostForm;
 use Sunlight\Router;
+use Sunlight\Settings;
 use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
@@ -20,7 +21,7 @@ $avatarLimits = [
 
 if (isset($_POST['save'])) {
     // avatar
-    if (_uploadavatar) {
+    if (Settings::get('uploadavatar')) {
         if (isset($_FILES['avatar']) && is_uploaded_file($_FILES['avatar']['tmp_name'])) {
             $avatar = User::uploadAvatar($_FILES['avatar']['tmp_name'], $_FILES['avatar']['name'], $avatarLimits, $avatarError);
 
@@ -54,8 +55,8 @@ if (isset($_POST['save'])) {
             User::removeAvatar(User::$data['avatar']);
         }
 
-        DB::update(_user_table, 'id=' . _user_id, $changeset);
-        Extend::call('user.edit', ['id' => _user_id]);
+        DB::update(_user_table, 'id=' . User::getId(), $changeset);
+        Extend::call('user.edit', ['id' => User::getId()]);
 
         $_index['type'] = _index_redir;
         $_index['redirect_to'] = Router::module('settings', 'action=profile&saved', true);
@@ -80,7 +81,7 @@ $output .= Form::render(
         'multipart' => true,
     ],
     [
-        _uploadavatar
+        Settings::get('uploadavatar')
             ? [
                 'label' => _lang('mod.settings.profile.avatar'),
                 'top' => true,

@@ -7,6 +7,7 @@ use Sunlight\Extend;
 use Sunlight\GenericTemplates;
 use Sunlight\Message;
 use Sunlight\Router;
+use Sunlight\Settings;
 use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Html;
@@ -56,7 +57,7 @@ if (isset($_GET['id'], $_GET['returnid'], $_GET['returnpage'])) {
         'perex' => '<p></p>',
         'picture_uid' => null,
         'content' => '',
-        'author' => _user_id,
+        'author' => User::getId(),
         'home1' => -2,
         'home2' => -1,
         'home3' => -1,
@@ -94,7 +95,7 @@ if (isset($_POST['title'])) {
     $newdata['home1'] = (int) Request::post('home1');
     $newdata['home2'] = (int) Request::post('home2');
     $newdata['home3'] = (int) Request::post('home3');
-    if (_priv_adminchangeartauthor) {
+    if (User::hasPrivilege('adminchangeartauthor')) {
         $newdata['author'] = (int) Request::post('author');
     } else {
         $newdata['author'] = $query['author'];
@@ -103,7 +104,7 @@ if (isset($_POST['title'])) {
     $newdata['content'] = User::filterContent(Request::post('content'));
     $newdata['public'] = Form::loadCheckbox('public');
     $newdata['visible'] = Form::loadCheckbox('visible');
-    if (_priv_adminconfirm || (_priv_adminautoconfirm && $newdata['author'] == _user_id)) {
+    if (User::hasPrivilege('adminconfirm') || (User::hasPrivilege('adminautoconfirm') && $newdata['author'] == User::getId())) {
         $newdata['confirmed'] = Form::loadCheckbox('confirmed');
     } else {
         $newdata['confirmed'] = $query['confirmed'];
@@ -149,7 +150,7 @@ if (isset($_POST['title'])) {
     }
 
     // autor
-    if (DB::result(DB::query("SELECT COUNT(*) FROM " . _user_table . " WHERE id=" . DB::val($newdata['author']) . " AND (id=" . _user_id . " OR (SELECT level FROM " . _user_group_table . " WHERE id=" . _user_table . ".group_id)<" . _priv_level . ")")) == 0) {
+    if (DB::result(DB::query("SELECT COUNT(*) FROM " . _user_table . " WHERE id=" . DB::val($newdata['author']) . " AND (id=" . User::getId() . " OR (SELECT level FROM " . _user_group_table . " WHERE id=" . _user_table . ".group_id)<" . User::getLevel() . ")")) == 0) {
         $error_log[] = _lang('admin.content.articles.edit.error3');
     }
 
@@ -167,8 +168,8 @@ if (isset($_POST['title'])) {
             'resize' => [
                 'mode' => 'fit',
                 'keep_smaller' => true,
-                'x' => _article_pic_w,
-                'y' => _article_pic_h,
+                'x' => Settings::get('article_pic_w'),
+                'y' => Settings::get('article_pic_h'),
             ],
         ];
         Extend::call('admin.article.picture', ['opts' => &$picOpts]);
@@ -293,7 +294,7 @@ if (isset($_POST['title'])) {
 if ($continue) {
 
     // vyber autora
-    if (_priv_adminchangeartauthor) {
+    if (User::hasPrivilege('adminchangeartauthor')) {
         $author_select = Admin::userSelect("author", $query['author'], "adminart=1", "selectmedium");
     } else {
         $author_select = "";
@@ -344,7 +345,7 @@ if ($continue) {
 <h1>" . _lang('admin.content.articles.edit.title') . "</h1>
 " . $message . "
 
-" . (($new && !_priv_adminautoconfirm) ? Admin::note(_lang('admin.content.articles.edit.newconfnote')) : '') . "
+" . (($new && !User::hasPrivilege('adminautoconfirm')) ? Admin::note(_lang('admin.content.articles.edit.newconfnote')) : '') . "
 " . ((!$new && $query['confirmed'] != 1) ? Admin::note(_lang('admin.content.articles.edit.confnote')) : '') . "
 
 " . ((!$new && DB::count(_article_table, 'id!=' . DB::val($query['id']) . ' AND home1=' . DB::val($query['home1']) . ' AND slug=' . DB::val($query['slug'])) !== 0) ? Message::warning(_lang('admin.content.form.slug.collision')) : '') . "
@@ -411,7 +412,7 @@ if ($continue) {
       <p id='is-settings'>
       <label><input type='checkbox' name='public' value='1'" . Form::activateCheckbox($query['public']) . "> " . _lang('admin.content.form.public') . "</label>
       <label><input type='checkbox' name='visible' value='1'" . Form::activateCheckbox($query['visible']) . "> " . _lang('admin.content.form.visible') . "</label>
-      " . ((_priv_adminconfirm || (_priv_adminautoconfirm && $query['author'] == _user_id)) ? "<label><input type='checkbox' name='confirmed' value='1'" . Form::activateCheckbox($query['confirmed']) . "> " . _lang('admin.content.form.confirmed') . "</label>" : '') . "
+      " . ((User::hasPrivilege('adminconfirm') || (User::hasPrivilege('adminautoconfirm') && $query['author'] == User::getId())) ? "<label><input type='checkbox' name='confirmed' value='1'" . Form::activateCheckbox($query['confirmed']) . "> " . _lang('admin.content.form.confirmed') . "</label>" : '') . "
       <label><input type='checkbox' name='comments' value='1'" . Form::activateCheckbox($query['comments']) . "> " . _lang('admin.content.form.comments') . "</label>
       <label><input type='checkbox' name='commentslocked' value='1'" . Form::activateCheckbox($query['commentslocked']) . "> " . _lang('admin.content.form.commentslocked') . "</label>
       <label><input type='checkbox' name='rateon' value='1'" . Form::activateCheckbox($query['rateon']) . "> " . _lang('admin.content.form.artrate') . "</label>

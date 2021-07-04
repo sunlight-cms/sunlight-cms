@@ -9,6 +9,7 @@ use Sunlight\GenericTemplates;
 use Sunlight\IpLog;
 use Sunlight\Message;
 use Sunlight\Router;
+use Sunlight\Settings;
 use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Password;
@@ -17,12 +18,12 @@ use Sunlight\Util\StringGenerator;
 
 defined('_root') or exit;
 
-if (!_registration) {
+if (!Settings::get('registration')) {
     $_index['type'] = _index_not_found;
     return;
 }
 
-if (_logged_in) {
+if (User::isLoggedIn()) {
     $_index['type'] = _index_redir;
     $_index['redirect_to'] = Router::module('login', null, true);
     return;
@@ -33,8 +34,8 @@ $message = '';
 $user_data = [];
 $user_data_valid = false;
 $show_form = true;
-$rules = Core::loadSetting('rules');
-$confirmed = !_registration_confirm;
+$rules = Settings::get('rules');
+$confirmed = !Settings::get('registration_confirm');
 
 // akce
 if (isset($_GET['confirm'])) {
@@ -42,7 +43,7 @@ if (isset($_GET['confirm'])) {
 
     $show_form = false;
 
-    if (!_registration_confirm) {
+    if (!Settings::get('registration_confirm')) {
         $_index['found'] = false;
         return;
     }
@@ -78,7 +79,7 @@ if (isset($_GET['confirm'])) {
                 $message = Message::warning(_lang('mod.reg.confirm.notfound'));
             }
         } else {
-            $message = Message::warning(_lang('mod.reg.confirm.limit', ['%limit%' => _accactexpire]));
+            $message = Message::warning(_lang('mod.reg.confirm.limit', ['%limit%' => Settings::get('accactexpire')]));
         }
     } else {
         $message = Message::error(_lang('mod.reg.confirm.badcode'));
@@ -94,7 +95,7 @@ if (isset($_GET['confirm'])) {
 
         // kontrola iplogu
         if (!IpLog::check(_iplog_anti_spam)) {
-            $errors[] = _lang('misc.antispam_error', ["%antispamtimeout%" => _antispamtimeout]);
+            $errors[] = _lang('misc.antispam_error', ["%antispamtimeout%" => Settings::get('antispamtimeout')]);
         }
 
         // nacteni a kontrola promennych
@@ -130,14 +131,14 @@ if (isset($_GET['confirm'])) {
 
         $user_data['massemail'] = Form::loadCheckbox('massemail');
 
-        if (_registration_grouplist && isset($_POST['group_id'])) {
+        if (Settings::get('registration_grouplist') && isset($_POST['group_id'])) {
             $user_data['group_id'] = (int) Request::post('group_id');
             $groupdata = DB::query("SELECT id FROM " . _user_group_table . " WHERE id=" . $user_data['group_id'] . " AND blocked=0 AND reglist=1");
             if (DB::size($groupdata) == 0) {
                 $errors[] = _lang('global.badinput');
             }
         } else {
-            $user_data['group_id'] = _defaultgroup;
+            $user_data['group_id'] = Settings::get('defaultgroup');
         }
 
         if ($rules !== '' && !Form::loadCheckbox('agreement')) {
@@ -173,12 +174,12 @@ if (!$user_data_valid && $show_form) {
 
     // priprava vyberu skupiny
     $groupselect = [];
-    if (_registration_grouplist) {
+    if (Settings::get('registration_grouplist')) {
         $groupselect_items = DB::query("SELECT id,title FROM " . _user_group_table . " WHERE blocked=0 AND reglist=1 ORDER BY title");
         if (DB::size($groupselect_items) != 0) {
             $groupselect_content = "";
             while ($groupselect_item = DB::row($groupselect_items)) {
-                $groupselect_content .= "<option value='" . $groupselect_item['id'] . "'" . (($groupselect_item['id'] == _defaultgroup) ? " selected" : '') . ">" . $groupselect_item['title'] . "</option>\n";
+                $groupselect_content .= "<option value='" . $groupselect_item['id'] . "'" . (($groupselect_item['id'] == Settings::get('defaultgroup')) ? " selected" : '') . ">" . $groupselect_item['title'] . "</option>\n";
             }
             $groupselect = ['label' => _lang('global.group'), 'content' => "<select name='group_id'>" . $groupselect_content . "</select>"];
         }
@@ -195,13 +196,13 @@ if (!$user_data_valid && $show_form) {
     $captcha = Captcha::init();
 
     // formular
-    $output .= "<p class='bborder'>" . _lang('mod.reg.p') . (_registration_confirm ? ' ' . _lang('mod.reg.confirm.extratext') : '') . "</p>\n";
+    $output .= "<p class='bborder'>" . _lang('mod.reg.p') . (Settings::get('registration_confirm') ? ' ' . _lang('mod.reg.confirm.extratext') : '') . "</p>\n";
 
     $output .= Form::render(
         [
             'name' => 'regform',
             'action' => Router::module('reg'),
-            'submit_text' => _lang('mod.reg.submit' . (_registration_confirm ? '2' : '')),
+            'submit_text' => _lang('mod.reg.submit' . (Settings::get('registration_confirm') ? '2' : '')),
             'submit_span' => !empty($rules),
             'submit_name' => 'regform',
         ],

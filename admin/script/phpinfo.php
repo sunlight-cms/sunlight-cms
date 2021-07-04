@@ -2,6 +2,7 @@
 
 use Sunlight\Core;
 use Sunlight\Router;
+use Sunlight\User;
 use Sunlight\Util\Response;
 
 require '../../system/bootstrap.php';
@@ -11,7 +12,7 @@ Core::init('../../', [
 
 /* ---  vystup  --- */
 
-if (!_priv_super_admin) {
+if (!User::isSuperAdmin()) {
     Response::redirect(Router::generate('admin/'));
     exit;
 }

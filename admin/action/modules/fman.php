@@ -376,14 +376,14 @@ if ($continue) {
 
                 // pridani vyberu do galerie - formular pro vyber galerie
             case "addtogallery_showform":
-                if (_priv_admingallery && _priv_admincontent) {
+                if (User::hasPrivilege('admingallery') && User::hasPrivilege('admincontent')) {
                     $_GET['a'] = "addtogallery";
                 }
                 break;
 
                 // pridani vyberu do galerie - ulozeni
             case "addtogallery":
-                if (_priv_admingallery && _priv_admincontent) {
+                if (User::hasPrivilege('admingallery') && User::hasPrivilege('admincontent')) {
 
                     // priprava promennych
                     $counter = 0;
@@ -637,7 +637,7 @@ if ($continue) {
     <a href='" . $url . "&amp;a=upload'>" . _lang('admin.fman.menu.upload') . "</a>
     <a href='" . $url . "&amp;a=edit'>" . _lang('admin.fman.menu.createfile') . "</a>
     <a href='" . $url . "&amp;a=newfolder'>" . _lang('admin.fman.menu.createfolder') . "</a>
-    " . ((_priv_admingallery && _priv_admincontent) ? "<a href='#' onclick='return Sunlight.admin.fmanAddSelectedToGallery()'>" . _lang('admin.fman.menu.addtogallery') . "</a>" : '') . "
+    " . ((User::hasPrivilege('admingallery') && User::hasPrivilege('admincontent')) ? "<a href='#' onclick='return Sunlight.admin.fmanAddSelectedToGallery()'>" . _lang('admin.fman.menu.addtogallery') . "</a>" : '') . "
     <a href='" . $url_base . "dir=" . rawurlencode($defdir) . "'>" . _lang('admin.fman.menu.home') . "</a>
     <strong>" . _lang('admin.fman.currentdir') . ":</strong> " . substr($dir, strlen(_root)) . "
     </p>

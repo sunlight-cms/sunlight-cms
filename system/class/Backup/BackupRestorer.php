@@ -6,6 +6,7 @@ use Sunlight\Core;
 use Sunlight\Database\Database as DB;
 use Sunlight\Database\DatabaseLoader;
 use Sunlight\Database\SqlReader;
+use Sunlight\Settings;
 use Sunlight\Util\Filesystem;
 
 class BackupRestorer
@@ -162,7 +163,7 @@ class BackupRestorer
         Core::$cache->clear();
 
         // force install check
-        Core::updateSetting('install_check', 1);
+        Settings::update('install_check', '1');
 
         return true;
     }

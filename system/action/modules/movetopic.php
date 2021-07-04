@@ -13,7 +13,7 @@ use Sunlight\Xsrf;
 
 defined('_root') or exit;
 
-if (!_logged_in) {
+if (!User::isLoggedIn()) {
     $_index['type'] = _index_unauthorized;
     return;
 }
@@ -30,7 +30,7 @@ if ($query !== false) {
     }
 
     $_index['backlink'] = Router::topic($query['id'], $query['forum_slug']);
-    if (!Comment::checkAccess($userQuery, $query) || !_priv_movetopics) {
+    if (!Comment::checkAccess($userQuery, $query) || !User::hasPrivilege('movetopics')) {
         $_index['type'] = _index_unauthorized;
         return;
     }

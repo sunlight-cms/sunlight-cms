@@ -89,10 +89,10 @@ abstract class Template
         // titulek
         $title = Extend::buffer('tpl.title', ['head' => true]);
         if ($title === '') {
-            if (_titletype == 1) {
-                $title = _title . ' ' . _titleseparator . ' ' . $_index['title'];
+            if (Settings::get('titletype') == 1) {
+                $title = Settings::get('title') . ' ' . Settings::get('titleseparator') . ' ' . $_index['title'];
             } else {
-                $title = $_index['title'] . ' ' . _titleseparator . ' ' . _title;
+                $title = $_index['title'] . ' ' . Settings::get('titleseparator') . ' ' . Settings::get('title');
             }
         }
 
@@ -105,15 +105,15 @@ abstract class Template
         ];
 
         // sestaveni
-        echo '<meta name="description" content="' . ($_index['description'] ?? _description) . '">' . ((_author !== '') ? '
-<meta name="author" content="' . _author . '">' : '')
+        echo '<meta name="description" content="' . ($_index['description'] ?? Settings::get('description')) . '">' . ((Settings::get('author') !== '') ? '
+<meta name="author" content="' . Settings::get('author') . '">' : '')
             . Extend::buffer('tpl.head.meta')
             . ($_template->getOption('responsive') ? "\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">" : '')
             . GenericTemplates::renderHeadAssets($assets);
 
-        if (_favicon) {
+        if (Settings::get('favicon')) {
             echo '
-<link rel="shortcut icon" href="' . _e(Router::file('favicon.ico') . '?' . _cacheid) . '">';
+<link rel="shortcut icon" href="' . _e(Router::file('favicon.ico') . '?' . Settings::get('cacheid')) . '">';
         }
 
         echo '
@@ -132,7 +132,7 @@ abstract class Template
     {
         $output = '';
 
-        if (!_notpublicsite || _logged_in) {
+        if (!Settings::get('notpublicsite') || User::isLoggedIn()) {
             global $_template, $_template_boxes;
 
             // nacist boxy
@@ -267,7 +267,7 @@ abstract class Template
     {
         return
             "<li><a href=\"https://sunlight-cms.cz/\">SunLight CMS</a></li>\n"
-            . ((!_adminlinkprivate || (_logged_in && _priv_administration)) ? '<li><a href="' . Router::generate('admin/') . '">' . _lang('global.adminlink') . "</a></li>\n" : '');
+            . ((!Settings::get('adminlinkprivate') || (User::isLoggedIn() && User::hasPrivilege('administration'))) ? '<li><a href="' . Router::generate('admin/') . '">' . _lang('global.adminlink') . "</a></li>\n" : '');
     }
 
     /**
@@ -293,7 +293,7 @@ abstract class Template
     static function menu(?int $ordStart = null, ?int $ordEnd = null, ?string $cssClass = null, string $extendEvent = 'tpl.menu.item'): string
     {
         // kontrola prihlaseni v pripade neverejnych stranek
-        if (!_logged_in && _notpublicsite) {
+        if (!User::isLoggedIn() && Settings::get('notpublicsite')) {
             return '';
         }
 
@@ -353,7 +353,7 @@ abstract class Template
         ];
 
         // kontrola prihlaseni v pripade neverejnych stranek
-        if (!_logged_in && _notpublicsite) {
+        if (!User::isLoggedIn() && Settings::get('notpublicsite')) {
             return '';
         }
 
@@ -488,7 +488,7 @@ abstract class Template
      */
     static function siteTitle(): string
     {
-        return _title;
+        return Settings::get('title');
     }
 
     /**
@@ -498,7 +498,7 @@ abstract class Template
      */
     static function siteDescription(): string
     {
-        return _description;
+        return Settings::get('description');
     }
 
     /**
@@ -521,13 +521,13 @@ abstract class Template
         // pripravit polozky
         $items = [];
 
-        if (!_logged_in) {
+        if (!User::isLoggedIn()) {
             // prihlaseni
             $items['login'] = [
                 Router::module('login', 'login_form_return=' . rawurlencode($_SERVER['REQUEST_URI'])),
                 _lang('usermenu.login'),
             ];
-            if (_registration) {
+            if (Settings::get('registration')) {
                 // registrace
                 $items['reg'] = [
                     Router::module('reg'),
@@ -544,7 +544,7 @@ abstract class Template
             }
 
             // vzkazy
-            if (_messages) {
+            if (Settings::get('messages')) {
                 $messages_count = User::getUnreadPmCount();
                 if ($messages_count != 0) {
                     $messages_count = " [{$messages_count}]";
@@ -564,7 +564,7 @@ abstract class Template
             ];
 
             // administrace
-            if ($adminLink && _priv_administration) {
+            if ($adminLink && User::hasPrivilege('administration')) {
                 $items['admin'] = [
                     Router::generate('admin/'),
                     _lang('global.adminlink')
@@ -572,7 +572,7 @@ abstract class Template
             }
         }
 
-        if (_ulist && (!_notpublicsite || _logged_in)) {
+        if (Settings::get('ulist') && (!Settings::get('notpublicsite') || User::isLoggedIn())) {
             // seznam uzivatelu
             $items['ulist'] = [
                 Router::module('ulist'),
@@ -581,7 +581,7 @@ abstract class Template
         }
 
         // odhlaseni
-        if (_logged_in) {
+        if (User::isLoggedIn()) {
             $items['logout'] = [
                 Xsrf::addToUrl(Router::generate("system/script/logout.php?_return=" . rawurlencode($_SERVER['REQUEST_URI']))),
                 _lang('usermenu.logout'),
@@ -591,7 +591,7 @@ abstract class Template
         // vykreslit
         $output = Extend::buffer('tpl.usermenu', ['items' => &$items]);
         if ($output === '' && !empty($items)) {
-            $output = "<ul class=\"user-menu " . (_logged_in ? 'logged-in' : 'not-logged-in') . "\">\n";
+            $output = "<ul class=\"user-menu " . (User::isLoggedIn() ? 'logged-in' : 'not-logged-in') . "\">\n";
             $output .= Extend::buffer('tpl.usermenu.start');
             foreach ($items as $id => $item) {
                 $output .= "<li class=\"user-menu-{$id}\"><a href=\"" . _e($item[0]) . "\">{$item[1]}</a></li>\n";
@@ -666,6 +666,6 @@ abstract class Template
      */
     static function currentIsIndex(): bool
     {
-        return self::currentIsPage() && $GLOBALS['_index']['id'] == _index_page_id;
+        return self::currentIsPage() && $GLOBALS['_index']['id'] == Settings::get('index_page_id');
     }
 }

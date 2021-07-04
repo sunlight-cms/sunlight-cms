@@ -3,13 +3,14 @@
 use Sunlight\Comment\CommentService;
 use Sunlight\Extend;
 use Sunlight\Hcm;
+use Sunlight\Settings;
 use Sunlight\User;
 
 defined('_root') or exit;
 
 // vychozi nastaveni
 if ($_page['var2'] === null) {
-    $_page['var2'] = _commentsperpage;
+    $_page['var2'] = Settings::get('commentsperpage');
 }
 
 // titulek

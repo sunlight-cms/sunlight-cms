@@ -7,6 +7,7 @@ use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\Message;
 use Sunlight\Plugin\PluginManager;
+use Sunlight\Settings;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
@@ -95,7 +96,7 @@ $editable_settings = [
             ['name' => 'registration'],
             ['name' => 'registration_confirm'],
             ['name' => 'registration_grouplist'],
-            ['name' => 'defaultgroup', 'table_id' => _user_group_table, 'input' => Admin::userSelect("defaultgroup", _defaultgroup, "id!=" . _group_guests, null, null, true), 'id' => false],
+            ['name' => 'defaultgroup', 'table_id' => _user_group_table, 'input' => Admin::userSelect("defaultgroup", Settings::get('defaultgroup'), "id!=" . _group_guests, null, null, true), 'id' => false],
             ['name' => 'rules', 'help' => false, 'extra_help' => _lang('admin.settings.users.rules.help'), 'input' => '<textarea id="setting_rules" name="rules" rows="9" cols="33" class="areasmallwide editor">' . _e($settings['rules']['val']) . '</textarea>'],
             ['name' => 'messages'],
             ['name' => 'lostpass'],
@@ -251,7 +252,7 @@ if (!empty($_POST)) {
 
             // update
             if ($value != $settings[$item['name']]['val']) {
-                Core::updateSetting($item['name'], $value);
+                Settings::update($item['name'], $value);
                 $settings[$item['name']]['val'] = $value;
 
                 if (isset($item['reload_on_update']) && $item['reload_on_update']) {
@@ -271,7 +272,7 @@ if (!empty($_POST)) {
         $admin_redirect_to = 'index.php?p=settings&saved';
     }
     if ($forceInstallCheck) {
-        Core::updateSetting('install_check', 1);
+        Settings::update('install_check', '1');
     }
 }
 

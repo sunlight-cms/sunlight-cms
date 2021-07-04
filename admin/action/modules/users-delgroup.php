@@ -1,8 +1,8 @@
 <?php
 
-use Sunlight\Core;
 use Sunlight\Database\Database as DB;
 use Sunlight\Message;
+use Sunlight\Settings;
 use Sunlight\User;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
@@ -21,7 +21,7 @@ if (isset($_GET['id'])) {
     $systemgroup = in_array($id, $sysgroups_array);
     $query = DB::queryRow("SELECT id,title,level FROM " . _user_group_table . " WHERE id=" . $id);
     if ($query !== false) {
-        if (_priv_level > $query['level']) {
+        if (User::getLevel() > $query['level']) {
             $continue = true;
         } else {
             $levelconflict = true;
@@ -44,8 +44,8 @@ if ($continue) {
         }
 
         // zmena vychozi skupiny
-        if (!$systemgroup && $id == _defaultgroup) {
-            Core::updateSetting('defaultgroup', 3);
+        if (!$systemgroup && $id == Settings::get('defaultgroup')) {
+            Settings::update('defaultgroup', _group_registered);
         }
 
         // smazani uzivatelu

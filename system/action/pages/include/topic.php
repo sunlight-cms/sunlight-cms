@@ -6,6 +6,7 @@ use Sunlight\Extend;
 use Sunlight\Paginator;
 use Sunlight\Comment\Comment;
 use Sunlight\Router;
+use Sunlight\Settings;
 use Sunlight\User;
 use Sunlight\Util\UrlHelper;
 
@@ -45,7 +46,7 @@ if (!$continue) {
 }
 
 // atributy
-$_index['title'] = $_page['title'] . ' ' . _titleseparator . ' ' . $query['subject'];
+$_index['title'] = $_page['title'] . ' ' . Settings::get('titleseparator') . ' ' . $query['subject'];
 $_index['heading'] = $_page['title'];
 $_index['url'] = Router::topic($id, $_page['slug']);
 
@@ -60,13 +61,13 @@ $topic_access = Comment::checkAccess($userQuery, $query);
 $topic_admin = [];
 
 if ($topic_access) {
-    if (_priv_locktopics) {
+    if (User::hasPrivilege('locktopics')) {
         $topic_admin[] = "<a class=\"post-action-" . (($query['locked'] == 1) ? 'unlock' : 'lock') . "\" href='" . _e(Router::module('locktopic', 'id=' . $id)) . "'>" . (_lang('mod.locktopic.link' . (($query['locked'] == 1) ? '2' : ''))) . "</a>";
     }
-    if (_priv_stickytopics) {
+    if (User::hasPrivilege('stickytopics')) {
         $topic_admin[] = "<a class=\"post-action-" . (($query['sticky'] == 1) ? 'unsticky' : 'sticky') . "\"  href='" . _e(Router::module('stickytopic', 'id=' . $id)) . "'>" . (_lang('mod.stickytopic.link' . (($query['sticky'] == 1) ? '2' : ''))) . "</a>";
     }
-    if (_priv_movetopics) {
+    if (User::hasPrivilege('movetopics')) {
         $topic_admin[] = "<a class=\"post-action-move\"  href='" . _e(Router::module('movetopic', 'id=' . $id)) . "'>" . (_lang('mod.movetopic.link')) . "</a>";
     }
 }
@@ -86,7 +87,7 @@ $output .= CommentService::render(
     CommentService::RENDER_FORUM_TOPIC,
     $_page['id'],
     [
-        _commentsperpage,
+        Settings::get('commentsperpage'),
         User::checkPublicAccess($_page['var3']),
         $_page['var2'],
         $id

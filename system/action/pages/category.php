@@ -5,13 +5,14 @@ use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\Hcm;
 use Sunlight\Paginator;
+use Sunlight\Settings;
 use Sunlight\User;
 
 defined('_root') or exit;
 
 // vychozi nastaveni
 if ($_page['var2'] === null) {
-    $_page['var2'] = _articlesperpage;
+    $_page['var2'] = Settings::get('articlesperpage');
 }
 
 // zobrazeni clanku?

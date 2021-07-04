@@ -8,7 +8,9 @@ use Sunlight\GenericTemplates;
 use Sunlight\Hcm;
 use Sunlight\IpLog;
 use Sunlight\Router;
+use Sunlight\Settings;
 use Sunlight\Template;
+use Sunlight\User;
 use Sunlight\Util\UrlHelper;
 use Sunlight\Xsrf;
 
@@ -90,7 +92,7 @@ $output .= "<div class='cleaner'></div>\n";
 // informace
 $infos = [];
 
-if (_priv_adminart) {
+if (User::hasPrivilege('adminart')) {
     $infos['idlink'] = [_lang('global.id'), "<a href='" . _e(UrlHelper::appendParams(Router::generate('admin/index.php'),"p=content-articles-edit&id=" . $_article['id'] . "&returnid=load&returnpage=1")) . "'>" . $_article['id'] . " <img src='" . Template::image("icons/edit.png") . "' alt='edit' class='icon'></a>"];
 }
 
@@ -100,9 +102,9 @@ if ($_article['showinfo']) {
     $infos['readnum'] = [_lang('article.readnum'), $_article['readnum'] . 'x'];
 }
 
-if ($_article['rateon'] && _ratemode != 0) {
+if ($_article['rateon'] && Settings::get('ratemode') != 0) {
     if ($_article['ratenum'] != 0) {
-        if (_ratemode == 1) {
+        if (Settings::get('ratemode') == 1) {
             // procenta
             $rate = (round($_article['ratesum'] / $_article['ratenum'])) . "%";
         } else {
@@ -119,14 +121,14 @@ if ($_article['rateon'] && _ratemode != 0) {
 
 // formular hodnoceni
 $rateform = null;
-if ($_article['rateon'] && _ratemode != 0 && _priv_artrate && IpLog::check(_iplog_article_rated, $_article['id'])) {
+if ($_article['rateon'] && Settings::get('ratemode') != 0 && User::hasPrivilege('artrate') && IpLog::check(_iplog_article_rated, $_article['id'])) {
     $rateform = "
 <strong>" . _lang('article.rate.title') . ":</strong>
 <form action='" . Router::generate('system/script/artrate.php') . "' method='post'>
 <input type='hidden' name='id' value='" . $_article['id'] . "'>
 ";
 
-    if (_ratemode == 1) {
+    if (Settings::get('ratemode') == 1) {
         // procenta
         $rateform .= "<select name='r'>\n";
         for ($x = 0; $x <= 100; $x += 10) {
@@ -193,7 +195,7 @@ if ($rateform !== null || !empty($infos)) {
 
 // komentare
 Extend::call('article.comments.before', $extend_args);
-if ($_article['comments'] && _comments) {
+if ($_article['comments'] && Settings::get('comments')) {
     $output .= CommentService::render(CommentService::RENDER_ARTICLE_COMMENTS, $_article['id'], $_article['commentslocked']);
 }
 Extend::call('article.comments.after', $extend_args);

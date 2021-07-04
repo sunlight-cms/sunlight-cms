@@ -9,6 +9,7 @@ use Sunlight\Page\PageManager;
 use Sunlight\Page\PageManipulator;
 use Sunlight\Plugin\TemplateService;
 use Sunlight\Router;
+use Sunlight\Settings;
 use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Html;
@@ -58,8 +59,8 @@ if (!empty($_POST)) {
         'slug_abs' => ['type' => 'bool', 'nullable' => false, 'enabled' => $editscript_enable_slug],
         'slug' => ['type' => 'raw', 'nullable' => false, 'enabled' => $editscript_enable_slug],
         'description' => ['type' => 'escaped_plaintext', 'nullable' => false, 'enabled' => $editscript_enable_meta],
-        'node_parent' => ['type' => 'int', 'nullable' => true, 'enabled' => _priv_adminpages],
-        'ord' => ['type' => 'raw', 'nullable' => false, 'enabled' => _priv_adminpages],
+        'node_parent' => ['type' => 'int', 'nullable' => true, 'enabled' => User::hasPrivilege('adminpages')],
+        'ord' => ['type' => 'raw', 'nullable' => false, 'enabled' => User::hasPrivilege('adminpages')],
         'visible' => ['type' => 'bool', 'nullable' => false, 'enabled' => $editscript_enable_visible],
         'public' => ['type' => 'bool', 'nullable' => false, 'enabled' => $editscript_enable_access],
         'level' => ['type' => 'raw', 'nullable' => false, 'enabled' => $editscript_enable_access],
@@ -217,7 +218,7 @@ if (!empty($_POST)) {
                         $changeset['level_inherit'] = 1;
                     }
                 } else {
-                    $val = min(_priv_level, max(0, (int) $val));
+                    $val = min(User::getLevel(), max(0, (int) $val));
                     $changeset['level_inherit'] = 0;
                 }
                 if (!$skip && ($val != $query['level'] || $query['level_inherit'] != $changeset['level_inherit'])) {
@@ -439,7 +440,7 @@ if (!empty($_POST)) {
 /* ---  vystup  --- */
 
 // vyber rodice
-if (_priv_adminpages) {
+if (User::hasPrivilege('adminpages')) {
     $parent_row = "<tr>\n<th>" . _lang('admin.content.form.node_parent') . "</th><td>";
     $parent_row .= Admin::pageSelect('node_parent', [
         'empty_item' => _lang('admin.content.form.node_parent.none'),
@@ -468,7 +469,7 @@ if (isset($_GET['saved'])) {
 if (!$new && $editscript_enable_slug && DB::count(_page_table, 'id!=' . DB::val($query['id']) . ' AND slug=' . DB::val($query['slug'])) !== 0) {
     $output .= Message::warning(_lang('admin.content.form.slug.collision'));
 }
-if (!$new && $id == _index_page_id) {
+if (!$new && $id == Settings::get('index_page_id')) {
     $output .= Admin::note(_lang('admin.content.form.indexnote'));
 }
 
@@ -551,7 +552,7 @@ $output .= "<form class='cform' action='index.php?p=content-edit" . $type_array[
                             <tr>
                                 <td colspan='2'>
                                     <label>" . _lang('admin.content.form.ord') . "</label>
-                                    <input type='number' name='ord'" . Form::disableInputUnless(_priv_adminpages) . " value='" . $query['ord'] . "' class='inputmax'>
+                                    <input type='number' name='ord'" . Form::disableInputUnless(User::hasPrivilege('adminpages')) . " value='" . $query['ord'] . "' class='inputmax'>
                                 </td>
                             </tr>"
                             . ((!empty($custom_settings) || $editscript_enable_show_heading || $editscript_enable_visible) ?

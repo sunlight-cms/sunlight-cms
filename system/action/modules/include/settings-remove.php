@@ -21,7 +21,7 @@ if (isset($_POST['submit'])) {
     }
 
     if (empty($errors)) {
-        if (User::delete(_user_id)) {
+        if (User::delete(User::getId())) {
             $_SESSION = [];
             session_destroy();
 

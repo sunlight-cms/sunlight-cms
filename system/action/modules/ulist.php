@@ -3,18 +3,19 @@
 use Sunlight\Database\Database as DB;
 use Sunlight\Paginator;
 use Sunlight\Router;
+use Sunlight\Settings;
 use Sunlight\User;
 use Sunlight\Util\Arr;
 use Sunlight\Util\Form;
 
 defined('_root') or exit;
 
-if (!_logged_in && _notpublicsite) {
+if (!User::isLoggedIn() && Settings::get('notpublicsite')) {
     $_index['type'] = _index_unauthorized;
     return;
 }
 
-if (!_ulist) {
+if (!Settings::get('ulist')) {
     $_index['type'] = _index_not_found;
     return;
 }
@@ -38,7 +39,7 @@ if (isset($_REQUEST['group_id'])) {
 // vyber skupiny
 $output .= '
   <form action="' . _e(Router::module('ulist')) . '" method="get">
-  ' . (!_pretty_urls ? Form::renderHiddenInputs(Arr::filterKeys($_GET, null, null, ['group_id'])) : '') . '
+  ' . (!Settings::get('pretty_urls') ? Form::renderHiddenInputs(Arr::filterKeys($_GET, null, null, ['group_id'])) : '') . '
   <strong>' . _lang('user.list.groupfilter') . ':</strong> <select name="group_id">
   <option value="-1">' . _lang('global.all') . '</option>
   ';

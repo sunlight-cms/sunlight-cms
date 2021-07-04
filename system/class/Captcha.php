@@ -31,7 +31,7 @@ class Captcha
             return $output;
         }
 
-        if (_captcha && !_logged_in) {
+        if (Settings::get('captcha') && !User::isLoggedIn()) {
             ++$captchaCounter;
             if (!isset($_SESSION['captcha_code']) || !is_array($_SESSION['captcha_code'])) {
                 $_SESSION['captcha_code'] = [];
@@ -62,7 +62,7 @@ class Captcha
             $result = false;
 
             // kontrola
-            if (_captcha && !_logged_in) {
+            if (Settings::get('captcha') and !User::isLoggedIn()) {
                 $enteredCode = Request::post('_cp');
                 $captchaId = Request::post('_cn');
 

@@ -1,12 +1,13 @@
 <?php
 
 use Sunlight\Router;
+use Sunlight\Settings;
 use Sunlight\Xsrf;
 
 return function () {
-    if (_search) {
+    if (Settings::get('search')) {
         return "<form action='" . _e(Router::module('search')) . "' method='get' class='searchform'>
-" . (!_pretty_urls ? "<input type='hidden' name='m' value='search'>" : '') . "
+" . (!Settings::get('pretty_urls') ? "<input type='hidden' name='m' value='search'>" : '') . "
 <input type='hidden' name='page' value='1'>
 <input type='hidden' name='art' value='1'>
 <input type='hidden' name='post' value='1'>

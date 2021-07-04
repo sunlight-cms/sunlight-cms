@@ -15,7 +15,6 @@ use Sunlight\Util\Password;
 use Sunlight\Util\PhpTemplate;
 use Sunlight\Util\Request;
 use Sunlight\Util\StringGenerator;
-use Sunlight\Util\StringManipulator;
 
 const CONFIG_PATH = __DIR__ . '/../config.php';
 

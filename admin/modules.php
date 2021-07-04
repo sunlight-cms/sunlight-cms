@@ -56,7 +56,7 @@ return [
     // content
     'content' => [
         'title' => _lang('admin.menu.content'),
-        'access' => _priv_admincontent,
+        'access' => User::hasPrivilege('admincontent'),
         'parent' => null,
         'children' => [
             'content-sort',
@@ -89,81 +89,81 @@ return [
     ],
     'content-setindex' => [
         'title' => _lang('admin.content.setindex.title'),
-        'access' => _priv_admincontent && _priv_adminpages,
+        'access' => User::hasPrivilege('admincontent') && User::hasPrivilege('adminpages'),
         'parent' => 'content',
     ],
     'content-sort' => [
         'title' => _lang('admin.content.sort.title'),
-        'access' => _priv_admincontent && _priv_adminpages,
+        'access' => User::hasPrivilege('admincontent') && User::hasPrivilege('adminpages'),
         'parent' => 'content',
     ],
     'content-titles' => [
         'title' => _lang('admin.content.titles.title'),
-        'access' => _priv_admincontent && _priv_adminpages,
+        'access' => User::hasPrivilege('admincontent') && User::hasPrivilege('adminpages'),
         'parent' => 'content',
     ],
     'content-redir' => [
         'title' => _lang('admin.content.redir.title'),
-        'access' => _priv_admincontent && _priv_adminpages,
+        'access' => User::hasPrivilege('admincontent') && User::hasPrivilege('adminpages'),
         'parent' => 'content',
     ],
     'content-articles' => [
         'title' => _lang('admin.content.articles.title'),
-        'access' => _priv_adminart,
+        'access' => User::hasPrivilege('adminart'),
         'parent' => 'content',
     ],
     'content-articles-list' => ['title' => _lang('admin.content.articles.list.title'),
-        'access' => _priv_adminart,
+        'access' => User::hasPrivilege('adminart'),
         'parent' => 'content-articles',
     ],
     'content-articles-edit' => ['title' => _lang('admin.content.articles.edit.title'),
-        'access' => _priv_adminart,
+        'access' => User::hasPrivilege('adminart'),
         'parent' => 'content-articles',
         'custom_header' => true
     ],
     'content-articles-delete' => [
         'title' => _lang('admin.content.articles.delete.title'),
-        'access' => _priv_adminart,
+        'access' => User::hasPrivilege('adminart'),
         'parent' => 'content-articles',
         'custom_header' => true
     ],
     'content-confirm' => [
         'title' => _lang('admin.content.confirm.title'),
-        'access' => _priv_adminconfirm,
+        'access' => User::hasPrivilege('adminconfirm'),
         'parent' => 'content',
     ],
     'content-movearts' => [
         'title' => _lang('admin.content.movearts.title'),
-        'access' => _priv_admincategory,
+        'access' => User::hasPrivilege('admincategory'),
         'parent' => 'content',
     ],
     'content-artfilter' => [
         'title' => _lang('admin.content.artfilter.title'),
-        'access' => _priv_admincategory,
+        'access' => User::hasPrivilege('admincategory'),
         'parent' => 'content',
     ],
     'content-polls' => [
         'title' => _lang('admin.content.polls.title'),
-        'access' => _priv_adminpoll,
+        'access' => User::hasPrivilege('adminpoll'),
         'parent' => 'content',
     ],
     'content-polls-edit' => [
         'title' => _lang('admin.content.polls.edit.title'),
-        'access' => _priv_adminpoll,
+        'access' => User::hasPrivilege('adminpoll'),
         'parent' => 'content-polls',
     ],
     'content-sboxes' => ['title' => _lang('admin.content.sboxes.title'),
-        'access' => _priv_adminsbox,
+        'access' => User::hasPrivilege('adminsbox'),
         'parent' => 'content',
     ],
     'content-boxes' => [
         'title' => _lang('admin.content.boxes.title'),
-        'access' => _priv_adminbox,
+        'access' => User::hasPrivilege('adminbox'),
         'parent' => 'content',
     ],
     'content-boxes-edit' => [
         'title' => _lang('admin.content.boxes.edit.title'),
-        'access' => _priv_adminbox,
+        'access' => User::hasPrivilege('adminbox'),
         'parent' => 'content-boxes',
     ],
     'content-delete' => [
@@ -173,52 +173,52 @@ return [
     ],
     'content-editsection' => [
         'title' => _lang('admin.content.editsection.title'),
-        'access' => _priv_adminsection,
+        'access' => User::hasPrivilege('adminsection'),
         'parent' => 'content',
     ],
     'content-editcategory' => [
         'title' => _lang('admin.content.editcategory.title'),
-        'access' => _priv_admincategory,
+        'access' => User::hasPrivilege('admincategory'),
         'parent' => 'content',
     ],
     'content-editgroup' => [
         'title' => _lang('admin.content.editgroup.title'),
-        'access' => _priv_admingroup,
+        'access' => User::hasPrivilege('admingroup'),
         'parent' => 'content',
     ],
     'content-editbook' => [
         'title' => _lang('admin.content.editbook.title'),
-        'access' => _priv_adminbook,
+        'access' => User::hasPrivilege('adminbook'),
         'parent' => 'content',
     ],
     'content-editseparator' => [
         'title' => _lang('admin.content.editseparator.title'),
-        'access' => _priv_adminseparator,
+        'access' => User::hasPrivilege('adminseparator'),
         'parent' => 'content',
     ],
     'content-editlink' => [
         'title' => _lang('admin.content.editlink.title'),
-        'access' => _priv_adminlink,
+        'access' => User::hasPrivilege('adminlink'),
         'parent' => 'content',
     ],
     'content-editgallery' => [
         'title' => _lang('admin.content.editgallery.title'),
-        'access' => _priv_admingallery,
+        'access' => User::hasPrivilege('admingallery'),
         'parent' => 'content',
     ],
     'content-editforum' => [
         'title' => _lang('admin.content.editforum.title'),
-        'access' => _priv_adminforum,
+        'access' => User::hasPrivilege('adminforum'),
         'parent' => 'content',
     ],
     'content-editpluginpage' => [
         'title' => _lang('admin.content.editpluginpage.title'),
-        'access' => _priv_adminpluginpage,
+        'access' => User::hasPrivilege('adminpluginpage'),
         'parent' => 'content',
     ],
     'content-manageimgs' => [
         'title' => _lang('admin.content.manageimgs.title'),
-        'access' => _priv_admingallery,
+        'access' => User::hasPrivilege('admingallery'),
         'parent' => 'content',
         'custom_header' => true,
     ],
@@ -226,7 +226,7 @@ return [
     // users
     'users' => [
         'title' => _lang('admin.menu.users'),
-        'access' => _priv_adminusers || _priv_admingroups,
+        'access' => User::hasPrivilege('adminusers') || User::hasPrivilege('admingroups'),
         'parent' => null,
         'children' => ['users-editgroup', 'users-delgroup', 'users-edit', 'users-delete', 'users-list', 'users-move'],
         'menu' => true,
@@ -234,40 +234,40 @@ return [
     ],
     'users-editgroup' => [
         'title' => _lang('admin.users.groups.edittitle'),
-        'access' => _priv_admingroups,
+        'access' => User::hasPrivilege('admingroups'),
         'parent' => 'users',
     ],
     'users-delgroup' => [
         'title' => _lang('admin.users.groups.deltitle'),
-        'access' => _priv_admingroups,
+        'access' => User::hasPrivilege('admingroups'),
         'parent' => 'users',
     ],
     'users-list' => [
         'title' => _lang('admin.users.list'),
-        'access' => _priv_adminusers,
+        'access' => User::hasPrivilege('adminusers'),
         'parent' => 'users',
         'children' => ['users-edit', 'users-delete'],
     ],
     'users-edit' => [
         'title' => _lang('admin.users.edit.title'),
-        'access' => _priv_adminusers,
+        'access' => User::hasPrivilege('adminusers'),
         'parent' => 'users-list',
     ],
     'users-delete' => [
         'title' => _lang('admin.users.deleteuser'),
-        'access' => _priv_adminusers,
+        'access' => User::hasPrivilege('adminusers'),
         'parent' => 'users-list',
     ],
     'users-move' => [
         'title' => _lang('admin.users.move'),
-        'access' => _priv_adminusers,
+        'access' => User::hasPrivilege('adminusers'),
         'parent' => 'users',
     ],
 
     // fman
     'fman' => [
         'title' => _lang('admin.menu.fman'),
-        'access' => _priv_fileaccess,
+        'access' => User::hasPrivilege('fileaccess'),
         'parent' => null,
         'menu' => true,
         'menu_order' => 30,
@@ -276,7 +276,7 @@ return [
     // plugins
     'plugins' => [
         'title' => _lang('admin.menu.plugins'),
-        'access' => _priv_adminplugins,
+        'access' => User::hasPrivilege('adminplugins'),
         'parent' => null,
         'children' => ['plugins-action', 'plugins-upload'],
         'menu' => true,
@@ -284,20 +284,20 @@ return [
     ],
     'plugins-action' => [
         'title' => _lang('admin.plugins.action'),
-        'access' => _priv_adminplugins,
+        'access' => User::hasPrivilege('adminplugins'),
         'parent' => 'plugins',
         'custom_header' => true,
     ],
     'plugins-upload' => [
         'title' => _lang('admin.plugins.upload'),
-        'access' => _priv_adminplugins,
+        'access' => User::hasPrivilege('adminplugins'),
         'parent' => 'plugins',
     ],
 
     // settings
     'settings' => [
         'title' => _lang('admin.menu.settings'),
-        'access' => _priv_adminsettings,
+        'access' => User::hasPrivilege('adminsettings'),
         'parent' => null,
         'menu' => true,
         'menu_order' => 50,
@@ -306,7 +306,7 @@ return [
     // backup
     'backup' => [
         'title' => _lang('admin.backup.title'),
-        'access' => _priv_adminbackup,
+        'access' => User::hasPrivilege('adminbackup'),
         'parent' => null,
         'menu' => true,
         'menu_order' => 60,
@@ -315,7 +315,7 @@ return [
     // other
     'other' => [
         'title' => _lang('admin.menu.other'),
-        'access' => _priv_adminother,
+        'access' => User::hasPrivilege('adminother'),
         'parent' => null,
         'children' => ['other-massemail', 'other-cleanup', 'other-sqlex'],
         'menu' => true,
@@ -323,7 +323,7 @@ return [
     ],
     'other-patch' => [
         'title' => _lang('admin.other.patch.title'),
-        'access' => _priv_adminother && _priv_super_admin,
+        'access' => User::hasPrivilege('adminother') && User::isSuperAdmin(),
         'parent' => 'other',
         'other' => true,
         'other_system' => true,
@@ -332,7 +332,7 @@ return [
     ],
     'other-cleanup' => [
         'title' => _lang('admin.other.cleanup.title'),
-        'access' => _priv_adminother && _priv_super_admin,
+        'access' => User::hasPrivilege('adminother') && User::isSuperAdmin(),
         'parent' => 'other',
         'other' => true,
         'other_system' => true,
@@ -341,7 +341,7 @@ return [
     ],
     'other-sqlex' => [
         'title' => _lang('admin.other.sqlex.title'),
-        'access' => _priv_adminother && _priv_super_admin,
+        'access' => User::hasPrivilege('adminother') && User::isSuperAdmin(),
         'parent' => 'other',
         'other' => true,
         'other_system' => true,
@@ -350,7 +350,7 @@ return [
     ],
     'other-php' => [
         'title' => _lang('admin.other.php.title'),
-        'access' => _priv_adminother && _priv_super_admin,
+        'access' => User::hasPrivilege('adminother') && User::isSuperAdmin(),
         'url' => 'script/php.php',
         'parent' => 'other',
         'other' => true,
@@ -361,7 +361,7 @@ return [
     ],
     'other-massemail' => [
         'title' => _lang('admin.other.massemail.title'),
-        'access' => _priv_adminother && _priv_adminmassemail,
+        'access' => User::hasPrivilege('adminother') && User::hasPrivilege('adminmassemail'),
         'parent' => 'other',
         'other' => true,
         'other_system' => true,

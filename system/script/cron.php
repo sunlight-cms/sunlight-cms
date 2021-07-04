@@ -2,6 +2,7 @@
 
 use Sunlight\Core;
 use Sunlight\Extend;
+use Sunlight\Settings;
 use Sunlight\Util\Request;
 use Sunlight\Util\Response;
 
@@ -12,7 +13,7 @@ Core::init('../../', [
 
 /* --- autorizace --- */
 
-$auth = explode(':', Core::loadSetting('cron_auth'), 2);
+$auth = explode(':', Settings::get('cron_auth'), 2);
 if (
     count($auth) !== 2
     || Request::get('user') !== $auth[0]

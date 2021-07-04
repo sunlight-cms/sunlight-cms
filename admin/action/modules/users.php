@@ -17,7 +17,7 @@ $sysgroups_array = [_group_admin, _group_guests, _group_registered];
 $msg = 0;
 
 // vytvoreni skupiny
-if (isset($_POST['type']) && _priv_admingroups) {
+if (isset($_POST['type']) && User::hasPrivilege('admingroups')) {
     $type = (int) Request::post('type');
     if ($type == -1) {
         // prazdna skupina
@@ -32,7 +32,7 @@ if (isset($_POST['type']) && _priv_admingroups) {
         $source_group = DB::queryRow("SELECT * FROM " . _user_group_table . " WHERE id=" . $type);
         if ($source_group !== false) {
             $new_group = [];
-            $privilege_map = array_flip(User::listPrivileges());
+            $privilege_map = User::getPrivilegeMap();
 
             // sesbirani dat
             foreach ($source_group as $column => $val) {
@@ -41,7 +41,7 @@ if (isset($_POST['type']) && _priv_admingroups) {
                         continue 2;
 
                     case "level":
-                        $val = Math::range($val, 0, min(_priv_level - 1, _priv_max_assignable_level));
+                        $val = Math::range($val, 0, min(User::getLevel() - 1, _priv_max_assignable_level));
                         break;
                         
                     case "title":
@@ -69,7 +69,7 @@ if (isset($_POST['type']) && _priv_admingroups) {
 }
 
 // prepnuti uzivatele
-if (_super_admin_id == _user_id && isset($_POST['switch_user'])) {
+if (_super_admin_id == User::getId() && isset($_POST['switch_user'])) {
     $user = trim(Request::post('switch_user'));
     $query = DB::queryRow("SELECT id,password,email FROM " . _user_table . " WHERE username=" . DB::val($user));
 
@@ -86,7 +86,7 @@ if (_super_admin_id == _user_id && isset($_POST['switch_user'])) {
 /* ---  priprava promennych  --- */
 
 // vypis skupin
-if (_priv_admingroups) {
+if (User::hasPrivilege('admingroups')) {
     $groups = "<table class='list list-hover list-max'>
 <thead><tr><td>" . _lang('global.name') . "</td><td>" . _lang('admin.users.groups.level') . "</td><td>" . _lang('admin.users.groups.members') . "</td><td>" . _lang('global.action') . "</td></tr></thead>
 <tbody>";
@@ -144,7 +144,7 @@ $output .= $message . "
 <table class='two-columns'>
 <tr class='valign-top'>
 
-    " . (_priv_adminusers ? "
+    " . (User::hasPrivilege('adminusers') ? "
     <td>
     <h2>" . _lang('admin.users.users') . "</h2>
     <p>
@@ -170,7 +170,7 @@ $output .= $message . "
     <input class='button' type='submit' value='" . _lang('global.do') . "'>
     </form>
 
-    " . ((_super_admin_id == _user_id) ? "
+    " . ((_super_admin_id == User::getId()) ? "
 
     <form action='index.php?p=users' method='post'>
     <h3>" . _lang('admin.users.switchuser') . "</h3>
@@ -182,7 +182,7 @@ $output .= $message . "
   </td>
     " : '') . "
 
-    " . (_priv_admingroups ? "<td>
+    " . (User::hasPrivilege('admingroups') ? "<td>
     <h2>" . _lang('admin.users.groups') . "</h2>
     <form action='index.php?p=users' method='post'>
         <p class='bborder'><strong>" . _lang('admin.users.groups.new') . ":</strong> "

@@ -40,7 +40,7 @@ return function ($adresa = "", $predmet = null) {
     }
 
     // predvyplneni odesilatele
-    if (_logged_in) {
+    if (User::isLoggedIn()) {
         $sender = User::$data['email'];
     } else {
         $sender = "&#64;";

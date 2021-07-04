@@ -10,6 +10,7 @@ use Sunlight\Message;
 use Sunlight\Paginator;
 use Sunlight\Comment\Comment;
 use Sunlight\Router;
+use Sunlight\Settings;
 use Sunlight\User;
 use Sunlight\Util\Arr;
 use Sunlight\Util\Form;
@@ -20,12 +21,12 @@ use Sunlight\Xsrf;
 
 defined('_root') or exit;
 
-if (!_logged_in && _notpublicsite) {
+if (!User::isLoggedIn() && Settings::get('notpublicsite')) {
     $_index['type'] = _index_unauthorized;
     return;
 }
 
-if (!_search) {
+if (!Settings::get('search')) {
     $_index['type'] = _index_not_found;
     return;
 }
@@ -54,7 +55,7 @@ $output .= "
 <p class='bborder'>" . _lang('mod.search.p') . "</p>
 
 <form action='" . _e(Router::module('search')) . "' method='get' class='fullsearchform'>
-" . (!_pretty_urls ? Form::renderHiddenInputs(Arr::filterKeys($_GET, null, null, ['q', 'page', 'art', 'post', 'img'])) : '') . "
+" . (!Settings::get('pretty_urls') ? Form::renderHiddenInputs(Arr::filterKeys($_GET, null, null, ['q', 'page', 'art', 'post', 'img'])) : '') . "
 <p><input type='search' name='q' class='inputmedium' value='" . _e($search_query) . "'> <input type='submit' value='" . _lang('mod.search.submit') . "'></p>
 <p>
     " . _lang('mod.search.where') . ":
@@ -76,7 +77,7 @@ if ($search_query != '') {
         // priprava
         $search_query_sql = DB::esc('%' . $search_query . '%');
         $results = []; // polozka: array(link, titulek, perex)
-        $public = !_logged_in;
+        $public = !User::isLoggedIn();
 
         // funkce na skladani vyhledavaciho dotazu
         $searchQuery = function ($alias, $cols) {
@@ -99,7 +100,7 @@ if ($search_query != '') {
 
         // vyhledani stranek
         if ($page) {
-            $q = DB::query('SELECT id,title,slug,perex FROM ' . _page_table . ' WHERE level<=' . _priv_level . ' AND ' . ($public ? 'public=1 AND ' : '') . $searchQuery(null, ['title', 'slug', 'description', 'perex', 'content']) . ' LIMIT 50');
+            $q = DB::query('SELECT id,title,slug,perex FROM ' . _page_table . ' WHERE level<=' . User::getLevel() . ' AND ' . ($public ? 'public=1 AND ' : '') . $searchQuery(null, ['title', 'slug', 'description', 'perex', 'content']) . ' LIMIT 50');
             while($r = DB::row($q)) {
                 $results[] = [
                     Router::page($r['id'], $r['slug']),
@@ -147,18 +148,18 @@ if ($search_query != '') {
                         // komentar sekce / prispevek knihy
                     case _post_section_comment:
                     case _post_book_entry:
-                        $pagenum = Paginator::getItemPage(_commentsperpage, _comment_table, "id>" . $r['id'] . " AND type=" . $r['type'] . " AND xhome=-1 AND home=" . $r['home']);
+                        $pagenum = Paginator::getItemPage(Settings::get('commentsperpage'), _comment_table, "id>" . $r['id'] . " AND type=" . $r['type'] . " AND xhome=-1 AND home=" . $r['home']);
                         break;
 
                         // komentar clanku
                     case _post_article_comment:
-                        $pagenum = Paginator::getItemPage(_commentsperpage, _comment_table, "id>" . $r['id'] . " AND type=" . _post_article_comment . " AND xhome=-1 AND home=" . $r['home']);
+                        $pagenum = Paginator::getItemPage(Settings::get('commentsperpage'), _comment_table, "id>" . $r['id'] . " AND type=" . _post_article_comment . " AND xhome=-1 AND home=" . $r['home']);
                         break;
 
                         // prispevek na foru
                     case _post_forum_topic:
                         if ($r['xhome'] != -1) {
-                            $pagenum = Paginator::getItemPage(_commentsperpage, _comment_table, "id<" . $r['id'] . " AND type=" . _post_forum_topic . " AND xhome=" . $r['xhome'] . " AND home=" . $r['home']);
+                            $pagenum = Paginator::getItemPage(Settings::get('commentsperpage'), _comment_table, "id<" . $r['id'] . " AND type=" . _post_forum_topic . " AND xhome=" . $r['xhome'] . " AND home=" . $r['home']);
                         } else {
                             $post_anchor = false;
                         }
@@ -194,7 +195,7 @@ if ($search_query != '') {
             $sql .= ' JOIN ' . _page_table . ' AS gal ON(gal.id=img.home)';
 
             // podminky
-            $sql .= ' WHERE gal.level<=' . _priv_level . ' AND ';
+            $sql .= ' WHERE gal.level<=' . User::getLevel() . ' AND ';
             if ($public) {
                 $sql .= 'gal.public=1 AND ';
             }
@@ -203,11 +204,11 @@ if ($search_query != '') {
             // vykonani a nacteni vysledku
             $q = DB::query($sql . ' LIMIT 100');
             while ($r = DB::row($q)) {
-                $link = UrlHelper::appendParams(Router::page($r['home'], $r['slug']), 'page=' . Paginator::getItemPage($r['var2'] ?: _galdefault_per_page, _gallery_image_table, "ord<" . $r['ord'] . " AND home=" . $r['home']));
+                $link = UrlHelper::appendParams(Router::page($r['home'], $r['slug']), 'page=' . Paginator::getItemPage($r['var2'] ?: Settings::get('galdefault_per_page'), _gallery_image_table, "ord<" . $r['ord'] . " AND home=" . $r['home']));
                 $results[] = [
                     $link,
                     $r['gal_title'],
-                    (($r['title'] !== '') ? '<p>' . $r['title'] . '</p>' : '') . Gallery::renderImage($r, 'search', _galdefault_thumb_w, _galdefault_thumb_h)
+                    (($r['title'] !== '') ? '<p>' . $r['title'] . '</p>' : '') . Gallery::renderImage($r, 'search', Settings::get('galdefault_thumb_w'), Settings::get('galdefault_thumb_h'))
                 ];
             }
             DB::free($q);

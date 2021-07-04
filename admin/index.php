@@ -6,6 +6,8 @@ use Sunlight\Exception\PrivilegeException;
 use Sunlight\Extend;
 use Sunlight\GenericTemplates;
 use Sunlight\Router;
+use Sunlight\Settings;
+use Sunlight\User;
 use Sunlight\Util\Request;
 use Sunlight\Util\Response;
 use Sunlight\Xsrf;
@@ -22,7 +24,7 @@ $admin_extra_css = [];
 $admin_extra_js = [];
 $admin_login_layout = false;
 $admin_body_classes = [];
-$admin_access = (_logged_in && _priv_administration);
+$admin_access = (User::isLoggedIn() && User::hasPrivilege('administration'));
 $admin_current_module = Request::get('p', 'index');
 $admin_redirect_to = null;
 $admin_output = '';
@@ -64,7 +66,7 @@ if ($admin_login_layout) {
     $assets = Admin::themeAssets(0, false);
 } else {
     $theme_dark = Admin::themeIsDark();
-    $assets = Admin::themeAssets(_adminscheme, $theme_dark);
+    $assets = Admin::themeAssets(Settings::get('adminscheme'), $theme_dark);
 }
 
 if (!empty($admin_extra_css)) {
@@ -93,7 +95,7 @@ $admin_body_classes[] = $theme_dark ? 'dark' : 'light';
 
 ?>
 <meta name="robots" content="noindex,nofollow"><?= GenericTemplates::renderHeadAssets($assets), "\n" ?>
-<title><?= _title, ' - ', _lang('global.admintitle'), (!empty($admin_title) ? ' - ' . $admin_title : '') ?></title>
+<title><?= Settings::get('title'), ' - ', _lang('global.admintitle'), (!empty($admin_title) ? ' - ' . $admin_title : '') ?></title>
 </head>
 
 <body class="<?= implode(' ', $admin_body_classes) ?>">
@@ -105,7 +107,7 @@ $admin_body_classes[] = $theme_dark ? 'dark' : 'light';
             <div id="header">
                 <?= Admin::userMenu() ?>
                 <div id="title">
-                    <?= _title, ' - ', _lang('global.admintitle') ?>
+                    <?= Settings::get('title'), ' - ', _lang('global.admintitle') ?>
                 </div>
             </div>
 

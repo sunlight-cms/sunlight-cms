@@ -10,7 +10,7 @@ Core::init('../../');
 
 // priprava
 $login = (bool) Request::get('login');
-$allow_login = $login && !_logged_in;
+$allow_login = $login && !User::isLoggedIn();
 $login_message = null;
 $target = Request::get('target');
 $do_repeat = true;
@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' || empty($target)) {
 }
 
 // prihlaseni
-if ($valid && $login && !_logged_in) {
+if ($valid && $login && !User::isLoggedIn()) {
     $username = Request::post('login_username');
     $password = Request::post('login_password');
     $persistent = Form::loadCheckbox('login_persistent');

@@ -6,7 +6,9 @@ use Sunlight\GenericTemplates;
 use Sunlight\Plugin\TemplatePlugin;
 use Sunlight\Plugin\TemplateService;
 use Sunlight\Router;
+use Sunlight\Settings;
 use Sunlight\Template;
+use Sunlight\User;
 use Sunlight\Util\Html;
 use Sunlight\Util\Request;
 use Sunlight\Util\Response;
@@ -26,13 +28,13 @@ $_template = null;
 $_template_layout = null;
 
 // nacist vychozi motiv
-if (!Template::change(TemplateService::composeUid(_default_template, TemplatePlugin::DEFAULT_LAYOUT))) {
-    Core::updateSetting('default_template', 'default');
+if (!Template::change(TemplateService::composeUid(Settings::get('default_template'), TemplatePlugin::DEFAULT_LAYOUT))) {
+    Settings::update('default_template', 'default');
 
     Core::systemFailure(
         'Motiv "%s" nebyl nalezen.',
         'Template "%s" was not found.',
-        [_default_template]
+        [Settings::get('default_template')]
     );
 }
 
@@ -94,16 +96,16 @@ if (empty($_POST) || Xsrf::check()) {
 
         require _root . 'system/action/module.php';
 
-    } elseif (!_logged_in && _notpublicsite) {
+    } elseif (!User::isLoggedIn() && Settings::get('notpublicsite')) {
 
         // neverejne stranky
-        $_index['is_rewritten'] = _pretty_urls;
+        $_index['is_rewritten'] = Settings::get('pretty_urls');
         $_index['type'] = _index_unauthorized;
 
     } else do {
 
         // stranka / plugin
-        if (_pretty_urls && isset($_GET['_rwp'])) {
+        if (Settings::get('pretty_urls') && isset($_GET['_rwp'])) {
             // hezka adresa
             $_index['slug'] = Request::get('_rwp');
             $_index['is_rewritten'] = true;

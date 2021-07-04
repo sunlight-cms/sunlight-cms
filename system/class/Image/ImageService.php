@@ -3,6 +3,7 @@
 namespace Sunlight\Image;
 
 use Sunlight\Extend;
+use Sunlight\Settings;
 use Sunlight\Util\Arr;
 use Sunlight\Util\Filesystem;
 
@@ -62,7 +63,7 @@ final class ImageService
 
             // use existing thumbnail
             if (file_exists($thumbPath)) {
-                if (time() - filemtime($thumbPath) >= _thumb_touch_threshold) {
+                if (time() - filemtime($thumbPath) >= Settings::get('thumb_touch_threshold')) {
                     touch($thumbPath);
                 }
 

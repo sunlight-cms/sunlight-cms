@@ -5,6 +5,7 @@ use Sunlight\Core;
 use Sunlight\Email;
 use Sunlight\GenericTemplates;
 use Sunlight\IpLog;
+use Sunlight\Settings;
 use Sunlight\User;
 use Sunlight\Util\Response;
 use Sunlight\Util\Request;
@@ -39,7 +40,7 @@ if (IpLog::check(_iplog_anti_spam)) {
     IpLog::update(_iplog_anti_spam);
 } else {
     // prekroceno
-    echo _lang('misc.antispam_error', ['%antispamtimeout%' => _antispamtimeout]);
+    echo _lang('misc.antispam_error', ['%antispamtimeout%' => Settings::get('antispamtimeout')]);
     exit;
 }
 
@@ -62,7 +63,7 @@ if (Xsrf::check()) {
 
         // pridani informacniho textu do tela
         $info_ip = _user_ip;
-        if (_logged_in) {
+        if (User::isLoggedIn()) {
             $info_ip .= ' (' . User::getUsername() . ')';
         }
         $text .= "\n\n" . str_repeat('-', 16) . "\n" . _lang('hcm.mailform.info', [

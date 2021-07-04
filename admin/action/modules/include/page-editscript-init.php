@@ -5,6 +5,7 @@ use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\Page\PageManager;
 use Sunlight\Page\PageManipulator;
+use Sunlight\User;
 use Sunlight\Util\Request;
 
 defined('_root') or exit;
@@ -60,7 +61,7 @@ if (isset($_GET['id'])) {
     }
 
     // zkontrolovat opravneni pro tvorbu stranek
-    if (!_priv_adminpages) {
+    if (!User::hasPrivilege('adminpages')) {
         $continue = false;
         return;
     }

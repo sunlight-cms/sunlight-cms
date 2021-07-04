@@ -444,8 +444,8 @@ class ToolbarRenderer
      */
     private function renderLogin(): void
     {
-        if (_logged_in) {
-            $loginInfo = sprintf('level %d', _priv_level);
+        if (User::isLoggedIn()) {
+            $loginInfo = sprintf('level %d', User::getLevel());
             $loginName = User::getUsername();
         } else {
             $loginInfo = 'not logged in';

@@ -10,6 +10,7 @@ use Sunlight\Page\PageManager;
 use Sunlight\Plugin\TemplatePlugin;
 use Sunlight\Plugin\TemplateService;
 use Sunlight\Router;
+use Sunlight\Settings;
 use Sunlight\User;
 use Sunlight\Util\DateTime;
 use Sunlight\Util\StringManipulator;
@@ -57,15 +58,15 @@ abstract class Admin
     static function userMenu(): string
     {
         $output = '<span id="usermenu">';
-        if (_logged_in && _priv_administration) {
+        if (User::isLoggedIn() && User::hasPrivilege('administration')) {
             $profile_link = Router::module('profile', 'id=' . User::getUsername());
             $avatar = User::renderAvatar(User::$data, ['get_url' => true, 'default' => false]);
             if ($avatar !== null) {
                 $output .= '<a id="usermenu-avatar" href="' . _e($profile_link) . '"><img src="' . $avatar . '" alt="' . User::getUsername() . '"></a>';
             }
             $output .= '<a id="usermenu-username" href="' . _e($profile_link) . '">' . User::getDisplayName() . '</a> [';
-            if (_messages) {
-                $messages_count = DB::count(_pm_table, '(receiver=' . _user_id . ' AND receiver_deleted=0 AND receiver_readtime<update_time) OR (sender=' . _user_id . ' AND sender_deleted=0 AND sender_readtime<update_time)');
+            if (Settings::get('messages')) {
+                $messages_count = DB::count(_pm_table, '(receiver=' . User::getId() . ' AND receiver_deleted=0 AND receiver_readtime<update_time) OR (sender=' . User::getId() . ' AND sender_deleted=0 AND sender_readtime<update_time)');
                 if ($messages_count != 0) {
                     $messages_count = " <span class='highlight'>(" . $messages_count . ")</span>";
                 } else {
@@ -139,7 +140,7 @@ abstract class Admin
             $csep = "";
         }
 
-        return ((!_priv_adminallart) ? $csep . "{$alias}author=" . _user_id : $csep . "({$alias}author=" . _user_id . " OR (SELECT level FROM " . _user_group_table . " WHERE id=(SELECT group_id FROM " . _user_table . " WHERE id={$alias}author))<" . _priv_level . ")");
+        return (!User::hasPrivilege('adminallart') ? $csep . "{$alias}author=" . User::getId() : $csep . "({$alias}author=" . User::getId() . " OR (SELECT level FROM " . _user_group_table . " WHERE id=(SELECT group_id FROM " . _user_table . " WHERE id={$alias}author))<" . User::getLevel() . ")");
     }
 
     /**
@@ -153,11 +154,11 @@ abstract class Admin
         if ($alias !== '') {
             $alias .= '.';
         }
-        if (_priv_adminallart) {
-            return " AND (" . $alias . "author=" . _user_id . " OR (SELECT level FROM " . _user_group_table . " WHERE id=(SELECT group_id FROM " . _user_table . " WHERE id=" . (($alias === '') ? "" . _article_table . "." : $alias) . "author))<" . _priv_level . ")";
+        if (User::hasPrivilege('adminallart')) {
+            return " AND (" . $alias . "author=" . User::getId() . " OR (SELECT level FROM " . _user_group_table . " WHERE id=(SELECT group_id FROM " . _user_table . " WHERE id=" . (($alias === '') ? "" . _article_table . "." : $alias) . "author))<" . User::getLevel() . ")";
         }
 
-        return " AND " . $alias . "author=" . _user_id;
+        return " AND " . $alias . "author=" . User::getId();
     }
 
     /**
@@ -336,7 +337,7 @@ abstract class Admin
 
         if (!$groupmode) {
             while ($item = DB::row($query)) {
-                $users = DB::query("SELECT id,username,publicname FROM " . _user_table . " WHERE group_id=" . $item['id'] . " AND (" . $item['level'] . "<" . _priv_level . " OR id=" . _user_id . ") ORDER BY id");
+                $users = DB::query("SELECT id,username,publicname FROM " . _user_table . " WHERE group_id=" . $item['id'] . " AND (" . $item['level'] . "<" . User::getLevel() . " OR id=" . User::getId() . ") ORDER BY id");
                 if (DB::size($users) != 0) {
                     $output .= "<optgroup label='" . $item['title'] . "'>";
                     while ($user = DB::row($users)) {
@@ -517,12 +518,12 @@ abstract class Admin
      */
     static function themeIsDark(): bool
     {
-        if (_adminscheme_mode == 0) {
+        if (Settings::get('adminscheme_mode') == 0) {
             // vzdy svetle
             return false;
         }
 
-        if (_adminscheme_mode == 1) {
+        if (Settings::get('adminscheme_mode') == 1) {
             // vzdy tmave
             return true;
         }

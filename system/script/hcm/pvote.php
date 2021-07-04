@@ -4,6 +4,7 @@ use Sunlight\Core;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\IpLog;
+use Sunlight\User;
 use Sunlight\Util\Response;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
@@ -23,7 +24,7 @@ if (isset($_POST['pid'], $_POST['option']) && Xsrf::check()) {
     if ($query !== false) {
         $answers = explode("#", $query['answers']);
         $votes = explode("-", $query['votes']);
-        if (_priv_pollvote && $query['locked'] == 0 && IpLog::check(_iplog_poll_vote, $pid) && isset($votes[$option])) {
+        if (User::hasPrivilege('pollvote') && $query['locked'] == 0 && IpLog::check(_iplog_poll_vote, $pid) && isset($votes[$option])) {
             ++$votes[$option];
             $votes = implode("-", $votes);
             DB::update(_poll_table, 'id=' . $pid, ['votes' => $votes]);

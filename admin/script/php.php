@@ -4,6 +4,8 @@ use Sunlight\Admin\Admin;
 use Sunlight\Core;
 use Sunlight\GenericTemplates;
 use Sunlight\Router;
+use Sunlight\Settings;
+use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
 use Sunlight\Util\Response;
@@ -16,14 +18,14 @@ Core::init('../../', [
 
 /* ---  vystup  --- */
 
-if (!_priv_super_admin) {
+if (!User::isSuperAdmin()) {
     Response::redirect(Router::generate('admin/'));
     exit;
 }
 
 echo GenericTemplates::renderHead();
 
-$assets = Admin::themeAssets(_adminscheme, Admin::themeIsDark()) + ['extend_event' => null];
+$assets = Admin::themeAssets(Settings::get('adminscheme'), Admin::themeIsDark()) + ['extend_event' => null];
 
 echo GenericTemplates::renderHeadAssets($assets);
 

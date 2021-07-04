@@ -11,7 +11,7 @@ use Sunlight\Xsrf;
 
 defined('_root') or exit;
 
-if (!_logged_in) {
+if (!User::isLoggedIn()) {
     $_index['type'] = _index_unauthorized;
     return;
 }
@@ -33,7 +33,7 @@ if ($query !== false) {
     if ($query['sticky']) {
         $unstick = '2';
     }
-    if (!Comment::checkAccess($userQuery, $query) || !_priv_stickytopics) {
+    if (!Comment::checkAccess($userQuery, $query) || !User::hasPrivilege('stickytopics')) {
         $_index['type'] = _index_unauthorized;
         return;
     }

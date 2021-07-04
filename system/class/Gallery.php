@@ -86,8 +86,8 @@ class Gallery
                 'resize' => [
                     'mode' => ImageTransformer::RESIZE_FIT,
                     'keep_smaller' => true,
-                    'w' => _galuploadresize_w,
-                    'h' => _galuploadresize_h,
+                    'w' => Settings::get('galuploadresize_w'),
+                    'h' => Settings::get('galuploadresize_h'),
                 ],
                 'write' => ['jpg_quality' => 95],
                 'format' => $format,

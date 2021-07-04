@@ -1,7 +1,9 @@
 <?php
 
+use Sunlight\User;
+
 return function ($pro_prihlasene = "", $pro_neprihlasene = "") {
-    if (_logged_in) {
+    if (User::isLoggedIn()) {
         return $pro_prihlasene;
     }
 

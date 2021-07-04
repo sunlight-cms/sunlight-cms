@@ -43,7 +43,7 @@ abstract class GenericTemplates
             return $extend;
         }
 
-        return date(_time_format, $timestamp);
+        return date(Settings::get('time_format'), $timestamp);
     }
 
     /**
@@ -122,7 +122,7 @@ HTML;
     static function renderHeadAssets(array $assets): string
     {
         $html = '';
-        $cacheParam = '_' . _cacheid;
+        $cacheParam = '_' . Settings::get('cacheid');
 
         // vychozi hodnoty
         $assets += [

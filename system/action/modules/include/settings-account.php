@@ -7,6 +7,7 @@ use Sunlight\Extend;
 use Sunlight\Message;
 use Sunlight\Plugin\PluginManager;
 use Sunlight\Router;
+use Sunlight\Settings;
 use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Password;
@@ -31,12 +32,12 @@ if (isset($_POST['save'])) {
             break;
         }
 
-        if (!_priv_changeusername &&  mb_strtolower($username) !== mb_strtolower(User::getUsername())) {
+        if (!User::hasPrivilege('changeusername') &&  mb_strtolower($username) !== mb_strtolower(User::getUsername())) {
             $errors[] = _lang('mod.settings.account.username.case_error');
             break;
         }
 
-        if (!User::isNameAvailable($username, _user_id)) {
+        if (!User::isNameAvailable($username, User::getId())) {
             $errors[] = _lang('user.msg.userexists');
             break;
         }
@@ -61,7 +62,7 @@ if (isset($_POST['save'])) {
             break;
         }
 
-        if (!User::isNameAvailable($publicname, _user_id)) {
+        if (!User::isNameAvailable($publicname, User::getId())) {
             $errors[] = _lang('user.msg.publicnameexists');
             break;
         }
@@ -96,7 +97,7 @@ if (isset($_POST['save'])) {
     } while(false);
 
     // language
-    if (_language_allowcustom) {
+    if (Settings::get('language_allowcustom')) {
         $language = Request::post('language', '');
 
         if ($language === '' || !Core::$pluginManager->has(PluginManager::LANGUAGE, $language)) {
@@ -123,7 +124,7 @@ if (isset($_POST['save'])) {
     }
     
     // wysiwyg
-    if (_priv_administration) {
+    if (User::hasPrivilege('administration')) {
         $wysiwyg = Form::loadCheckbox('wysiwyg');
 
         if ($wysiwyg != User::$data['wysiwyg']) {
@@ -139,8 +140,8 @@ if (isset($_POST['save'])) {
 
     if (empty($errors)) {
         Extend::call('mod.settings.account.save', ['changeset' => &$changeset]);
-        DB::update(_user_table, 'id=' . _user_id, $changeset);
-        Extend::call('user.edit', ['id' => _user_id]);
+        DB::update(_user_table, 'id=' . User::getId(), $changeset);
+        Extend::call('user.edit', ['id' => User::getId()]);
 
         $_index['type'] = _index_redir;
         $_index['redirect_to'] = Router::module('settings', 'action=account&saved', true);
@@ -167,7 +168,7 @@ $output .= Form::render(
         [
             'label' => _lang('login.username'),
             'content' => '<input type="text" maxlength="24" class="inputsmall" autocomplete="username"' . Form::restorePostValueAndName('username', User::getUsername()) . '>'
-                . (_priv_changeusername ? '' : ' <span class="hint">(' . _lang('mod.settings.account.username.case_only') . ')</span>'),
+                . (User::hasPrivilege('changeusername') ? '' : ' <span class="hint">(' . _lang('mod.settings.account.username.case_only') . ')</span>'),
         ],
         [
             'label' => _lang('mod.settings.account.publicname'),
@@ -183,7 +184,7 @@ $output .= Form::render(
             'content' => '<input type="password" name="current_password" class="inputsmall" autocomplete="off">'
                 . ' <span class="hint">(' . _lang('mod.settings.account.current_password.hint') . ')</span>',
         ],
-        _language_allowcustom
+        Settings::get('language_allowcustom')
             ? [
                 'label' => _lang('global.language'),
                 'content' => '<select name="language" class="inputsmall">'
@@ -206,7 +207,7 @@ $output .= Form::render(
                 . _lang('mod.settings.account.massemail.label')
                 . '</label>',
         ],
-        _priv_administration
+        User::hasPrivilege('administration')
             ? [
                 'label' => _lang('mod.settings.account.wysiwyg'),
                 'content' => '<label>'

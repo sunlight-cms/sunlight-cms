@@ -6,6 +6,7 @@ use Sunlight\Email;
 use Sunlight\Extend;
 use Sunlight\Message;
 use Sunlight\Router;
+use Sunlight\Settings;
 use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Password;
@@ -28,7 +29,7 @@ if (isset($_GET['id'])) {
     if ($query !== false) {
 
         // test pristupu
-        if ($query['id'] != _user_id) {
+        if ($query['id'] != User::getId()) {
             if (User::checkLevel($query['id'], $query['group_level'])) {
                 if ($query['id'] != 0) {
                     $continue = true;
@@ -50,7 +51,7 @@ if (isset($_GET['id'])) {
     $id = null;
     $query = [
         'id' => '-1',
-        'group_id' => _defaultgroup,
+        'group_id' => Settings::get('defaultgroup'),
         'levelshift' => 0,
         'username' => '',
         'publicname' => null,
@@ -67,7 +68,7 @@ if (isset($_GET['id'])) {
 if ($continue) {
     
     // vyber skupiny
-    $group_select = Admin::userSelect('group_id', (isset($_POST['group_id']) ? (int) Request::post('group_id') : $query['group_id']), "id!=2 AND level<" . _priv_level, null, null, true);
+    $group_select = Admin::userSelect('group_id', (isset($_POST['group_id']) ? (int) Request::post('group_id') : $query['group_id']), "id!=2 AND level<" . User::getLevel(), null, null, true);
 
     /* ---  ulozeni  --- */
     if (isset($_POST['username'])) {
@@ -151,9 +152,9 @@ if ($continue) {
         // group
         if (isset($_POST['group_id'])) {
             $group = (int) Request::post('group_id');
-            $group_test = DB::queryRow("SELECT level FROM " . _user_group_table . " WHERE id=" . $group . " AND id!=2 AND level<" . _priv_level);
+            $group_test = DB::queryRow("SELECT level FROM " . _user_group_table . " WHERE id=" . $group . " AND id!=2 AND level<" . User::getLevel());
             if ($group_test !== false) {
-                if ($group_test['level'] > _priv_level) {
+                if ($group_test['level'] > User::getLevel()) {
                     $errors[] = _lang('global.badinput');
                 }
             } else {
@@ -164,7 +165,7 @@ if ($continue) {
         }
 
         // levelshift
-        if (_user_id == _super_admin_id) {
+        if (User::getId() == _super_admin_id) {
             $levelshift = Form::loadCheckbox('levelshift');
         } else {
             $levelshift = $query['levelshift'];
@@ -284,7 +285,7 @@ if ($continue) {
 
 <tr>
 <th>" . _lang('global.levelshift') . "</th>
-<td><input type='checkbox' name='levelshift' value='1'" . Form::activateCheckbox($query['levelshift'] || isset($_POST['levelshift'])) . Form::disableInputUnless(_user_id == _super_admin_id) . "></td>
+<td><input type='checkbox' name='levelshift' value='1'" . Form::activateCheckbox($query['levelshift'] || isset($_POST['levelshift'])) . Form::disableInputUnless(User::getId() == _super_admin_id) . "></td>
 </tr>
 
 <tr>

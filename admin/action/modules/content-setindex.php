@@ -1,8 +1,8 @@
 <?php
 
 use Sunlight\Admin\Admin;
-use Sunlight\Core;
 use Sunlight\Message;
+use Sunlight\Settings;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
 
@@ -15,11 +15,12 @@ $message = "";
 /* ---  akce  --- */
 
 if (isset($_POST['index'])) {
-    Core::updateSetting('index_page_id', ($index_id = (int) Request::post('index')));
+    $index_id = (int) Request::post('index');
+    Settings::update('index_page_id', $index_id);
     $message = Message::ok(_lang('global.done'));
 
 } else {
-    $index_id = _index_page_id;
+    $index_id = Settings::get('index_page_id');
 }
 
 /* ---  vystup  --- */

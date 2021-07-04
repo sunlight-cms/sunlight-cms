@@ -5,6 +5,7 @@ use Sunlight\Core;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\Message;
+use Sunlight\Settings;
 use Sunlight\User;
 use Sunlight\VersionChecker;
 
@@ -12,7 +13,7 @@ defined('_root') or exit;
 
 /* ---  priprava promennych  --- */
 
-$admin_index_cfg = Core::loadSettings([
+$admin_index_cfg = Settings::getMultiple([
     'admin_index_custom',
     'admin_index_custom_pos',
 ]);
@@ -87,9 +88,9 @@ $output .= "
     <tr>
       <th>PHP:</th>
       <td>
-        " . (_priv_super_admin ? '<a href="script/phpinfo.php" target="_blank">' : '') . "
+        " . (User::isSuperAdmin() ? '<a href="script/phpinfo.php" target="_blank">' : '') . "
         " . PHP_VERSION . "
-        " . (_priv_super_admin ? '</a>' :'') . "
+        " . (User::isSuperAdmin() ? '</a>' :'') . "
     </td>
     </tr>
     <tr>

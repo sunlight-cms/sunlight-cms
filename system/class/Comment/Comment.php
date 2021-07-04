@@ -5,6 +5,8 @@ namespace Sunlight\Comment;
 use Sunlight\Bbcode;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
+use Sunlight\Settings;
+use Sunlight\User;
 
 abstract class Comment
 {
@@ -18,7 +20,7 @@ abstract class Comment
     static function checkAccess(array $userQuery, array $post): bool
     {
         // uzivatel je prihlasen
-        if (_logged_in) {
+        if (User::isLoggedIn()) {
             // extend
             $access = Extend::fetch('posts.access', [
                 'post' => $post,
@@ -29,11 +31,11 @@ abstract class Comment
             }
 
             // je uzivatel autorem prispevku?
-            if ($post[$userQuery['prefix'] . 'id'] == _user_id && ($post['time'] + _postadmintime > time() || _priv_unlimitedpostaccess)) {
+            if ($post[$userQuery['prefix'] . 'id'] == User::getId() && ($post['time'] + Settings::get('postadmintime') > time() || User::hasPrivilege('unlimitedpostaccess'))) {
                 return true;
             }
 
-            if (_priv_adminposts && _priv_level > $post[$userQuery['prefix'] . 'group_level']) {
+            if (User::hasPrivilege('adminposts') && User::getLevel() > $post[$userQuery['prefix'] . 'group_level']) {
                 // uzivatel ma pravo spravovat cizi prispevky
                 return true;
             }
@@ -75,11 +77,11 @@ home_post.subject xhome_subject";
             $conditions[] = "{$alias}.home IN(" . DB::arr($homes) . ")";
         }
 
-        $conditions[] = "(home_page.id IS NULL OR " . (_logged_in ? '' : 'home_page.public=1 AND ') . "home_page.level<=" . _priv_level . ")
-AND (home_art.id IS NULL OR " . (_logged_in ? '' : 'home_art.public=1 AND ') . "home_art.time<=" . time() . " AND home_art.confirmed=1)
+        $conditions[] = "(home_page.id IS NULL OR " . (User::isLoggedIn() ? '' : 'home_page.public=1 AND ') . "home_page.level<=" . User::getLevel() . ")
+AND (home_art.id IS NULL OR " . (User::isLoggedIn() ? '' : 'home_art.public=1 AND ') . "home_art.time<=" . time() . " AND home_art.confirmed=1)
 AND ({$alias}.type!=" . _post_article_comment . " OR (
-    " . (_logged_in ? '' : '(home_cat1.public=1 OR home_cat2.public=1 OR home_cat3.public=1) AND') . "
-    (home_cat1.level<=" . _priv_level . " OR home_cat2.level<=" . _priv_level . " OR home_cat3.level<=" . _priv_level . ")
+    " . (User::isLoggedIn() ? '' : '(home_cat1.public=1 OR home_cat2.public=1 OR home_cat3.public=1) AND') . "
+    (home_cat1.level<=" . User::getLevel() . " OR home_cat2.level<=" . User::getLevel() . " OR home_cat3.level<=" . User::getLevel() . ")
 ))";
 
         // vlastni podminky
@@ -136,7 +138,7 @@ LEFT JOIN " . _comment_table . " home_post ON({$alias}.type=" . _post_forum_topi
         ]);
 
         // vyhodnoceni BBCode
-        if (_bbcode && $bbcode) {
+        if (Settings::get('bbcode') && $bbcode) {
             $input = Bbcode::parse($input);
         }
 

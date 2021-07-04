@@ -5,6 +5,7 @@ use Sunlight\Core;
 use Sunlight\Database\Database as DB;
 use Sunlight\Email;
 use Sunlight\Message;
+use Sunlight\Settings;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
@@ -140,7 +141,7 @@ $output .= "
 
 <tr>
 <th>" . _lang('admin.other.massemail.sender') . "</th>
-<td><input type='email'" . Form::restorePostValueAndName('sender', _sysmail) . " class='inputbig'></td>
+<td><input type='email'" . Form::restorePostValueAndName('sender', Settings::get('sysmail')) . " class='inputbig'></td>
 </tr>
 
 <tr>

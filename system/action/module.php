@@ -2,6 +2,7 @@
 
 use Sunlight\Extend;
 use Sunlight\Router;
+use Sunlight\Settings;
 use Sunlight\Util\StringManipulator;
 
 defined('_root') or exit;
@@ -9,7 +10,7 @@ defined('_root') or exit;
 $_index['url'] = Router::module($_index['slug'], $_url->getQueryString());
 
 // presmerovani na hezkou verzi adresy
-if (_pretty_urls && !$_index['is_rewritten']) {
+if (Settings::get('pretty_urls') && !$_index['is_rewritten']) {
     $_url->remove('m');
     $_index['type'] = _index_redir;
     $_index['redirect_to'] = Router::module($_index['slug'], $_url->getQueryString(), true);

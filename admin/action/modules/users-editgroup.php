@@ -27,7 +27,7 @@ if (isset($_GET['id'])) {
     $query = DB::queryRow("SELECT * FROM " . _user_group_table . " WHERE id=" . $id);
     if ($query !== false) {
         $systemitem = in_array($query['id'], $sysgroups_array);
-        if (_priv_level > $query['level']) {
+        if (User::getLevel() > $query['level']) {
             $continue = true;
         } else {
             $levelconflict = true;
@@ -190,7 +190,7 @@ if ($continue) {
 
         // uroven, blokovani
         if ($id > _group_guests) {
-            $changeset['level'] = Math::range((int) Request::post('level'), 0, min(_priv_level, _priv_max_assignable_level));
+            $changeset['level'] = Math::range((int) Request::post('level'), 0, min(User::getLevel(), _priv_max_assignable_level));
         }
 
         // prava
@@ -266,7 +266,7 @@ if ($continue) {
 
   <tr>
   <th>" . _lang('admin.users.groups.level') . "</th>
-  <td><input type='number' min='0' max='" . min(_priv_level -1, _priv_max_assignable_level) . "' name='level' class='inputmedium' value='" . $query['level'] . "'" . Form::disableInputUnless(!$systemitem) . "></td>
+  <td><input type='number' min='0' max='" . min(User::getLevel() -1, _priv_max_assignable_level) . "' name='level' class='inputmedium' value='" . $query['level'] . "'" . Form::disableInputUnless(!$systemitem) . "></td>
   </tr>
 
   " . (($id != _group_guests) ? "

@@ -104,7 +104,7 @@ abstract class Router
      */
     static function path(string $slug, bool $absolute = false): string
     {
-        if (_pretty_urls) {
+        if (Settings::get('pretty_urls')) {
             $path = $slug;
         } elseif ($slug !== '') {
             $path = 'index.php?p=' . $slug;
@@ -133,7 +133,7 @@ abstract class Router
 
         if ($segment !== null) {
             $slug .= '/' . $segment;
-        } elseif ($id == _index_page_id) {
+        } elseif ($id == Settings::get('index_page_id')) {
             $slug = '';
         }
 
@@ -230,14 +230,14 @@ abstract class Router
      */
     static function module(string $module, ?string $params = null, bool $absolute = false): string
     {
-        if (_pretty_urls) {
+        if (Settings::get('pretty_urls')) {
             $path = 'm/' . $module;
         } else {
             $path = 'index.php?m=' . $module;
         }
 
         if (!empty($params)) {
-            $path .= (_pretty_urls ? '?' : '&') . $params;
+            $path .= (Settings::get('pretty_urls') ? '?' : '&') . $params;
         }
 
         return self::generate($path, $absolute);

@@ -1,6 +1,7 @@
 <?php
 
 use Sunlight\Router;
+use Sunlight\Settings;
 use Sunlight\User;
 
 defined('_root') or exit;
@@ -12,15 +13,15 @@ $_index['title'] = _lang('login.title');
 $output .= User::renderLoginForm(true);
 
 // moznosti
-if (_logged_in) {
+if (User::isLoggedIn()) {
     $output .= "<h2>" . _lang('login.links') . "</h2>\n<ul>\n";
 
     // pole polozek (adresa, titulek, podminky pro zobrazeni)
     $items = [
-        [Router::generate('admin/'), _lang('global.admintitle'), _priv_administration],
+        [Router::generate('admin/'), _lang('global.admintitle'), User::hasPrivilege('administration')],
         [Router::module('profile', 'id=' . User::getUsername()), _lang('mod.profile'), true],
         [Router::module('settings'), _lang('mod.settings'), true],
-        [Router::module('messages'), _lang('mod.messages') . " [" . User::getUnreadPmCount() . "]", _messages],
+        [Router::module('messages'), _lang('mod.messages') . " [" . User::getUnreadPmCount() . "]", Settings::get('messages')],
     ];
 
     // vypis

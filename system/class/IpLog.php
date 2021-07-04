@@ -27,7 +27,7 @@ abstract class IpLog
         ];
         if ($type <= _iplog_password_reset_requested) {
             if (!$cleaned['system']) {
-                DB::query("DELETE FROM " . _iplog_table . " WHERE (type=1 AND " . time() . "-time>" . _maxloginexpire . ") OR (type=2 AND " . time() . "-time>" . _artreadexpire . ") OR (type=3 AND " . time() . "-time>" . _artrateexpire . ") OR (type=4 AND " . time() . "-time>" . _pollvoteexpire . ") OR (type=5 AND " . time() . "-time>" . _antispamtimeout . ") OR (type=6 AND " . time() . "-time>" . _accactexpire . ") OR (type=7 AND " . time() . "-time>" . _lostpassexpire . ")");
+                DB::query("DELETE FROM " . _iplog_table . " WHERE (type=1 AND " . time() . "-time>" . Settings::get('maxloginexpire') . ") OR (type=2 AND " . time() . "-time>" . Settings::get('artreadexpire') . ") OR (type=3 AND " . time() . "-time>" . Settings::get('artrateexpire') . ") OR (type=4 AND " . time() . "-time>" . Settings::get('pollvoteexpire') . ") OR (type=5 AND " . time() . "-time>" . Settings::get('antispamtimeout') . ") OR (type=6 AND " . time() . "-time>" . Settings::get('accactexpire') . ") OR (type=7 AND " . time() . "-time>" . Settings::get('lostpassexpire') . ")");
                 $cleaned['system'] = true;
             }
         } elseif (!isset($cleaned['custom'][$type])) {
@@ -46,7 +46,7 @@ abstract class IpLog
 
             case _iplog_failed_login_attempt:
                 $query = DB::queryRow($querybasic);
-                if ($query !== false && $query['var'] >= _maxloginattempts) {
+                if ($query !== false && $query['var'] >= Settings::get('maxloginattempts')) {
                     $result = false;
                 }
                 break;

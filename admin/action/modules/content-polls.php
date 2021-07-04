@@ -26,7 +26,7 @@ if (isset($_GET['del']) && Xsrf::check(true)) {
 /* ---  vystup  --- */
 
 // filtr autoru
-if (_priv_adminpollall && isset($_GET['author']) && Request::get('author') != -1) {
+if (User::hasPrivilege('adminpollall') && isset($_GET['author']) && Request::get('author') != -1) {
     $pasep = true;
     $author_filter_id = (int) Request::get('author');
     $author_filter = "p.author=" . (int) Request::get('author');
@@ -42,7 +42,7 @@ $output .= "
 ";
 
 // filtr
-if (_priv_adminpollall) {
+if (User::hasPrivilege('adminpollall')) {
     $output .= "
   <form class='cform' action='index.php' method='get'>
   <input type='hidden' name='p' value='content-polls'>
@@ -57,7 +57,7 @@ $output .= $paging['paging'];
 
 $output .= $message . "
 <table class='list list-hover list-max'>
-<thead><tr><td>" . _lang('admin.content.form.question') . "</td>" . (_priv_adminpollall ? "<td>" . _lang('article.author') . "</td>" : '') . "<td>" . _lang('global.id') . "</td><td>" . _lang('global.action') . "</td></tr></thead>
+<thead><tr><td>" . _lang('admin.content.form.question') . "</td>" . (User::hasPrivilege('adminpollall') ? "<td>" . _lang('article.author') . "</td>" : '') . "<td>" . _lang('global.id') . "</td><td>" . _lang('global.action') . "</td></tr></thead>
 <tbody>
 ";
 
@@ -66,7 +66,7 @@ $userQuery = User::createQuery('p.author');
 $query = DB::query("SELECT p.id,p.question,p.locked," . $userQuery['column_list'] . " FROM " . _poll_table . " p " . $userQuery['joins'] . " WHERE " . $author_filter . Admin::pollAccess($pasep) . " ORDER BY p.id DESC " . $paging['sql_limit']);
 if (DB::size($query) != 0) {
     while ($item = DB::row($query)) {
-        if (_priv_adminpollall) {
+        if (User::hasPrivilege('adminpollall')) {
             $username = "<td>" . Router::userFromQuery($userQuery, $item) . "</td>";
         } else {
             $username = "";
@@ -82,7 +82,7 @@ if (DB::size($query) != 0) {
             . "</tr>\n";
     }
 } else {
-    $output .= "<tr><td colspan='" . (_priv_adminpollall ? "4" : "3") . "'>" . _lang('global.nokit') . "</td></tr>";
+    $output .= "<tr><td colspan='" . (User::hasPrivilege('adminpollall') ? "4" : "3") . "'>" . _lang('global.nokit') . "</td></tr>";
 }
 
 $output .= "

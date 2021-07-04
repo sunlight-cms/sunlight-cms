@@ -15,6 +15,7 @@ use Kuria\Event\EventEmitter;
 use Kuria\RequestInfo\RequestInfo;
 use Kuria\Url\Url;
 use Sunlight\Database\Database as DB;
+use Sunlight\Database\DatabaseException;
 use Sunlight\Exception\CoreException;
 use Sunlight\Image\ImageService;
 use Sunlight\Localization\LocalizationDictionary;
@@ -105,7 +106,7 @@ abstract class Core
     static function init(string $root, array $options = []): void
     {
         if (self::$ready) {
-            throw new \LogicException('Cannot init multiple times');
+            throw new \LogicException('Already initialized');
         }
 
         self::$start = microtime(true);
@@ -162,7 +163,7 @@ abstract class Core
 
         // cron tasks
         Extend::reg('cron.maintenance', [__CLASS__, 'doMaintenance']);
-        if (_cron_auto && $options['allow_cron_auto']) {
+        if (Settings::get('cron_auto') && $options['allow_cron_auto']) {
             self::runCronTasks();
         }
     }
@@ -362,16 +363,9 @@ abstract class Core
      */
     private static function initSettings(): void
     {
-        // fetch from database
-        if (_env === self::ENV_ADMIN) {
-            $preloadCond = 'admin=1';
-        } else {
-            $preloadCond = 'web=1';
-        }
-
-        $query = DB::query('SELECT var,val,constant FROM ' . _setting_table . ' WHERE preload=1 AND ' . $preloadCond, true);
-
-        if (DB::error()) {
+        try {
+            Settings::init();
+        } catch (DatabaseException $e) {
             self::systemFailure(
                 'Připojení k databázi proběhlo úspěšně, ale dotaz na databázi selhal. Zkontrolujte, zda je databáze správně nainstalovaná.',
                 'Successfully connected to the database, but the database query has failed. Make sure the database is installed correctly.',
@@ -380,29 +374,14 @@ abstract class Core
             );
         }
 
-        $settings = DB::rows($query, 'var');
-        DB::free($query);
-
-        // event
-        Extend::call('core.settings', ['settings' => &$settings]);
-
-        // apply settings
-        foreach ($settings as $setting) {
-            if ($setting['constant']) {
-                define("_{$setting['var']}", $setting['val']);
-            } else {
-                self::$settings[$setting['var']] = $setting['val'];
-            }
-        }
-
         // define maintenance cron interval
-        self::$cronIntervals['maintenance'] = _maintenance_interval;
+        self::$cronIntervals['maintenance'] = Settings::get('maintenance_interval');
 
         // determine client IP address
         if (empty($_SERVER['REMOTE_ADDR'])) {
             $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
         }
-        if (_proxy_mode && isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        if (Settings::get('proxy_mode') && isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
             $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
         } else {
             $ip = $_SERVER['REMOTE_ADDR'];
@@ -416,7 +395,7 @@ abstract class Core
     private static function checkSystemState(): void
     {
         // check database version
-        if (!defined('_dbversion') || _dbversion !== self::VERSION) {
+        if (Settings::get('dbversion') !== self::VERSION) {
             self::systemFailure(
                 'Verze nainstalované databáze není kompatibilní s verzí systému.',
                 'Database version is not compatible with the current system version.'
@@ -424,7 +403,7 @@ abstract class Core
         }
 
         // installation check
-        if (_install_check) {
+        if (Settings::get('install_check')) {
             $systemChecker = new SystemChecker();
             $systemChecker->check();
 
@@ -437,7 +416,7 @@ abstract class Core
                 );
             }
 
-            self::updateSetting('install_check', 0);
+            Settings::update('install_check', '0');
         }
     }
 
@@ -520,187 +499,13 @@ abstract class Core
                 self::$sessionPreviousId = session_id();
                 session_regenerate_id(true);
             }
+
+            // init user
+            User::init();
         } else {
             // no session
             $_SESSION = [];
         }
-
-        // authorization process
-        $authorized = false;
-        $isPersistentLogin = false;
-        $errorCode = null;
-
-        if (self::$sessionEnabled) do {
-            $userData = null;
-            $loginDataExist = isset($_SESSION['user_id'], $_SESSION['user_auth']);
-
-            // check persistent login cookie if there are no login data
-            if (!$loginDataExist) {
-                // check cookie existence
-                $persistentCookieName = self::$appId . '_persistent_key';
-                if (isset($_COOKIE[$persistentCookieName]) && is_string($_COOKIE[$persistentCookieName])) {
-                    // cookie authorization process
-                    do {
-                        // parse cookie
-                        $cookie = explode('$', $_COOKIE[$persistentCookieName], 2);
-                        if (count($cookie) !== 2) {
-                            // invalid cookie format
-                            $errorCode = 1;
-                            break;
-                        }
-                        $cookie = [
-                            'id' => (int) $cookie[0],
-                            'hash' => $cookie[1],
-                        ];
-
-                        // fetch user data
-                        $userData = DB::queryRow('SELECT * FROM ' . _user_table . ' WHERE id=' . DB::val($cookie['id']));
-                        if ($userData === false) {
-                            // user not found
-                            $errorCode = 2;
-                            break;
-                        }
-
-                        // check failed login attempt limit
-                        if (!IpLog::check(_iplog_failed_login_attempt)) {
-                            // limit exceeded
-                            $errorCode = 3;
-                            break;
-                        }
-
-                        $validHash = User::getPersistentLoginHash($cookie['id'], User::getAuthHash($userData['password']), $userData['email']);
-                        if ($validHash !== $cookie['hash']) {
-                            // invalid hash
-                            IpLog::update(_iplog_failed_login_attempt);
-                            $errorCode = 4;
-                            break;
-                        }
-
-                        // all is well! use cookie data to login the user
-                        User::login($cookie['id'], $userData['password'], $userData['email']);
-                        $loginDataExist = true;
-                        $isPersistentLogin = true;
-                    } while (false);
-
-                    // check result
-                    if ($errorCode !== null) {
-                        // cookie authoriation has failed, remove the cookie
-                        setcookie(self::$appId . '_persistent_key', '', (time() - 3600), '/');
-                        break;
-                    }
-                }
-            }
-
-            // check whether login data exist
-            if (!$loginDataExist) {
-                // no login data - user is not logged in
-                $errorCode = 5;
-                break;
-            }
-
-            // fetch user data
-            if (!$userData) {
-                $userData = DB::queryRow('SELECT * FROM ' . _user_table . ' WHERE id=' . DB::val($_SESSION['user_id']));
-                if ($userData === false) {
-                    // user not found
-                    $errorCode = 6;
-                    break;
-                }
-            }
-
-            // check user authentication hash
-            if ($_SESSION['user_auth'] !== User::getAuthHash($userData['password'])) {
-                // neplatny hash
-                $errorCode = 7;
-                break;
-            }
-
-            // check user account's status
-            if ($userData['blocked']) {
-                // account is blocked
-                $errorCode = 8;
-                break;
-            }
-
-            // fetch group data
-            $groupData = DB::queryRow('SELECT * FROM ' . _user_group_table . ' WHERE id=' . DB::val($userData['group_id']));
-            if ($groupData === false) {
-                // group data not found
-                $errorCode = 9;
-                break;
-            }
-
-            // check group status
-            if ($groupData['blocked']) {
-                // group is blocked
-                $errorCode = 10;
-                break;
-            }
-
-            // all is well! user is authorized
-            $authorized = true;
-        } while (false);
-
-        // process login
-        if ($authorized) {
-            // increase level for super users
-            if ($userData['levelshift']) {
-                ++$groupData['level'];
-            }
-
-            // record activity time (max once per 30 seconds)
-            if (time() - $userData['activitytime'] > 30) {
-                DB::update(_user_table, 'id=' . DB::val($userData['id']), [
-                    'activitytime' => time(),
-                    'ip' => _user_ip,
-                ]);
-            }
-
-            // event
-            Extend::call('user.auth.success', [
-                'user' => &$userData,
-                'group' => &$groupData,
-                'persistent_session' => $isPersistentLogin,
-            ]);
-
-            // set variables
-            User::$data = $userData;
-            User::$group = $groupData;
-        } else {
-            // anonymous user
-            $userData = [
-                'id' => -1,
-                'username' => '',
-                'publicname' => null,
-                'email' => '',
-                'levelshift' => false,
-            ];
-
-            // fetch anonymous group data
-            $groupData = DB::queryRow('SELECT * FROM ' . _user_group_table . ' WHERE id=' . _group_guests);
-            if ($groupData === false) {
-                throw new \RuntimeException(sprintf('Anonymous user group was not found (id=%s)', _group_guests));
-            }
-
-            // event
-            Extend::call('user.auth.failure', [
-                'error_code' => $errorCode,
-                'user' => &$userData,
-                'group' => &$groupData,
-            ]);
-
-            User::$group = $groupData;
-        }
-
-        // define constants
-        define('_logged_in', $authorized);
-        define('_user_id', $userData['id']);
-
-        foreach(User::listPrivileges() as $item) {
-            define('_priv_' . $item, $groupData[$item]);
-        }
-
-        define('_priv_super_admin', $userData['levelshift'] && $groupData['id'] == _group_admin);
     }
 
     /**
@@ -709,11 +514,11 @@ abstract class Core
     private static function initLocalization(): void
     {
         // language choice
-        if (_logged_in && _language_allowcustom && User::$data['language'] !== '') {
+        if (User::isLoggedIn() && Settings::get('language_allowcustom') && User::$data['language'] !== '') {
             $language = User::$data['language'];
             $usedLoginLanguage = true;
         } else {
-            $language = self::$settings['language'];
+            $language = Settings::get('language');
             $usedLoginLanguage = false;
         }
 
@@ -734,9 +539,9 @@ abstract class Core
         } else {
             // language plugin was not found
             if ($usedLoginLanguage) {
-                DB::update(_user_table, 'id=' . _user_id, ['language' => '']);
+                DB::update(_user_table, 'id=' . User::getId(), ['language' => '']);
             } else {
-                self::updateSetting('language', self::$fallbackLang);
+                Settings::update('language', self::$fallbackLang);
             }
 
             self::systemFailure(
@@ -757,12 +562,11 @@ abstract class Core
         $cronNow = time();
         $cronUpdate = false;
         $cronLockFileHandle = null;
-        if (self::$settings['cron_times']) {
-            $cronTimes = unserialize(self::$settings['cron_times']);
+        $cronTimes = Settings::get('cron_times');
+
+        if ($cronTimes !== '') {
+            $cronTimes = unserialize($cronTimes);
         } else {
-            $cronTimes = false;
-        }
-        if ($cronTimes === false) {
             $cronTimes = [];
             $cronUpdate = true;
         }
@@ -815,7 +619,7 @@ abstract class Core
             }
 
             // save
-            self::updateSetting('cron_times', serialize($cronTimes));
+            Settings::update('cron_times', serialize($cronTimes));
         }
 
         // free lock file
@@ -863,7 +667,7 @@ abstract class Core
     static function doMaintenance(): void
     {
         // clean thumbnails
-        ImageService::cleanThumbnails(_thumb_cleanup_threshold);
+        ImageService::cleanThumbnails(Settings::get('thumb_cleanup_threshold'));
 
         // remove old files in the temporary directory
         Filesystem::purgeDirectory(_root . 'system/tmp', [
@@ -880,70 +684,6 @@ abstract class Core
 
         // check version
         VersionChecker::check();
-    }
-
-    /**
-     * Load a single setting directive
-     *
-     * @param string $name
-     * @param mixed  $default
-     * @return mixed
-     */
-    static function loadSetting(string $name, $default = null)
-    {
-        $result = DB::queryRow('SELECT val FROM ' . _setting_table . ' WHERE var=' . DB::val($name));
-        if ($result !== false) {
-            return $result['val'];
-        }
-
-        return $default;
-    }
-
-    /**
-     * Load multiple setting directives
-     *
-     * @param string|string[] $names
-     * @return array
-     */
-    static function loadSettings(array $names): array
-    {
-        $names = (array) $names;
-
-        $settings = [];
-        $query = DB::query('SELECT var,val FROM ' . _setting_table . ' WHERE var IN(' . DB::arr($names) . ')');
-        while ($row = DB::row($query)) {
-            $settings[$row['var']] = $row['val'];
-        }
-
-        return $settings;
-    }
-
-    /**
-     * Load setting directives by type
-     *
-     * @param string|null $type
-     * @return array
-     */
-    static function loadSettingsByType(?string $type): array
-    {
-        $settings = [];
-        $query = DB::query('SELECT var,val FROM ' . _setting_table . ' WHERE type' . ($type === null ? ' IS NULL' : '=' . DB::val($type)));
-        while ($row = DB::row($query)) {
-            $settings[$row['var']] = $row['val'];
-        }
-
-        return $settings;
-    }
-
-    /**
-     * Update setting directive value
-     *
-     * @param string $name
-     * @param string $newValue
-     */
-    static function updateSetting(string $name, string $newValue): void
-    {
-        DB::update(_setting_table, 'var=' . DB::val($name), ['val' => $newValue]);
     }
 
     /**
@@ -971,7 +711,7 @@ abstract class Core
                 'loading' => _lang('javascript.loading'),
             ],
             'settings' => [
-                'atReplace' => _atreplace,
+                'atReplace' => Settings::get('atreplace'),
             ],
         ];
         if (!empty($customVariables)) {

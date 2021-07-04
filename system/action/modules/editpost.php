@@ -10,6 +10,7 @@ use Sunlight\Paginator;
 use Sunlight\Comment\Comment;
 use Sunlight\PostForm;
 use Sunlight\Router;
+use Sunlight\Settings;
 use Sunlight\Template;
 use Sunlight\User;
 use Sunlight\Util\Form;
@@ -20,7 +21,7 @@ use Sunlight\Util\UrlHelper;
 
 defined('_root') or exit;
 
-if (!_logged_in) {
+if (!User::isLoggedIn()) {
     $_index['type'] = _index_unauthorized;
     return;
 }
@@ -50,15 +51,15 @@ if ($query !== false) {
 
             switch ($query['type']) {
                 case _post_section_comment:
-                    $_index['backlink'] = UrlHelper::appendParams($url, "page=" . Paginator::getItemPage(_commentsperpage, _comment_table, "id>" . $query['id'] . " AND type=" . _post_section_comment . " AND xhome=-1 AND home=" . $query['home'])) . "#post-" . $query['id'];
+                    $_index['backlink'] = UrlHelper::appendParams($url, "page=" . Paginator::getItemPage(Settings::get('commentsperpage'), _comment_table, "id>" . $query['id'] . " AND type=" . _post_section_comment . " AND xhome=-1 AND home=" . $query['home'])) . "#post-" . $query['id'];
                     break;
                 case _post_article_comment:
-                    $_index['backlink'] = UrlHelper::appendParams($url, "page=" . Paginator::getItemPage(_commentsperpage, _comment_table, "id>" . $query['id'] . " AND type=" . _post_article_comment . " AND xhome=-1 AND home=" . $query['home'])) . "#post-" . $query['id'];
+                    $_index['backlink'] = UrlHelper::appendParams($url, "page=" . Paginator::getItemPage(Settings::get('commentsperpage'), _comment_table, "id>" . $query['id'] . " AND type=" . _post_article_comment . " AND xhome=-1 AND home=" . $query['home'])) . "#post-" . $query['id'];
                     break;
                 case _post_book_entry:
                     $postsperpage = DB::queryRow("SELECT var2 FROM " . _page_table . " WHERE id=" . $query['home']);
                     if ($postsperpage['var2'] === null) {
-                        $postsperpage['var2'] = _commentsperpage;
+                        $postsperpage['var2'] = Settings::get('commentsperpage');
                     }
                     $_index['backlink'] = UrlHelper::appendParams($url, "page=" . Paginator::getItemPage($postsperpage['var2'], _comment_table, "id>" . $query['id'] . " AND type=" . _post_book_entry . " AND xhome=-1 AND home=" . $query['home'])) . "#post-" . $query['id'];
                     break;
@@ -73,12 +74,12 @@ if ($query !== false) {
                             $_index['backlink'] = Router::page($query['home'], $query['page_slug']);
                         }
                     } else {
-                        $_index['backlink'] = UrlHelper::appendParams($url, "page=" . Paginator::getItemPage(_commentsperpage, _comment_table, "id<" . $query['id'] . " AND type=" . _post_forum_topic . " AND xhome=" . $query['xhome'] . " AND home=" . $query['home'])) . "#post-" . $query['id'];
+                        $_index['backlink'] = UrlHelper::appendParams($url, "page=" . Paginator::getItemPage(Settings::get('commentsperpage'), _comment_table, "id<" . $query['id'] . " AND type=" . _post_forum_topic . " AND xhome=" . $query['xhome'] . " AND home=" . $query['home'])) . "#post-" . $query['id'];
                     }
                     break;
 
                 case _post_pm:
-                    $_index['backlink'] = UrlHelper::appendParams($url, 'page=' . Paginator::getItemPage(_messagesperpage, _comment_table, 'id<' . $query['id'] . ' AND type=' . _post_pm . ' AND home=' . $query['home'])) . '#post-' . $query['id'];
+                    $_index['backlink'] = UrlHelper::appendParams($url, 'page=' . Paginator::getItemPage(Settings::get('messagesperpage'), _comment_table, 'id<' . $query['id'] . ' AND type=' . _post_pm . ' AND home=' . $query['home'])) . '#post-' . $query['id'];
                     break;
 
                 case _post_plugin:

@@ -5,6 +5,7 @@ use Sunlight\Article;
 use Sunlight\Database\Database as DB;
 use Sunlight\Message;
 use Sunlight\Router;
+use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
@@ -45,7 +46,7 @@ if (isset($_POST['category'])) {
     $new_author = (int) Request::post('new_author');
     $new_public = (int) Request::post('new_public');
     $new_visible = (int) Request::post('new_visible');
-    if (_priv_adminconfirm) {
+    if (User::hasPrivilege('adminconfirm')) {
         $new_confirmed = (int) Request::post('new_confirmed');
     }
     $new_comments = (int) Request::post('new_comments');
@@ -150,7 +151,7 @@ if (isset($_POST['category'])) {
             $infopage = true;
         } else {
             $boolparams = ["public", "visible", "comments", "rateon", "showinfo"];
-            if (_priv_adminconfirm) {
+            if (User::hasPrivilege('adminconfirm')) {
                 $boolparams[] = "confirmed";
             }
             while ($item = DB::row($query)) {
@@ -287,7 +288,7 @@ if (!$infopage) {
 <td>
 " . $boolSelect("new_public", true) . _lang('admin.content.form.public') . "<br>
 " . $boolSelect("new_visible", true) . _lang('admin.content.form.visible') . "<br>
-" . (_priv_adminconfirm ? $boolSelect("new_confirmed", true) . _lang('admin.content.form.confirmed') . "<br>" : '') . "
+" . (User::hasPrivilege('adminconfirm') ? $boolSelect("new_confirmed", true) . _lang('admin.content.form.confirmed') . "<br>" : '') . "
 " . $boolSelect("new_comments", true) . _lang('admin.content.form.comments') . "<br>
 " . $boolSelect("new_rateon", true) . _lang('admin.content.form.artrate') . "<br>
 " . $boolSelect("new_showinfo", true) . _lang('admin.content.form.showinfo') . "

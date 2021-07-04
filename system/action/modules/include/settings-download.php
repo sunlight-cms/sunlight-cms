@@ -3,6 +3,7 @@
 use Sunlight\Extend;
 use Sunlight\IpLog;
 use Sunlight\Message;
+use Sunlight\Settings;
 use Sunlight\User;
 use Sunlight\UserData;
 use Sunlight\Util\Form;
@@ -23,7 +24,7 @@ if (isset($_POST['download'])) {
 
     // antispam
     if (!IpLog::check(_iplog_anti_spam)) {
-        $errors[] = _lang('misc.antispam_error', ["%antispamtimeout%" => _antispamtimeout]);
+        $errors[] = _lang('misc.antispam_error', ["%antispamtimeout%" => Settings::get('antispamtimeout')]);
     }
 
     // process
@@ -34,7 +35,7 @@ if (isset($_POST['download'])) {
 
     if (empty($errors)) {
         IpLog::update(_iplog_anti_spam);
-        $tmpFile = (new UserData(_user_id, $options))->generate();
+        $tmpFile = (new UserData(User::getId(), $options))->generate();
         Response::downloadFile($tmpFile->getPathname(), sprintf('%s-%s.zip', User::getUsername(), date('Y-m-d')));
         $tmpFile->discard();
 

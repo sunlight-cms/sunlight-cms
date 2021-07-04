@@ -3,6 +3,7 @@
 use Sunlight\Extend;
 use Sunlight\Page\PageManager;
 use Sunlight\Router;
+use Sunlight\Settings;
 use Sunlight\Template;
 use Sunlight\User;
 use Sunlight\Util\ArgList;
@@ -23,7 +24,7 @@ $_index['url'] = Router::page($_page['id'], $_index['slug']);
 $_index['body_classes'][] = 't-page';
 if ($_index['slug'] !== null) {
     $_index['body_classes'][] = 'p-' . StringManipulator::slugify($_index['slug'], true, '_');
-} elseif ($_page['id'] == _index_page_id) {
+} elseif ($_page['id'] == Settings::get('index_page_id')) {
     $_index['body_classes'][] = 'homepage';
 }
 
@@ -45,11 +46,11 @@ if ($_page['layout'] !== null) {
 
 // kontrola typu pristupu k hlavni strane
 if (
-    $_page['id'] == _index_page_id
+    $_page['id'] == Settings::get('index_page_id')
     && !empty($segments)
     && $segment === null
 ) {
-    if (!_pretty_urls) {
+    if (!Settings::get('pretty_urls')) {
         $_url->remove('p');
     }
 
@@ -84,7 +85,7 @@ if ($segment !== null) {
 }
 
 // presmerovani na hezkou adresu
-if (_pretty_urls && !$_index['is_rewritten'] && !empty($segments)) {
+if (Settings::get('pretty_urls') && !$_index['is_rewritten'] && !empty($segments)) {
     $_index['type'] = _index_redir;
     $_index['redirect_to'] = $_index['url'];
     $_index['redirect_to_permanent'] = true;

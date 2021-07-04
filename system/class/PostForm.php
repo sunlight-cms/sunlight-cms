@@ -19,7 +19,7 @@ abstract class PostForm
         $output = '';
 
         // bbcode
-        if ($bbcode && _bbcode && $template->getOption('bbcode.buttons')) {
+        if ($bbcode && Settings::get('bbcode') && $template->getOption('bbcode.buttons')) {
             // nacteni tagu
             $bbtags = Bbcode::getTags();
 

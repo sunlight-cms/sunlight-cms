@@ -10,6 +10,7 @@ use Sunlight\Message;
 use Sunlight\Paginator;
 use Sunlight\PostForm;
 use Sunlight\Router;
+use Sunlight\Settings;
 use Sunlight\Template;
 use Sunlight\User;
 use Sunlight\Util\Form;
@@ -139,8 +140,8 @@ class CommentService
                 $title = _lang('posts.comments');
                 $addlink = _lang('posts.addcomment');
                 $nopostsmessage = _lang('posts.nocomments');
-                $postsperpage = _commentsperpage;
-                $canpost = _priv_postcomments;
+                $postsperpage = Settings::get('commentsperpage');
+                $canpost = User::hasPrivilege('postcomments');
                 $locked = (bool) $vars;
                 $replynote = true;
                 break;
@@ -152,8 +153,8 @@ class CommentService
                 $title = _lang('posts.comments');
                 $addlink = _lang('posts.addcomment');
                 $nopostsmessage = _lang('posts.nocomments');
-                $postsperpage = _commentsperpage;
-                $canpost = _priv_postcomments;
+                $postsperpage = Settings::get('commentsperpage');
+                $canpost = User::hasPrivilege('postcomments');
                 $locked = (bool) $vars;
                 $replynote = true;
                 break;
@@ -213,7 +214,7 @@ class CommentService
                 $title = null;
                 $addlink = _lang('posts.addanswer');
                 $nopostsmessage = _lang('posts.noanswers');
-                $postsperpage = _messagesperpage;
+                $postsperpage = Settings::get('messagesperpage');
                 $canpost = true;
                 $locked = (bool) $vars[0];
                 $unread_count = (int) $vars[1];
@@ -305,7 +306,7 @@ class CommentService
                     $form_output .= Message::ok(_lang((($style != 5) ? 'posts.added' : 'posts.topicadded')));
                     break;
                 case 2:
-                    $form_output .= Message::warning(_lang('misc.antispam_error', ["%antispamtimeout%" => _antispamtimeout]));
+                    $form_output .= Message::warning(_lang('misc.antispam_error', ["%antispamtimeout%" => Settings::get('antispamtimeout')]));
                     break;
                 case 3:
                     $form_output .= Message::warning(_lang('posts.guestnamedenied'));
@@ -519,12 +520,12 @@ class CommentService
                     if ($item['sticky']) $icon = 'sticky';
                     elseif ($item['locked']) $icon = 'locked';
                     elseif ($item['answer_count'] == 0) $icon = 'new';
-                    elseif ($item['answer_count'] < _topic_hot_ratio) $icon = 'normal';
+                    elseif ($item['answer_count'] < Settings::get('topic_hot_ratio')) $icon = 'normal';
                     else $icon = 'hot';
 
                     // mini pager
                     $tpages = '';
-                    $tpages_num = ceil($item['answer_count'] / _commentsperpage);
+                    $tpages_num = ceil($item['answer_count'] / Settings::get('commentsperpage'));
                     if ($tpages_num == 0) $tpages_num = 1;
                     if ($tpages_num > 1) {
                         $tpages .= '<span class=\'topic-pages\'>';
@@ -552,7 +553,7 @@ class CommentService
 
                 // latest answers
                 $output .= "\n<div class='post-answer-list'>\n<h3>" . _lang('posts.forum.lastact') . "</h3>\n";
-                $query = DB::query("SELECT topic.id AS topic_id,topic.subject AS topic_subject,p.author,p.guest,p.time," . $userQuery['column_list'] . " FROM " . _comment_table . " AS p JOIN " . _comment_table . " AS topic ON(topic.type=" . _post_forum_topic . " AND topic.id=p.xhome) " . $userQuery['joins'] . " WHERE p.type=" . _post_forum_topic . " AND p.home=" . $home . " AND p.xhome!=-1 ORDER BY p.id DESC LIMIT " . _extratopicslimit);
+                $query = DB::query("SELECT topic.id AS topic_id,topic.subject AS topic_subject,p.author,p.guest,p.time," . $userQuery['column_list'] . " FROM " . _comment_table . " AS p JOIN " . _comment_table . " AS topic ON(topic.type=" . _post_forum_topic . " AND topic.id=p.xhome) " . $userQuery['joins'] . " WHERE p.type=" . _post_forum_topic . " AND p.home=" . $home . " AND p.xhome!=-1 ORDER BY p.id DESC LIMIT " . Settings::get('extratopicslimit'));
                 if (DB::size($query) != 0) {
                     $output .= "<table class='topic-latest'>\n";
                     while ($item = DB::row($query)) {
@@ -607,7 +608,7 @@ class CommentService
 
         $captcha = Captcha::init();
         $output = GenericTemplates::jsLimitLength(16384, "postform", "text");
-        if (!_logged_in) {
+        if (!User::isLoggedIn()) {
             $inputs[] = ['label' => _lang('posts.guestname'), 'content' => "<input type='text' name='guest' maxlength='24' class='inputsmall'" . Form::restoreValue($_SESSION, 'post_form_guest') . ">"];
         }
         if ($vars['xhome'] == -1 && $vars['subject']) {
@@ -677,7 +678,7 @@ class CommentService
         $actlinks = array_merge($actlinks, $options['extra_actions']);
 
         // avatar
-        if (_show_avatars) {
+        if (Settings::get('show_avatars')) {
             $avatar = User::renderAvatarFromQuery($userQuery, $post);
         } else {
             $avatar = null;

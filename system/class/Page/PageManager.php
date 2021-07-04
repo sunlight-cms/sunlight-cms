@@ -9,6 +9,7 @@ use Sunlight\Database\TreeManager;
 use Sunlight\Database\TreeReader;
 use Sunlight\Database\TreeReaderOptions;
 use Sunlight\Extend;
+use Sunlight\Settings;
 
 abstract class PageManager
 {
@@ -63,7 +64,7 @@ abstract class PageManager
             }
             $conds[] = 'page.slug IN(' . DB::arr($slugs) . ')';
         } else {
-            $indexPageId = Extend::fetch('page.find.index', [], _index_page_id);
+            $indexPageId = Extend::fetch('page.find.index', [], Settings::get('index_page_id'));
             $conds[] = 'page.id=' . DB::val($indexPageId);
         }
 

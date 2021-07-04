@@ -2,7 +2,6 @@
 
 namespace Sunlight\Backup;
 
-use Kuria\Options\Error\Error;
 use Kuria\Options\Exception\ResolverException;
 use Kuria\Options\Option;
 use Kuria\Options\Resolver;

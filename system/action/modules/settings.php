@@ -2,11 +2,12 @@
 
 use Sunlight\Extend;
 use Sunlight\Router;
+use Sunlight\User;
 use Sunlight\Util\Request;
 
 defined('_root') or exit;
 
-if (!_logged_in) {
+if (!User::isLoggedIn()) {
     $_index['type'] = _index_unauthorized;
     return;
 }
@@ -20,7 +21,7 @@ $actions = [
     'download' => ['title' => _lang('mod.settings.download'), 'script' => __DIR__ . '/include/settings-download.php'],
 ];
 
-if (_priv_selfremove) {
+if (User::hasPrivilege('selfremove')) {
     $actions['remove'] = ['title' => _lang('mod.settings.remove'), 'script' => __DIR__ . '/include/settings-remove.php'];
 }
 

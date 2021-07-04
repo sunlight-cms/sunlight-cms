@@ -5,21 +5,22 @@ use Sunlight\Extend;
 use Sunlight\Gallery;
 use Sunlight\Hcm;
 use Sunlight\Paginator;
+use Sunlight\Settings;
 
 defined('_root') or exit;
 
 // vychozi nastaveni
 if ($_page['var1'] === null) {
-    $_page['var1'] = _galdefault_per_row;
+    $_page['var1'] = Settings::get('galdefault_per_row');
 }
 if ($_page['var2'] === null) {
-    $_page['var2'] = _galdefault_per_page;
+    $_page['var2'] = Settings::get('galdefault_per_page');
 }
 if ($_page['var3'] === null) {
-    $_page['var3'] = _galdefault_thumb_h;
+    $_page['var3'] = Settings::get('galdefault_thumb_h');
 }
 if ($_page['var4'] === null) {
-    $_page['var4'] = _galdefault_thumb_w;
+    $_page['var4'] = Settings::get('galdefault_thumb_w');
 }
 
 // titulek

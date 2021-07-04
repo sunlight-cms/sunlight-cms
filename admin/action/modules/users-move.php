@@ -3,6 +3,7 @@
 use Sunlight\Admin\Admin;
 use Sunlight\Database\Database as DB;
 use Sunlight\Message;
+use Sunlight\User;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
 
@@ -19,7 +20,7 @@ if (isset($_POST['sourcegroup'])) {
 
     if ($source_data !== false && $target_data !== false && $source != 2 && $target != 2) {
         if ($source != $target) {
-            if (_priv_level > $source_data['level'] && _priv_level > $target_data['level']) {
+            if (User::getLevel() > $source_data['level'] && User::getLevel() > $target_data['level']) {
                 DB::update(_user_table, 'group_id=' . $source . ' AND id!=0', ['group_id' => $target], null);
                 $message = Message::ok(_lang('global.done'));
             } else {

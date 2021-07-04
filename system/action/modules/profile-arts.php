@@ -4,13 +4,14 @@ use Sunlight\Article;
 use Sunlight\Database\Database as DB;
 use Sunlight\Paginator;
 use Sunlight\Router;
+use Sunlight\Settings;
 use Sunlight\User;
 use Sunlight\Util\Request;
 use Sunlight\Util\StringManipulator;
 
 defined('_root') or exit;
 
-if (!_logged_in && _notpublicsite) {
+if (!User::isLoggedIn() && Settings::get('notpublicsite')) {
     $_index['type'] = _index_unauthorized;
     return;
 }

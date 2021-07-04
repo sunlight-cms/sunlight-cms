@@ -9,6 +9,7 @@ use Sunlight\Message;
 use Sunlight\Page\PageManager;
 use Sunlight\Plugin\TemplateService;
 use Sunlight\Router;
+use Sunlight\Settings;
 use Sunlight\User;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
@@ -48,7 +49,7 @@ abstract class PageLister
 
         // set defaults
         self::$config += [
-            'mode' => _adminpagelist_mode,
+            'mode' => Settings::get('adminpagelist_mode'),
             'current_page' => null,
         ];
 
@@ -628,7 +629,7 @@ abstract class PageLister
     {
         $output = '';
         if ($page['type'] != _page_separator) {
-            if ($page['id'] == _index_page_id) {
+            if ($page['id'] == Settings::get('index_page_id')) {
                 $iconTitle = _lang('admin.content.form.homepage');
                 $output .= "<img src=\"images/icons/home.png\" class=\"icon\" alt=\"{$iconTitle}\" title=\"{$iconTitle}\">";
             }

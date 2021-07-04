@@ -21,73 +21,248 @@ use Sunlight\Util\UrlHelper;
 
 abstract class User
 {
+    /** @var bool */
+    private static $initialized = false;
+
+    /** @var array */
+    private static $privilegeMap = [
+        'administration' => true,
+        'adminsettings' => true,
+        'adminplugins' => true,
+        'adminusers' => true,
+        'admingroups' => true,
+        'admincontent' => true,
+        'adminother' => true,
+        'adminpages' => true,
+        'adminsection' => true,
+        'admincategory' => true,
+        'adminbook' => true,
+        'adminseparator' => true,
+        'admingallery' => true,
+        'adminlink' => true,
+        'admingroup' => true,
+        'adminforum' => true,
+        'adminpluginpage' => true,
+        'adminart' => true,
+        'adminallart' => true,
+        'adminchangeartauthor' => true,
+        'adminpoll' => true,
+        'adminpollall' => true,
+        'adminsbox' => true,
+        'adminbox' => true,
+        'adminconfirm' => true,
+        'adminautoconfirm' => true,
+        'fileaccess' => true,
+        'fileglobalaccess' => true,
+        'fileadminaccess' => true,
+        'adminhcm' => true,
+        'adminhcmphp' => true,
+        'adminbackup' => true,
+        'adminmassemail' => true,
+        'adminposts' => true,
+        'changeusername' => true,
+        'unlimitedpostaccess' => true,
+        'locktopics' => true,
+        'stickytopics' => true,
+        'movetopics' => true,
+        'postcomments' => true,
+        'artrate' => true,
+        'pollvote' => true,
+        'selfremove' => true,
+    ];
+
     /** @var array|null data from user table (if logged in) */
     static $data;
 
     /** @var array data from group table */
     static $group;
 
-    /**
-     * Vratit pole se jmeny vsech existujicich opravneni
-     *
-     * @return array
-     */
-    static function listPrivileges(): array
+    static function init(): void
     {
-        static $extended = false;
-        static $privileges = [
-            'level',
-            'administration',
-            'adminsettings',
-            'adminplugins',
-            'adminusers',
-            'admingroups',
-            'admincontent',
-            'adminother',
-            'adminpages',
-            'adminsection',
-            'admincategory',
-            'adminbook',
-            'adminseparator',
-            'admingallery',
-            'adminlink',
-            'admingroup',
-            'adminforum',
-            'adminpluginpage',
-            'adminart',
-            'adminallart',
-            'adminchangeartauthor',
-            'adminpoll',
-            'adminpollall',
-            'adminsbox',
-            'adminbox',
-            'adminconfirm',
-            'adminautoconfirm',
-            'fileaccess',
-            'fileglobalaccess',
-            'fileadminaccess',
-            'adminhcm',
-            'adminhcmphp',
-            'adminbackup',
-            'adminmassemail',
-            'adminposts',
-            'changeusername',
-            'unlimitedpostaccess',
-            'locktopics',
-            'stickytopics',
-            'movetopics',
-            'postcomments',
-            'artrate',
-            'pollvote',
-            'selfremove',
-        ];
-
-        if (!$extended) {
-            Extend::call('user.privileges', ['privileges' => &$privileges]);
-            $extended = true;
+        if (self::$initialized) {
+            throw new \LogicException('Already initialized');
         }
 
-        return $privileges;
+        Extend::call('user.privileges', ['privileges' => &self::$privilegeMap]);
+
+        self::authenticate();
+        self::$initialized = true;
+    }
+
+    static function getPrivilegeMap(): array
+    {
+        return self::$privilegeMap;
+    }
+
+    private static function authenticate(): void
+    {
+        $success = false;
+        $isPersistentLogin = false;
+        $errorCode = null;
+
+        do {
+            $userData = null;
+            $loginDataExist = isset($_SESSION['user_id'], $_SESSION['user_auth']);
+
+            // check persistent login cookie if there are no login data
+            if (!$loginDataExist) {
+                // check cookie existence
+                $persistentCookieName = Core::$appId . '_persistent_key';
+                if (isset($_COOKIE[$persistentCookieName]) && is_string($_COOKIE[$persistentCookieName])) {
+                    // cookie auth process
+                    do {
+                        // parse cookie
+                        $cookie = explode('$', $_COOKIE[$persistentCookieName], 2);
+                        if (count($cookie) !== 2) {
+                            // invalid cookie format
+                            $errorCode = 1;
+                            break;
+                        }
+                        $cookie = [
+                            'id' => (int) $cookie[0],
+                            'hash' => $cookie[1],
+                        ];
+
+                        // fetch user data
+                        $userData = DB::queryRow('SELECT * FROM ' . _user_table . ' WHERE id=' . DB::val($cookie['id']));
+                        if ($userData === false) {
+                            // user not found
+                            $errorCode = 2;
+                            break;
+                        }
+
+                        // check failed login attempt limit
+                        if (!IpLog::check(_iplog_failed_login_attempt)) {
+                            // limit exceeded
+                            $errorCode = 3;
+                            break;
+                        }
+
+                        $validHash = self::getPersistentLoginHash($cookie['id'], self::getAuthHash($userData['password']), $userData['email']);
+                        if ($validHash !== $cookie['hash']) {
+                            // invalid hash
+                            IpLog::update(_iplog_failed_login_attempt);
+                            $errorCode = 4;
+                            break;
+                        }
+
+                        // all is well! use cookie data to login the user
+                        self::login($cookie['id'], $userData['password'], $userData['email']);
+                        $loginDataExist = true;
+                        $isPersistentLogin = true;
+                    } while (false);
+
+                    // check result
+                    if ($errorCode !== null) {
+                        // cookie authoriation has failed, remove the cookie
+                        setcookie(Core::$appId . '_persistent_key', '', (time() - 3600), '/');
+                        break;
+                    }
+                }
+            }
+
+            // check whether login data exist
+            if (!$loginDataExist) {
+                // no login data - user is not logged in
+                $errorCode = 5;
+                break;
+            }
+
+            // fetch user data
+            if (!$userData) {
+                $userData = DB::queryRow('SELECT * FROM ' . _user_table . ' WHERE id=' . DB::val($_SESSION['user_id']));
+                if ($userData === false) {
+                    // user not found
+                    $errorCode = 6;
+                    break;
+                }
+            }
+
+            // check user authentication hash
+            if ($_SESSION['user_auth'] !== self::getAuthHash($userData['password'])) {
+                // neplatny hash
+                $errorCode = 7;
+                break;
+            }
+
+            // check user account's status
+            if ($userData['blocked']) {
+                // account is blocked
+                $errorCode = 8;
+                break;
+            }
+
+            // fetch group data
+            $groupData = DB::queryRow('SELECT * FROM ' . _user_group_table . ' WHERE id=' . DB::val($userData['group_id']));
+            if ($groupData === false) {
+                // group data not found
+                $errorCode = 9;
+                break;
+            }
+
+            // check group status
+            if ($groupData['blocked']) {
+                // group is blocked
+                $errorCode = 10;
+                break;
+            }
+
+            // all is well! user is authenticated
+            $success = true;
+        } while (false);
+
+        // process login
+        if ($success) {
+            // increase level for super users
+            if ($userData['levelshift']) {
+                ++$groupData['level'];
+            }
+
+            // record activity time (max once per 30 seconds)
+            if (time() - $userData['activitytime'] > 30) {
+                DB::update(_user_table, 'id=' . DB::val($userData['id']), [
+                    'activitytime' => time(),
+                    'ip' => _user_ip,
+                ]);
+            }
+
+            // event
+            Extend::call('user.auth.success', [
+                'user' => &$userData,
+                'group' => &$groupData,
+                'persistent' => $isPersistentLogin,
+            ]);
+
+            // set variables
+            self::$data = $userData;
+            self::$group = $groupData;
+        } else {
+            // guest
+            $groupData = DB::queryRow('SELECT * FROM ' . _user_group_table . ' WHERE id=' . _group_guests);
+            if ($groupData === false) {
+                throw new \RuntimeException(sprintf('Anonymous user group was not found (id=%s)', _group_guests));
+            }
+
+            // event
+            Extend::call('user.auth.failure', ['error_code' => $errorCode]);
+
+            self::$group = $groupData;
+        }
+    }
+
+    static function isLoggedIn(): bool
+    {
+        return self::$data !== null;
+    }
+
+    static function getId(): int
+    {
+        return self::$data['id'] ?? -1;
+    }
+
+    static function getLevel(): int
+    {
+        return self::$group['level'];
     }
 
     /**
@@ -98,9 +273,12 @@ abstract class User
      */
     static function hasPrivilege(string $name): bool
     {
-        $constant = '_priv_' . $name;
-
-        return defined($constant) && constant($constant);
+        return isset(self::$privilegeMap[$name]) && self::$group[$name];
+    }
+    
+    static function isSuperAdmin(): bool
+    {
+        return self::isLoggedIn() && self::$data['levelshift'] && self::$group['id'] == _group_admin;
     }
 
     /**
@@ -112,7 +290,7 @@ abstract class User
      */
     static function checkLevel(int $targetUserId, int $targetUserLevel): bool
     {
-        return _logged_in && (_priv_level > $targetUserLevel || $targetUserId == _user_id);
+        return self::isLoggedIn() && (self::getLevel() > $targetUserLevel || $targetUserId == self::getId());
     }
 
     /**
@@ -124,7 +302,7 @@ abstract class User
      */
     static function checkPublicAccess(bool $public, ?int $level = 0): bool
     {
-        return (_logged_in || $public) && _priv_level >= $level;
+        return (self::isLoggedIn() || $public) && self::getLevel() >= $level;
     }
 
     /**
@@ -138,12 +316,12 @@ abstract class User
      */
     static function getHomeDir(bool $getTopmost = false): string
     {
-        if (!_priv_fileaccess) {
+        if (!self::hasPrivilege('fileaccess')) {
             throw new \RuntimeException('User has no filesystem access');
         }
 
-        if (_priv_fileglobalaccess) {
-            if ($getTopmost && _priv_fileadminaccess) {
+        if (self::hasPrivilege('fileglobalaccess')) {
+            if ($getTopmost && self::hasPrivilege('fileadminaccess')) {
                 $homeDir = _root;
             } else {
                 $homeDir = _upload_dir;
@@ -187,7 +365,7 @@ abstract class User
      */
     static function checkPath(string $path, bool $isFile, bool $getPath = false)
     {
-        if (_priv_fileaccess) {
+        if (self::hasPrivilege('fileaccess')) {
             $path = Filesystem::parsePath($path, $isFile);
             $homeDirPath = Filesystem::parsePath(self::getHomeDir(true));
 
@@ -227,7 +405,7 @@ abstract class User
      * Zjistit, zda ma uzivatel pravo pracovat s danym nazvem souboru
      *
      * Tato funkce kontroluje NAZEV souboru, nikoliv cestu!
-     * Pro cesty je funkce {@see User::checkPath()}.
+     * Pro cesty je funkce {@see self::checkPath()}.
      *
      * @param string $filename
      * @return bool
@@ -235,9 +413,9 @@ abstract class User
     static function checkFilename(string $filename): bool
     {
         return
-            _priv_fileaccess
+            self::hasPrivilege('fileaccess')
             && (
-                _priv_fileadminaccess
+                self::hasPrivilege('fileadminaccess')
                 || Filesystem::isSafeFile($filename)
             );
     }
@@ -276,7 +454,7 @@ abstract class User
      */
     static function getUsername(): string
     {
-        if (!_logged_in) {
+        if (!self::isLoggedIn()) {
             return '';
         }
 
@@ -288,7 +466,7 @@ abstract class User
      */
     static function getDisplayName(): string
     {
-        if (!_logged_in) {
+        if (!self::isLoggedIn()) {
             return '';
         }
 
@@ -514,7 +692,7 @@ abstract class User
 
         // titulek
         if ($title) {
-            $title_text = _lang($required ? (_logged_in ? 'global.accessdenied' : 'login.required.title') : 'login.title');
+            $title_text = _lang($required ? (self::isLoggedIn() ? 'global.accessdenied' : 'login.required.title') : 'login.title');
             if (_env === Core::ENV_ADMIN) {
                 $output .= '<h1>' . $title_text . "</h1>\n";
             } else {
@@ -536,7 +714,7 @@ abstract class User
         }
 
         // obsah
-        if (!_logged_in) {
+        if (!self::isLoggedIn()) {
 
             $form_append = '';
 
@@ -591,10 +769,10 @@ abstract class User
             // odkazy
             if (!$embedded) {
                 $links = [];
-                if (_registration && _env === Core::ENV_WEB) {
+                if (Settings::get('registration') && _env === Core::ENV_WEB) {
                     $links['reg'] = ['url' => Router::module('reg'), 'text' => _lang('mod.reg')];
                 }
-                if (_lostpass) {
+                if (Settings::get('lostpass')) {
                     $links['lostpass'] = ['url' => Router::module('lostpass'), 'text' => _lang('mod.lostpass')];
                 }
                 Extend::call('user.login.links', ['links' => &$links]);
@@ -645,7 +823,7 @@ abstract class User
             case 4:
                 return Message::ok(_lang('login.selfremove'));
             case 5:
-                return Message::warning(_lang('login.attemptlimit', ['%max_attempts%' => _maxloginattempts, '%minutes%' => _maxloginexpire / 60]));
+                return Message::warning(_lang('login.attemptlimit', ['%max_attempts%' => Settings::get('maxloginattempts'), '%minutes%' => Settings::get('maxloginexpire') / 60]));
             case 6:
                 return Message::error(_lang('xsrf.msg'));
             default:
@@ -659,12 +837,12 @@ abstract class User
      * @param string $username
      * @param string $plainPassword
      * @param bool   $persistent
-     * @return int kod {@see User::getLoginMessage())
+     * @return int kod {@see self::getLoginMessage())
      */
     static function submitLogin(string $username, string $plainPassword, bool $persistent = false): int
     {
         // jiz prihlasen?
-        if (_logged_in) {
+        if (self::isLoggedIn()) {
             return 0;
         }
 
@@ -778,7 +956,7 @@ abstract class User
      */
     static function logout(bool $destroy = true): bool
     {
-        if (!_logged_in) {
+        if (!self::isLoggedIn()) {
             return false;
         }
 
@@ -813,7 +991,7 @@ abstract class User
         static $result = null;
 
         if ($result === null) {
-            $result = DB::count(_pm_table, "(receiver=" . _user_id . " AND receiver_deleted=0 AND receiver_readtime<update_time) OR (sender=" . _user_id . " AND sender_deleted=0 AND sender_readtime<update_time)");
+            $result = DB::count(_pm_table, "(receiver=" . self::getId() . " AND receiver_deleted=0 AND receiver_readtime<update_time) OR (sender=" . self::getId() . " AND sender_deleted=0 AND sender_readtime<update_time)");
         }
 
         return (int) $result;
@@ -941,11 +1119,11 @@ abstract class User
     }
 
     /**
-     * Ziskat kod avataru daneho uzivatele na zaklade dat z funkce {@see User::createQuery()}
+     * Ziskat kod avataru daneho uzivatele na zaklade dat z funkce {@see self::createQuery()}
      *
-     * @param array $userQuery vystup z {@see User::createQuery()}
+     * @param array $userQuery vystup z {@see self::createQuery()}
      * @param array $row       radek z vysledku dotazu
-     * @param array $options   nastaveni vykresleni, viz {@see User::renderAvatar()}
+     * @param array $options   nastaveni vykresleni, viz {@see self::renderAvatar()}
      * @return string
      */
     static function renderAvatarFromQuery(array $userQuery, array $row, array $options = []): string
@@ -987,7 +1165,7 @@ abstract class User
         $output = "<form name='post_repeat' method='post' action='" . _e($action) . "'>\n";
         $output .= Form::renderHiddenPostInputs(null, $allow_login ? 'login_' : null);
 
-        if ($allow_login && !_logged_in) {
+        if ($allow_login && !self::isLoggedIn()) {
             if ($login_message === null) {
                 $login_message = Message::ok(_lang('post_repeat.login'));
             }

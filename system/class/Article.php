@@ -23,7 +23,7 @@ abstract class Article
     {
         // nevydany / neschvaleny clanek
         if (!$article['confirmed'] || $article['time'] > time()) {
-            return _priv_adminconfirm || $article['author'] == _user_id;
+            return User::hasPrivilege('adminconfirm') || $article['author'] == User::getId();
         }
 
         // pristup k clanku
@@ -123,11 +123,11 @@ abstract class Article
         }
 
         // neverejnost
-        if ($checkPublic && !_logged_in) {
+        if ($checkPublic && !User::isLoggedIn()) {
             $conditions[] = "{$alias}.public=1";
             $conditions[] = "(cat1.public=1 OR cat2.public=1 OR cat3.public=1)";
         }
-        $conditions[] = "(cat1.level<=" . _priv_level . " OR cat2.level<=" . _priv_level . " OR cat3.level<=" . _priv_level . ")";
+        $conditions[] = "(cat1.level<=" . User::getLevel() . " OR cat2.level<=" . User::getLevel() . " OR cat3.level<=" . User::getLevel() . ")";
 
         // vlastni podminky
         if (!empty($sqlConditions)) {
@@ -239,7 +239,7 @@ abstract class Article
                 'readnum' => [_lang('article.readnum'), $art['readnum'] . 'x'],
             ];
 
-            if ($art['comments'] == 1 && _comments && $comment_count !== null) {
+            if ($art['comments'] == 1 && Settings::get('comments') && $comment_count !== null) {
                 $infos['comments'] = [_lang('article.comments'), $comment_count];
             }
 
@@ -281,8 +281,8 @@ abstract class Article
                 'resize' => [
                     'mode' => ImageTransformer::RESIZE_FIT,
                     'keep_smaller' => true,
-                    'w' => _article_pic_w,
-                    'h' => _article_pic_h,
+                    'w' => Settings::get('article_pic_w'),
+                    'h' => Settings::get('article_pic_h'),
                 ],
                 'format' => ImageLoader::getFormat($originalFilename),
             ],
@@ -310,8 +310,8 @@ abstract class Article
             self::getImagePath($imageUid),
             [
                 'mode' => ImageTransformer::RESIZE_FIT,
-                'w' => _article_pic_thumb_w,
-                'h' => _article_pic_thumb_h,
+                'w' => Settings::get('article_pic_thumb_w'),
+                'h' => Settings::get('article_pic_thumb_h'),
             ]
         );
     }

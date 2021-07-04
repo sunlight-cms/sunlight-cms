@@ -4,6 +4,7 @@ use Sunlight\Core;
 use Sunlight\Database\Database as DB;
 use Sunlight\IpLog;
 use Sunlight\Router;
+use Sunlight\User;
 use Sunlight\Xsrf;
 
 return function ($id = null) {
@@ -25,7 +26,7 @@ return function ($id = null) {
         $ranswers = explode("\n", $vpolldata['answers']);
         $rvotes = explode("-", $vpolldata['votes']);
         $rvotes_sum = array_sum($rvotes);
-        if (_priv_pollvote == 1 && $vpolldata['locked'] != 1 && IpLog::check(_iplog_poll_vote, $id)) {
+        if (User::hasPrivilege('pollvote') == 1 && $vpolldata['locked'] != 1 && IpLog::check(_iplog_poll_vote, $id)) {
             $rallowvote = true;
         } else {
             $rallowvote = false;

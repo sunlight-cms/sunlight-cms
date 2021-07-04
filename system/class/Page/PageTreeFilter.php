@@ -5,6 +5,7 @@ namespace Sunlight\Page;
 use Sunlight\Database\Database as DB;
 use Sunlight\Database\TreeFilterInterface;
 use Sunlight\Database\TreeReader;
+use Sunlight\User;
 
 class PageTreeFilter implements TreeFilterInterface
 {
@@ -48,8 +49,8 @@ class PageTreeFilter implements TreeFilterInterface
     {
         return
             /* visibility */        $node['visible']
-            /* page level */        && (!$this->options['check_level'] || $node['level'] <= _priv_level)
-            /* page public */       && (!$this->options['check_public'] || _logged_in || $node['public'])
+            /* page level */        && (!$this->options['check_level'] || $node['level'] <= User::getLevel())
+            /* page public */       && (!$this->options['check_public'] || User::isLoggedIn() || $node['public'])
             /* separator  check */  && $node['type'] != _page_separator
             /* order from */        && (
                                         $this->options['ord_start'] === null
@@ -105,7 +106,7 @@ class PageTreeFilter implements TreeFilterInterface
         $sql = '%__node__%.visible=1 AND %__node__%.type!=' . _page_separator;
 
         if ($options['check_level']) {
-            $sql .= ' AND %__node__%.level<=' . _priv_level;
+            $sql .= ' AND %__node__%.level<=' . User::getLevel();
         }
 
         // order constraints

@@ -3,6 +3,7 @@
 namespace Sunlight\Plugin;
 
 use Sunlight\Core;
+use Sunlight\Settings;
 
 abstract class TemplateService
 {
@@ -39,7 +40,7 @@ abstract class TemplateService
      */
     static function getDefaultTemplate(): TemplatePlugin
     {
-        return self::getTemplate(_default_template);
+        return self::getTemplate(Settings::get('default_template'));
     }
 
     /**

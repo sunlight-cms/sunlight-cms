@@ -65,14 +65,14 @@ class Paginator
             $s = $pages - 1;
         }
         $start = $s * $limit;
-        $beginpage = $s + 1 - _showpages;
+        $beginpage = $s + 1 - Settings::get('showpages');
         if ($beginpage < 1) {
             $endbonus = abs($beginpage) + 1;
             $beginpage = 1;
         } else {
             $endbonus = 0;
         }
-        $endpage = $s + 1 + _showpages + $endbonus;
+        $endpage = $s + 1 + Settings::get('showpages') + $endbonus;
         if ($endpage > $pages) {
             $beginpage -= $endpage - $pages;
             if ($beginpage < 1) {
@@ -199,7 +199,7 @@ class Paginator
      */
     static function atTop(): bool
     {
-        return _pagingmode == 1 || _pagingmode == 2;
+        return Settings::get('pagingmode') == 1 || Settings::get('pagingmode') == 2;
     }
 
     /**
@@ -209,6 +209,6 @@ class Paginator
      */
     static function atBottom(): bool
     {
-        return _pagingmode == 2 || _pagingmode == 3;
+        return Settings::get('pagingmode') == 2 || Settings::get('pagingmode') == 3;
     }
 }

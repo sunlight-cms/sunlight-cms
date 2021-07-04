@@ -8,6 +8,7 @@ use Sunlight\GenericTemplates;
 use Sunlight\Message;
 use Sunlight\Comment\Comment;
 use Sunlight\Router;
+use Sunlight\Settings;
 use Sunlight\Template;
 use Sunlight\User;
 use Sunlight\Util\Request;
@@ -15,7 +16,7 @@ use Sunlight\Util\StringManipulator;
 
 defined('_root') or exit;
 
-if (!_logged_in && _notpublicsite) {
+if (!User::isLoggedIn() && Settings::get('notpublicsite')) {
     $_index['type'] = _index_unauthorized;
     return;
 }
@@ -51,7 +52,7 @@ if ($query !== false) {
 
             // sestaveni kodu
             $arts = "\n<tr><th>" . _lang('global.articlesnum') . "</th><td>" . $arts . ", <a href='" . _e(Router::module('profile-arts', 'id=' . $id)) . "'>" . _lang('global.show') . " &gt;</a></td></tr>\n";
-            if (_ratemode != 0) {
+            if (Settings::get('ratemode') != 0) {
                 $arts .= "\n<tr><th>" . _lang('article.rate') . "</th><td>" . $avgrate . "</td></tr>\n";
             }
 
@@ -82,7 +83,7 @@ if ($query['blocked'] == 1 || $groupdata['blocked'] == 1) {
 }
 
 if ($public) {
-    if (!$query['public'] && _user_id == $query['id']) {
+    if (!$query['public'] && User::getId() == $query['id']) {
         $output .= Message::ok(_lang('mod.profile.private.selfnote'));
     }
 
@@ -115,7 +116,7 @@ if ($public) {
 <td>" . $groupdata['descr'] . "</td>
 </tr>" : '') . "
 
-" . ($query['id'] == _user_id || _priv_administration && _priv_adminusers ? "<tr>
+" . ($query['id'] == User::getId() || User::hasPrivilege('administration') && User::hasPrivilege('adminusers') ? "<tr>
 <th>" . _lang('mod.profile.lastact') . "</th>
 <td>" . GenericTemplates::renderTime($query['activitytime'], 'activity') . "</td>
 </tr>
@@ -139,7 +140,7 @@ if ($public) {
 <table class='profiletable'>
 
 <tr><th>" . _lang('mod.profile.regtime') . "</th><td>" . GenericTemplates::renderTime($query['registertime']) . "</td></tr>
-" . (_profileemail ? "<tr><th>" . _lang('global.email') . "</th><td>" . Email::link($query['email']) . "</td></tr>" : '') . "
+" . (Settings::get('profileemail') ? "<tr><th>" . _lang('global.email') . "</th><td>" . Email::link($query['email']) . "</td></tr>" : '') . "
 <tr><th>" . _lang('global.postsnum') . "</th><td>" . $posts_count . $posts_viewlink . "</td></tr>
 
 " . $arts . "
@@ -154,6 +155,6 @@ if ($public) {
 }
 
 // odkaz na zaslani vzkazu
-if (_logged_in && _messages && $query['id'] != _user_id && $query['blocked'] == 0 && $groupdata['blocked'] == 0) {
+if (User::isLoggedIn() && Settings::get('messages') && $query['id'] != User::getId() && $query['blocked'] == 0 && $groupdata['blocked'] == 0) {
     $output .= "<p><a class='button' href='" . _e(Router::module('messages', 'a=new&receiver=' . $query['username'])) . "'><img src='" . Template::image("icons/bubble.png") . "' alt='msg' class='icon'>" . _lang('mod.messages.new') . "</a></p>";
 }

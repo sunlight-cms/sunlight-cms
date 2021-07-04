@@ -8,6 +8,8 @@ use Sunlight\GenericTemplates;
 use Sunlight\IpLog;
 use Sunlight\Message;
 use Sunlight\Router;
+use Sunlight\Settings;
+use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Password;
 use Sunlight\Util\Request;
@@ -15,12 +17,12 @@ use Sunlight\Util\StringGenerator;
 
 defined('_root') or exit;
 
-if (!_lostpass) {
+if (!Settings::get('lostpass')) {
     $_index['type'] = _index_not_found;
     return;
 }
 
-if (_logged_in) {
+if (User::isLoggedIn()) {
     $_index['type'] = _index_redir;
     $_index['redirect_to'] = Router::module('login', null, true);
     return;
@@ -36,7 +38,7 @@ if (isset($_GET['user'], $_GET['hash'])) {
 
         // kontrola limitu
         if (!IpLog::check(_iplog_failed_login_attempt)) {
-            $output .= Message::error(_lang('login.attemptlimit', ['%max_attempts%' => _maxloginattempts, '%minutes%' => _maxloginexpire / 60]));
+            $output .= Message::error(_lang('login.attemptlimit', ['%max_attempts%' => Settings::get('maxloginattempts'), '%minutes%' => Settings::get('maxloginexpire') / 60]));
             break;
         }
 
@@ -95,7 +97,7 @@ if (isset($_GET['user'], $_GET['hash'])) {
 
         // kontrola limitu
         if (!IpLog::check(_iplog_password_reset_requested)) {
-            $output .= Message::error(_lang('mod.lostpass.limit', ['%limit%' => _lostpassexpire / 60]));
+            $output .= Message::error(_lang('mod.lostpass.limit', ['%limit%' => Settings::get('lostpassexpire') / 60]));
             break;
         }
 
