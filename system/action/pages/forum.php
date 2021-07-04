@@ -1,6 +1,6 @@
 <?php
 
-use Sunlight\Comment\CommentService;
+use Sunlight\Post\PostService;
 use Sunlight\Extend;
 use Sunlight\Hcm;
 use Sunlight\Settings;
@@ -30,7 +30,7 @@ if ($_page['content'] != "") {
 Extend::call('page.forum.content.after', $extend_args);
 
 // temata
-$output .= CommentService::render(CommentService::RENDER_FORUM_TOPIC_LIST, $id, [
+$output .= PostService::render(PostService::RENDER_FORUM_TOPIC_LIST, $id, [
     $_page['var1'],
     User::checkPublicAccess($_page['var3']),
     $_page['var2'],

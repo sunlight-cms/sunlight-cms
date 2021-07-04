@@ -4,6 +4,7 @@ use Sunlight\Admin\Admin;
 use Sunlight\Database\Database as DB;
 use Sunlight\GenericTemplates;
 use Sunlight\Message;
+use Sunlight\Page\Page;
 use Sunlight\Paginator;
 use Sunlight\Router;
 use Sunlight\Settings;
@@ -17,7 +18,7 @@ defined('_root') or exit;
 $continue = false;
 if (isset($_GET['cat'])) {
     $cid = (int) Request::get('cat');
-    if (DB::count(_page_table, 'id=' . DB::val($cid) . ' AND type=' . _page_category) !== 0) {
+    if (DB::count(_page_table, 'id=' . DB::val($cid) . ' AND type=' . Page::CATEGORY) !== 0) {
         $catdata = DB::queryRow("SELECT title,var1,var2 FROM " . _page_table . " WHERE id=" . $cid);
         $continue = true;
     }

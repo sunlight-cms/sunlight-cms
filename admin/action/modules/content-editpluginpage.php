@@ -2,14 +2,14 @@
 
 use Sunlight\Extend;
 use Sunlight\Message;
-use Sunlight\Page\PageManager;
+use Sunlight\Page\Page;
 
 defined('_root') or exit;
 
 /* ---  nastaveni a vlozeni skriptu pro upravu stranky  --- */
 
 // inicializace editscriptu
-$type = _page_plugin;
+$type = Page::PLUGIN;
 require _root . 'admin/action/modules/include/page-editscript-init.php';
 if (!$continue) {
     $output .= Message::error(_lang('global.badinput'));
@@ -17,7 +17,7 @@ if (!$continue) {
 }
 
 // nacist typy pluginu
-$plugin_types = PageManager::getPluginTypes();
+$plugin_types = Page::getPluginTypes();
 
 // overit dostupnost pluginu
 if (!isset($plugin_types[$type_idt])) {

@@ -2,7 +2,9 @@
 
 namespace Sunlight;
 
+use Sunlight\Post\Post;
 use Sunlight\Database\Database as DB;
+use Sunlight\Page\Page;
 use Sunlight\Util\Arr;
 use Sunlight\Util\Html;
 
@@ -150,25 +152,25 @@ abstract class Router
     static function post(array $post, bool $absolute = false): array
     {
         switch ($post['type']) {
-            case _post_section_comment:
-            case _post_book_entry:
+            case Post::SECTION_COMMENT:
+            case Post::BOOK_ENTRY:
                 return [
                     self::page($post['home'], $post['page_slug'], null, $absolute),
                     $post['page_title'],
                 ];
-            case _post_article_comment:
+            case Post::ARTICLE_COMMENT:
                 return [
                     self::article(null, $post['art_slug'], $post['cat_slug'], $absolute),
                     $post['art_title'],
                 ];
-            case _post_forum_topic:
-            case _post_pm:
+            case Post::FORUM_TOPIC:
+            case Post::PRIVATE_MSG:
                 if ($post['xhome'] == -1) {
-                    $topicId = $post[$post['type'] == _post_pm ? 'home' : 'id'];
+                    $topicId = $post[$post['type'] == Post::PRIVATE_MSG ? 'home' : 'id'];
                 } else {
                     $topicId = $post['xhome'];
                 }
-                if ($post['type'] == _post_forum_topic) {
+                if ($post['type'] == Post::FORUM_TOPIC) {
                     $url = self::topic($topicId, $post['page_slug'], $absolute);
                 } else {
                     $url = self::module('messages', "a=list&read={$topicId}", $absolute);
@@ -181,7 +183,7 @@ abstract class Router
                         : $post['xhome_subject']
                 ,
                 ];
-            case _post_plugin:
+            case Post::PLUGIN:
                 $url = '';
                 $title = '';
 
@@ -209,7 +211,7 @@ abstract class Router
     static function topic(int $topic_id, ?string $forum_slug = null, bool $absolute = false): string
     {
         if ($forum_slug === null) {
-            $forum_slug = DB::queryRow('SELECT r.slug FROM ' . _page_table . ' r WHERE type=' . _page_forum . ' AND id=(SELECT p.home FROM ' . _comment_table . ' p WHERE p.id=' . DB::val($topic_id) . ')');
+            $forum_slug = DB::queryRow('SELECT r.slug FROM ' . _page_table . ' r WHERE type=' . Page::FORUM . ' AND id=(SELECT p.home FROM ' . _post_table . ' p WHERE p.id=' . DB::val($topic_id) . ')');
             if ($forum_slug !== false) {
                 $forum_slug = $forum_slug['slug'];
             } else {

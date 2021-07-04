@@ -6,7 +6,7 @@ use Sunlight\Email;
 use Sunlight\Extend;
 use Sunlight\GenericTemplates;
 use Sunlight\Message;
-use Sunlight\Comment\Comment;
+use Sunlight\Post\Post;
 use Sunlight\Router;
 use Sunlight\Settings;
 use Sunlight\Template;
@@ -35,7 +35,7 @@ if ($query !== false) {
         if ($query['note'] == "") {
             $note = "";
         } else {
-            $note = "<tr class='valign-top'><th>" . _lang('global.note') . "</th><td><div class='note'>" . Comment::render($query['note']) . "</div></td></tr>";
+            $note = "<tr class='valign-top'><th>" . _lang('global.note') . "</th><td><div class='note'>" . Post::render($query['note']) . "</div></td></tr>";
         }
 
         // clanky autora
@@ -61,7 +61,7 @@ if ($query !== false) {
         }
 
         // odkaz na prispevky uzivatele
-        $posts_count = DB::count(_comment_table, 'author=' . DB::val($query['id']) . ' AND type!=' . _post_pm . ' AND type!=' . _post_shoutbox_entry);
+        $posts_count = DB::count(_post_table, 'author=' . DB::val($query['id']) . ' AND type!=' . Post::PRIVATE_MSG . ' AND type!=' . Post::SHOUTBOX_ENTRY);
         if ($posts_count > 0) {
             $posts_viewlink = ", <a href='" . _e(Router::module('profile-posts', 'id=' . $id)) . "'>" . _lang('global.show') . " &gt;</a>";
         } else {

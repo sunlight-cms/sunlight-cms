@@ -1,7 +1,7 @@
 <?php
 
 use Sunlight\Extend;
-use Sunlight\Page\PageManager;
+use Sunlight\Page\Page;
 use Sunlight\Router;
 use Sunlight\Settings;
 use Sunlight\Template;
@@ -13,7 +13,7 @@ use Sunlight\Util\UrlHelper;
 defined('_root') or exit;
 
 // nacteni dat stranky
-$_page = PageManager::find($segments);
+$_page = Page::find($segments);
 if ($_page === false) {
     $_index['type'] = _index_not_found;
     return;
@@ -64,7 +64,7 @@ if (
 
 if ($segment !== null) {
     // zkontrolovat, zda stranka podporuje segment
-    if ($_page['type'] == _page_category || $_page['type'] == _page_forum) {
+    if ($_page['type'] == Page::CATEGORY || $_page['type'] == Page::FORUM) {
         $segment_support = true;
     } else {
         $segment_support = false;
@@ -120,12 +120,12 @@ if ($_page['events'] !== null) {
 
 // priprava vykresleni stranky
 $id = $_page['id'];
-$types = PageManager::getTypes();
+$types = Page::getTypes();
 $type_name = $types[$_page['type']];
 $script = null;
 
 // urceni skriptu
-if ($_page['type'] == _page_plugin) {
+if ($_page['type'] == Page::PLUGIN) {
     // plugin stranka
     $script = null;
     Extend::call('page.plugin.' . $_page['type_idt'], [

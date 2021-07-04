@@ -2,6 +2,7 @@
 
 use Sunlight\Admin\Admin;
 use Sunlight\Database\Database as DB;
+use Sunlight\IpLog;
 use Sunlight\Message;
 use Sunlight\User;
 use Sunlight\Util\Arr;
@@ -115,7 +116,7 @@ if (isset($_POST['question'])) {
             // vynulovani
             if ($reset) {
                 DB::update(_poll_table, 'id=' . $id, ['votes' => trim(str_repeat("0-", $answers_count), "-")]);
-                DB::delete(_iplog_table, 'type=' . _iplog_poll_vote . ' AND var=' . $id);
+                DB::delete(_iplog_table, 'type=' . IpLog::POLL_VOTE . ' AND var=' . $id);
             }
 
             // presmerovani

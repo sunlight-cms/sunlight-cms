@@ -3,7 +3,7 @@
 use Sunlight\Database\Database as DB;
 use Sunlight\GenericTemplates;
 use Sunlight\Message;
-use Sunlight\Page\PageManager;
+use Sunlight\Page\Page;
 use Sunlight\Page\PageManipulator;
 use Sunlight\User;
 use Sunlight\Util\Request;
@@ -11,7 +11,7 @@ use Sunlight\Xsrf;
 
 defined('_root') or exit;
 
-$type_array = PageManager::getTypes();
+$type_array = Page::getTypes();
 
 /* ---  priprava promennych  --- */
 
@@ -28,7 +28,7 @@ if ($continue) {
 
     // opravneni k mazani podstranek = pravo na vsechny typy
     $recursive = true;
-    foreach (PageManager::getTypes() as $type) {
+    foreach (Page::getTypes() as $type) {
         if (!User::hasPrivilege('admin' . $type)) {
             $recursive = false;
             break;

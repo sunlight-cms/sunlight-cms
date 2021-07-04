@@ -1,10 +1,10 @@
 <?php
 
-use Sunlight\Comment\CommentService;
+use Sunlight\Post\PostService;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\Paginator;
-use Sunlight\Comment\Comment;
+use Sunlight\Post\Post;
 use Sunlight\Router;
 use Sunlight\Settings;
 use Sunlight\User;
@@ -20,7 +20,7 @@ if (!ctype_digit($_index['segment'])) {
 // nacteni dat
 $id = (int) $_index['segment'];
 $userQuery = User::createQuery('p.author');
-$query = DB::queryRow("SELECT p.*," . $userQuery['column_list'] . " FROM " . _comment_table . " p " . $userQuery['joins'] . " WHERE p.id=" . $id . " AND p.type=" . _post_forum_topic . " AND p.home=" . $_page['id'] . " AND p.xhome=-1");
+$query = DB::queryRow("SELECT p.*," . $userQuery['column_list'] . " FROM " . _post_table . " p " . $userQuery['joins'] . " WHERE p.id=" . $id . " AND p.type=" . Post::FORUM_TOPIC . " AND p.home=" . $_page['id'] . " AND p.xhome=-1");
 if ($query === false) {
     $_index['type'] = _index_not_found;
     return;
@@ -53,11 +53,11 @@ $_index['url'] = Router::topic($id, $_page['slug']);
 // priprava zpetneho odkazu
 $_index['backlink'] = Router::page($_page['id'], $_page['slug']);
 if (!$query['sticky']) {
-    $_index['backlink'] = UrlHelper::appendParams($_index['backlink'], 'page=' . Paginator::getItemPage($_page['var1'], _comment_table, "bumptime>" . $query['bumptime'] . " AND xhome=-1 AND type=" . _post_forum_topic . " AND home=" . $_page['id']));
+    $_index['backlink'] = UrlHelper::appendParams($_index['backlink'], 'page=' . Paginator::getItemPage($_page['var1'], _post_table, "bumptime>" . $query['bumptime'] . " AND xhome=-1 AND type=" . Post::FORUM_TOPIC . " AND home=" . $_page['id']));
 }
 
 // sprava tematu
-$topic_access = Comment::checkAccess($userQuery, $query);
+$topic_access = Post::checkAccess($userQuery, $query);
 $topic_admin = [];
 
 if ($topic_access) {
@@ -75,7 +75,7 @@ if ($topic_access) {
 // vystup
 $output .= "<div class=\"topic\">\n";
 $output .= "<h2>" . _lang('posts.topic') . ": " . $query['subject'] . "</h2>\n";
-$output .= CommentService::renderPost($query, $userQuery, [
+$output .= PostService::renderPost($query, $userQuery, [
     'post_link' => false,
     'allow_reply' => false,
     'extra_actions' => $topic_admin,
@@ -83,8 +83,8 @@ $output .= CommentService::renderPost($query, $userQuery, [
 $output .= "</div>\n";
 
 // odpovedi
-$output .= CommentService::render(
-    CommentService::RENDER_FORUM_TOPIC,
+$output .= PostService::render(
+    PostService::RENDER_FORUM_TOPIC,
     $_page['id'],
     [
         Settings::get('commentsperpage'),

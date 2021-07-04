@@ -35,9 +35,9 @@ if (isset($_SESSION[$skey])) {
 }
 
 // casove omezeni
-if (IpLog::check(_iplog_anti_spam)) {
+if (IpLog::check(IpLog::ANTI_SPAM)) {
     // zaznamenat
-    IpLog::update(_iplog_anti_spam);
+    IpLog::update(IpLog::ANTI_SPAM);
 } else {
     // prekroceno
     echo _lang('misc.antispam_error', ['%antispamtimeout%' => Settings::get('antispamtimeout')]);

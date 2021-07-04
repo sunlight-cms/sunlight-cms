@@ -1,6 +1,7 @@
 <?php
 
 use Sunlight\Admin\Admin;
+use Sunlight\Post\Post;
 use Sunlight\Database\Database as DB;
 use Sunlight\Database\DatabaseLoader;
 use Sunlight\Extend;
@@ -55,16 +56,16 @@ if (isset($_POST['action'])) {
                     if ($prev) {
                         $prev_count['mod.messages'] = DB::count(_pm_table, 'update_time<' . $messages_time);
                     } else {
-                        DB::query("DELETE " . _pm_table . ",post FROM " . _pm_table . " LEFT JOIN " . _comment_table . " AS post ON (post.type=" . _post_pm . " AND post.home=" . _pm_table . ".id) WHERE update_time<" . $messages_time);
+                        DB::query("DELETE " . _pm_table . ",post FROM " . _pm_table . " LEFT JOIN " . _post_table . " AS post ON (post.type=" . Post::PRIVATE_MSG . " AND post.home=" . _pm_table . ".id) WHERE update_time<" . $messages_time);
                     }
                     break;
 
                 case 2:
                     if ($prev) {
-                        $prev_count['mod.messages'] = DB::count(_comment_table, 'type=' . _post_pm);
+                        $prev_count['mod.messages'] = DB::count(_post_table, 'type=' . Post::PRIVATE_MSG);
                     } else {
                         DB::query("TRUNCATE TABLE " . _pm_table);
-                        DB::delete(_comment_table, 'type=' . _post_pm);
+                        DB::delete(_post_table, 'type=' . Post::PRIVATE_MSG);
                     }
                     break;
 
@@ -73,27 +74,27 @@ if (isset($_POST['action'])) {
             // komentare, prispevky, iplog
             if (Form::loadCheckbox("comments")) {
                 if ($prev) {
-                    $prev_count['admin.settings.functions.comments'] = DB::count(_comment_table, 'type=' . _post_section_comment . ' OR type=' . _post_article_comment);
+                    $prev_count['admin.settings.functions.comments'] = DB::count(_post_table, 'type=' . Post::SECTION_COMMENT . ' OR type=' . Post::ARTICLE_COMMENT);
                 } else {
-                    DB::delete(_comment_table, 'type=' . _post_section_comment . ' OR type=' . _post_article_comment);
+                    DB::delete(_post_table, 'type=' . Post::SECTION_COMMENT . ' OR type=' . Post::ARTICLE_COMMENT);
                 }
             }
             if (Form::loadCheckbox("posts")) {
                 if ($prev) {
-                    $prev_count['global.posts'] = DB::count(_comment_table, 'type IN(' . DB::arr([_post_book_entry, _post_shoutbox_entry, _post_forum_topic]) . ')');
+                    $prev_count['global.posts'] = DB::count(_post_table, 'type IN(' . DB::arr([Post::BOOK_ENTRY, Post::SHOUTBOX_ENTRY, Post::FORUM_TOPIC]) . ')');
                 } else {
-                    DB::deleteSet(_comment_table, 'type', [
-                        _post_book_entry,
-                        _post_shoutbox_entry,
-                        _post_forum_topic
+                    DB::deleteSet(_post_table, 'type', [
+                        Post::BOOK_ENTRY,
+                        Post::SHOUTBOX_ENTRY,
+                        Post::FORUM_TOPIC
                     ]);
                 }
             }
             if (Form::loadCheckbox("plugin_posts")) {
                 if ($prev) {
-                    $prev_count['admin.other.cleanup.other.plugin_posts.label'] = DB::count(_comment_table, 'type=' . _post_plugin);
+                    $prev_count['admin.other.cleanup.other.plugin_posts.label'] = DB::count(_post_table, 'type=' . Post::PLUGIN);
                 } else {
-                    DB::delete(_comment_table, 'type=' . _post_plugin);
+                    DB::delete(_post_table, 'type=' . Post::PLUGIN);
                 }
             }
             if (Form::loadCheckbox("iplog")) {

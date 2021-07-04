@@ -1,13 +1,15 @@
 <?php
 
+use Sunlight\Post\Post;
 use Sunlight\Database\Database as DB;
+use Sunlight\Page\Page;
 use Sunlight\Util\Form;
 
 defined('_root') or exit;
 
 /* ---  nastaveni a vlozeni skriptu pro upravu stranky  --- */
 
-$type = _page_book;
+$type = Page::BOOK;
 require _root . 'admin/action/modules/include/page-editscript-init.php';
 if ($continue) {
     $custom_settings = "
@@ -15,7 +17,7 @@ if ($continue) {
   <tr><td colspan='2'><label><input type='checkbox' name='var1' value='1'" . Form::activateCheckbox($query['var1']) . "> " . _lang('admin.content.form.unregpost') . "</label></td></tr>
   ";
     if (!$new) {
-        $custom_settings .= "<tr><td colspan='2'><label><input type='checkbox' name='delposts' value='1'> " . _lang('admin.content.form.delposts') . " <small>(" . DB::count(_comment_table, 'home=' . DB::val($id) . ' AND type=' . _post_book_entry) . ")</small></label></td></tr>";
+        $custom_settings .= "<tr><td colspan='2'><label><input type='checkbox' name='delposts' value='1'> " . _lang('admin.content.form.delposts') . " <small>(" . DB::count(_post_table, 'home=' . DB::val($id) . ' AND type=' . Post::BOOK_ENTRY) . ")</small></label></td></tr>";
     }
     $custom_settings .= "<tr><td><input type='number' min='1' name='var2' value='" . $query['var2'] . "' class='inputmax'></td><td>" . _lang('admin.content.form.postsperpage') . "</td></tr>";
     $custom_save_array = [

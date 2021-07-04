@@ -1,5 +1,6 @@
 <?php
 
+use Sunlight\Post\Post;
 use Sunlight\Database\Database as DB;
 use Sunlight\Message;
 use Sunlight\Util\Form;
@@ -65,7 +66,7 @@ if (isset($_POST['action'])) {
                             break;
                         case "delposts":
                             $skip = true;
-                            DB::delete(_comment_table, 'home=' . $id . ' AND type=' . _post_shoutbox_entry);
+                            DB::delete(_post_table, 'home=' . $id . ' AND type=' . Post::SHOUTBOX_ENTRY);
                             break;
                         default:
                             $skip = true;
@@ -114,7 +115,7 @@ if (isset($_POST['action'])) {
 if (isset($_GET['del']) && Xsrf::check(true)) {
     $del = (int) Request::get('del');
     DB::delete(_shoutbox_table, 'id=' . $del);
-    DB::delete(_comment_table, 'home=' . $del . ' AND type=' . _post_shoutbox_entry);
+    DB::delete(_post_table, 'home=' . $del . ' AND type=' . Post::SHOUTBOX_ENTRY);
     $message = Message::ok(_lang('global.done'));
 }
 

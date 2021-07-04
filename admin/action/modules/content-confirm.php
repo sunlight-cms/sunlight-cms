@@ -4,6 +4,7 @@ use Sunlight\Admin\Admin;
 use Sunlight\Database\Database as DB;
 use Sunlight\GenericTemplates;
 use Sunlight\Message;
+use Sunlight\Page\Page;
 use Sunlight\Router;
 use Sunlight\User;
 use Sunlight\Util\Request;
@@ -33,7 +34,7 @@ $output .= "
 <form class='cform' action='index.php' method='get'>
     <input type='hidden' name='p' value='content-confirm'>"
     . _lang('admin.content.confirm.filter') . ": "
-    . Admin::pageSelect("limit", ['type' => _page_category, 'selected' => $catlimit, 'empty_item' => _lang('global.all')])
+    . Admin::pageSelect("limit", ['type' => Page::CATEGORY, 'selected' => $catlimit, 'empty_item' => _lang('global.all')])
     . "
     <input type='submit' value='" . _lang('global.do') . "'>
 </form>

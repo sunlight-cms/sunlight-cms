@@ -2,7 +2,7 @@
 
 namespace Sunlight;
 
-use Sunlight\Page\PageManager;
+use Sunlight\Page\Page;
 use Sunlight\Page\PageMenu;
 use Sunlight\Page\PageTreeFilter;
 use Sunlight\Plugin\TemplatePlugin;
@@ -156,7 +156,7 @@ abstract class Template
             }
             foreach ($boxes as $item) {
                 // filtrovani boxu
-                if ($item['page_ids'] !== null && !PageManager::isActive(explode(',', $item['page_ids']), $item['page_children'])) {
+                if ($item['page_ids'] !== null && !Page::isActive(explode(',', $item['page_ids']), $item['page_children'])) {
                     continue;
                 }
 
@@ -298,10 +298,10 @@ abstract class Template
         }
 
         // zjisteni aktivni stranky
-        [$activeId] = PageManager::getActive();
+        [$activeId] = Page::getActive();
 
         // nacist stranky
-        $pages = PageManager::getRootPages(
+        $pages = Page::getRootPages(
             new PageTreeFilter([
                 'ord_start' => $ordStart,
                 'ord_end' => $ordEnd,
@@ -332,7 +332,7 @@ abstract class Template
      * css_class (-)                    trida hlavniho tagu menu
      * extend_event ("tpl.menu.item")   extend udalost pro polozky menu
      * type ("tree")                    identifikator typu menu
-     * filter (-)                       pole s nastavenim pro {@see PageManager::getFilter()}
+     * filter (-)                       pole s nastavenim pro {@see Page::getFilter()}
      *
      * @param array $options pole s nastavenim
      * @return string
@@ -358,7 +358,7 @@ abstract class Template
         }
 
         // zjisteni aktivni stranky
-        [$activeId] = PageManager::getActive();
+        [$activeId] = Page::getActive();
 
         // pouziti aktivni stranky
         if ($options['page_id'] == -1) {
@@ -371,7 +371,7 @@ abstract class Template
 
         // zjistit uroven a hloubku
         try {
-            [$level, $depth] = PageManager::getTreeReader()->getLevelAndDepth($options['page_id']);
+            [$level, $depth] = Page::getTreeReader()->getLevelAndDepth($options['page_id']);
             if ($options['max_depth'] !== null) {
                 $depth = min($options['max_depth'], $depth);
             }
@@ -387,14 +387,14 @@ abstract class Template
                 'ord_level' => $options['page_id'] === null ? $level : $level + 1,
             ] + $options['filter']);
 
-        $pages = PageManager::getFlatTree(
+        $pages = Page::getFlatTree(
             $options['page_id'],
             $depth,
             $filter,
             PageMenu::getRequiredExtraColumns()
         );
         if ($options['children_only']) {
-            $pages = PageManager::getTreeReader()->extractChildren($pages, $options['page_id'], true);
+            $pages = Page::getTreeReader()->extractChildren($pages, $options['page_id'], true);
         }
 
         // vykreslit menu
@@ -419,7 +419,7 @@ abstract class Template
         global $_index;
 
         // zjistit aktivni stranku a jeji uroven
-        [$pageId, $pageData] = PageManager::getActive();
+        [$pageId, $pageData] = Page::getActive();
         if ($pageData !== null) {
             $rootLevel = $pageData['node_level'];
         } else {
@@ -428,7 +428,7 @@ abstract class Template
 
         // pridat stranky
         if ($pageId !== null) {
-            foreach (PageManager::getPath($pageId, $rootLevel) as $page) {
+            foreach (Page::getPath($pageId, $rootLevel) as $page) {
                 $breadcrumbs[] = [
                     'title' => $page['title'],
                     'url' => Router::page($page['id'], $page['slug']),
@@ -632,7 +632,7 @@ abstract class Template
     {
         return
             $GLOBALS['_index']['type'] === _index_page
-            && $GLOBALS['_page']['type'] == _page_category
+            && $GLOBALS['_page']['type'] == Page::CATEGORY
             && $GLOBALS['_index']['segment'] !== null;
     }
 
@@ -645,7 +645,7 @@ abstract class Template
     {
         return
             $GLOBALS['_index']['type'] === _index_page
-            && $GLOBALS['_page']['type'] == _page_forum
+            && $GLOBALS['_page']['type'] == Page::FORUM
             && $GLOBALS['_index']['segment'] !== null;
     }
 

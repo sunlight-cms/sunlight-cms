@@ -26,7 +26,7 @@ return function ($id = null) {
         $ranswers = explode("\n", $vpolldata['answers']);
         $rvotes = explode("-", $vpolldata['votes']);
         $rvotes_sum = array_sum($rvotes);
-        if (User::hasPrivilege('pollvote') == 1 && $vpolldata['locked'] != 1 && IpLog::check(_iplog_poll_vote, $id)) {
+        if (User::hasPrivilege('pollvote') == 1 && $vpolldata['locked'] != 1 && IpLog::check(IpLog::POLL_VOTE, $id)) {
             $rallowvote = true;
         } else {
             $rallowvote = false;

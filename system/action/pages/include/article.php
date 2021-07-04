@@ -1,7 +1,7 @@
 <?php
 
 use Sunlight\Article;
-use Sunlight\Comment\CommentService;
+use Sunlight\Post\PostService;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\GenericTemplates;
@@ -121,7 +121,7 @@ if ($_article['rateon'] && Settings::get('ratemode') != 0) {
 
 // formular hodnoceni
 $rateform = null;
-if ($_article['rateon'] && Settings::get('ratemode') != 0 && User::hasPrivilege('artrate') && IpLog::check(_iplog_article_rated, $_article['id'])) {
+if ($_article['rateon'] && Settings::get('ratemode') != 0 && User::hasPrivilege('artrate') && IpLog::check(IpLog::ARTICLE_RATED, $_article['id'])) {
     $rateform = "
 <strong>" . _lang('article.rate.title') . ":</strong>
 <form action='" . Router::generate('system/script/artrate.php') . "' method='post'>
@@ -196,12 +196,12 @@ if ($rateform !== null || !empty($infos)) {
 // komentare
 Extend::call('article.comments.before', $extend_args);
 if ($_article['comments'] && Settings::get('comments')) {
-    $output .= CommentService::render(CommentService::RENDER_ARTICLE_COMMENTS, $_article['id'], $_article['commentslocked']);
+    $output .= PostService::render(PostService::RENDER_ARTICLE_COMMENTS, $_article['id'], $_article['commentslocked']);
 }
 Extend::call('article.comments.after', $extend_args);
 
 // zapocteni precteni
-if ($_article['confirmed'] && $_article['time'] <= time() && IpLog::check(_iplog_article_read, $_article['id'])) {
+if ($_article['confirmed'] && $_article['time'] <= time() && IpLog::check(IpLog::ARTICLE_READ, $_article['id'])) {
     DB::update(_article_table, 'id=' . $_article['id'], ['readnum' => DB::raw('readnum+1')]);
-    IpLog::update(_iplog_article_read, $_article['id']);
+    IpLog::update(IpLog::ARTICLE_READ, $_article['id']);
 }

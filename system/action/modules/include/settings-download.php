@@ -23,7 +23,7 @@ if (isset($_POST['download'])) {
     }
 
     // antispam
-    if (!IpLog::check(_iplog_anti_spam)) {
+    if (!IpLog::check(IpLog::ANTI_SPAM)) {
         $errors[] = _lang('misc.antispam_error', ["%antispamtimeout%" => Settings::get('antispamtimeout')]);
     }
 
@@ -34,7 +34,7 @@ if (isset($_POST['download'])) {
     ]);
 
     if (empty($errors)) {
-        IpLog::update(_iplog_anti_spam);
+        IpLog::update(IpLog::ANTI_SPAM);
         $tmpFile = (new UserData(User::getId(), $options))->generate();
         Response::downloadFile($tmpFile->getPathname(), sprintf('%s-%s.zip', User::getUsername(), date('Y-m-d')));
         $tmpFile->discard();

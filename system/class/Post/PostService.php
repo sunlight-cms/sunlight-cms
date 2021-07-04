@@ -1,6 +1,6 @@
 <?php
 
-namespace Sunlight\Comment;
+namespace Sunlight\Post;
 
 use Sunlight\Captcha;
 use Sunlight\Database\Database as DB;
@@ -18,7 +18,7 @@ use Sunlight\Util\Request;
 use Sunlight\Util\StringManipulator;
 use Sunlight\Util\UrlHelper;
 
-class CommentService
+class PostService
 {
     /**
      * Section comments
@@ -134,7 +134,7 @@ class CommentService
 
         switch ($style) {
             case self::RENDER_SECTION_COMMENTS:
-                $posttype = _post_section_comment;
+                $posttype = Post::SECTION_COMMENT;
                 $xhome = -1;
                 $subclass = "comments";
                 $title = _lang('posts.comments');
@@ -147,7 +147,7 @@ class CommentService
                 break;
 
             case self::RENDER_ARTICLE_COMMENTS:
-                $posttype = _post_article_comment;
+                $posttype = Post::ARTICLE_COMMENT;
                 $xhome = -1;
                 $subclass = "comments";
                 $title = _lang('posts.comments');
@@ -160,7 +160,7 @@ class CommentService
                 break;
 
             case self::RENDER_BOOK_POSTS:
-                $posttype = _post_book_entry;
+                $posttype = Post::BOOK_ENTRY;
                 $xhome = -1;
                 $subclass = "book";
                 $title = null;
@@ -173,7 +173,7 @@ class CommentService
                 break;
 
             case self::RENDER_FORUM_TOPIC_LIST:
-                $posttype = _post_forum_topic;
+                $posttype = Post::FORUM_TOPIC;
                 $xhome = -1;
                 $subclass = "topic";
                 $title = null;
@@ -190,7 +190,7 @@ class CommentService
                 break;
 
             case self::RENDER_FORUM_TOPIC:
-                $posttype = _post_forum_topic;
+                $posttype = Post::FORUM_TOPIC;
                 $xhome = $vars[3];
                 $subclass = "topic-replies";
                 $title = null;
@@ -201,14 +201,14 @@ class CommentService
                 $locked = (bool) $vars[2];
                 $replynote = false;
                 $desc = "";
-                $countcond = "type=" . _post_forum_topic . " AND xhome=" . $xhome . " AND home=" . $home;
+                $countcond = "type=" . Post::FORUM_TOPIC . " AND xhome=" . $xhome . " AND home=" . $home;
                 $autolast = isset($_GET['autolast']);
                 $postlink = true;
                 $replies_enabled = false;
                 break;
 
             case self::RENDER_PM_LIST:
-                $posttype = _post_pm;
+                $posttype = Post::PRIVATE_MSG;
                 $xhome = $home;
                 $subclass = "pm";
                 $title = null;
@@ -220,14 +220,14 @@ class CommentService
                 $unread_count = (int) $vars[1];
                 $replynote = false;
                 $desc = "";
-                $countcond = "type=" . _post_pm . " AND home=" . $home . " AND xhome!=-1";
+                $countcond = "type=" . Post::PRIVATE_MSG . " AND home=" . $home . " AND xhome!=-1";
                 $locked_textid = '4';
                 $autolast = true;
                 $replies_enabled = false;
                 break;
 
             case self::RENDER_PLUGIN_POSTS:
-                $posttype = _post_plugin;
+                $posttype = Post::PLUGIN;
                 $xhome = -1;
                 $subclass = "plugin";
                 $title = ($vars[5] ?? null);
@@ -238,7 +238,7 @@ class CommentService
                 $locked = (bool) $vars[2];
                 $replynote = true;
                 $pluginflag = $vars[3];
-                $countcond = "type=" . _post_plugin . " AND flag=" . $pluginflag;
+                $countcond = "type=" . Post::PLUGIN . " AND flag=" . $pluginflag;
                 if (!$vars[4]) {
                     $desc = '';
                 }
@@ -294,7 +294,7 @@ class CommentService
         $form_output = "<div class='posts-form' id='post-form'>\n";
 
         /* --- init pager --- */
-        $paging = Paginator::render($url, $postsperpage, _comment_table, $countcond, "#posts", $page_param, $autolast);
+        $paging = Paginator::render($url, $postsperpage, _post_table, $countcond, "#posts", $page_param, $autolast);
 
         /* --- message --- */
         if (isset($_GET['r'])) {
@@ -371,12 +371,12 @@ class CommentService
         // base query
         $userQuery = User::createQuery('p.author');
         if ($is_topic_list) {
-            $sql = "SELECT p.id,p.author,p.guest,p.subject,p.time,p.ip,p.locked,p.bumptime,p.sticky,(SELECT COUNT(*) FROM " . _comment_table . " WHERE type=" . _post_forum_topic . " AND xhome=p.id) AS answer_count";
+            $sql = "SELECT p.id,p.author,p.guest,p.subject,p.time,p.ip,p.locked,p.bumptime,p.sticky,(SELECT COUNT(*) FROM " . _post_table . " WHERE type=" . Post::FORUM_TOPIC . " AND xhome=p.id) AS answer_count";
         } else {
             $sql = "SELECT p.id,p.xhome,p.subject,p.text,p.author,p.guest,p.time,p.ip" . Extend::buffer('posts.columns');
         }
         $sql .= ',' . $userQuery['column_list'];
-        $sql .= " FROM " . _comment_table . " AS p";
+        $sql .= " FROM " . _post_table . " AS p";
         $sql .= ' ' . $userQuery['joins'];
 
         // conditions and sorting
@@ -403,7 +403,7 @@ class CommentService
         if ($is_topic_list) {
             // last post (for topic lists)
             if (!empty($item_ids_with_answers)) {
-                $topicextra = DB::query('SELECT p.id,p.xhome,p.author,p.guest,' . $userQuery['column_list'] . ' FROM ' . _comment_table . ' AS p ' . $userQuery['joins'] . ' WHERE p.id IN (SELECT MAX(id) FROM ' . _comment_table . ' WHERE type=' . _post_forum_topic . ' AND home=' . $home . ' AND xhome IN(' . implode(',', $item_ids_with_answers) . ') GROUP BY xhome)');
+                $topicextra = DB::query('SELECT p.id,p.xhome,p.author,p.guest,' . $userQuery['column_list'] . ' FROM ' . _post_table . ' AS p ' . $userQuery['joins'] . ' WHERE p.id IN (SELECT MAX(id) FROM ' . _post_table . ' WHERE type=' . Post::FORUM_TOPIC . ' AND home=' . $home . ' AND xhome IN(' . implode(',', $item_ids_with_answers) . ') GROUP BY xhome)');
                 while ($item = DB::row($topicextra)) {
                     if (!isset($items[$item['xhome']])) {
                         if (_debug) {
@@ -416,7 +416,7 @@ class CommentService
             }
         } elseif (!empty($items)) {
             // answers (to comments)
-            $answers = DB::query("SELECT p.id,p.xhome,p.text,p.author,p.guest,p.time,p.ip" . Extend::buffer('posts.columns') . ',' . $userQuery['column_list']  . " FROM " . _comment_table . " p " . $userQuery['joins'] . " WHERE p.type=" . $posttype . " AND p.home=" . $home . (isset($pluginflag) ? " AND p.flag=" . $pluginflag : '') . " AND p.xhome IN(" . implode(',', array_keys($items)) . ") ORDER BY p.id");
+            $answers = DB::query("SELECT p.id,p.xhome,p.text,p.author,p.guest,p.time,p.ip" . Extend::buffer('posts.columns') . ',' . $userQuery['column_list']  . " FROM " . _post_table . " p " . $userQuery['joins'] . " WHERE p.type=" . $posttype . " AND p.home=" . $home . (isset($pluginflag) ? " AND p.flag=" . $pluginflag : '') . " AND p.xhome IN(" . implode(',', array_keys($items)) . ") ORDER BY p.id");
             while ($item = DB::row($answers)) {
                 if (!isset($items[$item['xhome']])) {
                     continue;
@@ -553,7 +553,7 @@ class CommentService
 
                 // latest answers
                 $output .= "\n<div class='post-answer-list'>\n<h3>" . _lang('posts.forum.lastact') . "</h3>\n";
-                $query = DB::query("SELECT topic.id AS topic_id,topic.subject AS topic_subject,p.author,p.guest,p.time," . $userQuery['column_list'] . " FROM " . _comment_table . " AS p JOIN " . _comment_table . " AS topic ON(topic.type=" . _post_forum_topic . " AND topic.id=p.xhome) " . $userQuery['joins'] . " WHERE p.type=" . _post_forum_topic . " AND p.home=" . $home . " AND p.xhome!=-1 ORDER BY p.id DESC LIMIT " . Settings::get('extratopicslimit'));
+                $query = DB::query("SELECT topic.id AS topic_id,topic.subject AS topic_subject,p.author,p.guest,p.time," . $userQuery['column_list'] . " FROM " . _post_table . " AS p JOIN " . _post_table . " AS topic ON(topic.type=" . Post::FORUM_TOPIC . " AND topic.id=p.xhome) " . $userQuery['joins'] . " WHERE p.type=" . Post::FORUM_TOPIC . " AND p.home=" . $home . " AND p.xhome!=-1 ORDER BY p.id DESC LIMIT " . Settings::get('extratopicslimit'));
                 if (DB::size($query) != 0) {
                     $output .= "<table class='topic-latest'>\n";
                     while ($item = DB::row($query)) {
@@ -597,7 +597,7 @@ class CommentService
      * xhome        id_xhome
      * subject      show subject field 1/0
      * is_topic     the new post is a forum topic 1/0
-     * pluginflag   plugin flag (only for posttype == _post_plugin)
+     * pluginflag   plugin flag (only for posttype == Comment::PLUGIN)
      *
      * @param array $vars
      * @return string
@@ -660,7 +660,7 @@ class CommentService
             'extra_info' => '',
         ];
 
-        $postAccess = Comment::checkAccess($userQuery, $post);
+        $postAccess = Post::checkAccess($userQuery, $post);
 
         // fetch author
         if ($post['author'] != -1) {
@@ -704,7 +704,7 @@ class CommentService
                 . "<div class='post-body" . (isset($avatar) ? ' post-body-withavatar' : '') . "'>"
                     . $avatar
                     . '<div class="post-body-text">'
-                        . Comment::render($post['text'])
+                        . Post::render($post['text'])
                     . "</div>"
                 . "</div>"
                 . "</div>\n";
@@ -724,17 +724,17 @@ class CommentService
     static function deleteByPluginFlag(int $flag, ?int $home, bool $get_count = true): ?int
     {
         // condition
-        $cond = "type=" . _post_plugin . " AND flag=" . $flag;
+        $cond = "type=" . Post::PLUGIN . " AND flag=" . $flag;
         if (isset($home)) {
             $cond .= " AND home=" . $home;
         }
 
         // delete or count
         if ($get_count) {
-            return DB::count(_comment_table, $cond);
+            return DB::count(_post_table, $cond);
         }
 
-        DB::delete(_comment_table, $cond);
+        DB::delete(_post_table, $cond);
 
         return null;
     }

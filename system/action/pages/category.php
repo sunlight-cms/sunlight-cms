@@ -1,6 +1,7 @@
 <?php
 
 use Sunlight\Article;
+use Sunlight\Post\Post;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\Hcm;
@@ -52,7 +53,7 @@ Extend::call('page.category.content.after', $extend_args);
 [$art_joins, $art_cond, $art_count] = Article::createFilter('art', [$id], null, true);
 $paging = Paginator::render($_index['url'], $artsperpage, $art_count);
 $userQuery = User::createQuery('art.author');
-$arts = DB::query("SELECT art.id,art.title,art.slug,art.perex," . $userQuery['column_list'] . "," . ($_page['var4'] ? 'art.picture_uid,' : '') . "art.time,art.comments,art.readnum,cat1.slug AS cat_slug,(SELECT COUNT(*) FROM " . _comment_table . " AS post WHERE home=art.id AND post.type=" . _post_article_comment . ") AS comment_count FROM " . _article_table . " AS art " . $art_joins . ' ' . $userQuery['joins'] . " WHERE " . $art_cond . " ORDER BY " . $artorder . " " . $paging['sql_limit']);
+$arts = DB::query("SELECT art.id,art.title,art.slug,art.perex," . $userQuery['column_list'] . "," . ($_page['var4'] ? 'art.picture_uid,' : '') . "art.time,art.comments,art.readnum,cat1.slug AS cat_slug,(SELECT COUNT(*) FROM " . _post_table . " AS post WHERE home=art.id AND post.type=" . Post::ARTICLE_COMMENT . ") AS comment_count FROM " . _article_table . " AS art " . $art_joins . ' ' . $userQuery['joins'] . " WHERE " . $art_cond . " ORDER BY " . $artorder . " " . $paging['sql_limit']);
 
 if (DB::size($arts) != 0) {
     if (Paginator::atTop()) {

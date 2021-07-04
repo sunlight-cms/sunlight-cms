@@ -1,14 +1,14 @@
 <?php
 
 use Sunlight\Article;
-use Sunlight\Comment\CommentService;
+use Sunlight\Post\PostService;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\Gallery;
 use Sunlight\GenericTemplates;
 use Sunlight\Message;
 use Sunlight\Paginator;
-use Sunlight\Comment\Comment;
+use Sunlight\Post\Post;
 use Sunlight\Router;
 use Sunlight\Settings;
 use Sunlight\User;
@@ -131,14 +131,14 @@ if ($search_query != '') {
         // vyhledani prispevku
         if ($post) {
             // priprava
-            $types = [_post_section_comment, _post_article_comment, _post_book_entry, _post_forum_topic, _post_plugin];
-            [$columns, $joins, $cond] = Comment::createFilter('post', $types, [], $searchQuery('post', ['subject', 'text']));
+            $types = [Post::SECTION_COMMENT, Post::ARTICLE_COMMENT, Post::BOOK_ENTRY, Post::FORUM_TOPIC, Post::PLUGIN];
+            [$columns, $joins, $cond] = Post::createFilter('post', $types, [], $searchQuery('post', ['subject', 'text']));
             $userQuery = User::createQuery('post.author');
             $columns .= ',' . $userQuery['column_list'];
             $joins .= ' ' . $userQuery['joins'];
 
             // vykonani dotazu
-            $q = DB::query($x = 'SELECT ' . $columns . ' FROM ' . _comment_table . ' post ' . $joins . ' WHERE ' . $cond . ' ORDER BY id DESC LIMIT 100');
+            $q = DB::query($x = 'SELECT ' . $columns . ' FROM ' . _post_table . ' post ' . $joins . ' WHERE ' . $cond . ' ORDER BY id DESC LIMIT 100');
             while ($r = DB::row($q)) {
                 // nacteni titulku, odkazu a strany
                 $pagenum = null;
@@ -146,20 +146,20 @@ if ($search_query != '') {
                 [$link, $title] = Router::post($r);
                 switch ($r['type']) {
                         // komentar sekce / prispevek knihy
-                    case _post_section_comment:
-                    case _post_book_entry:
-                        $pagenum = Paginator::getItemPage(Settings::get('commentsperpage'), _comment_table, "id>" . $r['id'] . " AND type=" . $r['type'] . " AND xhome=-1 AND home=" . $r['home']);
+                    case Post::SECTION_COMMENT:
+                    case Post::BOOK_ENTRY:
+                        $pagenum = Paginator::getItemPage(Settings::get('commentsperpage'), _post_table, "id>" . $r['id'] . " AND type=" . $r['type'] . " AND xhome=-1 AND home=" . $r['home']);
                         break;
 
                         // komentar clanku
-                    case _post_article_comment:
-                        $pagenum = Paginator::getItemPage(Settings::get('commentsperpage'), _comment_table, "id>" . $r['id'] . " AND type=" . _post_article_comment . " AND xhome=-1 AND home=" . $r['home']);
+                    case Post::ARTICLE_COMMENT:
+                        $pagenum = Paginator::getItemPage(Settings::get('commentsperpage'), _post_table, "id>" . $r['id'] . " AND type=" . Post::ARTICLE_COMMENT . " AND xhome=-1 AND home=" . $r['home']);
                         break;
 
                         // prispevek na foru
-                    case _post_forum_topic:
+                    case Post::FORUM_TOPIC:
                         if ($r['xhome'] != -1) {
-                            $pagenum = Paginator::getItemPage(Settings::get('commentsperpage'), _comment_table, "id<" . $r['id'] . " AND type=" . _post_forum_topic . " AND xhome=" . $r['xhome'] . " AND home=" . $r['home']);
+                            $pagenum = Paginator::getItemPage(Settings::get('commentsperpage'), _post_table, "id<" . $r['id'] . " AND type=" . Post::FORUM_TOPIC . " AND xhome=" . $r['xhome'] . " AND home=" . $r['home']);
                         } else {
                             $post_anchor = false;
                         }
@@ -169,7 +169,7 @@ if ($search_query != '') {
                 // sestaveni infa
                 $infos = [];
                 if ($r['author'] == -1) {
-                    $infos[] = [_lang('global.postauthor'), "<span class='post-author-guest'>" . CommentService::renderGuestName($r['guest']) . '</span>'];
+                    $infos[] = [_lang('global.postauthor'), "<span class='post-author-guest'>" . PostService::renderGuestName($r['guest']) . '</span>'];
                 } else {
                     $infos[] = [_lang('global.postauthor'), Router::userFromQuery($userQuery, $r)];
                 }
@@ -179,7 +179,7 @@ if ($search_query != '') {
                 $results[] = [
                     (isset($pagenum) ? UrlHelper::appendParams($link, 'page=' . $pagenum) : $link) . ($post_anchor ? '#post-' . $r['id'] : ''),
                     $title,
-                    StringManipulator::ellipsis(strip_tags(Comment::render($r['text'])), 255),
+                    StringManipulator::ellipsis(strip_tags(Post::render($r['text'])), 255),
                     $infos
                 ];
             }

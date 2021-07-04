@@ -94,13 +94,13 @@ abstract class PageMenu
             ) {
                 // vychozi implementace
                 if ($url === null) {
-                    if ($page['type'] == _page_link) {
+                    if ($page['type'] == Page::LINK) {
                         $url = _e($page['link_url']);
                     } else {
                         $url = Router::page($page['id'], $page['slug']);
                     }
                 }
-                if ($page['type'] == _page_link && $page['link_new_window']) {
+                if ($page['type'] == Page::LINK && $page['link_new_window']) {
                     $attrs .= ' target="_blank"';
                 }
                 $link = "<a href=\"" . _e($url) . "\"{$attrs}>{$page['title']}</a>";

@@ -6,7 +6,7 @@ use Sunlight\Core;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\Message;
-use Sunlight\Page\PageManager;
+use Sunlight\Page\Page;
 use Sunlight\Plugin\TemplateService;
 use Sunlight\Router;
 use Sunlight\Settings;
@@ -54,8 +54,8 @@ abstract class PageLister
         ];
 
         // fetch types
-        self::$pageTypes = PageManager::getTypes();
-        self::$pluginTypes = PageManager::getPluginTypes();
+        self::$pageTypes = Page::getTypes();
+        self::$pluginTypes = Page::getPluginTypes();
 
         // setup
         self::setup();
@@ -220,7 +220,7 @@ abstract class PageLister
 
         $output .= "<ul class=\"page-list-breadcrumbs\">\n";
         $output .= "<li><a href=\"" . _e($rootLink->buildRelative()) . "\">" . _lang('global.all') . "</a></li>\n";
-        $path = PageManager::getPath(self::$config['current_page'], null, ['level_inherit', 'layout', 'layout_inherit']);
+        $path = Page::getPath(self::$config['current_page'], null, ['level_inherit', 'layout', 'layout_inherit']);
         foreach ($path as $page) {
             $pageLink = Core::getCurrentUrl();
             $pageLink->set('page_id', $page['id']);
@@ -263,7 +263,7 @@ abstract class PageLister
 
         // load and filter tree
         $tree = self::filterTree(
-            PageManager::getChildren(
+            Page::getChildren(
                 self::$config['current_page'],
                 self::MODE_SINGLE_LEVEL == $options['mode']
                     ? (self::$config['current_page'] !== null ? 1 : 0)
@@ -439,7 +439,7 @@ abstract class PageLister
         ]);
 
         // detect separator, compose link
-        $isSeparator = ($page['type'] == _page_separator);
+        $isSeparator = ($page['type'] == Page::SEPARATOR);
         if (!$isSeparator && $options['links'] && $page['node_depth'] > 0) {
             $nodeLink = Core::getCurrentUrl();
             $nodeLink->set('page_id', $page['id']);
@@ -457,7 +457,7 @@ abstract class PageLister
         }
         $class .= 'page-' . self::$pageTypes[$page['type']];
 
-        if ($page['type'] == _page_plugin && isset(self::$pluginTypes[$page['type_idt']])) {
+        if ($page['type'] == Page::PLUGIN && isset(self::$pluginTypes[$page['type_idt']])) {
             $class .= ' page-'
                 . $typeName
                 . '-'
@@ -505,7 +505,7 @@ abstract class PageLister
         if ($options['type']) {
             if ($isSeparator) {
                 $typeLabel = '';
-            } elseif ($page['type'] == _page_plugin && isset(self::$pluginTypes[$page['type_idt']])) {
+            } elseif ($page['type'] == Page::PLUGIN && isset(self::$pluginTypes[$page['type_idt']])) {
                 $typeLabel = self::$pluginTypes[$page['type_idt']];
             } else {
                 $typeLabel = _lang('page.type.' . self::$pageTypes[$page['type']]);
@@ -555,7 +555,7 @@ abstract class PageLister
         }
 
         // show
-        if ($page['type'] != _page_separator) {
+        if ($page['type'] != Page::SEPARATOR) {
             $actions['show'] = [
                 'url' => Router::page($page['id'], $page['slug']),
                 'new_window' => true,
@@ -567,7 +567,7 @@ abstract class PageLister
 
         // special actions
         switch ($page['type']) {
-            case _page_gallery:
+            case Page::GALLERY:
                 $actions['gallery_images'] = [
                     'url' => 'index.php?p=content-manageimgs&g=' . $page['id'],
                     'icon' => 'images/icons/img.png',
@@ -576,7 +576,7 @@ abstract class PageLister
                 ];
                 break;
 
-            case _page_category:
+            case Page::CATEGORY:
                 $actions['category_articles'] = [
                     'url' => 'index.php?p=content-articles-list&cat=' . $page['id'],
                     'icon' => 'images/icons/list.png',
@@ -628,7 +628,7 @@ abstract class PageLister
     private static function renderPageFlags(array $page): string
     {
         $output = '';
-        if ($page['type'] != _page_separator) {
+        if ($page['type'] != Page::SEPARATOR) {
             if ($page['id'] == Settings::get('index_page_id')) {
                 $iconTitle = _lang('admin.content.form.homepage');
                 $output .= "<img src=\"images/icons/home.png\" class=\"icon\" alt=\"{$iconTitle}\" title=\"{$iconTitle}\">";

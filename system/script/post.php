@@ -2,11 +2,13 @@
 
 use Sunlight\Article;
 use Sunlight\Captcha;
+use Sunlight\Post\Post;
 use Sunlight\Core;
-use Sunlight\Comment\CommentService;
+use Sunlight\Post\PostService;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\IpLog;
+use Sunlight\Page\Page;
 use Sunlight\Settings;
 use Sunlight\User;
 use Sunlight\Util\Html;
@@ -24,31 +26,31 @@ if (User::isLoggedIn()) {
     $guest = '';
     $author = User::getId();
 } else {
-    $guest = CommentService::normalizeGuestName(Request::post('guest', ''));
+    $guest = PostService::normalizeGuestName(Request::post('guest', ''));
     $author = -1;
 }
 
 // typ, domov, text
 $posttarget = (int) Request::post('_posttarget');
 $posttype = (int) Request::post('_posttype');
-$text = Html::cut(_e(trim(Request::post('text'))), ($posttype != _post_shoutbox_entry) ? 16384 : 255);
+$text = Html::cut(_e(trim(Request::post('text'))), ($posttype != Post::SHOUTBOX_ENTRY) ? 16384 : 255);
 
 // domovsky prispevek
-if ($posttype != _post_shoutbox_entry) {
+if ($posttype != Post::SHOUTBOX_ENTRY) {
     $xhome = (int) Request::post('_xhome');
 } else {
     $xhome = -1;
 }
 
 // predmet
-if ($xhome == -1 && in_array($posttype, [_post_forum_topic, _post_pm])) {
+if ($xhome == -1 && in_array($posttype, [Post::FORUM_TOPIC, Post::PRIVATE_MSG])) {
     $subject = Html::cut(_e(StringManipulator::trimExtraWhitespace(Request::post('subject'))), 48);
 } else {
     $subject = '';
 }
 
 // plugin flag
-if ($posttype == _post_plugin) {
+if ($posttype == Post::PLUGIN) {
     $pluginflag = (int) Request::post('_pluginflag');
 } else {
     $pluginflag = 0;
@@ -59,15 +61,15 @@ $continue = false;
 switch ($posttype) {
 
         // sekce
-    case _post_section_comment:
-        $tdata = DB::queryRow("SELECT public,var1,var3,level FROM " . _page_table . " WHERE id=" . $posttarget . " AND type=" . _page_section);
+    case Post::SECTION_COMMENT:
+        $tdata = DB::queryRow("SELECT public,var1,var3,level FROM " . _page_table . " WHERE id=" . $posttarget . " AND type=" . Page::SECTION);
         if ($tdata !== false && User::checkPublicAccess($tdata['public'], $tdata['level']) && $tdata['var1'] == 1 && $tdata['var3'] != 1) {
             $continue = true;
         }
         break;
 
         // clanek
-    case _post_article_comment:
+    case Post::ARTICLE_COMMENT:
         $tdata = DB::queryRow("SELECT id,time,confirmed,author,public,home1,home2,home3,comments,commentslocked FROM " . _article_table . " WHERE id=" . $posttarget);
         if ($tdata !== false && Article::checkAccess($tdata) && $tdata['comments'] == 1 && $tdata['commentslocked'] == 0) {
             $continue = true;
@@ -75,8 +77,8 @@ switch ($posttype) {
         break;
 
         // kniha
-    case _post_book_entry:
-        $tdata = DB::queryRow("SELECT public,var1,var3,level FROM " . _page_table . " WHERE id=" . $posttarget . " AND type=" . _page_book);
+    case Post::BOOK_ENTRY:
+        $tdata = DB::queryRow("SELECT public,var1,var3,level FROM " . _page_table . " WHERE id=" . $posttarget . " AND type=" . Page::BOOK);
         if ($tdata !== false && User::checkPublicAccess($tdata['public'], $tdata['level']) && User::checkPublicAccess($tdata['var1']) && $tdata['var3'] != 1) {
             $continue = true;
         }
@@ -84,7 +86,7 @@ switch ($posttype) {
         break;
 
         // shoutbox
-    case _post_shoutbox_entry:
+    case Post::SHOUTBOX_ENTRY:
         $tdata = DB::queryRow("SELECT public,locked FROM " . _shoutbox_table . " WHERE id=" . $posttarget);
         if ($tdata !== false && User::checkPublicAccess($tdata['public']) && $tdata['locked'] != 1) {
             $continue = true;
@@ -92,15 +94,15 @@ switch ($posttype) {
         break;
 
         // forum
-    case _post_forum_topic:
-        $tdata = DB::queryRow("SELECT public,var2,var3,level FROM " . _page_table . " WHERE id=" . $posttarget . " AND type=" . _page_forum);
+    case Post::FORUM_TOPIC:
+        $tdata = DB::queryRow("SELECT public,var2,var3,level FROM " . _page_table . " WHERE id=" . $posttarget . " AND type=" . Page::FORUM);
         if ($tdata !== false && User::checkPublicAccess($tdata['public'], $tdata['level']) && User::checkPublicAccess($tdata['var3']) && $tdata['var2'] != 1) {
             $continue = true;
         }
         break;
 
         // zprava
-    case _post_pm:
+    case Post::PRIVATE_MSG:
         if (Settings::get('messages') && User::isLoggedIn()) {
             $tdata = DB::queryRow('SELECT sender,receiver FROM ' . _pm_table . ' WHERE id=' . $posttarget . ' AND (sender=' . User::getId() . ' OR receiver=' . User::getId() . ') AND sender_deleted=0 AND receiver_deleted=0');
             if ($tdata !== false) {
@@ -111,7 +113,7 @@ switch ($posttype) {
         break;
 
         // plugin post
-    case _post_plugin:
+    case Post::PLUGIN:
         Extend::call('posts.' . $pluginflag . '.validate', ['home' => $posttarget, 'valid' => &$continue]);
         break;
 
@@ -122,9 +124,9 @@ switch ($posttype) {
 }
 
 //  kontrola prispevku pro odpoved
-if ($xhome != -1 && $posttype != _post_pm) {
+if ($xhome != -1 && $posttype != Post::PRIVATE_MSG) {
     $continue2 = false;
-    $tdata = DB::queryRow("SELECT xhome FROM " . _comment_table . " WHERE id=" . $xhome . " AND home=" . $posttarget . " AND locked=0");
+    $tdata = DB::queryRow("SELECT xhome FROM " . _post_table . " WHERE id=" . $xhome . " AND home=" . $posttarget . " AND locked=0");
     if ($tdata !== false && $tdata['xhome'] == -1) {
         $continue2 = true;
     }
@@ -133,9 +135,9 @@ if ($xhome != -1 && $posttype != _post_pm) {
 }
 
 //  ulozeni prispevku
-if ($continue && $continue2 && $text != '' && ($posttype == _post_shoutbox_entry || Captcha::check())) {
+if ($continue && $continue2 && $text != '' && ($posttype == Post::SHOUTBOX_ENTRY || Captcha::check())) {
     if (Xsrf::check()) {
-        if ($posttype == _post_shoutbox_entry || User::hasPrivilege('unlimitedpostaccess') || IpLog::check(_iplog_anti_spam)) {
+        if ($posttype == Post::SHOUTBOX_ENTRY || User::hasPrivilege('unlimitedpostaccess') || IpLog::check(IpLog::ANTI_SPAM)) {
             if ($guest === '' || User::isNameAvailable($guest)) {
 
                 // zpracovani pluginem
@@ -153,7 +155,7 @@ if ($continue && $continue2 && $text != '' && ($posttype == _post_shoutbox_entry
 
                 if ($allow) {
                     // ulozeni
-                    $insert_id = DB::insert(_comment_table, $post_data = [
+                    $insert_id = DB::insert(_post_table, $post_data = [
                         'type' => $posttype,
                         'home' => $posttarget,
                         'xhome' => $xhome,
@@ -163,22 +165,22 @@ if ($continue && $continue2 && $text != '' && ($posttype == _post_shoutbox_entry
                         'guest' => $guest,
                         'time' => time(),
                         'ip' => _user_ip,
-                        'bumptime' => (($posttype == _post_forum_topic && $xhome == -1) ? time() : '0'),
+                        'bumptime' => (($posttype == Post::FORUM_TOPIC && $xhome == -1) ? time() : '0'),
                         'flag' => $pluginflag
                     ], true);
-                    if (!User::hasPrivilege('unlimitedpostaccess') && $posttype != _post_shoutbox_entry) {
-                        IpLog::update(_iplog_anti_spam);
+                    if (!User::hasPrivilege('unlimitedpostaccess') && $posttype != Post::SHOUTBOX_ENTRY) {
+                        IpLog::update(IpLog::ANTI_SPAM);
                     }
                     $return = 1;
                     Extend::call('posts.new', ['id' => $insert_id, 'posttype' => $posttype, 'post' => $post_data]);
 
                     // topicy - aktualizace bumptime
-                    if ($posttype == _post_forum_topic && $xhome != -1) {
-                        DB::update(_comment_table, 'id=' . $xhome, ['bumptime' => time()]);
+                    if ($posttype == Post::FORUM_TOPIC && $xhome != -1) {
+                        DB::update(_post_table, 'id=' . $xhome, ['bumptime' => time()]);
                     }
 
                     // zpravy - aktualizace casu zmeny a precteni
-                    if ($posttype == _post_pm) {
+                    if ($posttype == Post::PRIVATE_MSG) {
                         $role = (($tdata['sender'] == User::getId()) ? 'sender' : 'receiver');
                         DB::update(_pm_table, 'id=' . $posttarget, [
                             'update_time' => time(),
@@ -187,12 +189,12 @@ if ($continue && $continue2 && $text != '' && ($posttype == _post_shoutbox_entry
                     }
 
                     // shoutboxy - odstraneni prispevku za hranici limitu
-                    if ($posttype == _post_shoutbox_entry) {
-                        $pnum = DB::count(_comment_table, 'type=' . _post_shoutbox_entry . ' AND home=' . DB::val($posttarget));
+                    if ($posttype == Post::SHOUTBOX_ENTRY) {
+                        $pnum = DB::count(_post_table, 'type=' . Post::SHOUTBOX_ENTRY . ' AND home=' . DB::val($posttarget));
                         if ($pnum > Settings::get('sboxmemory')) {
                             $dnum = $pnum - Settings::get('sboxmemory');
-                            $dposts = DB::queryRows("SELECT id FROM " . _comment_table . " WHERE type=" . _post_shoutbox_entry . " AND home=" . $posttarget . " ORDER BY id LIMIT " . $dnum, null, 'id');
-                            DB::deleteSet(_comment_table, 'id', $dpost);
+                            $dposts = DB::queryRows("SELECT id FROM " . _post_table . " WHERE type=" . Post::SHOUTBOX_ENTRY . " AND home=" . $posttarget . " ORDER BY id LIMIT " . $dnum, null, 'id');
+                            DB::deleteSet(_post_table, 'id', $dpost);
                         }
                     }
 
@@ -216,7 +218,7 @@ if ($continue && $continue2 && $text != '' && ($posttype == _post_shoutbox_entry
 /* ---  presmerovani  --- */
 
 $returnUrl = null;
-if ($posttype != _post_shoutbox_entry) {
+if ($posttype != Post::SHOUTBOX_ENTRY) {
     $returnUrl = Response::getReturnUrl();
 
     if ($return != 1) {
@@ -230,8 +232,8 @@ if ($posttype != _post_shoutbox_entry) {
     $returnUrl = UrlHelper::appendParams(
         $returnUrl,
         "r=" . $return
-            . (($posttype == _post_forum_topic) ? '&autolast' : '')
-            . (($posttype != _post_shoutbox_entry && isset($insert_id)) ? '#post-' . $insert_id : (($return != 1) ? '#post-form' : ''))
+            . (($posttype == Post::FORUM_TOPIC) ? '&autolast' : '')
+            . (($posttype != Post::SHOUTBOX_ENTRY && isset($insert_id)) ? '#post-' . $insert_id : (($return != 1) ? '#post-form' : ''))
     );
 }
 

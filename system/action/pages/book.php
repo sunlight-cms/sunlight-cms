@@ -1,6 +1,6 @@
 <?php
 
-use Sunlight\Comment\CommentService;
+use Sunlight\Post\PostService;
 use Sunlight\Extend;
 use Sunlight\Hcm;
 use Sunlight\Settings;
@@ -24,7 +24,7 @@ if ($_page['content'] != "") {
 Extend::call('page.book.content.after', $extend_args);
 
 // prispevky
-$output .= CommentService::render(CommentService::RENDER_BOOK_POSTS, $id, [
+$output .= PostService::render(PostService::RENDER_BOOK_POSTS, $id, [
     $_page['var2'],
     User::checkPublicAccess($_page['var1']),
     $_page['var3'],

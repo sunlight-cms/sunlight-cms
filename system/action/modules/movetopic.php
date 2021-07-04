@@ -3,8 +3,8 @@
 use Sunlight\Database\Database as DB;
 use Sunlight\Database\SimpleTreeFilter;
 use Sunlight\Message;
-use Sunlight\Page\PageManager;
-use Sunlight\Comment\Comment;
+use Sunlight\Page\Page;
+use Sunlight\Post\Post;
 use Sunlight\Router;
 use Sunlight\Template;
 use Sunlight\User;
@@ -23,14 +23,14 @@ if (!User::isLoggedIn()) {
 $message = "";
 $id = (int) Request::get('id');
 $userQuery = User::createQuery('p.author');
-$query = DB::queryRow("SELECT p.id,p.home,p.time,p.subject,p.sticky,r.slug forum_slug,r.layout forum_layout," . $userQuery['column_list'] . " FROM " . _comment_table . " p JOIN " . _page_table . " r ON(p.home=r.id) " . $userQuery['joins'] . " WHERE p.id=" . $id . " AND p.type=" . _post_forum_topic . " AND p.xhome=-1");
+$query = DB::queryRow("SELECT p.id,p.home,p.time,p.subject,p.sticky,r.slug forum_slug,r.layout forum_layout," . $userQuery['column_list'] . " FROM " . _post_table . " p JOIN " . _page_table . " r ON(p.home=r.id) " . $userQuery['joins'] . " WHERE p.id=" . $id . " AND p.type=" . Post::FORUM_TOPIC . " AND p.xhome=-1");
 if ($query !== false) {
     if (isset($query['forum_layout'])) {
         Template::change($query['forum_layout']);
     }
 
     $_index['backlink'] = Router::topic($query['id'], $query['forum_slug']);
-    if (!Comment::checkAccess($userQuery, $query) || !User::hasPrivilege('movetopics')) {
+    if (!Post::checkAccess($userQuery, $query) || !User::hasPrivilege('movetopics')) {
         $_index['type'] = _index_unauthorized;
         return;
     }
@@ -39,14 +39,14 @@ if ($query !== false) {
     return;
 }
 
-$forums = PageManager::getFlatTree(null, null, new SimpleTreeFilter(['type' => _page_forum]));
+$forums = Page::getFlatTree(null, null, new SimpleTreeFilter(['type' => Page::FORUM]));
 
 /* ---  ulozeni  --- */
 
 if (isset($_POST['new_forum'])) {
     $new_forum_id = (int) Request::post('new_forum');
-    if (isset($forums[$new_forum_id]) && $forums[$new_forum_id]['type'] == _page_forum) {
-        DB::update(_comment_table, 'id=' . DB::val($id) . ' OR (type=' . _post_forum_topic . ' AND xhome=' . $id . ')', ['home' => $new_forum_id]);
+    if (isset($forums[$new_forum_id]) && $forums[$new_forum_id]['type'] == Page::FORUM) {
+        DB::update(_post_table, 'id=' . DB::val($id) . ' OR (type=' . Post::FORUM_TOPIC . ' AND xhome=' . $id . ')', ['home' => $new_forum_id]);
         $query['home'] = $new_forum_id;
         $_index['backlink'] = Router::topic($query['id']);
         $message = Message::ok(_lang('mod.movetopic.ok'));
@@ -76,7 +76,7 @@ if (empty($forums)) {
     foreach($forums as $forum_id => $forum) {
         $output .= '<option'
             . " value='" . $forum_id . "'"
-            . ($forum['type'] != _page_forum ? " disabled" : '')
+            . ($forum['type'] != Page::FORUM ? " disabled" : '')
             . ($forum_id == $query['home'] ? " selected" : '')
             . ">"
             . str_repeat('&nbsp;&nbsp;&nbsp;│&nbsp;', $forum['node_level'])

@@ -24,7 +24,7 @@ if (isset($_POST['bulk_action'])) {
             $user_delete_counter = 0;
             foreach ($user_ids as $user_id) {
                 $user_id = (int) $user_id;
-                if ($user_id !== _super_admin_id && $user_id != User::getId() && User::delete($user_id)) {
+                if ($user_id !== User::SUPER_ADMIN_ID && $user_id != User::getId() && User::delete($user_id)) {
                     ++$user_delete_counter;
                 }
             }
@@ -76,7 +76,7 @@ $output .= '
 <form class="cform" action="index.php" method="get">
 <input type="hidden" name="p" value="users-list">
 <input type="hidden" name="search"' . Form::restoreGetValue('search', '') . '>
-<strong>' . _lang('admin.users.list.groupfilter') . ':</strong> ' . Admin::userSelect("group_id", $group, "id!=" . _group_guests, null, _lang('global.all'), true) . '
+<strong>' . _lang('admin.users.list.groupfilter') . ':</strong> ' . Admin::userSelect("group_id", $group, "id!=" . User::GUEST_GROUP_ID, null, _lang('global.all'), true) . '
 <input class="button" type="submit" value="' . _lang('global.apply') . '">
 </form>
 </td>

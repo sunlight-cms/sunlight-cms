@@ -2,7 +2,7 @@
 
 use Sunlight\Database\Database as DB;
 use Sunlight\Message;
-use Sunlight\Comment\Comment;
+use Sunlight\Post\Post;
 use Sunlight\Router;
 use Sunlight\Template;
 use Sunlight\User;
@@ -23,7 +23,7 @@ $message = '';
 $unstick = '';
 $id = (int) Request::get('id');
 $userQuery = User::createQuery('p.author');
-$query = DB::queryRow("SELECT p.id,p.time,p.subject,p.sticky,r.slug forum_slug,r.layout forum_layout," . $userQuery['column_list'] . " FROM " . _comment_table . " p JOIN " . _page_table . " r ON(p.home=r.id) " . $userQuery['joins'] . " WHERE p.id=" . $id . " AND p.type=" . _post_forum_topic . " AND p.xhome=-1");
+$query = DB::queryRow("SELECT p.id,p.time,p.subject,p.sticky,r.slug forum_slug,r.layout forum_layout," . $userQuery['column_list'] . " FROM " . _post_table . " p JOIN " . _page_table . " r ON(p.home=r.id) " . $userQuery['joins'] . " WHERE p.id=" . $id . " AND p.type=" . Post::FORUM_TOPIC . " AND p.xhome=-1");
 if ($query !== false) {
     if (isset($query['forum_layout'])) {
         Template::change($query['forum_layout']);
@@ -33,7 +33,7 @@ if ($query !== false) {
     if ($query['sticky']) {
         $unstick = '2';
     }
-    if (!Comment::checkAccess($userQuery, $query) || !User::hasPrivilege('stickytopics')) {
+    if (!Post::checkAccess($userQuery, $query) || !User::hasPrivilege('stickytopics')) {
         $_index['type'] = _index_unauthorized;
         return;
     }
@@ -45,7 +45,7 @@ if ($query !== false) {
 /* ---  ulozeni  --- */
 
 if (isset($_POST['doit'])) {
-    DB::update(_comment_table, 'id=' . DB::val($id), ['sticky' => (($query['sticky'] == 1) ? 0 : 1)]);
+    DB::update(_post_table, 'id=' . DB::val($id), ['sticky' => (($query['sticky'] == 1) ? 0 : 1)]);
     $message = Message::ok(_lang('mod.stickytopic.ok' . $unstick));
     $success = true;
 }

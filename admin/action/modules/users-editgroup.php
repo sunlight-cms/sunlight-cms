@@ -17,7 +17,7 @@ defined('_root') or exit;
 /* ---  priprava promennych  --- */
 
 $levelconflict = false;
-$sysgroups_array = [_group_admin, _group_guests /*,_group_registered is not necessary*/ ];
+$sysgroups_array = [User::ADMIN_GROUP_ID, User::GUEST_GROUP_ID /*,User::REGISTERED_GROUP_ID is not necessary*/ ];
 $unregistered_useable = ['postcomments', 'artrate', 'pollvote'];
 
 // id
@@ -139,8 +139,8 @@ if ($continue) {
         $rights .= "<fieldset><legend>" . $section['title'] . "</legend><table>\n";
         foreach ($section['rights'] as $item) {
             if (
-                $id == _group_admin
-                || $id == _group_guests && !in_array($item['name'], $unregistered_useable, true)
+                $id == User::ADMIN_GROUP_ID
+                || $id == User::GUEST_GROUP_ID && !in_array($item['name'], $unregistered_useable, true)
                 || !User::hasPrivilege($item['name'])
             ) {
                 $disabled = true;
@@ -177,28 +177,28 @@ if ($continue) {
             $changeset['title'] = _lang('global.novalue');
         }
         $changeset['descr'] = Html::cut(_e(trim(Request::post('descr'))), 255);
-        if ($id != _group_guests) {
+        if ($id != User::GUEST_GROUP_ID) {
             $changeset['icon'] = Html::cut(_e(trim(Request::post('icon'))), 16);
         }
         $changeset['color'] = Admin::formatHtmlColor(Request::post('color', ''), false, '');
-        if ($id > _group_guests) {
+        if ($id > User::GUEST_GROUP_ID) {
             $changeset['blocked'] = Form::loadCheckbox('blocked');
         }
-        if ($id != _group_guests) {
+        if ($id != User::GUEST_GROUP_ID) {
             $changeset['reglist'] = Form::loadCheckbox('reglist');
         }
 
         // uroven, blokovani
-        if ($id > _group_guests) {
-            $changeset['level'] = Math::range((int) Request::post('level'), 0, min(User::getLevel(), _priv_max_assignable_level));
+        if ($id > User::GUEST_GROUP_ID) {
+            $changeset['level'] = Math::range((int) Request::post('level'), 0, min(User::getLevel(), User::MAX_ASSIGNABLE_LEVEL));
         }
 
         // prava
-        if ($id != _group_admin) {
+        if ($id != User::ADMIN_GROUP_ID) {
             foreach ($rights_array as $section) {
                 foreach ($section['rights'] as $item) {
                     if (
-                        $id == _group_guests && !in_array($item['name'], $unregistered_useable, true)
+                        $id == User::GUEST_GROUP_ID && !in_array($item['name'], $unregistered_useable, true)
                         || !User::hasPrivilege($item['name'])
                     ) {
                         continue;
@@ -226,7 +226,7 @@ if ($continue) {
 
     /* -- nacist existujici ikony */
 
-    if ($id != _group_guests) {
+    if ($id != User::GUEST_GROUP_ID) {
         $icons = "<div class='radio-group'>\n";
         $icons .= "<label><input" . Form::activateCheckbox($query['icon'] === '') . " type='radio' name='icon' value=''> " . _lang('global.undefined') . "</label>\n";
 
@@ -266,10 +266,10 @@ if ($continue) {
 
   <tr>
   <th>" . _lang('admin.users.groups.level') . "</th>
-  <td><input type='number' min='0' max='" . min(User::getLevel() -1, _priv_max_assignable_level) . "' name='level' class='inputmedium' value='" . $query['level'] . "'" . Form::disableInputUnless(!$systemitem) . "></td>
+  <td><input type='number' min='0' max='" . min(User::getLevel() -1, User::MAX_ASSIGNABLE_LEVEL) . "' name='level' class='inputmedium' value='" . $query['level'] . "'" . Form::disableInputUnless(!$systemitem) . "></td>
   </tr>
 
-  " . (($id != _group_guests) ? "
+  " . (($id != User::GUEST_GROUP_ID) ? "
   <tr><th><dfn title='" . _lang('admin.users.groups.icon.help', ['%dir%' => $icon_dir]) . "'>" . _lang('admin.users.groups.icon') . "</dfn></th><td>" . $icons . "</td></tr>
   <tr><th>" . _lang('admin.users.groups.color') . "</th><td><input type='text' name='color' class='inputsmall' value='" . $query['color'] . "' maxlength='16'> <input type='color' value='" . Admin::formatHtmlColor($query['color']) . "' onchange='this.form.elements.color.value=this.value'></td></tr>
   <tr><th>" . _lang('admin.users.groups.reglist') . "</th><td><input type='checkbox' name='reglist' value='1'" . Form::activateCheckbox($query['reglist']) . "></td></tr>
@@ -277,7 +277,7 @@ if ($continue) {
 
   <tr>
   <th>" . _lang('admin.users.groups.blocked') . "</th>
-  <td><input type='checkbox' name='blocked' value='1'" . Form::activateCheckbox($query['blocked']) . Form::disableInputUnless($id != _group_admin && $id != _group_guests) . "></td>
+  <td><input type='checkbox' name='blocked' value='1'" . Form::activateCheckbox($query['blocked']) . Form::disableInputUnless($id != User::ADMIN_GROUP_ID && $id != User::GUEST_GROUP_ID) . "></td>
   </tr>
 
   </table>

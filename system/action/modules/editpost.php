@@ -1,13 +1,13 @@
 <?php
 
 use Sunlight\Core;
-use Sunlight\Comment\CommentService;
+use Sunlight\Post\PostService;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\GenericTemplates;
 use Sunlight\Message;
 use Sunlight\Paginator;
-use Sunlight\Comment\Comment;
+use Sunlight\Post\Post;
 use Sunlight\PostForm;
 use Sunlight\Router;
 use Sunlight\Settings;
@@ -31,18 +31,18 @@ if (!User::isLoggedIn()) {
 $message = '';
 $form = true;
 $id = (int) Request::get('id');
-[$columns, $joins, $cond] = Comment::createFilter('post');
+[$columns, $joins, $cond] = Post::createFilter('post');
 $userQuery = User::createQuery('post.author');
 $columns .= ',home_page.layout page_layout,' . $userQuery['column_list'];
 $joins .= ' ' . $userQuery['joins'];
-$query = DB::queryRow("SELECT " . $columns . " FROM " . _comment_table . " post " . $joins . " WHERE post.id=" . $id . " AND " . $cond);
+$query = DB::queryRow("SELECT " . $columns . " FROM " . _post_table . " post " . $joins . " WHERE post.id=" . $id . " AND " . $cond);
 
 if ($query !== false) {
     if (isset($query['page_layout'])) {
         Template::change($query['page_layout']);
     }
 
-    if (Comment::checkAccess($userQuery, $query)) {
+    if (Post::checkAccess($userQuery, $query)) {
         $bbcode = true;
         Extend::call('mod.editpost.backlink', ['backlink' => &$_index['backlink'], 'post' => $query]);
 
@@ -50,23 +50,23 @@ if ($query !== false) {
             [$url] = Router::post($query);
 
             switch ($query['type']) {
-                case _post_section_comment:
-                    $_index['backlink'] = UrlHelper::appendParams($url, "page=" . Paginator::getItemPage(Settings::get('commentsperpage'), _comment_table, "id>" . $query['id'] . " AND type=" . _post_section_comment . " AND xhome=-1 AND home=" . $query['home'])) . "#post-" . $query['id'];
+                case Post::SECTION_COMMENT:
+                    $_index['backlink'] = UrlHelper::appendParams($url, "page=" . Paginator::getItemPage(Settings::get('commentsperpage'), _post_table, "id>" . $query['id'] . " AND type=" . Post::SECTION_COMMENT . " AND xhome=-1 AND home=" . $query['home'])) . "#post-" . $query['id'];
                     break;
-                case _post_article_comment:
-                    $_index['backlink'] = UrlHelper::appendParams($url, "page=" . Paginator::getItemPage(Settings::get('commentsperpage'), _comment_table, "id>" . $query['id'] . " AND type=" . _post_article_comment . " AND xhome=-1 AND home=" . $query['home'])) . "#post-" . $query['id'];
+                case Post::ARTICLE_COMMENT:
+                    $_index['backlink'] = UrlHelper::appendParams($url, "page=" . Paginator::getItemPage(Settings::get('commentsperpage'), _post_table, "id>" . $query['id'] . " AND type=" . Post::ARTICLE_COMMENT . " AND xhome=-1 AND home=" . $query['home'])) . "#post-" . $query['id'];
                     break;
-                case _post_book_entry:
+                case Post::BOOK_ENTRY:
                     $postsperpage = DB::queryRow("SELECT var2 FROM " . _page_table . " WHERE id=" . $query['home']);
                     if ($postsperpage['var2'] === null) {
                         $postsperpage['var2'] = Settings::get('commentsperpage');
                     }
-                    $_index['backlink'] = UrlHelper::appendParams($url, "page=" . Paginator::getItemPage($postsperpage['var2'], _comment_table, "id>" . $query['id'] . " AND type=" . _post_book_entry . " AND xhome=-1 AND home=" . $query['home'])) . "#post-" . $query['id'];
+                    $_index['backlink'] = UrlHelper::appendParams($url, "page=" . Paginator::getItemPage($postsperpage['var2'], _post_table, "id>" . $query['id'] . " AND type=" . Post::BOOK_ENTRY . " AND xhome=-1 AND home=" . $query['home'])) . "#post-" . $query['id'];
                     break;
-                case _post_shoutbox_entry:
+                case Post::SHOUTBOX_ENTRY:
                     $bbcode = false;
                     break;
-                case _post_forum_topic:
+                case Post::FORUM_TOPIC:
                     if ($query['xhome'] == -1) {
                         if (!Form::loadCheckbox("delete")) {
                             $_index['backlink'] = $url;
@@ -74,15 +74,15 @@ if ($query !== false) {
                             $_index['backlink'] = Router::page($query['home'], $query['page_slug']);
                         }
                     } else {
-                        $_index['backlink'] = UrlHelper::appendParams($url, "page=" . Paginator::getItemPage(Settings::get('commentsperpage'), _comment_table, "id<" . $query['id'] . " AND type=" . _post_forum_topic . " AND xhome=" . $query['xhome'] . " AND home=" . $query['home'])) . "#post-" . $query['id'];
+                        $_index['backlink'] = UrlHelper::appendParams($url, "page=" . Paginator::getItemPage(Settings::get('commentsperpage'), _post_table, "id<" . $query['id'] . " AND type=" . Post::FORUM_TOPIC . " AND xhome=" . $query['xhome'] . " AND home=" . $query['home'])) . "#post-" . $query['id'];
                     }
                     break;
 
-                case _post_pm:
-                    $_index['backlink'] = UrlHelper::appendParams($url, 'page=' . Paginator::getItemPage(Settings::get('messagesperpage'), _comment_table, 'id<' . $query['id'] . ' AND type=' . _post_pm . ' AND home=' . $query['home'])) . '#post-' . $query['id'];
+                case Post::PRIVATE_MSG:
+                    $_index['backlink'] = UrlHelper::appendParams($url, 'page=' . Paginator::getItemPage(Settings::get('messagesperpage'), _post_table, 'id<' . $query['id'] . ' AND type=' . Post::PRIVATE_MSG . ' AND home=' . $query['home'])) . '#post-' . $query['id'];
                     break;
 
-                case _post_plugin:
+                case Post::PLUGIN:
                     if ($url === '') {
                         $output .= Message::error(_lang('plugin.error', ['%plugin%' => $query['flag']]), true);
 
@@ -116,13 +116,13 @@ if (isset($_POST['text'])) {
 
         // jmeno hosta
         if ($query['author'] == -1) {
-            $guest = CommentService::normalizeGuestName(Request::post('guest', ''));
+            $guest = PostService::normalizeGuestName(Request::post('guest', ''));
         } else {
             $guest = '';
         }
 
-        $text = Html::cut(_e(trim(Request::post('text'))), ($query['type'] != _post_shoutbox_entry) ? 16384 : 255);
-        if ($query['xhome'] == -1 && in_array($query['type'], [_post_forum_topic, _post_pm])) {
+        $text = Html::cut(_e(trim(Request::post('text'))), ($query['type'] != Post::SHOUTBOX_ENTRY) ? 16384 : 255);
+        if ($query['xhome'] == -1 && in_array($query['type'], [Post::FORUM_TOPIC, Post::PRIVATE_MSG])) {
             $subject = Html::cut(_e(StringManipulator::trimExtraWhitespace(Request::post('subject'))), 48);
             if ($subject === '')  {
                 $subject = '-';
@@ -146,7 +146,7 @@ if (isset($_POST['text'])) {
                 if(isset($guest)) {
                     $update_data['guest'] = $guest;
                 }
-                DB::update(_comment_table, 'id=' . DB::val($id), $update_data);
+                DB::update(_post_table, 'id=' . DB::val($id), $update_data);
                 $_index['type'] = _index_redir;
                 $_index['redirect_to'] = Router::module('editpost', 'id=' . $id . '&saved', true);
 
@@ -159,7 +159,7 @@ if (isset($_POST['text'])) {
     } else {
 
         /* -  odstraneni  - */
-        if ($query['type'] != _post_pm || $query['xhome'] != -1) {
+        if ($query['type'] != Post::PRIVATE_MSG || $query['xhome'] != -1) {
 
             Extend::call('posts.delete', [
                 'id' => $id,
@@ -167,20 +167,20 @@ if (isset($_POST['text'])) {
             ]);
 
             // debump topicu
-            if ($query['type'] == _post_forum_topic && $query['xhome'] != -1) {
+            if ($query['type'] == Post::FORUM_TOPIC && $query['xhome'] != -1) {
                 // kontrola, zda se jedna o posledni odpoved
                 // TODO: fixme
-                $chr = DB::queryRow('SELECT id,time FROM ' . _comment_table . ' WHERE type=' . _post_forum_topic . ' AND xhome=' . $query['xhome'] . ' ORDER BY id DESC LIMIT 2');
+                $chr = DB::queryRow('SELECT id,time FROM ' . _post_table . ' WHERE type=' . Post::FORUM_TOPIC . ' AND xhome=' . $query['xhome'] . ' ORDER BY id DESC LIMIT 2');
                 if ($chr !== false && $chr['id'] == $id) {
                     // ano, debump podle casu predchoziho postu nebo samotneho topicu (pokud se smazala jedina odpoved)
-                    DB::update(_comment_table, 'id=' . $query['xhome'], ['bumptime' => (($chr !== false) ? $chr['time'] : DB::raw('time'))]);
+                    DB::update(_post_table, 'id=' . $query['xhome'], ['bumptime' => (($chr !== false) ? $chr['time'] : DB::raw('time'))]);
                 }
             }
 
             // smazani prispevku a odpovedi
-            DB::delete(_comment_table, 'id=' . DB::val($id));
+            DB::delete(_post_table, 'id=' . DB::val($id));
             if ($query['xhome'] == -1) {
-                DB::delete(_comment_table, 'xhome=' . DB::val($id) . ' AND home=' . DB::val($query['home']) . ' AND type=' . DB::val($query['type']));
+                DB::delete(_post_table, 'xhome=' . DB::val($id) . ' AND home=' . DB::val($query['home']) . ' AND type=' . DB::val($query['type']));
             }
 
             // info
@@ -210,8 +210,8 @@ if ($form) {
     if ($query['author'] == -1) {
         $inputs[] = ['label' => _lang('posts.guestname'), 'content' => "<input type='text' name='guest' class='inputsmall' value='" . $query['guest'] . "' maxlength='24'>"];
     }
-    if ($query['xhome'] == -1 && in_array($query['type'], [_post_forum_topic, _post_pm])) {
-        $inputs[] = ['label' => _lang((($query['type'] != _post_forum_topic) ? 'posts.subject' : 'posts.topic')), 'content' => "<input type='text' name='subject' class='inputmedium' maxlength='48' value='" . $query['subject'] . "'>"];
+    if ($query['xhome'] == -1 && in_array($query['type'], [Post::FORUM_TOPIC, Post::PRIVATE_MSG])) {
+        $inputs[] = ['label' => _lang((($query['type'] != Post::FORUM_TOPIC) ? 'posts.subject' : 'posts.topic')), 'content' => "<input type='text' name='subject' class='inputmedium' maxlength='48' value='" . $query['subject'] . "'>"];
     }
     $inputs[] = ['label' => _lang('posts.text'), 'content' => "<textarea name='text' class='areamedium' rows='5' cols='33'>" . $query['text'] . "</textarea>", 'top' => true];
     $inputs[] = ['label' => '', 'content' => PostForm::renderControls('postform', 'text', $bbcode)];
@@ -222,10 +222,10 @@ if ($form) {
             'action' => Router::module('editpost', 'id=' . $id),
             'submit_text' => _lang('global.save'),
             'submit_append' => ' ' . PostForm::renderPreviewButton('postform', 'text')
-                . (($query['type'] != _post_pm || $query['xhome'] != -1) ? "<br><br><label><input type='checkbox' name='delete' value='1'> " . _lang('mod.editpost.delete') . "</label>" : ''),
+                . (($query['type'] != Post::PRIVATE_MSG || $query['xhome'] != -1) ? "<br><br><label><input type='checkbox' name='delete' value='1'> " . _lang('mod.editpost.delete') . "</label>" : ''),
         ],
         $inputs
     );
 
-    $output .= GenericTemplates::jsLimitLength((($query['type'] != _post_shoutbox_entry) ? 16384 : 255), "postform", "text");
+    $output .= GenericTemplates::jsLimitLength((($query['type'] != Post::SHOUTBOX_ENTRY) ? 16384 : 255), "postform", "text");
 }

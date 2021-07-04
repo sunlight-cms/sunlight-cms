@@ -3,6 +3,7 @@
 namespace Sunlight\Page;
 
 use Sunlight\Admin\Admin;
+use Sunlight\Post\Post;
 use Sunlight\Database\Database as DB;
 use Sunlight\Database\TreeReaderOptions;
 use Sunlight\Extend;
@@ -33,37 +34,37 @@ class PageManipulator
     static function getInitialData(int $type, ?string $type_idt): array
     {
         switch ($type) {
-            case _page_section:
+            case Page::SECTION:
                 $var1 = 0;
                 $var2 = null;
                 $var3 = 0;
                 $var4 = 0;
                 break;
-            case _page_category:
+            case Page::CATEGORY:
                 $var1 = 1;
                 $var2 = null;
                 $var3 = 1;
                 $var4 = 1;
                 break;
-            case _page_book:
+            case Page::BOOK:
                 $var1 = 1;
                 $var2 = null;
                 $var3 = 0;
                 $var4 = 0;
                 break;
-            case _page_gallery:
+            case Page::GALLERY:
                 $var1 = null;
                 $var2 = null;
                 $var3 = null;
                 $var4 = null;
                 break;
-            case _page_group:
+            case Page::GROUP:
                 $var1 = 1;
                 $var2 = 0;
                 $var3 = 0;
                 $var4 = 0;
                 break;
-            case _page_forum:
+            case Page::FORUM:
                 $var1 = null;
                 $var2 = 0;
                 $var3 = 1;
@@ -131,8 +132,8 @@ class PageManipulator
         $options->nodeId = $id;
         $options->columns = ['slug', 'slug_abs'];
 
-        return PageManager::getTreeManager()->propagate(
-            PageManager::getTreeReader()->getFlatTree($options),
+        return Page::getTreeManager()->propagate(
+            Page::getTreeReader()->getFlatTree($options),
             null,
             function ($baseSlug, $currentPage) {
                 if (!$currentPage['slug_abs']) {
@@ -173,8 +174,8 @@ class PageManipulator
         $options->nodeId = $id;
         $options->columns = ['level', 'level_inherit'];
 
-        return PageManager::getTreeManager()->propagate(
-            PageManager::getTreeReader()->getFlatTree($options),
+        return Page::getTreeManager()->propagate(
+            Page::getTreeReader()->getFlatTree($options),
             0,
             function ($contextLevel, $currentPage) {
                 if ($currentPage['level_inherit'] && $currentPage['level'] != $contextLevel) {
@@ -207,8 +208,8 @@ class PageManipulator
         $options->nodeId = $id;
         $options->columns = ['layout', 'layout_inherit'];
 
-        return PageManager::getTreeManager()->propagate(
-            PageManager::getTreeReader()->getFlatTree($options),
+        return Page::getTreeManager()->propagate(
+            Page::getTreeReader()->getFlatTree($options),
             null,
             function ($contextLayout, $currentPage) {
                 if ($currentPage['layout_inherit'] && $currentPage['layout'] !== $contextLayout) {
@@ -259,7 +260,7 @@ class PageManipulator
             DB::delete(_page_table, 'id=' . $page['id']);
 
             // obnova stromu od nadrazeneho uzlu / rootu
-            PageManager::getTreeManager()->refresh($page['node_parent']);
+            Page::getTreeManager()->refresh($page['node_parent']);
 
             // udalost
             Extend::call('admin.page.delete', ['id' => $page['id'], 'page' => [
@@ -291,22 +292,22 @@ class PageManipulator
 
         // dle typu
         switch ($page['type']) {
-            case _page_section:
-                $dependencies[] = DB::count(_comment_table, 'type=' . _post_section_comment . ' AND home=' . DB::val($page['id'])) . " " . _lang('count.comments');
+            case Page::SECTION:
+                $dependencies[] = DB::count(_post_table, 'type=' . Post::SECTION_COMMENT . ' AND home=' . DB::val($page['id'])) . " " . _lang('count.comments');
                 break;
-            case _page_category:
+            case Page::CATEGORY:
                 $dependencies[] = DB::count(_article_table, 'home1=' . DB::val($page['id']) . ' AND home2=-1 AND home3=-1') . " " . _lang('count.articles');
                 break;
-            case _page_book:
-                $dependencies[] = DB::count(_comment_table, 'type=' . _post_book_entry . ' AND home=' . DB::val($page['id'])) . " " . _lang('count.posts');
+            case Page::BOOK:
+                $dependencies[] = DB::count(_post_table, 'type=' . Post::BOOK_ENTRY . ' AND home=' . DB::val($page['id'])) . " " . _lang('count.posts');
                 break;
-            case _page_gallery:
+            case Page::GALLERY:
                 $dependencies[] = DB::count(_gallery_image_table, 'home=' . DB::val($page['id'])) . " " . _lang('count.images');
                 break;
-            case _page_forum:
-                $dependencies[] = DB::count(_comment_table, 'type=' . _post_forum_topic . ' AND home=' . DB::val($page['id'])) . " " . _lang('count.posts');
+            case Page::FORUM:
+                $dependencies[] = DB::count(_post_table, 'type=' . Post::FORUM_TOPIC . ' AND home=' . DB::val($page['id'])) . " " . _lang('count.posts');
                 break;
-            case _page_plugin:
+            case Page::PLUGIN:
                 Extend::call('page.plugin.' . $page['type_idt'] . '.delete.confirm', [
                     'contents' => &$dependencies,
                     'page' => [
@@ -320,9 +321,9 @@ class PageManipulator
 
         // podstranky
         if ($childPages && $page['node_depth'] > 0) {
-            $pageTypes = PageManager::getTypes();
+            $pageTypes = Page::getTypes();
 
-            foreach (PageManager::getChildren($page['id'], $page['node_depth']) as $childPage) {
+            foreach (Page::getChildren($page['id'], $page['node_depth']) as $childPage) {
                 $dependencies[] = sprintf(
                     '%s%s <small>(%s, <code>%s</code>)</small>',
                     str_repeat('&nbsp;', ($childPage['node_level'] - $page['node_level'] - 1) * 4),
@@ -363,7 +364,7 @@ class PageManipulator
         }
 
         // specialni pripad: plugin stranka
-        if ($deleteDirect && $page['type'] == _page_plugin) {
+        if ($deleteDirect && $page['type'] == Page::PLUGIN) {
             $handled = false;
             Extend::call('page.plugin.' . $page['type_idt'] . '.delete.do', [
                 'handled' => &$handled,
@@ -383,7 +384,7 @@ class PageManipulator
 
         // podstranky
         if ($deleteChildPages && $page['node_depth'] > 0) {
-            foreach (PageManager::getChildren($page['id'], 1) as $childPage) {
+            foreach (Page::getChildren($page['id'], 1) as $childPage) {
                 if (!self::delete($childPage, true, $error)) {
                     return false;
                 }
@@ -394,16 +395,16 @@ class PageManipulator
         if ($deleteDirect) {
             switch ($page['type']) {
                     // komentare v sekcich
-                case _page_section:
-                    DB::delete(_comment_table, 'type=' . _post_section_comment . ' AND home=' . $page['id']);
+                case Page::SECTION:
+                    DB::delete(_post_table, 'type=' . Post::SECTION_COMMENT . ' AND home=' . $page['id']);
                     break;
 
                     // clanky v kategoriich a jejich komentare
-                case _page_category:
+                case Page::CATEGORY:
                     $rquery = DB::query("SELECT id,home1,home2,home3 FROM " . _article_table . " WHERE home1=" . $page['id'] . " OR home2=" . $page['id'] . " OR home3=" . $page['id']);
                     while ($item = DB::row($rquery)) {
                         if ($item['home1'] == $page['id'] && $item['home2'] == -1 && $item['home3'] == -1) {
-                            DB::delete(_comment_table, 'type=' . _post_article_comment . ' AND home=' . $item['id']);
+                            DB::delete(_post_table, 'type=' . Post::ARTICLE_COMMENT . ' AND home=' . $item['id']);
                             DB::delete(_article_table, 'id=' . $item['id']);
                             continue;
                         } // delete
@@ -436,20 +437,20 @@ class PageManipulator
                     break;
 
                     // prispevky v knihach
-                case _page_book:
-                    DB::delete(_comment_table, 'type=' . _post_book_entry . ' AND home=' . $page['id']);
+                case Page::BOOK:
+                    DB::delete(_post_table, 'type=' . Post::BOOK_ENTRY . ' AND home=' . $page['id']);
                     break;
 
                     // obrazky v galerii
-                case _page_gallery:
+                case Page::GALLERY:
                     Admin::deleteGalleryStorage('home=' . $page['id']);
                     DB::delete(_gallery_image_table, 'home=' . $page['id']);
                     @rmdir(_root . 'images/galleries/' . $page['id']);
                     break;
 
                     // prispevky ve forech
-                case _page_forum:
-                    DB::delete(_comment_table, 'type=' . _post_forum_topic . ' AND home=' . $page['id']);
+                case Page::FORUM:
+                    DB::delete(_post_table, 'type=' . Post::FORUM_TOPIC . ' AND home=' . $page['id']);
                     break;
             }
         }
@@ -470,7 +471,7 @@ class PageManipulator
      */
     private static function findFirstTreeMatch(int $currentId, string $column, $value): int
     {
-        $path = PageManager::getTreeReader()->getPath([$column], $currentId);
+        $path = Page::getTreeReader()->getPath([$column], $currentId);
 
         for ($i = count($path) - 1; $i >= 0; --$i) {
             if ($path[$i][$column] == $value || $i === 0) {

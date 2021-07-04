@@ -3,7 +3,7 @@
 use Sunlight\Database\Database as DB;
 use Sunlight\GenericTemplates;
 use Sunlight\Paginator;
-use Sunlight\Comment\Comment;
+use Sunlight\Post\Post;
 use Sunlight\Router;
 use Sunlight\Settings;
 use Sunlight\User;
@@ -44,14 +44,14 @@ $_index['title'] = str_replace(
 $_index['backlink'] = Router::module('profile', 'id=' . $id);
 
 // tabulka
-[$columns, $joins, $cond, $count] = Comment::createFilter('post', [_post_section_comment, _post_article_comment, _post_book_entry, _post_forum_topic, _post_plugin], [], "post.author=" . $query['id'], true);
+[$columns, $joins, $cond, $count] = Post::createFilter('post', [Post::SECTION_COMMENT, Post::ARTICLE_COMMENT, Post::BOOK_ENTRY, Post::FORUM_TOPIC, Post::PLUGIN], [], "post.author=" . $query['id'], true);
 
 $paging = Paginator::render(Router::module('profile-posts', 'id=' . $id), 15, $count);
 if (Paginator::atTop()) {
     $output .= $paging['paging'];
 }
 
-$posts = DB::query("SELECT " . $columns . " FROM " . _comment_table . " post " . $joins . " WHERE " . $cond . " ORDER BY post.time DESC " . $paging['sql_limit']);
+$posts = DB::query("SELECT " . $columns . " FROM " . _post_table . " post " . $joins . " WHERE " . $cond . " ORDER BY post.time DESC " . $paging['sql_limit']);
 if (DB::size($posts) != 0) {
     while ($post = DB::row($posts)) {
         [$homelink, $hometitle] = Router::post($post);
@@ -60,7 +60,7 @@ if (DB::size($posts) != 0) {
     <a href='" . _e($homelink) . "#post-" . $post['id'] . "' class='post-author'>" . $hometitle . "</a>
     <span class='post-info'>(" . GenericTemplates::renderTime($post['time'], 'post') . ")</span>
 </div>
-<div class='post-body'>" . Comment::render($post['text']) . "</div>
+<div class='post-body'>" . Post::render($post['text']) . "</div>
 </div>";
     }
     if (Paginator::atBottom()) {

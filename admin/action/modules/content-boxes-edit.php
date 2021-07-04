@@ -5,6 +5,7 @@ use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\Message;
 use Sunlight\Plugin\TemplateService;
+use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Html;
 use Sunlight\Util\Math;
@@ -63,7 +64,7 @@ if (isset($_POST['box_edit'])) do {
         'content' => StringManipulator::trimExtraWhitespace(Request::post('content')),
         'visible' => Form::loadCheckbox('visible'),
         'public' => Form::loadCheckbox('public'),
-        'level' => Math::range((int) Request::post('level'), 0, _priv_max_level),
+        'level' => Math::range((int) Request::post('level'), 0, User::MAX_LEVEL),
         'page_ids' => implode(',', array_filter(array_map('intval', (array) Request::post('page_ids', [], true)), function ($id) { return $id >= 1; })) ?: null,
         'page_children' => Form::loadCheckbox('page_children'),
         'class' => StringManipulator::ellipsis(StringManipulator::trimExtraWhitespace(Request::post('class')), 255, false),
@@ -163,7 +164,7 @@ $output .= _buffer(function () use ($id, $box, $new, $templates_to_choose_slot_f
                 <td>
                     <label><input type="checkbox"<?= Form::restoreCheckedAndName('box_edit', 'visible', $box['visible']) ?>> <?= _lang('admin.content.form.visible') ?></label>
                     <label><input type="checkbox"<?= Form::restoreCheckedAndName('box_edit', 'public', $box['public']) ?>> <?= _lang('admin.content.form.public') ?></label>
-                    <label><input type="number" min="0" max="<?= _priv_max_level ?>" class="inputsmaller"<?= Form::restorePostValueAndName('level', $box['level']) ?>> <?= _lang('admin.content.form.level') ?></label>
+                    <label><input type="number" min="0" max="<?= User::MAX_LEVEL ?>" class="inputsmaller"<?= Form::restorePostValueAndName('level', $box['level']) ?>> <?= _lang('admin.content.form.level') ?></label>
                 </td>
             </tr>
             <tr class="valign-top">

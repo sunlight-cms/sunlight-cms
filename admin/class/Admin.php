@@ -6,7 +6,7 @@ use Sunlight\Core;
 use Sunlight\Database\Database as DB;
 use Sunlight\Database\SimpleTreeFilter;
 use Sunlight\Extend;
-use Sunlight\Page\PageManager;
+use Sunlight\Page\Page;
 use Sunlight\Plugin\TemplatePlugin;
 use Sunlight\Plugin\TemplateService;
 use Sunlight\Router;
@@ -254,7 +254,7 @@ abstract class Admin
         }
 
         // nacteni stromu
-        $tree = PageManager::getFlatTree(null, null, $filter);
+        $tree = Page::getFlatTree(null, null, $filter);
 
         // vypis
         $output = "<select name='{$name}'"
@@ -287,7 +287,7 @@ abstract class Admin
 
                 $output .= "<option value='{$page['id']}'"
                     . ($active ? " selected" : '')
-                    . (($options['type'] !== null && $page['type'] != $options['type'] || !$options['allow_separators'] && $page['type'] == _page_separator) ? " disabled" : '')
+                    . (($options['type'] !== null && $page['type'] != $options['type'] || !$options['allow_separators'] && $page['type'] == Page::SEPARATOR) ? " disabled" : '')
                     . '>'
                     . str_repeat('&nbsp;&nbsp;&nbsp;│&nbsp;', $page['node_level'])
                     . StringManipulator::ellipsis($page['title'], $options['maxlength'])

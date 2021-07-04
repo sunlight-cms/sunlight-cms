@@ -12,7 +12,7 @@ defined('_root') or exit;
 /* ---  priprava promennych  --- */
 
 $levelconflict = false;
-$sysgroups_array = [_group_admin, _group_guests, _group_registered];
+$sysgroups_array = [User::ADMIN_GROUP_ID, User::GUEST_GROUP_ID, User::REGISTERED_GROUP_ID];
 
 // id
 $continue = false;
@@ -45,7 +45,7 @@ if ($continue) {
 
         // zmena vychozi skupiny
         if (!$systemgroup && $id == Settings::get('defaultgroup')) {
-            Settings::update('defaultgroup', _group_registered);
+            Settings::update('defaultgroup', User::REGISTERED_GROUP_ID);
         }
 
         // smazani uzivatelu

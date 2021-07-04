@@ -1,12 +1,13 @@
 <?php
 
+use Sunlight\Page\Page;
 use Sunlight\Util\Form;
 
 defined('_root') or exit;
 
 /* ---  nastaveni a vlozeni skriptu pro upravu stranky  --- */
 
-$type = _page_group;
+$type = Page::GROUP;
 require _root . 'admin/action/modules/include/page-editscript-init.php';
 if ($continue) {
     $custom_settings = "

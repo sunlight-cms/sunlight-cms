@@ -58,7 +58,7 @@ class UserData
             'Registration time' => DB::datetime($userData['registertime']),
             'Activity time' => DB::datetime($userData['activitytime']),
             'IP address' => $userData['ip'],
-            'Comment IP addresses' => DB::queryRows('SELECT DISTINCT ip FROM ' . _comment_table . ' WHERE author = ' . $this->userId, null, 'ip'),
+            'Comment IP addresses' => DB::queryRows('SELECT DISTINCT ip FROM ' . _post_table . ' WHERE author = ' . $this->userId, null, 'ip'),
             'email' => $userData['email'],
             'note' => $userData['note'],
         ];

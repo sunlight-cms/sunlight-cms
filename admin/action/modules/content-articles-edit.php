@@ -2,10 +2,13 @@
 
 use Sunlight\Admin\Admin;
 use Sunlight\Article;
+use Sunlight\Post\Post;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\GenericTemplates;
+use Sunlight\IpLog;
 use Sunlight\Message;
+use Sunlight\Page\Page;
 use Sunlight\Router;
 use Sunlight\Settings;
 use Sunlight\User;
@@ -135,7 +138,7 @@ if (isset($_POST['title'])) {
     $homechecks = ["home1", "home2", "home2"];
     foreach ($homechecks as $homecheck) {
         if ($newdata[$homecheck] != -1 || $homecheck == "home1") {
-            if (DB::count(_page_table, 'type=' . _page_category . ' AND id=' . DB::val($newdata[$homecheck])) === 0) {
+            if (DB::count(_page_table, 'type=' . Page::CATEGORY . ' AND id=' . DB::val($newdata[$homecheck])) === 0) {
                 $error_log[] = _lang('admin.content.articles.edit.error2');
             }
         }
@@ -244,7 +247,7 @@ if (isset($_POST['title'])) {
 
             // smazani komentaru
             if ($newdata['delcomments'] == 1) {
-                DB::delete(_comment_table, 'type=' . _post_article_comment . ' AND home=' . $id);
+                DB::delete(_post_table, 'type=' . Post::ARTICLE_COMMENT . ' AND home=' . $id);
             }
 
             // vynulovani poctu precteni
@@ -258,7 +261,7 @@ if (isset($_POST['title'])) {
                     'ratenum' => 0,
                     'ratesum' => 0
                 ]);
-                DB::delete(_iplog_table, 'type=' . _iplog_article_rated . ' AND var=' . $id);
+                DB::delete(_iplog_table, 'type=' . IpLog::ARTICLE_RATED . ' AND var=' . $id);
             }
 
             // presmerovani
@@ -357,9 +360,9 @@ if ($continue) {
 <tr>
 <th>" . _lang('article.category') . "</th>
 <td>"
-    . Admin::pageSelect("home1", ['type' => _page_category, 'selected' => $query['home1']])
-    . Admin::pageSelect("home2", ['type' => _page_category, 'selected' => $query['home2'], 'empty_item' => _lang('admin.content.form.category.none')])
-    . Admin::pageSelect("home3", ['type' => _page_category, 'selected' => $query['home3'], 'empty_item' => _lang('admin.content.form.category.none')])
+    . Admin::pageSelect("home1", ['type' => Page::CATEGORY, 'selected' => $query['home1']])
+    . Admin::pageSelect("home2", ['type' => Page::CATEGORY, 'selected' => $query['home2'], 'empty_item' => _lang('admin.content.form.category.none')])
+    . Admin::pageSelect("home3", ['type' => Page::CATEGORY, 'selected' => $query['home3'], 'empty_item' => _lang('admin.content.form.category.none')])
     . "
 </td>
 </tr>
@@ -418,7 +421,7 @@ if ($continue) {
       <label><input type='checkbox' name='rateon' value='1'" . Form::activateCheckbox($query['rateon']) . "> " . _lang('admin.content.form.artrate') . "</label>
       <label><input type='checkbox' name='showinfo' value='1'" . Form::activateCheckbox($query['showinfo']) . "> " . _lang('admin.content.form.showinfo') . "</label>
       " . (!$new ? "<label><input type='checkbox' name='resetrate' value='1'> " . _lang('admin.content.form.resetartrate') . " <small>(" . $rate . ")</small></label>" : '') . "
-      " . (!$new ? "<label><input type='checkbox' name='delcomments' value='1'> " . _lang('admin.content.form.delcomments') . " <small>(" . DB::count(_comment_table, 'home=' . DB::val($query['id']) . ' AND type=' . _post_article_comment) . ")</small></label>" : '') . "
+      " . (!$new ? "<label><input type='checkbox' name='delcomments' value='1'> " . _lang('admin.content.form.delcomments') . " <small>(" . DB::count(_post_table, 'home=' . DB::val($query['id']) . ' AND type=' . Post::ARTICLE_COMMENT) . ")</small></label>" : '') . "
       " . (!$new ? "<label><input type='checkbox' name='resetread' value='1'> " . _lang('admin.content.form.resetartread') . " <small>(" . $read_counter . ")</small></label>" : '') . "
       </p>
 

@@ -143,7 +143,7 @@ $output .= implode($messages);
 $output .= "</div>\n";
 
 // editace
-if (User::$group['id'] == _group_admin) {
+if (User::$group['id'] == User::ADMIN_GROUP_ID) {
     $output .= '<p class="text-right"><a class="button" href="index.php?p=index-edit"><img src="images/icons/edit.png" alt="edit" class="icon">' . _lang('admin.index.edit.link') . '</a></p>';
 }
 

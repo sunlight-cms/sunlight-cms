@@ -45,7 +45,7 @@ if ($continue) {
     <input type='submit' name='confirmed' value='" . _lang('admin.users.deleteuser') . "'>
 " . Xsrf::getInput() . "</form>";
         }
-    } elseif ($query['id'] == _super_admin_id) {
+    } elseif ($query['id'] == User::SUPER_ADMIN_ID) {
         $output .= Message::warning(_lang('global.rootnote'));
     } else {
         $output .= Message::warning(_lang('admin.users.deleteuser.selfnote'));

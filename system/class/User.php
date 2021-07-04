@@ -2,6 +2,7 @@
 
 namespace Sunlight;
 
+use Sunlight\Post\Post;
 use Sunlight\Database\Database as DB;
 use Sunlight\Exception\ContentPrivilegeException;
 use Sunlight\Image\ImageException;
@@ -21,6 +22,24 @@ use Sunlight\Util\UrlHelper;
 
 abstract class User
 {
+    /** Max possible user level */
+    const MAX_LEVEL = 10001;
+
+    /** Max assignable user level */
+    const MAX_ASSIGNABLE_LEVEL = 9999;
+
+    /** ID of the default super admin */
+    const SUPER_ADMIN_ID = 1;
+
+    /** Admin group ID  */
+    const ADMIN_GROUP_ID = 1;
+
+    /** Guest group ID (anonymous users) */
+    const GUEST_GROUP_ID = 2;
+
+    /** Default registered user group ID */
+    const REGISTERED_GROUP_ID = 3;
+
     /** @var bool */
     private static $initialized = false;
 
@@ -132,7 +151,7 @@ abstract class User
                         }
 
                         // check failed login attempt limit
-                        if (!IpLog::check(_iplog_failed_login_attempt)) {
+                        if (!IpLog::check(IpLog::FAILED_LOGIN_ATTEMPT)) {
                             // limit exceeded
                             $errorCode = 3;
                             break;
@@ -141,7 +160,7 @@ abstract class User
                         $validHash = self::getPersistentLoginHash($cookie['id'], self::getAuthHash($userData['password']), $userData['email']);
                         if ($validHash !== $cookie['hash']) {
                             // invalid hash
-                            IpLog::update(_iplog_failed_login_attempt);
+                            IpLog::update(IpLog::FAILED_LOGIN_ATTEMPT);
                             $errorCode = 4;
                             break;
                         }
@@ -238,9 +257,9 @@ abstract class User
             self::$group = $groupData;
         } else {
             // guest
-            $groupData = DB::queryRow('SELECT * FROM ' . _user_group_table . ' WHERE id=' . _group_guests);
+            $groupData = DB::queryRow('SELECT * FROM ' . _user_group_table . ' WHERE id=' . User::GUEST_GROUP_ID);
             if ($groupData === false) {
-                throw new \RuntimeException(sprintf('Anonymous user group was not found (id=%s)', _group_guests));
+                throw new \RuntimeException(sprintf('Anonymous user group was not found (id=%s)', User::GUEST_GROUP_ID));
             }
 
             // event
@@ -278,7 +297,7 @@ abstract class User
     
     static function isSuperAdmin(): bool
     {
-        return self::isLoggedIn() && self::$data['levelshift'] && self::$group['id'] == _group_admin;
+        return self::isLoggedIn() && self::$data['levelshift'] && self::$group['id'] == User::ADMIN_GROUP_ID;
     }
 
     /**
@@ -604,7 +623,7 @@ abstract class User
     static function delete(int $id): bool
     {
         // nacist jmeno
-        if ($id == _super_admin_id) {
+        if ($id == User::SUPER_ADMIN_ID) {
             return false;
         }
         $udata = DB::queryRow("SELECT avatar FROM " . _user_table . " WHERE id=" . $id);
@@ -621,13 +640,13 @@ abstract class User
 
         // vyresit vazby
         DB::delete(_user_table, 'id=' . $id);
-        DB::query("DELETE " . _pm_table . ",post FROM " . _pm_table . " LEFT JOIN " . _comment_table . " AS post ON (post.type=" . _post_pm . " AND post.home=" . _pm_table . ".id) WHERE receiver=" . $id . " OR sender=" . $id);
-        DB::update(_comment_table, 'author=' . $id, [
+        DB::query("DELETE " . _pm_table . ",post FROM " . _pm_table . " LEFT JOIN " . _post_table . " AS post ON (post.type=" . Post::PRIVATE_MSG . " AND post.home=" . _pm_table . ".id) WHERE receiver=" . $id . " OR sender=" . $id);
+        DB::update(_post_table, 'author=' . $id, [
             'guest' => sprintf('%x', crc32((string) $id)),
             'author' => -1,
         ]);
-        DB::update(_article_table, 'author=' . $id, ['author' => _super_admin_id]);
-        DB::update(_poll_table, 'author=' . $id, ['author' => _super_admin_id]);
+        DB::update(_article_table, 'author=' . $id, ['author' => User::SUPER_ADMIN_ID]);
+        DB::update(_poll_table, 'author=' . $id, ['author' => User::SUPER_ADMIN_ID]);
 
         // odstraneni uploadovaneho avataru
         if (isset($udata['avatar'])) {
@@ -852,7 +871,7 @@ abstract class User
         }
 
         // kontrola limitu
-        if (!IpLog::check(_iplog_failed_login_attempt)) {
+        if (!IpLog::check(IpLog::FAILED_LOGIN_ATTEMPT)) {
             return 5;
         }
 
@@ -892,7 +911,7 @@ abstract class User
 
         if (!$password->match($plainPassword)) {
             // nespravne heslo
-            IpLog::update(_iplog_failed_login_attempt);
+            IpLog::update(IpLog::FAILED_LOGIN_ATTEMPT);
 
             return 0;
         }

@@ -4,6 +4,7 @@ use Sunlight\Admin\Admin;
 use Sunlight\Database\Database as DB;
 use Sunlight\Gallery;
 use Sunlight\Message;
+use Sunlight\Page\Page;
 use Sunlight\Settings;
 use Sunlight\Util\Environment;
 use Sunlight\Util\Form;
@@ -19,7 +20,7 @@ $message = "";
 $continue = false;
 if (isset($_GET['g'])) {
     $galid = (int) Request::get('g');
-    $galdata = DB::queryRow("SELECT title,var2,var3,var4 FROM " . _page_table . " WHERE id=" . $galid . " AND type=" . _page_gallery);
+    $galdata = DB::queryRow("SELECT title,var2,var3,var4 FROM " . _page_table . " WHERE id=" . $galid . " AND type=" . Page::GALLERY);
     if ($galdata !== false) {
         if ($galdata['var2'] === null) {
             $galdata['var2'] = Settings::get('galdefault_per_page');
@@ -160,7 +161,7 @@ if (isset($_POST['xaction']) && $continue) {
         case 5:
             $newhome = (int) Request::post('newhome');
             if ($newhome != $galid) {
-                if (DB::count(_page_table, 'id=' . DB::val($newhome) . ' AND type=' . _page_gallery) !== 0) {
+                if (DB::count(_page_table, 'id=' . DB::val($newhome) . ' AND type=' . Page::GALLERY) !== 0) {
                     if (DB::count(_gallery_image_table, 'home=' . DB::val($galid)) !== 0) {
 
                         // posunuti poradovych cisel v cilove galerii
@@ -434,7 +435,7 @@ if ($continue) {
 
   <form class='cform' action='index.php?p=content-manageimgs&amp;g=" . $galid . "' method='post'>
   <input type='hidden' name='xaction' value='5'>
-  " . Admin::pageSelect("newhome", ['type' => _page_gallery]) . " <input class='button' type='submit' value='" . _lang('global.do') . "' onclick='return Sunlight.confirm();'><br><br>
+  " . Admin::pageSelect("newhome", ['type' => Page::GALLERY]) . " <input class='button' type='submit' value='" . _lang('global.do') . "' onclick='return Sunlight.confirm();'><br><br>
   <label><input type='checkbox' name='moveords' value='1' checked> " . _lang('admin.content.manageimgs.moveords') . "</label>
   " . Xsrf::getInput() . "</form>
 

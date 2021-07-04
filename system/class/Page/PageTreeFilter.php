@@ -51,7 +51,7 @@ class PageTreeFilter implements TreeFilterInterface
             /* visibility */        $node['visible']
             /* page level */        && (!$this->options['check_level'] || $node['level'] <= User::getLevel())
             /* page public */       && (!$this->options['check_public'] || User::isLoggedIn() || $node['public'])
-            /* separator  check */  && $node['type'] != _page_separator
+            /* separator  check */  && $node['type'] != Page::SEPARATOR
             /* order from */        && (
                                         $this->options['ord_start'] === null
                                         || (
@@ -103,7 +103,7 @@ class PageTreeFilter implements TreeFilterInterface
     private function compileSql(array $options): string
     {
         // base conditions
-        $sql = '%__node__%.visible=1 AND %__node__%.type!=' . _page_separator;
+        $sql = '%__node__%.visible=1 AND %__node__%.type!=' . Page::SEPARATOR;
 
         if ($options['check_level']) {
             $sql .= ' AND %__node__%.level<=' . User::getLevel();

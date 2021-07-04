@@ -1,10 +1,10 @@
 <?php
 
 use Sunlight\Core;
-use Sunlight\Comment\CommentService;
+use Sunlight\Post\PostService;
 use Sunlight\Database\Database as DB;
 use Sunlight\GenericTemplates;
-use Sunlight\Comment\Comment;
+use Sunlight\Post\Post;
 use Sunlight\Router;
 use Sunlight\Template;
 use Sunlight\User;
@@ -57,7 +57,7 @@ return function ($id = null) {
         $result .= "\n</div>\n<div class='sbox-posts'>";
         // vypis prispevku
         $userQuery = User::createQuery('p.author');
-        $sposts = DB::query("SELECT p.id,p.text,p.author,p.guest,p.time,p.ip," . $userQuery['column_list'] . " FROM " . _comment_table . " p " . $userQuery['joins'] . " WHERE p.home=" . $id . " AND p.type=" . _post_shoutbox_entry . " ORDER BY p.id DESC");
+        $sposts = DB::query("SELECT p.id,p.text,p.author,p.guest,p.time,p.ip," . $userQuery['column_list'] . " FROM " . _post_table . " p " . $userQuery['joins'] . " WHERE p.home=" . $id . " AND p.type=" . Post::SHOUTBOX_ENTRY . " ORDER BY p.id DESC");
         if (DB::size($sposts) != 0) {
             while ($spost = DB::row($sposts)) {
 
@@ -66,19 +66,19 @@ return function ($id = null) {
                     $author = Router::userFromQuery($userQuery, $spost, ['class' => 'post_author', 'max_len' => 16, 'title' => GenericTemplates::renderTime($spost['time'], 'post')]);
                 } else {
                     $author = "<span class='post-author-guest' title='" . GenericTemplates::renderTime($spost['time'], 'post') . ", ip=" . GenericTemplates::renderIp($spost['ip']) . "'>"
-                        . CommentService::renderGuestName($spost['guest'])
+                        . PostService::renderGuestName($spost['guest'])
                         . "</span>";
                 }
 
                 // odkaz na spravu
-                if (Comment::checkAccess($userQuery, $spost)) {
+                if (Post::checkAccess($userQuery, $spost)) {
                     $alink = " <a href='" . _e(Router::module('editpost', 'id=' . $spost['id'])) . "'><img src='" . Template::image("icons/edit.png") . "' alt='edit' class='icon'></a>";
                 } else {
                     $alink = "";
                 }
 
                 // kod polozky
-                $result .= "<div class='sbox-item'>" . $author . ':' . $alink . " " . Comment::render($spost['text'], true, false) . "</div>\n";
+                $result .= "<div class='sbox-item'>" . $author . ':' . $alink . " " . Post::render($spost['text'], true, false) . "</div>\n";
 
             }
         } else {

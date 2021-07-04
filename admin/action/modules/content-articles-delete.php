@@ -1,6 +1,7 @@
 <?php
 
 use Sunlight\Admin\Admin;
+use Sunlight\Post\Post;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\Message;
@@ -27,7 +28,7 @@ if (isset($_GET['id'], $_GET['returnid'], $_GET['returnpage'])) {
 if (isset($_POST['confirm'])) {
 
     // smazani komentaru
-    DB::delete(_comment_table, 'type=' . _post_article_comment . ' AND home=' . $id);
+    DB::delete(_post_table, 'type=' . Post::ARTICLE_COMMENT . ' AND home=' . $id);
 
     // smazani clanku
     DB::delete(_article_table, 'id=' . $id);

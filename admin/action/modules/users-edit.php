@@ -165,7 +165,7 @@ if ($continue) {
         }
 
         // levelshift
-        if (User::getId() == _super_admin_id) {
+        if (User::getId() == User::SUPER_ADMIN_ID) {
             $levelshift = Form::loadCheckbox('levelshift');
         } else {
             $levelshift = $query['levelshift'];
@@ -285,7 +285,7 @@ if ($continue) {
 
 <tr>
 <th>" . _lang('global.levelshift') . "</th>
-<td><input type='checkbox' name='levelshift' value='1'" . Form::activateCheckbox($query['levelshift'] || isset($_POST['levelshift'])) . Form::disableInputUnless(User::getId() == _super_admin_id) . "></td>
+<td><input type='checkbox' name='levelshift' value='1'" . Form::activateCheckbox($query['levelshift'] || isset($_POST['levelshift'])) . Form::disableInputUnless(User::getId() == User::SUPER_ADMIN_ID) . "></td>
 </tr>
 
 <tr>

@@ -51,7 +51,7 @@ if (isset($_GET['confirm'])) {
     $code = Request::get('confirm');
     if (preg_match('{[a-z0-9]{48}$}AD', $code)) {
         // kontrola omezeni
-        if (IpLog::check(_iplog_failed_account_activation)) {
+        if (IpLog::check(IpLog::FAILED_ACCOUNT_ACTIVATION)) {
             // smazani expirovanych
             DB::delete(_user_activation_table, 'expire<' . time());
 
@@ -75,7 +75,7 @@ if (isset($_GET['confirm'])) {
                     $message .= Message::warning(_lang('mod.reg.confirm.emailornametaken'));
                 }
             } else {
-                IpLog::update(_iplog_failed_account_activation);
+                IpLog::update(IpLog::FAILED_ACCOUNT_ACTIVATION);
                 $message = Message::warning(_lang('mod.reg.confirm.notfound'));
             }
         } else {
@@ -94,7 +94,7 @@ if (isset($_GET['confirm'])) {
         $errors = [];
 
         // kontrola iplogu
-        if (!IpLog::check(_iplog_anti_spam)) {
+        if (!IpLog::check(IpLog::ANTI_SPAM)) {
             $errors[] = _lang('misc.antispam_error', ["%antispamtimeout%" => Settings::get('antispamtimeout')]);
         }
 
@@ -154,7 +154,7 @@ if (isset($_GET['confirm'])) {
 
         // validace
         if (empty($errors)) {
-            IpLog::update(_iplog_anti_spam);
+            IpLog::update(IpLog::ANTI_SPAM);
             $user_data_valid = true;
         } else {
             $message = Message::list($errors);

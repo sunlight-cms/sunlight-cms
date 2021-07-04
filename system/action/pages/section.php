@@ -1,6 +1,6 @@
 <?php
 
-use Sunlight\Comment\CommentService;
+use Sunlight\Post\PostService;
 use Sunlight\Extend;
 use Sunlight\Hcm;
 use Sunlight\Settings;
@@ -17,5 +17,5 @@ Extend::call('page.section.content.after', $extend_args);
 
 // komentare
 if ($_page['var1'] == 1 && Settings::get('comments')) {
-    $output .= CommentService::render(CommentService::RENDER_SECTION_COMMENTS, $id, $_page['var3']);
+    $output .= PostService::render(PostService::RENDER_SECTION_COMMENTS, $id, $_page['var3']);
 }

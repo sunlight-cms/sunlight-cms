@@ -30,7 +30,7 @@ if ($query !== false) {
     $article_exists = true;
     if (isset($_POST['r'])) {
         $r = round(Request::post('r') / 10) * 10;
-        if (IpLog::check(_iplog_article_rated, $id) && Xsrf::check() && $query['rateon'] == 1 && Article::checkAccess($query) && $r <= 100 && $r >= 0) {
+        if (IpLog::check(IpLog::ARTICLE_RATED, $id) && Xsrf::check() && $query['rateon'] == 1 && Article::checkAccess($query) && $r <= 100 && $r >= 0) {
             $continue = true;
         }
     }
@@ -42,7 +42,7 @@ if ($continue) {
         'ratenum' => DB::raw('ratenum+1'),
         'ratesum' => DB::raw('ratesum+' . $r)
     ]);
-    IpLog::update(_iplog_article_rated, $id);
+    IpLog::update(IpLog::ARTICLE_RATED, $id);
 }
 
 // presmerovani

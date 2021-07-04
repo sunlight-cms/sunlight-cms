@@ -1,6 +1,6 @@
 <?php
 
-namespace Sunlight\Comment;
+namespace Sunlight\Post;
 
 use Sunlight\Bbcode;
 use Sunlight\Database\Database as DB;
@@ -8,13 +8,69 @@ use Sunlight\Extend;
 use Sunlight\Settings;
 use Sunlight\User;
 
-abstract class Comment
+abstract class Post
 {
+    /**
+     * Section comment
+     *
+     * home:    page ID (section)
+     * xhome:   post ID (if comment is an answer) or -1
+     */
+    const SECTION_COMMENT = 1;
+
+    /**
+     * Article comment:
+     *
+     * home:    article ID
+     * xhome:   post ID (if comment is an answer) or -1
+     */
+    const ARTICLE_COMMENT = 2;
+
+    /**
+     * Book entry
+     *
+     * home:    page ID (book)
+     * xhome:   post ID ID (if comment is an answer) or -1
+     */
+    const BOOK_ENTRY = 3;
+
+    /**
+     * Shoutbox entry:
+     *
+     * home:    shoutbox ID
+     * xhome:   always -1
+     */
+    const SHOUTBOX_ENTRY = 4;
+
+    /**
+     * Forum topic
+     *
+     * home:    page ID (forum)
+     * xhome:   post ID (if post is a reply) or -1 (if it is the main post)
+     */
+    const FORUM_TOPIC = 5;
+
+    /**
+     * Private message
+     *
+     * home:    pm ID
+     * xhome:   pm ID (reply) or -1 (main post)
+     */
+    const PRIVATE_MSG = 6;
+
+    /**
+     * Plugin post
+     *
+     * home:    *plugin-implementation dependent*
+     * xhome:   post ID (if post is an answer) or -1
+     */
+    const PLUGIN = 7;
+
     /**
      * Vyhodnotit pravo uzivatele na pristup k prispevku
      *
      * @param array $userQuery vystup z {@see User::createQuery()}
-     * @param array $post      data prispevku (potreba data uzivatele a post.time)
+     * @param array $post      data prispevku (potreba data uzivatele a comment.time)
      * @return bool
      */
     static function checkAccess(array $userQuery, array $post): bool
@@ -79,7 +135,7 @@ home_post.subject xhome_subject";
 
         $conditions[] = "(home_page.id IS NULL OR " . (User::isLoggedIn() ? '' : 'home_page.public=1 AND ') . "home_page.level<=" . User::getLevel() . ")
 AND (home_art.id IS NULL OR " . (User::isLoggedIn() ? '' : 'home_art.public=1 AND ') . "home_art.time<=" . time() . " AND home_art.confirmed=1)
-AND ({$alias}.type!=" . _post_article_comment . " OR (
+AND ({$alias}.type!=" . Post::ARTICLE_COMMENT . " OR (
     " . (User::isLoggedIn() ? '' : '(home_cat1.public=1 OR home_cat2.public=1 OR home_cat3.public=1) AND') . "
     (home_cat1.level<=" . User::getLevel() . " OR home_cat2.level<=" . User::getLevel() . " OR home_cat3.level<=" . User::getLevel() . ")
 ))";
@@ -91,11 +147,11 @@ AND ({$alias}.type!=" . _post_article_comment . " OR (
 
         // joiny
         $joins = "LEFT JOIN " . _page_table . " home_page ON({$alias}.type IN(1,3,5) AND {$alias}.home=home_page.id)
-LEFT JOIN " . _article_table . " home_art ON({$alias}.type=" . _post_article_comment . " AND {$alias}.home=home_art.id)
-LEFT JOIN " . _page_table . " home_cat1 ON({$alias}.type=" . _post_article_comment . " AND home_art.home1=home_cat1.id)
-LEFT JOIN " . _page_table . " home_cat2 ON({$alias}.type=" . _post_article_comment . " AND home_art.home2!=-1 AND home_art.home2=home_cat2.id)
-LEFT JOIN " . _page_table . " home_cat3 ON({$alias}.type=" . _post_article_comment . " AND home_art.home3!=-1 AND home_art.home3=home_cat3.id)
-LEFT JOIN " . _comment_table . " home_post ON({$alias}.type=" . _post_forum_topic . " AND {$alias}.xhome!=-1 AND {$alias}.xhome=home_post.id)";
+LEFT JOIN " . _article_table . " home_art ON({$alias}.type=" . Post::ARTICLE_COMMENT . " AND {$alias}.home=home_art.id)
+LEFT JOIN " . _page_table . " home_cat1 ON({$alias}.type=" . Post::ARTICLE_COMMENT . " AND home_art.home1=home_cat1.id)
+LEFT JOIN " . _page_table . " home_cat2 ON({$alias}.type=" . Post::ARTICLE_COMMENT . " AND home_art.home2!=-1 AND home_art.home2=home_cat2.id)
+LEFT JOIN " . _page_table . " home_cat3 ON({$alias}.type=" . Post::ARTICLE_COMMENT . " AND home_art.home3!=-1 AND home_art.home3=home_cat3.id)
+LEFT JOIN " . _post_table . " home_post ON({$alias}.type=" . Post::FORUM_TOPIC . " AND {$alias}.xhome!=-1 AND {$alias}.xhome=home_post.id)";
 
         // extend
         Extend::call('posts.filter', [
@@ -114,7 +170,7 @@ LEFT JOIN " . _comment_table . " home_post ON({$alias}.type=" . _post_forum_topi
 
         // pridat pocet
         if ($doCount) {
-            $result[] = (int) DB::result(DB::query("SELECT COUNT({$alias}.id) FROM " . _comment_table . " {$alias} {$joins} WHERE {$result[2]}"));
+            $result[] = (int) DB::result(DB::query("SELECT COUNT({$alias}.id) FROM " . _post_table . " {$alias} {$joins} WHERE {$result[2]}"));
         }
 
         return $result;

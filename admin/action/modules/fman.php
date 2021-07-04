@@ -6,6 +6,7 @@ use Sunlight\Extend;
 use Sunlight\GenericTemplates;
 use Sunlight\Image\ImageService;
 use Sunlight\Message;
+use Sunlight\Page\Page;
 use Sunlight\User;
 use Sunlight\Util\Arr;
 use Sunlight\Util\Environment;
@@ -390,7 +391,7 @@ if ($continue) {
                     $galid = (int) Request::post('gallery');
 
                     // vlozeni obrazku
-                    if (DB::count(_page_table, 'id=' . DB::val($galid) . ' AND type=' . _page_gallery) !== 0) {
+                    if (DB::count(_page_table, 'id=' . DB::val($galid) . ' AND type=' . Page::GALLERY) !== 0) {
 
                         // nacteni nejmensiho poradoveho cisla
                         $smallestord = DB::queryRow("SELECT ord FROM " . _gallery_image_table . " WHERE home=" . $galid . " ORDER BY ord LIMIT 1");
@@ -586,7 +587,7 @@ if ($continue) {
       <tr>
       <th>" . _lang('admin.fman.addtogallery.galllery') . "</th>
       <td>
-      " . Admin::pageSelect("gallery", ['type' => _page_gallery]) . "
+      " . Admin::pageSelect("gallery", ['type' => Page::GALLERY]) . "
       " . $images . "
       </td>
       </tr>

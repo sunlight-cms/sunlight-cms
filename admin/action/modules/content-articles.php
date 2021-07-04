@@ -3,7 +3,7 @@
 use Sunlight\Database\Database as DB;
 use Sunlight\Database\SimpleTreeFilter;
 use Sunlight\Extend;
-use Sunlight\Page\PageManager;
+use Sunlight\Page\Page;
 
 defined('_root') or exit;
 
@@ -20,9 +20,9 @@ $output .= "
 ";
 
 // nacist strom kategorii
-$filter = new SimpleTreeFilter(['type' => _page_category]);
+$filter = new SimpleTreeFilter(['type' => Page::CATEGORY]);
 Extend::call('admin.article.catfilter', ['filter' => &$filter]);
-$tree = PageManager::getFlatTree(null, null, $filter);
+$tree = Page::getFlatTree(null, null, $filter);
 
 // nacist pocty clanku
 $art_counts = [];
@@ -30,7 +30,7 @@ $art_count_query = DB::query('SELECT
     c.id,
     (SELECT COUNT(*) FROM ' . _article_table . ' a WHERE a.home1=c.id OR a.home2=c.id OR a.home3=c.id) art_count
 FROM ' . _page_table . ' c
-WHERE c.type=' . _page_category);
+WHERE c.type=' . Page::CATEGORY);
 while ($art_count = DB::row($art_count_query)) {
     $art_counts[$art_count['id']] = $art_count['art_count'];
 }
@@ -38,7 +38,7 @@ while ($art_count = DB::row($art_count_query)) {
 // radky
 foreach ($tree as $page) {
     $output .= "<tr><td>";
-    if ($page['type'] == _page_category) {
+    if ($page['type'] == Page::CATEGORY) {
         $output .= "<a class='node-level-m{$page['node_level']}' href='index.php?p=content-articles-list&amp;cat={$page['id']}'>
     <img src='images/icons/dir.png' alt='col' class='icon'>
     {$page['title']}

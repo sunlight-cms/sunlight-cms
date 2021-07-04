@@ -2,8 +2,11 @@
 
 use Sunlight\Admin\Admin;
 use Sunlight\Article;
+use Sunlight\Post\Post;
 use Sunlight\Database\Database as DB;
+use Sunlight\IpLog;
 use Sunlight\Message;
+use Sunlight\Page\Page;
 use Sunlight\Router;
 use Sunlight\User;
 use Sunlight\Util\Form;
@@ -58,7 +61,7 @@ if (isset($_POST['category'])) {
     $new_resetread = Form::loadCheckbox("new_resetread");
 
     // kontrola promennych
-    if ($new_category != -1 && DB::count(_page_table, 'id=' . DB::val($new_category) . ' AND type=' . _page_category) === 0) {
+    if ($new_category != -1 && DB::count(_page_table, 'id=' . DB::val($new_category) . ' AND type=' . Page::CATEGORY) === 0) {
         $new_category = -1;
     }
     if ($new_author != -1 && DB::count(_user_table, 'id=' . DB::val($new_author)) === 0) {
@@ -158,7 +161,7 @@ if (isset($_POST['category'])) {
 
                 // smazani komentaru
                 if ($new_delcomments || $new_delete) {
-                    DB::delete(_comment_table, 'type=' . _post_article_comment . ' AND home=' . $item['id']);
+                    DB::delete(_post_table, 'type=' . Post::ARTICLE_COMMENT . ' AND home=' . $item['id']);
                 }
 
                 // smazani clanku
@@ -173,7 +176,7 @@ if (isset($_POST['category'])) {
                         'ratenum' => 0,
                         'ratesum' => 0
                     ]);
-                    DB::delete(_iplog_table, 'type=' . _iplog_article_rated . ' AND var=' . $item['id']);
+                    DB::delete(_iplog_table, 'type=' . IpLog::ARTICLE_RATED . ' AND var=' . $item['id']);
                 }
 
                 // vynulovani poctu precteni
@@ -229,7 +232,7 @@ if (!$infopage) {
 
 <tr>
 <th>" . _lang('article.category') . "</th>
-<td>" . Admin::pageSelect("category", ['type' => _page_category, 'empty_item' => _lang('global.any2')]) . "</td>
+<td>" . Admin::pageSelect("category", ['type' => Page::CATEGORY, 'empty_item' => _lang('global.any2')]) . "</td>
 </tr>
 
 <tr>
@@ -275,7 +278,7 @@ if (!$infopage) {
 
 <tr>
 <th>" . _lang('article.category') . "</th>
-<td>" . Admin::pageSelect("new_category", ['type' => _page_category, 'empty_item' => _lang('global.nochange')]) . "</td>
+<td>" . Admin::pageSelect("new_category", ['type' => Page::CATEGORY, 'empty_item' => _lang('global.nochange')]) . "</td>
 </tr>
 
 <tr>

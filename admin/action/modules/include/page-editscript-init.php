@@ -3,7 +3,7 @@
 use Sunlight\Admin\PageLister;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
-use Sunlight\Page\PageManager;
+use Sunlight\Page\Page;
 use Sunlight\Page\PageManipulator;
 use Sunlight\User;
 use Sunlight\Util\Request;
@@ -28,8 +28,8 @@ $editscript_enable_access = true;
 $editscript_extra_row = '';
 $editscript_extra_row2 = '';
 $editscript_extra = '';
-$type_array = PageManager::getTypes();
-$plugin_type_array = PageManager::getPluginTypes();
+$type_array = Page::getTypes();
+$plugin_type_array = Page::getPluginTypes();
 
 if (isset($_GET['id'])) {
     $id = (int) Request::get('id');
@@ -37,7 +37,7 @@ if (isset($_GET['id'])) {
     if ($query !== false) {
         $continue = true;
         $new = false;
-        if ($type == _page_plugin) {
+        if ($type == Page::PLUGIN) {
             $type_idt = $query['type_idt'];
         } else {
             $type_idt = null;
@@ -49,7 +49,7 @@ if (isset($_GET['id'])) {
     $continue = true;
 
     // zjistit typ plugin stranky
-    if ($type == _page_plugin) {
+    if ($type == Page::PLUGIN) {
         if (!isset($_GET['idt'])) {
             $continue = false;
             return;
@@ -69,7 +69,7 @@ if (isset($_GET['id'])) {
     /* ---  vychozi data pro novou polozku --- */
     $default_parent = PageLister::getConfig('current_page');
 
-    if ($type == _page_plugin) {
+    if ($type == Page::PLUGIN) {
         $default_title = $plugin_type_array[$type_idt];
     } else {
         $default_title = _lang('page.type.' . $type_array[$type]);

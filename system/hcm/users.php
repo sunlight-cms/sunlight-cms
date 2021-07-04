@@ -16,7 +16,7 @@ return function ($razeni = 'new', $pocet = 5) {
             break;
         case 'comment-count':
         case 3:
-            $rorder = "(SELECT COUNT(*) FROM " . _comment_table . " WHERE author=u.id) DESC";
+            $rorder = "(SELECT COUNT(*) FROM " . _post_table . " WHERE author=u.id) DESC";
             break;
         case 'article-rating':
         case 4:
@@ -44,7 +44,7 @@ return function ($razeni = 'new', $pocet = 5) {
 
             case 'comment-count':
             case 3:
-                $rvar = DB::count(_comment_table, 'author=' . DB::val($item['id']));
+                $rvar = DB::count(_post_table, 'author=' . DB::val($item['id']));
                 if ($rvar == 0) {
                     continue 2;
                 }

@@ -1,10 +1,12 @@
 <?php
 
+use Sunlight\Page\Page;
+
 defined('_root') or exit;
 
 /* ---  nastaveni a vlozeni skriptu pro upravu stranky  --- */
 
-$type = _page_separator;
+$type = Page::SEPARATOR;
 require _root . 'admin/action/modules/include/page-editscript-init.php';
 
 if ($continue) {

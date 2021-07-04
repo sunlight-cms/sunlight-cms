@@ -37,7 +37,7 @@ if (isset($_GET['user'], $_GET['hash'])) {
     do {
 
         // kontrola limitu
-        if (!IpLog::check(_iplog_failed_login_attempt)) {
+        if (!IpLog::check(IpLog::FAILED_LOGIN_ATTEMPT)) {
             $output .= Message::error(_lang('login.attemptlimit', ['%max_attempts%' => Settings::get('maxloginattempts'), '%minutes%' => Settings::get('maxloginexpire') / 60]));
             break;
         }
@@ -51,7 +51,7 @@ if (isset($_GET['user'], $_GET['hash'])) {
             || $hash !== $userdata['security_hash']
             || time() >= $userdata['security_hash_expires']
         ) {
-            IpLog::update(_iplog_failed_login_attempt);
+            IpLog::update(IpLog::FAILED_LOGIN_ATTEMPT);
             $output .= Message::warning(_lang('mod.lostpass.badlink'));
             $output .= '<p><a href="' . _e(Router::module('lostpass')) . '">' . _lang('global.tryagain') . ' &gt;</a></p>';
             break;
@@ -96,7 +96,7 @@ if (isset($_GET['user'], $_GET['hash'])) {
     if (isset($_POST['username'])) do {
 
         // kontrola limitu
-        if (!IpLog::check(_iplog_password_reset_requested)) {
+        if (!IpLog::check(IpLog::PASSWORD_RESET_REQUESTED)) {
             $output .= Message::error(_lang('mod.lostpass.limit', ['%limit%' => Settings::get('lostpassexpire') / 60]));
             break;
         }
@@ -143,7 +143,7 @@ if (isset($_GET['user'], $_GET['hash'])) {
         }
 
         // vse ok! email byl odeslan
-        IpLog::update(_iplog_password_reset_requested);
+        IpLog::update(IpLog::PASSWORD_RESET_REQUESTED);
         $output .= Message::ok(_lang('mod.lostpass.mailsent'));
         $sent = true;
 

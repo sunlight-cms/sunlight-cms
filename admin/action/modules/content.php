@@ -3,7 +3,7 @@
 use Sunlight\Admin\PageLister;
 use Sunlight\Extend;
 use Sunlight\Message;
-use Sunlight\Page\PageManager;
+use Sunlight\Page\Page;
 use Sunlight\User;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
@@ -15,8 +15,8 @@ defined('_root') or exit;
 $message = "";
 
 // vypis stranek
-$plugin_types = PageManager::getPluginTypes();
-$type_array = PageManager::getTypes();
+$plugin_types = Page::getPluginTypes();
+$type_array = Page::getTypes();
 
 if (
     User::hasPrivilege('adminsection')
@@ -41,7 +41,7 @@ if (
                 if (is_numeric(Request::post('type'))) {
                     $type = (int) Request::post('type');
                 } else {
-                    $type = _page_plugin;
+                    $type = Page::PLUGIN;
                     $type_idt = strval(Request::post('type'));
                     if (!isset($plugin_types[$type_idt])) {
                         break;
@@ -63,7 +63,7 @@ if (
     $create_list = "";
     if (User::hasPrivilege('adminpages')) {
         foreach ($type_array as $type => $name) {
-            if ($type != _page_plugin && User::hasPrivilege('admin' . $name)) {
+            if ($type != Page::PLUGIN && User::hasPrivilege('admin' . $name)) {
                 $create_list .= "<option value='" . $type . "'>" . _lang('page.type.' . $name) . "</option>\n";
             }
         }

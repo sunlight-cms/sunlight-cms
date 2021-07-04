@@ -7,9 +7,56 @@ use Sunlight\Database\Database as DB;
 abstract class IpLog
 {
     /**
+     * IP log entry for failed login attempt
+     *
+     * var: none
+     */
+    const FAILED_LOGIN_ATTEMPT = 1;
+
+    /**
+     * IP log entry for article read counter cooldown
+     *
+     * var: article ID
+     */
+    const ARTICLE_READ = 2;
+
+    /**
+     * IP log entry for article rating cooldown
+     *
+     * var: article ID
+     */
+    const ARTICLE_RATED = 3;
+
+    /**
+     * IP log entry for poll vote cooldown
+     *
+     * var: poll ID
+     */
+    const POLL_VOTE = 4;
+
+    /**
+     * IP log entry anti-spam cooldown
+     *
+     * var: none
+     */
+    const ANTI_SPAM = 5;
+
+    /**
+     * IP log entry for failed account activation attempt
+     *
+     * var: none
+     */
+    const FAILED_ACCOUNT_ACTIVATION = 6;
+
+    /**
+     * IP log entry for password reset request
+     */
+    const PASSWORD_RESET_REQUESTED = 7;
+    
+    /**
      * Zkontrolovat log IP adres
      *
-     * @param int      $type    typ zaznamu, viz _iplog_* konstanty
+     * @param int      $type    typ zaznamu, viz class konstanty
      * @param mixed    $var     promenny argument dle typu
      * @param int|null $expires doba expirace zaznamu v sekundach pro typ 8+
      * @return bool
@@ -25,7 +72,7 @@ abstract class IpLog
             'system' => false,
             'custom' => [],
         ];
-        if ($type <= _iplog_password_reset_requested) {
+        if ($type <= IpLog::PASSWORD_RESET_REQUESTED) {
             if (!$cleaned['system']) {
                 DB::query("DELETE FROM " . _iplog_table . " WHERE (type=1 AND " . time() . "-time>" . Settings::get('maxloginexpire') . ") OR (type=2 AND " . time() . "-time>" . Settings::get('artreadexpire') . ") OR (type=3 AND " . time() . "-time>" . Settings::get('artrateexpire') . ") OR (type=4 AND " . time() . "-time>" . Settings::get('pollvoteexpire') . ") OR (type=5 AND " . time() . "-time>" . Settings::get('antispamtimeout') . ") OR (type=6 AND " . time() . "-time>" . Settings::get('accactexpire') . ") OR (type=7 AND " . time() . "-time>" . Settings::get('lostpassexpire') . ")");
                 $cleaned['system'] = true;
@@ -44,31 +91,31 @@ abstract class IpLog
 
         switch ($type) {
 
-            case _iplog_failed_login_attempt:
+            case IpLog::FAILED_LOGIN_ATTEMPT:
                 $query = DB::queryRow($querybasic);
                 if ($query !== false && $query['var'] >= Settings::get('maxloginattempts')) {
                     $result = false;
                 }
                 break;
 
-            case _iplog_article_read:
-            case _iplog_article_rated:
-            case _iplog_poll_vote:
+            case IpLog::ARTICLE_READ:
+            case IpLog::ARTICLE_RATED:
+            case IpLog::POLL_VOTE:
                 $query = DB::query($querybasic . " AND var=" . $var);
                 if (DB::size($query) != 0) {
                     $result = false;
                 }
                 break;
 
-            case _iplog_anti_spam:
-            case _iplog_password_reset_requested:
+            case IpLog::ANTI_SPAM:
+            case IpLog::PASSWORD_RESET_REQUESTED:
                 $query = DB::query($querybasic);
                 if (DB::size($query) != 0) {
                     $result = false;
                 }
                 break;
 
-            case _iplog_failed_account_activation:
+            case IpLog::FAILED_ACCOUNT_ACTIVATION:
                 $query = DB::queryRow($querybasic);
                 if ($query !== false && $query['var'] >= 5) {
                     $result = false;
@@ -110,49 +157,49 @@ abstract class IpLog
 
         switch ($type) {
 
-            case _iplog_failed_login_attempt:
+            case IpLog::FAILED_LOGIN_ATTEMPT:
                 $query = DB::queryRow($querybasic);
                 if ($query !== false) {
                     DB::update(_iplog_table, 'id=' . $query['id'], ['var' => ($query['var'] + 1)]);
                 } else {
                     DB::insert(_iplog_table, [
                         'ip' => _user_ip,
-                        'type' => _iplog_failed_login_attempt,
+                        'type' => IpLog::FAILED_LOGIN_ATTEMPT,
                         'time' => time(),
                         'var' => 1
                     ]);
                 }
                 break;
 
-            case _iplog_article_read:
+            case IpLog::ARTICLE_READ:
                 DB::insert(_iplog_table, [
                     'ip' => _user_ip,
-                    'type' => _iplog_article_read,
+                    'type' => IpLog::ARTICLE_READ,
                     'time' => time(),
                     'var' => $var
                 ]);
                 break;
 
-            case _iplog_article_rated:
+            case IpLog::ARTICLE_RATED:
                 DB::insert(_iplog_table, [
                     'ip' => _user_ip,
-                    'type' => _iplog_article_rated,
+                    'type' => IpLog::ARTICLE_RATED,
                     'time' => time(),
                     'var' => $var
                 ]);
                 break;
 
-            case _iplog_poll_vote:
+            case IpLog::POLL_VOTE:
                 DB::insert(_iplog_table, [
                     'ip' => _user_ip,
-                    'type' => _iplog_poll_vote,
+                    'type' => IpLog::POLL_VOTE,
                     'time' => time(),
                     'var' => $var
                 ]);
                 break;
 
-            case _iplog_anti_spam:
-            case _iplog_password_reset_requested:
+            case IpLog::ANTI_SPAM:
+            case IpLog::PASSWORD_RESET_REQUESTED:
                 DB::insert(_iplog_table, [
                     'ip' => _user_ip,
                     'type' => $type,
@@ -161,14 +208,14 @@ abstract class IpLog
                 ]);
                 break;
 
-            case _iplog_failed_account_activation:
+            case IpLog::FAILED_ACCOUNT_ACTIVATION:
                 $query = DB::queryRow($querybasic);
                 if ($query !== false) {
                     DB::update(_iplog_table, 'id=' . $query['id'], ['var' => ($query['var'] + 1)]);
                 } else {
                     DB::insert(_iplog_table, [
                         'ip' => _user_ip,
-                        'type' => _iplog_failed_account_activation,
+                        'type' => IpLog::FAILED_ACCOUNT_ACTIVATION,
                         'time' => time(),
                         'var' => 1
                     ]);

@@ -13,7 +13,7 @@ defined('_root') or exit;
 
 /* ---  akce  --- */
 
-$sysgroups_array = [_group_admin, _group_guests, _group_registered];
+$sysgroups_array = [User::ADMIN_GROUP_ID, User::GUEST_GROUP_ID, User::REGISTERED_GROUP_ID];
 $msg = 0;
 
 // vytvoreni skupiny
@@ -41,7 +41,7 @@ if (isset($_POST['type']) && User::hasPrivilege('admingroups')) {
                         continue 2;
 
                     case "level":
-                        $val = Math::range($val, 0, min(User::getLevel() - 1, _priv_max_assignable_level));
+                        $val = Math::range($val, 0, min(User::getLevel() - 1, User::MAX_ASSIGNABLE_LEVEL));
                         break;
                         
                     case "title":
@@ -69,7 +69,7 @@ if (isset($_POST['type']) && User::hasPrivilege('admingroups')) {
 }
 
 // prepnuti uzivatele
-if (_super_admin_id == User::getId() && isset($_POST['switch_user'])) {
+if (User::SUPER_ADMIN_ID == User::getId() && isset($_POST['switch_user'])) {
     $user = trim(Request::post('switch_user'));
     $query = DB::queryRow("SELECT id,password,email FROM " . _user_table . " WHERE username=" . DB::val($user));
 
@@ -103,7 +103,7 @@ if (User::hasPrivilege('admingroups')) {
         . "</span>
     </td>
     <td>" . $item['level'] . "</td>
-    <td>" . (($item['id'] != _group_guests) ? "<a href='index.php?p=users-list&amp;group_id=" . $item['id'] . "'><img src='images/icons/list.png' alt='list' class='icon'>" . $item['user_count'] . "</a>" : "-") . "</td>
+    <td>" . (($item['id'] != User::GUEST_GROUP_ID) ? "<a href='index.php?p=users-list&amp;group_id=" . $item['id'] . "'><img src='images/icons/list.png' alt='list' class='icon'>" . $item['user_count'] . "</a>" : "-") . "</td>
     <td class='actions'>
         <a class='button' href='index.php?p=users-editgroup&amp;id=" . $item['id'] . "'><img src='images/icons/edit.png' alt='edit' class='icon'>" . _lang('global.edit') . "</a>
         <a class='button' href='index.php?p=users-delgroup&amp;id=" . $item['id'] . "'><img src='images/icons/delete.png' alt='del' class='icon'>" . _lang('global.delete') . "</a>
@@ -170,7 +170,7 @@ $output .= $message . "
     <input class='button' type='submit' value='" . _lang('global.do') . "'>
     </form>
 
-    " . ((_super_admin_id == User::getId()) ? "
+    " . ((User::SUPER_ADMIN_ID == User::getId()) ? "
 
     <form action='index.php?p=users' method='post'>
     <h3>" . _lang('admin.users.switchuser') . "</h3>

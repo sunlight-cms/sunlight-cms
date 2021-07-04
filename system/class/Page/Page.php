@@ -11,8 +11,98 @@ use Sunlight\Database\TreeReaderOptions;
 use Sunlight\Extend;
 use Sunlight\Settings;
 
-abstract class PageManager
+abstract class Page
 {
+    /**
+     * Section page type
+     *
+     * var1:    comments enabled 1/0
+     * var2:    *unused*
+     * var3:    lockec comments 1/0
+     * var4:    *unused*
+     */
+    const SECTION = 1;
+
+    /**
+     * Category page type
+     *
+     * var1:    article order type (1 = time DESC, 2 = id DESC, 3 = title ASC, 4 = title DESC)
+     * var2:    number of articles per page
+     * var3:    show article info 1/0
+     * var4:    show article thumbnails 1/0
+     */
+    const CATEGORY = 2;
+
+    /**
+     * Book page type
+     *
+     * var1:    allow guest posts 1/0
+     * var2:    number of posts per page
+     * var3:    locked 1/0
+     * var4:    *unused*
+     */
+    const BOOK = 3;
+
+    /**
+     * Separator page type
+     *
+     * var1:    *unused*
+     * var2:    *unused*
+     * var3:    *unused*
+     * var4:    *unused*
+     */
+    const SEPARATOR = 4;
+
+    /**
+     * Gallery page type
+     *
+     * var1:    number images per row (-1 = don't make a table)
+     * var2:    number of images per page
+     * var3:    thumbnail height
+     * var4:    thumbnail width
+     */
+    const GALLERY = 5;
+
+    /**
+     * Link page type
+     *
+     * var1:    open in new window 1/0
+     * var2:    *unused*
+     * var3:    *unused*
+     * var4:    *unused*
+     */
+    const LINK = 6;
+
+    /**
+     * Group page type
+     *
+     * var1:    show item info 1/0
+     * var2:    *unused*
+     * var3:    *unused*
+     * var4:    *unused*
+     */
+    const GROUP = 7;
+
+    /**
+     * Forum page type
+     *
+     * var1:    number of topics per page
+     * var2:    locked 1/0
+     * var3:    allow guest topics 1/0
+     * var4:    *unused*
+     */
+    const FORUM = 8;
+
+    /**
+     * Plugin page type
+     *
+     * var1:    *plugin-implementation dependent*
+     * var2:    *plugin-implementation dependent*
+     * var3:    *plugin-implementation dependent*
+     * var4:    *plugin-implementation dependent*
+     */
+    const PLUGIN = 9;
+    
     /** @var TreeManager|null */
     private static $treeManager;
     /** @var TreeReader|null */
@@ -49,7 +139,7 @@ abstract class PageManager
         $conds = [];
 
         // ignorovat oddelovace
-        $conds[] = 'page.type!=' . _page_separator;
+        $conds[] = 'page.type!=' . Page::SEPARATOR;
 
         // predane podminky
         if ($extra_conds !== null) {
@@ -160,15 +250,15 @@ abstract class PageManager
     static function getTypes(): array
     {
         return [
-            _page_section => 'section',
-            _page_category => 'category',
-            _page_book => 'book',
-            _page_separator => 'separator',
-            _page_gallery => 'gallery',
-            _page_link => 'link',
-            _page_group => 'group',
-            _page_forum => 'forum',
-            _page_plugin => 'pluginpage',
+            Page::SECTION => 'section',
+            Page::CATEGORY => 'category',
+            Page::BOOK => 'book',
+            Page::SEPARATOR => 'separator',
+            Page::GALLERY => 'gallery',
+            Page::LINK => 'link',
+            Page::GROUP => 'group',
+            Page::FORUM => 'forum',
+            Page::PLUGIN => 'pluginpage',
         ];
     }
 

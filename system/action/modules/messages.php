@@ -1,6 +1,7 @@
 <?php
 
-use Sunlight\Comment\CommentService;
+use Sunlight\Post\Post;
+use Sunlight\Post\PostService;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\GenericTemplates;
@@ -94,7 +95,7 @@ switch ($a) {
                 }
 
                 // anti spam limit
-                if (!User::hasPrivilege('unlimitedpostaccess') && !IpLog::check(_iplog_anti_spam)) {
+                if (!User::hasPrivilege('unlimitedpostaccess') && !IpLog::check(IpLog::ANTI_SPAM)) {
                     $message = Message::warning(_lang('misc.antispam_error', ['%antispamtimeout%' => Settings::get('antispamtimeout')]));
                     break;
                 }
@@ -103,7 +104,7 @@ switch ($a) {
 
                 // zaznam v logu
                 if (!User::hasPrivilege('unlimitedpostaccess')) {
-                    IpLog::update(_iplog_anti_spam);
+                    IpLog::update(IpLog::ANTI_SPAM);
                 }
 
                 // extend
@@ -125,8 +126,8 @@ switch ($a) {
                 ], true);
 
                 // vlozeni do posts tabulky
-                $insert_id = DB::insert(_comment_table, $post_data = [
-                    'type' => _post_pm,
+                $insert_id = DB::insert(_post_table, $post_data = [
+                    'type' => Post::PRIVATE_MSG,
                     'home' => $pm_id,
                     'xhome' => -1,
                     'subject' => $subject,
@@ -137,7 +138,7 @@ switch ($a) {
                     'ip' => _user_ip,
                     'bumptime' => 0
                 ], true);
-                Extend::call('posts.new', ['id' => $insert_id, 'posttype' => _post_pm, 'post' => $post_data]);
+                Extend::call('posts.new', ['id' => $insert_id, 'posttype' => Post::PRIVATE_MSG, 'post' => $post_data]);
 
                 // presmerovani a konec
                 $_index['type'] = _index_redir;
@@ -181,7 +182,7 @@ switch ($a) {
             // nacist data
             $senderUserQuery = User::createQuery('pm.sender', 'sender_', 'su');
             $receiverUserQuery = User::createQuery('pm.receiver', 'receiver_', 'ru');
-            $q = DB::queryRow('SELECT pm.*,p.id post_id,p.subject,p.time,p.text,p.guest,p.ip' . Extend::buffer('posts.columns') . ',' . $senderUserQuery['column_list'] . ',' . $receiverUserQuery['column_list'] . ' FROM ' . _pm_table . ' AS pm JOIN ' . _comment_table . ' AS p ON (p.type=' . _post_pm . ' AND p.home=pm.id AND p.xhome=-1) ' . $senderUserQuery['joins'] . ' ' . $receiverUserQuery['joins'] . ' WHERE pm.id=' . $id . ' AND (sender=' . User::getId() . ' AND sender_deleted=0 OR receiver=' . User::getId() . ' AND receiver_deleted=0)');
+            $q = DB::queryRow('SELECT pm.*,p.id post_id,p.subject,p.time,p.text,p.guest,p.ip' . Extend::buffer('posts.columns') . ',' . $senderUserQuery['column_list'] . ',' . $receiverUserQuery['column_list'] . ' FROM ' . _pm_table . ' AS pm JOIN ' . _post_table . ' AS p ON (p.type=' . Post::PRIVATE_MSG . ' AND p.home=pm.id AND p.xhome=-1) ' . $senderUserQuery['joins'] . ' ' . $receiverUserQuery['joins'] . ' WHERE pm.id=' . $id . ' AND (sender=' . User::getId() . ' AND sender_deleted=0 OR receiver=' . User::getId() . ' AND receiver_deleted=0)');
             if ($q === false) {
                 $_index['type'] = _index_not_found;
                 break;
@@ -192,18 +193,18 @@ switch ($a) {
             [$role, $role_other] = (($q['sender'] == User::getId()) ? ['sender', 'receiver'] : ['receiver', 'sender']);
 
             // spocitat neprectene zpravy
-            $unread_count = DB::count(_comment_table, 'home=' . DB::val($q['id']) . ' AND type=' . _post_pm . ' AND author=' . User::getId() . ' AND time>' . $q[$role_other . '_readtime']);
+            $unread_count = DB::count(_post_table, 'home=' . DB::val($q['id']) . ' AND type=' . Post::PRIVATE_MSG . ' AND author=' . User::getId() . ' AND time>' . $q[$role_other . '_readtime']);
 
             // vystup
             $_index['title'] = _lang('mod.messages.message') . ': ' . $q['subject'];
             $output .= "<div class=\"topic\">\n";
-            $output .= CommentService::renderPost(['id' => $q['post_id'], 'author' => $q['sender']] + $q, $senderUserQuery, [
+            $output .= PostService::renderPost(['id' => $q['post_id'], 'author' => $q['sender']] + $q, $senderUserQuery, [
                 'post_link' => false,
                 'allow_reply' => false,
             ]);
             $output .= "</div>\n";
 
-            $output .= CommentService::render(CommentService::RENDER_PM_LIST, $q['id'], [$locked, $unread_count], false, Router::module('messages', 'a=list&read=' . $q['id']));
+            $output .= PostService::render(PostService::RENDER_PM_LIST, $q['id'], [$locked, $unread_count], false, Router::module('messages', 'a=list&read=' . $q['id']));
 
             // aktualizace casu precteni
             DB::update(_pm_table, 'id=' . DB::val($id), [$role . '_readtime' => time()]);
@@ -246,7 +247,7 @@ switch ($a) {
 
                 // fyzicke vymazani
                 if (!empty($del_list)) {
-                    DB::query('DELETE ' . _pm_table . ',post FROM ' . _pm_table . ' JOIN ' . _comment_table . ' AS post ON (post.type=' . _post_pm . ' AND post.home=' . _pm_table . '.id) WHERE ' . _pm_table . '.id IN(' . DB::arr($del_list) . ')');
+                    DB::query('DELETE ' . _pm_table . ',post FROM ' . _pm_table . ' JOIN ' . _post_table . ' AS post ON (post.type=' . Post::PRIVATE_MSG . ' AND post.home=' . _pm_table . '.id) WHERE ' . _pm_table . '.id IN(' . DB::arr($del_list) . ')');
                 }
             };
 
@@ -264,7 +265,7 @@ switch ($a) {
                         $q = DB::query(
                             'SELECT pm.id,pm.sender,pm.receiver,last_post.time AS last_post_time'
                             . ' FROM ' . _pm_table . ' AS pm'
-                            . ' JOIN ' . _comment_table . ' AS last_post ON (last_post.id = (SELECT id FROM ' . _comment_table . ' WHERE type=' . _post_pm . ' AND home=pm.id ORDER BY id DESC LIMIT 1))'
+                            . ' JOIN ' . _post_table . ' AS last_post ON (last_post.id = (SELECT id FROM ' . _post_table . ' WHERE type=' . Post::PRIVATE_MSG . ' AND home=pm.id ORDER BY id DESC LIMIT 1))'
                             . ' WHERE pm.id IN(' . DB::arr($selected_ids) . ') AND (pm.sender=' . User::getId() . ' AND pm.sender_deleted=0 OR pm.receiver=' . User::getId() . ' AND pm.receiver_deleted=0)'
                             . ' AND last_post.author!=' . User::getId()
                         );
@@ -319,9 +320,9 @@ switch ($a) {
         $q = DB::query(
             'SELECT pm.id,pm.sender,pm.receiver,pm.sender_readtime,pm.receiver_readtime,pm.update_time,post.subject'
             . ',' . $senderUserQuery['column_list'] . ',' . $receiverUserQuery['column_list']
-            . ',(SELECT COUNT(*) FROM ' . _comment_table . ' AS countpost WHERE countpost.home=pm.id AND countpost.type=' . _post_pm . ' AND countpost.author=' . User::getId() . ' AND (pm.sender=' . User::getId() . ' AND countpost.time>pm.receiver_readtime OR pm.receiver=' . User::getId() . ' AND countpost.time>pm.sender_readtime)) AS unread_counter'
+            . ',(SELECT COUNT(*) FROM ' . _post_table . ' AS countpost WHERE countpost.home=pm.id AND countpost.type=' . Post::PRIVATE_MSG . ' AND countpost.author=' . User::getId() . ' AND (pm.sender=' . User::getId() . ' AND countpost.time>pm.receiver_readtime OR pm.receiver=' . User::getId() . ' AND countpost.time>pm.sender_readtime)) AS unread_counter'
             . ' FROM ' . _pm_table . ' AS pm'
-            . ' JOIN ' . _comment_table . ' AS post ON (post.home=pm.id AND post.type=' . _post_pm . ' AND post.xhome=-1)'
+            . ' JOIN ' . _post_table . ' AS post ON (post.home=pm.id AND post.type=' . Post::PRIVATE_MSG . ' AND post.xhome=-1)'
             . ' ' . $senderUserQuery['joins']
             . ' ' . $receiverUserQuery['joins']
             . ' WHERE pm.sender=' . User::getId() . ' AND pm.sender_deleted=0 OR pm.receiver=' . User::getId() . ' AND pm.receiver_deleted=0'.

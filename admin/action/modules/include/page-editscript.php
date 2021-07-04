@@ -1,11 +1,12 @@
 <?php
 
 use Sunlight\Admin\Admin;
+use Sunlight\Post\Post;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\GenericTemplates;
 use Sunlight\Message;
-use Sunlight\Page\PageManager;
+use Sunlight\Page\Page;
 use Sunlight\Page\PageManipulator;
 use Sunlight\Plugin\TemplateService;
 use Sunlight\Router;
@@ -48,7 +49,7 @@ if ($query['slug_abs']) {
 if (!empty($_POST)) {
 
     // kontroly
-    if (!$editscript_enable_slug && $type != _page_separator) {
+    if (!$editscript_enable_slug && $type != Page::SEPARATOR) {
         throw new LogicException('Only separators are allowed to have disabled identifier');
     }
 
@@ -135,14 +136,14 @@ if (!empty($_POST)) {
 
                 $skip = true;
                 if ($new || $val != $query['node_parent']) {
-                    $pageTreeManager = PageManager::getTreeManager();
+                    $pageTreeManager = Page::getTreeManager();
 
                     if ($val !== null) {
                         // novy rodic
-                        $parentData = PageManager::getData($val, ['id', 'type']);
+                        $parentData = Page::getData($val, ['id', 'type']);
                         if (
                             $parentData !== false
-                            && $parentData['type'] != _page_separator
+                            && $parentData['type'] != Page::SEPARATOR
                             && ($new || $pageTreeManager->checkParent($id, $val))
                         ) {
                             $val = $actual_parent_id = $parentData['id'];
@@ -234,19 +235,19 @@ if (!empty($_POST)) {
 
                 switch ($type) {
                     // zpusob razeni v kategoriich
-                    case _page_category:
+                    case Page::CATEGORY:
                         if ($val < 1 || $val > 4) {
                             $val = 1;
                         }
                         break;
                     // obrazku na radek v galerii
-                    case _page_gallery:
+                    case Page::GALLERY:
                         if ($val <= 0 && $val != -1) {
                             $val = 1;
                         }
                         break;
                     // temat na stranu ve forech
-                    case _page_forum:
+                    case Page::FORUM:
                         if ($val <= 0) {
                             $val = 1;
                         }
@@ -262,9 +263,9 @@ if (!empty($_POST)) {
 
                 switch ($type) {
                     // clanku na stranu v kategoriich, prispevku na stranu v knihach, obrazku na stranu v galeriich
-                    case _page_category:
-                    case _page_book:
-                    case _page_gallery:
+                    case Page::CATEGORY:
+                    case Page::BOOK:
+                    case Page::GALLERY:
                         if ($val <= 0) {
                             $val = 1;
                         }
@@ -280,7 +281,7 @@ if (!empty($_POST)) {
 
                 switch ($type) {
                     // vyska nahledu v galeriich
-                    case _page_gallery:
+                    case Page::GALLERY:
                         if ($val < 10) {
                             $val = 10;
                         } elseif ($val > 1024) {
@@ -298,7 +299,7 @@ if (!empty($_POST)) {
 
                 switch ($type) {
                     // sirka nahledu v galeriich
-                    case _page_gallery:
+                    case Page::GALLERY:
                         if ($val <= 10) {
                             $val = 10;
                         }
@@ -311,8 +312,8 @@ if (!empty($_POST)) {
 
             // smazani komentaru v sekcich
             case 'delcomments':
-                if ($type == _page_section && $val == 1 && !$new) {
-                    DB::delete(_comment_table, 'home=' . $id . ' AND type=' . _post_section_comment);
+                if ($type == Page::SECTION && $val == 1 && !$new) {
+                    DB::delete(_post_table, 'home=' . $id . ' AND type=' . Post::SECTION_COMMENT);
                 }
                 $skip = true;
                 break;
@@ -322,15 +323,15 @@ if (!empty($_POST)) {
                 if ($val == 1 && !$new) {
                     $ptype = null;
                     switch ($type) {
-                        case _page_book:
-                            $ptype = _post_book_entry;
+                        case Page::BOOK:
+                            $ptype = Post::BOOK_ENTRY;
                             break;
-                        case _page_forum:
-                            $ptype = _post_forum_topic;
+                        case Page::FORUM:
+                            $ptype = Post::FORUM_TOPIC;
                             break;
                     }
                     if ($ptype != null) {
-                        DB::delete(_comment_table, 'home=' . $id . ' AND type=' . $ptype);
+                        DB::delete(_post_table, 'home=' . $id . ' AND type=' . $ptype);
                     }
                 }
                 $skip = true;
@@ -338,7 +339,7 @@ if (!empty($_POST)) {
 
             // typ plugin stranky
             case 'type_idt':
-                if ($type == _page_plugin && $new) {
+                if ($type == Page::PLUGIN && $new) {
                     $val = $type_idt;
                 } else {
                     $skip = true;
@@ -473,7 +474,7 @@ if (!$new && $id == Settings::get('index_page_id')) {
     $output .= Admin::note(_lang('admin.content.form.indexnote'));
 }
 
-$output .= "<form class='cform' action='index.php?p=content-edit" . $type_array[$type] . (!$new ? "&amp;id=" . $id : '') . (($type == _page_plugin && $new) ? '&amp;idt=' . $type_idt : '') . "' method='post'>
+$output .= "<form class='cform' action='index.php?p=content-edit" . $type_array[$type] . (!$new ? "&amp;id=" . $id : '') . (($type == Page::PLUGIN && $new) ? '&amp;idt=' . $type_idt : '') . "' method='post'>
 " . $editscript_extra . "  
     <table class='formtable edittable'>
         <tbody>
@@ -584,7 +585,7 @@ $output .= "<form class='cform' action='index.php?p=content-edit" . $type_array[
                         <tbody>
                             <tr>
                                 <td>
-                                    <input type='number' min='0' max='" . _priv_max_level . "' name='level' value='" . ($query['level_inherit'] ? '' : $query['level']) . "' class='inputmax' maxlength='5'>
+                                    <input type='number' min='0' max='" . User::MAX_LEVEL . "' name='level' value='" . ($query['level_inherit'] ? '' : $query['level']) . "' class='inputmax' maxlength='5'>
                                 </td>
                                 <td>"
                                     . _lang('admin.content.form.level')

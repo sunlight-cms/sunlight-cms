@@ -3,6 +3,7 @@
 use Sunlight\Admin\Admin;
 use Sunlight\Database\Database as DB;
 use Sunlight\Message;
+use Sunlight\Page\Page;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
@@ -24,10 +25,10 @@ if (isset($_POST['source'])) {
 
     // kontrola promennych
     $error_log = [];
-    if (DB::count(_page_table, 'id=' . DB::val($source) . ' AND type=' . _page_category) === 0) {
+    if (DB::count(_page_table, 'id=' . DB::val($source) . ' AND type=' . Page::CATEGORY) === 0) {
         $error_log[] = _lang('admin.content.movearts.badsource');
     }
-    if (DB::count(_page_table, 'id=' . DB::val($target) . ' AND type=' . _page_category) === 0) {
+    if (DB::count(_page_table, 'id=' . DB::val($target) . ' AND type=' . Page::CATEGORY) === 0) {
         $error_log[] = _lang('admin.content.movearts.badtarget');
     }
     if ($source == $target) {
@@ -88,9 +89,9 @@ if (isset($_POST['source'])) {
 $output .= $message . "
 <form class='cform' action='index.php?p=content-movearts' method='post'>"
     . _lang('admin.content.movearts.text1')
-    . " " . Admin::pageSelect("source", ['type' => _page_category])
+    . " " . Admin::pageSelect("source", ['type' => Page::CATEGORY])
     . _lang('admin.content.movearts.text2')
-    . " " . Admin::pageSelect("target", ['type' => _page_category])
+    . " " . Admin::pageSelect("target", ['type' => Page::CATEGORY])
     . " <input class='button' type='submit' value='" . _lang('global.do') . "'>
 <br><br>
 <label><input type='checkbox' name='fullmove' value='1'> " . _lang('admin.content.movearts.fullmove') . "</label>
