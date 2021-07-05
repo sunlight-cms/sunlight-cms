@@ -172,7 +172,7 @@ if (isset($_POST['text'])) {
                 // debump topicu
                 if ($query['type'] == 5 && $query['xhome'] != -1) {
                     // kontrola, zda se jedna o posledni odpoved
-                    $chq = DB::query('SELECT id,time FROM ' . DB::table('post') . ' WHERE type=5 AND xhome=' . $query['xhome'] . ' ORDER BY id DESC LIMIT 2');
+                    $chq = DB::query('SELECT id,time FROM ' . DB::table('post') . ' WHERE type=' . Post::FORUM_TOPIC . ' AND xhome=' . $query['xhome'] . ' ORDER BY id DESC LIMIT 2');
                     $chr = DB::row($chq);
                     if ($chr !== false && $chr['id'] == $id) {
                         // ano, debump podle casu predchoziho postu nebo samotneho topicu (pokud se smazala jedina odpoved)
