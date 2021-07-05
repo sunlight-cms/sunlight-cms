@@ -48,7 +48,7 @@ if ($continue) {
         }
 
         // redirect
-        $admin_redirect_to = 'index.php?p=content&done';
+        $_admin->redirect('index.php?p=content&done');
 
         return;
 

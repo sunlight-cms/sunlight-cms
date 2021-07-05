@@ -49,7 +49,7 @@ if (
                     $is_plugin_page = true;
                 }
                 if (isset($type_array[$type]) && User::hasPrivilege('admin' . $type_array[$type])) {
-                    $admin_redirect_to = 'index.php?p=content-edit' . $type_array[$type] . ($is_plugin_page ? '&idt=' . rawurlencode($type_idt) : '');
+                    $_admin->redirect('index.php?p=content-edit' . $type_array[$type] . ($is_plugin_page ? '&idt=' . rawurlencode($type_idt) : ''));
 
                     return;
                 }

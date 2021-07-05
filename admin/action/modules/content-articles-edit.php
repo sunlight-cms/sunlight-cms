@@ -265,7 +265,7 @@ if (isset($_POST['title'])) {
             }
 
             // presmerovani
-            $admin_redirect_to = 'index.php?p=content-articles-edit&id=' . $id . '&saved&returnid=' . $returnid . '&returnpage=' . $returnpage;
+            $_admin->redirect('index.php?p=content-articles-edit&id=' . $id . '&saved&returnid=' . $returnid . '&returnpage=' . $returnpage);
 
         } else {
 
@@ -273,7 +273,7 @@ if (isset($_POST['title'])) {
             $id = DB::insert('article', $changeset, true);
 
             // presmerovani
-            $admin_redirect_to = 'index.php?p=content-articles-edit&id=' . $id . '&created&returnid=' . $newdata['home1'] . '&returnpage=1';
+            $_admin->redirect('index.php?p=content-articles-edit&id=' . $id . '&created&returnid=' . $newdata['home1'] . '&returnpage=1');
 
         }
 

@@ -11,7 +11,7 @@ defined('SL_ROOT') or exit;
 // vycisteni cache
 if (isset($_GET['clear'])) {
     Core::$pluginManager->purgeCache();
-    $admin_redirect_to = 'index.php?p=plugins&cleared';
+    $_admin->redirect('index.php?p=plugins&cleared');
 
     return;
 }

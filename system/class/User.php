@@ -342,7 +342,7 @@ abstract class User
             if ($getTopmost && self::hasPrivilege('fileadminaccess')) {
                 $homeDir = SL_ROOT;
             } else {
-                $homeDir = SL_ROOT . '/upload';
+                $homeDir = SL_ROOT . 'upload/';
             }
         } else {
             $subPath = 'home/' . self::getUsername() . '/';

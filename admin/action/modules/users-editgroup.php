@@ -218,7 +218,7 @@ if ($continue) {
         DB::update('user_group', 'id=' . $id, $changeset);
 
         // reload stranky
-        $admin_redirect_to = 'index.php?p=users-editgroup&id=' . $id . '&saved';
+        $_admin->redirect('index.php?p=users-editgroup&id=' . $id . '&saved');
 
         return;
 

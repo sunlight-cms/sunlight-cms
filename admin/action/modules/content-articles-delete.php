@@ -37,7 +37,7 @@ if (isset($_POST['confirm'])) {
     Extend::call('admin.article.delete', ['id' => $id]);
 
     // presmerovani
-    $admin_redirect_to = 'index.php?p=content-articles-list&cat=' . $returnid . '&page=' . $returnpage . '&artdeleted';
+    $_admin->redirect('index.php?p=content-articles-list&cat=' . $returnid . '&page=' . $returnpage . '&artdeleted');
 
     return;
 

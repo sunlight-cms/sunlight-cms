@@ -12,7 +12,7 @@ defined('SL_ROOT') or exit;
 if (isset($_POST['text'])) {
     Settings::update('admin_index_custom', trim(Request::post('text', '')));
     Settings::update('admin_index_custom_pos', (Request::post('pos') == 0) ? '0' : '1');
-    $admin_redirect_to = 'index.php?p=index-edit&saved';
+    $_admin->redirect('index.php?p=index-edit&saved');
 
     return;
 }

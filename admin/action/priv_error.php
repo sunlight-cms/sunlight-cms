@@ -7,7 +7,7 @@ defined('SL_ROOT') or exit;
 
 /* --- vystup --- */
 
-$admin_title = _lang('global.error');
+$_admin->title = _lang('global.error');
 
 $output = '';
 
@@ -16,4 +16,4 @@ $message = _lang(
     ['%message%' => _e($privException->getMessage())]
 );
 
-$admin_output .= Message::error($message);
+$output .= Message::error($message);

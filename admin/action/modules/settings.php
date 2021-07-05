@@ -260,7 +260,7 @@ if (!empty($_POST)) {
 
     $saved = true;
     if ($reload) {
-        $admin_redirect_to = 'index.php?p=settings&saved';
+        $_admin->redirect('index.php?p=settings&saved');
     }
     if ($forceInstallCheck) {
         Settings::update('install_check', '1');

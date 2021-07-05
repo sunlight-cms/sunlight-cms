@@ -24,21 +24,21 @@ abstract class Admin
      */
     static function menu(): string
     {
-        global $admin_access, $admin_modules, $admin_menu_items, $admin_current_module;
+        global $_admin;
 
         $output = "<div id=\"menu\">\n";
-        if ($admin_access) {
-            foreach ($admin_menu_items as $module => $order) {
+        if ($_admin->access) {
+            foreach ($_admin->menu as $module => $order) {
                 if (self::moduleAccess($module)) {
                     $active = (
-                        $admin_current_module === $module
-                        || !empty($admin_modules[$module]['children']) && in_array($admin_current_module, $admin_modules[$module]['children'])
+                        $_admin->currentModule === $module
+                        || !empty($_admin->modules[$module]['children']) && in_array($_admin->currentModule, $_admin->modules[$module]['children'])
                     );
-                    $url = $admin_modules[$module]['url'] ?? 'index.php?p=' . $module;
+                    $url = $_admin->modules[$module]['url'] ?? 'index.php?p=' . $module;
 
                     $output .= '<a href="' . $url . '"'
                         . ($active ? ' class="act"' : '')
-                        . '><span>' . $admin_modules[$module]['title'] . "</span></a>\n";
+                        . '><span>' . $_admin->modules[$module]['title'] . "</span></a>\n";
                 }
             }
         } else {
@@ -115,10 +115,10 @@ abstract class Admin
      */
     static function moduleAccess(string $module): bool
     {
-        global $admin_modules;
+        global $_admin;
 
-        if (isset($admin_modules[$module])) {
-            return (bool) $admin_modules[$module]['access'];
+        if (isset($_admin->modules[$module])) {
+            return (bool) $_admin->modules[$module]['access'];
         }
 
         return false;

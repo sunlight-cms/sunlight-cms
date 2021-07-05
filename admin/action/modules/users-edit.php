@@ -38,7 +38,7 @@ if (isset($_GET['id'])) {
                 }
             }
         } else {
-            $admin_redirect_to = Router::module('settings', null, true);
+            $_admin->redirect(Router::module('settings', null, true));
 
             return;
         }
@@ -205,7 +205,7 @@ if ($continue) {
                 // uprava
                 DB::update('user', 'id=' . DB::val($query['id']), $changeset);
                 Extend::call('user.edit', ['id' => $query['id']]);
-                $admin_redirect_to = 'index.php?p=users-edit&r=1&id=' . $username;
+                $_admin->redirect('index.php?p=users-edit&r=1&id=' . $username);
 
                 return;
             }
@@ -217,7 +217,7 @@ if ($continue) {
             ];
             $id = DB::insert('user', $changeset, true);
             Extend::call('user.new', ['id' => $id]);
-            $admin_redirect_to = 'index.php?p=users-edit&r=2&id=' . $username;
+            $_admin->redirect('index.php?p=users-edit&r=2&id=' . $username);
 
             return;
 

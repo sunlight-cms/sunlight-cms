@@ -75,7 +75,7 @@ if (User::SUPER_ADMIN_ID == User::getId() && isset($_POST['switch_user'])) {
 
     if ($query !== false) {
         User::login($query['id'], $query['password'], $query['email']);
-        $admin_redirect_to = Router::module('login', null, true);
+        $_admin->redirect(Router::module('login', null, true));
 
         return;
     }

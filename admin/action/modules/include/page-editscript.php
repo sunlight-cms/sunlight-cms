@@ -433,7 +433,7 @@ if (!empty($_POST)) {
         PageManipulator::refreshLayouts($id);
     }
 
-    $admin_redirect_to = 'index.php?p=content-edit' . $type_array[$type] . '&id=' . $id . '&saved';
+    $_admin->redirect('index.php?p=content-edit' . $type_array[$type] . '&id=' . $id . '&saved');
 
     return;
 }

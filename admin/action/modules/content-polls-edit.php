@@ -120,7 +120,7 @@ if (isset($_POST['question'])) {
             }
 
             // presmerovani
-            $admin_redirect_to = 'index.php?p=content-polls-edit&id=' . $id . '&saved';
+            $_admin->redirect('index.php?p=content-polls-edit&id=' . $id . '&saved');
 
             return;
 
@@ -133,7 +133,7 @@ if (isset($_POST['question'])) {
             'locked' => $locked,
             'votes' => trim(str_repeat("0-", $answers_count), "-")
         ], true);
-        $admin_redirect_to = 'index.php?p=content-polls-edit&id=' . $newid . '&created';
+        $_admin->redirect('index.php?p=content-polls-edit&id=' . $newid . '&created');
 
         return;
 

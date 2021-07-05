@@ -1,6 +1,7 @@
 <?php
 
 use Sunlight\Admin\Admin;
+use Sunlight\Admin\AdminState;
 use Sunlight\Core;
 use Sunlight\Exception\PrivilegeException;
 use Sunlight\Extend;
@@ -19,35 +20,27 @@ Core::init('../', [
 
 /* ----  priprava  ---- */
 
-$admin_title = null;
-$admin_extra_css = [];
-$admin_extra_js = [];
-$admin_login_layout = false;
-$admin_body_classes = [];
-$admin_access = (User::isLoggedIn() && User::hasPrivilege('administration'));
-$admin_current_module = Request::get('p', 'index');
-$admin_redirect_to = null;
-$admin_output = '';
+$_admin = new AdminState();
+$_admin->access = (User::isLoggedIn() && User::hasPrivilege('administration'));
+$_admin->currentModule = Request::get('p', 'index');
+
 $output = '';
 
 // nacteni modulu
-$admin_modules = require SL_ROOT . 'admin/modules.php';
-Extend::call('admin.init', [
-    'modules' => &$admin_modules,
-]);
-$admin_menu_items = [];
-foreach ($admin_modules as $module => $module_options) {
+$_admin->modules = require SL_ROOT . 'admin/modules.php';
+Extend::call('admin.init', ['admin' => $_admin]);
+foreach ($_admin->modules as $module => $module_options) {
     if (isset($module_options['menu']) && $module_options['menu']) {
-        $admin_menu_items[$module] = $module_options['menu_order'] ?? 15;
+        $_admin->menu[$module] = $module_options['menu_order'] ?? 15;
     }
 }
-asort($admin_menu_items, SORT_NUMERIC);
+asort($_admin->menu, SORT_NUMERIC);
 
 /* ---- priprava obsahu ---- */
 
 // vystup
 if (empty($_POST) || Xsrf::check()) {
-    if ($admin_access) {
+    if ($_admin->access) {
         try {
             require SL_ROOT . 'admin/action/module.php';
         } catch (PrivilegeException $privException) {
@@ -61,26 +54,18 @@ if (empty($_POST) || Xsrf::check()) {
 }
 
 // assets
-if ($admin_login_layout) {
-    $theme_dark = false;
-    $assets = Admin::themeAssets(0, false);
+if ($_admin->loginLayout) {
+    $_admin->assets = Admin::themeAssets(0, false);
 } else {
-    $theme_dark = Settings::get('adminscheme_dark');
-    $assets = Admin::themeAssets(Settings::get('adminscheme'), $theme_dark);
-}
-
-if (!empty($admin_extra_css)) {
-    $assets['css_after'] = "\n" . implode("\n", $admin_extra_css);
-}
-if (!empty($admin_extra_js)) {
-    $assets['js_after'] = "\n" . implode("\n", $admin_extra_js);
+    $_admin->dark = (bool) Settings::get('adminscheme_dark');
+    $_admin->assets = Admin::themeAssets(Settings::get('adminscheme'), $_admin->dark);
 }
 
 /* ----  vystup  ---- */
 
 // presmerovani?
-if ($admin_redirect_to !== null) {
-    Response::redirect($admin_redirect_to);
+if ($_admin->redirectTo !== null) {
+    Response::redirect($_admin->redirectTo);
     exit;
 }
 
@@ -88,17 +73,17 @@ if ($admin_redirect_to !== null) {
 echo GenericTemplates::renderHead();
 
 // body tridy
-if ($admin_login_layout) {
-    $admin_body_classes[] = 'login-layout';
+if ($_admin->loginLayout) {
+    $_admin->bodyClasses[] = 'login-layout';
 }
-$admin_body_classes[] = $theme_dark ? 'dark' : 'light';
+$_admin->bodyClasses[] = $_admin->dark ? 'dark' : 'light';
 
 ?>
-<meta name="robots" content="noindex,nofollow"><?= GenericTemplates::renderHeadAssets($assets), "\n" ?>
-<title><?= Settings::get('title'), ' - ', _lang('global.admintitle'), (!empty($admin_title) ? ' - ' . $admin_title : '') ?></title>
+<meta name="robots" content="noindex,nofollow"><?= GenericTemplates::renderHeadAssets($_admin->assets), "\n" ?>
+<title><?= Settings::get('title'), ' - ', _lang('global.admintitle'), (!empty($_admin->title) ? ' - ' . $_admin->title : '') ?></title>
 </head>
 
-<body class="<?= implode(' ', $admin_body_classes) ?>">
+<body class="<?= implode(' ', $_admin->bodyClasses) ?>">
 
 <div id="container">
 
@@ -118,8 +103,8 @@ $admin_body_classes[] = $theme_dark ? 'dark' : 'light';
     </div>
 
     <div id="page" class="wrapper">
-        <div id="content" class="module-<?= _e($admin_current_module) ?>">
-            <?= $admin_output, $output ?>
+        <div id="content" class="module-<?= _e($_admin->currentModule) ?>">
+            <?= $output ?>
 
             <div class="cleaner"></div>
         </div>
@@ -127,7 +112,7 @@ $admin_body_classes[] = $theme_dark ? 'dark' : 'light';
         <hr class="hidden">
         <div id="footer">
             <div id="footer-links">
-                <?php if ($admin_access): ?>
+                <?php if ($_admin->access): ?>
                     <a href="<?= Router::generate('') ?>" target="_blank"><?= _lang('admin.link.site') ?></a>
                     <a href="<?= Router::generate('admin/') ?>" target="_blank"><?= _lang('admin.link.newwin') ?></a>
                 <?php else: ?>

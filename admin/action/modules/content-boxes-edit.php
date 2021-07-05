@@ -123,7 +123,7 @@ if (isset($_POST['box_edit'])) do {
     }
 
     // redirect to form
-    $admin_redirect_to = 'index.php?p=content-boxes-edit&id=' . rawurlencode($id) . '&' . ($new ? 'created' : 'saved');
+    $_admin->redirect('index.php?p=content-boxes-edit&id=' . rawurlencode($id) . '&' . ($new ? 'created' : 'saved'));
 
     return;
 } while (false);

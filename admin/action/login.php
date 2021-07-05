@@ -7,12 +7,12 @@ defined('SL_ROOT') or exit;
 
 /* --- vystup --- */
 
-$admin_title = _lang('login.title');
-$admin_login_layout = true;
+$_admin->title = _lang('login.title');
+$_admin->loginLayout = true;
 
 if (empty($_POST) || User::isLoggedIn()) {
-    $admin_output .= User::renderLoginForm(false, User::isLoggedIn());
+    $output .= User::renderLoginForm(false, User::isLoggedIn());
 } else {
-    $admin_output .= "<h1>" . _lang('admin.post_repeat.title') . "</h1>\n";
-    $admin_output .= User::renderPostRepeatForm(true, Message::ok(_lang('admin.post_repeat.msg')));
+    $output .= "<h1>" . _lang('admin.post_repeat.title') . "</h1>\n";
+    $output .= User::renderPostRepeatForm(true, Message::ok(_lang('admin.post_repeat.msg')));
 }
