@@ -14,13 +14,13 @@ if ($_page['var1'] === null) {
 }
 
 // zobrazit tema?
-if ($_index['segment'] !== null) {
+if ($_index->segment !== null) {
     require SL_ROOT . 'system/action/pages/include/topic.php';
     return;
 }
 
 // titulek
-$_index['title'] = $_page['title'];
+$_index->title = $_page['title'];
 
 // obsah
 Extend::call('page.forum.content.before', $extend_args);

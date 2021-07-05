@@ -17,7 +17,7 @@ if ($_page['var2'] === null) {
 }
 
 // zobrazeni clanku?
-if ($_index['segment'] !== null) {
+if ($_index->segment !== null) {
     require SL_ROOT . 'system/action/pages/include/article.php';
     return;
 }
@@ -40,7 +40,7 @@ switch ($_page['var1']) {
 }
 
 // titulek
-$_index['title'] = $_page['title'];
+$_index->title = $_page['title'];
 
 // obsah
 Extend::call('page.category.content.before', $extend_args);
@@ -51,7 +51,7 @@ Extend::call('page.category.content.after', $extend_args);
 
 // vypis clanku
 [$art_joins, $art_cond, $art_count] = Article::createFilter('art', [$id], null, true);
-$paging = Paginator::render($_index['url'], $artsperpage, $art_count);
+$paging = Paginator::render($_index->url, $artsperpage, $art_count);
 $userQuery = User::createQuery('art.author');
 $arts = DB::query("SELECT art.id,art.title,art.slug,art.perex," . $userQuery['column_list'] . "," . ($_page['var4'] ? 'art.picture_uid,' : '') . "art.time,art.comments,art.readnum,cat1.slug AS cat_slug,(SELECT COUNT(*) FROM " . DB::table('post') . " AS post WHERE home=art.id AND post.type=" . Post::ARTICLE_COMMENT . ") AS comment_count FROM " . DB::table('article') . " AS art " . $art_joins . ' ' . $userQuery['joins'] . " WHERE " . $art_cond . " ORDER BY " . $artorder . " " . $paging['sql_limit']);
 

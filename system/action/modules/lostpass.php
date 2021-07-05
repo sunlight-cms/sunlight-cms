@@ -18,19 +18,18 @@ use Sunlight\Util\StringGenerator;
 defined('SL_ROOT') or exit;
 
 if (!Settings::get('lostpass')) {
-    $_index['type'] = _index_not_found;
+    $_index->notFound();
     return;
 }
 
 if (User::isLoggedIn()) {
-    $_index['type'] = _index_redir;
-    $_index['redirect_to'] = Router::module('login', null, true);
+    $_index->redirect(Router::module('login', null, true));
     return;
 }
 
 /* ---  vystup  --- */
 
-$_index['title'] = _lang('mod.lostpass');
+$_index->title = _lang('mod.lostpass');
 
 if (isset($_GET['user'], $_GET['hash'])) {
     // kontrola hashe a zmena hesla

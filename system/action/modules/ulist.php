@@ -11,16 +11,16 @@ use Sunlight\Util\Form;
 defined('SL_ROOT') or exit;
 
 if (!User::isLoggedIn() && Settings::get('notpublicsite')) {
-    $_index['type'] = _index_unauthorized;
+    $_index->unauthorized();
     return;
 }
 
 if (!Settings::get('ulist')) {
-    $_index['type'] = _index_not_found;
+    $_index->notFound();
     return;
 }
 
-$_index['title'] = _lang('user.list.title');
+$_index->title = _lang('user.list.title');
 
 $output .= "<p class='bborder'>" . _lang('mod.ulist.p') . "</p>";
 

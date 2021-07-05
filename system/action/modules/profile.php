@@ -17,7 +17,7 @@ use Sunlight\Util\StringManipulator;
 defined('SL_ROOT') or exit;
 
 if (!User::isLoggedIn() && Settings::get('notpublicsite')) {
-    $_index['type'] = _index_unauthorized;
+    $_index->unauthorized();
     return;
 }
 
@@ -69,13 +69,13 @@ if ($query !== false) {
         }
     }
 } else {
-    $_index['type'] = _index_not_found;
+    $_index->notFound();
     return;
 }
 
 /* ---  modul  --- */
 
-$_index['title'] = _lang('mod.profile') . ': ' . $query[$query['publicname'] !== null ? 'publicname' : 'username'];
+$_index->title = _lang('mod.profile') . ': ' . $query[$query['publicname'] !== null ? 'publicname' : 'username'];
 
 // poznamka o blokovani
 if ($query['blocked'] == 1 || $groupdata['blocked'] == 1) {

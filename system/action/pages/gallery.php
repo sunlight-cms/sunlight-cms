@@ -24,7 +24,7 @@ if ($_page['var4'] === null) {
 }
 
 // titulek
-$_index['title'] = $_page['title'];
+$_index->title = $_page['title'];
 
 // obsah
 Extend::call('page.gallery.content.before', $extend_args);
@@ -32,7 +32,7 @@ if ($_page['content'] != "") $output .= Hcm::parse($_page['content']) . "\n\n<di
 Extend::call('page.gallery.content.after', $extend_args);
 
 // obrazky
-$paging = Paginator::render($_index['url'], $_page['var2'], DB::table('gallery_image'), "home=" . $id);
+$paging = Paginator::render($_index->url, $_page['var2'], DB::table('gallery_image'), "home=" . $id);
 $images = DB::query("SELECT * FROM " . DB::table('gallery_image') . " WHERE home=" . $id . " ORDER BY ord " . $paging['sql_limit']);
 $images_number = DB::size($images);
 

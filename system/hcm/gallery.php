@@ -47,7 +47,7 @@ return function ($cesta = '', $rozmery = '', $strankovani = null, $lightbox = tr
         // priprava strankovani
         if ($strankovat) {
             $count = count($items);
-            $paging = Paginator::render($_index['url'], $strankovani, $count, '', '#hcm_gal' . Core::$hcmUid, 'hcm_gal' . Core::$hcmUid . 'p');
+            $paging = Paginator::render($_index->url, $strankovani, $count, '', '#hcm_gal' . Core::$hcmUid, 'hcm_gal' . Core::$hcmUid . 'p');
         }
 
         // vypis

@@ -714,7 +714,7 @@ abstract class User
             if (Core::$env === Core::ENV_ADMIN) {
                 $output .= '<h1>' . $title_text . "</h1>\n";
             } else {
-                $GLOBALS['_index']['title'] = $title_text;
+                $GLOBALS['_index']->title = $title_text;
             }
         }
 

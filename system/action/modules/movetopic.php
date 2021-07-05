@@ -14,7 +14,7 @@ use Sunlight\Xsrf;
 defined('SL_ROOT') or exit;
 
 if (!User::isLoggedIn()) {
-    $_index['type'] = _index_unauthorized;
+    $_index->unauthorized();
     return;
 }
 
@@ -29,13 +29,13 @@ if ($query !== false) {
         Template::change($query['forum_layout']);
     }
 
-    $_index['backlink'] = Router::topic($query['id'], $query['forum_slug']);
+    $_index->backlink = Router::topic($query['id'], $query['forum_slug']);
     if (!Post::checkAccess($userQuery, $query) || !User::hasPrivilege('movetopics')) {
-        $_index['type'] = _index_unauthorized;
+        $_index->unauthorized();
         return;
     }
 } else {
-    $_index['type'] = _index_not_found;
+    $_index->notFound();
     return;
 }
 
@@ -48,7 +48,7 @@ if (isset($_POST['new_forum'])) {
     if (isset($forums[$new_forum_id]) && $forums[$new_forum_id]['type'] == Page::FORUM) {
         DB::update('post', 'id=' . DB::val($id) . ' OR (type=' . Post::FORUM_TOPIC . ' AND xhome=' . $id . ')', ['home' => $new_forum_id]);
         $query['home'] = $new_forum_id;
-        $_index['backlink'] = Router::topic($query['id']);
+        $_index->backlink = Router::topic($query['id']);
         $message = Message::ok(_lang('mod.movetopic.ok'));
     } else {
         $message = Message::error(_lang('global.badinput'));
@@ -57,7 +57,7 @@ if (isset($_POST['new_forum'])) {
 
 /* ---  vystup  --- */
 
-$_index['title'] = _lang('mod.movetopic');
+$_index->title = _lang('mod.movetopic');
 
 // zprava
 $output .= $message;

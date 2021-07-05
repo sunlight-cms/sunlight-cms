@@ -12,7 +12,7 @@ use Sunlight\Xsrf;
 defined('SL_ROOT') or exit;
 
 if (!User::isLoggedIn()) {
-    $_index['type'] = _index_unauthorized;
+    $_index->unauthorized();
     return;
 }
 
@@ -29,16 +29,16 @@ if ($query !== false) {
         Template::change($query['forum_layout']);
     }
 
-    $_index['backlink'] = Router::topic($query['id'], $query['forum_slug']);
+    $_index->backlink = Router::topic($query['id'], $query['forum_slug']);
     if ($query['sticky']) {
         $unstick = '2';
     }
     if (!Post::checkAccess($userQuery, $query) || !User::hasPrivilege('stickytopics')) {
-        $_index['type'] = _index_unauthorized;
+        $_index->unauthorized();
         return;
     }
 } else {
-    $_index['type'] = _index_not_found;
+    $_index->notFound();
     return;
 }
 
@@ -52,7 +52,7 @@ if (isset($_POST['doit'])) {
 
 /* ---  vystup  --- */
 
-$_index['title'] = _lang('mod.stickytopic' . $unstick);
+$_index->title = _lang('mod.stickytopic' . $unstick);
 
 // zprava
 $output .= $message;

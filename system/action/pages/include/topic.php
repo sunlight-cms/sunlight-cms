@@ -12,22 +12,22 @@ use Sunlight\Util\UrlHelper;
 
 defined('SL_ROOT') or exit;
 
-if (!ctype_digit($_index['segment'])) {
-    $_index['type'] = _index_not_found;
+if (!ctype_digit($_index->segment)) {
+    $_index->notFound();
     return;
 }
 
 // nacteni dat
-$id = (int) $_index['segment'];
+$id = (int) $_index->segment;
 $userQuery = User::createQuery('p.author');
 $query = DB::queryRow("SELECT p.*," . $userQuery['column_list'] . " FROM " . DB::table('post') . " p " . $userQuery['joins'] . " WHERE p.id=" . $id . " AND p.type=" . Post::FORUM_TOPIC . " AND p.home=" . $_page['id'] . " AND p.xhome=-1");
 if ($query === false) {
-    $_index['type'] = _index_not_found;
+    $_index->notFound();
     return;
 }
 
 // drobecek
-$_index['crumbs'][] = [
+$_index->crumbs[] = [
     'title' => $query['subject'],
     'url' => Router::topic($id, $_page['slug'])
 ];
@@ -46,14 +46,14 @@ if (!$continue) {
 }
 
 // atributy
-$_index['title'] = $_page['title'] . ' ' . Settings::get('titleseparator') . ' ' . $query['subject'];
-$_index['heading'] = $_page['title'];
-$_index['url'] = Router::topic($id, $_page['slug']);
+$_index->title = $_page['title'] . ' ' . Settings::get('titleseparator') . ' ' . $query['subject'];
+$_index->heading = $_page['title'];
+$_index->url = Router::topic($id, $_page['slug']);
 
 // priprava zpetneho odkazu
-$_index['backlink'] = Router::page($_page['id'], $_page['slug']);
+$_index->backlink = Router::page($_page['id'], $_page['slug']);
 if (!$query['sticky']) {
-    $_index['backlink'] = UrlHelper::appendParams($_index['backlink'], 'page=' . Paginator::getItemPage($_page['var1'], DB::table('post'), "bumptime>" . $query['bumptime'] . " AND xhome=-1 AND type=" . Post::FORUM_TOPIC . " AND home=" . $_page['id']));
+    $_index->backlink = UrlHelper::appendParams($_index->backlink, 'page=' . Paginator::getItemPage($_page['var1'], DB::table('post'), "bumptime>" . $query['bumptime'] . " AND xhome=-1 AND type=" . Post::FORUM_TOPIC . " AND home=" . $_page['id']));
 }
 
 // sprava tematu

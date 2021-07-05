@@ -8,7 +8,7 @@ defined('SL_ROOT') or exit;
 
 /* ---  vystup  --- */
 
-$_index['title'] = _lang('login.title');
+$_index->title = _lang('login.title');
 
 $output .= User::renderLoginForm(true);
 

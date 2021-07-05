@@ -10,6 +10,7 @@ use Sunlight\Database\TreeReader;
 use Sunlight\Database\TreeReaderOptions;
 use Sunlight\Extend;
 use Sunlight\Settings;
+use Sunlight\WebState;
 
 abstract class Page
 {
@@ -190,8 +191,8 @@ abstract class Page
         if (Core::$env === Core::ENV_WEB) {
             global $_index;
 
-            if ($_index['type'] === _index_page) {
-                $id = $_index['id'];
+            if ($_index->type === WebState::PAGE) {
+                $id = $_index->id;
                 $data = $GLOBALS['_page'];
             }
         }

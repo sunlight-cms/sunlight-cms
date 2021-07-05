@@ -14,7 +14,7 @@ if ($_page['var2'] === null) {
 }
 
 // titulek
-$_index['title'] = $_page['title'];
+$_index->title = $_page['title'];
 
 // obsah
 Extend::call('page.book.content.before', $extend_args);

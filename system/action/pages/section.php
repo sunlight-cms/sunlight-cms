@@ -8,7 +8,7 @@ use Sunlight\Settings;
 defined('SL_ROOT') or exit;
 
 // titulek
-$_index['title'] = $_page['title'];
+$_index->title = $_page['title'];
 
 // obsah
 Extend::call('page.section.content.before', $extend_args);

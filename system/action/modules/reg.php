@@ -19,13 +19,12 @@ use Sunlight\Util\StringGenerator;
 defined('SL_ROOT') or exit;
 
 if (!Settings::get('registration')) {
-    $_index['type'] = _index_not_found;
+    $_index->notFound();
     return;
 }
 
 if (User::isLoggedIn()) {
-    $_index['type'] = _index_redir;
-    $_index['redirect_to'] = Router::module('login', null, true);
+    $_index->redirect(Router::module('login', null, true));
     return;
 }
 
@@ -44,7 +43,7 @@ if (isset($_GET['confirm'])) {
     $show_form = false;
 
     if (!Settings::get('registration_confirm')) {
-        $_index['found'] = false;
+        $_index->notFound();
         return;
     }
 
@@ -164,7 +163,7 @@ if (isset($_GET['confirm'])) {
 }
 
 // atributy
-$_index['title'] = _lang('mod.reg');
+$_index->title = _lang('mod.reg');
 
 // vystup
 $output .= $message;

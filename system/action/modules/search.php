@@ -22,12 +22,12 @@ use Sunlight\Xsrf;
 defined('SL_ROOT') or exit;
 
 if (!User::isLoggedIn() && Settings::get('notpublicsite')) {
-    $_index['type'] = _index_unauthorized;
+    $_index->unauthorized();
     return;
 }
 
 if (!Settings::get('search')) {
-    $_index['type'] = _index_not_found;
+    $_index->notFound();
     return;
 }
 
@@ -49,7 +49,7 @@ if (isset($_GET['q']) && Xsrf::check(true)) {
 
 /* ---  modul  --- */
 
-$_index['title'] = _lang('mod.search');
+$_index->title = _lang('mod.search');
 
 $output .= "
 <p class='bborder'>" . _lang('mod.search.p') . "</p>

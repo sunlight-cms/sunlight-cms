@@ -90,9 +90,9 @@ abstract class Template
         $title = Extend::buffer('tpl.title', ['head' => true]);
         if ($title === '') {
             if (Settings::get('titletype') == 1) {
-                $title = Settings::get('title') . ' ' . Settings::get('titleseparator') . ' ' . $_index['title'];
+                $title = Settings::get('title') . ' ' . Settings::get('titleseparator') . ' ' . $_index->title;
             } else {
-                $title = $_index['title'] . ' ' . Settings::get('titleseparator') . ' ' . Settings::get('title');
+                $title = $_index->title . ' ' . Settings::get('titleseparator') . ' ' . Settings::get('title');
             }
         }
 
@@ -105,7 +105,7 @@ abstract class Template
         ];
 
         // sestaveni
-        echo '<meta name="description" content="' . ($_index['description'] ?? Settings::get('description')) . '">' . ((Settings::get('author') !== '') ? '
+        echo '<meta name="description" content="' . ($_index->description ?? Settings::get('description')) . '">' . ((Settings::get('author') !== '') ? '
 <meta name="author" content="' . Settings::get('author') . '">' : '')
             . Extend::buffer('tpl.head.meta')
             . ($_template->getOption('responsive') ? "\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">" : '')
@@ -207,9 +207,9 @@ abstract class Template
     {
         global $_index;
 
-        Extend::call('tpl.content', ['content' => &$_index['output']]);
+        Extend::call('tpl.content', ['content' => &$_index->output]);
 
-        return $_index['output'];
+        return $_index->output;
     }
 
     /**
@@ -223,8 +223,8 @@ abstract class Template
 
         $output = '';
 
-        if ($_index['heading_enabled']) {
-            $heading = $_index['heading'] ?? $_index['title'];
+        if ($_index->headingEnabled) {
+            $heading = $_index->heading ?? $_index->title;
 
             // extend
             $output = Extend::buffer('tpl.heading', ['heading' => &$heading]);
@@ -248,11 +248,11 @@ abstract class Template
         global $_index;
 
         // extend
-        $output = Extend::buffer('tpl.backlink', ['backlink' => &$_index['backlink']]);
+        $output = Extend::buffer('tpl.backlink', ['backlink' => &$_index->backlink]);
 
         // vychozi implementace
-        if ($output === '' && $_index['backlink'] !== null) {
-            $output = '<div class="backlink"><a href="' . _e($_index['backlink']) . '">&lt; ' . _lang('global.return') . "</a></div>\n";
+        if ($output === '' && $_index->backlink !== null) {
+            $output = '<div class="backlink"><a href="' . _e($_index->backlink) . '">&lt; ' . _lang('global.return') . "</a></div>\n";
         }
 
         return $output;
@@ -439,13 +439,13 @@ abstract class Template
         // pridat modul
         if (self::currentIsModule()) {
             $breadcrumbs[] = [
-                'title' => $_index['title'],
-                'url' => $_index['url'],
+                'title' => $_index->title,
+                'url' => $_index->url,
             ];
         }
 
         // pridat drobecky aktualni stranky
-        foreach ($_index['crumbs'] as $crumb) {
+        foreach ($_index->crumbs as $crumb) {
             $breadcrumbs[] = $crumb;
         }
 
@@ -478,7 +478,7 @@ abstract class Template
     {
         $title = Extend::buffer('tpl.title', ['head' => false]);
 
-        return $title !== '' ? $title : $GLOBALS['_index']['title'];
+        return $title !== '' ? $title : $GLOBALS['_index']->title;
     }
 
     /**
@@ -610,7 +610,7 @@ abstract class Template
      */
     static function currentID(): ?int
     {
-        return $GLOBALS['_index']['id'];
+        return $GLOBALS['_index']->id;
     }
 
     /**
@@ -620,7 +620,7 @@ abstract class Template
      */
     static function currentIsPage(): bool
     {
-        return $GLOBALS['_index']['type'] === _index_page;
+        return $GLOBALS['_index']->type === WebState::PAGE;
     }
 
     /**
@@ -631,9 +631,9 @@ abstract class Template
     static function currentIsArticle(): bool
     {
         return
-            $GLOBALS['_index']['type'] === _index_page
+            $GLOBALS['_index']->type === WebState::PAGE
             && $GLOBALS['_page']['type'] == Page::CATEGORY
-            && $GLOBALS['_index']['segment'] !== null;
+            && $GLOBALS['_index']->segment !== null;
     }
 
     /**
@@ -644,9 +644,9 @@ abstract class Template
     static function currentIsTopic(): bool
     {
         return
-            $GLOBALS['_index']['type'] === _index_page
+            $GLOBALS['_index']->type === WebState::PAGE
             && $GLOBALS['_page']['type'] == Page::FORUM
-            && $GLOBALS['_index']['segment'] !== null;
+            && $GLOBALS['_index']->segment !== null;
     }
 
     /**
@@ -656,7 +656,7 @@ abstract class Template
      */
     static function currentIsModule(): bool
     {
-        return $GLOBALS['_index']['type'] === _index_module;
+        return $GLOBALS['_index']->type === WebState::MODULE;
     }
 
     /**
@@ -666,6 +666,6 @@ abstract class Template
      */
     static function currentIsIndex(): bool
     {
-        return self::currentIsPage() && $GLOBALS['_index']['id'] == Settings::get('index_page_id');
+        return self::currentIsPage() && $GLOBALS['_index']->id == Settings::get('index_page_id');
     }
 }

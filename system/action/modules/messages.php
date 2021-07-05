@@ -22,12 +22,12 @@ use Sunlight\Xsrf;
 defined('SL_ROOT') or exit;
 
 if (!Settings::get('messages')) {
-    $_index['type'] = _index_not_found;
+    $_index->notFound();
     return;
 }
 
 if (!User::isLoggedIn()) {
-    $_index['type'] = _index_unauthorized;
+    $_index->unauthorized();
     return;
 }
 
@@ -51,7 +51,7 @@ switch ($a) {
     case 'new':
 
         // titulek
-        $_index['title'] = _lang('mod.messages.new');
+        $_index->title = _lang('mod.messages.new');
 
         // odeslani
         if (isset($_POST['receiver'])) {
@@ -141,8 +141,7 @@ switch ($a) {
                 Extend::call('posts.new', ['id' => $insert_id, 'posttype' => Post::PRIVATE_MSG, 'post' => $post_data]);
 
                 // presmerovani a konec
-                $_index['type'] = _index_redir;
-                $_index['redirect_to'] = Router::module('messages', 'a=list&read=' . $pm_id, true);
+                $_index->redirect(Router::module('messages', 'a=list&read=' . $pm_id, true));
 
                 return;
 
@@ -184,7 +183,7 @@ switch ($a) {
             $receiverUserQuery = User::createQuery('pm.receiver', 'receiver_', 'ru');
             $q = DB::queryRow('SELECT pm.*,p.id post_id,p.subject,p.time,p.text,p.guest,p.ip' . Extend::buffer('posts.columns') . ',' . $senderUserQuery['column_list'] . ',' . $receiverUserQuery['column_list'] . ' FROM ' . DB::table('pm') . ' AS pm JOIN ' . DB::table('post') . ' AS p ON (p.type=' . Post::PRIVATE_MSG . ' AND p.home=pm.id AND p.xhome=-1) ' . $senderUserQuery['joins'] . ' ' . $receiverUserQuery['joins'] . ' WHERE pm.id=' . $id . ' AND (sender=' . User::getId() . ' AND sender_deleted=0 OR receiver=' . User::getId() . ' AND receiver_deleted=0)');
             if ($q === false) {
-                $_index['type'] = _index_not_found;
+                $_index->notFound();
                 break;
             }
 
@@ -196,7 +195,7 @@ switch ($a) {
             $unread_count = DB::count('post', 'home=' . DB::val($q['id']) . ' AND type=' . Post::PRIVATE_MSG . ' AND author=' . User::getId() . ' AND time>' . $q[$role_other . '_readtime']);
 
             // vystup
-            $_index['title'] = _lang('mod.messages.message') . ': ' . $q['subject'];
+            $_index->title = _lang('mod.messages.message') . ': ' . $q['subject'];
             $output .= "<div class=\"topic\">\n";
             $output .= PostService::renderPost(['id' => $q['post_id'], 'author' => $q['sender']] + $q, $senderUserQuery, [
                 'post_link' => false,
@@ -213,7 +212,7 @@ switch ($a) {
         }
 
         // je vypis
-        $_index['title'] = _lang('mod.messages');
+        $_index->title = _lang('mod.messages');
         $list = true;
 
         // smazani vzkazu
@@ -293,7 +292,7 @@ switch ($a) {
         }
 
         // strankovani
-        $paging = Paginator::render($_index['url'], Settings::get('messagesperpage'), DB::table('pm'), 'sender=' . User::getId() . ' OR receiver=' . User::getId(), '&amp;a=' . $a);
+        $paging = Paginator::render($_index->url, Settings::get('messagesperpage'), DB::table('pm'), 'sender=' . User::getId() . ' OR receiver=' . User::getId(), '&amp;a=' . $a);
         if (Paginator::atTop()) {
             $output .= $paging['paging'];
         }
@@ -363,5 +362,5 @@ switch ($a) {
 
 // zpetny odkaz
 if (!$list) {
-    $_index['backlink'] = Router::module('messages');
+    $_index->backlink = Router::module('messages');
 }

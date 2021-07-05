@@ -13,7 +13,7 @@ use Sunlight\Util\StringManipulator;
 defined('SL_ROOT') or exit;
 
 if (!User::isLoggedIn() && Settings::get('notpublicsite')) {
-    $_index['type'] = _index_unauthorized;
+    $_index->unauthorized();
     return;
 }
 
@@ -23,25 +23,25 @@ $id = StringManipulator::slugify(Request::get('id'), false);
 $query = DB::queryRow("SELECT u.id,u.username,u.publicname,u.public,g.level FROM " . DB::table('user') . " u JOIN " . DB::table('user_group') . " g ON u.group_id=g.id WHERE u.username=" . DB::val($id));
 
 if ($query === false) {
-    $_index['type'] = _index_not_found;
+    $_index->notFound();
     return;
 }
 
 if (!$query['public'] && !User::checkLevel($query['id'], $query['level'])) {
-    $_index['type'] = _index_unauthorized;
+    $_index->unauthorized();
     return;
 }
 
 /* ---  modul  --- */
 
-$_index['title'] = str_replace(
+$_index->title = str_replace(
     '%user%',
     $query[$query['publicname'] !== null ? 'publicname' : 'username'],
     _lang('mod.profile.arts')
 );
 
 // odkaz zpet na profil
-$_index['backlink'] = Router::module('profile', 'id=' . $id);
+$_index->backlink = Router::module('profile', 'id=' . $id);
 
 // tabulka
 [$joins, $cond, $count] = Article::createFilter('art', [], "art.author=" . $query['id'], true);

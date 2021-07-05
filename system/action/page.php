@@ -15,28 +15,28 @@ defined('SL_ROOT') or exit;
 // nacteni dat stranky
 $_page = Page::find($segments);
 if ($_page === false) {
-    $_index['type'] = _index_not_found;
+    $_index->notFound();
     return;
 }
 
 // parametry stranky
-$_index['url'] = Router::page($_page['id'], $_index['slug']);
-$_index['body_classes'][] = 't-page';
-if ($_index['slug'] !== null) {
-    $_index['body_classes'][] = 'p-' . StringManipulator::slugify($_index['slug'], true, '_');
+$_index->url = Router::page($_page['id'], $_index->slug);
+$_index->bodyClasses[] = 't-page';
+if ($_index->slug !== null) {
+    $_index->bodyClasses[] = 'p-' . StringManipulator::slugify($_index->slug, true, '_');
 } elseif ($_page['id'] == Settings::get('index_page_id')) {
-    $_index['body_classes'][] = 'homepage';
+    $_index->bodyClasses[] = 'homepage';
 }
 
-if ($_index['slug'] !== null && ($slug_length = strlen($_page['slug'])) < strlen($_index['slug'])) {
-    $segment = substr($_index['slug'], $slug_length + 1);
+if ($_index->slug !== null && ($slug_length = strlen($_page['slug'])) < strlen($_index->slug)) {
+    $segment = substr($_index->slug, $slug_length + 1);
 } else {
     $segment = null;
 }
 
 // meta
 if ($_page['description'] !== '') {
-    $_index['description'] = $_page['description'];
+    $_index->description = $_page['description'];
 }
 
 // motiv
@@ -54,10 +54,11 @@ if (
         $_url->remove('p');
     }
 
-    $_index['type'] = _index_redir;
-    $_index['redirect_to'] = UrlHelper::appendParams(
-        Router::page($_page['id'], $_page['slug'], null, true),
-        $_url->getQueryString()
+    $_index->redirect(
+        UrlHelper::appendParams(
+            Router::page($_page['id'], $_page['slug'], null, true),
+            $_url->getQueryString()
+        )
     );
     return;
 }
@@ -79,33 +80,31 @@ if ($segment !== null) {
 
     // stranka nenalezena, pokud nepodporuje segment
     if (!$segment_support) {
-        $_index['type'] = _index_not_found;
+        $_index->notFound();
         return;
     }
 }
 
 // presmerovani na hezkou adresu
-if (Settings::get('pretty_urls') && !$_index['is_rewritten'] && !empty($segments)) {
-    $_index['type'] = _index_redir;
-    $_index['redirect_to'] = $_index['url'];
-    $_index['redirect_to_permanent'] = true;
+if (Settings::get('pretty_urls') && !$_index->isRewritten && !empty($segments)) {
+    $_index->redirect($_index->url, true);
     return;
 }
 
 // test pristupu
 if (!User::checkPublicAccess($_page['public'], $_page['level'])) {
-    $_index['type'] = _index_unauthorized;
+    $_index->unauthorized();
     return;
 }
 
 // nastaveni atributu
-$_index['id'] = $_page['id'];
-$_index['title'] = $_page['title'];
+$_index->id = $_page['id'];
+$_index->title = $_page['title'];
 if ($_page['heading'] !== '') {
-    $_index['heading'] = $_page['heading'];
+    $_index->heading = $_page['heading'];
 }
-$_index['heading_enabled'] = (bool) $_page['show_heading'];
-$_index['segment'] = $segment;
+$_index->headingEnabled = (bool) $_page['show_heading'];
+$_index->segment = $segment;
 
 // udalosti stranky
 if ($_page['events'] !== null) {

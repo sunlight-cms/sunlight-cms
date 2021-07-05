@@ -128,7 +128,7 @@ class PostService
 
         // url
         if (!isset($url)) {
-            $url = $_index['url'];
+            $url = $_index->url;
         }
 
         $url_html = _e($url);

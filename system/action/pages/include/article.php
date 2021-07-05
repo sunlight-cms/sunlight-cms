@@ -17,27 +17,27 @@ use Sunlight\Xsrf;
 defined('SL_ROOT') or exit;
 
 // nacteni dat
-$_article = Article::find($_index['segment'], $_page['id']);
+$_article = Article::find($_index->segment, $_page['id']);
 if ($_article === false) {
-    $_index['type'] = _index_not_found;
+    $_index->notFound();
     return;
 }
 
 // kontrola pristupu
 if (!Article::checkAccess($_article, false)) {
-    $_index['type'] = _index_unauthorized;
+    $_index->unauthorized();
     return;
 }
 
 // drobecek
-$_index['crumbs'][] = [
+$_index->crumbs[] = [
     'title' => $_article['title'],
     'url' => Router::article(null, $_article['slug'], $_page['slug'])
 ];
 
 // meta
 if ($_article['description'] !== '') {
-    $_index['description'] = $_article['description'];
+    $_index->description = $_article['description'];
 }
 
 // extend
@@ -70,8 +70,8 @@ if ($_article['visible']) {
 }
 
 //  titulek
-$_index['title'] = $_article['title'];
-$_index['heading'] = null;
+$_index->title = $_article['title'];
+$_index->heading = null;
 
 // obrazek
 if (isset($_article['picture_uid'])) {

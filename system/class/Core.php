@@ -127,9 +127,6 @@ abstract class Core
         // configuration
         self::initConfiguration($root, $options);
 
-        // constants
-        require __DIR__ . '/../constants.php';
-
         // components
         if ($initComponents) {
             self::initComponents($options['cache']);

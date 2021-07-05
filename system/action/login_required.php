@@ -6,17 +6,17 @@ use Sunlight\Util\Response;
 
 defined('SL_ROOT') or exit;
 
-$_index['title'] = _lang('login.required.title');
-$_index['output'] = '';
-$_index['body_classes'][] = 't-error';
-$_index['body_classes'][] = 'e-unauthorized';
+$_index->title = _lang('login.required.title');
+$_index->output = '';
+$_index->bodyClasses[] = 't-error';
+$_index->bodyClasses[] = 'e-unauthorized';
 
 Response::unauthorized();
 
 Extend::call('index.login_required', [
-    'index' => &$_index,
+    'index' => $_index,
 ]);
 
-if ($_index['output'] === '') {
-    $_index['output'] = User::renderLoginForm(true, true);
+if ($_index->output === '') {
+    $_index->output = User::renderLoginForm(true, true);
 }

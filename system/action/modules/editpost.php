@@ -22,7 +22,7 @@ use Sunlight\Util\UrlHelper;
 defined('SL_ROOT') or exit;
 
 if (!User::isLoggedIn()) {
-    $_index['type'] = _index_unauthorized;
+    $_index->unauthorized();
     return;
 }
 
@@ -44,24 +44,24 @@ if ($query !== false) {
 
     if (Post::checkAccess($userQuery, $query)) {
         $bbcode = true;
-        Extend::call('mod.editpost.backlink', ['backlink' => &$_index['backlink'], 'post' => $query]);
+        Extend::call('mod.editpost.backlink', ['backlink' => &$_index->backlink, 'post' => $query]);
 
-        if ($_index['backlink'] === null) {
+        if ($_index->backlink === null) {
             [$url] = Router::post($query);
 
             switch ($query['type']) {
                 case Post::SECTION_COMMENT:
-                    $_index['backlink'] = UrlHelper::appendParams($url, "page=" . Paginator::getItemPage(Settings::get('commentsperpage'), DB::table('post'), "id>" . $query['id'] . " AND type=" . Post::SECTION_COMMENT . " AND xhome=-1 AND home=" . $query['home'])) . "#post-" . $query['id'];
+                    $_index->backlink = UrlHelper::appendParams($url, "page=" . Paginator::getItemPage(Settings::get('commentsperpage'), DB::table('post'), "id>" . $query['id'] . " AND type=" . Post::SECTION_COMMENT . " AND xhome=-1 AND home=" . $query['home'])) . "#post-" . $query['id'];
                     break;
                 case Post::ARTICLE_COMMENT:
-                    $_index['backlink'] = UrlHelper::appendParams($url, "page=" . Paginator::getItemPage(Settings::get('commentsperpage'), DB::table('post'), "id>" . $query['id'] . " AND type=" . Post::ARTICLE_COMMENT . " AND xhome=-1 AND home=" . $query['home'])) . "#post-" . $query['id'];
+                    $_index->backlink = UrlHelper::appendParams($url, "page=" . Paginator::getItemPage(Settings::get('commentsperpage'), DB::table('post'), "id>" . $query['id'] . " AND type=" . Post::ARTICLE_COMMENT . " AND xhome=-1 AND home=" . $query['home'])) . "#post-" . $query['id'];
                     break;
                 case Post::BOOK_ENTRY:
                     $postsperpage = DB::queryRow("SELECT var2 FROM " . DB::table('page') . " WHERE id=" . $query['home']);
                     if ($postsperpage['var2'] === null) {
                         $postsperpage['var2'] = Settings::get('commentsperpage');
                     }
-                    $_index['backlink'] = UrlHelper::appendParams($url, "page=" . Paginator::getItemPage($postsperpage['var2'], DB::table('post'), "id>" . $query['id'] . " AND type=" . Post::BOOK_ENTRY . " AND xhome=-1 AND home=" . $query['home'])) . "#post-" . $query['id'];
+                    $_index->backlink = UrlHelper::appendParams($url, "page=" . Paginator::getItemPage($postsperpage['var2'], DB::table('post'), "id>" . $query['id'] . " AND type=" . Post::BOOK_ENTRY . " AND xhome=-1 AND home=" . $query['home'])) . "#post-" . $query['id'];
                     break;
                 case Post::SHOUTBOX_ENTRY:
                     $bbcode = false;
@@ -69,17 +69,17 @@ if ($query !== false) {
                 case Post::FORUM_TOPIC:
                     if ($query['xhome'] == -1) {
                         if (!Form::loadCheckbox("delete")) {
-                            $_index['backlink'] = $url;
+                            $_index->backlink = $url;
                         } else {
-                            $_index['backlink'] = Router::page($query['home'], $query['page_slug']);
+                            $_index->backlink = Router::page($query['home'], $query['page_slug']);
                         }
                     } else {
-                        $_index['backlink'] = UrlHelper::appendParams($url, "page=" . Paginator::getItemPage(Settings::get('commentsperpage'), DB::table('post'), "id<" . $query['id'] . " AND type=" . Post::FORUM_TOPIC . " AND xhome=" . $query['xhome'] . " AND home=" . $query['home'])) . "#post-" . $query['id'];
+                        $_index->backlink = UrlHelper::appendParams($url, "page=" . Paginator::getItemPage(Settings::get('commentsperpage'), DB::table('post'), "id<" . $query['id'] . " AND type=" . Post::FORUM_TOPIC . " AND xhome=" . $query['xhome'] . " AND home=" . $query['home'])) . "#post-" . $query['id'];
                     }
                     break;
 
                 case Post::PRIVATE_MSG:
-                    $_index['backlink'] = UrlHelper::appendParams($url, 'page=' . Paginator::getItemPage(Settings::get('messagesperpage'), DB::table('post'), 'id<' . $query['id'] . ' AND type=' . Post::PRIVATE_MSG . ' AND home=' . $query['home'])) . '#post-' . $query['id'];
+                    $_index->backlink = UrlHelper::appendParams($url, 'page=' . Paginator::getItemPage(Settings::get('messagesperpage'), DB::table('post'), 'id<' . $query['id'] . ' AND type=' . Post::PRIVATE_MSG . ' AND home=' . $query['home'])) . '#post-' . $query['id'];
                     break;
 
                 case Post::PLUGIN:
@@ -90,17 +90,17 @@ if ($query !== false) {
                     }
                     break;
                 default:
-                    $_index['backlink'] = Core::getBaseUrl()->getPath();
+                    $_index->backlink = Core::getBaseUrl()->getPath();
                     break;
             }
         }
 
     } else {
-        $_index['type'] = _index_unauthorized;
+        $_index->unauthorized();
         return;
     }
 } else {
-    $_index['type'] = _index_not_found;
+    $_index->notFound();
     return;
 }
 
@@ -149,8 +149,7 @@ if (isset($_POST['text'])) {
                     $update_data['guest'] = $guest;
                 }
                 DB::update('post', 'id=' . DB::val($id), $update_data);
-                $_index['type'] = _index_redir;
-                $_index['redirect_to'] = Router::module('editpost', 'id=' . $id . '&saved', true);
+                $_index->redirect(Router::module('editpost', 'id=' . $id . '&saved', true));
 
                 return;
             }
@@ -200,7 +199,7 @@ if (isset($_POST['text'])) {
 
 /* ---  vystup  --- */
 
-$_index['title'] = _lang('mod.editpost');
+$_index->title = _lang('mod.editpost');
 
 // zprava
 if (isset($_GET['saved']) && $message == '') {

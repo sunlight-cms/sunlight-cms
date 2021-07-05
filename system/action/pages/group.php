@@ -14,7 +14,7 @@ use Sunlight\User;
 defined('SL_ROOT') or exit;
 
 // titulek
-$_index['title'] = $_page['title'];
+$_index->title = $_page['title'];
 
 // obsah
 Extend::call('page.group.content.before', $extend_args);

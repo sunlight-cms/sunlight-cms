@@ -25,8 +25,7 @@ if (isset($_POST['submit'])) {
             $_SESSION = [];
             session_destroy();
 
-            $_index['type'] = _index_redir;
-            $_index['redirect_to'] = Router::module('login', 'login_form_result=4', true);
+            $_index->redirect(Router::module('login', 'login_form_result=4', true));
 
             return;
         } else {

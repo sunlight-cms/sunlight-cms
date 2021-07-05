@@ -8,11 +8,11 @@ use Sunlight\Util\Request;
 defined('SL_ROOT') or exit;
 
 if (!User::isLoggedIn()) {
-    $_index['type'] = _index_unauthorized;
+    $_index->unauthorized();
     return;
 }
 
-$_index['title'] = _lang('mod.settings');
+$_index->title = _lang('mod.settings');
 
 $actions = [
     'account' => ['title' => _lang('mod.settings.account'), 'script' => __DIR__ . '/include/settings-account.php'],
@@ -31,11 +31,11 @@ $action = Request::get('action');
 
 if ($action !== null) {
     if (isset($actions[$action])) {
-        $_index['backlink'] = Router::module('settings');
+        $_index->backlink = Router::module('settings');
 
         require $actions[$action]['script'];
     } else {
-        $_index['type'] = _index_not_found;
+        $_index->notFound();
     }
 
     return;

@@ -12,6 +12,7 @@ use Sunlight\User;
 use Sunlight\Util\Html;
 use Sunlight\Util\Request;
 use Sunlight\Util\Response;
+use Sunlight\WebState;
 use Sunlight\Xsrf;
 
 require './system/bootstrap.php';
@@ -46,51 +47,24 @@ if (substr($_url->getPath(), strlen(Core::getBaseUrl()->getPath())) === '/index.
     Response::redirect(Core::getBaseUrl()->build());
 }
 
-// konfiguracni pole webu
-$_index = [
-    // atributy
-    'type' => null, // jedna z _index_* konstant
-    'id' => null, // ciselne ID
-    'slug' => null, // identifikator (string)
-    'segment' => null, // cast identifikatoru, ktera byla rozpoznana jako segment (string)
-    'url' => Router::generate(''), // zakladni adresa
-    'title' => null, // titulek - <title>
-    'heading' => null, // nadpis - <h1> (pokud je null, pouzije se title)
-    'heading_enabled' => true, // vykreslit nadpis 1/0
-    'output' => '', // obsah
-    'backlink' => null, // url zpetneho odkazu
-
-    // drobecky spadajici POD aktualni stranku
-    // format je: array(array('title' => 'titulek', 'url' => 'url'), ...)
-    'crumbs' => [],
-
-    // stav stranky
-    'is_rewritten' => false, // skutecny stav prepisu URL
-
-    // presmerovani
-    'redirect_to' => null, // adresa, kam presmerovat
-    'redirect_to_permanent' => false, // permanentni presmerovani 1/0
-
-    // motiv
-    'template_enabled' => true, // pouzit motiv
-    'body_classes' => [],
-];
+// init web state
+$_index = new WebState();
 
 
 /* ---- priprava obsahu ---- */
 
-Extend::call('index.init', ['index' => &$_index]);
+Extend::call('index.init', ['index' => $_index]);
 
-$output = &$_index['output'];
+$output = &$_index->output;
 
 if (empty($_POST) || Xsrf::check()) {
     // zjisteni typu
     if (isset($_GET['m'])) {
 
         // modul
-        $_index['slug'] = Request::get('m');
-        $_index['is_rewritten'] = !$_url->has('m');
-        $_index['type'] = _index_module;
+        $_index->slug = Request::get('m');
+        $_index->isRewritten = !$_url->has('m');
+        $_index->type = WebState::MODULE;
 
         Extend::call('mod.init');
 
@@ -99,23 +73,23 @@ if (empty($_POST) || Xsrf::check()) {
     } elseif (!User::isLoggedIn() && Settings::get('notpublicsite')) {
 
         // neverejne stranky
-        $_index['is_rewritten'] = Settings::get('pretty_urls');
-        $_index['type'] = _index_unauthorized;
+        $_index->isRewritten = Settings::get('pretty_urls');
+        $_index->type = WebState::UNAUTHORIZED;
 
     } else do {
 
         // stranka / plugin
         if (Settings::get('pretty_urls') && isset($_GET['_rwp'])) {
             // hezka adresa
-            $_index['slug'] = Request::get('_rwp');
-            $_index['is_rewritten'] = true;
+            $_index->slug = Request::get('_rwp');
+            $_index->isRewritten = true;
         } elseif (isset($_GET['p'])) {
             // parametr
-            $_index['slug'] = Request::get('p');
+            $_index->slug = Request::get('p');
         }
 
-        if ($_index['slug'] !== null) {
-            $segments = explode('/', $_index['slug']);
+        if ($_index->slug !== null) {
+            $segments = explode('/', $_index->slug);
         } else {
             $segments = [];
         }
@@ -123,26 +97,24 @@ if (empty($_POST) || Xsrf::check()) {
         if (!empty($segments) && $segments[count($segments) - 1] === '') {
             // presmerovat identifikator/ na identifikator
             $_url->setPath(rtrim($_url->getPath(), '/'));
-
-            $_index['type'] = _index_redir;
-            $_index['redirect_to'] = $_url->build();
+            $_index->redirect($_url->build());
             break;
         }
 
         // extend
         Extend::call('index.plugin', [
-            'index' => &$_index,
+            'index' => $_index,
             'segments' => $segments,
         ]);
 
         Extend::call('page.init');
 
-        if ($_index['type'] === _index_plugin) {
+        if ($_index->type === WebState::PLUGIN) {
             break;
         }
 
         // vykreslit stranku
-        $_index['type'] = _index_page;
+        $_index->type = WebState::PAGE;
         require SL_ROOT . 'system/action/page.php';
 
     } while (false);
@@ -153,31 +125,31 @@ if (empty($_POST) || Xsrf::check()) {
 
 /* ----  vystup  ---- */
 
-Extend::call('index.prepare', ['index' => &$_index]);
+Extend::call('index.prepare', ['index' => $_index]);
 
 // zpracovani stavu
-switch ($_index['type']) {
-    case _index_redir:
+switch ($_index->type) {
+    case WebState::REDIR:
         // presmerovani
-        $_index['template_enabled'] = false;
-        Response::redirect($_index['redirect_to'], $_index['redirect_to_permanent']);
+        $_index->templateEnabled = false;
+        Response::redirect($_index->redirectTo, $_index->redirectToPermanent);
         break;
 
-    case _index_not_found:
+    case WebState::NOT_FOUND:
         // stranka nenelezena
         require SL_ROOT . 'system/action/not_found.php';
         break;
 
-    case _index_unauthorized:
+    case WebState::UNAUTHORIZED:
         // pristup odepren
         require SL_ROOT . 'system/action/login_required.php';
         break;
 }
 
-Extend::call('index.ready', ['index' => &$_index]);
+Extend::call('index.ready', ['index' => $_index]);
 
 // vlozeni motivu
-if ($_index['template_enabled']) {
+if ($_index->templateEnabled) {
     // nacist prvky motivu
     $_template->begin($_template_layout);
     $_template_boxes = $_template->getBoxes($_template_layout);
@@ -194,7 +166,7 @@ if ($_index['template_enabled']) {
 
     ?>
 </head>
-<body<?php if ($_index['body_classes']): ?> class="<?= implode(' ', Html::escapeArrayItems($_index['body_classes'])) ?>"<?php endif ?><?= Extend::buffer('tpl.body_tag') ?>>
+<body<?php if ($_index->bodyClasses): ?> class="<?= implode(' ', Html::escapeArrayItems($_index->bodyClasses)) ?>"<?php endif ?><?= Extend::buffer('tpl.body_tag') ?>>
 
 <?php require $_template_path ?>
 <?= Extend::buffer('tpl.end') ?>

@@ -43,7 +43,7 @@ return function ($id = null) {
             $result .= Form::render(
                 [
                     'name' => 'hcm_sboxform_' . Core::$hcmUid,
-                    'action' => Router::generate('system/script/post.php?_return=' . rawurlencode($GLOBALS['_index']['url']) . "#hcm_sbox_" . Core::$hcmUid),
+                    'action' => Router::generate('system/script/post.php?_return=' . rawurlencode($GLOBALS['_index']->url) . "#hcm_sbox_" . Core::$hcmUid),
                 ],
                 $inputs
             );
