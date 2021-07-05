@@ -138,14 +138,15 @@ abstract class PluginInstaller
      *
      * @param string      $path          path to the .sql file
      * @param string|null $currentPrefix prefix that is used in the dump (null = do not replace)
-     * @param string|null $newPrefix     new prefix (null = do not replace)
      */
-    protected function loadSqlDump(string $path, ?string $currentPrefix = 'sunlight_', ?string $newPrefix = _dbprefix): void
+    protected function loadSqlDump(string $path, ?string $currentPrefix = 'sunlight_'): void
     {
         DatabaseLoader::load(
             SqlReader::fromFile($path),
             $currentPrefix,
-            $newPrefix
+            $currentPrefix !== null
+                ? DB::$prefix
+                : null
         );
     }
 }

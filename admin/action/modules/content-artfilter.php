@@ -61,10 +61,10 @@ if (isset($_POST['category'])) {
     $new_resetread = Form::loadCheckbox("new_resetread");
 
     // kontrola promennych
-    if ($new_category != -1 && DB::count(_page_table, 'id=' . DB::val($new_category) . ' AND type=' . Page::CATEGORY) === 0) {
+    if ($new_category != -1 && DB::count('page', 'id=' . DB::val($new_category) . ' AND type=' . Page::CATEGORY) === 0) {
         $new_category = -1;
     }
-    if ($new_author != -1 && DB::count(_user_table, 'id=' . DB::val($new_author)) === 0) {
+    if ($new_author != -1 && DB::count('user', 'id=' . DB::val($new_author)) === 0) {
         $new_author = -1;
     }
 
@@ -147,7 +147,7 @@ if (isset($_POST['category'])) {
     }
 
     // vyhledani clanku
-    $query = DB::query("SELECT art.id,art.title,art.slug,cat.slug AS cat_slug FROM " . _article_table . " AS art JOIN " . _page_table . " AS cat ON(cat.id=art.home1) WHERE " . $cond);
+    $query = DB::query("SELECT art.id,art.title,art.slug,cat.slug AS cat_slug FROM " . DB::table('article') . " AS art JOIN " . DB::table('page') . " AS cat ON(cat.id=art.home1) WHERE " . $cond);
     $found = DB::size($query);
     if ($found != 0) {
         if (!Form::loadCheckbox("_process")) {
@@ -161,32 +161,32 @@ if (isset($_POST['category'])) {
 
                 // smazani komentaru
                 if ($new_delcomments || $new_delete) {
-                    DB::delete(_post_table, 'type=' . Post::ARTICLE_COMMENT . ' AND home=' . $item['id']);
+                    DB::delete('post', 'type=' . Post::ARTICLE_COMMENT . ' AND home=' . $item['id']);
                 }
 
                 // smazani clanku
                 if ($new_delete) {
-                    DB::delete(_article_table, 'id=' . $item['id']);
+                    DB::delete('article', 'id=' . $item['id']);
                     continue;
                 }
 
                 // vynulovani hodnoceni
                 if ($new_resetrate) {
-                    DB::update(_article_table, 'id=' . $item['id'], [
+                    DB::update('article', 'id=' . $item['id'], [
                         'ratenum' => 0,
                         'ratesum' => 0
                     ]);
-                    DB::delete(_iplog_table, 'type=' . IpLog::ARTICLE_RATED . ' AND var=' . $item['id']);
+                    DB::delete('iplog', 'type=' . IpLog::ARTICLE_RATED . ' AND var=' . $item['id']);
                 }
 
                 // vynulovani poctu precteni
                 if ($new_resetread) {
-                    DB::update(_article_table, 'id=' . $item['id'], ['readnum' => 0]);
+                    DB::update('article', 'id=' . $item['id'], ['readnum' => 0]);
                 }
 
                 // zmena kategorie
                 if ($new_category != -1) {
-                    DB::update(_article_table, 'id=' . $item['id'], [
+                    DB::update('article', 'id=' . $item['id'], [
                         'home1' => $new_category,
                         'home2' => -1,
                         'home3' => -1
@@ -195,7 +195,7 @@ if (isset($_POST['category'])) {
 
                 // zmena autora
                 if ($new_author != -1) {
-                    DB::update(_article_table, 'id=' . $item['id'], ['author' => $new_author]);
+                    DB::update('article', 'id=' . $item['id'], ['author' => $new_author]);
                 }
 
                 // konfigurace
@@ -207,7 +207,7 @@ if (isset($_POST['category'])) {
                         $updatedata[$param] = $paramval;
                     }
                 }
-                DB::update(_article_table, 'id=' . $item['id'], $updatedata);
+                DB::update('article', 'id=' . $item['id'], $updatedata);
 
             }
             $message = Message::ok(_lang('global.done'));

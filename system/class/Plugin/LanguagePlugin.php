@@ -35,7 +35,7 @@ class LanguagePlugin extends Plugin
     function getLocalizationEntries(?bool $admin = null)
     {
         if ($admin === null) {
-            $admin = _env === Core::ENV_ADMIN;
+            $admin = Core::$env === Core::ENV_ADMIN;
         }
 
         // base dictionary

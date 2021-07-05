@@ -20,7 +20,7 @@ if (!User::isLoggedIn() && Settings::get('notpublicsite')) {
 /* ---  priprava  --- */
 
 $id = StringManipulator::slugify(Request::get('id'), false);
-$query = DB::queryRow("SELECT u.id,u.username,u.publicname,u.public,g.level FROM " . _user_table . " u JOIN " . _user_group_table . " g ON u.group_id=g.id WHERE u.username=" . DB::val($id));
+$query = DB::queryRow("SELECT u.id,u.username,u.publicname,u.public,g.level FROM " . DB::table('user') . " u JOIN " . DB::table('user_group') . " g ON u.group_id=g.id WHERE u.username=" . DB::val($id));
 
 if ($query === false) {
     $_index['type'] = _index_not_found;
@@ -51,7 +51,7 @@ if (Paginator::atTop()) {
     $output .= $paging['paging'];
 }
 $userQuery = User::createQuery('art.author');
-$arts = DB::query("SELECT art.id,art.title,art.slug,art.author,art.perex,art.picture_uid,art.time,art.comments,art.public,art.readnum,cat1.slug AS cat_slug," . $userQuery['column_list'] . ",(SELECT COUNT(*) FROM " . _post_table . " AS post WHERE home=art.id AND post.type=" . Post::ARTICLE_COMMENT . ") AS comment_count FROM " . _article_table . " AS art " . $joins . ' ' . $userQuery['joins'] . " WHERE " . $cond . " ORDER BY art.time DESC " . $paging['sql_limit']);
+$arts = DB::query("SELECT art.id,art.title,art.slug,art.author,art.perex,art.picture_uid,art.time,art.comments,art.public,art.readnum,cat1.slug AS cat_slug," . $userQuery['column_list'] . ",(SELECT COUNT(*) FROM " . DB::table('post') . " AS post WHERE home=art.id AND post.type=" . Post::ARTICLE_COMMENT . ") AS comment_count FROM " . DB::table('article') . " AS art " . $joins . ' ' . $userQuery['joins'] . " WHERE " . $cond . " ORDER BY art.time DESC " . $paging['sql_limit']);
 if (DB::size($arts) != 0) {
     while ($art = DB::row($arts)) {
         $output .= Article::renderPreview($art, $userQuery, true, true, $art['comment_count']);

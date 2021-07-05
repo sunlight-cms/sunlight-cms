@@ -146,12 +146,12 @@ AND ({$alias}.type!=" . Post::ARTICLE_COMMENT . " OR (
         }
 
         // joiny
-        $joins = "LEFT JOIN " . _page_table . " home_page ON({$alias}.type IN(1,3,5) AND {$alias}.home=home_page.id)
-LEFT JOIN " . _article_table . " home_art ON({$alias}.type=" . Post::ARTICLE_COMMENT . " AND {$alias}.home=home_art.id)
-LEFT JOIN " . _page_table . " home_cat1 ON({$alias}.type=" . Post::ARTICLE_COMMENT . " AND home_art.home1=home_cat1.id)
-LEFT JOIN " . _page_table . " home_cat2 ON({$alias}.type=" . Post::ARTICLE_COMMENT . " AND home_art.home2!=-1 AND home_art.home2=home_cat2.id)
-LEFT JOIN " . _page_table . " home_cat3 ON({$alias}.type=" . Post::ARTICLE_COMMENT . " AND home_art.home3!=-1 AND home_art.home3=home_cat3.id)
-LEFT JOIN " . _post_table . " home_post ON({$alias}.type=" . Post::FORUM_TOPIC . " AND {$alias}.xhome!=-1 AND {$alias}.xhome=home_post.id)";
+        $joins = "LEFT JOIN " . DB::table('page') . " home_page ON({$alias}.type IN(1,3,5) AND {$alias}.home=home_page.id)
+LEFT JOIN " . DB::table('article') . " home_art ON({$alias}.type=" . Post::ARTICLE_COMMENT . " AND {$alias}.home=home_art.id)
+LEFT JOIN " . DB::table('page') . " home_cat1 ON({$alias}.type=" . Post::ARTICLE_COMMENT . " AND home_art.home1=home_cat1.id)
+LEFT JOIN " . DB::table('page') . " home_cat2 ON({$alias}.type=" . Post::ARTICLE_COMMENT . " AND home_art.home2!=-1 AND home_art.home2=home_cat2.id)
+LEFT JOIN " . DB::table('page') . " home_cat3 ON({$alias}.type=" . Post::ARTICLE_COMMENT . " AND home_art.home3!=-1 AND home_art.home3=home_cat3.id)
+LEFT JOIN " . DB::table('post') . " home_post ON({$alias}.type=" . Post::FORUM_TOPIC . " AND {$alias}.xhome!=-1 AND {$alias}.xhome=home_post.id)";
 
         // extend
         Extend::call('posts.filter', [
@@ -170,7 +170,7 @@ LEFT JOIN " . _post_table . " home_post ON({$alias}.type=" . Post::FORUM_TOPIC .
 
         // pridat pocet
         if ($doCount) {
-            $result[] = (int) DB::result(DB::query("SELECT COUNT({$alias}.id) FROM " . _post_table . " {$alias} {$joins} WHERE {$result[2]}"));
+            $result[] = (int) DB::result(DB::query("SELECT COUNT({$alias}.id) FROM " . DB::table('post') . " {$alias} {$joins} WHERE {$result[2]}"));
         }
 
         return $result;

@@ -17,7 +17,7 @@ if (isset($_GET['id'], $_GET['returnid'], $_GET['returnpage'])) {
     $id = (int) Request::get('id');
     $returnid = (int) Request::get('returnid');
     $returnpage = (int) Request::get('returnpage');
-    $query = DB::queryRow("SELECT title FROM " . _article_table . " WHERE id=" . $id . Admin::articleAccess());
+    $query = DB::queryRow("SELECT title FROM " . DB::table('article') . " WHERE id=" . $id . Admin::articleAccess());
     if ($query !== false) {
         $continue = true;
     }
@@ -28,10 +28,10 @@ if (isset($_GET['id'], $_GET['returnid'], $_GET['returnpage'])) {
 if (isset($_POST['confirm'])) {
 
     // smazani komentaru
-    DB::delete(_post_table, 'type=' . Post::ARTICLE_COMMENT . ' AND home=' . $id);
+    DB::delete('post', 'type=' . Post::ARTICLE_COMMENT . ' AND home=' . $id);
 
     // smazani clanku
-    DB::delete(_article_table, 'id=' . $id);
+    DB::delete('article', 'id=' . $id);
 
     // udalost
     Extend::call('admin.article.delete', ['id' => $id]);

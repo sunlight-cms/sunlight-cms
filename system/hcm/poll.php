@@ -12,7 +12,7 @@ return function ($id = null) {
     $id = (int) $id;
 
     // nacteni dat ankety
-    $vpolldata = DB::queryRow("SELECT * FROM " . _poll_table . " WHERE id=" . DB::val($id));
+    $vpolldata = DB::queryRow("SELECT * FROM " . DB::table('poll') . " WHERE id=" . DB::val($id));
     if ($vpolldata !== false) {
         $rcontinue = true;
     } else {

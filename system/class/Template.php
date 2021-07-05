@@ -21,7 +21,7 @@ abstract class Template
     {
         // pouzit globalni promennou
         // (index)
-        if (_env === Core::ENV_WEB && isset($GLOBALS['_template']) && $GLOBALS['_template'] instanceof TemplatePlugin) {
+        if (Core::$env === Core::ENV_WEB && isset($GLOBALS['_template']) && $GLOBALS['_template'] instanceof TemplatePlugin) {
             return $GLOBALS['_template'];
         }
 
@@ -377,7 +377,7 @@ abstract class Template
             }
         } catch (\RuntimeException $e) {
             // stranka nenalezena
-            return _debug ? _e($e->getMessage()) : '';
+            return Core::$debug ? _e($e->getMessage()) : '';
         }
 
         // nacist stranky

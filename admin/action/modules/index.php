@@ -20,7 +20,7 @@ $admin_index_cfg = Settings::getMultiple([
 
 $version_data = VersionChecker::check();
 
-$mysqlver = DB::getMysqli()->server_info;
+$mysqlver = DB::$mysqli->server_info;
 if ($mysqlver != null && mb_substr_count($mysqlver, "-") != 0) {
     $mysqlver = mb_substr($mysqlver, 0, strpos($mysqlver, "-"));
 }
@@ -117,7 +117,7 @@ if (Core::DIST === 'BETA') {
     $messages[] = Message::warning(_lang('admin.index.betawarn'));
 }
 
-if (_debug) {
+if (Core::$debug) {
     // vyvojovy rezim
     $messages[] = Message::warning(_lang('admin.index.debugwarn'));
 }
@@ -148,7 +148,7 @@ if (User::$group['id'] == User::ADMIN_GROUP_ID) {
 }
 
 // kontrola funcknosti htaccess
-if (!_debug) {
+if (!Core::$debug) {
     $output .= "<script>
 Sunlight.admin.indexCheckHtaccess(
     " . json_encode(Core::getBaseUrl()->getPath() . '/vendor/autoload.php?_why=this_is_a_test_if_htaccess_works') . ",

@@ -15,7 +15,7 @@ defined('_root') or exit;
 
 $message = "";
 if (isset($_GET['id'])) {
-    DB::update(_article_table, 'id=' . DB::val(Request::get('id')), ['confirmed' => 1]);
+    DB::update('article', 'id=' . DB::val(Request::get('id')), ['confirmed' => 1]);
     $message = Message::ok(_lang('global.done'));
 }
 
@@ -48,7 +48,7 @@ $output .= "
 
 // vypis
 $userQuery = User::createQuery('art.author');
-$query = DB::query("SELECT art.id,art.title,art.slug,art.home1,art.home2,art.home3,art.time,art.visible,art.confirmed,art.public,cat.slug AS cat_slug," . $userQuery['column_list'] . " FROM " . _article_table . " AS art JOIN " . _page_table . " AS cat ON(cat.id=art.home1) " . $userQuery['joins'] . " WHERE art.confirmed=0" . $condplus . " ORDER BY art.time DESC");
+$query = DB::query("SELECT art.id,art.title,art.slug,art.home1,art.home2,art.home3,art.time,art.visible,art.confirmed,art.public,cat.slug AS cat_slug," . $userQuery['column_list'] . " FROM " . DB::table('article') . " AS art JOIN " . DB::table('page') . " AS cat ON(cat.id=art.home1) " . $userQuery['joins'] . " WHERE art.confirmed=0" . $condplus . " ORDER BY art.time DESC");
 if (DB::size($query) != 0) {
     while ($item = DB::row($query)) {
 
@@ -56,7 +56,7 @@ if (DB::size($query) != 0) {
         $cats = "";
         for ($i = 1; $i <= 3; $i++) {
             if ($item['home' . $i] != -1) {
-                $hometitle = DB::queryRow("SELECT title FROM " . _page_table . " WHERE id=" . $item['home' . $i]);
+                $hometitle = DB::queryRow("SELECT title FROM " . DB::table('page') . " WHERE id=" . $item['home' . $i]);
                 $cats .= $hometitle['title'];
             }
             if ($i != 3 && $item['home' . ($i + 1)] != -1) {

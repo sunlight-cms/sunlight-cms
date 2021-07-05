@@ -16,7 +16,7 @@ $levelconflict = false;
 $continue = false;
 if (isset($_GET['id'])) {
     $id = Request::get('id');
-    $query = DB::queryRow("SELECT u.id,u.username,g.level group_level FROM " . _user_table . " u JOIN " . _user_group_table . " g ON(u.group_id=g.id) WHERE u.username=" . DB::val($id));
+    $query = DB::queryRow("SELECT u.id,u.username,g.level group_level FROM " . DB::table('user') . " u JOIN " . DB::table('user_group') . " g ON(u.group_id=g.id) WHERE u.username=" . DB::val($id));
     if ($query !== false) {
         if (User::checkLevel($query['id'], $query['group_level'])) {
             $continue = true;

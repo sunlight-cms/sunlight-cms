@@ -137,7 +137,7 @@ abstract class PageLister
                 $changeset[$id] = ['ord' => (int) $ord];
             }
 
-            DB::updateSetMulti(_page_table, 'id', $changeset);
+            DB::updateSetMulti('page', 'id', $changeset);
 
             return true;
         }
@@ -187,7 +187,7 @@ abstract class PageLister
         ];
 
         // check current page
-        if (self::$config['current_page'] !== null && !DB::count(_page_table, 'id=' . DB::val(self::$config['current_page']))) {
+        if (self::$config['current_page'] !== null && !DB::count('page', 'id=' . DB::val(self::$config['current_page']))) {
             self::$config['current_page'] = null;
         }
 

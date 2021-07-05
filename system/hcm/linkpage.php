@@ -10,7 +10,7 @@ return function ($id = null, $text = null, $nove_okno = false) {
     } else {
         $id = DB::val($id);
     }
-    $query = DB::queryRow("SELECT id,title,slug FROM " . _page_table . " WHERE " . ($is_id ? 'id' : 'slug') . "=" . $id);
+    $query = DB::queryRow("SELECT id,title,slug FROM " . DB::table('page') . " WHERE " . ($is_id ? 'id' : 'slug') . "=" . $id);
     if ($nove_okno) {
         $target = " target='_blank'";
     } else {

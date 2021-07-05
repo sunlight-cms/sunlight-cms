@@ -20,7 +20,7 @@ defined('_root') or exit;
 $saved = (bool) Request::get('saved');
 
 // nacteni nastaveni
-$settings = DB::queryRows('SELECT var,val FROM ' . _setting_table, 'var', 'val');
+$settings = DB::queryRows('SELECT var,val FROM ' . DB::table('setting'), 'var', 'val');
 
 // vyber zpusobu zobrazeni titulku
 $titletype_choices = [];
@@ -87,7 +87,7 @@ $editable_settings = [
             ['name' => 'registration', 'format' => 'bool'],
             ['name' => 'registration_confirm', 'format' => 'bool'],
             ['name' => 'registration_grouplist', 'format' => 'bool'],
-            ['name' => 'defaultgroup', 'format' => 'int', 'table_id' => _user_group_table, 'input' => Admin::userSelect("defaultgroup", Settings::get('defaultgroup'), "id!=" . User::GUEST_GROUP_ID, null, null, true), 'id' => false],
+            ['name' => 'defaultgroup', 'format' => 'int', 'table_id' => 'user_group', 'input' => Admin::userSelect("defaultgroup", Settings::get('defaultgroup'), "id!=" . User::GUEST_GROUP_ID, null, null, true), 'id' => false],
             ['name' => 'rules', 'format' => 'text', 'help' => false, 'extra_help' => _lang('admin.settings.users.rules.help'), 'input' => '<textarea id="setting_rules" name="rules" rows="9" cols="33" class="areasmallwide editor">' . _e($settings['rules']) . '</textarea>'],
             ['name' => 'messages', 'format' => 'bool'],
             ['name' => 'lostpass', 'format' => 'bool'],

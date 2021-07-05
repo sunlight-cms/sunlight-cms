@@ -21,7 +21,7 @@ if (isset($_POST['type']) && User::hasPrivilege('admingroups')) {
     $type = (int) Request::post('type');
     if ($type == -1) {
         // prazdna skupina
-        DB::insert(_user_group_table, [
+        DB::insert('user_group', [
             'title' => _lang('admin.users.groups.new.empty'),
             'level' => 0,
             'icon' => ''
@@ -29,7 +29,7 @@ if (isset($_POST['type']) && User::hasPrivilege('admingroups')) {
         $msg = 1;
     } else {
         // kopirovat skupinu
-        $source_group = DB::queryRow("SELECT * FROM " . _user_group_table . " WHERE id=" . $type);
+        $source_group = DB::queryRow("SELECT * FROM " . DB::table('user_group') . " WHERE id=" . $type);
         if ($source_group !== false) {
             $new_group = [];
             $privilege_map = User::getPrivilegeMap();
@@ -59,7 +59,7 @@ if (isset($_POST['type']) && User::hasPrivilege('admingroups')) {
             }
 
             // sql dotaz
-            DB::insert(_user_group_table, $new_group);
+            DB::insert('user_group', $new_group);
             $msg = 1;
 
         } else {
@@ -71,7 +71,7 @@ if (isset($_POST['type']) && User::hasPrivilege('admingroups')) {
 // prepnuti uzivatele
 if (User::SUPER_ADMIN_ID == User::getId() && isset($_POST['switch_user'])) {
     $user = trim(Request::post('switch_user'));
-    $query = DB::queryRow("SELECT id,password,email FROM " . _user_table . " WHERE username=" . DB::val($user));
+    $query = DB::queryRow("SELECT id,password,email FROM " . DB::table('user') . " WHERE username=" . DB::val($user));
 
     if ($query !== false) {
         User::login($query['id'], $query['password'], $query['email']);
@@ -90,7 +90,7 @@ if (User::hasPrivilege('admingroups')) {
     $groups = "<table class='list list-hover list-max'>
 <thead><tr><td>" . _lang('global.name') . "</td><td>" . _lang('admin.users.groups.level') . "</td><td>" . _lang('admin.users.groups.members') . "</td><td>" . _lang('global.action') . "</td></tr></thead>
 <tbody>";
-    $query = DB::query("SELECT id,title,icon,color,blocked,level,reglist,(SELECT COUNT(*) FROM " . _user_table . " WHERE group_id=" . _user_group_table . ".id) AS user_count FROM " . _user_group_table . " ORDER BY level DESC");
+    $query = DB::query("SELECT id,title,icon,color,blocked,level,reglist,(SELECT COUNT(*) FROM " . DB::table('user') . " WHERE group_id=" . DB::table('user_group') . ".id) AS user_count FROM " . DB::table('user_group') . " ORDER BY level DESC");
     while ($item = DB::row($query)) {
         $is_sys = in_array($item['id'], $sysgroups_array);
         $groups .= "

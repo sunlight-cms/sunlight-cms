@@ -19,7 +19,7 @@ $continue = false;
 $message = "";
 if (isset($_GET['id'])) {
     $id = (int) Request::get('id');
-    $query = DB::queryRow("SELECT p.* FROM " . _poll_table . " p WHERE p.id=" . $id . Admin::pollAccess());
+    $query = DB::queryRow("SELECT p.* FROM " . DB::table('poll') . " p WHERE p.id=" . $id . Admin::pollAccess());
     if ($query !== false) {
         $new = false;
         $actionbonus = "&amp;id=" . $id;
@@ -72,7 +72,7 @@ if (isset($_POST['question'])) {
     if ($answers_count > 20) {
         $errors[] = _lang('admin.content.polls.edit.error3');
     }
-    if (User::hasPrivilege('adminpollall') && DB::result(DB::query("SELECT COUNT(*) FROM " . _user_table . " WHERE id=" . $author . " AND (id=" . User::getId() . " OR (SELECT level FROM " . _user_group_table . " WHERE id=" . _user_table . ".group_id)<" . User::getLevel() . ")")) == 0) {
+    if (User::hasPrivilege('adminpollall') && DB::result(DB::query("SELECT COUNT(*) FROM " . DB::table('user') . " WHERE id=" . $author . " AND (id=" . User::getId() . " OR (SELECT level FROM " . DB::table('user_group') . " WHERE id=" . DB::table('user') . ".group_id)<" . User::getLevel() . ")")) == 0) {
         $errors[] = _lang('admin.content.articles.edit.error3');
     }
 
@@ -80,7 +80,7 @@ if (isset($_POST['question'])) {
     if (count($errors) == 0) {
 
         if (!$new) {
-            DB::update(_poll_table, 'id=' . $id, [
+            DB::update('poll', 'id=' . $id, [
                 'question' => $question,
                 'answers' => $answers,
                 'author' => $author,
@@ -108,15 +108,15 @@ if (isset($_POST['question'])) {
 
                 // ulozeni korekci
                 if ($newvotes != "") {
-                    DB::update(_poll_table, 'id=' . $id, ['votes' => $newvotes]);
+                    DB::update('poll', 'id=' . $id, ['votes' => $newvotes]);
                 }
 
             }
 
             // vynulovani
             if ($reset) {
-                DB::update(_poll_table, 'id=' . $id, ['votes' => trim(str_repeat("0-", $answers_count), "-")]);
-                DB::delete(_iplog_table, 'type=' . IpLog::POLL_VOTE . ' AND var=' . $id);
+                DB::update('poll', 'id=' . $id, ['votes' => trim(str_repeat("0-", $answers_count), "-")]);
+                DB::delete('iplog', 'type=' . IpLog::POLL_VOTE . ' AND var=' . $id);
             }
 
             // presmerovani
@@ -126,7 +126,7 @@ if (isset($_POST['question'])) {
 
         }
 
-        $newid = DB::insert(_poll_table, [
+        $newid = DB::insert('poll', [
             'author' => $author,
             'question' => $question,
             'answers' => $answers,

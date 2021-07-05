@@ -25,7 +25,7 @@ $errno = 0;
 $continue = false;
 if (isset($_GET['id'])) {
     $id = Request::get('id');
-    $query = DB::queryRow("SELECT u.*,g.level group_level FROM " . _user_table . " u JOIN " . _user_group_table . " g ON(u.group_id=g.id) WHERE u.username=" . DB::val($id));
+    $query = DB::queryRow("SELECT u.*,g.level group_level FROM " . DB::table('user') . " u JOIN " . DB::table('user_group') . " g ON(u.group_id=g.id) WHERE u.username=" . DB::val($id));
     if ($query !== false) {
 
         // test pristupu
@@ -152,7 +152,7 @@ if ($continue) {
         // group
         if (isset($_POST['group_id'])) {
             $group = (int) Request::post('group_id');
-            $group_test = DB::queryRow("SELECT level FROM " . _user_group_table . " WHERE id=" . $group . " AND id!=2 AND level<" . User::getLevel());
+            $group_test = DB::queryRow("SELECT level FROM " . DB::table('user_group') . " WHERE id=" . $group . " AND id!=2 AND level<" . User::getLevel());
             if ($group_test !== false) {
                 if ($group_test['level'] > User::getLevel()) {
                     $errors[] = _lang('global.badinput');
@@ -203,7 +203,7 @@ if ($continue) {
 
             if ($id !== null) {
                 // uprava
-                DB::update(_user_table, 'id=' . DB::val($query['id']), $changeset);
+                DB::update('user', 'id=' . DB::val($query['id']), $changeset);
                 Extend::call('user.edit', ['id' => $query['id']]);
                 $admin_redirect_to = 'index.php?p=users-edit&r=1&id=' . $username;
 
@@ -215,7 +215,7 @@ if ($continue) {
                 'registertime' => time(),
                 'activitytime' => time(),
             ];
-            $id = DB::insert(_user_table, $changeset, true);
+            $id = DB::insert('user', $changeset, true);
             Extend::call('user.new', ['id' => $id]);
             $admin_redirect_to = 'index.php?p=users-edit&r=2&id=' . $username;
 

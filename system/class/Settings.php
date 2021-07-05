@@ -17,11 +17,11 @@ abstract class Settings
 
         self::$settings = [];
 
-        $cond = _env === Core::ENV_ADMIN
+        $cond = Core::$env === Core::ENV_ADMIN
             ? 'admin=1'
             : 'web=1';
 
-        $query = DB::query('SELECT var,val FROM ' . _setting_table . ' WHERE preload=1 AND ' . $cond);
+        $query = DB::query('SELECT var,val FROM ' . DB::table('setting') . ' WHERE preload=1 AND ' . $cond);
 
         while ($row = DB::row($query)) {
             self::$settings[$row['var']] = $row['val'];
@@ -75,7 +75,7 @@ abstract class Settings
      */
     static function update(string $setting, string $newValue): void
     {
-        DB::update(_setting_table, 'var=' . DB::val($setting), ['val' => $newValue]);
+        DB::update('setting', 'var=' . DB::val($setting), ['val' => $newValue]);
     }
 
     /**
@@ -88,7 +88,7 @@ abstract class Settings
 
     private static function loadSetting(string $setting): void
     {
-        $result = DB::queryRow('SELECT val FROM ' . _setting_table . ' WHERE var=' . DB::val($setting));
+        $result = DB::queryRow('SELECT val FROM ' . DB::table('setting') . ' WHERE var=' . DB::val($setting));
 
         if ($result === false) {
             throw new \OutOfBoundsException(sprintf('Unknown setting "%s"', $setting));
@@ -99,7 +99,7 @@ abstract class Settings
 
     private static function loadSettings(array $settings): void
     {
-        $values = DB::queryRows('SELECT var,val FROM ' . _setting_table . ' WHERE var IN(' . DB::val($settings, true) . ')', 'var', 'val');
+        $values = DB::queryRows('SELECT var,val FROM ' . DB::table('setting') . ' WHERE var IN(' . DB::val($settings, true) . ')', 'var', 'val');
 
         if (count($values) !== count($settings)) {
             $unknownSettings = [];

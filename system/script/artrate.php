@@ -25,7 +25,7 @@ $article_exists = false;
 
 // kontrola promennych a pristupu
 $continue = false;
-$query = DB::queryRow("SELECT art.id,art.slug,art.time,art.confirmed,art.author,art.public,art.home1,art.home2,art.home3,art.rateon,cat.slug AS cat_slug FROM " . _article_table . " AS art  JOIN " . _page_table . " AS cat ON(cat.id=art.home1) WHERE art.id=" . $id);
+$query = DB::queryRow("SELECT art.id,art.slug,art.time,art.confirmed,art.author,art.public,art.home1,art.home2,art.home3,art.rateon,cat.slug AS cat_slug FROM " . DB::table('article') . " AS art  JOIN " . DB::table('page') . " AS cat ON(cat.id=art.home1) WHERE art.id=" . $id);
 if ($query !== false) {
     $article_exists = true;
     if (isset($_POST['r'])) {
@@ -38,7 +38,7 @@ if ($query !== false) {
 
 // zapocteni hodnoceni
 if ($continue) {
-    DB::update(_article_table, 'id=' . $id, [
+    DB::update('article', 'id=' . $id, [
         'ratenum' => DB::raw('ratenum+1'),
         'ratesum' => DB::raw('ratesum+' . $r)
     ]);

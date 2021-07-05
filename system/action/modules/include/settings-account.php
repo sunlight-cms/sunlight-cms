@@ -140,7 +140,7 @@ if (isset($_POST['save'])) {
 
     if (empty($errors)) {
         Extend::call('mod.settings.account.save', ['changeset' => &$changeset]);
-        DB::update(_user_table, 'id=' . User::getId(), $changeset);
+        DB::update('user', 'id=' . User::getId(), $changeset);
         Extend::call('user.edit', ['id' => User::getId()]);
 
         $_index['type'] = _index_redir;

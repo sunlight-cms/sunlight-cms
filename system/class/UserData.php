@@ -23,7 +23,7 @@ class UserData
     function generate(): TemporaryFile
     {
         // load account data
-        $userData = DB::queryRow('SELECT * FROM ' . _user_table . ' WHERE id = ' . $this->userId);
+        $userData = DB::queryRow('SELECT * FROM ' . DB::table('user') . ' WHERE id = ' . $this->userId);
 
         if ($userData === false) {
             throw new \UnexpectedValueException('User not found');
@@ -58,7 +58,7 @@ class UserData
             'Registration time' => DB::datetime($userData['registertime']),
             'Activity time' => DB::datetime($userData['activitytime']),
             'IP address' => $userData['ip'],
-            'Comment IP addresses' => DB::queryRows('SELECT DISTINCT ip FROM ' . _post_table . ' WHERE author = ' . $this->userId, null, 'ip'),
+            'Comment IP addresses' => DB::queryRows('SELECT DISTINCT ip FROM ' . DB::table('post') . ' WHERE author = ' . $this->userId, null, 'ip'),
             'email' => $userData['email'],
             'note' => $userData['note'],
         ];

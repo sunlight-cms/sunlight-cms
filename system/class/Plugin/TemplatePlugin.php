@@ -161,7 +161,7 @@ class TemplatePlugin extends Plugin
         }
 
         $boxes = [];
-        $query = DB::query('SELECT id,title,content,slot,page_ids,page_children,class FROM ' . _box_table . ' WHERE template=' . DB::val($this->id) . ' AND layout=' . DB::val($layout) . ' AND visible=1' . (!User::isLoggedIn() ? ' AND public=1' : '') . ' AND level <= ' . User::getLevel() . ' ORDER BY ord');
+        $query = DB::query('SELECT id,title,content,slot,page_ids,page_children,class FROM ' . DB::table('box') . ' WHERE template=' . DB::val($this->id) . ' AND layout=' . DB::val($layout) . ' AND visible=1' . (!User::isLoggedIn() ? ' AND public=1' : '') . ' AND level <= ' . User::getLevel() . ' ORDER BY ord');
 
         while ($box = DB::row($query)) {
             $boxes[$box['slot']][$box['id']] = $box;

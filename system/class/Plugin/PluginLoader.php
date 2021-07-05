@@ -189,7 +189,7 @@ class PluginLoader
         }
 
         // debug mode
-        if ($plugin->options['debug'] !== null && $plugin->options['debug'] !== _debug) {
+        if ($plugin->options['debug'] !== null && $plugin->options['debug'] !== Core::$debug) {
             $plugin->addError(
                 $plugin->options['debug']
                     ? 'debug mode is required'

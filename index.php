@@ -31,7 +31,7 @@ $_template_layout = null;
 if (!Template::change(TemplateService::composeUid(Settings::get('default_template'), TemplatePlugin::DEFAULT_LAYOUT))) {
     Settings::update('default_template', 'default');
 
-    Core::systemFailure(
+    Core::fail(
         'Motiv "%s" nebyl nalezen.',
         'Template "%s" was not found.',
         [Settings::get('default_template')]

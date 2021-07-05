@@ -24,10 +24,10 @@ if (!User::isLoggedIn() && Settings::get('notpublicsite')) {
 /* ---  priprava  --- */
 
 $id = StringManipulator::slugify(Request::get('id'), false);
-$query = DB::queryRow("SELECT * FROM " . _user_table . " WHERE username=" . DB::val($id));
+$query = DB::queryRow("SELECT * FROM " . DB::table('user') . " WHERE username=" . DB::val($id));
 $public = true;
 if ($query !== false) {
-    $groupdata = DB::queryRow("SELECT title,descr,icon,color,blocked,level FROM " . _user_group_table . " WHERE id=" . $query['group_id']);
+    $groupdata = DB::queryRow("SELECT title,descr,icon,color,blocked,level FROM " . DB::table('user_group') . " WHERE id=" . $query['group_id']);
     $public = $query['public'] || User::checkLevel($query['id'], $groupdata['level']);
 
     if ($public) {
@@ -43,7 +43,7 @@ if ($query !== false) {
         if ($arts != 0) {
 
             // zjisteni prumerneho hodnoceni
-            $avgrate = DB::result(DB::query("SELECT ROUND(SUM(ratesum)/SUM(ratenum)) FROM " . _article_table . " WHERE rateon=1 AND ratenum!=0 AND confirmed=1 AND author=" . $query['id']));
+            $avgrate = DB::result(DB::query("SELECT ROUND(SUM(ratesum)/SUM(ratenum)) FROM " . DB::table('article') . " WHERE rateon=1 AND ratenum!=0 AND confirmed=1 AND author=" . $query['id']));
             if ($avgrate === null) {
                 $avgrate = _lang('article.rate.nodata');
             } else {
@@ -61,7 +61,7 @@ if ($query !== false) {
         }
 
         // odkaz na prispevky uzivatele
-        $posts_count = DB::count(_post_table, 'author=' . DB::val($query['id']) . ' AND type!=' . Post::PRIVATE_MSG . ' AND type!=' . Post::SHOUTBOX_ENTRY);
+        $posts_count = DB::count('post', 'author=' . DB::val($query['id']) . ' AND type!=' . Post::PRIVATE_MSG . ' AND type!=' . Post::SHOUTBOX_ENTRY);
         if ($posts_count > 0) {
             $posts_viewlink = ", <a href='" . _e(Router::module('profile-posts', 'id=' . $id)) . "'>" . _lang('global.show') . " &gt;</a>";
         } else {

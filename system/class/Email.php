@@ -135,7 +135,7 @@ abstract class Email
                                         // character not valid in local part
                                         $isValid = false;
                                     }
-            if (!_debug && function_exists('checkdnsrr') && $isValid && !checkdnsrr($domain . '.', 'ANY')) {
+            if (!Core::$debug && function_exists('checkdnsrr') && $isValid && !checkdnsrr($domain . '.', 'ANY')) {
                 // no DNS record for the given domain
                 $isValid = false;
             }

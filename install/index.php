@@ -706,17 +706,19 @@ class ConfigurationStep extends Step
 
         // connect to the database
         if (empty($this->errors)) {
-            $connectError = DB::connect($config['db.server'], $config['db.user'], $config['db.password'], '', $config['db.port']);
+            try {
+                DB::connect($config['db.server'], $config['db.user'], $config['db.password'], '', $config['db.port'], $config['db.prefix']);
+            } catch (DatabaseException $e) {
+                $this->errors[] = ['db.connect.error', ['%error%' => $e->getMessage()]];
+            }
 
-            if ($connectError === null) {
+            if (empty($this->errors)) {
                 // attempt to create the database if it does not exist
                 try {
                     DB::query('CREATE DATABASE IF NOT EXISTS ' . DB::escIdt($config['db.name']) . ' COLLATE \'utf8mb4_unicode_ci\'');
                 } catch (DatabaseException $e) {
                     $this->errors[] = ['db.create.error', ['%error%' => $e->getMessage()]];
                 }
-            } else {
-                $this->errors[] = ['db.connect.error', ['%error%' => $connectError]];
             }
         }
 
@@ -735,11 +737,20 @@ class ConfigurationStep extends Step
 
     function isComplete(): bool
     {
-        return
+        if (
             parent::isComplete()
             && is_file(CONFIG_PATH)
             && Config::isLoaded()
-            && DB::connect(Config::$config['db.server'], Config::$config['db.user'], Config::$config['db.password'], '', Config::$config['db.port']) === null;
+        ) {
+            try {
+                DB::connect(Config::$config['db.server'], Config::$config['db.user'], Config::$config['db.password'], '', Config::$config['db.port'], Config::$config['db.prefix']);
+
+                return true;
+            } catch (DatabaseException $e) {
+            }
+        }
+
+        return false;
     }
 
     function run(): void
@@ -871,7 +882,7 @@ class ImportDatabaseStep extends Step
         'iplog',
         'pm',
         'poll',
-        'comment',
+        'post',
         'page',
         'shoutbox',
         'setting',
@@ -938,23 +949,20 @@ class ImportDatabaseStep extends Step
                 DatabaseLoader::dropTables($this->getExistingTableNames());
                 $this->existingTableNames = null;
 
-                // prepare
-                $prefix = Config::$config['db.prefix'] . '_';
-
                 // load the dump
                 DatabaseLoader::load(
                     SqlReader::fromFile(__DIR__ . '/database.sql'),
                     'sunlight_',
-                    $prefix
+                    DB::$prefix
                 );
 
                 // update settings
                 foreach ($settings as $name => $value) {
-                    DB::update($prefix . 'setting', 'var=' . DB::val($name), ['val' => _e($value)]);
+                    DB::update('setting', 'var=' . DB::val($name), ['val' => _e($value)]);
                 }
 
                 // update admin account
-                DB::update($prefix . 'user', 'id=1', [
+                DB::update('user', 'id=1', [
                     'username' => $admin['username'],
                     'password' => Password::create($admin['password'])->build(),
                     'email' => $admin['email'],
@@ -965,7 +973,7 @@ class ImportDatabaseStep extends Step
                 // alter initial content
                 foreach ($this->getInitialContent() as $table => $rowMap) {
                     foreach ($rowMap as $id => $changeset) {
-                        DB::update($prefix . $table, 'id=' . DB::val($id), $changeset);
+                        DB::update($table, 'id=' . DB::val($id), $changeset);
                     }
                 }
             });

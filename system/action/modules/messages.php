@@ -80,7 +80,7 @@ switch ($a) {
 
                 // prijemce
                 if ($receiver !== '') {
-                    $rq = DB::queryRow('SELECT usr.id AS usr_id,usr.blocked AS usr_blocked, ugrp.blocked AS ugrp_blocked FROM ' . _user_table . ' AS usr JOIN ' . _user_group_table . ' AS ugrp ON (usr.group_id=ugrp.id) WHERE usr.username=' . DB::val($receiver) . ' OR usr.publicname=' . DB::val($receiver));
+                    $rq = DB::queryRow('SELECT usr.id AS usr_id,usr.blocked AS usr_blocked, ugrp.blocked AS ugrp_blocked FROM ' . DB::table('user') . ' AS usr JOIN ' . DB::table('user_group') . ' AS ugrp ON (usr.group_id=ugrp.id) WHERE usr.username=' . DB::val($receiver) . ' OR usr.publicname=' . DB::val($receiver));
                 } else {
                     $rq = false;
                 }
@@ -115,7 +115,7 @@ switch ($a) {
                 ]);
 
                 // vlozeni do pm tabulky
-                $pm_id = DB::insert(_pm_table, [
+                $pm_id = DB::insert('pm', [
                     'sender' => User::getId(),
                     'sender_readtime' => time(),
                     'sender_deleted' => 0,
@@ -126,7 +126,7 @@ switch ($a) {
                 ], true);
 
                 // vlozeni do posts tabulky
-                $insert_id = DB::insert(_post_table, $post_data = [
+                $insert_id = DB::insert('post', $post_data = [
                     'type' => Post::PRIVATE_MSG,
                     'home' => $pm_id,
                     'xhome' => -1,
@@ -182,7 +182,7 @@ switch ($a) {
             // nacist data
             $senderUserQuery = User::createQuery('pm.sender', 'sender_', 'su');
             $receiverUserQuery = User::createQuery('pm.receiver', 'receiver_', 'ru');
-            $q = DB::queryRow('SELECT pm.*,p.id post_id,p.subject,p.time,p.text,p.guest,p.ip' . Extend::buffer('posts.columns') . ',' . $senderUserQuery['column_list'] . ',' . $receiverUserQuery['column_list'] . ' FROM ' . _pm_table . ' AS pm JOIN ' . _post_table . ' AS p ON (p.type=' . Post::PRIVATE_MSG . ' AND p.home=pm.id AND p.xhome=-1) ' . $senderUserQuery['joins'] . ' ' . $receiverUserQuery['joins'] . ' WHERE pm.id=' . $id . ' AND (sender=' . User::getId() . ' AND sender_deleted=0 OR receiver=' . User::getId() . ' AND receiver_deleted=0)');
+            $q = DB::queryRow('SELECT pm.*,p.id post_id,p.subject,p.time,p.text,p.guest,p.ip' . Extend::buffer('posts.columns') . ',' . $senderUserQuery['column_list'] . ',' . $receiverUserQuery['column_list'] . ' FROM ' . DB::table('pm') . ' AS pm JOIN ' . DB::table('post') . ' AS p ON (p.type=' . Post::PRIVATE_MSG . ' AND p.home=pm.id AND p.xhome=-1) ' . $senderUserQuery['joins'] . ' ' . $receiverUserQuery['joins'] . ' WHERE pm.id=' . $id . ' AND (sender=' . User::getId() . ' AND sender_deleted=0 OR receiver=' . User::getId() . ' AND receiver_deleted=0)');
             if ($q === false) {
                 $_index['type'] = _index_not_found;
                 break;
@@ -193,7 +193,7 @@ switch ($a) {
             [$role, $role_other] = (($q['sender'] == User::getId()) ? ['sender', 'receiver'] : ['receiver', 'sender']);
 
             // spocitat neprectene zpravy
-            $unread_count = DB::count(_post_table, 'home=' . DB::val($q['id']) . ' AND type=' . Post::PRIVATE_MSG . ' AND author=' . User::getId() . ' AND time>' . $q[$role_other . '_readtime']);
+            $unread_count = DB::count('post', 'home=' . DB::val($q['id']) . ' AND type=' . Post::PRIVATE_MSG . ' AND author=' . User::getId() . ' AND time>' . $q[$role_other . '_readtime']);
 
             // vystup
             $_index['title'] = _lang('mod.messages.message') . ': ' . $q['subject'];
@@ -207,7 +207,7 @@ switch ($a) {
             $output .= PostService::render(PostService::RENDER_PM_LIST, $q['id'], [$locked, $unread_count], false, Router::module('messages', 'a=list&read=' . $q['id']));
 
             // aktualizace casu precteni
-            DB::update(_pm_table, 'id=' . DB::val($id), [$role . '_readtime' => time()]);
+            DB::update('pm', 'id=' . DB::val($id), [$role . '_readtime' => time()]);
 
             break;
         }
@@ -228,7 +228,7 @@ switch ($a) {
 
             // funkce
             $deletePms = function ($cond = null, $sender_cond = null, $receiver_cond = null) {
-                $q = DB::query('SELECT id,sender,sender_deleted,receiver,receiver_deleted FROM ' . _pm_table . ' WHERE (sender=' . User::getId() . ' AND sender_deleted=0' . (isset($sender_cond) ? ' AND ' . $sender_cond : '') . ' OR receiver=' . User::getId() . ' AND receiver_deleted=0' . (isset($receiver_cond) ? ' AND ' . $receiver_cond : '') . ')' . ((isset($cond)) ? ' AND ' . $cond : ''));
+                $q = DB::query('SELECT id,sender,sender_deleted,receiver,receiver_deleted FROM ' . DB::table('pm') . ' WHERE (sender=' . User::getId() . ' AND sender_deleted=0' . (isset($sender_cond) ? ' AND ' . $sender_cond : '') . ' OR receiver=' . User::getId() . ' AND receiver_deleted=0' . (isset($receiver_cond) ? ' AND ' . $receiver_cond : '') . ')' . ((isset($cond)) ? ' AND ' . $cond : ''));
                 $del_list = [];
 
                 while ($r = DB::row($q)) {
@@ -241,13 +241,13 @@ switch ($a) {
                         $del_list[] = $r['id'];
                     } else {
                         // pouze oznacit
-                        DB::update(_pm_table, 'id=' . $r['id'], [$role . '_deleted' => 1]);
+                        DB::update('pm', 'id=' . $r['id'], [$role . '_deleted' => 1]);
                     }
                 }
 
                 // fyzicke vymazani
                 if (!empty($del_list)) {
-                    DB::query('DELETE ' . _pm_table . ',post FROM ' . _pm_table . ' JOIN ' . _post_table . ' AS post ON (post.type=' . Post::PRIVATE_MSG . ' AND post.home=' . _pm_table . '.id) WHERE ' . _pm_table . '.id IN(' . DB::arr($del_list) . ')');
+                    DB::query('DELETE ' . DB::table('pm') . ',post FROM ' . DB::table('pm') . ' JOIN ' . DB::table('post') . ' AS post ON (post.type=' . Post::PRIVATE_MSG . ' AND post.home=' . DB::table('pm') . '.id) WHERE ' . DB::table('pm') . '.id IN(' . DB::arr($del_list) . ')');
                 }
             };
 
@@ -264,8 +264,8 @@ switch ($a) {
                     if (!empty($selected_ids)) {
                         $q = DB::query(
                             'SELECT pm.id,pm.sender,pm.receiver,last_post.time AS last_post_time'
-                            . ' FROM ' . _pm_table . ' AS pm'
-                            . ' JOIN ' . _post_table . ' AS last_post ON (last_post.id = (SELECT id FROM ' . _post_table . ' WHERE type=' . Post::PRIVATE_MSG . ' AND home=pm.id ORDER BY id DESC LIMIT 1))'
+                            . ' FROM ' . DB::table('pm') . ' AS pm'
+                            . ' JOIN ' . DB::table('post') . ' AS last_post ON (last_post.id = (SELECT id FROM ' . DB::table('post') . ' WHERE type=' . Post::PRIVATE_MSG . ' AND home=pm.id ORDER BY id DESC LIMIT 1))'
                             . ' WHERE pm.id IN(' . DB::arr($selected_ids) . ') AND (pm.sender=' . User::getId() . ' AND pm.sender_deleted=0 OR pm.receiver=' . User::getId() . ' AND pm.receiver_deleted=0)'
                             . ' AND last_post.author!=' . User::getId()
                         );
@@ -275,7 +275,7 @@ switch ($a) {
                             $role = $r['sender'] == User::getId() ? 'sender' : 'receiver';
                             $changesets[$r['id']][$role . '_readtime'] = $r['last_post_time'] - 1;
                         }
-                        DB::updateSetMulti(_pm_table, 'id', $changesets);
+                        DB::updateSetMulti('pm', 'id', $changesets);
                         $message = Message::ok(_lang('global.done'));
                     }
                     break;
@@ -293,7 +293,7 @@ switch ($a) {
         }
 
         // strankovani
-        $paging = Paginator::render($_index['url'], Settings::get('messagesperpage'), _pm_table, 'sender=' . User::getId() . ' OR receiver=' . User::getId(), '&amp;a=' . $a);
+        $paging = Paginator::render($_index['url'], Settings::get('messagesperpage'), DB::table('pm'), 'sender=' . User::getId() . ' OR receiver=' . User::getId(), '&amp;a=' . $a);
         if (Paginator::atTop()) {
             $output .= $paging['paging'];
         }
@@ -320,9 +320,9 @@ switch ($a) {
         $q = DB::query(
             'SELECT pm.id,pm.sender,pm.receiver,pm.sender_readtime,pm.receiver_readtime,pm.update_time,post.subject'
             . ',' . $senderUserQuery['column_list'] . ',' . $receiverUserQuery['column_list']
-            . ',(SELECT COUNT(*) FROM ' . _post_table . ' AS countpost WHERE countpost.home=pm.id AND countpost.type=' . Post::PRIVATE_MSG . ' AND countpost.author=' . User::getId() . ' AND (pm.sender=' . User::getId() . ' AND countpost.time>pm.receiver_readtime OR pm.receiver=' . User::getId() . ' AND countpost.time>pm.sender_readtime)) AS unread_counter'
-            . ' FROM ' . _pm_table . ' AS pm'
-            . ' JOIN ' . _post_table . ' AS post ON (post.home=pm.id AND post.type=' . Post::PRIVATE_MSG . ' AND post.xhome=-1)'
+            . ',(SELECT COUNT(*) FROM ' . DB::table('post') . ' AS countpost WHERE countpost.home=pm.id AND countpost.type=' . Post::PRIVATE_MSG . ' AND countpost.author=' . User::getId() . ' AND (pm.sender=' . User::getId() . ' AND countpost.time>pm.receiver_readtime OR pm.receiver=' . User::getId() . ' AND countpost.time>pm.sender_readtime)) AS unread_counter'
+            . ' FROM ' . DB::table('pm') . ' AS pm'
+            . ' JOIN ' . DB::table('post') . ' AS post ON (post.home=pm.id AND post.type=' . Post::PRIVATE_MSG . ' AND post.xhome=-1)'
             . ' ' . $senderUserQuery['joins']
             . ' ' . $receiverUserQuery['joins']
             . ' WHERE pm.sender=' . User::getId() . ' AND pm.sender_deleted=0 OR pm.receiver=' . User::getId() . ' AND pm.receiver_deleted=0'.

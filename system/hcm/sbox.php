@@ -16,7 +16,7 @@ return function ($id = null) {
     $id = (int) $id;
 
     // nacteni dat shoutboxu
-    $sboxdata = DB::queryRow("SELECT * FROM " . _shoutbox_table . " WHERE id=" . $id);
+    $sboxdata = DB::queryRow("SELECT * FROM " . DB::table('shoutbox') . " WHERE id=" . $id);
     if ($sboxdata !== false) {
         $rcontinue = true;
     } else {
@@ -57,7 +57,7 @@ return function ($id = null) {
         $result .= "\n</div>\n<div class='sbox-posts'>";
         // vypis prispevku
         $userQuery = User::createQuery('p.author');
-        $sposts = DB::query("SELECT p.id,p.text,p.author,p.guest,p.time,p.ip," . $userQuery['column_list'] . " FROM " . _post_table . " p " . $userQuery['joins'] . " WHERE p.home=" . $id . " AND p.type=" . Post::SHOUTBOX_ENTRY . " ORDER BY p.id DESC");
+        $sposts = DB::query("SELECT p.id,p.text,p.author,p.guest,p.time,p.ip," . $userQuery['column_list'] . " FROM " . DB::table('post') . " p " . $userQuery['joins'] . " WHERE p.home=" . $id . " AND p.type=" . Post::SHOUTBOX_ENTRY . " ORDER BY p.id DESC");
         if (DB::size($sposts) != 0) {
             while ($spost = DB::row($sposts)) {
 

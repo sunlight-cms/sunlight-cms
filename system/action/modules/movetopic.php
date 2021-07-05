@@ -23,7 +23,7 @@ if (!User::isLoggedIn()) {
 $message = "";
 $id = (int) Request::get('id');
 $userQuery = User::createQuery('p.author');
-$query = DB::queryRow("SELECT p.id,p.home,p.time,p.subject,p.sticky,r.slug forum_slug,r.layout forum_layout," . $userQuery['column_list'] . " FROM " . _post_table . " p JOIN " . _page_table . " r ON(p.home=r.id) " . $userQuery['joins'] . " WHERE p.id=" . $id . " AND p.type=" . Post::FORUM_TOPIC . " AND p.xhome=-1");
+$query = DB::queryRow("SELECT p.id,p.home,p.time,p.subject,p.sticky,r.slug forum_slug,r.layout forum_layout," . $userQuery['column_list'] . " FROM " . DB::table('post') . " p JOIN " . DB::table('page') . " r ON(p.home=r.id) " . $userQuery['joins'] . " WHERE p.id=" . $id . " AND p.type=" . Post::FORUM_TOPIC . " AND p.xhome=-1");
 if ($query !== false) {
     if (isset($query['forum_layout'])) {
         Template::change($query['forum_layout']);
@@ -46,7 +46,7 @@ $forums = Page::getFlatTree(null, null, new SimpleTreeFilter(['type' => Page::FO
 if (isset($_POST['new_forum'])) {
     $new_forum_id = (int) Request::post('new_forum');
     if (isset($forums[$new_forum_id]) && $forums[$new_forum_id]['type'] == Page::FORUM) {
-        DB::update(_post_table, 'id=' . DB::val($id) . ' OR (type=' . Post::FORUM_TOPIC . ' AND xhome=' . $id . ')', ['home' => $new_forum_id]);
+        DB::update('post', 'id=' . DB::val($id) . ' OR (type=' . Post::FORUM_TOPIC . ' AND xhome=' . $id . ')', ['home' => $new_forum_id]);
         $query['home'] = $new_forum_id;
         $_index['backlink'] = Router::topic($query['id']);
         $message = Message::ok(_lang('mod.movetopic.ok'));

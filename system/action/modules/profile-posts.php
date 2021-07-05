@@ -20,7 +20,7 @@ if (!User::isLoggedIn() && Settings::get('notpublicsite')) {
 /* ---  priprava  --- */
 
 $id = StringManipulator::slugify(Request::get('id'), false);
-$query = DB::queryRow("SELECT u.id,u.username,u.publicname,u.public,g.level FROM " . _user_table . " u JOIN " . _user_group_table . " g ON u.group_id=g.id WHERE u.username=" . DB::val($id));
+$query = DB::queryRow("SELECT u.id,u.username,u.publicname,u.public,g.level FROM " . DB::table('user') . " u JOIN " . DB::table('user_group') . " g ON u.group_id=g.id WHERE u.username=" . DB::val($id));
 
 if ($query === false) {
     $_index['type'] = _index_not_found;
@@ -51,7 +51,7 @@ if (Paginator::atTop()) {
     $output .= $paging['paging'];
 }
 
-$posts = DB::query("SELECT " . $columns . " FROM " . _post_table . " post " . $joins . " WHERE " . $cond . " ORDER BY post.time DESC " . $paging['sql_limit']);
+$posts = DB::query("SELECT " . $columns . " FROM " . DB::table('post') . " post " . $joins . " WHERE " . $cond . " ORDER BY post.time DESC " . $paging['sql_limit']);
 if (DB::size($posts) != 0) {
     while ($post = DB::row($posts)) {
         [$homelink, $hometitle] = Router::post($post);

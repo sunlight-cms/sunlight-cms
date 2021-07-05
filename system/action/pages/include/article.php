@@ -202,6 +202,6 @@ Extend::call('article.comments.after', $extend_args);
 
 // zapocteni precteni
 if ($_article['confirmed'] && $_article['time'] <= time() && IpLog::check(IpLog::ARTICLE_READ, $_article['id'])) {
-    DB::update(_article_table, 'id=' . $_article['id'], ['readnum' => DB::raw('readnum+1')]);
+    DB::update('article', 'id=' . $_article['id'], ['readnum' => DB::raw('readnum+1')]);
     IpLog::update(IpLog::ARTICLE_READ, $_article['id']);
 }

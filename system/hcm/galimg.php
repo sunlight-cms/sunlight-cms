@@ -49,7 +49,7 @@ return function ($galerie = "", $typ = 'new', $rozmery = null, $limit = null) {
     }
 
     // vypis obrazku
-    $rimgs = DB::query("SELECT id,title,prev,full FROM " . _gallery_image_table . " WHERE " . $galerie . " ORDER BY " . $razeni . " LIMIT " . $limit);
+    $rimgs = DB::query("SELECT id,title,prev,full FROM " . DB::table('gallery_image') . " WHERE " . $galerie . " ORDER BY " . $razeni . " LIMIT " . $limit);
     while($rimg = DB::row($rimgs)) {
         $result .= Gallery::renderImage($rimg, "hcm" . Core::$hcmUid, $x, $y);
     }

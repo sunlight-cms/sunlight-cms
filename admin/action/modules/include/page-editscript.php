@@ -168,7 +168,7 @@ if (!empty($_POST)) {
             // ord
             case 'ord':
                 if ($val === '') {
-                    $maxOrd = DB::queryRow('SELECT MAX(ord) max_ord FROM ' . _page_table . ' WHERE node_parent' . ($actual_parent_id === null ? ' IS NULL' : '=' . DB::val($actual_parent_id)));
+                    $maxOrd = DB::queryRow('SELECT MAX(ord) max_ord FROM ' . DB::table('page') . ' WHERE node_parent' . ($actual_parent_id === null ? ' IS NULL' : '=' . DB::val($actual_parent_id)));
                     if ($maxOrd && $maxOrd['max_ord'] !== null) {
                         $val = $maxOrd['max_ord'] + 1;
                     } else {
@@ -313,7 +313,7 @@ if (!empty($_POST)) {
             // smazani komentaru v sekcich
             case 'delcomments':
                 if ($type == Page::SECTION && $val == 1 && !$new) {
-                    DB::delete(_post_table, 'home=' . $id . ' AND type=' . Post::SECTION_COMMENT);
+                    DB::delete('post', 'home=' . $id . ' AND type=' . Post::SECTION_COMMENT);
                 }
                 $skip = true;
                 break;
@@ -331,7 +331,7 @@ if (!empty($_POST)) {
                             break;
                     }
                     if ($ptype != null) {
-                        DB::delete(_post_table, 'home=' . $id . ' AND type=' . $ptype);
+                        DB::delete('post', 'home=' . $id . ' AND type=' . $ptype);
                     }
                 }
                 $skip = true;
@@ -395,12 +395,12 @@ if (!empty($_POST)) {
 
     if (!$new) {
         // ulozeni
-        DB::update(_page_table, 'id=' . $id, $changeset);
+        DB::update('page', 'id=' . $id, $changeset);
 
     } else {
         // vytvoreni
         $changeset['type'] = $type;
-        $id = $query['id'] = DB::insert(_page_table, $changeset, true);
+        $id = $query['id'] = DB::insert('page', $changeset, true);
     }
 
     Extend::call('admin.page.' . $action, [
@@ -467,7 +467,7 @@ if ($editor === '') {
 if (isset($_GET['saved'])) {
     $output .= Message::ok(_lang('global.saved') . " <small>(" . GenericTemplates::renderTime(time()) . ")</small>", true);
 }
-if (!$new && $editscript_enable_slug && DB::count(_page_table, 'id!=' . DB::val($query['id']) . ' AND slug=' . DB::val($query['slug'])) !== 0) {
+if (!$new && $editscript_enable_slug && DB::count('page', 'id!=' . DB::val($query['id']) . ' AND slug=' . DB::val($query['slug'])) !== 0) {
     $output .= Message::warning(_lang('admin.content.form.slug.collision'));
 }
 if (!$new && $id == Settings::get('index_page_id')) {

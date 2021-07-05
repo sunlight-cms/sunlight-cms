@@ -23,7 +23,7 @@ abstract class PluginAction extends Action
      */
     function __construct(Plugin $plugin)
     {
-        if (_env !== Core::ENV_ADMIN) {
+        if (Core::$env !== Core::ENV_ADMIN) {
             throw new \RuntimeException('Plugin actions require administration environment');
         }
 

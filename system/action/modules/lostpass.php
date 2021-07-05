@@ -45,7 +45,7 @@ if (isset($_GET['user'], $_GET['hash'])) {
         // data uzivatele
         $user = Request::get('user');
         $hash = Request::get('hash');
-        $userdata = DB::queryRow("SELECT id,email,username,security_hash,security_hash_expires FROM " . _user_table . " WHERE username=" . DB::val($user));
+        $userdata = DB::queryRow("SELECT id,email,username,security_hash,security_hash_expires FROM " . DB::table('user') . " WHERE username=" . DB::val($user));
         if (
             $userdata === false
             || $hash !== $userdata['security_hash']
@@ -77,7 +77,7 @@ if (isset($_GET['user'], $_GET['hash'])) {
         }
 
         // zmenit heslo
-        DB::update(_user_table, 'id=' . DB::val($userdata['id']), [
+        DB::update('user', 'id=' . DB::val($userdata['id']), [
             'password' => Password::create($newpass)->build(),
             'security_hash' => null,
             'security_hash_expires' => 0,
@@ -110,7 +110,7 @@ if (isset($_GET['user'], $_GET['hash'])) {
         // data uzivatele
         $username = Request::post('username');
         $email = Request::post('email');
-        $userdata = DB::queryRow("SELECT id,email,username FROM " . _user_table . " WHERE username=" . DB::val($username) . " AND email=" . DB::val($email));
+        $userdata = DB::queryRow("SELECT id,email,username FROM " . DB::table('user') . " WHERE username=" . DB::val($username) . " AND email=" . DB::val($email));
         if ($userdata === false) {
             $output .= Message::warning(_lang('mod.lostpass.notfound'));
             break;
@@ -118,7 +118,7 @@ if (isset($_GET['user'], $_GET['hash'])) {
 
         // vygenerovani hashe
         $hash = StringGenerator::generateString(64);
-        DB::update(_user_table, 'id=' . DB::val($userdata['id']), [
+        DB::update('user', 'id=' . DB::val($userdata['id']), [
             'security_hash' => $hash,
             'security_hash_expires' => time() + 3600,
         ]);

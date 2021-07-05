@@ -45,6 +45,10 @@ abstract class Core
     /** @var float */
     static $start;
     /** @var string */
+    static $env;
+    /** @var bool */
+    static $debug;
+    /** @var string */
     static $appId;
     /** @var string */
     static $secret;
@@ -98,7 +102,7 @@ abstract class Core
      * session_regenerate   force new session ID 1/0
      * allow_cron_auto      allow running cron tasks automatically 1/0
      * content_type         content type, FALSE = disabled (default is "text/html; charset=UTF-8")
-     * env                  environment identifier, see Core::ENV_* constants
+     * env                  environment identifier, see self::ENV_* constants
      *
      * @param string $root relative path to the system root directory (with a trailing slash)
      * @param array  $options
@@ -128,7 +132,7 @@ abstract class Core
 
         // components
         if ($initComponents) {
-            self::initComponents($options);
+            self::initComponents($options['cache']);
         }
 
         // environment
@@ -194,7 +198,7 @@ abstract class Core
             $configFileOptions = @include $configFile;
 
             if ($configFileOptions === false) {
-                self::systemFailure(
+                self::fail(
                     'Chybí soubor "config.php". Otevřete /install pro instalaci.',
                     'The "config.php" file is missing. Open /install to create it.'
                 );
@@ -232,7 +236,7 @@ abstract class Core
 
             foreach ($requiredOptions as $requiredOption) {
                 if (empty($options[$requiredOption])) {
-                    self::systemFailure(
+                    self::fail(
                         "Konfigurační volba \"{$requiredOption}\" nesmí být prázdná.",
                         "The configuration option \"{$requiredOption}\" must not be empty."
                     );
@@ -241,6 +245,8 @@ abstract class Core
         }
 
         // define variables
+        self::$env = $options['env'];
+        self::$debug = (bool) $options['debug'];
         self::$appId = $options['app_id'];
         self::$secret = $options['secret'];
         self::$fallbackLang = $options['fallback_lang'];
@@ -250,11 +256,6 @@ abstract class Core
 
         // define constants
         define('_root', $root);
-        define('_env', $options['env']);
-        define('_debug', (bool) $options['debug']);
-        define('_dbprefix', $options['db.prefix'] . '_');
-        define('_dbname', $options['db.name']);
-        define('_upload_dir', _root . 'upload/');
     }
 
     /**
@@ -301,21 +302,19 @@ abstract class Core
 
     /**
      * Initialize components
-     *
-     * @param array $options
      */
-    private static function initComponents(array $options): void
+    private static function initComponents(bool $enableCache): void
     {
         // class loader
-        self::$classLoader->setDebug(_debug);
+        self::$classLoader->setDebug(self::$debug);
 
         // error handler
-        self::$errorHandler->setDebug(_debug || PHP_SAPI === 'cli');
+        self::$errorHandler->setDebug(self::$debug || PHP_SAPI === 'cli');
 
         // cache
         if (self::$cache === null) {
             self::$cache = new Cache(
-                $options['cache']
+                $enableCache
                     ? new FilesystemDriver(
                         _root . 'system/cache/core',
                         new EntryFactory(null, null, _root . 'system/tmp')
@@ -340,14 +339,21 @@ abstract class Core
      */
     private static function initDatabase(array $options): void
     {
-        $connectError = DB::connect($options['db.server'], $options['db.user'], $options['db.password'], $options['db.name'], $options['db.port']);
-
-        if ($connectError !== null) {
-            self::systemFailure(
-                'Připojení k databázi se nezdařilo. Důvodem je pravděpodobně výpadek serveru nebo chybné přístupové údaje. Zkontrolujte přístupové údaje v souboru config.php.',
-                'Could not connect to the database. This may have been caused by the database server being temporarily unavailable or an error in the configuration. Check your config.php file for errors.',
+        try {
+            DB::connect(
+                $options['db.server'],
+                $options['db.user'],
+                $options['db.password'],
+                $options['db.name'],
+                $options['db.port'],
+                $options['db.prefix']
+            );
+        } catch (DatabaseException $e) {
+            self::fail(
+                'Připojení k databázi se nezdařilo. Důvodem je pravděpodobně výpadek serveru nebo chybné přístupové údaje.',
+                'Could not connect to the database. This may have been caused by the database server being temporarily unavailable or an error in the configuration.',
                 null,
-                $connectError
+                $e->getMessage()
             );
         }
     }
@@ -360,7 +366,7 @@ abstract class Core
         try {
             Settings::init();
         } catch (DatabaseException $e) {
-            self::systemFailure(
+            self::fail(
                 'Připojení k databázi proběhlo úspěšně, ale dotaz na databázi selhal. Zkontrolujte, zda je databáze správně nainstalovaná.',
                 'Successfully connected to the database, but the database query has failed. Make sure the database is installed correctly.',
                 null,
@@ -390,7 +396,7 @@ abstract class Core
     {
         // check database version
         if (Settings::get('dbversion') !== self::VERSION) {
-            self::systemFailure(
+            self::fail(
                 'Verze nainstalované databáze není kompatibilní s verzí systému.',
                 'Database version is not compatible with the current system version.'
             );
@@ -402,7 +408,7 @@ abstract class Core
             $systemChecker->check();
 
             if ($systemChecker->hasErrors()) {
-                self::systemFailure(
+                self::fail(
                     'Při kontrole instalace byly detekovány následující problémy:',
                     'The installation check has detected the following problems:',
                     null,
@@ -435,7 +441,7 @@ abstract class Core
 
         // set error_reporting
         $err_rep = E_ALL;
-        if (!_debug) {
+        if (!self::$debug) {
             $err_rep &= ~(E_NOTICE | E_USER_NOTICE | E_DEPRECATED | E_STRICT);
         }
         error_reporting($err_rep);
@@ -533,12 +539,12 @@ abstract class Core
         } else {
             // language plugin was not found
             if ($usedLoginLanguage) {
-                DB::update(_user_table, 'id=' . User::getId(), ['language' => '']);
+                DB::update('user', 'id=' . User::getId(), ['language' => '']);
             } else {
                 Settings::update('language', self::$fallbackLang);
             }
 
-            self::systemFailure(
+            self::fail(
                 'Jazykový balíček "%s" nebyl nalezen.',
                 'Language plugin "%s" was not found.',
                 [$language]
@@ -623,9 +629,6 @@ abstract class Core
         }
     }
 
-    /**
-     * @return bool
-     */
     static function isReady(): bool
     {
         return self::$ready;
@@ -733,7 +736,7 @@ abstract class Core
      * @param string|null $msgExtra extra obsah pod zpravou (nelokalizovany)
      * @throws CoreException
      */
-    static function systemFailure(string $msgCs, string $msgEn, ?array $msgArgs = null, ?string $msgExtra = null): void
+    static function fail(string $msgCs, string $msgEn, ?array $msgArgs = null, ?string $msgExtra = null): void
     {
         $messages = [];
 
@@ -779,11 +782,11 @@ CSS;
 
         if (!self::$errorHandler->isDebugEnabled()) {
             $errorScreen->on(WebErrorScreenEvents::RENDER, function ($view) {
-                $view['title'] = $view['heading'] = Core::$fallbackLang === 'cs'
+                $view['title'] = $view['heading'] = self::$fallbackLang === 'cs'
                     ? 'Chyba serveru'
                     : 'Something went wrong';
 
-                $view['text'] = Core::$fallbackLang === 'cs'
+                $view['text'] = self::$fallbackLang === 'cs'
                     ? 'Omlouváme se, ale při zpracovávání Vašeho požadavku došlo k neočekávané chybě.'
                     : 'We are sorry, but an unexpected error has occurred while processing your request.';
 
@@ -791,7 +794,7 @@ CSS;
                     $view['extras'] .= '<div class="group core-exception-info"><div class="section">';
                     $view['extras'] .=  '<p class="message">' . nl2br(_e($view['exception']->getMessage()), false) . '</p>';
                     $view['extras'] .= '</div></div>';
-                    $view['extras'] .= '<a class="website-link" href="https://sunlight-cms.cz/" target="_blank">SunLight CMS ' . Core::VERSION . '</a>';
+                    $view['extras'] .= '<a class="website-link" href="https://sunlight-cms.cz/" target="_blank">SunLight CMS ' . self::VERSION . '</a>';
                 }
             });
         }

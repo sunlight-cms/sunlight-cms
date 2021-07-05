@@ -53,10 +53,10 @@ if (isset($_GET['confirm'])) {
         // kontrola omezeni
         if (IpLog::check(IpLog::FAILED_ACCOUNT_ACTIVATION)) {
             // smazani expirovanych
-            DB::delete(_user_activation_table, 'expire<' . time());
+            DB::delete('user_activation', 'expire<' . time());
 
             // nalezeni zaznamu
-            $activation = DB::queryRow('SELECT * FROM ' . _user_activation_table . ' WHERE code=' . DB::val($code));
+            $activation = DB::queryRow('SELECT * FROM ' . DB::table('user_activation') . ' WHERE code=' . DB::val($code));
             if ($activation !== false) {
                 // zaznam nalezen
                 $user_data = unserialize($activation['data']);
@@ -70,7 +70,7 @@ if (isset($_GET['confirm'])) {
                     $user_data_valid = true;
                     $confirmed = true;
 
-                    DB::delete(_user_activation_table, 'id=' . DB::val($activation['id']));
+                    DB::delete('user_activation', 'id=' . DB::val($activation['id']));
                 } else {
                     $message .= Message::warning(_lang('mod.reg.confirm.emailornametaken'));
                 }
@@ -133,7 +133,7 @@ if (isset($_GET['confirm'])) {
 
         if (Settings::get('registration_grouplist') && isset($_POST['group_id'])) {
             $user_data['group_id'] = (int) Request::post('group_id');
-            $groupdata = DB::query("SELECT id FROM " . _user_group_table . " WHERE id=" . $user_data['group_id'] . " AND blocked=0 AND reglist=1");
+            $groupdata = DB::query("SELECT id FROM " . DB::table('user_group') . " WHERE id=" . $user_data['group_id'] . " AND blocked=0 AND reglist=1");
             if (DB::size($groupdata) == 0) {
                 $errors[] = _lang('global.badinput');
             }
@@ -175,7 +175,7 @@ if (!$user_data_valid && $show_form) {
     // priprava vyberu skupiny
     $groupselect = [];
     if (Settings::get('registration_grouplist')) {
-        $groupselect_items = DB::query("SELECT id,title FROM " . _user_group_table . " WHERE blocked=0 AND reglist=1 ORDER BY title");
+        $groupselect_items = DB::query("SELECT id,title FROM " . DB::table('user_group') . " WHERE blocked=0 AND reglist=1 ORDER BY title");
         if (DB::size($groupselect_items) != 0) {
             $groupselect_content = "";
             while ($groupselect_item = DB::row($groupselect_items)) {
@@ -223,7 +223,7 @@ if (!$user_data_valid && $show_form) {
     if ($confirmed) {
 
         // potvrzeno
-        $user_id = DB::insert(_user_table, $user_data + ['registertime' => time()], true);
+        $user_id = DB::insert('user', $user_data + ['registertime' => time()], true);
 
         // udalost
         Extend::call('user.new', ['id' => $user_id]);
@@ -241,7 +241,7 @@ if (!$user_data_valid && $show_form) {
 
         // nepotvrzeno
         $code = StringGenerator::generateString(48);
-        $insert_id = DB::insert(_user_activation_table, [
+        $insert_id = DB::insert('user_activation', [
             'code' => $code,
             'expire' => time() + 3600,
             'data' => serialize($user_data),
@@ -276,7 +276,7 @@ if (!$user_data_valid && $show_form) {
             $output .= Message::ok(_lang('mod.reg.confirm.sent', ['%email%' => $user_data['email']]), true);
         } else {
             $output .= Message::error(_lang('global.emailerror'));
-            DB::delete(_user_activation_table, 'id=' . DB::val($insert_id));
+            DB::delete('user_activation', 'id=' . DB::val($insert_id));
         }
 
     }

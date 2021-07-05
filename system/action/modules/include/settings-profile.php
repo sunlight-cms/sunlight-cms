@@ -55,7 +55,7 @@ if (isset($_POST['save'])) {
             User::removeAvatar(User::$data['avatar']);
         }
 
-        DB::update(_user_table, 'id=' . User::getId(), $changeset);
+        DB::update('user', 'id=' . User::getId(), $changeset);
         Extend::call('user.edit', ['id' => User::getId()]);
 
         $_index['type'] = _index_redir;

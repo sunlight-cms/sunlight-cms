@@ -20,7 +20,7 @@ $message = "";
 $continue = false;
 if (isset($_GET['g'])) {
     $galid = (int) Request::get('g');
-    $galdata = DB::queryRow("SELECT title,var2,var3,var4 FROM " . _page_table . " WHERE id=" . $galid . " AND type=" . Page::GALLERY);
+    $galdata = DB::queryRow("SELECT title,var2,var3,var4 FROM " . DB::table('page') . " WHERE id=" . $galid . " AND type=" . Page::GALLERY);
     if ($galdata !== false) {
         if ($galdata['var2'] === null) {
             $galdata['var2'] = Settings::get('galdefault_per_page');
@@ -55,20 +55,20 @@ if (isset($_POST['xaction']) && $continue) {
 
             // vlozeni na zacatek nebo nacteni poradoveho cisla
             if (Form::loadCheckbox("moveords")) {
-                $smallerord = DB::queryRow("SELECT ord FROM " . _gallery_image_table . " WHERE home=" . $galid . " ORDER BY ord LIMIT 1");
+                $smallerord = DB::queryRow("SELECT ord FROM " . DB::table('gallery_image') . " WHERE home=" . $galid . " ORDER BY ord LIMIT 1");
                 if ($smallerord !== false) {
                     $ord = $smallerord['ord'];
                 } else {
                     $ord = 1;
                 }
-                DB::update(_gallery_image_table, 'home=' . $galid, ['ord' => DB::raw('ord+1')]);
+                DB::update('gallery_image', 'home=' . $galid, ['ord' => DB::raw('ord+1')]);
             } else {
                 $ord = floatval(Request::post('ord'));
             }
 
             // kontrola a vlozeni
             if ($full != '') {
-                DB::insert(_gallery_image_table, [
+                DB::insert('gallery_image', [
                     'home' => $galid,
                     'ord' => $ord,
                     'title' => $title,
@@ -130,7 +130,7 @@ if (isset($_POST['xaction']) && $continue) {
                         // ulozeni
                         if ($lastid != $id) {
                             $sql = trim($sql, ",");
-                            DB::query("UPDATE " . _gallery_image_table . " SET " . $sql . " WHERE id=" . $lastid . " AND home=" . $galid);
+                            DB::query("UPDATE " . DB::table('gallery_image') . " SET " . $sql . " WHERE id=" . $lastid . " AND home=" . $galid);
                             $sql = "";
                             $lastid = $id;
                         }
@@ -151,7 +151,7 @@ if (isset($_POST['xaction']) && $continue) {
 
             // ulozeni posledniho nebo jedineho obrazku
             if ($sql != '') {
-                DB::query("UPDATE " . _gallery_image_table . " SET " . $sql . " WHERE id=" . $id . " AND home=" . $galid);
+                DB::query("UPDATE " . DB::table('gallery_image') . " SET " . $sql . " WHERE id=" . $id . " AND home=" . $galid);
             }
 
             $message .= Message::ok(_lang('global.saved'));
@@ -161,22 +161,22 @@ if (isset($_POST['xaction']) && $continue) {
         case 5:
             $newhome = (int) Request::post('newhome');
             if ($newhome != $galid) {
-                if (DB::count(_page_table, 'id=' . DB::val($newhome) . ' AND type=' . Page::GALLERY) !== 0) {
-                    if (DB::count(_gallery_image_table, 'home=' . DB::val($galid)) !== 0) {
+                if (DB::count('page', 'id=' . DB::val($newhome) . ' AND type=' . Page::GALLERY) !== 0) {
+                    if (DB::count('gallery_image', 'home=' . DB::val($galid)) !== 0) {
 
                         // posunuti poradovych cisel v cilove galerii
                         $moveords = Form::loadCheckbox("moveords");
                         if ($moveords) {
 
                             // nacteni nejvetsiho poradoveho cisla v teto galerii
-                            $greatestord = DB::queryRow("SELECT ord FROM " . _gallery_image_table . " WHERE home=" . $galid . " ORDER BY ord DESC LIMIT 1");
+                            $greatestord = DB::queryRow("SELECT ord FROM " . DB::table('gallery_image') . " WHERE home=" . $galid . " ORDER BY ord DESC LIMIT 1");
                             $greatestord = $greatestord['ord'];
 
-                            DB::update(_gallery_image_table, 'home=' . $newhome, ['ord' => DB::raw('ord+' . $greatestord)]);
+                            DB::update('gallery_image', 'home=' . $newhome, ['ord' => DB::raw('ord+' . $greatestord)]);
                         }
 
                         // presun obrazku
-                        DB::update(_gallery_image_table, 'home=' . $galid, ['home' => $newhome]);
+                        DB::update('gallery_image', 'home=' . $galid, ['home' => $newhome]);
 
                         // zprava
                         $message .= Message::ok(_lang('global.done'));
@@ -196,7 +196,7 @@ if (isset($_POST['xaction']) && $continue) {
         case 6:
             if (Form::loadCheckbox("confirm")) {
                 Admin::deleteGalleryStorage('home=' . $galid);
-                DB::delete(_gallery_image_table, 'home=' . $galid);
+                DB::delete('gallery_image', 'home=' . $galid);
                 $message .= Message::ok(_lang('global.done'));
             }
             break;
@@ -242,10 +242,10 @@ if (isset($_POST['xaction']) && $continue) {
                 if (isset($_POST['moveords'])) {
                     // move
                     $ord = 0;
-                    DB::update(_gallery_image_table, 'home=' . $galid, ['ord' => DB::raw('ord+' . count($done))]);
+                    DB::update('gallery_image', 'home=' . $galid, ['ord' => DB::raw('ord+' . count($done))]);
                 } else {
                     // get max + 1
-                    $ord = DB::queryRow("SELECT ord FROM " . _gallery_image_table . " WHERE home=" . $galid . " ORDER BY ord DESC LIMIT 1");
+                    $ord = DB::queryRow("SELECT ord FROM " . DB::table('gallery_image') . " WHERE home=" . $galid . " ORDER BY ord DESC LIMIT 1");
                     $ord = $ord['ord'] + 1;
                 }
 
@@ -262,7 +262,7 @@ if (isset($_POST['xaction']) && $continue) {
                     ];
                     ++$ord;
                 }
-                DB::insertMulti(_gallery_image_table, $insertdata);
+                DB::insertMulti('gallery_image', $insertdata);
             }
 
             // message
@@ -282,7 +282,7 @@ if (isset($_POST['xaction']) && $continue) {
 if (isset($_GET['del']) && Xsrf::check(true) && $continue) {
     $del = (int) Request::get('del');
     Admin::deleteGalleryStorage('id=' . $del . ' AND home=' . $galid);
-    DB::delete(_gallery_image_table, 'id=' . $del . ' AND home=' . $galid);
+    DB::delete('gallery_image', 'id=' . $del . ' AND home=' . $galid);
     if (DB::affectedRows() === 1) {
         $message .= Message::ok(_lang('global.done'));
     }
@@ -361,7 +361,7 @@ if ($continue) {
 <div class='cleaner'></div>";
 
     // vypis
-    $images = DB::query("SELECT * FROM " . _gallery_image_table . " WHERE home=" . $galid . " ORDER BY ord");
+    $images = DB::query("SELECT * FROM " . DB::table('gallery_image') . " WHERE home=" . $galid . " ORDER BY ord");
     $images_forms = [];
     if (DB::size($images) != 0) {
         // sestaveni formularu

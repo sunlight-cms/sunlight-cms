@@ -31,7 +31,7 @@ if (isset($_GET['id'], $_GET['returnid'], $_GET['returnpage'])) {
         $returnid = (int) $returnid;
     }
     $returnpage = (int) Request::get('returnpage');
-    $query = DB::queryRow("SELECT art.*,cat.slug AS cat_slug FROM " . _article_table . " AS art JOIN " . _page_table . " AS cat ON(cat.id=art.home1) WHERE art.id=" . $id . Admin::articleAccess('art'));
+    $query = DB::queryRow("SELECT art.*,cat.slug AS cat_slug FROM " . DB::table('article') . " AS art JOIN " . DB::table('page') . " AS cat ON(cat.id=art.home1) WHERE art.id=" . $id . Admin::articleAccess('art'));
     if ($query !== false) {
         $read_counter = $query['readnum'];
         if ($returnid == "load") {
@@ -138,7 +138,7 @@ if (isset($_POST['title'])) {
     $homechecks = ["home1", "home2", "home2"];
     foreach ($homechecks as $homecheck) {
         if ($newdata[$homecheck] != -1 || $homecheck == "home1") {
-            if (DB::count(_page_table, 'type=' . Page::CATEGORY . ' AND id=' . DB::val($newdata[$homecheck])) === 0) {
+            if (DB::count('page', 'type=' . Page::CATEGORY . ' AND id=' . DB::val($newdata[$homecheck])) === 0) {
                 $error_log[] = _lang('admin.content.articles.edit.error2');
             }
         }
@@ -153,7 +153,7 @@ if (isset($_POST['title'])) {
     }
 
     // autor
-    if (DB::result(DB::query("SELECT COUNT(*) FROM " . _user_table . " WHERE id=" . DB::val($newdata['author']) . " AND (id=" . User::getId() . " OR (SELECT level FROM " . _user_group_table . " WHERE id=" . _user_table . ".group_id)<" . User::getLevel() . ")")) == 0) {
+    if (DB::result(DB::query("SELECT COUNT(*) FROM " . DB::table('user') . " WHERE id=" . DB::val($newdata['author']) . " AND (id=" . User::getId() . " OR (SELECT level FROM " . DB::table('user_group') . " WHERE id=" . DB::table('user') . ".group_id)<" . User::getLevel() . ")")) == 0) {
         $error_log[] = _lang('admin.content.articles.edit.error3');
     }
 
@@ -243,25 +243,25 @@ if (isset($_POST['title'])) {
         if (!$new) {
 
             // update
-            DB::update(_article_table, 'id=' . $id, $changeset);
+            DB::update('article', 'id=' . $id, $changeset);
 
             // smazani komentaru
             if ($newdata['delcomments'] == 1) {
-                DB::delete(_post_table, 'type=' . Post::ARTICLE_COMMENT . ' AND home=' . $id);
+                DB::delete('post', 'type=' . Post::ARTICLE_COMMENT . ' AND home=' . $id);
             }
 
             // vynulovani poctu precteni
             if ($newdata['resetread'] == 1) {
-                DB::update(_article_table, 'id=' . $id, ['readnum' => 0]);
+                DB::update('article', 'id=' . $id, ['readnum' => 0]);
             }
 
             // vynulovani hodnoceni
             if ($newdata['resetrate'] == 1) {
-                DB::update(_article_table, 'id=' . $id, [
+                DB::update('article', 'id=' . $id, [
                     'ratenum' => 0,
                     'ratesum' => 0
                 ]);
-                DB::delete(_iplog_table, 'type=' . IpLog::ARTICLE_RATED . ' AND var=' . $id);
+                DB::delete('iplog', 'type=' . IpLog::ARTICLE_RATED . ' AND var=' . $id);
             }
 
             // presmerovani
@@ -270,7 +270,7 @@ if (isset($_POST['title'])) {
         } else {
 
             // vlozeni
-            $id = DB::insert(_article_table, $changeset, true);
+            $id = DB::insert('article', $changeset, true);
 
             // presmerovani
             $admin_redirect_to = 'index.php?p=content-articles-edit&id=' . $id . '&created&returnid=' . $newdata['home1'] . '&returnpage=1';
@@ -314,7 +314,7 @@ if ($continue) {
     // vypocet hodnoceni
     if (!$new) {
         if ($query['ratenum'] != 0) {
-            $rate = DB::result(DB::query("SELECT ROUND(ratesum/ratenum) FROM " . _article_table . " WHERE id=" . $query['id'])) . "%, " . $query['ratenum'] . "x";
+            $rate = DB::result(DB::query("SELECT ROUND(ratesum/ratenum) FROM " . DB::table('article') . " WHERE id=" . $query['id'])) . "%, " . $query['ratenum'] . "x";
         } else {
             $rate = _lang('article.rate.nodata');
         }
@@ -351,7 +351,7 @@ if ($continue) {
 " . (($new && !User::hasPrivilege('adminautoconfirm')) ? Admin::note(_lang('admin.content.articles.edit.newconfnote')) : '') . "
 " . ((!$new && $query['confirmed'] != 1) ? Admin::note(_lang('admin.content.articles.edit.confnote')) : '') . "
 
-" . ((!$new && DB::count(_article_table, 'id!=' . DB::val($query['id']) . ' AND home1=' . DB::val($query['home1']) . ' AND slug=' . DB::val($query['slug'])) !== 0) ? Message::warning(_lang('admin.content.form.slug.collision')) : '') . "
+" . ((!$new && DB::count('article', 'id!=' . DB::val($query['id']) . ' AND home1=' . DB::val($query['home1']) . ' AND slug=' . DB::val($query['slug'])) !== 0) ? Message::warning(_lang('admin.content.form.slug.collision')) : '') . "
 
 <form class='cform' action='index.php?p=content-articles-edit" . $actionplus . "' method='post' enctype='multipart/form-data' name='artform'>
 
@@ -421,7 +421,7 @@ if ($continue) {
       <label><input type='checkbox' name='rateon' value='1'" . Form::activateCheckbox($query['rateon']) . "> " . _lang('admin.content.form.artrate') . "</label>
       <label><input type='checkbox' name='showinfo' value='1'" . Form::activateCheckbox($query['showinfo']) . "> " . _lang('admin.content.form.showinfo') . "</label>
       " . (!$new ? "<label><input type='checkbox' name='resetrate' value='1'> " . _lang('admin.content.form.resetartrate') . " <small>(" . $rate . ")</small></label>" : '') . "
-      " . (!$new ? "<label><input type='checkbox' name='delcomments' value='1'> " . _lang('admin.content.form.delcomments') . " <small>(" . DB::count(_post_table, 'home=' . DB::val($query['id']) . ' AND type=' . Post::ARTICLE_COMMENT) . ")</small></label>" : '') . "
+      " . (!$new ? "<label><input type='checkbox' name='delcomments' value='1'> " . _lang('admin.content.form.delcomments') . " <small>(" . DB::count('post', 'home=' . DB::val($query['id']) . ' AND type=' . Post::ARTICLE_COMMENT) . ")</small></label>" : '') . "
       " . (!$new ? "<label><input type='checkbox' name='resetread' value='1'> " . _lang('admin.content.form.resetartread') . " <small>(" . $read_counter . ")</small></label>" : '') . "
       </p>
 

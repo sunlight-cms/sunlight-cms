@@ -10,5 +10,5 @@ return function ($group_id = null) {
         $cond = "1";
     }
 
-    return DB::count(_user_table, $cond);
+    return DB::count('user', $cond);
 };

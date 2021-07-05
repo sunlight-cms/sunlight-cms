@@ -2,6 +2,8 @@
 
 namespace Sunlight\Image;
 
+use Sunlight\Core;
+
 class ImageException extends \RuntimeException
 {
     const COULD_NOT_CREATE = 'could-not-create';
@@ -60,7 +62,7 @@ class ImageException extends \RuntimeException
         $message = _lang('image.error.' . $this->reasonCode, $this->userFriendlyMessageArgs);
 
         // include more info in debug mode
-        if (_debug && $this->additionalInformation !== null) {
+        if (Core::$debug && $this->additionalInformation !== null) {
             $message .= sprintf(' (DEBUG: %s)', $this->additionalInformation);
         }
 

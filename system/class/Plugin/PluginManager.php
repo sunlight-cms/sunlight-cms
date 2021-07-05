@@ -523,7 +523,7 @@ class PluginManager
      */
     private function getCacheKey(): string
     {
-        return _debug ? 'plugins_debug' : 'plugins';
+        return Core::$debug ? 'plugins_debug' : 'plugins';
     }
 
     /**

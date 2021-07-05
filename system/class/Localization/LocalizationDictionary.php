@@ -2,6 +2,7 @@
 
 namespace Sunlight\Localization;
 
+use Sunlight\Core;
 use Sunlight\Extend;
 
 class LocalizationDictionary
@@ -75,7 +76,7 @@ class LocalizationDictionary
      */
     function registerSubDictionary(string $prefix, LocalizationDictionary $subDictionary): void
     {
-        if (_debug && strpos($prefix, '.') !== false) {
+        if (Core::$debug && strpos($prefix, '.') !== false) {
             throw new \InvalidArgumentException(sprintf('Sub-dictionary prefix "%s" must not contain a dot', $prefix));
         }
 

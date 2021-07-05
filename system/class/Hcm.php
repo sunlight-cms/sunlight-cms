@@ -47,7 +47,7 @@ abstract class Hcm
      */
     static function run(string $name, array $args = [])
     {
-        if (_env !== Core::ENV_WEB) {
+        if (Core::$env !== Core::ENV_WEB) {
             // HCM moduly vyzaduji frontendove prostredi
             return '';
         }

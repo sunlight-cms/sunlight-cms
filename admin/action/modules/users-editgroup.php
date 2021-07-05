@@ -24,7 +24,7 @@ $unregistered_useable = ['postcomments', 'artrate', 'pollvote'];
 $continue = false;
 if (isset($_GET['id'])) {
     $id = (int) Request::get('id');
-    $query = DB::queryRow("SELECT * FROM " . _user_group_table . " WHERE id=" . $id);
+    $query = DB::queryRow("SELECT * FROM " . DB::table('user_group') . " WHERE id=" . $id);
     if ($query !== false) {
         $systemitem = in_array($query['id'], $sysgroups_array);
         if (User::getLevel() > $query['level']) {
@@ -215,7 +215,7 @@ if ($continue) {
         Extend::call('admin.editgroup.save', ['changeset' => &$changeset]);
 
         // ulozeni
-        DB::update(_user_group_table, 'id=' . $id, $changeset);
+        DB::update('user_group', 'id=' . $id, $changeset);
 
         // reload stranky
         $admin_redirect_to = 'index.php?p=users-editgroup&id=' . $id . '&saved';

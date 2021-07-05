@@ -131,7 +131,34 @@ registerArgumentsSet(
     'selfremove'
 );
 
+registerArgumentsSet(
+    'tables',
+    'article',
+    'box',
+    'post',
+    'gallery_image',
+    'iplog',
+    'page',
+    'pm',
+    'poll',
+    'redirect',
+    'setting',
+    'shoutbox',
+    'user',
+    'user_activation',
+    'user_group',
+);
+
 expectedArguments(\Sunlight\Settings::get(), 0, argumentsSet('settings'));
 expectedArguments(\Sunlight\Settings::update(), 0, argumentsSet('settings'));
 expectedArguments(\Sunlight\Settings::overwrite(), 0, argumentsSet('settings'));
 expectedArguments(\Sunlight\User::hasPrivilege(), 0, argumentsSet('user_privileges'));
+expectedArguments(\Sunlight\Database\Database::table(), 0, argumentsSet('tables'));
+expectedArguments(\Sunlight\Database\Database::count(), 0, argumentsSet('tables'));
+expectedArguments(\Sunlight\Database\Database::insert(), 0, argumentsSet('tables'));
+expectedArguments(\Sunlight\Database\Database::insertMulti(), 0, argumentsSet('tables'));
+expectedArguments(\Sunlight\Database\Database::update(), 0, argumentsSet('tables'));
+expectedArguments(\Sunlight\Database\Database::updateSet(), 0, argumentsSet('tables'));
+expectedArguments(\Sunlight\Database\Database::updateSetMulti(), 0, argumentsSet('tables'));
+expectedArguments(\Sunlight\Database\Database::delete(), 0, argumentsSet('tables'));
+expectedArguments(\Sunlight\Database\Database::deleteSet(), 0, argumentsSet('tables'));

@@ -387,7 +387,7 @@ class BackupBuilder
     private function writePartial(Backup $backup): void
     {
         if ($this->databaseDumpEnabled) {
-            $backup->addDatabaseDump($this->dumpDatabase(), _dbprefix);
+            $backup->addDatabaseDump($this->dumpDatabase(), DB::$prefix);
         }
 
         foreach ($this->dynamicPathMap as $name => $paths) {
@@ -407,7 +407,7 @@ class BackupBuilder
     private function writeFull(Backup $backup): void
     {
         if ($this->databaseDumpEnabled) {
-            $backup->addDatabaseDump($this->dumpDatabase(), _dbprefix);
+            $backup->addDatabaseDump($this->dumpDatabase(), DB::$prefix);
         }
 
         foreach ($this->staticPathList as $path) {
@@ -524,7 +524,7 @@ class BackupBuilder
         $phpFileBuilder = PhpTemplate::fromFile(_root . 'system/config_template.php');
 
         return $phpFileBuilder->compile([
-            'db.prefix' => substr(_dbprefix, 0, -1),
+            'db.prefix' => substr(DB::$prefix, 0, -1),
             'app_id' => Core::$appId,
             'fallback_lang' => Core::$fallbackLang,
         ]);

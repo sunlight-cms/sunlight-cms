@@ -21,7 +21,7 @@ class TreeManager
     private $depthColumn;
 
     /**
-     * @param string      $table        nazev tabulky (vcetne pripadneho prefixu, jsou-li treba)
+     * @param string      $table        nazev tabulky (bez prefixu)
      * @param string|null $idColumn     nazev sloupce pro id
      * @param string|null $parentColumn nazev sloupce pro nadrazeny uzel
      * @param string|null $levelColumn  nazev sloupce pro uroven
@@ -191,7 +191,7 @@ class TreeManager
     function purgeOrphaned(bool $refresh = true) :self
     {
         do {
-            $orphaned = DB::query('SELECT n.' . $this->idColumn . ',n.' . $this->parentColumn . ' FROM `' . $this->table . '` n LEFT JOIN `' . $this->table . '` p ON(n.' . $this->parentColumn . '=p.' . $this->idColumn . ') WHERE n.' . $this->parentColumn . ' IS NOT NULL AND p.id IS NULL');
+            $orphaned = DB::query('SELECT n.' . $this->idColumn . ',n.' . $this->parentColumn . ' FROM ' . DB::table($this->table) . ' n LEFT JOIN ' . DB::table($this->table) . ' p ON(n.' . $this->parentColumn . '=p.' . $this->idColumn . ') WHERE n.' . $this->parentColumn . ' IS NOT NULL AND p.id IS NULL');
             $orphanedCount = DB::size($orphaned);
             while ($row = DB::row($orphaned)) {
 
@@ -273,7 +273,7 @@ class TreeManager
             return 0;
         }
         do {
-            $node = DB::queryRow('SELECT ' . $this->parentColumn . ' FROM `' . $this->table . '` WHERE ' . $this->idColumn . '=' . DB::val($nodeId));
+            $node = DB::queryRow('SELECT ' . $this->parentColumn . ' FROM ' . DB::table($this->table) . ' WHERE ' . $this->idColumn . '=' . DB::val($nodeId));
             if ($node === false) {
                 throw new \RuntimeException(sprintf('Node "%s" does not exist', $nodeId));
             }
@@ -318,7 +318,7 @@ class TreeManager
     private function getChildren(int $nodeId, bool $emptyArrayOnFailure = false): array
     {
         // zjistit hloubku uzlu
-        $node = DB::queryRow('SELECT ' . $this->depthColumn . ' FROM `' . $this->table . '` WHERE id=' . DB::val($nodeId));
+        $node = DB::queryRow('SELECT ' . $this->depthColumn . ' FROM ' . DB::table($this->table) . ' WHERE id=' . DB::val($nodeId));
         if ($node === false) {
             if ($emptyArrayOnFailure) {
                 return [];
@@ -339,13 +339,13 @@ class TreeManager
             $sql .= 'n' . $i . '.id';
         }
 
-        $sql .= ' FROM `' . $this->table . '` r';
+        $sql .= ' FROM ' . DB::table($this->table) . ' r';
         $parentAlias = 'r';
         for ($i = 0; $i < $node[$this->depthColumn]; ++$i) {
             $nodeAlias = 'n' . $i;
             $sql .= sprintf(
-                ' LEFT OUTER JOIN `%s` %s ON(%2$s.%s=%s.%s)',
-                $this->table,
+                ' LEFT OUTER JOIN %s %s ON(%2$s.%s=%s.%s)',
+                DB::table($this->table),
                 $nodeAlias,
                 $this->parentColumn,
                 $parentAlias,
@@ -402,7 +402,7 @@ class TreeManager
                 $childCondition = $this->parentColumn . ' IS NULL';
                 $childrenLevel = 0;
             }
-            $children = DB::query('SELECT ' . $this->idColumn . ',' . $this->levelColumn . ' FROM `' . $this->table . '` WHERE ' . $childCondition);
+            $children = DB::query('SELECT ' . $this->idColumn . ',' . $this->levelColumn . ' FROM ' . DB::table($this->table) . ' WHERE ' . $childCondition);
             while ($child = DB::row($children)) {
                 if ($childrenLevel != $child[$this->levelColumn]) {
                     if (isset($levelset[$childrenLevel][$child[$this->idColumn]])) {
@@ -464,7 +464,7 @@ class TreeManager
             } else {
                 $childCondition = $this->parentColumn . ' IS NULL';
             }
-            $children = DB::query('SELECT ' . $this->idColumn . ',' . $this->depthColumn . ' FROM `' . $this->table . '` WHERE ' . $childCondition);
+            $children = DB::query('SELECT ' . $this->idColumn . ',' . $this->depthColumn . ' FROM ' . DB::table($this->table) . ' WHERE ' . $childCondition);
             if (DB::size($children) > 0) {
                 // uzel ma potomky, pridat do fronty
                 if ($queue[$i][0] !== null) {

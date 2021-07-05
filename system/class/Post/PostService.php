@@ -3,6 +3,7 @@
 namespace Sunlight\Post;
 
 use Sunlight\Captcha;
+use Sunlight\Core;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\GenericTemplates;
@@ -294,7 +295,7 @@ class PostService
         $form_output = "<div class='posts-form' id='post-form'>\n";
 
         /* --- init pager --- */
-        $paging = Paginator::render($url, $postsperpage, _post_table, $countcond, "#posts", $page_param, $autolast);
+        $paging = Paginator::render($url, $postsperpage, DB::table('post'), $countcond, "#posts", $page_param, $autolast);
 
         /* --- message --- */
         if (isset($_GET['r'])) {
@@ -371,12 +372,12 @@ class PostService
         // base query
         $userQuery = User::createQuery('p.author');
         if ($is_topic_list) {
-            $sql = "SELECT p.id,p.author,p.guest,p.subject,p.time,p.ip,p.locked,p.bumptime,p.sticky,(SELECT COUNT(*) FROM " . _post_table . " WHERE type=" . Post::FORUM_TOPIC . " AND xhome=p.id) AS answer_count";
+            $sql = "SELECT p.id,p.author,p.guest,p.subject,p.time,p.ip,p.locked,p.bumptime,p.sticky,(SELECT COUNT(*) FROM " . DB::table('post') . " WHERE type=" . Post::FORUM_TOPIC . " AND xhome=p.id) AS answer_count";
         } else {
             $sql = "SELECT p.id,p.xhome,p.subject,p.text,p.author,p.guest,p.time,p.ip" . Extend::buffer('posts.columns');
         }
         $sql .= ',' . $userQuery['column_list'];
-        $sql .= " FROM " . _post_table . " AS p";
+        $sql .= " FROM " . DB::table('post') . " AS p";
         $sql .= ' ' . $userQuery['joins'];
 
         // conditions and sorting
@@ -403,10 +404,10 @@ class PostService
         if ($is_topic_list) {
             // last post (for topic lists)
             if (!empty($item_ids_with_answers)) {
-                $topicextra = DB::query('SELECT p.id,p.xhome,p.author,p.guest,' . $userQuery['column_list'] . ' FROM ' . _post_table . ' AS p ' . $userQuery['joins'] . ' WHERE p.id IN (SELECT MAX(id) FROM ' . _post_table . ' WHERE type=' . Post::FORUM_TOPIC . ' AND home=' . $home . ' AND xhome IN(' . implode(',', $item_ids_with_answers) . ') GROUP BY xhome)');
+                $topicextra = DB::query('SELECT p.id,p.xhome,p.author,p.guest,' . $userQuery['column_list'] . ' FROM ' . DB::table('post') . ' AS p ' . $userQuery['joins'] . ' WHERE p.id IN (SELECT MAX(id) FROM ' . DB::table('post') . ' WHERE type=' . Post::FORUM_TOPIC . ' AND home=' . $home . ' AND xhome IN(' . implode(',', $item_ids_with_answers) . ') GROUP BY xhome)');
                 while ($item = DB::row($topicextra)) {
                     if (!isset($items[$item['xhome']])) {
-                        if (_debug) {
+                        if (Core::$debug) {
                             throw new \RuntimeException('Could not find parent post of reply #' . $item['id']);
                         }
                         continue;
@@ -416,7 +417,7 @@ class PostService
             }
         } elseif (!empty($items)) {
             // answers (to comments)
-            $answers = DB::query("SELECT p.id,p.xhome,p.text,p.author,p.guest,p.time,p.ip" . Extend::buffer('posts.columns') . ',' . $userQuery['column_list']  . " FROM " . _post_table . " p " . $userQuery['joins'] . " WHERE p.type=" . $posttype . " AND p.home=" . $home . (isset($pluginflag) ? " AND p.flag=" . $pluginflag : '') . " AND p.xhome IN(" . implode(',', array_keys($items)) . ") ORDER BY p.id");
+            $answers = DB::query("SELECT p.id,p.xhome,p.text,p.author,p.guest,p.time,p.ip" . Extend::buffer('posts.columns') . ',' . $userQuery['column_list']  . " FROM " . DB::table('post') . " p " . $userQuery['joins'] . " WHERE p.type=" . $posttype . " AND p.home=" . $home . (isset($pluginflag) ? " AND p.flag=" . $pluginflag : '') . " AND p.xhome IN(" . implode(',', array_keys($items)) . ") ORDER BY p.id");
             while ($item = DB::row($answers)) {
                 if (!isset($items[$item['xhome']])) {
                     continue;
@@ -553,7 +554,7 @@ class PostService
 
                 // latest answers
                 $output .= "\n<div class='post-answer-list'>\n<h3>" . _lang('posts.forum.lastact') . "</h3>\n";
-                $query = DB::query("SELECT topic.id AS topic_id,topic.subject AS topic_subject,p.author,p.guest,p.time," . $userQuery['column_list'] . " FROM " . _post_table . " AS p JOIN " . _post_table . " AS topic ON(topic.type=" . Post::FORUM_TOPIC . " AND topic.id=p.xhome) " . $userQuery['joins'] . " WHERE p.type=" . Post::FORUM_TOPIC . " AND p.home=" . $home . " AND p.xhome!=-1 ORDER BY p.id DESC LIMIT " . Settings::get('extratopicslimit'));
+                $query = DB::query("SELECT topic.id AS topic_id,topic.subject AS topic_subject,p.author,p.guest,p.time," . $userQuery['column_list'] . " FROM " . DB::table('post') . " AS p JOIN " . DB::table('post') . " AS topic ON(topic.type=" . Post::FORUM_TOPIC . " AND topic.id=p.xhome) " . $userQuery['joins'] . " WHERE p.type=" . Post::FORUM_TOPIC . " AND p.home=" . $home . " AND p.xhome!=-1 ORDER BY p.id DESC LIMIT " . Settings::get('extratopicslimit'));
                 if (DB::size($query) != 0) {
                     $output .= "<table class='topic-latest'>\n";
                     while ($item = DB::row($query)) {
@@ -731,10 +732,10 @@ class PostService
 
         // delete or count
         if ($get_count) {
-            return DB::count(_post_table, $cond);
+            return DB::count('post', $cond);
         }
 
-        DB::delete(_post_table, $cond);
+        DB::delete('post', $cond);
 
         return null;
     }

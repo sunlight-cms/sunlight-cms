@@ -35,7 +35,7 @@ $id = (int) Request::get('id');
 $userQuery = User::createQuery('post.author');
 $columns .= ',home_page.layout page_layout,' . $userQuery['column_list'];
 $joins .= ' ' . $userQuery['joins'];
-$query = DB::queryRow("SELECT " . $columns . " FROM " . _post_table . " post " . $joins . " WHERE post.id=" . $id . " AND " . $cond);
+$query = DB::queryRow("SELECT " . $columns . " FROM " . DB::table('post') . " post " . $joins . " WHERE post.id=" . $id . " AND " . $cond);
 
 if ($query !== false) {
     if (isset($query['page_layout'])) {
@@ -51,17 +51,17 @@ if ($query !== false) {
 
             switch ($query['type']) {
                 case Post::SECTION_COMMENT:
-                    $_index['backlink'] = UrlHelper::appendParams($url, "page=" . Paginator::getItemPage(Settings::get('commentsperpage'), _post_table, "id>" . $query['id'] . " AND type=" . Post::SECTION_COMMENT . " AND xhome=-1 AND home=" . $query['home'])) . "#post-" . $query['id'];
+                    $_index['backlink'] = UrlHelper::appendParams($url, "page=" . Paginator::getItemPage(Settings::get('commentsperpage'), DB::table('post'), "id>" . $query['id'] . " AND type=" . Post::SECTION_COMMENT . " AND xhome=-1 AND home=" . $query['home'])) . "#post-" . $query['id'];
                     break;
                 case Post::ARTICLE_COMMENT:
-                    $_index['backlink'] = UrlHelper::appendParams($url, "page=" . Paginator::getItemPage(Settings::get('commentsperpage'), _post_table, "id>" . $query['id'] . " AND type=" . Post::ARTICLE_COMMENT . " AND xhome=-1 AND home=" . $query['home'])) . "#post-" . $query['id'];
+                    $_index['backlink'] = UrlHelper::appendParams($url, "page=" . Paginator::getItemPage(Settings::get('commentsperpage'), DB::table('post'), "id>" . $query['id'] . " AND type=" . Post::ARTICLE_COMMENT . " AND xhome=-1 AND home=" . $query['home'])) . "#post-" . $query['id'];
                     break;
                 case Post::BOOK_ENTRY:
-                    $postsperpage = DB::queryRow("SELECT var2 FROM " . _page_table . " WHERE id=" . $query['home']);
+                    $postsperpage = DB::queryRow("SELECT var2 FROM " . DB::table('page') . " WHERE id=" . $query['home']);
                     if ($postsperpage['var2'] === null) {
                         $postsperpage['var2'] = Settings::get('commentsperpage');
                     }
-                    $_index['backlink'] = UrlHelper::appendParams($url, "page=" . Paginator::getItemPage($postsperpage['var2'], _post_table, "id>" . $query['id'] . " AND type=" . Post::BOOK_ENTRY . " AND xhome=-1 AND home=" . $query['home'])) . "#post-" . $query['id'];
+                    $_index['backlink'] = UrlHelper::appendParams($url, "page=" . Paginator::getItemPage($postsperpage['var2'], DB::table('post'), "id>" . $query['id'] . " AND type=" . Post::BOOK_ENTRY . " AND xhome=-1 AND home=" . $query['home'])) . "#post-" . $query['id'];
                     break;
                 case Post::SHOUTBOX_ENTRY:
                     $bbcode = false;
@@ -74,12 +74,12 @@ if ($query !== false) {
                             $_index['backlink'] = Router::page($query['home'], $query['page_slug']);
                         }
                     } else {
-                        $_index['backlink'] = UrlHelper::appendParams($url, "page=" . Paginator::getItemPage(Settings::get('commentsperpage'), _post_table, "id<" . $query['id'] . " AND type=" . Post::FORUM_TOPIC . " AND xhome=" . $query['xhome'] . " AND home=" . $query['home'])) . "#post-" . $query['id'];
+                        $_index['backlink'] = UrlHelper::appendParams($url, "page=" . Paginator::getItemPage(Settings::get('commentsperpage'), DB::table('post'), "id<" . $query['id'] . " AND type=" . Post::FORUM_TOPIC . " AND xhome=" . $query['xhome'] . " AND home=" . $query['home'])) . "#post-" . $query['id'];
                     }
                     break;
 
                 case Post::PRIVATE_MSG:
-                    $_index['backlink'] = UrlHelper::appendParams($url, 'page=' . Paginator::getItemPage(Settings::get('messagesperpage'), _post_table, 'id<' . $query['id'] . ' AND type=' . Post::PRIVATE_MSG . ' AND home=' . $query['home'])) . '#post-' . $query['id'];
+                    $_index['backlink'] = UrlHelper::appendParams($url, 'page=' . Paginator::getItemPage(Settings::get('messagesperpage'), DB::table('post'), 'id<' . $query['id'] . ' AND type=' . Post::PRIVATE_MSG . ' AND home=' . $query['home'])) . '#post-' . $query['id'];
                     break;
 
                 case Post::PLUGIN:
@@ -148,7 +148,7 @@ if (isset($_POST['text'])) {
                 if(isset($guest)) {
                     $update_data['guest'] = $guest;
                 }
-                DB::update(_post_table, 'id=' . DB::val($id), $update_data);
+                DB::update('post', 'id=' . DB::val($id), $update_data);
                 $_index['type'] = _index_redir;
                 $_index['redirect_to'] = Router::module('editpost', 'id=' . $id . '&saved', true);
 
@@ -173,19 +173,19 @@ if (isset($_POST['text'])) {
                 // debump topicu
                 if ($query['type'] == 5 && $query['xhome'] != -1) {
                     // kontrola, zda se jedna o posledni odpoved
-                    $chq = DB::query('SELECT id,time FROM ' . _post_table . ' WHERE type=5 AND xhome=' . $query['xhome'] . ' ORDER BY id DESC LIMIT 2');
+                    $chq = DB::query('SELECT id,time FROM ' . DB::table('post') . ' WHERE type=5 AND xhome=' . $query['xhome'] . ' ORDER BY id DESC LIMIT 2');
                     $chr = DB::row($chq);
                     if ($chr !== false && $chr['id'] == $id) {
                         // ano, debump podle casu predchoziho postu nebo samotneho topicu (pokud se smazala jedina odpoved)
                         $chr = DB::row($chq);
-                        DB::update(_post_table, 'id=' . $query['xhome'], ['bumptime' => $chr !== false ? $chr['time'] : DB::raw('time')]);
+                        DB::update('post', 'id=' . $query['xhome'], ['bumptime' => $chr !== false ? $chr['time'] : DB::raw('time')]);
                     }
                 }
 
                 // smazani prispevku a odpovedi
-                DB::delete(_post_table, 'id=' . DB::val($id));
+                DB::delete('post', 'id=' . DB::val($id));
                 if ($query['xhome'] == -1) {
-                    DB::delete(_post_table, 'xhome=' . DB::val($id) . ' AND home=' . DB::val($query['home']) . ' AND type=' . DB::val($query['type']));
+                    DB::delete('post', 'xhome=' . DB::val($id) . ' AND home=' . DB::val($query['home']) . ' AND type=' . DB::val($query['type']));
                 }
 
                 // info

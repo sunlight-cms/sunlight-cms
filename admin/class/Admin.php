@@ -12,7 +12,6 @@ use Sunlight\Plugin\TemplateService;
 use Sunlight\Router;
 use Sunlight\Settings;
 use Sunlight\User;
-use Sunlight\Util\DateTime;
 use Sunlight\Util\StringManipulator;
 use Sunlight\Xsrf;
 
@@ -66,7 +65,7 @@ abstract class Admin
             }
             $output .= '<a id="usermenu-username" href="' . _e($profile_link) . '">' . User::getDisplayName() . '</a> [';
             if (Settings::get('messages')) {
-                $messages_count = DB::count(_pm_table, '(receiver=' . User::getId() . ' AND receiver_deleted=0 AND receiver_readtime<update_time) OR (sender=' . User::getId() . ' AND sender_deleted=0 AND sender_readtime<update_time)');
+                $messages_count = DB::count('pm', '(receiver=' . User::getId() . ' AND receiver_deleted=0 AND receiver_readtime<update_time) OR (sender=' . User::getId() . ' AND sender_deleted=0 AND sender_readtime<update_time)');
                 if ($messages_count != 0) {
                     $messages_count = " <span class='highlight'>(" . $messages_count . ")</span>";
                 } else {
@@ -140,7 +139,7 @@ abstract class Admin
             $csep = "";
         }
 
-        return (!User::hasPrivilege('adminallart') ? $csep . "{$alias}author=" . User::getId() : $csep . "({$alias}author=" . User::getId() . " OR (SELECT level FROM " . _user_group_table . " WHERE id=(SELECT group_id FROM " . _user_table . " WHERE id={$alias}author))<" . User::getLevel() . ")");
+        return (!User::hasPrivilege('adminallart') ? $csep . "{$alias}author=" . User::getId() : $csep . "({$alias}author=" . User::getId() . " OR (SELECT level FROM " . DB::table('user_group') . " WHERE id=(SELECT group_id FROM " . DB::table('user') . " WHERE id={$alias}author))<" . User::getLevel() . ")");
     }
 
     /**
@@ -155,7 +154,7 @@ abstract class Admin
             $alias .= '.';
         }
         if (User::hasPrivilege('adminallart')) {
-            return " AND (" . $alias . "author=" . User::getId() . " OR (SELECT level FROM " . _user_group_table . " WHERE id=(SELECT group_id FROM " . _user_table . " WHERE id=" . (($alias === '') ? "" . _article_table . "." : $alias) . "author))<" . User::getLevel() . ")";
+            return " AND (" . $alias . "author=" . User::getId() . " OR (SELECT level FROM " . DB::table('user_group') . " WHERE id=(SELECT group_id FROM " . DB::table('user') . " WHERE id=" . (($alias === '') ? "" . DB::table('article') . "." : $alias) . "author))<" . User::getLevel() . ")";
         }
 
         return " AND " . $alias . "author=" . User::getId();
@@ -330,14 +329,14 @@ abstract class Admin
             $multiple = "";
         }
         $output = "<select name='" . $name . "'" . $class . $multiple . ">";
-        $query = DB::query("SELECT id,title,level FROM " . _user_group_table . " WHERE " . $gcond . " AND id!=2 ORDER BY level DESC");
+        $query = DB::query("SELECT id,title,level FROM " . DB::table('user_group') . " WHERE " . $gcond . " AND id!=2 ORDER BY level DESC");
         if ($extraoption != null) {
             $output .= "<option value='-1' class='special'>" . $extraoption . "</option>";
         }
 
         if (!$groupmode) {
             while ($item = DB::row($query)) {
-                $users = DB::query("SELECT id,username,publicname FROM " . _user_table . " WHERE group_id=" . $item['id'] . " AND (" . $item['level'] . "<" . User::getLevel() . " OR id=" . User::getId() . ") ORDER BY id");
+                $users = DB::query("SELECT id,username,publicname FROM " . DB::table('user') . " WHERE group_id=" . $item['id'] . " AND (" . $item['level'] . "<" . User::getLevel() . " OR id=" . User::getId() . ") ORDER BY id");
                 if (DB::size($users) != 0) {
                     $output .= "<optgroup label='" . $item['title'] . "'>";
                     while ($user = DB::row($users)) {
@@ -358,7 +357,7 @@ abstract class Admin
                 } else {
                     $sel = "";
                 }
-                $output .= "<option value='" . $item['id'] . "'" . $sel . ">" . $item['title'] . " (" . DB::count(_user_table, 'group_id=' . $item['id']) . ")</option>\n";
+                $output .= "<option value='" . $item['id'] . "'" . $sel . ">" . $item['title'] . " (" . DB::count('user', 'group_id=' . $item['id']) . ")</option>\n";
             }
         }
 
@@ -505,7 +504,7 @@ abstract class Admin
      */
     static function deleteGalleryStorage(string $sql_cond): void
     {
-        $result = DB::query("SELECT full,(SELECT COUNT(*) FROM " . _gallery_image_table . " WHERE full=toptable.full) AS counter FROM " . _gallery_image_table . " AS toptable WHERE in_storage=1 AND (" . $sql_cond . ") HAVING counter=1");
+        $result = DB::query("SELECT full,(SELECT COUNT(*) FROM " . DB::table('gallery_image') . " WHERE full=toptable.full) AS counter FROM " . DB::table('gallery_image') . " AS toptable WHERE in_storage=1 AND (" . $sql_cond . ") HAVING counter=1");
         while($r = DB::row($result)) {
             @unlink(_root . $r['full']);
         }

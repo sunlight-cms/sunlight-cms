@@ -22,7 +22,7 @@ $id = Request::get('id');
 $new = $id === null;
 
 if (!$new) {
-    $box = DB::queryRow('SELECT * FROM ' . _box_table . ' WHERE id = ' . DB::val($id));
+    $box = DB::queryRow('SELECT * FROM ' . DB::table('box') . ' WHERE id = ' . DB::val($id));
     $new = false;
 } else {
     $box = [
@@ -106,7 +106,7 @@ if (isset($_POST['box_edit'])) do {
 
     // auto order
     if ($changeset['ord'] === '') {
-        $max_ord = DB::queryRow('SELECT MAX(ord) AS max_ord FROM ' . _box_table . ' WHERE template=' . DB::val($changeset['template']) . ' AND layout=' . DB::val($changeset['layout']));
+        $max_ord = DB::queryRow('SELECT MAX(ord) AS max_ord FROM ' . DB::table('box') . ' WHERE template=' . DB::val($changeset['template']) . ' AND layout=' . DB::val($changeset['layout']));
 
         if ($max_ord && $max_ord['max_ord']) {
             $changeset['ord'] = $max_ord['max_ord'] + 1;
@@ -117,9 +117,9 @@ if (isset($_POST['box_edit'])) do {
 
     // save or create
     if (!$new) {
-        DB::update(_box_table, 'id=' . DB::val($id), $changeset);
+        DB::update('box', 'id=' . DB::val($id), $changeset);
     } else {
-        $id = DB::insert(_box_table, $changeset, true);
+        $id = DB::insert('box', $changeset, true);
     }
 
     // redirect to form

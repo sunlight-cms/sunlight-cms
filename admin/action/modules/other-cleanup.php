@@ -54,18 +54,18 @@ if (isset($_POST['action'])) {
                 case 1:
                     $messages_time = time() - (Request::post('messages-time') * 7 * 24 * 60 * 60);
                     if ($prev) {
-                        $prev_count['mod.messages'] = DB::count(_pm_table, 'update_time<' . $messages_time);
+                        $prev_count['mod.messages'] = DB::count('pm', 'update_time<' . $messages_time);
                     } else {
-                        DB::query("DELETE " . _pm_table . ",post FROM " . _pm_table . " LEFT JOIN " . _post_table . " AS post ON (post.type=" . Post::PRIVATE_MSG . " AND post.home=" . _pm_table . ".id) WHERE update_time<" . $messages_time);
+                        DB::query("DELETE " . DB::table('pm') . ",post FROM " . DB::table('pm') . " LEFT JOIN " . DB::table('post') . " AS post ON (post.type=" . Post::PRIVATE_MSG . " AND post.home=" . DB::table('pm') . ".id) WHERE update_time<" . $messages_time);
                     }
                     break;
 
                 case 2:
                     if ($prev) {
-                        $prev_count['mod.messages'] = DB::count(_post_table, 'type=' . Post::PRIVATE_MSG);
+                        $prev_count['mod.messages'] = DB::count('post', 'type=' . Post::PRIVATE_MSG);
                     } else {
-                        DB::query("TRUNCATE TABLE " . _pm_table);
-                        DB::delete(_post_table, 'type=' . Post::PRIVATE_MSG);
+                        DB::query("TRUNCATE TABLE " . DB::table('pm'));
+                        DB::delete('post', 'type=' . Post::PRIVATE_MSG);
                     }
                     break;
 
@@ -74,16 +74,16 @@ if (isset($_POST['action'])) {
             // komentare, prispevky, iplog
             if (Form::loadCheckbox("comments")) {
                 if ($prev) {
-                    $prev_count['admin.settings.functions.comments'] = DB::count(_post_table, 'type=' . Post::SECTION_COMMENT . ' OR type=' . Post::ARTICLE_COMMENT);
+                    $prev_count['admin.settings.functions.comments'] = DB::count('post', 'type=' . Post::SECTION_COMMENT . ' OR type=' . Post::ARTICLE_COMMENT);
                 } else {
-                    DB::delete(_post_table, 'type=' . Post::SECTION_COMMENT . ' OR type=' . Post::ARTICLE_COMMENT);
+                    DB::delete('post', 'type=' . Post::SECTION_COMMENT . ' OR type=' . Post::ARTICLE_COMMENT);
                 }
             }
             if (Form::loadCheckbox("posts")) {
                 if ($prev) {
-                    $prev_count['global.posts'] = DB::count(_post_table, 'type IN(' . DB::arr([Post::BOOK_ENTRY, Post::SHOUTBOX_ENTRY, Post::FORUM_TOPIC]) . ')');
+                    $prev_count['global.posts'] = DB::count('post', 'type IN(' . DB::arr([Post::BOOK_ENTRY, Post::SHOUTBOX_ENTRY, Post::FORUM_TOPIC]) . ')');
                 } else {
-                    DB::deleteSet(_post_table, 'type', [
+                    DB::deleteSet('post', 'type', [
                         Post::BOOK_ENTRY,
                         Post::SHOUTBOX_ENTRY,
                         Post::FORUM_TOPIC
@@ -92,23 +92,23 @@ if (isset($_POST['action'])) {
             }
             if (Form::loadCheckbox("plugin_posts")) {
                 if ($prev) {
-                    $prev_count['admin.other.cleanup.other.plugin_posts.label'] = DB::count(_post_table, 'type=' . Post::PLUGIN);
+                    $prev_count['admin.other.cleanup.other.plugin_posts.label'] = DB::count('post', 'type=' . Post::PLUGIN);
                 } else {
-                    DB::delete(_post_table, 'type=' . Post::PLUGIN);
+                    DB::delete('post', 'type=' . Post::PLUGIN);
                 }
             }
             if (Form::loadCheckbox("iplog")) {
                 if ($prev) {
-                    $prev_count['admin.iplog'] = DB::count(_iplog_table);
+                    $prev_count['admin.iplog'] = DB::count('iplog');
                 } else {
-                    DB::query("TRUNCATE TABLE " . _iplog_table);
+                    DB::query("TRUNCATE TABLE " . DB::table('iplog'));
                 }
             }
             if (Form::loadCheckbox("user_activation")) {
                 if ($prev) {
-                    $prev_count['mod.reg.confirm'] = DB::count(_user_activation_table);
+                    $prev_count['mod.reg.confirm'] = DB::count('user_activation');
                 } else {
-                    DB::query("TRUNCATE TABLE " . _user_activation_table);
+                    DB::query("TRUNCATE TABLE " . DB::table('user_activation'));
                 }
             }
 
@@ -124,9 +124,9 @@ if (isset($_POST['action'])) {
                 }
 
                 if ($prev) {
-                    $prev_count['admin.users.users'] = DB::count(_user_table, 'id!=0 AND activitytime<' . $users_time . $users_group);
+                    $prev_count['admin.users.users'] = DB::count('user', 'id!=0 AND activitytime<' . $users_time . $users_group);
                 } else {
-                    $userids = DB::query("SELECT id FROM " . _user_table . " WHERE id!=0 AND activitytime<" . $users_time . $users_group);
+                    $userids = DB::query("SELECT id FROM " . DB::table('user') . " WHERE id!=0 AND activitytime<" . $users_time . $users_group);
                     while($userid = DB::row($userids)) {
                         User::delete($userid['id']);
                     }
@@ -174,7 +174,7 @@ if (isset($_POST['action'])) {
             $pass = Request::post('pass');
             $confirm = Form::loadCheckbox("confirm");
             if ($confirm) {
-                $right_pass = DB::queryRow("SELECT password FROM " . _user_table . " WHERE id=0");
+                $right_pass = DB::queryRow("SELECT password FROM " . DB::table('user') . " WHERE id=0");
                 if (Password::load($right_pass['password'])->match($pass)) {
 
                     // odhlaseni
@@ -271,8 +271,8 @@ $output .= $message . "
 <form class='cform' action='index.php?p=other-cleanup' method='post' autocomplete='off'>
 <input type='hidden' name='action' value='2'>
 <p class='bborder'>" . _lang('admin.other.cleanup.uninstall.p') . "</p>
-" . Admin::note(_lang('admin.other.cleanup.uninstall.note', ['%prefix%' => _dbprefix]), true, 'warn') . "
-<p><label><input type='checkbox' name='confirm' value='1'> " . _lang('admin.other.cleanup.uninstall.confirm', ['%dbname%' => _dbname]) . "</label></p>
+" . Admin::note(_lang('admin.other.cleanup.uninstall.note', ['%prefix%' => DB::$prefix]), true, 'warn') . "
+<p><label><input type='checkbox' name='confirm' value='1'> " . _lang('admin.other.cleanup.uninstall.confirm', ['%dbname%' => DB::$database]) . "</label></p>
 <p><strong>" . _lang('admin.other.cleanup.uninstall.pass') . ":</strong>  <input type='password' class='inputsmall' name='pass' autocomplete='off'></p>
 <input type='submit' value='" . _lang('global.do') . "' onclick='return Sunlight.confirm();'>
 " . Xsrf::getInput() . "</form>

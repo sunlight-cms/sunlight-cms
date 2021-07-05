@@ -2,7 +2,6 @@
 
 namespace SunlightExtend\Codemirror;
 
-use Sunlight\Admin\Admin;
 use Sunlight\Plugin\ExtendPlugin;
 use Sunlight\Settings;
 use Sunlight\User;

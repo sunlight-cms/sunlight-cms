@@ -48,7 +48,7 @@ return function ($limit = null, $stranky = "", $typ = null) {
     $userQuery = User::createQuery('post.author');
     $columns .= ',' . $userQuery['column_list'];
     $joins .= ' ' . $userQuery['joins'];
-    $query = DB::query("SELECT " . $columns . " FROM " . _post_table . " post " . $joins . " WHERE " . $cond . " ORDER BY id DESC LIMIT " . $limit);
+    $query = DB::query("SELECT " . $columns . " FROM " . DB::table('post') . " post " . $joins . " WHERE " . $cond . " ORDER BY id DESC LIMIT " . $limit);
 
     while ($item = DB::row($query)) {
         [$homelink, $hometitle] = Router::post($item);

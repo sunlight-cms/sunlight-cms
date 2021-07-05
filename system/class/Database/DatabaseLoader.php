@@ -26,7 +26,7 @@ abstract class DatabaseLoader
      * @param string|null $currentPrefix prefix that is used in the dump (null = do not replace)
      * @param string|null $newPrefix     new prefix (null = do not replace)
      */
-    static function load(SqlReader $reader, ?string $currentPrefix = null, ?string $newPrefix = _dbprefix): void
+    static function load(SqlReader $reader, ?string $currentPrefix = null, ?string $newPrefix = null): void
     {
         // determine current sql mode
         $oldSqlMode = DB::queryRow('SHOW VARIABLES WHERE Variable_name=\'sql_mode\'');

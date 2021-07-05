@@ -47,13 +47,13 @@ if (isset($_GET['new']) || isset($_GET['edit'])) {
                 $message = Message::warning(_lang('admin.content.redir.emptyidt'));
             } elseif ($new) {
                 // vytvoreni
-                DB::insert(_redirect_table, $q);
+                DB::insert('redirect', $q);
                 $new = false;
                 $message = Message::ok(_lang('global.created'));
                 break;
             } else {
                 // ulozeni
-                DB::update(_redirect_table, 'id=' . DB::val($edit_id), $q);
+                DB::update('redirect', 'id=' . DB::val($edit_id), $q);
                 $message = Message::ok(_lang('global.saved'));
             }
 
@@ -66,7 +66,7 @@ if (isset($_GET['new']) || isset($_GET['edit'])) {
             }
             $q += ['id' => null, 'old' => '', 'new' => '', 'permanent' => '0', 'active' => '1'];
         } else {
-            $q = DB::queryRow('SELECT * FROM ' . _redirect_table . ' WHERE id=' . $edit_id);
+            $q = DB::queryRow('SELECT * FROM ' . DB::table('redirect') . ' WHERE id=' . $edit_id);
             if ($q === false) {
                 break;
             }
@@ -107,14 +107,14 @@ if (isset($_GET['new']) || isset($_GET['edit'])) {
 } elseif (isset($_GET['del']) && Xsrf::check(true)) {
 
     // smazani
-    DB::delete(_redirect_table, 'id=' . DB::val(Request::get('del')));
+    DB::delete('redirect', 'id=' . DB::val(Request::get('del')));
     $output .= Message::ok(_lang('global.done'));
 
 } elseif (isset($_GET['wipe'])) {
 
     // smazani vsech
     if (isset($_POST['wipe_confirm'])) {
-        DB::query('TRUNCATE TABLE ' . _redirect_table);
+        DB::query('TRUNCATE TABLE ' . DB::table('redirect'));
         $output .= Message::ok(_lang('global.done'));
     } else {
         $output .= "
@@ -143,7 +143,7 @@ $output .= "<table class='list list-hover list-max'>
 
 // vypis
 $counter = 0;
-$q = DB::query('SELECT * FROM ' . _redirect_table);
+$q = DB::query('SELECT * FROM ' . DB::table('redirect'));
 while ($r = DB::row($q)) {
     $output .= "<tr>
         <td><code>" . $r['old'] . "</code></td>

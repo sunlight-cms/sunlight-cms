@@ -130,7 +130,7 @@ abstract class Page
         if ($extra_columns !== null) {
             $sql .= ',' . $extra_columns;
         }
-        $sql .= ' FROM ' . _page_table . ' AS page';
+        $sql .= ' FROM ' . DB::table('page') . ' AS page';
         if ($extra_joins !== null) {
             $sql .= ' ' . $extra_joins;
         }
@@ -187,7 +187,7 @@ abstract class Page
         $id = null;
         $data = null;
 
-        if (_env === Core::ENV_WEB) {
+        if (Core::$env === Core::ENV_WEB) {
             global $_index;
 
             if ($_index['type'] === _index_page) {
@@ -297,7 +297,7 @@ abstract class Page
             $columns = self::prepareTreeColumns($columns);
         }
 
-        return DB::queryRow('SELECT ' . DB::idtList($columns) . '  FROM ' . _page_table . ' WHERE id=' . DB::val($id));
+        return DB::queryRow('SELECT ' . DB::idtList($columns) . '  FROM ' . DB::table('page') . ' WHERE id=' . DB::val($id));
     }
 
     /**
@@ -308,7 +308,7 @@ abstract class Page
     static function getTreeManager(): TreeManager
     {
         if (self::$treeManager === null) {
-            self::$treeManager = new TreeManager(_page_table);
+            self::$treeManager = new TreeManager('page');
         }
 
         return self::$treeManager;
@@ -322,7 +322,7 @@ abstract class Page
     static function getTreeReader(): TreeReader
     {
         if (self::$treeReader === null) {
-            self::$treeReader = new TreeReader(_page_table);
+            self::$treeReader = new TreeReader('page');
         }
 
         return self::$treeReader;
@@ -349,7 +349,7 @@ abstract class Page
         }
 
         $columns = DB::idtList(array_merge(self::getTreeReader()->getSystemColumns(), self::prepareTreeColumns($extraColumns)));
-        $query = DB::query('SELECT ' . $columns . ' FROM ' . _page_table . ' WHERE ' . $where . ' ORDER BY ord');
+        $query = DB::query('SELECT ' . $columns . ' FROM ' . DB::table('page') . ' WHERE ' . $where . ' ORDER BY ord');
 
         $pages = [];
         while ($page = DB::row($query)) {

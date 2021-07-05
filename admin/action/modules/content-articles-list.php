@@ -18,8 +18,8 @@ defined('_root') or exit;
 $continue = false;
 if (isset($_GET['cat'])) {
     $cid = (int) Request::get('cat');
-    if (DB::count(_page_table, 'id=' . DB::val($cid) . ' AND type=' . Page::CATEGORY) !== 0) {
-        $catdata = DB::queryRow("SELECT title,var1,var2 FROM " . _page_table . " WHERE id=" . $cid);
+    if (DB::count('page', 'id=' . DB::val($cid) . ' AND type=' . Page::CATEGORY) !== 0) {
+        $catdata = DB::queryRow("SELECT title,var1,var2 FROM " . DB::table('page') . " WHERE id=" . $cid);
         $continue = true;
     }
 }
@@ -57,11 +57,11 @@ if ($continue) {
     }
 
     $cond = "(art.home1=" . $cid . " OR art.home2=" . $cid . " OR art.home3=" . $cid . ")" . Admin::articleAccess('art');
-    $paging = Paginator::render("index.php?p=content-articles-list&cat=" . $cid, $catdata['var2'] ?: Settings::get('articlesperpage'), _article_table . ':art', $cond);
+    $paging = Paginator::render("index.php?p=content-articles-list&cat=" . $cid, $catdata['var2'] ?: Settings::get('articlesperpage'), DB::table('article') . ':art', $cond);
     $s = $paging['current'];
     $output .= $paging['paging'] . $message . "\n<table class='list list-hover list-max'>\n<thead><tr><td>" . _lang('global.article') . "</td><td>" . _lang('article.author') . "</td><td>" . _lang('article.posted') . "</td><td>" . _lang('global.action') . "</td></tr></thead>\n<tbody>";
     $userQuery = User::createQuery('art.author');
-    $arts = DB::query("SELECT art.id,art.title,art.slug,art.time,art.confirmed,art.visible,art.public,cat.slug AS cat_slug," . $userQuery['column_list'] . " FROM " . _article_table . " AS art JOIN " . _page_table . " AS cat ON(cat.id=art.home1) " . $userQuery['joins'] . " WHERE " . $cond . " ORDER BY " . $artorder . " " . $paging['sql_limit']);
+    $arts = DB::query("SELECT art.id,art.title,art.slug,art.time,art.confirmed,art.visible,art.public,cat.slug AS cat_slug," . $userQuery['column_list'] . " FROM " . DB::table('article') . " AS art JOIN " . DB::table('page') . " AS cat ON(cat.id=art.home1) " . $userQuery['joins'] . " WHERE " . $cond . " ORDER BY " . $artorder . " " . $paging['sql_limit']);
     if (DB::size($arts) != 0) {
         while ($art = DB::row($arts)) {
             $output .= "<tr>

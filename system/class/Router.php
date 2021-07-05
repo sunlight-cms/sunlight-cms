@@ -81,7 +81,7 @@ abstract class Router
     {
         if ($id !== null) {
             if ($slug === null || $category_slug === null) {
-                $slug = DB::queryRow("SELECT art.slug AS art_ts, cat.slug AS cat_ts FROM " . _article_table . " AS art JOIN " . _page_table . " AS cat ON(cat.id=art.home1) WHERE art.id=" . $id);
+                $slug = DB::queryRow("SELECT art.slug AS art_ts, cat.slug AS cat_ts FROM " . DB::table('article') . " AS art JOIN " . DB::table('page') . " AS cat ON(cat.id=art.home1) WHERE art.id=" . $id);
                 if ($slug === false) {
                     $slug = ['---', '---'];
                 } else {
@@ -129,7 +129,7 @@ abstract class Router
     static function page(?int $id, ?string $slug = null, ?string $segment = null, bool $absolute = false): string
     {
         if ($id !== null && $slug === null) {
-            $slug = DB::queryRow("SELECT slug FROM " . _page_table . " WHERE id=" . DB::val($id));
+            $slug = DB::queryRow("SELECT slug FROM " . DB::table('page') . " WHERE id=" . DB::val($id));
             $slug = ($slug !== false ? $slug['slug'] : '---');
         }
 
@@ -211,7 +211,7 @@ abstract class Router
     static function topic(int $topic_id, ?string $forum_slug = null, bool $absolute = false): string
     {
         if ($forum_slug === null) {
-            $forum_slug = DB::queryRow('SELECT r.slug FROM ' . _page_table . ' r WHERE type=' . Page::FORUM . ' AND id=(SELECT p.home FROM ' . _post_table . ' p WHERE p.id=' . DB::val($topic_id) . ')');
+            $forum_slug = DB::queryRow('SELECT r.slug FROM ' . DB::table('page') . ' r WHERE type=' . Page::FORUM . ' AND id=(SELECT p.home FROM ' . DB::table('post') . ' p WHERE p.id=' . DB::val($topic_id) . ')');
             if ($forum_slug !== false) {
                 $forum_slug = $forum_slug['slug'];
             } else {
@@ -273,7 +273,7 @@ abstract class Router
             'color' => true,
             'icon' => true,
             'publicname' => true,
-            'new_window' => _env === Core::ENV_ADMIN,
+            'new_window' => Core::$env === Core::ENV_ADMIN,
             'max_len' => null,
             'class' => null,
             'title' => null,

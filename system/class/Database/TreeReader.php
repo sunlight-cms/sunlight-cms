@@ -23,7 +23,7 @@ class TreeReader
     private $depthColumn;
 
     /**
-     * @param string      $table         nazev tabulky (vcetne pripadneho prefixu a bez uvozovek)
+     * @param string      $table         nazev tabulky (bez prefixu)
      * @param string|null $childrenIndex nazev indexu pro kolekce potomku uzlu
      * @param string|null $idColumn      nazev sloupce pro id
      * @param string|null $parentColumn  nazev sloupce pro nadrazeny uzel
@@ -281,13 +281,13 @@ class TreeReader
             }
         }
 
-        $sql .= ' FROM `' . $this->table . '` r';
+        $sql .= ' FROM ' . DB::table($this->table) . ' r';
         $parentAlias = 'r';
         for ($i = 0; $i < $nodeDepth; ++$i) {
             $nodeAlias = 'n' . $i;
             $sql .= sprintf(
-                ' LEFT OUTER JOIN `%s` %s ON(%2$s.%s=%s.%s%s)',
-                $this->table,
+                ' LEFT OUTER JOIN %s %s ON(%2$s.%s=%s.%s%s)',
+                DB::table($this->table),
                 $nodeAlias,
                 $this->parentColumn,
                 $parentAlias,
@@ -511,10 +511,10 @@ class TreeReader
                 $sql .= 'n' . $i . '.' . $columns[$j];
             }
         }
-        $sql .= ' FROM `' . $this->table . '` n0';
+        $sql .= ' FROM ' . DB::table($this->table) . ' n0';
         for ($i = 1; $i <= $nodeLevel; ++$i) {
             $sql .= sprintf(
-                "\n JOIN `%s` n%s ON(n%2\$s.%s=n%s.%s)", $this->table, $i, $this->idColumn, $i - 1, $this->parentColumn
+                "\n JOIN %s n%s ON(n%2\$s.%s=n%s.%s)", DB::table($this->table), $i, $this->idColumn, $i - 1, $this->parentColumn
             );
         }
         $sql .= ' WHERE n0.' . $this->idColumn . '=' . DB::val($nodeId);
@@ -552,7 +552,7 @@ class TreeReader
         }
 
         // uzel
-        $data = DB::queryRow('SELECT ' . $this->levelColumn . ',' . $this->depthColumn . ' FROM `' . $this->table . '` WHERE ' . $this->idColumn . '=' . DB::val($nodeId));
+        $data = DB::queryRow('SELECT ' . $this->levelColumn . ',' . $this->depthColumn . ' FROM ' . DB::table($this->table) . ' WHERE ' . $this->idColumn . '=' . DB::val($nodeId));
         if ($data === false) {
             throw new \RuntimeException(sprintf('Node "%s" does not exist', $nodeId));
         }
@@ -575,7 +575,7 @@ class TreeReader
             return 0;
         }
 
-        $nodeLevel = DB::queryRow('SELECT ' . $this->levelColumn . ' FROM `' . $this->table . '` WHERE ' . $this->idColumn . '=' . DB::val($nodeId));
+        $nodeLevel = DB::queryRow('SELECT ' . $this->levelColumn . ' FROM ' . DB::table($this->table) . ' WHERE ' . $this->idColumn . '=' . DB::val($nodeId));
         if ($nodeLevel === false) {
             throw new \RuntimeException(sprintf('Node "%s" does not exist', $nodeId));
         }
@@ -592,9 +592,9 @@ class TreeReader
     function getDepth(?int $nodeId): ?int
     {
         if ($nodeId === null) {
-            $nodeDepth = DB::queryRow('SELECT MAX(' . $this->depthColumn . ') ' . $this->depthColumn . ' FROM `' . $this->table . '` WHERE ' . $this->levelColumn . '=0');
+            $nodeDepth = DB::queryRow('SELECT MAX(' . $this->depthColumn . ') ' . $this->depthColumn . ' FROM ' . DB::table($this->table) . ' WHERE ' . $this->levelColumn . '=0');
         } else {
-            $nodeDepth = DB::queryRow('SELECT ' . $this->depthColumn . ' FROM `' . $this->table . '` WHERE ' . $this->idColumn . '=' . DB::val($nodeId));
+            $nodeDepth = DB::queryRow('SELECT ' . $this->depthColumn . ' FROM ' . DB::table($this->table) . ' WHERE ' . $this->idColumn . '=' . DB::val($nodeId));
         }
 
         if ($nodeDepth === false) {

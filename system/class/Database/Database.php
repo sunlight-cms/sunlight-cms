@@ -11,8 +11,12 @@ use Sunlight\Extend;
  */
 class Database
 {
-    /** @var \mysqli|null */
-    private static $mysqli;
+    /** @var \mysqli */
+    static $mysqli;
+    /** @var string */
+    static $database;
+    /** @var string */
+    static $prefix;
 
     /**
      * Staticka trida
@@ -30,35 +34,28 @@ class Database
      * @param string      $database
      * @param string|null $port
      * @param string|null $charset
-     * @param string|null $sqlMode
-     * @return string|null null on success, error message on failure
+     * @throws DatabaseException on failure
      */
-    static function connect(string $server, string $user, string $password, string $database, ?string $port, ?string $charset = 'utf8mb4', ?string $sqlMode = ''): ?string
-    {
+    static function connect(
+        string $server,
+        string $user,
+        string $password,
+        string $database,
+        ?string $port,
+        string $prefix
+    ): void {
         $mysqli = @mysqli_connect($server, $user, $password, $database, $port);
         $connectError = mysqli_connect_error();
 
-        if ($connectError === null) {
-            if ($charset !== null) {
-                mysqli_set_charset($mysqli, $charset);
-            }
-
-            self::$mysqli = $mysqli;
-
-            if ($sqlMode !== null) {
-                self::query('SET SQL_MODE=' . self::val($sqlMode));
-            }
+        if ($connectError !== null) {
+            throw new DatabaseException($connectError);
         }
 
-        return $connectError;
-    }
+        mysqli_set_charset($mysqli, 'utf8mb4');
 
-    /**
-     * @return \mysqli|null
-     */
-    static function getMysqli(): ?\mysqli
-    {
-        return self::$mysqli;
+        self::$mysqli = $mysqli;
+        self::$database = $database;
+        self::$prefix = $prefix . '_';
     }
 
     /**
@@ -91,14 +88,6 @@ class Database
         } finally {
             $inTransaction = false;
         }
-    }
-
-    /**
-     * @param \mysqli $mysqli
-     */
-    static function setMysqli(\mysqli $mysqli): void
-    {
-        self::$mysqli = $mysqli;
     }
 
     /**
@@ -191,13 +180,13 @@ class Database
     /**
      * Spocitat pocet radku splnujici podminku
      *
-     * @param string $table nazev tabulky s prefixem
+     * @param string $table nazev tabulky (bez prefixu)
      * @param string $where podminka
      * @return int
      */
     static function count(string $table, string $where = '1'): int
     {
-        $result = self::query('SELECT COUNT(*) FROM ' . self::escIdt($table) . ' WHERE ' . $where);
+        $result = self::query('SELECT COUNT(*) FROM ' . self::table($table) . ' WHERE ' . $where);
         if ($result instanceof \mysqli_result) {
             $count = (int) self::result($result);
             self::free($result);
@@ -211,13 +200,13 @@ class Database
     /**
      * Ziskat nazvy tabulek dle prefixu
      *
-     * @param string $prefix
+     * @param string|null $prefix
      * @return array
      */
-    static function getTablesByPrefix(string $prefix = _dbprefix): array
+    static function getTablesByPrefix(?string $prefix = null): array
     {
         $tables = [];
-        $query = self::query('SHOW TABLES LIKE \'' . self::escWildcard($prefix) . '%\'');
+        $query = self::query('SHOW TABLES LIKE \'' . self::escWildcard($prefix ?? self::$prefix) . '%\'');
         while ($row = self::rown($query)) {
             $tables[] = $row[0];
         }
@@ -360,6 +349,14 @@ class Database
     static function affectedRows(): int
     {
         return self::$mysqli->affected_rows;
+    }
+
+    /**
+     * Get prefixed table name
+     */
+    static function table(string $name): string
+    {
+        return self::$prefix . $name;
     }
 
     /**
@@ -543,7 +540,7 @@ class Database
     /**
      * Vlozit radek do databaze
      *
-     * @param string $table       nazev tabulky s prefixem
+     * @param string $table       nazev tabulky (bez prefixu)
      * @param array  $data        asociativni pole s daty
      * @param bool   $getInsertId vratit insert ID 1/0
      * @return bool|int
@@ -565,7 +562,7 @@ class Database
             $val_list .= self::val($val);
             ++$counter;
         }
-        $result = self::query('INSERT INTO ' . self::escIdt($table) . " ({$col_list}) VALUES({$val_list})");
+        $result = self::query('INSERT INTO ' . self::table($table) . " ({$col_list}) VALUES({$val_list})");
         if ($result !== false && $getInsertId) {
             return self::insertID();
         }
@@ -586,7 +583,7 @@ class Database
      * Radky nemusi mit sloupce ve stejnem poradi ani jich mit stejny
      * pocet (hodnota sloupce je NULL, neni-li uveden oproti ostatnim radkum)
      *
-     * @param string $table nazev tabulky s prefixem
+     * @param string $table nazev tabulky (bez prefixu)
      * @param array  $rows  pole s radky, ktere se maji vlozit (kazdy radek je asociativni pole)
      * @return bool
      */
@@ -607,7 +604,7 @@ class Database
         }
 
         // sestavit dotaz
-        $sql = "INSERT INTO " . self::escIdt($table) . " (";
+        $sql = "INSERT INTO " . self::table($table) . " (";
 
         $columnCounter = 0;
         foreach ($columns as $column) {
@@ -644,7 +641,7 @@ class Database
     /**
      * Aktualizovat radky v databazi
      *
-     * @param string   $table nazev tabulky s prefixem
+     * @param string   $table nazev tabulky (bez prefixu)
      * @param string   $cond  podminka WHERE
      * @param array    $data  asociativni pole se zmenami
      * @param int|null $limit limit upravenych radku (null = bez limitu)
@@ -665,13 +662,13 @@ class Database
             ++$counter;
         }
 
-        return self::query('UPDATE ' . self::escIdt($table) . " SET {$set_list} WHERE {$cond}" . (($limit === null) ? '' : " LIMIT {$limit}"));
+        return self::query('UPDATE ' . self::table($table) . " SET {$set_list} WHERE {$cond}" . (($limit === null) ? '' : " LIMIT {$limit}"));
     }
 
     /**
      * Aktualizovat radky v databazi dle seznamu identifikatoru
      *
-     * @param string $table       nazev tabulky s prefixem
+     * @param string $table       nazev tabulky (bez prefixu)
      * @param string $idColumn    nazev sloupce, ktery obsahuje identifikator
      * @param array  $set         seznam identifikatoru
      * @param array  $changeset   spolecne asociativni pole se zmenami
@@ -696,7 +693,7 @@ class Database
      *
      * Pro popis formatu mapy, viz {@see Database::changesetMapToList()}
      *
-     * @param string $table        nazev tabulky s prefixem
+     * @param string $table        nazev tabulky (bez prefixu)
      * @param string $idColumn     nazev sloupce, ktery obsahuje identifikator
      * @param array  $changesetMap mapa zmen pro kazdy radek: array(id1 => changeset1, ...)
      * @param int    $maxPerQuery  maximalni pocet polozek v 1 dotazu
@@ -764,19 +761,19 @@ class Database
     /**
      * Smazat radky v databazi
      *
-     * @param string   $table nazev tabulky s prefixem
+     * @param string   $table nazev tabulky (bez prefixu)
      * @param string   $cond  podminka WHERE
      * @return bool
      */
     static function delete(string $table, string $cond): bool
     {
-        return self::query('DELETE FROM ' . self::escIdt($table) . " WHERE {$cond}");
+        return self::query('DELETE FROM ' . self::table($table) . " WHERE {$cond}");
     }
 
     /**
      * Smazat radku v databazi dle seznamu identifikatoru
      *
-     * @param string $table       nazev tabulky s prefixem
+     * @param string $table       nazev tabulky (bez prefixu)
      * @param string $column      nazev sloupce, ktery obsahuje identifikator
      * @param array  $set         seznam identifikatoru
      * @param int    $maxPerQuery maximalni pocet polozek v 1 dotazu
@@ -785,7 +782,7 @@ class Database
     {
         if (!empty($set)) {
             foreach (array_chunk($set, $maxPerQuery) as $chunk) {
-                self::query('DELETE FROM ' . self::escIdt($table) . ' WHERE ' . self::escIdt($column) . ' IN(' . self::arr($chunk) . ')');
+                self::query('DELETE FROM ' . self::table($table) . ' WHERE ' . self::escIdt($column) . ' IN(' . self::arr($chunk) . ')');
             }
         }
     }

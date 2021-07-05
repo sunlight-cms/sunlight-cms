@@ -20,7 +20,7 @@ if (!ctype_digit($_index['segment'])) {
 // nacteni dat
 $id = (int) $_index['segment'];
 $userQuery = User::createQuery('p.author');
-$query = DB::queryRow("SELECT p.*," . $userQuery['column_list'] . " FROM " . _post_table . " p " . $userQuery['joins'] . " WHERE p.id=" . $id . " AND p.type=" . Post::FORUM_TOPIC . " AND p.home=" . $_page['id'] . " AND p.xhome=-1");
+$query = DB::queryRow("SELECT p.*," . $userQuery['column_list'] . " FROM " . DB::table('post') . " p " . $userQuery['joins'] . " WHERE p.id=" . $id . " AND p.type=" . Post::FORUM_TOPIC . " AND p.home=" . $_page['id'] . " AND p.xhome=-1");
 if ($query === false) {
     $_index['type'] = _index_not_found;
     return;
@@ -53,7 +53,7 @@ $_index['url'] = Router::topic($id, $_page['slug']);
 // priprava zpetneho odkazu
 $_index['backlink'] = Router::page($_page['id'], $_page['slug']);
 if (!$query['sticky']) {
-    $_index['backlink'] = UrlHelper::appendParams($_index['backlink'], 'page=' . Paginator::getItemPage($_page['var1'], _post_table, "bumptime>" . $query['bumptime'] . " AND xhome=-1 AND type=" . Post::FORUM_TOPIC . " AND home=" . $_page['id']));
+    $_index['backlink'] = UrlHelper::appendParams($_index['backlink'], 'page=' . Paginator::getItemPage($_page['var1'], DB::table('post'), "bumptime>" . $query['bumptime'] . " AND xhome=-1 AND type=" . Post::FORUM_TOPIC . " AND home=" . $_page['id']));
 }
 
 // sprava tematu

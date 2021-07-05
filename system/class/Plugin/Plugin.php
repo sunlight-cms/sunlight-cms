@@ -360,7 +360,7 @@ abstract class Plugin
      */
     function getActionList(): array
     {
-        if (_env !== Core::ENV_ADMIN) {
+        if (Core::$env !== Core::ENV_ADMIN) {
             throw new \RuntimeException('Plugin actions require administration environment');
         }
 

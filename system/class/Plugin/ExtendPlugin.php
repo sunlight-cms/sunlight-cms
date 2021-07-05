@@ -23,8 +23,8 @@ class ExtendPlugin extends Plugin
                 $subscriber['priority']
             );
         }
-        if (_env === Core::ENV_WEB || _env === Core::ENV_ADMIN) {
-            foreach ($this->options['events.' . _env] as $subscriber) {
+        if (Core::$env === Core::ENV_WEB || Core::$env === Core::ENV_ADMIN) {
+            foreach ($this->options['events.' . Core::$env] as $subscriber) {
                 Extend::reg(
                     $subscriber['event'],
                     $subscriber['method'] !== null
@@ -44,8 +44,8 @@ class ExtendPlugin extends Plugin
         foreach ($this->options['scripts'] as $script) {
             $this->loadScript($script);
         }
-        if (_env === Core::ENV_WEB || _env === Core::ENV_ADMIN) {
-            foreach ($this->options['scripts.' . _env] as $script) {
+        if (Core::$env === Core::ENV_WEB || Core::$env === Core::ENV_ADMIN) {
+            foreach ($this->options['scripts.' . Core::$env] as $script) {
                 $this->loadScript($script);
             }
         }

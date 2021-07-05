@@ -142,7 +142,7 @@ abstract class User
                         ];
 
                         // fetch user data
-                        $userData = DB::queryRow('SELECT * FROM ' . _user_table . ' WHERE id=' . DB::val($cookie['id']));
+                        $userData = DB::queryRow('SELECT * FROM ' . DB::table('user') . ' WHERE id=' . DB::val($cookie['id']));
                         if ($userData === false) {
                             // user not found
                             $errorCode = 2;
@@ -188,7 +188,7 @@ abstract class User
 
             // fetch user data
             if (!$userData) {
-                $userData = DB::queryRow('SELECT * FROM ' . _user_table . ' WHERE id=' . DB::val($_SESSION['user_id']));
+                $userData = DB::queryRow('SELECT * FROM ' . DB::table('user') . ' WHERE id=' . DB::val($_SESSION['user_id']));
                 if ($userData === false) {
                     // user not found
                     $errorCode = 6;
@@ -211,7 +211,7 @@ abstract class User
             }
 
             // fetch group data
-            $groupData = DB::queryRow('SELECT * FROM ' . _user_group_table . ' WHERE id=' . DB::val($userData['group_id']));
+            $groupData = DB::queryRow('SELECT * FROM ' . DB::table('user_group') . ' WHERE id=' . DB::val($userData['group_id']));
             if ($groupData === false) {
                 // group data not found
                 $errorCode = 9;
@@ -238,7 +238,7 @@ abstract class User
 
             // record activity time (max once per 30 seconds)
             if (time() - $userData['activitytime'] > 30) {
-                DB::update(_user_table, 'id=' . DB::val($userData['id']), [
+                DB::update('user', 'id=' . DB::val($userData['id']), [
                     'activitytime' => time(),
                     'ip' => _user_ip,
                 ]);
@@ -256,7 +256,7 @@ abstract class User
             self::$group = $groupData;
         } else {
             // guest
-            $groupData = DB::queryRow('SELECT * FROM ' . _user_group_table . ' WHERE id=' . User::GUEST_GROUP_ID);
+            $groupData = DB::queryRow('SELECT * FROM ' . DB::table('user_group') . ' WHERE id=' . User::GUEST_GROUP_ID);
             if ($groupData === false) {
                 throw new \RuntimeException(sprintf('Anonymous user group was not found (id=%s)', User::GUEST_GROUP_ID));
             }
@@ -342,12 +342,12 @@ abstract class User
             if ($getTopmost && self::hasPrivilege('fileadminaccess')) {
                 $homeDir = _root;
             } else {
-                $homeDir = _upload_dir;
+                $homeDir = _root . '/upload';
             }
         } else {
             $subPath = 'home/' . self::getUsername() . '/';
             Extend::call('user.home_dir', ['subpath' => &$subPath]);
-            $homeDir = _upload_dir . $subPath;
+            $homeDir = _root . 'upload/' . $subPath;
         }
 
         return $homeDir;
@@ -522,7 +522,7 @@ abstract class User
             $where .= ' AND id!=' . DB::val($ignoredUserId);
         }
 
-        return DB::count(_user_table, $where) === 0;
+        return DB::count('user', $where) === 0;
     }
 
     /**
@@ -536,7 +536,7 @@ abstract class User
             $where .= ' AND id!=' . DB::val($ignoredUserId);
         }
 
-        return DB::count(_user_table, $where) === 0;
+        return DB::count('user', $where) === 0;
     }
 
     /**
@@ -578,9 +578,9 @@ abstract class User
         // joiny
         $joins = [];
         if ($joinUserIdColumn !== null) {
-            $joins[] = 'LEFT JOIN ' . _user_table . " {$alias} ON({$joinUserIdColumn}" . DB::notEqual($emptyValue) . " AND {$joinUserIdColumn}={$alias}.id)";
+            $joins[] = 'LEFT JOIN ' . DB::table('user') . " {$alias} ON({$joinUserIdColumn}" . DB::notEqual($emptyValue) . " AND {$joinUserIdColumn}={$alias}.id)";
         }
-        $joins[] = 'LEFT JOIN ' . _user_group_table . " {$groupAlias} ON({$groupAlias}.id={$alias}.group_id)";
+        $joins[] = 'LEFT JOIN ' . DB::table('user_group') . " {$groupAlias} ON({$groupAlias}.id={$alias}.group_id)";
 
         // extend
         Extend::call('user.query', [
@@ -625,7 +625,7 @@ abstract class User
         if ($id == User::SUPER_ADMIN_ID) {
             return false;
         }
-        $udata = DB::queryRow("SELECT avatar FROM " . _user_table . " WHERE id=" . $id);
+        $udata = DB::queryRow("SELECT avatar FROM " . DB::table('user') . " WHERE id=" . $id);
         if ($udata === false) {
             return false;
         }
@@ -638,14 +638,14 @@ abstract class User
         }
 
         // vyresit vazby
-        DB::delete(_user_table, 'id=' . $id);
-        DB::query("DELETE " . _pm_table . ",post FROM " . _pm_table . " LEFT JOIN " . _post_table . " AS post ON (post.type=" . Post::PRIVATE_MSG . " AND post.home=" . _pm_table . ".id) WHERE receiver=" . $id . " OR sender=" . $id);
-        DB::update(_post_table, 'author=' . $id, [
+        DB::delete('user', 'id=' . $id);
+        DB::query("DELETE " . DB::table('pm') . ",post FROM " . DB::table('pm') . " LEFT JOIN " . DB::table('post') . " AS post ON (post.type=" . Post::PRIVATE_MSG . " AND post.home=" . DB::table('pm') . ".id) WHERE receiver=" . $id . " OR sender=" . $id);
+        DB::update('post', 'author=' . $id, [
             'guest' => sprintf('%x', crc32((string) $id)),
             'author' => -1,
         ]);
-        DB::update(_article_table, 'author=' . $id, ['author' => User::SUPER_ADMIN_ID]);
-        DB::update(_poll_table, 'author=' . $id, ['author' => User::SUPER_ADMIN_ID]);
+        DB::update('article', 'author=' . $id, ['author' => User::SUPER_ADMIN_ID]);
+        DB::update('poll', 'author=' . $id, ['author' => User::SUPER_ADMIN_ID]);
 
         // odstraneni uploadovaneho avataru
         if (isset($udata['avatar'])) {
@@ -711,7 +711,7 @@ abstract class User
         // titulek
         if ($title) {
             $title_text = _lang($required ? (self::isLoggedIn() ? 'global.accessdenied' : 'login.required.title') : 'login.title');
-            if (_env === Core::ENV_ADMIN) {
+            if (Core::$env === Core::ENV_ADMIN) {
                 $output .= '<h1>' . $title_text . "</h1>\n";
             } else {
                 $GLOBALS['_index']['title'] = $title_text;
@@ -787,7 +787,7 @@ abstract class User
             // odkazy
             if (!$embedded) {
                 $links = [];
-                if (Settings::get('registration') && _env === Core::ENV_WEB) {
+                if (Settings::get('registration') && Core::$env === Core::ENV_WEB) {
                     $links['reg'] = ['url' => Router::module('reg'), 'text' => _lang('mod.reg')];
                 }
                 if (Settings::get('lostpass')) {
@@ -899,7 +899,7 @@ abstract class User
             $cond = 'u.username=' . DB::val($username) . ' OR u.publicname=' . DB::val($username);
         }
 
-        $query = DB::queryRow("SELECT u.id,u.username,u.email,u.logincounter,u.password,u.blocked,g.blocked group_blocked FROM " . _user_table . " u JOIN " . _user_group_table . " g ON(u.group_id=g.id) WHERE " . $cond);
+        $query = DB::queryRow("SELECT u.id,u.username,u.email,u.logincounter,u.password,u.blocked,g.blocked group_blocked FROM " . DB::table('user') . " u JOIN " . DB::table('user_group') . " g ON(u.group_id=g.id) WHERE " . $cond);
         if ($query === false) {
             // uzivatel nenalezen
             return 0;
@@ -937,7 +937,7 @@ abstract class User
             $changeset['password'] = $query['password'] = $password->build();
         }
 
-        DB::update(_user_table, 'id=' . DB::val($query['id']), $changeset);
+        DB::update('user', 'id=' . DB::val($query['id']), $changeset);
 
         // extend udalost
         Extend::call('user.login', ['user' => $query]);
@@ -1009,7 +1009,7 @@ abstract class User
         static $result = null;
 
         if ($result === null) {
-            $result = DB::count(_pm_table, "(receiver=" . self::getId() . " AND receiver_deleted=0 AND receiver_readtime<update_time) OR (sender=" . self::getId() . " AND sender_deleted=0 AND sender_readtime<update_time)");
+            $result = DB::count('pm', "(receiver=" . self::getId() . " AND receiver_deleted=0 AND receiver_readtime<update_time) OR (sender=" . self::getId() . " AND sender_deleted=0 AND sender_readtime<update_time)");
         }
 
         return (int) $result;
