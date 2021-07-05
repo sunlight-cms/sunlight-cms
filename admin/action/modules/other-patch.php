@@ -8,7 +8,7 @@ use Sunlight\Util\Environment;
 use Sunlight\VersionChecker;
 use Sunlight\Xsrf;
 
-defined('_root') or exit;
+defined('SL_ROOT') or exit;
 
 $version_data = VersionChecker::check();
 

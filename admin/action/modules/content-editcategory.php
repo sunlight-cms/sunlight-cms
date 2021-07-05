@@ -3,12 +3,12 @@
 use Sunlight\Page\Page;
 use Sunlight\Util\Form;
 
-defined('_root') or exit;
+defined('SL_ROOT') or exit;
 
 /* ---  nastaveni a vlozeni skriptu pro upravu stranky  --- */
 
 $type = Page::CATEGORY;
-require _root . 'admin/action/modules/include/page-editscript-init.php';
+require SL_ROOT . 'admin/action/modules/include/page-editscript-init.php';
 if ($continue) {
 
     // vyber zpusobu razeni clanku
@@ -36,4 +36,4 @@ if ($continue) {
         'var4' => ['type' => 'bool', 'nullable' => false],
     ];
 }
-require _root . 'admin/action/modules/include/page-editscript.php';
+require SL_ROOT . 'admin/action/modules/include/page-editscript.php';

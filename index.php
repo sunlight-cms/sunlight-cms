@@ -94,7 +94,7 @@ if (empty($_POST) || Xsrf::check()) {
 
         Extend::call('mod.init');
 
-        require _root . 'system/action/module.php';
+        require SL_ROOT . 'system/action/module.php';
 
     } elseif (!User::isLoggedIn() && Settings::get('notpublicsite')) {
 
@@ -143,12 +143,12 @@ if (empty($_POST) || Xsrf::check()) {
 
         // vykreslit stranku
         $_index['type'] = _index_page;
-        require _root . 'system/action/page.php';
+        require SL_ROOT . 'system/action/page.php';
 
     } while (false);
 } else {
     // spatny XSRF token
-    require _root . 'system/action/xsrf_error.php';
+    require SL_ROOT . 'system/action/xsrf_error.php';
 }
 
 /* ----  vystup  ---- */
@@ -165,12 +165,12 @@ switch ($_index['type']) {
 
     case _index_not_found:
         // stranka nenelezena
-        require _root . 'system/action/not_found.php';
+        require SL_ROOT . 'system/action/not_found.php';
         break;
 
     case _index_unauthorized:
         // pristup odepren
-        require _root . 'system/action/login_required.php';
+        require SL_ROOT . 'system/action/login_required.php';
         break;
 }
 

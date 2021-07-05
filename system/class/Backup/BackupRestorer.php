@@ -80,7 +80,7 @@ class BackupRestorer
 
         // verify files
         foreach ($files as $file) {
-            if (is_file($file) && !is_writable(_root . $file)) {
+            if (is_file($file) && !is_writable(SL_ROOT . $file)) {
                 $errors[] = sprintf('cannot write to "%s", please check privileges', $file);
             }
         }
@@ -127,7 +127,7 @@ class BackupRestorer
         }
 
         // filesystem cleanup
-        $systemRealPath = realpath(_root . 'system');
+        $systemRealPath = realpath(SL_ROOT . 'system');
 
         foreach ($directoriesToPurge as $directory) {
             if (realpath($directory) === $systemRealPath) {
@@ -151,12 +151,12 @@ class BackupRestorer
 
         // extract directories
         if (!empty($directories)) {
-            $this->backup->extractDirectories($directories, _root);
+            $this->backup->extractDirectories($directories, SL_ROOT);
         }
 
         // extract files
         if (!empty($files)) {
-            $this->backup->extractFiles($files, _root);
+            $this->backup->extractFiles($files, SL_ROOT);
         }
 
         // clear cache
@@ -191,7 +191,7 @@ class BackupRestorer
     /**
      * @param string[]      $paths
      * @param string[]|null $allowedValues      list of allowed values in $paths
-     * @param bool          $addRootPath        prefix normalized paths with _root 1/0
+     * @param bool          $addRootPath        prefix normalized paths with SL_ROOT 1/0
      * @param bool          $excludeNonexistent skip nonexistent paths 1/0
      * @return array
      */
@@ -204,14 +204,14 @@ class BackupRestorer
         $normalizedPaths = [];
 
         foreach ($paths as $path) {
-            if ($excludeNonexistent && !file_exists(_root . $path)) {
+            if ($excludeNonexistent && !file_exists(SL_ROOT . $path)) {
                 continue;
             }
 
             $normalizedPath = $path;
 
             if ($addRootPath) {
-                $normalizedPath = _root . $normalizedPath;
+                $normalizedPath = SL_ROOT . $normalizedPath;
             }
 
             $normalizedPaths[] = $normalizedPath;
@@ -223,10 +223,10 @@ class BackupRestorer
     private function preloadAllSystemClasses(): void
     {
         $paths = [
-            _root . 'system/class',
-            _root . 'vendor/kuria/debug/src',
-            _root . 'vendor/kuria/error/src',
-            _root . 'vendor/kuria/event/src',
+            SL_ROOT . 'system/class',
+            SL_ROOT . 'vendor/kuria/debug/src',
+            SL_ROOT . 'vendor/kuria/error/src',
+            SL_ROOT . 'vendor/kuria/event/src',
         ];
 
         foreach ($paths as $path) {
@@ -245,7 +245,7 @@ class BackupRestorer
             'cache' => true, // will be cleared at the end of restore()
         ];
 
-        foreach (Filesystem::createIterator(_root . 'system') as $item) {
+        foreach (Filesystem::createIterator(SL_ROOT . 'system') as $item) {
             if ($item->isDir()) {
                 if (!isset($preservedDirMap[$item->getFilename()])) {
                     Filesystem::purgeDirectory($item->getPathname());

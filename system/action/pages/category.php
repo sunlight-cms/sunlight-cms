@@ -9,7 +9,7 @@ use Sunlight\Paginator;
 use Sunlight\Settings;
 use Sunlight\User;
 
-defined('_root') or exit;
+defined('SL_ROOT') or exit;
 
 // vychozi nastaveni
 if ($_page['var2'] === null) {
@@ -18,7 +18,7 @@ if ($_page['var2'] === null) {
 
 // zobrazeni clanku?
 if ($_index['segment'] !== null) {
-    require _root . 'system/action/pages/include/article.php';
+    require SL_ROOT . 'system/action/pages/include/article.php';
     return;
 }
 

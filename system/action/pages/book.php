@@ -6,7 +6,7 @@ use Sunlight\Hcm;
 use Sunlight\Settings;
 use Sunlight\User;
 
-defined('_root') or exit;
+defined('SL_ROOT') or exit;
 
 // vychozi nastaveni
 if ($_page['var2'] === null) {

@@ -3,7 +3,7 @@
 use Sunlight\GenericTemplates;
 
 return function ($soubor = '') {
-    $soubor = _root . $soubor;
+    $soubor = SL_ROOT . $soubor;
 
     if (file_exists($soubor)) {
         return GenericTemplates::renderFileSize(filesize($soubor));

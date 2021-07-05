@@ -5,7 +5,7 @@ use Sunlight\Extend;
 use Sunlight\Hcm;
 use Sunlight\Settings;
 
-defined('_root') or exit;
+defined('SL_ROOT') or exit;
 
 // titulek
 $_index['title'] = $_page['title'];

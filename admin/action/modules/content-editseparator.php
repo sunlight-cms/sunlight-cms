@@ -2,12 +2,12 @@
 
 use Sunlight\Page\Page;
 
-defined('_root') or exit;
+defined('SL_ROOT') or exit;
 
 /* ---  nastaveni a vlozeni skriptu pro upravu stranky  --- */
 
 $type = Page::SEPARATOR;
-require _root . 'admin/action/modules/include/page-editscript-init.php';
+require SL_ROOT . 'admin/action/modules/include/page-editscript-init.php';
 
 if ($continue) {
     $editscript_enable_content = false;
@@ -22,4 +22,4 @@ if ($continue) {
     $editscript_enable_access = false;
 }
 
-require _root . 'admin/action/modules/include/page-editscript.php';
+require SL_ROOT . 'admin/action/modules/include/page-editscript.php';

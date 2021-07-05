@@ -5,7 +5,7 @@ use Sunlight\Router;
 use Sunlight\Settings;
 use Sunlight\Util\StringManipulator;
 
-defined('_root') or exit;
+defined('SL_ROOT') or exit;
 
 $_index['url'] = Router::module($_index['slug'], $_url->getQueryString());
 
@@ -22,7 +22,7 @@ if (Settings::get('pretty_urls') && !$_index['is_rewritten']) {
 $script = null;
 if (preg_match('{[a-zA-Z_\-.]+$}AD', $_index['slug'])) {
     // test, zda se jedna o systemovy modul
-    $systemModule = _root . 'system/action/modules/' . $_index['slug'] . '.php';
+    $systemModule = SL_ROOT . 'system/action/modules/' . $_index['slug'] . '.php';
 
     if (is_file($systemModule)) {
         $script = $systemModule;

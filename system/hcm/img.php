@@ -7,7 +7,7 @@ use Sunlight\Image\ImageTransformer;
 use Sunlight\Router;
 
 return function ($cesta = '', $rozmery = '', $titulek = null, $lightbox = null) {
-    $cesta = _root . $cesta;
+    $cesta = SL_ROOT . $cesta;
     $thumb = ImageService::getThumbnail('hcm.img', $cesta, ImageTransformer::parseResizeOptions($rozmery));
 
     return "<a href='" . _e(Router::file($cesta)) . "'"

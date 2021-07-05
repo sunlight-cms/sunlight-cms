@@ -4,7 +4,7 @@ use Sunlight\Extend;
 use Sunlight\User;
 use Sunlight\Util\Response;
 
-defined('_root') or exit;
+defined('SL_ROOT') or exit;
 
 $_index['title'] = _lang('login.required.title');
 $_index['output'] = '';

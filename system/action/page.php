@@ -10,7 +10,7 @@ use Sunlight\Util\ArgList;
 use Sunlight\Util\StringManipulator;
 use Sunlight\Util\UrlHelper;
 
-defined('_root') or exit;
+defined('SL_ROOT') or exit;
 
 // nacteni dat stranky
 $_page = Page::find($segments);
@@ -138,7 +138,7 @@ if ($_page['type'] == Page::PLUGIN) {
     }
 } else {
     // ostatni typy
-    $script = _root . 'system/action/pages/' . $type_name . '.php';
+    $script = SL_ROOT . 'system/action/pages/' . $type_name . '.php';
 }
 
 // vykresleni stranky

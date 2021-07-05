@@ -14,7 +14,7 @@ use Sunlight\User;
 use Sunlight\Util\UrlHelper;
 use Sunlight\Xsrf;
 
-defined('_root') or exit;
+defined('SL_ROOT') or exit;
 
 // nacteni dat
 $_article = Article::find($_index['segment'], $_page['id']);

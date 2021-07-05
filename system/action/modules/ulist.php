@@ -8,7 +8,7 @@ use Sunlight\User;
 use Sunlight\Util\Arr;
 use Sunlight\Util\Form;
 
-defined('_root') or exit;
+defined('SL_ROOT') or exit;
 
 if (!User::isLoggedIn() && Settings::get('notpublicsite')) {
     $_index['type'] = _index_unauthorized;

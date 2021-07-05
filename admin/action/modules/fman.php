@@ -16,7 +16,7 @@ use Sunlight\Util\Response;
 use Sunlight\Util\StringManipulator;
 use Sunlight\Xsrf;
 
-defined('_root') or exit;
+defined('SL_ROOT') or exit;
 
 /* ----  priprava funkci  ---- */
 
@@ -640,7 +640,7 @@ if ($continue) {
     <a href='" . $url . "&amp;a=newfolder'>" . _lang('admin.fman.menu.createfolder') . "</a>
     " . ((User::hasPrivilege('admingallery') && User::hasPrivilege('admincontent')) ? "<a href='#' onclick='return Sunlight.admin.fmanAddSelectedToGallery()'>" . _lang('admin.fman.menu.addtogallery') . "</a>" : '') . "
     <a href='" . $url_base . "dir=" . rawurlencode($defdir) . "'>" . _lang('admin.fman.menu.home') . "</a>
-    <strong>" . _lang('admin.fman.currentdir') . ":</strong> " . substr($dir, strlen(_root)) . "
+    <strong>" . _lang('admin.fman.currentdir') . ":</strong> " . substr($dir, strlen(SL_ROOT)) . "
     </p>
 
     " . $action_code;

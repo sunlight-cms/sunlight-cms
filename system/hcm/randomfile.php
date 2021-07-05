@@ -9,7 +9,7 @@ use Sunlight\Router;
 
 return function ($cesta = "", $typ = 'text', $pocet = 1, $rozmery_nahledu = null) {
     $result = "";
-    $cesta = _root . $cesta;
+    $cesta = SL_ROOT . $cesta;
     if (mb_substr($cesta, -1, 1) != "/") {
         $cesta .= "/";
     }

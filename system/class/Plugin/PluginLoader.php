@@ -52,7 +52,7 @@ class PluginLoader
         $autoload = array_fill_keys(['psr-0', 'psr-4', 'classmap', 'files'], []);
         $boundFiles = [];
 
-        $composerInjector = new RepositoryInjector(new Repository(realpath(_root . '/composer.json')));
+        $composerInjector = new RepositoryInjector(new Repository(realpath(SL_ROOT . '/composer.json')));
         $typeNames = array_keys($this->types);
 
         $plugins = $this->findPlugins($boundFiles);
@@ -98,7 +98,7 @@ class PluginLoader
         foreach ($this->types as $typeName => $type) {
             $plugins[$typeName] = [];
 
-            $dir = _root . $type->getDir();
+            $dir = SL_ROOT . $type->getDir();
 
             // scan directory
             foreach (scandir($dir) as $item) {

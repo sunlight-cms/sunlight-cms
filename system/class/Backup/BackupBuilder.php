@@ -428,7 +428,7 @@ class BackupBuilder
                     $backup->addPath($path, function ($dataPath) {
                         return $this->filterPath($dataPath, false, true);
                     });
-                } elseif (is_dir(_root . $path)) {
+                } elseif (is_dir(SL_ROOT . $path)) {
                     $backup->addEmptyDirectory($path);
                 }
             }
@@ -521,7 +521,7 @@ class BackupBuilder
      */
     static function generateConfigFile(): string
     {
-        $phpFileBuilder = PhpTemplate::fromFile(_root . 'system/config_template.php');
+        $phpFileBuilder = PhpTemplate::fromFile(SL_ROOT . 'system/config_template.php');
 
         return $phpFileBuilder->compile([
             'db.prefix' => substr(DB::$prefix, 0, -1),

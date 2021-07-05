@@ -9,7 +9,7 @@ use Sunlight\Settings;
 use Sunlight\User;
 use Sunlight\VersionChecker;
 
-defined('_root') or exit;
+defined('SL_ROOT') or exit;
 
 /* ---  priprava promennych  --- */
 

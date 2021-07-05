@@ -3,7 +3,7 @@
 use Sunlight\Message;
 use Sunlight\User;
 
-defined('_root') or exit;
+defined('SL_ROOT') or exit;
 
 $_index['title'] = _lang('xsrf.title');
 $_index['output'] = '';

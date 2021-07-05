@@ -445,7 +445,7 @@ class PageManipulator
                 case Page::GALLERY:
                     Admin::deleteGalleryStorage('home=' . $page['id']);
                     DB::delete('gallery_image', 'home=' . $page['id']);
-                    @rmdir(_root . 'images/galleries/' . $page['id']);
+                    @rmdir(SL_ROOT . 'images/galleries/' . $page['id']);
                     break;
 
                     // prispevky ve forech

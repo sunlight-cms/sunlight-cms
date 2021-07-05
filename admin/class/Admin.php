@@ -506,7 +506,7 @@ abstract class Admin
     {
         $result = DB::query("SELECT full,(SELECT COUNT(*) FROM " . DB::table('gallery_image') . " WHERE full=toptable.full) AS counter FROM " . DB::table('gallery_image') . " AS toptable WHERE in_storage=1 AND (" . $sql_cond . ") HAVING counter=1");
         while($r = DB::row($result)) {
-            @unlink(_root . $r['full']);
+            @unlink(SL_ROOT . $r['full']);
         }
     }
 

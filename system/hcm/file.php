@@ -1,7 +1,7 @@
 <?php
 
 return function ($soubor = '') {
-    $soubor = _root . $soubor;
+    $soubor = SL_ROOT . $soubor;
 
     if (
         in_array(pathinfo($soubor, PATHINFO_EXTENSION), ['txt', 'htm', 'html'])

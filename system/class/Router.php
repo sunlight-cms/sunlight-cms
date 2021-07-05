@@ -46,7 +46,7 @@ abstract class Router
         static $realRootPath = null, $realRootPathLength = null;
 
         if ($realRootPath === null) {
-            $realRootPath = realpath(_root) . DIRECTORY_SEPARATOR;
+            $realRootPath = realpath(SL_ROOT) . DIRECTORY_SEPARATOR;
             $realRootPathLength = strlen($realRootPath);
         }
 

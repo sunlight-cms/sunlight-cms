@@ -11,7 +11,7 @@ use Sunlight\Settings;
 use Sunlight\User;
 use Sunlight\Util\Request;
 
-defined('_root') or exit;
+defined('SL_ROOT') or exit;
 
 /* ---  nacteni promennych  --- */
 

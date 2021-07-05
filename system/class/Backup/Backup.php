@@ -196,7 +196,7 @@ class Backup
      */
     function addPath(string $path, ?callable $filter = null, bool $addRootFileToFileList = true): void
     {
-        $realPath = _root . $path;
+        $realPath = SL_ROOT . $path;
 
         if (file_exists($realPath)) {
             if (is_dir($realPath)) {
@@ -217,8 +217,8 @@ class Backup
     {
         $this->ensureOpenAndNew();
 
-        $basePath = _root . $path;
-        $rootPathInfo = new \SplFileInfo(_root);
+        $basePath = SL_ROOT . $path;
+        $rootPathInfo = new \SplFileInfo(SL_ROOT);
         $filePathNamePrefixLength = strlen($rootPathInfo->getPathname()) + 1;
 
         $iterator = Filesystem::createRecursiveIterator($basePath);

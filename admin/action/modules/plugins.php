@@ -6,7 +6,7 @@ use Sunlight\Plugin\InactivePlugin;
 use Sunlight\Plugin\Plugin;
 use Sunlight\Xsrf;
 
-defined('_root') or exit;
+defined('SL_ROOT') or exit;
 
 // vycisteni cache
 if (isset($_GET['clear'])) {

@@ -1,6 +1,6 @@
 <?php
 use Sunlight\Template;
-defined('_root') or exit
+defined('SL_ROOT') or exit
 ?>
 
 <div id="wrapper">

@@ -12,7 +12,7 @@ return function ($cesta = '', $rozmery = '', $strankovani = null, $lightbox = tr
 
     // priprava
     $result = "";
-    $cesta = _root . $cesta;
+    $cesta = SL_ROOT . $cesta;
     if (mb_substr($cesta, -1, 1) != "/") {
         $cesta .= "/";
     }

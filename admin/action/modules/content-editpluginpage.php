@@ -4,13 +4,13 @@ use Sunlight\Extend;
 use Sunlight\Message;
 use Sunlight\Page\Page;
 
-defined('_root') or exit;
+defined('SL_ROOT') or exit;
 
 /* ---  nastaveni a vlozeni skriptu pro upravu stranky  --- */
 
 // inicializace editscriptu
 $type = Page::PLUGIN;
-require _root . 'admin/action/modules/include/page-editscript-init.php';
+require SL_ROOT . 'admin/action/modules/include/page-editscript-init.php';
 if (!$continue) {
     $output .= Message::error(_lang('global.badinput'));
     return;
@@ -42,4 +42,4 @@ Extend::call('admin.page.plugin.' . $type_idt . '.edit', Extend::args($output, [
 
 // vlozeni skriptu
 $custom_save_array['type_idt'] = ['type' => 'raw', 'nullable' => false];
-require _root . 'admin/action/modules/include/page-editscript.php';
+require SL_ROOT . 'admin/action/modules/include/page-editscript.php';

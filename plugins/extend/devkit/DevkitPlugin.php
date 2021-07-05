@@ -109,7 +109,7 @@ class DevkitPlugin extends ExtendPlugin
             $headerString .= sprintf("%s: %s\n", $headerName, $headerValue);
         }
 
-        file_put_contents(_root . 'mail.log', <<<ENTRY
+        file_put_contents(SL_ROOT . 'mail.log', <<<ENTRY
 Time: {$time}
 Recipient: {$args['to']}
 Subject: {$args['subject']}

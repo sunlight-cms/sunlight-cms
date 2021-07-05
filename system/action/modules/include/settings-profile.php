@@ -12,7 +12,7 @@ use Sunlight\Util\Form;
 use Sunlight\Util\Request;
 use Sunlight\Util\StringManipulator;
 
-defined('_root') or exit;
+defined('SL_ROOT') or exit;
 
 $avatarLimits = [
     'filesize' => 3000000,

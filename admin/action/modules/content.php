@@ -8,7 +8,7 @@ use Sunlight\User;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
 
-defined('_root') or exit;
+defined('SL_ROOT') or exit;
 
 /* ---  priprava  --- */
 

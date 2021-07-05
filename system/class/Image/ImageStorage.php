@@ -7,7 +7,7 @@ final class ImageStorage
     /**
      * Get path to an image
      *
-     * @param string $directory path to the storage directory (relative to _root), including a trailing slash
+     * @param string $directory path to the storage directory (relative to SL_ROOT), including a trailing slash
      * @param string $id image identifier
      * @param string $format image format
      * @param int $partitions number of 2-character sub-directories to create from $id
@@ -15,13 +15,13 @@ final class ImageStorage
      */
     static function getPath(string $directory, string $id, string $format, int $partitions = 0): string
     {
-        return _root . self::getWebPath($directory, $id, $format, $partitions);
+        return SL_ROOT . self::getWebPath($directory, $id, $format, $partitions);
     }
 
     /**
      * Get web path to an image
      *
-     * @param string $directory path to the storage directory (relative to _root), including a trailing slash
+     * @param string $directory path to the storage directory (relative to SL_ROOT), including a trailing slash
      * @param string $id image identifier
      * @param string $format image format
      * @param int $partitions number of 2-character sub-directories to create from $id

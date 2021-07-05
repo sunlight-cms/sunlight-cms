@@ -9,7 +9,7 @@ use Sunlight\Router;
 use Sunlight\User;
 use Sunlight\Util\Request;
 
-defined('_root') or exit;
+defined('SL_ROOT') or exit;
 
 /* ---  schvaleni zvoleneho clanku  --- */
 

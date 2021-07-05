@@ -12,7 +12,7 @@ use Sunlight\Util\Math;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
 
-defined('_root') or exit;
+defined('SL_ROOT') or exit;
 
 /* ---  priprava promennych  --- */
 
@@ -230,7 +230,7 @@ if ($continue) {
         $icons = "<div class='radio-group'>\n";
         $icons .= "<label><input" . Form::activateCheckbox($query['icon'] === '') . " type='radio' name='icon' value=''> " . _lang('global.undefined') . "</label>\n";
 
-        $icon_dir = _root . 'images/groupicons';
+        $icon_dir = SL_ROOT . 'images/groupicons';
         foreach (scandir($icon_dir) as $file) {
             if (
                 $file === '.'

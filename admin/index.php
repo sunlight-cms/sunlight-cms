@@ -31,7 +31,7 @@ $admin_output = '';
 $output = '';
 
 // nacteni modulu
-$admin_modules = require _root . 'admin/modules.php';
+$admin_modules = require SL_ROOT . 'admin/modules.php';
 Extend::call('admin.init', [
     'modules' => &$admin_modules,
 ]);
@@ -49,15 +49,15 @@ asort($admin_menu_items, SORT_NUMERIC);
 if (empty($_POST) || Xsrf::check()) {
     if ($admin_access) {
         try {
-            require _root . 'admin/action/module.php';
+            require SL_ROOT . 'admin/action/module.php';
         } catch (PrivilegeException $privException) {
-            require _root . 'admin/action/priv_error.php';
+            require SL_ROOT . 'admin/action/priv_error.php';
         }
     } else {
-        require _root . 'admin/action/login.php';
+        require SL_ROOT . 'admin/action/login.php';
     }
 } else {
-    require _root . 'admin/action/xsrf_error.php';
+    require SL_ROOT . 'admin/action/xsrf_error.php';
 }
 
 // assets

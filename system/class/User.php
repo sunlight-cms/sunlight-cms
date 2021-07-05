@@ -340,14 +340,14 @@ abstract class User
 
         if (self::hasPrivilege('fileglobalaccess')) {
             if ($getTopmost && self::hasPrivilege('fileadminaccess')) {
-                $homeDir = _root;
+                $homeDir = SL_ROOT;
             } else {
-                $homeDir = _root . '/upload';
+                $homeDir = SL_ROOT . '/upload';
             }
         } else {
             $subPath = 'home/' . self::getUsername() . '/';
             Extend::call('user.home_dir', ['subpath' => &$subPath]);
-            $homeDir = _root . 'upload/' . $subPath;
+            $homeDir = SL_ROOT . 'upload/' . $subPath;
         }
 
         return $homeDir;
@@ -388,7 +388,7 @@ abstract class User
             $homeDirPath = Filesystem::parsePath(self::getHomeDir(true));
 
             if (
-                /* nepovolit vystup z rootu */                  substr_count($path, '..') <= substr_count(_root, '..')
+                /* nepovolit vystup z rootu */                  substr_count($path, '..') <= substr_count(SL_ROOT, '..')
                 /* nepovolit vystup z domovskeho adresare */    && strncmp($homeDirPath, $path, strlen($homeDirPath)) === 0
                 /* nepovolit praci s nebezpecnymi soubory */    && (!$isFile || self::checkFilename(basename($path)))
             ) {
@@ -1096,7 +1096,7 @@ abstract class User
         if ($hasAvatar) {
             $avatarPath = self::getAvatarPath($data['avatar']);
         } else {
-            $avatarPath = _root . 'images/avatars/no-avatar' . (Template::getCurrent()->getOption('dark') ? '-dark' : '') . '.jpg';
+            $avatarPath = SL_ROOT . 'images/avatars/no-avatar' . (Template::getCurrent()->getOption('dark') ? '-dark' : '') . '.jpg';
         }
 
         $url = Router::file($avatarPath);

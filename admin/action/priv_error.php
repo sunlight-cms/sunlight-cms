@@ -3,7 +3,7 @@
 use Sunlight\Exception\ContentPrivilegeException;
 use Sunlight\Message;
 
-defined('_root') or exit;
+defined('SL_ROOT') or exit;
 
 /* --- vystup --- */
 

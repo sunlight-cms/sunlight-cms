@@ -19,7 +19,7 @@ use Sunlight\Util\Request;
 use Sunlight\Util\StringManipulator;
 use Sunlight\Util\UrlHelper;
 
-defined('_root') or exit;
+defined('SL_ROOT') or exit;
 
 if (!User::isLoggedIn()) {
     $_index['type'] = _index_unauthorized;

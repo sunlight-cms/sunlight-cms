@@ -102,7 +102,7 @@ abstract class Core
      * session_regenerate   force new session ID 1/0
      * allow_cron_auto      allow running cron tasks automatically 1/0
      * content_type         content type, FALSE = disabled (default is "text/html; charset=UTF-8")
-     * env                  environment identifier, see self::ENV_* constants
+     * env                  environment identifier, see Core::ENV_* constants
      *
      * @param string $root relative path to the system root directory (with a trailing slash)
      * @param array  $options
@@ -255,7 +255,7 @@ abstract class Core
         self::$imageError = $root . 'system/image_error.png';
 
         // define constants
-        define('_root', $root);
+        define('SL_ROOT', $root);
     }
 
     /**
@@ -265,9 +265,9 @@ abstract class Core
     {
         $baseDir = RequestInfo::getBaseDir();
 
-        if (_root !== './') {
+        if (SL_ROOT !== './') {
             // drop subdirs beyond root
-            $baseDir = implode('/', array_slice(explode('/', $baseDir), 0, -substr_count(_root, '../')));
+            $baseDir = implode('/', array_slice(explode('/', $baseDir), 0, -substr_count(SL_ROOT, '../')));
         }
 
         $url = RequestInfo::getUrl();
@@ -316,8 +316,8 @@ abstract class Core
             self::$cache = new Cache(
                 $enableCache
                     ? new FilesystemDriver(
-                        _root . 'system/cache/core',
-                        new EntryFactory(null, null, _root . 'system/tmp')
+                        SL_ROOT . 'system/cache/core',
+                        new EntryFactory(null, null, SL_ROOT . 'system/tmp')
                     )
                     : new MemoryDriver()
             );
@@ -577,7 +577,7 @@ abstract class Core
                 if ($cronNow - $cronTimes[$cronIntervalName] >= $cronIntervalSeconds) {
                     // check lock file
                     if ($cronLockFileHandle === null) {
-                        $cronLockFile = _root . 'system/cron.lock';
+                        $cronLockFile = SL_ROOT . 'system/cron.lock';
                         $cronLockFileHandle = fopen($cronLockFile, 'r');
                         if (!flock($cronLockFileHandle, LOCK_EX | LOCK_NB)) {
                             // lock soubor je nepristupny
@@ -667,7 +667,7 @@ abstract class Core
         ImageService::cleanThumbnails(Settings::get('thumb_cleanup_threshold'));
 
         // remove old files in the temporary directory
-        Filesystem::purgeDirectory(_root . 'system/tmp', [
+        Filesystem::purgeDirectory(SL_ROOT . 'system/tmp', [
             'keep_dir' => true,
             'files_only' => true,
             'file_callback' => function (\SplFileInfo $file) {

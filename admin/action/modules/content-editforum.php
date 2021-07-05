@@ -5,12 +5,12 @@ use Sunlight\Database\Database as DB;
 use Sunlight\Page\Page;
 use Sunlight\Util\Form;
 
-defined('_root') or exit;
+defined('SL_ROOT') or exit;
 
 /* ---  nastaveni a vlozeni skriptu pro upravu stranky  --- */
 
 $type = Page::FORUM;
-require _root . 'admin/action/modules/include/page-editscript-init.php';
+require SL_ROOT . 'admin/action/modules/include/page-editscript-init.php';
 if ($continue) {
     $custom_settings = "
   <tr><td colspan='2'><label><input type='checkbox' name='var2' value='1'" . Form::activateCheckbox($query['var2']) . "> " . _lang('admin.content.form.locked3') . "</label></td></tr> 
@@ -27,4 +27,4 @@ if ($continue) {
         'delposts' => ['type' => 'bool', 'nullable' => true],
     ];
 }
-require _root . 'admin/action/modules/include/page-editscript.php';
+require SL_ROOT . 'admin/action/modules/include/page-editscript.php';

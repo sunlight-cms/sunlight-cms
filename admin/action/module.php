@@ -4,7 +4,7 @@ use Sunlight\Admin\Admin;
 use Sunlight\Extend;
 use Sunlight\Message;
 
-defined('_root') or exit;
+defined('SL_ROOT') or exit;
 
 /* --- vystup --- */
 
@@ -26,7 +26,7 @@ if (isset($admin_modules[$admin_current_module])) {
         }
 
         // urceni skriptu
-        $script = $module['script'] ?? _root . 'admin/action/modules/' . $admin_current_module . '.php';
+        $script = $module['script'] ?? SL_ROOT . 'admin/action/modules/' . $admin_current_module . '.php';
 
         // vlozeni
         $extend_args = Extend::args($output, [

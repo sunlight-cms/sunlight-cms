@@ -11,7 +11,7 @@ use Sunlight\Page\Page;
 use Sunlight\Router;
 use Sunlight\User;
 
-defined('_root') or exit;
+defined('SL_ROOT') or exit;
 
 // titulek
 $_index['title'] = $_page['title'];

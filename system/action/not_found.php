@@ -6,7 +6,7 @@ use Sunlight\Message;
 use Sunlight\Router;
 use Sunlight\Util\Response;
 
-defined('_root') or exit;
+defined('SL_ROOT') or exit;
 
 // udalost pred
 $continue = true;

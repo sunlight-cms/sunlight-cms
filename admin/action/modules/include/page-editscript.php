@@ -18,7 +18,7 @@ use Sunlight\Util\Request;
 use Sunlight\Util\StringManipulator;
 use Sunlight\Xsrf;
 
-defined('_root') or exit;
+defined('SL_ROOT') or exit;
 
 /* --- kontrola pristupu --- */
 

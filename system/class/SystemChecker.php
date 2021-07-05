@@ -74,7 +74,7 @@ class SystemChecker
     private function checkPaths(): void
     {
         for ($i = 0; isset($this->paths[$i]); ++$i) {
-            $path = _root . $this->paths[$i];
+            $path = SL_ROOT . $this->paths[$i];
             if (!is_dir($path)) {
                 $this->errors[] = [
                     'Adresář /' . $this->paths[$i] . ' neexistuje nebo není dostupný ke čtení',
@@ -94,13 +94,13 @@ class SystemChecker
      */
     private function checkInstallFiles(): void
     {
-        if (@is_dir(_root . 'install') && !Core::$debug) {
+        if (@is_dir(SL_ROOT . 'install') && !Core::$debug) {
             $this->errors[] = [
                 'Adresář install se stále nachází na serveru - po instalaci je třeba jej odstranit',
                 'The install directory must be removed after installation',
             ];
         }
-        if (file_exists(_root . 'patch.php')) {
+        if (file_exists(SL_ROOT . 'patch.php')) {
             $this->errors[] = [
                 'Soubor patch.php se stále nachází na serveru - po aktualizaci databáze je třeba jej odstranit',
                 'The patch.php file must be removed after the update',
@@ -118,7 +118,7 @@ class SystemChecker
         if (Environment::isApache()) {
             $generatedHtaccess = self::generateHtaccess();
 
-            $htaccessPath = _root . '.htaccess';
+            $htaccessPath = SL_ROOT . '.htaccess';
             $htaccessExists = file_exists($htaccessPath);
 
             if ($htaccessExists) {
@@ -129,7 +129,7 @@ class SystemChecker
                 }
             } elseif (Settings::get('pretty_urls')) {
                 // generate it
-                file_put_contents(_root . '.htaccess', $generatedHtaccess);
+                file_put_contents(SL_ROOT . '.htaccess', $generatedHtaccess);
             }
         }
     }

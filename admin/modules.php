@@ -2,7 +2,7 @@
 
 use Sunlight\User;
 
-defined('_root') or exit;
+defined('SL_ROOT') or exit;
 
 /* --- definice systemovych modulu --- */
 

@@ -5,7 +5,7 @@ use Sunlight\Database\Database as DB;
 use Sunlight\Message;
 use Sunlight\Xsrf;
 
-defined('_root') or exit;
+defined('SL_ROOT') or exit;
 
 /* ---  priprava  --- */
 

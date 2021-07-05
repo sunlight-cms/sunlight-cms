@@ -3,7 +3,7 @@
 use Sunlight\Admin\Admin;
 use Sunlight\Message;
 
-defined('_root') or exit;
+defined('SL_ROOT') or exit;
 
 /* --- priprava --- */
 

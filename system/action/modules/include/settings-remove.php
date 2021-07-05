@@ -7,7 +7,7 @@ use Sunlight\Util\Form;
 use Sunlight\Util\Password;
 use Sunlight\Util\Request;
 
-defined('_root') or exit;
+defined('SL_ROOT') or exit;
 
 if (isset($_POST['submit'])) {
     $errors = [];

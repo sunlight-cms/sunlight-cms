@@ -29,7 +29,7 @@ class Gallery
             $fullFile = null;
         } else {
             $fullUrl = Router::generate($img['full']);
-            $fullFile = _root . $img['full'];
+            $fullFile = SL_ROOT . $img['full'];
         }
 
         if (!empty($img['prev'])) {

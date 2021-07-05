@@ -19,7 +19,7 @@ use Sunlight\Util\StringGenerator;
 use Sunlight\Util\StringManipulator;
 use Sunlight\Xsrf;
 
-defined('_root') or exit;
+defined('SL_ROOT') or exit;
 
 $message = '';
 
@@ -35,7 +35,7 @@ $add_random_suffix = function ($filename) use ($remove_random_suffix) {
 };
 
 // nacteni existujicich zaloh
-$backup_dir = _root . 'system/backup';
+$backup_dir = SL_ROOT . 'system/backup';
 $backup_files = [];
 foreach (scandir($backup_dir) as $item) {
     if (
@@ -91,13 +91,13 @@ $computePathSize = function ($path) {
 
 $static_size = 0;
 foreach ($backup_builder->getStaticPaths() as $path) {
-    $static_size += $computePathSize(_root . $path);
+    $static_size += $computePathSize(SL_ROOT . $path);
 }
 
 foreach ($backup_dynpath_choices as $name => &$options) {
     $size = 0;
     foreach ($backup_builder->getDynamicPath($name) as $path) {
-        $size += $computePathSize(_root . $path);
+        $size += $computePathSize(SL_ROOT . $path);
     }
 
     $options['size'] = $size;

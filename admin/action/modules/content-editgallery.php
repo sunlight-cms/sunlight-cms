@@ -2,12 +2,12 @@
 
 use Sunlight\Page\Page;
 
-defined('_root') or exit;
+defined('SL_ROOT') or exit;
 
 /* ---  nastaveni a vlozeni skriptu pro upravu stranky  --- */
 
 $type = Page::GALLERY;
-require _root . 'admin/action/modules/include/page-editscript-init.php';
+require SL_ROOT . 'admin/action/modules/include/page-editscript-init.php';
 if ($continue) {
 
     if (!$new) {
@@ -30,4 +30,4 @@ if ($continue) {
     ];
 
 }
-require _root . 'admin/action/modules/include/page-editscript.php';
+require SL_ROOT . 'admin/action/modules/include/page-editscript.php';

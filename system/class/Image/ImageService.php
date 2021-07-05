@@ -94,7 +94,7 @@ final class ImageService
      */
     static function cleanThumbnails(int $minAge): void
     {
-        foreach (Filesystem::createRecursiveIterator(_root . 'images/thumb', \RecursiveIteratorIterator::LEAVES_ONLY) as $thumb) {
+        foreach (Filesystem::createRecursiveIterator(SL_ROOT . 'images/thumb', \RecursiveIteratorIterator::LEAVES_ONLY) as $thumb) {
             if (
                 self::isImage($thumb)
                 && time() - $thumb->getMTime() >= $minAge
@@ -161,6 +161,6 @@ final class ImageService
      */
     static function getErrorImage(string $reasonCode): string
     {
-        return _root . 'system/image_error.png?r=' . rawurlencode($reasonCode);
+        return SL_ROOT . 'system/image_error.png?r=' . rawurlencode($reasonCode);
     }
 }

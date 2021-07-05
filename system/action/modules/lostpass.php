@@ -15,7 +15,7 @@ use Sunlight\Util\Password;
 use Sunlight\Util\Request;
 use Sunlight\Util\StringGenerator;
 
-defined('_root') or exit;
+defined('SL_ROOT') or exit;
 
 if (!Settings::get('lostpass')) {
     $_index['type'] = _index_not_found;

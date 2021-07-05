@@ -19,7 +19,7 @@ use Sunlight\Util\StringManipulator;
 use Sunlight\Util\UrlHelper;
 use Sunlight\Xsrf;
 
-defined('_root') or exit;
+defined('SL_ROOT') or exit;
 
 if (!User::isLoggedIn() && Settings::get('notpublicsite')) {
     $_index['type'] = _index_unauthorized;

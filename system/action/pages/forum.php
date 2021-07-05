@@ -6,7 +6,7 @@ use Sunlight\Hcm;
 use Sunlight\Settings;
 use Sunlight\User;
 
-defined('_root') or exit;
+defined('SL_ROOT') or exit;
 
 // vychozi nastaveni
 if ($_page['var1'] === null) {
@@ -15,7 +15,7 @@ if ($_page['var1'] === null) {
 
 // zobrazit tema?
 if ($_index['segment'] !== null) {
-    require _root . 'system/action/pages/include/topic.php';
+    require SL_ROOT . 'system/action/pages/include/topic.php';
     return;
 }
 

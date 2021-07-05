@@ -35,7 +35,7 @@ class ConfigurationFile implements \ArrayAccess
 
         file_put_contents(
             $this->path,
-            sprintf("<?php if (defined('_root')) return %s;\n", var_export($this->data, true)),
+            sprintf("<?php if (defined('SL_ROOT')) return %s;\n", var_export($this->data, true)),
             LOCK_EX
         );
     }

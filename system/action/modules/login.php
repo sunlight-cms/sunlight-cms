@@ -4,7 +4,7 @@ use Sunlight\Router;
 use Sunlight\Settings;
 use Sunlight\User;
 
-defined('_root') or exit;
+defined('SL_ROOT') or exit;
 
 /* ---  vystup  --- */
 

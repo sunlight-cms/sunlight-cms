@@ -5,7 +5,7 @@ use Sunlight\Database\SimpleTreeFilter;
 use Sunlight\Extend;
 use Sunlight\Page\Page;
 
-defined('_root') or exit;
+defined('SL_ROOT') or exit;
 
 /* ---  vystup  --- */
 

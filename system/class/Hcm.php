@@ -57,7 +57,7 @@ abstract class Hcm
         if (!isset($module[1])) {
             // systemovy modul
             if (!isset(self::$systemModuleCache[$name])) {
-                $file = _root . 'system/hcm/' . basename($module[0]) . '.php';
+                $file = SL_ROOT . 'system/hcm/' . basename($module[0]) . '.php';
 
                 self::$systemModuleCache[$name] = is_file($file) ? require $file : false;
             }

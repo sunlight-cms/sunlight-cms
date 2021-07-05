@@ -7,7 +7,7 @@ use Sunlight\Hcm;
 use Sunlight\Paginator;
 use Sunlight\Settings;
 
-defined('_root') or exit;
+defined('SL_ROOT') or exit;
 
 // vychozi nastaveni
 if ($_page['var1'] === null) {

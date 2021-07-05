@@ -5,7 +5,7 @@ use Sunlight\Router;
 use Sunlight\User;
 use Sunlight\Util\Request;
 
-defined('_root') or exit;
+defined('SL_ROOT') or exit;
 
 if (!User::isLoggedIn()) {
     $_index['type'] = _index_unauthorized;

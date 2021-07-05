@@ -10,7 +10,7 @@ use Sunlight\Settings;
 use Sunlight\User;
 use Sunlight\Util\UrlHelper;
 
-defined('_root') or exit;
+defined('SL_ROOT') or exit;
 
 if (!ctype_digit($_index['segment'])) {
     $_index['type'] = _index_not_found;
