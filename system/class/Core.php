@@ -369,7 +369,7 @@ abstract class Core
                 'Připojení k databázi proběhlo úspěšně, ale dotaz na databázi selhal. Zkontrolujte, zda je databáze správně nainstalovaná.',
                 'Successfully connected to the database, but the database query has failed. Make sure the database is installed correctly.',
                 null,
-                DB::error()
+                $e->getMessage()
             );
         }
 

@@ -95,7 +95,7 @@ if (!empty($queries)) {
 
     // vypis vysledku
     if ($error) {
-        $output .= Message::error(DB::error());
+        $output .= Message::error(DB::$mysqli->error);
     } elseif ($lastResource !== null) {
 
         $columns = DB::columns($lastResource);

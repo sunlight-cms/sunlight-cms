@@ -467,6 +467,7 @@ ul.page-list-breadcrumbs a:hover {color: <?= $scheme_link ?>;}
 #sqlex td {padding: 1em; border: 1px solid <?= $scheme_smoke ?>; vertical-align: top;}
 #sqlex td:first-child ul {padding: 0; margin: 0; list-style-type: none;}
 #sqlex li, #sqlex-result li {line-height: 160%;}
+#sqlex-result {overflow: auto;}
 #sqlex-result h2 {margin-bottom: 1em;}
 #sqlex-result table.list {width: 100%; background-color: <?= $scheme_white ?>; outline: 6px solid <?= $scheme_white ?>;}
 #sqlex-result table.list textarea {width: 100%;}

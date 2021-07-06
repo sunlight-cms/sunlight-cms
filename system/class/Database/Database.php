@@ -216,16 +216,6 @@ class Database
     }
 
     /**
-     * Zjistit posledni chybu
-     *
-     * @return string prazdny retezec pokud neni chyba
-     */
-    static function error():string
-    {
-        return self::$mysqli->error;
-    }
-
-    /**
      * Ziskat radek z dotazu
      *
      * @param \mysqli_result $result
