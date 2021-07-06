@@ -296,10 +296,10 @@ class ToolbarRenderer
 
         foreach ($this->missingLocalizations as $dict) {
             foreach ($this->missingLocalizations[$dict] as $missingKey => $missingKeyCount) {
-                if (Core::$lang === $dict) {
+                if (Core::$dictionary === $dict) {
                     $dictDescription = '{main}';
                 } elseif ($dict instanceof LocalizationDirectory) {
-                    $dictPath = $dict->getPathForLanguage(_language);
+                    $dictPath = $dict->getPathForLanguage(Core::$lang);
                     $dictDescription = $dictPath;
 
                     if (!is_file($dictPath)) {
@@ -330,7 +330,7 @@ class ToolbarRenderer
 
 <div class="devkit-content">
     <div>
-        <div class="devkit-heading">Missing localizations for language <em><?= _e(_language) ?></em> (<?= $totalMissingLocalizations ?>)</div>
+        <div class="devkit-heading">Missing localizations for language <em><?= _e(Core::$lang) ?></em> (<?= $totalMissingLocalizations ?>)</div>
 
         <table>
             <thead>

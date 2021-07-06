@@ -45,5 +45,5 @@ function _e(string $input, bool $doubleEncode = true): string
  */
 function _lang(string $key, ?array $replacements = null, ?string $fallback = null): string
 {
-    return Core::$lang->get($key, $replacements, $fallback);
+    return Core::$dictionary->get($key, $replacements, $fallback);
 }

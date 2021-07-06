@@ -37,7 +37,7 @@ class ExtendPlugin extends Plugin
 
         // register language packs
         foreach ($this->options['langs'] as $key => $dir) {
-            Core::$lang->registerSubDictionary($key, new LocalizationDirectory($dir));
+            Core::$dictionary->registerSubDictionary($key, new LocalizationDirectory($dir));
         }
 
         // load scripts

@@ -53,6 +53,8 @@ abstract class Core
     /** @var string */
     static $secret;
     /** @var string */
+    static $lang;
+    /** @var string */
     static $fallbackLang;
     /** @var bool */
     static $sessionEnabled;
@@ -72,7 +74,7 @@ abstract class Core
     /** @var Cache */
     static $cache;
     /** @var LocalizationDictionary */
-    static $lang;
+    static $dictionary;
 
     /** @var string */
     static $imageError;
@@ -326,7 +328,7 @@ abstract class Core
         );
 
         // localization
-        self::$lang = new LocalizationDictionary();
+        self::$dictionary = new LocalizationDictionary();
     }
 
     /**
@@ -512,16 +514,16 @@ abstract class Core
     {
         // language choice
         if (User::isLoggedIn() && Settings::get('language_allowcustom') && User::$data['language'] !== '') {
-            $language = User::$data['language'];
+            $lang = User::$data['language'];
             $usedLoginLanguage = true;
         } else {
-            $language = Settings::get('language');
+            $lang = Settings::get('language');
             $usedLoginLanguage = false;
         }
 
         // load language plugin
-        if (self::$pluginManager->has(PluginManager::LANGUAGE, $language)) {
-            $languagePlugin = self::$pluginManager->getLanguage($language);
+        if (self::$pluginManager->has(PluginManager::LANGUAGE, $lang)) {
+            $languagePlugin = self::$pluginManager->getLanguage($lang);
         } else {
             $languagePlugin = null;
         }
@@ -531,7 +533,7 @@ abstract class Core
             $entries = $languagePlugin->getLocalizationEntries();
 
             if ($entries !== false) {
-                self::$lang->add($entries);
+                self::$dictionary->add($entries);
             }
         } else {
             // language plugin was not found
@@ -544,11 +546,11 @@ abstract class Core
             self::fail(
                 'Jazykový balíček "%s" nebyl nalezen.',
                 'Language plugin "%s" was not found.',
-                [$language]
+                [$lang]
             );
         }
 
-        define('_language', $language);
+        self::$lang = $lang;
     }
 
     /**
