@@ -88,7 +88,7 @@ if ($public) {
     }
 
     $output .= "
-<table>
+<table class='profiletable'>
 
 <tr class='valign-top'>
 
