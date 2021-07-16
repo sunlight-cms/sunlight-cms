@@ -4,7 +4,7 @@ namespace Sunlight\Util;
 
 class Color
 {
-    private $r, $g, $b, $h, $s, $l;
+    protected $r, $g, $b, $h, $s, $l;
 
     /**
      * @param array $color color segments
