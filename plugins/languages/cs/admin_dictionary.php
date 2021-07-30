@@ -300,8 +300,6 @@ return [
     'admin.settings.main.pretty_urls.help' => 'aktivace hezkého formátu adres (pokud používáte server Apache, bude soubor <em>.htaccess</em> vygenerován automaticky)',
     'admin.settings.main.notpublicsite' => 'Neveřejné stránky',
     'admin.settings.main.notpublicsite.help' => 'pokud je tato volba aktivována, musí být uživatel přihlášen, aby mohl prohlížet jakýkoliv obsah stránek',
-    'admin.settings.main.proxy_mode' => 'Proxy režim',
-    'admin.settings.main.proxy_mode.help' => 'aktivujte v případě, že se systém nachází za reverzním proxy serverem (poznáte podle toho, že <code>%ip%</code> nebude souhlasit s <a href="%link%" target="_blank">vaší skutečnou IP adresou</a>)',
     'admin.settings.info' => 'Informace o stránkách',
     'admin.settings.info.title' => 'Titulek',
     'admin.settings.info.title.help' => 'titulek stránek',

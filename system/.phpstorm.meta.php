@@ -59,7 +59,6 @@ registerArgumentsSet(
     'postadmintime',
     'pretty_urls',
     'profileemail',
-    'proxy_mode',
     'ratemode',
     'registration',
     'registration_confirm',

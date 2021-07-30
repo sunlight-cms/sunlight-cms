@@ -62,7 +62,7 @@ if (Xsrf::check()) {
         }
 
         // pridani informacniho textu do tela
-        $info_ip = _user_ip;
+        $info_ip = Core::getClientIp();
         if (User::isLoggedIn()) {
             $info_ip .= ' (' . User::getUsername() . ')';
         }

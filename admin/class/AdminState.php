@@ -34,7 +34,7 @@ class AdminState
     /** @var bool */
     public $dark = false;
 
-    public function redirect(string $url): void
+    function redirect(string $url): void
     {
         $this->redirectTo = $url;
     }

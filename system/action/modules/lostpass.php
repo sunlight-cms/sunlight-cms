@@ -68,7 +68,7 @@ if (isset($_GET['user'], $_GET['hash'])) {
                 '%username%' =>  $userdata['username'],
                 '%newpass%' => $newpass,
                 '%date%' => GenericTemplates::renderTime(time()),
-                '%ip%' => _user_ip,
+                '%ip%' => Core::getClientIp(),
             ])
         )) {
             $output .= Message::error(_lang('global.emailerror'));
@@ -134,7 +134,7 @@ if (isset($_GET['user'], $_GET['hash'])) {
                 '%username%' => $userdata['username'],
                 '%link%' => $link,
                 '%date%' => GenericTemplates::renderTime(time()),
-                '%ip%' => _user_ip,
+                '%ip%' => Core::getClientIp(),
             ])
         )) {
             $output .= Message::error(_lang('global.emailerror'));

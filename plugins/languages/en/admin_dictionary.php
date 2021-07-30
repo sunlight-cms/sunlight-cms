@@ -300,8 +300,6 @@ return [
     'admin.settings.main.pretty_urls.help' => 'enable pretty URLs (if under Apache, the <em>.htaccess</em> file will be generated automatically)',
     'admin.settings.main.notpublicsite' => 'Private pages',
     'admin.settings.main.notpublicsite.help' => 'if this option is enabled, the user must be logged in to be able to view any content',
-    'admin.settings.main.proxy_mode' => 'Proxy mode',
-    'admin.settings.main.proxy_mode.help' => 'activate in case the system is behind a reverse proxy (you can tell by <code>%ip%</code> not being the same as <a href="%link%" target="_blank"> your actual IP address</a>)',
     'admin.settings.info' => 'Website information',
     'admin.settings.info.title' => 'Title',
     'admin.settings.info.title.help' => 'website title',

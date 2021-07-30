@@ -357,7 +357,6 @@ INSERT INTO `sunlight_setting` (`var`, `val`, `preload`, `web`, `admin`) VALUES
 ('postadmintime',	'172800',	1,	1,	1),
 ('pretty_urls',	'0',	1,	1,	1),
 ('profileemail',	'0',	1,	1,	1),
-('proxy_mode',	'0',	1,	1,	1),
 ('ratemode',	'2',	1,	1,	1),
 ('registration',	'1',	1,	1,	1),
 ('registration_confirm',	'0',	1,	1,	1),

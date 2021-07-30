@@ -164,7 +164,7 @@ if ($continue && $continue2 && $text != '' && ($posttype == Post::SHOUTBOX_ENTRY
                         'author' => $author,
                         'guest' => $guest,
                         'time' => time(),
-                        'ip' => _user_ip,
+                        'ip' => Core::getClientIp(),
                         'bumptime' => (($posttype == Post::FORUM_TOPIC && $xhome == -1) ? time() : '0'),
                         'flag' => $pluginflag
                     ], true);

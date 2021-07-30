@@ -1,5 +1,6 @@
 <?php
 
+use Sunlight\Core;
 use Sunlight\Post\Post;
 use Sunlight\Post\PostService;
 use Sunlight\Database\Database as DB;
@@ -135,7 +136,7 @@ switch ($a) {
                     'author' => User::getId(),
                     'guest' => '',
                     'time' => time(),
-                    'ip' => _user_ip,
+                    'ip' => Core::getClientIp(),
                     'bumptime' => 0
                 ], true);
                 Extend::call('posts.new', ['id' => $insert_id, 'posttype' => Post::PRIVATE_MSG, 'post' => $post_data]);

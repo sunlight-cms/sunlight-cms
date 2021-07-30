@@ -13,6 +13,7 @@ use Kuria\Error\Screen\WebErrorScreen;
 use Kuria\Error\Screen\WebErrorScreenEvents;
 use Kuria\Event\EventEmitter;
 use Kuria\RequestInfo\RequestInfo;
+use Kuria\RequestInfo\TrustedProxies;
 use Kuria\Url\Url;
 use Sunlight\Database\Database as DB;
 use Sunlight\Database\DatabaseException;
@@ -375,17 +376,6 @@ abstract class Core
 
         // define maintenance cron interval
         self::$cronIntervals['maintenance'] = Settings::get('maintenance_interval');
-
-        // determine client IP address
-        if (empty($_SERVER['REMOTE_ADDR'])) {
-            $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
-        }
-        if (Settings::get('proxy_mode') && isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-        } else {
-            $ip = $_SERVER['REMOTE_ADDR'];
-        }
-        define('_user_ip', trim((($addr_comma = strrpos($ip, ',')) === false) ? $ip : substr($ip, $addr_comma + 1)));
     }
 
     /**
@@ -462,6 +452,28 @@ abstract class Core
             } elseif ($options['content_type'] !== false) {
                 header('Content-Type: ' . $options['content_type']);
             }
+        }
+
+        // set trusted proxies
+        if (isset($options['trusted_proxies'], $options['trusted_proxy_headers'])) {
+            switch ($options['trusted_proxy_headers']) {
+                case 'forwarded':
+                    $trustedProxyHeaders = TrustedProxies::HEADER_FORWARDED;
+                    break;
+                case 'x-forwarded':
+                    $trustedProxyHeaders = TrustedProxies::HEADER_X_FORWARDED_ALL;
+                    break;
+                case 'all':
+                    $trustedProxyHeaders = TrustedProxies::HEADER_FORWARDED | TrustedProxies::HEADER_X_FORWARDED_ALL;
+                    break;
+                default:
+                    self::fail(
+                        'Konfigurační volba "trusted_proxy_headers" má neplatnou hodnotu',
+                        'The configuration option "trusted_proxy_headers" has an invalid value'
+                    );
+            }
+
+            RequestInfo::setTrustedProxies(new TrustedProxies((array) $options['trusted_proxies'], $trustedProxyHeaders));
         }
     }
 
@@ -640,7 +652,7 @@ abstract class Core
      *
      * @return Url
      */
-    public static function getBaseUrl(): Url
+    static function getBaseUrl(): Url
     {
         return clone self::$baseUrl;
     }
@@ -652,9 +664,17 @@ abstract class Core
      *
      * @return Url
      */
-    public static function getCurrentUrl(): Url
+    static function getCurrentUrl(): Url
     {
         return clone self::$currentUrl;
+    }
+
+    /**
+     * Get current client's IP address
+     */
+    static function getClientIp(): string
+    {
+        return RequestInfo::getClientIp() ?? '127.0.0.1';
     }
 
     /**

@@ -240,7 +240,7 @@ abstract class User
             if (time() - $userData['activitytime'] > 30) {
                 DB::update('user', 'id=' . DB::val($userData['id']), [
                     'activitytime' => time(),
-                    'ip' => _user_ip,
+                    'ip' => Core::getClientIp(),
                 ]);
             }
 
@@ -923,7 +923,7 @@ abstract class User
 
         // aktualizace dat uzivatele
         $changeset = [
-            'ip' => _user_ip,
+            'ip' => Core::getClientIp(),
             'activitytime' => time(),
             'logincounter' => $query['logincounter'] + 1,
             'security_hash' => null,

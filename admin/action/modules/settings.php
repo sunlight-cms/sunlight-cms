@@ -56,7 +56,6 @@ $editable_settings = [
             ['name' => 'language', 'format' => 'text', 'choices' => Core::$pluginManager->choices(PluginManager::LANGUAGE), 'reload_on_update' => true],
             ['name' => 'language_allowcustom', 'format' => 'bool'],
             ['name' => 'notpublicsite', 'format' => 'bool'],
-            ['name' => 'proxy_mode', 'format' => 'bool', 'help_attrs' => ['%ip%' => _user_ip, '%link%' => 'https://sunlight-cms.cz/resource/ip-compare?with=' . rawurlencode(_user_ip)]],
             ['name' => 'pretty_urls', 'format' => 'bool', 'force_install_check' => true],
         ],
     ],

@@ -144,7 +144,7 @@ if (isset($_GET['confirm'])) {
             $errors[] = _lang('mod.reg.rules.disagreed');
         }
 
-        $user_data['ip'] = _user_ip;
+        $user_data['ip'] = Core::getClientIp();
 
         Extend::call('mod.reg.submit', [
             'user_data' => &$user_data,
@@ -263,7 +263,7 @@ if (!$user_data_valid && $show_form) {
                     $user_data['username'],
                     $domain,
                     Router::module('reg', 'confirm=' . $code, true),
-                    _user_ip,
+                    Core::getClientIp(),
                     GenericTemplates::renderTime(time()),
                 ],
                 _lang('mod.reg.confirm.text')

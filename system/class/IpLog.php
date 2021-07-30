@@ -87,7 +87,7 @@ abstract class IpLog
 
         // priprava
         $result = true;
-        $querybasic = "SELECT * FROM " . DB::table('iplog') . " WHERE ip=" . DB::val(_user_ip) . " AND type=" . $type;
+        $querybasic = "SELECT * FROM " . DB::table('iplog') . " WHERE ip=" . DB::val(Core::getClientIp()) . " AND type=" . $type;
 
         switch ($type) {
 
@@ -153,7 +153,7 @@ abstract class IpLog
             $var = (int) $var;
         }
 
-        $querybasic = "SELECT * FROM " . DB::table('iplog') . " WHERE ip=" . DB::val(_user_ip) . " AND type=" . $type;
+        $querybasic = "SELECT * FROM " . DB::table('iplog') . " WHERE ip=" . DB::val(Core::getClientIp()) . " AND type=" . $type;
 
         switch ($type) {
 
@@ -163,7 +163,7 @@ abstract class IpLog
                     DB::update('iplog', 'id=' . $query['id'], ['var' => ($query['var'] + 1)]);
                 } else {
                     DB::insert('iplog', [
-                        'ip' => _user_ip,
+                        'ip' => Core::getClientIp(),
                         'type' => IpLog::FAILED_LOGIN_ATTEMPT,
                         'time' => time(),
                         'var' => 1
@@ -173,7 +173,7 @@ abstract class IpLog
 
             case IpLog::ARTICLE_READ:
                 DB::insert('iplog', [
-                    'ip' => _user_ip,
+                    'ip' => Core::getClientIp(),
                     'type' => IpLog::ARTICLE_READ,
                     'time' => time(),
                     'var' => $var
@@ -182,7 +182,7 @@ abstract class IpLog
 
             case IpLog::ARTICLE_RATED:
                 DB::insert('iplog', [
-                    'ip' => _user_ip,
+                    'ip' => Core::getClientIp(),
                     'type' => IpLog::ARTICLE_RATED,
                     'time' => time(),
                     'var' => $var
@@ -191,7 +191,7 @@ abstract class IpLog
 
             case IpLog::POLL_VOTE:
                 DB::insert('iplog', [
-                    'ip' => _user_ip,
+                    'ip' => Core::getClientIp(),
                     'type' => IpLog::POLL_VOTE,
                     'time' => time(),
                     'var' => $var
@@ -201,7 +201,7 @@ abstract class IpLog
             case IpLog::ANTI_SPAM:
             case IpLog::PASSWORD_RESET_REQUESTED:
                 DB::insert('iplog', [
-                    'ip' => _user_ip,
+                    'ip' => Core::getClientIp(),
                     'type' => $type,
                     'time' => time(),
                     'var' => 0
@@ -214,7 +214,7 @@ abstract class IpLog
                     DB::update('iplog', 'id=' . $query['id'], ['var' => ($query['var'] + 1)]);
                 } else {
                     DB::insert('iplog', [
-                        'ip' => _user_ip,
+                        'ip' => Core::getClientIp(),
                         'type' => IpLog::FAILED_ACCOUNT_ACTIVATION,
                         'time' => time(),
                         'var' => 1
@@ -228,7 +228,7 @@ abstract class IpLog
                     DB::update('iplog', 'id=' . $query['id'], ['time' => time()]);
                 } else {
                     DB::insert('iplog', [
-                        'ip' => _user_ip,
+                        'ip' => Core::getClientIp(),
                         'type' => $type,
                         'time' => time(),
                         'var' => $var
