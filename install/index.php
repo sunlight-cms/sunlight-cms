@@ -844,7 +844,7 @@ class ConfigurationStep extends Step
      */
     private function getArrayConfigFromString(string $value): ?array
     {
-        return preg_split('/\s*,\s*/', $value, null, PREG_SPLIT_NO_EMPTY) ?: null;
+        return preg_split('/\s*,\s*/', $value, -1, PREG_SPLIT_NO_EMPTY) ?: null;
     }
 
     /**

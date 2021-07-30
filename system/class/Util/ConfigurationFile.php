@@ -67,6 +67,7 @@ class ConfigurationFile implements \ArrayAccess
         return isset($this->data[$offset]) || isset($this->defaults[$offset]);
     }
 
+    #[\ReturnTypeWillChange]
     function offsetGet($offset)
     {
         $this->ensureLoaded();
