@@ -346,7 +346,7 @@ class Database
      */
     static function table(string $name): string
     {
-        return self::$prefix . $name;
+        return Extend::fetch('db.table', ['name' => $name]) ?? self::$prefix . $name;
     }
 
     /**
