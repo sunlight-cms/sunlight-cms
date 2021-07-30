@@ -101,7 +101,7 @@ if (isset($_POST['save'])) {
         $language = Request::post('language', '');
 
         if ($language === '' || !Core::$pluginManager->has(PluginManager::LANGUAGE, $language)) {
-            $language = null;
+            $language = '';
         }
 
         if ($language !== User::$data['language']) {
