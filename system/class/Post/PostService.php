@@ -466,7 +466,7 @@ class PostService
                     ]);
 
                     // answers
-                    if ($replies_enabled && isset($item['_answers'])) {
+                    if (isset($item['_answers'])) {
                         foreach ($item['_answers'] as $answer) {
                             $output .= self::renderPost($answer, $userQuery, [
                                 'current_url' => $url,
