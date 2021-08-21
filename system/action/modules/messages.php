@@ -293,7 +293,7 @@ switch ($a) {
         }
 
         // strankovani
-        $paging = Paginator::render($_index->url, Settings::get('messagesperpage'), DB::table('pm'), 'sender=' . User::getId() . ' OR receiver=' . User::getId(), '&amp;a=' . $a);
+        $paging = Paginator::render($_index->url, Settings::get('messagesperpage'), DB::table('pm'), '(sender=' . User::getId() . ' AND sender_deleted=0) OR (receiver=' . User::getId() . ' AND receiver_deleted=0)', '&amp;a=' . $a);
         if (Paginator::atTop()) {
             $output .= $paging['paging'];
         }
