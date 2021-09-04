@@ -307,7 +307,7 @@ abstract class Bbcode
                     $url = trim($arg !== '' ? $arg : $buffer);
                     $url = UrlHelper::isSafe($url) ? UrlHelper::addScheme($url) : '#';
 
-                    return '<a href="' . $url . '" rel="nofollow noopener" target="_blank">' . $buffer . '</a>';
+                    return '<a href="' . $url . '" rel="nofollow noopener ugc" target="_blank">' . $buffer . '</a>';
                 }
                 break;
 
@@ -344,7 +344,7 @@ abstract class Bbcode
                     $src = UrlHelper::ensureValidScheme($buffer);
                     $link = ($arg !== '' && UrlHelper::isSafe($arg)) ? UrlHelper::addScheme($arg) : $src;
 
-                    return '<a href="' . $link . '" rel="nofollow noopener" target="_blank">'
+                    return '<a href="' . $link . '" rel="nofollow noopener ugc" target="_blank">'
                         . '<img src="' . $src . '" alt="img" class="bbcode-img">'
                         . '</a>';
                 }
