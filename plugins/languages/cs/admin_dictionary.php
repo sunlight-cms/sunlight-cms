@@ -480,6 +480,7 @@ return [
     'admin.plugins.action.do.enable' => 'Aktivovat',
     'admin.plugins.action.do.disable' => 'Deaktivovat',
     'admin.plugins.action.do.remove' => 'Odstranit',
+    'admin.plugins.action.config.no_map' => 'Chybí implementace mapování hodnoty - viz ConfigAction::mapSubmittedValue()',
     'admin.plugins.action.enable.success' => 'Rozšíření "%plugin%" bylo aktivováno',
     'admin.plugins.action.enable.failure' => 'Nepodařilo se aktivovat rozšíření "%plugin%"',
     'admin.plugins.action.disable.success' => 'Rozšíření "%plugin%" bylo deaktivováno',

@@ -4,6 +4,7 @@ namespace Sunlight\Plugin\Action;
 
 use Sunlight\Action\ActionResult;
 use Sunlight\Message;
+use Sunlight\Util\ConfigurationFile;
 use Sunlight\Util\Form;
 use Sunlight\Xsrf;
 
@@ -30,18 +31,27 @@ class ConfigAction extends PluginAction
         $fields = $this->getFields();
 
         if (isset($_POST['save'])) {
+            $config = $this->plugin->getConfig();
             $submittedConfig = isset($_POST['config']) && is_array($_POST['config'])
                 ? $_POST['config']
                 : [];
+            $errors = [];
 
             foreach ($fields as $key => $field) {
                 $submittedValue = $submittedConfig[$key] ?? null;
 
-                $this->mapSubmittedValue($key, $field, $submittedValue);
+                if (($error = $this->mapSubmittedValue($config, $key, $field, $submittedValue)) !== null) {
+                    $errors[] = Message::prefix($field['label'], $error);
+                }
             }
 
-            $this->plugin->getConfig()->save();
-            $messages[] = Message::ok(_lang('global.saved'));
+            if (empty($errors)) {
+                $config->save();
+                $messages[] = Message::ok(_lang('global.saved'));
+            } else {
+                $messages[] = Message::list($errors, ['type' => Message::ERROR]);
+            }
+
             $fields = $this->getFields();
         }
 
@@ -100,34 +110,34 @@ class ConfigAction extends PluginAction
     }
 
     /**
-     * @param string $key
-     * @param array $field
-     * @param mixed $value
+     * Map a submitted value to the config
+     *
+     * Returns NULL on success or an error message on failure.
      */
-    protected function mapSubmittedValue(string $key, array $field, $value): void
+    protected function mapSubmittedValue(ConfigurationFile $config, string $key, array $field, $value): ?string
     {
-        $config = $this->plugin->getConfig();
+        if (isset($field['type'])) {
+            switch ($field['type']) {
+                case 'checkbox':
+                    $config[$key] = (bool) $value;
+                    return null;
 
-        switch ($field['type']) {
-            case 'checkbox':
-                $config[$key] = (bool) $value;
-                break;
+                case 'text':
+                    if (!is_string($value)) {
+                        return _lang('global.badinput');
+                    }
 
-            case 'text':
-                if (!is_string($value)) {
-                    break;
-                }
+                    $value = trim($value);
 
-                $value = trim($value);
+                    if ($value === '') {
+                        $value = null;
+                    }
 
-                if ($value === '') {
-                    $value = null;
-                } elseif (ctype_digit($value)) {
-                    $value = (int) $value;
-                }
-
-                $config[$key] = $value;
-                break;
+                    $config[$key] = $value;
+                    return null;
+            }
         }
+
+        return _lang('admin.plugins.action.config.no_map');
     }
 }

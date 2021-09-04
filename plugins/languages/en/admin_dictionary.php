@@ -480,6 +480,7 @@ return [
     'admin.plugins.action.do.enable' => 'Activate',
     'admin.plugins.action.do.disable' => 'Deactivate',
     'admin.plugins.action.do.remove' => 'Remove',
+    'admin.plugins.action.config.no_map' => 'Missing value mapping implementation - see ConfigAction::mapSubmittedValue()',
     'admin.plugins.action.enable.success' => 'Plugin "%plugin%" has been activated.',
     'admin.plugins.action.enable.failure' => 'Could not activate plugin "%plugin%"',
     'admin.plugins.action.disable.success' => 'Plugin "%plugin%" has been deactivated',
