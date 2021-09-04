@@ -85,9 +85,9 @@ class Message
      *
      * Supported options:
      * ------------------------------------------------------------------
-     * type             see Message class constants (defaults to WARNING)
+     * type (WARNING)   see Message class constants
      * text             text before the list
-     * escape           escape the messages
+     * escape (1)       escape the messages
      * show_keys (0)    render message keys
      */
     static function list(array $messages, array $options = []): self
