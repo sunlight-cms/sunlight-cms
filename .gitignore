@@ -24,6 +24,7 @@
 /plugins/extend/*
 !/plugins/extend/devkit
 !/plugins/extend/codemirror
+!/plugins/extend/lightbox
 
 /plugins/languages/*
 !/plugins/languages/cs

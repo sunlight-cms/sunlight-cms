@@ -1,0 +1,14 @@
+@import url("lightbox.css");
+
+.lightbox .lb-image {
+  /* Image border */
+  border: 4px solid black;
+}
+
+.lb-outerContainer {
+  /* Background color behind image.
+     This is visible during transitions. */
+  background-color: #1d1d1d;
+}
+
+

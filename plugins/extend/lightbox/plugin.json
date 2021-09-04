@@ -1,0 +1,23 @@
+{
+    "$schema": "../../../system/schema/extend.json",
+    "name": "Lightbox",
+    "description": "A lightbox plugin for images and galleries.",
+    "version": "8.0",
+    "api": "^8.0",
+    "url": "https://sunlight-cms.cz/",
+    "class": "LightboxPlugin",
+    "langs": {
+        "lightbox": "lang"
+    },
+    "events": [
+        {"event": "image.lightbox", "method": "onLightbox"}
+    ],
+    "events.web": [
+        {"event": "tpl.head", "method": "onHead"},
+        {"event": "tpl.end", "method": "onEnd"}
+    ],
+    "events.admin": [
+        {"event": "admin.head", "method": "onHead"},
+        {"event": "admin.end", "method": "onEnd"}
+    ]
+}
