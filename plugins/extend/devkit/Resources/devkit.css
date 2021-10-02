@@ -63,6 +63,7 @@
 #devkit-toolbar .devkit-login {background-image: url("images/login.png");}
 #devkit-toolbar .devkit-lang {background-image: url("images/lang.png");}
 #devkit-toolbar .devkit-dump {background-image: url("images/dump.png");}
+#devkit-toolbar .devkit-edit {background-image: url("images/edit.png");}
 
 #devkit-toolbar > a:hover .devkit-section,
 #devkit-toolbar .devkit-toggleable:hover {

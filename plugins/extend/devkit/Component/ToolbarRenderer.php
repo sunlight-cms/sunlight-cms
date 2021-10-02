@@ -6,9 +6,12 @@ use Kuria\Debug\Dumper;
 use Sunlight\Core;
 use Sunlight\Extend;
 use Sunlight\Localization\LocalizationDirectory;
+use Sunlight\Page\Page;
 use Sunlight\Plugin\InactivePlugin;
 use Sunlight\Router;
+use Sunlight\Template;
 use Sunlight\User;
+use Sunlight\Util\UrlHelper;
 
 class ToolbarRenderer
 {
@@ -75,6 +78,7 @@ class ToolbarRenderer
 
                 $this->renderRequest();
                 $this->renderLogin();
+                $this->renderEdit();
 
                 // controls
                 ?>
@@ -459,5 +463,40 @@ class ToolbarRenderer
     </div>
 </a>
 <?php
+    }
+
+    /**
+     * Render page edit link
+     */
+    private function renderEdit(): void
+    {
+        if(Core::$env == Core::ENV_WEB){
+            $link = null;
+            if(Template::currentIsArticle()) {
+                global $_article;
+                $link = UrlHelper::appendParams(
+                        Router::generate('admin/index.php'),
+                        "p=content-articles-edit&id=" . $_article['id'] . "&returnid=load&returnpage=1"
+                );
+            }elseif (Template::currentIsPage() && !Template::currentIsTopic()) {
+                global $_page;
+                $types = Page::getTypes();
+                $adminModule = "content-edit" . $types[$_page['type']];
+                $link = UrlHelper::appendParams(
+                        Router::generate('admin/index.php'),
+                        "p=" . $adminModule . "&id=" . $_page['id']
+                );
+            }
+
+            if($link !== null) {
+                ?>
+                <a href="<?= _e($link) ?>">
+                    <div class="devkit-section devkit-edit">
+                        <?= _lang('global.edit'); ?>
+                    </div>
+                </a>
+                <?php
+            }
+        }
     }
 }
