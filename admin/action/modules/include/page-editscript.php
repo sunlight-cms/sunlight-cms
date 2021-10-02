@@ -546,6 +546,7 @@ $output .= "<form class='cform' action='index.php?p=content-edit" . $type_array[
 
                     <div id='settingseditform'>"
 
+                    . $editscript_setting_extra
                     ."<fieldset>
                         <legend>" . _lang('admin.content.form.settings') . "</legend>
                         <table>
@@ -598,6 +599,7 @@ $output .= "<form class='cform' action='index.php?p=content-edit" . $type_array[
                         </tbody>
                         </table>
                     </fieldset>" : '')
+                . $editscript_setting_extra2
                 . "</div>
                 </td>
             </tr>

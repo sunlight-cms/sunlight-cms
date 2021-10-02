@@ -28,6 +28,8 @@ $editscript_enable_access = true;
 $editscript_extra_row = '';
 $editscript_extra_row2 = '';
 $editscript_extra = '';
+$editscript_setting_extra = '';
+$editscript_setting_extra2 = '';
 $type_array = Page::getTypes();
 $plugin_type_array = Page::getPluginTypes();
 
