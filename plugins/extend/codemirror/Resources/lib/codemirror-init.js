@@ -76,13 +76,23 @@ $(document).ready(function () {
             theme: SunlightVars.admin.themeIsDark ? 'ambiance' : 'eclipse',
             lineWrapping: true,
             lineNumbers: true,
-            smartIndent: false,
+            indentUnit: 4,
+            smartIndent: true,
             electricChars: false,
             tabSize: 4,
             indentWithTabs: false,
             extraKeys: {
                 Tab: function (cm) {
-                    cm.replaceSelection('    ', 'end');
+                    if (cm.somethingSelected()) {
+                        var sel = editor.getSelection("\n");
+                        // Indent only if there are multiple lines selected, or if the selection spans a full line
+                        if (sel.length > 0 && (sel.indexOf("\n") > -1 || sel.length === cm.getLine(cm.getCursor().line).length)) {
+                            cm.indentSelection("add");
+                            return;
+                        }
+                    }
+
+                    cm.execCommand("insertSoftTab");
                 }
             },
 
