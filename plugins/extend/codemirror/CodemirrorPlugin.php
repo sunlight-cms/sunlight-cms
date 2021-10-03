@@ -37,6 +37,7 @@ class CodemirrorPlugin extends ExtendPlugin
         $args['js']['codemirror_css'] = $basePath . '/mode/css/css.js';
         $args['js']['codemirror_htmlmixed'] = $basePath . '/mode/htmlmixed/htmlmixed.js';
         $args['js']['codemirror_javascript'] = $basePath . '/mode/javascript/javascript.js';
+        $args['js']['codemirror_clike'] = $basePath . '/mode/clike/clike.js';
         $args['js']['codemirror_php'] = $basePath . '/mode/php/php.js';
         $args['js']['codemirror_sql'] = $basePath . '/mode/sql/sql.js';
         $args['js']['codemirror_xml'] = $basePath . '/mode/xml/xml.js';
