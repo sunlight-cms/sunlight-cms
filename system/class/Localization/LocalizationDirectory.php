@@ -4,6 +4,7 @@ namespace Sunlight\Localization;
 
 use Sunlight\Core;
 use Sunlight\Settings;
+use Sunlight\User;
 
 /**
  * Localization dictionary that loads entries from files in the given directory
@@ -83,7 +84,14 @@ class LocalizationDirectory extends LocalizationDictionary
      */
     private function load(): void
     {
-        if ($this->hasDictionaryForLanguage(Settings::get('language'))) {
+        if(
+            User::isLoggedIn()
+            && Settings::get('language_allowcustom')
+            && User::$data['language'] !== ''
+            && $this->hasDictionaryForLanguage(User::$data['language'])
+        ){
+            $this->add($this->loadDictionaryForLanguage(User::$data['language']));
+        } elseif ($this->hasDictionaryForLanguage(Settings::get('language'))) {
             $this->add($this->loadDictionaryForLanguage(Settings::get('language')));
         } elseif (Core::$fallbackLang !== Settings::get('language') && $this->hasDictionaryForLanguage(Core::$fallbackLang)) {
             $this->add($this->loadDictionaryForLanguage(Core::$fallbackLang));
