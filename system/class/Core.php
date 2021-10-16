@@ -700,6 +700,11 @@ abstract class Core
 
         // check version
         VersionChecker::check();
+
+        // cleanup the cache
+        if (self::$cache->supportsCleanup()) {
+            self::$cache->cleanup();
+        }
     }
 
     /**
