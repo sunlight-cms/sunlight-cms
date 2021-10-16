@@ -41,7 +41,7 @@ $output .= "
 
 <tr class='valign-top'>
     <th>" . _lang('admin.menu.index.edit.text') . "</th>
-    <td class='minwidth'><textarea name='text' rows='25' cols='94' class='areabig editor'>" . _e($custom) . "</textarea></td>
+    <td class='minwidth'><textarea name='text' rows='25' cols='94' class='areabig editor'>" . _e($admin_index_cfg['admin_index_custom']) . "</textarea></td>
 </tr>
 
 <tr>
