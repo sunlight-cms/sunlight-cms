@@ -382,13 +382,15 @@ class TreeReader
                         if (!isset($nodeMap[$nodeIndexToIdMap[$i]])) {
                             continue;
                         }
-                        if ($nodeMap[$nodeIndexToIdMap[$i]][$this->parentColumn] == $invalidNodeId
-                        && !isset($invalidNodes[$nodeIndexToIdMap[$i]])
-                        && $options->filter->acceptInvalidNodeWithValidChild(
-                            $nodeMap[$invalidNodeId],
-                            $nodeMap[$nodeIndexToIdMap[$i]],
-                            $this
-                        )) {
+                        if (
+                            $nodeMap[$nodeIndexToIdMap[$i]][$this->parentColumn] == $invalidNodeId
+                            && !isset($invalidNodes[$nodeIndexToIdMap[$i]])
+                            && $options->filter->acceptInvalidNodeWithValidChild(
+                                $nodeMap[$invalidNodeId],
+                                $nodeMap[$nodeIndexToIdMap[$i]],
+                                $this
+                            )
+                        ) {
                             $foundValidChild = true;
                             break;
                         }
@@ -403,7 +405,7 @@ class TreeReader
                         do {
                             $invalidNodes[$invalidNodeId] = false;
                             $invalidNodeId = $nodeMap[$invalidNodeId][$this->parentColumn];
-                        } while($invalidNodeId !== null);
+                        } while($invalidNodeId !== null && isset($nodeMap[$invalidNodeId]));
                     } else {
                         // odstranit uzel
                         unset($nodeMap[$invalidNodeId]);
