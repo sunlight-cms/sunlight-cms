@@ -18,9 +18,9 @@ if ($continue) {
     $editscript_enable_layout = false;
     $editscript_enable_show_heading = false;
     $editscript_extra_row = "<tr class='valign-top'>
-<th>" . _lang('admin.content.form.url') . (!$new ? " <a onclick='this.href=$(\"input[name=link_url]\").val()' href='" . (UrlHelper::isAbsolute($query['link_url']) ? '' : SL_ROOT) . _e($query['link_url']) . "' target='_blank'><img src='images/icons/loupe.png' alt='prev'></a>" : '') . "</td>
-<td colspan='3'>
-<input class='inputmax' type='url' name='link_url' value='" . _e($query['link_url']) . "'>
+<th>" . _lang('admin.content.form.url') . (!$new && $query['link_url'] !== null ? " <a onclick='this.href=$(\"input[name=link_url]\").val()' href='" . (UrlHelper::isAbsolute($query['link_url']) ? '' : SL_ROOT) . _e($query['link_url']) . "' target='_blank'><img src='images/icons/loupe.png' alt='prev'></a>" : '') . "</td>
+<td>
+<input class='inputmax' type='url' name='link_url' value='" . _e($query['link_url'] ?? '') . "'>
 </td>
 </tr>";
     $custom_settings = "<tr><td colspan='2'><label><input type='checkbox' name='link_new_window' value='1'" . Form::activateCheckbox($query['link_new_window']) . "> " . _lang('admin.content.form.newwindow') . "</label></td></tr>";

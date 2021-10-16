@@ -95,7 +95,7 @@ abstract class PageMenu
                 // vychozi implementace
                 if ($url === null) {
                     if ($page['type'] == Page::LINK) {
-                        $url = _e($page['link_url']);
+                        $url = _e($page['link_url'] ?? '');
                     } else {
                         $url = Router::page($page['id'], $page['slug']);
                     }
