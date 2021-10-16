@@ -42,7 +42,7 @@ if ($continue) {
         $error = null;
         if (!PageManipulator::delete($query, $recursive, $error)) {
             // selhani
-            $output .= Message::error($error);
+            $output .= Message::error($error, true);
 
             return;
         }
