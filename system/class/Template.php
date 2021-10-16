@@ -436,14 +436,6 @@ abstract class Template
             }
         }
 
-        // pridat modul
-        if (self::currentIsModule()) {
-            $breadcrumbs[] = [
-                'title' => $_index->title,
-                'url' => $_index->url,
-            ];
-        }
-
         // pridat drobecky aktualni stranky
         foreach ($_index->crumbs as $crumb) {
             $breadcrumbs[] = $crumb;
