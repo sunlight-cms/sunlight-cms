@@ -5,7 +5,6 @@ use Sunlight\Extend;
 use Sunlight\GenericTemplates;
 use Sunlight\Plugin\TemplatePlugin;
 use Sunlight\Plugin\TemplateService;
-use Sunlight\Router;
 use Sunlight\Settings;
 use Sunlight\Template;
 use Sunlight\User;

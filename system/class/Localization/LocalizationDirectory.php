@@ -3,7 +3,6 @@
 namespace Sunlight\Localization;
 
 use Sunlight\Core;
-use Sunlight\Settings;
 
 /**
  * Localization dictionary that loads entries from files in the given directory
