@@ -5,7 +5,7 @@ use Sunlight\Database\Database as DB;
 use Sunlight\Message;
 use Sunlight\Plugin\TemplatePlugin;
 use Sunlight\Plugin\TemplateService;
-use Sunlight\Util\Request;
+use Sunlight\Router;use Sunlight\Util\Request;
 use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
@@ -59,7 +59,7 @@ $output .= '<form method="post">';
 $output .= _buffer(function () { ?>
     <form method="post">
     <p>
-        <a class="button" href="index.php?p=content-boxes-edit"><img class="icon" src="images/icons/new.png" alt="new"><?= _lang('admin.content.boxes.new') ?></a>
+        <a class="button" href="<?= _e(Router::admin('content-boxes-edit')) ?>"><img class="icon" src="<?= Router::path('admin/images/icons/new.png') ?>" alt="new"><?= _lang('admin.content.boxes.new') ?></a>
     </p>
 <?php });
 
@@ -88,12 +88,12 @@ foreach ($boxes as $template_idt => $template_boxes) {
                     <td class="box-slot-cell box-sortable-cell"><?= _e(sprintf('%s - %s', $template->getLayoutLabel($box['layout']), $template->getSlotLabel($box['layout'], $box['slot']))) ?></td>
                     <td class="box-title-cell box-sortable-cell"><?= $box['title'] ?></td>
                     <td class="box-settings-cell">
-                        <?php if ($box['level'] > 0): $iconTitle = _lang('admin.content.form.level') . ' ' . _e($box['level']) . '+'; ?><img src="images/icons/lock3.png" class="icon" alt="<?= $iconTitle ?>" title="<?= $iconTitle ?>"><?php endif ?>
-                        <?php if ($box['page_ids'] !== null): $iconTitle = _lang('admin.content.boxes.page_ids.icon'); ?><img src="images/icons/tree.png" class="icon" alt="<?= $iconTitle ?>" title="<?= $iconTitle ?>"><?php endif ?>
+                        <?php if ($box['level'] > 0): $iconTitle = _lang('admin.content.form.level') . ' ' . _e($box['level']) . '+'; ?><img src="<?= Router::path('admin/images/icons/lock3.png') ?>" class="icon" alt="<?= $iconTitle ?>" title="<?= $iconTitle ?>"><?php endif ?>
+                        <?php if ($box['page_ids'] !== null): $iconTitle = _lang('admin.content.boxes.page_ids.icon'); ?><img src="<?= Router::path('admin/images/icons/tree.png') ?>" class="icon" alt="<?= $iconTitle ?>" title="<?= $iconTitle ?>"><?php endif ?>
                     </td>
                     <td class="box-action-cell">
-                        <a class="button" href="index.php?p=content-boxes-edit&amp;id=<?= _e($box['id']) ?>"><img src="images/icons/edit.png" alt="edit" class="icon"><?= _lang('global.edit') ?></a>
-                        <button onclick="return Sunlight.confirm()" name="action" value="delete:<?= _e($box['id']) ?>" class="button"><img src="images/icons/delete.png" alt="delete" class="icon"><?= _lang('global.delete') ?></button>
+                        <a class="button" href="<?= _e(Router::admin('content-boxes-edit', ['query' => ['id' => $box['id']]])) ?>"><img src="<?= Router::path('admin/images/icons/edit.png') ?>" alt="edit" class="icon"><?= _lang('global.edit') ?></a>
+                        <button onclick="return Sunlight.confirm()" name="action" value="delete:<?= _e($box['id']) ?>" class="button"><img src="<?= Router::path('admin/images/icons/delete.png') ?>" alt="delete" class="icon"><?= _lang('global.delete') ?></button>
                     </td>
                 </tr>
             <?php endforeach ?>
@@ -103,7 +103,7 @@ foreach ($boxes as $template_idt => $template_boxes) {
             <tr>
                 <td colspan="5">
                     <button name="action" value="save_ord" accesskey="s"><?= _lang('global.savechanges') ?></button>
-                    <a class="button right big" href="index.php?p=content-boxes-edit&amp;template=<?= _e(rawurlencode($template->getId())) ?>"><img class="icon" src="images/icons/new.png" alt="new"><?= _lang('admin.content.boxes.new.for_template') ?></a>
+                    <a class="button right big" href="<?= _e(Router::admin('content-boxes-edit', ['query' => ['template' => rawurlencode($template->getId())]])) ?>"><img class="icon" src="<?= Router::path('admin/images/icons/new.png') ?>" alt="new"><?= _lang('admin.content.boxes.new.for_template') ?></a>
                 </td>
             </tr>
         </tfoot>
@@ -135,8 +135,8 @@ if (!empty($unassigned_boxes)) $output .= _buffer(function () use ($unassigned_b
                     <td><?= _e(sprintf('%s - %s', $box['layout'], $box['slot'])) ?></td>
                     <td><?= $box['title'] ?></td>
                     <td>
-                        <a class="button" href="index.php?p=content-boxes-edit&amp;id=<?= _e($box['id']) ?>"><img src="images/icons/edit.png" alt="edit" class="icon"><?= _lang('global.edit') ?></a>
-                        <button onclick="return Sunlight.confirm()" name="action" value="delete:<?= _e($box['id']) ?>" class="button"><img src="images/icons/delete.png" alt="delete" class="icon"><?= _lang('global.delete') ?></button>
+                        <a class="button" href="<?= _e(Router::admin('content-boxes-edit', ['query' => ['id' => $box['id']]])) ?>"><img src="<?= Router::path('admin/images/icons/edit.png') ?>" alt="edit" class="icon"><?= _lang('global.edit') ?></a>
+                        <button onclick="return Sunlight.confirm()" name="action" value="delete:<?= _e($box['id']) ?>" class="button"><img src="<?= Router::path('admin/images/icons/delete.png') ?>" alt="delete" class="icon"><?= _lang('global.delete') ?></button>
                     </td>
                 </tr>
             <?php endforeach ?>

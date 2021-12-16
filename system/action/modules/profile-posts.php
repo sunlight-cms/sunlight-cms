@@ -41,12 +41,12 @@ $_index->title = str_replace(
 );
 
 // odkaz zpet na profil
-$_index->backlink = Router::module('profile', 'id=' . $id);
+$_index->backlink = Router::module('profile', ['query' => ['id' => $id]]);
 
 // tabulka
 [$columns, $joins, $cond, $count] = Post::createFilter('post', [Post::SECTION_COMMENT, Post::ARTICLE_COMMENT, Post::BOOK_ENTRY, Post::FORUM_TOPIC, Post::PLUGIN], [], "post.author=" . $query['id'], true);
 
-$paging = Paginator::render(Router::module('profile-posts', 'id=' . $id), 15, $count);
+$paging = Paginator::render(Router::module('profile-posts', ['query' => ['id' => $id]]), 15, $count);
 if (Paginator::atTop()) {
     $output .= $paging['paging'];
 }

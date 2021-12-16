@@ -75,7 +75,7 @@ if (User::SUPER_ADMIN_ID == User::getId() && isset($_POST['switch_user'])) {
 
     if ($query !== false) {
         User::login($query['id'], $query['password'], $query['email']);
-        $_admin->redirect(Router::module('login', null, true));
+        $_admin->redirect(Router::module('login', ['absolute' => true]));
 
         return;
     }
@@ -97,16 +97,16 @@ if (User::hasPrivilege('admingroups')) {
     <tr>
     <td>
         <span class='" . ($is_sys ? 'em' : '') . (($item['blocked'] == 1) ? ' strike' : '') . "'" . (($item['color'] !== '') ? " style='color:" . $item['color'] . ";'" : '') . ">"
-            . (($item['reglist'] == 1) ? "<img src='images/icons/action.png' alt='reglist' class='icon' title='" . _lang('admin.users.groups.reglist') . "'>" : '')
-            . (($item['icon'] != "") ? "<img src='" . Router::generate('images/groupicons/' . $item['icon']) . "' alt='icon' class='groupicon'> " : '')
+            . (($item['reglist'] == 1) ? "<img src='" . _e(Router::path('admin/images/icons/action.png')) . "' alt='reglist' class='icon' title='" . _lang('admin.users.groups.reglist') . "'>" : '')
+            . (($item['icon'] != "") ? "<img src='" . _e(Router::path('images/groupicons/' . $item['icon'])) . "' alt='icon' class='groupicon'> " : '')
             . $item['title']
         . "</span>
     </td>
     <td>" . $item['level'] . "</td>
-    <td>" . (($item['id'] != User::GUEST_GROUP_ID) ? "<a href='index.php?p=users-list&amp;group_id=" . $item['id'] . "'><img src='images/icons/list.png' alt='list' class='icon'>" . $item['user_count'] . "</a>" : "-") . "</td>
+    <td>" . (($item['id'] != User::GUEST_GROUP_ID) ? "<a href='" . _e(Router::admin('users-list', ['query' => ['group_id' => $item['id']]])) . "'><img src='" . _e(Router::path('admin/images/icons/list.png')) . "' alt='list' class='icon'>" . $item['user_count'] . "</a>" : "-") . "</td>
     <td class='actions'>
-        <a class='button' href='index.php?p=users-editgroup&amp;id=" . $item['id'] . "'><img src='images/icons/edit.png' alt='edit' class='icon'>" . _lang('global.edit') . "</a>
-        <a class='button' href='index.php?p=users-delgroup&amp;id=" . $item['id'] . "'><img src='images/icons/delete.png' alt='del' class='icon'>" . _lang('global.delete') . "</a>
+        <a class='button' href='" . _e(Router::admin('users-editgroup', ['query' => ['id' => $item['id']]])) . "'><img src='" . _e(Router::path('admin/images/icons/edit.png')) . "' alt='edit' class='icon'>" . _lang('global.edit') . "</a>
+        <a class='button' href='" . _e(Router::admin('users-delgroup', ['query' => ['id' => $item['id']]])) . "'><img src='" . _e(Router::path('admin/images/icons/delete.png')) . "' alt='del' class='icon'>" . _lang('global.delete') . "</a>
     </td>
     </tr>\n";
     }
@@ -148,21 +148,21 @@ $output .= $message . "
     <td>
     <h2>" . _lang('admin.users.users') . "</h2>
     <p>
-      <a class='button block' href='index.php?p=users-edit'><img src='images/icons/big-new.png' alt='new' class='icon'>" . _lang('global.create') . "</a>
-      <a class='button block' href='index.php?p=users-list'><img src='images/icons/big-list.png' alt='act' class='icon'>" . _lang('admin.users.list') . "</a>
-      <a class='button block' href='index.php?p=users-move'><img src='images/icons/big-move.png' alt='act' class='icon'>" . _lang('admin.users.move') . "</a>
+      <a class='button block' href='" . _e(Router::admin('users-edit')) . "'><img src='" . _e(Router::path('admin/images/icons/big-new.png')) . "' alt='new' class='icon'>" . _lang('global.create') . "</a>
+      <a class='button block' href='" . _e(Router::admin('users-list')) . "'><img src='" . _e(Router::path('admin/images/icons/big-list.png')) . "' alt='act' class='icon'>" . _lang('admin.users.list') . "</a>
+      <a class='button block' href='" . _e(Router::admin('users-move')) . "'><img src='" . _e(Router::path('admin/images/icons/big-move.png')) . "' alt='act' class='icon'>" . _lang('admin.users.move') . "</a>
     </p>
 
     <h2>" . _lang('global.action') . "</h2>
 
-    <form class='cform' action='index.php' method='get' name='edituserform'>
+    <form class='cform' action='" . _e(Router::admin(null)) . "' method='get' name='edituserform'>
     <input type='hidden' name='p' value='users-edit'>
     <h3>" . _lang('admin.users.edituser') . "</h3>
     <input type='text' name='id' class='inputsmall'>
     <input class='button' type='submit' value='" . _lang('global.do') . "'>
     </form>
 
-    <form class='cform' action='index.php' method='get' name='deleteuserform'>
+    <form class='cform' action='" . _e(Router::admin(null)) . "' method='get' name='deleteuserform'>
     <input type='hidden' name='p' value='users-delete'>
     " . Xsrf::getInput() . "
     <h3>" . _lang('admin.users.deleteuser') . "</h3>
@@ -172,7 +172,7 @@ $output .= $message . "
 
     " . ((User::SUPER_ADMIN_ID == User::getId()) ? "
 
-    <form action='index.php?p=users' method='post'>
+    <form action='" . _e(Router::admin('users')) . "' method='post'>
     <h3>" . _lang('admin.users.switchuser') . "</h3>
     <input type='text' name='switch_user' class='inputsmall'>
     <input class='button' type='submit' value='" . _lang('global.do') . "'>
@@ -184,7 +184,7 @@ $output .= $message . "
 
     " . (User::hasPrivilege('admingroups') ? "<td>
     <h2>" . _lang('admin.users.groups') . "</h2>
-    <form action='index.php?p=users' method='post'>
+    <form action='" . _e(Router::admin('users')) . "' method='post'>
         <p class='bborder'><strong>" . _lang('admin.users.groups.new') . ":</strong> "
         . Admin::userSelect("type", -1, "1", null, _lang('admin.users.groups.new.empty'), true)
         . " <input class='button' type='submit' value='" . _lang('global.do') . "'>

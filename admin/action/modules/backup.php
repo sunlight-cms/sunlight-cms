@@ -8,6 +8,7 @@ use Sunlight\Core;
 use Sunlight\Extend;
 use Sunlight\GenericTemplates;
 use Sunlight\Message;
+use Sunlight\Router;
 use Sunlight\User;
 use Sunlight\Util\Arr;
 use Sunlight\Util\Environment;
@@ -223,7 +224,7 @@ if (!empty($_POST)) {
 
                                 $config_info['estimated_time'] = $estimated_time;
 
-                                $backup_size_display .= ' <img src="images/icons/warn.png" class="icon" alt="warn">';
+                                $backup_size_display .= ' <img src="' . _e(Router::path('admin/images/icons/warn.png')) . '" class="icon" alt="warn">';
                                 $backup_size_warning = Message::warning(_lang('admin.backup.restore.size_warning', ['%config_info%' => json_encode($config_info)]));
                             }
 
@@ -331,7 +332,7 @@ if (!empty($backup_files)) {
     <td><label><input type="radio" name="backup_file" value="' . _e($backup_file) . '"> ' . _e($displayed_backup_name) . '</label></td>
     <td>' . GenericTemplates::renderFileSize(filesize($backup_dir . '/' . $backup_file)) . '</td>
     <td>' . GenericTemplates::renderTime($backup_ctime) . '</td>
-    <td><a href="index.php?p=backup&download=' . _e($backup_file) . '" title="' . _lang('global.download') . '"><img src="images/icons/floppy.png" alt="' . _lang('global.download') . '"></a></td>
+    <td><a href="' . _e(Router::admin('backup', ['query' => ['download' => $backup_file]])) . '" title="' . _lang('global.download') . '"><img src="' . _e(Router::path('admin/images/icons/floppy.png')) . '" alt="' . _lang('global.download') . '"></a></td>
 </tr>
 ';
     }

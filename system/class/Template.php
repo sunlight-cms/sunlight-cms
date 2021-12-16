@@ -73,17 +73,17 @@ abstract class Template
         // pripravit css
         $css = [];
         foreach ($_template->getOption('css') as $key => $path) {
-            $css[$key] = UrlHelper::isAbsolute($path) ? $path : Router::generate($path);
+            $css[$key] = UrlHelper::isAbsolute($path) ? $path : Router::path($path);
         }
 
         // pripravit js
         $js = [
-            'jquery' => Router::generate('system/js/jquery.js'),
-            'sunlight' => Router::generate('system/js/sunlight.js'),
-            'rangyinputs' => Router::generate('system/js/rangyinputs.js'),
+            'jquery' => Router::path('system/js/jquery.js'),
+            'sunlight' => Router::path('system/js/sunlight.js'),
+            'rangyinputs' => Router::path('system/js/rangyinputs.js'),
         ];
         foreach ($_template->getOption('js') as $key => $path) {
-            $js[$key] = UrlHelper::isAbsolute($path) ? $path : Router::generate($path);
+            $js[$key] = UrlHelper::isAbsolute($path) ? $path : Router::path($path);
         }
 
         // titulek
@@ -113,7 +113,7 @@ abstract class Template
 
         if (Settings::get('favicon')) {
             echo '
-<link rel="shortcut icon" href="' . _e(Router::file('favicon.ico') . '?' . Settings::get('cacheid')) . '">';
+<link rel="shortcut icon" href="' . _e(Router::path('favicon.ico') . '?' . Settings::get('cacheid')) . '">';
         }
 
         echo '
@@ -267,7 +267,7 @@ abstract class Template
     {
         return
             "<li><a href=\"https://sunlight-cms.cz/\">SunLight CMS</a></li>\n"
-            . ((!Settings::get('adminlinkprivate') || (User::isLoggedIn() && User::hasPrivilege('administration'))) ? '<li><a href="' . Router::generate('admin/') . '">' . _lang('global.adminlink') . "</a></li>\n" : '');
+            . ((!Settings::get('adminlinkprivate') || (User::isLoggedIn() && User::hasPrivilege('administration'))) ? '<li><a href="' . _e(Router::adminIndex()) . '">' . _lang('global.adminlink') . "</a></li>\n" : '');
     }
 
     /**
@@ -516,7 +516,7 @@ abstract class Template
         if (!User::isLoggedIn()) {
             // prihlaseni
             $items['login'] = [
-                Router::module('login', 'login_form_return=' . rawurlencode($_SERVER['REQUEST_URI'])),
+                Router::module('login', ['query' => ['login_form_return' => $_SERVER['REQUEST_URI']]]),
                 _lang('usermenu.login'),
             ];
             if (Settings::get('registration')) {
@@ -530,7 +530,7 @@ abstract class Template
             // profil
             if ($profileLink) {
                 $items['profile'] = [
-                    Router::module('profile', 'id=' . User::getUsername()),
+                    Router::module('profile', ['query' => ['id' => User::getUsername()]]),
                     _lang('usermenu.profile'),
                 ];
             }
@@ -558,7 +558,7 @@ abstract class Template
             // administrace
             if ($adminLink && User::hasPrivilege('administration')) {
                 $items['admin'] = [
-                    Router::generate('admin/'),
+                    Router::adminIndex(),
                     _lang('global.adminlink')
                 ];
             }
@@ -575,7 +575,7 @@ abstract class Template
         // odhlaseni
         if (User::isLoggedIn()) {
             $items['logout'] = [
-                Xsrf::addToUrl(Router::generate("system/script/logout.php?_return=" . rawurlencode($_SERVER['REQUEST_URI']))),
+                Xsrf::addToUrl(Router::path('system/script/logout.php', ['query' => ['_return' => $_SERVER['REQUEST_URI']]])),
                 _lang('usermenu.logout'),
             ];
         }

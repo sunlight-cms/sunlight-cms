@@ -23,7 +23,7 @@ if (!Settings::get('lostpass')) {
 }
 
 if (User::isLoggedIn()) {
-    $_index->redirect(Router::module('login', null, true));
+    $_index->redirect(Router::module('login', ['absolute' => true]));
     return;
 }
 
@@ -123,7 +123,7 @@ if (isset($_GET['user'], $_GET['hash'])) {
         ]);
 
         // odeslani emailu
-        $link = Router::module('lostpass', 'user=' . $username . '&hash=' . $hash, true);
+        $link = Router::module('lostpass', ['query' => ['id' => $username , 'hash' => $hash], 'absolute' => true]);
         $domain = Core::getBaseUrl()->getFullHost();
 
         if (!Email::send(

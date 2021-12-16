@@ -16,7 +16,7 @@ abstract class Extend
      * @param callable $callback
      * @param int      $priority
      */
-    static function reg(string $event, callable $callback, int $priority = 0): void
+    static function reg(string $event, $callback, int $priority = 0): void
     {
         Core::$eventEmitter->on($event, $callback, $priority);
     }

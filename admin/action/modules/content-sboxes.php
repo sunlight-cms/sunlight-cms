@@ -3,6 +3,7 @@
 use Sunlight\Post\Post;
 use Sunlight\Database\Database as DB;
 use Sunlight\Message;
+use Sunlight\Router;
 use Sunlight\Util\Form;
 use Sunlight\Util\Html;
 use Sunlight\Util\Request;
@@ -128,7 +129,7 @@ $output .= "
 
 <fieldset class='hs_fieldset'>
 <legend>" . _lang('admin.content.sboxes.create') . "</legend>
-<form class='cform' action='index.php?p=content-sboxes' method='post'>
+<form class='cform' action='" . _e(Router::admin('content-sboxes')) . "' method='post'>
 <input type='hidden' name='action' value='1'>
 
 <table>
@@ -158,7 +159,7 @@ $output .= "
 
 <fieldset>
 <legend>" . _lang('admin.content.sboxes.manage') . "</legend>
-<form class='cform' action='index.php?p=content-sboxes' method='post'>
+<form class='cform' action='" . _e(Router::admin('content-sboxes')) . "' method='post'>
 <input type='hidden' name='action' value='2'>
 
 <input type='submit' value='" . _lang('global.savechanges') . "' accesskey='s'>
@@ -194,7 +195,7 @@ if (DB::size($shoutboxes) != 0) {
     <label><input type='checkbox' name='s" . $shoutbox['id'] . "_public' value='1'" . Form::activateCheckbox($shoutbox['public']) . "> " . _lang('admin.content.form.unregpost') . "</label><br>
     <label><input type='checkbox' name='s" . $shoutbox['id'] . "_locked' value='1'" . Form::activateCheckbox($shoutbox['locked']) . "> " . _lang('admin.content.form.locked2') . "</label><br>
     <label><input type='checkbox' name='s" . $shoutbox['id'] . "_delposts' value='1'> " . _lang('admin.content.form.delposts') . "</label><br><br>
-    <a class='button' href='" . _e(Xsrf::addToUrl("index.php?p=content-sboxes&del=" . $shoutbox['id'])) . "' onclick='return Sunlight.confirm();'><img src='images/icons/delete.png' alt='del' class='icon'>" . _lang('global.delete') . "</a>
+    <a class='button' href='" . _e(Xsrf::addToUrl(Router::admin('content-sboxes', ['query' => ['del' => $shoutbox['id']]]))) . "' onclick='return Sunlight.confirm();'><img src='" . _e(Router::path('admin/images/icons/delete.png')) . "' alt='del' class='icon'>" . _lang('global.delete') . "</a>
     </td>
     </tr>
 

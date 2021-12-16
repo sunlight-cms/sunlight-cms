@@ -28,7 +28,7 @@ class Gallery
             $fullUrl = $img['full'];
             $fullFile = null;
         } else {
-            $fullUrl = Router::generate($img['full']);
+            $fullUrl = Router::path($img['full']);
             $fullFile = SL_ROOT . $img['full'];
         }
 
@@ -36,7 +36,7 @@ class Gallery
             if (UrlHelper::isAbsolute($img['prev'])) {
                 $prevUrl = $img['prev'];
             } else {
-                $prevUrl = Router::generate($img['prev']);
+                $prevUrl = Router::path($img['prev']);
             }
         } elseif ($fullFile !== null) {
             $prevUrl = Router::file(ImageService::getThumbnail('gallery', $fullFile, ['w' => $width, 'h' => $height]));

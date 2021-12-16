@@ -2,6 +2,7 @@
 
 use Sunlight\Database\Database as DB;
 use Sunlight\Message;
+use Sunlight\Router;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
 use Sunlight\Util\StringManipulator;
@@ -18,8 +19,8 @@ $message = "";
 // text a menu
 $output .= "<p class='bborder'>" . _lang('admin.content.redir.p') . "</p>
 <p>
-    <a class='button' href='index.php?p=content-redir&amp;new'><img src='images/icons/new.png' alt='new' class='icon'>" . _lang('admin.content.redir.act.new') . "</a>
-    <a class='button' href='index.php?p=content-redir&amp;wipe'><img src='images/icons/delete.png' alt='wipe' class='icon'>" . _lang('admin.content.redir.act.wipe') . "</a>
+    <a class='button' href='" . _e(Router::admin('content-redir', ['query' => ['new' => 1]])) . "'><img src='" . _e(Router::path('admin/images/icons/new.png')) . "' alt='new' class='icon'>" . _lang('admin.content.redir.act.new') . "</a>
+    <a class='button' href='" . _e(Router::admin('content-redir', ['query' => ['wipe' => 1]])) . "'><img src='" . _e(Router::path('admin/images/icons/delete.png')) . "' alt='wipe' class='icon'>" . _lang('admin.content.redir.act.wipe') . "</a>
 </p>
 ";
 
@@ -151,8 +152,8 @@ while ($r = DB::row($q)) {
         <td class='text-" . ($r['permanent'] ? 'success' : 'danger') . "'>" . _lang('global.' . ($r['permanent'] ? 'yes' : 'no')) . "</td>
         <td class='text-" . ($r['active'] ? 'success' : 'danger') . "'>" . _lang('global.' . ($r['active'] ? 'yes' : 'no')) . "</td>
         <td class='actions'>
-            <a class='button' href='index.php?p=content-redir&amp;edit=" . $r['id'] . "'><img src='images/icons/edit.png' alt='edit' class='icon'>" . _lang('global.edit') . "</a>
-            <a class='button' href='" . _e(Xsrf::addToUrl("index.php?p=content-redir&del=" . $r['id'])) . "' onclick='return Sunlight.confirm();'><img src='images/icons/delete.png' alt='del' class='icon'>" . _lang('global.delete') . "</a>
+            <a class='button' href='" . _e(Router::admin('content-redir', ['query' => ['edit' => $r['id']]])) . "'><img src='" . _e(Router::path('admin/images/icons/edit.png')) . "' alt='edit' class='icon'>" . _lang('global.edit') . "</a>
+            <a class='button' href='" . _e(Xsrf::addToUrl(Router::admin('content-redir', ['query' => ['del' => $r['id']]]))) . "' onclick='return Sunlight.confirm();'><img src='" . _e(Router::path('admin/images/icons/delete.png')) . "' alt='del' class='icon'>" . _lang('global.delete') . "</a>
         </td>
     </tr>";
     ++$counter;

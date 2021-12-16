@@ -5,6 +5,7 @@ use Sunlight\Core;
 use Sunlight\Database\Database as DB;
 use Sunlight\Email;
 use Sunlight\Message;
+use Sunlight\Router;
 use Sunlight\Settings;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
@@ -136,7 +137,7 @@ if (isset($_POST['text'])) {
 
 $output .= "
 <br>
-<form class='cform' action='index.php?p=other-massemail' method='post'>
+<form class='cform' action='" . _e(Router::admin('other-massemail')) . "' method='post'>
 <table class='formtable'>
 
 <tr>

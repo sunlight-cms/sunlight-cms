@@ -204,7 +204,7 @@ if ($search_query != '') {
             // vykonani a nacteni vysledku
             $q = DB::query($sql . ' LIMIT 100');
             while ($r = DB::row($q)) {
-                $link = UrlHelper::appendParams(Router::page($r['home'], $r['slug']), 'page=' . Paginator::getItemPage($r['var2'] ?: Settings::get('galdefault_per_page'), DB::table('gallery_image'), "ord<" . $r['ord'] . " AND home=" . $r['home']));
+                $link = Router::page($r['home'], $r['slug'], null, ['query' => ['page' => Paginator::getItemPage($r['var2'] ?: Settings::get('galdefault_per_page'), DB::table('gallery_image'), "ord<" . $r['ord'] . " AND home=" . $r['home'])]]);
                 $results[] = [
                     $link,
                     $r['gal_title'],

@@ -143,7 +143,7 @@ if (isset($_POST['save'])) {
         DB::update('user', 'id=' . User::getId(), $changeset);
         Extend::call('user.edit', ['id' => User::getId()]);
 
-        $_index->redirect(Router::module('settings', 'action=account&saved', true));
+        $_index->redirect(Router::module('settings', ['query' => ['action' => 'account', 'saved' => 1], 'absolute' => true]));
 
         return;
     } else {

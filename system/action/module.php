@@ -7,12 +7,12 @@ use Sunlight\Util\StringManipulator;
 
 defined('SL_ROOT') or exit;
 
-$_index->url = Router::module($_index->slug, $_url->getQueryString());
+$_index->url = Router::module($_index->slug, ['query' => $_url->getQuery()]);
 
 // presmerovani na hezkou verzi adresy
 if (Settings::get('pretty_urls') && !$_index->isRewritten) {
     $_url->remove('m');
-    $_index->redirect(Router::module($_index->slug, $_url->getQueryString(), true), true);
+    $_index->redirect(Router::module($_index->slug, ['query' => $_url->getQuery(), 'absolute' => true]), true);
     return;
 }
 

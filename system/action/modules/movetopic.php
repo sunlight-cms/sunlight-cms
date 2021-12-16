@@ -64,7 +64,7 @@ $output .= $message;
 
 // formular
 $output .= '
-<form action="' . _e(Router::module('movetopic', 'id=' . $id)) . '" method="post">
+<form action="' . _e(Router::module('movetopic', ['query' => ['id' => $id]])) . '" method="post">
 ' . Message::warning(_lang('mod.movetopic.text', ['%topic%' => $query['subject']]), true) . '
 <p>
 <select name="new_forum"' . (empty($forums) ? " disabled" : '') . '>

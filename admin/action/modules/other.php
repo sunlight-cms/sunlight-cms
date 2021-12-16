@@ -2,6 +2,7 @@
 
 use Sunlight\Admin\Admin;
 use Sunlight\Message;
+use Sunlight\Router;
 
 defined('SL_ROOT') or exit;
 
@@ -39,14 +40,14 @@ foreach ($other_modules as $type => $modules) {
     if (!empty($modules)) {
         $output .= "<td>\n";
         foreach ($modules as $module => $order) {
-            $url = $_admin->modules[$module]['url'] ?? 'index.php?p=' . $module;
-            $icon = $_admin->modules[$module]['other_icon'] ?? 'images/icons/big-cog.png';
+            $url = $_admin->modules[$module]['url'] ?? Router::admin($module);
+            $icon = $_admin->modules[$module]['other_icon'] ?? Router::path('images/icons/big-cog.png');
             $new_window = isset($_admin->modules[$module]['other_new_window']) && $_admin->modules[$module]['other_new_window'];
 
             $output .= '<a class="button block" href="' . $url . '"'
                 . ($new_window ? ' target="_blank"' : '')
                 . '>'
-                . '<img class="icon" alt="' . $module . '" src="' . $icon . '">'
+                . '<img class="icon" alt="' . $module . '" src="' . _e($icon) . '">'
                 . $_admin->modules[$module]['title']
                 . "</a>\n";
         }

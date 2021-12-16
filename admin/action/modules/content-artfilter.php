@@ -221,7 +221,7 @@ if (isset($_POST['category'])) {
 /* ---  vystup  --- */
 
 $output .= $message . "
-<form action='index.php?p=content-artfilter' method='post'>
+<form action='" . _e(Router::admin('content-artfilter')) . "' method='post'>
 ";
 
 if (!$infopage) {
@@ -326,12 +326,12 @@ if (!$infopage) {
             $output .= "<li><em>... (+" . ($found - $counter) . ")</em></li>\n";
             break;
         }
-        $output .= "<li><a href='" . Router::article($r['id'], $r['slug'], $r['cat_slug']) . "' target='_blank'>" . $r['title'] . "</a></li>\n";
+        $output .= "<li><a href='" . _e(Router::article($r['id'], $r['slug'], $r['cat_slug'])) . "' target='_blank'>" . $r['title'] . "</a></li>\n";
         ++$counter;
     }
 
     $output .="</ul>
-<input type='submit' value='" . _lang('global.do2') . "'> <a href='index.php?p=content-artfilter'>" . _lang('global.cancel') . "</a>
+<input type='submit' value='" . _lang('global.do2') . "'> <a href='" . _e(Router::admin('content-artfilter')) . "'>" . _lang('global.cancel') . "</a>
 ";
 }
 

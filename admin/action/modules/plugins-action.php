@@ -3,6 +3,7 @@
 use Sunlight\Admin\Admin;
 use Sunlight\Core;
 use Sunlight\Message;
+use Sunlight\Router;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
 
@@ -38,6 +39,6 @@ if ($result->isComplete()) {
 }
 
 // zobrazit vysledek
-$output .= Admin::backlink('index.php?p=plugins');
+$output .= Admin::backlink(Router::admin('plugins'));
 $output .= '<h1>' . _e($action->getTitle()) . ': ' . _e($plugin->getOption('name')) . "</h1>\n";
 $output .= $result;

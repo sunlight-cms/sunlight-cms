@@ -149,7 +149,7 @@ if (isset($_POST['text'])) {
                     $update_data['guest'] = $guest;
                 }
                 DB::update('post', 'id=' . DB::val($id), $update_data);
-                $_index->redirect(Router::module('editpost', 'id=' . $id . '&saved', true));
+                $_index->redirect(Router::module('editpost', ['query' => ['id' => $id , 'saved' => 1], 'absolute' => true]));
 
                 return;
             }
@@ -223,7 +223,7 @@ if ($form) {
     $output .= Form::render(
         [
             'name' => 'postform',
-            'action' => Router::module('editpost', 'id=' . $id),
+            'action' => Router::module('editpost', ['query' => ['id' => $id]]),
             'submit_text' => _lang('global.save'),
             'submit_append' => ' ' . PostForm::renderPreviewButton('postform', 'text')
                 . (($query['type'] != Post::PRIVATE_MSG || $query['xhome'] != -1) ? "<br><br><label><input type='checkbox' name='delete' value='1'> " . _lang('mod.editpost.delete') . "</label>" : ''),

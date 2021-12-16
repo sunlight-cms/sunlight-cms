@@ -433,7 +433,7 @@ if (!empty($_POST)) {
         PageManipulator::refreshLayouts($id);
     }
 
-    $_admin->redirect('index.php?p=content-edit' . $type_array[$type] . '&id=' . $id . '&saved');
+    $_admin->redirect(Router::admin('content-edit' . $type_array[$type], ['query' => ['id' => $id, 'saved' => 1]]));
 
     return;
 }
@@ -474,7 +474,13 @@ if (!$new && $id == Settings::get('index_page_id')) {
     $output .= Admin::note(_lang('admin.content.form.indexnote'));
 }
 
-$output .= "<form class='cform' action='index.php?p=content-edit" . $type_array[$type] . (!$new ? "&amp;id=" . $id : '') . (($type == Page::PLUGIN && $new) ? '&amp;idt=' . $type_idt : '') . "' method='post'>
+$actionOptions = array_merge(
+    [],
+    (!$new ? ['query' => ['id' => $id]] : []),
+    ($type == Page::PLUGIN && $new ? ['query' => ['idt' => $type_idt]] : [])
+);
+
+$output .= "<form class='cform' action='" . _e(Router::admin('content-edit' . $type_array[$type], $actionOptions)) . "' method='post'>
 " . $editscript_extra . "  
     <table class='formtable edittable'>
         <tbody>
@@ -521,7 +527,7 @@ $output .= "<form class='cform' action='index.php?p=content-edit" . $type_array[
 
                             . ($editscript_enable_content ?
                             "<tr class='valign-top'>
-                                <th>" . _lang('admin.content.form.content') . (!$new ? " <a href='" . Router::page($query['id'], $query['slug']) . "' target='_blank'><img src='images/icons/loupe.png' alt='prev'></a>" : '') . "</th>
+                                <th>" . _lang('admin.content.form.content') . (!$new ? " <a href='" . _e(Router::page($query['id'], $query['slug'])) . "' target='_blank'><img src='" . _e(Router::path('admin/images/icons/loupe.png')) . "' alt='prev'></a>" : '') . "</th>
                                 <td>" . $editor . "</td>
                             </tr>" : '')
 

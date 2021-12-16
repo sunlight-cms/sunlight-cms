@@ -5,6 +5,7 @@ use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\Message;
 use Sunlight\Plugin\TemplateService;
+use Sunlight\Router;
 use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Html;
@@ -123,7 +124,7 @@ if (isset($_POST['box_edit'])) do {
     }
 
     // redirect to form
-    $_admin->redirect('index.php?p=content-boxes-edit&id=' . rawurlencode($id) . '&' . ($new ? 'created' : 'saved'));
+    $_admin->redirect(Router::admin('content-boxes-edit', ['query' => ['id=' . rawurlencode($id), ($new ? 'created' : 'saved') => 1]]));
 
     return;
 } while (false);
@@ -137,7 +138,7 @@ if (isset($_GET['created'])) {
 
 // form
 $output .= _buffer(function () use ($id, $box, $new, $templates_to_choose_slot_from) { ?>
-    <form method="post" action="index.php?p=content-boxes-edit<?php if (!$new): ?>&amp;id=<?= _e($id) ?><?php endif ?>">
+    <form method="post" action="<?= _e(Router::admin('content-boxes-edit', (!$new ? ['query' => ['id' => $id]] : null))) ?>">
         <table class="formtable">
             <tr>
                 <th><?= _lang('admin.content.form.title') ?></th>

@@ -148,6 +148,82 @@ registerArgumentsSet(
     'user_group',
 );
 
+registerArgumentsSet(
+    'web_modules',
+    'editpost',
+    'locktopic',
+    'login',
+    'lostpass',
+    'messages',
+    'movetopic',
+    'profile',
+    'profile-art',
+    'profile-posts',
+    'reg',
+    'search',
+    'settings',
+    'settings-account',
+    'settings-download',
+    'settings-password',
+    'settings-profile',
+    'settings-remove',
+    'stickytopic',
+    'ulist'
+);
+
+registerArgumentsSet(
+    'admin_modules',
+    'index',
+    'index-edit',
+    'content',
+    'content-setindex',
+    'content-sort',
+    'content-titles',
+    'content-redir',
+    'content-articles',
+    'content-articles-list',
+    'content-articles-edit',
+    'content-articles-delete',
+    'content-confirm',
+    'content-movearts',
+    'content-artfilter',
+    'content-polls',
+    'content-polls-edit',
+    'content-sboxes',
+    'content-boxes',
+    'content-boxes-edit',
+    'content-delete',
+    'content-editsection',
+    'content-editcategory',
+    'content-editgroup',
+    'content-editbook',
+    'content-editseparator',
+    'content-editlink',
+    'content-editgallery',
+    'content-editforum',
+    'content-editpluginpage',
+    'content-manageimgs',
+    'users',
+    'users-editgroup',
+    'users-delgroup',
+    'users-list',
+    'users-edit',
+    'users-delete',
+    'users-move',
+    'fman',
+    'plugins',
+    'plugins-action',
+    'plugins-upload',
+    'settings',
+    'backup',
+    'other',
+    'other-patch',
+    'other-cleanup',
+    'other-sqlex',
+    'other-php',
+    'other-massemail'
+);
+
 expectedArguments(\Sunlight\Settings::get(), 0, argumentsSet('settings'));
 expectedArguments(\Sunlight\Settings::update(), 0, argumentsSet('settings'));
 expectedArguments(\Sunlight\Settings::overwrite(), 0, argumentsSet('settings'));
@@ -161,3 +237,5 @@ expectedArguments(\Sunlight\Database\Database::updateSet(), 0, argumentsSet('tab
 expectedArguments(\Sunlight\Database\Database::updateSetMulti(), 0, argumentsSet('tables'));
 expectedArguments(\Sunlight\Database\Database::delete(), 0, argumentsSet('tables'));
 expectedArguments(\Sunlight\Database\Database::deleteSet(), 0, argumentsSet('tables'));
+expectedArguments(\Sunlight\Router::module(), 0, argumentsSet('web_modules'));
+expectedArguments(\Sunlight\Router::admin(), 0, argumentsSet('admin_modules'));

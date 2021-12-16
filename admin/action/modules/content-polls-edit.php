@@ -4,6 +4,7 @@ use Sunlight\Admin\Admin;
 use Sunlight\Database\Database as DB;
 use Sunlight\IpLog;
 use Sunlight\Message;
+use Sunlight\Router;
 use Sunlight\User;
 use Sunlight\Util\Arr;
 use Sunlight\Util\Form;
@@ -22,7 +23,7 @@ if (isset($_GET['id'])) {
     $query = DB::queryRow("SELECT p.* FROM " . DB::table('poll') . " p WHERE p.id=" . $id . Admin::pollAccess());
     if ($query !== false) {
         $new = false;
-        $actionbonus = "&amp;id=" . $id;
+        $actionbonus = ['query' => ['id' => $id]];
         $submitcaption = _lang('global.save');
         $continue = true;
     }
@@ -30,7 +31,7 @@ if (isset($_GET['id'])) {
     $id = -1;
     $query = ['author' => User::getId(), 'question' => "", 'answers' => "", 'locked' => 0];
     $new = true;
-    $actionbonus = "";
+    $actionbonus = null;
     $submitcaption = _lang('global.create');
     $continue = true;
 }
@@ -120,7 +121,7 @@ if (isset($_POST['question'])) {
             }
 
             // presmerovani
-            $_admin->redirect('index.php?p=content-polls-edit&id=' . $id . '&saved');
+            $_admin->redirect(Router::admin('content-polls-edit', ['query' => ['id' => $id, 'saved' => 1]]));
 
             return;
 
@@ -133,7 +134,7 @@ if (isset($_POST['question'])) {
             'locked' => $locked,
             'votes' => trim(str_repeat("0-", $answers_count), "-")
         ], true);
-        $_admin->redirect('index.php?p=content-polls-edit&id=' . $newid . '&created');
+        $_admin->redirect(Router::admin('content-polls-edit', ['query' => ['id' => $newid, 'created' => 1]]));
 
         return;
 
@@ -166,7 +167,7 @@ if ($continue) {
     }
 
     $output .= $message . "
-  <form action='index.php?p=content-polls-edit" . $actionbonus . "' method='post'>
+  <form action='" . _e(Router::admin('content-polls-edit', $actionbonus)) . "' method='post'>
   <table class='formtable'>
 
   <tr>
@@ -195,7 +196,7 @@ if ($continue) {
   </tr>
 
   <tr><td></td>
-  <td><input type='submit' value='" . $submitcaption . "' accesskey='s'>" . (!$new ? " <small>" . _lang('admin.content.form.thisid') . " " . $id . "</small> <span class='customsettings'><a class='button' href='" . _e(Xsrf::addToUrl("index.php?p=content-polls&del=" . $id)) . "' onclick='return Sunlight.confirm();'><img src='images/icons/delete.png' class='icon' alt='del'> " . _lang('global.delete') . "</a>" : '') . "</span></td>
+  <td><input type='submit' value='" . $submitcaption . "' accesskey='s'>" . (!$new ? " <small>" . _lang('admin.content.form.thisid') . " " . $id . "</small> <span class='customsettings'><a class='button' href='" . _e(Xsrf::addToUrl(Router::admin('content-polls', ['query' => ['del' => $id]]))) . "' onclick='return Sunlight.confirm();'><img src='" . _e(Router::path('admin/images/icons/delete.png')) . "' class='icon' alt='del'> " . _lang('global.delete') . "</a>" : '') . "</span></td>
   </tr>
 
   </table>

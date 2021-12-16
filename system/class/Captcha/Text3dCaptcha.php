@@ -113,14 +113,14 @@ class Text3dCaptcha
 
         $w = $this->computeTextWidth($text) + $this->horizontalPadding * 2;
         $h = imagefontheight($this->font) + $this->verticalPadding * 2;
-        $pad = $this->scale * $h * cos($this->projectionAngle);
+        $pad = (int) ($this->scale * $h * cos($this->projectionAngle));
 
         $matrix = Image::blank($w, $h);
 
         $this->drawText($matrix, $text, $this->horizontalPadding, $this->verticalPadding);
         $this->drawNoise($matrix, $this->noise);
 
-        $captcha = Image::blank($w * $this->scale + $pad, $h * sin($this->projectionAngle) * $this->scale);
+        $captcha = Image::blank((int) ($w * $this->scale + $pad), (int) ($h * sin($this->projectionAngle) * $this->scale));
 
         if (function_exists('imageantialias')) {
             imageantialias($captcha->resource, true);
@@ -146,16 +146,16 @@ class Text3dCaptcha
     }
 
     /**
-     * @param int $x
-     * @param int $y
-     * @param int $z
-     * @return array
+     * @param float $x
+     * @param float $y
+     * @param float $z
+     * @return int[]
      */
-    private function to2d(int $x, int $y, int $z): array
+    private function to2d(float $x, float $y, float $z): array
     {
         return [
-            $x * $this->scale - $y * $this->scale * cos($this->projectionAngle),
-            $y * $this->scale * sin($this->projectionAngle) - $z * $this->scale,
+            (int) ($x * $this->scale - $y * $this->scale * cos($this->projectionAngle)),
+            (int) ($y * $this->scale * sin($this->projectionAngle) - $z * $this->scale),
         ];
     }
 

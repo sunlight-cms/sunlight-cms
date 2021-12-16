@@ -424,7 +424,7 @@ class StepRunner
 
     <p>
     <?php if ($step->getNumber() > 1): ?>
-        <a class="btn btn-lg" id="start-over" href="."><?php Labels::render('step.reset') ?></a>
+        <a class="btn btn-lg" id="start-over" href="<?= Core::getBaseUrl() ?>/install/"><?php Labels::render('step.reset') ?></a>
     <?php endif ?>
     <?php if ($step->isSubmittable()): ?>
         <input id="submit" name="step_submit" type="submit" value="<?php Labels::render('step.submit') ?>">

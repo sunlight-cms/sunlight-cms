@@ -60,7 +60,7 @@ $output .= $message;
 // formular
 if (!$success) {
     $output .= '
-    <form action="' . _e(Router::module('stickytopic', 'id=' . $id)) . '" method="post">
+    <form action="' . _e(Router::module('stickytopic', ['query' => ['id' => $id]])) . '" method="post">
     ' . Message::warning(_lang('mod.stickytopic.text' . $unstick, ['%topic%' => $query['subject']]), true) . '
     <input type="submit" name="doit" value="' . _lang('mod.stickytopic.submit' . $unstick) . '">
     ' . Xsrf::getInput() . '</form>

@@ -5,6 +5,7 @@ use Sunlight\Post\Post;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\Message;
+use Sunlight\Router;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
 
@@ -37,7 +38,7 @@ if (isset($_POST['confirm'])) {
     Extend::call('admin.article.delete', ['id' => $id]);
 
     // presmerovani
-    $_admin->redirect('index.php?p=content-articles-list&cat=' . $returnid . '&page=' . $returnpage . '&artdeleted');
+    $_admin->redirect(Router::admin('content-articles-list', ['query' => ['cat' => $returnid, 'page' => $returnpage, 'artdeleted' => 1]]));
 
     return;
 
@@ -48,10 +49,10 @@ if (isset($_POST['confirm'])) {
 if ($continue) {
 
     $output .=
-Admin::backlink('index.php?p=content-articles-list&cat=' . $returnid . '&page=' . $returnpage) . "
+Admin::backlink(Router::admin('content-articles-list', ['query' => ['cat' => $returnid, 'page' => $returnpage]])) . "
 <h1>" . _lang('admin.content.articles.delete.title') . "</h1>
 <p class='bborder'>" . _lang('admin.content.articles.delete.p', ["%arttitle%" => $query['title']]) . "</p>
-<form class='cform' action='index.php?p=content-articles-delete&amp;id=" . $id . "&amp;returnid=" . $returnid . "&amp;returnpage=" . $returnpage . "' method='post'>
+<form class='cform' action='" . _e(Router::admin('content-articles-delete', ['query' => ['id' => $id, 'returnid' => $returnid, 'returnpage' => $returnpage]])) . "' method='post'>
 <input type='hidden' name='confirm' value='1'>
 <input type='submit' value='" . _lang('admin.content.articles.delete.confirmbox') . "'>
 " . Xsrf::getInput() . "</form>

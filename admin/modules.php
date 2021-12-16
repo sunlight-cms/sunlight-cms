@@ -1,5 +1,6 @@
 <?php
 
+use Sunlight\Router;
 use Sunlight\User;
 
 defined('SL_ROOT') or exit;
@@ -16,7 +17,7 @@ defined('SL_ROOT') or exit;
             access                  => 1/0 nebo string (vyraz jako PHP kod)
 
             [script]                => cesta ke skriptu (vychozi je "module/*nazev*.php", false = zadny)
-            [url]                   => vlastni URL modulu (vychozi je "index.php?p=*nazev*")
+            [url]                   => vlastni URL modulu (vychozi je pouziti Router::module())
             [parent]                => nazev nadrazeneho modulu
             [children]              => pole jako seznam podrazenych modulu
             [custom_header] (0)     => 1/0 nevykreslovat titulek a zpetny odkaz
@@ -328,7 +329,7 @@ return [
         'other' => true,
         'other_system' => true,
         'other_order' => 0,
-        'other_icon' => 'images/icons/big-update.png',
+        'other_icon' => Router::path('admin/images/icons/big-update.png'),
     ],
     'other-cleanup' => [
         'title' => _lang('admin.other.cleanup.title'),
@@ -337,7 +338,7 @@ return [
         'other' => true,
         'other_system' => true,
         'other_order' => 10,
-        'other_icon' => 'images/icons/big-broom.png',
+        'other_icon' => Router::path('admin/images/icons/big-broom.png'),
     ],
     'other-sqlex' => [
         'title' => _lang('admin.other.sqlex.title'),
@@ -346,18 +347,18 @@ return [
         'other' => true,
         'other_system' => true,
         'other_order' => 20,
-        'other_icon' => 'images/icons/big-db.png',
+        'other_icon' => Router::path('admin/images/icons/big-db.png'),
     ],
     'other-php' => [
         'title' => _lang('admin.other.php.title'),
         'access' => User::hasPrivilege('adminother') && User::isSuperAdmin(),
-        'url' => 'script/php.php',
+        'url' => Router::path('admin/script/php.php'),
         'parent' => 'other',
         'other' => true,
         'other_system' => true,
         'other_order' => 30,
         'other_new_window' => true,
-        'other_icon' => 'images/icons/big-php.png',
+        'other_icon' => Router::path('admin/images/icons/big-php.png'),
     ],
     'other-massemail' => [
         'title' => _lang('admin.other.massemail.title'),
@@ -366,6 +367,6 @@ return [
         'other' => true,
         'other_system' => true,
         'other_order' => 40,
-        'other_icon' => 'images/icons/big-mail.png',
+        'other_icon' => Router::path('admin/images/icons/big-mail.png'),
     ],
 ];

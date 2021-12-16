@@ -60,7 +60,7 @@ $output .= $message;
 // formular
 if (!$success) {
     $output .= '
-    <form action="' . _e(Router::module('locktopic', 'id=' . $id)) . '" method="post">
+    <form action="' . _e(Router::module('locktopic', ['query' => ['id' => $id]])) . '" method="post">
     ' . Message::warning(_lang('mod.locktopic.text' . $unlock, ['%topic%' => $query['subject']]), true) . '
     <input type="submit" name="doit" value="' . _lang('mod.locktopic.submit' . $unlock) . '">
     ' . Xsrf::getInput() . '</form>

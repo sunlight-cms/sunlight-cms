@@ -4,6 +4,7 @@ use Sunlight\Admin\Admin;
 use Sunlight\Database\Database as DB;
 use Sunlight\Message;
 use Sunlight\Page\Page;
+use Sunlight\Router;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
@@ -87,7 +88,7 @@ if (isset($_POST['source'])) {
 /* ---  vystup  --- */
 
 $output .= $message . "
-<form class='cform' action='index.php?p=content-movearts' method='post'>"
+<form class='cform' action='" . _e(Router::admin('content-movearts')) . "' method='post'>"
     . _lang('admin.content.movearts.text1')
     . " " . Admin::pageSelect("source", ['type' => Page::CATEGORY])
     . _lang('admin.content.movearts.text2')

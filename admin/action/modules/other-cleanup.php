@@ -6,6 +6,7 @@ use Sunlight\Database\Database as DB;
 use Sunlight\Database\DatabaseLoader;
 use Sunlight\Extend;
 use Sunlight\Message;
+use Sunlight\Router;
 use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Password;
@@ -202,7 +203,7 @@ if (isset($_POST['action'])) {
 $output .= $message . "
 <fieldset>
 <legend>" . _lang('admin.other.cleanup.cleanup') . "</legend>
-<form class='cform' action='index.php?p=other-cleanup' method='post'>
+<form class='cform' action='" . _e(Router::admin('other-cleanup')) . "' method='post'>
 <input type='hidden' name='action' value='1'>
 <p>" . _lang('admin.other.cleanup.cleanup.p') . "</p>
 
@@ -268,7 +269,7 @@ $output .= $message . "
 
 <fieldset>
 <legend>" . _lang('admin.other.cleanup.uninstall') . "</legend>
-<form class='cform' action='index.php?p=other-cleanup' method='post' autocomplete='off'>
+<form class='cform' action='" . _e(Router::admin('other-cleanup')) . "' method='post' autocomplete='off'>
 <input type='hidden' name='action' value='2'>
 <p class='bborder'>" . _lang('admin.other.cleanup.uninstall.p') . "</p>
 " . Admin::note(_lang('admin.other.cleanup.uninstall.note', ['%prefix%' => DB::$prefix]), true, 'warn') . "

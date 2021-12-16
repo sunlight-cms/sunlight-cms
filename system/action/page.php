@@ -54,12 +54,7 @@ if (
         $_url->remove('p');
     }
 
-    $_index->redirect(
-        UrlHelper::appendParams(
-            Router::page($_page['id'], $_page['slug'], null, true),
-            $_url->getQueryString()
-        )
-    );
+    $_index->redirect(Router::page($_page['id'], $_page['slug'], null,['query' => $_url->getQuery()]));
     return;
 }
 

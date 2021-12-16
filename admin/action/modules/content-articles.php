@@ -4,13 +4,14 @@ use Sunlight\Database\Database as DB;
 use Sunlight\Database\SimpleTreeFilter;
 use Sunlight\Extend;
 use Sunlight\Page\Page;
+use Sunlight\Router;
 
 defined('SL_ROOT') or exit;
 
 /* ---  vystup  --- */
 
 $output .= "
-<p><a class='button' href='index.php?p=content-articles-edit'><img src='images/icons/new.png' alt='new' class='icon'>" . _lang('admin.content.articles.create') . "</a></p>
+<p><a class='button' href='" . _e(Router::admin('content-articles-edit')) . "'><img src='" . _e(Router::path('admin/images/icons/new.png')) . "' alt='new' class='icon'>" . _lang('admin.content.articles.create') . "</a></p>
 
 <table class='list list-noborder list-hover list-half'>
 <thead>
@@ -39,8 +40,8 @@ while ($art_count = DB::row($art_count_query)) {
 foreach ($tree as $page) {
     $output .= "<tr><td>";
     if ($page['type'] == Page::CATEGORY) {
-        $output .= "<a class='node-level-m{$page['node_level']}' href='index.php?p=content-articles-list&amp;cat={$page['id']}'>
-    <img src='images/icons/dir.png' alt='col' class='icon'>
+        $output .= "<a class='node-level-m{$page['node_level']}' href='" . _e(Router::admin('content-articles-list', ['query' => ['cat' => $page['id']]])) . "'>
+    <img src='" . _e(Router::path('admin/images/icons/dir.png')) . "' alt='col' class='icon'>
     {$page['title']}
 </a>";
     } else {
@@ -58,7 +59,7 @@ $output .= "
 </table>
 
 <br>
-<form class='cform' action='index.php' method='get'>
+<form class='cform' action='" . _e(Router::admin(null)) . "' method='get'>
 <input type='hidden' name='p' value='content-articles-edit'>
 <input type='hidden' name='returnid' value='load'>
 <input type='hidden' name='returnpage' value='1'>

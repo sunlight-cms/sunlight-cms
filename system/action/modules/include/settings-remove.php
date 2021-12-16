@@ -25,7 +25,7 @@ if (isset($_POST['submit'])) {
             $_SESSION = [];
             session_destroy();
 
-            $_index->redirect(Router::module('login', 'login_form_result=4', true));
+            $_index->redirect(Router::module('login', ['query' => ['login_form_result' => 4], 'absolute' => true]));
 
             return;
         } else {

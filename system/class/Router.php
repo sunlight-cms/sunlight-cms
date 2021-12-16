@@ -2,59 +2,51 @@
 
 namespace Sunlight;
 
+use Kuria\Url\Url;
 use Sunlight\Post\Post;
 use Sunlight\Database\Database as DB;
 use Sunlight\Page\Page;
 use Sunlight\Util\Arr;
 use Sunlight\Util\Html;
 
+/**
+ * Supported router $options:
+ * --------------------------------------------------
+ * absolute (false)     generate an absolute URL 1/0
+ * query (null)         array of query parameters
+ * fragment (null)      fragment string (without #)
+ */
 abstract class Router
 {
+    /** Any path */
+    const TYPE_PATH = 'path';
+    /** Web slug (page, article, etc.) */
+    const TYPE_SLUG = 'slug';
+    /** Web module */
+    const TYPE_MODULE = 'module';
+    /** Admin module */
+    const TYPE_ADMIN = 'admin';
+
     /**
-     * Sestavit adresu k libovolne ceste
-     *
-     * Cesta bude relativni k zakladni adrese systemu.
-     *
-     * @param string $path cesta v URL, muze obsahovat query string a fragment
-     * @param bool   $absolute
-     * @return string
+     * Generate URL for a path
      */
-    static function generate(string $path, bool $absolute = false): string
+    static function path(string $path, ?array $options = null): string
     {
-        $url = ($absolute ? Core::getBaseUrl()->build() : Core::getBaseUrl()->getPath()) . '/' . $path;
-
-        Extend::call('link', [
-            'path' => $path,
-            'absolute' => $absolute,
-            'output' => &$url,
-        ]);
-
-        return $url;
+        return self::generateUrl(self::TYPE_PATH, self::createUrl($path), $options);
     }
 
     /**
-     * Sestavit webovou cestu k existujicimu souboru
+     * Generate URL for an existing file
      *
-     * Soubor musi byt umisten v korenovem adresari systemu nebo v jeho podadresarich.
-     *
-     * @param string $filePath
-     * @param bool   $absolute
-     * @return string
+     * Relative paths are resolved automatically. Files outside SL_ROOT are not supported.
      */
-    static function file(string $filePath, bool $absolute = false): string
+    static function file(string $filePath, ?array $options = null): string
     {
         static $realRootPath = null, $realRootPathLength = null;
 
         if ($realRootPath === null) {
             $realRootPath = realpath(SL_ROOT) . DIRECTORY_SEPARATOR;
             $realRootPathLength = strlen($realRootPath);
-        }
-
-        if (($queryParamPos = strpos($filePath, '?')) !== false) {
-            $filePath = substr($filePath, 0, $queryParamPos);
-            $params = substr($filePath, $queryParamPos);
-        } else {
-            $params = '';
         }
 
         $realFilePath = realpath($filePath);
@@ -65,68 +57,32 @@ abstract class Router
             return '#';
         }
 
-        return self::generate($path, $absolute) . $params;
+        return self::path($path, $options);
     }
 
     /**
-     * Sestavit adresu clanku
+     * Generate URL using a slug (for pages, articles, etc.)
      *
-     * @param int|null    $id            ID clanku
-     * @param string|null $slug          jiz nacteny identifikator clanku nebo null
-     * @param string|null $category_slug jiz nacteny identifikator kategorie nebo null
-     * @param bool        $absolute      sestavit absolutni adresu 1/0
-     * @return string
+     * Index page uses an empty slug.
      */
-    static function article(?int $id, ?string $slug = null, ?string $category_slug = null, bool $absolute = false): string
-    {
-        if ($id !== null) {
-            if ($slug === null || $category_slug === null) {
-                $slug = DB::queryRow("SELECT art.slug AS art_ts, cat.slug AS cat_ts FROM " . DB::table('article') . " AS art JOIN " . DB::table('page') . " AS cat ON(cat.id=art.home1) WHERE art.id=" . $id);
-                if ($slug === false) {
-                    $slug = ['---', '---'];
-                } else {
-                    $slug = [$slug['art_ts'], $slug['cat_ts']];
-                }
-            } else {
-                $slug = [$slug, $category_slug];
-            }
-        } else {
-            $slug = [$slug, $category_slug];
-        }
-
-        return self::page(null, $slug[1], $slug[0], $absolute);
-    }
-
-    /**
-     * Sestavit cestu ke strance
-     *
-     * @param string $slug     cely identifikator stranky (prazdny pro hlavni stranu)
-     * @param bool   $absolute sestavit absolutni adresu 1/0
-     * @return string
-     */
-    static function path(string $slug, bool $absolute = false): string
+    static function slug(string $slug, ?array $options = null): string
     {
         if (Settings::get('pretty_urls')) {
-            $path = $slug;
+            $url = self::createUrl($slug);
         } elseif ($slug !== '') {
-            $path = 'index.php?p=' . $slug;
+            $url = self::createUrl('index.php');
+            $url->set('p', $slug);
         } else {
-            $path = '';
+            $url = self::createUrl('');
         }
 
-        return self::generate($path, $absolute);
+        return self::generateUrl(self::TYPE_SLUG, $url, $options);
     }
 
     /**
-     * Sestavit adresu stranky existujici v databazi
-     *
-     * @param int|null    $id       ID stranky
-     * @param string|null $slug     jiz nacteny identifikator nebo null
-     * @param string|null $segment  segment nebo null
-     * @param bool        $absolute sestavit absolutni adresu 1/0
-     * @return string
+     * Generate URL for a page
      */
-    static function page(?int $id, ?string $slug = null, ?string $segment = null, bool $absolute = false): string
+    static function page(?int $id, ?string $slug = null, ?string $segment = null, ?array $options = null): string
     {
         if ($id !== null && $slug === null) {
             $slug = DB::queryRow("SELECT slug FROM " . DB::table('page') . " WHERE id=" . DB::val($id));
@@ -139,28 +95,54 @@ abstract class Router
             $slug = '';
         }
 
-        return self::path($slug, $absolute);
+        return self::slug($slug, $options);
     }
 
     /**
-     * Sestavit adresu a titulek komentare
-     *
-     * @param array $post     data komentare (potreba sloupce z {@see Post::createFilter()}
-     * @param bool  $absolute sestavit absolutni adresu 1/0
-     * @return array adresa, titulek
+     * Generate URL for the index page
      */
-    static function post(array $post, bool $absolute = false): array
+    static function index(?array $options = null): string
+    {
+        return self::slug('', $options);
+    }
+
+    /**
+     * Generate URL to an article
+     */
+    static function article(?int $id, ?string $slug = null, ?string $categorySlug = null, ?array $options = null): string
+    {
+        if ($id !== null) {
+            if ($slug === null || $categorySlug === null) {
+                $slugs = DB::queryRow("SELECT art.slug AS art_ts, cat.slug AS cat_ts FROM " . DB::table('article') . " AS art JOIN " . DB::table('page') . " AS cat ON(cat.id=art.home1) WHERE art.id=" . $id);
+
+                if ($slugs !== false) {
+                    $slug = $slug['art_ts'];
+                    $categorySlug = $slug['cat_ts'];
+                }
+            }
+        }
+
+        return self::page(null, $slug ?? '---', $categorySlug ?? '---', $options);
+    }
+
+    /**
+     * Get URL and title of a post
+     *
+     * @param array $post post data - {@see Post::createFilter()
+     * @return array{string,string} URL, title
+     */
+    static function post(array $post, ?array $options = null): array
     {
         switch ($post['type']) {
             case Post::SECTION_COMMENT:
             case Post::BOOK_ENTRY:
                 return [
-                    self::page($post['home'], $post['page_slug'], null, $absolute),
+                    self::page($post['home'], $post['page_slug'], null, $options),
                     $post['page_title'],
                 ];
             case Post::ARTICLE_COMMENT:
                 return [
-                    self::article(null, $post['art_slug'], $post['cat_slug'], $absolute),
+                    self::article(null, $post['art_slug'], $post['cat_slug'], $options),
                     $post['art_title'],
                 ];
             case Post::FORUM_TOPIC:
@@ -171,17 +153,16 @@ abstract class Router
                     $topicId = $post['xhome'];
                 }
                 if ($post['type'] == Post::FORUM_TOPIC) {
-                    $url = self::topic($topicId, $post['page_slug'], $absolute);
+                    $url = self::topic($topicId, $post['page_slug'], $options);
                 } else {
-                    $url = self::module('messages', "a=list&read={$topicId}", $absolute);
+                    $url = self::module('messages', self::combineOptions(['query' => ['a' => 'list', 'read' => $topicId]], $options));
                 }
 
                 return [
                     $url,
                     ($post['xhome'] == -1)
                         ? $post['subject']
-                        : $post['xhome_subject']
-                ,
+                        : $post['xhome_subject'],
                 ];
             case Post::PLUGIN:
                 $url = '';
@@ -191,82 +172,87 @@ abstract class Router
                     'post' => $post,
                     'url' => &$url,
                     'title' => &$title,
-                    'absolute' => $absolute,
+                    'options' => $options,
                 ]);
 
                 return [$url, $title];
             default:
-                return ['', ''];
+                return ['#', ''];
         }
     }
 
     /**
-     * Sestavit adresu tematu
-     *
-     * @param int         $topic_id   ID tematu
-     * @param string|null $forum_slug jiz nacteny identifikator domovskeho fora nebo null
-     * @param bool        $absolute   sestavit absolutni adresu 1/0
-     * @return string
+     * Generate URL to a forum topic
      */
-    static function topic(int $topic_id, ?string $forum_slug = null, bool $absolute = false): string
+    static function topic(int $topicId, ?string $forumSlug = null, ?array $options = null): string
     {
-        if ($forum_slug === null) {
-            $forum_slug = DB::queryRow('SELECT r.slug FROM ' . DB::table('page') . ' r WHERE type=' . Page::FORUM . ' AND id=(SELECT p.home FROM ' . DB::table('post') . ' p WHERE p.id=' . DB::val($topic_id) . ')');
-            if ($forum_slug !== false) {
-                $forum_slug = $forum_slug['slug'];
+        if ($forumSlug === null) {
+            $forumSlug = DB::queryRow('SELECT r.slug FROM ' . DB::table('page') . ' r WHERE type=' . Page::FORUM . ' AND id=(SELECT p.home FROM ' . DB::table('post') . ' p WHERE p.id=' . DB::val($topicId) . ')');
+            if ($forumSlug !== false) {
+                $forumSlug = $forumSlug['slug'];
             } else {
-                $forum_slug = '---';
+                $forumSlug = '---';
             }
         }
 
-        return self::page(null, $forum_slug, $topic_id, $absolute);
+        return self::page(null, $forumSlug, $topicId, $options);
     }
 
     /**
-     * Sestavit adresu modulu
-     *
-     * @param string      $module   jmeno modulu
-     * @param string|null $params   standartni querystring
-     * @param bool        $absolute sestavit absolutni adresu 1/0
-     * @return string
+     * Generate URL to a module
      */
-    static function module(string $module, ?string $params = null, bool $absolute = false): string
+    static function module(string $module, ?array $options = null): string
     {
         if (Settings::get('pretty_urls')) {
-            $path = 'm/' . $module;
+            $url = self::createUrl('m/' . $module);
         } else {
-            $path = 'index.php?m=' . $module;
+            $url = self::createUrl('index.php');
+            $url->set('m', $module);
         }
 
-        if (!empty($params)) {
-            $path .= (Settings::get('pretty_urls') ? '?' : '&') . $params;
-        }
-
-        return self::generate($path, $absolute);
+        return self::generateUrl(self::TYPE_MODULE, $url, $options);
     }
 
     /**
-     * Sestaveni kodu odkazu na uzivatele
+     * Generate URL to an admin module
+     */
+    static function admin(?string $module, ?array $options = null): string
+    {
+        $url = self::createUrl('admin/index.php');
+        $url->set('p', $module);
+
+        return self::generateUrl(self::TYPE_ADMIN, $url, $options);
+    }
+
+    /**
+     * Generate URL to the admin index
+     */
+    static function adminIndex(?array $options = null): string
+    {
+        return self::generateUrl(self::TYPE_ADMIN, self::createUrl('admin/'), $options);
+    }
+
+    /**
+     * Generate a user profile link
      *
-     * Mozne klice v $options
-     * ----------------------
-     * plain (0)        vratit pouze jmeno uzivatele 1/0
-     * link (1)         odkazovat na profil uzivatele 1/0
-     * color (1)        obarvit podle skupiny 1/0
-     * icon (1)         zobrazit ikonu skupiny 1/0
-     * publicname (1)   vykreslit publicname, ma-li jej uzivatel vyplneno 1/0
-     * new_window (0)   odkazovat do noveho okna 1/0 (v prostredi administrace je vychozi 1)
-     * max_len (-)      maximalni delka vykresleneho jmena
-     * class (-)        vlastni CSS trida
-     * title (-)        titulek
+     * Supported options
+     * -----------------
+     * plain (0)        return only plain username 1/0
+     * link (1)         link to user profile 1/0
+     * color (1)        add color based on user group 1/0
+     * icon (1)         show group icon 1/0
+     * publicname (1)   use public name, if available 1/0
+     * new_window (0)   link to a new window 1/0 (defaults to 1 in admin env)
+     * max_len (-)      max. username length
+     * class (-)        custom CSS class
+     * title (-)        title
+     * url (-)          URL options (see class description)
      *
-     * @param array $data    samostatna data uzivatele viz {@see User::createQuery()}
-     * @param array $options moznosti vykresleni, viz popis funkce
-     * @return string HTML kod
+     * @param array $data user data {@see User::createQuery()}
+     * @return string HTML code
      */
     static function user(array $data, array $options = []): string
     {
-        // vychozi nastaveni
         $options += [
             'plain' => false,
             'link' => true,
@@ -277,6 +263,7 @@ abstract class Router
             'max_len' => null,
             'class' => null,
             'title' => null,
+            'url' => null,
         ];
 
         // extend
@@ -289,7 +276,7 @@ abstract class Router
         $name = $data[$options['publicname'] && $data['publicname'] !== null ? 'publicname' : 'username'];
         $nameIsTooLong = ($options['max_len'] !== null && mb_strlen($name) > $options['max_len']);
 
-        // pouze jmeno?
+        // plain?
         if ($options['plain']) {
             if ($nameIsTooLong) {
                 return Html::cut($name, $options['max_len']);
@@ -298,7 +285,7 @@ abstract class Router
             return $name;
         }
 
-        // titulek
+        // title
         $title = $options['title'];
         if ($nameIsTooLong) {
             if ($title === null) {
@@ -308,40 +295,39 @@ abstract class Router
             }
         }
 
-        // oteviraci tag
+        // opening tag
         $out = "<{$tag}"
-            . ($options['link'] ? ' href="' . _e(self::module('profile', 'id=' .  $data['username'])) . '"' : '')
+            . ($options['link'] ? ' href="' . _e(self::module('profile', self::combineOptions(['query' => ['id' => $data['username']]], $options['url']))) . '"' : '')
             . ($options['link'] && $options['new_window'] ? ' target="_blank"' : '')
             . " class=\"user-link user-link-{$data['id']} user-link-group-{$data['group_id']}" . ($options['class'] !== null ? " {$options['class']}" : '') . "\""
             . ($options['color'] && $data['group_color'] !== '' ? " style=\"color:{$data['group_color']}\"" : '')
             . ($title !== null ? " title=\"{$title}\"" : '')
             . '>';
 
-        // ikona skupiny
+        // group icon
         if ($options['icon'] && $data['group_icon'] !== '') {
-            $out .= "<img src=\"" . self::generate('images/groupicons/' . $data['group_icon']) . "\" title=\"{$data['group_title']}\" alt=\"{$data['group_title']}\" class=\"icon\">";
+            $out .= "<img src=\"" . self::path('images/groupicons/' . $data['group_icon']) . "\" title=\"{$data['group_title']}\" alt=\"{$data['group_title']}\" class=\"icon\">";
         }
 
-        // jmeno uzivatele
+        // username
         if ($nameIsTooLong) {
             $out .= Html::cut($name, $options['max_len']) . '...';
         } else {
             $out .= $name;
         }
 
-        // uzaviraci tag
+        // closing tag
         $out .= "</{$tag}>";
 
         return $out;
     }
 
     /**
-     * Sestaveni kodu odkazu na uzivatele na zaklade dat z funkce {@see User::createQuery()}
+     * Generate a user profile link using data from {@see User::createQuery()}
      *
-     * @param array $userQuery vystup z {@see User::createQuery()}
-     * @param array $row       radek z vysledku dotazu
-     * @param array $options   nastaveni vykresleni, viz {@see Router::user()}
-     * @return string
+     * @param array $userQuery output of z {@see User::createQuery()}
+     * @param array $row       the row to generate a link for
+     * @param array $options   link options {@see Router::user()}
      */
     static function userFromQuery(array $userQuery, array $row, array $options = []): string
     {
@@ -352,5 +338,37 @@ abstract class Router
         }
 
         return self::user($userData, $options);
+    }
+
+    private static function createUrl(string $path): Url
+    {
+        $url = Core::getBaseUrl();
+        $url->setPath($url->getPath() . '/' . $path);
+
+        return $url;
+    }
+
+    private static function generateUrl(string $type, Url $url, ?array $options): string
+    {
+        if (!empty($options['query'])) {
+            $url->add($options['query']);
+        }
+
+        if (isset($options['fragment'])) {
+            $url->setFragment($options['fragment']);;
+        }
+
+        Extend::call('router.generate', ['type' => $type, 'url' => $url]);
+
+        return ($options['absolute'] ?? false) ? $url->buildAbsolute() : $url->buildRelative();
+    }
+
+    private static function combineOptions(?array $a, ?array $b): ?array
+    {
+        if (isset($a, $b)) {
+            return array_replace_recursive($a, $b);
+        }
+
+        return $a ?? $b;
     }
 }

@@ -43,7 +43,7 @@ return function ($id = null) {
             $result .= Form::render(
                 [
                     'name' => 'hcm_sboxform_' . Core::$hcmUid,
-                    'action' => Router::generate('system/script/post.php?_return=' . rawurlencode($GLOBALS['_index']->url) . "#hcm_sbox_" . Core::$hcmUid),
+                    'action' => Router::path('system/script/post.php', ['query' => ['_return' => $GLOBALS['_index']->url], 'fragment' => "hcm_sbox_" . Core::$hcmUid]),
                 ],
                 $inputs
             );
@@ -72,7 +72,7 @@ return function ($id = null) {
 
                 // odkaz na spravu
                 if (Post::checkAccess($userQuery, $spost)) {
-                    $alink = " <a href='" . _e(Router::module('editpost', 'id=' . $spost['id'])) . "'><img src='" . Template::image("icons/edit.png") . "' alt='edit' class='icon'></a>";
+                    $alink = " <a href='" . _e(Router::module('editpost', ['query' => ['id' => $spost['id']]])) . "'><img src='" . Template::image("icons/edit.png") . "' alt='edit' class='icon'></a>";
                 } else {
                     $alink = "";
                 }

@@ -5,6 +5,7 @@ use Sunlight\Database\Database as DB;
 use Sunlight\Gallery;
 use Sunlight\Message;
 use Sunlight\Page\Page;
+use Sunlight\Router;
 use Sunlight\Settings;
 use Sunlight\Util\Environment;
 use Sunlight\Util\Form;
@@ -291,7 +292,7 @@ if (isset($_GET['del']) && Xsrf::check(true) && $continue) {
 /* ---  vystup  --- */
 
 if ($continue) {
-    $output .= Admin::backlink('index.php?p=content-editgallery&id=' . $galid) . "
+    $output .= Admin::backlink(Router::admin('content-editgallery', ['query' => ['id' => $galid]])) . "
 <h1>" . _lang('admin.content.manageimgs.title') . "</h1>
 <p class='bborder'>" . _lang('admin.content.manageimgs.p', ["%galtitle%" => $galdata['title']]) . "</p>
 
@@ -299,7 +300,7 @@ if ($continue) {
 
 <fieldset>
 <legend>" . _lang('admin.content.manageimgs.upload') . "</legend>
-<form action='index.php?p=content-manageimgs&amp;g=" . $galid . "' method='post' enctype='multipart/form-data'>
+<form action='" . _e(Router::admin('content-manageimgs', ['query' => ['g' => $galid]])) . "' method='post' enctype='multipart/form-data'>
     <p>" . _lang('admin.content.manageimgs.upload.text', ['%w%' => Settings::get('galuploadresize_w'), '%h%' => Settings::get('galuploadresize_h')]) . "</p>
     <input type='hidden' name='xaction' value='7'>
     <div id='fmanFiles'><input type='file' name='uf0[]' multiple> <a href='#' onclick='return Sunlight.admin.fmanAddFile();'>" . _lang('admin.fman.upload.addfile') . "</a></div>
@@ -314,7 +315,7 @@ if ($continue) {
 
 <fieldset class='hs_fieldset'>
 <legend>" . _lang('admin.content.manageimgs.insert') . "  <small>(" . _lang('admin.content.manageimgs.insert.tip') . ")</small></legend>
-<form action='index.php?p=content-manageimgs&amp;g=" . $galid . "' method='post' name='addform'>
+<form action='" . _e(Router::admin('content-manageimgs', ['query' => ['g' => $galid]])) . "' method='post' name='addform'>
 <input type='hidden' name='xaction' value='1'>
 
 <table>
@@ -354,7 +355,7 @@ if ($continue) {
     $output .= "
 <fieldset>
 <legend>" . _lang('admin.content.manageimgs.current') . "</legend>
-<form action='index.php?p=content-manageimgs&amp;g=" . $galid . "' method='post' name='editform'>
+<form action='" . _e(Router::admin('content-manageimgs', ['query' => ['g' => $galid]])) . "' method='post' name='editform'>
 <input type='hidden' name='xaction' value='4'>
 
 <input type='submit' value='" . _lang('admin.content.manageimgs.savechanges') . "' class='gallery-savebutton'>
@@ -406,7 +407,7 @@ if ($continue) {
 
 <tr class='valign-top'>
 <th>" . _lang('global.preview') . "</th>
-<td>" . $preview . "<br><br><a class='button' href='" . _e(Xsrf::addToUrl("index.php?p=content-manageimgs&g=" . $galid . "&del=" . $image['id'])) . "' onclick='return Sunlight.confirm();'><img src='images/icons/delete.png' alt='del' class='icon'>" . _lang('admin.content.manageimgs.delete') . "</a></td>
+<td>" . $preview . "<br><br><a class='button' href='" . _e(Xsrf::addToUrl(Router::admin('content-manageimgs', ['quary' => ['g' => $galid, 'del' => $image['id']]]))) . "' onclick='return Sunlight.confirm();'><img src='" . _e(Router::path('admin/images/icons/delete.png')) . "' alt='del' class='icon'>" . _lang('admin.content.manageimgs.delete') . "</a></td>
 </tr>
 
 </table>
@@ -433,7 +434,7 @@ if ($continue) {
   <fieldset class='hs_fieldset'>
   <legend>" . _lang('admin.content.manageimgs.moveimgs') . "</legend>
 
-  <form class='cform' action='index.php?p=content-manageimgs&amp;g=" . $galid . "' method='post'>
+  <form class='cform' action='" . _e(Router::admin('content-manageimgs', ['query' => ['g' => $galid]])) . "' method='post'>
   <input type='hidden' name='xaction' value='5'>
   " . Admin::pageSelect("newhome", ['type' => Page::GALLERY]) . " <input class='button' type='submit' value='" . _lang('global.do') . "' onclick='return Sunlight.confirm();'><br><br>
   <label><input type='checkbox' name='moveords' value='1' checked> " . _lang('admin.content.manageimgs.moveords') . "</label>
@@ -446,7 +447,7 @@ if ($continue) {
   <fieldset class='hs_fieldset'>
   <legend>" . _lang('admin.content.manageimgs.delimgs') . "</legend>
 
-  <form class='cform' action='index.php?p=content-manageimgs&amp;g=" . $galid . "' method='post'>
+  <form class='cform' action='" . _e(Router::admin('content-manageimgs', ['query' => ['g' => $galid]])) . "' method='post'>
   <input type='hidden' name='xaction' value='6'>
   <label><input type='checkbox' name='confirm' value='1'> " . _lang('admin.content.manageimgs.delimgs.confirm') . "</label> <input class='button' type='submit' value='" . _lang('global.do') . "' onclick='return Sunlight.confirm();'>
   " . Xsrf::getInput() . "</form>

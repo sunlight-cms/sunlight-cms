@@ -547,8 +547,8 @@ abstract class PageLister
         // edit
         if ($hasAccess) {
             $actions['edit'] = [
-                'url' => 'index.php?p=content-edit' . self::$pageTypes[$page['type']] . '&id=' . $page['id'],
-                'icon' => 'images/icons/edit.png',
+                'url' => Router::admin('content-edit' . self::$pageTypes[$page['type']], ['query' => ['id' => $page['id']]]),
+                'icon' => Router::path('admin/images/icons/edit.png'),
                 'label' => _lang('global.edit'),
                 'order' => 50,
             ];
@@ -559,7 +559,7 @@ abstract class PageLister
             $actions['show'] = [
                 'url' => Router::page($page['id'], $page['slug']),
                 'new_window' => true,
-                'icon' => 'images/icons/show.png',
+                'icon' => Router::path('admin/images/icons/show.png'),
                 'label' => _lang('global.show'),
                 'order' => 100,
             ];
@@ -569,8 +569,8 @@ abstract class PageLister
         switch ($page['type']) {
             case Page::GALLERY:
                 $actions['gallery_images'] = [
-                    'url' => 'index.php?p=content-manageimgs&g=' . $page['id'],
-                    'icon' => 'images/icons/img.png',
+                    'url' => Router::admin('content-manageimgs', ['query' => ['g' => $page['id']]]),
+                    'icon' => Router::path('admin/images/icons/img.png'),
                     'label' => _lang('admin.content.form.showpics'),
                     'order' => 150,
                 ];
@@ -578,8 +578,8 @@ abstract class PageLister
 
             case Page::CATEGORY:
                 $actions['category_articles'] = [
-                    'url' => 'index.php?p=content-articles-list&cat=' . $page['id'],
-                    'icon' => 'images/icons/list.png',
+                    'url' => Router::admin('content-articles-list', ['query' => ['cat' => $page['id']]]),
+                    'icon' => Router::path('admin/images/icons/list.png'),
                     'label' => _lang('admin.content.form.showarticles'),
                     'order' => 150,
                 ];
@@ -589,8 +589,8 @@ abstract class PageLister
         // delete
         if ($hasAccess) {
             $actions['delete'] = [
-                'url' => 'index.php?p=content-delete&id=' . $page['id'],
-                'icon' => 'images/icons/delete.png',
+                'url' => Router::admin('content-delete', ['query' => ['id' => $page['id']]]),
+                'icon' => Router::path('admin/images/icons/delete.png'),
                 'label' => _lang('global.delete'),
                 'order' => 200,
             ];
@@ -631,15 +631,15 @@ abstract class PageLister
         if ($page['type'] != Page::SEPARATOR) {
             if ($page['id'] == Settings::get('index_page_id')) {
                 $iconTitle = _lang('admin.content.form.homepage');
-                $output .= "<img src=\"images/icons/home.png\" class=\"icon\" alt=\"{$iconTitle}\" title=\"{$iconTitle}\">";
+                $output .= "<img src=\"" . _e(Router::path('admin/images/icons/home.png')) . "\" class=\"icon\" alt=\"{$iconTitle}\" title=\"{$iconTitle}\">";
             }
             if ($page['layout'] !== null && !$page['layout_inherit']) {
                 $iconTitle = _lang('admin.content.form.layout.setting', ['%layout%' => _e(TemplateService::getComponentLabelByUid($page['layout'], TemplateService::UID_TEMPLATE_LAYOUT))]);
-                $output .= "<img src=\"images/icons/template.png\" class=\"icon\" alt=\"{$iconTitle}\" title=\"{$iconTitle}\">";
+                $output .= "<img src=\"" . _e(Router::path('admin/images/icons/template.png')) . "\" class=\"icon\" alt=\"{$iconTitle}\" title=\"{$iconTitle}\">";
             }
             if (!$page['public']) {
                 $iconTitle = _lang('admin.content.form.private');
-                $output .= "<img src=\"images/icons/lock3.png\" class=\"icon\" alt=\"{$iconTitle}\" title=\"{$iconTitle}\">";
+                $output .= "<img src=\"" . _e(Router::path('admin/images/icons/lock3.png')) . "\" class=\"icon\" alt=\"{$iconTitle}\" title=\"{$iconTitle}\">";
             }
             if ($page['level'] > 0) {
                 $iconTitle = _lang('admin.content.form.level') . " {$page['level']}+";
@@ -649,11 +649,11 @@ abstract class PageLister
                 } else {
                     $icon = 'lock.png';
                 }
-                $output .= "<img src=\"images/icons/{$icon}\" class=\"icon\" alt=\"{$iconTitle}\" title=\"{$iconTitle}\">";
+                $output .= "<img src=\"" . _e(Router::path('admin/images/icons/' . $icon)) . "\" class=\"icon\" alt=\"{$iconTitle}\" title=\"{$iconTitle}\">";
             }
             if (!$page['visible']) {
                 $iconTitle = _lang('admin.content.form.invisible');
-                $output .= "<img src=\"images/icons/eye.png\" class=\"icon\" alt=\"{$iconTitle}\" title=\"{$iconTitle}\">";
+                $output .= "<img src=\"" . _e(Router::path('admin/images/icons/eye.png')) . "\" class=\"icon\" alt=\"{$iconTitle}\" title=\"{$iconTitle}\">";
             }
         }
 

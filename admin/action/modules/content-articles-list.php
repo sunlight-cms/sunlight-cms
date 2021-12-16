@@ -46,7 +46,7 @@ if ($continue) {
     }
 
     // titulek kategorie
-    $output .= "<h2 class='bborder'>" . $catdata['title'] . " <a class='button' href='index.php?p=content-articles-edit&amp;new_cat=" . $cid . "'><img src='images/icons/new.png' alt='new' class='icon'>" . _lang('admin.content.articles.create') . "</a></h2>\n";
+    $output .= "<h2 class='bborder'>" . $catdata['title'] . " <a class='button' href='" . _e(Router::admin('content-articles-edit', ['query' => ['new_cat' => $cid]])) . "'><img src='" . _e(Router::path('admin/images/icons/new.png')) . "' alt='new' class='icon'>" . _lang('admin.content.articles.create') . "</a></h2>\n";
 
     // vypis clanku
 
@@ -57,7 +57,7 @@ if ($continue) {
     }
 
     $cond = "(art.home1=" . $cid . " OR art.home2=" . $cid . " OR art.home3=" . $cid . ")" . Admin::articleAccess('art');
-    $paging = Paginator::render("index.php?p=content-articles-list&cat=" . $cid, $catdata['var2'] ?: Settings::get('articlesperpage'), DB::table('article') . ':art', $cond);
+    $paging = Paginator::render(Router::admin('content-articles-list', ['query' => ['cat' => $cid]]), $catdata['var2'] ?: Settings::get('articlesperpage'), DB::table('article') . ':art', $cond);
     $s = $paging['current'];
     $output .= $paging['paging'] . $message . "\n<table class='list list-hover list-max'>\n<thead><tr><td>" . _lang('global.article') . "</td><td>" . _lang('article.author') . "</td><td>" . _lang('article.posted') . "</td><td>" . _lang('global.action') . "</td></tr></thead>\n<tbody>";
     $userQuery = User::createQuery('art.author');
@@ -69,8 +69,8 @@ if ($continue) {
     <td>" . Router::userFromQuery($userQuery, $art) . "</td>
     <td>" . GenericTemplates::renderTime($art['time']) . "</td>
     <td class='actions'>
-            <a class='button' href='index.php?p=content-articles-edit&amp;id=" . $art['id'] . "&amp;returnid=" . $cid . "&amp;returnpage=" . $s . "'><img src='images/icons/edit.png' alt='edit' class='icon'>" . _lang('global.edit') . "</a>
-        <a class='button' href='index.php?p=content-articles-delete&amp;id=" . $art['id'] . "&amp;returnid=" . $cid . "&amp;returnpage=" . $s . "'><img src='images/icons/delete.png' alt='del' class='icon'>" . _lang('global.delete') . "</a>
+            <a class='button' href='" . _e(Router::admin('content-articles-edit', ['query' => ['id' => $art['id'], 'returnid' => $cid,  'returnpage' => $s]])) . "'><img src='" . _e(Router::path('admin/images/icons/edit.png')) . "' alt='edit' class='icon'>" . _lang('global.edit') . "</a>
+        <a class='button' href='" . _e(Router::admin('content-articles-delete', ['query' => ['id' => $art['id'], 'returnid' => $cid, 'returnpage' => $s]])) . "'><img src='" . _e(Router::path('admin/images/icons/delete.png')) . "' alt='del' class='icon'>" . _lang('global.delete') . "</a>
     </td>
 </tr>\n";
         }

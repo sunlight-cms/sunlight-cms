@@ -748,7 +748,7 @@ abstract class User
             // akce formulare
             if (!$embedded) {
                 // systemovy skript
-                $action = Router::generate('system/script/login.php');
+                $action = Router::path('system/script/login.php');
             } else {
                 // vlozeny formular
                 $action = null;
@@ -805,7 +805,7 @@ abstract class User
             }
 
         } else {
-            $output .= "<p>" . _lang('login.ininfo') . " <em>" . self::getUsername() . "</em> - <a href='" . _e(Xsrf::addToUrl(Router::generate('system/script/logout.php'))) . "'>" . _lang('usermenu.logout') . "</a>.</p>";
+            $output .= "<p>" . _lang('login.ininfo') . " <em>" . self::getUsername() . "</em> - <a href='" . _e(Xsrf::addToUrl(Router::path('system/script/logout.php'))) . "'>" . _lang('usermenu.logout') . "</a>.</p>";
         }
 
         return $output;
@@ -1126,7 +1126,7 @@ abstract class User
         // vykreslit obrazek
         $out = '';
         if ($options['link']) {
-            $out .= '<a href="' . _e(Router::module('profile', 'id=' .  $data['username'])) . '">';
+            $out .= '<a href="' . _e(Router::module('profile', ['query' => ['id' =>  $data['username']]])) . '">';
         }
         $out .= "<img class=\"avatar" . ($options['class'] !== null ? " {$options['class']}" : '') . "\" src=\"{$url}\" alt=\"" . $data[$data['publicname'] !== null ? 'publicname' : 'username'] . "\">";
         if ($options['link']) {
@@ -1177,7 +1177,7 @@ abstract class User
         if ($do_repeat) {
             $action = $target_url;
         } else {
-            $action = Router::generate('system/script/post_repeat.php?login=' . ($allow_login ? '1' : '0') . '&target=' . rawurlencode($target_url));
+            $action = Router::path('system/script/post_repeat.php', ['query' => ['login' => ($allow_login ? '1' : '0'), 'target' => $target_url]]);
         }
 
         $output = "<form name='post_repeat' method='post' action='" . _e($action) . "'>\n";

@@ -1,7 +1,10 @@
 <?php
 
-use Sunlight\Core;
+use Sunlight\Hcm;
+use Sunlight\Router;
 
-return function () {
-    return _e(Core::getCurrentUrl()->getPath());
+return function ($path = '') {
+    Hcm::normalizeArgument($path, 'string', false);
+
+    return Router::path((string) $path);
 };

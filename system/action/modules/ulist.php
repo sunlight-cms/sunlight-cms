@@ -55,7 +55,7 @@ while ($item = DB::row($query)) {
 $output .= '</select> <input type="submit" value="' . _lang('global.apply') . '"></form>';
 
 // tabulka
-$paging = Paginator::render(Router::module('ulist', 'group=' . $group, false), 50, DB::table('user') . ':u', $cond);
+$paging = Paginator::render(Router::module('ulist', ['query' => ['group' => $group]]), 50, DB::table('user') . ':u', $cond);
 if (Paginator::atTop()) {
     $output .= $paging['paging'];
 }

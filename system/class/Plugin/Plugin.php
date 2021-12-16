@@ -256,7 +256,7 @@ abstract class Plugin
      */
     function getWebPath(bool $absolute = false): string
     {
-        return Router::generate($this->webPath, $absolute);
+        return Router::path($this->webPath, ['absolute' => $absolute]);
     }
 
     /**

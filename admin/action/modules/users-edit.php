@@ -38,7 +38,7 @@ if (isset($_GET['id'])) {
                 }
             }
         } else {
-            $_admin->redirect(Router::module('settings', null, true));
+            $_admin->redirect(Router::module('settings', ['absolute' => true]));
 
             return;
         }
@@ -205,7 +205,7 @@ if ($continue) {
                 // uprava
                 DB::update('user', 'id=' . DB::val($query['id']), $changeset);
                 Extend::call('user.edit', ['id' => $query['id']]);
-                $_admin->redirect('index.php?p=users-edit&r=1&id=' . $username);
+                $_admin->redirect(Router::admin('users-edit', ['query' => ['r' => 1, 'id' => $username]]));
 
                 return;
             }
@@ -217,7 +217,7 @@ if ($continue) {
             ];
             $id = DB::insert('user', $changeset, true);
             Extend::call('user.new', ['id' => $id]);
-            $_admin->redirect('index.php?p=users-edit&r=2&id=' . $username);
+            $_admin->redirect(Router::admin('users-edit', ['query' => ['r' => 2, 'id' => $username]]));
 
             return;
 
@@ -250,7 +250,7 @@ if ($continue) {
     $output .= "
 <p class='bborder'>" . _lang('admin.users.edit.p') . "</p>
 " . $messages_code . "
-<form autocomplete='off' action='index.php?p=users-edit" . (($id != null) ? "&amp;id=" . $id : '') . "' method='post' name='userform'>
+<form autocomplete='off' action='" . _e(Router::admin('users-edit', (($id != null)) ? ['query' => ['id' => $id]] : null)) . "' method='post' name='userform'>
 <table class='formtable'>
 
 <tr>
@@ -327,7 +327,7 @@ if ($continue) {
     if ($id != null) {
         $output .= "
   <p>
-    <a href='" . _e(Router::module('profile', 'id=' . $query['username'])) . "' target='_blank'>" . _lang('mod.profile') . " &gt;</a>
+    <a href='" . _e(Router::module('profile', ['query' => ['id' => $query['username']]])) . "' target='_blank'>" . _lang('mod.profile') . " &gt;</a>
   </p>
   ";
     }

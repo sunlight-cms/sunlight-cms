@@ -4,6 +4,7 @@ use Sunlight\Admin\PageLister;
 use Sunlight\Extend;
 use Sunlight\Message;
 use Sunlight\Page\Page;
+use Sunlight\Router;
 use Sunlight\User;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
@@ -49,7 +50,7 @@ if (
                     $is_plugin_page = true;
                 }
                 if (isset($type_array[$type]) && User::hasPrivilege('admin' . $type_array[$type])) {
-                    $_admin->redirect('index.php?p=content-edit' . $type_array[$type] . ($is_plugin_page ? '&idt=' . rawurlencode($type_idt) : ''));
+                    $_admin->redirect(Router::admin('content-edit' . $type_array[$type], ($is_plugin_page ? ['query' => ['idt' => rawurlencode($type_idt)]] : null)));
 
                     return;
                 }
@@ -81,9 +82,9 @@ if (
     <td class="contenttable-box" style="' . ((User::hasPrivilege('adminart') || User::hasPrivilege('adminconfirm') || User::hasPrivilege('admincategory') || User::hasPrivilege('adminpoll') || User::hasPrivilege('adminsbox') || User::hasPrivilege('adminbox')) ? 'width: 75%; ' : 'border-right: none;') . 'padding-bottom: 0px;">
 
     ' . (User::hasPrivilege('adminpages') ? '
-    <form action="index.php?p=content" method="post" class="inline">
+    <form action="' . _e(Router::admin('content')) . '" method="post" class="inline">
     <input type="hidden" name="ac" value="new">
-    <img src="images/icons/new.png" alt="new" class="icon">
+    <img src="' . _e(Router::path('admin/images/icons/new.png')) . '" alt="new" class="icon">
     <select name="type">
     ' . $create_list . '
     </select>
@@ -94,19 +95,19 @@ if (
     ' : '' ) . '
 
     ' . (User::hasPrivilege('adminpages') ? '
-    <a class="button" href="index.php?p=content-setindex"><img src="images/icons/home.png" alt="act" class="icon">' . _lang('admin.content.setindex') . '</a>
+    <a class="button" href="' . _e(Router::admin('content-setindex')) . '"><img src="' . _e(Router::path('admin/images/icons/home.png')) . '" alt="act" class="icon">' . _lang('admin.content.setindex') . '</a>
 
     <span class="inline-separator"></span>
 
-    <a class="button" href="index.php?p=content-sort"><img src="images/icons/action.png" alt="move" class="icon">' . _lang('admin.content.sort') . '</a>
-    <a class="button" href="index.php?p=content-titles"><img src="images/icons/action.png" alt="titles" class="icon">' . _lang('admin.content.titles') . '</a>
-    <a class="button" href="index.php?p=content-redir"><img src="images/icons/action.png" alt="redir" class="icon">' . _lang('admin.content.redir') . '</a>
+    <a class="button" href="' . _e(Router::admin('content-sort')) . '"><img src="' . _e(Router::path('admin/images/icons/action.png')) . '" alt="move" class="icon">' . _lang('admin.content.sort') . '</a>
+    <a class="button" href="' . _e(Router::admin('content-titles')) . '"><img src="' . _e(Router::path('admin/images/icons/action.png')) . '" alt="titles" class="icon">' . _lang('admin.content.titles') . '</a>
+    <a class="button" href="' . _e(Router::admin('content-redir')) . '"><img src="' . _e(Router::path('admin/images/icons/action.png')) . '" alt="redir" class="icon">' . _lang('admin.content.redir') . '</a>
 
     <span class="inline-separator"></span>
     ' : '' ) . '
 
-    <a class="button" href="index.php?p=content&amp;list_mode=tree"' . (PageLister::MODE_FULL_TREE == PageLister::getConfig('mode') ? ' class="active-link"' : '') . '><img src="images/icons/tree.png" alt="move" class="icon">' . _lang('admin.content.mode.tree') . '</a>
-    <a class="button" href="index.php?p=content&amp;list_mode=single"' . (PageLister::MODE_SINGLE_LEVEL == PageLister::getConfig('mode') ? ' class="active-link"' : '') . '><img src="images/icons/list.png" alt="move" class="icon">' . _lang('admin.content.mode.single') . '</a>
+    <a class="button" href="' . _e(Router::admin('content', ['query' => ['list_mode' => 'tree']])) . '"' . (PageLister::MODE_FULL_TREE == PageLister::getConfig('mode') ? ' class="active-link"' : '') . '><img src="' . _e(Router::path('admin/images/icons/tree.png')) . '" alt="move" class="icon">' . _lang('admin.content.mode.tree') . '</a>
+    <a class="button" href="' . _e(Router::admin('content', ['query' => ['list_mode' => 'single']])) . '"' . (PageLister::MODE_SINGLE_LEVEL == PageLister::getConfig('mode') ? ' class="active-link"' : '') . '><img src="' . _e(Router::path('admin/images/icons/list.png')) . '" alt="move" class="icon">' . _lang('admin.content.mode.single') . '</a>
 
     <div class="hr"><hr></div>
 
@@ -144,8 +145,8 @@ $content_modules = [
     'layout' => [
         'modules' => [
             'boxes' => [
-                'url' => 'index.php?p=content-boxes',
-                'icon' => 'images/icons/big-layout.png',
+                'url' => Router::admin('content-boxes'),
+                'icon' => Router::path('admin/images/icons/big-layout.png'),
                 'access' => User::hasPrivilege('adminbox'),
             ],
         ],
@@ -154,29 +155,29 @@ $content_modules = [
     'articles' => [
         'modules' => [
             'newart' => [
-                'url' => 'index.php?p=content-articles-edit',
-                'icon' => 'images/icons/big-new.png',
+                'url' => Router::admin('content-articles-edit'),
+                'icon' => Router::path('admin/images/icons/big-new.png'),
                 'access' => User::hasPrivilege('adminart'),
             ],
             'manage' => [
-                'url' => 'index.php?p=content-articles',
-                'icon' => 'images/icons/big-list.png',
+                'url' => Router::admin('content-articles'),
+                'icon' => Router::path('admin/images/icons/big-list.png'),
                 'access' => User::hasPrivilege('adminart'),
                 'label' => _lang('admin.content.manage'),
             ],
             'confirm' => [
-                'url' => 'index.php?p=content-confirm',
-                'icon' => 'images/icons/big-check.png',
+                'url' => Router::admin('content-confirm'),
+                'icon' => Router::path('admin/images/icons/big-check.png'),
                 'access' => User::hasPrivilege('adminconfirm'),
             ],
             'movearts' => [
-                'url' => 'index.php?p=content-movearts',
-                'icon' => 'images/icons/big-move.png',
+                'url' => Router::admin('content-movearts'),
+                'icon' => Router::path('admin/images/icons/big-move.png'),
                 'access' => User::hasPrivilege('admincategory'),
             ],
             'artfilter' => [
-                'url' => 'index.php?p=content-artfilter',
-                'icon' => 'images/icons/big-filter.png',
+                'url' => Router::admin('content-artfilter'),
+                'icon' => Router::path('admin/images/icons/big-filter.png'),
                 'access' => User::hasPrivilege('admincategory'),
             ],
         ],
@@ -185,13 +186,13 @@ $content_modules = [
     'widgets' => [
         'modules' => [
             'polls' => [
-                'url' => 'index.php?p=content-polls',
-                'icon' => 'images/icons/big-bars.png',
+                'url' => Router::admin('content-polls'),
+                'icon' => Router::path('admin/images/icons/big-bars.png'),
                 'access' => User::hasPrivilege('adminpoll'),
             ],
             'sboxes' => [
-                'url' => 'index.php?p=content-sboxes',
-                'icon' => 'images/icons/big-bubbles.png',
+                'url' => Router::admin('content-sboxes'),
+                'icon' => Router::path('admin/images/icons/big-bubbles.png'),
                 'access' => User::hasPrivilege('adminsbox'),
             ],
         ],

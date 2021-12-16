@@ -3,6 +3,7 @@
 use Sunlight\Admin\PageLister;
 use Sunlight\Database\Database as DB;
 use Sunlight\Message;
+use Sunlight\Router;
 use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
@@ -30,7 +31,7 @@ if (isset($_POST['title']) && is_array($_POST['title'])) {
 
 $output .= $message . "
 
-<form action='index.php?p=content-titles' method='post'>
+<form action='" . _e(Router::admin('content-titles')) . "' method='post'>
 ";
 
 $output .= PageLister::render([

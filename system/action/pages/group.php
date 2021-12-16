@@ -34,7 +34,7 @@ if (DB::size($items) != 0) {
         Extend::call('page.group.item.start', $extendArgs);
 
         // titulek
-        $output .= "<h2 class='list-title'><a href='" . Router::page($item['id'], $item['slug']) . "'" . (($item['type'] == Page::LINK && $item['var1'] == 1) ? " target='_blank'" : '') . ">" . $item['title'] . "</a></h2>\n";
+        $output .= "<h2 class='list-title'><a href='" . _e(Router::page($item['id'], $item['slug'])) . "'" . (($item['type'] == Page::LINK && $item['var1'] == 1) ? " target='_blank'" : '') . ">" . $item['title'] . "</a></h2>\n";
 
         Extend::call('page.group.item.title.after', $extendArgs);
 

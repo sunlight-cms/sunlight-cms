@@ -73,7 +73,7 @@ $output .= '
 <tr>
 
 <td>
-<form class="cform" action="index.php" method="get">
+<form class="cform" action="' . _e(Router::admin(null)) . '" method="get">
 <input type="hidden" name="p" value="users-list">
 <input type="hidden" name="search"' . Form::restoreGetValue('search', '') . '>
 <strong>' . _lang('admin.users.list.groupfilter') . ':</strong> ' . Admin::userSelect("group_id", $group, "id!=" . User::GUEST_GROUP_ID, null, _lang('global.all'), true) . '
@@ -82,11 +82,11 @@ $output .= '
 </td>
 
 <td>
-<form class="cform" action="index.php" method="get">
+<form class="cform" action="' . _e(Router::admin(null)) . '" method="get">
 <input type="hidden" name="p" value="users-list">
 <input type="hidden" name="group_id" value="' . $group . '">
 <strong>' . _lang('admin.users.list.search') . ':</strong> <input type="text" name="search" class="inputsmall"' . Form::restoreGetValue('search') . '> <input class="button" type="submit" value="' . _lang('mod.search.submit') . '">
-' . ($search ? ' <a href="index.php?p=users-list&amp;group=' . $group . '">' . _lang('global.cancel') . '</a>' : '') . '
+' . ($search ? ' <a href="' . _e(Router::admin('users-list', ['query' => ['group' => $group]])) . '">' . _lang('global.cancel') . '</a>' : '') . '
 </form>
 </td>
 
@@ -95,7 +95,11 @@ $output .= '
 ';
 
 // priprava strankovani
-$paging = Paginator::render("index.php?p=users-list&group=" . $group . ($search !== false ? '&search=' . rawurlencode($search) : ''), 50, DB::table('user') . ':u', $list_conds_sql);
+$pagingOptions = ['query' => ['group' => $group]];
+if($search !== false) {
+    $pagingOptions['query']['search'] = rawurlencode($search);
+}
+$paging = Paginator::render(Router::admin('users-list', $pagingOptions), 50, DB::table('user') . ':u', $list_conds_sql);
 $output .= $paging['paging'];
 
 // tabulka
@@ -127,8 +131,8 @@ if (DB::size($query) != 0) {
             <td>" . $item['user_email'] . "</td><td>" . (($item['user_publicname'] != '') ? $item['user_publicname'] : "-") . "</td>
             <td>" . $item['user_group_title'] . "</td>
             <td class='actions'>
-                <a class='button' href='index.php?p=users-edit&amp;id=" . $item['user_username'] . "'><img src='images/icons/edit.png' alt='edit' class='icon'>" . _lang('global.edit') . "</a>
-                <a class='button' href='index.php?p=users-delete&amp;id=" . $item['user_username'] . "'><img src='images/icons/delete.png' alt='del' class='icon'>" . _lang('global.delete') . "</a>
+                <a class='button' href='" . _e(Router::admin('users-edit', ['query' => ['id' => $item['user_username']]])) . "'><img src='" . _e(Router::path('admin/images/icons/edit.png')) . "' alt='edit' class='icon'>" . _lang('global.edit') . "</a>
+                <a class='button' href='" . _e(Router::admin('users-delete', ['query' => ['id' =>$item['user_username']]])) . "'><img src='" . _e(Router::path('admin/images/icons/delete.png')) . "' alt='del' class='icon'>" . _lang('global.delete') . "</a>
             </td>
         </tr>\n";
     }

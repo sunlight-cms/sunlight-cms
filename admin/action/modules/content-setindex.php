@@ -2,6 +2,7 @@
 
 use Sunlight\Admin\Admin;
 use Sunlight\Message;
+use Sunlight\Router;
 use Sunlight\Settings;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
@@ -26,7 +27,7 @@ if (isset($_POST['index'])) {
 /* ---  vystup  --- */
 
 $output .= $message . "
-<form class='cform' action='index.php?p=content-setindex' method='post'>
+<form class='cform' action='" . _e(Router::admin('content-setindex')) . "' method='post'>
 " . Admin::pageSelect('index', ['selected' => $index_id, 'maxlength' => null]) . "
 <input class='button' type='submit' value='" . _lang('global.do') . "'>
 " . Xsrf::getInput() . "</form>

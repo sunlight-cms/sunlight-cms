@@ -113,10 +113,10 @@ $_admin->bodyClasses[] = $_admin->dark ? 'dark' : 'light';
         <div id="footer">
             <div id="footer-links">
                 <?php if ($_admin->access): ?>
-                    <a href="<?= Router::generate('') ?>" target="_blank"><?= _lang('admin.link.site') ?></a>
-                    <a href="<?= Router::generate('admin/') ?>" target="_blank"><?= _lang('admin.link.newwin') ?></a>
+                    <a href="<?= _e(Router::index()) ?>" target="_blank"><?= _lang('admin.link.site') ?></a>
+                    <a href="<?= _e(Router::adminIndex()) ?>" target="_blank"><?= _lang('admin.link.newwin') ?></a>
                 <?php else: ?>
-                    <a href="<?= Router::generate('') ?>">&lt; <?= _lang('admin.link.home') ?></a>
+                    <a href="<?= _e(Router::index()) ?>">&lt; <?= _lang('admin.link.home') ?></a>
                 <?php endif ?>
             </div>
 

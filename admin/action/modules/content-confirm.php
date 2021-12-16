@@ -31,7 +31,7 @@ if (isset($_GET['limit'])) {
 }
 
 $output .= "
-<form class='cform' action='index.php' method='get'>
+<form class='cform' action='" . _e(Router::admin(null)) . "' method='get'>
     <input type='hidden' name='p' value='content-confirm'>"
     . _lang('admin.content.confirm.filter') . ": "
     . Admin::pageSelect("limit", ['type' => Page::CATEGORY, 'selected' => $catlimit, 'empty_item' => _lang('global.all')])
@@ -69,8 +69,8 @@ if (DB::size($query) != 0) {
             <td>" . $cats . "</td><td>" . GenericTemplates::renderTime($item['time']) . "</td>
             <td>" . Router::userFromQuery($userQuery, $item) . "</td>
             <td class='actions'>
-                <a class='button' href='index.php?p=content-confirm&amp;id=" . $item['id'] . "&amp;limit=" . $catlimit . "'><img src='images/icons/check.png' alt='confirm' class='icon'>" . _lang('admin.content.confirm.confirm') . "</a>
-                <a class='button' href='index.php?p=content-articles-edit&amp;id=" . $item['id'] . "&amp;returnid=load&amp;returnpage=1'><img src='images/icons/edit.png' alt='edit' class='icon'>" . _lang('global.edit') . "</a>"
+                <a class='button' href='" . _e(Router::admin('content-confirm', ['query' => ['id' => $item['id'], 'limit' => $catlimit]])) . "'><img src='" . _e(Router::path('admin/images/icons/check.png')) . "' alt='confirm' class='icon'>" . _lang('admin.content.confirm.confirm') . "</a>
+                <a class='button' href='" . _e(Router::admin('content-articles-edit', ['query' => ['id' => $item['id'], 'returnid' => 'load', 'returnpage' => 1]])) . "'><img src='" . _e(Router::path('admin/images/icons/edit.png')) . "' alt='edit' class='icon'>" . _lang('global.edit') . "</a>"
             . "</td>"
             . "</tr>\n";
     }

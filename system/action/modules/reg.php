@@ -24,7 +24,7 @@ if (!Settings::get('registration')) {
 }
 
 if (User::isLoggedIn()) {
-    $_index->redirect(Router::module('login', null, true));
+    $_index->redirect(Router::module('login', ['absolute' => true]));
     return;
 }
 
@@ -262,7 +262,7 @@ if (!$user_data_valid && $show_form) {
                 [
                     $user_data['username'],
                     $domain,
-                    Router::module('reg', 'confirm=' . $code, true),
+                    Router::module('reg', ['query' => ['confirm' => $code], 'absolute' => true]),
                     Core::getClientIp(),
                     GenericTemplates::renderTime(time()),
                 ],

@@ -34,7 +34,7 @@ abstract class Admin
                         $_admin->currentModule === $module
                         || !empty($_admin->modules[$module]['children']) && in_array($_admin->currentModule, $_admin->modules[$module]['children'])
                     );
-                    $url = $_admin->modules[$module]['url'] ?? 'index.php?p=' . $module;
+                    $url = $_admin->modules[$module]['url'] ?? Router::admin($module);
 
                     $output .= '<a href="' . $url . '"'
                         . ($active ? ' class="act"' : '')
@@ -42,7 +42,7 @@ abstract class Admin
                 }
             }
         } else {
-            $output .= '<a href="./" class="act"><span>' . _lang('login.title') . "</span></a>\n";
+            $output .= '<a href="' . _e(Router::adminIndex()) . '" class="act"><span>' . _lang('login.title') . "</span></a>\n";
         }
         $output .= "</div>\n";
 
@@ -58,7 +58,7 @@ abstract class Admin
     {
         $output = '<span id="usermenu">';
         if (User::isLoggedIn() && User::hasPrivilege('administration')) {
-            $profile_link = Router::module('profile', 'id=' . User::getUsername());
+            $profile_link = Router::module('profile', ['query' => ['id' => User::getUsername()]]);
             $avatar = User::renderAvatar(User::$data, ['get_url' => true, 'default' => false]);
             if ($avatar !== null) {
                 $output .= '<a id="usermenu-avatar" href="' . _e($profile_link) . '"><img src="' . $avatar . '" alt="' . User::getUsername() . '"></a>';
@@ -73,10 +73,10 @@ abstract class Admin
                 }
                 $output .= "<a href='" . _e(Router::module('messages')) . "'>" . _lang('usermenu.messages') . $messages_count . "</a>, ";
             }
-            $output .= '<a href="' . _e(Router::module('settings')) . '">' . _lang('usermenu.settings') . '</a>, <a href="' . _e(Xsrf::addToUrl(Router::generate('system/script/logout.php?_return=admin/'))) . '">' . _lang('usermenu.logout') . '</a>]';
-            $output .= '<a href="' . _e(Core::getBaseUrl()->getPath()) . '/" target="_blank" class="usermenu-web-link" title="' . _lang('admin.link.site') . '"><img class="icon" src="images/icons/guide.png" alt="' . _lang('admin.link.site') . '"></a>';
+            $output .= '<a href="' . _e(Router::module('settings')) . '">' . _lang('usermenu.settings') . '</a>, <a href="' . _e(Xsrf::addToUrl(Router::path('system/script/logout.php', ['query' => ['_return' => Router::adminIndex()]]))) . '">' . _lang('usermenu.logout') . '</a>]';
+            $output .= '<a href="' . _e(Core::getBaseUrl()->getPath()) . '/" target="_blank" class="usermenu-web-link" title="' . _lang('admin.link.site') . '"><img class="icon" src="' . _e(Router::path('admin/images/icons/guide.png')) . '" alt="' . _lang('admin.link.site') . '"></a>';
         } else {
-            $output .= '<a href="./">' . _lang('usermenu.guest') . '</a>';
+            $output .= '<a href="' . _e(Router::adminIndex()) . '">' . _lang('usermenu.guest') . '</a>';
         }
         $output .= '</span>';
 
@@ -104,7 +104,7 @@ abstract class Admin
      */
     static function note(string $str, bool $no_gray = false, ?string $icon = null): string
     {
-        return "<p" . ($no_gray ? '' : ' class="note"') . "><img src='images/icons/" . ($icon ?? 'note') . ".png' alt='note' class='icon'>" . $str . "</p>";
+        return "<p" . ($no_gray ? '' : ' class="note"') . "><img src='" . _e(Router::path('admin/images/icons/' . ($icon ?? 'note') . '.png')) . "' alt='note' class='icon'>" . $str . "</p>";
     }
 
     /**
@@ -154,7 +154,7 @@ abstract class Admin
             $alias .= '.';
         }
         if (User::hasPrivilege('adminallart')) {
-            return " AND (" . $alias . "author=" . User::getId() . " OR (SELECT level FROM " . DB::table('user_group') . " WHERE id=(SELECT group_id FROM " . DB::table('user') . " WHERE id=" . (($alias === '') ? "" . DB::table('article') . "." : $alias) . "author))<" . User::getLevel() . ")";
+            return " AND (" . $alias . "author=" . User::getId() . " OR (SELECT level FROM " . DB::table('user_group') . " WHERE id=(SELECT group_id FROM " . DB::table('user') . " WHERE id=" . (($alias === '') ? DB::table('article') . "." : $alias) . "author))<" . User::getLevel() . ")";
         }
 
         return " AND " . $alias . "author=" . User::getId();
@@ -184,7 +184,7 @@ abstract class Admin
         }
 
         // odkaz
-        $output .= "<a href='" . Router::article($art['id'], $art['slug'], $art['cat_slug']) . "' target='_blank'" . $class . ">";
+        $output .= "<a href='" . _e(Router::article($art['id'], $art['slug'], $art['cat_slug'])) . "' target='_blank'" . $class . ">";
         if ($art['time'] <= time()) {
             $output .= "<strong>";
         }
@@ -521,19 +521,24 @@ abstract class Admin
 
         Extend::call('admin.wysiwyg', ['available' => &$wysiwygAvailable]);
 
+        $styleOptions = ['query' => ['s' => $scheme]];
+        if($dark){
+            $styleOptions['query']['d'] = 1;
+        }
+
         return [
             'extend_event' => 'admin.head',
             'css' => [
-                'admin' => Router::generate('admin/script/style.php?s=' . rawurlencode($scheme) . ($dark ? '&d' : '')),
+                'admin' => Router::path('admin/script/style.php', $styleOptions),
             ],
             'js' => [
-                'jquery' => Router::generate('system/js/jquery.js'),
-                'sunlight' => Router::generate('system/js/sunlight.js'),
-                'rangyinputs' => Router::generate('system/js/rangyinputs.js'),
-                'scrollwatch' => Router::generate('system/js/scrollwatch.js'),
-                'scrollfix' => Router::generate('system/js/scrollfix.js'),
-                'jquery_ui' => Router::generate('admin/js/jquery-ui.js'),
-                'admin' => Router::generate('admin/js/admin.js'),
+                'jquery' => Router::path('system/js/jquery.js'),
+                'sunlight' => Router::path('system/js/sunlight.js'),
+                'rangyinputs' => Router::path('system/js/rangyinputs.js'),
+                'scrollwatch' => Router::path('system/js/scrollwatch.js'),
+                'scrollfix' => Router::path('system/js/scrollfix.js'),
+                'jquery_ui' => Router::path('admin/js/jquery-ui.js'),
+                'admin' => Router::path('admin/js/admin.js'),
             ],
             'js_before' => "\n" . Core::getJavascript([
                     'admin' => [

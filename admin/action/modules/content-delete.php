@@ -5,6 +5,7 @@ use Sunlight\GenericTemplates;
 use Sunlight\Message;
 use Sunlight\Page\Page;
 use Sunlight\Page\PageManipulator;
+use Sunlight\Router;
 use Sunlight\User;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
@@ -48,7 +49,7 @@ if ($continue) {
         }
 
         // redirect
-        $_admin->redirect('index.php?p=content&done');
+        $_admin->redirect(Router::admin('content', ['query' => ['done' => 1]]));
 
         return;
 
@@ -69,7 +70,7 @@ if ($continue) {
             : '')
     . "
 
-    <form class='cform' action='index.php?p=content-delete&amp;id=" . $id . "' method='post'>
+    <form class='cform' action='" . _e(Router::admin('content-delete', ['query' => ['id' => $id]])) . "' method='post'>
     <input type='hidden' name='confirm' value='1'>
     <input type='submit' value='" . _lang('admin.content.delete.confirm') . "'>
     " . Xsrf::getInput() . "</form>

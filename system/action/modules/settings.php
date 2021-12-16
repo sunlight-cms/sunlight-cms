@@ -46,7 +46,7 @@ $output .= _buffer(function () use ($actions) { ?>
 
     <ul>
         <?php foreach ($actions as $action => $actionInfo): ?>
-            <li class="user-settings-action-<?= _e($action) ?>"><a href="<?= _e(Router::module('settings', 'action=' . rawurlencode($action))) ?>"><?= $actionInfo['title'] ?></a></li>
+            <li class="user-settings-action-<?= _e($action) ?>"><a href="<?= _e(Router::module('settings', ['query' => ['action' => $action]])) ?>"><?= $actionInfo['title'] ?></a></li>
         <?php endforeach ?>
     </ul>
 <?php });

@@ -19,7 +19,7 @@ Core::init('../../', [
 /* ---  vystup  --- */
 
 if (!User::isSuperAdmin()) {
-    Response::redirect(Router::generate('admin/'));
+    Response::redirect(Router::adminIndex(['absolute' => true]));
     exit;
 }
 
@@ -51,7 +51,7 @@ if (isset($_POST['code'])) {
 
 <h1><?= _lang('admin.other.php.title') ?></h1>
 
-<form action="php.php" method="post">
+<form action="<?= _e(Router::path('admin/script/php.php')) ?>" method="post">
 <textarea name="code" rows="25" cols="94" class="areabig editor" data-editor-mode="code" data-editor-format="php-raw"><?php if (isset($code)) echo _e($code); ?></textarea><br>
 <p><input class="inputfat" type="submit" value="<?= _lang('global.do') ?>">  <label><input type="checkbox" name="html" value="1"<?= Form::activateCheckbox(isset($_POST['html']) ? 1 : 0) ?>> <?= _lang('admin.other.php.html') ?></label></p>
 <?= Xsrf::getInput() ?>

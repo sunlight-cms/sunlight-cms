@@ -64,7 +64,7 @@ if ($_article['visible']) {
         if ($i > 1) {
             $output .= ', ';
         }
-        $output .= "<a href='" . Router::page($_article["cat{$i}_id"], $_article["cat{$i}_slug"]) . "'>" . $_article["cat{$i}_title"] . "</a>";
+        $output .= "<a href='" . _e(Router::page($_article["cat{$i}_id"], $_article["cat{$i}_slug"])) . "'>" . $_article["cat{$i}_title"] . "</a>";
     }
     $output .= "</div>\n";
 }
@@ -93,7 +93,7 @@ $output .= "<div class='cleaner'></div>\n";
 $infos = [];
 
 if (User::hasPrivilege('adminart')) {
-    $infos['idlink'] = [_lang('global.id'), "<a href='" . _e(UrlHelper::appendParams(Router::generate('admin/index.php'),"p=content-articles-edit&id=" . $_article['id'] . "&returnid=load&returnpage=1")) . "'>" . $_article['id'] . " <img src='" . Template::image("icons/edit.png") . "' alt='edit' class='icon'></a>"];
+    $infos['idlink'] = [_lang('global.id'), "<a href='" . _e(Router::admin('content-articles-edit', ['query' => ['id' => $_article['id'], 'returnid' => 'load', 'returnpage' => 1]])) . "'>" . $_article['id'] . " <img src='" . Template::image("icons/edit.png") . "' alt='edit' class='icon'></a>"];
 }
 
 if ($_article['showinfo']) {
@@ -124,7 +124,7 @@ $rateform = null;
 if ($_article['rateon'] && Settings::get('ratemode') != 0 && User::hasPrivilege('artrate') && IpLog::check(IpLog::ARTICLE_RATED, $_article['id'])) {
     $rateform = "
 <strong>" . _lang('article.rate.title') . ":</strong>
-<form action='" . Router::generate('system/script/artrate.php') . "' method='post'>
+<form action='" . _e(Router::path('system/script/artrate.php')) . "' method='post'>
 <input type='hidden' name='id' value='" . $_article['id'] . "'>
 ";
 

@@ -37,16 +37,16 @@ if (isset($_GET['id'], $_GET['returnid'], $_GET['returnpage'])) {
         if ($returnid == "load") {
             $returnid = $query['home1'];
         }
-        $backlink = "index.php?p=content-articles-list&cat=" . $returnid . "&page=" . $returnpage;
-        $actionplus = "&amp;id=" . $id . "&amp;returnid=" . $returnid . "&amp;returnpage=" . $returnpage;
+        $backlink = Router::admin('content-articles-list', ['query' => ['cat' => $returnid, 'page' => $returnpage]]);
+        $actionplus = ['query' => ['id' => $id, 'returnid' => $returnid, 'returnpage' => $returnpage]];
         $submittext = "global.savechanges";
-        $artlink = " <a href='" . Router::article($query['id'], $query['slug'], $query['cat_slug']) . "' target='_blank'><img src='images/icons/loupe.png' alt='prev'></a>";
+        $artlink = " <a href='" . _e(Router::article($query['id'], $query['slug'], $query['cat_slug'])) . "' target='_blank'><img src='" . _e(Router::path('admin/images/icons/loupe.png')) . "' alt='prev'></a>";
         $new = false;
         $continue = true;
     }
 } else {
-    $backlink = "index.php?p=content-articles";
-    $actionplus = "";
+    $backlink = Router::admin('content-articles');
+    $actionplus = null;
     $submittext = "global.create";
     $artlink = "";
     $new = true;
@@ -265,7 +265,7 @@ if (isset($_POST['title'])) {
             }
 
             // presmerovani
-            $_admin->redirect('index.php?p=content-articles-edit&id=' . $id . '&saved&returnid=' . $returnid . '&returnpage=' . $returnpage);
+            $_admin->redirect(Router::admin('content-articles-edit', ['query' => ['id' => $id, 'saved' => 1, 'returnid' => $returnid, 'returnpage' => $returnpage]]));
 
         } else {
 
@@ -273,7 +273,7 @@ if (isset($_POST['title'])) {
             $id = DB::insert('article', $changeset, true);
 
             // presmerovani
-            $_admin->redirect('index.php?p=content-articles-edit&id=' . $id . '&created&returnid=' . $newdata['home1'] . '&returnpage=1');
+            $_admin->redirect(Router::admin('content-articles-edit', ['query' => ['id' => $id, 'created' => 1, 'returnid' => $newdata['home1'], 'returnpage' => 1]]));
 
         }
 
@@ -329,9 +329,9 @@ if ($continue) {
     $picture = '';
     if (isset($query['picture_uid'])) {
         $picture .= "<img src='" . _e(Router::file(Article::getImagePath($query['picture_uid']))) . "' alt='article picture' id='is-picture-file'>
-<label id='is-picture-delete'><input type='checkbox' name='picture-delete' value='1'> <img src='images/icons/delete3.png' class='icon' alt='" . _lang('global.delete') . "'></label>";
+<label id='is-picture-delete'><input type='checkbox' name='picture-delete' value='1'> <img src='" . _e(Router::path('admin/images/icons/delete3.png')) . "' class='icon' alt='" . _lang('global.delete') . "'></label>";
     } else {
-        $picture .= "<img src='images/art-no-pic.png' alt='no picture'>\n";
+        $picture .= "<img src='" . _e(Router::path('admin/images/art-no-pic.png')) . "' alt='no picture'>\n";
     }
     $picture .= "<input type='file' name='picture' id='is-picture-upload'>\n";
 
@@ -353,7 +353,7 @@ if ($continue) {
 
 " . ((!$new && DB::count('article', 'id!=' . DB::val($query['id']) . ' AND home1=' . DB::val($query['home1']) . ' AND slug=' . DB::val($query['slug'])) !== 0) ? Message::warning(_lang('admin.content.form.slug.collision')) : '') . "
 
-<form class='cform' action='index.php?p=content-articles-edit" . $actionplus . "' method='post' enctype='multipart/form-data' name='artform'>
+<form class='cform' action='" . _e(Router::admin('content-articles-edit', $actionplus)) . "' method='post' enctype='multipart/form-data' name='artform'>
 
 <table class='formtable'>
 
@@ -445,7 +445,7 @@ if ($continue) {
 <td></td>
 <td id='ae-lastrow'><br><input type='submit' class='button bigger' value='" . _lang($submittext) . "' accesskey='s'>
 " . (!$new ? "
-<span class='customsettings'><a href='index.php?p=content-articles-delete&amp;id=" . $query['id'] . "&amp;returnid=" . $query['home1'] . "&amp;returnpage=1'><span><img src='images/icons/delete.png' alt='del' class='icon'>" . _lang('global.delete') . "</span></a></span>
+<span class='customsettings'><a href='" . _e(Router::admin('content-articles-delete', ['query' => ['id' => $query['id'], 'returnid' => $query['home1'], 'returnpage' => 1]])) . "'><span><img src='" . _e(Router::path('admin/images/icons/delete.png')) . "' alt='del' class='icon'>" . _lang('global.delete') . "</span></a></span>
 <span class='customsettings'><small>" . _lang('admin.content.form.thisid') . " " . $query['id'] . "</small></span>
 " : '') . "
 
@@ -460,7 +460,7 @@ if ($continue) {
 
 } else {
     $output .=
-        Admin::backlink('index.php?p=content-articles')
+        Admin::backlink(Router::admin('content-articles'))
         . "<h1>" . _lang('admin.content.articles.edit.title') . "</h1>\n"
         . Message::error(_lang('global.badinput'));
 }

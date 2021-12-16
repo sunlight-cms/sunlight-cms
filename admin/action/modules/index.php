@@ -5,6 +5,7 @@ use Sunlight\Core;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\Message;
+use Sunlight\Router;
 use Sunlight\Settings;
 use Sunlight\User;
 use Sunlight\VersionChecker;
@@ -88,7 +89,7 @@ $output .= "
     <tr>
       <th>PHP:</th>
       <td>
-        " . (User::isSuperAdmin() ? '<a href="script/phpinfo.php" target="_blank">' : '') . "
+        " . (User::isSuperAdmin() ? '<a href="' . _e(Router::path('admin/script/phpinfo.php')) . '" target="_blank">' : '') . "
         " . PHP_VERSION . "
         " . (User::isSuperAdmin() ? '</a>' :'') . "
     </td>
@@ -144,7 +145,7 @@ $output .= "</div>\n";
 
 // editace
 if (User::$group['id'] == User::ADMIN_GROUP_ID) {
-    $output .= '<p class="text-right"><a class="button" href="index.php?p=index-edit"><img src="images/icons/edit.png" alt="edit" class="icon">' . _lang('admin.index.edit.link') . '</a></p>';
+    $output .= '<p class="text-right"><a class="button" href="' . _e(Router::admin('index-edit')) . '"><img src="' . _e(Router::path('admin/images/icons/edit.png')) . '" alt="edit" class="icon">' . _lang('admin.index.edit.link') . '</a></p>';
 }
 
 // kontrola funcknosti htaccess

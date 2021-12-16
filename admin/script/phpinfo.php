@@ -13,7 +13,7 @@ Core::init('../../', [
 /* ---  vystup  --- */
 
 if (!User::isSuperAdmin()) {
-    Response::redirect(Router::generate('admin/'));
+    Response::redirect(Router::adminIndex(['absolute' => true]));
     exit;
 }
 

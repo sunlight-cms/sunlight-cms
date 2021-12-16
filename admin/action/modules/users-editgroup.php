@@ -5,6 +5,7 @@ use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\Image\ImageService;
 use Sunlight\Message;
+use Sunlight\Router;
 use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Html;
@@ -218,7 +219,7 @@ if ($continue) {
         DB::update('user_group', 'id=' . $id, $changeset);
 
         // reload stranky
-        $_admin->redirect('index.php?p=users-editgroup&id=' . $id . '&saved');
+        $_admin->redirect(Router::admin('users-editgroup', ['query' => ['id' => $id, 'saved' => 1]]));
 
         return;
 
@@ -251,7 +252,7 @@ if ($continue) {
   <p class='bborder'>" . _lang('admin.users.groups.editp') . "</p>
   " . (isset($_GET['saved']) ? Message::ok(_lang('global.saved')) : '') . "
   " . ($systemitem ? Admin::note(_lang('admin.users.groups.specialgroup.editnotice')) : '') . "
-  <form action='index.php?p=users-editgroup&amp;id=" . $id . "' method='post'>
+  <form action='" . _e(Router::admin('users-editgroup', ['query' => ['id' => $id]])) . "' method='post'>
   <table>
 
   <tr>

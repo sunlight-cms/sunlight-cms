@@ -7,6 +7,7 @@ use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\Message;
 use Sunlight\Plugin\PluginManager;
+use Sunlight\Router;
 use Sunlight\Settings;
 use Sunlight\User;
 use Sunlight\Util\Form;
@@ -259,7 +260,7 @@ if (!empty($_POST)) {
 
     $saved = true;
     if ($reload) {
-        $_admin->redirect('index.php?p=settings&saved');
+        $_admin->redirect(Router::admin('settings', ['query' => ['saved' => 1]]));
     }
     if ($forceInstallCheck) {
         Settings::update('install_check', '1');
@@ -270,7 +271,7 @@ if (!empty($_POST)) {
 
 $output .= ($saved ? Message::ok(_lang('admin.settings.saved')) : '') . '
 
-<form action="index.php?p=settings" method="post">
+<form action="' . _e(Router::admin('settings')) . '" method="post">
 
 <div id="settingsnav">
 <input type="submit"  class="button bigger" value="' . _lang('global.savechanges') . '" accesskey="s">

@@ -38,13 +38,13 @@ if (User::hasPrivilege('adminpollall') && isset($_GET['author']) && Request::get
 
 $output .= "
 <p class='bborder'>" . _lang('admin.content.polls.p') . "</p>
-<p><a class='button' href='index.php?p=content-polls-edit'><img src='images/icons/new.png' class='icon' alt='new'>" . _lang('admin.content.polls.new') . "</a></p>
+<p><a class='button' href='" . _e(Router::admin('content-polls-edit')) . "'><img src='" . _e(Router::path('admin/images/icons/new.png')) . "' class='icon' alt='new'>" . _lang('admin.content.polls.new') . "</a></p>
 ";
 
 // filtr
 if (User::hasPrivilege('adminpollall')) {
     $output .= "
-  <form class='cform' action='index.php' method='get'>
+  <form class='cform' action='" . _e(Router::admin(null)) . "' method='get'>
   <input type='hidden' name='p' value='content-polls'>
   <strong>" . _lang('admin.content.polls.filter') . ":</strong> " . Admin::userSelect("author", $author_filter_id, "adminpoll=1", null, _lang('global.all2')) . " <input class='button' type='submit' value='" . _lang('global.apply') . "'>
   </form>
@@ -52,7 +52,7 @@ if (User::hasPrivilege('adminpollall')) {
 }
 
 // strankovani
-$paging = Paginator::render("index.php?p=content-polls", 20, DB::table('poll') . ':p', $author_filter . Admin::pollAccess($pasep), "&amp;filter=" . $author_filter_id);
+$paging = Paginator::render(Router::admin('content-polls'), 20, DB::table('poll') . ':p', $author_filter . Admin::pollAccess($pasep), "&amp;filter=" . $author_filter_id);
 $output .= $paging['paging'];
 
 $output .= $message . "
@@ -76,8 +76,8 @@ if (DB::size($query) != 0) {
             . $username
             . "<td>" . $item['id'] . "</td>"
             . "<td class='actions'>
-                <a class='button' href='index.php?p=content-polls-edit&amp;id=" . $item['id'] . "'><img src='images/icons/edit.png' class='icon' alt='edit'> " . _lang('global.edit') . "</a>
-                <a class='button' href='" . _e(Xsrf::addToUrl("index.php?p=content-polls&author=" . $author_filter_id . "&page=" . $paging['current'] . "&del=" . $item['id'])) . "' onclick='return Sunlight.confirm();'><img src='images/icons/delete.png' class='icon' alt='del'> " . _lang('global.delete') . "</a>
+                <a class='button' href='" . _e(Router::admin('content-polls-edit', ['query' => ['id' => $item['id']]])) . "'><img src='" . _e(Router::path('admin/images/icons/edit.png')) . "' class='icon' alt='edit'> " . _lang('global.edit') . "</a>
+                <a class='button' href='" . _e(Xsrf::addToUrl(Router::admin('content-polls', ['query' => ['author' => $author_filter_id, 'page' => $paging['current'], 'del' => $item['id']]]))) . "' onclick='return Sunlight.confirm();'><img src='" . _e(Router::path('admin/images/icons/delete.png')) . "' class='icon' alt='del'> " . _lang('global.delete') . "</a>
             </td>"
             . "</tr>\n";
     }
@@ -91,7 +91,7 @@ $output .= "
 
 " . $paging['paging'] . "
 
-<form class='cform' action='index.php' method='get'>
+<form class='cform' action='" . _e(Router::admin(null)) . "' method='get'>
 <input type='hidden' name='p' value='content-polls-edit'>
 " . _lang('admin.content.polls.openid') . ": <input type='number' name='id' class='inputmini'> <input class='button' type='submit' value='" . _lang('global.open') . "'>
 </form>

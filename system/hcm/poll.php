@@ -33,7 +33,7 @@ return function ($id = null) {
         }
 
         if ($rallowvote) {
-            $ranswers_code = "<form action='" . Router::generate('system/script/hcm/pvote.php?_return=' . rawurlencode($GLOBALS['_index']->url) . "#hcm_poll_" . Core::$hcmUid) . "' method='post'>\n<input type='hidden' name='pid' value='" . $vpolldata['id'] . "'>";
+            $ranswers_code = "<form action='" . _e(Router::path('system/script/hcm/pvote.php', ['query' => ['_return=' => $GLOBALS['_index']->url], 'fragment' => 'hcm_poll_' . Core::$hcmUid])) . "' method='post'>\n<input type='hidden' name='pid' value='" . $vpolldata['id'] . "'>";
         } else {
             $ranswers_code = "";
         }

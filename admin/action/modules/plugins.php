@@ -4,6 +4,7 @@ use Sunlight\Core;
 use Sunlight\Message;
 use Sunlight\Plugin\InactivePlugin;
 use Sunlight\Plugin\Plugin;
+use Sunlight\Router;
 use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
@@ -11,7 +12,7 @@ defined('SL_ROOT') or exit;
 // vycisteni cache
 if (isset($_GET['clear'])) {
     Core::$pluginManager->purgeCache();
-    $_admin->redirect('index.php?p=plugins&cleared');
+    $_admin->redirect(Router::admin('plugins', ['query' => ['cleared' => 1]]));
 
     return;
 }
@@ -45,9 +46,9 @@ $renderPluginAuthor = function ($author, $url) {
 
 // tlacitka
 $output .= '<p>
-        <a class="button" href="index.php?p=plugins-upload"><img src="images/icons/plugin.png" alt="upload" class="icon">' . _lang('admin.plugins.upload') . '</a>
-        <a class="button" href="index.php?p=plugins&amp;clear"><img src="images/icons/refresh.png" alt="clear" class="icon">' . _lang('admin.plugins.clear_cache') . '</a>
-        <a class="button right" href="https://sunlight-cms.cz/resource/get-plugins" target="_blank"><img src="images/icons/show.png" alt="get" class="icon">' . _lang('admin.plugins.get') . '</a>
+        <a class="button" href="' . _e(Router::admin('plugins-upload')) . '"><img src="' . _e(Router::path('admin/images/icons/plugin.png')) . '" alt="upload" class="icon">' . _lang('admin.plugins.upload') . '</a>
+        <a class="button" href="' . _e(Router::admin('plugins', ['query' => ['clear' => 1]])) . '"><img src="' . _e(Router::path('admin/images/icons/refresh.png')) . '" alt="clear" class="icon">' . _lang('admin.plugins.clear_cache') . '</a>
+        <a class="button right" href="https://sunlight-cms.cz/resource/get-plugins" target="_blank"><img src="' . _e(Router::path('admin/images/icons/show.png')) . '" alt="get" class="icon">' . _lang('admin.plugins.get') . '</a>
 </p>
 ';
 
@@ -99,7 +100,7 @@ foreach (Core::$pluginManager->all() as $pluginType => $plugins) {
             <p>
                 ' . _buffer(function () use ($plugin) {
                     foreach ($plugin->getActionList() as $action => $label) {
-                        echo '<a class="button" href="' . _e(Xsrf::addToUrl('index.php?p=plugins-action&type=' . rawurlencode($plugin->getType()) . '&name=' . rawurlencode($plugin->getId()) . '&action=' . rawurlencode($action))) . '">' . _e($label) . "</a>\n";
+                        echo '<a class="button" href="' . _e(Xsrf::addToUrl(Router::admin('plugins-action', ['query' => ['type' => rawurlencode($plugin->getType()), 'name' => rawurlencode($plugin->getId()), 'action' => rawurlencode($action)]]))) . '">' . _e($label) . "</a>\n";
                     }
                 }) . '
             </p>

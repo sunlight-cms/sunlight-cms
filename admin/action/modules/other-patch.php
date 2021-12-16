@@ -4,6 +4,7 @@ use Sunlight\Backup\Backup;
 use Sunlight\Backup\BackupRestorer;
 use Sunlight\Core;
 use Sunlight\Message;
+use Sunlight\Router;
 use Sunlight\Util\Environment;
 use Sunlight\VersionChecker;
 use Sunlight\Xsrf;
@@ -81,7 +82,7 @@ $output .= _buffer(function () use ($latest_version) { ?>
             <tr>
                 <td></td>
                 <td>
-                    <?= Message::warning(_lang('admin.other.patch.note', ['%link%' => 'index.php?p=backup']), true) ?>
+                    <?= Message::warning(_lang('admin.other.patch.note', ['%link%' => Router::admin('backup')]), true) ?>
                     <input type="submit" class="button big" name="apply_patch" value="<?= _lang('admin.other.patch.upload') ?>">
 
                 </td>

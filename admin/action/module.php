@@ -3,6 +3,7 @@
 use Sunlight\Admin\Admin;
 use Sunlight\Extend;
 use Sunlight\Message;
+use Sunlight\Router;
 
 defined('SL_ROOT') or exit;
 
@@ -16,7 +17,7 @@ if (isset($_admin->modules[$_admin->currentModule])) {
 
         // zpetny odkaz
         if (isset($module['parent']) && !$module_custom_header) {
-            $output .= Admin::backlink('index.php?p=' . $module['parent']);
+            $output .= Admin::backlink(Router::admin($module['parent']));
         }
 
         // titulek

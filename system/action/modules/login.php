@@ -18,8 +18,8 @@ if (User::isLoggedIn()) {
 
     // pole polozek (adresa, titulek, podminky pro zobrazeni)
     $items = [
-        [Router::generate('admin/'), _lang('global.admintitle'), User::hasPrivilege('administration')],
-        [Router::module('profile', 'id=' . User::getUsername()), _lang('mod.profile'), true],
+        [Router::adminIndex(), _lang('global.admintitle'), User::hasPrivilege('administration')],
+        [Router::module('profile', ['query' => ['id' => User::getUsername()]]), _lang('mod.profile'), true],
         [Router::module('settings'), _lang('mod.settings'), true],
         [Router::module('messages'), _lang('mod.messages') . " [" . User::getUnreadPmCount() . "]", Settings::get('messages')],
     ];

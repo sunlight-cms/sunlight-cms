@@ -531,14 +531,14 @@ class PostService
                     if ($tpages_num > 1) {
                         $tpages .= '<span class=\'topic-pages\'>';
                         for ($i = 1; $i <= 3 && $i <= $tpages_num; ++$i) {
-                            $tpages .= "<a href='" . _e(UrlHelper::appendParams(Router::topic($item['id'], $forum_slug), 'page=' . $i)) . "#posts'>" . $i . '</a>';
+                            $tpages .= "<a href='" . _e(Router::topic($item['id'], $forum_slug, ['query' => ['page' => $i], 'fragment' => 'posts'])) . "'>" . $i . '</a>';
                         }
-                        if ($tpages_num > 3) $tpages .= "<a href='" . _e(UrlHelper::appendParams(Router::topic($item['id'], $forum_slug), 'page=' . $tpages_num)) . "'>" . $tpages_num . ' &rarr;</a>';
+                        if ($tpages_num > 3) $tpages .= "<a href='" . _e(Router::topic($item['id'], $forum_slug, ['query' => ['page' => $tpages_num]])) . "'>" . $tpages_num . ' &rarr;</a>';
                         $tpages .= '</span>';
                     }
 
                     // render row
-                    $output .= "<tr class='topic-" . $icon . ($hl ? ' topic-hl' : '') . "'><td class='topic-icon-cell'><a href='" . Router::topic($item['id'], $forum_slug) . "'><img src='" . Template::image('icons/topic-' . $icon . '.png') . "' alt='" . _lang('posts.topic.' . $icon) . "'></a></td><td class='topic-main-cell'><a href='" . Router::topic($item['id'], $forum_slug) . "'>" . $item['subject'] . "</a>" . $tpages . "<br>" . $author . " <small class='post-info'>(" . GenericTemplates::renderTime($item['time'], 'post') . ")</small></td><td>" . $item['answer_count'] . "</td><td>" . $lastpost . (($item['answer_count'] != 0) ? "<br><small class='post-info'>(" . GenericTemplates::renderTime($item['bumptime'], 'post') . ")</small>" : '') . "</td></tr>\n";
+                    $output .= "<tr class='topic-" . $icon . ($hl ? ' topic-hl' : '') . "'><td class='topic-icon-cell'><a href='" . _e(Router::topic($item['id'], $forum_slug)) . "'><img src='" . Template::image('icons/topic-' . $icon . '.png') . "' alt='" . _lang('posts.topic.' . $icon) . "'></a></td><td class='topic-main-cell'><a href='" . _e(Router::topic($item['id'], $forum_slug)) . "'>" . $item['subject'] . "</a>" . $tpages . "<br>" . $author . " <small class='post-info'>(" . GenericTemplates::renderTime($item['time'], 'post') . ")</small></td><td>" . $item['answer_count'] . "</td><td>" . $lastpost . (($item['answer_count'] != 0) ? "<br><small class='post-info'>(" . GenericTemplates::renderTime($item['bumptime'], 'post') . ")</small>" : '') . "</td></tr>\n";
                     $hl = !$hl;
                 }
                 $output .= "</tbody></table>\n\n";
@@ -563,7 +563,7 @@ class PostService
                         } else {
                             $author = "<span class='post-author-guest'>" . self::renderGuestName($item['guest']) . "</span>";
                         }
-                        $output .= "<tr><td><a href='" . Router::topic($item['topic_id'], $forum_slug) . "'>" . $item['topic_subject'] . "</a></td><td>" . $author . "</td><td>" . GenericTemplates::renderTime($item['time'], 'post') . "</td></tr>\n";
+                        $output .= "<tr><td><a href='" . _e(Router::topic($item['topic_id'], $forum_slug)) . "'>" . $item['topic_subject'] . "</a></td><td>" . $author . "</td><td>" . GenericTemplates::renderTime($item['time'], 'post') . "</td></tr>\n";
                     }
                     $output .= "</table>\n\n";
 
@@ -629,7 +629,7 @@ class PostService
         $output .= Form::render(
             [
                 'name' => 'postform',
-                'action' => UrlHelper::appendParams(Router::generate('system/script/post.php'), '_return=' . rawurlencode($vars['url'])),
+                'action' => Router::path('system/script/post.php', ['query' => ['_return' => $vars['url']]]),
                 'submit_append' => ' ' . PostForm::renderPreviewButton('postform', 'text'),
             ],
             $inputs
@@ -675,7 +675,7 @@ class PostService
         // action links
         $actlinks = [];
         if ($options['allow_reply']) $actlinks[] = "<a class='post-action-reply' href='" . _e(UrlHelper::appendParams($options['current_url'], "replyto=" . $post['id'])) . "#posts'>" . _lang('posts.reply') . "</a>";
-        if ($postAccess) $actlinks[] = "<a class='post-action-edit' href='" . _e(Router::module('editpost', 'id=' . $post['id'])) . "'>" . _lang('global.edit') . "</a>";
+        if ($postAccess) $actlinks[] = "<a class='post-action-edit' href='" . _e(Router::module('editpost', ['query' => ['id' => $post['id']]])) . "'>" . _lang('global.edit') . "</a>";
         $actlinks = array_merge($actlinks, $options['extra_actions']);
 
         // avatar

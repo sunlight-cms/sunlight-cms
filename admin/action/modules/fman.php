@@ -7,6 +7,7 @@ use Sunlight\GenericTemplates;
 use Sunlight\Image\ImageService;
 use Sunlight\Message;
 use Sunlight\Page\Page;
+use Sunlight\Router;
 use Sunlight\User;
 use Sunlight\Util\Arr;
 use Sunlight\Util\Environment;
@@ -17,25 +18,6 @@ use Sunlight\Util\StringManipulator;
 use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
-
-/* ----  priprava funkci  ---- */
-
-$decodeFilename = function ($value, $encoded = true) {
-    if ($encoded) {
-        $value = @base64_decode($value);
-    }
-
-    return basename($value);
-};
-
-$encodeFilename = function ($value, $urlencode = true) {
-    $output = base64_encode($value);
-    if ($urlencode) {
-        $output = rawurlencode($output);
-    }
-
-    return $output;
-};
 
 /* ----  priprava promennych  ---- */
 
@@ -76,6 +58,7 @@ $extensions = [
     'jpeg' => 'image',
     'png' => 'image',
     'gif' => 'image',
+    'webp' => 'image',
     'bmp' => 'image',
     'jp2' => 'image',
     'tga' => 'image',
@@ -163,6 +146,7 @@ $action_code = "";
 
 $defdir = User::getHomeDir();
 $dir = User::normalizeDir(Request::get('dir'));
+$uploaded = [];
 
 // vytvoreni vychoziho adresare
 if (!(file_exists($defdir) && is_dir($defdir))) {
@@ -175,9 +159,23 @@ if (!(file_exists($defdir) && is_dir($defdir))) {
     }
 }
 
-$url_base = "index.php?p=fman&amp;";
-$url = $url_base . "dir=" . rawurlencode($dir);
-$uploaded = [];
+/* ----  priprava funkci  ---- */
+
+$fmanUrl = function (array $query = []) use ($dir) {
+    return Router::admin('fman', ['query' => $query + ['dir' => $dir]]);
+};
+
+$decodeFilename = function ($value, $encoded = true) {
+    if ($encoded) {
+        $value = @base64_decode($value);
+    }
+
+    return basename($value);
+};
+
+$encodeFilename = function ($value) {
+    return base64_encode($value);
+};
 
 /* ----  akce, vystup  ---- */
 
@@ -440,7 +438,7 @@ if ($continue) {
     /* ---  get akce  --- */
     if (isset($_GET['a'])) {
 
-        $action_acbonus = "";
+        $action_query = [];
         $action_form_class = null;
 
         // vyber akce
@@ -516,8 +514,11 @@ if ($continue) {
                 // formular
                 if ($continue) {
                     $action_submit = "global.save";
-                    $action_acbonus = (!$new ? "&amp;a=edit&amp;name=" . $name : '');
                     $action_title = "admin.fman.edit.title";
+
+                    if (!$new) {
+                        $action_query += ['a' => 'edit', 'name' => $name];
+                    }
 
                     $action_form_class = 'cform';
 
@@ -559,7 +560,6 @@ if ($continue) {
                 // addtogallery
             case "addtogallery":
                 $action_submit = "global.insert";
-                $action_acbonus = "";
                 $action_title = "admin.fman.menu.addtogallery";
 
                 // load and check images
@@ -577,7 +577,7 @@ if ($continue) {
                 foreach ($images_load as $images_load_image) {
                     $images_load_image = $decodeFilename($images_load_image);
                     if (ImageService::isImage($images_load_image)) {
-                        $images .= "<input type='hidden' name='f" . $counter . "' value='" . $encodeFilename($images_load_image, false) . "'>\n";
+                        $images .= "<input type='hidden' name='f" . $counter . "' value='" . _e($encodeFilename($images_load_image)) . "'>\n";
                         ++$counter;
                     }
                 }
@@ -610,14 +610,14 @@ if ($continue) {
             $action_code = "
 <div id='fman-action'>
 <h2>" . _lang($action_title) . "</h2>
-<form action='" . $url . $action_acbonus . "'" . (($action_form_class !== null) ? " class='" . $action_form_class . "'" : '') . " method='post' enctype='multipart/form-data'>
+<form action='" . _e($fmanUrl($action_query)) . "'" . (($action_form_class !== null) ? " class='" . $action_form_class . "'" : '') . " method='post' enctype='multipart/form-data'>
 <input type='hidden' name='action' value='" . _e(Request::get('a')) . "'>
 <table class='formtable'>
 " . $action_code . "
 
   <tr>
   <td></td>
-  <td><input type='submit' value='" . _lang($action_submit) . "' accesskey='s'> <a href='" . $url . "'>" . _lang('global.cancel') . "</a></td>
+  <td><input type='submit' value='" . _lang($action_submit) . "' accesskey='s'> <a href='" . _e($fmanUrl()) . "'>" . _lang('global.cancel') . "</a></td>
   </tr>
 
 </table>
@@ -635,11 +635,11 @@ if ($continue) {
     $output .= $message . "
     <a id='top'></a>
     <p class='fman-menu'>
-    <a href='" . $url . "&amp;a=upload'>" . _lang('admin.fman.menu.upload') . "</a>
-    <a href='" . $url . "&amp;a=edit'>" . _lang('admin.fman.menu.createfile') . "</a>
-    <a href='" . $url . "&amp;a=newfolder'>" . _lang('admin.fman.menu.createfolder') . "</a>
+    <a href='" . _e($fmanUrl(['a' => 'upload'])) ."'>" . _lang('admin.fman.menu.upload') . "</a>
+    <a href='" . _e($fmanUrl(['a' => 'edit'])) ."'>" . _lang('admin.fman.menu.createfile') . "</a>
+    <a href='" . _e($fmanUrl(['a' => 'newfolder'])) ."'>" . _lang('admin.fman.menu.createfolder') . "</a>
     " . ((User::hasPrivilege('admingallery') && User::hasPrivilege('admincontent')) ? "<a href='#' onclick='return Sunlight.admin.fmanAddSelectedToGallery()'>" . _lang('admin.fman.menu.addtogallery') . "</a>" : '') . "
-    <a href='" . $url_base . "dir=" . rawurlencode($defdir) . "'>" . _lang('admin.fman.menu.home') . "</a>
+    <a href='" . _e($fmanUrl(['dir' => null])) . "'>" . _lang('admin.fman.menu.home') . "</a>
     <strong>" . _lang('admin.fman.currentdir') . ":</strong> " . substr($dir, strlen(SL_ROOT)) . "
     </p>
 
@@ -647,7 +647,7 @@ if ($continue) {
 
     // vypis
     $output .= "
-    <form action='" . $url . "' method='post' name='filelist'>
+    <form action='" . _e($fmanUrl()) ."' method='post' name='filelist'>
     <input type='hidden' name='action' value='-1'>
     <input type='hidden' name='param' value='-1'>
     <table id='fman-list'>
@@ -685,10 +685,10 @@ if ($continue) {
 
         $output .= "
         <tr" . $hl_class . ">
-        <td class='fman-item' colspan='" . (($item == "..") ? "3" : "2") . "'><a href='" . $url_base . "dir=" . rawurlencode($dirhref) . "/'><img src='images/icons/fman/dir.png' alt='dir' class='icon'>" . _e(StringManipulator::ellipsis($item, 64, false)) . "</a></td>
+        <td class='fman-item' colspan='" . (($item == "..") ? "3" : "2") . "'><a href='" . _e($fmanUrl(['dir' => $dirhref])) . "/'><img src='" . _e(Router::path('admin/images/icons/fman/dir.png')) . "' alt='dir' class='icon'>" . _e(StringManipulator::ellipsis($item, 64, false)) . "</a></td>
         " . (($item != "..") ? "<td class='actions'>
-            <a class='button' href='" . $url . "&amp;a=delete&amp;name=" . $encodeFilename($item) . "'><img src='images/icons/delete.png' alt='del' class='icon'>" . _lang('global.delete') . "</a>
-            <a class='button' href='" . $url . "&amp;a=rename&amp;name=" . $encodeFilename($item) . "'><img src='images/icons/rename.png' alt='rename' class='icon'>" . _lang('admin.fman.rename') . "</a>
+            <a class='button' href='" . _e($fmanUrl(['a' => 'delete', 'name' => $encodeFilename($item)])) . "'><img src='" . _e(Router::path('admin/images/icons/delete.png')) . "' alt='del' class='icon'>" . _lang('global.delete') . "</a>
+            <a class='button' href='" . _e($fmanUrl(['a' => 'rename', 'name' => $encodeFilename($item)])) . "'><img src='" . _e(Router::path('admin/images/icons/rename.png')) . "' alt='rename' class='icon'>" . _lang('admin.fman.rename') . "</a>
         </td>" : '') . "
         </tr>\n";
 
@@ -737,12 +737,12 @@ if ($continue) {
 
         $output .= "
         <tr class='" . implode(' ', $row_classes) . "'>
-        <td class='fman-item'><input type='checkbox' name='f" . $filecounter . "' id='f" . $filecounter . "' value='" . $encodeFilename($item, false) . "'> <a href='" . _e($dir . $item) . "' target='_blank'" . ($image ? Extend::buffer('image.lightbox', ['group' => 'fman']) : '') . "><img src='images/icons/fman/" . $icon . ".png' alt='file' class='icon'>" . _e(StringManipulator::ellipsis($item, 64, false)) . "</a></td>
+        <td class='fman-item'><input type='checkbox' name='f" . $filecounter . "' id='f" . $filecounter . "' value='" . _e($encodeFilename($item)) . "'> <a href='" . _e($dir . $item) . "' target='_blank'" . ($image ? Extend::buffer('image.lightbox', ['group' => 'fman']) : '') . "><img src='" . _e(Router::path('admin/images/icons/fman/' . $icon . '.png')) . "' alt='file' class='icon'>" . _e(StringManipulator::ellipsis($item, 64, false)) . "</a></td>
         <td class='fman-size'>" . GenericTemplates::renderFileSize($filesize) . "</td>
         <td class='actions'>". (User::checkFilename($item) ?
-            "<a class='button' href='" . $url . "&amp;a=delete&amp;name=" . $encodeFilename($item) . "'><img src='images/icons/delete.png' alt='del' class='icon'>" . _lang('global.delete') . "</a>  "
-            . "<a class='button' href='" . $url . "&amp;a=rename&amp;name=" . $encodeFilename($item) . "'><img src='images/icons/rename.png' alt='rename' class='icon'>" . _lang('admin.fman.rename') . "</a>  "
-            . (($icon == "editable") ? "<a class='button' href='" . $url . "&amp;a=edit&amp;name=" . $encodeFilename($item) . "'><img src='images/icons/edit.png' alt='edit' class='icon'>" . _lang('admin.fman.edit') . "</a>" : '')
+            "<a class='button' href='" . _e($fmanUrl(['a' => 'delete', 'name' => $encodeFilename($item)])) . "'><img src='" . _e(Router::path('admin/images/icons/delete.png')) . "' alt='del' class='icon'>" . _lang('global.delete') . "</a>  "
+            . "<a class='button' href='" . _e($fmanUrl(['a' => 'rename', 'name' => $encodeFilename($item)])) . "'><img src='" . _e(Router::path('admin/images/icons/rename.png')) . "' alt='rename' class='icon'>" . _lang('admin.fman.rename') . "</a>  "
+            . (($icon == "editable") ? "<a class='button' href='" . _e($fmanUrl(['a' => 'edit', 'name' => $encodeFilename($item)])) . "'><img src='" . _e(Router::path('admin/images/icons/edit.png')) . "' alt='edit' class='icon'>" . _lang('admin.fman.edit') . "</a>" : '')
         : '') . "</td>
         </tr>\n";
 
