@@ -52,16 +52,28 @@ class Gallery
             $alt = basename(Url::parse($fullUrl)->getPath());
         }
 
-        return '<a'
-            . ' href="' . _e($fullUrl) . '" target="_blank"'
-            . (isset($lightboxid) ? Extend::buffer('image.lightbox', ['group' => 'gal_' . $lightboxid]) : '')
-            . (($img['title']) ? ' title="' . _e($img['title']) . '"' : '')
-            . '>'
-            . '<img'
-            . ' src="' . _e($prevUrl) . '"'
-            . ' alt="' . _e($alt) . '"'
-            . '>'
-            . "</a>\n";
+        $image = Extend::buffer('gallery.image.render', [
+            'image' => $img,
+            'full_url' => $fullUrl,
+            'full_file' => $fullFile,
+            'prev_url' => $prevUrl,
+            'alt' => $alt,
+            'lightbox_id' => $lightboxid
+        ]);
+
+        if ($image === '') {
+            $image = '<a'
+                . ' href="' . _e($fullUrl) . '" target="_blank"'
+                . (isset($lightboxid) ? Extend::buffer('image.lightbox', ['group' => 'gal_' . $lightboxid]) : '')
+                . (($img['title']) ? ' title="' . _e($img['title']) . '"' : '')
+                . '>'
+                . '<img'
+                . ' src="' . _e($prevUrl) . '"'
+                . ' alt="' . _e($alt) . '"'
+                . '>'
+                . "</a>\n";
+        }
+        return $image;
     }
 
     /**
