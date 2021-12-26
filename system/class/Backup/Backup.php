@@ -460,14 +460,16 @@ class Backup
         $stream = $this->zip->getStream(self::METADATA_PATH);
 
         try {
-            $this->metadataCache = Json::decode(stream_get_contents($stream));
-            $this->validateMetaData($this->metadataCache, $this->metadataErrors);
+            $this->metadataCache = $this->resolveMetadata(
+                Json::decode(stream_get_contents($stream)),
+                $this->metadataErrors
+            );
         } catch (\Throwable $e) {
             throw new \RuntimeException('Could not load meta data', 0, $e);
         }
     }
 
-    private function validateMetaData(array &$metaData, array &$errors = null): void
+    private function resolveMetadata(array $metaData, array &$errors = null): ?array
     {
         $options = new Resolver();
         $options->addOption(
@@ -483,9 +485,11 @@ class Backup
         );
 
         try {
-            $options->resolve($metaData);
+            return $options->resolve($metaData)->toArray();
         } catch (ResolverException $e) {
             $errors = array_map('strval', $e->getErrors());
+
+            return null;
         }
     }
 
