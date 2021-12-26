@@ -73,6 +73,8 @@ class TemporaryFile extends \SplFileInfo
                 @mkdir($directoryPath, 0777, true);
             }
 
+            @chmod($this->realPath, 0666);
+
             $success = @rename($this->realPath, $newFilePath);
 
             if ($success) {
