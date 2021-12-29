@@ -21,7 +21,7 @@ if (isset($_POST['action'])) {
             // vytvoreni
         case 1:
             // nacteni zakladnich promennych
-            $title = Html::cut(_e(Request::post('title')), 64);
+            $title = Html::cut(_e(Request::post('title', '')), 64);
             $public = Form::loadCheckbox("public");
             $locked = Form::loadCheckbox("lockedc");
 

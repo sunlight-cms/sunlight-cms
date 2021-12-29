@@ -92,7 +92,7 @@ if (isset($_POST['title'])) {
         $slug = Request::post('title', '');
     }
 
-    $newdata['title'] = Html::cut(_e(Request::post('title')), 255);
+    $newdata['title'] = Html::cut(_e(Request::post('title', '')), 255);
     $newdata['slug'] = StringManipulator::slugify($slug);
     $newdata['description'] = Html::cut(_e(trim(Request::post('description', ''))), 255);
     $newdata['home1'] = (int) Request::post('home1');

@@ -48,11 +48,11 @@ if (isset($_POST['xaction']) && $continue) {
             // nacteni zakladnich promennych
             $title = Html::cut(_e(trim(Request::post('title', ''))), 255);
             if (!Form::loadCheckbox("autoprev")) {
-                $prev = Html::cut(_e(Request::post('prev')), 255);
+                $prev = Html::cut(_e(Request::post('prev', '')), 255);
             } else {
                 $prev = "";
             }
-            $full = Html::cut(_e(Request::post('full')), 255);
+            $full = Html::cut(_e(Request::post('full', '')), 255);
 
             // vlozeni na zacatek nebo nacteni poradoveho cisla
             if (Form::loadCheckbox("moveords")) {
@@ -111,7 +111,7 @@ if (isset($_POST['xaction']) && $continue) {
                         case "prevtrigger":
                             $var = "prev";
                             if (!Form::loadCheckbox('i' . $id . '_autoprev')) {
-                                $val = Html::cut(_e(Request::post('i' . $id . '_prev')), 255);
+                                $val = Html::cut(_e(Request::post('i' . $id . '_prev', '')), 255);
                             } else {
                                 $val = '';
                             }

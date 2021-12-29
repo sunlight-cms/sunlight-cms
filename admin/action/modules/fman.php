@@ -611,7 +611,7 @@ if ($continue) {
 <div id='fman-action'>
 <h2>" . _lang($action_title) . "</h2>
 <form action='" . _e($fmanUrl($action_query)) . "'" . (($action_form_class !== null) ? " class='" . $action_form_class . "'" : '') . " method='post' enctype='multipart/form-data'>
-<input type='hidden' name='action' value='" . _e(Request::get('a')) . "'>
+<input type='hidden' name='action' value='" . _e(Request::get('a', '')) . "'>
 <table class='formtable'>
 " . $action_code . "
 
