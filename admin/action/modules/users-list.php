@@ -56,7 +56,7 @@ if (isset($_GET['group_id'])) {
 }
 
 // aktivace vyhledavani
-$search = trim(Request::get('search'));
+$search = trim(Request::get('search', ''));
 if ($search !== '') {
     $wildcard = DB::val('%' . $search . '%');
     $list_conds[] = "(u.id=" . DB::val($search) . " OR u.username LIKE {$wildcard} OR u.publicname LIKE {$wildcard} OR u.email LIKE {$wildcard} OR u.ip LIKE {$wildcard})";

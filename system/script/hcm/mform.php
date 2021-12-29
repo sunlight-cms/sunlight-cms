@@ -20,9 +20,9 @@ Core::init('../../../', [
 /* ---  send  --- */
 
 // nacteni promennych
-$subject = trim(Request::post('subject'));
-$sender = trim(Request::post('sender'));
-$text = trim(Request::post('text'));
+$subject = trim(Request::post('subject', ''));
+$sender = trim(Request::post('sender', ''));
+$text = trim(Request::post('text', ''));
 $fid = (int) Request::post('fid');
 
 // nacteni prijemce

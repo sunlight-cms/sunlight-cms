@@ -60,7 +60,7 @@ switch ($a) {
             // nacteni dat
             $receiver = Request::post('receiver');
             $subject = Html::cut(_e(StringManipulator::trimExtraWhitespace(Request::post('subject'))), 48);
-            $text = Html::cut(_e(trim(Request::post('text'))), 16384);
+            $text = Html::cut(_e(trim(Request::post('text', ''))), 16384);
 
             // kontrola a odeslani
             do {

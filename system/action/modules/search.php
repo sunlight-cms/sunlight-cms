@@ -34,7 +34,7 @@ if (!Settings::get('search')) {
 /* ---  priprava  --- */
 
 if (isset($_GET['q']) && Xsrf::check(true)) {
-    $search_query = trim(Request::get('q'));
+    $search_query = trim(Request::get('q', ''));
     $page = isset($_GET['page']);
     $art = isset($_GET['art']);
     $post = isset($_GET['post']);

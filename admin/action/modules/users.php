@@ -70,7 +70,7 @@ if (isset($_POST['type']) && User::hasPrivilege('admingroups')) {
 
 // prepnuti uzivatele
 if (User::SUPER_ADMIN_ID == User::getId() && isset($_POST['switch_user'])) {
-    $user = trim(Request::post('switch_user'));
+    $user = trim(Request::post('switch_user', ''));
     $query = DB::queryRow("SELECT id,password,email FROM " . DB::table('user') . " WHERE username=" . DB::val($user));
 
     if ($query !== false) {

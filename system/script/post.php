@@ -33,7 +33,7 @@ if (User::isLoggedIn()) {
 // typ, domov, text
 $posttarget = (int) Request::post('_posttarget');
 $posttype = (int) Request::post('_posttype');
-$text = Html::cut(_e(trim(Request::post('text'))), ($posttype != Post::SHOUTBOX_ENTRY) ? 16384 : 255);
+$text = Html::cut(_e(trim(Request::post('text', ''))), ($posttype != Post::SHOUTBOX_ENTRY) ? 16384 : 255);
 
 // domovsky prispevek
 if ($posttype != Post::SHOUTBOX_ENTRY) {

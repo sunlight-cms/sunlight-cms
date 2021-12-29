@@ -173,13 +173,13 @@ if ($continue) {
         $changeset = [];
 
         // zakladni atributy
-        $changeset['title'] = Html::cut(_e(trim(Request::post('title'))), 128);
+        $changeset['title'] = Html::cut(_e(trim(Request::post('title', ''))), 128);
         if ($changeset['title'] == "") {
             $changeset['title'] = _lang('global.novalue');
         }
-        $changeset['descr'] = Html::cut(_e(trim(Request::post('descr'))), 255);
+        $changeset['descr'] = Html::cut(_e(trim(Request::post('descr', ''))), 255);
         if ($id != User::GUEST_GROUP_ID) {
-            $changeset['icon'] = Html::cut(_e(trim(Request::post('icon'))), 16);
+            $changeset['icon'] = Html::cut(_e(trim(Request::post('icon', ''))), 16);
         }
         $changeset['color'] = Admin::formatHtmlColor(Request::post('color', ''), false, '');
         if ($id > User::GUEST_GROUP_ID) {

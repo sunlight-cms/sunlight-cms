@@ -85,7 +85,7 @@ if (isset($_POST['box_edit'])) do {
     }
 
     // ord
-    $new_ord = trim(Request::post('ord'));
+    $new_ord = trim(Request::post('ord', ''));
 
     if ($new_ord !== '') {
         $new_ord = Math::range((int) Request::post('ord'), 0, null);

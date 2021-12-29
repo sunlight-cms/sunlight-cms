@@ -903,8 +903,8 @@ class ImportDatabaseStep extends Step
         $overwrite = (bool) Request::post('import_overwrite', false);
         
         $settings = [
-            'title' => trim(Request::post('import_settings_title')),
-            'description' => trim(Request::post('import_settings_description')),
+            'title' => trim(Request::post('import_settings_title', '')),
+            'description' => trim(Request::post('import_settings_description', '')),
             'language' => $this->vars['language'],
             'atreplace' => $this->vars['language'] === 'cs' ? '[zavinac]' : '[at]',
             'version_check' => Request::post('import_settings_version_check') ? 1 : 0,
@@ -913,7 +913,7 @@ class ImportDatabaseStep extends Step
         $admin = [
             'username' => User::normalizeUsername(Request::post('import_admin_username', '')),
             'password' => Request::post('import_admin_password'),
-            'email' => trim(Request::post('import_admin_email')),
+            'email' => trim(Request::post('import_admin_email', '')),
         ];
 
         // validate

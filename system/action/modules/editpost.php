@@ -121,7 +121,7 @@ if (isset($_POST['text'])) {
             $guest = '';
         }
 
-        $text = Html::cut(_e(trim(Request::post('text'))), ($query['type'] != Post::SHOUTBOX_ENTRY) ? 16384 : 255);
+        $text = Html::cut(_e(trim(Request::post('text', ''))), ($query['type'] != Post::SHOUTBOX_ENTRY) ? 16384 : 255);
         if ($query['xhome'] == -1 && in_array($query['type'], [Post::FORUM_TOPIC, Post::PRIVATE_MSG])) {
             $subject = Html::cut(_e(StringManipulator::trimExtraWhitespace(Request::post('subject'))), 48);
             if ($subject === '')  {

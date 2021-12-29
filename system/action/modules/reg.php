@@ -116,7 +116,7 @@ if (isset($_GET['confirm'])) {
             $errors[] = _lang('mod.reg.passwordneeded');
         }
 
-        $user_data['email'] = trim(Request::post('email'));
+        $user_data['email'] = trim(Request::post('email', ''));
         if (!Email::validate($user_data['email'])) {
             $errors[] = _lang('user.msg.bademail');
         }

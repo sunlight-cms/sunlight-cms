@@ -46,7 +46,7 @@ if (isset($_POST['xaction']) && $continue) {
         case 1:
 
             // nacteni zakladnich promennych
-            $title = Html::cut(_e(trim(Request::post('title'))), 255);
+            $title = Html::cut(_e(trim(Request::post('title', ''))), 255);
             if (!Form::loadCheckbox("autoprev")) {
                 $prev = Html::cut(_e(Request::post('prev')), 255);
             } else {

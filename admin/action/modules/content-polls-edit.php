@@ -40,7 +40,7 @@ if (isset($_GET['id'])) {
 
 if (isset($_POST['question'])) {
     // nacteni promennych
-    $question = Html::cut(_e(trim(Request::post('question'))), 255);
+    $question = Html::cut(_e(trim(Request::post('question', ''))), 255);
     $query['question'] = $question;
 
     // odpovedi

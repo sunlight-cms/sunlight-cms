@@ -105,7 +105,7 @@ if ($continue) {
         }
 
         // email
-        $email = trim(Request::post('email'));
+        $email = trim(Request::post('email', ''));
         if (!Email::validate($email)) {
             $errors[] = _lang('user.msg.bademail');
         } elseif (
