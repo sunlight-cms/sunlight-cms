@@ -763,7 +763,7 @@ abstract class User
                 $action = null;
             }
             if (!empty($return)) {
-                $action = UrlHelper::appendParams($action, '_return=' . rawurlencode($return));
+                $action = UrlHelper::appendParams($action, '_return=' . urlencode($return));
             }
 
             // adresa formulare

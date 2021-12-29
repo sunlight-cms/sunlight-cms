@@ -124,7 +124,7 @@ if (isset($_POST['box_edit'])) do {
     }
 
     // redirect to form
-    $_admin->redirect(Router::admin('content-boxes-edit', ['query' => ['id=' . rawurlencode($id), ($new ? 'created' : 'saved') => 1]]));
+    $_admin->redirect(Router::admin('content-boxes-edit', ['query' => ['id' => $id, ($new ? 'created' : 'saved') => 1]]));
 
     return;
 } while (false);

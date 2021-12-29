@@ -60,7 +60,7 @@ if (isset($_POST['apply_patch'])) do {
 } while (false);
 
 $output .= _buffer(function () use ($latest_version) { ?>
-    <p><?= _lang('admin.other.patch.text', ['%link%' => 'https://sunlight-cms.cz/resource/update?from=' . rawurlencode(Core::VERSION)]) ?></p>
+    <p><?= _lang('admin.other.patch.text', ['%link%' => 'https://sunlight-cms.cz/resource/update?from=' . urlencode(Core::VERSION)]) ?></p>
 
     <form method="post" enctype="multipart/form-data" onsubmit="return Sunlight.confirm()">
         <table class="formtable">

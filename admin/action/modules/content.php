@@ -50,7 +50,7 @@ if (
                     $is_plugin_page = true;
                 }
                 if (isset($type_array[$type]) && User::hasPrivilege('admin' . $type_array[$type])) {
-                    $_admin->redirect(Router::admin('content-edit' . $type_array[$type], ($is_plugin_page ? ['query' => ['idt' => rawurlencode($type_idt)]] : null)));
+                    $_admin->redirect(Router::admin('content-edit' . $type_array[$type], ($is_plugin_page ? ['query' => ['idt' => $type_idt]] : null)));
 
                     return;
                 }

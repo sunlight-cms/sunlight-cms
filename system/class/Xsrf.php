@@ -24,7 +24,7 @@ class Xsrf
      */
     static function addToUrl(string $url): string
     {
-        return UrlHelper::appendParams($url, '_security_token=' . rawurlencode(self::getToken()));
+        return UrlHelper::appendParams($url, '_security_token=' . urlencode(self::getToken()));
     }
 
     /**

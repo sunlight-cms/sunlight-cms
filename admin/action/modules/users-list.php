@@ -95,11 +95,11 @@ $output .= '
 ';
 
 // priprava strankovani
-$pagingOptions = ['query' => ['group' => $group]];
+$query_params = ['group' => $group];
 if($search !== false) {
-    $pagingOptions['query']['search'] = rawurlencode($search);
+    $query_params['search'] = $search;
 }
-$paging = Paginator::render(Router::admin('users-list', $pagingOptions), 50, DB::table('user') . ':u', $list_conds_sql);
+$paging = Paginator::render(Router::admin('users-list', ['query' => $query_params]), 50, DB::table('user') . ':u', $list_conds_sql);
 $output .= $paging['paging'];
 
 // tabulka
