@@ -31,11 +31,7 @@ if (isset($_GET['id'])) {
         // test pristupu
         if ($query['id'] != User::getId()) {
             if (User::checkLevel($query['id'], $query['group_level'])) {
-                if ($query['id'] != 0) {
-                    $continue = true;
-                } else {
-                    $errno = 2;
-                }
+                $continue = true;
             }
         } else {
             $_admin->redirect(Router::module('settings', ['absolute' => true]));
@@ -165,7 +161,7 @@ if ($continue) {
         }
 
         // levelshift
-        if (User::getId() == User::SUPER_ADMIN_ID) {
+        if (User::isSuperAdmin()) {
             $levelshift = Form::loadCheckbox('levelshift');
         } else {
             $levelshift = $query['levelshift'];
@@ -285,7 +281,7 @@ if ($continue) {
 
 <tr>
 <th>" . _lang('global.levelshift') . "</th>
-<td><input type='checkbox' name='levelshift' value='1'" . Form::activateCheckbox($query['levelshift'] || isset($_POST['levelshift'])) . Form::disableInputUnless(User::getId() == User::SUPER_ADMIN_ID) . "></td>
+<td><input type='checkbox' name='levelshift' value='1'" . Form::activateCheckbox($query['levelshift'] || isset($_POST['levelshift'])) . Form::disableInputUnless(User::isSuperAdmin()) . "></td>
 </tr>
 
 <tr>
@@ -336,9 +332,6 @@ if ($continue) {
     switch ($errno) {
         case 1:
             $output .= Message::warning(_lang('global.baduser'));
-            break;
-        case 2:
-            $output .= Message::warning(_lang('global.rootnote'));
             break;
         default:
             $output .= Message::error(_lang('global.disallowed'));

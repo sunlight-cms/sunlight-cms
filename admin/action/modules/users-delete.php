@@ -21,7 +21,6 @@ if (isset($_GET['id'])) {
         if (User::checkLevel($query['id'], $query['group_level'])) {
             $continue = true;
         } else {
-            $continue = false;
             $levelconflict = true;
         }
         $id = $query['id'];
@@ -31,7 +30,7 @@ if (isset($_GET['id'])) {
 if ($continue) {
 
     /* ---  odstraneni  --- */
-    if ($query['id'] != 0 && $query['id'] != User::getId()) {
+    if ($query['id'] != User::getId()) {
         if (isset($_POST['confirmed'])) {
             if (User::delete($id)) {
                 $output .= Message::ok(_lang('global.done'));
@@ -45,8 +44,6 @@ if ($continue) {
     <input type='submit' name='confirmed' value='" . _lang('admin.users.deleteuser') . "'>
 " . Xsrf::getInput() . "</form>";
         }
-    } elseif ($query['id'] == User::SUPER_ADMIN_ID) {
-        $output .= Message::warning(_lang('global.rootnote'));
     } else {
         $output .= Message::warning(_lang('admin.users.deleteuser.selfnote'));
     }

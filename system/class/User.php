@@ -28,9 +28,6 @@ abstract class User
     /** Max assignable user level */
     const MAX_ASSIGNABLE_LEVEL = 9999;
 
-    /** ID of the default super admin */
-    const SUPER_ADMIN_ID = 1;
-
     /** Admin group ID  */
     const ADMIN_GROUP_ID = 1;
 
@@ -621,36 +618,48 @@ abstract class User
      */
     static function delete(int $id): bool
     {
-        // nacist jmeno
-        if ($id == User::SUPER_ADMIN_ID) {
-            return false;
-        }
-        $udata = DB::queryRow("SELECT avatar FROM " . DB::table('user') . " WHERE id=" . $id);
-        if ($udata === false) {
+        // nacist data uzivatele
+        $user = DB::queryRow("SELECT id,avatar FROM " . DB::table('user') . " WHERE id=" . DB::val($id));
+        if ($user === false) {
             return false;
         }
 
-        // udalost
+        // udalost kontroly
         $allow = true;
-        Extend::call('user.delete', ['id' => $id, 'allow' => &$allow]);
+        $replacement = null;
+        Extend::call('user.delete.check', ['user' => $user, 'allow' => &$allow, 'replacement' => &$replacement]);
         if (!$allow) {
             return false;
         }
 
-        // vyresit vazby
-        DB::delete('user', 'id=' . $id);
-        DB::query("DELETE " . DB::table('pm') . ",post FROM " . DB::table('pm') . " LEFT JOIN " . DB::table('post') . " AS post ON (post.type=" . Post::PRIVATE_MSG . " AND post.home=" . DB::table('pm') . ".id) WHERE receiver=" . $id . " OR sender=" . $id);
-        DB::update('post', 'author=' . $id, [
+        // ziskat uzivatele pro prirazeni existujiciho obsahu
+        if ($replacement === null) {
+            $replacement = DB::queryRow('SELECT id FROM ' . DB::table('user') . ' WHERE group_id=' . DB::val(self::ADMIN_GROUP_ID) . ' AND levelshift=1 AND blocked=0 AND id!=' . DB::val($id) . ' ORDER BY registertime LIMIT 1');
+            if ($replacement === false) {
+                return false;
+            }
+        }
+
+        // udalost pred smazanim
+        Extend::call('user.delete.before', ['user' => $user, 'replacement' => $replacement]);
+
+        // odstranit data z databaze
+        DB::delete('user', 'id=' . DB::val($id));
+        DB::query("DELETE " . DB::table('pm') . ",post FROM " . DB::table('pm') . " LEFT JOIN " . DB::table('post') . " AS post ON (post.type=" . Post::PRIVATE_MSG . " AND post.home=" . DB::table('pm') . ".id) WHERE receiver=" . DB::val($id) . " OR sender=" . DB::val($id));
+        DB::update('post', 'author=' . DB::val($id), [
             'guest' => sprintf('%x', crc32((string) $id)),
             'author' => -1,
         ]);
-        DB::update('article', 'author=' . $id, ['author' => User::SUPER_ADMIN_ID]);
-        DB::update('poll', 'author=' . $id, ['author' => User::SUPER_ADMIN_ID]);
+        DB::update('article', 'author=' . DB::val($id), ['author' => $replacement['id']]);
+        DB::update('poll', 'author=' . DB::val($id), ['author' => $replacement['id']]);
 
-        // odstraneni uploadovaneho avataru
-        if (isset($udata['avatar'])) {
-            self::removeAvatar($udata['avatar']);
+        // odstranit avatar
+        if (isset($user['avatar'])) {
+            self::removeAvatar($user['avatar']);
         }
+
+        // udalost po smazani
+        Extend::call('user.delete.after', ['user' => $user, 'replacement' => $replacement]);
 
         return true;
     }

@@ -14,7 +14,6 @@ return [
     'global.undefined' => 'nezvoleno',
     'global.or' => 'nebo',
     'global.root' => 'Kořen',
-    'global.rootnote' => 'Hlavního superuživatele nelze odstranit ani přímo upravit.',
     'global.file' => 'Soubor',
     'global.dir' => 'Adresář',
     'global.send' => 'Odeslat',

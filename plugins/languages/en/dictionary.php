@@ -14,7 +14,6 @@ return [
     'global.undefined' => 'undefined',
     'global.or' => 'or',
     'global.root' => 'Root',
-    'global.rootnote' => 'Main superuser cannot be removed or directly edited.',
     'global.file' => 'File',
     'global.dir' => 'Directory',
     'global.send' => 'Send',

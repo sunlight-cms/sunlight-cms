@@ -69,7 +69,7 @@ if (isset($_POST['type']) && User::hasPrivilege('admingroups')) {
 }
 
 // prepnuti uzivatele
-if (User::SUPER_ADMIN_ID == User::getId() && isset($_POST['switch_user'])) {
+if (User::isSuperAdmin() && isset($_POST['switch_user'])) {
     $user = trim(Request::post('switch_user', ''));
     $query = DB::queryRow("SELECT id,password,email FROM " . DB::table('user') . " WHERE username=" . DB::val($user));
 
@@ -170,7 +170,7 @@ $output .= $message . "
     <input class='button' type='submit' value='" . _lang('global.do') . "'>
     </form>
 
-    " . ((User::SUPER_ADMIN_ID == User::getId()) ? "
+    " . (User::isSuperAdmin() ? "
 
     <form action='" . _e(Router::admin('users')) . "' method='post'>
     <h3>" . _lang('admin.users.switchuser') . "</h3>
