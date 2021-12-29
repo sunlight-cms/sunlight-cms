@@ -3,6 +3,7 @@
 use Sunlight\Core;
 use Sunlight\Extend;
 use Sunlight\GenericTemplates;
+use Sunlight\Plugin\PluginManager;
 use Sunlight\Plugin\TemplatePlugin;
 use Sunlight\Plugin\TemplateService;
 use Sunlight\Settings;
@@ -21,23 +22,6 @@ Core::init('./', [
 
 /* ----  priprava  ---- */
 
-// motiv
-/** @var TemplatePlugin $_template */
-$_template = null;
-/** @var string $_template_layout */
-$_template_layout = null;
-
-// nacist vychozi motiv
-if (!Template::change(TemplateService::composeUid(Settings::get('default_template'), TemplatePlugin::DEFAULT_LAYOUT))) {
-    Settings::update('default_template', 'default');
-
-    Core::fail(
-        'Motiv "%s" nebyl nalezen.',
-        'Template "%s" was not found.',
-        [Settings::get('default_template')]
-    );
-}
-
 // aktualni URL
 $_url = Core::getCurrentUrl();
 
@@ -48,7 +32,8 @@ if (substr($_url->getPath(), strlen(Core::getBaseUrl()->getPath())) === '/index.
 
 // init web state
 $_index = new WebState();
-
+$_index->template = TemplateService::getDefaultTemplate();
+$_index->templateLayout = TemplatePlugin::DEFAULT_LAYOUT;
 
 /* ---- priprava obsahu ---- */
 
@@ -150,14 +135,11 @@ Extend::call('index.ready', ['index' => $_index]);
 // vlozeni motivu
 if ($_index->templateEnabled) {
     // nacist prvky motivu
-    $_template->begin($_template_layout);
-    $_template_boxes = $_template->getBoxes($_template_layout);
-    $_template_path = $_template->getTemplate($_template_layout);
+    $_index->template->begin($_index->templateLayout);
+    $_index->templateBoxes = $_index->template->getBoxes($_index->templateLayout);
+    $_index->templatePath = $_index->template->getTemplate($_index->templateLayout);
 
-    Extend::call('index.template', [
-        'path' => &$_template_path,
-        'boxes' => &$_template_boxes,
-    ]);
+    Extend::call('tpl.start', ['index' => $_index]);
 
     // hlavicka
     echo GenericTemplates::renderHead();
@@ -167,7 +149,7 @@ if ($_index->templateEnabled) {
 </head>
 <body<?php if ($_index->bodyClasses): ?> class="<?= implode(' ', Html::escapeArrayItems($_index->bodyClasses)) ?>"<?php endif ?><?= Extend::buffer('tpl.body_tag') ?>>
 
-<?php require $_template_path ?>
+<?php require $_index->templatePath ?>
 <?= Extend::buffer('tpl.end') ?>
 
 </body>

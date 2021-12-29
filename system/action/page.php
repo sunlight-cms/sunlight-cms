@@ -41,7 +41,7 @@ if ($_page['description'] !== '') {
 
 // motiv
 if ($_page['layout'] !== null) {
-    Template::change($_page['layout']);
+    $_index->changeTemplate($_page['layout']);
 }
 
 // kontrola typu pristupu k hlavni strane

@@ -7,7 +7,6 @@ use Sunlight\Page\PageMenu;
 use Sunlight\Page\PageTreeFilter;
 use Sunlight\Plugin\TemplatePlugin;
 use Sunlight\Plugin\TemplateService;
-use Sunlight\Util\Request;
 use Sunlight\Util\UrlHelper;
 
 abstract class Template
@@ -19,48 +18,11 @@ abstract class Template
      */
     static function getCurrent(): TemplatePlugin
     {
-        // pouzit globalni promennou
-        // (index)
-        if (Core::$env === Core::ENV_WEB && isset($GLOBALS['_template']) && $GLOBALS['_template'] instanceof TemplatePlugin) {
-            return $GLOBALS['_template'];
+        if (Core::$env === Core::ENV_WEB) {
+            return $GLOBALS['_index']->template;
         }
 
-        // pouzit argument z GET
-        // (moznost pro skripty mimo index)
-        $request_template = Request::get('current_template');
-        if ($request_template !== null && TemplateService::templateExists($request_template)) {
-            return TemplateService::getTemplate($request_template);
-        }
-
-        // pouzit vychozi
         return TemplateService::getDefaultTemplate();
-    }
-
-    /**
-     * Zmenit aktivni sablonu a layout
-     *
-     * @param string $idt identifikator sablony a layoutu
-     * @return bool
-     */
-    static function change(string $idt): bool
-    {
-        global $_template, $_template_layout;
-
-        $components = TemplateService::getComponentsByUid($idt, TemplateService::UID_TEMPLATE_LAYOUT);
-
-        if ($components !== null) {
-            $_template = $components['template'];
-            $_template_layout = $components['layout'];
-
-            Extend::call('tpl.switch', [
-                'template' => $_template,
-                'layout' => $_template_layout,
-            ]);
-
-            return true;
-        }
-
-        return false;
     }
 
     /**
@@ -68,11 +30,11 @@ abstract class Template
      */
     static function head(): void
     {
-        global $_index, $_template;
+        global $_index;
 
         // pripravit css
         $css = [];
-        foreach ($_template->getOption('css') as $key => $path) {
+        foreach ($_index->template->getOption('css') as $key => $path) {
             $css[$key] = UrlHelper::isAbsolute($path) ? $path : Router::path($path);
         }
 
@@ -82,7 +44,7 @@ abstract class Template
             'sunlight' => Router::path('system/js/sunlight.js'),
             'rangyinputs' => Router::path('system/js/rangyinputs.js'),
         ];
-        foreach ($_template->getOption('js') as $key => $path) {
+        foreach ($_index->template->getOption('js') as $key => $path) {
             $js[$key] = UrlHelper::isAbsolute($path) ? $path : Router::path($path);
         }
 
@@ -108,7 +70,7 @@ abstract class Template
         echo '<meta name="description" content="' . ($_index->description ?? Settings::get('description')) . '">' . ((Settings::get('author') !== '') ? '
 <meta name="author" content="' . Settings::get('author') . '">' : '')
             . Extend::buffer('tpl.head.meta')
-            . ($_template->getOption('responsive') ? "\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">" : '')
+            . ($_index->template->getOption('responsive') ? "\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">" : '')
             . GenericTemplates::renderHeadAssets($assets);
 
         if (Settings::get('favicon')) {
@@ -133,10 +95,10 @@ abstract class Template
         $output = '';
 
         if (!Settings::get('notpublicsite') || User::isLoggedIn()) {
-            global $_template, $_template_boxes;
+            global $_index;
 
-            // nacist boxy
-            $boxes = $_template_boxes[$slot] ?? [];
+            // ziskat boxy
+            $boxes = $_index->templateBoxes[$slot] ?? [];
 
             // extend
             $output = Extend::buffer('tpl.boxes', [
@@ -148,7 +110,7 @@ abstract class Template
                 return $output;
             }
 
-            $options = $overrides + $_template->getOptions();
+            $options = $overrides + $_index->template->getOptions();
 
             // pocatecni tag
             if ($options['box.parent']) {
@@ -278,7 +240,7 @@ abstract class Template
      */
     static function image(string $name): string
     {
-        return $GLOBALS['_template']->getImagePath($name);
+        return self::getCurrent()->getImagePath($name);
     }
 
     /**

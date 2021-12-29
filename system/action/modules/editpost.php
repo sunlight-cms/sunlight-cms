@@ -39,7 +39,7 @@ $query = DB::queryRow("SELECT " . $columns . " FROM " . DB::table('post') . " po
 
 if ($query !== false) {
     if (isset($query['page_layout'])) {
-        Template::change($query['page_layout']);
+        $_index->changeTemplate($query['page_layout']);
     }
 
     if (Post::checkAccess($userQuery, $query)) {

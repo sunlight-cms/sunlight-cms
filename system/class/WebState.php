@@ -2,6 +2,9 @@
 
 namespace Sunlight;
 
+use Sunlight\Plugin\TemplatePlugin;
+use Sunlight\Plugin\TemplateService;
+
 class WebState
 {
     /** Page */
@@ -67,11 +70,42 @@ class WebState
     /** @var bool template toggle */
     public $templateEnabled = true;
 
+    /** @var TemplatePlugin */
+    public $template;
+
+    /** @var string */
+    public $templateLayout;
+
+    /** @var array|null */
+    public $templateBoxes;
+
+    /** @var string|null */
+    public $templatePath;
+
     /** @var string[] classes to put on <body> */
     public $bodyClasses = [];
 
     /** @var string the content */
     public $output = '';
+
+    /**
+     * Try to set current template using the template and layout identifier
+     */
+    function changeTemplate(string $idt): bool
+    {
+        $components = TemplateService::getComponentsByUid($idt, TemplateService::UID_TEMPLATE_LAYOUT);
+
+        if ($components !== null) {
+            $this->template = $components['template'];
+            $this->templateLayout = $components['layout'];
+
+            Extend::call('tpl.change', ['index' => $this]);
+
+            return true;
+        }
+
+        return false;
+    }
 
     /**
      * Set output to redirection

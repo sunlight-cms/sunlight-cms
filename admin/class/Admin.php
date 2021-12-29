@@ -54,12 +54,12 @@ abstract class Admin
      *
      * @return string
      */
-    static function userMenu(): string
+    static function userMenu(bool $dark): string
     {
         $output = '<span id="usermenu">';
         if (User::isLoggedIn() && User::hasPrivilege('administration')) {
             $profile_link = Router::module('profile', ['query' => ['id' => User::getUsername()]]);
-            $avatar = User::renderAvatar(User::$data, ['get_url' => true, 'default' => false]);
+            $avatar = User::renderAvatar(User::$data, ['get_url' => true, 'default' => false, 'default_dark' => $dark]);
             if ($avatar !== null) {
                 $output .= '<a id="usermenu-avatar" href="' . _e($profile_link) . '"><img src="' . $avatar . '" alt="' . User::getUsername() . '"></a>';
             }

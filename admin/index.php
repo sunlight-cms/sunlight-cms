@@ -90,7 +90,7 @@ $_admin->bodyClasses[] = $_admin->dark ? 'dark' : 'light';
     <div id="top">
         <div class="wrapper">
             <div id="header">
-                <?= Admin::userMenu() ?>
+                <?= Admin::userMenu($_admin->dark) ?>
                 <div id="title">
                     <?= Settings::get('title'), ' - ', _lang('global.admintitle') ?>
                 </div>

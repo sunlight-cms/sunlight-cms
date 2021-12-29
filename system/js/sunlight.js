@@ -202,13 +202,17 @@ var Sunlight = (function ($) {
             $(button).attr('disabled', true);
             $(document.createTextNode(SunlightVars.labels.loading)).appendTo(container);
 
-            container.load(
-                SunlightVars.basePath + 'system/script/postprev.php?current_template=' + SunlightVars.currentTemplate + '&_' + (new Date().getTime()),
-                {content: $(area).val()},
-                function () {
+            $.ajax({
+                url: SunlightVars.basePath + 'system/script/postprev.php',
+                method: 'POST',
+                cache: false,
+                dataType: 'html',
+                data: {content: $(area).val()},
+                success: function (data) {
+                    container.html(data);
                     $(button).attr('disabled', false);
                 }
-            );
+            });
         }
     };
 })(jQuery);

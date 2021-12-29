@@ -1074,6 +1074,7 @@ abstract class User
      * ----------------------
      * get_path (0)     ziskat pouze cestu namisto html kodu obrazku 1/0
      * default (1)      vratit vychozi avatar, pokud jej uzivatel nema nastaven 1/0 (jinak null)
+     * default_dark (-) tmave tema pro vychozi avatar (vychozi je dle motivu)
      * link (1)         odkazat na profil uzivatele 1/0
      * extend (1)       vyvolat extend udalost 1/0
      * class (-)        vlastni CSS trida
@@ -1088,6 +1089,7 @@ abstract class User
         $options += [
             'get_url' => false,
             'default' => true,
+            'default_dark' => null,
             'link' => true,
             'extend' => true,
             'class' => null,
@@ -1105,7 +1107,9 @@ abstract class User
         if ($hasAvatar) {
             $avatarPath = self::getAvatarPath($data['avatar']);
         } else {
-            $avatarPath = SL_ROOT . 'images/avatars/no-avatar' . (Template::getCurrent()->getOption('dark') ? '-dark' : '') . '.jpg';
+            $avatarPath = SL_ROOT . 'images/avatars/no-avatar'
+                . ($options['default_dark'] ?? Template::getCurrent()->getOption('dark') ? '-dark' : '')
+                . '.jpg';
         }
 
         $url = Router::file($avatarPath);

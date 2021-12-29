@@ -7,4 +7,4 @@ use Sunlight\Util\Request;
 require '../bootstrap.php';
 Core::init('../../');
 
-echo Post::render(_e(Request::post('content')));
+echo Post::render(_e(Request::post('content'), ''));

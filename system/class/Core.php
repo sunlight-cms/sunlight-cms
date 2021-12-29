@@ -726,7 +726,6 @@ abstract class Core
         // prepare variables
         $variables = [
             'basePath' => self::$baseUrl->getPath() . '/',
-            'currentTemplate' => Template::getCurrent()->getId(),
             'labels' => [
                 'alertConfirm' => _lang('javascript.alert.confirm'),
                 'loading' => _lang('javascript.loading'),

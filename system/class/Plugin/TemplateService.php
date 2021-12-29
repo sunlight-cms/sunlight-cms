@@ -14,12 +14,12 @@ abstract class TemplateService
     /**
      * Check if a template exists
      *
-     * @param string $idt
+     * @param string $id
      * @return bool
      */
-    static function templateExists(string $idt): bool
+    static function templateExists(string $id): bool
     {
-        return Core::$pluginManager->has(PluginManager::TEMPLATE, $idt);
+        return Core::$pluginManager->has(PluginManager::TEMPLATE, $id);
     }
 
     /**
@@ -30,6 +30,10 @@ abstract class TemplateService
      */
     static function getTemplate(string $id): TemplatePlugin
     {
+        if (!self::templateExists($id)) {
+            self::handleNonexistentTemplate($id);
+        }
+
         return Core::$pluginManager->getTemplate($id);
     }
 
@@ -227,5 +231,27 @@ abstract class TemplateService
         }
 
         return $uid;
+    }
+
+    private static function handleNonexistentTemplate(string $id): void
+    {
+        if (Core::$debug && Core::$pluginManager->hasInactive(PluginManager::TEMPLATE, $id)) {
+            $plugin = Core::$pluginManager->getInactive(PluginManager::TEMPLATE, $id);
+
+            if (!$plugin->isDisabled() && $plugin->hasErrors()) {
+                Core::fail(
+                    'Motiv "%s" obsahuje chyby:',
+                    'Template "%s" contains errors:',
+                    [$id],
+                    implode("\n", $plugin->getErrors())
+                );
+            }
+        }
+
+        Core::fail(
+            'Motiv "%s" není možné použít.',
+            'Template "%s" cannot be used.',
+            [$id]
+        );
     }
 }
