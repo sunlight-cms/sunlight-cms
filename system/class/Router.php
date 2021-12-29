@@ -122,7 +122,7 @@ abstract class Router
             }
         }
 
-        return self::page(null, $slug ?? '---', $categorySlug ?? '---', $options);
+        return self::page(null, $categorySlug ?? '---', $slug ?? '---', $options);
     }
 
     /**
