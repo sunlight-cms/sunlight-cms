@@ -306,7 +306,7 @@ if ($continue) {
                             continue;
                         }
                         $val = $decodeFilename($val);
-                        if(is_file($dir . $val) && !is_file($newdir . $val) && User::checkFilename($val) && rename($dir . $val, $newdir . $val)) {
+                        if (is_file($dir . $val) && !is_file($newdir . $val) && User::checkFilename($val) && rename($dir . $val, $newdir . $val)) {
                             $done++;
                         }
 
@@ -328,18 +328,18 @@ if ($continue) {
                         continue;
                     }
                     $val = $decodeFilename($val);
-                    if(is_file($dir . $val) && User::checkFilename($val)) {
+                    if (is_file($dir . $val) && User::checkFilename($val)) {
                         $selected[] = $val;
                     }
                 }
 
-                if(count($selected) > 0) {
+                if (count($selected) > 0) {
                     $tmpFile = Filesystem::createTmpFile();
                     $zip = new ZipArchive();
 
                     try {
                         $zip->open($tmpFile->getPathname(), ZipArchive::OVERWRITE);
-                        foreach ($selected as $sel){
+                        foreach ($selected as $sel) {
                             $zip->addFile($dir . $sel, $sel);
                         }
                         $zip->close();

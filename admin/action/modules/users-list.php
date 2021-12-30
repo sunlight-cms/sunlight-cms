@@ -96,7 +96,7 @@ $output .= '
 
 // priprava strankovani
 $query_params = ['group' => $group];
-if($search !== false) {
+if ($search !== false) {
     $query_params['search'] = $search;
 }
 $paging = Paginator::render(Router::admin('users-list', ['query' => $query_params]), 50, DB::table('user') . ':u', $list_conds_sql);

@@ -65,7 +65,7 @@ class TreeManager
      */
     function create(array $data, bool $refresh = true): int
     {
-        if (array_key_exists($this->levelColumn, $data) || array_key_exists( $this->depthColumn, $data)) {
+        if (array_key_exists($this->levelColumn, $data) || array_key_exists($this->depthColumn, $data)) {
             throw new \InvalidArgumentException(sprintf('Columns "%s" and "%s" cannot be specified manually', $this->levelColumn, $this->depthColumn));
         }
         $data += [

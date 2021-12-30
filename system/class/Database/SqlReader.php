@@ -124,7 +124,7 @@ class SqlReader
             if ($inQuotes) {
                 // inside of a quoted string
                 switch ($char) {
-                    case '\\';
+                    case '\\':
                         $escaped = !$escaped;
                         break;
                     case $quoteChar:

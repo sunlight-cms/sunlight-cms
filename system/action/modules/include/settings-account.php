@@ -43,7 +43,7 @@ if (isset($_POST['save'])) {
         }
 
         $changeset['username'] = $username;
-    } while(false);
+    } while (false);
 
     // publicname
     $publicname = User::normalizePublicname(Request::post('publicname', ''));
@@ -68,7 +68,7 @@ if (isset($_POST['save'])) {
         }
 
         $changeset['publicname'] = $publicname;
-    } while(false);
+    } while (false);
 
     // email
     $email = trim(Request::post('email', ''));
@@ -94,7 +94,7 @@ if (isset($_POST['save'])) {
         }
 
         $changeset['email'] = $email;
-    } while(false);
+    } while (false);
 
     // language
     if (Settings::get('language_allowcustom')) {

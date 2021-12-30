@@ -101,7 +101,7 @@ if ($search_query != '') {
         // vyhledani stranek
         if ($page) {
             $q = DB::query('SELECT id,title,slug,perex FROM ' . DB::table('page') . ' WHERE level<=' . User::getLevel() . ' AND ' . ($public ? 'public=1 AND ' : '') . $searchQuery(null, ['title', 'slug', 'description', 'perex', 'content']) . ' LIMIT 50');
-            while($r = DB::row($q)) {
+            while ($r = DB::row($q)) {
                 $results[] = [
                     Router::page($r['id'], $r['slug']),
                     $r['title'],
@@ -118,7 +118,7 @@ if ($search_query != '') {
 
             // vykonani a nacteni vysledku
             $q = DB::query('SELECT art.id,art.title,art.slug,art.perex,cat1.slug AS cat_slug FROM ' . DB::table('article') . ' art ' . $joins . ' WHERE ' . $cond . 'ORDER BY time DESC LIMIT 100');
-            while($r = DB::row($q)) {
+            while ($r = DB::row($q)) {
                 $results[] = [
                     Router::article($r['id'], $r['slug'], $r['cat_slug']),
                     $r['title'],

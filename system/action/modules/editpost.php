@@ -145,7 +145,7 @@ if (isset($_POST['text'])) {
                     'text' => $text,
                     'subject' => $subject
                 ];
-                if(isset($guest)) {
+                if (isset($guest)) {
                     $update_data['guest'] = $guest;
                 }
                 DB::update('post', 'id=' . DB::val($id), $update_data);

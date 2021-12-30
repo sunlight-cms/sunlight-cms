@@ -107,7 +107,7 @@ class BackupRestorer
         }
 
         // preload all system classes before any directories are restored
-        if(!empty($directories)) {
+        if (!empty($directories)) {
             $this->preloadAllSystemClasses();
         }
 

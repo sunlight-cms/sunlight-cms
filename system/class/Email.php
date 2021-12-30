@@ -110,31 +110,25 @@ abstract class Email
             if ($localLen < 1 || $localLen > 64) {
                 // local part length exceeded
                 $isValid = false;
-            } else
-                if ($domainLen < 1 || $domainLen > 255) {
-                    // domain part length exceeded
-                    $isValid = false;
-                } else
-                    if ($local[0] == '.' || $local[$localLen - 1] == '.') {
-                        // local part starts or ends with '.'
-                        $isValid = false;
-                    } else
-                        if (preg_match('{\\.\\.}', $local)) {
-                            // local part has two consecutive dots
-                            $isValid = false;
-                        } else
-                            if (!preg_match('{[A-Za-z0-9\\-\\.]+$}AD', $domain)) {
-                                // character not valid in domain part
-                                $isValid = false;
-                            } else
-                                if (preg_match('{\\.\\.}', $domain)) {
-                                    // domain part has two consecutive dots
-                                    $isValid = false;
-                                } else
-                                    if (!preg_match('{[A-Za-z0-9\\-\\._]+$}AD', $local)) {
-                                        // character not valid in local part
-                                        $isValid = false;
-                                    }
+            } elseif ($domainLen < 1 || $domainLen > 255) {
+                // domain part length exceeded
+                $isValid = false;
+            } elseif ($local[0] == '.' || $local[$localLen - 1] == '.') {
+                // local part starts or ends with '.'
+                $isValid = false;
+            } elseif (preg_match('{\\.\\.}', $local)) {
+                // local part has two consecutive dots
+                $isValid = false;
+            } elseif (!preg_match('{[A-Za-z0-9\\-\\.]+$}AD', $domain)) {
+                // character not valid in domain part
+                $isValid = false;
+            } elseif (preg_match('{\\.\\.}', $domain)) {
+                // domain part has two consecutive dots
+                $isValid = false;
+            } elseif (!preg_match('{[A-Za-z0-9\\-\\._]+$}AD', $local)) {
+                // character not valid in local part
+                $isValid = false;
+            }
             if (!Core::$debug && function_exists('checkdnsrr') && $isValid && !checkdnsrr($domain . '.', 'ANY')) {
                 // no DNS record for the given domain
                 $isValid = false;
