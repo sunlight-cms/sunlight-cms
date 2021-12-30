@@ -244,7 +244,7 @@ class TreeReader
             } else {
                 $parentId = false;
             }
-        } while($parentId !== false);
+        } while ($parentId !== false);
 
         return $output;
     }
@@ -405,7 +405,7 @@ class TreeReader
                         do {
                             $invalidNodes[$invalidNodeId] = false;
                             $invalidNodeId = $nodeMap[$invalidNodeId][$this->parentColumn];
-                        } while($invalidNodeId !== null && isset($nodeMap[$invalidNodeId]));
+                        } while ($invalidNodeId !== null && isset($nodeMap[$invalidNodeId]));
                     } else {
                         // odstranit uzel
                         unset($nodeMap[$invalidNodeId]);
@@ -499,7 +499,8 @@ class TreeReader
 
         // pripravit sloupce
         $columns = array_merge(
-            [$this->idColumn, $this->parentColumn, $this->levelColumn, $this->depthColumn], $columns
+            [$this->idColumn, $this->parentColumn, $this->levelColumn, $this->depthColumn],
+            $columns
         );
         $columnCount = count($columns);
 

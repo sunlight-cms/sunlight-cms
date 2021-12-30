@@ -308,7 +308,7 @@ switch ($a) {
 <table class='messages-table'>
 <thead>
 <tr>
-    <td><input type='checkbox' name='selector' onchange=\"var that=this;$('table.messages-table input').each(function(){this.checked=that.checked;});\"></td>
+    <td><input type='checkbox' name='selector' onchange=\"var that=this;$('table.messages-table input').each(function() {this.checked=that.checked;});\"></td>
     <th>" . _lang('mod.messages.message') . "</th>
     <th>" . _lang('global.user') . "</th>
     <th>" . _lang('mod.messages.time.update') . "</th>

@@ -233,7 +233,7 @@ HTML;
     {
         return <<<HTML
 <script>
-$(document).ready(function(){
+$(document).ready(function() {
     var events = ['keyup', 'mouseup', 'mousedown'];
     for (var i = 0; i < events.length; ++i) $(document)[events[i]](function() {
         Sunlight.limitTextarea(document.{$form}.{$name}, {$maxlength});

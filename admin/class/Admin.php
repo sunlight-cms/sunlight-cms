@@ -505,7 +505,7 @@ abstract class Admin
     static function deleteGalleryStorage(string $sql_cond): void
     {
         $result = DB::query("SELECT full,(SELECT COUNT(*) FROM " . DB::table('gallery_image') . " WHERE full=toptable.full) AS counter FROM " . DB::table('gallery_image') . " AS toptable WHERE in_storage=1 AND (" . $sql_cond . ") HAVING counter=1");
-        while($r = DB::row($result)) {
+        while ($r = DB::row($result)) {
             @unlink(SL_ROOT . $r['full']);
         }
     }
@@ -522,7 +522,7 @@ abstract class Admin
         Extend::call('admin.wysiwyg', ['available' => &$wysiwygAvailable]);
 
         $styleOptions = ['query' => ['s' => $scheme]];
-        if($dark){
+        if ($dark) {
             $styleOptions['query']['d'] = 1;
         }
 

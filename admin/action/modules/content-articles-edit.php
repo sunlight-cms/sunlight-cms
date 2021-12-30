@@ -178,7 +178,7 @@ if (isset($_POST['title'])) {
         Extend::call('admin.article.picture', ['opts' => &$picOpts]);
 
         // zpracovani
-        $pic_uid = Article::uploadImage( $_FILES['picture']['tmp_name'], $_FILES['picture']['name'], $pic_err);
+        $pic_uid = Article::uploadImage($_FILES['picture']['tmp_name'], $_FILES['picture']['name'], $pic_err);
 
         if ($pic_uid !== null) {
             // uspech

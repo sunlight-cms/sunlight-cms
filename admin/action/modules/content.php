@@ -92,7 +92,7 @@ if (
     ' . Xsrf::getInput() . '</form>
 
     <span class="inline-separator"></span>
-    ' : '' ) . '
+    ' : '') . '
 
     ' . (User::hasPrivilege('adminpages') ? '
     <a class="button" href="' . _e(Router::admin('content-setindex')) . '"><img src="' . _e(Router::path('admin/images/icons/home.png')) . '" alt="act" class="icon">' . _lang('admin.content.setindex') . '</a>
@@ -104,7 +104,7 @@ if (
     <a class="button" href="' . _e(Router::admin('content-redir')) . '"><img src="' . _e(Router::path('admin/images/icons/action.png')) . '" alt="redir" class="icon">' . _lang('admin.content.redir') . '</a>
 
     <span class="inline-separator"></span>
-    ' : '' ) . '
+    ' : '') . '
 
     <a class="button" href="' . _e(Router::admin('content', ['query' => ['list_mode' => 'tree']])) . '"' . (PageLister::MODE_FULL_TREE == PageLister::getConfig('mode') ? ' class="active-link"' : '') . '><img src="' . _e(Router::path('admin/images/icons/tree.png')) . '" alt="move" class="icon">' . _lang('admin.content.mode.tree') . '</a>
     <a class="button" href="' . _e(Router::admin('content', ['query' => ['list_mode' => 'single']])) . '"' . (PageLister::MODE_SINGLE_LEVEL == PageLister::getConfig('mode') ? ' class="active-link"' : '') . '><img src="' . _e(Router::path('admin/images/icons/list.png')) . '" alt="move" class="icon">' . _lang('admin.content.mode.single') . '</a>

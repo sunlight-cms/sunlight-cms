@@ -5,7 +5,8 @@ use Sunlight\Database\Database as DB;
 use Sunlight\Message;
 use Sunlight\Plugin\TemplatePlugin;
 use Sunlight\Plugin\TemplateService;
-use Sunlight\Router;use Sunlight\Util\Request;
+use Sunlight\Router;
+use Sunlight\Util\Request;
 use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;

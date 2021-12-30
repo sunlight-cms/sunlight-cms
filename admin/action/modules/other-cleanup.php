@@ -128,7 +128,7 @@ if (isset($_POST['action'])) {
                     $prev_count['admin.users.users'] = DB::count('user', 'id!=0 AND activitytime<' . $users_time . $users_group);
                 } else {
                     $userids = DB::query("SELECT id FROM " . DB::table('user') . " WHERE id!=0 AND activitytime<" . $users_time . $users_group);
-                    while($userid = DB::row($userids)) {
+                    while ($userid = DB::row($userids)) {
                         User::delete($userid['id']);
                     }
                     DB::free($userids);

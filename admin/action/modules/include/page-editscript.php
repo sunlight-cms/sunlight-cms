@@ -582,7 +582,8 @@ $output .= "<form class='cform' action='" . _e(Router::admin('content-edit' . $t
                                 ? _lang('admin.content.form.layout.inherited', ['%layout%' => TemplateService::getComponentLabelByUid($query['layout'], TemplateService::UID_TEMPLATE_LAYOUT)])
                                 : _lang('admin.content.form.layout.inherit'),
                             null,
-                            'inputmax')
+                            'inputmax'
+                        )
                     ."</fieldset>" : '')
 
                     . ($editscript_enable_access ?

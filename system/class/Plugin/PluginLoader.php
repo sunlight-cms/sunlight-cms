@@ -177,7 +177,7 @@ class PluginLoader
         }
 
         // PHP version
-        if ( $plugin->options['php'] !== null && !version_compare($plugin->options['php'], PHP_VERSION, '<=')) {
+        if ($plugin->options['php'] !== null && !version_compare($plugin->options['php'], PHP_VERSION, '<=')) {
             $plugin->addError(sprintf('PHP version "%s" or newer is required', $plugin->options['php']));
         }
 
