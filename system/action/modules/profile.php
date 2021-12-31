@@ -23,7 +23,7 @@ if (!User::isLoggedIn() && Settings::get('notpublicsite')) {
 
 /* ---  priprava  --- */
 
-$id = StringManipulator::slugify(Request::get('id'), false);
+$id = StringManipulator::slugify(Request::get('id', ''), false);
 $query = DB::queryRow("SELECT * FROM " . DB::table('user') . " WHERE username=" . DB::val($id));
 $public = true;
 if ($query !== false) {
