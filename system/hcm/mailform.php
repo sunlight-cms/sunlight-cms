@@ -55,7 +55,7 @@ return function ($adresa = "", $predmet = null) {
                 'submit_text' => _lang('hcm.mailform.send'),
             ],
             [
-                ['label' => _lang('hcm.mailform.sender'), 'content' => "<input type='text' class='inputsmall' name='sender' value='" . $sender . "'><input type='hidden' name='fid' value='" . Core::$hcmUid . "'>"],
+                ['label' => _lang('hcm.mailform.sender'), 'content' => "<input type='email' class='inputsmall' name='sender' value='" . $sender . "'><input type='hidden' name='fid' value='" . Core::$hcmUid . "'>"],
                 ['label' => _lang('posts.subject'), 'content' => "<input type='text' class='inputsmall' name='subject'" . $rsubject . ">"],
                 $rcaptcha,
                 ['label' => _lang('hcm.mailform.text'), 'content' => "<textarea class='areasmall' name='text' rows='9' cols='33'></textarea>", 'top' => true],
