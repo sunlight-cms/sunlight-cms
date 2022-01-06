@@ -480,7 +480,7 @@ $actionOptions = array_merge(
     ($type == Page::PLUGIN && $new ? ['query' => ['idt' => $type_idt]] : [])
 );
 
-$output .= "<form class='cform' action='" . _e(Router::admin('content-edit' . $type_array[$type], $actionOptions)) . "' method='post'>
+$output .= "<form id='cform' class='cform' action='" . _e(Router::admin('content-edit' . $type_array[$type], $actionOptions)) . "' method='post'>
 " . $editscript_extra . "  
     <table class='formtable edittable'>
         <tbody>
