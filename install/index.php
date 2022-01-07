@@ -839,7 +839,6 @@ class ConfigurationStep extends Step
      * Convert string representation of an array config to an array
      *
      * @param string        $value
-     * @param callable|null $mapper
      * @return array|null
      */
     private function getArrayConfigFromString(string $value): ?array
@@ -851,7 +850,6 @@ class ConfigurationStep extends Step
      * Get string representation of an array config option
      *
      * @param string      $key
-     * @param array|null  $default
      * @return string
      */
     private function getArrayConfigAsString(string $key): string
@@ -1077,7 +1075,7 @@ Now you can <a href="admin/">log in to the administration</a> (username and pass
         </tr>
         <tr>
             <th><?php Labels::render('import.admin.email') ?></th>
-            <td><input type="text"<?= Form::restorePostValueAndName('import_admin_email', Config::$config['debug'] ? 'admin@localhost' : '@') ?>></td>
+            <td><input type="email"<?= Form::restorePostValueAndName('import_admin_email', Config::$config['debug'] ? 'admin@localhost' : '@') ?>></td>
             <td class="help"><?php Labels::render('import.admin.email.help') ?></td>
         </tr>
     </table>
@@ -1231,7 +1229,7 @@ $step = $stepRunner->getCurrent();
         .nobullets {list-style-type: none; padding-left: 0;}
         ul.errors {padding-top: 10px; padding-bottom: 10px; background-color: #eee;}
         ul.errors li {font-size: 1.1em; color: red;}
-        select, input[type=text], input[type=password], input[type=reset], input[type=button], button {padding: 5px;}
+        select, input[type=text], input[type=password], input[type=reset], input[type=button], input[type=email], button {padding: 5px;}
         .btn {display: inline-block;}
         .btn, input[type=submit], input[type=button], input[type=reset], button {cursor: pointer; padding: 4px 16px; border: 1px solid #bbbbbb; background: #ededed; background: linear-gradient(to bottom, #f5f5f5, #ededed); color: #000; line-height: normal;}
         .btn:hover, input[type=submit]:hover, input[type=button]:hover, input[type=reset]:hover, button:hover {color: #fff; background: #fe5300; background: linear-gradient(to bottom, #fe7b3b, #ea4c00); border-color: #ea4c00; outline: none;}
