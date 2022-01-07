@@ -47,7 +47,7 @@ if ($continue) {
 
 // presmerovani
 if ($article_exists) {
-    $aurl = Router::article($id, $query['slug'], null, true) . "#article-info";
+    $aurl = Router::article($id, $query['slug'], $query['cat_slug'], ['absolute' => true, 'fragment' => 'article-info']);
 } else {
     $aurl = Core::getBaseUrl()->build();
 }
