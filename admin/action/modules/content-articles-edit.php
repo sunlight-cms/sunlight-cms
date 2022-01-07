@@ -296,13 +296,6 @@ if (isset($_POST['title'])) {
 
 if ($continue) {
 
-    // vyber autora
-    if (User::hasPrivilege('adminchangeartauthor')) {
-        $author_select = Admin::userSelect("author", $query['author'], "adminart=1", "selectmedium");
-    } else {
-        $author_select = "";
-    }
-
     // zprava
     if (isset($_GET['saved'])) {
         $message = Message::ok(_lang('global.saved') . " <small>(" . GenericTemplates::renderTime(time()) . ")</small>", true);
@@ -322,16 +315,13 @@ if ($continue) {
         $rate = "";
     }
 
-    // slug
-    $seo_input = "<input type='text' name='slug' value='" . $query['slug'] . "' maxlength='255' class='input" . (($author_select != '') ? 'medium' : 'big') . "'>";
-
     // obrazek
     $picture = '';
     if (isset($query['picture_uid'])) {
         $picture .= "<img src='" . _e(Router::file(Article::getImagePath($query['picture_uid']))) . "' alt='article picture' id='is-picture-file'>
-<label id='is-picture-delete'><input type='checkbox' name='picture-delete' value='1'> <img src='" . _e(Router::path('admin/images/icons/delete3.png')) . "' class='icon' alt='" . _lang('global.delete') . "'></label>";
+<label id='is-picture-delete'><input type='checkbox' name='picture-delete' value='1'> " . _lang('global.delete') . "</label>";
     } else {
-        $picture .= "<img src='" . _e(Router::path('admin/images/art-no-pic.png')) . "' alt='no picture'>\n";
+        $picture .= "<img src='" . _e(Router::path('admin/images/art-no-pic.png')) . "' alt='no picture' id='is-picture-file'>\n";
     }
     $picture .= "<input type='file' name='picture' id='is-picture-upload'>\n";
 
@@ -340,7 +330,7 @@ if ($continue) {
 
     if ($editor === '') {
         // vychozi implementace
-        $editor = "<textarea name='content' rows='25' cols='68' class='editor'>" . _e($query['content']) . "</textarea>";
+        $editor = "<textarea name='content' rows='25' cols='94' class='areabig editor'>" . _e($query['content']) . "</textarea>";
     }
 
     // formular
@@ -354,106 +344,100 @@ if ($continue) {
 " . ((!$new && DB::count('article', 'id!=' . DB::val($query['id']) . ' AND home1=' . DB::val($query['home1']) . ' AND slug=' . DB::val($query['slug'])) !== 0) ? Message::warning(_lang('admin.content.form.slug.collision')) : '') . "
 
 <form class='cform' action='" . _e(Router::admin('content-articles-edit', $actionplus)) . "' method='post' enctype='multipart/form-data' name='artform'>
+    <table class='formtable edittable'>
+        <tbody>
+            <tr class='valign-top'>
+                <td class='contenttable-box main-box'>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <th>" . _lang('article.category') . "</th>
+                                <td>"
+                                    . Admin::pageSelect("home1", ['type' => Page::CATEGORY, 'selected' => $query['home1']])
+                                    . Admin::pageSelect("home2", ['type' => Page::CATEGORY, 'selected' => $query['home2'], 'empty_item' => _lang('admin.content.form.category.none')])
+                                    . Admin::pageSelect("home3", ['type' => Page::CATEGORY, 'selected' => $query['home3'], 'empty_item' => _lang('admin.content.form.category.none')])
+                                    . "
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>" . _lang('admin.content.form.title') . "</th>
+                                <td><input type='text' name='title' value='" . $query['title'] . "' class='inputmax'></td>
+                            </tr>
+                            <tr>
+                                <th>" . _lang('admin.content.form.slug') . "</th>
+                                <td><input type='text' name='slug' value='" . $query['slug'] . "' maxlength='255' class='inputmax'></td>
+                            </tr>
+                            <tr>
+                                <th>" . _lang('admin.content.form.description') . "</th>
+                                <td><input type='text' name='description' value='" . $query['description'] . "' maxlength='255' class='inputmax'></td>
+                            </tr>
+                            <tr class='valign-top'>
+                                <th>" . _lang('admin.content.form.perex') . "</th>
+                                <td><textarea name='perex' rows='9' cols='94' class='areabigperex editor' data-editor-mode='lite'>" . _e($query['perex']) . "</textarea></td>
+                            </tr>
+                            <tr class='valign-top'>
+                                <th>" . _lang('admin.content.form.content') . $artlink . "</th>
+                                <td>" . $editor . "</td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>" . _lang('article.posted') . "</th>
+                                <td>" . Form::editTime('time', $query['time'], true, $new) . "</td>
+                            </tr>
+                            " . Extend::buffer('admin.article.form', ['article' => $query]) . "
+                            <tr>
+                                <td></td>
+                                <td id='ae-lastrow'><br><input type='submit' class='button bigger' value='" . _lang($submittext) . "' accesskey='s'>"
+                                . (!$new ? "
+                                    <span class='customsettings'><a href='" . _e(Router::admin('content-articles-delete', ['query' => ['id' => $query['id'], 'returnid' => $query['home1'], 'returnpage' => 1]])) . "'><span><img src='" . _e(Router::path('admin/images/icons/delete.png')) . "' alt='del' class='icon'>" . _lang('global.delete') . "</span></a></span>
+                                    <span class='customsettings'><small>" . _lang('admin.content.form.thisid') . " " . $query['id'] . "</small></span>
+                                " : '')
+                                . "</td>
+                            </tr>
+                       </tfoot>     
+                    </table>    
+                </td> 
+                <td class='contenttable-box'>
+                    <div id='settingseditform'>
+                        " . Extend::buffer('admin.article.settings.before', ['article' => $query]) . "
+                        <fieldset>
+                            <legend>" . _lang('admin.content.form.picture') . "</legend>
+                            <div id='is-picture'>" . $picture . "</div>
+                        </fieldset>"
 
-<table class='formtable'>
-
-<tr>
-<th>" . _lang('article.category') . "</th>
-<td>"
-    . Admin::pageSelect("home1", ['type' => Page::CATEGORY, 'selected' => $query['home1']])
-    . Admin::pageSelect("home2", ['type' => Page::CATEGORY, 'selected' => $query['home2'], 'empty_item' => _lang('admin.content.form.category.none')])
-    . Admin::pageSelect("home3", ['type' => Page::CATEGORY, 'selected' => $query['home3'], 'empty_item' => _lang('admin.content.form.category.none')])
-    . "
-</td>
-</tr>
-
-<tr>
-<th>" . _lang('admin.content.form.title') . "</th>
-<td><input type='text' name='title' value='" . $query['title'] . "' class='inputmax'></td>
-</tr>
-
-<tr>
-<th>" . _lang('admin.content.form.slug') . "</th>
-<td>" . (($author_select == '' ? $seo_input : "
-    <table class='ae-twoi'><tr>
-    <td>" . $seo_input . "</td>
-    <th>" . _lang('article.author') . "</th>
-    <td>" . $author_select . "</td>
-    </tr></table>
-")) . "</td>
-</tr>
-
-<tr>
-<th>" . _lang('admin.content.form.description') . "</th>
-<td>
-    <input type='text' name='description' value='" . $query['description'] . "' maxlength='255' class='inputmax'>
-</td>
-</tr>
-
-<tr class='valign-top'>
-<th>" . _lang('admin.content.form.perex') . "</th>
-<td><textarea name='perex' rows='9' cols='94' class='areabigperex editor' data-editor-mode='lite'>" . _e($query['perex']) . "</textarea></td>
-</tr>
-
-<tr class='valign-top'>
-<th>" . _lang('admin.content.form.content') . $artlink . "</th>
-<td>
-
-  <table id='ae-table'>
-  <tr class='valign-top'>
-    <td id='content-cell'>
-      " . $editor . "
-    </td>
-    <td id='is-cell'>
-      <div id='is-cell-wrapper'>
-      <div id='is-cell-content'>
-
-      <h2>" . _lang('admin.content.form.picture') . "</h2>
-      <div id='is-picture'>" . $picture . "</div>
-
-      <h2>" . _lang('admin.content.form.settings') . "</h2>
-      <p id='is-settings'>
-      <label><input type='checkbox' name='public' value='1'" . Form::activateCheckbox($query['public']) . "> " . _lang('admin.content.form.public') . "</label>
-      <label><input type='checkbox' name='visible' value='1'" . Form::activateCheckbox($query['visible']) . "> " . _lang('admin.content.form.visible') . "</label>
-      " . ((User::hasPrivilege('adminconfirm') || (User::hasPrivilege('adminautoconfirm') && $query['author'] == User::getId())) ? "<label><input type='checkbox' name='confirmed' value='1'" . Form::activateCheckbox($query['confirmed']) . "> " . _lang('admin.content.form.confirmed') . "</label>" : '') . "
-      <label><input type='checkbox' name='comments' value='1'" . Form::activateCheckbox($query['comments']) . "> " . _lang('admin.content.form.comments') . "</label>
-      <label><input type='checkbox' name='commentslocked' value='1'" . Form::activateCheckbox($query['commentslocked']) . "> " . _lang('admin.content.form.commentslocked') . "</label>
-      <label><input type='checkbox' name='rateon' value='1'" . Form::activateCheckbox($query['rateon']) . "> " . _lang('admin.content.form.artrate') . "</label>
-      <label><input type='checkbox' name='showinfo' value='1'" . Form::activateCheckbox($query['showinfo']) . "> " . _lang('admin.content.form.showinfo') . "</label>
-      " . (!$new ? "<label><input type='checkbox' name='resetrate' value='1'> " . _lang('admin.content.form.resetartrate') . " <small>(" . $rate . ")</small></label>" : '') . "
-      " . (!$new ? "<label><input type='checkbox' name='delcomments' value='1'> " . _lang('admin.content.form.delcomments') . " <small>(" . DB::count('post', 'home=' . DB::val($query['id']) . ' AND type=' . Post::ARTICLE_COMMENT) . ")</small></label>" : '') . "
-      " . (!$new ? "<label><input type='checkbox' name='resetread' value='1'> " . _lang('admin.content.form.resetartread') . " <small>(" . $read_counter . ")</small></label>" : '') . "
-      </p>
-
-      </div>
-      </div>
-    </td>
-  </tr>
-  </table>
-
-</td>
-</tr>
-
-<tr id='time-cell'>
-<th>" . _lang('article.posted') . "</th>
-<td>" . Form::editTime('time', $query['time'], true, $new) . "</td>
-</tr>
-
-" . Extend::buffer('admin.article.form', ['article' => $query]) . "
-
-<tr>
-<td></td>
-<td id='ae-lastrow'><br><input type='submit' class='button bigger' value='" . _lang($submittext) . "' accesskey='s'>
-" . (!$new ? "
-<span class='customsettings'><a href='" . _e(Router::admin('content-articles-delete', ['query' => ['id' => $query['id'], 'returnid' => $query['home1'], 'returnpage' => 1]])) . "'><span><img src='" . _e(Router::path('admin/images/icons/delete.png')) . "' alt='del' class='icon'>" . _lang('global.delete') . "</span></a></span>
-<span class='customsettings'><small>" . _lang('admin.content.form.thisid') . " " . $query['id'] . "</small></span>
-" : '') . "
-
-</td>
-</tr>
-
-</table>
-
+                        . (User::hasPrivilege('adminchangeartauthor')
+                            ? "<fieldset>
+                                <legend>" . _lang('article.author') . "</legend>"
+                                . Admin::userSelect("author", $query['author'], "adminart=1", "inputmax")
+                                . "</fieldset>"
+                            : '')
+                        
+                        . "<fieldset>
+                            <legend>" . _lang('admin.content.form.settings') . "</legend>
+                            <table>
+                                <tbody>
+                                    <tr><td><label><input type='checkbox' name='public' value='1'" . Form::activateCheckbox($query['public']) . "> " . _lang('admin.content.form.public') . "</label></td></tr>
+                                    <tr><td><label><input type='checkbox' name='visible' value='1'" . Form::activateCheckbox($query['visible']) . "> " . _lang('admin.content.form.visible') . "</label></td></tr>
+                                    " . ((User::hasPrivilege('adminconfirm') || (User::hasPrivilege('adminautoconfirm') && $query['author'] == User::getId()))
+                                        ? "<td><label><input type='checkbox' name='confirmed' value='1'" . Form::activateCheckbox($query['confirmed']) . "> " . _lang('admin.content.form.confirmed') . "</label></td></tr>"
+                                        : '') . "
+                                    <tr><td><label><input type='checkbox' name='comments' value='1'" . Form::activateCheckbox($query['comments']) . "> " . _lang('admin.content.form.comments') . "</label></td></tr>
+                                    <tr><td><label><input type='checkbox' name='commentslocked' value='1'" . Form::activateCheckbox($query['commentslocked']) . "> " . _lang('admin.content.form.commentslocked') . "</label></td></tr>
+                                    <tr><td><label><input type='checkbox' name='rateon' value='1'" . Form::activateCheckbox($query['rateon']) . "> " . _lang('admin.content.form.artrate') . "</label></td></tr>
+                                    <tr><td><label><input type='checkbox' name='showinfo' value='1'" . Form::activateCheckbox($query['showinfo']) . "> " . _lang('admin.content.form.showinfo') . "</label></td></tr>
+                                    " . (!$new ? "<tr><td><label><input type='checkbox' name='resetrate' value='1'> " . _lang('admin.content.form.resetartrate') . " <small>(" . $rate . ")</small></label></td></tr>" : '') . "
+                                    " . (!$new ? "<tr><td><label><input type='checkbox' name='delcomments' value='1'> " . _lang('admin.content.form.delcomments') . " <small>(" . DB::count('post', 'home=' . DB::val($query['id']) . ' AND type=' . Post::ARTICLE_COMMENT) . ")</small></label></td></tr>" : '') . "
+                                    " . (!$new ? "<tr><td><label><input type='checkbox' name='resetread' value='1'> " . _lang('admin.content.form.resetartread') . " <small>(" . $read_counter . ")</small></label></td></tr>" : '') . "
+                                </tbody>
+                            </table>
+                        </fieldset>
+                        " . Extend::buffer('admin.article.settings.after', ['article' => $query]) . "
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 " . Xsrf::getInput() . "</form>
 
 ";

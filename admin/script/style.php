@@ -351,6 +351,7 @@ body.login-layout #footer, body.login-layout #footer a {color: <?= $scheme_text 
 #contenttable h2 {margin: 0 0 8px 0; padding: 4px 0 7px 0; border-bottom: 1px solid <?= $scheme_smoke ?>;}
 #contenttable div.pad {padding: 20px 0;}
 td.contenttable-box {padding: 8px; margin: 0; border-right: 1px solid <?= $scheme_smoke ?>;}
+td.contenttable-box.main-box {width: 70%; padding-bottom: 0px;}
 
 #content-modules {border: none;}
 #content-modules h2 {margin-top: 1em;}
@@ -406,29 +407,9 @@ ul.page-list-breadcrumbs a:hover {color: <?= $scheme_link ?>;}
 .module-content-boxes .box-title-cell {white-space: normal; width: 90%;}
 
 /* article edit */
-#ae-table {width: 99.1%; table-layout: fixed; border-collapse: collapse; float: left;}
-#ae-table, #ae-table td {margin: 0; padding: 0;}
-#content-cell {width: 75%;}
-#content-cell textarea {width: 100%; height: 480px;}
-#is-cell {width: 25%;}
-#is-cell textarea {width: 213px; height: 179px;}
-#is-cell label {display: block;}
-#is-cell label input {margin: 0;}
-#is-cell-wrapper {position: relative;}
-#is-cell-content {padding: 0 5px 0 10px; position: absolute; left: 0; top: 0; width: 100%;}
-#is-picture {margin: 10px 0; width: 100%; padding: 5px 0 40px 0; overflow: hidden; position: relative;}
+#is-picture {width: 100%;}
 #is-picture-file {display: block; max-width: 200px; max-height: 200px; margin: 0 auto; border: 1px solid <?= $scheme_lighter ?>;}
-#is-picture-upload {position: absolute; left: 10px; bottom: 10px;}
-#is-picture-delete {position: absolute; right: 10px; top: 5px; padding: 3px;}
-#is-picture-delete img, #is-picture-delete input {vertical-align: middle;}
-#ae-lastrow {padding-bottom: 30px;}
-#time-cell {z-index: 1; position: relative;}
-.ae-artselect {width: 249px;}
-.ae-artselect-disoption {color: <?= $scheme_smoke_text ?>;}
-.ae-twoi {border-collapse: collapse;}
-.ae-twoi input, .ae-twoi select {width: 100% !important;}
-.ae-twoi td {padding-left: 0 !important; padding-right: 16px !important; width: 330px;}
-.ae-twoi th {width: 100px; white-space: nowrap;}
+#is-picture-delete {padding: 6px; text-align: center;}
 
 /* box manager */
 #boxesedit {width: 100%;}
