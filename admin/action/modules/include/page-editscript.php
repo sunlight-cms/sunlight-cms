@@ -485,7 +485,7 @@ $output .= "<form class='cform' action='" . _e(Router::admin('content-edit' . $t
     <table class='formtable edittable'>
         <tbody>
             <tr class='valign-top'>
-                <td class='contenttable-box' style='width: 70%; padding-bottom: 0px;'>
+                <td class='contenttable-box main-box'>
                     <table>
                         <tbody>
                             <tr>
