@@ -21,7 +21,7 @@
         "kuria/event": "^2.0",
         "kuria/options": "^2.0",
         "kuria/request-info": "^1.0",
-        "kuria/url": "^4.0"
+        "kuria/url": "^5.0"
     },
     "config": {
         "platform": {
