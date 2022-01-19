@@ -214,6 +214,11 @@ abstract class Page
         // zjistit aktualni stranku
         [$currentId, $currentData] = self::getActive();
 
+        // stranka bez ID (napr. modul)
+        if ($currentId === null) {
+            return false;
+        }
+
         if ($currentData !== null) {
             $currentLevel = $currentData['node_level'];
         } else {
