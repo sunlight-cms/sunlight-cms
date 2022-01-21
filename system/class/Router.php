@@ -116,8 +116,8 @@ abstract class Router
                 $slugs = DB::queryRow("SELECT art.slug AS art_ts, cat.slug AS cat_ts FROM " . DB::table('article') . " AS art JOIN " . DB::table('page') . " AS cat ON(cat.id=art.home1) WHERE art.id=" . $id);
 
                 if ($slugs !== false) {
-                    $slug = $slug['art_ts'];
-                    $categorySlug = $slug['cat_ts'];
+                    $slug = $slugs['art_ts'];
+                    $categorySlug = $slugs['cat_ts'];
                 }
             }
         }
