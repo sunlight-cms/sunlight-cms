@@ -329,7 +329,7 @@ abstract class Admin
             $multiple = "";
         }
         $output = "<select name='" . $name . "'" . $class . $multiple . ">";
-        $query = DB::query("SELECT id,title,level FROM " . DB::table('user_group') . " WHERE " . $gcond . " AND id!=2 ORDER BY level DESC");
+        $query = DB::query("SELECT id,title,level FROM " . DB::table('user_group') . " WHERE " . $gcond . " AND id!=" . User::GUEST_GROUP_ID . " ORDER BY level DESC");
         if ($extraoption != null) {
             $output .= "<option value='-1' class='special'>" . $extraoption . "</option>";
         }

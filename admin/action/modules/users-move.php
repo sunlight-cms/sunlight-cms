@@ -40,6 +40,6 @@ if (isset($_POST['sourcegroup'])) {
 
 $output .= $message . "
 <form class='cform' action='" . _e(Router::admin('users-move')) . "' method='post'>
-" . _lang('admin.users.move.text1') . " " . Admin::userSelect("sourcegroup", -1, "id!=" . User::GUEST_GROUP_ID, null, null, true) . " " . _lang('admin.users.move.text2') . " " . Admin::userSelect("targetgroup", -1, "id!=2", null, null, true) . " <input class='button' type='submit' value='" . _lang('global.do') . "' onclick='return Sunlight.confirm();'>
+" . _lang('admin.users.move.text1') . " " . Admin::userSelect("sourcegroup", -1, "id!=" . User::GUEST_GROUP_ID, null, null, true) . " " . _lang('admin.users.move.text2') . " " . Admin::userSelect("targetgroup", -1, "id!=" . User::GUEST_GROUP_ID, null, null, true) . " <input class='button' type='submit' value='" . _lang('global.do') . "' onclick='return Sunlight.confirm();'>
 " . Xsrf::getInput() . "</form>
 ";

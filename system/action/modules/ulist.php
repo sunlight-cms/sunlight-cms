@@ -43,7 +43,7 @@ $output .= '
   <strong>' . _lang('user.list.groupfilter') . ':</strong> <select name="group_id">
   <option value="-1">' . _lang('global.all') . '</option>
   ';
-$query = DB::query("SELECT id,title FROM " . DB::table('user_group') . " WHERE id!=2 ORDER BY level DESC");
+$query = DB::query("SELECT id,title FROM " . DB::table('user_group') . " WHERE id!=" . User::GUEST_GROUP_ID . " ORDER BY level DESC");
 while ($item = DB::row($query)) {
     if ($item['id'] == $group) {
         $selected = ' selected';
