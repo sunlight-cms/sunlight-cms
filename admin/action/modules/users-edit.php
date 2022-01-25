@@ -64,7 +64,7 @@ if (isset($_GET['id'])) {
 if ($continue) {
     
     // vyber skupiny
-    $group_select = Admin::userSelect('group_id', (isset($_POST['group_id']) ? (int) Request::post('group_id') : $query['group_id']), "id!=2 AND level<" . User::getLevel(), null, null, true);
+    $group_select = Admin::userSelect('group_id', (isset($_POST['group_id']) ? (int) Request::post('group_id') : $query['group_id']), "id!=" . User::GUEST_GROUP_ID . " AND level<" . User::getLevel(), null, null, true);
 
     /* ---  ulozeni  --- */
     if (isset($_POST['username'])) {
@@ -148,7 +148,7 @@ if ($continue) {
         // group
         if (isset($_POST['group_id'])) {
             $group = (int) Request::post('group_id');
-            $group_test = DB::queryRow("SELECT level FROM " . DB::table('user_group') . " WHERE id=" . $group . " AND id!=2 AND level<" . User::getLevel());
+            $group_test = DB::queryRow("SELECT level FROM " . DB::table('user_group') . " WHERE id=" . $group . " AND id!=" . User::GUEST_GROUP_ID . " AND level<" . User::getLevel());
             if ($group_test !== false) {
                 if ($group_test['level'] > User::getLevel()) {
                     $errors[] = _lang('global.badinput');
