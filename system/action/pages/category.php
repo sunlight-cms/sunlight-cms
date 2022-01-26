@@ -60,7 +60,7 @@ if (DB::size($arts) != 0) {
         $output .= $paging['paging'];
     }
     while ($art = DB::row($arts)) {
-        $extend_item_args = Extend::args($output, ['page' => $_page, 'item-query' => &$art]);
+        $extend_item_args = Extend::args($output, ['page' => $_page, 'item_query' => &$art]);
         Extend::call('page.category.item.before', $extend_item_args);
         $output .= Article::renderPreview($art, $userQuery, $_page['var3'] == 1, true, $art['comment_count']);
         Extend::call('page.category.item.after', $extend_item_args);
