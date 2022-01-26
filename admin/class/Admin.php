@@ -347,16 +347,16 @@ abstract class Admin
                         } else {
                             $sel = "";
                         }
-                        $output .= "<option value='" . $user['id'] . "'" . $sel . ">" . $user[($user['publicname'] !== null) ? 'publicname' : 'username'] . "</option>\n";
+                        $output .= "<option value='" . $user['id'] . "'" . $sel . ">" . ($user['publicname'] ?? $user['username']) . "</option>\n";
                     }
                     $output .= "</optgroup>";
                 }
             }
             if (!$containsSelected) {
-                $missingUser = DB::queryRow("SELECT u.id, u.username, u.publicname, g.title as grouptitle FROM " . DB::table('user') . " AS u JOIN " . DB::table('user_group') . " AS g ON(u.group_id=g.id) WHERE u.id = " . $selected);
-                if ($missingUser !== false) {
-                    $output .= "<optgroup label='" . $missingUser['grouptitle'] . "'>";
-                    $output .= "<option value='" . $missingUser['id'] . "' selected>" . $missingUser[($missingUser['publicname'] !== null) ? 'publicname' : 'username'] . "</option>\n";
+                $selectedUser = DB::queryRow("SELECT u.id, u.username, u.publicname, g.title as grouptitle FROM " . DB::table('user') . " AS u JOIN " . DB::table('user_group') . " AS g ON(u.group_id=g.id) WHERE u.id = " . $selected);
+                if ($selectedUser !== false) {
+                    $output .= "<optgroup label='" . $selectedUser['grouptitle'] . "'>";
+                    $output .= "<option value='" . $selectedUser['id'] . "' selected>" . ($selectedUser['publicname'] ?? $selectedUser['username']) . "</option>\n";
                     $output .= "</optgroup>";
                 }
             }
@@ -371,9 +371,9 @@ abstract class Admin
                 $output .= "<option value='" . $item['id'] . "'" . $sel . ">" . $item['title'] . " (" . DB::count('user', 'group_id=' . $item['id']) . ")</option>\n";
             }
             if (!$containsSelected) {
-                $missingGroup = DB::queryRow("SELECT id,title FROM " . DB::table('user_group') . " WHERE id=" . $selected);
-                if ($missingGroup !== false) {
-                    $output .= "<option value='" . $missingGroup['id'] . "' selected>" . $missingGroup['title'] . " (" . DB::count('user', 'group_id=' . $missingGroup['id']) . ")</option>\n";
+                $selectedGroup = DB::queryRow("SELECT id,title FROM " . DB::table('user_group') . " WHERE id=" . $selected);
+                if ($selectedGroup !== false) {
+                    $output .= "<option value='" . $selectedGroup['id'] . "' selected>" . $selectedGroup['title'] . " (" . DB::count('user', 'group_id=' . $selectedGroup['id']) . ")</option>\n";
                 }
             }
         }
