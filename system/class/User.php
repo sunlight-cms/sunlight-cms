@@ -288,7 +288,9 @@ abstract class User
      */
     static function hasPrivilege(string $name): bool
     {
-        return isset(self::$privilegeMap[$name]) && self::$group[$name];
+        $hasPrivilege = isset(self::$privilegeMap[$name]) && self::$group[$name];
+        Extend::call('user.privilege.validate', ['name' => $name, 'valid' => &$hasPrivilege]);
+        return $hasPrivilege;
     }
     
     static function isSuperAdmin(): bool
