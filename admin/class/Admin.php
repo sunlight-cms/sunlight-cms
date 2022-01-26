@@ -334,6 +334,7 @@ abstract class Admin
             $output .= "<option value='-1' class='special'>" . $extraoption . "</option>";
         }
 
+        $containsSelected = false;
         if (!$groupmode) {
             while ($item = DB::row($query)) {
                 $users = DB::query("SELECT id,username,publicname FROM " . DB::table('user') . " WHERE group_id=" . $item['id'] . " AND (" . $item['level'] . "<" . User::getLevel() . " OR id=" . User::getId() . ") ORDER BY id");
@@ -342,11 +343,20 @@ abstract class Admin
                     while ($user = DB::row($users)) {
                         if ($selected == $user['id']) {
                             $sel = " selected";
+                            $containsSelected = true;
                         } else {
                             $sel = "";
                         }
-                        $output .= "<option value='" . $user['id'] . "'" . $sel . ">" . $user[($user['publicname'] !== null) ? 'publicname' : 'username'] . "</option>\n";
+                        $output .= "<option value='" . $user['id'] . "'" . $sel . ">" . ($user['publicname'] ?? $user['username']) . "</option>\n";
                     }
+                    $output .= "</optgroup>";
+                }
+            }
+            if (!$containsSelected) {
+                $selectedUser = DB::queryRow("SELECT u.id, u.username, u.publicname, g.title as grouptitle FROM " . DB::table('user') . " AS u JOIN " . DB::table('user_group') . " AS g ON(u.group_id=g.id) WHERE u.id = " . $selected);
+                if ($selectedUser !== false) {
+                    $output .= "<optgroup label='" . $selectedUser['grouptitle'] . "'>";
+                    $output .= "<option value='" . $selectedUser['id'] . "' selected>" . ($selectedUser['publicname'] ?? $selectedUser['username']) . "</option>\n";
                     $output .= "</optgroup>";
                 }
             }
@@ -354,10 +364,17 @@ abstract class Admin
             while ($item = DB::row($query)) {
                 if ($selected == $item['id']) {
                     $sel = " selected";
+                    $containsSelected = true;
                 } else {
                     $sel = "";
                 }
                 $output .= "<option value='" . $item['id'] . "'" . $sel . ">" . $item['title'] . " (" . DB::count('user', 'group_id=' . $item['id']) . ")</option>\n";
+            }
+            if (!$containsSelected) {
+                $selectedGroup = DB::queryRow("SELECT id,title FROM " . DB::table('user_group') . " WHERE id=" . $selected);
+                if ($selectedGroup !== false) {
+                    $output .= "<option value='" . $selectedGroup['id'] . "' selected>" . $selectedGroup['title'] . " (" . DB::count('user', 'group_id=' . $selectedGroup['id']) . ")</option>\n";
+                }
             }
         }
 
