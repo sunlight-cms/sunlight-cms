@@ -83,7 +83,7 @@ if ($query['blocked'] == 1 || $groupdata['blocked'] == 1) {
 }
 
 if ($public) {
-    if (!$query['public'] && User::getId() == $query['id']) {
+    if (!$query['public'] && User::equals($query['id'])) {
         $output .= Message::ok(_lang('mod.profile.private.selfnote'));
     }
 
@@ -116,7 +116,7 @@ if ($public) {
 <td>" . $groupdata['descr'] . "</td>
 </tr>" : '') . "
 
-" . ($query['id'] == User::getId() || User::hasPrivilege('administration') && User::hasPrivilege('adminusers') ? "<tr>
+" . (User::equals($query['id']) || User::hasPrivilege('administration') && User::hasPrivilege('adminusers') ? "<tr>
 <th>" . _lang('mod.profile.lastact') . "</th>
 <td>" . GenericTemplates::renderTime($query['activitytime'], 'activity') . "</td>
 </tr>
@@ -155,6 +155,6 @@ if ($public) {
 }
 
 // odkaz na zaslani vzkazu
-if (User::isLoggedIn() && Settings::get('messages') && $query['id'] != User::getId() && $query['blocked'] == 0 && $groupdata['blocked'] == 0) {
+if (User::isLoggedIn() && Settings::get('messages') && !User::equals($query['id']) && $query['blocked'] == 0 && $groupdata['blocked'] == 0) {
     $output .= "<p><a class='button' href='" . _e(Router::module('messages', ['query' => ['a' => 'new', 'receiver' => $query['username']]])) . "'><img src='" . Template::image("icons/bubble.png") . "' alt='msg' class='icon'>" . _lang('mod.messages.new') . "</a></p>";
 }

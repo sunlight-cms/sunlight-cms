@@ -87,7 +87,7 @@ abstract class Post
             }
 
             // je uzivatel autorem prispevku?
-            if ($post[$userQuery['prefix'] . 'id'] == User::getId() && ($post['time'] + Settings::get('postadmintime') > time() || User::hasPrivilege('unlimitedpostaccess'))) {
+            if (User::equals($post[$userQuery['prefix'] . 'id']) && ($post['time'] + Settings::get('postadmintime') > time() || User::hasPrivilege('unlimitedpostaccess'))) {
                 return true;
             }
 

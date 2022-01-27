@@ -275,6 +275,17 @@ abstract class User
         return self::$data['id'] ?? -1;
     }
 
+    /**
+     * Zjistit, zda uzivatel ma stejne id
+     *
+     * @param int $targetUserId
+     * @return bool
+     */
+    static function equals(int $targetUserId): bool
+    {
+        return $targetUserId == self::getId();
+    }
+
     static function getLevel(): int
     {
         return self::$group['level'];

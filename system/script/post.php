@@ -181,7 +181,7 @@ if ($continue && $continue2 && $text != '' && ($posttype == Post::SHOUTBOX_ENTRY
 
                     // zpravy - aktualizace casu zmeny a precteni
                     if ($posttype == Post::PRIVATE_MSG) {
-                        $role = (($tdata['sender'] == User::getId()) ? 'sender' : 'receiver');
+                        $role = (User::equals($tdata['sender']) ? 'sender' : 'receiver');
                         DB::update('pm', 'id=' . $posttarget, [
                             'update_time' => time(),
                             $role . '_readtime' => time()
