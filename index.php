@@ -3,6 +3,7 @@
 use Sunlight\Core;
 use Sunlight\Extend;
 use Sunlight\GenericTemplates;
+use Sunlight\Plugin\PluginRouter;
 use Sunlight\Plugin\TemplatePlugin;
 use Sunlight\Plugin\TemplateService;
 use Sunlight\Settings;
@@ -85,14 +86,17 @@ if (empty($_POST) || Xsrf::check()) {
         }
 
         // extend
-        Extend::call('index.plugin', [
+        Extend::call('page.init', [
             'index' => $_index,
             'segments' => $segments,
         ]);
 
-        Extend::call('page.init');
-
         if ($_index->type === WebState::PLUGIN) {
+            break;
+        }
+
+        // plugin routes
+        if (PluginRouter::handle($_index)) {
             break;
         }
 

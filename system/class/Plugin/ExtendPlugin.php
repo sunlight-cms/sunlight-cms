@@ -49,6 +49,18 @@ class ExtendPlugin extends Plugin
                 $this->loadScript($script);
             }
         }
+
+        // register routes
+        if (Core::$env === Core::ENV_WEB) {
+            foreach ($this->options['routes'] as $route) {
+                PluginRouter::register(
+                    $route['pattern'],
+                    $route['method'] !== null
+                        ? [$this, $route['method']]
+                        : $route['callback']
+                );
+            }
+        }
     }
 
     /**

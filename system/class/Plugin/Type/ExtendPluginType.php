@@ -40,7 +40,7 @@ class ExtendPluginType extends PluginType
             Option::int('priority')->default(0),
         ];
 
-        $eventSubscriberValidator = function (array $subscribers) {
+        $methodOrCallbackValidator = function (array $subscribers) {
             foreach ($subscribers as $subscriber) {
                 if (!($subscriber['method'] === null xor $subscriber['callback'] === null)) {
                     return 'either method or callback must be specified';
@@ -50,11 +50,11 @@ class ExtendPluginType extends PluginType
 
         $optionResolver->addOption(
             Option::nodeList('events', ...$eventSubscriberOptions)
-                ->validate($eventSubscriberValidator),
+                ->validate($methodOrCallbackValidator),
             Option::nodeList('events.web', ...$eventSubscriberOptions)
-                ->validate($eventSubscriberValidator),
+                ->validate($methodOrCallbackValidator),
             Option::nodeList('events.admin', ...$eventSubscriberOptions)
-                ->validate($eventSubscriberValidator),
+                ->validate($methodOrCallbackValidator),
             Option::list('scripts', 'string')
                 ->normalize([PluginOptionNormalizer::class, 'normalizePathArray'])
                 ->default([]),
@@ -64,7 +64,13 @@ class ExtendPluginType extends PluginType
             Option::list('scripts.admin', 'string')
                 ->normalize([PluginOptionNormalizer::class, 'normalizePathArray'])
                 ->default([])
-            ->notEmpty(),
+                ->notEmpty(),
+            Option::nodeList(
+                'routes',
+                Option::string('pattern'),
+                Option::string('method')->default(null),
+                Option::any('callback')->default(null)
+            )->validate($methodOrCallbackValidator),
             Option::list('langs', 'string')
                 ->normalize([PluginOptionNormalizer::class, 'normalizePathArray'])
                 ->default([])

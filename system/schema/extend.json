@@ -24,6 +24,37 @@
                 "scripts.admin": {
                     "$ref": "#/definitions/path-list"
                 },
+                "routes": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "pattern": {
+                                "type": "string"
+                            },
+                            "method": {
+                                "type": "string"
+                            },
+                            "callback": {
+                                "type": ["string", "array"]
+                            }
+                        },
+                        "oneOf": [
+                            {
+                                "required": [
+                                    "pattern",
+                                    "method"
+                                ]
+                            },
+                            {
+                                "required": [
+                                    "pattern",
+                                    "callback"
+                                ]
+                            }
+                        ]
+                    }
+                },
                 "langs": {
                     "type": "object",
                     "patternProperties": {
