@@ -23,7 +23,7 @@ abstract class Article
     {
         // nevydany / neschvaleny clanek
         if (!$article['confirmed'] || $article['time'] > time()) {
-            return User::hasPrivilege('adminconfirm') || $article['author'] == User::getId();
+            return User::hasPrivilege('adminconfirm') || User::equals($article['author']);
         }
 
         // pristup k clanku

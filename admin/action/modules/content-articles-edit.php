@@ -107,7 +107,7 @@ if (isset($_POST['title'])) {
     $newdata['content'] = User::filterContent(Request::post('content'));
     $newdata['public'] = Form::loadCheckbox('public');
     $newdata['visible'] = Form::loadCheckbox('visible');
-    if (User::hasPrivilege('adminconfirm') || (User::hasPrivilege('adminautoconfirm') && $newdata['author'] == User::getId())) {
+    if (User::hasPrivilege('adminconfirm') || (User::hasPrivilege('adminautoconfirm') && User::equals($newdata['author']))) {
         $newdata['confirmed'] = Form::loadCheckbox('confirmed');
     } else {
         $newdata['confirmed'] = $query['confirmed'];
@@ -419,7 +419,7 @@ if ($continue) {
                                 <tbody>
                                     <tr><td><label><input type='checkbox' name='public' value='1'" . Form::activateCheckbox($query['public']) . "> " . _lang('admin.content.form.public') . "</label></td></tr>
                                     <tr><td><label><input type='checkbox' name='visible' value='1'" . Form::activateCheckbox($query['visible']) . "> " . _lang('admin.content.form.visible') . "</label></td></tr>
-                                    " . ((User::hasPrivilege('adminconfirm') || (User::hasPrivilege('adminautoconfirm') && $query['author'] == User::getId()))
+                                    " . ((User::hasPrivilege('adminconfirm') || (User::hasPrivilege('adminautoconfirm') && User::equals($query['author'])))
                                         ? "<td><label><input type='checkbox' name='confirmed' value='1'" . Form::activateCheckbox($query['confirmed']) . "> " . _lang('admin.content.form.confirmed') . "</label></td></tr>"
                                         : '') . "
                                     <tr><td><label><input type='checkbox' name='comments' value='1'" . Form::activateCheckbox($query['comments']) . "> " . _lang('admin.content.form.comments') . "</label></td></tr>

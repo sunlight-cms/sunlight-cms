@@ -29,7 +29,7 @@ if (isset($_GET['id'])) {
     if ($query !== false) {
 
         // test pristupu
-        if ($query['id'] != User::getId()) {
+        if (!User::equals($query['id'])) {
             if (User::checkLevel($query['id'], $query['group_level'])) {
                 $continue = true;
             }

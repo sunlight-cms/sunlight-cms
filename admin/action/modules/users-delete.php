@@ -30,7 +30,7 @@ if (isset($_GET['id'])) {
 if ($continue) {
 
     /* ---  odstraneni  --- */
-    if ($query['id'] != User::getId()) {
+    if (!User::equals($query['id'])) {
         if (isset($_POST['confirmed'])) {
             if (User::delete($id)) {
                 $output .= Message::ok(_lang('global.done'));

@@ -85,7 +85,7 @@ switch ($a) {
                 } else {
                     $rq = false;
                 }
-                if ($rq === false || $rq['usr_id'] == User::getId()) {
+                if ($rq === false || User::equals($rq['usr_id'])) {
                     $message = Message::warning(_lang('mod.messages.error.badreceiver'));
                     break;
                 }
@@ -190,7 +190,7 @@ switch ($a) {
 
             // stavy
             $locked = ($q['sender_deleted'] || $q['receiver_deleted']);
-            [$role, $role_other] = (($q['sender'] == User::getId()) ? ['sender', 'receiver'] : ['receiver', 'sender']);
+            [$role, $role_other] = (User::equals($q['sender']) ? ['sender', 'receiver'] : ['receiver', 'sender']);
 
             // spocitat neprectene zpravy
             $unread_count = DB::count('post', 'home=' . DB::val($q['id']) . ' AND type=' . Post::PRIVATE_MSG . ' AND author=' . User::getId() . ' AND time>' . $q[$role_other . '_readtime']);
@@ -233,7 +233,7 @@ switch ($a) {
 
                 while ($r = DB::row($q)) {
                     // zjisteni roli
-                    [$role, $role_other] = (($r['sender'] == User::getId()) ? ['sender', 'receiver'] : ['receiver', 'sender']);
+                    [$role, $role_other] = (User::equals($r['sender']) ? ['sender', 'receiver'] : ['receiver', 'sender']);
 
                     // smazani nebo oznaceni
                     if ($r[$role_other . '_deleted']) {
@@ -272,7 +272,7 @@ switch ($a) {
                         $changesets = [];
                         $now = time();
                         while ($r = DB::row($q)) {
-                            $role = $r['sender'] == User::getId() ? 'sender' : 'receiver';
+                            $role = User::equals($r['sender']) ? 'sender' : 'receiver';
                             $changesets[$r['id']][$role . '_readtime'] = $r['last_post_time'] - 1;
                         }
                         DB::updateSetMulti('pm', 'id', $changesets);
@@ -330,11 +330,11 @@ switch ($a) {
             . $paging['sql_limit']
         );
         while ($r = DB::row($q)) {
-            $read = ($r['sender'] == User::getId() && $r['sender_readtime'] >= $r['update_time'] || $r['receiver'] == User::getId() && $r['receiver_readtime'] >= $r['update_time']);
+            $read = (User::equals($r['sender']) && $r['sender_readtime'] >= $r['update_time'] || User::equals($r['receiver']) && $r['receiver_readtime'] >= $r['update_time']);
             $output .= "<tr>
     <td><input type='checkbox' name='msg[]' value='" . $r['id'] . "'></td>
     <td><a href='" . _e(Router::module('messages', ['query' => ['a' => 'list', 'read' => $r['id']]])) . "'" . ($read ? '' : ' class="notread"') . ">" . $r['subject'] . "</a></td>
-    <td>" . Router::userFromQuery($r['sender'] == User::getId() ? $receiverUserQuery : $senderUserQuery, $r) . " <small>(" . $r['unread_counter'] . ")</small></td>
+    <td>" . Router::userFromQuery(User::equals($r['sender']) ? $receiverUserQuery : $senderUserQuery, $r) . " <small>(" . $r['unread_counter'] . ")</small></td>
     <td>" . GenericTemplates::renderTime($r['update_time'], 'post') . "</td>
 </tr>\n";
         }
