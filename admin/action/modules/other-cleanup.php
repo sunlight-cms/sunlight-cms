@@ -9,7 +9,6 @@ use Sunlight\Message;
 use Sunlight\Router;
 use Sunlight\User;
 use Sunlight\Util\Form;
-use Sunlight\Util\Password;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
 
@@ -118,16 +117,15 @@ if (isset($_POST['action'])) {
 
                 $users_time = time() - (Request::post('users-time') * 7 * 24 * 60 * 60);
                 $users_group = (int) Request::post('users-group');
-                if ($users_group == -1) {
-                    $users_group = "";
-                } else {
-                    $users_group = " AND group_id=" . $users_group;
+                $users_group_cond = ' AND group_id!=' . User::ADMIN_GROUP_ID;
+                if ($users_group != -1) {
+                    $users_group_cond .= ' AND group_id=' . $users_group;
                 }
 
                 if ($prev) {
-                    $prev_count['admin.users.users'] = DB::count('user', 'id!=0 AND activitytime<' . $users_time . $users_group);
+                    $prev_count['admin.users.users'] = DB::count('user', 'activitytime<' . $users_time . $users_group_cond);
                 } else {
-                    $userids = DB::query("SELECT id FROM " . DB::table('user') . " WHERE id!=0 AND activitytime<" . $users_time . $users_group);
+                    $userids = DB::query("SELECT id FROM " . DB::table('user') . " WHERE activitytime<" . $users_time . $users_group_cond);
                     while ($userid = DB::row($userids)) {
                         User::delete($userid['id']);
                     }
@@ -172,11 +170,9 @@ if (isset($_POST['action'])) {
 
             // deinstalace
         case 2:
-            $pass = Request::post('pass');
             $confirm = Form::loadCheckbox("confirm");
             if ($confirm) {
-                $right_pass = DB::queryRow("SELECT password FROM " . DB::table('user') . " WHERE id=0");
-                if (Password::load($right_pass['password'])->match($pass)) {
+                if (User::checkPassword(Request::post('pass', ''))) {
 
                     // odhlaseni
                     User::logout();
@@ -230,7 +226,7 @@ $output .= $message . "
 
   <tr>
   <th>" . _lang('admin.other.cleanup.users.group') . "</th>
-  <td>" . Admin::userSelect("users-group", (isset($_POST['users-group']) ? (int) Request::post('users-group') : -1), "1", null, _lang('global.all'), true) . "</td>
+  <td>" . Admin::userSelect("users-group", Request::post('users-group', -1), 'id!=' . User::ADMIN_GROUP_ID, null, _lang('global.all'), true) . "</td>
   </tr>
 
   </table>

@@ -516,6 +516,7 @@ return [
     'admin.users.groups.deltitle' => 'Delete group',
     'admin.users.groups.delwarning' => 'Along with the group, %user_count% users will also be removed! To keep them, move them into another group before deleting this one.',
     'admin.users.groups.delconfirm' => 'Do you really want to remove the group "%group%"?',
+    'admin.users.groups.delpartial' => 'Failed to remove %failcount% users. The group has not been removed.',
     'admin.users.groups.level' => 'Level',
     'admin.users.groups.icon' => 'Icon',
     'admin.users.groups.icon.help' => 'icons retrieved from the directory %dir%',

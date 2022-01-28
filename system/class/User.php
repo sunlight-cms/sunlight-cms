@@ -308,6 +308,21 @@ abstract class User
     }
 
     /**
+     * Overit heslo uzivatele
+     *
+     * @param string $plainPassword
+     * @return bool
+     */
+    static function checkPassword(string $plainPassword): bool
+    {
+        if (self::isLoggedIn()) {
+            return Password::load(self::$data['password'])->match($plainPassword);
+        }
+
+        return false;
+    }
+
+    /**
      * Vyhodnotit pravo pristupu k cilovemu uzivateli
      *
      * @param int $targetUserId    ID ciloveho uzivatele
@@ -316,7 +331,7 @@ abstract class User
      */
     static function checkLevel(int $targetUserId, int $targetUserLevel): bool
     {
-        return self::isLoggedIn() && (self::getLevel() > $targetUserLevel || $targetUserId == self::getId());
+        return self::isLoggedIn() && (self::getLevel() > $targetUserLevel || self::equals($targetUserId));
     }
 
     /**

@@ -10,7 +10,6 @@ use Sunlight\Router;
 use Sunlight\Settings;
 use Sunlight\User;
 use Sunlight\Util\Form;
-use Sunlight\Util\Password;
 use Sunlight\Util\Request;
 
 defined('SL_ROOT') or exit;
@@ -88,7 +87,7 @@ if (isset($_POST['save'])) {
             break;
         }
 
-        if (!Password::load(User::$data['password'])->match(Request::post('current_password', ''))) {
+        if (!User::checkPassword(Request::post('current_password', ''))) {
             $errors[] = _lang('mod.settings.password.error.bad_current');
             break;
         }

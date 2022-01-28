@@ -16,7 +16,7 @@ if (isset($_POST['save'])) {
     $newPasswordCheck = Request::post('new_password_check', '');
     $errors = [];
 
-    if (!Password::load(User::$data['password'])->match($currentPassword)) {
+    if (!User::checkPassword($currentPassword)) {
         $errors[] = _lang('mod.settings.password.error.bad_current');
     }
 

@@ -50,7 +50,7 @@ return [
     ],
     'index-edit' => [
         'title' => _lang('admin.menu.index.edit.title'),
-        'access' => User::$group['id'] == 1,
+        'access' => User::$group['id'] == User::ADMIN_GROUP_ID,
         'parent' => 'index',
     ],
 

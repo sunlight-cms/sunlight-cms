@@ -516,6 +516,7 @@ return [
     'admin.users.groups.deltitle' => 'Odstranění skupiny',
     'admin.users.groups.delwarning' => 'Spolu se skupinou bude odstraněno i %user_count% uživatelů! Chcete-li je zachovat, přesuňte je před odstraněním této skupiny do jiné.',
     'admin.users.groups.delconfirm' => 'Opravdu chcete odstranit skupinu "%group%"?',
+    'admin.users.groups.delpartial' => 'Nebylo možné odstranit %failcount% uživatelů. Skupina nebyla odstraněna.',
     'admin.users.groups.level' => 'Úroveň',
     'admin.users.groups.icon' => 'Ikona',
     'admin.users.groups.icon.help' => 'ikony načteny z adresáře %dir%',

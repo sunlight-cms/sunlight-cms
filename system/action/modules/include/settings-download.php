@@ -7,7 +7,6 @@ use Sunlight\Settings;
 use Sunlight\User;
 use Sunlight\UserData;
 use Sunlight\Util\Form;
-use Sunlight\Util\Password;
 use Sunlight\Util\Request;
 use Sunlight\Util\Response;
 
@@ -18,7 +17,7 @@ if (isset($_POST['download'])) {
     $options = [];
 
     // check current password
-    if (!Password::load(User::$data['password'])->match(Request::post('current_password', ''))) {
+    if (!User::checkPassword(Request::post('current_password', ''))) {
         $errors[] = _lang('mod.settings.password.error.bad_current');
     }
 
