@@ -78,25 +78,29 @@ if (empty($_POST) || Xsrf::check()) {
             $segments = [];
         }
 
-        if (!empty($segments) && $segments[count($segments) - 1] === '') {
-            // presmerovat identifikator/ na identifikator
-            $_url->setPath(rtrim($_url->getPath(), '/'));
-            $_index->redirect($_url->build());
-            break;
-        }
-
         // extend
         Extend::call('page.init', [
             'index' => $_index,
             'segments' => $segments,
         ]);
 
-        if ($_index->type === WebState::PLUGIN) {
+        if ($_index->type !== null) {
             break;
         }
 
         // plugin routes
         if (PluginRouter::handle($_index)) {
+            break;
+        }
+
+        // presmerovat identifikator/ na identifikator
+        if (!empty($segments) && $segments[count($segments) - 1] === '') {
+            if (Settings::get('pretty_urls')) {
+                $_url->setPath(rtrim($_url->getPath(), '/'));
+            } else {
+                $_url->set('p', rtrim(Request::get('p', ''), '/'));
+            }
+            $_index->redirect($_url->build());
             break;
         }
 

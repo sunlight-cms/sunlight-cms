@@ -25,7 +25,7 @@ class WebState
     /** 401 */
     const UNAUTHORIZED = 5;
 
-    /** @var int output type (see WebController::* constants) */
+    /** @var int|null output type (see WebState::* constants) */
     public $type;
 
     /** @var int|null numeric identifier */
