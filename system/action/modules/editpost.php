@@ -90,7 +90,7 @@ if ($query !== false) {
                     }
                     break;
                 default:
-                    $_index->backlink = Core::getBaseUrl()->getPath();
+                    $_index->backlink = Core::getBaseUrl()->getPath() . '/';
                     break;
             }
         }

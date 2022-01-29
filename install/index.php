@@ -88,6 +88,7 @@ class Labels
             'config.title' => 'Konfigurace systému',
             'config.text' => 'Tento krok vygeneruje / přepíše soubor config.php.',
             'config.error.db.port.invalid' => 'neplatný port',
+            'config.error.db.name.empty' => 'název databáze nesmí být prázdný',
             'config.error.db.prefix.empty' => 'prefix nesmí být prázdný',
             'config.error.db.prefix.invalid' => 'prefix obsahuje nepovolené znaky',
             'config.error.db.connect.error' => 'nepodařilo se připojit k databázi, chyba: %error%',
@@ -164,6 +165,7 @@ class Labels
             'config.title' => 'System configuration',
             'config.text' => 'This step will generate / overwrite the config.php file.',
             'config.error.db.port.invalid' => 'invalid port',
+            'config.error.db.name.empty' => 'database name must not be empty',
             'config.error.db.prefix.empty' => 'prefix must not be empty',
             'config.error.db.prefix.invalid' => 'prefix contains invalid characters',
             'config.error.db.connect.error' => 'could not connect to the database, error: %error%',
@@ -688,6 +690,10 @@ class ConfigurationStep extends Step
             $this->errors[] = 'db.port.invalid';
         }
 
+        if ($config['db.name'] === '') {
+            $this->errors[] = 'db.name.empty';
+        }
+
         if ($config['db.prefix'] === '') {
             $this->errors[] = 'db.prefix.empty';
         } elseif (!preg_match('{[a-zA-Z0-9_]+$}AD', $config['db.prefix'])) {
@@ -1172,7 +1178,7 @@ class CompleteStep extends Step
 <h2><?php Labels::render('complete.whats_next') ?></h2>
 
 <ul class="big-list">
-    <li><a href="<?= _e(Core::getBaseUrl()->getPath()) ?>" target="_blank"><?php Labels::render('complete.goto.web') ?></a></li>
+    <li><a href="<?= _e(Core::getBaseUrl()->getPath()) ?>/" target="_blank"><?php Labels::render('complete.goto.web') ?></a></li>
     <li><a href="<?= _e(Core::getBaseUrl()->getPath()) ?>/admin/" target="_blank"><?php Labels::render('complete.goto.admin') ?></a></li>
 </ul>
 <?php
