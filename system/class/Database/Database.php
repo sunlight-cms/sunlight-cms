@@ -44,11 +44,14 @@ class Database
         ?string $port,
         string $prefix
     ): void {
-        $mysqli = @mysqli_connect($server, $user, $password, $database, $port);
-        $connectError = mysqli_connect_error();
+        if (PHP_VERSION_ID < 80100) {
+            mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+        }
 
-        if ($connectError !== null) {
-            throw new DatabaseException($connectError);
+        try {
+            $mysqli = mysqli_connect($server, $user, $password, $database, $port);
+        } catch (\mysqli_sql_exception $e) {
+            throw new DatabaseException('Could not connect to the database', 0, $e);
         }
 
         mysqli_set_charset($mysqli, 'utf8mb4');
@@ -105,35 +108,19 @@ class Database
             Extend::call('db.query', ['sql' => $sql]);
         }
 
-        $e = null;
-        $result = null;
-
         try {
-            $result = self::$mysqli->query($sql);
-
-            if ($result === false && !$expectError) {
-                throw new DatabaseException(sprintf(
-                    "%s\n\nSQL: %s",
-                    self::$mysqli->error,
-                    $sql
-                ));
+            return self::$mysqli->query($sql);
+        } catch (\mysqli_sql_exception $e) {
+            if ($expectError) {
+                return false;
             }
-        } catch (\Throwable $e) {
-        }
 
-        if ($log) {
-            Extend::call('db.query.after', [
-                'sql' => $sql,
-                'result' => $result,
-                'exception' => $e,
-            ]);
+            throw new DatabaseException(sprintf("%s\n\nSQL: %s", $e->getMessage(), $sql), 0, $e);
+        } finally {
+            if ($log) {
+                Extend::call('db.query.after', ['sql' => $sql]);
+            }
         }
-
-        if ($e !== null) {
-            throw $e;
-        }
-
-        return $result;
     }
 
     /**
