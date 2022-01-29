@@ -3,6 +3,7 @@
 namespace SunlightExtend\Devkit;
 
 use Sunlight\Core;
+use Sunlight\Database\Database;
 use Sunlight\Extend;
 use Sunlight\GenericTemplates;
 use Sunlight\IpLog;
@@ -32,11 +33,6 @@ class DevkitPlugin extends ExtendPlugin
         $this->missingLocalizationLogger = new Component\MissingLocalizationLogger();
 
         Extend::regGlobal([$this->eventLogger, 'log'], 10000);
-
-        $exceptionHandler = Core::$errorHandler->getErrorScreen();
-        if ($exceptionHandler instanceof WebErrorScreen) {
-            $exceptionHandler->on(WebErrorScreenEvents::RENDER_DEBUG, [$this->sqlLogger, 'showInDebugScreen']);
-        }
     }
 
     protected function getConfigDefaults(): array
@@ -155,13 +151,45 @@ ENTRY
      */
     function onEnd(array $args): void
     {
-        $toolbar = new Component\ToolbarRenderer(
+        $args['output'] .= $this->getToolbar()->render();
+    }
+
+    /**
+     * Inject toolbar CSS into the error screen
+     */
+    function onErrorScreenHead(): void
+    {
+        if (!Core::isReady()) {
+            return;
+        }
+
+        ?>
+<link rel="stylesheet" href="<?= _e($this->getWebPath() . '/Resources/devkit.css') ?>">
+<?php
+    }
+
+    /**
+     * Inject toolbar JS and HTML into the error screen
+     */
+    function onErrorScreenEnd(): void
+    {
+        if (!Core::isReady()) {
+            return;
+        }
+
+        ?>
+<script src="<?= _e($this->getWebPath() . '/Resources/devkit.js') ?>"></script>
+<?= $this->getToolbar()->render() ?>
+<?php
+    }
+
+    private function getToolbar(): Component\ToolbarRenderer
+    {
+        return new Component\ToolbarRenderer(
             $this->sqlLogger->getLog(),
             $this->eventLogger->getLog(),
             $this->missingLocalizationLogger->getMissingEntries(),
             $this->dumps
         );
-
-        $args['output'] .= $toolbar->render();
     }
 }

@@ -8,15 +8,13 @@ use Kuria\Cache\Driver\Filesystem\FilesystemDriver;
 use Kuria\Cache\Driver\Memory\MemoryDriver;
 use Kuria\ClassLoader\ClassLoader;
 use Kuria\Debug\Exception;
-use Kuria\Error\ErrorHandler;
-use Kuria\Error\Screen\WebErrorScreen;
-use Kuria\Error\Screen\WebErrorScreenEvents;
 use Kuria\Event\EventEmitter;
 use Kuria\RequestInfo\RequestInfo;
 use Kuria\RequestInfo\TrustedProxies;
 use Kuria\Url\Url;
 use Sunlight\Database\Database as DB;
 use Sunlight\Database\DatabaseException;
+use Sunlight\ErrorHandler\ErrorHandler;
 use Sunlight\Exception\CoreException;
 use Sunlight\Image\ImageService;
 use Sunlight\Localization\LocalizationDictionary;
@@ -100,7 +98,6 @@ abstract class Core
      * ------------------------
      * config_file          path to the configuration file, null (= default) or false (= skip)
      * minimal_mode         stop after initializing base components and environment (= no plugins, db, settings, session, etc.) 1/0
-     * skip_components      do not initalize any components 1/0
      * session_enabled      initialize session 1/0
      * session_regenerate   force new session ID 1/0
      * allow_cron_auto      allow running cron tasks automatically 1/0
@@ -117,23 +114,15 @@ abstract class Core
         }
 
         self::$start = microtime(true);
-        $initComponents = empty($options['skip_components']);
 
         // functions
         require __DIR__ . '/../functions.php';
 
         // base components
-        if ($initComponents) {
-            self::initBaseComponents();
-        }
+        self::initBaseComponents();
 
         // configuration
         self::initConfiguration($root, $options);
-
-        // components
-        if ($initComponents) {
-            self::initComponents($options['cache']);
-        }
 
         // environment
         self::initEnvironment($options);
@@ -142,10 +131,11 @@ abstract class Core
         self::$baseUrl = self::determineBaseUrl();
         self::$currentUrl = RequestInfo::getUrl();
 
+        // components
+        self::initComponents($options['cache']);
+
         // stop when minimal mode is enabled
         if ($options['minimal_mode']) {
-            self::$ready = true;
-
             return;
         }
 
@@ -283,18 +273,9 @@ abstract class Core
      */
     private static function initBaseComponents(): void
     {
-        // class loader
-        if (self::$classLoader === null) {
-            self::$classLoader = new ClassLoader();
-        }
-
         // error handler
         self::$errorHandler = new ErrorHandler();
         self::$errorHandler->register();
-
-        if (($exceptionHandler = self::$errorHandler->getErrorScreen()) instanceof WebErrorScreen) {
-            self::configureWebExceptionHandler($exceptionHandler);
-        }
 
         // event emitter
         self::$eventEmitter = new EventEmitter();
@@ -789,37 +770,5 @@ abstract class Core
     static function renderException(\Throwable $e, bool $showTrace = true, bool $showPrevious = true): string
     {
         return '<pre class="exception">' . _e(Exception::render($e, $showTrace, $showPrevious)) . "</pre>\n";
-    }
-
-    private static function configureWebExceptionHandler(WebErrorScreen $errorScreen): void
-    {
-        $errorScreen->on(WebErrorScreenEvents::CSS, function () {
-            echo <<<'CSS'
-body {background-color: #ededed; color: #000000;}
-a {color: #ff6600;}
-.core-exception-info {opacity: 0.8;}
-.website-link {display: block; margin: 1em 0; text-align: center; color: #000000; opacity: 0.5;}
-CSS;
-        });
-
-
-        if (!self::$errorHandler->isDebugEnabled()) {
-            $errorScreen->on(WebErrorScreenEvents::RENDER, function ($view) {
-                $view['title'] = $view['heading'] = self::$fallbackLang === 'cs'
-                    ? 'Chyba serveru'
-                    : 'Something went wrong';
-
-                $view['text'] = self::$fallbackLang === 'cs'
-                    ? 'Omlouváme se, ale při zpracovávání Vašeho požadavku došlo k neočekávané chybě.'
-                    : 'We are sorry, but an unexpected error has occurred while processing your request.';
-
-                if ($view['exception'] instanceof CoreException) {
-                    $view['extras'] .= '<div class="group core-exception-info"><div class="section">';
-                    $view['extras'] .=  '<p class="message">' . nl2br(_e($view['exception']->getMessage()), false) . '</p>';
-                    $view['extras'] .= '</div></div>';
-                    $view['extras'] .= '<a class="website-link" href="https://sunlight-cms.cz/" target="_blank">SunLight CMS ' . self::VERSION . '</a>';
-                }
-            });
-        }
     }
 }
