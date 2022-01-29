@@ -28,7 +28,7 @@ class WebErrorScreen extends BaseWebErrorScreen
 
         if ($view['exception'] instanceof CoreException) {
             $view['extras'] .= '<div class="group core-exception-info"><div class="section">';
-            $view['extras'] .=  '<p class="message">' . nl2br($this->escape($view['exception']->getMessage()), false) . '</p>';
+            $view['extras'] .= '<p class="message">' . nl2br($this->escape($view['exception']->getMessage()), false) . '</p>';
             $view['extras'] .= '</div></div>';
             $view['extras'] .= '<a class="website-link" href="https://sunlight-cms.cz/" target="_blank">SunLight CMS ' . Core::VERSION . '</a>';
         }
