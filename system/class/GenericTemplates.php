@@ -91,7 +91,7 @@ abstract class GenericTemplates
     static function renderHead(): string
     {
         $lang = _e(_lang('langcode.iso639'));
-        $generator = _e('SunLight CMS ' . Core::VERSION);
+        $generator = _e('SunLight CMS ' . Core::VERSION[0]);
 
         return <<<HTML
 <!DOCTYPE html>
