@@ -2,6 +2,7 @@
 
 use Sunlight\Admin\Admin;
 use Sunlight\Database\Database as DB;
+use Sunlight\Extend;
 use Sunlight\Message;
 use Sunlight\Router;
 use Sunlight\User;
@@ -87,32 +88,33 @@ if (User::isSuperAdmin() && isset($_POST['switch_user'])) {
 
 // vypis skupin
 if (User::hasPrivilege('admingroups')) {
-    $groups = "<table class='list list-hover list-max'>
+    $group_table = "<table class='list list-hover list-max'>
 <thead><tr><td>" . _lang('global.name') . "</td><td>" . _lang('admin.users.groups.level') . "</td><td>" . _lang('admin.users.groups.members') . "</td><td>" . _lang('global.action') . "</td></tr></thead>
 <tbody>";
-    $query = DB::query("SELECT id,title,icon,color,blocked,level,reglist,(SELECT COUNT(*) FROM " . DB::table('user') . " WHERE group_id=" . DB::table('user_group') . ".id) AS user_count FROM " . DB::table('user_group') . " ORDER BY level DESC");
-    while ($item = DB::row($query)) {
-        $is_sys = in_array($item['id'], $sysgroups_array);
-        $groups .= "
+    $groups = DB::queryRows("SELECT id,title,icon,color,blocked,level,reglist,(SELECT COUNT(*) FROM " . DB::table('user') . " WHERE group_id=" . DB::table('user_group') . ".id) AS user_count FROM " . DB::table('user_group') . " ORDER BY level DESC");
+    Extend::call('admin.users.groups', ['groups' => &$groups]);
+    foreach ($groups as $group) {
+        $is_sys = in_array($group['id'], $sysgroups_array);
+        $group_table .= "
     <tr>
     <td>
-        <span class='" . ($is_sys ? 'em' : '') . (($item['blocked'] == 1) ? ' strike' : '') . "'" . (($item['color'] !== '') ? " style='color:" . $item['color'] . ";'" : '') . ">"
-            . (($item['reglist'] == 1) ? "<img src='" . _e(Router::path('admin/images/icons/action.png')) . "' alt='reglist' class='icon' title='" . _lang('admin.users.groups.reglist') . "'>" : '')
-            . (($item['icon'] != "") ? "<img src='" . _e(Router::path('images/groupicons/' . $item['icon'])) . "' alt='icon' class='groupicon'> " : '')
-            . $item['title']
+        <span class='" . ($is_sys ? 'em' : '') . (($group['blocked'] == 1) ? ' strike' : '') . "'" . (($group['color'] !== '') ? " style='color:" . $group['color'] . ";'" : '') . ">"
+            . (($group['reglist'] == 1) ? "<img src='" . _e(Router::path('admin/images/icons/action.png')) . "' alt='reglist' class='icon' title='" . _lang('admin.users.groups.reglist') . "'>" : '')
+            . (($group['icon'] != "") ? "<img src='" . _e(Router::path('images/groupicons/' . $group['icon'])) . "' alt='icon' class='groupicon'> " : '')
+            . $group['title']
         . "</span>
     </td>
-    <td>" . $item['level'] . "</td>
-    <td>" . (($item['id'] != User::GUEST_GROUP_ID) ? "<a href='" . _e(Router::admin('users-list', ['query' => ['group_id' => $item['id']]])) . "'><img src='" . _e(Router::path('admin/images/icons/list.png')) . "' alt='list' class='icon'>" . $item['user_count'] . "</a>" : "-") . "</td>
+    <td>" . $group['level'] . "</td>
+    <td>" . (($group['id'] != User::GUEST_GROUP_ID) ? "<a href='" . _e(Router::admin('users-list', ['query' => ['group_id' => $group['id']]])) . "'><img src='" . _e(Router::path('admin/images/icons/list.png')) . "' alt='list' class='icon'>" . $group['user_count'] . "</a>" : "-") . "</td>
     <td class='actions'>
-        <a class='button' href='" . _e(Router::admin('users-editgroup', ['query' => ['id' => $item['id']]])) . "'><img src='" . _e(Router::path('admin/images/icons/edit.png')) . "' alt='edit' class='icon'>" . _lang('global.edit') . "</a>
-        <a class='button' href='" . _e(Router::admin('users-delgroup', ['query' => ['id' => $item['id']]])) . "'><img src='" . _e(Router::path('admin/images/icons/delete.png')) . "' alt='del' class='icon'>" . _lang('global.delete') . "</a>
+        <a class='button' href='" . _e(Router::admin('users-editgroup', ['query' => ['id' => $group['id']]])) . "'><img src='" . _e(Router::path('admin/images/icons/edit.png')) . "' alt='edit' class='icon'>" . _lang('global.edit') . "</a>
+        <a class='button' href='" . _e(Router::admin('users-delgroup', ['query' => ['id' => $group['id']]])) . "'><img src='" . _e(Router::path('admin/images/icons/delete.png')) . "' alt='del' class='icon'>" . _lang('global.delete') . "</a>
     </td>
     </tr>\n";
     }
-    $groups .= "</tbody>\n</table>";
+    $group_table .= "</tbody>\n</table>";
 } else {
-    $groups = "";
+    $group_table = "";
 }
 
 // zprava
@@ -137,6 +139,31 @@ switch ($msg) {
         break;
 }
 
+$modules = [
+    'users-edit' => [
+        'url' => Router::admin('users-edit'),
+        'icon' => Router::path('admin/images/icons/big-new.png'),
+        'label' => _lang('global.create')
+    ],
+    'users-list' => [
+        'url' => Router::admin('users-list'),
+        'icon' => Router::path('admin/images/icons/big-list.png'),
+        'label' => _lang('admin.users.list')
+    ],
+    'users-move' => [
+        'url' => Router::admin('users-move'),
+        'icon' => Router::path('admin/images/icons/big-move.png'),
+        'label' => _lang('admin.users.move')
+    ],
+];
+
+Extend::call('admin.users.modules', ['modules' => &$modules]);
+
+$module_links = '';
+foreach ($modules as $module) {
+    $module_links .= '<a class="button block" href="' . _e($module['url']) . '"><img src="' . _e($module['icon']) . '" alt="new" class="icon">' . _e($module['label']) . "</a>\n";
+}
+
 /* ---  vystup  --- */
 
 $output .= $message . "
@@ -147,11 +174,7 @@ $output .= $message . "
     " . (User::hasPrivilege('adminusers') ? "
     <td>
     <h2>" . _lang('admin.users.users') . "</h2>
-    <p>
-      <a class='button block' href='" . _e(Router::admin('users-edit')) . "'><img src='" . _e(Router::path('admin/images/icons/big-new.png')) . "' alt='new' class='icon'>" . _lang('global.create') . "</a>
-      <a class='button block' href='" . _e(Router::admin('users-list')) . "'><img src='" . _e(Router::path('admin/images/icons/big-list.png')) . "' alt='act' class='icon'>" . _lang('admin.users.list') . "</a>
-      <a class='button block' href='" . _e(Router::admin('users-move')) . "'><img src='" . _e(Router::path('admin/images/icons/big-move.png')) . "' alt='act' class='icon'>" . _lang('admin.users.move') . "</a>
-    </p>
+    <p>" . $module_links . "</p>
 
     <h2>" . _lang('global.action') . "</h2>
 
@@ -169,7 +192,8 @@ $output .= $message . "
     <input type='text' name='id' class='inputsmall'>
     <input class='button' type='submit' value='" . _lang('global.do') . "'>
     </form>
-
+    " . Extend::buffer('admin.users.actions.after') . "
+    
     " . (User::isSuperAdmin() ? "
 
     <form action='" . _e(Router::admin('users')) . "' method='post'>
@@ -190,7 +214,8 @@ $output .= $message . "
         . " <input class='button' type='submit' value='" . _lang('global.do') . "'>
         </p>"
         . Xsrf::getInput() . "</form>
-    " . $groups . "
+    " . $group_table
+        . Extend::buffer('admin.users.groups.after') . "
     </td>" : '') . "
 </tr>
 </table>
