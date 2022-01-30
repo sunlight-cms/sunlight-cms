@@ -30,7 +30,7 @@ if ($_page['content'] != "") {
 Extend::call('page.forum.content.after', $extend_args);
 
 // temata
-$output .= PostService::render(PostService::RENDER_FORUM_TOPIC_LIST, $id, [
+$output .= PostService::renderList(PostService::RENDER_FORUM_TOPIC_LIST, $id, [
     $_page['var1'],
     User::checkPublicAccess($_page['var3']),
     $_page['var2'],

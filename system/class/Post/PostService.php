@@ -105,7 +105,7 @@ class PostService
      * @param string|null $url          custom URL or null (= automatic)
      * @return string
      */
-    static function render(int $style, int $home, $vars, bool $force_locked = false, ?string $url = null): string
+    static function renderList(int $style, int $home, $vars, bool $force_locked = false, ?string $url = null): string
     {
         global $_index;
 

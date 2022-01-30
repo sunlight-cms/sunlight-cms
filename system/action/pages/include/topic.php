@@ -83,7 +83,7 @@ $output .= PostService::renderPost($query, $userQuery, [
 $output .= "</div>\n";
 
 // odpovedi
-$output .= PostService::render(
+$output .= PostService::renderList(
     PostService::RENDER_FORUM_TOPIC,
     $_page['id'],
     [

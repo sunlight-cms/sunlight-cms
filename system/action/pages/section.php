@@ -17,5 +17,5 @@ Extend::call('page.section.content.after', $extend_args);
 
 // komentare
 if ($_page['var1'] == 1 && Settings::get('comments')) {
-    $output .= PostService::render(PostService::RENDER_SECTION_COMMENTS, $id, $_page['var3']);
+    $output .= PostService::renderList(PostService::RENDER_SECTION_COMMENTS, $id, $_page['var3']);
 }

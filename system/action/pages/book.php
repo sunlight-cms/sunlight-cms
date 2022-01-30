@@ -24,7 +24,7 @@ if ($_page['content'] != "") {
 Extend::call('page.book.content.after', $extend_args);
 
 // prispevky
-$output .= PostService::render(PostService::RENDER_BOOK_POSTS, $id, [
+$output .= PostService::renderList(PostService::RENDER_BOOK_POSTS, $id, [
     $_page['var2'],
     User::checkPublicAccess($_page['var1']),
     $_page['var3'],

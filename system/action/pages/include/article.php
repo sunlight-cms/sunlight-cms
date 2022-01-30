@@ -196,7 +196,7 @@ if ($rateform !== null || !empty($infos)) {
 // komentare
 Extend::call('article.comments.before', $extend_args);
 if ($_article['comments'] && Settings::get('comments')) {
-    $output .= PostService::render(PostService::RENDER_ARTICLE_COMMENTS, $_article['id'], $_article['commentslocked']);
+    $output .= PostService::renderList(PostService::RENDER_ARTICLE_COMMENTS, $_article['id'], $_article['commentslocked']);
 }
 Extend::call('article.comments.after', $extend_args);
 

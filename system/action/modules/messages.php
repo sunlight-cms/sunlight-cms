@@ -204,7 +204,7 @@ switch ($a) {
             ]);
             $output .= "</div>\n";
 
-            $output .= PostService::render(PostService::RENDER_PM_LIST, $q['id'], [$locked, $unread_count], false, Router::module('messages', ['query' => ['a' => 'list', 'read' => $q['id']]]));
+            $output .= PostService::renderList(PostService::RENDER_PM_LIST, $q['id'], [$locked, $unread_count], false, Router::module('messages', ['query' => ['a' => 'list', 'read' => $q['id']]]));
 
             // aktualizace casu precteni
             DB::update('pm', 'id=' . DB::val($id), [$role . '_readtime' => time()]);
