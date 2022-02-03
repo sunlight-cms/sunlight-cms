@@ -511,7 +511,6 @@ class TreeManager
      * @param string $column
      * @param array  $set
      * @param array  $changeset
-     * @param int    $maxPerQuery
      */
     private function updateSet(string $column, array $set, array $changeset): void
     {
@@ -523,7 +522,6 @@ class TreeManager
      *
      * @param string $column
      * @param array  $set
-     * @param int    $maxPerQuery
      */
     private function deleteSet(string $column, array $set): void
     {

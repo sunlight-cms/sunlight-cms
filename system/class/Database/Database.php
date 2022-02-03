@@ -33,7 +33,7 @@ class Database
      * @param string      $password
      * @param string      $database
      * @param string|null $port
-     * @param string|null $charset
+     * @param string      $prefix
      * @throws DatabaseException on failure
      */
     static function connect(
