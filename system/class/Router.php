@@ -355,7 +355,7 @@ abstract class Router
         }
 
         if (isset($options['fragment'])) {
-            $url->setFragment($options['fragment']);;
+            $url->setFragment($options['fragment']);
         }
 
         Extend::call('router.generate', ['type' => $type, 'url' => $url]);
