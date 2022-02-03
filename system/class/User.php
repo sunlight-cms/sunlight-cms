@@ -253,9 +253,9 @@ abstract class User
             self::$group = $groupData;
         } else {
             // guest
-            $groupData = DB::queryRow('SELECT * FROM ' . DB::table('user_group') . ' WHERE id=' . User::GUEST_GROUP_ID);
+            $groupData = DB::queryRow('SELECT * FROM ' . DB::table('user_group') . ' WHERE id=' . self::GUEST_GROUP_ID);
             if ($groupData === false) {
-                throw new \RuntimeException(sprintf('Anonymous user group was not found (id=%s)', User::GUEST_GROUP_ID));
+                throw new \RuntimeException(sprintf('Anonymous user group was not found (id=%s)', self::GUEST_GROUP_ID));
             }
 
             // event
@@ -304,7 +304,7 @@ abstract class User
     
     static function isSuperAdmin(): bool
     {
-        return self::isLoggedIn() && self::$data['levelshift'] && self::$group['id'] == User::ADMIN_GROUP_ID;
+        return self::isLoggedIn() && self::$data['levelshift'] && self::$group['id'] == self::ADMIN_GROUP_ID;
     }
 
     /**

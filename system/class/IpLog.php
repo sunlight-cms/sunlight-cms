@@ -72,7 +72,7 @@ abstract class IpLog
             'system' => false,
             'custom' => [],
         ];
-        if ($type <= IpLog::PASSWORD_RESET_REQUESTED) {
+        if ($type <= self::PASSWORD_RESET_REQUESTED) {
             if (!$cleaned['system']) {
                 DB::query("DELETE FROM " . DB::table('iplog') . " WHERE (type=1 AND " . time() . "-time>" . Settings::get('maxloginexpire') . ") OR (type=2 AND " . time() . "-time>" . Settings::get('artreadexpire') . ") OR (type=3 AND " . time() . "-time>" . Settings::get('artrateexpire') . ") OR (type=4 AND " . time() . "-time>" . Settings::get('pollvoteexpire') . ") OR (type=5 AND " . time() . "-time>" . Settings::get('antispamtimeout') . ") OR (type=6 AND " . time() . "-time>" . Settings::get('accactexpire') . ") OR (type=7 AND " . time() . "-time>" . Settings::get('lostpassexpire') . ")");
                 $cleaned['system'] = true;
@@ -91,31 +91,31 @@ abstract class IpLog
 
         switch ($type) {
 
-            case IpLog::FAILED_LOGIN_ATTEMPT:
+            case self::FAILED_LOGIN_ATTEMPT:
                 $query = DB::queryRow($querybasic);
                 if ($query !== false && $query['var'] >= Settings::get('maxloginattempts')) {
                     $result = false;
                 }
                 break;
 
-            case IpLog::ARTICLE_READ:
-            case IpLog::ARTICLE_RATED:
-            case IpLog::POLL_VOTE:
+            case self::ARTICLE_READ:
+            case self::ARTICLE_RATED:
+            case self::POLL_VOTE:
                 $query = DB::query($querybasic . " AND var=" . $var);
                 if (DB::size($query) != 0) {
                     $result = false;
                 }
                 break;
 
-            case IpLog::ANTI_SPAM:
-            case IpLog::PASSWORD_RESET_REQUESTED:
+            case self::ANTI_SPAM:
+            case self::PASSWORD_RESET_REQUESTED:
                 $query = DB::query($querybasic);
                 if (DB::size($query) != 0) {
                     $result = false;
                 }
                 break;
 
-            case IpLog::FAILED_ACCOUNT_ACTIVATION:
+            case self::FAILED_ACCOUNT_ACTIVATION:
                 $query = DB::queryRow($querybasic);
                 if ($query !== false && $query['var'] >= 5) {
                     $result = false;
@@ -157,49 +157,49 @@ abstract class IpLog
 
         switch ($type) {
 
-            case IpLog::FAILED_LOGIN_ATTEMPT:
+            case self::FAILED_LOGIN_ATTEMPT:
                 $query = DB::queryRow($querybasic);
                 if ($query !== false) {
                     DB::update('iplog', 'id=' . $query['id'], ['var' => ($query['var'] + 1)]);
                 } else {
                     DB::insert('iplog', [
                         'ip' => Core::getClientIp(),
-                        'type' => IpLog::FAILED_LOGIN_ATTEMPT,
+                        'type' => self::FAILED_LOGIN_ATTEMPT,
                         'time' => time(),
                         'var' => 1
                     ]);
                 }
                 break;
 
-            case IpLog::ARTICLE_READ:
+            case self::ARTICLE_READ:
                 DB::insert('iplog', [
                     'ip' => Core::getClientIp(),
-                    'type' => IpLog::ARTICLE_READ,
+                    'type' => self::ARTICLE_READ,
                     'time' => time(),
                     'var' => $var
                 ]);
                 break;
 
-            case IpLog::ARTICLE_RATED:
+            case self::ARTICLE_RATED:
                 DB::insert('iplog', [
                     'ip' => Core::getClientIp(),
-                    'type' => IpLog::ARTICLE_RATED,
+                    'type' => self::ARTICLE_RATED,
                     'time' => time(),
                     'var' => $var
                 ]);
                 break;
 
-            case IpLog::POLL_VOTE:
+            case self::POLL_VOTE:
                 DB::insert('iplog', [
                     'ip' => Core::getClientIp(),
-                    'type' => IpLog::POLL_VOTE,
+                    'type' => self::POLL_VOTE,
                     'time' => time(),
                     'var' => $var
                 ]);
                 break;
 
-            case IpLog::ANTI_SPAM:
-            case IpLog::PASSWORD_RESET_REQUESTED:
+            case self::ANTI_SPAM:
+            case self::PASSWORD_RESET_REQUESTED:
                 DB::insert('iplog', [
                     'ip' => Core::getClientIp(),
                     'type' => $type,
@@ -208,14 +208,14 @@ abstract class IpLog
                 ]);
                 break;
 
-            case IpLog::FAILED_ACCOUNT_ACTIVATION:
+            case self::FAILED_ACCOUNT_ACTIVATION:
                 $query = DB::queryRow($querybasic);
                 if ($query !== false) {
                     DB::update('iplog', 'id=' . $query['id'], ['var' => ($query['var'] + 1)]);
                 } else {
                     DB::insert('iplog', [
                         'ip' => Core::getClientIp(),
-                        'type' => IpLog::FAILED_ACCOUNT_ACTIVATION,
+                        'type' => self::FAILED_ACCOUNT_ACTIVATION,
                         'time' => time(),
                         'var' => 1
                     ]);

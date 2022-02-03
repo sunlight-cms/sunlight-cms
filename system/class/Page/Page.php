@@ -140,7 +140,7 @@ abstract class Page
         $conds = [];
 
         // ignorovat oddelovace
-        $conds[] = 'page.type!=' . Page::SEPARATOR;
+        $conds[] = 'page.type!=' . self::SEPARATOR;
 
         // predane podminky
         if ($extra_conds !== null) {
@@ -256,15 +256,15 @@ abstract class Page
     static function getTypes(): array
     {
         return [
-            Page::SECTION => 'section',
-            Page::CATEGORY => 'category',
-            Page::BOOK => 'book',
-            Page::SEPARATOR => 'separator',
-            Page::GALLERY => 'gallery',
-            Page::LINK => 'link',
-            Page::GROUP => 'group',
-            Page::FORUM => 'forum',
-            Page::PLUGIN => 'pluginpage',
+            self::SECTION => 'section',
+            self::CATEGORY => 'category',
+            self::BOOK => 'book',
+            self::SEPARATOR => 'separator',
+            self::GALLERY => 'gallery',
+            self::LINK => 'link',
+            self::GROUP => 'group',
+            self::FORUM => 'forum',
+            self::PLUGIN => 'pluginpage',
         ];
     }
 
