@@ -22,7 +22,7 @@ if (!$continue) {
 if ($_index->slug !== null) {
     $redirect = DB::queryRow('SELECT new,permanent FROM ' . DB::table('redirect') . ' WHERE old=' . DB::val($_index->slug) . ' AND active=1');
     if ($redirect !== false) {
-        Response::redirect(Router::slug($redirect['new'], true), $redirect['permanent']);
+        Response::redirect(Router::slug($redirect['new'], ['absolute' => true]), $redirect['permanent']);
 
         return;
     }
