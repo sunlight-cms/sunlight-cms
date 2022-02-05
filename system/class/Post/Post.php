@@ -87,11 +87,24 @@ abstract class Post
             }
 
             // je uzivatel autorem prispevku?
-            if (User::equals($post[$userQuery['prefix'] . 'id']) && ($post['time'] + Settings::get('postadmintime') > time() || User::hasPrivilege('unlimitedpostaccess'))) {
+            if (
+                $post[$userQuery['prefix'] . 'id'] !== null
+                && User::equals($post[$userQuery['prefix'] . 'id'])
+                && (
+                    $post['time'] + Settings::get('postadmintime') > time()
+                    || User::hasPrivilege('unlimitedpostaccess')
+                )
+            ) {
                 return true;
             }
 
-            if (User::hasPrivilege('adminposts') && User::getLevel() > $post[$userQuery['prefix'] . 'group_level']) {
+            if (
+                User::hasPrivilege('adminposts')
+                && (
+                    $post[$userQuery['prefix'] . 'group_level'] === null
+                    || User::getLevel() > $post[$userQuery['prefix'] . 'group_level']
+                )
+            ) {
                 // uzivatel ma pravo spravovat cizi prispevky
                 return true;
             }
