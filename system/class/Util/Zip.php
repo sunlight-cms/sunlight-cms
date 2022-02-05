@@ -14,25 +14,31 @@ abstract class Zip
     /** Path mode - none (files only, no directories) */
     const PATH_NONE = 2;
 
+    private const DEFAULT_BIG_FILE_THRESHOLD = 500000;
+
     /**
      * Extract a single file
      *
      * @param \ZipArchive $zip
      * @param string      $archivePath
      * @param string      $targetPath
-     * @param int|null    $bigFileThreshold
+     * @param int         $bigFileThreshold
      * @throws \InvalidArgumentException if archive path is not valid
-     * @return bool
+     * @throws \RuntimeException if extraction fails
      */
-    static function extractFile(\ZipArchive $zip, string $archivePath, string $targetPath, ?int $bigFileThreshold = null): bool
-    {
+    static function extractFile(
+        \ZipArchive $zip,
+        string $archivePath,
+        string $targetPath,
+        int $bigFileThreshold = self::DEFAULT_BIG_FILE_THRESHOLD
+    ): void {
         $stat = $zip->statName($archivePath);
 
         if ($stat === false) {
             throw new \InvalidArgumentException(sprintf('Entry "%s" was not found in the archive', $archivePath));
         }
 
-        return self::extractFileEntry($zip, $stat, $targetPath, $bigFileThreshold);
+        self::extractFileEntry($zip, $stat, $targetPath, $bigFileThreshold);
     }
 
     /**
@@ -42,13 +48,17 @@ abstract class Zip
      * @param array       $stat
      * @param string      $targetPath
      * @param int         $bigFileThreshold
-     * @return bool
+     * @throws \RuntimeException if extraction fails
      */
-    static function extractFileEntry(\ZipArchive $zip, array $stat, string $targetPath, int $bigFileThreshold = 500000): bool
-    {
+    static function extractFileEntry(
+        \ZipArchive $zip,
+        array $stat,
+        string $targetPath,
+        int $bigFileThreshold = self::DEFAULT_BIG_FILE_THRESHOLD
+    ): void {
         if (substr($stat['name'], -1) === '/') {
             // empty dir
-            return false;
+            return;
         }
 
         if ($stat['size'] >= $bigFileThreshold) {
@@ -66,7 +76,11 @@ abstract class Zip
             fclose($source);
             fclose($targetPath);
 
-            return $bytesWritten == $stat['size'];
+            if ($bytesWritten !== $stat['size']) {
+                throw new \RuntimeException(sprintf('Could not extract "%s", %d/%d bytes written', $stat['name'], $bytesWritten, $stat['size']));
+            }
+
+            return;
         }
 
         // extract small files by getting all the data at once
@@ -75,7 +89,11 @@ abstract class Zip
             throw new \InvalidArgumentException(sprintf('Could not get data for "%s"', $stat['name']));
         }
 
-        return file_put_contents($targetPath, $data) === $stat['size'];
+        $bytesWritten = file_put_contents($targetPath, $data);
+
+        if ($bytesWritten !== $stat['size']) {
+            throw new \RuntimeException(sprintf('Could not extract "%s", %d/%d bytes written', $stat['name'], $bytesWritten, $stat['size']));
+        }
     }
 
     /**
