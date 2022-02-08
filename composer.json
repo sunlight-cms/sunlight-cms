@@ -14,7 +14,7 @@
         "ext-session": "*",
         "ext-zip": "*",
         "composer/semver": "^3.0",
-        "kuria/cache": "^5.0",
+        "kuria/cache": "^6.0",
         "kuria/class-loader": "^4.0",
         "kuria/debug": "^4.0",
         "kuria/error": "^4.2",
