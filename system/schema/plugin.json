@@ -29,9 +29,11 @@
             }
         },
         "requires": {
-            "type": "array",
-            "items": {
-                "type": "string"
+            "type": "object",
+            "patternProperties": {
+                "^": {
+                    "type": "string"
+                }
             }
         },
         "installer": {

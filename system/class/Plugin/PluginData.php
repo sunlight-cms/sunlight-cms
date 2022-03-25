@@ -14,8 +14,8 @@ class PluginData
     public $type;
     /** @var int|null */
     public $status;
-    /** @var bool */
-    public $installed = null;
+    /** @var bool|null */
+    public $installed;
     /** @var string */
     public $dir;
     /** @var string */

@@ -333,7 +333,7 @@ class PluginLoader
             [$id, $pathMap] = array_pop($checkQueue);
 
             if (isset($plugins[$id])) {
-                foreach (array_keys($plugins[$id]['options']['requires']) as $dependency) {
+                foreach (array_keys($plugins[$id]->options['requires']) as $dependency) {
                     if (isset($pathMap[$dependency])) {
                         $pathString = "{$id}";
                         foreach (array_keys($pathMap) as $segment) {
