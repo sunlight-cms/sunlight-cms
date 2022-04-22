@@ -2,7 +2,7 @@
 
 namespace Sunlight\Plugin;
 
-use Kuria\Cache\CacheInterface;
+use Kuria\Cache\NamespacedCache;
 use Kuria\ClassLoader\ClassLoader;
 use Sunlight\Core;
 use Sunlight\Plugin\Type\PluginType;
@@ -50,30 +50,39 @@ class PluginManager
     /** @var Type\PluginType[] */
     private $types;
 
-    /** @var CacheInterface */
+    /** @var NamespacedCache */
     private $cache;
 
     /** @var bool */
     private $initialized = false;
 
-    function __construct(CacheInterface $pluginCache)
+    function __construct()
     {
         $this->types = [
             'extend' => new Type\ExtendPluginType(),
             'template' => new Type\TemplatePluginType(),
             'language' => new Type\LanguagePluginType(),
         ];
-        $this->cache = $pluginCache;
+        $this->cache = Core::$cache->getNamespace(Core::$debug ? 'plugins_debug.' : 'plugins.');
     }
 
     /**
-     * Purge plugin cache
-     *
-     * @return bool
+     * Clear plugin cache
      */
-    function purgeCache(): bool
+    function clearCache(): bool
     {
         return $this->cache->clear();
+    }
+
+    /**
+     * Create a cache namespaced to a specific plugin
+     */
+    function createCacheForPlugin(Plugin $plugin): NamespacedCache
+    {
+        return new NamespacedCache(
+            $this->cache->getWrappedCache(),
+            sprintf('%s%s.%s.', $this->cache->getPrefix(), $plugin->getType(), $plugin->getId())
+        );
     }
 
     /**
@@ -444,16 +453,13 @@ class PluginManager
      */
     private function initialize(): void
     {
-        if ($this->initialized) {
-            return;
-        }
-
         // load data
-        $data = $this->cache->get($this->getCacheKey());
+        $data = $this->cache->get('data');
 
-        // invalidate stale data
+        // validate data
         if ($data !== null && !$this->validateCachedData($data)) {
             $data = null;
+            $this->clearCache(); // clear entire cache if data is stale
         }
 
         // if data could not be loaded from cache, use plugin loader
@@ -513,17 +519,9 @@ class PluginManager
             'system_hash' => $this->getSystemHash(),
         ];
 
-        $this->cache->set($this->getCacheKey(), $data);
+        $this->cache->set('data', $data);
 
         return $data;
-    }
-
-    /**
-     * @return string
-     */
-    private function getCacheKey(): string
-    {
-        return Core::$debug ? 'plugins_debug' : 'plugins';
     }
 
     /**

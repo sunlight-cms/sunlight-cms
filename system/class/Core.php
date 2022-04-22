@@ -305,9 +305,7 @@ abstract class Core
         }
 
         // plugin manager
-        self::$pluginManager = new PluginManager(
-            self::$cache->getNamespace('plugins.')
-        );
+        self::$pluginManager = new PluginManager();
 
         // localization
         self::$dictionary = new LocalizationDictionary();

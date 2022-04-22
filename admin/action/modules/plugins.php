@@ -11,7 +11,7 @@ defined('SL_ROOT') or exit;
 
 // vycisteni cache
 if (isset($_GET['clear'])) {
-    Core::$pluginManager->purgeCache();
+    Core::$pluginManager->clearCache();
     $_admin->redirect(Router::admin('plugins', ['query' => ['cleared' => 1]]));
 
     return;

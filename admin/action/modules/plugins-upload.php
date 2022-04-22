@@ -21,7 +21,7 @@ if (isset($_FILES['archive']) && is_uploaded_file($_FILES['archive']['tmp_name']
             if (!empty($extractedPlugins)) {
                 $message .= Message::list($extractedPlugins, ['type' => Message::OK, 'text' => _lang('admin.plugins.upload.extracted')]);
 
-                Core::$pluginManager->purgeCache();
+                Core::$pluginManager->clearCache();
             }
             if (!empty($failedPlugins)) {
                 $message .= Message::list($failedPlugins, ['text' => _lang('admin.plugins.upload.failed' . (!$merge ? '.no_merge' : ''))]);

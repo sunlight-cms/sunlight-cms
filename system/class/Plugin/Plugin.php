@@ -2,6 +2,7 @@
 
 namespace Sunlight\Plugin;
 
+use Kuria\Cache\NamespacedCache;
 use Sunlight\Core;
 use Sunlight\Plugin\Action\PluginAction;
 use Sunlight\Router;
@@ -49,6 +50,8 @@ abstract class Plugin
     protected $manager;
     /** @var ConfigurationFile|null */
     private $config;
+    /** @var NamespacedCache|null */
+    private $cache;
 
     function __construct(PluginData $data, PluginManager $manager)
     {
@@ -368,6 +371,7 @@ abstract class Plugin
 
         $actions['info'] = _lang('admin.plugins.action.do.info');
         $actions += $this->getCustomActionList();
+
         if (count($this->getConfigDefaults())) {
             $actions['config'] = _lang('admin.plugins.action.do.config');
         }
@@ -398,5 +402,10 @@ abstract class Plugin
     protected function getCustomActionList(): array
     {
         return [];
+    }
+
+    function getCache(): NamespacedCache
+    {
+        return $this->cache ?? ($this->cache = $this->manager->createCacheForPlugin($this));
     }
 }

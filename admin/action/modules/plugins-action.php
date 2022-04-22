@@ -35,7 +35,7 @@ if (
 $result = $action->run();
 
 if ($result->isComplete()) {
-    Core::$pluginManager->purgeCache();
+    Core::$pluginManager->clearCache();
 }
 
 // zobrazit vysledek
