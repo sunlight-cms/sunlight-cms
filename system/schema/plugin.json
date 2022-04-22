@@ -68,6 +68,9 @@
         },
         "inject_composer": {
             "type": "boolean"
+        },
+        "extra": {
+            "type": "object"
         }
     },
     "required": [

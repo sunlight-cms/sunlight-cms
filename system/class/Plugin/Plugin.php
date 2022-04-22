@@ -277,6 +277,15 @@ abstract class Plugin
     }
 
     /**
+     * @param string $name
+     * @return mixed null if not defined
+     */
+    function getExtraOption(string $name)
+    {
+        return $this->options['extra'][$name] ?? null;
+    }
+
+    /**
      * @return array
      */
     function getOptions(): array

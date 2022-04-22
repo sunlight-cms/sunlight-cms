@@ -77,6 +77,7 @@ abstract class PluginType
             Option::string('class')->default(null),
             Option::string('namespace')->default(null),
             Option::bool('inject_composer')->default(true),
+            Option::list('extra', null)->default([]),
         ];
     }
 
