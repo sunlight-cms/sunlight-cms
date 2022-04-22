@@ -464,6 +464,14 @@ abstract class Template
     }
 
     /**
+     * Ziskat zakladni cestu stranek
+     */
+    static function sitePath(): string
+    {
+        return Core::getBaseUrl()->getPath() . '/';
+    }
+
+    /**
      * Vykreslit uzivatelske menu
      *
      * @param bool $profileLink vykreslit odkaz na profil 1/0
