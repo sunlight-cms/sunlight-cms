@@ -161,6 +161,6 @@ final class ImageService
      */
     static function getErrorImage(string $reasonCode): string
     {
-        return SL_ROOT . 'system/image_error.png?r=' . urlencode($reasonCode);
+        return SL_ROOT . 'system/images/image_error.png?r=' . urlencode($reasonCode);
     }
 }

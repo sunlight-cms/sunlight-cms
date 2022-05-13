@@ -38,7 +38,9 @@ abstract class Router
     /**
      * Generate URL for an existing file
      *
-     * Relative paths are resolved automatically. Files outside SL_ROOT are not supported.
+     * - relative paths are resolved automatically
+     * - files outside SL_ROOT are not supported
+     * - the file path can contain a query string, which will be preserved
      */
     static function file(string $filePath, ?array $options = null): string
     {
@@ -47,6 +49,14 @@ abstract class Router
         if ($realRootPath === null) {
             $realRootPath = realpath(SL_ROOT) . DIRECTORY_SEPARATOR;
             $realRootPathLength = strlen($realRootPath);
+        }
+
+        $queryStringPos = strpos($filePath, '?');
+
+        if ($queryStringPos !== false) {
+            parse_str(substr($filePath, $queryStringPos + 1), $query);
+            $options = self::combineOptions($options, ['query' => $query]);
+            $filePath = substr($filePath, 0, $queryStringPos);
         }
 
         $realFilePath = realpath($filePath);

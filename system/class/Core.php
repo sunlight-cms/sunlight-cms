@@ -75,8 +75,6 @@ abstract class Core
     /** @var LocalizationDictionary */
     static $dictionary;
 
-    /** @var string */
-    static $imageError;
     /** @var int */
     static $hcmUid = 0;
     /** @var array */
@@ -242,7 +240,6 @@ abstract class Core
         self::$fallbackLang = $options['fallback_lang'];
         self::$sessionEnabled = $options['session_enabled'];
         self::$sessionRegenerate = $options['session_regenerate'] || isset($_POST['_session_force_regenerate']);
-        self::$imageError = $root . 'system/image_error.png';
 
         // define constants
         define('SL_ROOT', $root);
