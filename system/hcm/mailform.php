@@ -52,13 +52,13 @@ return function ($adresa = "", $predmet = null) {
                 'id' =>  'hcm_mform_' . Core::$hcmUid,
                 'name' => 'mform' . Core::$hcmUid,
                 'action' => Router::path('system/script/hcm/mform.php', ['query' => ['_return' => $GLOBALS['_index']->url]]),
-                'submit_text' => _lang('hcm.mailform.send'),
             ],
             [
                 ['label' => _lang('hcm.mailform.sender'), 'content' => "<input type='email' class='inputsmall' name='sender' value='" . $sender . "'><input type='hidden' name='fid' value='" . Core::$hcmUid . "'>"],
                 ['label' => _lang('posts.subject'), 'content' => "<input type='text' class='inputsmall' name='subject'" . $rsubject . ">"],
                 $rcaptcha,
                 ['label' => _lang('hcm.mailform.text'), 'content' => "<textarea class='areasmall' name='text' rows='9' cols='33'></textarea>", 'top' => true],
+                Form::getSubmitRow(['text' => _lang('hcm.mailform.send')])
             ]
         );
 

@@ -31,7 +31,7 @@ if (isset($_POST['save'])) {
     if (empty($errors)) {
         $builtNewPassword = Password::create($newPassword)->build();
         DB::update('user', 'id=' . User::getId(), ['password' => $builtNewPassword]);
-        $_SESSION['user_auth'] = User::getAuthHash($builtNewPassword);
+        $_SESSION['user_auth'] = User::getAuthHash(User::AUTH_SESSION, User::$data['email'], $builtNewPassword);
         Extend::call('user.edit', ['id' => User::getId()]);
         $output .= Message::ok(_lang('global.saved'));
     } else {
@@ -43,7 +43,6 @@ $output .= Form::render(
     [
         'name' => 'user_settings_password',
         'table_attrs' => ' class="profiletable"',
-        'submit_row' => [],
         'form_prepend' => '<fieldset><legend>' . _lang('mod.settings.password') . '</legend>',
         'form_append' => '</fieldset>'
             . '<input type="submit" name="save" value="' . _lang('mod.settings.password.submit') . '">',

@@ -50,7 +50,6 @@ $output .= Form::render(
     [
         'name' => 'user_settings_download',
         'table_attrs' => ' class="profiletable"',
-        'submit_row' => [],
         'form_prepend' => '<fieldset><legend>' . _lang('mod.settings.download') . '</legend>',
         'form_append' => '</fieldset>'
             . '<input type="submit" name="download" value="' . _lang('mod.settings.download.submit') . '">',

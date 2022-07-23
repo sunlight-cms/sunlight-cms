@@ -201,9 +201,6 @@ if (!$user_data_valid && $show_form) {
         [
             'name' => 'regform',
             'action' => Router::module('reg'),
-            'submit_text' => _lang('mod.reg.submit' . (Settings::get('registration_confirm') ? '2' : '')),
-            'submit_span' => !empty($rules),
-            'submit_name' => 'regform',
         ],
         [
             ['label' => _lang('login.username'), 'content' => "<input type='text' class='inputsmall' maxlength='24'" . Form::restorePostValueAndName('username') . " autocomplete='username'>"],
@@ -214,6 +211,11 @@ if (!$user_data_valid && $show_form) {
             $groupselect,
             $captcha,
             $rules,
+            Form::getSubmitRow([
+                'label' => $rules ? null : '',
+                'name' => 'regform',
+                'text' => _lang('mod.reg.submit' . (Settings::get('registration_confirm') ? '2' : '')),
+            ]),
         ]
     );
 } elseif ($user_data_valid) {

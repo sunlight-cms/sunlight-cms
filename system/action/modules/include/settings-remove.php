@@ -39,7 +39,6 @@ $output .= Form::render(
     [
         'name' => 'user_settings_remove',
         'table_attrs' => ' class="profiletable"',
-        'submit_row' => [],
         'form_prepend' => '<fieldset><legend>' . _lang('mod.settings.remove') . '</legend>',
         'form_append' => '</fieldset>'
             . '<input type="submit" name="submit" value="' . _lang('mod.settings.remove.submit') . '">',

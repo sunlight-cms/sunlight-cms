@@ -7,6 +7,7 @@ use Sunlight\Email;
 use Sunlight\Message;
 use Sunlight\Router;
 use Sunlight\Settings;
+use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
@@ -56,40 +57,33 @@ if (isset($_POST['text'])) {
         Email::defineSender($headers, $sender);
 
         // nacteni prijemcu
-        $query = DB::query("SELECT email FROM " . DB::table('user') . " WHERE massemail=1 AND (" . $groups . ")");
+        $query = DB::query("SELECT email,password FROM " . DB::table('user') . " WHERE massemail=1 AND (" . $groups . ")");
 
         // odeslani nebo zobrazeni adres
         if (!$maillist) {
 
             // priprava
-            $rec_buffer = [];
-            $rec_buffer_size = 20;
-            $rec_buffer_counter = 0;
-            $item_counter = 0;
-            $item_total = DB::size($query);
+            $total = DB::size($query);
 
-            // poznamka na konci zpravy
-            $notice = _lang('admin.other.massemail.emailnotice', ['%domain%' => Core::getBaseUrl()->getFullHost()]);
-            if ($ctype == 1) {
-                $notice = "\n\n\n-------------------------------------\n" . $notice;
-            } else {
-                $notice = "<br><br><hr><p><small>" . _e($notice) . "</small></p>";
-            }
-            $text .= $notice;
-
-            // postupne odesilani po skupinach
+            // odeslani
             $done = 0;
             while ($item = DB::row($query)) {
-                $rec_buffer[] = $item['email'];
-                ++$rec_buffer_counter;
-                ++$item_counter;
-                if ($rec_buffer_counter === $rec_buffer_size || $item_counter === $item_total) {
-                    // odeslani emailu
-                    if (Email::send('', $subject, $text, $headers + ['Bcc' => implode(",", $rec_buffer)])) {
-                        $done += count($rec_buffer);
-                    }
-                    $rec_buffer = [];
-                    $rec_buffer_counter = 0;
+                $footer = _lang('admin.other.massemail.emailnotice.' . ($ctype == 1 ? 'text' : 'html'), [
+                    '%domain%' => Core::getBaseUrl()->getFullHost(),
+                    '%unsub_link%' => Router::module(
+                        'massemail',
+                        [
+                            'query' => [
+                                'email' => $item['email'],
+                                'key' => User::getAuthHash(User::AUTH_MASSEMAIL, $item['email'], $item['password']),
+                            ],
+                            'absolute' => true,
+                        ]
+                    ),
+                ]);
+
+                if (Email::send($item['email'], $subject, $text . $footer, $headers)) {
+                    ++$done;
                 }
             }
 
@@ -97,7 +91,7 @@ if (isset($_POST['text'])) {
             if ($done != 0) {
                 $output .= Message::ok(_lang('admin.other.massemail.send', [
                     '%done%' => $done,
-                    '%total%' => $item_total,
+                    '%total%' => $total,
                 ]));
             } else {
                 $output .= Message::warning(_lang('admin.other.massemail.noreceiversfound'));

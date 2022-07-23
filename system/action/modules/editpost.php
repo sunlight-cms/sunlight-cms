@@ -219,14 +219,16 @@ if ($form) {
     }
     $inputs[] = ['label' => _lang('posts.text'), 'content' => "<textarea name='text' class='areamedium' rows='5' cols='33'>" . $query['text'] . "</textarea>", 'top' => true];
     $inputs[] = ['label' => '', 'content' => PostForm::renderControls('postform', 'text', $bbcode)];
+    $inputs[] = Form::getSubmitRow([
+        'text' => _lang('global.save'),
+        'append' => ' ' . PostForm::renderPreviewButton('postform', 'text')
+            . (($query['type'] != Post::PRIVATE_MSG || $query['xhome'] != -1) ? "<br><br><label><input type='checkbox' name='delete' value='1'> " . _lang('mod.editpost.delete') . "</label>" : ''),
+    ]);
 
     $output .= Form::render(
         [
             'name' => 'postform',
             'action' => Router::module('editpost', ['query' => ['id' => $id]]),
-            'submit_text' => _lang('global.save'),
-            'submit_append' => ' ' . PostForm::renderPreviewButton('postform', 'text')
-                . (($query['type'] != Post::PRIVATE_MSG || $query['xhome'] != -1) ? "<br><br><label><input type='checkbox' name='delete' value='1'> " . _lang('mod.editpost.delete') . "</label>" : ''),
         ],
         $inputs
     );

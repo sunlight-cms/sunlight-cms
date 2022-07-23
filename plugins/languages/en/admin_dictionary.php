@@ -695,7 +695,15 @@ return [
     'admin.other.massemail.noreceivers' => 'no recipients specified',
     'admin.other.massemail.send' => 'Bulk e-mail was sent to %done% of %total% recipients.',
     'admin.other.massemail.noreceiversfound' => 'No recipients found.',
-    'admin.other.massemail.emailnotice' => 'This e-mail was sent to you because you are registered on %domain%. If you prefer to not to receive such messages, please deactivate the option "send informational e-mails" in the settings of your account.',
+    'admin.other.massemail.emailnotice.text' => '
+
+
+-------------------------------------
+This e-mail was sent to you based on your account\'s settings on %domain%.
+Unsubscribe: %unsub_link%',
+    'admin.other.massemail.emailnotice.html' => '
+<br><br><hr>
+<p><small>This e-mail was sent to you based on your account\'s settings on %domain%. <a href="%unsub_link%">Unsubscribe</a></small></p>',
     'admin.other.sqlex.title' => 'Run SQL queries',
     'admin.other.sqlex.run' => 'Run',
     'admin.other.sqlex.rows' => 'Number of rows',

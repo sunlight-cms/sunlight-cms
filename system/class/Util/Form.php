@@ -316,7 +316,6 @@ abstract class Form
     /**
      * Sestaveni formulare
      *
-     *
      * Mozne klice v $options:
      * -----------------------
      * name (-)             name atribut formulare
@@ -328,14 +327,6 @@ abstract class Form
      * id (-)               id atribut formulare
      * class (-)            class atribut formulare
      * embedded (0)         nevykreslovat <form> tag ani submit radek 1/0
-     *
-     * submit_text (*)      popisek odesilaciho tlacitka (vychozi je _lang('global.send'))
-     * submit_append (-)    vlastni HTML vlozene za odesilaci tlacitko
-     * submit_span (0)      roztahnout bunku s odesilacim tlacitkem na cely radek (tzn. zadna mezera vlevo)
-     * submit_name (-)      name atribut odesilaciho tlacitka
-     * submit_row (-)       1 vlastni pole s atributy radku s odesilacim tlacitkem (viz format zaznamu v $rows)
-     *                      uvedeni teto volby potlaci submit_text, submit_span a submit_name
-     *
      * table_attrs          vlastni HTML vlozene na konec <table> tagu
      * table_append         vlastni HTML vlozene pred </table>
      * form_append          vlastni HTML vlozene pred </form>
@@ -354,6 +345,7 @@ abstract class Form
      *
      * - radek je preskocen, pokud je obsah i popisek prazdny
      * - pokud je label null, zabere bunka s obsahem cely radek
+     * - {@see Form::getSubmitRow()}
      *
      * @param array $options parametry formulare (viz popis funkce)
      * @param array $rows    pole s radky (viz popis funkce)
@@ -372,11 +364,6 @@ abstract class Form
             'id' => null,
             'class' => $options['name'] ?? null,
             'embedded' => false,
-            'submit_text' => _lang('global.send'),
-            'submit_append' => '',
-            'submit_span' => false,
-            'submit_name' => null,
-            'submit_row' => null,
             'table_attrs' => '',
             'table_prepend' => '',
             'table_append' => '',
@@ -421,29 +408,10 @@ abstract class Form
         $output .= $options['table_prepend'];
 
         // radky
-        foreach ($rows as $row) {
-            $output .= self::renderRow($row);
-        }
+        $useColspan = self::rowsHaveLabel($rows);
 
-        // radek s odesilacim tlacitkem
-        if (!$options['embedded']) {
-            if ($options['submit_row'] !== null) {
-                $submit_row = $options['submit_row'];
-            } else {
-                $submit_row = [
-                    'label' => $options['submit_span'] ? null : '',
-                    'content' => '<input type="submit"' . (!empty($options['submit_name']) ? ' name="' . _e($options['submit_name']) . '"' : '') . ' value="' . _e($options['submit_text']) . '">',
-                ];
-            }
-            if (isset($submit_row['content'])) {
-                $submit_row['content'] .= $options['submit_append'];
-            }
-            $output .= self::renderRow($submit_row);
-        } elseif (!empty($options['submit_append'])) {
-            $output .= self::renderRow([
-                'label' => $options['submit_span'] ? null : '',
-                'content' => $options['submit_append'],
-            ]);
+        foreach ($rows as $row) {
+            $output .= self::renderRow($row, $useColspan);
         }
 
         // konec tabulky
@@ -461,12 +429,24 @@ abstract class Form
     }
 
     /**
-     * Vykreslit radek tabulky formulare
-     *
-     * @param array $row
-     * @return string
+     * Sestavit radek s odesilacim tlacitkem
      */
-    private static function renderRow(array $row): string
+    static function getSubmitRow(array $options = []): array
+    {
+        return [
+            'label' => array_key_exists('label', $options) ? $options['label'] : '',
+            'content' => '<input type="submit"'
+                . (isset($options['name']) ? ' name="' . _e($options['name']) . '"' : '')
+                . ' value="' . _e($options['text'] ?? _lang('global.send')) . '">'
+                . ($options['append'] ?? ''),
+            '_submit' => true, // oznaceni pro ucely pluginu
+        ];
+    }
+
+    /**
+     * Vykreslit radek tabulky formulare
+     */
+    private static function renderRow(array $row, bool $useColspan): string
     {
         $row += [
             'label' => null,
@@ -493,7 +473,7 @@ abstract class Form
 
         // obsah
         $output .= '<td';
-        if ($row['label'] === null) {
+        if ($row['label'] === null && $useColspan) {
             $output .= ' colspan="2"';
         }
         $output .= ">{$row['content']}</td>\n";
@@ -502,5 +482,16 @@ abstract class Form
         $output .= "</tr>\n";
 
         return $output;
+    }
+
+    private static function rowsHaveLabel(array $rows): bool
+    {
+        foreach ($rows as $row) {
+            if (isset($row['label'])) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

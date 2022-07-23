@@ -618,6 +618,7 @@ class PostService
         $inputs[] = $captcha;
         $inputs[] = ['label' => _lang('posts.text'), 'content' => "<textarea name='text' class='areamedium' rows='5' cols='33'>" . Form::restoreValue($_SESSION, 'post_form_text', null, false) . "</textarea><input type='hidden' name='_posttype' value='" . $vars['posttype'] . "'><input type='hidden' name='_posttarget' value='" . $vars['posttarget'] . "'><input type='hidden' name='_xhome' value='" . $vars['xhome'] . "'>" . (isset($vars['pluginflag']) ? "<input type='hidden' name='_pluginflag' value='" . $vars['pluginflag'] . "'>" : ''), 'top' => true];
         $inputs[] = ['label' => '', 'content' => PostForm::renderControls('postform', 'text')];
+        $inputs[] = Form::getSubmitRow(['append' => ' ' . PostForm::renderPreviewButton('postform', 'text')]);
 
         unset(
             $_SESSION['post_form_guest'],
@@ -630,7 +631,6 @@ class PostService
             [
                 'name' => 'postform',
                 'action' => Router::path('system/script/post.php', ['query' => ['_return' => $vars['url']]]),
-                'submit_append' => ' ' . PostForm::renderPreviewButton('postform', 'text'),
             ],
             $inputs
         );

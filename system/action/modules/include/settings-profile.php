@@ -72,7 +72,6 @@ $output .= Form::render(
     [
         'name' => 'user_settings_profile',
         'table_attrs' => ' class="profiletable"',
-        'submit_row' => [],
         'form_prepend' => '<fieldset><legend>' . _lang('mod.settings.profile') . '</legend>',
         'form_append' => '</fieldset>'
             . '<input type="submit" name="save" value="' . _lang('global.savechanges') . '">' . "\n"

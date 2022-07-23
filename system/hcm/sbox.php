@@ -39,6 +39,7 @@ return function ($id = null) {
                 $inputs[] = ['label' => _lang('posts.guestname'), 'content' => "<input type='text' name='guest' class='sbox-input' maxlength='24'>"];
             }
             $inputs[] = ['label' => _lang('posts.text'), 'content' => "<input type='text' name='text' class='sbox-input' maxlength='255'><input type='hidden' name='_posttype' value='4'><input type='hidden' name='_posttarget' value='" . $id . "'>"];
+            $inputs[] = Form::getSubmitRow();
 
             $result .= Form::render(
                 [

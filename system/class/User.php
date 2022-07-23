@@ -37,6 +37,15 @@ abstract class User
     /** Default registered user group ID */
     const REGISTERED_GROUP_ID = 3;
 
+    /** Auth hash type - persistent login */
+    const AUTH_PERSISTENT_LOGIN = 'persistent_login';
+
+    /** Auth hash type - session */
+    const AUTH_SESSION = 'session';
+
+    /** Auth hash type - mass email management */
+    const AUTH_MASSEMAIL = 'massemail';
+
     /** @var bool */
     private static $initialized = false;
 
@@ -153,7 +162,7 @@ abstract class User
                             break;
                         }
 
-                        $validHash = self::getPersistentLoginHash($cookie['id'], self::getAuthHash($userData['password']), $userData['email']);
+                        $validHash = self::getAuthHash(self::AUTH_PERSISTENT_LOGIN, $userData['email'], $userData['password']);
                         if ($validHash !== $cookie['hash']) {
                             // invalid hash
                             IpLog::update(IpLog::FAILED_LOGIN_ATTEMPT);
@@ -194,7 +203,7 @@ abstract class User
             }
 
             // check user authentication hash
-            if ($_SESSION['user_auth'] !== self::getAuthHash($userData['password'])) {
+            if ($_SESSION['user_auth'] !== self::getAuthHash(self::AUTH_SESSION, $userData['email'], $userData['password'])) {
                 // neplatny hash
                 $errorCode = 7;
                 break;
@@ -693,12 +702,14 @@ abstract class User
     /**
      * Sestavit autentifikacni hash uzivatele
      *
+     * @param string $type viz User::AUTH_* konstanty
+     * @param string $email email uzivatele
      * @param string $storedPassword heslo ulozene v databazi
      * @return string
      */
-    static function getAuthHash(string $storedPassword): string
+    static function getAuthHash(string $type, string $email, string $storedPassword): string
     {
-        return hash('sha512', $storedPassword);
+        return hash_hmac('sha256', $type . '$' . $email . '$' . $storedPassword, Core::$secret);
     }
 
     /**
@@ -711,15 +722,13 @@ abstract class User
      */
     static function login(int $id, string $storedPassword, string $email, bool $persistent = false): void
     {
-        $authHash = self::getAuthHash($storedPassword);
-
         $_SESSION['user_id'] = $id;
-        $_SESSION['user_auth'] = $authHash;
+        $_SESSION['user_auth'] = self::getAuthHash(self::AUTH_SESSION, $email, $storedPassword);
 
         if ($persistent && !headers_sent()) {
             $cookie_data = [];
             $cookie_data[] = $id;
-            $cookie_data[] = self::getPersistentLoginHash($id, $authHash, $email);
+            $cookie_data[] = self::getAuthHash(self::AUTH_PERSISTENT_LOGIN, $email, $storedPassword);
 
             setcookie(
                 Core::$appId . '_persistent_key',
@@ -800,19 +809,25 @@ abstract class User
             $form_append .= "<input type='hidden' name='login_form_url' value='" . _e($form_url->buildRelative()) . "'>\n";
 
             // kod formulare
+            $rows = [];
+            $rows[] = ['label' => _lang('login.username'), 'content' => "<input type='text' name='login_username' class='inputmedium'" . Form::restoreValue($_SESSION, 'login_form_username') . " maxlength='24' autocomplete='username' autofocus>"];
+            $rows[] = ['label' => _lang('login.password'), 'content' => "<input type='password' name='login_password' class='inputmedium' autocomplete='current-password'>"];
+
+            if (!$embedded) {
+                $rows[] = Form::getSubmitRow([
+                    'text' => _lang('global.login'),
+                    'append' => " <label><input type='checkbox' name='login_persistent' value='1'> " . _lang('login.persistent') . "</label>",
+                ]);
+            }
+
             $output .= Form::render(
                 [
                     'name' => 'login_form',
                     'action' => $action,
                     'embedded' => $embedded,
-                    'submit_text' => _lang('global.login'),
-                    'submit_append' => " <label><input type='checkbox' name='login_persistent' value='1'> " . _lang('login.persistent') . "</label>",
                     'form_append' => $form_append,
                 ],
-                [
-                    ['label' => _lang('login.username'), 'content' => "<input type='text' name='login_username' class='inputmedium'" . Form::restoreValue($_SESSION, 'login_form_username') . " maxlength='24' autocomplete='username' autofocus>"],
-                    ['label' => _lang('login.password'), 'content' => "<input type='password' name='login_password' class='inputmedium' autocomplete='current-password'>"]
-                ]
+                $rows
             );
 
             if (isset($_SESSION['login_form_username'])) {
@@ -982,23 +997,6 @@ abstract class User
 
         // vse ok, uzivatel byl prihlasen
         return 1;
-    }
-
-    /**
-     * Sestavit HASH pro trvale prihlaseni uzivatele
-     *
-     * @param int    $id
-     * @param string $authHash
-     * @param string $email
-     * @return string
-     */
-    static function getPersistentLoginHash(int $id, string $authHash, string $email): string
-    {
-        return hash_hmac(
-            'sha512',
-            $id . '$' . $authHash . '$' . $email,
-            Core::$secret
-        );
     }
 
     /**

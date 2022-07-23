@@ -156,14 +156,14 @@ switch ($a) {
         $inputs[] = ['label' => _lang('posts.subject'), 'content' => "<input type='text' class='inputmedium' maxlength='48'" . Form::restorePostValueAndName('subject', Request::get('subject')) . ">"];
         $inputs[] = ['label' => _lang('mod.messages.message'), 'content' => "<textarea class='areamedium' rows='5' cols='33' name='text'>" . Form::restorePostValue('text', null, false) . "</textarea>", 'top' => true];
         $inputs[] = ['label' => '', 'content' => PostForm::renderControls('newmsg', 'text')];
+        $inputs[] = Form::getSubmitRow(['append' => ' ' . PostForm::renderPreviewButton('newmsg', 'text')]);
 
         // form
         $output .= $message. Form::render(
             [
                 'name' => 'newmsg',
                 'action' => '',
-                'submit_append' => ' ' . PostForm::renderPreviewButton('newmsg', 'text'),
-                'form_append' => GenericTemplates::jsLimitLength(16384, 'newmsg', 'text')
+                'form_append' => GenericTemplates::jsLimitLength(16384, 'newmsg', 'text'),
             ],
             $inputs
         );
