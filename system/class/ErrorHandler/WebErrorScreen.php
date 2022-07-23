@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Sunlight\ErrorHandler;
 
@@ -38,7 +38,7 @@ class WebErrorScreen extends BaseWebErrorScreen
     {
         ?>
 <!DOCTYPE html>
-<html lang="<?= $this->escape(Core::$fallbackLang) ?>">
+<html<?php if (Core::$fallbackLang !== null): ?> lang="<?= $this->escape(Core::$fallbackLang) ?>"<?php endif ?>>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
