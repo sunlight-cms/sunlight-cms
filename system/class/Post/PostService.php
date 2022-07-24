@@ -297,6 +297,28 @@ class PostService
         /* --- init pager --- */
         $paging = Paginator::render($url, $postsperpage, DB::table('post'), $countcond, "#posts", $page_param, $autolast);
 
+        /* --- redirect to page with post from url --- */
+        $selected_post_id = Request::get("post");
+        if ($selected_post_id !== null) {//" . $pageCond . " AND 
+            $selected_post = DB::queryRow("SELECT p.id, p.xhome FROM " . DB::table('post') . " p WHERE p.id = " . DB::esc($selected_post_id));
+            
+            if ($selected_post !== false){
+                $post_id = $selected_post_id;
+                if ($style !== self::RENDER_FORUM_TOPIC && $style !== self::RENDER_PM_LIST && $selected_post['xhome'] != -1)
+                    $post_id =  $selected_post['xhome'];
+                
+                $post_number = DB::count('post', $countcond . ' AND id ' . ($desc !== '' ? '>= ' : '<= ') . DB::esc($post_id) . ' ORDER BY ' . ($is_topic_list ? 'p.sticky DESC,' : '') . $ordercol . ' ' . $desc); 
+
+                $post_page = max(1, ceil($post_number / $postsperpage));
+                if ($post_page != $paging['current']){
+                    $redirect_url = UrlHelper::appendParams($url, 'page=' . $post_page);
+                    $redirect_url = UrlHelper::appendParams($redirect_url, 'post=' . $selected_post_id);
+                    $_index->redirect($redirect_url . "#post-" . $selected_post_id);
+                    return "";
+                }
+            }
+        }
+
         /* --- message --- */
         if (isset($_GET['r'])) {
             switch (Request::get('r')) {

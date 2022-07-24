@@ -143,6 +143,7 @@ abstract class Router
      */
     static function post(array $post, ?array $options = null): array
     {
+        $options = ($options ?? []) + ['query' => ['post' => $post['id']]];
         switch ($post['type']) {
             case Post::SECTION_COMMENT:
             case Post::BOOK_ENTRY:
