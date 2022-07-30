@@ -13,8 +13,6 @@ abstract class Template
 {
     /**
      * Ziskat instanci aktualniho motivu
-     *
-     * @return TemplatePlugin
      */
     static function getCurrent(): TemplatePlugin
     {
@@ -28,9 +26,11 @@ abstract class Template
     /**
      * Vykreslit HTML hlavicku
      */
-    static function head(): void
+    static function head(): string
     {
         global $_index;
+
+        $output = '';
 
         // pripravit css
         $css = [];
@@ -67,20 +67,22 @@ abstract class Template
         ];
 
         // sestaveni
-        echo '<meta name="description" content="' . ($_index->description ?? Settings::get('description')) . '">' . ((Settings::get('author') !== '') ? '
+        $output .= '<meta name="description" content="' . ($_index->description ?? Settings::get('description')) . '">' . ((Settings::get('author') !== '') ? '
 <meta name="author" content="' . Settings::get('author') . '">' : '')
             . Extend::buffer('tpl.head.meta')
             . ($_index->template->getOption('responsive') ? "\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">" : '')
             . GenericTemplates::renderHeadAssets($assets);
 
         if (Settings::get('favicon')) {
-            echo '
+            $output .= '
 <link rel="shortcut icon" href="' . _e(Router::path('favicon.ico') . '?' . Settings::get('cacheid')) . '">';
         }
 
-        echo '
+        $output .= '
 <title>' . $title . '</title>
 ';
+
+        return $output;
     }
 
     /**

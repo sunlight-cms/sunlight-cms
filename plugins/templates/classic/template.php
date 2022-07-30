@@ -1,8 +1,7 @@
 <?php
 use Sunlight\Template;
-defined('SL_ROOT') or exit
+defined('SL_ROOT') or exit;
 ?>
-
 <div id="header">
     <h2>
         <a href="<?= Template::siteUrl() ?>">

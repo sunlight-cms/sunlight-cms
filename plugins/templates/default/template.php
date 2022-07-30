@@ -1,8 +1,7 @@
 <?php
 use Sunlight\Template;
-defined('SL_ROOT') or exit
+defined('SL_ROOT') or exit;
 ?>
-
 <div id="wrapper">
     <div id="header">
         <div id="logo">

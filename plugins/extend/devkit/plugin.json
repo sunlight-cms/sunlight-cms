@@ -21,10 +21,10 @@
     ],
     "events.web": [
         {"event": "tpl.head", "method": "onHead"},
-        {"event": "tpl.end", "method": "onEnd"}
+        {"event": "tpl.body.end", "method": "onEnd"}
     ],
     "events.admin": [
         {"event": "admin.head", "method": "onHead"},
-        {"event": "admin.end", "method": "onEnd"}
+        {"event": "admin.body.end", "method": "onEnd"}
     ]
 }

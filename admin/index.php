@@ -24,7 +24,7 @@ $_admin = new AdminState();
 $_admin->access = (User::isLoggedIn() && User::hasPrivilege('administration'));
 $_admin->currentModule = Request::get('p', 'index');
 
-$output = '';
+$output = &$_admin->output;
 
 // nacteni modulu
 $_admin->modules = require SL_ROOT . 'admin/modules.php';
@@ -69,16 +69,15 @@ if ($_admin->redirectTo !== null) {
     exit;
 }
 
-// hlavicka a sablona
-echo GenericTemplates::renderHead();
-
 // body tridy
 if ($_admin->loginLayout) {
     $_admin->bodyClasses[] = 'login-layout';
 }
 $_admin->bodyClasses[] = $_admin->dark ? 'dark' : 'light';
 
-?>
+// vystup
+echo _buffer(function () use ($_admin) { ?>
+<?= GenericTemplates::renderHead() ?>
 <meta name="robots" content="noindex,nofollow"><?= GenericTemplates::renderHeadAssets($_admin->assets), "\n" ?>
 <title><?= Settings::get('title'), ' - ', _lang('global.admintitle'), (!empty($_admin->title) ? ' - ' . $_admin->title : '') ?></title>
 </head>
@@ -104,7 +103,7 @@ $_admin->bodyClasses[] = $_admin->dark ? 'dark' : 'light';
 
     <div id="page" class="wrapper">
         <div id="content" class="module-<?= _e($_admin->currentModule) ?>">
-            <?= $output ?>
+            <?= $_admin->output ?>
 
             <div class="cleaner"></div>
         </div>
@@ -128,7 +127,8 @@ $_admin->bodyClasses[] = $_admin->dark ? 'dark' : 'light';
 
 </div>
 
-<?= Extend::buffer('admin.end') ?>
+<?= Extend::buffer('admin.body.end') ?>
 
 </body>
 </html>
+<?php });

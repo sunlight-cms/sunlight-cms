@@ -146,22 +146,20 @@ if ($_index->templateEnabled) {
     $_index->templateBoxes = $_index->template->getBoxes($_index->templateLayout);
     $_index->templatePath = $_index->template->getTemplate($_index->templateLayout);
 
-    Extend::call('tpl.start', ['index' => $_index]);
+    Extend::call('tpl.ready', ['index' => $_index]);
 
-    // hlavicka
-    echo GenericTemplates::renderHead();
-    Template::head();
-
-    ?>
+    // vystup
+    echo _buffer(function () use ($_index) { ?>
+<?= GenericTemplates::renderHead() ?>
+<?= Template::head() ?>
 </head>
-<body<?php if ($_index->bodyClasses): ?> class="<?= implode(' ', Html::escapeArrayItems($_index->bodyClasses)) ?>"<?php endif ?><?= Extend::buffer('tpl.body_tag') ?>>
-
+<body<?php if ($_index->bodyClasses): ?> class="<?= implode(' ', Html::escapeArrayItems($_index->bodyClasses)) ?>"<?php endif ?><?= Extend::buffer('tpl.body.tag') ?>>
+<?= Extend::buffer('tpl.body.start') ?>
 <?php require $_index->templatePath ?>
-<?= Extend::buffer('tpl.end') ?>
-
+<?= Extend::buffer('tpl.body.end') ?>
 </body>
 </html>
-<?php
+<?php });
 }
 
 Extend::call('index.finish', ['index' => $_index]);
