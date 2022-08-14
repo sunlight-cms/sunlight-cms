@@ -48,56 +48,38 @@ class SqlDumper
 
     /**
      * Add table to dump
-     *
-     * @param string $table
-     * @return $this
      */
-    function addTable(string $table): self
+    function addTable(string $table): void
     {
         $this->tables[] = $table;
-
-        return $this;
     }
 
     /**
      * Add tables to dump
      *
      * @param string[] $tables
-     * @return $this
      */
-    function addTables(array $tables): self
+    function addTables(array $tables): void
     {
         foreach ($tables as $table) {
             $this->tables[] = $table;
         }
-
-        return $this;
     }
 
     /**
      * Set whether data should be dumped
-     *
-     * @param bool $dumpData
-     * @return $this
      */
-    function setDumpData(bool $dumpData): self
+    function setDumpData(bool $dumpData): void
     {
         $this->dumpData = $dumpData;
-
-        return $this;
     }
 
     /**
      * Set whether table definitions should be dumped
-     *
-     * @param bool $dumpTables
-     * @return $this
      */
-    function setDumpTables(bool $dumpTables): self
+    function setDumpTables(bool $dumpTables): void
     {
         $this->dumpTables = $dumpTables;
-
-        return $this;
     }
 
     /**
@@ -125,13 +107,10 @@ class SqlDumper
      * Set max packet size
      *
      * @param int|null $maxPacketSize
-     * @return $this
      */
-    function setMaxPacketSize(?int $maxPacketSize): self
+    function setMaxPacketSize(?int $maxPacketSize): void
     {
         $this->maxPacketSize = $maxPacketSize;
-
-        return $this;
     }
 
     /**

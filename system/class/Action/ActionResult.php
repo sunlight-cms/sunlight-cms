@@ -97,8 +97,6 @@ class ActionResult
 
     /**
      * See if the action is successful
-     *
-     * @return bool
      */
     function isSuccessful(): bool
     {
@@ -107,8 +105,6 @@ class ActionResult
 
     /**
      * Get result
-     *
-     * @return bool|null
      */
     function getResult(): ?bool
     {
@@ -117,15 +113,10 @@ class ActionResult
 
     /**
      * Set result
-     *
-     * @param bool|null $result
-     * @return $this
      */
-    function setResult(?bool $result): self
+    function setResult(?bool $result): void
     {
         $this->result = $result;
-
-        return $this;
     }
 
     /**
@@ -152,26 +143,18 @@ class ActionResult
      * Set the messages
      *
      * @param Message[] $messages
-     * @return $this
      */
-    function setMessages(array $messages): self
+    function setMessages(array $messages): void
     {
         $this->messages = $messages;
-
-        return $this;
     }
 
     /**
      * Add a message
-     *
-     * @param Message $message
-     * @return $this
      */
-    function addMessage(Message $message): self
+    function addMessage(Message $message): void
     {
         $this->messages[] = $message;
-
-        return $this;
     }
 
     /**
@@ -196,14 +179,9 @@ class ActionResult
 
     /**
      * Set output
-     *
-     * @param string|null $output
-     * @return $this
      */
-    function setOutput(?string $output): self
+    function setOutput(?string $output): void
     {
         $this->output = $output;
-
-        return $this;
     }
 }

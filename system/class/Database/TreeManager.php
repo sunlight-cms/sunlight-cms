@@ -89,9 +89,8 @@ class TreeManager
      * @param int   $parentNodeId
      * @param array $changeset
      * @param bool  $refresh
-     * @return $this
      */
-    function update(int $nodeId, int $parentNodeId, array $changeset, bool $refresh = true): self
+    function update(int $nodeId, int $parentNodeId, array $changeset, bool $refresh = true): void
     {
         if (array_key_exists($this->levelColumn, $changeset) || array_key_exists($this->depthColumn, $changeset)) {
             throw new \InvalidArgumentException(sprintf('Columns "%s" and "%s" cannnot be changed manually', $this->levelColumn, $this->depthColumn));
@@ -113,8 +112,6 @@ class TreeManager
         if ($refresh && $hasNewParent) {
             $this->refreshOnParentUpdate($nodeId, $newParent, $parentNodeId);
         }
-
-        return $this;
     }
 
     /**
@@ -122,9 +119,8 @@ class TreeManager
      *
      * @param int  $nodeId
      * @param bool $orphanRemoval
-     * @return $this
      */
-    function delete(int $nodeId, bool $orphanRemoval = true): self
+    function delete(int $nodeId, bool $orphanRemoval = true): void
     {
         if ($orphanRemoval) {
             $children = $this->getChildren($nodeId);
@@ -135,35 +131,27 @@ class TreeManager
         if ($nodeId != $rootNodeId) {
             $this->doRefreshDepth($rootNodeId, true);
         }
-
-        return $this;
     }
 
     /**
      * Odstranit vsechny potomky uzlu
      *
      * @param int $nodeId
-     * @return $this
      */
-    function purge(int $nodeId): self
+    function purge(int $nodeId): void
     {
         $this->deleteSet($this->idColumn, $this->getChildren($nodeId));
         $this->doRefreshDepth($nodeId);
-
-        return $this;
     }
 
     /**
      * Obnovit urovne stromu
      *
      * @param int|null $nodeId
-     * @return $this
      */
-    function refresh(?int $nodeId = null): self
+    function refresh(?int $nodeId = null): void
     {
         $this->doRefresh($nodeId);
-
-        return $this;
     }
 
     /**
@@ -186,9 +174,8 @@ class TreeManager
      * Odstranit osirele uzly
      *
      * @param bool $refresh
-     * @return $this
      */
-    function purgeOrphaned(bool $refresh = true) :self
+    function purgeOrphaned(bool $refresh = true): void
     {
         do {
             $orphaned = DB::query('SELECT n.' . $this->idColumn . ',n.' . $this->parentColumn . ' FROM ' . DB::table($this->table) . ' n LEFT JOIN ' . DB::table($this->table) . ' p ON(n.' . $this->parentColumn . '=p.' . $this->idColumn . ') WHERE n.' . $this->parentColumn . ' IS NOT NULL AND p.id IS NULL');
@@ -208,8 +195,6 @@ class TreeManager
         if ($refresh) {
             $this->doRefresh(null);
         }
-
-        return $this;
     }
 
     /**

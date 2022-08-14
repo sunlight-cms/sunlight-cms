@@ -60,12 +60,10 @@ class SqlReader
      * Set delimiter
      *
      * @param string $delimiter single character
-     * @return $this
      */
-    function setDelimiter(string $delimiter): self
+    function setDelimiter(string $delimiter): void
     {
         $this->delimiter = $delimiter;
-        return $this;
     }
 
     /**

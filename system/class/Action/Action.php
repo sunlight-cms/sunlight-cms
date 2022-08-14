@@ -14,28 +14,18 @@ abstract class Action
 
     /**
      * Set whether exceptions should be catched
-     *
-     * @param bool $catchExceptions
-     * @return $this
      */
-    function setCatchExceptions(bool $catchExceptions): self
+    function setCatchExceptions(bool $catchExceptions): void
     {
         $this->catchExceptions = $catchExceptions;
-
-        return $this;
     }
 
     /**
      * Set whether exceptions should be rendered
-     *
-     * @param bool $renderExceptions
-     * @return $this
      */
-    function setRenderExceptions(bool $renderExceptions): self
+    function setRenderExceptions(bool $renderExceptions): void
     {
         $this->renderExceptions = $renderExceptions;
-
-        return $this;
     }
 
     /**
