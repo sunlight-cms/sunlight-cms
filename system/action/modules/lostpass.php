@@ -159,7 +159,7 @@ if (isset($_GET['user'], $_GET['hash'])) {
             ],
             [
                 ['label' => _lang('login.username'), 'content' => "<input type='text' class='inputsmall' maxlength='24'" . Form::restorePostValueAndName('username') . "autocomplete='username'>"],
-                ['label' => _lang('global.email'), 'content' => "<input type='email' class='inputsmall' " . Form::restorePostValueAndName('email', '@') . " autocomplete='email'>"],
+                ['label' => _lang('global.email'), 'content' => "<input type='email' class='inputsmall' maxlength='191' " . Form::restorePostValueAndName('email', '@') . " autocomplete='email'>"],
                 $captcha,
                 Form::getSubmitRow(['text' => _lang('global.send')]),
             ]
