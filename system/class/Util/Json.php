@@ -14,9 +14,9 @@ abstract class Json
      * Encode data as JSON
      *
      * @param mixed $data
-     * @param bool  $pretty         produce formatted JSON 1/0 (true works in PHP 5.4.0+ only)
-     * @param bool  $escapedUnicode escape unicode 1/0 (false works in PHP 5.4.0+ only)
-     * @param bool  $escapedSlashes escape slashes 1/0 (false works in PHP 5.4.0+ only)
+     * @param bool  $pretty         produce formatted JSON 1/0
+     * @param bool  $escapedUnicode escape unicode 1/0
+     * @param bool  $escapedSlashes escape slashes 1/0
      * @throws \RuntimeException in case of an error
      * @return string
      */
@@ -24,13 +24,13 @@ abstract class Json
     {
         $options = 0;
 
-        if ($pretty && defined('JSON_PRETTY_PRINT')) {
+        if ($pretty) {
             $options |= JSON_PRETTY_PRINT;
         }
-        if (!$escapedSlashes && defined('JSON_UNESCAPED_SLASHES')) {
+        if (!$escapedSlashes) {
             $options |= JSON_UNESCAPED_SLASHES;
         }
-        if (!$escapedUnicode && defined('JSON_UNESCAPED_UNICODE')) {
+        if (!$escapedUnicode) {
             $options |= JSON_UNESCAPED_UNICODE;
         }
 

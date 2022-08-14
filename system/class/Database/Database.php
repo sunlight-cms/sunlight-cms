@@ -9,7 +9,7 @@ use Sunlight\Extend;
  *
  * Staticky se pouziva pro praci se sytemovym pripojenim.
  */
-class Database
+abstract class Database
 {
     /** @var \mysqli */
     static $mysqli;
@@ -17,13 +17,6 @@ class Database
     static $database;
     /** @var string */
     static $prefix;
-
-    /**
-     * Staticka trida
-     */
-    private function __construct()
-    {
-    }
 
     /**
      * Pripojit se k MySQL serveru

@@ -29,17 +29,10 @@ Core::init('../', [
 /**
  * Configuration
  */
-class Config
+abstract class Config
 {
     /** @var array|null */
     static $config;
-
-    /**
-     * This is a static class
-     */
-    private function __construct()
-    {
-    }
 
     /**
      * Attempt to load the configuration file
@@ -65,7 +58,7 @@ class Config
 /**
  * Installer labels
  */
-class Labels
+abstract class Labels
 {
     /** @var string */
     private static $language = '_none';
@@ -235,13 +228,6 @@ class Labels
     ];
 
     /**
-     * This is a static class
-     */
-    private function __construct()
-    {
-    }
-
-    /**
      * Set the used language
      *
      * @param string $language
@@ -293,15 +279,8 @@ class Labels
 /**
  * Installer errors
  */
-class Errors
+abstract class Errors
 {
-    /**
-     * This is a static class
-     */
-    private function __construct()
-    {
-    }
-
     /**
      * @param array  $errors
      * @param string $mainLabelKey

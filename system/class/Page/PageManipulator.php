@@ -8,7 +8,7 @@ use Sunlight\Database\Database as DB;
 use Sunlight\Database\TreeReaderOptions;
 use Sunlight\Extend;
 
-class PageManipulator
+abstract class PageManipulator
 {
     /** Flag zavislosti - podstranky */
     const DEPEND_CHILD_PAGES = 1;
@@ -16,13 +16,6 @@ class PageManipulator
     const DEPEND_DIRECT = 2;
     /** Flag zavislosti - prime i kdyz existuji podstranky */
     const DEPEND_DIRECT_FORCE = 4;
-
-    /**
-     * Staticka trida
-     */
-    private function __construct()
-    {
-    }
 
     /**
      * Ziskat vychozi data pro dany typ stranky
