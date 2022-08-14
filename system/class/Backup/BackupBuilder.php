@@ -14,11 +14,6 @@ use Sunlight\Util\TemporaryFile;
  */
 class BackupBuilder
 {
-    /** Backup type - partial */
-    const TYPE_PARTIAL = 0;
-    /** Backup type - full */
-    const TYPE_FULL = 1;
-
     /** @var string[] */
     private $staticPathList = [
         'admin',
@@ -76,96 +71,76 @@ class BackupBuilder
         'system/tmp/*' => ['static' => true, 'dynamic' => true],
     ];
 
+    /** @var bool */
+    private $fullBackup = true;
+
     /* @var bool */
     private $databaseDumpEnabled = true;
 
-    /**
-     * See if database dump is enabled
-     *
-     * @return bool
-     */
+    /** @var bool */
+    private $prefillConfigFile = true;
+
+    public function isFullBackup(): bool
+    {
+        return $this->fullBackup;
+    }
+
+    public function setFullBackup(bool $fullBackup): void
+    {
+        $this->fullBackup = $fullBackup;
+    }
+
     function isDatabaseDumpEnabled(): bool
     {
         return $this->databaseDumpEnabled;
     }
 
-    /**
-     * Toggle database dump
-     *
-     * @param bool $databaseDumpEnabled
-     * @return $this
-     */
-    function setDatabaseDumpEnabled(bool $databaseDumpEnabled): self
+    function setDatabaseDumpEnabled(bool $databaseDumpEnabled): void
     {
         $this->databaseDumpEnabled = $databaseDumpEnabled;
-
-        return $this;
     }
 
-    /**
-     * Get list of static paths
-     *
-     * @return array
-     */
+    public function getPrefillConfigFile(): bool
+    {
+        return $this->prefillConfigFile;
+    }
+
+    public function setPrefillConfigFile(bool $prefillConfigFile): void
+    {
+        $this->prefillConfigFile = $prefillConfigFile;
+    }
+
     function getStaticPaths(): array
     {
         return $this->staticPathList;
     }
 
     /**
-     * Add a static path
-     *
      * @param string $path path to a file or a directory, relative to system root
-     * @return $this
      */
-    function addStaticPath(string $path): self
+    function addStaticPath(string $path): void
     {
         $this->staticPathList[] = $path;
-
-        return $this;
     }
 
-    /**
-     * Get list of empty directories
-     *
-     * @return string[]
-     */
     function getEmptyDirectories(): array
     {
         return $this->emptyDirPathList;
     }
 
     /**
-     * Add empty directory
-     *
      * @param string $path path to a directory, relative to system root
-     * @return $this
      */
-    function addEmptyDirectory(string $path): self
+    function addEmptyDirectory(string $path): void
     {
         $this->emptyDirPathList[] = $path;
-
-        return $this;
     }
     
-    /**
-     * See if a dynamic path exists
-     *
-     * @param string $name dynamic path name
-     * @return bool
-     */
     function hasDynamicPath(string $name): bool
     {
         return isset($this->dynamicPathMap[$name]);
     }
 
-    /**
-     * Get paths for a the given dynamic path name
-     *
-     * @param string $name dynamic path name
-     * @throws \OutOfBoundsException if no such dynamic path exists
-     * @return array
-     */
     function getDynamicPath(string $name): array
     {
         $this->ensureDynamicPathNameIsValid($name);
@@ -173,11 +148,6 @@ class BackupBuilder
         return $this->dynamicPathMap[$name];
     }
 
-    /**
-     * Get names of all known dynamic paths
-     *
-     * @return array
-     */
     function getDynamicPathNames(): array
     {
         return array_keys($this->dynamicPathMap);
@@ -189,9 +159,8 @@ class BackupBuilder
      * @param string $name  dynamic path name (consisting of [a-zA-Z0-9_] only)
      * @param array  $paths array of relative directory/file paths
      * @throws \InvalidArgumentException if the name is empty or contains illegal characters
-     * @return $this
      */
-    function addDynamicPath(string $name, array $paths): self
+    function addDynamicPath(string $name, array $paths): void
     {
         if (!preg_match('{[a-zA-Z0-9_]+$}AD', $name)) {
             throw new \InvalidArgumentException('The name is empty or contains illegal characters');
@@ -200,30 +169,13 @@ class BackupBuilder
         $this->dynamicPathMap[$name] = isset($this->dynamicPathMap[$name])
             ? array_merge($this->dynamicPathMap[$name], $paths)
             : $paths;
-
-        return $this;
     }
 
-    /**
-     * Remove a dynamic path
-     *
-     * @param string $name dynamic path name
-     * @return $this
-     */
-    function removeDynamicPath(string $name): self
+    function removeDynamicPath(string $name): void
     {
         unset($this->dynamicPathMap[$name], $this->disabledDynamicPathMap[$name]);
-
-        return $this;
     }
 
-    /**
-     * See if a dynamic path is enabled
-     *
-     * @param string $name dynamic path name
-     * @throws \OutOfBoundsException if no such dynamic path exists
-     * @return bool
-     */
     function isDynamicPathEnabled(string $name): bool
     {
         $this->ensureDynamicPathNameIsValid($name);
@@ -231,45 +183,20 @@ class BackupBuilder
         return !isset($this->disabledDynamicPathMap[$name]);
     }
 
-    /**
-     * Disable a dynamic path
-     *
-     * @param string $name dynamic path name
-     * @throws \OutOfBoundsException if no such dynamic path exists
-     * @return $this
-     */
-    function disableDynamicPath(string $name): self
+    function disableDynamicPath(string $name): void
     {
         $this->ensureDynamicPathNameIsValid($name);
 
         $this->disabledDynamicPathMap[$name] = true;
-
-        return $this;
     }
 
-    /**
-     * Enable a previously disabled dynamic path
-     *
-     * @param string $name dynamic path name
-     * @throws \OutOfBoundsException if no such dynamic path exists
-     * @return $this
-     */
-    function enableDynamicPath(string $name): self
+    function enableDynamicPath(string $name): void
     {
         $this->ensureDynamicPathNameIsValid($name);
 
         unset($this->disabledDynamicPathMap[$name]);
-
-        return $this;
     }
 
-    /**
-     * See if a dynamic path can be disabled in full mode
-     *
-     * @param string $name dynamic path name
-     * @throws \OutOfBoundsException if no such dynamic path exists
-     * @return bool
-     */
     function isDynamicPathOptional(string $name): bool
     {
         $this->ensureDynamicPathNameIsValid($name);
@@ -277,36 +204,18 @@ class BackupBuilder
         return isset($this->optionalDynamicPathMap[$name]);
     }
 
-    /**
-     * Make dynamic path optional in full mode
-     *
-     * @param string $name dynamic path name
-     * @throws \OutOfBoundsException if no such dynamic path exists
-     * @return $this
-     */
-    function makeDynamicPathOptional(string $name): self
+    function makeDynamicPathOptional(string $name): void
     {
         $this->ensureDynamicPathNameIsValid($name);
 
         $this->optionalDynamicPathMap[$name] = true;
-
-        return $this;
     }
 
-    /**
-     * Make dynamic path required in full mode
-     *
-     * @param string $name dynamic path name
-     * @throws \OutOfBoundsException if no such dynamic path exists
-     * @return $this
-     */
-    function makeDynamicPathRequired(string $name): self
+    function makeDynamicPathRequired(string $name): void
     {
         $this->ensureDynamicPathNameIsValid($name);
 
         unset($this->optionalDynamicPathMap[$name]);
-
-        return $this;
     }
 
     /**
@@ -315,13 +224,10 @@ class BackupBuilder
      * @param string $pattern
      * @param bool   $static  affect static paths 1/0
      * @param bool   $dynamic affect dynamic paths 1/0
-     * @return $this
      */
-    function includePath(string $pattern, bool $static = true, bool $dynamic = true): self
+    function includePath(string $pattern, bool $static = true, bool $dynamic = true): void
     {
         $this->includedPathMap[$pattern] = ['static' => $static, 'dynamic' => $dynamic];
-
-        return $this;
     }
 
     /**
@@ -330,148 +236,70 @@ class BackupBuilder
      * @param string $pattern
      * @param bool   $static  affect static paths 1/0
      * @param bool   $dynamic affect dynamic paths 1/0
-     * @return $this
      */
-    function excludePath(string $pattern, bool $static = true, bool $dynamic = true): self
+    function excludePath(string $pattern, bool $static = true, bool $dynamic = true): void
     {
         $this->excludedPathMap[$pattern] = ['static' => $static, 'dynamic' => $dynamic];
-
-        return $this;
     }
 
     /**
-     * Build a backup file
-     *
-     * @param int $type see BackupBuilder::TYPE_* constants
-     * @throws \InvalidArgumentException on invalid type
-     * @return TemporaryFile
+     * Build the backup
      */
-    function build(int $type): TemporaryFile
+    function build(): TemporaryFile
     {
-        if ($type !== self::TYPE_PARTIAL && $type !== self::TYPE_FULL) {
-            throw new \InvalidArgumentException('Invalid type');
-        }
-
         $tmpFile = Filesystem::createTmpFile();
-        $backup =  $this->createBackup($tmpFile->getPathname());
-
-        try {
-            $backup->create();
-
-            switch ($type) {
-                case self::TYPE_PARTIAL:
-                    $this->writePartial($backup);
-                    break;
-
-                case self::TYPE_FULL:
-                    $this->writeFull($backup);
-                    break;
-            }
-
-            $backup->close();
-        } catch (\Exception $e) {
-            $backup->discard();
-            $tmpFile->discard();
-
-            throw $e;
-        }
+        $backup = new Backup($tmpFile->getPathname());
+        $backup->create();
+        $this->write($backup);
+        $backup->close();
 
         return $tmpFile;
     }
 
-    /**
-     * Write a partial ZIP backup
-     *
-     * @param Backup $backup
-     */
-    private function writePartial(Backup $backup): void
+    protected function write(Backup $backup): void
     {
         if ($this->databaseDumpEnabled) {
             $backup->addDatabaseDump($this->dumpDatabase(), DB::$prefix);
         }
 
-        foreach ($this->dynamicPathMap as $name => $paths) {
-            if ($this->isDynamicPathEnabled($name)) {
+        if ($this->fullBackup) {
+            foreach ($this->staticPathList as $path) {
+                $backup->addPath($path, function ($dataPath) {
+                    return $this->filterPath($dataPath, true);
+                });
+            }
+
+            foreach ($this->emptyDirPathList as $path) {
+                $backup->addEmptyDirectory($path);
+            }
+
+            foreach ($this->dynamicPathMap as $name => $paths) {
+                $enabled = !$this->isDynamicPathOptional($name) || $this->isDynamicPathEnabled($name);
+
                 foreach ($paths as $path) {
-                    $backup->addPath($path);
+                    if ($enabled) {
+                        $backup->addPath($path, function ($dataPath) {
+                            return $this->filterPath($dataPath, false, true);
+                        });
+                    } elseif (is_dir(SL_ROOT . $path)) {
+                        $backup->addEmptyDirectory($path);
+                    }
+                }
+            }
+
+            $backup->addFileFromString('config.php', $this->generateConfigFile(), false);
+        } else {
+            foreach ($this->dynamicPathMap as $name => $paths) {
+                if ($this->isDynamicPathEnabled($name)) {
+                    foreach ($paths as $path) {
+                        $backup->addPath($path);
+                    }
                 }
             }
         }
     }
 
-    /**
-     * Write a full ZIP backup
-     *
-     * @param Backup $backup
-     */
-    private function writeFull(Backup $backup): void
-    {
-        if ($this->databaseDumpEnabled) {
-            $backup->addDatabaseDump($this->dumpDatabase(), DB::$prefix);
-        }
-
-        foreach ($this->staticPathList as $path) {
-            $backup->addPath($path, function ($dataPath) {
-                return $this->filterPath($dataPath, true);
-            });
-        }
-
-        foreach ($this->emptyDirPathList as $path) {
-            $backup->addEmptyDirectory($path);
-        }
-
-        foreach ($this->dynamicPathMap as $name => $paths) {
-            $enabled = !$this->isDynamicPathOptional($name) || $this->isDynamicPathEnabled($name);
-
-            foreach ($paths as $path) {
-                if ($enabled) {
-                    $backup->addPath($path, function ($dataPath) {
-                        return $this->filterPath($dataPath, false, true);
-                    });
-                } elseif (is_dir(SL_ROOT . $path)) {
-                    $backup->addEmptyDirectory($path);
-                }
-            }
-        }
-
-        $backup->addFileFromString('config.php', self::generateConfigFile(), false);
-    }
-
-    /**
-     * Dump the database
-     *
-     * @return TemporaryFile
-     */
-    private function dumpDatabase(): TemporaryFile
-    {
-        $tables = DB::getTablesByPrefix();
-
-        $dumper = new SqlDumper();
-        $dumper->addTables($tables);
-
-        return $dumper->dump();
-    }
-
-    /**
-     * @param string $name
-     * @throws \OutOfBoundsException if no such dynamic path exists
-     */
-    private function ensureDynamicPathNameIsValid(string $name): void
-    {
-        if (!isset($this->dynamicPathMap[$name])) {
-            throw new \OutOfBoundsException(sprintf('Unknown dynamic path "%s"', $name));
-        }
-    }
-
-    /**
-     * Filter a path
-     *
-     * @param string $dataPath
-     * @param bool   $isStatic
-     * @param bool   $isDynamic
-     * @return bool
-     */
-    private function filterPath(string $dataPath, bool $isStatic = false, bool $isDynamic = false): bool
+    protected function filterPath(string $dataPath, bool $isStatic = false, bool $isDynamic = false): bool
     {
         foreach ($this->includedPathMap as $pattern => $options) {
             if (
@@ -506,27 +334,39 @@ class BackupBuilder
     }
 
     /**
-     * @param string $path
-     * @return Backup
+     * @throws \OutOfBoundsException if no such dynamic path exists
      */
-    private function createBackup(string $path): Backup
+    private function ensureDynamicPathNameIsValid(string $name): void
     {
-        return new Backup($path);
+        if (!isset($this->dynamicPathMap[$name])) {
+            throw new \OutOfBoundsException(sprintf('Unknown dynamic path "%s"', $name));
+        }
     }
 
-    /**
-     * Generate config.php
-     *
-     * @return string
-     */
-    static function generateConfigFile(): string
+    private function dumpDatabase(): TemporaryFile
+    {
+        $tables = DB::getTablesByPrefix();
+
+        $dumper = new SqlDumper();
+        $dumper->addTables($tables);
+
+        return $dumper->dump();
+    }
+
+    private function generateConfigFile(): string
     {
         $phpFileBuilder = PhpTemplate::fromFile(SL_ROOT . 'system/config_template.php');
 
-        return $phpFileBuilder->compile([
-            'db.prefix' => substr(DB::$prefix, 0, -1),
-            'app_id' => Core::$appId,
-            'fallback_lang' => Core::$fallbackLang,
-        ]);
+        if ($this->prefillConfigFile) {
+            $vars = [
+                'db.prefix' => substr(DB::$prefix, 0, -1),
+                'app_id' => Core::$appId,
+                'fallback_lang' => Core::$fallbackLang,
+            ];
+        } else {
+            $vars = [];
+        }
+
+        return $phpFileBuilder->compile($vars);
     }
 }

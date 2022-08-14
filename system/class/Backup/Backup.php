@@ -16,21 +16,18 @@ use Sunlight\Util\Zip;
  */
 class Backup
 {
-    /** Database dump file path */
-    private const DB_DUMP_PATH = 'database.sql';
-    /** Metadata file path */
-    private const METADATA_PATH = 'backup.json';
-    /** Data path (prefix) */
-    private const DATA_PATH = 'data';
-
     /** @var \ZipArchive */
     private $zip;
     /** @var string */
     private $path;
+    /** @var string */
+    private $dataPath = 'data';
+    /** @var string */
+    private $dbDumpPath = 'database.sql';
+    /** @var string|null */
+    private $metadataPath = 'backup.json';
     /** @var string[] */
     private $directoryList = [];
-    /** @var TemporaryFile[] */
-    private $temporaryFiles = [];
     /** @var bool */
     private $open = false;
     /** @var bool */
@@ -39,30 +36,55 @@ class Backup
     private $metadataCache;
     /** @var string[] */
     private $metadataErrors = [];
+    /** @var TemporaryFile|null */
+    private $dbDumpFile;
     /** @var string|null */
-    private $addedDbDumpPrefix;
+    private $dbDumpPrefix;
     /** @var string[] */
     private $fileList = [];
 
-    /**
-     * @param string $path
-     */
     function __construct(string $path)
     {
         $this->zip = new \ZipArchive();
         $this->path = $path;
     }
 
-    /**
-     * Destructor
-     */
     function __destruct()
     {
+        // revert unsaved changes
         if ($this->open) {
             $this->revertAndClose();
         }
+    }
 
-        $this->discardTemporaryFiles();
+    public function getDataPath(): string
+    {
+        return $this->dataPath;
+    }
+
+    public function setDataPath(string $dataPath): void
+    {
+        $this->dataPath = $dataPath;
+    }
+
+    public function getDbDumpPath(): string
+    {
+        return $this->dbDumpPath;
+    }
+
+    public function setDbDumpPath(string $dbDumpPath): void
+    {
+        $this->dbDumpPath = $dbDumpPath;
+    }
+
+    public function getMetadataPath(): ?string
+    {
+        return $this->metadataPath;
+    }
+
+    public function setMetadataPath(?string $metadataPath): void
+    {
+        $this->metadataPath = $metadataPath;
     }
 
     /**
@@ -102,14 +124,12 @@ class Backup
      */
     function close(): void
     {
-        if ($this->new) {
-            $this->setMetaData();
+        if ($this->new && $this->metadataPath !== null) {
+            $this->addMetaData();
         }
 
         $this->zip->close();
         $this->open = false;
-        
-        $this->discardTemporaryFiles();
     }
 
     /**
@@ -134,25 +154,6 @@ class Backup
      */
     function discard(): void
     {
-        if ($this->open) {
-            $this->revertAndClose();
-        }
-        if (is_file($this->path)) {
-            unlink($this->path);
-        }
-        $this->discardTemporaryFiles();
-    }
-
-    /**
-     * Discard temporary files
-     */
-    private function discardTemporaryFiles(): void
-    {
-        foreach ($this->temporaryFiles as $tmpFile) {
-            $tmpFile->discard();
-        }
-
-        $this->temporaryFiles = [];
     }
 
     /**
@@ -254,7 +255,7 @@ class Backup
     {
         $this->ensureOpenAndNew();
 
-        $this->zip->addEmptyDir(self::DATA_PATH . "/{$dataPath}");
+        $this->zip->addEmptyDir($this->dataPath . "/{$dataPath}");
     }
 
     /**
@@ -277,7 +278,7 @@ class Backup
 
             $this->zip->addFile(
                 $realPath,
-                self::DATA_PATH . "/{$dataPath}"
+                $this->dataPath . "/{$dataPath}"
             );
         }
     }
@@ -297,7 +298,7 @@ class Backup
             $this->fileList[] = $dataPath;
         }
 
-        $this->zip->addFromString(self::DATA_PATH . "/{$dataPath}", $data);
+        $this->zip->addFromString($this->dataPath . "/{$dataPath}", $data);
     }
 
     /**
@@ -309,7 +310,7 @@ class Backup
     {
         $this->ensureOpenAndNotNew();
 
-        return $this->zip->statName(self::DB_DUMP_PATH) !== false;
+        return $this->zip->statName($this->dbDumpPath) !== false;
     }
 
     /**
@@ -321,7 +322,7 @@ class Backup
     {
         $this->ensureOpenAndNotNew();
 
-        return $this->zip->getFromName(self::DB_DUMP_PATH);
+        return $this->zip->getFromName($this->dbDumpPath);
     }
 
     /**
@@ -333,7 +334,7 @@ class Backup
     {
         $this->ensureOpenAndNotNew();
 
-        if ($this->hasDatabaseDump() && ($stat = $this->zip->statName(self::DB_DUMP_PATH))) {
+        if ($this->hasDatabaseDump() && ($stat = $this->zip->statName($this->dbDumpPath))) {
             return $stat['size'];
         }
 
@@ -350,9 +351,9 @@ class Backup
     {
         $this->ensureOpenAndNew();
 
-        $this->zip->addFile($databaseDump->getPathname(), self::DB_DUMP_PATH);
-        $this->addedDbDumpPrefix = $prefix;
-        $this->temporaryFiles[] = $databaseDump;
+        $this->dbDumpFile = $databaseDump; // keep a reference to the temp file
+        $this->dbDumpPrefix = $prefix;
+        $this->zip->addFile($databaseDump->getPathname(), $this->dbDumpPath);
     }
 
     /**
@@ -457,7 +458,11 @@ class Backup
 
     private function loadMetaData(): void
     {
-        $stream = $this->zip->getStream(self::METADATA_PATH);
+        if ($this->metadataPath === null) {
+            throw new \LogicException('No metadata path');
+        }
+
+        $stream = $this->zip->getStream($this->metadataPath);
 
         try {
             $this->metadataCache = $this->resolveMetadata(
@@ -493,17 +498,17 @@ class Backup
         }
     }
 
-    private function setMetaData(): void
+    private function addMetaData(): void
     {
         $metaData = [
             'system_version' => Core::VERSION,
             'created_at' => time(),
             'directory_list' => $this->directoryList,
             'file_list' => $this->fileList,
-            'db_prefix' => $this->addedDbDumpPrefix,
+            'db_prefix' => $this->dbDumpPrefix,
         ];
 
-        $this->zip->addFromString(self::METADATA_PATH, Json::encode($metaData, true));
+        $this->zip->addFromString($this->metadataPath, Json::encode($metaData));
     }
 
     /**
@@ -542,6 +547,6 @@ class Backup
      */
     private function dataPathToArchivePath(string $dataPath): string
     {
-        return self::DATA_PATH . '/' . $dataPath;
+        return $this->dataPath . '/' . $dataPath;
     }
 }

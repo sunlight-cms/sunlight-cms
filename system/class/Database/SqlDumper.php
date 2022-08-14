@@ -31,28 +31,17 @@ class SqlDumper
     function dump(): TemporaryFile
     {
         $tmpFile = Filesystem::createTmpFile();
-        $handle = null;
+        $handle = fopen($tmpFile, 'wb');
 
-        try {
-            $handle = fopen($tmpFile, 'wb');
-
-            if ($this->dumpTables) {
-                $this->dumpTables($handle);
-            }
-
-            if ($this->dumpData) {
-                $this->dumpData($handle);
-            }
-
-            fclose($handle);
-        } catch (\Throwable $e) {
-            if ($handle !== null) {
-                fclose($handle);
-            }
-            $tmpFile->discard();
-
-            throw $e;
+        if ($this->dumpTables) {
+            $this->dumpTables($handle);
         }
+
+        if ($this->dumpData) {
+            $this->dumpData($handle);
+        }
+
+        fclose($handle);
 
         return $tmpFile;
     }

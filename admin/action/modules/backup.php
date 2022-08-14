@@ -108,18 +108,13 @@ unset($options);
 // zpracovani
 if (!empty($_POST)) {
     try {
-        if (isset($_POST['do_create']) || isset($_POST['do_package'])) {
+        if (isset($_POST['partial_backup']) || isset($_POST['full_backup'])) {
+            $backup_builder->setFullBackup(isset($_POST['full_backup']));
 
-            if (isset($_POST['do_create'])) {
-                $type = BackupBuilder::TYPE_PARTIAL;
-                $store = isset($_POST['do_create']['store']);
+            if ($backup_builder->isFullBackup()) {
+                $store = isset($_POST['full_backup']['store']);
             } else {
-                $type = BackupBuilder::TYPE_FULL;
-                $store = isset($_POST['do_package']['store']);
-            }
-
-            // nastaveni zalohy
-            if ($type === BackupBuilder::TYPE_PARTIAL) {
+                $store = isset($_POST['partial_backup']['store']);
                 $backup_builder->setDatabaseDumpEnabled(isset($_POST['opt_db']));
             }
 
@@ -134,13 +129,11 @@ if (!empty($_POST)) {
             }
 
             // sestavit zalohu
-            $backup = $backup_builder->build($type);
+            $backup = $backup_builder->build();
 
             $backup_name = sprintf(
                 '%s_%s_%s.zip',
-                $type === BackupBuilder::TYPE_PARTIAL
-                    ? 'backup'
-                    : 'full_backup',
+                $backup_builder->isFullBackup() ? 'full_backup' : 'backup',
                 Core::getBaseUrl()->getHost(),
                 date('Y_m_d')
             );
@@ -155,7 +148,6 @@ if (!empty($_POST)) {
             } else {
                 // stahnout
                 Response::downloadFile($backup, $backup_name);
-                $backup->discard();
                 exit;
             }
 
@@ -354,10 +346,10 @@ $output .= $message . '
                 <th>' . _lang('admin.backup.opts') . '</th>
                 <td>
                     <ul class="no-bullets">
-                        <li><label><input type="checkbox" value="1"' . Form::restoreCheckedAndName('do_create', 'opt_db', true) . '> ' . _lang('admin.backup.opt.db') . '</label></li>
+                        <li><label><input type="checkbox" value="1"' . Form::restoreCheckedAndName('partial_backup', 'opt_db', true) . '> ' . _lang('admin.backup.opt.db') . '</label></li>
                         ' . _buffer(function () use ($backup_dynpath_choices) {
                             foreach ($backup_dynpath_choices as $name => $options) {
-                                echo '<li><label><input type="checkbox" value="' . $name . '"' . Form::restoreCheckedAndName('do_create', 'dynpath_' . $name, true) . '> ' . _e($options['label']) . ' <small>(' . GenericTemplates::renderFileSize($options['size']) . ')</small></label></li>';
+                                echo '<li><label><input type="checkbox" value="' . $name . '"' . Form::restoreCheckedAndName('partial_backup', 'dynpath_' . $name, true) . '> ' . _e($options['label']) . ' <small>(' . GenericTemplates::renderFileSize($options['size']) . ')</small></label></li>';
                             }
                         }) . '
                         ' . Extend::buffer('admin.backup.options', ['type' => 'partial']) . '
@@ -367,9 +359,9 @@ $output .= $message . '
             <tr>
                 <td></td>
                 <td>
-                    <input class="button small" type="submit" name="do_create[download]" formtarget="_blank" value="' . _lang('global.download') . '">
+                    <input class="button small" type="submit" name="partial_backup[download]" formtarget="_blank" value="' . _lang('global.download') . '">
                     ' . _lang('global.or') . '
-                    <input class="button small" type="submit" name="do_create[store]" value="' . _lang('admin.backup.store') . '">
+                    <input class="button small" type="submit" name="partial_backup[store]" value="' . _lang('admin.backup.store') . '">
                 </td>
             </tr>
         </table>
@@ -392,7 +384,7 @@ $output .= $message . '
                                 $optional = $backup_builder->isDynamicPathOptional($name);
 
                                 if ($optional) {
-                                    $checked = !isset($_POST['do_package']) || isset($_POST['do_package'], $_POST['dynpath_' . $name]);
+                                    $checked = !isset($_POST['full_backup']) || isset($_POST['full_backup'], $_POST['dynpath_' . $name]);
                                 } else {
                                     $checked = true;
                                 }
@@ -406,9 +398,9 @@ $output .= $message . '
             <tr>
                 <td></td>
                 <td>
-                    <input class="button small" type="submit" name="do_package[download]" formtarget="_blank" value="' . _lang('global.download') . '">
+                    <input class="button small" type="submit" name="full_backup[download]" formtarget="_blank" value="' . _lang('global.download') . '">
                     ' . _lang('global.or') . '
-                    <input class="button small" type="submit" name="do_package[store]" value="' . _lang('admin.backup.store') . '">
+                    <input class="button small" type="submit" name="full_backup[store]" value="' . _lang('admin.backup.store') . '">
                 </td>
             </tr>
         </table>

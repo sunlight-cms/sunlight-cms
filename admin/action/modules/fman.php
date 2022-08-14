@@ -336,20 +336,16 @@ if ($continue) {
                 if (count($selected) > 0) {
                     $tmpFile = Filesystem::createTmpFile();
                     $zip = new ZipArchive();
+                    $zip->open($tmpFile->getPathname(), ZipArchive::OVERWRITE);
 
-                    try {
-                        $zip->open($tmpFile->getPathname(), ZipArchive::OVERWRITE);
-                        foreach ($selected as $sel) {
-                            $zip->addFile($dir . $sel, $sel);
-                        }
-                        $zip->close();
-                    } finally {
-                        $tmpFile->discard();
+                    foreach ($selected as $sel) {
+                        $zip->addFile($dir . $sel, $sel);
                     }
 
+                    $zip->close();
+
                     Response::downloadFile($tmpFile->getPathname(), sprintf('%s.zip', basename($dir)));
-                    // uklid
-                    $tmpFile->discard();
+                    exit;
                 }
                 break;
 

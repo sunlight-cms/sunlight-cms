@@ -66,14 +66,10 @@ final class Image
     {
         $tmpfile = Filesystem::createTmpFile();
 
-        try {
-            $this->generate($tmpfile->getPathname(), $format, $options);
+        $this->generate($tmpfile->getPathname(), $format, $options);
 
-            if (!$tmpfile->move($path)) {
-                throw new ImageException(ImageException::MOVE_FAILED);
-            }
-        } finally {
-            $tmpfile->discard();
+        if (!$tmpfile->move($path)) {
+            throw new ImageException(ImageException::MOVE_FAILED);
         }
     }
 
