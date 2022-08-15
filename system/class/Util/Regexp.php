@@ -23,12 +23,12 @@ abstract class Regexp
      *          ...
      *      )
      *
-     * @param string   $pattern  regexp pattern to search for
-     * @param string   $subject  string to search in
+     * @param string $pattern regexp pattern to search for
+     * @param string $subject string to search in
      * @param callback $callback replacement callback(array matches, int offset): string
-     * @param int      $limit    maximum number of replacements, -1 = unlimited
-     * @param int      $offset   initial matching offset
-     * @param int|null &$count   variable to store the number of replacements into
+     * @param int $limit maximum number of replacements, -1 = unlimited
+     * @param int $offset initial matching offset
+     * @param int|null &$count variable to store the number of replacements into
      * @return string|bool false on failure
      */
     static function replace(string $pattern, string $subject, callable $callback, int $limit = -1, int $offset = 0, ?int &$count = null)

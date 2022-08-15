@@ -70,8 +70,7 @@ abstract class Post
      * Vyhodnotit pravo uzivatele na pristup k prispevku
      *
      * @param array $userQuery vystup z {@see User::createQuery()}
-     * @param array $post      data prispevku (potreba data uzivatele a comment.time)
-     * @return bool
+     * @param array $post data prispevku (potreba data uzivatele a comment.time)
      */
     static function checkAccess(array $userQuery, array $post): bool
     {
@@ -119,11 +118,11 @@ abstract class Post
      * Join aliasy: home_page, home_art, home_cat1..3, home_post
      * Sloupce: data postu + (page|cat|art)_(title|slug), xhome_subject
      *
-     * @param string      $alias         alias tabulky komentaru pouzity v dotazu
-     * @param array       $types         pole s typy prispevku, ktere maji byt nacteny
-     * @param array       $homes         pole s ID domovskych polozek
+     * @param string $alias alias tabulky komentaru pouzity v dotazu
+     * @param array $types pole s typy prispevku, ktere maji byt nacteny
+     * @param array $homes pole s ID domovskych polozek
      * @param string|null $sqlConditions SQL s vlastnimi WHERE podminkami
-     * @param bool        $doCount       vracet take pocet odpovidajicich prispevku 1/0
+     * @param bool $doCount vracet take pocet odpovidajicich prispevku 1/0
      * @return array sloupce, joiny, where podminka, [pocet]
      */
     static function createFilter(string $alias, array $types = [], array $homes = [], ?string $sqlConditions = null, bool $doCount = false): array
@@ -192,10 +191,9 @@ LEFT JOIN " . DB::table('post') . " home_post ON({$alias}.type=" . self::FORUM_T
     /**
      * Vykreslit text prispevku
      *
-     * @param string $input   vstupni text (HTML)
-     * @param bool   $bbcode  vyhodnotit bbcode 1/0
-     * @param bool   $nl2br   prevest odrakovani na <br>
-     * @return string
+     * @param string $input vstupni text (HTML)
+     * @param bool $bbcode vyhodnotit bbcode 1/0
+     * @param bool $nl2br prevest odrakovani na <br>
      */
     static function render(string $input, bool $bbcode = true, bool $nl2br = true): string
     {

@@ -24,7 +24,6 @@ final class ImageService
      * @param string $source source image path
      * @param array $resizeOptions {@see ImageTransformer::resize()}
      * @param array $writeOptions {@see Image::write()}
-     * @return string
      */
     static function getThumbnail(string $type, string $source, array $resizeOptions, array $writeOptions = []): string
     {
@@ -119,7 +118,6 @@ final class ImageService
      * @param string $target target path
      * @param array $options see above
      * @param ImageException|null $exception set to an exception object in case of failure
-     * @return bool
      */
     static function process(
         string $type,

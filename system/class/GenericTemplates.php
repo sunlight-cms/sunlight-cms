@@ -11,8 +11,6 @@ abstract class GenericTemplates
      * Zformatovat ciselnout hodnotu na zaklade aktualni lokalizace
      *
      * @param number $number
-     * @param int    $decimals
-     * @return string
      */
     static function renderNumber($number, int $decimals = 2): string
     {
@@ -28,9 +26,8 @@ abstract class GenericTemplates
     /**
      * Zformatovat timestamp na zaklade nastaveni systemu
      *
-     * @param int         $timestamp UNIX timestamp
-     * @param string|null $category  kategorie casu (null, article, post, activity)
-     * @return string
+     * @param int $timestamp UNIX timestamp
+     * @param string|null $category kategorie casu (null, article, post, activity)
      */
     static function renderTime(int $timestamp, ?string $category = null): string
     {
@@ -48,9 +45,6 @@ abstract class GenericTemplates
 
     /**
      * Zformatovat velikost souboru
-     *
-     * @param int $bytes
-     * @return string
      */
     static function renderFilesize(int $bytes): string
     {
@@ -71,7 +65,6 @@ abstract class GenericTemplates
      * Zobrazit IP adresu
      *
      * @param string $ip ip adresa
-     * @return string
      */
     static function renderIp(string $ip): string
     {
@@ -85,8 +78,6 @@ abstract class GenericTemplates
 
     /**
      * Sestavit zacatek HTML dokumentu
-     *
-     * @return string
      */
     static function renderHead(): string
     {
@@ -117,7 +108,6 @@ HTML;
      * extend_event nazev extend udalosti pro toto sestaveni
      *
      * @param array $assets pole s konfiguraci assetu
-     * @return string
      */
     static function renderHeadAssets(array $assets): string
     {
@@ -176,8 +166,6 @@ HTML;
      *      array(obsah) nebo array(popisek, obsah)
      *
      * @param array[] $infos
-     * @param string  $class
-     * @return string
      */
     static function renderInfos(array $infos, string $class = 'list-info'): string
     {
@@ -224,10 +212,9 @@ HTML;
     /**
      * Sestavit kod pro limitovani delky textarey javascriptem
      *
-     * @param int    $maxlength maximalni povolena delka textu
-     * @param string $form      nazev formulare
-     * @param string $name      nazev textarey
-     * @return string
+     * @param int $maxlength maximalni povolena delka textu
+     * @param string $form nazev formulare
+     * @param string $name nazev textarey
      */
     static function jsLimitLength(int $maxlength, string $form, string $name): string
     {

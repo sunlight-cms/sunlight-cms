@@ -25,12 +25,6 @@ class Password
     /** @var string */
     private $hash;
 
-    /**
-     * @param string $algo
-     * @param int    $iterations
-     * @param string $salt
-     * @param string $hash
-     */
     function __construct(string $algo, int $iterations, string $salt, string $hash)
     {
         $this->algo = $algo;
@@ -76,12 +70,7 @@ class Password
     /**
      * Create a hash
      *
-     * @param string $algo
-     * @param int    $iterations
-     * @param string $salt
-     * @param string $plainPassword
      * @throws \InvalidArgumentException on invalid arguments
-     * @return string
      */
     private static function hash(string $algo, int $iterations, string $salt, string $plainPassword): string
     {
@@ -110,8 +99,6 @@ class Password
      * Convert to a string
      *
      * This methods calls build() internally
-     *
-     * @return string
      */
     function __toString(): string
     {
@@ -120,8 +107,6 @@ class Password
 
     /**
      * Build the password string
-     *
-     * @return string
      */
     function build(): string
     {
@@ -136,9 +121,6 @@ class Password
 
     /**
      * Match the given plain password against this instance
-     *
-     * @param string $plainPassword
-     * @return bool
      */
     function match(string $plainPassword): bool
     {
@@ -158,8 +140,6 @@ class Password
 
     /**
      * See if the password should be updated
-     *
-     * @return bool
      */
     function shouldUpdate(): bool
     {
@@ -172,8 +152,6 @@ class Password
      * Update the password
      *
      * This method updates the algo (if needed), salt and the hash.
-     *
-     * @param string $plainPassword
      */
     function update(string $plainPassword): void
     {

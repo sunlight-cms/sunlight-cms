@@ -21,9 +21,9 @@ class Message
     private $isHtml;
 
     /**
-     * @param string $type    see Message class constants
+     * @param string $type see Message class constants
      * @param string $message the message
-     * @param bool   $isHtml  display the message should be rendered as html (unescaped) 1/0
+     * @param bool $isHtml display the message should be rendered as html (unescaped) 1/0
      */
     function __construct(string $type, string $message, bool $isHtml = false)
     {
@@ -48,8 +48,7 @@ class Message
      * Create an informational message
      *
      * @param string $message the message
-     * @param bool   $isHtml  display the message should be rendered as html (unescaped) 1/0
-     * @return self
+     * @param bool $isHtml display the message should be rendered as html (unescaped) 1/0
      */
     static function ok(string $message, bool $isHtml = false): self
     {
@@ -60,8 +59,7 @@ class Message
      * Create a warning message
      *
      * @param string $message the message
-     * @param bool   $isHtml  display the message should be rendered as html (unescaped) 1/0
-     * @return self
+     * @param bool $isHtml display the message should be rendered as html (unescaped) 1/0
      */
     static function warning(string $message, bool $isHtml = false): self
     {
@@ -72,8 +70,7 @@ class Message
      * Create an error message
      *
      * @param string $message the message
-     * @param bool   $isHtml  display the message should be rendered as html (unescaped) 1/0
-     * @return self
+     * @param bool $isHtml display the message should be rendered as html (unescaped) 1/0
      */
     static function error(string $message, bool $isHtml = false): self
     {
@@ -115,8 +112,6 @@ class Message
 
     /**
      * Render the message
-     *
-     * @return string
      */
     function __toString(): string
     {
@@ -133,8 +128,6 @@ class Message
 
     /**
      * Get the message type
-     *
-     * @return string
      */
     function getType(): string
     {
@@ -143,8 +136,6 @@ class Message
 
     /**
      * Get the message
-     *
-     * @return string
      */
     function getMessage(): string
     {
@@ -153,8 +144,6 @@ class Message
 
     /**
      * See if the message is HTML
-     *
-     * @return bool
      */
     function isHtml(): bool
     {
@@ -165,9 +154,6 @@ class Message
      * Append a string to the message
      *
      * This forces the message to become HTML, if it isn't already
-     *
-     * @param string $str
-     * @param bool   $isHtml
      */
     function append(string $str, bool $isHtml = false): void
     {

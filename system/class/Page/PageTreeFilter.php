@@ -22,8 +22,6 @@ class PageTreeFilter implements TreeFilterInterface
      * ord_level (0)    level at which to match the order (0 = root)
      * check_level (1)  check user and page level 1/0
      * check_public (1) check page's public column 1/0
-     *
-     * @param array $options
      */
     function __construct(array $options)
     {
@@ -40,11 +38,6 @@ class PageTreeFilter implements TreeFilterInterface
         $this->sql = $this->compileSql($options);
     }
 
-    /**
-     * @param array      $node
-     * @param TreeReader $reader
-     * @return bool
-     */
     function filterNode(array $node, TreeReader $reader): bool
     {
         return
@@ -68,12 +61,6 @@ class PageTreeFilter implements TreeFilterInterface
                                     );
     }
 
-    /**
-     * @param array      $invalidNode
-     * @param array      $validChildNode
-     * @param TreeReader $reader
-     * @return bool
-     */
     function acceptInvalidNodeWithValidChild(array $invalidNode, array $validChildNode, TreeReader $reader): bool
     {
         if (
@@ -87,19 +74,11 @@ class PageTreeFilter implements TreeFilterInterface
         return true;
     }
 
-    /**
-     * @param TreeReader $reader
-     * @return string
-     */
     function getNodeSql(TreeReader $reader): string
     {
         return $this->sql;
     }
 
-    /**
-     * @param array $options
-     * @return string
-     */
     private function compileSql(array $options): string
     {
         // base conditions

@@ -30,9 +30,6 @@ class Text3dCaptcha
     /** @var int */
     private $noise = 0x30;
 
-    /**
-     * @param float $scale
-     */
     function setScale(float $scale): void
     {
         $this->scale = $scale;
@@ -54,41 +51,26 @@ class Text3dCaptcha
         $this->font = $font;
     }
 
-    /**
-     * @param int $foregroundColor
-     */
     function setForegroundColor(int $foregroundColor): void
     {
         $this->foregroundColor = $foregroundColor;
     }
 
-    /**
-     * @param int $horizontalPadding
-     */
     function setHorizontalPadding(int $horizontalPadding): void
     {
         $this->horizontalPadding = $horizontalPadding;
     }
 
-    /**
-     * @param int $verticalPadding
-     */
     function setVerticalPadding(int $verticalPadding): void
     {
         $this->verticalPadding = $verticalPadding;
     }
 
-    /**
-     * @param int $letterSpacing
-     */
     function setLetterSpacing(int $letterSpacing): void
     {
         $this->letterSpacing = $letterSpacing;
     }
 
-    /**
-     * @param int $backgroundColor
-     */
     function setBackgroundColor(int $backgroundColor): void
     {
         $this->backgroundColor = $backgroundColor;
@@ -146,9 +128,6 @@ class Text3dCaptcha
     }
 
     /**
-     * @param float $x
-     * @param float $y
-     * @param float $z
      * @return int[]
      */
     private function to2d(float $x, float $y, float $z): array

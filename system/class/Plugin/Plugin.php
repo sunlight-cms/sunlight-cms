@@ -70,8 +70,6 @@ abstract class Plugin
 
     /**
      * See if this plugin is currently active
-     *
-     * @return bool
      */
     static function isActive(): bool
     {
@@ -90,8 +88,6 @@ abstract class Plugin
 
     /**
      * Get plugin identifier
-     *
-     * @return string
      */
     function getId(): string
     {
@@ -100,25 +96,17 @@ abstract class Plugin
 
     /**
      * Get camel cased plugin identifier
-     *
-     * @return string
      */
     function getCamelId(): string
     {
         return $this->camelId;
     }
 
-    /**
-     * @return string
-     */
     function getType(): string
     {
         return $this->type;
     }
 
-    /**
-     * @return int
-     */
     function getStatus(): int
     {
         return $this->status;
@@ -126,8 +114,6 @@ abstract class Plugin
 
     /**
      * See if the plugin is disabled
-     *
-     * @return bool
      */
     function isDisabled(): bool
     {
@@ -136,8 +122,6 @@ abstract class Plugin
 
     /**
      * See if the plugin can be disabled
-     *
-     * @return bool
      */
     function canBeDisabled(): bool
     {
@@ -156,8 +140,6 @@ abstract class Plugin
 
     /**
      * See if the plugin has an installer
-     *
-     * @return bool
      */
     function hasInstaller(): bool
     {
@@ -168,7 +150,6 @@ abstract class Plugin
      * Get installer for this plugin
      *
      * @throws \LogicException if the plugin has no installer
-     * @return PluginInstaller
      */
     function getInstaller(): PluginInstaller
     {
@@ -181,8 +162,6 @@ abstract class Plugin
 
     /**
      * See if the plugin needs installation be activated
-     *
-     * @return bool
      */
     function needsInstallation(): bool
     {
@@ -191,8 +170,6 @@ abstract class Plugin
 
     /**
      * See if the plugin can be installed
-     *
-     * @return bool
      */
     function canBeInstalled(): bool
     {
@@ -201,8 +178,6 @@ abstract class Plugin
 
     /**
      * See if the plugin can be uninstalled
-     *
-     * @return bool
      */
     function canBeUninstalled(): bool
     {
@@ -211,8 +186,6 @@ abstract class Plugin
 
     /**
      * See if the plugin can be removed
-     *
-     * @return bool
      */
     function canBeRemoved(): bool
     {
@@ -221,8 +194,6 @@ abstract class Plugin
 
     /**
      * See if the plugin has errors
-     *
-     * @return bool
      */
     function hasErrors(): bool
     {
@@ -237,35 +208,23 @@ abstract class Plugin
         return $this->errors;
     }
 
-    /**
-     * @return string
-     */
     function getDirectory(): string
     {
         return $this->dir;
     }
 
-    /**
-     * @return string
-     */
     function getFile(): string
     {
         return $this->file;
     }
 
-    /**
-     * @param bool $absolute
-     * @return string
-     */
     function getWebPath(bool $absolute = false): string
     {
         return Router::path($this->webPath, ['absolute' => $absolute]);
     }
 
     /**
-     * @param string $name
      * @throws \OutOfBoundsException if the option does not exist
-     * @return mixed
      */
     function getOption(string $name)
     {
@@ -277,7 +236,6 @@ abstract class Plugin
     }
 
     /**
-     * @param string $name
      * @return mixed null if not defined
      */
     function getExtraOption(string $name)
@@ -285,9 +243,6 @@ abstract class Plugin
         return $this->options['extra'][$name] ?? null;
     }
 
-    /**
-     * @return array
-     */
     function getOptions(): array
     {
         return $this->options;
@@ -295,8 +250,6 @@ abstract class Plugin
 
     /**
      * Get plugin configuration
-     *
-     * @return ConfigurationFile
      */
     function getConfig(): ConfigurationFile
     {
@@ -313,35 +266,21 @@ abstract class Plugin
         return $this->config;
     }
 
-    /**
-     * @param string $key
-     * @return string
-     */
     function getConfigLabel(string $key): string
     {
         return $key;
     }
 
-    /**
-     * @return array
-     */
     protected function getConfigDefaults(): array
     {
         return [];
     }
 
-    /**
-     * @return string
-     */
     protected function getConfigPath(): string
     {
         return $this->dir . '/config.php';
     }
 
-    /**
-     * @param string $name
-     * @return PluginAction|null
-     */
     function getAction(string $name): ?PluginAction
     {
         switch ($name) {

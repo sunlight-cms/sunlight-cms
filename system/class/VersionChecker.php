@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Sunlight;
 
 use Kuria\Url\Url;
@@ -15,9 +14,6 @@ class VersionChecker
     /** @var bool */
     private static $loaded = false;
 
-    /**
-     * @return array|null
-     */
     static function check(): ?array
     {
         if (!self::$loaded) {

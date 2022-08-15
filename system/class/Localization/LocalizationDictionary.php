@@ -15,10 +15,7 @@ class LocalizationDictionary
     /**
      * Get a localization string
      *
-     * @param string      $key
-     * @param array|null  $replacements replacement map
-     * @param string|null $fallback
-     * @return string
+     * @param array|null $replacements replacement map
      */
     function get(string $key, ?array $replacements = null, ?string $fallback = null): string
     {
@@ -54,8 +51,6 @@ class LocalizationDictionary
      * Add entries
      *
      * Existing entries will not be overwritten.
-     *
-     * @param array $entries
      */
     function add(array $entries): void
     {
@@ -70,9 +65,6 @@ class LocalizationDictionary
      * - the prefix cannot contain a dot
      *
      * Example:
-     *
-     * @param string                 $prefix
-     * @param LocalizationDictionary $subDictionary
      */
     function registerSubDictionary(string $prefix, LocalizationDictionary $subDictionary): void
     {

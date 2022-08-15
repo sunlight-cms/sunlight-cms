@@ -13,8 +13,6 @@ abstract class PluginInstaller
 
     /**
      * See if the plugin is installed
-     *
-     * @return bool
      */
     final function isInstalled(): bool
     {
@@ -29,7 +27,6 @@ abstract class PluginInstaller
      * Install the plugin
      *
      * @throws \LogicException if the plugin is already installed
-     * @return bool
      */
     final function install(): bool
     {
@@ -50,7 +47,6 @@ abstract class PluginInstaller
      * Uninstall the plugin
      *
      * @throws \LogicException if the plugin is not installed
-     * @return bool
      */
     final function uninstall(): bool
     {
@@ -68,8 +64,6 @@ abstract class PluginInstaller
      * Verify plugin installation status
      *
      * Returns TRUE if the plugin is installed, FALSE otherwise.
-     *
-     * @return bool
      */
     abstract protected function verify(): bool;
 
@@ -106,7 +100,7 @@ abstract class PluginInstaller
     /**
      * Check that all given database table columns exist
      *
-     * @param string   $table   table name (with prefix)
+     * @param string $table table name (with prefix)
      * @param string[] $columns column names
      * @return string[] list of missing columns
      */
@@ -136,7 +130,7 @@ abstract class PluginInstaller
     /**
      * Load a SQL dump
      *
-     * @param string      $path          path to the .sql file
+     * @param string $path path to the .sql file
      * @param string|null $currentPrefix prefix that is used in the dump (null = do not replace)
      */
     protected function loadSqlDump(string $path, ?string $currentPrefix = 'sunlight_'): void

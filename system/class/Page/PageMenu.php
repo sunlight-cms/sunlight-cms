@@ -10,12 +10,11 @@ abstract class PageMenu
     /**
      * Vykreslit menu
      *
-     * @param array       $flatPageTree plochy strom stranek, musi obsahovat sloupce z {@see PageMenu::getRequiredExtraColumns()}
-     * @param int|null    $activeId     ID aktivni stranky nebo null
-     * @param string|null $rootClass    CSS trida korenoveho kontejneru
-     * @param string|null $pageEvent    nazev extend udalosti pro jednotlive stranky
-     * @param string|null $menuType     identifikator typu menu
-     * @return string
+     * @param array $flatPageTree plochy strom stranek, musi obsahovat sloupce z {@see PageMenu::getRequiredExtraColumns()}
+     * @param int|null $activeId ID aktivni stranky nebo null
+     * @param string|null $rootClass CSS trida korenoveho kontejneru
+     * @param string|null $pageEvent nazev extend udalosti pro jednotlive stranky
+     * @param string|null $menuType identifikator typu menu
      */
     static function render(array $flatPageTree, ?int $activeId = null, ?string $rootClass = null, ?string $pageEvent = null, ?string $menuType = null): string
     {
@@ -130,8 +129,6 @@ abstract class PageMenu
 
     /**
      * Ziskat seznam extra sloupcu potrebnych k vykresleni menu
-     *
-     * @return array
      */
     static function getRequiredExtraColumns(): array
     {

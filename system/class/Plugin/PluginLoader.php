@@ -43,9 +43,6 @@ class PluginLoader
      *          )
      *          bound_files => array(path, ...)
      *      )
-     *
-     * @param bool $resolveInstallationStatus
-     * @return array
      */
     function load(bool $resolveInstallationStatus = true): array
     {
@@ -220,8 +217,7 @@ class PluginLoader
      * Check version
      *
      * @param string $requiredVersion the required version pattern
-     * @param string $actualVersion   the version to match the pattern against
-     * @return bool
+     * @param string $actualVersion the version to match the pattern against
      */
     function checkVersion(string $requiredVersion, string $actualVersion): bool
     {
@@ -229,7 +225,6 @@ class PluginLoader
     }
 
     /**
-     * @param PluginData $plugin
      * @param string[] $errors
      */
     private function convertPluginToErrorState(PluginData $plugin, array $errors): void
@@ -243,7 +238,6 @@ class PluginLoader
      *
      * @param PluginData[] $plugins
      * @throws \RuntimeException if the dependencies cannot be resolved
-     * @return array
      */
     private function resolveDependencies(array $plugins): array
     {
@@ -314,7 +308,6 @@ class PluginLoader
      * )
      *
      * @param PluginData[] $plugins
-     * @return array
      */
     private function findCircularDependencies(array $plugins): array
     {
@@ -353,11 +346,6 @@ class PluginLoader
 
     /**
      * Check plugin dependency version
-     *
-     * @param PluginData $plugin
-     * @param string $requiredVersion
-     * @param array &$errors
-     * @return bool
      */
     private function checkDependency(PluginData $plugin, string $requiredVersion, array &$errors): bool
     {

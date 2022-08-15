@@ -94,9 +94,6 @@ abstract class PageLister
 
     /**
      * Set config value
-     *
-     * @param string $name
-     * @param mixed  $value
      */
     static function setConfig(string $name, $value): void
     {
@@ -110,9 +107,6 @@ abstract class PageLister
 
     /**
      * Get config value
-     *
-     * @param string $name
-     * @return mixed
      */
     static function getConfig(string $name)
     {
@@ -125,8 +119,6 @@ abstract class PageLister
 
     /**
      * Save ord changes
-     *
-     * @return bool
      */
     static function saveOrd(): bool
     {
@@ -147,8 +139,6 @@ abstract class PageLister
 
     /**
      * Get session key
-     *
-     * @return string
      */
     private static function getSessionKey(): string
     {
@@ -167,9 +157,6 @@ abstract class PageLister
      * title_editable   render title as an editable input 1/0
      * level_class      render level class 1/0
      * breadcrumbs      render breadcrumbs 1/0
-     *
-     * @param array $options
-     * @return string
      */
     static function render(array $options = []): string
     {
@@ -210,8 +197,6 @@ abstract class PageLister
 
     /**
      * Render breadcrumbs
-     *
-     * @param string $output
      */
     private static function renderBreadcrumbs(string &$output): void
     {
@@ -232,9 +217,6 @@ abstract class PageLister
 
     /**
      * Render list
-     *
-     * @param string $output
-     * @param array  $options
      */
     private static function renderList(string &$output, array $options): void
     {
@@ -307,10 +289,6 @@ abstract class PageLister
 
     /**
      * Render full tree
-     *
-     * @param string $output
-     * @param array  $tree
-     * @param array  $options
      */
     private static function renderFullTree(string &$output, array $tree, array $options): void
     {
@@ -334,10 +312,6 @@ abstract class PageLister
 
     /**
      * Render single level
-     *
-     * @param string $output
-     * @param array  $tree
-     * @param array  $options
      */
     private static function renderSingleLevel(string &$output, array $tree, array $options): void
     {
@@ -350,10 +324,6 @@ abstract class PageLister
 
     /**
      * Filter tree
-     *
-     * @param array $tree
-     * @param array $options
-     * @return array
      */
     private static function filterTree(array $tree, array $options): array
     {
@@ -400,9 +370,6 @@ abstract class PageLister
 
     /**
      * Check whether the page is accessible
-     *
-     * @param array $page
-     * @return bool
      */
     private static function isAccessible(array $page): bool
     {
@@ -420,12 +387,6 @@ abstract class PageLister
 
     /**
      * Render page
-     *
-     * @param string $output
-     * @param array  $page
-     * @param array  $options
-     * @param string $class
-     * @param int    $levelOffset
      */
     private static function renderPage(string &$output, array $page, array $options, string $class = '', int $levelOffset = 0): void
     {
@@ -535,10 +496,6 @@ abstract class PageLister
 
     /**
      * Prepare page actions
-     *
-     * @param array $page
-     * @param bool  $hasAccess
-     * @return array
      */
     private static function getPageActions(array $page, bool $hasAccess): array
     {
@@ -609,10 +566,6 @@ abstract class PageLister
 
     /**
      * [CALLBACK] Sort actions
-     *
-     * @param array $a
-     * @param array $b
-     * @return int
      */
     static function sortActions(array $a, array $b): int
     {
@@ -621,9 +574,6 @@ abstract class PageLister
 
     /**
      * Render page flags
-     *
-     * @param array $page
-     * @return string
      */
     private static function renderPageFlags(array $page): string
     {

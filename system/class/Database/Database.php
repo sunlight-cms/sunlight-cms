@@ -21,12 +21,6 @@ abstract class Database
     /**
      * Pripojit se k MySQL serveru
      *
-     * @param string      $server
-     * @param string      $user
-     * @param string      $password
-     * @param string      $database
-     * @param string|null $port
-     * @param string      $prefix
      * @throws DatabaseException on failure
      */
     static function connect(
@@ -89,9 +83,8 @@ abstract class Database
     /**
      * Vykonat SQL dotaz
      *
-     * @param string $sql
-     * @param bool   $expectError nevyhazovat vyjimku pri chybe 1/0
-     * @param bool   $log         vyvolat extend udalost 1/0
+     * @param bool $expectError nevyhazovat vyjimku pri chybe 1/0
+     * @param bool $log vyvolat extend udalost 1/0
      * @throws DatabaseException
      * @return \mysqli_result|bool
      */
@@ -119,8 +112,7 @@ abstract class Database
     /**
      * Vykonat SQL dotaz a vratit prvni radek
      *
-     * @param string $sql
-     * @param bool   $expectError deaktivovat DBException v pripade chyby
+     * @param bool $expectError deaktivovat DBException v pripade chyby
      * @return array|bool
      */
     static function queryRow(string $sql, bool $expectError = false)
@@ -138,11 +130,10 @@ abstract class Database
     /**
      * Vykonat SQL dotaz a vratit vsechny radky
      *
-     * @param string          $sql
-     * @param int|string|null $indexBy     indexovat vysledne pole timto klicem z radku
+     * @param int|string|null $indexBy indexovat vysledne pole timto klicem z radku
      * @param int|string|null $fetchColumn nacist pouze hodnotu daneho sloupce z kazdeho radku
-     * @param bool            $assoc       ziskat kazdy radek jako asociativni pole
-     * @param bool            $expectError deaktivovat DBException v pripade chyby
+     * @param bool $assoc ziskat kazdy radek jako asociativni pole
+     * @param bool $expectError deaktivovat DBException v pripade chyby
      * @return array[]|bool
      */
     static function queryRows(string $sql, $indexBy = null, $fetchColumn = null, bool $assoc = true, bool $expectError = false)
@@ -162,7 +153,6 @@ abstract class Database
      *
      * @param string $table nazev tabulky (bez prefixu)
      * @param string $where podminka
-     * @return int
      */
     static function count(string $table, string $where = '1'): int
     {
@@ -179,9 +169,6 @@ abstract class Database
 
     /**
      * Ziskat nazvy tabulek dle prefixu
-     *
-     * @param string|null $prefix
-     * @return array
      */
     static function getTablesByPrefix(?string $prefix = null): array
     {
@@ -198,7 +185,6 @@ abstract class Database
     /**
      * Ziskat radek z dotazu
      *
-     * @param \mysqli_result $result
      * @return array|bool
      */
     static function row(\mysqli_result $result)
@@ -209,10 +195,9 @@ abstract class Database
     /**
      * Ziskat vsechny radky z dotazu
      *
-     * @param \mysqli_result  $result
-     * @param int|string|null $indexBy     indexovat vysledne pole timto klicem z radku
+     * @param int|string|null $indexBy indexovat vysledne pole timto klicem z radku
      * @param int|string|null $fetchColumn nacist pouze hodnotu daneho sloupce z kazdeho radku
-     * @param bool            $assoc       ziskat kazdy radek jako asociativni pole
+     * @param bool $assoc ziskat kazdy radek jako asociativni pole
      * @return array[]
      */
     static function rows(\mysqli_result $result, $indexBy = null, $fetchColumn = null, bool $assoc = true): array
@@ -234,7 +219,6 @@ abstract class Database
     /**
      * Ziskat radek z dotazu s numerickymi klici namisto nazvu sloupcu
      *
-     * @param \mysqli_result $result
      * @return array|bool
      */
     static function rown(\mysqli_result $result)
@@ -245,9 +229,7 @@ abstract class Database
     /**
      * Ziskat konkretni sloupec z prvniho radku vysledku
      *
-     * @param \mysqli_result $result
-     * @param int            $column cislo sloupce
-     * @return mixed
+     * @param int $column cislo sloupce
      */
     static function result(\mysqli_result $result, int $column = 0)
     {
@@ -262,9 +244,6 @@ abstract class Database
 
     /**
      * Ziskat seznam nazvu sloupcu z provedeneho dotazu
-     *
-     * @param \mysqli_result $result
-     * @return array
      */
     static function columns(\mysqli_result $result): array
     {
@@ -279,9 +258,6 @@ abstract class Database
 
     /**
      * Uvolnit vysledek dotazu
-     *
-     * @param \mysqli_result $result
-     * @return bool
      */
     static function free(\mysqli_result $result): bool
     {
@@ -292,9 +268,6 @@ abstract class Database
 
     /**
      * Zjistit pocet radku ve vysledku
-     *
-     * @param \mysqli_result $result
-     * @return int
      */
     static function size(\mysqli_result $result): int
     {
@@ -303,8 +276,6 @@ abstract class Database
 
     /**
      * Zjitit AUTO_INCREMENT ID posledniho vlozeneho radku
-     *
-     * @return int
      */
     static function insertID(): int
     {
@@ -313,8 +284,6 @@ abstract class Database
 
     /**
      * Zjistit pocet radku ovlivnenych poslednim dotazem
-     *
-     * @return int
      */
     static function affectedRows(): int
     {
@@ -332,8 +301,8 @@ abstract class Database
     /**
      * Zpracovat hodnotu pro pouziti v dotazu
      *
-     * @param mixed $value       hodnota
-     * @param bool  $handleArray zpracovavat pole 1/0
+     * @param mixed $value hodnota
+     * @param bool $handleArray zpracovavat pole 1/0
      * @return string|array|null
      */
     static function esc($value, bool $handleArray = false)
@@ -363,7 +332,6 @@ abstract class Database
      * Zpracovat hodnotu pro pouziti jako identifikator (nazev tabulky / sloupce) v dotazu
      *
      * @param string $identifier identifikator
-     * @return string
      */
     static function escIdt(string $identifier): string
     {
@@ -372,9 +340,6 @@ abstract class Database
 
     /**
      * Sestavit seznam identifikatoru oddeleny carkami
-     *
-     * @param array $identifiers
-     * @return string
      */
     static function idtList(array $identifiers): string
     {
@@ -396,7 +361,6 @@ abstract class Database
      * Escapovat specialni wildcard znaky ("%" a "_") v retezci
      *
      * @param string $string retezec
-     * @return string
      */
     static function escWildcard(string $string): string
     {
@@ -410,9 +374,8 @@ abstract class Database
     /**
      * Zpracovat hodnotu pro pouziti v dotazu vcetne pripadnych uvozovek
      *
-     * @param mixed $value       hodnota
-     * @param bool  $handleArray zpracovavat pole 1/0
-     * @return string
+     * @param mixed $value hodnota
+     * @param bool $handleArray zpracovavat pole 1/0
      */
     static function val($value, bool $handleArray = false): string
     {
@@ -449,7 +412,6 @@ abstract class Database
      * Zpracovat hodnotu pro surove pouziti v dotazu
      *
      * @param string $safeSql hodnota
-     * @return RawSqlValue
      */
     static function raw(string $safeSql): RawSqlValue
     {
@@ -510,9 +472,9 @@ abstract class Database
     /**
      * Vlozit radek do databaze
      *
-     * @param string $table       nazev tabulky (bez prefixu)
-     * @param array  $data        asociativni pole s daty
-     * @param bool   $getInsertId vratit insert ID 1/0
+     * @param string $table nazev tabulky (bez prefixu)
+     * @param array $data asociativni pole s daty
+     * @param bool $getInsertId vratit insert ID 1/0
      * @return bool|int
      */
     static function insert(string $table, array $data, bool $getInsertId = false)
@@ -554,8 +516,7 @@ abstract class Database
      * pocet (hodnota sloupce je NULL, neni-li uveden oproti ostatnim radkum)
      *
      * @param string $table nazev tabulky (bez prefixu)
-     * @param array  $rows  pole s radky, ktere se maji vlozit (kazdy radek je asociativni pole)
-     * @return bool
+     * @param array $rows pole s radky, ktere se maji vlozit (kazdy radek je asociativni pole)
      */
     static function insertMulti(string $table, array $rows): bool
     {
@@ -611,11 +572,10 @@ abstract class Database
     /**
      * Aktualizovat radky v databazi
      *
-     * @param string   $table nazev tabulky (bez prefixu)
-     * @param string   $cond  podminka WHERE
-     * @param array    $data  asociativni pole se zmenami
+     * @param string $table nazev tabulky (bez prefixu)
+     * @param string $cond podminka WHERE
+     * @param array $data asociativni pole se zmenami
      * @param int|null $limit limit upravenych radku (null = bez limitu)
-     * @return bool
      */
     static function update(string $table, string $cond, array $data, ?int $limit = 1): bool
     {
@@ -638,11 +598,11 @@ abstract class Database
     /**
      * Aktualizovat radky v databazi dle seznamu identifikatoru
      *
-     * @param string $table       nazev tabulky (bez prefixu)
-     * @param string $idColumn    nazev sloupce, ktery obsahuje identifikator
-     * @param array  $set         seznam identifikatoru
-     * @param array  $changeset   spolecne asociativni pole se zmenami
-     * @param int    $maxPerQuery maximalni pocet polozek v 1 dotazu
+     * @param string $table nazev tabulky (bez prefixu)
+     * @param string $idColumn nazev sloupce, ktery obsahuje identifikator
+     * @param array $set seznam identifikatoru
+     * @param array $changeset spolecne asociativni pole se zmenami
+     * @param int $maxPerQuery maximalni pocet polozek v 1 dotazu
      */
     static function updateSet(string $table, string $idColumn, array $set, array $changeset, int $maxPerQuery = 100): void
     {
@@ -663,10 +623,10 @@ abstract class Database
      *
      * Pro popis formatu mapy, viz {@see Database::changesetMapToList()}
      *
-     * @param string $table        nazev tabulky (bez prefixu)
-     * @param string $idColumn     nazev sloupce, ktery obsahuje identifikator
-     * @param array  $changesetMap mapa zmen pro kazdy radek: array(id1 => changeset1, ...)
-     * @param int    $maxPerQuery  maximalni pocet polozek v 1 dotazu
+     * @param string $table nazev tabulky (bez prefixu)
+     * @param string $idColumn nazev sloupce, ktery obsahuje identifikator
+     * @param array $changesetMap mapa zmen pro kazdy radek: array(id1 => changeset1, ...)
+     * @param int $maxPerQuery maximalni pocet polozek v 1 dotazu
      */
     static function updateSetMulti(string $table, string $idColumn, array $changesetMap, int $maxPerQuery = 100): void
     {
@@ -687,7 +647,6 @@ abstract class Database
      *          ...
      *      )
      *
-     * @param array $changesetMap
      * @return array[] pole poli s klici "set" a "changeset"
      */
     static function changesetMapToList(array $changesetMap): array
@@ -731,9 +690,8 @@ abstract class Database
     /**
      * Smazat radky v databazi
      *
-     * @param string   $table nazev tabulky (bez prefixu)
-     * @param string   $cond  podminka WHERE
-     * @return bool
+     * @param string $table nazev tabulky (bez prefixu)
+     * @param string $cond podminka WHERE
      */
     static function delete(string $table, string $cond): bool
     {
@@ -743,10 +701,10 @@ abstract class Database
     /**
      * Smazat radku v databazi dle seznamu identifikatoru
      *
-     * @param string $table       nazev tabulky (bez prefixu)
-     * @param string $column      nazev sloupce, ktery obsahuje identifikator
-     * @param array  $set         seznam identifikatoru
-     * @param int    $maxPerQuery maximalni pocet polozek v 1 dotazu
+     * @param string $table nazev tabulky (bez prefixu)
+     * @param string $column nazev sloupce, ktery obsahuje identifikator
+     * @param array $set seznam identifikatoru
+     * @param int $maxPerQuery maximalni pocet polozek v 1 dotazu
      */
     static function deleteSet(string $table, string $column, array $set, int $maxPerQuery = 100): void
     {

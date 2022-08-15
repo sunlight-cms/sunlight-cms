@@ -18,19 +18,10 @@ header('Expires: ' . DateTime::formatForHttp(2592000, true));
 $dark = isset($_GET['d']);
 $s = (int) Request::get('s', 0);
 
-/**
- * Vypocet barvy
- *
- * @param int        $loff
- * @param float|null $satc
- * @param bool       $sat_abs
- * @param bool       $light_abs
- * @return string
- */
-function admin_color(int $loff = 0, ?float $satc = null, bool $sat_abs = false, bool $light_abs = false)
+function admin_color(int $loff = 0, ?float $satc = null, bool $sat_abs = false, bool $light_abs = false): string
 {
     // nacteni a uprava barev
-    if ($satc === 0) {
+    if ($satc === 0.0) {
         $light_abs = true;
         $loff += 127;
     }

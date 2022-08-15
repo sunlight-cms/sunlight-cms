@@ -14,10 +14,6 @@ class ConfigurationFile implements \ArrayAccess
     /** @var array|null */
     private $data;
 
-    /**
-     * @param string $path
-     * @param array $defaults
-     */
     function __construct(string $path, array $defaults = [])
     {
         $this->path = $path;
@@ -50,8 +46,6 @@ class ConfigurationFile implements \ArrayAccess
 
     /**
      * Get data stored in this file
-     *
-     * @return array
      */
     function toArray(): array
     {

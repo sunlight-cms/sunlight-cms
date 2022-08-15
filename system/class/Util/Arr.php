@@ -7,10 +7,9 @@ abstract class Arr
     /**
      * Odfiltrovani dane hodnoty z pole
      *
-     * @param array $array         vstupni pole
-     * @param mixed $value_remove  hodnota ktera ma byt odstranena
-     * @param bool  $preserve_keys zachovat ciselnou radu klicu 1/0
-     * @return array
+     * @param array $array vstupni pole
+     * @param mixed $value_remove hodnota ktera ma byt odstranena
+     * @param bool $preserve_keys zachovat ciselnou radu klicu 1/0
      */
     static function removeValue(array $array, $value_remove, bool $preserve_keys = false): array
     {
@@ -33,11 +32,10 @@ abstract class Arr
     /**
      * Ziskani danych klicu z pole
      *
-     * @param array    $array              vstupni pole
-     * @param array    $keys               seznam pozadovanych klicu
-     * @param int|null $prefixLen          delka prefixu v nazvu vsech klicu, ktery ma byt odebran
-     * @param bool     $exceptionOnMissing vyvolat vyjimku pri chybejicim klici
-     * @return array
+     * @param array $array vstupni pole
+     * @param array $keys seznam pozadovanych klicu
+     * @param int|null $prefixLen delka prefixu v nazvu vsech klicu, ktery ma byt odebran
+     * @param bool $exceptionOnMissing vyvolat vyjimku pri chybejicim klici
      */
     static function getSubset(array $array, array $keys, ?int $prefixLen = null, bool $exceptionOnMissing = true): array
     {
@@ -58,11 +56,10 @@ abstract class Arr
     /**
      * Filtrovat klice v poli
      *
-     * @param array       $array       vstupni pole
-     * @param string|null $include     prefix - klice zacinajici timto prefixem budou ZAHRNUTY
-     * @param string|null $exclude     prefix - klice zacinajici timto prefixem budou VYRAZENY
-     * @param array       $excludeList pole s klici, ktere maji byt VYRAZENY
-     * @return array
+     * @param array $array vstupni pole
+     * @param string|null $include prefix - klice zacinajici timto prefixem budou ZAHRNUTY
+     * @param string|null $exclude prefix - klice zacinajici timto prefixem budou VYRAZENY
+     * @param array $excludeList pole s klici, ktere maji byt VYRAZENY
      */
     static function filterKeys(array $array, ?string $include = null, ?string $exclude = null, array $excludeList = []): array
     {

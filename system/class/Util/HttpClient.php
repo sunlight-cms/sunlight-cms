@@ -20,10 +20,8 @@ class HttpClient
     /**
      * Perform a GET request
      *
-     * @param string $url
      * @param array $options see class description
      * @throws HttpClientException on failure
-     * @return string
      */
     static function get(string $url, array $options = []): string
     {
@@ -33,10 +31,7 @@ class HttpClient
     /**
      * Perform a POST request
      *
-     * @param string $url
-     * @param string $body
      * @param array $options see class description
-     * @return string
      * @throws HttpClientException on failure
      */
     static function post(string $url, string $body, array $options = []): string
@@ -44,12 +39,6 @@ class HttpClient
         return self::request($url, $body, $options);
     }
 
-    /**
-     * @param string $url
-     * @param string|null $body
-     * @param array $options
-     * @return string
-     */
     private static function request(string $url, ?string $body, array $options): string
     {
         self::validateUrl($url);
@@ -75,9 +64,6 @@ class HttpClient
         throw new HttpClientException('No available transport');
     }
 
-    /**
-     * @param string $url
-     */
     private static function validateUrl(string $url): void
     {
         try {
@@ -95,12 +81,6 @@ class HttpClient
         }
     }
 
-    /**
-     * @param string $url
-     * @param string|null $body
-     * @param array $options
-     * @return string
-     */
     private static function curlRequest(string $url, ?string $body, array $options): string
     {
         $timeout = isset($options['timeout']) ? (int) $options['timeout'] * 1000 : 0;
@@ -133,12 +113,6 @@ class HttpClient
         return $response;
     }
 
-    /**
-     * @param string $url
-     * @param string|null $body
-     * @param array $options
-     * @return string
-     */
     private static function nativeRequest(string $url, ?string $body, array $options): string
     {
         $contextOptions = [

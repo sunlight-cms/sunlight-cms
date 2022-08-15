@@ -46,8 +46,6 @@ abstract class Config
 
     /**
      * See whether the configuration file is loaded
-     *
-     * @return bool
      */
     static function isLoaded(): bool
     {
@@ -229,8 +227,6 @@ abstract class Labels
 
     /**
      * Set the used language
-     *
-     * @param string $language
      */
     static function setLanguage(string $language): void
     {
@@ -240,11 +236,8 @@ abstract class Labels
     /**
      * Get a label
      *
-     * @param string     $key
-     * @param array|null $replacements
-     * @throws \RuntimeException     if the language has not been set
+     * @throws \RuntimeException if the language has not been set
      * @throws \OutOfBoundsException if the key is not valid
-     * @return string
      */
     static function get(string $key, ?array $replacements = null): string
     {
@@ -266,9 +259,6 @@ abstract class Labels
 
     /**
      * Render a label as HTML
-     *
-     * @param string     $key
-     * @param array|null $replacements
      */
     static function render(string $key, ?array $replacements = null): void
     {
@@ -281,10 +271,7 @@ abstract class Labels
  */
 abstract class Errors
 {
-    /**
-     * @param array  $errors
-     * @param string $mainLabelKey
-     */
+    
     static function render(array $errors, string $mainLabelKey): void
     {
         if (!empty($errors)) {
@@ -327,8 +314,6 @@ class StepRunner
 
     /**
      * Run the steps
-     *
-     * @return string|null
      */
     function run(): ?string
     {
@@ -366,8 +351,6 @@ class StepRunner
 
     /**
      * Get current step
-     *
-     * @return Step|null
      */
     function getCurrent(): ?Step
     {
@@ -376,19 +359,12 @@ class StepRunner
 
     /**
      * Get total number of steps
-     *
-     * @return int
      */
     function getTotal(): int
     {
         return count($this->steps);
     }
 
-    /**
-     * @param Step  $step
-     * @param array $vars
-     * @return string
-     */
     private function runStep(Step $step, array $vars): string
     {
         ob_start();
@@ -442,14 +418,8 @@ abstract class Step
     /** @var array */
     protected $errors = [];
 
-    /**
-     * @return string
-     */
     abstract function getMainLabelKey(): string;
 
-    /**
-     * @return string
-     */
     function getFormKeyVar(): string
     {
         return "step_submit_{$this->number}";
@@ -463,57 +433,36 @@ abstract class Step
         return [];
     }
 
-    /**
-     * @param array $vars
-     */
     function setVars(array $vars): void
     {
         $this->vars = $vars;
     }
 
-    /**
-     * @param int $number
-     */
     function setNumber(int $number): void
     {
         $this->number = $number;
     }
 
-    /**
-     * @return int
-     */
     function getNumber(): int
     {
         return $this->number;
     }
 
-    /**
-     * @param int $submittedNumber
-     */
     function setSubmittedNumber(int $submittedNumber): void
     {
         $this->submittedNumber = $submittedNumber;
     }
 
-    /**
-     * @return int
-     */
     function getSubmittedNumber(): int
     {
         return $this->submittedNumber;
     }
 
-    /**
-     * @return string
-     */
     function getTitle(): string
     {
         return Labels::get($this->getMainLabelKey() . '.title');
     }
 
-    /**
-     * @return bool
-     */
     function isComplete(): bool
     {
         return
@@ -525,25 +474,16 @@ abstract class Step
             );
     }
 
-    /**
-     * @return bool
-     */
     function hasText(): bool
     {
         return true;
     }
 
-    /**
-     * @return bool
-     */
     function isSubmittable(): bool
     {
         return true;
     }
 
-    /**
-     * @return array
-     */
     function getErrors(): array
     {
         return $this->errors;
@@ -582,10 +522,6 @@ abstract class Step
 
     /**
      * Get configuration value
-     *
-     * @param string $key
-     * @param mixed  $default
-     * @return mixed
      */
     protected function getConfig(string $key, $default = null)
     {
@@ -822,9 +758,6 @@ class ConfigurationStep extends Step
 
     /**
      * Convert string representation of an array config to an array
-     *
-     * @param string        $value
-     * @return array|null
      */
     private function getArrayConfigFromString(string $value): ?array
     {
@@ -833,9 +766,6 @@ class ConfigurationStep extends Step
 
     /**
      * Get string representation of an array config option
-     *
-     * @param string      $key
-     * @return string
      */
     private function getArrayConfigAsString(string $key): string
     {
@@ -1081,9 +1011,6 @@ Now you can <a href="admin/">log in to the administration</a> (username and pass
 <?php
     }
 
-    /**
-     * @return bool
-     */
     private function isDatabaseInstalled(): bool
     {
         return count(array_diff($this->getTableNames(), $this->getExistingTableNames())) === 0;

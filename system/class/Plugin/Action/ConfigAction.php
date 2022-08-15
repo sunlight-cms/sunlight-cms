@@ -79,9 +79,6 @@ class ConfigAction extends PluginAction
         }), $messages);
     }
 
-    /**
-     * @return array
-     */
     protected function getFields(): array
     {
         $fields = [];

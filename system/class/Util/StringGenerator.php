@@ -27,9 +27,6 @@ abstract class StringGenerator
      * Generate a random string
      *
      * It will consist of alphanumeric characters, underscores and dashes.
-     *
-     * @param int $length
-     * @return string
      */
     static function generateString(int $length): string
     {
@@ -63,9 +60,6 @@ abstract class StringGenerator
      * Generate a random word using a markov chain
      *
      * Original source: http://code.google.com/p/3dcaptcha/
-     *
-     * @param int $length
-     * @return string
      */
     static function generateWordMarkov(int $length): string
     {

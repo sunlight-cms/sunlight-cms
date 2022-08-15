@@ -64,11 +64,6 @@ class Slugify
         return self::$inst;
     }
 
-    /**
-     * @param string $string
-     * @param array|null $options
-     * @return string
-     */
     function slugify(string $string, ?array $options = null): string
     {
         $options = array_merge($this->options, $options);
@@ -113,9 +108,6 @@ class Slugify
         }
     }
 
-    /**
-     * @param string $ruleSet
-     */
     function activateRuleSet(string $ruleSet): void
     {
         $this->addRules($this->provider->getRules($ruleSet));

@@ -18,7 +18,6 @@ abstract class PluginAction extends Action
     protected $plugin;
 
     /**
-     * @param Plugin $plugin
      * @throws \RuntimeException if instantiated outside of administration environment
      */
     function __construct(Plugin $plugin)
@@ -34,15 +33,11 @@ abstract class PluginAction extends Action
 
     /**
      * Get title of the action
-     *
-     * @return string
      */
     abstract function getTitle(): string;
 
     /**
      * See if the action has been confirmed
-     *
-     * @return bool
      */
     protected function isConfirmed(): bool
     {
@@ -51,10 +46,6 @@ abstract class PluginAction extends Action
 
     /**
      * Confirm an action
-     *
-     * @param string      $message
-     * @param string|null $buttonText
-     * @return ActionResult
      */
     protected function confirm(string $message, ?string $buttonText = null): ActionResult
     {

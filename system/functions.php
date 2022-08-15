@@ -4,10 +4,6 @@ use Sunlight\Core;
 
 /**
  * Buffer and return output of the given callback
- *
- * @param callable $callback
- * @param array    $arguments
- * @return string
  */
 function _buffer(callable $callback, array $arguments = []): string
 {
@@ -26,9 +22,8 @@ function _buffer(callable $callback, array $arguments = []): string
 /**
  * Convert special HTML characters to entities
  *
- * @param string $input        vstupni retezec
- * @param bool   $doubleEncode prevadet i jiz existujici entity 1/0
- * @return string
+ * @param string $input vstupni retezec
+ * @param bool $doubleEncode prevadet i jiz existujici entity 1/0
  */
 function _e(string $input, bool $doubleEncode = true): string
 {
@@ -37,11 +32,6 @@ function _e(string $input, bool $doubleEncode = true): string
 
 /**
  * Get a translation
- *
- * @param string      $key
- * @param array|null  $replacements
- * @param string|null $fallback
- * @return string
  */
 function _lang(string $key, ?array $replacements = null, ?string $fallback = null): string
 {

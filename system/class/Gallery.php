@@ -16,11 +16,10 @@ class Gallery
     /**
      * Sestavit kod obrazku v galerii
      *
-     * @param array       $img        pole s daty obrazku
+     * @param array $img pole s daty obrazku
      * @param string|null $lightboxid skupina lightboxu nebo null (= nepouzivat)
-     * @param int|null    $width      pozadovana sirka nahledu
-     * @param int|null    $height     pozadovana vyska nahledu
-     * @return string
+     * @param int|null $width pozadovana sirka nahledu
+     * @param int|null $height pozadovana vyska nahledu
      */
     static function renderImage(array $img, ?string $lightboxid, ?int $width, ?int $height): string
     {

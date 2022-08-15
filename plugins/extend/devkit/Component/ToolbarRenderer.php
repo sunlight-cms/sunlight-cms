@@ -22,9 +22,6 @@ class ToolbarRenderer
     private $dumps;
 
     /**
-     * @param array $sqlLog
-     * @param array $eventLog
-     * @param \SplObjectStorage $missingLocalizations
      * @param array[] $dumps
      */
     function __construct(
@@ -41,8 +38,6 @@ class ToolbarRenderer
 
     /**
      * Render the toolbar
-     *
-     * @return string
      */
     function render(): string
     {
@@ -100,8 +95,6 @@ class ToolbarRenderer
 
     /**
      * Render the time section
-     *
-     * @param float $now
      */
     private function renderTime(float $now): void
     {
@@ -406,8 +399,6 @@ class ToolbarRenderer
 
     /**
      * Render event argument list
-     *
-     * @param array $args
      */
     private function renderEventArgs(array $args): void
     {

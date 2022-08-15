@@ -9,9 +9,7 @@ abstract class StringManipulator
     /**
      * Orezat retezec na pozadovanou delku
      *
-     * @param string $string
-     * @param int    $length pozadovana delka
-     * @return string
+     * @param int $length pozadovana delka
      */
     static function cut(string $string, int $length): string
     {
@@ -25,10 +23,9 @@ abstract class StringManipulator
     /**
      * Orezat text na pozadovanou delku a pridat "...", pokud je delsi nez limit
      *
-     * @param string   $string           vstupni retezec
-     * @param int|null $length           pozadovana delka
-     * @param bool     $convert_entities prevest html entity zpet na originalni znaky a po orezani opet zpet
-     * @return string
+     * @param string $string vstupni retezec
+     * @param int|null $length pozadovana delka
+     * @param bool $convert_entities prevest html entity zpet na originalni znaky a po orezani opet zpet
      */
     static function ellipsis(string $string, ?int $length, bool $convert_entities = true): string
     {
@@ -53,7 +50,6 @@ abstract class StringManipulator
      * Odstraneni nezadoucich odradkovani a mezer z retezce
      *
      * @param string $string vstupni retezec
-     * @return string
      */
     static function trimExtraWhitespace(string $string): string
     {
@@ -70,7 +66,6 @@ abstract class StringManipulator
      * @param bool $lower prevest na mala pismena 1/0
      * @param string|null $extraAllowedChars seznam extra povolenych znaku nebo null
      * @param string $fallback hodnota pouzita v pripade, ze neni mozne vygenerovat slug
-     * @return string
      */
     static function slugify(string $input, bool $lower = true, ?string $extraAllowedChars = '._', string $fallback = ''): string
     {
@@ -91,10 +86,6 @@ abstract class StringManipulator
 
     /**
      * Formatovani retezce jako camelCase nebo CamelCase
-     *
-     * @param string $input
-     * @param bool $firstLetterLower
-     * @return string
      */
     static function toCamelCase(string $input, bool $firstLetterLower = false): string
     {

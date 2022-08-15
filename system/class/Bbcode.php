@@ -37,8 +37,6 @@ abstract class Bbcode
 
     /**
      * Get known BBCode tags
-     *
-     * @return array
      */
     static function getTags(): array
     {
@@ -51,7 +49,6 @@ abstract class Bbcode
      * Parse BBCode tags in string
      *
      * @param string $s input string (HTML)
-     * @return string
      */
     static function parse(string $s): string
     {

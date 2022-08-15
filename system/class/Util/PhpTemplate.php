@@ -26,9 +26,6 @@ class PhpTemplate
     /** @var string */
     private $template;
 
-    /**
-     * @param string $template
-     */
     function __construct(string $template)
     {
         $this->template = $template;
@@ -36,9 +33,6 @@ class PhpTemplate
 
     /**
      * Create from file
-     *
-     * @param string $path
-     * @return self
      */
     static function fromFile(string $path): self
     {
@@ -67,9 +61,9 @@ class PhpTemplate
     /**
      * Compile a placeholder
      *
-     * @param string      $name    placeholder name
+     * @param string $name placeholder name
      * @param string|null $default default value
-     * @param array       $vars    variables
+     * @param array $vars variables
      * @return string php code
      */
     private function compilePlaceholder(string $name, ?string $default, array $vars): string
@@ -90,7 +84,6 @@ class PhpTemplate
     /**
      * Compile default value
      *
-     * @param string $default
      * @return string php code
      */
     private function compileDefault(string $default): string

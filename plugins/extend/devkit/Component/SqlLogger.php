@@ -19,8 +19,6 @@ class SqlLogger
 
     /**
      * Log SQL query
-     *
-     * @param string $query
      */
     function log(string $query): void
     {
@@ -37,8 +35,6 @@ class SqlLogger
 
     /**
      * Get log
-     *
-     * @return array
      */
     function getLog(): array
     {

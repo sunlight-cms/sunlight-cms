@@ -8,7 +8,6 @@ abstract class Html
      * Prevest entity zpet na HTML znaky
      *
      * @param string $input vstupni retezec
-     * @return string
      */
     static function unescape(string $input): string
     {
@@ -26,9 +25,8 @@ abstract class Html
      *
      * Je-li kod uriznut uprostred zapisu HTML entity, je tato entita odstranena.
      *
-     * @param string $html   vstupni HTML kod
-     * @param int    $length pozadovana delka
-     * @return string
+     * @param string $html vstupni HTML kod
+     * @param int $length pozadovana delka
      */
     static function cut(string $html, int $length): string
     {
@@ -43,7 +41,6 @@ abstract class Html
      * Odstranit nekompletni HTML entitu z konce retezce
      *
      * @param string $string vstupni retezec
-     * @return string
      */
     static function fixTrailingHtmlEntity(string $string): string
     {
@@ -55,9 +52,8 @@ abstract class Html
      *
      * Klice jsou zachovany.
      *
-     * @param array $input         vstupni pole
-     * @param bool  $double_encode prevadet i jiz existujici entity 1/0
-     * @return array
+     * @param array $input vstupni pole
+     * @param bool $double_encode prevadet i jiz existujici entity 1/0
      */
     static function escapeArrayItems(array $input, bool $double_encode = true): array
     {

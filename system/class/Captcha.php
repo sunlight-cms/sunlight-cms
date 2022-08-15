@@ -51,8 +51,6 @@ class Captcha
 
     /**
      * Zkontrolovat vyplneni captcha fieldu
-     *
-     * @return bool
      */
     static function check(): bool
     {
@@ -82,10 +80,6 @@ class Captcha
         return $result;
     }
 
-    /**
-     * @param int $length
-     * @return string
-     */
     private static function generateCode(int $length): string
     {
         $word = strtoupper(StringGenerator::generateWordMarkov($length));

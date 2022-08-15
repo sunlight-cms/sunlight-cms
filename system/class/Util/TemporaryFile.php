@@ -20,7 +20,7 @@ class TemporaryFile extends \SplFileInfo
 
     /**
      * @param string|null $fileName existing file name or null to generate
-     * @param string|null $tmpDir   existing temporary directory or null to use the system's default
+     * @param string|null $tmpDir existing temporary directory or null to use the system's default
      * @throws \RuntimeException if the file cannot be created
      */
     function __construct(?string $fileName = null, ?string $tmpDir = null)
@@ -49,7 +49,7 @@ class TemporaryFile extends \SplFileInfo
      * - the temporary file will no longer be valid after this operation
      *
      * @param string $newFilePath new file path (including filename)
-     * @param bool   $createPath  create the path if it does not exist 1/0
+     * @param bool $createPath create the path if it does not exist 1/0
      */
     function move(string $newFilePath, bool $createPath = true): bool
     {

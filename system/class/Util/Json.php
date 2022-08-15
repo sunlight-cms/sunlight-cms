@@ -13,12 +13,10 @@ abstract class Json
     /**
      * Encode data as JSON
      *
-     * @param mixed $data
-     * @param bool  $pretty         produce formatted JSON 1/0
-     * @param bool  $escapedUnicode escape unicode 1/0
-     * @param bool  $escapedSlashes escape slashes 1/0
+     * @param bool $pretty produce formatted JSON 1/0
+     * @param bool $escapedUnicode escape unicode 1/0
+     * @param bool $escapedSlashes escape slashes 1/0
      * @throws \RuntimeException in case of an error
-     * @return string
      */
     static function encode($data, bool $pretty = true, bool $escapedUnicode = true, bool $escapedSlashes = false): string
     {
@@ -46,13 +44,10 @@ abstract class Json
     /**
      * Encode data as JSONP
      *
-     * @param string $callback
-     * @param mixed  $data
-     * @param bool   $pretty         produce formatted JSON 1/0 (true works in PHP 5.4.0+ only)
-     * @param bool   $escapedUnicode escape unicode 1/0 (false works in PHP 5.4.0+ only)
-     * @param bool   $escapedSlashes escape slashes 1/0 (false works in PHP 5.4.0+ only)
+     * @param bool $pretty produce formatted JSON 1/0 (true works in PHP 5.4.0+ only)
+     * @param bool $escapedUnicode escape unicode 1/0 (false works in PHP 5.4.0+ only)
+     * @param bool $escapedSlashes escape slashes 1/0 (false works in PHP 5.4.0+ only)
      * @throws \RuntimeException in case of an error
-     * @return string
      */
     static function encodeJsonp(string $callback, $data, bool $pretty = true, bool $escapedUnicode = true, bool $escapedSlashes = true): string
     {
@@ -62,10 +57,9 @@ abstract class Json
     /**
      * Determine JSON / JSONP format using a GET parameter and return the content type and encoded data
      *
-     * @param mixed  $data
-     * @param bool   $pretty             produce formatted JSON 1/0 (true works in PHP 5.4.0+ only)
-     * @param bool   $escapedUnicode     escape unicode 1/0 (false works in PHP 5.4.0+ only)
-     * @param bool   $escapedSlashes     escape slashes 1/0 (false works in PHP 5.4.0+ only)
+     * @param bool $pretty produce formatted JSON 1/0 (true works in PHP 5.4.0+ only)
+     * @param bool $escapedUnicode escape unicode 1/0 (false works in PHP 5.4.0+ only)
+     * @param bool $escapedSlashes escape slashes 1/0 (false works in PHP 5.4.0+ only)
      * @param string $jsonpCallbackParam JSONP callback parameter name
      * @throws \RuntimeException in case of an error
      * @return string[] content type, encoded data
@@ -90,11 +84,10 @@ abstract class Json
     /**
      * Decode a JSON string
      *
-     * @param string $json           the JSON string to decode
-     * @param bool   $assoc          decode objects as associative arrays 1/0
-     * @param bool   $bigIntAsString represent big integers as strings (instead of floats) 1/0
+     * @param string $json the JSON string to decode
+     * @param bool $assoc decode objects as associative arrays 1/0
+     * @param bool $bigIntAsString represent big integers as strings (instead of floats) 1/0
      * @throws \RuntimeException in case of an error
-     * @return mixed
      */
     static function decode(string $json, bool $assoc = true, bool $bigIntAsString = false)
     {

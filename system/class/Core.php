@@ -103,7 +103,6 @@ abstract class Core
      * env                  environment identifier, see Core::ENV_* constants
      *
      * @param string $root relative path to the system root directory (with a trailing slash)
-     * @param array  $options
      */
     static function init(string $root, array $options = []): void
     {
@@ -162,9 +161,6 @@ abstract class Core
 
     /**
      * Initialize configuration
-     *
-     * @param string $root
-     * @param array  &$options
      */
     private static function initConfiguration(string $root, array &$options): void
     {
@@ -245,9 +241,6 @@ abstract class Core
         define('SL_ROOT', $root);
     }
 
-    /**
-     * @return Url
-     */
     private static function determineBaseUrl(): Url
     {
         $baseDir = RequestInfo::getBaseDir();
@@ -310,8 +303,6 @@ abstract class Core
 
     /**
      * Initialize database
-     *
-     * @param array $options
      */
     private static function initDatabase(array $options): void
     {
@@ -387,8 +378,6 @@ abstract class Core
 
     /**
      * Initialize environment
-     *
-     * @param array $options
      */
     private static function initEnvironment(array $options): void
     {
@@ -625,8 +614,6 @@ abstract class Core
      * Get base URL
      *
      * The returned instance is a clone which may be modified.
-     *
-     * @return Url
      */
     static function getBaseUrl(): Url
     {
@@ -637,8 +624,6 @@ abstract class Core
      * Get current request URL
      *
      * The returned instance is a clone which may be modified.
-     *
-     * @return Url
      */
     static function getCurrentUrl(): Url
     {
@@ -687,8 +672,7 @@ abstract class Core
      * Get global JavaScript definitions
      *
      * @param array $customVariables asociativni pole s vlastnimi promennymi
-     * @param bool  $scriptTags      obalit do <script> tagu 1/0
-     * @return string
+     * @param bool $scriptTags obalit do <script> tagu 1/0
      */
     static function getJavascript(array $customVariables = [], bool $scriptTags = true): string
     {
@@ -729,9 +713,9 @@ abstract class Core
     /**
      * Throw a localized core exception
      *
-     * @param string      $msgCs    zprava cesky
-     * @param string      $msgEn    zprava anglicky
-     * @param array|null  $msgArgs  argumenty sprintf() formatovani
+     * @param string $msgCs zprava cesky
+     * @param string $msgEn zprava anglicky
+     * @param array|null $msgArgs argumenty sprintf() formatovani
      * @param string|null $msgExtra extra obsah pod zpravou (nelokalizovany)
      * @throws CoreException
      */
@@ -756,11 +740,6 @@ abstract class Core
 
     /**
      * Render an exception
-     *
-     * @param \Throwable $e
-     * @param bool $showTrace
-     * @param bool $showPrevious
-     * @return string
      */
     static function renderException(\Throwable $e, bool $showTrace = true, bool $showPrevious = true): string
     {

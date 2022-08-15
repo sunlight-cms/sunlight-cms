@@ -22,8 +22,6 @@ class EventLogger
 
     /**
      * Log extend event
-     *
-     * @param string $event
      */
     function log(string $event): void
     {
@@ -47,8 +45,6 @@ class EventLogger
 
     /**
      * Get log
-     *
-     * @return array
      */
     function getLog(): array
     {

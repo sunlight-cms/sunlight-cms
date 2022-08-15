@@ -10,8 +10,6 @@ class CodemirrorPlugin extends ExtendPlugin
 {
     /**
      * Define JS variables
-     *
-     * @param array $args
      */
     function onCoreJavascript(array $args): void
     {
@@ -22,8 +20,6 @@ class CodemirrorPlugin extends ExtendPlugin
 
     /**
      * Load CSS and JS
-     *
-     * @param array $args
      */
     function onAdminHead(array $args): void
     {
@@ -52,8 +48,6 @@ class CodemirrorPlugin extends ExtendPlugin
 
     /**
      * Generate admin CSS
-     *
-     * @param array $args
      */
     function onAdminStyle(array $args): void
     {

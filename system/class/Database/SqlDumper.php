@@ -26,7 +26,6 @@ class SqlDumper
      * Dump tables and/or data
      *
      * @throws DatabaseException on failure
-     * @return TemporaryFile
      */
     function dump(): TemporaryFile
     {
@@ -84,8 +83,6 @@ class SqlDumper
 
     /**
      * Get max packet size
-     *
-     * @return int
      */
     function getMaxPacketSize(): int
     {
@@ -105,8 +102,6 @@ class SqlDumper
 
     /**
      * Set max packet size
-     *
-     * @param int|null $maxPacketSize
      */
     function setMaxPacketSize(?int $maxPacketSize): void
     {
@@ -153,9 +148,6 @@ class SqlDumper
      * Dump table data
      *
      * @param resource $handle
-     * @param string   $table
-     * @param array    $columns
-     * @param mixed    $result
      */
     private function dumpTableData($handle, string $table, array $columns, $result): void
     {
@@ -249,9 +241,6 @@ class SqlDumper
 
     /**
      * Get table columns
-     *
-     * @param string $table
-     * @return array
      */
     private function getTableColumns(string $table): array
     {

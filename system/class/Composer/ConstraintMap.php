@@ -44,9 +44,6 @@ class ConstraintMap
 
     /**
      * See if a package is known
-     *
-     * @param string $packageName
-     * @return bool
      */
     function has(string $packageName): bool
     {
@@ -56,7 +53,6 @@ class ConstraintMap
     /**
      * Get all constraints imposed on a package with the given name
      *
-     * @param string $packageName
      * @throws \OutOfBoundsException if no such package is known
      * @return string[]
      */
@@ -83,7 +79,6 @@ class ConstraintMap
      *          ...
      *      )
      *
-     * @param string $packageName
      * @throws \OutOfBoundsException if no such package is known
      * @return array[]
      */

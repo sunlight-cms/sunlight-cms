@@ -48,8 +48,6 @@ class SqlReader
 
     /**
      * Get delimiter
-     *
-     * @return string
      */
     function getDelimiter(): string
     {

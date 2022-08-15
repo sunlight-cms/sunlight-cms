@@ -25,17 +25,11 @@ class Repository
     /** @var array|null */
     private $classMap;
 
-    /**
-     * @param string $composerJsonPath
-     */
     function __construct(string $composerJsonPath)
     {
         $this->composerJsonPath = $composerJsonPath;
     }
 
-    /**
-     * @return string
-     */
     function getComposerJsonPath(): string
     {
         return $this->composerJsonPath;
@@ -43,8 +37,6 @@ class Repository
 
     /**
      * Get data from composer.json
-     *
-     * @return \stdClass
      */
     function getDefinition(): \stdClass
     {
@@ -57,8 +49,6 @@ class Repository
 
     /**
      * Get directory where composer.json is located
-     *
-     * @return string
      */
     function getDirectory(): string
     {
@@ -69,9 +59,6 @@ class Repository
         return $this->directory;
     }
 
-    /**
-     * @return string
-     */
     function getVendorPath(): string
     {
         if ($this->vendorPath === null) {
@@ -93,27 +80,16 @@ class Repository
         return $this->vendorPath;
     }
 
-    /**
-     * @param \stdClass $package
-     * @return string
-     */
     function getPackagePath(\stdClass $package): string
     {
         return $this->getVendorPath() . '/' . $package->name;
     }
 
-    /**
-     * @param \stdClass $package
-     * @return string
-     */
     function getPackageComposerJsonPath(\stdClass $package): string
     {
         return $this->getPackagePath($package) . '/composer.json';
     }
 
-    /**
-     * @return string
-     */
     function getInstalledJsonPath(): string
     {
         return $this->getVendorPath() . '/composer/installed.json';
@@ -140,9 +116,6 @@ class Repository
         return $this->installedPackages;
     }
 
-    /**
-     * @return array
-     */
     function getClassMap(): array
     {
         if ($this->classMap === null) {

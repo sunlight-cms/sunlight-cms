@@ -11,7 +11,6 @@ abstract class UrlHelper
      * Rozpoznat, zda se jedna o URL v absolutnim tvaru, tj. obsahuje schema nebo zacina "/"
      *
      * @param string $url adresa
-     * @return bool
      */
     static function isAbsolute(string $url): bool
     {
@@ -26,7 +25,6 @@ abstract class UrlHelper
      * Overit, zda adresa neobsahuje skodlivy kod
      *
      * @param string $url adresa
-     * @return bool
      */
     static function isSafe(string $url): bool
     {
@@ -36,9 +34,8 @@ abstract class UrlHelper
     /**
      * Vlozeni GET promenne do odkazu
      *
-     * @param string $url    adresa
+     * @param string $url adresa
      * @param string $params cisty query retezec
-     * @return string
      */
     static function appendParams(string $url, string $params): string
     {
@@ -53,12 +50,9 @@ abstract class UrlHelper
 
     /**
      * Pridat HTTP schema do URL, pokud jej neobsahuje a neni relativni
-     *
-     * @param string $url
-     * @return string
      */
     static function addScheme(string $url): string
-    {   
+    {
         if (
             $url !== ''
             && $url[0] !== '/'
@@ -74,9 +68,6 @@ abstract class UrlHelper
 
     /**
      * Pridat/zmenit schema v absolutni URL, pokud jej neobsahuje nebo neni HTTPS (pouziva-li web HTTPS)
-     *
-     * @param string $url
-     * @return string
      */
     static function ensureValidScheme(string $url): string
     {

@@ -18,8 +18,6 @@ class LanguagePlugin extends Plugin
 
     /**
      * See if this is the fallback language
-     *
-     * @return bool
      */
     function isFallback(): bool
     {

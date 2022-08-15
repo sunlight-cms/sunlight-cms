@@ -178,7 +178,6 @@ if (!empty($_POST)) {
                             $modified_time_limit = false;
                         }
 
-
                         if ($restoring) {
                             // obnovit
                             $directories = Arr::filterKeys($_POST, 'directory_');

@@ -11,7 +11,6 @@ final class ImageStorage
      * @param string $id image identifier
      * @param string $format image format
      * @param int $partitions number of 2-character sub-directories to create from $id
-     * @return string
      */
     static function getPath(string $directory, string $id, string $format, int $partitions = 0): string
     {
@@ -25,7 +24,6 @@ final class ImageStorage
      * @param string $id image identifier
      * @param string $format image format
      * @param int $partitions number of 2-character sub-directories to create from $id
-     * @return string
      */
     static function getWebPath(string $directory, string $id, string $format, int $partitions = 0): string
     {

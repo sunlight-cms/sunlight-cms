@@ -89,10 +89,6 @@ abstract class PluginOptionNormalizer
         return $normalized;
     }
 
-    /**
-     * @param array $layouts
-     * @return array
-     */
     static function normalizeTemplateLayouts(array $layouts): array
     {
         foreach ($layouts as $layout => $options) {

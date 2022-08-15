@@ -22,14 +22,13 @@ class Paginator
      *      per_page    => pocet polozek na jednu stranu
      * )
      *
-     * @param string      $url        vychozi adresa (cista - bez HTML entit!)
-     * @param int         $limit      limit polozek na 1 stranu
-     * @param string|int  $table      nazev tabulky (tabulka[:alias]) nebo celkovy pocet polozek jako integer
-     * @param string      $conditions kod SQL dotazu za WHERE v SQL dotazu pro zjistovani poctu polozek; pokud je $table cislo, nema tato promenna zadny vyznam
-     * @param string      $linksuffix retezec pridavany za kazdy odkaz generovany strankovanim
-     * @param string|null $param      nazev parametru pro cislo strany (null = 'page')
-     * @param bool        $autolast   posledni strana je vychozi strana 1/0
-     * @return array
+     * @param string $url vychozi adresa (cista - bez HTML entit!)
+     * @param int $limit limit polozek na 1 stranu
+     * @param string|int $table nazev tabulky (tabulka[:alias]) nebo celkovy pocet polozek jako integer
+     * @param string $conditions kod SQL dotazu za WHERE v SQL dotazu pro zjistovani poctu polozek; pokud je $table cislo, nema tato promenna zadny vyznam
+     * @param string $linksuffix retezec pridavany za kazdy odkaz generovany strankovanim
+     * @param string|null $param nazev parametru pro cislo strany (null = 'page')
+     * @param bool $autolast posledni strana je vychozi strana 1/0
      */
     static function render(string $url, int $limit, $table, string $conditions = '1', string $linksuffix = '', ?string $param = null, bool $autolast = false): array
     {
@@ -168,10 +167,9 @@ class Paginator
     /**
      * Zjistit stranku, na ktere se polozka nachazi pri danem strankovani a podmince razeni
      *
-     * @param int    $limit      pocet polozek na jednu stranu
-     * @param string $table      nazev tabulky v databazi
+     * @param int $limit pocet polozek na jednu stranu
+     * @param string $table nazev tabulky v databazi
      * @param string $conditions kod SQL dotazu za WHERE v SQL dotazu pro zjistovani poctu polozek
-     * @return int
      */
     static function getItemPage(int $limit, string $table, string $conditions = "1"): int
     {
@@ -184,8 +182,7 @@ class Paginator
      * Zjisteni, zda je polozka s urcitym cislem v rozsahu aktualni strany strankovani
      *
      * @param array $pagingdata pole, ktere vraci funkce {@see Paginator::render()}
-     * @param int   $itemnumber poradove cislo polozky (poradi zacina nulou)
-     * @return bool
+     * @param int $itemnumber poradove cislo polozky (poradi zacina nulou)
      */
     static function isItemInRange(array $pagingdata, int $itemnumber): bool
     {
@@ -194,8 +191,6 @@ class Paginator
 
     /**
      * Zjisteni, zda-li ma byt strankovani zobrazeno nahore
-     *
-     * @return bool
      */
     static function atTop(): bool
     {
@@ -204,8 +199,6 @@ class Paginator
 
     /**
      * Zjisteni, zda-li ma byt strankovani zobrazeno dole
-     *
-     * @return bool
      */
     static function atBottom(): bool
     {

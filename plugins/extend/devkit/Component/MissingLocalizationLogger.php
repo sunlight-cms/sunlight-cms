@@ -14,10 +14,6 @@ class MissingLocalizationLogger
         $this->missingEntries = new \SplObjectStorage();
     }
 
-    /**
-     * @param LocalizationDictionary $dict
-     * @param string                 $key
-     */
     function log(LocalizationDictionary $dict, string $key): void
     {
         if (!isset($this->missingEntries[$dict])) {
@@ -35,9 +31,6 @@ class MissingLocalizationLogger
         $this->missingEntries[$dict] = $missingEntries;
     }
 
-    /**
-     * @return \SplObjectStorage
-     */
     function getMissingEntries(): \SplObjectStorage
     {
         return $this->missingEntries;

@@ -9,9 +9,6 @@ abstract class ArgList
 
     /**
      * Parse an argument list
-     *
-     * @param string $input
-     * @return array
      */
     static function parse(string $input): array
     {

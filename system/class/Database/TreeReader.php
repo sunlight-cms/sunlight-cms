@@ -23,12 +23,12 @@ class TreeReader
     private $depthColumn;
 
     /**
-     * @param string      $table         nazev tabulky (bez prefixu)
+     * @param string $table nazev tabulky (bez prefixu)
      * @param string|null $childrenIndex nazev indexu pro kolekce potomku uzlu
-     * @param string|null $idColumn      nazev sloupce pro id
-     * @param string|null $parentColumn  nazev sloupce pro nadrazeny uzel
-     * @param string|null $levelColumn   nazev sloupce pro uroven
-     * @param string|null $depthColumn   nazev sloupce pro hloubku
+     * @param string|null $idColumn nazev sloupce pro id
+     * @param string|null $parentColumn nazev sloupce pro nadrazeny uzel
+     * @param string|null $levelColumn nazev sloupce pro uroven
+     * @param string|null $depthColumn nazev sloupce pro hloubku
      */
     function __construct(string $table, ?string $childrenIndex = null, ?string $idColumn = null, ?string $parentColumn = null, ?string $levelColumn = null, ?string $depthColumn = null)
     {
@@ -43,10 +43,9 @@ class TreeReader
     /**
      * Nacist cestu k danemu uzlu (vypis od korenu k danemu uzlu)
      *
-     * @param array    $columns   pole, ktera maji byt nactena (systemove sloupce jsou nacteny vzdy)
-     * @param int      $nodeId    ID uzlu
+     * @param array $columns pole, ktera maji byt nactena (systemove sloupce jsou nacteny vzdy)
+     * @param int $nodeId ID uzlu
      * @param int|null $nodeLevel uroven uzlu, je-li znama (usetri 1 dotaz)
-     * @return array
      */
     function getPath(array $columns, int $nodeId, ?int $nodeLevel = null): array
     {
@@ -55,9 +54,6 @@ class TreeReader
 
     /**
      * Nacist strom (strukturovane pole)
-     *
-     * @param TreeReaderOptions $options
-     * @return array
      */
     function getTree(TreeReaderOptions $options): array
     {
@@ -70,9 +66,7 @@ class TreeReader
     /**
      * Ziskat potomky daneho uzlu
      *
-     * @param TreeReaderOptions $options
-     * @param bool               $flat   true = vratit plochy strom (vypis uzlu v poradi hierarchie), false = strukturovane pole
-     * @return array
+     * @param bool $flat true = vratit plochy strom (vypis uzlu v poradi hierarchie), false = strukturovane pole
      */
     function getChildren(TreeReaderOptions $options, bool $flat = true) : array{
         if ($flat) {
@@ -87,10 +81,9 @@ class TreeReader
     /**
      * Extrahovat potomky ze stromu, ktery obsahuje pouze 1 koren
      *
-     * @param array    $tree       strom stranek
+     * @param array $tree strom stranek
      * @param int|null $rootNodeId ID korenoveho uzlu
-     * @param bool     $flat       zda se jedna o plochy strom 1/0
-     * @return array
+     * @param bool $flat zda se jedna o plochy strom 1/0
      */
     function extractChildren(array $tree, ?int $rootNodeId, bool $flat): array
     {
@@ -108,9 +101,6 @@ class TreeReader
 
     /**
      * Nacist plochy strom (vypis uzlu v poradi hierarchie)
-     *
-     * @param TreeReaderOptions $options
-     * @return array
      */
     function getFlatTree(TreeReaderOptions $options): array
     {
@@ -124,7 +114,6 @@ class TreeReader
      * Zplostit strom
      *
      * @param array $tree strukturovany strom
-     * @return array
      */
     function flattenTree(array $tree): array
     {
@@ -164,9 +153,8 @@ class TreeReader
     /**
      * Prevest seznam uzlu na strukturovany strom
      *
-     * @param array    $nodes  pole uzlu
+     * @param array $nodes pole uzlu
      * @param int|null $rootId ID korenoveho uzlu
-     * @return array
      */
     function structureTree(array $nodes, ?int $rootId = null): array
     {
@@ -197,9 +185,8 @@ class TreeReader
     /**
      * Seradit seznam uzlu dle hierarchie
      *
-     * @param array    $nodes  pole uzlu
+     * @param array $nodes pole uzlu
      * @param int|null $rootId ID korenoveho uzlu
-     * @return array
      */
     function sortTree(array $nodes, ?int $rootId = null): array
     {
@@ -252,7 +239,6 @@ class TreeReader
     /**
      * Sestavit a provest dotaz na strom
      *
-     * @param TreeReaderOptions $options
      * @return array seznam uzlu serazeny dle urovne vzestupne
      */
     function loadTree(TreeReaderOptions $options): array
@@ -419,8 +405,6 @@ class TreeReader
 
     /**
      * Ziskat nazev tabulky
-     *
-     * @return string
      */
     function getTable(): string
     {
@@ -429,8 +413,6 @@ class TreeReader
 
     /**
      * Vratit seznam systemovych sloupcu
-     *
-     * @return array
      */
     function getSystemColumns(): array
     {
@@ -444,8 +426,6 @@ class TreeReader
 
     /**
      * Ziskat nazev sloupce s ID
-     *
-     * @return string
      */
     function getIdColumn(): string
     {
@@ -454,8 +434,6 @@ class TreeReader
 
     /**
      * Ziskat nazev sloupce s ID rodice
-     *
-     * @return string
      */
     function getParentColumn(): string
     {
@@ -464,8 +442,6 @@ class TreeReader
 
     /**
      * Ziskat nazev sloupce s urovni
-     *
-     * @return string
      */
     function getLevelColumn(): string
     {
@@ -474,8 +450,6 @@ class TreeReader
 
     /**
      * Ziskat nazev sloupce s hloubkou
-     *
-     * @return string
      */
     function getDepthColumn(): string
     {
@@ -484,11 +458,6 @@ class TreeReader
 
     /**
      * Sestavit a provest dotaz na cestu
-     *
-     * @param array    $columns
-     * @param int      $nodeId
-     * @param int|null $nodeLevel
-     * @return array
      */
     function loadPath(array $columns, int $nodeId, ?int $nodeLevel = null): array
     {
@@ -541,7 +510,6 @@ class TreeReader
     /**
      * Ziskat uroven a hloubku daneho uzlu ci korenu
      *
-     * @param int|null $nodeId
      * @return array level, depth
      */
     function getLevelAndDepth(?int $nodeId): array
@@ -568,9 +536,6 @@ class TreeReader
 
     /**
      * Ziskat uroven uzlu
-     *
-     * @param int|null $nodeId
-     * @return int
      */
     function getLevel(?int $nodeId): int
     {
@@ -588,9 +553,6 @@ class TreeReader
 
     /**
      * Ziskat hloubku na danem uzlu ci korenu
-     *
-     * @param int|null $nodeId
-     * @return int|null
      */
     function getDepth(?int $nodeId): ?int
     {

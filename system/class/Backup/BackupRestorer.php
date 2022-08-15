@@ -14,9 +14,6 @@ class BackupRestorer
     /** @var Backup */
     private $backup;
 
-    /**
-     * @param Backup $backup
-     */
     function __construct(Backup $backup)
     {
         $this->backup = $backup;
@@ -24,9 +21,6 @@ class BackupRestorer
 
     /**
      * Validate the backup
-     *
-     * @param array|null $errors
-     * @return bool
      */
     function validate(?array &$errors = null): bool
     {
@@ -38,11 +32,9 @@ class BackupRestorer
     /**
      * Restore the backup
      *
-     * @param bool       $database    restore the database 1/0
+     * @param bool $database restore the database 1/0
      * @param array|null $directories directory paths to restore (from backup's metadata), null = all
-     * @param array|null $files       file paths to restore (from backup's metadata), null = all
-     * @param array|null $errors
-     * @return bool
+     * @param array|null $files file paths to restore (from backup's metadata), null = all
      */
     function restore(bool $database, ?array $directories = null, ?array $files = null, ?array &$errors = null): bool
     {
@@ -170,8 +162,6 @@ class BackupRestorer
 
     /**
      * Get a pessimistic restoration time estimate
-     *
-     * @return int
      */
     function estimateFullRestorationTime(): int
     {
@@ -189,11 +179,10 @@ class BackupRestorer
     }
 
     /**
-     * @param string[]      $paths
-     * @param string[]|null $allowedValues      list of allowed values in $paths
-     * @param bool          $addRootPath        prefix normalized paths with SL_ROOT 1/0
-     * @param bool          $excludeNonexistent skip nonexistent paths 1/0
-     * @return array
+     * @param string[] $paths
+     * @param string[]|null $allowedValues list of allowed values in $paths
+     * @param bool $addRootPath prefix normalized paths with SL_ROOT 1/0
+     * @param bool $excludeNonexistent skip nonexistent paths 1/0
      */
     private function normalizePathList(array $paths, ?array $allowedValues = null, bool $addRootPath = false, bool $excludeNonexistent = false): array
     {

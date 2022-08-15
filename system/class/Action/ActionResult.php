@@ -14,9 +14,7 @@ class ActionResult
     private $output;
 
     /**
-     * @param bool|null              $result
      * @param Message|Message[]|null $messages
-     * @param string|null            $output
      */
     function __construct(?bool $result = null, $messages = null, ?string $output = null)
     {
@@ -36,9 +34,7 @@ class ActionResult
     /**
      * Create an intermediate result
      *
-     * @param string|null $output
      * @param Message|Message[]|null $messages
-     * @return self
      */
     static function output(?string $output, $messages = null): self
     {
@@ -49,7 +45,6 @@ class ActionResult
      * Create a successful result
      *
      * @param Message|Message[]|null $messages
-     * @return self
      */
     static function success($messages = null): self
     {
@@ -64,7 +59,6 @@ class ActionResult
      * Create an unsuccessful result
      *
      * @param Message|Message[]|null $messages
-     * @return self
      */
     static function failure($messages = null): self
     {
@@ -77,8 +71,6 @@ class ActionResult
 
     /**
      * Render the action result
-     *
-     * @return string
      */
     function __toString(): string
     {
@@ -87,8 +79,6 @@ class ActionResult
 
     /**
      * See if the action is complete
-     *
-     * @return bool
      */
     function isComplete(): bool
     {
@@ -121,8 +111,6 @@ class ActionResult
 
     /**
      * See if there are any messages
-     *
-     * @return bool
      */
     function hasMessages(): bool
     {
@@ -159,8 +147,6 @@ class ActionResult
 
     /**
      * See if there is any output
-     *
-     * @return bool
      */
     function hasOutput(): bool
     {
@@ -169,8 +155,6 @@ class ActionResult
 
     /**
      * Get output
-     *
-     * @return string|null
      */
     function getOutput(): ?string
     {

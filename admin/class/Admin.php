@@ -19,8 +19,6 @@ abstract class Admin
 {
     /**
      * Vykreslit menu
-     *
-     * @return string
      */
     static function menu(): string
     {
@@ -51,8 +49,6 @@ abstract class Admin
 
     /**
      * Vykreslit uziv. menu
-     *
-     * @return string
      */
     static function userMenu(bool $dark): string
     {
@@ -85,9 +81,6 @@ abstract class Admin
 
     /**
      * Sestavit kod zpetneho odkazu
-     *
-     * @param string $url
-     * @return string
      */
     static function backlink(string $url): string
     {
@@ -97,10 +90,9 @@ abstract class Admin
     /**
      * Sestavit kod poznamky
      *
-     * @param string      $str     zprava
-     * @param bool        $no_gray nepridavat tridu "note" 1/0
-     * @param string|null $icon    nazev ikony nebo null (= 'note')
-     * @return string
+     * @param string $str zprava
+     * @param bool $no_gray nepridavat tridu "note" 1/0
+     * @param string|null $icon nazev ikony nebo null (= 'note')
      */
     static function note(string $str, bool $no_gray = false, ?string $icon = null): string
     {
@@ -111,7 +103,6 @@ abstract class Admin
      * Zjistit, zda-li ma uzivatel pristup k modulu
      *
      * @param string $module nazev modulu
-     * @return bool
      */
     static function moduleAccess(string $module): bool
     {
@@ -127,9 +118,8 @@ abstract class Admin
     /**
      * Sestavit cast sql dotazu pro pristup k ankete - 'where'
      *
-     * @param bool   $csep  oddelit SQL dotaz vyrazem ' AND ' zleva 1/0
+     * @param bool $csep oddelit SQL dotaz vyrazem ' AND ' zleva 1/0
      * @param string $alias alias tabulky s anketami vcetne tecky
-     * @return string
      */
     static function pollAccess(bool $csep = true, string $alias = 'p.'): string
     {
@@ -146,7 +136,6 @@ abstract class Admin
      * Sestavit cast sql dotazu pro pristup k clanku - 'where'
      *
      * @param string|null $alias alias tabulky clanku nebo null
-     * @return string
      */
     static function articleAccess(?string $alias = ''): string
     {
@@ -163,9 +152,8 @@ abstract class Admin
     /**
      * Sestavit odkaz na clanek ve vypisu
      *
-     * @param array $art    data clanku vcetne cat_slug
-     * @param bool  $ucnote zobrazovat poznamku o neschvaleni 1/0
-     * @return string
+     * @param array $art data clanku vcetne cat_slug
+     * @param bool $ucnote zobrazovat poznamku o neschvaleni 1/0
      */
     static function articleEditLink(array $art, bool $ucnote = true): string
     {
@@ -216,9 +204,7 @@ abstract class Admin
      * maxlength            maximalni delka zobrazeneho titulku stranky (null = bez limitu)
      * attrs                HTML retezec s extra atributy pro <select> tag (bez mezery na zacatku)
      *
-     * @param string $name    nazev selectu
-     * @param array  $options
-     * @return string
+     * @param string $name nazev selectu
      */
     static function pageSelect(string $name, array $options): string
     {
@@ -306,14 +292,13 @@ abstract class Admin
     /**
      * Sestavit <select> pro vyber uzivatele/skupiny
      *
-     * @param string      $name        nazev selectu
-     * @param int         $selected    id zvoleneho uzivatele
-     * @param string      $gcond       SQL podminka pro zarazeni skupiny
-     * @param string|null $class       trida selectu nebo null
+     * @param string $name nazev selectu
+     * @param int $selected id zvoleneho uzivatele
+     * @param string $gcond SQL podminka pro zarazeni skupiny
+     * @param string|null $class trida selectu nebo null
      * @param string|null $extraoption popisek extra volby (-1) nebo null (= deaktivovano)
-     * @param bool        $groupmode   vybirat pouze cele skupiny 1/0
-     * @param int|null    $multiple    povolit vyber vice polozek (size = $multiple) nebo null (= deaktivovano)
-     * @return string
+     * @param bool $groupmode vybirat pouze cele skupiny 1/0
+     * @param int|null $multiple povolit vyber vice polozek (size = $multiple) nebo null (= deaktivovano)
      */
     static function userSelect(string $name, int $selected, string $gcond, ?string $class = null, ?string $extraoption = null, bool $groupmode = false, ?int $multiple = null): string
     {
@@ -386,12 +371,7 @@ abstract class Admin
     /**
      * Sestavit <select> pro vyber layoutu motivu
      *
-     * @param string          $name
      * @param string|string[] $selected
-     * @param string|null     $empty_option
-     * @param int|null        $multiple
-     * @param string|null     $class
-     * @return string
      */
     static function templateLayoutSelect(string $name, $selected, ?string $empty_option = null, ?int $multiple = null, ?string $class = null): string
     {
@@ -427,12 +407,7 @@ abstract class Admin
     /**
      * Sestavit <select> pro vyber motivu, layoutu a slotu
      *
-     * @param string                $name
-     * @param string|null           $selected
-     * @param string|null           $empty_option
-     * @param string|null           $class
      * @param TemplatePlugin[]|null $templates
-     * @return string
      */
     static function templateLayoutSlotSelect(string $name, ?string $selected, ?string $empty_option = null, ?string $class = null, ?array $templates = null): string
     {
@@ -468,11 +443,6 @@ abstract class Admin
 
     /**
      * Formatovat barvu jako #XXXXXX
-     *
-     * @param string $value
-     * @param bool   $expand
-     * @param string $default
-     * @return string
      */
     static function formatHtmlColor(string $value, bool $expand = true, string $default = '#000000'): string
     {
@@ -527,11 +497,6 @@ abstract class Admin
         }
     }
 
-    /**
-     * @param int $scheme
-     * @param bool $dark
-     * @return array
-     */
     static function themeAssets(int $scheme, bool $dark): array
     {
         $wysiwygAvailable = false;

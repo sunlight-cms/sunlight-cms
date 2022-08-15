@@ -98,12 +98,11 @@ class PostService
     /**
      * Render post list
      *
-     * @param int         $style        rendering style (see CommentService::RENDER_* constants)
-     * @param int         $home         home ID (depends on underlying post type)
-     * @param mixed       $vars         rendering options
-     * @param bool        $force_locked force locked state 1/0
-     * @param string|null $url          custom URL or null (= automatic)
-     * @return string
+     * @param int $style rendering style (see CommentService::RENDER_* constants)
+     * @param int $home home ID (depends on underlying post type)
+     * @param mixed $vars rendering options
+     * @param bool $force_locked force locked state 1/0
+     * @param string|null $url custom URL or null (= automatic)
      */
     static function renderList(int $style, int $home, $vars, bool $force_locked = false, ?string $url = null): string
     {
@@ -599,9 +598,6 @@ class PostService
      * subject      show subject field 1/0
      * is_topic     the new post is a forum topic 1/0
      * pluginflag   plugin flag (only for posttype == Comment::PLUGIN)
-     *
-     * @param array $vars
-     * @return string
      */
     static function renderForm(array $vars): string
     {
@@ -640,11 +636,6 @@ class PostService
 
     /**
      * Render a single post
-     *
-     * @param array $post
-     * @param array $userQuery
-     * @param array $options
-     * @return string
      */
     static function renderPost(
         array $post,
@@ -717,10 +708,9 @@ class PostService
     /**
      * Remove specific plugin posts
      *
-     * @param int      $flag      plugin post flag
-     * @param int|null $home      specific home ID or null (all)
-     * @param bool     $get_count do not remove, return count only 1/0
-     * @return int|null
+     * @param int $flag plugin post flag
+     * @param int|null $home specific home ID or null (all)
+     * @param bool $get_count do not remove, return count only 1/0
      */
     static function deleteByPluginFlag(int $flag, ?int $home, bool $get_count = true): ?int
     {
@@ -740,10 +730,6 @@ class PostService
         return null;
     }
 
-    /**
-     * @param string $guest
-     * @return string
-     */
     static function normalizeGuestName(string $guest): string
     {
         return StringManipulator::cut(
@@ -752,10 +738,6 @@ class PostService
         );
     }
 
-    /**
-     * @param string $guest
-     * @return string
-     */
     static function renderGuestName(string $guest): string
     {
         if ($guest === '') {

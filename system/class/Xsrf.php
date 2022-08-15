@@ -8,8 +8,6 @@ class Xsrf
 {
     /**
      * Sestavit kod skryteho inputu pro XSRF ochranu
-     *
-     * @return string
      */
     static function getInput(): string
     {
@@ -20,7 +18,6 @@ class Xsrf
      * Pridat XSRF parametr do URL
      *
      * @param string $url adresa
-     * @return string
      */
     static function addToUrl(string $url): string
     {
@@ -31,7 +28,6 @@ class Xsrf
      * Vygenerovat XSRF token
      *
      * @param bool $forCheck token je ziskavan pro kontrolu (je bran ohled na situaci, ze mohlo zrovna dojit ke zmene ID session) 1/0
-     * @return string
      */
     static function getToken(bool $forCheck = false): string
     {
@@ -72,7 +68,6 @@ class Xsrf
      * Zkontrolovat XSRF token
      *
      * @param bool $get zkontrolovat token v $_GET namisto $_POST 1/0
-     * @return bool
      */
     static function check(bool $get = false): bool
     {

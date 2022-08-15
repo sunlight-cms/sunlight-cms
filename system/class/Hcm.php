@@ -13,9 +13,8 @@ abstract class Hcm
     /**
      * Vyhodnotit HCM moduly v retezci
      *
-     * @param string $input   vstupni retezec
+     * @param string $input vstupni retezec
      * @param string $handler callback vyhodnocovace modulu
-     * @return string
      */
     static function parse(string $input, $handler = [__CLASS__, 'evaluateMatch']): string
     {
@@ -24,9 +23,6 @@ abstract class Hcm
 
     /**
      * Spustit modul
-     *
-     * @param array $match
-     * @return string
      */
     static function evaluateMatch(array $match): string
     {
@@ -42,7 +38,7 @@ abstract class Hcm
      * Zavolat konkretni HCM modul
      *
      * @param string $name nazev hcm modulu
-     * @param array  $args pole s argumenty
+     * @param array $args pole s argumenty
      * @return mixed vystup HCM modulu
      */
     static function run(string $name, array $args = [])
@@ -82,10 +78,9 @@ abstract class Hcm
     /**
      * Filtrovat HCM moduly v obsahu na zakladne opravneni
      *
-     * @param string $content   obsah, ktery ma byt filtrovan
-     * @param bool   $exception emitovat vyjimku v pripade nalezeni nepovoleneho HCM modulu 1/0
+     * @param string $content obsah, ktery ma byt filtrovan
+     * @param bool $exception emitovat vyjimku v pripade nalezeni nepovoleneho HCM modulu 1/0
      * @throws ContentPrivilegeException
-     * @return string
      */
     static function filter(string $content, bool $exception = false): string
     {
@@ -132,9 +127,6 @@ abstract class Hcm
 
     /**
      * Odstranit vsechny HCM moduly z obsahu
-     *
-     * @param string $content
-     * @return string
      */
     static function remove(string $content): string
     {
@@ -146,9 +138,8 @@ abstract class Hcm
     /**
      * Sestaveni casti SQL dotazu po WHERE pro filtrovani zaznamu podle moznych hodnot daneho sloupce
      *
-     * @param string       $column nazev sloupce v tabulce
+     * @param string $column nazev sloupce v tabulce
      * @param string|array $values mozne hodnoty sloupce v poli, oddelene pomlckami nebo "all" pro vypnuti limitu
-     * @return string
      */
     static function createColumnInSqlCondition(string $column, $values): string
     {
@@ -167,9 +158,9 @@ abstract class Hcm
      *
      * V pripade chyby bude promenna nastavena na null.
      *
-     * @param mixed $variable    promenna
-     * @param string $type        pozadovany typ, viz PHP funkce settype()
-     * @param bool   $emptyToNull je-li hodnota prazdna ("" nebo null), nastavit na null 1/0
+     * @param mixed $variable promenna
+     * @param string $type pozadovany typ, viz PHP funkce settype()
+     * @param bool $emptyToNull je-li hodnota prazdna ("" nebo null), nastavit na null 1/0
      */
     static function normalizeArgument(&$variable, string $type, bool $emptyToNull = true): void
     {

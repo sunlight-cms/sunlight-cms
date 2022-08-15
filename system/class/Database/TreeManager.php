@@ -21,11 +21,11 @@ class TreeManager
     private $depthColumn;
 
     /**
-     * @param string      $table        nazev tabulky (bez prefixu)
-     * @param string|null $idColumn     nazev sloupce pro id
+     * @param string $table nazev tabulky (bez prefixu)
+     * @param string|null $idColumn nazev sloupce pro id
      * @param string|null $parentColumn nazev sloupce pro nadrazeny uzel
-     * @param string|null $levelColumn  nazev sloupce pro uroven
-     * @param string|null $depthColumn  nazev sloupce pro hloubku
+     * @param string|null $levelColumn nazev sloupce pro uroven
+     * @param string|null $depthColumn nazev sloupce pro hloubku
      */
     function __construct(string $table, ?string $idColumn = null, ?string $parentColumn = null, ?string $levelColumn = null, ?string $depthColumn = null)
     {
@@ -39,9 +39,8 @@ class TreeManager
     /**
      * Zkontrolovat, zda je dany nadrazeny uzel platny pro dany uzel
      *
-     * @param int      $nodeId       ID uzlu
+     * @param int $nodeId ID uzlu
      * @param int|null $parentNodeId ID nadrazeneho uzlu
-     * @return bool
      */
     function checkParent(int $nodeId, ?int $parentNodeId): bool
     {
@@ -59,8 +58,6 @@ class TreeManager
     /**
      * Vytvorit novy uzel
      *
-     * @param array $data
-     * @param bool  $refresh
      * @return int id noveho uzlu
      */
     function create(array $data, bool $refresh = true): int
@@ -84,11 +81,6 @@ class TreeManager
 
     /**
      * Aktualizovat data uzlu
-     *
-     * @param int   $nodeId
-     * @param int   $parentNodeId
-     * @param array $changeset
-     * @param bool  $refresh
      */
     function update(int $nodeId, int $parentNodeId, array $changeset, bool $refresh = true): void
     {
@@ -116,9 +108,6 @@ class TreeManager
 
     /**
      * Odstranit uzel
-     *
-     * @param int  $nodeId
-     * @param bool $orphanRemoval
      */
     function delete(int $nodeId, bool $orphanRemoval = true): void
     {
@@ -135,8 +124,6 @@ class TreeManager
 
     /**
      * Odstranit vsechny potomky uzlu
-     *
-     * @param int $nodeId
      */
     function purge(int $nodeId): void
     {
@@ -146,8 +133,6 @@ class TreeManager
 
     /**
      * Obnovit urovne stromu
-     *
-     * @param int|null $nodeId
      */
     function refresh(?int $nodeId = null): void
     {
@@ -157,10 +142,6 @@ class TreeManager
     /**
      * Obnovit urovne stromu dle zmeny stavu rodice existujiciho uzlu
      * Nedoslo-li ke zmene rodice, obnova nebude provedena.
-     *
-     * @param int      $nodeId
-     * @param int|null $newParent
-     * @param int|null $oldParent
      */
     function refreshOnParentUpdate(int $nodeId, ?int $newParent, ?int $oldParent): void
     {
@@ -172,8 +153,6 @@ class TreeManager
 
     /**
      * Odstranit osirele uzly
-     *
-     * @param bool $refresh
      */
     function purgeOrphaned(bool $refresh = true): void
     {
@@ -200,12 +179,10 @@ class TreeManager
     /**
      * Upravit potomky na zaklade dat rodicu
      *
-     * @param array    $flatTree
-     * @param mixed    $context         pocatecti kontext
-     * @param callable $propagator      callback(context, current_node), mel by vratit pole se zmenami nebo null
-     * @param callable $contextUpdater  callback(context, current_node, current_changeset), mel by vratit novy kontext nebo null
-     * @param bool     $getChangesetMap vratit mapu zmen namisto volani {@see Database::updateSetMulti()}
-     * @return array|null
+     * @param mixed $context pocatecti kontext
+     * @param callable $propagator callback(context, current_node), mel by vratit pole se zmenami nebo null
+     * @param callable $contextUpdater callback(context, current_node, current_changeset), mel by vratit novy kontext nebo null
+     * @param bool $getChangesetMap vratit mapu zmen namisto volani {@see Database::updateSetMulti()}
      */
     function propagate(array $flatTree, $context, callable $propagator, callable $contextUpdater, bool $getChangesetMap = false): ?array
     {
@@ -245,10 +222,6 @@ class TreeManager
 
     /**
      * Ziskat uroven uzlu dle jeho pozice ve stromu
-     *
-     * @param int|null   $nodeId
-     * @param array|null &$parents
-     * @return int
      */
     private function getLevel(?int $nodeId, ?array &$parents = null): int
     {
@@ -278,9 +251,6 @@ class TreeManager
 
     /**
      * Ziskat korenovy uzel pro dany uzel
-     *
-     * @param int $nodeId
-     * @return int
      */
     private function getRoot(int $nodeId): int
     {
@@ -295,10 +265,6 @@ class TreeManager
 
     /**
      * Ziskat vsechny podrazene uzly (nestrukturovano)
-     *
-     * @param int  $nodeId
-     * @param bool $emptyArrayOnFailure
-     * @return array
      */
     private function getChildren(int $nodeId, bool $emptyArrayOnFailure = false): array
     {
@@ -355,8 +321,6 @@ class TreeManager
 
     /**
      * Obnovit strukturove stavy v dane casti stromu
-     *
-     * @param int|null $currentNodeId
      */
     private function doRefresh(?int $currentNodeId): void
     {
@@ -418,9 +382,6 @@ class TreeManager
 
     /**
      * Obnovit stav hloubky v cele vetvi
-     *
-     * @param int|null $currentNodeId
-     * @param bool|null $isRootNode
      */
     private function doRefreshDepth(?int $currentNodeId, ?bool $isRootNode = null): void
     {
@@ -492,10 +453,6 @@ class TreeManager
 
     /**
      * Aktualizovat set dat v tabulce
-     *
-     * @param string $column
-     * @param array  $set
-     * @param array  $changeset
      */
     private function updateSet(string $column, array $set, array $changeset): void
     {
@@ -504,9 +461,6 @@ class TreeManager
 
     /**
      * Odstranit set dat z tabulky
-     *
-     * @param string $column
-     * @param array  $set
      */
     private function deleteSet(string $column, array $set): void
     {

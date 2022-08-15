@@ -11,8 +11,6 @@ abstract class Filesystem
 
     /**
      * Vytvorit docasny soubor v system/tmp
-     *
-     * @return TemporaryFile
      */
     static function createTmpFile(): TemporaryFile
     {
@@ -23,7 +21,6 @@ abstract class Filesystem
      * Zjistit, zda je nazev souboru bezpecny
      *
      * @param string $filepath nazev souboru
-     * @return bool
      */
     static function isSafeFile(string $filepath): bool
     {
@@ -42,7 +39,6 @@ abstract class Filesystem
     /**
      * Ujistit se, ze existuje dany soubor
      *
-     * @param string $filepath
      * @throws \RuntimeException pokud soubor neexistuje
      */
     static function ensureFileExists(string $filepath): void
@@ -54,9 +50,6 @@ abstract class Filesystem
 
     /**
      * Normalize a path
-     *
-     * @param string $path
-     * @return string
      */
     static function normalizePath(string $path): string
     {
@@ -65,10 +58,6 @@ abstract class Filesystem
 
     /**
      * Normalize a path and add a base, if the path is not absolute
-     *
-     * @param string $basePath
-     * @param string $path
-     * @return string
      */
     static function normalizeWithBasePath(string $basePath, string $path): string
     {
@@ -86,9 +75,6 @@ abstract class Filesystem
 
     /**
      * See if a path is absolute
-     *
-     * @param string $path
-     * @return bool
      */
     static function isAbsolutePath(string $path): bool
     {
@@ -104,10 +90,9 @@ abstract class Filesystem
      *
      * The returned path may have a leading slash if $allowLeadingSlash = TRUE.
      *
-     * @param string $path              the path
-     * @param bool   $isFile            it is a file path 1/0
-     * @param bool   $allowLeadingSlash allow slash at the beginning of the resulting path
-     * @return string
+     * @param string $path the path
+     * @param bool $isFile it is a file path 1/0
+     * @param bool $allowLeadingSlash allow slash at the beginning of the resulting path
      */
     static function parsePath(string $path, bool $isFile = false, bool $allowLeadingSlash = false): string
     {
@@ -153,9 +138,6 @@ abstract class Filesystem
 
     /**
      * Create directory iterator
-     *
-     * @param string $path
-     * @return \FilesystemIterator
      */
     static function createIterator(string $path): \FilesystemIterator
     {
@@ -169,10 +151,6 @@ abstract class Filesystem
     
     /**
      * Create recursive directory iterator
-     *
-     * @param string $path
-     * @param int    $flags
-     * @return \RecursiveIteratorIterator
      */
     static function createRecursiveIterator(string $path, int $flags = \RecursiveIteratorIterator::SELF_FIRST): \RecursiveIteratorIterator
     {
@@ -193,7 +171,6 @@ abstract class Filesystem
      * Check whether a directory is empty
      *
      * @param string $path path to the directory
-     * @return bool
      */
     static function isDirectoryEmpty(string $path): bool
     {
@@ -214,10 +191,9 @@ abstract class Filesystem
     /**
      * Recursively verify privileges for the given directory and all its contents
      *
-     * @param string     $path         path to the directory
-     * @param bool       $checkWrite   test write access as well 1/0 (false = test only read access)
-     * @param array|null $failedPaths  an array variable to put failed paths to (null = do not track)
-     * @return bool
+     * @param string $path path to the directory
+     * @param bool $checkWrite test write access as well 1/0 (false = test only read access)
+     * @param array|null $failedPaths an array variable to put failed paths to (null = do not track)
      */
     static function checkDirectory(string $path, bool $checkWrite = true, ?array &$failedPaths = null): bool
     {
@@ -271,10 +247,9 @@ abstract class Filesystem
      * file_callback (-)    callback(\SplFileInfo file): bool - decide, whether to remove a file or not
      *                      (this option is active only if files_only = 1)
      *
-     * @param string      $path       path to the directory
-     * @param array       $options    option array (see above)
+     * @param string $path path to the directory
+     * @param array $options option array (see above)
      * @param string|null $failedPath variable that will contain a path that could not be removed
-     * @return bool
      */
     static function purgeDirectory(string $path, array $options = [], ?string &$failedPath = null): bool
     {
@@ -322,8 +297,6 @@ abstract class Filesystem
 
     /**
      * Deny access to a directory using a .htaccess file
-     *
-     * @param string $path
      */
     static function denyAccessToDirectory(string $path): void
     {

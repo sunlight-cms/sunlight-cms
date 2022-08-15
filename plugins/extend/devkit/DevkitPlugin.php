@@ -43,11 +43,6 @@ class DevkitPlugin extends ExtendPlugin
         ];
     }
 
-    /**
-     * @param string $file
-     * @param int $line
-     * @param string $dump
-     */
     function addDump(string $file, int $line, string $dump): void
     {
         $this->dumps[] = [
@@ -67,8 +62,6 @@ class DevkitPlugin extends ExtendPlugin
 
     /**
      * Handle database query result
-     *
-     * @param array $args
      */
     function onDbQueryPost(array $args): void
     {
@@ -77,8 +70,6 @@ class DevkitPlugin extends ExtendPlugin
 
     /**
      * Handle a missing localization entry
-     *
-     * @param array $args
      */
     function onMissingLocalization(array $args): void
     {
@@ -87,8 +78,6 @@ class DevkitPlugin extends ExtendPlugin
 
     /**
      * Intercept and log emails
-     *
-     * @param array $args
      */
     function onMail(array $args): void
     {
@@ -135,8 +124,6 @@ ENTRY
 
     /**
      * Inject custom CSS and JS
-     *
-     * @param array $args
      */
     function onHead(array $args): void
     {
@@ -146,8 +133,6 @@ ENTRY
 
     /**
      * Render toolbar before </body>
-     *
-     * @param array $args
      */
     function onEnd(array $args): void
     {

@@ -286,9 +286,6 @@ abstract class User
 
     /**
      * Zjistit, zda uzivatel ma stejne id
-     *
-     * @param int $targetUserId
-     * @return bool
      */
     static function equals(int $targetUserId): bool
     {
@@ -304,7 +301,6 @@ abstract class User
      * Zjistit, zda uzivatel ma dane pravo
      *
      * @param string $name nazev prava
-     * @return bool
      */
     static function hasPrivilege(string $name): bool
     {
@@ -318,9 +314,6 @@ abstract class User
 
     /**
      * Overit heslo uzivatele
-     *
-     * @param string $plainPassword
-     * @return bool
      */
     static function checkPassword(string $plainPassword): bool
     {
@@ -334,9 +327,8 @@ abstract class User
     /**
      * Vyhodnotit pravo pristupu k cilovemu uzivateli
      *
-     * @param int $targetUserId    ID ciloveho uzivatele
+     * @param int $targetUserId ID ciloveho uzivatele
      * @param int $targetUserLevel uroven skupiny ciloveho uzivatele
-     * @return bool
      */
     static function checkLevel(int $targetUserId, int $targetUserLevel): bool
     {
@@ -346,9 +338,8 @@ abstract class User
     /**
      * Vyhodnocenu prava aktualniho uzivatele pro pristup na zaklade verejnosti, urovne a stavu prihlaseni
      *
-     * @param bool     $public polozka je verejna 1/0
-     * @param int|null $level  minimalni pozadovana uroven
-     * @return bool
+     * @param bool $public polozka je verejna 1/0
+     * @param int|null $level minimalni pozadovana uroven
      */
     static function checkPublicAccess(bool $public, ?int $level = 0): bool
     {
@@ -362,7 +353,6 @@ abstract class User
      *
      * @param bool $getTopmost ziskat cestu na nejvyssi mozne urovni 1/0
      * @throws \RuntimeException nejsou-li prava
-     * @return string
      */
     static function getHomeDir(bool $getTopmost = false): string
     {
@@ -388,7 +378,6 @@ abstract class User
     /**
      * Normalizovat cestu k adresari dle prav uzivatele
      *
-     * @param string|null $dirPath
      * @return string cesta s lomitkem na konci
      */
     static function normalizeDir(?string $dirPath): string
@@ -408,9 +397,9 @@ abstract class User
     /**
      * Zjistit, zda ma uzivatel pravo pracovat s danou cestou
      *
-     * @param string $path    cesta
-     * @param bool   $isFile  jedna se o soubor 1/0
-     * @param bool   $getPath vratit zpracovanou cestu v pripade uspechu 1/0
+     * @param string $path cesta
+     * @param bool $isFile jedna se o soubor 1/0
+     * @param bool $getPath vratit zpracovanou cestu v pripade uspechu 1/0
      * @return bool|string true / false nebo cesta, je-li kontrola uspesna a $getPath je true
      */
     static function checkPath(string $path, bool $isFile, bool $getPath = false)
@@ -433,10 +422,6 @@ abstract class User
 
     /**
      * Presunout soubor, ktery byl nahran uzivatelem
-     *
-     * @param string $path
-     * @param string $newPath
-     * @return bool
      */
     static function moveUploadedFile(string $path, string $newPath): bool
     {
@@ -456,9 +441,6 @@ abstract class User
      *
      * Tato funkce kontroluje NAZEV souboru, nikoliv cestu!
      * Pro cesty je funkce {@see self::checkPath()}.
-     *
-     * @param string $filename
-     * @return bool
      */
     static function checkFilename(string $filename): bool
     {
@@ -474,11 +456,10 @@ abstract class User
      * Filtrovat uzivatelsky obsah na zaklade opravneni
      *
      * @param string $content obsah
-     * @param bool   $isHtml  jedna se o HTML kod
-     * @param bool   $hasHcm  obsah muze obsahovat HCM moduly
+     * @param bool $isHtml jedna se o HTML kod
+     * @param bool $hasHcm obsah muze obsahovat HCM moduly
      * @throws \LogicException
      * @throws ContentPrivilegeException
-     * @return string
      */
     static function filterContent(string $content, bool $isHtml = true, bool $hasHcm = true): string
     {
@@ -585,9 +566,9 @@ abstract class User
      * )
      *
      * @param string|null $joinUserIdColumn nazev sloupce obsahujici ID uzivatele nebo NULL (= nejoinovat)
-     * @param string      $prefix           predpona pro nazvy nacitanych sloupcu
-     * @param string      $alias            alias joinovane user tabulky
-     * @param mixed       $emptyValue       hodnota, ktera reprezentuje neurceneho uzivatele
+     * @param string $prefix predpona pro nazvy nacitanych sloupcu
+     * @param string $alias alias joinovane user tabulky
+     * @param mixed $emptyValue hodnota, ktera reprezentuje neurceneho uzivatele
      * @return array viz popis funkce
      */
     static function createQuery(?string $joinUserIdColumn = null, string $prefix = 'user_', string $alias = 'u', $emptyValue = -1): array
@@ -649,7 +630,6 @@ abstract class User
      * Odstraneni uzivatele
      *
      * @param int $id id uzivatele
-     * @return bool
      */
     static function delete(int $id): bool
     {
@@ -705,7 +685,6 @@ abstract class User
      * @param string $type viz User::AUTH_* konstanty
      * @param string $email email uzivatele
      * @param string $storedPassword heslo ulozene v databazi
-     * @return string
      */
     static function getAuthHash(string $type, string $email, string $storedPassword): string
     {
@@ -714,11 +693,6 @@ abstract class User
 
     /**
      * Prihlaseni uzivatele
-     *
-     * @param int    $id
-     * @param string $storedPassword
-     * @param string $email
-     * @param bool   $persistent
      */
     static function login(int $id, string $storedPassword, string $email, bool $persistent = false): void
     {
@@ -742,11 +716,10 @@ abstract class User
     /**
      * Sestavit kod prihlasovaciho formulare
      *
-     * @param bool        $title    vykreslit titulek 1/0
-     * @param bool        $required jedna se o povinne prihlaseni z duvodu nedostatku prav 1/0
-     * @param string|null $return   navratova URL
-     * @param bool        $embedded nevykreslovat <form> tag 1/0
-     * @return string
+     * @param bool $title vykreslit titulek 1/0
+     * @param bool $required jedna se o povinne prihlaseni z duvodu nedostatku prav 1/0
+     * @param string|null $return navratova URL
+     * @param bool $embedded nevykreslovat <form> tag 1/0
      */
     static function renderLoginForm(bool $title = false, bool $required = false, ?string $return = null, bool $embedded = false): string
     {
@@ -873,9 +846,6 @@ abstract class User
      * 4    smazani vlastniho uctu
      * 5    vycerpan limit neuspesnych prihlaseni
      * 6    neplatny XSRF token
-     *
-     * @param int $code
-     * @return Message|null
      */
     static function getLoginMessage(int $code): ?Message
     {
@@ -902,9 +872,6 @@ abstract class User
     /**
      * Zpracovat POST prihlaseni
      *
-     * @param string $username
-     * @param string $plainPassword
-     * @param bool   $persistent
      * @return int kod {@see self::getLoginMessage())
      */
     static function submitLogin(string $username, string $plainPassword, bool $persistent = false): int
@@ -1003,7 +970,6 @@ abstract class User
      * Odhlaseni aktualniho uzivatele
      *
      * @param bool $destroy uplne znicit session
-     * @return bool
      */
     static function logout(bool $destroy = true): bool
     {
@@ -1034,8 +1000,6 @@ abstract class User
      * Ziskat pocet neprectenych PM (soukromych zprav) aktualniho uzivatele
      *
      * Vystup teto funkce je cachovan.
-     *
-     * @return int
      */
     static function getUnreadPmCount(): int
     {
@@ -1103,7 +1067,7 @@ abstract class User
      * extend (1)       vyvolat extend udalost 1/0
      * class (-)        vlastni CSS trida
      *
-     * @param array $data    samostatna data uzivatele (avatar, username, publicname)
+     * @param array $data samostatna data uzivatele (avatar, username, publicname)
      * @param array $options moznosti vykresleni, viz popis funkce
      * @return string|null HTML kod s obrazkem nebo URL
      */
@@ -1177,9 +1141,8 @@ abstract class User
      * Ziskat kod avataru daneho uzivatele na zaklade dat z funkce {@see self::createQuery()}
      *
      * @param array $userQuery vystup z {@see self::createQuery()}
-     * @param array $row       radek z vysledku dotazu
-     * @param array $options   nastaveni vykresleni, viz {@see self::renderAvatar()}
-     * @return string
+     * @param array $row radek z vysledku dotazu
+     * @param array $options nastaveni vykresleni, viz {@see self::renderAvatar()}
      */
     static function renderAvatarFromQuery(array $userQuery, array $row, array $options = []): string
     {
@@ -1199,11 +1162,10 @@ abstract class User
     /**
      * Ziskat kod formulare pro opakovani POST requestu
      *
-     * @param bool         $allow_login   umoznit znovuprihlaseni, neni-li uzivatel prihlasen 1/0
+     * @param bool $allow_login umoznit znovuprihlaseni, neni-li uzivatel prihlasen 1/0
      * @param Message|null $login_message vlastni hlaska
-     * @param string|null  $target_url    cil formulare (null = aktualni URL)
-     * @param bool         $do_repeat     odeslat na cilovou adresu 1/0
-     * @return string
+     * @param string|null $target_url cil formulare (null = aktualni URL)
+     * @param bool $do_repeat odeslat na cilovou adresu 1/0
      */
     static function renderPostRepeatForm(bool $allow_login = true, ?Message $login_message = null, ?string $target_url = null, bool $do_repeat = false): string
     {

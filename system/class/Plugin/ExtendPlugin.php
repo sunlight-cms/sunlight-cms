@@ -65,8 +65,6 @@ class ExtendPlugin extends Plugin
 
     /**
      * Load a script
-     *
-     * @param string $script
      */
     private function loadScript(string $script): void
     {

@@ -19,10 +19,6 @@ abstract class Zip
     /**
      * Extract a single file
      *
-     * @param \ZipArchive $zip
-     * @param string      $archivePath
-     * @param string      $targetPath
-     * @param int         $bigFileThreshold
      * @throws \InvalidArgumentException if archive path is not valid
      * @throws \RuntimeException if extraction fails
      */
@@ -44,10 +40,6 @@ abstract class Zip
     /**
      * Extract a single entry
      *
-     * @param \ZipArchive $zip
-     * @param array       $stat
-     * @param string      $targetPath
-     * @param int         $bigFileThreshold
      * @throws \RuntimeException if extraction fails
      */
     static function extractFileEntry(
@@ -108,10 +100,8 @@ abstract class Zip
      *                          (the trailing slash is important)
      * big_file_threshold (-)
      *
-     * @param \ZipArchive     $zip
      * @param string[]|string $directories archive directory paths (e.g. "foo", "foo/bar" or "" for root)
-     * @param string          $targetPath  path where to extract the files to
-     * @param array           $options
+     * @param string $targetPath path where to extract the files to
      */
     static function extractDirectories(\ZipArchive $zip, ?array $directories, string $targetPath, array $options = []): void
     {
@@ -191,14 +181,8 @@ abstract class Zip
      *
      * If a string is returned it will always begin with a slash.
      *
-     * @param int         $mode
-     * @param string      $path
-     * @param int|bool    $lastSlashPos
-     * @param int         $prefixLen
-     * @param string|null $excludePrefix
-     * @param int         $excludePrefixLen
+     * @param int|bool $lastSlashPos
      * @throws \InvalidArgumentException if the mode is invalid
-     * @return string|null
      */
     private static function getSubpath(int $mode, string $path, $lastSlashPos, int $prefixLen, ?string $excludePrefix, int $excludePrefixLen): ?string
     {

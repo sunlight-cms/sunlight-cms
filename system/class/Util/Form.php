@@ -9,9 +9,6 @@ abstract class Form
 {
     /**
      * Zaskrtnout checkbox na zaklade podminky
-     *
-     * @param bool $input
-     * @return string
      */
     static function activateCheckbox(bool $input): string
     {
@@ -33,7 +30,6 @@ abstract class Form
      * Zakazat pole formulare, pokud NEPLATI podminka
      *
      * @param bool $cond pole je povoleno 1/0
-     * @return string
      */
     static function disableInputUnless(bool $cond): string
     {
@@ -48,10 +44,9 @@ abstract class Form
      * Obnovit stav zaskrtnuti na zaklade POST/GET dat
      *
      * @param string $key_var nazev klice, ktery indikuje odeslani daneho formulare
-     * @param string $name    nazev checkboxu
-     * @param bool   $default vychozi stav
-     * @param string $method  POST/GET
-     * @return string
+     * @param string $name nazev checkboxu
+     * @param bool $default vychozi stav
+     * @param string $method POST/GET
      */
     static function restoreChecked(string $key_var, string $name, bool $default = false, string $method = 'POST'): string
     {
@@ -74,10 +69,9 @@ abstract class Form
      * Nastavit nazev prvku a obnovit stav zaskrtnuti na zaklade POST/GET dat
      *
      * @param string $key_var nazev klice, ktery indikuje odeslani daneho formulare
-     * @param string $name    nazev checkboxu
-     * @param bool   $default vychozi stav
-     * @param string $method  POST/GET
-     * @return string
+     * @param string $name nazev checkboxu
+     * @param bool $default vychozi stav
+     * @param string $method POST/GET
      */
     static function restoreCheckedAndName(string $key_var, string $name, bool $default = false, string $method = 'POST'): string
     {
@@ -87,11 +81,10 @@ abstract class Form
     /**
      * Obnoveni hodnoty prvku podle stavu $_POST
      *
-     * @param string      $name          nazev klice v post
-     * @param string|null $else          vychozi hodnota
-     * @param bool        $param         vykreslit jako atribut ' value=".."' 1/0
-     * @param bool        $else_entities escapovat hodnotu $else 1/0
-     * @return string
+     * @param string $name nazev klice v post
+     * @param string|null $else vychozi hodnota
+     * @param bool $param vykreslit jako atribut ' value=".."' 1/0
+     * @param bool $else_entities escapovat hodnotu $else 1/0
      */
     static function restorePostValue(string $name, ?string $else = null, bool $param = true, bool $else_entities = true): string
     {
@@ -101,10 +94,9 @@ abstract class Form
     /**
      * Nastaveni nazvu prvku a obnoveni hodnoty z $_POST
      *
-     * @param string      $name          nazev klice
-     * @param string|null $else          vychozi hodnota
-     * @param bool        $else_entities escapovat hodnotu $else 1/0
-     * @return string
+     * @param string $name nazev klice
+     * @param string|null $else vychozi hodnota
+     * @param bool $else_entities escapovat hodnotu $else 1/0
      */
     static function restorePostValueAndName(string $name, ?string $else = null, bool $else_entities = true): string
     {
@@ -114,11 +106,10 @@ abstract class Form
     /**
      * Obnoveni hodnoty prvku podle stavu $_GET
      *
-     * @param string      $name          nazev klice
-     * @param string|null $else          vychozi hodnota
-     * @param bool        $param         vykreslit jako atribut ' value=".."' 1/0
-     * @param bool        $else_entities escapovat hodnotu $else 1/0
-     * @return string
+     * @param string $name nazev klice
+     * @param string|null $else vychozi hodnota
+     * @param bool $param vykreslit jako atribut ' value=".."' 1/0
+     * @param bool $else_entities escapovat hodnotu $else 1/0
      */
     static function restoreGetValue(string $name, ?string $else = null, bool $param = true, bool $else_entities = true): string
     {
@@ -128,10 +119,9 @@ abstract class Form
     /**
      * Nastaveni nazvu prvku a obnoveni hodnoty z $_GET
      *
-     * @param string      $name          nazev klice
-     * @param string|null $else          vychozi hodnota
-     * @param bool        $else_entities escapovat hodnotu $else 1/0
-     * @return string
+     * @param string $name nazev klice
+     * @param string|null $else vychozi hodnota
+     * @param bool $else_entities escapovat hodnotu $else 1/0
      */
     static function restoreGetValueAndName(string $name, ?string $else = null, bool $else_entities = true): string
     {
@@ -141,12 +131,11 @@ abstract class Form
     /**
      * Obnoveni hodnoty prvku na zaklade hodnoty z pole
      *
-     * @param array       $values        pole s hodnotami
-     * @param string      $key           nazev klice
-     * @param string|null $else          vychozi hodnota
-     * @param bool        $param         vykreslit jako atribut ' value=".."' 1/0
-     * @param bool        $else_entities escapovat hodnotu $else 1/0
-     * @return string
+     * @param array $values pole s hodnotami
+     * @param string $key nazev klice
+     * @param string|null $else vychozi hodnota
+     * @param bool $param vykreslit jako atribut ' value=".."' 1/0
+     * @param bool $else_entities escapovat hodnotu $else 1/0
      */
     static function restoreValue(array $values, string $key, ?string $else = null, bool $param = true, bool $else_entities = true): string
     {
@@ -171,11 +160,6 @@ abstract class Form
      * XSRF token je automaticky vynechan.
      *
      * @see \Sunlight\Util\Arr::filterKeys()
-     *
-     * @param string|null $include
-     * @param string|null $exclude
-     * @param array       $excludeList
-     * @return string
      */
     static function renderHiddenPostInputs(?string $include = null, ?string $exclude = null, array $excludeList = []): string
     {
@@ -188,7 +172,6 @@ abstract class Form
      * Vykreslit dana data jako serii skrytych formularovych prvku
      *
      * @param array $data data
-     * @return string
      */
     static function renderHiddenInputs(array $data): string
     {
@@ -209,10 +192,9 @@ abstract class Form
     /**
      * Vykreslit 1 nebo vice skrytych prvku formulare pro danou hodnotu
      *
-     * @param string $key   aktualni klic
-     * @param mixed  $value hodnota
-     * @param array  $pkeys nadrazene klice
-     * @return string
+     * @param string $key aktualni klic
+     * @param mixed $value hodnota
+     * @param array $pkeys nadrazene klice
      */
     static function renderHiddenInput(string $key, $value, array $pkeys = []): string
     {
@@ -244,11 +226,10 @@ abstract class Form
     /**
      * Sestavit kod inputu pro vyber casu
      *
-     * @param string        $name             identifikator casove hodnoty
-     * @param int|null      $timestamp        cas, -1 (= aktualni) nebo null (= nevyplneno)
-     * @param bool          $updatebox        zobrazit checkbox pro nastaveni na aktualni cas pri ulozeni
-     * @param bool          $updateboxchecked zaskrtnuti checkboxu 1/0
-     * @return string
+     * @param string $name identifikator casove hodnoty
+     * @param int|null $timestamp cas, -1 (= aktualni) nebo null (= nevyplneno)
+     * @param bool $updatebox zobrazit checkbox pro nastaveni na aktualni cas pri ulozeni
+     * @param bool $updateboxchecked zaskrtnuti checkboxu 1/0
      */
     static function editTime(string $name, ?int $timestamp = null, bool $updatebox = false, bool $updateboxchecked = false): string
     {
@@ -279,9 +260,8 @@ abstract class Form
     /**
      * Nacist casovou hodnotu vytvorenou a odeslanou pomoci {@see Form::editTime()}
      *
-     * @param string   $name    identifikator casove hodnoty
+     * @param string $name identifikator casove hodnoty
      * @param int|null $default vychozi casova hodnota pro pripad chyby
-     * @return int|null
      */
     static function loadTime(string $name, ?int $default = null): ?int
     {
@@ -348,8 +328,7 @@ abstract class Form
      * - {@see Form::getSubmitRow()}
      *
      * @param array $options parametry formulare (viz popis funkce)
-     * @param array $rows    pole s radky (viz popis funkce)
-     * @return string
+     * @param array $rows pole s radky (viz popis funkce)
      */
     static function render(array $options, array $rows): string
     {

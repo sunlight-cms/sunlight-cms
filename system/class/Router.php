@@ -336,8 +336,8 @@ abstract class Router
      * Generate a user profile link using data from {@see User::createQuery()}
      *
      * @param array $userQuery output of z {@see User::createQuery()}
-     * @param array $row       the row to generate a link for
-     * @param array $options   link options {@see Router::user()}
+     * @param array $row the row to generate a link for
+     * @param array $options link options {@see Router::user()}
      */
     static function userFromQuery(array $userQuery, array $row, array $options = []): string
     {

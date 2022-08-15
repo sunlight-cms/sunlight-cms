@@ -27,9 +27,7 @@ class RepositoryInjector
     /**
      * Attempt to inject repository dependencies into the current state
      *
-     * @param Repository $repository
      * @param string[] $errors
-     * @return bool
      */
     function inject(Repository $repository, array &$errors = null): bool
     {
@@ -137,9 +135,7 @@ class RepositoryInjector
     /**
      * Get source of a package
      *
-     * @param string $packageName
      * @throws \OutOfBoundsException if no such package is known
-     * @return Repository
      */
     function getSource(string $packageName): Repository
     {
@@ -152,8 +148,6 @@ class RepositoryInjector
 
     /**
      * Get current constraint map
-     *
-     * @return ConstraintMap
      */
     function getConstraintMap(): ConstraintMap
     {
@@ -161,9 +155,7 @@ class RepositoryInjector
     }
 
     /**
-     * @param \stdClass $package
-     * @param array     $failedIndexes
-     * @return bool
+     * @param array $failedIndexes
      */
     private function packageSatisfiesExistingConstraints(\stdClass $package, ?array &$failedIndexes): bool
     {
@@ -171,22 +163,13 @@ class RepositoryInjector
     }
 
     /**
-     * @param string $packageName
-     * @param array $constraints
      * @param array $failedIndexes
-     * @return bool
      */
     private function existingPackageSatisfiesConstraints(string $packageName, array $constraints, ?array &$failedIndexes): bool
     {
         return $this->satisfies($this->packages[$packageName]->version, $constraints, $failedIndexes);
     }
 
-    /**
-     * @param string     $version
-     * @param array      $constraints
-     * @param array|null $failedIndexes
-     * @return bool
-     */
     private function satisfies(string $version, array $constraints, ?array &$failedIndexes): bool
     {
         $success = true;
@@ -203,20 +186,11 @@ class RepositoryInjector
         return $success;
     }
 
-    /**
-     * @param \stdClass $package
-     * @param Repository $source
-     * @return string
-     */
     private function getPackageInfo(\stdClass $package, Repository $source): string
     {
         return $package->name . " ({$package->version} @ {$source->getPackagePath($package)})";
     }
 
-    /**
-     * @param string $name
-     * @return string
-     */
     private function getExistingPackageInfo(string $name): string
     {
         return $this->getPackageInfo($this->packages[$name], $this->sourceMap[$name]);
@@ -224,8 +198,6 @@ class RepositoryInjector
 
     /**
      * @param array[] $sources
-     * @param array   $indexesToShow
-     * @return string
      */
     private function getConstraintSourceInfo(array $sources, array $indexesToShow): string
     {

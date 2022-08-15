@@ -158,8 +158,6 @@ class Backup
 
     /**
      * Get the underlying ZIP archive for external modification
-     *
-     * @return \ZipArchive
      */
     function getArchive(): \ZipArchive
     {
@@ -170,8 +168,6 @@ class Backup
 
     /**
      * See if the backup is open
-     *
-     * @return bool
      */
     function isOpen(): bool
     {
@@ -180,8 +176,6 @@ class Backup
 
     /**
      * See if the backup is new
-     *
-     * @return bool
      */
     function isNew(): bool
     {
@@ -191,9 +185,9 @@ class Backup
     /**
      * Add file or directory to the archive (recursively)
      *
-     * @param string        $path                  relative to the system root
-     * @param callable|null $filter                callback(data_path): bool
-     * @param bool          $addRootFileToFileList automatically add root files to the file list 1/0
+     * @param string $path relative to the system root
+     * @param callable|null $filter callback(data_path): bool
+     * @param bool $addRootFileToFileList automatically add root files to the file list 1/0
      */
     function addPath(string $path, ?callable $filter = null, bool $addRootFileToFileList = true): void
     {
@@ -211,7 +205,7 @@ class Backup
     /**
      * Recursively add a directory to the archive
      *
-     * @param string        $path   relative to the system root
+     * @param string $path relative to the system root
      * @param callable|null $filter callback(data_path): bool
      */
     function addDirectory(string $path, ?callable $filter = null): void
@@ -261,10 +255,10 @@ class Backup
     /**
      * Add a file to the archive
      *
-     * @param string        $dataPath              path within the backup's data directory (e.g. "foo.txt")
-     * @param string        $realPath              real path to the file
-     * @param callable|null $filter                callback(data_path): bool
-     * @param bool          $addRootFileToFileList automatically add root files to the file list 1/0
+     * @param string $dataPath path within the backup's data directory (e.g. "foo.txt")
+     * @param string $realPath real path to the file
+     * @param callable|null $filter callback(data_path): bool
+     * @param bool $addRootFileToFileList automatically add root files to the file list 1/0
      */
     function addFile(string $dataPath, string $realPath, ?callable $filter = null, bool $addRootFileToFileList = true): void
     {
@@ -286,9 +280,9 @@ class Backup
     /**
      * Add file to the archive from a string
      *
-     * @param string $dataPath              path within the backup's data directory (e.g. "foo.txt)
-     * @param string $data                  the file's contents
-     * @param bool   $addRootFileToFileList automatically add root files to the file list 1/0
+     * @param string $dataPath path within the backup's data directory (e.g. "foo.txt)
+     * @param string $data the file's contents
+     * @param bool $addRootFileToFileList automatically add root files to the file list 1/0
      */
     function addFileFromString(string $dataPath, string $data, bool $addRootFileToFileList = true): void
     {
@@ -303,8 +297,6 @@ class Backup
 
     /**
      * See if the database contains a database dump
-     *
-     * @return bool
      */
     function hasDatabaseDump(): bool
     {
@@ -327,8 +319,6 @@ class Backup
 
     /**
      * Get size of the database dump, if any
-     *
-     * @return int|null
      */
     function getDatabaseDumpSize(): ?int
     {
@@ -343,9 +333,6 @@ class Backup
 
     /**
      * Add database dump
-     *
-     * @param TemporaryFile $databaseDump
-     * @param string        $prefix
      */
     function addDatabaseDump(TemporaryFile $databaseDump, string $prefix): void
     {
@@ -360,7 +347,6 @@ class Backup
      * Extract one or more files into the given directory path
      *
      * @param array|string $files
-     * @param string       $targetPath
      */
     function extractFiles($files, string $targetPath): void
     {
@@ -382,7 +368,7 @@ class Backup
      * Existing files will be overwritten.
      *
      * @param array|string $directories one or more archive paths relative to the data directory (e.g. "upload")
-     * @param string       $targetPath  path where to extract the directories to
+     * @param string $targetPath path where to extract the directories to
      */
     function extractDirectories($directories, string $targetPath): void
     {
@@ -398,8 +384,6 @@ class Backup
 
     /**
      * Get total size of files and directories (excluding the database dump)
-     *
-     * @return int
      */
     function getTotalDataSize(): int
     {
@@ -421,7 +405,6 @@ class Backup
     /**
      * @param string|null $key key to get from the metadata (null = all)
      * @throws \OutOfBoundsException if the key is invalid
-     * @return mixed
      */
     function getMetaData(?string $key = null)
     {
@@ -541,10 +524,6 @@ class Backup
         }
     }
 
-    /**
-     * @param string $dataPath
-     * @return string
-     */
     private function dataPathToArchivePath(string $dataPath): string
     {
         return $this->dataPath . '/' . $dataPath;

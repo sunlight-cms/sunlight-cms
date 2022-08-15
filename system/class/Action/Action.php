@@ -30,8 +30,6 @@ abstract class Action
 
     /**
      * Run the action
-     *
-     * @return ActionResult
      */
     final function run(): ActionResult
     {
@@ -54,8 +52,6 @@ abstract class Action
 
     /**
      * Execute the action
-     *
-     * @return ActionResult
      */
     abstract protected function execute(): ActionResult;
 }

@@ -7,11 +7,10 @@ abstract class Email
     /**
      * Wrapper funkce mail umoznujici odchyceni rozsirenim
      *
-     * @param string $to      prijemce
+     * @param string $to prijemce
      * @param string $subject predmet (automaticky formatovan jako UTF-8)
      * @param string $message zprava
-     * @param array  $headers asociativni pole s hlavickami
-     * @return bool
+     * @param array $headers asociativni pole s hlavickami
      */
     static function send(string $to, string $subject, string $message, array $headers = []): bool
     {
@@ -67,9 +66,9 @@ abstract class Email
     /**
      * Nastavit odesilatele emailu pomoci hlavicky
      *
-     * @param array       &$headers reference na pole s hlavickami
-     * @param string      $sender   emailova adresa odesilatele
-     * @param string|null $name     jmeno odesilatele
+     * @param array &$headers reference na pole s hlavickami
+     * @param string $sender emailova adresa odesilatele
+     * @param string|null $name jmeno odesilatele
      */
     static function defineSender(array &$headers, string $sender, ?string $name = null): void
     {
@@ -92,7 +91,6 @@ abstract class Email
      * Validace e-mailove adresy
      *
      * @param string $email e-mailova adresa
-     * @return bool
      */
     static function validate(string $email): bool
     {
@@ -142,7 +140,6 @@ abstract class Email
      * Sestavit kod odkazu na e-mail s ochranou
      *
      * @param string $email emailova adresa
-     * @return string
      */
     static function link(string $email): string
     {

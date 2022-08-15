@@ -7,10 +7,9 @@ abstract class PostForm
     /**
      * Sestavit kod ovladaciho panelu
      *
-     * @param string $form    nazev formulare
-     * @param string $area    nazev textarey
-     * @param bool   $bbcode  zobrazit BBCode 1/0
-     * @return string
+     * @param string $form nazev formulare
+     * @param string $area nazev textarey
+     * @param bool $bbcode zobrazit BBCode 1/0
      */
     static function renderControls(string $form, string $area, bool $bbcode = true): string
     {
@@ -50,7 +49,6 @@ abstract class PostForm
      *
      * @param string $form nazev formulare
      * @param string $area nazev textarey
-     * @return string
      */
     static function renderPreviewButton(string $form, string $area): string
     {

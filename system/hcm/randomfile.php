@@ -18,7 +18,6 @@ return function ($cesta = "", $typ = 'text', $pocet = 1, $rozmery_nahledu = null
     if (file_exists($cesta) && is_dir($cesta)) {
         $handle = opendir($cesta);
 
-
         switch ($typ) {
             case 'image':
             case 2:

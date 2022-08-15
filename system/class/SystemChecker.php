@@ -27,8 +27,6 @@ class SystemChecker
 
     /**
      * Run system checks
-     *
-     * @return bool
      */
     function check(): bool
     {
@@ -45,8 +43,6 @@ class SystemChecker
 
     /**
      * See if there were any errors
-     *
-     * @return bool
      */
     function hasErrors(): bool
     {
@@ -55,8 +51,6 @@ class SystemChecker
 
     /**
      * Render errors as a plaintext list
-     *
-     * @return string
      */
     function renderErrors(): string
     {
@@ -136,8 +130,6 @@ class SystemChecker
 
     /**
      * Generate the .htaccess file
-     *
-     * @return string
      */
     static function generateHtaccess(): string
     {

@@ -7,10 +7,9 @@ abstract class Request
     /**
      * Ziskat hodnotu z $_GET
      *
-     * @param string $key         klic
-     * @param mixed  $default     vychozi hodnota
-     * @param bool   $allow_array povolit pole 1/0
-     * @return mixed
+     * @param string $key klic
+     * @param mixed $default vychozi hodnota
+     * @param bool $allow_array povolit pole 1/0
      */
     static function get(string $key, $default = null, bool $allow_array = false)
     {
@@ -24,10 +23,9 @@ abstract class Request
     /**
      * Ziskat hodnotu z $_POST
      *
-     * @param string $key         klic
-     * @param mixed  $default     vychozi hodnota
-     * @param bool   $allow_array povolit pole 1/0
-     * @return mixed
+     * @param string $key klic
+     * @param mixed $default vychozi hodnota
+     * @param bool $allow_array povolit pole 1/0
      */
     static function post(string $key, $default = null, bool $allow_array = false)
     {

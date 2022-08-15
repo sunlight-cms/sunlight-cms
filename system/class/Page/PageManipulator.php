@@ -19,10 +19,6 @@ abstract class PageManipulator
 
     /**
      * Ziskat vychozi data pro dany typ stranky
-     *
-     * @param int         $type
-     * @param string|null $type_idt
-     * @return array
      */
     static function getInitialData(int $type, ?string $type_idt): array
     {
@@ -111,9 +107,8 @@ abstract class PageManipulator
     /**
      * Pregenerovat identifikatory stranek
      *
-     * @param int|null $id              ID stranky
-     * @param bool     $getChangesetMap pouze vratit mapu zmen, nezasahovat do databaze 1/0
-     * @return array|null
+     * @param int|null $id ID stranky
+     * @param bool $getChangesetMap pouze vratit mapu zmen, nezasahovat do databaze 1/0
      */
     static function refreshSlugs(?int $id, bool $getChangesetMap = false): ?array
     {
@@ -153,9 +148,8 @@ abstract class PageManipulator
     /**
      * Aktualizovat min. uroven stranek
      *
-     * @param int|null $id              ID stranky
-     * @param bool     $getChangesetMap pouze vratit mapu zmen, nezasahovat do databaze 1/0
-     * @return array|null
+     * @param int|null $id ID stranky
+     * @param bool $getChangesetMap pouze vratit mapu zmen, nezasahovat do databaze 1/0
      */
     static function refreshLevels(?int $id, bool $getChangesetMap = false): ?array
     {
@@ -187,9 +181,8 @@ abstract class PageManipulator
     /**
      * Aktualizovat layouty stranek
      *
-     * @param int|null $id              ID stranky
-     * @param bool     $getChangesetMap pouze vratit mapu zmen, nezasahovat do databaze 1/0
-     * @return array|null
+     * @param int|null $id ID stranky
+     * @param bool $getChangesetMap pouze vratit mapu zmen, nezasahovat do databaze 1/0
      */
     static function refreshLayouts(?int $id, bool $getChangesetMap = false): ?array
     {
@@ -220,9 +213,6 @@ abstract class PageManipulator
 
     /**
      * Ziskat segment z identifikatoru stranky
-     *
-     * @param string $slug
-     * @return string
      */
     static function getBaseSlug(string $slug): string
     {
@@ -236,10 +226,9 @@ abstract class PageManipulator
     /**
      * Smazat danou stranku i se zavislostmi
      *
-     * @param array       $page      stranka, ktera ma byt smazana (id, node_depth, node_parent, type, type_idt)
-     * @param bool        $recursive mazat i podstranky 1/0
-     * @param string|null $error     promenna, kam ulozit pripadnou chybovou hlasku
-     * @return bool
+     * @param array $page stranka, ktera ma byt smazana (id, node_depth, node_parent, type, type_idt)
+     * @param bool $recursive mazat i podstranky 1/0
+     * @param string|null $error promenna, kam ulozit pripadnou chybovou hlasku
      */
     static function delete(array $page, bool $recursive = false, ?string &$error = null): bool
     {
@@ -275,9 +264,8 @@ abstract class PageManipulator
     /**
      * Ziskat pocty zavislosti dane stranky
      *
-     * @param array $page       stranka (id, node_level, node_depth, type, type_idt)
-     * @param bool  $childPages vypisat podstranky 1/0
-     * @return array
+     * @param array $page stranka (id, node_level, node_depth, type, type_idt)
+     * @param bool $childPages vypisat podstranky 1/0
      */
     static function listDependencies(array $page, bool $childPages = false): array
     {
@@ -338,10 +326,9 @@ abstract class PageManipulator
     /**
      * Smazat zavislosti dane stranky
      *
-     * @param array       $page   stranka, ktera ma byt smazana (id, node_depth, type, type_idt)
-     * @param int         $flags  viz konstanty PageManipulator::DEPEND_X
-     * @param string|null $error  promenna, kam ulozit pripadnou chybovou hlasku
-     * @return bool
+     * @param array $page stranka, ktera ma byt smazana (id, node_depth, type, type_idt)
+     * @param int $flags viz konstanty PageManipulator::DEPEND_X
+     * @param string|null $error promenna, kam ulozit pripadnou chybovou hlasku
      */
     static function deleteDependencies(array $page, int $flags, ?string &$error = null): bool
     {
@@ -456,11 +443,6 @@ abstract class PageManipulator
      *
      * Hledani probiha od aktualni stranky smerem ke korenu.
      * Pokud neni nalezena zadna polozka, je vracen koren.
-     *
-     * @param int    $currentId
-     * @param string $column
-     * @param mixed  $value
-     * @return int
      */
     private static function findFirstTreeMatch(int $currentId, string $column, $value): int
     {

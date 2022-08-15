@@ -9,8 +9,6 @@ abstract class DatabaseLoader
 {
     /**
      * Remove tables from the database
-     *
-     * @param array $tables
      */
     static function dropTables(array $tables): void
     {
@@ -22,9 +20,8 @@ abstract class DatabaseLoader
     /**
      * Load database dump
      *
-     * @param SqlReader   $reader
      * @param string|null $currentPrefix prefix that is used in the dump (null = do not replace)
-     * @param string|null $newPrefix     new prefix (null = do not replace)
+     * @param string|null $newPrefix new prefix (null = do not replace)
      */
     static function load(SqlReader $reader, ?string $currentPrefix = null, ?string $newPrefix = null): void
     {
@@ -56,12 +53,6 @@ abstract class DatabaseLoader
 
     /**
      * Replace identifier prefixes in the query
-     *
-     * @param string $query
-     * @param array  $queryMap
-     * @param string $currentPrefix
-     * @param string $newPrefix
-     * @return string
      */
     static function replacePrefix(string $query, array $queryMap, string $currentPrefix, string $newPrefix): string
     {

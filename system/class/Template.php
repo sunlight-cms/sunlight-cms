@@ -88,9 +88,8 @@ abstract class Template
     /**
      * Vykreslit boxy daneho sloupce
      *
-     * @param string $slot      nazev slotu
-     * @param array  $overrides pretizeni konfigurace motivu
-     * @return string
+     * @param string $slot nazev slotu
+     * @param array $overrides pretizeni konfigurace motivu
      */
     static function boxes(string $slot, array $overrides = []): string
     {
@@ -164,8 +163,6 @@ abstract class Template
 
     /**
      * Vykreslit obsah
-     *
-     * @return string
      */
     static function content(): string
     {
@@ -178,8 +175,6 @@ abstract class Template
 
     /**
      * Vykreslit nadpis stranky
-     *
-     * @return string
      */
     static function heading(): string
     {
@@ -204,8 +199,6 @@ abstract class Template
 
     /**
      * Vykreslit zpetny odkaz
-     *
-     * @return string
      */
     static function backlink(): string
     {
@@ -224,8 +217,6 @@ abstract class Template
 
     /**
      * Vykreslit odkazy motivu
-     *
-     * @return string
      */
     static function links(): string
     {
@@ -238,7 +229,6 @@ abstract class Template
      * Sestavit adresu k obrazku aktualniho motivu
      *
      * @param string $name subcesta k souboru relativne ke slozce images aktualniho motivu
-     * @return string
      */
     static function image(string $name): string
     {
@@ -248,11 +238,10 @@ abstract class Template
     /**
      * Vykreslit menu
      *
-     * @param int|null    $ordStart    minimalni poradove cislo
-     * @param int|null    $ordEnd      maximalni poradove cislo
-     * @param string|null $cssClass    trida hlavniho tagu menu
-     * @param string      $extendEvent extend udalost pro polozky menu
-     * @return string
+     * @param int|null $ordStart minimalni poradove cislo
+     * @param int|null $ordEnd maximalni poradove cislo
+     * @param string|null $cssClass trida hlavniho tagu menu
+     * @param string $extendEvent extend udalost pro polozky menu
      */
     static function menu(?int $ordStart = null, ?int $ordEnd = null, ?string $cssClass = null, string $extendEvent = 'tpl.menu.item'): string
     {
@@ -299,7 +288,6 @@ abstract class Template
      * filter (-)                       pole s nastavenim pro {@see Page::getFilter()}
      *
      * @param array $options pole s nastavenim
-     * @return string
      */
     static function treeMenu(array $options): string
     {
@@ -376,7 +364,6 @@ abstract class Template
      *
      * @param array $breadcrumbs vychozi drobecky
      * @param bool $onlyWhenMultiple vykreslit pouze 2 a vice drobecku
-     * @return string
      */
     static function breadcrumbs(array $breadcrumbs = [], bool $onlyWhenMultiple = false): string
     {
@@ -427,8 +414,6 @@ abstract class Template
 
     /**
      * Vykreslit titulek aktualni stranky
-     *
-     * @return string
      */
     static function title(): string
     {
@@ -439,8 +424,6 @@ abstract class Template
 
     /**
      * Ziskat titulek stranek
-     *
-     * @return string
      */
     static function siteTitle(): string
     {
@@ -449,8 +432,6 @@ abstract class Template
 
     /**
      * Ziskat popis stranek
-     *
-     * @return string
      */
     static function siteDescription(): string
     {
@@ -477,8 +458,6 @@ abstract class Template
      * Vykreslit uzivatelske menu
      *
      * @param bool $profileLink vykreslit odkaz na profil 1/0
-     * @param bool $adminLink
-     * @return string
      */
     static function userMenu(bool $profileLink = true, bool $adminLink = true): string
     {
@@ -569,8 +548,6 @@ abstract class Template
 
     /**
      * Zjistit ID aktualni stranky
-     *
-     * @return int|null
      */
     static function currentID(): ?int
     {
@@ -579,8 +556,6 @@ abstract class Template
 
     /**
      * Zjistit, zda je aktualni obsah typu "stranka"
-     *
-     * @return bool
      */
     static function currentIsPage(): bool
     {
@@ -589,8 +564,6 @@ abstract class Template
 
     /**
      * Zjistit, zda je aktualni obsah typu "clanek" (v kategorii)
-     *
-     * @return bool
      */
     static function currentIsArticle(): bool
     {
@@ -602,8 +575,6 @@ abstract class Template
 
     /**
      * Zjistit, zda je aktualni obsah typu "tema" (ve foru)
-     *
-     * @return bool
      */
     static function currentIsTopic(): bool
     {
@@ -615,8 +586,6 @@ abstract class Template
 
     /**
      * Zjistit, zda je aktualni obsah typu "modul"
-     *
-     * @return bool
      */
     static function currentIsModule(): bool
     {
@@ -625,8 +594,6 @@ abstract class Template
 
     /**
      * Zjisteni, zda je aktualni obsah hlavni strana
-     *
-     * @return bool
      */
     static function currentIsIndex(): bool
     {

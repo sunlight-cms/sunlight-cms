@@ -118,10 +118,10 @@ abstract class Page
      *
      * Oddelovace jsou ignorovany.
      *
-     * @param array       $segments      segmenty
+     * @param array $segments segmenty
      * @param string|null $extra_columns sloupce navic (automaticky oddeleno carkou)
-     * @param string|null $extra_joins   joiny navic (automaticky oddeleno mezerou)
-     * @param string|null $extra_conds   podminky navic (automaticky oddeleno pomoci " AND (*conds*)")
+     * @param string|null $extra_joins joiny navic (automaticky oddeleno mezerou)
+     * @param string|null $extra_conds podminky navic (automaticky oddeleno pomoci " AND (*conds*)")
      * @return array|bool false pri nenalezeni
      */
     static function find(array $segments, ?string $extra_columns = null, ?string $extra_joins = null, ?string $extra_conds = null)
@@ -203,9 +203,8 @@ abstract class Page
     /**
      * Zjistit, zda je alespon jedna z uvedenych stranek aktivni
      *
-     * @param int[] $ids      seznam ID
-     * @param bool  $children kontrolovat take potomky danych stranek
-     * @return bool
+     * @param int[] $ids seznam ID
+     * @param bool $children kontrolovat take potomky danych stranek
      */
     static function isActive(array $ids, bool $children = false): bool
     {
@@ -288,9 +287,7 @@ abstract class Page
     /**
      * Ziskat data konkretni stranky
      *
-     * @param int   $id
-     * @param array $columns
-     * @param bool  $addTreeColumns pridat vychozi sloupce pro strom
+     * @param bool $addTreeColumns pridat vychozi sloupce pro strom
      * @return array|bool false pri selhani
      */
     static function getData(int $id, array $columns, bool $addTreeColumns = false)
@@ -308,8 +305,6 @@ abstract class Page
 
     /**
      * Ziskat tree reader pro strom stranek
-     *
-     * @return TreeManager
      */
     static function getTreeManager(): TreeManager
     {
@@ -322,8 +317,6 @@ abstract class Page
 
     /**
      * Ziskat tree reader pro strom stranek
-     *
-     * @return TreeReader
      */
     static function getTreeReader(): TreeReader
     {
@@ -337,10 +330,9 @@ abstract class Page
     /**
      * Nacist jednu uroven stranek
      *
-     * @param int|null    $parentNodeId ID nadrazene stranky nebo null
-     * @param string|null $sqlCond      SQL podminka
-     * @param array|null  $extraColumns pole s extra sloupci, ktere se maji nacist
-     * @return array
+     * @param int|null $parentNodeId ID nadrazene stranky nebo null
+     * @param string|null $sqlCond SQL podminka
+     * @param array|null $extraColumns pole s extra sloupci, ktere se maji nacist
      */
     static function getSingleLevel(?int $parentNodeId, ?string $sqlCond = null, ?array $extraColumns = null): array
     {
@@ -369,11 +361,10 @@ abstract class Page
     /**
      * Nacist strom stranek
      *
-     * @param int|null                 $nodeId       ID vychozi stranky
-     * @param int|null                 $nodeDepth    hloubka stromu, je-li znama
-     * @param TreeFilterInterface|null $filter       filtr polozek
-     * @param array|null               $extraColumns pole s extra sloupci, ktere se maji nacist
-     * @return array
+     * @param int|null $nodeId ID vychozi stranky
+     * @param int|null $nodeDepth hloubka stromu, je-li znama
+     * @param TreeFilterInterface|null $filter filtr polozek
+     * @param array|null $extraColumns pole s extra sloupci, ktere se maji nacist
      */
     static function getTree(
         ?int $nodeId = null,
@@ -389,11 +380,10 @@ abstract class Page
     /**
      * Nacist plochy strom stranek
      *
-     * @param int|null                 $nodeId       ID vychozi stranky
-     * @param int|null                 $nodeDepth    hloubka stromu, je-li znama
-     * @param TreeFilterInterface|null $filter       filtr polozek (asociativni pole)
-     * @param array|null               $extraColumns pole s extra sloupci, ktere se maji nacist
-     * @return array
+     * @param int|null $nodeId ID vychozi stranky
+     * @param int|null $nodeDepth hloubka stromu, je-li znama
+     * @param TreeFilterInterface|null $filter filtr polozek (asociativni pole)
+     * @param array|null $extraColumns pole s extra sloupci, ktere se maji nacist
      */
     static function getFlatTree(
         ?int $nodeId = null,
@@ -409,12 +399,11 @@ abstract class Page
     /**
      * Nacist potomky dane stranky
      *
-     * @param int|null                 $nodeId       ID stranky
-     * @param int|null                 $nodeDepth    hloubka stranky (node_depth), je-li znama
-     * @param bool                     $flat         vratit plochy strom 1/0
-     * @param TreeFilterInterface|null $filter       filtr polozek (asociativni pole)
-     * @param array|null               $extraColumns pole s extra sloupci, ktere se maji nacist
-     * @return array
+     * @param int|null $nodeId ID stranky
+     * @param int|null $nodeDepth hloubka stranky (node_depth), je-li znama
+     * @param bool $flat vratit plochy strom 1/0
+     * @param TreeFilterInterface|null $filter filtr polozek (asociativni pole)
+     * @param array|null $extraColumns pole s extra sloupci, ktere se maji nacist
      */
     static function getChildren(
         ?int $nodeId,
@@ -444,9 +433,7 @@ abstract class Page
     /**
      * Nacist korenove stranky (uroven=0)
      *
-     * @param TreeFilterInterface|null $filter
-     * @param array|null               $extraColumns pole s extra sloupci, ktere se maji nacist
-     * @return array
+     * @param array|null $extraColumns pole s extra sloupci, ktere se maji nacist
      */
     static function getRootPages(TreeFilterInterface $filter = null, ?array $extraColumns = null): array
     {
@@ -458,10 +445,9 @@ abstract class Page
     /**
      * Nacist cestu ("drobecky")
      *
-     * @param int        $id           identifikator stranky
-     * @param int|null   $level        uroven stranky (node_level), je-li znama
+     * @param int $id identifikator stranky
+     * @param int|null $level uroven stranky (node_level), je-li znama
      * @param array|null $extraColumns pole s extra sloupci, ktere se maji nacist
-     * @return array
      */
     static function getPath(int $id, ?int $level = null, ?array $extraColumns = null): array
     {
@@ -486,9 +472,6 @@ abstract class Page
 
     /**
      * Pripravit seznam sloupcu pro nacteni stromu
-     *
-     * @param array|null $extraColumns
-     * @return array
      */
     static function prepareTreeColumns(?array $extraColumns = null): array
     {
@@ -506,13 +489,6 @@ abstract class Page
         return $columns;
     }
 
-    /**
-     * @param int|null                 $nodeId
-     * @param int|null                 $nodeDepth
-     * @param TreeFilterInterface|null $filter
-     * @param array|null               $extraColumns
-     * @return TreeReaderOptions
-     */
     private static function getTreeReaderOptions(?int $nodeId, ?int $nodeDepth, ?TreeFilterInterface $filter = null, ?array $extraColumns = null): TreeReaderOptions
     {
         $options = new TreeReaderOptions();

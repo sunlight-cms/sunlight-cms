@@ -26,8 +26,6 @@ class SimpleTreeFilter implements TreeFilterInterface
      *      )
      *
      *      This results in the following SQL: column1=hodnota AND column2!=value
-     *
-     * @param array $filter
      */
     function __construct(array $filter)
     {
@@ -67,7 +65,6 @@ class SimpleTreeFilter implements TreeFilterInterface
      *
      * @param array $filter raw filter
      * @throws \InvalidArgumentException on empty filter
-     * @return array
      */
     private function compileFilter(array $filter): array
     {
@@ -90,7 +87,6 @@ class SimpleTreeFilter implements TreeFilterInterface
 
     /**
      * @param array $filter compiled filter
-     * @return string
      */
     private function compileSql(array $filter): string
     {

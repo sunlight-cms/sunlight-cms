@@ -12,9 +12,7 @@ abstract class Extend
     /**
      * Register callback for an event
      *
-     * @param string   $event
      * @param callable $callback
-     * @param int      $priority
      */
     static function reg(string $event, $callback, int $priority = 0): void
     {
@@ -25,7 +23,6 @@ abstract class Extend
      * Register multiple callbacks
      *
      * @param array $callbacks array(event1 => callback1, ...)
-     * @param int   $priority
      */
     static function regm(array $callbacks, int $priority = 0): void
     {
@@ -38,7 +35,6 @@ abstract class Extend
      * Register a global callback
      *
      * @param callable $callback callback(event, args)
-     * @param int      $priority
      */
     static function regGlobal(callable $callback, int $priority = 0): void
     {
@@ -48,9 +44,8 @@ abstract class Extend
     /**
      * Create normalized event arguments
      *
-     * @param string     &$output output variable reference
-     * @param array|null $args    array with additional arguments
-     * @return array
+     * @param string &$output output variable reference
+     * @param array|null $args array with additional arguments
      */
     static function args(string &$output, array $args = []): array
     {
@@ -61,9 +56,6 @@ abstract class Extend
 
     /**
      * Trigger an event
-     *
-     * @param string $event
-     * @param array  $args
      */
     static function call(string $event, array $args = []): void
     {
@@ -73,10 +65,8 @@ abstract class Extend
     /**
      * Trigger an event and fetch a value
      *
-     * @param string $event
-     * @param array  $args  ('value' is added automatically)
-     * @param mixed  $value initial value
-     * @return mixed
+     * @param array $args ('value' is added automatically)
+     * @param mixed $value initial value
      */
     static function fetch(string $event, array $args = [], $value = null)
     {
@@ -89,9 +79,7 @@ abstract class Extend
     /**
      * Trigger an event and fetch a string
      *
-     * @param string $event
-     * @param array  $args  ('output' is added automatically)
-     * @return string
+     * @param array $args ('output' is added automatically)
      */
     static function buffer(string $event, array $args = []): string
     {

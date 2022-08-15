@@ -87,9 +87,6 @@ class PluginManager
 
     /**
      * See if the given type is valid
-     *
-     * @param string $type
-     * @return bool
      */
     function isValidType(string $type): bool
     {
@@ -109,7 +106,6 @@ class PluginManager
     /**
      * Get definition of the given type
      *
-     * @param string $type
      * @throws \InvalidArgumentException if the plugin type is not valid
      * @return PluginType
      */
@@ -124,9 +120,6 @@ class PluginManager
 
     /**
      * See if the given plugin class is active
-     *
-     * @param string $class
-     * @return bool
      */
     function hasInstance(string $class): bool
     {
@@ -140,9 +133,7 @@ class PluginManager
     /**
      * Get plugin instance
      *
-     * @param string $class
      * @throws \OutOfBoundsException if the plugin does not exist
-     * @return Plugin
      */
     function getInstance(string $class): Plugin
     {
@@ -173,10 +164,6 @@ class PluginManager
 
     /**
      * See if the given plugin exists and is active
-     *
-     * @param string $type
-     * @param string $name
-     * @return bool
      */
     function has(string $type, string $name): bool
     {
@@ -189,10 +176,6 @@ class PluginManager
 
     /**
      * See if the given plugin exists (either active or inactive)
-     *
-     * @param string $type
-     * @param string $name
-     * @return bool
      */
     function exists(string $type, string $name): bool
     {
@@ -202,10 +185,7 @@ class PluginManager
     /**
      * Get single plugin
      *
-     * @param string $type
-     * @param string $name
      * @throws \OutOfBoundsException if the plugin does not exist
-     * @return Plugin
      */
     function get(string $type, string $name): Plugin
     {
@@ -223,9 +203,7 @@ class PluginManager
     /**
      * Get a template plugin
      *
-     * @param string $name
      * @throws \OutOfBoundsException if the plugin does not exist
-     * @return TemplatePlugin
      */
     function getTemplate(string $name): TemplatePlugin
     {
@@ -235,9 +213,7 @@ class PluginManager
     /**
      * Get an extend plugin
      *
-     * @param string $name
      * @throws \OutOfBoundsException if the plugin does not exist
-     * @return ExtendPlugin
      */
     function getExtend(string $name): ExtendPlugin
     {
@@ -247,9 +223,7 @@ class PluginManager
     /**
      * Get a language plugin
      *
-     * @param string $name
      * @throws \OutOfBoundsException if the plugin does not exist
-     * @return LanguagePlugin
      */
     function getLanguage(string $name): LanguagePlugin
     {
@@ -306,10 +280,6 @@ class PluginManager
 
     /**
      * See if the given inactive plugin exists
-     *
-     * @param string $type
-     * @param string $name
-     * @return bool
      */
     function hasInactive(string $type, string $name): bool
     {
@@ -323,10 +293,7 @@ class PluginManager
     /**
      * Get single inactive plugin
      *
-     * @param string $type
-     * @param string $name
      * @throws \OutOfBoundsException if the plugin does not exist
-     * @return InactivePlugin
      */
     function getInactive(string $type, string $name): InactivePlugin
     {
@@ -368,12 +335,8 @@ class PluginManager
     /**
      * Find a plugin (active or inactive)
      *
-     * @param string $type
-     * @param string $name
-     * @param bool   $exceptionOnFailure
      * @throws \InvalidArgumentException if the plugin type is not valid
-     * @throws \OutOfBoundsException     if the plugin does not exist
-     * @return Plugin|null
+     * @throws \OutOfBoundsException if the plugin does not exist
      */
     function find(string $type, string $name, bool $exceptionOnFailure = true): ?Plugin
     {
@@ -397,9 +360,7 @@ class PluginManager
     /**
      * Get name => label pairs for given plugin type
      *
-     * @param string $type
      * @throws \InvalidArgumentException if the plugin type is not valid
-     * @return array
      */
     function choices(string $type): array
     {
@@ -418,11 +379,9 @@ class PluginManager
     /**
      * Get HTML select for given plugin type
      *
-     * @param string      $pluginType
-     * @param string|null $active     active plugin name
-     * @param string|null $inputName  input name (null = no <select> tag, only options)
+     * @param string|null $active active plugin name
+     * @param string|null $inputName input name (null = no <select> tag, only options)
      * @throws \InvalidArgumentException if the plugin type is not valid
-     * @return string
      */
     function select(string $pluginType, ?string $active = null, ?string $inputName = null): string
     {
@@ -505,9 +464,6 @@ class PluginManager
         $this->initialized = true;
     }
 
-    /**
-     * @return array
-     */
     private function loadPlugins(): array
     {
         $pluginLoader = new PluginLoader($this->types);
@@ -524,18 +480,11 @@ class PluginManager
         return $data;
     }
 
-    /**
-     * @return string
-     */
     private function getSystemHash(): string
     {
         return sha1(Core::VERSION . '$' . realpath(SL_ROOT));
     }
 
-    /**
-     * @param array $boundFiles
-     * @return array
-     */
     private function mapBoundFiles(array $boundFiles): array
     {
         $map = [];
@@ -547,10 +496,6 @@ class PluginManager
         return $map;
     }
 
-    /**
-     * @param array $data
-     * @return bool
-     */
     private function validateCachedData(array $data): bool
     {
         if ($data['system_hash'] !== $this->getSystemHash()) {

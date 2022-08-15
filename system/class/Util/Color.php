@@ -8,7 +8,7 @@ class Color
 
     /**
      * @param array $color color segments
-     * @param int   $type  color model (0 = rgb, 1 = hsl)
+     * @param int $type color model (0 = rgb, 1 = hsl)
      */
     function __construct(array $color = [0, 0, 0], int $type = 0)
     {
@@ -22,14 +22,11 @@ class Color
     }
 
     /**
-     * Create color from a RGB HEX string.
+     * Create color from an RGB HEX string.
      *
      * Supported formats are #xxxxxx or #xxx (shorthand).
-     *
-     * @param $color
-     * @return self|null
      */
-    static function fromString($color): ?self
+    static function fromString(string $color): ?self
     {
         if (preg_match('{#([0-9a-f]{3,6})$}ADi', $color, $match)) {
             return new self(
@@ -44,8 +41,6 @@ class Color
 
     /**
      * Get the color as a RGB HEX string
-     *
-     * @return string
      */
     function __toString(): string
     {
@@ -82,8 +77,7 @@ class Color
      * Change color channel value
      *
      * @param string $channel channel name - r/g/b/h/s/l
-     * @param int    $value   new value (0-255)
-     * @return bool
+     * @param int $value new value (0-255)
      */
     function setChannel(string $channel, int $value): bool
     {
@@ -146,7 +140,7 @@ class Color
     /**
      * Get RGB values of HSL color
      *
-     * @param int   $h hue (0-255)
+     * @param int $h hue (0-255)
      * @param float $s saturation (0-255)
      * @param float $l lightness (0-255)
      * @return array array(r,g,b)

@@ -34,8 +34,6 @@ class TemplatePlugin extends Plugin
 
     /**
      * See if this is the default template
-     *
-     * @return bool
      */
     function isDefault(): bool
     {
@@ -44,8 +42,6 @@ class TemplatePlugin extends Plugin
 
     /**
      * Notify the template plugin that it is going to be used to render a front end page
-     *
-     * @param string $layout
      */
     function begin(string $layout): void
     {
@@ -53,8 +49,6 @@ class TemplatePlugin extends Plugin
 
     /**
      * Get the localization dictionary
-     *
-     * @return LocalizationDictionary
      */
     function getLang(): LocalizationDictionary
     {
@@ -63,9 +57,6 @@ class TemplatePlugin extends Plugin
     
     /**
      * Get template file path for the given layout
-     *
-     * @param string $layout
-     * @return string
      */
     function getTemplate(string $layout = self::DEFAULT_LAYOUT): string
     {
@@ -80,7 +71,6 @@ class TemplatePlugin extends Plugin
      * See if the given layout exists
      *
      * @param string $layout layout name
-     * @return bool
      */
     function hasLayout(string $layout): bool
     {
@@ -101,7 +91,6 @@ class TemplatePlugin extends Plugin
      * Get label for the given layout
      *
      * @param string $layout layout name
-     * @return string
      */
     function getLayoutLabel(string $layout): string
     {
@@ -110,10 +99,6 @@ class TemplatePlugin extends Plugin
 
     /**
      * See if the given slot exists
-     *
-     * @param string $layout
-     * @param string $slot
-     * @return bool
      */
     function hasSlot(string $layout, string $slot): bool
     {
@@ -138,10 +123,6 @@ class TemplatePlugin extends Plugin
 
     /**
      * Get label for the given layout and slot
-     *
-     * @param string $layout
-     * @param string $slot
-     * @return string
      */
     function getSlotLabel(string $layout, string $slot): string
     {
@@ -150,9 +131,6 @@ class TemplatePlugin extends Plugin
 
     /**
      * Get boxes for the given layout
-     *
-     * @param string $layout
-     * @return array
      */
     function getBoxes(string $layout = self::DEFAULT_LAYOUT): array
     {
@@ -177,9 +155,6 @@ class TemplatePlugin extends Plugin
         return $this->getWebPath($absolute) . "/images/{$name}";
     }
 
-    /**
-     * @return string
-     */
     protected function getLocalizationPrefix(): string
     {
         return "{$this->type}_{$this->id}";

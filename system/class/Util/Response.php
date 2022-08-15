@@ -26,8 +26,8 @@ abstract class Response
     /**
      * Odeslat hlavicky pro presmerovani
      *
-     * @param string $url       absolutni URL
-     * @param bool   $permanent vytvorit permanentni presmerovani 1/0
+     * @param string $url absolutni URL
+     * @param bool $permanent vytvorit permanentni presmerovani 1/0
      */
     static function redirect(string $url, bool $permanent = false): void
     {
@@ -67,8 +67,6 @@ abstract class Response
      * 1) parametr $url
      * 2) _get('_return')
      * 3) $_SERVER['HTTP_REFERER']
-     *
-     * @return string
      */
     static function getReturnUrl(): string
     {
@@ -97,7 +95,7 @@ abstract class Response
     /**
      * Poslat hlavicky pro stazeni souboru
      *
-     * @param string   $filename nazev souboru
+     * @param string $filename nazev souboru
      * @param int|null $filesize velikost souboru v bajtech, je-li znama
      */
     static function download(string $filename, ?int $filesize = null): void
@@ -115,7 +113,7 @@ abstract class Response
      *
      * Skript NENI ukoncen po zavolani teto funkce.
      *
-     * @param string      $filepath cesta k souboru
+     * @param string $filepath cesta k souboru
      * @param string|null $filename vlastni nazev souboru nebo null (= zjistit z $filepath)
      */
     static function downloadFile(string $filepath, ?string $filename = null): void

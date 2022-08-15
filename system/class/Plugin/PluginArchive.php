@@ -28,10 +28,6 @@ class PluginArchive
      */
     private $plugins;
 
-    /**
-     * @param PluginManager $manager
-     * @param string        $path
-     */
     function __construct(PluginManager $manager, string $path)
     {
         $this->manager = $manager;
@@ -42,7 +38,7 @@ class PluginArchive
     /**
      * Extract the archive
      *
-     * @param bool          $merge          merge with current plugins (only install new ones) 1/0
+     * @param bool $merge merge with current plugins (only install new ones) 1/0
      * @param string[]|null &$failedPlugins
      * @return string[] list of successfully extracted plugins
      */
@@ -75,8 +71,6 @@ class PluginArchive
 
     /**
      * See if the archive contains any plugins
-     *
-     * @return bool
      */
     function hasPlugins(): bool
     {
@@ -85,9 +79,6 @@ class PluginArchive
         return !empty($this->plugins);
     }
 
-    /**
-     * @return array
-     */
     function getPlugins(): array
     {
         $this->ensureOpen();

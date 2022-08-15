@@ -13,9 +13,6 @@ abstract class TemplateService
 
     /**
      * Check if a template exists
-     *
-     * @param string $id
-     * @return bool
      */
     static function templateExists(string $id): bool
     {
@@ -24,9 +21,6 @@ abstract class TemplateService
 
     /**
      * Get a template for the given template identifier
-     *
-     * @param string $id
-     * @return TemplatePlugin
      */
     static function getTemplate(string $id): TemplatePlugin
     {
@@ -39,8 +33,6 @@ abstract class TemplateService
 
     /**
      * Get default template
-     *
-     * @return TemplatePlugin
      */
     static function getDefaultTemplate(): TemplatePlugin
     {
@@ -51,9 +43,6 @@ abstract class TemplateService
      * Compose unique template component identifier
      *
      * @param string|TemplatePlugin $template
-     * @param string|null           $layout
-     * @param string|null           $slot
-     * @return string|null
      */
     static function composeUid($template, ?string $layout = null, ?string $slot = null): ?string
     {
@@ -74,8 +63,7 @@ abstract class TemplateService
     /**
      * Parse the given unique template component identifier
      *
-     * @param string $uid
-     * @param int    $type see TemplateService::UID_* constants
+     * @param int $type see TemplateService::UID_* constants
      * @return string[] template, [layout], [slot]
      */
     static function parseUid(string $uid, int $type): array
@@ -89,9 +77,7 @@ abstract class TemplateService
      * Verify that the given unique template component identifier is valid
      * and points to existing components
      *
-     * @param string $uid
-     * @param int    $type see TemplateService::UID_* constants
-     * @return bool
+     * @param int $type see TemplateService::UID_* constants
      */
     static function validateUid(string $uid, int $type): bool
     {
@@ -101,8 +87,7 @@ abstract class TemplateService
     /**
      * Get components identified by the given unique template component identifier
      *
-     * @param string $uid
-     * @param int    $type see TemplateService::UID_* constants
+     * @param int $type see TemplateService::UID_* constants
      * @return array|null array or null if the given identifier is not valid
      */
     static function getComponentsByUid(string $uid, int $type): ?array
@@ -120,9 +105,6 @@ abstract class TemplateService
      *      layout   => (string) layout identifier (only if $layout is not NULL)
      *      slot     => (string) slot identifier (only if both $layout and $slot are not NULL)
      *
-     * @param string      $template
-     * @param string|null $layout
-     * @param string|null $slot
      * @return array|null array or null if the given combination does not exist
      */
     static function getComponents(string $template, ?string $layout = null, ?string $slot = null): ?array
@@ -158,12 +140,6 @@ abstract class TemplateService
 
     /**
      * Get label for the given components
-     *
-     * @param TemplatePlugin $template
-     * @param string|null    $layout
-     * @param string|null    $slot
-     * @param bool           $includeTemplateName
-     * @return string
      */
     static function getComponentLabel(TemplatePlugin $template, ?string $layout = null, ?string $slot = null, bool $includeTemplateName = true): string
     {
@@ -186,10 +162,6 @@ abstract class TemplateService
      * Get label for the given component array
      *
      * @see TemplateService::getComponents()
-     *
-     * @param array $components
-     * @param bool  $includeTemplateName
-     * @return string
      */
     static function getComponentLabelFromArray(array $components, bool $includeTemplateName = true): string
     {
@@ -204,10 +176,7 @@ abstract class TemplateService
     /**
      * Get label for the given unique template component identifier
      *
-     * @param string|null $uid
-     * @param int         $type see TemplateService::UID_* constants
-     * @param bool        $includeTemplateName
-     * @return string
+     * @param int $type see TemplateService::UID_* constants
      */
     static function getComponentLabelByUid(?string $uid, int $type, bool $includeTemplateName = true): string
     {

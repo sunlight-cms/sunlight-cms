@@ -156,8 +156,8 @@ class BackupBuilder
     /**
      * Add/extend a dynamic path
      *
-     * @param string $name  dynamic path name (consisting of [a-zA-Z0-9_] only)
-     * @param array  $paths array of relative directory/file paths
+     * @param string $name dynamic path name (consisting of [a-zA-Z0-9_] only)
+     * @param array $paths array of relative directory/file paths
      * @throws \InvalidArgumentException if the name is empty or contains illegal characters
      */
     function addDynamicPath(string $name, array $paths): void
@@ -221,9 +221,8 @@ class BackupBuilder
     /**
      * Make a path included
      *
-     * @param string $pattern
-     * @param bool   $static  affect static paths 1/0
-     * @param bool   $dynamic affect dynamic paths 1/0
+     * @param bool $static affect static paths 1/0
+     * @param bool $dynamic affect dynamic paths 1/0
      */
     function includePath(string $pattern, bool $static = true, bool $dynamic = true): void
     {
@@ -233,9 +232,8 @@ class BackupBuilder
     /**
      * Make a path excluded
      *
-     * @param string $pattern
-     * @param bool   $static  affect static paths 1/0
-     * @param bool   $dynamic affect dynamic paths 1/0
+     * @param bool $static affect static paths 1/0
+     * @param bool $dynamic affect dynamic paths 1/0
      */
     function excludePath(string $pattern, bool $static = true, bool $dynamic = true): void
     {

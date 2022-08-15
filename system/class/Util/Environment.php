@@ -8,8 +8,6 @@ abstract class Environment
 {
     /**
      * Pokusit se detekovat, zda-li bezi tato instalace systemu pod webserverem Apache
-     *
-     * @return bool
      */
     static function isApache(): bool
     {
@@ -20,8 +18,6 @@ abstract class Environment
 
     /**
      * Zjistit zda-li je aktualni prostredi konzole
-     *
-     * @return bool
      */
     static function isCli(): bool
     {

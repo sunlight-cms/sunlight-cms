@@ -34,7 +34,6 @@ if (isset($_FILES['archive']) && is_uploaded_file($_FILES['archive']['tmp_name']
     }
 }
 
-
 $output .= $message . '
 <p class="bborder">' . _lang('admin.plugins.upload.p') . '</p>
 

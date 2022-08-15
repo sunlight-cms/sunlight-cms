@@ -56,10 +56,9 @@ abstract class IpLog
     /**
      * Zkontrolovat log IP adres
      *
-     * @param int      $type    typ zaznamu, viz class konstanty
-     * @param mixed    $var     promenny argument dle typu
+     * @param int $type typ zaznamu, viz class konstanty
+     * @param mixed $var promenny argument dle typu
      * @param int|null $expires doba expirace zaznamu v sekundach pro typ 8+
-     * @return bool
      */
     static function check(int $type, $var = null, ?int $expires = null): bool
     {
@@ -144,8 +143,8 @@ abstract class IpLog
      *
      * @see IpLog::check()
      *
-     * @param int   $type typ zaznamu
-     * @param mixed $var  promenny argument dle typu
+     * @param int $type typ zaznamu
+     * @param mixed $var promenny argument dle typu
      */
     static function update(int $type, $var = null): void
     {
