@@ -182,7 +182,11 @@ class ToolbarRenderer
 
         foreach ($listeners as $event => $eventListeners) {
             foreach ($eventListeners as $eventListener) {
-                $eventListenerRows[] = [$event, Dumper::dump($eventListener->callback), $eventListener->priority];
+                $eventListenerRows[] = [
+                    $event,
+                    $this->renderCallback($eventListener->callback),
+                    $eventListener->priority,
+                ];
             }
         }
 
@@ -207,7 +211,7 @@ class ToolbarRenderer
                 <?php foreach ($this->eventLog as $event => $data): ?>
                     <tr>
                         <td><?= _e($event) ?></td>
-                        <td><?= $data[0] ?></td>
+                        <td><?= _e($data[0]) ?></td>
                         <td><?php $this->renderEventArgs($data[1]) ?></td>
                     </tr>
                 <?php endforeach ?>
@@ -237,6 +241,15 @@ class ToolbarRenderer
     </div>
 </div>
 <?php
+    }
+
+    private function renderCallback($callback): string
+    {
+        if (is_callable($callback, true, $callableName)) {
+            return $callableName;
+        }
+
+        return sprintf('INVALID? %s', Dumper::dump($callback));
     }
 
     /**
