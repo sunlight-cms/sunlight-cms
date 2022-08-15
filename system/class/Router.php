@@ -277,7 +277,7 @@ abstract class Router
         ];
 
         // extend
-        $extendOutput = Extend::buffer('user.link', array('user' => $data, 'options' => &$options));
+        $extendOutput = Extend::buffer('user.link', ['user' => $data, 'options' => &$options]);
         if ($extendOutput !== '') {
             return $extendOutput;
         }
