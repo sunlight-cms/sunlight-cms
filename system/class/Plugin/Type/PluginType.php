@@ -41,7 +41,9 @@ abstract class PluginType
         $fallbackOptions = [
             'name' => $plugin->id,
             'version' => '0.0.0',
-            'api' => '0.0.0',
+            'environment' => [
+                'system' => '0.0.0',
+            ],
         ];
 
         $plugin->options = $this->getFallbackOptionResolver()->resolve($fallbackOptions, [$plugin])->toArray();
@@ -59,10 +61,14 @@ abstract class PluginType
             Option::string('author')->default(null),
             Option::string('url')->default(null),
             Option::string('version'),
-            Option::string('api'),
-            Option::string('php')->default(null),
-            Option::list('extensions', 'string')->default([]),
-            Option::list('requires', 'string')->default([]),
+            Option::node(
+                'environment',
+                Option::string('system'),
+                Option::string('php')->default(null),
+                Option::list('php_extensions', 'string')->default([]),
+                Option::bool('debug')->default(null)
+            ),
+            Option::list('dependencies', 'string')->default([]),
             Option::string('installer')
                 ->normalize([PluginOptionNormalizer::class, 'normalizePath'])
                 ->default(null),
@@ -73,7 +79,6 @@ abstract class PluginType
                 Option::list('classmap', 'string')->default([])
             )
                 ->normalize([PluginOptionNormalizer::class, 'normalizeAutoload']),
-            Option::bool('debug')->default(null),
             Option::string('class')->default(null),
             Option::string('namespace')->default(null),
             Option::bool('inject_composer')->default(true),

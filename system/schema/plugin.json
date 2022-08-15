@@ -16,19 +16,30 @@
         "version": {
             "type": "string"
         },
-        "api": {
-            "type": "string"
+        "environment": {
+            "type": "object",
+            "properties": {
+                "system": {
+                    "type": "string"
+                },
+                "php": {
+                    "type": "string"
+                },
+                "php_extensions": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "debug": {
+                    "type": ["boolean", "null"]
+                }
+            },
+            "required": [
+                "system"
+            ]
         },
-        "php": {
-            "type": "string"
-        },
-        "extensions": {
-            "type": "array",
-            "items": {
-                "type": "string"
-            }
-        },
-        "requires": {
+        "dependencies": {
             "type": "object",
             "patternProperties": {
                 "^": {
@@ -57,9 +68,6 @@
             },
             "additionalProperties": false
         },
-        "debug": {
-            "type": ["boolean", "null"]
-        },
         "class": {
             "type": "string"
         },
@@ -76,7 +84,7 @@
     "required": [
         "name",
         "version",
-        "api"
+        "environment"
     ],
     "definitions": {
         "autoload-map": {

@@ -2,9 +2,11 @@
     "$schema": "../../../system/schema/extend.json",
     "name": "Codemirror",
     "description": "Syntax highlighter for administration.",
-    "version": "8.0",
-    "api": "^8.0",
     "url": "https://sunlight-cms.cz/",
+    "version": "8.0",
+    "environment": {
+        "system": "^8.0"
+    },
     "class": "CodemirrorPlugin",
     "events.admin": [
         {"event": "admin.head", "method": "onAdminHead"},

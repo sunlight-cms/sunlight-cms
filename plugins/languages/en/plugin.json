@@ -2,7 +2,9 @@
     "$schema": "../../../system/schema/language.json",
     "name": "English",
     "description": "English translation files.",
+    "url": "https://sunlight-cms.cz/",
     "version": "8.0",
-    "api": "^8.0",
-    "url": "https://sunlight-cms.cz/"
+    "environment": {
+        "system": "^8.0"
+    }
 }

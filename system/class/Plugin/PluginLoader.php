@@ -141,7 +141,7 @@ class PluginLoader
             $type->resolveOptions($plugin, $options);
 
             if (!$plugin->hasErrors()) {
-                $this->validatePlugin($plugin);
+                $this->validateEnvironment($plugin);
             }
         }
 
@@ -166,31 +166,33 @@ class PluginLoader
         return $plugin;
     }
 
-    private function validatePlugin(PluginData $plugin): void
+    private function validateEnvironment(PluginData $plugin): void
     {
-        // api version
-        if (!$this->checkVersion($plugin->options['api'], Core::VERSION)) {
-            $plugin->addError(sprintf('API version "%s" is not compatible with system version "%s"', $plugin->options['api'], Core::VERSION));
+        $env = $plugin->options['environment'];
+
+        // system version
+        if (!$this->checkVersion($env['system'], Core::VERSION)) {
+            $plugin->addError(sprintf('System version "%s" is required', $env['system']));
         }
 
         // PHP version
-        if ($plugin->options['php'] !== null && !version_compare($plugin->options['php'], PHP_VERSION, '<=')) {
-            $plugin->addError(sprintf('PHP version "%s" or newer is required', $plugin->options['php']));
+        if ($env['php'] !== null && !$this->checkVersion($env['php'], PHP_VERSION)) {
+            $plugin->addError(sprintf('PHP version "%s" is required', $env['php']));
         }
 
-        // extensions
-        foreach ($plugin->options['extensions'] as $extension) {
+        // PHP extensions
+        foreach ($env['php_extensions'] as $extension) {
             if (!extension_loaded($extension)) {
                 $plugin->addError(sprintf('PHP extension "%s" is required', $extension));
             }
         }
 
         // debug mode
-        if ($plugin->options['debug'] !== null && $plugin->options['debug'] !== Core::$debug) {
+        if ($env['debug'] !== null && $env['debug'] !== Core::$debug) {
             $plugin->addError(
-                $plugin->options['debug']
-                    ? 'debug mode is required'
-                    : 'production mode is required'
+                $env['debug']
+                    ? 'plugin is only active in debug mode'
+                    : 'plugin is not active in debug mode'
             );
         }
     }
@@ -255,8 +257,8 @@ class PluginLoader
                         // the plugin is in a circular dependency chain
                         $errors[] = sprintf('circular dependency detected: "%s"', $circularDependencyMap[$id]);
                         $canBeAdded = false;
-                    } elseif (!empty($plugin->options['requires'])) {
-                        foreach ($plugin->options['requires'] as $dependency => $requiredVersion) {
+                    } elseif (!empty($plugin->options['dependencies'])) {
+                        foreach ($plugin->options['dependencies'] as $dependency => $requiredVersion) {
                             if (isset($sorted[$dependency])) {
                                 // the dependency is already in the sorted map
                                 if (!$this->checkDependency($sorted[$dependency], $requiredVersion, $errors)) {
@@ -316,7 +318,7 @@ class PluginLoader
         $checkQueue = [];
         foreach ($plugins as $id => $plugin) {
             if ($plugin->isOk()) {
-                foreach (array_keys($plugin->options['requires']) as $dependency) {
+                foreach (array_keys($plugin->options['dependencies']) as $dependency) {
                     $checkQueue[] = [$dependency, [$id => true, $dependency => true]];
                 }
             }
@@ -326,7 +328,7 @@ class PluginLoader
             [$id, $pathMap] = array_pop($checkQueue);
 
             if (isset($plugins[$id])) {
-                foreach (array_keys($plugins[$id]->options['requires']) as $dependency) {
+                foreach (array_keys($plugins[$id]->options['dependencies']) as $dependency) {
                     if (isset($pathMap[$dependency])) {
                         $pathString = "{$id}";
                         foreach (array_keys($pathMap) as $segment) {
