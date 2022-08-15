@@ -4,11 +4,9 @@ use Sunlight\Extend;
 use Sunlight\Page\Page;
 use Sunlight\Router;
 use Sunlight\Settings;
-use Sunlight\Template;
 use Sunlight\User;
 use Sunlight\Util\ArgList;
 use Sunlight\Util\StringManipulator;
-use Sunlight\Util\UrlHelper;
 
 defined('SL_ROOT') or exit;
 

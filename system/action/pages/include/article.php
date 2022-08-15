@@ -11,7 +11,6 @@ use Sunlight\Router;
 use Sunlight\Settings;
 use Sunlight\Template;
 use Sunlight\User;
-use Sunlight\Util\UrlHelper;
 use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;

@@ -6,7 +6,6 @@ use Sunlight\Message;
 use Sunlight\Page\Page;
 use Sunlight\Post\Post;
 use Sunlight\Router;
-use Sunlight\Template;
 use Sunlight\User;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;

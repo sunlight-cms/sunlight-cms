@@ -10,8 +10,6 @@ use Sunlight\IpLog;
 use Sunlight\Plugin\ExtendPlugin;
 use Sunlight\Plugin\PluginData;
 use Sunlight\Plugin\PluginManager;
-use Kuria\Error\Screen\WebErrorScreen;
-use Kuria\Error\Screen\WebErrorScreenEvents;
 
 class DevkitPlugin extends ExtendPlugin
 {

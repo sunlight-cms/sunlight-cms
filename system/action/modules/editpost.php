@@ -11,7 +11,6 @@ use Sunlight\Post\Post;
 use Sunlight\PostForm;
 use Sunlight\Router;
 use Sunlight\Settings;
-use Sunlight\Template;
 use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Html;

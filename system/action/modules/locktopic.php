@@ -4,7 +4,6 @@ use Sunlight\Database\Database as DB;
 use Sunlight\Message;
 use Sunlight\Post\Post;
 use Sunlight\Router;
-use Sunlight\Template;
 use Sunlight\User;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
