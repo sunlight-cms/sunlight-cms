@@ -67,6 +67,6 @@ class CodemirrorPlugin extends ExtendPlugin
         $args['output'] .= "cursor: text;\n";
         $args['output'] .= "background-color: #fff;\n";
         $args['output'] .= "}\n";
-        $args['output'] .= "div.CodeMirror span.cm-hcm {color: " . ($GLOBALS['dark'] ? '#ff0' : '#f60') . ";}\n";
+        $args['output'] .= 'div.CodeMirror span.cm-hcm {color: ' . ($GLOBALS['dark'] ? '#ff0' : '#f60') . ";}\n";
     }
 }

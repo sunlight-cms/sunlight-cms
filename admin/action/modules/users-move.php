@@ -14,12 +14,12 @@ $excluded_group_ids = [User::ADMIN_GROUP_ID, User::GUEST_GROUP_ID];
 
 /* ---  ulozeni  --- */
 
-$message = "";
+$message = '';
 if (isset($_POST['sourcegroup'])) {
     $source = (int) Request::post('sourcegroup');
     $target = (int) Request::post('targetgroup');
-    $source_data = DB::queryRow("SELECT level FROM " . DB::table('user_group') . " WHERE id=" . $source);
-    $target_data = DB::queryRow("SELECT level FROM " . DB::table('user_group') . " WHERE id=" . $target);
+    $source_data = DB::queryRow('SELECT level FROM ' . DB::table('user_group') . ' WHERE id=' . $source);
+    $target_data = DB::queryRow('SELECT level FROM ' . DB::table('user_group') . ' WHERE id=' . $target);
 
     if ($source_data !== false && $target_data !== false && !in_array($source, $excluded_group_ids) && !in_array($target, $excluded_group_ids)) {
         if ($source != $target) {
@@ -42,7 +42,7 @@ if (isset($_POST['sourcegroup'])) {
 $output .= $message . "
 <form class='cform' action='" . _e(Router::admin('users-move')) . "' method='post'>
 " . _lang('admin.users.move.text1')
-. " " . Admin::userSelect('sourcegroup', -1, 'id NOT IN(' . DB::arr($excluded_group_ids) . ')', null, null, true)
-. " " . _lang('admin.users.move.text2') . " " . Admin::userSelect('targetgroup', -1, 'id NOT IN(' . DB::arr($excluded_group_ids) . ')', null, null, true)
+. ' ' . Admin::userSelect('sourcegroup', -1, 'id NOT IN(' . DB::arr($excluded_group_ids) . ')', null, null, true)
+. ' ' . _lang('admin.users.move.text2') . ' ' . Admin::userSelect('targetgroup', -1, 'id NOT IN(' . DB::arr($excluded_group_ids) . ')', null, null, true)
 . " <input class='button' type='submit' value='" . _lang('global.do') . "' onclick='return Sunlight.confirm();'>
-" . Xsrf::getInput() . "</form>";
+" . Xsrf::getInput() . '</form>';

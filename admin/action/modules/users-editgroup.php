@@ -25,7 +25,7 @@ $unregistered_useable = ['postcomments', 'artrate', 'pollvote'];
 $continue = false;
 if (isset($_GET['id'])) {
     $id = (int) Request::get('id');
-    $query = DB::queryRow("SELECT * FROM " . DB::table('user_group') . " WHERE id=" . $id);
+    $query = DB::queryRow('SELECT * FROM ' . DB::table('user_group') . ' WHERE id=' . $id);
     if ($query !== false) {
         $systemitem = in_array($query['id'], $sysgroups_array);
         if (User::getLevel() > $query['level']) {
@@ -135,9 +135,9 @@ if ($continue) {
         'unregistered_rights' => &$unregistered_useable,
     ]);
 
-    $rights = "";
+    $rights = '';
     foreach ($rights_array as $section) {
-        $rights .= "<fieldset><legend>" . $section['title'] . "</legend><table>\n";
+        $rights .= '<fieldset><legend>' . $section['title'] . "</legend><table>\n";
         foreach ($section['rights'] as $item) {
             if (
                 $id == User::ADMIN_GROUP_ID
@@ -151,14 +151,14 @@ if ($continue) {
 
             $isText = isset($item['text']) && $item['text'];
 
-            $rights .= "<tr>
-    <th" . (isset($item['dangerous']) && $item['dangerous'] ? ' class="important"' : '') . ">
+            $rights .= '<tr>
+    <th' . (isset($item['dangerous']) && $item['dangerous'] ? ' class="important"' : '') . ">
         <label for='setting_" . $item['name'] . "'>" . ($item['label'] ?? _lang('admin.users.groups.' . $item['name'])) . "</label>
     </th>
     <td>
         <label>
-            <input type='" . ($isText ? 'text' : 'checkbox') . "' id='setting_" . $item['name'] . "' name='" . $item['name'] . "'" . ($isText ? " value='" . _e($query[$item['name']]) . "'" : " value='1'" . Form::activateCheckbox($query[$item['name']])) . Form::disableInputUnless(!$disabled) . ">
-            " . ($item['help'] ?? _lang('admin.users.groups.' . $item['name'] . '.help')) . "
+            <input type='" . ($isText ? 'text' : 'checkbox') . "' id='setting_" . $item['name'] . "' name='" . $item['name'] . "'" . ($isText ? " value='" . _e($query[$item['name']]) . "'" : " value='1'" . Form::activateCheckbox($query[$item['name']])) . Form::disableInputUnless(!$disabled) . '>
+            ' . ($item['help'] ?? _lang('admin.users.groups.' . $item['name'] . '.help')) . "
         </label>
     </td>
 </tr>\n";
@@ -174,7 +174,7 @@ if ($continue) {
 
         // zakladni atributy
         $changeset['title'] = Html::cut(_e(trim(Request::post('title', ''))), 128);
-        if ($changeset['title'] == "") {
+        if ($changeset['title'] == '') {
             $changeset['title'] = _lang('global.novalue');
         }
         $changeset['descr'] = Html::cut(_e(trim(Request::post('descr', ''))), 255);
@@ -229,7 +229,7 @@ if ($continue) {
 
     if ($id != User::GUEST_GROUP_ID) {
         $icons = "<div class='radio-group'>\n";
-        $icons .= "<label><input" . Form::activateCheckbox($query['icon'] === '') . " type='radio' name='icon' value=''> " . _lang('global.undefined') . "</label>\n";
+        $icons .= '<label><input' . Form::activateCheckbox($query['icon'] === '') . " type='radio' name='icon' value=''> " . _lang('global.undefined') . "</label>\n";
 
         $icon_dir = SL_ROOT . 'images/groupicons';
         foreach (scandir($icon_dir) as $file) {
@@ -242,16 +242,16 @@ if ($continue) {
                 continue;
             }
 
-            $icons .= "<label><input" . Form::activateCheckbox($file === $query['icon']) . " type='radio' name='icon' value='" . _e($file) . "'> <img class='icon' src='" . $icon_dir . '/' . _e($file) . "' alt='" . _e($file) . "'></label>\n";
+            $icons .= '<label><input' . Form::activateCheckbox($file === $query['icon']) . " type='radio' name='icon' value='" . _e($file) . "'> <img class='icon' src='" . $icon_dir . '/' . _e($file) . "' alt='" . _e($file) . "'></label>\n";
         }
         $icons .= "<div class='cleaner'></div></div>\n";
     }
 
     /* ---  vystup  --- */
     $output .= "
-  <p class='bborder'>" . _lang('admin.users.groups.editp') . "</p>
-  " . (isset($_GET['saved']) ? Message::ok(_lang('global.saved')) : '') . "
-  " . ($systemitem ? Admin::note(_lang('admin.users.groups.specialgroup.editnotice')) : '') . "
+  <p class='bborder'>" . _lang('admin.users.groups.editp') . '</p>
+  ' . (isset($_GET['saved']) ? Message::ok(_lang('global.saved')) : '') . '
+  ' . ($systemitem ? Admin::note(_lang('admin.users.groups.specialgroup.editnotice')) : '') . "
   <form action='" . _e(Router::admin('users-editgroup', ['query' => ['id' => $id]])) . "' method='post'>
   <table>
 
@@ -267,30 +267,30 @@ if ($continue) {
 
   <tr>
   <th>" . _lang('admin.users.groups.level') . "</th>
-  <td><input type='number' min='0' max='" . min(User::getLevel() -1, User::MAX_ASSIGNABLE_LEVEL) . "' name='level' class='inputmedium' value='" . $query['level'] . "'" . Form::disableInputUnless(!$systemitem) . "></td>
+  <td><input type='number' min='0' max='" . min(User::getLevel() -1, User::MAX_ASSIGNABLE_LEVEL) . "' name='level' class='inputmedium' value='" . $query['level'] . "'" . Form::disableInputUnless(!$systemitem) . '></td>
   </tr>
 
-  " . (($id != User::GUEST_GROUP_ID) ? "
-  <tr><th><dfn title='" . _lang('admin.users.groups.icon.help', ['%dir%' => $icon_dir]) . "'>" . _lang('admin.users.groups.icon') . "</dfn></th><td>" . $icons . "</td></tr>
-  <tr><th>" . _lang('admin.users.groups.color') . "</th><td><input type='text' name='color' class='inputsmall' value='" . $query['color'] . "' maxlength='16'> <input type='color' value='" . Admin::formatHtmlColor($query['color']) . "' onchange='this.form.elements.color.value=this.value'></td></tr>
-  <tr><th>" . _lang('admin.users.groups.reglist') . "</th><td><input type='checkbox' name='reglist' value='1'" . Form::activateCheckbox($query['reglist']) . "></td></tr>
-  " : '') . "
+  ' . (($id != User::GUEST_GROUP_ID) ? "
+  <tr><th><dfn title='" . _lang('admin.users.groups.icon.help', ['%dir%' => $icon_dir]) . "'>" . _lang('admin.users.groups.icon') . '</dfn></th><td>' . $icons . '</td></tr>
+  <tr><th>' . _lang('admin.users.groups.color') . "</th><td><input type='text' name='color' class='inputsmall' value='" . $query['color'] . "' maxlength='16'> <input type='color' value='" . Admin::formatHtmlColor($query['color']) . "' onchange='this.form.elements.color.value=this.value'></td></tr>
+  <tr><th>" . _lang('admin.users.groups.reglist') . "</th><td><input type='checkbox' name='reglist' value='1'" . Form::activateCheckbox($query['reglist']) . '></td></tr>
+  ' : '') . '
 
   <tr>
-  <th>" . _lang('admin.users.groups.blocked') . "</th>
-  <td><input type='checkbox' name='blocked' value='1'" . Form::activateCheckbox($query['blocked']) . Form::disableInputUnless($id != User::ADMIN_GROUP_ID && $id != User::GUEST_GROUP_ID) . "></td>
+  <th>' . _lang('admin.users.groups.blocked') . "</th>
+  <td><input type='checkbox' name='blocked' value='1'" . Form::activateCheckbox($query['blocked']) . Form::disableInputUnless($id != User::ADMIN_GROUP_ID && $id != User::GUEST_GROUP_ID) . '></td>
   </tr>
 
   </table>
 
-  " . Message::ok(_lang('admin.users.groups.dangernotice'), true) . "
-  " . $rights . "
-  " . Extend::buffer('admin.editgroup.form') . "
+  ' . Message::ok(_lang('admin.users.groups.dangernotice'), true) . '
+  ' . $rights . '
+  ' . Extend::buffer('admin.editgroup.form') . "
 
-  <input type='submit' class='button bigger' value='" . _lang('global.save') . "' accesskey='s'> <small>" . _lang('admin.content.form.thisid') . " " . $id . "</small>
+  <input type='submit' class='button bigger' value='" . _lang('global.save') . "' accesskey='s'> <small>" . _lang('admin.content.form.thisid') . ' ' . $id . '</small>
 
-  " . Xsrf::getInput() . "</form>
-  ";
+  ' . Xsrf::getInput() . '</form>
+  ';
 
 } elseif ($levelconflict == false) {
     $output .= Message::error(_lang('global.badinput'));

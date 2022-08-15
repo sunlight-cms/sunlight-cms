@@ -5,10 +5,10 @@ use Sunlight\Database\Database as DB;
 use Sunlight\Gallery;
 use Sunlight\Hcm;
 
-return function ($galerie = "", $typ = 'new', $rozmery = null, $limit = null) {
+return function ($galerie = '', $typ = 'new', $rozmery = null, $limit = null) {
     // nacteni parametru
-    $result = "";
-    $galerie = Hcm::createColumnInSqlCondition("home", $galerie);
+    $result = '';
+    $galerie = Hcm::createColumnInSqlCondition('home', $galerie);
     if (isset($limit)) {
         $limit = abs((int) $limit);
     } else {
@@ -37,21 +37,21 @@ return function ($galerie = "", $typ = 'new', $rozmery = null, $limit = null) {
     switch ($typ) {
         case 'random':
         case 2:
-            $razeni = "RAND()";
+            $razeni = 'RAND()';
             break;
         case 'order':
         case 3:
-            $razeni = "ord ASC";
+            $razeni = 'ord ASC';
             break;
         case 'new':
         default:
-            $razeni = "id DESC";
+            $razeni = 'id DESC';
     }
 
     // vypis obrazku
-    $rimgs = DB::query("SELECT id,title,prev,full FROM " . DB::table('gallery_image') . " WHERE " . $galerie . " ORDER BY " . $razeni . " LIMIT " . $limit);
+    $rimgs = DB::query('SELECT id,title,prev,full FROM ' . DB::table('gallery_image') . ' WHERE ' . $galerie . ' ORDER BY ' . $razeni . ' LIMIT ' . $limit);
     while ($rimg = DB::row($rimgs)) {
-        $result .= Gallery::renderImage($rimg, "hcm" . Core::$hcmUid, $x, $y);
+        $result .= Gallery::renderImage($rimg, 'hcm' . Core::$hcmUid, $x, $y);
     }
 
     return $result;

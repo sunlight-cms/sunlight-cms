@@ -23,7 +23,7 @@ $message = '';
 $unstick = '';
 $id = (int) Request::get('id');
 $userQuery = User::createQuery('p.author');
-$query = DB::queryRow("SELECT p.id,p.time,p.subject,p.sticky,r.slug forum_slug,r.layout forum_layout," . $userQuery['column_list'] . " FROM " . DB::table('post') . " p JOIN " . DB::table('page') . " r ON(p.home=r.id) " . $userQuery['joins'] . " WHERE p.id=" . $id . " AND p.type=" . Post::FORUM_TOPIC . " AND p.xhome=-1");
+$query = DB::queryRow('SELECT p.id,p.time,p.subject,p.sticky,r.slug forum_slug,r.layout forum_layout,' . $userQuery['column_list'] . ' FROM ' . DB::table('post') . ' p JOIN ' . DB::table('page') . ' r ON(p.home=r.id) ' . $userQuery['joins'] . ' WHERE p.id=' . $id . ' AND p.type=' . Post::FORUM_TOPIC . ' AND p.xhome=-1');
 if ($query !== false) {
     if (isset($query['forum_layout'])) {
         $_index->changeTemplate($query['forum_layout']);

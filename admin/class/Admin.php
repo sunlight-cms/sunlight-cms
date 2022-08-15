@@ -63,11 +63,11 @@ abstract class Admin
             if (Settings::get('messages')) {
                 $messages_count = DB::count('pm', '(receiver=' . User::getId() . ' AND receiver_deleted=0 AND receiver_readtime<update_time) OR (sender=' . User::getId() . ' AND sender_deleted=0 AND sender_readtime<update_time)');
                 if ($messages_count != 0) {
-                    $messages_count = " <span class='highlight'>(" . $messages_count . ")</span>";
+                    $messages_count = " <span class='highlight'>(" . $messages_count . ')</span>';
                 } else {
-                    $messages_count = "";
+                    $messages_count = '';
                 }
-                $output .= "<a href='" . _e(Router::module('messages')) . "'>" . _lang('usermenu.messages') . $messages_count . "</a>, ";
+                $output .= "<a href='" . _e(Router::module('messages')) . "'>" . _lang('usermenu.messages') . $messages_count . '</a>, ';
             }
             $output .= '<a href="' . _e(Router::module('settings')) . '">' . _lang('usermenu.settings') . '</a>, <a href="' . _e(Xsrf::addToUrl(Router::path('system/script/logout.php', ['query' => ['_return' => Router::adminIndex()]]))) . '">' . _lang('usermenu.logout') . '</a>]';
             $output .= '<a href="' . _e(Core::getBaseUrl()->getPath()) . '/" target="_blank" class="usermenu-web-link" title="' . _lang('admin.link.site') . '"><img class="icon" src="' . _e(Router::path('admin/images/icons/guide.png')) . '" alt="' . _lang('admin.link.site') . '"></a>';
@@ -96,7 +96,7 @@ abstract class Admin
      */
     static function note(string $str, bool $no_gray = false, ?string $icon = null): string
     {
-        return "<p" . ($no_gray ? '' : ' class="note"') . "><img src='" . _e(Router::path('admin/images/icons/' . ($icon ?? 'note') . '.png')) . "' alt='note' class='icon'>" . $str . "</p>";
+        return '<p' . ($no_gray ? '' : ' class="note"') . "><img src='" . _e(Router::path('admin/images/icons/' . ($icon ?? 'note') . '.png')) . "' alt='note' class='icon'>" . $str . '</p>';
     }
 
     /**
@@ -124,12 +124,12 @@ abstract class Admin
     static function pollAccess(bool $csep = true, string $alias = 'p.'): string
     {
         if ($csep) {
-            $csep = " AND ";
+            $csep = ' AND ';
         } else {
-            $csep = "";
+            $csep = '';
         }
 
-        return (!User::hasPrivilege('adminallart') ? $csep . "{$alias}author=" . User::getId() : $csep . "({$alias}author=" . User::getId() . " OR (SELECT level FROM " . DB::table('user_group') . " WHERE id=(SELECT group_id FROM " . DB::table('user') . " WHERE id={$alias}author))<" . User::getLevel() . ")");
+        return (!User::hasPrivilege('adminallart') ? $csep . "{$alias}author=" . User::getId() : $csep . "({$alias}author=" . User::getId() . ' OR (SELECT level FROM ' . DB::table('user_group') . ' WHERE id=(SELECT group_id FROM ' . DB::table('user') . " WHERE id={$alias}author))<" . User::getLevel() . ')');
     }
 
     /**
@@ -143,10 +143,10 @@ abstract class Admin
             $alias .= '.';
         }
         if (User::hasPrivilege('adminallart')) {
-            return " AND (" . $alias . "author=" . User::getId() . " OR (SELECT level FROM " . DB::table('user_group') . " WHERE id=(SELECT group_id FROM " . DB::table('user') . " WHERE id=" . (($alias === '') ? DB::table('article') . "." : $alias) . "author))<" . User::getLevel() . ")";
+            return ' AND (' . $alias . 'author=' . User::getId() . ' OR (SELECT level FROM ' . DB::table('user_group') . ' WHERE id=(SELECT group_id FROM ' . DB::table('user') . ' WHERE id=' . (($alias === '') ? DB::table('article') . '.' : $alias) . 'author))<' . User::getLevel() . ')';
         }
 
-        return " AND " . $alias . "author=" . User::getId();
+        return ' AND ' . $alias . 'author=' . User::getId();
     }
 
     /**
@@ -157,10 +157,10 @@ abstract class Admin
      */
     static function articleEditLink(array $art, bool $ucnote = true): string
     {
-        $output = "";
+        $output = '';
 
         // trida
-        $class = "";
+        $class = '';
         if ($art['visible'] == 0 && $art['public'] == 1) {
             $class = " class='invisible'";
         }
@@ -172,19 +172,19 @@ abstract class Admin
         }
 
         // odkaz
-        $output .= "<a href='" . _e(Router::article($art['id'], $art['slug'], $art['cat_slug'])) . "' target='_blank'" . $class . ">";
+        $output .= "<a href='" . _e(Router::article($art['id'], $art['slug'], $art['cat_slug'])) . "' target='_blank'" . $class . '>';
         if ($art['time'] <= time()) {
-            $output .= "<strong>";
+            $output .= '<strong>';
         }
         $output .= $art['title'];
         if ($art['time'] <= time()) {
-            $output .= "</strong>";
+            $output .= '</strong>';
         }
-        $output .= "</a>";
+        $output .= '</a>';
 
         // poznamka o neschvaleni
         if ($art['confirmed'] != 1 && $ucnote) {
-            $output .= " <small>(" . _lang('global.unconfirmed') . ")</small>";
+            $output .= ' <small>(' . _lang('global.unconfirmed') . ')</small>';
         }
 
         return $output;
@@ -271,8 +271,8 @@ abstract class Admin
                 }
 
                 $output .= "<option value='{$page['id']}'"
-                    . ($active ? " selected" : '')
-                    . (($options['type'] !== null && $page['type'] != $options['type'] || !$options['allow_separators'] && $page['type'] == Page::SEPARATOR) ? " disabled" : '')
+                    . ($active ? ' selected' : '')
+                    . (($options['type'] !== null && $page['type'] != $options['type'] || !$options['allow_separators'] && $page['type'] == Page::SEPARATOR) ? ' disabled' : '')
                     . '>'
                     . str_repeat('&nbsp;&nbsp;&nbsp;│&nbsp;', $page['node_level'])
                     . StringManipulator::ellipsis($page['title'], $options['maxlength'])
@@ -305,65 +305,65 @@ abstract class Admin
         if ($class !== null) {
             $class = " class='" . $class . "'";
         } else {
-            $class = "";
+            $class = '';
         }
         if ($multiple != null) {
             $multiple = " multiple size='" . $multiple . "'";
-            $name .= "[]";
+            $name .= '[]';
         } else {
-            $multiple = "";
+            $multiple = '';
         }
-        $output = "<select name='" . $name . "'" . $class . $multiple . ">";
-        $query = DB::query("SELECT id,title,level FROM " . DB::table('user_group') . " WHERE " . $gcond . " AND id!=" . User::GUEST_GROUP_ID . " ORDER BY level DESC");
+        $output = "<select name='" . $name . "'" . $class . $multiple . '>';
+        $query = DB::query('SELECT id,title,level FROM ' . DB::table('user_group') . ' WHERE ' . $gcond . ' AND id!=' . User::GUEST_GROUP_ID . ' ORDER BY level DESC');
         if ($extraoption != null) {
-            $output .= "<option value='-1' class='special'>" . $extraoption . "</option>";
+            $output .= "<option value='-1' class='special'>" . $extraoption . '</option>';
         }
 
         $containsSelected = false;
         if (!$groupmode) {
             while ($item = DB::row($query)) {
-                $users = DB::query("SELECT id,username,publicname FROM " . DB::table('user') . " WHERE group_id=" . $item['id'] . " AND (" . $item['level'] . "<" . User::getLevel() . " OR id=" . User::getId() . ") ORDER BY id");
+                $users = DB::query('SELECT id,username,publicname FROM ' . DB::table('user') . ' WHERE group_id=' . $item['id'] . ' AND (' . $item['level'] . '<' . User::getLevel() . ' OR id=' . User::getId() . ') ORDER BY id');
                 if (DB::size($users) != 0) {
                     $output .= "<optgroup label='" . $item['title'] . "'>";
                     while ($user = DB::row($users)) {
                         if ($selected == $user['id']) {
-                            $sel = " selected";
+                            $sel = ' selected';
                             $containsSelected = true;
                         } else {
-                            $sel = "";
+                            $sel = '';
                         }
-                        $output .= "<option value='" . $user['id'] . "'" . $sel . ">" . ($user['publicname'] ?? $user['username']) . "</option>\n";
+                        $output .= "<option value='" . $user['id'] . "'" . $sel . '>' . ($user['publicname'] ?? $user['username']) . "</option>\n";
                     }
-                    $output .= "</optgroup>";
+                    $output .= '</optgroup>';
                 }
             }
             if (!$containsSelected) {
-                $selectedUser = DB::queryRow("SELECT u.id, u.username, u.publicname, g.title as grouptitle FROM " . DB::table('user') . " AS u JOIN " . DB::table('user_group') . " AS g ON(u.group_id=g.id) WHERE u.id = " . $selected);
+                $selectedUser = DB::queryRow('SELECT u.id, u.username, u.publicname, g.title as grouptitle FROM ' . DB::table('user') . ' AS u JOIN ' . DB::table('user_group') . ' AS g ON(u.group_id=g.id) WHERE u.id = ' . $selected);
                 if ($selectedUser !== false) {
                     $output .= "<optgroup label='" . $selectedUser['grouptitle'] . "'>";
                     $output .= "<option value='" . $selectedUser['id'] . "' selected>" . ($selectedUser['publicname'] ?? $selectedUser['username']) . "</option>\n";
-                    $output .= "</optgroup>";
+                    $output .= '</optgroup>';
                 }
             }
         } else {
             while ($item = DB::row($query)) {
                 if ($selected == $item['id']) {
-                    $sel = " selected";
+                    $sel = ' selected';
                     $containsSelected = true;
                 } else {
-                    $sel = "";
+                    $sel = '';
                 }
-                $output .= "<option value='" . $item['id'] . "'" . $sel . ">" . $item['title'] . " (" . DB::count('user', 'group_id=' . $item['id']) . ")</option>\n";
+                $output .= "<option value='" . $item['id'] . "'" . $sel . '>' . $item['title'] . ' (' . DB::count('user', 'group_id=' . $item['id']) . ")</option>\n";
             }
             if (!$containsSelected) {
-                $selectedGroup = DB::queryRow("SELECT id,title FROM " . DB::table('user_group') . " WHERE id=" . $selected);
+                $selectedGroup = DB::queryRow('SELECT id,title FROM ' . DB::table('user_group') . ' WHERE id=' . $selected);
                 if ($selectedGroup !== false) {
-                    $output .= "<option value='" . $selectedGroup['id'] . "' selected>" . $selectedGroup['title'] . " (" . DB::count('user', 'group_id=' . $selectedGroup['id']) . ")</option>\n";
+                    $output .= "<option value='" . $selectedGroup['id'] . "' selected>" . $selectedGroup['title'] . ' (' . DB::count('user', 'group_id=' . $selectedGroup['id']) . ")</option>\n";
                 }
             }
         }
 
-        $output .= "</select>";
+        $output .= '</select>';
 
         return $output;
     }
@@ -399,7 +399,7 @@ abstract class Admin
             $output .= "</optgroup>\n";
         }
 
-        $output .= "</select>";
+        $output .= '</select>';
 
         return $output;
     }
@@ -491,7 +491,7 @@ abstract class Admin
      */
     static function deleteGalleryStorage(string $sql_cond): void
     {
-        $result = DB::query("SELECT full,(SELECT COUNT(*) FROM " . DB::table('gallery_image') . " WHERE full=toptable.full) AS counter FROM " . DB::table('gallery_image') . " AS toptable WHERE in_storage=1 AND (" . $sql_cond . ") HAVING counter=1");
+        $result = DB::query('SELECT full,(SELECT COUNT(*) FROM ' . DB::table('gallery_image') . ' WHERE full=toptable.full) AS counter FROM ' . DB::table('gallery_image') . ' AS toptable WHERE in_storage=1 AND (' . $sql_cond . ') HAVING counter=1');
         while ($r = DB::row($result)) {
             @unlink(SL_ROOT . $r['full']);
         }

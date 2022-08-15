@@ -28,17 +28,17 @@ if (isset($_POST['text'])) {
         $receivers = [];
     }
     $ctype = Request::post('ctype');
-    $maillist = Form::loadCheckbox("maillist");
+    $maillist = Form::loadCheckbox('maillist');
 
     // kontrola promennych
     $errors = [];
-    if ($text == "" && !$maillist) {
+    if ($text == '' && !$maillist) {
         $errors[] = _lang('admin.other.massemail.notext');
     }
     if (count($receivers) == 0) {
         $errors[] = _lang('admin.other.massemail.noreceivers');
     }
-    if ($subject == "" && !$maillist) {
+    if ($subject == '' && !$maillist) {
         $errors[] = _lang('admin.other.massemail.nosubject');
     }
     if (!Email::validate($sender) && !$maillist) {
@@ -57,7 +57,7 @@ if (isset($_POST['text'])) {
         Email::defineSender($headers, $sender);
 
         // nacteni prijemcu
-        $query = DB::query("SELECT email,password FROM " . DB::table('user') . " WHERE massemail=1 AND (" . $groups . ")");
+        $query = DB::query('SELECT email,password FROM ' . DB::table('user') . ' WHERE massemail=1 AND (' . $groups . ')');
 
         // odeslani nebo zobrazeni adres
         if (!$maillist) {
@@ -113,7 +113,7 @@ if (isset($_POST['text'])) {
                     }
                 }
 
-                $output .= Message::ok("<textarea class='areasmallwide' rows='9' cols='33' name='list'>" . $emails . "</textarea>", true);
+                $output .= Message::ok("<textarea class='areasmallwide' rows='9' cols='33' name='list'>" . $emails . '</textarea>', true);
 
             } else {
                 $output .= Message::warning(_lang('admin.other.massemail.noreceiversfound'));
@@ -145,16 +145,16 @@ $output .= "
 </tr>
 
 <tr class='valign-top'>
-<th>" . _lang('admin.other.massemail.receivers') . "</th>
-<td>" . Admin::userSelect("receivers", -1, "1", "selectbig", null, true, 4) . "</td>
+<th>" . _lang('admin.other.massemail.receivers') . '</th>
+<td>' . Admin::userSelect('receivers', -1, '1', 'selectbig', null, true, 4) . '</td>
 </tr>
 
 <tr>
-<th>" . _lang('admin.other.massemail.ctype') . "</th>
+<th>' . _lang('admin.other.massemail.ctype') . "</th>
 <td>
   <select name='ctype' class='selectbig'>
   <option value='1'>" . _lang('admin.other.massemail.ctype.1') . "</option>
-  <option value='2'" . (Request::post('ctype') == 2 ? " selected" : '') . ">" . _lang('admin.other.massemail.ctype.2') . "</option>
+  <option value='2'" . (Request::post('ctype') == 2 ? ' selected' : '') . '>' . _lang('admin.other.massemail.ctype.2') . "</option>
   </select>
 </td>
 </tr>
@@ -165,9 +165,9 @@ $output .= "
 </tr>
 
 <tr><td></td>
-<td><input type='submit' value='" . _lang('global.send') . "'> <label><input type='checkbox' name='maillist' value='1'" . Form::activateCheckbox(Form::loadCheckbox("maillist")) . "> " . _lang('admin.other.massemail.maillist') . "</label></td>
+<td><input type='submit' value='" . _lang('global.send') . "'> <label><input type='checkbox' name='maillist' value='1'" . Form::activateCheckbox(Form::loadCheckbox('maillist')) . '> ' . _lang('admin.other.massemail.maillist') . '</label></td>
 </tr>
 
 </table>
-" . Xsrf::getInput() . "</form>
-";
+' . Xsrf::getInput() . '</form>
+';

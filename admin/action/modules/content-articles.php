@@ -15,10 +15,10 @@ $output .= "
 
 <table class='list list-noborder list-hover list-half'>
 <thead>
-<tr><th>" . _lang('article.category') . "</th><th>" . _lang('global.articlesnum') . "</th></tr>
+<tr><th>" . _lang('article.category') . '</th><th>' . _lang('global.articlesnum') . '</th></tr>
 </thead>
 <tbody>
-";
+';
 
 // nacist strom kategorii
 $filter = new SimpleTreeFilter(['type' => Page::CATEGORY]);
@@ -38,7 +38,7 @@ while ($art_count = DB::row($art_count_query)) {
 
 // radky
 foreach ($tree as $page) {
-    $output .= "<tr><td>";
+    $output .= '<tr><td>';
     if ($page['type'] == Page::CATEGORY) {
         $output .= "<a class='node-level-m{$page['node_level']}' href='" . _e(Router::admin('content-articles-list', ['query' => ['cat' => $page['id']]])) . "'>
     <img src='" . _e(Router::path('admin/images/icons/dir.png')) . "' alt='col' class='icon'>
@@ -47,7 +47,7 @@ foreach ($tree as $page) {
     } else {
         $output .= "<span class='node-level-m{$page['node_level']}'>{$page['title']}</span>";
     }
-    $output .= "</td><td>" . ($art_counts[$page['id']] ?? '') . "</td></tr>\n";
+    $output .= '</td><td>' . ($art_counts[$page['id']] ?? '') . "</td></tr>\n";
 }
 
 if (empty($tree)) {

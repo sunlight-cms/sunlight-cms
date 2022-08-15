@@ -404,7 +404,7 @@ abstract class Template
         if (!empty($breadcrumbs) && (!$onlyWhenMultiple || count($breadcrumbs) >= 2) && $output === '') {
             $output .= "<ul class=\"breadcrumbs\">\n";
             foreach ($breadcrumbs as $crumb) {
-                $output .= "<li><a href=\"" . _e($crumb['url']) . "\">{$crumb['title']}</a></li>\n";
+                $output .= '<li><a href="' . _e($crumb['url']) . "\">{$crumb['title']}</a></li>\n";
             }
             $output .= "</ul>\n";
         }
@@ -534,7 +534,7 @@ abstract class Template
         // vykreslit
         $output = Extend::buffer('tpl.usermenu', ['items' => &$items]);
         if ($output === '' && !empty($items)) {
-            $output = "<ul class=\"user-menu " . (User::isLoggedIn() ? 'logged-in' : 'not-logged-in') . "\">\n";
+            $output = '<ul class="user-menu ' . (User::isLoggedIn() ? 'logged-in' : 'not-logged-in') . "\">\n";
             $output .= Extend::buffer('tpl.usermenu.start');
             foreach ($items as $id => $item) {
                 $output .= "<li class=\"user-menu-{$id}\"><a href=\"" . _e($item[0]) . "\">{$item[1]}</a></li>\n";

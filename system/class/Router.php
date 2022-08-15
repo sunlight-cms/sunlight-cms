@@ -95,7 +95,7 @@ abstract class Router
     static function page(?int $id, ?string $slug = null, ?string $segment = null, ?array $options = null): string
     {
         if ($id !== null && $slug === null) {
-            $slug = DB::queryRow("SELECT slug FROM " . DB::table('page') . " WHERE id=" . DB::val($id));
+            $slug = DB::queryRow('SELECT slug FROM ' . DB::table('page') . ' WHERE id=' . DB::val($id));
             $slug = ($slug !== false ? $slug['slug'] : '---');
         }
 
@@ -123,7 +123,7 @@ abstract class Router
     {
         if ($id !== null) {
             if ($slug === null || $categorySlug === null) {
-                $slugs = DB::queryRow("SELECT art.slug AS art_ts, cat.slug AS cat_ts FROM " . DB::table('article') . " AS art JOIN " . DB::table('page') . " AS cat ON(cat.id=art.home1) WHERE art.id=" . $id);
+                $slugs = DB::queryRow('SELECT art.slug AS art_ts, cat.slug AS cat_ts FROM ' . DB::table('article') . ' AS art JOIN ' . DB::table('page') . ' AS cat ON(cat.id=art.home1) WHERE art.id=' . $id);
 
                 if ($slugs !== false) {
                     $slug = $slugs['art_ts'];
@@ -309,14 +309,14 @@ abstract class Router
         $out = "<{$tag}"
             . ($options['link'] ? ' href="' . _e(self::module('profile', self::combineOptions(['query' => ['id' => $data['username']]], $options['url']))) . '"' : '')
             . ($options['link'] && $options['new_window'] ? ' target="_blank"' : '')
-            . " class=\"user-link user-link-{$data['id']} user-link-group-{$data['group_id']}" . ($options['class'] !== null ? " {$options['class']}" : '') . "\""
+            . " class=\"user-link user-link-{$data['id']} user-link-group-{$data['group_id']}" . ($options['class'] !== null ? " {$options['class']}" : '') . '"'
             . ($options['color'] && $data['group_color'] !== '' ? " style=\"color:{$data['group_color']}\"" : '')
             . ($title !== null ? " title=\"{$title}\"" : '')
             . '>';
 
         // group icon
         if ($options['icon'] && $data['group_icon'] !== '') {
-            $out .= "<img src=\"" . self::path('images/groupicons/' . $data['group_icon']) . "\" title=\"{$data['group_title']}\" alt=\"{$data['group_title']}\" class=\"icon\">";
+            $out .= '<img src="' . self::path('images/groupicons/' . $data['group_icon']) . "\" title=\"{$data['group_title']}\" alt=\"{$data['group_title']}\" class=\"icon\">";
         }
 
         // username

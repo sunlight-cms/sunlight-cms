@@ -13,6 +13,6 @@ $_admin->loginLayout = true;
 if (empty($_POST) || User::isLoggedIn()) {
     $output .= User::renderLoginForm(false, User::isLoggedIn());
 } else {
-    $output .= "<h1>" . _lang('admin.post_repeat.title') . "</h1>\n";
+    $output .= '<h1>' . _lang('admin.post_repeat.title') . "</h1>\n";
     $output .= User::renderPostRepeatForm(true, Message::ok(_lang('admin.post_repeat.msg')));
 }

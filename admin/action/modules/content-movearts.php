@@ -13,7 +13,7 @@ defined('SL_ROOT') or exit;
 
 /* ---  priprava promennych  --- */
 
-$message = "";
+$message = '';
 
 /* ---  akce  --- */
 
@@ -22,7 +22,7 @@ if (isset($_POST['source'])) {
     // nacteni promennych
     $source = (int) Request::post('source');
     $target = (int) Request::post('target');
-    $fullmove = Form::loadCheckbox("fullmove");
+    $fullmove = Form::loadCheckbox('fullmove');
 
     // kontrola promennych
     $error_log = [];
@@ -40,7 +40,7 @@ if (isset($_POST['source'])) {
     if (count($error_log) == 0) {
 
         if (!$fullmove) {
-            $query = DB::query("SELECT id,home1,home2,home3 FROM " . DB::table('article') . " WHERE home1=" . $source . " OR home2=" . $source . " OR home3=" . $source);
+            $query = DB::query('SELECT id,home1,home2,home3 FROM ' . DB::table('article') . ' WHERE home1=' . $source . ' OR home2=' . $source . ' OR home3=' . $source);
             $counter = 0;
             while ($item = DB::row($query)) {
                 if ($item['home1'] == $source) {
@@ -78,7 +78,7 @@ if (isset($_POST['source'])) {
             $counter = DB::affectedRows();
         }
 
-        $message = Message::ok(_lang('admin.content.movearts.done', ["%moved%" => $counter]));
+        $message = Message::ok(_lang('admin.content.movearts.done', ['%moved%' => $counter]));
     } else {
         $message = Message::list($error_log);
     }
@@ -90,11 +90,11 @@ if (isset($_POST['source'])) {
 $output .= $message . "
 <form class='cform' action='" . _e(Router::admin('content-movearts')) . "' method='post'>"
     . _lang('admin.content.movearts.text1')
-    . " " . Admin::pageSelect("source", ['type' => Page::CATEGORY])
+    . ' ' . Admin::pageSelect('source', ['type' => Page::CATEGORY])
     . _lang('admin.content.movearts.text2')
-    . " " . Admin::pageSelect("target", ['type' => Page::CATEGORY])
+    . ' ' . Admin::pageSelect('target', ['type' => Page::CATEGORY])
     . " <input class='button' type='submit' value='" . _lang('global.do') . "'>
 <br><br>
-<label><input type='checkbox' name='fullmove' value='1'> " . _lang('admin.content.movearts.fullmove') . "</label>
-" . Xsrf::getInput() . "</form>
-";
+<label><input type='checkbox' name='fullmove' value='1'> " . _lang('admin.content.movearts.fullmove') . '</label>
+' . Xsrf::getInput() . '</form>
+';

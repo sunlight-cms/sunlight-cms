@@ -124,9 +124,9 @@ abstract class Article
         // neverejnost
         if ($checkPublic && !User::isLoggedIn()) {
             $conditions[] = "{$alias}.public=1";
-            $conditions[] = "(cat1.public=1 OR cat2.public=1 OR cat3.public=1)";
+            $conditions[] = '(cat1.public=1 OR cat2.public=1 OR cat3.public=1)';
         }
-        $conditions[] = "(cat1.level<=" . User::getLevel() . " OR cat2.level<=" . User::getLevel() . " OR cat3.level<=" . User::getLevel() . ")";
+        $conditions[] = '(cat1.level<=' . User::getLevel() . ' OR cat2.level<=' . User::getLevel() . ' OR cat3.level<=' . User::getLevel() . ')';
 
         // vlastni podminky
         if (!empty($sqlConditions)) {

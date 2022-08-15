@@ -28,12 +28,12 @@ $_index->title = $_page['title'];
 
 // obsah
 Extend::call('page.gallery.content.before', $extend_args);
-if ($_page['content'] != "") $output .= Hcm::parse($_page['content']) . "\n\n<div class='hr gallery-hr'><hr></div>\n\n";
+if ($_page['content'] != '') $output .= Hcm::parse($_page['content']) . "\n\n<div class='hr gallery-hr'><hr></div>\n\n";
 Extend::call('page.gallery.content.after', $extend_args);
 
 // obrazky
-$paging = Paginator::render($_index->url, $_page['var2'], DB::table('gallery_image'), "home=" . $id);
-$images = DB::query("SELECT * FROM " . DB::table('gallery_image') . " WHERE home=" . $id . " ORDER BY ord " . $paging['sql_limit']);
+$paging = Paginator::render($_index->url, $_page['var2'], DB::table('gallery_image'), 'home=' . $id);
+$images = DB::query('SELECT * FROM ' . DB::table('gallery_image') . ' WHERE home=' . $id . ' ORDER BY ord ' . $paging['sql_limit']);
 $images_number = DB::size($images);
 
 if ($images_number != 0) {
@@ -58,11 +58,11 @@ if ($images_number != 0) {
 
         // bunka
         if ($usetable) {
-            $output .= "<td>";
+            $output .= '<td>';
         }
         $output .= Gallery::renderImage($img, $id, $_page['var4'], $_page['var3']);
         if ($usetable) {
-            $output .= "</td>";
+            $output .= '</td>';
         }
 
         $cell_counter++;
@@ -75,9 +75,9 @@ if ($images_number != 0) {
     }
 
     if ($usetable) {
-        $output .= "</table>";
+        $output .= '</table>';
     } else {
-        $output .= "</div>";
+        $output .= '</div>';
     }
     if (Paginator::atBottom()) {
         $output .= $paging['paging'];

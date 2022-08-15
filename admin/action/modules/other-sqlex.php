@@ -90,7 +90,7 @@ if (!empty($queries)) {
 ';
     for ($i = 0; isset($log[$i]); ++$i) {
         $isError = ($error && !isset($log[$i + 1]));
-        $output .= "<li" . ($isError ? ' class="important"' : '') . ">{$log[$i]}</li>\n";
+        $output .= '<li' . ($isError ? ' class="important"' : '') . ">{$log[$i]}</li>\n";
     }
     $output .= "</ol>\n";
 

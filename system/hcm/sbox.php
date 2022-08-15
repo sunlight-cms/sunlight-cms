@@ -12,11 +12,11 @@ use Sunlight\Util\Form;
 
 return function ($id = null) {
     // priprava
-    $result = "";
+    $result = '';
     $id = (int) $id;
 
     // nacteni dat shoutboxu
-    $sboxdata = DB::queryRow("SELECT * FROM " . DB::table('shoutbox') . " WHERE id=" . $id);
+    $sboxdata = DB::queryRow('SELECT * FROM ' . DB::table('shoutbox') . ' WHERE id=' . $id);
     if ($sboxdata !== false) {
         $rcontinue = true;
     } else {
@@ -29,7 +29,7 @@ return function ($id = null) {
         $result = "
     <div id='hcm_sbox_" . Core::$hcmUid . "' class='sbox'>
     <div class='sbox-content'>
-    " . (($sboxdata['title'] != "") ? "<div class='sbox-title'>" . $sboxdata['title'] . "</div>" : '') . "<div class='sbox-item'" . (($sboxdata['title'] == "") ? " style='border-top:none;'" : '') . ">";
+    " . (($sboxdata['title'] != '') ? "<div class='sbox-title'>" . $sboxdata['title'] . '</div>' : '') . "<div class='sbox-item'" . (($sboxdata['title'] == '') ? " style='border-top:none;'" : '') . '>';
 
         // formular na pridani
         if ($sboxdata['locked'] != 1 && User::checkPublicAccess($sboxdata['public'])) {
@@ -44,7 +44,7 @@ return function ($id = null) {
             $result .= Form::render(
                 [
                     'name' => 'hcm_sboxform_' . Core::$hcmUid,
-                    'action' => Router::path('system/script/post.php', ['query' => ['_return' => $GLOBALS['_index']->url], 'fragment' => "hcm_sbox_" . Core::$hcmUid]),
+                    'action' => Router::path('system/script/post.php', ['query' => ['_return' => $GLOBALS['_index']->url], 'fragment' => 'hcm_sbox_' . Core::$hcmUid]),
                 ],
                 $inputs
             );
@@ -52,13 +52,13 @@ return function ($id = null) {
         } elseif ($sboxdata['locked'] != 1) {
             $result .= _lang('posts.loginrequired');
         } else {
-            $result .= "<img src='" . Template::image("icons/lock.png") . "' alt='locked' class='icon'>" . _lang('posts.locked2');
+            $result .= "<img src='" . Template::image('icons/lock.png') . "' alt='locked' class='icon'>" . _lang('posts.locked2');
         }
 
         $result .= "\n</div>\n<div class='sbox-posts'>";
         // vypis prispevku
         $userQuery = User::createQuery('p.author');
-        $sposts = DB::query("SELECT p.id,p.text,p.author,p.guest,p.time,p.ip," . $userQuery['column_list'] . " FROM " . DB::table('post') . " p " . $userQuery['joins'] . " WHERE p.home=" . $id . " AND p.type=" . Post::SHOUTBOX_ENTRY . " ORDER BY p.id DESC");
+        $sposts = DB::query('SELECT p.id,p.text,p.author,p.guest,p.time,p.ip,' . $userQuery['column_list'] . ' FROM ' . DB::table('post') . ' p ' . $userQuery['joins'] . ' WHERE p.home=' . $id . ' AND p.type=' . Post::SHOUTBOX_ENTRY . ' ORDER BY p.id DESC');
         if (DB::size($sposts) != 0) {
             while ($spost = DB::row($sposts)) {
 
@@ -66,31 +66,31 @@ return function ($id = null) {
                 if ($spost['author'] != -1) {
                     $author = Router::userFromQuery($userQuery, $spost, ['class' => 'post_author', 'max_len' => 16, 'title' => GenericTemplates::renderTime($spost['time'], 'post')]);
                 } else {
-                    $author = "<span class='post-author-guest' title='" . GenericTemplates::renderTime($spost['time'], 'post') . ", ip=" . GenericTemplates::renderIp($spost['ip']) . "'>"
+                    $author = "<span class='post-author-guest' title='" . GenericTemplates::renderTime($spost['time'], 'post') . ', ip=' . GenericTemplates::renderIp($spost['ip']) . "'>"
                         . PostService::renderGuestName($spost['guest'])
-                        . "</span>";
+                        . '</span>';
                 }
 
                 // odkaz na spravu
                 if (Post::checkAccess($userQuery, $spost)) {
-                    $alink = " <a href='" . _e(Router::module('editpost', ['query' => ['id' => $spost['id']]])) . "'><img src='" . Template::image("icons/edit.png") . "' alt='edit' class='icon'></a>";
+                    $alink = " <a href='" . _e(Router::module('editpost', ['query' => ['id' => $spost['id']]])) . "'><img src='" . Template::image('icons/edit.png') . "' alt='edit' class='icon'></a>";
                 } else {
-                    $alink = "";
+                    $alink = '';
                 }
 
                 // kod polozky
-                $result .= "<div class='sbox-item'>" . $author . ':' . $alink . " " . Post::render($spost['text'], true, false) . "</div>\n";
+                $result .= "<div class='sbox-item'>" . $author . ':' . $alink . ' ' . Post::render($spost['text'], true, false) . "</div>\n";
 
             }
         } else {
             $result .= "\n<div class='sbox-item'>" . _lang('posts.noposts') . "</div>\n";
         }
 
-        $result .= "
+        $result .= '
   </div>
   </div>
   </div>
-  ";
+  ';
 
     }
 

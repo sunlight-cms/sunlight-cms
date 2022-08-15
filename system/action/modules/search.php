@@ -59,16 +59,16 @@ $output .= "
 <p><input type='search' name='q' class='inputmedium' value='" . _e($search_query) . "'> <input type='submit' value='" . _lang('mod.search.submit') . "'></p>
 <p>
     " . _lang('mod.search.where') . ":
-    <label><input type='checkbox' name='page' value='1'" . Form::activateCheckbox($page) . "> " . _lang('mod.search.where.page') . "</label>
-    <label><input type='checkbox' name='art' value='1'" . Form::activateCheckbox($art) . "> " . _lang('mod.search.where.articles') . "</label>
-    <label><input type='checkbox' name='post' value='1'" . Form::activateCheckbox($post) . "> " . _lang('mod.search.where.posts') . "</label>
-    <label><input type='checkbox' name='img' value='1'" . Form::activateCheckbox($image) . "> " . _lang('mod.search.where.images') . "</label>
+    <label><input type='checkbox' name='page' value='1'" . Form::activateCheckbox($page) . '> ' . _lang('mod.search.where.page') . "</label>
+    <label><input type='checkbox' name='art' value='1'" . Form::activateCheckbox($art) . '> ' . _lang('mod.search.where.articles') . "</label>
+    <label><input type='checkbox' name='post' value='1'" . Form::activateCheckbox($post) . '> ' . _lang('mod.search.where.posts') . "</label>
+    <label><input type='checkbox' name='img' value='1'" . Form::activateCheckbox($image) . '> ' . _lang('mod.search.where.images') . '</label>
 </p>
 
-" . Xsrf::getInput() . "
+' . Xsrf::getInput() . '
 </form>
 
-";
+';
 
 /* ---  vyhledavani --- */
 
@@ -148,18 +148,18 @@ if ($search_query != '') {
                         // komentar sekce / prispevek knihy
                     case Post::SECTION_COMMENT:
                     case Post::BOOK_ENTRY:
-                        $pagenum = Paginator::getItemPage(Settings::get('commentsperpage'), DB::table('post'), "id>" . $r['id'] . " AND type=" . $r['type'] . " AND xhome=-1 AND home=" . $r['home']);
+                        $pagenum = Paginator::getItemPage(Settings::get('commentsperpage'), DB::table('post'), 'id>' . $r['id'] . ' AND type=' . $r['type'] . ' AND xhome=-1 AND home=' . $r['home']);
                         break;
 
                         // komentar clanku
                     case Post::ARTICLE_COMMENT:
-                        $pagenum = Paginator::getItemPage(Settings::get('commentsperpage'), DB::table('post'), "id>" . $r['id'] . " AND type=" . Post::ARTICLE_COMMENT . " AND xhome=-1 AND home=" . $r['home']);
+                        $pagenum = Paginator::getItemPage(Settings::get('commentsperpage'), DB::table('post'), 'id>' . $r['id'] . ' AND type=' . Post::ARTICLE_COMMENT . ' AND xhome=-1 AND home=' . $r['home']);
                         break;
 
                         // prispevek na foru
                     case Post::FORUM_TOPIC:
                         if ($r['xhome'] != -1) {
-                            $pagenum = Paginator::getItemPage(Settings::get('commentsperpage'), DB::table('post'), "id<" . $r['id'] . " AND type=" . Post::FORUM_TOPIC . " AND xhome=" . $r['xhome'] . " AND home=" . $r['home']);
+                            $pagenum = Paginator::getItemPage(Settings::get('commentsperpage'), DB::table('post'), 'id<' . $r['id'] . ' AND type=' . Post::FORUM_TOPIC . ' AND xhome=' . $r['xhome'] . ' AND home=' . $r['home']);
                         } else {
                             $post_anchor = false;
                         }
@@ -204,7 +204,7 @@ if ($search_query != '') {
             // vykonani a nacteni vysledku
             $q = DB::query($sql . ' LIMIT 100');
             while ($r = DB::row($q)) {
-                $link = Router::page($r['home'], $r['slug'], null, ['query' => ['page' => Paginator::getItemPage($r['var2'] ?: Settings::get('galdefault_per_page'), DB::table('gallery_image'), "ord<" . $r['ord'] . " AND home=" . $r['home'])]]);
+                $link = Router::page($r['home'], $r['slug'], null, ['query' => ['page' => Paginator::getItemPage($r['var2'] ?: Settings::get('galdefault_per_page'), DB::table('gallery_image'), 'ord<' . $r['ord'] . ' AND home=' . $r['home'])]]);
                 $results[] = [
                     $link,
                     $r['gal_title'],
@@ -226,8 +226,8 @@ if ($search_query != '') {
             foreach ($results as $item) {
                 $output .= "<div class='list-item'>
 <h2 class='list-title'><a href='" . _e($item[0]) . "'>" . $item[1] . "</a></h2>
-<p class='list-perex'>" . $item[2] . "</p>
-";
+<p class='list-perex'>" . $item[2] . '</p>
+';
                 if (isset($item[3])) {
                     $output .= GenericTemplates::renderInfos($item[3]);
                 }

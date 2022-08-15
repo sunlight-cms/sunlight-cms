@@ -274,19 +274,19 @@ abstract class PageManipulator
         // dle typu
         switch ($page['type']) {
             case Page::SECTION:
-                $dependencies[] = DB::count('post', 'type=' . Post::SECTION_COMMENT . ' AND home=' . DB::val($page['id'])) . " " . _lang('count.comments');
+                $dependencies[] = DB::count('post', 'type=' . Post::SECTION_COMMENT . ' AND home=' . DB::val($page['id'])) . ' ' . _lang('count.comments');
                 break;
             case Page::CATEGORY:
-                $dependencies[] = DB::count('article', 'home1=' . DB::val($page['id']) . ' AND home2=-1 AND home3=-1') . " " . _lang('count.articles');
+                $dependencies[] = DB::count('article', 'home1=' . DB::val($page['id']) . ' AND home2=-1 AND home3=-1') . ' ' . _lang('count.articles');
                 break;
             case Page::BOOK:
-                $dependencies[] = DB::count('post', 'type=' . Post::BOOK_ENTRY . ' AND home=' . DB::val($page['id'])) . " " . _lang('count.posts');
+                $dependencies[] = DB::count('post', 'type=' . Post::BOOK_ENTRY . ' AND home=' . DB::val($page['id'])) . ' ' . _lang('count.posts');
                 break;
             case Page::GALLERY:
-                $dependencies[] = DB::count('gallery_image', 'home=' . DB::val($page['id'])) . " " . _lang('count.images');
+                $dependencies[] = DB::count('gallery_image', 'home=' . DB::val($page['id'])) . ' ' . _lang('count.images');
                 break;
             case Page::FORUM:
-                $dependencies[] = DB::count('post', 'type=' . Post::FORUM_TOPIC . ' AND home=' . DB::val($page['id'])) . " " . _lang('count.posts');
+                $dependencies[] = DB::count('post', 'type=' . Post::FORUM_TOPIC . ' AND home=' . DB::val($page['id'])) . ' ' . _lang('count.posts');
                 break;
             case Page::PLUGIN:
                 Extend::call('page.plugin.' . $page['type_idt'] . '.delete.confirm', [
@@ -381,7 +381,7 @@ abstract class PageManipulator
 
                     // clanky v kategoriich a jejich komentare
                 case Page::CATEGORY:
-                    $rquery = DB::query("SELECT id,home1,home2,home3 FROM " . DB::table('article') . " WHERE home1=" . $page['id'] . " OR home2=" . $page['id'] . " OR home3=" . $page['id']);
+                    $rquery = DB::query('SELECT id,home1,home2,home3 FROM ' . DB::table('article') . ' WHERE home1=' . $page['id'] . ' OR home2=' . $page['id'] . ' OR home3=' . $page['id']);
                     while ($item = DB::row($rquery)) {
                         if ($item['home1'] == $page['id'] && $item['home2'] == -1 && $item['home3'] == -1) {
                             DB::delete('post', 'type=' . Post::ARTICLE_COMMENT . ' AND home=' . $item['id']);

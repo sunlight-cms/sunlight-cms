@@ -10,7 +10,7 @@ defined('SL_ROOT') or exit;
 
 /* ---  priprava  --- */
 
-$message = "";
+$message = '';
 
 /* ---  akce  --- */
 
@@ -18,7 +18,7 @@ if (isset($_POST['title']) && is_array($_POST['title'])) {
     foreach ($_POST['title'] as $id => $title) {
         $id = (int) $id;
         $title = _e(trim($title));
-        if ($title == "") {
+        if ($title == '') {
             $title = _lang('global.novalue');
         }
         DB::update('page', 'id=' . DB::val($id), ['title' => $title]);
@@ -48,4 +48,4 @@ $output .= "
         <input type='submit' value='" . _lang('global.save') . "' accesskey='s'>
         <input type='reset' value='" . _lang('global.reset') . "' onclick='return Sunlight.confirm();'>
     </p>
-" . Xsrf::getInput() . "</form>";
+" . Xsrf::getInput() . '</form>';

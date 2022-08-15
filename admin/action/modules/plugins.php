@@ -38,7 +38,7 @@ $renderPluginAuthor = function ($author, $url) {
     }
 
     if ($renderedAuthor !== '') {
-        $renderedAuthor = "<li><strong>" . _lang('admin.plugins.author') . ":</strong> {$renderedAuthor}</li>\n";
+        $renderedAuthor = '<li><strong>' . _lang('admin.plugins.author') . ":</strong> {$renderedAuthor}</li>\n";
     }
 
     return $renderedAuthor;

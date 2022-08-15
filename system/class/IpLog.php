@@ -73,7 +73,7 @@ abstract class IpLog
         ];
         if ($type <= self::PASSWORD_RESET_REQUESTED) {
             if (!$cleaned['system']) {
-                DB::query("DELETE FROM " . DB::table('iplog') . " WHERE (type=1 AND " . time() . "-time>" . Settings::get('maxloginexpire') . ") OR (type=2 AND " . time() . "-time>" . Settings::get('artreadexpire') . ") OR (type=3 AND " . time() . "-time>" . Settings::get('artrateexpire') . ") OR (type=4 AND " . time() . "-time>" . Settings::get('pollvoteexpire') . ") OR (type=5 AND " . time() . "-time>" . Settings::get('antispamtimeout') . ") OR (type=6 AND " . time() . "-time>" . Settings::get('accactexpire') . ") OR (type=7 AND " . time() . "-time>" . Settings::get('lostpassexpire') . ")");
+                DB::query('DELETE FROM ' . DB::table('iplog') . ' WHERE (type=1 AND ' . time() . '-time>' . Settings::get('maxloginexpire') . ') OR (type=2 AND ' . time() . '-time>' . Settings::get('artreadexpire') . ') OR (type=3 AND ' . time() . '-time>' . Settings::get('artrateexpire') . ') OR (type=4 AND ' . time() . '-time>' . Settings::get('pollvoteexpire') . ') OR (type=5 AND ' . time() . '-time>' . Settings::get('antispamtimeout') . ') OR (type=6 AND ' . time() . '-time>' . Settings::get('accactexpire') . ') OR (type=7 AND ' . time() . '-time>' . Settings::get('lostpassexpire') . ')');
                 $cleaned['system'] = true;
             }
         } elseif (!isset($cleaned['custom'][$type])) {
@@ -86,7 +86,7 @@ abstract class IpLog
 
         // priprava
         $result = true;
-        $querybasic = "SELECT * FROM " . DB::table('iplog') . " WHERE ip=" . DB::val(Core::getClientIp()) . " AND type=" . $type;
+        $querybasic = 'SELECT * FROM ' . DB::table('iplog') . ' WHERE ip=' . DB::val(Core::getClientIp()) . ' AND type=' . $type;
 
         switch ($type) {
 
@@ -100,7 +100,7 @@ abstract class IpLog
             case self::ARTICLE_READ:
             case self::ARTICLE_RATED:
             case self::POLL_VOTE:
-                $query = DB::query($querybasic . " AND var=" . $var);
+                $query = DB::query($querybasic . ' AND var=' . $var);
                 if (DB::size($query) != 0) {
                     $result = false;
                 }
@@ -122,7 +122,7 @@ abstract class IpLog
                 break;
 
             default:
-                $query = DB::query($querybasic . (($var !== null) ? " AND var=" . $var : ''));
+                $query = DB::query($querybasic . (($var !== null) ? ' AND var=' . $var : ''));
                 if (DB::size($query) != 0) {
                     $result = false;
                 }
@@ -152,7 +152,7 @@ abstract class IpLog
             $var = (int) $var;
         }
 
-        $querybasic = "SELECT * FROM " . DB::table('iplog') . " WHERE ip=" . DB::val(Core::getClientIp()) . " AND type=" . $type;
+        $querybasic = 'SELECT * FROM ' . DB::table('iplog') . ' WHERE ip=' . DB::val(Core::getClientIp()) . ' AND type=' . $type;
 
         switch ($type) {
 
@@ -222,7 +222,7 @@ abstract class IpLog
                 break;
 
             default:
-                $query = DB::queryRow($querybasic . (($var !== null) ? " AND var=" . $var : ''));
+                $query = DB::queryRow($querybasic . (($var !== null) ? ' AND var=' . $var : ''));
                 if ($query !== false) {
                     DB::update('iplog', 'id=' . $query['id'], ['time' => time()]);
                 } else {

@@ -62,7 +62,7 @@ switch ($posttype) {
 
         // sekce
     case Post::SECTION_COMMENT:
-        $tdata = DB::queryRow("SELECT public,var1,var3,level FROM " . DB::table('page') . " WHERE id=" . $posttarget . " AND type=" . Page::SECTION);
+        $tdata = DB::queryRow('SELECT public,var1,var3,level FROM ' . DB::table('page') . ' WHERE id=' . $posttarget . ' AND type=' . Page::SECTION);
         if ($tdata !== false && User::checkPublicAccess($tdata['public'], $tdata['level']) && $tdata['var1'] == 1 && $tdata['var3'] != 1) {
             $continue = true;
         }
@@ -70,7 +70,7 @@ switch ($posttype) {
 
         // clanek
     case Post::ARTICLE_COMMENT:
-        $tdata = DB::queryRow("SELECT id,time,confirmed,author,public,home1,home2,home3,comments,commentslocked FROM " . DB::table('article') . " WHERE id=" . $posttarget);
+        $tdata = DB::queryRow('SELECT id,time,confirmed,author,public,home1,home2,home3,comments,commentslocked FROM ' . DB::table('article') . ' WHERE id=' . $posttarget);
         if ($tdata !== false && Article::checkAccess($tdata) && $tdata['comments'] == 1 && $tdata['commentslocked'] == 0) {
             $continue = true;
         }
@@ -78,7 +78,7 @@ switch ($posttype) {
 
         // kniha
     case Post::BOOK_ENTRY:
-        $tdata = DB::queryRow("SELECT public,var1,var3,level FROM " . DB::table('page') . " WHERE id=" . $posttarget . " AND type=" . Page::BOOK);
+        $tdata = DB::queryRow('SELECT public,var1,var3,level FROM ' . DB::table('page') . ' WHERE id=' . $posttarget . ' AND type=' . Page::BOOK);
         if ($tdata !== false && User::checkPublicAccess($tdata['public'], $tdata['level']) && User::checkPublicAccess($tdata['var1']) && $tdata['var3'] != 1) {
             $continue = true;
         }
@@ -87,7 +87,7 @@ switch ($posttype) {
 
         // shoutbox
     case Post::SHOUTBOX_ENTRY:
-        $tdata = DB::queryRow("SELECT public,locked FROM " . DB::table('shoutbox') . " WHERE id=" . $posttarget);
+        $tdata = DB::queryRow('SELECT public,locked FROM ' . DB::table('shoutbox') . ' WHERE id=' . $posttarget);
         if ($tdata !== false && User::checkPublicAccess($tdata['public']) && $tdata['locked'] != 1) {
             $continue = true;
         }
@@ -95,7 +95,7 @@ switch ($posttype) {
 
         // forum
     case Post::FORUM_TOPIC:
-        $tdata = DB::queryRow("SELECT public,var2,var3,level FROM " . DB::table('page') . " WHERE id=" . $posttarget . " AND type=" . Page::FORUM);
+        $tdata = DB::queryRow('SELECT public,var2,var3,level FROM ' . DB::table('page') . ' WHERE id=' . $posttarget . ' AND type=' . Page::FORUM);
         if ($tdata !== false && User::checkPublicAccess($tdata['public'], $tdata['level']) && User::checkPublicAccess($tdata['var3']) && $tdata['var2'] != 1) {
             $continue = true;
         }
@@ -126,7 +126,7 @@ switch ($posttype) {
 //  kontrola prispevku pro odpoved
 if ($xhome != -1 && $posttype != Post::PRIVATE_MSG) {
     $continue2 = false;
-    $tdata = DB::queryRow("SELECT xhome FROM " . DB::table('post') . " WHERE id=" . $xhome . " AND home=" . $posttarget . " AND locked=0");
+    $tdata = DB::queryRow('SELECT xhome FROM ' . DB::table('post') . ' WHERE id=' . $xhome . ' AND home=' . $posttarget . ' AND locked=0');
     if ($tdata !== false && $tdata['xhome'] == -1) {
         $continue2 = true;
     }
@@ -193,7 +193,7 @@ if ($continue && $continue2 && $text != '' && ($posttype == Post::SHOUTBOX_ENTRY
                         $pnum = DB::count('post', 'type=' . Post::SHOUTBOX_ENTRY . ' AND home=' . DB::val($posttarget));
                         if ($pnum > Settings::get('sboxmemory')) {
                             $dnum = $pnum - Settings::get('sboxmemory');
-                            $dposts = DB::queryRows("SELECT id FROM " . DB::table('post') . " WHERE type=" . Post::SHOUTBOX_ENTRY . " AND home=" . $posttarget . " ORDER BY id LIMIT " . $dnum, null, 'id');
+                            $dposts = DB::queryRows('SELECT id FROM ' . DB::table('post') . ' WHERE type=' . Post::SHOUTBOX_ENTRY . ' AND home=' . $posttarget . ' ORDER BY id LIMIT ' . $dnum, null, 'id');
                             DB::deleteSet('post', 'id', $dpost);
                         }
                     }
@@ -231,7 +231,7 @@ if ($posttype != Post::SHOUTBOX_ENTRY) {
 
     $returnUrl = UrlHelper::appendParams(
         $returnUrl,
-        "r=" . $return
+        'r=' . $return
             . (($posttype == Post::FORUM_TOPIC) ? '&autolast' : '')
             . (($posttype != Post::SHOUTBOX_ENTRY && isset($insert_id)) ? '#post-' . $insert_id : (($return != 1) ? '#post-form' : ''))
     );

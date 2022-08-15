@@ -17,7 +17,7 @@ $sysgroups_array = [User::ADMIN_GROUP_ID, User::GUEST_GROUP_ID, User::REGISTERED
 // id
 $id = (int) Request::get('id');
 $systemgroup = in_array($id, $sysgroups_array);
-$query = DB::queryRow("SELECT id,title,level FROM " . DB::table('user_group') . " WHERE id=" . $id);
+$query = DB::queryRow('SELECT id,title,level FROM ' . DB::table('user_group') . ' WHERE id=' . $id);
 
 if ($query === false) {
     $output .= Message::error(_lang('global.badinput'));
@@ -36,7 +36,7 @@ $user_count = DB::count('user', 'group_id=' . DB::val($id));
 $done = false;
 if (isset($_POST['doit'])) {
     // smazani uzivatelu
-    $users = DB::query("SELECT id FROM " . DB::table('user') . " WHERE group_id=" . $id);
+    $users = DB::query('SELECT id FROM ' . DB::table('user') . ' WHERE group_id=' . $id);
     $user_delete_failcount = 0;
     while ($user = DB::row($users)) {
         if (!User::delete($user['id'])) {
@@ -78,4 +78,4 @@ $output .= "
 <p>" . _lang('admin.users.groups.delconfirm', ['%group%' => $query['title']]) . "</p>
 <input type='submit' value='" . _lang('global.confirmdelete') . "'>"
 . Xsrf::getInput()
-. "</form>";
+. '</form>';

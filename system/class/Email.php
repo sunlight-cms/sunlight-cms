@@ -144,9 +144,9 @@ abstract class Email
     static function link(string $email): string
     {
         if (Settings::get('atreplace') !== '') {
-            $email = str_replace("@", Settings::get('atreplace'), $email);
+            $email = str_replace('@', Settings::get('atreplace'), $email);
         }
 
-        return "<a href='#' onclick='return Sunlight.mai_lto(this);'>" . _e($email) . "</a>";
+        return "<a href='#' onclick='return Sunlight.mai_lto(this);'>" . _e($email) . '</a>';
     }
 }

@@ -13,7 +13,7 @@ defined('SL_ROOT') or exit;
 
 /* ---  priprava a akce  --- */
 
-$message = "";
+$message = '';
 if (isset($_POST['action'])) {
 
     switch (Request::post('action')) {
@@ -22,8 +22,8 @@ if (isset($_POST['action'])) {
         case 1:
             // nacteni zakladnich promennych
             $title = Html::cut(_e(Request::post('title', '')), 64);
-            $public = Form::loadCheckbox("public");
-            $locked = Form::loadCheckbox("lockedc");
+            $public = Form::loadCheckbox('public');
+            $locked = Form::loadCheckbox('lockedc');
 
             // vlozeni
             DB::insert('shoutbox', [
@@ -37,12 +37,12 @@ if (isset($_POST['action'])) {
             // ulozeni
         case 2:
             $lastid = -1;
-            $sql = "";
+            $sql = '';
             foreach ($_POST as $var => $val) {
-                if ($var == "action") {
+                if ($var == 'action') {
                     continue;
                 }
-                $var = explode("_", $var);
+                $var = explode('_', $var);
                 if (count($var) == 2) {
                     $id = (int) mb_substr($var[0], 1);
                     $var = $var[1];
@@ -52,20 +52,20 @@ if (isset($_POST['action'])) {
                     $quotes = true;
                     $skip = false;
                     switch ($var) {
-                        case "title":
+                        case 'title':
                             $val = Html::cut(_e(trim($val)), 64);
                             break;
-                        case "lockedtrigger":
-                            $var = "locked";
-                            $val = Form::loadCheckbox("s" . $id . "_locked");
+                        case 'lockedtrigger':
+                            $var = 'locked';
+                            $val = Form::loadCheckbox('s' . $id . '_locked');
                             $quotes = false;
                             break;
-                        case "publictrigger":
-                            $var = "public";
-                            $val = Form::loadCheckbox("s" . $id . "_public");
+                        case 'publictrigger':
+                            $var = 'public';
+                            $val = Form::loadCheckbox('s' . $id . '_public');
                             $quotes = false;
                             break;
-                        case "delposts":
+                        case 'delposts':
                             $skip = true;
                             DB::delete('post', 'home=' . $id . ' AND type=' . Post::SHOUTBOX_ENTRY);
                             break;
@@ -79,7 +79,7 @@ if (isset($_POST['action'])) {
 
                         // ulozeni
                         if ($lastid != $id) {
-                            DB::query("UPDATE " . DB::table('shoutbox') . " SET " . $sql . " WHERE id=" . $lastid);
+                            DB::query('UPDATE ' . DB::table('shoutbox') . ' SET ' . $sql . ' WHERE id=' . $lastid);
                             $sql = '';
                             $lastid = $id;
                         }
@@ -99,9 +99,9 @@ if (isset($_POST['action'])) {
             }
 
             // ulozeni posledniho nebo jedineho shoutboxu
-            if ($sql != "") {
-                $sql = trim($sql, ",");
-                DB::query("UPDATE " . DB::table('shoutbox') . " SET " . $sql . " WHERE id=" . $id);
+            if ($sql != '') {
+                $sql = trim($sql, ',');
+                DB::query('UPDATE ' . DB::table('shoutbox') . ' SET ' . $sql . ' WHERE id=' . $id);
             }
 
             $message = Message::ok(_lang('global.saved'));
@@ -123,9 +123,9 @@ if (isset($_GET['del']) && Xsrf::check(true)) {
 /* ---  vystup  --- */
 
 $output .= "
-<p class='bborder'>" . _lang('admin.content.sboxes.p') . "</p>
+<p class='bborder'>" . _lang('admin.content.sboxes.p') . '</p>
 
-" . $message . "
+' . $message . "
 
 <fieldset class='hs_fieldset'>
 <legend>" . _lang('admin.content.sboxes.create') . "</legend>
@@ -154,11 +154,11 @@ $output .= "
 
 </table>
 
-" . Xsrf::getInput() . "</form>
+" . Xsrf::getInput() . '</form>
 </fieldset>
 
 <fieldset>
-<legend>" . _lang('admin.content.sboxes.manage') . "</legend>
+<legend>' . _lang('admin.content.sboxes.manage') . "</legend>
 <form class='cform' action='" . _e(Router::admin('content-sboxes')) . "' method='post'>
 <input type='hidden' name='action' value='2'>
 
@@ -167,16 +167,16 @@ $output .= "
 ";
 
 // vypis shoutboxu
-$shoutboxes = DB::query("SELECT * FROM " . DB::table('shoutbox') . " ORDER BY id DESC");
+$shoutboxes = DB::query('SELECT * FROM ' . DB::table('shoutbox') . ' ORDER BY id DESC');
 if (DB::size($shoutboxes) != 0) {
     while ($shoutbox = DB::row($shoutboxes)) {
 
-        $output .= "
+        $output .= '
     <br>
     <table>
 
     <tr>
-    <th>" . _lang('admin.content.form.title') . "</th>
+    <th>' . _lang('admin.content.form.title') . "</th>
     <td><input type='text' name='s" . $shoutbox['id'] . "_title' class='inputmedium' value='" . $shoutbox['title'] . "'></td>
     </tr>
 
@@ -184,7 +184,7 @@ if (DB::size($shoutboxes) != 0) {
     <th>" . _lang('admin.content.form.hcm') . "</th>
     <td>
         <input type='text' value='[hcm]sbox," . $shoutbox['id'] . "[/hcm]' onclick='this.select()' readonly>
-        <small>" . _lang('admin.content.form.thisid') . " " . $shoutbox['id'] . "</small>
+        <small>" . _lang('admin.content.form.thisid') . ' ' . $shoutbox['id'] . "</small>
     </td>
     </tr>
 
@@ -192,8 +192,8 @@ if (DB::size($shoutboxes) != 0) {
     <th>" . _lang('admin.content.form.settings') . "</th>
     <td>
     <input type='hidden' name='s" . $shoutbox['id'] . "_publictrigger' value='1'><input type='hidden' name='s" . $shoutbox['id'] . "_lockedtrigger' value='1'>
-    <label><input type='checkbox' name='s" . $shoutbox['id'] . "_public' value='1'" . Form::activateCheckbox($shoutbox['public']) . "> " . _lang('admin.content.form.unregpost') . "</label><br>
-    <label><input type='checkbox' name='s" . $shoutbox['id'] . "_locked' value='1'" . Form::activateCheckbox($shoutbox['locked']) . "> " . _lang('admin.content.form.locked2') . "</label><br>
+    <label><input type='checkbox' name='s" . $shoutbox['id'] . "_public' value='1'" . Form::activateCheckbox($shoutbox['public']) . '> ' . _lang('admin.content.form.unregpost') . "</label><br>
+    <label><input type='checkbox' name='s" . $shoutbox['id'] . "_locked' value='1'" . Form::activateCheckbox($shoutbox['locked']) . '> ' . _lang('admin.content.form.locked2') . "</label><br>
     <label><input type='checkbox' name='s" . $shoutbox['id'] . "_delposts' value='1'> " . _lang('admin.content.form.delposts') . "</label><br><br>
     <a class='button' href='" . _e(Xsrf::addToUrl(Router::admin('content-sboxes', ['query' => ['del' => $shoutbox['id']]]))) . "' onclick='return Sunlight.confirm();'><img src='" . _e(Router::path('admin/images/icons/delete.png')) . "' alt='del' class='icon'>" . _lang('global.delete') . "</a>
     </td>
@@ -207,8 +207,8 @@ if (DB::size($shoutboxes) != 0) {
     $output .= _lang('global.nokit');
 }
 
-$output .= "
-" . Xsrf::getInput() . "</form>
+$output .= '
+' . Xsrf::getInput() . '</form>
 </fieldset>
 
-";
+';

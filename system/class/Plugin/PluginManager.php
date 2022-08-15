@@ -389,7 +389,7 @@ class PluginManager
             throw new \InvalidArgumentException(sprintf('Invalid plugin type "%s"', $pluginType));
         }
 
-        $output = "";
+        $output = '';
         if ($inputName) {
             $output .= "<select name=\"{$inputName}\">\n";
         }

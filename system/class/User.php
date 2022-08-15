@@ -634,7 +634,7 @@ abstract class User
     static function delete(int $id): bool
     {
         // nacist data uzivatele
-        $user = DB::queryRow("SELECT id,avatar FROM " . DB::table('user') . " WHERE id=" . DB::val($id));
+        $user = DB::queryRow('SELECT id,avatar FROM ' . DB::table('user') . ' WHERE id=' . DB::val($id));
         if ($user === false) {
             return false;
         }
@@ -660,7 +660,7 @@ abstract class User
 
         // odstranit data z databaze
         DB::delete('user', 'id=' . DB::val($id));
-        DB::query("DELETE " . DB::table('pm') . ",post FROM " . DB::table('pm') . " LEFT JOIN " . DB::table('post') . " AS post ON (post.type=" . Post::PRIVATE_MSG . " AND post.home=" . DB::table('pm') . ".id) WHERE receiver=" . DB::val($id) . " OR sender=" . DB::val($id));
+        DB::query('DELETE ' . DB::table('pm') . ',post FROM ' . DB::table('pm') . ' LEFT JOIN ' . DB::table('post') . ' AS post ON (post.type=' . Post::PRIVATE_MSG . ' AND post.home=' . DB::table('pm') . '.id) WHERE receiver=' . DB::val($id) . ' OR sender=' . DB::val($id));
         DB::update('post', 'author=' . DB::val($id), [
             'guest' => sprintf('%x', crc32((string) $id)),
             'author' => -1,
@@ -789,7 +789,7 @@ abstract class User
             if (!$embedded) {
                 $rows[] = Form::getSubmitRow([
                     'text' => _lang('global.login'),
-                    'append' => " <label><input type='checkbox' name='login_persistent' value='1'> " . _lang('login.persistent') . "</label>",
+                    'append' => " <label><input type='checkbox' name='login_persistent' value='1'> " . _lang('login.persistent') . '</label>',
                 ]);
             }
 
@@ -828,7 +828,7 @@ abstract class User
             }
 
         } else {
-            $output .= "<p>" . _lang('login.ininfo') . " <em>" . self::getUsername() . "</em> - <a href='" . _e(Xsrf::addToUrl(Router::path('system/script/logout.php'))) . "'>" . _lang('usermenu.logout') . "</a>.</p>";
+            $output .= '<p>' . _lang('login.ininfo') . ' <em>' . self::getUsername() . "</em> - <a href='" . _e(Xsrf::addToUrl(Router::path('system/script/logout.php'))) . "'>" . _lang('usermenu.logout') . '</a>.</p>';
         }
 
         return $output;
@@ -916,7 +916,7 @@ abstract class User
             $cond = 'u.username=' . DB::val($username) . ' OR u.publicname=' . DB::val($username);
         }
 
-        $query = DB::queryRow("SELECT u.id,u.username,u.email,u.logincounter,u.password,u.blocked,g.blocked group_blocked FROM " . DB::table('user') . " u JOIN " . DB::table('user_group') . " g ON(u.group_id=g.id) WHERE " . $cond);
+        $query = DB::queryRow('SELECT u.id,u.username,u.email,u.logincounter,u.password,u.blocked,g.blocked group_blocked FROM ' . DB::table('user') . ' u JOIN ' . DB::table('user_group') . ' g ON(u.group_id=g.id) WHERE ' . $cond);
         if ($query === false) {
             // uzivatel nenalezen
             return 0;
@@ -1006,7 +1006,7 @@ abstract class User
         static $result = null;
 
         if ($result === null) {
-            $result = DB::count('pm', "(receiver=" . self::getId() . " AND receiver_deleted=0 AND receiver_readtime<update_time) OR (sender=" . self::getId() . " AND sender_deleted=0 AND sender_readtime<update_time)");
+            $result = DB::count('pm', '(receiver=' . self::getId() . ' AND receiver_deleted=0 AND receiver_readtime<update_time) OR (sender=' . self::getId() . ' AND sender_deleted=0 AND sender_readtime<update_time)');
         }
 
         return (int) $result;
@@ -1129,7 +1129,7 @@ abstract class User
         if ($options['link']) {
             $out .= '<a href="' . _e(Router::module('profile', ['query' => ['id' =>  $data['username']]])) . '">';
         }
-        $out .= "<img class=\"avatar" . ($options['class'] !== null ? " {$options['class']}" : '') . "\" src=\"{$url}\" alt=\"" . $data[$data['publicname'] !== null ? 'publicname' : 'username'] . "\">";
+        $out .= '<img class="avatar' . ($options['class'] !== null ? " {$options['class']}" : '') . "\" src=\"{$url}\" alt=\"" . $data[$data['publicname'] !== null ? 'publicname' : 'username'] . '">';
         if ($options['link']) {
             $out .= '</a>';
         }

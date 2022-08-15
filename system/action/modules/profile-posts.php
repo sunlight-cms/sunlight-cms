@@ -20,7 +20,7 @@ if (!User::isLoggedIn() && Settings::get('notpublicsite')) {
 /* ---  priprava  --- */
 
 $id = StringManipulator::slugify(Request::get('id'), false);
-$query = DB::queryRow("SELECT u.id,u.username,u.publicname,u.public,g.level FROM " . DB::table('user') . " u JOIN " . DB::table('user_group') . " g ON u.group_id=g.id WHERE u.username=" . DB::val($id));
+$query = DB::queryRow('SELECT u.id,u.username,u.publicname,u.public,g.level FROM ' . DB::table('user') . ' u JOIN ' . DB::table('user_group') . ' g ON u.group_id=g.id WHERE u.username=' . DB::val($id));
 
 if ($query === false) {
     $_index->notFound();
@@ -44,24 +44,24 @@ $_index->title = str_replace(
 $_index->backlink = Router::module('profile', ['query' => ['id' => $id]]);
 
 // tabulka
-[$columns, $joins, $cond, $count] = Post::createFilter('post', [Post::SECTION_COMMENT, Post::ARTICLE_COMMENT, Post::BOOK_ENTRY, Post::FORUM_TOPIC, Post::PLUGIN], [], "post.author=" . $query['id'], true);
+[$columns, $joins, $cond, $count] = Post::createFilter('post', [Post::SECTION_COMMENT, Post::ARTICLE_COMMENT, Post::BOOK_ENTRY, Post::FORUM_TOPIC, Post::PLUGIN], [], 'post.author=' . $query['id'], true);
 
 $paging = Paginator::render(Router::module('profile-posts', ['query' => ['id' => $id]]), 15, $count);
 if (Paginator::atTop()) {
     $output .= $paging['paging'];
 }
 
-$posts = DB::query("SELECT " . $columns . " FROM " . DB::table('post') . " post " . $joins . " WHERE " . $cond . " ORDER BY post.time DESC " . $paging['sql_limit']);
+$posts = DB::query('SELECT ' . $columns . ' FROM ' . DB::table('post') . ' post ' . $joins . ' WHERE ' . $cond . ' ORDER BY post.time DESC ' . $paging['sql_limit']);
 if (DB::size($posts) != 0) {
     while ($post = DB::row($posts)) {
         [$homelink, $hometitle] = Router::post($post);
         $output .= "<div class='post'>
 <div class='post-head'>
-    <a href='" . _e($homelink) . "#post-" . $post['id'] . "' class='post-author'>" . $hometitle . "</a>
+    <a href='" . _e($homelink) . '#post-' . $post['id'] . "' class='post-author'>" . $hometitle . "</a>
     <span class='post-info'>(" . GenericTemplates::renderTime($post['time'], 'post') . ")</span>
 </div>
-<div class='post-body'>" . Post::render($post['text']) . "</div>
-</div>";
+<div class='post-body'>" . Post::render($post['text']) . '</div>
+</div>';
     }
     if (Paginator::atBottom()) {
         $output .= $paging['paging'];

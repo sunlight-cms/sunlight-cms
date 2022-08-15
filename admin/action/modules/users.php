@@ -30,7 +30,7 @@ if (isset($_POST['type']) && User::hasPrivilege('admingroups')) {
         $msg = 1;
     } else {
         // kopirovat skupinu
-        $source_group = DB::queryRow("SELECT * FROM " . DB::table('user_group') . " WHERE id=" . $type);
+        $source_group = DB::queryRow('SELECT * FROM ' . DB::table('user_group') . ' WHERE id=' . $type);
         if ($source_group !== false) {
             $new_group = [];
             $privilege_map = User::getPrivilegeMap();
@@ -38,15 +38,15 @@ if (isset($_POST['type']) && User::hasPrivilege('admingroups')) {
             // sesbirani dat
             foreach ($source_group as $column => $val) {
                 switch ($column) {
-                    case "id":
+                    case 'id':
                         continue 2;
 
-                    case "level":
+                    case 'level':
                         $val = Math::range($val, 0, min(User::getLevel() - 1, User::MAX_ASSIGNABLE_LEVEL));
                         break;
                         
-                    case "title":
-                        $val = _lang('global.copy') . " - " . $val;
+                    case 'title':
+                        $val = _lang('global.copy') . ' - ' . $val;
                         break;
 
                     default:
@@ -72,7 +72,7 @@ if (isset($_POST['type']) && User::hasPrivilege('admingroups')) {
 // prepnuti uzivatele
 if (User::isSuperAdmin() && isset($_POST['switch_user'])) {
     $user = trim(Request::post('switch_user', ''));
-    $query = DB::queryRow("SELECT id,password,email FROM " . DB::table('user') . " WHERE username=" . DB::val($user));
+    $query = DB::queryRow('SELECT id,password,email FROM ' . DB::table('user') . ' WHERE username=' . DB::val($user));
 
     if ($query !== false) {
         User::login($query['id'], $query['password'], $query['email']);
@@ -89,23 +89,23 @@ if (User::isSuperAdmin() && isset($_POST['switch_user'])) {
 // vypis skupin
 if (User::hasPrivilege('admingroups')) {
     $group_table = "<table class='list list-hover list-max'>
-<thead><tr><td>" . _lang('global.name') . "</td><td>" . _lang('admin.users.groups.level') . "</td><td>" . _lang('admin.users.groups.members') . "</td><td>" . _lang('global.action') . "</td></tr></thead>
-<tbody>";
-    $groups = DB::queryRows("SELECT id,title,icon,color,blocked,level,reglist,(SELECT COUNT(*) FROM " . DB::table('user') . " WHERE group_id=" . DB::table('user_group') . ".id) AS user_count FROM " . DB::table('user_group') . " ORDER BY level DESC");
+<thead><tr><td>" . _lang('global.name') . '</td><td>' . _lang('admin.users.groups.level') . '</td><td>' . _lang('admin.users.groups.members') . '</td><td>' . _lang('global.action') . '</td></tr></thead>
+<tbody>';
+    $groups = DB::queryRows('SELECT id,title,icon,color,blocked,level,reglist,(SELECT COUNT(*) FROM ' . DB::table('user') . ' WHERE group_id=' . DB::table('user_group') . '.id) AS user_count FROM ' . DB::table('user_group') . ' ORDER BY level DESC');
     Extend::call('admin.users.groups', ['groups' => &$groups]);
     foreach ($groups as $group) {
         $is_sys = in_array($group['id'], $sysgroups_array);
         $group_table .= "
     <tr>
     <td>
-        <span class='" . ($is_sys ? 'em' : '') . (($group['blocked'] == 1) ? ' strike' : '') . "'" . (($group['color'] !== '') ? " style='color:" . $group['color'] . ";'" : '') . ">"
+        <span class='" . ($is_sys ? 'em' : '') . (($group['blocked'] == 1) ? ' strike' : '') . "'" . (($group['color'] !== '') ? " style='color:" . $group['color'] . ";'" : '') . '>'
             . (($group['reglist'] == 1) ? "<img src='" . _e(Router::path('admin/images/icons/action.png')) . "' alt='reglist' class='icon' title='" . _lang('admin.users.groups.reglist') . "'>" : '')
-            . (($group['icon'] != "") ? "<img src='" . _e(Router::path('images/groupicons/' . $group['icon'])) . "' alt='icon' class='groupicon'> " : '')
+            . (($group['icon'] != '') ? "<img src='" . _e(Router::path('images/groupicons/' . $group['icon'])) . "' alt='icon' class='groupicon'> " : '')
             . $group['title']
-        . "</span>
+        . '</span>
     </td>
-    <td>" . $group['level'] . "</td>
-    <td>" . (($group['id'] != User::GUEST_GROUP_ID) ? "<a href='" . _e(Router::admin('users-list', ['query' => ['group_id' => $group['id']]])) . "'><img src='" . _e(Router::path('admin/images/icons/list.png')) . "' alt='list' class='icon'>" . $group['user_count'] . "</a>" : "-") . "</td>
+    <td>' . $group['level'] . '</td>
+    <td>' . (($group['id'] != User::GUEST_GROUP_ID) ? "<a href='" . _e(Router::admin('users-list', ['query' => ['group_id' => $group['id']]])) . "'><img src='" . _e(Router::path('admin/images/icons/list.png')) . "' alt='list' class='icon'>" . $group['user_count'] . '</a>' : '-') . "</td>
     <td class='actions'>
         <a class='button' href='" . _e(Router::admin('users-editgroup', ['query' => ['id' => $group['id']]])) . "'><img src='" . _e(Router::path('admin/images/icons/edit.png')) . "' alt='edit' class='icon'>" . _lang('global.edit') . "</a>
         <a class='button' href='" . _e(Router::admin('users-delgroup', ['query' => ['id' => $group['id']]])) . "'><img src='" . _e(Router::path('admin/images/icons/delete.png')) . "' alt='del' class='icon'>" . _lang('global.delete') . "</a>
@@ -114,7 +114,7 @@ if (User::hasPrivilege('admingroups')) {
     }
     $group_table .= "</tbody>\n</table>";
 } else {
-    $group_table = "";
+    $group_table = '';
 }
 
 // zprava
@@ -135,7 +135,7 @@ switch ($msg) {
         $message = Message::warning(_lang('global.baduser'));
         break;
     default:
-        $message = "";
+        $message = '';
         break;
 }
 
@@ -171,12 +171,12 @@ $output .= $message . "
 <table class='two-columns'>
 <tr class='valign-top'>
 
-    " . (User::hasPrivilege('adminusers') ? "
+    " . (User::hasPrivilege('adminusers') ? '
     <td>
-    <h2>" . _lang('admin.users.users') . "</h2>
-    <p>" . $module_links . "</p>
+    <h2>' . _lang('admin.users.users') . '</h2>
+    <p>' . $module_links . '</p>
 
-    <h2>" . _lang('global.action') . "</h2>
+    <h2>' . _lang('global.action') . "</h2>
 
     <form class='cform' action='" . _e(Router::admin(null)) . "' method='get' name='edituserform'>
     <input type='hidden' name='p' value='users-edit'>
@@ -187,36 +187,36 @@ $output .= $message . "
 
     <form class='cform' action='" . _e(Router::admin(null)) . "' method='get' name='deleteuserform'>
     <input type='hidden' name='p' value='users-delete'>
-    " . Xsrf::getInput() . "
-    <h3>" . _lang('admin.users.deleteuser') . "</h3>
+    " . Xsrf::getInput() . '
+    <h3>' . _lang('admin.users.deleteuser') . "</h3>
     <input type='text' name='id' class='inputsmall'>
     <input class='button' type='submit' value='" . _lang('global.do') . "'>
     </form>
-    " . Extend::buffer('admin.users.actions.after') . "
+    " . Extend::buffer('admin.users.actions.after') . '
     
-    " . (User::isSuperAdmin() ? "
+    ' . (User::isSuperAdmin() ? "
 
     <form action='" . _e(Router::admin('users')) . "' method='post'>
     <h3>" . _lang('admin.users.switchuser') . "</h3>
     <input type='text' name='switch_user' class='inputsmall'>
     <input class='button' type='submit' value='" . _lang('global.do') . "'>
-    " . Xsrf::getInput() . "</form>
-    " : '') . "
+    " . Xsrf::getInput() . '</form>
+    ' : '') . '
 
   </td>
-    " : '') . "
+    ' : '') . '
 
-    " . (User::hasPrivilege('admingroups') ? "<td>
-    <h2>" . _lang('admin.users.groups') . "</h2>
+    ' . (User::hasPrivilege('admingroups') ? '<td>
+    <h2>' . _lang('admin.users.groups') . "</h2>
     <form action='" . _e(Router::admin('users')) . "' method='post'>
-        <p class='bborder'><strong>" . _lang('admin.users.groups.new') . ":</strong> "
-        . Admin::userSelect("type", -1, "1", null, _lang('admin.users.groups.new.empty'), true)
+        <p class='bborder'><strong>" . _lang('admin.users.groups.new') . ':</strong> '
+        . Admin::userSelect('type', -1, '1', null, _lang('admin.users.groups.new.empty'), true)
         . " <input class='button' type='submit' value='" . _lang('global.do') . "'>
         </p>"
-        . Xsrf::getInput() . "</form>
-    " . $group_table
-        . Extend::buffer('admin.users.groups.after') . "
-    </td>" : '') . "
+        . Xsrf::getInput() . '</form>
+    ' . $group_table
+        . Extend::buffer('admin.users.groups.after') . '
+    </td>' : '') . '
 </tr>
 </table>
-";
+';

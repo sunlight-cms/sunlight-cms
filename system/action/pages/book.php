@@ -18,7 +18,7 @@ $_index->title = $_page['title'];
 
 // obsah
 Extend::call('page.book.content.before', $extend_args);
-if ($_page['content'] != "") {
+if ($_page['content'] != '') {
     $output .= Hcm::parse($_page['content']);
 }
 Extend::call('page.book.content.after', $extend_args);

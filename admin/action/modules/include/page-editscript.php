@@ -442,7 +442,7 @@ if (!empty($_POST)) {
 
 // vyber rodice
 if (User::hasPrivilege('adminpages')) {
-    $parent_row = "<tr>\n<th>" . _lang('admin.content.form.node_parent') . "</th><td>";
+    $parent_row = "<tr>\n<th>" . _lang('admin.content.form.node_parent') . '</th><td>';
     $parent_row .= Admin::pageSelect('node_parent', [
         'empty_item' => _lang('admin.content.form.node_parent.none'),
         'disabled_branches' => $new ? null : [$id],
@@ -460,12 +460,12 @@ $editor = Extend::buffer('admin.page.editor');
 
 if ($editor === '') {
     // vychozi implementace
-    $editor = "<textarea name='content' rows='25' cols='94' class='areabig editor'>" . _e($query['content']) . "</textarea>";
+    $editor = "<textarea name='content' rows='25' cols='94' class='areabig editor'>" . _e($query['content']) . '</textarea>';
 }
 
 // zpravy
 if (isset($_GET['saved'])) {
-    $output .= Message::ok(_lang('global.saved') . " <small>(" . GenericTemplates::renderTime(time()) . ")</small>", true);
+    $output .= Message::ok(_lang('global.saved') . ' <small>(' . GenericTemplates::renderTime(time()) . ')</small>', true);
 }
 if (!$new && $editscript_enable_slug && DB::count('page', 'id!=' . DB::val($query['id']) . ' AND slug=' . DB::val($query['slug'])) !== 0) {
     $output .= Message::warning(_lang('admin.content.form.slug.collision'));
@@ -494,20 +494,20 @@ $output .= "<form class='cform' action='" . _e(Router::admin('content-edit' . $t
                             </tr>"
 
                             . ($editscript_enable_slug ?
-                            "<tr>
-                                <th>" . _lang('admin.content.form.slug') . "</th>
+                            '<tr>
+                                <th>' . _lang('admin.content.form.slug') . "</th>
                                 <td><input type='text' name='slug' value='" . $editable_slug . "' maxlength='1024' class='inputmax'></td>
                             </tr>" : '')
 
                             . ($editscript_enable_slug ?
                             "<tr>
                                 <th></th>
-                                <td><label><input type='checkbox' name='slug_abs'" . Form::activateCheckbox($query['slug_abs']) . "> " . _lang('admin.content.form.slug_abs.label') . "</label></td>
-                            </tr>" : '')
+                                <td><label><input type='checkbox' name='slug_abs'" . Form::activateCheckbox($query['slug_abs']) . '> ' . _lang('admin.content.form.slug_abs.label') . '</label></td>
+                            </tr>' : '')
 
                             . ($editscript_enable_meta ?
-                            "<tr>
-                                <th>" . _lang('admin.content.form.description') . "</th>
+                            '<tr>
+                                <th>' . _lang('admin.content.form.description') . "</th>
                                 <td><input type='text' name='description' value='" . $query['description'] . "' maxlength='255' class='inputmax'></td>
                             </tr>" : '')
 
@@ -516,26 +516,26 @@ $output .= "<form class='cform' action='" . _e(Router::admin('content-edit' . $t
                             . ($editscript_enable_perex ?
                             "<tr class='valign-top'>
                                 <th>" . _lang('admin.content.form.perex') . "</th>
-                                <td><textarea name='perex' rows='2' cols='94' class='arealine editor' data-editor-mode='lite'>" . _e($query['perex']) . "</textarea></td>
-                            </tr>" : '')
+                                <td><textarea name='perex' rows='2' cols='94' class='arealine editor' data-editor-mode='lite'>" . _e($query['perex']) . '</textarea></td>
+                            </tr>' : '')
 
                             . ($editscript_enable_heading ?
-                            "<tr>
-                                <th>" . _lang('admin.content.form.heading') . "</th>
+                            '<tr>
+                                <th>' . _lang('admin.content.form.heading') . "</th>
                                 <td><input type='text' name='heading' value='" . $query['heading'] . "' class='inputmax' maxlength='255'></td>
                             </tr>" : '')
 
                             . ($editscript_enable_content ?
                             "<tr class='valign-top'>
-                                <th>" . _lang('admin.content.form.content') . (!$new ? " <a href='" . _e(Router::page($query['id'], $query['slug'])) . "' target='_blank'><img src='" . _e(Router::path('admin/images/icons/loupe.png')) . "' alt='prev'></a>" : '') . "</th>
-                                <td>" . $editor . "</td>
-                            </tr>" : '')
+                                <th>" . _lang('admin.content.form.content') . (!$new ? " <a href='" . _e(Router::page($query['id'], $query['slug'])) . "' target='_blank'><img src='" . _e(Router::path('admin/images/icons/loupe.png')) . "' alt='prev'></a>" : '') . '</th>
+                                <td>' . $editor . '</td>
+                            </tr>' : '')
 
                             . $editscript_extra_row
 
                             . ($editscript_enable_events ?
-                            "<tr>
-                                <th>" . _lang('admin.content.form.events') . "</th>
+                            '<tr>
+                                <th>' . _lang('admin.content.form.events') . "</th>
                                 <td><input type='text' name='events' value='" . (isset($query['events']) ? _e($query['events']) : '') . "' class='inputmax' maxlength='255'></td>
                             </tr>" : '')
 
@@ -553,8 +553,8 @@ $output .= "<form class='cform' action='" . _e(Router::admin('content-edit' . $t
                     <div id='settingseditform'>"
 
                     . $editscript_setting_extra
-                    ."<fieldset>
-                        <legend>" . _lang('admin.content.form.settings') . "</legend>
+                    .'<fieldset>
+                        <legend>' . _lang('admin.content.form.settings') . "</legend>
                         <table>
                         <tbody>
                             <tr>
@@ -564,17 +564,17 @@ $output .= "<form class='cform' action='" . _e(Router::admin('content-edit' . $t
                                 </td>
                             </tr>"
                             . ((!empty($custom_settings) || $editscript_enable_show_heading || $editscript_enable_visible) ?
-                                ($editscript_enable_visible ? "<tr><td colspan='2'><label><input type='checkbox' name='visible' value='1'" . Form::activateCheckbox($query['visible']) . "> " . _lang('admin.content.form.visible') . "</label></td></tr>" : '')
-                                . ($editscript_enable_show_heading ? "<tr><td colspan='2'><label><input type='checkbox' name='show_heading' value='1'" . Form::activateCheckbox($query['show_heading']) . "> " . _lang('admin.content.form.show_heading') . "</label></td></tr>" : '')
+                                ($editscript_enable_visible ? "<tr><td colspan='2'><label><input type='checkbox' name='visible' value='1'" . Form::activateCheckbox($query['visible']) . '> ' . _lang('admin.content.form.visible') . '</label></td></tr>' : '')
+                                . ($editscript_enable_show_heading ? "<tr><td colspan='2'><label><input type='checkbox' name='show_heading' value='1'" . Form::activateCheckbox($query['show_heading']) . '> ' . _lang('admin.content.form.show_heading') . '</label></td></tr>' : '')
                                 . $custom_settings : '')
 
-                        ."</tbody>
+                        .'</tbody>
                         </table>
-                    </fieldset>"
+                    </fieldset>'
 
                     . ($editscript_enable_layout ?
-                    "<fieldset>
-                        <legend>" . _lang('admin.content.form.layout') . "</legend>"
+                    '<fieldset>
+                        <legend>' . _lang('admin.content.form.layout') . '</legend>'
                         . Admin::templateLayoutSelect(
                             'layout',
                             $query['layout_inherit'] ? null : $query['layout'],
@@ -584,11 +584,11 @@ $output .= "<form class='cform' action='" . _e(Router::admin('content-edit' . $t
                             null,
                             'inputmax'
                         )
-                    ."</fieldset>" : '')
+                    .'</fieldset>' : '')
 
                     . ($editscript_enable_access ?
-                    "<fieldset>
-                        <legend>" . _lang('global.access') . "</legend>
+                    '<fieldset>
+                        <legend>' . _lang('global.access') . "</legend>
                         <table>
                         <tbody>
                             <tr>
@@ -601,16 +601,16 @@ $output .= "<form class='cform' action='" . _e(Router::admin('content-edit' . $t
                                 ."</td>
                             </tr>
                             <tr>
-                                <td colspan='2'><input type='checkbox' name='public' value='1'" . Form::activateCheckbox($query['public']) . "> " . _lang('admin.content.form.public') . "</td>
+                                <td colspan='2'><input type='checkbox' name='public' value='1'" . Form::activateCheckbox($query['public']) . '> ' . _lang('admin.content.form.public') . '</td>
                             </tr>
                         </tbody>
                         </table>
-                    </fieldset>" : '')
+                    </fieldset>' : '')
                 . $editscript_setting_extra2
-                . "</div>
+                . '</div>
                 </td>
             </tr>
         </tbody>
     </table>
-    " . Xsrf::getInput() . "
-</form>";
+    ' . Xsrf::getInput() . '
+</form>';

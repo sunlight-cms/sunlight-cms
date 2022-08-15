@@ -1,6 +1,6 @@
 <?php
 
-return function ($kod = "", $ze_souboru = false) {
+return function ($kod = '', $ze_souboru = false) {
     return _buffer(function () use ($kod, $ze_souboru) {
         if ($ze_souboru) {
             // ze souboru

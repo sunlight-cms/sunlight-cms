@@ -7,25 +7,25 @@ use Sunlight\User;
 return function ($razeni = 'new', $pocet = 5) {
     $pocet = abs((int) $pocet);
 
-    $rcond = "public=1";
+    $rcond = 'public=1';
     switch ($razeni) {
         case 'activity':
         case 2:
-            $rorder = "activitytime DESC";
-            $rcond .= " AND " . time() . "-activitytime<1800";
+            $rorder = 'activitytime DESC';
+            $rcond .= ' AND ' . time() . '-activitytime<1800';
             break;
         case 'comment-count':
         case 3:
-            $rorder = "(SELECT COUNT(*) FROM " . DB::table('post') . " WHERE author=u.id) DESC";
+            $rorder = '(SELECT COUNT(*) FROM ' . DB::table('post') . ' WHERE author=u.id) DESC';
             break;
         case 'article-rating':
         case 4:
-            $rcond .= " AND (SELECT COUNT(*) FROM " . DB::table('article') . " WHERE author=u.id AND rateon=1 AND ratenum!=0)!=0";
-            $rorder = "(SELECT ROUND(SUM(ratesum)/SUM(ratenum)) FROM " . DB::table('article') . " WHERE rateon=1 AND ratenum!=0 AND author=u.id) DESC";
+            $rcond .= ' AND (SELECT COUNT(*) FROM ' . DB::table('article') . ' WHERE author=u.id AND rateon=1 AND ratenum!=0)!=0';
+            $rorder = '(SELECT ROUND(SUM(ratesum)/SUM(ratenum)) FROM ' . DB::table('article') . ' WHERE rateon=1 AND ratenum!=0 AND author=u.id) DESC';
             break;
         case 'new':
         default:
-            $rorder = "registertime DESC";
+            $rorder = 'registertime DESC';
             break;
     }
 
@@ -36,7 +36,7 @@ return function ($razeni = 'new', $pocet = 5) {
     }
 
     $userQuery = User::createQuery(null, '');
-    $query = DB::query("SELECT " . $userQuery['column_list'] . " FROM " . DB::table('user') . " u " . $userQuery['joins'] . ' WHERE ' . $rcond . " ORDER BY " . $rorder . " LIMIT " . $pocet);
+    $query = DB::query('SELECT ' . $userQuery['column_list'] . ' FROM ' . DB::table('user') . ' u ' . $userQuery['joins'] . ' WHERE ' . $rcond . ' ORDER BY ' . $rorder . ' LIMIT ' . $pocet);
     while ($item = DB::row($query)) {
 
         // pridani doplnujicich informaci
@@ -49,23 +49,23 @@ return function ($razeni = 'new', $pocet = 5) {
                     continue 2;
                 }
 
-                $rext = " (" . $rvar . ")";
+                $rext = ' (' . $rvar . ')';
                 break;
 
             case 'article-rating':
             case 4:
-                $rvar = DB::queryRow("SELECT ROUND(SUM(ratesum)/SUM(ratenum)) AS pct,COUNT(*) AS cnt FROM " . DB::table('article') . " WHERE rateon=1 AND ratenum!=0 AND author=" . $item['id']);
-                $rext = " - " . $rvar['pct'] . "%, " . _lang('global.articlesnum') . ": " . $rvar['cnt'];
+                $rvar = DB::queryRow('SELECT ROUND(SUM(ratesum)/SUM(ratenum)) AS pct,COUNT(*) AS cnt FROM ' . DB::table('article') . ' WHERE rateon=1 AND ratenum!=0 AND author=' . $item['id']);
+                $rext = ' - ' . $rvar['pct'] . '%, ' . _lang('global.articlesnum') . ': ' . $rvar['cnt'];
                 break;
 
                 // nic
             default:
-                $rext = "";
+                $rext = '';
                 break;
 
         }
 
-        $result .= "<li>" . Router::userFromQuery($userQuery, $item) . $rext . "</li>\n";
+        $result .= '<li>' . Router::userFromQuery($userQuery, $item) . $rext . "</li>\n";
     }
     if ($razeni != 4) {
         $result .= "</ul>\n";

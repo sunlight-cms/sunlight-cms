@@ -680,7 +680,7 @@ abstract class Core
 
         // opening script tag
         if ($scriptTags) {
-            $output .= "<script>";
+            $output .= '<script>';
         }
 
         // prepare variables

@@ -20,10 +20,10 @@ if (!User::isLoggedIn()) {
 
 /* ---  priprava promennych  --- */
 
-$message = "";
+$message = '';
 $id = (int) Request::get('id');
 $userQuery = User::createQuery('p.author');
-$query = DB::queryRow("SELECT p.id,p.home,p.time,p.subject,p.sticky,r.slug forum_slug,r.layout forum_layout," . $userQuery['column_list'] . " FROM " . DB::table('post') . " p JOIN " . DB::table('page') . " r ON(p.home=r.id) " . $userQuery['joins'] . " WHERE p.id=" . $id . " AND p.type=" . Post::FORUM_TOPIC . " AND p.xhome=-1");
+$query = DB::queryRow('SELECT p.id,p.home,p.time,p.subject,p.sticky,r.slug forum_slug,r.layout forum_layout,' . $userQuery['column_list'] . ' FROM ' . DB::table('post') . ' p JOIN ' . DB::table('page') . ' r ON(p.home=r.id) ' . $userQuery['joins'] . ' WHERE p.id=' . $id . ' AND p.type=' . Post::FORUM_TOPIC . ' AND p.xhome=-1');
 if ($query !== false) {
     if (isset($query['forum_layout'])) {
         $_index->changeTemplate($query['forum_layout']);
@@ -67,7 +67,7 @@ $output .= '
 <form action="' . _e(Router::module('movetopic', ['query' => ['id' => $id]])) . '" method="post">
 ' . Message::warning(_lang('mod.movetopic.text', ['%topic%' => $query['subject']]), true) . '
 <p>
-<select name="new_forum"' . (empty($forums) ? " disabled" : '') . '>
+<select name="new_forum"' . (empty($forums) ? ' disabled' : '') . '>
 ';
 
 if (empty($forums)) {
@@ -76,9 +76,9 @@ if (empty($forums)) {
     foreach($forums as $forum_id => $forum) {
         $output .= '<option'
             . " value='" . $forum_id . "'"
-            . ($forum['type'] != Page::FORUM ? " disabled" : '')
-            . ($forum_id == $query['home'] ? " selected" : '')
-            . ">"
+            . ($forum['type'] != Page::FORUM ? ' disabled' : '')
+            . ($forum_id == $query['home'] ? ' selected' : '')
+            . '>'
             . str_repeat('&nbsp;&nbsp;&nbsp;│&nbsp;', $forum['node_level'])
             . $forum['title']
             . "</option>\n";

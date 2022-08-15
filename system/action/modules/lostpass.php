@@ -44,7 +44,7 @@ if (isset($_GET['user'], $_GET['hash'])) {
         // data uzivatele
         $user = Request::get('user');
         $hash = Request::get('hash');
-        $userdata = DB::queryRow("SELECT id,email,username,security_hash,security_hash_expires FROM " . DB::table('user') . " WHERE username=" . DB::val($user));
+        $userdata = DB::queryRow('SELECT id,email,username,security_hash,security_hash_expires FROM ' . DB::table('user') . ' WHERE username=' . DB::val($user));
         if (
             $userdata === false
             || $hash !== $userdata['security_hash']
@@ -88,7 +88,7 @@ if (isset($_GET['user'], $_GET['hash'])) {
     } while (false);
 } else {
     // zobrazeni formulare
-    $output .= "<p class='bborder'>" . _lang('mod.lostpass.p') . "</p>";
+    $output .= "<p class='bborder'>" . _lang('mod.lostpass.p') . '</p>';
 
     // odeslani emailu
     $sent = false;
@@ -109,7 +109,7 @@ if (isset($_GET['user'], $_GET['hash'])) {
         // data uzivatele
         $username = Request::post('username');
         $email = Request::post('email');
-        $userdata = DB::queryRow("SELECT id,email,username FROM " . DB::table('user') . " WHERE username=" . DB::val($username) . " AND email=" . DB::val($email));
+        $userdata = DB::queryRow('SELECT id,email,username FROM ' . DB::table('user') . ' WHERE username=' . DB::val($username) . ' AND email=' . DB::val($email));
         if ($userdata === false) {
             $output .= Message::warning(_lang('mod.lostpass.notfound'));
             break;

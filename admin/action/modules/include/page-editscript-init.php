@@ -14,7 +14,7 @@ defined('SL_ROOT') or exit;
 
 $continue = false;
 $custom_save_array = [];
-$custom_settings = "";
+$custom_settings = '';
 $editscript_enable_content = true;
 $editscript_enable_heading = true;
 $editscript_enable_perex = true;
@@ -35,7 +35,7 @@ $plugin_type_array = Page::getPluginTypes();
 
 if (isset($_GET['id'])) {
     $id = (int) Request::get('id');
-    $query = DB::queryRow("SELECT * FROM " . DB::table('page') . " WHERE id=" . $id . " AND type=" . $type);
+    $query = DB::queryRow('SELECT * FROM ' . DB::table('page') . ' WHERE id=' . $id . ' AND type=' . $type);
     if ($query !== false) {
         $continue = true;
         $new = false;

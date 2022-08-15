@@ -37,7 +37,7 @@ abstract class StringManipulator
             $string = Html::unescape($string);
         }
         if (mb_strlen($string) > $length) {
-            $string = mb_substr($string, 0, max(0, $length - 3)) . "...";
+            $string = mb_substr($string, 0, max(0, $length - 3)) . '...';
         }
         if ($convert_entities) {
             $string = _e($string);
@@ -53,7 +53,7 @@ abstract class StringManipulator
      */
     static function trimExtraWhitespace(string $string): string
     {
-        $from = ["{(\r\n){3,}}s", "{  +}s"];
+        $from = ["{(\r\n){3,}}s", '{  +}s'];
         $to = ["\r\n\r\n", ' '];
 
         return preg_replace($from, $to, trim($string));

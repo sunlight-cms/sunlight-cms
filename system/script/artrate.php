@@ -25,7 +25,7 @@ $article_exists = false;
 
 // kontrola promennych a pristupu
 $continue = false;
-$query = DB::queryRow("SELECT art.id,art.slug,art.time,art.confirmed,art.author,art.public,art.home1,art.home2,art.home3,art.rateon,cat.slug AS cat_slug FROM " . DB::table('article') . " AS art  JOIN " . DB::table('page') . " AS cat ON(cat.id=art.home1) WHERE art.id=" . $id);
+$query = DB::queryRow('SELECT art.id,art.slug,art.time,art.confirmed,art.author,art.public,art.home1,art.home2,art.home3,art.rateon,cat.slug AS cat_slug FROM ' . DB::table('article') . ' AS art  JOIN ' . DB::table('page') . ' AS cat ON(cat.id=art.home1) WHERE art.id=' . $id);
 if ($query !== false) {
     $article_exists = true;
     if (isset($_POST['r'])) {
@@ -51,4 +51,4 @@ if ($article_exists) {
 } else {
     $aurl = Core::getBaseUrl()->build();
 }
-header("location: " . $aurl);
+header('location: ' . $aurl);

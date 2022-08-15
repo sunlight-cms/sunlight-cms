@@ -12,7 +12,7 @@ defined('SL_ROOT') or exit;
 
 /* ---  priprava  --- */
 
-$message = "";
+$message = '';
 
 /* ---  vystup  --- */
 
@@ -20,9 +20,9 @@ $message = "";
 $output .= "<p class='bborder'>" . _lang('admin.content.redir.p') . "</p>
 <p>
     <a class='button' href='" . _e(Router::admin('content-redir', ['query' => ['new' => 1]])) . "'><img src='" . _e(Router::path('admin/images/icons/new.png')) . "' alt='new' class='icon'>" . _lang('admin.content.redir.act.new') . "</a>
-    <a class='button' href='" . _e(Router::admin('content-redir', ['query' => ['wipe' => 1]])) . "'><img src='" . _e(Router::path('admin/images/icons/delete.png')) . "' alt='wipe' class='icon'>" . _lang('admin.content.redir.act.wipe') . "</a>
+    <a class='button' href='" . _e(Router::admin('content-redir', ['query' => ['wipe' => 1]])) . "'><img src='" . _e(Router::path('admin/images/icons/delete.png')) . "' alt='wipe' class='icon'>" . _lang('admin.content.redir.act.wipe') . '</a>
 </p>
-";
+';
 
 // akce - uprava / vytvoreni
 if (isset($_GET['new']) || isset($_GET['edit'])) {
@@ -89,11 +89,11 @@ if (isset($_GET['new']) || isset($_GET['edit'])) {
 
 <tr>
     <th>" . _lang('admin.content.redir.permanent') . "</th>
-    <td><input type='checkbox' name='permanent' value='1'" . Form::activateCheckbox($q['permanent']) . "></td>
+    <td><input type='checkbox' name='permanent' value='1'" . Form::activateCheckbox($q['permanent']) . '></td>
 </tr>
 
 <tr>
-    <th>" . _lang('admin.content.redir.act') . "</th>
+    <th>' . _lang('admin.content.redir.act') . "</th>
     <td><input type='checkbox' name='act' value='1'" . Form::activateCheckbox($q['active']) . "></td>
 </tr>
 
@@ -103,7 +103,7 @@ if (isset($_GET['new']) || isset($_GET['edit'])) {
 </tr>
 
 </table>
-" . Xsrf::getInput() . "</form>";
+" . Xsrf::getInput() . '</form>';
     } while (false);
 } elseif (isset($_GET['del']) && Xsrf::check(true)) {
 
@@ -122,8 +122,8 @@ if (isset($_GET['new']) || isset($_GET['edit'])) {
 <form method='post' class='well'>
 " . Message::warning(_lang('admin.content.redir.act.wipe.confirm')) . "
 <input type='submit' name='wipe_confirm' value='" . _lang('global.confirmdelete') . "'>
-" . Xsrf::getInput() . "</form>
-";
+" . Xsrf::getInput() . '</form>
+';
     }
 
 }
@@ -132,30 +132,30 @@ if (isset($_GET['new']) || isset($_GET['edit'])) {
 $output .= "<table class='list list-hover list-max'>
 <thead>
 <tr>
-    <td>" . _lang('admin.content.redir.old') . "</td>
-    <td>" . _lang('admin.content.redir.new') . "</td>
-    <td>" . _lang('admin.content.redir.permanent') . "</td>
-    <td>" . _lang('admin.content.redir.act') . "</td>
-    <td>" . _lang('global.action') . "</td>
+    <td>" . _lang('admin.content.redir.old') . '</td>
+    <td>' . _lang('admin.content.redir.new') . '</td>
+    <td>' . _lang('admin.content.redir.permanent') . '</td>
+    <td>' . _lang('admin.content.redir.act') . '</td>
+    <td>' . _lang('global.action') . '</td>
 </tr>
 </thead>
 <tbody>
-";
+';
 
 // vypis
 $counter = 0;
 $q = DB::query('SELECT * FROM ' . DB::table('redirect'));
 while ($r = DB::row($q)) {
-    $output .= "<tr>
-        <td><code>" . $r['old'] . "</code></td>
-        <td><code>" . $r['new'] . "</code></td>
+    $output .= '<tr>
+        <td><code>' . $r['old'] . '</code></td>
+        <td><code>' . $r['new'] . "</code></td>
         <td class='text-" . ($r['permanent'] ? 'success' : 'danger') . "'>" . _lang('global.' . ($r['permanent'] ? 'yes' : 'no')) . "</td>
         <td class='text-" . ($r['active'] ? 'success' : 'danger') . "'>" . _lang('global.' . ($r['active'] ? 'yes' : 'no')) . "</td>
         <td class='actions'>
             <a class='button' href='" . _e(Router::admin('content-redir', ['query' => ['edit' => $r['id']]])) . "'><img src='" . _e(Router::path('admin/images/icons/edit.png')) . "' alt='edit' class='icon'>" . _lang('global.edit') . "</a>
-            <a class='button' href='" . _e(Xsrf::addToUrl(Router::admin('content-redir', ['query' => ['del' => $r['id']]]))) . "' onclick='return Sunlight.confirm();'><img src='" . _e(Router::path('admin/images/icons/delete.png')) . "' alt='del' class='icon'>" . _lang('global.delete') . "</a>
+            <a class='button' href='" . _e(Xsrf::addToUrl(Router::admin('content-redir', ['query' => ['del' => $r['id']]]))) . "' onclick='return Sunlight.confirm();'><img src='" . _e(Router::path('admin/images/icons/delete.png')) . "' alt='del' class='icon'>" . _lang('global.delete') . '</a>
         </td>
-    </tr>";
+    </tr>';
     ++$counter;
 }
 

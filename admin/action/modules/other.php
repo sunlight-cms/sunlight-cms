@@ -23,7 +23,7 @@ asort($other_modules['plugin'], SORT_NUMERIC);
 
 /* ---  vystup  --- */
 
-$output .= "<p>" . _lang('admin.other.p') . "</p>";
+$output .= '<p>' . _lang('admin.other.p') . '</p>';
 
 if (empty($other_modules['system']) && empty($other_modules['plugin'])) {
     $output .= Message::ok(_lang('global.nokit'));

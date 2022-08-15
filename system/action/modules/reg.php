@@ -94,12 +94,12 @@ if (isset($_GET['confirm'])) {
 
         // kontrola iplogu
         if (!IpLog::check(IpLog::ANTI_SPAM)) {
-            $errors[] = _lang('misc.antispam_error', ["%antispamtimeout%" => Settings::get('antispamtimeout')]);
+            $errors[] = _lang('misc.antispam_error', ['%antispamtimeout%' => Settings::get('antispamtimeout')]);
         }
 
         // nacteni a kontrola promennych
         $user_data['username'] = User::normalizeUsername(Request::post('username', ''));
-        if ($user_data['username'] == "") {
+        if ($user_data['username'] == '') {
             $errors[] = _lang('user.msg.badusername');
         } elseif (!User::isNameAvailable($user_data['username'])) {
             $errors[] = _lang('user.msg.userexists');
@@ -110,7 +110,7 @@ if (isset($_GET['confirm'])) {
         if ($password != $password2) {
             $errors[] = _lang('mod.reg.nosame');
         }
-        if ($password != "") {
+        if ($password != '') {
             $user_data['password'] = Password::create($password)->build();
         } else {
             $errors[] = _lang('mod.reg.passwordneeded');
@@ -132,7 +132,7 @@ if (isset($_GET['confirm'])) {
 
         if (Settings::get('registration_grouplist') && isset($_POST['group_id'])) {
             $user_data['group_id'] = (int) Request::post('group_id');
-            $groupdata = DB::query("SELECT id FROM " . DB::table('user_group') . " WHERE id=" . $user_data['group_id'] . " AND blocked=0 AND reglist=1");
+            $groupdata = DB::query('SELECT id FROM ' . DB::table('user_group') . ' WHERE id=' . $user_data['group_id'] . ' AND blocked=0 AND reglist=1');
             if (DB::size($groupdata) == 0) {
                 $errors[] = _lang('global.badinput');
             }
@@ -174,19 +174,19 @@ if (!$user_data_valid && $show_form) {
     // priprava vyberu skupiny
     $groupselect = [];
     if (Settings::get('registration_grouplist')) {
-        $groupselect_items = DB::query("SELECT id,title FROM " . DB::table('user_group') . " WHERE blocked=0 AND reglist=1 ORDER BY title");
+        $groupselect_items = DB::query('SELECT id,title FROM ' . DB::table('user_group') . ' WHERE blocked=0 AND reglist=1 ORDER BY title');
         if (DB::size($groupselect_items) != 0) {
-            $groupselect_content = "";
+            $groupselect_content = '';
             while ($groupselect_item = DB::row($groupselect_items)) {
-                $groupselect_content .= "<option value='" . $groupselect_item['id'] . "'" . (($groupselect_item['id'] == Settings::get('defaultgroup')) ? " selected" : '') . ">" . $groupselect_item['title'] . "</option>\n";
+                $groupselect_content .= "<option value='" . $groupselect_item['id'] . "'" . (($groupselect_item['id'] == Settings::get('defaultgroup')) ? ' selected' : '') . '>' . $groupselect_item['title'] . "</option>\n";
             }
-            $groupselect = ['label' => _lang('global.group'), 'content' => "<select name='group_id'>" . $groupselect_content . "</select>"];
+            $groupselect = ['label' => _lang('global.group'), 'content' => "<select name='group_id'>" . $groupselect_content . '</select>'];
         }
     }
 
     // priprava podminek
     if ($rules !== '') {
-        $rules = ['content' => "<h2>" . _lang('mod.reg.rules') . "</h2>" . $rules . "<p><label><input type='checkbox' name='agreement' value='1'" . Form::activateCheckbox(isset($_POST['agreement'])) . "> " . _lang('mod.reg.rules.agreement') . "</label></p>", 'top' => true];
+        $rules = ['content' => '<h2>' . _lang('mod.reg.rules') . '</h2>' . $rules . "<p><label><input type='checkbox' name='agreement' value='1'" . Form::activateCheckbox(isset($_POST['agreement'])) . '> ' . _lang('mod.reg.rules.agreement') . '</label></p>', 'top' => true];
     } else {
         $rules = [];
     }
@@ -205,9 +205,9 @@ if (!$user_data_valid && $show_form) {
         [
             ['label' => _lang('login.username'), 'content' => "<input type='text' class='inputsmall' maxlength='24'" . Form::restorePostValueAndName('username') . " autocomplete='username'>"],
             ['label' => _lang('login.password'), 'content' => "<input type='password' name='password' class='inputsmall' autocomplete='new-password'>"],
-            ['label' => _lang('login.password') . " (" . _lang('global.check') . ")", 'content' => "<input type='password' name='password2' class='inputsmall' autocomplete='new-password'>"],
+            ['label' => _lang('login.password') . ' (' . _lang('global.check') . ')', 'content' => "<input type='password' name='password2' class='inputsmall' autocomplete='new-password'>"],
             ['label' => _lang('global.email'), 'content' => "<input type='email' class='inputsmall' " . Form::restorePostValueAndName('email', '@') . " autocomplete='email'>"],
-            ['label' => _lang('mod.settings.account.massemail'), 'content' => "<label><input type='checkbox' value='1'" . Form::restoreCheckedAndName('regform', 'massemail') . "> " . _lang('mod.settings.account.massemail.label') . '</label>'],
+            ['label' => _lang('mod.settings.account.massemail'), 'content' => "<label><input type='checkbox' value='1'" . Form::restoreCheckedAndName('regform', 'massemail') . '> ' . _lang('mod.settings.account.massemail.label') . '</label>'],
             $groupselect,
             $captcha,
             $rules,

@@ -7,11 +7,11 @@ use Sunlight\Image\ImageService;
 use Sunlight\Image\ImageTransformer;
 use Sunlight\Router;
 
-return function ($cesta = "", $typ = 'text', $pocet = 1, $rozmery_nahledu = null) {
-    $result = "";
+return function ($cesta = '', $typ = 'text', $pocet = 1, $rozmery_nahledu = null) {
+    $result = '';
     $cesta = SL_ROOT . $cesta;
-    if (mb_substr($cesta, -1, 1) != "/") {
-        $cesta .= "/";
+    if (mb_substr($cesta, -1, 1) != '/') {
+        $cesta .= '/';
     }
     $pocet = (int) $pocet;
 
@@ -33,7 +33,7 @@ return function ($cesta = "", $typ = 'text', $pocet = 1, $rozmery_nahledu = null
         $items = [];
         while (($item = readdir($handle)) !== false) {
             $ext = strtolower(pathinfo($item, PATHINFO_EXTENSION));
-            if (is_dir($cesta . $item) || $item == "." || $item == ".." || !$extension_filter($ext)) {
+            if (is_dir($cesta . $item) || $item == '.' || $item == '..' || !$extension_filter($ext)) {
                 continue;
             }
             $items[] = $item;

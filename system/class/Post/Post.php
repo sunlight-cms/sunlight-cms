@@ -139,18 +139,18 @@ home_post.subject xhome_subject";
         $conditions = [];
 
         if (!empty($types)) {
-            $conditions[] = "{$alias}.type IN(" . DB::arr($types) . ")";
+            $conditions[] = "{$alias}.type IN(" . DB::arr($types) . ')';
         }
         if (!empty($homes)) {
-            $conditions[] = "{$alias}.home IN(" . DB::arr($homes) . ")";
+            $conditions[] = "{$alias}.home IN(" . DB::arr($homes) . ')';
         }
 
-        $conditions[] = "(home_page.id IS NULL OR " . (User::isLoggedIn() ? '' : 'home_page.public=1 AND ') . "home_page.level<=" . User::getLevel() . ")
-AND (home_art.id IS NULL OR " . (User::isLoggedIn() ? '' : 'home_art.public=1 AND ') . "home_art.time<=" . time() . " AND home_art.confirmed=1)
-AND ({$alias}.type!=" . self::ARTICLE_COMMENT . " OR (
-    " . (User::isLoggedIn() ? '' : '(home_cat1.public=1 OR home_cat2.public=1 OR home_cat3.public=1) AND') . "
-    (home_cat1.level<=" . User::getLevel() . " OR home_cat2.level<=" . User::getLevel() . " OR home_cat3.level<=" . User::getLevel() . ")
-))";
+        $conditions[] = '(home_page.id IS NULL OR ' . (User::isLoggedIn() ? '' : 'home_page.public=1 AND ') . 'home_page.level<=' . User::getLevel() . ')
+AND (home_art.id IS NULL OR ' . (User::isLoggedIn() ? '' : 'home_art.public=1 AND ') . 'home_art.time<=' . time() . " AND home_art.confirmed=1)
+AND ({$alias}.type!=" . self::ARTICLE_COMMENT . ' OR (
+    ' . (User::isLoggedIn() ? '' : '(home_cat1.public=1 OR home_cat2.public=1 OR home_cat3.public=1) AND') . '
+    (home_cat1.level<=' . User::getLevel() . ' OR home_cat2.level<=' . User::getLevel() . ' OR home_cat3.level<=' . User::getLevel() . ')
+))';
 
         // vlastni podminky
         if (!empty($sqlConditions)) {
@@ -158,12 +158,12 @@ AND ({$alias}.type!=" . self::ARTICLE_COMMENT . " OR (
         }
 
         // joiny
-        $joins = "LEFT JOIN " . DB::table('page') . " home_page ON({$alias}.type IN(1,3,5) AND {$alias}.home=home_page.id)
+        $joins = 'LEFT JOIN ' . DB::table('page') . " home_page ON({$alias}.type IN(1,3,5) AND {$alias}.home=home_page.id)
 LEFT JOIN " . DB::table('article') . " home_art ON({$alias}.type=" . self::ARTICLE_COMMENT . " AND {$alias}.home=home_art.id)
-LEFT JOIN " . DB::table('page') . " home_cat1 ON({$alias}.type=" . self::ARTICLE_COMMENT . " AND home_art.home1=home_cat1.id)
-LEFT JOIN " . DB::table('page') . " home_cat2 ON({$alias}.type=" . self::ARTICLE_COMMENT . " AND home_art.home2!=-1 AND home_art.home2=home_cat2.id)
-LEFT JOIN " . DB::table('page') . " home_cat3 ON({$alias}.type=" . self::ARTICLE_COMMENT . " AND home_art.home3!=-1 AND home_art.home3=home_cat3.id)
-LEFT JOIN " . DB::table('post') . " home_post ON({$alias}.type=" . self::FORUM_TOPIC . " AND {$alias}.xhome!=-1 AND {$alias}.xhome=home_post.id)";
+LEFT JOIN " . DB::table('page') . " home_cat1 ON({$alias}.type=" . self::ARTICLE_COMMENT . ' AND home_art.home1=home_cat1.id)
+LEFT JOIN ' . DB::table('page') . " home_cat2 ON({$alias}.type=" . self::ARTICLE_COMMENT . ' AND home_art.home2!=-1 AND home_art.home2=home_cat2.id)
+LEFT JOIN ' . DB::table('page') . " home_cat3 ON({$alias}.type=" . self::ARTICLE_COMMENT . ' AND home_art.home3!=-1 AND home_art.home3=home_cat3.id)
+LEFT JOIN ' . DB::table('post') . " home_post ON({$alias}.type=" . self::FORUM_TOPIC . " AND {$alias}.xhome!=-1 AND {$alias}.xhome=home_post.id)";
 
         // extend
         Extend::call('posts.filter', [

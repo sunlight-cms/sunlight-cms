@@ -44,7 +44,7 @@ if (isset($_POST['bulk_action'])) {
 /* ---  vystup  --- */
 
 // filtr skupiny
-$grouplimit = "";
+$grouplimit = '';
 $list_conds = [];
 if (isset($_GET['group_id'])) {
     $group = (int) Request::get('group_id');
@@ -59,7 +59,7 @@ if (isset($_GET['group_id'])) {
 $search = trim(Request::get('search', ''));
 if ($search !== '') {
     $wildcard = DB::val('%' . $search . '%');
-    $list_conds[] = "(u.id=" . DB::val($search) . " OR u.username LIKE {$wildcard} OR u.publicname LIKE {$wildcard} OR u.email LIKE {$wildcard} OR u.ip LIKE {$wildcard})";
+    $list_conds[] = '(u.id=' . DB::val($search) . " OR u.username LIKE {$wildcard} OR u.publicname LIKE {$wildcard} OR u.email LIKE {$wildcard} OR u.ip LIKE {$wildcard})";
 } else {
     $search = false;
 }
@@ -76,7 +76,7 @@ $output .= '
 <form class="cform" action="' . _e(Router::admin(null)) . '" method="get">
 <input type="hidden" name="p" value="users-list">
 <input type="hidden" name="search"' . Form::restoreGetValue('search', '') . '>
-<strong>' . _lang('admin.users.list.groupfilter') . ':</strong> ' . Admin::userSelect("group_id", $group, "id!=" . User::GUEST_GROUP_ID, null, _lang('global.all'), true) . '
+<strong>' . _lang('admin.users.list.groupfilter') . ':</strong> ' . Admin::userSelect('group_id', $group, 'id!=' . User::GUEST_GROUP_ID, null, _lang('global.all'), true) . '
 <input class="button" type="submit" value="' . _lang('global.apply') . '">
 </form>
 </td>
@@ -108,14 +108,14 @@ $output .= $message . "
 <table id='user-list' class='list list-hover list-max'>
 <thead><tr>
     <td><input type='checkbox' onclick='Sunlight.checkAll(event, this.checked, \"#user-list\")'></td>
-    <td>ID</td><td>" . _lang('login.username') . "</td>
-    <td>" . _lang('global.email') . "</td>
-    <td>" . _lang('mod.settings.account.publicname') . "</td>
-    <td>" . _lang('global.group') . "</td>
-    <td>" . _lang('global.action') . "</td>
+    <td>ID</td><td>" . _lang('login.username') . '</td>
+    <td>' . _lang('global.email') . '</td>
+    <td>' . _lang('mod.settings.account.publicname') . '</td>
+    <td>' . _lang('global.group') . '</td>
+    <td>' . _lang('global.action') . '</td>
 </tr></thead>
 <tbody>
-";
+';
 
 // dotaz na db
 $userQuery = User::createQuery();
@@ -126,10 +126,10 @@ if (DB::size($query) != 0) {
     while ($item = DB::row($query)) {
         $output .= "<tr>
             <td><input type='checkbox' name='user[]' value='" . $item['user_id'] . "'></td>
-            <td>" . $item['user_id'] . "</td>
-            <td>" . Router::userFromQuery($userQuery, $item, ['new_window' => true, 'publicname' => false]) . "</td>
-            <td>" . $item['user_email'] . "</td><td>" . (($item['user_publicname'] != '') ? $item['user_publicname'] : "-") . "</td>
-            <td>" . $item['user_group_title'] . "</td>
+            <td>" . $item['user_id'] . '</td>
+            <td>' . Router::userFromQuery($userQuery, $item, ['new_window' => true, 'publicname' => false]) . '</td>
+            <td>' . $item['user_email'] . '</td><td>' . (($item['user_publicname'] != '') ? $item['user_publicname'] : '-') . '</td>
+            <td>' . $item['user_group_title'] . "</td>
             <td class='actions'>
                 <a class='button' href='" . _e(Router::admin('users-edit', ['query' => ['id' => $item['user_username']]])) . "'><img src='" . _e(Router::path('admin/images/icons/edit.png')) . "' alt='edit' class='icon'>" . _lang('global.edit') . "</a>
                 <a class='button' href='" . _e(Router::admin('users-delete', ['query' => ['id' =>$item['user_username']]])) . "'><img src='" . _e(Router::path('admin/images/icons/delete.png')) . "' alt='del' class='icon'>" . _lang('global.delete') . "</a>
@@ -144,7 +144,7 @@ $output .= "</tbody></table>\n";
 
 // pocet uzivatelu
 $totalusers = DB::count('user');
-$output .= '<p class="right">' . _lang('admin.users.list.totalusers') . ": " . $totalusers . '</p>';
+$output .= '<p class="right">' . _lang('admin.users.list.totalusers') . ': ' . $totalusers . '</p>';
 
 // hromadna akce
 $output .= "
@@ -157,7 +157,7 @@ $output .= "
         <input class='button' type='submit' onclick='return Sunlight.confirm()' value='" . _lang('global.do') . "'>
     </p>
 
-" . Xsrf::getInput() . "</form>";
+" . Xsrf::getInput() . '</form>';
 
 // strankovani
 $output .= $paging['paging'];

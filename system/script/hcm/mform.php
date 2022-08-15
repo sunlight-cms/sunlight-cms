@@ -88,4 +88,4 @@ if (Xsrf::check()) {
 }
 
 // presmerovani zpet
-Response::redirectBack(UrlHelper::appendParams(Response::getReturnUrl(), "hcm_mr_" . $fid . "=" . $return) . "#hcm_mform_" . $fid);
+Response::redirectBack(UrlHelper::appendParams(Response::getReturnUrl(), 'hcm_mr_' . $fid . '=' . $return) . '#hcm_mform_' . $fid);

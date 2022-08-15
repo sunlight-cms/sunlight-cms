@@ -11,10 +11,10 @@ return function ($cesta = '', $rozmery = '', $strankovani = null, $lightbox = tr
     global $_index;
 
     // priprava
-    $result = "";
+    $result = '';
     $cesta = SL_ROOT . $cesta;
-    if (mb_substr($cesta, -1, 1) != "/") {
-        $cesta .= "/";
+    if (mb_substr($cesta, -1, 1) != '/') {
+        $cesta .= '/';
     }
     if (isset($strankovani) && $strankovani > 0) {
         $strankovat = true;

@@ -144,14 +144,14 @@ HTML;
         // css
         $html .= $assets['css_before'];
         foreach ($assets['css'] as $item) {
-            $html .= "\n<link rel=\"stylesheet\" href=\"" . _e(UrlHelper::appendParams($item, $cacheParam)) . "\" type=\"text/css\">";
+            $html .= "\n<link rel=\"stylesheet\" href=\"" . _e(UrlHelper::appendParams($item, $cacheParam)) . '" type="text/css">';
         }
         $html .= $assets['css_after'];
 
         // javascript
         $html .= $assets['js_before'];
         foreach ($assets['js'] as $item) {
-            $html .= "\n<script src=\"" . _e(UrlHelper::appendParams($item, $cacheParam)) . "\"></script>";
+            $html .= "\n<script src=\"" . _e(UrlHelper::appendParams($item, $cacheParam)) . '"></script>';
         }
         $html .= $assets['js_after'];
 

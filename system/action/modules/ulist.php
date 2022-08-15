@@ -22,7 +22,7 @@ if (!Settings::get('ulist')) {
 
 $_index->title = _lang('user.list.title');
 
-$output .= "<p class='bborder'>" . _lang('mod.ulist.p') . "</p>";
+$output .= "<p class='bborder'>" . _lang('mod.ulist.p') . '</p>';
 
 // filtry
 $cond = 'u.public=1';
@@ -43,12 +43,12 @@ $output .= '
   <strong>' . _lang('user.list.groupfilter') . ':</strong> <select name="group_id">
   <option value="-1">' . _lang('global.all') . '</option>
   ';
-$query = DB::query("SELECT id,title FROM " . DB::table('user_group') . " WHERE id!=" . User::GUEST_GROUP_ID . " ORDER BY level DESC");
+$query = DB::query('SELECT id,title FROM ' . DB::table('user_group') . ' WHERE id!=' . User::GUEST_GROUP_ID . ' ORDER BY level DESC');
 while ($item = DB::row($query)) {
     if ($item['id'] == $group) {
         $selected = ' selected';
     } else {
-        $selected = "";
+        $selected = '';
     }
     $output .= '<option value="' . $item['id'] . '"' . $selected . '>' . $item['title'] . '</option>';
 }
@@ -63,14 +63,14 @@ if ($paging['count'] > 0) {
     $userQuery = User::createQuery();
     $query = DB::query('SELECT ' . $userQuery['column_list'] . ' FROM ' . DB::table('user') . ' u ' . $userQuery['joins'] . ' WHERE ' . $cond . ' ORDER BY ug.level DESC ' . $paging['sql_limit']);
 
-    $output .= "<table class='widetable'>\n<tr><th>" . _lang('login.username') . "</th><th>" . _lang('global.group') . "</th></tr>\n";
+    $output .= "<table class='widetable'>\n<tr><th>" . _lang('login.username') . '</th><th>' . _lang('global.group') . "</th></tr>\n";
     while ($item = DB::row($query)) {
-        $output .= "<tr>
-    <td>" . Router::userFromQuery($userQuery, $item) . "</td>
-    <td>" . $item['user_group_title'] . "</td>
-</tr>";
+        $output .= '<tr>
+    <td>' . Router::userFromQuery($userQuery, $item) . '</td>
+    <td>' . $item['user_group_title'] . '</td>
+</tr>';
     }
-    $output .= "</table>";
+    $output .= '</table>';
 }
 
 if (Paginator::atBottom()) {
@@ -78,4 +78,4 @@ if (Paginator::atBottom()) {
 }
 
 // celkovy pocet uzivatelu
-$output .= "<p>" . _lang('user.list.total') . ": " . $paging['count'] . "</p>";
+$output .= '<p>' . _lang('user.list.total') . ': ' . $paging['count'] . '</p>';

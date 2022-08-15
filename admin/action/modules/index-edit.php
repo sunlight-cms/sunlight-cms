@@ -24,9 +24,9 @@ $admin_index_cfg = Settings::getMultiple(['admin_index_custom', 'admin_index_cus
 
 $output .= "
 
-<p class='bborder'>" . _lang('admin.menu.index.edit.p') . "</p>
+<p class='bborder'>" . _lang('admin.menu.index.edit.p') . '</p>
 
-" . (isset($_GET['saved']) ? Message::ok(_lang('global.saved')) : '') . "
+' . (isset($_GET['saved']) ? Message::ok(_lang('global.saved')) : '') . "
 
 <form method='post'>
 
@@ -35,8 +35,8 @@ $output .= "
 <tr>
     <th>" . _lang('admin.menu.index.edit.pos') . "</th>
     <td><select name='pos'>
-        <option value='0'" . (($admin_index_cfg['admin_index_custom_pos'] == 0) ? " selected" : '') . ">" . _lang('admin.menu.index.edit.pos.0') . "</option>
-        <option value='1'" . (($admin_index_cfg['admin_index_custom_pos'] == 1) ? " selected" : '') . ">" . _lang('admin.menu.index.edit.pos.1') . "</option>
+        <option value='0'" . (($admin_index_cfg['admin_index_custom_pos'] == 0) ? ' selected' : '') . '>' . _lang('admin.menu.index.edit.pos.0') . "</option>
+        <option value='1'" . (($admin_index_cfg['admin_index_custom_pos'] == 1) ? ' selected' : '') . '>' . _lang('admin.menu.index.edit.pos.1') . "</option>
     </select></td>
 </tr>
 
@@ -52,5 +52,5 @@ $output .= "
 
 </table>
 
-" . Xsrf::getInput() . "</form>
-";
+" . Xsrf::getInput() . '</form>
+';

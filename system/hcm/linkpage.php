@@ -10,17 +10,17 @@ return function ($id = null, $text = null, $nove_okno = false) {
     } else {
         $id = DB::val($id);
     }
-    $query = DB::queryRow("SELECT id,title,slug FROM " . DB::table('page') . " WHERE " . ($is_id ? 'id' : 'slug') . "=" . $id);
+    $query = DB::queryRow('SELECT id,title,slug FROM ' . DB::table('page') . ' WHERE ' . ($is_id ? 'id' : 'slug') . '=' . $id);
     if ($nove_okno) {
         $target = " target='_blank'";
     } else {
-        $target = "";
+        $target = '';
     }
     if ($query !== false) {
-        if (isset($text) && $text != "") {
+        if (isset($text) && $text != '') {
             $query['title'] = _e($text);
         }
 
-        return "<a href='" . _e(Router::page($query['id'], $query['slug'])) . "'" . $target . ">" . $query['title'] . "</a>";
+        return "<a href='" . _e(Router::page($query['id'], $query['slug'])) . "'" . $target . '>' . $query['title'] . '</a>';
     }
 };

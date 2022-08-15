@@ -87,7 +87,7 @@ $editable_settings = [
             ['name' => 'registration', 'format' => 'bool'],
             ['name' => 'registration_confirm', 'format' => 'bool'],
             ['name' => 'registration_grouplist', 'format' => 'bool'],
-            ['name' => 'defaultgroup', 'format' => 'int', 'table_id' => 'user_group', 'input' => Admin::userSelect("defaultgroup", Settings::get('defaultgroup'), "id!=" . User::GUEST_GROUP_ID, null, null, true), 'id' => false],
+            ['name' => 'defaultgroup', 'format' => 'int', 'table_id' => 'user_group', 'input' => Admin::userSelect('defaultgroup', Settings::get('defaultgroup'), 'id!=' . User::GUEST_GROUP_ID, null, null, true), 'id' => false],
             ['name' => 'rules', 'format' => 'text', 'help' => false, 'extra_help' => _lang('admin.settings.users.rules.help'), 'input' => '<textarea id="setting_rules" name="rules" rows="9" cols="33" class="areasmallwide editor">' . _e($settings['rules']) . '</textarea>'],
             ['name' => 'messages', 'format' => 'bool'],
             ['name' => 'lostpass', 'format' => 'bool'],
@@ -322,12 +322,12 @@ foreach ($editable_settings as $settings_category => $settings_category_data) {
                 $inputAttrs .= " id=\"{$id}\"";
             }
             if (isset($item['disabled']) && $item['disabled']) {
-                $inputAttrs .= " disabled=\"disabled\"";
+                $inputAttrs .= ' disabled="disabled"';
             }
             if ($item['format'] !== 'bool') {
                 if (!isset($item['input_class'])) {
                     if (!isset($item['choices'])) {
-                        $inputAttrs .= " class=\"inputmedium\"";
+                        $inputAttrs .= ' class="inputmedium"';
                     }
                 } else {
                     $inputAttrs .= " class=\"{$item['input_class']}\"";
@@ -338,22 +338,22 @@ foreach ($editable_settings as $settings_category => $settings_category_data) {
             if (isset($item['choices'])) {
                 $input = "<select{$inputAttrs}>\n";
                 foreach ($item['choices'] as $choiceValue => $choiceLabel) {
-                    $input .= "<option" . ($choiceValue == $value ? ' selected' : '') . " value=\"" . _e($choiceValue) . "\">{$choiceLabel}</option>\n";
+                    $input .= '<option' . ($choiceValue == $value ? ' selected' : '') . ' value="' . _e($choiceValue) . "\">{$choiceLabel}</option>\n";
                 }
-                $input .= "</select>";
+                $input .= '</select>';
             } else {
                 switch ($item['format']) {
                     case 'int':
-                        $input = "<input type=\"number\"{$inputAttrs} value=\"" . _e($value) . "\">";
+                        $input = "<input type=\"number\"{$inputAttrs} value=\"" . _e($value) . '">';
                         break;
                     case 'bool':
-                        $input = "<input type=\"checkbox\"{$inputAttrs} value=\"1\"" . Form::activateCheckbox($value) . ">";
+                        $input = "<input type=\"checkbox\"{$inputAttrs} value=\"1\"" . Form::activateCheckbox($value) . '>';
                         break;
                     case 'html':
                     default:
                         $input = "<input type=\"text\"{$inputAttrs} value=\""
                             . ($item['format'] === 'html' ? $value : _e($value))
-                            . "\">";
+                            . '">';
                         break;
                 }
             }
@@ -376,8 +376,8 @@ foreach ($editable_settings as $settings_category => $settings_category_data) {
         }
 
         // polozka
-        $output .= "<tr>
-    <td><label" . (!isset($item['id']) || $item['id'] ? " for=\"{$id}\"" : '') . ">{$label}</label></td>
+        $output .= '<tr>
+    <td><label' . (!isset($item['id']) || $item['id'] ? " for=\"{$id}\"" : '') . ">{$label}</label></td>
     <td" . ($help === '' ? ' colspan="2"' : '') . ">{$input}</td>\n";
         if ($help !== '') {
             $output .= "<td>{$help}</td>\n";

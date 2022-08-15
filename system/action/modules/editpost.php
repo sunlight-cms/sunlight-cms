@@ -35,7 +35,7 @@ $id = (int) Request::get('id');
 $userQuery = User::createQuery('post.author');
 $columns .= ',home_page.layout page_layout,' . $userQuery['column_list'];
 $joins .= ' ' . $userQuery['joins'];
-$query = DB::queryRow("SELECT " . $columns . " FROM " . DB::table('post') . " post " . $joins . " WHERE post.id=" . $id . " AND " . $cond);
+$query = DB::queryRow('SELECT ' . $columns . ' FROM ' . DB::table('post') . ' post ' . $joins . ' WHERE post.id=' . $id . ' AND ' . $cond);
 
 if ($query !== false) {
     if (isset($query['page_layout'])) {
@@ -51,30 +51,30 @@ if ($query !== false) {
 
             switch ($query['type']) {
                 case Post::SECTION_COMMENT:
-                    $_index->backlink = UrlHelper::appendParams($url, "page=" . Paginator::getItemPage(Settings::get('commentsperpage'), DB::table('post'), "id>" . $query['id'] . " AND type=" . Post::SECTION_COMMENT . " AND xhome=-1 AND home=" . $query['home'])) . "#post-" . $query['id'];
+                    $_index->backlink = UrlHelper::appendParams($url, 'page=' . Paginator::getItemPage(Settings::get('commentsperpage'), DB::table('post'), 'id>' . $query['id'] . ' AND type=' . Post::SECTION_COMMENT . ' AND xhome=-1 AND home=' . $query['home'])) . '#post-' . $query['id'];
                     break;
                 case Post::ARTICLE_COMMENT:
-                    $_index->backlink = UrlHelper::appendParams($url, "page=" . Paginator::getItemPage(Settings::get('commentsperpage'), DB::table('post'), "id>" . $query['id'] . " AND type=" . Post::ARTICLE_COMMENT . " AND xhome=-1 AND home=" . $query['home'])) . "#post-" . $query['id'];
+                    $_index->backlink = UrlHelper::appendParams($url, 'page=' . Paginator::getItemPage(Settings::get('commentsperpage'), DB::table('post'), 'id>' . $query['id'] . ' AND type=' . Post::ARTICLE_COMMENT . ' AND xhome=-1 AND home=' . $query['home'])) . '#post-' . $query['id'];
                     break;
                 case Post::BOOK_ENTRY:
-                    $postsperpage = DB::queryRow("SELECT var2 FROM " . DB::table('page') . " WHERE id=" . $query['home']);
+                    $postsperpage = DB::queryRow('SELECT var2 FROM ' . DB::table('page') . ' WHERE id=' . $query['home']);
                     if ($postsperpage['var2'] === null) {
                         $postsperpage['var2'] = Settings::get('commentsperpage');
                     }
-                    $_index->backlink = UrlHelper::appendParams($url, "page=" . Paginator::getItemPage($postsperpage['var2'], DB::table('post'), "id>" . $query['id'] . " AND type=" . Post::BOOK_ENTRY . " AND xhome=-1 AND home=" . $query['home'])) . "#post-" . $query['id'];
+                    $_index->backlink = UrlHelper::appendParams($url, 'page=' . Paginator::getItemPage($postsperpage['var2'], DB::table('post'), 'id>' . $query['id'] . ' AND type=' . Post::BOOK_ENTRY . ' AND xhome=-1 AND home=' . $query['home'])) . '#post-' . $query['id'];
                     break;
                 case Post::SHOUTBOX_ENTRY:
                     $bbcode = false;
                     break;
                 case Post::FORUM_TOPIC:
                     if ($query['xhome'] == -1) {
-                        if (!Form::loadCheckbox("delete")) {
+                        if (!Form::loadCheckbox('delete')) {
                             $_index->backlink = $url;
                         } else {
                             $_index->backlink = Router::page($query['home'], $query['page_slug']);
                         }
                     } else {
-                        $_index->backlink = UrlHelper::appendParams($url, "page=" . Paginator::getItemPage(Settings::get('commentsperpage'), DB::table('post'), "id<" . $query['id'] . " AND type=" . Post::FORUM_TOPIC . " AND xhome=" . $query['xhome'] . " AND home=" . $query['home'])) . "#post-" . $query['id'];
+                        $_index->backlink = UrlHelper::appendParams($url, 'page=' . Paginator::getItemPage(Settings::get('commentsperpage'), DB::table('post'), 'id<' . $query['id'] . ' AND type=' . Post::FORUM_TOPIC . ' AND xhome=' . $query['xhome'] . ' AND home=' . $query['home'])) . '#post-' . $query['id'];
                     }
                     break;
 
@@ -108,7 +108,7 @@ if ($query !== false) {
 
 if (isset($_POST['text'])) {
 
-    if (!Form::loadCheckbox("delete")) {
+    if (!Form::loadCheckbox('delete')) {
 
         /* -  uprava  - */
 
@@ -132,7 +132,7 @@ if (isset($_POST['text'])) {
         }
 
         // ulozeni
-        if ($text != "") {
+        if ($text != '') {
             $continue = true;
             Extend::call('posts.edit', [
                 'id' => $id,
@@ -217,12 +217,12 @@ if ($form) {
     if ($query['xhome'] == -1 && in_array($query['type'], [Post::FORUM_TOPIC, Post::PRIVATE_MSG])) {
         $inputs[] = ['label' => _lang((($query['type'] != Post::FORUM_TOPIC) ? 'posts.subject' : 'posts.topic')), 'content' => "<input type='text' name='subject' class='inputmedium' maxlength='48' value='" . $query['subject'] . "'>"];
     }
-    $inputs[] = ['label' => _lang('posts.text'), 'content' => "<textarea name='text' class='areamedium' rows='5' cols='33'>" . $query['text'] . "</textarea>", 'top' => true];
+    $inputs[] = ['label' => _lang('posts.text'), 'content' => "<textarea name='text' class='areamedium' rows='5' cols='33'>" . $query['text'] . '</textarea>', 'top' => true];
     $inputs[] = ['label' => '', 'content' => PostForm::renderControls('postform', 'text', $bbcode)];
     $inputs[] = Form::getSubmitRow([
         'text' => _lang('global.save'),
         'append' => ' ' . PostForm::renderPreviewButton('postform', 'text')
-            . (($query['type'] != Post::PRIVATE_MSG || $query['xhome'] != -1) ? "<br><br><label><input type='checkbox' name='delete' value='1'> " . _lang('mod.editpost.delete') . "</label>" : ''),
+            . (($query['type'] != Post::PRIVATE_MSG || $query['xhome'] != -1) ? "<br><br><label><input type='checkbox' name='delete' value='1'> " . _lang('mod.editpost.delete') . '</label>' : ''),
     ]);
 
     $output .= Form::render(
@@ -233,5 +233,5 @@ if ($form) {
         $inputs
     );
 
-    $output .= GenericTemplates::jsLimitLength((($query['type'] != Post::SHOUTBOX_ENTRY) ? 16384 : 255), "postform", "text");
+    $output .= GenericTemplates::jsLimitLength((($query['type'] != Post::SHOUTBOX_ENTRY) ? 16384 : 255), 'postform', 'text');
 }

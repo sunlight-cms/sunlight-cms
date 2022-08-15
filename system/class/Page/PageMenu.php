@@ -102,11 +102,11 @@ abstract class PageMenu
                 if ($page['type'] == Page::LINK && $page['link_new_window']) {
                     $attrs .= ' target="_blank"';
                 }
-                $link = "<a href=\"" . _e($url) . "\"{$attrs}>{$page['title']}</a>";
+                $link = '<a href="' . _e($url) . "\"{$attrs}>{$page['title']}</a>";
             }
 
             // vykresleni polozky
-            $out .= "    <li class=\"" . _e(implode(' ', $classes)) . "\">{$link}";
+            $out .= '    <li class="' . _e(implode(' ', $classes)) . "\">{$link}";
 
             $currentLevel = $pageLevel;
         }

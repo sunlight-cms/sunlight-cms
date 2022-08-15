@@ -24,7 +24,7 @@ $_index->title = $_page['title'];
 
 // obsah
 Extend::call('page.forum.content.before', $extend_args);
-if ($_page['content'] != "") {
+if ($_page['content'] != '') {
     $output .= Hcm::parse($_page['content']);
 }
 Extend::call('page.forum.content.after', $extend_args);

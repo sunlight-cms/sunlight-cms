@@ -13,7 +13,7 @@ defined('SL_ROOT') or exit;
 
 /* ---  priprava  --- */
 
-$message = "";
+$message = '';
 
 // vypis stranek
 $plugin_types = Page::getPluginTypes();
@@ -61,7 +61,7 @@ if (
     // horni panel
 
     // seznam typu stranek
-    $create_list = "";
+    $create_list = '';
     if (User::hasPrivilege('adminpages')) {
         foreach ($type_array as $type => $name) {
             if ($type != Page::PLUGIN && User::hasPrivilege('admin' . $name)) {

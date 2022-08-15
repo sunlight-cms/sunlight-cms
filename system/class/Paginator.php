@@ -46,7 +46,7 @@ class Paginator
             $param = 'page';
         }
         if (is_string($table)) {
-            $count = DB::result(DB::query("SELECT COUNT(*) FROM " . DB::escIdt($table) . (isset($alias) ? " AS {$alias}" : '') . " WHERE " . $conditions));
+            $count = DB::result(DB::query('SELECT COUNT(*) FROM ' . DB::escIdt($table) . (isset($alias) ? " AS {$alias}" : '') . ' WHERE ' . $conditions));
         } else {
             $count = $table;
         }
@@ -100,7 +100,7 @@ class Paginator
         if ($paging === null) {
             if ($pages > 1) {
 
-                if (strpos($url, "?") === false) {
+                if (strpos($url, '?') === false) {
                     $url .= '?';
                 } else {
                     $url .= '&';
@@ -112,12 +112,12 @@ class Paginator
 
                 // prvni
                 if ($beginpage > 1) {
-                    $paging .= "<a href='" . $url . $param . "=1" . $linksuffix . "' title='" . _lang('global.first') . "'>1</a><span class='paging-first-addon'> ...</span>\n";
+                    $paging .= "<a href='" . $url . $param . '=1' . $linksuffix . "' title='" . _lang('global.first') . "'>1</a><span class='paging-first-addon'> ...</span>\n";
                 }
 
                 // predchozi
                 if ($s + 1 != 1) {
-                    $paging .= "<a class='paging-prev' href='" . $url . $param . "=" . ($s) . $linksuffix . "'>&laquo; " . _lang('global.previous') . "</a>\n";
+                    $paging .= "<a class='paging-prev' href='" . $url . $param . '=' . ($s) . $linksuffix . "'>&laquo; " . _lang('global.previous') . "</a>\n";
                 }
 
                 // strany
@@ -126,21 +126,21 @@ class Paginator
                     if ($x == $s + 1) {
                         $class = " class='act'";
                     } else {
-                        $class = "";
+                        $class = '';
                     }
-                    $paging .= "<a href='" . $url . $param . "=" . $x . $linksuffix . "'" . $class . ">" . $x . "</a>\n";
+                    $paging .= "<a href='" . $url . $param . '=' . $x . $linksuffix . "'" . $class . '>' . $x . "</a>\n";
                     if ($x != $endpage) {
-                        $paging .= " ";
+                        $paging .= ' ';
                     }
                 }
                 $paging .= "</span>\n";
 
                 // dalsi
                 if ($s + 1 != $pages) {
-                    $paging .= "<a class='paging-next' href='" . $url . $param . "=" . ($s + 2) . $linksuffix . "'>" . _lang('global.next') . " &raquo;</a>\n";
+                    $paging .= "<a class='paging-next' href='" . $url . $param . '=' . ($s + 2) . $linksuffix . "'>" . _lang('global.next') . " &raquo;</a>\n";
                 }
                 if ($endpage < $pages) {
-                    $paging .= "<span class='paging-last-addon'> ... </span><a class='paging-last' href='" . $url . $param . "=" . $pages . $linksuffix . "' title='" . _lang('global.last') . "'>" . $pages . "</a>\n";
+                    $paging .= "<span class='paging-last-addon'> ... </span><a class='paging-last' href='" . $url . $param . '=' . $pages . $linksuffix . "' title='" . _lang('global.last') . "'>" . $pages . "</a>\n";
                 }
 
                 $paging .= "\n</div>\n\n";
@@ -171,9 +171,9 @@ class Paginator
      * @param string $table nazev tabulky v databazi
      * @param string $conditions kod SQL dotazu za WHERE v SQL dotazu pro zjistovani poctu polozek
      */
-    static function getItemPage(int $limit, string $table, string $conditions = "1"): int
+    static function getItemPage(int $limit, string $table, string $conditions = '1'): int
     {
-        $count = DB::result(DB::query("SELECT COUNT(*) FROM " .  DB::escIdt($table) . " WHERE " . $conditions));
+        $count = DB::result(DB::query('SELECT COUNT(*) FROM ' .  DB::escIdt($table) . ' WHERE ' . $conditions));
 
         return (int) floor($count / $limit + 1);
     }

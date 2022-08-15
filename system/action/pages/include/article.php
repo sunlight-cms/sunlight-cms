@@ -56,7 +56,7 @@ if (!$continue) {
 
 //  navigace
 if ($_article['visible']) {
-    $output .= "<div class='article-navigation'><span>" . _lang('article.category') . ": </span>";
+    $output .= "<div class='article-navigation'><span>" . _lang('article.category') . ': </span>';
     for ($i = 1; $i <= 3; ++$i) {
         if ($_article["cat{$i}_id"] === null) {
             continue;
@@ -64,7 +64,7 @@ if ($_article['visible']) {
         if ($i > 1) {
             $output .= ', ';
         }
-        $output .= "<a href='" . _e(Router::page($_article["cat{$i}_id"], $_article["cat{$i}_slug"])) . "'>" . $_article["cat{$i}_title"] . "</a>";
+        $output .= "<a href='" . _e(Router::page($_article["cat{$i}_id"], $_article["cat{$i}_slug"])) . "'>" . $_article["cat{$i}_title"] . '</a>';
     }
     $output .= "</div>\n";
 }
@@ -93,7 +93,7 @@ $output .= "<div class='cleaner'></div>\n";
 $infos = [];
 
 if (User::hasPrivilege('adminart')) {
-    $infos['idlink'] = [_lang('global.id'), "<a href='" . _e(Router::admin('content-articles-edit', ['query' => ['id' => $_article['id'], 'returnid' => 'load', 'returnpage' => 1]])) . "'>" . $_article['id'] . " <img src='" . Template::image("icons/edit.png") . "' alt='edit' class='icon'></a>"];
+    $infos['idlink'] = [_lang('global.id'), "<a href='" . _e(Router::admin('content-articles-edit', ['query' => ['id' => $_article['id'], 'returnid' => 'load', 'returnpage' => 1]])) . "'>" . $_article['id'] . " <img src='" . Template::image('icons/edit.png') . "' alt='edit' class='icon'></a>"];
 }
 
 if ($_article['showinfo']) {
@@ -106,12 +106,12 @@ if ($_article['rateon'] && Settings::get('ratemode') != 0) {
     if ($_article['ratenum'] != 0) {
         if (Settings::get('ratemode') == 1) {
             // procenta
-            $rate = (round($_article['ratesum'] / $_article['ratenum'])) . "%";
+            $rate = (round($_article['ratesum'] / $_article['ratenum'])) . '%';
         } else {
             // znamka
             $rate = round(-0.04 * ($_article['ratesum'] / $_article['ratenum']) + 5);
         }
-        $rate .= " (" . _lang('article.rate.num') . " " . $_article['ratenum'] . "x)";
+        $rate .= ' (' . _lang('article.rate.num') . ' ' . $_article['ratenum'] . 'x)';
     } else {
         $rate = _lang('article.rate.nodata');
     }
@@ -122,8 +122,8 @@ if ($_article['rateon'] && Settings::get('ratemode') != 0) {
 // formular hodnoceni
 $rateform = null;
 if ($_article['rateon'] && Settings::get('ratemode') != 0 && User::hasPrivilege('artrate') && IpLog::check(IpLog::ARTICLE_RATED, $_article['id'])) {
-    $rateform = "
-<strong>" . _lang('article.rate.title') . ":</strong>
+    $rateform = '
+<strong>' . _lang('article.rate.title') . ":</strong>
 <form action='" . _e(Router::path('system/script/artrate.php')) . "' method='post'>
 <input type='hidden' name='id' value='" . $_article['id'] . "'>
 ";
@@ -133,11 +133,11 @@ if ($_article['rateon'] && Settings::get('ratemode') != 0 && User::hasPrivilege(
         $rateform .= "<select name='r'>\n";
         for ($x = 0; $x <= 100; $x += 10) {
             if ($x == 50) {
-                $selected = " selected";
+                $selected = ' selected';
             } else {
-                $selected = "";
+                $selected = '';
             }
-            $rateform .= "<option value='" . $x . "'" . $selected . ">" . $x . "%</option>\n";
+            $rateform .= "<option value='" . $x . "'" . $selected . '>' . $x . "%</option>\n";
         }
         $rateform .= "</select> \n<input type='submit' value='" . _lang('article.rate.submit') . "'>";
     } else {
@@ -146,17 +146,17 @@ if ($_article['rateon'] && Settings::get('ratemode') != 0 && User::hasPrivilege(
         for ($i = 0; $i < 2; $i++) {
             $rateform .= "<tr class='r" . $i . "'>\n";
             if ($i == 0) {
-                $rateform .= "<td rowspan='2'><img src='" . Template::image("icons/rate-good.png") . "' alt='good' class='icon'></td>\n";
+                $rateform .= "<td rowspan='2'><img src='" . Template::image('icons/rate-good.png') . "' alt='good' class='icon'></td>\n";
             }
             for ($x = 1; $x < 6; $x++) {
                 if ($i == 0) {
                     $rateform .= "<td><input type='radio' name='r' value='" . ((5 - $x) * 25) . "'></td>\n";
                 } else {
-                    $rateform .= "<td>" . $x . "</td>\n";
+                    $rateform .= '<td>' . $x . "</td>\n";
                 }
             }
             if ($i == 0) {
-                $rateform .= "<td rowspan='2'><img src='" . Template::image("icons/rate-bad.png") . "' alt='bad' class='icon'></td>\n";
+                $rateform .= "<td rowspan='2'><img src='" . Template::image('icons/rate-bad.png') . "' alt='bad' class='icon'></td>\n";
             }
             $rateform .= "</tr>\n";
         }

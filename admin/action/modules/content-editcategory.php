@@ -12,22 +12,22 @@ require SL_ROOT . 'admin/action/modules/include/page-editscript-init.php';
 if ($continue) {
 
     // vyber zpusobu razeni clanku
-    $artorder_select = "";
+    $artorder_select = '';
     for ($x = 1; $x <= 4; $x++) {
         if ($x == $query['var1']) {
-            $selected = " selected";
+            $selected = ' selected';
         } else {
-            $selected = "";
+            $selected = '';
         }
-        $artorder_select .= "<option value='" . $x . "'" . $selected . ">" . _lang('admin.content.form.artorder.' . $x) . "</option>";
+        $artorder_select .= "<option value='" . $x . "'" . $selected . '>' . _lang('admin.content.form.artorder.' . $x) . '</option>';
     }
 
     $custom_settings = "
-    <tr><td colspan='2'><label><input type='checkbox' name='var3' value='1'" . Form::activateCheckbox($query['var3']) . "> " . _lang('admin.content.form.showinfo') . "</label></td></tr>
-    <tr><td colspan='2'><label><input type='checkbox' name='var4' value='1'" . Form::activateCheckbox($query['var4']) . "> " . _lang('admin.content.form.showpics') . "</label></td></tr>
-    <tr><td><select name='var1' class='selectmax'>" . $artorder_select . "</select></td><td>"._lang('admin.content.form.artorder') . "</td></tr>
-    <tr><td><input type='number' min='1' name='var2' value='" . $query['var2'] . "' class='inputmax'></span></td><td>" . _lang('admin.content.form.artsperpage') . "</td></tr>
-  ";
+    <tr><td colspan='2'><label><input type='checkbox' name='var3' value='1'" . Form::activateCheckbox($query['var3']) . '> ' . _lang('admin.content.form.showinfo') . "</label></td></tr>
+    <tr><td colspan='2'><label><input type='checkbox' name='var4' value='1'" . Form::activateCheckbox($query['var4']) . '> ' . _lang('admin.content.form.showpics') . "</label></td></tr>
+    <tr><td><select name='var1' class='selectmax'>" . $artorder_select . '</select></td><td>'._lang('admin.content.form.artorder') . "</td></tr>
+    <tr><td><input type='number' min='1' name='var2' value='" . $query['var2'] . "' class='inputmax'></span></td><td>" . _lang('admin.content.form.artsperpage') . '</td></tr>
+  ';
 
     $custom_save_array = [
         'var1' => ['type' => 'int', 'nullable' => false],

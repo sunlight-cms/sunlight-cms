@@ -22,13 +22,13 @@ $admin_index_cfg = Settings::getMultiple([
 $version_data = VersionChecker::check();
 
 $mysqlver = DB::$mysqli->server_info;
-if ($mysqlver != null && mb_substr_count($mysqlver, "-") != 0) {
-    $mysqlver = mb_substr($mysqlver, 0, strpos($mysqlver, "-"));
+if ($mysqlver != null && mb_substr_count($mysqlver, '-') != 0) {
+    $mysqlver = mb_substr($mysqlver, 0, strpos($mysqlver, '-'));
 }
 
 $software = getenv('SERVER_SOFTWARE');
 if (mb_strlen($software) > 16) {
-    $software = substr($software, 0, 13) . "...";
+    $software = substr($software, 0, 13) . '...';
 }
 
 /* ---  vystup  --- */
@@ -56,22 +56,22 @@ $output .= "
 
 <tr class='valign-top'>
 
-<td>" . (($custom !== '' && $admin_index_cfg['admin_index_custom_pos'] == 0) ? $custom : "
-  <h1>" . _lang('admin.menu.index') . "</h1>
-  <p>" . _lang('admin.index.p') . "</p>
-  " . $logout_warning . "
-  ") . "
+<td>" . (($custom !== '' && $admin_index_cfg['admin_index_custom_pos'] == 0) ? $custom : '
+  <h1>' . _lang('admin.menu.index') . '</h1>
+  <p>' . _lang('admin.index.p') . '</p>
+  ' . $logout_warning . '
+  ') . '
 </td>
 
 <td>
-  <h2>" . _lang('admin.index.box') . "</h2>
+  <h2>' . _lang('admin.index.box') . '</h2>
   <table>
     <tr>
-      <th>" . _lang('global.version') . ":</th>
-      <td>" . Core::VERSION . " <small>(" . Core::DIST . ")</small></td>
+      <th>' . _lang('global.version') . ':</th>
+      <td>' . Core::VERSION . ' <small>(' . Core::DIST . ')</small></td>
     </tr>
 
-    " . _buffer(function () use ($version_data) { ?>
+    ' . _buffer(function () use ($version_data) { ?>
         <tr>
             <th><?= _lang('admin.index.box.latest') ?></th>
             <td>
@@ -84,29 +84,29 @@ $output .= "
                 <?php endif ?>
             </td>
         </tr>
-    <?php }) . "
+    <?php }) . '
 
     <tr>
       <th>PHP:</th>
       <td>
-        " . (User::isSuperAdmin() ? '<a href="' . _e(Router::path('admin/script/phpinfo.php')) . '" target="_blank">' : '') . "
-        " . PHP_VERSION . "
-        " . (User::isSuperAdmin() ? '</a>' :'') . "
+        ' . (User::isSuperAdmin() ? '<a href="' . _e(Router::path('admin/script/phpinfo.php')) . '" target="_blank">' : '') . '
+        ' . PHP_VERSION . '
+        ' . (User::isSuperAdmin() ? '</a>' :'') . '
     </td>
     </tr>
     <tr>
       <th>MySQL:</th>
-      <td>" . $mysqlver . "</td>
+      <td>' . $mysqlver . '</td>
     </tr>
   </table>
 </td>
 
 </tr>
 
-" . (($custom !== '' && $admin_index_cfg['admin_index_custom_pos'] == 1) ? '<tr><td colspan="2">' . $custom . '</td></tr>' : '') . "
+' . (($custom !== '' && $admin_index_cfg['admin_index_custom_pos'] == 1) ? '<tr><td colspan="2">' . $custom . '</td></tr>' : '') . '
 
 </table>
-";
+';
 
 // extend
 $output .= Extend::buffer('admin.index.after_table');
@@ -150,10 +150,10 @@ if (User::$group['id'] == User::ADMIN_GROUP_ID) {
 
 // kontrola funcknosti htaccess
 if (!Core::$debug) {
-    $output .= "<script>
+    $output .= '<script>
 Sunlight.admin.indexCheckHtaccess(
-    " . json_encode(Core::getBaseUrl()->getPath() . '/vendor/autoload.php?_why=this_is_a_test_if_htaccess_works') . ",
-    " . json_encode(_lang('admin.index.htaccess_check_failure', ['%link%' => 'https://sunlight-cms.cz/resource/no-htaccess'])) . ",
+    ' . json_encode(Core::getBaseUrl()->getPath() . '/vendor/autoload.php?_why=this_is_a_test_if_htaccess_works') . ',
+    ' . json_encode(_lang('admin.index.htaccess_check_failure', ['%link%' => 'https://sunlight-cms.cz/resource/no-htaccess'])) . ",
 );
 </script>\n";
 }

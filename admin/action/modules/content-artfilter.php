@@ -17,7 +17,7 @@ defined('SL_ROOT') or exit;
 
 /* ---  priprava  --- */
 
-$message = "";
+$message = '';
 $infopage = false;
 
 $boolSelect = function ($name, $type2 = false)
@@ -55,10 +55,10 @@ if (isset($_POST['category'])) {
     $new_comments = (int) Request::post('new_comments');
     $new_rateon = (int) Request::post('new_rateon');
     $new_showinfo = (int) Request::post('new_showinfo');
-    $new_delete = Form::loadCheckbox("new_delete");
-    $new_resetrate = Form::loadCheckbox("new_resetrate");
-    $new_delcomments = Form::loadCheckbox("new_delcomments");
-    $new_resetread = Form::loadCheckbox("new_resetread");
+    $new_delete = Form::loadCheckbox('new_delete');
+    $new_resetrate = Form::loadCheckbox('new_resetrate');
+    $new_delcomments = Form::loadCheckbox('new_delcomments');
+    $new_resetread = Form::loadCheckbox('new_resetread');
 
     // kontrola promennych
     if ($new_category != -1 && DB::count('page', 'id=' . DB::val($new_category) . ' AND type=' . Page::CATEGORY) === 0) {
@@ -69,43 +69,43 @@ if (isset($_POST['category'])) {
     }
 
     // sestaveni casti sql dotazu - 'where'
-    $params = ["category", "author", "time", "public", "visible", "confirmed", "comments", "rateon", "showinfo"];
-    $cond = "";
+    $params = ['category', 'author', 'time', 'public', 'visible', 'confirmed', 'comments', 'rateon', 'showinfo'];
+    $cond = '';
 
     // cyklus
     foreach ($params as $param) {
 
         $skip = false;
-        if ($param == "category" || $param == "author" || $param == "time") {
+        if ($param == 'category' || $param == 'author' || $param == 'time') {
 
             switch ($param) {
 
-                case "category":
-                    if ($$param != "-1") {
+                case 'category':
+                    if ($$param != '-1') {
                         $cond .= Article::createCategoryFilter([$$param], 'art');
                     } else {
                         $skip = true;
                     }
                     break;
 
-                case "author":
-                    if ($$param != "-1") {
-                        $cond .= 'art.' . $param . "=" . $$param;
+                case 'author':
+                    if ($$param != '-1') {
+                        $cond .= 'art.' . $param . '=' . $$param;
                     } else {
                         $skip = true;
                     }
                     break;
 
-                case "time":
+                case 'time':
                     switch ($ba) {
                         case 1:
-                            $operator = ">";
+                            $operator = '>';
                             break;
                         case 2:
-                            $operator = "=";
+                            $operator = '=';
                             break;
                         case 3:
-                            $operator = "<";
+                            $operator = '<';
                             break;
                         default:
                             $skip = true;
@@ -121,11 +121,11 @@ if (isset($_POST['category'])) {
         } else {
             // boolean
             switch ($$param) {
-                case "1":
-                    $cond .= 'art.' . $param . "=1";
+                case '1':
+                    $cond .= 'art.' . $param . '=1';
                     break;
-                case "0":
-                    $cond .= 'art.' . $param . "=0";
+                case '0':
+                    $cond .= 'art.' . $param . '=0';
                     break;
                 default:
                     $skip = true;
@@ -134,28 +134,28 @@ if (isset($_POST['category'])) {
         }
 
         if (!$skip) {
-            $cond .= " AND ";
+            $cond .= ' AND ';
         }
 
     }
 
     // vycisteni podminky
-    if ($cond == "") {
+    if ($cond == '') {
         $cond = 1;
     } else {
         $cond = mb_substr($cond, 0, -5);
     }
 
     // vyhledani clanku
-    $query = DB::query("SELECT art.id,art.title,art.slug,cat.slug AS cat_slug FROM " . DB::table('article') . " AS art JOIN " . DB::table('page') . " AS cat ON(cat.id=art.home1) WHERE " . $cond);
+    $query = DB::query('SELECT art.id,art.title,art.slug,cat.slug AS cat_slug FROM ' . DB::table('article') . ' AS art JOIN ' . DB::table('page') . ' AS cat ON(cat.id=art.home1) WHERE ' . $cond);
     $found = DB::size($query);
     if ($found != 0) {
-        if (!Form::loadCheckbox("_process")) {
+        if (!Form::loadCheckbox('_process')) {
             $infopage = true;
         } else {
-            $boolparams = ["public", "visible", "comments", "rateon", "showinfo"];
+            $boolparams = ['public', 'visible', 'comments', 'rateon', 'showinfo'];
             if (User::hasPrivilege('adminconfirm')) {
-                $boolparams[] = "confirmed";
+                $boolparams[] = 'confirmed';
             }
             while ($item = DB::row($query)) {
 
@@ -201,7 +201,7 @@ if (isset($_POST['category'])) {
                 // konfigurace
                 $updatedata = [];
                 foreach ($boolparams as $param) {
-                    $paramvar = "new_" . $param;
+                    $paramvar = 'new_' . $param;
                     $paramval = $$paramvar;
                     if ($paramval == 0 || $paramval == 1) {
                         $updatedata[$param] = $paramval;
@@ -225,46 +225,46 @@ $output .= $message . "
 ";
 
 if (!$infopage) {
-    $output .= "
-<h2>" . _lang('admin.content.artfilter.f1.title') . "</h2>
-<p>" . _lang('admin.content.artfilter.f1.p') . "</p>
+    $output .= '
+<h2>' . _lang('admin.content.artfilter.f1.title') . '</h2>
+<p>' . _lang('admin.content.artfilter.f1.p') . '</p>
 <table>
 
 <tr>
-<th>" . _lang('article.category') . "</th>
-<td>" . Admin::pageSelect("category", ['type' => Page::CATEGORY, 'empty_item' => _lang('global.any2')]) . "</td>
+<th>' . _lang('article.category') . '</th>
+<td>' . Admin::pageSelect('category', ['type' => Page::CATEGORY, 'empty_item' => _lang('global.any2')]) . '</td>
 </tr>
 
 <tr>
-<th>" . _lang('article.author') . "</th>
-<td>" . Admin::userSelect("author", -1, "adminart=1", "selectmedium", _lang('global.any')) . "</td>
+<th>' . _lang('article.author') . '</th>
+<td>' . Admin::userSelect('author', -1, 'adminart=1', 'selectmedium', _lang('global.any')) . '</td>
 </tr>
 
 <tr>
-<th>" . _lang('article.posted') . "</th>
+<th>' . _lang('article.posted') . "</th>
 <td>
 
 <select name='ba'>
 <option value='0'>" . _lang('admin.content.artfilter.f1.time0') . "</option>
 <option value='1'>" . _lang('admin.content.artfilter.f1.time1') . "</option>
 <option value='2'>" . _lang('admin.content.artfilter.f1.time2') . "</option>
-<option value='3'>" . _lang('admin.content.artfilter.f1.time3') . "</option>
+<option value='3'>" . _lang('admin.content.artfilter.f1.time3') . '</option>
 </select>
 
-" . Form::editTime('time', -1) . "
+' . Form::editTime('time', -1) . "
 
 </td>
 </tr>
 
 <tr class='valign-top'>
-<th>" . _lang('admin.content.form.settings') . "</th>
+<th>" . _lang('admin.content.form.settings') . '</th>
 <td>
-" . $boolSelect("public") . _lang('admin.content.form.public') . "<br>
-" . $boolSelect("visible") . _lang('admin.content.form.visible') . "<br>
-" . $boolSelect("confirmed") . _lang('admin.content.form.confirmed') . "<br>
-" . $boolSelect("comments") . _lang('admin.content.form.comments') . "<br>
-" . $boolSelect("rateon") . _lang('admin.content.form.artrate') . "<br>
-" . $boolSelect("showinfo") . _lang('admin.content.form.showinfo') . "
+' . $boolSelect('public') . _lang('admin.content.form.public') . '<br>
+' . $boolSelect('visible') . _lang('admin.content.form.visible') . '<br>
+' . $boolSelect('confirmed') . _lang('admin.content.form.confirmed') . '<br>
+' . $boolSelect('comments') . _lang('admin.content.form.comments') . '<br>
+' . $boolSelect('rateon') . _lang('admin.content.form.artrate') . '<br>
+' . $boolSelect('showinfo') . _lang('admin.content.form.showinfo') . "
 </td>
 </tr>
 
@@ -272,29 +272,29 @@ if (!$infopage) {
 
 <br><div class='hr'><hr></div><br>
 
-<h2>" . _lang('admin.content.artfilter.f2.title') . "</h2>
-<p>" . _lang('admin.content.artfilter.f2.p') . "</p>
+<h2>" . _lang('admin.content.artfilter.f2.title') . '</h2>
+<p>' . _lang('admin.content.artfilter.f2.p') . '</p>
 <table>
 
 <tr>
-<th>" . _lang('article.category') . "</th>
-<td>" . Admin::pageSelect("new_category", ['type' => Page::CATEGORY, 'empty_item' => _lang('global.nochange')]) . "</td>
+<th>' . _lang('article.category') . '</th>
+<td>' . Admin::pageSelect('new_category', ['type' => Page::CATEGORY, 'empty_item' => _lang('global.nochange')]) . '</td>
 </tr>
 
 <tr>
-<th>" . _lang('article.author') . "</th>
-<td>" . Admin::userSelect("new_author", -1, "adminart=1", "selectmedium", _lang('global.nochange')) . "</td>
+<th>' . _lang('article.author') . '</th>
+<td>' . Admin::userSelect('new_author', -1, 'adminart=1', 'selectmedium', _lang('global.nochange')) . "</td>
 </tr>
 
 <tr class='valign-top'>
-<th>" . _lang('admin.content.form.settings') . "</th>
+<th>" . _lang('admin.content.form.settings') . '</th>
 <td>
-" . $boolSelect("new_public", true) . _lang('admin.content.form.public') . "<br>
-" . $boolSelect("new_visible", true) . _lang('admin.content.form.visible') . "<br>
-" . (User::hasPrivilege('adminconfirm') ? $boolSelect("new_confirmed", true) . _lang('admin.content.form.confirmed') . "<br>" : '') . "
-" . $boolSelect("new_comments", true) . _lang('admin.content.form.comments') . "<br>
-" . $boolSelect("new_rateon", true) . _lang('admin.content.form.artrate') . "<br>
-" . $boolSelect("new_showinfo", true) . _lang('admin.content.form.showinfo') . "
+' . $boolSelect('new_public', true) . _lang('admin.content.form.public') . '<br>
+' . $boolSelect('new_visible', true) . _lang('admin.content.form.visible') . '<br>
+' . (User::hasPrivilege('adminconfirm') ? $boolSelect('new_confirmed', true) . _lang('admin.content.form.confirmed') . '<br>' : '') . '
+' . $boolSelect('new_comments', true) . _lang('admin.content.form.comments') . '<br>
+' . $boolSelect('new_rateon', true) . _lang('admin.content.form.artrate') . '<br>
+' . $boolSelect('new_showinfo', true) . _lang('admin.content.form.showinfo') . "
 </td>
 </tr>
 
@@ -317,13 +317,13 @@ if (!$infopage) {
 } else {
     $output .= Form::renderHiddenPostInputs(null, null, ['_process']) . "
 <input type='hidden' name='_process' value='1'>
-" . Message::ok(_lang('admin.content.artfilter.f1.infotext', ["%found%" => $found])) . "
-<ul>";
+" . Message::ok(_lang('admin.content.artfilter.f1.infotext', ['%found%' => $found])) . '
+<ul>';
 
     $counter = 0;
     while ($r = DB::row($query)) {
         if ($counter >= 30) {
-            $output .= "<li><em>... (+" . ($found - $counter) . ")</em></li>\n";
+            $output .= '<li><em>... (+' . ($found - $counter) . ")</em></li>\n";
             break;
         }
         $output .= "<li><a href='" . _e(Router::article($r['id'], $r['slug'], $r['cat_slug'])) . "' target='_blank'>" . $r['title'] . "</a></li>\n";
@@ -331,8 +331,8 @@ if (!$infopage) {
     }
 
     $output .="</ul>
-<input type='submit' value='" . _lang('global.do2') . "'> <a href='" . _e(Router::admin('content-artfilter')) . "'>" . _lang('global.cancel') . "</a>
-";
+<input type='submit' value='" . _lang('global.do2') . "'> <a href='" . _e(Router::admin('content-artfilter')) . "'>" . _lang('global.cancel') . '</a>
+';
 }
 
-$output .= Xsrf::getInput() . "</form>";
+$output .= Xsrf::getInput() . '</form>';

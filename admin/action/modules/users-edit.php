@@ -18,14 +18,14 @@ defined('SL_ROOT') or exit;
 
 /* ---  priprava promennych  --- */
 
-$message = "";
+$message = '';
 $errno = 0;
 
 // id
 $continue = false;
 if (isset($_GET['id'])) {
     $id = Request::get('id');
-    $query = DB::queryRow("SELECT u.*,g.level group_level FROM " . DB::table('user') . " u JOIN " . DB::table('user_group') . " g ON(u.group_id=g.id) WHERE u.username=" . DB::val($id));
+    $query = DB::queryRow('SELECT u.*,g.level group_level FROM ' . DB::table('user') . ' u JOIN ' . DB::table('user_group') . ' g ON(u.group_id=g.id) WHERE u.username=' . DB::val($id));
     if ($query !== false) {
 
         // test pristupu
@@ -64,7 +64,7 @@ if (isset($_GET['id'])) {
 if ($continue) {
     
     // vyber skupiny
-    $group_select = Admin::userSelect('group_id', (isset($_POST['group_id']) ? (int) Request::post('group_id') : $query['group_id']), "id!=" . User::GUEST_GROUP_ID . " AND level<" . User::getLevel(), null, null, true);
+    $group_select = Admin::userSelect('group_id', (isset($_POST['group_id']) ? (int) Request::post('group_id') : $query['group_id']), 'id!=' . User::GUEST_GROUP_ID . ' AND level<' . User::getLevel(), null, null, true);
 
     /* ---  ulozeni  --- */
     if (isset($_POST['username'])) {
@@ -121,7 +121,7 @@ if ($continue) {
         $public = Form::loadCheckbox('public');
 
         // avatar
-        if (isset($query['avatar']) && Form::loadCheckbox("removeavatar")) {
+        if (isset($query['avatar']) && Form::loadCheckbox('removeavatar')) {
             User::removeAvatar($query['avatar']);
             $avatar = null;
         } else {
@@ -131,10 +131,10 @@ if ($continue) {
         // password
         $passwordchange = false;
         $password = Request::post('password');
-        if ($id == null && $password == "") {
+        if ($id == null && $password == '') {
             $errors[] = _lang('admin.users.edit.passwordneeded');
         }
-        if ($password != "") {
+        if ($password != '') {
             $passwordchange = true;
             $password = Password::create($password)->build();
         }
@@ -143,12 +143,12 @@ if ($continue) {
         $note = _e(trim(StringManipulator::cut(Request::post('note'), 1024)));
 
         // blocked
-        $blocked = Form::loadCheckbox("blocked");
+        $blocked = Form::loadCheckbox('blocked');
 
         // group
         if (isset($_POST['group_id'])) {
             $group = (int) Request::post('group_id');
-            $group_test = DB::queryRow("SELECT level FROM " . DB::table('user_group') . " WHERE id=" . $group . " AND id!=" . User::GUEST_GROUP_ID . " AND level<" . User::getLevel());
+            $group_test = DB::queryRow('SELECT level FROM ' . DB::table('user_group') . ' WHERE id=' . $group . ' AND id!=' . User::GUEST_GROUP_ID . ' AND level<' . User::getLevel());
             if ($group_test !== false) {
                 if ($group_test['level'] > User::getLevel()) {
                     $errors[] = _lang('global.badinput');
@@ -226,7 +226,7 @@ if ($continue) {
     /* ---  vystup  --- */
 
     // zpravy
-    $messages_code = "";
+    $messages_code = '';
 
     if (isset($_GET['r'])) {
         switch (Request::get('r')) {
@@ -239,13 +239,13 @@ if ($continue) {
         }
     }
 
-    if ($message != "") {
+    if ($message != '') {
         $messages_code .= $message;
     }
 
     $output .= "
-<p class='bborder'>" . _lang('admin.users.edit.p') . "</p>
-" . $messages_code . "
+<p class='bborder'>" . _lang('admin.users.edit.p') . '</p>
+' . $messages_code . "
 <form autocomplete='off' action='" . _e(Router::admin('users-edit', (($id != null)) ? ['query' => ['id' => $id]] : null)) . "' method='post' name='userform'>
 <table class='formtable'>
 
@@ -261,71 +261,71 @@ if ($continue) {
 
 <tr>
 <th>" . _lang('global.email') . "</th>
-<td><input type='email' class='inputsmall'" . Form::restorePostValueAndName('email', $query['email']) . "></td>
+<td><input type='email' class='inputsmall'" . Form::restorePostValueAndName('email', $query['email']) . '></td>
 </tr>
 
 <tr>
-<th>" . _lang((($id == null) ? 'login.password' : 'mod.settings.password.new')) . "</th>
+<th>' . _lang((($id == null) ? 'login.password' : 'mod.settings.password.new')) . "</th>
 <td><input type='password' name='password' class='inputsmall' autocomplete='new-password'></td>
 </tr>
 
 <tr>
-<th>" . _lang('global.group') . "</th>
-<td>" . $group_select . "</td>
+<th>" . _lang('global.group') . '</th>
+<td>' . $group_select . '</td>
 </tr>
 
 <tr>
-<th>" . _lang('login.blocked') . "</th>
-<td><input type='checkbox' name='blocked' value='1'" . Form::activateCheckbox($query['blocked'] || isset($_POST['blocked'])) . "></td>
+<th>' . _lang('login.blocked') . "</th>
+<td><input type='checkbox' name='blocked' value='1'" . Form::activateCheckbox($query['blocked'] || isset($_POST['blocked'])) . '></td>
 </tr>
 
 <tr>
-<th>" . _lang('global.levelshift') . "</th>
-<td><input type='checkbox' name='levelshift' value='1'" . Form::activateCheckbox($query['levelshift'] || isset($_POST['levelshift'])) . Form::disableInputUnless(User::isSuperAdmin()) . "></td>
+<th>' . _lang('global.levelshift') . "</th>
+<td><input type='checkbox' name='levelshift' value='1'" . Form::activateCheckbox($query['levelshift'] || isset($_POST['levelshift'])) . Form::disableInputUnless(User::isSuperAdmin()) . '></td>
 </tr>
 
 <tr>
-<th>" . _lang('mod.settings.account.wysiwyg') . "</th>
-<td><input type='checkbox' name='wysiwyg' value='1'" . Form::activateCheckbox($query['wysiwyg'] || isset($_POST['wysiwyg'])) . "></td>
+<th>' . _lang('mod.settings.account.wysiwyg') . "</th>
+<td><input type='checkbox' name='wysiwyg' value='1'" . Form::activateCheckbox($query['wysiwyg'] || isset($_POST['wysiwyg'])) . '></td>
 </tr>
 
 <tr>
-<th>" . _lang('mod.settings.account.massemail') . "</th>
-<td><input type='checkbox' name='massemail' value='1'" . Form::activateCheckbox($query['massemail'] || isset($_POST['massemail'])) . "></td>
+<th>' . _lang('mod.settings.account.massemail') . "</th>
+<td><input type='checkbox' name='massemail' value='1'" . Form::activateCheckbox($query['massemail'] || isset($_POST['massemail'])) . '></td>
 </tr>
 
 <tr>
-<th>" . _lang('mod.settings.account.public') . "</th>
-<td><input type='checkbox' name='public' value='1'" . Form::activateCheckbox($query['public'] || isset($_POST['public'])) . "></td>
+<th>' . _lang('mod.settings.account.public') . "</th>
+<td><input type='checkbox' name='public' value='1'" . Form::activateCheckbox($query['public'] || isset($_POST['public'])) . '></td>
 </tr>
 
 <tr>
-<th>" . _lang('global.avatar') . "</th>
+<th>' . _lang('global.avatar') . "</th>
 <td><label><input type='checkbox' name='removeavatar' value='1'> " . _lang('global.delete') . "</label></td>
 </tr>
 
 <tr class='valign-top'>
 <th>" . _lang('global.note') . "</th>
-<td><textarea class='areasmall' rows='9' cols='33' name='note'>" . Form::restorePostValue('note', $query['note'], false, false) . "</textarea></td>
+<td><textarea class='areasmall' rows='9' cols='33' name='note'>" . Form::restorePostValue('note', $query['note'], false, false) . '</textarea></td>
 </tr>
 
-" . Extend::buffer('admin.user.form', ['user' => $query]) . "
+' . Extend::buffer('admin.user.form', ['user' => $query]) . "
 
 <tr><td></td>
-<td><input type='submit' class='button bigger' value='" . _lang((isset($_GET['id']) ? 'global.save' : 'global.create')) . "' accesskey='s'>" . (($id != null) ? " <small>" . _lang('admin.content.form.thisid') . " " . $query['id'] . "</small>" : '') . "</td>
+<td><input type='submit' class='button bigger' value='" . _lang((isset($_GET['id']) ? 'global.save' : 'global.create')) . "' accesskey='s'>" . (($id != null) ? ' <small>' . _lang('admin.content.form.thisid') . ' ' . $query['id'] . '</small>' : '') . '</td>
 </tr>
 
 </table>
-" . Xsrf::getInput() . "</form>
-";
+' . Xsrf::getInput() . '</form>
+';
 
     // odkaz na profil a zjisteni ip
     if ($id != null) {
         $output .= "
   <p>
-    <a href='" . _e(Router::module('profile', ['query' => ['id' => $query['username']]])) . "' target='_blank'>" . _lang('mod.profile') . " &gt;</a>
+    <a href='" . _e(Router::module('profile', ['query' => ['id' => $query['username']]])) . "' target='_blank'>" . _lang('mod.profile') . ' &gt;</a>
   </p>
-  ";
+  ';
     }
 
 } else {

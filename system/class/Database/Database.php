@@ -535,7 +535,7 @@ abstract class Database
         }
 
         // sestavit dotaz
-        $sql = "INSERT INTO " . self::table($table) . " (";
+        $sql = 'INSERT INTO ' . self::table($table) . ' (';
 
         $columnCounter = 0;
         foreach ($columns as $column) {

@@ -111,9 +111,9 @@ class PostService
         /* ---  type  --- */
 
         // defaults
-        $desc = "DESC ";
+        $desc = 'DESC ';
         $ordercol = 'id';
-        $countcond = "type=" . $style . " AND xhome=-1 AND home=" . $home;
+        $countcond = 'type=' . $style . ' AND xhome=-1 AND home=' . $home;
         $locked_textid = '';
         $autolast = false;
         $postlink = false;
@@ -136,7 +136,7 @@ class PostService
             case self::RENDER_SECTION_COMMENTS:
                 $posttype = Post::SECTION_COMMENT;
                 $xhome = -1;
-                $subclass = "comments";
+                $subclass = 'comments';
                 $title = _lang('posts.comments');
                 $addlink = _lang('posts.addcomment');
                 $nopostsmessage = _lang('posts.nocomments');
@@ -149,7 +149,7 @@ class PostService
             case self::RENDER_ARTICLE_COMMENTS:
                 $posttype = Post::ARTICLE_COMMENT;
                 $xhome = -1;
-                $subclass = "comments";
+                $subclass = 'comments';
                 $title = _lang('posts.comments');
                 $addlink = _lang('posts.addcomment');
                 $nopostsmessage = _lang('posts.nocomments');
@@ -162,7 +162,7 @@ class PostService
             case self::RENDER_BOOK_POSTS:
                 $posttype = Post::BOOK_ENTRY;
                 $xhome = -1;
-                $subclass = "book";
+                $subclass = 'book';
                 $title = null;
                 $addlink = _lang('posts.addpost');
                 $nopostsmessage = _lang('posts.noposts');
@@ -175,7 +175,7 @@ class PostService
             case self::RENDER_FORUM_TOPIC_LIST:
                 $posttype = Post::FORUM_TOPIC;
                 $xhome = -1;
-                $subclass = "topic";
+                $subclass = 'topic';
                 $title = null;
                 $addlink = _lang('posts.addtopic');
                 $nopostsmessage = _lang('posts.notopics');
@@ -192,7 +192,7 @@ class PostService
             case self::RENDER_FORUM_TOPIC:
                 $posttype = Post::FORUM_TOPIC;
                 $xhome = $vars[3];
-                $subclass = "topic-replies";
+                $subclass = 'topic-replies';
                 $title = null;
                 $addlink = _lang('posts.addanswer');
                 $nopostsmessage = _lang('posts.noanswers');
@@ -200,8 +200,8 @@ class PostService
                 $canpost = $vars[1];
                 $locked = (bool) $vars[2];
                 $replynote = false;
-                $desc = "";
-                $countcond = "type=" . Post::FORUM_TOPIC . " AND xhome=" . $xhome . " AND home=" . $home;
+                $desc = '';
+                $countcond = 'type=' . Post::FORUM_TOPIC . ' AND xhome=' . $xhome . ' AND home=' . $home;
                 $autolast = isset($_GET['autolast']);
                 $postlink = true;
                 $replies_enabled = false;
@@ -210,7 +210,7 @@ class PostService
             case self::RENDER_PM_LIST:
                 $posttype = Post::PRIVATE_MSG;
                 $xhome = $home;
-                $subclass = "pm";
+                $subclass = 'pm';
                 $title = null;
                 $addlink = _lang('posts.addanswer');
                 $nopostsmessage = _lang('posts.noanswers');
@@ -219,8 +219,8 @@ class PostService
                 $locked = (bool) $vars[0];
                 $unread_count = (int) $vars[1];
                 $replynote = false;
-                $desc = "";
-                $countcond = "type=" . Post::PRIVATE_MSG . " AND home=" . $home . " AND xhome!=-1";
+                $desc = '';
+                $countcond = 'type=' . Post::PRIVATE_MSG . ' AND home=' . $home . ' AND xhome!=-1';
                 $locked_textid = '4';
                 $autolast = true;
                 $replies_enabled = false;
@@ -229,7 +229,7 @@ class PostService
             case self::RENDER_PLUGIN_POSTS:
                 $posttype = Post::PLUGIN;
                 $xhome = -1;
-                $subclass = "plugin";
+                $subclass = 'plugin';
                 $title = ($vars[5] ?? null);
                 $addlink = _lang('posts.addpost');
                 $nopostsmessage = _lang('posts.noposts');
@@ -238,7 +238,7 @@ class PostService
                 $locked = (bool) $vars[2];
                 $replynote = true;
                 $pluginflag = $vars[3];
-                $countcond = "type=" . Post::PLUGIN . " AND flag=" . $pluginflag;
+                $countcond = 'type=' . Post::PLUGIN . ' AND flag=' . $pluginflag;
                 if (!$vars[4]) {
                     $desc = '';
                 }
@@ -288,13 +288,13 @@ class PostService
   ";
 
         if ($title != null) {
-            $output .= "<h2>" . $title . "</h2>\n";
+            $output .= '<h2>' . $title . "</h2>\n";
         }
 
         $form_output = "<div class='posts-form' id='post-form'>\n";
 
         /* --- init pager --- */
-        $paging = Paginator::render($url, $postsperpage, DB::table('post'), $countcond, "#posts", $page_param, $autolast);
+        $paging = Paginator::render($url, $postsperpage, DB::table('post'), $countcond, '#posts', $page_param, $autolast);
 
         /* --- message --- */
         if (isset($_GET['r'])) {
@@ -306,7 +306,7 @@ class PostService
                     $form_output .= Message::ok(_lang((($style != 5) ? 'posts.added' : 'posts.topicadded')));
                     break;
                 case 2:
-                    $form_output .= Message::warning(_lang('misc.antispam_error', ["%antispamtimeout%" => Settings::get('antispamtimeout')]));
+                    $form_output .= Message::warning(_lang('misc.antispam_error', ['%antispamtimeout%' => Settings::get('antispamtimeout')]));
                     break;
                 case 3:
                     $form_output .= Message::warning(_lang('posts.guestnamedenied'));
@@ -325,7 +325,7 @@ class PostService
                 if (isset($_GET['replyto']) && Request::get('replyto') != -1) {
                     $reply = (int) Request::get('replyto');
                     if ($replynote) {
-                        $form_output .= "<p>" . _lang('posts.replynote') . " (<a href='" . $url_html . "#posts'>" . _lang('global.cancel') . "</a>).</p>";
+                        $form_output .= '<p>' . _lang('posts.replynote') . " (<a href='" . $url_html . "#posts'>" . _lang('global.cancel') . '</a>).</p>';
                     }
                 } else {
                     $reply = -1;
@@ -346,14 +346,14 @@ class PostService
                     'url' => $url,
                 ]);
             } else {
-                $form_output .= "<p>" . _lang('posts.loginrequired') . "</p>\n";
+                $form_output .= '<p>' . _lang('posts.loginrequired') . "</p>\n";
                 $form_output .= User::renderLoginForm();
             }
 
         } elseif (!$locked) {
-            $form_output .= "<a class='button' href='" . _e(UrlHelper::appendParams($url, "addpost&page=" . $paging['current'])) . "#post-form'><img class='icon' src='" . Template::image('icons/bubble.png') . "' alt='post'>" . $addlink . "</a>";
+            $form_output .= "<a class='button' href='" . _e(UrlHelper::appendParams($url, 'addpost&page=' . $paging['current'])) . "#post-form'><img class='icon' src='" . Template::image('icons/bubble.png') . "' alt='post'>" . $addlink . '</a>';
         } else {
-            $form_output .= "<img src='" . Template::image("icons/lock.png") . "' alt='stop' class='icon'><strong>" . _lang('posts.locked' . $locked_textid) . "</strong>";
+            $form_output .= "<img src='" . Template::image('icons/lock.png') . "' alt='stop' class='icon'><strong>" . _lang('posts.locked' . $locked_textid) . '</strong>';
         }
 
         $form_output .= "\n</div>\n";
@@ -371,17 +371,17 @@ class PostService
         // base query
         $userQuery = User::createQuery('p.author');
         if ($is_topic_list) {
-            $sql = "SELECT p.id,p.author,p.guest,p.subject,p.time,p.ip,p.locked,p.bumptime,p.sticky,(SELECT COUNT(*) FROM " . DB::table('post') . " WHERE type=" . Post::FORUM_TOPIC . " AND xhome=p.id) AS answer_count";
+            $sql = 'SELECT p.id,p.author,p.guest,p.subject,p.time,p.ip,p.locked,p.bumptime,p.sticky,(SELECT COUNT(*) FROM ' . DB::table('post') . ' WHERE type=' . Post::FORUM_TOPIC . ' AND xhome=p.id) AS answer_count';
         } else {
-            $sql = "SELECT p.id,p.xhome,p.subject,p.text,p.author,p.guest,p.time,p.ip" . Extend::buffer('posts.columns');
+            $sql = 'SELECT p.id,p.xhome,p.subject,p.text,p.author,p.guest,p.time,p.ip' . Extend::buffer('posts.columns');
         }
         $sql .= ',' . $userQuery['column_list'];
-        $sql .= " FROM " . DB::table('post') . " AS p";
+        $sql .= ' FROM ' . DB::table('post') . ' AS p';
         $sql .= ' ' . $userQuery['joins'];
 
         // conditions and sorting
-        $sql .= " WHERE p.type=" . $posttype . (isset($xhome) ? " AND p.xhome=" . $xhome : '') . " AND p.home=" . $home . (isset($pluginflag) ? " AND p.flag=" . $pluginflag : '');
-        $sql .= " ORDER BY " . ($is_topic_list ? 'p.sticky DESC,' : '') . $ordercol . ' ' . $desc . $paging['sql_limit'];
+        $sql .= ' WHERE p.type=' . $posttype . (isset($xhome) ? ' AND p.xhome=' . $xhome : '') . ' AND p.home=' . $home . (isset($pluginflag) ? ' AND p.flag=' . $pluginflag : '');
+        $sql .= ' ORDER BY ' . ($is_topic_list ? 'p.sticky DESC,' : '') . $ordercol . ' ' . $desc . $paging['sql_limit'];
 
         // query
         $query = DB::query($sql);
@@ -416,7 +416,7 @@ class PostService
             }
         } elseif (!empty($items)) {
             // answers (to comments)
-            $answers = DB::query("SELECT p.id,p.xhome,p.text,p.author,p.guest,p.time,p.ip" . Extend::buffer('posts.columns') . ',' . $userQuery['column_list']  . " FROM " . DB::table('post') . " p " . $userQuery['joins'] . " WHERE p.type=" . $posttype . " AND p.home=" . $home . (isset($pluginflag) ? " AND p.flag=" . $pluginflag : '') . " AND p.xhome IN(" . implode(',', array_keys($items)) . ") ORDER BY p.id");
+            $answers = DB::query('SELECT p.id,p.xhome,p.text,p.author,p.guest,p.time,p.ip' . Extend::buffer('posts.columns') . ',' . $userQuery['column_list']  . ' FROM ' . DB::table('post') . ' p ' . $userQuery['joins'] . ' WHERE p.type=' . $posttype . ' AND p.home=' . $home . (isset($pluginflag) ? ' AND p.flag=' . $pluginflag : '') . ' AND p.xhome IN(' . implode(',', array_keys($items)) . ') ORDER BY p.id');
             while ($item = DB::row($answers)) {
                 if (!isset($items[$item['xhome']])) {
                     continue;
@@ -496,7 +496,7 @@ class PostService
 
                 // topic list table
                 $hl = false;
-                $output .= "\n<table class='topic-table'>\n<thead><tr><th colspan='2'>" . _lang('posts.topic') . "</th><th>" . _lang('global.answersnum') . "</th><th>" . _lang('global.lastanswer') . "</th></tr></thead>\n<tbody>\n";
+                $output .= "\n<table class='topic-table'>\n<thead><tr><th colspan='2'>" . _lang('posts.topic') . '</th><th>' . _lang('global.answersnum') . '</th><th>' . _lang('global.lastanswer') . "</th></tr></thead>\n<tbody>\n";
                 foreach ($items as $item) {
 
                     // fetch author
@@ -505,15 +505,15 @@ class PostService
                     } else {
                         $author = "<span class='post-author-guest' title='" . GenericTemplates::renderIp($item['ip']) . "'>"
                             . StringManipulator::ellipsis(self::renderGuestName($item['guest']), 16)
-                            . "</span>";
+                            . '</span>';
                     }
 
                     // fetch last post author
                     if (isset($item['_lastpost'])) {
                         if ($item['_lastpost']['author'] != -1) $lastpost = Router::userFromQuery($userQuery, $item['_lastpost'], ['class' => 'post-author', 'max_len' => 16]);
-                        else $lastpost = "<span class='post-author-guest'>" . StringManipulator::ellipsis(self::renderGuestName($item['_lastpost']['guest']), 16) . "</span>";
+                        else $lastpost = "<span class='post-author-guest'>" . StringManipulator::ellipsis(self::renderGuestName($item['_lastpost']['guest']), 16) . '</span>';
                     } else {
-                        $lastpost = "-";
+                        $lastpost = '-';
                     }
 
                     // choose icon
@@ -537,7 +537,7 @@ class PostService
                     }
 
                     // render row
-                    $output .= "<tr class='topic-" . $icon . ($hl ? ' topic-hl' : '') . "'><td class='topic-icon-cell'><a href='" . _e(Router::topic($item['id'], $forum_slug)) . "'><img src='" . Template::image('icons/topic-' . $icon . '.png') . "' alt='" . _lang('posts.topic.' . $icon) . "'></a></td><td class='topic-main-cell'><a href='" . _e(Router::topic($item['id'], $forum_slug)) . "'>" . $item['subject'] . "</a>" . $tpages . "<br>" . $author . " <small class='post-info'>(" . GenericTemplates::renderTime($item['time'], 'post') . ")</small></td><td>" . $item['answer_count'] . "</td><td>" . $lastpost . (($item['answer_count'] != 0) ? "<br><small class='post-info'>(" . GenericTemplates::renderTime($item['bumptime'], 'post') . ")</small>" : '') . "</td></tr>\n";
+                    $output .= "<tr class='topic-" . $icon . ($hl ? ' topic-hl' : '') . "'><td class='topic-icon-cell'><a href='" . _e(Router::topic($item['id'], $forum_slug)) . "'><img src='" . Template::image('icons/topic-' . $icon . '.png') . "' alt='" . _lang('posts.topic.' . $icon) . "'></a></td><td class='topic-main-cell'><a href='" . _e(Router::topic($item['id'], $forum_slug)) . "'>" . $item['subject'] . '</a>' . $tpages . '<br>' . $author . " <small class='post-info'>(" . GenericTemplates::renderTime($item['time'], 'post') . ')</small></td><td>' . $item['answer_count'] . '</td><td>' . $lastpost . (($item['answer_count'] != 0) ? "<br><small class='post-info'>(" . GenericTemplates::renderTime($item['bumptime'], 'post') . ')</small>' : '') . "</td></tr>\n";
                     $hl = !$hl;
                 }
                 $output .= "</tbody></table>\n\n";
@@ -553,35 +553,35 @@ class PostService
 
                 // latest answers
                 $output .= "\n<div class='post-answer-list'>\n<h3>" . _lang('posts.forum.lastact') . "</h3>\n";
-                $query = DB::query("SELECT topic.id AS topic_id,topic.subject AS topic_subject,p.author,p.guest,p.time," . $userQuery['column_list'] . " FROM " . DB::table('post') . " AS p JOIN " . DB::table('post') . " AS topic ON(topic.type=" . Post::FORUM_TOPIC . " AND topic.id=p.xhome) " . $userQuery['joins'] . " WHERE p.type=" . Post::FORUM_TOPIC . " AND p.home=" . $home . " AND p.xhome!=-1 ORDER BY p.id DESC LIMIT " . Settings::get('extratopicslimit'));
+                $query = DB::query('SELECT topic.id AS topic_id,topic.subject AS topic_subject,p.author,p.guest,p.time,' . $userQuery['column_list'] . ' FROM ' . DB::table('post') . ' AS p JOIN ' . DB::table('post') . ' AS topic ON(topic.type=' . Post::FORUM_TOPIC . ' AND topic.id=p.xhome) ' . $userQuery['joins'] . ' WHERE p.type=' . Post::FORUM_TOPIC . ' AND p.home=' . $home . ' AND p.xhome!=-1 ORDER BY p.id DESC LIMIT ' . Settings::get('extratopicslimit'));
                 if (DB::size($query) != 0) {
                     $output .= "<table class='topic-latest'>\n";
                     while ($item = DB::row($query)) {
                         if ($item['author'] != -1) {
                             $author = Router::userFromQuery($userQuery, $item);
                         } else {
-                            $author = "<span class='post-author-guest'>" . self::renderGuestName($item['guest']) . "</span>";
+                            $author = "<span class='post-author-guest'>" . self::renderGuestName($item['guest']) . '</span>';
                         }
-                        $output .= "<tr><td><a href='" . _e(Router::topic($item['topic_id'], $forum_slug)) . "'>" . $item['topic_subject'] . "</a></td><td>" . $author . "</td><td>" . GenericTemplates::renderTime($item['time'], 'post') . "</td></tr>\n";
+                        $output .= "<tr><td><a href='" . _e(Router::topic($item['topic_id'], $forum_slug)) . "'>" . $item['topic_subject'] . '</a></td><td>' . $author . '</td><td>' . GenericTemplates::renderTime($item['time'], 'post') . "</td></tr>\n";
                     }
                     $output .= "</table>\n\n";
 
                 } else {
-                    $output .= "<p>" . _lang('global.nokit') . "</p>";
+                    $output .= '<p>' . _lang('global.nokit') . '</p>';
                 }
                 $output .= "</div>\n";
 
             }
 
         } else {
-            $output .= "<p>" . $nopostsmessage . "</p>";
+            $output .= '<p>' . $nopostsmessage . '</p>';
         }
 
         if ($form_position === 1) {
             $output .= $form_output;
         }
 
-        $output .= "</div>";
+        $output .= '</div>';
 
         return $output;
     }
@@ -604,12 +604,12 @@ class PostService
         $inputs = [];
 
         $captcha = Captcha::init();
-        $output = GenericTemplates::jsLimitLength(16384, "postform", "text");
+        $output = GenericTemplates::jsLimitLength(16384, 'postform', 'text');
         if (!User::isLoggedIn()) {
-            $inputs[] = ['label' => _lang('posts.guestname'), 'content' => "<input type='text' name='guest' maxlength='24' class='inputsmall'" . Form::restoreValue($_SESSION, 'post_form_guest') . ">"];
+            $inputs[] = ['label' => _lang('posts.guestname'), 'content' => "<input type='text' name='guest' maxlength='24' class='inputsmall'" . Form::restoreValue($_SESSION, 'post_form_guest') . '>'];
         }
         if ($vars['xhome'] == -1 && $vars['subject']) {
-            $inputs[] = ['label' => _lang($vars['is_topic'] ? 'posts.topic' : 'posts.subject'), 'content' => "<input type='text' name='subject' class='input" . ($vars['is_topic'] ? 'medium' : 'small') . "' maxlength='48'" . Form::restoreValue($_SESSION, 'post_form_subject') . ">"];
+            $inputs[] = ['label' => _lang($vars['is_topic'] ? 'posts.topic' : 'posts.subject'), 'content' => "<input type='text' name='subject' class='input" . ($vars['is_topic'] ? 'medium' : 'small') . "' maxlength='48'" . Form::restoreValue($_SESSION, 'post_form_subject') . '>'];
         }
         $inputs[] = $captcha;
         $inputs[] = ['label' => _lang('posts.text'), 'content' => "<textarea name='text' class='areamedium' rows='5' cols='33'>" . Form::restoreValue($_SESSION, 'post_form_text', null, false) . "</textarea><input type='hidden' name='_posttype' value='" . $vars['posttype'] . "'><input type='hidden' name='_posttarget' value='" . $vars['posttarget'] . "'><input type='hidden' name='_xhome' value='" . $vars['xhome'] . "'>" . (isset($vars['pluginflag']) ? "<input type='hidden' name='_pluginflag' value='" . $vars['pluginflag'] . "'>" : ''), 'top' => true];
@@ -660,13 +660,13 @@ class PostService
         } else {
             $author = "<span class='post-author-guest' title='" . GenericTemplates::renderIp($post['ip']) . "'>"
                 . self::renderGuestName($post['guest'])
-                . "</span>";
+                . '</span>';
         }
 
         // action links
         $actlinks = [];
-        if ($options['allow_reply']) $actlinks[] = "<a class='post-action-reply' href='" . _e(UrlHelper::appendParams($options['current_url'], "replyto=" . $post['id'])) . "#posts'>" . _lang('posts.reply') . "</a>";
-        if ($postAccess) $actlinks[] = "<a class='post-action-edit' href='" . _e(Router::module('editpost', ['query' => ['id' => $post['id']]])) . "'>" . _lang('global.edit') . "</a>";
+        if ($options['allow_reply']) $actlinks[] = "<a class='post-action-reply' href='" . _e(UrlHelper::appendParams($options['current_url'], 'replyto=' . $post['id'])) . "#posts'>" . _lang('posts.reply') . '</a>';
+        if ($postAccess) $actlinks[] = "<a class='post-action-edit' href='" . _e(Router::module('editpost', ['query' => ['id' => $post['id']]])) . "'>" . _lang('global.edit') . '</a>';
         $actlinks = array_merge($actlinks, $options['extra_actions']);
 
         // avatar
@@ -689,16 +689,16 @@ class PostService
             $output .= "<div id='post-" . $post['id'] . "' class='post" . ($options['is_answer'] ? ' post-answer' : '') . (isset($avatar) ? ' post-withavatar' : '') . "'>"
                 . "<div class='post-head'>"
                     . $author
-                    . " <span class='post-info'>(" . GenericTemplates::renderTime($post['time'], 'post') . $options['extra_info'] . ")</span>"
+                    . " <span class='post-info'>(" . GenericTemplates::renderTime($post['time'], 'post') . $options['extra_info'] . ')</span>'
                     . ($actlinks ? " <span class='post-actions'>" . implode(' ', $actlinks) . '</span>' : '')
-                    . ($options['post_link'] ? "<a class='post-postlink' href='" . _e(UrlHelper::appendParams($options['current_url'], 'page=' . $options['current_page'])) . "#post-" . $post['id'] . "'><span>#" . str_pad($post['id'], 6, '0', STR_PAD_LEFT) . "</span></a>" : '')
-                . "</div>"
+                    . ($options['post_link'] ? "<a class='post-postlink' href='" . _e(UrlHelper::appendParams($options['current_url'], 'page=' . $options['current_page'])) . '#post-' . $post['id'] . "'><span>#" . str_pad($post['id'], 6, '0', STR_PAD_LEFT) . '</span></a>' : '')
+                . '</div>'
                 . "<div class='post-body" . (isset($avatar) ? ' post-body-withavatar' : '') . "'>"
                     . $avatar
                     . '<div class="post-body-text">'
                         . Post::render($post['text'])
-                    . "</div>"
-                . "</div>"
+                    . '</div>'
+                . '</div>'
                 . "</div>\n";
         }
 
@@ -715,9 +715,9 @@ class PostService
     static function deleteByPluginFlag(int $flag, ?int $home, bool $get_count = true): ?int
     {
         // condition
-        $cond = "type=" . Post::PLUGIN . " AND flag=" . $flag;
+        $cond = 'type=' . Post::PLUGIN . ' AND flag=' . $flag;
         if (isset($home)) {
-            $cond .= " AND home=" . $home;
+            $cond .= ' AND home=' . $home;
         }
 
         // delete or count

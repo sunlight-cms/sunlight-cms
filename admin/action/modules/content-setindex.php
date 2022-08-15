@@ -11,7 +11,7 @@ defined('SL_ROOT') or exit;
 
 /* ---  priprava  --- */
 
-$message = "";
+$message = '';
 
 /* ---  akce  --- */
 
@@ -30,5 +30,5 @@ $output .= $message . "
 <form class='cform' action='" . _e(Router::admin('content-setindex')) . "' method='post'>
 " . Admin::pageSelect('index', ['selected' => $index_id, 'maxlength' => null]) . "
 <input class='button' type='submit' value='" . _lang('global.do') . "'>
-" . Xsrf::getInput() . "</form>
-";
+" . Xsrf::getInput() . '</form>
+';
