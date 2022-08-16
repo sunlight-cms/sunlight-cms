@@ -40,7 +40,7 @@ abstract class Config
     static function load(): void
     {
         if (is_file(CONFIG_PATH)) {
-            static::$config = require CONFIG_PATH;
+            self::$config = require CONFIG_PATH;
         }
     }
 
@@ -49,7 +49,7 @@ abstract class Config
      */
     static function isLoaded(): bool
     {
-        return static::$config !== null;
+        return self::$config !== null;
     }
 }
 
@@ -230,7 +230,7 @@ abstract class Labels
      */
     static function setLanguage(string $language): void
     {
-        static::$language = $language;
+        self::$language = $language;
     }
 
     /**
@@ -241,14 +241,14 @@ abstract class Labels
      */
     static function get(string $key, ?array $replacements = null): string
     {
-        if (static::$language === null) {
+        if (self::$language === null) {
             throw new \RuntimeException('Language not set');
         }
-        if (!isset(static::$labels[static::$language][$key])) {
-            throw new \OutOfBoundsException(sprintf('Unknown key "%s[%s]"', static::$language, $key));
+        if (!isset(self::$labels[self::$language][$key])) {
+            throw new \OutOfBoundsException(sprintf('Unknown key "%s[%s]"', self::$language, $key));
         }
 
-        $value = static::$labels[static::$language][$key];
+        $value = self::$labels[self::$language][$key];
 
         if (!empty($replacements)) {
             $value = strtr($value, $replacements);
@@ -262,7 +262,7 @@ abstract class Labels
      */
     static function render(string $key, ?array $replacements = null): void
     {
-        echo _e(static::get($key, $replacements));
+        echo _e(self::get($key, $replacements));
     }
 }
 
@@ -1043,7 +1043,7 @@ Now you can <a href="admin/">log in to the administration</a> (username and pass
 
         return array_map(function ($baseTableName) use ($prefix) {
             return $prefix . $baseTableName;
-        }, static::$baseTableNames);
+        }, self::$baseTableNames);
     }
 }
 
