@@ -80,12 +80,12 @@ class BackupBuilder
     /** @var bool */
     private $prefillConfigFile = true;
 
-    public function isFullBackup(): bool
+    function isFullBackup(): bool
     {
         return $this->fullBackup;
     }
 
-    public function setFullBackup(bool $fullBackup): void
+    function setFullBackup(bool $fullBackup): void
     {
         $this->fullBackup = $fullBackup;
     }
@@ -100,12 +100,12 @@ class BackupBuilder
         $this->databaseDumpEnabled = $databaseDumpEnabled;
     }
 
-    public function getPrefillConfigFile(): bool
+    function getPrefillConfigFile(): bool
     {
         return $this->prefillConfigFile;
     }
 
-    public function setPrefillConfigFile(bool $prefillConfigFile): void
+    function setPrefillConfigFile(bool $prefillConfigFile): void
     {
         $this->prefillConfigFile = $prefillConfigFile;
     }

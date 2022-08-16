@@ -57,32 +57,32 @@ class Backup
         }
     }
 
-    public function getDataPath(): string
+    function getDataPath(): string
     {
         return $this->dataPath;
     }
 
-    public function setDataPath(string $dataPath): void
+    function setDataPath(string $dataPath): void
     {
         $this->dataPath = $dataPath;
     }
 
-    public function getDbDumpPath(): string
+    function getDbDumpPath(): string
     {
         return $this->dbDumpPath;
     }
 
-    public function setDbDumpPath(string $dbDumpPath): void
+    function setDbDumpPath(string $dbDumpPath): void
     {
         $this->dbDumpPath = $dbDumpPath;
     }
 
-    public function getMetadataPath(): ?string
+    function getMetadataPath(): ?string
     {
         return $this->metadataPath;
     }
 
-    public function setMetadataPath(?string $metadataPath): void
+    function setMetadataPath(?string $metadataPath): void
     {
         $this->metadataPath = $metadataPath;
     }
