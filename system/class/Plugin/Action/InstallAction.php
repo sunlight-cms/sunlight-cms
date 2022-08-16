@@ -20,7 +20,7 @@ class InstallAction extends PluginAction
         if (!$this->isConfirmed()) {
             return $this->confirm(
                 _lang('admin.plugins.action.install.confirm'),
-                _lang('admin.plugins.action.do.install')
+                ['button_text' => _lang('admin.plugins.action.do.install')]
             );
         }
 

@@ -65,7 +65,7 @@ if ($continue) {
     <h2>' . _lang('global.item') . ' <em>' . $query['title'] . '</em></h2><br>
     ' . (!empty($content_array)
             ? '<p>' . _lang('admin.content.delete.contentlist') . ':</p>'
-                . GenericTemplates::renderMessageList($content_array, false)
+                . GenericTemplates::renderMessageList($content_array, ['escape' => false])
                 . "<div class='hr'><hr></div>"
             : '')
     . "

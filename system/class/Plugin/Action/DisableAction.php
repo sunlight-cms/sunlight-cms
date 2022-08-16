@@ -18,6 +18,18 @@ class DisableAction extends PluginAction
 
     protected function execute(): ActionResult
     {
+        $dependantsWarning = $this->getDependantsWarning();
+
+        if ($dependantsWarning !== null && !$this->isConfirmed()) {
+            return $this->confirm(
+                _lang('admin.plugins.action.disable.confirm'),
+                [
+                    'button_text' => _lang('admin.plugins.action.do.disable'),
+                    'content_after' => $dependantsWarning,
+                ]
+            );
+        }
+
         if ($this->plugin->canBeDisabled() && touch($this->plugin->getDirectory() . '/' . Plugin::DEACTIVATING_FILE)) {
             return ActionResult::success(
                 Message::ok(_lang('admin.plugins.action.disable.success', ['%plugin%' => $this->plugin->getOption('name')]))

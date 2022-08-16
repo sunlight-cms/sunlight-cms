@@ -143,6 +143,27 @@ class PluginManager
     }
 
     /**
+     * Get plugins that depend on the given plugin
+     *
+     * Inactive plugins are not considered.
+     *
+     * @return Plugin[]
+     */
+    function getDependants(Plugin $plugin): array
+    {
+        $id = $plugin->getId();
+        $dependants = [];
+
+        foreach ($this->plugins->map as $otherPlugin) {
+            if (isset($otherPlugin->getOption('dependencies')[$id])) {
+                $dependants[] = $otherPlugin;
+            }
+        }
+
+        return $dependants;
+    }
+
+    /**
      * Get name => label pairs for plugins of given type
      *
      * @return array<string, string>

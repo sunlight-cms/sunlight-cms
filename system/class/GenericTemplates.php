@@ -188,19 +188,27 @@ HTML;
 
     /**
      * Vykreslit seznam hlasek
+     *
+     * Podporovane klice v $options:
+     * ---------------------------------------------------------
+     * lcfirst (1)      prevest prvni znak zprav na male pismena
+     * escape (1)       escapovat HTML znaky ve zpravach
+     * show_keys (0)    vykreslit i klice pole
      */
-    static function renderMessageList(array $messages, bool $escapeItems = true, bool $showKeys = false): string
+    static function renderMessageList(array $messages, array $options = []): string
     {
         $output = '';
 
         if (!empty($messages)) {
             $output .= "<ul>\n";
             foreach($messages as $key => $item) {
-                $item = StringManipulator::lcfirst($item);
+                if ($options['lcfirst'] ?? true) {
+                    $item = StringManipulator::lcfirst($item);
+                }
 
                 $output .= '<li>'
-                    . ($showKeys ? '<strong>' . _e($key) . '</strong>: ' : '')
-                    . ($escapeItems ? _e($item) : $item)
+                    . (($options['show_keys'] ?? false) ? '<strong>' . _e($key) . '</strong>: ' : '')
+                    . (($options['escape'] ?? true) ? _e($item) : $item)
                     . "</li>\n";
             }
             $output .= "</ul>\n";

@@ -21,7 +21,10 @@ class RemoveAction extends PluginAction
         if (!$this->isConfirmed()) {
             return $this->confirm(
                 _lang('admin.plugins.action.remove.confirm'),
-                _lang('admin.plugins.action.do.remove')
+                [
+                    'button_text' => _lang('admin.plugins.action.do.remove'),
+                    'content_after' => $this->getDependantsWarning(),
+                ]
             );
         }
 

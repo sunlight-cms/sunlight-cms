@@ -20,7 +20,10 @@ class UninstallAction extends PluginAction
         if (!$this->isConfirmed()) {
             return $this->confirm(
                 _lang('admin.plugins.action.uninstall.confirm'),
-                _lang('admin.plugins.action.do.uninstall')
+                [
+                    'button_text' => _lang('admin.plugins.action.do.uninstall'),
+                    'content_after' => $this->getDependantsWarning(),
+                ]
             );
         }
 

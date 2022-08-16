@@ -81,11 +81,10 @@ class Message
      * List messages
      *
      * Supported options:
-     * ------------------------------------------------------------------
+     * ---------------------------------------------------------------------------
      * type (WARNING)   see Message class constants
      * text             text before the list
-     * escape (1)       escape the messages
-     * show_keys (0)    render message keys
+     * list             options for {@see GenericTemplates::renderMessageList()}
      */
     static function list(array $messages, array $options = []): self
     {
@@ -93,11 +92,7 @@ class Message
             $options['type'] ?? self::WARNING,
             ($options['text'] ?? _lang('misc.error_list'))
                 . "\n"
-                . GenericTemplates::renderMessageList(
-                    $messages,
-                    $options['escape'] ?? true,
-                    $options['show_keys'] ?? false
-                ),
+                . GenericTemplates::renderMessageList($messages, $options['list'] ?? []),
             true
         );
     }

@@ -5,6 +5,7 @@ namespace Sunlight\Plugin\Action;
 use Sunlight\Action\Action;
 use Sunlight\Action\ActionResult;
 use Sunlight\Core;
+use Sunlight\Message;
 use Sunlight\Plugin\Plugin;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
@@ -46,30 +47,54 @@ abstract class PluginAction extends Action
 
     /**
      * Confirm an action
+     *
+     * Supported options:
+     * --------------------------------------
+     * button_text      customize button text
+     * content_before   HTML before text
+     * content_after    HTML after text
      */
-    protected function confirm(string $message, ?string $buttonText = null): ActionResult
+    protected function confirm(string $text, array $options = []): ActionResult
     {
-        if ($buttonText === null) {
-            $buttonText = _lang('global.continue');
-        }
-
         $confirmationToken = md5(static::class);
 
         return ActionResult::output(_buffer(function () use (
-            $message,
-            $buttonText,
+            $text,
+            $options,
             $confirmationToken
         ) {
             ?>
 <form method="post">
     <input type="hidden" name="_plugin_action_confirmation" value="<?= $confirmationToken ?>">
 
-    <p class="bborder"><?= $message ?></p>
+    <?= $options['content_before'] ?? '' ?>
+    <p class="bborder"><?= $text ?></p>
+    <?= $options['content_after'] ?? '' ?>
 
-    <input type="submit" value="<?= $buttonText ?>">
+    <input type="submit" value="<?= $options['button_text'] ?? _lang('global.continue') ?>">
     <?= Xsrf::getInput() ?>
 </form>
 <?php
         }));
+    }
+
+    protected function getDependantsWarning(): ?Message
+    {
+        $dependants = Core::$pluginManager->getDependants($this->plugin);
+
+        if (!empty($dependants)) {
+            return Message::list(
+                array_map(
+                    function (Plugin $dependant) { return $dependant->getOption('name'); },
+                    $dependants
+                ),
+                [
+                    'text' => _lang('admin.plugins.action.dependants_warning'),
+                    'list' => ['lcfirst' => false],
+                ]
+            );
+        }
+
+        return null;
     }
 }
