@@ -24,10 +24,8 @@ class ImageException extends \RuntimeException
 
     /** @var string */
     private $reasonCode;
-
     /** @var string[] */
     private $userFriendlyMessageArgs;
-
     /** @var string|null */
     private $additionalInformation;
 

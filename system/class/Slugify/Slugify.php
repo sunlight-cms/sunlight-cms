@@ -6,13 +6,10 @@ class Slugify
 {
     /** @var self|null */
     private static $inst;
-
     /** @var string[] */
     private $rules = [];
-
     /** @var RuleProviderInterface */
     private $provider;
-
     /** @var array */
     private $options = [
         'regexp' => '/([^A-Za-z0-9]|-)+/',

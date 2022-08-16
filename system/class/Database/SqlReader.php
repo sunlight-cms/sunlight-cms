@@ -8,16 +8,12 @@ class SqlReader
 {
     /** Query map item - comment */
     const COMMENT = 0;
-
     /** Query map item - quoted value */
     const QUOTED = 1;
-
     /** Map of quote chars */
-    const QUOTE_MAP = ['"' => 0, '\'' => 1, '`' => 2];
-
+    private const QUOTE_MAP = ['"' => 0, '\'' => 1, '`' => 2];
     /** Map of whitespace chars */
     private const WHITESPACE_MAP = [' ' => 0, "\n" => 1, "\r" => 2, "\t" => 3, "\h" => 4];
-    
     /** Comment syntaxes */
     private const COMMENT_SYNTAXES = [
         ['#', "\n"],
@@ -27,7 +23,6 @@ class SqlReader
 
     /** @var string */
     private $input;
-
     /** @var string */
     private $delimiter = ';';
 

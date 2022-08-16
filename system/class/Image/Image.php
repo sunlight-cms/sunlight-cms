@@ -8,10 +8,8 @@ final class Image
 {
     /** @var \GdImage|resource */
     public $resource;
-
     /** @var int */
     public $width;
-
     /** @var int */
     public $height;
 
