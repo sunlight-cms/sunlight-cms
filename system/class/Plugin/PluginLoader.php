@@ -9,73 +9,50 @@ use Sunlight\Core;
 use Sunlight\Plugin\Type\PluginType;
 use Sunlight\Util\Filesystem;
 use Sunlight\Util\Json;
+use Sunlight\Util\StringManipulator;
 
 class PluginLoader
 {
+    private const PLUGIN_DIR_PATTERN = '{' . Plugin::ID_PATTERN . '$}AD';
+
     /** @var PluginType[] */
     private $types;
-    /** @var string */
-    private $pluginIdPattern;
+
     /**
      * @param PluginType[] $types
      */
     function __construct(array $types)
     {
         $this->types = $types;
-        $this->pluginIdPattern = '{' . Plugin::ID_PATTERN . '$}AD';
     }
 
     /**
      * Load plugin data from the filesystem
      *
-     * Returns an array with the following structure:
-     *
-     *      array(
-     *          plugins => array(
-     *              type => array(name => data, ...)
-     *              ...
-     *          )
-     *          autoload => array(
-     *              psr-0 => array(prefix => paths, ...)
-     *              psr-4 => array(prefix => paths, ...)
-     *              classmap => array(className => path, ...)
-     *              files => array(path, ...)
-     *          )
-     *          bound_files => array(path, ...)
-     *      )
+     * @return array{
+     *     plugins: array<string, PluginData>,
+     *     autoload: array{
+     *          psr-0: array<string, string[]>,
+     *          psr-4: array<string, string[]>,
+     *          classmap: array<string, string>,
+     *          files: string[],
+     *     },
+     *     bound_files: string[],
+     * }
      */
-    function load(bool $resolveInstallationStatus = true): array
+    function load(): array
     {
         $autoload = array_fill_keys(['psr-0', 'psr-4', 'classmap', 'files'], []);
         $boundFiles = [];
-
         $composerInjector = new RepositoryInjector(new Repository(realpath(SL_ROOT . '/composer.json')));
-        $typeNames = array_keys($this->types);
 
         $plugins = $this->findPlugins($boundFiles);
+        $plugins = $this->resolveDependencies($plugins);
 
-        // resolve dependencies
-        foreach ($typeNames as $typeName) {
-            $plugins[$typeName] = $this->resolveDependencies($plugins[$typeName]);
-        }
-
-        // resolve autoload
-        foreach ($typeNames as $typeName) {
-            $this->resolveAutoload($plugins[$typeName], $autoload);
-        }
-
-        foreach ($typeNames as $typeName) {
-            $this->handleComposerRepositories($plugins[$typeName], $boundFiles, $composerInjector);
-        }
-
+        $this->resolveAutoload($plugins, $autoload);
+        $this->handleComposerRepositories($plugins, $boundFiles, $composerInjector);
         $this->resolveAutoloadForInjectedComposerPackages($autoload, $composerInjector);
-
-        // resolve installation status
-        if ($resolveInstallationStatus) {
-            foreach ($this->types as $typeName => $type) {
-                $this->resolveInstallationStatus($plugins[$typeName]);
-            }
-        }
+        $this->resolveInstallationStatus($plugins);
 
         return [
             'plugins' => $plugins,
@@ -85,30 +62,24 @@ class PluginLoader
     }
 
     /**
-     * @return PluginData[][]
+     * @return array<string, PluginData>
      */
     private function findPlugins(array &$boundFiles): array
     {
         $plugins = [];
 
         // load plugins from standard paths
-        foreach ($this->types as $typeName => $type) {
-            $plugins[$typeName] = [];
-
+        foreach ($this->types as $type) {
             $dir = SL_ROOT . $type->getDir();
 
-            // scan directory
             foreach (scandir($dir) as $item) {
-                // validate item
                 if (
-                    preg_match($this->pluginIdPattern, $item) // skips dots and invalid names
+                    preg_match(self::PLUGIN_DIR_PATTERN, $item) // skips dots and invalid names
                     && is_dir("{$dir}/{$item}")
-                    && is_file($pluginFile = "{$dir}/{$item}/" . Plugin::FILE)
+                    && ($plugin = $this->loadPlugin($dir, $item, $type))
                 ) {
-                    // load plugin
-                    $boundFiles[] = $pluginFile;
-
-                    $plugins[$typeName][$item] = $this->loadPlugin($item, $pluginFile, $type);
+                    $plugins[$plugin->id] = $plugin;
+                    $boundFiles[] = $plugin->file;
                 }
             }
         }
@@ -116,13 +87,21 @@ class PluginLoader
         return $plugins;
     }
 
-    function loadPlugin(string $id, string $pluginFile, PluginType $type): PluginData
+    private function loadPlugin(string $dir, string $name, PluginType $type): ?PluginData
     {
+        $file = realpath("{$dir}/{$name}/" . Plugin::FILE);
+
+        if ($file === false) {
+            return null;
+        }
+
         $plugin = new PluginData(
-            $id,
+            "{$type->getName()}/{$name}",
+            $name,
+            StringManipulator::toCamelCase($name),
             $type->getName(),
-            realpath($pluginFile),
-            $type->getDir() . '/' . $id
+            $file,
+            "{$type->getDir()}/{$name}"
         );
 
         // check state
@@ -238,7 +217,7 @@ class PluginLoader
     /**
      * Resolve plugin dependencies
      *
-     * @param PluginData[] $plugins
+     * @param array<string, PluginData> $plugins
      * @throws \RuntimeException if the dependencies cannot be resolved
      */
     private function resolveDependencies(array $plugins): array
@@ -309,7 +288,7 @@ class PluginLoader
      *      ...
      * )
      *
-     * @param PluginData[] $plugins
+     * @param array<string, PluginData> $plugins
      */
     private function findCircularDependencies(array $plugins): array
     {
@@ -372,7 +351,7 @@ class PluginLoader
     }
 
     /**
-     * @param PluginData[] $plugins
+     * @param array<string, PluginData> $plugins
      */
     private function resolveAutoload(array $plugins, array &$autoload): void
     {
@@ -532,7 +511,7 @@ class PluginLoader
     /**
      * Resolve installation status
      *
-     * @param PluginData[] $plugins
+     * @param array<string, PluginData> $plugins
      */
     private function resolveInstallationStatus(array $plugins): void
     {

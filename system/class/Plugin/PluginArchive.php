@@ -15,17 +15,7 @@ class PluginArchive
     private $path;
     /** @var bool */
     private $open = false;
-    /**
-     * type => array(
-     *      name1 => array(
-     *          path => string,
-     *          valid => bool,
-     *      ),
-     *      ...
-     * )
-     *
-     * @var array|null
-     */
+    /** @var array<string, array<string, array{path: string, valid: bool}> */
     private $plugins;
 
     function __construct(PluginManager $manager, string $path)
@@ -49,8 +39,11 @@ class PluginArchive
 
         // get and check plugins
         foreach ($this->getPlugins() as $type => $plugins) {
-            foreach ($plugins as $pluginId => $pluginParams) {
-                if ($this->manager->exists($type, $pluginId)) {
+            foreach ($plugins as $name => $pluginParams) {
+                if (
+                    $this->manager->getPlugins()->hasName($type, $name)
+                    || $this->manager->getInactivePlugins()->hasName($type, $name)
+                ) {
                     $failedPlugins[] = $pluginParams['path'];
                 } else {
                     $toExtract[] = $pluginParams['path'];

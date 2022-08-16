@@ -46,6 +46,8 @@ abstract class PluginOptionNormalizer
 
     static function normalizeAutoload(Node $autoload, PluginData $plugin): array
     {
+        $normalized = [];
+
         foreach ($autoload as $type => $entries) {
             $normalized[$type] = [];
 
@@ -117,6 +119,22 @@ abstract class PluginOptionNormalizer
         }
 
         return $layouts;
+    }
+
+    static function normalizeDependencies(array $dependencies, PluginData $plugin): array
+    {
+        $normalized = [];
+
+        foreach ($dependencies as $dependency => $version) {
+            // prefix dependency by current type if none is specified
+            if (strpos($dependency, '/') === false) {
+                $dependency = "{$plugin->type}/{$dependency}";
+            }
+
+            $normalized[$dependency] = $version;
+        }
+
+        return $normalized;
     }
 
     private static function fail(string $message, ...$args): void

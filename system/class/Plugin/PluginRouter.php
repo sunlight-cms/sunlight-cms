@@ -11,7 +11,7 @@ abstract class PluginRouter
 
     static function register(string $pattern, $callback): void
     {
-        self::$routes["{{$pattern}\$}AD"] = $callback; // TODO: always anchor?
+        self::$routes["{{$pattern}\$}AD"] = $callback;
     }
 
     static function handle(WebState $index): bool

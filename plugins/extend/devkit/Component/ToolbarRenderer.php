@@ -6,7 +6,6 @@ use Kuria\Debug\Dumper;
 use Sunlight\Core;
 use Sunlight\Extend;
 use Sunlight\Localization\LocalizationDirectory;
-use Sunlight\Plugin\InactivePlugin;
 use Sunlight\Router;
 use Sunlight\User;
 
@@ -112,7 +111,7 @@ class ToolbarRenderer
     {
         ?>
 <div class="devkit-section devkit-memory">
-    <?= number_format(round(memory_get_peak_usage() / 1048576, 1), 1, '.', ',') ?>MB
+    <?= number_format(round(memory_get_peak_usage() / 1048576, 1), 1) ?>MB
 </div>
 <?php
     }
@@ -252,13 +251,9 @@ class ToolbarRenderer
     {
         $pluginErrors = [];
 
-        foreach (Core::$pluginManager->getAllInactive() as $type => $inactivePlugins) {
-            foreach ($inactivePlugins as $name => $inactivePlugin) {
-                /** @var InactivePlugin $inactivePlugin */
-
-                foreach ($inactivePlugin->getErrors() as $error) {
-                    $pluginErrors["{$type}/{$name} ({$inactivePlugin->getFile()})"][] = $error;
-                }
+        foreach (Core::$pluginManager->getInactivePlugins()->map as $inactivePlugin) {
+            foreach ($inactivePlugin->getErrors() as $error) {
+                $pluginErrors["{$inactivePlugin->getId()} ({$inactivePlugin->getFile()})"][] = $error;
             }
         }
 

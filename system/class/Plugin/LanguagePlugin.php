@@ -26,30 +26,25 @@ class LanguagePlugin extends Plugin
 
     /**
      * Get localization entries
-     *
-     * @param bool|null $admin load administration dictionary as well 1/0 (null = auto)
-     * @return array|bool false on failure
      */
-    function getLocalizationEntries(?bool $admin = null)
+    function getLocalizationEntries(bool $loadAdminDict): ?array
     {
-        if ($admin === null) {
-            $admin = Core::$env === Core::ENV_ADMIN;
-        }
-
         // base dictionary
         $fileName = sprintf('%s/dictionary.php', $this->dir);
+
         if (is_file($fileName)) {
             $data = (array) include $fileName;
 
             // admin dictionary
-            if ($admin) {
+            if ($loadAdminDict) {
                 $adminFileName = sprintf('%s/admin_dictionary.php', $this->dir);
+
                 if (is_file($adminFileName)) {
                     $data += (array) include $adminFileName;
-                } elseif ($this->manager->has($this->type, Core::$fallbackLang)) {
+                } elseif ($this->manager->getPlugins()->hasLanguage(Core::$fallbackLang)) {
                     $adminFileName = sprintf(
                         '%s/admin_dictionary.php',
-                        $this->manager->getLanguage(Core::$fallbackLang)->getDirectory()
+                        $this->manager->getPlugins()->getLanguage(Core::$fallbackLang)->getDirectory()
                     );
                     if (is_file($adminFileName)) {
                         $data += (array) include $adminFileName;
@@ -60,6 +55,6 @@ class LanguagePlugin extends Plugin
             return $data;
         }
 
-        return false;
+        return null;
     }
 }

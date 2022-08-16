@@ -6,7 +6,6 @@ use Sunlight\Core;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\Message;
-use Sunlight\Plugin\PluginManager;
 use Sunlight\Router;
 use Sunlight\Settings;
 use Sunlight\User;
@@ -51,10 +50,10 @@ for ($x = 1; $x < 4; ++$x) {
 $editable_settings = [
     'main' => [
         'items' => [
-            ['name' => 'default_template', 'format' => 'text', 'choices' => Core::$pluginManager->choices(PluginManager::TEMPLATE)],
+            ['name' => 'default_template', 'format' => 'text', 'choices' => Core::$pluginManager->choices('template')],
             ['name' => 'time_format', 'format' => 'html', 'input_class' => 'inputsmall'],
             ['name' => 'cacheid', 'format' => 'int', 'input_class' => 'inputsmall'],
-            ['name' => 'language', 'format' => 'text', 'choices' => Core::$pluginManager->choices(PluginManager::LANGUAGE), 'reload_on_update' => true],
+            ['name' => 'language', 'format' => 'text', 'choices' => Core::$pluginManager->choices('language'), 'reload_on_update' => true],
             ['name' => 'language_allowcustom', 'format' => 'bool'],
             ['name' => 'notpublicsite', 'format' => 'bool'],
             ['name' => 'pretty_urls', 'format' => 'bool', 'force_install_check' => true],

@@ -16,7 +16,7 @@ if (!function_exists('dump')) {
             $line = 0;
         }
 
-        Core::$pluginManager->getExtend('devkit')->addDump(
+        Core::$pluginManager->getPlugins()->getExtend('devkit')->addDump(
             $file,
             $line,
             Dumper::dump($value, $maxLevel, $maxStringLen)

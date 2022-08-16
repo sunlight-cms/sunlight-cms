@@ -447,10 +447,7 @@ abstract class Core
      */
     private static function initPlugins(): void
     {
-        foreach (self::$pluginManager->getAllExtends() as $extendPlugin) {
-            $extendPlugin->initialize();
-        }
-
+        self::$pluginManager->initialize();
         Extend::call('plugins.ready');
     }
 
@@ -499,17 +496,13 @@ abstract class Core
         }
 
         // load language plugin
-        if (self::$pluginManager->has(PluginManager::LANGUAGE, $lang)) {
-            $languagePlugin = self::$pluginManager->getLanguage($lang);
-        } else {
-            $languagePlugin = null;
-        }
+        $languagePlugin = self::$pluginManager->getPlugins()->getLanguage($lang);
 
         if ($languagePlugin !== null) {
             // load localization entries from the plugin
-            $entries = $languagePlugin->getLocalizationEntries();
+            $entries = $languagePlugin->getLocalizationEntries(self::$env === Core::ENV_ADMIN);
 
-            if ($entries !== false) {
+            if ($entries !== null) {
                 self::$dictionary->add($entries);
             }
         } else {

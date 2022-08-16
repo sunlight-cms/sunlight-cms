@@ -5,7 +5,6 @@ use Sunlight\Database\Database as DB;
 use Sunlight\Email;
 use Sunlight\Extend;
 use Sunlight\Message;
-use Sunlight\Plugin\PluginManager;
 use Sunlight\Router;
 use Sunlight\Settings;
 use Sunlight\User;
@@ -99,7 +98,7 @@ if (isset($_POST['save'])) {
     if (Settings::get('language_allowcustom')) {
         $language = Request::post('language', '');
 
-        if ($language === '' || !Core::$pluginManager->has(PluginManager::LANGUAGE, $language)) {
+        if ($language === '' || !Core::$pluginManager->getPlugins()->hasLanguage($language)) {
             $language = '';
         }
 
@@ -186,7 +185,7 @@ $output .= Form::render(
                 'label' => _lang('global.language'),
                 'content' => '<select name="language" class="inputsmall">'
                     . '<option value="">' . _lang('global.default') . '</option>'
-                    . Core::$pluginManager->select(PluginManager::LANGUAGE, User::$data['language'])
+                    . Core::$pluginManager->select('language', User::$data['language'])
                     . '</select>'
             ]
             : [],

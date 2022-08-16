@@ -14,21 +14,23 @@ abstract class TemplateService
     /**
      * Check if a template exists
      */
-    static function templateExists(string $id): bool
+    static function templateExists(string $name): bool
     {
-        return Core::$pluginManager->has(PluginManager::TEMPLATE, $id);
+        return Core::$pluginManager->getPlugins()->hasTemplate($name);
     }
 
     /**
      * Get a template for the given template identifier
      */
-    static function getTemplate(string $id): TemplatePlugin
+    static function getTemplate(string $name): TemplatePlugin
     {
-        if (!self::templateExists($id)) {
-            self::handleNonexistentTemplate($id);
+        $template = Core::$pluginManager->getPlugins()->getTemplate($name);
+
+        if ($template === null) {
+            self::handleNonexistentTemplate($name);
         }
 
-        return Core::$pluginManager->getTemplate($id);
+        return $template;
     }
 
     /**
@@ -47,7 +49,7 @@ abstract class TemplateService
     static function composeUid($template, ?string $layout = null, ?string $slot = null): ?string
     {
         $uid = $template instanceof TemplatePlugin
-            ? $template->getId()
+            ? $template->getName()
             : $template;
 
         if ($layout !== null || $slot !== null) {
@@ -98,14 +100,11 @@ abstract class TemplateService
     /**
      * Get template components
      *
-     * Returns an array with the following keys or NULL if the given
-     * combination does not exist.
-     *
-     *      template => (object) instance of TemplatePlugin
-     *      layout   => (string) layout identifier (only if $layout is not NULL)
-     *      slot     => (string) slot identifier (only if both $layout and $slot are not NULL)
-     *
-     * @return array|null array or null if the given combination does not exist
+     * @return array{
+     *     template: TemplatePlugin,
+     *     layout: string|null,
+     *     slot: string|null,
+     * }|null
      */
     static function getComponents(string $template, ?string $layout = null, ?string $slot = null): ?array
     {
@@ -202,16 +201,19 @@ abstract class TemplateService
         return $uid;
     }
 
-    private static function handleNonexistentTemplate(string $id): void
+    /**
+     * @return never
+     */
+    private static function handleNonexistentTemplate(string $name): void
     {
-        if (Core::$debug && Core::$pluginManager->hasInactive(PluginManager::TEMPLATE, $id)) {
-            $plugin = Core::$pluginManager->getInactive(PluginManager::TEMPLATE, $id);
+        if (Core::$debug && Core::$pluginManager->getInactivePlugins()->hasTemplate($name)) {
+            $plugin = Core::$pluginManager->getInactivePlugins()->getTemplate($name);
 
             if (!$plugin->isDisabled() && $plugin->hasErrors()) {
                 Core::fail(
                     'Motiv "%s" obsahuje chyby:',
                     'Template "%s" contains errors:',
-                    [$id],
+                    [$name],
                     implode("\n", $plugin->getErrors())
                 );
             }
@@ -220,7 +222,7 @@ abstract class TemplateService
         Core::fail(
             'Motiv "%s" není možné použít.',
             'Template "%s" cannot be used.',
-            [$id]
+            [$name]
         );
     }
 }

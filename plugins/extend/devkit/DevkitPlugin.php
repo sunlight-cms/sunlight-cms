@@ -3,7 +3,6 @@
 namespace SunlightExtend\Devkit;
 
 use Sunlight\Core;
-use Sunlight\Database\Database;
 use Sunlight\Extend;
 use Sunlight\GenericTemplates;
 use Sunlight\IpLog;

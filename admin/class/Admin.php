@@ -384,7 +384,7 @@ abstract class Admin
             $output .= '<option class="special" value="">' . _e($empty_option) . "</option>\n";
         }
 
-        foreach (Core::$pluginManager->getAllTemplates() as $template) {
+        foreach (Core::$pluginManager->getPlugins()->getTemplates() as $template) {
             $output .= '<optgroup label="' . _e($template->getOption('name')) . "\">\n";
             foreach ($template->getLayouts() as $layout) {
                 $layoutUid = TemplateService::composeUid($template, $layout);
@@ -420,7 +420,7 @@ abstract class Admin
         }
 
         if ($templates === null) {
-            $templates = Core::$pluginManager->getAllTemplates();
+            $templates = Core::$pluginManager->getPlugins()->getTemplates();
         }
 
         foreach ($templates as $template) {

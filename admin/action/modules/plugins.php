@@ -23,25 +23,25 @@ if (isset($_GET['cleared'])) {
 
 // pomocne funkce
 $renderPluginAuthor = function ($author, $url) {
-    $renderedAuthor = '';
+    $output = '';
 
     if (!empty($url)) {
-        $renderedAuthor .= '<a href="' . _e($url) . '" target="_blank">';
+        $output .= '<a href="' . _e($url) . '" target="_blank">';
     }
     if (!empty($author)) {
-        $renderedAuthor .= _e($author);
+        $output .= _e($author);
     } elseif (!empty($url)) {
-        $renderedAuthor .= _e(parse_url($url, PHP_URL_HOST) ?? '');
+        $output .= _e(parse_url($url, PHP_URL_HOST) ?? '');
     }
     if (!empty($url)) {
-        $renderedAuthor .= '</a>';
+        $output .= '</a>';
     }
 
-    if ($renderedAuthor !== '') {
-        $renderedAuthor = '<li><strong>' . _lang('admin.plugins.author') . ":</strong> {$renderedAuthor}</li>\n";
+    if ($output !== '') {
+        $output = '<li><strong>' . _lang('admin.plugins.author') . ":</strong> {$output}</li>\n";
     }
 
-    return $renderedAuthor;
+    return $output;
 };
 
 // tlacitka
@@ -53,11 +53,12 @@ $output .= '<p>
 ';
 
 // seznam pluginu
-foreach (Core::$pluginManager->all() as $pluginType => $plugins) {
-    $inactivePlugins = Core::$pluginManager->getAllInactive($pluginType);
+foreach (Core::$pluginManager->getTypes() as $type) {
+    $plugins = Core::$pluginManager->getPlugins()->getByType($type->getName());
+    $inactivePlugins = Core::$pluginManager->getInactivePlugins()->getByType($type->getName());
 
     $output .= "<fieldset>\n";
-    $output .= '<legend>' . _lang('admin.plugins.title.' . $pluginType) . ' (' . (count($plugins) + count($inactivePlugins)) . ")</legend>\n";
+    $output .= '<legend>' . _lang('admin.plugins.title.' . $type->getName()) . ' (' . (count($plugins) + count($inactivePlugins)) . ")</legend>\n";
     $output .= '<table class="list list-hover plugin-list">
 <thead>
     <tr>
@@ -100,7 +101,7 @@ foreach (Core::$pluginManager->all() as $pluginType => $plugins) {
             <p>
                 ' . _buffer(function () use ($plugin) {
                     foreach ($plugin->getActionList() as $action => $label) {
-                        echo '<a class="button" href="' . _e(Xsrf::addToUrl(Router::admin('plugins-action', ['query' => ['type' => $plugin->getType(), 'name' => $plugin->getId(), 'action' => $action]]))) . '">' . _e($label) . "</a>\n";
+                        echo '<a class="button" href="' . _e(Xsrf::addToUrl(Router::admin('plugins-action', ['query' => ['id' => $plugin->getId(), 'action' => $action]]))) . '">' . _e($label) . "</a>\n";
                     }
                 }) . '
             </p>

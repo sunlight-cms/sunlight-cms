@@ -13,7 +13,6 @@ abstract class PluginType
 {
     /** @var Resolver|null */
     private $optionResolver;
-
     /** @var Resolver|null */
     private $fallbackOptionResolver;
 
@@ -68,7 +67,9 @@ abstract class PluginType
                 Option::list('php_extensions', 'string')->default([]),
                 Option::bool('debug')->default(null)
             ),
-            Option::list('dependencies', 'string')->default([]),
+            Option::list('dependencies', 'string')
+                ->normalize([PluginOptionNormalizer::class, 'normalizeDependencies'])
+                ->default([]),
             Option::string('installer')
                 ->normalize([PluginOptionNormalizer::class, 'normalizePath'])
                 ->default(null),
@@ -112,7 +113,7 @@ abstract class PluginType
 
         $optionResolver->addNormalizer(function (Node $node, PluginData $plugin) {
             if ($node['namespace'] === null) {
-                $node['namespace'] = $this->getDefaultBaseNamespace() . '\\' . $plugin->camelId;
+                $node['namespace'] = $this->getDefaultBaseNamespace() . '\\' . $plugin->camelCasedName;
             }
 
             return $node;

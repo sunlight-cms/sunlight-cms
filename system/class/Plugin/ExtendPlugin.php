@@ -6,11 +6,8 @@ use Sunlight\Core;
 use Sunlight\Extend;
 use Sunlight\Localization\LocalizationDirectory;
 
-class ExtendPlugin extends Plugin
+class ExtendPlugin extends Plugin implements InitializableInterface
 {
-    /**
-     * Initialize the plugin
-     */
     function initialize(): void
     {
         // register events
@@ -63,9 +60,6 @@ class ExtendPlugin extends Plugin
         }
     }
 
-    /**
-     * Load a script
-     */
     private function loadScript(string $script): void
     {
         include $script;

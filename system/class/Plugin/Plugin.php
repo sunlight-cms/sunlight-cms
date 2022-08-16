@@ -29,7 +29,9 @@ abstract class Plugin
     /** @var string */
     protected $id;
     /** @var string */
-    protected $camelId;
+    protected $name;
+    /** @var string */
+    protected $camelCasedName;
     /** @var string */
     protected $type;
     /** @var int */
@@ -56,7 +58,8 @@ abstract class Plugin
     function __construct(PluginData $data, PluginManager $manager)
     {
         $this->id = $data->id;
-        $this->camelId = $data->camelId;
+        $this->name = $data->name;
+        $this->camelCasedName = $data->camelCasedName;
         $this->type = $data->type;
         $this->status = $data->status;
         $this->installed = $data->installed;
@@ -68,38 +71,19 @@ abstract class Plugin
         $this->manager = $manager;
     }
 
-    /**
-     * See if this plugin is currently active
-     */
-    static function isActive(): bool
-    {
-        return Core::$pluginManager->hasInstance(static::class);
-    }
-
-    /**
-     * Get plugin instance
-     *
-     * @throws \OutOfBoundsException if the plugin is not currently active
-     */
-    static function getInstance(): self
-    {
-        return Core::$pluginManager->getInstance(static::class);
-    }
-
-    /**
-     * Get plugin identifier
-     */
     function getId(): string
     {
         return $this->id;
     }
 
-    /**
-     * Get camel cased plugin identifier
-     */
-    function getCamelId(): string
+    function getName(): string
     {
-        return $this->camelId;
+        return $this->name;
+    }
+
+    function getCamelCasedName(): string
+    {
+        return $this->camelCasedName;
     }
 
     function getType(): string
@@ -112,25 +96,17 @@ abstract class Plugin
         return $this->status;
     }
 
-    /**
-     * See if the plugin is disabled
-     */
     function isDisabled(): bool
     {
         return $this->status === self::STATUS_DISABLED;
     }
 
-    /**
-     * See if the plugin can be disabled
-     */
     function canBeDisabled(): bool
     {
         return !$this->isDisabled();
     }
 
     /**
-     * See if the plugin has been installed
-     *
      * @return bool|null null if the plugin has no installer
      */
     function isInstalled(): ?bool
@@ -138,17 +114,12 @@ abstract class Plugin
         return $this->installed;
     }
 
-    /**
-     * See if the plugin has an installer
-     */
     function hasInstaller(): bool
     {
         return $this->options['installer'] !== null;
     }
 
     /**
-     * Get installer for this plugin
-     *
      * @throws \LogicException if the plugin has no installer
      */
     function getInstaller(): PluginInstaller
@@ -160,41 +131,26 @@ abstract class Plugin
         return require $this->options['installer'];
     }
 
-    /**
-     * See if the plugin needs installation be activated
-     */
     function needsInstallation(): bool
     {
         return $this->status === self::STATUS_NEEDS_INSTALLATION;
     }
 
-    /**
-     * See if the plugin can be installed
-     */
     function canBeInstalled(): bool
     {
         return $this->hasInstaller() && $this->installed === false;
     }
 
-    /**
-     * See if the plugin can be uninstalled
-     */
     function canBeUninstalled(): bool
     {
         return $this->hasInstaller() && $this->installed === true;
     }
 
-    /**
-     * See if the plugin can be removed
-     */
     function canBeRemoved(): bool
     {
         return !$this->hasInstaller() || $this->installed === false;
     }
 
-    /**
-     * See if the plugin has errors
-     */
     function hasErrors(): bool
     {
         return !empty($this->errors);
@@ -248,9 +204,6 @@ abstract class Plugin
         return $this->options;
     }
 
-    /**
-     * Get plugin configuration
-     */
     function getConfig(): ConfigurationFile
     {
         if ($this->config === null) {
@@ -343,9 +296,7 @@ abstract class Plugin
     }
 
     /**
-     * Get list of custom actions
-     *
-     * @return string[] name => label
+     * @return array<string, string> name => label
      */
     protected function getCustomActionList(): array
     {

@@ -2,14 +2,14 @@
 
 namespace Sunlight\Plugin;
 
-use Sunlight\Util\StringManipulator;
-
 class PluginData
 {
     /** @var string */
     public $id;
     /** @var string */
-    public $camelId;
+    public $name;
+    /** @var string */
+    public $camelCasedName;
     /** @var string */
     public $type;
     /** @var int|null */
@@ -27,10 +27,11 @@ class PluginData
     /** @var array */
     public $options = [];
 
-    function __construct(string $id, string $type, string $file, string $webPath)
+    function __construct(string $id, string $name, string $camelCasedName, string $type, string $file, string $webPath)
     {
         $this->id = $id;
-        $this->camelId = StringManipulator::toCamelCase($id);
+        $this->name = $name;
+        $this->camelCasedName = $camelCasedName;
         $this->type = $type;
         $this->dir = dirname($file);
         $this->file = $file;

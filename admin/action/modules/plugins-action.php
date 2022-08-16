@@ -10,9 +10,8 @@ use Sunlight\Xsrf;
 defined('SL_ROOT') or exit;
 
 // parametry
-$type = Request::get('type');
-$name = Request::get('name');
-$action = Request::get('action');
+$id = Request::get('id', '');
+$action = Request::get('action', '');
 
 if (!Xsrf::check(true)) {
     $output .= Message::error(_lang('global.badinput'));
@@ -21,9 +20,11 @@ if (!Xsrf::check(true)) {
 }
 
 // nacist plugin a akci
+$plugin = Core::$pluginManager->getPlugins()->get($id)
+    ?? Core::$pluginManager->getInactivePlugins()->get($id);
+
 if (
-    !Core::$pluginManager->isValidType($type)
-    || ($plugin = Core::$pluginManager->find($type, $name, false)) === null
+    $plugin === null
     || ($action = $plugin->getAction($action)) === null
 ) {
     $output .= Message::error(_lang('global.badinput'));
