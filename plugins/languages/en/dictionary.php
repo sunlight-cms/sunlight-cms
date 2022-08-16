@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'langcode.iso639' => 'en',
+    'code.iso639-1' => 'en',
     'numbers.dec_point' => '.',
     'numbers.thousands_sep' => ' ',
     'system.poweredby' => 'Powered by',
@@ -337,6 +337,8 @@ The request was issued %date% by %ip%.',
     'posts.topic.locked' => 'Closed topic',
     'posts.topic.sticky' => 'Sticky topic',
     'posts.unread' => 'unread',
+    'gallery.no_images' => 'This gallery does not contain any images.',
+    'category.no_articles' => 'This category does not contain any articles.',
     'article.author' => 'Author',
     'article.posted' => 'Published',
     'article.readnum' => 'Read',
@@ -398,8 +400,6 @@ The sender entered his address as: %sender%',
     'plugin.error' => 'The action could not be performed because the necessary extension <code>%plugin%</code> was not found.',
     'action.success' => 'Action successful',
     'action.failure' => 'Could not perform the action',
-    'misc.antispam_error' => 'Only one request can be sent in %antispamtimeout% seconds. Please wait.',
-    'misc.error_list' => 'The following errors have occured:',
-    'misc.category.noarts' => 'This category does not contain any articles.',
-    'misc.gallery.noimages' => 'This gallery does not contain any images.',
+    'error.antispam' => 'Only one request can be sent in %antispamtimeout% seconds. Please wait.',
+    'error.list_text' => 'The following errors have occured:',
 ];

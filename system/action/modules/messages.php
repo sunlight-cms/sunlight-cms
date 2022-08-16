@@ -97,7 +97,7 @@ switch ($a) {
 
                 // anti spam limit
                 if (!User::hasPrivilege('unlimitedpostaccess') && !IpLog::check(IpLog::ANTI_SPAM)) {
-                    $message = Message::warning(_lang('misc.antispam_error', ['%antispamtimeout%' => Settings::get('antispamtimeout')]));
+                    $message = Message::warning(_lang('error.antispam', ['%antispamtimeout%' => Settings::get('antispamtimeout')]));
                     break;
                 }
 

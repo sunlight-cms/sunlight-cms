@@ -94,7 +94,7 @@ if (isset($_GET['confirm'])) {
 
         // kontrola iplogu
         if (!IpLog::check(IpLog::ANTI_SPAM)) {
-            $errors[] = _lang('misc.antispam_error', ['%antispamtimeout%' => Settings::get('antispamtimeout')]);
+            $errors[] = _lang('error.antispam', ['%antispamtimeout%' => Settings::get('antispamtimeout')]);
         }
 
         // nacteni a kontrola promennych

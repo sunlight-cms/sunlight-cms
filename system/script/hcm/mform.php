@@ -40,7 +40,7 @@ if (IpLog::check(IpLog::ANTI_SPAM)) {
     IpLog::update(IpLog::ANTI_SPAM);
 } else {
     // prekroceno
-    echo _lang('misc.antispam_error', ['%antispamtimeout%' => Settings::get('antispamtimeout')]);
+    echo _lang('error.antispam', ['%antispamtimeout%' => Settings::get('antispamtimeout')]);
     exit;
 }
 

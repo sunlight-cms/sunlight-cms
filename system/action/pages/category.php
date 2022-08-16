@@ -69,5 +69,5 @@ if (DB::size($arts) != 0) {
         $output .= $paging['paging'];
     }
 } else {
-    $output .= '<p>' . _lang('misc.category.noarts') . '</p>';
+    $output .= '<p>' . _lang('category.no_articles') . '</p>';
 }

@@ -38,7 +38,7 @@ class VersionChecker
                 'dist' => Core::DIST,
                 'php' => PHP_VERSION_ID,
                 'checksum' => sha1(Core::$appId . '$' . Core::$secret),
-                'lang' => _lang('langcode.iso639'),
+                'lang' => _lang('code.iso639-1'),
             ]);
 
             try {

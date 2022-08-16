@@ -23,7 +23,7 @@ if (isset($_POST['download'])) {
 
     // antispam
     if (!IpLog::check(IpLog::ANTI_SPAM)) {
-        $errors[] = _lang('misc.antispam_error', ['%antispamtimeout%' => Settings::get('antispamtimeout')]);
+        $errors[] = _lang('error.antispam', ['%antispamtimeout%' => Settings::get('antispamtimeout')]);
     }
 
     // process

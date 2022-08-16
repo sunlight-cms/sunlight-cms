@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'langcode.iso639' => 'cs',
+    'code.iso639-1' => 'cs',
     'numbers.dec_point' => '.',
     'numbers.thousands_sep' => ' ',
     'system.poweredby' => 'Powered by',
@@ -337,6 +337,8 @@ Platnost tohoto odkazu je 1 hodina.
     'posts.topic.locked' => 'Uzavřené téma',
     'posts.topic.sticky' => 'Připnuté téma',
     'posts.unread' => 'nepřečteno',
+    'gallery.no_images' => 'Tato galerie neobsahuje žádné obrázky.',
+    'category.no_articles' => 'Tato kategorie neobsahuje žádné články.',
     'article.author' => 'Autor',
     'article.posted' => 'Vydáno',
     'article.readnum' => 'Přečteno',
@@ -398,8 +400,6 @@ Odesílatel uvedl svou adresu jako: %sender%',
     'plugin.error' => 'Akci nebylo možné provést, protože nebylo nalezeno potřebné rozšíření <code>%plugin%</code>.',
     'action.success' => 'Akce byla provedena',
     'action.failure' => 'Akci se nepodařilo provést',
-    'misc.antispam_error' => 'Je možné zaslat maximálně jeden požadavek za %antispamtimeout% sekund. Prosíme počkejte.',
-    'misc.error_list' => 'Během zpracovávání požadavku došlo k chybám:',
-    'misc.category.noarts' => 'Tato kategorie neobsahuje žádné články.',
-    'misc.gallery.noimages' => 'Tato galerie neobsahuje žádné obrázky.',
+    'error.antispam' => 'Je možné zaslat maximálně jeden požadavek za %antispamtimeout% sekund. Prosíme počkejte.',
+    'error.list_text' => 'Během zpracovávání požadavku došlo k chybám:',
 ];

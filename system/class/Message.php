@@ -90,7 +90,7 @@ class Message
     {
         return new self(
             $options['type'] ?? self::WARNING,
-            ($options['text'] ?? _lang('misc.error_list'))
+            ($options['text'] ?? _lang('error.list_text'))
                 . "\n"
                 . GenericTemplates::renderMessageList($messages, $options['list'] ?? []),
             true
