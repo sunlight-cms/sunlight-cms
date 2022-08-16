@@ -497,7 +497,7 @@ return [
     'admin.plugins.action.remove.failure' => 'Nepodařilo se odstranit rozšíření "%plugin%". Zkontrolujte oprávnění.',
     'admin.plugins.action.dependants_warning' => 'Toto rozšíření je vyžadováno jinými rozšířeními, které budou v případě jeho nedostupnosti deaktivovány:',
     'admin.plugins.upload' => 'Nahrát nová rozšíření',
-    'admin.plugins.upload.p' => 'Nahráváte nový archív s rozšířeními. Jakmile bude archív nahrán, vraťte se zpět na seznam rozšíření a zkontrolujte/nainstalujte požadovaná rozšíření.',
+    'admin.plugins.upload.p' => 'Nahráváte nový archív s rozšířeními.',
     'admin.plugins.upload.file' => 'Soubor pluginu (.zip)',
     'admin.plugins.upload.skip_existing' => 'přeskočit již existující pluginy',
     'admin.plugins.upload.no_plugins' => 'Archív neobsahuje žádné pluginy',

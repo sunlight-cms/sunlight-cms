@@ -497,7 +497,7 @@ return [
     'admin.plugins.action.remove.failure' => 'Could not remove plugin "%plugin%". Check filesystem privileges.',
     'admin.plugins.action.dependants_warning' => 'This plugin is required by other plugins which are going to be disabled if this plugin is not available:',
     'admin.plugins.upload' => 'Upload new plugins',
-    'admin.plugins.upload.p' => 'You are uploading a new plugin archive. After the archive has been uploaded, go back to the plugin list to verify and/or install the plugins.',
+    'admin.plugins.upload.p' => 'You are uploading a new plugin archive.',
     'admin.plugins.upload.file' => 'Plugin archive (.zip)',
     'admin.plugins.upload.skip_existing' => 'skip existing plugins',
     'admin.plugins.upload.no_plugins' => 'The archive does not contain any plugins',
