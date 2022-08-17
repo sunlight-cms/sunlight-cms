@@ -9,7 +9,7 @@ Documentation, support and stable downloads are available at `sunlight-cms.cz <h
 Requirements
 ************
 
-- web server (Apache preferred)
+- Apache (with enabled .htaccess)
 - PHP 7.1 or newer
 - MySQL (or MariaDB) 5.0 or newer
 - `Composer <https://getcomposer.org/>`_ (to install dependencies)

@@ -38,6 +38,5 @@
 !/vendor/.htaccess
 
 /composer.lock
-/.htaccess
 /config.php
 /mail.log

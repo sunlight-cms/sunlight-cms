@@ -18,7 +18,7 @@ Core::init('../', [
     'env' => Core::ENV_ADMIN,
 ]);
 
-/* ----  priprava  ---- */
+/* ----  prepare  ---- */
 
 $_admin = new AdminState();
 $_admin->access = (User::isLoggedIn() && User::hasPrivilege('administration'));
@@ -26,7 +26,7 @@ $_admin->currentModule = Request::get('p', 'index');
 
 $output = &$_admin->output;
 
-// nacteni modulu
+// load modules
 $_admin->modules = require SL_ROOT . 'admin/modules.php';
 Extend::call('admin.init', ['admin' => $_admin]);
 foreach ($_admin->modules as $module => $module_options) {
@@ -36,9 +36,8 @@ foreach ($_admin->modules as $module => $module_options) {
 }
 asort($_admin->menu, SORT_NUMERIC);
 
-/* ---- priprava obsahu ---- */
+/* ---- prepare content ---- */
 
-// vystup
 if (empty($_POST) || Xsrf::check()) {
     if ($_admin->access) {
         try {
@@ -61,21 +60,21 @@ if ($_admin->loginLayout) {
     $_admin->assets = Admin::themeAssets(Settings::get('adminscheme'), $_admin->dark);
 }
 
-/* ----  vystup  ---- */
+/* ---- output content ---- */
 
-// presmerovani?
+// redirection?
 if ($_admin->redirectTo !== null) {
     Response::redirect($_admin->redirectTo);
     exit;
 }
 
-// body tridy
+// body classes
 if ($_admin->loginLayout) {
     $_admin->bodyClasses[] = 'login-layout';
 }
 $_admin->bodyClasses[] = $_admin->dark ? 'dark' : 'light';
 
-// vystup
+// output
 echo _buffer(function () use ($_admin) { ?>
 <?= GenericTemplates::renderHead() ?>
 <meta name="robots" content="noindex,nofollow"><?= GenericTemplates::renderHeadAssets($_admin->assets), "\n" ?>

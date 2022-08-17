@@ -55,7 +55,6 @@ $output .= "
 <p class='bborder'>" . _lang('mod.search.p') . "</p>
 
 <form action='" . _e(Router::module('search')) . "' method='get' class='fullsearchform'>
-" . (!Settings::get('pretty_urls') ? Form::renderHiddenInputs(Arr::filterKeys($_GET, null, null, ['q', 'page', 'art', 'post', 'img'])) : '') . "
 <p><input type='search' name='q' class='inputmedium' value='" . _e($search_query) . "'> <input type='submit' value='" . _lang('mod.search.submit') . "'></p>
 <p>
     " . _lang('mod.search.where') . ":

@@ -297,7 +297,7 @@ return [
     'admin.settings.main.language_allowcustom' => 'Choose language',
     'admin.settings.main.language_allowcustom.help' => 'allow registered users to choose from available system localisations',
     'admin.settings.main.pretty_urls' => 'Pretty URLs',
-    'admin.settings.main.pretty_urls.help' => 'enable pretty URLs (if under Apache, the <em>.htaccess</em> file will be generated automatically)',
+    'admin.settings.main.pretty_urls.help' => 'enable pretty URLs (mod_rewrite support is required)',
     'admin.settings.main.notpublicsite' => 'Private pages',
     'admin.settings.main.notpublicsite.help' => 'if this option is enabled, the user must be logged in to be able to view any content',
     'admin.settings.info' => 'Website information',

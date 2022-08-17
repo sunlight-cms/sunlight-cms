@@ -1,16 +1,17 @@
 <?php
 
+use Kuria\RequestInfo\RequestInfo;
 use Sunlight\Core;
 use Sunlight\Extend;
 use Sunlight\GenericTemplates;
 use Sunlight\Plugin\PluginRouter;
 use Sunlight\Plugin\TemplatePlugin;
 use Sunlight\Plugin\TemplateService;
+use Sunlight\Router;
 use Sunlight\Settings;
 use Sunlight\Template;
 use Sunlight\User;
 use Sunlight\Util\Html;
-use Sunlight\Util\Request;
 use Sunlight\Util\Response;
 use Sunlight\WebState;
 use Sunlight\Xsrf;
@@ -20,135 +21,133 @@ Core::init('./', [
     'env' => Core::ENV_WEB,
 ]);
 
-/* ----  priprava  ---- */
+/* ----  prepare  ---- */
 
-// aktualni URL
+// current URL
 $_url = Core::getCurrentUrl();
-
-// presmerovat /index.php na /
-if (substr($_url->getPath(), strlen(Core::getBaseUrl()->getPath())) === '/index.php' && !$_url->hasQuery()) {
-    Response::redirect(Core::getBaseUrl()->build());
-}
+$pretty_urls_enabled = (bool) Settings::get('pretty_urls');
+$is_pretty_url = ((RequestInfo::getBaseDir() === RequestInfo::getBasePath()));
 
 // init web state
 $_index = new WebState();
 $_index->template = TemplateService::getDefaultTemplate();
 $_index->templateLayout = TemplatePlugin::DEFAULT_LAYOUT;
+$_index->slug = RequestInfo::getPathInfo();
 
-/* ---- priprava obsahu ---- */
+// normalize slug
+if (strncmp($_index->slug, '/', 1) === 0) {
+    $_index->slug = substr($_index->slug, 1);
+}
+
+if ($_index->slug === '') {
+    $_index->slug = null;
+}
+
+// redirect between URL types
+if (
+    $pretty_urls_enabled !== $is_pretty_url
+    && ($pretty_urls_enabled || $_index->slug !== null) // don't redirect / to /index.php
+) {
+    Response::redirect(Router::slug($_index->slug ?? '', ['absolute' => true, 'query' => $_url->getQuery()]));
+    exit;
+}
+
+// redirect "/index.php/" to "/"
+if (!$pretty_urls_enabled && !$is_pretty_url && $_index->slug === null) {
+    Response::redirect(Router::slug('', ['absolute' => true, 'query' => $_url->getQuery()]));
+    exit;
+}
+
+/* ---- prepare content ---- */
 
 Extend::call('index.init', ['index' => $_index]);
 
 $output = &$_index->output;
 
-if (empty($_POST) || Xsrf::check()) {
-    // zjisteni typu
-    if (isset($_GET['m'])) {
+do {
+    // XSRF check
+    if (!empty($_POST) && !Xsrf::check()) {
+        require SL_ROOT . 'system/action/xsrf_error.php';
+        break;
+    }
 
-        // modul
-        $_index->slug = Request::get('m');
-        $_index->isRewritten = !$_url->has('m');
+    // module
+    if ($_index->slug !== null && strncmp($_index->slug, 'm/', 2) === 0) {
         $_index->type = WebState::MODULE;
-
         Extend::call('mod.init');
-
         require SL_ROOT . 'system/action/module.php';
+        break;
+    }
 
-    } elseif (!User::isLoggedIn() && Settings::get('notpublicsite')) {
-
-        // neverejne stranky
-        $_index->isRewritten = Settings::get('pretty_urls');
+    // enforce login if site is not public
+    if (!User::isLoggedIn() && Settings::get('notpublicsite')) {
         $_index->type = WebState::UNAUTHORIZED;
+        break;
+    }
 
-    } else do {
+    // page
+    if ($_index->slug !== null) {
+        $segments = explode('/', $_index->slug);
+    } else {
+        $segments = [];
+    }
 
-        // stranka / plugin
-        if (Settings::get('pretty_urls') && isset($_GET['_rwp'])) {
-            // hezka adresa
-            $_index->slug = Request::get('_rwp');
-            $_index->isRewritten = true;
-        } elseif (isset($_GET['p'])) {
-            // parametr
-            $_index->slug = Request::get('p');
-        }
+    Extend::call('page.init', [
+        'index' => $_index,
+        'segments' => $segments,
+    ]);
 
-        if ($_index->slug !== null) {
-            $segments = explode('/', $_index->slug);
-        } else {
-            $segments = [];
-        }
+    if ($_index->type !== null) {
+        break;
+    }
 
-        // extend
-        Extend::call('page.init', [
-            'index' => $_index,
-            'segments' => $segments,
-        ]);
+    if (PluginRouter::handle($_index)) {
+        break;
+    }
 
-        if ($_index->type !== null) {
-            break;
-        }
+    if (!empty($segments) && $segments[count($segments) - 1] === '') {
+        // redirect trailing slash
+        $_index->redirect(Router::slug(rtrim($_index->slug, '/'), ['absolute' => true]));
+        break;
+    }
 
-        // plugin routes
-        if (PluginRouter::handle($_index)) {
-            break;
-        }
+    // render page
+    $_index->type = WebState::PAGE;
+    require SL_ROOT . 'system/action/page.php';
+} while(false);
 
-        // presmerovat identifikator/ na identifikator
-        if (!empty($segments) && $segments[count($segments) - 1] === '') {
-            if (Settings::get('pretty_urls')) {
-                $_url->setPath(rtrim($_url->getPath(), '/'));
-            } else {
-                $_url->set('p', rtrim(Request::get('p', ''), '/'));
-            }
-            $_index->redirect($_url->build());
-            break;
-        }
-
-        // vykreslit stranku
-        $_index->type = WebState::PAGE;
-        require SL_ROOT . 'system/action/page.php';
-
-    } while (false);
-} else {
-    // spatny XSRF token
-    require SL_ROOT . 'system/action/xsrf_error.php';
-}
-
-/* ----  vystup  ---- */
+/* ---- output content ---- */
 
 Extend::call('index.prepare', ['index' => $_index]);
 
-// zpracovani stavu
+// handle state
 switch ($_index->type) {
     case WebState::REDIR:
-        // presmerovani
         $_index->templateEnabled = false;
         Response::redirect($_index->redirectTo, $_index->redirectToPermanent);
         break;
 
     case WebState::NOT_FOUND:
-        // stranka nenelezena
         require SL_ROOT . 'system/action/not_found.php';
         break;
 
     case WebState::UNAUTHORIZED:
-        // pristup odepren
         require SL_ROOT . 'system/action/login_required.php';
         break;
 }
 
 Extend::call('index.ready', ['index' => $_index]);
 
-// vlozeni motivu
+// insert the template
 if ($_index->templateEnabled) {
-    // nacist prvky motivu
+    // load template components
     $_index->template->begin($_index->templateLayout);
     $_index->templateBoxes = $_index->template->getBoxes($_index->templateLayout);
     $_index->templatePath = $_index->template->getTemplate($_index->templateLayout);
 
     Extend::call('tpl.ready', ['index' => $_index]);
 
-    // vystup
+    // output
     echo _buffer(function () use ($_index) { ?>
 <?= GenericTemplates::renderHead() ?>
 <?= Template::head() ?>

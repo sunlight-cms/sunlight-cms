@@ -2,52 +2,47 @@
 
 use Sunlight\Extend;
 use Sunlight\Router;
-use Sunlight\Settings;
 use Sunlight\Util\StringManipulator;
 
 defined('SL_ROOT') or exit;
 
-$_index->url = Router::module($_index->slug, ['query' => $_url->getQuery()]);
-
-// presmerovani na hezkou verzi adresy
-if (Settings::get('pretty_urls') && !$_index->isRewritten) {
-    $_url->remove('m');
-    $_index->redirect(Router::module($_index->slug, ['query' => $_url->getQuery(), 'absolute' => true]), true);
-    return;
-}
-
 // nalezeni modulu
+$module = null;
 $script = null;
-if (preg_match('{[a-zA-Z_\-.]+$}AD', $_index->slug)) {
+
+if (preg_match('{m/([a-zA-Z_\-.]+)$}AD', $_index->slug, $match)) {
+    $module = $match[1];
+    $_index->url = clone $_url;
+
     // test, zda se jedna o systemovy modul
-    $systemModule = SL_ROOT . 'system/action/modules/' . $_index->slug . '.php';
+    $systemModule = SL_ROOT . 'system/action/modules/' . $module . '.php';
 
     if (is_file($systemModule)) {
         $script = $systemModule;
     } else {
         // systemovy modul nenalezen
         // umoznit implementaci pluginem
-        Extend::call('mod.custom.' . $_index->slug, [
+        Extend::call('mod.custom.' . $module, [
             'script' => &$script,
         ]);
     }
 }
 
 // spusteni modulu
-if ($script !== null) {
+if (isset($module, $script)) {
     $_index->bodyClasses[] = 't-module';
-    $_index->bodyClasses[] = 'm-' . StringManipulator::slugify($_index->slug, true, '_');
+    $_index->bodyClasses[] = 'm-' . StringManipulator::slugify($module, true, '_');
 
-    $extend_args = Extend::args($output, ['id' => $_index->slug, 'script' => &$script]);
+    $extend_args = Extend::args($output, ['id' => $module, 'script' => &$script]);
 
     Extend::call('mod.all.before', $extend_args);
     Extend::call('mod.' . $_index->slug . '.before', $extend_args);
 
-    $extend_args = Extend::args($output, ['id' => $_index->slug]);
+    $extend_args = Extend::args($output, ['id' => $module]);
 
     require $script;
 
-    Extend::call('mod.' . $_index->slug . '.after', $extend_args);
+    Extend::call('mod.' . $module . '.after', $extend_args);
     Extend::call('mod.all.after', $extend_args);
 } else {
     $_index->notFound();

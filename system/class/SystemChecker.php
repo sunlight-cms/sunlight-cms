@@ -34,7 +34,6 @@ class SystemChecker
 
         $this->checkPaths();
         $this->checkInstallFiles();
-        $this->checkHtaccess();
 
         Extend::call('core.check', ['errors' => &$this->errors]);
 
@@ -100,51 +99,5 @@ class SystemChecker
                 'The patch.php file must be removed after the update',
             ];
         }
-    }
-
-    /**
-     * Check .htaccess file
-     */
-    private function checkHtaccess(): void
-    {
-        // auto-generate .htaccess file if pretty urls are enabled
-        // and the server is apache
-        if (Environment::isApache()) {
-            $generatedHtaccess = self::generateHtaccess();
-
-            $htaccessPath = SL_ROOT . '.htaccess';
-            $htaccessExists = file_exists($htaccessPath);
-
-            if ($htaccessExists) {
-                // the .htaccess file already exists
-                if (!Settings::get('pretty_urls') && file_get_contents($htaccessPath) === $generatedHtaccess) {
-                    // delete the previously generated one
-                    unlink($htaccessPath);
-                }
-            } elseif (Settings::get('pretty_urls')) {
-                // generate it
-                file_put_contents(SL_ROOT . '.htaccess', $generatedHtaccess);
-            }
-        }
-    }
-
-    /**
-     * Generate the .htaccess file
-     */
-    static function generateHtaccess(): string
-    {
-        $basePath = preg_quote(Core::getBaseUrl()->getPath());
-
-        return <<<HTACCESS
-RewriteEngine On
-
-RewriteCond %{REQUEST_URI} ^{$basePath}/m/([0-9a-zA-Z\.\-_]+)$ [NC]
-RewriteRule .* {$basePath}/index.php?m=%1 [L,QSA]
-
-RewriteCond %{REQUEST_URI} ^{$basePath}/([0-9a-zA-Z\.\-_/]+)$ [NC]
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule .* {$basePath}/index.php?_rwp=%1 [L,QSA]
-HTACCESS;
     }
 }

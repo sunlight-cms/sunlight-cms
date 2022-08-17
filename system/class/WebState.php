@@ -42,8 +42,6 @@ class WebState
     public $backlink;
     /** @var array<array{title: string, url: string}> */
     public $crumbs = [];
-    /** @var bool actual URL type */
-    public $isRewritten = false;
     /** @var string|null redirection target */
     public $redirectTo;
     /** @var bool permanent redirection 1/0 */

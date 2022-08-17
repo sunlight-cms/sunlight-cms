@@ -297,7 +297,7 @@ return [
     'admin.settings.main.language_allowcustom' => 'Výběr jazyka',
     'admin.settings.main.language_allowcustom.help' => 'povolit zaregistrovaným uživatelům výběr mezi nainstalovanými jazykovými mutacemi systému',
     'admin.settings.main.pretty_urls' => 'Hezké adresy',
-    'admin.settings.main.pretty_urls.help' => 'aktivace hezkého formátu adres (pokud používáte server Apache, bude soubor <em>.htaccess</em> vygenerován automaticky)',
+    'admin.settings.main.pretty_urls.help' => 'aktivace hezkého formátu adres (vyžaduje podporu mod_rewrite)',
     'admin.settings.main.notpublicsite' => 'Neveřejné stránky',
     'admin.settings.main.notpublicsite.help' => 'pokud je tato volba aktivována, musí být uživatel přihlášen, aby mohl prohlížet jakýkoliv obsah stránek',
     'admin.settings.info' => 'Informace o stránkách',

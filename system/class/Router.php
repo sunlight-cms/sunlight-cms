@@ -18,21 +18,12 @@ use Sunlight\Util\Html;
  */
 abstract class Router
 {
-    /** Any path */
-    const TYPE_PATH = 'path';
-    /** Web slug (page, article, etc.) */
-    const TYPE_SLUG = 'slug';
-    /** Web module */
-    const TYPE_MODULE = 'module';
-    /** Admin module */
-    const TYPE_ADMIN = 'admin';
-
     /**
      * Generate URL for a path
      */
     static function path(string $path, ?array $options = null): string
     {
-        return self::generateUrl(self::TYPE_PATH, self::createUrl($path), $options);
+        return self::generateUrl(self::createUrl($path), $options);
     }
 
     /**
@@ -80,13 +71,12 @@ abstract class Router
         if (Settings::get('pretty_urls')) {
             $url = self::createUrl($slug);
         } elseif ($slug !== '') {
-            $url = self::createUrl('index.php');
-            $url->set('p', $slug);
+            $url = self::createUrl('index.php/' . $slug);
         } else {
             $url = self::createUrl('');
         }
 
-        return self::generateUrl(self::TYPE_SLUG, $url, $options);
+        return self::generateUrl($url, $options);
     }
 
     /**
@@ -213,14 +203,7 @@ abstract class Router
      */
     static function module(string $module, ?array $options = null): string
     {
-        if (Settings::get('pretty_urls')) {
-            $url = self::createUrl('m/' . $module);
-        } else {
-            $url = self::createUrl('index.php');
-            $url->set('m', $module);
-        }
-
-        return self::generateUrl(self::TYPE_MODULE, $url, $options);
+        return self::slug('m/' . $module, $options);
     }
 
     /**
@@ -231,7 +214,7 @@ abstract class Router
         $url = self::createUrl('admin/index.php');
         $url->set('p', $module);
 
-        return self::generateUrl(self::TYPE_ADMIN, $url, $options);
+        return self::generateUrl($url, $options);
     }
 
     /**
@@ -239,7 +222,7 @@ abstract class Router
      */
     static function adminIndex(?array $options = null): string
     {
-        return self::generateUrl(self::TYPE_ADMIN, self::createUrl('admin/'), $options);
+        return self::generateUrl(self::createUrl('admin/'), $options);
     }
 
     /**
@@ -358,7 +341,7 @@ abstract class Router
         return $url;
     }
 
-    private static function generateUrl(string $type, Url $url, ?array $options): string
+    private static function generateUrl(Url $url, ?array $options): string
     {
         if (!empty($options['query'])) {
             $url->add($options['query']);
@@ -368,7 +351,7 @@ abstract class Router
             $url->setFragment($options['fragment']);
         }
 
-        Extend::call('router.generate', ['type' => $type, 'url' => $url]);
+        Extend::call('router.generate', ['url' => $url]);
 
         return ($options['absolute'] ?? false) ? $url->buildAbsolute() : $url->buildRelative();
     }

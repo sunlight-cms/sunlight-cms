@@ -42,16 +42,12 @@ if ($_page['layout'] !== null) {
     $_index->changeTemplate($_page['layout']);
 }
 
-// kontrola typu pristupu k hlavni strane
+// kontrola URL hlavni strany
 if (
     $_page['id'] == Settings::get('index_page_id')
     && !empty($segments)
     && $segment === null
 ) {
-    if (!Settings::get('pretty_urls')) {
-        $_url->remove('p');
-    }
-
     $_index->redirect(Router::page($_page['id'], $_page['slug'], null, ['query' => $_url->getQuery()]));
     return;
 }
@@ -76,12 +72,6 @@ if ($segment !== null) {
         $_index->notFound();
         return;
     }
-}
-
-// presmerovani na hezkou adresu
-if (Settings::get('pretty_urls') && !$_index->isRewritten && !empty($segments)) {
-    $_index->redirect($_index->url, true);
-    return;
 }
 
 // test pristupu

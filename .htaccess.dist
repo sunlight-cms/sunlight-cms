@@ -1,9 +1,0 @@
-RewriteEngine On
-
-RewriteCond %{REQUEST_URI} ^/m/([0-9a-zA-Z\.\-_]+)$ [NC]
-RewriteRule .* /index.php?m=%1 [L,QSA]
-
-RewriteCond %{REQUEST_URI} ^/([0-9a-zA-Z\.\-_/]+)$ [NC]
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule .* /index.php?_rwp=%1 [L,QSA]
