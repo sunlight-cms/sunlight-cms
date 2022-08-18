@@ -26,7 +26,7 @@ Core::init('./', [
 // current URL
 $_url = Core::getCurrentUrl();
 $pretty_urls_enabled = (bool) Settings::get('pretty_urls');
-$is_pretty_url = ((RequestInfo::getBaseDir() === RequestInfo::getBasePath()));
+$is_pretty_url = (RequestInfo::getBaseDir() === RequestInfo::getBasePath());
 
 // init web state
 $_index = new WebState();
