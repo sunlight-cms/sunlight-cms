@@ -284,7 +284,7 @@ abstract class Router
             if ($title === null) {
                 $title = $name;
             } else {
-                $title = "{$name}, {$title}";
+                $title = $name . ', ' . $title;
             }
         }
 
@@ -292,14 +292,14 @@ abstract class Router
         $out = "<{$tag}"
             . ($options['link'] ? ' href="' . _e(self::module('profile', self::combineOptions(['query' => ['id' => $data['username']]], $options['url']))) . '"' : '')
             . ($options['link'] && $options['new_window'] ? ' target="_blank"' : '')
-            . " class=\"user-link user-link-{$data['id']} user-link-group-{$data['group_id']}" . ($options['class'] !== null ? " {$options['class']}" : '') . '"'
-            . ($options['color'] && $data['group_color'] !== '' ? " style=\"color:{$data['group_color']}\"" : '')
-            . ($title !== null ? " title=\"{$title}\"" : '')
+            . ' class="user-link user-link-' . $data['id'] . ' user-link-group-' . $data['group_id'] . ($options['class'] !== null ? ' ' . $options['class'] : '') . '"️'
+            . ($options['color'] && $data['group_color'] !== '' ? ' style="color:' . $data['group_color'] . '"' : '')
+            . ($title !== null ? ' title="' . $title . '"' : '')
             . '>';
 
         // group icon
         if ($options['icon'] && $data['group_icon'] !== '') {
-            $out .= '<img src="' . self::path('images/groupicons/' . $data['group_icon']) . "\" title=\"{$data['group_title']}\" alt=\"{$data['group_title']}\" class=\"icon\">";
+            $out .= '<img src="' . self::path('images/groupicons/' . $data['group_icon']) . '" title="' . $data['group_title'] . '" alt="' . $data['group_title'] . '" class="icon">';
         }
 
         // username

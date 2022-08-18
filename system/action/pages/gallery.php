@@ -28,7 +28,7 @@ $_index->title = $_page['title'];
 
 // obsah
 Extend::call('page.gallery.content.before', $extend_args);
-if ($_page['content'] != '') $output .= Hcm::parse($_page['content']) . "\n\n<div class='hr gallery-hr'><hr></div>\n\n";
+if ($_page['content'] != '') $output .= Hcm::parse($_page['content']) . "\n\n<div class=\"hr gallery-hr\"><hr></div>\n\n";
 Extend::call('page.gallery.content.after', $extend_args);
 
 // obrazky
@@ -43,9 +43,9 @@ if ($images_number != 0) {
         $output .= $paging['paging'];
     }
     if ($usetable) {
-        $output .= "<table class='gallery'>\n";
+        $output .= "<table class=\"gallery\">\n";
     } else {
-        $output .= "<div class='gallery'>\n";
+        $output .= "<div class=\"gallery\">\n";
     }
 
     // obrazky

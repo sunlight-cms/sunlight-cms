@@ -208,11 +208,11 @@ abstract class Article
             return $extendOutput;
         }
 
-        $output = "<div class='list-item article-preview'>\n";
+        $output = "<div class=\"list-item article-preview\">\n";
 
         // titulek
         $link = Router::article($art['id'], $art['slug'], $art['cat_slug']);
-        $output .= "<h2 class='list-title'><a href='" . $link . "'>" . $art['title'] . "</a></h2>\n";
+        $output .= '<h2 class="list-title"><a href="' . $link . '">' . $art['title'] . "</a></h2>\n";
 
         // perex a obrazek
         if ($perex == true) {
@@ -222,8 +222,8 @@ abstract class Article
                 $thumbnail = null;
             }
 
-            $output .= "<div class='list-perex'>"
-                . ($thumbnail !== null ? "<a href='" . _e($link) . "'><img class='list-perex-image' src='" . _e(Router::file($thumbnail)) . "' alt='" . $art['title'] . "'></a>" : '')
+            $output .= '<div class="list-perex">'
+                . ($thumbnail !== null ? '<a href="' . _e($link) . '"><img class="list-perex-image" src="' . _e(Router::file($thumbnail)) . '" alt="' . $art['title'] . '"></a>' : '')
                 . $art['perex']
                 . "</div>\n";
         }
@@ -250,7 +250,7 @@ abstract class Article
 
             $output .= GenericTemplates::renderInfos($infos);
         } elseif ($perex && isset($art['picture_uid'])) {
-            $output .= "<div class='cleaner'></div>\n";
+            $output .= "<div class=\"cleaner\"></div>\n";
         }
 
         $output .= "</div>\n";

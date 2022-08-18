@@ -35,7 +35,7 @@ if ($query !== false) {
         if ($query['note'] == '') {
             $note = '';
         } else {
-            $note = "<tr class='valign-top'><th>" . _lang('global.note') . "</th><td><div class='note'>" . Post::render($query['note']) . '</div></td></tr>';
+            $note = '<tr class="valign-top"><th>' . _lang('global.note') . '</th><td><div class="note">' .Post::render($query['note']) . '</div></td></tr>';
         }
 
         // clanky autora
@@ -51,7 +51,7 @@ if ($query !== false) {
             }
 
             // sestaveni kodu
-            $arts = "\n<tr><th>" . _lang('global.articlesnum') . '</th><td>' . $arts . ", <a href='" . _e(Router::module('profile-arts', ['query' => ['id' => $id]])) . "'>" . _lang('global.show') . " &gt;</a></td></tr>\n";
+            $arts = "\n<tr><th>" . _lang('global.articlesnum') . '</th><td>' . $arts . ', <a href="' . _e(Router::module('profile-arts', ['query' => ['id' => $id]])) . '">' . _lang('global.show') . " &gt;</a></td></tr>\n";
             if (Settings::get('ratemode') != 0) {
                 $arts .= "\n<tr><th>" . _lang('article.rate') . '</th><td>' . $avgrate . "</td></tr>\n";
             }
@@ -63,7 +63,7 @@ if ($query !== false) {
         // odkaz na prispevky uzivatele
         $posts_count = DB::count('post', 'author=' . DB::val($query['id']) . ' AND type!=' . Post::PRIVATE_MSG . ' AND type!=' . Post::SHOUTBOX_ENTRY);
         if ($posts_count > 0) {
-            $posts_viewlink = ", <a href='" . _e(Router::module('profile-posts', ['query' => ['id' => $id]])) . "'>" . _lang('global.show') . ' &gt;</a>';
+            $posts_viewlink = ', <a href="' . _e(Router::module('profile-posts', ['query' => ['id' => $id]])) . '">' . _lang('global.show') . ' &gt;</a>';
         } else {
             $posts_viewlink = '';
         }
@@ -87,28 +87,28 @@ if ($public) {
         $output .= Message::ok(_lang('mod.profile.private.selfnote'));
     }
 
-    $output .= "
-<table class='profiletable'>
+    $output .= '
+<table class="profiletable">
 
-<tr class='valign-top'>
+<tr class="valign-top">
 
-<td class='avatartd'>
-" . User::renderAvatar($query) . "
+<td class="avatartd">
+' . User::renderAvatar($query) . '
 </td>
 
 <td>
-<table class='profiletable'>
+<table class="profiletable">
 
 <tr>
-<th>" . _lang('login.username') . '</th>
+<th>' . _lang('login.username') . '</th>
 <td>' . $query['username'] . '</td>
 </tr>
 
 ' . (($query['publicname'] !== null) ? '<tr><th>' . _lang('mod.settings.account.publicname') . '</th><td>' . $query['publicname'] . '</td></tr>' : '') . '
 
 <tr>
-<th>' . _lang('global.group') . "</th>
-<td><span class='text-icon'>" . (($groupdata['icon'] != '') ? "<img src='" . _e(Router::path('images/groupicons/' . $groupdata['icon'])) . "' alt='icon' class='icon'>" : '') . (($groupdata['color'] !== '') ? '<span style="color:' . $groupdata['color'] . ';">' . $groupdata['title'] . '</span>' : $groupdata['title']) . '</span></td>
+<th>' . _lang('global.group') . '</th>
+<td><span class="text-icon">' .(($groupdata['icon'] != '') ? '<img src="' . _e(Router::path('images/groupicons/' . $groupdata['icon'])) . '" alt="icon" class="icon">' : '') . (($groupdata['color'] !== '') ? '<span style="color:' . $groupdata['color'] . ';">' . $groupdata['title'] . '</span>' : $groupdata['title']) . '</span></td>
 </tr>
 
 ' . (($groupdata['descr'] !== '') ? '<tr>
@@ -126,7 +126,7 @@ if ($public) {
 <td>' . $query['logincounter'] . '</td>
 </tr>' : '') . '
 
-' . Extend::buffer('mod.profile.table.main', ['user' => $query]) . "
+' . Extend::buffer('mod.profile.table.main', ['user' => $query]) . '
 
 </table>
 </td>
@@ -134,12 +134,12 @@ if ($public) {
 </tr>
 </table>
 
-<div class='hr profile-hr'><hr></div>
+<div class="hr profile-hr"><hr></div>
 
-<div class='wlimiter'>
-<table class='profiletable'>
+<div class="wlimiter">
+<table class="profiletable">
 
-<tr><th>" . _lang('mod.profile.regtime') . '</th><td>' . GenericTemplates::renderTime($query['registertime']) . '</td></tr>
+<tr><th>' . _lang('mod.profile.regtime') . '</th><td>' . GenericTemplates::renderTime($query['registertime']) . '</td></tr>
 ' . (Settings::get('profileemail') ? '<tr><th>' . _lang('global.email') . '</th><td>' . Email::link($query['email']) . '</td></tr>' : '') . '
 <tr><th>' . _lang('global.postsnum') . '</th><td>' . $posts_count . $posts_viewlink . '</td></tr>
 
@@ -156,5 +156,5 @@ if ($public) {
 
 // odkaz na zaslani vzkazu
 if (User::isLoggedIn() && Settings::get('messages') && !User::equals($query['id']) && $query['blocked'] == 0 && $groupdata['blocked'] == 0) {
-    $output .= "<p><a class='button' href='" . _e(Router::module('messages', ['query' => ['a' => 'new', 'receiver' => $query['username']]])) . "'><img src='" . Template::image('icons/bubble.png') . "' alt='msg' class='icon'>" . _lang('mod.messages.new') . '</a></p>';
+    $output .= '<p><a class="button" href="' . _e(Router::module('messages', ['query' => ['a' => 'new', 'receiver' => $query['username']]])) . '"><img src="' . Template::image('icons/bubble.png') . '" alt="msg" class="icon">' . _lang('mod.messages.new') . '</a></p>';
 }

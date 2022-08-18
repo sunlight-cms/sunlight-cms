@@ -103,12 +103,12 @@ $paging = Paginator::render(Router::admin('users-list', ['query' => $query_param
 $output .= $paging['paging'];
 
 // tabulka
-$output .= $message . "
-<form method='post'>
-<table id='user-list' class='list list-hover list-max'>
+$output .= $message . '
+<form method="post">
+<table id="user-list" class="list list-hover list-max">
 <thead><tr>
-    <td><input type='checkbox' onclick='Sunlight.checkAll(event, this.checked, \"#user-list\")'></td>
-    <td>ID</td><td>" . _lang('login.username') . '</td>
+    <td><input type="checkbox" onclick="Sunlight.checkAll(event, this.checked, \'#user-list\')"></td>
+    <td>ID</td><td>' . _lang('login.username') . '</td>
     <td>' . _lang('global.email') . '</td>
     <td>' . _lang('mod.settings.account.publicname') . '</td>
     <td>' . _lang('global.group') . '</td>
@@ -124,20 +124,20 @@ $query = DB::query('SELECT ' . $userQuery['column_list'] . ',u.email user_email 
 // vypis
 if (DB::size($query) != 0) {
     while ($item = DB::row($query)) {
-        $output .= "<tr>
-            <td><input type='checkbox' name='user[]' value='" . $item['user_id'] . "'></td>
-            <td>" . $item['user_id'] . '</td>
+        $output .= '<tr>
+            <td><input type="checkbox" name="user[]" value="' . $item['user_id'] . '"></td>
+            <td>' . $item['user_id'] . '</td>
             <td>' . Router::userFromQuery($userQuery, $item, ['new_window' => true, 'publicname' => false]) . '</td>
             <td>' . $item['user_email'] . '</td><td>' . (($item['user_publicname'] != '') ? $item['user_publicname'] : '-') . '</td>
-            <td>' . $item['user_group_title'] . "</td>
-            <td class='actions'>
-                <a class='button' href='" . _e(Router::admin('users-edit', ['query' => ['id' => $item['user_username']]])) . "'><img src='" . _e(Router::path('admin/images/icons/edit.png')) . "' alt='edit' class='icon'>" . _lang('global.edit') . "</a>
-                <a class='button' href='" . _e(Router::admin('users-delete', ['query' => ['id' =>$item['user_username']]])) . "'><img src='" . _e(Router::path('admin/images/icons/delete.png')) . "' alt='del' class='icon'>" . _lang('global.delete') . "</a>
+            <td>' . $item['user_group_title'] . '</td>
+            <td class="actions">
+                <a class="button" href="' . _e(Router::admin('users-edit', ['query' => ['id' => $item['user_username']]])) . '"><img src="' . _e(Router::path('admin/images/icons/edit.png')) . '" alt="edit" class="icon">' . _lang('global.edit') . '</a>
+                <a class="button" href="' . _e(Router::admin('users-delete', ['query' => ['id' =>$item['user_username']]])) . '"><img src="' . _e(Router::path('admin/images/icons/delete.png')) . '" alt="del" class="icon">' . _lang('global.delete') . "</a>
             </td>
         </tr>\n";
     }
 } else {
-    $output .= "<tr><td colspan='5'>" . _lang('global.nokit') . "</td></tr>\n";
+    $output .= '<tr><td colspan="5">' . _lang('global.nokit') . "</td></tr>\n";
 }
 
 $output .= "</tbody></table>\n";
@@ -147,17 +147,17 @@ $totalusers = DB::count('user');
 $output .= '<p class="right">' . _lang('admin.users.list.totalusers') . ': ' . $totalusers . '</p>';
 
 // hromadna akce
-$output .= "
-    <p class='left'>
-        " . _lang('global.bulk') . ":
-        <select name='bulk_action'>
-            <option value=''></option>
-            <option value='del'>" . _lang('global.delete') . "</option>
+$output .= '
+    <p class="left">
+        ' . _lang('global.bulk') . ':
+        <select name="bulk_action">
+            <option value=""></option>
+            <option value="del">' . _lang('global.delete') . '</option>
         </select>
-        <input class='button' type='submit' onclick='return Sunlight.confirm()' value='" . _lang('global.do') . "'>
+        <input class="button" type="submit" onclick="return Sunlight.confirm()" value="' . _lang('global.do') . '">
     </p>
 
-" . Xsrf::getInput() . '</form>';
+' . Xsrf::getInput() . '</form>';
 
 // strankovani
 $output .= $paging['paging'];

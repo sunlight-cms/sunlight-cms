@@ -33,7 +33,7 @@ return function ($id = null) {
         }
 
         if ($rallowvote) {
-            $ranswers_code = "<form action='" . _e(Router::path('system/script/hcm/pvote.php', ['query' => ['_return=' => $GLOBALS['_index']->url], 'fragment' => 'hcm_poll_' . Core::$hcmUid])) . "' method='post'>\n<input type='hidden' name='pid' value='" . $vpolldata['id'] . "'>";
+            $ranswers_code = '<form action="' . _e(Router::path('system/script/hcm/pvote.php', ['query' => ['_return=' => $GLOBALS['_index']->url], 'fragment' => 'hcm_poll_' . Core::$hcmUid])) . "\" method=\"post\">\n<input type=\"hidden\" name=\"pid\" value=\"" . $vpolldata['id'] . '">';
         } else {
             $ranswers_code = '';
         }
@@ -46,29 +46,29 @@ return function ($id = null) {
                 $rpercent = 0;
             }
             if ($rallowvote) {
-                $item = "<label><input type='radio' name='option' value='" . $ranswer_id . "'> " . $item . ' [' . $rvotes[$ranswer_id] . '/' . $rpercent . '%]</label>';
+                $item = '<label><input type="radio" name="option" value="' . $ranswer_id . '"> ' . $item . ' [' . $rvotes[$ranswer_id] . '/' . $rpercent . '%]</label>';
             } else {
                 $item .= ' [' . $rvotes[$ranswer_id] . '/' . $rpercent . '%]';
             }
-            $ranswers_code .= "<div class='poll-answer'>" . $item . "<div style='width:" . $rpercent . "%;'></div></div>\n";
+            $ranswers_code .= '<div class="poll-answer">' . $item . '<div style="width:' . $rpercent . "%;\"></div></div>\n";
             ++$ranswer_id;
         }
 
-        $ranswers_code .= "<div class='poll-answer'>";
+        $ranswers_code .= '<div class="poll-answer">';
         if ($rallowvote) {
-            $ranswers_code .= "<input type='submit' value='" . _lang('hcm.poll.vote') . "' class='votebutton'>";
+            $ranswers_code .= '<input type="submit" value="' . _lang('hcm.poll.vote') . ' class="votebutton">';
         }
         $ranswers_code .= _lang('hcm.poll.votes') . ': ' . $rvotes_sum . '</div>';
         if ($rallowvote) {
             $ranswers_code .= Xsrf::getInput() . "</form>\n";
         }
 
-        return "
-<div id='hcm_poll_" . Core::$hcmUid . "' class='poll'>
-<div class='poll-content'>
+        return '
+<div id="hcm_poll_' . Core::$hcmUid . '" class="poll">
+<div class="poll-content">
 
-<div class='poll-question'>
-" . $vpolldata['question'] . '
+<div class="poll-question">
+' . $vpolldata['question'] . '
 ' . (($vpolldata['locked'] == 1) ? '<div>(' . _lang('hcm.poll.locked') . ')</div>' : '') . '
 </div>
 

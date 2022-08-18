@@ -63,11 +63,11 @@ abstract class Admin
             if (Settings::get('messages')) {
                 $messages_count = DB::count('pm', '(receiver=' . User::getId() . ' AND receiver_deleted=0 AND receiver_readtime<update_time) OR (sender=' . User::getId() . ' AND sender_deleted=0 AND sender_readtime<update_time)');
                 if ($messages_count != 0) {
-                    $messages_count = " <span class='highlight'>(" . $messages_count . ')</span>';
+                    $messages_count = ' <span class="highlight">(' . $messages_count . ')</span>';
                 } else {
                     $messages_count = '';
                 }
-                $output .= "<a href='" . _e(Router::module('messages')) . "'>" . _lang('usermenu.messages') . $messages_count . '</a>, ';
+                $output .= '<a href="' . _e(Router::module('messages')) . '">' . _lang('usermenu.messages') . $messages_count . '</a>, ';
             }
             $output .= '<a href="' . _e(Router::module('settings')) . '">' . _lang('usermenu.settings') . '</a>, <a href="' . _e(Xsrf::addToUrl(Router::path('system/script/logout.php', ['query' => ['_return' => Router::adminIndex()]]))) . '">' . _lang('usermenu.logout') . '</a>]';
             $output .= '<a href="' . _e(Core::getBaseUrl()->getPath()) . '/" target="_blank" class="usermenu-web-link" title="' . _lang('admin.link.site') . '"><img class="icon" src="' . _e(Router::path('admin/images/icons/guide.png')) . '" alt="' . _lang('admin.link.site') . '"></a>';
@@ -96,7 +96,7 @@ abstract class Admin
      */
     static function note(string $str, bool $no_gray = false, ?string $icon = null): string
     {
-        return '<p' . ($no_gray ? '' : ' class="note"') . "><img src='" . _e(Router::path('admin/images/icons/' . ($icon ?? 'note') . '.png')) . "' alt='note' class='icon'>" . $str . '</p>';
+        return '<p' . ($no_gray ? '' : ' class="note"') . '><img src="' . _e(Router::path('admin/images/icons/' . ($icon ?? 'note') . '.png')) . '" alt="note" class="icon">' . $str . '</p>';
     }
 
     /**
@@ -162,17 +162,17 @@ abstract class Admin
         // trida
         $class = '';
         if ($art['visible'] == 0 && $art['public'] == 1) {
-            $class = " class='invisible'";
+            $class = ' class="invisible"';
         }
         if ($art['visible'] == 1 && $art['public'] == 0) {
-            $class = " class='notpublic'";
+            $class = ' class="notpublic"';
         }
         if ($art['visible'] == 0 && $art['public'] == 0) {
-            $class = " class='invisible-notpublic'";
+            $class = ' class="invisible-notpublic"';
         }
 
         // odkaz
-        $output .= "<a href='" . _e(Router::article($art['id'], $art['slug'], $art['cat_slug'])) . "' target='_blank'" . $class . '>';
+        $output .= '<a href="' . _e(Router::article($art['id'], $art['slug'], $art['cat_slug'])) . '" target="_blank"' . $class . '>';
         if ($art['time'] <= time()) {
             $output .= '<strong>';
         }
@@ -242,13 +242,13 @@ abstract class Admin
         $tree = Page::getFlatTree(null, null, $filter);
 
         // vypis
-        $output = "<select name='{$name}'"
-            . ($options['multiple'] ? ' multiple' : 'ß')
+        $output = '<select name="' . $name . '"'
+            . ($options['multiple'] ? ' multiple' : '')
             . ($options['attrs'] !== null ? ' ' . $options['attrs'] : '')
             . ">\n";
 
         if ($options['empty_item'] !== null) {
-            $output .= "<option class='special' value='-1'>{$options['empty_item']}</option>\n";
+            $output .= '<option class="special" value="-1">' . $options['empty_item'] . "</option>\n";
         }
 
         $disabledBranchLevel = null;
@@ -270,7 +270,7 @@ abstract class Admin
                     $active = $options['selected'] == $page['id'];
                 }
 
-                $output .= "<option value='{$page['id']}'"
+                $output .= '<option value="' . $page['id'] . '"'
                     . ($active ? ' selected' : '')
                     . (($options['type'] !== null && $page['type'] != $options['type'] || !$options['allow_separators'] && $page['type'] == Page::SEPARATOR) ? ' disabled' : '')
                     . '>'
@@ -281,7 +281,7 @@ abstract class Admin
         }
 
         if (empty($tree) && $options['empty_item'] === null) {
-            $output .= "<option value='-1'>" . _lang('global.nokit') . "</option>\n";
+            $output .= '<option value="-1">' . _lang('global.nokit') . "</option>\n";
         }
 
         $output .= "</select>\n";
@@ -303,20 +303,20 @@ abstract class Admin
     static function userSelect(string $name, int $selected, string $gcond, ?string $class = null, ?string $extraoption = null, bool $groupmode = false, ?int $multiple = null): string
     {
         if ($class !== null) {
-            $class = " class='" . $class . "'";
+            $class = ' class="' . $class . '"';
         } else {
             $class = '';
         }
         if ($multiple != null) {
-            $multiple = " multiple size='" . $multiple . "'";
+            $multiple = ' multiple size="' . $multiple . '"';
             $name .= '[]';
         } else {
             $multiple = '';
         }
-        $output = "<select name='" . $name . "'" . $class . $multiple . '>';
+        $output = '<select name="' . $name . '"' . $class . $multiple . '>';
         $query = DB::query('SELECT id,title,level FROM ' . DB::table('user_group') . ' WHERE ' . $gcond . ' AND id!=' . User::GUEST_GROUP_ID . ' ORDER BY level DESC');
         if ($extraoption != null) {
-            $output .= "<option value='-1' class='special'>" . $extraoption . '</option>';
+            $output .= '<option value="-1" class="special">' . $extraoption . '</option>';
         }
 
         $containsSelected = false;
@@ -324,7 +324,7 @@ abstract class Admin
             while ($item = DB::row($query)) {
                 $users = DB::query('SELECT id,username,publicname FROM ' . DB::table('user') . ' WHERE group_id=' . $item['id'] . ' AND (' . $item['level'] . '<' . User::getLevel() . ' OR id=' . User::getId() . ') ORDER BY id');
                 if (DB::size($users) != 0) {
-                    $output .= "<optgroup label='" . $item['title'] . "'>";
+                    $output .= '<optgroup label="' . $item['title'] . '">' ;
                     while ($user = DB::row($users)) {
                         if ($selected == $user['id']) {
                             $sel = ' selected';
@@ -332,7 +332,7 @@ abstract class Admin
                         } else {
                             $sel = '';
                         }
-                        $output .= "<option value='" . $user['id'] . "'" . $sel . '>' . ($user['publicname'] ?? $user['username']) . "</option>\n";
+                        $output .= '<option value="' . $user['id'] . '"' . $sel . '>' . ($user['publicname'] ?? $user['username']) . "</option>\n";
                     }
                     $output .= '</optgroup>';
                 }
@@ -340,8 +340,8 @@ abstract class Admin
             if (!$containsSelected) {
                 $selectedUser = DB::queryRow('SELECT u.id, u.username, u.publicname, g.title as grouptitle FROM ' . DB::table('user') . ' AS u JOIN ' . DB::table('user_group') . ' AS g ON(u.group_id=g.id) WHERE u.id = ' . $selected);
                 if ($selectedUser !== false) {
-                    $output .= "<optgroup label='" . $selectedUser['grouptitle'] . "'>";
-                    $output .= "<option value='" . $selectedUser['id'] . "' selected>" . ($selectedUser['publicname'] ?? $selectedUser['username']) . "</option>\n";
+                    $output .= '<optgroup label="' . $selectedUser['grouptitle'] . '">' ;
+                    $output .= '<option value="' . $selectedUser['id'] . '" selected>' . ($selectedUser['publicname'] ?? $selectedUser['username']) . "</option>\n";
                     $output .= '</optgroup>';
                 }
             }
@@ -353,12 +353,12 @@ abstract class Admin
                 } else {
                     $sel = '';
                 }
-                $output .= "<option value='" . $item['id'] . "'" . $sel . '>' . $item['title'] . ' (' . DB::count('user', 'group_id=' . $item['id']) . ")</option>\n";
+                $output .= '<option value="' . $item['id'] . '"' . $sel . '>' . $item['title'] . ' (' . DB::count('user', 'group_id=' . $item['id']) . ")</option>\n";
             }
             if (!$containsSelected) {
                 $selectedGroup = DB::queryRow('SELECT id,title FROM ' . DB::table('user_group') . ' WHERE id=' . $selected);
                 if ($selectedGroup !== false) {
-                    $output .= "<option value='" . $selectedGroup['id'] . "' selected>" . $selectedGroup['title'] . ' (' . DB::count('user', 'group_id=' . $selectedGroup['id']) . ")</option>\n";
+                    $output .= '<option value="' . $selectedGroup['id'] . '" selected>' . $selectedGroup['title'] . ' (' . DB::count('user', 'group_id=' . $selectedGroup['id']) . ")</option>\n";
                 }
             }
         }
@@ -375,9 +375,9 @@ abstract class Admin
      */
     static function templateLayoutSelect(string $name, $selected, ?string $empty_option = null, ?int $multiple = null, ?string $class = null): string
     {
-        $output = "<select name=\"{$name}\""
-            . ($class !== null ? " class=\"{$class}\"" : '')
-            . ($multiple !== null ? " multiple size=\"{$multiple}\"" : '')
+        $output = '<select name="' . $name . '"'
+            . ($class !== null ? ' class="' . $class . '"' : '')
+            . ($multiple !== null ? ' multiple size="' . $multiple . '"' : '')
             . ">\n";
 
         if ($empty_option !== null) {
@@ -411,8 +411,8 @@ abstract class Admin
      */
     static function templateLayoutSlotSelect(string $name, ?string $selected, ?string $empty_option = null, ?string $class = null, ?array $templates = null): string
     {
-        $output = "<select name=\"{$name}\""
-            . ($class !== null ? " class=\"{$class}\"" : '')
+        $output = '<select name="' . $name . '"'
+            . ($class !== null ? ' class="' . $class . '"' : '')
             . ">\n";
 
         if ($empty_option !== null) {

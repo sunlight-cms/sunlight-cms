@@ -30,20 +30,20 @@ if (isset($_GET['limit'])) {
     $condplus = '';
 }
 
-$output .= "
-<form class='cform' action='" . _e(Router::admin(null)) . "' method='get'>
-    <input type='hidden' name='p' value='content-confirm'>"
+$output .= '
+<form class="cform" action="' . _e(Router::admin(null)) . '" method="get">
+    <input type="hidden" name="p" value="content-confirm">'
     . _lang('admin.content.confirm.filter') . ': '
     . Admin::pageSelect('limit', ['type' => Page::CATEGORY, 'selected' => $catlimit, 'empty_item' => _lang('global.all')])
-    . "
-    <input type='submit' value='" . _lang('global.do') . "'>
+    . '
+    <input type="submit" value="' . _lang('global.do') . '">
 </form>
-<div class='hr'><hr></div>
+<div class="hr"><hr></div>
 
-" . $message . "
+' . $message . '
 
-<table class='list list-hover list-max'>
-<thead><tr><td>" . _lang('global.article') . '</td><td>' . _lang('article.category') . '</td><td>' . _lang('article.posted') . '</td><td>' . _lang('article.author') . '</td><td>' . _lang('global.action') . '</td></tr></thead>
+<table class="list list-hover list-max">
+<thead><tr><td>' . _lang('global.article') . '</td><td>' . _lang('article.category') . '</td><td>' . _lang('article.posted') . '</td><td>' . _lang('article.author') . '</td><td>' . _lang('global.action') . '</td></tr></thead>
 <tbody>';
 
 // vypis
@@ -67,15 +67,15 @@ if (DB::size($query) != 0) {
         $output .= '<tr>
             <td>' . Admin::articleEditLink($item, false) . '</td>
             <td>' . $cats . '</td><td>' . GenericTemplates::renderTime($item['time']) . '</td>
-            <td>' . Router::userFromQuery($userQuery, $item) . "</td>
-            <td class='actions'>
-                <a class='button' href='" . _e(Router::admin('content-confirm', ['query' => ['id' => $item['id'], 'limit' => $catlimit]])) . "'><img src='" . _e(Router::path('admin/images/icons/check.png')) . "' alt='confirm' class='icon'>" . _lang('admin.content.confirm.confirm') . "</a>
-                <a class='button' href='" . _e(Router::admin('content-articles-edit', ['query' => ['id' => $item['id'], 'returnid' => 'load', 'returnpage' => 1]])) . "'><img src='" . _e(Router::path('admin/images/icons/edit.png')) . "' alt='edit' class='icon'>" . _lang('global.edit') . '</a>'
+            <td>' . Router::userFromQuery($userQuery, $item) . '</td>
+            <td class="actions">
+                <a class="button" href="' . _e(Router::admin('content-confirm', ['query' => ['id' => $item['id'], 'limit' => $catlimit]])) . '"><img src="' . _e(Router::path('admin/images/icons/check.png')) . '" alt="confirm" class="icon">' . _lang('admin.content.confirm.confirm') . '</a>
+                <a class="button" href="' . _e(Router::admin('content-articles-edit', ['query' => ['id' => $item['id'], 'returnid' => 'load', 'returnpage' => 1]])) . '"><img src="' . _e(Router::path('admin/images/icons/edit.png')) . '" alt="edit" class="icon">' . _lang('global.edit') . '</a>'
             . '</td>'
             . "</tr>\n";
     }
 } else {
-    $output .= "<tr><td colspan='5'>" . _lang('global.nokit') . '</td></tr>';
+    $output .= '<tr><td colspan="5">' . _lang('global.nokit') . '</td></tr>';
 }
 
 $output .= '</tbody></table>';

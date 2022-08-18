@@ -100,7 +100,7 @@ class PhpTemplate
 
         if (strncmp($default, 'array(', 6) === 0) {
             // arrays
-            return str_replace("\\'", "'", $default);
+            return str_replace("\\'", '"', $default);
         }
 
         if (preg_match('{"(.+)"$}AD', $default, $match)) {

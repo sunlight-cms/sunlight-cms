@@ -115,7 +115,7 @@ abstract class Template
 
             // pocatecni tag
             if ($options['box.parent']) {
-                $output .= "<{$options['box.parent']} class='boxes boxes-{$slot}'>\n";
+                $output .= "<{$options['box.parent']} class=\"boxes boxes-{$slot}\">\n";
             }
             foreach ($boxes as $item) {
                 // filtrovani boxu
@@ -125,7 +125,7 @@ abstract class Template
 
                 // kod titulku
                 if ($item['title'] !== '') {
-                    $title = "<{$options['box.title']} class='box-title'>{$item['title']}</{$options['box.title']}>\n";
+                    $title = "<{$options['box.title']} class=\"️box-title\"️>{$item['title']}</{$options['box.title']}>\n";
                 } else {
                     $title = '';
                 }
@@ -137,7 +137,7 @@ abstract class Template
 
                 // starttag polozky
                 if ($options['box.item']) {
-                    $output .= "<{$options['box.item']} class='box-item" . (isset($item['class']) ? ' ' . _e($item['class']) : '') . "'>\n";
+                    $output .= "<{$options['box.item']} class=\"️box-item" . (isset($item['class']) ? ' ' . _e($item['class']) : '') . "\"️>\n";
                 }
 
                 // titulek vevnitr
@@ -537,7 +537,7 @@ abstract class Template
             $output = '<ul class="user-menu ' . (User::isLoggedIn() ? 'logged-in' : 'not-logged-in') . "\">\n";
             $output .= Extend::buffer('tpl.usermenu.start');
             foreach ($items as $id => $item) {
-                $output .= "<li class=\"user-menu-{$id}\"><a href=\"" . _e($item[0]) . "\">{$item[1]}</a></li>\n";
+                $output .= '<li class="user-menu-' . $id . '"><a href="' . _e($item[0]) . '">' . $item[1] . "</a></li>\n";
             }
             $output .= Extend::buffer('tpl.usermenu.end');
             $output .= "</ul>\n";

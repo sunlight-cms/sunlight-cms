@@ -14,7 +14,7 @@ return function ($adresa = '', $predmet = null) {
     $result = '';
     $_SESSION['hcm_' . Core::$hcmUid . '_mail_receiver'] = implode(',', Arr::removeValue(explode(';', trim($adresa)), ''));
     if (isset($predmet)) {
-        $rsubject = " value='" . _e($predmet) . "'";
+        $rsubject = ' value="' . _e($predmet) . '"';
     } else {
         $rsubject = '';
     }
@@ -54,10 +54,10 @@ return function ($adresa = '', $predmet = null) {
                 'action' => Router::path('system/script/hcm/mform.php', ['query' => ['_return' => $GLOBALS['_index']->url]]),
             ],
             [
-                ['label' => _lang('hcm.mailform.sender'), 'content' => "<input type='email' class='inputsmall' name='sender' value='" . $sender . "'><input type='hidden' name='fid' value='" . Core::$hcmUid . "'>"],
-                ['label' => _lang('posts.subject'), 'content' => "<input type='text' class='inputsmall' name='subject'" . $rsubject . '>'],
+                ['label' => _lang('hcm.mailform.sender'), 'content' => '<input type="email" class="inputsmall" name="sender" value="' . $sende . '"><input type="hidden" name="fid" value="' . Core::$hcmUid . '">' ],
+                ['label' => _lang('posts.subject'), 'content' => '<input type="text" class="inputsmall" name="subject"' . $rsubject . '>'],
                 $rcaptcha,
-                ['label' => _lang('hcm.mailform.text'), 'content' => "<textarea class='areasmall' name='text' rows='9' cols='33'></textarea>", 'top' => true],
+                ['label' => _lang('hcm.mailform.text'), 'content' => '<textarea class="areasmall" name="text" rows="9" cols="33"></textarea>', 'top' => true],
                 Form::getSubmitRow(['text' => _lang('hcm.mailform.send')])
             ]
         );

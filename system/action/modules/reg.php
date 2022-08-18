@@ -178,15 +178,15 @@ if (!$user_data_valid && $show_form) {
         if (DB::size($groupselect_items) != 0) {
             $groupselect_content = '';
             while ($groupselect_item = DB::row($groupselect_items)) {
-                $groupselect_content .= "<option value='" . $groupselect_item['id'] . "'" . (($groupselect_item['id'] == Settings::get('defaultgroup')) ? ' selected' : '') . '>' . $groupselect_item['title'] . "</option>\n";
+                $groupselect_content .= '<option value="' . $groupselect_item['id'] . '"' . (($groupselect_item['id'] == Settings::get('defaultgroup')) ? ' selected' : '') . '>' . $groupselect_item['title'] . "</option>\n";
             }
-            $groupselect = ['label' => _lang('global.group'), 'content' => "<select name='group_id'>" . $groupselect_content . '</select>'];
+            $groupselect = ['label' => _lang('global.group'), 'content' => '<select name="group_id">' . $groupselect_content . '</select>'];
         }
     }
 
     // priprava podminek
     if ($rules !== '') {
-        $rules = ['content' => '<h2>' . _lang('mod.reg.rules') . '</h2>' . $rules . "<p><label><input type='checkbox' name='agreement' value='1'" . Form::activateCheckbox(isset($_POST['agreement'])) . '> ' . _lang('mod.reg.rules.agreement') . '</label></p>', 'top' => true];
+        $rules = ['content' => '<h2>' . _lang('mod.reg.rules') . '</h2>' . $rules . '<p><label><input type="checkbox" name="agreement" value="1"' . Form::activateCheckbox(isset($_POST['agreement'])) . '> ' . _lang('mod.reg.rules.agreement') . '</label></p>', 'top' => true];
     } else {
         $rules = [];
     }
@@ -195,7 +195,7 @@ if (!$user_data_valid && $show_form) {
     $captcha = Captcha::init();
 
     // formular
-    $output .= "<p class='bborder'>" . _lang('mod.reg.p') . (Settings::get('registration_confirm') ? ' ' . _lang('mod.reg.confirm.extratext') : '') . "</p>\n";
+    $output .= '<p class="bborder">' . _lang('mod.reg.p') . (Settings::get('registration_confirm') ? ' ' . _lang('mod.reg.confirm.extratext') : '') . "</p>\n";
 
     $output .= Form::render(
         [
@@ -203,11 +203,11 @@ if (!$user_data_valid && $show_form) {
             'action' => Router::module('reg'),
         ],
         [
-            ['label' => _lang('login.username'), 'content' => "<input type='text' class='inputsmall' maxlength='24'" . Form::restorePostValueAndName('username') . " autocomplete='username'>"],
-            ['label' => _lang('login.password'), 'content' => "<input type='password' name='password' class='inputsmall' autocomplete='new-password'>"],
-            ['label' => _lang('login.password') . ' (' . _lang('global.check') . ')', 'content' => "<input type='password' name='password2' class='inputsmall' autocomplete='new-password'>"],
-            ['label' => _lang('global.email'), 'content' => "<input type='email' class='inputsmall' " . Form::restorePostValueAndName('email', '@') . " autocomplete='email'>"],
-            ['label' => _lang('mod.settings.account.massemail'), 'content' => "<label><input type='checkbox' value='1'" . Form::restoreCheckedAndName('regform', 'massemail') . '> ' . _lang('mod.settings.account.massemail.label') . '</label>'],
+            ['label' => _lang('login.username'), 'content' => '<input type="text" class="inputsmall" maxlength="24"' . Form::restorePostValueAndName('username') . ' autocomplete="username">'],
+            ['label' => _lang('login.password'), 'content' => '<input type="password" name="password" class="inputsmall" autocomplete="new-password">'],
+            ['label' => _lang('login.password') . ' (' . _lang('global.check') . ')', 'content' => '<input type="password" name="password2" class="inputsmall" autocomplete="new-password">'],
+            ['label' => _lang('global.email'), 'content' => '<input type="email" class="inputsmall" ' . Form::restorePostValueAndName('email', '@') . ' autocomplete="email">'],
+            ['label' => _lang('mod.settings.account.massemail'), 'content' => '<label><input type="checkbox" value="1"' . Form::restoreCheckedAndName('regform', 'massemail') . '> ' . _lang('mod.settings.account.massemail.label') . '</label>'],
             $groupselect,
             $captcha,
             $rules,

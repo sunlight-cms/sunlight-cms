@@ -128,7 +128,7 @@ abstract class PageManipulator
                     $slug = PageManipulator::getBaseSlug($currentPage['slug']);
 
                     if ($baseSlug !== null) {
-                        $slug = "{$baseSlug}/{$slug}";
+                        $slug = $baseSlug . '/' . $slug;
                     }
 
                     if ($currentPage['slug'] !== $slug) {

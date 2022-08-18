@@ -71,11 +71,11 @@ if ($user_count > 0) {
     $output .= Message::warning(_lang('admin.users.groups.delwarning', ['%user_count%' => $user_count]));
 }
 
-$output .= "
-<form class='cform' method='post'>
-<input type='hidden' name='doit' value='1'>
+$output .= '
+<form class="cform" method="post">
+<input type="hidden" name="doit" value="1">
 
-<p>" . _lang('admin.users.groups.delconfirm', ['%group%' => $query['title']]) . "</p>
-<input type='submit' value='" . _lang('global.confirmdelete') . "'>"
+<p>' . _lang('admin.users.groups.delconfirm', ['%group%' => $query['title']]) . '</p>
+<input type="submit" value="' . _lang('global.confirmdelete') . '">'
 . Xsrf::getInput()
 . '</form>';

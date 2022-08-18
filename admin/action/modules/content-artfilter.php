@@ -22,11 +22,11 @@ $infopage = false;
 
 $boolSelect = function ($name, $type2 = false)
 {
-    return "
-<select name='" . $name . "'>
-<option value='-1'>" . (($type2 == false) ? _lang('admin.content.artfilter.f1.bool.doesntmatter') : _lang('global.nochange')) . "</option>
-<option value='1'>" . _lang('admin.content.artfilter.f1.bool.mustbe') . "</option>
-<option value='0'>" . _lang('admin.content.artfilter.f1.bool.mustntbe') . "</option>
+    return '
+<select name="' . $name . '">
+<option value="-1">' . (($type2 == false) ? _lang('admin.content.artfilter.f1.bool.doesntmatter') : _lang('global.nochange')) . '</option>
+<option value="1">' . _lang('admin.content.artfilter.f1.bool.mustbe') . '</option>
+<option value="0">' . _lang('admin.content.artfilter.f1.bool.mustntbe') . "</option>
 </select> \n";
 };
 
@@ -220,9 +220,9 @@ if (isset($_POST['category'])) {
 
 /* ---  vystup  --- */
 
-$output .= $message . "
-<form action='" . _e(Router::admin('content-artfilter')) . "' method='post'>
-";
+$output .= $message . '
+<form action="' . _e(Router::admin('content-artfilter')) . ' method="post">
+';
 
 if (!$infopage) {
     $output .= '
@@ -241,38 +241,38 @@ if (!$infopage) {
 </tr>
 
 <tr>
-<th>' . _lang('article.posted') . "</th>
+<th>' . _lang('article.posted') . '</th>
 <td>
 
-<select name='ba'>
-<option value='0'>" . _lang('admin.content.artfilter.f1.time0') . "</option>
-<option value='1'>" . _lang('admin.content.artfilter.f1.time1') . "</option>
-<option value='2'>" . _lang('admin.content.artfilter.f1.time2') . "</option>
-<option value='3'>" . _lang('admin.content.artfilter.f1.time3') . '</option>
+<select name="ba">
+<option value="0">' . _lang('admin.content.artfilter.f1.time0') . '</option>
+<option value="1">' . _lang('admin.content.artfilter.f1.time1') . '</option>
+<option value="2">' . _lang('admin.content.artfilter.f1.time2') . '</option>
+<option value="3">' . _lang('admin.content.artfilter.f1.time3') . '</option>
 </select>
 
-' . Form::editTime('time', -1) . "
+' . Form::editTime('time', -1) . '
 
 </td>
 </tr>
 
-<tr class='valign-top'>
-<th>" . _lang('admin.content.form.settings') . '</th>
+<tr class="valign-top">
+<th>' . _lang('admin.content.form.settings') . '</th>
 <td>
 ' . $boolSelect('public') . _lang('admin.content.form.public') . '<br>
 ' . $boolSelect('visible') . _lang('admin.content.form.visible') . '<br>
 ' . $boolSelect('confirmed') . _lang('admin.content.form.confirmed') . '<br>
 ' . $boolSelect('comments') . _lang('admin.content.form.comments') . '<br>
 ' . $boolSelect('rateon') . _lang('admin.content.form.artrate') . '<br>
-' . $boolSelect('showinfo') . _lang('admin.content.form.showinfo') . "
+' . $boolSelect('showinfo') . _lang('admin.content.form.showinfo') . '
 </td>
 </tr>
 
 </table>
 
-<br><div class='hr'><hr></div><br>
+<br><div class="hr"><hr></div><br>
 
-<h2>" . _lang('admin.content.artfilter.f2.title') . '</h2>
+<h2>' . _lang('admin.content.artfilter.f2.title') . '</h2>
 <p>' . _lang('admin.content.artfilter.f2.p') . '</p>
 <table>
 
@@ -283,41 +283,41 @@ if (!$infopage) {
 
 <tr>
 <th>' . _lang('article.author') . '</th>
-<td>' . Admin::userSelect('new_author', -1, 'adminart=1', 'selectmedium', _lang('global.nochange')) . "</td>
+<td>' . Admin::userSelect('new_author', -1, 'adminart=1', 'selectmedium', _lang('global.nochange')) . '</td>
 </tr>
 
-<tr class='valign-top'>
-<th>" . _lang('admin.content.form.settings') . '</th>
+<tr class="valign-top">
+<th>' . _lang('admin.content.form.settings') . '</th>
 <td>
 ' . $boolSelect('new_public', true) . _lang('admin.content.form.public') . '<br>
 ' . $boolSelect('new_visible', true) . _lang('admin.content.form.visible') . '<br>
 ' . (User::hasPrivilege('adminconfirm') ? $boolSelect('new_confirmed', true) . _lang('admin.content.form.confirmed') . '<br>' : '') . '
 ' . $boolSelect('new_comments', true) . _lang('admin.content.form.comments') . '<br>
 ' . $boolSelect('new_rateon', true) . _lang('admin.content.form.artrate') . '<br>
-' . $boolSelect('new_showinfo', true) . _lang('admin.content.form.showinfo') . "
+' . $boolSelect('new_showinfo', true) . _lang('admin.content.form.showinfo') . '
 </td>
 </tr>
 
-<tr class='valign-top'>
-<th>" . _lang('global.action') . "</th>
+<tr class="valign-top">
+<th>' . _lang('global.action') . '</th>
 <td>
-<label><input type='checkbox' name='new_delete' value='1'> " . _lang('global.delete') . "</label><br>
-<label><input type='checkbox' name='new_resetrate' value='1'> " . _lang('admin.content.form.resetartrate') . "</label><br>
-<label><input type='checkbox' name='new_delcomments' value='1'> " . _lang('admin.content.form.delcomments') . "</label><br>
-<label><input type='checkbox' name='new_resetread' value='1'> " . _lang('admin.content.form.resetartread') . "</label>
+<label><input type="checkbox" name="new_delete" value="1"> ' . _lang('global.delete') . '</label><br>
+<label><input type="checkbox" name="new_resetrate" value="1"> ' . _lang('admin.content.form.resetartrate') . '</label><br>
+<label><input type="checkbox" name="new_delcomments" value="1"> ' . _lang('admin.content.form.delcomments') . '</label><br>
+<label><input type="checkbox" name="new_resetread" value="1"> ' . _lang('admin.content.form.resetartread') . '</label>
 </td>
 </tr>
 
 </table>
 
-<br><div class='hr'><hr></div><br>
+<br><div class="hr"><hr></div><br>
 
-<input type='submit' value='" . _lang('mod.search.submit') . "'>
-";
+<input type="submit" value="' . _lang('mod.search.submit') . '">
+';
 } else {
-    $output .= Form::renderHiddenPostInputs(null, null, ['_process']) . "
-<input type='hidden' name='_process' value='1'>
-" . Message::ok(_lang('admin.content.artfilter.f1.infotext', ['%found%' => $found])) . '
+    $output .= Form::renderHiddenPostInputs(null, null, ['_process']) . '
+<input type="hidden" name="_process" value="1">
+' . Message::ok(_lang('admin.content.artfilter.f1.infotext', ['%found%' => $found])) . '
 <ul>';
 
     $counter = 0;
@@ -326,12 +326,12 @@ if (!$infopage) {
             $output .= '<li><em>... (+' . ($found - $counter) . ")</em></li>\n";
             break;
         }
-        $output .= "<li><a href='" . _e(Router::article($r['id'], $r['slug'], $r['cat_slug'])) . "' target='_blank'>" . $r['title'] . "</a></li>\n";
+        $output .= '<li><a href="' . _e(Router::article($r['id'], $r['slug'], $r['cat_slug'])) . '" target="_blank">' . $r['title'] . "</a></li>\n";
         ++$counter;
     }
 
-    $output .="</ul>
-<input type='submit' value='" . _lang('global.do2') . "'> <a href='" . _e(Router::admin('content-artfilter')) . "'>" . _lang('global.cancel') . '</a>
+    $output .='</ul>
+<input type="submit" value="' . _lang('global.do2') . '"> <a href="' . _e(Router::admin('content-artfilter')) . '">' . _lang('global.cancel') . '</a>
 ';
 }
 

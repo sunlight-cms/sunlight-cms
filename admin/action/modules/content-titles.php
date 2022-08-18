@@ -29,10 +29,10 @@ if (isset($_POST['title']) && is_array($_POST['title'])) {
 
 /* ---  vystup  --- */
 
-$output .= $message . "
+$output .= $message . '
 
-<form action='" . _e(Router::admin('content-titles')) . "' method='post'>
-";
+<form action="' . _e(Router::admin('content-titles')) . '" method="post">
+';
 
 $output .= PageLister::render([
     'mode' => PageLister::MODE_SINGLE_LEVEL,
@@ -43,9 +43,9 @@ $output .= PageLister::render([
     'type' => true,
 ]);
 
-$output .= "
+$output .= '
     <p>
-        <input type='submit' value='" . _lang('global.save') . "' accesskey='s'>
-        <input type='reset' value='" . _lang('global.reset') . "' onclick='return Sunlight.confirm();'>
+        <input type="submit" value="' . _lang('global.save') . '" accesskey="s">
+        <input type="reset" value="' . _lang('global.reset') . '" onclick="return Sunlight.confirm();">
     </p>
-" . Xsrf::getInput() . '</form>';
+' . Xsrf::getInput() . '</form>';

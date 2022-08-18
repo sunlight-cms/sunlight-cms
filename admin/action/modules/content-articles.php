@@ -10,12 +10,12 @@ defined('SL_ROOT') or exit;
 
 /* ---  vystup  --- */
 
-$output .= "
-<p><a class='button' href='" . _e(Router::admin('content-articles-edit')) . "'><img src='" . _e(Router::path('admin/images/icons/new.png')) . "' alt='new' class='icon'>" . _lang('admin.content.articles.create') . "</a></p>
+$output .= '
+<p><a class="button" href="' . _e(Router::admin('content-articles-edit')) . '"><img src="' . _e(Router::path('admin/images/icons/new.png')) . '" alt="new" class="icon">' . _lang('admin.content.articles.create') . '</a></p>
 
-<table class='list list-noborder list-hover list-half'>
+<table class="list list-noborder list-hover list-half">
 <thead>
-<tr><th>" . _lang('article.category') . '</th><th>' . _lang('global.articlesnum') . '</th></tr>
+<tr><th>' . _lang('article.category') . '</th><th>' . _lang('global.articlesnum') . '</th></tr>
 </thead>
 <tbody>
 ';
@@ -40,12 +40,12 @@ while ($art_count = DB::row($art_count_query)) {
 foreach ($tree as $page) {
     $output .= '<tr><td>';
     if ($page['type'] == Page::CATEGORY) {
-        $output .= "<a class='node-level-m{$page['node_level']}' href='" . _e(Router::admin('content-articles-list', ['query' => ['cat' => $page['id']]])) . "'>
-    <img src='" . _e(Router::path('admin/images/icons/dir.png')) . "' alt='col' class='icon'>
-    {$page['title']}
-</a>";
+        $output .= '<a class="node-level-m' . $page['node_level'] . '" href="' . _e(Router::admin('content-articles-list', ['query' => ['cat' => $page['id']]])) . '">
+    <img src="' . _e(Router::path('admin/images/icons/dir.png')) . '" alt="col" class="icon">
+    ' . $page['title'] . '
+</a>';
     } else {
-        $output .= "<span class='node-level-m{$page['node_level']}'>{$page['title']}</span>";
+        $output .= '<span class="node-level-m' . $page['node_level'] . '">' . $page['title'] . '</span>';
     }
     $output .= '</td><td>' . ($art_counts[$page['id']] ?? '') . "</td></tr>\n";
 }
@@ -54,15 +54,15 @@ if (empty($tree)) {
     $output .= '<tr><td colspan="2">' . _lang('admin.content.form.category.nonefound') . '</td></tr>';
 }
 
-$output .= "
+$output .= '
 </tbody>
 </table>
 
 <br>
-<form class='cform' action='" . _e(Router::admin(null)) . "' method='get'>
-<input type='hidden' name='p' value='content-articles-edit'>
-<input type='hidden' name='returnid' value='load'>
-<input type='hidden' name='returnpage' value='1'>
-" . _lang('admin.content.articles.openid') . ": <input type='number' name='id' class='inputmini'> <input class='button' type='submit' value='" . _lang('global.open') . "'>
+<form class="cform" action="' . _e(Router::admin(null)) . '" method="get">
+<input type="hidden" name="p" value="content-articles-edit">
+<input type="hidden" name="returnid" value="load">
+<input type="hidden" name="returnpage" value="1">
+' . _lang('admin.content.articles.openid') . ': <input type="number" name="id" class="inputmini"> <input class="button" type="submit" value="' . _lang('global.open') . '">
 </form>
-";
+';

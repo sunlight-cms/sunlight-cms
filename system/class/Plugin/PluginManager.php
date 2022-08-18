@@ -192,7 +192,7 @@ class PluginManager
     {
         $output = '';
         if ($inputName) {
-            $output .= "<select name=\"{$inputName}\">\n";
+            $output .= '<select name=\"' . $inputName . "\">\n";
         }
 
         foreach ($this->choices($type) as $name => $label) {

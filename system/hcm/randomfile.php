@@ -53,11 +53,11 @@ return function ($cesta = '', $typ = 'text', $pocet = 1, $rozmery_nahledu = null
                 switch ($typ) {
                     case 2:
                         $thumb = ImageService::getThumbnail('hcm.randomfile', $cesta . $item, $resize_opts);
-                        $result .= "<a href='" . _e(Router::file($cesta . $item)) . "'"
-                            . " target='_blank'"
+                        $result .= '<a href="' . _e(Router::file($cesta . $item)) . '"'
+                            . ' target="_blank"'
                             . Extend::buffer('image.lightbox', ['group' => 'hcm_rnd_' . Core::$hcmUid])
                             . '>'
-                            . "<img src='" . _e(Router::file($thumb)) . "' alt='" . _e($item) . "'>"
+                            . '<img src="' . _e(Router::file($thumb)) . '" alt="' . _e($item) . '">'
                             . "</a>\n";
                         break;
                     default:

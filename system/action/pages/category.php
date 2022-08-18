@@ -45,7 +45,7 @@ $_index->title = $_page['title'];
 // obsah
 Extend::call('page.category.content.before', $extend_args);
 if ($_page['content'] != '') {
-    $output .= Hcm::parse($_page['content']) . "\n\n<div class='hr category-hr'><hr></div>\n\n";
+    $output .= Hcm::parse($_page['content']) . "\n\n<div class=\"hr category-hr\"><hr></div>\n\n";
 }
 Extend::call('page.category.content.after', $extend_args);
 

@@ -88,7 +88,7 @@ if (isset($_GET['user'], $_GET['hash'])) {
     } while (false);
 } else {
     // zobrazeni formulare
-    $output .= "<p class='bborder'>" . _lang('mod.lostpass.p') . '</p>';
+    $output .= '<p class="bborder">' . _lang('mod.lostpass.p') . '</p>';
 
     // odeslani emailu
     $sent = false;
@@ -158,8 +158,8 @@ if (isset($_GET['user'], $_GET['hash'])) {
                 'action' => Router::module('lostpass'),
             ],
             [
-                ['label' => _lang('login.username'), 'content' => "<input type='text' class='inputsmall' maxlength='24'" . Form::restorePostValueAndName('username') . "autocomplete='username'>"],
-                ['label' => _lang('global.email'), 'content' => "<input type='email' class='inputsmall' maxlength='191' " . Form::restorePostValueAndName('email', '@') . " autocomplete='email'>"],
+                ['label' => _lang('login.username'), 'content' => '<input type="text" class="inputsmall" maxlength="24"' . Form::restorePostValueAndName('username') . ' autocomplete="username">'],
+                ['label' => _lang('global.email'), 'content' => '<input type="email" class="inputsmall" maxlength="191"' . Form::restorePostValueAndName('email', '@') . ' autocomplete="email">'],
                 $captcha,
                 Form::getSubmitRow(['text' => _lang('global.send')]),
             ]

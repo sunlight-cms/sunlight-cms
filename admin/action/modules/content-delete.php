@@ -60,20 +60,20 @@ if ($continue) {
     // pole souvisejicich polozek
     $content_array = PageManipulator::listDependencies($query, $recursive);
 
-    $output .= "
-    <p class='bborder'>" . _lang('admin.content.delete.p') . '</p>
+    $output .= '
+    <p class="bborder">' . _lang('admin.content.delete.p') . '</p>
     <h2>' . _lang('global.item') . ' <em>' . $query['title'] . '</em></h2><br>
     ' . (!empty($content_array)
             ? '<p>' . _lang('admin.content.delete.contentlist') . ':</p>'
                 . GenericTemplates::renderMessageList($content_array, ['escape' => false])
-                . "<div class='hr'><hr></div>"
+                . '<div class="hr"><hr></div>'
             : '')
-    . "
+    . '
 
-    <form class='cform' action='" . _e(Router::admin('content-delete', ['query' => ['id' => $id]])) . "' method='post'>
-    <input type='hidden' name='confirm' value='1'>
-    <input type='submit' value='" . _lang('admin.content.delete.confirm') . "'>
-    " . Xsrf::getInput() . '</form>
+    <form class="cform" action="' . _e(Router::admin('content-delete', ['query' => ['id' => $id]])) . '" method="post">
+    <input type="hidden" name="confirm" value="1">
+    <input type="submit" value="' . _lang('admin.content.delete.confirm') . '">
+    ' . Xsrf::getInput() . '</form>
     ';
 
 } else {

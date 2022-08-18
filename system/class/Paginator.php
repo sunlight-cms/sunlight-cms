@@ -108,27 +108,27 @@ class Paginator
 
                 $url = _e($url);
 
-                $paging = "\n<div class='paging'>\n<span class='paging-label'>" . _lang('global.paging') . ":</span>\n";
+                $paging = "\n<div class=\"paging\">\n<span class=\"paging-label\">" . _lang('global.paging') . ":</span>\n";
 
                 // prvni
                 if ($beginpage > 1) {
-                    $paging .= "<a href='" . $url . $param . '=1' . $linksuffix . "' title='" . _lang('global.first') . "'>1</a><span class='paging-first-addon'> ...</span>\n";
+                    $paging .= '<a href="' . $url . $param . '=1' . $linksuffix . '" title="' . _lang('global.first') . "\">1</a><span class=\"paging-first-addon\"> ...</span>\n";
                 }
 
                 // predchozi
                 if ($s + 1 != 1) {
-                    $paging .= "<a class='paging-prev' href='" . $url . $param . '=' . ($s) . $linksuffix . "'>&laquo; " . _lang('global.previous') . "</a>\n";
+                    $paging .= '<a class="paging-prev" href="' . $url . $param . '=' . ($s) . $linksuffix . '">&laquo; ' . _lang('global.previous') . "</a>\n";
                 }
 
                 // strany
-                $paging .= "<span class='paging-pages'>\n";
+                $paging .= "<span class=\"paging-pages\">\n";
                 for ($x = $beginpage; $x <= $endpage; ++$x) {
                     if ($x == $s + 1) {
-                        $class = " class='act'";
+                        $class = ' class="act"';
                     } else {
                         $class = '';
                     }
-                    $paging .= "<a href='" . $url . $param . '=' . $x . $linksuffix . "'" . $class . '>' . $x . "</a>\n";
+                    $paging .= '<a href="' . $url . $param . '=' . $x . $linksuffix . '"' . $class . '>' . $x . "</a>\n";
                     if ($x != $endpage) {
                         $paging .= ' ';
                     }
@@ -137,10 +137,10 @@ class Paginator
 
                 // dalsi
                 if ($s + 1 != $pages) {
-                    $paging .= "<a class='paging-next' href='" . $url . $param . '=' . ($s + 2) . $linksuffix . "'>" . _lang('global.next') . " &raquo;</a>\n";
+                    $paging .= '<a class="paging-next" href="' . $url . $param . '=' . ($s + 2) . $linksuffix . '">' . _lang('global.next') . " &raquo;</a>\n";
                 }
                 if ($endpage < $pages) {
-                    $paging .= "<span class='paging-last-addon'> ... </span><a class='paging-last' href='" . $url . $param . '=' . $pages . $linksuffix . "' title='" . _lang('global.last') . "'>" . $pages . "</a>\n";
+                    $paging .= '<span class="paging-last-addon"> ... </span><a class="paging-last" href="' . $url . $param . '=' . $pages . $linksuffix . '" title="' . _lang('global.last') . '">' . $pages . "</a>\n";
                 }
 
                 $paging .= "\n</div>\n\n";

@@ -12,5 +12,5 @@ return function ($id = null, $text = null, $nove_okno = false) {
 
     $text = $text === null ? $query['title'] : _e($text);
 
-    return "<a href='" . _e(Router::article($query['id'], $query['slug'], $query['cat_slug'])) . "'" . ($nove_okno ? ' target="_blank"' : '') . '>' . $text . '</a>';
+    return '<a href="' . _e(Router::article($query['id'], $query['slug'], $query['cat_slug'])) . '"' . ($nove_okno ? ' target="_blank"' : '') . '>' . $text . '</a>';
 };

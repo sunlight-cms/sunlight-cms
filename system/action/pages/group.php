@@ -19,7 +19,7 @@ $_index->title = $_page['title'];
 // obsah
 Extend::call('page.group.content.before', $extend_args);
 if ($_page['content'] != '') {
-    $output .= Hcm::parse($_page['content']) . "\n\n<div class='hr group-hr'><hr></div>\n\n";
+    $output .= Hcm::parse($_page['content']) . "\n\n<div class=\"hr group-hr\"><hr></div>\n\n";
 }
 Extend::call('page.group.content.after', $extend_args);
 
@@ -29,18 +29,18 @@ if (DB::size($items) != 0) {
     while ($item = DB::row($items)) {
         $extendArgs = Extend::args($output, ['item' => &$item]);
 
-        $output .= "<div class='list-item'>\n";
+        $output .= "<div class=\"list-item\">\n";
 
         Extend::call('page.group.item.start', $extendArgs);
 
         // titulek
-        $output .= "<h2 class='list-title'><a href='" . _e(Router::page($item['id'], $item['slug'])) . "'" . (($item['type'] == Page::LINK && $item['var1'] == 1) ? " target='_blank'" : '') . '>' . $item['title'] . "</a></h2>\n";
+        $output .= '<h2 class="list-title"><a href="' . _e(Router::page($item['id'], $item['slug'])) . '"' . (($item['type'] == Page::LINK && $item['var1'] == 1) ? ' target="_blank"' : '') . '>' . $item['title'] . "</a></h2>\n";
 
         Extend::call('page.group.item.title.after', $extendArgs);
 
         // perex
         if ($item['perex'] != '') {
-            $output .= "<p class='list-perex'>" . $item['perex'] . "</p>\n";
+            $output .= '<p class="list-perex">' . $item['perex'] . "</p>\n";
         }
 
         Extend::call('page.group.item.perex.after', $extendArgs);

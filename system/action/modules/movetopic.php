@@ -70,11 +70,11 @@ $output .= '
 ';
 
 if (empty($forums)) {
-    $output .= "<option value='-1'>" . _lang('mod.movetopic.noforums') . "</option>\n";
+    $output .= '<option value="-1">' . _lang('mod.movetopic.noforums') . "</option>\n";
 } else {
     foreach($forums as $forum_id => $forum) {
         $output .= '<option'
-            . " value='" . $forum_id . "'"
+            . ' value="' . $forum_id . '"'
             . ($forum['type'] != Page::FORUM ? ' disabled' : '')
             . ($forum_id == $query['home'] ? ' selected' : '')
             . '>'

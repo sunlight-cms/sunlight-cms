@@ -21,9 +21,9 @@ $message = '';
 $selectTime = function ($name) {
     $opts = [1, 2, 4, 8, 25, 52, 104];
     $active = (isset($_POST[$name]) ? (int) Request::post($name) : 25);
-    $output = "<select name='" . $name . "'>\n";
+    $output = '<select name="' . $name . "\">\n";
     for($i = 0; isset($opts[$i]); ++$i) {
-        $output .= "<option value='" . $opts[$i] . "'" . (($active === $opts[$i]) ? ' selected' : '') . '>' . _lang('admin.other.cleanup.time.' . $opts[$i]) . "</option>\n";
+        $output .= '<option value="' . $opts[$i] . '"' . (($active === $opts[$i]) ? ' selected' : '') . '>' . _lang('admin.other.cleanup.time.' . $opts[$i]) . "</option>\n";
     }
     $output .= "</select>\n";
 
@@ -198,25 +198,25 @@ if (isset($_POST['action'])) {
 
 $output .= $message . '
 <fieldset>
-<legend>' . _lang('admin.other.cleanup.cleanup') . "</legend>
-<form class='cform' action='" . _e(Router::admin('other-cleanup')) . "' method='post'>
-<input type='hidden' name='action' value='1'>
-<p>" . _lang('admin.other.cleanup.cleanup.p') . "</p>
+<legend>' . _lang('admin.other.cleanup.cleanup') . '</legend>
+<form class="cform" action="' . _e(Router::admin('other-cleanup')) . '" method="post">
+<input type="hidden" name="action" value="1">
+<p>' . _lang('admin.other.cleanup.cleanup.p') . '</p>
 
 <table>
-<tr class='valign-top'>
+<tr class="valign-top">
 
-<td rowspan='2'>
+<td rowspan="2">
   <fieldset>
-  <legend>" . _lang('mod.messages') . "</legend>
-  <label><input type='radio' name='messages' value='0'" . Form::activateCheckbox(!isset($_POST['messages']) || Request::post('messages') == 0) . '> ' . _lang('global.noaction') . "</label><br>
-  <label><input type='radio' name='messages' value='1'" . Form::activateCheckbox(isset($_POST['messages']) && Request::post('messages') == 1) . '> ' . _lang('admin.other.cleanup.messages.1') . '</label> ' . $selectTime('messages-time') . "<br>
-  <label><input type='radio' name='messages' value='2'" . Form::activateCheckbox(isset($_POST['messages']) && Request::post('messages') == 2) . '> ' . _lang('admin.other.cleanup.messages.2') . '</label>
+  <legend>' . _lang('mod.messages') . '</legend>
+  <label><input type="radio" name="messages" value="0"' . Form::activateCheckbox(!isset($_POST['messages']) || Request::post('messages') == 0) . '> ' . _lang('global.noaction') . '</label><br>
+  <label><input type="radio" name="messages" value="1"' . Form::activateCheckbox(isset($_POST['messages']) && Request::post('messages') == 1) . '> ' . _lang('admin.other.cleanup.messages.1') . '</label> ' . $selectTime('messages-time') . '<br>
+  <label><input type="radio" name="messages" value="2"' . Form::activateCheckbox(isset($_POST['messages']) && Request::post('messages') == 2) . '> ' . _lang('admin.other.cleanup.messages.2') . '</label>
   </fieldset>
 
   <fieldset>
-  <legend>' . _lang('admin.users.users') . "</legend>
-  <p class='bborder'><label><input type='checkbox' name='users' value='1'" . Form::activateCheckbox(isset($_POST['users'])) . '> ' . _lang('admin.other.cleanup.users') . '</label></p>
+  <legend>' . _lang('admin.users.users') . '</legend>
+  <p class="bborder"><label><input type="checkbox" name="users" value="1"' . Form::activateCheckbox(isset($_POST['users'])) . '> ' . _lang('admin.other.cleanup.users') . '</label></p>
   <table>
 
   <tr>
@@ -235,43 +235,43 @@ $output .= $message . '
 
 <td>
   <fieldset>
-  <legend>' . _lang('global.other') . "</legend>
-  <label><input type='checkbox' name='maintenance' value='1' checked> " . _lang('admin.other.cleanup.other.maintenance') . "</label><br>
-  <label><input type='checkbox' name='optimize' value='1' checked> " . _lang('admin.other.cleanup.other.optimize') . "</label><br>
-  <label><input type='checkbox' name='comments' value='1'" . Form::activateCheckbox(isset($_POST['comments'])) . '> ' . _lang('admin.other.cleanup.other.comments') . "</label><br>
-  <label><input type='checkbox' name='posts' value='1'" . Form::activateCheckbox(isset($_POST['posts'])) . '> ' . _lang('admin.other.cleanup.other.posts') . "</label><br>
-  <label><input type='checkbox' name='plugin_posts' value='1'" . Form::activateCheckbox(isset($_POST['plugin_posts'])) . '> ' . _lang('admin.other.cleanup.other.plugin_posts') . "</label><br>
-  <label><input type='checkbox' name='iplog' value='1'" . Form::activateCheckbox(isset($_POST['iplog'])) . '> ' . _lang('admin.other.cleanup.other.iplog') . "</label><br>
-  <label><input type='checkbox' name='user_activation' value='1'" . Form::activateCheckbox(isset($_POST['user_activation'])) . '> ' . _lang('admin.other.cleanup.other.user_activation') . "</label>
+  <legend>' . _lang('global.other') . '</legend>
+  <label><input type="checkbox" name="maintenance" value="1" checked> ' . _lang('admin.other.cleanup.other.maintenance') . '</label><br>
+  <label><input type="checkbox" name="optimize" value="1" checked> ' . _lang('admin.other.cleanup.other.optimize') . '</label><br>
+  <label><input type="checkbox" name="comments" value="1"' . Form::activateCheckbox(isset($_POST['comments'])) . '> ' . _lang('admin.other.cleanup.other.comments') . '</label><br>
+  <label><input type="checkbox" name="posts" value="1"' . Form::activateCheckbox(isset($_POST['posts'])) . '> ' . _lang('admin.other.cleanup.other.posts') . '</label><br>
+  <label><input type="checkbox" name="plugin_posts" value="1"' . Form::activateCheckbox(isset($_POST['plugin_posts'])) . '> ' . _lang('admin.other.cleanup.other.plugin_posts') . '</label><br>
+  <label><input type="checkbox" name="iplog" value="1"' . Form::activateCheckbox(isset($_POST['iplog'])) . '> ' . _lang('admin.other.cleanup.other.iplog') . '</label><br>
+  <label><input type="checkbox" name="user_activation" value="1"' . Form::activateCheckbox(isset($_POST['user_activation'])) . '> ' . _lang('admin.other.cleanup.other.user_activation') . '</label>
   </fieldset>
 </td>
 
 </tr>
 
-<tr class='valign-top'>
+<tr class="valign-top">
 
-<td class='text-center'><p>
-<input type='submit' value='" . _lang('admin.other.cleanup.prev') . "'><br><br>
-<input type='submit' name='do_cleanup' value='" . _lang('admin.other.cleanup.do') . "' onclick='return Sunlight.confirm();'>
+<td class="text-center"><p>
+<input type="submit" value="' . _lang('admin.other.cleanup.prev') . '"><br><br>
+<input type="submit" name="do_cleanup" value="' . _lang('admin.other.cleanup.do') . '" onclick="return Sunlight.confirm();">
 </p></td>
 
 </tr>
 
 </table>
 
-" . Xsrf::getInput() . '</form>
+' . Xsrf::getInput() . '</form>
 </fieldset>
 <br>
 
 <fieldset>
-<legend>' . _lang('admin.other.cleanup.uninstall') . "</legend>
-<form class='cform' action='" . _e(Router::admin('other-cleanup')) . "' method='post' autocomplete='off'>
-<input type='hidden' name='action' value='2'>
-<p class='bborder'>" . _lang('admin.other.cleanup.uninstall.p') . '</p>
-' . Admin::note(_lang('admin.other.cleanup.uninstall.note', ['%prefix%' => DB::$prefix]), true, 'warn') . "
-<p><label><input type='checkbox' name='confirm' value='1'> " . _lang('admin.other.cleanup.uninstall.confirm', ['%dbname%' => DB::$database]) . '</label></p>
-<p><strong>' . _lang('admin.other.cleanup.uninstall.pass') . ":</strong>  <input type='password' class='inputsmall' name='pass' autocomplete='off'></p>
-<input type='submit' value='" . _lang('global.do') . "' onclick='return Sunlight.confirm();'>
-" . Xsrf::getInput() . '</form>
+<legend>' . _lang('admin.other.cleanup.uninstall') . '</legend>
+<form class="cform" action="' . _e(Router::admin('other-cleanup')) . '" method="post" autocomplete="off">
+<input type="hidden" name="action" value="2">
+<p class="bborder">' . _lang('admin.other.cleanup.uninstall.p') . '</p>
+' . Admin::note(_lang('admin.other.cleanup.uninstall.note', ['%prefix%' => DB::$prefix]), true, 'warn') . '
+<p><label><input type="checkbox" name="confirm" value="1"> ' . _lang('admin.other.cleanup.uninstall.confirm', ['%dbname%' => DB::$database]) . '</label></p>
+<p><strong>' . _lang('admin.other.cleanup.uninstall.pass') . ':</strong>  <input type="password" class="inputsmall" name="pass" autocomplete="off"></p>
+<input type="submit" value="' . _lang('global.do') . '" onclick="return Sunlight.confirm();">
+' . Xsrf::getInput() . '</form>
 </fieldset>
 ';

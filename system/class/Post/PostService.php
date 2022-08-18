@@ -283,15 +283,15 @@ class PostService
         }
 
         /* ---  output  --- */
-        $output = "
-  <div id='posts' class='posts posts-" . $subclass . "'>
-  ";
+        $output = '
+  <div id="posts" class="posts posts-' . $subclass . '">
+  ';
 
         if ($title != null) {
             $output .= '<h2>' . $title . "</h2>\n";
         }
 
-        $form_output = "<div class='posts-form' id='post-form'>\n";
+        $form_output = "<div class=\"posts-form\" id=\"post-form\">\n";
 
         /* --- init pager --- */
         $paging = Paginator::render($url, $postsperpage, DB::table('post'), $countcond, '#posts', $page_param, $autolast);
@@ -325,7 +325,7 @@ class PostService
                 if (isset($_GET['replyto']) && Request::get('replyto') != -1) {
                     $reply = (int) Request::get('replyto');
                     if ($replynote) {
-                        $form_output .= '<p>' . _lang('posts.replynote') . " (<a href='" . $url_html . "#posts'>" . _lang('global.cancel') . '</a>).</p>';
+                        $form_output .= '<p>' . _lang('posts.replynote') . ' (<a href="' . $url_html . '#posts">' . _lang('global.cancel') . '</a>).</p>';
                     }
                 } else {
                     $reply = -1;
@@ -351,9 +351,9 @@ class PostService
             }
 
         } elseif (!$locked) {
-            $form_output .= "<a class='button' href='" . _e(UrlHelper::appendParams($url, 'addpost&page=' . $paging['current'])) . "#post-form'><img class='icon' src='" . Template::image('icons/bubble.png') . "' alt='post'>" . $addlink . '</a>';
+            $form_output .= '<a class="button" href="' . _e(UrlHelper::appendParams($url, 'addpost&page=' . $paging['current'])) . '#post-form"️><img class="icon" src="' . Template::image('icons/bubble.png') . '" alt="post">' . $addlink . '</a>';
         } else {
-            $form_output .= "<img src='" . Template::image('icons/lock.png') . "' alt='stop' class='icon'><strong>" . _lang('posts.locked' . $locked_textid) . '</strong>';
+            $form_output .= '<img src="' . Template::image('icons/lock.png') . '" alt="stop" class="icon"><strong>' . _lang('posts.locked' . $locked_textid) . '</strong>';
         }
 
         $form_output .= "\n</div>\n";
@@ -442,7 +442,7 @@ class PostService
 
             // list posts or topics
             if (!$is_topic_list) {
-                $output .= "<div class='post-list'>\n";
+                $output .= "<div class=\"️post-list\"️>\n";
 
                 $extra_info = '';
                 $item_offset = ($paging['current'] - 1) * $paging['per_page'];
@@ -496,14 +496,14 @@ class PostService
 
                 // topic list table
                 $hl = false;
-                $output .= "\n<table class='topic-table'>\n<thead><tr><th colspan='2'>" . _lang('posts.topic') . '</th><th>' . _lang('global.answersnum') . '</th><th>' . _lang('global.lastanswer') . "</th></tr></thead>\n<tbody>\n";
+                $output .= "\n<table class=\"️topic-table\"️>\n<thead><tr><th colspan=\"️2\"️>" . _lang('posts.topic') . '</th><th>' . _lang('global.answersnum') . '</th><th>' . _lang('global.lastanswer') . "</th></tr></thead>\n<tbody>\n";
                 foreach ($items as $item) {
 
                     // fetch author
                     if ($item['author'] != -1) {
                         $author = Router::userFromQuery($userQuery, $item, ['max_len' => 16]);
                     } else {
-                        $author = "<span class='post-author-guest' title='" . GenericTemplates::renderIp($item['ip']) . "'>"
+                        $author = '<span class="post-author-guest" title="' . GenericTemplates::renderIp($item['ip']) . '">'
                             . StringManipulator::ellipsis(self::renderGuestName($item['guest']), 16)
                             . '</span>';
                     }
@@ -511,7 +511,7 @@ class PostService
                     // fetch last post author
                     if (isset($item['_lastpost'])) {
                         if ($item['_lastpost']['author'] != -1) $lastpost = Router::userFromQuery($userQuery, $item['_lastpost'], ['class' => 'post-author', 'max_len' => 16]);
-                        else $lastpost = "<span class='post-author-guest'>" . StringManipulator::ellipsis(self::renderGuestName($item['_lastpost']['guest']), 16) . '</span>';
+                        else $lastpost = '<span class="post-author-guest">' .StringManipulator::ellipsis(self::renderGuestName($item['_lastpost']['guest']), 16) . '</span>';
                     } else {
                         $lastpost = '-';
                     }
@@ -528,16 +528,16 @@ class PostService
                     $tpages_num = ceil($item['answer_count'] / Settings::get('commentsperpage'));
                     if ($tpages_num == 0) $tpages_num = 1;
                     if ($tpages_num > 1) {
-                        $tpages .= '<span class=\'topic-pages\'>';
+                        $tpages .= '<span class="topic-pages">';
                         for ($i = 1; $i <= 3 && $i <= $tpages_num; ++$i) {
-                            $tpages .= "<a href='" . _e(Router::topic($item['id'], $forum_slug, ['query' => ['page' => $i], 'fragment' => 'posts'])) . "'>" . $i . '</a>';
+                            $tpages .= '<a href="' . _e(Router::topic($item['id'], $forum_slug, ['query' => ['page' => $i], 'fragment' => 'posts'])) . '">' . $i . '</a>';
                         }
-                        if ($tpages_num > 3) $tpages .= "<a href='" . _e(Router::topic($item['id'], $forum_slug, ['query' => ['page' => $tpages_num]])) . "'>" . $tpages_num . ' &rarr;</a>';
+                        if ($tpages_num > 3) $tpages .= '<a href="' . _e(Router::topic($item['id'], $forum_slug, ['query' => ['page' => $tpages_num]])) . '">' . $tpages_num . ' &rarr;</a>';
                         $tpages .= '</span>';
                     }
 
                     // render row
-                    $output .= "<tr class='topic-" . $icon . ($hl ? ' topic-hl' : '') . "'><td class='topic-icon-cell'><a href='" . _e(Router::topic($item['id'], $forum_slug)) . "'><img src='" . Template::image('icons/topic-' . $icon . '.png') . "' alt='" . _lang('posts.topic.' . $icon) . "'></a></td><td class='topic-main-cell'><a href='" . _e(Router::topic($item['id'], $forum_slug)) . "'>" . $item['subject'] . '</a>' . $tpages . '<br>' . $author . " <small class='post-info'>(" . GenericTemplates::renderTime($item['time'], 'post') . ')</small></td><td>' . $item['answer_count'] . '</td><td>' . $lastpost . (($item['answer_count'] != 0) ? "<br><small class='post-info'>(" . GenericTemplates::renderTime($item['bumptime'], 'post') . ')</small>' : '') . "</td></tr>\n";
+                    $output .= '<tr class="topic-' . $icon . ($hl ? ' topic-hl' : '') . '"><td class="topic-icon-cell"><a href="' . _e(Router::topic($item['id'], $forum_slug)) . '"><img src="' . Template::image('icons/topic-' . $icon . '.png') . '" alt="' . _lang('posts.topic.' . $icon) . '"></a></td><td class="topic-main-cell"><a href="' . _e(Router::topic($item['id'], $forum_slug)) . '">' . $item['subject'] . '</a>' . $tpages . '<br>' . $author . ' <small class="post-info">(' . GenericTemplates::renderTime($item['time'], 'post') . ')</small></td><td>' . $item['answer_count'] . '</td><td>' . $lastpost . (($item['answer_count'] != 0) ? '<br><small class="post-info">(' . GenericTemplates::renderTime($item['bumptime'], 'post') . ')</small>' : '') . "</td></tr>\n";
                     $hl = !$hl;
                 }
                 $output .= "</tbody></table>\n\n";
@@ -552,17 +552,17 @@ class PostService
                 }
 
                 // latest answers
-                $output .= "\n<div class='post-answer-list'>\n<h3>" . _lang('posts.forum.lastact') . "</h3>\n";
+                $output .= "\n<div class=\"post-answer-list\">\n<h3>" . _lang('posts.forum.lastact') . "</h3>\n";
                 $query = DB::query('SELECT topic.id AS topic_id,topic.subject AS topic_subject,p.author,p.guest,p.time,' . $userQuery['column_list'] . ' FROM ' . DB::table('post') . ' AS p JOIN ' . DB::table('post') . ' AS topic ON(topic.type=' . Post::FORUM_TOPIC . ' AND topic.id=p.xhome) ' . $userQuery['joins'] . ' WHERE p.type=' . Post::FORUM_TOPIC . ' AND p.home=' . $home . ' AND p.xhome!=-1 ORDER BY p.id DESC LIMIT ' . Settings::get('extratopicslimit'));
                 if (DB::size($query) != 0) {
-                    $output .= "<table class='topic-latest'>\n";
+                    $output .= "<table class=\"️topic-latest\"️>\n";
                     while ($item = DB::row($query)) {
                         if ($item['author'] != -1) {
                             $author = Router::userFromQuery($userQuery, $item);
                         } else {
-                            $author = "<span class='post-author-guest'>" . self::renderGuestName($item['guest']) . '</span>';
+                            $author = '<span class="post-author-guest">' . self::renderGuestName($item['guest']) . '</span>';
                         }
-                        $output .= "<tr><td><a href='" . _e(Router::topic($item['topic_id'], $forum_slug)) . "'>" . $item['topic_subject'] . '</a></td><td>' . $author . '</td><td>' . GenericTemplates::renderTime($item['time'], 'post') . "</td></tr>\n";
+                        $output .= '<tr><td><a href="' . _e(Router::topic($item['topic_id'], $forum_slug)) . '">' . $item['topic_subject'] . '</a></td><td>' . $author . '</td><td>' . GenericTemplates::renderTime($item['time'], 'post') . "</td></tr>\n";
                     }
                     $output .= "</table>\n\n";
 
@@ -606,13 +606,13 @@ class PostService
         $captcha = Captcha::init();
         $output = GenericTemplates::jsLimitLength(16384, 'postform', 'text');
         if (!User::isLoggedIn()) {
-            $inputs[] = ['label' => _lang('posts.guestname'), 'content' => "<input type='text' name='guest' maxlength='24' class='inputsmall'" . Form::restoreValue($_SESSION, 'post_form_guest') . '>'];
+            $inputs[] = ['label' => _lang('posts.guestname'), 'content' => '<input type="text" name="guest" maxlength="24" class="inputsmall"' . Form::restoreValue($_SESSION, 'post_form_guest') . '>'];
         }
         if ($vars['xhome'] == -1 && $vars['subject']) {
-            $inputs[] = ['label' => _lang($vars['is_topic'] ? 'posts.topic' : 'posts.subject'), 'content' => "<input type='text' name='subject' class='input" . ($vars['is_topic'] ? 'medium' : 'small') . "' maxlength='48'" . Form::restoreValue($_SESSION, 'post_form_subject') . '>'];
+            $inputs[] = ['label' => _lang($vars['is_topic'] ? 'posts.topic' : 'posts.subject'), 'content' => '<input type="text" name="subject" class="input' . ($vars['is_topic'] ? 'medium' : 'small') . '" maxlength="48"' . Form::restoreValue($_SESSION, 'post_form_subject') . '>'];
         }
         $inputs[] = $captcha;
-        $inputs[] = ['label' => _lang('posts.text'), 'content' => "<textarea name='text' class='areamedium' rows='5' cols='33'>" . Form::restoreValue($_SESSION, 'post_form_text', null, false) . "</textarea><input type='hidden' name='_posttype' value='" . $vars['posttype'] . "'><input type='hidden' name='_posttarget' value='" . $vars['posttarget'] . "'><input type='hidden' name='_xhome' value='" . $vars['xhome'] . "'>" . (isset($vars['pluginflag']) ? "<input type='hidden' name='_pluginflag' value='" . $vars['pluginflag'] . "'>" : ''), 'top' => true];
+        $inputs[] = ['label' => _lang('posts.text'), 'content' => '<textarea name="text" class="areamedium" rows="5" cols="33">' .Form::restoreValue($_SESSION, 'post_form_text', null, false) . '</textarea><input type="hidden" name="_posttype" value="' . $vars['posttype'] . '"><input type="hidden" name="_posttarget" value="' . $vars['posttarget'] . '"><input type="hidden" name="_xhome" value="' . $vars['xhome'] . '">' . (isset($vars['pluginflag']) ? '<input type="hidden" name="_pluginflag" value="' . $vars['pluginflag'] . '">' : ''), 'top' => true];
         $inputs[] = ['label' => '', 'content' => PostForm::renderControls('postform', 'text')];
         $inputs[] = Form::getSubmitRow(['append' => ' ' . PostForm::renderPreviewButton('postform', 'text')]);
 
@@ -658,15 +658,15 @@ class PostService
         if ($post['author'] != -1) {
             $author = Router::userFromQuery($userQuery, $post, ['class' => 'post-author']);
         } else {
-            $author = "<span class='post-author-guest' title='" . GenericTemplates::renderIp($post['ip']) . "'>"
+            $author = '<span class="post-author-guest" title="' . GenericTemplates::renderIp($post['ip']) . '">'
                 . self::renderGuestName($post['guest'])
                 . '</span>';
         }
 
         // action links
         $actlinks = [];
-        if ($options['allow_reply']) $actlinks[] = "<a class='post-action-reply' href='" . _e(UrlHelper::appendParams($options['current_url'], 'replyto=' . $post['id'])) . "#posts'>" . _lang('posts.reply') . '</a>';
-        if ($postAccess) $actlinks[] = "<a class='post-action-edit' href='" . _e(Router::module('editpost', ['query' => ['id' => $post['id']]])) . "'>" . _lang('global.edit') . '</a>';
+        if ($options['allow_reply']) $actlinks[] = '<a class="post-action-reply" href="' . _e(UrlHelper::appendParams($options['current_url'], 'replyto=' . $post['id'])) . '#posts">' . _lang('posts.reply') . '</a>';
+        if ($postAccess) $actlinks[] = '<a class="post-action-edit" href="' . _e(Router::module('editpost', ['query' => ['id' => $post['id']]])) . '">' . _lang('global.edit') . '</a>';
         $actlinks = array_merge($actlinks, $options['extra_actions']);
 
         // avatar
@@ -686,14 +686,14 @@ class PostService
         ]);
 
         if ($output === '') {
-            $output .= "<div id='post-" . $post['id'] . "' class='post" . ($options['is_answer'] ? ' post-answer' : '') . (isset($avatar) ? ' post-withavatar' : '') . "'>"
-                . "<div class='post-head'>"
+            $output .= '<div id="post-' . $post['id'] . '" class="post' . ($options['is_answer'] ? ' post-answer' : '') . (isset($avatar) ? ' post-withavatar' : '') . '">'
+                . '<div class="post-head">'
                     . $author
-                    . " <span class='post-info'>(" . GenericTemplates::renderTime($post['time'], 'post') . $options['extra_info'] . ')</span>'
-                    . ($actlinks ? " <span class='post-actions'>" . implode(' ', $actlinks) . '</span>' : '')
-                    . ($options['post_link'] ? "<a class='post-postlink' href='" . _e(UrlHelper::appendParams($options['current_url'], 'page=' . $options['current_page'])) . '#post-' . $post['id'] . "'><span>#" . str_pad($post['id'], 6, '0', STR_PAD_LEFT) . '</span></a>' : '')
+                    . ' <span class="post-info">(' . GenericTemplates::renderTime($post['time'], 'post') . $options['extra_info'] . ')</span>'
+                    . ($actlinks ? ' <span class="post-actions">' . implode(' ', $actlinks) . '</span>' : '')
+                    . ($options['post_link'] ? '<a class="post-postlink" href="' . _e(UrlHelper::appendParams($options['current_url'], 'page=' . $options['current_page'])) . '#post-' . $post['id'] . "'><span>#" . str_pad($post['id'], 6, '0', STR_PAD_LEFT) . '</span></a>' : '')
                 . '</div>'
-                . "<div class='post-body" . (isset($avatar) ? ' post-body-withavatar' : '') . "'>"
+                . '<div class="post-body' . (isset($avatar) ? ' post-body-withavatar' : '') . '">'
                     . $avatar
                     . '<div class="post-body-text">'
                         . Post::render($post['text'])

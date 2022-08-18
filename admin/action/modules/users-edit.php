@@ -243,76 +243,76 @@ if ($continue) {
         $messages_code .= $message;
     }
 
-    $output .= "
-<p class='bborder'>" . _lang('admin.users.edit.p') . '</p>
-' . $messages_code . "
-<form autocomplete='off' action='" . _e(Router::admin('users-edit', (($id != null)) ? ['query' => ['id' => $id]] : null)) . "' method='post' name='userform'>
-<table class='formtable'>
+    $output .= '
+<p class="bborder">' . _lang('admin.users.edit.p') . '</p>
+' . $messages_code . '
+<form autocomplete="off" action="' . _e(Router::admin('users-edit', (($id != null)) ? ['query' => ['id' => $id]] : null)) . '" method="post" name="userform">
+<table class="formtable">
 
 <tr>
-<th>" . _lang('login.username') . "</th>
-<td><input type='text' class='inputsmall'" . Form::restorePostValueAndName('username', $query['username']) . " maxlength='24'></td>
+<th>' . _lang('login.username') . '</th>
+<td><input type="text" class="inputsmall"' . Form::restorePostValueAndName('username', $query['username']) . ' maxlength="24"></td>
 </tr>
 
 <tr>
-<th>" . _lang('mod.settings.account.publicname') . "</th>
-<td><input type='text' class='inputsmall'" . Form::restorePostValueAndName('publicname', $query['publicname'], false) . " maxlength='24'></td>
+<th>' . _lang('mod.settings.account.publicname') . '</th>
+<td><input type="text" class="inputsmall"' . Form::restorePostValueAndName('publicname', $query['publicname'], false) . ' maxlength="24"></td>
 </tr>
 
 <tr>
-<th>" . _lang('global.email') . "</th>
-<td><input type='email' class='inputsmall'" . Form::restorePostValueAndName('email', $query['email']) . '></td>
+<th>' . _lang('global.email') . '</th>
+<td><input type="email" class="inputsmall"' . Form::restorePostValueAndName('email', $query['email']) . '></td>
 </tr>
 
 <tr>
-<th>' . _lang((($id == null) ? 'login.password' : 'mod.settings.password.new')) . "</th>
-<td><input type='password' name='password' class='inputsmall' autocomplete='new-password'></td>
+<th>' . _lang((($id == null) ? 'login.password' : 'mod.settings.password.new')) . '</th>
+<td><input type="password" name="password" class="inputsmall" autocomplete="new-password"></td>
 </tr>
 
 <tr>
-<th>" . _lang('global.group') . '</th>
+<th>' . _lang('global.group') . '</th>
 <td>' . $group_select . '</td>
 </tr>
 
 <tr>
-<th>' . _lang('login.blocked') . "</th>
-<td><input type='checkbox' name='blocked' value='1'" . Form::activateCheckbox($query['blocked'] || isset($_POST['blocked'])) . '></td>
+<th>' . _lang('login.blocked') . '</th>
+<td><input type="checkbox" name="blocked" value="1"' . Form::activateCheckbox($query['blocked'] || isset($_POST['blocked'])) . '></td>
 </tr>
 
 <tr>
-<th>' . _lang('global.levelshift') . "</th>
-<td><input type='checkbox' name='levelshift' value='1'" . Form::activateCheckbox($query['levelshift'] || isset($_POST['levelshift'])) . Form::disableInputUnless(User::isSuperAdmin()) . '></td>
+<th>' . _lang('global.levelshift') . '</th>
+<td><input type="checkbox" name="levelshift" value="1"' . Form::activateCheckbox($query['levelshift'] || isset($_POST['levelshift'])) . Form::disableInputUnless(User::isSuperAdmin()) . '></td>
 </tr>
 
 <tr>
-<th>' . _lang('mod.settings.account.wysiwyg') . "</th>
-<td><input type='checkbox' name='wysiwyg' value='1'" . Form::activateCheckbox($query['wysiwyg'] || isset($_POST['wysiwyg'])) . '></td>
+<th>' . _lang('mod.settings.account.wysiwyg') . '</th>
+<td><input type="checkbox" name="wysiwyg" value="1"' . Form::activateCheckbox($query['wysiwyg'] || isset($_POST['wysiwyg'])) . '></td>
 </tr>
 
 <tr>
-<th>' . _lang('mod.settings.account.massemail') . "</th>
-<td><input type='checkbox' name='massemail' value='1'" . Form::activateCheckbox($query['massemail'] || isset($_POST['massemail'])) . '></td>
+<th>' . _lang('mod.settings.account.massemail') . '</th>
+<td><input type="checkbox" name="massemail" value="1"' . Form::activateCheckbox($query['massemail'] || isset($_POST['massemail'])) . '></td>
 </tr>
 
 <tr>
-<th>' . _lang('mod.settings.account.public') . "</th>
-<td><input type='checkbox' name='public' value='1'" . Form::activateCheckbox($query['public'] || isset($_POST['public'])) . '></td>
+<th>' . _lang('mod.settings.account.public') . '</th>
+<td><input type="checkbox" name="public" value="1"' . Form::activateCheckbox($query['public'] || isset($_POST['public'])) . '></td>
 </tr>
 
 <tr>
-<th>' . _lang('global.avatar') . "</th>
-<td><label><input type='checkbox' name='removeavatar' value='1'> " . _lang('global.delete') . "</label></td>
+<th>' . _lang('global.avatar') . '</th>
+<td><label><input type="checkbox" name="removeavatar" value="1"> ' . _lang('global.delete') . '</label></td>
 </tr>
 
-<tr class='valign-top'>
-<th>" . _lang('global.note') . "</th>
-<td><textarea class='areasmall' rows='9' cols='33' name='note'>" . Form::restorePostValue('note', $query['note'], false, false) . '</textarea></td>
+<tr class="valign-top">
+<th>' . _lang('global.note') . '</th>
+<td><textarea class="areasmall" rows="9" cols="33" name="note">' . Form::restorePostValue('note', $query['note'], false, false) . '</textarea></td>
 </tr>
 
-' . Extend::buffer('admin.user.form', ['user' => $query]) . "
+' . Extend::buffer('admin.user.form', ['user' => $query]) . '
 
 <tr><td></td>
-<td><input type='submit' class='button bigger' value='" . _lang((isset($_GET['id']) ? 'global.save' : 'global.create')) . "' accesskey='s'>" . (($id != null) ? ' <small>' . _lang('admin.content.form.thisid') . ' ' . $query['id'] . '</small>' : '') . '</td>
+<td><input type="submit" class="button bigger" value="' . _lang((isset($_GET['id']) ? 'global.save' : 'global.create')) . '" accesskey="s">' . (($id != null) ? ' <small>' . _lang('admin.content.form.thisid') . ' ' . $query['id'] . '</small>' : '') . '</td>
 </tr>
 
 </table>
@@ -321,9 +321,9 @@ if ($continue) {
 
     // odkaz na profil a zjisteni ip
     if ($id != null) {
-        $output .= "
+        $output .= '
   <p>
-    <a href='" . _e(Router::module('profile', ['query' => ['id' => $query['username']]])) . "' target='_blank'>" . _lang('mod.profile') . ' &gt;</a>
+    <a href="' . _e(Router::module('profile', ['query' => ['id' => $query['username']]])) . '" target="_blank">' . _lang('mod.profile') . ' &gt;</a>
   </p>
   ';
     }
