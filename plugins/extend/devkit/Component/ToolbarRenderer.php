@@ -253,7 +253,7 @@ class ToolbarRenderer
 
         foreach (Core::$pluginManager->getInactivePlugins()->map as $inactivePlugin) {
             foreach ($inactivePlugin->getErrors() as $error) {
-                $pluginErrors["{$inactivePlugin->getId()} ({$inactivePlugin->getFile()})"][] = $error;
+                $pluginErrors[$inactivePlugin->getId()][] = $error;
             }
         }
 
