@@ -7,6 +7,7 @@ use Sunlight\Composer\Repository;
 use Sunlight\Composer\RepositoryInjector;
 use Sunlight\Core;
 use Sunlight\Plugin\Type\PluginType;
+use Sunlight\Util\Environment;
 use Sunlight\Util\Filesystem;
 use Sunlight\Util\Json;
 use Sunlight\Util\StringManipulator;
@@ -47,12 +48,10 @@ class PluginLoader
         $composerInjector = new RepositoryInjector(new Repository(realpath(SL_ROOT . '/composer.json')));
 
         $plugins = $this->findPlugins($boundFiles);
-        $plugins = $this->resolveDependencies($plugins);
-
-        $this->resolveAutoload($plugins, $autoload);
-        $this->handleComposerRepositories($plugins, $boundFiles, $composerInjector);
-        $this->resolveAutoloadForInjectedComposerPackages($autoload, $composerInjector);
         $this->resolveInstallationStatus($plugins);
+        $plugins = $this->resolveDependencies($plugins, $composerInjector, $boundFiles);
+        $this->resolveAutoload($plugins, $autoload);
+        $this->resolveAutoloadForInjectedComposerPackages($composerInjector, $autoload);
 
         return [
             'plugins' => $plugins,
@@ -155,7 +154,7 @@ class PluginLoader
         }
 
         // PHP version
-        if ($env['php'] !== null && !$this->checkVersion($env['php'], PHP_VERSION)) {
+        if ($env['php'] !== null && !$this->checkVersion($env['php'], Environment::getPhpVersion())) {
             $plugin->addError(sprintf('PHP version "%s" is required', $env['php']));
         }
 
@@ -206,61 +205,75 @@ class PluginLoader
     }
 
     /**
-     * @param string[] $errors
-     */
-    private function convertPluginToErrorState(PluginData $plugin, array $errors): void
-    {
-        $plugin->status = Plugin::STATUS_HAS_ERRORS;
-        $plugin->errors = $errors;
-    }
-
-    /**
      * Resolve plugin dependencies
      *
      * @param array<string, PluginData> $plugins
-     * @throws \RuntimeException if the dependencies cannot be resolved
+     * @return array<string, PluginData>
      */
-    private function resolveDependencies(array $plugins): array
+    private function resolveDependencies(array $plugins, RepositoryInjector $composerInjector, array &$boundFiles): array
     {
         $sorted = [];
         $circularDependencyMap = $this->findCircularDependencies($plugins);
 
         while (!empty($plugins)) {
             $numAdded = 0;
+
             foreach ($plugins as $id => $plugin) {
-                $canBeAdded = true;
+                $delay = false;
                 $errors = [];
 
-                if ($plugin->isOk()) {
-                    if (isset($circularDependencyMap[$id])) {
-                        // the plugin is in a circular dependency chain
-                        $errors[] = sprintf('circular dependency detected: "%s"', $circularDependencyMap[$id]);
-                        $canBeAdded = false;
-                    } elseif (!empty($plugin->options['dependencies'])) {
-                        foreach ($plugin->options['dependencies'] as $dependency => $requiredVersion) {
-                            if (isset($sorted[$dependency])) {
-                                // the dependency is already in the sorted map
-                                if (!$this->checkDependency($sorted[$dependency], $requiredVersion, $errors)) {
-                                    $canBeAdded = false;
-                                }
-                            } else {
-                                // not in the sorted map yet
-                                if (isset($plugins[$dependency])) {
-                                    $this->checkDependency($plugins[$dependency], $requiredVersion, $errors);
-                                } else {
-                                    $errors[] = sprintf('missing dependency "%s"', $dependency);
-                                }
+                do {
+                    // check state
+                    if (!$plugin->isOk()) {
+                        break;
+                    }
 
-                                $canBeAdded = false;
+                    // check circular dependencies
+                    if (isset($circularDependencyMap[$id])) {
+                        $errors[] = sprintf('circular dependency detected: "%s"', $circularDependencyMap[$id]);
+                        break;
+                    }
+
+                    // check plugin dependencies
+                    if (!empty($plugin->options['dependencies'])) {
+                        $hasPendingDep = false;
+
+                        foreach (array_keys($plugin->options['dependencies']) as $dependency) {
+                            if (!isset($plugins[$dependency]) && !isset($sorted[$dependency])) {
+                                $errors[] = sprintf('missing dependency "%s"', $dependency);
+                            } elseif (!isset($sorted[$dependency])) {
+                                $hasPendingDep = true;
                             }
                         }
-                    }
-                }
 
-                // add if all dependencies are ok or there are errors
-                if ($canBeAdded || !empty($errors)) {
+                        if (!empty($errors)) {
+                            break;
+                        }
+
+                        if ($hasPendingDep) {
+                            // delay until dependency is processed
+                            $delay = true;
+                            break;
+                        }
+
+                        foreach ($plugin->options['dependencies'] as $dependency => $requiredVersion) {
+                            $this->checkDependency($sorted[$dependency], $requiredVersion, $errors);
+                        }
+
+                        if (!empty($errors)) {
+                            break;
+                        }
+                    }
+
+                    // resolve composer dependencies
+                    $this->resolveComposerDependencies($plugin, $composerInjector, $boundFiles, $errors);
+                } while (false);
+
+                // add unless delayed
+                if (!$delay) {
                     if (!empty($errors)) {
-                        $this->convertPluginToErrorState($plugin, $errors);
+                        $plugin->status = Plugin::STATUS_HAS_ERRORS;
+                        $plugin->errors = $errors;
                     }
 
                     $sorted[$id] = $plugin;
@@ -271,7 +284,7 @@ class PluginLoader
 
             if ($numAdded === 0) {
                 // this should not happen
-                throw new \RuntimeException('Could not resolve plugin dependencies');
+                throw new \LogicException('Failed to resolve plugin dependencies');
             }
         }
 
@@ -328,26 +341,52 @@ class PluginLoader
     /**
      * Check plugin dependency version
      */
-    private function checkDependency(PluginData $plugin, string $requiredVersion, array &$errors): bool
+    private function checkDependency(PluginData $plugin, string $requiredVersion, array &$errors): void
     {
-        if ($plugin->status !== Plugin::STATUS_OK) {
+        if (!$plugin->isOk()) {
             $errors[] = sprintf('dependency "%s" is not available', $plugin->id);
-            
-            return false;
-        }
-
-        if (!$this->checkVersion($requiredVersion, $plugin->options['version'])) {
+        } elseif (!$this->checkVersion($requiredVersion, $plugin->options['version'])) {
             $errors[] = sprintf(
                 'dependency "%s" (version "%s") is not compatible, version "%s" is required',
                 $plugin->id,
                 $plugin->options['version'],
                 $requiredVersion
             );
+        }
+    }
 
-            return false;
+    private function resolveComposerDependencies(
+        PluginData $plugin,
+        RepositoryInjector $injector,
+        array &$boundFiles,
+        array &$errors
+    ): void {
+        if (!$plugin->options['inject_composer']) {
+            return;
         }
 
-        return true;
+        $composerJsonPath = $plugin->dir . '/composer.json';
+
+        if (is_file($composerJsonPath)) {
+            $repository = new Repository($composerJsonPath);
+
+            if (!is_dir($repository->getVendorPath())) {
+                $errors[] = sprintf('composer dependencies are missing, try running "composer install" in %s', $repository->getDirectory());
+                return;
+            }
+
+            $this->ensureComposerRepositoryAccessControl($repository);
+
+            if (!$injector->inject($repository, $errors)) {
+                return;
+            }
+
+            $boundFiles[] = $repository->getComposerJsonPath();
+
+            if (is_file($installedJsonPath = $repository->getInstalledJsonPath())) {
+                $boundFiles[] = $installedJsonPath;
+            }
+        }
     }
 
     /**
@@ -356,7 +395,7 @@ class PluginLoader
     private function resolveAutoload(array $plugins, array &$autoload): void
     {
         foreach ($plugins as $plugin) {
-            if ($plugin->status !== Plugin::STATUS_OK) {
+            if (!$plugin->isOk()) {
                 continue;
             }
 
@@ -368,42 +407,6 @@ class PluginLoader
         }
     }
 
-    private function handleComposerRepositories(array $plugins, array &$boundFiles, RepositoryInjector $injector): void
-    {
-        foreach ($plugins as $plugin) {
-            if (!$plugin->options['inject_composer']) {
-                continue;
-            }
-
-            $composerJsonPath = $plugin->dir . '/composer.json';
-
-            if (is_file($composerJsonPath)) {
-                $repository = new Repository($composerJsonPath);
-
-                if (!is_dir($repository->getVendorPath())) {
-                    $this->convertPluginToErrorState(
-                        $plugin,
-                        [sprintf('missing dependencies, please run "composer install" in %s', $repository->getDirectory())]
-                    );
-                    continue;
-                }
-
-                $this->ensureComposerRepositoryAccessControl($repository);
-
-                if (!$injector->inject($repository, $errors)) {
-                    $this->convertPluginToErrorState($plugin, $errors);
-                    continue;
-                }
-
-                $boundFiles[] = $repository->getComposerJsonPath();
-
-                if (is_file($installedJsonPath = $repository->getInstalledJsonPath())) {
-                    $boundFiles[] = $installedJsonPath;
-                }
-            }
-        }
-    }
-
     private function ensureComposerRepositoryAccessControl(Repository $repository): void
     {
         if (!is_file($repository->getVendorPath() . '/.htaccess')) {
@@ -411,7 +414,7 @@ class PluginLoader
         }
     }
 
-    private function resolveAutoloadForInjectedComposerPackages(array &$autoload, RepositoryInjector $injector): void
+    private function resolveAutoloadForInjectedComposerPackages(RepositoryInjector $injector, array &$autoload): void
     {
         $uniqueSources = [];
         $injectedPackages = $injector->getInjectedPackages();
