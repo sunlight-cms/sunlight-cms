@@ -7,17 +7,15 @@ use Sunlight\GenericTemplates;
 abstract class Environment
 {
     /**
-     * Pokusit se detekovat, zda-li bezi tato instalace systemu pod webserverem Apache
+     * Determine PHP version
      */
-    static function isApache(): bool
+    static function getPhpVersion(): string
     {
-        return
-            mb_stripos(php_sapi_name(), 'apache') !== false
-            || isset($_SERVER['SERVER_SOFTWARE']) && mb_stripos($_SERVER['SERVER_SOFTWARE'], 'apache') !== false;
+        return sprintf('%d.%d.%d', PHP_MAJOR_VERSION, PHP_MINOR_VERSION, PHP_RELEASE_VERSION) ;
     }
 
     /**
-     * Zjistit zda-li je aktualni prostredi konzole
+     * See if the code is running from console
      */
     static function isCli(): bool
     {
@@ -25,9 +23,9 @@ abstract class Environment
     }
 
     /**
-     * Zjistit maximalni moznou celkovou velikost uploadu
+     * Determine upload limit
      *
-     * @return int|null cislo v bajtech nebo null (= neznamo)
+     * @return int|null number of bytes or null if unknown
      */
     static function getUploadLimit(): ?int
     {
@@ -48,7 +46,7 @@ abstract class Environment
     }
 
     /**
-     * Vykreslit upozorneni na max. velikost uploadu
+     * Render a note about the upload limit
      *
      * @return string HTML
      */
@@ -63,10 +61,9 @@ abstract class Environment
     }
 
     /**
-     * Zjistit datovy limit dane konfiguracni volby PHP
+     * Determine a limit from PHP option
      *
-     * @param string $opt nazev option
-     * @return int|null cislo v bajtech nebo null (= neomezeno)
+     * @return int|null number of bytes or null if unknown
      */
     static function phpIniLimit(string $opt): ?int
     {
@@ -104,9 +101,9 @@ abstract class Environment
     }
 
     /**
-     * Zjistit dostupnou pamet
+     * Determine available memory
      *
-     * @return int|null cislo v bajtech nebo null (= neomezeno)
+     * @return int|null number of bytes or null if not limited by PHP
      */
     static function getAvailableMemory(): ?int
     {

@@ -2,6 +2,8 @@
 
 namespace Sunlight;
 
+use Sunlight\Util\Environment;
+
 abstract class Email
 {
     /**
@@ -28,7 +30,7 @@ abstract class Email
             $headers['Content-Type'] = 'text/plain; charset=UTF-8';
         }
         if (!isset($definedHeaderMap['x-mailer'])) {
-            $headers['X-Mailer'] = sprintf('PHP/%s', PHP_VERSION);
+            $headers['X-Mailer'] = sprintf('PHP/%s', Environment::getPhpVersion());
         }
 
         // udalost

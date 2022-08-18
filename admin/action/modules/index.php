@@ -8,6 +8,7 @@ use Sunlight\Message;
 use Sunlight\Router;
 use Sunlight\Settings;
 use Sunlight\User;
+use Sunlight\Util\Environment;
 use Sunlight\VersionChecker;
 
 defined('SL_ROOT') or exit;
@@ -90,7 +91,7 @@ $output .= "
       <th>PHP:</th>
       <td>
         ' . (User::isSuperAdmin() ? '<a href="' . _e(Router::path('admin/script/phpinfo.php')) . '" target="_blank">' : '') . '
-        ' . PHP_VERSION . '
+        ' . _e(Environment::getPhpVersion()) . '
         ' . (User::isSuperAdmin() ? '</a>' :'') . '
     </td>
     </tr>

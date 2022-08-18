@@ -4,6 +4,7 @@ namespace Sunlight\Composer;
 
 use Composer\Semver\Comparator;
 use Composer\Semver\Semver;
+use Sunlight\Util\Environment;
 
 class RepositoryInjector
 {
@@ -36,15 +37,13 @@ class RepositoryInjector
         $constraintMap = new ConstraintMap($repository);
 
         // check PHP version
-        $phpVersion = PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION . '.' . PHP_RELEASE_VERSION;
-
         if (
             $constraintMap->has('php')
-            && !$this->satisfies($phpVersion, $constraintMap->getConstraints('php'), $failedConstraints)
+            && !$this->satisfies(Environment::getPhpVersion(), $constraintMap->getConstraints('php'), $failedConstraints)
         ) {
             $errors[] = sprintf(
                 'current PHP version %s is not compatible with constraints %s',
-                $phpVersion,
+                Environment::getPhpVersion(),
                 $this->getConstraintSourceInfo($constraintMap->getSources('php'), $failedConstraints)
             );
 
