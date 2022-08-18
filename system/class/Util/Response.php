@@ -40,6 +40,7 @@ abstract class Response
      * Po provedeni presmerovani je skript ukoncen.
      *
      * @param string|null $url adresa pro navrat, null = {@see Response::getReturnUrl()}
+     * @return never-return
      */
     static function redirectBack(?string $url = null): void
     {

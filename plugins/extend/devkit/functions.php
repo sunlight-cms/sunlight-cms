@@ -24,6 +24,9 @@ if (!function_exists('dump')) {
     }
 
     if (!function_exists('dd')) {
+        /**
+         * @return never-return
+         */
         function dd($value, $maxLevel = Dumper::DEFAULT_MAX_LEVEL + 1, $maxStringLen = Dumper::DEFAULT_MAX_STRING_LENGTH * 2)
         {
             echo '<pre>', _e(Dumper::dump($value, $maxLevel, $maxStringLen)), '</pre>';
