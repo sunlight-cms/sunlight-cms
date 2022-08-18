@@ -821,6 +821,7 @@ class ImportDatabaseStep extends Step
             'language' => $this->vars['language'],
             'atreplace' => $this->vars['language'] === 'cs' ? '[zavinac]' : '[at]',
             'version_check' => Request::post('import_settings_version_check') ? 1 : 0,
+            'pretty_urls' => function_exists('apache_get_modules') && in_array('mod_rewrite', apache_get_modules(), true) ? 1 : 0,
         ];
 
         $admin = [
