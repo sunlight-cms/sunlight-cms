@@ -51,17 +51,17 @@ if (isset($_GET['q']) && Xsrf::check(true)) {
 
 $_index->title = _lang('mod.search');
 
-$output .= "
-<p class='bborder'>" . _lang('mod.search.p') . "</p>
+$output .= '
+<p class="bborder">' . _lang('mod.search.p') . '</p>
 
-<form action='" . _e(Router::module('search')) . "' method='get' class='fullsearchform'>
-<p><input type='search' name='q' class='inputmedium' value='" . _e($search_query) . "'> <input type='submit' value='" . _lang('mod.search.submit') . "'></p>
+<form action="' . _e(Router::module('search')) . '" method="get" class="fullsearchform">
+<p><input type="search" name="q" class="inputmedium" value="' . _e($search_query) . '"> <input type="submit" value="' . _lang('mod.search.submit') . '"></p>
 <p>
-    " . _lang('mod.search.where') . ":
-    <label><input type='checkbox' name='page' value='1'" . Form::activateCheckbox($page) . '> ' . _lang('mod.search.where.page') . "</label>
-    <label><input type='checkbox' name='art' value='1'" . Form::activateCheckbox($art) . '> ' . _lang('mod.search.where.articles') . "</label>
-    <label><input type='checkbox' name='post' value='1'" . Form::activateCheckbox($post) . '> ' . _lang('mod.search.where.posts') . "</label>
-    <label><input type='checkbox' name='img' value='1'" . Form::activateCheckbox($image) . '> ' . _lang('mod.search.where.images') . '</label>
+    ' . _lang('mod.search.where') . ':
+    <label><input type="checkbox" name="page" value="1"' . Form::activateCheckbox($page) . '> ' . _lang('mod.search.where.page') . '</label>
+    <label><input type="checkbox" name="art" value="1"' . Form::activateCheckbox($art) . '> ' . _lang('mod.search.where.articles') . '</label>
+    <label><input type="checkbox" name="post" value="1"' . Form::activateCheckbox($post) . '> ' . _lang('mod.search.where.posts') . '</label>
+    <label><input type="checkbox" name="img" value="1"' . Form::activateCheckbox($image) . '> ' . _lang('mod.search.where.images') . '</label>
 </p>
 
 ' . Xsrf::getInput() . '
@@ -168,7 +168,7 @@ if ($search_query != '') {
                 // sestaveni infa
                 $infos = [];
                 if ($r['author'] == -1) {
-                    $infos[] = [_lang('global.postauthor'), "<span class='post-author-guest'>" . PostService::renderGuestName($r['guest']) . '</span>'];
+                    $infos[] = [_lang('global.postauthor'), '<span class="post-author-guest">' .PostService::renderGuestName($r['guest']) . '</span>'];
                 } else {
                     $infos[] = [_lang('global.postauthor'), Router::userFromQuery($userQuery, $r)];
                 }
@@ -223,9 +223,9 @@ if ($search_query != '') {
         // vypis vysledku
         if (count($results) != 0) {
             foreach ($results as $item) {
-                $output .= "<div class='list-item'>
-<h2 class='list-title'><a href='" . _e($item[0]) . "'>" . $item[1] . "</a></h2>
-<p class='list-perex'>" . $item[2] . '</p>
+                $output .= '<div class="list-item">
+<h2 class="list-title"><a href="' . _e($item[0]) . '">' . $item[1] . '</a></h2>
+<p class="list-perex">' . $item[2] . '</p>
 ';
                 if (isset($item[3])) {
                     $output .= GenericTemplates::renderInfos($item[3]);

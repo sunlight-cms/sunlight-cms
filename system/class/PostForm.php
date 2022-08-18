@@ -30,7 +30,7 @@ abstract class PostForm
                     continue;
                 }
                 $icon = (($vars[4] === 1) ? Template::image('bbcode/' . $tag . '.png') : $vars[4]);
-                $output .= "<a class=\"bbcode-button post-form-bbcode-{$tag}\" href=\"#\" onclick=\"return Sunlight.addBBCode('" . $form . "','" . $area . "','" . $tag . "', " . ($vars[0] ? 'true' : 'false') . ");\" class='bbcode-button'><img src=\"" . $icon . '" alt="' . $tag . "\"></a>\n";
+                $output .= '<a class="bbcode-button post-form-bbcode-' . $tag . '" href="#" onclick="return Sunlight.addBBCode(\'' . $form . '\',\'' . $area . '\',\'' . $tag . '\', ' . ($vars[0] ? 'true' : 'false') . ');" class="bbcode-button"><img src="' . $icon . '" alt="' . $tag . "\"></a>\n";
             }
             $output .= '</span>';
         }
@@ -38,7 +38,7 @@ abstract class PostForm
         Extend::call('posts.form_controls', ['output' => &$output]);
 
         if ($output !== '') {
-            $output = "<span class='posts-form-controls'>" . $output . '</span>';
+            $output = '<span class="posts-form-controls">' . $output . '</span>';
         }
 
         return $output;

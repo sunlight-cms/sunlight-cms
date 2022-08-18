@@ -210,7 +210,7 @@ abstract class PageLister
             $pageLink = Core::getCurrentUrl();
             $pageLink->set('page_id', $page['id']);
 
-            $output .= '<li>' . self::renderPageFlags($page) . '<a href="' . _e($pageLink->buildRelative()) . "\" title=\"ID: {$page['id']}, " . _lang('admin.content.form.ord') . " {$page['ord']}\">{$page['title']}</a></li>\n";
+            $output .= '<li>' . self::renderPageFlags($page) . '<a href="' . _e($pageLink->buildRelative()) . '" title="ID: ' . $page['id'] . ', ' . _lang('admin.content.form.ord') . ' ' . $page['ord'] . '">' . $page['title'] . "</a></li>\n";
         }
         $output .= "</ul>\n";
     }
@@ -233,7 +233,7 @@ abstract class PageLister
         } else {
             $class .= ' page-list-full-tree';
         }
-        $output .= "<table class=\"{$class}\">\n<tbody";
+        $output .= '<table class="' . $class . "\">\n<tbody";
         if ($options['sortable']) {
             $output .= '
     class="sortable"
@@ -430,23 +430,23 @@ abstract class PageLister
         }
 
         // render
-        $output .= "<tr class=\"{$class}\">\n";
+        $output .= '<tr class="' . $class . "\"️>\n";
 
         // order input
         if ($options['sortable']) {
-            $output .= "<td class=\"page-list-sortcell\"><span class=\"sortable-handle\"></span><input class=\"inputmini\" type=\"number\" name=\"ord[{$page['id']}]\" value=\"{$page['ord']}\"></td>\n";
+            $output .= '<td class="page-list-sortcell"><span class="sortable-handle"></span><input class="inputmini" type="number" name="ord[' . $page['id'] . ']" value="' . $page['ord'] . "\"></td>\n";
         }
 
         // title
         $output .= '<td class="page-title">';
-        $itemAttrs = " title=\"ID: {$page['id']}, " . _lang('admin.content.form.ord') . ": {$page['ord']}\"";
+        $itemAttrs = ' title="ID: ' . $page['id'] . ', ' . _lang('admin.content.form.ord') . ': ' . $page['ord'] .'"';
         if ($options['level_class']) {
             $itemAttrs .= ' class="node-level-p' . ($page['node_level'] + $levelOffset) . '"';
         }
         if ($nodeLink !== null && !$options['title_editable']) {
-            $output .= "<a{$itemAttrs} href=\"" . _e($nodeLink) . "\"><span class=\"page-list-title\">{$page['title']}</span></a>";
+            $output .= '<a' . $itemAttrs . ' href="' . _e($nodeLink) . '"><span class="page-list-title">' . $page['title'] . '</span></a>';
         } else {
-            $output .= "<span{$itemAttrs}><span class=\"page-list-title\"><span>";
+            $output .= '<span' . $itemAttrs . '><span class="page-list-title"><span>';
             if ($options['title_editable']) {
                 $output .= '<input class="inputbig" maxlength="255" type="text" name="title[' . $page['id'] . ']" value="' . $page['title'] . '">';
             } else {
@@ -481,10 +481,10 @@ abstract class PageLister
                 $actionLabel = _e($action['label']);
                 $output .= '<a'
                     . ((isset($action['new_window']) && $action['new_window']) ? ' target="_blank"' : '')
-                    . " class=\"page-action-{$actionId}\" href=\"" . _e($action['url']) . "\" title=\"{$actionLabel}\""
+                    . ' class="page-action-{$actionId}" href="' . _e($action['url']) . '" title="{$actionLabel}"'
                     . '>';
                 if (isset($action['icon'])) {
-                    $output .= '<img class="icon" src="' . _e($action['icon']) . "\" alt=\"{$actionLabel}\">";
+                    $output .= '<img class="icon" src="' . _e($action['icon']) . '" alt="{$actionLabel}">';
                 }
                 $output .= "<span>{$actionLabel}</span></a>\n";
             }
@@ -581,15 +581,15 @@ abstract class PageLister
         if ($page['type'] != Page::SEPARATOR) {
             if ($page['id'] == Settings::get('index_page_id')) {
                 $iconTitle = _lang('admin.content.form.homepage');
-                $output .= '<img src="' . _e(Router::path('admin/images/icons/home.png')) . "\" class=\"icon\" alt=\"{$iconTitle}\" title=\"{$iconTitle}\">";
+                $output .= '<img src="' . _e(Router::path('admin/images/icons/home.png')) . '" class="icon" alt="' . $iconTitle . '" title="' . $iconTitle . '">';
             }
             if ($page['layout'] !== null && !$page['layout_inherit']) {
                 $iconTitle = _lang('admin.content.form.layout.setting', ['%layout%' => _e(TemplateService::getComponentLabelByUid($page['layout'], TemplateService::UID_TEMPLATE_LAYOUT))]);
-                $output .= '<img src="' . _e(Router::path('admin/images/icons/template.png')) . "\" class=\"icon\" alt=\"{$iconTitle}\" title=\"{$iconTitle}\">";
+                $output .= '<img src="' . _e(Router::path('admin/images/icons/template.png')) . '" class="icon" alt="' . $iconTitl . '" title="' . $iconTitle . '">';
             }
             if (!$page['public']) {
                 $iconTitle = _lang('admin.content.form.private');
-                $output .= '<img src="' . _e(Router::path('admin/images/icons/lock3.png')) . "\" class=\"icon\" alt=\"{$iconTitle}\" title=\"{$iconTitle}\">";
+                $output .= '<img src="' . _e(Router::path('admin/images/icons/lock3.png')) . '" class="icon" alt="' . $iconTitl . '" title="' . $iconTitle . '">';
             }
             if ($page['level'] > 0) {
                 $iconTitle = _lang('admin.content.form.level') . " {$page['level']}+";
@@ -599,11 +599,11 @@ abstract class PageLister
                 } else {
                     $icon = 'lock.png';
                 }
-                $output .= '<img src="' . _e(Router::path('admin/images/icons/' . $icon)) . "\" class=\"icon\" alt=\"{$iconTitle}\" title=\"{$iconTitle}\">";
+                $output .= '<img src="' . _e(Router::path('admin/images/icons/' . $icon)) . '" class="icon" alt="' . $iconTitl . '" title="' . $iconTitle . '">';
             }
             if (!$page['visible']) {
                 $iconTitle = _lang('admin.content.form.invisible');
-                $output .= '<img src="' . _e(Router::path('admin/images/icons/eye.png')) . "\" class=\"icon\" alt=\"{$iconTitle}\" title=\"{$iconTitle}\">";
+                $output .= '<img src="' . _e(Router::path('admin/images/icons/eye.png')) . '" class="icon" alt="' . $iconTitl . '" title="' . $iconTitle . '">';
             }
         }
 

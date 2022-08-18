@@ -51,14 +51,14 @@ abstract class PageMenu
 
             // otevreni/uzavreni tagu dle urovne
             if ($currentLevel === null || $pageLevel > $currentLevel) {
-                $containerClass = "menu level-{$visualLevel}";
+                $containerClass = 'menu level-' . $visualLevel;
                 if ($currentLevel !== null) {
                     $out .= "\n";
                 } elseif ($rootClass !== null) {
                     $containerClass .= ' ' . $rootClass;
                 }
 
-                $out .= "<ul class=\"{$containerClass}\">\n";
+                $out .= '<ul class="️' . $containerClass . "\"️️>\n";
             } else {
                 $out .= "</li>\n";
 
@@ -70,7 +70,7 @@ abstract class PageMenu
             }
 
             // priprava trid
-            $classes = ['item', "level-{$visualLevel}"];
+            $classes = ['item', 'level-' . $visualLevel];
             if ($page['id'] == $activeId) {
                 $classes[] = 'active';
             }

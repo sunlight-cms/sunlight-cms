@@ -446,10 +446,10 @@ if ($continue) {
                 $action_title = 'admin.fman.menu.createfolder';
                 $action_code = '
       <tr>
-      <th>' . _lang('global.name') . ":</th>
-      <td><input type='text' name='name' class='inputmedium' maxlength='64'></td>
+      <th>' . _lang('global.name') . ':</th>
+      <td><input type="text" name="name" class="inputmedium" maxlength="64"></td>
       </tr>
-      ";
+      ';
                 break;
 
                 // odstraneni
@@ -458,11 +458,11 @@ if ($continue) {
                     $name = Request::get('name');
                     $action_submit = 'global.do';
                     $action_title = 'admin.fman.delete.title';
-                    $action_code = "
+                    $action_code = '
         <tr>
-        <td colspan='2'>" . _lang('admin.fman.delask', ['%name%' => _e($decodeFilename($name))]) . "<input type='hidden' name='name' value='" . _e($name) . "'></td>
+        <td colspan="2">' . _lang('admin.fman.delask', ['%name%' => _e($decodeFilename($name))]) . '<input type="hidden" name="name" value="' . _e($name) . '"></td>
         </tr>
-        ";
+        ';
                 }
                 break;
 
@@ -474,10 +474,10 @@ if ($continue) {
                     $action_title = 'admin.fman.rename.title';
                     $action_code = '
         <tr>
-        <th>' . _lang('admin.fman.newname') . ":</th>
-        <td><input type='text' name='newname' class='inputmedium' maxlength='64' value='" . _e($decodeFilename($name)) . "'><input type='hidden' name='name' value='" . _e($name) . "'></td>
+        <th>' . _lang('admin.fman.newname') . ':</th>
+        <td><input type="text" name="newname" class="inputmedium" maxlength="64" value="' . _e($decodeFilename($name)) . '"><input type="hidden" name="name" value="' . _e($name) . '"></td>
         </tr>
-        ";
+        ';
                 }
                 break;
 
@@ -520,13 +520,13 @@ if ($continue) {
 
                     $action_code = '
         <tr>
-        <th>' . _lang('global.name') . "</th>
-        <td><input type='text' name='name' class='inputmedium' maxlength='64' value='" . _e($decodeFilename($name)) . "'> <small>" . _lang('admin.fman.edit.namenote' . ($new ? '2' : '')) . "</small></td>
+        <th>' . _lang('global.name') . '</th>
+        <td><input type="text" name="name" class="inputmedium" maxlength="64" value="' . _e($decodeFilename($name)) . '"> <small>' . _lang('admin.fman.edit.namenote' . ($new ? '2' : '')) . '</small></td>
         </tr>
 
-        <tr class='valign-top'>
-        <th>" . _lang('admin.content.form.content') . "</th>
-        <td><textarea rows='25' cols='94' class='areabig editor' data-editor-mode='code' data-editor-format='" . $ext . "' name='content' wrap='off'>" . _e($content) . '</textarea></td>
+        <tr class="valign-top">
+        <th>' . _lang('admin.content.form.content') . '</th>
+        <td><textarea rows="25" cols="94" class="areabig editor" data-editor-mode="code" data-editor-format="' . $ext . '" name="content" wrap="off">' . _e($content) . '</textarea></td>
         </tr>
         ';
                 }
@@ -537,16 +537,16 @@ if ($continue) {
             case 'upload':
                 $action_submit = 'global.send';
                 $action_title = 'admin.fman.menu.upload';
-                $action_code = "
-      <tr class='valign-top'>
-      <th>" . _lang('admin.fman.file') . ":</th>
-      <td id='fmanFiles'><input type='file' name='uf0[]' multiple> <a href='#' onclick='return Sunlight.admin.fmanAddFile();'>" . _lang('admin.fman.upload.addfile') . "</a></td>
+                $action_code = '
+      <tr class="valign-top">
+      <th>' . _lang('admin.fman.file') . ':</th>
+      <td id="fmanFiles"><input type="file" name="uf0[]" multiple> <a href="#" onclick="return Sunlight.admin.fmanAddFile();">' . _lang('admin.fman.upload.addfile') . '</a></td>
       </tr>
 
       <tr>
       <td></td>
       <td>
-          <label><input type='checkbox' name='upload_rewrite' value='1'> " . _lang('global.uploadrewrite') . '</label>
+          <label><input type="checkbox" name="upload_rewrite" value="1"> ' . _lang('global.uploadrewrite') . '</label>
           ' . Environment::renderUploadLimit() . '
       </td>
       </tr>
@@ -573,7 +573,7 @@ if ($continue) {
                 foreach ($images_load as $images_load_image) {
                     $images_load_image = $decodeFilename($images_load_image);
                     if (ImageService::isImage($images_load_image)) {
-                        $images .= "<input type='hidden' name='f" . $counter . "' value='" . _e($encodeFilename($images_load_image)) . "'>\n";
+                        $images .= '<input type="hidden" name="f' . $counter . '" value="' . _e($encodeFilename($images_load_image)) . "\">\n";
                         ++$counter;
                     }
                 }
@@ -603,17 +603,17 @@ if ($continue) {
         // dokonceni kodu
         if ($action_code != '') {
 
-            $action_code = "
-<div id='fman-action'>
-<h2>" . _lang($action_title) . "</h2>
-<form action='" . _e($fmanUrl($action_query)) . "'" . (($action_form_class !== null) ? " class='" . $action_form_class . "'" : '') . " method='post' enctype='multipart/form-data'>
-<input type='hidden' name='action' value='" . _e(Request::get('a', '')) . "'>
-<table class='formtable'>
-" . $action_code . "
+            $action_code = '
+<div id="fman-action">
+<h2>' . _lang($action_title) . '</h2>
+<form action="' . _e($fmanUrl($action_query)) . '"' . (($action_form_class !== null) ? ' class="' . $action_form_class . '"' : '') . ' method="post" enctype="multipart/form-data">
+<input type="hidden" name="action" value="' . _e(Request::get('a', '')) . '">
+<table class="formtable">
+' . $action_code . '
 
   <tr>
   <td></td>
-  <td><input type='submit' value='" . _lang($action_submit) . "' accesskey='s'> <a href='" . _e($fmanUrl()) . "'>" . _lang('global.cancel') . '</a></td>
+  <td><input type="submit" value="' . _lang($action_submit) . '" accesskey="s"> <a href="' . _e($fmanUrl()) . '">' . _lang('global.cancel') . '</a></td>
   </tr>
 
 </table>
@@ -628,26 +628,26 @@ if ($continue) {
     /* ---  vystup  --- */
 
     // menu, formular akce
-    $output .= $message . "
-    <a id='top'></a>
-    <p class='fman-menu'>
-    <a href='" . _e($fmanUrl(['a' => 'upload'])) ."'>" . _lang('admin.fman.menu.upload') . "</a>
-    <a href='" . _e($fmanUrl(['a' => 'edit'])) ."'>" . _lang('admin.fman.menu.createfile') . "</a>
-    <a href='" . _e($fmanUrl(['a' => 'newfolder'])) ."'>" . _lang('admin.fman.menu.createfolder') . '</a>
-    ' . ((User::hasPrivilege('admingallery') && User::hasPrivilege('admincontent')) ? "<a href='#' onclick='return Sunlight.admin.fmanAddSelectedToGallery()'>" . _lang('admin.fman.menu.addtogallery') . '</a>' : '') . "
-    <a href='" . _e($fmanUrl(['dir' => null])) . "'>" . _lang('admin.fman.menu.home') . '</a>
+    $output .= $message . '
+    <a id="top"></a>
+    <p class="fman-menu">
+    <a href="' . _e($fmanUrl(['a' => 'upload'])) . '">' . _lang('admin.fman.menu.upload') . '</a>
+    <a href="' . _e($fmanUrl(['a' => 'edit'])) . '">' . _lang('admin.fman.menu.createfile') . '</a>
+    <a href="' . _e($fmanUrl(['a' => 'newfolder'])) . '">' . _lang('admin.fman.menu.createfolder') . '</a>
+    ' . ((User::hasPrivilege('admingallery') && User::hasPrivilege('admincontent')) ? '<a href="#" onclick="return Sunlight.admin.fmanAddSelectedToGallery()">' . _lang('admin.fman.menu.addtogallery') . '</a>' : '') . '
+    <a href="' . _e($fmanUrl(['dir' => null])) . '">' . _lang('admin.fman.menu.home') . '</a>
     <strong>' . _lang('admin.fman.currentdir') . ':</strong> ' . substr($dir, strlen(SL_ROOT)) . '
     </p>
 
     ' . $action_code;
 
     // vypis
-    $output .= "
-    <form action='" . _e($fmanUrl()) ."' method='post' name='filelist'>
-    <input type='hidden' name='action' value='-1'>
-    <input type='hidden' name='param' value='-1'>
-    <table id='fman-list'>
-    ";
+    $output .= '
+    <form action="' . _e($fmanUrl()) . '" method="post" name="filelist">
+    <input type="hidden" name="action" value="-1">
+    <input type="hidden" name="param" value="-1">
+    <table id="fman-list">
+    ';
 
     $highlight = false;
 
@@ -674,17 +674,17 @@ if ($continue) {
         }
 
         if ($highlight) {
-            $hl_class = " class='hl'";
+            $hl_class = ' class="hl"';
         } else {
             $hl_class = '';
         }
 
         $output .= '
-        <tr' . $hl_class . ">
-        <td class='fman-item' colspan='" . (($item == '..') ? '3' : '2') . "'><a href='" . _e($fmanUrl(['dir' => $dirhref])) . "/'><img src='" . _e(Router::path('admin/images/icons/fman/dir.png')) . "' alt='dir' class='icon'>" . _e(StringManipulator::ellipsis($item, 64, false)) . '</a></td>
-        ' . (($item != '..') ? "<td class='actions'>
-            <a class='button' href='" . _e($fmanUrl(['a' => 'delete', 'name' => $encodeFilename($item)])) . "'><img src='" . _e(Router::path('admin/images/icons/delete.png')) . "' alt='del' class='icon'>" . _lang('global.delete') . "</a>
-            <a class='button' href='" . _e($fmanUrl(['a' => 'rename', 'name' => $encodeFilename($item)])) . "'><img src='" . _e(Router::path('admin/images/icons/rename.png')) . "' alt='rename' class='icon'>" . _lang('admin.fman.rename') . '</a>
+        <tr' . $hl_class . '>
+        <td class="fman-item" colspan="' . (($item == '..') ? '3' : '2') . '"><a href="' . _e($fmanUrl(['dir' => $dirhref])) . '/"><img src="' . _e(Router::path('admin/images/icons/fman/dir.png')) . '" alt="dir" class="icon">' . _e(StringManipulator::ellipsis($item, 64, false)) . '</a></td>
+        ' . (($item != '..') ? '<td class="actions">
+            <a class="button" href="' . _e($fmanUrl(['a' => 'delete', 'name' => $encodeFilename($item)])) . '"><img src="' . _e(Router::path('admin/images/icons/delete.png')) . '" alt="del" class="icon">' . _lang('global.delete') . '</a>
+            <a class="button" href="' . _e($fmanUrl(['a' => 'rename', 'name' => $encodeFilename($item)])) . '"><img src="' . _e(Router::path('admin/images/icons/rename.png')) . '" alt="rename" class="icon">' . _lang('admin.fman.rename') . '</a>
         </td>' : '') . "
         </tr>\n";
 
@@ -693,7 +693,7 @@ if ($continue) {
     }
 
     if ($dircounter !== 0) {
-        $output .= "<tr><td class='fman-spacer' colspan='3'></td></tr>";
+        $output .= '<tr><td class="fman-spacer" colspan="3"></td></tr>';
     }
 
     // soubory
@@ -731,14 +731,14 @@ if ($continue) {
             $row_classes[] = 'fman-uploaded';
         }
 
-        $output .= "
-        <tr class='" . implode(' ', $row_classes) . "'>
-        <td class='fman-item'><input type='checkbox' name='f" . $filecounter . "' id='f" . $filecounter . "' value='" . _e($encodeFilename($item)) . "'> <a href='" . _e($dir . $item) . "' target='_blank'" . ($image ? Extend::buffer('image.lightbox', ['group' => 'fman']) : '') . "><img src='" . _e(Router::path('admin/images/icons/fman/' . $icon . '.png')) . "' alt='file' class='icon'>" . _e(StringManipulator::ellipsis($item, 64, false)) . "</a></td>
-        <td class='fman-size'>" . GenericTemplates::renderFileSize($filesize) . "</td>
-        <td class='actions'>". (User::checkFilename($item) ?
-            "<a class='button' href='" . _e($fmanUrl(['a' => 'delete', 'name' => $encodeFilename($item)])) . "'><img src='" . _e(Router::path('admin/images/icons/delete.png')) . "' alt='del' class='icon'>" . _lang('global.delete') . '</a>  '
-            . "<a class='button' href='" . _e($fmanUrl(['a' => 'rename', 'name' => $encodeFilename($item)])) . "'><img src='" . _e(Router::path('admin/images/icons/rename.png')) . "' alt='rename' class='icon'>" . _lang('admin.fman.rename') . '</a>  '
-            . (($icon == 'editable') ? "<a class='button' href='" . _e($fmanUrl(['a' => 'edit', 'name' => $encodeFilename($item)])) . "'><img src='" . _e(Router::path('admin/images/icons/edit.png')) . "' alt='edit' class='icon'>" . _lang('admin.fman.edit') . '</a>' : '')
+        $output .= '
+        <tr class="' . implode(' ', $row_classes) . '">
+        <td class="fman-item"><input type="checkbox" name="f' . $filecounter . '" id="f' . $filecounter . '" value="' . _e($encodeFilename($item)) . '"> <a href="' . _e($dir . $item) . '" target="_blank"' . ($image ? Extend::buffer('image.lightbox', ['group' => 'fman']) : '') . '><img src="' . _e(Router::path('admin/images/icons/fman/' . $icon . '.png')) . '" alt="file" class="icon">' . _e(StringManipulator::ellipsis($item, 64, false)) . '</a></td>
+        <td class="fman-size">' . GenericTemplates::renderFileSize($filesize) . '</td>
+        <td class="actions">' . (User::checkFilename($item) ?
+            '<a class="button" href="' . _e($fmanUrl(['a' => 'delete', 'name' => $encodeFilename($item)])) . '"><img src="' . _e(Router::path('admin/images/icons/delete.png')) . '" alt="del" class="icon">' . _lang('global.delete') . '</a>  '
+            . '<a class="button" href="' . _e($fmanUrl(['a' => 'rename', 'name' => $encodeFilename($item)])) . '"><img src="' . _e(Router::path('admin/images/icons/rename.png')) . '" alt="rename" class="icon">' . _lang('admin.fman.rename') . '</a>  '
+            . (($icon == 'editable') ? '<a class="button" href="' . _e($fmanUrl(['a' => 'edit', 'name' => $encodeFilename($item)])) . '"><img src="' . _e(Router::path('admin/images/icons/edit.png')) . '" alt="edit" class="icon">' . _lang('admin.fman.edit') . '</a>' : '')
         : '') . "</td>
         </tr>\n";
 
@@ -748,24 +748,24 @@ if ($continue) {
     }
 
     if ($filecounter === 0 && $dircounter === 0) {
-        $output .= "<tr><td colspan='3'>" . _lang('global.nokit') . "</td></tr>\n";
+        $output .= '<tr><td colspan="3">' . _lang('global.nokit') . "</td></tr>\n";
     }
 
     $output .= '
     </table>
-    ' . Xsrf::getInput() . "</form>
+    ' . Xsrf::getInput() . '</form>
 
-    <p class='fman-menu'>
-    <span><strong>" . _lang('admin.fman.filecounter') . ':</strong> ' . $filecounter . ' <small>(' . GenericTemplates::renderFileSize($sizecounter) . ")</small></span>
-    <a href='#' onclick='return Sunlight.admin.fmanSelect(" . $filecounter . ", 1)'>" . _lang('admin.fman.selectall') . "</a>
-    <a href='#' onclick='return Sunlight.admin.fmanSelect(" . $filecounter . ", 2)'>" . _lang('admin.fman.deselectall') . "</a>
-    <a href='#' onclick='return Sunlight.admin.fmanSelect(" . $filecounter . ", 3)'>" . _lang('admin.fman.inverse') . '</a>
-    <strong>' . _lang('admin.fman.selected') . ":</strong>
-    <a href='#' onclick='return Sunlight.admin.fmanMoveSelected()'>" . _lang('admin.fman.selected.move') . "</a>
-    <a href='#' onclick='return Sunlight.admin.fmanDeleteSelected()'>" . _lang('admin.fman.selected.delete') . "</a>
-    <a href='#' onclick='return Sunlight.admin.fmanDownloadSelected()'>" . _lang('admin.fman.selected.download') . "</a>
-    <a href='#top'><span class='big-text'>&uarr;</span></a>
+    <p class="fman-menu">
+    <span><strong>' . _lang('admin.fman.filecounter') . ':</strong> ' . $filecounter . ' <small>(' . GenericTemplates::renderFileSize($sizecounter) . ')</small></span>
+    <a href="#" onclick="return Sunlight.admin.fmanSelect(' . $filecounter . ', 1)">' . _lang('admin.fman.selectall') . '</a>
+    <a href="#" onclick="return Sunlight.admin.fmanSelect(' . $filecounter . ', 2)">' . _lang('admin.fman.deselectall') . '</a>
+    <a href="#" onclick="return Sunlight.admin.fmanSelect(' . $filecounter . ', 3)">' . _lang('admin.fman.inverse') . '</a>
+    <strong>' . _lang('admin.fman.selected') . ':</strong>
+    <a href="#" onclick="return Sunlight.admin.fmanMoveSelected()">' . _lang('admin.fman.selected.move') . '</a>
+    <a href="#" onclick="return Sunlight.admin.fmanDeleteSelected()">' . _lang('admin.fman.selected.delete') . '</a>
+    <a href="#" onclick="return Sunlight.admin.fmanDownloadSelected()">' . _lang('admin.fman.selected.download') . '</a>
+    <a href="#top"><span class="big-text">&uarr;</span></a>
     </p>
-    ";
+    ';
 
 }

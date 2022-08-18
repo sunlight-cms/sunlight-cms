@@ -52,12 +52,12 @@ if (!empty($maxltime) && !isset($_COOKIE[Core::$appId . '_persistent_key'])) {
 }
 
 // vystup
-$output .= "
-<table id='index-table'>
+$output .= '
+<table id="index-table">
 
-<tr class='valign-top'>
+<tr class="valign-top">
 
-<td>" . (($custom !== '' && $admin_index_cfg['admin_index_custom_pos'] == 0) ? $custom : '
+<td>' . (($custom !== '' && $admin_index_cfg['admin_index_custom_pos'] == 0) ? $custom : '
   <h1>' . _lang('admin.menu.index') . '</h1>
   <p>' . _lang('admin.index.p') . '</p>
   ' . $logout_warning . '
@@ -139,7 +139,7 @@ Extend::call('admin.index.messages', [
    'messages' => &$messages,
 ]);
 
-$output .= "<div id='index-messages' class='well" . (empty($messages) ? ' hidden' : '') . "'>\n";
+$output .= '<div id="index-messages" class="well' . (empty($messages) ? ' hidden' : '') . "\">\n";
 $output .= '<h2>' . _lang('admin.index.messages') . "</h2>\n";
 $output .= implode($messages);
 $output .= "</div>\n";

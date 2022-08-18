@@ -131,7 +131,7 @@ abstract class Zip
         $archivePathPrefixMap = [];
         foreach ((array) $directories as $archivePath) {
             if ($archivePath !== '') {
-                $archivePathPrefix = "{$archivePath}/";
+                $archivePathPrefix = $archivePath . '/';
                 $archivePathPrefixMap[$archivePathPrefix] = strlen($archivePathPrefix);
             } else {
                 $archivePathPrefixMap[''] = 0;
@@ -220,7 +220,7 @@ abstract class Zip
         }
 
         if ($subpath !== null && $subpath[0] !== '/') {
-            $subpath = "/{$subpath}";
+            $subpath = '/' . $subpath;
         }
 
         return $subpath;

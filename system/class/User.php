@@ -614,7 +614,7 @@ abstract class User
                 $isFirstColumn = false;
             }
 
-            $columnList .= "{$columnName} {$columnAlias}";
+            $columnList .= $columnName . ' ' . $columnAlias;
         }
 
         return [
@@ -779,17 +779,17 @@ abstract class User
             if ($form_url->has('login_form_result')) {
                 $form_url->remove('login_form_result');
             }
-            $form_append .= "<input type='hidden' name='login_form_url' value='" . _e($form_url->buildRelative()) . "'>\n";
+            $form_append .= '<input type="hidden" name="login_form_url" value="' . _e($form_url->buildRelative()) . "\">\n";
 
             // kod formulare
             $rows = [];
-            $rows[] = ['label' => _lang('login.username'), 'content' => "<input type='text' name='login_username' class='inputmedium'" . Form::restoreValue($_SESSION, 'login_form_username') . " maxlength='191' autocomplete='username' autofocus>"];
-            $rows[] = ['label' => _lang('login.password'), 'content' => "<input type='password' name='login_password' class='inputmedium' autocomplete='current-password'>"];
+            $rows[] = ['label' => _lang('login.username'), 'content' => '<input type="text" name="login_username" class="inputmedium"' . Form::restoreValue($_SESSION, 'login_form_username') . ' maxlength="191" autocomplete="username" autofocus>'];
+            $rows[] = ['label' => _lang('login.password'), 'content' => '<input type="password" name="login_password" class="inputmedium" autocomplete="current-password">'];
 
             if (!$embedded) {
                 $rows[] = Form::getSubmitRow([
                     'text' => _lang('global.login'),
-                    'append' => " <label><input type='checkbox' name='login_persistent' value='1'> " . _lang('login.persistent') . '</label>',
+                    'append' => ' <label><input type="checkbox" name="login_persistent" value="1"> ' . _lang('login.persistent') . '</label>',
                 ]);
             }
 
@@ -821,14 +821,14 @@ abstract class User
                 if (!empty($links)) {
                     $output .= "<ul class=\"login-form-links\">\n";
                     foreach ($links as $link_id => $link) {
-                        $output .= "<li class=\"login-form-link-{$link_id}\"><a href=\"" . _e($link['url']) . "\">{$link['text']}</a></li>\n";
+                        $output .= '<li class="login-form-link-' . $link_id . '"><a href="' . _e($link['url']) . "\">{$link['text']}</a></li>\n";
                     }
                     $output .= "</ul>\n";
                 }
             }
 
         } else {
-            $output .= '<p>' . _lang('login.ininfo') . ' <em>' . self::getUsername() . "</em> - <a href='" . _e(Xsrf::addToUrl(Router::path('system/script/logout.php'))) . "'>" . _lang('usermenu.logout') . '</a>.</p>';
+            $output .= '<p>' . _lang('login.ininfo') . ' <em>' . self::getUsername() . '</em> - <a href="' . _e(Xsrf::addToUrl(Router::path('system/script/logout.php'))) . '">' . _lang('usermenu.logout') . '</a>.</p>';
         }
 
         return $output;
@@ -1129,7 +1129,7 @@ abstract class User
         if ($options['link']) {
             $out .= '<a href="' . _e(Router::module('profile', ['query' => ['id' =>  $data['username']]])) . '">';
         }
-        $out .= '<img class="avatar' . ($options['class'] !== null ? " {$options['class']}" : '') . "\" src=\"{$url}\" alt=\"" . $data[$data['publicname'] !== null ? 'publicname' : 'username'] . '">';
+        $out .= '<img class="avatar' . ($options['class'] !== null ? " {$options['class']}" : '') . '" src="{$url}" alt="' . $data[$data['publicname'] !== null ? 'publicname' : 'username'] . '">';
         if ($options['link']) {
             $out .= '</a>';
         }
@@ -1179,7 +1179,7 @@ abstract class User
             $action = Router::path('system/script/post_repeat.php', ['query' => ['login' => ($allow_login ? '1' : '0'), 'target' => $target_url]]);
         }
 
-        $output = "<form name='post_repeat' method='post' action='" . _e($action) . "'>\n";
+        $output = '<form name="post_repeat" method="post" action="' . _e($action). "\">\n";
         $output .= Form::renderHiddenPostInputs(null, $allow_login ? 'login_' : null);
 
         if ($allow_login && !self::isLoggedIn()) {
@@ -1193,7 +1193,7 @@ abstract class User
             $output .= $login_message;
         }
 
-        $output .= "<p><input type='submit' value='" . _lang($do_repeat ? 'post_repeat.submit' : 'global.continue') . "'></p>";
+        $output .= '<p><input type="submit" value="' . _lang($do_repeat ? 'post_repeat.submit' : 'global.continue') . '"></p>';
         $output .= Xsrf::getInput() . "</form>\n";
 
         return $output;

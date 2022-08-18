@@ -166,37 +166,37 @@ if ($continue) {
         $message = Message::ok(_lang('global.created'));
     }
 
-    $output .= $message . "
-  <form action='" . _e(Router::admin('content-polls-edit', $actionbonus)) . "' method='post'>
-  <table class='formtable'>
+    $output .= $message . '
+  <form action="' . _e(Router::admin('content-polls-edit', $actionbonus)) . '" method="post">
+  <table class="formtable">
 
   <tr>
-  <th>" . _lang('admin.content.form.question') . "</th>
-  <td><input type='text' name='question' class='inputmedium' value='" . $query['question'] . "' maxlength='255'></td>
+  <th>' . _lang('admin.content.form.question') . '</th>
+  <td><input type="text" name="question" class="inputmedium" value="' . $query['question'] . '" maxlength="255"></td>
   </tr>
 
-  " . $author_select . "
+  ' . $author_select . '
 
-  <tr class='valign-top'>
-  <th>" . _lang('admin.content.form.answers') . "</th>
-  <td><textarea name='answers' rows='25' cols='94' class='areamedium'>" . $query['answers'] . '</textarea></td>
+  <tr class="valign-top">
+  <th>' . _lang('admin.content.form.answers') . '</th>
+  <td><textarea name="answers" rows="25" cols="94" class="areamedium">' . $query['answers'] . '</textarea></td>
   </tr>
 
   ' . (!$new ? '<tr>
-  <th>' . _lang('admin.content.form.hcm') . "</th>
-  <td><input type='text' name='hcm' value='[hcm]poll," . $id . "[/hcm]' readonly='readonly' onclick='this.select();' class='inputmedium'></td>
-  </tr>" : '') . '
+  <th>' . _lang('admin.content.form.hcm') . '</th>
+  <td><input type="text" name="hcm" value="[hcm]poll,' . $id . '[/hcm]" readonly="readonly" onclick="this.select();" class="inputmedium"></td>
+  </tr>' : '') . '
 
   <tr>
-  <th>' . _lang('admin.content.form.settings') . "</th>
+  <th>' . _lang('admin.content.form.settings') . '</th>
   <td>
-  <label><input type='checkbox' name='locked' value='1'" . Form::activateCheckbox($query['locked']) . '> ' . _lang('admin.content.form.locked') . '</label> 
-  ' . (!$new ? "<label><input type='checkbox' name='reset' value='1'> " . _lang('admin.content.polls.reset') . '</label>' : '') . "
+  <label><input type="checkbox" name="locked" value="1"' . Form::activateCheckbox($query['locked']) . '> ' . _lang('admin.content.form.locked') . '</label> 
+  ' . (!$new ? '<label><input type="checkbox" name="reset" value="1"> ' . _lang('admin.content.polls.reset') . '</label>' : '') . '
   </td>
   </tr>
 
   <tr><td></td>
-  <td><input type='submit' value='" . $submitcaption . "' accesskey='s'>" . (!$new ? ' <small>' . _lang('admin.content.form.thisid') . ' ' . $id . "</small> <span class='customsettings'><a class='button' href='" . _e(Xsrf::addToUrl(Router::admin('content-polls', ['query' => ['del' => $id]]))) . "' onclick='return Sunlight.confirm();'><img src='" . _e(Router::path('admin/images/icons/delete.png')) . "' class='icon' alt='del'> " . _lang('global.delete') . '</a>' : '') . '</span></td>
+  <td><input type="submit" value="' . $submitcaption . '" accesskey="s">' . (!$new ? ' <small>' . _lang('admin.content.form.thisid') . ' ' . $id . '</small> <span class="customsettings"><a class="button" href="' . _e(Xsrf::addToUrl(Router::admin('content-polls', ['query' => ['del' => $id]]))) . '" onclick="return Sunlight.confirm();"><img src="' . _e(Router::path('admin/images/icons/delete.png')) . '" class="icon" alt="del"> ' . _lang('global.delete') . '</a>' : '') . '</span></td>
   </tr>
 
   </table>

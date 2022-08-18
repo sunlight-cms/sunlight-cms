@@ -88,27 +88,27 @@ if (User::isSuperAdmin() && isset($_POST['switch_user'])) {
 
 // vypis skupin
 if (User::hasPrivilege('admingroups')) {
-    $group_table = "<table class='list list-hover list-max'>
-<thead><tr><td>" . _lang('global.name') . '</td><td>' . _lang('admin.users.groups.level') . '</td><td>' . _lang('admin.users.groups.members') . '</td><td>' . _lang('global.action') . '</td></tr></thead>
+    $group_table = '<table class="list list-hover list-max">
+<thead><tr><td>' . _lang('global.name') . '</td><td>' . _lang('admin.users.groups.level') . '</td><td>' . _lang('admin.users.groups.members') . '</td><td>' . _lang('global.action') . '</td></tr></thead>
 <tbody>';
     $groups = DB::queryRows('SELECT id,title,icon,color,blocked,level,reglist,(SELECT COUNT(*) FROM ' . DB::table('user') . ' WHERE group_id=' . DB::table('user_group') . '.id) AS user_count FROM ' . DB::table('user_group') . ' ORDER BY level DESC');
     Extend::call('admin.users.groups', ['groups' => &$groups]);
     foreach ($groups as $group) {
         $is_sys = in_array($group['id'], $sysgroups_array);
-        $group_table .= "
+        $group_table .= '
     <tr>
     <td>
-        <span class='" . ($is_sys ? 'em' : '') . (($group['blocked'] == 1) ? ' strike' : '') . "'" . (($group['color'] !== '') ? " style='color:" . $group['color'] . ";'" : '') . '>'
-            . (($group['reglist'] == 1) ? "<img src='" . _e(Router::path('admin/images/icons/action.png')) . "' alt='reglist' class='icon' title='" . _lang('admin.users.groups.reglist') . "'>" : '')
-            . (($group['icon'] != '') ? "<img src='" . _e(Router::path('images/groupicons/' . $group['icon'])) . "' alt='icon' class='groupicon'> " : '')
+        <span class="' . ($is_sys ? 'em' : '') . (($group['blocked'] == 1) ? ' strike' : '') . '"' . (($group['color'] !== '') ? ' style="color:' . $group['color'] . ';"' : '') . '>'
+            . (($group['reglist'] == 1) ? '<img src="' . _e(Router::path('admin/images/icons/action.png')) . '" alt="reglist" class="icon" title="' . _lang('admin.users.groups.reglist') . '">' : '')
+            . (($group['icon'] != '') ? '<img src="' . _e(Router::path('images/groupicons/' . $group['icon'])) . '" alt="icon" class="groupicon"> ' : '')
             . $group['title']
         . '</span>
     </td>
     <td>' . $group['level'] . '</td>
-    <td>' . (($group['id'] != User::GUEST_GROUP_ID) ? "<a href='" . _e(Router::admin('users-list', ['query' => ['group_id' => $group['id']]])) . "'><img src='" . _e(Router::path('admin/images/icons/list.png')) . "' alt='list' class='icon'>" . $group['user_count'] . '</a>' : '-') . "</td>
-    <td class='actions'>
-        <a class='button' href='" . _e(Router::admin('users-editgroup', ['query' => ['id' => $group['id']]])) . "'><img src='" . _e(Router::path('admin/images/icons/edit.png')) . "' alt='edit' class='icon'>" . _lang('global.edit') . "</a>
-        <a class='button' href='" . _e(Router::admin('users-delgroup', ['query' => ['id' => $group['id']]])) . "'><img src='" . _e(Router::path('admin/images/icons/delete.png')) . "' alt='del' class='icon'>" . _lang('global.delete') . "</a>
+    <td>' . (($group['id'] != User::GUEST_GROUP_ID) ? '<a href="' . _e(Router::admin('users-list', ['query' => ['group_id' => $group['id']]])) . '"><img src="' . _e(Router::path('admin/images/icons/list.png')) . '" alt="list" class="icon">' . $group['user_count'] . '</a>' : '-') . '</td>
+    <td class="actions">
+        <a class="button" href="' . _e(Router::admin('users-editgroup', ['query' => ['id' => $group['id']]])) . '"><img src="' . _e(Router::path('admin/images/icons/edit.png')) . '" alt="edit" class="icon">' . _lang('global.edit') . '</a>
+        <a class="button" href="' . _e(Router::admin('users-delgroup', ['query' => ['id' => $group['id']]])) . '"><img src="' . _e(Router::path('admin/images/icons/delete.png')) . '" alt="del" class="icon">' . _lang('global.delete') . "</a>
     </td>
     </tr>\n";
     }
@@ -166,53 +166,53 @@ foreach ($modules as $module) {
 
 /* ---  vystup  --- */
 
-$output .= $message . "
+$output .= $message . '
 
-<table class='two-columns'>
-<tr class='valign-top'>
+<table class="two-columns">
+<tr class="valign-top">
 
-    " . (User::hasPrivilege('adminusers') ? '
+    ' . (User::hasPrivilege('adminusers') ? '
     <td>
     <h2>' . _lang('admin.users.users') . '</h2>
     <p>' . $module_links . '</p>
 
-    <h2>' . _lang('global.action') . "</h2>
+    <h2>' . _lang('global.action') . '</h2>
 
-    <form class='cform' action='" . _e(Router::admin(null)) . "' method='get' name='edituserform'>
-    <input type='hidden' name='p' value='users-edit'>
-    <h3>" . _lang('admin.users.edituser') . "</h3>
-    <input type='text' name='id' class='inputsmall'>
-    <input class='button' type='submit' value='" . _lang('global.do') . "'>
+    <form class="cform" action="' . _e(Router::admin(null)) . '" method="get" name="edituserform">
+    <input type="hidden" name="p" value="users-edit">
+    <h3>' . _lang('admin.users.edituser') . '</h3>
+    <input type="text" name="id" class="inputsmall">
+    <input class="button" type="submit" value="' . _lang('global.do') . '">
     </form>
 
-    <form class='cform' action='" . _e(Router::admin(null)) . "' method='get' name='deleteuserform'>
-    <input type='hidden' name='p' value='users-delete'>
-    " . Xsrf::getInput() . '
-    <h3>' . _lang('admin.users.deleteuser') . "</h3>
-    <input type='text' name='id' class='inputsmall'>
-    <input class='button' type='submit' value='" . _lang('global.do') . "'>
+    <form class="cform" action="' . _e(Router::admin(null)) . '" method="get" name="deleteuserform">
+    <input type="hidden" name="p" value="users-delete">
+    ' . Xsrf::getInput() . '
+    <h3>' . _lang('admin.users.deleteuser') . '</h3>
+    <input type="text" name="id" class="inputsmall">
+    <input class="button" type="submit" value="' . _lang('global.do') . '">
     </form>
-    " . Extend::buffer('admin.users.actions.after') . '
+    ' . Extend::buffer('admin.users.actions.after') . '
     
-    ' . (User::isSuperAdmin() ? "
+    ' . (User::isSuperAdmin() ? '
 
-    <form action='" . _e(Router::admin('users')) . "' method='post'>
-    <h3>" . _lang('admin.users.switchuser') . "</h3>
-    <input type='text' name='switch_user' class='inputsmall'>
-    <input class='button' type='submit' value='" . _lang('global.do') . "'>
-    " . Xsrf::getInput() . '</form>
+    <form action="' . _e(Router::admin('users')) . '" method="post">
+    <h3>' . _lang('admin.users.switchuser') . '</h3>
+    <input type="text" name="switch_user" class="inputsmall">
+    <input class="button" type="submit" value="' . _lang('global.do') . '">
+    ' . Xsrf::getInput() . '</form>
     ' : '') . '
 
   </td>
     ' : '') . '
 
     ' . (User::hasPrivilege('admingroups') ? '<td>
-    <h2>' . _lang('admin.users.groups') . "</h2>
-    <form action='" . _e(Router::admin('users')) . "' method='post'>
-        <p class='bborder'><strong>" . _lang('admin.users.groups.new') . ':</strong> '
+    <h2>' . _lang('admin.users.groups') . '</h2>
+    <form action="' . _e(Router::admin('users')) . '" method="post">
+        <p class="bborder"><strong>' . _lang('admin.users.groups.new') . ':</strong> '
         . Admin::userSelect('type', -1, '1', null, _lang('admin.users.groups.new.empty'), true)
-        . " <input class='button' type='submit' value='" . _lang('global.do') . "'>
-        </p>"
+        . ' <input class="button" type="submit" value="' . _lang('global.do') . '">
+        </p>'
         . Xsrf::getInput() . '</form>
     ' . $group_table
         . Extend::buffer('admin.users.groups.after') . '

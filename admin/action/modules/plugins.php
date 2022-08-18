@@ -93,7 +93,7 @@ foreach (Core::$pluginManager->getTypes() as $type) {
 
         // vykreslit radek
         $output .= '
-    <tr' . ($rowClass !== null ? " class=\"{$rowClass}\"" : '') . '>
+    <tr' . ($rowClass !== null ? ' class="' . $rowClass . '"' : '') . '>
         <td>
             ' . ($isInactive
                 ? '<h3><del>' . _e($title) . '</del> <small>(' . _lang('admin.plugins.status.' . $plugin->getStatus()) . ')</small></h3>'

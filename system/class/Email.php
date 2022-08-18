@@ -149,6 +149,6 @@ abstract class Email
             $email = str_replace('@', Settings::get('atreplace'), $email);
         }
 
-        return "<a href='#' onclick='return Sunlight.mai_lto(this);'>" . _e($email) . '</a>';
+        return '<a href="#" onclick="return Sunlight.mai_lto(this);">' . _e($email) . '</a>';
     }
 }

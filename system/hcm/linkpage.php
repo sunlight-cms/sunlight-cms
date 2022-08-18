@@ -12,7 +12,7 @@ return function ($id = null, $text = null, $nove_okno = false) {
     }
     $query = DB::queryRow('SELECT id,title,slug FROM ' . DB::table('page') . ' WHERE ' . ($is_id ? 'id' : 'slug') . '=' . $id);
     if ($nove_okno) {
-        $target = " target='_blank'";
+        $target = ' target="_blank"';
     } else {
         $target = '';
     }
@@ -21,6 +21,6 @@ return function ($id = null, $text = null, $nove_okno = false) {
             $query['title'] = _e($text);
         }
 
-        return "<a href='" . _e(Router::page($query['id'], $query['slug'])) . "'" . $target . '>' . $query['title'] . '</a>';
+        return '<a href="' . _e(Router::page($query['id'], $query['slug'])) . '"' . $target . '>' . $query['title'] . '</a>';
     }
 };

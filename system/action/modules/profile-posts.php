@@ -55,12 +55,12 @@ $posts = DB::query('SELECT ' . $columns . ' FROM ' . DB::table('post') . ' post 
 if (DB::size($posts) != 0) {
     while ($post = DB::row($posts)) {
         [$homelink, $hometitle] = Router::post($post);
-        $output .= "<div class='post'>
-<div class='post-head'>
-    <a href='" . _e($homelink) . '#post-' . $post['id'] . "' class='post-author'>" . $hometitle . "</a>
-    <span class='post-info'>(" . GenericTemplates::renderTime($post['time'], 'post') . ")</span>
+        $output .= '<div class="post">
+<div class="post-head">
+    <a href="' . _e($homelink) . '#post-' . $post['id'] . '" class="post-author">' . $hometitle . '</a>
+    <span class="post-info">(' . GenericTemplates::renderTime($post['time'], 'post') . ')</span>
 </div>
-<div class='post-body'>" . Post::render($post['text']) . '</div>
+<div class="post-body">' .Post::render($post['text']) . '</div>
 </div>';
     }
     if (Paginator::atBottom()) {

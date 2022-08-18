@@ -22,7 +22,7 @@ if (!Settings::get('ulist')) {
 
 $_index->title = _lang('user.list.title');
 
-$output .= "<p class='bborder'>" . _lang('mod.ulist.p') . '</p>';
+$output .= '<p class="bborder">' . _lang('mod.ulist.p') . '</p>';
 
 // filtry
 $cond = 'u.public=1';
@@ -62,7 +62,7 @@ if ($paging['count'] > 0) {
     $userQuery = User::createQuery();
     $query = DB::query('SELECT ' . $userQuery['column_list'] . ' FROM ' . DB::table('user') . ' u ' . $userQuery['joins'] . ' WHERE ' . $cond . ' ORDER BY ug.level DESC ' . $paging['sql_limit']);
 
-    $output .= "<table class='widetable'>\n<tr><th>" . _lang('login.username') . '</th><th>' . _lang('global.group') . "</th></tr>\n";
+    $output .= "<table class=\"widetable\">\n<tr><th>" . _lang('login.username') . '</th><th>' . _lang('global.group') . "</th></tr>\n";
     while ($item = DB::row($query)) {
         $output .= '<tr>
     <td>' . Router::userFromQuery($userQuery, $item) . '</td>

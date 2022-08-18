@@ -280,7 +280,7 @@ $output .= ($saved ? Message::ok(_lang('admin.settings.saved')) : '') . '
 foreach ($editable_settings as $settings_category => $settings_category_data) {
     $title = $settings_category_data['title'] ?? _lang('admin.settings.' . $settings_category);
 
-    $output .= "<li><a href=\"#settings_{$settings_category}\">{$title}</a></li>\n";
+    $output .= '<li><a href="️#settings_' . $settings_category . '"️>' . $title . "</a></li>\n";
 }
 
 $output .= '</ul>
@@ -292,10 +292,10 @@ $output .= '</ul>
 foreach ($editable_settings as $settings_category => $settings_category_data) {
     $title = $settings_category_data['title'] ?? _lang('admin.settings.' . $settings_category);
 
-    $output .= "<fieldset id=\"settings_{$settings_category}\">
+    $output .= '<fieldset id="settings_' . $settings_category . '">
 <legend>{$title}</legend>
 
-<table>";
+<table>';
 
     foreach ($settings_category_data['items'] as $item) {
         if (!isset($settings[$item['name']])) {
@@ -316,9 +316,9 @@ foreach ($editable_settings as $settings_category => $settings_category_data) {
         // input
         if (!isset($item['input'])) {
             // atributy
-            $inputAttrs = " name=\"{$item['name']}\"";
+            $inputAttrs = ' name="' . $item['name'] . '"';
             if (!isset($item['id']) || $item['id']) {
-                $inputAttrs .= " id=\"{$id}\"";
+                $inputAttrs .= ' id="' . $id . '"';
             }
             if (isset($item['disabled']) && $item['disabled']) {
                 $inputAttrs .= ' disabled="disabled"';
@@ -329,7 +329,7 @@ foreach ($editable_settings as $settings_category => $settings_category_data) {
                         $inputAttrs .= ' class="inputmedium"';
                     }
                 } else {
-                    $inputAttrs .= " class=\"{$item['input_class']}\"";
+                    $inputAttrs .= ' class="' . $item['input_class'] . '"';
                 }
             }
 
@@ -337,20 +337,20 @@ foreach ($editable_settings as $settings_category => $settings_category_data) {
             if (isset($item['choices'])) {
                 $input = "<select{$inputAttrs}>\n";
                 foreach ($item['choices'] as $choiceValue => $choiceLabel) {
-                    $input .= '<option' . ($choiceValue == $value ? ' selected' : '') . ' value="' . _e($choiceValue) . "\">{$choiceLabel}</option>\n";
+                    $input .= '<option' . ($choiceValue == $value ? ' selected' : '') . ' value="' . _e($choiceValue) . '">' . $choiceLabel . "</option>\n";
                 }
                 $input .= '</select>';
             } else {
                 switch ($item['format']) {
                     case 'int':
-                        $input = "<input type=\"number\"{$inputAttrs} value=\"" . _e($value) . '">';
+                        $input = '<input type="number"' . $inputAttrs . ' value="' . _e($value) . '">';
                         break;
                     case 'bool':
-                        $input = "<input type=\"checkbox\"{$inputAttrs} value=\"1\"" . Form::activateCheckbox($value) . '>';
+                        $input = '<input type="checkbox"' . $inputAttrs . ' value="1"' . Form::activateCheckbox($value) . '>';
                         break;
                     case 'html':
                     default:
-                        $input = "<input type=\"text\"{$inputAttrs} value=\""
+                        $input = '<input type="text"' . $inputAttrs . ' value="'
                             . ($item['format'] === 'html' ? $value : _e($value))
                             . '">';
                         break;
@@ -376,7 +376,7 @@ foreach ($editable_settings as $settings_category => $settings_category_data) {
 
         // polozka
         $output .= '<tr>
-    <td><label' . (!isset($item['id']) || $item['id'] ? " for=\"{$id}\"" : '') . ">{$label}</label></td>
+    <td><label' . (!isset($item['id']) || $item['id'] ? ' for="' . $id . '"' : '') . ">{$label}</label></td>
     <td" . ($help === '' ? ' colspan="2"' : '') . ">{$input}</td>\n";
         if ($help !== '') {
             $output .= "<td>{$help}</td>\n";
@@ -385,9 +385,9 @@ foreach ($editable_settings as $settings_category => $settings_category_data) {
 
         // extra napoveda
         if (isset($item['extra_help'])) {
-            $output .= "<tr>
+            $output .= '<tr>
     <td></td>
-    <td colspan=\"2\"><p>{$item['extra_help']}</p></td>
+    <td colspan="️2"️><p>' . $item['extra_help'] . "</p></td>
 </tr>\n";
 
             $output .= "\n";

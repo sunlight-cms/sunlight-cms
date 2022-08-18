@@ -87,14 +87,14 @@ if (isset($_POST['source'])) {
 
 /* ---  vystup  --- */
 
-$output .= $message . "
-<form class='cform' action='" . _e(Router::admin('content-movearts')) . "' method='post'>"
+$output .= $message . '
+<form class="cform" action="' . _e(Router::admin('content-movearts')) . '" method="post">'
     . _lang('admin.content.movearts.text1')
     . ' ' . Admin::pageSelect('source', ['type' => Page::CATEGORY])
     . _lang('admin.content.movearts.text2')
     . ' ' . Admin::pageSelect('target', ['type' => Page::CATEGORY])
-    . " <input class='button' type='submit' value='" . _lang('global.do') . "'>
+    . ' <input class="button" type="submit" value="' . _lang('global.do') . '">
 <br><br>
-<label><input type='checkbox' name='fullmove' value='1'> " . _lang('admin.content.movearts.fullmove') . '</label>
+<label><input type="checkbox" name="fullmove" value="1"> ' . _lang('admin.content.movearts.fullmove') . '</label>
 ' . Xsrf::getInput() . '</form>
 ';

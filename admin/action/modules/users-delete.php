@@ -38,11 +38,11 @@ if ($continue) {
                 $output .= Message::warning(_lang('global.error'));
             }
         } else {
-            $output .= "
-<p class='bborder'>" . _lang('admin.users.deleteuser.confirmation', ['%user%' => $query['username']]) . "
-<form method='post'>
-    <input type='submit' name='confirmed' value='" . _lang('admin.users.deleteuser') . "'>
-" . Xsrf::getInput() . '</form>';
+            $output .= '
+<p class="bborder">' . _lang('admin.users.deleteuser.confirmation', ['%user%' => $query['username']]) . '
+<form method="post">
+    <input type="submit" name="confirmed" value="' . _lang('admin.users.deleteuser') . '">
+' . Xsrf::getInput() . '</form>';
         }
     } else {
         $output .= Message::warning(_lang('admin.users.deleteuser.selfnote'));

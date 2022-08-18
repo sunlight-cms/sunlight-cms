@@ -113,7 +113,7 @@ if (isset($_POST['text'])) {
                     }
                 }
 
-                $output .= Message::ok("<textarea class='areasmallwide' rows='9' cols='33' name='list'>" . $emails . '</textarea>', true);
+                $output .= Message::ok('<textarea class="areasmallwide" rows="9" cols="33" name="list">' . $emails . '</textarea>', true);
 
             } else {
                 $output .= Message::warning(_lang('admin.other.massemail.noreceiversfound'));
@@ -129,43 +129,43 @@ if (isset($_POST['text'])) {
 
 /* ---  vystup  --- */
 
-$output .= "
+$output .= '
 <br>
-<form class='cform' action='" . _e(Router::admin('other-massemail')) . "' method='post'>
-<table class='formtable'>
+<form class="cform" action="' . _e(Router::admin('other-massemail')) . '" method="post">
+<table class="formtable">
 
 <tr>
-<th>" . _lang('admin.other.massemail.sender') . "</th>
-<td><input type='email'" . Form::restorePostValueAndName('sender', Settings::get('sysmail')) . " class='inputbig'></td>
+<th>' . _lang('admin.other.massemail.sender') . '</th>
+<td><input type="email"' . Form::restorePostValueAndName('sender', Settings::get('sysmail')) . ' class="inputbig"></td>
 </tr>
 
 <tr>
-<th>" . _lang('posts.subject') . "</th>
-<td><input type='text' class='inputbig'" . Form::restorePostValueAndName('subject') . "></td>
+<th>' . _lang('posts.subject') . '</th>
+<td><input type="text" class="inputbig"' . Form::restorePostValueAndName('subject') . '></td>
 </tr>
 
-<tr class='valign-top'>
-<th>" . _lang('admin.other.massemail.receivers') . '</th>
+<tr class="valign-top">
+<th>' . _lang('admin.other.massemail.receivers') . '</th>
 <td>' . Admin::userSelect('receivers', -1, '1', 'selectbig', null, true, 4) . '</td>
 </tr>
 
 <tr>
-<th>' . _lang('admin.other.massemail.ctype') . "</th>
+<th>' . _lang('admin.other.massemail.ctype') . '</th>
 <td>
-  <select name='ctype' class='selectbig'>
-  <option value='1'>" . _lang('admin.other.massemail.ctype.1') . "</option>
-  <option value='2'" . (Request::post('ctype') == 2 ? ' selected' : '') . '>' . _lang('admin.other.massemail.ctype.2') . "</option>
+  <select name="ctype" class="selectbig">
+  <option value="1">' . _lang('admin.other.massemail.ctype.1') . '</option>
+  <option value="2"' . (Request::post('ctype') == 2 ? ' selected' : '') . '>' . _lang('admin.other.massemail.ctype.2') . '</option>
   </select>
 </td>
 </tr>
 
-<tr class='valign-top'>
-<th>" . _lang('admin.other.massemail.text') . "</th>
-<td><textarea name='text' class='areabig editor' rows='9' cols='94' data-editor-mode='code'>" . Form::restorePostValue('text', null, false) . "</textarea></td>
+<tr class="valign-top">
+<th>' . _lang('admin.other.massemail.text') . '</th>
+<td><textarea name="text" class="areabig editor" rows="9" cols="94" data-editor-mode="code">' . Form::restorePostValue('text', null, false) . '</textarea></td>
 </tr>
 
 <tr><td></td>
-<td><input type='submit' value='" . _lang('global.send') . "'> <label><input type='checkbox' name='maillist' value='1'" . Form::activateCheckbox(Form::loadCheckbox('maillist')) . '> ' . _lang('admin.other.massemail.maillist') . '</label></td>
+<td><input type="submit" value="' . _lang('global.send') . '"> <label><input type="checkbox" name="maillist" value="1"' . Form::activateCheckbox(Form::loadCheckbox('maillist')) . '> ' . _lang('admin.other.massemail.maillist') . '</label></td>
 </tr>
 
 </table>

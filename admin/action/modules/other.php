@@ -30,10 +30,10 @@ if (empty($other_modules['system']) && empty($other_modules['plugin'])) {
     return;
 }
 
-$output .= "
-<table class='list list-noborder'>
-<tr class='valign-top'>
-";
+$output .= '
+<table class="list list-noborder">
+<tr class="valign-top">
+';
 
 // vypis
 foreach ($other_modules as $type => $modules) {

@@ -65,15 +65,15 @@ if (
     if (User::hasPrivilege('adminpages')) {
         foreach ($type_array as $type => $name) {
             if ($type != Page::PLUGIN && User::hasPrivilege('admin' . $name)) {
-                $create_list .= "<option value='" . $type . "'>" . _lang('page.type.' . $name) . "</option>\n";
+                $create_list .= '<option value="' . $type . '">' . _lang('page.type.' . $name) . "</option>\n";
             }
         }
 
         // seznam pluginovych typu stranek
         if (User::hasPrivilege('adminpluginpage') && !empty($plugin_types)) {
-            $create_list .= "<option value='' disabled>---</option>\n";
+            $create_list .= "<option value=\"\" disabled>---</option>\n";
             foreach($plugin_types as $plugin_type => $plugin_label) {
-                $create_list .= "<option value='" . $plugin_type . "'>" . $plugin_label . "</option>\n";
+                $create_list .= '<option value="' . $plugin_type . '">' . $plugin_label . "</option>\n";
             }
         }
     }
@@ -229,7 +229,7 @@ $output .= $message . '
 <table id="contenttable">
 <tr class="valign-top">
   ' . $pageitems . '
-  ' . ($content_modules_str !== '' ? "<td class=\"contenttable-box\" id=\"content-modules\">{$content_modules_str}</td>" : '') . '
+  ' . ($content_modules_str !== '' ? '<td class="contenttable-box" id="content-modules">' . $content_modules_str . '</td>' : '') . '
 </tr>
 </table>
 ';
