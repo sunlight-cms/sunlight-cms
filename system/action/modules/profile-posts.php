@@ -60,7 +60,7 @@ if (DB::size($posts) != 0) {
     <a href="' . _e($homelink) . '#post-' . $post['id'] . '" class="post-author">' . $hometitle . '</a>
     <span class="post-info">(' . GenericTemplates::renderTime($post['time'], 'post') . ')</span>
 </div>
-<div class="post-body">' .Post::render($post['text']) . '</div>
+<div class="post-body">' . Post::render($post['text']) . '</div>
 </div>';
     }
     if (Paginator::atBottom()) {
