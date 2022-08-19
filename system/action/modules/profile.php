@@ -35,7 +35,7 @@ if ($query !== false) {
         if ($query['note'] == '') {
             $note = '';
         } else {
-            $note = '<tr class="valign-top"><th>' . _lang('global.note') . '</th><td><div class="note">' .Post::render($query['note']) . '</div></td></tr>';
+            $note = '<tr class="valign-top"><th>' . _lang('global.note') . '</th><td><div class="note">' . Post::render($query['note']) . '</div></td></tr>';
         }
 
         // clanky autora

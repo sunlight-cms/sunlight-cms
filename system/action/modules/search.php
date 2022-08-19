@@ -168,7 +168,7 @@ if ($search_query != '') {
                 // sestaveni infa
                 $infos = [];
                 if ($r['author'] == -1) {
-                    $infos[] = [_lang('global.postauthor'), '<span class="post-author-guest">' .PostService::renderGuestName($r['guest']) . '</span>'];
+                    $infos[] = [_lang('global.postauthor'), '<span class="post-author-guest">' . PostService::renderGuestName($r['guest']) . '</span>'];
                 } else {
                     $infos[] = [_lang('global.postauthor'), Router::userFromQuery($userQuery, $r)];
                 }
