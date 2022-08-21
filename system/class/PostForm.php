@@ -13,12 +13,17 @@ abstract class PostForm
      */
     static function renderControls(string $form, string $area, bool $bbcode = true): string
     {
-        $template = Template::getCurrent();
-
         $output = '';
 
+        Extend::call('post_form.controls.before', [
+            'form' => $form,
+            'area' => $area,
+            'bbcode' => &$bbcode,
+            'output' => &$output,
+        ]);
+
         // bbcode
-        if ($bbcode && Settings::get('bbcode') && $template->getOption('bbcode.buttons')) {
+        if ($bbcode && Settings::get('bbcode') && Template::getCurrent()->getOption('bbcode.buttons')) {
             // nacteni tagu
             $bbtags = Bbcode::getTags();
 
@@ -35,7 +40,12 @@ abstract class PostForm
             $output .= '</span>';
         }
 
-        Extend::call('posts.form_controls', ['output' => &$output]);
+        Extend::call('post_form.controls.after', [
+            'form' => $form,
+            'area' => $area,
+            'bbcode' => $bbcode,
+            'output' => &$output,
+        ]);
 
         if ($output !== '') {
             $output = '<span class="posts-form-controls">' . $output . '</span>';
