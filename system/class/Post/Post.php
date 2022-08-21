@@ -198,10 +198,10 @@ LEFT JOIN ' . DB::table('post') . " home_post ON({$alias}.type=" . self::FORUM_T
     static function render(string $input, bool $bbcode = true, bool $nl2br = true): string
     {
         // event
-        Extend::call('post.parse', [
-            'content' => &$input,
-            'bbcode' => $bbcode,
-            'nl2br' => $nl2br,
+        Extend::call('post.render', [
+            'input' => &$input,
+            'bbcode' => &$bbcode,
+            'nl2br' => &$nl2br,
         ]);
 
         // vyhodnoceni BBCode
