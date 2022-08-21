@@ -116,16 +116,14 @@ do {
     require SL_ROOT . 'system/action/page.php';
 } while(false);
 
-/* ---- output content ---- */
+/* ---- handle content ---- */
 
-Extend::call('index.prepare', ['index' => $_index]);
+Extend::call('index.handle', ['index' => $_index]);
 
-// handle state
 switch ($_index->type) {
     case WebState::REDIR:
-        $_index->templateEnabled = false;
         Response::redirect($_index->redirectTo, $_index->redirectToPermanent);
-        break;
+        exit;
 
     case WebState::NOT_FOUND:
         require SL_ROOT . 'system/action/not_found.php';
@@ -136,19 +134,17 @@ switch ($_index->type) {
         break;
 }
 
-Extend::call('index.ready', ['index' => $_index]);
+/* ---- insert template ---- */
 
-// insert the template
-if ($_index->templateEnabled) {
-    // load template components
-    $_index->template->begin($_index->templateLayout);
-    $_index->templateBoxes = $_index->template->getBoxes($_index->templateLayout);
-    $_index->templatePath = $_index->template->getTemplate($_index->templateLayout);
+Extend::call('tpl.start', ['index' => $_index]);
 
-    Extend::call('tpl.ready', ['index' => $_index]);
+$_index->template->begin($_index->templateLayout);
+$_index->templateBoxes = $_index->template->getBoxes($_index->templateLayout);
+$_index->templatePath = $_index->template->getTemplate($_index->templateLayout);
 
-    // output
-    echo _buffer(function () use ($_index) { ?>
+Extend::call('tpl.ready', ['index' => $_index]);
+
+echo _buffer(function () use ($_index) { ?>
 <?= GenericTemplates::renderHead() ?>
 <?= Template::head() ?>
 </head>
@@ -159,6 +155,5 @@ if ($_index->templateEnabled) {
 </body>
 </html>
 <?php });
-}
 
-Extend::call('index.finish', ['index' => $_index]);
+Extend::call('tpl.end', ['index' => $_index]);

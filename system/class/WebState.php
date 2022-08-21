@@ -46,8 +46,6 @@ class WebState
     public $redirectTo;
     /** @var bool permanent redirection 1/0 */
     public $redirectToPermanent = false;
-    /** @var bool template toggle */
-    public $templateEnabled = true;
     /** @var TemplatePlugin */
     public $template;
     /** @var string */
