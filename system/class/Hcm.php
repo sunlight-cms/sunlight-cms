@@ -56,20 +56,47 @@ abstract class Hcm
     /**
      * Parse HCM modules in a string
      */
-    static function parse(string $input, $handler = [__CLASS__, 'evaluateMatch']): string
+    static function parse(string $input, $handler = [__CLASS__, 'evaluate']): string
     {
-        return preg_replace_callback('{\[hcm\](.*?)\[/hcm\]}s', $handler, $input);
+        $output = '';
+
+        for ($offset = 0, $length = strlen($input); $offset < $length;) {
+            $start = strpos($input, '[hcm]', $offset);
+
+            if ($start === false) {
+                break;
+            }
+
+            $argsStart = $start + 5;
+
+            $end = strpos($input, '[/hcm]', $argsStart);
+
+            if ($end === false) {
+                break;
+            }
+
+            $output .= substr($input, $offset, $start - $length);
+            $output .= $handler(substr($input, $argsStart, $end - $argsStart));
+            $offset = $end + 6;
+        }
+
+        if ($offset === 0) {
+            return $input;
+        }
+
+        if ($offset < $length) {
+            $output .= substr($input, $offset);
+        }
+
+        return $output;
     }
 
-    /**
-     * @internal
-     */
-    static function evaluateMatch(array $match): string
+    static function evaluate(string $args): string
     {
-        $params = ArgList::parse($match[1]);
+        $args = ArgList::parse($args);
 
-        if (isset($params[0])) {
-            return self::run($params[0], array_slice($params, 1));
+        if (isset($args[0])) {
+            return self::run((string) $args[0], array_slice($args, 1));
         }
 
         return '';
@@ -124,9 +151,8 @@ abstract class Hcm
         $deniedMap = $deniedModules !== null ? array_flip($deniedModules) : null;
         $allowedMap = $allowedModules !== null ? array_flip($allowedModules) : null;
 
-        return self::parse($content, function ($match) use ($deniedMap, $allowedMap, $exception) {
-            $params = ArgList::parse($match[1]);
-            $module = isset($params[0]) ? mb_strtolower($params[0]) : '';
+        return self::parse($content, function ($args) use ($deniedMap, $allowedMap, $exception) {
+            $module = (string) (ArgList::parse($args)[0] ?? '');
 
             if (
                 $allowedMap !== null && !isset($allowedMap[$module])
@@ -134,13 +160,13 @@ abstract class Hcm
                 || isset($deniedMap[$module])
             ) {
                 if ($exception) {
-                    throw new ContentPrivilegeException(sprintf('HCM module "%s"', $params[0]));
+                    throw new ContentPrivilegeException(sprintf('HCM module "%s"', $module));
                 }
 
                 return '';
             }
 
-            return $match[0];
+            return self::compose($args);
         });
     }
 
@@ -150,6 +176,14 @@ abstract class Hcm
     static function remove(string $content): string
     {
         return self::parse($content, function () { return ''; });
+    }
+
+    /**
+     * Compose HCM module
+     */
+    static function compose(string $args): string
+    {
+        return '[hcm]' . $args . '[/hcm]';
     }
 
     /**

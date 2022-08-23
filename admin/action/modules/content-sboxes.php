@@ -1,5 +1,6 @@
 <?php
 
+use Sunlight\Hcm;
 use Sunlight\Post\Post;
 use Sunlight\Database\Database as DB;
 use Sunlight\Message;
@@ -183,7 +184,7 @@ if (DB::size($shoutboxes) != 0) {
     <tr>
     <th>' . _lang('admin.content.form.hcm') . '</th>
     <td>
-        <input type="text" value="[hcm]sbox,' . $shoutbox['id'] . '[/hcm]" onclick="this.select()" readonly>
+        <input type="text" value="' . Hcm::compose("sbox,{$shoutbox['id']}") . '" onclick="this.select()" readonly>
         <small>' . _lang('admin.content.form.thisid') . ' ' . $shoutbox['id'] . '</small>
     </td>
     </tr>

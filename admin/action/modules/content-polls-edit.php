@@ -2,6 +2,7 @@
 
 use Sunlight\Admin\Admin;
 use Sunlight\Database\Database as DB;
+use Sunlight\Hcm;
 use Sunlight\IpLog;
 use Sunlight\Message;
 use Sunlight\Router;
@@ -184,7 +185,7 @@ if ($continue) {
 
   ' . (!$new ? '<tr>
   <th>' . _lang('admin.content.form.hcm') . '</th>
-  <td><input type="text" name="hcm" value="[hcm]poll,' . $id . '[/hcm]" readonly="readonly" onclick="this.select();" class="inputmedium"></td>
+  <td><input type="text" name="hcm" value="' . _e(Hcm::compose("poll,{$id}")) . '" readonly="readonly" onclick="this.select();" class="inputmedium"></td>
   </tr>' : '') . '
 
   <tr>
