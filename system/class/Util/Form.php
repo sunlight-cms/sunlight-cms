@@ -443,7 +443,7 @@ abstract class Form
         }
 
         // zacatek radku
-        $output = '<tr' . ($row['class'] !== '' ? ' class="' . $row['class'] : '') . ">\n";
+        $output = '<tr' . ($row['class'] !== '' ? ' class="' . $row['class'] : '') . "\">\n";
 
         // popisek
         if ($row['label'] !== null) {
