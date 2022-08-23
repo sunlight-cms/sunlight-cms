@@ -1,7 +1,7 @@
 <?php
 
-use Sunlight\Core;
 use Sunlight\Database\Database as DB;
+use Sunlight\Hcm;
 use Sunlight\IpLog;
 use Sunlight\Router;
 use Sunlight\User;
@@ -33,7 +33,7 @@ return function ($id = null) {
         }
 
         if ($rallowvote) {
-            $ranswers_code = '<form action="' . _e(Router::path('system/script/hcm/pvote.php', ['query' => ['_return=' => $GLOBALS['_index']->url], 'fragment' => 'hcm_poll_' . Core::$hcmUid])) . "\" method=\"post\">\n<input type=\"hidden\" name=\"pid\" value=\"" . $vpolldata['id'] . '">';
+            $ranswers_code = '<form action="' . _e(Router::path('system/script/hcm/pvote.php', ['query' => ['_return=' => $GLOBALS['_index']->url], 'fragment' => 'hcm_poll_' . Hcm::$uid])) . "\" method=\"post\">\n<input type=\"hidden\" name=\"pid\" value=\"" . $vpolldata['id'] . '">';
         } else {
             $ranswers_code = '';
         }
@@ -64,7 +64,7 @@ return function ($id = null) {
         }
 
         return '
-<div id="hcm_poll_' . Core::$hcmUid . '" class="poll">
+<div id="hcm_poll_' . Hcm::$uid . '" class="poll">
 <div class="poll-content">
 
 <div class="poll-question">

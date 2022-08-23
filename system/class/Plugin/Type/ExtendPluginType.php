@@ -73,6 +73,9 @@ class ExtendPluginType extends PluginType
             )->validate($methodOrCallbackValidator),
             Option::list('langs', 'string')
                 ->normalize([PluginOptionNormalizer::class, 'normalizePathArray'])
+                ->default([]),
+            Option::list('hcm', 'string')
+                ->normalize([PluginOptionNormalizer::class, 'normalizePathArray'])
                 ->default([])
         );
     }

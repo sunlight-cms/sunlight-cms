@@ -1,7 +1,7 @@
 <?php
 
-use Sunlight\Core;
 use Sunlight\Extend;
+use Sunlight\Hcm;
 use Sunlight\Image\ImageService;
 use Sunlight\Image\ImageTransformer;
 use Sunlight\Router;
@@ -12,7 +12,7 @@ return function ($cesta = '', $rozmery = '', $titulek = null, $lightbox = null) 
 
     return '<a href="' . _e(Router::file($cesta)) . '"'
         . ' target="_blank"'
-        . Extend::buffer('image.lightbox', ['group' => 'hcm_img_' . ($lightbox ?? Core::$hcmUid)])
+        . Extend::buffer('image.lightbox', ['group' => 'hcm_img_' . ($lightbox ?? Hcm::$uid)])
         . (($titulek != '') ? ' title=\'' . _e($titulek) . '\'' : '')
         . '>'
         . '<img src="' . _e(Router::file($thumb)) . '" alt="' . _e($titulek ?: basename($cesta)) . '">'

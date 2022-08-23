@@ -1,7 +1,7 @@
 <?php
 
-use Sunlight\Core;
 use Sunlight\Extend;
+use Sunlight\Hcm;
 use Sunlight\Image\ImageService;
 use Sunlight\Image\ImageTransformer;
 use Sunlight\Paginator;
@@ -47,11 +47,11 @@ return function ($cesta = '', $rozmery = '', $strankovani = null, $lightbox = tr
         // priprava strankovani
         if ($strankovat) {
             $count = count($items);
-            $paging = Paginator::render($_index->url, $strankovani, $count, '', '#hcm_gal' . Core::$hcmUid, 'hcm_gal' . Core::$hcmUid . 'p');
+            $paging = Paginator::render($_index->url, $strankovani, $count, '', '#hcm_gal' . Hcm::$uid, 'hcm_gal' . Hcm::$uid . 'p');
         }
 
         // vypis
-        $result = '<div id="hcm_gal' . Core::$hcmUid . "\" class=\"gallery\">\n";
+        $result = '<div id="hcm_gal' . Hcm::$uid . "\" class=\"gallery\">\n";
         $counter = 0;
         foreach ($items as $item) {
             if ($strankovat && $counter > $paging['last']) {
@@ -59,7 +59,7 @@ return function ($cesta = '', $rozmery = '', $strankovani = null, $lightbox = tr
             }
             if (!$strankovat || Paginator::isItemInRange($paging, $counter)) {
                 $thumb = ImageService::getThumbnail('gallery', $cesta . $item, $resize_opts);
-                $result .= '<a href="' . _e(Router::file($cesta . $item)) . '" target="_blank"' . ($lightbox ? Extend::buffer('image.lightbox', ['group' => 'hcm_gal_' . Core::$hcmUid]) : '') . '><img src="' . _e(Router::file($thumb)) . '" alt="' . _e($item) . "\"></a>\n";
+                $result .= '<a href="' . _e(Router::file($cesta . $item)) . '" target="_blank"' . ($lightbox ? Extend::buffer('image.lightbox', ['group' => 'hcm_gal_' . Hcm::$uid]) : '') . '><img src="' . _e(Router::file($thumb)) . '" alt="' . _e($item) . "\"></a>\n";
             }
             $counter++;
         }

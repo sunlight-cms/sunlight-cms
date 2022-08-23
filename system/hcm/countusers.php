@@ -3,9 +3,11 @@
 use Sunlight\Database\Database as DB;
 use Sunlight\Hcm;
 
-return function ($group_id = null) {
-    if (isset($group_id)) {
-        $cond = Hcm::createColumnInSqlCondition('group_id', $group_id);
+return function ($group_ids = null) {
+    Hcm::normalizeArgument($group_ids, 'string');
+
+    if ($group_ids !== null && !empty($group_ids = explode('-', $group_ids))) {
+        $cond = 'group_id IN(' . DB::arr($group_ids) . ')';
     } else {
         $cond = '1';
     }

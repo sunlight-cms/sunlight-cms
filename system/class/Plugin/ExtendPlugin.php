@@ -4,6 +4,7 @@ namespace Sunlight\Plugin;
 
 use Sunlight\Core;
 use Sunlight\Extend;
+use Sunlight\Hcm;
 use Sunlight\Localization\LocalizationDirectory;
 
 class ExtendPlugin extends Plugin implements InitializableInterface
@@ -35,6 +36,11 @@ class ExtendPlugin extends Plugin implements InitializableInterface
         // register language packs
         foreach ($this->options['langs'] as $key => $dir) {
             Core::$dictionary->registerSubDictionary($key, new LocalizationDirectory($dir));
+        }
+
+        // register HCM modules
+        foreach ($this->options['hcm'] as $name => $script) {
+            Hcm::register((string) $name, $script);
         }
 
         // load scripts

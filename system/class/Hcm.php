@@ -2,19 +2,59 @@
 
 namespace Sunlight;
 
-use Sunlight\Database\Database as DB;
 use Sunlight\Exception\ContentPrivilegeException;
 use Sunlight\Util\ArgList;
 
 abstract class Hcm
 {
-    private static $systemModuleCache;
+    /** @var int unique HCM identifier */
+    public static $uid = 0;
+    /** @var array<string, string> */
+    private static $registry = [
+        'articles' => __DIR__ . '/../hcm/articles.php',
+        'countart' => __DIR__ . '/../hcm/countart.php',
+        'countusers' => __DIR__ . '/../hcm/countusers.php',
+        'date' => __DIR__ . '/../hcm/date.php',
+        'file' => __DIR__ . '/../hcm/file.php',
+        'filesize' => __DIR__ . '/../hcm/filesize.php',
+        'galimg' => __DIR__ . '/../hcm/galimg.php',
+        'gallery' => __DIR__ . '/../hcm/gallery.php',
+        'img' => __DIR__ . '/../hcm/img.php',
+        'iperex' => __DIR__ . '/../hcm/iperex.php',
+        'lang' => __DIR__ . '/../hcm/lang.php',
+        'levelcontent' => __DIR__ . '/../hcm/levelcontent.php',
+        'levelcontent2' => __DIR__ . '/../hcm/levelcontent2.php',
+        'linkart' => __DIR__ . '/../hcm/linkart.php',
+        'linkpage' => __DIR__ . '/../hcm/linkpage.php',
+        'mailform' => __DIR__ . '/../hcm/mailform.php',
+        'mailto' => __DIR__ . '/../hcm/mailto.php',
+        'menu' => __DIR__ . '/../hcm/menu.php',
+        'menu_subtree' => __DIR__ . '/../hcm/menu_subtree.php',
+        'menu_tree' => __DIR__ . '/../hcm/menu_tree.php',
+        'msg' => __DIR__ . '/../hcm/msg.php',
+        'notpublic' => __DIR__ . '/../hcm/notpublic.php',
+        'path' => __DIR__ . '/../hcm/path.php',
+        'php' => __DIR__ . '/../hcm/php.php',
+        'phpsource' => __DIR__ . '/../hcm/phpsource.php',
+        'poll' => __DIR__ . '/../hcm/poll.php',
+        'randomfile' => __DIR__ . '/../hcm/randomfile.php',
+        'recentposts' => __DIR__ . '/../hcm/recentposts.php',
+        'sbox' => __DIR__ . '/../hcm/sbox.php',
+        'search' => __DIR__ . '/../hcm/search.php',
+        'source' => __DIR__ . '/../hcm/source.php',
+        'usermenu' => __DIR__ . '/../hcm/usermenu.php',
+        'users' => __DIR__ . '/../hcm/users.php',
+    ];
+    /** @var array<string, \Closure> */
+    private static $cache = [];
+
+    static function register(string $name, string $scriptPath): void
+    {
+        self::$registry[$name] = $scriptPath;
+    }
 
     /**
-     * Vyhodnotit HCM moduly v retezci
-     *
-     * @param string $input vstupni retezec
-     * @param string $handler callback vyhodnocovace modulu
+     * Parse HCM modules in a string
      */
     static function parse(string $input, $handler = [__CLASS__, 'evaluateMatch']): string
     {
@@ -22,97 +62,76 @@ abstract class Hcm
     }
 
     /**
-     * Spustit modul
+     * @internal
      */
     static function evaluateMatch(array $match): string
     {
         $params = ArgList::parse($match[1]);
+
         if (isset($params[0])) {
-            return (string) self::run($params[0], array_splice($params, 1));
+            return self::run($params[0], array_slice($params, 1));
         }
 
         return '';
     }
 
     /**
-     * Zavolat konkretni HCM modul
-     *
-     * @param string $name nazev hcm modulu
-     * @param array $args pole s argumenty
-     * @return mixed vystup HCM modulu
+     * Run a single HCM module
      */
-    static function run(string $name, array $args = [])
+    static function run(string $name, array $args = []): string
     {
         if (Core::$env !== Core::ENV_WEB) {
-            // HCM moduly vyzaduji frontendove prostredi
+            return ''; // HCM modules can't be run outside of web env
+        }
+
+        $closure = self::$cache[$name] ?? (
+            isset(self::$registry[$name])
+                ? self::load(self::$registry[$name])
+                : null
+        );
+
+        if ($closure === null) {
             return '';
         }
 
-        $module = explode('/', $name, 2);
+        ++self::$uid;
 
-        if (!isset($module[1])) {
-            // systemovy modul
-            if (!isset(self::$systemModuleCache[$name])) {
-                $file = SL_ROOT . 'system/hcm/' . basename($module[0]) . '.php';
-
-                self::$systemModuleCache[$name] = is_file($file) ? require $file : false;
-            }
-
-            if (self::$systemModuleCache[$name] !== false) {
-                ++Core::$hcmUid;
-
-                return (self::$systemModuleCache[$name])(...$args);
-            }
-
-            return '';
-        }
-
-        // extend modul
-        ++Core::$hcmUid;
-
-        return Extend::buffer("hcm.{$module[0]}.{$module[1]}", [
-            'args' => $args,
-        ]);
+        return $closure(...$args);
     }
 
     /**
-     * Filtrovat HCM moduly v obsahu na zakladne opravneni
+     * Filter HCM modules in the given content according to user privileges
      *
-     * @param string $content obsah, ktery ma byt filtrovan
-     * @param bool $exception emitovat vyjimku v pripade nalezeni nepovoleneho HCM modulu 1/0
-     * @throws ContentPrivilegeException
+     * @throws ContentPrivilegeException if $exception is TRUE and a denied HCM module is found
      */
     static function filter(string $content, bool $exception = false): string
     {
-        // pripravit seznamy
-        $blacklist = [];
+        $deniedModules = [];
         if (!User::hasPrivilege('adminhcmphp')) {
-            $blacklist[] = 'php';
+            $deniedModules[] = 'php';
         }
 
-        $whitelist = preg_split('{\s*,\s*}', User::$group['adminhcm']);
-        if (count($whitelist) === 1 && $whitelist[0] === '*') {
-            $whitelist = null; // vsechny HCM moduly povoleny
+        $allowedModules = preg_split('{\s*,\s*}', User::$group['adminhcm']);
+        if (count($allowedModules) === 1 && $allowedModules[0] === '*') {
+            $allowedModules = null; // vsechny HCM moduly povoleny
         }
 
         Extend::call('hcm.filter', [
-            'blacklist' => &$blacklist,
-            'whitelist' => &$whitelist,
+            'denied_modules' => &$deniedModules,
+            'allowed_modules' => &$allowedModules,
         ]);
 
-        // pripravit mapy
-        $blacklistMap = $blacklist !== null ? array_flip($blacklist) : null;
-        $whitelistMap = $whitelist !== null ? array_flip($whitelist) : null;
+        $deniedMap = $deniedModules !== null ? array_flip($deniedModules) : null;
+        $allowedMap = $allowedModules !== null ? array_flip($allowedModules) : null;
 
-        // filtrovat
-        return self::parse($content, function ($match) use ($blacklistMap, $whitelistMap, $exception) {
+        return self::parse($content, function ($match) use ($deniedMap, $allowedMap, $exception) {
             $params = ArgList::parse($match[1]);
             $module = isset($params[0]) ? mb_strtolower($params[0]) : '';
 
             if (
-                $whitelistMap !== null && !isset($whitelistMap[$module])
-                || $blacklistMap === null
-                || isset($blacklistMap[$module])
+                $allowedMap !== null && !isset($allowedMap[$module])
+                || $deniedMap === null
+                || isset($deniedMap[$module])
             ) {
                 if ($exception) {
                     throw new ContentPrivilegeException(sprintf('HCM module "%s"', $params[0]));
@@ -126,41 +145,20 @@ abstract class Hcm
     }
 
     /**
-     * Odstranit vsechny HCM moduly z obsahu
+     * Remove all HCM modules from content
      */
     static function remove(string $content): string
     {
-        return self::parse($content, function () {
-            return '';
-        });
+        return self::parse($content, function () { return ''; });
     }
 
     /**
-     * Sestaveni casti SQL dotazu po WHERE pro filtrovani zaznamu podle moznych hodnot daneho sloupce
+     * Normalize HCM argument
      *
-     * @param string $column nazev sloupce v tabulce
-     * @param string|array $values mozne hodnoty sloupce v poli, oddelene pomlckami nebo "all" pro vypnuti limitu
-     */
-    static function createColumnInSqlCondition(string $column, $values): string
-    {
-        if ($values !== 'all') {
-            if (!is_array($values)) {
-                $values = explode('-', $values);
-            }
-            return $column . ' IN(' . DB::val($values, true) . ')';
-        }
-
-        return '1';
-    }
-
-    /**
-     * Normalizovat promennou
+     * In case of failure, the variable is set to NULL.
      *
-     * V pripade chyby bude promenna nastavena na null.
-     *
-     * @param mixed $variable promenna
-     * @param string $type pozadovany typ, viz PHP funkce settype()
-     * @param bool $emptyToNull je-li hodnota prazdna ("" nebo null), nastavit na null 1/0
+     * @param string $type {@see settype()}
+     * @param bool $emptyToNull if the value is an empty string, set it to NULL
      */
     static function normalizeArgument(&$variable, string $type, bool $emptyToNull = true): void
     {
@@ -170,5 +168,16 @@ abstract class Hcm
         ) {
             $variable = null;
         }
+    }
+
+    private static function load(string $scriptPath): \Closure
+    {
+        $closure = require $scriptPath;
+
+        if (!$closure instanceof \Closure) {
+            throw new \UnexpectedValueException(sprintf('HCM script "%s" did not return a closure', $scriptPath));
+        }
+
+        return $closure;
     }
 }

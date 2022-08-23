@@ -75,8 +75,6 @@ abstract class Core
     /** @var LocalizationDictionary */
     static $dictionary;
 
-    /** @var int */
-    static $hcmUid = 0;
     /** @var array */
     static $settings = [];
     /** @var array id => seconds */

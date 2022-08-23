@@ -1,7 +1,7 @@
 <?php
 
-use Sunlight\Core;
 use Sunlight\Extend;
+use Sunlight\Hcm;
 use Sunlight\Image\ImageFormat;
 use Sunlight\Image\ImageService;
 use Sunlight\Image\ImageTransformer;
@@ -20,7 +20,6 @@ return function ($cesta = '', $typ = 'text', $pocet = 1, $rozmery_nahledu = null
 
         switch ($typ) {
             case 'image':
-            case 2:
                 $extension_filter = function ($ext) { return ImageFormat::isValidFormat($ext); };
                 $resize_opts = ImageTransformer::parseResizeOptions($rozmery_nahledu);
                 break;
@@ -51,11 +50,11 @@ return function ($cesta = '', $typ = 'text', $pocet = 1, $rozmery_nahledu = null
             foreach ($randitems as $item) {
                 $item = $items[$item];
                 switch ($typ) {
-                    case 2:
+                    case 'image':
                         $thumb = ImageService::getThumbnail('hcm.randomfile', $cesta . $item, $resize_opts);
                         $result .= '<a href="' . _e(Router::file($cesta . $item)) . '"'
                             . ' target="_blank"'
-                            . Extend::buffer('image.lightbox', ['group' => 'hcm_rnd_' . Core::$hcmUid])
+                            . Extend::buffer('image.lightbox', ['group' => 'hcm_rnd_' . Hcm::$uid])
                             . '>'
                             . '<img src="' . _e(Router::file($thumb)) . '" alt="' . _e($item) . '">'
                             . "</a>\n";

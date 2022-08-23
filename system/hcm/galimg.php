@@ -1,22 +1,27 @@
 <?php
 
-use Sunlight\Core;
 use Sunlight\Database\Database as DB;
 use Sunlight\Gallery;
 use Sunlight\Hcm;
 
-return function ($galerie = '', $typ = 'new', $rozmery = null, $limit = null) {
+return function ($galerie = null, $typ = 'new', $rozmery = null, $limit = null) {
     // nacteni parametru
-    $result = '';
-    $galerie = Hcm::createColumnInSqlCondition('home', $galerie);
-    if (isset($limit)) {
+    Hcm::normalizeArgument($galerie, 'string');
+
+    if ($galerie !== null && !empty($galerie = explode('-', $galerie))) {
+        $home_cond = 'home IN(' . DB::arr($galerie) . ')';
+    } else {
+        $home_cond = '1';
+    }
+
+    if ($limit !== null) {
         $limit = abs((int) $limit);
     } else {
         $limit = 1;
     }
 
     // rozmery
-    if (isset($rozmery)) {
+    if ($rozmery !== null) {
         $rozmery = explode('/', $rozmery, 2);
         if (count($rozmery) === 2) {
             // sirka i vyska
@@ -36,11 +41,9 @@ return function ($galerie = '', $typ = 'new', $rozmery = null, $limit = null) {
     // urceni razeni
     switch ($typ) {
         case 'random':
-        case 2:
             $razeni = 'RAND()';
             break;
         case 'order':
-        case 3:
             $razeni = 'ord ASC';
             break;
         case 'new':
@@ -49,9 +52,10 @@ return function ($galerie = '', $typ = 'new', $rozmery = null, $limit = null) {
     }
 
     // vypis obrazku
-    $rimgs = DB::query('SELECT id,title,prev,full FROM ' . DB::table('gallery_image') . ' WHERE ' . $galerie . ' ORDER BY ' . $razeni . ' LIMIT ' . $limit);
+    $result = '';
+    $rimgs = DB::query('SELECT id,title,prev,full FROM ' . DB::table('gallery_image') . ' WHERE ' . $home_cond . ' ORDER BY ' . $razeni . ' LIMIT ' . $limit);
     while ($rimg = DB::row($rimgs)) {
-        $result .= Gallery::renderImage($rimg, 'hcm' . Core::$hcmUid, $x, $y);
+        $result .= Gallery::renderImage($rimg, 'hcm' . Hcm::$uid, $x, $y);
     }
 
     return $result;

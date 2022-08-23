@@ -1,6 +1,6 @@
 <?php
 
-use Sunlight\Core;
+use Sunlight\Hcm;
 use Sunlight\Post\PostService;
 use Sunlight\Database\Database as DB;
 use Sunlight\GenericTemplates;
@@ -27,7 +27,7 @@ return function ($id = null) {
     if ($rcontinue) {
 
         $result = '
-    <div id="hcm_sbox_' . Core::$hcmUid . '" class="sbox">
+    <div id="hcm_sbox_' . Hcm::$uid . '" class="sbox">
     <div class="sbox-content">
     ' . (($sboxdata['title'] != '') ? '<div class="sbox-title">' . $sboxdata['title'] . '</div>' : '') . '<div class="sbox-item"' . (($sboxdata['title'] == '') ? ' style="border-top:none;"' : '') . '>';
 
@@ -43,8 +43,8 @@ return function ($id = null) {
 
             $result .= Form::render(
                 [
-                    'name' => 'hcm_sboxform_' . Core::$hcmUid,
-                    'action' => Router::path('system/script/post.php', ['query' => ['_return' => $GLOBALS['_index']->url], 'fragment' => 'hcm_sbox_' . Core::$hcmUid]),
+                    'name' => 'hcm_sboxform_' . Hcm::$uid,
+                    'action' => Router::path('system/script/post.php', ['query' => ['_return' => $GLOBALS['_index']->url], 'fragment' => 'hcm_sbox_' . Hcm::$uid]),
                 ],
                 $inputs
             );

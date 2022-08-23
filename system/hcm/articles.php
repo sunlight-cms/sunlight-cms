@@ -25,13 +25,11 @@ return function ($typ = 'new', $pocet = null, $perex = 'perex', $info = true, $k
             $show_image = false;
             break;
         case 'perex':
-        case 1:
         default:
             $show_perex = true;
             $show_image = false;
             break;
         case 'perex-image':
-        case 2:
             $show_perex = true;
             $show_image = true;
             break;
@@ -41,42 +39,34 @@ return function ($typ = 'new', $pocet = null, $perex = 'perex', $info = true, $k
     // priprava casti sql dotazu
     switch ($typ) {
         case 'readnum':
-        case 2:
             $rorder = 'art.readnum DESC';
             $rcond = 'art.readnum!=0';
             break;
         case 'rating':
-        case 3:
             $rorder = 'art.ratesum/art.ratenum DESC';
             $rcond = 'art.ratenum!=0';
             break;
         case 'ratenum':
-        case 4:
             $rorder = 'art.ratenum DESC';
             $rcond = 'art.ratenum!=0';
             break;
         case 'random':
-        case 5:
             $rorder = 'RAND()';
             $rcond = '';
             break;
         case 'read':
-        case 6:
             $rorder = '(SELECT time FROM ' . DB::table('iplog') . ' WHERE type=' . IpLog::ARTICLE_READ . ' AND var=art.id AND art.visible=1 AND art.time<=' . time() . ' AND art.confirmed=1 ORDER BY id DESC LIMIT 1) DESC';
             $rcond = 'art.readnum!=0';
             break;
         case 'rated':
-        case 7:
             $rorder = '(SELECT time FROM ' . DB::table('iplog') . ' WHERE type=' . IpLog::ARTICLE_RATED . ' AND var=art.id AND art.visible=1 AND art.time<=' . time() . ' AND art.confirmed=1 ORDER BY id DESC LIMIT 1) DESC';
             $rcond = 'art.ratenum!=0';
             break;
         case 'commented':
-        case 8:
             $rorder = '(SELECT time FROM ' . DB::table('post') . ' WHERE home=art.id AND type=' . Post::ARTICLE_COMMENT . ' ORDER BY time DESC LIMIT 1) DESC';
             $rcond = '(SELECT COUNT(*) FROM ' . DB::table('post') . ' WHERE home=art.id AND type=' . Post::ARTICLE_COMMENT . ')!=0';
             break;
         case 'most-comments':
-        case 9:
             $rorder = '(SELECT COUNT(*) FROM ' . DB::table('post') . ' WHERE home=art.id AND type=' . Post::ARTICLE_COMMENT . ') DESC';
             $rcond = '(SELECT COUNT(*) FROM ' . DB::table('post') . ' WHERE home=art.id AND type=' . Post::ARTICLE_COMMENT . ')!=0';
             break;
