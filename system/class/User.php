@@ -1129,7 +1129,7 @@ abstract class User
         if ($options['link']) {
             $out .= '<a href="' . _e(Router::module('profile', ['query' => ['id' =>  $data['username']]])) . '">';
         }
-        $out .= '<img class="avatar' . ($options['class'] !== null ? " {$options['class']}" : '') . '" src="{$url}" alt="' . $data[$data['publicname'] !== null ? 'publicname' : 'username'] . '">';
+        $out .= '<img class="avatar' . ($options['class'] !== null ? " {$options['class']}" : '') . '" src="' . _e($url) . '" alt="' . $data[$data['publicname'] !== null ? 'publicname' : 'username'] . '">';
         if ($options['link']) {
             $out .= '</a>';
         }

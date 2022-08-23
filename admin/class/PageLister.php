@@ -481,10 +481,10 @@ abstract class PageLister
                 $actionLabel = _e($action['label']);
                 $output .= '<a'
                     . ((isset($action['new_window']) && $action['new_window']) ? ' target="_blank"' : '')
-                    . ' class="page-action-{$actionId}" href="' . _e($action['url']) . '" title="{$actionLabel}"'
+                    . ' class="page-action-' . $actionId . '" href="' . _e($action['url']) . '" title="' . $actionLabel . '"'
                     . '>';
                 if (isset($action['icon'])) {
-                    $output .= '<img class="icon" src="' . _e($action['icon']) . '" alt="{$actionLabel}">';
+                    $output .= '<img class="icon" src="' . _e($action['icon']) . '" alt="' . $actionLabel . '">';
                 }
                 $output .= "<span>{$actionLabel}</span></a>\n";
             }
@@ -585,11 +585,11 @@ abstract class PageLister
             }
             if ($page['layout'] !== null && !$page['layout_inherit']) {
                 $iconTitle = _lang('admin.content.form.layout.setting', ['%layout%' => _e(TemplateService::getComponentLabelByUid($page['layout'], TemplateService::UID_TEMPLATE_LAYOUT))]);
-                $output .= '<img src="' . _e(Router::path('admin/images/icons/template.png')) . '" class="icon" alt="' . $iconTitl . '" title="' . $iconTitle . '">';
+                $output .= '<img src="' . _e(Router::path('admin/images/icons/template.png')) . '" class="icon" alt="' . $iconTitle . '" title="' . $iconTitle . '">';
             }
             if (!$page['public']) {
                 $iconTitle = _lang('admin.content.form.private');
-                $output .= '<img src="' . _e(Router::path('admin/images/icons/lock3.png')) . '" class="icon" alt="' . $iconTitl . '" title="' . $iconTitle . '">';
+                $output .= '<img src="' . _e(Router::path('admin/images/icons/lock3.png')) . '" class="icon" alt="' . $iconTitle . '" title="' . $iconTitle . '">';
             }
             if ($page['level'] > 0) {
                 $iconTitle = _lang('admin.content.form.level') . " {$page['level']}+";
@@ -599,11 +599,11 @@ abstract class PageLister
                 } else {
                     $icon = 'lock.png';
                 }
-                $output .= '<img src="' . _e(Router::path('admin/images/icons/' . $icon)) . '" class="icon" alt="' . $iconTitl . '" title="' . $iconTitle . '">';
+                $output .= '<img src="' . _e(Router::path('admin/images/icons/' . $icon)) . '" class="icon" alt="' . $iconTitle . '" title="' . $iconTitle . '">';
             }
             if (!$page['visible']) {
                 $iconTitle = _lang('admin.content.form.invisible');
-                $output .= '<img src="' . _e(Router::path('admin/images/icons/eye.png')) . '" class="icon" alt="' . $iconTitl . '" title="' . $iconTitle . '">';
+                $output .= '<img src="' . _e(Router::path('admin/images/icons/eye.png')) . '" class="icon" alt="' . $iconTitle . '" title="' . $iconTitle . '">';
             }
         }
 

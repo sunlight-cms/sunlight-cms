@@ -293,7 +293,7 @@ foreach ($editable_settings as $settings_category => $settings_category_data) {
     $title = $settings_category_data['title'] ?? _lang('admin.settings.' . $settings_category);
 
     $output .= '<fieldset id="settings_' . $settings_category . '">
-<legend>{$title}</legend>
+<legend>' . $title . '</legend>
 
 <table>';
 
