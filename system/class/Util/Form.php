@@ -248,7 +248,13 @@ abstract class Form
             } else {
                 $timestamp = ['seconds' => '', 'minutes' => '', 'hours' => '', 'mday' => '', 'mon' => '', 'year' => ''];
             }
-            $output .= '<input type="text" size="2" maxlength="2" name="' . $name . '[tday]" value="' . $timestamp['mday'] . '">.<input type="text" size="2" maxlength="2" name="' . $name . '[tmonth]" value="' . $timestamp['mon'] . '"> <input type="text" size="4" maxlength="4" name="' . $name . '[tyear]" value="' . $timestamp['year'] . '"> <input type="text" size="2" maxlength="2" name="' . $name . '[thour]" value="' . $timestamp['hours'] . '">:<input type="text" size="2" maxlength="2" name="' . $name . '[tminute]" value="' . $timestamp['minutes'] . '">:<input type="text" size="2" maxlength="2" name="' . $name . '[tsecond]" value="' . $timestamp['seconds'] . '"> <small>' . _lang('time.help') . '</small>';
+            $output .= '<input type="text" size="2" maxlength="2" name="' . $name . '[tday]" value="' . $timestamp['mday'] . '">'
+                . '.<input type="text" size="2" maxlength="2" name="' . $name . '[tmonth]" value="' . $timestamp['mon'] . '">'
+                . ' <input type="text" size="4" maxlength="4" name="' . $name . '[tyear]" value="' . $timestamp['year'] . '">'
+                . ' <input type="text" size="2" maxlength="2" name="' . $name . '[thour]" value="' . $timestamp['hours'] . '">'
+                . ':<input type="text" size="2" maxlength="2" name="' . $name . '[tminute]" value="' . $timestamp['minutes'] . '">'
+                . ':<input type="text" size="2" maxlength="2" name="' . $name . '[tsecond]" value="' . $timestamp['seconds'] . '">'
+                . ' <small>' . _lang('time.help') . '</small>';
             if ($updatebox) {
                 $output .= ' <label><input type="checkbox" name="' . $name . '[tupdate]" value="1"' . self::activateCheckbox($updateboxchecked) . '> ' . _lang('time.update') . '</label>';
             }
