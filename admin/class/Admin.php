@@ -465,14 +465,18 @@ abstract class Admin
         $hexLen = strlen($hex);
 
         // zpracovat
-        if ($hexLen === 3 && $expand) {
+        if ($hexLen === 3) {
             // zkracena verze
-            $output = '#';
-            for ($i = 0; $i < $hexLen; ++$i) {
-                $output .= str_repeat($hex[$i], 2);
+            if ($expand) {
+                $output = '#';
+                for ($i = 0; $i < $hexLen; ++$i) {
+                    $output .= str_repeat($hex[$i], 2);
+                }
+
+                return $output;
             }
 
-            return $output;
+            return $value;
         }
 
         if ($hexLen === 6) {
