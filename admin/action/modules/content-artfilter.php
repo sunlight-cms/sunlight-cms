@@ -221,7 +221,7 @@ if (isset($_POST['category'])) {
 /* ---  vystup  --- */
 
 $output .= $message . '
-<form action="' . _e(Router::admin('content-artfilter')) . ' method="post">
+<form action="' . _e(Router::admin('content-artfilter')) . '" method="post">
 ';
 
 if (!$infopage) {

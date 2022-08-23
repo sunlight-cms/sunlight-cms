@@ -56,7 +56,7 @@ return function ($id = null) {
 
         $ranswers_code .= '<div class="poll-answer">';
         if ($rallowvote) {
-            $ranswers_code .= '<input type="submit" value="' . _lang('hcm.poll.vote') . ' class="votebutton">';
+            $ranswers_code .= '<input type="submit" value="' . _lang('hcm.poll.vote') . '" class="votebutton">';
         }
         $ranswers_code .= _lang('hcm.poll.votes') . ': ' . $rvotes_sum . '</div>';
         if ($rallowvote) {
