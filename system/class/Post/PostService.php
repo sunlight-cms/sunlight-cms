@@ -691,7 +691,7 @@ class PostService
                     . $author
                     . ' <span class="post-info">(' . GenericTemplates::renderTime($post['time'], 'post') . $options['extra_info'] . ')</span>'
                     . ($actlinks ? ' <span class="post-actions">' . implode(' ', $actlinks) . '</span>' : '')
-                    . ($options['post_link'] ? '<a class="post-postlink" href="' . _e(UrlHelper::appendParams($options['current_url'], 'page=' . $options['current_page'])) . '#post-' . $post['id'] . "'><span>#" . str_pad($post['id'], 6, '0', STR_PAD_LEFT) . '</span></a>' : '')
+                    . ($options['post_link'] ? '<a class="post-postlink" href="' . _e(UrlHelper::appendParams($options['current_url'], 'page=' . $options['current_page'])) . '#post-' . $post['id'] . '"><span>#' . str_pad($post['id'], 6, '0', STR_PAD_LEFT) . '</span></a>' : '')
                 . '</div>'
                 . '<div class="post-body' . (isset($avatar) ? ' post-body-withavatar' : '') . '">'
                     . $avatar
