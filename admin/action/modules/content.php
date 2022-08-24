@@ -214,7 +214,7 @@ foreach ($content_modules as $category_alias => $category_data) {
     if ($buttons_str !== '') {
         $content_modules_str .= '<div class="content-' . $category_alias . '">
 <h2>' . ($category_data['label'] ?? _lang('admin.content.' . $category_alias)) . '</h2>
-' . $buttons_str;
+' . $buttons_str . '</div>';
     }
 }
 

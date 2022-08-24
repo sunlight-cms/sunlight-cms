@@ -56,7 +56,6 @@ while ($box = DB::row($query)) {
 $output .= $message;
 
 // main form
-$output .= '<form method="post">';
 $output .= _buffer(function () { ?>
     <form method="post">
     <p>

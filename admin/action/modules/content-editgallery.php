@@ -16,11 +16,11 @@ if ($continue) {
     }
 
     $custom_settings = '
-  <tr><td><label><input type="number" min="-1" name="var1" value="' . $query['var1'] . '" class="inputmax"></td><td>' . _lang('admin.content.form.imgsperrow') . '</td></tr>
-  <tr><td><label><input type="number" min="1" name="var2" value="' . $query['var2'] . '" class="inputmax"></td><td>' . _lang('admin.content.form.imgsperpage') . '</td></tr>
+  <tr><td><input type="number" min="-1" name="var1" value="' . $query['var1'] . '" class="inputmax"></td><td>' . _lang('admin.content.form.imgsperrow') . '</td></tr>
+  <tr><td><input type="number" min="1" name="var2" value="' . $query['var2'] . '" class="inputmax"></td><td>' . _lang('admin.content.form.imgsperpage') . '</td></tr>
  
-  <tr><td><label><input type="number" min="10" max="1024" name="var4" value="' . $query['var4'] . '" class="inputmax"></td><td>' . _lang('admin.content.form.prevwidth') . '</td></tr> 
-  <tr><td><label><input type="number" min="10" max="1024" name="var3" value="' . $query['var3'] . '" class="inputmax"></td><td>' . _lang('admin.content.form.prevheight') . '</td></tr>
+  <tr><td><input type="number" min="10" max="1024" name="var4" value="' . $query['var4'] . '" class="inputmax"></td><td>' . _lang('admin.content.form.prevwidth') . '</td></tr> 
+  <tr><td><input type="number" min="10" max="1024" name="var3" value="' . $query['var3'] . '" class="inputmax"></td><td>' . _lang('admin.content.form.prevheight') . '</td></tr>
 ';
 
     $custom_save_array = [
