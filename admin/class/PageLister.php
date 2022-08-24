@@ -452,7 +452,7 @@ abstract class PageLister
             } else {
                 $output .= $page['title'];
             }
-            $output .= '</span></span>';
+            $output .= '</span></span></span>';
         }
         $output .= "</td>\n";
 

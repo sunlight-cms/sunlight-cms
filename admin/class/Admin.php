@@ -438,6 +438,8 @@ abstract class Admin
             $output .= "</optgroup>\n";
         }
 
+        $output .= "</select>\n";
+
         return $output;
     }
 
