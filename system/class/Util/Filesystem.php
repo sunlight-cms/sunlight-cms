@@ -310,6 +310,6 @@ abstract class Filesystem
 </IfModule>
 
 HTACCESS
-);
+        );
     }
 }

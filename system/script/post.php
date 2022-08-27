@@ -60,7 +60,7 @@ if ($posttype == Post::PLUGIN) {
 $continue = false;
 switch ($posttype) {
 
-        // sekce
+    // sekce
     case Post::SECTION_COMMENT:
         $tdata = DB::queryRow('SELECT public,var1,var3,level FROM ' . DB::table('page') . ' WHERE id=' . $posttarget . ' AND type=' . Page::SECTION);
         if ($tdata !== false && User::checkPublicAccess($tdata['public'], $tdata['level']) && $tdata['var1'] == 1 && $tdata['var3'] != 1) {
@@ -68,7 +68,7 @@ switch ($posttype) {
         }
         break;
 
-        // clanek
+    // clanek
     case Post::ARTICLE_COMMENT:
         $tdata = DB::queryRow('SELECT id,time,confirmed,author,public,home1,home2,home3,comments,commentslocked FROM ' . DB::table('article') . ' WHERE id=' . $posttarget);
         if ($tdata !== false && Article::checkAccess($tdata) && $tdata['comments'] == 1 && $tdata['commentslocked'] == 0) {
@@ -76,7 +76,7 @@ switch ($posttype) {
         }
         break;
 
-        // kniha
+    // kniha
     case Post::BOOK_ENTRY:
         $tdata = DB::queryRow('SELECT public,var1,var3,level FROM ' . DB::table('page') . ' WHERE id=' . $posttarget . ' AND type=' . Page::BOOK);
         if ($tdata !== false && User::checkPublicAccess($tdata['public'], $tdata['level']) && User::checkPublicAccess($tdata['var1']) && $tdata['var3'] != 1) {
@@ -85,7 +85,7 @@ switch ($posttype) {
 
         break;
 
-        // shoutbox
+    // shoutbox
     case Post::SHOUTBOX_ENTRY:
         $tdata = DB::queryRow('SELECT public,locked FROM ' . DB::table('shoutbox') . ' WHERE id=' . $posttarget);
         if ($tdata !== false && User::checkPublicAccess($tdata['public']) && $tdata['locked'] != 1) {
@@ -93,7 +93,7 @@ switch ($posttype) {
         }
         break;
 
-        // forum
+    // forum
     case Post::FORUM_TOPIC:
         $tdata = DB::queryRow('SELECT public,var2,var3,level FROM ' . DB::table('page') . ' WHERE id=' . $posttarget . ' AND type=' . Page::FORUM);
         if ($tdata !== false && User::checkPublicAccess($tdata['public'], $tdata['level']) && User::checkPublicAccess($tdata['var3']) && $tdata['var2'] != 1) {
@@ -101,7 +101,7 @@ switch ($posttype) {
         }
         break;
 
-        // zprava
+    // zprava
     case Post::PRIVATE_MSG:
         if (Settings::get('messages') && User::isLoggedIn()) {
             $tdata = DB::queryRow('SELECT sender,receiver FROM ' . DB::table('pm') . ' WHERE id=' . $posttarget . ' AND (sender=' . User::getId() . ' OR receiver=' . User::getId() . ') AND sender_deleted=0 AND receiver_deleted=0');
@@ -112,12 +112,12 @@ switch ($posttype) {
         }
         break;
 
-        // plugin post
+    // plugin post
     case Post::PLUGIN:
         Extend::call('posts.' . $pluginflag . '.validate', ['home' => $posttarget, 'valid' => &$continue]);
         break;
 
-        // blbost
+    // blbost
     default:
         exit;
 

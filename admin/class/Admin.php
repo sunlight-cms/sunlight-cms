@@ -529,17 +529,17 @@ abstract class Admin
                 'admin' => Router::path('admin/js/admin.js'),
             ],
             'js_before' => "\n" . Core::getJavascript([
-                    'admin' => [
-                        'themeIsDark' => $dark,
-                        'wysiwygAvailable' => $wysiwygAvailable,
-                    ],
-                    'labels' => [
-                        'cancel' => _lang('global.cancel'),
-                        'fmanMovePrompt' => _lang('admin.fman.selected.move.prompt'),
-                        'fmanDeleteConfirm' => _lang('admin.fman.selected.delete.confirm'),
-                        'busyOverlayText' => _lang('admin.busy_overlay.text'),
-                    ],
-                ]),
+                'admin' => [
+                    'themeIsDark' => $dark,
+                    'wysiwygAvailable' => $wysiwygAvailable,
+                ],
+                'labels' => [
+                    'cancel' => _lang('global.cancel'),
+                    'fmanMovePrompt' => _lang('admin.fman.selected.move.prompt'),
+                    'fmanDeleteConfirm' => _lang('admin.fman.selected.delete.confirm'),
+                    'busyOverlayText' => _lang('admin.busy_overlay.text'),
+                ],
+            ]),
         ];
     }
 

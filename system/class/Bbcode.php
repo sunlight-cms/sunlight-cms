@@ -75,7 +75,7 @@ abstract class Bbcode
             // mode step
             switch ($mode) {
 
-                ########## look for tag ##########
+                // look for tag
                 case 0:
                     if ($char === '[') {
                         $mode = 1;
@@ -89,7 +89,7 @@ abstract class Bbcode
                     }
                     break;
 
-                ########## scan tag ##########
+                // scan tag
                 case 1:
                     if (($ord = ord($char)) > 47 && $ord < 59 || $ord > 64 && $ord < 91 || $ord > 96 && $ord < 123) {
                         // tag character
@@ -163,7 +163,7 @@ abstract class Bbcode
                     }
                     break;
 
-                ########## scan tag argument ##########
+                // scan tag argument
                 case 2:
 
                     // detect submode

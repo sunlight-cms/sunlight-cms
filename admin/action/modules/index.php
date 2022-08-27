@@ -136,7 +136,7 @@ if (($version_data !== null) && $version_data['localAge'] >= 0) {
 }
 
 Extend::call('admin.index.messages', [
-   'messages' => &$messages,
+    'messages' => &$messages,
 ]);
 
 $output .= '<div id="index-messages" class="well' . (empty($messages) ? ' hidden' : '') . "\">\n";

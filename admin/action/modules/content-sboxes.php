@@ -19,7 +19,7 @@ if (isset($_POST['action'])) {
 
     switch (Request::post('action')) {
 
-            // vytvoreni
+        // vytvoreni
         case 1:
             // nacteni zakladnich promennych
             $title = Html::cut(_e(Request::post('title', '')), 64);
@@ -35,7 +35,7 @@ if (isset($_POST['action'])) {
             $message = Message::ok(_lang('global.created'));
             break;
 
-            // ulozeni
+        // ulozeni
         case 2:
             $lastid = -1;
             $sql = '';

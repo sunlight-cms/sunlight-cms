@@ -374,12 +374,12 @@ abstract class PageManipulator
         // ostatni typy
         if ($deleteDirect) {
             switch ($page['type']) {
-                    // komentare v sekcich
+                // komentare v sekcich
                 case Page::SECTION:
                     DB::delete('post', 'type=' . Post::SECTION_COMMENT . ' AND home=' . $page['id']);
                     break;
 
-                    // clanky v kategoriich a jejich komentare
+                // clanky v kategoriich a jejich komentare
                 case Page::CATEGORY:
                     $rquery = DB::query('SELECT id,home1,home2,home3 FROM ' . DB::table('article') . ' WHERE home1=' . $page['id'] . ' OR home2=' . $page['id'] . ' OR home3=' . $page['id']);
                     while ($item = DB::row($rquery)) {
@@ -416,19 +416,19 @@ abstract class PageManipulator
                     }
                     break;
 
-                    // prispevky v knihach
+                // prispevky v knihach
                 case Page::BOOK:
                     DB::delete('post', 'type=' . Post::BOOK_ENTRY . ' AND home=' . $page['id']);
                     break;
 
-                    // obrazky v galerii
+                // obrazky v galerii
                 case Page::GALLERY:
                     Admin::deleteGalleryStorage('home=' . $page['id']);
                     DB::delete('gallery_image', 'home=' . $page['id']);
                     @rmdir(SL_ROOT . 'images/galleries/' . $page['id']);
                     break;
 
-                    // prispevky ve forech
+                // prispevky ve forech
                 case Page::FORUM:
                     DB::delete('post', 'type=' . Post::FORUM_TOPIC . ' AND home=' . $page['id']);
                     break;

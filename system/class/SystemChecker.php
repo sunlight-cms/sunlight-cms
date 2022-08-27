@@ -2,8 +2,6 @@
 
 namespace Sunlight;
 
-use Sunlight\Util\Environment;
-
 class SystemChecker
 {
     /** @var array */

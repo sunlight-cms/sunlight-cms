@@ -50,20 +50,20 @@ if (DB::size($items) != 0) {
             $iteminfos = [];
 
             switch ($item['type']) {
-                    // sekce
+                // sekce
                 case Page::SECTION:
                     if ($item['var1'] == 1) {
                         $iteminfos['comment_num'] = [_lang('article.comments'), DB::count('post', 'type=' . Post::SECTION_COMMENT . ' AND home=' . DB::val($item['id']))];
                     }
                     break;
 
-                    // kategorie
+                // kategorie
                 case Page::CATEGORY:
                     [, , $art_count] = Article::createFilter('art', [$item['id']], null, true);
                     $iteminfos['article_num'] = [_lang('global.articlesnum'), $art_count];
                     break;
 
-                    // kniha
+                // kniha
                 case Page::BOOK:
                     // nacteni jmena autora posledniho prispevku
                     $userQuery = User::createQuery('p.author');
@@ -82,18 +82,18 @@ if (DB::size($items) != 0) {
                     $iteminfos['last_post'] = [_lang('global.lastpost'), $lastpost];
                     break;
 
-                    // galerie
+                // galerie
                 case Page::GALLERY:
                     $iteminfos['image_num'] = [_lang('global.imgsnum'), DB::count('gallery_image', 'home=' . DB::val($item['id']))];
                     break;
 
-                    // forum
+                // forum
                 case Page::FORUM:
                     $iteminfos['topic_num'] = [_lang('global.topicsnum'), DB::count('post', 'type=' . Post::FORUM_TOPIC . ' AND home=' . DB::val($item['id']) . ' AND xhome=-1')];
                     $iteminfos['answer_num'] = [_lang('global.answersnum'), DB::count('post', 'type=' . Post::FORUM_TOPIC . ' AND home=' . DB::val($item['id']) . ' AND xhome!=-1')];
                     break;
 
-                    // plugin stranka
+                // plugin stranka
                 case Page::PLUGIN:
                     Extend::call('page.plugin.' . $item['type_idt'] . '.group_infos', ['item' => $item, 'infos' => &$iteminfos]);
                     break;

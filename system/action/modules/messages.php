@@ -48,7 +48,7 @@ $message = '';
 // obsah
 switch ($a) {
 
-        /* ---  nova zprava  --- */
+    // nova zprava
     case 'new':
 
         // titulek
@@ -170,7 +170,7 @@ switch ($a) {
 
         break;
 
-        /* ---  vypis  --- */
+    // vypis
     default:
 
         // cteni vzkazu

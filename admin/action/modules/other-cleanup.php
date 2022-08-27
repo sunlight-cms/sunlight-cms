@@ -36,7 +36,7 @@ if (isset($_POST['action'])) {
 
     switch (Request::post('action')) {
 
-            // cistka
+        // cistka
         case 1:
 
             // nahled ci smazani?
@@ -168,7 +168,7 @@ if (isset($_POST['action'])) {
 
             break;
 
-            // deinstalace
+        // deinstalace
         case 2:
             $confirm = Form::loadCheckbox('confirm');
             if ($confirm) {

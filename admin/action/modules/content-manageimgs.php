@@ -42,7 +42,7 @@ if (isset($_POST['xaction']) && $continue) {
 
     switch (Request::post('xaction')) {
 
-            /* -  vlozeni obrazku  - */
+        // vlozeni obrazku
         case 1:
 
             // nacteni zakladnich promennych
@@ -158,7 +158,7 @@ if (isset($_POST['xaction']) && $continue) {
             $message .= Message::ok(_lang('global.saved'));
             break;
 
-            /* -  presunuti obrazku  - */
+        // presunuti obrazku
         case 5:
             $newhome = (int) Request::post('newhome');
             if ($newhome != $galid) {
@@ -193,7 +193,7 @@ if (isset($_POST['xaction']) && $continue) {
             }
             break;
 
-            /* -  odstraneni vsech obrazku  - */
+        // odstraneni vsech obrazku
         case 6:
             if (Form::loadCheckbox('confirm')) {
                 Admin::deleteGalleryStorage('home=' . $galid);
@@ -202,7 +202,7 @@ if (isset($_POST['xaction']) && $continue) {
             }
             break;
 
-            /* -  upload obrazku  - */
+        // upload obrazku
         case 7:
 
             // prepare vars

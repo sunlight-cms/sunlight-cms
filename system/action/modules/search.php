@@ -12,7 +12,6 @@ use Sunlight\Post\Post;
 use Sunlight\Router;
 use Sunlight\Settings;
 use Sunlight\User;
-use Sunlight\Util\Arr;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
 use Sunlight\Util\StringManipulator;
@@ -144,18 +143,18 @@ if ($search_query != '') {
                 $post_anchor = true;
                 [$link, $title] = Router::post($r);
                 switch ($r['type']) {
-                        // komentar sekce / prispevek knihy
+                    // komentar sekce / prispevek knihy
                     case Post::SECTION_COMMENT:
                     case Post::BOOK_ENTRY:
                         $pagenum = Paginator::getItemPage(Settings::get('commentsperpage'), DB::table('post'), 'id>' . $r['id'] . ' AND type=' . $r['type'] . ' AND xhome=-1 AND home=' . $r['home']);
                         break;
 
-                        // komentar clanku
+                    // komentar clanku
                     case Post::ARTICLE_COMMENT:
                         $pagenum = Paginator::getItemPage(Settings::get('commentsperpage'), DB::table('post'), 'id>' . $r['id'] . ' AND type=' . Post::ARTICLE_COMMENT . ' AND xhome=-1 AND home=' . $r['home']);
                         break;
 
-                        // prispevek na foru
+                    // prispevek na foru
                     case Post::FORUM_TOPIC:
                         if ($r['xhome'] != -1) {
                             $pagenum = Paginator::getItemPage(Settings::get('commentsperpage'), DB::table('post'), 'id<' . $r['id'] . ' AND type=' . Post::FORUM_TOPIC . ' AND xhome=' . $r['xhome'] . ' AND home=' . $r['home']);

@@ -1,7 +1,6 @@
 <?php
 
 use Sunlight\Extend;
-use Sunlight\Router;
 use Sunlight\Util\StringManipulator;
 
 defined('SL_ROOT') or exit;

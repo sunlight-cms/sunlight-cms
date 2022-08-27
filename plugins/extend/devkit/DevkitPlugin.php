@@ -102,7 +102,7 @@ Subject: {$args['subject']}
 =====================================
 
 ENTRY
-        , FILE_APPEND | LOCK_EX);
+            , FILE_APPEND | LOCK_EX);
     }
 
     /**

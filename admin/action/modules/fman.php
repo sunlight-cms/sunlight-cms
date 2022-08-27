@@ -186,7 +186,7 @@ if ($continue) {
 
         switch (Request::post('action')) {
 
-                // upload
+            // upload
             case 'upload':
                 $total = 0;
                 $done = 0;
@@ -212,7 +212,7 @@ if ($continue) {
                 $message = Message::render($done == $total ? Message::OK : Message::WARNING, _lang('admin.fman.msg.upload.done', ['%done%' => $done, '%total%' => $total]));
                 break;
 
-                // novy adresar
+            // novy adresar
             case 'newfolder':
                 $name = $decodeFilename(Request::post('name'), false);
                 if (!file_exists($dir . $name)) {
@@ -228,7 +228,7 @@ if ($continue) {
                 }
                 break;
 
-                // odstraneni
+            // odstraneni
             case 'delete':
                 $name = $decodeFilename(Request::post('name'));
                 if (file_exists($dir . $name)) {
@@ -250,7 +250,7 @@ if ($continue) {
                 }
                 break;
 
-                // prejmenovani
+            // prejmenovani
             case 'rename':
                 $name = $decodeFilename(Request::post('name'));
                 $newname = $decodeFilename(Request::post('newname'), false);
@@ -271,7 +271,7 @@ if ($continue) {
                 }
                 break;
 
-                // uprava
+            // uprava
             case 'edit':
                 $name = $decodeFilename(Request::post('name'), false);
                 $content = Request::post('content');
@@ -289,7 +289,7 @@ if ($continue) {
                 }
                 break;
 
-                // presun
+            // presun
             case 'move':
                 $newdir = Arr::removeValue(explode('/', Request::post('param')), '');
                 $newdir = implode('/', $newdir);
@@ -369,14 +369,14 @@ if ($continue) {
                 $message = Message::render($done == $total ? Message::OK : Message::WARNING, _lang('admin.fman.msg.deleteselected.done', ['%done%' => $done, '%total%' => $total]));
                 break;
 
-                // pridani vyberu do galerie - formular pro vyber galerie
+            // pridani vyberu do galerie - formular pro vyber galerie
             case 'addtogallery_showform':
                 if (User::hasPrivilege('admingallery') && User::hasPrivilege('admincontent')) {
                     $_GET['a'] = 'addtogallery';
                 }
                 break;
 
-                // pridani vyberu do galerie - ulozeni
+            // pridani vyberu do galerie - ulozeni
             case 'addtogallery':
                 if (User::hasPrivilege('admingallery') && User::hasPrivilege('admincontent')) {
 
@@ -440,7 +440,7 @@ if ($continue) {
         // vyber akce
         switch (Request::get('a')) {
 
-                // novy adresar
+            // novy adresar
             case 'newfolder':
                 $action_submit = 'global.create';
                 $action_title = 'admin.fman.menu.createfolder';
@@ -452,7 +452,7 @@ if ($continue) {
       ';
                 break;
 
-                // odstraneni
+            // odstraneni
             case 'delete':
                 if (isset($_GET['name'])) {
                     $name = Request::get('name');
@@ -466,7 +466,7 @@ if ($continue) {
                 }
                 break;
 
-                // prejmenovani
+            // prejmenovani
             case 'rename':
                 if (isset($_GET['name'])) {
                     $name = Request::get('name');
@@ -481,7 +481,7 @@ if ($continue) {
                 }
                 break;
 
-                // uprava
+            // uprava
             case 'edit':
 
                 // priprava
@@ -533,7 +533,7 @@ if ($continue) {
 
                 break;
 
-                // upload
+            // upload
             case 'upload':
                 $action_submit = 'global.send';
                 $action_title = 'admin.fman.menu.upload';
@@ -553,7 +553,7 @@ if ($continue) {
       ';
                 break;
 
-                // addtogallery
+            // addtogallery
             case 'addtogallery':
                 $action_submit = 'global.insert';
                 $action_title = 'admin.fman.menu.addtogallery';

@@ -5,8 +5,6 @@ use Sunlight\Paginator;
 use Sunlight\Router;
 use Sunlight\Settings;
 use Sunlight\User;
-use Sunlight\Util\Arr;
-use Sunlight\Util\Form;
 
 defined('SL_ROOT') or exit;
 
