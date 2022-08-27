@@ -15,30 +15,15 @@ use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
-/* ---  priprava  --- */
-
 $message = '';
 $infopage = false;
 
-$boolSelect = function ($name, $type2 = false)
-{
-    return '
-<select name="' . $name . '">
-<option value="-1">' . (($type2 == false) ? _lang('admin.content.artfilter.f1.bool.doesntmatter') : _lang('global.nochange')) . '</option>
-<option value="1">' . _lang('admin.content.artfilter.f1.bool.mustbe') . '</option>
-<option value="0">' . _lang('admin.content.artfilter.f1.bool.mustntbe') . "</option>
-</select> \n";
-};
-
-/* ---  akce  --- */
-
+// process action
 if (isset($_POST['category'])) {
-
-    // nacteni promennych
     $category = (int) Request::post('category');
     $author = (int) Request::post('author');
     $time = Form::loadTime('time', time());
-    $ba = (int) Request::post('ba');
+    $time_op = Request::post('time_op');
     $public = (int) Request::post('public');
     $visible = (int) Request::post('visible');
     $confirmed = (int) Request::post('confirmed');
@@ -49,9 +34,7 @@ if (isset($_POST['category'])) {
     $new_author = (int) Request::post('new_author');
     $new_public = (int) Request::post('new_public');
     $new_visible = (int) Request::post('new_visible');
-    if (User::hasPrivilege('adminconfirm')) {
-        $new_confirmed = (int) Request::post('new_confirmed');
-    }
+    $new_confirmed = User::hasPrivilege('adminconfirm') ? (int) Request::post('new_confirmed') : -1;
     $new_comments = (int) Request::post('new_comments');
     $new_rateon = (int) Request::post('new_rateon');
     $new_showinfo = (int) Request::post('new_showinfo');
@@ -60,7 +43,7 @@ if (isset($_POST['category'])) {
     $new_delcomments = Form::loadCheckbox('new_delcomments');
     $new_resetread = Form::loadCheckbox('new_resetread');
 
-    // kontrola promennych
+    // check vars
     if ($new_category != -1 && DB::count('page', 'id=' . DB::val($new_category) . ' AND type=' . Page::CATEGORY) === 0) {
         $new_category = -1;
     }
@@ -68,157 +51,120 @@ if (isset($_POST['category'])) {
         $new_author = -1;
     }
 
-    // sestaveni casti sql dotazu - 'where'
-    $params = ['category', 'author', 'time', 'public', 'visible', 'confirmed', 'comments', 'rateon', 'showinfo'];
-    $cond = '';
+    // build WHERE condition
+    $cond_parts = [];
 
-    // cyklus
-    foreach ($params as $param) {
-
-        $skip = false;
-        if ($param == 'category' || $param == 'author' || $param == 'time') {
-
-            switch ($param) {
-
-                case 'category':
-                    if ($$param != '-1') {
-                        $cond .= Article::createCategoryFilter([$$param], 'art');
-                    } else {
-                        $skip = true;
-                    }
-                    break;
-
-                case 'author':
-                    if ($$param != '-1') {
-                        $cond .= 'art.' . $param . '=' . $$param;
-                    } else {
-                        $skip = true;
-                    }
-                    break;
-
-                case 'time':
-                    switch ($ba) {
-                        case 1:
-                            $operator = '>';
-                            break;
-                        case 2:
-                            $operator = '=';
-                            break;
-                        case 3:
-                            $operator = '<';
-                            break;
-                        default:
-                            $skip = true;
-                            break;
-                    }
-                    if (!$skip) {
-                        $cond .= 'art.' . $param . $operator . $$param;
-                    }
-                    break;
-
-            }
-
-        } else {
-            // boolean
-            switch ($$param) {
-                case '1':
-                    $cond .= 'art.' . $param . '=1';
-                    break;
-                case '0':
-                    $cond .= 'art.' . $param . '=0';
-                    break;
-                default:
-                    $skip = true;
-                    break;
-            }
-        }
-
-        if (!$skip) {
-            $cond .= ' AND ';
-        }
-
+    if ($category != -1) {
+        $cond_parts[] = Article::createCategoryFilter([$category], 'art');
     }
 
-    // vycisteni podminky
-    if ($cond == '') {
-        $cond = 1;
-    } else {
-        $cond = mb_substr($cond, 0, -5);
+    if ($author != -1) {
+        $cond_parts[] = 'art.author=' . DB::val($author);
     }
 
-    // vyhledani clanku
+    if (in_array($time_op, ['<', '=', '>'], true)) {
+        $cond_parts[] = 'art.time' . $time_op . DB::val($time);
+    }
+
+    foreach (compact('public', 'visible', 'confirmed', 'comments', 'rateon', 'showinfo') as $column => $value) {
+        if ($value === 0 || $value === 1) {
+            $cond_parts[] = 'art.' . $column . '=' . DB::val($value);
+        }
+    }
+
+    $cond = implode(' AND ', $cond_parts ?: ['1']);
+
+    // find articles
     $query = DB::query('SELECT art.id,art.title,art.slug,cat.slug AS cat_slug FROM ' . DB::table('article') . ' AS art JOIN ' . DB::table('page') . ' AS cat ON(cat.id=art.home1) WHERE ' . $cond);
     $found = DB::size($query);
-    if ($found != 0) {
+
+    do {
+        if ($found === 0) {
+            $message = Message::warning(_lang('admin.content.artfilter.f1.noresult'));
+            break;
+        }
+
         if (!Form::loadCheckbox('_process')) {
             $infopage = true;
-        } else {
-            $boolparams = ['public', 'visible', 'comments', 'rateon', 'showinfo'];
-            if (User::hasPrivilege('adminconfirm')) {
-                $boolparams[] = 'confirmed';
-            }
-            while ($item = DB::row($query)) {
-
-                // smazani komentaru
-                if ($new_delcomments || $new_delete) {
-                    DB::delete('post', 'type=' . Post::ARTICLE_COMMENT . ' AND home=' . $item['id']);
-                }
-
-                // smazani clanku
-                if ($new_delete) {
-                    DB::delete('article', 'id=' . $item['id']);
-                    continue;
-                }
-
-                // vynulovani hodnoceni
-                if ($new_resetrate) {
-                    DB::update('article', 'id=' . $item['id'], [
-                        'ratenum' => 0,
-                        'ratesum' => 0
-                    ]);
-                    DB::delete('iplog', 'type=' . IpLog::ARTICLE_RATED . ' AND var=' . $item['id']);
-                }
-
-                // vynulovani poctu precteni
-                if ($new_resetread) {
-                    DB::update('article', 'id=' . $item['id'], ['readnum' => 0]);
-                }
-
-                // zmena kategorie
-                if ($new_category != -1) {
-                    DB::update('article', 'id=' . $item['id'], [
-                        'home1' => $new_category,
-                        'home2' => -1,
-                        'home3' => -1
-                    ]);
-                }
-
-                // zmena autora
-                if ($new_author != -1) {
-                    DB::update('article', 'id=' . $item['id'], ['author' => $new_author]);
-                }
-
-                // konfigurace
-                $updatedata = [];
-                foreach ($boolparams as $param) {
-                    $paramvar = 'new_' . $param;
-                    $paramval = $$paramvar;
-                    if ($paramval == 0 || $paramval == 1) {
-                        $updatedata[$param] = $paramval;
-                    }
-                }
-                DB::update('article', 'id=' . $item['id'], $updatedata);
-
-            }
-            $message = Message::ok(_lang('global.done'));
+            break;
         }
-    } else {
-        $message = Message::warning(_lang('admin.content.artfilter.f1.noresult'));
-    }
 
+        while ($item = DB::row($query)) {
+            // delete comments
+            if ($new_delcomments || $new_delete) {
+                DB::delete('post', 'type=' . Post::ARTICLE_COMMENT . ' AND home=' . $item['id']);
+            }
+
+            // delete article
+            if ($new_delete) {
+                DB::delete('article', 'id=' . $item['id']);
+                continue;
+            }
+
+            // article changes
+            $changeset = [];
+
+            // reset rating
+            if ($new_resetrate) {
+
+                $changeset += ['ratenum' => 0, 'ratesum' => 0];
+                DB::delete('iplog', 'type=' . IpLog::ARTICLE_RATED . ' AND var=' . $item['id']);
+            }
+
+            // reset read counter
+            if ($new_resetread) {
+                $changeset['readnum'] = 0;
+            }
+
+            // change category
+            if ($new_category != -1) {
+                $changeset += [
+                    'home1' => $new_category,
+                    'home2' => -1,
+                    'home3' => -1
+                ];
+            }
+
+            // change author
+            if ($new_author != -1) {
+                $changeset['author'] = $new_author;
+            }
+
+            // change settings
+            $settings = [
+                'public' => $new_public,
+                'visible' => $new_visible,
+                'comments' => $new_comments,
+                'rateon' => $new_rateon,
+                'showinfo' => $new_showinfo,
+                'confirmed' => $new_confirmed,
+            ];
+
+            foreach ($settings as $column => $new_value) {
+                if ($new_value === 0 || $new_value === 1) {
+                    $changeset[$column] = $new_value;
+                }
+            }
+
+            // apply changeset
+            if (!empty($changeset)) {
+                DB::update('article', 'id=' . $item['id'], $changeset);
+            }
+        }
+
+        $message = Message::ok(_lang('global.done'));
+    } while (false);
 }
 
-/* ---  vystup  --- */
+// output
+$boolSelect = function ($name, $changing = false) {
+    return '
+<select name="' . $name . '">
+<option value="-1">' . ($changing ? _lang('global.nochange') : _lang('admin.content.artfilter.f1.bool.doesntmatter')) . '</option>
+<option value="1">' . _lang('admin.content.artfilter.f1.bool.mustbe') . '</option>
+<option value="0">' . _lang('admin.content.artfilter.f1.bool.mustntbe') . "</option>
+</select> \n";
+};
 
 $output .= $message . '
 <form action="' . _e(Router::admin('content-artfilter')) . '" method="post">
@@ -244,11 +190,11 @@ if (!$infopage) {
 <th>' . _lang('article.posted') . '</th>
 <td>
 
-<select name="ba">
-<option value="0">' . _lang('admin.content.artfilter.f1.time0') . '</option>
-<option value="1">' . _lang('admin.content.artfilter.f1.time1') . '</option>
-<option value="2">' . _lang('admin.content.artfilter.f1.time2') . '</option>
-<option value="3">' . _lang('admin.content.artfilter.f1.time3') . '</option>
+<select name="time_op">
+<option value="">' . _lang('admin.content.artfilter.f1.time.any') . '</option>
+<option value="&gt;">' . _lang('admin.content.artfilter.f1.time.gt') . '</option>
+<option value="=">' . _lang('admin.content.artfilter.f1.time.eq') . '</option>
+<option value="&lt;">' . _lang('admin.content.artfilter.f1.time.lt') . '</option>
 </select>
 
 ' . Form::editTime('time', -1) . '
