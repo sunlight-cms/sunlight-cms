@@ -123,7 +123,7 @@ abstract class Hcm
 
         ++self::$uid;
 
-        return $closure(...$args);
+        return (string) $closure(...$args);
     }
 
     /**
