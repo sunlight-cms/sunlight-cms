@@ -5,7 +5,7 @@ namespace Sunlight\Database;
 /**
  * Raw SQL value
  *
- * Bypasses {@see Database::esc()}. Use with caution.
+ * Bypasses {@see Database::val()}. Use with caution.
  */
 class RawSqlValue
 {

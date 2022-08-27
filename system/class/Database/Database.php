@@ -5,9 +5,9 @@ namespace Sunlight\Database;
 use Sunlight\Extend;
 
 /**
- * Databazova trida
- *
- * Staticky se pouziva pro praci se sytemovym pripojenim.
+ * Static database class
+ * 
+ * Manages acccess to the system database.
  */
 abstract class Database
 {
@@ -19,7 +19,7 @@ abstract class Database
     static $prefix;
 
     /**
-     * Pripojit se k MySQL serveru
+     * Connect to a MySQL server
      *
      * @throws DatabaseException on failure
      */
@@ -49,7 +49,9 @@ abstract class Database
     }
 
     /**
-     * Provest callback v databazove transakci
+     * Execute a callback in a transaction
+     * 
+     * @throws DatabaseException on failure
      */
     static function transactional(callable $callback): void
     {
@@ -81,16 +83,16 @@ abstract class Database
     }
 
     /**
-     * Vykonat SQL dotaz
+     * Run a SQL query
      *
-     * @param bool $expectError nevyhazovat vyjimku pri chybe 1/0
-     * @param bool $log vyvolat extend udalost 1/0
+     * @param bool $expectError don't throw an exception on failure 1/0
+     * @param bool $event trigger an extend event 1/0
      * @throws DatabaseException
-     * @return \mysqli_result|bool
+     * @return \mysqli_result|false
      */
-    static function query(string $sql, bool $expectError = false, bool $log = true)
+    static function query(string $sql, bool $expectError = false, bool $event = true)
     {
-        if ($log) {
+        if ($event) {
             Extend::call('db.query', ['sql' => $sql]);
         }
 
@@ -103,17 +105,17 @@ abstract class Database
 
             throw new DatabaseException(sprintf("%s\n\nSQL: %s", $e->getMessage(), $sql), 0, $e);
         } finally {
-            if ($log) {
+            if ($event) {
                 Extend::call('db.query.after', ['sql' => $sql]);
             }
         }
     }
 
     /**
-     * Vykonat SQL dotaz a vratit prvni radek
+     * Run a SQL query and return the first result
      *
-     * @param bool $expectError deaktivovat DBException v pripade chyby
-     * @return array|bool
+     * @param bool $expectError don't throw an exception on failure 1/0
+     * @return array|false
      */
     static function queryRow(string $sql, bool $expectError = false)
     {
@@ -128,13 +130,13 @@ abstract class Database
     }
 
     /**
-     * Vykonat SQL dotaz a vratit vsechny radky
+     * Run a SQL eury and return all rows
      *
-     * @param int|string|null $indexBy indexovat vysledne pole timto klicem z radku
-     * @param int|string|null $fetchColumn nacist pouze hodnotu daneho sloupce z kazdeho radku
-     * @param bool $assoc ziskat kazdy radek jako asociativni pole
-     * @param bool $expectError deaktivovat DBException v pripade chyby
-     * @return array[]|bool
+     * @param int|string|null $indexBy index the resulting array using the given column
+     * @param int|string|null $fetchColumn only fetch the given column instead of the entire row
+     * @param bool $assoc fetch rows as assoiative arrays 1/0
+     * @param bool $expectError don't throw an exception on failure 1/0
+     * @return array[]|false
      */
     static function queryRows(string $sql, $indexBy = null, $fetchColumn = null, bool $assoc = true, bool $expectError = false)
     {
@@ -149,10 +151,9 @@ abstract class Database
     }
 
     /**
-     * Spocitat pocet radku splnujici podminku
+     * Count number of rows in a table using a condition
      *
-     * @param string $table nazev tabulky (bez prefixu)
-     * @param string $where podminka
+     * @param string $table table name (no prefix)
      */
     static function count(string $table, string $where = '1'): int
     {
@@ -168,7 +169,11 @@ abstract class Database
     }
 
     /**
-     * Ziskat nazvy tabulek dle prefixu
+     * List table names by common prefix
+     *
+     * Uses system prefix if none is given.
+     *
+     * @return string[]
      */
     static function getTablesByPrefix(?string $prefix = null): array
     {
@@ -183,9 +188,9 @@ abstract class Database
     }
 
     /**
-     * Ziskat radek z dotazu
+     * Get a single row from a result
      *
-     * @return array|bool
+     * @return array|false
      */
     static function row(\mysqli_result $result)
     {
@@ -193,11 +198,11 @@ abstract class Database
     }
 
     /**
-     * Ziskat vsechny radky z dotazu
+     * Get all rows from a result
      *
-     * @param int|string|null $indexBy indexovat vysledne pole timto klicem z radku
-     * @param int|string|null $fetchColumn nacist pouze hodnotu daneho sloupce z kazdeho radku
-     * @param bool $assoc ziskat kazdy radek jako asociativni pole
+     * @param int|string|null $indexBy index the resulting array using the given column
+     * @param int|string|null $fetchColumn only fetch the given column instead of the entire row
+     * @param bool $assoc fetch rows as assoiative arrays 1/0
      * @return array[]
      */
     static function rows(\mysqli_result $result, $indexBy = null, $fetchColumn = null, bool $assoc = true): array
@@ -217,9 +222,9 @@ abstract class Database
     }
 
     /**
-     * Ziskat radek z dotazu s numerickymi klici namisto nazvu sloupcu
+     * Get a single row from a result using numeric indexes
      *
-     * @return array|bool
+     * @return array|false
      */
     static function rown(\mysqli_result $result)
     {
@@ -227,9 +232,7 @@ abstract class Database
     }
 
     /**
-     * Ziskat konkretni sloupec z prvniho radku vysledku
-     *
-     * @param int $column cislo sloupce
+     * Get a single column from the first result
      */
     static function result(\mysqli_result $result, int $column = 0)
     {
@@ -243,7 +246,7 @@ abstract class Database
     }
 
     /**
-     * Ziskat seznam nazvu sloupcu z provedeneho dotazu
+     * Get a list of columns in the given result
      */
     static function columns(\mysqli_result $result): array
     {
@@ -257,7 +260,7 @@ abstract class Database
     }
 
     /**
-     * Uvolnit vysledek dotazu
+     * Free a result
      */
     static function free(\mysqli_result $result): bool
     {
@@ -267,7 +270,7 @@ abstract class Database
     }
 
     /**
-     * Zjistit pocet radku ve vysledku
+     * Get number of rows in a result
      */
     static function size(\mysqli_result $result): int
     {
@@ -275,7 +278,7 @@ abstract class Database
     }
 
     /**
-     * Zjitit AUTO_INCREMENT ID posledniho vlozeneho radku
+     * Get AUTO_INCREMENT ID of last inserted row
      */
     static function insertID(): int
     {
@@ -283,7 +286,7 @@ abstract class Database
     }
 
     /**
-     * Zjistit pocet radku ovlivnenych poslednim dotazem
+     * Get number of rows affected by the last query
      */
     static function affectedRows(): int
     {
@@ -299,39 +302,17 @@ abstract class Database
     }
 
     /**
-     * Zpracovat hodnotu pro pouziti v dotazu
+     * Escape a string for use in a query
      *
-     * @param mixed $value hodnota
-     * @param bool $handleArray zpracovavat pole 1/0
-     * @return string|array|null
+     * This function does not add quotes - {@see Database::val()}.
      */
-    static function esc($value, bool $handleArray = false)
+    static function esc(string $value): string
     {
-        if ($value === null) {
-            return null;
-        }
-        
-        if ($handleArray && is_array($value)) {
-            foreach ($value as &$item) {
-                $item = self::esc($item);
-            }
-
-            return $value;
-        }
-        if (is_string($value)) {
-            return self::$mysqli->real_escape_string($value);
-        }
-        if (is_numeric($value)) {
-            return (0 + $value);
-        }
-
-        return self::$mysqli->real_escape_string((string) $value);
+        return self::$mysqli->real_escape_string($value);
     }
 
     /**
-     * Zpracovat hodnotu pro pouziti jako identifikator (nazev tabulky / sloupce) v dotazu
-     *
-     * @param string $identifier identifikator
+     * Escape a value to be used as an identifier (table or column name)
      */
     static function escIdt(string $identifier): string
     {
@@ -339,7 +320,7 @@ abstract class Database
     }
 
     /**
-     * Sestavit seznam identifikatoru oddeleny carkami
+     * Compose a list of identifiers separated by commas
      */
     static function idtList(array $identifiers): string
     {
@@ -358,9 +339,7 @@ abstract class Database
     }
 
     /**
-     * Escapovat specialni wildcard znaky ("%" a "_") v retezci
-     *
-     * @param string $string retezec
+     * Escape special wildcard characters in a string ("%" and "_")
      */
     static function escWildcard(string $string): string
     {
@@ -372,46 +351,33 @@ abstract class Database
     }
 
     /**
-     * Zpracovat hodnotu pro pouziti v dotazu vcetne pripadnych uvozovek
-     *
-     * @param mixed $value hodnota
-     * @param bool $handleArray zpracovavat pole 1/0
+     * Format a value to be used in a query, including quotes if necessary
      */
-    static function val($value, bool $handleArray = false): string
+    static function val($value): string
     {
-        if ($value instanceof RawSqlValue) {
-            return $value->getSql();
-        }
-        $value = self::esc($value, $handleArray);
-        if ($handleArray && is_array($value)) {
-            $out = '';
-            $itemCounter = 0;
-            foreach ($value as $item) {
-                if ($itemCounter !== 0) {
-                    $out .= ',';
-                }
-                $out .= self::val($item);
-                ++$itemCounter;
-            }
-
-            return $out;
-        }
-
-        if (is_string($value)) {
-            return '\'' . $value . '\'';
-        }
-
         if ($value === null) {
             return 'NULL';
         }
 
-        return $value;
+        if ($value instanceof RawSqlValue) {
+            return $value->getSql();
+        }
+
+        if (is_numeric($value)) {
+            $value = (0 + $value);
+
+            if (is_int($value)) {
+                return sprintf('%d', $value);
+            }
+
+            return sprintf('%.14F', $value);
+        }
+
+        return '\'' . self::esc((string) $value) . '\'';
     }
 
     /**
-     * Zpracovat hodnotu pro surove pouziti v dotazu
-     *
-     * @param string $safeSql hodnota
+     * Create a RAW sql value that will be ignored by {@see Database::val()}
      */
     static function raw(string $safeSql): RawSqlValue
     {
@@ -419,10 +385,9 @@ abstract class Database
     }
 
     /**
-     * Sestavit podminku pro ekvalitu
+     * Create an equality condition
      *
-     * @param mixed $value hodnota
-     * @return string "=<hodnota>" nebo "IS NULL"
+     * @return string "=<value>" or "IS NULL"
      */
     static function equal($value): string
     {
@@ -434,10 +399,9 @@ abstract class Database
     }
 
     /**
-     * Sestavit podminku pro neekvalitu
+     * Create a non-equality condition
      *
-     * @param mixed $value hodnota
-     * @return string "!=<hodnota>" nebo "IS NOT NULL"
+     * @return string "!=<value>" or "IS NOT NULL"
      */
     static function notEqual($value): string
     {
@@ -449,10 +413,7 @@ abstract class Database
     }
 
     /**
-     * Zpracovat pole hodnot pro pouziti v dotazu (napr. IN)
-     *
-     * @param array $arr pole
-     * @return string ve formatu a,b,c,d
+     * Format an array of values as a list of items separated by commas
      */
     static function arr(array $arr): string
     {
@@ -470,11 +431,11 @@ abstract class Database
     }
 
     /**
-     * Vlozit radek do databaze
+     * Insert a row
      *
-     * @param string $table nazev tabulky (bez prefixu)
-     * @param array $data asociativni pole s daty
-     * @param bool $getInsertId vratit insert ID 1/0
+     * @param string $table table name (no prefix)
+     * @param array<string, mixed> $data associative array with row data
+     * @param bool $getInsertId return AUTO_INCREMENT ID 1/0
      * @return bool|int
      */
     static function insert(string $table, array $data, bool $getInsertId = false)
@@ -482,19 +443,24 @@ abstract class Database
         if (empty($data)) {
             return false;
         }
+
         $counter = 0;
         $col_list = '';
         $val_list = '';
+
         foreach ($data as $col => $val) {
             if ($counter !== 0) {
                 $col_list .= ',';
                 $val_list .= ',';
             }
+
             $col_list .= self::escIdt($col);
             $val_list .= self::val($val);
             ++$counter;
         }
+
         $result = self::query('INSERT INTO ' . self::table($table) . " ({$col_list}) VALUES({$val_list})");
+
         if ($result !== false && $getInsertId) {
             return self::insertID();
         }
@@ -503,20 +469,12 @@ abstract class Database
     }
 
     /**
-     * Vlozit vice radku do databaze najednou
+     * Insert multiple rows
      *
-     * Priklad:
+     * If a column is missing in any of the rows, NULL will be used instead.
      *
-     * Database::insertMulti('tabulka', array(
-     *      array('jmeno' => 'Jan', 'prijmeni' => 'Novak'),
-     *      array('jmeno' => 'Pepa', 'prijmeni' => 'Zdepa'),
-     * ));
-     *
-     * Radky nemusi mit sloupce ve stejnem poradi ani jich mit stejny
-     * pocet (hodnota sloupce je NULL, neni-li uveden oproti ostatnim radkum)
-     *
-     * @param string $table nazev tabulky (bez prefixu)
-     * @param array $rows pole s radky, ktere se maji vlozit (kazdy radek je asociativni pole)
+     * @param string $table table name (no prefix)
+     * @param array<array<string, mixed>> $rows list of associative arrays (rows) to insert
      */
     static function insertMulti(string $table, array $rows): bool
     {
@@ -524,17 +482,18 @@ abstract class Database
             return false;
         }
 
-        // ziskat vsechny uvedene sloupce
+        // get all columns
         $columns = [];
         foreach ($rows as $row) {
             $columns += array_flip(array_keys($row));
         }
         $columns = array_keys($columns);
+
         if (empty($columns)) {
             return false;
         }
 
-        // sestavit dotaz
+        // compose query
         $sql = 'INSERT INTO ' . self::table($table) . ' (';
 
         $columnCounter = 0;
@@ -570,21 +529,23 @@ abstract class Database
     }
 
     /**
-     * Aktualizovat radky v databazi
+     * Update rows
      *
-     * @param string $table nazev tabulky (bez prefixu)
-     * @param string $cond podminka WHERE
-     * @param array $data asociativni pole se zmenami
-     * @param int|null $limit limit upravenych radku (null = bez limitu)
+     * @param string $table table name (no prefix)
+     * @param string $cond WHERE condition
+     * @param array<string, mixed> $changeset associative array with changes
+     * @param int|null $limit max number of updated rows (null = no limit)
      */
-    static function update(string $table, string $cond, array $data, ?int $limit = 1): bool
+    static function update(string $table, string $cond, array $changeset, ?int $limit = 1): bool
     {
-        if (empty($data)) {
+        if (empty($changeset)) {
             return false;
         }
+
         $counter = 0;
         $set_list = '';
-        foreach ($data as $col => $val) {
+
+        foreach ($changeset as $col => $val) {
             if ($counter !== 0) {
                 $set_list .= ',';
             }
@@ -596,13 +557,13 @@ abstract class Database
     }
 
     /**
-     * Aktualizovat radky v databazi dle seznamu identifikatoru
+     * Update rows using a list of identifiers
      *
-     * @param string $table nazev tabulky (bez prefixu)
-     * @param string $idColumn nazev sloupce, ktery obsahuje identifikator
-     * @param array $set seznam identifikatoru
-     * @param array $changeset spolecne asociativni pole se zmenami
-     * @param int $maxPerQuery maximalni pocet polozek v 1 dotazu
+     * @param string $table table name (no prefix)
+     * @param string $idColumn identifier column name
+     * @param scalar[] $set list of identifiers
+     * @param array<string, mixed> $changeset associative array with changes for all rows
+     * @param int $maxPerQuery max number of identifiers per query
      */
     static function updateSet(string $table, string $idColumn, array $set, array $changeset, int $maxPerQuery = 100): void
     {
@@ -619,14 +580,12 @@ abstract class Database
     }
 
     /**
-     * Aktualizovat radky v databazi dle mapy zmen pro kazdy radek
+     * Update rows using a map of changes
      *
-     * Pro popis formatu mapy, viz {@see Database::changesetMapToList()}
-     *
-     * @param string $table nazev tabulky (bez prefixu)
-     * @param string $idColumn nazev sloupce, ktery obsahuje identifikator
-     * @param array $changesetMap mapa zmen pro kazdy radek: array(id1 => changeset1, ...)
-     * @param int $maxPerQuery maximalni pocet polozek v 1 dotazu
+     * @param string $table table name (no prefix)
+     * @param string $idColumn identifier column name
+     * @param array<scalar, array<string, mixed>> $changesetMap map of identifiers to changesets: array(id1 => changeset1, ...)
+     * @param int $maxPerQuery max number of identifiers per query
      */
     static function updateSetMulti(string $table, string $idColumn, array $changesetMap, int $maxPerQuery = 100): void
     {
@@ -636,18 +595,10 @@ abstract class Database
     }
 
     /**
-     * Prevest asociativni mapu zmen na seznam zmen
+     * Convert a changeset map to a list of common update sets
      *
-     * Tato metoda slouci spolecne zmeny dohromady.
-     *
-     * Format mapy zmen:
-     *
-     *      array(
-     *          id1 => array(sloupec1 => novahodnota1, ...),
-     *          ...
-     *      )
-     *
-     * @return array[] pole poli s klici "set" a "changeset"
+     * @param array<scalar, array<string, mixed>> $changesetMap array(id1 => changeset1, ...)
+     * @return array<array{set: array, changeset: array}>
      */
     static function changesetMapToList(array $changesetMap): array
     {
@@ -688,10 +639,10 @@ abstract class Database
     }
 
     /**
-     * Smazat radky v databazi
+     * Delete rows
      *
-     * @param string $table nazev tabulky (bez prefixu)
-     * @param string $cond podminka WHERE
+     * @param string $table table name (no prefix)
+     * @param string $cond WHERE condition
      */
     static function delete(string $table, string $cond): bool
     {
@@ -699,27 +650,27 @@ abstract class Database
     }
 
     /**
-     * Smazat radku v databazi dle seznamu identifikatoru
+     * Delete rows using a list of identifiers
      *
-     * @param string $table nazev tabulky (bez prefixu)
-     * @param string $column nazev sloupce, ktery obsahuje identifikator
-     * @param array $set seznam identifikatoru
-     * @param int $maxPerQuery maximalni pocet polozek v 1 dotazu
+     * @param string $table table name (no prefix)
+     * @param string $idColumn identifier column name
+     * @param scalar[] $set list of identifiers
+     * @param int $maxPerQuery max number of identifiers per query
      */
-    static function deleteSet(string $table, string $column, array $set, int $maxPerQuery = 100): void
+    static function deleteSet(string $table, string $idColumn, array $set, int $maxPerQuery = 100): void
     {
         if (!empty($set)) {
             foreach (array_chunk($set, $maxPerQuery) as $chunk) {
-                self::query('DELETE FROM ' . self::table($table) . ' WHERE ' . self::escIdt($column) . ' IN(' . self::arr($chunk) . ')');
+                self::query('DELETE FROM ' . self::table($table) . ' WHERE ' . self::escIdt($idColumn) . ' IN(' . self::arr($chunk) . ')');
             }
         }
     }
 
     /**
-     * Formatovat datum a cas
+     * Format date and time
      *
-     * @param int|null $timestamp timestamp (null = time())
-     * @return string YY-MM-DD HH:MM:SS (bez uvozovek)
+     * @param int|null $timestamp timestamp or null (= current time)
+     * @return string YY-MM-DD HH:MM:SS (no quotes)
      */
     static function datetime(?int $timestamp = null): string
     {
@@ -727,10 +678,10 @@ abstract class Database
     }
 
     /**
-     * Formatovat datum
+     * Format date
      *
-     * @param int|null $timestamp timestamp (null = time())
-     * @return string YY-MM-DD (bez uvozovek)
+     * @param int|null $timestamp timestamp or null (= current date)
+     * @return string YY-MM-DD (no quotes)
      */
     static function date(?int $timestamp = null): string
     {
