@@ -24,9 +24,11 @@ $_index->title = $_page['title'];
 
 // content
 Extend::call('page.forum.content.before', $extend_args);
+
 if ($_page['content'] != '') {
     $output .= Hcm::parse($_page['content']);
 }
+
 Extend::call('page.forum.content.after', $extend_args);
 
 // topics

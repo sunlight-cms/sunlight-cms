@@ -17,6 +17,7 @@ defined('SL_ROOT') or exit;
 
 // load article
 $_article = Article::find($_index->segment, $_page['id']);
+
 if ($_article === false) {
     $_index->notFound();
     return;
@@ -56,15 +57,19 @@ if (!$continue) {
 // navigation
 if ($_article['visible']) {
     $output .= '<div class="article-navigation"><span>' . _lang('article.category') . ': </span>';
+
     for ($i = 1; $i <= 3; ++$i) {
         if ($_article["cat{$i}_id"] === null) {
             continue;
         }
+
         if ($i > 1) {
             $output .= ', ';
         }
+
         $output .= '<a href="' . _e(Router::page($_article["cat{$i}_id"], $_article["cat{$i}_slug"])) . '">' . $_article["cat{$i}_title"] . '</a>';
     }
+
     $output .= "</div>\n";
 }
 
@@ -110,6 +115,7 @@ if ($_article['rateon'] && Settings::get('ratemode') != 0) {
             // mark
             $rate = round(-0.04 * ($_article['ratesum'] / $_article['ratenum']) + 5);
         }
+
         $rate .= ' (' . _lang('article.rate.num') . ' ' . $_article['ratenum'] . 'x)';
     } else {
         $rate = _lang('article.rate.nodata');
@@ -120,6 +126,7 @@ if ($_article['rateon'] && Settings::get('ratemode') != 0) {
 
 // rate form
 $rateform = null;
+
 if ($_article['rateon'] && Settings::get('ratemode') != 0 && User::hasPrivilege('artrate') && IpLog::check(IpLog::ARTICLE_RATED, $_article['id'])) {
     $rateform = '
 <strong>' . _lang('article.rate.title') . ':</strong>
@@ -130,23 +137,29 @@ if ($_article['rateon'] && Settings::get('ratemode') != 0 && User::hasPrivilege(
     if (Settings::get('ratemode') == 1) {
         // percentage
         $rateform .= "<select name=\"r\">\n";
+
         for ($x = 0; $x <= 100; $x += 10) {
             if ($x == 50) {
                 $selected = ' selected';
             } else {
                 $selected = '';
             }
+
             $rateform .= '<option value="' . $x . '"' . $selected . '>' . $x . "%</option>\n";
         }
+
         $rateform .= "</select> \n<input type=\"submit\" value=\"" . _lang('article.rate.submit') . '">' ;
     } else {
         // marks
         $rateform .= "<table class=\"article-rating\">\n";
+
         for ($i = 0; $i < 2; $i++) {
             $rateform .= '<tr class="r' . $i. "\">\n";
+
             if ($i == 0) {
                 $rateform .= '<td rowspan="2"><img src="' . Template::image('icons/rate-good.png') . "\" alt=\"good\" class=\"icon\"></td>\n";
             }
+
             for ($x = 1; $x < 6; $x++) {
                 if ($i == 0) {
                     $rateform .= '<td><input type="radio" name="r" value="' . ((5 - $x) * 25) . "\"️></td>\n";
@@ -154,11 +167,14 @@ if ($_article['rateon'] && Settings::get('ratemode') != 0 && User::hasPrivilege(
                     $rateform .= '<td>' . $x . "</td>\n";
                 }
             }
+
             if ($i == 0) {
                 $rateform .= '<td rowspan="2"><img src="' . Template::image('icons/rate-bad.png') . "\"️ alt=\"️bad\"️ class=\"️icon\"️></td>\n";
             }
+
             $rateform .= "</tr>\n";
         }
+
         $rateform .= '
 <tr><td colspan="7"><input type="submit" value="' . _lang('article.rate.submit') . '"></td></tr>
 </table>
@@ -194,9 +210,11 @@ if ($rateform !== null || !empty($infos)) {
 
 // comments
 Extend::call('article.comments.before', $extend_args);
+
 if ($_article['comments'] && Settings::get('comments')) {
     $output .= PostService::renderList(PostService::RENDER_ARTICLE_COMMENTS, $_article['id'], $_article['commentslocked']);
 }
+
 Extend::call('article.comments.after', $extend_args);
 
 // count view

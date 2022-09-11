@@ -77,6 +77,7 @@ class Password
         if (!is_string($plainPassword)) {
             throw new \InvalidArgumentException('Password must be a string');
         }
+
         if ($plainPassword === '') {
             throw new \InvalidArgumentException('Password must not be empty');
         }

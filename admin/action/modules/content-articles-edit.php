@@ -22,19 +22,25 @@ defined('SL_ROOT') or exit;
 
 $message = '';
 $continue = false;
+
 if (isset($_GET['id'], $_GET['returnid'], $_GET['returnpage'])) {
     $id = (int) Request::get('id');
     $returnid = Request::get('returnid');
+
     if ($returnid != 'load') {
         $returnid = (int) $returnid;
     }
+
     $returnpage = (int) Request::get('returnpage');
     $query = DB::queryRow('SELECT art.*,cat.slug AS cat_slug FROM ' . DB::table('article') . ' AS art JOIN ' . DB::table('page') . ' AS cat ON(cat.id=art.home1) WHERE art.id=' . $id . Admin::articleAccess('art'));
+
     if ($query !== false) {
         $read_counter = $query['readnum'];
+
         if ($returnid == 'load') {
             $returnid = $query['home1'];
         }
+
         $backlink = Router::admin('content-articles-list', ['query' => ['cat' => $returnid, 'page' => $returnpage]]);
         $actionplus = ['query' => ['id' => $id, 'returnid' => $returnid, 'returnpage' => $returnpage]];
         $submittext = 'global.savechanges';
@@ -73,9 +79,11 @@ if (isset($_GET['id'], $_GET['returnid'], $_GET['returnpage'])) {
         'readnum' => 0,
     ];
     Extend::call('admin.article.default', ['data' => &$query]);
+
     if (isset($_GET['new_cat'])) {
         $query['home1'] = (int) Request::get('new_cat');
     }
+
     $continue = true;
 }
 
@@ -93,20 +101,24 @@ if (isset($_POST['title'])) {
     $newdata['home1'] = (int) Request::post('home1');
     $newdata['home2'] = (int) Request::post('home2');
     $newdata['home3'] = (int) Request::post('home3');
+
     if (User::hasPrivilege('adminchangeartauthor')) {
         $newdata['author'] = (int) Request::post('author');
     } else {
         $newdata['author'] = $query['author'];
     }
+
     $newdata['perex'] = Request::post('perex');
     $newdata['content'] = User::filterContent(Request::post('content'));
     $newdata['public'] = Form::loadCheckbox('public');
     $newdata['visible'] = Form::loadCheckbox('visible');
+
     if (User::hasPrivilege('adminconfirm') || (User::hasPrivilege('adminautoconfirm') && User::equals($newdata['author']))) {
         $newdata['confirmed'] = Form::loadCheckbox('confirmed');
     } else {
         $newdata['confirmed'] = $query['confirmed'];
     }
+
     $newdata['comments'] = Form::loadCheckbox('comments');
     $newdata['commentslocked'] = Form::loadCheckbox('commentslocked');
     $newdata['rateon'] = Form::loadCheckbox('rateon');
@@ -131,6 +143,7 @@ if (isset($_POST['title'])) {
 
     // category
     $homechecks = ['home1', 'home2', 'home2'];
+
     foreach ($homechecks as $homecheck) {
         if ($newdata[$homecheck] != -1 || $homecheck == 'home1') {
             if (DB::count('page', 'type=' . Page::CATEGORY . ' AND id=' . DB::val($newdata[$homecheck])) === 0) {
@@ -143,6 +156,7 @@ if (isset($_POST['title'])) {
     if ($newdata['home1'] == $newdata['home2']) {
         $newdata['home2'] = -1;
     }
+
     if ($newdata['home2'] == $newdata['home3'] || $newdata['home1'] == $newdata['home3']) {
         $newdata['home3'] = -1;
     }
@@ -154,6 +168,7 @@ if (isset($_POST['title'])) {
 
     // image
     $newdata['picture_uid'] = $query['picture_uid'];
+
     if (empty($error_log) && isset($_FILES['picture']) && is_uploaded_file($_FILES['picture']['tmp_name'])) {
         // prepare resize options
         $picOpts = [
@@ -180,6 +195,7 @@ if (isset($_POST['title'])) {
                 // delete old image
                 Article::removeImage($query['picture_uid']);
             }
+
             $newdata['picture_uid'] = $pic_uid;
         } else {
             // error
@@ -283,6 +299,7 @@ if ($continue) {
     if (isset($_GET['saved'])) {
         $message = Message::ok(_lang('global.saved') . ' <small>(' . GenericTemplates::renderTime(time()) . ')</small>', true);
     }
+
     if (isset($_GET['created'])) {
         $message = Message::ok(_lang('global.created'));
     }
@@ -300,12 +317,14 @@ if ($continue) {
 
     // image
     $picture = '';
+
     if (isset($query['picture_uid'])) {
         $picture .= '<img src="' . _e(Router::file(Article::getImagePath($query['picture_uid']))) . '" alt="article picture" id="is-picture-file">
 <label id="is-picture-delete"><input type="checkbox" name="picture-delete" value="1"> ' . _lang('global.delete') . '</label>';
     } else {
         $picture .= '<img src="' . _e(Router::path('admin/images/art-no-pic.png')) . "\" alt=\"no picture\" id=\"is-picture-file\">\n";
     }
+
     $picture .= "<input type=\"file\" name=\"picture\" id=\"is-picture-upload\">\n";
 
     // content editor

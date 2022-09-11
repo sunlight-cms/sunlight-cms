@@ -13,12 +13,15 @@ defined('SL_ROOT') or exit;
 if ($_page['var1'] === null) {
     $_page['var1'] = Settings::get('galdefault_per_row');
 }
+
 if ($_page['var2'] === null) {
     $_page['var2'] = Settings::get('galdefault_per_page');
 }
+
 if ($_page['var3'] === null) {
     $_page['var3'] = Settings::get('galdefault_thumb_h');
 }
+
 if ($_page['var4'] === null) {
     $_page['var4'] = Settings::get('galdefault_thumb_w');
 }
@@ -28,6 +31,7 @@ $_index->title = $_page['title'];
 
 // content
 Extend::call('page.gallery.content.before', $extend_args);
+
 if ($_page['content'] != '') $output .= Hcm::parse($_page['content']) . "\n\n<div class=\"hr gallery-hr\"><hr></div>\n\n";
 Extend::call('page.gallery.content.after', $extend_args);
 
@@ -38,9 +42,11 @@ $images_number = DB::size($images);
 
 if ($images_number != 0) {
     $usetable = $_page['var1'] != -1;
+
     if (Paginator::atTop()) {
         $output .= $paging['paging'];
     }
+
     if ($usetable) {
         $output .= "<table class=\"gallery\">\n";
     } else {
@@ -50,6 +56,7 @@ if ($images_number != 0) {
     // images
     $counter = 0;
     $cell_counter = 0;
+
     while ($img = DB::row($images)) {
         if ($usetable && $cell_counter == 0) {
             $output .= "<tr>\n";
@@ -67,10 +74,12 @@ if ($images_number != 0) {
         }
 
         $cell_counter++;
+
         if ($usetable && ($cell_counter == $_page['var1'] || $counter == $images_number - 1)) {
             $cell_counter = 0;
             $output .= "\n</tr>";
         }
+
         $output .= "\n";
         $counter++;
     }
@@ -80,6 +89,7 @@ if ($images_number != 0) {
     } else {
         $output .= '</div>';
     }
+
     if (Paginator::atBottom()) {
         $output .= $paging['paging'];
     }

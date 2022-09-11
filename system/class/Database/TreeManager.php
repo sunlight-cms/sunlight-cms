@@ -57,6 +57,7 @@ class TreeManager
         if (array_key_exists($this->levelColumn, $data) || array_key_exists($this->depthColumn, $data)) {
             throw new \InvalidArgumentException(sprintf('Columns "%s" and "%s" cannot be specified manually', $this->levelColumn, $this->depthColumn));
         }
+
         $data += [
             $this->parentColumn => null,
             $this->levelColumn => 0,
@@ -64,6 +65,7 @@ class TreeManager
         ];
 
         $nodeId = DB::insert($this->table, $data, true);
+
         if ($refresh) {
             $this->doRefresh($nodeId);
         }
@@ -82,8 +84,10 @@ class TreeManager
 
         // check parent
         $hasNewParent = array_key_exists($this->parentColumn, $changeset);
+
         if ($hasNewParent) {
             $newParent = $changeset[$this->parentColumn];
+
             if (!$this->checkParent($nodeId, $newParent)) {
                 throw new \RuntimeException(sprintf('Node "%s" is not a valid parent node for "%s"', $changeset[$this->parentColumn], $nodeId));
             }
@@ -107,8 +111,10 @@ class TreeManager
             $children = $this->getChildren($nodeId);
             $this->deleteSet($this->idColumn, $children);
         }
+
         $rootNodeId = $this->getRoot($nodeId);
         DB::delete($this->table, $this->idColumn . '=' . DB::val($nodeId));
+
         if ($nodeId != $rootNodeId) {
             $this->doRefreshDepth($rootNodeId, true);
         }
@@ -158,6 +164,7 @@ class TreeManager
                 // delete node nad direct children
                 DB::delete($this->table, $this->idColumn . '=' . DB::val($row[$this->idColumn]) . ' OR ' . $this->parentColumn . '=' . DB::val($row[$this->parentColumn]));
             }
+
             DB::free($orphaned);
         } while ($orphanedCount > 0);
 
@@ -188,12 +195,14 @@ class TreeManager
             
             // call propagator of current context
             $changeset = $propagator($context, $node);
+
             if ($changeset !== null) {
                 $changesetMap[$node[$this->idColumn]] = $changeset;
             }
 
             // call context updater (for children)
             $newContext = $contextUpdater($context, $node, $changeset);
+
             if ($newContext !== null) {
                 $stack[] = [$context, $contextLevel];
                 $context = $newContext;
@@ -217,19 +226,24 @@ class TreeManager
     {
         $level = 0;
         $parents = [];
+
         if ($nodeId === null) {
             return 0;
         }
+
         do {
             $node = DB::queryRow('SELECT ' . $this->parentColumn . ' FROM ' . DB::table($this->table) . ' WHERE ' . $this->idColumn . '=' . DB::val($nodeId));
+
             if ($node === false) {
                 throw new \RuntimeException(sprintf('Node "%s" does not exist', $nodeId));
             }
 
             $hasParent = ($node[$this->parentColumn] !== null);
+
             if ($hasParent) {
                 $nodeId = $node[$this->parentColumn];
                 $parents[] = $nodeId;
+
                 if (++$level > 200) {
                     throw new \RuntimeException(sprintf('Limit of 200 nesting levels reached near node "%s" - recursive database data?', $node[$this->parentColumn]));
                 }
@@ -266,6 +280,7 @@ class TreeManager
             if ($emptyArrayOnFailure) {
                 return [];
             }
+
             throw new \RuntimeException(sprintf('Node "%s" does not exist', $nodeId));
         }
 
@@ -276,15 +291,18 @@ class TreeManager
 
         // compose query
         $sql = 'SELECT ';
+
         for ($i = 0; $i < $node[$this->depthColumn]; ++$i) {
             if ($i !== 0) {
                 $sql .= ',';
             }
+
             $sql .= 'n' . $i . '.id';
         }
 
         $sql .= ' FROM ' . DB::table($this->table) . ' r';
         $parentAlias = 'r';
+
         for ($i = 0; $i < $node[$this->depthColumn]; ++$i) {
             $nodeAlias = 'n' . $i;
             $sql .= sprintf(
@@ -297,16 +315,19 @@ class TreeManager
             );
             $parentAlias = $nodeAlias;
         }
+
         $sql .= ' WHERE r.' . $this->idColumn . '=' . DB::val($nodeId);
 
         // load children
         $query = DB::query($sql);
         $childrenMap = [];
+
         while ($row = DB::rown($query)) {
             for ($i = 0; isset($row[$i]); ++$i) {
                 $childrenMap[$row[$i]] = true;
             }
         }
+
         DB::free($query);
 
         return array_keys($childrenMap);
@@ -329,6 +350,7 @@ class TreeManager
             ],
         ];
         $levelset = [];
+
         if ($currentNodeId !== null) {
             $levelset[$currentNodeLevel] = [$currentNodeId => true];
         }
@@ -343,14 +365,18 @@ class TreeManager
                 $childCondition = $this->parentColumn . ' IS NULL';
                 $childrenLevel = 0;
             }
+
             $children = DB::query('SELECT ' . $this->idColumn . ',' . $this->levelColumn . ' FROM ' . DB::table($this->table) . ' WHERE ' . $childCondition);
+
             while ($child = DB::row($children)) {
                 if ($childrenLevel != $child[$this->levelColumn]) {
                     if (isset($levelset[$childrenLevel][$child[$this->idColumn]])) {
                         throw new \RuntimeException(sprintf('Recursive dependency on node "%s"', $child[$this->idColumn]));
                     }
+
                     $levelset[$childrenLevel][$child[$this->idColumn]] = true;
                 }
+
                 $queue[] = [$child[$this->idColumn], $childrenLevel];
             }
 
@@ -365,9 +391,11 @@ class TreeManager
 
         // update depth of whole branch
         $topNodeId = end($currentNodeParents);
+
         if ($topNodeId === false) {
             $topNodeId = $currentNodeId;
         }
+
         $this->doRefreshDepth($topNodeId, true);
     }
 
@@ -378,6 +406,7 @@ class TreeManager
     {
         // determine root node
         $rootNodeId = $currentNodeId;
+
         if ($isRootNode !== true && $currentNodeId !== null) {
             $rootNodeId = $this->getRoot($currentNodeId);
         }
@@ -400,7 +429,9 @@ class TreeManager
             } else {
                 $childCondition = $this->parentColumn . ' IS NULL';
             }
+
             $children = DB::query('SELECT ' . $this->idColumn . ',' . $this->depthColumn . ' FROM ' . DB::table($this->table) . ' WHERE ' . $childCondition);
+
             if (DB::size($children) > 0) {
                 // node has children, add to queue
                 if ($queue[$i][0] !== null) {
@@ -413,23 +444,28 @@ class TreeManager
                     $queue[] = [$child[$this->idColumn], $child[$this->depthColumn], $childParents];
                 }
             }
+
             DB::free($children);
 
             // update depth of parent nodes
             if ($queue[$i][0] !== null && !isset($depthmap[$queue[$i][0]])) {
                 $depthmap[$queue[$i][0]] = 0;
             }
+
             for ($j = 0; isset($queue[$i][2][$j]); ++$j) {
                 $currentDepth = $j + 1;
+
                 if (!isset($depthmap[$queue[$i][2][$j]]) || $depthmap[$queue[$i][2][$j]] < $currentDepth) {
                     $depthmap[$queue[$i][2][$j]] = $currentDepth;
                 }
             }
+
             unset($queue[$i]);
         }
 
         // convert depth map to sets
         $depthsets = [];
+
         foreach ($depthmap as $nodeId => $newDepth) {
             $depthsets[$newDepth][] = $nodeId;
         }

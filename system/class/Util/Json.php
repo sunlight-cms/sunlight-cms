@@ -25,9 +25,11 @@ abstract class Json
         if ($pretty) {
             $options |= JSON_PRETTY_PRINT;
         }
+
         if (!$escapedSlashes) {
             $options |= JSON_UNESCAPED_SLASHES;
         }
+
         if (!$escapedUnicode) {
             $options |= JSON_UNESCAPED_UNICODE;
         }

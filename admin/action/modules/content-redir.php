@@ -24,6 +24,7 @@ $output .= '<p class="bborder">' . _lang('admin.content.redir.p') . '</p>
 if (isset($_GET['new']) || isset($_GET['edit'])) {
     do {
         $new = isset($_GET['new']);
+
         if (!$new) {
             $edit_id = (int) Request::get('edit');
         }
@@ -57,9 +58,11 @@ if (isset($_GET['new']) || isset($_GET['edit'])) {
             if (!isset($q)) {
                 $q = [];
             }
+
             $q += ['id' => null, 'old' => '', 'new' => '', 'permanent' => '0', 'active' => '1'];
         } else {
             $q = DB::queryRow('SELECT * FROM ' . DB::table('redirect') . ' WHERE id=' . $edit_id);
+
             if ($q === false) {
                 break;
             }
@@ -133,6 +136,7 @@ $output .= '<table class="list list-hover list-max">
 // list
 $counter = 0;
 $q = DB::query('SELECT * FROM ' . DB::table('redirect'));
+
 while ($r = DB::row($q)) {
     $output .= '<tr>
         <td><code>' . $r['old'] . '</code></td>

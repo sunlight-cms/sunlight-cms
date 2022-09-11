@@ -28,11 +28,13 @@ $renderPluginAuthor = function ($author, $url) {
     if (!empty($url)) {
         $output .= '<a href="' . _e($url) . '" target="_blank">';
     }
+
     if (!empty($author)) {
         $output .= _e($author);
     } elseif (!empty($url)) {
         $output .= _e(parse_url($url, PHP_URL_HOST) ?? '');
     }
+
     if (!empty($url)) {
         $output .= '</a>';
     }

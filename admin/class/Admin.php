@@ -25,6 +25,7 @@ abstract class Admin
         global $_admin;
 
         $output = "<div id=\"menu\">\n";
+
         if ($_admin->access) {
             foreach ($_admin->menu as $module => $order) {
                 if (self::moduleAccess($module)) {
@@ -42,6 +43,7 @@ abstract class Admin
         } else {
             $output .= '<a href="' . _e(Router::adminIndex()) . '" class="act"><span>' . _lang('login.title') . "</span></a>\n";
         }
+
         $output .= "</div>\n";
 
         return $output;
@@ -53,27 +55,35 @@ abstract class Admin
     static function userMenu(bool $dark): string
     {
         $output = '<span id="usermenu">';
+
         if (User::isLoggedIn() && User::hasPrivilege('administration')) {
             $profile_link = Router::module('profile', ['query' => ['id' => User::getUsername()]]);
             $avatar = User::renderAvatar(User::$data, ['get_url' => true, 'default' => false, 'default_dark' => $dark]);
+
             if ($avatar !== null) {
                 $output .= '<a id="usermenu-avatar" href="' . _e($profile_link) . '"><img src="' . $avatar . '" alt="' . User::getUsername() . '"></a>';
             }
+
             $output .= '<a id="usermenu-username" href="' . _e($profile_link) . '">' . User::getDisplayName() . '</a> [';
+
             if (Settings::get('messages')) {
                 $messages_count = DB::count('pm', '(receiver=' . User::getId() . ' AND receiver_deleted=0 AND receiver_readtime<update_time) OR (sender=' . User::getId() . ' AND sender_deleted=0 AND sender_readtime<update_time)');
+
                 if ($messages_count != 0) {
                     $messages_count = ' <span class="highlight">(' . $messages_count . ')</span>';
                 } else {
                     $messages_count = '';
                 }
+
                 $output .= '<a href="' . _e(Router::module('messages')) . '">' . _lang('usermenu.messages') . $messages_count . '</a>, ';
             }
+
             $output .= '<a href="' . _e(Router::module('settings')) . '">' . _lang('usermenu.settings') . '</a>, <a href="' . _e(Xsrf::addToUrl(Router::path('system/script/logout.php', ['query' => ['_return' => Router::adminIndex()]]))) . '">' . _lang('usermenu.logout') . '</a>]';
             $output .= '<a href="' . _e(Core::getBaseUrl()->getPath()) . '/" target="_blank" class="usermenu-web-link" title="' . _lang('admin.link.site') . '"><img class="icon" src="' . _e(Router::path('admin/images/icons/guide.png')) . '" alt="' . _lang('admin.link.site') . '"></a>';
         } else {
             $output .= '<a href="' . _e(Router::adminIndex()) . '">' . _lang('usermenu.guest') . '</a>';
         }
+
         $output .= '</span>';
 
         return $output;
@@ -140,6 +150,7 @@ abstract class Admin
         if ($alias !== '') {
             $alias .= '.';
         }
+
         if (User::hasPrivilege('adminallart')) {
             return ' AND (' . $alias . 'author=' . User::getId() . ' OR (SELECT level FROM ' . DB::table('user_group') . ' WHERE id=(SELECT group_id FROM ' . DB::table('user') . ' WHERE id=' . (($alias === '') ? DB::table('article') . '.' : $alias) . 'author))<' . User::getLevel() . ')';
         }
@@ -158,25 +169,32 @@ abstract class Admin
 
         // class
         $class = '';
+
         if ($art['visible'] == 0 && $art['public'] == 1) {
             $class = ' class="invisible"';
         }
+
         if ($art['visible'] == 1 && $art['public'] == 0) {
             $class = ' class="notpublic"';
         }
+
         if ($art['visible'] == 0 && $art['public'] == 0) {
             $class = ' class="invisible-notpublic"';
         }
 
         // link
         $output .= '<a href="' . _e(Router::article($art['id'], $art['slug'], $art['cat_slug'])) . '" target="_blank"' . $class . '>';
+
         if ($art['time'] <= time()) {
             $output .= '<strong>';
         }
+
         $output .= $art['title'];
+
         if ($art['time'] <= time()) {
             $output .= '</strong>';
         }
+
         $output .= '</a>';
 
         // confirmation note
@@ -246,6 +264,7 @@ abstract class Admin
         }
 
         $disabledBranchLevel = null;
+
         foreach ($tree as $page) {
             // filter disabled branches
             if ($disabledBranchLevel === null) {
@@ -308,24 +327,30 @@ abstract class Admin
         } else {
             $class = '';
         }
+
         if ($multiple != null) {
             $multiple = ' multiple size="' . $multiple . '"';
             $name .= '[]';
         } else {
             $multiple = '';
         }
+
         $output = '<select name="' . $name . '"' . $class . $multiple . '>';
         $query = DB::query('SELECT id,title,level FROM ' . DB::table('user_group') . ' WHERE ' . $groupCond . ' AND id!=' . User::GUEST_GROUP_ID . ' ORDER BY level DESC');
+
         if ($extraOption != null) {
             $output .= '<option value="-1" class="special">' . $extraOption . '</option>';
         }
 
         $containsSelected = false;
+
         if (!$selectGroups) {
             while ($item = DB::row($query)) {
                 $users = DB::query('SELECT id,username,publicname FROM ' . DB::table('user') . ' WHERE group_id=' . $item['id'] . ' AND (' . $item['level'] . '<' . User::getLevel() . ' OR id=' . User::getId() . ') ORDER BY id');
+
                 if (DB::size($users) != 0) {
                     $output .= '<optgroup label="' . $item['title'] . '">' ;
+
                     while ($user = DB::row($users)) {
                         if ($selected == $user['id']) {
                             $sel = ' selected';
@@ -333,13 +358,17 @@ abstract class Admin
                         } else {
                             $sel = '';
                         }
+
                         $output .= '<option value="' . $user['id'] . '"' . $sel . '>' . ($user['publicname'] ?? $user['username']) . "</option>\n";
                     }
+
                     $output .= '</optgroup>';
                 }
             }
+
             if (!$containsSelected) {
                 $selectedUser = DB::queryRow('SELECT u.id, u.username, u.publicname, g.title as grouptitle FROM ' . DB::table('user') . ' AS u JOIN ' . DB::table('user_group') . ' AS g ON(u.group_id=g.id) WHERE u.id = ' . $selected);
+
                 if ($selectedUser !== false) {
                     $output .= '<optgroup label="' . $selectedUser['grouptitle'] . '">' ;
                     $output .= '<option value="' . $selectedUser['id'] . '" selected>' . ($selectedUser['publicname'] ?? $selectedUser['username']) . "</option>\n";
@@ -354,10 +383,13 @@ abstract class Admin
                 } else {
                     $sel = '';
                 }
+
                 $output .= '<option value="' . $item['id'] . '"' . $sel . '>' . $item['title'] . ' (' . DB::count('user', 'group_id=' . $item['id']) . ")</option>\n";
             }
+
             if (!$containsSelected) {
                 $selectedGroup = DB::queryRow('SELECT id,title FROM ' . DB::table('user_group') . ' WHERE id=' . $selected);
+
                 if ($selectedGroup !== false) {
                     $output .= '<option value="' . $selectedGroup['id'] . '" selected>' . $selectedGroup['title'] . ' (' . DB::count('user', 'group_id=' . $selectedGroup['id']) . ")</option>\n";
                 }
@@ -387,6 +419,7 @@ abstract class Admin
 
         foreach (Core::$pluginManager->getPlugins()->getTemplates() as $template) {
             $output .= '<optgroup label="' . _e($template->getOption('name')) . "\">\n";
+
             foreach ($template->getLayouts() as $layout) {
                 $layoutUid = TemplateService::composeUid($template, $layout);
                 $layoutLabel = TemplateService::getComponentLabel($template, $layout);
@@ -397,6 +430,7 @@ abstract class Admin
                     . _e($layoutLabel)
                     . "</option>\n";
             }
+
             $output .= "</optgroup>\n";
         }
 
@@ -426,6 +460,7 @@ abstract class Admin
 
         foreach ($templates as $template) {
             $output .= '<optgroup label="' . _e($template->getOption('name')) . "\">\n";
+
             foreach ($template->getLayouts() as $layout) {
                 foreach ($template->getSlots($layout) as $slot) {
                     $slotUid = TemplateService::composeUid($template, $layout, $slot);
@@ -436,6 +471,7 @@ abstract class Admin
                         . "</option>\n";
                 }
             }
+
             $output .= "</optgroup>\n";
         }
 
@@ -451,20 +487,24 @@ abstract class Admin
     {
         // prepare value
         $value = trim($value);
+
         if ($value === '') {
             // empty value
             return $default;
         }
+
         if ($value[0] !== '#') {
             $value = '#' . $value;
         }
 
         // extract hex part
         $hex = substr($value, 1);
+
         if (!ctype_xdigit($hex)) {
             // invalid characters
             return $default;
         }
+
         $hexLen = strlen($hex);
 
         // process
@@ -472,6 +512,7 @@ abstract class Admin
             // short version
             if ($expand) {
                 $output = '#';
+
                 for ($i = 0; $i < $hexLen; ++$i) {
                     $output .= str_repeat($hex[$i], 2);
                 }
@@ -499,6 +540,7 @@ abstract class Admin
     static function deleteGalleryStorage(string $sql_cond): void
     {
         $result = DB::query('SELECT full,(SELECT COUNT(*) FROM ' . DB::table('gallery_image') . ' WHERE full=toptable.full) AS counter FROM ' . DB::table('gallery_image') . ' AS toptable WHERE in_storage=1 AND (' . $sql_cond . ') HAVING counter=1');
+
         while ($r = DB::row($result)) {
             @unlink(SL_ROOT . $r['full']);
         }
@@ -511,6 +553,7 @@ abstract class Admin
         Extend::call('admin.wysiwyg', ['available' => &$wysiwygAvailable]);
 
         $styleOptions = ['query' => ['s' => $scheme]];
+
         if ($dark) {
             $styleOptions['query']['d'] = 1;
         }

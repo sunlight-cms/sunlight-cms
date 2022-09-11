@@ -18,6 +18,7 @@ $message = '';
 if (isset($_GET['del']) && Xsrf::check(true)) {
     $del = (int) Request::get('del');
     DB::query('DELETE FROM p USING ' . DB::table('poll') . ' AS p WHERE p.id=' . $del . Admin::pollAccess());
+
     if (DB::affectedRows() != 0) {
         $message = Message::ok(_lang('global.done'));
     }
@@ -62,6 +63,7 @@ $output .= $message . '
 // list polls
 $userQuery = User::createQuery('p.author');
 $query = DB::query('SELECT p.id,p.question,p.locked,' . $userQuery['column_list'] . ' FROM ' . DB::table('poll') . ' p ' . $userQuery['joins'] . ' WHERE ' . $author_filter . Admin::pollAccess($pasep) . ' ORDER BY p.id DESC ' . $paging['sql_limit']);
+
 if (DB::size($query) != 0) {
     while ($item = DB::row($query)) {
         if (User::hasPrivilege('adminpollall')) {
@@ -69,6 +71,7 @@ if (DB::size($query) != 0) {
         } else {
             $username = '';
         }
+
         $output .= '<tr>'
             . '<td>' . StringManipulator::ellipsis($item['question'], 64) . (($item['locked'] == 1) ? ' (' . _lang('admin.content.form.locked') . ')' : '') . '</td>'
             . $username

@@ -126,10 +126,13 @@ abstract class Page
     {
         // basic query
         $sql = 'SELECT page.*';
+
         if ($extra_columns !== null) {
             $sql .= ',' . $extra_columns;
         }
+
         $sql .= ' FROM ' . DB::table('page') . ' AS page';
+
         if ($extra_joins !== null) {
             $sql .= ' ' . $extra_joins;
         }
@@ -148,9 +151,11 @@ abstract class Page
         // identifier
         if (!empty($segments)) {
             $slugs = [];
+
             for ($i = count($segments); $i > 0; --$i) {
                 $slugs[] = implode('/', array_slice($segments, 0, $i));
             }
+
             $conds[] = 'page.slug IN(' . DB::arr($slugs) . ')';
         } else {
             $indexPageId = Extend::fetch('page.find.index', [], Settings::get('index_page_id'));
@@ -159,9 +164,11 @@ abstract class Page
 
         // finalize query
         $sql .= ' WHERE ' . implode(' AND ', $conds);
+
         if (!empty($segments)) {
             $sql .= ' ORDER BY LENGTH(page.slug) DESC';
         }
+
         $sql .= ' LIMIT 1';
 
         // load data
@@ -338,9 +345,11 @@ abstract class Page
         $query = DB::query('SELECT ' . $columns . ' FROM ' . DB::table('page') . ' WHERE ' . $where . ' ORDER BY ord');
 
         $pages = [];
+
         while ($page = DB::row($query)) {
             $pages[] = $page;
         }
+
         DB::free($query);
 
         return $pages;
@@ -470,6 +479,7 @@ abstract class Page
         $columns = ['title', 'slug', 'type', 'type_idt', 'ord', 'visible', 'public', 'level'];
 
         Extend::call('page.tree_columns', ['extra_columns' => &$extraColumns]);
+
         if (!empty($extraColumns)) {
             $columns = array_merge($columns, $extraColumns);
         }

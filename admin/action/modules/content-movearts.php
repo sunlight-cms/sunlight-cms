@@ -21,12 +21,15 @@ if (isset($_POST['source'])) {
 
     // check variables
     $error_log = [];
+
     if (DB::count('page', 'id=' . DB::val($source) . ' AND type=' . Page::CATEGORY) === 0) {
         $error_log[] = _lang('admin.content.movearts.badsource');
     }
+
     if (DB::count('page', 'id=' . DB::val($target) . ' AND type=' . Page::CATEGORY) === 0) {
         $error_log[] = _lang('admin.content.movearts.badtarget');
     }
+
     if ($source == $target) {
         $error_log[] = _lang('admin.content.movearts.samecats');
     }
@@ -36,31 +39,39 @@ if (isset($_POST['source'])) {
         if (!$fullmove) {
             $query = DB::query('SELECT id,home1,home2,home3 FROM ' . DB::table('article') . ' WHERE home1=' . $source . ' OR home2=' . $source . ' OR home3=' . $source);
             $counter = 0;
+
             while ($item = DB::row($query)) {
                 if ($item['home1'] == $source) {
                     $homeid = 1;
                     $homecheck = [2, 3];
                 }
+
                 if ($item['home2'] == $source) {
                     $homeid = 2;
                     $homecheck = [1, 3];
                 }
+
                 if ($item['home3'] == $source) {
                     $homeid = 3;
                     $homecheck = [1, 2];
                 }
+
                 DB::update('article', 'id=' . $item['id'], ['home' . $homeid => $target]);
+
                 foreach ($homecheck as $hc) {
                     if ($item['home' . $hc] == $target) {
                         $updatedata = [];
+
                         if ($hc != 1) {
                             $updatedata['home' . $hc] = -1;
                         } else {
                             $updatedata['home' . $homeid] = -1;
                         }
+
                         DB::update('article', 'id=' . $item['id'], $updatedata);
                     }
                 }
+
                 $counter++;
             }
         } else {

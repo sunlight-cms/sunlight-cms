@@ -22,24 +22,28 @@ $settings = DB::queryRows('SELECT var,val FROM ' . DB::table('setting'), 'var', 
 
 // title type choices
 $titletype_choices = [];
+
 for ($x = 1; $x < 3; ++$x) {
     $titletype_choices[$x] = _lang('admin.settings.info.titletype.' . $x);
 }
 
 // admin scheme choicces
 $adminscheme_choices = [];
+
 for ($x = 0; $x < 11; ++$x) {
     $adminscheme_choices[$x] = _lang('admin.settings.admin.adminscheme.' . $x);
 }
 
 // article rate mode choices
 $ratemode_choices = [];
+
 for ($x = 0; $x < 3; ++$x) {
     $ratemode_choices[$x] = _lang('admin.settings.articles.ratemode.' . $x);
 }
 
 // paging mode choices
 $pagingmode_choices = [];
+
 for ($x = 1; $x < 4; ++$x) {
     $pagingmode_choices[$x] = _lang('admin.settings.paging.pagingmode.' . $x);
 }
@@ -193,6 +197,7 @@ if (!empty($_POST)) {
             } else {
                 // value
                 $value = trim(Request::post($item['name'], ''));
+
                 switch ($item['format']) {
                     case 'int':
                         $value = (int) $value;
@@ -242,6 +247,7 @@ if (!empty($_POST)) {
                 if (isset($item['reload_on_update']) && $item['reload_on_update']) {
                     $reload = true;
                 }
+
                 if (isset($item['force_install_check']) && $item['force_install_check']) {
                     $reload = true;
                     $forceInstallCheck = true;
@@ -251,9 +257,11 @@ if (!empty($_POST)) {
     }
 
     $saved = true;
+
     if ($reload) {
         $_admin->redirect(Router::admin('settings', ['query' => ['saved' => 1]]));
     }
+
     if ($forceInstallCheck) {
         Settings::update('install_check', '1');
     }
@@ -309,12 +317,15 @@ foreach ($editable_settings as $settings_category => $settings_category_data) {
         if (!isset($item['input'])) {
             // attributes
             $inputAttrs = ' name="' . $item['name'] . '"';
+
             if (!isset($item['id']) || $item['id']) {
                 $inputAttrs .= ' id="' . $id . '"';
             }
+
             if (isset($item['disabled']) && $item['disabled']) {
                 $inputAttrs .= ' disabled="disabled"';
             }
+
             if ($item['format'] !== 'bool') {
                 if (!isset($item['input_class'])) {
                     if (!isset($item['choices'])) {
@@ -328,9 +339,11 @@ foreach ($editable_settings as $settings_category => $settings_category_data) {
             // input
             if (isset($item['choices'])) {
                 $input = "<select{$inputAttrs}>\n";
+
                 foreach ($item['choices'] as $choiceValue => $choiceLabel) {
                     $input .= '<option' . ($choiceValue == $value ? ' selected' : '') . ' value="' . _e($choiceValue) . '">' . $choiceLabel . "</option>\n";
                 }
+
                 $input .= '</select>';
             } else {
                 switch ($item['format']) {
@@ -362,6 +375,7 @@ foreach ($editable_settings as $settings_category => $settings_category_data) {
         } else {
             $help = _lang('admin.settings.' . $settings_category . '.' . $item['name'] . '.help');
         }
+
         if (isset($item['help_attrs'])) {
             $help = strtr($help, $item['help_attrs']);
         }
@@ -370,9 +384,11 @@ foreach ($editable_settings as $settings_category => $settings_category_data) {
         $output .= '<tr>
     <td><label' . (!isset($item['id']) || $item['id'] ? ' for="' . $id . '"' : '') . ">{$label}</label></td>
     <td" . ($help === '' ? ' colspan="2"' : '') . ">{$input}</td>\n";
+
         if ($help !== '') {
             $output .= "<td>{$help}</td>\n";
         }
+
         $output .= "</tr>\n";
 
         // extra help

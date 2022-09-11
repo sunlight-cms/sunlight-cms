@@ -106,6 +106,7 @@ abstract class Filesystem
             if ($isParent) {
                 ++$parentJumps;
             }
+
             if ($isDot || $isEmpty && (!$allowLeadingSlash || $i > 0) || $parentJumps > 0) {
                 unset($segments[$i]);
 
@@ -173,12 +174,14 @@ abstract class Filesystem
         $isEmpty = true;
         
         $handle = opendir($path);
+
         while (($item = readdir($handle)) !== false) {
             if ($item !== '.' && $item !== '..') {
                 $isEmpty = false;
                 break;
             }
         }
+
         closedir($handle);
 
         return $isEmpty;
@@ -257,6 +260,7 @@ abstract class Filesystem
 
         // remove children
         $success = true;
+
         foreach ($iterator as $item) {
             /* @var $item \SplFileInfo */
             if ($item->isDir()) {

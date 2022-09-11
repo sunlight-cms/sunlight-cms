@@ -21,9 +21,11 @@ $errno = 0;
 
 // load user
 $continue = false;
+
 if (isset($_GET['id'])) {
     $id = Request::get('id');
     $query = DB::queryRow('SELECT u.*,g.level group_level FROM ' . DB::table('user') . ' u JOIN ' . DB::table('user_group') . ' g ON(u.group_id=g.id) WHERE u.username=' . DB::val($id));
+
     if ($query !== false) {
         // test access
         if (!User::equals($query['id'])) {
@@ -67,10 +69,12 @@ if ($continue) {
 
         // username
         $username = User::normalizeUsername(Request::post('username', ''));
+
         if ($username === '') {
             $errors[] = _lang('user.msg.badusername');
         } else {
             $usernamechange = false;
+
             if ($username !== $query['username']) {
                 if (User::isNameAvailable($username, $query['id'])) {
                     $usernamechange = true;
@@ -82,6 +86,7 @@ if ($continue) {
 
         // publicname
         $publicname = User::normalizePublicname(Request::post('publicname', ''));
+
         if ($publicname !== $query['publicname']) {
             if ($publicname !== '') {
                 if (!User::isNameAvailable($publicname, $query['id'])) {
@@ -94,6 +99,7 @@ if ($continue) {
 
         // email
         $email = trim(Request::post('email', ''));
+
         if (!Email::validate($email)) {
             $errors[] = _lang('user.msg.bademail');
         } elseif (
@@ -123,9 +129,11 @@ if ($continue) {
         // password
         $passwordchange = false;
         $password = Request::post('password');
+
         if ($id == null && $password == '') {
             $errors[] = _lang('admin.users.edit.passwordneeded');
         }
+
         if ($password != '') {
             $passwordchange = true;
             $password = Password::create($password)->build();
@@ -141,6 +149,7 @@ if ($continue) {
         if (isset($_POST['group_id'])) {
             $group = (int) Request::post('group_id');
             $group_test = DB::queryRow('SELECT level FROM ' . DB::table('user_group') . ' WHERE id=' . $group . ' AND id!=' . User::GUEST_GROUP_ID . ' AND level<' . User::getLevel());
+
             if ($group_test !== false) {
                 if ($group_test['level'] > User::getLevel()) {
                     $errors[] = _lang('global.badinput');
@@ -173,9 +182,11 @@ if ($continue) {
                 'public' => $public,
                 'wysiwyg' => $wysiwyg,
             ];
+
             if ($id === null || $passwordchange) {
                 $changeset['password'] = $password;
             }
+
             if ($id === null || $usernamechange) {
                 $changeset['username'] = $username;
             }

@@ -14,6 +14,7 @@ Extend::call('index.not_found.before', [
     'index' => $_index,
     'continue' => &$continue,
 ]);
+
 if (!$continue) {
     return;
 }
@@ -21,6 +22,7 @@ if (!$continue) {
 // redirection
 if ($_index->slug !== null) {
     $redirect = DB::queryRow('SELECT new,permanent FROM ' . DB::table('redirect') . ' WHERE old=' . DB::val($_index->slug) . ' AND active=1');
+
     if ($redirect !== false) {
         Response::redirect(Router::slug($redirect['new'], ['absolute' => true]), $redirect['permanent']);
 

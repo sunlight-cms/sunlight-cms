@@ -50,6 +50,7 @@ class Paginator
         if (!isset($param)) {
             $param = 'page';
         }
+
         if (is_string($tableOrCount)) {
             $count = DB::result(DB::query('SELECT COUNT(*) FROM ' . DB::escIdt($tableOrCount) . (isset($alias) ? " AS {$alias}" : '') . ' WHERE ' . $conditions));
         } else {
@@ -57,6 +58,7 @@ class Paginator
         }
 
         $pages = max(1, ceil($count / $limit));
+
         if (isset($_GET[$param])) {
             $s = abs((int) Request::get($param) - 1);
         } elseif ($autolast) {
@@ -68,20 +70,26 @@ class Paginator
         if ($s + 1 > $pages) {
             $s = $pages - 1;
         }
+
         $start = $s * $limit;
         $beginpage = $s + 1 - Settings::get('showpages');
+
         if ($beginpage < 1) {
             $endbonus = abs($beginpage) + 1;
             $beginpage = 1;
         } else {
             $endbonus = 0;
         }
+
         $endpage = $s + 1 + Settings::get('showpages') + $endbonus;
+
         if ($endpage > $pages) {
             $beginpage -= $endpage - $pages;
+
             if ($beginpage < 1) {
                 $beginpage = 1;
             }
+
             $endpage = $pages;
         }
 
@@ -128,17 +136,21 @@ class Paginator
 
                 // pages
                 $paging .= "<span class=\"paging-pages\">\n";
+
                 for ($x = $beginpage; $x <= $endpage; ++$x) {
                     if ($x == $s + 1) {
                         $class = ' class="act"';
                     } else {
                         $class = '';
                     }
+
                     $paging .= '<a href="' . $url . $param . '=' . $x . $linksuffix . '"' . $class . '>' . $x . "</a>\n";
+
                     if ($x != $endpage) {
                         $paging .= ' ';
                     }
                 }
+
                 $paging .= "</span>\n";
 
                 // next

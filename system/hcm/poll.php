@@ -12,6 +12,7 @@ return function ($id = null) {
 
     // fetch poll data
     $vpolldata = DB::queryRow('SELECT * FROM ' . DB::table('poll') . ' WHERE id=' . DB::val($id));
+
     if ($vpolldata !== false) {
         $rcontinue = true;
     } else {
@@ -23,6 +24,7 @@ return function ($id = null) {
         $ranswers = explode("\n", $vpolldata['answers']);
         $rvotes = explode('-', $vpolldata['votes']);
         $rvotes_sum = array_sum($rvotes);
+
         if (User::hasPrivilege('pollvote') == 1 && $vpolldata['locked'] != 1 && IpLog::check(IpLog::POLL_VOTE, $id)) {
             $rallowvote = true;
         } else {
@@ -40,12 +42,14 @@ return function ($id = null) {
         }
 
         $ranswer_id = 0;
+
         foreach ($ranswers as $item) {
             if ($rvotes_sum != 0 && $rvotes[$ranswer_id] != 0) {
                 $rpercent = round($rvotes[$ranswer_id] / $rvotes_sum * 100);
             } else {
                 $rpercent = 0;
             }
+
             if ($rallowvote) {
                 $item = '<label>'
                     . '<input type="radio" name="option" value="' . $ranswer_id . '"> '
@@ -55,15 +59,19 @@ return function ($id = null) {
             } else {
                 $item .= ' [' . $rvotes[$ranswer_id] . '/' . $rpercent . '%]';
             }
+
             $ranswers_code .= '<div class="poll-answer">' . $item . '<div style="width:' . $rpercent . "%;\"></div></div>\n";
             ++$ranswer_id;
         }
 
         $ranswers_code .= '<div class="poll-answer">';
+
         if ($rallowvote) {
             $ranswers_code .= '<input type="submit" value="' . _lang('hcm.poll.vote') . '" class="votebutton">';
         }
+
         $ranswers_code .= _lang('hcm.poll.votes') . ': ' . $rvotes_sum . '</div>';
+
         if ($rallowvote) {
             $ranswers_code .= Xsrf::getInput() . "</form>\n";
         }

@@ -276,18 +276,23 @@ abstract class Plugin
         if (count($this->getConfigDefaults())) {
             $actions['config'] = _lang('admin.plugins.action.do.config');
         }
+
         if ($this->canBeInstalled()) {
             $actions['install'] = _lang('admin.plugins.action.do.install');
         }
+
         if ($this->canBeUninstalled()) {
             $actions['uninstall'] = _lang('admin.plugins.action.do.uninstall');
         }
+
         if ($this->canBeDisabled()) {
             $actions['disable'] = _lang('admin.plugins.action.do.disable');
         }
+
         if ($this->isDisabled()) {
             $actions['enable'] = _lang('admin.plugins.action.do.enable');
         }
+
         if ($this->canBeRemoved()) {
             $actions['remove'] = _lang('admin.plugins.action.do.remove');
         }

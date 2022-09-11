@@ -55,6 +55,7 @@ abstract class TemplateService
         if ($layout !== null || $slot !== null) {
             $uid .= ':' . $layout;
         }
+
         if ($slot !== null) {
             $uid .= ':' . $slot;
         }
@@ -147,9 +148,11 @@ abstract class TemplateService
         if ($includeTemplateName) {
             $parts[] = $template->getOption('name');
         }
+
         if ($layout !== null || $slot !== null) {
             $parts[] = $template->getLayoutLabel($layout);
         }
+
         if ($slot !== null) {
             $parts[] = $template->getSlotLabel($layout, $slot);
         }
@@ -189,6 +192,7 @@ abstract class TemplateService
             if ($type >= self::UID_TEMPLATE_LAYOUT) {
                 $components['layout'] = TemplatePlugin::DEFAULT_LAYOUT;
             }
+
             if ($type >= self::UID_TEMPLATE_LAYOUT_SLOT) {
                 $components['slot'] = '';
             }

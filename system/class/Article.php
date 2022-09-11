@@ -70,22 +70,29 @@ abstract class Article
         $authorQuery = User::createQuery('a.author');
 
         $sql = 'SELECT a.*';
+
         for ($i = 1; $i <= 3; ++$i) {
             $sql .= ",cat{$i}.id cat{$i}_id,cat{$i}.title cat{$i}_title,cat{$i}.slug cat{$i}_slug,cat{$i}.public cat{$i}_public,cat{$i}.level cat{$i}_level";
         }
+
         $sql .= ',' . $authorQuery['column_list'];
         $sql .= ' FROM ' . DB::table('article') . ' a';
+
         for ($i = 1; $i <= 3; ++$i) {
             $sql .= ' LEFT JOIN ' . DB::table('page') . " cat{$i} ON(a.home{$i}=cat{$i}.id)";
         }
+
         $sql .= ' ' . $authorQuery['joins'];
         $sql .= ' WHERE a.slug=' . DB::val($slug);
+
         if ($mainCategoryId !== null) {
             $sql .= ' AND a.home1=' . DB::val($mainCategoryId);
         }
+
         $sql .= ' LIMIT 1';
 
         $query = DB::queryRow($sql);
+
         if ($query !== false) {
             $query['author_query'] = $authorQuery;
         }
@@ -127,6 +134,7 @@ abstract class Article
             $conditions[] = "{$alias}.public=1";
             $conditions[] = '(cat1.public=1 OR cat2.public=1 OR cat3.public=1)';
         }
+
         $conditions[] = '(cat1.level<=' . User::getLevel() . ' OR cat2.level<=' . User::getLevel() . ' OR cat3.level<=' . User::getLevel() . ')';
 
         // custom conditions
@@ -136,10 +144,12 @@ abstract class Article
 
         // joins
         $joins = '';
+
         for ($i = 1; $i <= 3; ++$i) {
             if ($i > 1) {
                 $joins .= ' ';
             }
+
             $joins .= 'LEFT JOIN ' . DB::table('page') . " cat{$i} ON({$alias}.home{$i}!=-1 AND cat{$i}.id={$alias}.home{$i})";
         }
 
@@ -174,12 +184,15 @@ abstract class Article
 
         $cond = '(';
         $idList = DB::arr($categories);
+
         for ($i = 1; $i <= 3; ++$i) {
             if ($i > 1) {
                 $cond .= ' OR ';
             }
+
             $cond .= "{$alias}home{$i} IN({$idList})";
         }
+
         $cond .= ')';
 
         return $cond;
@@ -208,6 +221,7 @@ abstract class Article
             'info' => $info,
             'perex' => $perex,
         ]);
+
         if ($extendOutput !== '') {
             return $extendOutput;
         }

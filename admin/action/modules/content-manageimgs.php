@@ -17,19 +17,24 @@ defined('SL_ROOT') or exit;
 
 $message = '';
 $continue = false;
+
 if (isset($_GET['g'])) {
     $galid = (int) Request::get('g');
     $galdata = DB::queryRow('SELECT title,var2,var3,var4 FROM ' . DB::table('page') . ' WHERE id=' . $galid . ' AND type=' . Page::GALLERY);
+
     if ($galdata !== false) {
         if ($galdata['var2'] === null) {
             $galdata['var2'] = Settings::get('galdefault_per_page');
         }
+
         if ($galdata['var3'] === null) {
             $galdata['var3'] = Settings::get('galdefault_thumb_h');
         }
+
         if ($galdata['var4'] === null) {
             $galdata['var4'] = Settings::get('galdefault_thumb_w');
         }
+
         $continue = true;
     }
 }
@@ -41,21 +46,25 @@ if (isset($_POST['xaction']) && $continue) {
         case 1:
             // load base vars
             $title = Html::cut(_e(trim(Request::post('title', ''))), 255);
+
             if (!Form::loadCheckbox('autoprev')) {
                 $prev = Html::cut(_e(Request::post('prev', '')), 255);
             } else {
                 $prev = '';
             }
+
             $full = Html::cut(_e(Request::post('full', '')), 255);
 
             // load order
             if (Form::loadCheckbox('moveords')) {
                 $smallerord = DB::queryRow('SELECT ord FROM ' . DB::table('gallery_image') . ' WHERE home=' . $galid . ' ORDER BY ord LIMIT 1');
+
                 if ($smallerord !== false) {
                     $ord = $smallerord['ord'];
                 } else {
                     $ord = 1;
                 }
+
                 DB::update('gallery_image', 'home=' . $galid, ['ord' => DB::raw('ord+1')]);
             } else {
                 $ord = floatval(Request::post('ord'));
@@ -81,19 +90,25 @@ if (isset($_POST['xaction']) && $continue) {
         case 4:
             $lastid = -1;
             $sql = '';
+
             foreach ($_POST as $var => $val) {
                 if ($var == 'xaction') {
                     continue;
                 }
+
                 $var = explode('_', $var);
+
                 if (count($var) == 2) {
                     $id = (int) substr($var[0], 1);
                     $var = $var[1];
+
                     if ($lastid == -1) {
                         $lastid = $id;
                     }
+
                     $quotes = true;
                     $skip = false;
+
                     switch ($var) {
                         case 'title':
                             $val = _e($val);
@@ -104,6 +119,7 @@ if (isset($_POST['xaction']) && $continue) {
                             break;
                         case 'prevtrigger':
                             $var = 'prev';
+
                             if (!Form::loadCheckbox('i' . $id . '_autoprev')) {
                                 $val = Html::cut(_e(Request::post('i' . $id . '_prev', '')), 255);
                             } else {
@@ -131,7 +147,9 @@ if (isset($_POST['xaction']) && $continue) {
                         if ($sql !== '') {
                             $sql .= ',';
                         }
+
                         $sql .= $var . '=';
+
                         if ($quotes) {
                             $sql .= DB::val($val);
                         } else {
@@ -152,11 +170,13 @@ if (isset($_POST['xaction']) && $continue) {
         // move images
         case 5:
             $newhome = (int) Request::post('newhome');
+
             if ($newhome != $galid) {
                 if (DB::count('page', 'id=' . DB::val($newhome) . ' AND type=' . Page::GALLERY) !== 0) {
                     if (DB::count('gallery_image', 'home=' . DB::val($galid)) !== 0) {
                         // move order numbers in the target gallery
                         $moveords = Form::loadCheckbox('moveords');
+
                         if ($moveords) {
                             // get the highest order number in this gallery
                             $greatestord = DB::queryRow('SELECT ord FROM ' . DB::table('gallery_image') . ' WHERE home=' . $galid . ' ORDER BY ord DESC LIMIT 1');
@@ -199,6 +219,7 @@ if (isset($_POST['xaction']) && $continue) {
                 if (!is_array($file['name'])) {
                     continue;
                 }
+
                 for ($i = 0; isset($file['name'][$i]); ++$i) {
                     ++$total;
 
@@ -234,6 +255,7 @@ if (isset($_POST['xaction']) && $continue) {
 
                 // query
                 $insertdata = [];
+
                 foreach ($done as $path) {
                     $insertdata[] = [
                         'home' => $galid,
@@ -245,6 +267,7 @@ if (isset($_POST['xaction']) && $continue) {
                     ];
                     ++$ord;
                 }
+
                 DB::insertMulti('gallery_image', $insertdata);
             }
 
@@ -263,6 +286,7 @@ if (isset($_GET['del']) && Xsrf::check(true) && $continue) {
     $del = (int) Request::get('del');
     Admin::deleteGalleryStorage('id=' . $del . ' AND home=' . $galid);
     DB::delete('gallery_image', 'id=' . $del . ' AND home=' . $galid);
+
     if (DB::affectedRows() === 1) {
         $message .= Message::ok(_lang('global.done'));
     }
@@ -354,6 +378,7 @@ if ($continue) {
     data-auto-grid="true"
     data-tolerance="pointer"
 >';
+
         while ($image = DB::row($images)) {
             $preview = Gallery::renderImage($image, 'admin', $galdata['var4'], $galdata['var3']);
 

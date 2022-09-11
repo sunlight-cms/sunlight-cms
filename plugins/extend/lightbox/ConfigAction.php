@@ -43,6 +43,7 @@ class ConfigAction extends BaseConfigAction
                 } catch (\RuntimeException $e) {
                     return $e->getMessage();
                 }
+
                 return null;
         }
 

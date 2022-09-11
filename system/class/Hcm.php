@@ -134,11 +134,13 @@ abstract class Hcm
     static function filter(string $content, bool $exception = false): string
     {
         $deniedModules = [];
+
         if (!User::hasPrivilege('adminhcmphp')) {
             $deniedModules[] = 'php';
         }
 
         $allowedModules = preg_split('{\s*,\s*}', User::$group['adminhcm']);
+
         if (count($allowedModules) === 1 && $allowedModules[0] === '*') {
             $allowedModules = null; // all modules allowed
         }

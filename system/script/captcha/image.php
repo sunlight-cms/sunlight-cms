@@ -23,6 +23,7 @@ if (!empty($captchaNumber) && isset($_SESSION['captcha_code'][$captchaNumber])) 
         Response::forbidden();
         exit;
     }
+
     $_SESSION['captcha_code'][$captchaNumber][1] = true;
 } else {
     Response::forbidden();

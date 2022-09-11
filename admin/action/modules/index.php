@@ -21,20 +21,24 @@ $admin_index_cfg = Settings::getMultiple([
 $version_data = VersionChecker::check();
 
 $mysqlver = DB::$mysqli->server_info;
+
 if ($mysqlver != null && mb_substr_count($mysqlver, '-') != 0) {
     $mysqlver = mb_substr($mysqlver, 0, strpos($mysqlver, '-'));
 }
 
 $software = getenv('SERVER_SOFTWARE');
+
 if (mb_strlen($software) > 16) {
     $software = substr($software, 0, 13) . '...';
 }
 
 // prepare custom content
 $custom = '';
+
 if ($admin_index_cfg['admin_index_custom'] !== '') {
     $custom = $admin_index_cfg['admin_index_custom'];
 }
+
 Extend::call('admin.index.custom', [
     'custom' => &$custom,
     'position' => &$admin_index_cfg['admin_index_custom_pos'],
@@ -43,6 +47,7 @@ Extend::call('admin.index.custom', [
 // logout warning
 $logout_warning = '';
 $maxltime = ini_get('session.gc_maxlifetime');
+
 if (!empty($maxltime) && !isset($_COOKIE[Core::$appId . '_persistent_key'])) {
     $logout_warning = Admin::note(_lang('admin.index.logoutwarn', ['%minutes%' => round($maxltime / 60)]));
 }

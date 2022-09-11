@@ -11,11 +11,13 @@ use Sunlight\Util\StringManipulator;
 
 return function ($limit = null, $pages = '', $type = null) {
     $result = '';
+
     if (isset($limit) && (int) $limit >= 1) {
         $limit = abs((int) $limit);
     } else {
         $limit = 10;
     }
+
     $post_types =  [
         'section' => Post::SECTION_COMMENT,
         'article' => Post::ARTICLE_COMMENT,
@@ -36,6 +38,7 @@ return function ($limit = null, $pages = '', $type = null) {
         } elseif (!in_array($type, $post_types)) {
             $type = Post::SECTION_COMMENT;
         }
+
         $types = [$type];
     } else {
         $types = $post_types;

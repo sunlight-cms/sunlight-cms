@@ -9,6 +9,7 @@ defined('SL_ROOT') or exit;
 
 $type = Page::LINK;
 require SL_ROOT . 'admin/action/modules/include/page-editscript-init.php';
+
 if ($continue) {
     $editscript_enable_content = false;
     $editscript_enable_heading = false;
@@ -28,4 +29,5 @@ if ($continue) {
         'link_new_window' => ['type' => 'bool', 'nullable' => false],
     ];
 }
+
 require SL_ROOT . 'admin/action/modules/include/page-editscript.php';

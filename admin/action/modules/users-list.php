@@ -21,8 +21,10 @@ if (isset($_POST['bulk_action'])) {
         case 'del':
             $user_ids = (array) Request::post('user', [], true);
             $user_delete_counter = 0;
+
             foreach ($user_ids as $user_id) {
                 $user_id = (int) $user_id;
+
                 if (!User::equals($user_id) && User::delete($user_id)) {
                     ++$user_delete_counter;
                 }
@@ -45,8 +47,10 @@ if (isset($_POST['bulk_action'])) {
 // group filter
 $grouplimit = '';
 $list_conds = [];
+
 if (isset($_GET['group_id'])) {
     $group = (int) Request::get('group_id');
+
     if ($group != -1) {
         $list_conds[] = 'u.group_id=' . $group;
     }
@@ -56,6 +60,7 @@ if (isset($_GET['group_id'])) {
 
 // search
 $search = trim(Request::get('search', ''));
+
 if ($search !== '') {
     $wildcard = DB::val('%' . $search . '%');
     $list_conds[] = '(u.id=' . DB::val($search) . " OR u.username LIKE {$wildcard} OR u.publicname LIKE {$wildcard} OR u.email LIKE {$wildcard} OR u.ip LIKE {$wildcard})";
@@ -95,9 +100,11 @@ $output .= '
 
 // prepare paging
 $query_params = ['group' => $group];
+
 if ($search !== false) {
     $query_params['search'] = $search;
 }
+
 $paging = Paginator::render(Router::admin('users-list', ['query' => $query_params]), 50, DB::table('user') . ':u', $list_conds_sql);
 $output .= $paging['paging'];
 

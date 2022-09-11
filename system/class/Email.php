@@ -16,6 +16,7 @@ abstract class Email
     {
         // map defined headers
         $definedHeaderMap = [];
+
         foreach (array_keys($headers) as $headerName) {
             $definedHeaderMap[strtolower($headerName)] = true;
         }
@@ -24,9 +25,11 @@ abstract class Email
         if (Settings::get('mailerusefrom') && !isset($definedHeaderMap['from'])) {
             $headers['From'] = Settings::get('sysmail');
         }
+
         if (!isset($definedHeaderMap['content-type'])) {
             $headers['Content-Type'] = 'text/plain; charset=UTF-8';
         }
+
         if (!isset($definedHeaderMap['x-mailer'])) {
             $headers['X-Mailer'] = sprintf('PHP/%d', PHP_MAJOR_VERSION);
         }
@@ -40,6 +43,7 @@ abstract class Email
             'headers' => &$headers,
             'result' => &$result,
         ]);
+
         if ($result !== null) {
             // handled by a plugin
             return $result;
@@ -50,6 +54,7 @@ abstract class Email
 
         // process headers
         $headerString = '';
+
         foreach ($headers as $headerName => $headerValue) {
             $headerString .= sprintf("%s: %s\n", $headerName, strtr($headerValue, ["\r" => '', "\n" => '']));
         }
@@ -90,6 +95,7 @@ abstract class Email
     {
         $isValid = true;
         $atIndex = mb_strrpos($email, '@');
+
         if (mb_strlen($email) > 255) {
             $isValid = false;
         } elseif (is_bool($atIndex) && !$atIndex) {
@@ -99,6 +105,7 @@ abstract class Email
             $local = mb_substr($email, 0, $atIndex);
             $localLen = mb_strlen($local);
             $domainLen = mb_strlen($domain);
+
             if ($localLen < 1 || $localLen > 64) {
                 // local part length exceeded
                 $isValid = false;
@@ -121,6 +128,7 @@ abstract class Email
                 // character not valid in local part
                 $isValid = false;
             }
+
             if (!Core::$debug && function_exists('checkdnsrr') && $isValid && !checkdnsrr($domain . '.', 'ANY')) {
                 // no DNS record for the given domain
                 $isValid = false;

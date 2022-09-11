@@ -32,10 +32,12 @@ $user_count = DB::count('user', 'group_id=' . DB::val($id));
 
 // delete
 $done = false;
+
 if (isset($_POST['doit'])) {
     // delete users
     $users = DB::query('SELECT id FROM ' . DB::table('user') . ' WHERE group_id=' . $id);
     $user_delete_failcount = 0;
+
     while ($user = DB::row($users)) {
         if (!User::delete($user['id'])) {
             ++$user_delete_failcount;
@@ -65,6 +67,7 @@ if (isset($_POST['doit'])) {
 if ($systemgroup) {
     $output .= Message::ok(_lang('admin.users.groups.specialgroup.delnotice'));
 }
+
 if ($user_count > 0) {
     $output .= Message::warning(_lang('admin.users.groups.delwarning', ['%user_count%' => $user_count]));
 }

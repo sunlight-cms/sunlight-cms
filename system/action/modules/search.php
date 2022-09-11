@@ -79,13 +79,17 @@ if ($search_query != '') {
             } else {
                 $alias .= '.';
             }
+
             $output = '(';
+
             for ($i = 0, $last = (count($cols) - 1); isset($cols[$i]); ++$i) {
                 $output .= $alias . $cols[$i] . ' LIKE \'' . $GLOBALS['search_query_sql'] . '\'';
+
                 if ($i !== $last) {
                     $output .= ' OR ';
                 }
             }
+
             $output .= ')';
 
             return $output;
@@ -176,6 +180,7 @@ if ($search_query != '') {
                     $infos
                 ];
             }
+
             DB::free($q);
         }
 
@@ -225,6 +230,7 @@ if ($search_query != '') {
 <h2 class="list-title"><a href="' . _e($item[0]) . '">' . $item[1] . '</a></h2>
 <p class="list-perex">' . $item[2] . '</p>
 ';
+
                 if (isset($item[3])) {
                     $output .= GenericTemplates::renderInfos($item[3]);
                 }

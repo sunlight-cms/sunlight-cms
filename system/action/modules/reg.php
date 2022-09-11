@@ -46,6 +46,7 @@ if (isset($_GET['confirm'])) {
     }
 
     $code = Request::get('confirm');
+
     if (preg_match('{[a-z0-9]{48}$}AD', $code)) {
         // check IP log
         if (IpLog::check(IpLog::FAILED_ACCOUNT_ACTIVATION)) {
@@ -94,6 +95,7 @@ if (isset($_GET['confirm'])) {
 
         // load and check variables
         $user_data['username'] = User::normalizeUsername(Request::post('username', ''));
+
         if ($user_data['username'] == '') {
             $errors[] = _lang('user.msg.badusername');
         } elseif (!User::isNameAvailable($user_data['username'])) {
@@ -102,9 +104,11 @@ if (isset($_GET['confirm'])) {
 
         $password = Request::post('password');
         $password2 = Request::post('password2');
+
         if ($password != $password2) {
             $errors[] = _lang('mod.reg.nosame');
         }
+
         if ($password != '') {
             $user_data['password'] = Password::create($password)->build();
         } else {
@@ -112,9 +116,11 @@ if (isset($_GET['confirm'])) {
         }
 
         $user_data['email'] = trim(Request::post('email', ''));
+
         if (!Email::validate($user_data['email'])) {
             $errors[] = _lang('user.msg.bademail');
         }
+
         if (!User::isEmailAvailable($user_data['email'])) {
             $errors[] = _lang('user.msg.emailexists');
         }
@@ -128,6 +134,7 @@ if (isset($_GET['confirm'])) {
         if (Settings::get('registration_grouplist') && isset($_POST['group_id'])) {
             $user_data['group_id'] = (int) Request::post('group_id');
             $groupdata = DB::query('SELECT id FROM ' . DB::table('user_group') . ' WHERE id=' . $user_data['group_id'] . ' AND blocked=0 AND reglist=1');
+
             if (DB::size($groupdata) == 0) {
                 $errors[] = _lang('global.badinput');
             }
@@ -169,11 +176,14 @@ if (!$user_data_valid && $show_form) {
 
     if (Settings::get('registration_grouplist')) {
         $groupselect_items = DB::query('SELECT id,title FROM ' . DB::table('user_group') . ' WHERE blocked=0 AND reglist=1 ORDER BY title');
+
         if (DB::size($groupselect_items) != 0) {
             $groupselect_content = '';
+
             while ($groupselect_item = DB::row($groupselect_items)) {
                 $groupselect_content .= '<option value="' . $groupselect_item['id'] . '"' . (($groupselect_item['id'] == Settings::get('defaultgroup')) ? ' selected' : '') . '>' . $groupselect_item['title'] . "</option>\n";
             }
+
             $groupselect = ['label' => _lang('global.group'), 'content' => '<select name="group_id">' . $groupselect_content . '</select>'];
         }
     }

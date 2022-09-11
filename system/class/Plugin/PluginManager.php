@@ -175,6 +175,7 @@ class PluginManager
         }
 
         $choices = [];
+
         foreach ($this->plugins->getByType($type) as $name => $plugin) {
             $choices[$name] = $plugin->getOption('name');
         }
@@ -191,6 +192,7 @@ class PluginManager
     function select(string $type, ?string $active = null, ?string $inputName = null): string
     {
         $output = '';
+
         if ($inputName) {
             $output .= '<select name=\"' . $inputName . "\">\n";
         }
@@ -201,6 +203,7 @@ class PluginManager
                 . _e($label)
                 . "</option>\n";
         }
+
         if ($inputName) {
             $output .= "</select>\n";
         }

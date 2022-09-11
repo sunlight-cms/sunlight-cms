@@ -89,6 +89,7 @@ class SqlDumper
         if ($this->maxPacketSize === null) {
             // determine max packet size
             $maxAllowedPacket = DB::queryRow('SHOW VARIABLES WHERE Variable_name=\'max_allowed_packet\'');
+
             if ($maxAllowedPacket === false) {
                 throw new DatabaseException('Could not determine value of the "max_allowed_packet" variable');
             }
@@ -171,6 +172,7 @@ class SqlDumper
             // compose row
             $rowStatement = '(';
             $isFirstColumn = true;
+
             foreach ($columns as $column => $columnOptions) {
                 // get value
                 if (array_key_exists($column, $rowx)) {
@@ -199,13 +201,16 @@ class SqlDumper
                 } else {
                     $rowStatement .= ',';
                 }
+
                 $rowStatement .= DB::val($value);
             }
+
             $rowStatement .= ')';
 
             // check row statement size
             $rowStatementSize = strlen($rowStatement);
             $requiredBytes = $rowStatementSize + ($isFirstRowStatement ? 0 : 1);
+
             if ($currentQuerySize + $requiredBytes > $maxPacketSize) {
                 // not enough bytes left
                 if ($isFirstRowStatement || $insertStatementSize + $rowStatementSize > $currentQuerySize) {
@@ -229,6 +234,7 @@ class SqlDumper
             } else {
                 $currentQuerySize += fwrite($handle, ',');
             }
+
             $currentQuerySize += fwrite($handle, $rowStatement);
         }
 

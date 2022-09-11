@@ -14,8 +14,10 @@ use Sunlight\Util\Request;
 defined('SL_ROOT') or exit;
 
 $continue = false;
+
 if (isset($_GET['cat'])) {
     $cid = (int) Request::get('cat');
+
     if (DB::count('page', 'id=' . DB::val($cid) . ' AND type=' . Page::CATEGORY) !== 0) {
         $catdata = DB::queryRow('SELECT title,var1,var2 FROM ' . DB::table('page') . ' WHERE id=' . $cid);
         $continue = true;
@@ -26,6 +28,7 @@ if (isset($_GET['cat'])) {
 if ($continue) {
     // set order depending on category
     $artsperpage = $catdata['var2'];
+
     switch ($catdata['var1']) {
         case 1:
             $artorder = 'art.time DESC';
@@ -50,6 +53,7 @@ if ($continue) {
 
     // message
     $message = '';
+
     if (isset($_GET['artdeleted'])) {
         $message = Message::ok(_lang('admin.content.articles.delete.done'));
     }
@@ -77,6 +81,7 @@ if ($continue) {
     } else {
         $output .= '<tr><td colspan="4">' . _lang('global.nokit') . '</td></tr>';
     }
+
     $output .= '</tbody></table>';
     $output .= $paging['paging'];
 } else {

@@ -10,9 +10,11 @@ use Sunlight\Router;
 return function ($dir = '', $type = 'text', $limit = 1, $thumbnail_size = null) {
     $result = '';
     $dir = SL_ROOT . $dir;
+
     if (mb_substr($dir, -1, 1) != '/') {
         $dir .= '/';
     }
+
     $limit = (int) $limit;
 
     if (file_exists($dir) && is_dir($dir)) {
@@ -30,11 +32,14 @@ return function ($dir = '', $type = 'text', $limit = 1, $thumbnail_size = null) 
         }
 
         $items = [];
+
         while (($item = readdir($handle)) !== false) {
             $ext = strtolower(pathinfo($item, PATHINFO_EXTENSION));
+
             if (is_dir($dir . $item) || $item == '.' || $item == '..' || !$extension_filter($ext)) {
                 continue;
             }
+
             $items[] = $item;
         }
 
@@ -42,13 +47,16 @@ return function ($dir = '', $type = 'text', $limit = 1, $thumbnail_size = null) 
             if ($limit > count($items)) {
                 $limit = count($items);
             }
+
             $randitems = array_rand($items, $limit);
+
             if (!is_array($randitems)) {
                 $randitems = [$randitems];
             }
 
             foreach ($randitems as $item) {
                 $item = $items[$item];
+
                 switch ($type) {
                     case 'image':
                         $thumb = ImageService::getThumbnail('hcm.randomfile', $dir . $item, $resize_opts);

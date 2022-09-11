@@ -52,7 +52,8 @@ class SystemChecker
     function renderErrors(): string
     {
         $errors_str = '';
-        for($i = 0; isset($this->errors[$i]); ++$i) {
+
+        for ($i = 0; isset($this->errors[$i]); ++$i) {
             $errors_str .= ($i + 1) . '. ' . $this->errors[$i][Core::$fallbackLang === 'cs' ? 0 : 1] . "\n";
         }
 
@@ -66,6 +67,7 @@ class SystemChecker
     {
         for ($i = 0; isset($this->paths[$i]); ++$i) {
             $path = SL_ROOT . $this->paths[$i];
+
             if (!is_dir($path)) {
                 $this->errors[] = [
                     'Adresář /' . $this->paths[$i] . ' neexistuje nebo není dostupný ke čtení',
@@ -91,6 +93,7 @@ class SystemChecker
                 'The install directory must be removed after installation',
             ];
         }
+
         if (file_exists(SL_ROOT . 'patch.php')) {
             $this->errors[] = [
                 'Soubor patch.php se stále nachází na serveru - po aktualizaci databáze je třeba jej odstranit',

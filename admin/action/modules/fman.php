@@ -149,6 +149,7 @@ $uploaded = [];
 // create default dir
 if (!(file_exists($defdir) && is_dir($defdir))) {
     $test = mkdir($defdir, 0777, true);
+
     if (!$test) {
         $continue = false;
         $output .= Message::error(_lang('admin.fman.msg.defdircreationfailure'));
@@ -183,12 +184,15 @@ if ($continue) {
             case 'upload':
                 $total = 0;
                 $done = 0;
+
                 foreach ($_FILES as $item) {
                     if (!is_array($item['name'])) continue;
+
                     for ($i = 0; isset($item['name'][$i]); ++$i) {
                         $name = StringManipulator::slugify($decodeFilename($item['name'][$i], false), false);
                         $tmp_name = $item['tmp_name'][$i];
                         $exists = file_exists($dir . $name);
+
                         if (
                             is_uploaded_file($tmp_name)
                             && User::checkFilename($name)
@@ -198,6 +202,7 @@ if ($continue) {
                             ++$done;
                             $uploaded[$name] = true;
                         }
+
                         ++$total;
                     }
                 }
@@ -208,8 +213,10 @@ if ($continue) {
             // new dir
             case 'newfolder':
                 $name = $decodeFilename(Request::post('name'), false);
+
                 if (!file_exists($dir . $name)) {
                     $test = mkdir($dir . $name);
+
                     if ($test) {
                         $message = Message::ok(_lang('admin.fman.msg.newfolder.done'));
                         chmod($dir . $name, 0777);
@@ -224,6 +231,7 @@ if ($continue) {
             // delete
             case 'delete':
                 $name = $decodeFilename(Request::post('name'));
+
                 if (file_exists($dir . $name)) {
                     if (!is_dir($dir . $name)) {
                         if (User::checkFilename($name)) {
@@ -247,6 +255,7 @@ if ($continue) {
             case 'rename':
                 $name = $decodeFilename(Request::post('name'));
                 $newname = $decodeFilename(Request::post('newname'), false);
+
                 if (file_exists($dir . $name)) {
                     if (!file_exists($dir . $newname)) {
                         if (User::checkFilename($newname) && User::checkFilename($name)) {
@@ -268,8 +277,10 @@ if ($continue) {
             case 'edit':
                 $name = $decodeFilename(Request::post('name'), false);
                 $content = Request::post('content');
+
                 if (User::checkFilename($name)) {
                     $file = fopen($dir . $name, 'w');
+
                     if ($file) {
                         fwrite($file, $content);
                         fclose($file);
@@ -286,10 +297,13 @@ if ($continue) {
             case 'move':
                 $newdir = Arr::removeValue(explode('/', Request::post('param')), '');
                 $newdir = implode('/', $newdir);
+
                 if (substr($newdir, -1, 1) != '/') {
                     $newdir .= '/';
                 }
+
                 $newdir = Filesystem::parsePath($dir . $newdir);
+
                 if (User::checkPath($newdir, false)) {
                     $done = 0;
                     $total = 0;
@@ -298,7 +312,9 @@ if ($continue) {
                         if ($var == 'action' || $var == 'param') {
                             continue;
                         }
+
                         $val = $decodeFilename($val);
+
                         if (is_file($dir . $val) && !is_file($newdir . $val) && User::checkFilename($val) && rename($dir . $val, $newdir . $val)) {
                             $done++;
                         }
@@ -316,11 +332,14 @@ if ($continue) {
             case 'downloadselected':
                 // locate selected files
                 $selected = [];
+
                 foreach ($_POST as $var => $val) {
                     if ($var == 'action' || $var == 'param') {
                         continue;
                     }
+
                     $val = $decodeFilename($val);
+
                     if (is_file($dir . $val) && User::checkFilename($val)) {
                         $selected[] = $val;
                     }
@@ -350,7 +369,9 @@ if ($continue) {
                     if ($var == 'action' || $var == 'param') {
                         continue;
                     }
+
                     $val = $decodeFilename($val);
+
                     if (is_file($dir . $val) && User::checkFilename($val) && unlink($dir . $val)) {
                         $done++;
                     }
@@ -378,6 +399,7 @@ if ($continue) {
                     if (DB::count('page', 'id=' . DB::val($galid) . ' AND type=' . Page::GALLERY) !== 0) {
                         // get the lowest order number
                         $smallestord = DB::queryRow('SELECT ord FROM ' . DB::table('gallery_image') . ' WHERE home=' . $galid . ' ORDER BY ord LIMIT 1');
+
                         if ($smallestord !== false) {
                             $smallestord = $smallestord['ord'];
                         } else {
@@ -389,11 +411,14 @@ if ($continue) {
 
                         // prepare query
                         $sql = '';
+
                         foreach ($_POST as $var => $val) {
                             if ($var == 'action' || $var == 'param') {
                                 continue;
                             }
+
                             $val = $decodeFilename($val);
+
                             if (is_file($dir . $val) && ImageService::isImage($val)) {
                                 $sql .= '(' . $galid . ',' . ($smallestord + $counter) . ",'','','" . substr($dir . $val, 3) . "'),";
                                 ++$counter;
@@ -465,10 +490,12 @@ if ($continue) {
             // edit
             case 'edit':
                 $continue = false;
+
                 if (isset($_GET['name'])) {
                     $name = Request::get('name');
                     $dname = $decodeFilename($name);
                     $ext = strtolower(pathinfo($dname, PATHINFO_EXTENSION));
+
                     if (file_exists($dir . $dname)) {
                         if (User::checkFilename($dname)) {
                             $new = false;
@@ -539,6 +566,7 @@ if ($continue) {
 
                 // load and check images
                 $images_load = [];
+
                 foreach ($_POST as $var => $val) {
                     if ($var == 'action' || $var == 'param') {
                         continue;
@@ -549,8 +577,10 @@ if ($continue) {
 
                 $images = '';
                 $counter = 0;
+
                 foreach ($images_load as $images_load_image) {
                     $images_load_image = $decodeFilename($images_load_image);
+
                     if (ImageService::isImage($images_load_image)) {
                         $images .= '<input type="hidden" name="f' . $counter . '" value="' . _e($encodeFilename($images_load_image)) . "\">\n";
                         ++$counter;
@@ -629,14 +659,17 @@ if ($continue) {
     // directories
     $handle = opendir($dir);
     $items = [];
+
     while (($item = readdir($handle)) !== false) {
         if (is_dir($dir . $item) && $item != '.' && $item != '..') {
             $items[] = $item;
         }
     }
+
     natsort($items);
     $items = array_merge(['..'], $items);
     $dircounter = 0;
+
     foreach ($items as $item) {
         // directory or parent link
         if ($item == '..') {
@@ -673,23 +706,28 @@ if ($continue) {
     // files
     rewinddir($handle);
     $items = [];
+
     while (($item = readdir($handle)) !== false) {
         if (!is_dir($dir . $item) && $item != '..') {
             $items[] = $item;
         }
     }
+
     natsort($items);
     $filecounter = 0;
     $sizecounter = 0;
+
     foreach ($items as $item) {
         ++$filecounter;
         $row_classes = [];
 
         // icon
         $iteminfo = pathinfo($item);
+
         if (!isset($iteminfo['extension'])) {
             $iteminfo['extension'] = '';
         }
+
         $ext = strtolower($iteminfo['extension']);
         $image = false;
 
@@ -701,6 +739,7 @@ if ($continue) {
         if ($highlight) {
             $row_classes[] = 'hl';
         }
+
         if (isset($uploaded[$item])) {
             $row_classes[] = 'fman-uploaded';
         }

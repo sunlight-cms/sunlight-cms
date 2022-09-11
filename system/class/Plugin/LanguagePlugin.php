@@ -46,6 +46,7 @@ class LanguagePlugin extends Plugin
                         '%s/admin_dictionary.php',
                         $this->manager->getPlugins()->getLanguage(Core::$fallbackLang)->getDirectory()
                     );
+
                     if (is_file($adminFileName)) {
                         $data += (array) include $adminFileName;
                     }

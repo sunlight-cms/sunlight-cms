@@ -22,6 +22,7 @@ return function ($gallery = null, $type = 'new', $thumbnail_size = null, $limit 
     // size
     if ($thumbnail_size !== null) {
         $thumbnail_size = explode('/', $thumbnail_size, 2);
+
         if (count($thumbnail_size) === 2) {
             // width and height
             $x = (int) $thumbnail_size[0];
@@ -53,6 +54,7 @@ return function ($gallery = null, $type = 'new', $thumbnail_size = null, $limit 
     // list images
     $result = '';
     $rimgs = DB::query('SELECT id,title,prev,full FROM ' . DB::table('gallery_image') . ' WHERE ' . $home_cond . ' ORDER BY ' . $order . ' LIMIT ' . $limit);
+
     while ($rimg = DB::row($rimgs)) {
         $result .= Gallery::renderImage($rimg, 'hcm' . Hcm::$uid, $x, $y);
     }

@@ -17,9 +17,11 @@ defined('SL_ROOT') or exit;
 
 $continue = false;
 $message = '';
+
 if (isset($_GET['id'])) {
     $id = (int) Request::get('id');
     $query = DB::queryRow('SELECT p.* FROM ' . DB::table('poll') . ' p WHERE p.id=' . $id . Admin::pollAccess());
+
     if ($query !== false) {
         $new = false;
         $actionbonus = ['query' => ['id' => $id]];
@@ -43,9 +45,11 @@ if (isset($_POST['question'])) {
     // answers
     $answers = explode("\n", Request::post('answers'));
     $answers_new = [];
+
     foreach ($answers as $answer) {
         $answers_new[] = _e(trim($answer));
     }
+
     $answers = Arr::removeValue($answers_new, '');
     $answers_count = count($answers);
     $answers = implode("\n", $answers);
@@ -56,20 +60,25 @@ if (isset($_POST['question'])) {
     } else {
         $author = User::getId();
     }
+
     $locked = Form::loadCheckbox('locked');
     $reset = Form::loadCheckbox('reset');
 
     // check variables
     $errors = [];
+
     if ($question == '') {
         $errors[] = _lang('admin.content.polls.edit.error1');
     }
+
     if ($answers_count == 0) {
         $errors[] = _lang('admin.content.polls.edit.error2');
     }
+
     if ($answers_count > 20) {
         $errors[] = _lang('admin.content.polls.edit.error3');
     }
+
     if (User::hasPrivilege('adminpollall') && DB::result(DB::query('SELECT COUNT(*) FROM ' . DB::table('user') . ' WHERE id=' . $author . ' AND (id=' . User::getId() . ' OR (SELECT level FROM ' . DB::table('user_group') . ' WHERE id=' . DB::table('user') . '.group_id)<' . User::getLevel() . ')')) == 0) {
         $errors[] = _lang('admin.content.articles.edit.error3');
     }
@@ -95,6 +104,7 @@ if (isset($_POST['question'])) {
                     for ($i = 0; $i < $votes_count - $answers_count; $i++) {
                         array_pop($votes);
                     }
+
                     $newvotes = implode('-', $votes);
                 }
 
@@ -153,6 +163,7 @@ if ($continue) {
     if (isset($_GET['saved'])) {
         $message = Message::ok(_lang('global.saved'));
     }
+
     if (isset($_GET['created'])) {
         $message = Message::ok(_lang('global.created'));
     }

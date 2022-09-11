@@ -54,15 +54,18 @@ if (!empty($queries)) {
     $log = [];
     $lastResource = null;
     $error = false;
+
     for ($i = 0; isset($queries[$i]); ++$i) {
         $result = DB::query($queries[$i], true);
 
         if ($result instanceof mysqli_result) {
             // result
             $log[] = _lang('admin.other.sqlex.rows') . ': ' . DB::size($result);
+
             if ($lastResource !== null) {
                 DB::free($lastResource);
             }
+
             $lastResource = $result;
         } elseif ($result) {
             // true
@@ -81,10 +84,12 @@ if (!empty($queries)) {
         <h2>' . _lang('global.result') . '</h2>
         <ol>
 ';
+
     for ($i = 0; isset($log[$i]); ++$i) {
         $isError = ($error && !isset($log[$i + 1]));
         $output .= '<li' . ($isError ? ' class="important"' : '') . ">{$log[$i]}</li>\n";
     }
+
     $output .= "</ol>\n";
 
     // output results
@@ -108,8 +113,10 @@ if (!empty($queries)) {
 
         while ($row = DB::rown($lastResource)) {
             $output .= "<tr>\n";
+
             for ($j = 0; $j < $i; ++$j) {
                 $output .= '<td>';
+
                 if ($row[$j] === null) {
                     // null
                     $output .= '<code class="text-warning">NULL</code>';
@@ -123,8 +130,10 @@ if (!empty($queries)) {
                     // short string
                     $output .= _e($row[$j]);
                 }
+
                 $output .= "</td>\n";
             }
+
             $output .= "</tr>\n";
         }
 

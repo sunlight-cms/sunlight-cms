@@ -34,6 +34,7 @@ abstract class Template
 
         // CSS
         $css = [];
+
         foreach ($_index->template->getOption('css') as $key => $path) {
             $css[$key] = UrlHelper::isAbsolute($path) ? $path : Router::path($path);
         }
@@ -44,12 +45,14 @@ abstract class Template
             'sunlight' => Router::path('system/js/sunlight.js'),
             'rangyinputs' => Router::path('system/js/rangyinputs.js'),
         ];
+
         foreach ($_index->template->getOption('js') as $key => $path) {
             $js[$key] = UrlHelper::isAbsolute($path) ? $path : Router::path($path);
         }
 
         // title
         $title = Extend::buffer('tpl.title', ['head' => true]);
+
         if ($title === '') {
             if (Settings::get('titletype') == 1) {
                 $title = Settings::get('title') . ' ' . Settings::get('titleseparator') . ' ' . $_index->title;
@@ -107,6 +110,7 @@ abstract class Template
                 'boxes' => &$boxes,
                 'overrides' => &$overrides,
             ]);
+
             if ($output !== '') {
                 return $output;
             }
@@ -117,6 +121,7 @@ abstract class Template
             if ($options['box.parent']) {
                 $output .= "<{$options['box.parent']} class=\"boxes boxes-{$slot}\">\n";
             }
+
             foreach ($boxes as $item) {
                 // filter boxes
                 if ($item['page_ids'] !== null && !Page::isActive(explode(',', $item['page_ids']), $item['page_children'])) {
@@ -153,6 +158,7 @@ abstract class Template
                     $output .= "\n</{$options['box.item']}>";
                 }
             }
+
             if ($options['box.parent']) {
                 $output .= "</{$options['box.parent']}>\n";
             }
@@ -321,6 +327,7 @@ abstract class Template
         // determine page tree level and depth
         try {
             [$level, $depth] = Page::getTreeReader()->getLevelAndDepth($options['page_id']);
+
             if ($options['max_depth'] !== null) {
                 $depth = min($options['max_depth'], $depth);
             }
@@ -342,6 +349,7 @@ abstract class Template
             $filter,
             PageMenu::getRequiredExtraColumns()
         );
+
         if ($options['children_only']) {
             $pages = Page::getTreeReader()->extractChildren($pages, $options['page_id'], true);
         }
@@ -368,6 +376,7 @@ abstract class Template
 
         // determine active page and its level
         [$pageId, $pageData] = Page::getActive();
+
         if ($pageData !== null) {
             $rootLevel = $pageData['node_level'];
         } else {
@@ -400,9 +409,11 @@ abstract class Template
         // render
         if (!empty($breadcrumbs) && (!$onlyWhenMultiple || count($breadcrumbs) >= 2) && $output === '') {
             $output .= "<ul class=\"breadcrumbs\">\n";
+
             foreach ($breadcrumbs as $crumb) {
                 $output .= '<li><a href="' . _e($crumb['url']) . "\">{$crumb['title']}</a></li>\n";
             }
+
             $output .= "</ul>\n";
         }
 
@@ -484,11 +495,13 @@ abstract class Template
             // messages
             if (Settings::get('messages')) {
                 $messages_count = User::getUnreadPmCount();
+
                 if ($messages_count != 0) {
                     $messages_count = " [{$messages_count}]";
                 } else {
                     $messages_count = '';
                 }
+
                 $items['messages'] = [
                     Router::module('messages'),
                     _lang('usermenu.messages') . $messages_count,
@@ -528,12 +541,15 @@ abstract class Template
 
         // render
         $output = Extend::buffer('tpl.usermenu', ['items' => &$items]);
+
         if ($output === '' && !empty($items)) {
             $output = '<ul class="user-menu ' . (User::isLoggedIn() ? 'logged-in' : 'not-logged-in') . "\">\n";
             $output .= Extend::buffer('tpl.usermenu.start');
+
             foreach ($items as $id => $item) {
                 $output .= '<li class="user-menu-' . $id . '"><a href="' . _e($item[0]) . '">' . $item[1] . "</a></li>\n";
             }
+
             $output .= Extend::buffer('tpl.usermenu.end');
             $output .= "</ul>\n";
         }

@@ -32,6 +32,7 @@ if ($query['slug_abs']) {
     $base_slug = '';
 } else {
     $slug_last_slash = mb_strrpos($query['slug'], '/');
+
     if ($slug_last_slash === false) {
         $editable_slug = $query['slug'];
         $base_slug = '';
@@ -83,6 +84,7 @@ if (!empty($_POST)) {
         // load and process value
         if (!isset($item_opts['enabled']) || $item_opts['enabled']) {
             $val = Request::post($item);
+
             if ($val !== null) {
                 $val = trim($val);
             } elseif (!$item_opts['nullable']) {
@@ -91,6 +93,7 @@ if (!empty($_POST)) {
         } else {
             $val = $query[$item];
         }
+
         switch ($item_opts['type']) {
             case 'raw':
                 if ($item_opts['nullable'] && $val === '') {
@@ -130,12 +133,14 @@ if (!empty($_POST)) {
                 }
 
                 $skip = true;
+
                 if ($new || $val != $query['node_parent']) {
                     $pageTreeManager = Page::getTreeManager();
 
                     if ($val !== null) {
                         // new parent
                         $parentData = Page::getData($val, ['id', 'type']);
+
                         if (
                             $parentData !== false
                             && $parentData['type'] != Page::SEPARATOR
@@ -164,6 +169,7 @@ if (!empty($_POST)) {
             case 'ord':
                 if ($val === '') {
                     $maxOrd = DB::queryRow('SELECT MAX(ord) max_ord FROM ' . DB::table('page') . ' WHERE node_parent' . ($actual_parent_id === null ? ' IS NULL' : '=' . DB::val($actual_parent_id)));
+
                     if ($maxOrd && $maxOrd['max_ord'] !== null) {
                         $val = $maxOrd['max_ord'] + 1;
                     } else {
@@ -179,6 +185,7 @@ if (!empty($_POST)) {
                 if ($val === '') {
                     $val = _lang('global.novalue');
                 }
+
                 $title = $val;
                 break;
 
@@ -192,6 +199,7 @@ if (!empty($_POST)) {
                 if ($val === '') {
                     $val = Request::post('title');
                 }
+
                 if ($slug_abs) {
                     // absolutni slug
                     $val = StringManipulator::slugify($val, true, '._/', 'page');
@@ -199,6 +207,7 @@ if (!empty($_POST)) {
                     // pouze segment
                     $val = ($base_slug !== '' ? $base_slug . '/' : '') . StringManipulator::slugify($val, true, '._', 'page');
                 }
+
                 if ($query['slug'] !== $val || $query['slug_abs'] != $slug_abs) {
                     $refresh_slug = true;
                 }
@@ -217,6 +226,7 @@ if (!empty($_POST)) {
                     $val = min(User::getLevel(), max(0, (int) $val));
                     $changeset['level_inherit'] = 0;
                 }
+
                 if (!$skip && ($val != $query['level'] || $query['level_inherit'] != $changeset['level_inherit'])) {
                     $refresh_levels = true;
                 }
@@ -297,8 +307,7 @@ if (!empty($_POST)) {
                     case Page::GALLERY:
                         if ($val <= 10) {
                             $val = 10;
-                        }
-                        elseif ($val > 1024) {
+                        } elseif ($val > 1024) {
                             $val = 1024;
                         }
                         break;
@@ -310,6 +319,7 @@ if (!empty($_POST)) {
                 if ($type == Page::SECTION && $val == 1 && !$new) {
                     DB::delete('post', 'home=' . $id . ' AND type=' . Post::SECTION_COMMENT);
                 }
+
                 $skip = true;
                 break;
 
@@ -317,6 +327,7 @@ if (!empty($_POST)) {
             case 'delposts':
                 if ($val == 1 && !$new) {
                     $ptype = null;
+
                     switch ($type) {
                         case Page::BOOK:
                             $ptype = Post::BOOK_ENTRY;
@@ -325,10 +336,12 @@ if (!empty($_POST)) {
                             $ptype = Post::FORUM_TOPIC;
                             break;
                     }
+
                     if ($ptype != null) {
                         DB::delete('post', 'home=' . $id . ' AND type=' . $ptype);
                     }
                 }
+
                 $skip = true;
                 break;
 
@@ -360,6 +373,7 @@ if (!empty($_POST)) {
                 } else {
                     $changeset['layout_inherit'] = 0;
                 }
+
                 if (!$skip && ($val != $query['layout'] || $query['layout_inherit'] != $changeset['layout_inherit'])) {
                     $refresh_layouts = true;
                 }
@@ -458,9 +472,11 @@ if ($editor === '') {
 if (isset($_GET['saved'])) {
     $output .= Message::ok(_lang('global.saved') . ' <small>(' . GenericTemplates::renderTime(time()) . ')</small>', true);
 }
+
 if (!$new && $editscript_enable_slug && DB::count('page', 'id!=' . DB::val($query['id']) . ' AND slug=' . DB::val($query['slug'])) !== 0) {
     $output .= Message::warning(_lang('admin.content.form.slug.collision'));
 }
+
 if (!$new && $id == Settings::get('index_page_id')) {
     $output .= Admin::note(_lang('admin.content.form.indexnote'));
 }

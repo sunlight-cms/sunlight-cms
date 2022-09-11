@@ -30,15 +30,19 @@ abstract class Environment
     static function getUploadLimit(): ?int
     {
         static $result = null;
+
         if (!isset($result)) {
             $limit_lowest = null;
             $opts = ['upload_max_filesize', 'post_max_size', 'memory_limit'];
+
             for ($i = 0; isset($opts[$i]); ++$i) {
                 $limit = self::phpIniLimit($opts[$i]);
+
                 if (isset($limit) && (!isset($limit_lowest) || $limit < $limit_lowest)) {
                     $limit_lowest = $limit;
                 }
             }
+
             $result = $limit_lowest ?? null;
         }
 
@@ -53,6 +57,7 @@ abstract class Environment
     static function renderUploadLimit(): string
     {
         $limit = self::getUploadLimit();
+
         if ($limit !== null) {
             return '<small>' . _lang('global.uploadlimit') . ': <em>' . GenericTemplates::renderFileSize($limit) . '</em></small>';
         }

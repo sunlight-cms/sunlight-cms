@@ -120,9 +120,11 @@ abstract class Database
     static function queryRow(string $sql, bool $expectError = false)
     {
         $result = self::query($sql, $expectError);
+
         if ($result === false) {
             return false;
         }
+
         $row = self::row($result);
         self::free($result);
 
@@ -141,9 +143,11 @@ abstract class Database
     static function queryRows(string $sql, $indexBy = null, $fetchColumn = null, bool $assoc = true, bool $expectError = false)
     {
         $result = self::query($sql, $expectError);
+
         if ($result === false) {
             return false;
         }
+
         $rows = self::rows($result, $indexBy, $fetchColumn, $assoc);
         self::free($result);
 
@@ -158,6 +162,7 @@ abstract class Database
     static function count(string $table, string $where = '1'): int
     {
         $result = self::query('SELECT COUNT(*) FROM ' . self::table($table) . ' WHERE ' . $where);
+
         if ($result instanceof \mysqli_result) {
             $count = (int) self::result($result);
             self::free($result);
@@ -179,9 +184,11 @@ abstract class Database
     {
         $tables = [];
         $query = self::query('SHOW TABLES LIKE \'' . self::escWildcard($prefix ?? self::$prefix) . '%\'');
+
         while ($row = self::rown($query)) {
             $tables[] = $row[0];
         }
+
         self::free($query);
 
         return $tables;
@@ -252,6 +259,7 @@ abstract class Database
     {
         $columns = [];
         $fields = $result->fetch_fields();
+
         for ($i = 0; isset($fields[$i]); ++$i) {
             $columns[] = $fields[$i]->name;
         }
@@ -326,12 +334,14 @@ abstract class Database
     {
         $sql = '';
         $first = true;
+
         foreach ($identifiers as $identifier) {
             if ($first) {
                 $first = false;
             } else {
                 $sql .= ',';
             }
+
             $sql .= self::escIdt($identifier);
         }
 
@@ -484,9 +494,11 @@ abstract class Database
 
         // get all columns
         $columns = [];
+
         foreach ($rows as $row) {
             $columns += array_flip(array_keys($row));
         }
+
         $columns = array_keys($columns);
 
         if (empty($columns)) {
@@ -497,10 +509,12 @@ abstract class Database
         $sql = 'INSERT INTO ' . self::table($table) . ' (';
 
         $columnCounter = 0;
+
         foreach ($columns as $column) {
             if ($columnCounter !== 0) {
                 $sql .= ',';
             }
+
             $sql .= self::escIdt($column);
             ++$columnCounter;
         }
@@ -508,19 +522,24 @@ abstract class Database
         $sql .= ') VALUES ';
 
         $rowCounter = 0;
+
         foreach ($rows as $row) {
             if ($rowCounter !== 0) {
                 $sql .= ',';
             }
+
             $sql .= '(';
             $columnCounter = 0;
+
             foreach ($columns as $column) {
                 if ($columnCounter !== 0) {
                     $sql .= ',';
                 }
+
                 $sql .= self::val($row[$column] ?? null);
                 ++$columnCounter;
             }
+
             $sql .= ')';
             ++$rowCounter;
         }
@@ -549,6 +568,7 @@ abstract class Database
             if ($counter !== 0) {
                 $set_list .= ',';
             }
+
             $set_list .= self::escIdt($col) . '=' . self::val($val);
             ++$counter;
         }

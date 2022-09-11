@@ -15,9 +15,11 @@ if (isset($_POST['title']) && is_array($_POST['title'])) {
     foreach ($_POST['title'] as $id => $title) {
         $id = (int) $id;
         $title = _e(trim($title));
+
         if ($title == '') {
             $title = _lang('global.novalue');
         }
+
         DB::update('page', 'id=' . DB::val($id), ['title' => $title]);
     }
 

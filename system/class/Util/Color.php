@@ -88,11 +88,13 @@ class Color
 
         // update channel
         $this->$channel = $value;
+
         if ($channel === 'r' || $channel === 'g' || $channel === 'b') {
             [$this->h, $this->s, $this->l] = $this->rgbToHsl($this->r, $this->g, $this->b);
         } else {
             [$this->r, $this->g, $this->b] = $this->hslToRgb($this->h, $this->s, $this->l);
         }
+
         return true;
     }
 
@@ -149,7 +151,8 @@ class Color
     {
         // normalize args
         $args = ['h', 's', 'l'];
-        for($i = 0; $i < 3; ++$i) {
+
+        for ($i = 0; $i < 3; ++$i) {
             if (${$args[$i]} < 0) {
                 ${$args[$i]} = 0;
             } elseif (${$args[$i]} > 255) {
@@ -164,6 +167,7 @@ class Color
         $c = (1 - abs(2 * $l)) * $s;
         $hx = $h / 60;
         $x = $c * (1 - abs(fmod($hx, 2) - 1));
+
         if ($hx >= 0 && $hx < 1) {
             $rgb = [$c, $x, 0];
         } elseif ($hx >= 1 && $hx < 2) {
@@ -177,8 +181,10 @@ class Color
         } else {
             $rgb = [$c, 0, $x];
         }
+
         $m = $l - $c * .5;
-        for($i = 0; $i < 3; ++$i) {
+
+        for ($i = 0; $i < 3; ++$i) {
             $rgb[$i] = (int) Math::range(floor(($rgb[$i] + $m) * 255 + 127), 0, 255);
         }
 
@@ -197,7 +203,8 @@ class Color
     {
         // normalize args
         $args = ['r', 'g', 'b'];
-        for($i = 0; $i < 3; ++$i) {
+
+        for ($i = 0; $i < 3; ++$i) {
             if (${$args[$i]} < 0) {
                 ${$args[$i]} = 0;
             } elseif (${$args[$i]} > 255) {
@@ -210,9 +217,11 @@ class Color
         $m = min($r, $g, $b);
         $l = .5 * ($M + $m);
         $c = $M - $m;
+
         if ($c === 0) {
             return [0, (int) $l, 0];
         }
+
         if ($M === $r) {
             $hx = fmod(($g - $b) / $c, 6);
         } elseif ($M === $g) {
@@ -220,6 +229,7 @@ class Color
         } else {
             $hx = ($r - $g) / $c + 4;
         }
+
         $h = (int) round($hx * 60 / 360 * 255);
         $l = (int) round($l);
         $s = (int) round($c / (1 - abs(2 * ($l - 127) / 255)));

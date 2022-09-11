@@ -47,6 +47,7 @@ if (isset($_POST['category'])) {
     if ($new_category != -1 && DB::count('page', 'id=' . DB::val($new_category) . ' AND type=' . Page::CATEGORY) === 0) {
         $new_category = -1;
     }
+
     if ($new_author != -1 && DB::count('user', 'id=' . DB::val($new_author)) === 0) {
         $new_author = -1;
     }
@@ -266,11 +267,13 @@ if (!$infopage) {
 <ul>';
 
     $counter = 0;
+
     while ($r = DB::row($query)) {
         if ($counter >= 30) {
             $output .= '<li><em>... (+' . ($found - $counter) . ")</em></li>\n";
             break;
         }
+
         $output .= '<li><a href="' . _e(Router::article($r['id'], $r['slug'], $r['cat_slug'])) . '" target="_blank">' . $r['title'] . "</a></li>\n";
         ++$counter;
     }

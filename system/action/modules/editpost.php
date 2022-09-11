@@ -55,9 +55,11 @@ if ($query !== false) {
                     break;
                 case Post::BOOK_ENTRY:
                     $postsperpage = DB::queryRow('SELECT var2 FROM ' . DB::table('page') . ' WHERE id=' . $query['home']);
+
                     if ($postsperpage['var2'] === null) {
                         $postsperpage['var2'] = Settings::get('commentsperpage');
                     }
+
                     $_index->backlink = UrlHelper::appendParams($url, 'page=' . Paginator::getItemPage($postsperpage['var2'], DB::table('post'), 'id>' . $query['id'] . ' AND type=' . Post::BOOK_ENTRY . ' AND xhome=-1 AND home=' . $query['home'])) . '#post-' . $query['id'];
                     break;
                 case Post::SHOUTBOX_ENTRY:
@@ -110,8 +112,10 @@ if (isset($_POST['text'])) {
         }
 
         $text = Html::cut(_e(trim(Request::post('text', ''))), ($query['type'] != Post::SHOUTBOX_ENTRY) ? 16384 : 255);
+
         if ($query['xhome'] == -1 && in_array($query['type'], [Post::FORUM_TOPIC, Post::PRIVATE_MSG])) {
             $subject = Html::cut(_e(StringManipulator::trimExtraWhitespace(Request::post('subject'))), 48);
+
             if ($subject === '')  {
                 $subject = '-';
             }
@@ -133,9 +137,11 @@ if (isset($_POST['text'])) {
                     'text' => $text,
                     'subject' => $subject
                 ];
+
                 if (isset($guest)) {
                     $update_data['guest'] = $guest;
                 }
+
                 DB::update('post', 'id=' . DB::val($id), $update_data);
                 $_index->redirect(Router::module('editpost', ['query' => ['id' => $id , 'saved' => 1], 'absolute' => true]));
 
@@ -170,6 +176,7 @@ if (isset($_POST['text'])) {
 
                 // remove replies
                 DB::delete('post', 'id=' . DB::val($id));
+
                 if ($query['xhome'] == -1) {
                     DB::delete('post', 'xhome=' . DB::val($id) . ' AND home=' . DB::val($query['home']) . ' AND type=' . DB::val($query['type']));
                 }
@@ -189,6 +196,7 @@ $_index->title = _lang('mod.editpost');
 if (isset($_GET['saved']) && $message == '') {
     $message = Message::ok(_lang('global.saved'));
 }
+
 $output .= $message;
 
 // form
@@ -198,9 +206,11 @@ if ($form) {
     if ($query['author'] == -1) {
         $inputs[] = ['label' => _lang('posts.guestname'), 'content' => '<input type="text" name="guest" class="inputsmall" value="' . $query['guest'] . '" maxlength="24">'];
     }
+
     if ($query['xhome'] == -1 && in_array($query['type'], [Post::FORUM_TOPIC, Post::PRIVATE_MSG])) {
         $inputs[] = ['label' => _lang((($query['type'] != Post::FORUM_TOPIC) ? 'posts.subject' : 'posts.topic')), 'content' => '<input type="text" name="subject" class="inputmedium" maxlength="48" value="' . $query['subject'] . '">' ];
     }
+
     $inputs[] = ['label' => _lang('posts.text'), 'content' => '<textarea name="text" class="areamedium" rows="5" cols="33">' . $query['text'] . '</textarea>', 'top' => true];
     $inputs[] = ['label' => '', 'content' => PostForm::renderControls('postform', 'text', $bbcode)];
     $inputs[] = Form::getSubmitRow([

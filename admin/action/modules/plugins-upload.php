@@ -23,6 +23,7 @@ if (isset($_FILES['archive']) && is_uploaded_file($_FILES['archive']['tmp_name']
 
                 Core::$pluginManager->clearCache();
             }
+
             if (!empty($failedPlugins)) {
                 $message .= Message::list($failedPlugins, ['text' => _lang('admin.plugins.upload.failed' . (!$merge ? '.no_merge' : ''))]);
             }

@@ -73,6 +73,7 @@ switch ($a) {
                 } else {
                     $rq = false;
                 }
+
                 if ($rq === false || User::equals($rq['usr_id'])) {
                     $message = Message::warning(_lang('mod.messages.error.badreceiver'));
                     break;
@@ -161,6 +162,7 @@ switch ($a) {
             $senderUserQuery = User::createQuery('pm.sender', 'sender_', 'su');
             $receiverUserQuery = User::createQuery('pm.receiver', 'receiver_', 'ru');
             $q = DB::queryRow('SELECT pm.*,p.id post_id,p.subject,p.time,p.text,p.guest,p.ip' . Extend::buffer('posts.columns') . ',' . $senderUserQuery['column_list'] . ',' . $receiverUserQuery['column_list'] . ' FROM ' . DB::table('pm') . ' AS pm JOIN ' . DB::table('post') . ' AS p ON (p.type=' . Post::PRIVATE_MSG . ' AND p.home=pm.id AND p.xhome=-1) ' . $senderUserQuery['joins'] . ' ' . $receiverUserQuery['joins'] . ' WHERE pm.id=' . $id . ' AND (sender=' . User::getId() . ' AND sender_deleted=0 OR receiver=' . User::getId() . ' AND receiver_deleted=0)');
+
             if ($q === false) {
                 $_index->notFound();
                 break;
@@ -247,10 +249,12 @@ switch ($a) {
                         );
                         $changesets = [];
                         $now = time();
+
                         while ($r = DB::row($q)) {
                             $role = User::equals($r['sender']) ? 'sender' : 'receiver';
                             $changesets[$r['id']][$role . '_readtime'] = $r['last_post_time'] - 1;
                         }
+
                         DB::updateSetMulti('pm', 'id', $changesets);
                         $message = Message::ok(_lang('global.done'));
                     }
@@ -270,6 +274,7 @@ switch ($a) {
 
         // paging
         $paging = Paginator::render($_index->url, Settings::get('messagesperpage'), DB::table('pm'), '(sender=' . User::getId() . ' AND sender_deleted=0) OR (receiver=' . User::getId() . ' AND receiver_deleted=0)', '&a=' . $a);
+
         if (Paginator::atTop()) {
             $output .= $paging['paging'];
         }
@@ -305,6 +310,7 @@ switch ($a) {
             ' ORDER BY pm.update_time DESC '
             . $paging['sql_limit']
         );
+
         while ($r = DB::row($q)) {
             $read = (User::equals($r['sender']) && $r['sender_readtime'] >= $r['update_time'] || User::equals($r['receiver']) && $r['receiver_readtime'] >= $r['update_time']);
             $output .= '<tr>
@@ -314,6 +320,7 @@ switch ($a) {
     <td>' . GenericTemplates::renderTime($r['update_time'], 'post') . "</td>
 </tr>\n";
         }
+
         if (!isset($read)) {
             $output .= '<tr><td colspan="4">' . _lang('mod.messages.nokit') . "</td></tr>\n";
         }

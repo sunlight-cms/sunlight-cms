@@ -77,12 +77,13 @@ abstract class Bbcode
                 case 0:
                     if ($char === '[') {
                         $mode = 1;
+
                         if ($parents_n === -1) {
                             $output .= $buffer;
-                        }
-                        else {
+                        } else {
                             $parents[$parents_n][2] .= $buffer;
                         }
+
                         $buffer = '';
                     }
                     break;
@@ -99,6 +100,7 @@ abstract class Bbcode
                     } elseif ($char === ']') {
                         // tag end
                         $tag = mb_strtolower($tag);
+
                         if (isset(self::$tags[$tag])) {
                             if ($parents_n === -1 || self::$tags[$tag][2] || self::$tags[$tag][0] && $closing) {
                                 if (self::$tags[$tag][0]) {
@@ -111,11 +113,13 @@ abstract class Bbcode
                                             --$parents_n;
                                             $pop = array_pop($parents);
                                             $buffer = self::processTag($pop[0], $pop[1], $pop[2]);
+
                                             if ($parents_n === -1) {
                                                 $output .= $buffer;
                                             } else {
                                                 $parents[$parents_n][2] .= $buffer;
                                             }
+
                                             $reset = 1;
                                             $char = '';
                                         }
@@ -133,11 +137,13 @@ abstract class Bbcode
                                 } else {
                                     // standalone tag
                                     $buffer = self::processTag($tag, $arg);
+
                                     if ($parents_n === -1) {
                                         $output .= $buffer;
                                     } else {
                                         $parents[$parents_n][2] .= $buffer;
                                     }
+
                                     $reset = 1;
                                 }
                             } else {
@@ -217,6 +223,7 @@ abstract class Bbcode
                         $parents[$parents_n][2] .= $buffer;
                     }
                 }
+
                 $buffer = '';
                 $reset = 0;
                 $mode = 0;
@@ -229,10 +236,11 @@ abstract class Bbcode
 
         // flush remaining parents and buffer
         if ($parents_n !== -1) {
-            for($i = 0; isset($parents[$i]); ++$i) {
+            for ($i = 0; isset($parents[$i]); ++$i) {
                 $output .= $parents[$i][2];
             }
         }
+
         $output .= $buffer;
 
         // return output
@@ -243,6 +251,7 @@ abstract class Bbcode
     {
         // load extend tag processors
         static $ext = null;
+
         if (!isset($ext)) {
             $ext = [];
             Extend::call('bbcode.init.proc', ['tags' => &$ext]);
@@ -252,6 +261,7 @@ abstract class Bbcode
         if (isset($ext[$tag])) {
             return $ext[$tag]($arg, $buffer);
         }
+
         switch ($tag) {
             case 'b':
                 if ($buffer !== '') {
@@ -308,9 +318,11 @@ abstract class Bbcode
                 return '<span class="hr"></span>';
             case 'color':
                 static $colors = ['aqua' => 0, 'black' => 1, 'blue' => 2, 'fuchsia' => 3, 'gray' => 4, 'green' => 5, 'lime' => 6, 'maroon' => 7, 'navy' => 8, 'olive' => 9, 'orange' => 10, 'purple' => 11, 'red' => 12, 'silver' => 13, 'teal' => 14, 'white' => 15, 'yellow' => 16];
+
                 if ($buffer !== '') {
                     if (preg_match('{#[0-9A-Fa-f]{3,6}$}AD', $arg) !== 1) {
                         $arg = mb_strtolower($arg);
+
                         if (!isset($colors[$arg])) {
                             return $buffer;
                         }
@@ -323,15 +335,18 @@ abstract class Bbcode
             case 'size':
                 if ($buffer !== '') {
                     $arg = (int) $arg;
+
                     if ($arg < 1 || $arg > 8) {
                         return $buffer;
                     }
+
                     return '<span style="font-size:' . round((0.5 + ($arg / 6)) * 100) . '%;">' . $buffer . '</span>';
                 }
                 break;
 
             case 'img':
                 $buffer = trim($buffer);
+
                 if ($buffer !== '' && UrlHelper::isSafe($buffer)) {
                     $src = UrlHelper::ensureValidScheme($buffer);
                     $link = ($arg !== '' && UrlHelper::isSafe($arg)) ? UrlHelper::addScheme($arg) : $src;

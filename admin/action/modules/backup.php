@@ -63,6 +63,7 @@ if (isset($_GET['download'])) {
 $backup_builder = new BackupBuilder();
 
 $backup_dynpath_choices = [];
+
 foreach ($backup_builder->getDynamicPathNames() as $name) {
     $backup_dynpath_choices[$name] = [
         'label' => _lang('admin.backup.dynpath.' . $name),
@@ -90,18 +91,21 @@ $computePathSize = function ($path) {
 };
 
 $static_size = 0;
+
 foreach ($backup_builder->getStaticPaths() as $path) {
     $static_size += $computePathSize(SL_ROOT . $path);
 }
 
 foreach ($backup_dynpath_choices as $name => &$options) {
     $size = 0;
+
     foreach ($backup_builder->getDynamicPath($name) as $path) {
         $size += $computePathSize(SL_ROOT . $path);
     }
 
     $options['size'] = $size;
 }
+
 unset($options);
 
 // process
@@ -118,6 +122,7 @@ if (!empty($_POST)) {
             }
 
             $enabled_dynpaths = Arr::filterKeys($_POST, 'dynpath_');
+
             foreach ($backup_builder->getDynamicPathNames() as $name) {
                 if (
                     isset($backup_dynpath_choices[$name])
@@ -304,6 +309,7 @@ if (!empty($_POST)) {
 arsort($backup_files, SORT_NUMERIC);
 
 $backup_list = '';
+
 if (!empty($backup_files)) {
     foreach ($backup_files as $backup_file => $backup_ctime) {
         $displayed_backup_name = $remove_random_suffix($backup_file);
@@ -376,6 +382,7 @@ $output .= $message . '
                                 } else {
                                     $checked = true;
                                 }
+
                                 echo '<li><label><input type="checkbox" value="' . $name . '" name="dynpath_' . $name . '"' . Form::disableInputUnless($optional) . Form::activateCheckbox($checked) . '> ' . _e($options['label']) . ' <small>(' . GenericTemplates::renderFileSize($options['size']) . ')</small></label></li>';
                             }
                         }) . '

@@ -18,9 +18,11 @@ $_index->title = $_page['title'];
 
 // content
 Extend::call('page.book.content.before', $extend_args);
+
 if ($_page['content'] != '') {
     $output .= Hcm::parse($_page['content']);
 }
+
 Extend::call('page.book.content.after', $extend_args);
 
 // posts

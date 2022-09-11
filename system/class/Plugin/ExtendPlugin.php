@@ -21,6 +21,7 @@ class ExtendPlugin extends Plugin implements InitializableInterface
                 $subscriber['priority']
             );
         }
+
         if (Core::$env === Core::ENV_WEB || Core::$env === Core::ENV_ADMIN) {
             foreach ($this->options['events.' . Core::$env] as $subscriber) {
                 Extend::reg(
@@ -47,6 +48,7 @@ class ExtendPlugin extends Plugin implements InitializableInterface
         foreach ($this->options['scripts'] as $script) {
             $this->loadScript($script);
         }
+
         if (Core::$env === Core::ENV_WEB || Core::$env === Core::ENV_ADMIN) {
             foreach ($this->options['scripts.' . Core::$env] as $script) {
                 $this->loadScript($script);

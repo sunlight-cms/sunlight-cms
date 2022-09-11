@@ -72,6 +72,7 @@ class Gallery
                 . '>'
                 . "</a>\n";
         }
+
         return $image;
     }
 

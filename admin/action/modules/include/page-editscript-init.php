@@ -34,9 +34,11 @@ $plugin_type_array = Page::getPluginTypes();
 if (isset($_GET['id'])) {
     $id = (int) Request::get('id');
     $query = DB::queryRow('SELECT * FROM ' . DB::table('page') . ' WHERE id=' . $id . ' AND type=' . $type);
+
     if ($query !== false) {
         $continue = true;
         $new = false;
+
         if ($type == Page::PLUGIN) {
             $type_idt = $query['type_idt'];
         } else {

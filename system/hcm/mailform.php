@@ -12,15 +12,18 @@ use Sunlight\Util\Request;
 return function ($adresa = '', $predmet = null) {
     $result = '';
     $_SESSION['hcm_' . Hcm::$uid . '_mail_receiver'] = implode(',', Arr::removeValue(explode(';', trim($adresa)), ''));
+
     if (isset($predmet)) {
         $rsubject = ' value="' . _e($predmet) . '"';
     } else {
         $rsubject = '';
     }
+
     $rcaptcha = Captcha::init();
 
     // message
     $msg = '';
+
     if (isset($_GET['hcm_mr_' . Hcm::$uid])) {
         switch (Request::get('hcm_mr_' . Hcm::$uid)) {
             case 1:

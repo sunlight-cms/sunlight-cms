@@ -27,6 +27,7 @@ abstract class DatabaseLoader
     {
         // determine current sql mode
         $oldSqlMode = DB::queryRow('SHOW VARIABLES WHERE Variable_name=\'sql_mode\'');
+
         if ($oldSqlMode !== false) {
             $oldSqlMode = $oldSqlMode['Value'];
         } else {
@@ -59,6 +60,7 @@ abstract class DatabaseLoader
         return Regexp::replace('{`' . preg_quote($currentPrefix) . '([a-zA-Z_]+)`}', $query, function (array $matches, $offset) use ($queryMap, $newPrefix) {
             // determine where we are in the query
             $segment = null;
+
             for ($i = 0; isset($queryMap[$i]); ++$i) {
                 if ($offset >= $queryMap[$i][1] && $offset <= $queryMap[$i][2]) {
                     $segment = $i;

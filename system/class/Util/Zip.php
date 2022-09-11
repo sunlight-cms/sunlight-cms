@@ -57,6 +57,7 @@ abstract class Zip
             // extract big files using streams
             // (this is slower but also less memory intensive)
             $source = $zip->getStream($stat['name']);
+
             if ($source === false) {
                 throw new \InvalidArgumentException(sprintf('Could not get stream for "%s"', $stat['name']));
             }
@@ -77,6 +78,7 @@ abstract class Zip
 
         // extract small files by getting all the data at once
         $data = $zip->getFromIndex($stat['index']);
+
         if ($data === false) {
             throw new \InvalidArgumentException(sprintf('Could not get data for "%s"', $stat['name']));
         }
@@ -129,6 +131,7 @@ abstract class Zip
 
         // build archive path prefix map
         $archivePathPrefixMap = [];
+
         foreach ((array) $directories as $archivePath) {
             if ($archivePath !== '') {
                 $archivePathPrefix = $archivePath . '/';
@@ -148,6 +151,7 @@ abstract class Zip
                     || strncmp($archivePathPrefix, $stat['name'], $archivePathPrefixLen) === 0
                 ) {
                     $lastSlashPos = strrpos($stat['name'], '/');
+
                     if ($lastSlashPos === false || $options['recursive'] || $lastSlashPos === $archivePathPrefixLen - 1) {
                         // parse current item
                         $fileName = $lastSlashPos !== false ? substr($stat['name'], $lastSlashPos) : $stat['name'];
@@ -155,6 +159,7 @@ abstract class Zip
 
                         // determine target directory
                         $targetDir = $targetPath;
+
                         if ($subpath !== null) {
                             $targetDir .= $subpath;
                         }

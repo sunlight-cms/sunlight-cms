@@ -58,10 +58,12 @@ if ($type == Post::PLUGIN) {
 
 // check home
 $continue = false;
+
 switch ($type) {
     // section
     case Post::SECTION_COMMENT:
         $tdata = DB::queryRow('SELECT public,var1,var3,level FROM ' . DB::table('page') . ' WHERE id=' . $home . ' AND type=' . Page::SECTION);
+
         if ($tdata !== false && User::checkPublicAccess($tdata['public'], $tdata['level']) && $tdata['var1'] == 1 && $tdata['var3'] != 1) {
             $continue = true;
         }
@@ -70,6 +72,7 @@ switch ($type) {
     // article
     case Post::ARTICLE_COMMENT:
         $tdata = DB::queryRow('SELECT id,time,confirmed,author,public,home1,home2,home3,comments,commentslocked FROM ' . DB::table('article') . ' WHERE id=' . $home);
+
         if ($tdata !== false && Article::checkAccess($tdata) && $tdata['comments'] == 1 && $tdata['commentslocked'] == 0) {
             $continue = true;
         }
@@ -78,6 +81,7 @@ switch ($type) {
     // book
     case Post::BOOK_ENTRY:
         $tdata = DB::queryRow('SELECT public,var1,var3,level FROM ' . DB::table('page') . ' WHERE id=' . $home . ' AND type=' . Page::BOOK);
+
         if ($tdata !== false && User::checkPublicAccess($tdata['public'], $tdata['level']) && User::checkPublicAccess($tdata['var1']) && $tdata['var3'] != 1) {
             $continue = true;
         }
@@ -87,6 +91,7 @@ switch ($type) {
     // shoutbox
     case Post::SHOUTBOX_ENTRY:
         $tdata = DB::queryRow('SELECT public,locked FROM ' . DB::table('shoutbox') . ' WHERE id=' . $home);
+
         if ($tdata !== false && User::checkPublicAccess($tdata['public']) && $tdata['locked'] != 1) {
             $continue = true;
         }
@@ -95,6 +100,7 @@ switch ($type) {
     // forum
     case Post::FORUM_TOPIC:
         $tdata = DB::queryRow('SELECT public,var2,var3,level FROM ' . DB::table('page') . ' WHERE id=' . $home . ' AND type=' . Page::FORUM);
+
         if ($tdata !== false && User::checkPublicAccess($tdata['public'], $tdata['level']) && User::checkPublicAccess($tdata['var3']) && $tdata['var2'] != 1) {
             $continue = true;
         }
@@ -104,6 +110,7 @@ switch ($type) {
     case Post::PRIVATE_MSG:
         if (Settings::get('messages') && User::isLoggedIn()) {
             $tdata = DB::queryRow('SELECT sender,receiver FROM ' . DB::table('pm') . ' WHERE id=' . $home . ' AND (sender=' . User::getId() . ' OR receiver=' . User::getId() . ') AND sender_deleted=0 AND receiver_deleted=0');
+
             if ($tdata !== false) {
                 $continue = true;
                 $xhome = $home;
@@ -125,6 +132,7 @@ switch ($type) {
 if ($xhome != -1 && $type != Post::PRIVATE_MSG) {
     $continue2 = false;
     $tdata = DB::queryRow('SELECT xhome FROM ' . DB::table('post') . ' WHERE id=' . $xhome . ' AND home=' . $home . ' AND locked=0');
+
     if ($tdata !== false && $tdata['xhome'] == -1) {
         $continue2 = true;
     }
@@ -165,9 +173,11 @@ if ($continue && $continue2 && $text != '' && ($type == Post::SHOUTBOX_ENTRY || 
                         'bumptime' => (($type == Post::FORUM_TOPIC && $xhome == -1) ? time() : '0'),
                         'flag' => $pluginflag
                     ], true);
+
                     if (!User::hasPrivilege('unlimitedpostaccess') && $type != Post::SHOUTBOX_ENTRY) {
                         IpLog::update(IpLog::ANTI_SPAM);
                     }
+
                     $return = 1;
                     Extend::call('posts.new', ['id' => $insert_id, 'posttype' => $type, 'post' => $post_data]);
 
@@ -188,6 +198,7 @@ if ($continue && $continue2 && $text != '' && ($type == Post::SHOUTBOX_ENTRY || 
                     // remove shoutbox posts beyond limit
                     if ($type == Post::SHOUTBOX_ENTRY) {
                         $pnum = DB::count('post', 'type=' . Post::SHOUTBOX_ENTRY . ' AND home=' . DB::val($home));
+
                         if ($pnum > Settings::get('sboxmemory')) {
                             $dnum = $pnum - Settings::get('sboxmemory');
                             $dposts = DB::queryRows('SELECT id FROM ' . DB::table('post') . ' WHERE type=' . Post::SHOUTBOX_ENTRY . ' AND home=' . $home . ' ORDER BY id LIMIT ' . $dnum, null, 'id');
@@ -212,6 +223,7 @@ if ($continue && $continue2 && $text != '' && ($type == Post::SHOUTBOX_ENTRY || 
 
 // redirect back
 $returnUrl = null;
+
 if ($type != Post::SHOUTBOX_ENTRY) {
     $returnUrl = Response::getReturnUrl();
 

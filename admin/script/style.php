@@ -23,12 +23,15 @@ $adminColor = function(int $loff = 0, ?float $satc = null, bool $sat_abs = false
         $light_abs = true;
         $loff += 127;
     }
+
     $h = $GLOBALS['hue'];
+
     if ($GLOBALS['dark']) {
         $l = ($light_abs ? 255 - $loff : $GLOBALS['light'] - $loff);
     } else {
         $l = ($light_abs ? $loff : $GLOBALS['light'] + $loff);
     }
+
     $s = (isset($satc) ? ($sat_abs ? $satc :  $GLOBALS['sat'] * $satc) : $GLOBALS['sat']);
 
     return (new Color([$h, $s, $l], 1))->getRgbStr();
@@ -69,6 +72,7 @@ if ($dark) {
     $scheme_contrast = $scheme_white;
     $scheme_contrast2 = $scheme_black;
 }
+
 $scheme_link_loff = ($dark ? -20 : -10);
 $dark_suffix = ($dark ? '_dark' : '');
 
@@ -83,15 +87,18 @@ switch ($s) {
     // green
     case 2:
         $hue = 70;
+
         if (!$dark) {
             $light -= 20;
         }
+
         $sat *= 0.7;
         break;
 
     // red
     case 3:
         $hue = 5;
+
         if (!$dark) {
             $light -= 10;
         }
@@ -102,6 +109,7 @@ switch ($s) {
         $hue = 35;
         $scheme_contrast = $scheme_black;
         $scheme_link = '#BE9B02';
+
         if (!$dark) {
             $light -= 20;
             $scheme_bar_flip = true;
@@ -118,6 +126,7 @@ switch ($s) {
     // azure
     case 6:
         $hue = 128;
+
         if (!$dark) {
             $light -= 10;
             $sat -= 70;
@@ -129,6 +138,7 @@ switch ($s) {
     // violet
     case 7:
         $hue = 195;
+
         if ($dark) {
             $light += 10;
         }
@@ -144,9 +154,11 @@ switch ($s) {
     // dark blue
     case 9:
         $hue = 170;
+
         if ($dark) {
             $scheme_link_loff -= 20;
         }
+
         $sat *= 0.5;
         break;
 
@@ -156,6 +168,7 @@ switch ($s) {
         $sat = 0;
         $scheme_link = '#67939F';
         $scheme_bar_loff = 50;
+
         if (!$dark) {
             $scheme_bar_flip = true;
         }
@@ -194,15 +207,19 @@ $scheme_bar = $adminColor($scheme_bar_loff);
 if ($scheme_link == null) {
     $scheme_link = $adminColor($scheme_link_loff, 255, true);
 }
+
 if ($scheme_bar_shadow === null) {
     $scheme_bar_shadow = ($scheme_bar_flip ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.3)');
 }
+
 if ($dark) {
     $scheme_bar_flip = !$scheme_bar_flip;
 }
+
 if ($scheme_bar_text === null) {
     $scheme_bar_text = ($scheme_bar_flip ? $scheme_black : $scheme_white);
 }
+
 if ($dark) {
     $scheme_alpha_shadow = 'rgba(255, 255, 255, 0.15)';
     $scheme_alpha_shadow2 = 'rgba(255, 255, 255, 0.075)';

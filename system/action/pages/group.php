@@ -18,13 +18,16 @@ $_index->title = $_page['title'];
 
 // content
 Extend::call('page.group.content.before', $extend_args);
+
 if ($_page['content'] != '') {
     $output .= Hcm::parse($_page['content']) . "\n\n<div class=\"hr group-hr\"><hr></div>\n\n";
 }
+
 Extend::call('page.group.content.after', $extend_args);
 
 // child pages
 $items = DB::query('SELECT id,title,slug,type,type_idt,perex,var1 FROM ' . DB::table('page') . ' WHERE node_parent=' . $id . ' AND visible=1 ORDER BY ord');
+
 if (DB::size($items) != 0) {
     while ($item = DB::row($items)) {
         $extendArgs = Extend::args($output, ['item' => &$item]);
@@ -68,6 +71,7 @@ if (DB::size($items) != 0) {
                     // load author of last post
                     $userQuery = User::createQuery('p.author');
                     $lastpost = DB::queryRow('SELECT p.author,p.guest,' . $userQuery['column_list'] . ' FROM ' . DB::table('post') . ' p ' . $userQuery['joins'] . ' WHERE p.home=' . $item['id'] . ' ORDER BY p.id DESC LIMIT 1');
+
                     if ($lastpost !== false) {
                         if ($lastpost['author'] != -1) {
                             $lastpost = Router::userFromQuery($userQuery, $lastpost);

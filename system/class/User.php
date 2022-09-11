@@ -132,16 +132,19 @@ abstract class User
             if (!$loginDataExist) {
                 // check cookie existence
                 $persistentCookieName = Core::$appId . '_persistent_key';
+
                 if (isset($_COOKIE[$persistentCookieName]) && is_string($_COOKIE[$persistentCookieName])) {
                     // cookie auth process
                     do {
                         // parse cookie
                         $cookie = explode('$', $_COOKIE[$persistentCookieName], 2);
+
                         if (count($cookie) !== 2) {
                             // invalid cookie format
                             $errorCode = 1;
                             break;
                         }
+
                         $cookie = [
                             'id' => (int) $cookie[0],
                             'hash' => $cookie[1],
@@ -149,6 +152,7 @@ abstract class User
 
                         // fetch user data
                         $userData = DB::queryRow('SELECT * FROM ' . DB::table('user') . ' WHERE id=' . DB::val($cookie['id']));
+
                         if ($userData === false) {
                             // user not found
                             $errorCode = 2;
@@ -163,6 +167,7 @@ abstract class User
                         }
 
                         $validHash = self::getAuthHash(self::AUTH_PERSISTENT_LOGIN, $userData['email'], $userData['password']);
+
                         if ($validHash !== $cookie['hash']) {
                             // invalid hash
                             IpLog::update(IpLog::FAILED_LOGIN_ATTEMPT);
@@ -195,6 +200,7 @@ abstract class User
             // fetch user data
             if (!$userData) {
                 $userData = DB::queryRow('SELECT * FROM ' . DB::table('user') . ' WHERE id=' . DB::val($_SESSION['user_id']));
+
                 if ($userData === false) {
                     // user not found
                     $errorCode = 6;
@@ -218,6 +224,7 @@ abstract class User
 
             // fetch group data
             $groupData = DB::queryRow('SELECT * FROM ' . DB::table('user_group') . ' WHERE id=' . DB::val($userData['group_id']));
+
             if ($groupData === false) {
                 // group data not found
                 $errorCode = 9;
@@ -263,6 +270,7 @@ abstract class User
         } else {
             // guest
             $groupData = DB::queryRow('SELECT * FROM ' . DB::table('user_group') . ' WHERE id=' . self::GUEST_GROUP_ID);
+
             if ($groupData === false) {
                 throw new \RuntimeException(sprintf('Anonymous user group was not found (id=%s)', self::GUEST_GROUP_ID));
             }
@@ -576,9 +584,11 @@ abstract class User
 
         // joins
         $joins = [];
+
         if ($joinUserIdColumn !== null) {
             $joins[] = 'LEFT JOIN ' . DB::table('user') . " {$alias} ON({$joinUserIdColumn}" . DB::notEqual($emptyValue) . " AND {$joinUserIdColumn}={$alias}.id)";
         }
+
         $joins[] = 'LEFT JOIN ' . DB::table('user_group') . " {$groupAlias} ON({$groupAlias}.id={$alias}.group_id)";
 
         // extend
@@ -593,6 +603,7 @@ abstract class User
         // make column list
         $columnList = '';
         $isFirstColumn = true;
+
         foreach ($columns as $columnName => $columnAlias) {
             if (!$isFirstColumn) {
                 $columnList .= ',';
@@ -619,6 +630,7 @@ abstract class User
     {
         // fetch user's data
         $user = DB::queryRow('SELECT id,avatar FROM ' . DB::table('user') . ' WHERE id=' . DB::val($id));
+
         if ($user === false) {
             return false;
         }
@@ -627,6 +639,7 @@ abstract class User
         $allow = true;
         $replacement = null;
         Extend::call('user.delete.check', ['user' => $user, 'allow' => &$allow, 'replacement' => &$replacement]);
+
         if (!$allow) {
             return false;
         }
@@ -634,6 +647,7 @@ abstract class User
         // get a replacement user to assign existing content to
         if ($replacement === null) {
             $replacement = DB::queryRow('SELECT id FROM ' . DB::table('user') . ' WHERE group_id=' . DB::val(self::ADMIN_GROUP_ID) . ' AND levelshift=1 AND blocked=0 AND id!=' . DB::val($id) . ' ORDER BY registertime LIMIT 1');
+
             if ($replacement === false) {
                 return false;
             }
@@ -712,6 +726,7 @@ abstract class User
         // title
         if ($title) {
             $title_text = _lang($required ? (self::isLoggedIn() ? 'global.accessdenied' : 'login.required.title') : 'login.title');
+
             if (Core::$env === Core::ENV_ADMIN) {
                 $output .= '<h1>' . $title_text . "</h1>\n";
             } else {
@@ -727,6 +742,7 @@ abstract class User
         // login result message
         if (isset($_GET['login_form_result'])) {
             $login_result = self::getLoginMessage(Request::get('login_form_result'));
+
             if ($login_result !== null) {
                 $output .= $login_result;
             }
@@ -759,6 +775,7 @@ abstract class User
 
             // form URL
             $form_url = Core::getCurrentUrl();
+
             if ($form_url->has('login_form_result')) {
                 $form_url->remove('login_form_result');
             }
@@ -792,19 +809,24 @@ abstract class User
             // links
             if (!$embedded) {
                 $links = [];
+
                 if (Settings::get('registration') && Core::$env === Core::ENV_WEB) {
                     $links['reg'] = ['url' => Router::module('reg'), 'text' => _lang('mod.reg')];
                 }
+
                 if (Settings::get('lostpass')) {
                     $links['lostpass'] = ['url' => Router::module('lostpass'), 'text' => _lang('mod.lostpass')];
                 }
+
                 Extend::call('user.login.links', ['links' => &$links]);
 
                 if (!empty($links)) {
                     $output .= "<ul class=\"login-form-links\">\n";
+
                     foreach ($links as $link_id => $link) {
                         $output .= '<li class="login-form-link-' . $link_id . '"><a href="' . _e($link['url']) . "\">{$link['text']}</a></li>\n";
                     }
+
                     $output .= "</ul>\n";
                 }
             }
@@ -885,6 +907,7 @@ abstract class User
             'persistent' => $persistent,
             'result' => &$extend_result,
         ]);
+
         if ($extend_result !== null) {
             return $extend_result;
         }
@@ -897,6 +920,7 @@ abstract class User
         }
 
         $query = DB::queryRow('SELECT u.id,u.username,u.email,u.logincounter,u.password,u.blocked,g.blocked group_blocked FROM ' . DB::table('user') . ' u JOIN ' . DB::table('user_group') . ' g ON(u.group_id=g.id) WHERE ' . $cond);
+
         if ($query === false) {
             // user not found
             return 0;
@@ -1084,6 +1108,7 @@ abstract class User
                 'url' => &$url,
                 'options' => $options,
             ]);
+
             if ($extendOutput !== '') {
                 return $extendOutput;
             }
@@ -1101,10 +1126,13 @@ abstract class User
 
         // render
         $out = '';
+
         if ($options['link']) {
             $out .= '<a href="' . _e(Router::module('profile', ['query' => ['id' =>  $data['username']]])) . '">';
         }
+
         $out .= '<img class="avatar' . ($options['class'] !== null ? " {$options['class']}" : '') . '" src="' . _e($url) . '" alt="' . $data[$data['publicname'] !== null ? 'publicname' : 'username'] . '">';
+
         if ($options['link']) {
             $out .= '</a>';
         }
@@ -1161,6 +1189,7 @@ abstract class User
             if ($login_message === null) {
                 $login_message = Message::ok(_lang('post_repeat.login'));
             }
+
             $login_message->append('<div class="hr"><hr></div>' . self::renderLoginForm(false, false, null, true), true);
 
             $output .= $login_message;

@@ -21,11 +21,14 @@ $unregistered_useable = ['postcomments', 'artrate', 'pollvote'];
 
 // load group
 $continue = false;
+
 if (isset($_GET['id'])) {
     $id = (int) Request::get('id');
     $query = DB::queryRow('SELECT * FROM ' . DB::table('user_group') . ' WHERE id=' . $id);
+
     if ($query !== false) {
         $systemitem = in_array($query['id'], $sysgroups_array);
+
         if (User::getLevel() > $query['level']) {
             $continue = true;
         } else {
@@ -132,8 +135,10 @@ if ($continue) {
     ]);
 
     $rights = '';
+
     foreach ($rights_array as $section) {
         $rights .= '<fieldset><legend>' . $section['title'] . "</legend><table>\n";
+
         foreach ($section['rights'] as $item) {
             if (
                 $id == User::ADMIN_GROUP_ID
@@ -169,20 +174,27 @@ if ($continue) {
 
         // base date
         $changeset['title'] = Html::cut(_e(trim(Request::post('title', ''))), 128);
+
         if ($changeset['title'] == '') {
             $changeset['title'] = _lang('global.novalue');
         }
+
         $changeset['descr'] = Html::cut(_e(trim(Request::post('descr', ''))), 255);
+
         if ($id != User::GUEST_GROUP_ID) {
             $changeset['icon'] = Html::cut(_e(trim(Request::post('icon', ''))), 16);
         }
+
         $changeset['color'] = Admin::formatHtmlColor(Request::post('color', ''), false, '');
+
         if ($id > User::GUEST_GROUP_ID) {
             $changeset['blocked'] = Form::loadCheckbox('blocked');
         }
+
         if ($id != User::GUEST_GROUP_ID) {
             $changeset['reglist'] = Form::loadCheckbox('reglist');
         }
+
         if ($id > User::GUEST_GROUP_ID) {
             $changeset['level'] = Math::range((int) Request::post('level'), 0, min(User::getLevel(), User::MAX_ASSIGNABLE_LEVEL));
         }
@@ -223,6 +235,7 @@ if ($continue) {
         $icons .= '<label><input' . Form::activateCheckbox($query['icon'] === '') . ' type="radio" name="icon" value=""> ' . _lang('global.undefined') . "</label>\n";
 
         $icon_dir = SL_ROOT . 'images/groupicons';
+
         foreach (scandir($icon_dir) as $file) {
             if (
                 $file === '.'
@@ -235,6 +248,7 @@ if ($continue) {
 
             $icons .= '<label><input' . Form::activateCheckbox($file === $query['icon']) . ' type="radio" name="icon" value="' . _e($file) . '"> <img class="icon" src="' . $icon_dir . '/' . _e($file) . '" alt="' . _e($file) . "\"></label>\n";
         }
+
         $icons .= "<div class=\"cleaner\"></div></div>\n";
     }
 

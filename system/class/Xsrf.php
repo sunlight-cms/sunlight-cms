@@ -46,6 +46,7 @@ class Xsrf
             } else {
                 // current session ID
                 $sessionId = session_id();
+
                 if ($sessionId === '') {
                     $sessionId = 'none';
                 }

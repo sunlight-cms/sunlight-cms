@@ -36,16 +36,20 @@ if (
             // create page
             case 'new':
                 $is_plugin_page = false;
+
                 if (is_numeric(Request::post('type'))) {
                     $type = (int) Request::post('type');
                 } else {
                     $type = Page::PLUGIN;
                     $type_idt = strval(Request::post('type'));
+
                     if (!isset($plugin_types[$type_idt])) {
                         break;
                     }
+
                     $is_plugin_page = true;
                 }
+
                 if (isset($type_array[$type]) && User::hasPrivilege('admin' . $type_array[$type])) {
                     $_admin->redirect(Router::admin('content-edit' . $type_array[$type], ($is_plugin_page ? ['query' => ['idt' => $type_idt]] : null)));
 
@@ -59,6 +63,7 @@ if (
 
     // page type list
     $create_list = '';
+
     if (User::hasPrivilege('adminpages')) {
         foreach ($type_array as $type => $name) {
             if ($type != Page::PLUGIN && User::hasPrivilege('admin' . $name)) {
@@ -69,7 +74,8 @@ if (
         // add plugin page types
         if (User::hasPrivilege('adminpluginpage') && !empty($plugin_types)) {
             $create_list .= "<option value=\"\" disabled>---</option>\n";
-            foreach($plugin_types as $plugin_type => $plugin_label) {
+
+            foreach ($plugin_types as $plugin_type => $plugin_label) {
                 $create_list .= '<option value="' . $plugin_type . '">' . $plugin_label . "</option>\n";
             }
         }
@@ -199,8 +205,10 @@ $content_modules = [
 Extend::call('admin.content.modules', ['modules' => &$content_modules]);
 
 $content_modules_str = '';
+
 foreach ($content_modules as $category_alias => $category_data) {
     $buttons_str = '';
+
     foreach ($category_data['modules'] as $module_alias => $module_options) {
         if ($module_options['access']) {
             $module_label = $module_options['label'] ?? _lang('admin.content.' . $module_alias);

@@ -128,10 +128,12 @@ abstract class Response
         self::download($filename, filesize($filepath));
 
         $handle = fopen($filepath, 'rb');
+
         while (!feof($handle)) {
             echo fread($handle, 131072);
             flush();
         }
+
         fclose($handle);
     }
 

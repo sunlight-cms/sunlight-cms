@@ -374,6 +374,7 @@ abstract class PageManipulator
                 // category articles and their comments
                 case Page::CATEGORY:
                     $rquery = DB::query('SELECT id,home1,home2,home3 FROM ' . DB::table('article') . ' WHERE home1=' . $page['id'] . ' OR home2=' . $page['id'] . ' OR home3=' . $page['id']);
+
                     while ($item = DB::row($rquery)) {
                         if ($item['home1'] == $page['id'] && $item['home2'] == -1 && $item['home3'] == -1) {
                             // delete article if this is its only category
@@ -381,12 +382,14 @@ abstract class PageManipulator
                             DB::delete('article', 'id=' . $item['id']);
                             continue;
                         }
+
                         if ($item['home1'] == $page['id'] && $item['home2'] != -1 && $item['home3'] == -1) {
                             // move home2 => home
                             DB::update('article', 'id=' . $item['id'], ['home1' => DB::raw('home2')]);
                             DB::update('article', 'id=' . $item['id'], ['home2' => -1]);
                             continue;
                         }
+
                         if ($item['home1'] == $page['id'] && $item['home2'] != -1 && $item['home3'] != -1) {
                             // move home2 => home, home3 => home2
                             DB::update('article', 'id=' . $item['id'], ['home1' => DB::raw('home2')]);
@@ -394,6 +397,7 @@ abstract class PageManipulator
                             DB::update('article', 'id=' . $item['id'], ['home3' => -1]);
                             continue;
                         }
+
                         if ($item['home1'] == $page['id'] && $item['home2'] == -1 && $item['home3'] != -1) {
                             // move home3 => home
                             DB::update('article', 'id=' . $item['id'], ['home1' => DB::raw('home3')]);
@@ -401,11 +405,13 @@ abstract class PageManipulator
 
                             continue;
                         }
+
                         if ($item['home1'] != -1 && $item['home2'] == $page['id']) {
                             // unset home2
                             DB::update('article', 'id=' . $item['id'], ['home2' => -1]);
                             continue;
                         }
+
                         if ($item['home1'] != -1 && $item['home3'] == $page['id']) {
                             // unset home3
                             DB::update('article', 'id=' . $item['id'], ['home3' => -1]);

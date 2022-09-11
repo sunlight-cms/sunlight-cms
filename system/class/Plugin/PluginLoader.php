@@ -308,6 +308,7 @@ class PluginLoader
         $circularDependencyMap = [];
 
         $checkQueue = [];
+
         foreach ($plugins as $id => $plugin) {
             if ($plugin->isOk()) {
                 foreach (array_keys($plugin->options['dependencies']) as $dependency) {
@@ -323,6 +324,7 @@ class PluginLoader
                 foreach (array_keys($plugins[$id]->options['dependencies']) as $dependency) {
                     if (isset($pathMap[$dependency])) {
                         $pathString = "{$id}";
+
                         foreach (array_keys($pathMap) as $segment) {
                             $pathString .= " -> {$segment}";
                         }
@@ -474,7 +476,7 @@ class PluginLoader
 
         // files
         if (!empty($package->autoload->files)) {
-            foreach($package->autoload->files as $path) {
+            foreach ($package->autoload->files as $path) {
                 $autoload['files'][] = Filesystem::normalizeWithBasePath($packagePath, $path);
             }
         }

@@ -108,10 +108,12 @@ class PluginArchive
         // build the regex
         $dirPatterns = [];
         $typeDir2Type = [];
+
         foreach ($this->manager->getTypes() as $type) {
             $dirPatterns[] = preg_quote($type->getDir());
             $typeDir2Type[$type->getDir()] = $type->getName();
         }
+
         $regex = '{(' . implode('|', $dirPatterns) . ')/(' . Plugin::ID_PATTERN . ')/(.+)$}AD';
 
         // iterate all files in the archive

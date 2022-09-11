@@ -248,12 +248,15 @@ class TreeReader
 
         // compose query
         $sql = 'SELECT ';
+
         for ($i = 0; $i < $columnCount; ++$i) {
             if ($i !== 0) {
                 $sql .= ',';
             }
+
             $sql .= 'r.' . $columns[$i];
         }
+
         for ($i = 0; $i < $nodeDepth; ++$i) {
             for ($j = 0; $j < $columnCount; ++$j) {
                 $sql .= ',n' . $i . '.' . $columns[$j];
@@ -262,6 +265,7 @@ class TreeReader
 
         $sql .= ' FROM ' . DB::table($this->table) . ' r';
         $parentAlias = 'r';
+
         for ($i = 0; $i < $nodeDepth; ++$i) {
             $nodeAlias = 'n' . $i;
             $sql .= sprintf(
@@ -277,12 +281,15 @@ class TreeReader
             );
             $parentAlias = $nodeAlias;
         }
+
         $sql .= ' WHERE r.';
+
         if ($options->nodeId === null) {
             $sql .= $this->levelColumn . '=0';
         } else {
             $sql .= $this->idColumn . '=' . DB::val($options->nodeId);
         }
+
         if ($filterSql !== null) {
             $sql .= ' AND (' . str_replace('%__node__%', 'r', $filterSql) . ')';
         }
@@ -290,16 +297,19 @@ class TreeReader
         // load nodes
         $nodeMap = [];
         $query = DB::query($sql);
+
         while ($row = DB::rown($query)) {
             for ($i = 0; isset($row[$i]); $i += $columnCount) {
                 if (!isset($nodeMap[$row[$i]])) {
                     $nodeMap[$row[$i]] = [];
+
                     for ($j = 0; $j < $columnCount; ++$j) {
                         $nodeMap[$row[$i]][$columns[$j]] = $row[$i + $j];
                     }
                 }
             }
         }
+
         DB::free($query);
 
         // sort nodes
@@ -310,6 +320,7 @@ class TreeReader
                 if ($a[$levelColumn] > $b[$levelColumn]) {
                     return 1;
                 }
+
                 if ($a[$levelColumn] == $b[$levelColumn]) {
                     if ($options->sortBy !== null) {
                         return strnatcmp($a[$options->sortBy], $b[$options->sortBy]) * ($options->sortAsc ? 1 : -1);
@@ -361,6 +372,7 @@ class TreeReader
                         if (!isset($nodeMap[$nodeIndexToIdMap[$i]])) {
                             continue;
                         }
+
                         if (
                             $nodeMap[$nodeIndexToIdMap[$i]][$this->parentColumn] == $invalidNodeId
                             && !isset($invalidNodes[$nodeIndexToIdMap[$i]])
@@ -468,20 +480,25 @@ class TreeReader
 
         // compose query
         $sql = 'SELECT ';
+
         for ($i = 0; $i <= $nodeLevel; ++$i) {
             for ($j = 0; $j < $columnCount; ++$j) {
                 if ($i !== 0 || $j !== 0) {
                     $sql .= ',';
                 }
+
                 $sql .= 'n' . $i . '.' . $columns[$j];
             }
         }
+
         $sql .= ' FROM ' . DB::table($this->table) . ' n0';
+
         for ($i = 1; $i <= $nodeLevel; ++$i) {
             $sql .= sprintf(
                 "\n JOIN %s n%s ON(n%2\$s.%s=n%s.%s)", DB::table($this->table), $i, $this->idColumn, $i - 1, $this->parentColumn
             );
         }
+
         $sql .= ' WHERE n0.' . $this->idColumn . '=' . DB::val($nodeId);
 
         // load nodes
@@ -489,12 +506,15 @@ class TreeReader
         $nodeIndex = 0;
         $query = DB::query($sql);
         $row = DB::rown($query);
+
         for ($i = $nodeLevel * $columnCount; isset($row[$i]); $i -= $columnCount) {
             for ($j = 0; $j < $columnCount; ++$j) {
                 $nodes[$nodeIndex][$columns[$j]] = $row[$i + $j];
             }
+
             ++$nodeIndex;
         }
+
         DB::free($query);
 
         return $nodes;
@@ -517,6 +537,7 @@ class TreeReader
 
         // node
         $data = DB::queryRow('SELECT ' . $this->levelColumn . ',' . $this->depthColumn . ' FROM ' . DB::table($this->table) . ' WHERE ' . $this->idColumn . '=' . DB::val($nodeId));
+
         if ($data === false) {
             throw new \RuntimeException(sprintf('Node "%s" does not exist', $nodeId));
         }
@@ -537,6 +558,7 @@ class TreeReader
         }
 
         $nodeLevel = DB::queryRow('SELECT ' . $this->levelColumn . ' FROM ' . DB::table($this->table) . ' WHERE ' . $this->idColumn . '=' . DB::val($nodeId));
+
         if ($nodeLevel === false) {
             throw new \RuntimeException(sprintf('Node "%s" does not exist', $nodeId));
         }

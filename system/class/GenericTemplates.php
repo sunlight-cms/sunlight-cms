@@ -51,6 +51,7 @@ abstract class GenericTemplates
         for ($i = 2; $i >= 0; --$i) {
             $bytesPerUnit = 1000 ** $i;
             $value = $bytes / $bytesPerUnit;
+
             if ($value >= 1 || $i === 0) {
                 break;
             }
@@ -136,16 +137,20 @@ HTML;
 
         // css
         $html .= $assets['css_before'];
+
         foreach ($assets['css'] as $item) {
             $html .= "\n<link rel=\"stylesheet\" href=\"" . _e(UrlHelper::appendParams($item, $cacheParam)) . '" type="text/css">';
         }
+
         $html .= $assets['css_after'];
 
         // javascript
         $html .= $assets['js_before'];
+
         foreach ($assets['js'] as $item) {
             $html .= "\n<script src=\"" . _e(UrlHelper::appendParams($item, $cacheParam)) . '"></script>';
         }
+
         $html .= $assets['js_after'];
 
         return $html;
@@ -162,6 +167,7 @@ HTML;
     {
         if (!empty($infos)) {
             $output = '<ul class="' . _e($class) . "\"\n>";
+
             foreach ($infos as $info) {
                 if (isset($info[1])) {
                     $output .= "<li><strong>{$info[0]}:</strong> {$info[1]}</li>\n";
@@ -169,6 +175,7 @@ HTML;
                     $output .= "<li>{$info[0]}</li>\n";
                 }
             }
+
             $output .= "</ul>\n";
 
             return $output;
@@ -192,7 +199,8 @@ HTML;
 
         if (!empty($messages)) {
             $output .= "<ul>\n";
-            foreach($messages as $key => $item) {
+
+            foreach ($messages as $key => $item) {
                 if ($options['lcfirst'] ?? true) {
                     $item = StringManipulator::lcfirst($item);
                 }
@@ -202,6 +210,7 @@ HTML;
                     . (($options['escape'] ?? true) ? _e($item) : $item)
                     . "</li>\n";
             }
+
             $output .= "</ul>\n";
         }
 

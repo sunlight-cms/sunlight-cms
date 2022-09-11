@@ -35,19 +35,25 @@ if (isset($_POST['action'])) {
         case 2:
             $lastid = -1;
             $sql = '';
+
             foreach ($_POST as $var => $val) {
                 if ($var == 'action') {
                     continue;
                 }
+
                 $var = explode('_', $var);
+
                 if (count($var) == 2) {
                     $id = (int) mb_substr($var[0], 1);
                     $var = $var[1];
+
                     if ($lastid == -1) {
                         $lastid = $id;
                     }
+
                     $quotes = true;
                     $skip = false;
+
                     switch ($var) {
                         case 'title':
                             $val = Html::cut(_e(trim($val)), 64);
@@ -82,7 +88,9 @@ if (isset($_POST['action'])) {
                         if ($sql !== '') {
                             $sql .= ',';
                         }
+
                         $sql .= $var . '=';
+
                         if ($quotes) {
                             $sql .= DB::val($val);
                         } else {

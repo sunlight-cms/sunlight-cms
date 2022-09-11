@@ -16,6 +16,7 @@ return function ($id = null) {
 
     // fetch shoutbox data
     $sboxdata = DB::queryRow('SELECT * FROM ' . DB::table('shoutbox') . ' WHERE id=' . $id);
+
     if ($sboxdata !== false) {
         $rcontinue = true;
     } else {
@@ -36,6 +37,7 @@ return function ($id = null) {
             if (!User::isLoggedIn()) {
                 $inputs[] = ['label' => _lang('posts.guestname'), 'content' => '<input type="text" name="guest" class="sbox-input" maxlength="24">'];
             }
+
             $inputs[] = [
                 'label' => _lang('posts.text'),
                 'content' => '<input type="text" name="text" class="sbox-input" maxlength="255">'
@@ -67,6 +69,7 @@ return function ($id = null) {
             . ' WHERE p.home=' . $id . ' AND p.type=' . Post::SHOUTBOX_ENTRY
             . ' ORDER BY p.id DESC'
         );
+
         if (DB::size($sposts) != 0) {
             while ($spost = DB::row($sposts)) {
                 // author

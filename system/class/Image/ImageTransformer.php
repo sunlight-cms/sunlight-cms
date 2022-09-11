@@ -69,6 +69,7 @@ final class ImageTransformer
         if ($options['w'] === 0) {
             $options['h'] = null;
         }
+
         if ($options['w'] === 0) {
             $options['h'] = null;
         }
@@ -235,6 +236,7 @@ final class ImageTransformer
 
         // resample
         error_clear_last();
+
         if (!@imagecopyresampled($output->resource, $image->resource, $targetX, $targetY, $sourceX, $sourceY, $targetW, $targetH, $sourceW, $sourceH)) {
             throw new ImageException(ImageException::RESIZE_FAILED, null, error_get_last()['message'] ?? null);
         }

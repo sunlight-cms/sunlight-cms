@@ -11,4 +11,5 @@ Core::init('../../');
 if (Xsrf::check(true)) {
     User::logout();
 }
+
 Response::redirectBack();

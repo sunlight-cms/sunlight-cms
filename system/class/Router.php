@@ -152,6 +152,7 @@ abstract class Router
                 } else {
                     $topicId = $post['xhome'];
                 }
+
                 if ($post['type'] == Post::FORUM_TOPIC) {
                     $url = self::topic($topicId, $post['page_slug'], $options);
                 } else {
@@ -188,6 +189,7 @@ abstract class Router
     {
         if ($forumSlug === null) {
             $forumSlug = DB::queryRow('SELECT r.slug FROM ' . DB::table('page') . ' r WHERE type=' . Page::FORUM . ' AND id=(SELECT p.home FROM ' . DB::table('post') . ' p WHERE p.id=' . DB::val($topicId) . ')');
+
             if ($forumSlug !== false) {
                 $forumSlug = $forumSlug['slug'];
             } else {
@@ -261,6 +263,7 @@ abstract class Router
 
         // extend
         $extendOutput = Extend::buffer('user.link', ['user' => $data, 'options' => &$options]);
+
         if ($extendOutput !== '') {
             return $extendOutput;
         }
@@ -280,6 +283,7 @@ abstract class Router
 
         // title
         $title = $options['title'];
+
         if ($nameIsTooLong) {
             if ($title === null) {
                 $title = $name;

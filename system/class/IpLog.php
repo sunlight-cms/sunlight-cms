@@ -77,6 +77,7 @@ abstract class IpLog
             if ($expires === null) {
                 throw new \InvalidArgumentException('The "expires" argument must be specified for custom types');
             }
+
             DB::delete('iplog', 'type=' . $type .(($var !== null) ? ' AND var=' . $var : '') . ' AND ' . time() . '-time>' . $expires);
             $cleaned['custom'][$type] = true;
         }
@@ -88,6 +89,7 @@ abstract class IpLog
         switch ($type) {
             case self::FAILED_LOGIN_ATTEMPT:
                 $query = DB::queryRow($querybasic);
+
                 if ($query !== false && $query['var'] >= Settings::get('maxloginattempts')) {
                     $result = false;
                 }
@@ -97,6 +99,7 @@ abstract class IpLog
             case self::ARTICLE_RATED:
             case self::POLL_VOTE:
                 $query = DB::query($querybasic . ' AND var=' . $var);
+
                 if (DB::size($query) != 0) {
                     $result = false;
                 }
@@ -105,6 +108,7 @@ abstract class IpLog
             case self::ANTI_SPAM:
             case self::PASSWORD_RESET_REQUESTED:
                 $query = DB::query($querybasic);
+
                 if (DB::size($query) != 0) {
                     $result = false;
                 }
@@ -112,6 +116,7 @@ abstract class IpLog
 
             case self::FAILED_ACCOUNT_ACTIVATION:
                 $query = DB::queryRow($querybasic);
+
                 if ($query !== false && $query['var'] >= 5) {
                     $result = false;
                 }
@@ -119,6 +124,7 @@ abstract class IpLog
 
             default:
                 $query = DB::query($querybasic . (($var !== null) ? ' AND var=' . $var : ''));
+
                 if (DB::size($query) != 0) {
                     $result = false;
                 }
@@ -147,6 +153,7 @@ abstract class IpLog
         switch ($type) {
             case self::FAILED_LOGIN_ATTEMPT:
                 $query = DB::queryRow($querybasic);
+
                 if ($query !== false) {
                     DB::update('iplog', 'id=' . $query['id'], ['var' => ($query['var'] + 1)]);
                 } else {
@@ -198,6 +205,7 @@ abstract class IpLog
 
             case self::FAILED_ACCOUNT_ACTIVATION:
                 $query = DB::queryRow($querybasic);
+
                 if ($query !== false) {
                     DB::update('iplog', 'id=' . $query['id'], ['var' => ($query['var'] + 1)]);
                 } else {
@@ -212,6 +220,7 @@ abstract class IpLog
 
             default:
                 $query = DB::queryRow($querybasic . (($var !== null) ? ' AND var=' . $var : ''));
+
                 if ($query !== false) {
                     DB::update('iplog', 'id=' . $query['id'], ['time' => time()]);
                 } else {

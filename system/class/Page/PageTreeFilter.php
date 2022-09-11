@@ -91,13 +91,16 @@ class PageTreeFilter implements TreeFilterInterface
         // order constraints
         if ($options['ord_start'] !== null || $options['ord_end'] !== null) {
             $ordSql = '';
+
             if ($options['ord_start'] !== null) {
                 $ordSql .= '%__node__%.ord>=' . DB::val($options['ord_start']);
             }
+
             if ($options['ord_end'] !== null) {
                 if ($options['ord_start'] !== null) {
                     $ordSql .= ' AND ';
                 }
+
                 $ordSql .= '%__node__%.ord<=' . DB::val($options['ord_end']);
             }
 

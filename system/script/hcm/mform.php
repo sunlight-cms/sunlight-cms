@@ -25,6 +25,7 @@ $fid = (int) Request::post('fid');
 
 // load receiver
 $skey = 'hcm_' . $fid . '_mail_receiver';
+
 if (isset($_SESSION[$skey])) {
     $receiver = $_SESSION[$skey];
     unset($_SESSION[$skey], $skey);
@@ -58,9 +59,11 @@ if (Xsrf::check()) {
 
         // add information to the message body
         $info_ip = Core::getClientIp();
+
         if (User::isLoggedIn()) {
             $info_ip .= ' (' . User::getUsername() . ')';
         }
+
         $text .= "\n\n" . str_repeat('-', 16) . "\n" . _lang('hcm.mailform.info', [
             '%domain%' => Core::getBaseUrl()->getFullHost(),
             '%time%' => GenericTemplates::renderTime(time()),

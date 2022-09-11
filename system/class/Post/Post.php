@@ -81,6 +81,7 @@ abstract class Post
                 'post' => $post,
                 'user_query' => $userQuery,
             ]);
+
             if ($access !== null) {
                 return $access;
             }
@@ -141,6 +142,7 @@ home_post.subject xhome_subject";
         if (!empty($types)) {
             $conditions[] = "{$alias}.type IN(" . DB::arr($types) . ')';
         }
+
         if (!empty($homes)) {
             $conditions[] = "{$alias}.home IN(" . DB::arr($homes) . ')';
         }

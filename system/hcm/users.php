@@ -9,6 +9,7 @@ return function ($order = 'new', $limit = 5) {
 
     $rcond = 'public=1';
     $ordered = true;
+
     switch ($order) {
         case 'activity':
             $rorder = 'activitytime DESC';
@@ -42,11 +43,13 @@ return function ($order = 'new', $limit = 5) {
         . ' ORDER BY ' . $rorder
         . ' LIMIT ' . $limit
     );
+
     while ($item = DB::row($query)) {
         // add additional info
         switch ($order) {
             case 'comment-count':
                 $rvar = DB::count('post', 'author=' . DB::val($item['id']));
+
                 if ($rvar == 0) {
                     continue 2;
                 }
@@ -70,6 +73,7 @@ return function ($order = 'new', $limit = 5) {
 
         $result .= '<li>' . Router::userFromQuery($userQuery, $item) . $rext . "</li>\n";
     }
+
     if ($order != 4) {
         $result .= "</ul>\n";
     } else {

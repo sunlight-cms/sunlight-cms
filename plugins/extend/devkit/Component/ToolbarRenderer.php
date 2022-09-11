@@ -399,12 +399,14 @@ class ToolbarRenderer
     {
         if (!empty($args)) {
             $eventArgIsFirst = true;
+
             foreach ($args as $eventArgName => $eventArgType) {
                 if ($eventArgIsFirst) {
                     $eventArgIsFirst = false;
                 } else {
                     echo ', ';
                 }
+
                 echo '<small>(' . _e($eventArgType) . ')</small> ' . _e($eventArgName);
             }
         } else {

@@ -152,6 +152,7 @@ abstract class Core
 
         // cron tasks
         Extend::reg('cron.maintenance', [__CLASS__, 'doMaintenance']);
+
         if (Settings::get('cron_auto') && $options['allow_cron_auto']) {
             self::runCronTasks();
         }
@@ -385,23 +386,28 @@ abstract class Core
         // make sure $_SERVER['REQUEST_URI'] is defined
         if (!isset($_SERVER['REQUEST_URI'])) {
             $requestUri = $_SERVER['SCRIPT_NAME'] ?? $_SERVER['PHP_SELF'];
+
             if (!empty($_SERVER['QUERY_STRING'])) {
                 $requestUri .= '?' . $_SERVER['QUERY_STRING'];
             }
+
             $_SERVER['REQUEST_URI'] = $requestUri;
         }
 
         // set error_reporting
         $err_rep = E_ALL;
+
         if (!self::$debug) {
             $err_rep &= ~(E_NOTICE | E_USER_NOTICE | E_DEPRECATED | E_STRICT);
         }
+
         error_reporting($err_rep);
 
         // set locale
         if (!empty($options['locale'])) {
             @setlocale(LC_TIME, $options['locale']);
         }
+
         if (!empty($options['timezone'])) {
             date_default_timezone_set($options['timezone']);
         }
@@ -545,6 +551,7 @@ abstract class Core
                     if ($cronLockFileHandle === null) {
                         $cronLockFile = SL_ROOT . 'system/cron.lock';
                         $cronLockFileHandle = fopen($cronLockFile, 'r');
+
                         if (!flock($cronLockFileHandle, LOCK_EX | LOCK_NB)) {
                             // lock soubor je nepristupny
                             fclose($cronLockFileHandle);
@@ -682,9 +689,11 @@ abstract class Core
                 'atReplace' => Settings::get('atreplace'),
             ],
         ];
+
         if (!empty($customVariables)) {
             $variables = array_merge_recursive($variables, $customVariables);
         }
+
         Extend::call('core.javascript', ['variables' => &$variables]);
 
         // output variables

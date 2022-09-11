@@ -10,6 +10,7 @@ use Sunlight\Util\Arr;
 return function ($type = 'new', $limit = null, $perex = 'perex', $info = true, $category = null) {
     $result = '';
     $limit = (int) $limit;
+
     if ($limit < 1) {
         $limit = 1;
     }
@@ -33,6 +34,7 @@ return function ($type = 'new', $limit = null, $perex = 'perex', $info = true, $
             $show_image = true;
             break;
     }
+
     $info = (bool) $info;
 
     // prepare SQL parts
@@ -105,6 +107,7 @@ return function ($type = 'new', $limit = null, $perex = 'perex', $info = true, $
         . $joins . ' ' . $userQuery['joins']
         . ' WHERE ' . $cond . ' ORDER BY ' . $rorder . ' LIMIT ' . $limit
     );
+
     while ($item = DB::row($query)) {
         $result .= Article::renderPreview($item, $userQuery, $info, $show_perex);
     }

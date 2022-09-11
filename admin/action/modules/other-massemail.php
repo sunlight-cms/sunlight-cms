@@ -19,25 +19,31 @@ if (isset($_POST['text'])) {
     $text = Request::post('text');
     $subject = Request::post('subject');
     $sender = Request::post('sender');
+
     if (isset($_POST['receivers'])) {
         $receivers = (array) $_POST['receivers'];
     } else {
         $receivers = [];
     }
+
     $ctype = Request::post('ctype');
     $maillist = Form::loadCheckbox('maillist');
 
     // check variables
     $errors = [];
+
     if ($text == '' && !$maillist) {
         $errors[] = _lang('admin.other.massemail.notext');
     }
+
     if (empty($receivers)) {
         $errors[] = _lang('admin.other.massemail.noreceivers');
     }
+
     if ($subject == '' && !$maillist) {
         $errors[] = _lang('admin.other.massemail.nosubject');
     }
+
     if (!Email::validate($sender) && !$maillist) {
         $errors[] = _lang('admin.other.massemail.badsender');
     }
@@ -59,6 +65,7 @@ if (isset($_POST['text'])) {
         if (!$maillist) {
             $total = DB::size($query);
             $done = 0;
+
             while ($item = DB::row($query)) {
                 $footer = _lang('admin.other.massemail.emailnotice.' . ($ctype == 1 ? 'text' : 'html'), [
                     '%domain%' => Core::getBaseUrl()->getFullHost(),
@@ -91,12 +98,15 @@ if (isset($_POST['text'])) {
         } else {
             // list emails
             $emails_total = DB::size($query);
+
             if ($emails_total != 0) {
                 $emails = '';
                 $email_counter = 0;
+
                 while ($item = DB::row($query)) {
                     ++$email_counter;
                     $emails .= $item['email'];
+
                     if ($email_counter !== $emails_total) {
                         $emails .= ',';
                     }

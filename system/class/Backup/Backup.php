@@ -504,6 +504,7 @@ class Backup
         if (!$this->open) {
             throw new \LogicException('No archive has been opened');
         }
+
         if (!$this->new) {
             throw new \LogicException('Existing backups cannot be modified');
         }
@@ -519,6 +520,7 @@ class Backup
         if (!$this->open) {
             throw new \LogicException('No archive has been opened');
         }
+
         if ($this->new) {
             throw new \LogicException('The backup has not been saved yet');
         }

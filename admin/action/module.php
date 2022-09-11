@@ -20,6 +20,7 @@ if (isset($_admin->modules[$_admin->currentModule])) {
 
         // title
         $_admin->title = $module['title'];
+
         if (!$module_custom_header) {
             $output .= '<h1>' . $module['title'] . "</h1>\n";
         }

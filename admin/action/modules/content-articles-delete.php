@@ -12,11 +12,13 @@ use Sunlight\Xsrf;
 defined('SL_ROOT') or exit;
 
 $continue = false;
+
 if (isset($_GET['id'], $_GET['returnid'], $_GET['returnpage'])) {
     $id = (int) Request::get('id');
     $returnid = (int) Request::get('returnid');
     $returnpage = (int) Request::get('returnpage');
     $query = DB::queryRow('SELECT title FROM ' . DB::table('article') . ' WHERE id=' . $id . Admin::articleAccess());
+
     if ($query !== false) {
         $continue = true;
     }

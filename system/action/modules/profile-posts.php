@@ -44,11 +44,13 @@ $_index->backlink = Router::module('profile', ['query' => ['id' => $id]]);
 [$columns, $joins, $cond, $count] = Post::createFilter('post', [Post::SECTION_COMMENT, Post::ARTICLE_COMMENT, Post::BOOK_ENTRY, Post::FORUM_TOPIC, Post::PLUGIN], [], 'post.author=' . $query['id'], true);
 
 $paging = Paginator::render(Router::module('profile-posts', ['query' => ['id' => $id]]), 15, $count);
+
 if (Paginator::atTop()) {
     $output .= $paging['paging'];
 }
 
 $posts = DB::query('SELECT ' . $columns . ' FROM ' . DB::table('post') . ' post ' . $joins . ' WHERE ' . $cond . ' ORDER BY post.time DESC ' . $paging['sql_limit']);
+
 if (DB::size($posts) != 0) {
     while ($post = DB::row($posts)) {
         [$homelink, $hometitle] = Router::post($post);
@@ -60,6 +62,7 @@ if (DB::size($posts) != 0) {
 <div class="post-body">' . Post::render($post['text']) . '</div>
 </div>';
     }
+
     if (Paginator::atBottom()) {
         $output .= $paging['paging'];
     }

@@ -62,6 +62,7 @@ abstract class PluginOptionNormalizer
                     case 'psr-4':
                         if (is_array($entry)) {
                             $normalizedEntry = [];
+
                             foreach ($entry as $pathKey => $path) {
                                 if (!is_string($path)) {
                                     self::fail('[%s][%s][%s] must be a string', $type, $key, $pathKey);

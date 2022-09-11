@@ -9,6 +9,7 @@ defined('SL_ROOT') or exit;
 // init editscript
 $type = Page::PLUGIN;
 require SL_ROOT . 'admin/action/modules/include/page-editscript-init.php';
+
 if (!$continue) {
     $output .= Message::error(_lang('global.badinput'));
     return;
@@ -23,6 +24,7 @@ if (!isset($plugin_types[$type_idt])) {
 
     return;
 }
+
 $plugin_type = $plugin_types[$type_idt];
 
 // editscript vars

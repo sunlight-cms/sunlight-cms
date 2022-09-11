@@ -24,10 +24,12 @@ abstract class PageMenu
 
         // build trail map
         $trailMap = [];
+
         if ($activeId !== null) {
             foreach ($flatPageTree as $page) {
                 if ($page['id'] == $activeId) {
                     $current = $page;
+
                     while ($current['node_parent'] !== null && isset($flatPageTree[$current['node_parent']])) {
                         $current = $flatPageTree[$current['node_parent']];
                         $trailMap[$current['id']] = true;
@@ -43,14 +45,17 @@ abstract class PageMenu
 
         foreach ($flatPageTree as $pageId => $page) {
             $pageLevel = $page['node_level'];
+
             if ($rootLevel === null) {
                 $rootLevel = $pageLevel;
             }
+
             $visualLevel = $pageLevel - $rootLevel;
 
             // open/close tags depending on level
             if ($currentLevel === null || $pageLevel > $currentLevel) {
                 $containerClass = 'menu level-' . $visualLevel;
+
                 if ($currentLevel !== null) {
                     $out .= "\n";
                 } elseif ($rootClass !== null) {
@@ -70,9 +75,11 @@ abstract class PageMenu
 
             // prepare classes
             $classes = ['item', 'level-' . $visualLevel];
+
             if ($page['id'] == $activeId) {
                 $classes[] = 'active';
             }
+
             if (isset($trailMap[$pageId])) {
                 $classes[] = 'trail';
             }
@@ -80,6 +87,7 @@ abstract class PageMenu
             // prepare link
             $url = null;
             $attrs = '';
+
             if (
                 $pageEvent === null
                 || ($link = Extend::buffer($pageEvent, [
@@ -98,9 +106,11 @@ abstract class PageMenu
                         $url = Router::page($page['id'], $page['slug']);
                     }
                 }
+
                 if ($page['type'] == Page::LINK && $page['link_new_window']) {
                     $attrs .= ' target="_blank"';
                 }
+
                 $link = '<a href="' . _e($url) . "\"{$attrs}>{$page['title']}</a>";
             }
 

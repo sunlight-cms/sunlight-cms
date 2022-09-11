@@ -177,6 +177,7 @@ abstract class Form
             if ($counter > 0) {
                 $output .= "\n";
             }
+
             $output .= self::renderHiddenInput($key, $value);
             ++$counter;
         }
@@ -194,10 +195,11 @@ abstract class Form
             $output = '';
             $counter = 0;
 
-            foreach($value as $vkey => $vvalue) {
+            foreach ($value as $vkey => $vvalue) {
                 if ($counter > 0) {
                     $output .= "\n";
                 }
+
                 $output .= self::renderHiddenInput($key, $vvalue, array_merge($parentKeys, [$vkey]));
                 ++$counter;
             }
@@ -207,6 +209,7 @@ abstract class Form
 
         // value
         $name = _e($key);
+
         if (!empty($parentKeys)) {
             $name .= _e('[' . implode('][', $parentKeys) . ']');
         }
@@ -236,6 +239,7 @@ abstract class Form
             } else {
                 $timestamp = ['seconds' => '', 'minutes' => '', 'hours' => '', 'mday' => '', 'mon' => '', 'year' => ''];
             }
+
             $output .= '<input type="text" size="2" maxlength="2" name="' . $name . '[tday]" value="' . $timestamp['mday'] . '">'
                 . '.<input type="text" size="2" maxlength="2" name="' . $name . '[tmonth]" value="' . $timestamp['mon'] . '">'
                 . ' <input type="text" size="4" maxlength="4" name="' . $name . '[tyear]" value="' . $timestamp['year'] . '">'
@@ -243,6 +247,7 @@ abstract class Form
                 . ':<input type="text" size="2" maxlength="2" name="' . $name . '[tminute]" value="' . $timestamp['minutes'] . '">'
                 . ':<input type="text" size="2" maxlength="2" name="' . $name . '[tsecond]" value="' . $timestamp['seconds'] . '">'
                 . ' <small>' . _lang('time.help') . '</small>';
+
             if ($updatebox) {
                 $output .= ' <label><input type="checkbox" name="' . $name . '[tupdate]" value="1"' . self::activateCheckbox($updateboxchecked) . '> ' . _lang('time.update') . '</label>';
             }
@@ -274,6 +279,7 @@ abstract class Form
                 $hour = (int) $_POST[$name]['thour'];
                 $minute = (int) $_POST[$name]['tminute'];
                 $second = (int) $_POST[$name]['tsecond'];
+
                 if (checkdate($month, $day, $year) && $hour >= 0 && $hour < 24 && $minute >= 0 && $minute < 60 && $second >= 0 && $second < 60) {
                     $result = mktime($hour, $minute, $second, $month, $day, $year);
                 } else {
@@ -368,6 +374,7 @@ abstract class Form
 
             $output .= ">\n";
         }
+
         $output .= $options['form_prepend'];
 
         // <table>
@@ -387,6 +394,7 @@ abstract class Form
 
         // </form>
         $output .= $options['form_append'];
+
         if (!$options['embedded']) {
             $output .= Xsrf::getInput();
             $output .= "\n</form>\n";
@@ -425,6 +433,7 @@ abstract class Form
             'top' => false,
             'class' => '',
         ];
+
         if ($row['top']) {
             $row['class'] .= ($row['class'] !== '' ? ' ' : '') . 'valign-top';
         }
@@ -444,9 +453,11 @@ abstract class Form
 
         // content
         $output .= '<td';
+
         if ($row['label'] === null && $useColspan) {
             $output .= ' colspan="2"';
         }
+
         $output .= ">{$row['content']}</td>\n";
 
         // </tr>

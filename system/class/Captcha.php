@@ -25,15 +25,18 @@ class Captcha
         static $captchaCounter = 0;
 
         $output = Extend::fetch('captcha.init');
+
         if ($output !== null) {
             return $output;
         }
 
         if (Settings::get('captcha') && !User::isLoggedIn()) {
             ++$captchaCounter;
+
             if (!isset($_SESSION['captcha_code']) || !is_array($_SESSION['captcha_code'])) {
                 $_SESSION['captcha_code'] = [];
             }
+
             $_SESSION['captcha_code'][$captchaCounter] = [self::generateCode(8), false];
 
             return [
@@ -65,6 +68,7 @@ class Captcha
                     if (strtr($_SESSION['captcha_code'][$captchaId][0], self::DISAMBIGUATION) === strtr(mb_strtoupper($enteredCode), self::DISAMBIGUATION)) {
                         $result = true;
                     }
+
                     unset($_SESSION['captcha_code'][$captchaId]);
                 }
             } else {

@@ -34,9 +34,11 @@ abstract class StringManipulator
         if ($convert_entities) {
             $string = Html::unescape($string);
         }
+
         if (mb_strlen($string) > $length) {
             $string = mb_substr($string, 0, max(0, $length - 3)) . '…';
         }
+
         if ($convert_entities) {
             $string = _e($string);
         }

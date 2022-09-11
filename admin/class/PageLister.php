@@ -38,11 +38,13 @@ abstract class PageLister
         if (self::$initialized) {
             return;
         }
+
         self::$initialized = true;
 
         // load config
         self::$config = [];
         $sessionKey = self::getSessionKey();
+
         if (isset($_SESSION[$sessionKey]) && is_array($_SESSION[$sessionKey])) {
             self::$config = $_SESSION[$sessionKey];
         }
@@ -68,6 +70,7 @@ abstract class PageLister
     {
         // set current page
         $pageId = Request::get('page_id');
+
         if ($pageId !== null) {
             if ($pageId === 'root') {
                 $pageId = null;
@@ -80,6 +83,7 @@ abstract class PageLister
 
         // set mode
         $mode = Request::get('list_mode');
+
         if ($mode !== null) {
             switch ($mode) {
                 case 'tree':
@@ -206,12 +210,14 @@ abstract class PageLister
         $output .= "<ul class=\"page-list-breadcrumbs\">\n";
         $output .= '<li><a href="' . _e($rootLink->buildRelative()) . '">' . _lang('global.all') . "</a></li>\n";
         $path = Page::getPath(self::$config['current_page'], null, ['level_inherit', 'layout', 'layout_inherit']);
+
         foreach ($path as $page) {
             $pageLink = Core::getCurrentUrl();
             $pageLink->set('page_id', $page['id']);
 
             $output .= '<li>' . self::renderPageFlags($page) . '<a href="' . _e($pageLink->buildRelative()) . '" title="ID: ' . $page['id'] . ', ' . _lang('admin.content.form.ord') . ' ' . $page['ord'] . '">' . $page['title'] . "</a></li>\n";
         }
+
         $output .= "</ul>\n";
     }
 
@@ -222,18 +228,23 @@ abstract class PageLister
     {
         // start
         $class = 'page-list';
+
         if ($options['sortable']) {
             $output .= "<form method=\"post\">\n";
+
             if (self::saveOrd()) {
                 $output .= Message::ok(_lang('admin.content.form.ord.saved'));
             }
         }
+
         if (self::MODE_SINGLE_LEVEL == $options['mode']) {
             $class .= ' page-list-single-level';
         } else {
             $class .= ' page-list-full-tree';
         }
+
         $output .= '<table class="' . $class . "\">\n<tbody";
+
         if ($options['sortable']) {
             $output .= '
     class="sortable"
@@ -241,6 +252,7 @@ abstract class PageLister
     data-stopper-selector="tr.page-separator"
     data-handle-selector="td.page-title, .sortable-handle"';
         }
+
         $output .= ">\n";
 
         // load and filter tree
@@ -263,9 +275,11 @@ abstract class PageLister
                 if ($options['level_class'] === null) {
                     $options['level_class'] = true;
                 }
+
                 if ($options['sortable']) {
                     throw new \RuntimeException('The "sortable" option is not supported in full tree list mode');
                 }
+
                 self::renderFullTree($output, $tree, $options);
                 break;
             case self::MODE_SINGLE_LEVEL:
@@ -277,6 +291,7 @@ abstract class PageLister
 
         // end
         $output .= "</tbody>\n</table>\n";
+
         if ($options['sortable']) {
             $output .= '<p class="separated">
                 <input type="submit" value="' . _lang('global.savechanges') . '" accesskey="s">
@@ -303,6 +318,7 @@ abstract class PageLister
 
             // render
             $even = true;
+
             foreach ($tree as $page) {
                 self::renderPage($output, $page, $options, $even ? 'even' : 'odd', $levelOffset);
                 $even = !$even;
@@ -316,6 +332,7 @@ abstract class PageLister
     private static function renderSingleLevel(string &$output, array $tree, array $options): void
     {
         $even = true;
+
         foreach ($tree as $page) {
             self::renderPage($output, $page, $options, $even ? 'even' : 'odd');
             $even = !$even;
@@ -401,6 +418,7 @@ abstract class PageLister
 
         // detect separator, compose link
         $isSeparator = ($page['type'] == Page::SEPARATOR);
+
         if (!$isSeparator && $options['links'] && $page['node_depth'] > 0) {
             $nodeLink = Core::getCurrentUrl();
             $nodeLink->set('page_id', $page['id']);
@@ -416,6 +434,7 @@ abstract class PageLister
         if ($class !== '') {
             $class .= ' ';
         }
+
         $class .= 'page-' . self::$pageTypes[$page['type']];
 
         if ($page['type'] == Page::PLUGIN && isset(self::$pluginTypes[$page['type_idt']])) {
@@ -440,20 +459,25 @@ abstract class PageLister
         // title
         $output .= '<td class="page-title">';
         $itemAttrs = ' title="ID: ' . $page['id'] . ', ' . _lang('admin.content.form.ord') . ': ' . $page['ord'] .'"';
+
         if ($options['level_class']) {
             $itemAttrs .= ' class="node-level-p' . ($page['node_level'] + $levelOffset) . '"';
         }
+
         if ($nodeLink !== null && !$options['title_editable']) {
             $output .= '<a' . $itemAttrs . ' href="' . _e($nodeLink) . '"><span class="page-list-title">' . $page['title'] . '</span></a>';
         } else {
             $output .= '<span' . $itemAttrs . '><span class="page-list-title"><span>';
+
             if ($options['title_editable']) {
                 $output .= '<input class="inputbig" maxlength="255" type="text" name="title[' . $page['id'] . ']" value="' . $page['title'] . '">';
             } else {
                 $output .= $page['title'];
             }
+
             $output .= '</span></span></span>';
         }
+
         $output .= "</td>\n";
 
         if ($options['flags']) {
@@ -471,23 +495,28 @@ abstract class PageLister
             } else {
                 $typeLabel = _lang('page.type.' . self::$pageTypes[$page['type']]);
             }
+
             $output .= '<td class="page-type">' . $typeLabel . "</td>\n";
         }
 
         // actions
         if ($options['actions']) {
             $output .= "<td class=\"page-actions\">\n";
+
             foreach ($actions as $actionId => $action) {
                 $actionLabel = _e($action['label']);
                 $output .= '<a'
                     . ((isset($action['new_window']) && $action['new_window']) ? ' target="_blank"' : '')
                     . ' class="page-action-' . $actionId . '" href="' . _e($action['url']) . '" title="' . $actionLabel . '"'
                     . '>';
+
                 if (isset($action['icon'])) {
                     $output .= '<img class="icon" src="' . _e($action['icon']) . '" alt="' . $actionLabel . '">';
                 }
+
                 $output .= "<span>{$actionLabel}</span></a>\n";
             }
+
             $output .= "</td>\n";
         }
 
@@ -578,29 +607,36 @@ abstract class PageLister
     private static function renderPageFlags(array $page): string
     {
         $output = '';
+
         if ($page['type'] != Page::SEPARATOR) {
             if ($page['id'] == Settings::get('index_page_id')) {
                 $iconTitle = _lang('admin.content.form.homepage');
                 $output .= '<img src="' . _e(Router::path('admin/images/icons/home.png')) . '" class="icon" alt="' . $iconTitle . '" title="' . $iconTitle . '">';
             }
+
             if ($page['layout'] !== null && !$page['layout_inherit']) {
                 $iconTitle = _lang('admin.content.form.layout.setting', ['%layout%' => _e(TemplateService::getComponentLabelByUid($page['layout'], TemplateService::UID_TEMPLATE_LAYOUT))]);
                 $output .= '<img src="' . _e(Router::path('admin/images/icons/template.png')) . '" class="icon" alt="' . $iconTitle . '" title="' . $iconTitle . '">';
             }
+
             if (!$page['public']) {
                 $iconTitle = _lang('admin.content.form.private');
                 $output .= '<img src="' . _e(Router::path('admin/images/icons/lock3.png')) . '" class="icon" alt="' . $iconTitle . '" title="' . $iconTitle . '">';
             }
+
             if ($page['level'] > 0) {
                 $iconTitle = _lang('admin.content.form.level') . " {$page['level']}+";
+
                 if ($page['level_inherit']) {
                     $icon = 'lock2.png';
                     $iconTitle .= ' (' . _lang('admin.content.form.inherited') . ')';
                 } else {
                     $icon = 'lock.png';
                 }
+
                 $output .= '<img src="' . _e(Router::path('admin/images/icons/' . $icon)) . '" class="icon" alt="' . $iconTitle . '" title="' . $iconTitle . '">';
             }
+
             if (!$page['visible']) {
                 $iconTitle = _lang('admin.content.form.invisible');
                 $output .= '<img src="' . _e(Router::path('admin/images/icons/eye.png')) . '" class="icon" alt="' . $iconTitle . '" title="' . $iconTitle . '">';

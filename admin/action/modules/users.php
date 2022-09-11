@@ -19,6 +19,7 @@ $msg = 0;
 // create a group
 if (isset($_POST['type']) && User::hasPrivilege('admingroups')) {
     $type = (int) Request::post('type');
+
     if ($type == -1) {
         // empty group
         DB::insert('user_group', [
@@ -30,6 +31,7 @@ if (isset($_POST['type']) && User::hasPrivilege('admingroups')) {
     } else {
         // copy existing group
         $source_group = DB::queryRow('SELECT * FROM ' . DB::table('user_group') . ' WHERE id=' . $type);
+
         if ($source_group !== false) {
             $new_group = [];
             $privilege_map = User::getPrivilegeMap();
@@ -89,6 +91,7 @@ if (User::hasPrivilege('admingroups')) {
 <tbody>';
     $groups = DB::queryRows('SELECT id,title,icon,color,blocked,level,reglist,(SELECT COUNT(*) FROM ' . DB::table('user') . ' WHERE group_id=' . DB::table('user_group') . '.id) AS user_count FROM ' . DB::table('user_group') . ' ORDER BY level DESC');
     Extend::call('admin.users.groups', ['groups' => &$groups]);
+
     foreach ($groups as $group) {
         $is_sys = in_array($group['id'], $sysgroups_array);
         $group_table .= '
@@ -108,6 +111,7 @@ if (User::hasPrivilege('admingroups')) {
     </td>
     </tr>\n";
     }
+
     $group_table .= "</tbody>\n</table>";
 } else {
     $group_table = '';
@@ -156,6 +160,7 @@ $modules = [
 Extend::call('admin.users.modules', ['modules' => &$modules]);
 
 $module_links = '';
+
 foreach ($modules as $module) {
     $module_links .= '<a class="button block" href="' . _e($module['url']) . '"><img src="' . _e($module['icon']) . '" alt="new" class="icon">' . _e($module['label']) . "</a>\n";
 }

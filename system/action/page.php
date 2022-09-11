@@ -84,9 +84,11 @@ if (!User::checkPublicAccess($_page['public'], $_page['level'])) {
 // more meta data
 $_index->id = $_page['id'];
 $_index->title = $_page['title'];
+
 if ($_page['heading'] !== '') {
     $_index->heading = $_page['heading'];
 }
+
 $_index->headingEnabled = (bool) $_page['show_heading'];
 $_index->segment = $segment;
 

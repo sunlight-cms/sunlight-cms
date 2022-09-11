@@ -20,9 +20,11 @@ $selectTime = function ($name) {
     $opts = [1, 2, 4, 8, 25, 52, 104];
     $active = (isset($_POST[$name]) ? (int) Request::post($name) : 25);
     $output = '<select name="' . $name . "\">\n";
-    for($i = 0; isset($opts[$i]); ++$i) {
+
+    for ($i = 0; isset($opts[$i]); ++$i) {
         $output .= '<option value="' . $opts[$i] . '"' . (($active === $opts[$i]) ? ' selected' : '') . '>' . _lang('admin.other.cleanup.time.' . $opts[$i]) . "</option>\n";
     }
+
     $output .= "</select>\n";
 
     return $output;
@@ -44,9 +46,11 @@ if (isset($_POST['action'])) {
 
             // messages
             $messages = Request::post('messages');
+
             switch ($messages) {
                 case 1:
                     $messages_time = time() - (Request::post('messages-time') * 7 * 24 * 60 * 60);
+
                     if ($prev) {
                         $prev_count['mod.messages'] = DB::count('pm', 'update_time<' . $messages_time);
                     } else {
@@ -72,6 +76,7 @@ if (isset($_POST['action'])) {
                     DB::delete('post', 'type=' . Post::SECTION_COMMENT . ' OR type=' . Post::ARTICLE_COMMENT);
                 }
             }
+
             if (Form::loadCheckbox('posts')) {
                 if ($prev) {
                     $prev_count['global.posts'] = DB::count('post', 'type IN(' . DB::arr([Post::BOOK_ENTRY, Post::SHOUTBOX_ENTRY, Post::FORUM_TOPIC]) . ')');
@@ -83,6 +88,7 @@ if (isset($_POST['action'])) {
                     ]);
                 }
             }
+
             if (Form::loadCheckbox('plugin_posts')) {
                 if ($prev) {
                     $prev_count['admin.other.cleanup.other.plugin_posts.label'] = DB::count('post', 'type=' . Post::PLUGIN);
@@ -90,6 +96,7 @@ if (isset($_POST['action'])) {
                     DB::delete('post', 'type=' . Post::PLUGIN);
                 }
             }
+
             if (Form::loadCheckbox('iplog')) {
                 if ($prev) {
                     $prev_count['admin.iplog'] = DB::count('iplog');
@@ -97,6 +104,7 @@ if (isset($_POST['action'])) {
                     DB::query('TRUNCATE TABLE ' . DB::table('iplog'));
                 }
             }
+
             if (Form::loadCheckbox('user_activation')) {
                 if ($prev) {
                     $prev_count['mod.reg.confirm'] = DB::count('user_activation');
@@ -110,6 +118,7 @@ if (isset($_POST['action'])) {
                 $users_time = time() - (Request::post('users-time') * 7 * 24 * 60 * 60);
                 $users_group = (int) Request::post('users-group');
                 $users_group_cond = ' AND group_id!=' . User::ADMIN_GROUP_ID;
+
                 if ($users_group != -1) {
                     $users_group_cond .= ' AND group_id=' . $users_group;
                 }
@@ -118,9 +127,11 @@ if (isset($_POST['action'])) {
                     $prev_count['admin.users.users'] = DB::count('user', 'activitytime<' . $users_time . $users_group_cond);
                 } else {
                     $userids = DB::query('SELECT id FROM ' . DB::table('user') . ' WHERE activitytime<' . $users_time . $users_group_cond);
+
                     while ($userid = DB::row($userids)) {
                         User::delete($userid['id']);
                     }
+
                     DB::free($userids);
                 }
             }
@@ -148,10 +159,13 @@ if (isset($_POST['action'])) {
                     $message = Message::warning(_lang('global.noaction'));
                     break;
                 }
+
                 $message = "<br><ul>\n";
-                foreach($prev_count as $key => $val) {
+
+                foreach ($prev_count as $key => $val) {
                     $message .= '<li><strong>' . _lang($key) . ':</strong> <code>' . $val . "</code></li>\n";
                 }
+
                 $message .= '</ul>';
             } else {
                 $message = Message::ok(_lang('global.done'));
@@ -162,6 +176,7 @@ if (isset($_POST['action'])) {
         // deinstallation
         case 2:
             $confirm = Form::loadCheckbox('confirm');
+
             if ($confirm) {
                 if (User::checkPassword(Request::post('pass', ''))) {
                     // logout

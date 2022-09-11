@@ -13,6 +13,7 @@ Core::init('../../', [
 
 // check authorization
 $auth = explode(':', Settings::get('cron_auth'), 2);
+
 if (
     count($auth) !== 2
     || Request::get('user') !== $auth[0]

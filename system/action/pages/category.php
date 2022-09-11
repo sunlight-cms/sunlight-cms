@@ -24,6 +24,7 @@ if ($_index->segment !== null) {
 
 // paginator settings
 $artsperpage = $_page['var2'];
+
 switch ($_page['var1']) {
     case 1:
         $artorder = 'time DESC';
@@ -44,9 +45,11 @@ $_index->title = $_page['title'];
 
 // content
 Extend::call('page.category.content.before', $extend_args);
+
 if ($_page['content'] != '') {
     $output .= Hcm::parse($_page['content']) . "\n\n<div class=\"hr category-hr\"><hr></div>\n\n";
 }
+
 Extend::call('page.category.content.after', $extend_args);
 
 // articles
@@ -59,12 +62,14 @@ if (DB::size($arts) != 0) {
     if (Paginator::atTop()) {
         $output .= $paging['paging'];
     }
+
     while ($art = DB::row($arts)) {
         $extend_item_args = Extend::args($output, ['page' => $_page, 'item_query' => &$art]);
         Extend::call('page.category.item.before', $extend_item_args);
         $output .= Article::renderPreview($art, $userQuery, $_page['var3'] == 1);
         Extend::call('page.category.item.after', $extend_item_args);
     }
+
     if (Paginator::atBottom()) {
         $output .= $paging['paging'];
     }

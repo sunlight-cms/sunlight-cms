@@ -74,6 +74,7 @@ abstract class StringGenerator
 
             // get next char
             $next = random_int(0, 10000) / 10000;
+
             for ($j = 0; $j < 26; ++$j) {
                 if ($next < $matrix[$char * 26 + $j]) {
                     $char = $j;

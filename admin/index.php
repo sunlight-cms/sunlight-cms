@@ -29,11 +29,13 @@ $output = &$_admin->output;
 // load modules
 $_admin->modules = require SL_ROOT . 'admin/modules.php';
 Extend::call('admin.init', ['admin' => $_admin]);
+
 foreach ($_admin->modules as $module => $module_options) {
     if (isset($module_options['menu']) && $module_options['menu']) {
         $_admin->menu[$module] = $module_options['menu_order'] ?? 15;
     }
 }
+
 asort($_admin->menu, SORT_NUMERIC);
 
 /* ---- prepare content ---- */
@@ -72,6 +74,7 @@ if ($_admin->redirectTo !== null) {
 if ($_admin->loginLayout) {
     $_admin->bodyClasses[] = 'login-layout';
 }
+
 $_admin->bodyClasses[] = $_admin->dark ? 'dark' : 'light';
 
 // output

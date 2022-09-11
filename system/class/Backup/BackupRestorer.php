@@ -47,6 +47,7 @@ class BackupRestorer
         if ($directories === null) {
             $directories = $this->backup->getMetaData('directory_list');
         }
+
         if ($files === null) {
             $files = $this->backup->getMetaData('file_list');
         }
@@ -76,6 +77,7 @@ class BackupRestorer
                 $errors[] = sprintf('cannot write to "%s", please check privileges', $file);
             }
         }
+
         foreach ($filesToRemove as $file) {
             if (!is_writable($file)) {
                 $errors[] = sprintf('cannot write to "%s", please check privileges', $file);
@@ -86,6 +88,7 @@ class BackupRestorer
         foreach (array_merge($directoriesToRemove, $directoriesToPurge) as $directory) {
             if (!Filesystem::checkDirectory($directory, true, $failedPaths)) {
                 $failedPathsString = implode(', ', array_slice($failedPaths, 0, 3));
+
                 if (count($failedPaths) > 3) {
                     $failedPathsString .= sprintf(' and %d more', count($failedPaths) - 3);
                 }

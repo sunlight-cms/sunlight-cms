@@ -38,8 +38,10 @@ echo GenericTemplates::renderHeadAssets($assets);
 
 // load code
 $process = false;
+
 if (isset($_POST['code'])) {
     $code = Request::post('code');
+
     if (Xsrf::check()) {
         $process = true;
     }

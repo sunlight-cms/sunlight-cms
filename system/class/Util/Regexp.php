@@ -51,6 +51,7 @@ abstract class Regexp
             if ($result === false) {
                 return false;
             }
+
             if ($result !== 1) {
                 break;
             }

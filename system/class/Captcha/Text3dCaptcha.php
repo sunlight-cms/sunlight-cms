@@ -107,6 +107,7 @@ class Text3dCaptcha
         if (function_exists('imageantialias')) {
             imageantialias($captcha->resource, true);
         }
+
         imagefill($captcha->resource, 0, 0, $this->backgroundColor);
 
         for ($x = 1; $x < $w - 1; $x++) {

@@ -93,10 +93,12 @@ class SimpleTreeFilter implements TreeFilterInterface
         $sql = '';
 
         $condCounter = 0;
+
         foreach ($filter as $cond) {
             if ($condCounter !== 0) {
                 $sql .= ' AND ';
             }
+
             if ($cond[1] !== null) {
                 // value
                 $sql .= sprintf(

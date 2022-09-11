@@ -244,6 +244,7 @@ abstract class Labels
         if (self::$language === null) {
             throw new \RuntimeException('Language not set');
         }
+
         if (!isset(self::$labels[self::$language][$key])) {
             throw new \OutOfBoundsException(sprintf('Unknown key "%s[%s]"', self::$language, $key));
         }
@@ -306,6 +307,7 @@ class StepRunner
 
         // map step numbers
         $stepNumber = 0;
+
         foreach ($this->steps as $step) {
             $step->setNumber(++$stepNumber);
         }
@@ -321,6 +323,7 @@ class StepRunner
 
         // gather vars
         $vars = [];
+
         foreach ($this->steps as $step) {
             foreach ($step->getVarNames() as $varName) {
                 $vars[$varName] = Request::post($varName, null, true);
@@ -1115,6 +1118,7 @@ try {
 <?php
     $content = ob_get_clean();
 }
+
 $step = $stepRunner->getCurrent();
 
 ?>
