@@ -7,8 +7,6 @@ use Sunlight\Util\UrlHelper;
 
 defined('SL_ROOT') or exit;
 
-/* ---  nastaveni a vlozeni skriptu pro upravu stranky  --- */
-
 $type = Page::LINK;
 require SL_ROOT . 'admin/action/modules/include/page-editscript-init.php';
 if ($continue) {

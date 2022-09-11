@@ -2,9 +2,9 @@
 
 use Sunlight\Template;
 
-return function ($odstavec = true) {
+return function ($paragraph = true) {
     if (Template::currentIsPage() && $GLOBALS['_page']['perex'] !== '') {
-        if ($odstavec) {
+        if ($paragraph) {
             return '<p>' . $GLOBALS['_page']['perex'] . '</p>';
         }
         

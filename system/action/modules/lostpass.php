@@ -27,21 +27,19 @@ if (User::isLoggedIn()) {
     return;
 }
 
-/* ---  vystup  --- */
-
+// output
 $_index->title = _lang('mod.lostpass');
 
 if (isset($_GET['user'], $_GET['hash'])) {
-    // kontrola hashe a zmena hesla
+    // verify user and hash
     do {
-
-        // kontrola limitu
+        // check login attempt limit
         if (!IpLog::check(IpLog::FAILED_LOGIN_ATTEMPT)) {
             $output .= Message::error(_lang('login.attemptlimit', ['%max_attempts%' => Settings::get('maxloginattempts'), '%minutes%' => Settings::get('maxloginexpire') / 60]));
             break;
         }
 
-        // data uzivatele
+        // user data
         $user = Request::get('user');
         $hash = Request::get('hash');
         $userdata = DB::queryRow('SELECT id,email,username,security_hash,security_hash_expires FROM ' . DB::table('user') . ' WHERE username=' . DB::val($user));
@@ -56,7 +54,7 @@ if (isset($_GET['user'], $_GET['hash'])) {
             break;
         }
 
-        // vygenerovat heslo a odeslat na email
+        // generate a new password and send it to user's e-mail
         $newpass = StringGenerator::generateString(12);
         $domain = Core::getBaseUrl()->getFullHost();
 
@@ -75,38 +73,38 @@ if (isset($_GET['user'], $_GET['hash'])) {
             break;
         }
 
-        // zmenit heslo
+        // change password
         DB::update('user', 'id=' . DB::val($userdata['id']), [
             'password' => Password::create($newpass)->build(),
             'security_hash' => null,
             'security_hash_expires' => 0,
         ]);
 
-        // vse ok! email s heslem byl odeslan
+        // all ok
         $output .= Message::ok(_lang('mod.lostpass.generated'));
 
     } while (false);
 } else {
-    // zobrazeni formulare
+    // initiate reset attempt
     $output .= '<p class="bborder">' . _lang('mod.lostpass.p') . '</p>';
 
-    // odeslani emailu
+    // send e-mail
     $sent = false;
-    if (isset($_POST['username'])) do {
 
-        // kontrola limitu
+    if (isset($_POST['username'])) do {
+        // check login attempt limit
         if (!IpLog::check(IpLog::PASSWORD_RESET_REQUESTED)) {
             $output .= Message::error(_lang('mod.lostpass.limit', ['%limit%' => Settings::get('lostpassexpire') / 60]));
             break;
         }
 
-        // kontrolni obrazek
+        // captcha
         if (!Captcha::check()) {
             $output .= Message::warning(_lang('captcha.failure2'));
             break;
         }
 
-        // data uzivatele
+        // user data
         $username = Request::post('username');
         $email = Request::post('email');
         $userdata = DB::queryRow('SELECT id,email,username FROM ' . DB::table('user') . ' WHERE username=' . DB::val($username) . ' AND email=' . DB::val($email));
@@ -115,14 +113,14 @@ if (isset($_GET['user'], $_GET['hash'])) {
             break;
         }
 
-        // vygenerovani hashe
+        // generate a hash
         $hash = StringGenerator::generateString(64);
         DB::update('user', 'id=' . DB::val($userdata['id']), [
             'security_hash' => $hash,
             'security_hash_expires' => time() + 3600,
         ]);
 
-        // odeslani emailu
+        // send e-mail
         $link = Router::module('lostpass', ['query' => ['id' => $username , 'hash' => $hash], 'absolute' => true]);
         $domain = Core::getBaseUrl()->getFullHost();
 
@@ -141,14 +139,13 @@ if (isset($_GET['user'], $_GET['hash'])) {
             break;
         }
 
-        // vse ok! email byl odeslan
+        // all ok
         IpLog::update(IpLog::PASSWORD_RESET_REQUESTED);
         $output .= Message::ok(_lang('mod.lostpass.mailsent'));
         $sent = true;
-
     } while (false);
 
-    // formular
+    // form
     if (!$sent) {
         $captcha = Captcha::init();
 

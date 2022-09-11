@@ -19,8 +19,6 @@ use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
-/* ----  priprava promennych  ---- */
-
 $extensions = [
     // archives
     'rar' => 'archive',
@@ -148,7 +146,7 @@ $defdir = User::getHomeDir();
 $dir = User::normalizeDir(Request::get('dir'));
 $uploaded = [];
 
-// vytvoreni vychoziho adresare
+// create default dir
 if (!(file_exists($defdir) && is_dir($defdir))) {
     $test = mkdir($defdir, 0777, true);
     if (!$test) {
@@ -159,8 +157,7 @@ if (!(file_exists($defdir) && is_dir($defdir))) {
     }
 }
 
-/* ----  priprava funkci  ---- */
-
+// functions
 $fmanUrl = function (array $query = []) use ($dir) {
     return Router::admin('fman', ['query' => $query + ['dir' => $dir]]);
 };
@@ -177,15 +174,12 @@ $encodeFilename = function ($value) {
     return base64_encode($value);
 };
 
-/* ----  akce, vystup  ---- */
-
+// actions and output
 if ($continue) {
-
-    /* ---  post akce  --- */
+    // post actions
     if (isset($_POST['action'])) {
 
         switch (Request::post('action')) {
-
             // upload
             case 'upload':
                 $total = 0;
@@ -212,7 +206,7 @@ if ($continue) {
                 $message = Message::render($done == $total ? Message::OK : Message::WARNING, _lang('admin.fman.msg.upload.done', ['%done%' => $done, '%total%' => $total]));
                 break;
 
-            // novy adresar
+            // new dir
             case 'newfolder':
                 $name = $decodeFilename(Request::post('name'), false);
                 if (!file_exists($dir . $name)) {
@@ -228,7 +222,7 @@ if ($continue) {
                 }
                 break;
 
-            // odstraneni
+            // delete
             case 'delete':
                 $name = $decodeFilename(Request::post('name'));
                 if (file_exists($dir . $name)) {
@@ -250,7 +244,7 @@ if ($continue) {
                 }
                 break;
 
-            // prejmenovani
+            // rename
             case 'rename':
                 $name = $decodeFilename(Request::post('name'));
                 $newname = $decodeFilename(Request::post('newname'), false);
@@ -271,7 +265,7 @@ if ($continue) {
                 }
                 break;
 
-            // uprava
+            // edit
             case 'edit':
                 $name = $decodeFilename(Request::post('name'), false);
                 $content = Request::post('content');
@@ -289,7 +283,7 @@ if ($continue) {
                 }
                 break;
 
-            // presun
+            // move
             case 'move':
                 $newdir = Arr::removeValue(explode('/', Request::post('param')), '');
                 $newdir = implode('/', $newdir);
@@ -319,9 +313,9 @@ if ($continue) {
                 }
                 break;
 
-            // stazeni souboru
+            // download selected
             case 'downloadselected':
-                // ziskani vybranych souboru
+                // locate selected files
                 $selected = [];
                 foreach ($_POST as $var => $val) {
                     if ($var == 'action' || $var == 'param') {
@@ -345,11 +339,10 @@ if ($continue) {
                     $zip->close();
 
                     Response::downloadFile($tmpFile->getPathname(), sprintf('%s.zip', basename($dir)));
-                    exit;
                 }
                 break;
 
-            // odstraneni vyberu
+            // remove selected
             case 'deleteselected':
                 $done = 0;
                 $total = 0;
@@ -369,25 +362,22 @@ if ($continue) {
                 $message = Message::render($done == $total ? Message::OK : Message::WARNING, _lang('admin.fman.msg.deleteselected.done', ['%done%' => $done, '%total%' => $total]));
                 break;
 
-            // pridani vyberu do galerie - formular pro vyber galerie
+            // add selection to gallery - choose gallery
             case 'addtogallery_showform':
                 if (User::hasPrivilege('admingallery') && User::hasPrivilege('admincontent')) {
                     $_GET['a'] = 'addtogallery';
                 }
                 break;
 
-            // pridani vyberu do galerie - ulozeni
+            // add selection to gallery - perform
             case 'addtogallery':
                 if (User::hasPrivilege('admingallery') && User::hasPrivilege('admincontent')) {
-
-                    // priprava promennych
                     $counter = 0;
                     $galid = (int) Request::post('gallery');
 
-                    // vlozeni obrazku
+                    // insert images
                     if (DB::count('page', 'id=' . DB::val($galid) . ' AND type=' . Page::GALLERY) !== 0) {
-
-                        // nacteni nejmensiho poradoveho cisla
+                        // get the lowest order number
                         $smallestord = DB::queryRow('SELECT ord FROM ' . DB::table('gallery_image') . ' WHERE home=' . $galid . ' ORDER BY ord LIMIT 1');
                         if ($smallestord !== false) {
                             $smallestord = $smallestord['ord'];
@@ -395,10 +385,10 @@ if ($continue) {
                             $smallestord = 1;
                         }
 
-                        // posunuti poradovych cisel
+                        // move order numbers
                         DB::update('gallery_image', 'home=' . $galid, ['ord' => DB::raw('ord+' . (count($_POST) - 2))]);
 
-                        // cyklus
+                        // prepare query
                         $sql = '';
                         foreach ($_POST as $var => $val) {
                             if ($var == 'action' || $var == 'param') {
@@ -411,19 +401,16 @@ if ($continue) {
                             }
                         }
 
-                        // vlozeni
+                        // insert
                         if ($counter != 0) {
                             $sql = trim($sql, ',');
                             DB::query('INSERT INTO ' . DB::table('gallery_image') . ' (home,ord,title,prev,full) VALUES ' . $sql);
                         }
 
-                        // zprava
                         $message = Message::ok(_lang('admin.fman.addtogallery.done', ['%done%' => $counter]));
-
                     } else {
                         $message = Message::warning(_lang('global.badinput'));
                     }
-
                 }
                 break;
 
@@ -431,16 +418,13 @@ if ($continue) {
 
     }
 
-    /* ---  get akce  --- */
+    // get actions
     if (isset($_GET['a'])) {
-
         $action_query = [];
         $action_form_class = null;
 
-        // vyber akce
         switch (Request::get('a')) {
-
-            // novy adresar
+            // new folder
             case 'newfolder':
                 $action_submit = 'global.create';
                 $action_title = 'admin.fman.menu.createfolder';
@@ -452,7 +436,7 @@ if ($continue) {
       ';
                 break;
 
-            // odstraneni
+            // delete
             case 'delete':
                 if (isset($_GET['name'])) {
                     $name = Request::get('name');
@@ -466,7 +450,7 @@ if ($continue) {
                 }
                 break;
 
-            // prejmenovani
+            // rename
             case 'rename':
                 if (isset($_GET['name'])) {
                     $name = Request::get('name');
@@ -481,10 +465,8 @@ if ($continue) {
                 }
                 break;
 
-            // uprava
+            // edit
             case 'edit':
-
-                // priprava
                 $continue = false;
                 if (isset($_GET['name'])) {
                     $name = Request::get('name');
@@ -507,7 +489,7 @@ if ($continue) {
                     $continue = true;
                 }
 
-                // formular
+                // form
                 if ($continue) {
                     $action_submit = 'global.save';
                     $action_title = 'admin.fman.edit.title';
@@ -553,7 +535,7 @@ if ($continue) {
       ';
                 break;
 
-            // addtogallery
+            // add to gallery
             case 'addtogallery':
                 $action_submit = 'global.insert';
                 $action_title = 'admin.fman.menu.addtogallery';
@@ -600,9 +582,8 @@ if ($continue) {
 
         }
 
-        // dokonceni kodu
+        // finish action code
         if ($action_code != '') {
-
             $action_code = '
 <div id="fman-action">
 <h2>' . _lang($action_title) . '</h2>
@@ -620,14 +601,12 @@ if ($continue) {
 ' . Xsrf::getInput() . '</form>
 </div>
 ';
-
         }
-
     }
 
-    /* ---  vystup  --- */
+    // output
 
-    // menu, formular akce
+    // menu, action form
     $output .= $message . '
     <a id="top"></a>
     <p class="fman-menu">
@@ -641,7 +620,7 @@ if ($continue) {
 
     ' . $action_code;
 
-    // vypis
+    // list
     $output .= '
     <form action="' . _e($fmanUrl()) . '" method="post" name="filelist">
     <input type="hidden" name="action" value="-1">
@@ -651,7 +630,7 @@ if ($continue) {
 
     $highlight = false;
 
-    // adresare
+    // directories
     $handle = opendir($dir);
     $items = [];
     while (($item = readdir($handle)) !== false) {
@@ -664,7 +643,7 @@ if ($continue) {
     $dircounter = 0;
     foreach ($items as $item) {
 
-        // adresar nebo odkaz na nadrazeny adresar
+        // directory or parent link
         if ($item == '..') {
             if (($dirhref = User::checkPath($dir . $item, false, true)) === false) {
                 continue;
@@ -696,7 +675,7 @@ if ($continue) {
         $output .= '<tr><td class="fman-spacer" colspan="3"></td></tr>';
     }
 
-    // soubory
+    // files
     rewinddir($handle);
     $items = [];
     while (($item = readdir($handle)) !== false) {
@@ -711,7 +690,7 @@ if ($continue) {
         ++$filecounter;
         $row_classes = [];
 
-        // ikona
+        // icon
         $iteminfo = pathinfo($item);
         if (!isset($iteminfo['extension'])) {
             $iteminfo['extension'] = '';
@@ -767,5 +746,4 @@ if ($continue) {
     <a href="#top"><span class="big-text">&uarr;</span></a>
     </p>
     ';
-
 }

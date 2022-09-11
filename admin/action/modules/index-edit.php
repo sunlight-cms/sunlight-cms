@@ -8,8 +8,7 @@ use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
-/* ---  zpracovani ulozeni  --- */
-
+// save
 if (isset($_POST['text'])) {
     Settings::update('admin_index_custom', trim(Request::post('text', '')));
     Settings::update('admin_index_custom_pos', (Request::post('pos') == 0) ? '0' : '1');
@@ -20,8 +19,7 @@ if (isset($_POST['text'])) {
 
 $admin_index_cfg = Settings::getMultiple(['admin_index_custom', 'admin_index_custom_pos']);
 
-/* ---  vystup  --- */
-
+// output
 $output .= '
 
 <p class="bborder">' . _lang('admin.menu.index.edit.p') . '</p>

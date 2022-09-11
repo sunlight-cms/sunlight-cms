@@ -4,11 +4,12 @@ use Sunlight\Database\Database as DB;
 use Sunlight\Router;
 use Sunlight\User;
 
-return function ($razeni = 'new', $pocet = 5) {
-    $pocet = abs((int) $pocet);
+return function ($order = 'new', $limit = 5) {
+    $limit = abs((int) $limit);
 
     $rcond = 'public=1';
-    switch ($razeni) {
+    $ordered = true;
+    switch ($order) {
         case 'activity':
             $rorder = 'activitytime DESC';
             $rcond .= ' AND ' . time() . '-activitytime<1800';
@@ -23,21 +24,21 @@ return function ($razeni = 'new', $pocet = 5) {
         case 'new':
         default:
             $rorder = 'registertime DESC';
+            $ordered = false;
             break;
     }
 
-    if ($razeni != 4) {
-        $result = "<ul>\n";
-    } else {
+    if ($ordered) {
         $result = "<ol>\n";
+    } else {
+        $result = "<ul>\n";
     }
 
     $userQuery = User::createQuery(null, '');
-    $query = DB::query('SELECT ' . $userQuery['column_list'] . ' FROM ' . DB::table('user') . ' u ' . $userQuery['joins'] . ' WHERE ' . $rcond . ' ORDER BY ' . $rorder . ' LIMIT ' . $pocet);
+    $query = DB::query('SELECT ' . $userQuery['column_list'] . ' FROM ' . DB::table('user') . ' u ' . $userQuery['joins'] . ' WHERE ' . $rcond . ' ORDER BY ' . $rorder . ' LIMIT ' . $limit);
     while ($item = DB::row($query)) {
-
-        // pridani doplnujicich informaci
-        switch ($razeni) {
+        // add additional info
+        switch ($order) {
             case 'comment-count':
                 $rvar = DB::count('post', 'author=' . DB::val($item['id']));
                 if ($rvar == 0) {
@@ -52,7 +53,6 @@ return function ($razeni = 'new', $pocet = 5) {
                 $rext = ' - ' . $rvar['pct'] . '%, ' . _lang('global.articlesnum') . ': ' . $rvar['cnt'];
                 break;
 
-                // nic
             default:
                 $rext = '';
                 break;
@@ -60,7 +60,7 @@ return function ($razeni = 'new', $pocet = 5) {
 
         $result .= '<li>' . Router::userFromQuery($userQuery, $item) . $rext . "</li>\n";
     }
-    if ($razeni != 4) {
+    if ($order != 4) {
         $result .= "</ul>\n";
     } else {
         $result .= "</ol>\n";

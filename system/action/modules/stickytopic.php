@@ -15,8 +15,6 @@ if (!User::isLoggedIn()) {
     return;
 }
 
-/* ---  priprava promennych  --- */
-
 $success = false;
 $message = '';
 $unstick = '';
@@ -41,22 +39,19 @@ if ($query !== false) {
     return;
 }
 
-/* ---  ulozeni  --- */
-
+// save
 if (isset($_POST['doit'])) {
     DB::update('post', 'id=' . DB::val($id), ['sticky' => (($query['sticky'] == 1) ? 0 : 1)]);
     $message = Message::ok(_lang('mod.stickytopic.ok' . $unstick));
     $success = true;
 }
 
-/* ---  vystup  --- */
-
+// output
 $_index->title = _lang('mod.stickytopic' . $unstick);
 
-// zprava
 $output .= $message;
 
-// formular
+// form
 if (!$success) {
     $output .= '
     <form action="' . _e(Router::module('stickytopic', ['query' => ['id' => $id]])) . '" method="post">

@@ -10,16 +10,18 @@ use Sunlight\Util\StringManipulator;
 
 defined('SL_ROOT') or exit;
 
-// nacteni dat stranky
+// load page
 $_page = Page::find($segments);
+
 if ($_page === false) {
     $_index->notFound();
     return;
 }
 
-// parametry stranky
+// basic meta data
 $_index->url = Router::page($_page['id'], $_index->slug);
 $_index->bodyClasses[] = 't-page';
+
 if ($_index->slug !== null) {
     $_index->bodyClasses[] = 'p-' . StringManipulator::slugify($_index->slug, true, '_');
 } elseif ($_page['id'] == Settings::get('index_page_id')) {
@@ -32,17 +34,16 @@ if ($_index->slug !== null && ($slug_length = strlen($_page['slug'])) < strlen($
     $segment = null;
 }
 
-// meta
 if ($_page['description'] !== '') {
     $_index->description = $_page['description'];
 }
 
-// motiv
+// change template
 if ($_page['layout'] !== null) {
     $_index->changeTemplate($_page['layout']);
 }
 
-// kontrola URL hlavni strany
+// check URL of index page
 if (
     $_page['id'] == Settings::get('index_page_id')
     && !empty($segments)
@@ -53,34 +54,34 @@ if (
 }
 
 if ($segment !== null) {
-    // zkontrolovat, zda stranka podporuje segment
+    // check if segment is supported
     if ($_page['type'] == Page::CATEGORY || $_page['type'] == Page::FORUM) {
         $segment_support = true;
     } else {
         $segment_support = false;
     }
 
-    // umoznit pluginum urcit stav podpory segmentu
+    // allow plugins to implement segment logic
     Extend::call('page.segment', [
         'segment' => $segment,
         'page' => $_page,
         'support' => &$segment_support,
     ]);
 
-    // stranka nenalezena, pokud nepodporuje segment
+    // 404 if segment is not supported
     if (!$segment_support) {
         $_index->notFound();
         return;
     }
 }
 
-// test pristupu
+// check access
 if (!User::checkPublicAccess($_page['public'], $_page['level'])) {
     $_index->unauthorized();
     return;
 }
 
-// nastaveni atributu
+// more meta data
 $_index->id = $_page['id'];
 $_index->title = $_page['title'];
 if ($_page['heading'] !== '') {
@@ -89,7 +90,7 @@ if ($_page['heading'] !== '') {
 $_index->headingEnabled = (bool) $_page['show_heading'];
 $_index->segment = $segment;
 
-// udalosti stranky
+// page events
 if ($_page['events'] !== null) {
     foreach (ArgList::parse($_page['events']) as $page_event) {
         $page_event_parts = explode(':', $page_event, 2);
@@ -100,15 +101,15 @@ if ($_page['events'] !== null) {
     }
 }
 
-// priprava vykresleni stranky
+// prepare to render page
 $id = $_page['id'];
 $types = Page::getTypes();
 $type_name = $types[$_page['type']];
 $script = null;
 
-// urceni skriptu
+// determine script
 if ($_page['type'] == Page::PLUGIN) {
-    // plugin stranka
+    // plugin page
     $script = null;
     Extend::call('page.plugin.' . $_page['type_idt'], [
         'page' => &$_page,
@@ -119,11 +120,11 @@ if ($_page['type'] == Page::PLUGIN) {
         throw new RuntimeException(sprintf('No handler for plugin page type "%s"', $_page['type_idt']));
     }
 } else {
-    // ostatni typy
+    // other types
     $script = SL_ROOT . 'system/action/pages/' . $type_name . '.php';
 }
 
-// vykresleni stranky
+// render page
 $extend_args = Extend::args($output, ['page' => &$_page, 'script' => &$script]);
 
 Extend::call('page.all.before', $extend_args);

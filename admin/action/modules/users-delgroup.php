@@ -9,12 +9,10 @@ use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
-/* ---  priprava promennych  --- */
-
 $levelconflict = false;
 $sysgroups_array = [User::ADMIN_GROUP_ID, User::GUEST_GROUP_ID, User::REGISTERED_GROUP_ID];
 
-// id
+// load group
 $id = (int) Request::get('id');
 $systemgroup = in_array($id, $sysgroups_array);
 $query = DB::queryRow('SELECT id,title,level FROM ' . DB::table('user_group') . ' WHERE id=' . $id);
@@ -29,13 +27,13 @@ if (User::getLevel() <= $query['level']) {
     return;
 }
 
-/* --- spocitani uzivatelu --- */
+// count users
 $user_count = DB::count('user', 'group_id=' . DB::val($id));
 
-/* ---  odstraneni  --- */
+// delete
 $done = false;
 if (isset($_POST['doit'])) {
-    // smazani uzivatelu
+    // delete users
     $users = DB::query('SELECT id FROM ' . DB::table('user') . ' WHERE group_id=' . $id);
     $user_delete_failcount = 0;
     while ($user = DB::row($users)) {
@@ -49,11 +47,11 @@ if (isset($_POST['doit'])) {
         return;
     }
 
-    // smazani skupiny
+    // delete group
     if (!$systemgroup) {
         DB::delete('user_group', 'id=' . $id);
 
-        // zmena vychozi skupiny
+        // update default group
         if ($id == Settings::get('defaultgroup')) {
             Settings::update('defaultgroup', User::REGISTERED_GROUP_ID);
         }
@@ -63,7 +61,7 @@ if (isset($_POST['doit'])) {
     return;
 }
 
-/* ---  vystup  --- */
+// output
 if ($systemgroup) {
     $output .= Message::ok(_lang('admin.users.groups.specialgroup.delnotice'));
 }

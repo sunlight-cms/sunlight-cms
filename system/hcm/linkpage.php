@@ -3,7 +3,7 @@
 use Sunlight\Database\Database as DB;
 use Sunlight\Router;
 
-return function ($id = null, $text = null, $nove_okno = false) {
+return function ($id = null, $text = null, $new_window = false) {
     $is_id = is_numeric($id);
     if ($is_id) {
         $id = (int) $id;
@@ -11,7 +11,7 @@ return function ($id = null, $text = null, $nove_okno = false) {
         $id = DB::val($id);
     }
     $query = DB::queryRow('SELECT id,title,slug FROM ' . DB::table('page') . ' WHERE ' . ($is_id ? 'id' : 'slug') . '=' . $id);
-    if ($nove_okno) {
+    if ($new_window) {
         $target = ' target="_blank"';
     } else {
         $target = '';

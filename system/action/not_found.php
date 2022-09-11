@@ -8,7 +8,7 @@ use Sunlight\Util\Response;
 
 defined('SL_ROOT') or exit;
 
-// udalost pred
+// extend
 $continue = true;
 Extend::call('index.not_found.before', [
     'index' => $_index,
@@ -18,7 +18,7 @@ if (!$continue) {
     return;
 }
 
-// presmerovani
+// redirection
 if ($_index->slug !== null) {
     $redirect = DB::queryRow('SELECT new,permanent FROM ' . DB::table('redirect') . ' WHERE old=' . DB::val($_index->slug) . ' AND active=1');
     if ($redirect !== false) {
@@ -28,7 +28,7 @@ if ($_index->slug !== null) {
     }
 }
 
-// hlavicka a vychozi obsah
+// header and default content
 Response::notFound();
 
 $_index->title = _lang('global.error404.title');

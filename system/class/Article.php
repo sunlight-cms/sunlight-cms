@@ -8,132 +8,133 @@ use Sunlight\Image\ImageLoader;
 use Sunlight\Image\ImageService;
 use Sunlight\Image\ImageStorage;
 use Sunlight\Image\ImageTransformer;
+use Sunlight\Util\Arr;
 use Sunlight\Util\StringGenerator;
 
 abstract class Article
 {
     /**
-     * Vyhodnotit pravo aktualniho uzivatele k pristupu ke clanku
+     * See if the current user can access an article
      *
-     * @param array $article pole s daty clanku (potreba id,time,confirmed,author,public,home1,home2,home3)
-     * @param bool $check_categories kontrolovat kategorie 1/0
+     * @param array $article article data (id,time,confirmed,author,public,home1,home2,home3)
+     * @param bool $checkCategories check access to categories 1/0
      */
-    static function checkAccess(array $article, bool $check_categories = true): bool
+    static function checkAccess(array $article, bool $checkCategories = true): bool
     {
-        // nevydany / neschvaleny clanek
+        // unconfirmed or unpublished article
         if (!$article['confirmed'] || $article['time'] > time()) {
             return User::hasPrivilege('adminconfirm') || User::equals($article['author']);
         }
 
-        // pristup k clanku
+        // access to article
         if (!User::checkPublicAccess($article['public'])) {
             return false;
         }
 
-        // pristup ke kategoriim
-        if ($check_categories) {
-            // nacist
-            $homes = [$article['home1']];
-            if ($article['home2'] != -1) {
-                $homes[] = $article['home2'];
-            }
-            if ($article['home3'] != -1) {
-                $homes[] = $article['home3'];
-            }
-            $result = DB::query('SELECT public,level FROM ' . DB::table('page') . ' WHERE id IN(' . implode(',', $homes) . ')');
+        // access to at least one category
+        if ($checkCategories) {
+            $categoryIds = Arr::removeValue([$article['home1'], $article['home2'], $article['home3']], -1);
+            $hasCategoryAccess = false;
+            $result = DB::query('SELECT public,level FROM ' . DB::table('page') . ' WHERE id IN(' . DB::arr($categoryIds) . ')');
+
             while ($r = DB::row($result)) {
                 if (User::checkPublicAccess($r['public'], $r['level'])) {
-                    // do kategorie je pristup (staci alespon 1)
-                    return true;
+                    $hasCategoryAccess = true;
+                    break;
                 }
             }
 
-            // neni pristup k zadne kategorii
-            return false;
+            if (!$hasCategoryAccess) {
+                return false;
+            }
         }
 
-        // nekontrolovat
         return true;
     }
 
     /**
-     * Nalezt clanek a nacist jeho data
-     * Jsou nactena vsechna data clanku + cat[1|2|3]_[id|title|slug|public|level] a author_query
+     * Find an article and load its data
      *
-     * @param string $slug identifikator clanku
-     * @param int|null $cat_id ID hlavni kategorie clanku (home1)
-     * @return array|bool false pri nenalezeni
+     * The returned array contains:
+     *
+     * - article columns
+     * - category columns: cat[123]_{id,title,slug,public,level}
+     * - author_query + columns from {@see User::createQuery()}
+     *
+     * @param string $slug article slug
+     * @param int|null $mainCategoryId main category ID (home1)
+     * @return array|false
      */
-    static function find(string $slug, ?int $cat_id = null)
+    static function find(string $slug, ?int $mainCategoryId = null)
     {
-        $author_user_query = User::createQuery('a.author');
+        $authorQuery = User::createQuery('a.author');
 
         $sql = 'SELECT a.*';
         for ($i = 1; $i <= 3; ++$i) {
             $sql .= ",cat{$i}.id cat{$i}_id,cat{$i}.title cat{$i}_title,cat{$i}.slug cat{$i}_slug,cat{$i}.public cat{$i}_public,cat{$i}.level cat{$i}_level";
         }
-        $sql .= ',' . $author_user_query['column_list'];
+        $sql .= ',' . $authorQuery['column_list'];
         $sql .= ' FROM ' . DB::table('article') . ' a';
         for ($i = 1; $i <= 3; ++$i) {
             $sql .= ' LEFT JOIN ' . DB::table('page') . " cat{$i} ON(a.home{$i}=cat{$i}.id)";
         }
-        $sql .= ' ' . $author_user_query['joins'];
+        $sql .= ' ' . $authorQuery['joins'];
         $sql .= ' WHERE a.slug=' . DB::val($slug);
-        if ($cat_id !== null) {
-            $sql .= ' AND a.home1=' . DB::val($cat_id);
+        if ($mainCategoryId !== null) {
+            $sql .= ' AND a.home1=' . DB::val($mainCategoryId);
         }
         $sql .= ' LIMIT 1';
 
         $query = DB::queryRow($sql);
         if ($query !== false) {
-            $query['author_query'] = $author_user_query;
+            $query['author_query'] = $authorQuery;
         }
 
         return $query;
     }
 
     /**
-     * Sestavit casti SQL dotazu pro vypis clanku
+     * Create SQL parts for article list query
      *
-     * Join aliasy: cat1, cat2, cat3
+     * Join aliases: cat1, cat2, cat3
      *
-     * @param string $alias alias tabulky clanku pouzity v dotazu
-     * @param array $categories pole s ID kategorii, muze byt prazdne
-     * @param string|null $sqlConditions SQL s vlastnimi WHERE podminkami
-     * @param bool $doCount vracet take pocet odpovidajicich clanku 1/0
-     * @param bool $checkPublic nevypisovat neverejne clanky, neni-li uzivatel prihlasen
-     * @param bool $hideInvisible nevypisovat neviditelne clanky
-     * @return array joiny, where podminka, [pocet clanku]
+     * @param string $alias alias of the article table
+     * @param array $categories ID of article categories (can be empty)
+     * @param string|null $sqlConditions custom WHERE conditions
+     * @param bool $doCount return a number of matching articles as well 1/0
+     * @param bool $checkPublic skip non-public articles if user is not logged in 1/0
+     * @param bool $hideInvisible skip invisible articles 1/0
+     * @return array joins, where condition, [number of articles]
      */
     static function createFilter(string $alias, array $categories = [], ?string $sqlConditions = null, bool $doCount = false, bool $checkPublic = true, bool $hideInvisible = true): array
     {
-        //kategorie
+        // categories
         if (!empty($categories)) {
             $conditions[] = self::createCategoryFilter($categories);
         }
 
-        // cas vydani
+        // publication time and confirmation
         $conditions[] = "{$alias}.time<=" . time();
         $conditions[] = "{$alias}.confirmed=1";
 
-        // neviditelnost
+        // visibility
         if ($hideInvisible) {
             $conditions[] = "{$alias}.visible=1";
         }
 
-        // neverejnost
+        // public status, level
         if ($checkPublic && !User::isLoggedIn()) {
             $conditions[] = "{$alias}.public=1";
             $conditions[] = '(cat1.public=1 OR cat2.public=1 OR cat3.public=1)';
         }
         $conditions[] = '(cat1.level<=' . User::getLevel() . ' OR cat2.level<=' . User::getLevel() . ' OR cat3.level<=' . User::getLevel() . ')';
 
-        // vlastni podminky
+        // custom conditions
         if (!empty($sqlConditions)) {
             $conditions[] = $sqlConditions;
         }
 
-        // joiny
+        // joins
         $joins = '';
         for ($i = 1; $i <= 3; ++$i) {
             if ($i > 1) {
@@ -142,13 +143,12 @@ abstract class Article
             $joins .= 'LEFT JOIN ' . DB::table('page') . " cat{$i} ON({$alias}.home{$i}!=-1 AND cat{$i}.id={$alias}.home{$i})";
         }
 
-        // spojit podminky
         $conditions = implode(' AND ', $conditions);
 
-        // sestaveni vysledku
+        // compose result
         $result = [$joins, $conditions];
 
-        // pridat pocet
+        // add count
         if ($doCount) {
             $result[] = (int) DB::result(DB::query("SELECT COUNT({$alias}.id) FROM " . DB::table('article') . " {$alias} {$joins} WHERE {$conditions}"));
         }
@@ -157,10 +157,10 @@ abstract class Article
     }
 
     /**
-     * Sestaveni casti SQL dotazu po WHERE pro vyhledani clanku v urcitych kategoriich.
+     * Create SQL condition for article category filtering
      *
-     * @param array $categories pole s ID kategorii
-     * @param string|null $alias alias tabulky clanku pouzity v dotazu
+     * @param array $categories category ID list
+     * @param string|null $alias alias of the article table, if any
      */
     static function createCategoryFilter(array $categories, ?string $alias = null): string
     {
@@ -186,15 +186,20 @@ abstract class Article
     }
 
     /**
-     * Vytvoreni nahledu clanku pro vypis
+     * Render article preview
      *
-     * @param array $art pole s daty clanku vcetne cat_slug a data uzivatele z {@see User::createQuery()}
-     * @param array $userQuery vystup funkce {@see User::createQuery()}
-     * @param bool $info vypisovat radek s informacemi 1/0
-     * @param bool $perex vypisovat perex 1/0
-     * @param int|null $comment_count pocet komentaru (null = nezobrazi se)
+     * Article data:
+     * - id, title, slug, author, perex, picture_uid, time, comments, public, readnum
+     * - cat_slug (slug of main category)
+     * - author data from {@see User::createQuery()}
+     * - comment_count (optional)
+     *
+     * @param array $art article data
+     * @param array $userQuery output of {@see User::createQuery()}
+     * @param bool $info show article info 1/0
+     * @param bool $perex show perex 1/0
      */
-    static function renderPreview(array $art, array $userQuery, bool $info = true, bool $perex = true, ?int $comment_count = null): ?string
+    static function renderPreview(array $art, array $userQuery, bool $info = true, bool $perex = true): ?string
     {
         // extend
         $extendOutput = Extend::buffer('article.preview', [
@@ -202,7 +207,6 @@ abstract class Article
             'user_query' => $userQuery,
             'info' => $info,
             'perex' => $perex,
-            'comment_count' => $comment_count,
         ]);
         if ($extendOutput !== '') {
             return $extendOutput;
@@ -210,12 +214,12 @@ abstract class Article
 
         $output = "<div class=\"list-item article-preview\">\n";
 
-        // titulek
+        // title
         $link = Router::article($art['id'], $art['slug'], $art['cat_slug']);
         $output .= '<h2 class="list-title"><a href="' . $link . '">' . $art['title'] . "</a></h2>\n";
 
-        // perex a obrazek
-        if ($perex == true) {
+        // perex and image
+        if ($perex) {
             if (isset($art['picture_uid'])) {
                 $thumbnail = self::getThumbnail($art['picture_uid']);
             } else {
@@ -229,22 +233,21 @@ abstract class Article
         }
 
         // info
-        if ($info == true) {
+        if ($info) {
             $infos = [
                 'author' => [_lang('article.author'), Router::userFromQuery($userQuery, $art)],
                 'posted' => [_lang('article.posted'), GenericTemplates::renderTime($art['time'], 'article')],
                 'readnum' => [_lang('article.readnum'), $art['readnum'] . 'x'],
             ];
 
-            if ($art['comments'] == 1 && Settings::get('comments') && $comment_count !== null) {
-                $infos['comments'] = [_lang('article.comments'), $comment_count];
+            if ($art['comments'] && isset($art['comment_count']) && Settings::get('comments')) {
+                $infos['comments'] = [_lang('article.comments'), $art['comment_count']];
             }
 
             Extend::call('article.preview.infos', [
                 'art' => $art,
                 'user_query' => $userQuery,
                 'perex' => $perex,
-                'comment_count' => $comment_count,
                 'infos' => &$infos,
             ]);
 
@@ -258,7 +261,7 @@ abstract class Article
         return $output;
     }
 
-    /**
+    /*
      * Upload a new article image
      *
      * Returns image UID or NULL on failure.

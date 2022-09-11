@@ -17,8 +17,6 @@ if (!User::isLoggedIn()) {
     return;
 }
 
-/* ---  priprava promennych  --- */
-
 $message = '';
 $id = (int) Request::get('id');
 $userQuery = User::createQuery('p.author');
@@ -40,8 +38,7 @@ if ($query !== false) {
 
 $forums = Page::getFlatTree(null, null, new SimpleTreeFilter(['type' => Page::FORUM]));
 
-/* ---  ulozeni  --- */
-
+// save
 if (isset($_POST['new_forum'])) {
     $new_forum_id = (int) Request::post('new_forum');
     if (isset($forums[$new_forum_id]) && $forums[$new_forum_id]['type'] == Page::FORUM) {
@@ -54,14 +51,13 @@ if (isset($_POST['new_forum'])) {
     }
 }
 
-/* ---  vystup  --- */
-
+// output
 $_index->title = _lang('mod.movetopic');
 
-// zprava
+// message
 $output .= $message;
 
-// formular
+// form
 $output .= '
 <form action="' . _e(Router::module('movetopic', ['query' => ['id' => $id]])) . '" method="post">
 ' . Message::warning(_lang('mod.movetopic.text', ['%topic%' => $query['subject']]), true) . '

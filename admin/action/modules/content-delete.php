@@ -14,8 +14,6 @@ defined('SL_ROOT') or exit;
 
 $type_array = Page::getTypes();
 
-/* ---  priprava promennych  --- */
-
 $continue = false;
 if (isset($_GET['id'])) {
     $id = (int) Request::get('id');
@@ -27,7 +25,7 @@ if (isset($_GET['id'])) {
 
 if ($continue) {
 
-    // opravneni k mazani podstranek = pravo na vsechny typy
+    // removing child pages requires privileges for all page types
     $recursive = true;
     foreach (Page::getTypes() as $type) {
         if (!User::hasPrivilege('admin' . $type)) {
@@ -36,13 +34,11 @@ if ($continue) {
         }
     }
 
-    /* ---  odstraneni  --- */
+    // delete
     if (isset($_POST['confirm'])) {
-
-        // smazani
         $error = null;
         if (!PageManipulator::delete($query, $recursive, $error)) {
-            // selhani
+            // failure
             $output .= Message::error($error, true);
 
             return;
@@ -55,9 +51,7 @@ if ($continue) {
 
     }
 
-    /* ---  vystup  --- */
-
-    // pole souvisejicich polozek
+    // output
     $content_array = PageManipulator::listDependencies($query, $recursive);
 
     $output .= '

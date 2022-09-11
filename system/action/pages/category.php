@@ -11,18 +11,18 @@ use Sunlight\User;
 
 defined('SL_ROOT') or exit;
 
-// vychozi nastaveni
+// defaults
 if ($_page['var2'] === null) {
     $_page['var2'] = Settings::get('articlesperpage');
 }
 
-// zobrazeni clanku?
+// show an article?
 if ($_index->segment !== null) {
     require SL_ROOT . 'system/action/pages/include/article.php';
     return;
 }
 
-// nastaveni strankovani
+// paginator settings
 $artsperpage = $_page['var2'];
 switch ($_page['var1']) {
     case 1:
@@ -39,17 +39,17 @@ switch ($_page['var1']) {
         break;
 }
 
-// titulek
+// title
 $_index->title = $_page['title'];
 
-// obsah
+// content
 Extend::call('page.category.content.before', $extend_args);
 if ($_page['content'] != '') {
     $output .= Hcm::parse($_page['content']) . "\n\n<div class=\"hr category-hr\"><hr></div>\n\n";
 }
 Extend::call('page.category.content.after', $extend_args);
 
-// vypis clanku
+// articles
 [$art_joins, $art_cond, $art_count] = Article::createFilter('art', [$id], null, true);
 $paging = Paginator::render($_index->url, $artsperpage, $art_count);
 $userQuery = User::createQuery('art.author');
@@ -62,7 +62,7 @@ if (DB::size($arts) != 0) {
     while ($art = DB::row($arts)) {
         $extend_item_args = Extend::args($output, ['page' => $_page, 'item_query' => &$art]);
         Extend::call('page.category.item.before', $extend_item_args);
-        $output .= Article::renderPreview($art, $userQuery, $_page['var3'] == 1, true, $art['comment_count']);
+        $output .= Article::renderPreview($art, $userQuery, $_page['var3'] == 1);
         Extend::call('page.category.item.after', $extend_item_args);
     }
     if (Paginator::atBottom()) {

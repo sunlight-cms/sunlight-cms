@@ -24,10 +24,10 @@ abstract class Response
     }
 
     /**
-     * Odeslat hlavicky pro presmerovani
+     * Send redirection headers
      *
-     * @param string $url absolutni URL
-     * @param bool $permanent vytvorit permanentni presmerovani 1/0
+     * @param string $url absolute URL
+     * @param bool $permanent create a permanent redirect 1/0
      */
     static function redirect(string $url, bool $permanent = false): void
     {
@@ -36,10 +36,9 @@ abstract class Response
     }
 
     /**
-     * Navrat na predchozi stranku
-     * Po provedeni presmerovani je skript ukoncen.
+     * Redirect back to the previous page and exit
      *
-     * @param string|null $url adresa pro navrat, null = {@see Response::getReturnUrl()}
+     * @param string|null $url URL to return to, defaults to {@see Response::getReturnUrl()}
      * @return never-return
      */
     static function redirectBack(?string $url = null): void
@@ -61,13 +60,13 @@ abstract class Response
     }
 
     /**
-     * Ziskat navratovou adresu
+     * Determine return URL
      *
-     * Jsou pouzity nasledujici adresy (v poradi priority):
+     * This function will attempt to load it from (in order of priority):
      *
-     * 1) parametr $url
-     * 2) _get('_return')
-     * 3) $_SERVER['HTTP_REFERER']
+     * 1) $_GET['_return']
+     * 2) $_SERVER['HTTP_REFERER']
+     * 3) system's base URL
      */
     static function getReturnUrl(): string
     {
@@ -85,7 +84,7 @@ abstract class Response
             $returnUrl = Url::parse($_SERVER['HTTP_REFERER']);
         }
 
-        // pouzit vychozi URL, pokud ma zjistena navratova URL jiny hostname (prevence open redirection vulnerability)
+        // reject URLs with different hostname (prevent open redirection)
         if ($baseUrl->getHost() !== $returnUrl->getHost()) {
             $returnUrl = $baseUrl;
         }
@@ -94,10 +93,10 @@ abstract class Response
     }
 
     /**
-     * Poslat hlavicky pro stazeni souboru
+     * Send file download headers
      *
-     * @param string $filename nazev souboru
-     * @param int|null $filesize velikost souboru v bajtech, je-li znama
+     * @param string $filename file name
+     * @param int|null $filesize file size, if known
      */
     static function download(string $filename, ?int $filesize = null): void
     {
@@ -110,12 +109,11 @@ abstract class Response
     }
 
     /**
-     * Stahnout lokalni soubor
+     * Download a local file and exit
      *
-     * Skript NENI ukoncen po zavolani teto funkce.
-     *
-     * @param string $filepath cesta k souboru
-     * @param string|null $filename vlastni nazev souboru nebo null (= zjistit z $filepath)
+     * @param string $filepath path to the file
+     * @param string|null $filename custom file name
+     * @return never-return
      */
     static function downloadFile(string $filepath, ?string $filename = null): void
     {
@@ -138,9 +136,9 @@ abstract class Response
     }
 
     /**
-     * Ujistit se, ze jeste nebyly odeslany hlavicky
+     * Make sure headers have not been sent yet
      *
-     * @throws \RuntimeException pokud jiz byly hlavicky odeslany
+     * @throws \RuntimeException if headers were already sent
      */
     static function ensureHeadersNotSent(): void
     {

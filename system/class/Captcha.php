@@ -16,11 +16,9 @@ class Captcha
     ];
 
     /**
-     * Inicializace captchy
+     * Initialize a CAPTCHA form row
      *
      * @see \Sunlight\Util\Form::render()
-     *
-     * @return array radek formulare
      */
     static function init(): array
     {
@@ -50,7 +48,7 @@ class Captcha
     }
 
     /**
-     * Zkontrolovat vyplneni captcha fieldu
+     * Check if CAPTCHA was submitted and is correct
      */
     static function check(): bool
     {
@@ -59,7 +57,6 @@ class Captcha
         if ($result === null) {
             $result = false;
 
-            // kontrola
             if (Settings::get('captcha') and !User::isLoggedIn()) {
                 $enteredCode = Request::post('_cp');
                 $captchaId = Request::post('_cn');

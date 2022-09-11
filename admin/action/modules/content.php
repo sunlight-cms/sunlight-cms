@@ -11,11 +11,9 @@ use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
-/* ---  priprava  --- */
-
 $message = '';
 
-// vypis stranek
+// list pages
 $plugin_types = Page::getPluginTypes();
 $type_array = Page::getTypes();
 
@@ -30,13 +28,12 @@ if (
     || User::hasPrivilege('adminforum')
     || User::hasPrivilege('adminpluginpage')
 ) {
-
-    // akce
+    // action
     if (isset($_POST['ac'])) {
         $ac = Request::post('ac');
 
         switch ($ac) {
-            // vytvoreni stranky
+            // create page
             case 'new':
                 $is_plugin_page = false;
                 if (is_numeric(Request::post('type'))) {
@@ -58,9 +55,9 @@ if (
         }
     }
 
-    // horni panel
+    // top panel
 
-    // seznam typu stranek
+    // page type list
     $create_list = '';
     if (User::hasPrivilege('adminpages')) {
         foreach ($type_array as $type => $name) {
@@ -69,7 +66,7 @@ if (
             }
         }
 
-        // seznam pluginovych typu stranek
+        // add plugin page types
         if (User::hasPrivilege('adminpluginpage') && !empty($plugin_types)) {
             $create_list .= "<option value=\"\" disabled>---</option>\n";
             foreach($plugin_types as $plugin_type => $plugin_label) {
@@ -113,7 +110,7 @@ if (
 
     ';
 
-    // tabulka polozek
+    // page table
     if (
         User::hasPrivilege('adminpages')
         && PageLister::getConfig('mode') == PageLister::MODE_SINGLE_LEVEL
@@ -140,7 +137,7 @@ if (
     $pageitems = '';
 }
 
-// nabidka modulu
+// content modules
 $content_modules = [
     'layout' => [
         'modules' => [
@@ -218,9 +215,7 @@ foreach ($content_modules as $category_alias => $category_data) {
     }
 }
 
-/* ---  vystup  --- */
-
-// zprava
+// output
 if (isset($_GET['done'])) {
     $message = Message::ok(_lang('global.done'));
 }

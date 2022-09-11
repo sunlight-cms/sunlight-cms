@@ -18,7 +18,7 @@ defined('SL_ROOT') or exit;
 
 $templates_to_choose_slot_from = null;
 
-// fetch box data
+// load box
 $id = Request::get('id');
 $new = $id === null;
 

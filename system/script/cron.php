@@ -11,8 +11,7 @@ Core::init('../../', [
     'content_type' => 'text/plain; charset=UTF-8',
 ]);
 
-/* --- autorizace --- */
-
+// check authorization
 $auth = explode(':', Settings::get('cron_auth'), 2);
 if (
     count($auth) !== 2
@@ -24,17 +23,14 @@ if (
     exit(1);
 }
 
-/* ---  spusteni cronu  --- */
-
-// priprava
+// run cron tasks
 $start = microtime(true);
 $names = [];
 Extend::reg('cron', function ($args) use (&$names) {
     $names[] = $args['name'];
 });
 
-// spusteni
 Core::runCronTasks();
 
-// vysledek
+// output results
 echo date('Y-m-d H:i:s'), ' [', round((microtime(true) - $start) * 1000), 'ms] ', implode(', ', $names), "\n";

@@ -32,54 +32,43 @@ if (!User::isLoggedIn()) {
     return;
 }
 
-/* ---  priprava promennych  --- */
-
 if (isset($_GET['a'])) {
     $a = strval(Request::get('a'));
 } else {
     $a = 'list';
 }
 
-/* ---  modul  --- */
-
 $list = false;
 $message = '';
 
-// obsah
 switch ($a) {
 
-    // nova zprava
+    // new message
     case 'new':
-
-        // titulek
+        // title
         $_index->title = _lang('mod.messages.new');
 
-        // odeslani
+        // send message
         if (isset($_POST['receiver'])) {
-
-            // nacteni dat
             $receiver = Request::post('receiver');
             $subject = Html::cut(_e(StringManipulator::trimExtraWhitespace(Request::post('subject'))), 48);
             $text = Html::cut(_e(trim(Request::post('text', ''))), 16384);
 
-            // kontrola a odeslani
+            // check variables
             do {
-
-                /* ---  kontrola  --- */
-
                 // text
                 if ($text === '') {
                     $message = Message::warning(_lang('mod.messages.error.notext'));
                     break;
                 }
 
-                // predmet
+                // subject
                 if ($subject === '') {
                     $message = Message::warning(_lang('mod.messages.error.nosubject'));
                     break;
                 }
 
-                // prijemce
+                // receiver
                 if ($receiver !== '') {
                     $rq = DB::queryRow('SELECT usr.id AS usr_id,usr.blocked AS usr_blocked, ugrp.blocked AS ugrp_blocked FROM ' . DB::table('user') . ' AS usr JOIN ' . DB::table('user_group') . ' AS ugrp ON (usr.group_id=ugrp.id) WHERE usr.username=' . DB::val($receiver) . ' OR usr.publicname=' . DB::val($receiver));
                 } else {
@@ -95,15 +84,13 @@ switch ($a) {
                     break;
                 }
 
-                // anti spam limit
+                // check IP log
                 if (!User::hasPrivilege('unlimitedpostaccess') && !IpLog::check(IpLog::ANTI_SPAM)) {
                     $message = Message::warning(_lang('error.antispam', ['%antispamtimeout%' => Settings::get('antispamtimeout')]));
                     break;
                 }
 
-                /* ---  vse ok, odeslani  --- */
-
-                // zaznam v logu
+                // update IP log
                 if (!User::hasPrivilege('unlimitedpostaccess')) {
                     IpLog::update(IpLog::ANTI_SPAM);
                 }
@@ -115,7 +102,7 @@ switch ($a) {
                     'text' => &$text,
                 ]);
 
-                // vlozeni do pm tabulky
+                // create PM
                 $pm_id = DB::insert('pm', [
                     'sender' => User::getId(),
                     'sender_readtime' => time(),
@@ -126,7 +113,7 @@ switch ($a) {
                     'update_time' => time()
                 ], true);
 
-                // vlozeni do posts tabulky
+                // create post
                 $insert_id = DB::insert('post', $post_data = [
                     'type' => Post::PRIVATE_MSG,
                     'home' => $pm_id,
@@ -141,16 +128,14 @@ switch ($a) {
                 ], true);
                 Extend::call('posts.new', ['id' => $insert_id, 'posttype' => Post::PRIVATE_MSG, 'post' => $post_data]);
 
-                // presmerovani a konec
+                // redirect
                 $_index->redirect(Router::module('messages', ['query' => ['a' => 'list', 'read' => $pm_id], 'absolute' => true]));
 
                 return;
-
             } while (false);
-
         }
 
-        // formular
+        // form
         $inputs = [];
         $inputs[] = ['label' => _lang('mod.messages.receiver'), 'content' => '<input type="text" class="inputsmall" maxlength="24"' . Form::restorePostValueAndName('receiver', Request::get('receiver')) . '>'];
         $inputs[] = ['label' => _lang('posts.subject'), 'content' => '<input type="text" class="inputmedium" maxlength="48"' . Form::restorePostValueAndName('subject', Request::get('subject')) . '>'];
@@ -158,7 +143,6 @@ switch ($a) {
         $inputs[] = ['label' => '', 'content' => PostForm::renderControls('newmsg', 'text')];
         $inputs[] = Form::getSubmitRow(['append' => ' ' . PostForm::renderPreviewButton('newmsg', 'text')]);
 
-        // form
         $output .= $message. Form::render(
             [
                 'name' => 'newmsg',
@@ -167,19 +151,14 @@ switch ($a) {
             ],
             $inputs
         );
-
         break;
 
-    // vypis
+    // list
     default:
-
-        // cteni vzkazu
+        // show a single message?
         if (isset($_GET['read'])) {
-
-            // promenne
+            // laod data
             $id = (int) Request::get('read');
-
-            // nacist data
             $senderUserQuery = User::createQuery('pm.sender', 'sender_', 'su');
             $receiverUserQuery = User::createQuery('pm.receiver', 'receiver_', 'ru');
             $q = DB::queryRow('SELECT pm.*,p.id post_id,p.subject,p.time,p.text,p.guest,p.ip' . Extend::buffer('posts.columns') . ',' . $senderUserQuery['column_list'] . ',' . $receiverUserQuery['column_list'] . ' FROM ' . DB::table('pm') . ' AS pm JOIN ' . DB::table('post') . ' AS p ON (p.type=' . Post::PRIVATE_MSG . ' AND p.home=pm.id AND p.xhome=-1) ' . $senderUserQuery['joins'] . ' ' . $receiverUserQuery['joins'] . ' WHERE pm.id=' . $id . ' AND (sender=' . User::getId() . ' AND sender_deleted=0 OR receiver=' . User::getId() . ' AND receiver_deleted=0)');
@@ -188,14 +167,14 @@ switch ($a) {
                 break;
             }
 
-            // stavy
+            // states
             $locked = ($q['sender_deleted'] || $q['receiver_deleted']);
             [$role, $role_other] = (User::equals($q['sender']) ? ['sender', 'receiver'] : ['receiver', 'sender']);
 
-            // spocitat neprectene zpravy
+            // count unread messages
             $unread_count = DB::count('post', 'home=' . DB::val($q['id']) . ' AND type=' . Post::PRIVATE_MSG . ' AND author=' . User::getId() . ' AND time>' . $q[$role_other . '_readtime']);
 
-            // vystup
+            // output
             $_index->title = _lang('mod.messages.message') . ': ' . $q['subject'];
             $output .= "<div class=\"topic\">\n";
             $output .= PostService::renderPost(['id' => $q['post_id'], 'author' => $q['sender']] + $q, $senderUserQuery, [
@@ -206,52 +185,50 @@ switch ($a) {
 
             $output .= PostService::renderList(PostService::RENDER_PM_LIST, $q['id'], [$locked, $unread_count], false, Router::module('messages', ['query' => ['a' => 'list', 'read' => $q['id']]]));
 
-            // aktualizace casu precteni
+            // update read time
             DB::update('pm', 'id=' . DB::val($id), [$role . '_readtime' => time()]);
 
             break;
         }
 
-        // je vypis
+        // list messages
         $_index->title = _lang('mod.messages');
         $list = true;
 
-        // smazani vzkazu
+        // delete messages action
         if (isset($_POST['action'])) {
-
-            // promenne
             $do_delete = false;
             $delcond = null;
             $delcond_sadd = null;
             $delcond_radd = null;
             $selected_ids = (array) Request::post('msg', [], true);
 
-            // funkce
+            // functions
             $deletePms = function ($cond = null, $sender_cond = null, $receiver_cond = null) {
                 $q = DB::query('SELECT id,sender,sender_deleted,receiver,receiver_deleted FROM ' . DB::table('pm') . ' WHERE (sender=' . User::getId() . ' AND sender_deleted=0' . (isset($sender_cond) ? ' AND ' . $sender_cond : '') . ' OR receiver=' . User::getId() . ' AND receiver_deleted=0' . (isset($receiver_cond) ? ' AND ' . $receiver_cond : '') . ')' . ((isset($cond)) ? ' AND ' . $cond : ''));
                 $del_list = [];
 
                 while ($r = DB::row($q)) {
-                    // zjisteni roli
+                    // determine roles
                     [$role, $role_other] = (User::equals($r['sender']) ? ['sender', 'receiver'] : ['receiver', 'sender']);
 
-                    // smazani nebo oznaceni
+                    // delete or flag
                     if ($r[$role_other . '_deleted']) {
-                        // druha strana jiz smazala, smazat uplne
+                        // other side has deleted the message too, delete it for real
                         $del_list[] = $r['id'];
                     } else {
-                        // pouze oznacit
+                        // only flag as deleted
                         DB::update('pm', 'id=' . $r['id'], [$role . '_deleted' => 1]);
                     }
                 }
 
-                // fyzicke vymazani
+                // delete messages
                 if (!empty($del_list)) {
                     DB::query('DELETE ' . DB::table('pm') . ',post FROM ' . DB::table('pm') . ' JOIN ' . DB::table('post') . ' AS post ON (post.type=' . Post::PRIVATE_MSG . ' AND post.home=' . DB::table('pm') . '.id) WHERE ' . DB::table('pm') . '.id IN(' . DB::arr($del_list) . ')');
                 }
             };
 
-            // akce
+            // action
             switch (Request::post('action')) {
                 case 1:
                     if (!empty($selected_ids)) {
@@ -292,13 +269,13 @@ switch ($a) {
             }
         }
 
-        // strankovani
-        $paging = Paginator::render($_index->url, Settings::get('messagesperpage'), DB::table('pm'), '(sender=' . User::getId() . ' AND sender_deleted=0) OR (receiver=' . User::getId() . ' AND receiver_deleted=0)', '&amp;a=' . $a);
+        // paging
+        $paging = Paginator::render($_index->url, Settings::get('messagesperpage'), DB::table('pm'), '(sender=' . User::getId() . ' AND sender_deleted=0) OR (receiver=' . User::getId() . ' AND receiver_deleted=0)', '&a=' . $a);
         if (Paginator::atTop()) {
             $output .= $paging['paging'];
         }
 
-        // tabulka
+        // table
         $output .= $message . '
         <form method="post" action="">
 <p class="messages-menu">
@@ -357,7 +334,7 @@ switch ($a) {
 </table>
 ' . Xsrf::getInput() . "</form>\n";
 
-        // strankovani dole
+        // paging at bottom
         if (Paginator::atBottom()) {
             $output .= $paging['paging'];
         }
@@ -366,7 +343,7 @@ switch ($a) {
 
 }
 
-// zpetny odkaz
+// backlink
 if (!$list) {
     $_index->backlink = Router::module('messages');
 }

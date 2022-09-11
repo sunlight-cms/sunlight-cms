@@ -9,12 +9,9 @@ use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
-/* ---  priprava  --- */
-
 $message = '';
 
-/* ---  akce  --- */
-
+// action
 if (isset($_POST['index'])) {
     $index_id = (int) Request::post('index');
     Settings::update('index_page_id', $index_id);
@@ -24,8 +21,7 @@ if (isset($_POST['index'])) {
     $index_id = Settings::get('index_page_id');
 }
 
-/* ---  vystup  --- */
-
+// output
 $output .= $message . '
 <form class="cform" action="' . _e(Router::admin('content-setindex')) . '" method="post">
 ' . Admin::pageSelect('index', ['selected' => $index_id, 'maxlength' => null]) . '

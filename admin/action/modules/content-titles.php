@@ -8,12 +8,9 @@ use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
-/* ---  priprava  --- */
-
 $message = '';
 
-/* ---  akce  --- */
-
+// action
 if (isset($_POST['title']) && is_array($_POST['title'])) {
     foreach ($_POST['title'] as $id => $title) {
         $id = (int) $id;
@@ -27,8 +24,7 @@ if (isset($_POST['title']) && is_array($_POST['title'])) {
     $message = Message::ok(_lang('global.saved'));
 }
 
-/* ---  vystup  --- */
-
+// output
 $output .= $message . '
 
 <form action="' . _e(Router::admin('content-titles')) . '" method="post">

@@ -2,10 +2,10 @@
 
 use Sunlight\User;
 
-return function ($min_uroven = 0, $vyhovujici_text = '', $nevyhovujici_text = '') {
-    if (User::getLevel() >= (int) $min_uroven) {
-        return $vyhovujici_text;
+return function ($min_level = 0, $privileged_content = '', $other_content = '') {
+    if (User::getLevel() >= (int) $min_level) {
+        return $privileged_content;
     }
 
-    return $nevyhovujici_text;
+    return $other_content;
 };

@@ -148,7 +148,7 @@ echo _buffer(function () use ($_index) { ?>
 <?= GenericTemplates::renderHead() ?>
 <?= Template::head() ?>
 </head>
-<body<?php if ($_index->bodyClasses): ?> class="<?= implode(' ', Html::escapeArrayItems($_index->bodyClasses)) ?>"<?php endif ?><?= Extend::buffer('tpl.body.tag') ?>>
+<body<?php if ($_index->bodyClasses): ?> class="<?= _e(implode(' ', $_index->bodyClasses)) ?>"<?php endif ?><?= Extend::buffer('tpl.body.tag') ?>>
 <?= Extend::buffer('tpl.body.start') ?>
 <?php require $_index->templatePath ?>
 <?= Extend::buffer('tpl.body.end') ?>

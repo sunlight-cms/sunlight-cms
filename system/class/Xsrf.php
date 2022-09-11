@@ -7,7 +7,7 @@ use Sunlight\Util\UrlHelper;
 class Xsrf
 {
     /**
-     * Sestavit kod skryteho inputu pro XSRF ochranu
+     * Render a hidden input with the XSRF token
      */
     static function getInput(): string
     {
@@ -15,9 +15,7 @@ class Xsrf
     }
 
     /**
-     * Pridat XSRF parametr do URL
-     *
-     * @param string $url adresa
+     * Add a XSRF parameter to a URL
      */
     static function addToUrl(string $url): string
     {
@@ -25,72 +23,50 @@ class Xsrf
     }
 
     /**
-     * Vygenerovat XSRF token
+     * Get a XSRF token
      *
      * @param bool $forCheck token je ziskavan pro kontrolu (je bran ohled na situaci, ze mohlo zrovna dojit ke zmene ID session) 1/0
      */
     static function getToken(bool $forCheck = false): string
     {
-        // cache tokenu
+        // token cache
         static $tokens = [null, null];
 
-        // typ tokenu (aktualni ci pro kontrolu)
+        // token type - current or for verification purposes
         $type = ($forCheck ? 1 : 0);
 
-        // vygenerovat token
+        // generate a token
         if ($tokens[$type] === null) {
-
-            // zjistit ID session
+            // determine session ID
             if (!Core::$sessionEnabled) {
-                // session je deaktivovana
                 $sessionId = 'none';
             } elseif ($forCheck && Core::$sessionRegenerate) {
-                // ID session bylo prave pregenerovane
+                // session has just been regenerated, use previous ID
                 $sessionId = Core::$sessionPreviousId;
             } else {
-                // ID aktualni session
+                // current session ID
                 $sessionId = session_id();
                 if ($sessionId === '') {
                     $sessionId = 'none';
                 }
             }
 
-            // vygenerovat token
+            // generate token
             $tokens[$type] = hash_hmac('sha256', $sessionId, Core::$secret);
-
         }
 
-        // vystup
         return $tokens[$type];
     }
 
     /**
-     * Zkontrolovat XSRF token
+     * Check a XSRF token
      *
-     * @param bool $get zkontrolovat token v $_GET namisto $_POST 1/0
+     * @param bool $get check $_GET instead of $_POST 1/0
      */
     static function check(bool $get = false): bool
     {
-        // determine data source variable
-        if ($get) {
-            $tvar = '_GET';
-        } else {
-            $tvar = '_POST';
-        }
+        $token = $GLOBALS[$get ? '_GET' : '_POST']['_security_token'] ?? null;
 
-        // load used token
-        if (isset($GLOBALS[$tvar]['_security_token'])) {
-            $test = strval($GLOBALS[$tvar]['_security_token']);
-            unset($GLOBALS[$tvar]['_security_token']);
-        } else {
-            $test = null;
-        }
-
-        // check
-        if ($test !== null && self::getToken(true) === $test) {
-            return true;
-        }
-
-        return false;
+        return $token === self::getToken(true);
     }
 }

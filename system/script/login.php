@@ -12,15 +12,15 @@ Core::init('../../', [
     'session_regenerate' => true,
 ]);
 
-// priprava
+// load variables
 $username = Request::post('login_username');
 $password = Request::post('login_password');
 $persistent = Form::loadCheckbox('login_persistent');
 
-// proces prihlaseni
+// submit login
 $result = User::submitLogin($username, $password, $persistent);
 
-// presmerovani
+// redirect back
 if ($result !== 1 && isset($_POST['login_form_url'])) {
     $_SESSION['login_form_username'] = $username;
 

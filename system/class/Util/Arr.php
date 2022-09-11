@@ -5,23 +5,18 @@ namespace Sunlight\Util;
 abstract class Arr
 {
     /**
-     * Odfiltrovani dane hodnoty z pole
-     *
-     * @param array $array vstupni pole
-     * @param mixed $value_remove hodnota ktera ma byt odstranena
-     * @param bool $preserve_keys zachovat ciselnou radu klicu 1/0
+     * Filter a value from an array
      */
-    static function removeValue(array $array, $value_remove, bool $preserve_keys = false): array
+    static function removeValue(array $array, $valueToRemove, bool $preserveKeys = false): array
     {
         $output = [];
-        if (is_array($array)) {
-            foreach ($array as $key => $value) {
-                if ($value != $value_remove) {
-                    if (!$preserve_keys) {
-                        $output[] = $value;
-                    } else {
-                        $output[$key] = $value;
-                    }
+
+        foreach ($array as $key => $value) {
+            if ($value != $valueToRemove) {
+                if (!$preserveKeys) {
+                    $output[] = $value;
+                } else {
+                    $output[$key] = $value;
                 }
             }
         }
@@ -30,21 +25,21 @@ abstract class Arr
     }
 
     /**
-     * Ziskani danych klicu z pole
+     * Get a subset of keys from an array
      *
-     * @param array $array vstupni pole
-     * @param array $keys seznam pozadovanych klicu
-     * @param int|null $prefixLen delka prefixu v nazvu vsech klicu, ktery ma byt odebran
-     * @param bool $exceptionOnMissing vyvolat vyjimku pri chybejicim klici
+     * Missing keys will be set to NULL.
+     *
+     * @param array $array input array
+     * @param array $keys list of keys
+     * @param int|null $prefixLen exclude this many bytes from the start of the keys
      */
-    static function getSubset(array $array, array $keys, ?int $prefixLen = null, bool $exceptionOnMissing = true): array
+    static function getSubset(array $array, array $keys, ?int $prefixLen = null): array
     {
         $out = [];
+
         foreach ($keys as $key) {
             if (array_key_exists($key, $array)) {
                 $out[$prefixLen === null ? $key : substr($key, $prefixLen)] = $array[$key];
-            } elseif ($exceptionOnMissing) {
-                throw new \OutOfBoundsException(sprintf('Missing key "%s"', $key));
             } else {
                 $out[$prefixLen === null ? $key : substr($key, $prefixLen)] = null;
             }
@@ -54,31 +49,33 @@ abstract class Arr
     }
 
     /**
-     * Filtrovat klice v poli
+     * Filter array keys
      *
-     * @param array $array vstupni pole
-     * @param string|null $include prefix - klice zacinajici timto prefixem budou ZAHRNUTY
-     * @param string|null $exclude prefix - klice zacinajici timto prefixem budou VYRAZENY
-     * @param array $excludeList pole s klici, ktere maji byt VYRAZENY
+     * @param string $includedPrefix all keys must have this prefix (unless NULL)
+     * @param string $excludedPrefix all keys must not have this prefix (unless NULL)
+     * @param string[] $excludedKeys all keys in this list are excluded
      */
-    static function filterKeys(array $array, ?string $include = null, ?string $exclude = null, array $excludeList = []): array
+    static function filterKeys(array $array, ?string $includedPrefix = null, ?string $excludedPrefix = null, array $excludedKeys = []): array
     {
-        if ($include !== null) {
-            $includeLength = strlen($include);
+        if ($includedPrefix !== null) {
+            $includeLength = strlen($includedPrefix);
         }
-        if ($exclude !== null) {
-            $excludeLength = strlen($exclude);
+
+        if ($excludedPrefix !== null) {
+            $excludeLength = strlen($excludedPrefix);
         }
-        if (!empty($excludeList)) {
-            $excludeList = array_flip($excludeList);
+
+        if (!empty($excludedKeys)) {
+            $excludedKeys = array_flip($excludedKeys);
         }
 
         $output = [];
+
         foreach ($array as $key => $value) {
             if (
-                $include !== null && strncmp($key, $include, $includeLength) !== 0
-                || $exclude !== null && strncmp($key, $exclude, $excludeLength) === 0
-                || isset($excludeList[$key])
+                $includedPrefix !== null && strncmp($key, $includedPrefix, $includeLength) !== 0
+                || $excludedPrefix !== null && strncmp($key, $excludedPrefix, $excludeLength) === 0
+                || isset($excludedKeys[$key])
             ) {
                 continue;
             }

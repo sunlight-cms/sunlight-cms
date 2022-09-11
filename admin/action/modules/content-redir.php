@@ -10,13 +10,9 @@ use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
-/* ---  priprava  --- */
-
 $message = '';
 
-/* ---  vystup  --- */
-
-// text a menu
+// output text and buttons
 $output .= '<p class="bborder">' . _lang('admin.content.redir.p') . '</p>
 <p>
     <a class="button" href="' . _e(Router::admin('content-redir', ['query' => ['new' => 1]])) . '"><img src="' . _e(Router::path('admin/images/icons/new.png')) . '" alt="new" class="icon">' . _lang('admin.content.redir.act.new') . '</a>
@@ -24,43 +20,39 @@ $output .= '<p class="bborder">' . _lang('admin.content.redir.p') . '</p>
 </p>
 ';
 
-// akce - uprava / vytvoreni
+// action
 if (isset($_GET['new']) || isset($_GET['edit'])) {
     do {
-        // priprava
         $new = isset($_GET['new']);
         if (!$new) {
             $edit_id = (int) Request::get('edit');
         }
 
-        // zpracovani
+        // save
         if (isset($_POST['old'])) {
-
-            // nacteni dat
             $q = [];
             $q['old'] = StringManipulator::slugify(trim(Request::post('old', '')), true, '._/');
             $q['new'] = StringManipulator::slugify(trim(Request::post('new', '')), true, '._/');
             $q['permanent'] = Form::loadCheckbox('permanent');
             $q['active'] = Form::loadCheckbox('act');
 
-            // kontrola
+            // check params
             if ($q['old'] === '' || $q['new'] === '') {
                 $message = Message::warning(_lang('admin.content.redir.emptyidt'));
             } elseif ($new) {
-                // vytvoreni
+                // create
                 DB::insert('redirect', $q);
                 $new = false;
                 $message = Message::ok(_lang('global.created'));
                 break;
             } else {
-                // ulozeni
+                // update
                 DB::update('redirect', 'id=' . DB::val($edit_id), $q);
                 $message = Message::ok(_lang('global.saved'));
             }
-
         }
 
-        // nacteni dat
+        // load data
         if ($new) {
             if (!isset($q)) {
                 $q = [];
@@ -73,7 +65,7 @@ if (isset($_GET['new']) || isset($_GET['edit'])) {
             }
         }
 
-        // formular
+        // form
         $output .= $message . "\n<form method=\"post\">
 <table class=\"formtable\">
 
@@ -106,14 +98,11 @@ if (isset($_GET['new']) || isset($_GET['edit'])) {
 ' . Xsrf::getInput() . '</form>';
     } while (false);
 } elseif (isset($_GET['del']) && Xsrf::check(true)) {
-
-    // smazani
+    // delete
     DB::delete('redirect', 'id=' . DB::val(Request::get('del')));
     $output .= Message::ok(_lang('global.done'));
-
 } elseif (isset($_GET['wipe'])) {
-
-    // smazani vsech
+    // delete all
     if (isset($_POST['wipe_confirm'])) {
         DB::query('TRUNCATE TABLE ' . DB::table('redirect'));
         $output .= Message::ok(_lang('global.done'));
@@ -128,7 +117,7 @@ if (isset($_GET['new']) || isset($_GET['edit'])) {
 
 }
 
-// tabulka
+// table
 $output .= '<table class="list list-hover list-max">
 <thead>
 <tr>
@@ -142,7 +131,7 @@ $output .= '<table class="list list-hover list-max">
 <tbody>
 ';
 
-// vypis
+// list
 $counter = 0;
 $q = DB::query('SELECT * FROM ' . DB::table('redirect'));
 while ($r = DB::row($q)) {
@@ -159,11 +148,11 @@ while ($r = DB::row($q)) {
     ++$counter;
 }
 
-// zadna data?
+// no items?
 if ($counter === 0) {
     $output .= '<tr><td colspan="5">' . _lang('global.nokit') . "</td></tr>\n";
 }
 
-// konec tabulky
+// end table
 $output .= "</tbody>
 </table>\n";

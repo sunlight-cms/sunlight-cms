@@ -6,8 +6,8 @@ use Sunlight\Image\Image;
 
 /**
  * Simple axonometric 3D text CAPTCHA
- *
- * @author martin.hozik@cleverweb.cz
+ * 
+ * Based on code by martin.hozik@cleverweb.cz
  */
 class Text3dCaptcha
 {

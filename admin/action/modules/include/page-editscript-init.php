@@ -10,8 +10,6 @@ use Sunlight\Util\Request;
 
 defined('SL_ROOT') or exit;
 
-/* ----  nacteni promennych  ---- */
-
 $continue = false;
 $custom_save_array = [];
 $custom_settings = '';
@@ -50,7 +48,7 @@ if (isset($_GET['id'])) {
     $new = true;
     $continue = true;
 
-    // zjistit typ plugin stranky
+    // get plugin page type
     if ($type == Page::PLUGIN) {
         if (!isset($_GET['idt'])) {
             $continue = false;
@@ -62,13 +60,13 @@ if (isset($_GET['id'])) {
         $type_idt = null;
     }
 
-    // zkontrolovat opravneni pro tvorbu stranek
+    // check privilege for page creation
     if (!User::hasPrivilege('adminpages')) {
         $continue = false;
         return;
     }
 
-    /* ---  vychozi data pro novou polozku --- */
+    // set default data
     $default_parent = PageLister::getConfig('current_page');
 
     if ($type == Page::PLUGIN) {

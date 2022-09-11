@@ -8,9 +8,9 @@ use Sunlight\Core;
 abstract class UrlHelper
 {
     /**
-     * Rozpoznat, zda se jedna o URL v absolutnim tvaru, tj. obsahuje schema nebo zacina "/"
+     * Detect an absolute URL
      *
-     * @param string $url adresa
+     * A URL is considered absolute if it starts with a "/" or contains a scheme.
      */
     static function isAbsolute(string $url): bool
     {
@@ -22,9 +22,10 @@ abstract class UrlHelper
     }
 
     /**
-     * Overit, zda adresa neobsahuje skodlivy kod
+     * See if a URL is safe
      *
-     * @param string $url adresa
+     * Safe URLs: URLs without scheme, HTTP/HTTPS URLs
+     * Unsafe URLs: non-HTTP schemes, "data:", "javascript:" etc.
      */
     static function isSafe(string $url): bool
     {
@@ -32,10 +33,7 @@ abstract class UrlHelper
     }
 
     /**
-     * Vlozeni GET promenne do odkazu
-     *
-     * @param string $url adresa
-     * @param string $params cisty query retezec
+     * Append a query string to a URL
      */
     static function appendParams(string $url, string $params): string
     {
@@ -49,7 +47,7 @@ abstract class UrlHelper
     }
 
     /**
-     * Pridat HTTP schema do URL, pokud jej neobsahuje a neni relativni
+     * Add HTTP scheme to a URL if it doesn't have any and is not relative to current host
      */
     static function addScheme(string $url): string
     {
@@ -67,12 +65,14 @@ abstract class UrlHelper
     }
 
     /**
-     * Pridat/zmenit schema v absolutni URL, pokud jej neobsahuje nebo neni HTTPS (pouziva-li web HTTPS)
+     * Add or update scheme in absolute URL
+     *
+     * If the system uses HTTPS but the URL is HTTP, it will be converted to HTTPS.
      */
     static function ensureValidScheme(string $url): string
     {
         if ($url === '' || $url[0] === '/' || strncmp($url, './', 2) === 0) {
-            // relativni URL
+            // relative URL
             return $url;
         }
     
@@ -80,7 +80,7 @@ abstract class UrlHelper
         $baseScheme = Core::getBaseUrl()->getScheme();
         
         if (!$parsedUrl->hasScheme()) {
-            // absolutni URL bez schematu
+            // absolute URL with no scheme
             return $baseScheme . '://' . $url;
         }
 

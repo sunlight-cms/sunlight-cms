@@ -30,8 +30,6 @@ if (!Settings::get('search')) {
     return;
 }
 
-/* ---  priprava  --- */
-
 if (isset($_GET['q']) && Xsrf::check(true)) {
     $search_query = trim(Request::get('q', ''));
     $page = isset($_GET['page']);
@@ -46,8 +44,7 @@ if (isset($_GET['q']) && Xsrf::check(true)) {
     $image = true;
 }
 
-/* ---  modul  --- */
-
+// output
 $_index->title = _lang('mod.search');
 
 $output .= '
@@ -68,16 +65,14 @@ $output .= '
 
 ';
 
-/* ---  vyhledavani --- */
-
+// search
 if ($search_query != '') {
     if (mb_strlen($search_query) >= 3) {
-        // priprava
         $search_query_sql = DB::esc('%' . $search_query . '%');
-        $results = []; // polozka: array(link, titulek, perex)
+        $results = []; // item format: array(link, title, perex)
         $public = !User::isLoggedIn();
 
-        // funkce na skladani vyhledavaciho dotazu
+        // functions
         $searchQuery = function ($alias, $cols) {
             if ($alias === null) {
                 $alias = '';
@@ -96,9 +91,10 @@ if ($search_query != '') {
             return $output;
         };
 
-        // vyhledani stranek
+        // search pages
         if ($page) {
             $q = DB::query('SELECT id,title,slug,perex FROM ' . DB::table('page') . ' WHERE level<=' . User::getLevel() . ' AND ' . ($public ? 'public=1 AND ' : '') . $searchQuery(null, ['title', 'slug', 'description', 'perex', 'content']) . ' LIMIT 50');
+
             while ($r = DB::row($q)) {
                 $results[] = [
                     Router::page($r['id'], $r['slug']),
@@ -106,16 +102,15 @@ if ($search_query != '') {
                     strip_tags($r['perex'])
                 ];
             }
+
             DB::free($q);
         }
 
-        // vyhledani clanku
+        // search articles
         if ($art) {
-            // zakladni dostaz
             [$joins, $cond] = Article::createFilter('art', [], $searchQuery('art', ['title', 'slug', 'perex', 'description', 'content']));
-
-            // vykonani a nacteni vysledku
             $q = DB::query('SELECT art.id,art.title,art.slug,art.perex,cat1.slug AS cat_slug FROM ' . DB::table('article') . ' art ' . $joins . ' WHERE ' . $cond . 'ORDER BY time DESC LIMIT 100');
+
             while ($r = DB::row($q)) {
                 $results[] = [
                     Router::article($r['id'], $r['slug'], $r['cat_slug']),
@@ -123,38 +118,36 @@ if ($search_query != '') {
                     StringManipulator::ellipsis(strip_tags($r['perex']), 255, false)
                 ];
             }
+
             DB::free($q);
         }
 
-        // vyhledani prispevku
+        // search posts
         if ($post) {
-            // priprava
             $types = [Post::SECTION_COMMENT, Post::ARTICLE_COMMENT, Post::BOOK_ENTRY, Post::FORUM_TOPIC, Post::PLUGIN];
             [$columns, $joins, $cond] = Post::createFilter('post', $types, [], $searchQuery('post', ['subject', 'text']));
             $userQuery = User::createQuery('post.author');
             $columns .= ',' . $userQuery['column_list'];
             $joins .= ' ' . $userQuery['joins'];
 
-            // vykonani dotazu
             $q = DB::query($x = 'SELECT ' . $columns . ' FROM ' . DB::table('post') . ' post ' . $joins . ' WHERE ' . $cond . ' ORDER BY id DESC LIMIT 100');
+
             while ($r = DB::row($q)) {
-                // nacteni titulku, odkazu a strany
+                // load title, link and page number
                 $pagenum = null;
                 $post_anchor = true;
                 [$link, $title] = Router::post($r);
+
                 switch ($r['type']) {
-                    // komentar sekce / prispevek knihy
                     case Post::SECTION_COMMENT:
                     case Post::BOOK_ENTRY:
                         $pagenum = Paginator::getItemPage(Settings::get('commentsperpage'), DB::table('post'), 'id>' . $r['id'] . ' AND type=' . $r['type'] . ' AND xhome=-1 AND home=' . $r['home']);
                         break;
 
-                    // komentar clanku
                     case Post::ARTICLE_COMMENT:
                         $pagenum = Paginator::getItemPage(Settings::get('commentsperpage'), DB::table('post'), 'id>' . $r['id'] . ' AND type=' . Post::ARTICLE_COMMENT . ' AND xhome=-1 AND home=' . $r['home']);
                         break;
 
-                    // prispevek na foru
                     case Post::FORUM_TOPIC:
                         if ($r['xhome'] != -1) {
                             $pagenum = Paginator::getItemPage(Settings::get('commentsperpage'), DB::table('post'), 'id<' . $r['id'] . ' AND type=' . Post::FORUM_TOPIC . ' AND xhome=' . $r['xhome'] . ' AND home=' . $r['home']);
@@ -164,16 +157,18 @@ if ($search_query != '') {
                         break;
                 }
 
-                // sestaveni infa
+                // make search result infos
                 $infos = [];
+
                 if ($r['author'] == -1) {
                     $infos[] = [_lang('global.postauthor'), '<span class="post-author-guest">' . PostService::renderGuestName($r['guest']) . '</span>'];
                 } else {
                     $infos[] = [_lang('global.postauthor'), Router::userFromQuery($userQuery, $r)];
                 }
+
                 $infos[] = [_lang('global.time'), GenericTemplates::renderTime($r['time'], 'post')];
 
-                // pridani do vysledku
+                // add to results
                 $results[] = [
                     (isset($pagenum) ? UrlHelper::appendParams($link, 'page=' . $pagenum) : $link) . ($post_anchor ? '#post-' . $r['id'] : ''),
                     $title,
@@ -184,23 +179,26 @@ if ($search_query != '') {
             DB::free($q);
         }
 
-        // vyhledani obrazku
+        // search images
         if ($image) {
-            // zaklad dotazu
+            // base query
             $sql = 'SELECT img.id,img.prev,img.full,img.ord,img.home,img.title,gal.title AS gal_title,gal.slug,gal.var2 FROM ' . DB::table('gallery_image') . ' AS img';
 
-            // join na galerii
+            // join gallery
             $sql .= ' JOIN ' . DB::table('page') . ' AS gal ON(gal.id=img.home)';
 
-            // podminky
+            // conditions
             $sql .= ' WHERE gal.level<=' . User::getLevel() . ' AND ';
+
             if ($public) {
                 $sql .= 'gal.public=1 AND ';
             }
+
             $sql .= $searchQuery('img', ['title']);
 
-            // vykonani a nacteni vysledku
+            // add to results
             $q = DB::query($sql . ' LIMIT 100');
+
             while ($r = DB::row($q)) {
                 $link = Router::page($r['home'], $r['slug'], null, ['query' => ['page' => Paginator::getItemPage($r['var2'] ?: Settings::get('galdefault_per_page'), DB::table('gallery_image'), 'ord<' . $r['ord'] . ' AND home=' . $r['home'])]]);
                 $results[] = [
@@ -209,6 +207,7 @@ if ($search_query != '') {
                     (($r['title'] !== '') ? '<p>' . $r['title'] . '</p>' : '') . Gallery::renderImage($r, 'search', Settings::get('galdefault_thumb_w'), Settings::get('galdefault_thumb_h'))
                 ];
             }
+
             DB::free($q);
         }
 
@@ -219,8 +218,8 @@ if ($search_query != '') {
             'query_sql' => $search_query_sql,
         ]);
 
-        // vypis vysledku
-        if (count($results) != 0) {
+        // output results
+        if (!empty($results)) {
             foreach ($results as $item) {
                 $output .= '<div class="list-item">
 <h2 class="list-title"><a href="' . _e($item[0]) . '">' . $item[1] . '</a></h2>

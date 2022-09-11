@@ -15,26 +15,26 @@ use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
-// nacteni dat
+// load article
 $_article = Article::find($_index->segment, $_page['id']);
 if ($_article === false) {
     $_index->notFound();
     return;
 }
 
-// kontrola pristupu
+// check access
 if (!Article::checkAccess($_article, false)) {
     $_index->unauthorized();
     return;
 }
 
-// drobecek
+// add breadcrumb
 $_index->crumbs[] = [
     'title' => $_article['title'],
     'url' => Router::article(null, $_article['slug'], $_page['slug'])
 ];
 
-// meta
+// metadata
 if ($_article['description'] !== '') {
     $_index->description = $_article['description'];
 }
@@ -53,7 +53,7 @@ if (!$continue) {
     return;
 }
 
-//  navigace
+// navigation
 if ($_article['visible']) {
     $output .= '<div class="article-navigation"><span>' . _lang('article.category') . ': </span>';
     for ($i = 1; $i <= 3; ++$i) {
@@ -68,27 +68,27 @@ if ($_article['visible']) {
     $output .= "</div>\n";
 }
 
-//  titulek
+// title
 $_index->title = $_article['title'];
 $_index->heading = null;
 
-// obrazek
+// image
 if (isset($_article['picture_uid'])) {
     $thumbnail = Article::getThumbnail($_article['picture_uid']);
 } else {
     $thumbnail = null;
 }
 
-//  perex
+// perex
 Extend::call('article.perex.before', $extend_args);
 $output .= '<div class="article-perex">' . ($thumbnail !== null ? '<img class="article-perex-image" src="' . _e(Router::file($thumbnail)) . '" alt="' . $_article['title'] . '">' : '') . $_article['perex'] . "</div>\n";
 Extend::call('article.perex.after', $extend_args);
 
-//  obsah
+// content
 $output .= "<div class=\"article-content\">\n" . Hcm::parse($_article['content']) . "\n</div>\n";
 $output .= "<div class=\"cleaner\"></div>\n";
 
-// informace
+// infos
 $infos = [];
 
 if (User::hasPrivilege('adminart')) {
@@ -104,10 +104,10 @@ if ($_article['showinfo']) {
 if ($_article['rateon'] && Settings::get('ratemode') != 0) {
     if ($_article['ratenum'] != 0) {
         if (Settings::get('ratemode') == 1) {
-            // procenta
+            // percentage
             $rate = (round($_article['ratesum'] / $_article['ratenum'])) . '%';
         } else {
-            // znamka
+            // mark
             $rate = round(-0.04 * ($_article['ratesum'] / $_article['ratenum']) + 5);
         }
         $rate .= ' (' . _lang('article.rate.num') . ' ' . $_article['ratenum'] . 'x)';
@@ -118,7 +118,7 @@ if ($_article['rateon'] && Settings::get('ratemode') != 0) {
     $infos['rating'] = [_lang('article.rate'), $rate];
 }
 
-// formular hodnoceni
+// rate form
 $rateform = null;
 if ($_article['rateon'] && Settings::get('ratemode') != 0 && User::hasPrivilege('artrate') && IpLog::check(IpLog::ARTICLE_RATED, $_article['id'])) {
     $rateform = '
@@ -128,7 +128,7 @@ if ($_article['rateon'] && Settings::get('ratemode') != 0 && User::hasPrivilege(
 ';
 
     if (Settings::get('ratemode') == 1) {
-        // procenta
+        // percentage
         $rateform .= "<select name=\"r\">\n";
         for ($x = 0; $x <= 100; $x += 10) {
             if ($x == 50) {
@@ -140,7 +140,7 @@ if ($_article['rateon'] && Settings::get('ratemode') != 0 && User::hasPrivilege(
         }
         $rateform .= "</select> \n<input type=\"submit\" value=\"" . _lang('article.rate.submit') . '">' ;
     } else {
-        // znamky
+        // marks
         $rateform .= "<table class=\"article-rating\">\n";
         for ($i = 0; $i < 2; $i++) {
             $rateform .= '<tr class="r' . $i. "\">\n";
@@ -168,38 +168,38 @@ if ($_article['rateon'] && Settings::get('ratemode') != 0 && User::hasPrivilege(
     $rateform .= Xsrf::getInput() . "</form>\n";
 }
 
-// sestaveni kodu
+// render infos
 Extend::call('article.infos', ['article' => $_article, 'infos' => &$infos]);
 
 if ($rateform !== null || !empty($infos)) {
-    // zacatek tabulky
+    // table start
     $output .= '
 <table id="article-info" class="article-footer">
 <tr>
 ';
     
-    // informace
+    // infos
     if (!empty($infos)) {
         $output .= '<td>' . GenericTemplates::renderInfos($infos, 'article-info') . "</td>\n";
     }
     
-    // hodnoceni
+    // rating
     if ($rateform !== null) {
         $output .= "<td>{$rateform}</td>\n";
     }
     
-    // konec
+    // table end
     $output .= "</tr></table>\n";
 }
 
-// komentare
+// comments
 Extend::call('article.comments.before', $extend_args);
 if ($_article['comments'] && Settings::get('comments')) {
     $output .= PostService::renderList(PostService::RENDER_ARTICLE_COMMENTS, $_article['id'], $_article['commentslocked']);
 }
 Extend::call('article.comments.after', $extend_args);
 
-// zapocteni precteni
+// count view
 if ($_article['confirmed'] && $_article['time'] <= time() && IpLog::check(IpLog::ARTICLE_READ, $_article['id'])) {
     DB::update('article', 'id=' . $_article['id'], ['readnum' => DB::raw('readnum+1')]);
     IpLog::update(IpLog::ARTICLE_READ, $_article['id']);

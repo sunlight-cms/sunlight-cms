@@ -5,7 +5,7 @@ use Sunlight\Util\StringManipulator;
 
 defined('SL_ROOT') or exit;
 
-// nalezeni modulu
+// locate module
 $module = null;
 $script = null;
 
@@ -13,21 +13,20 @@ if (preg_match('{m/([a-zA-Z_\-.]+)$}AD', $_index->slug, $match)) {
     $module = $match[1];
     $_index->url = clone $_url;
 
-    // test, zda se jedna o systemovy modul
+    // check if it's a system module
     $systemModule = SL_ROOT . 'system/action/modules/' . $module . '.php';
 
     if (is_file($systemModule)) {
         $script = $systemModule;
     } else {
-        // systemovy modul nenalezen
-        // umoznit implementaci pluginem
+        // not a system module, allow plugin implementation
         Extend::call('mod.custom.' . $module, [
             'script' => &$script,
         ]);
     }
 }
 
-// spusteni modulu
+// run module
 if (isset($module, $script)) {
     $_index->bodyClasses[] = 't-module';
     $_index->bodyClasses[] = 'm-' . StringManipulator::slugify($module, true, '_');

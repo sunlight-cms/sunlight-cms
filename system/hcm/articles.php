@@ -7,12 +7,11 @@ use Sunlight\IpLog;
 use Sunlight\User;
 use Sunlight\Util\Arr;
 
-return function ($typ = 'new', $pocet = null, $perex = 'perex', $info = true, $kategorie = null) {
-    // priprava
+return function ($type = 'new', $limit = null, $perex = 'perex', $info = true, $category = null) {
     $result = '';
-    $pocet = (int) $pocet;
-    if ($pocet < 1) {
-        $pocet = 1;
+    $limit = (int) $limit;
+    if ($limit < 1) {
+        $limit = 1;
     }
 
     if ($perex === '0' || $perex === 0) {
@@ -36,8 +35,8 @@ return function ($typ = 'new', $pocet = null, $perex = 'perex', $info = true, $k
     }
     $info = (bool) $info;
 
-    // priprava casti sql dotazu
-    switch ($typ) {
+    // prepare SQL parts
+    switch ($type) {
         case 'readnum':
             $rorder = 'art.readnum DESC';
             $rcond = 'art.readnum!=0';
@@ -77,23 +76,21 @@ return function ($typ = 'new', $pocet = null, $perex = 'perex', $info = true, $k
             break;
     }
 
-    // omezeni vypisu
     [$joins, $cond] = Article::createFilter(
         'art',
-        Arr::removeValue(explode('-', $kategorie ?? ''), ''),
+        Arr::removeValue(explode('-', $category ?? ''), ''),
         $rcond
     );
 
-    // pripojeni casti
     if ($rcond != '') {
         $cond .= ' AND ' . $cond;
     }
 
-    // vypis
+    // list
     $userQuery = User::createQuery('art.author');
-    $query = DB::query('SELECT art.id,art.title,art.slug,art.perex,' . ($show_image ? 'art.picture_uid,' : '') . 'art.time,art.readnum,art.comments,cat1.slug AS cat_slug,' . $userQuery['column_list'] . (($info !== 0) ? ',(SELECT COUNT(*) FROM ' . DB::table('post') . ' AS post WHERE home=art.id AND post.type=' . Post::ARTICLE_COMMENT . ') AS comment_count' : '') . ' FROM ' . DB::table('article') . ' AS art ' . $joins . ' ' . $userQuery['joins'] . ' WHERE ' . $cond . ' ORDER BY ' . $rorder . ' LIMIT ' . $pocet);
+    $query = DB::query('SELECT art.id,art.title,art.slug,art.perex,' . ($show_image ? 'art.picture_uid,' : '') . 'art.time,art.readnum,art.comments,cat1.slug AS cat_slug,' . $userQuery['column_list'] . (($info !== 0) ? ',(SELECT COUNT(*) FROM ' . DB::table('post') . ' AS post WHERE home=art.id AND post.type=' . Post::ARTICLE_COMMENT . ') AS comment_count' : '') . ' FROM ' . DB::table('article') . ' AS art ' . $joins . ' ' . $userQuery['joins'] . ' WHERE ' . $cond . ' ORDER BY ' . $rorder . ' LIMIT ' . $limit);
     while ($item = DB::row($query)) {
-        $result .= Article::renderPreview($item, $userQuery, $info, $show_perex, (($info !== 0) ? $item['comment_count'] : null));
+        $result .= Article::renderPreview($item, $userQuery, $info, $show_perex);
     }
 
     return $result;

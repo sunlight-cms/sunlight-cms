@@ -10,7 +10,7 @@ final class ImageStorage
      * @param string $directory path to the storage directory (relative to SL_ROOT), including a trailing slash
      * @param string $id image identifier
      * @param string $format image format
-     * @param int $partitions number of 2-character sub-directories to create from $id
+     * @param int $partitions number of 2-character subdirectories to create from $id
      */
     static function getPath(string $directory, string $id, string $format, int $partitions = 0): string
     {
@@ -23,7 +23,7 @@ final class ImageStorage
      * @param string $directory path to the storage directory (relative to SL_ROOT), including a trailing slash
      * @param string $id image identifier
      * @param string $format image format
-     * @param int $partitions number of 2-character sub-directories to create from $id
+     * @param int $partitions number of 2-character subdirectories to create from $id
      */
     static function getWebPath(string $directory, string $id, string $format, int $partitions = 0): string
     {

@@ -237,7 +237,7 @@ abstract class User
 
         // process login
         if ($success) {
-            // increase level for super users
+            // increase level for superusers
             if ($userData['levelshift']) {
                 ++$groupData['level'];
             }
@@ -285,22 +285,23 @@ abstract class User
     }
 
     /**
-     * Zjistit, zda uzivatel ma stejne id
+     * See if user ID matches the current user
      */
     static function equals(int $targetUserId): bool
     {
         return $targetUserId == self::getId();
     }
 
+    /**
+     * Get user's privilege level
+     */
     static function getLevel(): int
     {
         return self::$group['level'];
     }
 
     /**
-     * Zjistit, zda uzivatel ma dane pravo
-     *
-     * @param string $name nazev prava
+     * See if a privilege has been granted
      */
     static function hasPrivilege(string $name): bool
     {
@@ -313,7 +314,7 @@ abstract class User
     }
 
     /**
-     * Overit heslo uzivatele
+     * Verify user's password
      */
     static function checkPassword(string $plainPassword): bool
     {
@@ -325,10 +326,7 @@ abstract class User
     }
 
     /**
-     * Vyhodnotit pravo pristupu k cilovemu uzivateli
-     *
-     * @param int $targetUserId ID ciloveho uzivatele
-     * @param int $targetUserLevel uroven skupiny ciloveho uzivatele
+     * See if the user can access another's content
      */
     static function checkLevel(int $targetUserId, int $targetUserLevel): bool
     {
@@ -336,23 +334,23 @@ abstract class User
     }
 
     /**
-     * Vyhodnocenu prava aktualniho uzivatele pro pristup na zaklade verejnosti, urovne a stavu prihlaseni
+     * See if the user can access content which may not be public or may require some privilege level
      *
-     * @param bool $public polozka je verejna 1/0
-     * @param int|null $level minimalni pozadovana uroven
+     * @param bool $public content is public 1/0
+     * @param int|null $level minimal required level
      */
-    static function checkPublicAccess(bool $public, ?int $level = 0): bool
+    static function checkPublicAccess(bool $public, ?int $level = null): bool
     {
-        return (self::isLoggedIn() || $public) && self::getLevel() >= $level;
+        return (self::isLoggedIn() || $public) && ($level === null || self::getLevel() >= $level);
     }
 
     /**
-     * Ziskat domovsky adresar uzivatele
+     * Get user's home directory
      *
-     * Adresar NEMUSI existovat!
+     * The directory may not exist!
      *
-     * @param bool $getTopmost ziskat cestu na nejvyssi mozne urovni 1/0
-     * @throws \RuntimeException nejsou-li prava
+     * @param bool $getTopmost get topmost possible directory 1/0
+     * @throws \RuntimeException if user has no filesystem access
      */
     static function getHomeDir(bool $getTopmost = false): string
     {
@@ -376,9 +374,9 @@ abstract class User
     }
 
     /**
-     * Normalizovat cestu k adresari dle prav uzivatele
+     * Normalize a directory path using the user's privileges
      *
-     * @return string cesta s lomitkem na konci
+     * @return string path with a "/" at the end
      */
     static function normalizeDir(?string $dirPath): string
     {
@@ -395,12 +393,12 @@ abstract class User
     }
 
     /**
-     * Zjistit, zda ma uzivatel pravo pracovat s danou cestou
+     * Check if the user can access the given path
      *
-     * @param string $path cesta
-     * @param bool $isFile jedna se o soubor 1/0
-     * @param bool $getPath vratit zpracovanou cestu v pripade uspechu 1/0
-     * @return bool|string true / false nebo cesta, je-li kontrola uspesna a $getPath je true
+     * @param string $path the patch to check
+     * @param bool $isFile treat path as a file path
+     * @param bool $getPath return the normalized path if successful 1/0
+     * @return bool|string
      */
     static function checkPath(string $path, bool $isFile, bool $getPath = false)
     {
@@ -409,9 +407,9 @@ abstract class User
             $homeDirPath = Filesystem::parsePath(self::getHomeDir(true));
 
             if (
-                /* nepovolit vystup z rootu */                  substr_count($path, '..') <= substr_count(SL_ROOT, '..')
-                /* nepovolit vystup z domovskeho adresare */    && strncmp($homeDirPath, $path, strlen($homeDirPath)) === 0
-                /* nepovolit praci s nebezpecnymi soubory */    && (!$isFile || self::checkFilename(basename($path)))
+                /* don't allow access outside of root */        substr_count($path, '..') <= substr_count(SL_ROOT, '..')
+                /* don't allow access outside of home dir */    && strncmp($homeDirPath, $path, strlen($homeDirPath)) === 0
+                /* don't allow access to unsafe files */        && (!$isFile || self::checkFilename(basename($path)))
             ) {
                 return $getPath ? $path : true;
             }
@@ -421,7 +419,7 @@ abstract class User
     }
 
     /**
-     * Presunout soubor, ktery byl nahran uzivatelem
+     * Move a file uploaded by the user
      */
     static function moveUploadedFile(string $path, string $newPath): bool
     {
@@ -437,10 +435,9 @@ abstract class User
     }
 
     /**
-     * Zjistit, zda ma uzivatel pravo pracovat s danym nazvem souboru
+     * See if the user can access the given file name
      *
-     * Tato funkce kontroluje NAZEV souboru, nikoliv cestu!
-     * Pro cesty je funkce {@see self::checkPath()}.
+     * Only file name is checked, not the path! {@see User::checkPath()}
      */
     static function checkFilename(string $filename): bool
     {
@@ -453,12 +450,11 @@ abstract class User
     }
 
     /**
-     * Filtrovat uzivatelsky obsah na zaklade opravneni
+     * Filter user's content based on privileges
      *
-     * @param string $content obsah
-     * @param bool $isHtml jedna se o HTML kod
-     * @param bool $hasHcm obsah muze obsahovat HCM moduly
-     * @throws \LogicException
+     * @param string $content the content
+     * @param bool $isHtml indicate HTML cocntent 1/0
+     * @param bool $hasHcm the content can contain HCM modules 1/0
      * @throws ContentPrivilegeException
      */
     static function filterContent(string $content, bool $isHtml = true, bool $hasHcm = true): string
@@ -481,7 +477,7 @@ abstract class User
     }
 
     /**
-     * Ziskat uzivatelske jmeno aktualniho uzivatele
+     * Get current user's username
      */
     static function getUsername(): string
     {
@@ -493,7 +489,7 @@ abstract class User
     }
 
     /**
-     * Ziskat jmeno aktualniho uzivatele pro zobrazeni
+     * Get current user's display name
      */
     static function getDisplayName(): string
     {
@@ -505,9 +501,9 @@ abstract class User
     }
 
     /**
-     * Normalizovat format uzivatelskeho jmena
+     * Normalize username
      *
-     * Muze vratit prazdny string.
+     * May return an empty string.
      */
     static function normalizeUsername(string $username): string
     {
@@ -515,9 +511,9 @@ abstract class User
     }
 
     /**
-     * Normalizovat format zobrazovaneho jmena
+     * Normalize display name
      *
-     * Muze vratit prazdny string.
+     * May return an empty string.
      */
     static function normalizePublicname(string $publicname): string
     {
@@ -525,7 +521,7 @@ abstract class User
     }
 
     /**
-     * Zkontrolovat zda neni dane jmeno obsazene uzivatelskym nebo zobrazovanym jmenem
+     * See if the given name is available (not already in use by another username or display name)
      */
     static function isNameAvailable(string $name, ?int $ignoredUserId = null): bool
     {
@@ -539,7 +535,7 @@ abstract class User
     }
 
     /**
-     * Zkontrolovat zda neni dany email obsazeny
+     * See if the given e-mail address is available
      */
     static function isEmailAvailable(string $email, ?int $ignoredUserId = null): bool
     {
@@ -553,29 +549,19 @@ abstract class User
     }
 
     /**
-     * Sestavit casti dotazu pro nacteni dat uzivatele
+     * Compose parts of SQL query to load user data
      *
-     * Struktura navratove hodnoty:
-     *
-     * array(
-     *      columns => array(a,b,c,...),
-     *      column_list => "a,b,c,...",
-     *      joins => "JOIN ...",
-     *      alias => "...",
-     *      prefix = "...",
-     * )
-     *
-     * @param string|null $joinUserIdColumn nazev sloupce obsahujici ID uzivatele nebo NULL (= nejoinovat)
-     * @param string $prefix predpona pro nazvy nacitanych sloupcu
-     * @param string $alias alias joinovane user tabulky
-     * @param mixed $emptyValue hodnota, ktera reprezentuje neurceneho uzivatele
-     * @return array viz popis funkce
+     * @param string|null $joinUserIdColumn name of user ID column to use for joining or NULL (= don't join)
+     * @param string $prefix user data column prefix
+     * @param string $alias alias of the joined user table
+     * @param mixed $emptyValue column value that signifies "no user"
+     * @return array{columns: string[], column_list: string, joins: string, alias: string, prefix: string}
      */
     static function createQuery(?string $joinUserIdColumn = null, string $prefix = 'user_', string $alias = 'u', $emptyValue = -1): array
     {
         $groupAlias = "{$alias}g";
 
-        // pole sloupcu
+        // column array
         $columns = [
             "{$alias}.id" => "{$prefix}id",
             "{$alias}.username" => "{$prefix}username",
@@ -588,7 +574,7 @@ abstract class User
             "{$groupAlias}.color" => "{$prefix}group_color",
         ];
 
-        // joiny
+        // joins
         $joins = [];
         if ($joinUserIdColumn !== null) {
             $joins[] = 'LEFT JOIN ' . DB::table('user') . " {$alias} ON({$joinUserIdColumn}" . DB::notEqual($emptyValue) . " AND {$joinUserIdColumn}={$alias}.id)";
@@ -604,7 +590,7 @@ abstract class User
             'alias' => $alias,
         ]);
 
-        // sestavit seznam sloupcu
+        // make column list
         $columnList = '';
         $isFirstColumn = true;
         foreach ($columns as $columnName => $columnAlias) {
@@ -627,19 +613,17 @@ abstract class User
     }
 
     /**
-     * Odstraneni uzivatele
-     *
-     * @param int $id id uzivatele
+     * Delete an user
      */
     static function delete(int $id): bool
     {
-        // nacist data uzivatele
+        // fetch user's data
         $user = DB::queryRow('SELECT id,avatar FROM ' . DB::table('user') . ' WHERE id=' . DB::val($id));
         if ($user === false) {
             return false;
         }
 
-        // udalost kontroly
+        // extend event (check)
         $allow = true;
         $replacement = null;
         Extend::call('user.delete.check', ['user' => $user, 'allow' => &$allow, 'replacement' => &$replacement]);
@@ -647,7 +631,7 @@ abstract class User
             return false;
         }
 
-        // ziskat uzivatele pro prirazeni existujiciho obsahu
+        // get a replacement user to assign existing content to
         if ($replacement === null) {
             $replacement = DB::queryRow('SELECT id FROM ' . DB::table('user') . ' WHERE group_id=' . DB::val(self::ADMIN_GROUP_ID) . ' AND levelshift=1 AND blocked=0 AND id!=' . DB::val($id) . ' ORDER BY registertime LIMIT 1');
             if ($replacement === false) {
@@ -655,10 +639,10 @@ abstract class User
             }
         }
 
-        // udalost pred smazanim
+        // extend event (before deletion)
         Extend::call('user.delete.before', ['user' => $user, 'replacement' => $replacement]);
 
-        // odstranit data z databaze
+        // delete database data
         DB::delete('user', 'id=' . DB::val($id));
         DB::query('DELETE ' . DB::table('pm') . ',post FROM ' . DB::table('pm') . ' LEFT JOIN ' . DB::table('post') . ' AS post ON (post.type=' . Post::PRIVATE_MSG . ' AND post.home=' . DB::table('pm') . '.id) WHERE receiver=' . DB::val($id) . ' OR sender=' . DB::val($id));
         DB::update('post', 'author=' . DB::val($id), [
@@ -668,23 +652,23 @@ abstract class User
         DB::update('article', 'author=' . DB::val($id), ['author' => $replacement['id']]);
         DB::update('poll', 'author=' . DB::val($id), ['author' => $replacement['id']]);
 
-        // odstranit avatar
+        // delete avatar
         if (isset($user['avatar'])) {
             self::removeAvatar($user['avatar']);
         }
 
-        // udalost po smazani
+        // extend event (after deletion)
         Extend::call('user.delete.after', ['user' => $user, 'replacement' => $replacement]);
 
         return true;
     }
 
     /**
-     * Sestavit autentifikacni hash uzivatele
+     * Make user authentication hash
      *
-     * @param string $type viz User::AUTH_* konstanty
-     * @param string $email email uzivatele
-     * @param string $storedPassword heslo ulozene v databazi
+     * @param string $type see User::AUTH_* constants
+     * @param string $email user's e-mail
+     * @param string $storedPassword user's password stored in the database
      */
     static function getAuthHash(string $type, string $email, string $storedPassword): string
     {
@@ -692,7 +676,7 @@ abstract class User
     }
 
     /**
-     * Prihlaseni uzivatele
+     * Login a user
      */
     static function login(int $id, string $storedPassword, string $email, bool $persistent = false): void
     {
@@ -714,18 +698,18 @@ abstract class User
     }
 
     /**
-     * Sestavit kod prihlasovaciho formulare
+     * Render a login form
      *
-     * @param bool $title vykreslit titulek 1/0
-     * @param bool $required jedna se o povinne prihlaseni z duvodu nedostatku prav 1/0
-     * @param string|null $return navratova URL
-     * @param bool $embedded nevykreslovat <form> tag 1/0
+     * @param bool $title render title 1/0
+     * @param bool $required indicate a required login due to insufficient privileges 1/0
+     * @param string|null $return return URL
+     * @param bool $embedded don't render a <form> tag 1/0
      */
     static function renderLoginForm(bool $title = false, bool $required = false, ?string $return = null, bool $embedded = false): string
     {
         $output = '';
 
-        // titulek
+        // title
         if ($title) {
             $title_text = _lang($required ? (self::isLoggedIn() ? 'global.accessdenied' : 'login.required.title') : 'login.title');
             if (Core::$env === Core::ENV_ADMIN) {
@@ -740,7 +724,7 @@ abstract class User
             $output .= '<p>' . _lang('login.required.p') . "</p>\n";
         }
 
-        // zpravy
+        // login result message
         if (isset($_GET['login_form_result'])) {
             $login_result = self::getLoginMessage(Request::get('login_form_result'));
             if ($login_result !== null) {
@@ -748,12 +732,9 @@ abstract class User
             }
         }
 
-        // obsah
+        // content
         if (!self::isLoggedIn()) {
-
-            $form_append = '';
-
-            // adresa pro navrat
+            // return URL
             if ($return === null && !$embedded) {
                 if (isset($_GET['login_form_return'])) {
                     $return = Request::get('login_form_return');
@@ -762,26 +743,27 @@ abstract class User
                 }
             }
 
-            // akce formulare
+            // form action
             if (!$embedded) {
-                // systemovy skript
+                // script
                 $action = Router::path('system/script/login.php');
             } else {
-                // vlozeny formular
+                // embedded
                 $action = null;
             }
+
+            // add return URL to the action
             if (!empty($return)) {
                 $action = UrlHelper::appendParams($action, '_return=' . urlencode($return));
             }
 
-            // adresa formulare
+            // form URL
             $form_url = Core::getCurrentUrl();
             if ($form_url->has('login_form_result')) {
                 $form_url->remove('login_form_result');
             }
-            $form_append .= '<input type="hidden" name="login_form_url" value="' . _e($form_url->buildRelative()) . "\">\n";
 
-            // kod formulare
+            // render form
             $rows = [];
             $rows[] = ['label' => _lang('login.username'), 'content' => '<input type="text" name="login_username" class="inputmedium"' . Form::restoreValue($_SESSION, 'login_form_username') . ' maxlength="191" autocomplete="username" autofocus>'];
             $rows[] = ['label' => _lang('login.password'), 'content' => '<input type="password" name="login_password" class="inputmedium" autocomplete="current-password">'];
@@ -798,7 +780,7 @@ abstract class User
                     'name' => 'login_form',
                     'action' => $action,
                     'embedded' => $embedded,
-                    'form_append' => $form_append,
+                    'form_append' => '<input type="hidden" name="login_form_url" value="' . _e($form_url->buildRelative()) . "\">\n",
                 ],
                 $rows
             );
@@ -807,7 +789,7 @@ abstract class User
                 unset($_SESSION['login_form_username']);
             }
 
-            // odkazy
+            // links
             if (!$embedded) {
                 $links = [];
                 if (Settings::get('registration') && Core::$env === Core::ENV_WEB) {
@@ -835,17 +817,17 @@ abstract class User
     }
 
     /**
-     * Ziskat hlasku pro dany kod
+     * Get login message for the given code
      *
-     * Existujici kody:
-     * ------------------------------------------------------
-     * 0    prihlaseni se nezdarilo (spatne jmeno nebo heslo / jiz prihlasen)
-     * 1    prihlaseni uspesne
-     * 2    uzivatel je blokovan
-     * 3    automaticke odhlaseni z bezp. duvodu
-     * 4    smazani vlastniho uctu
-     * 5    vycerpan limit neuspesnych prihlaseni
-     * 6    neplatny XSRF token
+     * Supported codes:
+     * ------------------------------------------------------------------------
+     * 0    invalid username or password
+     * 1    success
+     * 2    user is blocked
+     * 3    automatic logout for security reasons
+     * 4    user account has been deleted
+     * 5    unsuccessful login attempt limit exceeded
+     * 6    invalid XSRF token
      */
     static function getLoginMessage(int $code): ?Message
     {
@@ -870,34 +852,33 @@ abstract class User
     }
 
     /**
-     * Zpracovat POST prihlaseni
+     * Handle a login request
      *
-     * @return int kod {@see self::getLoginMessage())
+     * Returns a message code for {@see User::getLoginMessage()).
      */
     static function submitLogin(string $username, string $plainPassword, bool $persistent = false): int
     {
-        // jiz prihlasen?
+        // already logged in?
         if (self::isLoggedIn()) {
             return 0;
         }
 
-        // XSRF kontrola
+        // XSRF check
         if (!Xsrf::check()) {
             return 6;
         }
 
-        // kontrola limitu
+        // login attempt limit check
         if (!IpLog::check(IpLog::FAILED_LOGIN_ATTEMPT)) {
             return 5;
         }
 
-        // kontrola uziv. jmena
+        // check username
         if ($username === '') {
-            // prazdne uziv. jmeno
             return 0;
         }
 
-        // udalost
+        // extend event (before)
         $extend_result = null;
         Extend::call('user.login.before', [
             'username' => $username,
@@ -909,7 +890,7 @@ abstract class User
             return $extend_result;
         }
 
-        // nalezeni uzivatele
+        // load user
         if (strpos($username, '@') !== false) {
             $cond = 'u.email=' . DB::val($username);
         } else {
@@ -918,27 +899,25 @@ abstract class User
 
         $query = DB::queryRow('SELECT u.id,u.username,u.email,u.logincounter,u.password,u.blocked,g.blocked group_blocked FROM ' . DB::table('user') . ' u JOIN ' . DB::table('user_group') . ' g ON(u.group_id=g.id) WHERE ' . $cond);
         if ($query === false) {
-            // uzivatel nenalezen
+            // user not found
             return 0;
         }
 
-        // kontrola hesla
+        // check password
         $password = Password::load($query['password']);
 
         if (!$password->match($plainPassword)) {
-            // nespravne heslo
             IpLog::update(IpLog::FAILED_LOGIN_ATTEMPT);
 
             return 0;
         }
 
-        // kontrola blokace
+        // check blocked status
         if ($query['blocked'] || $query['group_blocked']) {
-            // uzivatel nebo skupina je blokovana
             return 2;
         }
 
-        // aktualizace dat uzivatele
+        // update user data
         $changeset = [
             'ip' => Core::getClientIp(),
             'activitytime' => time(),
@@ -948,7 +927,7 @@ abstract class User
         ];
 
         if ($password->shouldUpdate()) {
-            // aktualizace formatu hesla
+            // update password
             $password->update($plainPassword);
 
             $changeset['password'] = $query['password'] = $password->build();
@@ -956,20 +935,20 @@ abstract class User
 
         DB::update('user', 'id=' . DB::val($query['id']), $changeset);
 
-        // extend udalost
+        // extend event
         Extend::call('user.login', ['user' => $query]);
 
-        // prihlaseni
+        // login
         self::login($query['id'], $query['password'], $query['email'], $persistent);
 
-        // vse ok, uzivatel byl prihlasen
+        // all ok
         return 1;
     }
 
     /**
-     * Odhlaseni aktualniho uzivatele
+     * Logout the current user
      *
-     * @param bool $destroy uplne znicit session
+     * @param bool $destroy destroy session 1/0
      */
     static function logout(bool $destroy = true): bool
     {
@@ -997,9 +976,9 @@ abstract class User
     }
 
     /**
-     * Ziskat pocet neprectenych PM (soukromych zprav) aktualniho uzivatele
+     * Get number of unread private messages for the current user
      *
-     * Vystup teto funkce je cachovan.
+     * The result is cached.
      */
     static function getUnreadPmCount(): int
     {
@@ -1056,24 +1035,21 @@ abstract class User
     }
 
     /**
-     * Ziskat kod avataru daneho uzivatele
+     * Render user avatar
      *
-     * Mozne klice v $options
-     * ----------------------
-     * get_path (0)     ziskat pouze cestu namisto html kodu obrazku 1/0
-     * default (1)      vratit vychozi avatar, pokud jej uzivatel nema nastaven 1/0 (jinak null)
-     * default_dark (-) tmave tema pro vychozi avatar (vychozi je dle motivu)
-     * link (1)         odkazat na profil uzivatele 1/0
-     * extend (1)       vyvolat extend udalost 1/0
-     * class (-)        vlastni CSS trida
+     * Supported keys in $options:
+     * -------------------------------------------------------------------------------------------------
+     * get_path (0)     return avatar path instead of HTML 1/0
+     * default (1)      use default avatar if user has none, otherwise return NULL 1/0
+     * default_dark (-) use dark variant of the default avatar 1/0 (default depends on current template)
+     * link (1)         link to the user's profile 1/0
+     * extend (1)       enable extend event 1/0
+     * class (-)        custom CSS class
      *
-     * @param array $data samostatna data uzivatele (avatar, username, publicname)
-     * @param array $options moznosti vykresleni, viz popis funkce
-     * @return string|null HTML kod s obrazkem nebo URL
+     * @param array $data user data (avatar, username, publicname)
      */
     static function renderAvatar(array $data, array $options = []): ?string
     {
-        // vychozi nastaveni
         $options += [
             'get_url' => false,
             'default' => true,
@@ -1102,7 +1078,7 @@ abstract class User
 
         $url = Router::file($avatarPath);
 
-        // vykresleni rozsirenim
+        // allow custom avatar rendering by plugins
         if ($options['extend']) {
             $extendOutput = Extend::buffer('user.avatar.render', [
                 'data' => $data,
@@ -1114,17 +1090,17 @@ abstract class User
             }
         }
 
-        // vratit null neni-li avatar a je deaktivovan vychozi
+        // return NULL if user has no avatar and default avatar is disabled
         if (!$options['default'] && !$hasAvatar) {
             return null;
         }
 
-        // vratit pouze URL?
+        // return only the URL?
         if ($options['get_url']) {
             return $url;
         }
 
-        // vykreslit obrazek
+        // render
         $out = '';
         if ($options['link']) {
             $out .= '<a href="' . _e(Router::module('profile', ['query' => ['id' =>  $data['username']]])) . '">';
@@ -1138,11 +1114,11 @@ abstract class User
     }
 
     /**
-     * Ziskat kod avataru daneho uzivatele na zaklade dat z funkce {@see self::createQuery()}
+     * Render avatar based on data fetched by {@see self::createQuery()}
      *
-     * @param array $userQuery vystup z {@see self::createQuery()}
-     * @param array $row radek z vysledku dotazu
-     * @param array $options nastaveni vykresleni, viz {@see self::renderAvatar()}
+     * @param array $userQuery output of {@see self::createQuery()}
+     * @param array $row result row
+     * @param array $options render options, {@see self::renderAvatar()}
      */
     static function renderAvatarFromQuery(array $userQuery, array $row, array $options = []): string
     {
@@ -1160,12 +1136,12 @@ abstract class User
     }
 
     /**
-     * Ziskat kod formulare pro opakovani POST requestu
+     * Render a form to repeat a POST request
      *
-     * @param bool $allow_login umoznit znovuprihlaseni, neni-li uzivatel prihlasen 1/0
-     * @param Message|null $login_message vlastni hlaska
-     * @param string|null $target_url cil formulare (null = aktualni URL)
-     * @param bool $do_repeat odeslat na cilovou adresu 1/0
+     * @param bool $allow_login allow a login, if the user is not logged in 1/0
+     * @param Message|null $login_message custom login message
+     * @param string|null $target_url form's target URL (null = current URL)
+     * @param bool $do_repeat send to the final URL 1/0
      */
     static function renderPostRepeatForm(bool $allow_login = true, ?Message $login_message = null, ?string $target_url = null, bool $do_repeat = false): string
     {

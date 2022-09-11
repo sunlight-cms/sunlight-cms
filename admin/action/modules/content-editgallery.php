@@ -5,8 +5,6 @@ use Sunlight\Router;
 
 defined('SL_ROOT') or exit;
 
-/* ---  nastaveni a vlozeni skriptu pro upravu stranky  --- */
-
 $type = Page::GALLERY;
 require SL_ROOT . 'admin/action/modules/include/page-editscript-init.php';
 if ($continue) {

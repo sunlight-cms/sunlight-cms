@@ -12,7 +12,7 @@ use Sunlight\Util\UrlHelper;
 abstract class Template
 {
     /**
-     * Ziskat instanci aktualniho motivu
+     * Get currently active template
      */
     static function getCurrent(): TemplatePlugin
     {
@@ -24,7 +24,7 @@ abstract class Template
     }
 
     /**
-     * Vykreslit HTML hlavicku
+     * Render <head> contents
      */
     static function head(): string
     {
@@ -32,13 +32,13 @@ abstract class Template
 
         $output = '';
 
-        // pripravit css
+        // CSS
         $css = [];
         foreach ($_index->template->getOption('css') as $key => $path) {
             $css[$key] = UrlHelper::isAbsolute($path) ? $path : Router::path($path);
         }
 
-        // pripravit js
+        // JS
         $js = [
             'jquery' => Router::path('system/js/jquery.js'),
             'sunlight' => Router::path('system/js/sunlight.js'),
@@ -48,7 +48,7 @@ abstract class Template
             $js[$key] = UrlHelper::isAbsolute($path) ? $path : Router::path($path);
         }
 
-        // titulek
+        // title
         $title = Extend::buffer('tpl.title', ['head' => true]);
         if ($title === '') {
             if (Settings::get('titletype') == 1) {
@@ -58,7 +58,7 @@ abstract class Template
             }
         }
 
-        // assety
+        // assets
         $assets = [
             'extend_event' => 'tpl.head',
             'css' => $css,
@@ -66,7 +66,7 @@ abstract class Template
             'js_before' => "\n" . Core::getJavascript(),
         ];
 
-        // sestaveni
+        // render
         $output .= '<meta name="description" content="' . ($_index->description ?? Settings::get('description')) . '">' . ((Settings::get('author') !== '') ? '
 <meta name="author" content="' . Settings::get('author') . '">' : '')
             . Extend::buffer('tpl.head.meta')
@@ -86,10 +86,10 @@ abstract class Template
     }
 
     /**
-     * Vykreslit boxy daneho sloupce
+     * Render boxes
      *
-     * @param string $slot nazev slotu
-     * @param array $overrides pretizeni konfigurace motivu
+     * @param string $slot slot name
+     * @param array $overrides template option overrides
      */
     static function boxes(string $slot, array $overrides = []): string
     {
@@ -98,7 +98,7 @@ abstract class Template
         if (!Settings::get('notpublicsite') || User::isLoggedIn()) {
             global $_index;
 
-            // ziskat boxy
+            // get boxes
             $boxes = $_index->templateBoxes[$slot] ?? [];
 
             // extend
@@ -113,42 +113,42 @@ abstract class Template
 
             $options = $overrides + $_index->template->getOptions();
 
-            // pocatecni tag
+            // opening tag
             if ($options['box.parent']) {
                 $output .= "<{$options['box.parent']} class=\"boxes boxes-{$slot}\">\n";
             }
             foreach ($boxes as $item) {
-                // filtrovani boxu
+                // filter boxes
                 if ($item['page_ids'] !== null && !Page::isActive(explode(',', $item['page_ids']), $item['page_children'])) {
                     continue;
                 }
 
-                // kod titulku
+                // prepare title
                 if ($item['title'] !== '') {
                     $title = "<{$options['box.title']} class=\"️box-title\"️>{$item['title']}</{$options['box.title']}>\n";
                 } else {
                     $title = '';
                 }
 
-                // titulek venku
+                // title (outside)
                 if (!$options['box.title.inside']) {
                     $output .= $title;
                 }
 
-                // starttag polozky
+                // opening tag
                 if ($options['box.item']) {
                     $output .= "<{$options['box.item']} class=\"️box-item" . (isset($item['class']) ? ' ' . _e($item['class']) : '') . "\"️>\n";
                 }
 
-                // titulek vevnitr
+                // title (inside)
                 if ($options['box.title.inside']) {
                     $output .= $title;
                 }
 
-                // obsah
+                // content
                 $output .= Hcm::parse($item['content']);
 
-                // endtag polozky
+                // closing tag
                 if ($options['box.item']) {
                     $output .= "\n</{$options['box.item']}>";
                 }
@@ -162,7 +162,7 @@ abstract class Template
     }
 
     /**
-     * Vykreslit obsah
+     * Render content
      */
     static function content(): string
     {
@@ -174,7 +174,7 @@ abstract class Template
     }
 
     /**
-     * Vykreslit nadpis stranky
+     * Render heading
      */
     static function heading(): string
     {
@@ -188,7 +188,7 @@ abstract class Template
             // extend
             $output = Extend::buffer('tpl.heading', ['heading' => &$heading]);
 
-            // vychozi implementace
+            // default implementation
             if ($output === '') {
                 $output = "<h1>{$heading}</h1>\n";
             }
@@ -198,7 +198,7 @@ abstract class Template
     }
 
     /**
-     * Vykreslit zpetny odkaz
+     * Render backlick
      */
     static function backlink(): string
     {
@@ -207,7 +207,7 @@ abstract class Template
         // extend
         $output = Extend::buffer('tpl.backlink', ['backlink' => &$_index->backlink]);
 
-        // vychozi implementace
+        // default implementation
         if ($output === '' && $_index->backlink !== null) {
             $output = '<div class="backlink"><a href="' . _e($_index->backlink) . '">&lt; ' . _lang('global.return') . "</a></div>\n";
         }
@@ -216,7 +216,7 @@ abstract class Template
     }
 
     /**
-     * Vykreslit odkazy motivu
+     * Render template links
      */
     static function links(): string
     {
@@ -226,9 +226,9 @@ abstract class Template
     }
 
     /**
-     * Sestavit adresu k obrazku aktualniho motivu
+     * Compose path to a current template's image
      *
-     * @param string $name subcesta k souboru relativne ke slozce images aktualniho motivu
+     * @param string $name subpath in the "images" directory
      */
     static function image(string $name): string
     {
@@ -236,24 +236,24 @@ abstract class Template
     }
 
     /**
-     * Vykreslit menu
+     * Render menu
      *
-     * @param int|null $ordStart minimalni poradove cislo
-     * @param int|null $ordEnd maximalni poradove cislo
-     * @param string|null $cssClass trida hlavniho tagu menu
-     * @param string $extendEvent extend udalost pro polozky menu
+     * @param int|null $ordStart min. order number
+     * @param int|null $ordEnd max order number
+     * @param string|null $cssClass custom CSS class for the container
+     * @param string $extendEvent extend event for menu items
      */
     static function menu(?int $ordStart = null, ?int $ordEnd = null, ?string $cssClass = null, string $extendEvent = 'tpl.menu.item'): string
     {
-        // kontrola prihlaseni v pripade neverejnych stranek
+        // check login if site is not public
         if (!User::isLoggedIn() && Settings::get('notpublicsite')) {
             return '';
         }
 
-        // zjisteni aktivni stranky
+        // determine active page
         [$activeId] = Page::getActive();
 
-        // nacist stranky
+        // load pages
         $pages = Page::getRootPages(
             new PageTreeFilter([
                 'ord_start' => $ordStart,
@@ -262,7 +262,7 @@ abstract class Template
             PageMenu::getRequiredExtraColumns()
         );
 
-        // vykreslit menu
+        // render menu
         return PageMenu::render(
             $pages,
             $activeId,
@@ -273,25 +273,22 @@ abstract class Template
     }
 
     /**
-     * Vykreslit stromove menu
+     * Render tree menu
      *
-     * Mozne klice v $options:
+     * Supported keys in $options:
      * ---------------------------------------------------------------------------------
-     * page_id (-)                      ID referencni stranky (-1 = aktivni stranka)
-     * children_only (1)                vypsat pouze potomky, je-li uvedeno page_id
-     * max_depth (-)                    maximalni vypsana hloubka (null = neomezeno, 0+)
-     * ord_start (-)                    limit poradi od
-     * ord_end (-)                      limit poradi do
-     * css_class (-)                    trida hlavniho tagu menu
-     * extend_event ("tpl.menu.item")   extend udalost pro polozky menu
-     * type ("tree")                    identifikator typu menu
-     * filter (-)                       pole s nastavenim pro {@see Page::getFilter()}
-     *
-     * @param array $options pole s nastavenim
+     * page_id (-)                      ID of page to render menu for (-1 = current)
+     * children_only (1)                only list children (requires page_id)
+     * max_depth (-)                    maximum number of levels (null = unlimited)
+     * ord_start (-)                    only list pages with this order number or higher
+     * ord_end (-)                      only list pages with this order number or less
+     * css_class (-)                    CSS class for the container tag
+     * extend_event ("tpl.menu.item")   menu item extend event name
+     * type ("tree")                    menu type identifier (for events)
+     * filter (-)                       additional options for {@see PageTreeFilter}
      */
     static function treeMenu(array $options): string
     {
-        // vychozi nastaveni
         $options += [
             'page_id' => null,
             'children_only' => true,
@@ -304,15 +301,15 @@ abstract class Template
             'filter' => [],
         ];
 
-        // kontrola prihlaseni v pripade neverejnych stranek
+        // check login if site is not public
         if (!User::isLoggedIn() && Settings::get('notpublicsite')) {
             return '';
         }
 
-        // zjisteni aktivni stranky
+        // get active page
         [$activeId] = Page::getActive();
 
-        // pouziti aktivni stranky
+        // use active page
         if ($options['page_id'] == -1) {
             if ($activeId === null) {
                 return '';
@@ -321,18 +318,18 @@ abstract class Template
             $options['page_id'] = $activeId;
         }
 
-        // zjistit uroven a hloubku
+        // determine page tree level and depth
         try {
             [$level, $depth] = Page::getTreeReader()->getLevelAndDepth($options['page_id']);
             if ($options['max_depth'] !== null) {
                 $depth = min($options['max_depth'], $depth);
             }
         } catch (\RuntimeException $e) {
-            // stranka nenalezena
+            // page not found
             return Core::$debug ? _e($e->getMessage()) : '';
         }
 
-        // nacist stranky
+        // load pages
         $filter = new PageTreeFilter([
                 'ord_start' => $options['ord_start'],
                 'ord_end' => $options['ord_end'],
@@ -349,7 +346,7 @@ abstract class Template
             $pages = Page::getTreeReader()->extractChildren($pages, $options['page_id'], true);
         }
 
-        // vykreslit menu
+        // render menu
         return PageMenu::render(
             $pages,
             $activeId,
@@ -360,16 +357,16 @@ abstract class Template
     }
 
     /**
-     * Vykreslit drobeckovou navigaci
+     * Render breadcrumbs
      *
-     * @param array $breadcrumbs vychozi drobecky
-     * @param bool $onlyWhenMultiple vykreslit pouze 2 a vice drobecku
+     * @param array $breadcrumbs default breadcrumbs to add to
+     * @param bool $onlyWhenMultiple only render if there are 2 or more crumbs
      */
     static function breadcrumbs(array $breadcrumbs = [], bool $onlyWhenMultiple = false): string
     {
         global $_index;
 
-        // zjistit aktivni stranku a jeji uroven
+        // determine active page and its level
         [$pageId, $pageData] = Page::getActive();
         if ($pageData !== null) {
             $rootLevel = $pageData['node_level'];
@@ -377,7 +374,7 @@ abstract class Template
             $rootLevel = null;
         }
 
-        // pridat stranky
+        // add pages
         if ($pageId !== null) {
             foreach (Page::getPath($pageId, $rootLevel) as $page) {
                 $breadcrumbs[] = [
@@ -387,12 +384,12 @@ abstract class Template
             }
         }
 
-        // pridat drobecky aktualni stranky
+        // add current page's crumbs
         foreach ($_index->crumbs as $crumb) {
             $breadcrumbs[] = $crumb;
         }
 
-        // extend udalost
+        // extend
         $output = '';
         Extend::call('tpl.breadcrumbs', [
             'breadcrumbs' => &$breadcrumbs,
@@ -400,7 +397,7 @@ abstract class Template
             'output' => &$output,
         ]);
 
-        // vykreslit
+        // render
         if (!empty($breadcrumbs) && (!$onlyWhenMultiple || count($breadcrumbs) >= 2) && $output === '') {
             $output .= "<ul class=\"breadcrumbs\">\n";
             foreach ($breadcrumbs as $crumb) {
@@ -413,7 +410,7 @@ abstract class Template
     }
 
     /**
-     * Vykreslit titulek aktualni stranky
+     * Render current page's title
      */
     static function title(): string
     {
@@ -423,7 +420,7 @@ abstract class Template
     }
 
     /**
-     * Ziskat titulek stranek
+     * Render the site title
      */
     static function siteTitle(): string
     {
@@ -431,7 +428,7 @@ abstract class Template
     }
 
     /**
-     * Ziskat popis stranek
+     * Render the site description
      */
     static function siteDescription(): string
     {
@@ -439,7 +436,7 @@ abstract class Template
     }
 
     /**
-     * Ziskat zakladni adresu stranek
+     * Render the site's base URL
      */
     static function siteUrl(): string
     {
@@ -447,7 +444,7 @@ abstract class Template
     }
 
     /**
-     * Ziskat zakladni cestu stranek
+     * Render the site's base path
      */
     static function sitePath(): string
     {
@@ -455,30 +452,28 @@ abstract class Template
     }
 
     /**
-     * Vykreslit uzivatelske menu
-     *
-     * @param bool $profileLink vykreslit odkaz na profil 1/0
+     * Render user menu
      */
     static function userMenu(bool $profileLink = true, bool $adminLink = true): string
     {
-        // pripravit polozky
         $items = [];
 
         if (!User::isLoggedIn()) {
-            // prihlaseni
+            // login
             $items['login'] = [
                 Router::module('login', ['query' => ['login_form_return' => $_SERVER['REQUEST_URI']]]),
                 _lang('usermenu.login'),
             ];
+
+            // registration
             if (Settings::get('registration')) {
-                // registrace
                 $items['reg'] = [
                     Router::module('reg'),
                     _lang('usermenu.registration'),
                 ];
             }
         } else {
-            // profil
+            // profile
             if ($profileLink) {
                 $items['profile'] = [
                     Router::module('profile', ['query' => ['id' => User::getUsername()]]),
@@ -486,7 +481,7 @@ abstract class Template
                 ];
             }
 
-            // vzkazy
+            // messages
             if (Settings::get('messages')) {
                 $messages_count = User::getUnreadPmCount();
                 if ($messages_count != 0) {
@@ -500,13 +495,13 @@ abstract class Template
                 ];
             }
 
-            // nastaveni
+            // settings
             $items['settings'] = [
                 Router::module('settings'),
                 _lang('usermenu.settings'),
             ];
 
-            // administrace
+            // admin
             if ($adminLink && User::hasPrivilege('administration')) {
                 $items['admin'] = [
                     Router::adminIndex(),
@@ -516,14 +511,14 @@ abstract class Template
         }
 
         if (Settings::get('ulist') && (!Settings::get('notpublicsite') || User::isLoggedIn())) {
-            // seznam uzivatelu
+            // user list
             $items['ulist'] = [
                 Router::module('ulist'),
                 _lang('usermenu.ulist'),
             ];
         }
 
-        // odhlaseni
+        // logout
         if (User::isLoggedIn()) {
             $items['logout'] = [
                 Xsrf::addToUrl(Router::path('system/script/logout.php', ['query' => ['_return' => $_SERVER['REQUEST_URI']]])),
@@ -531,7 +526,7 @@ abstract class Template
             ];
         }
 
-        // vykreslit
+        // render
         $output = Extend::buffer('tpl.usermenu', ['items' => &$items]);
         if ($output === '' && !empty($items)) {
             $output = '<ul class="user-menu ' . (User::isLoggedIn() ? 'logged-in' : 'not-logged-in') . "\">\n";
@@ -547,7 +542,7 @@ abstract class Template
     }
 
     /**
-     * Zjistit ID aktualni stranky
+     * Get ID of current page
      */
     static function currentID(): ?int
     {
@@ -555,7 +550,7 @@ abstract class Template
     }
 
     /**
-     * Zjistit, zda je aktualni obsah typu "stranka"
+     * See if a page is being rendered
      */
     static function currentIsPage(): bool
     {
@@ -563,7 +558,7 @@ abstract class Template
     }
 
     /**
-     * Zjistit, zda je aktualni obsah typu "clanek" (v kategorii)
+     * See if an article is being rendered
      */
     static function currentIsArticle(): bool
     {
@@ -574,7 +569,7 @@ abstract class Template
     }
 
     /**
-     * Zjistit, zda je aktualni obsah typu "tema" (ve foru)
+     * See if a forum topic is being rendered
      */
     static function currentIsTopic(): bool
     {
@@ -585,7 +580,7 @@ abstract class Template
     }
 
     /**
-     * Zjistit, zda je aktualni obsah typu "modul"
+     * See if a module is being rendered
      */
     static function currentIsModule(): bool
     {
@@ -593,7 +588,7 @@ abstract class Template
     }
 
     /**
-     * Zjisteni, zda je aktualni obsah hlavni strana
+     * See if the index page is being rendered
      */
     static function currentIsIndex(): bool
     {

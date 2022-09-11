@@ -19,7 +19,7 @@ abstract class PluginAction extends Action
     protected $plugin;
 
     /**
-     * @throws \RuntimeException if instantiated outside of administration environment
+     * @throws \RuntimeException if instantiated outside of admin environment
      */
     function __construct(Plugin $plugin)
     {

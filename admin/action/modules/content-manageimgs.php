@@ -15,8 +15,6 @@ use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
-/* ---  priprava promennych  --- */
-
 $message = '';
 $continue = false;
 if (isset($_GET['g'])) {
@@ -36,16 +34,14 @@ if (isset($_GET['g'])) {
     }
 }
 
-/* ---  akce  --- */
-
+// action
 if (isset($_POST['xaction']) && $continue) {
 
     switch (Request::post('xaction')) {
 
-        // vlozeni obrazku
+        // insert image
         case 1:
-
-            // nacteni zakladnich promennych
+            // load base vars
             $title = Html::cut(_e(trim(Request::post('title', ''))), 255);
             if (!Form::loadCheckbox('autoprev')) {
                 $prev = Html::cut(_e(Request::post('prev', '')), 255);
@@ -54,7 +50,7 @@ if (isset($_POST['xaction']) && $continue) {
             }
             $full = Html::cut(_e(Request::post('full', '')), 255);
 
-            // vlozeni na zacatek nebo nacteni poradoveho cisla
+            // load order
             if (Form::loadCheckbox('moveords')) {
                 $smallerord = DB::queryRow('SELECT ord FROM ' . DB::table('gallery_image') . ' WHERE home=' . $galid . ' ORDER BY ord LIMIT 1');
                 if ($smallerord !== false) {
@@ -67,7 +63,7 @@ if (isset($_POST['xaction']) && $continue) {
                 $ord = floatval(Request::post('ord'));
             }
 
-            // kontrola a vlozeni
+            // check and insert
             if ($full != '') {
                 DB::insert('gallery_image', [
                     'home' => $galid,
@@ -83,7 +79,7 @@ if (isset($_POST['xaction']) && $continue) {
 
             break;
 
-            /* -  aktualizace obrazku  - */
+        // update images
         case 4:
             $lastid = -1;
             $sql = '';
@@ -125,10 +121,8 @@ if (isset($_POST['xaction']) && $continue) {
                             break;
                     }
 
-                    // ukladani a cachovani
+                    // save each image
                     if (!$skip) {
-
-                        // ulozeni
                         if ($lastid != $id) {
                             $sql = trim($sql, ',');
                             DB::query('UPDATE ' . DB::table('gallery_image') . ' SET ' . $sql . ' WHERE id=' . $lastid . ' AND home=' . $galid);
@@ -150,7 +144,7 @@ if (isset($_POST['xaction']) && $continue) {
                 }
             }
 
-            // ulozeni posledniho nebo jedineho obrazku
+            // save last (or only) image
             if ($sql != '') {
                 DB::query('UPDATE ' . DB::table('gallery_image') . ' SET ' . $sql . ' WHERE id=' . $id . ' AND home=' . $galid);
             }
@@ -158,30 +152,26 @@ if (isset($_POST['xaction']) && $continue) {
             $message .= Message::ok(_lang('global.saved'));
             break;
 
-        // presunuti obrazku
+        // move images
         case 5:
             $newhome = (int) Request::post('newhome');
             if ($newhome != $galid) {
                 if (DB::count('page', 'id=' . DB::val($newhome) . ' AND type=' . Page::GALLERY) !== 0) {
                     if (DB::count('gallery_image', 'home=' . DB::val($galid)) !== 0) {
 
-                        // posunuti poradovych cisel v cilove galerii
+                        // move order numbers in the target gallery
                         $moveords = Form::loadCheckbox('moveords');
                         if ($moveords) {
-
-                            // nacteni nejvetsiho poradoveho cisla v teto galerii
+                            // get the highest order number in this gallery
                             $greatestord = DB::queryRow('SELECT ord FROM ' . DB::table('gallery_image') . ' WHERE home=' . $galid . ' ORDER BY ord DESC LIMIT 1');
                             $greatestord = $greatestord['ord'];
 
                             DB::update('gallery_image', 'home=' . $newhome, ['ord' => DB::raw('ord+' . $greatestord)]);
                         }
 
-                        // presun obrazku
+                        // move images
                         DB::update('gallery_image', 'home=' . $galid, ['home' => $newhome]);
-
-                        // zprava
                         $message .= Message::ok(_lang('global.done'));
-
                     } else {
                         $message .= Message::warning(_lang('admin.content.manageimgs.moveimgs.nokit'));
                     }
@@ -193,7 +183,7 @@ if (isset($_POST['xaction']) && $continue) {
             }
             break;
 
-        // odstraneni vsech obrazku
+        // remove all images
         case 6:
             if (Form::loadCheckbox('confirm')) {
                 Admin::deleteGalleryStorage('home=' . $galid);
@@ -202,14 +192,10 @@ if (isset($_POST['xaction']) && $continue) {
             }
             break;
 
-        // upload obrazku
+        // upload images
         case 7:
-
-            // prepare vars
             $done = [];
             $total = 0;
-
-            // prepare and check image storage
             $storage_dir = 'images/galleries/' . $galid . '/';
 
             // process uploads
@@ -278,8 +264,7 @@ if (isset($_POST['xaction']) && $continue) {
 
 }
 
-/* ---  odstraneni obrazku  --- */
-
+// remove image
 if (isset($_GET['del']) && Xsrf::check(true) && $continue) {
     $del = (int) Request::get('del');
     Admin::deleteGalleryStorage('id=' . $del . ' AND home=' . $galid);
@@ -289,8 +274,7 @@ if (isset($_GET['del']) && Xsrf::check(true) && $continue) {
     }
 }
 
-/* ---  vystup  --- */
-
+// output
 if ($continue) {
     $output .= Admin::backlink(Router::admin('content-editgallery', ['query' => ['id' => $galid]])) . '
 <h1>' . _lang('admin.content.manageimgs.title') . '</h1>
@@ -351,7 +335,7 @@ if ($continue) {
 
 ';
 
-    // obrazky
+    // images
     $output .= '
 <fieldset>
 <legend>' . _lang('admin.content.manageimgs.current') . '</legend>
@@ -361,11 +345,11 @@ if ($continue) {
 <input type="submit" value="' . _lang('admin.content.manageimgs.savechanges') . '" class="gallery-savebutton">
 <div class="cleaner"></div>';
 
-    // vypis
+    // list
     $images = DB::query('SELECT * FROM ' . DB::table('gallery_image') . ' WHERE home=' . $galid . ' ORDER BY ord');
     $images_forms = [];
+
     if (DB::size($images) != 0) {
-        // sestaveni formularu
         $output .= '<div
     id="gallery-edit"
     class="sortable"
@@ -377,10 +361,8 @@ if ($continue) {
     data-tolerance="pointer"
 >';
         while ($image = DB::row($images)) {
-            // kod nahledu
             $preview = Gallery::renderImage($image, 'admin', $galdata['var4'], $galdata['var3']);
 
-            // kod formulare
             $output .= '
 <div class="gallery-edit-image">
 <table>

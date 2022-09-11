@@ -7,33 +7,32 @@ use Sunlight\Image\ImageTransformer;
 use Sunlight\Paginator;
 use Sunlight\Router;
 
-return function ($cesta = '', $rozmery = '', $strankovani = null, $lightbox = true) {
+return function ($path = '', $thumbnail_size = '', $per_page = null, $lightbox = true) {
     global $_index;
 
-    // priprava
     $result = '';
-    $cesta = SL_ROOT . $cesta;
-    if (mb_substr($cesta, -1, 1) != '/') {
-        $cesta .= '/';
+    $path = SL_ROOT . $path;
+    if (mb_substr($path, -1, 1) != '/') {
+        $path .= '/';
     }
-    if (isset($strankovani) && $strankovani > 0) {
-        $strankovat = true;
-        $strankovani = (int) $strankovani;
-        if ($strankovani <= 0) {
-            $strankovani = 1;
+    if (isset($per_page) && $per_page > 0) {
+        $paginator = true;
+        $per_page = (int) $per_page;
+        if ($per_page <= 0) {
+            $per_page = 1;
         }
     } else {
-        $strankovat = false;
+        $paginator = false;
     }
     
     $lightbox = (bool) $lightbox;
 
-    $resize_opts = ImageTransformer::parseResizeOptions($rozmery);
+    $resize_opts = ImageTransformer::parseResizeOptions($thumbnail_size);
 
-    if (file_exists($cesta) && is_dir($cesta)) {
-        $handle = opendir($cesta);
+    if (file_exists($path) && is_dir($path)) {
+        $handle = opendir($path);
 
-        // nacteni polozek
+        // load images
         $items = [];
         while (($item = readdir($handle)) !== false) {
             if ($item == '.' || $item == '..' || is_dir($item) || !ImageService::isImage($item)) {
@@ -44,27 +43,27 @@ return function ($cesta = '', $rozmery = '', $strankovani = null, $lightbox = tr
         closedir($handle);
         natsort($items);
 
-        // priprava strankovani
-        if ($strankovat) {
+        // prepare paginator
+        if ($paginator) {
             $count = count($items);
-            $paging = Paginator::render($_index->url, $strankovani, $count, '', '#hcm_gal' . Hcm::$uid, 'hcm_gal' . Hcm::$uid . 'p');
+            $paging = Paginator::render($_index->url, $per_page, $count, '', '#hcm_gal' . Hcm::$uid, 'hcm_gal' . Hcm::$uid . 'p');
         }
 
-        // vypis
+        // render
         $result = '<div id="hcm_gal' . Hcm::$uid . "\" class=\"gallery\">\n";
         $counter = 0;
         foreach ($items as $item) {
-            if ($strankovat && $counter > $paging['last']) {
+            if ($paginator && $counter > $paging['last']) {
                 break;
             }
-            if (!$strankovat || Paginator::isItemInRange($paging, $counter)) {
-                $thumb = ImageService::getThumbnail('gallery', $cesta . $item, $resize_opts);
-                $result .= '<a href="' . _e(Router::file($cesta . $item)) . '" target="_blank"' . ($lightbox ? Extend::buffer('image.lightbox', ['group' => 'hcm_gal_' . Hcm::$uid]) : '') . '><img src="' . _e(Router::file($thumb)) . '" alt="' . _e($item) . "\"></a>\n";
+            if (!$paginator || Paginator::isItemInRange($paging, $counter)) {
+                $thumb = ImageService::getThumbnail('gallery', $path . $item, $resize_opts);
+                $result .= '<a href="' . _e(Router::file($path . $item)) . '" target="_blank"' . ($lightbox ? Extend::buffer('image.lightbox', ['group' => 'hcm_gal_' . Hcm::$uid]) : '') . '><img src="' . _e(Router::file($thumb)) . '" alt="' . _e($item) . "\"></a>\n";
             }
             $counter++;
         }
         $result .= "</div>\n";
-        if ($strankovat) {
+        if ($paginator) {
             $result .= $paging['paging'];
         }
 

@@ -54,23 +54,20 @@ abstract class IpLog
     const PASSWORD_RESET_REQUESTED = 7;
     
     /**
-     * Zkontrolovat log IP adres
+     * Check IP address log
      *
-     * @param int $type typ zaznamu, viz class konstanty
-     * @param mixed $var promenny argument dle typu
-     * @param int|null $expires doba expirace zaznamu v sekundach pro typ 8+
+     * @param int $type entry type, see class constants
+     * @param int|null $var variable argument (depends on type)
+     * @param int|null $expires expiration time (for custom types)
      */
-    static function check(int $type, $var = null, ?int $expires = null): bool
+    static function check(int $type, ?int $var = null, ?int $expires = null): bool
     {
-        if ($var !== null) {
-            $var = (int) $var;
-        }
-
-        // vycisteni iplogu
+        // clean IP log
         static $cleaned = [
             'system' => false,
             'custom' => [],
         ];
+
         if ($type <= self::PASSWORD_RESET_REQUESTED) {
             if (!$cleaned['system']) {
                 DB::query('DELETE FROM ' . DB::table('iplog') . ' WHERE (type=1 AND ' . time() . '-time>' . Settings::get('maxloginexpire') . ') OR (type=2 AND ' . time() . '-time>' . Settings::get('artreadexpire') . ') OR (type=3 AND ' . time() . '-time>' . Settings::get('artrateexpire') . ') OR (type=4 AND ' . time() . '-time>' . Settings::get('pollvoteexpire') . ') OR (type=5 AND ' . time() . '-time>' . Settings::get('antispamtimeout') . ') OR (type=6 AND ' . time() . '-time>' . Settings::get('accactexpire') . ') OR (type=7 AND ' . time() . '-time>' . Settings::get('lostpassexpire') . ')');
@@ -84,12 +81,11 @@ abstract class IpLog
             $cleaned['custom'][$type] = true;
         }
 
-        // priprava
+        // check IP log
         $result = true;
         $querybasic = 'SELECT * FROM ' . DB::table('iplog') . ' WHERE ip=' . DB::val(Core::getClientIp()) . ' AND type=' . $type;
 
         switch ($type) {
-
             case self::FAILED_LOGIN_ATTEMPT:
                 $query = DB::queryRow($querybasic);
                 if ($query !== false && $query['var'] >= Settings::get('maxloginattempts')) {
@@ -139,23 +135,16 @@ abstract class IpLog
     }
 
     /**
-     * Aktualizace logu IP adres
+     * Update IP log
      *
-     * @see IpLog::check()
-     *
-     * @param int $type typ zaznamu
-     * @param mixed $var promenny argument dle typu
+     * @param int $type entry type, see class constants
+     * @param int|null $var variable argument (depends on type)
      */
-    static function update(int $type, $var = null): void
+    static function update(int $type, ?int $var = null): void
     {
-        if ($var !== null) {
-            $var = (int) $var;
-        }
-
         $querybasic = 'SELECT * FROM ' . DB::table('iplog') . ' WHERE ip=' . DB::val(Core::getClientIp()) . ' AND type=' . $type;
 
         switch ($type) {
-
             case self::FAILED_LOGIN_ATTEMPT:
                 $query = DB::queryRow($querybasic);
                 if ($query !== false) {

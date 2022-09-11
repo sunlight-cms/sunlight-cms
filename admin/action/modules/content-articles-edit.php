@@ -20,8 +20,6 @@ use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
-/* ---  nacteni promennych  --- */
-
 $message = '';
 $continue = false;
 if (isset($_GET['id'], $_GET['returnid'], $_GET['returnpage'])) {
@@ -81,11 +79,8 @@ if (isset($_GET['id'], $_GET['returnid'], $_GET['returnpage'])) {
     $continue = true;
 }
 
-/* ---  ulozeni  --- */
-
+// save
 if (isset($_POST['title'])) {
-
-    // nacteni promennych
     $slug = Request::post('slug', '');
 
     if ($slug === '') {
@@ -121,10 +116,10 @@ if (isset($_POST['title'])) {
     $newdata['resetread'] = Form::loadCheckbox('resetread');
     $newdata['time'] = Form::loadTime('time', $query['time']);
 
-    // kontrola promennych
+    // check variables
     $error_log = [];
 
-    // titulek
+    // title
     if ($newdata['title'] === '') {
         $error_log[] = _lang('admin.content.articles.edit.error1');
     }
@@ -134,7 +129,7 @@ if (isset($_POST['title'])) {
         $error_log[] = _lang('admin.content.form.slug.empty');
     }
 
-    // kategorie
+    // category
     $homechecks = ['home1', 'home2', 'home2'];
     foreach ($homechecks as $homecheck) {
         if ($newdata[$homecheck] != -1 || $homecheck == 'home1') {
@@ -144,7 +139,7 @@ if (isset($_POST['title'])) {
         }
     }
 
-    // zruseni duplikatu
+    // remove duplicate categories
     if ($newdata['home1'] == $newdata['home2']) {
         $newdata['home2'] = -1;
     }
@@ -152,16 +147,15 @@ if (isset($_POST['title'])) {
         $newdata['home3'] = -1;
     }
 
-    // autor
+    // author
     if (DB::result(DB::query('SELECT COUNT(*) FROM ' . DB::table('user') . ' WHERE id=' . DB::val($newdata['author']) . ' AND (id=' . User::getId() . ' OR (SELECT level FROM ' . DB::table('user_group') . ' WHERE id=' . DB::table('user') . '.group_id)<' . User::getLevel() . ')')) == 0) {
         $error_log[] = _lang('admin.content.articles.edit.error3');
     }
 
-    // obrazek
+    // image
     $newdata['picture_uid'] = $query['picture_uid'];
     if (empty($error_log) && isset($_FILES['picture']) && is_uploaded_file($_FILES['picture']['tmp_name'])) {
-
-        // priprava moznosti zmeny velikosti
+        // prepare resize options
         $picOpts = [
             'file_path' => $_FILES['picture']['tmp_name'],
             'file_name' => $_FILES['picture']['name'],
@@ -177,31 +171,29 @@ if (isset($_POST['title'])) {
         ];
         Extend::call('admin.article.picture', ['opts' => &$picOpts]);
 
-        // zpracovani
+        // upload image
         $pic_uid = Article::uploadImage($_FILES['picture']['tmp_name'], $_FILES['picture']['name'], $pic_err);
 
         if ($pic_uid !== null) {
-            // uspech
+            // success
             if (isset($query['picture_uid'])) {
-                // odstraneni stareho
+                // delete old image
                 Article::removeImage($query['picture_uid']);
             }
             $newdata['picture_uid'] = $pic_uid;
         } else {
-            // chyba
+            // error
             $error_log[] = Message::prefix(_lang('admin.content.form.picture'), $pic_err->getUserFriendlyMessage());
         }
 
     } elseif (isset($query['picture_uid']) && Form::loadCheckbox('picture-delete')) {
-        // smazani obrazku
+        // remove image
         Article::removeImage($query['picture_uid']);
         $newdata['picture_uid'] = null;
     }
 
-    // ulozeni
-    if (count($error_log) == 0) {
-
-        // changeset
+    // save changes
+    if (empty($error_log)) {
         $changeset = [
             'title' => $newdata['title'],
             'slug' => $newdata['slug'],
@@ -241,21 +233,20 @@ if (isset($_POST['title'])) {
         ]);
 
         if (!$new) {
-
             // update
             DB::update('article', 'id=' . $id, $changeset);
 
-            // smazani komentaru
+            // delete comments
             if ($newdata['delcomments'] == 1) {
                 DB::delete('post', 'type=' . Post::ARTICLE_COMMENT . ' AND home=' . $id);
             }
 
-            // vynulovani poctu precteni
+            // reset read counter
             if ($newdata['resetread'] == 1) {
                 DB::update('article', 'id=' . $id, ['readnum' => 0]);
             }
 
-            // vynulovani hodnoceni
+            // reset rating
             if ($newdata['resetrate'] == 1) {
                 DB::update('article', 'id=' . $id, [
                     'ratenum' => 0,
@@ -264,17 +255,14 @@ if (isset($_POST['title'])) {
                 DB::delete('iplog', 'type=' . IpLog::ARTICLE_RATED . ' AND var=' . $id);
             }
 
-            // presmerovani
+            // redirect
             $_admin->redirect(Router::admin('content-articles-edit', ['query' => ['id' => $id, 'saved' => 1, 'returnid' => $returnid, 'returnpage' => $returnpage]]));
-
         } else {
-
-            // vlozeni
+            // insert
             $id = DB::insert('article', $changeset, true);
 
-            // presmerovani
+            // redirect
             $_admin->redirect(Router::admin('content-articles-edit', ['query' => ['id' => $id, 'created' => 1, 'returnid' => $newdata['home1'], 'returnpage' => 1]]));
-
         }
 
         Extend::call('admin.article.' . $action, [
@@ -292,11 +280,10 @@ if (isset($_POST['title'])) {
 
 }
 
-/* ---  vystup  --- */
-
+// output
 if ($continue) {
 
-    // zprava
+    // message
     if (isset($_GET['saved'])) {
         $message = Message::ok(_lang('global.saved') . ' <small>(' . GenericTemplates::renderTime(time()) . ')</small>', true);
     }
@@ -304,7 +291,7 @@ if ($continue) {
         $message = Message::ok(_lang('global.created'));
     }
 
-    // vypocet hodnoceni
+    // calculate rating
     if (!$new) {
         if ($query['ratenum'] != 0) {
             $rate = DB::result(DB::query('SELECT ROUND(ratesum/ratenum) FROM ' . DB::table('article') . ' WHERE id=' . $query['id'])) . '%, ' . $query['ratenum'] . 'x';
@@ -315,7 +302,7 @@ if ($continue) {
         $rate = '';
     }
 
-    // obrazek
+    // image
     $picture = '';
     if (isset($query['picture_uid'])) {
         $picture .= '<img src="' . _e(Router::file(Article::getImagePath($query['picture_uid']))) . '" alt="article picture" id="is-picture-file">
@@ -325,15 +312,15 @@ if ($continue) {
     }
     $picture .= "<input type=\"file\" name=\"picture\" id=\"is-picture-upload\">\n";
 
-    // editacni pole
+    // content editor
     $editor = Extend::buffer('admin.article.editor');
 
     if ($editor === '') {
-        // vychozi implementace
+        // default implementation
         $editor = '<textarea name="content" rows="25" cols="94" class="areabig editor">' . _e($query['content']) . '</textarea>';
     }
 
-    // formular
+    // form
     $output .= Admin::backlink($backlink) . '
 <h1>' . _lang('admin.content.articles.edit.title') . '</h1>
 ' . $message . '

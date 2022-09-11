@@ -2,10 +2,10 @@
 
 use Sunlight\GenericTemplates;
 
-return function ($soubor = '') {
-    $soubor = SL_ROOT . $soubor;
+return function ($path = '') {
+    $path = SL_ROOT . $path;
 
-    if (file_exists($soubor)) {
-        return GenericTemplates::renderFileSize(filesize($soubor));
+    if (file_exists($path)) {
+        return GenericTemplates::renderFileSize(filesize($path));
     }
 };

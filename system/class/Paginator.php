@@ -8,47 +8,52 @@ use Sunlight\Util\Request;
 class Paginator
 {
     /**
-     * Strankovani vysledku
+     * Render a paginator
      *
-     * Format vystupu:
-     * array(
-     *      paging      => html kod seznamu stran
-     *      sql_limit   => cast sql dotazu - limit
-     *      current     => aktualni strana (1+)
-     *      total       => celkovy pocet stran
-     *      count       => pocet polozek
-     *      first       => cislo prvni zobrazene polozky
-     *      last        => cislo posledni zobrazene polozky
-     *      per_page    => pocet polozek na jednu stranu
-     * )
-     *
-     * @param string $url vychozi adresa (cista - bez HTML entit!)
-     * @param int $limit limit polozek na 1 stranu
-     * @param string|int $table nazev tabulky (tabulka[:alias]) nebo celkovy pocet polozek jako integer
-     * @param string $conditions kod SQL dotazu za WHERE v SQL dotazu pro zjistovani poctu polozek; pokud je $table cislo, nema tato promenna zadny vyznam
-     * @param string $linksuffix retezec pridavany za kazdy odkaz generovany strankovanim
-     * @param string|null $param nazev parametru pro cislo strany (null = 'page')
-     * @param bool $autolast posledni strana je vychozi strana 1/0
+     * @param string $url base URL to add page parameter to
+     * @param int $limit max item per page
+     * @param string|int $tableOrCount table name (table[:alias]) or an already known total number of items
+     * @param string $conditions SQL condition used to filter items from table
+     * @param string $linksuffix content to append after every paginator URL
+     * @param string|null $param query parameter name (defaults to 'page')
+     * @param bool $autolast last page is the default page 1/0
+     * @return array{
+     *      paging: string,
+     *      sql_limit: string,
+     *      current: int,
+     *      total: int,
+     *      count: int,
+     *      first: int,
+     *      last: int,
+     *      per_page: int,
+     * }
      */
-    static function render(string $url, int $limit, $table, string $conditions = '1', string $linksuffix = '', ?string $param = null, bool $autolast = false): array
-    {
-        // alias tabulky
-        if (is_string($table)) {
-            $table = explode(':', $table);
-            $alias = ($table[1] ?? null);
-            $table = $table[0];
+    static function render(
+        string $url,
+        int $limit,
+        $tableOrCount,
+        string $conditions = '1',
+        string $linksuffix = '',
+        ?string $param = null,
+        bool $autolast = false
+    ): array {
+        // table alias
+        if (is_string($tableOrCount)) {
+            $tableOrCount = explode(':', $tableOrCount);
+            $alias = ($tableOrCount[1] ?? null);
+            $tableOrCount = $tableOrCount[0];
         } else {
             $alias = null;
         }
 
-        // priprava promennych
+        // prepare variables
         if (!isset($param)) {
             $param = 'page';
         }
-        if (is_string($table)) {
-            $count = DB::result(DB::query('SELECT COUNT(*) FROM ' . DB::escIdt($table) . (isset($alias) ? " AS {$alias}" : '') . ' WHERE ' . $conditions));
+        if (is_string($tableOrCount)) {
+            $count = DB::result(DB::query('SELECT COUNT(*) FROM ' . DB::escIdt($tableOrCount) . (isset($alias) ? " AS {$alias}" : '') . ' WHERE ' . $conditions));
         } else {
-            $count = $table;
+            $count = $tableOrCount;
         }
 
         $pages = max(1, ceil($count / $limit));
@@ -80,13 +85,13 @@ class Paginator
             $endpage = $pages;
         }
 
-        // vypis stran
+        // render pages
         $paging = null;
         Extend::call('paging.render', [
             'url' => $url,
             'param' => $param,
             'autolast' => $autolast,
-            'table' => $table,
+            'table' => $tableOrCount,
             'count' => $count,
             'offset' => $start,
             'limit' => $limit,
@@ -99,6 +104,7 @@ class Paginator
 
         if ($paging === null) {
             if ($pages > 1) {
+                $linksuffix = _e($linksuffix);
 
                 if (strpos($url, '?') === false) {
                     $url .= '?';
@@ -110,17 +116,17 @@ class Paginator
 
                 $paging = "\n<div class=\"paging\">\n<span class=\"paging-label\">" . _lang('global.paging') . ":</span>\n";
 
-                // prvni
+                // first
                 if ($beginpage > 1) {
                     $paging .= '<a href="' . $url . $param . '=1' . $linksuffix . '" title="' . _lang('global.first') . "\">1</a><span class=\"paging-first-addon\"> ...</span>\n";
                 }
 
-                // predchozi
+                // previous
                 if ($s + 1 != 1) {
                     $paging .= '<a class="paging-prev" href="' . $url . $param . '=' . ($s) . $linksuffix . '">&laquo; ' . _lang('global.previous') . "</a>\n";
                 }
 
-                // strany
+                // pages
                 $paging .= "<span class=\"paging-pages\">\n";
                 for ($x = $beginpage; $x <= $endpage; ++$x) {
                     if ($x == $s + 1) {
@@ -135,10 +141,12 @@ class Paginator
                 }
                 $paging .= "</span>\n";
 
-                // dalsi
+                // next
                 if ($s + 1 != $pages) {
                     $paging .= '<a class="paging-next" href="' . $url . $param . '=' . ($s + 2) . $linksuffix . '">' . _lang('global.next') . " &raquo;</a>\n";
                 }
+
+                // last
                 if ($endpage < $pages) {
                     $paging .= '<span class="paging-last-addon"> ... </span><a class="paging-last" href="' . $url . $param . '=' . $pages . $linksuffix . '" title="' . _lang('global.last') . '">' . $pages . "</a>\n";
                 }
@@ -165,11 +173,11 @@ class Paginator
     }
 
     /**
-     * Zjistit stranku, na ktere se polozka nachazi pri danem strankovani a podmince razeni
+     * Determine item page
      *
-     * @param int $limit pocet polozek na jednu stranu
-     * @param string $table nazev tabulky v databazi
-     * @param string $conditions kod SQL dotazu za WHERE v SQL dotazu pro zjistovani poctu polozek
+     * @param int $limit max item per page
+     * @param string|int $tableOrCount table name (table[:alias]) or an already known total number of items
+     * @param string $conditions SQL condition used to filter items from table
      */
     static function getItemPage(int $limit, string $table, string $conditions = '1'): int
     {
@@ -179,10 +187,10 @@ class Paginator
     }
 
     /**
-     * Zjisteni, zda je polozka s urcitym cislem v rozsahu aktualni strany strankovani
+     * Check if an item is in range of the current page
      *
-     * @param array $pagingdata pole, ktere vraci funkce {@see Paginator::render()}
-     * @param int $itemnumber poradove cislo polozky (poradi zacina nulou)
+     * @param array $pagingdata output of {@see Paginator::render()}
+     * @param int $itemnumber 0-based item number
      */
     static function isItemInRange(array $pagingdata, int $itemnumber): bool
     {
@@ -190,7 +198,7 @@ class Paginator
     }
 
     /**
-     * Zjisteni, zda-li ma byt strankovani zobrazeno nahore
+     * See if paginator should be at the top of the page
      */
     static function atTop(): bool
     {
@@ -198,7 +206,7 @@ class Paginator
     }
 
     /**
-     * Zjisteni, zda-li ma byt strankovani zobrazeno dole
+     * See if paginator should be at the bottom of the page
      */
     static function atBottom(): bool
     {

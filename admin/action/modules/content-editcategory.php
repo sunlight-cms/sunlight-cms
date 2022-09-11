@@ -5,13 +5,11 @@ use Sunlight\Util\Form;
 
 defined('SL_ROOT') or exit;
 
-/* ---  nastaveni a vlozeni skriptu pro upravu stranky  --- */
-
 $type = Page::CATEGORY;
 require SL_ROOT . 'admin/action/modules/include/page-editscript-init.php';
 if ($continue) {
 
-    // vyber zpusobu razeni clanku
+    // order type select
     $artorder_select = '';
     for ($x = 1; $x <= 4; $x++) {
         if ($x == $query['var1']) {

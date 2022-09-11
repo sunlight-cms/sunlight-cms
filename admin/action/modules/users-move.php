@@ -11,10 +11,9 @@ use Sunlight\Xsrf;
 defined('SL_ROOT') or exit;
 
 $excluded_group_ids = [User::ADMIN_GROUP_ID, User::GUEST_GROUP_ID];
-
-/* ---  ulozeni  --- */
-
 $message = '';
+
+// save
 if (isset($_POST['sourcegroup'])) {
     $source = (int) Request::post('sourcegroup');
     $target = (int) Request::post('targetgroup');
@@ -37,8 +36,7 @@ if (isset($_POST['sourcegroup'])) {
     }
 }
 
-/* ---  vystup  --- */
-
+// output
 $output .= $message . '
 <form class="cform" action="' . _e(Router::admin('users-move')) . '" method="post">
 ' . _lang('admin.users.move.text1')

@@ -113,7 +113,7 @@ class SqlReader
 
             // parse character
             if ($inQuotes) {
-                // inside of a quoted string
+                // inside a quoted string
                 switch ($char) {
                     case '\\':
                         $escaped = !$escaped;
@@ -137,7 +137,7 @@ class SqlReader
                         break;
                 }
             } elseif ($inComment) {
-                // inside of a comment
+                // inside a comment
                 if (
                     $commentEndSyntax === "\n" && ($char === "\n" || $char === "\r")
                     || $char === $commentEndSyntax[$commentEndMatch]

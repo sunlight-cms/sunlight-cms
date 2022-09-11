@@ -13,7 +13,7 @@ class SimpleTreeFilter implements TreeFilterInterface
 {
     /** @var array */
     private $filter;
-    /** @private string */
+    /** @var string */
     private $sql;
 
     /**
@@ -25,7 +25,7 @@ class SimpleTreeFilter implements TreeFilterInterface
      *          ...
      *      )
      *
-     *      This results in the following SQL: column1=hodnota AND column2!=value
+     *      This results in the following SQL: column1=value AND column2!=value
      */
     function __construct(array $filter)
     {
@@ -61,7 +61,7 @@ class SimpleTreeFilter implements TreeFilterInterface
     }
 
     /**
-     * Compile an filter array
+     * Compile a filter array
      *
      * @param array $filter raw filter
      * @throws \InvalidArgumentException on empty filter
@@ -98,7 +98,7 @@ class SimpleTreeFilter implements TreeFilterInterface
                 $sql .= ' AND ';
             }
             if ($cond[1] !== null) {
-                // hodnota
+                // value
                 $sql .= sprintf(
                     '%%__node__%%.`%s`%s=%s',
                     $cond[0],

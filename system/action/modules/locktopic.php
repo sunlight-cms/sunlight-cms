@@ -15,8 +15,6 @@ if (!User::isLoggedIn()) {
     return;
 }
 
-/* ---  priprava promennych  --- */
-
 $success = false;
 $message = '';
 $unlock = '';
@@ -41,22 +39,20 @@ if ($query !== false) {
     return;
 }
 
-/* ---  ulozeni  --- */
-
+// save
 if (isset($_POST['doit'])) {
     DB::update('post', 'id=' . DB::val($id), ['locked' => (($query['locked'] == 1) ? 0 : 1)]);
     $message = Message::ok(_lang('mod.locktopic.ok' . $unlock));
     $success = true;
 }
 
-/* ---  vystup  --- */
-
+// output
 $_index->title = _lang('mod.locktopic' . $unlock);
 
-// zprava
+// message
 $output .= $message;
 
-// formular
+// form
 if (!$success) {
     $output .= '
     <form action="' . _e(Router::module('locktopic', ['query' => ['id' => $id]])) . '" method="post">

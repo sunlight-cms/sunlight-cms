@@ -9,7 +9,7 @@ use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
-// vycisteni cache
+// clear cache
 if (isset($_GET['clear'])) {
     Core::$pluginManager->clearCache();
     $_admin->redirect(Router::admin('plugins', ['query' => ['cleared' => 1]]));
@@ -21,7 +21,7 @@ if (isset($_GET['cleared'])) {
     $output .= Message::ok(_lang('global.done'));
 }
 
-// pomocne funkce
+// functions
 $renderPluginAuthor = function ($author, $url) {
     $output = '';
 
@@ -44,7 +44,7 @@ $renderPluginAuthor = function ($author, $url) {
     return $output;
 };
 
-// tlacitka
+// buttons
 $output .= '<p>
         <a class="button" href="' . _e(Router::admin('plugins-upload')) . '"><img src="' . _e(Router::path('admin/images/icons/plugin.png')) . '" alt="upload" class="icon">' . _lang('admin.plugins.upload') . '</a>
         <a class="button" href="' . _e(Router::admin('plugins', ['query' => ['clear' => 1]])) . '"><img src="' . _e(Router::path('admin/images/icons/refresh.png')) . '" alt="clear" class="icon">' . _lang('admin.plugins.clear_cache') . '</a>
@@ -52,7 +52,7 @@ $output .= '<p>
 </p>
 ';
 
-// seznam pluginu
+// plugin list
 foreach (Core::$pluginManager->getTypes() as $type) {
     $plugins = Core::$pluginManager->getPlugins()->getByType($type->getName());
     $inactivePlugins = Core::$pluginManager->getInactivePlugins()->getByType($type->getName());
@@ -69,20 +69,20 @@ foreach (Core::$pluginManager->getTypes() as $type) {
 <tbody>
 ';
 
-    // vykreslit pluginy
+    // list plugins
     foreach (array_merge($plugins, $inactivePlugins) as $name => $plugin) {
         /* @var $plugin Plugin */
 
         $isInactive = $plugin instanceof InactivePlugin;
 
-        // nacist data z pluginu
+        // get plugin data
         $title = $plugin->getOption('name');
         $descr = $plugin->getOption('description');
         $version = $plugin->getOption('version');
         $author = $plugin->getOption('author');
         $url = $plugin->getOption('url');
 
-        // urcit tridu radku
+        // determine row class
         if ($plugin->hasErrors()) {
             $rowClass = 'row-danger';
         } elseif ($plugin->needsInstallation()) {
@@ -91,7 +91,7 @@ foreach (Core::$pluginManager->getTypes() as $type) {
             $rowClass = null;
         }
 
-        // vykreslit radek
+        // output row
         $output .= '
     <tr' . ($rowClass !== null ? ' class="' . $rowClass . '"' : '') . '>
         <td>

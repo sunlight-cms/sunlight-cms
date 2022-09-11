@@ -18,9 +18,7 @@ header('Expires: ' . DateTime::formatForHttp(2592000, true));
 $dark = isset($_GET['d']);
 $s = (int) Request::get('s', 0);
 
-function admin_color(int $loff = 0, ?float $satc = null, bool $sat_abs = false, bool $light_abs = false): string
-{
-    // nacteni a uprava barev
+$adminColor = function(int $loff = 0, ?float $satc = null, bool $sat_abs = false, bool $light_abs = false): string {
     if ($satc === 0.0) {
         $light_abs = true;
         $loff += 127;
@@ -33,22 +31,20 @@ function admin_color(int $loff = 0, ?float $satc = null, bool $sat_abs = false, 
     }
     $s = (isset($satc) ? ($sat_abs ? $satc :  $GLOBALS['sat'] * $satc) : $GLOBALS['sat']);
 
-    // vytvoreni hex kodu barvy
-    $color = new Color([$h, $s, $l], 1);
+    return (new Color([$h, $s, $l], 1))->getRgbStr();
+};
 
-    return $color->getRgbStr();
-}
-
-// vychozi HSL hodnoty
+// default HSL values
 $hue = 0;
 $light = 127;
 $sat = 255;
 
-// vychozi barevne hodnoty
+// default color values
 $scheme_link = null;
 $scheme_bar_text = null;
 $scheme_bar_shadow = null;
 $scheme_bar_flip = false;
+
 if ($dark) {
     $scheme_white = '#000';
     $scheme_black = '#fff';
@@ -62,8 +58,10 @@ if ($dark) {
     $scheme_bg_alert = '#FFD183';
     $scheme_bg_danger = '#FFA7A7';
 }
+
 $scheme_bar_loff = 30;
 $scheme_text = $scheme_black;
+
 if ($dark) {
     $scheme_contrast = $scheme_black;
     $scheme_contrast2 = $scheme_white;
@@ -74,15 +72,15 @@ if ($dark) {
 $scheme_link_loff = ($dark ? -20 : -10);
 $dark_suffix = ($dark ? '_dark' : '');
 
-// uprava podle schematu
+// apply scheme
 switch ($s) {
-    // modry
+    // blue
     case 1:
         $hue = 145;
         $sat -= 10;
         break;
 
-    // zeleny
+    // green
     case 2:
         $hue = 70;
         if (!$dark) {
@@ -91,7 +89,7 @@ switch ($s) {
         $sat *= 0.7;
         break;
 
-    // cerveny
+    // red
     case 3:
         $hue = 5;
         if (!$dark) {
@@ -99,7 +97,7 @@ switch ($s) {
         }
         break;
 
-    // zluty
+    // yellow
     case 4:
         $hue = 35;
         $scheme_contrast = $scheme_black;
@@ -112,12 +110,12 @@ switch ($s) {
         }
         break;
 
-    // purpurovy
+    // purple
     case 5:
         $hue = 205;
         break;
 
-    // azurovy
+    // azure
     case 6:
         $hue = 128;
         if (!$dark) {
@@ -128,7 +126,7 @@ switch ($s) {
         }
         break;
 
-    // fialovy
+    // violet
     case 7:
         $hue = 195;
         if ($dark) {
@@ -136,14 +134,14 @@ switch ($s) {
         }
         break;
 
-    // hnedy
+    // brown
     case 8:
         $hue = 20;
         $light -= 10;
         $sat *= 0.6;
         break;
 
-    // tmave modry
+    // dark blue
     case 9:
         $hue = 170;
         if ($dark) {
@@ -152,7 +150,7 @@ switch ($s) {
         $sat *= 0.5;
         break;
 
-    // sedy
+    // grey
     case 10:
         $hue = 150;
         $sat = 0;
@@ -163,7 +161,7 @@ switch ($s) {
         }
         break;
 
-    // oranzovy
+    // orange
     default:
         $hue = 14;
         $scheme_link = '#F84A00';
@@ -173,28 +171,28 @@ switch ($s) {
 
 Extend::call('admin.style.init');
 
-// vypocet barev
-$scheme = admin_color(($dark ? 40 : 0));
-$scheme_lighter = admin_color(80);
-$scheme_lightest = admin_color(100);
-$scheme_smoke = admin_color(115, 0);
-$scheme_smoke_text = admin_color((int) ($light * 0.2), 0);
-$scheme_smoke_text_dark = admin_color(10, 0);
-$scheme_smoke_text_darker = admin_color(-30, 0);
-$scheme_smoke = admin_color(110, 0);
-$scheme_smoke_med = admin_color(90, 0);
-$scheme_smoke_dark = admin_color(60, 0);
-$scheme_smoke_darker = admin_color($dark ? -20 : -10, 0);
-$scheme_smoke_light = admin_color(110, 0);
-$scheme_smoke_lighter = admin_color(118, 0);
-$scheme_smoke_lightest = admin_color(125, 0);
-$scheme_smoke_lightest_colored = admin_color(125);
-$scheme_med = admin_color(30);
-$scheme_dark = admin_color(-10);
-$scheme_bar = admin_color($scheme_bar_loff);
+// generate colors
+$scheme = $adminColor(($dark ? 40 : 0));
+$scheme_lighter = $adminColor(80);
+$scheme_lightest = $adminColor(100);
+$scheme_smoke = $adminColor(115, 0);
+$scheme_smoke_text = $adminColor((int) ($light * 0.2), 0);
+$scheme_smoke_text_dark = $adminColor(10, 0);
+$scheme_smoke_text_darker = $adminColor(-30, 0);
+$scheme_smoke = $adminColor(110, 0);
+$scheme_smoke_med = $adminColor(90, 0);
+$scheme_smoke_dark = $adminColor(60, 0);
+$scheme_smoke_darker = $adminColor($dark ? -20 : -10, 0);
+$scheme_smoke_light = $adminColor(110, 0);
+$scheme_smoke_lighter = $adminColor(118, 0);
+$scheme_smoke_lightest = $adminColor(125, 0);
+$scheme_smoke_lightest_colored = $adminColor(125);
+$scheme_med = $adminColor(30);
+$scheme_dark = $adminColor(-10);
+$scheme_bar = $adminColor($scheme_bar_loff);
 
 if ($scheme_link == null) {
-    $scheme_link = admin_color($scheme_link_loff, 255, true);
+    $scheme_link = $adminColor($scheme_link_loff, 255, true);
 }
 if ($scheme_bar_shadow === null) {
     $scheme_bar_shadow = ($scheme_bar_flip ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.3)');
@@ -217,7 +215,7 @@ Extend::call('admin.style.start');
 
 ?>
 /* <style>
-/* tagy */
+/* tags */
 * {margin: 0; padding: 0;}
 body {font-family: sans-serif; font-size: 12px; color: <?= $scheme_text ?>; background-color: <?= $scheme_smoke_light ?>; margin: 0 0 1em 0;}
 a {font-size: 12px; color: <?= $scheme_link ?>; text-decoration: none;}
@@ -235,7 +233,7 @@ th {text-align: left; font-weight: bold;}
 form td {padding: 2px;}
 form > table > tbody > tr > th, .cform th {padding-right: 10px; text-align: right;}
 
-/* formulare */
+/* forms */
 form {margin: 0 0 8px 0;}
 form.inline {line-height: 1;}
 fieldset {margin: 25px 0; padding: 8px; background-color: <?= $scheme_smoke_lighter ?>; border: 1px solid <?= $scheme_smoke ?>;}

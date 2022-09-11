@@ -108,8 +108,6 @@ class PostService
     {
         global $_index;
 
-        /* ---  type  --- */
-
         // defaults
         $desc = 'DESC ';
         $ordercol = 'id';
@@ -282,7 +280,7 @@ class PostService
             return $extend_output;
         }
 
-        /* ---  output  --- */
+        // output
         $output = '
   <div id="posts" class="posts posts-' . $subclass . '">
   ';
@@ -293,10 +291,10 @@ class PostService
 
         $form_output = "<div class=\"posts-form\" id=\"post-form\">\n";
 
-        /* --- init pager --- */
+        // init pager
         $paging = Paginator::render($url, $postsperpage, DB::table('post'), $countcond, '#posts', $page_param, $autolast);
 
-        /* --- message --- */
+        // message
         if (isset($_GET['r'])) {
             switch (Request::get('r')) {
                 case 0:
@@ -317,7 +315,7 @@ class PostService
             }
         }
 
-        /* ---  render post form or link  --- */
+        // render post form or link
         if (!$locked && (isset($_GET['addpost']) || isset($_GET['replyto']))) {
 
             // fetch reply to ID
@@ -363,7 +361,7 @@ class PostService
             $form_output = null;
         }
 
-        /* ---  list  --- */
+        // list
         if (Paginator::atTop()) {
             $output .= $paging['paging'];
         }
@@ -437,7 +435,7 @@ class PostService
             'items' => &$items,
         ]);
 
-        // vypis
+        // list
         if (!empty($items)) {
 
             // list posts or topics
@@ -641,7 +639,7 @@ class PostService
         array $post,
         array $userQuery,
         array $options
-    ) : string{
+    ): string {
         $options += [
             'current_url' => '',
             'current_page' => 1,

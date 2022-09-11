@@ -5,11 +5,11 @@ namespace Sunlight\Util;
 abstract class Request
 {
     /**
-     * Ziskat hodnotu z $_GET
+     * Get a value from $_GET
      *
-     * @param string $key klic
-     * @param mixed $default vychozi hodnota
-     * @param bool $allow_array povolit pole 1/0
+     * @param string $key key to get
+     * @param mixed $default default value
+     * @param bool $allow_array allow array values 1/0
      */
     static function get(string $key, $default = null, bool $allow_array = false)
     {
@@ -21,11 +21,11 @@ abstract class Request
     }
 
     /**
-     * Ziskat hodnotu z $_POST
+     * Get a value from $_POST
      *
-     * @param string $key klic
-     * @param mixed $default vychozi hodnota
-     * @param bool $allow_array povolit pole 1/0
+     * @param string $key key to get
+     * @param mixed $default default value
+     * @param bool $allow_array allow array values 1/0
      */
     static function post(string $key, $default = null, bool $allow_array = false)
     {

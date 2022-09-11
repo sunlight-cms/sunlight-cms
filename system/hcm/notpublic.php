@@ -2,10 +2,10 @@
 
 use Sunlight\User;
 
-return function ($pro_prihlasene = '', $pro_neprihlasene = '') {
+return function ($logged_in_content = '', $other_content = '') {
     if (User::isLoggedIn()) {
-        return $pro_prihlasene;
+        return $logged_in_content;
     }
 
-    return $pro_neprihlasene;
+    return $other_content;
 };

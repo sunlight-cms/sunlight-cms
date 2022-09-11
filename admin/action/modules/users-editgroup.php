@@ -15,13 +15,11 @@ use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
-/* ---  priprava promennych  --- */
-
 $levelconflict = false;
 $sysgroups_array = [User::ADMIN_GROUP_ID, User::GUEST_GROUP_ID /*,User::REGISTERED_GROUP_ID is not necessary*/ ];
 $unregistered_useable = ['postcomments', 'artrate', 'pollvote'];
 
-// id
+// load group
 $continue = false;
 if (isset($_GET['id'])) {
     $id = (int) Request::get('id');
@@ -37,8 +35,6 @@ if (isset($_GET['id'])) {
 }
 
 if ($continue) {
-
-    // pole prav
     $rights_array = [
         [
             'title' => _lang('admin.users.groups.commonrights'),
@@ -167,12 +163,11 @@ if ($continue) {
         $rights .= "</table></fieldset>\n";
     }
 
-    /* ---  ulozeni  --- */
+    // save
     if (!empty($_POST)) {
-
         $changeset = [];
 
-        // zakladni atributy
+        // base date
         $changeset['title'] = Html::cut(_e(trim(Request::post('title', ''))), 128);
         if ($changeset['title'] == '') {
             $changeset['title'] = _lang('global.novalue');
@@ -188,13 +183,11 @@ if ($continue) {
         if ($id != User::GUEST_GROUP_ID) {
             $changeset['reglist'] = Form::loadCheckbox('reglist');
         }
-
-        // uroven, blokovani
         if ($id > User::GUEST_GROUP_ID) {
             $changeset['level'] = Math::range((int) Request::post('level'), 0, min(User::getLevel(), User::MAX_ASSIGNABLE_LEVEL));
         }
 
-        // prava
+        // privileges
         if ($id != User::ADMIN_GROUP_ID) {
             foreach ($rights_array as $section) {
                 foreach ($section['rights'] as $item) {
@@ -215,18 +208,16 @@ if ($continue) {
         // extend
         Extend::call('admin.editgroup.save', ['changeset' => &$changeset]);
 
-        // ulozeni
+        // save
         DB::update('user_group', 'id=' . $id, $changeset);
 
-        // reload stranky
+        // redirect
         $_admin->redirect(Router::admin('users-editgroup', ['query' => ['id' => $id, 'saved' => 1]]));
 
         return;
-
     }
 
-    /* -- nacist existujici ikony */
-
+    // load iccons
     if ($id != User::GUEST_GROUP_ID) {
         $icons = "<div class=\"radio-group\">\n";
         $icons .= '<label><input' . Form::activateCheckbox($query['icon'] === '') . ' type="radio" name="icon" value=""> ' . _lang('global.undefined') . "</label>\n";
@@ -247,7 +238,7 @@ if ($continue) {
         $icons .= "<div class=\"cleaner\"></div></div>\n";
     }
 
-    /* ---  vystup  --- */
+    // output
     $output .= '
   <p class="bborder">' . _lang('admin.users.groups.editp') . '</p>
   ' . (isset($_GET['saved']) ? Message::ok(_lang('global.saved')) : '') . '

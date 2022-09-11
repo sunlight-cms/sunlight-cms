@@ -1,5 +1,5 @@
 <?php
 
-return function ($kod = '') {
-    return '<div class="pre php-source">' .highlight_string($kod, true) . '</div>';
+return function ($php_code = '') {
+    return '<div class="pre php-source">' . highlight_string($php_code, true) . '</div>';
 };

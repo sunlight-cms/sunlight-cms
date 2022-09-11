@@ -14,11 +14,8 @@ use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
-/* ---  odeslani  --- */
-
+// send
 if (isset($_POST['text'])) {
-
-    // nacteni promennych
     $text = Request::post('text');
     $subject = Request::post('subject');
     $sender = Request::post('sender');
@@ -30,7 +27,7 @@ if (isset($_POST['text'])) {
     $ctype = Request::post('ctype');
     $maillist = Form::loadCheckbox('maillist');
 
-    // kontrola promennych
+    // check variables
     $errors = [];
     if ($text == '' && !$maillist) {
         $errors[] = _lang('admin.other.massemail.notext');
@@ -45,27 +42,22 @@ if (isset($_POST['text'])) {
         $errors[] = _lang('admin.other.massemail.badsender');
     }
 
-    if (count($errors) == 0) {
-
-        // sestaveni casti sql dotazu - 'where'
+    if (empty($errors)) {
+        // group filter
         $groups = 'group_id IN(' . DB::arr($receivers) . ')';
 
-        // hlavicky
+        // headers
         $headers = [
             'Content-Type' => 'text/' . ($ctype == 2 ? 'html' : 'plain') . '; charset=UTF-8',
         ];
         Email::defineSender($headers, $sender);
 
-        // nacteni prijemcu
+        // get users
         $query = DB::query('SELECT email,password FROM ' . DB::table('user') . ' WHERE massemail=1 AND (' . $groups . ')');
 
-        // odeslani nebo zobrazeni adres
+        // send emails or list emails
         if (!$maillist) {
-
-            // priprava
             $total = DB::size($query);
-
-            // odeslani
             $done = 0;
             while ($item = DB::row($query)) {
                 $footer = _lang('admin.other.massemail.emailnotice.' . ($ctype == 1 ? 'text' : 'html'), [
@@ -87,7 +79,7 @@ if (isset($_POST['text'])) {
                 }
             }
 
-            // zprava
+            // message
             if ($done != 0) {
                 $output .= Message::ok(_lang('admin.other.massemail.send', [
                     '%done%' => $done,
@@ -96,10 +88,8 @@ if (isset($_POST['text'])) {
             } else {
                 $output .= Message::warning(_lang('admin.other.massemail.noreceiversfound'));
             }
-
         } else {
-
-            // vypis emailu
+            // list emails
             $emails_total = DB::size($query);
             if ($emails_total != 0) {
 
@@ -118,17 +108,14 @@ if (isset($_POST['text'])) {
             } else {
                 $output .= Message::warning(_lang('admin.other.massemail.noreceiversfound'));
             }
-
         }
-
     } else {
         $output .= Message::list($errors);
     }
 
 }
 
-/* ---  vystup  --- */
-
+// output
 $output .= '
 <br>
 <form class="cform" action="' . _e(Router::admin('other-massemail')) . '" method="post">

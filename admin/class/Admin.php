@@ -18,7 +18,7 @@ use Sunlight\Xsrf;
 abstract class Admin
 {
     /**
-     * Vykreslit menu
+     * Render menu
      */
     static function menu(): string
     {
@@ -48,7 +48,7 @@ abstract class Admin
     }
 
     /**
-     * Vykreslit uziv. menu
+     * Render user menu
      */
     static function userMenu(bool $dark): string
     {
@@ -80,7 +80,7 @@ abstract class Admin
     }
 
     /**
-     * Sestavit kod zpetneho odkazu
+     * Render backlink
      */
     static function backlink(string $url): string
     {
@@ -88,7 +88,7 @@ abstract class Admin
     }
 
     /**
-     * Sestavit kod poznamky
+     * Render note
      *
      * @param string $str zprava
      * @param bool $no_gray nepridavat tridu "note" 1/0
@@ -100,9 +100,7 @@ abstract class Admin
     }
 
     /**
-     * Zjistit, zda-li ma uzivatel pristup k modulu
-     *
-     * @param string $module nazev modulu
+     * Check if the user has access to the given module
      */
     static function moduleAccess(string $module): bool
     {
@@ -116,26 +114,26 @@ abstract class Admin
     }
 
     /**
-     * Sestavit cast sql dotazu pro pristup k ankete - 'where'
+     * Compose SQL condition for poll access
      *
-     * @param bool $csep oddelit SQL dotaz vyrazem ' AND ' zleva 1/0
-     * @param string $alias alias tabulky s anketami vcetne tecky
+     * @param bool $and begin condition with ' AND'
+     * @param string $alias poll table alias including the dot
      */
-    static function pollAccess(bool $csep = true, string $alias = 'p.'): string
+    static function pollAccess(bool $and = true, string $alias = 'p.'): string
     {
-        if ($csep) {
-            $csep = ' AND ';
+        if ($and) {
+            $and = ' AND ';
         } else {
-            $csep = '';
+            $and = '';
         }
 
-        return (!User::hasPrivilege('adminallart') ? $csep . "{$alias}author=" . User::getId() : $csep . "({$alias}author=" . User::getId() . ' OR (SELECT level FROM ' . DB::table('user_group') . ' WHERE id=(SELECT group_id FROM ' . DB::table('user') . " WHERE id={$alias}author))<" . User::getLevel() . ')');
+        return (!User::hasPrivilege('adminallart')
+            ? $and . "{$alias}author=" . User::getId()
+            : $and . "({$alias}author=" . User::getId() . ' OR (SELECT level FROM ' . DB::table('user_group') . ' WHERE id=(SELECT group_id FROM ' . DB::table('user') . " WHERE id={$alias}author))<" . User::getLevel() . ')');
     }
 
     /**
-     * Sestavit cast sql dotazu pro pristup k clanku - 'where'
-     *
-     * @param string|null $alias alias tabulky clanku nebo null
+     * Compose SQL condition for article access
      */
     static function articleAccess(?string $alias = ''): string
     {
@@ -150,16 +148,15 @@ abstract class Admin
     }
 
     /**
-     * Sestavit odkaz na clanek ve vypisu
+     * Render link to an article
      *
-     * @param array $art data clanku vcetne cat_slug
-     * @param bool $ucnote zobrazovat poznamku o neschvaleni 1/0
+     * @param array $art article data, including cat_slug
      */
-    static function articleEditLink(array $art, bool $ucnote = true): string
+    static function articleEditLink(array $art, bool $showUnconfirmedNote = true): string
     {
         $output = '';
 
-        // trida
+        // class
         $class = '';
         if ($art['visible'] == 0 && $art['public'] == 1) {
             $class = ' class="invisible"';
@@ -171,7 +168,7 @@ abstract class Admin
             $class = ' class="invisible-notpublic"';
         }
 
-        // odkaz
+        // link
         $output .= '<a href="' . _e(Router::article($art['id'], $art['slug'], $art['cat_slug'])) . '" target="_blank"' . $class . '>';
         if ($art['time'] <= time()) {
             $output .= '<strong>';
@@ -182,8 +179,8 @@ abstract class Admin
         }
         $output .= '</a>';
 
-        // poznamka o neschvaleni
-        if ($art['confirmed'] != 1 && $ucnote) {
+        // confirmation note
+        if ($art['confirmed'] != 1 && $showUnconfirmedNote) {
             $output .= ' <small>(' . _lang('global.unconfirmed') . ')</small>';
         }
 
@@ -191,24 +188,21 @@ abstract class Admin
     }
 
     /**
-     * Sestavit <select> pro vyber stranky
+     * Render <select> for page selection
      *
-     * Mozne volby v $options:
-     * -----------------------
-     * selected             ID aktivni polozky (nebo pole, pokud multiple = TRUE)
-     * multiple             povolit vyber vice polozek 1/0
-     * empty_item           popisek prazdne polozky (ID = -1)
-     * type                 omezeni na typ stranky
-     * allow_separators     povolit vyber oddelovace 1/0
-     * disabled_branches    pole ID stranek, jejichz uzly a podstranky maji byt vynechany z vypisu
-     * maxlength            maximalni delka zobrazeneho titulku stranky (null = bez limitu)
-     * attrs                HTML retezec s extra atributy pro <select> tag (bez mezery na zacatku)
-     *
-     * @param string $name nazev selectu
+     * Supported $options:
+     * -------------------
+     * selected             ID of active page (or an array if multiple = TRUE)
+     * multiple             allow choice of multiple pages 1/0
+     * empty_item           label of empty item (ID = -1)
+     * type                 limit to a single page type
+     * allow_separators     make separators selectable 1/0
+     * disabled_branches    array of page IDs whose branches should be excluded
+     * maxlength            max. length of page title or null (unlimited)
+     * attrs                extra HTML with <select> attributes (without space)
      */
     static function pageSelect(string $name, array $options): string
     {
-        // vychozi volby
         $options += [
             'selected' => -1,
             'multiple' => false,
@@ -220,7 +214,7 @@ abstract class Admin
             'attrs' => null,
         ];
 
-        // filtr na typ
+        // type filter
         if ($options['type'] !== null) {
             $filter = new SimpleTreeFilter(['type' => $options['type']]);
         } else {
@@ -233,15 +227,15 @@ abstract class Admin
             'filter' => &$filter,
         ]);
 
-        // deaktivovane vetve
+        // disabled branches
         if (!empty($options['disabled_branches'])) {
             $options['disabled_branches'] = array_flip($options['disabled_branches']);
         }
 
-        // nacteni stromu
+        // load tree
         $tree = Page::getFlatTree(null, null, $filter);
 
-        // vypis
+        // list
         $output = '<select name="' . $name . '"'
             . ($options['multiple'] ? ' multiple' : '')
             . ($options['attrs'] !== null ? ' ' . $options['attrs'] : '')
@@ -253,7 +247,7 @@ abstract class Admin
 
         $disabledBranchLevel = null;
         foreach ($tree as $page) {
-            // filtr deaktivovanych vetvi
+            // filter disabled branches
             if ($disabledBranchLevel === null) {
                 if (isset($options['disabled_branches'][$page['id']])) {
                     $disabledBranchLevel = $page['node_level'];
@@ -262,7 +256,7 @@ abstract class Admin
                 $disabledBranchLevel = null;
             }
 
-            // vypis stranky
+            // list pages
             if ($disabledBranchLevel === null) {
                 if ($options['multiple']) {
                     $active = in_array($page['id'], $options['selected']);
@@ -290,18 +284,25 @@ abstract class Admin
     }
 
     /**
-     * Sestavit <select> pro vyber uzivatele/skupiny
+     * Render <select> for user or group selection
      *
-     * @param string $name nazev selectu
-     * @param int $selected id zvoleneho uzivatele
-     * @param string $gcond SQL podminka pro zarazeni skupiny
-     * @param string|null $class trida selectu nebo null
-     * @param string|null $extraoption popisek extra volby (-1) nebo null (= deaktivovano)
-     * @param bool $groupmode vybirat pouze cele skupiny 1/0
-     * @param int|null $multiple povolit vyber vice polozek (size = $multiple) nebo null (= deaktivovano)
+     * @param string $name select name
+     * @param int $selected ID of selected user
+     * @param string $groupCond SQL condition for groups
+     * @param string|null $class select class or null
+     * @param string|null $extraOption extra option label (-1) or null (= none)
+     * @param bool $selectGroups select groups instead of users 1/0
+     * @param int|null $multiple render multi-select with size = $multiple, null = single select
      */
-    static function userSelect(string $name, int $selected, string $gcond, ?string $class = null, ?string $extraoption = null, bool $groupmode = false, ?int $multiple = null): string
-    {
+    static function userSelect(
+        string $name,
+        int $selected,
+        string $groupCond,
+        ?string $class = null,
+        ?string $extraOption = null,
+        bool $selectGroups = false,
+        ?int $multiple = null
+    ): string {
         if ($class !== null) {
             $class = ' class="' . $class . '"';
         } else {
@@ -314,13 +315,13 @@ abstract class Admin
             $multiple = '';
         }
         $output = '<select name="' . $name . '"' . $class . $multiple . '>';
-        $query = DB::query('SELECT id,title,level FROM ' . DB::table('user_group') . ' WHERE ' . $gcond . ' AND id!=' . User::GUEST_GROUP_ID . ' ORDER BY level DESC');
-        if ($extraoption != null) {
-            $output .= '<option value="-1" class="special">' . $extraoption . '</option>';
+        $query = DB::query('SELECT id,title,level FROM ' . DB::table('user_group') . ' WHERE ' . $groupCond . ' AND id!=' . User::GUEST_GROUP_ID . ' ORDER BY level DESC');
+        if ($extraOption != null) {
+            $output .= '<option value="-1" class="special">' . $extraOption . '</option>';
         }
 
         $containsSelected = false;
-        if (!$groupmode) {
+        if (!$selectGroups) {
             while ($item = DB::row($query)) {
                 $users = DB::query('SELECT id,username,publicname FROM ' . DB::table('user') . ' WHERE group_id=' . $item['id'] . ' AND (' . $item['level'] . '<' . User::getLevel() . ' OR id=' . User::getId() . ') ORDER BY id');
                 if (DB::size($users) != 0) {
@@ -369,7 +370,7 @@ abstract class Admin
     }
 
     /**
-     * Sestavit <select> pro vyber layoutu motivu
+     * Render <select> for template layout
      *
      * @param string|string[] $selected
      */
@@ -405,7 +406,7 @@ abstract class Admin
     }
 
     /**
-     * Sestavit <select> pro vyber motivu, layoutu a slotu
+     * Render <select> for template, layout and slot selection
      *
      * @param TemplatePlugin[]|null $templates
      */
@@ -444,31 +445,31 @@ abstract class Admin
     }
 
     /**
-     * Formatovat barvu jako #XXXXXX
+     * Validate and format HTML color
      */
     static function formatHtmlColor(string $value, bool $expand = true, string $default = '#000000'): string
     {
-        // pripravit hodnotu
+        // prepare value
         $value = trim($value);
         if ($value === '') {
-            // prazdna hodnota
+            // empty value
             return $default;
         }
         if ($value[0] !== '#') {
             $value = '#' . $value;
         }
 
-        // vytahnout hex cast
+        // extract hex part
         $hex = substr($value, 1);
         if (!ctype_xdigit($hex)) {
-            // neplatne znaky
+            // invalid characters
             return $default;
         }
         $hexLen = strlen($hex);
 
-        // zpracovat
+        // process
         if ($hexLen === 3) {
-            // zkracena verze
+            // short version
             if ($expand) {
                 $output = '#';
                 for ($i = 0; $i < $hexLen; ++$i) {
@@ -482,18 +483,18 @@ abstract class Admin
         }
 
         if ($hexLen === 6) {
-            // plna verze
+            // full version
             return $value;
         }
 
-        // neplatny pocet znaku
+        // invalid character count
         return $default;
     }
 
     /**
-     * Smazat obrazky z uloziste galerie
+     * Remove images from gallery storage
      *
-     * @param string $sql_cond SQL podminka pro vyber obrazku
+     * @param string $sql_cond SQL condition to find images
      */
     static function deleteGalleryStorage(string $sql_cond): void
     {

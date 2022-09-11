@@ -16,19 +16,17 @@ use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
-/* ---  priprava promennych  --- */
-
 $message = '';
 $errno = 0;
 
-// id
+// load user
 $continue = false;
 if (isset($_GET['id'])) {
     $id = Request::get('id');
     $query = DB::queryRow('SELECT u.*,g.level group_level FROM ' . DB::table('user') . ' u JOIN ' . DB::table('user_group') . ' g ON(u.group_id=g.id) WHERE u.username=' . DB::val($id));
     if ($query !== false) {
 
-        // test pristupu
+        // test access
         if (!User::equals($query['id'])) {
             if (User::checkLevel($query['id'], $query['group_level'])) {
                 $continue = true;
@@ -62,16 +60,13 @@ if (isset($_GET['id'])) {
 }
 
 if ($continue) {
-    
-    // vyber skupiny
+    // group select
     $group_select = Admin::userSelect('group_id', (isset($_POST['group_id']) ? (int) Request::post('group_id') : $query['group_id']), 'id!=' . User::GUEST_GROUP_ID . ' AND level<' . User::getLevel(), null, null, true);
 
-    /* ---  ulozeni  --- */
+    // save
     if (isset($_POST['username'])) {
 
         $errors = [];
-
-        // nacteni a kontrola promennych
 
         // username
         $username = User::normalizeUsername(Request::post('username', ''));
@@ -114,10 +109,10 @@ if ($continue) {
         // wysiwyg
         $wysiwyg = Form::loadCheckbox('wysiwyg');
 
-        // hromadny email
+        // mass email
         $massemail = Form::loadCheckbox('massemail');
 
-        // verejny profil
+        // public
         $public = Form::loadCheckbox('public');
 
         // avatar
@@ -167,10 +162,8 @@ if ($continue) {
             $levelshift = $query['levelshift'];
         }
 
-        // ulozeni / vytvoreni anebo seznam chyb
-        if (count($errors) == 0) {
-
-            // changeset
+        // save
+        if (empty($errors)) {
             $changeset = [
                 'email' => $email,
                 'avatar' => $avatar,
@@ -198,7 +191,7 @@ if ($continue) {
             ]);
 
             if ($id !== null) {
-                // uprava
+                // update
                 DB::update('user', 'id=' . DB::val($query['id']), $changeset);
                 Extend::call('user.edit', ['id' => $query['id']]);
                 $_admin->redirect(Router::admin('users-edit', ['query' => ['r' => 1, 'id' => $username]]));
@@ -206,7 +199,7 @@ if ($continue) {
                 return;
             }
 
-            // vytvoreni
+            // insert
             $changeset += [
                 'registertime' => time(),
                 'activitytime' => time(),
@@ -216,16 +209,13 @@ if ($continue) {
             $_admin->redirect(Router::admin('users-edit', ['query' => ['r' => 2, 'id' => $username]]));
 
             return;
-
         }
 
         $message = Message::list($errors);
 
     }
 
-    /* ---  vystup  --- */
-
-    // zpravy
+    // messages
     $messages_code = '';
 
     if (isset($_GET['r'])) {
@@ -243,6 +233,7 @@ if ($continue) {
         $messages_code .= $message;
     }
 
+    // output
     $output .= '
 <p class="bborder">' . _lang('admin.users.edit.p') . '</p>
 ' . $messages_code . '
@@ -319,7 +310,7 @@ if ($continue) {
 ' . Xsrf::getInput() . '</form>
 ';
 
-    // odkaz na profil a zjisteni ip
+    // link to profile
     if ($id != null) {
         $output .= '
   <p>
@@ -327,7 +318,6 @@ if ($continue) {
   </p>
   ';
     }
-
 } else {
     switch ($errno) {
         case 1:

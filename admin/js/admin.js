@@ -38,11 +38,11 @@ Sunlight.admin = (function ($) {
      */
     function initBusyOverlay()
     {
-        // nacit obrazek spinneru predem
+        // preload spinner image
         var spinner = new Image();
         spinner.src = SunlightVars.basePath + 'admin/images/spinner.gif';
 
-        // pri odeslani formulare
+        // show after form submit
         $(document.body).on('submit', 'form', function (e) {
             var usedSubmitButton =  $('.clicked-submit', e.target);
             if (

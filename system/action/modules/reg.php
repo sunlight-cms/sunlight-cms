@@ -28,7 +28,6 @@ if (User::isLoggedIn()) {
     return;
 }
 
-// priprava
 $message = '';
 $user_data = [];
 $user_data_valid = false;
@@ -36,10 +35,9 @@ $show_form = true;
 $rules = Settings::get('rules');
 $confirmed = !Settings::get('registration_confirm');
 
-// akce
+// action
 if (isset($_GET['confirm'])) {
-    /* ----- potvrzeni ----- */
-
+    // confirmation
     $show_form = false;
 
     if (!Settings::get('registration_confirm')) {
@@ -49,23 +47,24 @@ if (isset($_GET['confirm'])) {
 
     $code = Request::get('confirm');
     if (preg_match('{[a-z0-9]{48}$}AD', $code)) {
-        // kontrola omezeni
+        // check IP log
         if (IpLog::check(IpLog::FAILED_ACCOUNT_ACTIVATION)) {
-            // smazani expirovanych
+            // remove expired activations
             DB::delete('user_activation', 'expire<' . time());
 
-            // nalezeni zaznamu
+            // load activation
             $activation = DB::queryRow('SELECT * FROM ' . DB::table('user_activation') . ' WHERE code=' . DB::val($code));
+
             if ($activation !== false) {
-                // zaznam nalezen
+                // activation found
                 $user_data = unserialize($activation['data']);
 
-                // kontrola dostupnosti uziv. jmena a emailu
+                // check user name and e-mail availability
                 if (
                     User::isNameAvailable($user_data['username'])
                     && User::isEmailAvailable($user_data['email'])
                 ) {
-                    // vse ok
+                    // all ok
                     $user_data_valid = true;
                     $confirmed = true;
 
@@ -83,21 +82,17 @@ if (isset($_GET['confirm'])) {
     } else {
         $message = Message::error(_lang('mod.reg.confirm.badcode'));
     }
-
 } else {
-    /* ----- zpracovani formulare ----- */
-
-    // zpracovani odeslani
+    // process registration form
     if (!empty($_POST)) {
-
         $errors = [];
 
-        // kontrola iplogu
+        // check IP log
         if (!IpLog::check(IpLog::ANTI_SPAM)) {
             $errors[] = _lang('error.antispam', ['%antispamtimeout%' => Settings::get('antispamtimeout')]);
         }
 
-        // nacteni a kontrola promennych
+        // load and check variables
         $user_data['username'] = User::normalizeUsername(Request::post('username', ''));
         if ($user_data['username'] == '') {
             $errors[] = _lang('user.msg.badusername');
@@ -151,28 +146,27 @@ if (isset($_GET['confirm'])) {
             'errors' => &$errors,
         ]);
 
-        // validace
+        // validate
         if (empty($errors)) {
             IpLog::update(IpLog::ANTI_SPAM);
             $user_data_valid = true;
         } else {
             $message = Message::list($errors);
         }
-
     }
 }
 
-// atributy
+// output
 $_index->title = _lang('mod.reg');
 
-// vystup
 $output .= $message;
 
 if (!$user_data_valid && $show_form) {
-    /* ----- formular ----- */
+    // form
 
-    // priprava vyberu skupiny
+    // group select
     $groupselect = [];
+
     if (Settings::get('registration_grouplist')) {
         $groupselect_items = DB::query('SELECT id,title FROM ' . DB::table('user_group') . ' WHERE blocked=0 AND reglist=1 ORDER BY title');
         if (DB::size($groupselect_items) != 0) {
@@ -184,7 +178,7 @@ if (!$user_data_valid && $show_form) {
         }
     }
 
-    // priprava podminek
+    // rules
     if ($rules !== '') {
         $rules = ['content' => '<h2>' . _lang('mod.reg.rules') . '</h2>' . $rules . '<p><label><input type="checkbox" name="agreement" value="1"' . Form::activateCheckbox(isset($_POST['agreement'])) . '> ' . _lang('mod.reg.rules.agreement') . '</label></p>', 'top' => true];
     } else {
@@ -194,7 +188,7 @@ if (!$user_data_valid && $show_form) {
     // captcha
     $captcha = Captcha::init();
 
-    // formular
+    // form
     $output .= '<p class="bborder">' . _lang('mod.reg.p') . (Settings::get('registration_confirm') ? ' ' . _lang('mod.reg.confirm.extratext') : '') . "</p>\n";
 
     $output .= Form::render(
@@ -219,28 +213,25 @@ if (!$user_data_valid && $show_form) {
         ]
     );
 } elseif ($user_data_valid) {
-    /* ----- zpracovani dat ----- */
-
+    // process data
     if ($confirmed) {
-
-        // potvrzeno
+        // confirmed
         $user_id = DB::insert('user', $user_data + ['registertime' => time()], true);
 
-        // udalost
+        // extend
         Extend::call('user.new', ['id' => $user_id]);
 
-        // hlaska
+        // store username for login form
         $_SESSION['login_form_username'] = $user_data['username'];
 
+        // message
         $output .= Message::ok(str_replace(
             '%login_link%',
             Router::module('login'),
             _lang('mod.reg.done')
         ), true);
-
     } else {
-
-        // nepotvrzeno
+        // send confirmation message
         $code = StringGenerator::generateString(48);
         $insert_id = DB::insert('user_activation', [
             'code' => $code,
@@ -248,7 +239,6 @@ if (!$user_data_valid && $show_form) {
             'data' => serialize($user_data),
         ], true);
 
-        // potvrzovaci zprava
         $domain = Core::getBaseUrl()->getFullHost();
         $mail = Email::send(
             $user_data['email'],
@@ -272,13 +262,12 @@ if (!$user_data_valid && $show_form) {
             )
         );
 
-        // hlaska
+        // message
         if ($mail) {
             $output .= Message::ok(_lang('mod.reg.confirm.sent', ['%email%' => $user_data['email']]), true);
         } else {
             $output .= Message::error(_lang('global.emailerror'));
             DB::delete('user_activation', 'id=' . DB::val($insert_id));
         }
-
     }
 }

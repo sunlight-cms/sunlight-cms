@@ -5,11 +5,11 @@ namespace Sunlight;
 abstract class PostForm
 {
     /**
-     * Sestavit kod ovladaciho panelu
+     * Render post form controls
      *
-     * @param string $form nazev formulare
-     * @param string $area nazev textarey
-     * @param bool $bbcode zobrazit BBCode 1/0
+     * @param string $form form name
+     * @param string $area textarea name
+     * @param bool $bbcode enable BBCode buttons 1/0
      */
     static function renderControls(string $form, string $area, bool $bbcode = true): string
     {
@@ -24,14 +24,14 @@ abstract class PostForm
 
         // bbcode
         if ($bbcode && Settings::get('bbcode') && Template::getCurrent()->getOption('bbcode.buttons')) {
-            // nacteni tagu
+            // load tags
             $bbtags = Bbcode::getTags();
 
-            // pridani kodu
+            // render buttons
             $output .= '<span class="post-form-bbcode">';
             foreach ($bbtags as $tag => $vars) {
                 if (!isset($vars[4])) {
-                    // tag bez tlacitka
+                    // button-less tag
                     continue;
                 }
                 $icon = (($vars[4] === 1) ? Template::image('bbcode/' . $tag . '.png') : $vars[4]);
@@ -55,10 +55,10 @@ abstract class PostForm
     }
 
     /**
-     * Sestavit kod tlacitka pro nahled prispevku
+     * Render post preview button
      *
-     * @param string $form nazev formulare
-     * @param string $area nazev textarey
+     * @param string $form form name
+     * @param string $area textarea name
      */
     static function renderPreviewButton(string $form, string $area): string
     {

@@ -12,18 +12,16 @@ use Sunlight\Xsrf;
 require '../../bootstrap.php';
 Core::init('../../../');
 
-/* ---  hlasovani  --- */
-
-// nacteni promennych
 if (isset($_POST['pid'], $_POST['option']) && Xsrf::check()) {
     $pid = (int) Request::post('pid');
     $option = (int) Request::post('option');
 
-    // ulozeni hlasu
     $query = DB::queryRow('SELECT locked,answers,votes FROM ' . DB::table('poll') . ' WHERE id=' . $pid);
+
     if ($query !== false) {
         $answers = explode('#', $query['answers']);
         $votes = explode('-', $query['votes']);
+
         if (User::hasPrivilege('pollvote') && $query['locked'] == 0 && IpLog::check(IpLog::POLL_VOTE, $pid) && isset($votes[$option])) {
             ++$votes[$option];
             $votes = implode('-', $votes);
@@ -32,8 +30,7 @@ if (isset($_POST['pid'], $_POST['option']) && Xsrf::check()) {
             Extend::call('poll.voted', ['id' => $pid, 'option' => $option]);
         }
     }
-
 }
 
-// presmerovani
+// redirect back
 Response::redirectBack();

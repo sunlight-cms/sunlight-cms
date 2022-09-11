@@ -4,9 +4,6 @@ namespace Sunlight\Database;
 
 use Sunlight\Database\Database as DB;
 
-/**
- * Trida pro spravu stromove tabulky
- */
 class TreeManager
 {
     /** @var string */
@@ -21,11 +18,11 @@ class TreeManager
     private $depthColumn;
 
     /**
-     * @param string $table nazev tabulky (bez prefixu)
-     * @param string|null $idColumn nazev sloupce pro id
-     * @param string|null $parentColumn nazev sloupce pro nadrazeny uzel
-     * @param string|null $levelColumn nazev sloupce pro uroven
-     * @param string|null $depthColumn nazev sloupce pro hloubku
+     * @param string $table table name (no prefix)
+     * @param string|null $idColumn identifier column name
+     * @param string|null $parentColumn parent identifier column name
+     * @param string|null $levelColumn level column name
+     * @param string|null $depthColumn depth column name
      */
     function __construct(string $table, ?string $idColumn = null, ?string $parentColumn = null, ?string $levelColumn = null, ?string $depthColumn = null)
     {
@@ -37,10 +34,7 @@ class TreeManager
     }
 
     /**
-     * Zkontrolovat, zda je dany nadrazeny uzel platny pro dany uzel
-     *
-     * @param int $nodeId ID uzlu
-     * @param int|null $parentNodeId ID nadrazeneho uzlu
+     * Check if a parent node is valid
      */
     function checkParent(int $nodeId, ?int $parentNodeId): bool
     {
@@ -56,9 +50,7 @@ class TreeManager
     }
 
     /**
-     * Vytvorit novy uzel
-     *
-     * @return int id noveho uzlu
+     * Create a new node
      */
     function create(array $data, bool $refresh = true): int
     {
@@ -80,7 +72,7 @@ class TreeManager
     }
 
     /**
-     * Aktualizovat data uzlu
+     * Update node
      */
     function update(int $nodeId, int $parentNodeId, array $changeset, bool $refresh = true): void
     {
@@ -88,7 +80,7 @@ class TreeManager
             throw new \InvalidArgumentException(sprintf('Columns "%s" and "%s" cannnot be changed manually', $this->levelColumn, $this->depthColumn));
         }
 
-        // kontrola rodice
+        // check parent
         $hasNewParent = array_key_exists($this->parentColumn, $changeset);
         if ($hasNewParent) {
             $newParent = $changeset[$this->parentColumn];
@@ -97,7 +89,7 @@ class TreeManager
             }
         }
 
-        // aktualizace
+        // update
         DB::update($this->table, $this->idColumn . '=' . DB::val($nodeId), $changeset);
 
         // refresh
@@ -107,7 +99,7 @@ class TreeManager
     }
 
     /**
-     * Odstranit uzel
+     * Delete node
      */
     function delete(int $nodeId, bool $orphanRemoval = true): void
     {
@@ -123,7 +115,7 @@ class TreeManager
     }
 
     /**
-     * Odstranit vsechny potomky uzlu
+     * Delete all children of a node
      */
     function purge(int $nodeId): void
     {
@@ -132,7 +124,7 @@ class TreeManager
     }
 
     /**
-     * Obnovit urovne stromu
+     * Refresh tree levels
      */
     function refresh(?int $nodeId = null): void
     {
@@ -140,8 +132,7 @@ class TreeManager
     }
 
     /**
-     * Obnovit urovne stromu dle zmeny stavu rodice existujiciho uzlu
-     * Nedoslo-li ke zmene rodice, obnova nebude provedena.
+     * Refresh tree levels for a node if a parent has changed
      */
     function refreshOnParentUpdate(int $nodeId, ?int $newParent, ?int $oldParent): void
     {
@@ -152,21 +143,20 @@ class TreeManager
     }
 
     /**
-     * Odstranit osirele uzly
+     * Remove orphaned nodes
      */
     function purgeOrphaned(bool $refresh = true): void
     {
         do {
             $orphaned = DB::query('SELECT n.' . $this->idColumn . ',n.' . $this->parentColumn . ' FROM ' . DB::table($this->table) . ' n LEFT JOIN ' . DB::table($this->table) . ' p ON(n.' . $this->parentColumn . '=p.' . $this->idColumn . ') WHERE n.' . $this->parentColumn . ' IS NOT NULL AND p.id IS NULL');
             $orphanedCount = DB::size($orphaned);
-            while ($row = DB::row($orphaned)) {
 
-                // odstranit potomky
+            while ($row = DB::row($orphaned)) {
+                // delete children
                 $this->deleteSet($this->idColumn, $this->getChildren($row[$this->idColumn], true));
 
-                // odstranit osirely uzel a jeho prime potomky
+                // delete node nad direct children
                 DB::delete($this->table, $this->idColumn . '=' . DB::val($row[$this->idColumn]) . ' OR ' . $this->parentColumn . '=' . DB::val($row[$this->parentColumn]));
-
             }
             DB::free($orphaned);
         } while ($orphanedCount > 0);
@@ -177,12 +167,12 @@ class TreeManager
     }
 
     /**
-     * Upravit potomky na zaklade dat rodicu
+     * Propagate parent node data to children
      *
-     * @param mixed $context pocatecti kontext
-     * @param callable $propagator callback(context, current_node), mel by vratit pole se zmenami nebo null
-     * @param callable $contextUpdater callback(context, current_node, current_changeset), mel by vratit novy kontext nebo null
-     * @param bool $getChangesetMap vratit mapu zmen namisto volani {@see Database::updateSetMulti()}
+     * @param mixed $context initial context
+     * @param callable $propagator callback(context, current_node), should return a changeset or null
+     * @param callable $contextUpdater callback(context, current_node, current_changeset) should return a new context or null
+     * @param bool $getChangesetMap only return a changeset map, don't call {@see Database::updateSetMulti()}
      */
     function propagate(array $flatTree, $context, callable $propagator, callable $contextUpdater, bool $getChangesetMap = false): ?array
     {
@@ -191,18 +181,18 @@ class TreeManager
         $changesetMap = [];
 
         foreach ($flatTree as $node) {
-            // aktualizovat aktualni kontext
+            // update current context
             while (!empty($stack) && $node[$this->levelColumn] < $contextLevel) {
                 [$context, $contextLevel] = array_pop($stack);
             }
             
-            // zavolat propagator aktualniho kontextu
+            // call propagator of current context
             $changeset = $propagator($context, $node);
             if ($changeset !== null) {
                 $changesetMap[$node[$this->idColumn]] = $changeset;
             }
 
-            // zavolat aktualizator kontextu (pro potomky)
+            // call context updater (for children)
             $newContext = $contextUpdater($context, $node, $changeset);
             if ($newContext !== null) {
                 $stack[] = [$context, $contextLevel];
@@ -221,7 +211,7 @@ class TreeManager
     }
 
     /**
-     * Ziskat uroven uzlu dle jeho pozice ve stromu
+     * Determine node level
      */
     private function getLevel(?int $nodeId, ?array &$parents = null): int
     {
@@ -250,12 +240,13 @@ class TreeManager
     }
 
     /**
-     * Ziskat korenovy uzel pro dany uzel
+     * Get root node identifier
      */
     private function getRoot(int $nodeId): int
     {
         $parents = [];
         $this->getLevel($nodeId, $parents);
+
         if (!empty($parents)) {
             return end($parents);
         }
@@ -264,24 +255,26 @@ class TreeManager
     }
 
     /**
-     * Ziskat vsechny podrazene uzly (nestrukturovano)
+     * Get an unordered list of all child node identifiers
      */
     private function getChildren(int $nodeId, bool $emptyArrayOnFailure = false): array
     {
-        // zjistit hloubku uzlu
+        // determine node depth
         $node = DB::queryRow('SELECT ' . $this->depthColumn . ' FROM ' . DB::table($this->table) . ' WHERE id=' . DB::val($nodeId));
+
         if ($node === false) {
             if ($emptyArrayOnFailure) {
                 return [];
             }
             throw new \RuntimeException(sprintf('Node "%s" does not exist', $nodeId));
         }
+
         if ($node[$this->depthColumn] == 0) {
-            // nulova hloubka
+            // zero depth
             return [];
         }
 
-        // sestavit dotaz
+        // compose query
         $sql = 'SELECT ';
         for ($i = 0; $i < $node[$this->depthColumn]; ++$i) {
             if ($i !== 0) {
@@ -306,7 +299,7 @@ class TreeManager
         }
         $sql .= ' WHERE r.' . $this->idColumn . '=' . DB::val($nodeId);
 
-        // nacist potomky
+        // load children
         $query = DB::query($sql);
         $childrenMap = [];
         while ($row = DB::rown($query)) {
@@ -320,19 +313,19 @@ class TreeManager
     }
 
     /**
-     * Obnovit strukturove stavy v dane casti stromu
+     * Refresh structure data in the given part of the tree
      */
     private function doRefresh(?int $currentNodeId): void
     {
-        // zjistit level a rodice aktualniho nodu
+        // determine level and parents of current node
         $currentNodeParents = [];
         $currentNodeLevel = $this->getLevel($currentNodeId, $currentNodeParents);
 
-        // pripravit frontu a level set
+        // prepare queue and level set
         $queue = [
             [
-                $currentNodeId, // id uzlu
-                $currentNodeLevel, // uroven uzlu
+                $currentNodeId, // node ID
+                $currentNodeLevel, // node level
             ],
         ];
         $levelset = [];
@@ -340,10 +333,10 @@ class TreeManager
             $levelset[$currentNodeLevel] = [$currentNodeId => true];
         }
 
-        // traverzovat frontu
+        // traverse queue
         for ($i = 0; isset($queue[$i]); ++$i) {
 
-            // traverzovat potomky aktualniho uzlu
+            // traverse children of current node
             if ($queue[$i][0] !== null) {
                 $childCondition = $this->parentColumn . '=' . DB::val($queue[$i][0]);
                 $childrenLevel = $queue[$i][1] + 1;
@@ -367,12 +360,12 @@ class TreeManager
 
         }
 
-        // aplikovat level set
+        // apply level set
         foreach ($levelset as $newLevel => $childrenMap) {
             $this->updateSet($this->idColumn, array_keys($childrenMap), [$this->levelColumn => $newLevel]);
         }
 
-        // aktualizovat hloubku cele vetve
+        // update depth of whole branch
         $topNodeId = end($currentNodeParents);
         if ($topNodeId === false) {
             $topNodeId = $currentNodeId;
@@ -381,30 +374,30 @@ class TreeManager
     }
 
     /**
-     * Obnovit stav hloubky v cele vetvi
+     * Refresh depth data in the given branch
      */
     private function doRefreshDepth(?int $currentNodeId, ?bool $isRootNode = null): void
     {
-        // zjistit korenovy uzel
+        // determine root node
         $rootNodeId = $currentNodeId;
         if ($isRootNode !== true && $currentNodeId !== null) {
             $rootNodeId = $this->getRoot($currentNodeId);
         }
 
-        // pripravit frontu a depth mapu
+        // prepare queue and depth map
         $queue = [
             [
-                $rootNodeId, // id uzlu
-                0, // uroven uzlu
-                [], // seznam nadrazenych uzlu
+                $rootNodeId, // node id
+                0, // node level
+                [], // parent list
             ],
         ];
         $depthmap = [];
 
-        // traverzovat frontu
+        // traverse queue
         for ($i = 0; isset($queue[$i]); ++$i) {
 
-            // vyhledat potomky
+            // find children
             if ($queue[$i][0] !== null) {
                 $childCondition = $this->parentColumn . '=' . DB::val($queue[$i][0]);
             } else {
@@ -412,7 +405,7 @@ class TreeManager
             }
             $children = DB::query('SELECT ' . $this->idColumn . ',' . $this->depthColumn . ' FROM ' . DB::table($this->table) . ' WHERE ' . $childCondition);
             if (DB::size($children) > 0) {
-                // uzel ma potomky, pridat do fronty
+                // node has children, add to queue
                 if ($queue[$i][0] !== null) {
                     $childParents = array_merge([$queue[$i][0]], $queue[$i][2]);
                 } else {
@@ -425,7 +418,7 @@ class TreeManager
             }
             DB::free($children);
 
-            // aktualizovat urovne nadrazenych uzlu
+            // update depth of parent nodes
             if ($queue[$i][0] !== null && !isset($depthmap[$queue[$i][0]])) {
                 $depthmap[$queue[$i][0]] = 0;
             }
@@ -439,20 +432,20 @@ class TreeManager
 
         }
 
-        // konvertovat depth mapu na sety
+        // convert depth map to sets
         $depthsets = [];
         foreach ($depthmap as $nodeId => $newDepth) {
             $depthsets[$newDepth][] = $nodeId;
         }
 
-        // aplikovat depth sety
+        // apply depth sets
         foreach ($depthsets as $newDepth => $nodeIds) {
             $this->updateSet($this->idColumn, $nodeIds, [$this->depthColumn => $newDepth]);
         }
     }
 
     /**
-     * Aktualizovat set dat v tabulce
+     * Update set of nodes
      */
     private function updateSet(string $column, array $set, array $changeset): void
     {
@@ -460,7 +453,7 @@ class TreeManager
     }
 
     /**
-     * Odstranit set dat z tabulky
+     * Delete set of nodes
      */
     private function deleteSet(string $column, array $set): void
     {

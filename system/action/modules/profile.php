@@ -21,8 +21,6 @@ if (!User::isLoggedIn() && Settings::get('notpublicsite')) {
     return;
 }
 
-/* ---  priprava  --- */
-
 $id = StringManipulator::slugify(Request::get('id', ''), false);
 $query = DB::queryRow('SELECT * FROM ' . DB::table('user') . ' WHERE username=' . DB::val($id));
 $public = true;
@@ -31,18 +29,18 @@ if ($query !== false) {
     $public = $query['public'] || User::checkLevel($query['id'], $groupdata['level']);
 
     if ($public) {
-        // promenne
+        // note
         if ($query['note'] == '') {
             $note = '';
         } else {
             $note = '<tr class="valign-top"><th>' . _lang('global.note') . '</th><td><div class="note">' . Post::render($query['note']) . '</div></td></tr>';
         }
 
-        // clanky autora
+        // user's articles
         [, , $arts] = Article::createFilter('art', [], 'author=' . $query['id'], true, false, false);
-        if ($arts != 0) {
 
-            // zjisteni prumerneho hodnoceni
+        if ($arts != 0) {
+            // determine average rating
             $avgrate = DB::result(DB::query('SELECT ROUND(SUM(ratesum)/SUM(ratenum)) FROM ' . DB::table('article') . ' WHERE rateon=1 AND ratenum!=0 AND confirmed=1 AND author=' . $query['id']));
             if ($avgrate === null) {
                 $avgrate = _lang('article.rate.nodata');
@@ -50,17 +48,17 @@ if ($query !== false) {
                 $avgrate = '&Oslash; ' . $avgrate . '%';
             }
 
-            // sestaveni kodu
+            // render number of articles and average rating
             $arts = "\n<tr><th>" . _lang('global.articlesnum') . '</th><td>' . $arts . ', <a href="' . _e(Router::module('profile-arts', ['query' => ['id' => $id]])) . '">' . _lang('global.show') . " &gt;</a></td></tr>\n";
+
             if (Settings::get('ratemode') != 0) {
                 $arts .= "\n<tr><th>" . _lang('article.rate') . '</th><td>' . $avgrate . "</td></tr>\n";
             }
-
         } else {
             $arts = '';
         }
 
-        // odkaz na prispevky uzivatele
+        // link to user's posts
         $posts_count = DB::count('post', 'author=' . DB::val($query['id']) . ' AND type!=' . Post::PRIVATE_MSG . ' AND type!=' . Post::SHOUTBOX_ENTRY);
         if ($posts_count > 0) {
             $posts_viewlink = ', <a href="' . _e(Router::module('profile-posts', ['query' => ['id' => $id]])) . '">' . _lang('global.show') . ' &gt;</a>';
@@ -73,11 +71,9 @@ if ($query !== false) {
     return;
 }
 
-/* ---  modul  --- */
-
+// output
 $_index->title = _lang('mod.profile') . ': ' . $query[$query['publicname'] !== null ? 'publicname' : 'username'];
 
-// poznamka o blokovani
 if ($query['blocked'] == 1 || $groupdata['blocked'] == 1) {
     $output .= Message::error(_lang('mod.profile.blockednote'));
 }
@@ -154,7 +150,7 @@ if ($public) {
     $output .= Message::ok(_lang('mod.profile.private'));
 }
 
-// odkaz na zaslani vzkazu
+// link to send a message
 if (User::isLoggedIn() && Settings::get('messages') && !User::equals($query['id']) && $query['blocked'] == 0 && $groupdata['blocked'] == 0) {
     $output .= '<p><a class="button" href="' . _e(Router::module('messages', ['query' => ['a' => 'new', 'receiver' => $query['username']]])) . '"><img src="' . Template::image('icons/bubble.png') . '" alt="msg" class="icon">' . _lang('mod.messages.new') . '</a></p>';
 }

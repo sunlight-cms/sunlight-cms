@@ -9,15 +9,10 @@ use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
-/* ---  priprava  --- */
-
 $tables = DB::getTablesByPrefix();
-
-// nacist zaslany sql kod
 $sql = Request::post('sql', '');
 
-/* --- formular --- */
-
+// form
 $output .= '
 <form method="post">
 <table id="sqlex">
@@ -51,20 +46,20 @@ $output .= '
 ' . Xsrf::getInput() . '
 </form>';
 
-/* --- vysledek --- */
-
+// result
 $queries = (new SqlReader($sql))->read();
+
 if (!empty($queries)) {
 
-    // zpracovat dotazy
+    // process queries
     $log = [];
     $lastResource = null;
     $error = false;
     for ($i = 0; isset($queries[$i]); ++$i) {
-
         $result = DB::query($queries[$i], true);
+
         if ($result instanceof mysqli_result) {
-            // resource
+            // result
             $log[] = _lang('admin.other.sqlex.rows') . ': ' . DB::size($result);
             if ($lastResource !== null) {
                 DB::free($lastResource);
@@ -79,10 +74,9 @@ if (!empty($queries)) {
             $error = true;
             break;
         }
-
     }
 
-    // vypis logu
+    // output log
     $output .= '
     <div id="sqlex-result">
         <h2>' . _lang('global.result') . '</h2>
@@ -94,7 +88,7 @@ if (!empty($queries)) {
     }
     $output .= "</ol>\n";
 
-    // vypis vysledku
+    // output results
     if ($error) {
         $output .= Message::error(DB::$mysqli->error);
     } elseif ($lastResource !== null) {
@@ -122,13 +116,13 @@ if (!empty($queries)) {
                     // null
                     $output .= '<code class="text-warning">NULL</code>';
                 } elseif (strpos($row[$j], "\n") !== false) {
-                    // s odradkovanim
+                    // string with newlines
                     $output .= '<textarea cols="60" rows="' . max(10, substr_count($row[$j], "\n")) . '">' . _e($row[$j]) . '</textarea>';
                 } elseif (strlen($row[$j]) > 64) {
-                    // dlouhy text
+                    // long string
                     $output .= '<input size="64" value="' . _e($row[$j]) . '">';
                 } else {
-                    // kratky text
+                    // short string
                     $output .= _e($row[$j]);
                 }
                 $output .= "</td>\n";
@@ -145,5 +139,4 @@ if (!empty($queries)) {
     }
 
     $output .= "</div>\n";
-
 }

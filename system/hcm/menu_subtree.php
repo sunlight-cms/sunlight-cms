@@ -3,18 +3,18 @@
 use Sunlight\Hcm;
 use Sunlight\Template;
 
-return function ($id_stranky = null, $od = null, $do = null, $max_hloubka = null, $class = null) {
-    Hcm::normalizeArgument($id_stranky, 'int');
-    Hcm::normalizeArgument($od, 'int');
-    Hcm::normalizeArgument($do, 'int');
-    Hcm::normalizeArgument($max_hloubka, 'int');
+return function ($page_id = null, $ord_start = null, $ord_end = null, $max_depth = null, $class = null) {
+    Hcm::normalizeArgument($page_id, 'int');
+    Hcm::normalizeArgument($ord_start, 'int');
+    Hcm::normalizeArgument($ord_end, 'int');
+    Hcm::normalizeArgument($max_depth, 'int');
     Hcm::normalizeArgument($class, 'string');
 
     return Template::treeMenu([
-        'page_id' => $id_stranky,
-        'max_depth' => $max_hloubka,
-        'ord_start' => $od,
-        'ord_end' => $do,
+        'page_id' => $page_id,
+        'max_depth' => $max_depth,
+        'ord_start' => $ord_start,
+        'ord_end' => $ord_end,
         'css_class' => $class,
     ]);
 };

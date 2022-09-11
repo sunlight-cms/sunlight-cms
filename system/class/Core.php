@@ -409,7 +409,6 @@ abstract class Core
         // send default headers
         if (!Environment::isCli()) {
             if ($options['content_type'] === null) {
-                // vychozi hlavicky
                 header('Content-Type: text/html; charset=UTF-8');
                 header('Expires: ' . DateTime::formatForHttp(-604800, true));
             } elseif ($options['content_type'] !== false) {
@@ -642,11 +641,9 @@ abstract class Core
             'keep_dir' => true,
             'files_only' => true,
             'file_callback' => function (\SplFileInfo $file) {
-                // posledni zmena souboru byla pred vice nez 24h
-                // a nejedna se o skryty soubor
                 return
-                    substr($file->getFilename(), 0, 1) !== '.'
-                    && time() - $file->getMTime() > 86400;
+                    substr($file->getFilename(), 0, 1) !== '.' // not a hidden file
+                    && time() - $file->getMTime() > 86400; // changed more than 24h ago
             },
         ]);
 

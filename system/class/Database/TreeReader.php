@@ -4,9 +4,6 @@ namespace Sunlight\Database;
 
 use Sunlight\Database\Database as DB;
 
-/**
- * Trida pro cteni ze stromove tabulky
- */
 class TreeReader
 {
     /** @var string */
@@ -23,7 +20,7 @@ class TreeReader
     private $depthColumn;
 
     /**
-     * @param string $table nazev tabulky (bez prefixu)
+     * @param string $table table name (no prefix)
      * @param string|null $childrenIndex nazev indexu pro kolekce potomku uzlu
      * @param string|null $idColumn nazev sloupce pro id
      * @param string|null $parentColumn nazev sloupce pro nadrazeny uzel
@@ -41,11 +38,11 @@ class TreeReader
     }
 
     /**
-     * Nacist cestu k danemu uzlu (vypis od korenu k danemu uzlu)
+     * Get path to the given node (from root)
      *
-     * @param array $columns pole, ktera maji byt nactena (systemove sloupce jsou nacteny vzdy)
-     * @param int $nodeId ID uzlu
-     * @param int|null $nodeLevel uroven uzlu, je-li znama (usetri 1 dotaz)
+     * @param array $columns list of additional columns to load
+     * @param int $nodeId node identifier
+     * @param int|null $nodeLevel node level, if known (saves 1 query)
      */
     function getPath(array $columns, int $nodeId, ?int $nodeLevel = null): array
     {
@@ -53,7 +50,7 @@ class TreeReader
     }
 
     /**
-     * Nacist strom (strukturovane pole)
+     * Load tree as a structured array
      */
     function getTree(TreeReaderOptions $options): array
     {
@@ -64,11 +61,12 @@ class TreeReader
     }
 
     /**
-     * Ziskat potomky daneho uzlu
+     * Load children of the given node
      *
-     * @param bool $flat true = vratit plochy strom (vypis uzlu v poradi hierarchie), false = strukturovane pole
+     * @param bool $flat return a flat tree if TRUE, otherwise a structured array
      */
-    function getChildren(TreeReaderOptions $options, bool $flat = true) : array{
+    function getChildren(TreeReaderOptions $options, bool $flat = true): array
+    {
         if ($flat) {
             $tree = $this->getFlatTree($options);
         } else {
@@ -79,11 +77,11 @@ class TreeReader
     }
 
     /**
-     * Extrahovat potomky ze stromu, ktery obsahuje pouze 1 koren
+     * Extract children from a tree with only one root
      *
-     * @param array $tree strom stranek
-     * @param int|null $rootNodeId ID korenoveho uzlu
-     * @param bool $flat zda se jedna o plochy strom 1/0
+     * @param array $tree
+     * @param int|null $rootNodeId root node identifier
+     * @param bool $flat TRUE if this is a tree
      */
     function extractChildren(array $tree, ?int $rootNodeId, bool $flat): array
     {
@@ -100,7 +98,7 @@ class TreeReader
     }
 
     /**
-     * Nacist plochy strom (vypis uzlu v poradi hierarchie)
+     * Load a flat tree
      */
     function getFlatTree(TreeReaderOptions $options): array
     {
@@ -111,9 +109,9 @@ class TreeReader
     }
 
     /**
-     * Zplostit strom
+     * Flatten a tree
      *
-     * @param array $tree strukturovany strom
+     * @param array $tree structured tree
      */
     function flattenTree(array $tree): array
     {
@@ -127,17 +125,16 @@ class TreeReader
         do {
 
             for ($i = $frame[1]; isset($frame[0][$i]); ++$i) {
-
-                // ziskat potomky
+                // get children
                 $children = $frame[0][$i][$this->childrenIndex];
                 unset($frame[0][$i][$this->childrenIndex]);
 
-                // vlozit uzel do seznamu
+                // add node to list
                 $list[] = $frame[0][$i];
 
-                // traverzovat potomky?
+                // traverse children?
                 if (!empty($children)) {
-                    // prerusit tok a pokracovat potomky
+                    // stop and continue with children
                     $stack[] = [$frame[0], $i + 1];
                     $frame = [$children, 0];
                     continue 2;
@@ -151,22 +148,21 @@ class TreeReader
     }
 
     /**
-     * Prevest seznam uzlu na strukturovany strom
+     * Convert a list of nodes into a structured tree
      *
-     * @param array $nodes pole uzlu
-     * @param int|null $rootId ID korenoveho uzlu
+     * @param int|null $rootId root node identifier
      */
     function structureTree(array $nodes, ?int $rootId = null): array
     {
         $tree = [];
         $childrenMap = [];
-        foreach ($nodes as &$node) {
 
+        foreach ($nodes as &$node) {
             $node[$this->childrenIndex] = [];
 
-            // pridat uzel
+            // add node
             if ($node[$this->parentColumn] !== null && ($rootId === null || $rootId != $node[$this->idColumn])) {
-                // jako potomka
+                // as a child
                 if ($node[$this->depthColumn] > 0) {
                     $nodeIndex = array_push($childrenMap[$node[$this->parentColumn]], $node) - 1;
                     $childrenMap[$node[$this->idColumn]] = &$childrenMap[$node[$this->parentColumn]][$nodeIndex][$this->childrenIndex];
@@ -174,7 +170,7 @@ class TreeReader
                     $childrenMap[$node[$this->parentColumn]][] = $node;
                 }
             } else {
-                // jako koren
+                // as root
                 $childrenMap[$node[$this->idColumn]] = &$tree[array_push($tree, $node) - 1][$this->childrenIndex];
             }
         }
@@ -183,10 +179,9 @@ class TreeReader
     }
 
     /**
-     * Seradit seznam uzlu dle hierarchie
+     * Sort node list based on the hierarchy
      *
-     * @param array $nodes pole uzlu
-     * @param int|null $rootId ID korenoveho uzlu
+     * @param int|null $rootId root node identifier
      */
     function sortTree(array $nodes, ?int $rootId = null): array
     {
@@ -237,23 +232,23 @@ class TreeReader
     }
 
     /**
-     * Sestavit a provest dotaz na strom
+     * Load a tree
      *
-     * @return array seznam uzlu serazeny dle urovne vzestupne
+     * @return array node list ordered by level (ascending)
      */
     function loadTree(TreeReaderOptions $options): array
     {
-        // zjistit hloubku stromu
+        // determine tree depth
         $nodeDepth = $options->nodeDepth ?? $this->getDepth($options->nodeId);
 
-        // pripravit sloupce
-        $columns = array_merge($this->getSystemColumns(), $options->columns);
+        // prepare columns
+        $columns = array_merge($this->getTreeColumns(), $options->columns);
         $columnCount = count($columns);
 
-        // pripravit filtr
+        // prepare filter
         $filterSql = $options->filter ? "%__node__%.`{$this->depthColumn}`>0 OR ({$options->filter->getNodeSql($this)})" : null;
 
-        // sestavit dotaz
+        // compose query
         $sql = 'SELECT ';
         for ($i = 0; $i < $columnCount; ++$i) {
             if ($i !== 0) {
@@ -294,7 +289,7 @@ class TreeReader
             $sql .= ' AND (' . str_replace('%__node__%', 'r', $filterSql) . ')';
         }
 
-        // nacist uzly
+        // load nodes
         $nodeMap = [];
         $query = DB::query($sql);
         while ($row = DB::rown($query)) {
@@ -309,7 +304,7 @@ class TreeReader
         }
         DB::free($query);
 
-        // seradit uzly
+        // sort nodes
         $levelColumn = $this->levelColumn;
         uasort(
             $nodeMap,
@@ -329,33 +324,33 @@ class TreeReader
             }
         );
 
-        // aplikovat filtr
+        // apply filter
         if ($options->filter) {
-            // vyhledat nevalidni uzly
+            // find invalid nodes
             $invalidNodes = [];
+
             foreach ($nodeMap as $id => $node) {
                 if (!$options->filter->filterNode($node, $this)) {
-                    // zpracovat nevalidni uzel
                     if ($node[$this->depthColumn] > 0) {
-                        // nevalidni uzel s potomky - pridat na seznam
+                        // invalid node with children - add to list
                         $invalidNodes[$id] = $node[$this->levelColumn];
                     } else {
-                        // nevalidni uzel bez potomku - rovnou odstranit
+                        // invalid node with no children - remove
                         unset($nodeMap[$id]);
                     }
                 }
             }
 
-            // odstranit "hluche" vetve
+            // remove branches with only invalid nodes
             if (!empty($invalidNodes)) {
-                // seradit neplatne uzly sestupne dle urovne
+                // order invalid nodes by level (ascending)
                 arsort($invalidNodes, SORT_NUMERIC);
 
-                // pripravit mapy
+                // prepare maps
                 $nodeIndexToIdMap = array_keys($nodeMap);
                 $nodeIdToIndexMap = array_flip($nodeIndexToIdMap);
 
-                // projit neplatne uzly
+                // traverse invalid nodes
                 foreach ($invalidNodes as $invalidNodeId => &$invalidNodeLevel) {
                     if ($invalidNodeLevel === false) {
                         continue;
@@ -387,13 +382,13 @@ class TreeReader
                     }
 
                     if ($foundValidChild) {
-                        // oznacit celou cestu jako validni
+                        // mark whole path as valid
                         do {
                             $invalidNodes[$invalidNodeId] = false;
                             $invalidNodeId = $nodeMap[$invalidNodeId][$this->parentColumn];
                         } while ($invalidNodeId !== null && isset($nodeMap[$invalidNodeId]));
                     } else {
-                        // odstranit uzel
+                        // remove node
                         unset($nodeMap[$invalidNodeId]);
                     }
                 }
@@ -404,7 +399,7 @@ class TreeReader
     }
 
     /**
-     * Ziskat nazev tabulky
+     * Get table name
      */
     function getTable(): string
     {
@@ -412,9 +407,9 @@ class TreeReader
     }
 
     /**
-     * Vratit seznam systemovych sloupcu
+     * Get list of tree columns
      */
-    function getSystemColumns(): array
+    function getTreeColumns(): array
     {
         return [
             $this->idColumn,
@@ -425,7 +420,7 @@ class TreeReader
     }
 
     /**
-     * Ziskat nazev sloupce s ID
+     * Get identifier column
      */
     function getIdColumn(): string
     {
@@ -433,7 +428,7 @@ class TreeReader
     }
 
     /**
-     * Ziskat nazev sloupce s ID rodice
+     * Get parent identifier column
      */
     function getParentColumn(): string
     {
@@ -441,7 +436,7 @@ class TreeReader
     }
 
     /**
-     * Ziskat nazev sloupce s urovni
+     * Get level column
      */
     function getLevelColumn(): string
     {
@@ -449,7 +444,7 @@ class TreeReader
     }
 
     /**
-     * Ziskat nazev sloupce s hloubkou
+     * Get depth column
      */
     function getDepthColumn(): string
     {
@@ -457,23 +452,23 @@ class TreeReader
     }
 
     /**
-     * Sestavit a provest dotaz na cestu
+     * Load path to a node (from root)
      */
     function loadPath(array $columns, int $nodeId, ?int $nodeLevel = null): array
     {
-        // zjistit uroven uzlu
+        // determine node level
         if ($nodeLevel === null) {
             $nodeLevel = $this->getLevel($nodeId);
         }
 
-        // pripravit sloupce
+        // prepare columns
         $columns = array_merge(
             [$this->idColumn, $this->parentColumn, $this->levelColumn, $this->depthColumn],
             $columns
         );
         $columnCount = count($columns);
 
-        // sestavit dotaz
+        // compose query
         $sql = 'SELECT ';
         for ($i = 0; $i <= $nodeLevel; ++$i) {
             for ($j = 0; $j < $columnCount; ++$j) {
@@ -491,7 +486,7 @@ class TreeReader
         }
         $sql .= ' WHERE n0.' . $this->idColumn . '=' . DB::val($nodeId);
 
-        // nacist uzly
+        // load nodes
         $nodes = [];
         $nodeIndex = 0;
         $query = DB::query($sql);
@@ -508,21 +503,21 @@ class TreeReader
     }
 
     /**
-     * Ziskat uroven a hloubku daneho uzlu ci korenu
+     * Get level and depth of given node or root
      *
      * @return array level, depth
      */
     function getLevelAndDepth(?int $nodeId): array
     {
         if ($nodeId === null) {
-            // koren
+            // root
             return [
                 0,
                 $this->getDepth(null),
             ];
         }
 
-        // uzel
+        // node
         $data = DB::queryRow('SELECT ' . $this->levelColumn . ',' . $this->depthColumn . ' FROM ' . DB::table($this->table) . ' WHERE ' . $this->idColumn . '=' . DB::val($nodeId));
         if ($data === false) {
             throw new \RuntimeException(sprintf('Node "%s" does not exist', $nodeId));
@@ -535,7 +530,7 @@ class TreeReader
     }
 
     /**
-     * Ziskat uroven uzlu
+     * Get node level
      */
     function getLevel(?int $nodeId): int
     {
@@ -552,7 +547,7 @@ class TreeReader
     }
 
     /**
-     * Ziskat hloubku na danem uzlu ci korenu
+     * Get depth of given node or root
      */
     function getDepth(?int $nodeId): ?int
     {
@@ -563,7 +558,7 @@ class TreeReader
         }
 
         if ($nodeDepth === false) {
-            // neexistujici node nebo jina chyba
+            // nonexistent node or other error
             throw new \RuntimeException(
                 ($nodeId === null) ? 'Failed to determine tree depth' : sprintf('Node "%s" does not exist', $nodeId)
             );

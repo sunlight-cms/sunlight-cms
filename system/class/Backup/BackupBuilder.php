@@ -74,7 +74,7 @@ class BackupBuilder
     /** @var bool */
     private $fullBackup = true;
 
-    /* @var bool */
+    /** @var bool */
     private $databaseDumpEnabled = true;
 
     /** @var bool */

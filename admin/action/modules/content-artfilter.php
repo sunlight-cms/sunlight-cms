@@ -197,7 +197,7 @@ if (!$infopage) {
 <option value="&lt;">' . _lang('admin.content.artfilter.f1.time.lt') . '</option>
 </select>
 
-' . Form::editTime('time', -1) . '
+' . Form::editTime('time', time()) . '
 
 </td>
 </tr>

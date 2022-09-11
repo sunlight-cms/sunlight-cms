@@ -12,21 +12,17 @@ use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
-/* ---  priprava a akce  --- */
-
 $message = '';
+
+// action
 if (isset($_POST['action'])) {
-
     switch (Request::post('action')) {
-
-        // vytvoreni
+        // create
         case 1:
-            // nacteni zakladnich promennych
             $title = Html::cut(_e(Request::post('title', '')), 64);
             $public = Form::loadCheckbox('public');
             $locked = Form::loadCheckbox('lockedc');
 
-            // vlozeni
             DB::insert('shoutbox', [
                 'title' => $title,
                 'locked' => $locked,
@@ -35,7 +31,7 @@ if (isset($_POST['action'])) {
             $message = Message::ok(_lang('global.created'));
             break;
 
-        // ulozeni
+        // save
         case 2:
             $lastid = -1;
             $sql = '';
@@ -75,10 +71,8 @@ if (isset($_POST['action'])) {
                             break;
                     }
 
-                    // ukladani a cachovani
+                    // save each shoutbox
                     if (!$skip) {
-
-                        // ulozeni
                         if ($lastid != $id) {
                             DB::query('UPDATE ' . DB::table('shoutbox') . ' SET ' . $sql . ' WHERE id=' . $lastid);
                             $sql = '';
@@ -99,7 +93,7 @@ if (isset($_POST['action'])) {
                 }
             }
 
-            // ulozeni posledniho nebo jedineho shoutboxu
+            // save last (or only) shoutbox
             if ($sql != '') {
                 $sql = trim($sql, ',');
                 DB::query('UPDATE ' . DB::table('shoutbox') . ' SET ' . $sql . ' WHERE id=' . $id);
@@ -107,13 +101,10 @@ if (isset($_POST['action'])) {
 
             $message = Message::ok(_lang('global.saved'));
             break;
-
     }
-
 }
 
-/* ---  odstraneni shoutboxu  --- */
-
+// delete shoutbox
 if (isset($_GET['del']) && Xsrf::check(true)) {
     $del = (int) Request::get('del');
     DB::delete('shoutbox', 'id=' . $del);
@@ -121,8 +112,7 @@ if (isset($_GET['del']) && Xsrf::check(true)) {
     $message = Message::ok(_lang('global.done'));
 }
 
-/* ---  vystup  --- */
-
+// output
 $output .= '
 <p class="bborder">' . _lang('admin.content.sboxes.p') . '</p>
 
@@ -167,8 +157,9 @@ $output .= '
 <div class="hr"><hr></div>
 ';
 
-// vypis shoutboxu
+// list shoutboxes
 $shoutboxes = DB::query('SELECT * FROM ' . DB::table('shoutbox') . ' ORDER BY id DESC');
+
 if (DB::size($shoutboxes) != 0) {
     while ($shoutbox = DB::row($shoutboxes)) {
 

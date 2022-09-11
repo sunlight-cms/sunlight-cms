@@ -20,15 +20,13 @@ use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
-/* --- kontrola pristupu --- */
-
+// check access
 if (!$continue) {
     $output .= Message::error(_lang('global.badinput'));
     return;
 }
 
-/* --- priprava --- */
-
+// prepare
 if ($query['slug_abs']) {
     $editable_slug = $query['slug'];
     $base_slug = '';
@@ -44,16 +42,14 @@ if ($query['slug_abs']) {
 
 }
 
-/* ---  ulozeni  --- */
-
+// save
 if (!empty($_POST)) {
-
-    // kontroly
+    // checks
     if (!$editscript_enable_slug && $type != Page::SEPARATOR) {
         throw new LogicException('Only separators are allowed to have disabled identifier');
     }
 
-    // pole vstupu array(nazev => typ)
+    // define save array
     $save_array = [
         'title' => ['type' => 'escaped_plaintext', 'length' => 255, 'nullable' => false],
         'heading' => ['type' => 'escaped_plaintext', 'length' => 255, 'nullable' => false, 'enabled' => $editscript_enable_heading],
@@ -73,7 +69,7 @@ if (!empty($_POST)) {
     ];
     $save_array += $custom_save_array;
 
-    // ulozeni
+    // calculate changeset
     $changeset = [];
     $refresh_tree = null;
     $refresh_slug = false;
@@ -81,11 +77,11 @@ if (!empty($_POST)) {
     $refresh_layouts = false;
     $slug_abs = false;
     $actual_parent_id = $query['node_parent'];
-    foreach ($save_array as $item => $item_opts) {
 
+    foreach ($save_array as $item => $item_opts) {
         $skip = false;
 
-        // nacteni a zpracovani hodnoty
+        // load and process value
         if (!isset($item_opts['enabled']) || $item_opts['enabled']) {
             $val = Request::post($item);
             if ($val !== null) {
@@ -121,7 +117,7 @@ if (!empty($_POST)) {
                 break;
         }
 
-        // individualni akce
+        // individual action
         switch ($item) {
             // content
             case 'content':
@@ -139,7 +135,7 @@ if (!empty($_POST)) {
                     $pageTreeManager = Page::getTreeManager();
 
                     if ($val !== null) {
-                        // novy rodic
+                        // new parent
                         $parentData = Page::getData($val, ['id', 'type']);
                         if (
                             $parentData !== false
@@ -154,7 +150,7 @@ if (!empty($_POST)) {
                             $skip = false;
                         }
                     } else {
-                        // zadny rodic
+                        // no parent
                         $actual_parent_id = null;
                         $refresh_tree = true;
                         $refresh_slug = true;
@@ -234,19 +230,19 @@ if (!empty($_POST)) {
                 }
 
                 switch ($type) {
-                    // zpusob razeni v kategoriich
+                    // category sort type
                     case Page::CATEGORY:
                         if ($val < 1 || $val > 4) {
                             $val = 1;
                         }
                         break;
-                    // obrazku na radek v galerii
+                    // images per row in galleries
                     case Page::GALLERY:
                         if ($val <= 0 && $val != -1) {
                             $val = 1;
                         }
                         break;
-                    // temat na stranu ve forech
+                    // topics per page in forums
                     case Page::FORUM:
                         if ($val <= 0) {
                             $val = 1;
@@ -262,7 +258,7 @@ if (!empty($_POST)) {
                 }
 
                 switch ($type) {
-                    // clanku na stranu v kategoriich, prispevku na stranu v knihach, obrazku na stranu v galeriich
+                    // article, book and gallery items per page
                     case Page::CATEGORY:
                     case Page::BOOK:
                     case Page::GALLERY:
@@ -280,7 +276,7 @@ if (!empty($_POST)) {
                 }
 
                 switch ($type) {
-                    // vyska nahledu v galeriich
+                    // gallery thumbnail height
                     case Page::GALLERY:
                         if ($val < 10) {
                             $val = 10;
@@ -298,7 +294,7 @@ if (!empty($_POST)) {
                 }
 
                 switch ($type) {
-                    // sirka nahledu v galeriich
+                    // gallery thumbnail width
                     case Page::GALLERY:
                         if ($val <= 10) {
                             $val = 10;
@@ -310,7 +306,7 @@ if (!empty($_POST)) {
                 }
                 break;
 
-            // smazani komentaru v sekcich
+            // delete section comments
             case 'delcomments':
                 if ($type == Page::SECTION && $val == 1 && !$new) {
                     DB::delete('post', 'home=' . $id . ' AND type=' . Post::SECTION_COMMENT);
@@ -318,7 +314,7 @@ if (!empty($_POST)) {
                 $skip = true;
                 break;
 
-            // smazani prispevku v knihach
+            // delete book posts
             case 'delposts':
                 if ($val == 1 && !$new) {
                     $ptype = null;
@@ -337,7 +333,7 @@ if (!empty($_POST)) {
                 $skip = true;
                 break;
 
-            // typ plugin stranky
+            // plugin page type
             case 'type_idt':
                 if ($type == Page::PLUGIN && $new) {
                     $val = $type_idt;
@@ -346,14 +342,14 @@ if (!empty($_POST)) {
                 }
                 break;
 
-            // udalosti stranky
+            // page events
             case 'events':
                 if ($val === '') {
                     $val = null;
                 }
                 break;
 
-            // layout
+            // template layout
             case 'layout':
                 if ($val === '' || !TemplateService::validateUid((string)$val, TemplateService::UID_TEMPLATE_LAYOUT)) {
                     if ($query['layout_inherit']) {
@@ -382,10 +378,9 @@ if (!empty($_POST)) {
 
             $changeset[$item] = $val;
         }
-
     }
 
-    // vlozeni / ulozeni
+    // create or save
     $action = ($new ? 'new' : 'edit');
     Extend::call('admin.page.' . $action . '.before', [
         'id' => $id,
@@ -394,11 +389,11 @@ if (!empty($_POST)) {
     ]);
 
     if (!$new) {
-        // ulozeni
+        // save
         DB::update('page', 'id=' . $id, $changeset);
 
     } else {
-        // vytvoreni
+        // create
         $changeset['type'] = $type;
         $id = $query['id'] = DB::insert('page', $changeset, true);
     }
@@ -409,7 +404,7 @@ if (!empty($_POST)) {
         'changeset' => $changeset,
     ]);
 
-    // obnovit urovne stromu
+    // refresh tree
     if ($refresh_tree) {
         if ($new) {
             $pageTreeManager->refresh($id);
@@ -418,17 +413,17 @@ if (!empty($_POST)) {
         }
     }
 
-    // pregenerovat identifikatory
+    // referesh slugs
     if ($refresh_slug) {
         PageManipulator::refreshSlugs($id);
     }
 
-    // aktualizovat opravneni
+    // update levels
     if ($refresh_levels) {
         PageManipulator::refreshLevels($id);
     }
 
-    // aktualizovat layouty
+    // update layouts
     if ($refresh_layouts) {
         PageManipulator::refreshLayouts($id);
     }
@@ -438,9 +433,7 @@ if (!empty($_POST)) {
     return;
 }
 
-/* ---  vystup  --- */
-
-// vyber rodice
+// parent select
 if (User::hasPrivilege('adminpages')) {
     $parent_row = "<tr>\n<th>" . _lang('admin.content.form.node_parent') . '</th><td>';
     $parent_row .= Admin::pageSelect('node_parent', [
@@ -455,15 +448,15 @@ if (User::hasPrivilege('adminpages')) {
     $parent_row = '';
 }
 
-// editacni pole
+// content editor
 $editor = Extend::buffer('admin.page.editor');
 
 if ($editor === '') {
-    // vychozi implementace
+    // default implementation
     $editor = '<textarea name="content" rows="25" cols="94" class="areabig editor">' ._e($query['content']) . '</textarea>';
 }
 
-// zpravy
+// messages
 if (isset($_GET['saved'])) {
     $output .= Message::ok(_lang('global.saved') . ' <small>(' . GenericTemplates::renderTime(time()) . ')</small>', true);
 }

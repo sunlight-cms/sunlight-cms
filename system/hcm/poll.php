@@ -8,10 +8,9 @@ use Sunlight\User;
 use Sunlight\Xsrf;
 
 return function ($id = null) {
-    // nacteni promennych
     $id = (int) $id;
 
-    // nacteni dat ankety
+    // fetch poll data
     $vpolldata = DB::queryRow('SELECT * FROM ' . DB::table('poll') . ' WHERE id=' . DB::val($id));
     if ($vpolldata !== false) {
         $rcontinue = true;
@@ -19,10 +18,8 @@ return function ($id = null) {
         $rcontinue = false;
     }
 
-    // sestaveni kodu
+    // render
     if ($rcontinue) {
-
-        // odpovedi
         $ranswers = explode("\n", $vpolldata['answers']);
         $rvotes = explode('-', $vpolldata['votes']);
         $rvotes_sum = array_sum($rvotes);
@@ -77,6 +74,5 @@ return function ($id = null) {
 </div>
 </div>\n
 ";
-
     }
 };

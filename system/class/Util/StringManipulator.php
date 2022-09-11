@@ -7,9 +7,7 @@ use Sunlight\Slugify\Slugify;
 abstract class StringManipulator
 {
     /**
-     * Orezat retezec na pozadovanou delku
-     *
-     * @param int $length pozadovana delka
+     * Cut a string to the specified length
      */
     static function cut(string $string, int $length): string
     {
@@ -21,11 +19,11 @@ abstract class StringManipulator
     }
 
     /**
-     * Orezat text na pozadovanou delku a pridat "...", pokud je delsi nez limit
+     * Cut a string to the specified length and add ellipsis
      *
-     * @param string $string vstupni retezec
-     * @param int|null $length pozadovana delka
-     * @param bool $convert_entities prevest html entity zpet na originalni znaky a po orezani opet zpet
+     * @param string $string text to cut
+     * @param int|null $length desired length
+     * @param bool $convert_entities convert HTML entities to characters before cutting and back after 1/0
      */
     static function ellipsis(string $string, ?int $length, bool $convert_entities = true): string
     {
@@ -37,7 +35,7 @@ abstract class StringManipulator
             $string = Html::unescape($string);
         }
         if (mb_strlen($string) > $length) {
-            $string = mb_substr($string, 0, max(0, $length - 3)) . '...';
+            $string = mb_substr($string, 0, max(0, $length - 3)) . '…';
         }
         if ($convert_entities) {
             $string = _e($string);
@@ -47,25 +45,20 @@ abstract class StringManipulator
     }
 
     /**
-     * Odstraneni nezadoucich odradkovani a mezer z retezce
-     *
-     * @param string $string vstupni retezec
+     * Remove excess whitespace from a string
      */
     static function trimExtraWhitespace(string $string): string
     {
-        $from = ["{(\r\n){3,}}s", '{  +}s'];
-        $to = ["\r\n\r\n", ' '];
-
-        return preg_replace($from, $to, trim($string));
+        return preg_replace(["{(\r\n){3,}}", '{  +}'], ["\r\n\r\n", ' '], trim($string));
     }
 
     /**
-     * Formatovani retezce pro uzivatelska jmena, mod rewrite atd.
+     * Slugify a string
      *
-     * @param string $input vstupni retezec
-     * @param bool $lower prevest na mala pismena 1/0
-     * @param string|null $extraAllowedChars seznam extra povolenych znaku nebo null
-     * @param string $fallback hodnota pouzita v pripade, ze neni mozne vygenerovat slug
+     * @param string $input input string
+     * @param bool $lower generate lowercase slug 1/0
+     * @param string|null $extraAllowedChars list of additional allowed characters
+     * @param string $fallback fallback value when a slug cannot be generated
      */
     static function slugify(string $input, bool $lower = true, ?string $extraAllowedChars = '._', string $fallback = ''): string
     {
@@ -85,7 +78,7 @@ abstract class StringManipulator
     }
 
     /**
-     * Formatovani retezce jako camelCase nebo CamelCase
+     * Convert a string into camel case
      */
     static function toCamelCase(string $input, bool $firstLetterLower = false): string
     {

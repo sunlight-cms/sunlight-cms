@@ -16,8 +16,6 @@ Core::init('../../', [
     'env' => Core::ENV_ADMIN,
 ]);
 
-/* ---  vystup  --- */
-
 if (!User::isSuperAdmin()) {
     Response::redirect(Router::adminIndex(['absolute' => true]));
     exit;
@@ -38,7 +36,7 @@ echo GenericTemplates::renderHeadAssets($assets);
 
 <?php
 
-// nacteni postdat
+// load code
 $process = false;
 if (isset($_POST['code'])) {
     $code = Request::post('code');

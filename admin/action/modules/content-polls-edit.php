@@ -15,8 +15,6 @@ use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
-/* ---  priprava promennych  --- */
-
 $continue = false;
 $message = '';
 if (isset($_GET['id'])) {
@@ -37,14 +35,12 @@ if (isset($_GET['id'])) {
     $continue = true;
 }
 
-/* ---  ulozeni / vytvoreni  --- */
-
+// save or create
 if (isset($_POST['question'])) {
-    // nacteni promennych
     $question = Html::cut(_e(trim(Request::post('question', ''))), 255);
     $query['question'] = $question;
 
-    // odpovedi
+    // answers
     $answers = explode("\n", Request::post('answers'));
     $answers_new = [];
     foreach ($answers as $answer) {
@@ -63,7 +59,7 @@ if (isset($_POST['question'])) {
     $locked = Form::loadCheckbox('locked');
     $reset = Form::loadCheckbox('reset');
 
-    // kontrola promennych
+    // check variables
     $errors = [];
     if ($question == '') {
         $errors[] = _lang('admin.content.polls.edit.error1');
@@ -78,9 +74,8 @@ if (isset($_POST['question'])) {
         $errors[] = _lang('admin.content.articles.edit.error3');
     }
 
-    // ulozeni
-    if (count($errors) == 0) {
-
+    // save
+    if (empty($errors)) {
         if (!$new) {
             DB::update('poll', 'id=' . $id, [
                 'question' => $question,
@@ -89,13 +84,13 @@ if (isset($_POST['question'])) {
                 'locked' => $locked
             ]);
 
-            // korekce seznamu hlasu
+            // normalize votes
             if (!$reset) {
                 $votes = explode('-', $query['votes']);
                 $votes_count = count($votes);
                 $newvotes = '';
 
-                // prilis mnoho polozek
+                // too many items
                 if ($votes_count > $answers_count) {
                     for ($i = 0; $i < $votes_count - $answers_count; $i++) {
                         array_pop($votes);
@@ -103,29 +98,28 @@ if (isset($_POST['question'])) {
                     $newvotes = implode('-', $votes);
                 }
 
-                // malo polozek
+                // not enough items
                 if ($votes_count < $answers_count) {
                     $newvotes = implode('-', $votes) . str_repeat('-0', $answers_count - $votes_count);
                 }
 
-                // ulozeni korekci
+                // save normalized votes
                 if ($newvotes != '') {
                     DB::update('poll', 'id=' . $id, ['votes' => $newvotes]);
                 }
 
             }
 
-            // vynulovani
+            // reset
             if ($reset) {
                 DB::update('poll', 'id=' . $id, ['votes' => trim(str_repeat('0-', $answers_count), '-')]);
                 DB::delete('iplog', 'type=' . IpLog::POLL_VOTE . ' AND var=' . $id);
             }
 
-            // presmerovani
+            // redirect
             $_admin->redirect(Router::admin('content-polls-edit', ['query' => ['id' => $id, 'saved' => 1]]));
 
             return;
-
         }
 
         $newid = DB::insert('poll', [
@@ -138,17 +132,15 @@ if (isset($_POST['question'])) {
         $_admin->redirect(Router::admin('content-polls-edit', ['query' => ['id' => $newid, 'created' => 1]]));
 
         return;
-
     }
 
     $message = Message::list($errors);
 }
 
-/* ---  vystup  --- */
-
+// output
 if ($continue) {
 
-    // vyber autora
+    // author select
     if (User::hasPrivilege('adminpollall')) {
         $author_select = '
     <tr>
@@ -159,7 +151,7 @@ if ($continue) {
         $author_select = '';
     }
 
-    // zprava
+    // message
     if (isset($_GET['saved'])) {
         $message = Message::ok(_lang('global.saved'));
     }

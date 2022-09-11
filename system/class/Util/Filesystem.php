@@ -10,7 +10,7 @@ abstract class Filesystem
     static $unsafeExtRegex = '{(php\d*?|[ps]html|asp|py|cgi|htaccess)}Ai';
 
     /**
-     * Vytvorit docasny soubor v system/tmp
+     * Create a temporary file in system/tmp/
      */
     static function createTmpFile(): TemporaryFile
     {
@@ -18,9 +18,7 @@ abstract class Filesystem
     }
 
     /**
-     * Zjistit, zda je nazev souboru bezpecny
-     *
-     * @param string $filepath nazev souboru
+     * Check if the file name in a path is safe
      */
     static function isSafeFile(string $filepath): bool
     {
@@ -37,9 +35,9 @@ abstract class Filesystem
     }
 
     /**
-     * Ujistit se, ze existuje dany soubor
+     * Make sure that a file exists
      *
-     * @throws \RuntimeException pokud soubor neexistuje
+     * @throws \RuntimeException if it doesn't
      */
     static function ensureFileExists(string $filepath): void
     {
@@ -169,8 +167,6 @@ abstract class Filesystem
 
     /**
      * Check whether a directory is empty
-     *
-     * @param string $path path to the directory
      */
     static function isDirectoryEmpty(string $path): bool
     {
@@ -219,9 +215,6 @@ abstract class Filesystem
 
     /**
      * Recursively calculate size of a directory
-     *
-     * @param string $path path to the directory
-     * @return int total size in bytes
      */
     static function getDirectorySize(string $path): int
     {

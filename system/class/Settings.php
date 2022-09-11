@@ -99,7 +99,7 @@ abstract class Settings
 
     private static function loadSettings(array $settings): void
     {
-        $values = DB::queryRows('SELECT var,val FROM ' . DB::table('setting') . ' WHERE var IN(' . DB::val($settings, true) . ')', 'var', 'val');
+        $values = DB::queryRows('SELECT var,val FROM ' . DB::table('setting') . ' WHERE var IN(' . DB::arr($settings) . ')', 'var', 'val');
 
         if (count($values) !== count($settings)) {
             $unknownSettings = [];

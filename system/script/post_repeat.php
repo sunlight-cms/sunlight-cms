@@ -8,7 +8,7 @@ use Sunlight\Util\Request;
 require '../bootstrap.php';
 Core::init('../../');
 
-// priprava
+// load variables
 $login = (bool) Request::get('login');
 $allow_login = $login && !User::isLoggedIn();
 $login_message = null;
@@ -16,12 +16,12 @@ $target = Request::get('target');
 $do_repeat = true;
 $valid = true;
 
-// kontrola
+// check request
 if ($_SERVER['REQUEST_METHOD'] !== 'POST' || empty($target)) {
     $valid = false;
 }
 
-// prihlaseni
+// login
 if ($valid && $login && !User::isLoggedIn()) {
     $username = Request::post('login_username');
     $password = Request::post('login_password');
@@ -37,7 +37,7 @@ if ($valid && $login && !User::isLoggedIn()) {
     }
 }
 
-// vystup
+// output
 ?>
 <!doctype html>
 <html>

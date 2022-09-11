@@ -12,16 +12,15 @@ use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
-/* ---  akce  --- */
-
+// action
 $sysgroups_array = [User::ADMIN_GROUP_ID, User::GUEST_GROUP_ID, User::REGISTERED_GROUP_ID];
 $msg = 0;
 
-// vytvoreni skupiny
+// create a group
 if (isset($_POST['type']) && User::hasPrivilege('admingroups')) {
     $type = (int) Request::post('type');
     if ($type == -1) {
-        // prazdna skupina
+        // empty group
         DB::insert('user_group', [
             'title' => _lang('admin.users.groups.new.empty'),
             'level' => 0,
@@ -29,13 +28,13 @@ if (isset($_POST['type']) && User::hasPrivilege('admingroups')) {
         ]);
         $msg = 1;
     } else {
-        // kopirovat skupinu
+        // copy existing group
         $source_group = DB::queryRow('SELECT * FROM ' . DB::table('user_group') . ' WHERE id=' . $type);
         if ($source_group !== false) {
             $new_group = [];
             $privilege_map = User::getPrivilegeMap();
 
-            // sesbirani dat
+            // collect data
             foreach ($source_group as $column => $val) {
                 switch ($column) {
                     case 'id':
@@ -59,7 +58,7 @@ if (isset($_POST['type']) && User::hasPrivilege('admingroups')) {
                 $new_group[$column] = $val;
             }
 
-            // sql dotaz
+            // insert
             DB::insert('user_group', $new_group);
             $msg = 1;
 
@@ -69,7 +68,7 @@ if (isset($_POST['type']) && User::hasPrivilege('admingroups')) {
     }
 }
 
-// prepnuti uzivatele
+// user switch
 if (User::isSuperAdmin() && isset($_POST['switch_user'])) {
     $user = trim(Request::post('switch_user', ''));
     $query = DB::queryRow('SELECT id,password,email FROM ' . DB::table('user') . ' WHERE username=' . DB::val($user));
@@ -84,9 +83,7 @@ if (User::isSuperAdmin() && isset($_POST['switch_user'])) {
     $msg = 5;
 }
 
-/* ---  priprava promennych  --- */
-
-// vypis skupin
+// group list
 if (User::hasPrivilege('admingroups')) {
     $group_table = '<table class="list list-hover list-max">
 <thead><tr><td>' . _lang('global.name') . '</td><td>' . _lang('admin.users.groups.level') . '</td><td>' . _lang('admin.users.groups.members') . '</td><td>' . _lang('global.action') . '</td></tr></thead>
@@ -117,7 +114,7 @@ if (User::hasPrivilege('admingroups')) {
     $group_table = '';
 }
 
-// zprava
+// message
 switch ($msg) {
     case 1:
         $message = Message::ok(_lang('global.done'));
@@ -164,8 +161,7 @@ foreach ($modules as $module) {
     $module_links .= '<a class="button block" href="' . _e($module['url']) . '"><img src="' . _e($module['icon']) . '" alt="new" class="icon">' . _e($module['label']) . "</a>\n";
 }
 
-/* ---  vystup  --- */
-
+// output
 $output .= $message . '
 
 <table class="two-columns">

@@ -7,22 +7,22 @@ use Sunlight\Util\Environment;
 abstract class Email
 {
     /**
-     * Wrapper funkce mail umoznujici odchyceni rozsirenim
+     * Send an email
      *
-     * @param string $to prijemce
-     * @param string $subject predmet (automaticky formatovan jako UTF-8)
-     * @param string $message zprava
-     * @param array $headers asociativni pole s hlavickami
+     * @param string $to recipient
+     * @param string $subject subject (automatically formatted for UTF-8)
+     * @param string $message message content
+     * @param array $headers associative array with headers
      */
     static function send(string $to, string $subject, string $message, array $headers = []): bool
     {
-        // zjistit veskere hlavicky, ktere byly uvedeny
+        // map defined headers
         $definedHeaderMap = [];
         foreach (array_keys($headers) as $headerName) {
             $definedHeaderMap[strtolower($headerName)] = true;
         }
 
-        // vychozi hlavicky
+        // add default headers
         if (Settings::get('mailerusefrom') && !isset($definedHeaderMap['from'])) {
             $headers['From'] = Settings::get('sysmail');
         }
@@ -30,10 +30,10 @@ abstract class Email
             $headers['Content-Type'] = 'text/plain; charset=UTF-8';
         }
         if (!isset($definedHeaderMap['x-mailer'])) {
-            $headers['X-Mailer'] = sprintf('PHP/%s', Environment::getPhpVersion());
+            $headers['X-Mailer'] = sprintf('PHP/%d', PHP_MAJOR_VERSION);
         }
 
-        // udalost
+        // extend
         $result = null;
         Extend::call('mail.send', [
             'to' => &$to,
@@ -43,20 +43,20 @@ abstract class Email
             'result' => &$result,
         ]);
         if ($result !== null) {
-            // odchyceno rozsirenim
+            // handled by a plugin
             return $result;
         }
 
-        // predmet
+        // subject
         $subject = '=?UTF-8?B?' . base64_encode($subject) . '?=';
 
-        // zpracovani hlavicek
+        // process headers
         $headerString = '';
         foreach ($headers as $headerName => $headerValue) {
             $headerString .= sprintf("%s: %s\n", $headerName, strtr($headerValue, ["\r" => '', "\n" => '']));
         }
 
-        // odeslani
+        // send
         return @mail(
             $to,
             $subject,
@@ -66,11 +66,7 @@ abstract class Email
     }
 
     /**
-     * Nastavit odesilatele emailu pomoci hlavicky
-     *
-     * @param array &$headers reference na pole s hlavickami
-     * @param string $sender emailova adresa odesilatele
-     * @param string|null $name jmeno odesilatele
+     * Define an e-mail sender header according to system settings
      */
     static function defineSender(array &$headers, string $sender, ?string $name = null): void
     {
@@ -90,9 +86,7 @@ abstract class Email
     }
 
     /**
-     * Validace e-mailove adresy
-     *
-     * @param string $email e-mailova adresa
+     * Validate an e-mail address
      */
     static function validate(string $email): bool
     {
@@ -139,9 +133,7 @@ abstract class Email
     }
 
     /**
-     * Sestavit kod odkazu na e-mail s ochranou
-     *
-     * @param string $email emailova adresa
+     * Render a mailto link with some basic anti-spam protection
      */
     static function link(string $email): string
     {

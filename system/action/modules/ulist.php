@@ -22,7 +22,7 @@ $_index->title = _lang('user.list.title');
 
 $output .= '<p class="bborder">' . _lang('mod.ulist.p') . '</p>';
 
-// filtry
+// filters
 $cond = 'u.public=1';
 
 if (isset($_REQUEST['group_id'])) {
@@ -34,7 +34,7 @@ if (isset($_REQUEST['group_id'])) {
     $group = -1;
 }
 
-// vyber skupiny
+// group select
 $output .= '
   <form action="' . _e(Router::module('ulist')) . '" method="get">
   <strong>' . _lang('user.list.groupfilter') . ':</strong> <select name="group_id">
@@ -51,7 +51,7 @@ while ($item = DB::row($query)) {
 }
 $output .= '</select> <input type="submit" value="' . _lang('global.apply') . '"></form>';
 
-// tabulka
+// table
 $paging = Paginator::render(Router::module('ulist', ['query' => ['group' => $group]]), 50, DB::table('user') . ':u', $cond);
 if (Paginator::atTop()) {
     $output .= $paging['paging'];
@@ -74,5 +74,5 @@ if (Paginator::atBottom()) {
     $output .= $paging['paging'];
 }
 
-// celkovy pocet uzivatelu
+// total number of users
 $output .= '<p>' . _lang('user.list.total') . ': ' . $paging['count'] . '</p>';

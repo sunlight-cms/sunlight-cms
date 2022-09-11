@@ -81,7 +81,7 @@ abstract class PluginInstaller
      * Check that all given database tables exist
      *
      * @param string[] $tables list of table names (with prefixes)
-     * @throws \RuntimeException if only some of the tables exist
+     * @throws \RuntimeException if only some tables exist
      * @return string[] list of missing tables
      */
     protected function checkTables(array $tables): array

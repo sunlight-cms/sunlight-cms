@@ -8,18 +8,17 @@ use Sunlight\Xsrf;
 abstract class Form
 {
     /**
-     * Zaskrtnout checkbox na zaklade podminky
+     * Activate a checkbox based on a condition
      */
-    static function activateCheckbox(bool $input): string
+    static function activateCheckbox(bool $checked): string
     {
-        return $input ? ' checked' : '';
+        return $checked ? ' checked' : '';
     }
 
     /**
-     * Nacteni odeslaneho checkboxu formularem (POST)
+     * Check if a checkbox was submitted in POST data
      *
-     * @param string $name jmeno checkboxu (post)
-     * @return int 1/0
+     * @return int 1 or 0
      */
     static function loadCheckbox(string $name): int
     {
@@ -27,13 +26,11 @@ abstract class Form
     }
 
     /**
-     * Zakazat pole formulare, pokud NEPLATI podminka
-     *
-     * @param bool $cond pole je povoleno 1/0
+     * Disable an input unless a condition is TRUE
      */
-    static function disableInputUnless(bool $cond): string
+    static function disableInputUnless(bool $enabled): string
     {
-        if (!$cond) {
+        if (!$enabled) {
             return ' disabled';
         }
 
@@ -41,11 +38,11 @@ abstract class Form
     }
 
     /**
-     * Obnovit stav zaskrtnuti na zaklade POST/GET dat
+     * Restore checkbox state using POST or GET data
      *
-     * @param string $key_var nazev klice, ktery indikuje odeslani daneho formulare
-     * @param string $name nazev checkboxu
-     * @param bool $default vychozi stav
+     * @param string $key_var name of another input that indicates that the form has been submitted
+     * @param string $name checkbox name
+     * @param bool $default default state
      * @param string $method POST/GET
      */
     static function restoreChecked(string $key_var, string $name, bool $default = false, string $method = 'POST'): string
@@ -66,11 +63,11 @@ abstract class Form
     }
 
     /**
-     * Nastavit nazev prvku a obnovit stav zaskrtnuti na zaklade POST/GET dat
+     * Set checkbox name and restore state using POST or GET data
      *
-     * @param string $key_var nazev klice, ktery indikuje odeslani daneho formulare
-     * @param string $name nazev checkboxu
-     * @param bool $default vychozi stav
+     * @param string $key_var name of another input that indicates that the form has been submitted
+     * @param string $name checkbox name
+     * @param bool $default default state
      * @param string $method POST/GET
      */
     static function restoreCheckedAndName(string $key_var, string $name, bool $default = false, string $method = 'POST'): string
@@ -79,12 +76,12 @@ abstract class Form
     }
 
     /**
-     * Obnoveni hodnoty prvku podle stavu $_POST
+     * Restore input value from POST data
      *
-     * @param string $name nazev klice v post
-     * @param string|null $else vychozi hodnota
-     * @param bool $param vykreslit jako atribut ' value=".."' 1/0
-     * @param bool $else_entities escapovat hodnotu $else 1/0
+     * @param string $name input name
+     * @param string|null $else default value
+     * @param bool $param output a "value" attribute instead of just the value 1/0
+     * @param bool $else_entities escape HTML in $else 1/0
      */
     static function restorePostValue(string $name, ?string $else = null, bool $param = true, bool $else_entities = true): string
     {
@@ -92,11 +89,11 @@ abstract class Form
     }
 
     /**
-     * Nastaveni nazvu prvku a obnoveni hodnoty z $_POST
+     * Set input name and restore value from POST data
      *
-     * @param string $name nazev klice
-     * @param string|null $else vychozi hodnota
-     * @param bool $else_entities escapovat hodnotu $else 1/0
+     * @param string $name input name
+     * @param string|null $else default value
+     * @param bool $else_entities escape HTML in $else 1/0
      */
     static function restorePostValueAndName(string $name, ?string $else = null, bool $else_entities = true): string
     {
@@ -104,12 +101,12 @@ abstract class Form
     }
 
     /**
-     * Obnoveni hodnoty prvku podle stavu $_GET
+     * Restore input value from GET data
      *
-     * @param string $name nazev klice
-     * @param string|null $else vychozi hodnota
-     * @param bool $param vykreslit jako atribut ' value=".."' 1/0
-     * @param bool $else_entities escapovat hodnotu $else 1/0
+     * @param string $name input name
+     * @param string|null $else default value
+     * @param bool $param output a "value" attribute instead of just the value 1/0
+     * @param bool $else_entities escape HTML in $else 1/0
      */
     static function restoreGetValue(string $name, ?string $else = null, bool $param = true, bool $else_entities = true): string
     {
@@ -117,11 +114,11 @@ abstract class Form
     }
 
     /**
-     * Nastaveni nazvu prvku a obnoveni hodnoty z $_GET
+     * Set input name and restore value from GET data
      *
-     * @param string $name nazev klice
-     * @param string|null $else vychozi hodnota
-     * @param bool $else_entities escapovat hodnotu $else 1/0
+     * @param string $name input name
+     * @param string|null $else default value
+     * @param bool $else_entities escape HTML in $else 1/0
      */
     static function restoreGetValueAndName(string $name, ?string $else = null, bool $else_entities = true): string
     {
@@ -129,13 +126,13 @@ abstract class Form
     }
 
     /**
-     * Obnoveni hodnoty prvku na zaklade hodnoty z pole
+     * Restore input value based on submitted data
      *
-     * @param array $values pole s hodnotami
-     * @param string $key nazev klice
-     * @param string|null $else vychozi hodnota
-     * @param bool $param vykreslit jako atribut ' value=".."' 1/0
-     * @param bool $else_entities escapovat hodnotu $else 1/0
+     * @param array $values submitted data
+     * @param string $key input name
+     * @param string|null $else default value
+     * @param bool $param output a "value" attribute instead of just the value 1/0
+     * @param bool $else_entities escape HTML in $else 1/0
      */
     static function restoreValue(array $values, string $key, ?string $else = null, bool $param = true, bool $else_entities = true): string
     {
@@ -155,23 +152,21 @@ abstract class Form
     }
 
     /**
-     * Vykreslit aktualni POST data jako serii skrytych formularovych prvku
+     * Render current POST data as hidden inputs
      *
-     * XSRF token je automaticky vynechan.
+     * XSRF token is excluded.
      *
-     * @see \Sunlight\Util\Arr::filterKeys()
+     * @see Arr::filterKeys()
      */
-    static function renderHiddenPostInputs(?string $include = null, ?string $exclude = null, array $excludeList = []): string
+    static function renderHiddenPostInputs(?string $includedPrefix = null, ?string $excludedPrefix = null, array $excludedKeys = []): string
     {
-        $excludeList[] = '_security_token';
+        $excludedKeys[] = '_security_token';
 
-        return self::renderHiddenInputs(Arr::filterKeys($_POST, $include, $exclude, $excludeList));
+        return self::renderHiddenInputs(Arr::filterKeys($_POST, $includedPrefix, $excludedPrefix, $excludedKeys));
     }
 
     /**
-     * Vykreslit dana data jako serii skrytych formularovych prvku
-     *
-     * @param array $data data
+     * Render data as hidden inputs
      */
     static function renderHiddenInputs(array $data): string
     {
@@ -190,16 +185,12 @@ abstract class Form
     }
 
     /**
-     * Vykreslit 1 nebo vice skrytych prvku formulare pro danou hodnotu
-     *
-     * @param string $key aktualni klic
-     * @param mixed $value hodnota
-     * @param array $pkeys nadrazene klice
+     * Render 1 or more hidden inputs
      */
-    static function renderHiddenInput(string $key, $value, array $pkeys = []): string
+    static function renderHiddenInput(string $key, $value, array $parentKeys = []): string
     {
         if (is_array($value)) {
-            // pole
+            // array
             $output = '';
             $counter = 0;
 
@@ -207,29 +198,29 @@ abstract class Form
                 if ($counter > 0) {
                     $output .= "\n";
                 }
-                $output .= self::renderHiddenInput($key, $vvalue, array_merge($pkeys, [$vkey]));
+                $output .= self::renderHiddenInput($key, $vvalue, array_merge($parentKeys, [$vkey]));
                 ++$counter;
             }
 
             return $output;
         }
 
-        // hodnota
+        // value
         $name = _e($key);
-        if (!empty($pkeys)) {
-            $name .= _e('[' . implode('][', $pkeys) . ']');
+        if (!empty($parentKeys)) {
+            $name .= _e('[' . implode('][', $parentKeys) . ']');
         }
 
         return '<input type="hidden" name="' . $name . '" value="' . _e($value) . '">';
     }
 
     /**
-     * Sestavit kod inputu pro vyber casu
+     * Render inputs for date-time selection
      *
-     * @param string $name identifikator casove hodnoty
-     * @param int|null $timestamp cas, -1 (= aktualni) nebo null (= nevyplneno)
-     * @param bool $updatebox zobrazit checkbox pro nastaveni na aktualni cas pri ulozeni
-     * @param bool $updateboxchecked zaskrtnuti checkboxu 1/0
+     * @param string $name input name
+     * @param int|null $timestamp pre-filled date and time value
+     * @param bool $updatebox allow setting the date and time value to current 1/0
+     * @param bool $updateboxchecked enable setting date and time value to current by default 1/0
      */
     static function editTime(string $name, ?int $timestamp = null, bool $updatebox = false, bool $updateboxchecked = false): string
     {
@@ -240,9 +231,6 @@ abstract class Form
         ]);
 
         if ($output === '') {
-            if ($timestamp === -1) {
-                $timestamp = time();
-            }
             if ($timestamp !== null) {
                 $timestamp = getdate($timestamp);
             } else {
@@ -264,10 +252,10 @@ abstract class Form
     }
 
     /**
-     * Nacist casovou hodnotu vytvorenou a odeslanou pomoci {@see Form::editTime()}
+     * Load date-time value submitted by {@see Form::editTime()}
      *
-     * @param string $name identifikator casove hodnoty
-     * @param int|null $default vychozi casova hodnota pro pripad chyby
+     * @param string $name input name
+     * @param int|null $default default in case of invalid value
      */
     static function loadTime(string $name, ?int $default = null): ?int
     {
@@ -300,45 +288,40 @@ abstract class Form
     }
 
     /**
-     * Sestaveni formulare
+     * Render a form
      *
-     * Mozne klice v $options:
-     * -----------------------
-     * name (-)             name atribut formulare
-     * method (post)        method atribut formulare
-     * action (-)           action atribut formulare
-     * autocomplete (1)     autocomplete atribut formulare (on/off)
-     * enctype (-)          enctype atribut formulare
-     * multipart (0)        nastavit enctype na "multipart/form-data"
-     * id (-)               id atribut formulare
-     * class (-)            class atribut formulare
-     * embedded (0)         nevykreslovat <form> tag ani submit radek 1/0
-     * table_attrs          vlastni HTML vlozene na konec <table> tagu
-     * table_append         vlastni HTML vlozene pred </table>
-     * form_append          vlastni HTML vlozene pred </form>
+     * Supported $options:
+     * --------------------------------------------------------------
+     * name (-)             name attribute
+     * method (post)        method attribute
+     * action (-)           action attribute
+     * autocomplete (-)     autocomplete attribute
+     * enctype (-)          enctype attribute
+     * multipart (0)        set enctype to "multipart/form-data"
+     * id (-)               id attribute
+     * class (-)            class attribute
+     * embedded (0)         don't render <form> tag and XSRF input
+     * table_attrs          custom HTML at the end of the <table> tag
+     * table_append         custom HTML before </table>
+     * form_append          custom HTML before </form>
      *
-     * Format $cells:
-     * --------------
-     *  array(
-     *      array(
-     *          label       => popisek
-     *          content     => obsah
-     *          top         => zarovnani nahoru 1/0
-     *          class       => class atribut pro <tr>
-     *      ),
-     *      ...
-     *  )
+     * Format of a single row in $rows:
+     * -----------------------------------------
+     * label (-)        row albel
+     * content (-)      row content
+     * top (0)          align the row to the top
+     * class (-)        custom <tr> attribute
      *
-     * - radek je preskocen, pokud je obsah i popisek prazdny
-     * - pokud je label null, zabere bunka s obsahem cely radek
-     * - {@see Form::getSubmitRow()}
+     * - if both label and content is empty, the row is skipped
+     * - if label is null, the content cell will span the entire row
+     * - use {@see Form::getSubmitRow()} to add a submit button
      *
-     * @param array $options parametry formulare (viz popis funkce)
-     * @param array $rows pole s radky (viz popis funkce)
+     *
+     * @param array $options
+     * @param array[] $rows
      */
     static function render(array $options, array $rows): string
     {
-        // vychozi parametry
         $options += [
             'name' => null,
             'method' => 'post',
@@ -367,14 +350,14 @@ abstract class Form
         }
 
         if ($extend_buffer !== '') {
-            // vykresleni pretizeno
+            // rendered by plugin
             return $extend_buffer;
         }
 
-        // vykresleni
+        //  render
         $output = '';
 
-        // form tag
+        // <form>
         if (!$options['embedded']) {
             $output .= '<form';
 
@@ -388,22 +371,22 @@ abstract class Form
         }
         $output .= $options['form_prepend'];
 
-        // zacatek tabulky
+        // <table>
         $output .= "<table{$options['table_attrs']}>\n";
         $output .= $options['table_prepend'];
 
-        // radky
-        $useColspan = self::rowsHaveLabel($rows);
+        // rows
+        $useColspan = self::anyRowHasLabel($rows);
 
         foreach ($rows as $row) {
             $output .= self::renderRow($row, $useColspan);
         }
 
-        // konec tabulky
+        // </table>
         $output .= $options['table_append'];
         $output .= "</table>\n";
 
-        // konec formulare
+        // </form>
         $output .= $options['form_append'];
         if (!$options['embedded']) {
             $output .= Xsrf::getInput();
@@ -414,7 +397,14 @@ abstract class Form
     }
 
     /**
-     * Sestavit radek s odesilacim tlacitkem
+     * Create a form row with a submit button
+     *
+     * Supported $options:
+     * -------------------------------------
+     * label ('')   row label
+     * name (-)     submit button name
+     * text         submit button text
+     * append       HTML after submit button
      */
     static function getSubmitRow(array $options = []): array
     {
@@ -424,13 +414,10 @@ abstract class Form
                 . (isset($options['name']) ? ' name="' . _e($options['name']) . '"' : '')
                 . ' value="' . _e($options['text'] ?? _lang('global.send')) . '">'
                 . ($options['append'] ?? ''),
-            '_submit' => true, // oznaceni pro ucely pluginu
+            '_submit' => true, // mark the row for plugin purposes
         ];
     }
 
-    /**
-     * Vykreslit radek tabulky formulare
-     */
     private static function renderRow(array $row, bool $useColspan): string
     {
         $row += [
@@ -443,33 +430,33 @@ abstract class Form
             $row['class'] .= ($row['class'] !== '' ? ' ' : '') . 'valign-top';
         }
 
-        // prazdny radek?
+        // skip empty rows
         if (empty($row['label']) && empty($row['content'])) {
             return '';
         }
 
-        // zacatek radku
+        // <tr>
         $output = '<tr' . ($row['class'] !== '' ? ' class="' . $row['class'] . '"' : '') . ">\n";
 
-        // popisek
+        // label
         if ($row['label'] !== null) {
             $output .= "<th>{$row['label']}</th>\n";
         }
 
-        // obsah
+        // content
         $output .= '<td';
         if ($row['label'] === null && $useColspan) {
             $output .= ' colspan="2"';
         }
         $output .= ">{$row['content']}</td>\n";
 
-        // konec radku
+        // </tr>
         $output .= "</tr>\n";
 
         return $output;
     }
 
-    private static function rowsHaveLabel(array $rows): bool
+    private static function anyRowHasLabel(array $rows): bool
     {
         foreach ($rows as $row) {
             if (isset($row['label'])) {

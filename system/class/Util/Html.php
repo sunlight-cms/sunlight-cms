@@ -5,9 +5,7 @@ namespace Sunlight\Util;
 abstract class Html
 {
     /**
-     * Prevest entity zpet na HTML znaky
-     *
-     * @param string $input vstupni retezec
+     * Convert HTML entities back to normal characters
      */
     static function unescape(string $input): string
     {
@@ -21,12 +19,7 @@ abstract class Html
     }
 
     /**
-     * Orezat HTML na pozadovanou delku
-     *
-     * Je-li kod uriznut uprostred zapisu HTML entity, je tato entita odstranena.
-     *
-     * @param string $html vstupni HTML kod
-     * @param int $length pozadovana delka
+     * Cut text that may include HTML entities to the desired length
      */
     static function cut(string $html, int $length): string
     {
@@ -38,31 +31,10 @@ abstract class Html
     }
 
     /**
-     * Odstranit nekompletni HTML entitu z konce retezce
-     *
-     * @param string $string vstupni retezec
+     * Remove incomplete HTML entity from the end of a string
      */
     static function fixTrailingHtmlEntity(string $string): string
     {
         return preg_replace('{\\s*&[^;]*$}D', '', $string);
-    }
-
-    /**
-     * Prevet HTML znaky vsech polozek v poli na entity
-     *
-     * Klice jsou zachovany.
-     *
-     * @param array $input vstupni pole
-     * @param bool $double_encode prevadet i jiz existujici entity 1/0
-     */
-    static function escapeArrayItems(array $input, bool $double_encode = true): array
-    {
-        $output = [];
-
-        foreach ($input as $key => $value) {
-            $output[$key] = _e((string) $value, $double_encode);
-        }
-
-        return $output;
     }
 }

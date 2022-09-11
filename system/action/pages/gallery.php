@@ -9,7 +9,7 @@ use Sunlight\Settings;
 
 defined('SL_ROOT') or exit;
 
-// vychozi nastaveni
+// defaults
 if ($_page['var1'] === null) {
     $_page['var1'] = Settings::get('galdefault_per_row');
 }
@@ -23,21 +23,20 @@ if ($_page['var4'] === null) {
     $_page['var4'] = Settings::get('galdefault_thumb_w');
 }
 
-// titulek
+// title
 $_index->title = $_page['title'];
 
-// obsah
+// content
 Extend::call('page.gallery.content.before', $extend_args);
 if ($_page['content'] != '') $output .= Hcm::parse($_page['content']) . "\n\n<div class=\"hr gallery-hr\"><hr></div>\n\n";
 Extend::call('page.gallery.content.after', $extend_args);
 
-// obrazky
+// images
 $paging = Paginator::render($_index->url, $_page['var2'], DB::table('gallery_image'), 'home=' . $id);
 $images = DB::query('SELECT * FROM ' . DB::table('gallery_image') . ' WHERE home=' . $id . ' ORDER BY ord ' . $paging['sql_limit']);
 $images_number = DB::size($images);
 
 if ($images_number != 0) {
-
     $usetable = $_page['var1'] != -1;
     if (Paginator::atTop()) {
         $output .= $paging['paging'];
@@ -48,7 +47,7 @@ if ($images_number != 0) {
         $output .= "<div class=\"gallery\">\n";
     }
 
-    // obrazky
+    // images
     $counter = 0;
     $cell_counter = 0;
     while ($img = DB::row($images)) {
@@ -56,11 +55,13 @@ if ($images_number != 0) {
             $output .= "<tr>\n";
         }
 
-        // bunka
+        // cell
         if ($usetable) {
             $output .= '<td>';
         }
+
         $output .= Gallery::renderImage($img, $id, $_page['var4'], $_page['var3']);
+
         if ($usetable) {
             $output .= '</td>';
         }
@@ -82,7 +83,6 @@ if ($images_number != 0) {
     if (Paginator::atBottom()) {
         $output .= $paging['paging'];
     }
-
 } else {
     $output .= _lang('gallery.no_images');
 }

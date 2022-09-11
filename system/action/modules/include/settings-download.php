@@ -36,7 +36,6 @@ if (isset($_POST['download'])) {
         IpLog::update(IpLog::ANTI_SPAM);
         $tmpFile = (new UserData(User::getId(), $options))->generate();
         Response::downloadFile($tmpFile->getPathname(), sprintf('%s-%s.zip', User::getUsername(), date('Y-m-d')));
-        exit;
     } else {
         $output .= Message::list($errors);
     }

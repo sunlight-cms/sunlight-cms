@@ -114,19 +114,17 @@ abstract class Page
     private static $childrenCache = [];
 
     /**
-     * Nalezt stranku a nacist jeji data
+     * Find a page and load its data
      *
-     * Oddelovace jsou ignorovany.
-     *
-     * @param array $segments segmenty
-     * @param string|null $extra_columns sloupce navic (automaticky oddeleno carkou)
-     * @param string|null $extra_joins joiny navic (automaticky oddeleno mezerou)
-     * @param string|null $extra_conds podminky navic (automaticky oddeleno pomoci " AND (*conds*)")
-     * @return array|bool false pri nenalezeni
+     * @param array $segments segments
+     * @param string|null $extra_columns extra columns to load (automatically separated by a comma)
+     * @param string|null $extra_joins extra joins (automatically separated by a space)
+     * @param string|null $extra_conds extra conditions (automatically separated by ' AND ')
+     * @return array|false
      */
     static function find(array $segments, ?string $extra_columns = null, ?string $extra_joins = null, ?string $extra_conds = null)
     {
-        // zaklad dotazu
+        // basic query
         $sql = 'SELECT page.*';
         if ($extra_columns !== null) {
             $sql .= ',' . $extra_columns;
@@ -136,18 +134,18 @@ abstract class Page
             $sql .= ' ' . $extra_joins;
         }
 
-        // podminky
+        // conditions
         $conds = [];
 
-        // ignorovat oddelovace
+        // ignore separators
         $conds[] = 'page.type!=' . self::SEPARATOR;
 
-        // predane podminky
+        // extra conditions
         if ($extra_conds !== null) {
-            $conds[] = '(' . $conds . ')';
+            $conds[] = '(' . $extra_conds . ')';
         }
 
-        // identifikator
+        // identifier
         if (!empty($segments)) {
             $slugs = [];
             for ($i = count($segments); $i > 0; --$i) {
@@ -159,29 +157,21 @@ abstract class Page
             $conds[] = 'page.id=' . DB::val($indexPageId);
         }
 
-        // dokoncit dotaz
+        // finalize query
         $sql .= ' WHERE ' . implode(' AND ', $conds);
         if (!empty($segments)) {
             $sql .= ' ORDER BY LENGTH(page.slug) DESC';
         }
         $sql .= ' LIMIT 1';
 
-        // nacist data
+        // load data
         return DB::queryRow($sql);
     }
 
     /**
-     * Ziskat data aktivni stranky
+     * Get data of active page
      *
-     * Pouzitelne v kontextu webu.
-     * Vraci pole v tomto formatu:
-     *
-     * array(
-     *     cislo (ID stranky) nebo NULL,
-     *     pole (vsechna data stranky) nebo NULL,
-     * )
-     *
-     * @return array id, [data]
+     * @return array{0: numeric-string|null, 1: array|null}
      */
     static function getActive(): array
     {
@@ -201,56 +191,54 @@ abstract class Page
     }
 
     /**
-     * Zjistit, zda je alespon jedna z uvedenych stranek aktivni
+     * See if any of the given page IDs is the active page
      *
-     * @param int[] $ids seznam ID
-     * @param bool $children kontrolovat take potomky danych stranek
+     * @param int[] $ids list of IDs
+     * @param bool $children check page children 1/0
      */
     static function isActive(array $ids, bool $children = false): bool
     {
         $result = false;
 
-        // zjistit aktualni stranku
+        // determine current page
         [$currentId, $currentData] = self::getActive();
 
-        // stranka bez ID (napr. modul)
         if ($currentId === null) {
             return false;
         }
 
+        // determine current level
         if ($currentData !== null) {
             $currentLevel = $currentData['node_level'];
         } else {
             $currentLevel = null;
         }
 
-        // kontrola shody ID
+        // check IDs
         foreach ($ids as $id) {
             if ($currentId == $id) {
-                $result = true;
-                break;
+                return true;
             }
         }
 
-        // kontrola potomku
-        if (!$result && $children) {
+        // check children
+        if ($children) {
             $idMap = array_flip($ids);
 
             foreach (self::getPath($currentId, $currentLevel) as $page) {
                 if (isset($idMap[$page['id']])) {
-                    $result = true;
-                    break;
+                    return true;
                 }
             }
         }
 
-        return $result;
+        return false;
     }
 
     /**
-     * Ziskat typy stranek
+     * Get page types
      *
-     * @return array pole nazvu
+     * @return array<int, string> number => name
      */
     static function getTypes(): array
     {
@@ -268,9 +256,9 @@ abstract class Page
     }
 
     /**
-     * Ziskat typy registrovanych plugin stranek
+     * Get types of registered plugin pages
      *
-     * @return array idt => label
+     * @return array<string, string> idt => label
      */
     static function getPluginTypes(): array
     {
@@ -285,15 +273,15 @@ abstract class Page
     }
 
     /**
-     * Ziskat data konkretni stranky
+     * Get data of a specific page
      *
-     * @param bool $addTreeColumns pridat vychozi sloupce pro strom
-     * @return array|bool false pri selhani
+     * @param bool $addTreeColumns load tree columns as well 1/0
+     * @return array|false
      */
     static function getData(int $id, array $columns, bool $addTreeColumns = false)
     {
-        if ($id === null || $id < 1) {
-            return false;
+        if ($id < 1) {
+            return null;
         }
 
         if ($addTreeColumns) {
@@ -304,7 +292,7 @@ abstract class Page
     }
 
     /**
-     * Ziskat tree reader pro strom stranek
+     * Get page tree manager
      */
     static function getTreeManager(): TreeManager
     {
@@ -316,7 +304,7 @@ abstract class Page
     }
 
     /**
-     * Ziskat tree reader pro strom stranek
+     * Get page tree reader
      */
     static function getTreeReader(): TreeReader
     {
@@ -328,25 +316,25 @@ abstract class Page
     }
 
     /**
-     * Nacist jednu uroven stranek
+     * Load a single level of pages
      *
-     * @param int|null $parentNodeId ID nadrazene stranky nebo null
-     * @param string|null $sqlCond SQL podminka
-     * @param array|null $extraColumns pole s extra sloupci, ktere se maji nacist
+     * @param int|null $parentPageId parent page ID or null
+     * @param string|null $sqlCond SQL condition
+     * @param array|null $extraColumns list of additional columns to load
      */
-    static function getSingleLevel(?int $parentNodeId, ?string $sqlCond = null, ?array $extraColumns = null): array
+    static function getSingleLevel(?int $parentPageId, ?string $sqlCond = null, ?array $extraColumns = null): array
     {
-        if ($parentNodeId === null) {
+        if ($parentPageId === null) {
             $where = 'node_parent IS NULL';
         } else {
-            $where = 'node_parent=' . DB::val($parentNodeId);
+            $where = 'node_parent=' . DB::val($parentPageId);
         }
 
         if ($sqlCond !== null) {
             $where .= ' AND (' . $sqlCond . ')';
         }
 
-        $columns = DB::idtList(array_merge(self::getTreeReader()->getSystemColumns(), self::prepareTreeColumns($extraColumns)));
+        $columns = DB::idtList(array_merge(self::getTreeReader()->getTreeColumns(), self::prepareTreeColumns($extraColumns)));
         $query = DB::query('SELECT ' . $columns . ' FROM ' . DB::table('page') . ' WHERE ' . $where . ' ORDER BY ord');
 
         $pages = [];
@@ -359,81 +347,81 @@ abstract class Page
     }
 
     /**
-     * Nacist strom stranek
+     * Load a page tree
      *
-     * @param int|null $nodeId ID vychozi stranky
-     * @param int|null $nodeDepth hloubka stromu, je-li znama
-     * @param TreeFilterInterface|null $filter filtr polozek
-     * @param array|null $extraColumns pole s extra sloupci, ktere se maji nacist
+     * @param int|null $pageId only load this page and its children
+     * @param int|null $depth depth, if known
+     * @param TreeFilterInterface|null $filter page filter
+     * @param array|null $extraColumns list of additional columns to load
      */
     static function getTree(
-        ?int $nodeId = null,
-        ?int $nodeDepth = null,
+        ?int $pageId = null,
+        ?int $depth = null,
         ?TreeFilterInterface $filter = null,
         ?array $extraColumns = null
-    ) : array{
+    ): array {
         return self::getTreeReader()->getTree(
-            self::getTreeReaderOptions($nodeId, $nodeDepth, $filter, $extraColumns)
+            self::getTreeReaderOptions($pageId, $depth, $filter, $extraColumns)
         );
     }
 
     /**
-     * Nacist plochy strom stranek
+     * Load a flat page tree
      *
-     * @param int|null $nodeId ID vychozi stranky
-     * @param int|null $nodeDepth hloubka stromu, je-li znama
-     * @param TreeFilterInterface|null $filter filtr polozek (asociativni pole)
-     * @param array|null $extraColumns pole s extra sloupci, ktere se maji nacist
+     * @param int|null $pageId only load this page and its children
+     * @param int|null $depth depth, if known
+     * @param TreeFilterInterface|null $filter page filter
+     * @param array|null $extraColumns list of additional columns to load
      */
     static function getFlatTree(
-        ?int $nodeId = null,
-        ?int $nodeDepth = null,
+        ?int $pageId = null,
+        ?int $depth = null,
         ?TreeFilterInterface $filter = null,
         array $extraColumns = null
-    ) : array{
+    ) : array {
         return self::getTreeReader()->getFlatTree(
-            self::getTreeReaderOptions($nodeId, $nodeDepth, $filter, $extraColumns)
+            self::getTreeReaderOptions($pageId, $depth, $filter, $extraColumns)
         );
     }
 
     /**
-     * Nacist potomky dane stranky
+     * Load children of the given page
      *
-     * @param int|null $nodeId ID stranky
-     * @param int|null $nodeDepth hloubka stranky (node_depth), je-li znama
-     * @param bool $flat vratit plochy strom 1/0
-     * @param TreeFilterInterface|null $filter filtr polozek (asociativni pole)
-     * @param array|null $extraColumns pole s extra sloupci, ktere se maji nacist
+     * @param int|null $pageId page ID or NULL (root)
+     * @param int|null $depth depth, if known
+     * @param bool $flat return a flat tree 1/0
+     * @param TreeFilterInterface|null $filter page filter
+     * @param array|null $extraColumns list of additional columns to load
      */
     static function getChildren(
-        ?int $nodeId,
-        ?int $nodeDepth = null,
+        ?int $pageId,
+        ?int $depth = null,
         bool $flat = true,
         ?TreeFilterInterface $filter = null,
         ?array $extraColumns = null
-    ) : array{
+    ): array{
         $canBeCached = $filter === null && $extraColumns === null;
 
-        if ($canBeCached && isset(self::$childrenCache[$nodeId])) {
-            return self::$childrenCache[$nodeId];
+        if ($canBeCached && isset(self::$childrenCache[$pageId])) {
+            return self::$childrenCache[$pageId];
         }
 
         $children = self::getTreeReader()->getChildren(
-            self::getTreeReaderOptions($nodeId, $nodeDepth, $filter, $extraColumns),
+            self::getTreeReaderOptions($pageId, $depth, $filter, $extraColumns),
             $flat
         );
         
         if ($canBeCached) {
-            self::$childrenCache[$nodeId] = $children;
+            self::$childrenCache[$pageId] = $children;
         }
 
         return $children;
     }
 
     /**
-     * Nacist korenove stranky (uroven=0)
+     * Load root pages
      *
-     * @param array|null $extraColumns pole s extra sloupci, ktere se maji nacist
+     * @param array|null $extraColumns list of additional columns to load
      */
     static function getRootPages(TreeFilterInterface $filter = null, ?array $extraColumns = null): array
     {
@@ -443,11 +431,11 @@ abstract class Page
     }
 
     /**
-     * Nacist cestu ("drobecky")
+     * Load a path ("breadcrumbs")
      *
-     * @param int $id identifikator stranky
-     * @param int|null $level uroven stranky (node_level), je-li znama
-     * @param array|null $extraColumns pole s extra sloupci, ktere se maji nacist
+     * @param int $id page identifier
+     * @param int|null $level page level, if known
+     * @param array|null $extraColumns list of additional columns to load
      */
     static function getPath(int $id, ?int $level = null, ?array $extraColumns = null): array
     {
@@ -471,7 +459,7 @@ abstract class Page
     }
 
     /**
-     * Pripravit seznam sloupcu pro nacteni stromu
+     * Prepare a list of tree columns
      */
     static function prepareTreeColumns(?array $extraColumns = null): array
     {
@@ -489,13 +477,13 @@ abstract class Page
         return $columns;
     }
 
-    private static function getTreeReaderOptions(?int $nodeId, ?int $nodeDepth, ?TreeFilterInterface $filter = null, ?array $extraColumns = null): TreeReaderOptions
+    private static function getTreeReaderOptions(?int $pageId, ?int $depth, ?TreeFilterInterface $filter = null, ?array $extraColumns = null): TreeReaderOptions
     {
         $options = new TreeReaderOptions();
 
         $options->columns = self::prepareTreeColumns($extraColumns);
-        $options->nodeId = $nodeId;
-        $options->nodeDepth = $nodeDepth;
+        $options->nodeId = $pageId;
+        $options->nodeDepth = $depth;
         $options->filter = $filter;
         $options->sortBy = 'ord';
 

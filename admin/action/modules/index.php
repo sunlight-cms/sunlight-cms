@@ -13,8 +13,6 @@ use Sunlight\VersionChecker;
 
 defined('SL_ROOT') or exit;
 
-/* ---  priprava promennych  --- */
-
 $admin_index_cfg = Settings::getMultiple([
     'admin_index_custom',
     'admin_index_custom_pos',
@@ -32,9 +30,7 @@ if (mb_strlen($software) > 16) {
     $software = substr($software, 0, 13) . '...';
 }
 
-/* ---  vystup  --- */
-
-// priprava vlastniho obsahu indexu
+// prepare custom content
 $custom = '';
 if ($admin_index_cfg['admin_index_custom'] !== '') {
     $custom = $admin_index_cfg['admin_index_custom'];
@@ -44,14 +40,14 @@ Extend::call('admin.index.custom', [
     'position' => &$admin_index_cfg['admin_index_custom_pos'],
 ]);
 
-// upozorneni na logout
+// logout warning
 $logout_warning = '';
 $maxltime = ini_get('session.gc_maxlifetime');
 if (!empty($maxltime) && !isset($_COOKIE[Core::$appId . '_persistent_key'])) {
     $logout_warning = Admin::note(_lang('admin.index.logoutwarn', ['%minutes%' => round($maxltime / 60)]));
 }
 
-// vystup
+// output
 $output .= '
 <table id="index-table">
 
@@ -112,7 +108,7 @@ $output .= '
 // extend
 $output .= Extend::buffer('admin.index.after_table');
 
-// zpravy
+// messages
 $messages = [];
 
 if (Core::DIST === 'BETA') {
@@ -120,7 +116,7 @@ if (Core::DIST === 'BETA') {
 }
 
 if (Core::$debug) {
-    // vyvojovy rezim
+    // debug mode
     $messages[] = Message::warning(_lang('admin.index.debugwarn'));
 }
 
@@ -144,12 +140,12 @@ $output .= '<h2>' . _lang('admin.index.messages') . "</h2>\n";
 $output .= implode($messages);
 $output .= "</div>\n";
 
-// editace
+// edit link
 if (User::$group['id'] == User::ADMIN_GROUP_ID) {
     $output .= '<p class="text-right"><a class="button" href="' . _e(Router::admin('index-edit')) . '"><img src="' . _e(Router::path('admin/images/icons/edit.png')) . '" alt="edit" class="icon">' . _lang('admin.index.edit.link') . '</a></p>';
 }
 
-// kontrola funkcnosti htaccess
+// .htaccess check
 $output .= '<script>
 Sunlight.admin.indexCheckHtaccess(
     ' . json_encode(Core::getBaseUrl()->getPath() . '/vendor/autoload.php?_why=this_is_a_test_if_htaccess_works') . ',

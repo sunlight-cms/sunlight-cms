@@ -8,13 +8,13 @@ use Sunlight\Router;
 abstract class PageMenu
 {
     /**
-     * Vykreslit menu
+     * Render a menu
      *
-     * @param array $flatPageTree plochy strom stranek, musi obsahovat sloupce z {@see PageMenu::getRequiredExtraColumns()}
-     * @param int|null $activeId ID aktivni stranky nebo null
-     * @param string|null $rootClass CSS trida korenoveho kontejneru
-     * @param string|null $pageEvent nazev extend udalosti pro jednotlive stranky
-     * @param string|null $menuType identifikator typu menu
+     * @param array $flatPageTree flat page tree, must contain columns from {@see PageMenu::getRequiredExtraColumns()}
+     * @param int|null $activeId active page ID or null
+     * @param string|null $rootClass container CSS class
+     * @param string|null $pageEvent extend event name
+     * @param string|null $menuType menu type identifier (for events)
      */
     static function render(array $flatPageTree, ?int $activeId = null, ?string $rootClass = null, ?string $pageEvent = null, ?string $menuType = null): string
     {
@@ -22,7 +22,7 @@ abstract class PageMenu
             return '';
         }
 
-        // sestavit mapu drobecku
+        // build trail map
         $trailMap = [];
         if ($activeId !== null) {
             foreach ($flatPageTree as $page) {
@@ -36,7 +36,7 @@ abstract class PageMenu
             }
         }
 
-        // vykreslit menu
+        // render menu
         $out = '';
         $currentLevel = null;
         $rootLevel = null;
@@ -49,7 +49,7 @@ abstract class PageMenu
             }
             $visualLevel = $pageLevel - $rootLevel;
 
-            // otevreni/uzavreni tagu dle urovne
+            // open/close tags depending on level
             if ($currentLevel === null || $pageLevel > $currentLevel) {
                 $containerClass = 'menu level-' . $visualLevel;
                 if ($currentLevel !== null) {
@@ -69,7 +69,7 @@ abstract class PageMenu
                 }
             }
 
-            // priprava trid
+            // prepare classes
             $classes = ['item', 'level-' . $visualLevel];
             if ($page['id'] == $activeId) {
                 $classes[] = 'active';
@@ -78,7 +78,7 @@ abstract class PageMenu
                 $classes[] = 'trail';
             }
 
-            // priprava odkazu
+            // prepare link
             $url = null;
             $attrs = '';
             if (
@@ -91,7 +91,7 @@ abstract class PageMenu
                     'attrs' => &$attrs,
                 ])) === ''
             ) {
-                // vychozi implementace
+                // default implementation
                 if ($url === null) {
                     if ($page['type'] == Page::LINK) {
                         $url = _e($page['link_url'] ?? '');
@@ -105,13 +105,13 @@ abstract class PageMenu
                 $link = '<a href="' . _e($url) . "\"{$attrs}>{$page['title']}</a>";
             }
 
-            // vykresleni polozky
+            // render item
             $out .= '    <li class="' . _e(implode(' ', $classes)) . "\">{$link}";
 
             $currentLevel = $pageLevel;
         }
 
-        // uzavreni tagu
+        // close tag
         if ($currentLevel !== null) {
             $out .= "</li>\n";
 
@@ -128,7 +128,7 @@ abstract class PageMenu
     }
 
     /**
-     * Ziskat seznam extra sloupcu potrebnych k vykresleni menu
+     * Get extra columns required for menu rendering
      */
     static function getRequiredExtraColumns(): array
     {

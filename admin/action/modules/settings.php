@@ -15,38 +15,36 @@ use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
-/* --- priprava --- */
-
 $saved = (bool) Request::get('saved');
 
-// nacteni nastaveni
+// load settings
 $settings = DB::queryRows('SELECT var,val FROM ' . DB::table('setting'), 'var', 'val');
 
-// vyber zpusobu zobrazeni titulku
+// title type choices
 $titletype_choices = [];
 for ($x = 1; $x < 3; ++$x) {
     $titletype_choices[$x] = _lang('admin.settings.info.titletype.' . $x);
 }
 
-// vyber schematu administrace
+// admin scheme choicces
 $adminscheme_choices = [];
 for ($x = 0; $x < 11; ++$x) {
     $adminscheme_choices[$x] = _lang('admin.settings.admin.adminscheme.' . $x);
 }
 
-// vyber zpusobu hodnoceni clanku
+// article rate mode choices
 $ratemode_choices = [];
 for ($x = 0; $x < 3; ++$x) {
     $ratemode_choices[$x] = _lang('admin.settings.articles.ratemode.' . $x);
 }
 
-// vyber zobrazeni strankovani
+// paging mode choices
 $pagingmode_choices = [];
 for ($x = 1; $x < 4; ++$x) {
     $pagingmode_choices[$x] = _lang('admin.settings.paging.pagingmode.' . $x);
 }
 
-// konfigurace editovatelnych direktiv
+// define editable settings
 $editable_settings = [
     'main' => [
         'items' => [
@@ -178,8 +176,7 @@ Extend::call('admin.settings', [
     'current' => &$settings,
 ]);
 
-/* ---  ulozeni  --- */
-
+// save
 if (!empty($_POST)) {
 
     $reload = false;
@@ -192,12 +189,12 @@ if (!empty($_POST)) {
                 continue;
             }
 
-            // nacist odeslanou hodnotu
+            // load value
             if ($item['format'] === 'bool') {
                 // checkbox
                 $value = Form::loadCheckbox($item['name']) ? '1' : '0';
             } else {
-                // hodnota
+                // value
                 $value = trim(Request::post($item['name'], ''));
                 switch ($item['format']) {
                     case 'int':
@@ -208,33 +205,33 @@ if (!empty($_POST)) {
                         break;
                 }
 
-                // minimalni hodnota
+                // enforce minimum value
                 if (isset($item['min_value']) && $value < $item['min_value']) {
                     $value = $item['min_value'];
                 }
 
-                // maximalni hodnota
+                // enforce maximum value
                 if (isset($item['max_value']) && $value > $item['max_value']) {
                     $value = $item['max_value'];
                 }
 
-                // ID z tabulky
+                // ID from a table
                 if (
                     isset($item['table_id'])
                     && (!isset($item['empty_value']) || $value != $item['empty_value'])
                     && DB::count($item['table_id'], 'id=' . DB::val($value)) < 1
                 ) {
-                    // neplatne ID
+                    // invalid ID
                     continue;
                 }
 
-                // volba
+                // choice
                 if (isset($item['choices']) && !isset($item['choices'][$value])) {
-                    // neplatna volba
+                    // invalid choice
                     continue;
                 }
 
-                // transformace
+                // transformation
                 if (isset($item['transform_back'])) {
                     $value = $item['transform_back']($value);
                 }
@@ -266,8 +263,7 @@ if (!empty($_POST)) {
     }
 }
 
-/* ---  vystup  --- */
-
+// output
 $output .= ($saved ? Message::ok(_lang('admin.settings.saved')) : '') . '
 
 <form action="' . _e(Router::admin('settings')) . '" method="post">
@@ -305,17 +301,17 @@ foreach ($editable_settings as $settings_category => $settings_category_data) {
         $id = "setting_{$item['name']}";
         $value = $settings[$item['name']];
 
-        // transformace
+        // transformation
         if (isset($item['transform_to'])) {
             $value = $item['transform_to']($value);
         }
 
-        // popisek
+        // label
         $label = $item['label'] ?? _lang('admin.settings.' . $settings_category . '.' . $item['name']);
 
         // input
         if (!isset($item['input'])) {
-            // atributy
+            // attributes
             $inputAttrs = ' name="' . $item['name'] . '"';
             if (!isset($item['id']) || $item['id']) {
                 $inputAttrs .= ' id="' . $id . '"';
@@ -360,7 +356,7 @@ foreach ($editable_settings as $settings_category => $settings_category_data) {
             $input = $item['input'];
         }
 
-        // napoveda
+        // help
         if (isset($item['help'])) {
             if ($item['help'] !== false) {
                 $help = $item['help'];
@@ -374,7 +370,7 @@ foreach ($editable_settings as $settings_category => $settings_category_data) {
             $help = strtr($help, $item['help_attrs']);
         }
 
-        // polozka
+        // item
         $output .= '<tr>
     <td><label' . (!isset($item['id']) || $item['id'] ? ' for="' . $id . '"' : '') . ">{$label}</label></td>
     <td" . ($help === '' ? ' colspan="2"' : '') . ">{$input}</td>\n";
@@ -383,7 +379,7 @@ foreach ($editable_settings as $settings_category => $settings_category_data) {
         }
         $output .= "</tr>\n";
 
-        // extra napoveda
+        // extra help
         if (isset($item['extra_help'])) {
             $output .= '<tr>
     <td></td>

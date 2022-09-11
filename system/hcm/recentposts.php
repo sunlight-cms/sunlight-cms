@@ -9,8 +9,7 @@ use Sunlight\User;
 use Sunlight\Util\Arr;
 use Sunlight\Util\StringManipulator;
 
-return function ($limit = null, $stranky = '', $typ = null) {
-    // priprava
+return function ($limit = null, $pages = '', $type = null) {
     $result = '';
     if (isset($limit) && (int) $limit >= 1) {
         $limit = abs((int) $limit);
@@ -25,25 +24,23 @@ return function ($limit = null, $stranky = '', $typ = null) {
         'plugin' => Post::PLUGIN,
     ];
 
-    // nastaveni filtru
-    if (!empty($stranky)) {
-        $homes = Arr::removeValue(explode('-', $stranky), '');
+    if (!empty($pages)) {
+        $homes = Arr::removeValue(explode('-', $pages), '');
     } else {
         $homes = [];
     }
 
-    if (!empty($typ)) {
-        if (isset($post_types[$typ])) {
-            $typ = $post_types[$typ];
-        } elseif (!in_array($typ, $post_types)) {
-            $typ = Post::SECTION_COMMENT;
+    if (!empty($type)) {
+        if (isset($post_types[$type])) {
+            $type = $post_types[$type];
+        } elseif (!in_array($type, $post_types)) {
+            $type = Post::SECTION_COMMENT;
         }
-        $types = [$typ];
+        $types = [$type];
     } else {
         $types = $post_types;
     }
 
-    // dotaz
     [$columns, $joins, $cond] = Post::createFilter('post', $types, $homes);
     $userQuery = User::createQuery('post.author');
     $columns .= ',' . $userQuery['column_list'];

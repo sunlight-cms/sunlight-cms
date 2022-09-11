@@ -11,20 +11,15 @@ use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
-/* ---  priprava promennych  --- */
-
 $message = '';
 
-/* ---  akce  --- */
-
+// action
 if (isset($_POST['source'])) {
-
-    // nacteni promennych
     $source = (int) Request::post('source');
     $target = (int) Request::post('target');
     $fullmove = Form::loadCheckbox('fullmove');
 
-    // kontrola promennych
+    // check variables
     $error_log = [];
     if (DB::count('page', 'id=' . DB::val($source) . ' AND type=' . Page::CATEGORY) === 0) {
         $error_log[] = _lang('admin.content.movearts.badsource');
@@ -36,9 +31,8 @@ if (isset($_POST['source'])) {
         $error_log[] = _lang('admin.content.movearts.samecats');
     }
 
-    // aplikace
-    if (count($error_log) == 0) {
-
+    // apply
+    if (empty($error_log)) {
         if (!$fullmove) {
             $query = DB::query('SELECT id,home1,home2,home3 FROM ' . DB::table('article') . ' WHERE home1=' . $source . ' OR home2=' . $source . ' OR home3=' . $source);
             $counter = 0;
@@ -85,8 +79,7 @@ if (isset($_POST['source'])) {
 
 }
 
-/* ---  vystup  --- */
-
+// output
 $output .= $message . '
 <form class="cform" action="' . _e(Router::admin('content-movearts')) . '" method="post">'
     . _lang('admin.content.movearts.text1')

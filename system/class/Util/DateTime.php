@@ -5,10 +5,10 @@ namespace Sunlight\Util;
 abstract class DateTime
 {
     /**
-     * Formatovat cas jako HTTP-date
+     * Format date-time for HTTP
      *
      * @param int $time timestamp
-     * @param bool $relative relativne k aktualnimu casu 1/0
+     * @param bool $relative relativne to current time
      */
     static function formatForHttp(int $time, bool $relative = false): string
     {

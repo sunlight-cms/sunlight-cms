@@ -2,21 +2,18 @@
 
 namespace Sunlight\Database;
 
-/**
- * Trida obsahujici moznosti pro nacitani stromu
- */
 class TreeReaderOptions
 {
-    /** @var string[] sloupce, ktera maji byt nacteny (systemove sloupce jsou nacteny vzdy) */
+    /** @var string[] list of additional columns to load */
     public $columns = [];
-    /** @var int|null nacist pouze tento uzel a jeho potomky */
+    /** @var int|null only load this node and its children */
     public $nodeId;
-    /** @var int|null hloubka uzlu, je-li znama, pripadne limit hloubky */
+    /** @var int|null node depth, if known (can also be used to limit depth) */
     public $nodeDepth;
-    /** @var string|null nazev sloupce podle ktereho radit nebo NULL */
+    /** @var string|null name of column to use for sorting */
     public $sortBy;
-    /** @var bool radit vzestupne */
+    /** @var bool sort mode */
     public $sortAsc = true;
-    /** @var TreeFilterInterface|null filtr stromu  */
+    /** @var TreeFilterInterface|null tree filter */
     public $filter;
 }

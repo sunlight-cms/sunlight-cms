@@ -8,9 +8,7 @@ use Sunlight\Util\UrlHelper;
 abstract class GenericTemplates
 {
     /**
-     * Zformatovat ciselnout hodnotu na zaklade aktualni lokalizace
-     *
-     * @param number $number
+     * Render a number
      */
     static function renderNumber($number, int $decimals = 2): string
     {
@@ -24,16 +22,16 @@ abstract class GenericTemplates
     }
 
     /**
-     * Zformatovat timestamp na zaklade nastaveni systemu
+     * Render a time value
      *
      * @param int $timestamp UNIX timestamp
-     * @param string|null $category kategorie casu (null, article, post, activity)
+     * @param string|null $type article, post, activity or null
      */
-    static function renderTime(int $timestamp, ?string $category = null): string
+    static function renderTime(int $timestamp, ?string $type = null): string
     {
         $extend = Extend::buffer('time.format', [
             'timestamp' => $timestamp,
-            'category' => $category
+            'type' => $type
         ]);
 
         if ($extend !== '') {
@@ -44,7 +42,7 @@ abstract class GenericTemplates
     }
 
     /**
-     * Zformatovat velikost souboru
+     * Render a file size
      */
     static function renderFilesize(int $bytes): string
     {
@@ -62,59 +60,54 @@ abstract class GenericTemplates
     }
 
     /**
-     * Zobrazit IP adresu
-     *
-     * @param string $ip ip adresa
+     * Render an IP address
      */
     static function renderIp(string $ip): string
     {
         if (User::$group['id'] == User::ADMIN_GROUP_ID) {
-            // hlavni administratori vidi vzdy puvodni IP
+            // admins see the actual IP
             return $ip;
         }
 
-        return hash_hmac('md5', $ip, Core::$secret);
+        return hash_hmac('fnv1a32', $ip, Core::$secret);
     }
 
     /**
-     * Sestavit zacatek HTML dokumentu
+     * Render the beginning of an HTML document
      */
     static function renderHead(): string
     {
         $lang = _e(_lang('code.iso639-1'));
-        $generator = _e('SunLight CMS ' . Core::VERSION[0]);
 
         return <<<HTML
 <!DOCTYPE html>
 <html lang="{$lang}">
 <head>
 <meta charset="UTF-8">
-<meta name="generator" content="{$generator}">
+<meta name="generator" content="SunLight CMS">
 
 HTML;
     }
 
     /**
-     * Sestavit HTML pro vlozeni CSS a JS do <head>
+     * Render HTML to insert CSS and JS into <head>
      *
-     * Parametry v $assets:
-     * ------------------------------------------------------
-     * css          pole s cestami k css souborum
-     * js           pole s cestami k js souborum
-     * css_before   html vlozene pred css
-     * css_after    html vlozene za css
-     * js_before    html vlozene pred js
-     * js_after     html vlozene za js
-     * extend_event nazev extend udalosti pro toto sestaveni
-     *
-     * @param array $assets pole s konfiguraci assetu
+     * Parameters supported in$assets:
+     * ---------------------------------------------------
+     * meta             HTML inserted at the beginning
+     * css              array with paths to CSS files
+     * js               array with paths to JS files
+     * css_before       HTML inserted before <link> tags
+     * css_after        HTML inserted after <link> tags
+     * js_before        HTML inserted before <script> tags
+     * js_after         HTML inserted after <script> tags
+     * extend_event     extend event name
      */
     static function renderHeadAssets(array $assets): string
     {
         $html = '';
         $cacheParam = '_' . Settings::get('cacheid');
 
-        // vychozi hodnoty
         $assets += [
             'meta' => '',
             'css' => [],
@@ -125,7 +118,7 @@ HTML;
             'js_after' => '',
         ];
 
-        // extend udalost
+        // extend
         if (isset($assets['extend_event'])) {
             Extend::call($assets['extend_event'], [
                 'meta' => &$assets['meta'],
@@ -159,11 +152,9 @@ HTML;
     }
 
     /**
-     * Vykreslit seznam informaci
+     * Render a list of information
      *
-     * Kazda polozka musi byt pole o 1 nebo 2 prvcich:
-     *
-     *      array(obsah) nebo array(popisek, obsah)
+     * Each item must have 1 or 2 elements: array(content) or array(label, content)
      *
      * @param array[] $infos
      */
@@ -187,13 +178,13 @@ HTML;
     }
 
     /**
-     * Vykreslit seznam hlasek
+     * Render a list of messages
      *
-     * Podporovane klice v $options:
-     * ---------------------------------------------------------
-     * lcfirst (1)      prevest prvni znak zprav na male pismena
-     * escape (1)       escapovat HTML znaky ve zpravach
-     * show_keys (0)    vykreslit i klice pole
+     * Supported $options:
+     * -------------------------------------------------------
+     * lcfirst (1)      lowercase first letter of each message
+     * escape (1)       escape HTML in messages
+     * show_keys (0)    render array keys
      */
     static function renderMessageList(array $messages, array $options = []): string
     {
@@ -218,11 +209,11 @@ HTML;
     }
 
     /**
-     * Sestavit kod pro limitovani delky textarey javascriptem
+     * Render a script to limit a length of a textarea
      *
-     * @param int $maxlength maximalni povolena delka textu
-     * @param string $form nazev formulare
-     * @param string $name nazev textarey
+     * @param int $maxlength maximum length
+     * @param string $form form name
+     * @param string $name textarea name
      */
     static function jsLimitLength(int $maxlength, string $form, string $name): string
     {

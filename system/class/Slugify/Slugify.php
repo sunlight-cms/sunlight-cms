@@ -18,8 +18,7 @@ class Slugify
         'trim' => true,
         'rulesets' => [
             'default',
-            // Languages are preferred if they appear later, list is ordered by number of
-            // websites in that language
+            // Languages are preferred if they appear later, list is ordered by number of websites in that language
             // https://en.wikipedia.org/wiki/Languages_used_on_the_Internet#Content_languages_for_websites
             'armenian',
             'azerbaijani',
@@ -65,7 +64,7 @@ class Slugify
     {
         $options = array_merge($this->options, $options);
 
-        // Add a custom ruleset without touching the default rules
+        // add a custom ruleset without touching the default rules
         if (isset($options['ruleset'])) {
             $rules = array_merge($this->rules, $this->provider->getRules($options['ruleset']));
         } else {

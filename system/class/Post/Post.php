@@ -30,7 +30,7 @@ abstract class Post
      * Book entry
      *
      * home:    page ID (book)
-     * xhome:   post ID ID (if comment is an answer) or -1
+     * xhome:   post ID (if comment is an answer) or -1
      */
     const BOOK_ENTRY = 3;
 
@@ -67,14 +67,14 @@ abstract class Post
     const PLUGIN = 7;
 
     /**
-     * Vyhodnotit pravo uzivatele na pristup k prispevku
+     * Check user access to the given post
      *
-     * @param array $userQuery vystup z {@see User::createQuery()}
-     * @param array $post data prispevku (potreba data uzivatele a comment.time)
+     * @param array $userQuery output of {@see User::createQuery()}
+     * @param array $post post data (must contain user data and comment.time)
      */
     static function checkAccess(array $userQuery, array $post): bool
     {
-        // uzivatel je prihlasen
+        // user is logged in
         if (User::isLoggedIn()) {
             // extend
             $access = Extend::fetch('posts.access', [
@@ -85,7 +85,7 @@ abstract class Post
                 return $access;
             }
 
-            // je uzivatel autorem prispevku?
+            // is current user the author of the post?
             if (
                 $post[$userQuery['prefix'] . 'id'] !== null
                 && User::equals($post[$userQuery['prefix'] . 'id'])
@@ -104,7 +104,7 @@ abstract class Post
                     || User::getLevel() > $post[$userQuery['prefix'] . 'group_level']
                 )
             ) {
-                // uzivatel ma pravo spravovat cizi prispevky
+                // user can manage other people's posts
                 return true;
             }
         }
@@ -113,21 +113,21 @@ abstract class Post
     }
 
     /**
-     * Sestavit casti SQL dotazu pro vypis komentaru
+     * Compose parts of SQL query to list posts
      *
-     * Join aliasy: home_page, home_art, home_cat1..3, home_post
-     * Sloupce: data postu + (page|cat|art)_(title|slug), xhome_subject
+     * Join aliases: home_page, home_art, home_cat1..3, home_post
+     * Columns: post data, page|cat|art_title, page|cat|art_slug, xhome_subject
      *
-     * @param string $alias alias tabulky komentaru pouzity v dotazu
-     * @param array $types pole s typy prispevku, ktere maji byt nacteny
-     * @param array $homes pole s ID domovskych polozek
-     * @param string|null $sqlConditions SQL s vlastnimi WHERE podminkami
-     * @param bool $doCount vracet take pocet odpovidajicich prispevku 1/0
-     * @return array sloupce, joiny, where podminka, [pocet]
+     * @param string $alias post table alias
+     * @param array $types list of post types to load
+     * @param array $homes list of home IDs
+     * @param string|null $sqlConditions custom SQL conditions
+     * @param bool $doCount return a post count as well 1/0
+     * @return array column_string, join_string, where_string, [count]
      */
     static function createFilter(string $alias, array $types = [], array $homes = [], ?string $sqlConditions = null, bool $doCount = false): array
     {
-        // sloupce
+        // columns
         $columns = "{$alias}.id,{$alias}.type,{$alias}.home,{$alias}.xhome,{$alias}.subject,
 {$alias}.author,{$alias}.guest,{$alias}.time,{$alias}.text,{$alias}.flag,
 home_page.title page_title,home_page.slug page_slug,
@@ -135,7 +135,7 @@ home_cat1.title cat_title,home_cat1.slug cat_slug,
 home_art.title art_title,home_art.slug art_slug,
 home_post.subject xhome_subject";
 
-        // podminky
+        // conditions
         $conditions = [];
 
         if (!empty($types)) {
@@ -152,12 +152,12 @@ AND ({$alias}.type!=" . self::ARTICLE_COMMENT . ' OR (
     (home_cat1.level<=' . User::getLevel() . ' OR home_cat2.level<=' . User::getLevel() . ' OR home_cat3.level<=' . User::getLevel() . ')
 ))';
 
-        // vlastni podminky
+        // custom conditions
         if (!empty($sqlConditions)) {
             $conditions[] = $sqlConditions;
         }
 
-        // joiny
+        // joins
         $joins = 'LEFT JOIN ' . DB::table('page') . " home_page ON({$alias}.type IN(1,3,5) AND {$alias}.home=home_page.id)
 LEFT JOIN " . DB::table('article') . " home_art ON({$alias}.type=" . self::ARTICLE_COMMENT . " AND {$alias}.home=home_art.id)
 LEFT JOIN " . DB::table('page') . " home_cat1 ON({$alias}.type=" . self::ARTICLE_COMMENT . ' AND home_art.home1=home_cat1.id)
@@ -173,14 +173,14 @@ LEFT JOIN ' . DB::table('post') . " home_post ON({$alias}.type=" . self::FORUM_T
             'alias' => $alias,
         ]);
 
-        // sestaveni vysledku
+        // result
         $result = [
             $columns,
             $joins,
             implode(' AND ', $conditions),
         ];
 
-        // pridat pocet
+        // add count
         if ($doCount) {
             $result[] = (int) DB::result(DB::query("SELECT COUNT({$alias}.id) FROM " . DB::table('post') . " {$alias} {$joins} WHERE {$result[2]}"));
         }
@@ -189,11 +189,11 @@ LEFT JOIN ' . DB::table('post') . " home_post ON({$alias}.type=" . self::FORUM_T
     }
 
     /**
-     * Vykreslit text prispevku
+     * Render post text
      *
-     * @param string $input vstupni text (HTML)
-     * @param bool $bbcode vyhodnotit bbcode 1/0
-     * @param bool $nl2br prevest odrakovani na <br>
+     * @param string $input input text (HTML)
+     * @param bool $bbcode parse BBCode 1/0
+     * @param bool $nl2br convert newlines to <br>
      */
     static function render(string $input, bool $bbcode = true, bool $nl2br = true): string
     {
@@ -204,17 +204,16 @@ LEFT JOIN ' . DB::table('post') . " home_post ON({$alias}.type=" . self::FORUM_T
             'nl2br' => &$nl2br,
         ]);
 
-        // vyhodnoceni BBCode
+        // parse BBCode
         if (Settings::get('bbcode') && $bbcode) {
             $input = Bbcode::parse($input);
         }
 
-        // prevedeni novych radku
+        // conver newlines
         if ($nl2br) {
             $input = nl2br($input, false);
         }
 
-        // navrat vystupu
         return $input;
     }
 }

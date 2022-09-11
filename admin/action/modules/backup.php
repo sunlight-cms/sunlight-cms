@@ -35,9 +35,10 @@ $add_random_suffix = function ($filename) use ($remove_random_suffix) {
     return preg_replace('{(.+)(\.zip)$}Di', '${1}__' . $suffix . '${2}', $filename);
 };
 
-// nacteni existujicich zaloh
+// load existing backups
 $backup_dir = SL_ROOT . 'system/backup';
 $backup_files = [];
+
 foreach (scandir($backup_dir) as $item) {
     if (
         $item !== '.'
@@ -49,20 +50,18 @@ foreach (scandir($backup_dir) as $item) {
     }
 }
 
-// stazeni zalohy
+// download backup
 if (isset($_GET['download'])) {
     $download = Request::get('download');
 
     if (isset($backup_files[$download])) {
         Response::downloadFile($backup_dir . '/' . $download, $remove_random_suffix($download));
-        exit;
     }
 }
 
-// pripravit backup builder
+// prepare backup builder
 $backup_builder = new BackupBuilder();
 
-// pripravit volby dynamickych cest
 $backup_dynpath_choices = [];
 foreach ($backup_builder->getDynamicPathNames() as $name) {
     $backup_dynpath_choices[$name] = [
@@ -75,7 +74,7 @@ Extend::call('admin.backup.builder', [
     'dynpath_choices' => &$backup_dynpath_choices,
 ]);
 
-// spocitat velikosti
+// path size computation function
 $computePathSize = function ($path) {
     $size = 0;
 
@@ -105,7 +104,7 @@ foreach ($backup_dynpath_choices as $name => &$options) {
 }
 unset($options);
 
-// zpracovani
+// process
 if (!empty($_POST)) {
     try {
         if (isset($_POST['partial_backup']) || isset($_POST['full_backup'])) {
@@ -128,7 +127,7 @@ if (!empty($_POST)) {
                 }
             }
 
-            // sestavit zalohu
+            // build the backup
             $backup = $backup_builder->build();
 
             $backup_name = sprintf(
@@ -139,16 +138,15 @@ if (!empty($_POST)) {
             );
 
             if ($store) {
-                // ulozit na serveru
+                // save on server
                 $stored_backup_name = $add_random_suffix($backup_name);
                 $backup->move($backup_dir . '/' . $stored_backup_name);
                 $backup_files[$stored_backup_name] = time();
 
                 $message = Message::ok(_lang('admin.backup.store.success'));
             } else {
-                // stahnout
+                // download
                 Response::downloadFile($backup, $backup_name);
-                exit;
             }
 
         } elseif (isset($_POST['do_restore'])) {
@@ -179,7 +177,7 @@ if (!empty($_POST)) {
                         }
 
                         if ($restoring) {
-                            // obnovit
+                            // restore
                             $directories = Arr::filterKeys($_POST, 'directory_');
                             $files = Arr::filterKeys($_POST, 'file_');
                             $database = isset($_POST['database']);
@@ -192,7 +190,7 @@ if (!empty($_POST)) {
                             }
                         }
 
-                        // zobrazit info
+                        // show info
                         if (!$success) {
                             $backup_size = filesize($backup_dir . '/' . $backup_file);
                             $backup_size_display = GenericTemplates::renderFileSize($backup_size);
@@ -311,7 +309,7 @@ if (!empty($_POST)) {
     }
 }
 
-// vypis existujicich zaloh
+// list existing backups
 arsort($backup_files, SORT_NUMERIC);
 
 $backup_list = '';
@@ -331,7 +329,7 @@ if (!empty($backup_files)) {
     $backup_list = '<tr><td colspan="4">' . _lang('global.nokit') . "</td></tr>\n";
 }
 
-// formulare
+// forms
 $output .= $message . '
 <table class="two-columns">
 <tr class="valign-top">

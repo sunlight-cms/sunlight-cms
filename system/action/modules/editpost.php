@@ -25,8 +25,6 @@ if (!User::isLoggedIn()) {
     return;
 }
 
-/* ---  priprava promennych  --- */
-
 $message = '';
 $form = true;
 $id = (int) Request::get('id');
@@ -103,17 +101,9 @@ if ($query !== false) {
     return;
 }
 
-/* ---  ulozeni  --- */
-
+// save
 if (isset($_POST['text'])) {
-
     if (!Form::loadCheckbox('delete')) {
-
-        /* -  uprava  - */
-
-        // nacteni promennych
-
-        // jmeno hosta
         if ($query['author'] == -1) {
             $guest = PostService::normalizeGuestName(Request::post('guest', ''));
         } else {
@@ -130,7 +120,7 @@ if (isset($_POST['text'])) {
             $subject = '';
         }
 
-        // ulozeni
+        // save
         if ($text != '') {
             $continue = true;
             Extend::call('posts.edit', [
@@ -157,8 +147,7 @@ if (isset($_POST['text'])) {
         }
 
     } else {
-
-        /* -  odstraneni  - */
+        // delete
         if ($query['type'] != Post::PRIVATE_MSG || $query['xhome'] != -1) {
             $continue = true;
             Extend::call('posts.delete', [
@@ -168,19 +157,20 @@ if (isset($_POST['text'])) {
             ]);
 
             if ($continue) {
-                // debump topicu
-                if ($query['type'] == 5 && $query['xhome'] != -1) {
-                    // kontrola, zda se jedna o posledni odpoved
+                // update topic bump time
+                if ($query['type'] == Post::FORUM_TOPIC && $query['xhome'] != -1) {
+                    // check if this is the last reply
                     $chq = DB::query('SELECT id,time FROM ' . DB::table('post') . ' WHERE type=' . Post::FORUM_TOPIC . ' AND xhome=' . $query['xhome'] . ' ORDER BY id DESC LIMIT 2');
                     $chr = DB::row($chq);
+
                     if ($chr !== false && $chr['id'] == $id) {
-                        // ano, debump podle casu predchoziho postu nebo samotneho topicu (pokud se smazala jedina odpoved)
+                        // update bump time to last reply or topic creation time (if last reply is deleted)
                         $chr = DB::row($chq);
                         DB::update('post', 'id=' . $query['xhome'], ['bumptime' => $chr !== false ? $chr['time'] : DB::raw('time')]);
                     }
                 }
 
-                // smazani prispevku a odpovedi
+                // remove replies
                 DB::delete('post', 'id=' . DB::val($id));
                 if ($query['xhome'] == -1) {
                     DB::delete('post', 'xhome=' . DB::val($id) . ' AND home=' . DB::val($query['home']) . ' AND type=' . DB::val($query['type']));
@@ -191,22 +181,19 @@ if (isset($_POST['text'])) {
                 $form = false;
             }
         }
-
     }
-
 }
 
-/* ---  vystup  --- */
-
+// output
 $_index->title = _lang('mod.editpost');
 
-// zprava
+// message
 if (isset($_GET['saved']) && $message == '') {
     $message = Message::ok(_lang('global.saved'));
 }
 $output .= $message;
 
-// formular
+// form
 if ($form) {
     $inputs = [];
 

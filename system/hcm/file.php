@@ -1,12 +1,12 @@
 <?php
 
-return function ($soubor = '') {
-    $soubor = SL_ROOT . $soubor;
+return function ($path = '') {
+    $path = SL_ROOT . $path;
 
     if (
-        in_array(pathinfo($soubor, PATHINFO_EXTENSION), ['txt', 'htm', 'html'])
-        && file_exists($soubor)
+        in_array(pathinfo($path, PATHINFO_EXTENSION), ['txt', 'htm', 'html'])
+        && file_exists($path)
     ) {
-        return file_get_contents($soubor);
+        return file_get_contents($path);
     }
 };

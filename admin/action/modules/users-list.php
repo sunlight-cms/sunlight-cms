@@ -14,11 +14,10 @@ defined('SL_ROOT') or exit;
 
 $message = '';
 
-/* --- hromadne akce --- */
-
+// bulk actions
 if (isset($_POST['bulk_action'])) {
     switch (Request::post('bulk_action')) {
-        // smazani
+        // delete
         case 'del':
             $user_ids = (array) Request::post('user', [], true);
             $user_delete_counter = 0;
@@ -41,9 +40,9 @@ if (isset($_POST['bulk_action'])) {
     }
 }
 
-/* ---  vystup  --- */
+// output
 
-// filtr skupiny
+// group filter
 $grouplimit = '';
 $list_conds = [];
 if (isset($_GET['group_id'])) {
@@ -55,7 +54,7 @@ if (isset($_GET['group_id'])) {
     $group = -1;
 }
 
-// aktivace vyhledavani
+// search
 $search = trim(Request::get('search', ''));
 if ($search !== '') {
     $wildcard = DB::val('%' . $search . '%');
@@ -64,10 +63,10 @@ if ($search !== '') {
     $search = false;
 }
 
-// priprava podminek vypisu
+// prepare list conditions
 $list_conds_sql = empty($list_conds) ? '1' : implode(' AND ', $list_conds);
 
-// filtry - vyber skupiny, vyhledavani
+// filters
 $output .= '
 <table class="two-columns">
 <tr>
@@ -94,7 +93,7 @@ $output .= '
 </table>
 ';
 
-// priprava strankovani
+// prepare paging
 $query_params = ['group' => $group];
 if ($search !== false) {
     $query_params['search'] = $search;
@@ -102,7 +101,7 @@ if ($search !== false) {
 $paging = Paginator::render(Router::admin('users-list', ['query' => $query_params]), 50, DB::table('user') . ':u', $list_conds_sql);
 $output .= $paging['paging'];
 
-// tabulka
+// table
 $output .= $message . '
 <form method="post">
 <table id="user-list" class="list list-hover list-max">
@@ -117,11 +116,11 @@ $output .= $message . '
 <tbody>
 ';
 
-// dotaz na db
+// query
 $userQuery = User::createQuery();
 $query = DB::query('SELECT ' . $userQuery['column_list'] . ',u.email user_email FROM ' . DB::table('user') . ' u ' . $userQuery['joins'] . ' WHERE ' . $list_conds_sql . ' ORDER BY ug.level DESC ' . $paging['sql_limit']);
 
-// vypis
+// list
 if (DB::size($query) != 0) {
     while ($item = DB::row($query)) {
         $output .= '<tr>
@@ -142,11 +141,11 @@ if (DB::size($query) != 0) {
 
 $output .= "</tbody></table>\n";
 
-// pocet uzivatelu
+// user count
 $totalusers = DB::count('user');
 $output .= '<p class="right">' . _lang('admin.users.list.totalusers') . ': ' . $totalusers . '</p>';
 
-// hromadna akce
+// bulk actions
 $output .= '
     <p class="left">
         ' . _lang('global.bulk') . ':
@@ -159,5 +158,5 @@ $output .= '
 
 ' . Xsrf::getInput() . '</form>';
 
-// strankovani
+// paging
 $output .= $paging['paging'];

@@ -14,12 +14,12 @@ use Sunlight\Util\UrlHelper;
 class Gallery
 {
     /**
-     * Sestavit kod obrazku v galerii
+     * Render a gallery image
      *
-     * @param array $img pole s daty obrazku
-     * @param string|null $lightboxid skupina lightboxu nebo null (= nepouzivat)
-     * @param int|null $width pozadovana sirka nahledu
-     * @param int|null $height pozadovana vyska nahledu
+     * @param array $img image data
+     * @param string|null $lightboxid lightbox group ID, if any
+     * @param int|null $width thumbnail width
+     * @param int|null $height thumbnail height
      */
     static function renderImage(array $img, ?string $lightboxid, ?int $width, ?int $height): string
     {

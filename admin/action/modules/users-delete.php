@@ -8,12 +8,10 @@ use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
-/* ---  priprava promennych  --- */
-
 $levelconflict = false;
-
-// id
 $continue = false;
+
+// load user
 if (isset($_GET['id'])) {
     $id = Request::get('id');
     $query = DB::queryRow('SELECT u.id,u.username,g.level group_level FROM ' . DB::table('user') . ' u JOIN ' . DB::table('user_group') . ' g ON(u.group_id=g.id) WHERE u.username=' . DB::val($id));
@@ -27,9 +25,8 @@ if (isset($_GET['id'])) {
     }
 }
 
+// action and output
 if ($continue) {
-
-    /* ---  odstraneni  --- */
     if (!User::equals($query['id'])) {
         if (isset($_POST['confirmed'])) {
             if (User::delete($id)) {
@@ -48,7 +45,7 @@ if ($continue) {
         $output .= Message::warning(_lang('admin.users.deleteuser.selfnote'));
     }
 
-} elseif ($levelconflict == false) {
+} elseif (!$levelconflict) {
     $output .= Message::error(_lang('global.baduser'));
 } else {
     $output .= Message::error(_lang('global.disallowed'));

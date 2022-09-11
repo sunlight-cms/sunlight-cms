@@ -9,7 +9,6 @@ use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
-// parametry
 $id = Request::get('id', '');
 $action = Request::get('action', '');
 
@@ -19,7 +18,7 @@ if (!Xsrf::check(true)) {
     return;
 }
 
-// nacist plugin a akci
+// get plugin and action
 $plugin = Core::$pluginManager->getPlugins()->get($id)
     ?? Core::$pluginManager->getInactivePlugins()->get($id);
 
@@ -32,14 +31,14 @@ if (
     return;
 }
 
-// provest akci
+// run action
 $result = $action->run();
 
 if ($result->isComplete()) {
     Core::$pluginManager->clearCache();
 }
 
-// zobrazit vysledek
+// show result
 $output .= Admin::backlink(Router::admin('plugins'));
 $output .= '<h1>' . _e($action->getTitle()) . ': ' . _e($plugin->getOption('name')) . "</h1>\n";
 $output .= $result;

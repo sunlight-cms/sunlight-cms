@@ -10,8 +10,6 @@ Core::init('../../', [
     'env' => Core::ENV_ADMIN,
 ]);
 
-/* ---  vystup  --- */
-
 if (!User::isSuperAdmin()) {
     Response::redirect(Router::adminIndex(['absolute' => true]));
     exit;

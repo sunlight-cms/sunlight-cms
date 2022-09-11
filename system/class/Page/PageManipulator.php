@@ -10,15 +10,15 @@ use Sunlight\Extend;
 
 abstract class PageManipulator
 {
-    /** Flag zavislosti - podstranky */
+    /** Depencency flag - child pages */
     const DEPEND_CHILD_PAGES = 1;
-    /** Flag zavislosti - prime */
+    /** Dependency flag - direct */
     const DEPEND_DIRECT = 2;
-    /** Flag zavislosti - prime i kdyz existuji podstranky */
+    /** Dependency flag - direct even if subpages child pages exist */
     const DEPEND_DIRECT_FORCE = 4;
 
     /**
-     * Ziskat vychozi data pro dany typ stranky
+     * Get initial data for a page
      */
     static function getInitialData(int $type, ?string $type_idt): array
     {
@@ -105,15 +105,14 @@ abstract class PageManipulator
     }
 
     /**
-     * Pregenerovat identifikatory stranek
+     * Refresh page slugs
      *
-     * @param int|null $id ID stranky
-     * @param bool $getChangesetMap pouze vratit mapu zmen, nezasahovat do databaze 1/0
+     * @param int|null $id page ID
      */
-    static function refreshSlugs(?int $id, bool $getChangesetMap = false): ?array
+    static function refreshSlugs(?int $id): ?array
     {
         if ($id !== null) {
-            $id = self::findFirstTreeMatch($id, 'slug_abs', 1);
+            $id = self::findFirstPathMatch($id, 'slug_abs', 1);
         }
 
         $options = new TreeReaderOptions();
@@ -125,7 +124,7 @@ abstract class PageManipulator
             null,
             function ($baseSlug, $currentPage) {
                 if (!$currentPage['slug_abs']) {
-                    $slug = PageManipulator::getBaseSlug($currentPage['slug']);
+                    $slug = PageManipulator::getLastSegment($currentPage['slug']);
 
                     if ($baseSlug !== null) {
                         $slug = $baseSlug . '/' . $slug;
@@ -138,23 +137,21 @@ abstract class PageManipulator
             },
             function ($baseSlug, $currentPage) {
                 return ($baseSlug !== null && !$currentPage['slug_abs'])
-                    ? "{$baseSlug}/" . PageManipulator::getBaseSlug($currentPage['slug'])
+                    ? "{$baseSlug}/" . PageManipulator::getLastSegment($currentPage['slug'])
                     : $currentPage['slug'];
-            },
-            $getChangesetMap
+            }
         );
     }
 
     /**
-     * Aktualizovat min. uroven stranek
+     * Refresh page access levels
      *
-     * @param int|null $id ID stranky
-     * @param bool $getChangesetMap pouze vratit mapu zmen, nezasahovat do databaze 1/0
+     * @param int|null $id page ID
      */
-    static function refreshLevels(?int $id, bool $getChangesetMap = false): ?array
+    static function refreshLevels(?int $id): ?array
     {
         if ($id !== null) {
-            $id = self::findFirstTreeMatch($id, 'level_inherit', 0);
+            $id = self::findFirstPathMatch($id, 'level_inherit', 0);
         }
 
         $options = new TreeReaderOptions();
@@ -173,21 +170,19 @@ abstract class PageManipulator
                 if (!$currentPage['level_inherit']) {
                     return $currentPage['level'];
                 }
-            },
-            $getChangesetMap
+            }
         );
     }
 
     /**
-     * Aktualizovat layouty stranek
+     * Refresh page layouts
      *
-     * @param int|null $id ID stranky
-     * @param bool $getChangesetMap pouze vratit mapu zmen, nezasahovat do databaze 1/0
+     * @param int|null $id page ID
      */
-    static function refreshLayouts(?int $id, bool $getChangesetMap = false): ?array
+    static function refreshLayouts(?int $id): ?array
     {
         if ($id !== null) {
-            $id = self::findFirstTreeMatch($id, 'layout_inherit', 0);
+            $id = self::findFirstPathMatch($id, 'layout_inherit', 0);
         }
 
         $options = new TreeReaderOptions();
@@ -206,15 +201,14 @@ abstract class PageManipulator
                 if (!$currentPage['layout_inherit']) {
                     return $currentPage['layout'];
                 }
-            },
-            $getChangesetMap
+            }
         );
     }
 
     /**
-     * Ziskat segment z identifikatoru stranky
+     * Get last segment from page slug
      */
-    static function getBaseSlug(string $slug): string
+    static function getLastSegment(string $slug): string
     {
         $slugLastSlashPos = mb_strrpos($slug, '/');
 
@@ -224,27 +218,27 @@ abstract class PageManipulator
     }
 
     /**
-     * Smazat danou stranku i se zavislostmi
+     * Delete the given page, incudling dependencies
      *
-     * @param array $page stranka, ktera ma byt smazana (id, node_depth, node_parent, type, type_idt)
-     * @param bool $recursive mazat i podstranky 1/0
-     * @param string|null $error promenna, kam ulozit pripadnou chybovou hlasku
+     * @param array $page page data (id, node_depth, node_parent, type, type_idt)
+     * @param bool $recursive remove child pages
      */
     static function delete(array $page, bool $recursive = false, ?string &$error = null): bool
     {
-        // zavislosti
         $flags = self::DEPEND_DIRECT;
+
         if ($recursive) {
             $flags |= self::DEPEND_CHILD_PAGES;
         }
+
         if (self::deleteDependencies($page, $flags, $error)) {
-            // stranka
+            // delete page
             DB::delete('page', 'id=' . $page['id']);
 
-            // obnova stromu od nadrazeneho uzlu / rootu
+            // refresh tree from parent (or root)
             Page::getTreeManager()->refresh($page['node_parent']);
 
-            // udalost
+            // extend
             Extend::call('admin.page.delete', ['id' => $page['id'], 'page' => [
                 'id' => $page['id'],
                 'type' => $page['type'],
@@ -262,16 +256,15 @@ abstract class PageManipulator
     }
 
     /**
-     * Ziskat pocty zavislosti dane stranky
+     * List page dependenies
      *
-     * @param array $page stranka (id, node_level, node_depth, type, type_idt)
-     * @param bool $childPages vypisat podstranky 1/0
+     * @param array $page page data (id, node_level, node_depth, type, type_idt)
+     * @param bool $childPages list child pages 1/0
      */
     static function listDependencies(array $page, bool $childPages = false): array
     {
         $dependencies = [];
 
-        // dle typu
         switch ($page['type']) {
             case Page::SECTION:
                 $dependencies[] = DB::count('post', 'type=' . Post::SECTION_COMMENT . ' AND home=' . DB::val($page['id'])) . ' ' . _lang('count.comments');
@@ -300,7 +293,7 @@ abstract class PageManipulator
                 break;
         }
 
-        // podstranky
+        // child pages
         if ($childPages && $page['node_depth'] > 0) {
             $pageTypes = Page::getTypes();
 
@@ -315,7 +308,7 @@ abstract class PageManipulator
             }
         }
 
-        // zadne polozky
+        // empty?
         if (empty($dependencies)) {
             $dependencies[] = _lang('global.nokit');
         }
@@ -324,11 +317,10 @@ abstract class PageManipulator
     }
 
     /**
-     * Smazat zavislosti dane stranky
+     * Delete dependencies of the given page
      *
-     * @param array $page stranka, ktera ma byt smazana (id, node_depth, type, type_idt)
-     * @param int $flags viz konstanty PageManipulator::DEPEND_X
-     * @param string|null $error promenna, kam ulozit pripadnou chybovou hlasku
+     * @param array $page page data (id, node_depth, type, type_idt)
+     * @param int $flags see PageManipulator::DEPEND_X constants
      */
     static function deleteDependencies(array $page, int $flags, ?string &$error = null): bool
     {
@@ -336,14 +328,14 @@ abstract class PageManipulator
         $deleteDirect = (($flags & self::DEPEND_DIRECT) !== 0);
         $deleteDirectForce = (($flags & self::DEPEND_DIRECT_FORCE) !== 0);
 
-        // kontrola podstranek
+        // check child pages
         if ($page['node_depth'] > 0 && !$deleteChildPages && !$deleteDirectForce) {
             $error = _lang('page.deletefail.children');
 
             return false;
         }
 
-        // specialni pripad: plugin stranka
+        // plugin page
         if ($deleteDirect && $page['type'] == Page::PLUGIN) {
             $handled = false;
             Extend::call('page.plugin.' . $page['type_idt'] . '.delete.do', [
@@ -362,7 +354,7 @@ abstract class PageManipulator
             }
         }
 
-        // podstranky
+        // child pages
         if ($deleteChildPages && $page['node_depth'] > 0) {
             foreach (Page::getChildren($page['id'], 1) as $childPage) {
                 if (!self::delete($childPage, true, $error)) {
@@ -371,64 +363,70 @@ abstract class PageManipulator
             }
         }
 
-        // ostatni typy
+        // direct dependencies
         if ($deleteDirect) {
             switch ($page['type']) {
-                // komentare v sekcich
+                // section comments
                 case Page::SECTION:
                     DB::delete('post', 'type=' . Post::SECTION_COMMENT . ' AND home=' . $page['id']);
                     break;
 
-                // clanky v kategoriich a jejich komentare
+                // category articles and their comments
                 case Page::CATEGORY:
                     $rquery = DB::query('SELECT id,home1,home2,home3 FROM ' . DB::table('article') . ' WHERE home1=' . $page['id'] . ' OR home2=' . $page['id'] . ' OR home3=' . $page['id']);
                     while ($item = DB::row($rquery)) {
                         if ($item['home1'] == $page['id'] && $item['home2'] == -1 && $item['home3'] == -1) {
+                            // delete article if this is its only category
                             DB::delete('post', 'type=' . Post::ARTICLE_COMMENT . ' AND home=' . $item['id']);
                             DB::delete('article', 'id=' . $item['id']);
                             continue;
-                        } // delete
+                        }
                         if ($item['home1'] == $page['id'] && $item['home2'] != -1 && $item['home3'] == -1) {
+                            // move home2 => home
                             DB::update('article', 'id=' . $item['id'], ['home1' => DB::raw('home2')]);
                             DB::update('article', 'id=' . $item['id'], ['home2' => -1]);
                             continue;
-                        } // 2->1
+                        }
                         if ($item['home1'] == $page['id'] && $item['home2'] != -1 && $item['home3'] != -1) {
+                            // move home2 => home, home3 => home2
                             DB::update('article', 'id=' . $item['id'], ['home1' => DB::raw('home2')]);
                             DB::update('article', 'id=' . $item['id'], ['home2' => DB::raw('home3')]);
                             DB::update('article', 'id=' . $item['id'], ['home3' => -1]);
                             continue;
-                        } // 2->1,3->2
+                        }
                         if ($item['home1'] == $page['id'] && $item['home2'] == -1 && $item['home3'] != -1) {
+                            // move home3 => home
                             DB::update('article', 'id=' . $item['id'], ['home1' => DB::raw('home3')]);
                             DB::update('article', 'id=' . $item['id'], ['home3' => -1]);
 
                             continue;
-                        } // 3->1
+                        }
                         if ($item['home1'] != -1 && $item['home2'] == $page['id']) {
+                            // unset home2
                             DB::update('article', 'id=' . $item['id'], ['home2' => -1]);
                             continue;
-                        } // 2->x
+                        }
                         if ($item['home1'] != -1 && $item['home3'] == $page['id']) {
+                            // unset home3
                             DB::update('article', 'id=' . $item['id'], ['home3' => -1]);
                             continue;
-                        } // 3->x
+                        }
                     }
                     break;
 
-                // prispevky v knihach
+                // book posts
                 case Page::BOOK:
                     DB::delete('post', 'type=' . Post::BOOK_ENTRY . ' AND home=' . $page['id']);
                     break;
 
-                // obrazky v galerii
+                // gallery images
                 case Page::GALLERY:
                     Admin::deleteGalleryStorage('home=' . $page['id']);
                     DB::delete('gallery_image', 'home=' . $page['id']);
                     @rmdir(SL_ROOT . 'images/galleries/' . $page['id']);
                     break;
 
-                // prispevky ve forech
+                // forum posts
                 case Page::FORUM:
                     DB::delete('post', 'type=' . Post::FORUM_TOPIC . ' AND home=' . $page['id']);
                     break;
@@ -439,12 +437,12 @@ abstract class PageManipulator
     }
 
     /**
-     * Najit prvni stranku odpovidajici dane podmince (sloupec = hodnota).
+     * Find first page in path matching the given condition (column = value)
      *
-     * Hledani probiha od aktualni stranky smerem ke korenu.
-     * Pokud neni nalezena zadna polozka, je vracen koren.
+     * The search starts from the current page up to the root.
+     * If nothing is found, the root is returned.
      */
-    private static function findFirstTreeMatch(int $currentId, string $column, $value): int
+    private static function findFirstPathMatch(int $currentId, string $column, $value): int
     {
         $path = Page::getTreeReader()->getPath([$column], $currentId);
 

@@ -14,8 +14,6 @@ use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
-/* ---  priprava  --- */
-
 $message = '';
 
 $selectTime = function ($name) {
@@ -30,16 +28,13 @@ $selectTime = function ($name) {
     return $output;
 };
 
-/* ---  akce  --- */
-
+// action
 if (isset($_POST['action'])) {
-
     switch (Request::post('action')) {
-
-        // cistka
+        // cleanup
         case 1:
 
-            // nahled ci smazani?
+            // preview?
             if (isset($_POST['do_cleanup'])) {
                 $prev = false;
             } else {
@@ -47,7 +42,7 @@ if (isset($_POST['action'])) {
                 $prev_count = [];
             }
 
-            // vzkazy
+            // messages
             $messages = Request::post('messages');
             switch ($messages) {
 
@@ -71,7 +66,7 @@ if (isset($_POST['action'])) {
 
             }
 
-            // komentare, prispevky, iplog
+            // comments, posts, iplog
             if (Form::loadCheckbox('comments')) {
                 if ($prev) {
                     $prev_count['admin.settings.functions.comments'] = DB::count('post', 'type=' . Post::SECTION_COMMENT . ' OR type=' . Post::ARTICLE_COMMENT);
@@ -112,7 +107,7 @@ if (isset($_POST['action'])) {
                 }
             }
 
-            // uzivatele
+            // users
             if (Form::loadCheckbox('users')) {
 
                 $users_time = time() - (Request::post('users-time') * 7 * 24 * 60 * 60);
@@ -134,7 +129,7 @@ if (isset($_POST['action'])) {
 
             }
 
-            // udrzba
+            // maintenance
             if (Form::loadCheckbox('maintenance') && !$prev) {
                 Extend::call('cron.maintenance', [
                     'last' => null,
@@ -144,14 +139,14 @@ if (isset($_POST['action'])) {
                 ]);
             }
 
-            // optimalizace
+            // optimization
             if (Form::loadCheckbox('optimize') && !$prev) {
                 foreach (DB::getTablesByPrefix() as $table) {
                     DB::query('OPTIMIZE TABLE `' . $table . '`');
                 }
             }
 
-            // zprava
+            // message
             if ($prev) {
                 if (empty($prev_count)) {
                     $message = Message::warning(_lang('global.noaction'));
@@ -168,34 +163,29 @@ if (isset($_POST['action'])) {
 
             break;
 
-        // deinstalace
+        // deinstallation
         case 2:
             $confirm = Form::loadCheckbox('confirm');
             if ($confirm) {
                 if (User::checkPassword(Request::post('pass', ''))) {
-
-                    // odhlaseni
+                    // logout
                     User::logout();
 
-                    // odstraneni tabulek
+                    // drop tables
                     DatabaseLoader::dropTables(DB::getTablesByPrefix());
 
-                    // zprava
+                    // message
                     echo '<h1>' . _lang('global.done') . "</h1>\n<p>" . _lang('admin.other.cleanup.uninstall.done') . '</p>';
                     exit;
-
                 }
 
                 $message = Message::warning(_lang('admin.other.cleanup.uninstall.badpass'));
             }
             break;
-
     }
-
 }
 
-/* ---  vystup  --- */
-
+// output
 $output .= $message . '
 <fieldset>
 <legend>' . _lang('admin.other.cleanup.cleanup') . '</legend>

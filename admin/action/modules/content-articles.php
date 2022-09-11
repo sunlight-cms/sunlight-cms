@@ -8,8 +8,7 @@ use Sunlight\Router;
 
 defined('SL_ROOT') or exit;
 
-/* ---  vystup  --- */
-
+// output
 $output .= '
 <p><a class="button" href="' . _e(Router::admin('content-articles-edit')) . '"><img src="' . _e(Router::path('admin/images/icons/new.png')) . '" alt="new" class="icon">' . _lang('admin.content.articles.create') . '</a></p>
 
@@ -20,12 +19,12 @@ $output .= '
 <tbody>
 ';
 
-// nacist strom kategorii
+// load category tree
 $filter = new SimpleTreeFilter(['type' => Page::CATEGORY]);
 Extend::call('admin.article.catfilter', ['filter' => &$filter]);
 $tree = Page::getFlatTree(null, null, $filter);
 
-// nacist pocty clanku
+// load article counts
 $art_counts = [];
 $art_count_query = DB::query('SELECT
     c.id,
@@ -36,7 +35,7 @@ while ($art_count = DB::row($art_count_query)) {
     $art_counts[$art_count['id']] = $art_count['art_count'];
 }
 
-// radky
+// rows
 foreach ($tree as $page) {
     $output .= '<tr><td>';
     if ($page['type'] == Page::CATEGORY) {

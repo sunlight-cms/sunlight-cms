@@ -8,22 +8,22 @@ use Sunlight\User;
 
 defined('SL_ROOT') or exit;
 
-// vychozi nastaveni
+// defaults
 if ($_page['var2'] === null) {
     $_page['var2'] = Settings::get('commentsperpage');
 }
 
-// titulek
+// title
 $_index->title = $_page['title'];
 
-// obsah
+// content
 Extend::call('page.book.content.before', $extend_args);
 if ($_page['content'] != '') {
     $output .= Hcm::parse($_page['content']);
 }
 Extend::call('page.book.content.after', $extend_args);
 
-// prispevky
+// posts
 $output .= PostService::renderList(PostService::RENDER_BOOK_POSTS, $id, [
     $_page['var2'],
     User::checkPublicAccess($_page['var1']),

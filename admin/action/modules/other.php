@@ -6,8 +6,6 @@ use Sunlight\Router;
 
 defined('SL_ROOT') or exit;
 
-/* --- priprava --- */
-
 $other_modules = [
     'system' => [],
     'plugin' => [],
@@ -21,8 +19,7 @@ foreach ($_admin->modules as $module => $module_options) {
 asort($other_modules['system'], SORT_NUMERIC);
 asort($other_modules['plugin'], SORT_NUMERIC);
 
-/* ---  vystup  --- */
-
+// output
 $output .= '<p>' . _lang('admin.other.p') . '</p>';
 
 if (empty($other_modules['system']) && empty($other_modules['plugin'])) {
@@ -35,7 +32,7 @@ $output .= '
 <tr class="valign-top">
 ';
 
-// vypis
+// list
 foreach ($other_modules as $type => $modules) {
     if (!empty($modules)) {
         $output .= "<td>\n";

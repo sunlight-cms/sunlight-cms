@@ -12,9 +12,9 @@ use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
-/* ---  odstraneni ankety  --- */
-
 $message = '';
+
+// remove a poll
 if (isset($_GET['del']) && Xsrf::check(true)) {
     $del = (int) Request::get('del');
     DB::query('DELETE FROM p USING ' . DB::table('poll') . ' AS p WHERE p.id=' . $del . Admin::pollAccess());
@@ -23,9 +23,7 @@ if (isset($_GET['del']) && Xsrf::check(true)) {
     }
 }
 
-/* ---  vystup  --- */
-
-// filtr autoru
+// output
 if (User::hasPrivilege('adminpollall') && isset($_GET['author']) && Request::get('author') != -1) {
     $pasep = true;
     $author_filter_id = (int) Request::get('author');
@@ -41,7 +39,7 @@ $output .= '
 <p><a class="button" href="' . _e(Router::admin('content-polls-edit')) . '"><img src="' . _e(Router::path('admin/images/icons/new.png')) . '" class="icon" alt="new">' . _lang('admin.content.polls.new') . '</a></p>
 ';
 
-// filtr
+// filter
 if (User::hasPrivilege('adminpollall')) {
     $output .= '
   <form class="cform" action="' . _e(Router::admin(null)) . '" method="get">
@@ -51,8 +49,8 @@ if (User::hasPrivilege('adminpollall')) {
   ';
 }
 
-// strankovani
-$paging = Paginator::render(Router::admin('content-polls'), 20, DB::table('poll') . ':p', $author_filter . Admin::pollAccess($pasep), '&amp;filter=' . $author_filter_id);
+// paging
+$paging = Paginator::render(Router::admin('content-polls'), 20, DB::table('poll') . ':p', $author_filter . Admin::pollAccess($pasep), '&filter=' . $author_filter_id);
 $output .= $paging['paging'];
 
 $output .= $message . '
@@ -61,7 +59,7 @@ $output .= $message . '
 <tbody>
 ';
 
-// vypis anket
+// list polls
 $userQuery = User::createQuery('p.author');
 $query = DB::query('SELECT p.id,p.question,p.locked,' . $userQuery['column_list'] . ' FROM ' . DB::table('poll') . ' p ' . $userQuery['joins'] . ' WHERE ' . $author_filter . Admin::pollAccess($pasep) . ' ORDER BY p.id DESC ' . $paging['sql_limit']);
 if (DB::size($query) != 0) {

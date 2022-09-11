@@ -7,29 +7,28 @@ use Sunlight\Router;
 
 defined('SL_ROOT') or exit;
 
-/* --- vystup --- */
-
+// output
 if (isset($_admin->modules[$_admin->currentModule])) {
     if (Admin::moduleAccess($_admin->currentModule)) {
 
         $module = $_admin->modules[$_admin->currentModule];
         $module_custom_header = (isset($module['custom_header']) && $module['custom_header']);
 
-        // zpetny odkaz
+        // backlink
         if (isset($module['parent']) && !$module_custom_header) {
             $output .= Admin::backlink(Router::admin($module['parent']));
         }
 
-        // titulek
+        // title
         $_admin->title = $module['title'];
         if (!$module_custom_header) {
             $output .= '<h1>' . $module['title'] . "</h1>\n";
         }
 
-        // urceni skriptu
+        // compose script path
         $script = $module['script'] ?? SL_ROOT . 'admin/action/modules/' . $_admin->currentModule . '.php';
 
-        // vlozeni
+        // run script
         $extend_args = Extend::args($output, [
             'name' => $_admin->currentModule,
             'script' => &$script,
@@ -47,10 +46,10 @@ if (isset($_admin->modules[$_admin->currentModule])) {
             $output .= Message::warning(_lang('admin.moduleunavailable'));
         }
     } else {
-        // pristup odepren
+        // no access
         $output .= '<h1>' . _lang('global.error') . "</h1>\n" . Message::warning(_lang('global.accessdenied'));
     }
 } else {
-    // modul neexistuje
+    // module not found
     $output .= '<h1>' . _lang('global.error404.title') . "</h1>\n" . Message::warning(_lang('global.error404'));
 }

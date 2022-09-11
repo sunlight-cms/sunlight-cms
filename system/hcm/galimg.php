@@ -4,12 +4,11 @@ use Sunlight\Database\Database as DB;
 use Sunlight\Gallery;
 use Sunlight\Hcm;
 
-return function ($galerie = null, $typ = 'new', $rozmery = null, $limit = null) {
-    // nacteni parametru
-    Hcm::normalizeArgument($galerie, 'string');
+return function ($gallery = null, $type = 'new', $thumbnail_size = null, $limit = null) {
+    Hcm::normalizeArgument($gallery, 'string');
 
-    if ($galerie !== null && !empty($galerie = explode('-', $galerie))) {
-        $home_cond = 'home IN(' . DB::arr($galerie) . ')';
+    if ($gallery !== null && !empty($gallery = explode('-', $gallery))) {
+        $home_cond = 'home IN(' . DB::arr($gallery) . ')';
     } else {
         $home_cond = '1';
     }
@@ -20,40 +19,40 @@ return function ($galerie = null, $typ = 'new', $rozmery = null, $limit = null) 
         $limit = 1;
     }
 
-    // rozmery
-    if ($rozmery !== null) {
-        $rozmery = explode('/', $rozmery, 2);
-        if (count($rozmery) === 2) {
-            // sirka i vyska
-            $x = (int) $rozmery[0];
-            $y = (int) $rozmery[1];
+    // size
+    if ($thumbnail_size !== null) {
+        $thumbnail_size = explode('/', $thumbnail_size, 2);
+        if (count($thumbnail_size) === 2) {
+            // width and height
+            $x = (int) $thumbnail_size[0];
+            $y = (int) $thumbnail_size[1];
         } else {
-            // pouze vyska
+            // height only
             $x = null;
-            $y = (int) $rozmery[0];
+            $y = (int) $thumbnail_size[0];
         }
     } else {
-        // neuvedeno
+        // default size
         $x = null;
         $y = 128;
     }
 
-    // urceni razeni
-    switch ($typ) {
+    // order
+    switch ($type) {
         case 'random':
-            $razeni = 'RAND()';
+            $order = 'RAND()';
             break;
         case 'order':
-            $razeni = 'ord ASC';
+            $order = 'ord ASC';
             break;
         case 'new':
         default:
-            $razeni = 'id DESC';
+            $order = 'id DESC';
     }
 
-    // vypis obrazku
+    // list images
     $result = '';
-    $rimgs = DB::query('SELECT id,title,prev,full FROM ' . DB::table('gallery_image') . ' WHERE ' . $home_cond . ' ORDER BY ' . $razeni . ' LIMIT ' . $limit);
+    $rimgs = DB::query('SELECT id,title,prev,full FROM ' . DB::table('gallery_image') . ' WHERE ' . $home_cond . ' ORDER BY ' . $order . ' LIMIT ' . $limit);
     while ($rimg = DB::row($rimgs)) {
         $result .= Gallery::renderImage($rimg, 'hcm' . Hcm::$uid, $x, $y);
     }

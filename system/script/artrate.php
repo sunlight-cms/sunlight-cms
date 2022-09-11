@@ -16,14 +16,12 @@ if (Settings::get('ratemode') == 0) {
     exit;
 }
 
-/* ---  hodnoceni  --- */
-
-// nacteni promennych
+// load variables
 $id = (int) Request::post('id');
 
 $article_exists = false;
 
-// kontrola promennych a pristupu
+// check variables and access
 $continue = false;
 $query = DB::queryRow('SELECT art.id,art.slug,art.time,art.confirmed,art.author,art.public,art.home1,art.home2,art.home3,art.rateon,cat.slug AS cat_slug FROM ' . DB::table('article') . ' AS art  JOIN ' . DB::table('page') . ' AS cat ON(cat.id=art.home1) WHERE art.id=' . $id);
 if ($query !== false) {
@@ -36,7 +34,7 @@ if ($query !== false) {
     }
 }
 
-// zapocteni hodnoceni
+// add rating
 if ($continue) {
     DB::update('article', 'id=' . $id, [
         'ratenum' => DB::raw('ratenum+1'),
@@ -45,7 +43,7 @@ if ($continue) {
     IpLog::update(IpLog::ARTICLE_RATED, $id);
 }
 
-// presmerovani
+// redirect back
 if ($article_exists) {
     $aurl = Router::article($id, $query['slug'], $query['cat_slug'], ['absolute' => true, 'fragment' => 'article-info']);
 } else {

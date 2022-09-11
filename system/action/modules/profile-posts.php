@@ -17,8 +17,6 @@ if (!User::isLoggedIn() && Settings::get('notpublicsite')) {
     return;
 }
 
-/* ---  priprava  --- */
-
 $id = StringManipulator::slugify(Request::get('id'), false);
 $query = DB::queryRow('SELECT u.id,u.username,u.publicname,u.public,g.level FROM ' . DB::table('user') . ' u JOIN ' . DB::table('user_group') . ' g ON u.group_id=g.id WHERE u.username=' . DB::val($id));
 
@@ -32,18 +30,17 @@ if (!$query['public'] && !User::checkLevel($query['id'], $query['level'])) {
     return;
 }
 
-/* ---  modul  --- */
-
+// output
 $_index->title = str_replace(
     '%user%',
     $query[$query['publicname'] !== null ? 'publicname' : 'username'],
     _lang('mod.profile.posts')
 );
 
-// odkaz zpet na profil
+// backlink
 $_index->backlink = Router::module('profile', ['query' => ['id' => $id]]);
 
-// tabulka
+// table
 [$columns, $joins, $cond, $count] = Post::createFilter('post', [Post::SECTION_COMMENT, Post::ARTICLE_COMMENT, Post::BOOK_ENTRY, Post::FORUM_TOPIC, Post::PLUGIN], [], 'post.author=' . $query['id'], true);
 
 $paging = Paginator::render(Router::module('profile-posts', ['query' => ['id' => $id]]), 15, $count);
