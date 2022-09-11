@@ -64,12 +64,12 @@ abstract class GenericTemplates
      */
     static function renderIp(string $ip): string
     {
-        if (User::$group['id'] == User::ADMIN_GROUP_ID) {
-            // admins see the actual IP
-            return $ip;
+        if (User::$group['id'] != User::ADMIN_GROUP_ID) {
+            // only admins see the actual IP, anonymize IP for anyone else
+            $ip = substr(hash_hmac('sha256', $ip, Core::$secret), 0, 16);
         }
 
-        return hash_hmac('fnv1a32', $ip, Core::$secret);
+        return _lang('posts.anonym') . '@' . _e($ip);
     }
 
     /**
