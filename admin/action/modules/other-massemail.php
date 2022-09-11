@@ -32,7 +32,7 @@ if (isset($_POST['text'])) {
     if ($text == '' && !$maillist) {
         $errors[] = _lang('admin.other.massemail.notext');
     }
-    if (count($receivers) == 0) {
+    if (empty($receivers)) {
         $errors[] = _lang('admin.other.massemail.noreceivers');
     }
     if ($subject == '' && !$maillist) {

@@ -30,7 +30,11 @@ return function ($id = null) {
         }
 
         if ($rallowvote) {
-            $ranswers_code = '<form action="' . _e(Router::path('system/script/hcm/pvote.php', ['query' => ['_return=' => $GLOBALS['_index']->url], 'fragment' => 'hcm_poll_' . Hcm::$uid])) . "\" method=\"post\">\n<input type=\"hidden\" name=\"pid\" value=\"" . $vpolldata['id'] . '">';
+            $ranswers_code = '<form'
+                . ' action="' . _e(Router::path('system/script/hcm/pvote.php', ['query' => ['_return=' => $GLOBALS['_index']->url], 'fragment' => 'hcm_poll_' . Hcm::$uid])) . '"'
+                . ' method="post"'
+                . '>'
+                . '<input type="hidden" name="pid" value="' . $vpolldata['id'] . '">';
         } else {
             $ranswers_code = '';
         }
@@ -43,7 +47,11 @@ return function ($id = null) {
                 $rpercent = 0;
             }
             if ($rallowvote) {
-                $item = '<label><input type="radio" name="option" value="' . $ranswer_id . '"> ' . $item . ' [' . $rvotes[$ranswer_id] . '/' . $rpercent . '%]</label>';
+                $item = '<label>'
+                    . '<input type="radio" name="option" value="' . $ranswer_id . '"> '
+                    . $item
+                    . ' [' . $rvotes[$ranswer_id] . '/' . $rpercent . '%]'
+                    . '</label>';
             } else {
                 $item .= ' [' . $rvotes[$ranswer_id] . '/' . $rpercent . '%]';
             }

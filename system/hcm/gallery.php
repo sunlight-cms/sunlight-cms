@@ -58,7 +58,9 @@ return function ($path = '', $thumbnail_size = '', $per_page = null, $lightbox =
             }
             if (!$paginator || Paginator::isItemInRange($paging, $counter)) {
                 $thumb = ImageService::getThumbnail('gallery', $path . $item, $resize_opts);
-                $result .= '<a href="' . _e(Router::file($path . $item)) . '" target="_blank"' . ($lightbox ? Extend::buffer('image.lightbox', ['group' => 'hcm_gal_' . Hcm::$uid]) : '') . '><img src="' . _e(Router::file($thumb)) . '" alt="' . _e($item) . "\"></a>\n";
+                $result .= '<a href="' . _e(Router::file($path . $item)) . '" target="_blank"' . ($lightbox ? Extend::buffer('image.lightbox', ['group' => 'hcm_gal_' . Hcm::$uid]) : '') . '>'
+                    . '<img src="' . _e(Router::file($thumb)) . '" alt="' . _e($item) . '">'
+                    . "</a>\n";
             }
             $counter++;
         }

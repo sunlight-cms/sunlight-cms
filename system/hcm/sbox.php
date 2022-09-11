@@ -27,7 +27,8 @@ return function ($id = null) {
         $result = '
     <div id="hcm_sbox_' . Hcm::$uid . '" class="sbox">
     <div class="sbox-content">
-    ' . (($sboxdata['title'] != '') ? '<div class="sbox-title">' . $sboxdata['title'] . '</div>' : '') . '<div class="sbox-item"' . (($sboxdata['title'] == '') ? ' style="border-top:none;"' : '') . '>';
+    ' . (($sboxdata['title'] != '') ? '<div class="sbox-title">' . $sboxdata['title'] . '</div>' : '')
+    . '<div class="sbox-item"' . (($sboxdata['title'] == '') ? ' style="border-top:none;"' : '') . '>';
 
         // post form
         if ($sboxdata['locked'] != 1 && User::checkPublicAccess($sboxdata['public'])) {
@@ -35,7 +36,11 @@ return function ($id = null) {
             if (!User::isLoggedIn()) {
                 $inputs[] = ['label' => _lang('posts.guestname'), 'content' => '<input type="text" name="guest" class="sbox-input" maxlength="24">'];
             }
-            $inputs[] = ['label' => _lang('posts.text'), 'content' => '<input type="text" name="text" class="sbox-input" maxlength="255"><input type="hidden" name="_posttype" value="4"><input type="hidden" name="_posttarget" value="' . $id . '">' ];
+            $inputs[] = [
+                'label' => _lang('posts.text'),
+                'content' => '<input type="text" name="text" class="sbox-input" maxlength="255">'
+                    . '<input type="hidden" name="_posttype" value="4"><input type="hidden" name="_posttarget" value="' . $id . '">',
+            ];
             $inputs[] = Form::getSubmitRow();
 
             $result .= Form::render(
@@ -55,12 +60,22 @@ return function ($id = null) {
 
         // list posts
         $userQuery = User::createQuery('p.author');
-        $sposts = DB::query('SELECT p.id,p.text,p.author,p.guest,p.time,p.ip,' . $userQuery['column_list'] . ' FROM ' . DB::table('post') . ' p ' . $userQuery['joins'] . ' WHERE p.home=' . $id . ' AND p.type=' . Post::SHOUTBOX_ENTRY . ' ORDER BY p.id DESC');
+        $sposts = DB::query(
+            'SELECT p.id,p.text,p.author,p.guest,p.time,p.ip,' . $userQuery['column_list']
+            . ' FROM ' . DB::table('post') . ' p '
+            . $userQuery['joins']
+            . ' WHERE p.home=' . $id . ' AND p.type=' . Post::SHOUTBOX_ENTRY
+            . ' ORDER BY p.id DESC'
+        );
         if (DB::size($sposts) != 0) {
             while ($spost = DB::row($sposts)) {
                 // author
                 if ($spost['author'] != -1) {
-                    $author = Router::userFromQuery($userQuery, $spost, ['class' => 'post_author', 'max_len' => 16, 'title' => GenericTemplates::renderTime($spost['time'], 'post')]);
+                    $author = Router::userFromQuery($userQuery, $spost, [
+                        'class' => 'post_author',
+                        'max_len' => 16,
+                        'title' => GenericTemplates::renderTime($spost['time'], 'post')
+                    ]);
                 } else {
                     $author = '<span class="post-author-guest" title="' . GenericTemplates::renderTime($spost['time'], 'post') . ', ip=' . GenericTemplates::renderIp($spost['ip']) . '">'
                         . PostService::renderGuestName($spost['guest'])
@@ -69,7 +84,9 @@ return function ($id = null) {
 
                 // edit link
                 if (Post::checkAccess($userQuery, $spost)) {
-                    $alink = ' <a href="' . _e(Router::module('editpost', ['query' => ['id' => $spost['id']]])) . '"><img src="' . Template::image('icons/edit.png') . '" alt="edit" class="icon"></a>';
+                    $alink = ' <a href="' . _e(Router::module('editpost', ['query' => ['id' => $spost['id']]])) . '">'
+                        . '<img src="' . Template::image('icons/edit.png') . '" alt="edit" class="icon">'
+                        . '</a>';
                 } else {
                     $alink = '';
                 }

@@ -261,7 +261,7 @@ abstract class Article
         return $output;
     }
 
-    /*
+    /**
      * Upload a new article image
      *
      * Returns image UID or NULL on failure.

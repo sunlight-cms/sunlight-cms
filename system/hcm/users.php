@@ -35,7 +35,13 @@ return function ($order = 'new', $limit = 5) {
     }
 
     $userQuery = User::createQuery(null, '');
-    $query = DB::query('SELECT ' . $userQuery['column_list'] . ' FROM ' . DB::table('user') . ' u ' . $userQuery['joins'] . ' WHERE ' . $rcond . ' ORDER BY ' . $rorder . ' LIMIT ' . $limit);
+    $query = DB::query(
+        'SELECT ' . $userQuery['column_list']
+        . ' FROM ' . DB::table('user') . ' u ' . $userQuery['joins']
+        . ' WHERE ' . $rcond
+        . ' ORDER BY ' . $rorder
+        . ' LIMIT ' . $limit
+    );
     while ($item = DB::row($query)) {
         // add additional info
         switch ($order) {
@@ -49,7 +55,11 @@ return function ($order = 'new', $limit = 5) {
                 break;
 
             case 'article-rating':
-                $rvar = DB::queryRow('SELECT ROUND(SUM(ratesum)/SUM(ratenum)) AS pct,COUNT(*) AS cnt FROM ' . DB::table('article') . ' WHERE rateon=1 AND ratenum!=0 AND author=' . $item['id']);
+                $rvar = DB::queryRow(
+                    'SELECT ROUND(SUM(ratesum)/SUM(ratenum)) AS pct,COUNT(*) AS cnt'
+                    . ' FROM ' . DB::table('article')
+                    . ' WHERE rateon=1 AND ratenum!=0 AND author=' . $item['id']
+                );
                 $rext = ' - ' . $rvar['pct'] . '%, ' . _lang('global.articlesnum') . ': ' . $rvar['cnt'];
                 break;
 

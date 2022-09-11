@@ -54,20 +54,29 @@ return function ($type = 'new', $limit = null, $perex = 'perex', $info = true, $
             $rcond = '';
             break;
         case 'read':
-            $rorder = '(SELECT time FROM ' . DB::table('iplog') . ' WHERE type=' . IpLog::ARTICLE_READ . ' AND var=art.id AND art.visible=1 AND art.time<=' . time() . ' AND art.confirmed=1 ORDER BY id DESC LIMIT 1) DESC';
+            $rorder = '(SELECT time FROM ' . DB::table('iplog')
+                . ' WHERE type=' . IpLog::ARTICLE_READ . ' AND var=art.id AND art.visible=1 AND art.time<=' . time() . ' AND art.confirmed=1'
+                . ' ORDER BY id DESC LIMIT 1) DESC';
             $rcond = 'art.readnum!=0';
             break;
         case 'rated':
-            $rorder = '(SELECT time FROM ' . DB::table('iplog') . ' WHERE type=' . IpLog::ARTICLE_RATED . ' AND var=art.id AND art.visible=1 AND art.time<=' . time() . ' AND art.confirmed=1 ORDER BY id DESC LIMIT 1) DESC';
+            $rorder = '(SELECT time FROM ' . DB::table('iplog')
+                . ' WHERE type=' . IpLog::ARTICLE_RATED . ' AND var=art.id AND art.visible=1 AND art.time<=' . time() . ' AND art.confirmed=1'
+                . ' ORDER BY id DESC LIMIT 1) DESC';
             $rcond = 'art.ratenum!=0';
             break;
         case 'commented':
-            $rorder = '(SELECT time FROM ' . DB::table('post') . ' WHERE home=art.id AND type=' . Post::ARTICLE_COMMENT . ' ORDER BY time DESC LIMIT 1) DESC';
-            $rcond = '(SELECT COUNT(*) FROM ' . DB::table('post') . ' WHERE home=art.id AND type=' . Post::ARTICLE_COMMENT . ')!=0';
+            $rorder = '(SELECT time FROM ' . DB::table('post')
+                . ' WHERE home=art.id AND type=' . Post::ARTICLE_COMMENT
+                . ' ORDER BY time DESC LIMIT 1) DESC';
+            $rcond = '(SELECT COUNT(*) FROM ' . DB::table('post')
+                . ' WHERE home=art.id AND type=' . Post::ARTICLE_COMMENT . ')!=0';
             break;
         case 'most-comments':
-            $rorder = '(SELECT COUNT(*) FROM ' . DB::table('post') . ' WHERE home=art.id AND type=' . Post::ARTICLE_COMMENT . ') DESC';
-            $rcond = '(SELECT COUNT(*) FROM ' . DB::table('post') . ' WHERE home=art.id AND type=' . Post::ARTICLE_COMMENT . ')!=0';
+            $rorder = '(SELECT COUNT(*) FROM ' . DB::table('post')
+                . ' WHERE home=art.id AND type=' . Post::ARTICLE_COMMENT . ') DESC';
+            $rcond = '(SELECT COUNT(*) FROM ' . DB::table('post')
+                . ' WHERE home=art.id AND type=' . Post::ARTICLE_COMMENT . ')!=0';
             break;
         case 'new':
         default:
@@ -88,7 +97,14 @@ return function ($type = 'new', $limit = null, $perex = 'perex', $info = true, $
 
     // list
     $userQuery = User::createQuery('art.author');
-    $query = DB::query('SELECT art.id,art.title,art.slug,art.perex,' . ($show_image ? 'art.picture_uid,' : '') . 'art.time,art.readnum,art.comments,cat1.slug AS cat_slug,' . $userQuery['column_list'] . (($info !== 0) ? ',(SELECT COUNT(*) FROM ' . DB::table('post') . ' AS post WHERE home=art.id AND post.type=' . Post::ARTICLE_COMMENT . ') AS comment_count' : '') . ' FROM ' . DB::table('article') . ' AS art ' . $joins . ' ' . $userQuery['joins'] . ' WHERE ' . $cond . ' ORDER BY ' . $rorder . ' LIMIT ' . $limit);
+    $query = DB::query(
+        'SELECT art.id,art.title,art.slug,art.perex,' . ($show_image ? 'art.picture_uid,' : '') . 'art.time,art.readnum,art.comments,cat1.slug AS cat_slug,'
+        . $userQuery['column_list']
+        . ($info ? ',(SELECT COUNT(*) FROM ' . DB::table('post') . ' AS post WHERE home=art.id AND post.type=' . Post::ARTICLE_COMMENT . ') AS comment_count' : '')
+        . ' FROM ' . DB::table('article') . ' AS art '
+        . $joins . ' ' . $userQuery['joins']
+        . ' WHERE ' . $cond . ' ORDER BY ' . $rorder . ' LIMIT ' . $limit
+    );
     while ($item = DB::row($query)) {
         $result .= Article::renderPreview($item, $userQuery, $info, $show_perex);
     }
