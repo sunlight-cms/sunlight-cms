@@ -296,7 +296,7 @@ abstract class Router
         $out = "<{$tag}"
             . ($options['link'] ? ' href="' . _e(self::module('profile', self::combineOptions(['query' => ['id' => $data['username']]], $options['url']))) . '"' : '')
             . ($options['link'] && $options['new_window'] ? ' target="_blank"' : '')
-            . ' class="user-link user-link-' . $data['id'] . ' user-link-group-' . $data['group_id'] . ($options['class'] !== null ? ' ' . $options['class'] : '') . '"️'
+            . ' class="user-link user-link-' . $data['id'] . ' user-link-group-' . $data['group_id'] . ($options['class'] !== null ? ' ' . $options['class'] : '') . '"'
             . ($options['color'] && $data['group_color'] !== '' ? ' style="color:' . $data['group_color'] . '"' : '')
             . ($title !== null ? ' title="' . $title . '"' : '')
             . '>';

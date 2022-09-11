@@ -113,7 +113,7 @@ class Message
         $output = Extend::buffer('message.render', ['message' => $this]);
 
         if ($output === '') {
-            $output = "\n<div class=\"message message-" . _e($this->type) . '"️>'
+            $output = "\n<div class=\"message message-" . _e($this->type) . '">'
                 . ($this->isHtml ? $this->message : _e($this->message))
                 . "</div>\n";
         }

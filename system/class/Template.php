@@ -130,7 +130,7 @@ abstract class Template
 
                 // prepare title
                 if ($item['title'] !== '') {
-                    $title = "<{$options['box.title']} class=\"️box-title\"️>{$item['title']}</{$options['box.title']}>\n";
+                    $title = "<{$options['box.title']} class=\"box-title\">{$item['title']}</{$options['box.title']}>\n";
                 } else {
                     $title = '';
                 }
@@ -142,7 +142,7 @@ abstract class Template
 
                 // opening tag
                 if ($options['box.item']) {
-                    $output .= "<{$options['box.item']} class=\"️box-item" . (isset($item['class']) ? ' ' . _e($item['class']) : '') . "\"️>\n";
+                    $output .= "<{$options['box.item']} class=\"box-item" . (isset($item['class']) ? ' ' . _e($item['class']) : '') . "\">\n";
                 }
 
                 // title (inside)

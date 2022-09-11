@@ -349,7 +349,7 @@ class PostService
                 $form_output .= User::renderLoginForm();
             }
         } elseif (!$locked) {
-            $form_output .= '<a class="button" href="' . _e(UrlHelper::appendParams($url, 'addpost&page=' . $paging['current'])) . '#post-form"️><img class="icon" src="' . Template::image('icons/bubble.png') . '" alt="post">' . $addlink . '</a>';
+            $form_output .= '<a class="button" href="' . _e(UrlHelper::appendParams($url, 'addpost&page=' . $paging['current'])) . '#post-form"><img class="icon" src="' . Template::image('icons/bubble.png') . '" alt="post">' . $addlink . '</a>';
         } else {
             $form_output .= '<img src="' . Template::image('icons/lock.png') . '" alt="stop" class="icon"><strong>' . _lang('posts.locked' . $locked_textid) . '</strong>';
         }
@@ -450,7 +450,7 @@ class PostService
         if (!empty($items)) {
             // list posts or topics
             if (!$is_topic_list) {
-                $output .= "<div class=\"️post-list\"️>\n";
+                $output .= "<div class=\"post-list\">\n";
 
                 $extra_info = '';
                 $item_offset = ($paging['current'] - 1) * $paging['per_page'];
@@ -502,7 +502,7 @@ class PostService
             } else {
                 // topic list table
                 $hl = false;
-                $output .= "\n<table class=\"️topic-table\"️>\n<thead><tr><th colspan=\"️2\"️>" . _lang('posts.topic') . '</th><th>' . _lang('global.answersnum') . '</th><th>' . _lang('global.lastanswer') . "</th></tr></thead>\n<tbody>\n";
+                $output .= "\n<table class=\"topic-table\">\n<thead><tr><th colspan=\"2\">" . _lang('posts.topic') . '</th><th>' . _lang('global.answersnum') . '</th><th>' . _lang('global.lastanswer') . "</th></tr></thead>\n<tbody>\n";
 
                 foreach ($items as $item) {
                     // fetch author
@@ -568,7 +568,7 @@ class PostService
                 $query = DB::query('SELECT topic.id AS topic_id,topic.subject AS topic_subject,p.author,p.guest,p.time,' . $userQuery['column_list'] . ' FROM ' . DB::table('post') . ' AS p JOIN ' . DB::table('post') . ' AS topic ON(topic.type=' . Post::FORUM_TOPIC . ' AND topic.id=p.xhome) ' . $userQuery['joins'] . ' WHERE p.type=' . Post::FORUM_TOPIC . ' AND p.home=' . $home . ' AND p.xhome!=-1 ORDER BY p.id DESC LIMIT ' . Settings::get('extratopicslimit'));
 
                 if (DB::size($query) != 0) {
-                    $output .= "<table class=\"️topic-latest\"️>\n";
+                    $output .= "<table class=\"topic-latest\">\n";
 
                     while ($item = DB::row($query)) {
                         if ($item['author'] != -1) {

@@ -162,14 +162,14 @@ if ($_article['rateon'] && Settings::get('ratemode') != 0 && User::hasPrivilege(
 
             for ($x = 1; $x < 6; $x++) {
                 if ($i == 0) {
-                    $rateform .= '<td><input type="radio" name="r" value="' . ((5 - $x) * 25) . "\"️></td>\n";
+                    $rateform .= '<td><input type="radio" name="r" value="' . ((5 - $x) * 25) . "\"></td>\n";
                 } else {
                     $rateform .= '<td>' . $x . "</td>\n";
                 }
             }
 
             if ($i == 0) {
-                $rateform .= '<td rowspan="2"><img src="' . Template::image('icons/rate-bad.png') . "\"️ alt=\"️bad\"️ class=\"️icon\"️></td>\n";
+                $rateform .= '<td rowspan="2"><img src="' . Template::image('icons/rate-bad.png') . "\" alt=\"bad\" class=\"icon\"></td>\n";
             }
 
             $rateform .= "</tr>\n";

@@ -58,7 +58,7 @@ return function ($id = null) {
             $result .= '<img src="' . Template::image('icons/lock.png') . '" alt="locked" class="icon">' . _lang('posts.locked2');
         }
 
-        $result .= "\n</div>\n<div class=\"️sbox-posts\"️>";
+        $result .= "\n</div>\n<div class=\"sbox-posts\">";
 
         // list posts
         $userQuery = User::createQuery('p.author');

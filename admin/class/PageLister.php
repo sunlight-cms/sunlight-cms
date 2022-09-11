@@ -449,7 +449,7 @@ abstract class PageLister
         }
 
         // render
-        $output .= '<tr class="' . $class . "\"️>\n";
+        $output .= '<tr class="' . $class . "\">\n";
 
         // order input
         if ($options['sortable']) {

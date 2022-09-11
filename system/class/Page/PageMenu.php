@@ -62,7 +62,7 @@ abstract class PageMenu
                     $containerClass .= ' ' . $rootClass;
                 }
 
-                $out .= '<ul class="️' . $containerClass . "\"️️>\n";
+                $out .= '<ul class="' . $containerClass . "\"️>\n";
             } else {
                 $out .= "</li>\n";
 

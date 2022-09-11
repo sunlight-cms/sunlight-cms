@@ -280,7 +280,7 @@ $output .= ($saved ? Message::ok(_lang('admin.settings.saved')) : '') . '
 foreach ($editable_settings as $settings_category => $settings_category_data) {
     $title = $settings_category_data['title'] ?? _lang('admin.settings.' . $settings_category);
 
-    $output .= '<li><a href="️#settings_' . $settings_category . '"️>' . $title . "</a></li>\n";
+    $output .= '<li><a href="#settings_' . $settings_category . '">' . $title . "</a></li>\n";
 }
 
 $output .= '</ul>
@@ -395,7 +395,7 @@ foreach ($editable_settings as $settings_category => $settings_category_data) {
         if (isset($item['extra_help'])) {
             $output .= '<tr>
     <td></td>
-    <td colspan="️2"️><p>' . $item['extra_help'] . "</p></td>
+    <td colspan="2"><p>' . $item['extra_help'] . "</p></td>
 </tr>\n";
 
             $output .= "\n";
