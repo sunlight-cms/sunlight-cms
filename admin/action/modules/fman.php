@@ -178,7 +178,6 @@ $encodeFilename = function ($value) {
 if ($continue) {
     // post actions
     if (isset($_POST['action'])) {
-
         switch (Request::post('action')) {
             // upload
             case 'upload':
@@ -413,9 +412,7 @@ if ($continue) {
                     }
                 }
                 break;
-
         }
-
     }
 
     // get actions
@@ -579,7 +576,6 @@ if ($continue) {
                     $message = Message::warning(_lang('admin.fman.addtogallery.noimages'));
                 }
                 break;
-
         }
 
         // finish action code
@@ -642,7 +638,6 @@ if ($continue) {
     $items = array_merge(['..'], $items);
     $dircounter = 0;
     foreach ($items as $item) {
-
         // directory or parent link
         if ($item == '..') {
             if (($dirhref = User::checkPath($dir . $item, false, true)) === false) {

@@ -42,7 +42,6 @@ abstract class PageMenu
         $rootLevel = null;
 
         foreach ($flatPageTree as $pageId => $page) {
-
             $pageLevel = $page['node_level'];
             if ($rootLevel === null) {
                 $rootLevel = $pageLevel;

@@ -16,7 +16,6 @@ if (isset($_POST['index'])) {
     $index_id = (int) Request::post('index');
     Settings::update('index_page_id', $index_id);
     $message = Message::ok(_lang('global.done'));
-
 } else {
     $index_id = Settings::get('index_page_id');
 }

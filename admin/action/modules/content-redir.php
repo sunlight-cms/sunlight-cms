@@ -114,7 +114,6 @@ if (isset($_GET['new']) || isset($_GET['edit'])) {
 ' . Xsrf::getInput() . '</form>
 ';
     }
-
 }
 
 // table

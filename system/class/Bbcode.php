@@ -68,13 +68,11 @@ abstract class Bbcode
 
         // scan
         for ($i = 0; isset($s[$i]); ++$i) {
-
             // get char
             $char = $s[$i];
 
             // mode step
             switch ($mode) {
-
                 // look for tag
                 case 0:
                     if ($char === '[') {
@@ -205,7 +203,6 @@ abstract class Bbcode
                     }
 
                     break;
-
             }
 
             // buffer char
@@ -228,7 +225,6 @@ abstract class Bbcode
                 $tag = '';
                 $arg = '';
             }
-
         }
 
         // flush remaining parents and buffer
@@ -310,7 +306,6 @@ abstract class Bbcode
 
             case 'hr':
                 return '<span class="hr"></span>';
-
             case 'color':
                 static $colors = ['aqua' => 0, 'black' => 1, 'blue' => 2, 'fuchsia' => 3, 'gray' => 4, 'green' => 5, 'lime' => 6, 'maroon' => 7, 'navy' => 8, 'olive' => 9, 'orange' => 10, 'purple' => 11, 'red' => 12, 'silver' => 13, 'teal' => 14, 'white' => 15, 'yellow' => 16];
                 if ($buffer !== '') {

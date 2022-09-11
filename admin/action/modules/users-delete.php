@@ -44,7 +44,6 @@ if ($continue) {
     } else {
         $output .= Message::warning(_lang('admin.users.deleteuser.selfnote'));
     }
-
 } elseif (!$levelconflict) {
     $output .= Message::error(_lang('global.baduser'));
 } else {

@@ -37,7 +37,6 @@ class ConfigAction extends BaseConfigAction
             case 'dark_mode':
                 $config[$key] = ($value === '' ? null : (bool) $value);
                 return null;
-
             case 'options':
                 try {
                     $config[$key] = Json::decode($value);

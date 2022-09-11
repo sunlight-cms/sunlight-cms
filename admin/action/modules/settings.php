@@ -99,7 +99,6 @@ $editable_settings = [
             ['name' => 'mailerusefrom', 'format' => 'bool'],
             ['name' => 'profileemail', 'format' => 'bool'],
             ['name' => 'atreplace', 'format' => 'html'],
-
         ],
     ],
     'articles' => [
@@ -178,13 +177,11 @@ Extend::call('admin.settings', [
 
 // save
 if (!empty($_POST)) {
-
     $reload = false;
     $forceInstallCheck = false;
 
     foreach ($editable_settings as $settings_category_data) {
         foreach ($settings_category_data['items'] as $item) {
-
             if (!isset($settings[$item['name']])) {
                 continue;
             }
@@ -250,7 +247,6 @@ if (!empty($_POST)) {
                     $forceInstallCheck = true;
                 }
             }
-
         }
     }
 
@@ -388,7 +384,6 @@ foreach ($editable_settings as $settings_category => $settings_category_data) {
 
             $output .= "\n";
         }
-
     }
 
     $output .= "</table>\n</fieldset>\n\n";

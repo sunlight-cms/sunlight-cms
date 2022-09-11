@@ -50,7 +50,6 @@ $output .= '
 $queries = (new SqlReader($sql))->read();
 
 if (!empty($queries)) {
-
     // process queries
     $log = [];
     $lastResource = null;
@@ -92,7 +91,6 @@ if (!empty($queries)) {
     if ($error) {
         $output .= Message::error(DB::$mysqli->error);
     } elseif ($lastResource !== null) {
-
         $columns = DB::columns($lastResource);
 
         $output .= '<table class="list list-hover">
@@ -135,7 +133,6 @@ if (!empty($queries)) {
         $output .= '</tbody>
 </table>
 ';
-
     }
 
     $output .= "</div>\n";

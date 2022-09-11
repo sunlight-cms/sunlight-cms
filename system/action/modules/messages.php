@@ -42,7 +42,6 @@ $list = false;
 $message = '';
 
 switch ($a) {
-
     // new message
     case 'new':
         // title
@@ -340,7 +339,6 @@ switch ($a) {
         }
 
         break;
-
 }
 
 // backlink

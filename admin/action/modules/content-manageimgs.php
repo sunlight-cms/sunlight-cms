@@ -36,9 +36,7 @@ if (isset($_GET['g'])) {
 
 // action
 if (isset($_POST['xaction']) && $continue) {
-
     switch (Request::post('xaction')) {
-
         // insert image
         case 1:
             // load base vars
@@ -140,7 +138,6 @@ if (isset($_POST['xaction']) && $continue) {
                             $sql .= $val;
                         }
                     }
-
                 }
             }
 
@@ -158,7 +155,6 @@ if (isset($_POST['xaction']) && $continue) {
             if ($newhome != $galid) {
                 if (DB::count('page', 'id=' . DB::val($newhome) . ' AND type=' . Page::GALLERY) !== 0) {
                     if (DB::count('gallery_image', 'home=' . DB::val($galid)) !== 0) {
-
                         // move order numbers in the target gallery
                         $moveords = Form::loadCheckbox('moveords');
                         if ($moveords) {
@@ -259,9 +255,7 @@ if (isset($_POST['xaction']) && $continue) {
                 _lang('admin.content.manageimgs.upload.msg', ['%done%' => $done, '%total%' => $total])
             );
             break;
-
     }
-
 }
 
 // remove image

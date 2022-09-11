@@ -2,8 +2,6 @@
 
 namespace Sunlight;
 
-use Sunlight\Util\Environment;
-
 abstract class Email
 {
     /**

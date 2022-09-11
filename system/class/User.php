@@ -808,7 +808,6 @@ abstract class User
                     $output .= "</ul>\n";
                 }
             }
-
         } else {
             $output .= '<p>' . _lang('login.ininfo') . ' <em>' . self::getUsername() . '</em> - <a href="' . _e(Xsrf::addToUrl(Router::path('system/script/logout.php'))) . '">' . _lang('usermenu.logout') . '</a>.</p>';
         }

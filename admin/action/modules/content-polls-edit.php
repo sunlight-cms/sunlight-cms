@@ -107,7 +107,6 @@ if (isset($_POST['question'])) {
                 if ($newvotes != '') {
                     DB::update('poll', 'id=' . $id, ['votes' => $newvotes]);
                 }
-
             }
 
             // reset
@@ -139,7 +138,6 @@ if (isset($_POST['question'])) {
 
 // output
 if ($continue) {
-
     // author select
     if (User::hasPrivilege('adminpollall')) {
         $author_select = '
@@ -195,7 +193,6 @@ if ($continue) {
   </table>
   ' . Xsrf::getInput() . '</form>
   ';
-
 } else {
     $output .= Message::error(_lang('global.badinput'));
 }

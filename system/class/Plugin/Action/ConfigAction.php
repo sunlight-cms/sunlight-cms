@@ -118,7 +118,6 @@ class ConfigAction extends PluginAction
                 case 'checkbox':
                     $config[$key] = (bool) $value;
                     return null;
-
                 case 'text':
                     if (!is_string($value)) {
                         return _lang('global.badinput');

@@ -82,7 +82,6 @@ if (isset($_GET['user'], $_GET['hash'])) {
 
         // all ok
         $output .= Message::ok(_lang('mod.lostpass.generated'));
-
     } while (false);
 } else {
     // initiate reset attempt

@@ -91,7 +91,6 @@ if ($query !== false) {
                     break;
             }
         }
-
     } else {
         $_index->unauthorized();
         return;
@@ -145,7 +144,6 @@ if (isset($_POST['text'])) {
         } else {
             $message = Message::warning(_lang('mod.editpost.failed'));
         }
-
     } else {
         // delete
         if ($query['type'] != Post::PRIVATE_MSG || $query['xhome'] != -1) {

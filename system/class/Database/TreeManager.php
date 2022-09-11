@@ -335,7 +335,6 @@ class TreeManager
 
         // traverse queue
         for ($i = 0; isset($queue[$i]); ++$i) {
-
             // traverse children of current node
             if ($queue[$i][0] !== null) {
                 $childCondition = $this->parentColumn . '=' . DB::val($queue[$i][0]);
@@ -357,7 +356,6 @@ class TreeManager
 
             DB::free($children);
             unset($queue[$i]);
-
         }
 
         // apply level set
@@ -396,7 +394,6 @@ class TreeManager
 
         // traverse queue
         for ($i = 0; isset($queue[$i]); ++$i) {
-
             // find children
             if ($queue[$i][0] !== null) {
                 $childCondition = $this->parentColumn . '=' . DB::val($queue[$i][0]);
@@ -429,7 +426,6 @@ class TreeManager
                 }
             }
             unset($queue[$i]);
-
         }
 
         // convert depth map to sets

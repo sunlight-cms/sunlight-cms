@@ -89,7 +89,6 @@ if (isset($_POST['action'])) {
                             $sql .= $val;
                         }
                     }
-
                 }
             }
 
@@ -162,7 +161,6 @@ $shoutboxes = DB::query('SELECT * FROM ' . DB::table('shoutbox') . ' ORDER BY id
 
 if (DB::size($shoutboxes) != 0) {
     while ($shoutbox = DB::row($shoutboxes)) {
-
         $output .= '
     <br>
     <table>

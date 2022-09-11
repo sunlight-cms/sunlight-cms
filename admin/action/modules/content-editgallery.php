@@ -8,7 +8,6 @@ defined('SL_ROOT') or exit;
 $type = Page::GALLERY;
 require SL_ROOT . 'admin/action/modules/include/page-editscript-init.php';
 if ($continue) {
-
     if (!$new) {
         $editscript_extra = '<p><a class="button" href="' . _e(Router::admin('content-manageimgs', ['query' => ['g' => $id]])) . '"><img src="' . _e(Router::path('admin/images/icons/edit.png')) . '" alt="edit" class="icon"><span class="big-text">' . _lang('admin.content.form.manageimgs') . '</span></a></p>';
     }
@@ -27,6 +26,5 @@ if ($continue) {
         'var3' => ['type' => 'int', 'nullable' => true],
         'var4' => ['type' => 'int', 'nullable' => true],
     ];
-
 }
 require SL_ROOT . 'admin/action/modules/include/page-editscript.php';

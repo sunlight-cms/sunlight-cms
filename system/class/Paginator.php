@@ -176,7 +176,6 @@ class Paginator
      * Determine item page
      *
      * @param int $limit max item per page
-     * @param string|int $tableOrCount table name (table[:alias]) or an already known total number of items
      * @param string $conditions SQL condition used to filter items from table
      */
     static function getItemPage(int $limit, string $table, string $conditions = '1'): int

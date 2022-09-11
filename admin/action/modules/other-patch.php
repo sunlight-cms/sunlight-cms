@@ -53,7 +53,6 @@ if (isset($_POST['apply_patch'])) do {
         }
 
         $output .= Message::list($errors, ['type' => Message::ERROR]);
-
     } catch (Throwable $e) {
         $output .= Message::error(_lang('global.error')) . Core::renderException($e);
     }

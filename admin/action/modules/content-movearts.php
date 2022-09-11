@@ -76,7 +76,6 @@ if (isset($_POST['source'])) {
     } else {
         $message = Message::list($error_log);
     }
-
 }
 
 // output

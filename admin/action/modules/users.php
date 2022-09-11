@@ -61,7 +61,6 @@ if (isset($_POST['type']) && User::hasPrivilege('admingroups')) {
             // insert
             DB::insert('user_group', $new_group);
             $msg = 1;
-
         } else {
             $msg = 4;
         }

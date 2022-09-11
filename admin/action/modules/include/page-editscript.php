@@ -39,7 +39,6 @@ if ($query['slug_abs']) {
         $editable_slug = mb_substr($query['slug'], $slug_last_slash + 1);
         $base_slug = mb_substr($query['slug'], 0, $slug_last_slash);
     }
-
 }
 
 // save
@@ -391,7 +390,6 @@ if (!empty($_POST)) {
     if (!$new) {
         // save
         DB::update('page', 'id=' . $id, $changeset);
-
     } else {
         // create
         $changeset['type'] = $type;

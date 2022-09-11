@@ -10,7 +10,6 @@ defined('SL_ROOT') or exit;
 // output
 if (isset($_admin->modules[$_admin->currentModule])) {
     if (Admin::moduleAccess($_admin->currentModule)) {
-
         $module = $_admin->modules[$_admin->currentModule];
         $module_custom_header = (isset($module['custom_header']) && $module['custom_header']);
 

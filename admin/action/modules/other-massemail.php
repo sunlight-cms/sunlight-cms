@@ -92,7 +92,6 @@ if (isset($_POST['text'])) {
             // list emails
             $emails_total = DB::size($query);
             if ($emails_total != 0) {
-
                 $emails = '';
                 $email_counter = 0;
                 while ($item = DB::row($query)) {
@@ -104,7 +103,6 @@ if (isset($_POST['text'])) {
                 }
 
                 $output .= Message::ok('<textarea class="areasmallwide" rows="9" cols="33" name="list">' . $emails . '</textarea>', true);
-
             } else {
                 $output .= Message::warning(_lang('admin.other.massemail.noreceiversfound'));
             }
@@ -112,7 +110,6 @@ if (isset($_POST['text'])) {
     } else {
         $output .= Message::list($errors);
     }
-
 }
 
 // output

@@ -282,7 +282,6 @@ if ($continue) {
 
   ' . Xsrf::getInput() . '</form>
   ';
-
 } elseif ($levelconflict == false) {
     $output .= Message::error(_lang('global.badinput'));
 } else {

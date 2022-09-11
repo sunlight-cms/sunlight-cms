@@ -24,7 +24,6 @@ if (isset($_GET['id'])) {
 }
 
 if ($continue) {
-
     // removing child pages requires privileges for all page types
     $recursive = true;
     foreach (Page::getTypes() as $type) {
@@ -48,7 +47,6 @@ if ($continue) {
         $_admin->redirect(Router::admin('content', ['query' => ['done' => 1]]));
 
         return;
-
     }
 
     // output
@@ -69,7 +67,6 @@ if ($continue) {
     <input type="submit" value="' . _lang('admin.content.delete.confirm') . '">
     ' . Xsrf::getInput() . '</form>
     ';
-
 } else {
     $output .= Message::error(_lang('global.badinput'));
 }

@@ -148,14 +148,11 @@ if (!empty($_POST)) {
                 // download
                 Response::downloadFile($backup, $backup_name);
             }
-
         } elseif (isset($_POST['do_restore'])) {
-
             $backup_file = Request::post('backup_file');
 
             if (isset($backup_files[$backup_file])) {
                 if (($restoring = isset($_POST['do_restore']['restore'])) || isset($_POST['do_restore']['load'])) {
-
                     $backup = new Backup($backup_dir . '/' . $backup_file);
                     $backup->open();
                     $backup_restorer = new BackupRestorer($backup);
@@ -273,7 +270,6 @@ if (!empty($_POST)) {
                     } else {
                         $message = Message::list($errors, ['text' => _lang('admin.backup.restore.errors.validate')]);
                     }
-
                 } elseif (isset($_POST['do_restore']['delete'])) {
                     unlink($backup_dir . '/' . $backup_file);
                     unset($backup_files[$backup_file]);
@@ -281,11 +277,8 @@ if (!empty($_POST)) {
                     $message = Message::ok(_lang('global.done'));
                 }
             }
-
         } elseif (isset($_POST['do_upload'])) {
-
             if (isset($_FILES['backup']) && is_uploaded_file($_FILES['backup']['tmp_name'])) {
-
                 $backup_name = StringManipulator::slugify($_FILES['backup']['name'], false);
 
                 if (preg_match('{\.zip$}Di', $backup_name) && Filesystem::isSafeFile($backup_name)) {
@@ -298,11 +291,9 @@ if (!empty($_POST)) {
                 } else {
                     $message = Message::warning(_lang('admin.backup.upload.error'));
                 }
-
             } else {
                 $message = Message::warning(_lang('global.noupload'));
             }
-
         }
     } catch (Throwable $e) {
         $message = Message::error(_lang('global.error')) . Core::renderException($e);

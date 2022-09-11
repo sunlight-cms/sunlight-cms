@@ -43,7 +43,6 @@ if (IpLog::check(IpLog::ANTI_SPAM)) {
 // send
 if (Xsrf::check()) {
     if (Email::validate($sender) && $text != '' && Captcha::check()) {
-
         // headers
         $headers = [
             'Content-Type' => 'text/plain; charset=UTF-8',
@@ -75,7 +74,6 @@ if (Xsrf::check()) {
         } else {
             $return = 3;
         }
-
     } else {
         $return = 2;
     }

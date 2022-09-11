@@ -33,7 +33,6 @@ defined('SL_ROOT') or exit;
 */
 
 return [
-
     // index
     'index' => [
         'title' => _lang('admin.menu.index'),

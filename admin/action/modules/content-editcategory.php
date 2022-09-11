@@ -8,7 +8,6 @@ defined('SL_ROOT') or exit;
 $type = Page::CATEGORY;
 require SL_ROOT . 'admin/action/modules/include/page-editscript-init.php';
 if ($continue) {
-
     // order type select
     $artorder_select = '';
     for ($x = 1; $x <= 4; $x++) {

@@ -69,7 +69,6 @@ abstract class StringGenerator
         $char = random_int(0, 25);
 
         for ($i = 0; $i < $length; ++$i) {
-
             // add char
             $output .= chr($char + 65 + 32);
 
@@ -81,7 +80,6 @@ abstract class StringGenerator
                     break;
                 }
             }
-
         }
 
         return $output;

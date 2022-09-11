@@ -45,7 +45,6 @@ if (isset($_POST['action'])) {
             // messages
             $messages = Request::post('messages');
             switch ($messages) {
-
                 case 1:
                     $messages_time = time() - (Request::post('messages-time') * 7 * 24 * 60 * 60);
                     if ($prev) {
@@ -63,7 +62,6 @@ if (isset($_POST['action'])) {
                         DB::delete('post', 'type=' . Post::PRIVATE_MSG);
                     }
                     break;
-
             }
 
             // comments, posts, iplog
@@ -109,7 +107,6 @@ if (isset($_POST['action'])) {
 
             // users
             if (Form::loadCheckbox('users')) {
-
                 $users_time = time() - (Request::post('users-time') * 7 * 24 * 60 * 60);
                 $users_group = (int) Request::post('users-group');
                 $users_group_cond = ' AND group_id!=' . User::ADMIN_GROUP_ID;
@@ -126,7 +123,6 @@ if (isset($_POST['action'])) {
                     }
                     DB::free($userids);
                 }
-
             }
 
             // maintenance

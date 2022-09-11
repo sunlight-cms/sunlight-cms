@@ -161,7 +161,6 @@ class SqlDumper
         $isFirstRowStatement = false;
 
         while ($rowx = DB::row($result)) {
-
             // write initial insert statement
             if (!$writtenInsertSyntax) {
                 $currentQuerySize += fwrite($handle, $insertStatement);

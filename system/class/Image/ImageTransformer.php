@@ -264,7 +264,6 @@ final class ImageTransformer
                 case self::ALIGN_HIGH: $sourceCoord = $sourceOffset; break;
                 default: throw new ImageException(ImageException::INVALID_ALIGN);
             }
-
         } elseif ($targetSize < $outputSize) {
             // size too small
             if ($pad) {

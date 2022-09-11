@@ -317,7 +317,6 @@ abstract class Form
      * - use {@see Form::getSubmitRow()} to add a submit button
      *
      *
-     * @param array $options
      * @param array[] $rows
      */
     static function render(array $options, array $rows): string

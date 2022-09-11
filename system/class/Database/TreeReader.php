@@ -79,7 +79,6 @@ class TreeReader
     /**
      * Extract children from a tree with only one root
      *
-     * @param array $tree
      * @param int|null $rootNodeId root node identifier
      * @param bool $flat TRUE if this is a tree
      */
@@ -123,7 +122,6 @@ class TreeReader
         $stack = [];
         $frame = [$tree, 0];
         do {
-
             for ($i = $frame[1]; isset($frame[0][$i]); ++$i) {
                 // get children
                 $children = $frame[0][$i][$this->childrenIndex];

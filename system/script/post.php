@@ -194,7 +194,6 @@ if ($continue && $continue2 && $text != '' && ($type == Post::SHOUTBOX_ENTRY || 
                             DB::deleteSet('post', 'id', $dpost);
                         }
                     }
-
                 } else {
                     $return = 0;
                 }

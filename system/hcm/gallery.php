@@ -68,7 +68,6 @@ return function ($path = '', $thumbnail_size = '', $per_page = null, $lightbox =
         if ($paginator) {
             $result .= $paging['paging'];
         }
-
     }
 
     return $result;

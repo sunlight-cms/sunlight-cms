@@ -185,7 +185,6 @@ if (isset($_POST['title'])) {
             // error
             $error_log[] = Message::prefix(_lang('admin.content.form.picture'), $pic_err->getUserFriendlyMessage());
         }
-
     } elseif (isset($query['picture_uid']) && Form::loadCheckbox('picture-delete')) {
         // remove image
         Article::removeImage($query['picture_uid']);
@@ -272,17 +271,14 @@ if (isset($_POST['title'])) {
         ]);
 
         return;
-
     }
 
     $message = Message::list($error_log);
     $query = $newdata + $query;
-
 }
 
 // output
 if ($continue) {
-
     // message
     if (isset($_GET['saved'])) {
         $message = Message::ok(_lang('global.saved') . ' <small>(' . GenericTemplates::renderTime(time()) . ')</small>', true);
@@ -428,7 +424,6 @@ if ($continue) {
 ' . Xsrf::getInput() . '</form>
 
 ';
-
 } else {
     $output .=
         Admin::backlink(Router::admin('content-articles'))

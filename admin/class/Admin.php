@@ -543,5 +543,4 @@ abstract class Admin
             ]),
         ];
     }
-
 }

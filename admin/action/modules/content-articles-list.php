@@ -24,7 +24,6 @@ if (isset($_GET['cat'])) {
 
 // output
 if ($continue) {
-    
     // set order depending on category
     $artsperpage = $catdata['var2'];
     switch ($catdata['var1']) {
@@ -80,7 +79,6 @@ if ($continue) {
     }
     $output .= '</tbody></table>';
     $output .= $paging['paging'];
-
 } else {
     $output .= Message::error(_lang('global.badinput'));
 }

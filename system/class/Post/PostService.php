@@ -244,7 +244,6 @@ class PostService
                     $page_param = $vars[6];
                 }
                 break;
-
         }
 
         // force locked
@@ -317,7 +316,6 @@ class PostService
 
         // render post form or link
         if (!$locked && (isset($_GET['addpost']) || isset($_GET['replyto']))) {
-
             // fetch reply to ID
             if ($xhome == -1) {
                 if (isset($_GET['replyto']) && Request::get('replyto') != -1) {
@@ -347,7 +345,6 @@ class PostService
                 $form_output .= '<p>' . _lang('posts.loginrequired') . "</p>\n";
                 $form_output .= User::renderLoginForm();
             }
-
         } elseif (!$locked) {
             $form_output .= '<a class="button" href="' . _e(UrlHelper::appendParams($url, 'addpost&page=' . $paging['current'])) . '#post-form"️><img class="icon" src="' . Template::image('icons/bubble.png') . '" alt="post">' . $addlink . '</a>';
         } else {
@@ -437,7 +434,6 @@ class PostService
 
         // list
         if (!empty($items)) {
-
             // list posts or topics
             if (!$is_topic_list) {
                 $output .= "<div class=\"️post-list\"️>\n";
@@ -489,14 +485,11 @@ class PostService
                     $output .= $form_output;
                     $form_output = null;
                 }
-
             } else {
-
                 // topic list table
                 $hl = false;
                 $output .= "\n<table class=\"️topic-table\"️>\n<thead><tr><th colspan=\"️2\"️>" . _lang('posts.topic') . '</th><th>' . _lang('global.answersnum') . '</th><th>' . _lang('global.lastanswer') . "</th></tr></thead>\n<tbody>\n";
                 foreach ($items as $item) {
-
                     // fetch author
                     if ($item['author'] != -1) {
                         $author = Router::userFromQuery($userQuery, $item, ['max_len' => 16]);
@@ -563,14 +556,11 @@ class PostService
                         $output .= '<tr><td><a href="' . _e(Router::topic($item['topic_id'], $forum_slug)) . '">' . $item['topic_subject'] . '</a></td><td>' . $author . '</td><td>' . GenericTemplates::renderTime($item['time'], 'post') . "</td></tr>\n";
                     }
                     $output .= "</table>\n\n";
-
                 } else {
                     $output .= '<p>' . _lang('global.nokit') . '</p>';
                 }
                 $output .= "</div>\n";
-
             }
-
         } else {
             $output .= '<p>' . $nopostsmessage . '</p>';
         }

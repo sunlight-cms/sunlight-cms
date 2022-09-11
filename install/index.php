@@ -271,7 +271,6 @@ abstract class Labels
  */
 abstract class Errors
 {
-    
     static function render(array $errors, string $mainLabelKey): void
     {
         if (!empty($errors)) {

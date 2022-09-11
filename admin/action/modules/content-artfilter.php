@@ -106,7 +106,6 @@ if (isset($_POST['category'])) {
 
             // reset rating
             if ($new_resetrate) {
-
                 $changeset += ['ratenum' => 0, 'ratesum' => 0];
                 DB::delete('iplog', 'type=' . IpLog::ARTICLE_RATED . ' AND var=' . $item['id']);
             }

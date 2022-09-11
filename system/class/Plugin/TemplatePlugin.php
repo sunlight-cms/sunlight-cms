@@ -115,7 +115,6 @@ class TemplatePlugin extends Plugin
     {
         if (isset($this->options['layouts'][$layout])) {
             return $this->options['layouts'][$layout]['slots'];
-
         }
 
         return [];
