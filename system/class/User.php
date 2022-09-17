@@ -215,7 +215,7 @@ abstract class User
 
             // check user authentication hash
             if ($_SESSION['user_auth'] !== self::getAuthHash(self::AUTH_SESSION, $userData['email'], $userData['password'])) {
-                // neplatny hash
+                // invalid hash
                 $errorCode = 7;
                 break;
             }
