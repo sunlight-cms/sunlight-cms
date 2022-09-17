@@ -59,7 +59,8 @@ class TemplatePluginType extends PluginType
                 ->required(),
             Option::string('lang_dir')
                 ->normalize([PluginOptionNormalizer::class, 'normalizePath'])
-                ->default(null)
+                ->default(null),
+            $this->createEventSubscribersOption('events')
         );
 
         $optionResolver->addNormalizer(function (Node $node, PluginData $plugin) {

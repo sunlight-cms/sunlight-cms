@@ -6,6 +6,7 @@ use Kuria\Options\Exception\ResolverException;
 use Kuria\Options\Node;
 use Kuria\Options\Option;
 use Kuria\Options\Resolver;
+use Sunlight\CallbackHandler;
 use Sunlight\Plugin\PluginData;
 use Sunlight\Plugin\PluginOptionNormalizer;
 
@@ -118,5 +119,15 @@ abstract class PluginType
 
             return $node;
         });
+    }
+
+    protected function createEventSubscribersOption(string $name): Option\NodeOption
+    {
+        return Option::nodeList(
+            $name,
+            Option::string('event'),
+            Option::int('priority')->default(0),
+            ...CallbackHandler::getDefinitionOptions()
+        )->normalize([PluginOptionNormalizer::class, 'normalizeCallbackNodes']);
     }
 }

@@ -7,13 +7,22 @@
         {
             "properties": {
                 "events": {
-                    "$ref": "#/definitions/event-subscriber"
+                    "type": "array",
+                    "items": {
+                        "$ref": "plugin.json#/definitions/event-subscriber"
+                    }
                 },
                 "events.web": {
-                    "$ref": "#/definitions/event-subscriber"
+                    "type": "array",
+                    "items": {
+                        "$ref": "plugin.json#/definitions/event-subscriber"
+                    }
                 },
                 "events.admin": {
-                    "$ref": "#/definitions/event-subscriber"
+                    "type": "array",
+                    "items": {
+                        "$ref": "plugin.json#/definitions/event-subscriber"
+                    }
                 },
                 "scripts": {
                     "$ref": "#/definitions/path-list"
@@ -25,35 +34,28 @@
                     "$ref": "#/definitions/path-list"
                 },
                 "routes": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "pattern": {
-                                "type": "string"
-                            },
-                            "method": {
-                                "type": "string"
-                            },
-                            "callback": {
-                                "type": ["string", "array"]
+                    "allOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "$ref": "plugin.json#/definitions/callback-definition"
                             }
                         },
-                        "oneOf": [
-                            {
+                        {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "pattern": {
+                                        "type": "string"
+                                    }
+                                },
                                 "required": [
-                                    "pattern",
-                                    "method"
-                                ]
-                            },
-                            {
-                                "required": [
-                                    "pattern",
-                                    "callback"
+                                    "pattern"
                                 ]
                             }
-                        ]
-                    }
+                        }
+                    ]
                 },
                 "langs": {
                     "type": "object",
@@ -67,7 +69,7 @@
                     "type": "object",
                     "patternProperties": {
                         "^": {
-                            "type": "string"
+                            "$ref": "plugin.json#/definitions/callback-definition"
                         }
                     }
                 }
@@ -75,40 +77,6 @@
         }
     ],
     "definitions": {
-        "event-subscriber": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "event": {
-                        "type": "string"
-                    },
-                    "method": {
-                        "type": "string"
-                    },
-                    "callback": {
-                        "type": ["string", "array"]
-                    },
-                    "priority": {
-                        "type": "integer"
-                    }
-                },
-                "oneOf": [
-                    {
-                        "required": [
-                            "event",
-                            "method"
-                        ]
-                    },
-                    {
-                        "required": [
-                            "event",
-                            "callback"
-                        ]
-                    }
-                ]
-            }
-        },
         "path-list": {
             "type": "array",
             "items": {

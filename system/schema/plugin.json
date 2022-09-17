@@ -32,7 +32,10 @@
                     }
                 },
                 "debug": {
-                    "type": ["boolean", "null"]
+                    "type": [
+                        "boolean",
+                        "null"
+                    ]
                 }
             },
             "required": [
@@ -100,6 +103,61 @@
                     }
                 }
             }
+        },
+        "callback-definition": {
+            "type": "object",
+            "properties": {
+                "method": {
+                    "type": "string"
+                },
+                "callback": {
+                    "type": [
+                        "string",
+                        "array"
+                    ]
+                },
+                "script": {
+                    "type": "string"
+                }
+            },
+            "oneOf": [
+                {
+                    "required": [
+                        "method"
+                    ]
+                },
+                {
+                    "required": [
+                        "callback"
+                    ]
+                },
+                {
+                    "required": [
+                        "script"
+                    ]
+                }
+            ]
+        },
+        "event-subscriber": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/callback-definition"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "event": {
+                            "type": "string"
+                        },
+                        "priority": {
+                            "type": "integer"
+                        }
+                    },
+                    "required": [
+                        "event"
+                    ]
+                }
+            ]
         }
     }
 }

@@ -2,9 +2,9 @@
 
 namespace Sunlight\Plugin;
 
+use Sunlight\CallbackHandler;
 use Sunlight\Core;
 use Sunlight\Extend;
-use Sunlight\Hcm;
 use Sunlight\Localization\LocalizationDirectory;
 
 class ExtendPlugin extends Plugin implements InitializableInterface
@@ -15,9 +15,7 @@ class ExtendPlugin extends Plugin implements InitializableInterface
         foreach ($this->options['events'] as $subscriber) {
             Extend::reg(
                 $subscriber['event'],
-                $subscriber['method'] !== null
-                    ? [$this, $subscriber['method']]
-                    : $subscriber['callback'],
+                CallbackHandler::fromArray($subscriber, $this),
                 $subscriber['priority']
             );
         }
@@ -26,9 +24,7 @@ class ExtendPlugin extends Plugin implements InitializableInterface
             foreach ($this->options['events.' . Core::$env] as $subscriber) {
                 Extend::reg(
                     $subscriber['event'],
-                    $subscriber['method'] !== null
-                        ? [$this, $subscriber['method']]
-                        : $subscriber['callback'],
+                    CallbackHandler::fromArray($subscriber, $this),
                     $subscriber['priority']
                 );
             }
@@ -40,8 +36,10 @@ class ExtendPlugin extends Plugin implements InitializableInterface
         }
 
         // register HCM modules
-        foreach ($this->options['hcm'] as $name => $script) {
-            Hcm::register((string) $name, $script);
+        foreach ($this->options['hcm'] as $name => $definition) {
+            Extend::reg("hcm.plugin.{$name}", function (array $args) use ($definition) {
+                $args['output'] = (string) CallbackHandler::fromArray($definition, $this)(...$args['arg_list']);
+            });
         }
 
         // load scripts
@@ -60,9 +58,7 @@ class ExtendPlugin extends Plugin implements InitializableInterface
             foreach ($this->options['routes'] as $route) {
                 PluginRouter::register(
                     $route['pattern'],
-                    $route['method'] !== null
-                        ? [$this, $route['method']]
-                        : $route['callback']
+                    CallbackHandler::fromArray($route, $this)
                 );
             }
         }

@@ -10,7 +10,7 @@ abstract class Hcm
     /** @var int unique HCM identifier */
     public static $uid = 0;
     /** @var array<string, string> */
-    private static $registry = [
+    private static $modules = [
         'articles' => __DIR__ . '/../hcm/articles.php',
         'countart' => __DIR__ . '/../hcm/countart.php',
         'countusers' => __DIR__ . '/../hcm/countusers.php',
@@ -45,13 +45,6 @@ abstract class Hcm
         'usermenu' => __DIR__ . '/../hcm/usermenu.php',
         'users' => __DIR__ . '/../hcm/users.php',
     ];
-    /** @var array<string, \Closure> */
-    private static $cache = [];
-
-    static function register(string $name, string $scriptPath): void
-    {
-        self::$registry[$name] = $scriptPath;
-    }
 
     /**
      * Parse HCM modules in a string
@@ -91,12 +84,12 @@ abstract class Hcm
         return $output;
     }
 
-    static function evaluate(string $args): string
+    static function evaluate(string $argList): string
     {
-        $args = ArgList::parse($args);
+        $argList = ArgList::parse($argList);
 
-        if (isset($args[0])) {
-            return self::run((string) $args[0], array_slice($args, 1));
+        if (isset($argList[0])) {
+            return self::run((string) $argList[0], array_slice($argList, 1));
         }
 
         return '';
@@ -105,25 +98,21 @@ abstract class Hcm
     /**
      * Run a single HCM module
      */
-    static function run(string $name, array $args = []): string
+    static function run(string $name, array $argList = []): string
     {
         if (Core::$env !== Core::ENV_WEB) {
             return ''; // HCM modules can't be run outside of web env
         }
 
-        $closure = self::$cache[$name] ?? (
-            isset(self::$registry[$name])
-                ? self::load(self::$registry[$name])
-                : null
-        );
-
-        if ($closure === null) {
-            return '';
-        }
-
         ++self::$uid;
 
-        return (string) $closure(...$args);
+        if (isset(self::$modules[$name])) {
+            // system module
+            return (string) CallbackHandler::fromScript(self::$modules[$name])(...$argList);
+        } else {
+            // emit event for unknown modules
+            return Extend::buffer("hcm.plugin.{$name}", ['name' => $name, 'arg_list' => $argList]);
+        }
     }
 
     /**
@@ -153,8 +142,8 @@ abstract class Hcm
         $deniedMap = $deniedModules !== null ? array_flip($deniedModules) : null;
         $allowedMap = $allowedModules !== null ? array_flip($allowedModules) : null;
 
-        return self::parse($content, function ($args) use ($deniedMap, $allowedMap, $exception) {
-            $module = (string) (ArgList::parse($args)[0] ?? '');
+        return self::parse($content, function ($argList) use ($deniedMap, $allowedMap, $exception) {
+            $module = (string) (ArgList::parse($argList)[0] ?? '');
 
             if (
                 $allowedMap !== null && !isset($allowedMap[$module])
@@ -168,7 +157,7 @@ abstract class Hcm
                 return '';
             }
 
-            return self::compose($args);
+            return self::compose($argList);
         });
     }
 
@@ -183,9 +172,9 @@ abstract class Hcm
     /**
      * Compose HCM module
      */
-    static function compose(string $args): string
+    static function compose(string $argList): string
     {
-        return '[hcm]' . $args . '[/hcm]';
+        return '[hcm]' . $argList . '[/hcm]';
     }
 
     /**
@@ -204,16 +193,5 @@ abstract class Hcm
         ) {
             $variable = null;
         }
-    }
-
-    private static function load(string $scriptPath): \Closure
-    {
-        $closure = require $scriptPath;
-
-        if (!$closure instanceof \Closure) {
-            throw new \UnexpectedValueException(sprintf('HCM script "%s" did not return a closure', $scriptPath));
-        }
-
-        return $closure;
     }
 }

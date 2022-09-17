@@ -58,6 +58,12 @@
                 },
                 "lang_dir": {
                     "type": "string"
+                },
+                "events": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "plugin.json#/definitions/event-subscriber"
+                    }
                 }
             },
             "required": [
@@ -67,7 +73,10 @@
     ],
     "definitions": {
         "asset-map": {
-            "type": ["array", "object"],
+            "type": [
+                "array",
+                "object"
+            ],
             "items": {
                 "type": "string"
             },

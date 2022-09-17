@@ -92,6 +92,31 @@ abstract class PluginOptionNormalizer
         return $normalized;
     }
 
+    /**
+     * @param Node[] $callbacks
+     */
+    static function normalizeCallbackNodes(array $callbacks, PluginData $plugin): array
+    {
+        foreach ($callbacks as $key => $callback) {
+            $callbackProps = array_filter(
+                array_intersect_key($callback->toArray(), ['method' => true, 'callback' => true, 'script' => true]),
+                function ($value) { return $value !== null; }
+            );
+
+            if (count($callbackProps) > 1) {
+                self::fail('[%s] must specify only method, callback or script, got multiple', $key);
+            } elseif (count($callbackProps) < 0) {
+                self::fail('[%s] must specify method, callback or script', $key);
+            }
+
+            if (key($callbackProps) === 'script') {
+                $callback['script'] = self::normalizePath($callback['script'], $plugin);
+            }
+        }
+
+        return $callbacks;
+    }
+
     static function normalizeTemplateLayouts(array $layouts): array
     {
         foreach ($layouts as $layout => $options) {
@@ -138,6 +163,9 @@ abstract class PluginOptionNormalizer
         return $normalized;
     }
 
+    /**
+     * @return never-return
+     */
     private static function fail(string $message, ...$args): void
     {
         throw new NormalizerException('', [new InvalidOptionError(vsprintf($message, $args))]);

@@ -4,6 +4,7 @@ namespace Sunlight\Plugin\Type;
 
 use Kuria\Options\Option;
 use Kuria\Options\Resolver;
+use Sunlight\CallbackHandler;
 use Sunlight\Plugin\ExtendPlugin;
 use Sunlight\Plugin\PluginOptionNormalizer;
 
@@ -33,28 +34,10 @@ class ExtendPluginType extends PluginType
     {
         parent::configureOptionResolver($optionResolver);
 
-        $eventSubscriberOptions = [
-            Option::string('event'),
-            Option::string('method')->default(null),
-            Option::any('callback')->default(null),
-            Option::int('priority')->default(0),
-        ];
-
-        $methodOrCallbackValidator = function (array $subscribers) {
-            foreach ($subscribers as $subscriber) {
-                if (!($subscriber['method'] === null xor $subscriber['callback'] === null)) {
-                    return 'either method or callback must be specified';
-                }
-            }
-        };
-
         $optionResolver->addOption(
-            Option::nodeList('events', ...$eventSubscriberOptions)
-                ->validate($methodOrCallbackValidator),
-            Option::nodeList('events.web', ...$eventSubscriberOptions)
-                ->validate($methodOrCallbackValidator),
-            Option::nodeList('events.admin', ...$eventSubscriberOptions)
-                ->validate($methodOrCallbackValidator),
+            $this->createEventSubscribersOption('events'),
+            $this->createEventSubscribersOption('events.web'),
+            $this->createEventSubscribersOption('events.admin'),
             Option::list('scripts', 'string')
                 ->normalize([PluginOptionNormalizer::class, 'normalizePathArray'])
                 ->default([]),
@@ -68,15 +51,15 @@ class ExtendPluginType extends PluginType
             Option::nodeList(
                 'routes',
                 Option::string('pattern'),
-                Option::string('method')->default(null),
-                Option::any('callback')->default(null)
-            )->validate($methodOrCallbackValidator),
+                ...CallbackHandler::getDefinitionOptions()
+            )->normalize([PluginOptionNormalizer::class, 'normalizeCallbackNodes']),
             Option::list('langs', 'string')
                 ->normalize([PluginOptionNormalizer::class, 'normalizePathArray'])
                 ->default([]),
-            Option::list('hcm', 'string')
-                ->normalize([PluginOptionNormalizer::class, 'normalizePathArray'])
-                ->default([])
+            Option::nodeList(
+                'hcm',
+                ...CallbackHandler::getDefinitionOptions()
+            )->normalize([PluginOptionNormalizer::class, 'normalizeCallbackNodes'])
         );
     }
 }

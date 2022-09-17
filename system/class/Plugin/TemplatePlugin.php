@@ -2,7 +2,9 @@
 
 namespace Sunlight\Plugin;
 
+use Sunlight\CallbackHandler;
 use Sunlight\Database\Database as DB;
+use Sunlight\Extend;
 use Sunlight\Localization\LocalizationDictionary;
 use Sunlight\Localization\LocalizationDirectory;
 use Sunlight\Settings;
@@ -45,6 +47,14 @@ class TemplatePlugin extends Plugin
      */
     function begin(string $layout): void
     {
+        // register events once the template is being used
+        foreach ($this->options['events'] as $subscriber) {
+            Extend::reg(
+                $subscriber['event'],
+                CallbackHandler::fromArray($subscriber, $this),
+                $subscriber['priority']
+            );
+        }
     }
 
     /**
