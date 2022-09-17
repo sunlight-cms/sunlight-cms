@@ -356,8 +356,8 @@ $output .= $message . '
                         ' . _buffer(function () use ($backup_dynpath_choices) {
                             foreach ($backup_dynpath_choices as $name => $options) {
                                 echo '<li><label>'
-                                    . '<input type="checkbox" value="' . $name . '"' . Form::restoreCheckedAndName('partial_backup', 'dynpath_' . $name, true) . '> 
-                                    ' . _e($options['label'])
+                                    . '<input type="checkbox" value="' . $name . '"' . Form::restoreCheckedAndName('partial_backup', 'dynpath_' . $name, true) . '>'
+                                    . ' ' . _e($options['label'])
                                     . ' <small>(' . GenericTemplates::renderFileSize($options['size']) . ')</small>'
                                     . '</label></li>';
                             }
@@ -369,9 +369,9 @@ $output .= $message . '
             <tr>
                 <td></td>
                 <td>
-                    <input class="button small" type="submit" name="partial_backup[download]" formtarget="_blank" value="' . _lang('global.download') . '">
-                    ' . _lang('global.or') . '
-                    <input class="button small" type="submit" name="partial_backup[store]" value="' . _lang('admin.backup.store') . '">
+                    <input class="button small" type="submit" name="partial_backup[download]" formtarget="_blank" value="' . _lang('global.download') . '">'
+                    . ' ' . _lang('global.or') . ' '
+                    . '<input class="button small" type="submit" name="partial_backup[store]" value="' . _lang('admin.backup.store') . '">
                 </td>
             </tr>
         </table>
@@ -400,8 +400,8 @@ $output .= $message . '
                                 }
 
                                 echo '<li><label>'
-                                    . '<input type="checkbox" value="' . $name . '" name="dynpath_' . $name . '"' . Form::disableInputUnless($optional) . Form::activateCheckbox($checked) . '> 
-                                    ' . _e($options['label'])
+                                    . '<input type="checkbox" value="' . $name . '" name="dynpath_' . $name . '"' . Form::disableInputUnless($optional) . Form::activateCheckbox($checked) . '>'
+                                    . ' ' . _e($options['label'])
                                     . ' <small>(' . GenericTemplates::renderFileSize($options['size']) . ')</small>'
                                     . '</label></li>';
                             }
@@ -413,9 +413,9 @@ $output .= $message . '
             <tr>
                 <td></td>
                 <td>
-                    <input class="button small" type="submit" name="full_backup[download]" formtarget="_blank" value="' . _lang('global.download') . '">
-                    ' . _lang('global.or') . '
-                    <input class="button small" type="submit" name="full_backup[store]" value="' . _lang('admin.backup.store') . '">
+                    <input class="button small" type="submit" name="full_backup[download]" formtarget="_blank" value="' . _lang('global.download') . '">'
+                    . ' ' . _lang('global.or') . ' '
+                    . '<input class="button small" type="submit" name="full_backup[store]" value="' . _lang('admin.backup.store') . '">
                 </td>
             </tr>
         </table>
@@ -465,9 +465,9 @@ $output .= $message . '
         </table>
 
         <p>
-            <input class="button small" type="submit" name="do_restore[load]" value="' . _lang('admin.backup.restore.submit.load') . '">
-            ' . _lang('global.or') . '
-            <input class="button small" onclick="return Sunlight.confirm()" type="submit" name="do_restore[delete]" value="' . _lang('admin.backup.restore.submit.delete') . '">
+            <input class="button small" type="submit" name="do_restore[load]" value="' . _lang('admin.backup.restore.submit.load') . '">'
+            . ' ' . _lang('global.or') . ' '
+            . '<input class="button small" onclick="return Sunlight.confirm()" type="submit" name="do_restore[delete]" value="' . _lang('admin.backup.restore.submit.delete') . '">
         </p>
     ' . Xsrf::getInput() . '
     </form>
