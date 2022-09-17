@@ -9,14 +9,14 @@ use Sunlight\Util\Arr;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
 
-return function ($adresa = '', $predmet = null) {
+return function ($receiver = '', $subject = null) {
     $result = '';
-    $_SESSION['hcm_' . Hcm::$uid . '_mail_receiver'] = implode(',', Arr::removeValue(explode(';', trim($adresa)), ''));
+    $_SESSION['hcm_' . Hcm::$uid . '_mail_receiver'] = implode(',', Arr::removeValue(explode(';', trim($receiver)), ''));
 
-    if (isset($predmet)) {
-        $rsubject = ' value="' . _e($predmet) . '"';
+    if (isset($subject)) {
+        $subject_value = ' value="' . _e($subject) . '"';
     } else {
-        $rsubject = '';
+        $subject_value = '';
     }
 
     $rcaptcha = Captcha::init();
@@ -57,7 +57,7 @@ return function ($adresa = '', $predmet = null) {
             ],
             [
                 ['label' => _lang('hcm.mailform.sender'), 'content' => '<input type="email" class="inputsmall" name="sender" value="' . _e($sender) . '"><input type="hidden" name="fid" value="' . Hcm::$uid . '">' ],
-                ['label' => _lang('posts.subject'), 'content' => '<input type="text" class="inputsmall" name="subject"' . $rsubject . '>'],
+                ['label' => _lang('posts.subject'), 'content' => '<input type="text" class="inputsmall" name="subject"' . $subject_value . '>'],
                 $rcaptcha,
                 ['label' => _lang('hcm.mailform.text'), 'content' => '<textarea class="areasmall" name="text" rows="9" cols="33"></textarea>', 'top' => true],
                 Form::getSubmitRow(['text' => _lang('hcm.mailform.send')])

@@ -201,10 +201,10 @@ if (!empty($_POST)) {
                 }
 
                 if ($slug_abs) {
-                    // absolutni slug
+                    // absolute slug
                     $val = StringManipulator::slugify($val, true, '._/', 'page');
                 } else {
-                    // pouze segment
+                    // segment only
                     $val = ($base_slug !== '' ? $base_slug . '/' : '') . StringManipulator::slugify($val, true, '._', 'page');
                 }
 

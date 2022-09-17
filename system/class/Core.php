@@ -553,7 +553,7 @@ abstract class Core
                         $cronLockFileHandle = fopen($cronLockFile, 'r');
 
                         if (!flock($cronLockFileHandle, LOCK_EX | LOCK_NB)) {
-                            // lock soubor je nepristupny
+                            // lock file is not accessible
                             fclose($cronLockFileHandle);
                             $cronLockFileHandle = null;
                             $cronUpdate = false;
@@ -710,10 +710,10 @@ abstract class Core
     /**
      * Throw a localized core exception
      *
-     * @param string $msgCs zprava cesky
-     * @param string $msgEn zprava anglicky
-     * @param array|null $msgArgs argumenty sprintf() formatovani
-     * @param string|null $msgExtra extra obsah pod zpravou (nelokalizovany)
+     * @param string $msgCs czech message
+     * @param string $msgEn english message
+     * @param array|null $msgArgs arguments for sprintf() formatting
+     * @param string|null $msgExtra extra content below the message (not localized)
      * @throws CoreException
      */
     static function fail(string $msgCs, string $msgEn, ?array $msgArgs = null, ?string $msgExtra = null): void

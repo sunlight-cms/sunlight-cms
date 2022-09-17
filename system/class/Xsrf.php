@@ -25,7 +25,7 @@ class Xsrf
     /**
      * Get a XSRF token
      *
-     * @param bool $forCheck token je ziskavan pro kontrolu (je bran ohled na situaci, ze mohlo zrovna dojit ke zmene ID session) 1/0
+     * @param bool $forCheck get token for verification purposes (takes into account session ID changes) 1/0
      */
     static function getToken(bool $forCheck = false): string
     {

@@ -8,7 +8,7 @@ abstract class DateTime
      * Format date-time for HTTP
      *
      * @param int $time timestamp
-     * @param bool $relative relativne to current time
+     * @param bool $relative treat $time as a relative value to current time
      */
     static function formatForHttp(int $time, bool $relative = false): string
     {

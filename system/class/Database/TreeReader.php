@@ -21,11 +21,11 @@ class TreeReader
 
     /**
      * @param string $table table name (no prefix)
-     * @param string|null $childrenIndex nazev indexu pro kolekce potomku uzlu
-     * @param string|null $idColumn nazev sloupce pro id
-     * @param string|null $parentColumn nazev sloupce pro nadrazeny uzel
-     * @param string|null $levelColumn nazev sloupce pro uroven
-     * @param string|null $depthColumn nazev sloupce pro hloubku
+     * @param string|null $childrenIndex name of the array index which will hold node children
+     * @param string|null $idColumn ID column name
+     * @param string|null $parentColumn parent column ID column name
+     * @param string|null $levelColumn level column name
+     * @param string|null $depthColumn depth column name
      */
     function __construct(string $table, ?string $childrenIndex = null, ?string $idColumn = null, ?string $parentColumn = null, ?string $levelColumn = null, ?string $depthColumn = null)
     {
