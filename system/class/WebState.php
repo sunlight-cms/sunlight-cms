@@ -81,11 +81,11 @@ class WebState
     /**
      * Set output to redirection
      */
-    function redirect(string $url, bool $permament = false): void
+    function redirect(string $url, bool $permanent = false): void
     {
         $this->type = self::REDIR;
         $this->redirectTo = $url;
-        $this->redirectToPermanent = $permament;
+        $this->redirectToPermanent = $permanent;
     }
 
     /**
