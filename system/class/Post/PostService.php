@@ -113,7 +113,7 @@ class PostService
         $ordercol = 'id';
         $countcond = 'type=' . $style . ' AND xhome=-1 AND home=' . $home;
         $locked_textid = '';
-        $autolast = false;
+        $auto_last = false;
         $postlink = false;
         $pluginflag = null;
         $subject_enabled = false;
@@ -200,7 +200,7 @@ class PostService
                 $replynote = false;
                 $desc = '';
                 $countcond = 'type=' . Post::FORUM_TOPIC . ' AND xhome=' . $xhome . ' AND home=' . $home;
-                $autolast = isset($_GET['autolast']);
+                $auto_last = isset($_GET['autolast']);
                 $postlink = true;
                 $replies_enabled = false;
                 break;
@@ -220,7 +220,7 @@ class PostService
                 $desc = '';
                 $countcond = 'type=' . Post::PRIVATE_MSG . ' AND home=' . $home . ' AND xhome!=-1';
                 $locked_textid = '4';
-                $autolast = true;
+                $auto_last = true;
                 $replies_enabled = false;
                 break;
 
@@ -268,7 +268,7 @@ class PostService
             'plugin_flag' => $pluginflag,
             'canpost' => &$canpost,
             'locked' => &$locked,
-            'autolast' => &$autolast,
+            'autolast' => &$auto_last,
             'post_link' => &$postlink,
             'posts_per_page' => &$postsperpage,
             'sql_desc' => &$desc,
@@ -293,7 +293,17 @@ class PostService
         $form_output = "<div class=\"posts-form\" id=\"post-form\">\n";
 
         // init pager
-        $paging = Paginator::render($url, $postsperpage, DB::table('post'), $countcond, '#posts', $page_param, $autolast);
+        $paging = Paginator::paginateTable(
+            $url,
+            $postsperpage,
+            DB::table('post'),
+            [
+                'cond' => $countcond,
+                'link_suffix' => '#posts',
+                'param' => $page_param,
+                'auto_last' => $auto_last,
+            ]
+        );
 
         // message
         if (isset($_GET['r'])) {

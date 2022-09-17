@@ -60,7 +60,12 @@ if ($continue) {
 
     // list articles
     $cond = '(art.home1=' . $cid . ' OR art.home2=' . $cid . ' OR art.home3=' . $cid . ')' . Admin::articleAccess('art');
-    $paging = Paginator::render(Router::admin('content-articles-list', ['query' => ['cat' => $cid]]), $catdata['var2'] ?: Settings::get('articlesperpage'), DB::table('article') . ':art', $cond);
+    $paging = Paginator::paginateTable(
+        Router::admin('content-articles-list', ['query' => ['cat' => $cid]]),
+        $catdata['var2'] ?: Settings::get('articlesperpage'),
+        DB::table('article'),
+        ['alias' => 'art', 'cond' => $cond]
+    );
     $s = $paging['current'];
     $output .= $paging['paging']
         . $message

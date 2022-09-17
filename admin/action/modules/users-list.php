@@ -105,7 +105,12 @@ if ($search !== false) {
     $query_params['search'] = $search;
 }
 
-$paging = Paginator::render(Router::admin('users-list', ['query' => $query_params]), 50, DB::table('user') . ':u', $list_conds_sql);
+$paging = Paginator::paginateTable(
+    Router::admin('users-list', ['query' => $query_params]),
+    50,
+    DB::table('user'),
+    ['alias' => 'u', 'cond' => $list_conds_sql]
+);
 $output .= $paging['paging'];
 
 // table

@@ -52,7 +52,15 @@ return function ($path = '', $thumbnail_size = '', $per_page = null, $lightbox =
         // prepare paginator
         if ($paginator) {
             $count = count($items);
-            $paging = Paginator::render($_index->url, $per_page, $count, '', '#hcm_gal' . Hcm::$uid, 'hcm_gal' . Hcm::$uid . 'p');
+            $paging = Paginator::paginate(
+                $_index->url,
+                $per_page,
+                $count,
+                [
+                    'param' => 'hcm_gal' . Hcm::$uid . 'p',
+                    'link_suffix' => '#hcm_gal' . Hcm::$uid,
+                ]
+            );
         }
 
         // render

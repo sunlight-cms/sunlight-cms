@@ -26,11 +26,9 @@ if (isset($_GET['del']) && Xsrf::check(true)) {
 
 // output
 if (User::hasPrivilege('adminpollall') && isset($_GET['author']) && Request::get('author') != -1) {
-    $pasep = true;
     $author_filter_id = (int) Request::get('author');
     $author_filter = 'p.author=' . (int) Request::get('author');
 } else {
-    $pasep = false;
     $author_filter = '';
     $author_filter_id = -1;
 }
@@ -51,7 +49,16 @@ if (User::hasPrivilege('adminpollall')) {
 }
 
 // paging
-$paging = Paginator::render(Router::admin('content-polls'), 20, DB::table('poll') . ':p', $author_filter . Admin::pollAccess($pasep), '&filter=' . $author_filter_id);
+$paging = Paginator::paginateTable(
+    Router::admin('content-polls'),
+    20,
+    DB::table('poll'),
+    [
+        'alias' => 'p',
+        'cond' => $author_filter . Admin::pollAccess($author_filter !== ''),
+        'link_suffix' => '&filter=' . $author_filter_id,
+    ]
+);
 $output .= $paging['paging'];
 
 $output .= $message . '
@@ -62,7 +69,7 @@ $output .= $message . '
 
 // list polls
 $userQuery = User::createQuery('p.author');
-$query = DB::query('SELECT p.id,p.question,p.locked,' . $userQuery['column_list'] . ' FROM ' . DB::table('poll') . ' p ' . $userQuery['joins'] . ' WHERE ' . $author_filter . Admin::pollAccess($pasep) . ' ORDER BY p.id DESC ' . $paging['sql_limit']);
+$query = DB::query('SELECT p.id,p.question,p.locked,' . $userQuery['column_list'] . ' FROM ' . DB::table('poll') . ' p ' . $userQuery['joins'] . ' WHERE ' . $author_filter . Admin::pollAccess($author_filter !== '') . ' ORDER BY p.id DESC ' . $paging['sql_limit']);
 
 if (DB::size($query) != 0) {
     while ($item = DB::row($query)) {

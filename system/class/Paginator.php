@@ -10,13 +10,15 @@ class Paginator
     /**
      * Render a paginator
      *
+     * Supported options:
+     * ------------------------------------------------------
+     * param ('page')       query parameter name
+     * link_suffix ('')     string to append after every link
+     * auto_last (0)        default to the last page 1/0
+     *
      * @param string $url base URL to add page parameter to
      * @param int $limit max item per page
-     * @param string|int $tableOrCount table name (table[:alias]) or an already known total number of items
-     * @param string $conditions SQL condition used to filter items from table
-     * @param string $linksuffix content to append after every paginator URL
-     * @param string|null $param query parameter name (defaults to 'page')
-     * @param bool $autolast last page is the default page 1/0
+     * @param int $count total number of items
      * @return array{
      *      paging: string,
      *      sql_limit: string,
@@ -28,51 +30,34 @@ class Paginator
      *      per_page: int,
      * }
      */
-    static function render(
+    static function paginate(
         string $url,
         int $limit,
-        $tableOrCount,
-        string $conditions = '1',
-        string $linksuffix = '',
-        ?string $param = null,
-        bool $autolast = false
+        int $count,
+        array $options = []
     ): array {
-        // table alias
-        if (is_string($tableOrCount)) {
-            $tableOrCount = explode(':', $tableOrCount);
-            $alias = ($tableOrCount[1] ?? null);
-            $tableOrCount = $tableOrCount[0];
-        } else {
-            $alias = null;
-        }
-
-        // prepare variables
-        if (!isset($param)) {
-            $param = 'page';
-        }
-
-        if (is_string($tableOrCount)) {
-            $count = DB::result(DB::query('SELECT COUNT(*) FROM ' . DB::escIdt($tableOrCount) . (isset($alias) ? " AS {$alias}" : '') . ' WHERE ' . $conditions));
-        } else {
-            $count = $tableOrCount;
-        }
+        $options += [
+            'param' => 'page',
+            'link_suffix' => '',
+            'auto_last' => false,
+        ];
 
         $pages = max(1, ceil($count / $limit));
 
-        if (isset($_GET[$param])) {
-            $s = abs((int) Request::get($param) - 1);
-        } elseif ($autolast) {
-            $s = $pages - 1;
+        if (isset($_GET[$options['param']])) {
+            $current_page = abs((int) Request::get($options['param']) - 1);
+        } elseif ($options['auto_last']) {
+            $current_page = $pages - 1;
         } else {
-            $s = 0;
+            $current_page = 0;
         }
 
-        if ($s + 1 > $pages) {
-            $s = $pages - 1;
+        if ($current_page + 1 > $pages) {
+            $current_page = $pages - 1;
         }
 
-        $start = $s * $limit;
-        $beginpage = $s + 1 - Settings::get('showpages');
+        $start = $current_page * $limit;
+        $beginpage = $current_page + 1 - Settings::get('showpages');
 
         if ($beginpage < 1) {
             $endbonus = abs($beginpage) + 1;
@@ -81,7 +66,7 @@ class Paginator
             $endbonus = 0;
         }
 
-        $endpage = $s + 1 + Settings::get('showpages') + $endbonus;
+        $endpage = $current_page + 1 + Settings::get('showpages') + $endbonus;
 
         if ($endpage > $pages) {
             $beginpage -= $endpage - $pages;
@@ -97,13 +82,11 @@ class Paginator
         $paging = null;
         Extend::call('paging.render', [
             'url' => $url,
-            'param' => $param,
-            'autolast' => $autolast,
-            'table' => $tableOrCount,
+            'options' => $options,
             'count' => $count,
             'offset' => $start,
             'limit' => $limit,
-            'current' => $s + 1,
+            'current' => $current_page + 1,
             'total' => $pages,
             'begin' => $beginpage,
             'end' => $endpage,
@@ -112,7 +95,7 @@ class Paginator
 
         if ($paging === null) {
             if ($pages > 1) {
-                $linksuffix = _e($linksuffix);
+                $link_suffix = _e($options['link_suffix']);
 
                 if (strpos($url, '?') === false) {
                     $url .= '?';
@@ -126,25 +109,25 @@ class Paginator
 
                 // first
                 if ($beginpage > 1) {
-                    $paging .= '<a href="' . $url . $param . '=1' . $linksuffix . '" title="' . _lang('global.first') . "\">1</a><span class=\"paging-first-addon\"> ...</span>\n";
+                    $paging .= '<a href="' . $url . $options['param'] . '=1' . $link_suffix . '" title="' . _lang('global.first') . "\">1</a><span class=\"paging-first-addon\"> ...</span>\n";
                 }
 
                 // previous
-                if ($s + 1 != 1) {
-                    $paging .= '<a class="paging-prev" href="' . $url . $param . '=' . ($s) . $linksuffix . '">&laquo; ' . _lang('global.previous') . "</a>\n";
+                if ($current_page + 1 != 1) {
+                    $paging .= '<a class="paging-prev" href="' . $url . $options['param'] . '=' . ($current_page) . $link_suffix . '">&laquo; ' . _lang('global.previous') . "</a>\n";
                 }
 
                 // pages
                 $paging .= "<span class=\"paging-pages\">\n";
 
                 for ($x = $beginpage; $x <= $endpage; ++$x) {
-                    if ($x == $s + 1) {
+                    if ($x == $current_page + 1) {
                         $class = ' class="act"';
                     } else {
                         $class = '';
                     }
 
-                    $paging .= '<a href="' . $url . $param . '=' . $x . $linksuffix . '"' . $class . '>' . $x . "</a>\n";
+                    $paging .= '<a href="' . $url . $options['param'] . '=' . $x . $link_suffix . '"' . $class . '>' . $x . "</a>\n";
 
                     if ($x != $endpage) {
                         $paging .= ' ';
@@ -154,13 +137,13 @@ class Paginator
                 $paging .= "</span>\n";
 
                 // next
-                if ($s + 1 != $pages) {
-                    $paging .= '<a class="paging-next" href="' . $url . $param . '=' . ($s + 2) . $linksuffix . '">' . _lang('global.next') . " &raquo;</a>\n";
+                if ($current_page + 1 != $pages) {
+                    $paging .= '<a class="paging-next" href="' . $url . $options['param'] . '=' . ($current_page + 2) . $link_suffix . '">' . _lang('global.next') . " &raquo;</a>\n";
                 }
 
                 // last
                 if ($endpage < $pages) {
-                    $paging .= '<span class="paging-last-addon"> ... </span><a class="paging-last" href="' . $url . $param . '=' . $pages . $linksuffix . '" title="' . _lang('global.last') . '">' . $pages . "</a>\n";
+                    $paging .= '<span class="paging-last-addon"> ... </span><a class="paging-last" href="' . $url . $options['param'] . '=' . $pages . $link_suffix . '" title="' . _lang('global.last') . '">' . $pages . "</a>\n";
                 }
 
                 $paging .= "\n</div>\n\n";
@@ -175,13 +158,51 @@ class Paginator
         return [
             'paging' => $paging,
             'sql_limit' => 'LIMIT ' . $start . ', ' . $limit,
-            'current' => ($s + 1),
+            'current' => ($current_page + 1),
             'total' => $pages,
             'count' => $count,
             'first' => $start,
             'last' => (($end_item > $count - 1) ? $count - 1 : $end_item),
             'per_page' => $limit,
         ];
+    }
+
+    /**
+     * Render paginator for table rows
+     *
+     * Additional supported options:
+     * ({@see Paginator::paginate()} for the rest)
+     * -------------------------------------------
+     * cond ('1')       row filter
+     * alias (-)        table alias to use
+     *
+     * @param string $url base URL to add page parameter to
+     * @param int $limit max item per page
+     * @param string $table
+     * @return array{
+     *      paging: string,
+     *      sql_limit: string,
+     *      current: int,
+     *      total: int,
+     *      count: int,
+     *      first: int,
+     *      last: int,
+     *      per_page: int,
+     * }
+     */
+    static function paginateTable(string $url, int $limit, string $table, array $options = []): array
+    {
+        $count = DB::result(DB::query(
+            'SELECT COUNT(*) FROM ' . DB::escIdt($table) . (isset($options['alias']) ? " AS {$options['alias']}" : '')
+            . ' WHERE ' . ($options['cond'] ?? '1')
+        ));
+
+        return self::paginate(
+            $url,
+            $limit,
+            $count,
+            $options
+        );
     }
 
     /**
@@ -200,7 +221,7 @@ class Paginator
     /**
      * Check if an item is in range of the current page
      *
-     * @param array $pagingdata output of {@see Paginator::render()}
+     * @param array $pagingdata output of {@see Paginator::paginate()}
      * @param int $itemnumber 0-based item number
      */
     static function isItemInRange(array $pagingdata, int $itemnumber): bool

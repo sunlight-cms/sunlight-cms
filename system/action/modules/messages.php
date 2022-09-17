@@ -298,7 +298,15 @@ switch ($a) {
         }
 
         // paging
-        $paging = Paginator::render($_index->url, Settings::get('messagesperpage'), DB::table('pm'), '(sender=' . User::getId() . ' AND sender_deleted=0) OR (receiver=' . User::getId() . ' AND receiver_deleted=0)', '&a=' . $a);
+        $paging = Paginator::paginateTable(
+            $_index->url,
+            Settings::get('messagesperpage'),
+            DB::table('pm'),
+            [
+                'cond' => '(sender=' . User::getId() . ' AND sender_deleted=0) OR (receiver=' . User::getId() . ' AND receiver_deleted=0)',
+                'link_suffix' => '&a=' . $a,
+            ]
+        );
 
         if (Paginator::atTop()) {
             $output .= $paging['paging'];

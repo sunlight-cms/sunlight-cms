@@ -36,7 +36,12 @@ if ($_page['content'] != '') $output .= Hcm::parse($_page['content']) . "\n\n<di
 Extend::call('page.gallery.content.after', $extend_args);
 
 // images
-$paging = Paginator::render($_index->url, $_page['var2'], DB::table('gallery_image'), 'home=' . $id);
+$paging = Paginator::paginateTable(
+    $_index->url,
+    $_page['var2'],
+    DB::table('gallery_image'),
+    ['cond' => 'home=' . $id]
+);
 $images = DB::query('SELECT * FROM ' . DB::table('gallery_image') . ' WHERE home=' . $id . ' ORDER BY ord ' . $paging['sql_limit']);
 $images_number = DB::size($images);
 

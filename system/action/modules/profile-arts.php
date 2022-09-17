@@ -43,7 +43,11 @@ $_index->backlink = Router::module('profile', ['query' => ['id' => $id]]);
 // table
 [$joins, $cond, $count] = Article::createFilter('art', [], 'art.author=' . $query['id'], true);
 
-$paging = Paginator::render(Router::module('profile-arts', ['query' => ['id' => $id]]), 10, $count);
+$paging = Paginator::paginate(
+    Router::module('profile-arts', ['query' => ['id' => $id]]),
+    10,
+    $count
+);
 
 if (Paginator::atTop()) {
     $output .= $paging['paging'];
