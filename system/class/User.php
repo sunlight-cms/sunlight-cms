@@ -24,27 +24,32 @@ abstract class User
 {
     /** Max possible user level */
     const MAX_LEVEL = 10001;
-
     /** Max assignable user level */
     const MAX_ASSIGNABLE_LEVEL = 9999;
-
     /** Admin group ID  */
     const ADMIN_GROUP_ID = 1;
-
     /** Guest group ID (anonymous users) */
     const GUEST_GROUP_ID = 2;
-
     /** Default registered user group ID */
     const REGISTERED_GROUP_ID = 3;
-
     /** Auth hash type - persistent login */
     const AUTH_PERSISTENT_LOGIN = 'persistent_login';
-
     /** Auth hash type - session */
     const AUTH_SESSION = 'session';
-
     /** Auth hash type - mass email management */
     const AUTH_MASSEMAIL = 'massemail';
+    /** Login status - wrong username or password  */
+    const LOGIN_FAILURE = 0;
+    /** Login status - successful */
+    const LOGIN_SUCCESS = 1;
+    /** Login status - user or group is blocked  */
+    const LOGIN_BLOCKED = 2;
+    /** Login status - user account removed */
+    const LOGIN_REMOVED = 3;
+    /** Login status - attempt limit exceeded */
+    const LOGIN_ATTEMPTS_EXCEEDED = 4;
+    /** Login status - XSRF failure */
+    const LOGIN_XSRF_FAILURE = 5;
 
     /** @var bool */
     private static $initialized = false;
@@ -845,32 +850,22 @@ abstract class User
     /**
      * Get login message for the given code
      *
-     * Supported codes:
-     * ------------------------------------------------------------------------
-     * 0    invalid username or password
-     * 1    success
-     * 2    user is blocked
-     * 3    automatic logout for security reasons
-     * 4    user account has been deleted
-     * 5    unsuccessful login attempt limit exceeded
-     * 6    invalid XSRF token
+     * @param int $code see User::LOGIN_* constants
      */
     static function getLoginMessage(int $code): ?Message
     {
         switch ($code) {
-            case 0:
+            case self::LOGIN_FAILURE:
                 return Message::warning(_lang('login.failure'));
-            case 1:
+            case self::LOGIN_SUCCESS:
                 return Message::ok(_lang('login.success'));
-            case 2:
+            case self::LOGIN_BLOCKED:
                 return Message::warning(_lang('login.blocked.message'));
-            case 3:
-                return Message::error(_lang('login.securitylogout'));
-            case 4:
+            case self::LOGIN_REMOVED:
                 return Message::ok(_lang('login.selfremove'));
-            case 5:
+            case self::LOGIN_ATTEMPTS_EXCEEDED:
                 return Message::warning(_lang('login.attemptlimit', ['%max_attempts%' => Settings::get('maxloginattempts'), '%minutes%' => Settings::get('maxloginexpire') / 60]));
-            case 6:
+            case self::LOGIN_XSRF_FAILURE:
                 return Message::error(_lang('xsrf.msg'));
             default:
                 return Extend::fetch('user.login.message', ['code' => $code]);
@@ -886,22 +881,22 @@ abstract class User
     {
         // already logged in?
         if (self::isLoggedIn()) {
-            return 0;
+            return self::LOGIN_FAILURE;
         }
 
         // XSRF check
         if (!Xsrf::check()) {
-            return 6;
+            return self::LOGIN_XSRF_FAILURE;
         }
 
         // login attempt limit check
         if (!IpLog::check(IpLog::FAILED_LOGIN_ATTEMPT)) {
-            return 5;
+            return self::LOGIN_ATTEMPTS_EXCEEDED;
         }
 
         // check username
         if ($username === '') {
-            return 0;
+            return self::LOGIN_FAILURE;
         }
 
         // extend event (before)
@@ -928,7 +923,7 @@ abstract class User
 
         if ($query === false) {
             // user not found
-            return 0;
+            return self::LOGIN_FAILURE;
         }
 
         // check password
@@ -937,12 +932,12 @@ abstract class User
         if (!$password->match($plainPassword)) {
             IpLog::update(IpLog::FAILED_LOGIN_ATTEMPT);
 
-            return 0;
+            return self::LOGIN_FAILURE;
         }
 
         // check blocked status
         if ($query['blocked'] || $query['group_blocked']) {
-            return 2;
+            return self::LOGIN_BLOCKED;
         }
 
         // update user data
@@ -957,7 +952,6 @@ abstract class User
         if ($password->shouldUpdate()) {
             // update password
             $password->update($plainPassword);
-
             $changeset['password'] = $query['password'] = $password->build();
         }
 
@@ -970,7 +964,7 @@ abstract class User
         self::login($query['id'], $query['password'], $query['email'], $persistent);
 
         // all ok
-        return 1;
+        return self::LOGIN_SUCCESS;
     }
 
     /**

@@ -359,7 +359,6 @@ Platnost tohoto odkazu je 1 hodina.
     'login.ininfo' => 'Jste přihlášeni pod uživatelským jménem',
     'login.blocked' => 'Zablokovaný účet',
     'login.blocked.message' => 'Váš účet je zablokovaný.',
-    'login.securitylogout' => 'Z bezpečnostních důvodů proběhlo automatické odhlášení.',
     'login.selfremove' => 'Váš účet byl zrušen.',
     'login.attemptlimit' => 'Byl překročen limit počtu nezdařilých pokusů, který je maximálně %max_attempts% nezdařilých pokusů za %minutes% minut.',
     'login.persistent' => 'trvalé přihlášení',
