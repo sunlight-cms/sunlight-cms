@@ -47,7 +47,13 @@ $output .= '
 
 // list
 $userQuery = User::createQuery('art.author');
-$query = DB::query('SELECT art.id,art.title,art.slug,art.home1,art.home2,art.home3,art.time,art.visible,art.confirmed,art.public,cat.slug AS cat_slug,' . $userQuery['column_list'] . ' FROM ' . DB::table('article') . ' AS art JOIN ' . DB::table('page') . ' AS cat ON(cat.id=art.home1) ' . $userQuery['joins'] . ' WHERE art.confirmed=0' . $condplus . ' ORDER BY art.time DESC');
+$query = DB::query(
+    'SELECT art.id,art.title,art.slug,art.home1,art.home2,art.home3,art.time,art.visible,art.confirmed,art.public,cat.slug AS cat_slug,' . $userQuery['column_list']
+    . ' FROM ' . DB::table('article') . ' AS art JOIN ' . DB::table('page') . ' AS cat ON(cat.id=art.home1) '
+    . $userQuery['joins']
+    . ' WHERE art.confirmed=0' . $condplus
+    . ' ORDER BY art.time DESC'
+);
 
 if (DB::size($query) != 0) {
     while ($item = DB::row($query)) {
@@ -70,8 +76,12 @@ if (DB::size($query) != 0) {
             <td>' . $cats . '</td><td>' . GenericTemplates::renderTime($item['time']) . '</td>
             <td>' . Router::userFromQuery($userQuery, $item) . '</td>
             <td class="actions">
-                <a class="button" href="' . _e(Router::admin('content-confirm', ['query' => ['id' => $item['id'], 'limit' => $catlimit]])) . '"><img src="' . _e(Router::path('admin/images/icons/check.png')) . '" alt="confirm" class="icon">' . _lang('admin.content.confirm.confirm') . '</a>
-                <a class="button" href="' . _e(Router::admin('content-articles-edit', ['query' => ['id' => $item['id'], 'returnid' => 'load', 'returnpage' => 1]])) . '"><img src="' . _e(Router::path('admin/images/icons/edit.png')) . '" alt="edit" class="icon">' . _lang('global.edit') . '</a>'
+                <a class="button" href="' . _e(Router::admin('content-confirm', ['query' => ['id' => $item['id'], 'limit' => $catlimit]])) . '">
+                    <img src="' . _e(Router::path('admin/images/icons/check.png')) . '" alt="confirm" class="icon">' . _lang('admin.content.confirm.confirm') . '
+                </a>
+                <a class="button" href="' . _e(Router::admin('content-articles-edit', ['query' => ['id' => $item['id'], 'returnid' => 'load', 'returnpage' => 1]])) . '">
+                    <img src="' . _e(Router::path('admin/images/icons/edit.png')) . '" alt="edit" class="icon">' . _lang('global.edit') . '
+                </a>'
             . '</td>'
             . "</tr>\n";
     }

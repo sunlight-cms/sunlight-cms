@@ -59,7 +59,85 @@ if (
         }
     }
 
-    // top panel
+    // content modules
+    $content_modules = [
+        'layout' => [
+            'modules' => [
+                'boxes' => [
+                    'url' => Router::admin('content-boxes'),
+                    'icon' => Router::path('admin/images/icons/big-layout.png'),
+                    'access' => User::hasPrivilege('adminbox'),
+                ],
+            ],
+        ],
+
+        'articles' => [
+            'modules' => [
+                'newart' => [
+                    'url' => Router::admin('content-articles-edit'),
+                    'icon' => Router::path('admin/images/icons/big-new.png'),
+                    'access' => User::hasPrivilege('adminart'),
+                ],
+                'manage' => [
+                    'url' => Router::admin('content-articles'),
+                    'icon' => Router::path('admin/images/icons/big-list.png'),
+                    'access' => User::hasPrivilege('adminart'),
+                    'label' => _lang('admin.content.manage'),
+                ],
+                'confirm' => [
+                    'url' => Router::admin('content-confirm'),
+                    'icon' => Router::path('admin/images/icons/big-check.png'),
+                    'access' => User::hasPrivilege('adminconfirm'),
+                ],
+                'movearts' => [
+                    'url' => Router::admin('content-movearts'),
+                    'icon' => Router::path('admin/images/icons/big-move.png'),
+                    'access' => User::hasPrivilege('admincategory'),
+                ],
+                'artfilter' => [
+                    'url' => Router::admin('content-artfilter'),
+                    'icon' => Router::path('admin/images/icons/big-filter.png'),
+                    'access' => User::hasPrivilege('admincategory'),
+                ],
+            ],
+        ],
+
+        'widgets' => [
+            'modules' => [
+                'polls' => [
+                    'url' => Router::admin('content-polls'),
+                    'icon' => Router::path('admin/images/icons/big-bars.png'),
+                    'access' => User::hasPrivilege('adminpoll'),
+                ],
+                'sboxes' => [
+                    'url' => Router::admin('content-sboxes'),
+                    'icon' => Router::path('admin/images/icons/big-bubbles.png'),
+                    'access' => User::hasPrivilege('adminsbox'),
+                ],
+            ],
+        ],
+    ];
+
+    Extend::call('admin.content.modules', ['modules' => &$content_modules]);
+
+    $content_modules_str = '';
+
+    foreach ($content_modules as $category_alias => $category_data) {
+        $buttons_str = '';
+
+        foreach ($category_data['modules'] as $module_alias => $module_options) {
+            if ($module_options['access']) {
+                $module_label = $module_options['label'] ?? _lang('admin.content.' . $module_alias);
+                $buttons_str .= '<a class="button block" href="' . _e($module_options['url']) . '"><img class="icon" alt="' . _e($module_label) . '" src="' . _e($module_options['icon']) . '">' . $module_label . "</a>\n";
+            }
+        }
+
+        if ($buttons_str !== '') {
+            $content_modules_str .= '<div class="content-' . $category_alias . '">
+<h2>' . ($category_data['label'] ?? _lang('admin.content.' . $category_alias)) . '</h2>
+' . $buttons_str . '</div>';
+        }
+    }
 
     // page type list
     $create_list = '';
@@ -82,7 +160,21 @@ if (
     }
 
     $pageitems = '
-    <td class="contenttable-box" style="' . ((User::hasPrivilege('adminart') || User::hasPrivilege('adminconfirm') || User::hasPrivilege('admincategory') || User::hasPrivilege('adminpoll') || User::hasPrivilege('adminsbox') || User::hasPrivilege('adminbox')) ? 'width: 75%; ' : 'border-right: none;') . 'padding-bottom: 0px;">
+    <td class="contenttable-box" style="' .
+        (
+            (
+                User::hasPrivilege('adminart')
+                || User::hasPrivilege('adminconfirm')
+                || User::hasPrivilege('admincategory')
+                || User::hasPrivilege('adminpoll')
+                || User::hasPrivilege('adminsbox')
+                || User::hasPrivilege('adminbox')
+            )
+                ? 'width: 75%; '
+                : 'border-right: none;'
+        )
+        . 'padding-bottom: 0px;'
+    . '">
 
     ' . (User::hasPrivilege('adminpages') ? '
     <form action="' . _e(Router::admin('content')) . '" method="post" class="inline">
@@ -109,8 +201,12 @@ if (
     <span class="inline-separator"></span>
     ' : '') . '
 
-    <a class="button" href="' . _e(Router::admin('content', ['query' => ['list_mode' => 'tree']])) . '"' . (PageLister::MODE_FULL_TREE == PageLister::getConfig('mode') ? ' class="active-link"' : '') . '><img src="' . _e(Router::path('admin/images/icons/tree.png')) . '" alt="move" class="icon">' . _lang('admin.content.mode.tree') . '</a>
-    <a class="button" href="' . _e(Router::admin('content', ['query' => ['list_mode' => 'single']])) . '"' . (PageLister::MODE_SINGLE_LEVEL == PageLister::getConfig('mode') ? ' class="active-link"' : '') . '><img src="' . _e(Router::path('admin/images/icons/list.png')) . '" alt="move" class="icon">' . _lang('admin.content.mode.single') . '</a>
+    <a class="button" href="' . _e(Router::admin('content', ['query' => ['list_mode' => 'tree']])) . '"' . (PageLister::MODE_FULL_TREE == PageLister::getConfig('mode') ? ' class="active-link"' : '') . '>
+        <img src="' . _e(Router::path('admin/images/icons/tree.png')) . '" alt="move" class="icon">' . _lang('admin.content.mode.tree') . '
+    </a>
+    <a class="button" href="' . _e(Router::admin('content', ['query' => ['list_mode' => 'single']])) . '"' . (PageLister::MODE_SINGLE_LEVEL == PageLister::getConfig('mode') ? ' class="active-link"' : '') . '>
+        <img src="' . _e(Router::path('admin/images/icons/list.png')) . '" alt="move" class="icon">' . _lang('admin.content.mode.single') . '
+    </a>
 
     <div class="hr"><hr></div>
 
@@ -141,86 +237,6 @@ if (
 ';
 } else {
     $pageitems = '';
-}
-
-// content modules
-$content_modules = [
-    'layout' => [
-        'modules' => [
-            'boxes' => [
-                'url' => Router::admin('content-boxes'),
-                'icon' => Router::path('admin/images/icons/big-layout.png'),
-                'access' => User::hasPrivilege('adminbox'),
-            ],
-        ],
-    ],
-
-    'articles' => [
-        'modules' => [
-            'newart' => [
-                'url' => Router::admin('content-articles-edit'),
-                'icon' => Router::path('admin/images/icons/big-new.png'),
-                'access' => User::hasPrivilege('adminart'),
-            ],
-            'manage' => [
-                'url' => Router::admin('content-articles'),
-                'icon' => Router::path('admin/images/icons/big-list.png'),
-                'access' => User::hasPrivilege('adminart'),
-                'label' => _lang('admin.content.manage'),
-            ],
-            'confirm' => [
-                'url' => Router::admin('content-confirm'),
-                'icon' => Router::path('admin/images/icons/big-check.png'),
-                'access' => User::hasPrivilege('adminconfirm'),
-            ],
-            'movearts' => [
-                'url' => Router::admin('content-movearts'),
-                'icon' => Router::path('admin/images/icons/big-move.png'),
-                'access' => User::hasPrivilege('admincategory'),
-            ],
-            'artfilter' => [
-                'url' => Router::admin('content-artfilter'),
-                'icon' => Router::path('admin/images/icons/big-filter.png'),
-                'access' => User::hasPrivilege('admincategory'),
-            ],
-        ],
-    ],
-
-    'widgets' => [
-        'modules' => [
-            'polls' => [
-                'url' => Router::admin('content-polls'),
-                'icon' => Router::path('admin/images/icons/big-bars.png'),
-                'access' => User::hasPrivilege('adminpoll'),
-            ],
-            'sboxes' => [
-                'url' => Router::admin('content-sboxes'),
-                'icon' => Router::path('admin/images/icons/big-bubbles.png'),
-                'access' => User::hasPrivilege('adminsbox'),
-            ],
-        ],
-    ],
-];
-
-Extend::call('admin.content.modules', ['modules' => &$content_modules]);
-
-$content_modules_str = '';
-
-foreach ($content_modules as $category_alias => $category_data) {
-    $buttons_str = '';
-
-    foreach ($category_data['modules'] as $module_alias => $module_options) {
-        if ($module_options['access']) {
-            $module_label = $module_options['label'] ?? _lang('admin.content.' . $module_alias);
-            $buttons_str .= '<a class="button block" href="' . _e($module_options['url']) . '"><img class="icon" alt="' . _e($module_label) . '" src="' . _e($module_options['icon']) . '">' . $module_label . "</a>\n";
-        }
-    }
-
-    if ($buttons_str !== '') {
-        $content_modules_str .= '<div class="content-' . $category_alias . '">
-<h2>' . ($category_data['label'] ?? _lang('admin.content.' . $category_alias)) . '</h2>
-' . $buttons_str . '</div>';
-    }
 }
 
 // output

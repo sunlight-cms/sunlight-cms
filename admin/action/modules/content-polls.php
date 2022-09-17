@@ -77,8 +77,12 @@ if (DB::size($query) != 0) {
             . $username
             . '<td>' . $item['id'] . '</td>'
             . '<td class="actions">
-                <a class="button" href="' . _e(Router::admin('content-polls-edit', ['query' => ['id' => $item['id']]])) . '"><img src="' . _e(Router::path('admin/images/icons/edit.png')) . '" class="icon" alt="edit"> ' . _lang('global.edit') . '</a>
-                <a class="button" href="' . _e(Xsrf::addToUrl(Router::admin('content-polls', ['query' => ['author' => $author_filter_id, 'page' => $paging['current'], 'del' => $item['id']]]))) . '" onclick="return Sunlight.confirm();\"><img src="' . _e(Router::path('admin/images/icons/delete.png')) . '" class="icon" alt="del"> ' . _lang('global.delete') . '</a>
+                <a class="button" href="' . _e(Router::admin('content-polls-edit', ['query' => ['id' => $item['id']]])) . '">
+                    <img src="' . _e(Router::path('admin/images/icons/edit.png')) . '" class="icon" alt="edit"> ' . _lang('global.edit') . '
+                </a>
+                <a class="button" href="' . _e(Xsrf::addToUrl(Router::admin('content-polls', ['query' => ['author' => $author_filter_id, 'page' => $paging['current'], 'del' => $item['id']]]))) . '" onclick="return Sunlight.confirm();">
+                    <img src="' . _e(Router::path('admin/images/icons/delete.png')) . '" class="icon" alt="del"> ' . _lang('global.delete') . '
+                </a>
             </td>'
             . "</tr>\n";
     }

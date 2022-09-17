@@ -158,7 +158,13 @@ if ($continue) {
     </th>
     <td>
         <label>
-            <input type="' . ($isText ? 'text' : 'checkbox') . '" id="setting_' . $item['name'] . '" name="' . $item['name'] . '"' . ($isText ? ' value="' . _e($query[$item['name']]) . '"' : ' value="1"' . Form::activateCheckbox($query[$item['name']])) . Form::disableInputUnless(!$disabled) . '>
+            <input type="' . ($isText ? 'text' : 'checkbox') . '"'
+                . ' id="setting_' . $item['name'] . '"'
+                . ' name="' . $item['name'] . '"'
+                . ($isText ? ' value="' . _e($query[$item['name']]) . '"' : ' value="1"'
+                . Form::activateCheckbox($query[$item['name']]))
+                . Form::disableInputUnless(!$disabled)
+            . '>
             ' . ($item['help'] ?? _lang('admin.users.groups.' . $item['name'] . '.help')) . "
         </label>
     </td>
@@ -277,7 +283,13 @@ if ($continue) {
 
   ' . (($id != User::GUEST_GROUP_ID) ? '
   <tr><th><dfn title="' . _lang('admin.users.groups.icon.help', ['%dir%' => $icon_dir]) . '">' . _lang('admin.users.groups.icon') . '</dfn></th><td>' . $icons . '</td></tr>
-  <tr><th>' . _lang('admin.users.groups.color') . '</th><td><input type="text" name="color" class="inputsmall" value="' . $query['color'] . '" maxlength="16"> <input type="color" value="' . Admin::formatHtmlColor($query['color']) . '" onchange="this.form.elements.color.value=this.value"></td></tr>
+  <tr>
+    <th>' . _lang('admin.users.groups.color') . '</th>
+    <td>
+        <input type="text" name="color" class="inputsmall" value="' . $query['color'] . '" maxlength="16">
+        <input type="color" value="' . Admin::formatHtmlColor($query['color']) . '" onchange="this.form.elements.color.value=this.value">
+    </td>
+  </tr>
   <tr><th>' . _lang('admin.users.groups.reglist') . '</th><td><input type="checkbox" name="reglist" value="1"' . Form::activateCheckbox($query['reglist']) . '></td></tr>
   ' : '') . '
 

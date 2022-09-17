@@ -50,7 +50,16 @@ if (Paginator::atTop()) {
 }
 
 $userQuery = User::createQuery('art.author');
-$arts = DB::query('SELECT art.id,art.title,art.slug,art.author,art.perex,art.picture_uid,art.time,art.comments,art.public,art.readnum,cat1.slug AS cat_slug,' . $userQuery['column_list'] . ',(SELECT COUNT(*) FROM ' . DB::table('post') . ' AS post WHERE home=art.id AND post.type=' . Post::ARTICLE_COMMENT . ') AS comment_count FROM ' . DB::table('article') . ' AS art ' . $joins . ' ' . $userQuery['joins'] . ' WHERE ' . $cond . ' ORDER BY art.time DESC ' . $paging['sql_limit']);
+$arts = DB::query(
+    'SELECT art.id,art.title,art.slug,art.author,art.perex,art.picture_uid,art.time,art.comments,art.public,art.readnum,cat1.slug AS cat_slug,' . $userQuery['column_list']
+    . ',(SELECT COUNT(*) FROM ' . DB::table('post') . ' AS post WHERE home=art.id AND post.type=' . Post::ARTICLE_COMMENT . ') AS comment_count'
+    . ' FROM ' . DB::table('article') . ' AS art '
+    . $joins
+    . ' ' . $userQuery['joins']
+    . ' WHERE ' . $cond
+    . ' ORDER BY art.time DESC '
+    . $paging['sql_limit']
+);
 
 if (DB::size($arts) != 0) {
     while ($art = DB::row($arts)) {

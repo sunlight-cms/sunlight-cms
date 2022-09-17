@@ -26,11 +26,13 @@ $tree = Page::getFlatTree(null, null, $filter);
 
 // load article counts
 $art_counts = [];
-$art_count_query = DB::query('SELECT
-    c.id,
-    (SELECT COUNT(*) FROM ' . DB::table('article') . ' a WHERE a.home1=c.id OR a.home2=c.id OR a.home3=c.id) art_count
-FROM ' . DB::table('page') . ' c
-WHERE c.type=' . Page::CATEGORY);
+$art_count_query = DB::query(
+    'SELECT'
+    . ' c.id,'
+    . ' (SELECT COUNT(*) FROM ' . DB::table('article') . ' a WHERE a.home1=c.id OR a.home2=c.id OR a.home3=c.id) art_count'
+    . ' FROM ' . DB::table('page') . ' c'
+    . ' WHERE c.type=' . Page::CATEGORY
+);
 
 while ($art_count = DB::row($art_count_query)) {
     $art_counts[$art_count['id']] = $art_count['art_count'];

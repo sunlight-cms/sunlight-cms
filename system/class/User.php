@@ -658,7 +658,12 @@ abstract class User
 
         // delete database data
         DB::delete('user', 'id=' . DB::val($id));
-        DB::query('DELETE ' . DB::table('pm') . ',post FROM ' . DB::table('pm') . ' LEFT JOIN ' . DB::table('post') . ' AS post ON (post.type=' . Post::PRIVATE_MSG . ' AND post.home=' . DB::table('pm') . '.id) WHERE receiver=' . DB::val($id) . ' OR sender=' . DB::val($id));
+        DB::query(
+            'DELETE ' . DB::table('pm') . ',post'
+            . ' FROM ' . DB::table('pm')
+            . ' LEFT JOIN ' . DB::table('post') . ' AS post ON (post.type=' . Post::PRIVATE_MSG . ' AND post.home=' . DB::table('pm') . '.id)'
+            . ' WHERE receiver=' . DB::val($id) . ' OR sender=' . DB::val($id)
+        );
         DB::update('post', 'author=' . DB::val($id), [
             'guest' => sprintf('%x', crc32((string) $id)),
             'author' => -1,

@@ -246,12 +246,20 @@ if (!empty($_POST)) {
                         <li><label><input type="checkbox"' . Form::restoreCheckedAndName('backup_loaded', 'database') . Form::disableInputUnless($backup->hasDatabaseDump()) . '> ' . _lang('admin.backup.opt.db') . '</label></li>
                         ' . _buffer(function () use ($backup_metadata) {
                                 foreach ($backup_metadata['directory_list'] as $index => $directory) {
-                                    echo '<li><label><input type="checkbox"' . Form::restoreCheckedAndName('backup_loaded', 'directory_' . $index) . ' value="' . _e($directory) . '"> ' . _lang('admin.backup.restore.contents.dir') . ' <code>' . _e($directory) . "</code></label></li>\n";
+                                    echo '<li><label>'
+                                        . '<input type="checkbox"' . Form::restoreCheckedAndName('backup_loaded', 'directory_' . $index) . ' value="' . _e($directory) . '"> '
+                                        . _lang('admin.backup.restore.contents.dir')
+                                        . ' <code>' . _e($directory) . '</code>'
+                                        . "</label></li>\n";
                                 }
                         }) . '
                         ' . _buffer(function () use ($backup_metadata) {
                             foreach ($backup_metadata['file_list'] as $index => $file) {
-                                echo '<li><label><input type="checkbox"' . Form::restoreCheckedAndName('backup_loaded', 'file_' . $index) . ' value="' . _e($file) . '"> ' . _lang('admin.backup.restore.contents.file') . ' <code>' . _e($file) . "</code></label></li>\n";
+                                echo '<li><label>'
+                                    . '<input type="checkbox"' . Form::restoreCheckedAndName('backup_loaded', 'file_' . $index) . ' value="' . _e($file) . '"> '
+                                    . _lang('admin.backup.restore.contents.file')
+                                    . ' <code>' . _e($file) . '</code>'
+                                    . "</label></li>\n";
                             }
                         }) . '
                     </ul>
@@ -318,7 +326,11 @@ if (!empty($backup_files)) {
     <td><label><input type="radio" name="backup_file" value="' . _e($backup_file) . '"> ' . _e($displayed_backup_name) . '</label></td>
     <td>' . GenericTemplates::renderFileSize(filesize($backup_dir . '/' . $backup_file)) . '</td>
     <td>' . GenericTemplates::renderTime($backup_ctime) . '</td>
-    <td><a href="' . _e(Router::admin('backup', ['query' => ['download' => $backup_file]])) . '" title="' . _lang('global.download') . '"><img src="' . _e(Router::path('admin/images/icons/floppy.png')) . '" alt="' . _lang('global.download') . '"></a></td>
+    <td>'
+        . '<a href="' . _e(Router::admin('backup', ['query' => ['download' => $backup_file]])) . '" title="' . _lang('global.download') . '">'
+        . '<img src="' . _e(Router::path('admin/images/icons/floppy.png')) . '" alt="' . _lang('global.download') . '">'
+        . '</a>'
+    . '</td>
 </tr>
 ';
     }
@@ -343,7 +355,11 @@ $output .= $message . '
                         <li><label><input type="checkbox" value="1"' . Form::restoreCheckedAndName('partial_backup', 'opt_db', true) . '> ' . _lang('admin.backup.opt.db') . '</label></li>
                         ' . _buffer(function () use ($backup_dynpath_choices) {
                             foreach ($backup_dynpath_choices as $name => $options) {
-                                echo '<li><label><input type="checkbox" value="' . $name . '"' . Form::restoreCheckedAndName('partial_backup', 'dynpath_' . $name, true) . '> ' . _e($options['label']) . ' <small>(' . GenericTemplates::renderFileSize($options['size']) . ')</small></label></li>';
+                                echo '<li><label>'
+                                    . '<input type="checkbox" value="' . $name . '"' . Form::restoreCheckedAndName('partial_backup', 'dynpath_' . $name, true) . '> 
+                                    ' . _e($options['label'])
+                                    . ' <small>(' . GenericTemplates::renderFileSize($options['size']) . ')</small>'
+                                    . '</label></li>';
                             }
                         }) . '
                         ' . Extend::buffer('admin.backup.options', ['type' => 'partial']) . '
@@ -383,7 +399,11 @@ $output .= $message . '
                                     $checked = true;
                                 }
 
-                                echo '<li><label><input type="checkbox" value="' . $name . '" name="dynpath_' . $name . '"' . Form::disableInputUnless($optional) . Form::activateCheckbox($checked) . '> ' . _e($options['label']) . ' <small>(' . GenericTemplates::renderFileSize($options['size']) . ')</small></label></li>';
+                                echo '<li><label>'
+                                    . '<input type="checkbox" value="' . $name . '" name="dynpath_' . $name . '"' . Form::disableInputUnless($optional) . Form::activateCheckbox($checked) . '> 
+                                    ' . _e($options['label'])
+                                    . ' <small>(' . GenericTemplates::renderFileSize($options['size']) . ')</small>'
+                                    . '</label></li>';
                             }
                         }) . '
                         ' . Extend::buffer('admin.backup.options', ['type' => 'full']) . '

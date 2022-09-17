@@ -534,7 +534,10 @@ $output .= '<form class="cform" action="' . _e(Router::admin('content-edit' . $t
 
                             . ($editscript_enable_content ?
                             '<tr class="valign-top">
-                                <th>' . _lang('admin.content.form.content') . (!$new ? ' <a href="' . _e(Router::page($query['id'], $query['slug'])) . '" target="_blank"><img src="' . _e(Router::path('admin/images/icons/loupe.png')) . '" alt="prev"></a>' : '') . '</th>
+                                <th>'
+                                    . _lang('admin.content.form.content')
+                                    . (!$new ? ' <a href="' . _e(Router::page($query['id'], $query['slug'])) . '" target="_blank"><img src="' . _e(Router::path('admin/images/icons/loupe.png')) . '" alt="prev"></a>' : '')
+                            . '</th>
                                 <td>' . $editor . '</td>
                             </tr>' : '')
 

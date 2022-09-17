@@ -406,7 +406,14 @@ class PostService
         if ($is_topic_list) {
             // last post (for topic lists)
             if (!empty($item_ids_with_answers)) {
-                $topicextra = DB::query('SELECT p.id,p.xhome,p.author,p.guest,' . $userQuery['column_list'] . ' FROM ' . DB::table('post') . ' AS p ' . $userQuery['joins'] . ' WHERE p.id IN (SELECT MAX(id) FROM ' . DB::table('post') . ' WHERE type=' . Post::FORUM_TOPIC . ' AND home=' . $home . ' AND xhome IN(' . implode(',', $item_ids_with_answers) . ') GROUP BY xhome)');
+                $topicextra = DB::query(
+                    'SELECT p.id,p.xhome,p.author,p.guest,' . $userQuery['column_list']
+                    . ' FROM ' . DB::table('post') . ' AS p'
+                    . ' ' . $userQuery['joins']
+                    . ' WHERE p.id IN (SELECT MAX(id) FROM ' . DB::table('post')
+                        . ' WHERE type=' . Post::FORUM_TOPIC . ' AND home=' . $home . ' AND xhome IN(' . DB::arr($item_ids_with_answers) . ')'
+                        . ' GROUP BY xhome)'
+                );
 
                 while ($item = DB::row($topicextra)) {
                     if (!isset($items[$item['xhome']])) {
@@ -422,7 +429,13 @@ class PostService
             }
         } elseif (!empty($items)) {
             // answers (to comments)
-            $answers = DB::query('SELECT p.id,p.xhome,p.text,p.author,p.guest,p.time,p.ip' . Extend::buffer('posts.columns') . ',' . $userQuery['column_list']  . ' FROM ' . DB::table('post') . ' p ' . $userQuery['joins'] . ' WHERE p.type=' . $posttype . ' AND p.home=' . $home . (isset($pluginflag) ? ' AND p.flag=' . $pluginflag : '') . ' AND p.xhome IN(' . implode(',', array_keys($items)) . ') ORDER BY p.id');
+            $answers = DB::query(
+                'SELECT p.id,p.xhome,p.text,p.author,p.guest,p.time,p.ip' . Extend::buffer('posts.columns') . ',' . $userQuery['column_list']
+                . ' FROM ' . DB::table('post') . ' p'
+                . ' ' . $userQuery['joins']
+                . ' WHERE p.type=' . $posttype . ' AND p.home=' . $home . (isset($pluginflag) ? ' AND p.flag=' . $pluginflag : '') . ' AND p.xhome IN(' . DB::arr(array_keys($items)) . ')'
+                . ' ORDER BY p.id'
+            );
 
             while ($item = DB::row($answers)) {
                 if (!isset($items[$item['xhome']])) {
@@ -547,7 +560,11 @@ class PostService
                     }
 
                     // render row
-                    $output .= '<tr class="topic-' . $icon . ($hl ? ' topic-hl' : '') . '"><td class="topic-icon-cell"><a href="' . _e(Router::topic($item['id'], $forum_slug)) . '"><img src="' . Template::image('icons/topic-' . $icon . '.png') . '" alt="' . _lang('posts.topic.' . $icon) . '"></a></td><td class="topic-main-cell"><a href="' . _e(Router::topic($item['id'], $forum_slug)) . '">' . $item['subject'] . '</a>' . $tpages . '<br>' . $author . ' <small class="post-info">(' . GenericTemplates::renderTime($item['time'], 'post') . ')</small></td><td>' . $item['answer_count'] . '</td><td>' . $lastpost . (($item['answer_count'] != 0) ? '<br><small class="post-info">(' . GenericTemplates::renderTime($item['bumptime'], 'post') . ')</small>' : '') . "</td></tr>\n";
+                    $output .= '<tr class="topic-' . $icon . ($hl ? ' topic-hl' : '') . '">'
+                        . '<td class="topic-icon-cell"><a href="' . _e(Router::topic($item['id'], $forum_slug)) . '"><img src="' . Template::image('icons/topic-' . $icon . '.png') . '" alt="' . _lang('posts.topic.' . $icon) . '"></a></td>'
+                        . '<td class="topic-main-cell"><a href="' . _e(Router::topic($item['id'], $forum_slug)) . '">' . $item['subject'] . '</a>' . $tpages . '<br>' . $author . ' <small class="post-info">(' . GenericTemplates::renderTime($item['time'], 'post') . ')</small></td>'
+                        . '<td>' . $item['answer_count'] . '</td><td>' . $lastpost . (($item['answer_count'] != 0) ? '<br><small class="post-info">(' . GenericTemplates::renderTime($item['bumptime'], 'post') . ')</small>' : '') . '</td>'
+                        . "</tr>\n";
                     $hl = !$hl;
                 }
 
@@ -565,7 +582,15 @@ class PostService
 
                 // latest answers
                 $output .= "\n<div class=\"post-answer-list\">\n<h3>" . _lang('posts.forum.lastact') . "</h3>\n";
-                $query = DB::query('SELECT topic.id AS topic_id,topic.subject AS topic_subject,p.author,p.guest,p.time,' . $userQuery['column_list'] . ' FROM ' . DB::table('post') . ' AS p JOIN ' . DB::table('post') . ' AS topic ON(topic.type=' . Post::FORUM_TOPIC . ' AND topic.id=p.xhome) ' . $userQuery['joins'] . ' WHERE p.type=' . Post::FORUM_TOPIC . ' AND p.home=' . $home . ' AND p.xhome!=-1 ORDER BY p.id DESC LIMIT ' . Settings::get('extratopicslimit'));
+                $query = DB::query(
+                    'SELECT topic.id AS topic_id,topic.subject AS topic_subject,p.author,p.guest,p.time,' . $userQuery['column_list']
+                    . ' FROM ' . DB::table('post') . ' AS p'
+                    . ' JOIN ' . DB::table('post') . ' AS topic ON(topic.type=' . Post::FORUM_TOPIC . ' AND topic.id=p.xhome)'
+                    . ' ' . $userQuery['joins']
+                    . ' WHERE p.type=' . Post::FORUM_TOPIC . ' AND p.home=' . $home . ' AND p.xhome!=-1'
+                    . ' ORDER BY p.id DESC'
+                    . ' LIMIT ' . Settings::get('extratopicslimit')
+                );
 
                 if (DB::size($query) != 0) {
                     $output .= "<table class=\"topic-latest\">\n";
@@ -577,7 +602,11 @@ class PostService
                             $author = '<span class="post-author-guest">' . self::renderGuestName($item['guest']) . '</span>';
                         }
 
-                        $output .= '<tr><td><a href="' . _e(Router::topic($item['topic_id'], $forum_slug)) . '">' . $item['topic_subject'] . '</a></td><td>' . $author . '</td><td>' . GenericTemplates::renderTime($item['time'], 'post') . "</td></tr>\n";
+                        $output .= '<tr>'
+                            . '<td><a href="' . _e(Router::topic($item['topic_id'], $forum_slug)) . '">' . $item['topic_subject'] . '</a></td>'
+                            . '<td>' . $author . '</td>'
+                            . '<td>' . GenericTemplates::renderTime($item['time'], 'post') . '</td>'
+                            . "</tr>\n";
                     }
 
                     $output .= "</table>\n\n";
@@ -625,11 +654,22 @@ class PostService
         }
 
         if ($vars['xhome'] == -1 && $vars['subject']) {
-            $inputs[] = ['label' => _lang($vars['is_topic'] ? 'posts.topic' : 'posts.subject'), 'content' => '<input type="text" name="subject" class="input' . ($vars['is_topic'] ? 'medium' : 'small') . '" maxlength="48"' . Form::restoreValue($_SESSION, 'post_form_subject') . '>'];
+            $inputs[] = [
+                'label' => _lang($vars['is_topic'] ? 'posts.topic' : 'posts.subject'),
+                'content' => '<input type="text" name="subject" class="input' . ($vars['is_topic'] ? 'medium' : 'small') . '" maxlength="48"' . Form::restoreValue($_SESSION, 'post_form_subject') . '>',
+            ];
         }
 
         $inputs[] = $captcha;
-        $inputs[] = ['label' => _lang('posts.text'), 'content' => '<textarea name="text" class="areamedium" rows="5" cols="33">' .Form::restoreValue($_SESSION, 'post_form_text', null, false) . '</textarea><input type="hidden" name="_posttype" value="' . $vars['posttype'] . '"><input type="hidden" name="_posttarget" value="' . $vars['posttarget'] . '"><input type="hidden" name="_xhome" value="' . $vars['xhome'] . '">' . (isset($vars['pluginflag']) ? '<input type="hidden" name="_pluginflag" value="' . $vars['pluginflag'] . '">' : ''), 'top' => true];
+        $inputs[] = [
+            'label' => _lang('posts.text'),
+            'content' => '<textarea name="text" class="areamedium" rows="5" cols="33">' . Form::restoreValue($_SESSION, 'post_form_text', null, false) . '</textarea>'
+                . '<input type="hidden" name="_posttype" value="' . $vars['posttype'] . '">'
+                . '<input type="hidden" name="_posttarget" value="' . $vars['posttarget'] . '">'
+                . '<input type="hidden" name="_xhome" value="' . $vars['xhome'] . '">'
+                . (isset($vars['pluginflag']) ? '<input type="hidden" name="_pluginflag" value="' . $vars['pluginflag'] . '">' : ''),
+            'top' => true,
+        ];
         $inputs[] = ['label' => '', 'content' => PostForm::renderControls('postform', 'text')];
         $inputs[] = Form::getSubmitRow(['append' => ' ' . PostForm::renderPreviewButton('postform', 'text')]);
 
@@ -710,7 +750,11 @@ class PostService
                     . $author
                     . ' <span class="post-info">(' . GenericTemplates::renderTime($post['time'], 'post') . $options['extra_info'] . ')</span>'
                     . ($actlinks ? ' <span class="post-actions">' . implode(' ', $actlinks) . '</span>' : '')
-                    . ($options['post_link'] ? '<a class="post-postlink" href="' . _e(UrlHelper::appendParams($options['current_url'], 'page=' . $options['current_page'])) . '#post-' . $post['id'] . '"><span>#' . str_pad($post['id'], 6, '0', STR_PAD_LEFT) . '</span></a>' : '')
+                    . ($options['post_link']
+                        ? '<a class="post-postlink" href="' . _e(UrlHelper::appendParams($options['current_url'], 'page=' . $options['current_page'])) . '#post-' . $post['id'] . '">'
+                            . '<span>#' . str_pad($post['id'], 6, '0', STR_PAD_LEFT) . '</span>'
+                            . '</a>'
+                        : '')
                 . '</div>'
                 . '<div class="post-body' . (isset($avatar) ? ' post-body-withavatar' : '') . '">'
                     . $avatar

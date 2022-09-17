@@ -70,7 +70,16 @@ abstract class IpLog
 
         if ($type <= self::PASSWORD_RESET_REQUESTED) {
             if (!$cleaned['system']) {
-                DB::query('DELETE FROM ' . DB::table('iplog') . ' WHERE (type=1 AND ' . time() . '-time>' . Settings::get('maxloginexpire') . ') OR (type=2 AND ' . time() . '-time>' . Settings::get('artreadexpire') . ') OR (type=3 AND ' . time() . '-time>' . Settings::get('artrateexpire') . ') OR (type=4 AND ' . time() . '-time>' . Settings::get('pollvoteexpire') . ') OR (type=5 AND ' . time() . '-time>' . Settings::get('antispamtimeout') . ') OR (type=6 AND ' . time() . '-time>' . Settings::get('accactexpire') . ') OR (type=7 AND ' . time() . '-time>' . Settings::get('lostpassexpire') . ')');
+                DB::query(
+                    'DELETE FROM ' . DB::table('iplog')
+                    . ' WHERE (type=' . self::FAILED_LOGIN_ATTEMPT . ' AND ' . time() . '-time>' . Settings::get('maxloginexpire') . ')'
+                    . ' OR (type=' . self::ARTICLE_READ . ' AND ' . time() . '-time>' . Settings::get('artreadexpire') . ')'
+                    . ' OR (type=' . self::ARTICLE_RATED . ' AND ' . time() . '-time>' . Settings::get('artrateexpire') . ')'
+                    . ' OR (type=' . self::POLL_VOTE . ' AND ' . time() . '-time>' . Settings::get('pollvoteexpire') . ')'
+                    . ' OR (type=' . self::ANTI_SPAM . ' AND ' . time() . '-time>' . Settings::get('antispamtimeout') . ')'
+                    . ' OR (type=' . self::FAILED_ACCOUNT_ACTIVATION . ' AND ' . time() . '-time>' . Settings::get('accactexpire') . ')'
+                    . ' OR (type=' . self::PASSWORD_RESET_REQUESTED . ' AND ' . time() . '-time>' . Settings::get('lostpassexpire') . ')'
+                );
                 $cleaned['system'] = true;
             }
         } elseif (!isset($cleaned['custom'][$type])) {

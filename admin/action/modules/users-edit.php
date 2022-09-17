@@ -310,7 +310,10 @@ if ($continue) {
 ' . Extend::buffer('admin.user.form', ['user' => $query]) . '
 
 <tr><td></td>
-<td><input type="submit" class="button bigger" value="' . _lang((isset($_GET['id']) ? 'global.save' : 'global.create')) . '" accesskey="s">' . (($id != null) ? ' <small>' . _lang('admin.content.form.thisid') . ' ' . $query['id'] . '</small>' : '') . '</td>
+<td>
+    <input type="submit" class="button bigger" value="' . _lang((isset($_GET['id']) ? 'global.save' : 'global.create')) . '" accesskey="s">'
+    . (($id != null) ? ' <small>' . _lang('admin.content.form.thisid') . ' ' . $query['id'] . '</small>' : '')
+. '</td>
 </tr>
 
 </table>

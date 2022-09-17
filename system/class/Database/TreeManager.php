@@ -154,7 +154,12 @@ class TreeManager
     function purgeOrphaned(bool $refresh = true): void
     {
         do {
-            $orphaned = DB::query('SELECT n.' . $this->idColumn . ',n.' . $this->parentColumn . ' FROM ' . DB::table($this->table) . ' n LEFT JOIN ' . DB::table($this->table) . ' p ON(n.' . $this->parentColumn . '=p.' . $this->idColumn . ') WHERE n.' . $this->parentColumn . ' IS NOT NULL AND p.id IS NULL');
+            $orphaned = DB::query(
+                'SELECT n.' . $this->idColumn . ',n.' . $this->parentColumn
+                . ' FROM ' . DB::table($this->table) . ' n'
+                . ' LEFT JOIN ' . DB::table($this->table) . ' p ON(n.' . $this->parentColumn . '=p.' . $this->idColumn . ')'
+                . ' WHERE n.' . $this->parentColumn . ' IS NOT NULL AND p.id IS NULL'
+            );
             $orphanedCount = DB::size($orphaned);
 
             while ($row = DB::row($orphaned)) {

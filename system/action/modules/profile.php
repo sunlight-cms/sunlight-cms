@@ -107,7 +107,14 @@ if ($public) {
 
 <tr>
 <th>' . _lang('global.group') . '</th>
-<td><span class="text-icon">' .(($groupdata['icon'] != '') ? '<img src="' . _e(Router::path('images/groupicons/' . $groupdata['icon'])) . '" alt="icon" class="icon">' : '') . (($groupdata['color'] !== '') ? '<span style="color:' . $groupdata['color'] . ';">' . $groupdata['title'] . '</span>' : $groupdata['title']) . '</span></td>
+<td>
+    <span class="text-icon">'
+    . (($groupdata['icon'] != '') ? '<img src="' . _e(Router::path('images/groupicons/' . $groupdata['icon'])) . '" alt="icon" class="icon">' : '')
+    . (($groupdata['color'] !== '')
+        ? '<span style="color:' . $groupdata['color'] . ';">' . $groupdata['title']. '</span>'
+        : $groupdata['title'])
+    . '</span>
+</td>
 </tr>
 
 ' . (($groupdata['descr'] !== '') ? '<tr>
@@ -155,5 +162,10 @@ if ($public) {
 
 // link to send a message
 if (User::isLoggedIn() && Settings::get('messages') && !User::equals($query['id']) && $query['blocked'] == 0 && $groupdata['blocked'] == 0) {
-    $output .= '<p><a class="button" href="' . _e(Router::module('messages', ['query' => ['a' => 'new', 'receiver' => $query['username']]])) . '"><img src="' . Template::image('icons/bubble.png') . '" alt="msg" class="icon">' . _lang('mod.messages.new') . '</a></p>';
+    $output .= '<p>
+    <a class="button" href="' . _e(Router::module('messages', ['query' => ['a' => 'new', 'receiver' => $query['username']]])) . '">
+    <img src="' . Template::image('icons/bubble.png') . '" alt="msg" class="icon">'
+    . _lang('mod.messages.new')
+    . '</a>
+</p>';
 }

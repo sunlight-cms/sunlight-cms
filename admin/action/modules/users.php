@@ -89,7 +89,11 @@ if (User::hasPrivilege('admingroups')) {
     $group_table = '<table class="list list-hover list-max">
 <thead><tr><td>' . _lang('global.name') . '</td><td>' . _lang('admin.users.groups.level') . '</td><td>' . _lang('admin.users.groups.members') . '</td><td>' . _lang('global.action') . '</td></tr></thead>
 <tbody>';
-    $groups = DB::queryRows('SELECT id,title,icon,color,blocked,level,reglist,(SELECT COUNT(*) FROM ' . DB::table('user') . ' WHERE group_id=' . DB::table('user_group') . '.id) AS user_count FROM ' . DB::table('user_group') . ' ORDER BY level DESC');
+    $groups = DB::queryRows(
+        'SELECT id,title,icon,color,blocked,level,reglist,(SELECT COUNT(*) FROM ' . DB::table('user') . ' WHERE group_id=' . DB::table('user_group') . '.id) AS user_count'
+        . ' FROM ' . DB::table('user_group')
+        . ' ORDER BY level DESC'
+    );
     Extend::call('admin.users.groups', ['groups' => &$groups]);
 
     foreach ($groups as $group) {
@@ -104,7 +108,13 @@ if (User::hasPrivilege('admingroups')) {
         . '</span>
     </td>
     <td>' . $group['level'] . '</td>
-    <td>' . (($group['id'] != User::GUEST_GROUP_ID) ? '<a href="' . _e(Router::admin('users-list', ['query' => ['group_id' => $group['id']]])) . '"><img src="' . _e(Router::path('admin/images/icons/list.png')) . '" alt="list" class="icon">' . $group['user_count'] . '</a>' : '-') . '</td>
+    <td>' . (($group['id'] != User::GUEST_GROUP_ID)
+        ? '<a href="' . _e(Router::admin('users-list', ['query' => ['group_id' => $group['id']]])) . '">
+            <img src="' . _e(Router::path('admin/images/icons/list.png')) . '" alt="list" class="icon">'
+            . $group['user_count']
+            . '</a>'
+            : '-')
+    . '</td>
     <td class="actions">
         <a class="button" href="' . _e(Router::admin('users-editgroup', ['query' => ['id' => $group['id']]])) . '"><img src="' . _e(Router::path('admin/images/icons/edit.png')) . '" alt="edit" class="icon">' . _lang('global.edit') . '</a>
         <a class="button" href="' . _e(Router::admin('users-delgroup', ['query' => ['id' => $group['id']]])) . '"><img src="' . _e(Router::path('admin/images/icons/delete.png')) . '" alt="del" class="icon">' . _lang('global.delete') . "</a>

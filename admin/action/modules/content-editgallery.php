@@ -10,7 +10,12 @@ require SL_ROOT . 'admin/action/modules/include/page-editscript-init.php';
 
 if ($continue) {
     if (!$new) {
-        $editscript_extra = '<p><a class="button" href="' . _e(Router::admin('content-manageimgs', ['query' => ['g' => $id]])) . '"><img src="' . _e(Router::path('admin/images/icons/edit.png')) . '" alt="edit" class="icon"><span class="big-text">' . _lang('admin.content.form.manageimgs') . '</span></a></p>';
+        $editscript_extra = '<p>
+    <a class="button" href="' . _e(Router::admin('content-manageimgs', ['query' => ['g' => $id]])) . '">
+        <img src="' . _e(Router::path('admin/images/icons/edit.png')) . '" alt="edit" class="icon">
+        <span class="big-text">' . _lang('admin.content.form.manageimgs') . '</span>
+    </a>
+</p>';
     }
 
     $custom_settings = '

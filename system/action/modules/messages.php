@@ -69,7 +69,12 @@ switch ($a) {
 
                 // receiver
                 if ($receiver !== '') {
-                    $rq = DB::queryRow('SELECT usr.id AS usr_id,usr.blocked AS usr_blocked, ugrp.blocked AS ugrp_blocked FROM ' . DB::table('user') . ' AS usr JOIN ' . DB::table('user_group') . ' AS ugrp ON (usr.group_id=ugrp.id) WHERE usr.username=' . DB::val($receiver) . ' OR usr.publicname=' . DB::val($receiver));
+                    $rq = DB::queryRow(
+                        'SELECT usr.id AS usr_id,usr.blocked AS usr_blocked, ugrp.blocked AS ugrp_blocked'
+                        . ' FROM ' . DB::table('user') . ' AS usr'
+                        . ' JOIN ' . DB::table('user_group') . ' AS ugrp ON (usr.group_id=ugrp.id)'
+                        . ' WHERE usr.username=' . DB::val($receiver) . ' OR usr.publicname=' . DB::val($receiver)
+                    );
                 } else {
                     $rq = false;
                 }
@@ -161,7 +166,14 @@ switch ($a) {
             $id = (int) Request::get('read');
             $senderUserQuery = User::createQuery('pm.sender', 'sender_', 'su');
             $receiverUserQuery = User::createQuery('pm.receiver', 'receiver_', 'ru');
-            $q = DB::queryRow('SELECT pm.*,p.id post_id,p.subject,p.time,p.text,p.guest,p.ip' . Extend::buffer('posts.columns') . ',' . $senderUserQuery['column_list'] . ',' . $receiverUserQuery['column_list'] . ' FROM ' . DB::table('pm') . ' AS pm JOIN ' . DB::table('post') . ' AS p ON (p.type=' . Post::PRIVATE_MSG . ' AND p.home=pm.id AND p.xhome=-1) ' . $senderUserQuery['joins'] . ' ' . $receiverUserQuery['joins'] . ' WHERE pm.id=' . $id . ' AND (sender=' . User::getId() . ' AND sender_deleted=0 OR receiver=' . User::getId() . ' AND receiver_deleted=0)');
+            $q = DB::queryRow(
+                'SELECT pm.*,p.id post_id,p.subject,p.time,p.text,p.guest,p.ip' . Extend::buffer('posts.columns') . ',' . $senderUserQuery['column_list'] . ',' . $receiverUserQuery['column_list']
+                . ' FROM ' . DB::table('pm') . ' AS pm'
+                . ' JOIN ' . DB::table('post') . ' AS p ON (p.type=' . Post::PRIVATE_MSG . ' AND p.home=pm.id AND p.xhome=-1)'
+                . ' ' . $senderUserQuery['joins']
+                . ' ' . $receiverUserQuery['joins']
+                . ' WHERE pm.id=' . $id . ' AND (sender=' . User::getId() . ' AND sender_deleted=0 OR receiver=' . User::getId() . ' AND receiver_deleted=0)'
+            );
 
             if ($q === false) {
                 $_index->notFound();
@@ -206,7 +218,16 @@ switch ($a) {
 
             // functions
             $deletePms = function ($cond = null, $sender_cond = null, $receiver_cond = null) {
-                $q = DB::query('SELECT id,sender,sender_deleted,receiver,receiver_deleted FROM ' . DB::table('pm') . ' WHERE (sender=' . User::getId() . ' AND sender_deleted=0' . (isset($sender_cond) ? ' AND ' . $sender_cond : '') . ' OR receiver=' . User::getId() . ' AND receiver_deleted=0' . (isset($receiver_cond) ? ' AND ' . $receiver_cond : '') . ')' . ((isset($cond)) ? ' AND ' . $cond : ''));
+                $q = DB::query(
+                    'SELECT id,sender,sender_deleted,receiver,receiver_deleted'
+                    . ' FROM ' . DB::table('pm')
+                    . ' WHERE'
+                        . '('
+                            . 'sender=' . User::getId() . ' AND sender_deleted=0' . (isset($sender_cond) ? ' AND ' . $sender_cond : '')
+                            . ' OR receiver=' . User::getId() . ' AND receiver_deleted=0' . (isset($receiver_cond) ? ' AND ' . $receiver_cond : '')
+                        . ')'
+                    . ((isset($cond)) ? ' AND ' . $cond : '')
+                );
                 $del_list = [];
 
                 while ($r = DB::row($q)) {
@@ -225,7 +246,11 @@ switch ($a) {
 
                 // delete messages
                 if (!empty($del_list)) {
-                    DB::query('DELETE ' . DB::table('pm') . ',post FROM ' . DB::table('pm') . ' JOIN ' . DB::table('post') . ' AS post ON (post.type=' . Post::PRIVATE_MSG . ' AND post.home=' . DB::table('pm') . '.id) WHERE ' . DB::table('pm') . '.id IN(' . DB::arr($del_list) . ')');
+                    DB::query(
+                        'DELETE ' . DB::table('pm') . ',post FROM ' . DB::table('pm')
+                        . ' JOIN ' . DB::table('post') . ' AS post ON (post.type=' . Post::PRIVATE_MSG . ' AND post.home=' . DB::table('pm') . '.id)'
+                        . ' WHERE ' . DB::table('pm') . '.id IN(' . DB::arr($del_list) . ')'
+                    );
                 }
             };
 

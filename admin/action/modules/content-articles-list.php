@@ -62,9 +62,28 @@ if ($continue) {
     $cond = '(art.home1=' . $cid . ' OR art.home2=' . $cid . ' OR art.home3=' . $cid . ')' . Admin::articleAccess('art');
     $paging = Paginator::render(Router::admin('content-articles-list', ['query' => ['cat' => $cid]]), $catdata['var2'] ?: Settings::get('articlesperpage'), DB::table('article') . ':art', $cond);
     $s = $paging['current'];
-    $output .= $paging['paging'] . $message . "\n<table class=\"list list-hover list-max\">\n<thead><tr><td>" . _lang('global.article') . '</td><td>' . _lang('article.author') . '</td><td>' . _lang('article.posted') . '</td><td>' . _lang('global.action') . "</td></tr></thead>\n<tbody>";
+    $output .= $paging['paging']
+        . $message
+        . '<table class="list list-hover list-max">
+    <thead>
+        <tr>
+            <td>' . _lang('global.article') . '</td>
+            <td>' . _lang('article.author') . '</td>
+            <td>' . _lang('article.posted') . '</td>
+            <td>' . _lang('global.action') . '</td>
+        </tr>
+    </thead>
+    <tbody>';
     $userQuery = User::createQuery('art.author');
-    $arts = DB::query('SELECT art.id,art.title,art.slug,art.time,art.confirmed,art.visible,art.public,cat.slug AS cat_slug,' . $userQuery['column_list'] . ' FROM ' . DB::table('article') . ' AS art JOIN ' . DB::table('page') . ' AS cat ON(cat.id=art.home1) ' . $userQuery['joins'] . ' WHERE ' . $cond . ' ORDER BY ' . $artorder . ' ' . $paging['sql_limit']);
+    $arts = DB::query(
+        'SELECT art.id,art.title,art.slug,art.time,art.confirmed,art.visible,art.public,cat.slug AS cat_slug,' . $userQuery['column_list']
+        . ' FROM ' . DB::table('article') . ' AS art'
+        . ' JOIN ' . DB::table('page') . ' AS cat ON(cat.id=art.home1) '
+        . $userQuery['joins']
+        . ' WHERE ' . $cond
+        . ' ORDER BY ' . $artorder
+        . ' ' . $paging['sql_limit']
+    );
 
     if (DB::size($arts) != 0) {
         while ($art = DB::row($arts)) {
@@ -73,10 +92,14 @@ if ($continue) {
     <td>' . Router::userFromQuery($userQuery, $art) . '</td>
     <td>' . GenericTemplates::renderTime($art['time']) . '</td>
     <td class="actions">
-            <a class="button" href="' . _e(Router::admin('content-articles-edit', ['query' => ['id' => $art['id'], 'returnid' => $cid,  'returnpage' => $s]])) . '"><img src="' . _e(Router::path('admin/images/icons/edit.png')) . '" alt="edit" class="icon">' . _lang('global.edit') . '</a>
-            <a class="button" href="' . _e(Router::admin('content-articles-delete', ['query' => ['id' => $art['id'], 'returnid' => $cid, 'returnpage' => $s]])) . '"><img src="' . _e(Router::path('admin/images/icons/delete.png')) . '" alt="del" class="icon">' . _lang('global.delete') . "</a>
+        <a class="button" href="' . _e(Router::admin('content-articles-edit', ['query' => ['id' => $art['id'], 'returnid' => $cid,  'returnpage' => $s]])) . '">
+            <img src="' . _e(Router::path('admin/images/icons/edit.png')) . '" alt="edit" class="icon">' . _lang('global.edit') . '
+        </a>
+        <a class="button" href="' . _e(Router::admin('content-articles-delete', ['query' => ['id' => $art['id'], 'returnid' => $cid, 'returnpage' => $s]])) . '">
+            <img src="' . _e(Router::path('admin/images/icons/delete.png')) . '" alt="del" class="icon">' . _lang('global.delete') . '
+        </a>
     </td>
-</tr>\n";
+</tr>';
         }
     } else {
         $output .= '<tr><td colspan="4">' . _lang('global.nokit') . '</td></tr>';

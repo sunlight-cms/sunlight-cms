@@ -144,8 +144,12 @@ while ($r = DB::row($q)) {
         <td class="text-' . ($r['permanent'] ? 'success' : 'danger') . '">' . _lang('global.' . ($r['permanent'] ? 'yes' : 'no')) . '</td>
         <td class="text-' . ($r['active'] ? 'success' : 'danger') . '">' . _lang('global.' . ($r['active'] ? 'yes' : 'no')) . '</td>
         <td class="actions">
-            <a class="button" href="' . _e(Router::admin('content-redir', ['query' => ['edit' => $r['id']]])) . '"><img src="' . _e(Router::path('admin/images/icons/edit.png')) . '" alt="edit" class="icon">' . _lang('global.edit') . '</a>
-            <a class="button" href="' . _e(Xsrf::addToUrl(Router::admin('content-redir', ['query' => ['del' => $r['id']]]))) . '" onclick="return Sunlight.confirm();"><img src="' . _e(Router::path('admin/images/icons/delete.png')) . '" alt="del" class="icon">' . _lang('global.delete') . '</a>
+            <a class="button" href="' . _e(Router::admin('content-redir', ['query' => ['edit' => $r['id']]])) . '">
+                <img src="' . _e(Router::path('admin/images/icons/edit.png')) . '" alt="edit" class="icon">' . _lang('global.edit') . '
+            </a>
+            <a class="button" href="' . _e(Xsrf::addToUrl(Router::admin('content-redir', ['query' => ['del' => $r['id']]]))) . '" onclick="return Sunlight.confirm();">
+                <img src="' . _e(Router::path('admin/images/icons/delete.png')) . '" alt="del" class="icon">' . _lang('global.delete') . '
+            </a>
         </td>
     </tr>';
     ++$counter;

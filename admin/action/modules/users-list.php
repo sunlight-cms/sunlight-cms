@@ -137,8 +137,14 @@ if (DB::size($query) != 0) {
             <td>' . $item['user_email'] . '</td><td>' . (($item['user_publicname'] != '') ? $item['user_publicname'] : '-') . '</td>
             <td>' . $item['user_group_title'] . '</td>
             <td class="actions">
-                <a class="button" href="' . _e(Router::admin('users-edit', ['query' => ['id' => $item['user_username']]])) . '"><img src="' . _e(Router::path('admin/images/icons/edit.png')) . '" alt="edit" class="icon">' . _lang('global.edit') . '</a>
-                <a class="button" href="' . _e(Router::admin('users-delete', ['query' => ['id' =>$item['user_username']]])) . '"><img src="' . _e(Router::path('admin/images/icons/delete.png')) . '" alt="del" class="icon">' . _lang('global.delete') . "</a>
+                <a class="button" href="' . _e(Router::admin('users-edit', ['query' => ['id' => $item['user_username']]])) . '">
+                    <img src="' . _e(Router::path('admin/images/icons/edit.png')) . '" alt="edit" class="icon">'
+                    . _lang('global.edit')
+                . '</a>
+                <a class="button" href="' . _e(Router::admin('users-delete', ['query' => ['id' =>$item['user_username']]])) . '">
+                    <img src="' . _e(Router::path('admin/images/icons/delete.png')) . '" alt="del" class="icon">'
+                    . _lang('global.delete')
+                . "</a>
             </td>
         </tr>\n";
     }

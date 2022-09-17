@@ -79,7 +79,17 @@ if (isset($_POST['question'])) {
         $errors[] = _lang('admin.content.polls.edit.error3');
     }
 
-    if (User::hasPrivilege('adminpollall') && DB::result(DB::query('SELECT COUNT(*) FROM ' . DB::table('user') . ' WHERE id=' . $author . ' AND (id=' . User::getId() . ' OR (SELECT level FROM ' . DB::table('user_group') . ' WHERE id=' . DB::table('user') . '.group_id)<' . User::getLevel() . ')')) == 0) {
+    if (
+        User::hasPrivilege('adminpollall')
+        && DB::result(DB::query(
+            'SELECT COUNT(*) FROM ' . DB::table('user')
+            . ' WHERE id=' . $author
+            . ' AND ('
+                . 'id=' . User::getId()
+                . ' OR (SELECT level FROM ' . DB::table('user_group') . ' WHERE id=' . DB::table('user') . '.group_id)<' . User::getLevel()
+            . ')'
+        )) == 0
+    ) {
         $errors[] = _lang('admin.content.articles.edit.error3');
     }
 
@@ -198,7 +208,16 @@ if ($continue) {
   </tr>
 
   <tr><td></td>
-  <td><input type="submit" value="' . $submitcaption . '" accesskey="s">' . (!$new ? ' <small>' . _lang('admin.content.form.thisid') . ' ' . $id . '</small> <span class="customsettings"><a class="button" href="' . _e(Xsrf::addToUrl(Router::admin('content-polls', ['query' => ['del' => $id]]))) . '" onclick="return Sunlight.confirm();"><img src="' . _e(Router::path('admin/images/icons/delete.png')) . '" class="icon" alt="del"> ' . _lang('global.delete') . '</a>' : '') . '</span></td>
+  <td>
+    <input type="submit" value="' . $submitcaption . '" accesskey="s">'
+    . (!$new
+            ? ' <small>' . _lang('admin.content.form.thisid') . ' ' . $id . '</small>'
+            . ' <span class="customsettings"><a class="button" href="' . _e(Xsrf::addToUrl(Router::admin('content-polls', ['query' => ['del' => $id]]))) . '" onclick="return Sunlight.confirm();">'
+                . '<img src="' . _e(Router::path('admin/images/icons/delete.png')) . '" class="icon" alt="del"> '
+                . _lang('global.delete')
+            . '</a></span>'
+            : '')
+. '</td>
   </tr>
 
   </table>

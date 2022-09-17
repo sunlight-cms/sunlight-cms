@@ -328,12 +328,18 @@ if ($continue) {
 
 <tr>
 <th>' . _lang('admin.content.form.ord') . '</th>
-<td><input type="number" name="ord" class="inputsmall" disabled> <label><input type="checkbox" name="moveords" value="1" checked onclick="Sunlight.toggleFormField(this.checked, \'addform\', \'ord\');"> ' . _lang('admin.content.manageimgs.moveords') . '</label></td>
+<td>
+    <input type="number" name="ord" class="inputsmall" disabled>
+    <label><input type="checkbox" name="moveords" value="1" checked onclick="Sunlight.toggleFormField(this.checked, \'addform\', \'ord\');"> ' . _lang('admin.content.manageimgs.moveords') . '</label>
+</td>
 </tr>
 
 <tr>
 <th>' . _lang('admin.content.manageimgs.prev') . '</th>
-<td><input type="text" name="prev" class="inputsmall" disabled> <label><input type="checkbox" name="autoprev" value="1" checked onclick="Sunlight.toggleFormField(this.checked, \'addform\', \'prev\');"> ' . _lang('admin.content.manageimgs.autoprev') . '</label></td>
+<td>
+    <input type="text" name="prev" class="inputsmall" disabled>
+    <label><input type="checkbox" name="autoprev" value="1" checked onclick="Sunlight.toggleFormField(this.checked, \'addform\', \'prev\');"> ' . _lang('admin.content.manageimgs.autoprev') . '</label>
+</td>
 </tr>
 
 <tr>
@@ -398,7 +404,11 @@ if ($continue) {
 
 ' . (!$image['in_storage'] ? '<tr>
 <th>' . _lang('admin.content.manageimgs.prev') . '</th>
-<td><input type="hidden" name="i' . $image['id'] . '_prevtrigger" value="1"><input type="text" name="i' . $image['id'] . '_prev" class="inputsmall" value="' . $image['prev'] . '"' . Form::disableInputUnless($image['prev'] != '') . '> <label><input type="checkbox" name="i' . $image['id'] . '_autoprev" value="1" onclick="Sunlight.toggleFormField(checked, \'editform\', \'i' . $image['id'] . '_prev\');"' . Form::activateCheckbox($image['prev'] == '') . '> ' . _lang('admin.content.manageimgs.autoprev') . '</label></td>
+<td>
+    <input type="hidden" name="i' . $image['id'] . '_prevtrigger" value="1">
+    <input type="text" name="i' . $image['id'] . '_prev" class="inputsmall" value="' . $image['prev'] . '"' . Form::disableInputUnless($image['prev'] != '') . '>
+    <label><input type="checkbox" name="i' . $image['id'] . '_autoprev" value="1" onclick="Sunlight.toggleFormField(checked, \'editform\', \'i' . $image['id'] . '_prev\');"' . Form::activateCheckbox($image['prev'] == '') . '>' . _lang('admin.content.manageimgs.autoprev') . '</label>
+</td>
 </tr>
 
 <tr>
@@ -408,7 +418,12 @@ if ($continue) {
 
 <tr class="valign-top">
 <th>' . _lang('global.preview') . '</th>
-<td>' . $preview . '<br><br><a class="button" href="' . _e(Xsrf::addToUrl(Router::admin('content-manageimgs', ['query' => ['g' => $galid, 'del' => $image['id']]]))) . '" onclick="return Sunlight.confirm();"><img src="' . _e(Router::path('admin/images/icons/delete.png')) . '" alt="del" class="icon">' . _lang('admin.content.manageimgs.delete') . '</a></td>
+<td>' . $preview . '<br><br>
+    <a class="button" href="' . _e(Xsrf::addToUrl(Router::admin('content-manageimgs', ['query' => ['g' => $galid, 'del' => $image['id']]]))) . '" onclick="return Sunlight.confirm();">
+        <img src="' . _e(Router::path('admin/images/icons/delete.png')) . '" alt="del" class="icon">'
+        . _lang('admin.content.manageimgs.delete')
+    . '</a>
+</td>
 </tr>
 
 </table>

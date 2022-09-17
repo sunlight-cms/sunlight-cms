@@ -190,7 +190,12 @@ if (!$user_data_valid && $show_form) {
 
     // rules
     if ($rules !== '') {
-        $rules = ['content' => '<h2>' . _lang('mod.reg.rules') . '</h2>' . $rules . '<p><label><input type="checkbox" name="agreement" value="1"' . Form::activateCheckbox(isset($_POST['agreement'])) . '> ' . _lang('mod.reg.rules.agreement') . '</label></p>', 'top' => true];
+        $rules = [
+            'content' => '<h2>' . _lang('mod.reg.rules') . '</h2>'
+                . $rules
+                . '<p><label><input type="checkbox" name="agreement" value="1"' . Form::activateCheckbox(isset($_POST['agreement'])) . '> ' . _lang('mod.reg.rules.agreement') . '</label></p>',
+            'top' => true,
+        ];
     } else {
         $rules = [];
     }

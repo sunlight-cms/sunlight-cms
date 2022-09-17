@@ -97,7 +97,12 @@ if ($search_query != '') {
 
         // search pages
         if ($page) {
-            $q = DB::query('SELECT id,title,slug,perex FROM ' . DB::table('page') . ' WHERE level<=' . User::getLevel() . ' AND ' . ($public ? 'public=1 AND ' : '') . $searchQuery(null, ['title', 'slug', 'description', 'perex', 'content']) . ' LIMIT 50');
+            $q = DB::query(
+                'SELECT id,title,slug,perex FROM ' . DB::table('page')
+                . ' WHERE level<=' . User::getLevel() . ' AND ' . ($public ? 'public=1 AND ' : '')
+                . $searchQuery(null, ['title', 'slug', 'description', 'perex', 'content'])
+                . ' LIMIT 50'
+            );
 
             while ($r = DB::row($q)) {
                 $results[] = [

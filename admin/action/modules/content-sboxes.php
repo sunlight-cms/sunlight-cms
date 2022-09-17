@@ -193,7 +193,9 @@ if (DB::size($shoutboxes) != 0) {
     <label><input type="checkbox" name="s' . $shoutbox['id'] . '_public" value="1"' . Form::activateCheckbox($shoutbox['public']) . '> ' . _lang('admin.content.form.unregpost') . '</label><br>
     <label><input type="checkbox" name="s' . $shoutbox['id'] . '_locked" value="1"' . Form::activateCheckbox($shoutbox['locked']) . '> ' . _lang('admin.content.form.locked2') . '</label><br>
     <label><input type="checkbox" name="s' . $shoutbox['id'] . '_delposts" value="1"> ' . _lang('admin.content.form.delposts') . '</label><br><br>
-    <a class="button" href="' . _e(Xsrf::addToUrl(Router::admin('content-sboxes', ['query' => ['del' => $shoutbox['id']]]))) . '" onclick="return Sunlight.confirm();"><img src="' . _e(Router::path('admin/images/icons/delete.png')) . '" alt="del" class="icon">' . _lang('global.delete') . '</a>
+    <a class="button" href="' . _e(Xsrf::addToUrl(Router::admin('content-sboxes', ['query' => ['del' => $shoutbox['id']]]))) . '" onclick="return Sunlight.confirm();">
+        <img src="' . _e(Router::path('admin/images/icons/delete.png')) . '" alt="del" class="icon">' . _lang('global.delete') . '
+    </a>
     </td>
     </tr>
 

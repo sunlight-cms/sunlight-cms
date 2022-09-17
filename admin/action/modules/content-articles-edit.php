@@ -162,7 +162,16 @@ if (isset($_POST['title'])) {
     }
 
     // author
-    if (DB::result(DB::query('SELECT COUNT(*) FROM ' . DB::table('user') . ' WHERE id=' . DB::val($newdata['author']) . ' AND (id=' . User::getId() . ' OR (SELECT level FROM ' . DB::table('user_group') . ' WHERE id=' . DB::table('user') . '.group_id)<' . User::getLevel() . ')')) == 0) {
+    if (
+        DB::result(DB::query(
+            'SELECT COUNT(*) FROM ' . DB::table('user')
+            . ' WHERE id=' . DB::val($newdata['author'])
+            . ' AND ('
+                . 'id=' . User::getId()
+                . ' OR (SELECT level FROM ' . DB::table('user_group') . ' WHERE id=' . DB::table('user') . '.group_id)<' . User::getLevel()
+            . ')'
+        )) == 0
+    ) {
         $error_log[] = _lang('admin.content.articles.edit.error3');
     }
 
@@ -392,8 +401,14 @@ if ($continue) {
                                 <td></td>
                                 <td id="ae-lastrow"><br><input type="submit" class="button bigger" value="' . _lang($submittext) . '" accesskey="s">'
                                 . (!$new ? '
-                                    <span class="customsettings"><a href="' . _e(Router::admin('content-articles-delete', ['query' => ['id' => $query['id'], 'returnid' => $query['home1'], 'returnpage' => 1]])) . '"><span><img src="' . _e(Router::path('admin/images/icons/delete.png')) . '" alt="del" class="icon">' . _lang('global.delete') . '</span></a></span>
-                                    <span class="customsettings"><small>' . _lang('admin.content.form.thisid') . ' ' . $query['id'] . '</small></span>
+                                    <span class="customsettings">
+                                        <a href="' . _e(Router::admin('content-articles-delete', ['query' => ['id' => $query['id'], 'returnid' => $query['home1'], 'returnpage' => 1]])) . '">
+                                            <span><img src="' . _e(Router::path('admin/images/icons/delete.png')) . '" alt="del" class="icon">' . _lang('global.delete') . '</span>
+                                        </a>
+                                    </span>
+                                    <span class="customsettings">
+                                        <small>' . _lang('admin.content.form.thisid') . ' ' . $query['id'] . '</small>
+                                    </span>
                                 ' : '')
                                 . '</td>
                             </tr>

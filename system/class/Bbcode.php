@@ -317,7 +317,25 @@ abstract class Bbcode
             case 'hr':
                 return '<span class="hr"></span>';
             case 'color':
-                static $colors = ['aqua' => 0, 'black' => 1, 'blue' => 2, 'fuchsia' => 3, 'gray' => 4, 'green' => 5, 'lime' => 6, 'maroon' => 7, 'navy' => 8, 'olive' => 9, 'orange' => 10, 'purple' => 11, 'red' => 12, 'silver' => 13, 'teal' => 14, 'white' => 15, 'yellow' => 16];
+                static $colors = [
+                    'aqua' => 0,
+                    'black' => 1,
+                    'blue' => 2,
+                    'fuchsia' => 3,
+                    'gray' => 4,
+                    'green' => 5,
+                    'lime' => 6,
+                    'maroon' => 7,
+                    'navy' => 8,
+                    'olive' => 9,
+                    'orange' => 10,
+                    'purple' => 11,
+                    'red' => 12,
+                    'silver' => 13,
+                    'teal' => 14,
+                    'white' => 15,
+                    'yellow' => 16
+                ];
 
                 if ($buffer !== '') {
                     if (preg_match('{#[0-9A-Fa-f]{3,6}$}AD', $arg) !== 1) {

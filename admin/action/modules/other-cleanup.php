@@ -54,7 +54,11 @@ if (isset($_POST['action'])) {
                     if ($prev) {
                         $prev_count['mod.messages'] = DB::count('pm', 'update_time<' . $messages_time);
                     } else {
-                        DB::query('DELETE ' . DB::table('pm') . ',post FROM ' . DB::table('pm') . ' LEFT JOIN ' . DB::table('post') . ' AS post ON (post.type=' . Post::PRIVATE_MSG . ' AND post.home=' . DB::table('pm') . '.id) WHERE update_time<' . $messages_time);
+                        DB::query(
+                            'DELETE ' . DB::table('pm') . ',post FROM ' . DB::table('pm')
+                            . ' LEFT JOIN ' . DB::table('post') . ' AS post ON (post.type=' . Post::PRIVATE_MSG . ' AND post.home=' . DB::table('pm') . '.id)'
+                            . ' WHERE update_time<' . $messages_time
+                        );
                     }
                     break;
 

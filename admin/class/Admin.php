@@ -78,8 +78,11 @@ abstract class Admin
                 $output .= '<a href="' . _e(Router::module('messages')) . '">' . _lang('usermenu.messages') . $messages_count . '</a>, ';
             }
 
-            $output .= '<a href="' . _e(Router::module('settings')) . '">' . _lang('usermenu.settings') . '</a>, <a href="' . _e(Xsrf::addToUrl(Router::path('system/script/logout.php', ['query' => ['_return' => Router::adminIndex()]]))) . '">' . _lang('usermenu.logout') . '</a>]';
-            $output .= '<a href="' . _e(Core::getBaseUrl()->getPath()) . '/" target="_blank" class="usermenu-web-link" title="' . _lang('admin.link.site') . '"><img class="icon" src="' . _e(Router::path('admin/images/icons/guide.png')) . '" alt="' . _lang('admin.link.site') . '"></a>';
+            $output .= '<a href="' . _e(Router::module('settings')) . '">' . _lang('usermenu.settings') . '</a>,'
+                . ' <a href="' . _e(Xsrf::addToUrl(Router::path('system/script/logout.php', ['query' => ['_return' => Router::adminIndex()]]))) . '">' . _lang('usermenu.logout') . '</a>]';
+            $output .= '<a href="' . _e(Core::getBaseUrl()->getPath()) . '/" target="_blank" class="usermenu-web-link" title="' . _lang('admin.link.site') . '">'
+                . '<img class="icon" src="' . _e(Router::path('admin/images/icons/guide.png')) . '" alt="' . _lang('admin.link.site') . '">'
+                . '</a>';
         } else {
             $output .= '<a href="' . _e(Router::adminIndex()) . '">' . _lang('usermenu.guest') . '</a>';
         }
@@ -152,7 +155,10 @@ abstract class Admin
         }
 
         if (User::hasPrivilege('adminallart')) {
-            return ' AND (' . $alias . 'author=' . User::getId() . ' OR (SELECT level FROM ' . DB::table('user_group') . ' WHERE id=(SELECT group_id FROM ' . DB::table('user') . ' WHERE id=' . (($alias === '') ? DB::table('article') . '.' : $alias) . 'author))<' . User::getLevel() . ')';
+            return ' AND ('
+                . $alias . 'author=' . User::getId()
+                . ' OR (SELECT level FROM ' . DB::table('user_group') . ' WHERE id=(SELECT group_id FROM ' . DB::table('user') . ' WHERE id=' . (($alias === '') ? DB::table('article') . '.' : $alias) . 'author))<' . User::getLevel()
+                . ')';
         }
 
         return ' AND ' . $alias . 'author=' . User::getId();

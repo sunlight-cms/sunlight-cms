@@ -97,7 +97,13 @@ $output .= "<div class=\"cleaner\"></div>\n";
 $infos = [];
 
 if (User::hasPrivilege('adminart')) {
-    $infos['idlink'] = [_lang('global.id'), '<a href="' . _e(Router::admin('content-articles-edit', ['query' => ['id' => $_article['id'], 'returnid' => 'load', 'returnpage' => 1]])) . '">' . $_article['id'] . ' <img src="' . Template::image('icons/edit.png') . '" alt="edit" class="icon"></a>'];
+    $infos['idlink'] = [
+        _lang('global.id'),
+        '<a href="' . _e(Router::admin('content-articles-edit', ['query' => ['id' => $_article['id'], 'returnid' => 'load', 'returnpage' => 1]])) . '">'
+        . $_article['id']
+        . ' <img src="' . Template::image('icons/edit.png') . '" alt="edit" class="icon">'
+        . '</a>',
+    ];
 }
 
 if ($_article['showinfo']) {
