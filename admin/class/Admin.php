@@ -103,9 +103,9 @@ abstract class Admin
     /**
      * Render note
      *
-     * @param string $str zprava
-     * @param bool $no_gray nepridavat tridu "note" 1/0
-     * @param string|null $icon nazev ikony nebo null (= 'note')
+     * @param string $str message
+     * @param bool $no_gray don't add the "note" class 1/0
+     * @param string|null $icon icon name (null = 'note')
      */
     static function note(string $str, bool $no_gray = false, ?string $icon = null): string
     {

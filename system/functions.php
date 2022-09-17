@@ -22,8 +22,8 @@ function _buffer(callable $callback, array $arguments = []): string
 /**
  * Convert special HTML characters to entities
  *
- * @param string $input vstupni retezec
- * @param bool $doubleEncode prevadet i jiz existujici entity 1/0
+ * @param string $input input string
+ * @param bool $doubleEncode encode existing entities as well 1/0
  */
 function _e(string $input, bool $doubleEncode = true): string
 {
