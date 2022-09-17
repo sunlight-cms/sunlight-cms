@@ -73,7 +73,6 @@ $editable_settings = [
     ],
     'admin' => [
         'items' => [
-            ['name' => 'adminlinkprivate', 'format' => 'bool'],
             ['name' => 'version_check', 'format' => 'bool'],
             ['name' => 'adminscheme', 'format' => 'int', 'choices' => $adminscheme_choices, 'reload_on_update' => true],
             ['name' => 'adminscheme_dark', 'format' => 'bool', 'reload_on_update' => true],

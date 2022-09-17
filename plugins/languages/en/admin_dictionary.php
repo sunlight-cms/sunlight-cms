@@ -316,8 +316,6 @@ return [
     'admin.settings.info.favicon' => 'Favicon',
     'admin.settings.info.favicon.help' => 'link the favicon in the page head (the root directory should contain <em>favicon.ico</em>)',
     'admin.settings.admin' => 'Administration',
-    'admin.settings.admin.adminlinkprivate' => 'Private link',
-    'admin.settings.admin.adminlinkprivate.help' => 'if activated, the administration link will be shown only to authorized users',
     'admin.settings.admin.version_check' => 'Check version',
     'admin.settings.admin.version_check.help' => 'check whether the system is up to date',
     'admin.settings.admin.adminscheme' => 'Color scheme',

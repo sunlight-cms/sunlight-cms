@@ -7,7 +7,6 @@ registerArgumentsSet(
     'accactexpire',
     'admin_index_custom',
     'admin_index_custom_pos',
-    'adminlinkprivate',
     'adminpagelist_mode',
     'adminscheme',
     'adminscheme_dark',

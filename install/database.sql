@@ -305,7 +305,6 @@ INSERT INTO `sunlight_setting` (`var`, `val`, `preload`, `web`, `admin`) VALUES
 ('accactexpire',	'1200',	1,	1,	1),
 ('admin_index_custom',	'',	0,	0,	1),
 ('admin_index_custom_pos',	'1',	0,	0,	1),
-('adminlinkprivate',	'0',	1,	1,	1),
 ('adminpagelist_mode',	'0',	1,	0,	1),
 ('adminscheme',	'0',	1,	0,	1),
 ('adminscheme_dark',	'0',	1,	0,	1),

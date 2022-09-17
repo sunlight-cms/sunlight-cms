@@ -223,12 +223,36 @@ abstract class Template
 
     /**
      * Render template links
+     *
+     * Supported options:
+     * --------------------------------------------------------------------------
+     * cms (1)      show link to CMS website
+     * admin (-)    show link to administration
+     *              (TRUE - always, FALSE - never, NULL - if user has privileges)
      */
-    static function links(): string
+    static function links(array $options = []): string
     {
-        return
-            "<li><a href=\"https://sunlight-cms.cz/\">SunLight CMS</a></li>\n"
-            . ((!Settings::get('adminlinkprivate') || (User::isLoggedIn() && User::hasPrivilege('administration'))) ? '<li><a href="' . _e(Router::adminIndex()) . '">' . _lang('global.adminlink') . "</a></li>\n" : '');
+        $options += [
+            'cms' => true,
+            'admin' => null,
+        ];
+
+        $output = Extend::buffer('tpl.links.before', ['options' => &$options]);
+
+        if ($options['cms']) {
+            $output .= "<li><a href=\"https://sunlight-cms.cz/\">SunLight CMS</a></li>\n";
+        }
+
+        if (
+            $options['admin'] === true
+            || $options['admin'] === null && User::isLoggedIn() && User::hasPrivilege('administration')
+        ) {
+            $output .= '<li><a href="' . _e(Router::adminIndex()) . '">' . _lang('global.adminlink') . "</a></li>\n";
+        }
+
+        Extend::call('tpl.links.after', ['output' => &$output]);
+
+        return $output;
     }
 
     /**

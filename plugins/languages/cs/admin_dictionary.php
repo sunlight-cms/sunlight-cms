@@ -316,8 +316,6 @@ return [
     'admin.settings.info.favicon' => 'Ikonka stránek',
     'admin.settings.info.favicon.help' => 'odkazovat na ikonku v hlavičce (do kořenového adresáře je potřeba nahrát soubor <em>favicon.ico</em>)',
     'admin.settings.admin' => 'Administrace',
-    'admin.settings.admin.adminlinkprivate' => 'Neveřejný odkaz',
-    'admin.settings.admin.adminlinkprivate.help' => 'při aktivaci bude odkaz na administraci zobrazován pouze přihlášeným a oprávněným uživatelům',
     'admin.settings.admin.version_check' => 'Kontrola verze',
     'admin.settings.admin.version_check.help' => 'kontrolovat, zda je verze systému aktuální',
     'admin.settings.admin.adminscheme' => 'Barevné schéma',
