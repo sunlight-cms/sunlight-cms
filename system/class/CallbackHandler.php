@@ -10,7 +10,7 @@ abstract class CallbackHandler
     private static $scriptCache = [];
 
     /**
-     * Get supported definition options (read-only)
+     * Get callback definition options (read-only)
      *
      * @return Option\OptionDefinition[]
      */
@@ -26,7 +26,7 @@ abstract class CallbackHandler
     }
 
     /**
-     * Create a callable from a callback definition
+     * Create a callable from the given callback definition
      *
      * @param array{method?: string, callback?: string|array, script?: string} $definition
      * @param object $object object to call methods on

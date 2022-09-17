@@ -105,7 +105,9 @@ abstract class PluginOptionNormalizer
 
             if (count($callbackProps) > 1) {
                 self::fail('[%s] must specify only method, callback or script, got multiple', $key);
-            } elseif (count($callbackProps) < 0) {
+            }
+
+            if (count($callbackProps) < 0) {
                 self::fail('[%s] must specify method, callback or script', $key);
             }
 
