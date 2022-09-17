@@ -59,7 +59,7 @@ Sunlight.admin = (function ($) {
     /**
      * Get busy overlay object
      *
-     * @param {Boolean} cancellable povolit zruseni 1/0
+     * @param {Boolean} cancellable allow cancellation 1/0
      * @returns {jQuery}
      */
     function getBusyOverlay(cancellable)
