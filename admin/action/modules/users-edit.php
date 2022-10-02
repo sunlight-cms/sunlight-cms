@@ -131,16 +131,14 @@ if ($continue) {
         }
 
         // password
-        $passwordchange = false;
-        $password = Request::post('password');
+        $password = Request::post('password', '');
 
-        if ($id == null && $password == '') {
+        if ($id == null && $password === '') {
             $errors[] = _lang('admin.users.edit.passwordneeded');
         }
 
-        if ($password != '') {
-            $passwordchange = true;
-            $password = Password::create($password)->build();
+        if (Password::isPasswordTooLong($password)) {
+            $errors[] = _lang('admin.users.edit.passwordtoolong');
         }
 
         // note
@@ -187,8 +185,8 @@ if ($continue) {
                 'wysiwyg' => $wysiwyg,
             ];
 
-            if ($id === null || $passwordchange) {
-                $changeset['password'] = $password;
+            if ($id === null || $password !== '') {
+                $changeset['password'] = Password::create($password)->build();
             }
 
             if ($id === null || $usernamechange) {

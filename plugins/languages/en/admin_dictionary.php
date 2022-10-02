@@ -638,6 +638,7 @@ return [
     'admin.users.edit.title' => 'Editing / creating an user',
     'admin.users.edit.p' => 'Editing existing or creating new user. Required fields are the username, e-mail address and password (if you are creating a new user). When editing an existing user enter password only if you want to change it.',
     'admin.users.edit.passwordneeded' => 'password has to be entered to create an user',
+    'admin.users.edit.passwordtoolong' => 'the entered password is too long',
     'admin.other.p' => 'Choose the function you want to work with.',
     'admin.other.patch.title' => 'System update (patch)',
     'admin.other.patch.text' => 'You can upload and apply system patches here. Patches are <a href="%link%">available for download at the official website</a>.',

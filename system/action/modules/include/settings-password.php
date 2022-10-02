@@ -28,6 +28,10 @@ if (isset($_POST['save'])) {
         $errors[] = _lang('mod.settings.password.error.empty');
     }
 
+    if (Password::isPasswordTooLong($newPassword)) {
+        $errors[] = _lang('mod.settings.password.error.too_long');
+    }
+
     if (empty($errors)) {
         $builtNewPassword = Password::create($newPassword)->build();
         DB::update('user', 'id=' . User::getId(), ['password' => $builtNewPassword]);

@@ -638,6 +638,7 @@ return [
     'admin.users.edit.title' => 'Úprava / tvorba uživatele',
     'admin.users.edit.p' => 'Upravujete stávajícího nebo tvoříte nového uživatele. Povinné jsou pouze pole uživatelské jméno, e-mailová adresa a heslo, pokud tvoříte nového uživatele. Při upravování stávajícího uživatele heslo zadávejte pouze v případě, že jej chcete změnit.',
     'admin.users.edit.passwordneeded' => 'při vytváření uživatele je nutné zadat heslo',
+    'admin.users.edit.passwordtoolong' => 'heslo je příliš dlouhé',
     'admin.other.p' => 'Vyberte si funkci, se kterou chcete pracovat.',
     'admin.other.patch.title' => 'Aktualizace systému (patch)',
     'admin.other.patch.text' => 'Zde můžete nahrát a aplikovat patch pro aktualizaci systému. Patche jsou dostupné  <a href="%link%">ke stažení na oficiálních stránkách</a>.',

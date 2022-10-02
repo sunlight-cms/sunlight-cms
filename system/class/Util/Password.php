@@ -12,9 +12,11 @@ class Password
     /** Old MD5 algorithm */
     const MD5_LEGACY_ALGO = 'md5_legacy';
     /** Number of PBKDF2 iterations */
-    const PBKDF2_ITERATIONS = 50000;
+    const PBKDF2_ITERATIONS = 100000;
     /** Length of generated salts */
     const GENERATED_SALT_LENGTH = 64;
+    /** Maximum password length */
+    const MAX_PASSWORD_LENGTH = 4096;
 
     /** @var string */
     private $algo;
@@ -74,12 +76,12 @@ class Password
      */
     private static function hash(string $algo, int $iterations, string $salt, string $plainPassword): string
     {
-        if (!is_string($plainPassword)) {
-            throw new \InvalidArgumentException('Password must be a string');
-        }
-
         if ($plainPassword === '') {
             throw new \InvalidArgumentException('Password must not be empty');
+        }
+
+        if (self::isPasswordTooLong($plainPassword)) {
+            throw new \InvalidArgumentException('Password is too long');
         }
 
         if ($algo === self::MD5_LEGACY_ALGO) {
@@ -99,7 +101,7 @@ class Password
     /**
      * Convert to a string
      *
-     * This methods calls build() internally
+     * This method calls build() internally
      */
     function __toString(): string
     {
@@ -129,12 +131,15 @@ class Password
             return false;
         }
 
+        if (self::isPasswordTooLong($plainPassword)) {
+            return false;
+        }
+
         $hash = self::hash($this->algo, $this->iterations, $this->salt, $plainPassword);
 
         return
             is_string($this->hash)
             && $this->hash !== ''
-            && is_string($hash)
             && $hash !== ''
             && $hash === $this->hash;
     }
@@ -156,9 +161,19 @@ class Password
      */
     function update(string $plainPassword): void
     {
-        $this->algo = self::PREFERRED_ALGO;
-        $this->iterations = max(self::PBKDF2_ITERATIONS, $this->iterations);
-        $this->salt = StringGenerator::generateString(self::GENERATED_SALT_LENGTH);
-        $this->hash = self::hash($this->algo, $this->iterations, $this->salt, $plainPassword);
+        $newAlgo = self::PREFERRED_ALGO;
+        $newIterations = max(self::PBKDF2_ITERATIONS, $this->iterations);
+        $newSalt = StringGenerator::generateString(self::GENERATED_SALT_LENGTH);
+        $newHash = self::hash($newAlgo, $newIterations, $newSalt, $plainPassword);
+
+        $this->algo = $newAlgo;
+        $this->iterations = $newIterations;
+        $this->salt = $newSalt;
+        $this->hash = $newHash;
+    }
+
+    static function isPasswordTooLong(string $plainPassword): bool
+    {
+        return strlen($plainPassword) > self::MAX_PASSWORD_LENGTH;
     }
 }

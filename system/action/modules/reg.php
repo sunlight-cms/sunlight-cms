@@ -102,15 +102,19 @@ if (isset($_GET['confirm'])) {
             $errors[] = _lang('user.msg.userexists');
         }
 
-        $password = Request::post('password');
-        $password2 = Request::post('password2');
+        $password = Request::post('password', '');
+        $password2 = Request::post('password2', '');
 
-        if ($password != $password2) {
+        if ($password !== $password2) {
             $errors[] = _lang('mod.reg.nosame');
         }
 
-        if ($password != '') {
-            $user_data['password'] = Password::create($password)->build();
+        if ($password !== '') {
+            if (!Password::isPasswordTooLong($password)) {
+                $user_data['password'] = Password::create($password)->build();
+            } else {
+                $errors[] = _lang('mod.reg.passwordtoolong');
+            }
         } else {
             $errors[] = _lang('mod.reg.passwordneeded');
         }
