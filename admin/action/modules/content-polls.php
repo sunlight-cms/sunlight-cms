@@ -43,7 +43,9 @@ if (User::hasPrivilege('adminpollall')) {
     $output .= '
   <form class="cform" action="' . _e(Router::admin(null)) . '" method="get">
   <input type="hidden" name="p" value="content-polls">
-  <strong>' . _lang('admin.content.polls.filter') . ':</strong> ' . Admin::userSelect('author', $author_filter_id, 'adminpoll=1', null, _lang('global.all2')) . ' <input class="button" type="submit" value="' . _lang('global.apply') . '">
+  <strong>' . _lang('admin.content.polls.filter') . ':</strong> '
+    . Admin::userSelect('author', ['selected' => $author_filter_id, 'group_cond' => 'adminpoll=1', 'extra_option' => _lang('global.all2')])
+    . ' <input class="button" type="submit" value="' . _lang('global.apply') . '">
   </form>
   ';
 }

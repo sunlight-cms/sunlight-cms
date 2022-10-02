@@ -426,7 +426,7 @@ if ($continue) {
                         . (User::hasPrivilege('adminchangeartauthor')
                             ? '<fieldset>
                                 <legend>' . _lang('article.author') . '</legend>'
-                                . Admin::userSelect('author', $query['author'], 'adminart=1', 'inputmax')
+                                . Admin::userSelect('author', ['selected' => $query['author'], 'group_cond' => 'adminart=1', 'class' => 'inputmax'])
                                 . '</fieldset>'
                             : '')
                         

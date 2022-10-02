@@ -311,56 +311,79 @@ abstract class Admin
     /**
      * Render <select> for user or group selection
      *
-     * @param string $name select name
-     * @param int $selected ID of selected user
-     * @param string $groupCond SQL condition for groups
-     * @param string|null $class select class or null
-     * @param string|null $extraOption extra option label (-1) or null (= none)
-     * @param bool $selectGroups select groups instead of users 1/0
-     * @param int|null $multiple render multi-select with size = $multiple, null = single select
+     * Supported $options:
+     * -------------------
+     * selected (-)         ID or IDs of selected items
+     * group_cond ('1')     SQL condition for groups
+     * user_cond ('1')      SQL condition for users
+     * class (-)            CSS class on the select element
+     * extra_option (-)     add an extra option with this label (value = -1)
+     * select_groups (0)    select groups instead of users 1/0
+     * multiple (-)         render multi-select with this size
      */
-    static function userSelect(
-        string $name,
-        int $selected,
-        string $groupCond,
-        ?string $class = null,
-        ?string $extraOption = null,
-        bool $selectGroups = false,
-        ?int $multiple = null
-    ): string {
-        if ($class !== null) {
-            $class = ' class="' . $class . '"';
+    static function userSelect(string $name, array $options = []): string
+    {
+        $options += [
+            'selected' => null,
+            'group_cond' => '1',
+            'user_cond' => '1',
+            'class' => null,
+            'extra_option' => null,
+            'select_groups' => false,
+            'multiple' => null,
+        ];
+
+        if ($options['selected'] !== null) {
+            $selectedMap = array_flip(
+                is_array($options['selected'])
+                    ? $options['selected']
+                    : [$options['selected']]
+            );
+        } else {
+            $selectedMap = [];
+        }
+
+        $missingSelectedMap = $selectedMap;
+
+        if ($options['class'] !== null) {
+            $class = ' class="' . _e($options['class']) . '"';
         } else {
             $class = '';
         }
 
-        if ($multiple != null) {
-            $multiple = ' multiple size="' . $multiple . '"';
+        if ($options['multiple'] != null) {
+            $multiple = ' multiple size="' . _e($options['multiple']) . '"';
             $name .= '[]';
         } else {
             $multiple = '';
         }
 
         $output = '<select name="' . $name . '"' . $class . $multiple . '>';
-        $query = DB::query('SELECT id,title,level FROM ' . DB::table('user_group') . ' WHERE ' . $groupCond . ' AND id!=' . User::GUEST_GROUP_ID . ' ORDER BY level DESC');
+        $groupQuery = DB::query(
+            'SELECT id,title,level FROM ' . DB::table('user_group')
+            . ' WHERE ' . $options['group_cond'] . ' AND id!=' . User::GUEST_GROUP_ID
+            . ' ORDER BY level DESC'
+        );
 
-        if ($extraOption != null) {
-            $output .= '<option value="-1" class="special">' . $extraOption . '</option>';
+        if ($options['extra_option'] != null) {
+            $output .= '<option value="-1" class="special">' . $options['extra_option'] . '</option>';
         }
 
-        $containsSelected = false;
+        if (!$options['select_groups']) {
+            while ($group = DB::row($groupQuery)) {
+                $userQuery = DB::query(
+                    'SELECT id,username,publicname FROM ' . DB::table('user')
+                    . ' WHERE group_id=' . $group['id'] . ' AND (' . $group['level'] . '<' . User::getLevel() . ' OR id=' . User::getId() . ')'
+                    . ' ORDER BY COALESCE(publicname, username)'
+                );
 
-        if (!$selectGroups) {
-            while ($item = DB::row($query)) {
-                $users = DB::query('SELECT id,username,publicname FROM ' . DB::table('user') . ' WHERE group_id=' . $item['id'] . ' AND (' . $item['level'] . '<' . User::getLevel() . ' OR id=' . User::getId() . ') ORDER BY id');
+                if (DB::size($userQuery) != 0) {
+                    $output .= '<optgroup label="' . $group['title'] . '">' ;
 
-                if (DB::size($users) != 0) {
-                    $output .= '<optgroup label="' . $item['title'] . '">' ;
-
-                    while ($user = DB::row($users)) {
-                        if ($selected == $user['id']) {
+                    while ($user = DB::row($userQuery)) {
+                        if (isset($selectedMap[$user['id']])) {
                             $sel = ' selected';
-                            $containsSelected = true;
+                            unset($missingSelectedMap[$user['id']]);
                         } else {
                             $sel = '';
                         }
@@ -372,32 +395,33 @@ abstract class Admin
                 }
             }
 
-            if (!$containsSelected) {
-                $selectedUser = DB::queryRow('SELECT u.id, u.username, u.publicname, g.title as grouptitle FROM ' . DB::table('user') . ' AS u JOIN ' . DB::table('user_group') . ' AS g ON(u.group_id=g.id) WHERE u.id = ' . $selected);
+            if (!empty($missingSelectedMap)) {
+                $missingUsersQuery = DB::query('SELECT id, username, publicname FROM ' . DB::table('user'). ' WHERE id IN(' . DB::arr(array_keys($missingSelectedMap)) . ')');
+                $output .= '<optgroup label="' . _lang('global.other') . '">' ;
 
-                if ($selectedUser !== false) {
-                    $output .= '<optgroup label="' . $selectedUser['grouptitle'] . '">' ;
-                    $output .= '<option value="' . $selectedUser['id'] . '" selected>' . ($selectedUser['publicname'] ?? $selectedUser['username']) . "</option>\n";
-                    $output .= '</optgroup>';
+                while ($user = DB::row($missingUsersQuery)) {
+                    $output .= '<option value="' . $user['id'] . '" selected>' . ($user['publicname'] ?? $user['username']) . "</option>\n";
                 }
+
+                $output .= '</optgroup>';
             }
         } else {
-            while ($item = DB::row($query)) {
-                if ($selected == $item['id']) {
+            while ($group = DB::row($groupQuery)) {
+                if (isset($selectedMap[$group['id']])) {
                     $sel = ' selected';
-                    $containsSelected = true;
+                    unset($missingSelectedMap[$group['id']]);
                 } else {
                     $sel = '';
                 }
 
-                $output .= '<option value="' . $item['id'] . '"' . $sel . '>' . $item['title'] . ' (' . DB::count('user', 'group_id=' . $item['id']) . ")</option>\n";
+                $output .= '<option value="' . $group['id'] . '"' . $sel . '>' . $group['title'] . ' (' . DB::count('user', $options['user_cond'] . ' AND group_id=' . $group['id']) . ")</option>\n";
             }
 
-            if (!$containsSelected) {
-                $selectedGroup = DB::queryRow('SELECT id,title FROM ' . DB::table('user_group') . ' WHERE id=' . $selected);
+            if (!empty($missingSelectedMap)) {
+                $missingGroupsQuery = DB::query('SELECT id,title FROM ' . DB::table('user_group') . ' WHERE id IN(' . DB::arr(array_keys($missingSelectedMap)) . ')');
 
-                if ($selectedGroup !== false) {
-                    $output .= '<option value="' . $selectedGroup['id'] . '" selected>' . $selectedGroup['title'] . ' (' . DB::count('user', 'group_id=' . $selectedGroup['id']) . ")</option>\n";
+                while ($group = DB::row($missingGroupsQuery)) {
+                    $output .= '<option value="' . $group['id'] . '" selected>' . $group['title'] . ' (' . DB::count('user', $options['user_cond'] . ' AND group_id=' . $group['id']) . ")</option>\n";
                 }
             }
         }

@@ -91,7 +91,7 @@ $editable_settings = [
                 'name' => 'defaultgroup',
                 'format' => 'int',
                 'table_id' => 'user_group',
-                'input' => Admin::userSelect('defaultgroup', Settings::get('defaultgroup'), 'id!=' . User::GUEST_GROUP_ID, null, null, true),
+                'input' => Admin::userSelect('defaultgroup', ['selected' => Settings::get('defaultgroup'), 'select_groups' => true]),
                 'id' => false,
             ],
             [

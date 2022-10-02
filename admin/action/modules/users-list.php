@@ -80,8 +80,9 @@ $output .= '
 <form class="cform" action="' . _e(Router::admin(null)) . '" method="get">
 <input type="hidden" name="p" value="users-list">
 <input type="hidden" name="search"' . Form::restoreGetValue('search', '') . '>
-<strong>' . _lang('admin.users.list.groupfilter') . ':</strong> ' . Admin::userSelect('group_id', $group, 'id!=' . User::GUEST_GROUP_ID, null, _lang('global.all'), true) . '
-<input class="button" type="submit" value="' . _lang('global.apply') . '">
+<strong>' . _lang('admin.users.list.groupfilter') . ':</strong> '
+. Admin::userSelect('group_id', ['selected' => $group, 'extra_option' => _lang('global.all'), 'select_groups' => true])
+. '<input class="button" type="submit" value="' . _lang('global.apply') . '">
 </form>
 </td>
 

@@ -49,9 +49,6 @@ if (isset($_POST['text'])) {
     }
 
     if (empty($errors)) {
-        // group filter
-        $groups = 'group_id IN(' . DB::arr($receivers) . ')';
-
         // headers
         $headers = [
             'Content-Type' => 'text/' . ($ctype == 2 ? 'html' : 'plain') . '; charset=UTF-8',
@@ -59,7 +56,11 @@ if (isset($_POST['text'])) {
         Email::defineSender($headers, $sender);
 
         // get users
-        $query = DB::query('SELECT email,password FROM ' . DB::table('user') . ' WHERE massemail=1 AND (' . $groups . ')');
+        $query = DB::query(
+            'SELECT email,password'
+            . ' FROM ' . DB::table('user')
+            . ' WHERE massemail=1 AND blocked=0 AND group_id IN(' . DB::arr($receivers) . ')'
+        );
 
         // send emails or list emails
         if (!$maillist) {
@@ -140,7 +141,16 @@ $output .= '
 
 <tr class="valign-top">
 <th>' . _lang('admin.other.massemail.receivers') . '</th>
-<td>' . Admin::userSelect('receivers', -1, '1', 'selectbig', null, true, 4) . '</td>
+<td>'
+    . Admin::userSelect('receivers', [
+        'selected' => Request::post('receivers', [], true),
+        'group_cond' => 'blocked=0',
+        'user_cond' => 'massemail=1 AND blocked=0',
+        'class' => 'selectbig',
+        'select_groups' => true,
+        'multiple' => 8,
+    ])
+. '</td>
 </tr>
 
 <tr>

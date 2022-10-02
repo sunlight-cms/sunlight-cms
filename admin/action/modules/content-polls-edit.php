@@ -163,7 +163,8 @@ if ($continue) {
         $author_select = '
     <tr>
     <th>' . _lang('article.author') . '</th>
-    <td>' . Admin::userSelect('author', $query['author'], 'adminpoll=1', 'selectmedium') . '</td></tr>
+    <td>' . Admin::userSelect('author', ['selected' => $query['author'], 'group_cond' => 'adminpoll=1', 'class' => 'selectmedium']) . '</td>
+    </tr>
     ';
     } else {
         $author_select = '';

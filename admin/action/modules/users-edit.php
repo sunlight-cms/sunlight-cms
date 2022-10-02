@@ -61,7 +61,11 @@ if (isset($_GET['id'])) {
 
 if ($continue) {
     // group select
-    $group_select = Admin::userSelect('group_id', (isset($_POST['group_id']) ? (int) Request::post('group_id') : $query['group_id']), 'id!=' . User::GUEST_GROUP_ID . ' AND level<' . User::getLevel(), null, null, true);
+    $group_select = Admin::userSelect('group_id', [
+        'selected' => isset($_POST['group_id']) ? (int) Request::post('group_id') : $query['group_id'],
+        'group_cond' => 'level<' . User::getLevel(),
+        'select_groups' => true,
+    ]);
 
     // save
     if (isset($_POST['username'])) {

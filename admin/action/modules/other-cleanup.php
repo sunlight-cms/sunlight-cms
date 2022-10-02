@@ -231,7 +231,7 @@ $output .= $message . '
 
   <tr>
   <th>' . _lang('admin.other.cleanup.users.group') . '</th>
-  <td>' . Admin::userSelect('users-group', Request::post('users-group', -1), 'id!=' . User::ADMIN_GROUP_ID, null, _lang('global.all'), true) . '</td>
+  <td>' . Admin::userSelect('users-group', ['selected' => Request::post('users-group', -1), 'group_cond' => 'id!=' . User::ADMIN_GROUP_ID, 'extra_option' => _lang('global.all'), 'select_groups' => true]) . '</td>
   </tr>
 
   </table>

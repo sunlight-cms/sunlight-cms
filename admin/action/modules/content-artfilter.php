@@ -183,7 +183,7 @@ if (!$infopage) {
 
 <tr>
 <th>' . _lang('article.author') . '</th>
-<td>' . Admin::userSelect('author', -1, 'adminart=1', 'selectmedium', _lang('global.any')) . '</td>
+<td>' . Admin::userSelect('author', ['group_cond' => 'adminart=1', 'class' => 'selectmedium', 'extra_option' => _lang('global.any')]) . '</td>
 </tr>
 
 <tr>
@@ -229,7 +229,7 @@ if (!$infopage) {
 
 <tr>
 <th>' . _lang('article.author') . '</th>
-<td>' . Admin::userSelect('new_author', -1, 'adminart=1', 'selectmedium', _lang('global.nochange')) . '</td>
+<td>' . Admin::userSelect('new_author', ['group_cond' => 'adminart=1', 'class' => 'selectmedium', 'extra_option' => _lang('global.nochange')]) . '</td>
 </tr>
 
 <tr class="valign-top">
