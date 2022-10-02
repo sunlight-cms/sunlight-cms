@@ -112,7 +112,7 @@ class PluginManager
     {
         return new NamespacedCache(
             $this->cache->getWrappedCache(),
-            sprintf('%s%s.%s.', $this->cache->getPrefix(), $plugin->getType(), $plugin->getId())
+            $this->cache->getPrefix() . $plugin->getId()
         );
     }
 
