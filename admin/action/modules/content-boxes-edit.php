@@ -24,7 +24,6 @@ $new = $id === null;
 
 if (!$new) {
     $box = DB::queryRow('SELECT * FROM ' . DB::table('box') . ' WHERE id = ' . DB::val($id));
-    $new = false;
 } else {
     $box = [
         'id' => null,
@@ -76,7 +75,7 @@ if (isset($_POST['box_edit'])) do {
 
     if ($template_components !== null) {
         $changeset += [
-            'template' => $template_components['template']->getId(),
+            'template' => $template_components['template']->getName(),
             'layout' => $template_components['layout'],
             'slot' => $template_components['slot'],
         ];

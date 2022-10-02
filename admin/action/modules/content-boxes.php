@@ -109,7 +109,7 @@ foreach ($boxes as $template_idt => $template_boxes) {
             <tr>
                 <td colspan="5">
                     <button name="action" value="save_ord" accesskey="s"><?= _lang('global.savechanges') ?></button>
-                    <a class="button right big" href="<?= _e(Router::admin('content-boxes-edit', ['query' => ['template' => $template->getId()]])) ?>">
+                    <a class="button right big" href="<?= _e(Router::admin('content-boxes-edit', ['query' => ['template' => $template->getName()]])) ?>">
                         <img class="icon" src="<?= Router::path('admin/images/icons/new.png') ?>" alt="new"><?= _lang('admin.content.boxes.new.for_template') ?>
                     </a>
                 </td>
