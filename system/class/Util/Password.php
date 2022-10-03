@@ -135,13 +135,7 @@ class Password
             return false;
         }
 
-        $hash = self::hash($this->algo, $this->iterations, $this->salt, $plainPassword);
-
-        return
-            is_string($this->hash)
-            && $this->hash !== ''
-            && $hash !== ''
-            && $hash === $this->hash;
+        return hash_equals($this->hash, self::hash($this->algo, $this->iterations, $this->salt, $plainPassword));
     }
 
     /**
