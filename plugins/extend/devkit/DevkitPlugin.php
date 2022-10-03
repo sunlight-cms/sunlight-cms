@@ -37,6 +37,7 @@ class DevkitPlugin extends ExtendPlugin
         return [
             'mail_log_enabled' => true,
             'disable_anti_spam' => true,
+            'captcha_check_always_true' => true,
         ];
     }
 
@@ -117,6 +118,18 @@ ENTRY
         if ($args['type'] == IpLog::ANTI_SPAM) {
             $args['result'] = true;
         }
+    }
+
+    /**
+     * Make captcha check always succeed
+     */
+    function onCaptchaCheckAfter(array $args): void
+    {
+        if (!$this->getConfig()['captcha_check_always_true']) {
+            return;
+        }
+
+        $args['output'] = true;
     }
 
     /**
