@@ -125,10 +125,7 @@ abstract class Database
             return false;
         }
 
-        $row = self::row($result);
-        self::free($result);
-
-        return $row;
+        return self::row($result);
     }
 
     /**
@@ -148,10 +145,7 @@ abstract class Database
             return false;
         }
 
-        $rows = self::rows($result, $indexBy, $fetchColumn, $assoc);
-        self::free($result);
-
-        return $rows;
+        return self::rows($result, $indexBy, $fetchColumn, $assoc);
     }
 
     /**
@@ -164,10 +158,7 @@ abstract class Database
         $result = self::query('SELECT COUNT(*) FROM ' . self::table($table) . ' WHERE ' . $where);
 
         if ($result instanceof \mysqli_result) {
-            $count = (int) self::result($result);
-            self::free($result);
-
-            return $count;
+            return (int) self::result($result);
         }
 
         return 0;
@@ -188,8 +179,6 @@ abstract class Database
         while ($row = self::rown($query)) {
             $tables[] = $row[0];
         }
-
-        self::free($query);
 
         return $tables;
     }
@@ -265,16 +254,6 @@ abstract class Database
         }
 
         return $columns;
-    }
-
-    /**
-     * Free a result
-     */
-    static function free(\mysqli_result $result): bool
-    {
-        $result->free();
-
-        return true;
     }
 
     /**

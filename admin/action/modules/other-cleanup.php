@@ -136,7 +136,7 @@ if (isset($_POST['action'])) {
                         User::delete($userid['id']);
                     }
 
-                    DB::free($userids);
+                    unset($userids);
                 }
             }
 

@@ -52,7 +52,7 @@ $queries = (new SqlReader($sql))->read();
 if (!empty($queries)) {
     // process queries
     $log = [];
-    $lastResource = null;
+    $lastResult = null;
     $error = false;
 
     for ($i = 0; isset($queries[$i]); ++$i) {
@@ -61,12 +61,7 @@ if (!empty($queries)) {
         if ($result instanceof mysqli_result) {
             // result
             $log[] = _lang('admin.other.sqlex.rows') . ': ' . DB::size($result);
-
-            if ($lastResource !== null) {
-                DB::free($lastResource);
-            }
-
-            $lastResource = $result;
+            $lastResult = $result;
         } elseif ($result) {
             // true
             $log[] = _lang('admin.other.sqlex.affected') . ': ' . DB::affectedRows();
@@ -95,8 +90,8 @@ if (!empty($queries)) {
     // output results
     if ($error) {
         $output .= Message::error(DB::$mysqli->error);
-    } elseif ($lastResource !== null) {
-        $columns = DB::columns($lastResource);
+    } elseif ($lastResult !== null) {
+        $columns = DB::columns($lastResult);
 
         $output .= '<table class="list list-hover">
 <thead>
@@ -111,7 +106,7 @@ if (!empty($queries)) {
 <tbody>
 ';
 
-        while ($row = DB::rown($lastResource)) {
+        while ($row = DB::rown($lastResult)) {
             $output .= "<tr>\n";
 
             for ($j = 0; $j < $i; ++$j) {
@@ -136,8 +131,6 @@ if (!empty($queries)) {
 
             $output .= "</tr>\n";
         }
-
-        DB::free($lastResource);
 
         $output .= '</tbody>
 </table>

@@ -350,8 +350,6 @@ abstract class Page
             $pages[] = $page;
         }
 
-        DB::free($query);
-
         return $pages;
     }
 

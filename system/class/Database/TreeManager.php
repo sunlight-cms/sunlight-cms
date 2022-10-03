@@ -170,7 +170,6 @@ class TreeManager
                 DB::delete($this->table, $this->idColumn . '=' . DB::val($row[$this->idColumn]) . ' OR ' . $this->parentColumn . '=' . DB::val($row[$this->parentColumn]));
             }
 
-            DB::free($orphaned);
         } while ($orphanedCount > 0);
 
         if ($refresh) {
@@ -333,8 +332,6 @@ class TreeManager
             }
         }
 
-        DB::free($query);
-
         return array_keys($childrenMap);
     }
 
@@ -385,8 +382,8 @@ class TreeManager
                 $queue[] = [$child[$this->idColumn], $childrenLevel];
             }
 
-            DB::free($children);
-            unset($queue[$i]);
+
+            unset($children, $queue[$i]);
         }
 
         // apply level set
@@ -450,7 +447,7 @@ class TreeManager
                 }
             }
 
-            DB::free($children);
+            unset($children);
 
             // update depth of parent nodes
             if ($queue[$i][0] !== null && !isset($depthmap[$queue[$i][0]])) {

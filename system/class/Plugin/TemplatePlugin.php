@@ -159,8 +159,6 @@ class TemplatePlugin extends Plugin
             $boxes[$box['slot']][$box['id']] = $box;
         }
 
-        DB::free($query);
-
         return $boxes;
     }
 

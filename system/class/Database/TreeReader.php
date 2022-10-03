@@ -310,7 +310,7 @@ class TreeReader
             }
         }
 
-        DB::free($query);
+        unset($query);
 
         // sort nodes
         $levelColumn = $this->levelColumn;
@@ -514,8 +514,6 @@ class TreeReader
 
             ++$nodeIndex;
         }
-
-        DB::free($query);
 
         return $nodes;
     }

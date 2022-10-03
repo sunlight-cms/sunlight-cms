@@ -140,8 +140,6 @@ class SqlDumper
             $result = DB::query('SELECT * FROM `' . $table . '`');
 
             $this->dumpTableData($handle, $table, $columns, $result);
-
-            DB::free($result);
         }
     }
 
@@ -271,8 +269,6 @@ class SqlDumper
 
             $columns[$row['Field']] = [$type, $row['Default']];
         }
-
-        DB::free($result);
 
         return $columns;
     }

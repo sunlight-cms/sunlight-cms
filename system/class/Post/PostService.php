@@ -411,7 +411,7 @@ class PostService
         }
 
         // free query
-        DB::free($query);
+        unset($query);
 
         if ($is_topic_list) {
             // last post (for topic lists)
@@ -456,7 +456,7 @@ class PostService
                 $items[$item['xhome']]['_answers'][] = $item;
             }
 
-            DB::free($answers);
+            unset($answers);
         }
 
         Extend::call('posts.items', [

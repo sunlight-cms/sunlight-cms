@@ -112,7 +112,7 @@ if ($search_query != '') {
                 ];
             }
 
-            DB::free($q);
+            unset($q);
         }
 
         // search articles
@@ -128,7 +128,7 @@ if ($search_query != '') {
                 ];
             }
 
-            DB::free($q);
+            unset($q);
         }
 
         // search posts
@@ -186,7 +186,7 @@ if ($search_query != '') {
                 ];
             }
 
-            DB::free($q);
+            unset($q);
         }
 
         // search images
@@ -218,7 +218,7 @@ if ($search_query != '') {
                 ];
             }
 
-            DB::free($q);
+            unset($q);
         }
 
         // extend
