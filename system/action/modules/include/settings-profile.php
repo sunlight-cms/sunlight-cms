@@ -56,7 +56,6 @@ if (isset($_POST['save'])) {
         }
 
         DB::update('user', 'id=' . User::getId(), $changeset);
-        Extend::call('user.edit', ['id' => User::getId()]);
 
         $_index->redirect(Router::module('settings', ['query' => ['action' => 'profile', 'saved' => 1], 'absolute' => true]));
 

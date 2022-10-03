@@ -36,7 +36,6 @@ if (isset($_POST['save'])) {
         $builtNewPassword = Password::create($newPassword)->build();
         DB::update('user', 'id=' . User::getId(), ['password' => $builtNewPassword]);
         $_SESSION['user_auth'] = User::getAuthHash(User::AUTH_SESSION, User::$data['email'], $builtNewPassword);
-        Extend::call('user.edit', ['id' => User::getId()]);
         $output .= Message::ok(_lang('global.saved'));
     } else {
         $output .= Message::list($errors);

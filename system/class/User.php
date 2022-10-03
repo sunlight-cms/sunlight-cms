@@ -38,6 +38,8 @@ abstract class User
     const AUTH_SESSION = 'session';
     /** Auth hash type - mass email management */
     const AUTH_MASSEMAIL = 'massemail';
+    /** Auth hash type - password reset */
+    const AUTH_PASSWORD_RESET = 'password_reset';
     /** Login status - wrong username or password  */
     const LOGIN_FAILURE = 0;
     /** Login status - successful */
@@ -693,10 +695,11 @@ abstract class User
      * @param string $type see User::AUTH_* constants
      * @param string $email user's e-mail
      * @param string $storedPassword user's password stored in the database
+     * @param string $salt additional string data to distinguish hashes
      */
-    static function getAuthHash(string $type, string $email, string $storedPassword): string
+    static function getAuthHash(string $type, string $email, string $storedPassword, string $salt = ''): string
     {
-        return hash_hmac('sha256', $type . '$' . $email . '$' . $storedPassword, Core::$secret);
+        return hash_hmac('sha256', $type . '$' . $email . '$' . $storedPassword . '$' . $salt, Core::$secret);
     }
 
     /**
@@ -864,7 +867,7 @@ abstract class User
             case self::LOGIN_REMOVED:
                 return Message::ok(_lang('login.selfremove'));
             case self::LOGIN_ATTEMPTS_EXCEEDED:
-                return Message::warning(_lang('login.attemptlimit', ['%max_attempts%' => Settings::get('maxloginattempts'), '%minutes%' => Settings::get('maxloginexpire') / 60]));
+                return Message::warning(_lang('login.attemptlimit', ['%minutes%' => Settings::get('maxloginexpire') / 60]));
             case self::LOGIN_XSRF_FAILURE:
                 return Message::error(_lang('xsrf.msg'));
             default:
@@ -945,8 +948,6 @@ abstract class User
             'ip' => Core::getClientIp(),
             'activitytime' => time(),
             'logincounter' => $query['logincounter'] + 1,
-            'security_hash' => null,
-            'security_hash_expires' => 0,
         ];
 
         if ($password->shouldUpdate()) {

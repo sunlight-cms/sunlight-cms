@@ -9,7 +9,7 @@ return [
     'global.error' => 'Chyba',
     'global.error404' => 'Vámi požádovaná stránka nebyla nalezena.',
     'global.error404.title' => 'Stránka nenalezena',
-    'global.emailerror' => 'Zprávu se nepodařilo odeslat',
+    'global.emailerror' => 'E-mail se nepodařilo odeslat',
     'global.accessdenied' => 'Přístup odepřen',
     'global.undefined' => 'nezvoleno',
     'global.or' => 'nebo',
@@ -27,7 +27,6 @@ return [
     'global.download' => 'Stáhnout',
     'global.upload' => 'Nahrát',
     'global.savechanges' => 'Uložit provedené změny',
-    'global.tryagain' => 'Zkusit znovu',
     'global.confirmdelete' => 'Ano, odstranit',
     'global.deletefail' => 'Položku nebylo možné odstranit',
     'global.reset' => 'Reset',
@@ -138,7 +137,7 @@ return [
     'user.msg.userexists' => 'uživatel se zvoleným jménem již existuje',
     'user.msg.emailexists' => 'zvolená e-mailová adresa je již použita',
     'user.msg.badusername' => 'neplatné uživatelské jméno',
-    'user.msg.bademail' => 'e-mailová adresa nemá platný tvar nebo byla použita neexistující doména',
+    'user.msg.bademail' => 'e-mailová adresa není validní',
     'user.msg.publicnameexists' => 'zvolené zobrazované jméno je již použito',
     'user.list.title' => 'Seznam uživatelů',
     'user.list.groupfilter' => 'Zobrazit pouze skupinu',
@@ -178,13 +177,13 @@ Pokud není možné na tento odkaz kliknout, zkopírujte jej prosím do adresní
     'mod.reg.rules' => 'Podmínky',
     'mod.reg.rules.agreement' => 'souhlasím s podmínkami',
     'mod.reg.rules.disagreed' => 'pro registraci musíte souhlasit s podmínkami',
-    'mod.lostpass' => 'Ztracené heslo',
-    'mod.lostpass.p' => 'Do pole níže zadejte své uživatelské jméno a e-mailovou adresu přiřazenou k vašemu účtu, na kterou bude odeslána potvrzující e-mailová zpráva.',
-    'mod.lostpass.notfound' => 'Uživatelské jméno není platné nebo nesouhlasí e-mailová adresa.',
-    'mod.lostpass.mailsent' => 'Potvrzující e-mail byl odeslán.',
-    'mod.lostpass.badlink' => 'Tento odkaz je nesprávný nebo již vypršela jeho platnost',
-    'mod.lostpass.mail.subject' => 'Obnoveni ztraceneho hesla na %domain%',
-    'mod.lostpass.mail.text' => 'Na %domain% bylo (pravděpodobně vámi) požádáno o obnovení ztraceného hesla k uživatelskému účtu "%username%". Pokud si přejete vygenerovat nové heslo, pokračujte kliknutím na odkaz níže. V opačném případě tuto zprávu ignorujte.
+    'mod.lostpass' => 'Zapomenuté heslo',
+    'mod.lostpass.p' => 'Pokud jste zapomněli heslo, zadejte do pole níže e-mailovou adresu vedenou u vašeho účtu. Bude na ni zaslán odkaz pro nastavení nového hesla.',
+    'mod.lostpass.error.email_not_found' => 'Uživatel s uvedenou e-mailovou adresou nebyl nalezen',
+    'mod.lostpass.error.bad_link' => 'Tento odkaz je nesprávný nebo již vypršela jeho platnost',
+    'mod.lostpass.email_sent' => 'Odkaz pro nastavení nového hesla byl odeslán',
+    'mod.lostpass.email.subject' => 'Obnoveni zapomenutého hesla na %domain%',
+    'mod.lostpass.email.text' => 'Na %domain% bylo (pravděpodobně vámi) požádáno o obnovení zapomenutého hesla k uživatelskému účtu "%username%". Pokud si přejete nastavit nové heslo, pokračujte kliknutím na odkaz níže. V opačném případě tuto zprávu ignorujte.
 
 %link%
 
@@ -192,14 +191,9 @@ Platnost tohoto odkazu je 1 hodina.
 
 ----------------
 Žádost byla odeslána %date% z počítače %ip%.',
-    'mod.lostpass.mail.text2' => 'Na %domain% bylo pro váš uživatelský účet "%username%" vygenerováno nové heslo:
-
-%newpass%
-
-----------------
-Žádost byla odeslána %date% z počítače %ip%.',
-    'mod.lostpass.generated' => 'Nové heslo bylo vygenerováno a odesláno na vaši e-mailovou adresu.',
-    'mod.lostpass.limit' => 'Je povolena pouze jedna žádost o obnovu hesla za dobu %limit% minut.',
+    'mod.lostpass.limit' => 'je povolena pouze jedna žádost o obnovu hesla za dobu %limit% minut',
+    'mod.lostpass.reset.p' => 'Nyní si můžete nastavit nové heslo.',
+    'mod.lostpass.reset.success' => 'Nové heslo bylo nastaveno. Nyní se můžete <a href="%login_link%">přihlásit</a>.',
     'mod.massemail.title' => 'Nastavení e-mailů',
     'mod.massemail.invalid_link' => 'Tento odkaz není platný. Změnit nastavení je možné <a href="%settings_link%">po přihlášení</a>.',
     'mod.search' => 'Vyhledávání',
@@ -362,7 +356,7 @@ Platnost tohoto odkazu je 1 hodina.
     'login.blocked' => 'Zablokovaný účet',
     'login.blocked.message' => 'Váš účet je zablokovaný.',
     'login.selfremove' => 'Váš účet byl zrušen.',
-    'login.attemptlimit' => 'Byl překročen limit počtu nezdařilých pokusů, který je maximálně %max_attempts% nezdařilých pokusů za %minutes% minut.',
+    'login.attemptlimit' => 'Byl překročen limit počtu neúspěšných pokusů o autorizaci. Zkuste to znovu za %minutes% minut.',
     'login.persistent' => 'trvalé přihlášení',
     'login.links' => 'Kam dál?',
     'javascript.alert.confirm' => 'Opravdu chcete provést tuto akci?',
@@ -370,7 +364,6 @@ Platnost tohoto odkazu je 1 hodina.
     'captcha.input' => 'Kontrola',
     'captcha.help' => 'tyto znaky přepište do pole kontrola',
     'captcha.failure' => 'chybně přepsaný kontrolní kód',
-    'captcha.failure2' => 'Chybně přepsaný kontrolní kód.',
     'hcm.mailform.text' => 'Zpráva',
     'hcm.mailform.send' => 'Odeslat e-mail',
     'hcm.mailform.sender' => 'Váš e-mail',

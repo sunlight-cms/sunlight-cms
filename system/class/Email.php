@@ -90,8 +90,10 @@ abstract class Email
 
     /**
      * Validate an e-mail address
+     *
+     * @param bool $checkDns check DNS for the given domain (disabled in debug) 1/0
      */
-    static function validate(string $email): bool
+    static function validate(string $email, bool $checkDns = true): bool
     {
         $isValid = true;
         $atIndex = mb_strrpos($email, '@');
@@ -129,7 +131,13 @@ abstract class Email
                 $isValid = false;
             }
 
-            if (!Core::$debug && function_exists('checkdnsrr') && $isValid && !checkdnsrr($domain . '.', 'ANY')) {
+            if (
+                $isValid
+                && $checkDns
+                && !Core::$debug
+                && function_exists('checkdnsrr')
+                && !checkdnsrr($domain . '.', 'ANY')
+            ) {
                 // no DNS record for the given domain
                 $isValid = false;
             }

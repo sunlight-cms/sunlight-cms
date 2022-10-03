@@ -153,6 +153,7 @@ registerArgumentsSet(
     'locktopic',
     'login',
     'lostpass',
+    'lostpass-reset',
     'massemail',
     'messages',
     'movetopic',

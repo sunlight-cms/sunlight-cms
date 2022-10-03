@@ -9,7 +9,7 @@ return [
     'global.error' => 'Error',
     'global.error404' => 'The requested page was not found.',
     'global.error404.title' => 'Page not found',
-    'global.emailerror' => 'The message could not be sent',
+    'global.emailerror' => 'The e-mail could not be sent',
     'global.accessdenied' => 'Access denied',
     'global.undefined' => 'undefined',
     'global.or' => 'or',
@@ -27,7 +27,6 @@ return [
     'global.download' => 'Download',
     'global.upload' => 'Upload',
     'global.savechanges' => 'Save changes',
-    'global.tryagain' => 'Try again',
     'global.confirmdelete' => 'Yes, delete',
     'global.deletefail' => 'The item could not be removed',
     'global.reset' => 'Reset',
@@ -138,7 +137,7 @@ return [
     'user.msg.userexists' => 'the selected username already exists',
     'user.msg.emailexists' => 'the selected e-mail address is already used',
     'user.msg.badusername' => 'invalid username',
-    'user.msg.bademail' => 'e-mail address is not valid or nonexistent domain was used',
+    'user.msg.bademail' => 'e-mail address is not valid',
     'user.msg.publicnameexists' => 'selected public name is already used',
     'user.list.title' => 'User list',
     'user.list.groupfilter' => 'Show only one group',
@@ -178,13 +177,13 @@ The request was issued %date% by %ip%.',
     'mod.reg.rules' => 'Terms and conditions',
     'mod.reg.rules.agreement' => 'i agree with the terms and conditions',
     'mod.reg.rules.disagreed' => 'to register you have to agree with the terms and conditions',
-    'mod.lostpass' => 'Lost password',
-    'mod.lostpass.p' => 'Enter your username and e-mail address. If correct, a confirmation e-mail message will be sent to this address.',
-    'mod.lostpass.notfound' => 'Invalid username or e-mail address.',
-    'mod.lostpass.mailsent' => 'Confirmation e-mail has been sent.',
-    'mod.lostpass.badlink' => 'This URL is incorrect or has expired.',
-    'mod.lostpass.mail.subject' => 'Recover lost password on %domain%',
-    'mod.lostpass.mail.text' => 'Someone (probably you) has requested a password reset for the user account "%username%" on %domain%. If you wish to proceed, please click the link below:
+    'mod.lostpass' => 'Forgotten password',
+    'mod.lostpass.p' => 'If you have forgotten your password, enter your account\'s e-mail address into the field below. A password reset link will be sent to you.',
+    'mod.lostpass.error.email_not_found' => 'There is no user with the given e-mail address',
+    'mod.lostpass.error.bad_link' => 'This link is incorrect or has expired',
+    'mod.lostpass.email_sent' => 'Password reset link has been sent',
+    'mod.lostpass.email.subject' => 'Password reset on %domain%',
+    'mod.lostpass.email.text' => 'Someone (probably you) has requested a password reset for the user account "%username%" on %domain%. If you wish to proceed, please click the link below. If you have not requested a password reset, please ignore this message.
 
 %link%
 
@@ -192,14 +191,9 @@ This link is valid for 1 hour.
 
 ----------------
 The request was issued %date% by %ip%.',
-    'mod.lostpass.mail.text2' => 'A new password has been generated for your user account "%username% on %domain%:
-    
-%newpass%
-
-----------------
-The request was issued %date% by %ip%.',
-    'mod.lostpass.generated' => 'A new password has been generated and sent to your e-mail address.',
-    'mod.lostpass.limit' => 'Only one request for password recovery is allowed within %limit% minutes.',
+    'mod.lostpass.limit' => 'only one request for password recovery is allowed within %limit% minutes',
+    'mod.lostpass.reset.p' => 'You many now set a new password for your account.',
+    'mod.lostpass.reset.success' => 'New password has been set. Now you can <a href="%login_link%">log in</a>.',
     'mod.massemail.title' => 'E-mailing settings',
     'mod.massemail.invalid_link' => 'This link is no longer valid. You can change your settings <a href="%settings_link%">after logging in</a>.',
     'mod.search' => 'Search',
@@ -362,7 +356,7 @@ The request was issued %date% by %ip%.',
     'login.blocked' => 'Banned account',
     'login.blocked.message' => 'Your account is banned.',
     'login.selfremove' => 'Your account has been removed.',
-    'login.attemptlimit' => 'You have reached the maximum number of %max_attempts% failed login attempts in %minutes% minutes.',
+    'login.attemptlimit' => 'You have exceeded the maximum number of failed authorization attempts. Please try again in %minutes% minutes.',
     'login.persistent' => 'remember me',
     'login.links' => 'What\'s next?',
     'javascript.alert.confirm' => 'Do you want to perform this action?',
@@ -370,7 +364,6 @@ The request was issued %date% by %ip%.',
     'captcha.input' => 'Security code',
     'captcha.help' => 'enter this into the security code input',
     'captcha.failure' => 'incorrect security code',
-    'captcha.failure2' => 'Incorrect security code.',
     'hcm.mailform.text' => 'Message',
     'hcm.mailform.send' => 'Send e-mail',
     'hcm.mailform.sender' => 'Your e-mail',
