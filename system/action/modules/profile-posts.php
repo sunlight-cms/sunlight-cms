@@ -31,11 +31,7 @@ if (!$query['public'] && !User::checkLevel($query['id'], $query['level'])) {
 }
 
 // output
-$_index->title = str_replace(
-    '%user%',
-    $query[$query['publicname'] !== null ? 'publicname' : 'username'],
-    _lang('mod.profile.posts')
-);
+$_index->title = _lang('mod.profile.posts', ['%user%' => $query[$query['publicname'] !== null ? 'publicname' : 'username']]);
 
 // backlink
 $_index->backlink = Router::module('profile', ['query' => ['id' => $id]]);

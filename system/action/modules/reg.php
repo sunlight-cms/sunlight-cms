@@ -244,11 +244,7 @@ if (!$user_data_valid && $show_form) {
         $_SESSION['login_form_username'] = $user_data['username'];
 
         // message
-        $output .= Message::ok(str_replace(
-            '%login_link%',
-            Router::module('login'),
-            _lang('mod.reg.done')
-        ), true);
+        $output .= Message::ok(_lang('mod.reg.done', ['%login_link%' => _e(Router::module('login'))]), true);
     } else {
         // send confirmation message
         $code = StringGenerator::generateString(48);
@@ -262,23 +258,13 @@ if (!$user_data_valid && $show_form) {
         $mail = Email::send(
             $user_data['email'],
             _lang('mod.reg.confirm.subject', ['%domain%' => $domain]),
-            str_replace(
-                [
-                    '%username%',
-                    '%domain%',
-                    '%confirm_link%',
-                    '%ip%',
-                    '%date%'
-                ],
-                [
-                    $user_data['username'],
-                    $domain,
-                    Router::module('reg', ['query' => ['confirm' => $code], 'absolute' => true]),
-                    Core::getClientIp(),
-                    GenericTemplates::renderTime(time()),
-                ],
-                _lang('mod.reg.confirm.text')
-            )
+            _lang('mod.reg.confirm.text', [
+                '%username%' => $user_data['username'],
+                '%domain%' => $domain,
+                '%confirm_link%' => Router::module('reg', ['query' => ['confirm' => $code], 'absolute' => true]),
+                '%ip%' => Core::getClientIp(),
+                '%date%' => GenericTemplates::renderTime(time()),
+            ])
         );
 
         // message
