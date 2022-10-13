@@ -114,7 +114,6 @@ class PostService
         $countcond = 'type=' . $style . ' AND xhome=-1 AND home=' . $home;
         $locked_textid = '';
         $auto_last = false;
-        $postlink = false;
         $pluginflag = null;
         $subject_enabled = false;
         $form_position = 0;
@@ -201,7 +200,6 @@ class PostService
                 $desc = '';
                 $countcond = 'type=' . Post::FORUM_TOPIC . ' AND xhome=' . $xhome . ' AND home=' . $home;
                 $auto_last = isset($_GET['autolast']);
-                $postlink = true;
                 $replies_enabled = false;
                 break;
 
@@ -269,7 +267,6 @@ class PostService
             'canpost' => &$canpost,
             'locked' => &$locked,
             'autolast' => &$auto_last,
-            'post_link' => &$postlink,
             'posts_per_page' => &$postsperpage,
             'sql_desc' => &$desc,
             'sql_ordercol' => &$ordercol,
@@ -490,7 +487,6 @@ class PostService
                     $output .= self::renderPost($item, $userQuery, [
                         'current_url' => $url,
                         'current_page' => $paging['current'],
-                        'post_link' => $postlink,
                         'allow_reply' => $replies_enabled,
                         'extra_info' => $extra_info,
                     ]);
@@ -501,7 +497,6 @@ class PostService
                             $output .= self::renderPost($answer, $userQuery, [
                                 'current_url' => $url,
                                 'current_page' => $paging['current'],
-                                'post_link' => $postlink,
                                 'is_answer' => true,
                                 'allow_reply' => false,
                             ]);
@@ -758,13 +753,8 @@ class PostService
             $output .= '<div id="post-' . $post['id'] . '" class="post' . ($options['is_answer'] ? ' post-answer' : '') . (isset($avatar) ? ' post-withavatar' : '') . '">'
                 . '<div class="post-head">'
                     . $author
-                    . ' <span class="post-info">(' . GenericTemplates::renderTime($post['time'], 'post') . $options['extra_info'] . ')</span>'
+                    . ' <span class="post-info">(<a href="' . _e(Router::postPermalink($post['id'])) . '">' . GenericTemplates::renderTime($post['time'], 'post') . '</a>' . $options['extra_info'] . ')</span>'
                     . ($actlinks ? ' <span class="post-actions">' . implode(' ', $actlinks) . '</span>' : '')
-                    . ($options['post_link']
-                        ? '<a class="post-postlink" href="' . _e(UrlHelper::appendParams($options['current_url'], 'page=' . $options['current_page'])) . '#post-' . $post['id'] . '">'
-                            . '<span>#' . str_pad($post['id'], 6, '0', STR_PAD_LEFT) . '</span>'
-                            . '</a>'
-                        : '')
                 . '</div>'
                 . '<div class="post-body' . (isset($avatar) ? ' post-body-withavatar' : '') . '">'
                     . $avatar
@@ -776,6 +766,149 @@ class PostService
         }
 
         return $output;
+    }
+
+    /**
+     * Get current post URL
+     *
+     * Note: This method will perform additional database queries to determine post page. Do not use in a loop.
+     * @see Router::postPermalink() to get a permanent URL that is not resource-intensive to generate
+     *
+     * @param array $post post data - {@see Post::createFilter()
+     * @return string
+     */
+    static function getCurrentPostUrl(array $post): string
+    {
+        $url = self::getPostHomeUrl($post);
+
+        switch ($post['type']) {
+            case Post::SECTION_COMMENT:
+                $page = Paginator::getItemPage(Settings::get('commentsperpage'), DB::table('post'), 'id>' . $post['id'] . ' AND type=' . Post::SECTION_COMMENT . ' AND xhome=-1 AND home=' . $post['home']);
+
+                return UrlHelper::appendParams($url, 'page=' . $page . '#post-' . $post['id']);
+
+            case Post::ARTICLE_COMMENT:
+                $page = Paginator::getItemPage(Settings::get('commentsperpage'), DB::table('post'), 'id>' . $post['id'] . ' AND type=' . Post::ARTICLE_COMMENT . ' AND xhome=-1 AND home=' . $post['home']);
+
+                return UrlHelper::appendParams($url, 'page=' . $page) . '#post-' . $post['id'];
+
+            case Post::BOOK_ENTRY:
+                $postsperpage = DB::queryRow('SELECT var2 FROM ' . DB::table('page') . ' WHERE id=' . $post['home']);
+
+                if ($postsperpage['var2'] === null) {
+                    $postsperpage['var2'] = Settings::get('commentsperpage');
+                }
+
+                $page = Paginator::getItemPage($postsperpage['var2'], DB::table('post'), 'id>' . $post['id'] . ' AND type=' . Post::BOOK_ENTRY . ' AND xhome=-1 AND home=' . $post['home']);
+
+                return UrlHelper::appendParams($url, 'page=' . $page) . '#post-' . $post['id'];
+
+            case Post::FORUM_TOPIC:
+                if ($post['xhome'] == -1) {
+                    return Router::topic($post['id'], $post['page_slug']);
+                }
+
+                $page = Paginator::getItemPage(Settings::get('commentsperpage'), DB::table('post'), 'id<' . $post['id'] . ' AND type=' . Post::FORUM_TOPIC . ' AND xhome=' . $post['xhome'] . ' AND home=' . $post['home']);
+
+                return UrlHelper::appendParams($url, 'page=' . $page) . '#post-' . $post['id'];
+
+            case Post::PRIVATE_MSG:
+                $url = Router::module('messages', ['query' => ['a' => 'list', 'read' => $post['home']]]);
+
+                if ($post['xhome'] != -1) {
+                    $page = Paginator::getItemPage(Settings::get('messagesperpage'), DB::table('post'), 'id<' . $post['id'] . ' AND type=' . Post::PRIVATE_MSG . ' AND home=' . $post['home']);
+                    $url = UrlHelper::appendParams($url, 'page=' . $page) . '#post-' . $post['id'];
+                }
+
+                return $url;
+
+            case Post::PLUGIN:
+                Extend::call("posts.{$post['flag']}.url", [
+                    'post' => $post,
+                    'url' => &$url,
+                ]);
+
+                return $url;
+
+            default:
+                return $url;
+        }
+    }
+
+    /**
+     * Get home URL for the given post
+     *
+     * @param array $post post data - {@see Post::createFilter()
+     */
+    static function getPostHomeUrl(array $post): string
+    {
+        switch ($post['type']) {
+            case Post::SECTION_COMMENT:
+            case Post::BOOK_ENTRY:
+                return Router::page($post['home'], $post['page_slug']);
+
+            case Post::FORUM_TOPIC:
+                return $post['xhome'] == -1
+                    ? Router::page($post['home'], $post['page_slug'])
+                    : Router::topic($post['xhome'], $post['page_slug']);
+
+            case Post::ARTICLE_COMMENT:
+                return Router::article(null, $post['art_slug'], $post['cat_slug']);
+
+            case Post::PRIVATE_MSG:
+                return $post['xhome'] == -1
+                    ? Router::module('messages')
+                    : Router::module('messages', ['query' => ['a' => 'list', 'read' => $post['xhome']]]);
+
+            case Post::PLUGIN:
+                $url = '';
+
+                Extend::call("posts.{$post['flag']}.home_url", [
+                    'post' => $post,
+                    'url' => &$url,
+                ]);
+
+                return $url;
+
+            default:
+                return '#';
+        }
+    }
+
+    /**
+     * Get title for the given post
+     *
+     * @param array $post post data - {@see Post::createFilter()
+     */
+    static function getPostTitle(array $post): string
+    {
+        switch ($post['type']) {
+            case Post::SECTION_COMMENT:
+            case Post::BOOK_ENTRY:
+                return $post['page_title'];
+
+            case Post::ARTICLE_COMMENT:
+                return $post['art_title'];
+
+            case Post::FORUM_TOPIC:
+            case Post::PRIVATE_MSG:
+                return ($post['xhome'] == -1)
+                    ? $post['subject']
+                    : $post['xhome_subject'];
+
+            case Post::PLUGIN:
+                $title = '';
+
+                Extend::call("posts.{$post['flag']}.title", [
+                    'post' => $post,
+                    'title' => &$title,
+                ]);
+
+                return $title;
+
+            default:
+                return '?';
+        }
     }
 
     /**

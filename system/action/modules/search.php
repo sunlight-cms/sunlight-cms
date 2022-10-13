@@ -15,7 +15,6 @@ use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
 use Sunlight\Util\StringManipulator;
-use Sunlight\Util\UrlHelper;
 use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
@@ -142,30 +141,6 @@ if ($search_query != '') {
             $q = DB::query('SELECT ' . $columns . ' FROM ' . DB::table('post') . ' post ' . $joins . ' WHERE ' . $cond . ' ORDER BY id DESC LIMIT 100');
 
             while ($r = DB::row($q)) {
-                // load title, link and page number
-                $pagenum = null;
-                $post_anchor = true;
-                [$link, $title] = Router::post($r);
-
-                switch ($r['type']) {
-                    case Post::SECTION_COMMENT:
-                    case Post::BOOK_ENTRY:
-                        $pagenum = Paginator::getItemPage(Settings::get('commentsperpage'), DB::table('post'), 'id>' . $r['id'] . ' AND type=' . $r['type'] . ' AND xhome=-1 AND home=' . $r['home']);
-                        break;
-
-                    case Post::ARTICLE_COMMENT:
-                        $pagenum = Paginator::getItemPage(Settings::get('commentsperpage'), DB::table('post'), 'id>' . $r['id'] . ' AND type=' . Post::ARTICLE_COMMENT . ' AND xhome=-1 AND home=' . $r['home']);
-                        break;
-
-                    case Post::FORUM_TOPIC:
-                        if ($r['xhome'] != -1) {
-                            $pagenum = Paginator::getItemPage(Settings::get('commentsperpage'), DB::table('post'), 'id<' . $r['id'] . ' AND type=' . Post::FORUM_TOPIC . ' AND xhome=' . $r['xhome'] . ' AND home=' . $r['home']);
-                        } else {
-                            $post_anchor = false;
-                        }
-                        break;
-                }
-
                 // make search result infos
                 $infos = [];
 
@@ -179,8 +154,8 @@ if ($search_query != '') {
 
                 // add to results
                 $results[] = [
-                    (isset($pagenum) ? UrlHelper::appendParams($link, 'page=' . $pagenum) : $link) . ($post_anchor ? '#post-' . $r['id'] : ''),
-                    $title,
+                    Router::postPermalink($r['id']),
+                    PostService::getPostTitle($r),
                     StringManipulator::ellipsis(strip_tags(Post::render($r['text'])), 255),
                     $infos
                 ];

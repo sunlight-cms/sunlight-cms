@@ -126,60 +126,11 @@ abstract class Router
     }
 
     /**
-     * Get URL and title of a post
-     *
-     * @param array $post post data - {@see Post::createFilter()
-     * @return array{string,string} URL, title
+     * Get a permanent URL for a post
      */
-    static function post(array $post, ?array $options = null): array
+    static function postPermalink(int $id, ?array $options = null): string
     {
-        switch ($post['type']) {
-            case Post::SECTION_COMMENT:
-            case Post::BOOK_ENTRY:
-                return [
-                    self::page($post['home'], $post['page_slug'], null, $options),
-                    $post['page_title'],
-                ];
-            case Post::ARTICLE_COMMENT:
-                return [
-                    self::article(null, $post['art_slug'], $post['cat_slug'], $options),
-                    $post['art_title'],
-                ];
-            case Post::FORUM_TOPIC:
-            case Post::PRIVATE_MSG:
-                if ($post['xhome'] == -1) {
-                    $topicId = $post[$post['type'] == Post::PRIVATE_MSG ? 'home' : 'id'];
-                } else {
-                    $topicId = $post['xhome'];
-                }
-
-                if ($post['type'] == Post::FORUM_TOPIC) {
-                    $url = self::topic($topicId, $post['page_slug'], $options);
-                } else {
-                    $url = self::module('messages', self::combineOptions(['query' => ['a' => 'list', 'read' => $topicId]], $options));
-                }
-
-                return [
-                    $url,
-                    ($post['xhome'] == -1)
-                        ? $post['subject']
-                        : $post['xhome_subject'],
-                ];
-            case Post::PLUGIN:
-                $url = '';
-                $title = '';
-
-                Extend::call("posts.{$post['flag']}.link", [
-                    'post' => $post,
-                    'url' => &$url,
-                    'title' => &$title,
-                    'options' => $options,
-                ]);
-
-                return [$url, $title];
-            default:
-                return ['#', ''];
-        }
+        return self::module('viewpost', self::combineOptions(['query' => ['id' => $id]], $options));
     }
 
     /**

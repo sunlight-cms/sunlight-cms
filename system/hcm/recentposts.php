@@ -55,8 +55,6 @@ return function ($limit = null, $pages = '', $type = null) {
     );
 
     while ($item = DB::row($query)) {
-        [$homelink, $hometitle] = Router::post($item);
-
         if ($item['author'] != -1) {
             $authorname = Router::userFromQuery($userQuery, $item);
         } else {
@@ -65,7 +63,7 @@ return function ($limit = null, $pages = '', $type = null) {
 
         $result .= '
 <div class="list-item">
-<h2 class="list-title"><a href="' . _e($homelink) . '">' . $hometitle . '</a></h2>
+<h2 class="list-title"><a href="' . _e(Router::postPermalink($item['id'])) . '">' . PostService::getPostTitle($item) . '</a></h2>
 <p class="list-perex">' . StringManipulator::ellipsis(strip_tags(Post::render($item['text'])), 255) . '</p>
 ' . GenericTemplates::renderInfos([
     [_lang('global.postauthor'), $authorname],

@@ -534,26 +534,21 @@ ul.list-info strong {
     margin: 10px 0;
     clear: both;
 }
+.post:target {
+    background-color: #fceef1;
+}
+.post:target .post-body {
+    border-bottom: none;
+}
 .post-author {
     text-decoration: none;
 }
 .post-author-guest {
     color: gray;
 }
-.post-info {
+.post-info, .post-info a {
     color: gray;
     font-size: 12px;
-}
-.post-postlink {
-    color: #9A9A9A;
-    float: right;
-    font-size: 12px;
-    position: relative;
-    right: 5px;
-    text-decoration: none;
-}
-.post-actions {
-    
 }
 .post-actions a {
     font-size: 12px;

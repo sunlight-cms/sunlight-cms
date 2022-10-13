@@ -169,7 +169,8 @@ registerArgumentsSet(
     'settings-profile',
     'settings-remove',
     'stickytopic',
-    'ulist'
+    'ulist',
+    'viewpost'
 );
 
 registerArgumentsSet(

@@ -427,6 +427,12 @@ ul.list-info a {
     margin: 20px 0;
     clear: both;
 }
+.post:target {
+    background-color: #f8faf0;
+}
+.post:target .post-body {
+    border-bottom: none;
+}
 .post-actions a {
     font-size: 10px;
     padding-left: 4px;
@@ -447,9 +453,6 @@ ul.list-info a {
 .post-answer .post-body-withavatar .post-body-text {
     border-left: none;
     padding-left: 3px;
-}
-.post-answer .post-head {
-    
 }
 .post-answer .post-info {
     font-size: 10px;
@@ -480,16 +483,8 @@ ul.list-info a {
     margin-left: -60px;
     max-width: 50px;
 }
-.post-info {
+.post-info, .post-info a {
     color: gray;
-}
-.post-postlink {
-    color: #9A9A9A;
-    float: right;
-    font-size: 9px;
-    position: relative;
-    right: 5px;
-    text-decoration: none;
 }
 .posts h2 {
     margin-bottom: 10px;
