@@ -24,11 +24,11 @@ if (!User::isLoggedIn()) {
 $message = '';
 $form = true;
 $id = (int) Request::get('id');
-[$columns, $joins, $cond] = Post::createFilter('post');
-$userQuery = User::createQuery('post.author');
+[$columns, $joins, $cond] = Post::createFilter('p');
+$userQuery = User::createQuery('p.author');
 $columns .= ',home_page.layout page_layout,' . $userQuery['column_list'];
 $joins .= ' ' . $userQuery['joins'];
-$post = DB::queryRow('SELECT ' . $columns . ' FROM ' . DB::table('post') . ' post ' . $joins . ' WHERE post.id=' . $id . ' AND ' . $cond);
+$post = DB::queryRow('SELECT ' . $columns . Extend::buffer('posts.columns') . ' FROM ' . DB::table('post') . ' p ' . $joins . ' WHERE p.id=' . $id . ' AND ' . $cond);
 
 if ($post !== false) {
     if (isset($post['page_layout'])) {
