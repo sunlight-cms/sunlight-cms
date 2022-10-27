@@ -73,6 +73,8 @@ if (isset($_POST['text'])) {
             Extend::call('mod.editpost.edit', [
                 'id' => $id,
                 'post' => $post,
+                'subject' => &$subject,
+                'text' => &$text,
                 'continue' => &$continue,
             ]);
 
