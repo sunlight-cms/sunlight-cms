@@ -114,11 +114,13 @@ abstract class Hcm
             'output' => &$output,
         ]);
 
-        // run system module (unless overriden by a plugin)
-        if ($output === null && isset(self::$modules[$name])) {
-            $output = (string) CallbackHandler::fromScript(self::$modules[$name])(...$argList);
-        } else {
-            $output = '';
+        // try to run system module (unless overriden by a plugin)
+        if ($output === null) {
+            if (isset(self::$modules[$name])) {
+                $output = (string) CallbackHandler::fromScript(self::$modules[$name])(...$argList);
+            } else {
+                $output = ''; // unknown module
+            }
         }
 
         return $output;
