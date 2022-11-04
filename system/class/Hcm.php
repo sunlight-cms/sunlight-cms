@@ -106,13 +106,22 @@ abstract class Hcm
 
         ++self::$uid;
 
-        if (isset(self::$modules[$name])) {
-            // system module
-            return (string) CallbackHandler::fromScript(self::$modules[$name])(...$argList);
+        $output = null;
+
+        Extend::call("hcm.run.{$name}", [
+            'name' => $name,
+            'arg_list' => &$argList,
+            'output' => &$output,
+        ]);
+
+        // run system module (unless overriden by a plugin)
+        if ($output === null && isset(self::$modules[$name])) {
+            $output = (string) CallbackHandler::fromScript(self::$modules[$name])(...$argList);
         } else {
-            // emit event for unknown modules
-            return Extend::buffer("hcm.plugin.{$name}", ['name' => $name, 'arg_list' => $argList]);
+            $output = '';
         }
+
+        return $output;
     }
 
     /**

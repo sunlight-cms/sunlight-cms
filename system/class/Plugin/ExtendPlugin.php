@@ -37,7 +37,7 @@ class ExtendPlugin extends Plugin implements InitializableInterface
 
         // register HCM modules
         foreach ($this->options['hcm'] as $name => $definition) {
-            Extend::reg("hcm.plugin.{$name}", function (array $args) use ($definition) {
+            Extend::reg("hcm.run.{$name}", function (array $args) use ($definition) {
                 $args['output'] = (string) CallbackHandler::fromArray($definition, $this)(...$args['arg_list']);
             });
         }
