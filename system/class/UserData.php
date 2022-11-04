@@ -65,7 +65,7 @@ class UserData
 
         $zip->addFromString(
             'account.json',
-            Json::encode($info, true, false)
+            Json::encode($info, Json::PRETTY)
         );
     }
 

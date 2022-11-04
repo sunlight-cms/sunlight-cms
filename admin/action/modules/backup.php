@@ -14,6 +14,7 @@ use Sunlight\Util\Arr;
 use Sunlight\Util\Environment;
 use Sunlight\Util\Filesystem;
 use Sunlight\Util\Form;
+use Sunlight\Util\Json;
 use Sunlight\Util\Request;
 use Sunlight\Util\Response;
 use Sunlight\Util\StringGenerator;
@@ -216,7 +217,7 @@ if (!empty($_POST)) {
                                 $config_info['estimated_time'] = $estimated_time;
 
                                 $backup_size_display .= ' <img src="' . _e(Router::path('admin/images/icons/warn.png')) . '" class="icon" alt="warn">';
-                                $backup_size_warning = Message::warning(_lang('admin.backup.restore.size_warning', ['%config_info%' => json_encode($config_info)]));
+                                $backup_size_warning = Message::warning(_lang('admin.backup.restore.size_warning', ['%config_info%' => Json::encode($config_info)]));
                             }
 
                             $backup_metadata = $backup->getMetaData();

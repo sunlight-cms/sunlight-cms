@@ -25,7 +25,7 @@ class ConfigAction extends BaseConfigAction
             ],
             'options' => [
                 'label' => _lang('lightbox.cfg.options'),
-                'input' => '<textarea name="config[options]" class="areasmall">' . _e(Json::encode($config['options'], true, false)) . '</textarea><br>'
+                'input' => '<textarea name="config[options]" class="areasmall">' . _e(Json::encode($config['options'], Json::PRETTY)) . '</textarea><br>'
                     . '<p>' . _lang('lightbox.cfg.options.docs') . '</p>',
             ],
         ];

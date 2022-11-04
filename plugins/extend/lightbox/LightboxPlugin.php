@@ -36,7 +36,7 @@ class LightboxPlugin extends ExtendPlugin
         $options =  $this->getConfig()['options'] + ['albumLabel' => _lang('lightbox.album_label')];
 
         $args['output'] .= '<script src="' . $this->getWebPath() . '/Resources/js/lightbox.js"></script>' . "\n";
-        $args['output'] .= '<script>lightbox.option(' . Json::encode($options, false, false) . ');</script>' . "\n";
+        $args['output'] .= '<script>lightbox.option(' . Json::encodeForInlineJs($options, Json::PRETTY) . ');</script>' . "\n";
     }
 
     function getAction(string $name): ?PluginAction

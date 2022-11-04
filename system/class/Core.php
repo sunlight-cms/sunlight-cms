@@ -22,6 +22,7 @@ use Sunlight\Plugin\PluginManager;
 use Sunlight\Util\DateTime;
 use Sunlight\Util\Environment;
 use Sunlight\Util\Filesystem;
+use Sunlight\Util\Json;
 
 /**
  * Main system singleton
@@ -697,7 +698,7 @@ abstract class Core
         Extend::call('core.javascript', ['variables' => &$variables]);
 
         // output variables
-        $output .= 'var SunlightVars = ' . json_encode($variables) . ';';
+        $output .= 'var SunlightVars = ' . Json::encodeForInlineJs($variables) . ';';
 
         // closing script tags
         if ($scriptTags) {
