@@ -57,7 +57,7 @@ $output .= '<p>
 // plugin list
 foreach (Core::$pluginManager->getTypes() as $type) {
     $plugins = Core::$pluginManager->getPlugins()->getByType($type->getName());
-    $inactivePlugins = Core::$pluginManager->getInactivePlugins()->getByType($type->getName());
+    $inactivePlugins = Core::$pluginManager->getPlugins()->getInactiveByType($type->getName());
 
     $output .= "<fieldset>\n";
     $output .= '<legend>' . _lang('admin.plugins.title.' . $type->getName()) . ' (' . (count($plugins) + count($inactivePlugins)) . ")</legend>\n";

@@ -42,7 +42,7 @@ class PluginArchive
             foreach ($plugins as $name => $pluginParams) {
                 if (
                     $this->manager->getPlugins()->hasName($type, $name)
-                    || $this->manager->getInactivePlugins()->hasName($type, $name)
+                    || $this->manager->getPlugins()->hasInactiveName($type, $name)
                 ) {
                     $failedPlugins[] = $pluginParams['path'];
                 } else {

@@ -20,7 +20,7 @@ if (!Xsrf::check(true)) {
 
 // get plugin and action
 $plugin = Core::$pluginManager->getPlugins()->get($id)
-    ?? Core::$pluginManager->getInactivePlugins()->get($id);
+    ?? Core::$pluginManager->getPlugins()->getInactive($id);
 
 if (
     $plugin === null

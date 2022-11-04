@@ -210,8 +210,8 @@ abstract class TemplateService
      */
     private static function handleNonexistentTemplate(string $name): void
     {
-        if (Core::$debug && Core::$pluginManager->getInactivePlugins()->hasTemplate($name)) {
-            $plugin = Core::$pluginManager->getInactivePlugins()->getTemplate($name);
+        if (Core::$debug && Core::$pluginManager->getPlugins()->hasInactiveName('template', $name)) {
+            $plugin = Core::$pluginManager->getPlugins()->getInactiveByName('template', $name);
 
             if (!$plugin->isDisabled() && $plugin->hasErrors()) {
                 Core::fail(

@@ -22,21 +22,21 @@ if (!function_exists('dump')) {
 
         return $value;
     }
+}
 
-    if (!function_exists('dd')) {
-        /**
-         * @return never-return
-         */
-        function dd($value, $maxLevel = Dumper::DEFAULT_MAX_LEVEL + 1, $maxStringLen = Dumper::DEFAULT_MAX_STRING_LENGTH * 2)
-        {
-            if (Environment::isCli()) {
-                echo Dumper::dump($value, $maxLevel, $maxStringLen);
-            } else {
-                Output::cleanBuffers();
-                echo '<pre>', _e(Dumper::dump($value, $maxLevel, $maxStringLen)), '</pre>';
-            }
-
-            exit(1);
+if (!function_exists('dd')) {
+    /**
+     * @return never-return
+     */
+    function dd($value, $maxLevel = Dumper::DEFAULT_MAX_LEVEL + 1, $maxStringLen = Dumper::DEFAULT_MAX_STRING_LENGTH * 2)
+    {
+        if (Environment::isCli()) {
+            echo Dumper::dump($value, $maxLevel, $maxStringLen);
+        } else {
+            Output::cleanBuffers();
+            echo '<pre>', _e(Dumper::dump($value, $maxLevel, $maxStringLen)), '</pre>';
         }
+
+        exit(1);
     }
 }

@@ -12,8 +12,6 @@ class PluginManager
     private $types;
     /** @var PluginRegistry */
     private $plugins;
-    /** @var PluginRegistry */
-    private $inactivePlugins;
     /** @var NamespacedCache */
     private $cache;
     /** @var bool */
@@ -27,7 +25,6 @@ class PluginManager
             'language' => new Type\LanguagePluginType(),
         ];
         $this->plugins = new PluginRegistry();
-        $this->inactivePlugins = new PluginRegistry();
         $this->cache = Core::$cache->getNamespace(Core::$debug ? 'plugins_debug.' : 'plugins.');
     }
 
@@ -88,8 +85,8 @@ class PluginManager
             } else {
                 $pluginInstance = new InactivePlugin($plugin, $this);
 
-                $this->inactivePlugins->map[$plugin->id] = $pluginInstance;
-                $this->inactivePlugins->typeMap[$plugin->type][$plugin->name] = $pluginInstance;
+                $this->plugins->inactiveMap[$plugin->id] = $pluginInstance;
+                $this->plugins->inactiveTypeMap[$plugin->type][$plugin->name] = $pluginInstance;
             }
         }
 
@@ -132,14 +129,6 @@ class PluginManager
     function getPlugins(): PluginRegistry
     {
         return $this->plugins;
-    }
-
-    /**
-     * Get inactive plugins
-     */
-    function getInactivePlugins(): PluginRegistry
-    {
-        return $this->inactivePlugins;
     }
 
     /**
