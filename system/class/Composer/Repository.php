@@ -41,7 +41,7 @@ class Repository
     function getDefinition(): \stdClass
     {
         if ($this->package === null) {
-            $this->package = Json::decode(file_get_contents($this->composerJsonPath), false);
+            $this->package = Json::decode(file_get_contents($this->composerJsonPath), 0, false);
         }
 
         return $this->package;
@@ -104,7 +104,7 @@ class Repository
             $this->installedPackages = [];
 
             if (is_file($installedJson = $this->getInstalledJsonPath())) {
-                $packages = Json::decode(file_get_contents($installedJson), false);
+                $packages = Json::decode(file_get_contents($installedJson), 0, false);
                 $packages = $packages->packages ?? $packages; // composer 2.0 has wrapper
                 
                 foreach ($packages as $package) {
