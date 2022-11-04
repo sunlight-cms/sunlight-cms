@@ -135,6 +135,8 @@ abstract class Response
         }
 
         fclose($handle);
+
+        exit;
     }
 
     /**
