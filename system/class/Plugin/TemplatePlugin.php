@@ -151,7 +151,7 @@ class TemplatePlugin extends Plugin
         $query = DB::query(
             'SELECT id,title,content,slot,page_ids,page_children,class'
             . ' FROM ' . DB::table('box')
-            . ' WHERE template=' . DB::val($this->id) . ' AND layout=' . DB::val($layout) . ' AND visible=1' . (!User::isLoggedIn() ? ' AND public=1' : '') . ' AND level <= ' . User::getLevel()
+            . ' WHERE template=' . DB::val($this->getName()) . ' AND layout=' . DB::val($layout) . ' AND visible=1' . (!User::isLoggedIn() ? ' AND public=1' : '') . ' AND level <= ' . User::getLevel()
             . ' ORDER BY ord'
         );
 
