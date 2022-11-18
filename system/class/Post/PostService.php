@@ -744,7 +744,7 @@ class PostService
         $output = Extend::buffer('posts.post', [
             'item' => &$post,
             'avatar' => &$avatar,
-            'author' => $author,
+            'author' => &$author,
             'actlinks' => &$actlinks,
             'options' => $options,
         ]);
