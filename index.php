@@ -65,6 +65,11 @@ Extend::call('index.init', ['index' => $_index]);
 $output = &$_index->output;
 
 do {
+    // plugin routes
+    if (PluginRouter::handle($_index)) {
+        break;
+    }
+
     // XSRF check
     if (!empty($_POST) && !Xsrf::check()) {
         require SL_ROOT . 'system/action/xsrf_error.php';
@@ -98,10 +103,6 @@ do {
     ]);
 
     if ($_index->type !== null) {
-        break;
-    }
-
-    if (PluginRouter::handle($_index)) {
         break;
     }
 
