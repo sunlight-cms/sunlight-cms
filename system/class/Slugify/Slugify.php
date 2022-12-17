@@ -60,9 +60,9 @@ class Slugify
         return self::$inst;
     }
 
-    function slugify(string $string, ?array $options = null): string
+    function slugify(string $string, array $options = []): string
     {
-        $options = array_merge($this->options, $options);
+        $options += $this->options;
 
         // add a custom ruleset without touching the default rules
         if (isset($options['ruleset'])) {
@@ -85,27 +85,8 @@ class Slugify
             : $string;
     }
 
-    /**
-     * @param string $character character
-     * @param string $replacement replacement character
-     */
-    function addRule(string $character, string $replacement): void
-    {
-        $this->rules[$character] = $replacement;
-    }
-
-    /**
-     * @param string[] $rules
-     */
-    function addRules(array $rules): void
-    {
-        foreach ($rules as $character => $replacement) {
-            $this->addRule($character, $replacement);
-        }
-    }
-
     function activateRuleSet(string $ruleSet): void
     {
-        $this->addRules($this->provider->getRules($ruleSet));
+        $this->rules += $this->provider->getRules($ruleSet);
     }
 }
