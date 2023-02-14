@@ -19,7 +19,7 @@
         "kuria/debug": "^4.0",
         "kuria/error": "^4.2",
         "kuria/event": "^2.0",
-        "kuria/options": "^2.0",
+        "kuria/options": "^2.1",
         "kuria/request-info": "^1.0",
         "kuria/url": "^5.0"
     },

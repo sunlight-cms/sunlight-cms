@@ -133,9 +133,6 @@ class PluginLoader
             $type->resolveFallbackOptions($plugin);
         }
 
-        // resolve plugin class
-        $plugin->options['class'] = $this->resolvePluginClass($plugin, $type);
-
         // override status if the plugin is disabled
         if ($isDisabled) {
             $plugin->status = Plugin::STATUS_DISABLED;
@@ -173,24 +170,6 @@ class PluginLoader
                     : 'plugin is not active in debug mode'
             );
         }
-    }
-
-    private function resolvePluginClass(PluginData $plugin, PluginType $type): string
-    {
-        $specifiedClass = $plugin->options['class'];
-
-        if ($specifiedClass === null) {
-            // no class specified - use default class of the given type
-            return $type->getClass();
-        }
-
-        if (strpos($specifiedClass, '\\') === false) {
-            // plain (unnamespaced) class name specified - prefix by plugin namespace
-            return $plugin->options['namespace'] . '\\' . $specifiedClass;
-        }
-
-        // fully-qualified class name
-        return $specifiedClass;
     }
 
     /**

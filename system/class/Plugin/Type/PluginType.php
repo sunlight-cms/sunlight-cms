@@ -81,8 +81,12 @@ abstract class PluginType
                 Option::list('classmap', 'string')->default([])
             )
                 ->normalize([PluginOptionNormalizer::class, 'normalizeAutoload']),
-            Option::string('class')->default(null),
-            Option::string('namespace')->default(null),
+            Option::string('class')
+                ->default($this->getClass()),
+            Option::string('namespace')
+                ->default(function (Node $node, PluginData $plugin) {
+                    return $this->getDefaultBaseNamespace() . '\\' . $plugin->camelCasedName;
+                }),
             Option::bool('inject_composer')->default(true),
             Option::list('extra', null)->default([]),
         ];
@@ -112,10 +116,8 @@ abstract class PluginType
     {
         $optionResolver->addOption(...$this->getBaseOptions());
 
-        $optionResolver->addNormalizer(function (Node $node, PluginData $plugin) {
-            if ($node['namespace'] === null) {
-                $node['namespace'] = $this->getDefaultBaseNamespace() . '\\' . $plugin->camelCasedName;
-            }
+        $optionResolver->addNormalizer(function (Node $node) {
+            $node['class'] = PluginOptionNormalizer::normalizeClass($node['class'], $node['namespace']);
 
             return $node;
         });

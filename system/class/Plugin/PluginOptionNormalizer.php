@@ -10,6 +10,20 @@ use Sunlight\Util\UrlHelper;
 
 abstract class PluginOptionNormalizer
 {
+    static function normalizeClass(string $class, string $defaultNamespace): string
+    {
+        if ($class === '') {
+            self::fail('cannot be empty');
+        }
+
+        if (strpos($class, '\\') !== false) {
+            // FQCN
+            return $class;
+        }
+
+        return $defaultNamespace . '\\' . $class;
+    }
+
     static function normalizePath(string $path, PluginData $plugin): ?string
     {
         return Filesystem::normalizeWithBasePath($plugin->dir, $path);
@@ -107,7 +121,7 @@ abstract class PluginOptionNormalizer
                 self::fail('[%s] must specify only method, callback or script, got multiple', $key);
             }
 
-            if (count($callbackProps) < 0) {
+            if (count($callbackProps) === 0) {
                 self::fail('[%s] must specify method, callback or script', $key);
             }
 
