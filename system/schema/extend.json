@@ -72,6 +72,29 @@
                             "$ref": "plugin.json#/definitions/callback-definition"
                         }
                     }
+                },
+                "cron": {
+                    "type": "object",
+                    "patternProperties": {
+                        "^": {
+                            "allOf": [
+                                {
+                                    "$ref": "plugin.json#/definitions/callback-definition"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "interval": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "required": [
+                                        "interval"
+                                    ]
+                                }
+                            ]
+                        }
+                    }
                 }
             }
         }

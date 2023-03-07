@@ -1,6 +1,7 @@
 <?php
 
 use Sunlight\Core;
+use Sunlight\Cron;
 use Sunlight\Extend;
 use Sunlight\Settings;
 use Sunlight\Util\Request;
@@ -27,11 +28,11 @@ if (
 // run cron tasks
 $start = microtime(true);
 $names = [];
-Extend::reg('cron', function ($args) use (&$names) {
+Extend::reg('cron.task', function ($args) use (&$names) {
     $names[] = $args['name'];
 });
 
-Core::runCronTasks();
+Cron::run();
 
 // output results
 echo date('Y-m-d H:i:s'), ' [', round((microtime(true) - $start) * 1000), 'ms] ', implode(', ', $names), "\n";

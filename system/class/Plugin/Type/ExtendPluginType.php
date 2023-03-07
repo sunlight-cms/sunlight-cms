@@ -59,6 +59,11 @@ class ExtendPluginType extends PluginType
             Option::nodeList(
                 'hcm',
                 ...CallbackHandler::getDefinitionOptions()
+            )->normalize([PluginOptionNormalizer::class, 'normalizeCallbackNodes']),
+            Option::nodeList(
+                'cron',
+                Option::int('interval'),
+                ...CallbackHandler::getDefinitionOptions()
             )->normalize([PluginOptionNormalizer::class, 'normalizeCallbackNodes'])
         );
     }

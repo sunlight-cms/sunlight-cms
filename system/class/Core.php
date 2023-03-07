@@ -152,10 +152,8 @@ abstract class Core
         Extend::call('core.ready');
 
         // cron tasks
-        Extend::reg('cron.maintenance', [__CLASS__, 'doMaintenance']);
-
         if (Settings::get('cron_auto') && $options['allow_cron_auto']) {
-            self::runCronTasks();
+            Cron::run();
         }
     }
 
@@ -527,82 +525,6 @@ abstract class Core
         self::$lang = $lang;
     }
 
-    /**
-     * Run CRON tasks
-     */
-    static function runCronTasks(): void
-    {
-        $cronNow = time();
-        $cronUpdate = false;
-        $cronLockFileHandle = null;
-        $cronTimes = Settings::get('cron_times');
-
-        if ($cronTimes !== '') {
-            $cronTimes = unserialize($cronTimes);
-        } else {
-            $cronTimes = [];
-            $cronUpdate = true;
-        }
-
-        foreach (self::$cronIntervals as $cronIntervalName => $cronIntervalSeconds) {
-            if (isset($cronTimes[$cronIntervalName])) {
-                // last run time is known
-                if ($cronNow - $cronTimes[$cronIntervalName] >= $cronIntervalSeconds) {
-                    // check lock file
-                    if ($cronLockFileHandle === null) {
-                        $cronLockFile = SL_ROOT . 'system/cron.lock';
-                        $cronLockFileHandle = fopen($cronLockFile, 'r');
-
-                        if (!flock($cronLockFileHandle, LOCK_EX | LOCK_NB)) {
-                            // lock file is not accessible
-                            fclose($cronLockFileHandle);
-                            $cronLockFileHandle = null;
-                            $cronUpdate = false;
-                            break;
-                        }
-                    }
-
-                    // event
-                    $cronEventArgs = [
-                        'last' => $cronTimes[$cronIntervalName],
-                        'name' => $cronIntervalName,
-                        'seconds' => $cronIntervalSeconds,
-                        'delay' => $cronNow - $cronTimes[$cronIntervalName],
-                    ];
-                    Extend::call('cron', $cronEventArgs);
-                    Extend::call('cron.' . $cronIntervalName, $cronEventArgs);
-
-                    // update last run time
-                    $cronTimes[$cronIntervalName] = $cronNow;
-                    $cronUpdate = true;
-                }
-            } else {
-                // unknown last run time
-                $cronTimes[$cronIntervalName] = $cronNow;
-                $cronUpdate = true;
-            }
-        }
-
-        // update run times
-        if ($cronUpdate) {
-            // remove unknown intervals
-            foreach (array_keys($cronTimes) as $cronTimeKey) {
-                if (!isset(self::$cronIntervals[$cronTimeKey])) {
-                    unset($cronTimes[$cronTimeKey]);
-                }
-            }
-
-            // save
-            Settings::update('cron_times', serialize($cronTimes));
-        }
-
-        // free lock file
-        if ($cronLockFileHandle !== null) {
-            flock($cronLockFileHandle, LOCK_UN);
-            fclose($cronLockFileHandle);
-        }
-    }
-
     static function isReady(): bool
     {
         return self::$ready;
@@ -667,8 +589,8 @@ abstract class Core
     /**
      * Get global JavaScript definitions
      *
-     * @param array $customVariables asociativni pole s vlastnimi promennymi
-     * @param bool $scriptTags obalit do <script> tagu 1/0
+     * @param array $customVariables map of custom variables
+     * @param bool $scriptTags wrap in a <script> tag 1/0
      */
     static function getJavascript(array $customVariables = [], bool $scriptTags = true): string
     {

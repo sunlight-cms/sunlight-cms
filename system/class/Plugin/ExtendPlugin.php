@@ -42,6 +42,18 @@ class ExtendPlugin extends Plugin implements InitializableInterface
             });
         }
 
+        // register cron tasks
+        if (!empty($this->options['cron'])) {
+            Extend::reg('cron.init', function (array $args) {
+                foreach ($this->options['cron'] as $name => $definition) {
+                    $args['tasks']["{$this->getId()}.{$name}"] = [
+                        'interval' => $definition['interval'],
+                        'callback' => CallbackHandler::fromArray($definition, $this),
+                    ];
+                }
+            });
+        }
+
         // load scripts
         foreach ($this->options['scripts'] as $script) {
             $this->loadScript($script);
