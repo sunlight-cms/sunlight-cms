@@ -76,11 +76,6 @@ abstract class Core
     /** @var LocalizationDictionary */
     static $dictionary;
 
-    /** @var array */
-    static $settings = [];
-    /** @var array id => seconds */
-    static $cronIntervals = [];
-
     /** @var Url */
     private static $baseUrl;
     /** @var Url */
@@ -338,9 +333,6 @@ abstract class Core
                 $e->getMessage()
             );
         }
-
-        // define maintenance cron interval
-        self::$cronIntervals['maintenance'] = Settings::get('maintenance_interval');
     }
 
     /**
