@@ -390,7 +390,7 @@ CREATE TABLE `sunlight_user_group` (
   `adminhcmphp` tinyint(1) NOT NULL DEFAULT 0,
   `adminbackup` tinyint(1) NOT NULL DEFAULT 0,
   `adminmassemail` tinyint(1) NOT NULL DEFAULT 0,
-  `adminposts` tinyint(1) NOT NULL,
+  `adminposts` tinyint(1) NOT NULL DEFAULT 0,
   `changeusername` tinyint(1) NOT NULL DEFAULT 0,
   `postcomments` tinyint(1) NOT NULL DEFAULT 0,
   `unlimitedpostaccess` tinyint(1) NOT NULL DEFAULT 0,
@@ -410,6 +410,6 @@ INSERT INTO `sunlight_user_group` (`id`, `title`, `descr`, `level`, `icon`, `col
 (1,	'SUPER_ADMIN',	'',	10000,	'redstar.png',	'',	0,	0,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	'*',	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1),
 (2,	'GUESTS',	'',	0,	'',	'',	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	'',	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	1,	1,	0),
 (3,	'REGISTERED',	'',	1,	'',	'',	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	0,	1,	0,	'',	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	1,	1,	1),
-(4,	'ADMINISTRATORS',	'',	1000,	'orangestar.png',	'',	0,	0,	1,	1,	0,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	0,	'*',	0,	0,	1,	1,	1,	1,	1,	1,	0,	0,	1,	1,	0),
+(4,	'ADMINISTRATORS',	'',	1000,	'orangestar.png',	'',	0,	0,	1,	0,	0,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	0,	'*',	0,	0,	1,	1,	0,	1,	1,	1,	1,	1,	1,	1,	0),
 (5,	'MODERATORS',	'',	600,	'greenstar.png',	'',	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	0,	1,	0,	'',	0,	0,	0,	1,	0,	1,	1,	1,	1,	1,	1,	1,	0),
 (6,	'EDITOR',	'',	500,	'bluestar.png',	'',	0,	0,	1,	0,	0,	0,	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	1,	0,	0,	0,	1,	0,	0,	'poll, gallery, linkart, linkroot',	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	1,	1,	0);
