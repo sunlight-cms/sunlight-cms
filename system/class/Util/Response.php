@@ -94,7 +94,7 @@ abstract class Response
     }
 
     /**
-     * Download a local file and exit
+     * Send a local file with download headers and exit
      *
      * @param string $filepath path to the file
      * @param string|null $filename custom file name
