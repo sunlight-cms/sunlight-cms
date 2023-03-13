@@ -2,7 +2,6 @@
 
 use Sunlight\Extend;
 use Sunlight\User;
-use Sunlight\Util\Response;
 
 defined('SL_ROOT') or exit;
 
@@ -11,7 +10,7 @@ $_index->output = '';
 $_index->bodyClasses[] = 't-error';
 $_index->bodyClasses[] = 'e-unauthorized';
 
-Response::unauthorized();
+http_response_code(401);
 
 Extend::call('index.login_required', [
     'index' => $_index,

@@ -30,8 +30,8 @@ if ($_index->slug !== null) {
     }
 }
 
-// header and default content
-Response::notFound();
+// output
+http_response_code(404);
 
 $_index->title = _lang('global.error404.title');
 $_index->output = '';

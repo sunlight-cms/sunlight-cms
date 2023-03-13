@@ -20,13 +20,13 @@ if (!empty($captchaNumber) && isset($_SESSION['captcha_code'][$captchaNumber])) 
     [$captchaCode, $captchaDrawn] = $_SESSION['captcha_code'][$captchaNumber];
 
     if ($captchaDrawn) {
-        Response::forbidden();
+        http_response_code(403);
         exit;
     }
 
     $_SESSION['captcha_code'][$captchaNumber][1] = true;
 } else {
-    Response::forbidden();
+    http_response_code(403);
     exit;
 }
 

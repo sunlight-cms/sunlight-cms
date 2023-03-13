@@ -5,7 +5,6 @@ use Sunlight\Cron;
 use Sunlight\Extend;
 use Sunlight\Settings;
 use Sunlight\Util\Request;
-use Sunlight\Util\Response;
 
 require '../bootstrap.php';
 Core::init('../../', [
@@ -20,7 +19,7 @@ if (
     || Request::get('user') !== $auth[0]
     || Request::get('password') !== $auth[1]
 ) {
-    Response::unauthorized();
+    http_response_code(401);
     echo 'Unauthorized';
     exit(1);
 }
