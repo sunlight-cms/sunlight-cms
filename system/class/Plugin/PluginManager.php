@@ -66,8 +66,9 @@ class PluginManager
             if ($plugin->isOk()) {
                 /** @var Plugin $pluginInstance */
                 $pluginInstance = new $plugin->options['class']($plugin, $this);
+                $baseClass = $this->types[$plugin->type]->getClass();
 
-                if (!is_a($pluginInstance, $this->types[$plugin->type]->getClass())) {
+                if (!is_a($pluginInstance, $baseClass)) {
                     throw new \LogicException(sprintf(
                         'Plugin class "%s" of plugin type "%s" must extend "%s"',
                         get_class($pluginInstance),
@@ -78,6 +79,10 @@ class PluginManager
 
                 $this->plugins->map[$plugin->id] = $pluginInstance;
                 $this->plugins->typeMap[$plugin->type][$plugin->name] = $pluginInstance;
+
+                if ($plugin->options['class'] !== $baseClass) {
+                    $this->plugins->classMap[$plugin->options['class']] = $pluginInstance;
+                }
 
                 if ($pluginInstance instanceof InitializableInterface) {
                     $pluginInstance->initialize();

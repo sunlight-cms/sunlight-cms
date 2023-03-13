@@ -71,6 +71,25 @@ abstract class Plugin
         $this->manager = $manager;
     }
 
+    static function isLoaded(): bool
+    {
+        return Core::$pluginManager->getPlugins()->hasClass(static::class);
+    }
+
+    /**
+     * @return static
+     */
+    static function getInstance(): self
+    {
+        $inst = Core::$pluginManager->getPlugins()->getByClass(static::class);
+
+        if ($inst === null) {
+            throw new \RuntimeException(sprintf('Could not get instance of plugin "%s". Plugin is unavailable, disabled or does not have a custom class.', static::class));
+        }
+
+        return $inst;
+    }
+
     function getId(): string
     {
         return $this->id;

@@ -8,6 +8,8 @@ class PluginRegistry
     public $map = [];
     /** @var array<string, array<string, Plugin>> type and name-indexed */
     public $typeMap = [];
+    /** @var array<string, Plugin> class indexed (only plugins with custom classes) */
+    public $classMap;
     /** @var array<string, Plugin> ID-indexed */
     public $inactiveMap = [];
     /** @var array<string, array<string, InactivePlugin>> type and name-indexed */
@@ -53,6 +55,26 @@ class PluginRegistry
     function getByName(string $type, string $name): ?Plugin
     {
         return $this->typeMap[$type][$name] ?? null;
+    }
+
+    /**
+     * See if a plugin with the given class exists
+     * 
+     * (Only applies to plugins with custom classes.)
+     */
+    function hasClass(string $class): bool
+    {
+        return isset($this->classMap[$class]);
+    }
+
+    /**
+     * Get a single plugin by class name
+     * 
+     * (Only applies to plugins with custom classes.)
+     */
+    function getByClass(string $class): ?Plugin
+    {
+        return $this->classMap[$class] ?? null;
     }
 
     function hasExtend(string $name): bool
