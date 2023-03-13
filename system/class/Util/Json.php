@@ -11,13 +11,15 @@ abstract class Json
     const DEFAULT = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES;
     /** Encoder flags for human-readable output */
     const PRETTY = JSON_PRETTY_PRINT | self::DEFAULT;
+    /** Default depth limit */
+    const DEFAULT_DEPTH = 512;
 
     /**
      * Encode data as JSON
      *
      * @throws \InvalidArgumentException in case of an error
      */
-    static function encode($data, int $flags = self::DEFAULT, int $depth = 512): string
+    static function encode($data, int $flags = self::DEFAULT, int $depth = self::DEFAULT_DEPTH): string
     {
         $json = json_encode($data, $flags, $depth);
 
@@ -33,7 +35,7 @@ abstract class Json
      *
      * @throws \InvalidArgumentException in case of an error
      */
-    static function encodeForInlineJs($data, int $flags = self::DEFAULT, int $depth = 512): string
+    static function encodeForInlineJs($data, int $flags = self::DEFAULT, int $depth = self::DEFAULT_DEPTH): string
     {
         // https://html.spec.whatwg.org/multipage/scripting.html#restrictions-for-contents-of-script-elements
         return str_ireplace(
@@ -48,7 +50,7 @@ abstract class Json
      *
      * @throws \InvalidArgumentException in case of an error
      */
-    static function decode(string $json, int $flags = 0, bool $assoc = true, int $depth = 512)
+    static function decode(string $json, int $flags = 0, bool $assoc = true, int $depth = self::DEFAULT_DEPTH)
     {
         $data = json_decode($json, $assoc, $depth, $flags);
 

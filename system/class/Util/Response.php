@@ -125,6 +125,19 @@ abstract class Response
     }
 
     /**
+     * Encode and send data as JSON and exit
+     * 
+     * @return never-return
+     */
+    static function json($data, int $flags = Json::DEFAULT, int $depth = Json::DEFAULT_DEPTH): void
+    {
+        header('Content-Type: application/json');
+        echo Json::encode($data, $flags, $depth);
+
+        exit;
+    }
+
+    /**
      * Make sure headers have not been sent yet
      *
      * @throws \RuntimeException if headers were already sent
