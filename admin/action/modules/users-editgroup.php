@@ -143,17 +143,17 @@ if ($continue) {
             if (
                 $id == User::ADMIN_GROUP_ID
                 || $id == User::GUEST_GROUP_ID && !in_array($item['name'], $unregistered_useable, true)
-                || !User::hasPrivilege($item['name'])
+                || empty($item['text']) && !User::hasPrivilege($item['name'])
             ) {
                 $disabled = true;
             } else {
                 $disabled = false;
             }
 
-            $isText = isset($item['text']) && $item['text'];
+            $isText = !empty($item['text']);
 
             $rights .= '<tr>
-    <th' . (isset($item['dangerous']) && $item['dangerous'] ? ' class="important"' : '') . '>
+    <th' . (!empty($item['dangerous']) ? ' class="important"' : '') . '>
         <label for="setting_' . $item['name'] . '">' . ($item['label'] ?? _lang('admin.users.groups.' . $item['name'])) . '</label>
     </th>
     <td>
@@ -211,12 +211,12 @@ if ($continue) {
                 foreach ($section['rights'] as $item) {
                     if (
                         $id == User::GUEST_GROUP_ID && !in_array($item['name'], $unregistered_useable, true)
-                        || !User::hasPrivilege($item['name'])
+                        || empty($item['text']) && !User::hasPrivilege($item['name'])
                     ) {
                         continue;
                     }
 
-                    $isText = isset($item['text']) && $item['text'];
+                    $isText = !empty($item['text']);
 
                     $changeset[$item['name']] = $isText ? trim(Request::post($item['name'])) : Form::loadCheckbox($item['name']);
                 }

@@ -34,8 +34,8 @@ abstract class Hcm
         'msg' => __DIR__ . '/../hcm/msg.php',
         'notpublic' => __DIR__ . '/../hcm/notpublic.php',
         'path' => __DIR__ . '/../hcm/path.php',
-        'php' => __DIR__ . '/../hcm/php.php',
-        'phpsource' => __DIR__ . '/../hcm/phpsource.php',
+        'php_include' => __DIR__ . '/../hcm/php_include.php',
+        'php_highlight' => __DIR__ . '/../hcm/php_highlight.php',
         'poll' => __DIR__ . '/../hcm/poll.php',
         'randomfile' => __DIR__ . '/../hcm/randomfile.php',
         'recentposts' => __DIR__ . '/../hcm/recentposts.php',
@@ -136,7 +136,7 @@ abstract class Hcm
         $deniedModules = [];
 
         if (!User::hasPrivilege('adminhcmphp')) {
-            $deniedModules[] = 'php';
+            $deniedModules[] = 'php_include';
         }
 
         $allowedModules = preg_split('{\s*,\s*}', User::$group['adminhcm']);

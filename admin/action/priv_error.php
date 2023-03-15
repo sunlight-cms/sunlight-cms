@@ -15,4 +15,4 @@ $message = _lang(
     ['%message%' => _e($privException->getMessage())]
 );
 
-$output .= Message::error($message);
+$output .= Message::error($message, true);
