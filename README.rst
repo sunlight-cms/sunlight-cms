@@ -19,7 +19,7 @@ Installation
 ************
 
 1. Download (and extract) or clone this repository locally.
-2. Run ``composer install --prefer-dist`` in the root directory.
+2. Run ``composer install`` in the root directory.
 3. Open ``http://example.com/install/`` (change the domain and path accordingly) in your web browser.
 4. Follow the on-screen instructions.
 
