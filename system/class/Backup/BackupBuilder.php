@@ -23,6 +23,8 @@ class BackupBuilder
         'composer.json',
         'robots.txt',
         'favicon.ico',
+        '.htaccess',
+        'LICENSE',
     ];
 
     /** @var string[] */
