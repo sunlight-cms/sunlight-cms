@@ -614,6 +614,7 @@ abstract class Admin
                     'busyOverlayText' => _lang('admin.busy_overlay.text'),
                 ],
             ]),
+            'favicon' => (bool) Settings::get('favicon'),
         ];
     }
 }

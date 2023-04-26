@@ -67,6 +67,7 @@ abstract class Template
             'css' => $css,
             'js' => $js,
             'js_before' => "\n" . Core::getJavascript(),
+            'favicon' => (bool) Settings::get('favicon'),
         ];
 
         // render
@@ -75,11 +76,6 @@ abstract class Template
             . Extend::buffer('tpl.head.meta')
             . ($_index->template->getOption('responsive') ? "\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">" : '')
             . GenericTemplates::renderHeadAssets($assets);
-
-        if (Settings::get('favicon')) {
-            $output .= '
-<link rel="shortcut icon" href="' . _e(Router::path('favicon.ico') . '?' . Settings::get('cacheid')) . '">';
-        }
 
         $output .= '
 <title>' . $title . '</title>

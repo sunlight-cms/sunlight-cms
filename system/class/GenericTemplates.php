@@ -103,6 +103,7 @@ HTML;
      * js_before        HTML inserted before <script> tags
      * js_after         HTML inserted after <script> tags
      * extend_event     extend event name
+     * favicon          true = link to favicon, false = no favicon, null = no output
      */
     static function renderHeadAssets(array $assets): string
     {
@@ -117,6 +118,7 @@ HTML;
             'css_after' => '',
             'js_before' => '',
             'js_after' => '',
+            'favicon' => null,
         ];
 
         // extend
@@ -129,6 +131,7 @@ HTML;
                 'css_after' => &$assets['css_after'],
                 'js_before' => &$assets['js_before'],
                 'js_after' => &$assets['js_after'],
+                'favicon' => &$assets['favicon'],
             ]);
         }
 
@@ -143,6 +146,15 @@ HTML;
         }
 
         $html .= $assets['css_after'];
+
+        // favicon
+        if ($assets['favicon'] !== null) {
+            $faviconPath = $assets['favicon']
+                ? Router::path('favicon.ico') . '?' . Settings::get('cacheid')
+                : 'data:,';
+
+            $html .= "\n<link rel=\"icon\" href=\"" . _e($faviconPath) . '">';
+        }
 
         // javascript
         $html .= $assets['js_before'];
