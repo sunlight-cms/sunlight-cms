@@ -1,21 +1,27 @@
 <?php
 
 use Sunlight\Article;
+use Sunlight\Hcm;
 use Sunlight\Post\Post;
 use Sunlight\Database\Database as DB;
 use Sunlight\IpLog;
 use Sunlight\User;
 use Sunlight\Util\Arr;
 
-return function ($type = 'new', $limit = null, $perex = 'perex', $info = true, $category = null) {
+return function ($type = 'new', $limit = null, $perex = 'perex', $info = true, $category = '') {
+    Hcm::normalizeArgument($type, 'string');
+    Hcm::normalizeArgument($limit, 'int');
+    Hcm::normalizeArgument($perex, 'string');
+    Hcm::normalizeArgument($info, 'bool');
+    Hcm::normalizeArgument($category, 'string');
+
     $result = '';
-    $limit = (int) $limit;
 
     if ($limit < 1) {
         $limit = 1;
     }
 
-    if ($perex === '0' || $perex === 0) {
+    if ($perex === '0') {
         $perex = 'no-perex';
     }
 
@@ -34,8 +40,6 @@ return function ($type = 'new', $limit = null, $perex = 'perex', $info = true, $
             $show_image = true;
             break;
     }
-
-    $info = (bool) $info;
 
     // prepare SQL parts
     switch ($type) {

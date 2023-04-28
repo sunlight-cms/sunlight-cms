@@ -10,10 +10,13 @@ use Sunlight\Util\Form;
 use Sunlight\Util\Request;
 
 return function ($receiver = '', $subject = null) {
+    Hcm::normalizeArgument($receiver, 'string');
+    Hcm::normalizeArgument($subject, 'string', true);
+
     $result = '';
     $_SESSION['hcm_' . Hcm::$uid . '_mail_receiver'] = implode(',', Arr::removeValue(explode(';', trim($receiver)), ''));
 
-    if (isset($subject)) {
+    if ($subject !== null) {
         $subject_value = ' value="' . _e($subject) . '"';
     } else {
         $subject_value = '';

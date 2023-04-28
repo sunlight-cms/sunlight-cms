@@ -7,8 +7,8 @@ use Sunlight\Router;
 use Sunlight\User;
 use Sunlight\Xsrf;
 
-return function ($id = null) {
-    $id = (int) $id;
+return function ($id = 0) {
+    Hcm::normalizeArgument($id, 'int');
 
     // fetch poll data
     $vpolldata = DB::queryRow('SELECT * FROM ' . DB::table('poll') . ' WHERE id=' . DB::val($id));

@@ -10,9 +10,10 @@ use Sunlight\Template;
 use Sunlight\User;
 use Sunlight\Util\Form;
 
-return function ($id = null) {
+return function ($id = 0) {
+    Hcm::normalizeArgument($id, 'int');
+
     $result = '';
-    $id = (int) $id;
 
     // fetch shoutbox data
     $sboxdata = DB::queryRow('SELECT * FROM ' . DB::table('shoutbox') . ' WHERE id=' . $id);

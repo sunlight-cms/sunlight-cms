@@ -1,9 +1,14 @@
 <?php
 
+use Sunlight\Hcm;
 use Sunlight\User;
 
 return function ($min_level = 0, $privileged_content = '', $other_content = '') {
-    if (User::getLevel() >= (int) $min_level) {
+    Hcm::normalizeArgument($min_level, 'int');
+    Hcm::normalizeArgument($privileged_content, 'string');
+    Hcm::normalizeArgument($other_content, 'string');
+
+    if (User::getLevel() >= $min_level) {
         return $privileged_content;
     }
 

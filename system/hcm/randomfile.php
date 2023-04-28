@@ -7,15 +7,18 @@ use Sunlight\Image\ImageService;
 use Sunlight\Image\ImageTransformer;
 use Sunlight\Router;
 
-return function ($dir = '', $type = 'text', $limit = 1, $thumbnail_size = null) {
+return function ($dir = '', $type = 'text', $limit = 1, $thumbnail_size = '') {
+    Hcm::normalizeArgument($dir, 'string');
+    Hcm::normalizeArgument($type, 'string');
+    Hcm::normalizeArgument($limit, 'int');
+    Hcm::normalizeArgument($thumbnail_size, 'string');
+
     $result = '';
     $dir = SL_ROOT . $dir;
 
     if (mb_substr($dir, -1, 1) != '/') {
         $dir .= '/';
     }
-
-    $limit = (int) $limit;
 
     if (file_exists($dir) && is_dir($dir)) {
         $handle = opendir($dir);

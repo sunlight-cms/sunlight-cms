@@ -2,10 +2,13 @@
 
 use Sunlight\Article;
 use Sunlight\Database\Database as DB;
+use Sunlight\Hcm;
 use Sunlight\Util\Arr;
 
 return function ($category = null) {
-    if (!empty($category)) {
+    Hcm::normalizeArgument($category, 'string', true);
+
+    if ($category !== null) {
         $category = Arr::removeValue(explode('-', $category), '');
     } else {
         $category = [];

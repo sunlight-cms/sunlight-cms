@@ -1,11 +1,15 @@
 <?php
 
 use Sunlight\Database\Database as DB;
+use Sunlight\Hcm;
 use Sunlight\Router;
 use Sunlight\User;
 
 return function ($order = 'new', $limit = 5) {
-    $limit = abs((int) $limit);
+    Hcm::normalizeArgument($order, 'string');
+    Hcm::normalizeArgument($limit, 'int');
+
+    $limit = abs($limit);
 
     $rcond = 'public=1';
     $ordered = true;

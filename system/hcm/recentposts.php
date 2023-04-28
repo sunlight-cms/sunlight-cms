@@ -1,5 +1,6 @@
 <?php
 
+use Sunlight\Hcm;
 use Sunlight\Post\PostService;
 use Sunlight\Database\Database as DB;
 use Sunlight\GenericTemplates;
@@ -9,11 +10,15 @@ use Sunlight\User;
 use Sunlight\Util\Arr;
 use Sunlight\Util\StringManipulator;
 
-return function ($limit = null, $pages = '', $type = null) {
+return function ($limit = null, $pages = null, $type = null) {
+    Hcm::normalizeArgument($limit, 'int', true);
+    Hcm::normalizeArgument($pages, 'string', true);
+    Hcm::normalizeArgument($type, 'string', true);
+
     $result = '';
 
-    if (isset($limit) && (int) $limit >= 1) {
-        $limit = abs((int) $limit);
+    if ($limit !== null && $limit >= 1) {
+        $limit = abs($limit);
     } else {
         $limit = 10;
     }
@@ -26,13 +31,13 @@ return function ($limit = null, $pages = '', $type = null) {
         'plugin' => Post::PLUGIN,
     ];
 
-    if (!empty($pages)) {
+    if ($pages !== null) {
         $homes = Arr::removeValue(explode('-', $pages), '');
     } else {
         $homes = [];
     }
 
-    if (!empty($type)) {
+    if ($type !== null) {
         if (isset($post_types[$type])) {
             $type = $post_types[$type];
         } elseif (!in_array($type, $post_types)) {

@@ -5,7 +5,10 @@ use Sunlight\Gallery;
 use Sunlight\Hcm;
 
 return function ($gallery = null, $type = 'new', $thumbnail_size = null, $limit = null) {
-    Hcm::normalizeArgument($gallery, 'string');
+    Hcm::normalizeArgument($gallery, 'string', true);
+    Hcm::normalizeArgument($type, 'string');
+    Hcm::normalizeArgument($thumbnail_size, 'string', true);
+    Hcm::normalizeArgument($limit, 'int', true);
 
     if ($gallery !== null && !empty($gallery = explode('-', $gallery))) {
         $home_cond = 'home IN(' . DB::arr($gallery) . ')';
@@ -14,7 +17,7 @@ return function ($gallery = null, $type = 'new', $thumbnail_size = null, $limit 
     }
 
     if ($limit !== null) {
-        $limit = abs((int) $limit);
+        $limit = abs($limit);
     } else {
         $limit = 1;
     }

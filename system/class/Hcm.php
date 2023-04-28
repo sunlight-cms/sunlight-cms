@@ -191,18 +191,22 @@ abstract class Hcm
     /**
      * Normalize HCM argument
      *
-     * In case of failure, the variable is set to NULL.
-     *
      * @param string $type {@see settype()}
-     * @param bool $emptyToNull if the value is an empty string, set it to NULL
+     * @param bool $nullable allow null value 1/0
      */
-    static function normalizeArgument(&$variable, string $type, bool $emptyToNull = true): void
+    static function normalizeArgument(&$variable, string $type, bool $nullable = false): void
     {
-        if (
-            $emptyToNull && ($variable === null || $variable === '')
-            || !settype($variable, $type)
-        ) {
+        // convert empty string to null if the type is a nullable string
+        if ($type === 'string' && $nullable && $variable === '') {
             $variable = null;
+            return;
         }
+
+        // check for allowed null value
+        if ($nullable && $variable === null) {
+            return;
+        }
+
+        settype($variable, $type);
     }
 }

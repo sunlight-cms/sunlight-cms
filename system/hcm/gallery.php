@@ -8,6 +8,11 @@ use Sunlight\Paginator;
 use Sunlight\Router;
 
 return function ($path = '', $thumbnail_size = '', $per_page = null, $lightbox = true) {
+    Hcm::normalizeArgument($path, 'string');
+    Hcm::normalizeArgument($thumbnail_size, 'string');
+    Hcm::normalizeArgument($per_page, 'int', true);
+    Hcm::normalizeArgument($lightbox, 'bool');
+
     global $_index;
 
     $result = '';
@@ -17,18 +22,11 @@ return function ($path = '', $thumbnail_size = '', $per_page = null, $lightbox =
         $path .= '/';
     }
 
-    if (isset($per_page) && $per_page > 0) {
+    if ($per_page !== null && $per_page > 0) {
         $paginator = true;
-        $per_page = (int) $per_page;
-
-        if ($per_page <= 0) {
-            $per_page = 1;
-        }
     } else {
         $paginator = false;
     }
-    
-    $lightbox = (bool) $lightbox;
 
     $resize_opts = ImageTransformer::parseResizeOptions($thumbnail_size);
 

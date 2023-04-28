@@ -1,10 +1,15 @@
 <?php
 
 use Sunlight\Database\Database as DB;
+use Sunlight\Hcm;
 use Sunlight\Router;
 
-return function ($id = null, $text = null, $new_window = false) {
-    $is_id = is_numeric($id);
+return function ($id = '', $text = null, $new_window = false) {
+    Hcm::normalizeArgument($id, 'string');
+    Hcm::normalizeArgument($text, 'string', true);
+    Hcm::normalizeArgument($new_window, 'bool');
+
+    $is_id = ctype_digit($id);
 
     if ($is_id) {
         $id = (int) $id;
@@ -21,10 +26,6 @@ return function ($id = null, $text = null, $new_window = false) {
     }
 
     if ($query !== false) {
-        if (isset($text) && $text != '') {
-            $query['title'] = _e($text);
-        }
-
-        return '<a href="' . _e(Router::page($query['id'], $query['slug'])) . '"' . $target . '>' . $query['title'] . '</a>';
+        return '<a href="' . _e(Router::page($query['id'], $query['slug'])) . '"' . $target . '>' . ($text ?? $query['title']) . '</a>';
     }
 };
