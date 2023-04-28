@@ -140,6 +140,10 @@ if (isset($_POST['save'])) {
         Extend::call('mod.settings.account.save', ['changeset' => &$changeset]);
         DB::update('user', 'id=' . User::getId(), $changeset);
 
+        if (isset($changeset['email'])) {
+            $_SESSION['user_auth'] = User::getAuthHash(User::AUTH_SESSION, $changeset['email'], User::$data['password']);
+        }
+
         $_index->redirect(Router::module('settings', ['query' => ['action' => 'account', 'saved' => 1], 'absolute' => true]));
 
         return;
