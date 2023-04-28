@@ -20,7 +20,7 @@ abstract class Hcm
         'galimg' => __DIR__ . '/../hcm/galimg.php',
         'gallery' => __DIR__ . '/../hcm/gallery.php',
         'img' => __DIR__ . '/../hcm/img.php',
-        'iperex' => __DIR__ . '/../hcm/iperex.php',
+        'perex' => __DIR__ . '/../hcm/perex.php',
         'lang' => __DIR__ . '/../hcm/lang.php',
         'levelcontent' => __DIR__ . '/../hcm/levelcontent.php',
         'levelcontent2' => __DIR__ . '/../hcm/levelcontent2.php',
