@@ -418,14 +418,9 @@ abstract class User
     static function checkPath(string $path, bool $isFile, bool $getPath = false)
     {
         if (self::hasPrivilege('fileaccess')) {
-            $path = Filesystem::parsePath($path, $isFile);
-            $homeDirPath = Filesystem::parsePath(self::getHomeDir(true));
+            $path = Filesystem::resolvePath($path, $isFile, self::getHomeDir(true));
 
-            if (
-                /* don't allow access outside of root */        substr_count($path, '..') <= substr_count(SL_ROOT, '..')
-                /* don't allow access outside of home dir */    && strncmp($homeDirPath, $path, strlen($homeDirPath)) === 0
-                /* don't allow access to unsafe files */        && (!$isFile || self::checkFilename(basename($path)))
-            ) {
+            if ($path !== null && (!$isFile || self::checkFilename($path))) {
                 return $getPath ? $path : true;
             }
         }

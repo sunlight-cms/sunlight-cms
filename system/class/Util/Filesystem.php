@@ -7,7 +7,7 @@ namespace Sunlight\Util;
  */
 abstract class Filesystem
 {
-    static $unsafeExtRegex = '{(php\d*?|[ps]html|asp|py|cgi|htaccess)}Ai';
+    private const UNSAFE_EXT_REGEX = '{php\d*?|[ps]html|asp|py|cgi}Ai';
 
     /**
      * Create a temporary file in system/tmp/
@@ -22,11 +22,28 @@ abstract class Filesystem
      */
     static function isSafeFile(string $filepath): bool
     {
-        $parts = explode('.', basename(trim($filepath)));
+        // check extra whitespace
+        if ($filepath !== trim($filepath)) {
+            return false;
+        }
+
+        $filename = basename($filepath);
+
+        // check empty filename
+        if ($filename === '') {
+            return false;
+        }
+
+        // check hidden files
+        if ($filename[0] === '.') {
+            return false;
+        }
 
         // check all extensions since some webservers will evaluate files such as "example.php.html"
+        $parts = explode('.', $filename);
+
         for ($i = 1; isset($parts[$i]); ++$i) {
-            if (preg_match(self::$unsafeExtRegex, $parts[$i])) {
+            if (preg_match(self::UNSAFE_EXT_REGEX, $parts[$i])) {
                 return false;
             }
         }
@@ -133,6 +150,30 @@ abstract class Filesystem
         }
 
         return $result;
+    }
+
+    /**
+     * Try to resolve a path within SL_ROOT and an optional base directory
+     *
+     * @return string|null the resolved path or NULL if invalid
+     */
+    static function resolvePath(string $path, bool $isFile, ?string $requiredBaseDir = null): ?string
+    {
+        $path = self::parsePath($path, $isFile);
+
+        if ($requiredBaseDir !== null) {
+            $requiredBaseDir = self::parsePath($requiredBaseDir);
+        }
+
+        if (substr_count($path, '..') > substr_count(SL_ROOT, '..')) {
+            return null; // don't allow a path outside of SL_ROOT
+        }
+
+        if ($requiredBaseDir !== null && strncmp($requiredBaseDir, $path, strlen($requiredBaseDir)) !== 0) {
+            return null; // don't allow a path outside the required base directory
+        }
+
+        return $path;
     }
 
     /**

@@ -1,11 +1,12 @@
 <?php
 
 use Sunlight\GenericTemplates;
+use Sunlight\Hcm;
 
 return function ($path = '') {
-    $path = SL_ROOT . $path;
+    Hcm::normalizePathArgument($path, true);
 
-    if (file_exists($path)) {
-        return GenericTemplates::renderFileSize(filesize($path));
+    if ($path !== null) {
+        return GenericTemplates::renderFileSize((int) filesize($path));
     }
 };

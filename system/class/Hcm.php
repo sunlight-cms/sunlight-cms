@@ -4,6 +4,7 @@ namespace Sunlight;
 
 use Sunlight\Exception\ContentPrivilegeException;
 use Sunlight\Util\ArgList;
+use Sunlight\Util\Filesystem;
 
 abstract class Hcm
 {
@@ -208,5 +209,30 @@ abstract class Hcm
         }
 
         settype($variable, $type);
+    }
+
+    /**
+     * Normalize HCM path argument
+     *
+     * - paths are restricted to upload/
+     * - nonexistent, invalid or unsafe paths result in failure
+     * - if normalization fails, the argument is set to NULL
+     */
+    static function normalizePathArgument(&$variable, bool $isFile): void
+    {
+        self::normalizeArgument($variable, 'string');
+
+        $variable = Filesystem::resolvePath(SL_ROOT . $variable, $isFile, SL_ROOT . 'upload/');
+
+        if ($variable === null) {
+            return; // invalid path
+        }
+
+        if (
+            $isFile && (!Filesystem::isSafeFile($variable) || !is_file($variable)) // reject unsafe or nonexistent files
+            || !$isFile && !is_dir($variable) // reject nonexistent dirs
+        ) {
+            $variable = null;
+        }
     }
 }

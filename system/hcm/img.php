@@ -7,12 +7,15 @@ use Sunlight\Image\ImageTransformer;
 use Sunlight\Router;
 
 return function ($path = '', $thumbnail_size = '', $title = null, $lightbox = null) {
-    Hcm::normalizeArgument($path, 'string');
+    Hcm::normalizePathArgument($path, true);
     Hcm::normalizeArgument($thumbnail_size, 'string');
     Hcm::normalizeArgument($title, 'string', true);
     Hcm::normalizeArgument($lightbox, 'string', true);
 
-    $path = SL_ROOT . $path;
+    if ($path === null) {
+        return '';
+    }
+
     $thumb = ImageService::getThumbnail('hcm.img', $path, ImageTransformer::parseResizeOptions($thumbnail_size));
 
     return '<a href="' . _e(Router::file($path)) . '"'

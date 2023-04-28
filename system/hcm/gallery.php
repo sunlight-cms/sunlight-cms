@@ -8,19 +8,16 @@ use Sunlight\Paginator;
 use Sunlight\Router;
 
 return function ($path = '', $thumbnail_size = '', $per_page = null, $lightbox = true) {
-    Hcm::normalizeArgument($path, 'string');
+    Hcm::normalizePathArgument($path, false);
     Hcm::normalizeArgument($thumbnail_size, 'string');
     Hcm::normalizeArgument($per_page, 'int', true);
     Hcm::normalizeArgument($lightbox, 'bool');
 
-    global $_index;
-
-    $result = '';
-    $path = SL_ROOT . $path;
-
-    if (mb_substr($path, -1, 1) != '/') {
-        $path .= '/';
+    if ($path === null) {
+        return '';
     }
+
+    global $_index;
 
     if ($per_page !== null && $per_page > 0) {
         $paginator = true;
@@ -30,61 +27,59 @@ return function ($path = '', $thumbnail_size = '', $per_page = null, $lightbox =
 
     $resize_opts = ImageTransformer::parseResizeOptions($thumbnail_size);
 
-    if (file_exists($path) && is_dir($path)) {
-        $handle = opendir($path);
+    $handle = opendir($path);
 
-        // load images
-        $items = [];
+    // load images
+    $items = [];
 
-        while (($item = readdir($handle)) !== false) {
-            if ($item == '.' || $item == '..' || is_dir($item) || !ImageService::isImage($item)) {
-                continue;
-            }
-
-            $items[] = $item;
+    while (($item = readdir($handle)) !== false) {
+        if ($item == '.' || $item == '..' || is_dir($item) || !ImageService::isImage($item)) {
+            continue;
         }
 
-        closedir($handle);
-        natsort($items);
+        $items[] = $item;
+    }
 
-        // prepare paginator
-        if ($paginator) {
-            $count = count($items);
-            $paging = Paginator::paginate(
-                $_index->url,
-                $per_page,
-                $count,
-                [
-                    'param' => 'hcm_gal' . Hcm::$uid . 'p',
-                    'link_suffix' => '#hcm_gal' . Hcm::$uid,
-                ]
-            );
+    closedir($handle);
+    natsort($items);
+
+    // prepare paginator
+    if ($paginator) {
+        $count = count($items);
+        $paging = Paginator::paginate(
+            $_index->url,
+            $per_page,
+            $count,
+            [
+                'param' => 'hcm_gal' . Hcm::$uid . 'p',
+                'link_suffix' => '#hcm_gal' . Hcm::$uid,
+            ]
+        );
+    }
+
+    // render
+    $result = '<div id="hcm_gal' . Hcm::$uid . "\" class=\"gallery\">\n";
+    $counter = 0;
+
+    foreach ($items as $item) {
+        if ($paginator && $counter > $paging['last']) {
+            break;
         }
 
-        // render
-        $result = '<div id="hcm_gal' . Hcm::$uid . "\" class=\"gallery\">\n";
-        $counter = 0;
-
-        foreach ($items as $item) {
-            if ($paginator && $counter > $paging['last']) {
-                break;
-            }
-
-            if (!$paginator || Paginator::isItemInRange($paging, $counter)) {
-                $thumb = ImageService::getThumbnail('gallery', $path . $item, $resize_opts);
-                $result .= '<a href="' . _e(Router::file($path . $item)) . '" target="_blank"' . ($lightbox ? Extend::buffer('image.lightbox', ['group' => 'hcm_gal_' . Hcm::$uid]) : '') . '>'
-                    . '<img src="' . _e(Router::file($thumb)) . '" alt="' . _e($item) . '">'
-                    . "</a>\n";
-            }
-
-            $counter++;
+        if (!$paginator || Paginator::isItemInRange($paging, $counter)) {
+            $thumb = ImageService::getThumbnail('gallery', $path . $item, $resize_opts);
+            $result .= '<a href="' . _e(Router::file($path . $item)) . '" target="_blank"' . ($lightbox ? Extend::buffer('image.lightbox', ['group' => 'hcm_gal_' . Hcm::$uid]) : '') . '>'
+                . '<img src="' . _e(Router::file($thumb)) . '" alt="' . _e($item) . '">'
+                . "</a>\n";
         }
 
-        $result .= "</div>\n";
+        $counter++;
+    }
 
-        if ($paginator) {
-            $result .= $paging['paging'];
-        }
+    $result .= "</div>\n";
+
+    if ($paginator) {
+        $result .= $paging['paging'];
     }
 
     return $result;
