@@ -3,6 +3,7 @@
 use Sunlight\Database\Database as DB;
 use Sunlight\Gallery;
 use Sunlight\Hcm;
+use Sunlight\Image\ImageTransformer;
 
 return function ($gallery = null, $type = 'new', $thumbnail_size = null, $limit = null) {
     Hcm::normalizeArgument($gallery, 'string', true);
@@ -24,21 +25,9 @@ return function ($gallery = null, $type = 'new', $thumbnail_size = null, $limit 
 
     // size
     if ($thumbnail_size !== null) {
-        $thumbnail_size = explode('/', $thumbnail_size, 2);
-
-        if (count($thumbnail_size) === 2) {
-            // width and height
-            $x = (int) $thumbnail_size[0];
-            $y = (int) $thumbnail_size[1];
-        } else {
-            // height only
-            $x = null;
-            $y = (int) $thumbnail_size[0];
-        }
+        $resize_options = ImageTransformer::parseResizeOptions($thumbnail_size);
     } else {
-        // default size
-        $x = null;
-        $y = 128;
+        $resize_options = ['h' => 128];
     }
 
     // order
@@ -59,7 +48,7 @@ return function ($gallery = null, $type = 'new', $thumbnail_size = null, $limit 
     $rimgs = DB::query('SELECT id,title,prev,full FROM ' . DB::table('gallery_image') . ' WHERE ' . $home_cond . ' ORDER BY ' . $order . ' LIMIT ' . $limit);
 
     while ($rimg = DB::row($rimgs)) {
-        $result .= Gallery::renderImage($rimg, 'hcm' . Hcm::$uid, $x, $y);
+        $result .= Gallery::renderImage($rimg, 'hcm' . Hcm::$uid, $resize_options);
     }
 
     return $result;

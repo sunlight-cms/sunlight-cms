@@ -385,8 +385,10 @@ if ($continue) {
     data-tolerance="pointer"
 >';
 
+        $resize_options = ['w' => $galdata['var4'], 'h' => $galdata['var3']];
+
         while ($image = DB::row($images)) {
-            $preview = Gallery::renderImage($image, 'admin', $galdata['var4'], $galdata['var3']);
+            $preview = Gallery::renderImage($image, 'admin', $resize_options);
 
             $output .= '
 <div class="gallery-edit-image">

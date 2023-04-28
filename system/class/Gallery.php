@@ -18,10 +18,9 @@ class Gallery
      *
      * @param array $img image data
      * @param string|null $lightboxid lightbox group ID, if any
-     * @param int|null $width thumbnail width
-     * @param int|null $height thumbnail height
+     * @param array $resizeOptions {@see ImageTransformer::resize()}
      */
-    static function renderImage(array $img, ?string $lightboxid, ?int $width, ?int $height): string
+    static function renderImage(array $img, ?string $lightboxid, array $resizeOptions): string
     {
         if (UrlHelper::isAbsolute($img['full'])) {
             $fullUrl = $img['full'];
@@ -38,7 +37,7 @@ class Gallery
                 $prevUrl = Router::path($img['prev']);
             }
         } elseif ($fullFile !== null) {
-            $prevUrl = Router::file(ImageService::getThumbnail('gallery', $fullFile, ['w' => $width, 'h' => $height]));
+            $prevUrl = Router::file(ImageService::getThumbnail('gallery', $fullFile, $resizeOptions));
         } else {
             $prevUrl = $fullUrl;
         }

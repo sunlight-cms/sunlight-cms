@@ -61,6 +61,7 @@ if ($images_number != 0) {
     // images
     $counter = 0;
     $cell_counter = 0;
+    $resize_options = ['w' => $_page['var4'], 'h' => $_page['var3']];
 
     while ($img = DB::row($images)) {
         if ($usetable && $cell_counter == 0) {
@@ -72,7 +73,7 @@ if ($images_number != 0) {
             $output .= '<td>';
         }
 
-        $output .= Gallery::renderImage($img, $id, $_page['var4'], $_page['var3']);
+        $output .= Gallery::renderImage($img, $id, $resize_options);
 
         if ($usetable) {
             $output .= '</td>';

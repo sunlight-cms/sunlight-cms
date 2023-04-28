@@ -184,12 +184,17 @@ if ($search_query != '') {
             // add to results
             $q = DB::query($sql . ' LIMIT 100');
 
+            $resize_options = [
+                'w' => Settings::get('galdefault_thumb_w'),
+                'h' => Settings::get('galdefault_thumb_h'),
+            ];
+
             while ($r = DB::row($q)) {
                 $link = Router::page($r['home'], $r['slug'], null, ['query' => ['page' => Paginator::getItemPage($r['var2'] ?: Settings::get('galdefault_per_page'), DB::table('gallery_image'), 'ord<' . $r['ord'] . ' AND home=' . $r['home'])]]);
                 $results[] = [
                     $link,
                     $r['gal_title'],
-                    (($r['title'] !== '') ? '<p>' . $r['title'] . '</p>' : '') . Gallery::renderImage($r, 'search', Settings::get('galdefault_thumb_w'), Settings::get('galdefault_thumb_h'))
+                    (($r['title'] !== '') ? '<p>' . $r['title'] . '</p>' : '') . Gallery::renderImage($r, 'search', $resize_options)
                 ];
             }
 
