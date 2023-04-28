@@ -17,6 +17,7 @@ abstract class Hcm
         'countusers' => __DIR__ . '/../hcm/countusers.php',
         'date' => __DIR__ . '/../hcm/date.php',
         'file' => __DIR__ . '/../hcm/file.php',
+        'filelist' => __DIR__ . '/../hcm/filelist.php',
         'filesize' => __DIR__ . '/../hcm/filesize.php',
         'galimg' => __DIR__ . '/../hcm/galimg.php',
         'gallery' => __DIR__ . '/../hcm/gallery.php',
