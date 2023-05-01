@@ -389,11 +389,11 @@ Sunlight.admin = (function ($) {
 
             $(options.inputSelector, container).each(function () {
                 if (
-                    null === currentOrd
+                    currentOrd === null
                     || !options.stopperSelector
                     || $(this).parents(options.stopperSelector).length !== 0
                 ) {
-                    if (null === currentOrd) {
+                    if (currentOrd === null) {
                         this.value = currentOrd = options.start;
                     } else {
                         this.value = ++currentOrd;

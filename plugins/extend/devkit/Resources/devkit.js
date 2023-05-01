@@ -1,6 +1,7 @@
 jQuery(document).ready(function ($) {
 
     var toolbarHeight = 32;
+    var currentContent = null;
 
     /**
      * Show content
@@ -9,7 +10,7 @@ jQuery(document).ready(function ($) {
      */
     function showContent(content)
     {
-        if (null !== currentContent && content.get(0) !== currentContent.get(0)) {
+        if (currentContent !== null && content.get(0) !== currentContent.get(0)) {
             currentContent.hide();
         }
         content.show();
@@ -37,7 +38,7 @@ jQuery(document).ready(function ($) {
      */
     function updateContentHeight()
     {
-        if (null !== currentContent) {
+        if (currentContent !== null) {
             currentContent.height($(window).height() - toolbarHeight);
         }
     }
@@ -66,7 +67,7 @@ jQuery(document).ready(function ($) {
     function setCookie(name, value, path)
     {
         var cookieString = name + '=' + encodeURIComponent(value);
-        if (null !== path) {
+        if (path !== null) {
             cookieString += ';path=' + (path || '/');
         }
         document.cookie = cookieString;
@@ -78,7 +79,7 @@ jQuery(document).ready(function ($) {
     function close()
     {
         setCookie('sl_devkit_toolbar', 'closed');
-        if (null !== currentContent) {
+        if (currentContent !== null) {
             hideContent(currentContent);
         }
         $('#devkit-toolbar')
@@ -110,7 +111,6 @@ jQuery(document).ready(function ($) {
     }
 
     // toggleable
-    var currentContent = null;
     $('#devkit-toolbar > div.devkit-toggleable').click(function () {
         var content = $(this).next('div.devkit-content');
         if (content.is(':visible')) {
