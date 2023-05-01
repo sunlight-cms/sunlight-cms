@@ -47,7 +47,7 @@ if (isset($_GET['confirm'])) {
 
     $code = Request::get('confirm');
 
-    if (preg_match('{[a-z0-9]{48}$}AD', $code)) {
+    if (preg_match('{[\w\\-]{48}$}AD', $code)) {
         // check IP log
         if (IpLog::check(IpLog::FAILED_ACCOUNT_ACTIVATION)) {
             // remove expired activations
