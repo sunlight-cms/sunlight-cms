@@ -85,8 +85,6 @@ abstract class Labels
             'config.error.db.connect.error' => 'nepodařilo se připojit k databázi, chyba: %error%',
             'config.error.db.create.error' => 'nepodařilo se vytvořit databázi (možná ji bude nutné vytvořit manuálně ve správě vašeho webhostingu): %error%',
             'config.error.secret.empty' => 'tajný hash nesmí být prázdný',
-            'config.error.app_id.empty' => 'ID aplikace nesmí být prázdné',
-            'config.error.app_id.invalid' => 'ID aplikace obsahuje nepovolené znaky',
             'config.error.write_failed' => 'Nepodařilo se zapsat %config_path%. Zkontrolujte přístupová práva.',
             'config.db' => 'Přístup k MySQL databázi',
             'config.db.server' => 'Server',
@@ -104,8 +102,6 @@ abstract class Labels
             'config.system' => 'Nastavení systému',
             'config.secret' => 'Tajný hash',
             'config.secret.help' => 'náhodný tajný hash (používáno mj. jako součást XSRF ochrany)',
-            'config.app_id' => 'ID aplikace',
-            'config.app_id.help' => 'unikátní identifikátor v rámci serveru (používáno pro název session, cookies, ...)',
             'config.timezone' => 'Časové pásmo',
             'config.timezone.help' => 'časové pásmo (prázdné = spoléhat na nastavení serveru), viz',
             'config.locale' => 'Lokalizace',
@@ -162,8 +158,6 @@ abstract class Labels
             'config.error.db.connect.error' => 'could not connect to the database, error: %error%',
             'config.error.db.create.error' => 'could not create database (perhaps you need to create it manually via your webhosting\'s management page): %error%',
             'config.error.secret.empty' => 'secret hash must not be empty',
-            'config.error.app_id.empty' => 'app ID must not be empty',
-            'config.error.app_id.invalid' => 'app ID contains invalid characters',
             'config.error.write_failed' => 'Could not write %config_path%. Check filesystem permissions.',
             'config.db' => 'MySQL database access',
             'config.db.server' => 'Server',
@@ -181,8 +175,6 @@ abstract class Labels
             'config.system' => 'System configuration',
             'config.secret' => 'Secret hash',
             'config.secret.help' => 'random secret hash (used for XSRF protection etc.)',
-            'config.app_id' => 'App ID',
-            'config.app_id.help' => 'unique identifier (server-wide) (used as part of the session name, cookies, etc.)',
             'config.timezone' => 'Timezone',
             'config.timezone.help' => 'timezone (empty = rely on server settings), see',
             'config.locale' => 'Localisation',
@@ -595,7 +587,6 @@ class ConfigurationStep extends Step
             'db.name' => trim(Request::post('config_db_name', '')),
             'db.prefix' => trim(Request::post('config_db_prefix', '')),
             'secret' => trim(Request::post('config_secret', '')),
-            'app_id' => trim(Request::post('config_app_id', '')),
             'fallback_lang' => $this->vars['language'],
             'debug' => (bool) Form::loadCheckbox('config_debug'),
             'locale' => $this->getArrayConfigFromString(trim(Request::post('config_locale', ''))),
@@ -619,12 +610,6 @@ class ConfigurationStep extends Step
 
         if ($config['secret'] === '') {
             $this->errors[] = 'secret.empty';
-        }
-
-        if ($config['app_id'] === '') {
-            $this->errors[] = 'app_id.empty';
-        } elseif (!ctype_alnum($config['app_id'])) {
-            $this->errors[] = 'app_id.invalid';
         }
 
         // connect to the database
@@ -726,11 +711,6 @@ class ConfigurationStep extends Step
             <th><?php Labels::render('config.secret') ?></th>
             <td><input type="text"<?= Form::restorePostValueAndName('config_secret', $this->getConfig('secret', $defaultSecret)) ?>></td>
             <td class="help"><?php Labels::render('config.secret.help') ?></td>
-        </tr>
-        <tr>
-            <th><?php Labels::render('config.app_id') ?></th>
-            <td><input type="text"<?= Form::restorePostValueAndName('config_app_id', $this->getConfig('app_id', 'sunlight')) ?>></td>
-            <td class="help"><?php Labels::render('config.app_id.help') ?></td>
         </tr>
         <tr>
             <th><?php Labels::render('config.timezone') ?></th>

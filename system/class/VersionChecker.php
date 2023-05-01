@@ -2,6 +2,7 @@
 
 namespace Sunlight;
 
+use Kuria\Cache\Driver\Memory\MemoryDriver;
 use Kuria\Url\Url;
 use Sunlight\Util\HttpClient;
 use Sunlight\Util\HttpClientException;
@@ -37,7 +38,7 @@ class VersionChecker
                 'ver' => Core::VERSION,
                 'dist' => Core::DIST,
                 'php' => PHP_VERSION_ID,
-                'checksum' => sha1(Core::$appId . '$' . Core::$secret),
+                'checksum' => hash_hmac('sha1', __FILE__, Core::$secret),
                 'lang' => _lang('code.iso639-1'),
             ]);
 

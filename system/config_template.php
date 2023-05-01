@@ -15,10 +15,6 @@ return [
     // https://sunlight-cms.cz/resource/hashgen
     'secret' => '@@secret@@',
 
-    // unikatni identifikator v ramci serveru (pouzivano pro nazev session, cookies, aj.)
-    // unique identifier (server-wide) (used as part of the session name, cookies, etc.)
-    'app_id' => '@@app_id|sunlight@@',
-
     // vychozi jazyk (cs nebo en)
     // default language (cs or en)
     'fallback_lang' => '@@fallback_lang|cs@@',

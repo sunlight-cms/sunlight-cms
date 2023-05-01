@@ -11,6 +11,7 @@ use Sunlight\Image\ImageService;
 use Sunlight\Image\ImageStorage;
 use Sunlight\Image\ImageTransformer;
 use Sunlight\Util\Arr;
+use Sunlight\Util\Cookie;
 use Sunlight\Util\Filesystem;
 use Sunlight\Util\Form;
 use Sunlight\Util\Html;
@@ -32,7 +33,11 @@ abstract class User
     const GUEST_GROUP_ID = 2;
     /** Default registered user group ID */
     const REGISTERED_GROUP_ID = 3;
-    /** Auth hash type - persistent login */
+    /** Cookie name - session */
+    const COOKIE_SESSION = 'sl_session';
+    /** Cookie name - persistent login key */
+    const COOKIE_PERSISTENT_LOGIN = 'sl_persistent_login';
+    /** Auth hash type - remember me */
     const AUTH_PERSISTENT_LOGIN = 'persistent_login';
     /** Auth hash type - session */
     const AUTH_SESSION = 'session';
@@ -138,13 +143,11 @@ abstract class User
             // check persistent login cookie if there are no login data
             if (!$loginDataExist) {
                 // check cookie existence
-                $persistentCookieName = Core::$appId . '_persistent_key';
-
-                if (isset($_COOKIE[$persistentCookieName]) && is_string($_COOKIE[$persistentCookieName])) {
+                if (Cookie::exists(self::COOKIE_PERSISTENT_LOGIN)) {
                     // cookie auth process
                     do {
                         // parse cookie
-                        $cookie = explode('$', $_COOKIE[$persistentCookieName], 2);
+                        $cookie = explode('$', Cookie::get(self::COOKIE_PERSISTENT_LOGIN), 2);
 
                         if (count($cookie) !== 2) {
                             // invalid cookie format
@@ -190,8 +193,8 @@ abstract class User
 
                     // check result
                     if ($errorCode !== null) {
-                        // cookie authoriation has failed, remove the cookie
-                        setcookie(Core::$appId . '_persistent_key', '', (time() - 3600), '/');
+                        // cookie authorization has failed, remove the cookie
+                        Cookie::remove(self::COOKIE_PERSISTENT_LOGIN);
                         break;
                     }
                 }
@@ -710,12 +713,7 @@ abstract class User
             $cookie_data[] = $id;
             $cookie_data[] = self::getAuthHash(self::AUTH_PERSISTENT_LOGIN, $email, $storedPassword);
 
-            setcookie(
-                Core::$appId . '_persistent_key',
-                implode('$', $cookie_data),
-                (time() + 31536000),
-                '/'
-            );
+            Cookie::set(self::COOKIE_PERSISTENT_LOGIN, implode('$', $cookie_data), ['expires' => time() + 31536000]);
         }
     }
 
@@ -982,12 +980,12 @@ abstract class User
             session_destroy();
 
             if (!headers_sent()) {
-                setcookie(session_name(), '', time() - 3600, '/');
+                Cookie::remove(self::COOKIE_SESSION);
             }
         }
 
-        if (!headers_sent() && isset($_COOKIE[Core::$appId . '_persistent_key'])) {
-            setcookie(Core::$appId . '_persistent_key', '', (time() - 3600), '/');
+        if (!headers_sent() && Cookie::exists(self::COOKIE_PERSISTENT_LOGIN)) {
+            Cookie::remove(self::COOKIE_PERSISTENT_LOGIN);
         }
 
         return true;

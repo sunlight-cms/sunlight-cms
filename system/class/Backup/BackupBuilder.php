@@ -360,7 +360,6 @@ class BackupBuilder
         if ($this->prefillConfigFile) {
             $vars = [
                 'db.prefix' => substr(DB::$prefix, 0, -1),
-                'app_id' => Core::$appId,
                 'fallback_lang' => Core::$fallbackLang,
             ];
         } else {

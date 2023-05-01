@@ -8,6 +8,7 @@ use Sunlight\Extend;
 use Sunlight\Localization\LocalizationDirectory;
 use Sunlight\Router;
 use Sunlight\User;
+use Sunlight\Util\Cookie;
 
 class ToolbarRenderer
 {
@@ -44,7 +45,7 @@ class ToolbarRenderer
             $now = microtime(true);
 
             // determine class
-            if (isset($_COOKIE['sl_devkit_toolbar']) && $_COOKIE['sl_devkit_toolbar'] === 'closed') {
+            if (Cookie::get('sl_devkit_toolbar') === 'closed') {
                 $class = 'devkit-toolbar-closed';
             } else {
                 $class = 'devkit-toolbar-open';

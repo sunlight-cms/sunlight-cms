@@ -49,8 +49,6 @@ abstract class Core
     /** @var bool */
     static $debug;
     /** @var string */
-    static $appId;
-    /** @var string */
     static $secret;
     /** @var string */
     static $lang;
@@ -193,7 +191,6 @@ abstract class Core
             'db.name' => null,
             'db.prefix' => null,
             'secret' => null,
-            'app_id' => null,
             'fallback_lang' => 'en',
             'debug' => false,
             'cache' => true,
@@ -208,7 +205,6 @@ abstract class Core
                 'db.name',
                 'db.prefix',
                 'secret',
-                'app_id',
             ];
 
             foreach ($requiredOptions as $requiredOption) {
@@ -224,7 +220,6 @@ abstract class Core
         // define variables
         self::$env = $options['env'];
         self::$debug = (bool) $options['debug'];
-        self::$appId = $options['app_id'];
         self::$secret = $options['secret'];
         self::$fallbackLang = $options['fallback_lang'];
         self::$sessionEnabled = $options['session_enabled'];
@@ -453,13 +448,29 @@ abstract class Core
         // start session
         if (self::$sessionEnabled) {
             // cookie parameters
-            $cookieParams = session_get_cookie_params();
-            $cookieParams['httponly'] = 1;
-            $cookieParams['secure'] = self::$currentUrl->getScheme() === 'https' ? 1 : 0;
-            session_set_cookie_params($cookieParams['lifetime'], $cookieParams['path'], $cookieParams['domain'], $cookieParams['secure'], $cookieParams['httponly']);
+            $cookieParams = [
+                'lifetime' => 0,
+                'path' => self::$baseUrl->getPath() . '/',
+                'domain' => '',
+                'secure' => self::isHttpsEnabled(),
+                'httponly' => true,
+                'samesite' => 'Lax',
+            ];
+
+            if (PHP_VERSION_ID >= 70300) {
+                session_set_cookie_params($cookieParams);
+            } else {
+                session_set_cookie_params(
+                    $cookieParams['lifetime'],
+                    $cookieParams['path'],
+                    $cookieParams['domain'],
+                    $cookieParams['secure'],
+                    $cookieParams['httponly']
+                );
+            }
 
             // set session name and start it
-            session_name(self::$appId . '_session');
+            session_name(User::COOKIE_SESSION);
             session_start();
 
             if (self::$sessionRegenerate) {
@@ -540,6 +551,14 @@ abstract class Core
     static function getCurrentUrl(): Url
     {
         return clone self::$currentUrl;
+    }
+
+    /**
+     * Check if the current request has been done via HTTPS
+     */
+    static function isHttpsEnabled(): bool
+    {
+        return self::$baseUrl->getScheme() === 'https';
     }
 
     /**

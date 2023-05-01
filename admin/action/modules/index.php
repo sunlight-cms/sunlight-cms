@@ -8,6 +8,7 @@ use Sunlight\Message;
 use Sunlight\Router;
 use Sunlight\Settings;
 use Sunlight\User;
+use Sunlight\Util\Cookie;
 use Sunlight\Util\Environment;
 use Sunlight\Util\Json;
 use Sunlight\VersionChecker;
@@ -49,7 +50,7 @@ Extend::call('admin.index.custom', [
 $logout_warning = '';
 $maxltime = ini_get('session.gc_maxlifetime');
 
-if (!empty($maxltime) && !isset($_COOKIE[Core::$appId . '_persistent_key'])) {
+if (!empty($maxltime) && !Cookie::exists(User::COOKIE_PERSISTENT_LOGIN)) {
     $logout_warning = Admin::note(_lang('admin.index.logoutwarn', ['%minutes%' => round($maxltime / 60)]));
 }
 
