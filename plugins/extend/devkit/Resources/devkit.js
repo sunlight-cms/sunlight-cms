@@ -59,18 +59,10 @@ jQuery(document).ready(function ($) {
 
     /**
      * Set cookie
-     *
-     * @param name
-     * @param value
-     * @param path string, null = current, undefined = "/"
      */
-    function setCookie(name, value, path)
+    function setCookie(name, value)
     {
-        var cookieString = name + '=' + encodeURIComponent(value);
-        if (path !== null) {
-            cookieString += ';path=' + (path || '/');
-        }
-        document.cookie = cookieString;
+        document.cookie = name + '=' + encodeURIComponent(value) + ';path=' + SunlightVars.basePath;
     }
 
     /**
