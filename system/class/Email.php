@@ -90,10 +90,8 @@ abstract class Email
 
     /**
      * Validate an e-mail address
-     *
-     * @param bool $checkDns check DNS for the given domain (disabled in debug) 1/0
      */
-    static function validate(string $email, bool $checkDns = true): bool
+    static function validate(string $email): bool
     {
         if (mb_strlen($email) > 255) {
             return false;
@@ -138,11 +136,17 @@ abstract class Email
             return false; // character not valid in local part
         }
 
-        if ($checkDns && !self::checkDns($domain)) {
-            return false; // no DNS record for the given domain
-        }
+        $valid = true;
+        $checkDns = !Core::$debug;
 
-        return true;
+        Extend::call('email.validate', [
+            'email' => $email,
+            'domain' => $domain,
+            'check_dns' => &$checkDns,
+            'valid' => &$valid,
+        ]);
+
+        return $valid && (!$checkDns || self::checkDns($domain));
     }
 
     /**
@@ -159,7 +163,7 @@ abstract class Email
 
     private static function checkDns(string $domain): bool
     {
-        if (Core::$debug || !function_exists('checkdnsrr')) {
+        if (!function_exists('checkdnsrr')) {
             return true;
         }
 
