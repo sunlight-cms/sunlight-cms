@@ -95,55 +95,54 @@ abstract class Email
      */
     static function validate(string $email, bool $checkDns = true): bool
     {
-        $isValid = true;
-        $atIndex = mb_strrpos($email, '@');
-
         if (mb_strlen($email) > 255) {
-            $isValid = false;
-        } elseif (is_bool($atIndex) && !$atIndex) {
-            $isValid = false;
-        } else {
-            $domain = mb_substr($email, $atIndex + 1);
-            $local = mb_substr($email, 0, $atIndex);
-            $localLen = mb_strlen($local);
-            $domainLen = mb_strlen($domain);
-
-            if ($localLen < 1 || $localLen > 64) {
-                // local part length exceeded
-                $isValid = false;
-            } elseif ($domainLen < 1 || $domainLen > 255) {
-                // domain part length exceeded
-                $isValid = false;
-            } elseif ($local[0] == '.' || $local[$localLen - 1] == '.') {
-                // local part starts or ends with '.'
-                $isValid = false;
-            } elseif (preg_match('{\\.\\.}', $local)) {
-                // local part has two consecutive dots
-                $isValid = false;
-            } elseif (!preg_match('{[A-Za-z0-9\\-\\.]+$}AD', $domain)) {
-                // character not valid in domain part
-                $isValid = false;
-            } elseif (preg_match('{\\.\\.}', $domain)) {
-                // domain part has two consecutive dots
-                $isValid = false;
-            } elseif (!preg_match('{[A-Za-z0-9\\-\\._]+$}AD', $local)) {
-                // character not valid in local part
-                $isValid = false;
-            }
-
-            if (
-                $isValid
-                && $checkDns
-                && !Core::$debug
-                && function_exists('checkdnsrr')
-                && !checkdnsrr($domain . '.', 'ANY')
-            ) {
-                // no DNS record for the given domain
-                $isValid = false;
-            }
+            return false;
         }
 
-        return $isValid;
+        $atIndex = mb_strrpos($email, '@');
+
+        if ($atIndex === false) {
+            return false;
+        }
+
+        $domain = mb_substr($email, $atIndex + 1);
+        $local = mb_substr($email, 0, $atIndex);
+        $localLen = mb_strlen($local);
+        $domainLen = mb_strlen($domain);
+
+        if ($localLen < 1 || $localLen > 64) {
+            return false; // local part length exceeded
+        }
+
+        if ($domainLen < 1 || $domainLen > 255) {
+            return false; // domain part length exceeded
+        }
+
+        if ($local[0] == '.' || $local[$localLen - 1] == '.') {
+            return false; // local part starts or ends with '.'
+        }
+
+        if (preg_match('{\\.\\.}', $local)) {
+            return false; // local part has two consecutive dots
+        }
+
+        if (!preg_match('{[A-Za-z0-9\\-\\.]+$}AD', $domain)) {
+            return false; // character not valid in domain part
+        }
+
+        if (preg_match('{\\.\\.}', $domain)) {
+            return false; // domain part has two consecutive dots
+        }
+
+        if (!preg_match('{[A-Za-z0-9\\-\\._]+$}AD', $local)) {
+            return false; // character not valid in local part
+        }
+
+        if ($checkDns && !self::checkDns($domain)) {
+            return false; // no DNS record for the given domain
+        }
+
+        return true;
     }
 
     /**
@@ -156,5 +155,14 @@ abstract class Email
         }
 
         return '<a href="#" onclick="return Sunlight.mai_lto(this);">' . _e($email) . '</a>';
+    }
+
+    private static function checkDns(string $domain): bool
+    {
+        if (Core::$debug || !function_exists('checkdnsrr')) {
+            return true;
+        }
+
+        return @checkdnsrr($domain . '.');
     }
 }
