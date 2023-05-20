@@ -33,6 +33,7 @@
 /plugins/templates/*
 !/plugins/templates/default
 !/plugins/templates/classic
+!/plugins/templates/.htaccess
 
 /vendor/*
 !/vendor/.htaccess
