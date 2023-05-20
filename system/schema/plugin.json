@@ -7,11 +7,38 @@
         "description": {
             "type": "string"
         },
-        "author": {
-            "type": "string"
-        },
-        "url": {
-            "type": "string"
+        "authors": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "url": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    }
+                },
+                "additionalProperties": false,
+                "anyOf": [
+                    {
+                        "required": [
+                            "name"
+                        ]
+                    },
+                    {
+                        "required": [
+                            "url"
+                        ]
+                    }
+                ]
+            }
         },
         "version": {
             "type": "string"
@@ -38,6 +65,7 @@
                     ]
                 }
             },
+            "additionalProperties": false,
             "required": [
                 "system"
             ]

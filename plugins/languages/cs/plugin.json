@@ -2,7 +2,9 @@
     "$schema": "../../../system/schema/language.json",
     "name": "Čeština",
     "description": "Česká lokalizace systému.",
-    "url": "https://sunlight-cms.cz/",
+    "authors": [
+        {"url": "https://sunlight-cms.cz/"}
+    ],
     "version": "8.0",
     "environment": {
         "system": "^8.0"

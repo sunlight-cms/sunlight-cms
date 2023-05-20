@@ -21,31 +21,6 @@ if (isset($_GET['cleared'])) {
     $output .= Message::ok(_lang('global.done'));
 }
 
-// functions
-$renderPluginAuthor = function ($author, $url) {
-    $output = '';
-
-    if (!empty($url)) {
-        $output .= '<a href="' . _e($url) . '" target="_blank">';
-    }
-
-    if (!empty($author)) {
-        $output .= _e($author);
-    } elseif (!empty($url)) {
-        $output .= _e(parse_url($url, PHP_URL_HOST) ?? '');
-    }
-
-    if (!empty($url)) {
-        $output .= '</a>';
-    }
-
-    if ($output !== '') {
-        $output = '<li><strong>' . _lang('admin.plugins.author') . ":</strong> {$output}</li>\n";
-    }
-
-    return $output;
-};
-
 // buttons
 $output .= '<p>
         <a class="button" href="' . _e(Router::admin('plugins-upload')) . '"><img src="' . _e(Router::path('admin/images/icons/plugin.png')) . '" alt="upload" class="icon">' . _lang('admin.plugins.upload') . '</a>
@@ -81,8 +56,6 @@ foreach (Core::$pluginManager->getTypes() as $type) {
         $title = $plugin->getOption('name');
         $descr = $plugin->getOption('description');
         $version = $plugin->getOption('version');
-        $author = $plugin->getOption('author');
-        $url = $plugin->getOption('url');
 
         // determine row class
         if ($plugin->hasStatus(Plugin::STATUS_ERROR)) {
@@ -112,7 +85,37 @@ foreach (Core::$pluginManager->getTypes() as $type) {
             ' . (!empty($descr) ? '<p>' . nl2br(_e($descr), false) . "</p>\n" : '') . '
             <ul class="inline-list">
                 <li><strong>' . _lang('admin.plugins.version') . ':</strong> ' . _e($version) . '</li>
-                ' . $renderPluginAuthor($author, $url) . '
+                ' . _buffer(function () use ($plugin) {
+                    $authors = $plugin->getOption('authors');
+
+                    if (empty($authors)) {
+                        return;
+                    }
+
+                    echo '<li><strong>' . _lang('admin.plugins.authors') . ':</strong> ';
+
+                    $first = true;
+
+                    foreach ($authors as $author) {
+                        if ($first) {
+                            $first = false;
+                        } else {
+                            echo ', ';
+                        }
+
+                        if ($author['url'] !== null) {
+                            echo '<a href="' . _e($author['url']) . '" target="_blank" rel="noopener">';
+                        }
+
+                        echo _e($author['name']);
+
+                        if ($author['url'] !== null) {
+                            echo '</a>';
+                        }
+                    }
+
+                    echo "</li>\n";
+                }) . '
             </ul>
         </td>
     </tr>

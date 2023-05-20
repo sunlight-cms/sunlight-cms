@@ -58,8 +58,21 @@ abstract class PluginType
             Option::any('$schema')->default(null),
             Option::string('name'),
             Option::string('description')->default(null),
-            Option::string('author')->default(null),
-            Option::string('url')->default(null),
+            Option::nodeList(
+                'authors',
+                Option::string('name')->default(function (Node $node) {
+                    return $node['url'] !== null
+                        ? parse_url($node['url'], PHP_URL_HOST)
+                        : null;
+                }),
+                Option::string('url')->default(null)
+            )->validate(function (array $authors) {
+                foreach ($authors as $key => $author) {
+                    if ($author['name'] === null && $author['url'] === null) {
+                        return sprintf('[%s] must specify at least name or url, got none', $key);
+                    }
+                }
+            }),
             Option::string('version'),
             Option::node(
                 'environment',

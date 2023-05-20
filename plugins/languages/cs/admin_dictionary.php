@@ -459,7 +459,7 @@ return [
     'admin.plugins.title.extend' => 'Extend pluginy',
     'admin.plugins.plugin' => 'Plugin',
     'admin.plugins.description' => 'Popis',
-    'admin.plugins.author' => 'Autor',
+    'admin.plugins.authors' => 'Autoři',
     'admin.plugins.version' => 'Verze',
     'admin.plugins.status' => 'Stav',
     'admin.plugins.implementation' => 'Implementace',
