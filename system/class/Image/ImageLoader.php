@@ -90,7 +90,7 @@ final class ImageLoader
 
     private static function getInfo(string $path, string $format): array
     {
-        $info = getimagesize($path);
+        $info = @getimagesize($path);
 
         if ($info === false || $info[0] === 0 || $info[1] === 0) {
             throw new ImageException(ImageException::COULD_NOT_GET_SIZE);
