@@ -150,7 +150,7 @@ HTML;
         // favicon
         if ($assets['favicon'] !== null) {
             $faviconPath = $assets['favicon']
-                ? Router::path('favicon.ico') . '?' . Settings::get('cacheid')
+                ? Router::path('favicon.ico') . '?' . $cacheParam
                 : 'data:,';
 
             $html .= "\n<link rel=\"icon\" href=\"" . _e($faviconPath) . '">';

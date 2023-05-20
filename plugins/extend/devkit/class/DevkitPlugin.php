@@ -137,8 +137,8 @@ ENTRY
      */
     function onHead(array $args): void
     {
-        $args['css'][] = $this->getWebPath() . '/Resources/devkit.css';
-        $args['js'][] = $this->getWebPath() . '/Resources/devkit.js';
+        $args['css'][] = $this->getWebPath() . '/public/devkit.css';
+        $args['js'][] = $this->getWebPath() . '/public/devkit.js';
     }
 
     /**
@@ -159,7 +159,7 @@ ENTRY
         }
 
         ?>
-<link rel="stylesheet" href="<?= _e($this->getWebPath() . '/Resources/devkit.css') ?>">
+<link rel="stylesheet" href="<?= _e($this->getWebPath() . '/public/devkit.css') ?>">
 <?php
     }
 
@@ -173,7 +173,7 @@ ENTRY
         }
 
         ?>
-<script src="<?= _e($this->getWebPath() . '/Resources/devkit.js') ?>"></script>
+<script src="<?= _e($this->getWebPath() . '/public/devkit.js') ?>"></script>
 <?= $this->getToolbar()->render() ?>
 <?php
     }

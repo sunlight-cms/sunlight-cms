@@ -360,8 +360,6 @@ class PluginLoader
                 return;
             }
 
-            $this->ensureComposerRepositoryAccessControl($repository);
-
             if (!$injector->inject($repository, $errors)) {
                 return;
             }
@@ -384,18 +382,11 @@ class PluginLoader
                 continue;
             }
 
-            $autoload['psr-4'][$plugin->options['namespace'] . '\\'] = $plugin->dir;
+            $autoload['psr-4'][$plugin->options['namespace'] . '\\'] = $plugin->dir . DIRECTORY_SEPARATOR . 'class';
 
             foreach ($plugin->options['autoload'] as $type => $entries) {
                 $autoload[$type] += $entries;
             }
-        }
-    }
-
-    private function ensureComposerRepositoryAccessControl(Repository $repository): void
-    {
-        if (!is_file($repository->getVendorPath() . '/.htaccess')) {
-            Filesystem::denyAccessToDirectory($repository->getVendorPath());
         }
     }
 
