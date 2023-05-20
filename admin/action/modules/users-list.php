@@ -140,11 +140,11 @@ if (DB::size($query) != 0) {
             <td>' . $item['user_group_title'] . '</td>
             <td class="actions">
                 <a class="button" href="' . _e(Router::admin('users-edit', ['query' => ['id' => $item['user_username']]])) . '">
-                    <img src="' . _e(Router::path('admin/images/icons/edit.png')) . '" alt="edit" class="icon">'
+                    <img src="' . _e(Router::path('admin/public/images/icons/edit.png')) . '" alt="edit" class="icon">'
                     . _lang('global.edit')
                 . '</a>
                 <a class="button" href="' . _e(Router::admin('users-delete', ['query' => ['id' =>$item['user_username']]])) . '">
-                    <img src="' . _e(Router::path('admin/images/icons/delete.png')) . '" alt="del" class="icon">'
+                    <img src="' . _e(Router::path('admin/public/images/icons/delete.png')) . '" alt="del" class="icon">'
                     . _lang('global.delete')
                 . "</a>
             </td>

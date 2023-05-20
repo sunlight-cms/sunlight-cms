@@ -44,7 +44,7 @@ if (isset($_GET['id'], $_GET['returnid'], $_GET['returnpage'])) {
         $backlink = Router::admin('content-articles-list', ['query' => ['cat' => $returnid, 'page' => $returnpage]]);
         $actionplus = ['query' => ['id' => $id, 'returnid' => $returnid, 'returnpage' => $returnpage]];
         $submittext = 'global.savechanges';
-        $artlink = ' <a href="' . _e(Router::article($query['id'], $query['slug'], $query['cat_slug'])) . '" target="_blank"><img src="' . _e(Router::path('admin/images/icons/loupe.png')) . '" alt="prev"></a>';
+        $artlink = ' <a href="' . _e(Router::article($query['id'], $query['slug'], $query['cat_slug'])) . '" target="_blank"><img src="' . _e(Router::path('admin/public/images/icons/loupe.png')) . '" alt="prev"></a>';
         $new = false;
         $continue = true;
     }
@@ -331,7 +331,7 @@ if ($continue) {
         $picture .= '<img src="' . _e(Router::file(Article::getImagePath($query['picture_uid']))) . '" alt="article picture" id="is-picture-file">
 <label id="is-picture-delete"><input type="checkbox" name="picture-delete" value="1"> ' . _lang('global.delete') . '</label>';
     } else {
-        $picture .= '<img src="' . _e(Router::path('admin/images/art-no-pic.png')) . "\" alt=\"no picture\" id=\"is-picture-file\">\n";
+        $picture .= '<img src="' . _e(Router::path('admin/public/images/art-no-pic.png')) . "\" alt=\"no picture\" id=\"is-picture-file\">\n";
     }
 
     $picture .= "<input type=\"file\" name=\"picture\" id=\"is-picture-upload\">\n";
@@ -403,7 +403,7 @@ if ($continue) {
                                 . (!$new ? '
                                     <span class="customsettings">
                                         <a href="' . _e(Router::admin('content-articles-delete', ['query' => ['id' => $query['id'], 'returnid' => $query['home1'], 'returnpage' => 1]])) . '">
-                                            <span><img src="' . _e(Router::path('admin/images/icons/delete.png')) . '" alt="del" class="icon">' . _lang('global.delete') . '</span>
+                                            <span><img src="' . _e(Router::path('admin/public/images/icons/delete.png')) . '" alt="del" class="icon">' . _lang('global.delete') . '</span>
                                         </a>
                                     </span>
                                     <span class="customsettings">

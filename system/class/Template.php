@@ -41,9 +41,9 @@ abstract class Template
 
         // JS
         $js = [
-            'jquery' => Router::path('system/js/jquery.js'),
-            'sunlight' => Router::path('system/js/sunlight.js'),
-            'rangyinputs' => Router::path('system/js/rangyinputs.js'),
+            'jquery' => Router::path('system/public/jquery.js'),
+            'sunlight' => Router::path('system/public/sunlight.js'),
+            'rangyinputs' => Router::path('system/public/rangyinputs.js'),
         ];
 
         foreach ($_index->template->getOption('js') as $key => $path) {

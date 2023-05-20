@@ -102,7 +102,7 @@ if (User::hasPrivilege('admingroups')) {
     <tr>
     <td>
         <span class="' . ($is_sys ? 'em' : '') . (($group['blocked'] == 1) ? ' strike' : '') . '"' . (($group['color'] !== '') ? ' style="color:' . $group['color'] . ';"' : '') . '>'
-            . (($group['reglist'] == 1) ? '<img src="' . _e(Router::path('admin/images/icons/action.png')) . '" alt="reglist" class="icon" title="' . _lang('admin.users.groups.reglist') . '">' : '')
+            . (($group['reglist'] == 1) ? '<img src="' . _e(Router::path('admin/public/images/icons/action.png')) . '" alt="reglist" class="icon" title="' . _lang('admin.users.groups.reglist') . '">' : '')
             . (($group['icon'] != '') ? '<img src="' . _e(Router::path('images/groupicons/' . $group['icon'])) . '" alt="icon" class="groupicon"> ' : '')
             . $group['title']
         . '</span>
@@ -110,14 +110,14 @@ if (User::hasPrivilege('admingroups')) {
     <td>' . $group['level'] . '</td>
     <td>' . (($group['id'] != User::GUEST_GROUP_ID)
         ? '<a href="' . _e(Router::admin('users-list', ['query' => ['group_id' => $group['id']]])) . '">
-            <img src="' . _e(Router::path('admin/images/icons/list.png')) . '" alt="list" class="icon">'
+            <img src="' . _e(Router::path('admin/public/images/icons/list.png')) . '" alt="list" class="icon">'
             . $group['user_count']
             . '</a>'
             : '-')
     . '</td>
     <td class="actions">
-        <a class="button" href="' . _e(Router::admin('users-editgroup', ['query' => ['id' => $group['id']]])) . '"><img src="' . _e(Router::path('admin/images/icons/edit.png')) . '" alt="edit" class="icon">' . _lang('global.edit') . '</a>
-        <a class="button" href="' . _e(Router::admin('users-delgroup', ['query' => ['id' => $group['id']]])) . '"><img src="' . _e(Router::path('admin/images/icons/delete.png')) . '" alt="del" class="icon">' . _lang('global.delete') . "</a>
+        <a class="button" href="' . _e(Router::admin('users-editgroup', ['query' => ['id' => $group['id']]])) . '"><img src="' . _e(Router::path('admin/public/images/icons/edit.png')) . '" alt="edit" class="icon">' . _lang('global.edit') . '</a>
+        <a class="button" href="' . _e(Router::admin('users-delgroup', ['query' => ['id' => $group['id']]])) . '"><img src="' . _e(Router::path('admin/public/images/icons/delete.png')) . '" alt="del" class="icon">' . _lang('global.delete') . "</a>
     </td>
     </tr>\n";
     }
@@ -152,17 +152,17 @@ switch ($msg) {
 $modules = [
     'users-edit' => [
         'url' => Router::admin('users-edit'),
-        'icon' => Router::path('admin/images/icons/big-new.png'),
+        'icon' => Router::path('admin/public/images/icons/big-new.png'),
         'label' => _lang('global.create')
     ],
     'users-list' => [
         'url' => Router::admin('users-list'),
-        'icon' => Router::path('admin/images/icons/big-list.png'),
+        'icon' => Router::path('admin/public/images/icons/big-list.png'),
         'label' => _lang('admin.users.list')
     ],
     'users-move' => [
         'url' => Router::admin('users-move'),
-        'icon' => Router::path('admin/images/icons/big-move.png'),
+        'icon' => Router::path('admin/public/images/icons/big-move.png'),
         'label' => _lang('admin.users.move')
     ],
 ];

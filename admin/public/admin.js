@@ -40,7 +40,7 @@ Sunlight.admin = (function ($) {
     {
         // preload spinner image
         var spinner = new Image();
-        spinner.src = SunlightVars.basePath + 'admin/images/spinner.gif';
+        spinner.src = SunlightVars.basePath + 'admin/public/images/spinner.gif';
 
         // show after form submit
         $(document.body).on('submit', 'form', function (e) {
@@ -70,7 +70,7 @@ Sunlight.admin = (function ($) {
             overlay = $('<div id="busy-overlay">'
                 + '<div><div>'
                     + '<p></p>'
-                    + '<p><img src="' + SunlightVars.basePath + 'admin/images/spinner.gif"></p>'
+                    + '<p><img src="' + SunlightVars.basePath + 'admin/public/images/spinner.gif"></p>'
                     + '<button onclick="void Sunlight.admin.hideBusyOverlay()"></button>'
                 + '</div></div>'
                 + '</div>')

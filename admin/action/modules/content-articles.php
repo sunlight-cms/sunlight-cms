@@ -10,7 +10,7 @@ defined('SL_ROOT') or exit;
 
 // output
 $output .= '
-<p><a class="button" href="' . _e(Router::admin('content-articles-edit')) . '"><img src="' . _e(Router::path('admin/images/icons/new.png')) . '" alt="new" class="icon">' . _lang('admin.content.articles.create') . '</a></p>
+<p><a class="button" href="' . _e(Router::admin('content-articles-edit')) . '"><img src="' . _e(Router::path('admin/public/images/icons/new.png')) . '" alt="new" class="icon">' . _lang('admin.content.articles.create') . '</a></p>
 
 <table class="list list-noborder list-hover list-half">
 <thead>
@@ -44,7 +44,7 @@ foreach ($tree as $page) {
 
     if ($page['type'] == Page::CATEGORY) {
         $output .= '<a class="node-level-m' . $page['node_level'] . '" href="' . _e(Router::admin('content-articles-list', ['query' => ['cat' => $page['id']]])) . '">
-    <img src="' . _e(Router::path('admin/images/icons/dir.png')) . '" alt="col" class="icon">
+    <img src="' . _e(Router::path('admin/public/images/icons/dir.png')) . '" alt="col" class="icon">
     ' . $page['title'] . '
 </a>';
     } else {

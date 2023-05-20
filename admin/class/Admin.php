@@ -81,7 +81,7 @@ abstract class Admin
             $output .= '<a href="' . _e(Router::module('settings')) . '">' . _lang('usermenu.settings') . '</a>,'
                 . ' <a href="' . _e(Xsrf::addToUrl(Router::path('system/script/logout.php', ['query' => ['_return' => Router::adminIndex()]]))) . '">' . _lang('usermenu.logout') . '</a>]';
             $output .= '<a href="' . _e(Core::getBaseUrl()->getPath()) . '/" target="_blank" class="usermenu-web-link" title="' . _lang('admin.link.site') . '">'
-                . '<img class="icon" src="' . _e(Router::path('admin/images/icons/guide.png')) . '" alt="' . _lang('admin.link.site') . '">'
+                . '<img class="icon" src="' . _e(Router::path('admin/public/images/icons/guide.png')) . '" alt="' . _lang('admin.link.site') . '">'
                 . '</a>';
         } else {
             $output .= '<a href="' . _e(Router::adminIndex()) . '">' . _lang('usermenu.guest') . '</a>';
@@ -109,7 +109,7 @@ abstract class Admin
      */
     static function note(string $str, bool $no_gray = false, ?string $icon = null): string
     {
-        return '<p' . ($no_gray ? '' : ' class="note"') . '><img src="' . _e(Router::path('admin/images/icons/' . ($icon ?? 'note') . '.png')) . '" alt="note" class="icon">' . $str . '</p>';
+        return '<p' . ($no_gray ? '' : ' class="note"') . '><img src="' . _e(Router::path('admin/public/images/icons/' . ($icon ?? 'note') . '.png')) . '" alt="note" class="icon">' . $str . '</p>';
     }
 
     /**
@@ -594,13 +594,13 @@ abstract class Admin
                 'admin' => Router::path('admin/script/style.php', $styleOptions),
             ],
             'js' => [
-                'jquery' => Router::path('system/js/jquery.js'),
-                'sunlight' => Router::path('system/js/sunlight.js'),
-                'rangyinputs' => Router::path('system/js/rangyinputs.js'),
-                'scrollwatch' => Router::path('system/js/scrollwatch.js'),
-                'scrollfix' => Router::path('system/js/scrollfix.js'),
-                'jquery_ui' => Router::path('admin/js/jquery-ui.js'),
-                'admin' => Router::path('admin/js/admin.js'),
+                'jquery' => Router::path('system/public/jquery.js'),
+                'sunlight' => Router::path('system/public/sunlight.js'),
+                'rangyinputs' => Router::path('system/public/rangyinputs.js'),
+                'scrollwatch' => Router::path('system/public/scrollwatch.js'),
+                'scrollfix' => Router::path('system/public/scrollfix.js'),
+                'jquery_ui' => Router::path('admin/public/jquery-ui.js'),
+                'admin' => Router::path('admin/public/admin.js'),
             ],
             'js_before' => "\n" . Core::getJavascript([
                 'admin' => [

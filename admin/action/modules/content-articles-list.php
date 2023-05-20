@@ -47,7 +47,7 @@ if ($continue) {
     // category title
     $output .= '<h2 class="bborder">'
         . $catdata['title']
-        . ' <a class="button" href="' . _e(Router::admin('content-articles-edit', ['query' => ['new_cat' => $cid]])) . '"><img src="' . _e(Router::path('admin/images/icons/new.png')) . '" alt="new" class="icon">'
+        . ' <a class="button" href="' . _e(Router::admin('content-articles-edit', ['query' => ['new_cat' => $cid]])) . '"><img src="' . _e(Router::path('admin/public/images/icons/new.png')) . '" alt="new" class="icon">'
         . _lang('admin.content.articles.create')
         . "</a></h2>\n";
 
@@ -98,10 +98,10 @@ if ($continue) {
     <td>' . GenericTemplates::renderTime($art['time']) . '</td>
     <td class="actions">
         <a class="button" href="' . _e(Router::admin('content-articles-edit', ['query' => ['id' => $art['id'], 'returnid' => $cid,  'returnpage' => $s]])) . '">
-            <img src="' . _e(Router::path('admin/images/icons/edit.png')) . '" alt="edit" class="icon">' . _lang('global.edit') . '
+            <img src="' . _e(Router::path('admin/public/images/icons/edit.png')) . '" alt="edit" class="icon">' . _lang('global.edit') . '
         </a>
         <a class="button" href="' . _e(Router::admin('content-articles-delete', ['query' => ['id' => $art['id'], 'returnid' => $cid, 'returnpage' => $s]])) . '">
-            <img src="' . _e(Router::path('admin/images/icons/delete.png')) . '" alt="del" class="icon">' . _lang('global.delete') . '
+            <img src="' . _e(Router::path('admin/public/images/icons/delete.png')) . '" alt="del" class="icon">' . _lang('global.delete') . '
         </a>
     </td>
 </tr>';

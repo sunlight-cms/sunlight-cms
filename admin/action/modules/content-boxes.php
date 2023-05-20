@@ -59,7 +59,7 @@ $output .= $message;
 $output .= _buffer(function () { ?>
     <form method="post">
     <p>
-        <a class="button" href="<?= _e(Router::admin('content-boxes-edit')) ?>"><img class="icon" src="<?= Router::path('admin/images/icons/new.png') ?>" alt="new"><?= _lang('admin.content.boxes.new') ?></a>
+        <a class="button" href="<?= _e(Router::admin('content-boxes-edit')) ?>"><img class="icon" src="<?= Router::path('admin/public/images/icons/new.png') ?>" alt="new"><?= _lang('admin.content.boxes.new') ?></a>
     </p>
 <?php });
 
@@ -89,16 +89,16 @@ foreach ($boxes as $template_idt => $template_boxes) {
                     <td class="box-title-cell box-sortable-cell"><?= $box['title'] ?></td>
                     <td class="box-settings-cell">
                         <?php if ($box['level'] > 0): $iconTitle = _lang('admin.content.form.level') . ' ' . _e($box['level']) . '+'; ?>
-                            <img src="<?= Router::path('admin/images/icons/lock3.png') ?>" class="icon" alt="<?= $iconTitle ?>" title="<?= $iconTitle ?>">
+                            <img src="<?= Router::path('admin/public/images/icons/lock3.png') ?>" class="icon" alt="<?= $iconTitle ?>" title="<?= $iconTitle ?>">
                         <?php endif ?>
                         <?php if ($box['page_ids'] !== null): $iconTitle = _lang('admin.content.boxes.page_ids.icon'); ?>
-                            <img src="<?= Router::path('admin/images/icons/tree.png') ?>" class="icon" alt="<?= $iconTitle ?>" title="<?= $iconTitle ?>">
+                            <img src="<?= Router::path('admin/public/images/icons/tree.png') ?>" class="icon" alt="<?= $iconTitle ?>" title="<?= $iconTitle ?>">
                         <?php endif ?>
                     </td>
                     <td class="box-action-cell">
-                        <a class="button" href="<?= _e(Router::admin('content-boxes-edit', ['query' => ['id' => $box['id']]])) ?>"><img src="<?= Router::path('admin/images/icons/edit.png') ?>" alt="edit" class="icon"><?= _lang('global.edit') ?></a>
+                        <a class="button" href="<?= _e(Router::admin('content-boxes-edit', ['query' => ['id' => $box['id']]])) ?>"><img src="<?= Router::path('admin/public/images/icons/edit.png') ?>" alt="edit" class="icon"><?= _lang('global.edit') ?></a>
                         <button onclick="return Sunlight.confirm()" name="action" value="delete:<?= _e($box['id']) ?>" class="button">
-                            <img src="<?= Router::path('admin/images/icons/delete.png') ?>" alt="delete" class="icon"><?= _lang('global.delete') ?>
+                            <img src="<?= Router::path('admin/public/images/icons/delete.png') ?>" alt="delete" class="icon"><?= _lang('global.delete') ?>
                         </button>
                     </td>
                 </tr>
@@ -110,7 +110,7 @@ foreach ($boxes as $template_idt => $template_boxes) {
                 <td colspan="5">
                     <button name="action" value="save_ord" accesskey="s"><?= _lang('global.savechanges') ?></button>
                     <a class="button right big" href="<?= _e(Router::admin('content-boxes-edit', ['query' => ['template' => $template->getName()]])) ?>">
-                        <img class="icon" src="<?= Router::path('admin/images/icons/new.png') ?>" alt="new"><?= _lang('admin.content.boxes.new.for_template') ?>
+                        <img class="icon" src="<?= Router::path('admin/public/images/icons/new.png') ?>" alt="new"><?= _lang('admin.content.boxes.new.for_template') ?>
                     </a>
                 </td>
             </tr>
@@ -144,10 +144,10 @@ if (!empty($unassigned_boxes)) $output .= _buffer(function () use ($unassigned_b
                     <td><?= $box['title'] ?></td>
                     <td>
                         <a class="button" href="<?= _e(Router::admin('content-boxes-edit', ['query' => ['id' => $box['id']]])) ?>">
-                            <img src="<?= Router::path('admin/images/icons/edit.png') ?>" alt="edit" class="icon"><?= _lang('global.edit') ?>
+                            <img src="<?= Router::path('admin/public/images/icons/edit.png') ?>" alt="edit" class="icon"><?= _lang('global.edit') ?>
                         </a>
                         <button onclick="return Sunlight.confirm()" name="action" value="delete:<?= _e($box['id']) ?>" class="button">
-                            <img src="<?= Router::path('admin/images/icons/delete.png') ?>" alt="delete" class="icon"><?= _lang('global.delete') ?>
+                            <img src="<?= Router::path('admin/public/images/icons/delete.png') ?>" alt="delete" class="icon"><?= _lang('global.delete') ?>
                         </button>
                     </td>
                 </tr>

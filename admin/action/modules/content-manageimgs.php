@@ -422,7 +422,7 @@ if ($continue) {
 <th>' . _lang('global.preview') . '</th>
 <td>' . $preview . '<br><br>
     <a class="button" href="' . _e(Xsrf::addToUrl(Router::admin('content-manageimgs', ['query' => ['g' => $galid, 'del' => $image['id']]]))) . '" onclick="return Sunlight.confirm();">
-        <img src="' . _e(Router::path('admin/images/icons/delete.png')) . '" alt="del" class="icon">'
+        <img src="' . _e(Router::path('admin/public/images/icons/delete.png')) . '" alt="del" class="icon">'
         . _lang('admin.content.manageimgs.delete')
     . '</a>
 </td>

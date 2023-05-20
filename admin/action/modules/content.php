@@ -65,7 +65,7 @@ if (
             'modules' => [
                 'boxes' => [
                     'url' => Router::admin('content-boxes'),
-                    'icon' => Router::path('admin/images/icons/big-layout.png'),
+                    'icon' => Router::path('admin/public/images/icons/big-layout.png'),
                     'access' => User::hasPrivilege('adminbox'),
                 ],
             ],
@@ -75,28 +75,28 @@ if (
             'modules' => [
                 'newart' => [
                     'url' => Router::admin('content-articles-edit'),
-                    'icon' => Router::path('admin/images/icons/big-new.png'),
+                    'icon' => Router::path('admin/public/images/icons/big-new.png'),
                     'access' => User::hasPrivilege('adminart'),
                 ],
                 'manage' => [
                     'url' => Router::admin('content-articles'),
-                    'icon' => Router::path('admin/images/icons/big-list.png'),
+                    'icon' => Router::path('admin/public/images/icons/big-list.png'),
                     'access' => User::hasPrivilege('adminart'),
                     'label' => _lang('admin.content.manage'),
                 ],
                 'confirm' => [
                     'url' => Router::admin('content-confirm'),
-                    'icon' => Router::path('admin/images/icons/big-check.png'),
+                    'icon' => Router::path('admin/public/images/icons/big-check.png'),
                     'access' => User::hasPrivilege('adminconfirm'),
                 ],
                 'movearts' => [
                     'url' => Router::admin('content-movearts'),
-                    'icon' => Router::path('admin/images/icons/big-move.png'),
+                    'icon' => Router::path('admin/public/images/icons/big-move.png'),
                     'access' => User::hasPrivilege('admincategory'),
                 ],
                 'artfilter' => [
                     'url' => Router::admin('content-artfilter'),
-                    'icon' => Router::path('admin/images/icons/big-filter.png'),
+                    'icon' => Router::path('admin/public/images/icons/big-filter.png'),
                     'access' => User::hasPrivilege('admincategory'),
                 ],
             ],
@@ -106,12 +106,12 @@ if (
             'modules' => [
                 'polls' => [
                     'url' => Router::admin('content-polls'),
-                    'icon' => Router::path('admin/images/icons/big-bars.png'),
+                    'icon' => Router::path('admin/public/images/icons/big-bars.png'),
                     'access' => User::hasPrivilege('adminpoll'),
                 ],
                 'sboxes' => [
                     'url' => Router::admin('content-sboxes'),
-                    'icon' => Router::path('admin/images/icons/big-bubbles.png'),
+                    'icon' => Router::path('admin/public/images/icons/big-bubbles.png'),
                     'access' => User::hasPrivilege('adminsbox'),
                 ],
             ],
@@ -179,7 +179,7 @@ if (
     ' . (User::hasPrivilege('adminpages') ? '
     <form action="' . _e(Router::admin('content')) . '" method="post" class="inline">
     <input type="hidden" name="ac" value="new">
-    <img src="' . _e(Router::path('admin/images/icons/new.png')) . '" alt="new" class="icon">
+    <img src="' . _e(Router::path('admin/public/images/icons/new.png')) . '" alt="new" class="icon">
     <select name="type">
     ' . $create_list . '
     </select>
@@ -190,22 +190,22 @@ if (
     ' : '') . '
 
     ' . (User::hasPrivilege('adminpages') ? '
-    <a class="button" href="' . _e(Router::admin('content-setindex')) . '"><img src="' . _e(Router::path('admin/images/icons/home.png')) . '" alt="act" class="icon">' . _lang('admin.content.setindex') . '</a>
+    <a class="button" href="' . _e(Router::admin('content-setindex')) . '"><img src="' . _e(Router::path('admin/public/images/icons/home.png')) . '" alt="act" class="icon">' . _lang('admin.content.setindex') . '</a>
 
     <span class="inline-separator"></span>
 
-    <a class="button" href="' . _e(Router::admin('content-sort')) . '"><img src="' . _e(Router::path('admin/images/icons/action.png')) . '" alt="move" class="icon">' . _lang('admin.content.sort') . '</a>
-    <a class="button" href="' . _e(Router::admin('content-titles')) . '"><img src="' . _e(Router::path('admin/images/icons/action.png')) . '" alt="titles" class="icon">' . _lang('admin.content.titles') . '</a>
-    <a class="button" href="' . _e(Router::admin('content-redir')) . '"><img src="' . _e(Router::path('admin/images/icons/action.png')) . '" alt="redir" class="icon">' . _lang('admin.content.redir') . '</a>
+    <a class="button" href="' . _e(Router::admin('content-sort')) . '"><img src="' . _e(Router::path('admin/public/images/icons/action.png')) . '" alt="move" class="icon">' . _lang('admin.content.sort') . '</a>
+    <a class="button" href="' . _e(Router::admin('content-titles')) . '"><img src="' . _e(Router::path('admin/public/images/icons/action.png')) . '" alt="titles" class="icon">' . _lang('admin.content.titles') . '</a>
+    <a class="button" href="' . _e(Router::admin('content-redir')) . '"><img src="' . _e(Router::path('admin/public/images/icons/action.png')) . '" alt="redir" class="icon">' . _lang('admin.content.redir') . '</a>
 
     <span class="inline-separator"></span>
     ' : '') . '
 
     <a class="button" href="' . _e(Router::admin('content', ['query' => ['list_mode' => 'tree']])) . '"' . (PageLister::MODE_FULL_TREE == PageLister::getConfig('mode') ? ' class="active-link"' : '') . '>
-        <img src="' . _e(Router::path('admin/images/icons/tree.png')) . '" alt="move" class="icon">' . _lang('admin.content.mode.tree') . '
+        <img src="' . _e(Router::path('admin/public/images/icons/tree.png')) . '" alt="move" class="icon">' . _lang('admin.content.mode.tree') . '
     </a>
     <a class="button" href="' . _e(Router::admin('content', ['query' => ['list_mode' => 'single']])) . '"' . (PageLister::MODE_SINGLE_LEVEL == PageLister::getConfig('mode') ? ' class="active-link"' : '') . '>
-        <img src="' . _e(Router::path('admin/images/icons/list.png')) . '" alt="move" class="icon">' . _lang('admin.content.mode.single') . '
+        <img src="' . _e(Router::path('admin/public/images/icons/list.png')) . '" alt="move" class="icon">' . _lang('admin.content.mode.single') . '
     </a>
 
     <div class="hr"><hr></div>

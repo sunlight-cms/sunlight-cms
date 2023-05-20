@@ -23,7 +23,7 @@ $output .= '
 
 foreach ($tables as $table) {
     $output .= '<li>
-    <img class="icon" src="' . _e(Router::path('admin/images/icons/list.png')) . '" alt="table">
+    <img class="icon" src="' . _e(Router::path('admin/public/images/icons/list.png')) . '" alt="table">
     <a href="javascript:void(0)" onclick="Sunlight.admin.sqlexInsertTableName(this)">' . _e($table) . "</a>
 </li>\n";
 }

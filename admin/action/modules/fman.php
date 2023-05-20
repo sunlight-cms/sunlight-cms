@@ -690,12 +690,12 @@ if ($continue) {
         <tr' . $hl_class . '>
         <td class="fman-item" colspan="' . (($item == '..') ? '3' : '2') . '">
             <a href="' . _e($fmanUrl(['dir' => $dirhref])) . '/">
-                <img src="' . _e(Router::path('admin/images/icons/fman/dir.png')) . '" alt="dir" class="icon">' . _e(StringManipulator::ellipsis($item, 64, false)) . '
+                <img src="' . _e(Router::path('admin/public/images/icons/fman/dir.png')) . '" alt="dir" class="icon">' . _e(StringManipulator::ellipsis($item, 64, false)) . '
             </a>
         </td>
         ' . (($item != '..') ? '<td class="actions">
-            <a class="button" href="' . _e($fmanUrl(['a' => 'delete', 'name' => $encodeFilename($item)])) . '"><img src="' . _e(Router::path('admin/images/icons/delete.png')) . '" alt="del" class="icon">' . _lang('global.delete') . '</a>
-            <a class="button" href="' . _e($fmanUrl(['a' => 'rename', 'name' => $encodeFilename($item)])) . '"><img src="' . _e(Router::path('admin/images/icons/rename.png')) . '" alt="rename" class="icon">' . _lang('admin.fman.rename') . '</a>
+            <a class="button" href="' . _e($fmanUrl(['a' => 'delete', 'name' => $encodeFilename($item)])) . '"><img src="' . _e(Router::path('admin/public/images/icons/delete.png')) . '" alt="del" class="icon">' . _lang('global.delete') . '</a>
+            <a class="button" href="' . _e($fmanUrl(['a' => 'rename', 'name' => $encodeFilename($item)])) . '"><img src="' . _e(Router::path('admin/public/images/icons/rename.png')) . '" alt="rename" class="icon">' . _lang('admin.fman.rename') . '</a>
         </td>' : '') . "
         </tr>\n";
 
@@ -753,23 +753,23 @@ if ($continue) {
         <td class="fman-item">
             <input type="checkbox" name="f' . $filecounter . '" id="f' . $filecounter . '" value="' . _e($encodeFilename($item)) . '">
             <a href="' . _e($dir . $item) . '" target="_blank"' . ($image ? Extend::buffer('image.lightbox', ['group' => 'fman']) : '') . '>
-                <img src="' . _e(Router::path('admin/images/icons/fman/' . $icon . '.png')) . '" alt="file" class="icon">'
+                <img src="' . _e(Router::path('admin/public/images/icons/fman/' . $icon . '.png')) . '" alt="file" class="icon">'
                 . _e(StringManipulator::ellipsis($item, 64, false)) . '
             </a>
         </td>
         <td class="fman-size">' . GenericTemplates::renderFileSize($filesize) . '</td>
         <td class="actions">' . (User::checkFilename($item) ?
             '<a class="button" href="' . _e($fmanUrl(['a' => 'delete', 'name' => $encodeFilename($item)])) . '">
-                <img src="' . _e(Router::path('admin/images/icons/delete.png')) . '" alt="del" class="icon">'
+                <img src="' . _e(Router::path('admin/public/images/icons/delete.png')) . '" alt="del" class="icon">'
                 . _lang('global.delete')
             . '</a>  '
             . '<a class="button" href="' . _e($fmanUrl(['a' => 'rename', 'name' => $encodeFilename($item)])) . '">
-                <img src="' . _e(Router::path('admin/images/icons/rename.png')) . '" alt="rename" class="icon">'
+                <img src="' . _e(Router::path('admin/public/images/icons/rename.png')) . '" alt="rename" class="icon">'
                 . _lang('admin.fman.rename')
             . '</a>  '
             . (($icon === 'editable')
                 ? '<a class="button" href="' . _e($fmanUrl(['a' => 'edit', 'name' => $encodeFilename($item)])) . '">'
-                . '<img src="' . _e(Router::path('admin/images/icons/edit.png')) . '" alt="edit" class="icon">'
+                . '<img src="' . _e(Router::path('admin/public/images/icons/edit.png')) . '" alt="edit" class="icon">'
                 . _lang('admin.fman.edit')
                 . '</a>'
                 : '')

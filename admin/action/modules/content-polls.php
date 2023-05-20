@@ -35,7 +35,7 @@ if (User::hasPrivilege('adminpollall') && isset($_GET['author']) && Request::get
 
 $output .= '
 <p class="bborder">' . _lang('admin.content.polls.p') . '</p>
-<p><a class="button" href="' . _e(Router::admin('content-polls-edit')) . '"><img src="' . _e(Router::path('admin/images/icons/new.png')) . '" class="icon" alt="new">' . _lang('admin.content.polls.new') . '</a></p>
+<p><a class="button" href="' . _e(Router::admin('content-polls-edit')) . '"><img src="' . _e(Router::path('admin/public/images/icons/new.png')) . '" class="icon" alt="new">' . _lang('admin.content.polls.new') . '</a></p>
 ';
 
 // filter
@@ -87,10 +87,10 @@ if (DB::size($query) != 0) {
             . '<td>' . $item['id'] . '</td>'
             . '<td class="actions">
                 <a class="button" href="' . _e(Router::admin('content-polls-edit', ['query' => ['id' => $item['id']]])) . '">
-                    <img src="' . _e(Router::path('admin/images/icons/edit.png')) . '" class="icon" alt="edit"> ' . _lang('global.edit') . '
+                    <img src="' . _e(Router::path('admin/public/images/icons/edit.png')) . '" class="icon" alt="edit"> ' . _lang('global.edit') . '
                 </a>
                 <a class="button" href="' . _e(Xsrf::addToUrl(Router::admin('content-polls', ['query' => ['author' => $author_filter_id, 'page' => $paging['current'], 'del' => $item['id']]]))) . '" onclick="return Sunlight.confirm();">
-                    <img src="' . _e(Router::path('admin/images/icons/delete.png')) . '" class="icon" alt="del"> ' . _lang('global.delete') . '
+                    <img src="' . _e(Router::path('admin/public/images/icons/delete.png')) . '" class="icon" alt="del"> ' . _lang('global.delete') . '
                 </a>
             </td>'
             . "</tr>\n";

@@ -214,7 +214,7 @@ if ($continue) {
     . (!$new
             ? ' <small>' . _lang('admin.content.form.thisid') . ' ' . $id . '</small>'
             . ' <span class="customsettings"><a class="button" href="' . _e(Xsrf::addToUrl(Router::admin('content-polls', ['query' => ['del' => $id]]))) . '" onclick="return Sunlight.confirm();">'
-                . '<img src="' . _e(Router::path('admin/images/icons/delete.png')) . '" class="icon" alt="del"> '
+                . '<img src="' . _e(Router::path('admin/public/images/icons/delete.png')) . '" class="icon" alt="del"> '
                 . _lang('global.delete')
             . '</a></span>'
             : '')

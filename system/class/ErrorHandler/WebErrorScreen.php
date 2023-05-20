@@ -58,7 +58,7 @@ class WebErrorScreen extends BaseWebErrorScreen
         <?= $content ?>
     </div>
 </div>
-<script src="<?= $this->escape(Router::path('system/js/jquery.js')) ?>"></script>
+<script src="<?= $this->escape(Router::path('system/public/jquery.js')) ?>"></script>
 <script><?php $this->renderJs($debug) ?></script>
 <?php Extend::call('error_screen.end') ?>
 </body>

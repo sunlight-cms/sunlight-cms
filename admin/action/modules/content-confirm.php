@@ -77,10 +77,10 @@ if (DB::size($query) != 0) {
             <td>' . Router::userFromQuery($userQuery, $item) . '</td>
             <td class="actions">
                 <a class="button" href="' . _e(Router::admin('content-confirm', ['query' => ['id' => $item['id'], 'limit' => $catlimit]])) . '">
-                    <img src="' . _e(Router::path('admin/images/icons/check.png')) . '" alt="confirm" class="icon">' . _lang('admin.content.confirm.confirm') . '
+                    <img src="' . _e(Router::path('admin/public/images/icons/check.png')) . '" alt="confirm" class="icon">' . _lang('admin.content.confirm.confirm') . '
                 </a>
                 <a class="button" href="' . _e(Router::admin('content-articles-edit', ['query' => ['id' => $item['id'], 'returnid' => 'load', 'returnpage' => 1]])) . '">
-                    <img src="' . _e(Router::path('admin/images/icons/edit.png')) . '" alt="edit" class="icon">' . _lang('global.edit') . '
+                    <img src="' . _e(Router::path('admin/public/images/icons/edit.png')) . '" alt="edit" class="icon">' . _lang('global.edit') . '
                 </a>'
             . '</td>'
             . "</tr>\n";

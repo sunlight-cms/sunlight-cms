@@ -324,7 +324,7 @@ return [
         'other' => true,
         'other_system' => true,
         'other_order' => 0,
-        'other_icon' => Router::path('admin/images/icons/big-update.png'),
+        'other_icon' => Router::path('admin/public/images/icons/big-update.png'),
     ],
     'other-cleanup' => [
         'title' => _lang('admin.other.cleanup.title'),
@@ -333,7 +333,7 @@ return [
         'other' => true,
         'other_system' => true,
         'other_order' => 10,
-        'other_icon' => Router::path('admin/images/icons/big-broom.png'),
+        'other_icon' => Router::path('admin/public/images/icons/big-broom.png'),
     ],
     'other-sqlex' => [
         'title' => _lang('admin.other.sqlex.title'),
@@ -342,7 +342,7 @@ return [
         'other' => true,
         'other_system' => true,
         'other_order' => 20,
-        'other_icon' => Router::path('admin/images/icons/big-db.png'),
+        'other_icon' => Router::path('admin/public/images/icons/big-db.png'),
     ],
     'other-php' => [
         'title' => _lang('admin.other.php.title'),
@@ -353,7 +353,7 @@ return [
         'other_system' => true,
         'other_order' => 30,
         'other_new_window' => true,
-        'other_icon' => Router::path('admin/images/icons/big-php.png'),
+        'other_icon' => Router::path('admin/public/images/icons/big-php.png'),
     ],
     'other-massemail' => [
         'title' => _lang('admin.other.massemail.title'),
@@ -362,6 +362,6 @@ return [
         'other' => true,
         'other_system' => true,
         'other_order' => 40,
-        'other_icon' => Router::path('admin/images/icons/big-mail.png'),
+        'other_icon' => Router::path('admin/public/images/icons/big-mail.png'),
     ],
 ];
