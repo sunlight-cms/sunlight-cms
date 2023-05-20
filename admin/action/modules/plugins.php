@@ -85,9 +85,9 @@ foreach (Core::$pluginManager->getTypes() as $type) {
         $url = $plugin->getOption('url');
 
         // determine row class
-        if ($plugin->hasErrors()) {
+        if ($plugin->hasStatus(Plugin::STATUS_ERROR)) {
             $rowClass = 'row-danger';
-        } elseif ($plugin->needsInstallation()) {
+        } elseif ($plugin->hasStatus(Plugin::STATUS_NEEDS_INSTALLATION)) {
             $rowClass = 'row-warning';
         } else {
             $rowClass = null;

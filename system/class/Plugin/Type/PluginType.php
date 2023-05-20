@@ -39,7 +39,7 @@ abstract class PluginType
     final function resolveFallbackOptions(PluginData $plugin): void
     {
         $fallbackOptions = [
-            'name' => $plugin->id,
+            'name' => $plugin->name,
             'version' => '0.0.0',
             'environment' => [
                 'system' => '0.0.0',

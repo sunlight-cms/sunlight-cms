@@ -18,13 +18,15 @@ abstract class Plugin
     const DEACTIVATING_FILE = 'DISABLED';
 
     /** Plugin status - OK */
-    const STATUS_OK = 0;
-    /** Plugin status - has error messages */
-    const STATUS_HAS_ERRORS = 1;
+    const STATUS_OK = 'ok';
+    /** Plugin status - error */
+    const STATUS_ERROR = 'error';
     /** Plugin status - not installed */
-    const STATUS_NEEDS_INSTALLATION = 2;
+    const STATUS_NEEDS_INSTALLATION = 'needs_install';
     /** Plugin status - disabled */
-    const STATUS_DISABLED = 3;
+    const STATUS_DISABLED = 'disabled';
+    /** Plugin status - unavailable */
+    const STATUS_UNAVAILABLE = 'unavailable';
 
     /** @var string */
     protected $id;
@@ -34,7 +36,7 @@ abstract class Plugin
     protected $camelCasedName;
     /** @var string */
     protected $type;
-    /** @var int */
+    /** @var string */
     protected $status;
     /** @var bool|null */
     protected $installed;
@@ -110,19 +112,19 @@ abstract class Plugin
         return $this->type;
     }
 
-    function getStatus(): int
+    function getStatus(): string
     {
         return $this->status;
     }
 
-    function isDisabled(): bool
+    function hasStatus(string $status): bool
     {
-        return $this->status === self::STATUS_DISABLED;
+        return $this->status === $status;
     }
 
     function canBeDisabled(): bool
     {
-        return !$this->isDisabled();
+        return !$this->hasStatus(self::STATUS_DISABLED);
     }
 
     /**
@@ -150,11 +152,6 @@ abstract class Plugin
         return require $this->options['installer'];
     }
 
-    function needsInstallation(): bool
-    {
-        return $this->status === self::STATUS_NEEDS_INSTALLATION;
-    }
-
     function canBeInstalled(): bool
     {
         return $this->hasInstaller() && $this->installed === false;
@@ -168,11 +165,6 @@ abstract class Plugin
     function canBeRemoved(): bool
     {
         return !$this->hasInstaller() || $this->installed === false;
-    }
-
-    function hasErrors(): bool
-    {
-        return !empty($this->errors);
     }
 
     /**
@@ -308,7 +300,7 @@ abstract class Plugin
             $actions['disable'] = _lang('admin.plugins.action.do.disable');
         }
 
-        if ($this->isDisabled()) {
+        if ($this->hasStatus(self::STATUS_DISABLED)) {
             $actions['enable'] = _lang('admin.plugins.action.do.enable');
         }
 

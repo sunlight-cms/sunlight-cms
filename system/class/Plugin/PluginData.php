@@ -12,7 +12,7 @@ class PluginData
     public $camelCasedName;
     /** @var string */
     public $type;
-    /** @var int|null */
+    /** @var string|null */
     public $status;
     /** @var bool|null */
     public $installed;

@@ -33,8 +33,8 @@ class PluginLoader
      * @return array{
      *     plugins: array<string, PluginData>,
      *     autoload: array{
-     *          psr-0: array<string, string[]>,
-     *          psr-4: array<string, string[]>,
+     *          "psr-0": array<string, string[]>,
+     *          "psr-4": array<string, string[]>,
      *          classmap: array<string, string>,
      *          files: string[],
      *     },
@@ -115,22 +115,30 @@ class PluginLoader
         }
 
         // process options
+        $optionsAreValid = false;
+
         if ($options !== null) {
             $type->resolveOptions($plugin, $options);
 
             if (!$plugin->hasErrors()) {
-                $this->validateEnvironment($plugin);
+                $optionsAreValid = true;
+                $this->checkEnvironment($plugin);
             }
         }
 
         // handle result
         if (!$plugin->hasErrors()) {
             // ok
-            $plugin->status = Plugin::STATUS_OK;
+            if ($plugin->status === null) {
+                $plugin->status = Plugin::STATUS_OK;
+            }
         } else {
             // there are errors
-            $plugin->status = Plugin::STATUS_HAS_ERRORS;
-            $type->resolveFallbackOptions($plugin);
+            $plugin->status = Plugin::STATUS_ERROR;
+
+            if (!$optionsAreValid) {
+                $type->resolveFallbackOptions($plugin);
+            }
         }
 
         // override status if the plugin is disabled
@@ -141,7 +149,7 @@ class PluginLoader
         return $plugin;
     }
 
-    private function validateEnvironment(PluginData $plugin): void
+    private function checkEnvironment(PluginData $plugin): void
     {
         $env = $plugin->options['environment'];
 
@@ -164,11 +172,7 @@ class PluginLoader
 
         // debug mode
         if ($env['debug'] !== null && $env['debug'] !== Core::$debug) {
-            $plugin->addError(
-                $env['debug']
-                    ? 'plugin is only active in debug mode'
-                    : 'plugin is not active in debug mode'
-            );
+            $plugin->status = Plugin::STATUS_UNAVAILABLE;
         }
     }
 
@@ -251,7 +255,7 @@ class PluginLoader
                 // add unless delayed
                 if (!$delay) {
                     if (!empty($errors)) {
-                        $plugin->status = Plugin::STATUS_HAS_ERRORS;
+                        $plugin->status = Plugin::STATUS_ERROR;
                         $plugin->errors = $errors;
                     }
 

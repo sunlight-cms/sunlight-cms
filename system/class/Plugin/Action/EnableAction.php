@@ -18,7 +18,7 @@ class EnableAction extends PluginAction
 
     protected function execute(): ActionResult
     {
-        if ($this->plugin->isDisabled()) {
+        if ($this->plugin->hasStatus(Plugin::STATUS_DISABLED)) {
             $file = $this->plugin->getDirectory() . '/' . Plugin::DEACTIVATING_FILE;
 
             if (is_file($file) && @unlink($file)) {

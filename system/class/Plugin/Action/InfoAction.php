@@ -5,6 +5,7 @@ namespace Sunlight\Plugin\Action;
 use Kuria\Debug\Dumper;
 use Sunlight\Action\ActionResult;
 use Sunlight\GenericTemplates;
+use Sunlight\Plugin\Plugin;
 
 /**
  * Show information about a plugin
@@ -49,7 +50,7 @@ class InfoAction extends PluginAction
         </td>
     </tr>
 
-    <?php if ($plugin->hasErrors()): ?>
+    <?php if (!empty($plugin->getErrors())): ?>
     <tr>
         <th><?= _lang('admin.plugins.errors') ?></th>
         <td class="text-danger">

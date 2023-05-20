@@ -213,7 +213,7 @@ abstract class TemplateService
         if (Core::$debug && Core::$pluginManager->getPlugins()->hasInactiveName('template', $name)) {
             $plugin = Core::$pluginManager->getPlugins()->getInactiveByName('template', $name);
 
-            if (!$plugin->isDisabled() && $plugin->hasErrors()) {
+            if ($plugin->hasStatus(Plugin::STATUS_ERROR)) {
                 Core::fail(
                     'Motiv "%s" obsahuje chyby:',
                     'Template "%s" contains errors:',
