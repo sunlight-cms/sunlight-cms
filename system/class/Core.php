@@ -518,11 +518,13 @@ abstract class Core
                 Settings::update('language', self::$fallbackLang);
             }
 
-            self::fail(
-                'Jazykový balíček "%s" nebyl nalezen.',
-                'Language plugin "%s" was not found.',
-                [$lang]
-            );
+            if ($lang !== self::$fallbackLang) {
+                self::fail(
+                    'Jazykový balíček "%s" nebyl nalezen.',
+                    'Language plugin "%s" was not found.',
+                    [$lang]
+                );
+            }
         }
 
         self::$lang = $lang;
