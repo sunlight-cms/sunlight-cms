@@ -1,6 +1,10 @@
 <?php
 
 return [
+    // vyvojovy rezim (nepouzivat v produkci)
+    // debug mode (do not use in production)
+    'debug' => '@@debug|false@@',
+
     // pristup k databazi
     // database access
     'db.server' => '@@db.server@@',
@@ -23,10 +27,6 @@ return [
     // trusted proxy configuration (if your site is behind a proxy; needed for correct URL and IP detection)
     'trusted_proxies' => null, // ['10.20.30.40'] - list of IPs (can use CIDR notation)
     'trusted_proxy_headers' => null, // 'forwarded' / 'x-forwarded' / 'all'
-
-    // vyvojovy rezim (nepouzivat v produkci)
-    // debug mode (do not use in production)
-    'debug' => '@@debug|false@@',
 
     // pouzivat cache (doporuceno)
     // use cache (recommended)
