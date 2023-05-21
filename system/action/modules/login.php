@@ -11,9 +11,10 @@ $_index->title = _lang('login.title');
 
 $output .= User::renderLoginForm(true);
 
-// show login links if loggen in
+// show login links if logged in
 if (User::isLoggedIn()) {
-    $output .= '<h2>' . _lang('login.links') . "</h2>\n<ul>\n";
+    $output .= '<h2>' . _lang('login.links') . "</h2>\n";
+    $output .= "<div class=\"user-login-actions\">\n<ul>\n";
 
     $items = [
         [Router::adminIndex(), _lang('global.admintitle'), User::hasPrivilege('administration')],
@@ -28,5 +29,5 @@ if (User::isLoggedIn()) {
         }
     }
 
-    $output .= "</ul>\n";
+    $output .= "</ul>\n</div>\n";
 }
