@@ -210,7 +210,7 @@ HTML;
         $output = '';
 
         if (!empty($messages)) {
-            $output .= "<ul>\n";
+            $output .= "<ul class=\"message-list\">\n";
 
             foreach ($messages as $key => $item) {
                 if ($options['lcfirst'] ?? true) {

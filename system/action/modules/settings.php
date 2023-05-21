@@ -42,11 +42,13 @@ if ($action !== null) {
 }
 
 $output .= _buffer(function () use ($actions) { ?>
-    <p><?= _lang('mod.settings.p') ?></p>
+    <div class="user-settings-actions">
+        <p><?= _lang('mod.settings.p') ?></p>
 
-    <ul>
-        <?php foreach ($actions as $action => $actionInfo): ?>
-            <li class="user-settings-action-<?= _e($action) ?>"><a href="<?= _e(Router::module('settings', ['query' => ['action' => $action]])) ?>"><?= $actionInfo['title'] ?></a></li>
-        <?php endforeach ?>
-    </ul>
+        <ul>
+            <?php foreach ($actions as $action => $actionInfo): ?>
+                <li class="user-settings-action-<?= _e($action) ?>"><a href="<?= _e(Router::module('settings', ['query' => ['action' => $action]])) ?>"><?= $actionInfo['title'] ?></a></li>
+            <?php endforeach ?>
+        </ul>
+    </div>
 <?php });
