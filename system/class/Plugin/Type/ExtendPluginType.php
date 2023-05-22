@@ -34,10 +34,12 @@ class ExtendPluginType extends PluginType
     {
         parent::configureOptionResolver($optionResolver);
 
+        $eventGroupOption = Option::string('group')->default(null);
+
         $optionResolver->addOption(
-            $this->createEventSubscribersOption('events'),
-            $this->createEventSubscribersOption('events.web'),
-            $this->createEventSubscribersOption('events.admin'),
+            $this->createEventSubscribersOption('events', $eventGroupOption),
+            $this->createEventSubscribersOption('events.web', $eventGroupOption),
+            $this->createEventSubscribersOption('events.admin', $eventGroupOption),
             Option::list('scripts', 'string')
                 ->normalize([PluginOptionNormalizer::class, 'normalizePathArray'])
                 ->default([]),

@@ -136,12 +136,13 @@ abstract class PluginType
         });
     }
 
-    protected function createEventSubscribersOption(string $name): Option\NodeOption
+    protected function createEventSubscribersOption(string $name, Option\OptionDefinition ...$extraOptions): Option\NodeOption
     {
         return Option::nodeList(
             $name,
             Option::string('event'),
             Option::int('priority')->default(0),
+            ...$extraOptions,
             ...CallbackHandler::getDefinitionOptions()
         )->normalize([PluginOptionNormalizer::class, 'normalizeCallbackNodes']);
     }

@@ -7,22 +7,13 @@
         {
             "properties": {
                 "events": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "plugin.json#/definitions/event-subscriber"
-                    }
+                    "$ref": "#/definitions/event-list"
                 },
                 "events.web": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "plugin.json#/definitions/event-subscriber"
-                    }
+                    "$ref": "#/definitions/event-list"
                 },
                 "events.admin": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "plugin.json#/definitions/event-subscriber"
-                    }
+                    "$ref": "#/definitions/event-list"
                 },
                 "scripts": {
                     "$ref": "#/definitions/path-list"
@@ -104,6 +95,24 @@
             "type": "array",
             "items": {
                 "type": "string"
+            }
+        },
+        "event-list": {
+            "type": "array",
+            "items": {
+                "allOf": [
+                    {
+                        "$ref": "plugin.json#/definitions/event-subscriber"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "group": {
+                                "type": ["string", "null"]
+                            }
+                        }
+                    }
+                ]
             }
         }
     }

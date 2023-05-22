@@ -9,24 +9,31 @@ use Sunlight\Localization\LocalizationDirectory;
 
 class ExtendPlugin extends Plugin implements InitializableInterface
 {
+    /** @var array|null */
+    private $enabledEventGroups;
+
     function initialize(): void
     {
         // register events
         foreach ($this->options['events'] as $subscriber) {
-            Extend::reg(
-                $subscriber['event'],
-                CallbackHandler::fromArray($subscriber, $this),
-                $subscriber['priority']
-            );
-        }
-
-        if (Core::$env === Core::ENV_WEB || Core::$env === Core::ENV_ADMIN) {
-            foreach ($this->options['events.' . Core::$env] as $subscriber) {
+            if ($subscriber['group'] === null) {
                 Extend::reg(
                     $subscriber['event'],
                     CallbackHandler::fromArray($subscriber, $this),
                     $subscriber['priority']
                 );
+            }
+        }
+
+        if (Core::$env === Core::ENV_WEB || Core::$env === Core::ENV_ADMIN) {
+            foreach ($this->options['events.' . Core::$env] as $subscriber) {
+                if ($subscriber['group'] === null) {
+                    Extend::reg(
+                        $subscriber['event'],
+                        CallbackHandler::fromArray($subscriber, $this),
+                        $subscriber['priority']
+                    );
+                }
             }
         }
 
@@ -72,6 +79,40 @@ class ExtendPlugin extends Plugin implements InitializableInterface
                     $route['pattern'],
                     CallbackHandler::fromArray($route, $this)
                 );
+            }
+        }
+    }
+
+    /**
+     * Enable a specific event group
+     *
+     * Can be called multiple times - subsequent calls will be no-op.
+     */
+    protected function enableEventGroup(string $group): void
+    {
+        if (!isset($this->enabledEventGroups[$group])) {
+            $this->enabledEventGroups[$group] = true;
+
+            foreach ($this->options['events'] as $subscriber) {
+                if ($subscriber['group'] === $group) {
+                    Extend::reg(
+                        $subscriber['event'],
+                        CallbackHandler::fromArray($subscriber, $this),
+                        $subscriber['priority']
+                    );
+                }
+            }
+
+            if (Core::$env === Core::ENV_WEB || Core::$env === Core::ENV_ADMIN) {
+                foreach ($this->options['events.' . Core::$env] as $subscriber) {
+                    if ($subscriber['group'] === $group) {
+                        Extend::reg(
+                            $subscriber['event'],
+                            CallbackHandler::fromArray($subscriber, $this),
+                            $subscriber['priority']
+                        );
+                    }
+                }
             }
         }
     }
