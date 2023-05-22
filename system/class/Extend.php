@@ -32,16 +32,6 @@ abstract class Extend
     }
 
     /**
-     * Register a global callback
-     *
-     * @param callable $callback callback(event, args)
-     */
-    static function regGlobal(callable $callback, int $priority = 0): void
-    {
-        Core::$eventEmitter->on(EventEmitterInterface::ANY_EVENT, $callback, $priority);
-    }
-
-    /**
      * Create normalized event arguments
      *
      * @param string &$output output variable reference

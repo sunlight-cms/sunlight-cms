@@ -2,6 +2,7 @@
 
 namespace SunlightExtend\Devkit;
 
+use Kuria\Event\ObservableInterface;
 use Sunlight\Core;
 use Sunlight\Extend;
 use Sunlight\GenericTemplates;
@@ -29,7 +30,7 @@ class DevkitPlugin extends ExtendPlugin
         $this->eventLogger = new Component\EventLogger();
         $this->missingLocalizationLogger = new Component\MissingLocalizationLogger();
 
-        Extend::regGlobal([$this->eventLogger, 'log'], 10000);
+        Extend::reg(ObservableInterface::ANY_EVENT, [$this->eventLogger, 'log'], 10000);
     }
 
     protected function getConfigDefaults(): array
