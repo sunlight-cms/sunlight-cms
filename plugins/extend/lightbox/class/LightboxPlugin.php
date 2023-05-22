@@ -13,6 +13,8 @@ class LightboxPlugin extends ExtendPlugin
 {
     function onLightbox(array $args): void
     {
+        $this->enableEventGroup('lightbox');
+
         $args['output'] .= "data-lightbox='" . $args['group'] . "'";
     }
 
