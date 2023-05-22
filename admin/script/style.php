@@ -268,7 +268,7 @@ input[type=submit]:focus, input[type=button]:focus, input[type=reset]:focus, but
 input[type=submit]:hover, input[type=button]:hover, input[type=reset]:hover, button:hover {background: <?= $scheme_lightest ?>; background: linear-gradient(to bottom, <?= $scheme_lightest ?>, <?= $scheme_lighter ?>); border-color: <?= $scheme_lighter ?>; outline: none;}
 input[type=color] {padding: 0;}
 
-select {padding: 0 20px 0 6px; background: <?= $scheme_white ?> url("../images/select_arrow<?= $dark ? '_inverted' : '' ?>.png") right center no-repeat; appearance: none; -webkit-appearance: none; -moz-appearance: none; text-indent: 0.01px; text-overflow: ''; line-height: 2 !important;}
+select {padding: 0 20px 0 6px; background: <?= $scheme_white ?> url("../public/images/select_arrow<?= $dark ? '_inverted' : '' ?>.png") right center no-repeat; appearance: none; -webkit-appearance: none; -moz-appearance: none; text-indent: 0.01px; text-overflow: ''; line-height: 2 !important;}
 select::-ms-expand {display: none;}
 select[multiple], select[size] {height: auto;}
 optgroup option {padding-left: 16px;}
@@ -290,7 +290,7 @@ input, textarea, button, select {
 div.wrapper {max-width: 1400px; min-width: 700px; margin: 0 auto;}
 
 /* header */
-#top {background: url("../images/top_bg<?= $dark_suffix ?>.png") left bottom repeat-x;}
+#top {background: url("../public/images/top_bg<?= $dark_suffix ?>.png") left bottom repeat-x;}
 #header {font-family: Georgia, "Times New Roman", Times, serif; font-size: 24px; padding: 0.7em 16px 0.5em 16px;}
 #title {color: <?= $scheme_smoke_darker ?>;}
 #usermenu {float: right; position: relative; top: 6px;}
@@ -306,8 +306,8 @@ a#usermenu-username {margin-right: 0.5em; font-weight: bold; color: <?= $scheme_
 /* menu */
 #menu {position: relative; padding: 5px 0 0 16px; background-color: <?= $scheme_bar ?>; font-size: 0;}
 #menu a {color: <?= $scheme_bar_text ?>; text-decoration: none; display: inline-block;}
-#menu a span {display: inline-block; padding: 7px 16px; background: url("../images/menu_sep<?= $dark_suffix ?>.png") right bottom no-repeat; font-size: 13px; text-shadow: 0 0 5px <?= $scheme_bar_shadow ?>;}
-#menu a:hover span, #menu a.act span {color: <?= $scheme_black ?>; background: <?= $scheme_white ?> url("../images/menu_active<?= $dark_suffix ?>.png") left top repeat-x; text-shadow: none;}
+#menu a span {display: inline-block; padding: 7px 16px; background: url("../public/images/menu_sep<?= $dark_suffix ?>.png") right bottom no-repeat; font-size: 13px; text-shadow: 0 0 5px <?= $scheme_bar_shadow ?>;}
+#menu a:hover span, #menu a.act span {color: <?= $scheme_black ?>; background: <?= $scheme_white ?> url("../public/images/menu_active<?= $dark_suffix ?>.png") left top repeat-x; text-shadow: none;}
 
 /* content */
 #content {padding: 12px 16px 16px 16px; background-color: <?= $scheme_white ?>;}
@@ -323,7 +323,7 @@ a#usermenu-username {margin-right: 0.5em; font-weight: bold; color: <?= $scheme_
 body.login-layout {background: radial-gradient(at center 270px, <?= $scheme_smoke_light ?>, <?= $scheme_smoke_dark ?>) no-repeat fixed;}
 body.login-layout div.wrapper {width: 500px; min-width: 0;}
 body.login-layout #header, body.login-layout #menu {display: none;}
-body.login-layout #top {padding-top: 140px; background: url("../images/logo.png") center 50px no-repeat;}
+body.login-layout #top {padding-top: 140px; background: url("../public/images/logo.png") center 50px no-repeat;}
 body.login-layout #content {padding: 24px 16px; box-shadow: 0 0 6px 1px <?= $scheme_alpha_shadow ?>; text-align: center;}
 body.login-layout #content form {display: inline-block;}
 body.login-layout ul.login-form-links, body.login-layout #content form {text-align: left;}
@@ -374,7 +374,7 @@ table.page-list td.page-title {width: 90%;}
 table.page-list td.page-title a, table.page-list td.page-title span {display: block;}
 table.page-list.page-list-full-tree td.page-title > :not(.node-level-p0) span.page-list-title {padding-left: 8px; border-left: 1px solid <?= $scheme_smoke_dark ?>;}
 table.page-list.page-list-full-tree tr.page-separator td.page-title span.page-list-title {border-left-color: <?= $scheme_smoke_text ?>;}
-table.page-list.page-list-full-tree td.page-title a:hover span:after, table.page-list.page-list-single-level td.page-title a span:after {content: url("../images/down<?= $dark ? '_inverted' : '' ?>.png"); position: absolute; margin-left: 0.5em; margin-top: 2px;}
+table.page-list.page-list-full-tree td.page-title a:hover span:after, table.page-list.page-list-single-level td.page-title a span:after {content: url("../public/images/down<?= $dark ? '_inverted' : '' ?>.png"); position: absolute; margin-left: 0.5em; margin-top: 2px;}
 
 table.page-list tr:hover:not(.page-separator) td {background-color: <?= $scheme_lighter ?>;}
 
@@ -505,9 +505,9 @@ a.active-link {text-decoration: underline !important;}
 .message {margin: 1em 0; padding: 13px 5px 13px 48px; background-color: <?= $scheme_smoke ?>; background-position: 5px 5px; background-repeat: no-repeat;}
 .message ul {margin: 0; padding: 5px 0 0 15px;}
 .message a {color: inherit; text-decoration: underline;}
-.message-ok {background-color: <?= $scheme_bg_info ?>; background-image: url("../images/icons/info.png");}
-.message-warn {background-color: <?= $scheme_bg_alert ?>; background-image: url("../images/icons/warning.png");}
-.message-err {background-color: <?= $scheme_bg_danger ?>; background-image: url("../images/icons/error.png");}
+.message-ok {background-color: <?= $scheme_bg_info ?>; background-image: url("../public/images/icons/info.png");}
+.message-warn {background-color: <?= $scheme_bg_alert ?>; background-image: url("../public/images/icons/warning.png");}
+.message-err {background-color: <?= $scheme_bg_danger ?>; background-image: url("../public/images/icons/error.png");}
 
 /* preformatted */
 pre {white-space: -moz-pre-wrap; white-space: -pre-wrap; white-space: -o-pre-wrap; white-space: pre-wrap; word-break: break-all; word-wrap: break-word;}
@@ -554,7 +554,7 @@ tr.odd td {background-color: <?= $scheme_smoke_lightest ?>;}
 .selectmax {width: 100%;}
 
 /* horizontal rule */
-.hr {height: 10px; background-image: url("../images/hr<?= $dark_suffix ?>.gif"); background-position: left center; background-repeat: repeat-x;}
+.hr {height: 10px; background-image: url("../public/images/hr<?= $dark_suffix ?>.gif"); background-position: left center; background-repeat: repeat-x;}
 .hr hr {display: none;}
 
 .paging {margin: 1em 0;}
@@ -622,7 +622,7 @@ span.inline-separator {margin-left: 0.5em; padding-right: 0.5em; border-left: 1p
 
 /* sortables */
 .sortable.ui-sortable {overflow: hidden;}
-.sortable-handle {display: inline-block; vertical-align: middle; padding-right: 10px; width: 11px; height: 18px; background: url("../images/icons/drag-handle.png") left top no-repeat; cursor: move;}
+.sortable-handle {display: inline-block; vertical-align: middle; padding-right: 10px; width: 11px; height: 18px; background: url("../public/images/icons/drag-handle.png") left top no-repeat; cursor: move;}
 
 /* generic */
 .bborder {padding-bottom: 8px; margin-bottom: 12px; border-bottom: 1px solid <?= $scheme_smoke ?>;}
