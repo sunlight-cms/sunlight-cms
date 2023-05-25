@@ -316,7 +316,7 @@ switch ($a) {
         $output .= $message . '
         <form method="post" action="">
 <p class="messages-menu">
-    <a class="button" href="' . _e(Router::module('messages', ['query' => ['a' => 'new']])) . '"><img src="' . Template::image('icons/bubble.png') . '" alt="new" class="icon">' . _lang('mod.messages.new') . '</a>
+    <a class="button" href="' . _e(Router::module('messages', ['query' => ['a' => 'new']])) . '"><img src="' . Template::asset('images/icons/bubble.png') . '" alt="new" class="icon">' . _lang('mod.messages.new') . '</a>
 </p>
 
 <table class="messages-table">

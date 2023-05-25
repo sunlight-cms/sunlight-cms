@@ -252,13 +252,14 @@ abstract class Template
     }
 
     /**
-     * Compose path to a current template's image
+     * Compose path to a current template's asset
      *
-     * @param string $name subpath in the "images" directory
+     * @param string $path subpath in the template direcotry
+     * @param bool $absolute generate an absolute URL 1/0
      */
-    static function image(string $name): string
+    static function asset(string $path, bool $absolute = false): string
     {
-        return self::getCurrent()->getImagePath($name);
+        return self::getCurrent()->getWebPath($absolute) . "/{$path}";
     }
 
     /**

@@ -162,11 +162,6 @@ class TemplatePlugin extends Plugin
         return $boxes;
     }
 
-    function getImagePath(string $name, bool $absolute = false): string
-    {
-        return $this->getWebPath($absolute) . "/images/{$name}";
-    }
-
     protected function getLocalizationPrefix(): string
     {
         return "{$this->type}_{$this->id}";
