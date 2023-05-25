@@ -26,7 +26,6 @@ defined('SL_ROOT') or exit;
             [other_order] (0)       => order in list of "other functions"
             [other_system] (0)      => show as system module in "other functions" 1/0
             [other_icon]            => path to button icon for this module in "other functions"
-            [other_new_window] (0)  => make button link to new window in "other functions"
         ),
         ...
     )
@@ -344,15 +343,13 @@ return [
         'other_order' => 20,
         'other_icon' => Router::path('admin/public/images/icons/big-db.png'),
     ],
-    'other-php' => [
-        'title' => _lang('admin.other.php.title'),
+    'other-phpex' => [
+        'title' => _lang('admin.other.phpex.title'),
         'access' => User::hasPrivilege('adminother') && User::isSuperAdmin(),
-        'url' => Router::path('admin/script/php.php'),
         'parent' => 'other',
         'other' => true,
         'other_system' => true,
         'other_order' => 30,
-        'other_new_window' => true,
         'other_icon' => Router::path('admin/public/images/icons/big-php.png'),
     ],
     'other-massemail' => [

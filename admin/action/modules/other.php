@@ -42,10 +42,8 @@ foreach ($other_modules as $type => $modules) {
         foreach ($modules as $module => $order) {
             $url = $_admin->modules[$module]['url'] ?? Router::admin($module);
             $icon = $_admin->modules[$module]['other_icon'] ?? Router::path('images/icons/big-cog.png');
-            $new_window = isset($_admin->modules[$module]['other_new_window']) && $_admin->modules[$module]['other_new_window'];
 
             $output .= '<a class="button block" href="' . $url . '"'
-                . ($new_window ? ' target="_blank"' : '')
                 . '>'
                 . '<img class="icon" alt="' . $module . '" src="' . _e($icon) . '">'
                 . $_admin->modules[$module]['title']

@@ -744,6 +744,6 @@ Odhlásit odběr: %unsub_link%',
     'admin.backup.restore.complete' => 'Záloha byla obnovena. Je možné, že se budete muset znovu přihlásit.',
     'admin.backup.restore.submit.load' => 'Načíst zálohu',
     'admin.backup.restore.submit.delete' => 'Odstranit zálohu',
-    'admin.other.php.title' => 'Vyhodnocení PHP kódu',
-    'admin.other.php.html' => 'Vyhodnotit výstup jako HTML kód',
+    'admin.other.phpex.title' => 'Vyhodnocení PHP kódu',
+    'admin.other.phpex.html' => 'Vyhodnotit výstup jako HTML kód',
 ];
