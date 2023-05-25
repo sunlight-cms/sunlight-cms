@@ -134,7 +134,7 @@ echo _buffer(function () use ($_admin) {
     </div>
 
 </div>
-<? endif ?>
+<?php endif ?>
 
 <?= Extend::buffer('admin.body.end') ?>
 
