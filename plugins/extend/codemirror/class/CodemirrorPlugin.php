@@ -9,16 +9,6 @@ use Sunlight\User;
 class CodemirrorPlugin extends ExtendPlugin
 {
     /**
-     * Define JS variables
-     */
-    function onCoreJavascript(array $args): void
-    {
-        $args['variables']['pluginCodemirror'] = [
-            'userWysiwygEnabled' => User::isLoggedIn() && User::$data['wysiwyg'],
-        ];
-    }
-
-    /**
      * Load CSS and JS
      */
     function onAdminHead(array $args): void

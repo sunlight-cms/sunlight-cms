@@ -606,6 +606,7 @@ abstract class Admin
                 'admin' => [
                     'themeIsDark' => $dark,
                     'wysiwygAvailable' => $wysiwygAvailable,
+                    'wysiwygEnabled' => User::isLoggedIn() && User::$data['wysiwyg'],
                 ],
                 'labels' => [
                     'cancel' => _lang('global.cancel'),

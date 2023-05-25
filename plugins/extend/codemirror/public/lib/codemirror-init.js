@@ -26,8 +26,8 @@ $(document).ready(function () {
         if (
             'code' !== textarea.data('editorMode')
             && (
-                SunlightVars.pluginCodemirror.userWysiwygEnabled
-                && SunlightVars.admin.wysiwygAvailable
+                SunlightVars.admin.wysiwygAvailable
+                && SunlightVars.admin.wysiwygEnabled
             )
         ) {
             return;
