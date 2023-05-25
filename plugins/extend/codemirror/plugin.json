@@ -11,7 +11,8 @@
     },
     "class": "CodemirrorPlugin",
     "events.admin": [
-        {"event": "admin.head", "method": "onAdminHead"},
+        {"event": "admin.editor", "method": "onAdminEditor"},
+        {"event": "admin.head", "method": "onAdminHead", "group": "codemirror"},
         {"event": "admin.style", "method": "onAdminStyle"}
     ]
 }

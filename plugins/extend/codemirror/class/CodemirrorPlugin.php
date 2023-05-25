@@ -8,9 +8,36 @@ use Sunlight\User;
 
 class CodemirrorPlugin extends ExtendPlugin
 {
-    /**
-     * Load CSS and JS
-     */
+    private const SUPPORTED_FORMATS = [
+        'xml' => true,
+        'css' => true,
+        'js' => true,
+        'json' => true,
+        'php' => true,
+        'php-raw' => true,
+        'html' => true,
+    ];
+
+    function onAdminEditor(array $args): void
+    {
+        global $_admin;
+
+        if (
+            // format is supported
+            isset(self::SUPPORTED_FORMATS[$args['options']['format']])
+
+            // and should use a code editor and not a wysiwyg editor
+            && (
+                $args['options']['mode'] === 'code'
+                || !$_admin->wysiwygAvailable
+                || !User::isLoggedIn()
+                || !User::$data['wysiwyg']
+            )
+        ) {
+            $this->enableEventGroup('codemirror');
+        }
+    }
+
     function onAdminHead(array $args): void
     {
         $basePath = $this->getWebPath() . '/public';
@@ -36,9 +63,6 @@ class CodemirrorPlugin extends ExtendPlugin
         $args['js']['codemirror_init'] = $basePath . '/lib/codemirror-init.js';
     }
 
-    /**
-     * Generate admin CSS
-     */
     function onAdminStyle(array $args): void
     {
         $args['output'] .= "/* codemirror */\n";
