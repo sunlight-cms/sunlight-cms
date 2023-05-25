@@ -88,7 +88,7 @@ class ExtendPlugin extends Plugin implements InitializableInterface
      *
      * Can be called multiple times - subsequent calls will be no-op.
      */
-    protected function enableEventGroup(string $group): void
+    function enableEventGroup(string $group): void
     {
         if (!isset($this->enabledEventGroups[$group])) {
             $this->enabledEventGroups[$group] = true;
