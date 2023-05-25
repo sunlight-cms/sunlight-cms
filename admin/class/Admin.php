@@ -646,22 +646,18 @@ abstract class Admin
         ];
     }
 
-    static function themeAssets(int $scheme, bool $dark): array
+    static function assets(AdminState $admin): array
     {
-        $wysiwygAvailable = false;
+        $styleQuery = ['s' => Settings::get('adminscheme')];
 
-        Extend::call('admin.wysiwyg', ['available' => &$wysiwygAvailable]);
-
-        $styleOptions = ['query' => ['s' => $scheme]];
-
-        if ($dark) {
-            $styleOptions['query']['d'] = 1;
+        if ($admin->dark) {
+            $styleQuery['d'] = 1;
         }
 
         return [
             'extend_event' => 'admin.head',
             'css' => [
-                'admin' => Router::path('admin/script/style.php', $styleOptions),
+                'admin' => Router::path('admin/script/style.php', ['query' => $styleQuery]),
             ],
             'js' => [
                 'jquery' => Router::path('system/public/jquery.js'),
@@ -674,8 +670,8 @@ abstract class Admin
             ],
             'js_before' => "\n" . Core::getJavascript([
                 'admin' => [
-                    'themeIsDark' => $dark,
-                    'wysiwygAvailable' => $wysiwygAvailable,
+                    'themeIsDark' => $admin->dark,
+                    'wysiwygAvailable' => $admin->wysiwygAvailable,
                     'wysiwygEnabled' => User::isLoggedIn() && User::$data['wysiwyg'],
                 ],
                 'labels' => [

@@ -12,6 +12,8 @@ class AdminState
     public $menu;
     /** @var bool */
     public $loginLayout = false;
+    /** @var bool */
+    public $wysiwygAvailable = false;
     /** @var string[] */
     public $bodyClasses = [];
     /** @var bool */
@@ -24,7 +26,7 @@ class AdminState
     public $assets;
     /** @var bool */
     public $dark = false;
-    /** @var string the content */
+    /** @var string */
     public $output = '';
 
     function redirect(string $url): void

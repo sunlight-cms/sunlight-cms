@@ -59,7 +59,7 @@ if ($_admin->loginLayout) {
     $_admin->assets = Admin::loginAssets();
 } else {
     $_admin->dark = (bool) Settings::get('adminscheme_dark');
-    $_admin->assets = Admin::themeAssets(Settings::get('adminscheme'), $_admin->dark);
+    $_admin->assets = Admin::assets($_admin);
 }
 
 /* ---- output content ---- */
