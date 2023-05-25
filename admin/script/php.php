@@ -2,6 +2,7 @@
 
 use Sunlight\Admin\Admin;
 use Sunlight\Core;
+use Sunlight\Extend;
 use Sunlight\GenericTemplates;
 use Sunlight\Router;
 use Sunlight\Settings;
@@ -23,7 +24,7 @@ if (!User::isSuperAdmin()) {
 
 echo GenericTemplates::renderHead();
 
-$assets = Admin::themeAssets(Settings::get('adminscheme'), Settings::get('adminscheme_dark')) + ['extend_event' => null];
+$assets = Admin::themeAssets(Settings::get('adminscheme'), Settings::get('adminscheme_dark'));
 
 echo GenericTemplates::renderHeadAssets($assets);
 
@@ -82,5 +83,6 @@ if ($process) {
 ?>
 
 </div>
+<?= Extend::buffer('admin.body.end') ?>
 </body>
 </html>

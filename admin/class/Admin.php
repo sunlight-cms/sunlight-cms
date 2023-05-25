@@ -630,6 +630,22 @@ abstract class Admin
         }
     }
 
+    static function loginAssets(): array
+    {
+        return [
+            'extend_event' => 'admin.head',
+            'css' => [
+                'admin' => Router::path('admin/script/style.php', ['query' => ['s' => 0]]),
+            ],
+            'js' => [
+                'jquery' => Router::path('system/public/jquery.js'),
+                'sunlight' => Router::path('system/public/sunlight.js'),
+            ],
+            'js_before' => "\n" . Core::getJavascript(),
+            'favicon' => (bool) Settings::get('favicon'),
+        ];
+    }
+
     static function themeAssets(int $scheme, bool $dark): array
     {
         $wysiwygAvailable = false;
