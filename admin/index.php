@@ -78,7 +78,10 @@ if ($_admin->loginLayout) {
 $_admin->bodyClasses[] = $_admin->dark ? 'dark' : 'light';
 
 // output
-echo _buffer(function () use ($_admin) { ?>
+echo _buffer(function () use ($_admin) {
+    $replaceBody = false;
+
+    ?>
 <?= GenericTemplates::renderHead() ?>
 <meta name="robots" content="noindex,nofollow"><?= GenericTemplates::renderHeadAssets($_admin->assets), "\n" ?>
 <title><?= Settings::get('title'), ' - ', _lang('global.admintitle'), (!empty($_admin->title) ? ' - ' . $_admin->title : '') ?></title>
@@ -86,6 +89,9 @@ echo _buffer(function () use ($_admin) { ?>
 
 <body class="<?= implode(' ', $_admin->bodyClasses) ?>">
 
+<?= Extend::buffer('admin.body.start', ['replace' => &$replaceBody]) ?>
+
+<?php if (!$replaceBody): ?>
 <div id="container">
 
     <div id="top">
@@ -128,6 +134,7 @@ echo _buffer(function () use ($_admin) { ?>
     </div>
 
 </div>
+<? endif ?>
 
 <?= Extend::buffer('admin.body.end') ?>
 
