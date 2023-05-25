@@ -336,14 +336,6 @@ if ($continue) {
 
     $picture .= "<input type=\"file\" name=\"picture\" id=\"is-picture-upload\">\n";
 
-    // content editor
-    $editor = Extend::buffer('admin.article.editor');
-
-    if ($editor === '') {
-        // default implementation
-        $editor = '<textarea name="content" rows="25" cols="94" class="areabig editor">' . _e($query['content']) . '</textarea>';
-    }
-
     // form
     $output .= Admin::backlink($backlink) . '
 <h1>' . _lang('admin.content.articles.edit.title') . '</h1>
@@ -384,11 +376,11 @@ if ($continue) {
                             </tr>
                             <tr class="valign-top">
                                 <th>' . _lang('admin.content.form.perex') . '</th>
-                                <td><textarea name="perex" rows="9" cols="94" class="areabigperex editor" data-editor-mode="lite">' . _e($query['perex']) . '</textarea></td>
+                                <td>' . Admin::editor('article-perex', 'perex', _e($query['perex']), ['mode' => 'lite', 'rows' => 9, 'class' => 'areabigperex']) . '</td>
                             </tr>
                             <tr class="valign-top">
                                 <th>' . _lang('admin.content.form.content') . $artlink . '</th>
-                                <td>' . $editor . '</td>
+                                <td>' . Admin::editor('article-content', 'content', _e($query['content'])) . '</td>
                             </tr>
                         </tbody>
                         <tfoot>

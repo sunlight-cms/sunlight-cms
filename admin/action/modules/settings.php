@@ -99,7 +99,7 @@ $editable_settings = [
                 'format' => 'text',
                 'help' => false,
                 'extra_help' => _lang('admin.settings.users.rules.help'),
-                'input' => '<textarea id="setting_rules" name="rules" rows="9" cols="33" class="areasmallwide editor">' . _e($settings['rules']) . '</textarea>',
+                'input' => Admin::editor('settings-rules', 'rules', _e($settings['rules']), ['rows' => 9, 'class' => 'areasmallwide']),
             ],
             ['name' => 'messages', 'format' => 'bool'],
             ['name' => 'lostpass', 'format' => 'bool'],

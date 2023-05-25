@@ -165,7 +165,7 @@ $output .= '
 
 <tr class="valign-top">
 <th>' . _lang('admin.other.massemail.text') . '</th>
-<td><textarea name="text" class="areabig editor" rows="9" cols="94" data-editor-mode="code">' . Form::restorePostValue('text', null, false) . '</textarea></td>
+<td>' . Admin::editor('massemail-body', 'text', Form::restorePostValue('text', null, false), ['mode' => 'code', 'rows' => 9]) . '</td>
 </tr>
 
 <tr><td></td>

@@ -113,6 +113,60 @@ abstract class Admin
     }
 
     /**
+     * Render a content editor
+     *
+     * Supported $options:
+     * -------------------------------------
+     * mode ('default')     'default' / 'code' (non-wysiwyg code editor) / 'lite' (short content editor)
+     * format ('html')      'xml' / 'css' / 'js' / 'json' / 'php' / 'php-raw' / 'html'
+     * cols (94)            number of textarea columns
+     * rows (25)            number of textarea rows
+     * wrap (null)          textarea wrap attribute
+     * class ('areabig')    textarea class attribute
+     *
+     * @param string $context descriptive identifier of where the editor is used (for plugins)
+     * @param string $name form element name
+     * @param string $htmlContent properly escaped HTML content for the editor
+     * @param array $options see description
+     */
+    static function editor(string $context, string $name, string $htmlContent, array $options = []): string
+    {
+        $options += [
+            'mode' => 'default',
+            'format' => 'html',
+            'cols' => 94,
+            'rows' => 25,
+            'wrap' => null,
+            'class' => 'areabig',
+        ];
+
+        $output = Extend::buffer('admin.editor', [
+            'context' => $context,
+            'name' => $name,
+            'html_content' => &$htmlContent,
+            'options' => &$options,
+        ]);
+
+        if ($output === '') {
+            // default implementation
+            $output = '<textarea'
+                . ' name="' . _e($name) . '"'
+                . ' cols="' . ((int) $options['cols']) . '"'
+                . ' rows="' . ((int) $options['rows']) . '"'
+                . ($options['wrap'] !== null ? ' wrap="' . _e($options['wrap']) . '"' : '')
+                . ' class="editor ' . _e($options['class']) . '"'
+                . ' data-editor-context="' . _e($context) . '"'
+                . ' data-editor-mode="' . _e($options['mode']) . '"'
+                . ' data-editor-format="' . _e($options['format']) . '"'
+                . '>'
+                . $htmlContent
+                . '</textarea>';
+        }
+
+        return $output;
+    }
+
+    /**
      * Check if the user has access to the given module
      */
     static function moduleAccess(string $module): bool

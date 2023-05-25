@@ -153,7 +153,7 @@ $output .= _buffer(function () use ($id, $box, $new, $templates_to_choose_slot_f
             </tr>
             <tr>
                 <th><?= _lang('admin.content.form.content') ?></th>
-                <td><textarea class="areasmallwide editor" name="content" rows="9" cols="33"><?= Form::restorePostValue('content', $box['content'], false) ?></textarea></td>
+                <td><?= Admin::editor('box-content', 'content', Form::restorePostValue('content', $box['content'], false), ['rows' => 9, 'cols' => 33, 'class' => 'areasmallwide']) ?></td>
             </tr>
             <tr>
                 <th><?= _lang('admin.content.form.class') ?></th>

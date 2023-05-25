@@ -460,14 +460,6 @@ if (User::hasPrivilege('adminpages')) {
     $parent_row = '';
 }
 
-// content editor
-$editor = Extend::buffer('admin.page.editor');
-
-if ($editor === '') {
-    // default implementation
-    $editor = '<textarea name="content" rows="25" cols="94" class="areabig editor">' ._e($query['content']) . '</textarea>';
-}
-
 // messages
 if (isset($_GET['saved'])) {
     $output .= Message::ok(_lang('global.saved') . ' <small>(' . GenericTemplates::renderTime(time()) . ')</small>', true);
@@ -523,7 +515,7 @@ $output .= '<form class="cform" action="' . _e(Router::admin('content-edit' . $t
                             . ($editscript_enable_perex ?
                             '<tr class="valign-top">
                                 <th>' . _lang('admin.content.form.perex') . '</th>
-                                <td><textarea name="perex" rows="2" cols="94" class="arealine editor" data-editor-mode="lite">' . _e($query['perex']) . '</textarea></td>
+                                <td>' . Admin::editor('page-perex', 'perex', _e($query['perex']), ['mode' => 'lite', 'rows' => 2, 'class' => 'arealine']) . '</td>
                             </tr>' : '')
 
                             . ($editscript_enable_heading ?
@@ -538,7 +530,7 @@ $output .= '<form class="cform" action="' . _e(Router::admin('content-edit' . $t
                                     . _lang('admin.content.form.content')
                                     . (!$new ? ' <a href="' . _e(Router::page($query['id'], $query['slug'])) . '" target="_blank"><img src="' . _e(Router::path('admin/public/images/icons/loupe.png')) . '" alt="prev"></a>' : '')
                             . '</th>
-                                <td>' . $editor . '</td>
+                                <td>' . Admin::editor('page-content', 'content', _e($query['content'])) . '</td>
                             </tr>' : '')
 
                             . $editscript_extra_row

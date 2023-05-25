@@ -532,7 +532,7 @@ if ($continue) {
 
         <tr class="valign-top">
         <th>' . _lang('admin.content.form.content') . '</th>
-        <td><textarea rows="25" cols="94" class="areabig editor" data-editor-mode="code" data-editor-format="' . $ext . '" name="content" wrap="off">' . _e($content) . '</textarea></td>
+        <td>' . Admin::editor('fman-edit', 'content', _e($content), ['mode' => 'code', 'format' => $ext, 'wrap' => 'off']) . '</td>
         </tr>
         ';
                 }

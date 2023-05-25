@@ -38,31 +38,26 @@ $(document).ready(function () {
 
         // determine mode
         var mode;
-        var format = textarea.data('editorFormat');
-        if ('undefined' !== typeof format) {
-            switch (format) {
-                case 'xml':
-                    mode = 'application/xml';
-                    break;
-                case 'css':
-                    mode = 'text/css';
-                    break;
-                case 'js':
-                case 'json':
-                    mode = 'text/javascript';
-                    break;
-                case 'php':
-                    mode = 'application/x-httpd-php';
-                    break;
-                case 'php-raw':
-                    mode = 'text/x-php';
-                    break;
-                case 'html':
-                    mode = {name: 'hcm', backdrop: 'text/html'};
-                    break;
-            }
-        } else {
-            mode = {name: 'hcm', backdrop: 'text/html'};
+        switch (textarea.data('editorFormat')) {
+            case 'xml':
+                mode = 'application/xml';
+                break;
+            case 'css':
+                mode = 'text/css';
+                break;
+            case 'js':
+            case 'json':
+                mode = 'text/javascript';
+                break;
+            case 'php':
+                mode = 'application/x-httpd-php';
+                break;
+            case 'php-raw':
+                mode = 'text/x-php';
+                break;
+            case 'html':
+                mode = {name: 'hcm', backdrop: 'text/html'};
+                break;
         }
 
         // abort if no mode has been determined
