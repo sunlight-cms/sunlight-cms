@@ -352,6 +352,10 @@ abstract class Database
             return $value->getSql();
         }
 
+        if (is_bool($value)) {
+            $value = (int)$value;
+        }
+
         if (is_numeric($value)) {
             $value = (0 + $value);
 
@@ -606,7 +610,7 @@ abstract class Database
 
         foreach ($ids as $id) {
             foreach ($changesetMap[$id] as $column => $value) {
-                $commonChanges[$column][$value][$id] = true;
+                $commonChanges[$column][self::val($value)][$id] = true;
             }
         }
 
@@ -619,7 +623,7 @@ abstract class Database
 
                 foreach ($changeList as &$changeItem) {
                     if ($changeItem['set'] === $set) {
-                        $changeItem['changeset'][$column] = $value;
+                        $changeItem['changeset'][$column] = self::raw($value);
                         $merged = true;
                         break;
                     }
@@ -628,7 +632,7 @@ abstract class Database
                 if (!$merged) {
                     $changeList[] = [
                         'set' => $set,
-                        'changeset' => [$column => $value],
+                        'changeset' => [$column => self::raw($value)],
                     ];
                 }
             }
