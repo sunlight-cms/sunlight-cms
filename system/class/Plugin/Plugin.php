@@ -185,9 +185,14 @@ abstract class Plugin
         return $this->file;
     }
 
-    function getWebPath(bool $absolute = false): string
+    function getWebPath(?array $routerOptions = null): string
     {
-        return Router::path($this->webPath, ['absolute' => $absolute]);
+        return Router::path($this->webPath, $routerOptions);
+    }
+
+    function getAssetPath(string $path, ?array $routerOptions = null): string
+    {
+        return $this->getWebPath($routerOptions) . '/' . $path;
     }
 
     /**

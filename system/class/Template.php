@@ -254,12 +254,12 @@ abstract class Template
     /**
      * Compose path to a current template's asset
      *
-     * @param string $path subpath in the template direcotry
-     * @param bool $absolute generate an absolute URL 1/0
+     * @param string $path subpath in the template's direcotry
+     * @param array|null $routerOptions router URL generation options {@see Router}
      */
-    static function asset(string $path, bool $absolute = false): string
+    static function asset(string $path, ?array $routerOptions = null): string
     {
-        return self::getCurrent()->getWebPath($absolute) . "/{$path}";
+        return self::getCurrent()->getAssetPath($path, $routerOptions);
     }
 
     /**

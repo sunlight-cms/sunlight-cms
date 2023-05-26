@@ -30,15 +30,15 @@ class LightboxPlugin extends ExtendPlugin
             }
         }
 
-        $args['css']['lightbox'] = $this->getWebPath() . '/public/css/lightbox' . ($dark ? '-dark' : '') . '.css';
+        $args['css']['lightbox'] = $this->getAssetPath('public/css/lightbox' . ($dark ? '-dark' : '') . '.css');
     }
 
     function onEnd(array $args): void
     {
         $options =  $this->getConfig()['options'] + ['albumLabel' => _lang('lightbox.album_label')];
 
-        $args['output'] .= '<script src="' . $this->getWebPath() . '/public/js/lightbox.js"></script>' . "\n";
-        $args['output'] .= '<script>lightbox.option(' . Json::encodeForInlineJs($options, Json::PRETTY) . ');</script>' . "\n";
+        $args['output'] .= '<script src="' . _e($this->getAssetPath('public/js/lightbox.js')) . '"></script>' . "\n";
+        $args['output'] .= '<script>lightbox.option(' . Json::encodeForInlineJs($options) . ');</script>' . "\n";
     }
 
     function getAction(string $name): ?PluginAction
