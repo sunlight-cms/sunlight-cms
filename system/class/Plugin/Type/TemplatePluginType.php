@@ -38,7 +38,11 @@ class TemplatePluginType extends PluginType
         $optionResolver->addOption(
             Option::list('css', 'string')
                 ->normalize([PluginOptionNormalizer::class, 'normalizeWebPathArray'])
-                ->default([]),
+                ->default(function (Node $node, PluginData $plugin) {
+                    return [
+                        'template_style' => PluginOptionNormalizer::normalizeWebPath('style.css', $plugin),
+                    ];
+                }),
             Option::list('js', 'string')
                 ->normalize([PluginOptionNormalizer::class, 'normalizeWebPathArray'])
                 ->default([]),
@@ -59,20 +63,10 @@ class TemplatePluginType extends PluginType
                 ->required(),
             Option::string('lang_dir')
                 ->normalize([PluginOptionNormalizer::class, 'normalizePath'])
-                ->default(null),
+                ->default(function (Node $node, PluginData $plugin) {
+                    return PluginOptionNormalizer::normalizePath('labels', $plugin);
+                }),
             $this->createEventSubscribersOption('events')
         );
-
-        $optionResolver->addNormalizer(function (Node $node, PluginData $plugin) {
-            if (count($node['css']) === 0) {
-                $node['css']['template_style'] = PluginOptionNormalizer::normalizeWebPath('style.css', $plugin);
-            }
-
-            if ($node['lang_dir'] === null) {
-                $node['lang_dir'] = PluginOptionNormalizer::normalizePath('labels', $plugin);
-            }
-
-            return $node;
-        });
     }
 }
