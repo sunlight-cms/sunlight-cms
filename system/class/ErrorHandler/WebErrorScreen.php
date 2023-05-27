@@ -23,7 +23,7 @@ class WebErrorScreen extends BaseWebErrorScreen
             : 'Something went wrong';
 
         $view['text'] = Core::$fallbackLang === 'cs'
-            ? 'Omlouváme se, ale při zpracovávání Vašeho požadavku došlo k neočekávané chybě.'
+            ? 'Omlouváme se, ale při zpracovávání požadavku došlo k neočekávané chybě.'
             : 'We are sorry, but an unexpected error has occurred while processing your request.';
 
         if ($view['exception'] instanceof CoreException) {
