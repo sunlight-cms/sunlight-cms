@@ -353,7 +353,7 @@ abstract class Database
         }
 
         if (is_bool($value)) {
-            return (int) $value;
+            return $value ? '1' : '0';
         }
 
         if (is_numeric($value)) {
