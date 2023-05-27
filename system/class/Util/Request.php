@@ -2,8 +2,18 @@
 
 namespace Sunlight\Util;
 
+use Kuria\RequestInfo\RequestInfo;
+
 abstract class Request
 {
+    /**
+     * Get current request method
+     */
+    static function method(): string
+    {
+        return RequestInfo::getMethod();
+    }
+
     /**
      * Get a value from $_GET
      *

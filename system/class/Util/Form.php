@@ -48,7 +48,7 @@ abstract class Form
     static function restoreChecked(string $key_var, string $name, bool $default = false, string $method = 'POST'): string
     {
         if (
-            $method === $_SERVER['REQUEST_METHOD']
+            $method === Request::method()
             && (
                 $method === 'POST' && isset($_POST[$key_var], $_POST[$name])
                 || $method === 'GET' && isset($_GET[$key_var], $_GET[$name])

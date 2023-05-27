@@ -12,6 +12,7 @@ use Sunlight\Plugin\Plugin;
 use Sunlight\Router;
 use Sunlight\User;
 use Sunlight\Util\Cookie;
+use Sunlight\Util\Request;
 
 class ToolbarRenderer
 {
@@ -485,7 +486,7 @@ class ToolbarRenderer
     {
         ?>
 <div class="devkit-section devkit-request devkit-toggleable">
-    <?= _e($_SERVER['REQUEST_METHOD']) ?>
+    <?= _e(Request::method()) ?>
 </div>
 
 <div class="devkit-content">

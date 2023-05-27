@@ -17,7 +17,7 @@ $do_repeat = true;
 $valid = true;
 
 // check request
-if ($_SERVER['REQUEST_METHOD'] !== 'POST' || empty($target)) {
+if (Request::method() !== 'POST' || empty($target)) {
     $valid = false;
 }
 
