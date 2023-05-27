@@ -493,7 +493,7 @@ abstract class Template
         if (!User::isLoggedIn()) {
             // login
             $items['login'] = [
-                Router::module('login', ['query' => ['login_form_return' => $_SERVER['REQUEST_URI']]]),
+                Router::module('login', ['query' => ['login_form_return' => Core::getCurrentUrl()->buildRelative()]]),
                 _lang('usermenu.login'),
             ];
 
@@ -555,7 +555,7 @@ abstract class Template
         // logout
         if (User::isLoggedIn()) {
             $items['logout'] = [
-                Xsrf::addToUrl(Router::path('system/script/logout.php', ['query' => ['_return' => $_SERVER['REQUEST_URI']]])),
+                Xsrf::addToUrl(Router::path('system/script/logout.php', ['query' => ['_return' => Core::getCurrentUrl()->buildRelative()]])),
                 _lang('usermenu.logout'),
             ];
         }

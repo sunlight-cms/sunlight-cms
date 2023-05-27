@@ -375,17 +375,6 @@ abstract class Core
         // ensure correct encoding for mb_*() functions
         mb_internal_encoding('UTF-8');
 
-        // make sure $_SERVER['REQUEST_URI'] is defined
-        if (!isset($_SERVER['REQUEST_URI'])) {
-            $requestUri = $_SERVER['SCRIPT_NAME'] ?? $_SERVER['PHP_SELF'];
-
-            if (!empty($_SERVER['QUERY_STRING'])) {
-                $requestUri .= '?' . $_SERVER['QUERY_STRING'];
-            }
-
-            $_SERVER['REQUEST_URI'] = $requestUri;
-        }
-
         // set error_reporting
         $err_rep = E_ALL;
 

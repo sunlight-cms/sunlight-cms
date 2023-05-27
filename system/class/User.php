@@ -761,7 +761,7 @@ abstract class User
                 if (isset($_GET['login_form_return'])) {
                     $return = Request::get('login_form_return');
                 } else  {
-                    $return = $_SERVER['REQUEST_URI'];
+                    $return = Core::getCurrentUrl()->buildRelative();
                 }
             }
 
@@ -1166,7 +1166,7 @@ abstract class User
     static function renderPostRepeatForm(bool $allow_login = true, ?Message $login_message = null, ?string $target_url = null, bool $do_repeat = false): string
     {
         if ($target_url === null) {
-            $target_url = $_SERVER['REQUEST_URI'];
+            $target_url = Core::getCurrentUrl()->buildRelative();
         }
 
         if ($do_repeat) {
