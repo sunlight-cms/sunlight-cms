@@ -315,7 +315,7 @@ CREATE TABLE `sunlight_user` (
   `registertime` bigint(20) NOT NULL DEFAULT 0,
   `activitytime` bigint(20) NOT NULL DEFAULT 0,
   `blocked` tinyint(1) NOT NULL DEFAULT 0,
-  `massemail` tinyint(1) NOT NULL DEFAULT 1,
+  `massemail` tinyint(1) NOT NULL DEFAULT 0,
   `wysiwyg` tinyint(1) NOT NULL DEFAULT 0,
   `public` tinyint(1) NOT NULL DEFAULT 1,
   `language` varchar(12) NOT NULL DEFAULT '',
