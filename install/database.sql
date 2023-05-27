@@ -257,7 +257,7 @@ INSERT INTO `sunlight_setting` (`var`, `val`, `preload`, `web`, `admin`) VALUES
 ('galuploadresize_h',	'565',	1,	1,	1),
 ('galuploadresize_w',	'750',	1,	1,	1),
 ('index_page_id',	'1',	1,	1,	1),
-('install_check',	'1',	1,	1,	1),
+('install_check',	'',		1,	1,	1),
 ('language',	'cs',	1,	1,	1),
 ('language_allowcustom',	'0',	1,	1,	1),
 ('lostpass',	'1',	1,	1,	1),

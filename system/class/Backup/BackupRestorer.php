@@ -158,7 +158,7 @@ class BackupRestorer
         Core::$cache->clear();
 
         // force install check
-        Settings::update('install_check', '1');
+        Settings::update('install_check', '');
 
         return true;
     }

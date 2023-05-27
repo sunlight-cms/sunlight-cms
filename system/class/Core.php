@@ -134,7 +134,7 @@ abstract class Core
         self::initSettings();
 
         // check system phase
-        self::checkSystemState();
+        self::checkSystemState($options);
 
         // second init phase
         self::initSession();
@@ -167,10 +167,12 @@ abstract class Core
         ];
 
         // load config file
-        $configFile = $options['config_file'] ?? $root . 'config.php';
+        if ($options['config_file'] !== false) {
+            if ($options['config_file'] === null) {
+                $options['config_file'] = $root . 'config.php';
+            }
 
-        if ($configFile !== false) {
-            $configFileOptions = @include $configFile;
+            $configFileOptions = @include $options['config_file'];
 
             if ($configFileOptions === false) {
                 self::fail(
@@ -333,7 +335,7 @@ abstract class Core
     /**
      * Check system state after initialization
      */
-    private static function checkSystemState(): void
+    private static function checkSystemState(array $options): void
     {
         // check database version
         if (Settings::get('dbversion') !== self::VERSION) {
@@ -344,20 +346,24 @@ abstract class Core
         }
 
         // installation check
-        if (Settings::get('install_check')) {
-            $systemChecker = new SystemChecker();
-            $systemChecker->check();
+        if ($options['config_file'] !== false) {
+            $installCheckKey = sprintf('%s-%d', self::VERSION, filemtime($options['config_file']));
 
-            if ($systemChecker->hasErrors()) {
-                self::fail(
-                    'Při kontrole instalace byly detekovány následující problémy:',
-                    'The installation check has detected the following problems:',
-                    null,
-                    $systemChecker->renderErrors()
-                );
+            if (Settings::get('install_check') !== $installCheckKey) {
+                $systemChecker = new SystemChecker();
+                $systemChecker->check();
+
+                if ($systemChecker->hasErrors()) {
+                    self::fail(
+                        'Při kontrole instalace byly detekovány následující problémy:',
+                        'The installation check has detected the following problems:',
+                        null,
+                        $systemChecker->renderErrors()
+                    );
+                }
+
+                Settings::update('install_check', $installCheckKey);
             }
-
-            Settings::update('install_check', '0');
         }
     }
 
