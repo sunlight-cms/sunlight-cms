@@ -471,7 +471,7 @@ class ToolbarRenderer
                     echo ', ';
                 }
 
-                echo '<small>(' . _e($eventArgType) . ')</small> ' . _e($eventArgName);
+                echo '<span class="devkit-type">' . _e($eventArgType) . '</span> ' . _e($eventArgName);
             }
         } else {
             echo '-';

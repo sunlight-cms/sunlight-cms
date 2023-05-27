@@ -181,8 +181,7 @@ body.devkit-content-open {
     border: none;
     background: none;
 }
-#devkit-toolbar small {
-    font-size: 80%;
+#devkit-toolbar .devkit-type {
     color: #0077A7;
 }
 #devkit-toolbar code, #devkit-toolbar pre {
