@@ -1,5 +1,6 @@
 /* Toolbar */
 #devkit-toolbar * {
+    box-sizing: content-box;
     margin: 0;
     padding: 0;
     width: auto;
@@ -20,6 +21,7 @@
     left: 0;
     bottom: 0;
     z-index: 1000;
+    box-sizing: content-box;
     padding: 0 10px;
     width: 100%;
     background: #1c1c1c;
@@ -41,7 +43,7 @@
 /* Sections */
 #devkit-toolbar .devkit-section {
     float: left;
-    padding: 10px 15px 10px 32px;
+    padding: 13px 15px 13px 32px;
     background-repeat: no-repeat;
     background-position: 8px center;
     font-size: 12px;

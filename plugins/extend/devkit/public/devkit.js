@@ -62,7 +62,7 @@ jQuery(document).ready(function ($) {
      */
     function setCookie(name, value)
     {
-        document.cookie = name + '=' + encodeURIComponent(value) + ';path=' + SunlightVars.basePath;
+        document.cookie = name + '=' + encodeURIComponent(value) + ';path=' + SunlightVars.basePath + ';SameSite=Lax';
     }
 
     /**
