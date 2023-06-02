@@ -46,6 +46,8 @@ registerArgumentsSet(
     'language_allowcustom',
     'lostpass',
     'lostpassexpire',
+    'log_retention',
+    'log_level',
     'mailerusefrom',
     'maintenance_interval',
     'maxloginattempts',
