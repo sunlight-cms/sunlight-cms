@@ -85,7 +85,7 @@ abstract class Logger
 
         $shouldLog = $level <= (int) Settings::get('log_level');
 
-        Extend::call('logger.log.before', [
+        Extend::call('logger.filter', [
             'level' => $level,
             'category' => $category,
             'message' => $message,
@@ -99,9 +99,13 @@ abstract class Logger
 
         try {
             $entry = self::createEntry($level, $category, $message, $context);
-            Extend::call('logger.log', ['entry' => $entry]);
-            self::$handler->log($entry);
-            Extend::call('logger.log.after', ['entry' => $entry]);
+
+            Extend::call('logger.before', ['entry' => $entry, 'should_log' => &$shouldLog]);
+
+            if ($shouldLog) {
+                self::$handler->log($entry);
+                Extend::call('logger.after', ['entry' => $entry]);
+            }
         } catch (\Throwable $e) {
             // ignore logger errors
         }
