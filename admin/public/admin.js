@@ -274,7 +274,7 @@ Sunlight.admin = (function ($) {
         fmanAddFile: function () {
             var newfile = document.createElement('span');
             newfile.id = "file" + fmanTotalFiles;
-            newfile.innerHTML = "<br /><input type='file' name='upf" + fmanTotalFiles + "[]' multiple /> <a href=\"#\" onclick=\"return Sunlight.admin.fmanRemoveFile(" + fmanTotalFiles + ");\">" + SunlightVars.labels.cancel + "</a>";
+            newfile.innerHTML = "<br><input type='file' name='upf" + fmanTotalFiles + "[]' multiple> <a href=\"#\" onclick=\"return Sunlight.admin.fmanRemoveFile(" + fmanTotalFiles + ");\">" + SunlightVars.labels.cancel + "</a>";
             document.getElementById("fmanFiles").appendChild(newfile);
             fmanTotalFiles += 1;
 
