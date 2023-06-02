@@ -36,7 +36,7 @@ abstract class StringManipulator
         }
 
         if (mb_strlen($string) > $length) {
-            $string = mb_substr($string, 0, max(0, $length - 3)) . '…';
+            $string = mb_substr($string, 0, max(0, $length - 1)) . '…';
         }
 
         if ($convert_entities) {

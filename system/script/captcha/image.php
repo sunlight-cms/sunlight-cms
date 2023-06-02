@@ -6,7 +6,6 @@ use Sunlight\Extend;
 use Sunlight\Image\ImageFormat;
 use Sunlight\Image\ImageTransformer;
 use Sunlight\Util\Request;
-use Sunlight\Util\Response;
 
 require '../../bootstrap.php';
 Core::init('../../../', [

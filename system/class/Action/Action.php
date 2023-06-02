@@ -2,7 +2,7 @@
 
 namespace Sunlight\Action;
 
-use Sunlight\Core;
+use Sunlight\GenericTemplates;
 use Sunlight\Message;
 
 abstract class Action
@@ -31,7 +31,7 @@ abstract class Action
     /**
      * Run the action
      */
-    final function run(): ActionResult
+    function run(): ActionResult
     {
         try {
             $result = $this->execute();
@@ -40,7 +40,7 @@ abstract class Action
                 $result = ActionResult::failure(Message::error(_lang('global.error')));
 
                 if ($this->renderExceptions) {
-                    $result->setOutput(Core::renderException($e));
+                    $result->setOutput(GenericTemplates::renderException($e));
                 }
             } else {
                 throw $e;

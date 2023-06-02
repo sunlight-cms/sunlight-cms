@@ -16,6 +16,14 @@ abstract class Form
     }
 
     /**
+     * Select an option based on a condition
+     */
+    static function selectOption(bool $selected): string
+    {
+        return $selected ? ' selected' : '';
+    }
+
+    /**
      * Check if a checkbox was submitted in POST data
      *
      * @return int 1 or 0

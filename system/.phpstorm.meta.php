@@ -136,6 +136,7 @@ registerArgumentsSet(
     'post',
     'gallery_image',
     'iplog',
+    'log',
     'page',
     'pm',
     'poll',
@@ -222,7 +223,7 @@ registerArgumentsSet(
     'other-patch',
     'other-cleanup',
     'other-sqlex',
-    'other-php',
+    'other-phpex',
     'other-massemail'
 );
 

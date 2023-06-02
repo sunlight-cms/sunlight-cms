@@ -7,7 +7,6 @@ use Kuria\Cache\Driver\Filesystem\Entry\EntryFactory;
 use Kuria\Cache\Driver\Filesystem\FilesystemDriver;
 use Kuria\Cache\Driver\Memory\MemoryDriver;
 use Kuria\ClassLoader\ClassLoader;
-use Kuria\Debug\Exception;
 use Kuria\Event\EventEmitter;
 use Kuria\RequestInfo\RequestInfo;
 use Kuria\RequestInfo\TrustedProxies;
@@ -16,12 +15,10 @@ use Sunlight\Database\Database as DB;
 use Sunlight\Database\DatabaseException;
 use Sunlight\ErrorHandler\ErrorHandler;
 use Sunlight\Exception\CoreException;
-use Sunlight\Image\ImageService;
 use Sunlight\Localization\LocalizationDictionary;
 use Sunlight\Plugin\PluginManager;
 use Sunlight\Util\DateTime;
 use Sunlight\Util\Environment;
-use Sunlight\Util\Filesystem;
 use Sunlight\Util\Json;
 
 /**
@@ -132,6 +129,7 @@ abstract class Core
         self::initDatabase($options);
         self::initPlugins();
         self::initSettings();
+        Logger::init();
 
         // check system phase
         self::checkSystemState($options);
@@ -567,34 +565,6 @@ abstract class Core
     }
 
     /**
-     * Run system maintenance
-     */
-    static function doMaintenance(): void
-    {
-        // clean thumbnails
-        ImageService::cleanThumbnails(Settings::get('thumb_cleanup_threshold'));
-
-        // remove old files in the temporary directory
-        Filesystem::purgeDirectory(SL_ROOT . 'system/tmp', [
-            'keep_dir' => true,
-            'files_only' => true,
-            'file_callback' => function (\SplFileInfo $file) {
-                return
-                    substr($file->getFilename(), 0, 1) !== '.' // not a hidden file
-                    && time() - $file->getMTime() > 86400; // changed more than 24h ago
-            },
-        ]);
-
-        // check version
-        VersionChecker::check();
-
-        // cleanup the cache
-        if (self::$cache->supportsCleanup()) {
-            self::$cache->cleanup();
-        }
-    }
-
-    /**
      * Get global JavaScript definitions
      *
      * @param array $customVariables map of custom variables
@@ -664,13 +634,5 @@ abstract class Core
         }
 
         throw new CoreException(implode("\n\n", $messages));
-    }
-
-    /**
-     * Render an exception
-     */
-    static function renderException(\Throwable $e, bool $showTrace = true, bool $showPrevious = true): string
-    {
-        return '<pre class="exception">' . _e(Exception::render($e, $showTrace, $showPrevious)) . "</pre>\n";
     }
 }

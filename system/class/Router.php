@@ -3,7 +3,6 @@
 namespace Sunlight;
 
 use Kuria\Url\Url;
-use Sunlight\Post\Post;
 use Sunlight\Database\Database as DB;
 use Sunlight\Page\Page;
 use Sunlight\Util\Arr;
@@ -185,6 +184,7 @@ abstract class Router
      * -----------------
      * plain (0)        return only plain username 1/0
      * link (1)         link to user profile 1/0
+     * custom_link (-)  custom URL to use instead of user's profile
      * color (1)        add color based on user group 1/0
      * icon (1)         show group icon 1/0
      * publicname (1)   use public name, if available 1/0
@@ -202,6 +202,7 @@ abstract class Router
         $options += [
             'plain' => false,
             'link' => true,
+            'custom_link' => null,
             'color' => true,
             'icon' => true,
             'publicname' => true,
@@ -245,7 +246,7 @@ abstract class Router
 
         // opening tag
         $out = "<{$tag}"
-            . ($options['link'] ? ' href="' . _e(self::module('profile', self::combineOptions(['query' => ['id' => $data['username']]], $options['url']))) . '"' : '')
+            . ($options['link'] ? ' href="' . _e($options['custom_link'] ?? self::module('profile', self::combineOptions(['query' => ['id' => $data['username']]], $options['url']))) . '"' : '')
             . ($options['link'] && $options['new_window'] ? ' target="_blank"' : '')
             . ' class="user-link user-link-' . $data['id'] . ' user-link-group-' . $data['group_id'] . ($options['class'] !== null ? ' ' . $options['class'] : '') . '"'
             . ($options['color'] && $data['group_color'] !== '' ? ' style="color:' . $data['group_color'] . '"' : '')

@@ -1,6 +1,7 @@
 <?php
 
 use Sunlight\Database\Database as DB;
+use Sunlight\Logger;
 use Sunlight\Message;
 use Sunlight\Settings;
 use Sunlight\User;
@@ -52,6 +53,12 @@ if (isset($_POST['doit'])) {
     // delete group
     if (!$systemgroup) {
         DB::delete('user_group', 'id=' . $id);
+
+        Logger::notice(
+            'user',
+            sprintf('User group "%s" deleted via admin module', $query['title']),
+            ['group_id' => $id]
+        );
 
         // update default group
         if ($id == Settings::get('defaultgroup')) {

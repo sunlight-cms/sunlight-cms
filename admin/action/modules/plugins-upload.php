@@ -1,6 +1,8 @@
 <?php
 
 use Sunlight\Core;
+use Sunlight\GenericTemplates;
+use Sunlight\Logger;
 use Sunlight\Message;
 use Sunlight\Plugin\PluginArchive;
 use Sunlight\Util\Form;
@@ -27,11 +29,21 @@ if (isset($_FILES['archive']) && is_uploaded_file($_FILES['archive']['tmp_name']
             if (!empty($failedPlugins)) {
                 $message .= Message::list($failedPlugins, ['text' => _lang('admin.plugins.upload.failed' . (!$merge ? '.no_merge' : ''))]);
             }
+
+            Logger::notice(
+                'system',
+                sprintf(
+                    'Uploaded plugin archive "%s" with %d plugins',
+                    $_FILES['archive']['name'],
+                    count($extractedPlugins)
+                ),
+                ['extracted_plugins' => $extractedPlugins, 'failed_plugins' => $failedPlugins]
+            );
         } else {
             $message = Message::warning(_lang('admin.plugins.upload.no_plugins'));
         }
     } catch (Throwable $e) {
-        $message = Message::error(_lang('global.error')) . Core::renderException($e);
+        $message = Message::error(_lang('global.error')) . GenericTemplates::renderException($e);
     }
 }
 

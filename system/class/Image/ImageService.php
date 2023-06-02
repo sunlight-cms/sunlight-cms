@@ -3,6 +3,7 @@
 namespace Sunlight\Image;
 
 use Sunlight\Extend;
+use Sunlight\Logger;
 use Sunlight\Settings;
 use Sunlight\Util\Arr;
 use Sunlight\Util\Filesystem;
@@ -82,6 +83,12 @@ final class ImageService
 
             return $thumbPath;
         } catch (ImageException $e) {
+            Logger::warning(
+                'image_service',
+                sprintf('Failed to generate thumbnail, reason = %s', $e->getReasonCode()),
+                ['exception' => $e]
+            );
+
             return self::getErrorImage($e->getReasonCode());
         }
     }
@@ -150,6 +157,17 @@ final class ImageService
 
             return true;
         } catch (ImageException $exception) {
+            Logger::warning(
+                'image_service',
+                sprintf('Failed to process image, reason = %s', $exception->getReasonCode()),
+                [
+                    'type' => $type,
+                    'source' => $source,
+                    'target' => $target,
+                    'exception' => $exception,
+                ]
+            );
+
             return false;
         }
     }

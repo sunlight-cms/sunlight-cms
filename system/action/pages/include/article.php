@@ -11,6 +11,7 @@ use Sunlight\Router;
 use Sunlight\Settings;
 use Sunlight\Template;
 use Sunlight\User;
+use Sunlight\Util\Form;
 use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
@@ -145,13 +146,7 @@ if ($_article['rateon'] && Settings::get('ratemode') != 0 && User::hasPrivilege(
         $rateform .= "<select name=\"r\">\n";
 
         for ($x = 0; $x <= 100; $x += 10) {
-            if ($x == 50) {
-                $selected = ' selected';
-            } else {
-                $selected = '';
-            }
-
-            $rateform .= '<option value="' . $x . '"' . $selected . '>' . $x . "%</option>\n";
+            $rateform .= '<option value="' . $x . '"' . Form::selectOption($x === 50) . '>' . $x . "%</option>\n";
         }
 
         $rateform .= "</select> \n<input type=\"submit\" value=\"" . _lang('article.rate.submit') . '">' ;

@@ -3,6 +3,7 @@
 use Sunlight\Admin\Admin;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
+use Sunlight\Logger;
 use Sunlight\Message;
 use Sunlight\Router;
 use Sunlight\User;
@@ -27,6 +28,7 @@ if (isset($_POST['type']) && User::hasPrivilege('admingroups')) {
             'level' => 0,
             'icon' => ''
         ]);
+        Logger::notice('user', 'Created new empty user group via admin module', ['group_id' => DB::insertID()]);
         $msg = 1;
     } else {
         // copy existing group
@@ -62,6 +64,11 @@ if (isset($_POST['type']) && User::hasPrivilege('admingroups')) {
 
             // insert
             DB::insert('user_group', $new_group);
+            Logger::notice(
+                'user',
+                sprintf('Copied existing user group "%s"', $source_group['title']),
+                ['source_group_id' => $source_group['id'], 'group_id' => DB::insertID()]
+            );
             $msg = 1;
         } else {
             $msg = 4;
@@ -103,7 +110,7 @@ if (User::hasPrivilege('admingroups')) {
     <td>
         <span class="' . ($is_sys ? 'em' : '') . (($group['blocked'] == 1) ? ' strike' : '') . '"' . (($group['color'] !== '') ? ' style="color:' . $group['color'] . ';"' : '') . '>'
             . (($group['reglist'] == 1) ? '<img src="' . _e(Router::path('admin/public/images/icons/action.png')) . '" alt="reglist" class="icon" title="' . _lang('admin.users.groups.reglist') . '">' : '')
-            . (($group['icon'] != '') ? '<img src="' . _e(Router::path('images/groupicons/' . $group['icon'])) . '" alt="icon" class="groupicon"> ' : '')
+            . (($group['icon'] != '') ? '<img src="' . _e(Router::path('images/groupicons/' . $group['icon'])) . '" alt="icon" class="icon"> ' : '')
             . $group['title']
         . '</span>
     </td>

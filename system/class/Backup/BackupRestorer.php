@@ -6,6 +6,7 @@ use Sunlight\Core;
 use Sunlight\Database\Database as DB;
 use Sunlight\Database\DatabaseLoader;
 use Sunlight\Database\SqlReader;
+use Sunlight\Logger;
 use Sunlight\Settings;
 use Sunlight\Util\Filesystem;
 
@@ -108,8 +109,8 @@ class BackupRestorer
 
         // load database
         if ($database) {
-            DB::transactional(function () {
-                if (!$this->backup->getMetaData('is_patch')) {
+            DB::transactional(function () use ($isPatch) {
+                if (!$isPatch) {
                     DatabaseLoader::dropTables(DB::getTablesByPrefix());
                 }
 
@@ -119,6 +120,12 @@ class BackupRestorer
                     DB::$prefix
                 );
             });
+
+            Logger::notice(
+                'system',
+                sprintf('Loaded database dump from a %s', $isPatch ? 'patch' : 'backup'),
+                ['path' => $this->backup->getPath(), 'metadata' => $this->backup->getMetaData()]
+            );
         }
 
         // filesystem cleanup
@@ -153,6 +160,13 @@ class BackupRestorer
         if (!empty($files)) {
             $this->backup->extractFiles($files, SL_ROOT);
         }
+
+        // log
+        Logger::notice(
+            'system',
+            sprintf('Finished %s', $isPatch ? 'applying a patch' : 'restoring a backup'),
+            ['path' => $this->backup->getPath(), 'metadata' => $this->backup->getMetaData(), 'directories' => $directories, 'files' => $files]
+        );
 
         // clear cache
         Core::$cache->clear();

@@ -135,9 +135,9 @@ abstract class User
         $success = false;
         $isPersistentLogin = false;
         $errorCode = null;
+        $userData = null;
 
         do {
-            $userData = null;
             $loginDataExist = isset($_SESSION['user_id'], $_SESSION['user_auth']);
 
             // check persistent login cookie if there are no login data
@@ -287,6 +287,14 @@ abstract class User
 
             // event
             Extend::call('user.auth.failure', ['error_code' => $errorCode]);
+
+            // log
+            if ($errorCode !== 5) {
+                Logger::debug('user', 'User auth failure', [
+                    'error_code' => $errorCode,
+                    'user_id' => is_array($userData) ? $userData['id'] : null,
+                ]);
+            }
 
             self::$group = $groupData;
         }
@@ -634,7 +642,7 @@ abstract class User
     static function delete(int $id): bool
     {
         // fetch user's data
-        $user = DB::queryRow('SELECT id,avatar FROM ' . DB::table('user') . ' WHERE id=' . DB::val($id));
+        $user = DB::queryRow('SELECT id,username,avatar FROM ' . DB::table('user') . ' WHERE id=' . DB::val($id));
 
         if ($user === false) {
             return false;
@@ -680,6 +688,9 @@ abstract class User
         if (isset($user['avatar'])) {
             self::removeAvatar($user['avatar']);
         }
+
+        // log
+        Logger::notice('user', sprintf('User "%s" has been deleted', $user['username']), ['user_id' => $id]);
 
         // extend event (after deletion)
         Extend::call('user.delete.after', ['user' => $user, 'replacement' => $replacement]);
@@ -927,6 +938,7 @@ abstract class User
 
         if (!$password->match($plainPassword)) {
             IpLog::update(IpLog::FAILED_LOGIN_ATTEMPT);
+            Logger::notice('security', sprintf('Failed login attempt for user "%s"', $query['username']), ['user_id' => $query['id']]);
 
             return self::LOGIN_FAILURE;
         }

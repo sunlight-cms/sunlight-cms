@@ -4,6 +4,7 @@ use Sunlight\Core;
 use Sunlight\Database\Database as DB;
 use Sunlight\Email;
 use Sunlight\Extend;
+use Sunlight\Logger;
 use Sunlight\Message;
 use Sunlight\Router;
 use Sunlight\Settings;
@@ -142,6 +143,14 @@ if (isset($_POST['save'])) {
 
         if (isset($changeset['email'])) {
             $_SESSION['user_auth'] = User::getAuthHash(User::AUTH_SESSION, $changeset['email'], User::$data['password']);
+        }
+
+        if (!empty($changeset)) {
+            Logger::notice(
+                'user',
+                sprintf('User "%s" has changed their settings', User::getUsername()),
+                ['user_id' => User::getId(), 'changeset' => $changeset]
+            );
         }
 
         $_index->redirect(Router::module('settings', ['query' => ['action' => 'account', 'saved' => 1], 'absolute' => true]));

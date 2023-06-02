@@ -4,6 +4,7 @@ use Sunlight\Admin\Admin;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\Image\ImageService;
+use Sunlight\Logger;
 use Sunlight\Message;
 use Sunlight\Router;
 use Sunlight\User;
@@ -228,6 +229,13 @@ if ($continue) {
 
         // save
         DB::update('user_group', 'id=' . $id, $changeset);
+
+        // log
+        Logger::notice(
+            'user',
+            sprintf('User group "%s" updated via admin module', $query['title']),
+            ['group_id' => $id, 'diff' => array_diff_assoc($changeset, $query)]
+        );
 
         // redirect
         $_admin->redirect(Router::admin('users-editgroup', ['query' => ['id' => $id, 'saved' => 1]]));

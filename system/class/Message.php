@@ -21,7 +21,7 @@ class Message
     private $isHtml;
 
     /**
-     * @param string $type see Message class constants
+     * @param string $type see class constants
      * @param string $message the message
      * @param bool $isHtml display the message should be rendered as html (unescaped) 1/0
      */
@@ -35,11 +35,11 @@ class Message
     /**
      * Render a message
      *
-     * @see Message::__construct()
+     * @see __construct()
      */
     static function render(string $type, string $message, bool $isHtml = false): string
     {
-        $message = new Message($type, $message, $isHtml);
+        $message = new self($type, $message, $isHtml);
 
         return $message->__toString();
     }

@@ -5,6 +5,7 @@ namespace Sunlight\Plugin\Action;
 use Sunlight\Action\Action;
 use Sunlight\Action\ActionResult;
 use Sunlight\Core;
+use Sunlight\Logger;
 use Sunlight\Message;
 use Sunlight\Plugin\Plugin;
 use Sunlight\Util\Request;
@@ -36,6 +37,31 @@ abstract class PluginAction extends Action
      * Get title of the action
      */
     abstract function getTitle(): string;
+
+    function run(): ActionResult
+    {
+        $result = parent::run();
+
+        if ($result->isComplete() || $result->hasMessages()) {
+            Logger::notice(
+                'system',
+                sprintf('Executed action "%s" on plugin "%s"', (new \ReflectionClass($this))->getShortName(), $this->plugin->getId()),
+                [
+                    'plugin' => $this->plugin->getId(),
+                    'action' => get_class($this),
+                    'result' => $result->getResult(),
+                    'messages' => array_map(
+                        function (Message $message) {
+                            return $message->getMessage();
+                        },
+                        $result->getMessages()
+                    ),
+                ]
+            );
+        }
+
+        return $result;
+    }
 
     /**
      * See if the action has been confirmed

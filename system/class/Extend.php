@@ -2,8 +2,6 @@
 
 namespace Sunlight;
 
-use Kuria\Event\EventEmitterInterface;
-
 /**
  * Extend event system
  */

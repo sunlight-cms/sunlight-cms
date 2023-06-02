@@ -11,7 +11,6 @@ use Sunlight\Router;
 use Sunlight\Settings;
 use Sunlight\Template;
 use Sunlight\User;
-use Sunlight\Util\Html;
 use Sunlight\Util\Response;
 use Sunlight\WebState;
 use Sunlight\Xsrf;

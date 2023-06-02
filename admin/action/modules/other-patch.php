@@ -3,6 +3,7 @@
 use Sunlight\Backup\Backup;
 use Sunlight\Backup\BackupRestorer;
 use Sunlight\Core;
+use Sunlight\GenericTemplates;
 use Sunlight\Message;
 use Sunlight\Router;
 use Sunlight\Util\Environment;
@@ -54,7 +55,7 @@ if (isset($_POST['apply_patch'])) do {
 
         $output .= Message::list($errors, ['type' => Message::ERROR]);
     } catch (Throwable $e) {
-        $output .= Message::error(_lang('global.error')) . Core::renderException($e);
+        $output .= Message::error(_lang('global.error')) . GenericTemplates::renderException($e);
     }
 } while (false);
 

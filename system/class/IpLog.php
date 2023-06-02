@@ -146,6 +146,10 @@ abstract class IpLog
             'result' => &$result,
         ]);
 
+        if ($result === false) {
+            Logger::notice('ip_log', 'IP log check failed', ['type' => $type, 'var' => $var]);
+        }
+
         return $result;
     }
 

@@ -1,7 +1,7 @@
 <?php
 
 use Sunlight\Database\Database as DB;
-use Sunlight\Extend;
+use Sunlight\Logger;
 use Sunlight\Message;
 use Sunlight\User;
 use Sunlight\Util\Form;
@@ -35,6 +35,7 @@ if (isset($_POST['save'])) {
     if (empty($errors)) {
         $builtNewPassword = Password::create($newPassword)->build();
         DB::update('user', 'id=' . User::getId(), ['password' => $builtNewPassword]);
+        Logger::notice('user', sprintf('User "%s" has changed their password', User::getUsername()), ['user_id' => User::getId()]);
         $_SESSION['user_auth'] = User::getAuthHash(User::AUTH_SESSION, User::$data['email'], $builtNewPassword);
         $output .= Message::ok(_lang('global.saved'));
     } else {

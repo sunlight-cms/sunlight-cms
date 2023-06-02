@@ -5,10 +5,10 @@ use Sunlight\Admin\PageLister;
 use Sunlight\Core;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
+use Sunlight\Logger;
 use Sunlight\Message;
 use Sunlight\Router;
 use Sunlight\Settings;
-use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
@@ -182,6 +182,12 @@ $editable_settings = [
             ['name' => 'thumb_touch_threshold', 'format' => 'int'],
         ],
     ],
+    'logger' => [
+        'items' => [
+            ['name' => 'log_level', 'format' => 'int', 'choices' => [-1 => _lang('admin.settings.logger.log_level.disabled')] + Logger::LEVEL_NAMES],
+            ['name' => 'log_retention', 'format' => 'text', 'transform_back' => function ($v) { return ctype_digit($v) ? $v : ''; }],
+        ],
+    ],
 ];
 
 // extend
@@ -352,7 +358,7 @@ foreach ($editable_settings as $settings_category => $settings_category_data) {
                 $input = "<select{$inputAttrs}>\n";
 
                 foreach ($item['choices'] as $choiceValue => $choiceLabel) {
-                    $input .= '<option' . ($choiceValue == $value ? ' selected' : '') . ' value="' . _e($choiceValue) . '">' . $choiceLabel . "</option>\n";
+                    $input .= '<option' . Form::selectOption($choiceValue == $value) . ' value="' . _e($choiceValue) . '">' . $choiceLabel . "</option>\n";
                 }
 
                 $input .= '</select>';

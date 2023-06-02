@@ -4,6 +4,7 @@ use Sunlight\Admin\Admin;
 use Sunlight\Core;
 use Sunlight\Database\Database as DB;
 use Sunlight\Email;
+use Sunlight\Logger;
 use Sunlight\Message;
 use Sunlight\Router;
 use Sunlight\Settings;
@@ -58,8 +59,9 @@ if (isset($_POST['text'])) {
         // get users
         $query = DB::query(
             'SELECT email,password'
-            . ' FROM ' . DB::table('user')
-            . ' WHERE massemail=1 AND blocked=0 AND group_id IN(' . DB::arr($receivers) . ')'
+            . ' FROM ' . DB::table('user') . ' u'
+            . ' JOIN ' . DB::table('user_group') . ' g'
+            . ' WHERE u.massemail=1 AND u.blocked=0 AND g.blocked=0 AND u.group_id IN(' . DB::arr($receivers) . ')'
         );
 
         // send emails or list emails
@@ -89,6 +91,13 @@ if (isset($_POST['text'])) {
 
             // message
             if ($done != 0) {
+                Logger::notice('massemail', sprintf('Sent a mass email to %d recipients', $done), [
+                    'subject' => $subject,
+                    'text' => $text,
+                    'headers' => $headers,
+                    'group_ids' => $receivers,
+                ]);
+
                 $output .= Message::ok(_lang('admin.other.massemail.send', [
                     '%done%' => $done,
                     '%total%' => $total,
@@ -158,7 +167,7 @@ $output .= '
 <td>
   <select name="ctype" class="selectbig">
   <option value="1">' . _lang('admin.other.massemail.ctype.1') . '</option>
-  <option value="2"' . (Request::post('ctype') == 2 ? ' selected' : '') . '>' . _lang('admin.other.massemail.ctype.2') . '</option>
+  <option value="2"' . Form::selectOption(Request::post('ctype') == 2) . '>' . _lang('admin.other.massemail.ctype.2') . '</option>
   </select>
 </td>
 </tr>

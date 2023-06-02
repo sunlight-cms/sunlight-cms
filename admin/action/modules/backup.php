@@ -310,7 +310,7 @@ if (!empty($_POST)) {
             }
         }
     } catch (Throwable $e) {
-        $message = Message::error(_lang('global.error')) . Core::renderException($e);
+        $message = Message::error(_lang('global.error')) . GenericTemplates::renderException($e);
     }
 }
 

@@ -5,7 +5,6 @@ namespace Sunlight\Plugin\Action;
 use Kuria\Debug\Dumper;
 use Sunlight\Action\ActionResult;
 use Sunlight\GenericTemplates;
-use Sunlight\Plugin\Plugin;
 
 /**
  * Show information about a plugin

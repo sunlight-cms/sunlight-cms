@@ -265,7 +265,7 @@ abstract class Database
     }
 
     /**
-     * Get AUTO_INCREMENT ID of last inserted row
+     * Get LAST_INSERT_ID()
      */
     static function insertID(): int
     {
@@ -428,7 +428,7 @@ abstract class Database
      *
      * @param string $table table name (no prefix)
      * @param array<string, mixed> $data associative array with row data
-     * @param bool $getInsertId return AUTO_INCREMENT ID 1/0
+     * @param bool $getInsertId return LAST_INSERT_ID() 1/0
      * @return bool|int
      */
     static function insert(string $table, array $data, bool $getInsertId = false)

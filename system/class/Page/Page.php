@@ -205,8 +205,6 @@ abstract class Page
      */
     static function isActive(array $ids, bool $children = false): bool
     {
-        $result = false;
-
         // determine current page
         [$currentId, $currentData] = self::getActive();
 

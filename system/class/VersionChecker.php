@@ -2,7 +2,6 @@
 
 namespace Sunlight;
 
-use Kuria\Cache\Driver\Memory\MemoryDriver;
 use Kuria\Url\Url;
 use Sunlight\Util\HttpClient;
 use Sunlight\Util\HttpClientException;

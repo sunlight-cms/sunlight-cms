@@ -12,6 +12,20 @@ abstract class StringGenerator
     private static $uid = 0;
 
     /**
+     * Generate a version 4 universally unique identifier
+     *
+     * @return string 36-character UUID
+     */
+    static function generateUuidV4(): string
+    {
+        $data = random_bytes(16);
+        $data[6] = chr(ord($data[6]) & 0x0f | 0x40); // set version to 0100
+        $data[8] = chr(ord($data[8]) & 0x3f | 0x80); // set bits 6-7 to 10
+
+        return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+    }
+
+    /**
      * Generate an unique hash (32 characters)
      */
     static function generateUniqueHash(): string

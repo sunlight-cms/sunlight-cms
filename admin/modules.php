@@ -307,6 +307,20 @@ return [
         'menu_order' => 60,
     ],
 
+    // log
+    'log' => [
+        'title' => _lang('admin.log.title'),
+        'access' => User::isSuperAdmin(),
+        'parent' => null,
+        'menu' => true,
+        'menu_order' => 70,
+    ],
+    'log-detail' => [
+        'title' => _lang('admin.log.detail.title'),
+        'access' => User::isSuperAdmin(),
+        'parent' => 'log',
+    ],
+
     // other
     'other' => [
         'title' => _lang('admin.menu.other'),
@@ -314,7 +328,7 @@ return [
         'parent' => null,
         'children' => ['other-massemail', 'other-cleanup', 'other-sqlex'],
         'menu' => true,
-        'menu_order' => 70,
+        'menu_order' => 80,
     ],
     'other-patch' => [
         'title' => _lang('admin.other.patch.title'),

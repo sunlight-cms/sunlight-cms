@@ -121,7 +121,9 @@ abstract class Hcm
             if (isset(self::$modules[$name])) {
                 $output = (string) CallbackHandler::fromScript(self::$modules[$name])(...$argList);
             } else {
-                $output = ''; // unknown module
+                // unknown module
+                Logger::warning('hcm', sprintf('Unknown HCM module "%s"', $name));
+                $output = '';
             }
         }
 

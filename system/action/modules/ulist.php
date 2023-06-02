@@ -5,6 +5,7 @@ use Sunlight\Paginator;
 use Sunlight\Router;
 use Sunlight\Settings;
 use Sunlight\User;
+use Sunlight\Util\Form;
 
 defined('SL_ROOT') or exit;
 
@@ -44,13 +45,7 @@ $output .= '
 $query = DB::query('SELECT id,title FROM ' . DB::table('user_group') . ' WHERE id!=' . User::GUEST_GROUP_ID . ' ORDER BY level DESC');
 
 while ($item = DB::row($query)) {
-    if ($item['id'] == $group) {
-        $selected = ' selected';
-    } else {
-        $selected = '';
-    }
-
-    $output .= '<option value="' . $item['id'] . '"' . $selected . '>' . $item['title'] . '</option>';
+    $output .= '<option value="' . $item['id'] . '"' . Form::selectOption($item['id'] == $group) . '>' . $item['title'] . '</option>';
 }
 
 $output .= '</select> <input type="submit" value="' . _lang('global.apply') . '"></form>';

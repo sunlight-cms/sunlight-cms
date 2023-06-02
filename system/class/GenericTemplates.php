@@ -2,6 +2,7 @@
 
 namespace Sunlight;
 
+use Kuria\Debug\Exception;
 use Sunlight\Util\StringManipulator;
 use Sunlight\Util\UrlHelper;
 
@@ -227,6 +228,14 @@ HTML;
         }
 
         return $output;
+    }
+
+    /**
+     * Render an exception
+     */
+    public static function renderException(\Throwable $e, bool $showTrace = true, bool $showPrevious = true): string
+    {
+        return '<pre class="exception">' . _e(Exception::render($e, $showTrace, $showPrevious)) . "</pre>\n";
     }
 
     /**

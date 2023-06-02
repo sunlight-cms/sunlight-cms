@@ -7,6 +7,7 @@ use Sunlight\Page\Page;
 use Sunlight\Post\Post;
 use Sunlight\Router;
 use Sunlight\User;
+use Sunlight\Util\Form;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
 
@@ -81,7 +82,7 @@ if (empty($forums)) {
         $output .= '<option'
             . ' value="' . $forum_id . '"'
             . ($forum['type'] != Page::FORUM ? ' disabled' : '')
-            . ($forum_id == $query['home'] ? ' selected' : '')
+            . Form::selectOption($forum_id == $query['home'])
             . '>'
             . str_repeat('&nbsp;&nbsp;&nbsp;│&nbsp;', $forum['node_level'])
             . $forum['title']

@@ -2,6 +2,7 @@
 
 use Sunlight\Database\Database as DB;
 use Sunlight\Database\SqlReader;
+use Sunlight\Logger;
 use Sunlight\Message;
 use Sunlight\Router;
 use Sunlight\Util\Request;
@@ -57,6 +58,7 @@ if (!empty($queries)) {
 
     for ($i = 0; isset($queries[$i]); ++$i) {
         $result = DB::query($queries[$i], true);
+        Logger::notice('system', 'Executed a custom SQL query via admin module', ['query' => $queries[$i], 'success' => $result !== false]);
 
         if ($result instanceof mysqli_result) {
             // result

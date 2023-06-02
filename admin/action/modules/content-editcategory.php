@@ -13,13 +13,7 @@ if ($continue) {
     $artorder_select = '';
 
     for ($x = 1; $x <= 4; $x++) {
-        if ($x == $query['var1']) {
-            $selected = ' selected';
-        } else {
-            $selected = '';
-        }
-
-        $artorder_select .= '<option value="' . $x . '"' . $selected . '>' . _lang('admin.content.form.artorder.' . $x) . '</option>';
+        $artorder_select .= '<option value="' . $x . '"' . Form::selectOption($x == $query['var1']) . '>' . _lang('admin.content.form.artorder.' . $x) . '</option>';
     }
 
     $custom_settings = '

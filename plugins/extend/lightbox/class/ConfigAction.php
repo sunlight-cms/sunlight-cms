@@ -4,6 +4,7 @@ namespace SunlightExtend\Lightbox;
 
 use Sunlight\Plugin\Action\ConfigAction as BaseConfigAction;
 use Sunlight\Util\ConfigurationFile;
+use Sunlight\Util\Form;
 use Sunlight\Util\Json;
 
 class ConfigAction extends BaseConfigAction
@@ -17,9 +18,9 @@ class ConfigAction extends BaseConfigAction
                 'label' => _lang('lightbox.cfg.dark_mode'),
                 'input' => _buffer(function () use ($config) { ?>
                     <select name="config[dark_mode]">
-                        <option value="" <?= $config['dark_mode'] === null ? ' selected' : '' ?>><?= _lang('lightbox.cfg.dark_mode.auto') ?></option>
-                        <option value="1" <?= $config['dark_mode'] === true ? ' selected' : '' ?>><?= _lang('global.yes') ?></option>
-                        <option value="0" <?= $config['dark_mode'] === false ? ' selected' : '' ?>><?= _lang('global.no') ?></option>
+                        <option value="" <?= Form::selectOption($config['dark_mode'] === null) ?>><?= _lang('lightbox.cfg.dark_mode.auto') ?></option>
+                        <option value="1" <?= Form::selectOption($config['dark_mode'] === true) ?>><?= _lang('global.yes') ?></option>
+                        <option value="0" <?= Form::selectOption($config['dark_mode'] === false) ?>><?= _lang('global.no') ?></option>
                     </select>
                     <?php }),
             ],
@@ -40,7 +41,7 @@ class ConfigAction extends BaseConfigAction
             case 'options':
                 try {
                     $config[$key] = Json::decode($value);
-                } catch (\RuntimeException $e) {
+                } catch (\InvalidArgumentException $e) {
                     return $e->getMessage();
                 }
 

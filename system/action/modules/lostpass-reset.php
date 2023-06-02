@@ -1,6 +1,7 @@
 <?php
 
 use Sunlight\IpLog;
+use Sunlight\Logger;
 use Sunlight\Message;
 use Sunlight\Router;
 use Sunlight\Settings;
@@ -92,6 +93,7 @@ if (isset($_POST['new_password'])) {
 
     if (empty($errors)) {
         DB::update('user', 'id=' . $user['id'], ['password' => Password::create($newPassword)->build()]);
+        Logger::notice('user', sprintf('User "%s" has reset their password', $user['username']), ['user_id' => $user['id']]);
         $_SESSION['login_form_username'] = $user['username'];
         $output .= Message::ok(_lang('mod.lostpass.reset.success', ['%login_link%' => Router::module('login')]), true);
         return;

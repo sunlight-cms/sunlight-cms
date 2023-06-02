@@ -5,6 +5,7 @@ namespace Sunlight\Backup;
 use Sunlight\Core;
 use Sunlight\Database\Database as DB;
 use Sunlight\Database\SqlDumper;
+use Sunlight\Logger;
 use Sunlight\Util\Filesystem;
 use Sunlight\Util\PhpTemplate;
 use Sunlight\Util\TemporaryFile;
@@ -252,6 +253,8 @@ class BackupBuilder
         $backup->create();
         $this->write($backup);
         $backup->close();
+
+        Logger::notice('system', 'Created a new backup', ['metadata' => $backup->getAddedMetaData()]);
 
         return $tmpFile;
     }

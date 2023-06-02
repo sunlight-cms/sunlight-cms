@@ -4,6 +4,7 @@ use Sunlight\Admin\Admin;
 use Sunlight\Message;
 use Sunlight\Router;
 use Sunlight\Settings;
+use Sunlight\Util\Form;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
 
@@ -34,8 +35,8 @@ $output .= '
 <tr>
     <th>' . _lang('admin.menu.index.edit.pos') . '</th>
     <td><select name="pos">
-        <option value="0"' . (($admin_index_cfg['admin_index_custom_pos'] == 0) ? ' selected' : '') . '>' . _lang('admin.menu.index.edit.pos.0') . '</option>
-        <option value="1"' . (($admin_index_cfg['admin_index_custom_pos'] == 1) ? ' selected' : '') . '>' . _lang('admin.menu.index.edit.pos.1') . '</option>
+        <option value="0"' . Form::selectOption($admin_index_cfg['admin_index_custom_pos'] == 0) . '>' . _lang('admin.menu.index.edit.pos.0') . '</option>
+        <option value="1"' . Form::selectOption($admin_index_cfg['admin_index_custom_pos'] == 1) . '>' . _lang('admin.menu.index.edit.pos.1') . '</option>
     </select></td>
 </tr>
 

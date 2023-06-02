@@ -5,6 +5,7 @@ namespace Sunlight\Plugin;
 use Kuria\Cache\NamespacedCache;
 use Kuria\ClassLoader\ClassLoader;
 use Sunlight\Core;
+use Sunlight\Util\Form;
 
 class PluginManager
 {
@@ -193,7 +194,7 @@ class PluginManager
 
         foreach ($this->choices($type) as $name => $label) {
             $output .=
-                '<option value="' . _e($name) . '"' . ($active === $name ? ' selected' : '') . '>'
+                '<option value="' . _e($name) . '"' . Form::selectOption($active === $name) . '>'
                 . _e($label)
                 . "</option>\n";
         }

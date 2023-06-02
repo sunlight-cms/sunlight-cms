@@ -92,6 +92,29 @@ CREATE TABLE `sunlight_iplog` (
   KEY `var` (`var`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE `sunlight_log` (
+  `id` varchar(36) NOT NULL,
+  `level` tinyint(4) NOT NULL,
+  `category` varchar(64) NOT NULL,
+  `time` bigint(20) NOT NULL,
+  `message` text NOT NULL,
+  `method` varchar(32) DEFAULT NULL,
+  `url` varchar(2048) DEFAULT NULL,
+  `ip` varchar(45) DEFAULT NULL,
+  `user_agent` varchar(255) DEFAULT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `context` text DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `level` (`level`),
+  KEY `category` (`category`),
+  KEY `time` (`time`),
+  KEY `message` (`message`(255)),
+  KEY `method` (`method`),
+  KEY `url` (`url`(255)),
+  KEY `ip` (`ip`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE `sunlight_page` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
@@ -260,6 +283,8 @@ INSERT INTO `sunlight_setting` (`var`, `val`, `preload`, `web`, `admin`) VALUES
 ('install_check',	'',	1,	1,	1),
 ('language',	'cs',	1,	1,	1),
 ('language_allowcustom',	'0',	1,	1,	1),
+('log_level',	'5',	1,	1,	1),
+('log_retention',	'30',	1,	1,	1),
 ('lostpass',	'1',	1,	1,	1),
 ('lostpassexpire',	'1800',	1,	1,	1),
 ('mailerusefrom',	'0',	1,	1,	1),
@@ -410,6 +435,6 @@ INSERT INTO `sunlight_user_group` (`id`, `title`, `descr`, `level`, `icon`, `col
 (1,	'SUPER_ADMIN',	'',	10000,	'redstar.png',	'',	0,	0,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	'*',	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1),
 (2,	'GUESTS',	'',	0,	'',	'',	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	'',	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	1,	1,	0),
 (3,	'REGISTERED',	'',	1,	'',	'',	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	0,	1,	0,	'',	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	1,	1,	1),
-(4,	'ADMINISTRATORS',	'',	1000,	'orangestar.png',	'',	0,	0,	1,	1,	0,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	0,	'*',	0,	0,	1,	1,	1,	1,	1,	1,	0,	0,	1,	1,	0),
+(4,	'ADMINISTRATORS',	'',	1000,	'orangestar.png',	'',	0,	0,	1,	1,	0,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	0,	'*',	0,	0,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	0),
 (5,	'MODERATORS',	'',	600,	'greenstar.png',	'',	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	0,	1,	0,	'',	0,	0,	0,	1,	0,	1,	1,	1,	1,	1,	1,	1,	0),
 (6,	'EDITOR',	'',	500,	'bluestar.png',	'',	0,	0,	1,	0,	0,	0,	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	1,	0,	0,	0,	1,	0,	0,	'poll, gallery, linkart, linkroot',	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	1,	1,	0);

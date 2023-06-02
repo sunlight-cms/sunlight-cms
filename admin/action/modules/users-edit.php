@@ -4,6 +4,7 @@ use Sunlight\Admin\Admin;
 use Sunlight\Database\Database as DB;
 use Sunlight\Email;
 use Sunlight\Extend;
+use Sunlight\Logger;
 use Sunlight\Message;
 use Sunlight\Router;
 use Sunlight\Settings;
@@ -203,6 +204,11 @@ if ($continue) {
             if ($id !== null) {
                 // update
                 DB::update('user', 'id=' . DB::val($query['id']), $changeset);
+                Logger::notice(
+                    'user',
+                    sprintf('User "%s" edited via admin module', $query['username']),
+                    ['diff' => array_diff_assoc($changeset, $query)]
+                );
                 Extend::call('user.edit', ['id' => $query['id']]);
                 $_admin->redirect(Router::admin('users-edit', ['query' => ['r' => 1, 'id' => $username]]));
 
@@ -215,6 +221,11 @@ if ($continue) {
                 'activitytime' => time(),
             ];
             $id = DB::insert('user', $changeset, true);
+            Logger::notice(
+                'user',
+                sprintf('User "%s" created via admin module', $changeset['username']),
+                ['data' => $changeset]
+            );
             Extend::call('user.new', ['id' => $id]);
             $_admin->redirect(Router::admin('users-edit', ['query' => ['r' => 2, 'id' => $username]]));
 

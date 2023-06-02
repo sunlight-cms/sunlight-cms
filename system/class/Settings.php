@@ -2,6 +2,7 @@
 
 namespace Sunlight;
 
+use Kuria\Debug\Dumper;
 use Sunlight\Database\Database as DB;
 
 abstract class Settings
@@ -75,7 +76,20 @@ abstract class Settings
      */
     static function update(string $setting, string $newValue): void
     {
+        $oldValue = self::get($setting);
+
         DB::update('setting', 'var=' . DB::val($setting), ['val' => $newValue]);
+
+        Logger::notice(
+            'system',
+            sprintf(
+                'Updated setting "%s" from %s to %s',
+                $setting,
+                Dumper::dump($oldValue),
+                Dumper::dump($newValue)
+            ),
+            ['setting' => $setting, 'old_value' => $oldValue, 'new_value' => $newValue]
+        );
     }
 
     /**

@@ -4,6 +4,8 @@ use Sunlight\Admin\Admin;
 use Sunlight\Core;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
+use Sunlight\Log\LogQuery;
+use Sunlight\Logger;
 use Sunlight\Message;
 use Sunlight\Router;
 use Sunlight\Settings;
@@ -21,6 +23,7 @@ $admin_index_cfg = Settings::getMultiple([
 ]);
 
 $version_data = VersionChecker::check();
+dump($version_data);
 
 $mysqlver = DB::$mysqli->server_info;
 
@@ -119,6 +122,7 @@ $output .= Extend::buffer('admin.index.after_table');
 $messages = [];
 
 if (Core::DIST === 'BETA') {
+    // beta warning
     $messages[] = Message::warning(_lang('admin.index.betawarn'));
 }
 
@@ -128,6 +132,7 @@ if (Core::$debug) {
 }
 
 if (($version_data !== null) && $version_data['localAge'] >= 0) {
+    // old version
     if ($version_data['localAge'] === 0) {
         $messages[] = Message::ok(_lang('admin.index.version.latest'));
     } else {
@@ -135,6 +140,20 @@ if (($version_data !== null) && $version_data['localAge'] >= 0) {
             _lang('admin.index.version.old', ['%version%' => $version_data['latestVersion'], '%link%' => $version_data['url']]),
             true
         );
+    }
+}
+
+if (Admin::moduleAccess('log')) {
+    $log_query = new LogQuery();
+    $log_query->maxLevel = Logger::ERROR;
+    $log_query->since = strtotime('-30 days 00:00');
+    $recent_log_errors = Logger::getTotalResults($log_query);
+
+    if ($recent_log_errors > 0) {
+        $messages[] = Message::warning(_lang('admin.index.recent_log_errors', [
+            '%count%' => $recent_log_errors,
+            '%link%' => _e(Router::admin('log', ['query' => ['maxLevel' => $log_query->maxLevel, 'since' => '-30 days 00:00', 'desc' => '1', 'search' => '1']])),
+        ]), true);
     }
 }
 

@@ -7,6 +7,7 @@ use Sunlight\Email;
 use Sunlight\Extend;
 use Sunlight\GenericTemplates;
 use Sunlight\IpLog;
+use Sunlight\Logger;
 use Sunlight\Message;
 use Sunlight\Router;
 use Sunlight\Settings;
@@ -185,7 +186,7 @@ if (!$user_data_valid && $show_form) {
             $groupselect_content = '';
 
             while ($groupselect_item = DB::row($groupselect_items)) {
-                $groupselect_content .= '<option value="' . $groupselect_item['id'] . '"' . (($groupselect_item['id'] == Settings::get('defaultgroup')) ? ' selected' : '') . '>' . $groupselect_item['title'] . "</option>\n";
+                $groupselect_content .= '<option value="' . $groupselect_item['id'] . '"' . Form::selectOption($groupselect_item['id'] == Settings::get('defaultgroup')) . '>' . $groupselect_item['title'] . "</option>\n";
             }
 
             $groupselect = ['label' => _lang('global.group'), 'content' => '<select name="group_id">' . $groupselect_content . '</select>'];
@@ -236,6 +237,7 @@ if (!$user_data_valid && $show_form) {
     if ($confirmed) {
         // confirmed
         $user_id = DB::insert('user', $user_data + ['registertime' => time()], true);
+        Logger::notice('user', sprintf('New user account "%s" has been registered', $user_data['username']), ['user_id' => $user_id]);
 
         // extend
         Extend::call('user.new', ['id' => $user_id]);

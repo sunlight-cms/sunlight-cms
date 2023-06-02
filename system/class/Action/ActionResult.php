@@ -63,7 +63,7 @@ class ActionResult
     static function failure($messages = null): self
     {
         if (empty($messages)) {
-            $messages = Message::ok(_lang('action.failure'));
+            $messages = Message::error(_lang('action.failure'));
         }
 
         return new self(false, $messages);

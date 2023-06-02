@@ -36,6 +36,8 @@ class Backup
     private $metadataCache;
     /** @var string[] */
     private $metadataErrors = [];
+    /** @var array|null */
+    private $addedMetaData;
     /** @var TemporaryFile|null */
     private $dbDumpFile;
     /** @var string|null */
@@ -55,6 +57,11 @@ class Backup
         if ($this->open) {
             $this->revertAndClose();
         }
+    }
+
+    function getPath(): string
+    {
+        return $this->path;
     }
 
     function getDataPath(): string
@@ -432,6 +439,14 @@ class Backup
         return $this->metadataErrors;
     }
 
+    /**
+     * Get metadata that was added to a new backup - after calling close()
+     */
+    function getAddedMetaData(): ?array
+    {
+        return $this->addedMetaData;
+    }
+
     private function ensureMetaDataLoaded(): void
     {
         if ($this->metadataCache === null) {
@@ -483,7 +498,7 @@ class Backup
 
     private function addMetaData(): void
     {
-        $metaData = [
+        $this->addedMetaData = [
             'system_version' => Core::VERSION,
             'created_at' => time(),
             'directory_list' => $this->directoryList,
@@ -491,7 +506,7 @@ class Backup
             'db_prefix' => $this->dbDumpPrefix,
         ];
 
-        $this->zip->addFromString($this->metadataPath, Json::encode($metaData));
+        $this->zip->addFromString($this->metadataPath, Json::encode($this->addedMetaData));
     }
 
     /**

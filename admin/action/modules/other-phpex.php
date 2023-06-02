@@ -1,7 +1,8 @@
 <?php
 
 use Sunlight\Admin\Admin;
-use Sunlight\Core;
+use Sunlight\GenericTemplates;
+use Sunlight\Logger;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
@@ -36,10 +37,12 @@ if ($process) {
 
     ob_start();
 
+    Logger::notice('system', 'Executed custom PHP code via admin module', ['code' => $code]);
+
     try {
         eval($code);
     } catch (Throwable $e) {
-        $output .= Core::renderException($e);
+        $output .= GenericTemplates::renderException($e);
         $html = true;
     }
 

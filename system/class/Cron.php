@@ -88,7 +88,7 @@ abstract class Cron
         $tasks = [
             'maintenance' => [
                 'interval' => (int) Settings::get('maintenance_interval'),
-                'callback' => [Core::class, 'doMaintenance'],
+                'callback' => [SystemMaintenance::class, 'run'],
             ],
         ];
 

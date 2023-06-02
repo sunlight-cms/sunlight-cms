@@ -12,6 +12,7 @@ use Sunlight\Plugin\TemplateService;
 use Sunlight\Router;
 use Sunlight\Settings;
 use Sunlight\User;
+use Sunlight\Util\Form;
 use Sunlight\Util\StringManipulator;
 use Sunlight\Xsrf;
 
@@ -344,7 +345,7 @@ abstract class Admin
                 }
 
                 $output .= '<option value="' . $page['id'] . '"'
-                    . ($active ? ' selected' : '')
+                    . Form::selectOption($active)
                     . (($options['type'] !== null && $page['type'] != $options['type'] || !$options['allow_separators'] && $page['type'] == Page::SEPARATOR) ? ' disabled' : '')
                     . '>'
                     . str_repeat('&nbsp;&nbsp;&nbsp;│&nbsp;', $page['node_level'])
@@ -436,13 +437,13 @@ abstract class Admin
 
                     while ($user = DB::row($userQuery)) {
                         if (isset($selectedMap[$user['id']])) {
-                            $sel = ' selected';
+                            $sel = true;
                             unset($missingSelectedMap[$user['id']]);
                         } else {
-                            $sel = '';
+                            $sel = false;
                         }
 
-                        $output .= '<option value="' . $user['id'] . '"' . $sel . '>' . ($user['publicname'] ?? $user['username']) . "</option>\n";
+                        $output .= '<option value="' . $user['id'] . '"' . Form::selectOption($sel) . '>' . ($user['publicname'] ?? $user['username']) . "</option>\n";
                     }
 
                     $output .= '</optgroup>';
@@ -462,13 +463,13 @@ abstract class Admin
         } else {
             while ($group = DB::row($groupQuery)) {
                 if (isset($selectedMap[$group['id']])) {
-                    $sel = ' selected';
+                    $sel = true;
                     unset($missingSelectedMap[$group['id']]);
                 } else {
-                    $sel = '';
+                    $sel = false;
                 }
 
-                $output .= '<option value="' . $group['id'] . '"' . $sel . '>' . $group['title'] . ' (' . DB::count('user', $options['user_cond'] . ' AND group_id=' . $group['id']) . ")</option>\n";
+                $output .= '<option value="' . $group['id'] . '"' . Form::selectOption($sel) . '>' . $group['title'] . ' (' . DB::count('user', $options['user_cond'] . ' AND group_id=' . $group['id']) . ")</option>\n";
             }
 
             if (!empty($missingSelectedMap)) {
@@ -510,7 +511,7 @@ abstract class Admin
 
                 $active = $multiple === null && $layoutUid === $selected || $multiple !== null && in_array($layoutUid, $selected, true);
 
-                $output .= '<option value="' . _e($layoutUid) . '"' . ($active ? ' selected' : '') . '>'
+                $output .= '<option value="' . _e($layoutUid) . '"' . Form::selectOption($active) . '>'
                     . _e($layoutLabel)
                     . "</option>\n";
             }
@@ -550,7 +551,7 @@ abstract class Admin
                     $slotUid = TemplateService::composeUid($template, $layout, $slot);
                     $slotLabel = TemplateService::getComponentLabel($template, $layout, $slot, false);
 
-                    $output .= '<option value="' . _e($slotUid) . '"' . ($selected === $slotUid ? ' selected' : '') . '>'
+                    $output .= '<option value="' . _e($slotUid) . '"' . Form::selectOption($selected === $slotUid) . '>'
                         . _e($slotLabel)
                         . "</option>\n";
                 }

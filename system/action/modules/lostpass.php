@@ -6,6 +6,7 @@ use Sunlight\Database\Database as DB;
 use Sunlight\Email;
 use Sunlight\GenericTemplates;
 use Sunlight\IpLog;
+use Sunlight\Logger;
 use Sunlight\Message;
 use Sunlight\Router;
 use Sunlight\Settings;
@@ -36,7 +37,7 @@ if (isset($_POST['email'])) {
         $email = Request::post('email', '');
 
         // validate email
-        if (!Email::validate($email, false)) {
+        if (!Email::validate($email)) {
             $errors[] = _lang('user.msg.bademail');
             break;
         }
@@ -90,6 +91,7 @@ if (isset($_POST['email'])) {
 
         // all ok
         IpLog::update(IpLog::PASSWORD_RESET_REQUESTED);
+        Logger::notice('user', sprintf('Password reset requested for user "%s"', $user['username']), ['user_id' => $user['id']]);
         $output .= Message::ok(_lang('mod.lostpass.email_sent'));
 
         return;
