@@ -4,7 +4,6 @@ use Sunlight\Core;
 use Sunlight\Database\Database;
 use Sunlight\Log\LogQuery;
 use Sunlight\Logger;
-use Sunlight\Message;
 use Sunlight\Paginator;
 use Sunlight\Router;
 use Sunlight\Util\Form;
@@ -67,19 +66,15 @@ foreach ($queryParams as $param => $type) {
 $query->desc = isset($_GET['desc']) || !isset($_GET['search']);
 
 // paginator
-$paginator = Paginator::paginate(
-    Core::getCurrentUrl()->buildRelative(),
-    $query->limit,
-    Logger::getTotalResults($query)
-);
-
+$totalResults = Logger::getTotalResults($query);
+$paginator = Paginator::paginate(Core::getCurrentUrl()->buildRelative(), $query->limit, $totalResults);
 $query->offset = $paginator['first'];
 
 // get entries
 $entries = Logger::search($query);
 
 // output
-$output .= _buffer(function () use ($query, $queryParamValues, $queryParamErrors, $entries) { ?>
+$output .= _buffer(function () use ($query, $queryParamValues, $queryParamErrors, $totalResults, $entries) { ?>
 <form method="get" class="log-search">
     <input type="hidden" name="p" value="log">
 
@@ -182,6 +177,9 @@ $output .= _buffer(function () use ($query, $queryParamValues, $queryParamErrors
 </form>
 
 <table class="list list-max list-noborder log-list">
+    <?php if (!empty($entries)): ?>
+    <caption><?= _lang('admin.log.search.total', ['%count%' => $totalResults]) ?></caption>
+    <?php endif ?>
     <thead>
         <tr>
             <th class="cell-shrink"><?= _lang('global.time') ?></th>
