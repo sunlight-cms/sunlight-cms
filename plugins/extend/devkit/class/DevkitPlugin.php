@@ -7,9 +7,11 @@ use Sunlight\Core;
 use Sunlight\Extend;
 use Sunlight\GenericTemplates;
 use Sunlight\IpLog;
+use Sunlight\Log\LogEntry;
 use Sunlight\Plugin\ExtendPlugin;
 use Sunlight\Plugin\PluginData;
 use Sunlight\Plugin\PluginManager;
+use Sunlight\Settings;
 
 class DevkitPlugin extends ExtendPlugin
 {
@@ -19,6 +21,8 @@ class DevkitPlugin extends ExtendPlugin
     private $eventLogger;
     /** @var Component\MissingLocalizationLogger */
     private $missingLocalizationLogger;
+    /** @var LogEntry[] */
+    private $logEntries = [];
     /** @var array[] */
     private $dumps = [];
 
@@ -121,6 +125,21 @@ ENTRY
         }
     }
 
+    function onLoggerFilter(array $args): void
+    {
+        // allow all messages through so they can be fully processed
+        $args['should_log'] = true;
+    }
+
+    function onLoggerBefore(array $args): void
+    {
+        // restore original filtering logic according to system settings
+        $args['should_log'] = $args['entry']->level <= (int) Settings::get('log_level');
+
+        // store entry
+        $this->logEntries[] = $args['entry'];
+    }
+
     /**
      * Make captcha check always succeed
      */
@@ -185,6 +204,7 @@ ENTRY
             $this->sqlLogger->getLog(),
             $this->eventLogger->getLog(),
             $this->missingLocalizationLogger->getMissingEntries(),
+            $this->logEntries,
             $this->dumps
         );
     }

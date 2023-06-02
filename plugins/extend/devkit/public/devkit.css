@@ -29,8 +29,8 @@
 #devkit-toolbar.devkit-toolbar-closed {
     left: auto;
     right: 0;
-    width: 18px;
-    height: 32px;
+    width: 24px;
+    height: 38px;
     overflow: hidden;
     border-radius: 10px 0 0 0;
     outline: none;
@@ -47,9 +47,15 @@
     background-repeat: no-repeat;
     background-position: 8px center;
     font-size: 12px;
+    user-select: none;
+}
+#devkit-toolbar .devkit-section.devkit-section-warning {
+    border-right: 1px solid #1c1c1c;
+    background-color: #ad9303;
 }
 #devkit-toolbar .devkit-section.devkit-section-error {
-    background-color: #560000;
+    border-right: 1px solid #1c1c1c;
+    background-color: #950202;
 }
 #devkit-toolbar.devkit-toolbar-closed .devkit-section {
     display: none;
@@ -60,6 +66,7 @@
 #devkit-toolbar .devkit-memory {background-image: url("images/memory.png");}
 #devkit-toolbar .devkit-database {background-image: url("images/database.png");}
 #devkit-toolbar .devkit-extend {background-image: url("images/plugin.png");}
+#devkit-toolbar .devkit-logger {background-image: url("images/log.png");}
 #devkit-toolbar .devkit-plugin-errors {background-image: url("images/error.png");}
 #devkit-toolbar .devkit-request {background-image: url("images/request.png");}
 #devkit-toolbar .devkit-login {background-image: url("images/login.png");}
@@ -82,7 +89,7 @@
     overflow: auto;
     position: fixed;
     left: 0;
-    bottom: 32px;
+    bottom: 38px;
     width: 100%;
     min-width: 700px;
     height: 100%;
@@ -130,6 +137,7 @@ body.devkit-content-open {
     font-size: 30px;
     color: #777;
     cursor: pointer;
+    user-select: none;
 }
 #devkit-toolbar.devkit-toolbar-closed .devkit-close {
     display: none;
@@ -154,6 +162,10 @@ body.devkit-content-open {
 }
 #devkit-toolbar td {
     background-color: #1c1c1c;
+}
+#devkit-toolbar .devkit-cell-shrink {
+    width: 0;
+    white-space: nowrap;
 }
 
 /* Generic */
@@ -190,9 +202,14 @@ body.devkit-content-open {
     font-family: monospace;
     overflow-y: visible;
 }
+#devkit-toolbar pre {
+    white-space: -moz-pre-wrap;
+    white-space: -pre-wrap;
+    white-space: -o-pre-wrap;
+    white-space: pre-wrap;
+    word-break: break-all;
+    word-wrap: break-word;
+}
 #devkit-toolbar .break-all {
     word-break: break-all;
-}
-#devkit-toolbar .no-break {
-    white-space: nowrap;
 }

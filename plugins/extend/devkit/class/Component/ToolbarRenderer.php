@@ -7,12 +7,15 @@ use Sunlight\CallbackHandler;
 use Sunlight\Core;
 use Sunlight\Extend;
 use Sunlight\Localization\LocalizationDirectory;
+use Sunlight\Log\LogEntry;
+use Sunlight\Logger;
 use Sunlight\Plugin\ExtendPlugin;
 use Sunlight\Plugin\Plugin;
 use Sunlight\Router;
 use Sunlight\User;
 use Sunlight\Util\Cookie;
 use Sunlight\Util\Request;
+use Sunlight\Util\StringManipulator;
 
 class ToolbarRenderer
 {
@@ -22,21 +25,26 @@ class ToolbarRenderer
     private $eventLog;
     /** @var \SplObjectStorage */
     private $missingLocalizations;
+    /** @var LogEntry[] */
+    private $logEntries;
     /** @var array[] */
     private $dumps;
 
     /**
+     * @param LogEntry[] $logEntries
      * @param array[] $dumps
      */
     function __construct(
         array $sqlLog,
         array $eventLog,
         \SplObjectStorage $missingLocalizations,
+        array $logEntries,
         array $dumps
     ) {
         $this->sqlLog = $sqlLog;
         $this->eventLog = $eventLog;
         $this->missingLocalizations = $missingLocalizations;
+        $this->logEntries = $logEntries;
         $this->dumps = $dumps;
     }
 
@@ -61,19 +69,20 @@ class ToolbarRenderer
                 <?php
 
                 // sections
-                $this->renderInfo();
-                $this->renderTime($now);
-                $this->renderMemory();
-                $this->renderDatabase();
-                $this->renderEvents();
-                $this->renderPluginErrors();
-                $this->renderLang();
-                $this->renderDumps();
+                $this->renderInfoSection();
+                $this->renderTimeSection($now);
+                $this->renderMemorySection();
+                $this->renderDatabaseSection();
+                $this->renderEventsSection();
+                $this->renderPluginErrorsSection();
+                $this->renderLoggerSection();
+                $this->renderLangSection();
+                $this->renderDumpsSection();
 
                 Extend::call('devkit.toolbar.render');
 
-                $this->renderRequest();
-                $this->renderLogin();
+                $this->renderRequestSection();
+                $this->renderLoginSection();
 
                 // controls
                 ?>
@@ -84,10 +93,7 @@ class ToolbarRenderer
         });
     }
 
-    /**
-     * Render the system info section
-     */
-    private function renderInfo(): void
+    private function renderInfoSection(): void
     {
         ?>
 <div class="devkit-section devkit-sl">
@@ -97,10 +103,7 @@ class ToolbarRenderer
 <?php
     }
 
-    /**
-     * Render the time section
-     */
-    private function renderTime(float $now): void
+    private function renderTimeSection(float $now): void
     {
         ?>
 <div class="devkit-section devkit-time">
@@ -109,10 +112,7 @@ class ToolbarRenderer
 <?php
     }
 
-    /**
-     * Render the memory section
-     */
-    private function renderMemory(): void
+    private function renderMemorySection(): void
     {
         ?>
 <div class="devkit-section devkit-memory">
@@ -121,10 +121,7 @@ class ToolbarRenderer
 <?php
     }
 
-    /**
-     * Render the database section
-     */
-    private function renderDatabase(): void
+    private function renderDatabaseSection(): void
     {
         ?>
 <div class="devkit-section devkit-database devkit-toggleable">
@@ -167,10 +164,7 @@ class ToolbarRenderer
 <?php
     }
 
-    /**
-     * Render the event section
-     */
-    private function renderEvents(): void
+    private function renderEventsSection(): void
     {
         $listeners = Core::$eventEmitter->getListeners();
         $eventListenerRows = [];
@@ -237,6 +231,279 @@ class ToolbarRenderer
         </table>
     </div>
 </div>
+<?php
+    }
+
+    private function renderPluginErrorsSection(): void
+    {
+        $pluginErrors = [];
+
+        foreach (Core::$pluginManager->getPlugins()->inactiveMap as $inactivePlugin) {
+            foreach ($inactivePlugin->getErrors() as $error) {
+                $pluginErrors[$inactivePlugin->getId()][] = $error;
+            }
+        }
+
+        if (empty($pluginErrors)) {
+            return;
+        }
+
+        $pluginErrorCount = count($pluginErrors);
+
+        ?>
+<div class="devkit-section devkit-section-error devkit-plugin-errors devkit-toggleable">
+    <?= $pluginErrorCount ?> plugin <?= $pluginErrorCount > 1 ? 'errors' : 'error' ?>
+</div>
+
+<div class="devkit-content">
+    <div>
+        <div class="devkit-heading">Plugin errors</div>
+
+        <ul>
+            <?php foreach ($pluginErrors as $pluginIdentifier => $errors): ?>
+                <li><?= _e($pluginIdentifier) ?>
+                    <ol>
+                        <?php foreach ($errors as $error): ?>
+                            <li><?= _e($error) ?></li>
+                        <?php endforeach ?>
+                    </ol>
+                </li>
+            <?php endforeach ?>
+        </ul>
+    </div>
+</div>
+<?php
+    }
+
+    private function renderLoggerSection(): void
+    {
+        $class = '';
+
+        if (!empty($this->logEntries)) {
+            $minLevel = min(array_column($this->logEntries, 'level'));
+
+            if ($minLevel <= Logger::ERROR) {
+                $class = ' devkit-section-error';
+            } elseif ($minLevel <= Logger::WARNING) {
+                $class = ' devkit-section-warning';
+            }
+        }
+
+        ?>
+<div class="devkit-section devkit-logger devkit-toggleable<?= $class ?>">
+    <?= count($this->logEntries) ?>
+</div>
+
+<div class="devkit-content">
+    <div>
+        <div class="devkit-heading">Log entries for current request</div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Level</th>
+                    <th>Category</th>
+                    <th>Message</th>
+                    <th>Context</th>
+                    <th>Detail</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if (!empty($this->logEntries)): ?>
+                    <?php
+                    foreach ($this->logEntries as $index => $entry):
+                        $parsedContext = $entry->context !== null ? json_decode($entry->context) : null;
+                    ?>
+                        <tr>
+                            <td class="devkit-cell-shrink"><?= _e(Logger::LEVEL_NAMES[$entry->level]) ?></td>
+                            <td class="devkit-cell-shrink"><?= _e($entry->category) ?></td>
+                            <td><code><?= _e(StringManipulator::ellipsis($entry->message, 1024, false)) ?></code></td>
+                            <td class="devkit-cell-shrink">
+                                <?php if ($parsedContext !== null): ?>
+                                    <a href="#" class="devkit-hideshow" data-target="#devkit-log-context-<?= $index ?>">show</a>
+                                <?php else: ?>
+                                    -
+                                <?php endif ?>
+                            </td>
+                            <td class="devkit-cell-shrink">
+                                <?php if ($entry->id !== null): ?>
+                                    <a href="<?= _e(Router::admin('log-detail', ['query' => ['id' => $entry->id]])) ?>" target="_blank">detail</a>
+                                <?php else: ?>
+                                    -
+                                <?php endif ?>
+                            </td>
+                        </tr>
+                        <?php if ($parsedContext !== null): ?>
+                            <tr id="devkit-log-context-<?= $index ?>" class="devkit-hidden">
+                                <td colspan="5">
+                                    <table>
+                                        <?php foreach ($parsedContext as $key => $value): ?>
+                                            <tr>
+                                                <th><code><?= _e($key) ?></code></th>
+                                                <td><pre><?= _e(is_string($value) ? $value : Dumper::dump($value)) ?></pre></td>
+                                            </tr>
+                                        <?php endforeach ?>
+                                    </table>
+                                </td>
+                            </tr>
+                        <?php endif ?>
+                    <?php endforeach ?>
+                <?php else: ?>
+                    <tr>
+                        <td colspan="5">None</td>
+                    </tr>
+                <?php endif ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+<?php
+    }
+
+    private function renderLangSection(): void
+    {
+        $missingLocalizationRows = [];
+
+        foreach ($this->missingLocalizations as $dict) {
+            foreach ($this->missingLocalizations[$dict] as $missingKey => $missingKeyCount) {
+                if (Core::$dictionary === $dict) {
+                    $dictDescription = '{main}';
+                } elseif ($dict instanceof LocalizationDirectory) {
+                    $dictPath = $dict->getPathForLanguage(Core::$lang);
+                    $dictDescription = $dictPath;
+
+                    if (!is_file($dictPath)) {
+                        $dictDescription .= ' [does not exist]';
+                    }
+                } else {
+                    $dictDescription = Dumper::dump($dict, 1);
+                }
+
+                $missingLocalizationRows[] = [
+                    'dict' => $dictDescription,
+                    'key' => $missingKey,
+                    'count' => $missingKeyCount,
+                ];
+            }
+        }
+
+        $totalMissingLocalizations = count($missingLocalizationRows);
+
+        if ($totalMissingLocalizations === 0) {
+            return;
+        }
+
+        ?>
+<div class="devkit-section devkit-section-error devkit-lang devkit-toggleable">
+    <?= $totalMissingLocalizations ?> missing
+</div>
+
+<div class="devkit-content">
+    <div>
+        <div class="devkit-heading">Missing localizations for language <?= _e(Core::$lang) ?></div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Dictionary</th>
+                    <th>Key</th>
+                    <th>Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($missingLocalizationRows as $row): ?>
+                    <tr>
+                        <td><code><?= _e($row['dict']) ?></code></td>
+                        <td><?= _e($row['key']) ?></td>
+                        <td><?= _e($row['count']) ?></td>
+                    </tr>
+                <?php endforeach ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+    <?php
+    }
+
+    private function renderDumpsSection(): void
+    {
+        $count = count($this->dumps);
+
+        ?>
+<div class="devkit-section devkit-dump devkit-toggleable<?php if ($count > 0): ?> devkit-section-warning<?php endif ?>">
+    <?= $count ?>
+</div>
+
+<div class="devkit-content">
+    <div>
+        <div class="devkit-heading">Dumped values</div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Location</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if (!empty($this->dumps)): ?>
+                    <?php foreach ($this->dumps as $dump): ?>
+                        <tr>
+                            <td title="<?= _e($dump['file']) ?>"><?= _e(basename($dump['file'])), ':', $dump['line'] ?></td>
+                            <td><pre><?= _e($dump['dump']) ?></pre></td>
+                        </tr>
+                    <?php endforeach ?>
+                <?php else: ?>
+                    <tr>
+                        <td colspan="2">None</td>
+                    </tr>
+                <?php endif ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+    <?php
+    }
+
+    private function renderRequestSection(): void
+    {
+        ?>
+<div class="devkit-section devkit-request devkit-toggleable">
+    <?= _e(Request::method()) ?>
+</div>
+
+<div class="devkit-content">
+    <div>
+        <?php foreach (['_GET', '_POST', '_COOKIE', '_SESSION'] as $globalVarName): ?>
+            <?php if (!empty($GLOBALS[$globalVarName])): ?>
+            <div class="devkit-heading devkit-hideshow">
+                $<?= $globalVarName ?>
+            </div>
+
+            <div class="devkit-request-dump devkit-hideshow-target"><pre><?= _e(Dumper::dump($GLOBALS[$globalVarName])) ?></pre></div>
+            <?php endif ?>
+        <?php endforeach ?>
+    </div>
+</div>
+<?php
+    }
+
+    private function renderLoginSection(): void
+    {
+        if (User::isLoggedIn()) {
+            $loginInfo = sprintf('level %d', User::getLevel());
+            $loginName = User::getUsername();
+        } else {
+            $loginInfo = 'not logged in';
+            $loginName = '---';
+        }
+
+        ?>
+<a href="<?= _e(Router::module('login')) ?>">
+    <div class="devkit-section devkit-login" title="<?= $loginInfo ?>">
+        <?= _e($loginName) ?>
+    </div>
+</a>
 <?php
     }
 
@@ -310,154 +577,6 @@ class ToolbarRenderer
     }
 
     /**
-     * Render the  plugin errors section
-     */
-    private function renderPluginErrors(): void
-    {
-        $pluginErrors = [];
-
-        foreach (Core::$pluginManager->getPlugins()->inactiveMap as $inactivePlugin) {
-            foreach ($inactivePlugin->getErrors() as $error) {
-                $pluginErrors[$inactivePlugin->getId()][] = $error;
-            }
-        }
-
-        if (empty($pluginErrors)) {
-            return;
-        }
-
-        $pluginErrorCount = count($pluginErrors);
-
-        ?>
-<div class="devkit-section devkit-section-error devkit-plugin-errors devkit-toggleable">
-    <?= $pluginErrorCount ?> plugin <?= $pluginErrorCount > 1 ? 'errors' : 'error' ?>
-</div>
-
-<div class="devkit-content">
-    <div>
-        <div class="devkit-heading">Plugin errors</div>
-
-        <ul>
-            <?php foreach ($pluginErrors as $pluginIdentifier => $errors): ?>
-                <li><?= _e($pluginIdentifier) ?>
-                    <ol>
-                        <?php foreach ($errors as $error): ?>
-                            <li><?= _e($error) ?></li>
-                        <?php endforeach ?>
-                    </ol>
-                </li>
-            <?php endforeach ?>
-        </ul>
-    </div>
-</div>
-<?php
-    }
-
-    /**
-     * Render the localization section
-     */
-    private function renderLang(): void
-    {
-        $missingLocalizationRows = [];
-
-        foreach ($this->missingLocalizations as $dict) {
-            foreach ($this->missingLocalizations[$dict] as $missingKey => $missingKeyCount) {
-                if (Core::$dictionary === $dict) {
-                    $dictDescription = '{main}';
-                } elseif ($dict instanceof LocalizationDirectory) {
-                    $dictPath = $dict->getPathForLanguage(Core::$lang);
-                    $dictDescription = $dictPath;
-
-                    if (!is_file($dictPath)) {
-                        $dictDescription .= ' [does not exist]';
-                    }
-                } else {
-                    $dictDescription = Dumper::dump($dict, 1);
-                }
-
-                $missingLocalizationRows[] = [
-                    'dict' => $dictDescription,
-                    'key' => $missingKey,
-                    'count' => $missingKeyCount,
-                ];
-            }
-        }
-
-        $totalMissingLocalizations = count($missingLocalizationRows);
-
-        if ($totalMissingLocalizations === 0) {
-            return;
-        }
-
-        ?>
-<div class="devkit-section devkit-section-error devkit-lang devkit-toggleable">
-    <?= $totalMissingLocalizations ?> missing
-</div>
-
-<div class="devkit-content">
-    <div>
-        <div class="devkit-heading">Missing localizations for language <em><?= _e(Core::$lang) ?></em> (<?= $totalMissingLocalizations ?>)</div>
-
-        <table>
-            <thead>
-                <tr>
-                    <th>Dictionary</th>
-                    <th>Key</th>
-                    <th>Count</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($missingLocalizationRows as $row): ?>
-                    <tr>
-                        <td><code><?= _e($row['dict']) ?></code></td>
-                        <td><?= _e($row['key']) ?></td>
-                        <td><?= _e($row['count']) ?></td>
-                    </tr>
-                <?php endforeach ?>
-            </tbody>
-        </table>
-    </div>
-</div>
-    <?php
-    }
-
-    private function renderDumps(): void
-    {
-        ?>
-<div class="devkit-section devkit-dump devkit-toggleable">
-    <?= count($this->dumps) ?>
-</div>
-
-<div class="devkit-content">
-    <div class="devkit-heading">Dumped values</div>
-
-    <table>
-        <thead>
-            <tr>
-                <th>Location</th>
-                <th>Value</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php if (!empty($this->dumps)): ?>
-                <?php foreach ($this->dumps as $dump): ?>
-                    <tr>
-                        <td title="<?= _e($dump['file']) ?>"><?= _e(basename($dump['file'])), ':', $dump['line'] ?></td>
-                        <td><pre><?= _e($dump['dump']) ?></pre></td>
-                    </tr>
-                <?php endforeach ?>
-            <?php else: ?>
-                <tr>
-                    <td colspan="2">None</td>
-                </tr>
-            <?php endif ?>
-        </tbody>
-    </table>
-</div>
-    <?php
-    }
-
-    /**
      * Render event argument list
      */
     private function renderEventArgs(array $args): void
@@ -477,53 +596,5 @@ class ToolbarRenderer
         } else {
             echo '-';
         }
-    }
-
-    /**
-     * Render the request section
-     */
-    private function renderRequest(): void
-    {
-        ?>
-<div class="devkit-section devkit-request devkit-toggleable">
-    <?= _e(Request::method()) ?>
-</div>
-
-<div class="devkit-content">
-    <div>
-        <?php foreach (['_GET', '_POST', '_COOKIE', '_SESSION'] as $globalVarName): ?>
-            <?php if (!empty($GLOBALS[$globalVarName])): ?>
-            <div class="devkit-heading devkit-hideshow">
-                $<?= $globalVarName, ' (', count($GLOBALS[$globalVarName]), ')' ?>
-            </div>
-
-            <div class="devkit-request-dump devkit-hideshow-target"><pre><?= _e(Dumper::dump($GLOBALS[$globalVarName])) ?></pre></div>
-            <?php endif ?>
-        <?php endforeach ?>
-    </div>
-</div>
-<?php
-    }
-
-    /**
-     * Render the login section
-     */
-    private function renderLogin(): void
-    {
-        if (User::isLoggedIn()) {
-            $loginInfo = sprintf('level %d', User::getLevel());
-            $loginName = User::getUsername();
-        } else {
-            $loginInfo = 'not logged in';
-            $loginName = '---';
-        }
-
-        ?>
-<a href="<?= _e(Router::module('login')) ?>">
-    <div class="devkit-section devkit-login" title="<?= $loginInfo ?>">
-        <?= _e($loginName) ?>
-    </div>
-</a>
-<?php
     }
 }

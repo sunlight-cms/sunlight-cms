@@ -20,6 +20,8 @@
         {"event": "localization.missing", "method": "onMissingLocalization"},
         {"event": "mail.send", "method": "onMail"},
         {"event": "iplog.check", "method": "onIpLogCheck"},
+        {"event": "logger.filter", "method": "onLoggerFilter"},
+        {"event": "logger.before", "method": "onLoggerBefore"},
         {"event": "captcha.check.after", "method": "onCaptchaCheckAfter"},
         {"event": "error_screen.head", "method": "onErrorScreenHead"},
         {"event": "error_screen.end", "method": "onErrorScreenEnd"}
