@@ -2,6 +2,7 @@
 
 namespace Sunlight;
 
+use Kuria\Cache\Driver;
 use Kuria\Url\Url;
 use Sunlight\Util\HttpClient;
 use Sunlight\Util\HttpClientException;
@@ -28,6 +29,14 @@ class VersionChecker
         self::$loaded = true;
 
         if (!Settings::get('version_check')) {
+            return;
+        }
+
+        if (
+            Core::$cache->getDriver() instanceof Driver\Memory\MemoryDriver
+            || Core::$cache->getDriver() instanceof Driver\BlackHole\BlackHoleDriver
+        ) {
+            // don't hit the API if cache is disabled
             return;
         }
 
