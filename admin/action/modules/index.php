@@ -23,7 +23,6 @@ $admin_index_cfg = Settings::getMultiple([
 ]);
 
 $version_data = VersionChecker::check();
-dump($version_data);
 
 $mysqlver = DB::$mysqli->server_info;
 
