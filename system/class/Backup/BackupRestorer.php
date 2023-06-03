@@ -228,20 +228,36 @@ class BackupRestorer
 
     private function preloadAllSystemClasses(): void
     {
-        $paths = [
-            SL_ROOT . 'system/class',
-            SL_ROOT . 'vendor/kuria/debug/src',
-            SL_ROOT . 'vendor/kuria/error/src',
-            SL_ROOT . 'vendor/kuria/event/src',
-        ];
+        $classMap = require SL_ROOT . 'vendor/composer/autoload_classmap.php';
 
-        foreach ($paths as $path) {
-            foreach (Filesystem::createRecursiveIterator($path) as $file) {
-                if ($file->getExtension() === 'php' && substr($file->getFilename(), -9) !== 'Trait.php') {
-                    include_once $file->getPathname();
-                }
+        foreach ($classMap as $class => $path) {
+            if ($this->shouldPreloadClass($class)) {
+                include_once $path;
             }
         }
+    }
+
+    private function shouldPreloadClass(string $class): bool
+    {
+        $nsSepPos = strpos($class, '\\');
+
+        if ($nsSepPos === false) {
+            return false; // no namespace
+        }
+
+        $rootNs = substr($class, 0, $nsSepPos);
+
+        if ($rootNs !== 'Kuria' && $rootNs !== 'Sunlight') {
+            return false; // only load system classes and kuria libs
+        }
+
+        $lastNsSepPos = strrpos($class, '\\', $nsSepPos + 1);
+
+        if ($lastNsSepPos !== false && substr($class, 0, $lastNsSepPos) === 'Kuria\Cache\Psr') {
+            return false; // don't load psr cache classes (psr interfaces are not available)
+        }
+
+        return true;
     }
 
     private function purgeSystemDirectory(): void
