@@ -221,6 +221,8 @@ registerArgumentsSet(
     'plugins-upload',
     'settings',
     'backup',
+    'backup-create',
+    'backup-restore',
     'other',
     'other-patch',
     'other-cleanup',

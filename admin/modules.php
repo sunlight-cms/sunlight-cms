@@ -306,6 +306,16 @@ return [
         'menu' => true,
         'menu_order' => 60,
     ],
+    'backup-create' => [
+        'title' => _lang('admin.backup.create.title'),
+        'access' => User::hasPrivilege('adminbackup'),
+        'parent' => 'backup',
+    ],
+    'backup-restore' => [
+        'title' => _lang('admin.backup.restore.title'),
+        'access' => User::hasPrivilege('adminbackup'),
+        'parent' => 'backup',
+    ],
 
     // log
     'log' => [

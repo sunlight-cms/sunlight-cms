@@ -53,7 +53,7 @@ class BackupBuilder
     private $disabledDynamicPathMap = [];
 
     /** @var bool[] name => true */
-    private $optionalDynamicPathMap = [
+    private $fullBackupOptionalDynamicPathMap = [
         'upload' => true,
         'images_user' => true,
         'images_articles' => true,
@@ -159,13 +159,13 @@ class BackupBuilder
     /**
      * Add/extend a dynamic path
      *
-     * @param string $name dynamic path name (consisting of [a-zA-Z0-9_] only)
+     * @param string $name dynamic path name (consisting of alphanumeric character, numbers and underscores only)
      * @param array $paths array of relative directory/file paths
      * @throws \InvalidArgumentException if the name is empty or contains illegal characters
      */
     function addDynamicPath(string $name, array $paths): void
     {
-        if (!preg_match('{[a-zA-Z0-9_]+$}AD', $name)) {
+        if (!preg_match('{\w+$}AD', $name)) {
             throw new \InvalidArgumentException('The name is empty or contains illegal characters');
         }
 
@@ -176,7 +176,11 @@ class BackupBuilder
 
     function removeDynamicPath(string $name): void
     {
-        unset($this->dynamicPathMap[$name], $this->disabledDynamicPathMap[$name]);
+        unset(
+            $this->dynamicPathMap[$name],
+            $this->disabledDynamicPathMap[$name],
+            $this->fullBackupOptionalDynamicPathMap[$name]
+        );
     }
 
     function isDynamicPathEnabled(string $name): bool
@@ -200,25 +204,25 @@ class BackupBuilder
         unset($this->disabledDynamicPathMap[$name]);
     }
 
-    function isDynamicPathOptional(string $name): bool
+    function isDynamicPathOptionalInFullBackup(string $name): bool
     {
         $this->ensureDynamicPathNameIsValid($name);
 
-        return isset($this->optionalDynamicPathMap[$name]);
+        return isset($this->fullBackupOptionalDynamicPathMap[$name]);
     }
 
-    function makeDynamicPathOptional(string $name): void
+    function makeDynamicPathOptionalInFullBackup(string $name): void
     {
         $this->ensureDynamicPathNameIsValid($name);
 
-        $this->optionalDynamicPathMap[$name] = true;
+        $this->fullBackupOptionalDynamicPathMap[$name] = true;
     }
 
-    function makeDynamicPathRequired(string $name): void
+    function makeDynamicPathRequiredInFullBackup(string $name): void
     {
         $this->ensureDynamicPathNameIsValid($name);
 
-        unset($this->optionalDynamicPathMap[$name]);
+        unset($this->fullBackupOptionalDynamicPathMap[$name]);
     }
 
     /**
@@ -277,7 +281,7 @@ class BackupBuilder
             }
 
             foreach ($this->dynamicPathMap as $name => $paths) {
-                $enabled = !$this->isDynamicPathOptional($name) || $this->isDynamicPathEnabled($name);
+                $enabled = !$this->isDynamicPathOptionalInFullBackup($name) || $this->isDynamicPathEnabled($name);
 
                 foreach ($paths as $path) {
                     if ($enabled) {
