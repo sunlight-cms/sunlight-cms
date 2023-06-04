@@ -26,6 +26,7 @@ Sunlight.admin = (function ($) {
     {
         // preload spinner image
         var spinner = new Image();
+        spinner.loading = 'eager';
         spinner.src = SunlightVars.basePath + 'admin/public/images/spinner.gif';
 
         // show after form submit
