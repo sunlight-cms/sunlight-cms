@@ -7,7 +7,6 @@ Sunlight.admin = (function ($) {
      */
     function initializeOnReady()
     {
-        initSubmitButtonMarks();
         initBusyOverlay();
         initHsFieldsets();
     }
@@ -18,19 +17,6 @@ Sunlight.admin = (function ($) {
     function initializeOnLoad()
     {
         initSortables();
-    }
-    
-    /**
-     * Automatically mark used submit buttons
-     */
-    function initSubmitButtonMarks()
-    {
-        var submitButtonSelector = 'input[type=submit], input[type=image] button[type=submit]';
-
-        $(document.body).on('click', submitButtonSelector, function (e) {
-            $(submitButtonSelector, e.target.form).removeClass('clicked-submit');
-            $(e.target).addClass('clicked-submit');
-        });
     }
 
     /**
@@ -44,11 +30,11 @@ Sunlight.admin = (function ($) {
 
         // show after form submit
         $(document.body).on('submit', 'form', function (e) {
-            var usedSubmitButton =  $('.clicked-submit', e.target);
+            var usedSubmitButton = e.originalEvent.submitter;
             if (
                 !e.isDefaultPrevented()
                 && !e.target.target
-                && (usedSubmitButton.length === 0 || !usedSubmitButton.attr('formtarget'))
+                && (!usedSubmitButton || !usedSubmitButton.formTarget)
                 && !$(e.target).hasClass('no-busy-overlay')
             ) {
                 self.showBusyOverlay(true, 1000);
