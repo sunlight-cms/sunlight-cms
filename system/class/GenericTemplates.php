@@ -47,18 +47,11 @@ abstract class GenericTemplates
      */
     static function renderFilesize(int $bytes): string
     {
-        $units = ['B', 'kB', 'MB'];
-
-        for ($i = 2; $i >= 0; --$i) {
-            $bytesPerUnit = 1000 ** $i;
-            $value = $bytes / $bytesPerUnit;
-
-            if ($value >= 1 || $i === 0) {
-                break;
-            }
+        if ($bytes >= 1000000) {
+            return self::renderNumber($bytes / 1000000) . ' MB';
         }
 
-        return self::renderNumber($i === 2 ? $value : ceil($value)) . ' ' . $units[$i];
+        return self::renderNumber(ceil($bytes / 1000)) . ' kB';
     }
 
     /**
