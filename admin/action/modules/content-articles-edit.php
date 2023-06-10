@@ -32,7 +32,7 @@ if (isset($_GET['id'], $_GET['returnid'], $_GET['returnpage'])) {
     }
 
     $returnpage = (int) Request::get('returnpage');
-    $query = DB::queryRow('SELECT art.*,cat.slug AS cat_slug FROM ' . DB::table('article') . ' AS art JOIN ' . DB::table('page') . ' AS cat ON(cat.id=art.home1) WHERE art.id=' . $id . Admin::articleAccess('art'));
+    $query = DB::queryRow('SELECT art.*,cat.slug AS cat_slug FROM ' . DB::table('article') . ' AS art JOIN ' . DB::table('page') . ' AS cat ON(cat.id=art.home1) WHERE art.id=' . $id . ' AND ' . Admin::articleAccessSql('art'));
 
     if ($query !== false) {
         $read_counter = $query['readnum'];
@@ -146,7 +146,7 @@ if (isset($_POST['title'])) {
 
     foreach ($homechecks as $homecheck) {
         if ($newdata[$homecheck] != -1 || $homecheck == 'home1') {
-            if (DB::count('page', 'type=' . Page::CATEGORY . ' AND id=' . DB::val($newdata[$homecheck])) === 0) {
+            if (DB::count('page', 'type=' . Page::CATEGORY . ' AND id=' . DB::val($newdata[$homecheck]) . ' AND level<=' . User::getLevel()) === 0) {
                 $error_log[] = _lang('admin.content.articles.edit.error2');
             }
         }

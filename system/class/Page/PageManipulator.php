@@ -295,14 +295,12 @@ abstract class PageManipulator
 
         // child pages
         if ($childPages && $page['node_depth'] > 0) {
-            $pageTypes = Page::getTypes();
-
             foreach (Page::getChildren($page['id'], $page['node_depth']) as $childPage) {
                 $dependencies[] = sprintf(
                     '%s%s <small>(%s, <code>%s</code>)</small>',
                     str_repeat('&nbsp;', ($childPage['node_level'] - $page['node_level'] - 1) * 4),
                     $childPage['title'],
-                    _lang('page.type.' . $pageTypes[$childPage['type']]),
+                    _lang('page.type.' . Page::TYPES[$childPage['type']]),
                     $childPage['slug']
                 );
             }

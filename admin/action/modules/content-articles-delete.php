@@ -17,7 +17,7 @@ if (isset($_GET['id'], $_GET['returnid'], $_GET['returnpage'])) {
     $id = (int) Request::get('id');
     $returnid = (int) Request::get('returnid');
     $returnpage = (int) Request::get('returnpage');
-    $query = DB::queryRow('SELECT title FROM ' . DB::table('article') . ' WHERE id=' . $id . Admin::articleAccess());
+    $query = DB::queryRow('SELECT title FROM ' . DB::table('article') . ' WHERE id=' . $id . ' AND ' . Admin::articleAccessSql());
 
     if ($query !== false) {
         $continue = true;

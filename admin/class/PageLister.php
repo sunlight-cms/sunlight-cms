@@ -10,7 +10,6 @@ use Sunlight\Page\Page;
 use Sunlight\Plugin\TemplateService;
 use Sunlight\Router;
 use Sunlight\Settings;
-use Sunlight\User;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
 
@@ -25,8 +24,6 @@ abstract class PageLister
     private static $initialized = false;
     /** @var array|null */
     private static $config;
-    /** @var array|null */
-    private static $pageTypes;
     /** @var array|null */
     private static $pluginTypes;
 
@@ -55,8 +52,7 @@ abstract class PageLister
             'current_page' => null,
         ];
 
-        // fetch types
-        self::$pageTypes = Page::getTypes();
+        // fetch plugin types
         self::$pluginTypes = Page::getPluginTypes();
 
         // setup
@@ -237,7 +233,7 @@ abstract class PageLister
             }
         }
 
-        if (self::MODE_SINGLE_LEVEL == $options['mode']) {
+        if ($options['mode'] == self::MODE_SINGLE_LEVEL) {
             $class .= ' page-list-single-level';
         } else {
             $class .= ' page-list-full-tree';
@@ -256,18 +252,25 @@ abstract class PageLister
         $output .= ">\n";
 
         // load and filter tree
-        $tree = self::filterTree(
-            Page::getChildren(
+        $extraColumns = ['layout', 'layout_inherit', 'level_inherit', 'ord'];
+
+        if ($options['mode'] == self::MODE_FULL_TREE) {
+            $tree = Page::getChildren(
                 self::$config['current_page'],
-                self::MODE_SINGLE_LEVEL == $options['mode']
-                    ? (self::$config['current_page'] !== null ? 1 : 0)
-                    : null,
+                null,
+                true,
+                new PageFilter(null, true),
+                $extraColumns
+            );
+        } else {
+            $tree = Page::getChildren(
+                self::$config['current_page'],
+                self::$config['current_page'] !== null ? 1 : 0,
                 true,
                 null,
-                ['layout', 'layout_inherit', 'level_inherit', 'ord']
-            ),
-            $options
-        );
+                $extraColumns
+            );
+        }
 
         // render mode
         switch ($options['mode']) {
@@ -340,76 +343,13 @@ abstract class PageLister
     }
 
     /**
-     * Filter tree
-     */
-    private static function filterTree(array $tree, array $options): array
-    {
-        $ids = array_keys($tree);
-        $current = 0;
-        $filteredTree = [];
-        $isFullTree = (self::MODE_FULL_TREE == self::$config['mode']);
-
-        // iterate pages
-        foreach ($tree as $id => $page) {
-            if (!$isFullTree && $page['node_parent'] != self::$config['current_page']) {
-                // not in current branch
-                $keep = false;
-            } elseif ($isAccessible = self::isAccessible($page)) {
-                // accessible
-                $keep = true;
-            } else {
-                // not accessible
-                $keep = false;
-
-                // keep if the tree is sortable
-                if ($options['sortable']) {
-                    $keep = true;
-                } elseif ($page['node_depth'] > 0) {
-                    // keep if it has accessible children
-                    for ($i = $current + 1; isset($ids[$i]) && $tree[$ids[$i]]['node_level'] > $page['node_level']; ++$i) {
-                        if (self::isAccessible($tree[$ids[$i]])) {
-                            $keep = true;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            if ($keep) {
-                $filteredTree[$id] = ['_is_accessible' => $isAccessible] + $page;
-            }
-
-            ++$current;
-        }
-
-        return $filteredTree;
-    }
-
-    /**
-     * Check whether the page is accessible
-     */
-    private static function isAccessible(array $page): bool
-    {
-        $userHasRight = User::hasPrivilege('admin' . self::$pageTypes[$page['type']]);
-        $isAccessible = $userHasRight;
-
-        Extend::call('admin.page.list.access', [
-            'page' => $page,
-            'user_has_right' => $userHasRight,
-            'is_accessible' => &$isAccessible,
-        ]);
-
-        return $isAccessible;
-    }
-
-    /**
      * Render page
      */
     private static function renderPage(string &$output, array $page, array $options, string $class = '', int $levelOffset = 0): void
     {
         // prepare
-        $typeName = self::$pageTypes[$page['type']];
-        $isAccessible = $page['_is_accessible'];
+        $typeName = Page::TYPES[$page['type']];
+        $isAccessible = Admin::pageAccess($page, true);
         Extend::call('admin.page.list.item', [
             'item' => &$page,
             'options' => &$options,
@@ -435,7 +375,7 @@ abstract class PageLister
             $class .= ' ';
         }
 
-        $class .= 'page-' . self::$pageTypes[$page['type']];
+        $class .= 'page-' . Page::TYPES[$page['type']];
 
         if ($page['type'] == Page::PLUGIN && isset(self::$pluginTypes[$page['type_idt']])) {
             $class .= ' page-'
@@ -493,7 +433,7 @@ abstract class PageLister
             } elseif ($page['type'] == Page::PLUGIN && isset(self::$pluginTypes[$page['type_idt']])) {
                 $typeLabel = self::$pluginTypes[$page['type_idt']];
             } else {
-                $typeLabel = _lang('page.type.' . self::$pageTypes[$page['type']]);
+                $typeLabel = _lang('page.type.' . Page::TYPES[$page['type']]);
             }
 
             $output .= '<td class="page-type">' . $typeLabel . "</td>\n";
@@ -533,7 +473,7 @@ abstract class PageLister
         // edit
         if ($hasAccess) {
             $actions['edit'] = [
-                'url' => Router::admin('content-edit' . self::$pageTypes[$page['type']], ['query' => ['id' => $page['id']]]),
+                'url' => Router::admin('content-edit' . Page::TYPES[$page['type']], ['query' => ['id' => $page['id']]]),
                 'icon' => Router::path('admin/public/images/icons/edit.png'),
                 'label' => _lang('global.edit'),
                 'order' => 50,

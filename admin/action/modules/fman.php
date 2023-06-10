@@ -396,7 +396,7 @@ if ($continue) {
                     $galid = (int) Request::post('gallery');
 
                     // insert images
-                    if (DB::count('page', 'id=' . DB::val($galid) . ' AND type=' . Page::GALLERY) !== 0) {
+                    if (DB::count('page', 'id=' . DB::val($galid) . ' AND type=' . Page::GALLERY . ' AND level<=' . User::getLevel()) !== 0) {
                         // get the lowest order number
                         $smallestord = DB::queryRow('SELECT ord FROM ' . DB::table('gallery_image') . ' WHERE home=' . $galid . ' ORDER BY ord LIMIT 1');
 
@@ -407,7 +407,7 @@ if ($continue) {
                         }
 
                         // move order numbers
-                        DB::update('gallery_image', 'home=' . $galid, ['ord' => DB::raw('ord+' . (count($_POST) - 2))]);
+                        DB::update('gallery_image', 'home=' . $galid, ['ord' => DB::raw('ord+' . (count($_POST) - 2))], null);
 
                         // prepare query
                         $sql = '';

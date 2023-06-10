@@ -8,24 +8,36 @@ use Sunlight\Page\Page;
 use Sunlight\Router;
 use Sunlight\User;
 use Sunlight\Util\Request;
+use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
-// confirm selected article
 $message = '';
 
-if (isset($_GET['id'])) {
-    DB::update('article', 'id=' . DB::val(Request::get('id')), ['confirmed' => 1]);
-    $message = Message::ok(_lang('global.done'));
+// confirm selected article
+if (isset($_POST['confirm'])) {
+    $article = DB::queryRow(
+        'SELECT art.id FROM ' . DB::table('article') . ' art'
+        . ' LEFT JOIN ' . DB::table('page') . ' cat1 ON art.home1=cat1.id'
+        . ' LEFT JOIN ' . DB::table('page') . ' cat2 ON art.home2=cat2.id'
+        . ' LEFT JOIN ' . DB::table('page') . ' cat3 ON art.home3=cat3.id'
+        . ' WHERE art.id=' . DB::val((int) Request::post('confirm'))
+        . ' AND (cat1.level<=' . User::getLevel() . ' OR cat2.level<=' . User::getLevel() . ' OR cat3.level<=' . User::getLevel() . ')'
+    );
+
+    if ($article !== false) {
+        DB::update('article', 'id=' . $article['id'], ['confirmed' => 1]);
+        $message = Message::ok(_lang('global.done'));
+    }
 }
 
 // load filters
-if (isset($_GET['limit'])) {
-    $catlimit = (int) Request::get('limit');
-    $condplus = ' AND (art.home1=' . $catlimit . ' OR art.home2=' . $catlimit . ' OR art.home3=' . $catlimit . ')';
+if (isset($_GET['category'])) {
+    $category = (int) Request::get('category');
+    $cond = ' AND (art.home1=' . $category . ' OR art.home2=' . $category . ' OR art.home3=' . $category . ')';
 } else {
-    $catlimit = -1;
-    $condplus = '';
+    $category = -1;
+    $cond = '';
 }
 
 // output
@@ -33,7 +45,7 @@ $output .= '
 <form class="cform" action="' . _e(Router::admin(null)) . '" method="get">
     <input type="hidden" name="p" value="content-confirm">'
     . _lang('admin.content.confirm.filter') . ': '
-    . Admin::pageSelect('limit', ['type' => Page::CATEGORY, 'selected' => $catlimit, 'empty_item' => _lang('global.all')])
+    . Admin::pageSelect('category', ['type' => Page::CATEGORY, 'selected' => $category, 'empty_item' => _lang('global.all')])
     . '
     <input type="submit" value="' . _lang('global.do') . '">
 </form>
@@ -41,6 +53,7 @@ $output .= '
 
 ' . $message . '
 
+<form method="post">
 <table class="list list-hover list-max">
 <thead><tr><td>' . _lang('global.article') . '</td><td>' . _lang('article.category') . '</td><td>' . _lang('article.posted') . '</td><td>' . _lang('article.author') . '</td><td>' . _lang('global.action') . '</td></tr></thead>
 <tbody>';
@@ -49,9 +62,16 @@ $output .= '
 $userQuery = User::createQuery('art.author');
 $query = DB::query(
     'SELECT art.id,art.title,art.slug,art.home1,art.home2,art.home3,art.time,art.visible,art.confirmed,art.public,cat.slug AS cat_slug,' . $userQuery['column_list']
+    . ',(' . Admin::articleAccessSql('art') . ') art_access'
     . ' FROM ' . DB::table('article') . ' AS art JOIN ' . DB::table('page') . ' AS cat ON(cat.id=art.home1) '
     . $userQuery['joins']
-    . ' WHERE art.confirmed=0' . $condplus
+    . ' LEFT JOIN ' . DB::table('page') . ' cat1 ON art.home1=cat1.id'
+    . ' LEFT JOIN ' . DB::table('page') . ' cat2 ON art.home2=cat2.id'
+    . ' LEFT JOIN ' . DB::table('page') . ' cat3 ON art.home3=cat3.id'
+    . ' WHERE'
+        . ' art.confirmed=0'
+        . ' AND (cat1.level<=' . User::getLevel() . ' OR cat2.level<=' . User::getLevel() . ' OR cat3.level<=' . User::getLevel() . ')'
+        . $cond
     . ' ORDER BY art.time DESC'
 );
 
@@ -76,12 +96,12 @@ if (DB::size($query) != 0) {
             <td>' . $cats . '</td><td>' . GenericTemplates::renderTime($item['time']) . '</td>
             <td>' . Router::userFromQuery($userQuery, $item) . '</td>
             <td class="actions">
-                <a class="button" href="' . _e(Router::admin('content-confirm', ['query' => ['id' => $item['id'], 'limit' => $catlimit]])) . '">
+                <button class="button" type="submit" name="confirm" value="' . $item['id'] . '">
                     <img src="' . _e(Router::path('admin/public/images/icons/check.png')) . '" alt="confirm" class="icon">' . _lang('admin.content.confirm.confirm') . '
-                </a>
-                <a class="button" href="' . _e(Router::admin('content-articles-edit', ['query' => ['id' => $item['id'], 'returnid' => 'load', 'returnpage' => 1]])) . '">
-                    <img src="' . _e(Router::path('admin/public/images/icons/edit.png')) . '" alt="edit" class="icon">' . _lang('global.edit') . '
-                </a>'
+                </button>
+                ' . ($item['art_access'] ? '<a class="button" href="' . _e(Router::admin('content-articles-edit', ['query' => ['id' => $item['id'], 'returnid' => 'load', 'returnpage' => 1]])) . '">
+                        <img src="' . _e(Router::path('admin/public/images/icons/edit.png')) . '" alt="edit" class="icon">' . _lang('global.edit') . '
+                    </a>' : '')
             . '</td>'
             . "</tr>\n";
     }
@@ -89,4 +109,7 @@ if (DB::size($query) != 0) {
     $output .= '<tr><td colspan="5">' . _lang('global.nokit') . '</td></tr>';
 }
 
-$output .= '</tbody></table>';
+$output .= '</tbody>
+</table>
+' . Xsrf::getInput() . '
+</form>';

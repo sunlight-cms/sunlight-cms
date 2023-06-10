@@ -416,6 +416,7 @@ a#usermenu-username {margin-right: 0.5em; font-weight: bold; color: <?= $scheme_
 #is-picture {width: 100%;}
 #is-picture-file {display: block; max-width: 200px; max-height: 200px; margin: 0 auto; border: 1px solid <?= $scheme_lighter ?>;}
 #is-picture-delete {padding: 6px; text-align: center;}
+#is-picture-upload {display: block; margin: 0 auto;}
 
 /* box manager */
 #boxesedit {width: 100%;}

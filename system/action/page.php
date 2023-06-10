@@ -105,8 +105,7 @@ if ($_page['events'] !== null) {
 
 // prepare to render page
 $id = $_page['id'];
-$types = Page::getTypes();
-$type_name = $types[$_page['type']];
+$type_name = Page::TYPES[$_page['type']];
 $script = null;
 
 // determine script

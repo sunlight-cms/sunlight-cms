@@ -12,15 +12,13 @@ use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
-$type_array = Page::getTypes();
-
 $continue = false;
 
 if (isset($_GET['id'])) {
     $id = (int) Request::get('id');
     $query = DB::queryRow('SELECT id,node_level,node_depth,node_parent,title,type,type_idt,ord FROM ' . DB::table('page') . ' WHERE id=' . $id);
 
-    if ($query !== false && User::hasPrivilege('admin' . $type_array[$query['type']])) {
+    if ($query !== false && User::hasPrivilege('admin' . Page::TYPES[$query['type']])) {
         $continue = true;
     }
 }
@@ -29,7 +27,7 @@ if ($continue) {
     // removing child pages requires privileges for all page types
     $recursive = true;
 
-    foreach (Page::getTypes() as $type) {
+    foreach (Page::TYPES as $type) {
         if (!User::hasPrivilege('admin' . $type)) {
             $recursive = false;
             break;

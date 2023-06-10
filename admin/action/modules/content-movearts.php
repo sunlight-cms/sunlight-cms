@@ -5,6 +5,7 @@ use Sunlight\Database\Database as DB;
 use Sunlight\Message;
 use Sunlight\Page\Page;
 use Sunlight\Router;
+use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
@@ -22,11 +23,11 @@ if (isset($_POST['source'])) {
     // check variables
     $error_log = [];
 
-    if (DB::count('page', 'id=' . DB::val($source) . ' AND type=' . Page::CATEGORY) === 0) {
+    if (DB::count('page', 'id=' . DB::val($source) . ' AND type=' . Page::CATEGORY . ' AND level<=' . User::getLevel()) === 0) {
         $error_log[] = _lang('admin.content.movearts.badsource');
     }
 
-    if (DB::count('page', 'id=' . DB::val($target) . ' AND type=' . Page::CATEGORY) === 0) {
+    if (DB::count('page', 'id=' . DB::val($target) . ' AND type=' . Page::CATEGORY . ' AND level<=' . User::getLevel()) === 0) {
         $error_log[] = _lang('admin.content.movearts.badtarget');
     }
 
@@ -79,7 +80,7 @@ if (isset($_POST['source'])) {
                 'home1' => $target,
                 'home2' => -1,
                 'home3' => -1
-            ]);
+            ], null);
             $counter = DB::affectedRows();
         }
 

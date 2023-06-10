@@ -348,7 +348,7 @@ class PostService
                     'posttarget' => $home,
                     'xhome' => $reply,
                     'subject' => $subject_enabled,
-                    'is_topic' => self::RENDER_FORUM_TOPIC_LIST == $style,
+                    'is_topic' => $style == self::RENDER_FORUM_TOPIC_LIST,
                     'url' => $url,
                 ]);
             } else {

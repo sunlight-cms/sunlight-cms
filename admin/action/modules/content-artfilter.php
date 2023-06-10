@@ -2,6 +2,7 @@
 
 use Sunlight\Admin\Admin;
 use Sunlight\Article;
+use Sunlight\Exception\PrivilegeException;
 use Sunlight\Post\Post;
 use Sunlight\Database\Database as DB;
 use Sunlight\IpLog;
@@ -44,8 +45,15 @@ if (isset($_POST['category'])) {
     $new_resetread = Form::loadCheckbox('new_resetread');
 
     // check vars
-    if ($new_category != -1 && DB::count('page', 'id=' . DB::val($new_category) . ' AND type=' . Page::CATEGORY) === 0) {
-        $new_category = -1;
+    if (
+        $category == -1 && !User::hasPrivilege('adminpages')
+        || DB::count('page', 'id=' . DB::val($category) . ' AND type=' . Page::CATEGORY . ' AND level<=' . User::getLevel()) == 0
+    ) {
+        throw new PrivilegeException(sprintf('Invalid article filter source category ID %d', $category));
+    }
+
+    if ($new_category != -1 && DB::count('page', 'id=' . DB::val($new_category) . ' AND type=' . Page::CATEGORY . ' AND level<=' . User::getLevel()) === 0) {
+        throw new PrivilegeException(sprintf('Invalid article filter new category ID %d', $new_category));
     }
 
     if ($new_author != -1 && DB::count('user', 'id=' . DB::val($new_author)) === 0) {
@@ -178,7 +186,7 @@ if (!$infopage) {
 
 <tr>
 <th>' . _lang('article.category') . '</th>
-<td>' . Admin::pageSelect('category', ['type' => Page::CATEGORY, 'empty_item' => _lang('global.any2')]) . '</td>
+<td>' . Admin::pageSelect('category', ['type' => Page::CATEGORY, 'empty_item' => User::hasPrivilege('adminpages') ? _lang('global.any2') : null]) . '</td>
 </tr>
 
 <tr>

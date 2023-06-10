@@ -175,6 +175,7 @@ $output .= _buffer(function () use ($id, $box, $new, $templates_to_choose_slot_f
                         'selected' => $box['page_ids'] !== null ? explode(',', $box['page_ids']) : [],
                         'attrs' => 'size="10" class="inputmax"',
                         'empty_item' => _lang('global.all'),
+                        'check_access' => false,
                     ]) ?>
                     <p><label><input type="checkbox"<?= Form::restoreCheckedAndName('box_edit', 'page_children', $box['page_children']) ?>> <?= _lang('admin.content.form.include_subpages') ?></label>
                 </td>

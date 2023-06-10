@@ -359,10 +359,10 @@ abstract class Template
 
         // load pages
         $filter = new PageTreeFilter([
-                'ord_start' => $options['ord_start'],
-                'ord_end' => $options['ord_end'],
-                'ord_level' => $options['page_id'] === null ? $level : $level + 1,
-            ] + $options['filter']);
+            'ord_start' => $options['ord_start'],
+            'ord_end' => $options['ord_end'],
+            'ord_level' => $options['page_id'] === null ? $level : $level + 1,
+        ] + $options['filter']);
 
         $pages = Page::getFlatTree(
             $options['page_id'],

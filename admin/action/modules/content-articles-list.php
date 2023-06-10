@@ -17,11 +17,8 @@ $continue = false;
 
 if (isset($_GET['cat'])) {
     $cid = (int) Request::get('cat');
-
-    if (DB::count('page', 'id=' . DB::val($cid) . ' AND type=' . Page::CATEGORY) !== 0) {
-        $catdata = DB::queryRow('SELECT title,var1,var2 FROM ' . DB::table('page') . ' WHERE id=' . $cid);
-        $continue = true;
-    }
+    $catdata = DB::queryRow('SELECT type,level,title,var1,var2 FROM ' . DB::table('page') . ' WHERE id=' . $cid . ' AND type=' . Page::CATEGORY);
+    $continue = ($catdata !== false && Admin::pageAccess($catdata));
 }
 
 // output
@@ -59,7 +56,7 @@ if ($continue) {
     }
 
     // list articles
-    $cond = '(art.home1=' . $cid . ' OR art.home2=' . $cid . ' OR art.home3=' . $cid . ')' . Admin::articleAccess('art');
+    $cond = '(art.home1=' . $cid . ' OR art.home2=' . $cid . ' OR art.home3=' . $cid . ') AND ' . Admin::articleAccessSql('art');
     $paging = Paginator::paginateTable(
         Router::admin('content-articles-list', ['query' => ['cat' => $cid]]),
         $catdata['var2'] ?: Settings::get('articlesperpage'),

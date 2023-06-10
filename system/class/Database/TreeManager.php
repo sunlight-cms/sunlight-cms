@@ -24,13 +24,18 @@ class TreeManager
      * @param string|null $levelColumn level column name
      * @param string|null $depthColumn depth column name
      */
-    function __construct(string $table, ?string $idColumn = null, ?string $parentColumn = null, ?string $levelColumn = null, ?string $depthColumn = null)
-    {
+    function __construct(
+        string  $table,
+        ?string $idColumn = null,
+        ?string $parentColumn = null,
+        ?string $levelColumn = null,
+        ?string $depthColumn = null
+    ) {
         $this->table = $table;
-        $this->idColumn = $idColumn ?: 'id';
-        $this->parentColumn = $parentColumn ?: 'node_parent';
-        $this->levelColumn = $levelColumn ?: 'node_level';
-        $this->depthColumn = $depthColumn ?: 'node_depth';
+        $this->idColumn = $idColumn ??'id';
+        $this->parentColumn = $parentColumn ?? 'node_parent';
+        $this->levelColumn = $levelColumn ?? 'node_level';
+        $this->depthColumn = $depthColumn ?? 'node_depth';
     }
 
     /**

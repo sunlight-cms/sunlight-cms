@@ -1,5 +1,6 @@
 <?php
 
+use Sunlight\Admin\Admin;
 use Sunlight\Admin\PageLister;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
@@ -29,14 +30,13 @@ $editscript_extra_row2 = '';
 $editscript_extra = '';
 $editscript_setting_extra = '';
 $editscript_setting_extra2 = '';
-$type_array = Page::getTypes();
 $plugin_type_array = Page::getPluginTypes();
 
 if (isset($_GET['id'])) {
     $id = (int) Request::get('id');
     $query = DB::queryRow('SELECT * FROM ' . DB::table('page') . ' WHERE id=' . $id . ' AND type=' . $type);
 
-    if ($query !== false) {
+    if ($query !== false && Admin::pageAccess($query, true)) {
         $continue = true;
         $new = false;
 
@@ -75,7 +75,7 @@ if (isset($_GET['id'])) {
     if ($type == Page::PLUGIN) {
         $default_title = $plugin_type_array[$type_idt];
     } else {
-        $default_title = _lang('page.type.' . $type_array[$type]);
+        $default_title = _lang('page.type.' . Page::TYPES[$type]);
     }
 
     $default_title = StringManipulator::ucfirst($default_title);

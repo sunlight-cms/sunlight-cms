@@ -182,6 +182,19 @@ abstract class Admin
     }
 
     /**
+     * Check if the user has access to the given page
+     *
+     * @param array{type: int, level: int} $page page data
+     * @param bool $checkPrivilege check privilege to manage the page type 1/0
+     */
+    static function pageAccess(array $page, bool $checkPrivilege = false): bool
+    {
+        return
+            $page['level'] <= User::getLevel()
+            && (!$checkPrivilege || User::hasPrivilege('admin' . Page::TYPES[$page['type']]));
+    }
+
+    /**
      * Compose SQL condition for poll access
      *
      * @param bool $and begin condition with ' AND'
@@ -203,20 +216,20 @@ abstract class Admin
     /**
      * Compose SQL condition for article access
      */
-    static function articleAccess(?string $alias = ''): string
+    static function articleAccessSql(?string $alias = ''): string
     {
         if ($alias !== '') {
             $alias .= '.';
         }
 
         if (User::hasPrivilege('adminallart')) {
-            return ' AND ('
+            return '('
                 . $alias . 'author=' . User::getId()
                 . ' OR (SELECT level FROM ' . DB::table('user_group') . ' WHERE id=(SELECT group_id FROM ' . DB::table('user') . ' WHERE id=' . (($alias === '') ? DB::table('article') . '.' : $alias) . 'author))<' . User::getLevel()
                 . ')';
         }
 
-        return ' AND ' . $alias . 'author=' . User::getId();
+        return $alias . 'author=' . User::getId();
     }
 
     /**
@@ -275,6 +288,8 @@ abstract class Admin
      * multiple             allow choice of multiple pages 1/0
      * empty_item           label of empty item (ID = -1)
      * type                 limit to a single page type
+     * check_access         check access to each page 1/0
+     * check_privilege      also check privilege to manage each page type 1/0 (requires check_access = 1)
      * allow_separators     make separators selectable 1/0
      * disabled_branches    array of page IDs whose branches should be excluded
      * maxlength            max. length of page title or null (unlimited)
@@ -287,24 +302,16 @@ abstract class Admin
             'multiple' => false,
             'empty_item' => null,
             'type' => null,
+            'check_access' => true,
+            'check_privilege' => false,
             'allow_separators' => false,
             'disabled_branches' => [],
             'maxlength' => 22,
             'attrs' => null,
         ];
 
-        // type filter
-        if ($options['type'] !== null) {
-            $filter = new SimpleTreeFilter(['type' => $options['type']]);
-        } else {
-            $filter = null;
-        }
-
         // extend
-        Extend::call('admin.page.select', [
-            'options' => &$options,
-            'filter' => &$filter,
-        ]);
+        Extend::call('admin.page.select', ['options' => &$options]);
 
         // disabled branches
         if (!empty($options['disabled_branches'])) {
@@ -312,6 +319,14 @@ abstract class Admin
         }
 
         // load tree
+        if ($options['check_access']) {
+            $filter = new PageFilter($options['type'], $options['check_privilege']);
+        } elseif ($options['type'] !== null) {
+            $filter = new SimpleTreeFilter(['type' => $options['type']]);
+        } else {
+            $filter = null;
+        }
+
         $tree = Page::getFlatTree(null, null, $filter);
 
         // list
@@ -344,9 +359,13 @@ abstract class Admin
                     $active = $options['selected'] == $page['id'];
                 }
 
-                $output .= '<option value="' . $page['id'] . '"'
+                $enabled = (!$options['check_access'] || self::pageAccess($page, $options['check_privilege']))
+                    && ($options['type'] === null || $page['type'] == $options['type'])
+                    && ($options['allow_separators'] || $page['type'] != Page::SEPARATOR);
+
+                $output .= '<option'
+                    . ($enabled ? ' value="' . $page['id'] . '"' : ' disabled')
                     . Form::selectOption($active)
-                    . (($options['type'] !== null && $page['type'] != $options['type'] || !$options['allow_separators'] && $page['type'] == Page::SEPARATOR) ? ' disabled' : '')
                     . '>'
                     . str_repeat('&nbsp;&nbsp;&nbsp;│&nbsp;', $page['node_level'])
                     . StringManipulator::ellipsis($page['title'], $options['maxlength'])

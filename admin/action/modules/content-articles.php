@@ -1,8 +1,8 @@
 <?php
 
+use Sunlight\Admin\Admin;
+use Sunlight\Admin\PageFilter;
 use Sunlight\Database\Database as DB;
-use Sunlight\Database\SimpleTreeFilter;
-use Sunlight\Extend;
 use Sunlight\Page\Page;
 use Sunlight\Router;
 
@@ -20,9 +20,7 @@ $output .= '
 ';
 
 // load category tree
-$filter = new SimpleTreeFilter(['type' => Page::CATEGORY]);
-Extend::call('admin.article.catfilter', ['filter' => &$filter]);
-$tree = Page::getFlatTree(null, null, $filter);
+$tree = Page::getFlatTree(null, null, new PageFilter(Page::CATEGORY));
 
 // load article counts
 $art_counts = [];
@@ -34,15 +32,13 @@ $art_count_query = DB::query(
     . ' WHERE c.type=' . Page::CATEGORY
 );
 
-while ($art_count = DB::row($art_count_query)) {
-    $art_counts[$art_count['id']] = $art_count['art_count'];
-}
+$art_counts = DB::rows($art_count_query, 'id', 'art_count');
 
 // rows
 foreach ($tree as $page) {
     $output .= '<tr><td>';
 
-    if ($page['type'] == Page::CATEGORY) {
+    if ($page['type'] == Page::CATEGORY && Admin::pageAccess($page)) {
         $output .= '<a class="node-level-m' . $page['node_level'] . '" href="' . _e(Router::admin('content-articles-list', ['query' => ['cat' => $page['id']]])) . '">
     <img src="' . _e(Router::path('admin/public/images/icons/dir.png')) . '" alt="col" class="icon">
     ' . $page['title'] . '

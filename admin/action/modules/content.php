@@ -15,7 +15,6 @@ $message = '';
 
 // list pages
 $plugin_types = Page::getPluginTypes();
-$type_array = Page::getTypes();
 
 if (
     User::hasPrivilege('adminsection')
@@ -50,8 +49,8 @@ if (
                     $is_plugin_page = true;
                 }
 
-                if (isset($type_array[$type]) && User::hasPrivilege('admin' . $type_array[$type])) {
-                    $_admin->redirect(Router::admin('content-edit' . $type_array[$type], ($is_plugin_page ? ['query' => ['idt' => $type_idt]] : null)));
+                if (isset(Page::TYPES[$type]) && User::hasPrivilege('admin' . Page::TYPES[$type])) {
+                    $_admin->redirect(Router::admin('content-edit' . Page::TYPES[$type], ($is_plugin_page ? ['query' => ['idt' => $type_idt]] : null)));
 
                     return;
                 }
@@ -143,7 +142,7 @@ if (
     $create_list = '';
 
     if (User::hasPrivilege('adminpages')) {
-        foreach ($type_array as $type => $name) {
+        foreach (Page::TYPES as $type => $name) {
             if ($type != Page::PLUGIN && User::hasPrivilege('admin' . $name)) {
                 $create_list .= '<option value="' . $type . '">' . _lang('page.type.' . $name) . "</option>\n";
             }
@@ -201,10 +200,10 @@ if (
     <span class="inline-separator"></span>
     ' : '') . '
 
-    <a class="button" href="' . _e(Router::admin('content', ['query' => ['list_mode' => 'tree']])) . '"' . (PageLister::MODE_FULL_TREE == PageLister::getConfig('mode') ? ' class="active-link"' : '') . '>
+    <a class="button" href="' . _e(Router::admin('content', ['query' => ['list_mode' => 'tree']])) . '"' . (PageLister::getConfig('mode') == PageLister::MODE_FULL_TREE ? ' class="active-link"' : '') . '>
         <img src="' . _e(Router::path('admin/public/images/icons/tree.png')) . '" alt="move" class="icon">' . _lang('admin.content.mode.tree') . '
     </a>
-    <a class="button" href="' . _e(Router::admin('content', ['query' => ['list_mode' => 'single']])) . '"' . (PageLister::MODE_SINGLE_LEVEL == PageLister::getConfig('mode') ? ' class="active-link"' : '') . '>
+    <a class="button" href="' . _e(Router::admin('content', ['query' => ['list_mode' => 'single']])) . '"' . (PageLister::getConfig('mode') == PageLister::MODE_SINGLE_LEVEL ? ' class="active-link"' : '') . '>
         <img src="' . _e(Router::path('admin/public/images/icons/list.png')) . '" alt="move" class="icon">' . _lang('admin.content.mode.single') . '
     </a>
 

@@ -440,7 +440,7 @@ if (!empty($_POST)) {
         PageManipulator::refreshLayouts($id);
     }
 
-    $_admin->redirect(Router::admin('content-edit' . $type_array[$type], ['query' => ['id' => $id, 'saved' => 1]]));
+    $_admin->redirect(Router::admin('content-edit' . Page::TYPES[$type], ['query' => ['id' => $id, 'saved' => 1]]));
 
     return;
 }
@@ -479,7 +479,7 @@ $actionOptions = array_merge(
     ($type == Page::PLUGIN && $new ? ['query' => ['idt' => $type_idt]] : [])
 );
 
-$output .= '<form class="cform" action="' . _e(Router::admin('content-edit' . $type_array[$type], $actionOptions)) . '" method="post">
+$output .= '<form class="cform" action="' . _e(Router::admin('content-edit' . Page::TYPES[$type], $actionOptions)) . '" method="post">
 ' . $editscript_extra . '  
     <table class="formtable edittable">
         <tbody>

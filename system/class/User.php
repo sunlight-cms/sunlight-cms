@@ -680,9 +680,9 @@ abstract class User
         DB::update('post', 'author=' . DB::val($id), [
             'guest' => sprintf('%x', crc32((string) $id)),
             'author' => -1,
-        ]);
-        DB::update('article', 'author=' . DB::val($id), ['author' => $replacement['id']]);
-        DB::update('poll', 'author=' . DB::val($id), ['author' => $replacement['id']]);
+        ], null);
+        DB::update('article', 'author=' . DB::val($id), ['author' => $replacement['id']], null);
+        DB::update('poll', 'author=' . DB::val($id), ['author' => $replacement['id']], null);
 
         // delete avatar
         if (isset($user['avatar'])) {

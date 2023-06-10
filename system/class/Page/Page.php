@@ -15,6 +15,21 @@ use Sunlight\WebState;
 abstract class Page
 {
     /**
+     * Map of page types to readable names
+     */
+    const TYPES = [
+        self::SECTION => 'section',
+        self::CATEGORY => 'category',
+        self::BOOK => 'book',
+        self::SEPARATOR => 'separator',
+        self::GALLERY => 'gallery',
+        self::LINK => 'link',
+        self::GROUP => 'group',
+        self::FORUM => 'forum',
+        self::PLUGIN => 'pluginpage',
+    ];
+
+    /**
      * Section page type
      *
      * var1:    comments enabled 1/0
@@ -220,10 +235,8 @@ abstract class Page
         }
 
         // check IDs
-        foreach ($ids as $id) {
-            if ($currentId == $id) {
-                return true;
-            }
+        if (in_array($currentId, $ids)) {
+            return true;
         }
 
         // check children
@@ -238,26 +251,6 @@ abstract class Page
         }
 
         return false;
-    }
-
-    /**
-     * Get page types
-     *
-     * @return array<int, string> number => name
-     */
-    static function getTypes(): array
-    {
-        return [
-            self::SECTION => 'section',
-            self::CATEGORY => 'category',
-            self::BOOK => 'book',
-            self::SEPARATOR => 'separator',
-            self::GALLERY => 'gallery',
-            self::LINK => 'link',
-            self::GROUP => 'group',
-            self::FORUM => 'forum',
-            self::PLUGIN => 'pluginpage',
-        ];
     }
 
     /**

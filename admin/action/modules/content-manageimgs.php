@@ -7,6 +7,7 @@ use Sunlight\Message;
 use Sunlight\Page\Page;
 use Sunlight\Router;
 use Sunlight\Settings;
+use Sunlight\User;
 use Sunlight\Util\Environment;
 use Sunlight\Util\Form;
 use Sunlight\Util\Html;
@@ -65,7 +66,7 @@ if (isset($_POST['xaction']) && $continue) {
                     $ord = 1;
                 }
 
-                DB::update('gallery_image', 'home=' . $galid, ['ord' => DB::raw('ord+1')]);
+                DB::update('gallery_image', 'home=' . $galid, ['ord' => DB::raw('ord+1')], null);
             } else {
                 $ord = floatval(Request::post('ord'));
             }
@@ -172,7 +173,7 @@ if (isset($_POST['xaction']) && $continue) {
             $newhome = (int) Request::post('newhome');
 
             if ($newhome != $galid) {
-                if (DB::count('page', 'id=' . DB::val($newhome) . ' AND type=' . Page::GALLERY) !== 0) {
+                if (DB::count('page', 'id=' . DB::val($newhome) . ' AND type=' . Page::GALLERY . ' AND level<=' . User::getLevel()) !== 0) {
                     if (DB::count('gallery_image', 'home=' . DB::val($galid)) !== 0) {
                         // move order numbers in the target gallery
                         $moveords = Form::loadCheckbox('moveords');
@@ -182,11 +183,11 @@ if (isset($_POST['xaction']) && $continue) {
                             $greatestord = DB::queryRow('SELECT ord FROM ' . DB::table('gallery_image') . ' WHERE home=' . $galid . ' ORDER BY ord DESC LIMIT 1');
                             $greatestord = $greatestord['ord'];
 
-                            DB::update('gallery_image', 'home=' . $newhome, ['ord' => DB::raw('ord+' . $greatestord)]);
+                            DB::update('gallery_image', 'home=' . $newhome, ['ord' => DB::raw('ord+' . $greatestord)], null);
                         }
 
                         // move images
-                        DB::update('gallery_image', 'home=' . $galid, ['home' => $newhome]);
+                        DB::update('gallery_image', 'home=' . $galid, ['home' => $newhome], null);
                         $message .= Message::ok(_lang('global.done'));
                     } else {
                         $message .= Message::warning(_lang('admin.content.manageimgs.moveimgs.nokit'));
@@ -246,7 +247,7 @@ if (isset($_POST['xaction']) && $continue) {
                 if (isset($_POST['moveords'])) {
                     // move
                     $ord = 0;
-                    DB::update('gallery_image', 'home=' . $galid, ['ord' => DB::raw('ord+' . count($done))]);
+                    DB::update('gallery_image', 'home=' . $galid, ['ord' => DB::raw('ord+' . count($done))], null);
                 } else {
                     // get max + 1
                     $ord = DB::queryRow('SELECT ord FROM ' . DB::table('gallery_image') . ' WHERE home=' . $galid . ' ORDER BY ord DESC LIMIT 1');
