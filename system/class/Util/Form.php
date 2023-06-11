@@ -228,36 +228,41 @@ abstract class Form
     /**
      * Render inputs for date-time selection
      *
+     * Supported $options:
+     * -------------------
+     * input_class (-)          input class name
+     * now_toggle (0)           add an option to set the timestamp to current time on save 1/0
+     * now_toggle_default (0)   enable the now_toggle by default 1/0
+     *
      * @param string $name input name
-     * @param int|null $timestamp pre-filled date and time value
-     * @param bool $updatebox allow setting the date and time value to current 1/0
-     * @param bool $updateboxchecked enable setting date and time value to current by default 1/0
+     * @param int|null $timestamp pre-filled timestamp
+     * @param array $options additional options, see description
      */
-    static function editTime(string $name, ?int $timestamp = null, bool $updatebox = false, bool $updateboxchecked = false): string
+    static function editTime(string $name, ?int $timestamp = null, array $options = []): string
     {
+        $options += [
+            'now_toggle' => false,
+            'now_toggle_default' => false,
+            'input_class' => null,
+        ];
+
         $output = Extend::buffer('time.edit', [
             'timestamp' => $timestamp,
-            'updatebox' => $updatebox,
-            'updatebox_checked' => $updateboxchecked,
+            'options' => &$options,
         ]);
 
         if ($output === '') {
-            if ($timestamp !== null) {
-                $timestamp = getdate($timestamp);
-            } else {
-                $timestamp = ['seconds' => '', 'minutes' => '', 'hours' => '', 'mday' => '', 'mon' => '', 'year' => ''];
-            }
+            $output .= '<input type="datetime-local" name="' . _e($name) . '"'
+                . ($options['input_class'] !== null ? ' class="' . _e($options['input_class']) . '"' : '')
+                . ($timestamp !== null ? ' value="' . _e(date('Y-m-d\TH:i', $timestamp)) . '"' : '');
 
-            $output .= '<input type="text" size="2" maxlength="2" name="' . $name . '[tday]" value="' . $timestamp['mday'] . '">'
-                . '.<input type="text" size="2" maxlength="2" name="' . $name . '[tmonth]" value="' . $timestamp['mon'] . '">'
-                . ' <input type="text" size="4" maxlength="4" name="' . $name . '[tyear]" value="' . $timestamp['year'] . '">'
-                . ' <input type="text" size="2" maxlength="2" name="' . $name . '[thour]" value="' . $timestamp['hours'] . '">'
-                . ':<input type="text" size="2" maxlength="2" name="' . $name . '[tminute]" value="' . $timestamp['minutes'] . '">'
-                . ':<input type="text" size="2" maxlength="2" name="' . $name . '[tsecond]" value="' . $timestamp['seconds'] . '">'
-                . ' <small>' . _lang('time.help') . '</small>';
+            $output .= '>';
 
-            if ($updatebox) {
-                $output .= ' <label><input type="checkbox" name="' . $name . '[tupdate]" value="1"' . self::activateCheckbox($updateboxchecked) . '> ' . _lang('time.update') . '</label>';
+            if ($options['now_toggle']) {
+                $output .= ' <label>'
+                    . '<input type="checkbox" name="' . $name . '_now" value="1"' . self::activateCheckbox($options['now_toggle_default']) . '> '
+                    . _lang('time.update')
+                    . '</label>';
             }
         }
 
@@ -269,36 +274,36 @@ abstract class Form
      *
      * @param string $name input name
      * @param int|null $default default in case of invalid value
+     * @param bool $get load value from GET data instead of POST
      */
-    static function loadTime(string $name, ?int $default = null): ?int
+    static function loadTime(string $name, ?int $default = null, bool $get = false): ?int
     {
-        $result = Extend::fetch('time.load', [
+        $value = Extend::fetch('time.load', [
             'name' => $name,
             'default' => $default,
         ]);
 
-        if ($result === null) {
-            if (!isset($_POST[$name]) || !is_array($_POST[$name])) {
-                $result = $default;
-            } elseif (!isset($_POST[$name]['tupdate'])) {
-                $day = (int) $_POST[$name]['tday'];
-                $month = (int) $_POST[$name]['tmonth'];
-                $year = (int) $_POST[$name]['tyear'];
-                $hour = (int) $_POST[$name]['thour'];
-                $minute = (int) $_POST[$name]['tminute'];
-                $second = (int) $_POST[$name]['tsecond'];
-
-                if (checkdate($month, $day, $year) && $hour >= 0 && $hour < 24 && $minute >= 0 && $minute < 60 && $second >= 0 && $second < 60) {
-                    $result = mktime($hour, $minute, $second, $month, $day, $year);
-                } else {
-                    $result =  $default;
-                }
-            } else {
-                $result = time();
-            }
+        if ($value !== null) {
+            return $value;
         }
 
-        return $result;
+        if (Form::loadCheckbox($name . '_now')) {
+            return time();
+        }
+
+        $value = $get ? Request::get($name) : Request::post($name);
+
+        if ($value === null) {
+            return $default;
+        }
+
+        $datetime = \DateTime::createFromFormat('Y-m-d\TH:i', $value) ?: \DateTime::createFromFormat('Y-m-d\TH:i:s', $value);
+
+        if ($datetime === false) {
+            return $default;
+        }
+
+        return $datetime->getTimestamp();
     }
 
     /**

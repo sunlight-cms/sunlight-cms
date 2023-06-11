@@ -328,13 +328,13 @@ if ($continue) {
     $picture = '';
 
     if (isset($query['picture_uid'])) {
-        $picture .= '<img src="' . _e(Router::file(Article::getImagePath($query['picture_uid']))) . '" alt="article picture" id="is-picture-file">
-<label id="is-picture-delete"><input type="checkbox" name="picture-delete" value="1"> ' . _lang('global.delete') . '</label>';
+        $picture .= '<img src="' . _e(Router::file(Article::getImagePath($query['picture_uid']))) . '" alt="article picture" id="article-edit-picture-file">
+<label id="article-edit-picture-delete"><input type="checkbox" name="picture-delete" value="1"> ' . _lang('global.delete') . '</label>';
     } else {
-        $picture .= '<img src="' . _e(Router::path('admin/public/images/art-no-pic.png')) . "\" alt=\"no picture\" id=\"is-picture-file\">\n";
+        $picture .= '<img src="' . _e(Router::path('admin/public/images/art-no-pic.png')) . "\" alt=\"no picture\" id=\"article-edit-picture-file\">\n";
     }
 
-    $picture .= "<input type=\"file\" name=\"picture\" id=\"is-picture-upload\">\n";
+    $picture .= "<input type=\"file\" name=\"picture\" id=\"article-edit-picture-upload\">\n";
 
     // form
     $output .= Admin::backlink($backlink) . '
@@ -384,10 +384,6 @@ if ($continue) {
                             </tr>
                         </tbody>
                         <tfoot>
-                            <tr>
-                                <th>' . _lang('article.posted') . '</th>
-                                <td>' . Form::editTime('time', $query['time'], true, $new) . '</td>
-                            </tr>
                             ' . Extend::buffer('admin.article.form', ['article' => $query]) . '
                             <tr>
                                 <td></td>
@@ -412,7 +408,7 @@ if ($continue) {
                         ' . Extend::buffer('admin.article.settings.before', ['article' => $query]) . '
                         <fieldset>
                             <legend>' . _lang('admin.content.form.picture') . '</legend>
-                            <div id="is-picture">' . $picture . '</div>
+                            <div id="article-edit-picture">' . $picture . '</div>
                         </fieldset>'
 
                         . (User::hasPrivilege('adminchangeartauthor')
@@ -421,8 +417,13 @@ if ($continue) {
                                 . Admin::userSelect('author', ['selected' => $query['author'], 'group_cond' => 'adminart=1', 'class' => 'inputmax'])
                                 . '</fieldset>'
                             : '')
+
+                        . '<fieldset id="article-edit-time">
+                            <legend>' . _lang('article.posted') . '</legend>
+                            ' . Form::editTime('time', $query['time'], ['input_class' => 'inputmax', 'now_toggle' => true, 'now_toggle_default' => $new]) . '
+                        </fieldset>
                         
-                        . '<fieldset>
+                        <fieldset>
                             <legend>' . _lang('admin.content.form.settings') . '</legend>
                             <table>
                                 <tbody>

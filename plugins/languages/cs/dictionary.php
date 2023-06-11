@@ -117,7 +117,6 @@ return [
     'count.articles' => 'článků',
     'count.posts' => 'příspěvků',
     'count.images' => 'obrázků',
-    'time.help' => 'DD.MM. YYYY HH:MM:SS',
     'time.update' => 'nastavit při uložení na aktuální',
     'image.error.could-not-create' => 'Nepodařilo se vytvořit obrázek',
     'image.error.could-not-get-size' => 'Nepodařilo se načíst velikost obrázku',

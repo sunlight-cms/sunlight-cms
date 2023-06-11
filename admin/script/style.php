@@ -413,10 +413,11 @@ a#usermenu-username {margin-right: 0.5em; font-weight: bold; color: <?= $scheme_
 .module-content-boxes .box-title-cell {white-space: normal; width: 90%;}
 
 /* article edit */
-#is-picture {width: 100%;}
-#is-picture-file {display: block; max-width: 200px; max-height: 200px; margin: 0 auto; border: 1px solid <?= $scheme_lighter ?>;}
-#is-picture-delete {padding: 6px; text-align: center;}
-#is-picture-upload {display: block; margin: 0 auto;}
+#article-edit-picture {width: 100%;}
+#article-edit-picture-file {display: block; max-width: 200px; max-height: 200px; margin: 0 auto; border: 1px solid <?= $scheme_lighter ?>;}
+#article-edit-picture-delete {padding: 6px; text-align: center;}
+#article-edit-picture-upload {display: block; margin: 0 auto;}
+#article-edit-time input[type=datetime-local] {margin-bottom: 10px;}
 
 /* box manager */
 #boxesedit {width: 100%;}

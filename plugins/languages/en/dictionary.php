@@ -117,7 +117,6 @@ return [
     'count.articles' => 'articles',
     'count.posts' => 'posts',
     'count.images' => 'images',
-    'time.help' => 'DD.MM. YYYY HH:MM:SS',
     'time.update' => 'set to current upon saving',
     'image.error.could-not-create' => 'Could not create image',
     'image.error.could-not-get-size' => 'Could not get image size',
