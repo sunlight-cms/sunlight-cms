@@ -34,7 +34,7 @@ abstract class Page
      *
      * var1:    comments enabled 1/0
      * var2:    *unused*
-     * var3:    lockec comments 1/0
+     * var3:    locked comments 1/0
      * var4:    *unused*
      */
     const SECTION = 1;

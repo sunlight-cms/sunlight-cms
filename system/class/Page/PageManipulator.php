@@ -10,7 +10,7 @@ use Sunlight\Extend;
 
 abstract class PageManipulator
 {
-    /** Depencency flag - child pages */
+    /** Dependency flag - child pages */
     const DEPEND_CHILD_PAGES = 1;
     /** Dependency flag - direct */
     const DEPEND_DIRECT = 2;
@@ -256,7 +256,7 @@ abstract class PageManipulator
     }
 
     /**
-     * List page dependenies
+     * List page dependencies
      *
      * @param array $page page data (id, node_level, node_depth, type, type_idt)
      * @param bool $childPages list child pages 1/0

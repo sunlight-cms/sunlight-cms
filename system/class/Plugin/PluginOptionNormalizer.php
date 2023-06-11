@@ -65,7 +65,7 @@ abstract class PluginOptionNormalizer
         foreach ($autoload as $type => $entries) {
             $normalized[$type] = [];
 
-            // iterate entires
+            // iterate entries
             foreach ($entries as $key => $entry) {
                 if (!is_string($key)) {
                     self::fail('[%s][%s] is not a valid key (expected a string key)', $type, $key);
