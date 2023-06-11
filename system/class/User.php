@@ -474,7 +474,7 @@ abstract class User
      * Filter user's content based on privileges
      *
      * @param string $content the content
-     * @param bool $isHtml indicate HTML cocntent 1/0
+     * @param bool $isHtml indicate HTML content 1/0
      * @param bool $hasHcm the content can contain HCM modules 1/0
      * @throws ContentPrivilegeException
      */

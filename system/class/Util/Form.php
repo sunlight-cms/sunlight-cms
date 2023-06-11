@@ -326,7 +326,7 @@ abstract class Form
      *
      * Format of a single row in $rows:
      * -----------------------------------------
-     * label (-)        row albel
+     * label (-)        row label
      * content (-)      row content
      * top (0)          align the row to the top
      * class (-)        custom <tr> attribute

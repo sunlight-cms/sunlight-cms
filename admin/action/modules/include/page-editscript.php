@@ -425,7 +425,7 @@ if (!empty($_POST)) {
         }
     }
 
-    // referesh slugs
+    // refresh slugs
     if ($refresh_slug) {
         PageManipulator::refreshSlugs($id);
     }
