@@ -47,7 +47,7 @@ if (isset($_POST['category'])) {
     // check vars
     if (
         $category == -1 && !User::hasPrivilege('adminpages')
-        || DB::count('page', 'id=' . DB::val($category) . ' AND type=' . Page::CATEGORY . ' AND level<=' . User::getLevel()) == 0
+        || $category != -1 && DB::count('page', 'id=' . DB::val($category) . ' AND type=' . Page::CATEGORY . ' AND level<=' . User::getLevel()) == 0
     ) {
         throw new PrivilegeException(sprintf('Invalid article filter source category ID %d', $category));
     }
