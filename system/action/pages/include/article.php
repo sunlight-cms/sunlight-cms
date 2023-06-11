@@ -109,7 +109,7 @@ if (User::hasPrivilege('adminart')) {
 
 if ($_article['showinfo']) {
     $infos['author'] = [_lang('article.author'), Router::userFromQuery($_article['author_query'], $_article)];
-    $infos['posted'] = [_lang('article.posted'), GenericTemplates::renderTime($_article['time'], 'article')];
+    $infos['posted'] = [_lang('article.posted'), GenericTemplates::renderDate($_article['time'], 'article')];
     $infos['readnum'] = [_lang('article.readnum'), $_article['readnum'] . 'x'];
 }
 

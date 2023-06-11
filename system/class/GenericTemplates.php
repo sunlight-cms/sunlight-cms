@@ -23,23 +23,25 @@ abstract class GenericTemplates
     }
 
     /**
-     * Render a time value
+     * Render a date value
      *
      * @param int $timestamp UNIX timestamp
-     * @param string|null $type article, post, activity or null
+     * @param string|null $type short description of usage type for plugins
+     */
+    static function renderDate(int $timestamp, ?string $type = null): string
+    {
+        return self::renderTimestamp('date_format', $timestamp, $type);
+    }
+
+    /**
+     * Render a date-time value
+     *
+     * @param int $timestamp UNIX timestamp
+     * @param string|null $type short description of usage type for plugins
      */
     static function renderTime(int $timestamp, ?string $type = null): string
     {
-        $extend = Extend::buffer('time.format', [
-            'timestamp' => $timestamp,
-            'type' => $type
-        ]);
-
-        if ($extend !== '') {
-            return $extend;
-        }
-
-        return date(Settings::get('time_format'), $timestamp);
+        return self::renderTimestamp('time_format', $timestamp, $type);
     }
 
     /**
@@ -250,5 +252,20 @@ $(document).ready(function() {
 });
 </script>
 HTML;
+    }
+
+    private static function renderTimestamp(string $settingVar, int $timestamp, ?string $type = null): string
+    {
+        $extend = Extend::buffer('render.timestamp', [
+            'settings_var' => $settingVar,
+            'timestamp' => $timestamp,
+            'type' => $type,
+        ]);
+
+        if ($extend !== '') {
+            return $extend;
+        }
+
+        return date(Settings::get($settingVar), $timestamp);
     }
 }

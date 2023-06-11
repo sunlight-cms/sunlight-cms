@@ -265,7 +265,7 @@ if (!$user_data_valid && $show_form) {
                 '%domain%' => $domain,
                 '%confirm_link%' => Router::module('reg', ['query' => ['confirm' => $code], 'absolute' => true]),
                 '%ip%' => Core::getClientIp(),
-                '%date%' => GenericTemplates::renderTime(time()),
+                '%date%' => GenericTemplates::renderTime(time(), 'email'),
             ])
         );
 

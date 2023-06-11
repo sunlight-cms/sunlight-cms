@@ -105,7 +105,7 @@ $output .= '
         </tr>
         <tr>
             <th>' . _lang('global.created_at') . '</th>
-            <td>' . GenericTemplates::renderTime($backup_metadata['created_at']) . '</td>
+            <td>' . GenericTemplates::renderTime($backup_metadata['created_at'], 'backup') . '</td>
         </tr>
         <tr class="valign-top">
             <th>' . _lang('admin.backup.restore.contents') . '</th>

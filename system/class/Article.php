@@ -250,7 +250,7 @@ abstract class Article
         if ($info) {
             $infos = [
                 'author' => [_lang('article.author'), Router::userFromQuery($userQuery, $art)],
-                'posted' => [_lang('article.posted'), GenericTemplates::renderTime($art['time'], 'article')],
+                'posted' => [_lang('article.posted'), GenericTemplates::renderDate($art['time'], 'article')],
                 'readnum' => [_lang('article.readnum'), $art['readnum'] . 'x'],
             ];
 

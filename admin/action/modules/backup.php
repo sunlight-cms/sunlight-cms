@@ -79,7 +79,7 @@ if (!empty($backup_files)) {
         $backup_list .= '<tr>
     <td><label><input type="radio" name="backup_file" value="' . _e($backup_file) . '" required> ' . _e($backup_file) . '</label></td>
     <td>' . GenericTemplates::renderFileSize(filesize($backup_dir . '/' . $backup_file)) . '</td>
-    <td>' . GenericTemplates::renderTime($backup_ctime) . '</td>
+    <td>' . GenericTemplates::renderTime($backup_ctime, 'backup') . '</td>
     <td>'
         . '<a href="' . _e(Router::admin('backup', ['query' => ['download' => $backup_file]])) . '" title="' . _lang('global.download') . '">'
         . '<img src="' . _e(Router::path('admin/public/images/icons/floppy.png')) . '" alt="' . _lang('global.download') . '">'

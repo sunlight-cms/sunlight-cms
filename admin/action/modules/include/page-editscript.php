@@ -462,7 +462,7 @@ if (User::hasPrivilege('adminpages')) {
 
 // messages
 if (isset($_GET['saved'])) {
-    $output .= Message::ok(_lang('global.saved') . ' <small>(' . GenericTemplates::renderTime(time()) . ')</small>', true);
+    $output .= Message::ok(_lang('global.saved') . ' <small>(' . GenericTemplates::renderTime(time(), 'saved_msg') . ')</small>', true);
 }
 
 if (!$new && $editscript_enable_slug && DB::count('page', 'id!=' . DB::val($query['id']) . ' AND slug=' . DB::val($query['slug'])) !== 0) {

@@ -124,7 +124,7 @@ if ($public) {
 
 ' . (User::equals($query['id']) || User::hasPrivilege('administration') && User::hasPrivilege('adminusers') ? '<tr>
 <th>' . _lang('mod.profile.lastact') . '</th>
-<td>' . GenericTemplates::renderTime($query['activitytime'], 'activity') . '</td>
+<td>' . GenericTemplates::renderDate($query['activitytime'], 'user_activity') . '</td>
 </tr>
 
 <tr>
@@ -145,7 +145,7 @@ if ($public) {
 <div class="wlimiter">
 <table class="profiletable">
 
-<tr><th>' . _lang('mod.profile.regtime') . '</th><td>' . GenericTemplates::renderTime($query['registertime']) . '</td></tr>
+<tr><th>' . _lang('mod.profile.regtime') . '</th><td>' . GenericTemplates::renderDate($query['registertime'], 'user_registration') . '</td></tr>
 ' . (Settings::get('profileemail') ? '<tr><th>' . _lang('global.email') . '</th><td>' . Email::link($query['email']) . '</td></tr>' : '') . '
 <tr><th>' . _lang('global.postsnum') . '</th><td>' . $posts_count . $posts_viewlink . '</td></tr>
 

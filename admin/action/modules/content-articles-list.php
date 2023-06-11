@@ -92,7 +92,7 @@ if ($continue) {
             $output .= '<tr>
     <td>' . Admin::articleEditLink($art) . '</td>
     <td>' . Router::userFromQuery($userQuery, $art) . '</td>
-    <td>' . GenericTemplates::renderTime($art['time']) . '</td>
+    <td>' . GenericTemplates::renderTime($art['time'], 'article_admin') . '</td>
     <td class="actions">
         <a class="button" href="' . _e(Router::admin('content-articles-edit', ['query' => ['id' => $art['id'], 'returnid' => $cid,  'returnpage' => $s]])) . '">
             <img src="' . _e(Router::path('admin/public/images/icons/edit.png')) . '" alt="edit" class="icon">' . _lang('global.edit') . '

@@ -93,7 +93,7 @@ if (DB::size($query) != 0) {
 
         $output .= '<tr>
             <td>' . Admin::articleEditLink($item, false) . '</td>
-            <td>' . $cats . '</td><td>' . GenericTemplates::renderTime($item['time']) . '</td>
+            <td>' . $cats . '</td><td>' . GenericTemplates::renderTime($item['time'], 'article_admin') . '</td>
             <td>' . Router::userFromQuery($userQuery, $item) . '</td>
             <td class="actions">
                 <button class="button" type="submit" name="confirm" value="' . $item['id'] . '">

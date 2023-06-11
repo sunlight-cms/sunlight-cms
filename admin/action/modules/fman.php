@@ -284,7 +284,7 @@ if ($continue) {
                     if ($file) {
                         fwrite($file, $content);
                         fclose($file);
-                        $message = Message::ok(_lang('admin.fman.msg.edit.done') . ' <small>(' . GenericTemplates::renderTime(time()) . ')</small>', true);
+                        $message = Message::ok(_lang('admin.fman.msg.edit.done') . ' <small>(' . GenericTemplates::renderTime(time(), 'saved_msg') . ')</small>', true);
                     } else {
                         $message = Message::warning(_lang('admin.fman.msg.edit.failure'));
                     }

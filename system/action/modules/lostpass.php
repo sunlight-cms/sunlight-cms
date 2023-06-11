@@ -81,7 +81,7 @@ if (isset($_POST['email'])) {
                 '%domain%' => $domain,
                 '%username%' => $user['username'],
                 '%link%' => $link,
-                '%date%' => GenericTemplates::renderTime(time()),
+                '%date%' => GenericTemplates::renderTime(time(), 'email'),
                 '%ip%' => Core::getClientIp(),
             ])
         )) {

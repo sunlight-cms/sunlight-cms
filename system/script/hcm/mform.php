@@ -66,7 +66,7 @@ if (Xsrf::check()) {
 
         $text .= "\n\n" . str_repeat('-', 16) . "\n" . _lang('hcm.mailform.info', [
             '%domain%' => Core::getBaseUrl()->getFullHost(),
-            '%time%' => GenericTemplates::renderTime(time()),
+            '%time%' => GenericTemplates::renderTime(time(), 'email'),
             '%ip%' => $info_ip,
             '%sender%' => $sender,
         ]);

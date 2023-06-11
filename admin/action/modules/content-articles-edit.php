@@ -306,7 +306,7 @@ if (isset($_POST['title'])) {
 if ($continue) {
     // message
     if (isset($_GET['saved'])) {
-        $message = Message::ok(_lang('global.saved') . ' <small>(' . GenericTemplates::renderTime(time()) . ')</small>', true);
+        $message = Message::ok(_lang('global.saved') . ' <small>(' . GenericTemplates::renderTime(time(), 'article_admin') . ')</small>', true);
     }
 
     if (isset($_GET['created'])) {

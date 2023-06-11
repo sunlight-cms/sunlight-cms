@@ -53,6 +53,7 @@ $editable_settings = [
     'main' => [
         'items' => [
             ['name' => 'default_template', 'format' => 'text', 'choices' => Core::$pluginManager->choices('template')],
+            ['name' => 'date_format', 'format' => 'html', 'input_class' => 'inputsmall'],
             ['name' => 'time_format', 'format' => 'html', 'input_class' => 'inputsmall'],
             ['name' => 'cacheid', 'format' => 'int', 'input_class' => 'inputsmall'],
             ['name' => 'language', 'format' => 'text', 'choices' => Core::$pluginManager->choices('language'), 'reload_on_update' => true],
