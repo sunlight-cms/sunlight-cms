@@ -218,7 +218,7 @@ abstract class PageManipulator
     }
 
     /**
-     * Delete the given page, incudling dependencies
+     * Delete the given page, including dependencies
      *
      * @param array $page page data (id, node_depth, node_parent, type, type_idt)
      * @param bool $recursive remove child pages

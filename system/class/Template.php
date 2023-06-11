@@ -200,7 +200,7 @@ abstract class Template
     }
 
     /**
-     * Render backlick
+     * Render backlink
      */
     static function backlink(): string
     {
@@ -254,7 +254,7 @@ abstract class Template
     /**
      * Compose path to a current template's asset
      *
-     * @param string $path subpath in the template's direcotry
+     * @param string $path subpath in the template's directory
      * @param array|null $routerOptions router URL generation options {@see Router}
      */
     static function asset(string $path, ?array $routerOptions = null): string
