@@ -116,7 +116,7 @@ abstract class Hcm
             'output' => &$output,
         ]);
 
-        // try to run system module (unless overriden by a plugin)
+        // try to run system module (unless overridden by a plugin)
         if ($output === null) {
             if (isset(self::$modules[$name])) {
                 $output = (string) CallbackHandler::fromScript(self::$modules[$name])(...$argList);

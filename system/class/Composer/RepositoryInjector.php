@@ -10,7 +10,7 @@ class RepositoryInjector
 {
     /** @var \stdClass[] name-indexed */
     private $packages;
-    /** @var array indicates packages that cannot be overriden */
+    /** @var array indicates packages that cannot be overridden */
     private $rootMap;
     /** @var array package name => Repository */
     private $sourceMap;
