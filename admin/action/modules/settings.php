@@ -27,7 +27,7 @@ for ($x = 1; $x < 3; ++$x) {
     $titletype_choices[$x] = _lang('admin.settings.info.titletype.' . $x);
 }
 
-// admin scheme choicces
+// admin scheme choices
 $adminscheme_choices = [];
 
 for ($x = 0; $x < 11; ++$x) {

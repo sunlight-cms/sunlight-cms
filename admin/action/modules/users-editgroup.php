@@ -243,7 +243,7 @@ if ($continue) {
         return;
     }
 
-    // load iccons
+    // load icons
     if ($id != User::GUEST_GROUP_ID) {
         $icons = "<div class=\"radio-group\">\n";
         $icons .= '<label><input' . Form::activateCheckbox($query['icon'] === '') . ' type="radio" name="icon" value=""> ' . _lang('global.undefined') . "</label>\n";

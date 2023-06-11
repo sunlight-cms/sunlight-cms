@@ -211,7 +211,7 @@ LEFT JOIN ' . DB::table('post') . " home_post ON({$alias}.type=" . self::FORUM_T
             $input = Bbcode::parse($input);
         }
 
-        // conver newlines
+        // convert newlines
         if ($nl2br) {
             $input = nl2br($input, false);
         }

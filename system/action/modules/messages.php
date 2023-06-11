@@ -162,7 +162,7 @@ switch ($a) {
     default:
         // show a single message?
         if (isset($_GET['read'])) {
-            // laod data
+            // load data
             $id = (int) Request::get('read');
             $senderUserQuery = User::createQuery('pm.sender', 'sender_', 'su');
             $receiverUserQuery = User::createQuery('pm.receiver', 'receiver_', 'ru');
