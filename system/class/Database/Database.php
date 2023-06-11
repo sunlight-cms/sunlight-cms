@@ -7,7 +7,7 @@ use Sunlight\Extend;
 /**
  * Static database class
  * 
- * Manages acccess to the system database.
+ * Manages access to the system database.
  */
 abstract class Database
 {
@@ -198,7 +198,7 @@ abstract class Database
      *
      * @param int|string|null $indexBy index the resulting array using the given column
      * @param int|string|null $fetchColumn only fetch the given column instead of the entire row
-     * @param bool $assoc fetch rows as assoiative arrays 1/0
+     * @param bool $assoc fetch rows as associative arrays 1/0
      * @return array[]
      */
     static function rows(\mysqli_result $result, $indexBy = null, $fetchColumn = null, bool $assoc = true): array
