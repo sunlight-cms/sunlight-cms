@@ -60,7 +60,7 @@ if (isset($_POST['text'])) {
         $query = DB::query(
             'SELECT email,password'
             . ' FROM ' . DB::table('user') . ' u'
-            . ' JOIN ' . DB::table('user_group') . ' g'
+            . ' JOIN ' . DB::table('user_group') . ' g ON g.id = u.group_id'
             . ' WHERE u.massemail=1 AND u.blocked=0 AND g.blocked=0 AND u.group_id IN(' . DB::arr($receivers) . ')'
         );
 
