@@ -36,12 +36,6 @@ if ($mysqlver != null && mb_substr_count($mysqlver, '-') != 0) {
     $mysqlver = mb_substr($mysqlver, 0, strpos($mysqlver, '-'));
 }
 
-$software = getenv('SERVER_SOFTWARE');
-
-if (mb_strlen($software) > 16) {
-    $software = substr($software, 0, 13) . '...';
-}
-
 // prepare custom content
 $custom = '';
 
