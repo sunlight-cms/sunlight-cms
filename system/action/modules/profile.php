@@ -38,7 +38,7 @@ if ($query !== false) {
         }
 
         // user's articles
-        [, , $arts] = Article::createFilter('art', [], 'author=' . $query['id'], true, false, false);
+        [, , $arts] = Article::createFilter('art', [], 'art.author=' . $query['id'], true);
 
         if ($arts != 0) {
             // determine average rating
@@ -61,7 +61,7 @@ if ($query !== false) {
         }
 
         // link to user's posts
-        $posts_count = DB::count('post', 'author=' . DB::val($query['id']) . ' AND type!=' . Post::PRIVATE_MSG . ' AND type!=' . Post::SHOUTBOX_ENTRY);
+        [, , , $posts_count] = Post::createFilter('post', [Post::SECTION_COMMENT, Post::ARTICLE_COMMENT, Post::BOOK_ENTRY, Post::FORUM_TOPIC, Post::PLUGIN], [], 'post.author=' . DB::val($id), true);
 
         if ($posts_count > 0) {
             $posts_viewlink = ', <a href="' . _e(Router::module('profile-posts', ['query' => ['id' => $id]])) . '">' . _lang('global.show') . ' &gt;</a>';
