@@ -46,6 +46,10 @@ abstract class Email
 
         if ($result !== null) {
             // handled by a plugin
+            if (!$result) {
+                Logger::error('system', 'Failed to send email (plugin)', ['recipient' => $to, 'subject' => $subject]);
+            }
+
             return $result;
         }
 
@@ -60,12 +64,22 @@ abstract class Email
         }
 
         // send
-        return @mail(
+        $result = @mail(
             $to,
             $subject,
             $message,
             $headerString
         );
+
+        if (!$result) {
+            Logger::error('system', 'Failed to send email', [
+                'recipient' => $to,
+                'subject' => $subject,
+                'error' => error_get_last()['message'] ?? null,
+            ]);
+        }
+
+        return $result;
     }
 
     /**
