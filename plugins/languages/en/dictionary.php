@@ -53,6 +53,7 @@ return [
     'global.edit' => 'edit',
     'global.delete' => 'remove',
     'global.show' => 'show',
+    'global.hide' => 'hide',
     'global.reload' => 'reload',
     'global.group' => 'Group',
     'global.levelshift' => 'Superuser',

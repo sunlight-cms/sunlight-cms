@@ -53,6 +53,7 @@ return [
     'global.edit' => 'upravit',
     'global.delete' => 'odstranit',
     'global.show' => 'zobrazit',
+    'global.hide' => 'skrýt',
     'global.reload' => 'obnovit',
     'global.group' => 'Skupina',
     'global.levelshift' => 'Superuživatel',

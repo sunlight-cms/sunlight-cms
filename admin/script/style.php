@@ -507,6 +507,7 @@ a.active-link {text-decoration: underline !important;}
 .message {margin: 1em 0; padding: 13px 5px 13px 48px; background-color: <?= $scheme_smoke ?>; background-position: 5px 5px; background-repeat: no-repeat;}
 .message ul {margin: 0; padding: 5px 0 0 15px;}
 .message a {color: inherit; text-decoration: underline;}
+.message a.button {color: unset; text-decoration: unset;}
 .message-ok {background-color: <?= $scheme_bg_info ?>; background-image: url("../public/images/icons/info.png");}
 .message-warn {background-color: <?= $scheme_bg_alert ?>; background-image: url("../public/images/icons/warning.png");}
 .message-err {background-color: <?= $scheme_bg_danger ?>; background-image: url("../public/images/icons/error.png");}

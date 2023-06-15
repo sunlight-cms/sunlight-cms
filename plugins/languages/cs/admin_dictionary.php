@@ -29,7 +29,7 @@ return [
     'admin.index.htaccess_check_failure' => 'Pozor! Zdá se, že váš webový server nepodporuje soubory .htaccess. To představuje možné bezpečnostní riziko.<br><br>Viz <a href="%link%">%link%</a>',
     'admin.index.version.latest' => 'Používáte nejnovější verzi systému.',
     'admin.index.version.old' => 'Je k dispozici nová verze <strong>%version%</strong>. Je doporučeno <a href="%link%" target="_blank">aktualizovat</a>.',
-    'admin.index.recent_log_errors' => 'Za posledních 30 dní byly v systémovém logu nalezeny chyby: %count% (<a href="%link%">zobrazit</a>)',
+    'admin.index.recent_log_errors' => 'Od poslední kontroly byly v systémovém logu nalezeny nové chyby: %count%',
     'admin.menu.index.edit.title' => 'Úprava hlavní strany',
     'admin.menu.index.edit.p' => 'Zde máte možnost upravit obsah hlavní strany. Chcete-li tuto funkci deaktivovat, ponechte pole <q>Vlastní text</q> prázdné.',
     'admin.menu.index.edit.pos' => 'Pozice textu',

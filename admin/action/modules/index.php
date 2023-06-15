@@ -14,12 +14,18 @@ use Sunlight\Util\Cookie;
 use Sunlight\Util\Environment;
 use Sunlight\Util\Json;
 use Sunlight\VersionChecker;
+use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
+
+if (isset($_POST['hide_recent_log_errors']) && Admin::moduleAccess('log')) {
+    Settings::update('admin_index_log_since', (string) time());
+}
 
 $admin_index_cfg = Settings::getMultiple([
     'admin_index_custom',
     'admin_index_custom_pos',
+    'admin_index_log_since',
 ]);
 
 $version_data = VersionChecker::check();
@@ -145,14 +151,27 @@ if (($version_data !== null) && $version_data['localAge'] >= 0) {
 if (Admin::moduleAccess('log')) {
     $log_query = new LogQuery();
     $log_query->maxLevel = Logger::ERROR;
-    $log_query->since = strtotime('-30 days 00:00');
+    $log_query->since = $admin_index_cfg['admin_index_log_since'] !== '0' ? (int) $admin_index_cfg['admin_index_log_since'] : null;
     $recent_log_errors = Logger::getTotalResults($log_query);
 
     if ($recent_log_errors > 0) {
-        $messages[] = Message::warning(_lang('admin.index.recent_log_errors', [
-            '%count%' => $recent_log_errors,
-            '%link%' => _e(Router::admin('log', ['query' => ['maxLevel' => $log_query->maxLevel, 'since' => '-30 days 00:00', 'desc' => '1', 'search' => '1']])),
-        ]), true);
+        $messages[] = Message::warning(
+            _buffer(function () use ($log_query, $recent_log_errors) {
+                ?>
+    <?= _lang('admin.index.recent_log_errors', ['%count%' => $recent_log_errors]) ?><br><br>
+
+    <a class="button" href="<?= _e(Router::admin('log', ['query' => ['maxLevel' => $log_query->maxLevel, 'since' => $log_query->since !== null ? "@{$log_query->since}" : null, 'desc' => '1', 'search' => '1']])) ?>">
+        <?= _lang('global.show') ?>
+    </a>
+
+    <form method="post" class="inline">
+        <input class="button" type="submit" name="hide_recent_log_errors" value="<?= _lang('global.hide') ?>">
+        <?= Xsrf::getInput() ?>
+    </form>
+<?php
+            }),
+            true
+        );
     }
 }
 

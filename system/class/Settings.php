@@ -72,7 +72,7 @@ abstract class Settings
     }
 
     /**
-     * Update a setting in the database
+     * Update a setting
      */
     static function update(string $setting, string $newValue): void
     {
@@ -90,6 +90,8 @@ abstract class Settings
             ),
             ['setting' => $setting, 'old_value' => $oldValue, 'new_value' => $newValue]
         );
+
+        self::$settings[$setting] = $newValue;
     }
 
     /**
