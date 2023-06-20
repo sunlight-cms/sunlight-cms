@@ -277,6 +277,9 @@ abstract class User
             // set variables
             self::$data = $userData;
             self::$group = $groupData;
+
+            // event
+            Extend::call('user.ready');
         } else {
             // guest
             $groupData = DB::queryRow('SELECT * FROM ' . DB::table('user_group') . ' WHERE id=' . self::GUEST_GROUP_ID);
