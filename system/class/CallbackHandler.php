@@ -6,7 +6,7 @@ use Kuria\Options\Option;
 
 abstract class CallbackHandler
 {
-    /** @var array<string, \Closure> */
+    /** @var array<string, callable> */
     private static $scriptCache = [];
 
     /**
@@ -50,9 +50,11 @@ abstract class CallbackHandler
     }
 
     /**
-     * Get closure defined by the given PHP script
+     * Get callback defined by the given PHP script
+     *
+     * @return callable
      */
-    static function fromScript(string $script): \Closure
+    static function fromScript(string $script)
     {
         $fullPath = realpath($script);
 
@@ -64,7 +66,7 @@ abstract class CallbackHandler
     }
 
     /**
-     * Get a lazy closure defined by the given PHP script
+     * Get a lazy callable defined by the given PHP script
      *
      * The script is not loaded until the closure is run.
      */
@@ -75,14 +77,17 @@ abstract class CallbackHandler
         };
     }
 
-    private static function loadScript(string $fullPath): \Closure
+    /**
+     * @return callable
+     */
+    private static function loadScript(string $fullPath)
     {
-        $closure = require $fullPath;
+        $callback = require $fullPath;
 
-        if (!$closure instanceof \Closure) {
-            throw new \UnexpectedValueException(sprintf('Script "%s" should return a closure, got %s', $fullPath, gettype($closure)));
+        if (Core::$debug && !is_callable($callback)) {
+            throw new \UnexpectedValueException(sprintf('Script "%s" should return a callable, got %s', $fullPath, gettype($callback)));
         }
 
-        return $closure;
+        return $callback;
     }
 }
