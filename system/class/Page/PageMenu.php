@@ -93,6 +93,7 @@ abstract class PageMenu
                 || ($link = Extend::buffer($pageEvent, [
                     'type' => $menuType,
                     'page' => &$page,
+                    'root_class' => $rootClass,
                     'classes' => &$classes,
                     'url' => &$url,
                     'attrs' => &$attrs,
