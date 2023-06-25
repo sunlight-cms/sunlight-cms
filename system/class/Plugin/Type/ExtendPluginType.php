@@ -4,7 +4,7 @@ namespace Sunlight\Plugin\Type;
 
 use Kuria\Options\Option;
 use Kuria\Options\Resolver;
-use Sunlight\CallbackHandler;
+use Sunlight\Callback\CallbackHandler;
 use Sunlight\Plugin\ExtendPlugin;
 use Sunlight\Plugin\PluginOptionNormalizer;
 

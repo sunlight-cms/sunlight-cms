@@ -3,13 +3,13 @@
 namespace SunlightExtend\Devkit\Component;
 
 use Kuria\Debug\Dumper;
-use Sunlight\CallbackHandler;
+use Sunlight\Callback\ScriptCallback;
 use Sunlight\Core;
 use Sunlight\Extend;
 use Sunlight\Localization\LocalizationDirectory;
 use Sunlight\Log\LogEntry;
 use Sunlight\Logger;
-use Sunlight\Plugin\ExtendPlugin;
+use Sunlight\Plugin\PluginHcmHandler;
 use Sunlight\Plugin\Plugin;
 use Sunlight\Router;
 use Sunlight\User;
@@ -513,6 +513,14 @@ class ToolbarRenderer
             return $this->renderClosure($callback);
         }
 
+        if ($callback instanceof ScriptCallback) {
+            return $callback->path;
+        }
+
+        if ($callback instanceof PluginHcmHandler) {
+            return $this->renderCallback($callback->callback);
+        }
+
         if (is_callable($callback, true, $callableName)) {
             return $callableName;
         }
@@ -524,35 +532,6 @@ class ToolbarRenderer
     {
         $refl = new \ReflectionFunction($closure);
 
-        // try to render system closure used vars if on PHP 8.1+
-        if (PHP_VERSION_ID >= 80100 && $this->isSystemClosure($refl)) {
-            $vars = $refl->getClosureUsedVariables();
-
-            if (count($vars) === 1 && isset($vars['definition'])) {
-                // HCM module callback definition from an extend plugin
-                $vars = $vars['definition'];
-            }
-
-            $vars = array_reduce(
-                array_keys($vars),
-                function ($output, $var) use ($vars) {
-                    if (is_scalar($vars[$var])) {
-                        return ($output !== '' ? $output . ', ' : '')
-                            . $var
-                            . '='
-                            . Dumper::dump($vars[$var], 1, 128);
-                    }
-
-                    return $output;
-                },
-                ''
-            );
-
-            if ($vars !== '') {
-                return sprintf('Closure(%s)', $vars);
-            }
-        }
-
         // try to render info about the owning plugin
         if (($closureThis = $refl->getClosureThis()) instanceof Plugin) {
             return sprintf('Closure(plugin="%s")', $closureThis->getId());
@@ -560,20 +539,6 @@ class ToolbarRenderer
 
         // fallback to rendering file and line
         return sprintf('Closure(file="%s", line=%d)', $refl->getFileName(), $refl->getStartLine());
-    }
-
-    private function isSystemClosure(\ReflectionFunction $closureRefl): bool
-    {
-        static $systemClosurePathMap;
-
-        if ($systemClosurePathMap === null) {
-            $systemClosurePathMap = [
-                (new \ReflectionClass(CallbackHandler::class))->getFileName() => true,
-                (new \ReflectionClass(ExtendPlugin::class))->getFileName() => true,
-            ];
-        }
-
-        return isset($systemClosurePathMap[$closureRefl->getFileName()]);
     }
 
     /**

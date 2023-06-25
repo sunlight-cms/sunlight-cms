@@ -2,7 +2,7 @@
 
 namespace Sunlight\Plugin;
 
-use Sunlight\CallbackHandler;
+use Sunlight\Callback\CallbackHandler;
 use Sunlight\Core;
 use Sunlight\Extend;
 use Sunlight\Localization\LocalizationDirectory;
@@ -44,9 +44,7 @@ class ExtendPlugin extends Plugin implements InitializableInterface
 
         // register HCM modules
         foreach ($this->options['hcm'] as $name => $definition) {
-            Extend::reg("hcm.run.{$name}", function (array $args) use ($definition) {
-                $args['output'] = (string) CallbackHandler::fromArray($definition, $this)(...$args['arg_list']);
-            });
+            Extend::reg("hcm.run.{$name}", new PluginHcmHandler(CallbackHandler::fromArray($definition, $this)));
         }
 
         // register cron tasks

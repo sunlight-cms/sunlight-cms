@@ -13,7 +13,7 @@ class PageFilter implements TreeFilterInterface
     /** @var bool */
     private $checkPrivilege;
 
-    public function __construct(?int $type = null, bool $checkPrivilege = false)
+    function __construct(?int $type = null, bool $checkPrivilege = false)
     {
         $this->type = $type;
         $this->checkPrivilege = $checkPrivilege;

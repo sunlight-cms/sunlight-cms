@@ -86,7 +86,15 @@ class PluginManager
                 }
 
                 if ($pluginInstance instanceof InitializableInterface) {
-                    $pluginInstance->initialize();
+                    try {
+                        $pluginInstance->initialize();
+                    } catch (\Throwable $e) {
+                        throw new \RuntimeException(
+                            sprintf('An exception was thrown while initializing plugin %s (%s): %s', $plugin->name, $plugin->id, $e->getMessage()),
+                            0,
+                            $e
+                        );
+                    }
                 }
             } else {
                 $pluginInstance = new InactivePlugin($plugin, $this);

@@ -2,6 +2,7 @@
 
 namespace Sunlight;
 
+use Sunlight\Callback\CallbackHandler;
 use Sunlight\Exception\ContentPrivilegeException;
 use Sunlight\Util\ArgList;
 use Sunlight\Util\Filesystem;

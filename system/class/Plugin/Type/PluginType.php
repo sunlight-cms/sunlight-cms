@@ -6,7 +6,7 @@ use Kuria\Options\Exception\ResolverException;
 use Kuria\Options\Node;
 use Kuria\Options\Option;
 use Kuria\Options\Resolver;
-use Sunlight\CallbackHandler;
+use Sunlight\Callback\CallbackHandler;
 use Sunlight\Plugin\PluginData;
 use Sunlight\Plugin\PluginOptionNormalizer;
 

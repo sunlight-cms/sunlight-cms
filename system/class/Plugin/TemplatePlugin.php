@@ -2,7 +2,7 @@
 
 namespace Sunlight\Plugin;
 
-use Sunlight\CallbackHandler;
+use Sunlight\Callback\CallbackHandler;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\Localization\LocalizationDictionary;

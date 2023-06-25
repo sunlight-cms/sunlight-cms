@@ -1,12 +1,12 @@
 <?php
 
-namespace Sunlight;
+namespace Sunlight\Callback;
 
 use Kuria\Options\Option;
 
 abstract class CallbackHandler
 {
-    /** @var array<string, callable> */
+    /** @var array<string, ScriptCallback> */
     private static $scriptCache = [];
 
     /**
@@ -43,7 +43,7 @@ abstract class CallbackHandler
         }
 
         if (isset($definition['script'])) {
-            return self::fromScriptLazy($definition['script']);
+            return self::fromScript($definition['script']);
         }
 
         throw new \InvalidArgumentException('Invalid callback definition');
@@ -51,10 +51,8 @@ abstract class CallbackHandler
 
     /**
      * Get callback defined by the given PHP script
-     *
-     * @return callable
      */
-    static function fromScript(string $script)
+    static function fromScript(string $script): ScriptCallback
     {
         $fullPath = realpath($script);
 
@@ -62,32 +60,6 @@ abstract class CallbackHandler
             throw new \InvalidArgumentException(sprintf('Script "%s" does not exist or is not accessible', $script));
         }
 
-        return self::$scriptCache[$fullPath] ?? (self::$scriptCache[$fullPath] = self::loadScript($fullPath));
-    }
-
-    /**
-     * Get a lazy callable defined by the given PHP script
-     *
-     * The script is not loaded until the closure is run.
-     */
-    static function fromScriptLazy(string $script): \Closure
-    {
-        return function (...$args) use ($script) {
-            return self::fromScript($script)(...$args);
-        };
-    }
-
-    /**
-     * @return callable
-     */
-    private static function loadScript(string $fullPath)
-    {
-        $callback = require $fullPath;
-
-        if (Core::$debug && !is_callable($callback)) {
-            throw new \UnexpectedValueException(sprintf('Script "%s" should return a callable, got %s', $fullPath, gettype($callback)));
-        }
-
-        return $callback;
+        return self::$scriptCache[$fullPath] ?? (self::$scriptCache[$fullPath] = new ScriptCallback($fullPath));
     }
 }
