@@ -1,10 +1,5 @@
 DirectoryIndex index.php
 
-# don't resolve "/index" to "/index.php"
-<IfModule mod_negotiation.c>
-    Options -MultiViews
-</IfModule>
-
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
