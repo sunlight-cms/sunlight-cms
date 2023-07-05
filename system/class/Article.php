@@ -230,7 +230,7 @@ abstract class Article
 
         // title
         $link = Router::article($art['id'], $art['slug'], $art['cat_slug']);
-        $output .= '<h2 class="list-title"><a href="' . $link . '">' . $art['title'] . "</a></h2>\n";
+        $output .= '<h2 class="list-title"><a href="' . _e($link) . '">' . $art['title'] . "</a></h2>\n";
 
         // perex and image
         if ($perex) {

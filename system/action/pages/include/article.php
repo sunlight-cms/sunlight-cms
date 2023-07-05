@@ -87,7 +87,14 @@ if (isset($_article['picture_uid'])) {
 
 // perex
 Extend::call('article.perex.before', $extend_args);
-$output .= '<div class="article-perex">' . ($thumbnail !== null ? '<img class="article-perex-image" src="' . _e(Router::file($thumbnail)) . '" alt="' . $_article['title'] . '">' : '') . $_article['perex'] . "</div>\n";
+$output .= '<div class="article-perex">'
+    . ($thumbnail !== null
+        ? '<a href="' . _e(Router::file(Article::getImagePath($_article['picture_uid']))) . '" target="_blank"' . Extend::buffer('image.lightbox', ['group' => 'article']) . '>'
+          . '<img class="article-perex-image" src="' . _e(Router::file($thumbnail)) . '" alt="' . $_article['title'] . '">'
+          . '</a>'
+        : '</a>')
+    . $_article['perex']
+    . "</div>\n";
 Extend::call('article.perex.after', $extend_args);
 
 // content
@@ -96,16 +103,6 @@ $output .= "<div class=\"cleaner\"></div>\n";
 
 // infos
 $infos = [];
-
-if (User::hasPrivilege('adminart')) {
-    $infos['idlink'] = [
-        _lang('global.id'),
-        '<a href="' . _e(Router::admin('content-articles-edit', ['query' => ['id' => $_article['id'], 'returnid' => 'load', 'returnpage' => 1]])) . '">'
-        . $_article['id']
-        . ' <img src="' . Template::asset('images/icons/edit.png') . '" alt="edit" class="icon">'
-        . '</a>',
-    ];
-}
 
 if ($_article['showinfo']) {
     $infos['author'] = [_lang('article.author'), Router::userFromQuery($_article['author_query'], $_article)];
@@ -194,17 +191,29 @@ if ($rateform !== null || !empty($infos)) {
 <table id="article-info" class="article-footer">
 <tr>
 ';
-    
+
     // infos
     if (!empty($infos)) {
+        // add admin link only if there already are some infos
+        if (User::hasPrivilege('adminart')) {
+            $infos['idlink'] = [
+                _lang('global.id'),
+                '<a href="' . _e(Router::admin('content-articles-edit', ['query' => ['id' => $_article['id'], 'returnid' => 'load', 'returnpage' => 1]])) . '">'
+                . $_article['id']
+                . ' <img src="' . Template::asset('images/icons/edit.png') . '" alt="edit" class="icon">'
+                . '</a>',
+            ];
+        }
+
+        // render infos
         $output .= '<td>' . GenericTemplates::renderInfos($infos, 'article-info') . "</td>\n";
     }
-    
+
     // rating
     if ($rateform !== null) {
         $output .= "<td>{$rateform}</td>\n";
     }
-    
+
     // table end
     $output .= "</tr></table>\n";
 }
