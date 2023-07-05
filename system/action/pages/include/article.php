@@ -107,7 +107,7 @@ $infos = [];
 if ($_article['showinfo']) {
     $infos['author'] = [_lang('article.author'), Router::userFromQuery($_article['author_query'], $_article)];
     $infos['posted'] = [_lang('article.posted'), GenericTemplates::renderDate($_article['time'], 'article')];
-    $infos['readnum'] = [_lang('article.readnum'), $_article['readnum'] . 'x'];
+    $infos['view_count'] = [_lang('article.view_count'), $_article['view_count'] . 'x'];
 }
 
 if ($_article['rateon'] && Settings::get('ratemode') != 0) {
@@ -228,7 +228,7 @@ if ($_article['comments'] && Settings::get('comments')) {
 Extend::call('article.comments.after', $extend_args);
 
 // count view
-if ($_article['confirmed'] && $_article['time'] <= time() && IpLog::check(IpLog::ARTICLE_READ, $_article['id'])) {
-    DB::update('article', 'id=' . $_article['id'], ['readnum' => DB::raw('readnum+1')]);
-    IpLog::update(IpLog::ARTICLE_READ, $_article['id']);
+if ($_article['confirmed'] && $_article['time'] <= time() && IpLog::check(IpLog::ARTICLE_VIEW, $_article['id'])) {
+    DB::update('article', 'id=' . $_article['id'], ['view_count' => DB::raw('view_count+1')]);
+    IpLog::update(IpLog::ARTICLE_VIEW, $_article['id']);
 }

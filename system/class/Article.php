@@ -202,7 +202,7 @@ abstract class Article
      * Render article preview
      *
      * Article data:
-     * - id, title, slug, author, perex, picture_uid, time, comments, public, readnum
+     * - id, title, slug, author, perex, picture_uid, time, comments, public, view_count
      * - cat_slug (slug of main category)
      * - author data from {@see User::createQuery()}
      * - comment_count (optional)
@@ -251,7 +251,7 @@ abstract class Article
             $infos = [
                 'author' => [_lang('article.author'), Router::userFromQuery($userQuery, $art)],
                 'posted' => [_lang('article.posted'), GenericTemplates::renderDate($art['time'], 'article')],
-                'readnum' => [_lang('article.readnum'), $art['readnum'] . 'x'],
+                'view_count' => [_lang('article.view_count'), $art['view_count'] . 'x'],
             ];
 
             if ($art['comments'] && isset($art['comment_count']) && Settings::get('comments')) {

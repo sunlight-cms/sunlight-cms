@@ -57,7 +57,7 @@ Extend::call('page.category.content.after', $extend_args);
 $paging = Paginator::paginate($_index->url, $artsperpage, $art_count);
 $userQuery = User::createQuery('art.author');
 $arts = DB::query(
-    'SELECT art.id,art.title,art.slug,art.perex,' . $userQuery['column_list'] . ',' . ($_page['var4'] ? 'art.picture_uid,' : '') . 'art.time,art.comments,art.readnum,cat1.slug AS cat_slug,'
+    'SELECT art.id,art.title,art.slug,art.perex,' . $userQuery['column_list'] . ',' . ($_page['var4'] ? 'art.picture_uid,' : '') . 'art.time,art.comments,art.view_count,cat1.slug AS cat_slug,'
     . '(SELECT COUNT(*) FROM ' . DB::table('post') . ' AS post WHERE home=art.id AND post.type=' . Post::ARTICLE_COMMENT . ') AS comment_count'
     . ' FROM ' . DB::table('article') . ' AS art'
     . ' ' . $art_joins

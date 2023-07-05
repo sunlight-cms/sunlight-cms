@@ -35,7 +35,7 @@ if (isset($_GET['id'], $_GET['returnid'], $_GET['returnpage'])) {
     $query = DB::queryRow('SELECT art.*,cat.slug AS cat_slug FROM ' . DB::table('article') . ' AS art JOIN ' . DB::table('page') . ' AS cat ON(cat.id=art.home1) WHERE art.id=' . $id . ' AND ' . Admin::articleAccessSql('art'));
 
     if ($query !== false) {
-        $read_counter = $query['readnum'];
+        $view_count = $query['view_count'];
 
         if ($returnid == 'load') {
             $returnid = $query['home1'];
@@ -55,7 +55,7 @@ if (isset($_GET['id'], $_GET['returnid'], $_GET['returnpage'])) {
     $artlink = '';
     $new = true;
     $id = -1;
-    $read_counter = 0;
+    $view_count = 0;
     $query = [
         'id' => -1,
         'title' => '',
@@ -76,7 +76,7 @@ if (isset($_GET['id'], $_GET['returnid'], $_GET['returnpage'])) {
         'showinfo' => 1,
         'confirmed' => 0,
         'rateon' => 1,
-        'readnum' => 0,
+        'view_count' => 0,
     ];
     Extend::call('admin.article.default', ['data' => &$query]);
 
@@ -242,7 +242,7 @@ if (isset($_POST['title'])) {
         if ($new) {
             $action = 'new';
             $changeset += [
-                'readnum' => 0,
+                'view_count' => 0,
                 'ratenum' => 0,
                 'ratesum' => 0,
             ];
@@ -265,9 +265,9 @@ if (isset($_POST['title'])) {
                 DB::delete('post', 'type=' . Post::ARTICLE_COMMENT . ' AND home=' . $id);
             }
 
-            // reset read counter
+            // reset view counter
             if ($newdata['resetread'] == 1) {
-                DB::update('article', 'id=' . $id, ['readnum' => 0]);
+                DB::update('article', 'id=' . $id, ['view_count' => 0]);
             }
 
             // reset rating
@@ -438,7 +438,7 @@ if ($continue) {
                                     <tr><td><label><input type="checkbox" name="showinfo" value="1"' . Form::activateCheckbox($query['showinfo']) . '> ' . _lang('admin.content.form.showinfo') . '</label></td></tr>
                                     ' . (!$new ? '<tr><td><label><input type="checkbox" name="resetrate" value="1"> ' . _lang('admin.content.form.resetartrate') . ' <small>(' . $rate . ')</small></label></td></tr>' : '') . '
                                     ' . (!$new ? '<tr><td><label><input type="checkbox" name="delcomments" value="1"> ' . _lang('admin.content.form.delcomments') . ' <small>(' . DB::count('post', 'home=' . DB::val($query['id']) . ' AND type=' . Post::ARTICLE_COMMENT) . ')</small></label></td></tr>' : '') . '
-                                    ' . (!$new ? '<tr><td><label><input type="checkbox" name="resetread" value="1"> ' . _lang('admin.content.form.resetartread') . ' <small>(' . $read_counter . ')</small></label></td></tr>' : '') . '
+                                    ' . (!$new ? '<tr><td><label><input type="checkbox" name="resetread" value="1"> ' . _lang('admin.content.form.resetviews') . ' <small>(' . $view_count . ')</small></label></td></tr>' : '') . '
                                 </tbody>
                             </table>
                         </fieldset>

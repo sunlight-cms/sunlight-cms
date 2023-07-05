@@ -167,7 +167,7 @@ $editable_settings = [
             ['name' => 'postadmintime', 'format' => 'int', 'transform_to' => function ($v) { return $v / 60; }, 'transform_back' => function ($v) { return max(0, $v * 60); }],
             ['name' => 'maxloginattempts', 'format' => 'int', 'min_value' => 1],
             ['name' => 'maxloginexpire', 'format' => 'int', 'transform_to' => function ($v) { return $v / 60; }, 'transform_back' => function ($v) { return max(0, $v * 60); }],
-            ['name' => 'artreadexpire', 'format' => 'int', 'transform_to' => function ($v) { return $v / 60; }, 'transform_back' => function ($v) { return max(0, $v * 60); }],
+            ['name' => 'artviewexpire', 'format' => 'int', 'transform_to' => function ($v) { return $v / 60; }, 'transform_back' => function ($v) { return max(0, $v * 60); }],
             ['name' => 'artrateexpire', 'format' => 'int', 'transform_to' => function ($v) { return $v / 60; }, 'transform_back' => function ($v) { return max(0, $v * 60); }],
             ['name' => 'pollvoteexpire', 'format' => 'int', 'transform_to' => function ($v) { return $v / 60; }, 'transform_back' => function ($v) { return max(0, $v * 60); }],
             ['name' => 'accactexpire', 'format' => 'int', 'transform_to' => function ($v) { return $v / 60; }, 'transform_back' => function ($v) { return max(0, $v * 60); }],

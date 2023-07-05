@@ -337,7 +337,7 @@ Platnost tohoto odkazu je 1 hodina.
     'category.no_articles' => 'Tato kategorie neobsahuje žádné články.',
     'article.author' => 'Autor',
     'article.posted' => 'Vydáno',
-    'article.readnum' => 'Přečteno',
+    'article.view_count' => 'Zobrazeno',
     'article.rate' => 'Hodnocení',
     'article.rate.num' => 'hodnoceno',
     'article.rate.title' => 'Vaše hodnocení',

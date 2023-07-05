@@ -43,9 +43,9 @@ return function ($type = 'new', $limit = null, $perex = 'perex', $info = true, $
 
     // prepare SQL parts
     switch ($type) {
-        case 'readnum':
-            $rorder = 'art.readnum DESC';
-            $rcond = 'art.readnum!=0';
+        case 'views':
+            $rorder = 'art.view_count DESC';
+            $rcond = 'art.view_count!=0';
             break;
         case 'rating':
             $rorder = 'art.ratesum/art.ratenum DESC';
@@ -58,12 +58,6 @@ return function ($type = 'new', $limit = null, $perex = 'perex', $info = true, $
         case 'random':
             $rorder = 'RAND()';
             $rcond = '';
-            break;
-        case 'read':
-            $rorder = '(SELECT time FROM ' . DB::table('iplog')
-                . ' WHERE type=' . IpLog::ARTICLE_READ . ' AND var=art.id AND art.visible=1 AND art.time<=' . time() . ' AND art.confirmed=1'
-                . ' ORDER BY id DESC LIMIT 1) DESC';
-            $rcond = 'art.readnum!=0';
             break;
         case 'rated':
             $rorder = '(SELECT time FROM ' . DB::table('iplog')
@@ -104,7 +98,7 @@ return function ($type = 'new', $limit = null, $perex = 'perex', $info = true, $
     // list
     $userQuery = User::createQuery('art.author');
     $query = DB::query(
-        'SELECT art.id,art.title,art.slug,art.perex,' . ($show_image ? 'art.picture_uid,' : '') . 'art.time,art.readnum,art.comments,cat1.slug AS cat_slug,'
+        'SELECT art.id,art.title,art.slug,art.perex,' . ($show_image ? 'art.picture_uid,' : '') . 'art.time,art.view_count,art.comments,cat1.slug AS cat_slug,'
         . $userQuery['column_list']
         . ($info ? ',(SELECT COUNT(*) FROM ' . DB::table('post') . ' AS post WHERE home=art.id AND post.type=' . Post::ARTICLE_COMMENT . ') AS comment_count' : '')
         . ' FROM ' . DB::table('article') . ' AS art '

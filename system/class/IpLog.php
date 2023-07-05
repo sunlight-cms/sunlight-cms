@@ -14,11 +14,11 @@ abstract class IpLog
     const FAILED_LOGIN_ATTEMPT = 1;
 
     /**
-     * IP log entry for article read counter cooldown
+     * IP log entry for article view counter cooldown
      *
      * var: article ID
      */
-    const ARTICLE_READ = 2;
+    const ARTICLE_VIEW = 2;
 
     /**
      * IP log entry for article rating cooldown
@@ -73,7 +73,7 @@ abstract class IpLog
                 DB::query(
                     'DELETE FROM ' . DB::table('iplog')
                     . ' WHERE (type=' . self::FAILED_LOGIN_ATTEMPT . ' AND ' . time() . '-time>' . Settings::get('maxloginexpire') . ')'
-                    . ' OR (type=' . self::ARTICLE_READ . ' AND ' . time() . '-time>' . Settings::get('artreadexpire') . ')'
+                    . ' OR (type=' . self::ARTICLE_VIEW . ' AND ' . time() . '-time>' . Settings::get('artviewexpire') . ')'
                     . ' OR (type=' . self::ARTICLE_RATED . ' AND ' . time() . '-time>' . Settings::get('artrateexpire') . ')'
                     . ' OR (type=' . self::POLL_VOTE . ' AND ' . time() . '-time>' . Settings::get('pollvoteexpire') . ')'
                     . ' OR (type=' . self::ANTI_SPAM . ' AND ' . time() . '-time>' . Settings::get('antispamtimeout') . ')'
@@ -104,7 +104,7 @@ abstract class IpLog
                 }
                 break;
 
-            case self::ARTICLE_READ:
+            case self::ARTICLE_VIEW:
             case self::ARTICLE_RATED:
             case self::POLL_VOTE:
                 $query = DB::query($querybasic . ' AND var=' . $var);
@@ -179,10 +179,10 @@ abstract class IpLog
                 }
                 break;
 
-            case self::ARTICLE_READ:
+            case self::ARTICLE_VIEW:
                 DB::insert('iplog', [
                     'ip' => Core::getClientIp(),
-                    'type' => self::ARTICLE_READ,
+                    'type' => self::ARTICLE_VIEW,
                     'time' => time(),
                     'var' => $var
                 ]);

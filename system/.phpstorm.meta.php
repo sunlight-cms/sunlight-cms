@@ -17,7 +17,7 @@ registerArgumentsSet(
     'article_pic_w',
     'articlesperpage',
     'artrateexpire',
-    'artreadexpire',
+    'artviewexpire',
     'atreplace',
     'author',
     'bbcode',

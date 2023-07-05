@@ -119,9 +119,9 @@ if (isset($_POST['category'])) {
                 DB::delete('iplog', 'type=' . IpLog::ARTICLE_RATED . ' AND var=' . $item['id']);
             }
 
-            // reset read counter
+            // reset view counter
             if ($new_resetread) {
-                $changeset['readnum'] = 0;
+                $changeset['view_count'] = 0;
             }
 
             // change category
@@ -258,7 +258,7 @@ if (!$infopage) {
 <label><input type="checkbox" name="new_delete" value="1"> ' . _lang('global.delete') . '</label><br>
 <label><input type="checkbox" name="new_resetrate" value="1"> ' . _lang('admin.content.form.resetartrate') . '</label><br>
 <label><input type="checkbox" name="new_delcomments" value="1"> ' . _lang('admin.content.form.delcomments') . '</label><br>
-<label><input type="checkbox" name="new_resetread" value="1"> ' . _lang('admin.content.form.resetartread') . '</label>
+<label><input type="checkbox" name="new_resetread" value="1"> ' . _lang('admin.content.form.resetviews') . '</label>
 </td>
 </tr>
 
