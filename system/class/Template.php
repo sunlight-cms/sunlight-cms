@@ -277,9 +277,6 @@ abstract class Template
             return '';
         }
 
-        // determine active page
-        [$activeId] = Page::getActive();
-
         // load pages
         $pages = Page::getRootPages(
             new PageTreeFilter([
@@ -292,7 +289,7 @@ abstract class Template
         // render menu
         return PageMenu::render(
             $pages,
-            $activeId,
+            Page::getActive()[1],
             $cssClass,
             $extendEvent,
             'simple'
@@ -328,33 +325,42 @@ abstract class Template
             'filter' => [],
         ];
 
+        $level = null;
+        $depth = null;
+
         // check login if site is not public
         if (!User::isLoggedIn() && Settings::get('notpublicsite')) {
             return '';
         }
 
         // get active page
-        [$activeId] = Page::getActive();
+        [$activePageId, $activePage] = Page::getActive();
 
         // use active page
         if ($options['page_id'] == -1) {
-            if ($activeId === null) {
+            if ($activePageId === null) {
                 return '';
             }
 
-            $options['page_id'] = $activeId;
+            $options['page_id'] = $activePageId;
+            $level = $activePage['node_level'];
+            $depth = $activePage['node_depth'];
         }
 
         // determine page tree level and depth
-        try {
-            [$level, $depth] = Page::getTreeReader()->getLevelAndDepth($options['page_id']);
+        if (!isset($level, $depth)) {
+            try {
+                [$level, $depth] = Page::getTreeReader()->getLevelAndDepth($options['page_id']);
+            } catch (\RuntimeException $e) {
+                // page not found
+                Logger::error('template', 'Failed to render a tree menu', ['options' => $options, 'exception' => $e]);
 
-            if ($options['max_depth'] !== null) {
-                $depth = min($options['max_depth'], $depth);
+                return '';
             }
-        } catch (\RuntimeException $e) {
-            // page not found
-            return Core::$debug ? _e($e->getMessage()) : '';
+        }
+
+        if ($options['max_depth'] !== null) {
+            $depth = min($options['max_depth'], $depth);
         }
 
         // load pages
@@ -378,7 +384,7 @@ abstract class Template
         // render menu
         return PageMenu::render(
             $pages,
-            $activeId,
+            $activePage,
             $options['css_class'],
             $options['extend_event'],
             $options['type']

@@ -149,7 +149,7 @@ a:hover {
     color: #FFF;
 }
 
-#menu .active a {
+#menu .active a, #menu .trail a {
     background: #FFFFFF;
     color: #F44C31;
 }

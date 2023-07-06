@@ -425,7 +425,7 @@ abstract class Page
     {
         $options = self::getTreeReaderOptions(null, 0, $filter, $extraColumns);
 
-        return self::getTreeReader()->getTree($options);
+        return self::getTreeReader()->getFlatTree($options);
     }
 
     /**

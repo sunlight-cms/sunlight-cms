@@ -11,12 +11,12 @@ abstract class PageMenu
      * Render a menu
      *
      * @param array $flatPageTree flat page tree, must contain columns from {@see PageMenu::getRequiredExtraColumns()}
-     * @param int|null $activeId active page ID or null
+     * @param array|null $activePage active page data or null
      * @param string|null $rootClass container CSS class
      * @param string|null $pageEvent extend event name
      * @param string|null $menuType menu type identifier (for events)
      */
-    static function render(array $flatPageTree, ?int $activeId = null, ?string $rootClass = null, ?string $pageEvent = null, ?string $menuType = null): string
+    static function render(array $flatPageTree, ?array $activePage = null, ?string $rootClass = null, ?string $pageEvent = null, ?string $menuType = null): string
     {
         if (empty($flatPageTree)) {
             return '';
@@ -25,14 +25,33 @@ abstract class PageMenu
         // build trail map
         $trailMap = [];
 
-        if ($activeId !== null) {
+        if ($activePage !== null) {
+            $maxLevel = 0;
+            $maxDepth = 0;
+
             foreach ($flatPageTree as $page) {
-                if ($page['id'] == $activeId) {
+                if ($page['node_level'] == 0 && $page['node_depth'] > $maxDepth) {
+                    $maxDepth = $page['node_depth'];
+                } elseif ($page['node_level'] > $maxLevel) {
+                    $maxLevel = $page['node_level'];
+                }
+
+                if ($page['id'] == $activePage['id']) {
                     $current = $page;
 
                     while ($current['node_parent'] !== null && isset($flatPageTree[$current['node_parent']])) {
                         $current = $flatPageTree[$current['node_parent']];
                         $trailMap[$current['id']] = true;
+                    }
+                }
+            }
+
+            if ($maxDepth > $maxLevel && empty($trailMap)) {
+                // there are more pages at a deeper level and the active page is not in the current tree
+                // load a full path to get the trail
+                foreach (Page::getPath($activePage['id'], $activePage['node_level']) as $page) {
+                    if ($page['id'] != $activePage['id']) {
+                        $trailMap[$page['id']] = true;
                     }
                 }
             }
@@ -76,7 +95,7 @@ abstract class PageMenu
             // prepare classes
             $classes = ['item', 'level-' . $visualLevel];
 
-            if ($page['id'] == $activeId) {
+            if ($activePage !== null && $page['id'] == $activePage['id']) {
                 $classes[] = 'active';
             }
 
