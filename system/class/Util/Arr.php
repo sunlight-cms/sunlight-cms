@@ -25,6 +25,30 @@ abstract class Arr
     }
 
     /**
+     * Insert key-value pairs after a specific key in the given array
+     *
+     * If the index is not found, the pairs will be appended to the array.
+     *
+     * @param array-key $existingKey
+     */
+    static function insertAfter(array &$array, $existingKey, array $newPairs): void
+    {
+        self::insertPairs($array, $existingKey, $newPairs, true);
+    }
+
+    /**
+     * Insert key-value pairs before a specific key in the given array
+     *
+     * If the index is not found, the pairs will be prepended to the array.
+     *
+     * @param array-key $existingKey
+     */
+    static function insertBefore(array &$array, $existingKey, array $newPairs): void
+    {
+        self::insertPairs($array, $existingKey, $newPairs, false);
+    }
+
+    /**
      * Get a subset of keys from an array
      *
      * Missing keys will be set to NULL.
@@ -133,5 +157,43 @@ abstract class Arr
         }
 
         return hash_final($context);
+    }
+
+    /**
+     * @param array-key $existingKey
+     */
+    private static function insertPairs(array &$array, $existingKey, array $newPairs, bool $after): void
+    {
+        if (array_key_exists($existingKey, $array)) {
+            $newArray = [];
+
+            foreach ($array as $key => $value) {
+                if ($key === $existingKey) {
+                    if (!$after) {
+                        $newArray += $newPairs;
+                    }
+
+                    $newArray[$key] = $value;
+
+                    if ($after) {
+                        $newArray += $newPairs;
+                    }
+                } else {
+                    $newArray[$key] = $value;
+                }
+            }
+
+            $array = $newArray;
+
+            return;
+        }
+
+        // insert at start or end if the key does not exist
+        if ($after) {
+            $array += $newPairs;
+            reset($array);
+        } else {
+            $array = $newPairs + $array;
+        }
     }
 }
