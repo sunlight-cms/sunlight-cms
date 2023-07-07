@@ -37,15 +37,6 @@ class DevkitPlugin extends ExtendPlugin
         Extend::reg(ObservableInterface::ANY_EVENT, [$this->eventLogger, 'log'], 10000);
     }
 
-    protected function getConfigDefaults(): array
-    {
-        return [
-            'mail_log_enabled' => true,
-            'disable_anti_spam' => true,
-            'captcha_check_always_true' => true,
-        ];
-    }
-
     function addDump(string $file, int $line, string $dump): void
     {
         $this->dumps[] = [

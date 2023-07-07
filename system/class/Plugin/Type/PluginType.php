@@ -101,6 +101,10 @@ abstract class PluginType
                     return $this->getDefaultBaseNamespace() . '\\' . $plugin->camelCasedName;
                 }),
             Option::bool('inject_composer')->default(true),
+            Option::list('actions', 'string')
+                ->default([]),
+            Option::array('config_defaults')
+                ->default(null),
             Option::list('extra', null)->default([]),
         ];
     }
@@ -131,6 +135,10 @@ abstract class PluginType
 
         $optionResolver->addNormalizer(function (Node $node) {
             $node['class'] = PluginOptionNormalizer::normalizeClass($node['class'], $node['namespace']);
+            $node['actions'] = array_map(
+                function (string $class) use ($node) { return PluginOptionNormalizer::normalizeClass($class, $node['namespace']); },
+                $node['actions']
+            );
 
             return $node;
         });

@@ -16,6 +16,11 @@ class InfoAction extends PluginAction
         return _lang('admin.plugins.action.do.info');
     }
 
+    function isAllowed(): bool
+    {
+        return true;
+    }
+
     protected function execute(): ActionResult
     {
         $plugin = $this->plugin;

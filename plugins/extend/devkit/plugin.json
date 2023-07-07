@@ -11,6 +11,11 @@
         "debug": true
     },
     "class": "DevkitPlugin",
+    "config_defaults": {
+        "mail_log_enabled": true,
+        "disable_anti_spam": true,
+        "captcha_check_always_true": true
+    },
     "scripts": [
         "functions.php"
     ],

@@ -15,6 +15,11 @@ class InstallAction extends PluginAction
         return _lang('admin.plugins.action.do.install');
     }
 
+    function isAllowed(): bool
+    {
+        return $this->plugin->isInstalled() === false;
+    }
+
     protected function execute(): ActionResult
     {
         if (!$this->isConfirmed()) {
@@ -24,14 +29,12 @@ class InstallAction extends PluginAction
             );
         }
 
-        if ($this->plugin->canBeInstalled()) {
-            $installer = $this->plugin->getInstaller();
+        $installer = $this->plugin->getInstaller();
 
-            if ($installer->install()) {
-                return ActionResult::success(
-                    Message::ok(_lang('admin.plugins.action.install.success', ['%plugin%' => $this->plugin->getOption('name')]))
-                );
-            }
+        if ($installer->install()) {
+            return ActionResult::success(
+                Message::ok(_lang('admin.plugins.action.install.success', ['%plugin%' => $this->plugin->getOption('name')]))
+            );
         }
 
         return ActionResult::failure(

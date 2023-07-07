@@ -75,8 +75,12 @@ foreach (Core::$pluginManager->getTypes() as $type) {
                 : '<h3>' . _e($title) . '</h3>') . '
             <p>
                 ' . _buffer(function () use ($plugin) {
-                    foreach ($plugin->getActionList() as $action => $label) {
-                        echo '<a class="button" href="' . _e(Xsrf::addToUrl(Router::admin('plugins-action', ['query' => ['id' => $plugin->getId(), 'action' => $action]]))) . '">' . _e($label) . "</a>\n";
+                    foreach ($plugin->getActions() as $name => $action) {
+                        if ($action->isAllowed()) {
+                            echo '<a class="button" href="' . _e(Xsrf::addToUrl(Router::admin('plugins-action', ['query' => ['id' => $plugin->getId(), 'action' => $name]]))) . '">'
+                                . _e($action->getTitle())
+                                . "</a>\n";
+                        }
                     }
                 }) . '
             </p>

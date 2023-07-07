@@ -28,6 +28,16 @@ abstract class Plugin
     /** Plugin status - unavailable */
     const STATUS_UNAVAILABLE = 'unavailable';
 
+    private const DEFAULT_ACTIONS = [
+        'info' => Action\InfoAction::class,
+        'config' => Action\ConfigAction::class,
+        'install' => Action\InstallAction::class,
+        'uninstall' => Action\UninstallAction::class,
+        'enable' => Action\EnableAction::class,
+        'disable' => Action\DisableAction::class,
+        'remove' => Action\RemoveAction::class,
+    ];
+
     /** @var string */
     protected $id;
     /** @var string */
@@ -122,9 +132,9 @@ abstract class Plugin
         return $this->status === $status;
     }
 
-    function canBeDisabled(): bool
+    function isEssential(): bool
     {
-        return !$this->hasStatus(self::STATUS_DISABLED);
+        return false;
     }
 
     /**
@@ -135,36 +145,16 @@ abstract class Plugin
         return $this->installed;
     }
 
-    function hasInstaller(): bool
-    {
-        return $this->options['installer'] !== null;
-    }
-
     /**
      * @throws \LogicException if the plugin has no installer
      */
     function getInstaller(): PluginInstaller
     {
-        if (!$this->hasInstaller()) {
+        if ($this->options['installer'] === null) {
             throw new \LogicException('Plugin has no installer');
         }
 
         return require $this->options['installer'];
-    }
-
-    function canBeInstalled(): bool
-    {
-        return $this->hasInstaller() && $this->installed === false;
-    }
-
-    function canBeUninstalled(): bool
-    {
-        return $this->hasInstaller() && $this->installed === true;
-    }
-
-    function canBeRemoved(): bool
-    {
-        return !$this->hasInstaller() || $this->installed === false;
     }
 
     /**
@@ -220,29 +210,24 @@ abstract class Plugin
         return $this->options;
     }
 
+    function hasConfig(): bool
+    {
+        return !empty($this->options['config_defaults']);
+    }
+
     function getConfig(): ConfigurationFile
     {
         if ($this->config === null) {
-            $defaults = $this->getConfigDefaults();
+            $defaults = $this->options['config_defaults'];
 
             if (empty($defaults)) {
-                throw new \LogicException('To use the configuration file, defaults must be specified by overriding the getConfigDefaults() method');
+                throw new \LogicException('To use the configuration file, defaults must be specified using the "config_defaults" option');
             }
 
             $this->config = new ConfigurationFile($this->getConfigPath(), $defaults);
         }
 
         return $this->config;
-    }
-
-    function getConfigLabel(string $key): string
-    {
-        return $key;
-    }
-
-    protected function getConfigDefaults(): array
-    {
-        return [];
     }
 
     protected function getConfigPath(): string
@@ -252,76 +237,39 @@ abstract class Plugin
 
     function getAction(string $name): ?PluginAction
     {
-        switch ($name) {
-            case 'info':
-                return new Action\InfoAction($this);
-            case 'config':
-                return new Action\ConfigAction($this);
-            case 'install':
-                return new Action\InstallAction($this);
-            case 'uninstall':
-                return new Action\UninstallAction($this);
-            case 'disable':
-                return new Action\DisableAction($this);
-            case 'enable':
-                return new Action\EnableAction($this);
-            case 'remove':
-                return new Action\RemoveAction($this);
+        if ($this->hasStatus(self::STATUS_OK) && isset($this->options['actions'][$name])) {
+            return new $this->options['actions'][$name]($this);
+        }
+
+        if (isset(self::DEFAULT_ACTIONS[$name])) {
+            return new (self::DEFAULT_ACTIONS[$name])($this);
         }
 
         return null;
     }
 
     /**
-     * Get list of currently available actions
-     *
-     * @throws \RuntimeException if run outside of administration environment
-     * @return string[] name => label
+     * @return array<string, PluginAction> name => action
      */
-    function getActionList(): array
+    function getActions(): array
     {
-        if (Core::$env !== Core::ENV_ADMIN) {
-            throw new \RuntimeException('Plugin actions require administration environment');
-        }
-
         $actions = [];
 
-        $actions['info'] = _lang('admin.plugins.action.do.info');
-        $actions += $this->getCustomActionList();
+        foreach (self::DEFAULT_ACTIONS as $name => $class) {
+            $actions[$name] = $this->getAction($name);
 
-        if (count($this->getConfigDefaults())) {
-            $actions['config'] = _lang('admin.plugins.action.do.config');
-        }
-
-        if ($this->canBeInstalled()) {
-            $actions['install'] = _lang('admin.plugins.action.do.install');
-        }
-
-        if ($this->canBeUninstalled()) {
-            $actions['uninstall'] = _lang('admin.plugins.action.do.uninstall');
-        }
-
-        if ($this->canBeDisabled()) {
-            $actions['disable'] = _lang('admin.plugins.action.do.disable');
-        }
-
-        if ($this->hasStatus(self::STATUS_DISABLED)) {
-            $actions['enable'] = _lang('admin.plugins.action.do.enable');
-        }
-
-        if ($this->canBeRemoved()) {
-            $actions['remove'] = _lang('admin.plugins.action.do.remove');
+            // append custom actions after config action
+            if ($name === 'config' && $this->hasStatus(self::STATUS_OK)) {
+                foreach ($this->options['actions'] as $customName => $customClass) {
+                    // don't add default action overrides (to keep the order)
+                    if (!isset(self::DEFAULT_ACTIONS[$customName])) {
+                        $actions[$customName] = $this->getAction($customName);
+                    }
+                }
+            }
         }
 
         return $actions;
-    }
-
-    /**
-     * @return array<string, string> name => label
-     */
-    protected function getCustomActionList(): array
-    {
-        return [];
     }
 
     function getCache(): NamespacedCache

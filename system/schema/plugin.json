@@ -108,6 +108,17 @@
         "inject_composer": {
             "type": "boolean"
         },
+        "actions": {
+            "type": "object",
+            "patternProperties": {
+                "^": {
+                    "type": "string"
+                }
+            }
+        },
+        "config_defaults": {
+            "type": "object"
+        },
         "extra": {
             "type": "object"
         }

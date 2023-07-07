@@ -16,6 +16,11 @@ class DisableAction extends PluginAction
         return _lang('admin.plugins.action.do.disable');
     }
 
+    function isAllowed(): bool
+    {
+        return !$this->plugin->hasStatus(Plugin::STATUS_DISABLED) && !$this->plugin->isEssential();
+    }
+
     protected function execute(): ActionResult
     {
         $dependantsWarning = $this->getDependantsWarning();
@@ -30,7 +35,7 @@ class DisableAction extends PluginAction
             );
         }
 
-        if ($this->plugin->canBeDisabled() && touch($this->plugin->getDirectory() . '/' . Plugin::DEACTIVATING_FILE)) {
+        if (@touch($this->plugin->getDirectory() . '/' . Plugin::DEACTIVATING_FILE)) {
             return ActionResult::success(
                 Message::ok(_lang('admin.plugins.action.disable.success', ['%plugin%' => $this->plugin->getOption('name')]))
             );

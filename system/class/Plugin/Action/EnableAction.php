@@ -16,16 +16,19 @@ class EnableAction extends PluginAction
         return _lang('admin.plugins.action.do.enable');
     }
 
+    function isAllowed(): bool
+    {
+        return $this->plugin->hasStatus(Plugin::STATUS_DISABLED);
+    }
+
     protected function execute(): ActionResult
     {
-        if ($this->plugin->hasStatus(Plugin::STATUS_DISABLED)) {
-            $file = $this->plugin->getDirectory() . '/' . Plugin::DEACTIVATING_FILE;
+        $file = $this->plugin->getDirectory() . '/' . Plugin::DEACTIVATING_FILE;
 
-            if (is_file($file) && @unlink($file)) {
-                return ActionResult::success(
-                    Message::ok(_lang('admin.plugins.action.enable.success', ['%plugin%' => $this->plugin->getOption('name')]))
-                );
-            }
+        if (is_file($file) && @unlink($file)) {
+            return ActionResult::success(
+                Message::ok(_lang('admin.plugins.action.enable.success', ['%plugin%' => $this->plugin->getOption('name')]))
+            );
         }
 
         return ActionResult::failure(

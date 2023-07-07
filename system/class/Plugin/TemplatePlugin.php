@@ -24,20 +24,7 @@ class TemplatePlugin extends Plugin
         $this->lang = new LocalizationDirectory($this->options['lang_dir']);
     }
 
-    function canBeDisabled(): bool
-    {
-        return !$this->isDefault() && parent::canBeDisabled();
-    }
-
-    function canBeRemoved(): bool
-    {
-        return !$this->isDefault() && parent::canBeRemoved();
-    }
-
-    /**
-     * See if this is the default template
-     */
-    function isDefault(): bool
+    function isEssential(): bool
     {
         return $this->id === Settings::get('default_template');
     }

@@ -38,8 +38,17 @@ abstract class PluginAction extends Action
      */
     abstract function getTitle(): string;
 
+    /**
+     * See if the action is allowed to take place
+     */
+    abstract function isAllowed(): bool;
+
     function run(): ActionResult
     {
+        if (!$this->isAllowed()) {
+            return ActionResult::output(null, Message::error(_lang('global.accessdenied')));
+        }
+
         $result = parent::run();
 
         if ($result->isComplete() || $result->hasMessages()) {

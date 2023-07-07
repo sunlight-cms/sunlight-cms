@@ -15,6 +15,11 @@ class UninstallAction extends PluginAction
         return _lang('admin.plugins.action.do.uninstall');
     }
 
+    function isAllowed(): bool
+    {
+        return $this->plugin->isInstalled() === true && !$this->plugin->isEssential();
+    }
+
     protected function execute(): ActionResult
     {
         if (!$this->isConfirmed()) {
@@ -27,14 +32,12 @@ class UninstallAction extends PluginAction
             );
         }
 
-        if ($this->plugin->canBeUninstalled()) {
-            $installer = $this->plugin->getInstaller();
+        $installer = $this->plugin->getInstaller();
 
-            if ($installer->uninstall()) {
-                return ActionResult::success(
-                    Message::ok(_lang('admin.plugins.action.uninstall.success', ['%plugin%' => $this->plugin->getOption('name')]))
-                );
-            }
+        if ($installer->uninstall()) {
+            return ActionResult::success(
+                Message::ok(_lang('admin.plugins.action.uninstall.success', ['%plugin%' => $this->plugin->getOption('name')]))
+            );
         }
 
         return ActionResult::failure(

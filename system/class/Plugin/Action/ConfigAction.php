@@ -4,8 +4,10 @@ namespace Sunlight\Plugin\Action;
 
 use Sunlight\Action\ActionResult;
 use Sunlight\Message;
+use Sunlight\Plugin\Plugin;
 use Sunlight\Util\ConfigurationFile;
 use Sunlight\Util\Form;
+use Sunlight\Util\StringManipulator;
 use Sunlight\Xsrf;
 
 /**
@@ -16,6 +18,11 @@ class ConfigAction extends PluginAction
     function getTitle(): string
     {
         return _lang('admin.plugins.action.do.config');
+    }
+
+    function isAllowed(): bool
+    {
+        return $this->plugin->hasStatus(Plugin::STATUS_OK) && $this->plugin->hasConfig();
     }
 
     protected function execute(): ActionResult
@@ -97,13 +104,18 @@ class ConfigAction extends PluginAction
             }
 
             $fields[$key] = [
-                'label' => $this->plugin->getConfigLabel($key),
+                'label' => $this->getConfigLabel($key),
                 'input' => $input,
                 'type' => $type,
             ];
         }
 
         return $fields;
+    }
+
+    function getConfigLabel(string $key): string
+    {
+        return StringManipulator::ucfirst(strtr($key, '_.-', ' '));
     }
 
     /**

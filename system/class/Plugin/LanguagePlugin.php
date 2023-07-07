@@ -6,20 +6,7 @@ use Sunlight\Core;
 
 class LanguagePlugin extends Plugin
 {
-    function canBeDisabled(): bool
-    {
-        return !$this->isFallback() && parent::canBeDisabled();
-    }
-    
-    function canBeRemoved(): bool
-    {
-        return !$this->isFallback() && parent::canBeRemoved();
-    }
-
-    /**
-     * See if this is the fallback language
-     */
-    function isFallback(): bool
+    function isEssential(): bool
     {
         return $this->id === Core::$fallbackLang;
     }

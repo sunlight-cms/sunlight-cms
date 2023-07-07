@@ -16,6 +16,11 @@ class RemoveAction extends PluginAction
         return _lang('admin.plugins.action.do.remove');
     }
 
+    function isAllowed(): bool
+    {
+        return $this->plugin->isInstalled() !== true && !$this->plugin->isEssential();
+    }
+
     protected function execute(): ActionResult
     {
         if (!$this->isConfirmed()) {
@@ -28,14 +33,12 @@ class RemoveAction extends PluginAction
             );
         }
 
-        if ($this->plugin->canBeRemoved()) {
-            $dir = $this->plugin->getDirectory();
+        $dir = $this->plugin->getDirectory();
 
-            if (Filesystem::checkDirectory($dir) && Filesystem::purgeDirectory($dir)) {
-                return ActionResult::success(
-                    Message::ok(_lang('admin.plugins.action.remove.success', ['%plugin%' => $this->plugin->getOption('name')]))
-                );
-            }
+        if (Filesystem::checkDirectory($dir) && Filesystem::purgeDirectory($dir)) {
+            return ActionResult::success(
+                Message::ok(_lang('admin.plugins.action.remove.success', ['%plugin%' => $this->plugin->getOption('name')]))
+            );
         }
 
         return ActionResult::failure(
