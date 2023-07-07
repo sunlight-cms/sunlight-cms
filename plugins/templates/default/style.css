@@ -657,7 +657,7 @@ ul.list-info strong {
     margin: 3px 4px 2px 0;
 }
 .poll-answer div {
-    background: url("images/system/votebar.gif") repeat-x;
+    background: url("images/votebar.gif") repeat-x;
     height: 11px;
     margin: 6px 2px 4px 0;
 }

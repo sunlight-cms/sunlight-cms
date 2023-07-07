@@ -587,7 +587,7 @@ ul.list-info a {
     margin: 3px 4px 2px 0;
 }
 .poll-answer div {
-    background-image: url("images/system/votebar.gif");
+    background-image: url("images/votebar.gif");
     background-repeat: repeat-x;
     height: 11px;
     margin: 6px 2px 4px 0;
@@ -708,7 +708,7 @@ ul.list-info a {
 
 /* Horizontal line */
 .hr {
-    background-image: url("images/system/hr.gif");
+    background-image: url("images/hr.gif");
     background-position: left center;
     background-repeat: repeat-x;
     display: block;
