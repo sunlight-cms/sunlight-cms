@@ -3,9 +3,9 @@ CREATE TABLE `sunlight_article` (
   `title` varchar(255) NOT NULL,
   `slug` varchar(255) NOT NULL,
   `description` varchar(255) NOT NULL DEFAULT '',
-  `perex` mediumtext NOT NULL,
+  `perex` text NOT NULL,
   `picture_uid` varchar(32) DEFAULT NULL,
-  `content` longtext NOT NULL,
+  `content` mediumtext NOT NULL,
   `search_content` text NOT NULL,
   `author` int(11) NOT NULL,
   `home1` int(11) NOT NULL,
@@ -33,7 +33,7 @@ CREATE TABLE `sunlight_article` (
   KEY `confirmed` (`confirmed`),
   KEY `ratenum` (`ratenum`),
   KEY `ratesum` (`ratesum`),
-  KEY `slug` (`slug`(191)),
+  KEY `slug` (`slug`),
   FULLTEXT KEY `search` (`title`,`description`,`search_content`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -48,7 +48,7 @@ CREATE TABLE `sunlight_box` (
   `template` varchar(255) NOT NULL,
   `layout` varchar(255) NOT NULL,
   `slot` varchar(64) NOT NULL,
-  `page_ids` mediumtext DEFAULT NULL,
+  `page_ids` text DEFAULT NULL,
   `page_children` tinyint(1) NOT NULL DEFAULT 0,
   `class` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -57,8 +57,8 @@ CREATE TABLE `sunlight_box` (
   KEY `public` (`public`),
   KEY `slot` (`slot`),
   KEY `level` (`level`),
-  KEY `template` (`template`(191)),
-  KEY `layout` (`layout`(191))
+  KEY `template` (`template`),
+  KEY `layout` (`layout`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `sunlight_box` (`id`, `ord`, `title`, `content`, `visible`, `public`, `level`, `template`, `layout`, `slot`, `page_ids`, `page_children`, `class`) VALUES
@@ -76,9 +76,9 @@ CREATE TABLE `sunlight_gallery_image` (
   `in_storage` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `home` (`home`),
-  KEY `full` (`full`(8)),
   KEY `in_storage` (`in_storage`),
   KEY `ord` (`ord`),
+  KEY `full` (`full`),
   FULLTEXT KEY `search` (`title`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -122,7 +122,7 @@ CREATE TABLE `sunlight_page` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
   `heading` varchar(255) NOT NULL DEFAULT '',
-  `slug` mediumtext NOT NULL,
+  `slug` varchar(255) NOT NULL,
   `slug_abs` tinyint(1) NOT NULL DEFAULT 0,
   `description` varchar(255) NOT NULL DEFAULT '',
   `type` tinyint(4) NOT NULL,
@@ -130,9 +130,9 @@ CREATE TABLE `sunlight_page` (
   `node_parent` int(11) DEFAULT NULL,
   `node_level` int(11) NOT NULL DEFAULT 0,
   `node_depth` int(11) NOT NULL DEFAULT 0,
-  `perex` mediumtext NOT NULL,
+  `perex` text NOT NULL,
   `ord` int(11) NOT NULL DEFAULT 0,
-  `content` longtext NOT NULL,
+  `content` mediumtext NOT NULL,
   `search_content` text NOT NULL,
   `visible` tinyint(1) NOT NULL DEFAULT 1,
   `public` tinyint(1) NOT NULL DEFAULT 1,
@@ -159,9 +159,9 @@ CREATE TABLE `sunlight_page` (
   KEY `var2` (`var2`),
   KEY `var3` (`var3`),
   KEY `var4` (`var4`),
-  KEY `slug_seo_abs` (`slug_abs`),
-  KEY `slug_seo` (`slug`(16)),
   KEY `node_parent` (`node_parent`),
+  KEY `slug_abs` (`slug_abs`),
+  KEY `slug` (`slug`),
   FULLTEXT KEY `search` (`title`,`heading`,`description`,`search_content`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -188,8 +188,8 @@ CREATE TABLE `sunlight_pm` (
 CREATE TABLE `sunlight_poll` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `author` int(11) NOT NULL,
-  `question` varchar(96) NOT NULL,
-  `answers` mediumtext NOT NULL,
+  `question` varchar(255) NOT NULL,
+  `answers` text NOT NULL,
   `locked` tinyint(1) NOT NULL DEFAULT 0,
   `votes` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
@@ -202,7 +202,7 @@ CREATE TABLE `sunlight_post` (
   `home` int(11) NOT NULL,
   `xhome` int(11) NOT NULL DEFAULT -1,
   `subject` varchar(48) NOT NULL DEFAULT '',
-  `text` mediumtext NOT NULL,
+  `text` text NOT NULL,
   `author` int(11) NOT NULL DEFAULT -1,
   `guest` varchar(24) NOT NULL DEFAULT '',
   `time` bigint(20) NOT NULL,
@@ -230,9 +230,9 @@ CREATE TABLE `sunlight_redirect` (
   `permanent` tinyint(1) NOT NULL DEFAULT 0,
   `active` tinyint(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`id`),
-  KEY `old` (`old`(191)),
   KEY `active` (`active`),
-  KEY `permanent` (`permanent`)
+  KEY `permanent` (`permanent`),
+  KEY `old` (`old`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `sunlight_setting` (
@@ -356,7 +356,7 @@ CREATE TABLE `sunlight_user` (
   `ip` varchar(45) NOT NULL DEFAULT '',
   `email` varchar(191) NOT NULL,
   `avatar` varchar(32) DEFAULT NULL,
-  `note` mediumtext NOT NULL DEFAULT '',
+  `note` text NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`),
@@ -376,7 +376,7 @@ CREATE TABLE `sunlight_user_activation` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `code` varchar(48) NOT NULL,
   `expire` bigint(20) NOT NULL,
-  `data` mediumblob NOT NULL,
+  `data` blob NOT NULL,
   PRIMARY KEY (`id`),
   KEY `code` (`code`),
   KEY `expire` (`expire`)
@@ -443,7 +443,7 @@ CREATE TABLE `sunlight_user_group` (
 INSERT INTO `sunlight_user_group` (`id`, `title`, `descr`, `level`, `icon`, `color`, `blocked`, `reglist`, `administration`, `adminsettings`, `adminplugins`, `adminusers`, `admingroups`, `admincontent`, `adminother`, `adminpages`, `adminsection`, `admincategory`, `adminbook`, `adminseparator`, `admingallery`, `adminlink`, `admingroup`, `adminforum`, `adminpluginpage`, `adminart`, `adminallart`, `adminchangeartauthor`, `adminconfirm`, `adminautoconfirm`, `adminpoll`, `adminpollall`, `adminsbox`, `adminbox`, `fileaccess`, `fileglobalaccess`, `fileadminaccess`, `adminhcm`, `adminhcmphp`, `adminbackup`, `adminmassemail`, `adminposts`, `changeusername`, `postcomments`, `unlimitedpostaccess`, `locktopics`, `stickytopics`, `movetopics`, `artrate`, `pollvote`, `selfremove`) VALUES
 (1,	'SUPER_ADMIN',	'',	10000,	'redstar.png',	'',	0,	0,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	'*',	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1),
 (2,	'GUESTS',	'',	0,	'',	'',	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	'',	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	1,	1,	0),
-(3,	'REGISTERED',	'',	1,	'',	'',	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	0,	1,	0,	'',	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	1,	1,	1),
+(3,	'REGISTERED',	'',	1,	'',	'',	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	'',	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	1,	1,	1),
 (4,	'ADMINISTRATORS',	'',	1000,	'orangestar.png',	'',	0,	0,	1,	1,	0,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	0,	'*',	0,	0,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	0),
-(5,	'MODERATORS',	'',	600,	'greenstar.png',	'',	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	0,	1,	0,	'',	0,	0,	0,	1,	0,	1,	1,	1,	1,	1,	1,	1,	0),
-(6,	'EDITOR',	'',	500,	'bluestar.png',	'',	0,	0,	1,	0,	0,	0,	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	1,	0,	0,	0,	1,	0,	0,	'poll, gallery, linkart, linkroot',	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	1,	1,	0);
+(5,	'MODERATORS',	'',	600,	'greenstar.png',	'',	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	'',	0,	0,	0,	1,	0,	1,	1,	1,	1,	1,	1,	1,	0),
+(6,	'EDITOR',	'',	500,	'bluestar.png',	'',	0,	0,	1,	0,	0,	0,	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	1,	0,	0,	0,	1,	0,	0,	'poll, gallery, linkart, linkpage',	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	1,	1,	0);

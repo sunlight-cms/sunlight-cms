@@ -41,7 +41,7 @@ return function ($id = 0) {
 
             $inputs[] = [
                 'label' => _lang('posts.text'),
-                'content' => '<input type="text" name="text" class="sbox-input" maxlength="255">'
+                'content' => '<input type="text" name="text" class="sbox-input" maxlength="' . Post::getMaxLength(Post::SHOUTBOX_ENTRY) . '">'
                     . '<input type="hidden" name="_posttype" value="4"><input type="hidden" name="_posttarget" value="' . $id . '">',
             ];
             $inputs[] = Form::getSubmitRow();

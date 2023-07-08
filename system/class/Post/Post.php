@@ -67,6 +67,18 @@ abstract class Post
     const PLUGIN = 7;
 
     /**
+     * Get maximum post text length
+     */
+    static function getMaxLength(int $type): int
+    {
+        if ($type === self::SHOUTBOX_ENTRY) {
+            return 255;
+        }
+
+        return 16384;
+    }
+
+    /**
      * Check user access to the given post
      *
      * @param array $userQuery output of {@see User::createQuery()}

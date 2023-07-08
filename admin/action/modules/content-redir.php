@@ -32,8 +32,8 @@ if (isset($_GET['new']) || isset($_GET['edit'])) {
         // save
         if (isset($_POST['old'])) {
             $q = [];
-            $q['old'] = StringManipulator::slugify(trim(Request::post('old', '')), true, '._/');
-            $q['new'] = StringManipulator::slugify(trim(Request::post('new', '')), true, '._/');
+            $q['old'] = StringManipulator::slugify(trim(Request::post('old', '')), ['extra' => '._/']);
+            $q['new'] = StringManipulator::slugify(trim(Request::post('new', '')), ['extra' => '._/']);
             $q['permanent'] = Form::loadCheckbox('permanent');
             $q['active'] = Form::loadCheckbox('act');
 

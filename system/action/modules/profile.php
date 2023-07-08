@@ -12,7 +12,6 @@ use Sunlight\Settings;
 use Sunlight\Template;
 use Sunlight\User;
 use Sunlight\Util\Request;
-use Sunlight\Util\StringManipulator;
 
 defined('SL_ROOT') or exit;
 
@@ -21,7 +20,7 @@ if (!User::isLoggedIn() && Settings::get('notpublicsite')) {
     return;
 }
 
-$id = StringManipulator::slugify(Request::get('id', ''), false);
+$id = Request::get('id', '');
 $query = DB::queryRow('SELECT * FROM ' . DB::table('user') . ' WHERE username=' . DB::val($id));
 $public = true;
 

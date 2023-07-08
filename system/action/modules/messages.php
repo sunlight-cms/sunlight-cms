@@ -51,7 +51,7 @@ switch ($a) {
         if (isset($_POST['receiver'])) {
             $receiver = Request::post('receiver');
             $subject = Html::cut(_e(StringManipulator::trimExtraWhitespace(Request::post('subject'))), 48);
-            $text = Html::cut(_e(trim(Request::post('text', ''))), 16384);
+            $text = Html::cut(_e(trim(Request::post('text', ''))), Post::getMaxLength(Post::PRIVATE_MSG));
 
             // check variables
             do {
@@ -152,7 +152,7 @@ switch ($a) {
             [
                 'name' => 'newmsg',
                 'action' => '',
-                'form_append' => GenericTemplates::jsLimitLength(16384, 'newmsg', 'text'),
+                'form_append' => GenericTemplates::jsLimitLength(Post::getMaxLength(Post::PRIVATE_MSG), 'newmsg', 'text'),
             ],
             $inputs
         );

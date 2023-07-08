@@ -189,7 +189,7 @@ if ($continue) {
                     if (!is_array($item['name'])) continue;
 
                     for ($i = 0; isset($item['name'][$i]); ++$i) {
-                        $name = StringManipulator::slugify($decodeFilename($item['name'][$i], false), false);
+                        $name = StringManipulator::slugify($decodeFilename($item['name'][$i], false), ['lower' => false]);
                         $tmp_name = $item['tmp_name'][$i];
                         $exists = file_exists($dir . $name);
 

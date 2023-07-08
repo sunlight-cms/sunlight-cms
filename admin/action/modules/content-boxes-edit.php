@@ -61,13 +61,19 @@ if (isset($_POST['box_edit'])) do {
 
     $changeset = [
         'title' => Html::cut(_e(StringManipulator::trimExtraWhitespace(Request::post('title'))), 255),
-        'content' => StringManipulator::trimExtraWhitespace(Request::post('content')),
+        'content' => Html::cut(Request::post('content', ''), DB::MAX_MEDIUMTEXT_LENGTH),
         'visible' => Form::loadCheckbox('visible'),
         'public' => Form::loadCheckbox('public'),
         'level' => Math::range((int) Request::post('level'), 0, User::MAX_LEVEL),
-        'page_ids' => implode(',', array_filter(array_map('intval', (array) Request::post('page_ids', [], true)), function ($id) { return $id >= 1; })) ?: null,
+        'page_ids' => StringManipulator::cut(
+            implode(
+                ',',
+                array_filter(array_map('intval', (array) Request::post('page_ids', [], true)), function ($id) { return $id >= 1; })
+            ),
+            DB::MAX_TEXT_LENGTH
+        ) ?: null,
         'page_children' => Form::loadCheckbox('page_children'),
-        'class' => StringManipulator::ellipsis(StringManipulator::trimExtraWhitespace(Request::post('class')), 255, false),
+        'class' => StringManipulator::cut(StringManipulator::trimExtraWhitespace(Request::post('class')), 255),
     ];
 
     // slot uid
@@ -87,7 +93,7 @@ if (isset($_POST['box_edit'])) do {
     $new_ord = trim(Request::post('ord', ''));
 
     if ($new_ord !== '') {
-        $new_ord = Math::range((int) Request::post('ord'), 0, null);
+        $new_ord = Math::range((int) $new_ord, 0, null);
     }
 
     $changeset['ord'] = $new_ord;

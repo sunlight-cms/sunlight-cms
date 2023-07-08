@@ -57,26 +57,41 @@ abstract class StringManipulator
     /**
      * Slugify a string
      *
-     * @param string $input input string
-     * @param bool $lower generate lowercase slug 1/0
-     * @param string|null $extraAllowedChars list of additional allowed characters
-     * @param string $fallback fallback value when a slug cannot be generated
+     * Supported $options:
+     * -------------------
+     * lower (1)        generate lowercase slug 1/0
+     * extra ("._")     string list of extra allowed characters
+     * max_len (255)    slug length limit or null
+     * fallback ("")    fallback slug in case the process fails
+     *
+     * @param array{lower: bool, extra: string, max_len: int|null, fallback: string} $options
      */
-    static function slugify(string $input, bool $lower = true, ?string $extraAllowedChars = '._', string $fallback = ''): string
+    static function slugify(string $input, array $options = []): string
     {
+        $options += [
+            'lower' => true,
+            'extra' => '._',
+            'max_len' => 255,
+            'fallback' => '',
+        ];
+
         $slug = Slugify::getInstance()->slugify(
             $input,
             [
-                'lowercase' => $lower,
-                'regexp' => sprintf('{(?:[^A-Za-z0-9%s]|-)++}', preg_quote($extraAllowedChars)),
+                'lowercase' => $options['lower'],
+                'regexp' => sprintf('{(?:[^A-Za-z0-9%s]|-)++}', preg_quote($options['extra'])),
             ]
         );
 
         if ($slug !== '') {
+            if ($options['max_len'] !== null) {
+                $slug = self::cut($slug, $options['max_len']);
+            }
+
             return $slug;
         }
 
-        return $fallback;
+        return $options['fallback'];
     }
 
     /**

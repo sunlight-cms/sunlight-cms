@@ -39,7 +39,7 @@ if (isset($_GET['download'])) {
 } elseif (isset($_POST['upload'])) {
     // upload a backup
     if (isset($_FILES['backup']) && is_uploaded_file($_FILES['backup']['tmp_name'])) {
-        $backup_name = StringManipulator::slugify($_FILES['backup']['name'], false);
+        $backup_name = StringManipulator::slugify($_FILES['backup']['name'], ['lower' => false]);
 
         if (preg_match('{\.zip$}Di', $backup_name) && Filesystem::isSafeFile($backup_name)) {
             $backup_path = $backup_dir . '/' . $backup_name;

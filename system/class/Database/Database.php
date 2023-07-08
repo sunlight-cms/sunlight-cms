@@ -11,6 +11,9 @@ use Sunlight\Extend;
  */
 abstract class Database
 {
+    const MAX_TEXT_LENGTH = 65535;
+    const MAX_MEDIUMTEXT_LENGTH = 16777215;
+
     /** @var \mysqli */
     static $mysqli;
     /** @var string */

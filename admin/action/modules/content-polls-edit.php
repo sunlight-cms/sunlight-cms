@@ -53,7 +53,7 @@ if (isset($_POST['question'])) {
     $answers = Arr::removeValue($answers_new, '');
     $answers_count = count($answers);
     $answers = implode("\n", $answers);
-    $query['answers'] = $answers;
+    $query['answers'] = Html::cut($answers, DB::MAX_TEXT_LENGTH);
 
     if (User::hasPrivilege('adminpollall')) {
         $author = (int) Request::post('author');

@@ -33,7 +33,7 @@ if (User::isLoggedIn()) {
 // home, type, text
 $home = (int) Request::post('_posttarget');
 $type = (int) Request::post('_posttype');
-$text = Html::cut(_e(trim(Request::post('text', ''))), ($type != Post::SHOUTBOX_ENTRY) ? 16384 : 255);
+$text = Html::cut(_e(trim(Request::post('text', ''))), Post::getMaxLength($type));
 
 // xhome
 if ($type != Post::SHOUTBOX_ENTRY) {

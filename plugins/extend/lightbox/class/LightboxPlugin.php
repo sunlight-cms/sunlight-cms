@@ -3,7 +3,6 @@
 namespace SunlightExtend\Lightbox;
 
 use Sunlight\Core;
-use Sunlight\Plugin\Action\PluginAction;
 use Sunlight\Plugin\ExtendPlugin;
 use Sunlight\Settings;
 use Sunlight\Template;

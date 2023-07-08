@@ -8,7 +8,6 @@ use Sunlight\Router;
 use Sunlight\Settings;
 use Sunlight\User;
 use Sunlight\Util\Request;
-use Sunlight\Util\StringManipulator;
 
 defined('SL_ROOT') or exit;
 
@@ -17,7 +16,7 @@ if (!User::isLoggedIn() && Settings::get('notpublicsite')) {
     return;
 }
 
-$id = StringManipulator::slugify(Request::get('id'), false);
+$id = Request::get('id', '');
 $query = DB::queryRow('SELECT u.id,u.username,u.publicname,u.public,g.level FROM ' . DB::table('user') . ' u JOIN ' . DB::table('user_group') . ' g ON u.group_id=g.id WHERE u.username=' . DB::val($id));
 
 if ($query === false) {

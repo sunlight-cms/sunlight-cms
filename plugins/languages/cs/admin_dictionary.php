@@ -462,7 +462,7 @@ return [
     'admin.settings.logger' => 'Logování',
     'admin.settings.logger.log_level' => 'Úroveň logování',
     'admin.settings.logger.log_level.disabled' => 'vypnout logování',
-    'admin.settings.logger.log_level.help' => 'úroveň od které mají být zprávy zaznamenány do logu',
+    'admin.settings.logger.log_level.help' => 'úroveň, od které mají být zprávy zaznamenány do logu',
     'admin.settings.logger.log_retention' => 'Uchování logů',
     'admin.settings.logger.log_retention.help' => 'minimální počet dní jak dlouho mají být uchovávány zprávy v logu (prázdné = navždy)',
     'admin.plugins.title.language' => 'Jazykové balíčky',

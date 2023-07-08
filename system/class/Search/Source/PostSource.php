@@ -2,7 +2,6 @@
 
 namespace Sunlight\Search\Source;
 
-use Sunlight\Article;
 use Sunlight\Database\Database as DB;
 use Sunlight\GenericTemplates;
 use Sunlight\Post\Post;

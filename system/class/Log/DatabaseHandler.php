@@ -23,7 +23,7 @@ class DatabaseHandler implements LogHandlerInterface
             'ip' => $entry->ip !== null ? StringManipulator::cut($entry->ip, 45) : null,
             'user_agent' => $entry->userAgent !== null ? StringManipulator::cut($entry->userAgent, 255) : null,
             'user_id' => $entry->userId,
-            'context' => $entry->context !== null && strlen($entry->context) < 65536 ? $entry->context : null,
+            'context' => $entry->context !== null && strlen($entry->context) <= DB::MAX_TEXT_LENGTH ? $entry->context : null,
         ]);
     }
 

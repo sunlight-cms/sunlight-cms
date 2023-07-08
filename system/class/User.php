@@ -528,7 +528,7 @@ abstract class User
      */
     static function normalizeUsername(string $username): string
     {
-        return StringManipulator::slugify(StringManipulator::cut($username, 24), false);
+        return StringManipulator::slugify($username, ['lower' => false, 'max_len' => 24]);
     }
 
     /**

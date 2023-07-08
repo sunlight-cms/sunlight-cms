@@ -640,7 +640,7 @@ class PostService
      * $vars structure:
      * ----------------
      * url          return URL
-     * posttype     post type (see _post_* constants)
+     * posttype     post type (see Post::* constants)
      * posttarget   id_home
      * xhome        id_xhome
      * subject      show subject field 1/0
@@ -652,7 +652,7 @@ class PostService
         $inputs = [];
 
         $captcha = Captcha::init();
-        $output = GenericTemplates::jsLimitLength(16384, 'postform', 'text');
+        $output = GenericTemplates::jsLimitLength(Post::getMaxLength($vars['posttype']), 'postform', 'text');
 
         if (!User::isLoggedIn()) {
             $inputs[] = ['label' => _lang('posts.guestname'), 'content' => '<input type="text" name="guest" maxlength="24" class="inputsmall"' . Form::restoreValue($_SESSION, 'post_form_guest') . '>'];
@@ -940,7 +940,7 @@ class PostService
     static function normalizeGuestName(string $guest): string
     {
         return StringManipulator::cut(
-            StringManipulator::slugify($guest, false),
+            StringManipulator::slugify($guest, ['lower' => false]),
             24
         );
     }

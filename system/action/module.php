@@ -29,7 +29,7 @@ if (preg_match('{m/([a-zA-Z_\-.]+)$}AD', $_index->slug, $match)) {
 // run module
 if (isset($module, $script)) {
     $_index->bodyClasses[] = 't-module';
-    $_index->bodyClasses[] = 'm-' . StringManipulator::slugify($module, true, '_');
+    $_index->bodyClasses[] = 'm-' . StringManipulator::slugify($module, ['extra' => '_']);
 
     $extend_args = Extend::args($output, ['id' => $module, 'script' => &$script]);
 

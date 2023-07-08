@@ -55,7 +55,7 @@ if (isset($_POST['text'])) {
             $guest = '';
         }
 
-        $text = Html::cut(_e(trim(Request::post('text', ''))), ($post['type'] != Post::SHOUTBOX_ENTRY) ? 16384 : 255);
+        $text = Html::cut(_e(trim(Request::post('text', ''))), Post::getMaxLength($post['type']));
 
         if ($post['xhome'] == -1 && in_array($post['type'], [Post::FORUM_TOPIC, Post::PRIVATE_MSG])) {
             $subject = Html::cut(_e(StringManipulator::trimExtraWhitespace(Request::post('subject'))), 48);
@@ -171,5 +171,5 @@ if ($form) {
         $inputs
     );
 
-    $output .= GenericTemplates::jsLimitLength((($post['type'] != Post::SHOUTBOX_ENTRY) ? 16384 : 255), 'postform', 'text');
+    $output .= GenericTemplates::jsLimitLength(Post::getMaxLength($post['type']), 'postform', 'text');
 }

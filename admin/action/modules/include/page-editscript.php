@@ -56,15 +56,15 @@ if (!empty($_POST)) {
         'heading' => ['type' => 'escaped_plaintext', 'length' => 255, 'nullable' => false, 'enabled' => $editscript_enable_heading],
         'slug_abs' => ['type' => 'bool', 'nullable' => false, 'enabled' => $editscript_enable_slug],
         'slug' => ['type' => 'raw', 'nullable' => false, 'enabled' => $editscript_enable_slug],
-        'description' => ['type' => 'escaped_plaintext', 'nullable' => false, 'enabled' => $editscript_enable_meta],
+        'description' => ['type' => 'escaped_plaintext', 'length' => 255, 'nullable' => false, 'enabled' => $editscript_enable_meta],
         'node_parent' => ['type' => 'int', 'nullable' => true, 'enabled' => User::hasPrivilege('adminpages')],
         'ord' => ['type' => 'raw', 'nullable' => false, 'enabled' => User::hasPrivilege('adminpages')],
         'visible' => ['type' => 'bool', 'nullable' => false, 'enabled' => $editscript_enable_visible],
         'public' => ['type' => 'bool', 'nullable' => false, 'enabled' => $editscript_enable_access],
         'level' => ['type' => 'raw', 'nullable' => false, 'enabled' => $editscript_enable_access],
         'show_heading' => ['type' => 'bool', 'nullable' => false, 'enabled' => $editscript_enable_show_heading],
-        'perex' => ['type' => 'raw', 'nullable' => false, 'enabled' => $editscript_enable_perex],
-        'content' => ['type' => 'raw', 'nullable' => false, 'enabled' => $editscript_enable_content],
+        'perex' => ['type' => 'raw', 'length' => DB::MAX_TEXT_LENGTH, 'nullable' => false, 'enabled' => $editscript_enable_perex],
+        'content' => ['type' => 'raw', 'length' => DB::MAX_MEDIUMTEXT_LENGTH, 'nullable' => false, 'enabled' => $editscript_enable_content],
         'events' => ['type' => 'raw', 'length' => 255, 'nullable' => true, 'enabled' => $editscript_enable_events],
         'layout' => ['type' => 'raw', 'nullable' => true, 'enabled' => $editscript_enable_layout],
     ];
@@ -210,10 +210,10 @@ if (!empty($_POST)) {
 
                 if ($slug_abs) {
                     // absolute slug
-                    $val = StringManipulator::slugify($val, true, '._/', 'page');
+                    $val = StringManipulator::slugify($val, ['extra' => '._/', 'max_len' => 127, 'fallback' => 'page']);
                 } else {
                     // segment only
-                    $val = ($base_slug !== '' ? $base_slug . '/' : '') . StringManipulator::slugify($val, true, '._', 'page');
+                    $val = ($base_slug !== '' ? $base_slug . '/' : '') . StringManipulator::slugify($val, ['extra' => '._', 'max_len' => 127, 'fallback' => 'page']);
                 }
 
                 if ($query['slug'] !== $val || $query['slug_abs'] != $slug_abs) {
@@ -393,7 +393,7 @@ if (!empty($_POST)) {
                 if ($item_opts['type'] === 'escaped_plaintext') {
                     $val = Html::cut($val, $item_opts['length']);
                 } else {
-                    $val = StringManipulator::ellipsis($val, $item_opts['length'], false);
+                    $val = StringManipulator::cut($val, $item_opts['length']);
                 }
             }
 

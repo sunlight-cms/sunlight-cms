@@ -145,7 +145,7 @@ $editable_settings = [
         'items' => [
             ['name' => 'comments', 'format' => 'bool'],
             ['name' => 'search', 'format' => 'bool'],
-            ['name' => 'fulltext_content_limit', 'format' => 'int', 'min_value' => 0, 'max_value' => 65535],
+            ['name' => 'fulltext_content_limit', 'format' => 'int', 'min_value' => 0, 'max_value' => DB::MAX_TEXT_LENGTH],
             ['name' => 'captcha', 'format' => 'bool'],
             ['name' => 'bbcode', 'format' => 'bool'],
         ],
