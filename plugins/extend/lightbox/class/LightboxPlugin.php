@@ -40,24 +40,4 @@ class LightboxPlugin extends ExtendPlugin
         $args['output'] .= '<script src="' . _e($this->getAssetPath('public/js/lightbox.js')) . '"></script>' . "\n";
         $args['output'] .= '<script>lightbox.option(' . Json::encodeForInlineJs($options) . ');</script>' . "\n";
     }
-
-    function getAction(string $name): ?PluginAction
-    {
-        if ($name === 'config') {
-            return new ConfigAction($this);
-        }
-
-        return parent::getAction($name);
-    }
-
-    protected function getConfigDefaults(): array
-    {
-        return [
-            'dark_mode' => null,
-            'options' => [
-                'fadeDuration' => 300,
-                'resizeDuration' => 300,
-            ],
-        ];
-    }
 }

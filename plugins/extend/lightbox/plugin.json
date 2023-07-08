@@ -10,6 +10,16 @@
         "system": "^8.0"
     },
     "class": "LightboxPlugin",
+    "actions": {
+        "config": "ConfigAction"
+    },
+    "config_defaults": {
+        "dark_mode": null,
+        "options": {
+            "fadeDuration": 300,
+            "resizeDuration": 300
+        }
+    },
     "langs": {
         "lightbox": "lang"
     },

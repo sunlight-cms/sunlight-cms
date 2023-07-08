@@ -115,7 +115,7 @@ class ConfigAction extends PluginAction
 
     function getConfigLabel(string $key): string
     {
-        return StringManipulator::ucfirst(strtr($key, '_.-', ' '));
+        return StringManipulator::ucfirst(strtr($key, '_.-', '   '));
     }
 
     /**
