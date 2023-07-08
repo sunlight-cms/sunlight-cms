@@ -6,6 +6,7 @@ CREATE TABLE `sunlight_article` (
   `perex` mediumtext NOT NULL,
   `picture_uid` varchar(32) DEFAULT NULL,
   `content` longtext NOT NULL,
+  `search_content` text NOT NULL,
   `author` int(11) NOT NULL,
   `home1` int(11) NOT NULL,
   `home2` int(11) NOT NULL DEFAULT -1,
@@ -32,7 +33,8 @@ CREATE TABLE `sunlight_article` (
   KEY `confirmed` (`confirmed`),
   KEY `ratenum` (`ratenum`),
   KEY `ratesum` (`ratesum`),
-  KEY `slug` (`slug`(191))
+  KEY `slug` (`slug`(191)),
+  FULLTEXT KEY `search` (`title`,`description`,`search_content`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `sunlight_box` (
@@ -76,7 +78,8 @@ CREATE TABLE `sunlight_gallery_image` (
   KEY `home` (`home`),
   KEY `full` (`full`(8)),
   KEY `in_storage` (`in_storage`),
-  KEY `ord` (`ord`)
+  KEY `ord` (`ord`),
+  FULLTEXT KEY `search` (`title`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `sunlight_iplog` (
@@ -130,6 +133,7 @@ CREATE TABLE `sunlight_page` (
   `perex` mediumtext NOT NULL,
   `ord` int(11) NOT NULL DEFAULT 0,
   `content` longtext NOT NULL,
+  `search_content` text NOT NULL,
   `visible` tinyint(1) NOT NULL DEFAULT 1,
   `public` tinyint(1) NOT NULL DEFAULT 1,
   `level` int(11) NOT NULL DEFAULT 0,
@@ -157,11 +161,12 @@ CREATE TABLE `sunlight_page` (
   KEY `var4` (`var4`),
   KEY `slug_seo_abs` (`slug_abs`),
   KEY `slug_seo` (`slug`(16)),
-  KEY `node_parent` (`node_parent`)
+  KEY `node_parent` (`node_parent`),
+  FULLTEXT KEY `search` (`title`,`heading`,`description`,`search_content`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO `sunlight_page` (`id`, `title`, `heading`, `slug`, `slug_abs`, `description`, `type`, `type_idt`, `node_parent`, `node_level`, `node_depth`, `perex`, `ord`, `content`, `visible`, `public`, `level`, `level_inherit`, `show_heading`, `events`, `link_new_window`, `link_url`, `layout`, `layout_inherit`, `var1`, `var2`, `var3`, `var4`) VALUES
-(1,	'',	'',	'index',	0,	'',	1,	NULL,	NULL,	0,	0,	'',	1,	'',	1,	1,	0,	1,	1,	NULL,	0,	NULL,	NULL,	0,	0,	0,	0,	0);
+INSERT INTO `sunlight_page` (`id`, `title`, `heading`, `slug`, `slug_abs`, `description`, `type`, `type_idt`, `node_parent`, `node_level`, `node_depth`, `perex`, `ord`, `content`, `search_content`, `visible`, `public`, `level`, `level_inherit`, `show_heading`, `events`, `link_new_window`, `link_url`, `layout`, `layout_inherit`, `var1`, `var2`, `var3`, `var4`) VALUES
+(1,	'',	'',	'index',	0,	'',	1,	NULL,	NULL,	0,	0,	'',	1,	'',	'',	1,	1,	0,	1,	1,	NULL,	0,	NULL,	NULL,	0,	0,	0,	0,	0);
 
 CREATE TABLE `sunlight_pm` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -214,7 +219,8 @@ CREATE TABLE `sunlight_post` (
   KEY `author` (`author`),
   KEY `time` (`time`),
   KEY `sticky` (`sticky`),
-  KEY `flag` (`flag`)
+  KEY `flag` (`flag`),
+  FULLTEXT KEY `search` (`subject`,`text`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `sunlight_redirect` (
@@ -275,6 +281,7 @@ INSERT INTO `sunlight_setting` (`var`, `val`, `preload`, `web`, `admin`) VALUES
 ('description',	'',	1,	1,	1),
 ('extratopicslimit',	'12',	1,	1,	1),
 ('favicon',	'0',	1,	1,	1),
+('fulltext_content_limit',	'65535',	0,	0,	0),
 ('galdefault_per_page',	'9',	1,	1,	1),
 ('galdefault_per_row',	'3',	1,	1,	1),
 ('galdefault_thumb_h',	'110',	1,	1,	1),

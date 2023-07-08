@@ -403,6 +403,8 @@ return [
     'admin.settings.functions.comments.help' => 'enable commenting on pages and articles',
     'admin.settings.functions.search' => 'Search',
     'admin.settings.functions.search.help' => 'enable searching',
+    'admin.settings.functions.fulltext_content_limit' => 'Full-text limit',
+    'admin.settings.functions.fulltext_content_limit.help' => 'maximum length of generated full-text content per page and article',
     'admin.settings.functions.captcha' => 'Security code',
     'admin.settings.functions.captcha.help' => 'use security codes (CAPTCHA)',
     'admin.settings.functions.bbcode' => 'BBCode',

@@ -1,7 +1,6 @@
 <?php
 
 use Sunlight\Admin\Admin;
-use Sunlight\Post\Post;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\GenericTemplates;
@@ -9,7 +8,9 @@ use Sunlight\Message;
 use Sunlight\Page\Page;
 use Sunlight\Page\PageManipulator;
 use Sunlight\Plugin\TemplateService;
+use Sunlight\Post\Post;
 use Sunlight\Router;
+use Sunlight\Search\FulltextContentBuilder;
 use Sunlight\Settings;
 use Sunlight\User;
 use Sunlight\Util\Form;
@@ -77,6 +78,7 @@ if (!empty($_POST)) {
     $refresh_layouts = false;
     $slug_abs = false;
     $actual_parent_id = $query['node_parent'];
+    $search_content = new FulltextContentBuilder();
 
     foreach ($save_array as $item => $item_opts) {
         $skip = false;
@@ -124,6 +126,7 @@ if (!empty($_POST)) {
             // content
             case 'content':
                 $val = User::filterContent($val);
+                $search_content->add($val, ['strip_tags' => true, 'unescape_html' => true, 'remove_hcm' => true]);
                 break;
 
             // node_parent
@@ -187,6 +190,11 @@ if (!empty($_POST)) {
                 }
 
                 $title = $val;
+                break;
+
+            // perex
+            case 'perex':
+                $search_content->add($val, ['strip_tags' => true, 'unescape_html' => true]);
                 break;
 
             // slug_abs
@@ -391,6 +399,12 @@ if (!empty($_POST)) {
 
             $changeset[$item] = $val;
         }
+    }
+
+    $search_content = $search_content->build();
+
+    if ($search_content !== $query['search_content']) {
+        $changeset['search_content'] = $search_content;
     }
 
     // create or save

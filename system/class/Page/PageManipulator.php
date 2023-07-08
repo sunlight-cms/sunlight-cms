@@ -79,6 +79,7 @@ abstract class PageManipulator
             'perex' => '',
             'ord' => 0,
             'content' => '',
+            'search_content' => '',
             'visible' => 1,
             'public' => 1,
             'level' => 0,

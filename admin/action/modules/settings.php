@@ -133,10 +133,10 @@ $editable_settings = [
     ],
     'galleries' => [
         'items' => [
-            ['name' => 'galuploadresize_w', 'format' => 'int', 'min_value' => 10, 'max_value' => 1024],
-            ['name' => 'galuploadresize_h', 'format' => 'int', 'min_value' => 10, 'max_value' => 1024],
-            ['name' => 'galdefault_thumb_w', 'format' => 'int', 'min_value' => 10, 'max_value' => 1024],
-            ['name' => 'galdefault_thumb_h', 'format' => 'int', 'min_value' => 10, 'max_value' => 1024],
+            ['name' => 'galuploadresize_w', 'format' => 'int', 'min_value' => 10, 'max_value' => 10000],
+            ['name' => 'galuploadresize_h', 'format' => 'int', 'min_value' => 10, 'max_value' => 10000],
+            ['name' => 'galdefault_thumb_w', 'format' => 'int', 'min_value' => 10, 'max_value' => 1500],
+            ['name' => 'galdefault_thumb_h', 'format' => 'int', 'min_value' => 10, 'max_value' => 1500],
             ['name' => 'galdefault_per_row', 'format' => 'int', 'min_value' => -1],
             ['name' => 'galdefault_per_page', 'format' => 'int', 'min_value' => 1],
         ],
@@ -145,6 +145,7 @@ $editable_settings = [
         'items' => [
             ['name' => 'comments', 'format' => 'bool'],
             ['name' => 'search', 'format' => 'bool'],
+            ['name' => 'fulltext_content_limit', 'format' => 'int', 'min_value' => 0, 'max_value' => 65535],
             ['name' => 'captcha', 'format' => 'bool'],
             ['name' => 'bbcode', 'format' => 'bool'],
         ],

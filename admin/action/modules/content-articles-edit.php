@@ -10,6 +10,7 @@ use Sunlight\IpLog;
 use Sunlight\Message;
 use Sunlight\Page\Page;
 use Sunlight\Router;
+use Sunlight\Search\FulltextContentBuilder;
 use Sunlight\Settings;
 use Sunlight\User;
 use Sunlight\Util\Form;
@@ -64,6 +65,7 @@ if (isset($_GET['id'], $_GET['returnid'], $_GET['returnpage'])) {
         'perex' => '<p></p>',
         'picture_uid' => null,
         'content' => '',
+        'search_content' => '',
         'author' => User::getId(),
         'home1' => -2,
         'home2' => -1,
@@ -218,6 +220,10 @@ if (isset($_POST['title'])) {
 
     // save changes
     if (empty($error_log)) {
+        $search_content = new FulltextContentBuilder();
+        $search_content->add($newdata['perex'], ['strip_tags' => true, 'unescape_html' => true]);
+        $search_content->add($newdata['content'], ['strip_tags' => true, 'unescape_html' => true, 'remove_hcm' => true]);
+
         $changeset = [
             'title' => $newdata['title'],
             'slug' => $newdata['slug'],
@@ -229,6 +235,7 @@ if (isset($_POST['title'])) {
             'perex' => $newdata['perex'],
             'picture_uid' => $newdata['picture_uid'],
             'content' => $newdata['content'],
+            'search_content' => $search_content->build(),
             'public' => $newdata['public'],
             'visible' => $newdata['visible'],
             'confirmed' => $newdata['confirmed'],

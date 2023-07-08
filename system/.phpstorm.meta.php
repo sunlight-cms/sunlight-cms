@@ -34,6 +34,7 @@ registerArgumentsSet(
     'description',
     'extratopicslimit',
     'favicon',
+    'fulltext_content_limit',
     'galdefault_per_page',
     'galdefault_per_row',
     'galdefault_thumb_h',

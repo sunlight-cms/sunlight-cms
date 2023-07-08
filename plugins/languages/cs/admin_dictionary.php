@@ -403,6 +403,8 @@ return [
     'admin.settings.functions.comments.help' => 'povolit zasílání komentářů k sekcím a článkům',
     'admin.settings.functions.search' => 'Vyhledávání',
     'admin.settings.functions.search.help' => 'povolit vyhledávání na stránkách',
+    'admin.settings.functions.fulltext_content_limit' => 'Full-text limit',
+    'admin.settings.functions.fulltext_content_limit.help' => 'maximální délka vygenerovaného full-text obsahu pro každou stránku a článek',
     'admin.settings.functions.captcha' => 'Kontrolní kód',
     'admin.settings.functions.captcha.help' => 'používat kontrolní obrázek (CAPTCHA)',
     'admin.settings.functions.bbcode' => 'BBCode',

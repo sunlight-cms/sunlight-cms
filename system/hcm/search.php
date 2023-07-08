@@ -1,19 +1,24 @@
 <?php
 
 use Sunlight\Router;
+use Sunlight\Search\Search;
 use Sunlight\Settings;
 use Sunlight\Xsrf;
 
 return function () {
     if (Settings::get('search')) {
-        return '<form action="' . _e(Router::module('search')) . '" method="get" class="searchform">
-<input type="hidden" name="page" value="1">
-<input type="hidden" name="art" value="1">
-<input type="hidden" name="post" value="1">
-<input type="hidden" name="img" value="1">
-' . Xsrf::getInput() . '
-<input type="search" name="q" class="search-query"> <input type="submit" value="' . _lang('mod.search.submit') . '">
-</form>
-';
+        $output = '<form action="' . _e(Router::module('search')) . '" method="get" class="searchform">' . "\n";
+
+        foreach (Search::getSources() as $source) {
+            if ($source->isEnabledByDefault()) {
+                $output .= '<input type="hidden" name="' . _e($source->getKey()) . '" value="1">' . "\n";
+            }
+        }
+
+        $output .= '<input type="search" name="q" class="search-query"> <input type="submit" value="' . _lang('mod.search.submit') . "\">\n"
+            . Xsrf::getInput() . "\n"
+            . "</form>\n";
+
+        return $output;
     }
 };
