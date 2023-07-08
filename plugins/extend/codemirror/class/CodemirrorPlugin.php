@@ -40,7 +40,7 @@ class CodemirrorPlugin extends ExtendPlugin
 
     function onAdminHead(array $args): void
     {
-        $basePath = $this->getAssetPath('/public');
+        $basePath = $this->getAssetPath('public');
 
         $args['css']['codemirror'] = $basePath . '/lib/codemirror.css';
         $args['css']['codemirror_theme'] = $basePath . '/theme/' . (Settings::get('adminscheme_dark') ? 'ambiance' : 'eclipse') . '.css';
