@@ -356,13 +356,11 @@ abstract class Database
             return $value ? '1' : '0';
         }
 
-        if (is_numeric($value)) {
-            $value = (0 + $value);
+        if (is_int($value)) {
+            return sprintf('%d', $value);
+        }
 
-            if (is_int($value)) {
-                return sprintf('%d', $value);
-            }
-
+        if (is_float($value)) {
             return sprintf('%.14F', $value);
         }
 
