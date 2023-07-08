@@ -5,9 +5,6 @@ namespace Sunlight\Plugin\Action;
 use Sunlight\Action\ActionResult;
 use Sunlight\Message;
 
-/**
- * Uninstall a plugin
- */
 class UninstallAction extends PluginAction
 {
     function getTitle(): string

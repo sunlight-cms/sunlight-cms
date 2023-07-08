@@ -2,9 +2,6 @@
 
 namespace Sunlight\Util;
 
-/**
- * Zip archive helper
- */
 abstract class Zip
 {
     /** Path mode - full paths */

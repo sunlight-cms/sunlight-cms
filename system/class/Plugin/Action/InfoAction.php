@@ -6,9 +6,6 @@ use Kuria\Debug\Dumper;
 use Sunlight\Action\ActionResult;
 use Sunlight\GenericTemplates;
 
-/**
- * Show information about a plugin
- */
 class InfoAction extends PluginAction
 {
     function getTitle(): string

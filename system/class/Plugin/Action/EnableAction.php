@@ -6,9 +6,6 @@ use Sunlight\Action\ActionResult;
 use Sunlight\Message;
 use Sunlight\Plugin\Plugin;
 
-/**
- * Enable a plugin
- */
 class EnableAction extends PluginAction
 {
     function getTitle(): string

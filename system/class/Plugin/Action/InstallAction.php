@@ -5,9 +5,6 @@ namespace Sunlight\Plugin\Action;
 use Sunlight\Action\ActionResult;
 use Sunlight\Message;
 
-/**
- * Install a plugin
- */
 class InstallAction extends PluginAction
 {
     function getTitle(): string

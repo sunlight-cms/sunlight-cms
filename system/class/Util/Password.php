@@ -2,9 +2,6 @@
 
 namespace Sunlight\Util;
 
-/**
- * Password utility
- */
 class Password
 {
     /** Default algorithm */

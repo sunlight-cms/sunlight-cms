@@ -2,9 +2,6 @@
 
 namespace Sunlight\Util;
 
-/**
- * JSON helper
- */
 abstract class Json
 {
     /** Default encoder flags */

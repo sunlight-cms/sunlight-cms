@@ -6,9 +6,6 @@ use Sunlight\Action\ActionResult;
 use Sunlight\Message;
 use Sunlight\Util\Filesystem;
 
-/**
- * Remove a plugin
- */
 class RemoveAction extends PluginAction
 {
     function getTitle(): string

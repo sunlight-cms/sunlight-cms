@@ -2,9 +2,6 @@
 
 namespace Sunlight\Util;
 
-/**
- * Filesystem utilities
- */
 abstract class Filesystem
 {
     private const UNSAFE_EXT_REGEX = '{php\d*?|[ps]html|asp|py|cgi}Ai';

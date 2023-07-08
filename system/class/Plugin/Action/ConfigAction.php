@@ -10,9 +10,6 @@ use Sunlight\Util\Form;
 use Sunlight\Util\StringHelper;
 use Sunlight\Xsrf;
 
-/**
- * Modify plugin configuration
- */
 class ConfigAction extends PluginAction
 {
     function getTitle(): string

@@ -4,9 +4,6 @@ namespace Sunlight\Util;
 
 use Sunlight\Core;
 
-/**
- * String generator
- */
 abstract class StringGenerator
 {
     private static $uid = 0;

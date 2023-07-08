@@ -2,9 +2,6 @@
 
 namespace Sunlight\Util;
 
-/**
- * Math helper
- */
 abstract class Math
 {
     /**

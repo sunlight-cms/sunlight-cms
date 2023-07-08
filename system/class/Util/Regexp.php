@@ -2,9 +2,6 @@
 
 namespace Sunlight\Util;
 
-/**
- * Regexp helper
- */
 abstract class Regexp
 {
     /**

@@ -11,9 +11,6 @@ use Sunlight\Plugin\Plugin;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
 
-/**
- * Plugin action
- */
 abstract class PluginAction extends Action
 {
     /** @var Plugin */
