@@ -15,7 +15,7 @@ use Sunlight\Router;
 use Sunlight\User;
 use Sunlight\Util\Cookie;
 use Sunlight\Util\Request;
-use Sunlight\Util\StringManipulator;
+use Sunlight\Util\StringHelper;
 
 class ToolbarRenderer
 {
@@ -317,7 +317,7 @@ class ToolbarRenderer
                         <tr>
                             <td class="devkit-cell-shrink"><?= _e(Logger::LEVEL_NAMES[$entry->level]) ?></td>
                             <td class="devkit-cell-shrink"><?= _e($entry->category) ?></td>
-                            <td><code><?= _e(StringManipulator::ellipsis($entry->message, 1024, false)) ?></code></td>
+                            <td><code><?= _e(StringHelper::ellipsis($entry->message, 1024, false)) ?></code></td>
                             <td class="devkit-cell-shrink">
                                 <?php if ($parsedContext !== null): ?>
                                     <a href="#" class="devkit-hideshow" data-target="#devkit-log-context-<?= $index ?>">show</a>

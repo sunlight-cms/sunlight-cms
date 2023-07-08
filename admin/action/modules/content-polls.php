@@ -7,7 +7,7 @@ use Sunlight\Paginator;
 use Sunlight\Router;
 use Sunlight\User;
 use Sunlight\Util\Request;
-use Sunlight\Util\StringManipulator;
+use Sunlight\Util\StringHelper;
 use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
@@ -82,7 +82,7 @@ if (DB::size($query) != 0) {
         }
 
         $output .= '<tr>'
-            . '<td>' . StringManipulator::ellipsis($item['question'], 64) . (($item['locked'] == 1) ? ' (' . _lang('admin.content.form.locked') . ')' : '') . '</td>'
+            . '<td>' . StringHelper::ellipsis($item['question'], 64) . (($item['locked'] == 1) ? ' (' . _lang('admin.content.form.locked') . ')' : '') . '</td>'
             . $username
             . '<td>' . $item['id'] . '</td>'
             . '<td class="actions">

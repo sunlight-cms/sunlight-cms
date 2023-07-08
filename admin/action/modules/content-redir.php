@@ -5,7 +5,7 @@ use Sunlight\Message;
 use Sunlight\Router;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
-use Sunlight\Util\StringManipulator;
+use Sunlight\Util\StringHelper;
 use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
@@ -32,8 +32,8 @@ if (isset($_GET['new']) || isset($_GET['edit'])) {
         // save
         if (isset($_POST['old'])) {
             $q = [];
-            $q['old'] = StringManipulator::slugify(trim(Request::post('old', '')), ['extra' => '._/']);
-            $q['new'] = StringManipulator::slugify(trim(Request::post('new', '')), ['extra' => '._/']);
+            $q['old'] = StringHelper::slugify(trim(Request::post('old', '')), ['extra' => '._/']);
+            $q['new'] = StringHelper::slugify(trim(Request::post('new', '')), ['extra' => '._/']);
             $q['permanent'] = Form::loadCheckbox('permanent');
             $q['active'] = Form::loadCheckbox('act');
 

@@ -4,7 +4,7 @@ namespace Sunlight\Log;
 
 use Sunlight\Database\Database as DB;
 use Sunlight\Util\StringGenerator;
-use Sunlight\Util\StringManipulator;
+use Sunlight\Util\StringHelper;
 
 class DatabaseHandler implements LogHandlerInterface
 {
@@ -15,13 +15,13 @@ class DatabaseHandler implements LogHandlerInterface
         DB::insert('log', [
             'id' => $entry->id,
             'level' => $entry->level,
-            'category' => StringManipulator::cut($entry->category, 64),
+            'category' => StringHelper::cut($entry->category, 64),
             'time' => $entry->time,
-            'message' => StringManipulator::cut($entry->message, 32768),
-            'method' => $entry->method !== null ? StringManipulator::cut($entry->method, 32) : null,
-            'url' => $entry->url !== null ? StringManipulator::cut($entry->url, 2048) : null,
-            'ip' => $entry->ip !== null ? StringManipulator::cut($entry->ip, 45) : null,
-            'user_agent' => $entry->userAgent !== null ? StringManipulator::cut($entry->userAgent, 255) : null,
+            'message' => StringHelper::cut($entry->message, 32768),
+            'method' => $entry->method !== null ? StringHelper::cut($entry->method, 32) : null,
+            'url' => $entry->url !== null ? StringHelper::cut($entry->url, 2048) : null,
+            'ip' => $entry->ip !== null ? StringHelper::cut($entry->ip, 45) : null,
+            'user_agent' => $entry->userAgent !== null ? StringHelper::cut($entry->userAgent, 255) : null,
             'user_id' => $entry->userId,
             'context' => $entry->context !== null && strlen($entry->context) <= DB::MAX_TEXT_LENGTH ? $entry->context : null,
         ]);

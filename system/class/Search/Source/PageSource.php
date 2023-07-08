@@ -6,7 +6,7 @@ use Sunlight\Database\Database as DB;
 use Sunlight\Router;
 use Sunlight\Search\SearchResult;
 use Sunlight\User;
-use Sunlight\Util\StringManipulator;
+use Sunlight\Util\StringHelper;
 
 class PageSource extends FulltextSource
 {
@@ -49,7 +49,7 @@ class PageSource extends FulltextSource
         $result->title = $row['title'];
 
         if ($row['perex'] !== '') {
-            $result->perex = StringManipulator::ellipsis(strip_tags($row['perex']), 255);
+            $result->perex = StringHelper::ellipsis(strip_tags($row['perex']), 255);
         } elseif ($row['description'] !== '') {
             $result->perex = $row['description'];
         }

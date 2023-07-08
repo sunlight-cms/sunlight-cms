@@ -3,7 +3,7 @@
 namespace Sunlight;
 
 use Kuria\Debug\Exception;
-use Sunlight\Util\StringManipulator;
+use Sunlight\Util\StringHelper;
 use Sunlight\Util\UrlHelper;
 
 abstract class GenericTemplates
@@ -210,7 +210,7 @@ HTML;
 
             foreach ($messages as $key => $item) {
                 if ($options['lcfirst'] ?? true) {
-                    $item = StringManipulator::lcfirst($item);
+                    $item = StringHelper::lcfirst($item);
                 }
 
                 $output .= '<li>'

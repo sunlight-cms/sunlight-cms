@@ -9,7 +9,7 @@ use Sunlight\Post\PostService;
 use Sunlight\Router;
 use Sunlight\Search\SearchResult;
 use Sunlight\User;
-use Sunlight\Util\StringManipulator;
+use Sunlight\Util\StringHelper;
 
 class PostSource extends FulltextSource
 {
@@ -74,7 +74,7 @@ class PostSource extends FulltextSource
     {
         $result->link = Router::postPermalink($row['id']);
         $result->title = PostService::getPostTitle($row);
-        $result->perex = StringManipulator::ellipsis(strip_tags(Post::render($row['text'])), 255);
+        $result->perex = StringHelper::ellipsis(strip_tags(Post::render($row['text'])), 255);
 
         if ($row['author'] == -1) {
             $result->infos[] = [_lang('global.postauthor'), '<span class="post-author-guest">' . PostService::renderGuestName($row['guest']) . '</span>'];

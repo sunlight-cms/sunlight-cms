@@ -8,7 +8,7 @@ use Sunlight\Paginator;
 use Sunlight\Router;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
-use Sunlight\Util\StringManipulator;
+use Sunlight\Util\StringHelper;
 
 defined('SL_ROOT') or exit;
 
@@ -195,7 +195,7 @@ $output .= _buffer(function () use ($query, $queryParamValues, $queryParamErrors
             <td class="cell-shrink"><strong><?= _e(Database::datetime($entry->time)) ?></strong></td>
             <td class="cell-shrink"><?= _e(Logger::LEVEL_NAMES[$entry->level]) ?></td>
             <td class="cell-shrink"><?= _e($entry->category) ?></td>
-            <td><?= _e(StringManipulator::ellipsis($entry->url ?? '-', 255, false)) ?></td>
+            <td><?= _e(StringHelper::ellipsis($entry->url ?? '-', 255, false)) ?></td>
             <td class="actions" rowspan="2">
                 <a class="button" href="<?= Router::admin('log-detail', ['query' => ['id' => $entry->id]]) ?>">
                     <?= _lang('admin.log.detail.link') ?>
@@ -204,7 +204,7 @@ $output .= _buffer(function () use ($query, $queryParamValues, $queryParamErrors
         </tr>
         <tr class="log-message">
             <td colspan="4">
-                <code><?= _e(StringManipulator::ellipsis($entry->message, 1024, false)) ?></code>
+                <code><?= _e(StringHelper::ellipsis($entry->message, 1024, false)) ?></code>
             </td>
         </tr>
     </tbody>

@@ -2,7 +2,7 @@
 
 namespace Sunlight;
 
-use Sunlight\Util\StringManipulator;
+use Sunlight\Util\StringHelper;
 
 /**
  * System message
@@ -102,7 +102,7 @@ class Message
      */
     static function prefix(string $prefix, string $message): string
     {
-        return $prefix . ': ' . StringManipulator::lcfirst($message);
+        return $prefix . ': ' . StringHelper::lcfirst($message);
     }
 
     /**

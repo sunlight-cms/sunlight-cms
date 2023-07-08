@@ -7,7 +7,7 @@ use Sunlight\Database\Database as DB;
 use Sunlight\GenericTemplates;
 use Sunlight\Router;
 use Sunlight\Search\SearchResult;
-use Sunlight\Util\StringManipulator;
+use Sunlight\Util\StringHelper;
 
 class ArticleSource extends FulltextSource
 {
@@ -68,7 +68,7 @@ class ArticleSource extends FulltextSource
     {
         $result->link = Router::article($row['id'], $row['slug'], $row['cat_slug']);
         $result->title = $row['title'];
-        $result->perex = StringManipulator::ellipsis(strip_tags($row['perex']), 255);
+        $result->perex = StringHelper::ellipsis(strip_tags($row['perex']), 255);
         $result->infos[] = [_lang('article.posted'), GenericTemplates::renderDate($row['time'], 'article')];
     }
 }

@@ -5,7 +5,7 @@ namespace Sunlight\Search;
 use Sunlight\Hcm;
 use Sunlight\Settings;
 use Sunlight\Util\Html;
-use Sunlight\Util\StringManipulator;
+use Sunlight\Util\StringHelper;
 
 class FulltextContentBuilder
 {
@@ -33,7 +33,7 @@ class FulltextContentBuilder
             $part = Html::unescape($part);
         }
 
-        $part = StringManipulator::trimExtraWhitespace($part);
+        $part = StringHelper::trimExtraWhitespace($part);
 
         if ($part === '') {
             return;
@@ -44,6 +44,6 @@ class FulltextContentBuilder
 
     function build(): string
     {
-        return StringManipulator::cut(implode(' ', $this->parts), (int) Settings::get('fulltext_content_limit'));
+        return StringHelper::cut(implode(' ', $this->parts), (int) Settings::get('fulltext_content_limit'));
     }
 }

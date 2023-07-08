@@ -16,7 +16,7 @@ use Sunlight\Template;
 use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
-use Sunlight\Util\StringManipulator;
+use Sunlight\Util\StringHelper;
 use Sunlight\Util\UrlHelper;
 
 class PostService
@@ -528,14 +528,14 @@ class PostService
                         $author = Router::userFromQuery($userQuery, $item, ['max_len' => 16]);
                     } else {
                         $author = '<span class="post-author-guest" title="' . GenericTemplates::renderIp($item['ip']) . '">'
-                            . StringManipulator::ellipsis(self::renderGuestName($item['guest']), 16)
+                            . StringHelper::ellipsis(self::renderGuestName($item['guest']), 16)
                             . '</span>';
                     }
 
                     // fetch last post author
                     if (isset($item['_lastpost'])) {
                         if ($item['_lastpost']['author'] != -1) $lastpost = Router::userFromQuery($userQuery, $item['_lastpost'], ['class' => 'post-author', 'max_len' => 16]);
-                        else $lastpost = '<span class="post-author-guest">' .StringManipulator::ellipsis(self::renderGuestName($item['_lastpost']['guest']), 16) . '</span>';
+                        else $lastpost = '<span class="post-author-guest">' .StringHelper::ellipsis(self::renderGuestName($item['_lastpost']['guest']), 16) . '</span>';
                     } else {
                         $lastpost = '-';
                     }
@@ -939,8 +939,8 @@ class PostService
 
     static function normalizeGuestName(string $guest): string
     {
-        return StringManipulator::cut(
-            StringManipulator::slugify($guest, ['lower' => false]),
+        return StringHelper::cut(
+            StringHelper::slugify($guest, ['lower' => false]),
             24
         );
     }

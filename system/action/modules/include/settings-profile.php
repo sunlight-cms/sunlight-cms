@@ -10,7 +10,7 @@ use Sunlight\Settings;
 use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
-use Sunlight\Util\StringManipulator;
+use Sunlight\Util\StringHelper;
 
 defined('SL_ROOT') or exit;
 
@@ -36,7 +36,7 @@ if (isset($_POST['save'])) {
     }
 
     // note
-    $note = _e(StringManipulator::cut(trim(Request::post('note', '')), 1024));
+    $note = _e(StringHelper::cut(trim(Request::post('note', '')), 1024));
 
     if ($note !== User::$data['note']) {
         $changeset['note'] = $note;

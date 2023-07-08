@@ -14,7 +14,7 @@ use Sunlight\Util\Environment;
 use Sunlight\Util\Filesystem;
 use Sunlight\Util\Request;
 use Sunlight\Util\Response;
-use Sunlight\Util\StringManipulator;
+use Sunlight\Util\StringHelper;
 use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
@@ -189,7 +189,7 @@ if ($continue) {
                     if (!is_array($item['name'])) continue;
 
                     for ($i = 0; isset($item['name'][$i]); ++$i) {
-                        $name = StringManipulator::slugify($decodeFilename($item['name'][$i], false), ['lower' => false]);
+                        $name = StringHelper::slugify($decodeFilename($item['name'][$i], false), ['lower' => false]);
                         $tmp_name = $item['tmp_name'][$i];
                         $exists = file_exists($dir . $name);
 
@@ -690,7 +690,7 @@ if ($continue) {
         <tr' . $hl_class . '>
         <td class="fman-item" colspan="' . (($item == '..') ? '3' : '2') . '">
             <a href="' . _e($fmanUrl(['dir' => $dirhref])) . '/">
-                <img src="' . _e(Router::path('admin/public/images/icons/fman/dir.png')) . '" alt="dir" class="icon">' . _e(StringManipulator::ellipsis($item, 64, false)) . '
+                <img src="' . _e(Router::path('admin/public/images/icons/fman/dir.png')) . '" alt="dir" class="icon">' . _e(StringHelper::ellipsis($item, 64, false)) . '
             </a>
         </td>
         ' . (($item != '..') ? '<td class="actions">
@@ -754,7 +754,7 @@ if ($continue) {
             <input type="checkbox" name="f' . $filecounter . '" id="f' . $filecounter . '" value="' . _e($encodeFilename($item)) . '">
             <a href="' . _e($dir . $item) . '" target="_blank"' . ($image ? Extend::buffer('image.lightbox', ['group' => 'fman']) : '') . '>
                 <img src="' . _e(Router::path('admin/public/images/icons/fman/' . $icon . '.png')) . '" alt="file" class="icon">'
-                . _e(StringManipulator::ellipsis($item, 64, false)) . '
+                . _e(StringHelper::ellipsis($item, 64, false)) . '
             </a>
         </td>
         <td class="fman-size">' . GenericTemplates::renderFileSize($filesize) . '</td>

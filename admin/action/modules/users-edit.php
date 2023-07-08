@@ -12,7 +12,7 @@ use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Password;
 use Sunlight\Util\Request;
-use Sunlight\Util\StringManipulator;
+use Sunlight\Util\StringHelper;
 use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
@@ -143,7 +143,7 @@ if ($continue) {
         }
 
         // note
-        $note = _e(trim(StringManipulator::cut(Request::post('note'), 1024)));
+        $note = _e(trim(StringHelper::cut(Request::post('note'), 1024)));
 
         // blocked
         $blocked = Form::loadCheckbox('blocked');

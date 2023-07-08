@@ -13,7 +13,7 @@ use Sunlight\Router;
 use Sunlight\Settings;
 use Sunlight\User;
 use Sunlight\Util\Form;
-use Sunlight\Util\StringManipulator;
+use Sunlight\Util\StringHelper;
 use Sunlight\Xsrf;
 
 abstract class Admin
@@ -368,7 +368,7 @@ abstract class Admin
                     . Form::selectOption($active)
                     . '>'
                     . str_repeat('&nbsp;&nbsp;&nbsp;│&nbsp;', $page['node_level'])
-                    . StringManipulator::ellipsis($page['title'], $options['maxlength'])
+                    . StringHelper::ellipsis($page['title'], $options['maxlength'])
                     . "</option>\n";
             }
         }

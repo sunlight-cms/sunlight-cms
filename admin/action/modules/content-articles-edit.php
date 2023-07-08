@@ -16,7 +16,7 @@ use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Html;
 use Sunlight\Util\Request;
-use Sunlight\Util\StringManipulator;
+use Sunlight\Util\StringHelper;
 use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
@@ -98,7 +98,7 @@ if (isset($_POST['title'])) {
     }
 
     $newdata['title'] = Html::cut(_e(Request::post('title', '')), 255);
-    $newdata['slug'] = StringManipulator::slugify($slug);
+    $newdata['slug'] = StringHelper::slugify($slug);
     $newdata['description'] = Html::cut(_e(trim(Request::post('description', ''))), 255);
     $newdata['home1'] = (int) Request::post('home1');
     $newdata['home2'] = (int) Request::post('home2');

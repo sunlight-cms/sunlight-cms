@@ -7,7 +7,7 @@ use Sunlight\Message;
 use Sunlight\Plugin\Plugin;
 use Sunlight\Util\ConfigurationFile;
 use Sunlight\Util\Form;
-use Sunlight\Util\StringManipulator;
+use Sunlight\Util\StringHelper;
 use Sunlight\Xsrf;
 
 /**
@@ -115,7 +115,7 @@ class ConfigAction extends PluginAction
 
     function getConfigLabel(string $key): string
     {
-        return StringManipulator::ucfirst(strtr($key, '_.-', '   '));
+        return StringHelper::ucfirst(strtr($key, '_.-', '   '));
     }
 
     /**

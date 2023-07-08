@@ -4,7 +4,7 @@ namespace Sunlight\Util;
 
 use Sunlight\Slugify\Slugify;
 
-abstract class StringManipulator
+abstract class StringHelper
 {
     /**
      * Cut a string to the specified length

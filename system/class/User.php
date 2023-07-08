@@ -18,7 +18,7 @@ use Sunlight\Util\Html;
 use Sunlight\Util\Password;
 use Sunlight\Util\Request;
 use Sunlight\Util\StringGenerator;
-use Sunlight\Util\StringManipulator;
+use Sunlight\Util\StringHelper;
 use Sunlight\Util\UrlHelper;
 
 abstract class User
@@ -528,7 +528,7 @@ abstract class User
      */
     static function normalizeUsername(string $username): string
     {
-        return StringManipulator::slugify($username, ['lower' => false, 'max_len' => 24]);
+        return StringHelper::slugify($username, ['lower' => false, 'max_len' => 24]);
     }
 
     /**
@@ -538,7 +538,7 @@ abstract class User
      */
     static function normalizePublicname(string $publicname): string
     {
-        return Html::cut(_e(StringManipulator::trimExtraWhitespace($publicname)), 24);
+        return Html::cut(_e(StringHelper::trimExtraWhitespace($publicname)), 24);
     }
 
     /**

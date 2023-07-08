@@ -11,7 +11,7 @@ use Sunlight\Util\Form;
 use Sunlight\Util\Html;
 use Sunlight\Util\Math;
 use Sunlight\Util\Request;
-use Sunlight\Util\StringManipulator;
+use Sunlight\Util\StringHelper;
 use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
@@ -60,12 +60,12 @@ if (isset($_POST['box_edit'])) do {
     $errors = [];
 
     $changeset = [
-        'title' => Html::cut(_e(StringManipulator::trimExtraWhitespace(Request::post('title'))), 255),
+        'title' => Html::cut(_e(StringHelper::trimExtraWhitespace(Request::post('title'))), 255),
         'content' => Html::cut(Request::post('content', ''), DB::MAX_MEDIUMTEXT_LENGTH),
         'visible' => Form::loadCheckbox('visible'),
         'public' => Form::loadCheckbox('public'),
         'level' => Math::range((int) Request::post('level'), 0, User::MAX_LEVEL),
-        'page_ids' => StringManipulator::cut(
+        'page_ids' => StringHelper::cut(
             implode(
                 ',',
                 array_filter(array_map('intval', (array) Request::post('page_ids', [], true)), function ($id) { return $id >= 1; })
@@ -73,7 +73,7 @@ if (isset($_POST['box_edit'])) do {
             DB::MAX_TEXT_LENGTH
         ) ?: null,
         'page_children' => Form::loadCheckbox('page_children'),
-        'class' => StringManipulator::cut(StringManipulator::trimExtraWhitespace(Request::post('class')), 255),
+        'class' => StringHelper::cut(StringHelper::trimExtraWhitespace(Request::post('class')), 255),
     ];
 
     // slot uid

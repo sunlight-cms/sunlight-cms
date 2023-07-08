@@ -8,7 +8,7 @@ use Sunlight\Page\Page;
 use Sunlight\Page\PageManipulator;
 use Sunlight\User;
 use Sunlight\Util\Request;
-use Sunlight\Util\StringManipulator;
+use Sunlight\Util\StringHelper;
 
 defined('SL_ROOT') or exit;
 
@@ -78,7 +78,7 @@ if (isset($_GET['id'])) {
         $default_title = _lang('page.type.' . Page::TYPES[$type]);
     }
 
-    $default_title = StringManipulator::ucfirst($default_title);
+    $default_title = StringHelper::ucfirst($default_title);
 
     $query = [
         'id' => -1,

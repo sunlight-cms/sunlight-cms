@@ -14,7 +14,7 @@ use Sunlight\User;
 use Sunlight\Util\Html;
 use Sunlight\Util\Request;
 use Sunlight\Util\Response;
-use Sunlight\Util\StringManipulator;
+use Sunlight\Util\StringHelper;
 use Sunlight\Util\UrlHelper;
 use Sunlight\Xsrf;
 
@@ -44,7 +44,7 @@ if ($type != Post::SHOUTBOX_ENTRY) {
 
 // subject
 if ($xhome == -1 && in_array($type, [Post::FORUM_TOPIC, Post::PRIVATE_MSG])) {
-    $subject = Html::cut(_e(StringManipulator::trimExtraWhitespace(Request::post('subject'))), 48);
+    $subject = Html::cut(_e(StringHelper::trimExtraWhitespace(Request::post('subject'))), 48);
 } else {
     $subject = '';
 }

@@ -8,7 +8,7 @@ use Sunlight\Util\Environment;
 use Sunlight\Util\Filesystem;
 use Sunlight\Util\Request;
 use Sunlight\Util\Response;
-use Sunlight\Util\StringManipulator;
+use Sunlight\Util\StringHelper;
 use Sunlight\Xsrf;
 
 $message = '';
@@ -39,7 +39,7 @@ if (isset($_GET['download'])) {
 } elseif (isset($_POST['upload'])) {
     // upload a backup
     if (isset($_FILES['backup']) && is_uploaded_file($_FILES['backup']['tmp_name'])) {
-        $backup_name = StringManipulator::slugify($_FILES['backup']['name'], ['lower' => false]);
+        $backup_name = StringHelper::slugify($_FILES['backup']['name'], ['lower' => false]);
 
         if (preg_match('{\.zip$}Di', $backup_name) && Filesystem::isSafeFile($backup_name)) {
             $backup_path = $backup_dir . '/' . $backup_name;

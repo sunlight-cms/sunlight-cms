@@ -16,7 +16,7 @@ use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Html;
 use Sunlight\Util\Request;
-use Sunlight\Util\StringManipulator;
+use Sunlight\Util\StringHelper;
 use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
@@ -210,10 +210,10 @@ if (!empty($_POST)) {
 
                 if ($slug_abs) {
                     // absolute slug
-                    $val = StringManipulator::slugify($val, ['extra' => '._/', 'max_len' => 127, 'fallback' => 'page']);
+                    $val = StringHelper::slugify($val, ['extra' => '._/', 'max_len' => 127, 'fallback' => 'page']);
                 } else {
                     // segment only
-                    $val = ($base_slug !== '' ? $base_slug . '/' : '') . StringManipulator::slugify($val, ['extra' => '._', 'max_len' => 127, 'fallback' => 'page']);
+                    $val = ($base_slug !== '' ? $base_slug . '/' : '') . StringHelper::slugify($val, ['extra' => '._', 'max_len' => 127, 'fallback' => 'page']);
                 }
 
                 if ($query['slug'] !== $val || $query['slug_abs'] != $slug_abs) {
@@ -393,7 +393,7 @@ if (!empty($_POST)) {
                 if ($item_opts['type'] === 'escaped_plaintext') {
                     $val = Html::cut($val, $item_opts['length']);
                 } else {
-                    $val = StringManipulator::cut($val, $item_opts['length']);
+                    $val = StringHelper::cut($val, $item_opts['length']);
                 }
             }
 

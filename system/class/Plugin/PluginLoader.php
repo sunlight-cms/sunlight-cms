@@ -10,7 +10,7 @@ use Sunlight\Plugin\Type\PluginType;
 use Sunlight\Util\Environment;
 use Sunlight\Util\Filesystem;
 use Sunlight\Util\Json;
-use Sunlight\Util\StringManipulator;
+use Sunlight\Util\StringHelper;
 
 class PluginLoader
 {
@@ -97,7 +97,7 @@ class PluginLoader
         $plugin = new PluginData(
             "{$type->getName()}/{$name}",
             $name,
-            StringManipulator::toCamelCase($name),
+            StringHelper::toCamelCase($name),
             $type->getName(),
             $file,
             "{$type->getDir()}/{$name}"

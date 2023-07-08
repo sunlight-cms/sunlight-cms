@@ -8,7 +8,7 @@ use Sunlight\Post\Post;
 use Sunlight\Router;
 use Sunlight\User;
 use Sunlight\Util\Arr;
-use Sunlight\Util\StringManipulator;
+use Sunlight\Util\StringHelper;
 
 return function ($limit = null, $pages = null, $type = null) {
     Hcm::normalizeArgument($limit, 'int', true);
@@ -69,7 +69,7 @@ return function ($limit = null, $pages = null, $type = null) {
         $result .= '
 <div class="list-item">
 <h2 class="list-title"><a href="' . _e(Router::postPermalink($item['id'])) . '">' . PostService::getPostTitle($item) . '</a></h2>
-<p class="list-perex">' . StringManipulator::ellipsis(strip_tags(Post::render($item['text'])), 255) . '</p>
+<p class="list-perex">' . StringHelper::ellipsis(strip_tags(Post::render($item['text'])), 255) . '</p>
 ' . GenericTemplates::renderInfos([
     [_lang('global.postauthor'), $authorname],
     [_lang('global.time'), GenericTemplates::renderTime($item['time'], 'post')],

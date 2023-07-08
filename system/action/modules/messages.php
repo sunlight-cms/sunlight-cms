@@ -17,7 +17,7 @@ use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Html;
 use Sunlight\Util\Request;
-use Sunlight\Util\StringManipulator;
+use Sunlight\Util\StringHelper;
 use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
@@ -50,7 +50,7 @@ switch ($a) {
         // send message
         if (isset($_POST['receiver'])) {
             $receiver = Request::post('receiver');
-            $subject = Html::cut(_e(StringManipulator::trimExtraWhitespace(Request::post('subject'))), 48);
+            $subject = Html::cut(_e(StringHelper::trimExtraWhitespace(Request::post('subject'))), 48);
             $text = Html::cut(_e(trim(Request::post('text', ''))), Post::getMaxLength(Post::PRIVATE_MSG));
 
             // check variables
