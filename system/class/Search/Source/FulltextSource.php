@@ -8,6 +8,11 @@ use Sunlight\Search\SearchSource;
 
 abstract class FulltextSource extends SearchSource
 {
+    /** @var string|null */
+    private $modifier;
+    /** @var float */
+    private $scoreThreshold = 0.0;
+
     function search(string $query): iterable
     {
         $alias = $this->getTableAlias();
@@ -16,14 +21,20 @@ abstract class FulltextSource extends SearchSource
 
         $query = DB::query(
             'SELECT ' . implode(',', $this->getResultColumns())
-            . ',MATCH(' . implode(',', $this->getFulltextColumns()) . ') AGAINST(' . DB::val($query) . ') score'
+            . ',MATCH(' . implode(',', $this->getFulltextColumns()) . ')'
+            . ' AGAINST(' . DB::val($query) . ($this->modifier !== null ? ' ' . $this->modifier : null) . ') score'
             . ' FROM ' . DB::escIdt($this->getTable()) . ($alias !== null ? ' ' . $alias : '')
             . (!empty($joins) ? ' ' . implode(' ', $joins) : '')
             . (!empty($filter) ? ' WHERE ' . implode(' AND ', $filter) : '')
-            . ' HAVING score>0'
+            . ' HAVING score>' . DB::val($this->scoreThreshold)
             . ' ORDER BY score DESC'
-            . ' LIMIT ' . $this->getLimit()
+            . ' LIMIT ' . $this->getLimit(),
+            true // boolean mode can fail with a syntax error
         );
+
+        if ($query === false) {
+            return;
+        }
 
         while ($row = DB::row($query)) {
             $result = new SearchResult();
@@ -31,6 +42,22 @@ abstract class FulltextSource extends SearchSource
 
             yield $result;
         }
+    }
+
+    /**
+     * Set the full-text search modifier
+     */
+    function setModifier(?string $modifier): void
+    {
+        $this->modifier = $modifier;
+    }
+
+    /**
+     * Set the exclusive minimal result score
+     */
+    function setScoreThreshold(float $scoreThreshold): void
+    {
+        $this->scoreThreshold = $scoreThreshold;
     }
 
     abstract protected function getTable(): string;
