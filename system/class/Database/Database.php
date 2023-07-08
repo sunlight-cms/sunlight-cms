@@ -349,7 +349,7 @@ abstract class Database
         }
 
         if ($value instanceof RawSqlValue) {
-            return $value->getSql();
+            return $value->sql;
         }
 
         if (is_bool($value)) {

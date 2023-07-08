@@ -10,15 +10,10 @@ namespace Sunlight\Database;
 class RawSqlValue
 {
     /** @var string */
-    private $safeSqlString;
+    public $sql;
 
-    function __construct($safeSqlString)
+    function __construct(string $sql)
     {
-        $this->safeSqlString = (string) $safeSqlString;
-    }
-
-    function getSql(): string
-    {
-        return $this->safeSqlString;
+        $this->sql = $sql;
     }
 }
