@@ -222,7 +222,7 @@ abstract class Hcm
      * - nonexistent, invalid or unsafe paths result in failure
      * - if normalization fails, the argument is set to NULL
      */
-    static function normalizePathArgument(&$variable, bool $isFile): void
+    static function normalizePathArgument(&$variable, bool $isFile, bool $allowUnsafeFiles = false): void
     {
         self::normalizeArgument($variable, 'string');
 
@@ -233,7 +233,7 @@ abstract class Hcm
         }
 
         if (
-            $isFile && (!Filesystem::isSafeFile($variable) || !is_file($variable)) // reject unsafe or nonexistent files
+            $isFile && (!$allowUnsafeFiles && !Filesystem::isSafeFile($variable) || !is_file($variable)) // reject unsafe or nonexistent files
             || !$isFile && !is_dir($variable) // reject nonexistent dirs
         ) {
             $variable = null;

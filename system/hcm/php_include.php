@@ -3,7 +3,7 @@
 use Sunlight\Hcm;
 
 return function ($file = '', ...$args) {
-    Hcm::normalizePathArgument($file, true);
+    Hcm::normalizePathArgument($file, true, true);
 
     if ($file === null) {
         return '';
