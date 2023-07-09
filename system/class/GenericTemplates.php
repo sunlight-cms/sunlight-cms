@@ -89,8 +89,8 @@ HTML;
     /**
      * Render HTML to insert CSS and JS into <head>
      *
-     * Parameters supported in$assets:
-     * ---------------------------------------------------
+     * Parameters supported in $assets:
+     * --------------------------------
      * meta             HTML inserted at the beginning
      * css              array with paths to CSS files
      * js               array with paths to JS files
@@ -100,6 +100,17 @@ HTML;
      * js_after         HTML inserted after <script> tags
      * extend_event     extend event name
      * favicon          true = link to favicon, false = no favicon, null = no output
+     *
+     * @param array{
+     *     meta?: string,
+     *     css?: string[],
+     *     js?: string[],
+     *     css_before?: string,
+     *     css_after?: string,
+     *     js_before?: string,
+     *     js_after?: string,
+     *     favicon?: bool|null,
+     * } $assets see description
      */
     static function renderHeadAssets(array $assets): string
     {
@@ -195,11 +206,14 @@ HTML;
     /**
      * Render a list of messages
      *
-     * Supported $options:
-     * -------------------------------------------------------
+     * Supported options:
+     * ------------------
      * lcfirst (1)      lowercase first letter of each message
      * escape (1)       escape HTML in messages
      * show_keys (0)    render array keys
+     *
+     * @param string[] $messages
+     * @param array{lcfirst?: bool|null, escape?: bool|null, show_keys?: bool|null} $options see description
      */
     static function renderMessageList(array $messages, array $options = []): string
     {

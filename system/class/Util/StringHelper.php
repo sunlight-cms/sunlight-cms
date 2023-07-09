@@ -57,14 +57,14 @@ abstract class StringHelper
     /**
      * Slugify a string
      *
-     * Supported $options:
-     * -------------------
+     * Supported options:
+     * ------------------
      * lower (1)        generate lowercase slug 1/0
      * extra ("._")     string list of extra allowed characters
      * max_len (255)    slug length limit or null
      * fallback ("")    fallback slug in case the process fails
      *
-     * @param array{lower: bool, extra: string, max_len: int|null, fallback: string} $options
+     * @param array{lower?: bool, extra?: string, max_len?: int|null, fallback?: string} $options see description
      */
     static function slugify(string $input, array $options = []): string
     {

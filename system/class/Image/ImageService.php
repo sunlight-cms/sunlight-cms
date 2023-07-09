@@ -113,8 +113,8 @@ final class ImageService
     /**
      * Load and store an image
      *
-     * Supported $options:
-     * --------------------------------------------
+     * Supported options:
+     * ------------------
      * limits       {@see ImageLoader::load()}
      * resize       {@see ImageTransformer::resize()}
      * write        {@see Image::write()}
@@ -123,7 +123,31 @@ final class ImageService
      * @param string $type descriptive type (for extend event)
      * @param string $source source path
      * @param string $target target path
-     * @param array $options see above
+     * @param array{
+     *     limits?: array{
+     *         filesize?: int|null,
+     *         dimensions?: array{w: int, h: int}|null,
+     *         memory?: float
+     *     }|null,
+     *     resize?: array{
+     *         w?: int|null,
+     *         h?: int|null,
+     *         mode?: string|null,
+     *         keep_smaller?: bool,
+     *         bgcolor?: array{r: int, g: int, b: int}|null,
+     *         pad?: bool,
+     *         "align-x"?: int,
+     *         "align-y"?: int,
+     *         trans?: bool,
+     *     }|null,
+     *     write?: array{
+     *         jpg_quality?: int|null,
+     *         png_quality?: int|null,
+     *         png_filters?: int|null,
+     *         webp_quality?: int|null,
+     *     }|null,
+     *     format?: string|null,
+     * } $options see description
      * @param ImageException|null $exception set to an exception object in case of failure
      */
     static function process(
@@ -132,8 +156,7 @@ final class ImageService
         string $target,
         array $options = [],
         ?ImageException &$exception = null
-    ): bool
-    {
+    ): bool {
         try {
             Extend::call('image.process.before', [
                 'type' => $type,

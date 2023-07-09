@@ -81,10 +81,16 @@ abstract class PluginAction extends Action
      * Confirm an action
      *
      * Supported options:
-     * --------------------------------------
+     * ------------------
      * button_text      customize button text
      * content_before   HTML before text
      * content_after    HTML after text
+     *
+     * @param array{
+     *     button_text?: string|null,
+     *     content_before?: string|null,
+     *     content_after?: string|null,
+     * } $options see description
      */
     protected function confirm(string $text, array $options = []): ActionResult
     {

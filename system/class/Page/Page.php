@@ -397,7 +397,7 @@ abstract class Page
         bool $flat = true,
         ?TreeFilterInterface $filter = null,
         ?array $extraColumns = null
-    ): array{
+    ): array {
         $canBeCached = $filter === null && $extraColumns === null;
 
         if ($canBeCached && isset(self::$childrenCache[$pageId])) {

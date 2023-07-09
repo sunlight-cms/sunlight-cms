@@ -90,8 +90,8 @@ abstract class Zip
     /**
      * Extract one or more paths from an archive
      *
-     * Supported $options:
-     * ==========================================================
+     * Supported options:
+     * ------------------
      * path_mode (PATH_FULL)    (see Zip::PATH_* constants)
      * dir_mode (0777)          mode of newly created directories
      * recursive (1)            extract subdirectories 1/0
@@ -101,6 +101,13 @@ abstract class Zip
      *
      * @param string[]|string $directories archive directory paths (e.g. "foo", "foo/bar" or "" for root)
      * @param string $targetPath path where to extract the files to
+     * @param array{
+     *     path_mode?: int,
+     *     dir_mode?: int,
+     *     recursive?: bool,
+     *     exclude_prefix?: string|null,
+     *     big_file_threshold?: int|null,
+     * } $options see description
      */
     static function extractDirectories(\ZipArchive $zip, ?array $directories, string $targetPath, array $options = []): void
     {

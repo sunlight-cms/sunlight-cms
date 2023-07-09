@@ -27,7 +27,14 @@ abstract class Cookie
      *
      * Note: samesite is only supported on PHP 7.3 or newer
      *
-     * @param array{expires?: int, path?: string, domain?: string, secure?: bool, httponly?: bool, samesite?: string} $options
+     * @param array{
+     *     expires?: int,
+     *     path?: string,
+     *     domain?: string,
+     *     secure?: bool,
+     *     httponly?: bool,
+     *     samesite?: string,
+     * } $options
      */
     static function set(string $name, string $value, array $options = []): void
     {

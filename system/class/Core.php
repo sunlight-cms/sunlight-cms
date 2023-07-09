@@ -81,17 +81,26 @@ abstract class Core
     /**
      * Initialize the system
      *
-     * Supported $options keys:
-     * ------------------------
-     * config_file          path to the configuration file, null (= default) or false (= skip)
-     * minimal_mode         stop after initializing base components and environment (= no plugins, db, settings, session, etc.) 1/0
-     * session_enabled      initialize session 1/0
-     * session_regenerate   force new session ID 1/0
-     * allow_cron_auto      allow running cron tasks automatically 1/0
-     * content_type         content type, FALSE = disabled (default is "text/html; charset=UTF-8")
-     * env                  environment identifier, see Core::ENV_* constants
+     * Supported options:
+     * ------------------
+     * config_file (-)          path to the configuration file, null (= default) or false (= skip)
+     * minimal_mode (0)         stop after initializing base components and environment (= no plugins, db, settings, session, etc.) 1/0
+     * session_enabled (1)      initialize session 1/0
+     * session_regenerate (0)   force new session ID 1/0
+     * allow_cron_auto          allow running cron tasks automatically 1/0 (default state depends on env)
+     * content_type (-)         content type, FALSE = disabled (default is "text/html; charset=UTF-8")
+     * env ("script")           environment identifier, see Core::ENV_* constants
      *
      * @param string $root relative path to the system root directory (with a trailing slash)
+     * @param array{
+     *     config_file?: string|false|null,
+     *     minimal_mode?: bool,
+     *     session_enabled?: bool,
+     *     session_regenerate?: bool,
+     *     allow_cron_auto?: bool,
+     *     content_type?: string|false,
+     *     env?: string,
+     * } $options see description
      */
     static function init(string $root, array $options = []): void
     {

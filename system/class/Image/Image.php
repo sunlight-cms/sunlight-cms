@@ -57,7 +57,12 @@ final class Image
     /**
      * Save the image to a file
      *
-     * @see Image::generate() for supported formats and options
+     * @param array{
+     *     jpg_quality?: int|null,
+     *     png_quality?: int|null,
+     *     png_filters?: int|null,
+     *     webp_quality?: int|null,
+     * } $options
      * @throws ImageException
      */
     function write(string $path, string $format, array $options = []): void
@@ -74,7 +79,12 @@ final class Image
     /**
      * Output the image directly
      *
-     * @see Image::generate() for supported formats and options
+     * @param array{
+     *     jpg_quality?: int|null,
+     *     png_quality?: int|null,
+     *     png_filters?: int|null,
+     *     webp_quality?: int|null,
+     * } $options
      * @throws ImageException
      */
     function output(string $format, array $options = []): void
@@ -83,12 +93,13 @@ final class Image
     }
 
     /**
-     * Supported formats and options - {@see ImageFormat}
-     * ------------------------------------------------------
-     * jpg, jpeg    options: jpg_quality (0 - 100)
-     * png          options: png_quality (0 - 9), png_filters
-     * gif          options: none
-     * webp         options: webp_quality (0 - 100)
+     * @param string $format {@see ImageFormat}
+     * @param array{
+     *     jpg_quality?: int|null,
+     *     png_quality?: int|null,
+     *     png_filters?: int|null,
+     *     webp_quality?: int|null,
+     * } $options
      */
     private function generate(?string $filename, string $format, array $options): void
     {

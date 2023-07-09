@@ -274,7 +274,7 @@ abstract class Filesystem
     /**
      * Recursively purge a directory
      *
-     * Available options:
+     * Supported options:
      * ------------------
      * keep_dir (0)         keep the empty directory (remove children only) 1/0
      * files_only (0)       remove files only (keep directory structure) 1/0
@@ -282,7 +282,7 @@ abstract class Filesystem
      *                      (this option is active only if files_only = 1)
      *
      * @param string $path path to the directory
-     * @param array $options option array (see above)
+     * @param array{keep_dir?: bool, files_only?: bool, file_callback?: callable|null} $options see description
      * @param string|null $failedPath variable that will contain a path that could not be removed
      */
     static function purgeDirectory(string $path, array $options = [], ?string &$failedPath = null): bool

@@ -81,10 +81,17 @@ class Message
      * List messages
      *
      * Supported options:
-     * ---------------------------------------------------------------------------
-     * type (WARNING)   see Message class constants
-     * text             text before the list
-     * list             options for {@see GenericTemplates::renderMessageList()}
+     * ------------------
+     * type (warn)  see Message class constants
+     * text         content at the beginning of the message
+     * list         options for {@see GenericTemplates::renderMessageList()}
+     *
+     * @param string[] $messages
+     * @param array{
+     *     type?: string,
+     *     text?: string,
+     *     list?: array{lcfirst?: bool|null, escape?: bool|null, show_keys?: bool|null},
+     * } $options see description
      */
     static function list(array $messages, array $options = []): self
     {

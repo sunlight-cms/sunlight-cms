@@ -228,22 +228,22 @@ abstract class Form
     /**
      * Render inputs for date-time selection
      *
-     * Supported $options:
-     * -------------------
+     * Supported options:
+     * ------------------
      * input_class (-)          input class name
      * now_toggle (0)           add an option to set the timestamp to current time on save 1/0
      * now_toggle_default (0)   enable the now_toggle by default 1/0
      *
      * @param string $name input name
      * @param int|null $timestamp pre-filled timestamp
-     * @param array $options additional options, see description
+     * @param array{input_class?: string|null, now_toggle?: bool, now_toggle_default?: bool} $options see description
      */
     static function editTime(string $name, ?int $timestamp = null, array $options = []): string
     {
         $options += [
+            'input_class' => null,
             'now_toggle' => false,
             'now_toggle_default' => false,
-            'input_class' => null,
         ];
 
         $output = Extend::buffer('time.edit', [
@@ -309,8 +309,8 @@ abstract class Form
     /**
      * Render a form
      *
-     * Supported $options:
-     * --------------------------------------------------------------
+     * Supported options:
+     * ------------------
      * name (-)             name attribute
      * method (post)        method attribute
      * action (-)           action attribute
@@ -321,22 +321,45 @@ abstract class Form
      * class (-)            class attribute
      * embedded (0)         don't render <form> tag and XSRF input
      * table_attrs          custom HTML at the end of the <table> tag
+     * table_prepend        custom after before <table>
      * table_append         custom HTML before </table>
+     * form_prepend         custom HTML after <form>
      * form_append          custom HTML before </form>
      *
      * Format of a single row in $rows:
-     * -----------------------------------------
+     * --------------------------------
      * label (-)        row label
      * content (-)      row content
-     * top (0)          align the row to the top
-     * class (-)        custom <tr> attribute
+     * top (0)          align the row to the top 1/0
+     * class (-)        custom <tr> class
      *
      * - if both label and content is empty, the row is skipped
      * - if label is null, the content cell will span the entire row
      * - use {@see Form::getSubmitRow()} to add a submit button
      *
+     * @param array{
+     *     name?: string|null,
+     *     method?: string,
+     *     action?: string|null,
+     *     autocomplete?: string|null,
+     *     enctype?: string|null,
+     *     multipart?: bool,
+     *     id?: string|null,
+     *     class?: string|null,
+     *     embedded?: bool,
+     *     table_attrs?: string,
+     *     table_prepend?: string,
+     *     table_append?: string,
+     *     form_prepend?: string,
+     *     form_append?: string,
+     * } $options see description
      *
-     * @param array[] $rows
+     * @param array<array{
+     *     label?: string|null,
+     *     content?: string|null,
+     *     top?: bool,
+     *     class?: string
+     * }> $rows see description
      */
     static function render(array $options, array $rows): string
     {
@@ -419,12 +442,19 @@ abstract class Form
     /**
      * Create a form row with a submit button
      *
-     * Supported $options:
-     * -------------------------------------
+     * Supported options:
+     * ------------------
      * label ('')   row label
      * name (-)     submit button name
      * text         submit button text
      * append       HTML after submit button
+     *
+     * @param array{
+     *     label?: string|null,
+     *     name?: string|null,
+     *     text?: string|null,
+     *     append?: string|null,
+     * } $options see description
      */
     static function getSubmitRow(array $options = []): array
     {

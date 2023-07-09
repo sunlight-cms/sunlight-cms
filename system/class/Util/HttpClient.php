@@ -9,18 +9,20 @@ use Sunlight\Core;
 /**
  * Minimalistic HTTP client
  *
- * Supported $options:
+ * Supported options:
+ * ------------------
+ * timeout      request timeout in seconds (float, default = 60, null/<=0 means unlimited)
+ * headers      numerically indexed list of additional header strings
+ * user_agent   user agent string
  *
- *  timeout     request timeout in seconds (float, default = 60, null/<=0 means unlimited)
- *  headers     numerically indexed list of additional header strings
- *  user_agent  user agent string
+ * @psalm-type HttpClientOptions = array{timeout?: float|null, headers?: list<string>, user_agent?: string}
  */
 class HttpClient
 {
     /**
      * Perform a GET request
      *
-     * @param array $options see class description
+     * @param HttpClientOptions $options see class description
      * @throws HttpClientException on failure
      */
     static function get(string $url, array $options = []): string
@@ -31,7 +33,7 @@ class HttpClient
     /**
      * Perform a POST request
      *
-     * @param array $options see class description
+     * @param HttpClientOptions $options see class description
      * @throws HttpClientException on failure
      */
     static function post(string $url, string $body, array $options = []): string
@@ -39,6 +41,9 @@ class HttpClient
         return self::request($url, $body, $options);
     }
 
+    /**
+     * @param HttpClientOptions $options
+     */
     private static function request(string $url, ?string $body, array $options): string
     {
         self::validateUrl($url);
@@ -81,6 +86,9 @@ class HttpClient
         }
     }
 
+    /**
+     * @param HttpClientOptions $options
+     */
     private static function curlRequest(string $url, ?string $body, array $options): string
     {
         $timeout = isset($options['timeout']) ? (int) $options['timeout'] * 1000 : 0;
@@ -113,6 +121,9 @@ class HttpClient
         return $response;
     }
 
+    /**
+     * @param HttpClientOptions $options
+     */
     private static function nativeRequest(string $url, ?string $body, array $options): string
     {
         $contextOptions = [

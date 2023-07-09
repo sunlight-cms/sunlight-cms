@@ -19,12 +19,18 @@ final class ImageLoader
     /**
      * Load image from a path
      *
-     * Supported $limits:
-     * --------------------------------------------------------------------
-     * filesize     max file size in bytes
-     * dimensions   array{w: int, h: int}
-     * memory       max percentage of remaining memory used (default: 0.75)
+     * Supported limits:
+     * -----------------
+     * filesize (null)      max file size in bytes
+     * dimensions (null)    max image dimensions as array{w: int, h: int}
+     * memory (0.75)        max percentage of remaining memory used
      *
+     * @param array{
+     *     filesize?: int|null,
+     *     dimensions?: array{w: int, h: int}|null,
+     *     memory?: float,
+     * } $limits see description
+     * @param string|null $format image format or null (= determine from path)
      * @throws ImageException
      */
     static function load(string $path, array $limits = [], ?string $format = null): Image

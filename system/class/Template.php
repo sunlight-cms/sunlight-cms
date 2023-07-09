@@ -221,10 +221,12 @@ abstract class Template
      * Render template links
      *
      * Supported options:
-     * --------------------------------------------------------------------------
+     * ------------------
      * cms (1)      show link to CMS website
      * admin (-)    show link to administration
      *              (TRUE - always, FALSE - never, NULL - if user has privileges)
+     *
+     * @param array{cms?: bool, admin?: bool|null} $options see description
      */
     static function links(array $options = []): string
     {
@@ -299,17 +301,29 @@ abstract class Template
     /**
      * Render tree menu
      *
-     * Supported keys in $options:
-     * ---------------------------------------------------------------------------------
+     * Supported options:
+     * ------------------
      * page_id (-)                      ID of page to render menu for (-1 = current)
      * children_only (1)                only list children (requires page_id)
      * max_depth (-)                    maximum number of levels (null = unlimited)
      * ord_start (-)                    only list pages with this order number or higher
      * ord_end (-)                      only list pages with this order number or less
      * css_class (-)                    CSS class for the container tag
-     * extend_event ("tpl.menu.item")   menu item extend event name
+     * extend_event ("tpl.menu.item")   menu item extend event name or null
      * type ("tree")                    menu type identifier (for events)
      * filter (-)                       additional options for {@see PageTreeFilter}
+     *
+     * @param array{
+     *     page_id?: int|null,
+     *     children_only?: bool,
+     *     max_depth?: int|null,
+     *     ord_start?: int|null,
+     *     ord_end?: int|null,
+     *     css_class?: string|null,
+     *     extend_event?: string|null,
+     *     type?: string,
+     *     filter?: array{check_level?: bool, check_public?: bool},
+     * } $options see description
      */
     static function treeMenu(array $options): string
     {

@@ -1065,8 +1065,8 @@ abstract class User
     /**
      * Render user avatar
      *
-     * Supported keys in $options:
-     * -------------------------------------------------------------------------------------------------
+     * Supported options:
+     * ------------------
      * get_path (0)     return avatar path instead of HTML 1/0
      * default (1)      use default avatar if user has none, otherwise return NULL 1/0
      * default_dark (-) use dark variant of the default avatar 1/0 (default depends on current template)
@@ -1075,6 +1075,14 @@ abstract class User
      * class (-)        custom CSS class
      *
      * @param array $data user data (avatar, username, publicname)
+     * @param array{
+     *     get_path?: bool,
+     *     default?: bool,
+     *     default_dark?: bool|null,
+     *     link?: bool,
+     *     extend?: bool,
+     *     class?: string|null,
+     * } $options see description
      */
     static function renderAvatar(array $data, array $options = []): ?string
     {

@@ -37,8 +37,8 @@ final class ImageTransformer
     /**
      * Resize image using the given options
      *
-     * Supported $options:
-     * -----------------------------------------------------------------------------------------------
+     * Supported$options:
+     * ------------------
      * w                    target width (optional if "h" is specified)
      * h                    target height (optional if "w" is specified)
      * mode (fill)          resize mode (see RESIZE_* class constants)
@@ -49,6 +49,17 @@ final class ImageTransformer
      * align-y (0)          vertical alignment for cropping and padding, see ALIGN_* class constants
      * trans (false)        enable transparency
      *
+     * @param array{
+     *     w?: int|null,
+     *     h?: int|null,
+     *     mode?: string|null,
+     *     keep_smaller?: bool,
+     *     bgcolor?: array{r: int, g: int, b: int}|null,
+     *     pad?: bool,
+     *     "align-x"?: int,
+     *     "align-y"?: int,
+     *     trans?: bool,
+     * } $options see description
      * @throws ImageException
      */
     static function resize(Image $image, array $options): Image

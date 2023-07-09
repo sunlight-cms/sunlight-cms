@@ -13,7 +13,11 @@ class FulltextContentBuilder
     private $parts = [];
 
     /**
-     * @param array{remove_hcm?: bool, strip_tags?: bool, unescape_html?: bool} $options
+     * @param array{
+     *     remove_hcm?: bool|null,
+     *     strip_tags?: bool|null,
+     *     unescape_html?: bool|null,
+     * } $options
      */
     function add(?string $part, array $options = []): void
     {

@@ -11,7 +11,7 @@ class Paginator
      * Render a paginator
      *
      * Supported options:
-     * ------------------------------------------------------
+     * ------------------
      * param ('page')       query parameter name
      * link_suffix ('')     string to append after every link
      * auto_last (0)        default to the last page 1/0
@@ -19,6 +19,11 @@ class Paginator
      * @param string $url base URL to add page parameter to
      * @param int $limit max item per page
      * @param int $count total number of items
+     * @param array{
+     *     param?: string,
+     *     link_suffix?: string,
+     *     auto_last?: bool,
+     * } $options see descripion
      * @return array{
      *      paging: string,
      *      sql_limit: string,
@@ -171,7 +176,7 @@ class Paginator
      * Render paginator for table rows
      *
      * Additional supported options:
-     * ({@see Paginator::paginate()} for the rest)
+     * @see Paginator::paginate() for more options
      * -------------------------------------------
      * cond ('1')       row filter
      * alias (-)        table alias to use
@@ -179,6 +184,13 @@ class Paginator
      * @param string $url base URL to add page parameter to
      * @param int $limit max item per page
      * @param string $table
+     * @param array{
+     *     param?: string,
+     *     link_suffix?: string,
+     *     auto_last?: bool,
+     *     cond?: string,
+     *     alias?: string,
+     * } $options
      * @return array{
      *      paging: string,
      *      sql_limit: string,

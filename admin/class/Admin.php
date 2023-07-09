@@ -116,19 +116,26 @@ abstract class Admin
     /**
      * Render a content editor
      *
-     * Supported $options:
-     * -------------------------------------
+     * Supported options:
+     * ------------------
      * mode ('default')     'default' / 'code' (non-wysiwyg code editor) / 'lite' (short content editor)
      * format ('html')      'xml' / 'css' / 'js' / 'json' / 'php' / 'php-raw' / 'html'
      * cols (94)            number of textarea columns
      * rows (25)            number of textarea rows
-     * wrap (null)          textarea wrap attribute
+     * wrap (-)             textarea wrap attribute
      * class ('areabig')    textarea class attribute
      *
      * @param string $context descriptive identifier of where the editor is used (for plugins)
      * @param string $name form element name
      * @param string $htmlContent properly escaped HTML content for the editor
-     * @param array $options see description
+     * @param array{
+     *     mode?: string,
+     *     format?: string,
+     *     cols?: int,
+     *     rows?: int,
+     *     wrap?: string|null,
+     *     class?: string,
+     * } $options see description
      */
     static function editor(string $context, string $name, string $htmlContent, array $options = []): string
     {
@@ -282,18 +289,31 @@ abstract class Admin
     /**
      * Render <select> for page selection
      *
-     * Supported $options:
-     * -------------------
-     * selected             ID of active page (or an array if multiple = TRUE)
-     * multiple             allow choice of multiple pages 1/0
-     * empty_item           label of empty item (ID = -1)
-     * type                 limit to a single page type
-     * check_access         check access to each page 1/0
-     * check_privilege      also check privilege to manage each page type 1/0 (requires check_access = 1)
-     * allow_separators     make separators selectable 1/0
-     * disabled_branches    array of page IDs whose branches should be excluded
-     * maxlength            max. length of page title or null (unlimited)
-     * attrs                extra HTML with <select> attributes (without space)
+     * Supported options:
+     * ------------------
+     * selected (-1)            ID of active page (or an array if multiple = TRUE)
+     * multiple (0)             allow choice of multiple pages 1/0
+     * empty_item (-)           label of empty item (ID = -1)
+     * type (-)                 limit to a single page type
+     * check_access (1)         check access to each page 1/0
+     * check_privilege (0)      also check privilege to manage each page type 1/0 (requires check_access = 1)
+     * allow_separators (0)     make separators selectable 1/0
+     * disabled_branches ([])   array of page IDs whose branches should be excluded
+     * maxlength (22)           max. length of page title or null (unlimited)
+     * attrs (-)                extra HTML with <select> attributes (without space)
+     *
+     * @param array{
+     *     selected?: int|int[],
+     *     multiple?: bool,
+     *     empty_item?: string|null,
+     *     type?: int|null,
+     *     check_access?: bool,
+     *     check_privilege?: bool,
+     *     allow_separators?: bool,
+     *     disabled_branches?: int[],
+     *     maxlength?: int|null,
+     *     attrs?: string|null,
+     * } $options see description
      */
     static function pageSelect(string $name, array $options): string
     {
@@ -385,8 +405,8 @@ abstract class Admin
     /**
      * Render <select> for user or group selection
      *
-     * Supported $options:
-     * -------------------
+     * Supported options:
+     * ------------------
      * selected (-)         ID or IDs of selected items
      * group_cond ('1')     SQL condition for groups
      * user_cond ('1')      SQL condition for users
@@ -394,6 +414,16 @@ abstract class Admin
      * extra_option (-)     add an extra option with this label (value = -1)
      * select_groups (0)    select groups instead of users 1/0
      * multiple (-)         render multi-select with this size
+     *
+     * @param array{
+     *     selected?: int|int[]|null,
+     *     group_cond?: string,
+     *     user_cond?: string,
+     *     class?: string|null,
+     *     extra_option?: string|null,
+     *     select_groups?: bool,
+     *     multiple?: int|null,
+     * } $options see description
      */
     static function userSelect(string $name, array $options = []): string
     {

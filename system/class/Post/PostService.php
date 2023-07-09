@@ -646,6 +646,16 @@ class PostService
      * subject      show subject field 1/0
      * is_topic     the new post is a forum topic 1/0
      * pluginflag   plugin flag (only for posttype == Comment::PLUGIN)
+     *
+     * @param array{
+     *     url: string,
+     *     posttype: int,
+     *     posttarget: int,
+     *     xhome: int,
+     *     subject: bool,
+     *     is_topic: bool,
+     *     pluginflag?: string|null,
+     * } $vars see description
      */
     static function renderForm(array $vars): string
     {

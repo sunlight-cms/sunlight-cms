@@ -9,16 +9,24 @@ use Sunlight\Util\Arr;
 use Sunlight\Util\Html;
 
 /**
- * Supported router $options:
- * --------------------------------------------------
+ * Supported options:
+ * ------------------
  * absolute (false)     generate an absolute URL 1/0
  * query (null)         array of query parameters
  * fragment (null)      fragment string (without #)
+ *
+ * @psalm-type RouterOptions = array{
+ *     absolute?: bool|null,
+ *     query?: array|null,
+ *     fragment?: string|null,
+ * }|null
  */
 abstract class Router
 {
     /**
      * Generate URL for a path
+     *
+     * @param RouterOptions $options
      */
     static function path(string $path, ?array $options = null): string
     {
@@ -31,6 +39,8 @@ abstract class Router
      * - relative paths are resolved automatically
      * - files outside SL_ROOT are not supported
      * - the file path can contain a query string, which will be preserved
+     *
+     * @param RouterOptions $options
      */
     static function file(string $filePath, ?array $options = null): string
     {
@@ -64,6 +74,8 @@ abstract class Router
      * Generate URL using a slug (for pages, articles, etc.)
      *
      * Index page uses an empty slug.
+     *
+     * @param RouterOptions $options
      */
     static function slug(string $slug, ?array $options = null): string
     {
@@ -80,6 +92,8 @@ abstract class Router
 
     /**
      * Generate URL for a page
+     *
+     * @param RouterOptions $options
      */
     static function page(?int $id, ?string $slug = null, ?string $segment = null, ?array $options = null): string
     {
@@ -99,6 +113,8 @@ abstract class Router
 
     /**
      * Generate URL for the index page
+     *
+     * @param RouterOptions $options
      */
     static function index(?array $options = null): string
     {
@@ -107,6 +123,8 @@ abstract class Router
 
     /**
      * Generate URL to an article
+     *
+     * @param RouterOptions $options
      */
     static function article(?int $id, ?string $slug = null, ?string $categorySlug = null, ?array $options = null): string
     {
@@ -126,6 +144,8 @@ abstract class Router
 
     /**
      * Get a permanent URL for a post
+     *
+     * @param RouterOptions $options
      */
     static function postPermalink(int $id, ?array $options = null): string
     {
@@ -134,6 +154,8 @@ abstract class Router
 
     /**
      * Generate URL to a forum topic
+     *
+     * @param RouterOptions $options
      */
     static function topic(int $topicId, ?string $forumSlug = null, ?array $options = null): string
     {
@@ -152,6 +174,8 @@ abstract class Router
 
     /**
      * Generate URL to a module
+     *
+     * @param RouterOptions $options
      */
     static function module(string $module, ?array $options = null): string
     {
@@ -160,6 +184,8 @@ abstract class Router
 
     /**
      * Generate URL to an admin module
+     *
+     * @param RouterOptions $options
      */
     static function admin(?string $module, ?array $options = null): string
     {
@@ -171,6 +197,8 @@ abstract class Router
 
     /**
      * Generate URL to the admin index
+     *
+     * @param RouterOptions $options
      */
     static function adminIndex(?array $options = null): string
     {
@@ -195,6 +223,19 @@ abstract class Router
      * url (-)          URL options (see class description)
      *
      * @param array $data user data {@see User::createQuery()}
+     * @param array{
+     *     plain?: bool,
+     *     link?: bool,
+     *     custom_link?: string|null,
+     *     color?: bool,
+     *     icon?: bool,
+     *     publicname?: bool,
+     *     new_window?: bool,
+     *     max_len?: int|null,
+     *     class?: string|null,
+     *     title?: string|null,
+     *     url?: RouterOptions,
+     * } $options see description
      * @return string HTML code
      */
     static function user(array $data, array $options = []): string
@@ -274,9 +315,21 @@ abstract class Router
     /**
      * Generate a user profile link using data from {@see User::createQuery()}
      *
-     * @param array $userQuery output of z {@see User::createQuery()}
+     * @param array $userQuery output of {@see User::createQuery()}
      * @param array $row the row to generate a link for
-     * @param array $options link options {@see Router::user()}
+     * @param array{
+     *     plain?: bool,
+     *     link?: bool,
+     *     custom_link?: string,
+     *     color?: bool,
+     *     icon?: bool,
+     *     publicname?: bool,
+     *     new_window?: bool,
+     *     max_len?: int,
+     *     class?: string,
+     *     title?: string,
+     *     url?: RouterOptions,
+     * } $options {@see Router::user()}
      */
     static function userFromQuery(array $userQuery, array $row, array $options = []): string
     {
@@ -297,6 +350,9 @@ abstract class Router
         return $url;
     }
 
+    /**
+     * @param RouterOptions $options
+     */
     private static function generateUrl(Url $url, ?array $options): string
     {
         if (!empty($options['query'])) {
