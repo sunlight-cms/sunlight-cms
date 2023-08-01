@@ -403,7 +403,7 @@ if (!empty($_POST)) {
 
     $search_content = $search_content->build();
 
-    if ($search_content !== $query['search_content']) {
+    if ($new || $search_content !== $query['search_content']) {
         $changeset['search_content'] = $search_content;
     }
 
