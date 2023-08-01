@@ -55,7 +55,10 @@ abstract class PluginInstaller
         }
 
         $this->installed = null;
-        $this->doUninstall();
+
+        DB::transactional(function () {
+            $this->doUninstall();
+        });
 
         return !$this->isInstalled();
     }
@@ -135,8 +138,24 @@ abstract class PluginInstaller
      */
     protected function loadSqlDump(string $path, ?string $currentPrefix = 'sunlight_'): void
     {
+        $this->loadSql(SqlReader::fromFile($path), $currentPrefix);
+    }
+
+    /**
+     * Load a SQL string
+     *
+     * @param string $sql SQL statements to load
+     * @param string|null $currentPrefix prefix that is used in the SQL string (null = do not replace)
+     */
+    protected function loadSqlString(string $sql, ?string $currentPrefix = 'sunlight_'): void
+    {
+        $this->loadSql(new SqlReader($sql), $currentPrefix);
+    }
+
+    private function loadSql(SqlReader $reader, ?string $currentPrefix = 'sunlight_'): void
+    {
         DatabaseLoader::load(
-            SqlReader::fromFile($path),
+            $reader,
             $currentPrefix,
             $currentPrefix !== null
                 ? DB::$prefix
