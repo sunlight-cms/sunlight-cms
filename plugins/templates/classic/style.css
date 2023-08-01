@@ -788,9 +788,6 @@ a.button:hover {
 a .icon, .text-icon .icon {
     padding-right: 5px;
 }
-.important {
-    color: red;
-}
 .cleaner {
     clear: both;
 }
