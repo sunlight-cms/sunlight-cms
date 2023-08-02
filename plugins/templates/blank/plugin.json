@@ -1,0 +1,21 @@
+{
+    "$schema": "../../../system/schema/template.json",
+    "name": "Blank",
+    "description": "8.x blank template",
+    "authors": [
+        {"url": "https://sunlight-cms.cz/"}
+    ],
+    "version": "1.0",
+    "environment": {
+        "system": "^8.0"
+    },
+    "layouts": {
+        "default": {
+            "template": "template.php",
+            "slots": ["right"]
+        }
+    },
+    "box.item": "section",
+    "box.title": "h2",
+    "box.title.inside": true
+}

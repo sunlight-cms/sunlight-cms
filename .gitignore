@@ -32,7 +32,7 @@
 
 /plugins/templates/*
 !/plugins/templates/default
-!/plugins/templates/classic
+!/plugins/templates/blank
 !/plugins/templates/.htaccess
 
 /vendor/*

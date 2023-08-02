@@ -2,5 +2,5 @@
 
 return [
     'default.label' => 'výchozí',
-    'default.slot.left' => 'levý sloupec',
+    'default.slot.right' => 'pravý sloupec',
 ];

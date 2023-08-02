@@ -2,5 +2,5 @@
 
 return [
     'default.label' => 'default',
-    'default.slot.left' => 'left column',
+    'default.slot.right' => 'right column',
 ];
