@@ -141,7 +141,6 @@ if ($public) {
 
 <div class="hr profile-hr"><hr></div>
 
-<div class="wlimiter">
 <table class="profiletable">
 
 <tr><th>' . _lang('mod.profile.regtime') . '</th><td>' . GenericTemplates::renderDate($query['registertime'], 'user_registration') . '</td></tr>
@@ -153,7 +152,6 @@ if ($public) {
 ' . $note . '
 
 </table>
-</div>
 ';
 } else {
     $output .= Message::ok(_lang('mod.profile.private'));

@@ -276,7 +276,6 @@ tr.valign-top th {
     vertical-align: top;
 }
 .widetable,
-.widetable2,
 .topic-table {
     width: 650px;
 }
@@ -286,9 +285,6 @@ tr.valign-top th {
 .widetable td {
     padding: 6px 15px;
     width: 50%;
-}
-.widetable2 td {
-    padding: 6px 10px;
 }
 
 /* Forms generic */
@@ -839,10 +835,6 @@ a.button:hover {
 .bborder {
     padding-bottom: 0.8em;
     border-bottom: 1px solid #dcdcdc;
-}
-.wlimiter {
-    overflow: auto;
-    width: 646px;
 }
 .pre {
     display: block;
