@@ -59,6 +59,8 @@ Extend::call('admin.box.edit', ['box' => &$box]);
 if (isset($_POST['box_edit'])) do {
     $errors = [];
 
+    $class = StringHelper::cut(StringHelper::trimExtraWhitespace(Request::post('class', '')), 255);
+
     $changeset = [
         'title' => Html::cut(_e(StringHelper::trimExtraWhitespace(Request::post('title'))), 255),
         'content' => Html::cut(Request::post('content', ''), DB::MAX_MEDIUMTEXT_LENGTH),
@@ -73,7 +75,7 @@ if (isset($_POST['box_edit'])) do {
             DB::MAX_TEXT_LENGTH
         ) ?: null,
         'page_children' => Form::loadCheckbox('page_children'),
-        'class' => StringHelper::cut(StringHelper::trimExtraWhitespace(Request::post('class')), 255),
+        'class' => $class !== '' ? $class : null,
     ];
 
     // slot uid
