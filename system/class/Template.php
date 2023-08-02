@@ -462,48 +462,6 @@ abstract class Template
     }
 
     /**
-     * Render current page's title
-     */
-    static function title(): string
-    {
-        $title = Extend::buffer('tpl.title', ['head' => false]);
-
-        return $title !== '' ? $title : $GLOBALS['_index']->title;
-    }
-
-    /**
-     * Render the site title
-     */
-    static function siteTitle(): string
-    {
-        return Settings::get('title');
-    }
-
-    /**
-     * Render the site description
-     */
-    static function siteDescription(): string
-    {
-        return Settings::get('description');
-    }
-
-    /**
-     * Render the site's base URL
-     */
-    static function siteUrl(): string
-    {
-        return Core::getBaseUrl()->build() . '/';
-    }
-
-    /**
-     * Render the site's base path
-     */
-    static function sitePath(): string
-    {
-        return Core::getBaseUrl()->getPath() . '/';
-    }
-
-    /**
      * Render user menu
      */
     static function userMenu(bool $profileLink = true, bool $adminLink = true): string
@@ -596,6 +554,48 @@ abstract class Template
         }
 
         return $output;
+    }
+
+    /**
+     * Render current page's title
+     */
+    static function title(): string
+    {
+        $title = Extend::buffer('tpl.title', ['head' => false]);
+
+        return $title !== '' ? $title : $GLOBALS['_index']->title;
+    }
+
+    /**
+     * Render the site title
+     */
+    static function siteTitle(): string
+    {
+        return Settings::get('title');
+    }
+
+    /**
+     * Render the site description
+     */
+    static function siteDescription(): string
+    {
+        return Settings::get('description');
+    }
+
+    /**
+     * Render the site's base URL
+     */
+    static function siteUrl(): string
+    {
+        return Core::getBaseUrl()->build() . '/';
+    }
+
+    /**
+     * Render the site's base path
+     */
+    static function sitePath(): string
+    {
+        return Core::getBaseUrl()->getPath() . '/';
     }
 
     /**
