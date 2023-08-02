@@ -6,7 +6,7 @@
     </nav>
 
     <header id="header">
-        <a id="logo" href="<?= Template::siteUrl() ?>"><?= Template::siteTitle() ?></a>
+        <a id="logo" href="<?= _e(Template::sitePath()) ?>"><?= Template::siteTitle() ?></a>
         <p><?= Template::siteDescription() ?></p>
         <?= Template::menu() ?>
     </header>
