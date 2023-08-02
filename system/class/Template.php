@@ -351,7 +351,7 @@ abstract class Template
         [$activePageId, $activePage] = Page::getActive();
 
         // use active page
-        if ($options['page_id'] === null) {
+        if ($options['page_id'] == -1) {
             if ($activePageId === null) {
                 return '';
             }

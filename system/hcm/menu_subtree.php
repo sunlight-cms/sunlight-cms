@@ -3,7 +3,7 @@
 use Sunlight\Hcm;
 use Sunlight\Template;
 
-return function ($page_id = null, $ord_start = null, $ord_end = null, $max_depth = null, $class = null) {
+return function ($page_id = -1, $ord_start = null, $ord_end = null, $max_depth = null, $class = null) {
     Hcm::normalizeArgument($page_id, 'int', true);
     Hcm::normalizeArgument($ord_start, 'int', true);
     Hcm::normalizeArgument($ord_end, 'int', true);
