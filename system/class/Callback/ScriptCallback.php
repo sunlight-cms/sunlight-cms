@@ -15,10 +15,13 @@ class ScriptCallback
     public $path;
     /** @var callable|null */
     private $callback;
+    /** @var CallbackObjectInterface|null */
+    private $object;
 
-    function __construct(string $path)
+    function __construct(string $path, ?CallbackObjectInterface $object)
     {
         $this->path = $path;
+        $this->object = $object;
     }
 
     function __invoke(...$args)
@@ -36,6 +39,10 @@ class ScriptCallback
 
         if (Core::$debug && !is_callable($callback)) {
             throw new \UnexpectedValueException(sprintf('Script "%s" should return a callable, got %s', $this->path, gettype($callback)));
+        }
+
+        if ($this->object !== null && $callback instanceof \Closure) {
+            $callback = $callback->bindTo($this->object, $this->object);
         }
 
         $this->callback = $callback;

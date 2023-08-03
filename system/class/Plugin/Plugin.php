@@ -3,12 +3,13 @@
 namespace Sunlight\Plugin;
 
 use Kuria\Cache\NamespacedCache;
+use Sunlight\Callback\CallbackObjectInterface;
 use Sunlight\Core;
 use Sunlight\Plugin\Action\PluginAction;
 use Sunlight\Router;
 use Sunlight\Util\ConfigurationFile;
 
-abstract class Plugin
+abstract class Plugin implements CallbackObjectInterface
 {
     /** ID pattern */
     const ID_PATTERN = '[a-zA-Z][a-zA-Z0-9_.\-]*';
@@ -65,7 +66,7 @@ abstract class Plugin
     /** @var ConfigurationFile|null */
     private $config;
     /** @var NamespacedCache|null */
-    private $cache;
+    private $cache;    
 
     function __construct(PluginData $data, PluginManager $manager)
     {
@@ -275,5 +276,10 @@ abstract class Plugin
     function getCache(): NamespacedCache
     {
         return $this->cache ?? ($this->cache = $this->manager->createCacheForPlugin($this));
+    }
+
+    function getCallbackCacheKey(): string
+    {
+        return "plugin:{$this->id}";
     }
 }

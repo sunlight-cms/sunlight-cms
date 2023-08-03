@@ -29,10 +29,10 @@ abstract class CallbackHandler
      * Create a callable from the given callback definition
      *
      * @param array{method?: string, callback?: string|array, script?: string} $definition
-     * @param object $object object to call methods on
+     * @param CallbackObjectInterface $object object to call methods on
      * @return callable
      */
-    static function fromArray(array $definition, $object)
+    static function fromArray(array $definition, CallbackObjectInterface $object)
     {
         if (isset($definition['method'])) {
             return [$object, $definition['method']];
@@ -43,7 +43,7 @@ abstract class CallbackHandler
         }
 
         if (isset($definition['script'])) {
-            return self::fromScript($definition['script']);
+            return self::fromScript($definition['script'], $object);
         }
 
         throw new \InvalidArgumentException('Invalid callback definition');
@@ -52,7 +52,7 @@ abstract class CallbackHandler
     /**
      * Get callback defined by the given PHP script
      */
-    static function fromScript(string $script): ScriptCallback
+    static function fromScript(string $script, ?CallbackObjectInterface $object = null): ScriptCallback
     {
         $fullPath = realpath($script);
 
@@ -60,6 +60,12 @@ abstract class CallbackHandler
             throw new \InvalidArgumentException(sprintf('Script "%s" does not exist or is not accessible', $script));
         }
 
-        return self::$scriptCache[$fullPath] ?? (self::$scriptCache[$fullPath] = new ScriptCallback($fullPath));
+        if ($object !== null) {
+            $cacheKey = $object->getCallbackCacheKey() . ':' . $fullPath;
+        } else {
+            $cacheKey = $fullPath;
+        }
+
+        return self::$scriptCache[$cacheKey] ?? (self::$scriptCache[$cacheKey] = new ScriptCallback($fullPath, $object));
     }
 }
