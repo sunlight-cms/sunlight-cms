@@ -1,9 +1,6 @@
 <?php
 
 return [
-    'code.iso639-1' => 'en',
-    'numbers.dec_point' => '.',
-    'numbers.thousands_sep' => ' ',
     'system.poweredby' => 'Powered by',
     'global.nokit' => 'No items found',
     'global.error' => 'Error',

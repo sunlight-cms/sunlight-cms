@@ -47,7 +47,7 @@ class VersionChecker
                 'dist' => Core::DIST,
                 'php' => PHP_VERSION_ID,
                 'checksum' => hash_hmac('sha1', __FILE__, Core::$secret),
-                'lang' => _lang('code.iso639-1'),
+                'lang' => Core::$langPlugin->getIsoCode(),
             ]);
 
             try {

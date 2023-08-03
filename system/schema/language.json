@@ -3,6 +3,19 @@
     "allOf": [
         {
             "$ref": "plugin.json"
+        },
+        {
+            "properties": {
+                "iso_code": {
+                    "type": "string"
+                },
+                "decimal_point": {
+                    "type": "string"
+                },
+                "thousands_separator": {
+                    "type": "string"
+                }
+            }
         }
     ]
 }

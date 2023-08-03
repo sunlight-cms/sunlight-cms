@@ -16,6 +16,7 @@ use Sunlight\Database\DatabaseException;
 use Sunlight\ErrorHandler\ErrorHandler;
 use Sunlight\Exception\CoreException;
 use Sunlight\Localization\LocalizationDictionary;
+use Sunlight\Plugin\LanguagePlugin;
 use Sunlight\Plugin\PluginManager;
 use Sunlight\Util\DateTime;
 use Sunlight\Util\Environment;
@@ -51,6 +52,8 @@ abstract class Core
     static $lang;
     /** @var string */
     static $fallbackLang;
+    /** @var LanguagePlugin */
+    static $langPlugin;
     /** @var bool */
     static $sessionEnabled;
     /** @var bool */
@@ -530,6 +533,7 @@ abstract class Core
         }
 
         self::$lang = $lang;
+        self::$langPlugin = $languagePlugin;
     }
 
     static function isReady(): bool

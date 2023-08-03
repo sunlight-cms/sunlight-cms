@@ -15,11 +15,11 @@ abstract class GenericTemplates
     {
         if (is_int($number) || $decimals <= 0 || abs(fmod($number, 1)) < 0.1 ** $decimals) {
             // an integer value
-            return number_format($number, 0, '', _lang('numbers.thousands_sep'));
+            return number_format($number, 0, '', Core::$langPlugin->getThousandsSeparator());
         }
 
         // a float value
-        return number_format($number, $decimals, _lang('numbers.dec_point'), _lang('numbers.thousands_sep'));
+        return number_format($number, $decimals, Core::$langPlugin->getDecimalPoint(), Core::$langPlugin->getThousandsSeparator());
     }
 
     /**
@@ -74,7 +74,7 @@ abstract class GenericTemplates
      */
     static function renderHead(): string
     {
-        $lang = _e(_lang('code.iso639-1'));
+        $lang = _e(Core::$langPlugin->getIsoCode());
 
         return <<<HTML
 <!DOCTYPE html>

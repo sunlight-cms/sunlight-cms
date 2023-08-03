@@ -11,9 +11,21 @@ class LanguagePlugin extends Plugin
         return $this->id === Core::$fallbackLang;
     }
 
-    /**
-     * Get localization entries
-     */
+    function getIsoCode(): string
+    {
+        return $this->options['iso_code'];
+    }
+
+    function getDecimalPoint(): string
+    {
+        return $this->options['decimal_point'];
+    }
+
+    function getThousandsSeparator(): string
+    {
+        return $this->options['thousands_separator'];
+    }
+
     function getLocalizationEntries(bool $loadAdminDict): ?array
     {
         // base dictionary

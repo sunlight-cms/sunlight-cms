@@ -1,9 +1,6 @@
 <?php
 
 return [
-    'code.iso639-1' => 'cs',
-    'numbers.dec_point' => '.',
-    'numbers.thousands_sep' => ' ',
     'system.poweredby' => 'Powered by',
     'global.nokit' => 'Nenalezena žádná položka',
     'global.error' => 'Chyba',

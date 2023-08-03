@@ -8,5 +8,8 @@
     "version": "1.0",
     "environment": {
         "system": "^8.0"
-    }
+    },
+    "iso_code": "en",
+    "decimal_point": ".",
+    "thousands_separator": " "
 }
