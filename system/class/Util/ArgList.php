@@ -21,7 +21,16 @@ abstract class ArgList
             $offset < $length
             && preg_match(
                 <<<'REGEX'
-{(?>\s*)(?:"(?:(?P<d>[^"\\]*(?:\\.[^"\\]*)*))"|'(?P<s>(?:[^'\\]*(?:\\.[^'\\]*)*))'|(?P<p>[^,]*?))(?>\s*)(?:,|$)}A
+{
+    (?>\s*) # skip leading whitespace
+    (?:
+        "(?:(?P<d>[^"\\]*(?:\\.[^"\\]*)*))" # double quoted string
+        |'(?P<s>(?:[^'\\]*(?:\\.[^'\\]*)*))' # single quoted string
+        |(?P<p>[^,]*?) # plain value or a keyword
+    )
+    (?>\s*) # skip trailing whitespace
+    (?:,|$) # comma or end of input
+}Ax
 REGEX
                 ,
                 $input,
