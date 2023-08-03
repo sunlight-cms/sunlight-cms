@@ -9,10 +9,20 @@
     "environment": {
         "system": "^8.0"
     },
-    "class": "CodemirrorPlugin",
     "events.admin": [
-        {"event": "admin.editor", "method": "onAdminEditor"},
-        {"event": "admin.head", "method": "onAdminHead", "group": "codemirror"},
-        {"event": "admin.style", "method": "onAdminStyle"}
-    ]
+        {"event": "admin.editor", "script": "event/admin_editor.php"},
+        {"event": "admin.head", "script": "event/admin_head.php", "group": "codemirror"},
+        {"event": "admin.style", "script": "event/admin_style.php"}
+    ],
+    "extra": {
+        "supported_formats": {
+            "xml": true,
+            "css": true,
+            "js": true,
+            "json": true,
+            "php": true,
+            "php-raw": true,
+            "html": true
+        }
+    }
 }
