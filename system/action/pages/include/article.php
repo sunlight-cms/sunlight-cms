@@ -155,7 +155,7 @@ if ($_article['rateon'] && Settings::get('ratemode') != 0 && User::hasPrivilege(
             $rateform .= '<tr class="r' . $i. "\">\n";
 
             if ($i == 0) {
-                $rateform .= '<td rowspan="2"><img src="' . Template::asset('images/icons/rate-good.png') . "\" alt=\"good\" class=\"icon\"></td>\n";
+                $rateform .= '<td rowspan="2"><img src="' . _e(Template::asset('images/icons/rate-good.png')) . "\" alt=\"good\" class=\"icon\"></td>\n";
             }
 
             for ($x = 1; $x < 6; $x++) {
@@ -167,7 +167,7 @@ if ($_article['rateon'] && Settings::get('ratemode') != 0 && User::hasPrivilege(
             }
 
             if ($i == 0) {
-                $rateform .= '<td rowspan="2"><img src="' . Template::asset('images/icons/rate-bad.png') . "\" alt=\"bad\" class=\"icon\"></td>\n";
+                $rateform .= '<td rowspan="2"><img src="' . _e(Template::asset('images/icons/rate-bad.png')) . "\" alt=\"bad\" class=\"icon\"></td>\n";
             }
 
             $rateform .= "</tr>\n";
@@ -200,7 +200,7 @@ if ($rateform !== null || !empty($infos)) {
                 _lang('global.id'),
                 '<a href="' . _e(Router::admin('content-articles-edit', ['query' => ['id' => $_article['id'], 'returnid' => 'load', 'returnpage' => 1]])) . '">'
                 . $_article['id']
-                . ' <img src="' . Template::asset('images/icons/edit.png') . '" alt="edit" class="icon">'
+                . ' <img src="' . _e(Template::asset('images/icons/edit.png')) . '" alt="edit" class="icon">'
                 . '</a>',
             ];
         }

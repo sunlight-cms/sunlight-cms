@@ -356,9 +356,9 @@ class PostService
                 $form_output .= User::renderLoginForm();
             }
         } elseif (!$locked) {
-            $form_output .= '<a class="button" href="' . _e(UrlHelper::appendParams($url, 'addpost&page=' . $paging['current'])) . '#post-form"><img class="icon" src="' . Template::asset('images/icons/bubble.png') . '" alt="post">' . $addlink . '</a>';
+            $form_output .= '<a class="button" href="' . _e(UrlHelper::appendParams($url, 'addpost&page=' . $paging['current'])) . '#post-form"><img class="icon" src="' . _e(Template::asset('images/icons/bubble.png')) . '" alt="post">' . $addlink . '</a>';
         } else {
-            $form_output .= '<img src="' . Template::asset('images/icons/lock.png') . '" alt="stop" class="icon"><strong>' . _lang('posts.locked' . $locked_textid) . '</strong>';
+            $form_output .= '<img src="' . _e(Template::asset('images/icons/lock.png')) . '" alt="stop" class="icon"><strong>' . _lang('posts.locked' . $locked_textid) . '</strong>';
         }
 
         $form_output .= "\n</div>\n";
@@ -566,7 +566,7 @@ class PostService
 
                     // render row
                     $output .= '<tr class="topic-' . $icon . ($hl ? ' topic-hl' : '') . '">'
-                        . '<td class="topic-icon-cell"><a href="' . _e(Router::topic($item['id'], $forum_slug)) . '"><img src="' . Template::asset('images/icons/topic-' . $icon . '.png') . '" alt="' . _lang('posts.topic.' . $icon) . '"></a></td>'
+                        . '<td class="topic-icon-cell"><a href="' . _e(Router::topic($item['id'], $forum_slug)) . '"><img src="' . _e(Template::asset('images/icons/topic-' . $icon . '.png')) . '" alt="' . _lang('posts.topic.' . $icon) . '"></a></td>'
                         . '<td class="topic-main-cell"><a href="' . _e(Router::topic($item['id'], $forum_slug)) . '">' . $item['subject'] . '</a>' . $tpages . '<br>' . $author . ' <small class="post-info">(' . GenericTemplates::renderTime($item['time'], 'post') . ')</small></td>'
                         . '<td>' . $item['answer_count'] . '</td><td>' . $lastpost . (($item['answer_count'] != 0) ? '<br><small class="post-info">(' . GenericTemplates::renderTime($item['bumptime'], 'post') . ')</small>' : '') . '</td>'
                         . "</tr>\n";

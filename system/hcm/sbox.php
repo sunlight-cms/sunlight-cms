@@ -56,7 +56,7 @@ return function ($id = 0) {
         } elseif ($sboxdata['locked'] != 1) {
             $result .= _lang('posts.loginrequired');
         } else {
-            $result .= '<img src="' . Template::asset('images/icons/lock.png') . '" alt="locked" class="icon">' . _lang('posts.locked2');
+            $result .= '<img src="' . _e(Template::asset('images/icons/lock.png')) . '" alt="locked" class="icon">' . _lang('posts.locked2');
         }
 
         $result .= "\n</div>\n<div class=\"sbox-posts\">";
@@ -89,7 +89,7 @@ return function ($id = 0) {
                 // edit link
                 if (Post::checkAccess($userQuery, $spost)) {
                     $alink = ' <a href="' . _e(Router::module('editpost', ['query' => ['id' => $spost['id']]])) . '">'
-                        . '<img src="' . Template::asset('images/icons/edit.png') . '" alt="edit" class="icon">'
+                        . '<img src="' . _e(Template::asset('images/icons/edit.png')) . '" alt="edit" class="icon">'
                         . '</a>';
                 } else {
                     $alink = '';

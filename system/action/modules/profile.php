@@ -161,7 +161,7 @@ if ($public) {
 if (User::isLoggedIn() && Settings::get('messages') && !User::equals($query['id']) && $query['blocked'] == 0 && $groupdata['blocked'] == 0) {
     $output .= '<p>
     <a class="button" href="' . _e(Router::module('messages', ['query' => ['a' => 'new', 'receiver' => $query['username']]])) . '">
-    <img src="' . Template::asset('images/icons/bubble.png') . '" alt="msg" class="icon">'
+    <img src="' . _e(Template::asset('images/icons/bubble.png')) . '" alt="msg" class="icon">'
     . _lang('mod.messages.new')
     . '</a>
 </p>';
