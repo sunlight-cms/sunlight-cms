@@ -1,25 +1,25 @@
 // hcm mode
-CodeMirror.defineMode("hcm", function (config, parserConfig) {
-    var hcmOverlay = {
-        token: function (stream, state) {
-            if (stream.match("[hcm]")) {
-                while (stream.next() != null)
-                    if (stream.match("[/hcm]")) break;
-                return "hcm";
-            }
-            while (stream.next() != null && !stream.match("[hcm]", false)) {
-            }
-            return null;
+CodeMirror.defineMode('text/html+hcm', function (config, parserConfig) {
+    return CodeMirror.multiplexingMode(
+        CodeMirror.getMode(config, 'text/html'),
+        {
+            open: '[hcm]',
+            close: '[/hcm]',
+            mode: {
+                token: function (stream, state) {
+                    stream.skipToEnd();
+
+                    return 'hcm';
+                },
+            },
+            delimStyle: 'hcm',
         }
-    };
-    return CodeMirror.overlayMode(CodeMirror.getMode(config, parserConfig.backdrop), hcmOverlay);
+      );
 });
 
 $(document).ready(function () {
-
     // apply to textareas
     $('textarea.editor').each(function () {
-
         var textarea = $(this);
 
         // abort if a wysiwyg editor should be used instead
@@ -56,7 +56,7 @@ $(document).ready(function () {
                 mode = 'text/x-php';
                 break;
             case 'html':
-                mode = {name: 'hcm', backdrop: 'text/html'};
+                mode = 'text/html+hcm'
                 break;
         }
 
@@ -79,15 +79,15 @@ $(document).ready(function () {
             extraKeys: {
                 Tab: function (cm) {
                     if (cm.somethingSelected()) {
-                        var sel = editor.getSelection("\n");
+                        var sel = editor.getSelection('\n');
                         // Indent only if there are multiple lines selected, or if the selection spans a full line
-                        if (sel.length > 0 && (sel.indexOf("\n") > -1 || sel.length === cm.getLine(cm.getCursor().line).length)) {
-                            cm.indentSelection("add");
+                        if (sel.length > 0 && (sel.indexOf('\n') > -1 || sel.length === cm.getLine(cm.getCursor().line).length)) {
+                            cm.indentSelection('add');
                             return;
                         }
                     }
 
-                    cm.execCommand("insertSoftTab");
+                    cm.execCommand('insertSoftTab');
                 }
             },
 
@@ -98,6 +98,5 @@ $(document).ready(function () {
         });
 
         editor.setSize(null, height);
-
     });
 });
