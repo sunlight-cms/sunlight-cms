@@ -32,11 +32,11 @@
         {"event": "error_screen.end", "method": "onErrorScreenEnd"}
     ],
     "events.web": [
-        {"event": "tpl.head", "method": "onHead"},
-        {"event": "tpl.body.end", "method": "onEnd"}
+        {"event": "tpl.head", "method": "onHead", "priority": -9999},
+        {"event": "tpl.body.end", "method": "onEnd", "priority": -9999}
     ],
     "events.admin": [
-        {"event": "admin.head", "method": "onHead"},
-        {"event": "admin.body.end", "method": "onEnd"}
+        {"event": "admin.head", "method": "onHead", "priority": -9999},
+        {"event": "admin.body.end", "method": "onEnd", "priority": -9999}
     ]
 }
