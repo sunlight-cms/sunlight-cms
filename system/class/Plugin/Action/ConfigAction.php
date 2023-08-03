@@ -96,7 +96,7 @@ class ConfigAction extends PluginAction
                 $input = '<input type="checkbox" name="config[' . _e($key) . ']" value="1"' . Form::activateCheckbox($value) . '>';
                 $type = 'checkbox';
             } else {
-                $input = '<input type="text" name="config[' . _e($key) . ']" class="inputmedium" value="' . _e($value) . '">';
+                $input = '<input type="text" name="config[' . _e($key) . ']" class="inputmedium" value="' . _e((string) $value) . '">';
                 $type = 'text';
             }
 
