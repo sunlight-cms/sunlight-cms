@@ -55,7 +55,7 @@ abstract class PluginType
     private function getBaseOptions(): array
     {
         return [
-            Option::any('$schema')->default(null),
+            Option::string('$schema')->default(null),
             Option::string('name'),
             Option::string('description')->default(null),
             Option::nodeList(
