@@ -9,7 +9,6 @@
     "environment": {
         "system": "^8.0"
     },
-    "class": "LightboxPlugin",
     "actions": {
         "config": "ConfigAction"
     },
@@ -24,14 +23,14 @@
         "lightbox": "lang"
     },
     "events": [
-        {"event": "image.lightbox", "method": "onLightbox"}
+        {"event": "image.lightbox", "script": "event/image_lightbox.php"}
     ],
     "events.web": [
-        {"event": "tpl.head", "method": "onHead", "group": "lightbox"},
-        {"event": "tpl.body.end", "method": "onEnd", "group": "lightbox"}
+        {"event": "tpl.head", "script": "event/head_assets.php", "group": "lightbox"},
+        {"event": "tpl.body.end", "script": "event/body_assets.php", "group": "lightbox"}
     ],
     "events.admin": [
-        {"event": "admin.head", "method": "onHead", "group": "lightbox"},
-        {"event": "admin.body.end", "method": "onEnd", "group": "lightbox"}
+        {"event": "admin.head", "script": "event/head_assets.php", "group": "lightbox"},
+        {"event": "admin.body.end", "script": "event/body_assets.php", "group": "lightbox"}
     ]
 }
