@@ -26,7 +26,7 @@ if (isset($_POST['new_type'])) {
         return;
     }
 
-    if (!isset(Page::TYPES[$new_type]) && isset($plugin_types[$new_type])) {
+    if (!isset(Page::TYPES[$new_type]) && isset(Page::getPluginTypes()[$new_type])) {
         $type_idt = $new_type;
         $new_type = Page::PLUGIN;
     }
