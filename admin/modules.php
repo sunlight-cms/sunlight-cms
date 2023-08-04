@@ -97,6 +97,11 @@ return [
         'access' => User::hasPrivilege('admincontent') && User::hasPrivilege('adminpages'),
         'parent' => 'content',
     ],
+    'content-chtype' => [
+        'title' => _lang('admin.content.chtype.title'),
+        'access' => User::hasPrivilege('admincontent') && User::hasPrivilege('adminpages'),
+        'parent' => 'content',
+    ],
     'content-redir' => [
         'title' => _lang('admin.content.redir.title'),
         'access' => User::hasPrivilege('admincontent') && User::hasPrivilege('adminpages'),

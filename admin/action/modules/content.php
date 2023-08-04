@@ -27,34 +27,20 @@ if (
     || User::hasPrivilege('adminforum')
     || User::hasPrivilege('adminpluginpage')
 ) {
-    // action
-    if (isset($_POST['ac'])) {
-        $ac = Request::post('ac');
+    // new page creation
+    if (isset($_POST['new_page_type'])) {
+        $type = Request::post('new_page_type', '');
+        $type_idt = null;
+ 
+        if (!isset(Page::TYPES[$type])) {
+            $type_idt = $type;
+            $type = Page::PLUGIN;
+        }
 
-        switch ($ac) {
-            // create page
-            case 'new':
-                $is_plugin_page = false;
+        if (isset(Page::TYPES[$type]) && User::hasPrivilege('admin' . Page::TYPES[$type])) {
+            $_admin->redirect(Router::admin('content-edit' . Page::TYPES[$type], ($type == Page::PLUGIN ? ['query' => ['idt' => $type_idt]] : null)));
 
-                if (is_numeric(Request::post('type'))) {
-                    $type = (int) Request::post('type');
-                } else {
-                    $type = Page::PLUGIN;
-                    $type_idt = strval(Request::post('type'));
-
-                    if (!isset($plugin_types[$type_idt])) {
-                        break;
-                    }
-
-                    $is_plugin_page = true;
-                }
-
-                if (isset(Page::TYPES[$type]) && User::hasPrivilege('admin' . Page::TYPES[$type])) {
-                    $_admin->redirect(Router::admin('content-edit' . Page::TYPES[$type], ($is_plugin_page ? ['query' => ['idt' => $type_idt]] : null)));
-
-                    return;
-                }
-                break;
+            return;
         }
     }
 
@@ -150,8 +136,6 @@ if (
 
         // add plugin page types
         if (User::hasPrivilege('adminpluginpage') && !empty($plugin_types)) {
-            $create_list .= "<option value=\"\" disabled>---</option>\n";
-
             foreach ($plugin_types as $plugin_type => $plugin_label) {
                 $create_list .= '<option value="' . $plugin_type . '">' . $plugin_label . "</option>\n";
             }
@@ -177,12 +161,9 @@ if (
 
     ' . (User::hasPrivilege('adminpages') ? '
     <form action="' . _e(Router::admin('content')) . '" method="post" class="inline">
-    <input type="hidden" name="ac" value="new">
-    <img src="' . _e(Router::path('admin/public/images/icons/new.png')) . '" alt="new" class="icon">
-    <select name="type">
-    ' . $create_list . '
-    </select>
-    <input class="button" type="submit" value="' . _lang('global.create') . '">
+        <img src="' . _e(Router::path('admin/public/images/icons/new.png')) . '" alt="new" class="icon">
+        <select name="new_page_type">' . $create_list . '</select>
+        <input class="button" type="submit" value="' . _lang('global.create') . '">
     ' . Xsrf::getInput() . '</form>
 
     <span class="inline-separator"></span>
@@ -195,6 +176,7 @@ if (
 
     <a class="button" href="' . _e(Router::admin('content-sort')) . '"><img src="' . _e(Router::path('admin/public/images/icons/action.png')) . '" alt="move" class="icon">' . _lang('admin.content.sort') . '</a>
     <a class="button" href="' . _e(Router::admin('content-titles')) . '"><img src="' . _e(Router::path('admin/public/images/icons/action.png')) . '" alt="titles" class="icon">' . _lang('admin.content.titles') . '</a>
+    <a class="button" href="' . _e(Router::admin('content-chtype')) . '"><img src="' . _e(Router::path('admin/public/images/icons/action.png')) . '" alt="redir" class="icon">' . _lang('admin.content.chtype') . '</a>
     <a class="button" href="' . _e(Router::admin('content-redir')) . '"><img src="' . _e(Router::path('admin/public/images/icons/action.png')) . '" alt="redir" class="icon">' . _lang('admin.content.redir') . '</a>
 
     <span class="inline-separator"></span>
