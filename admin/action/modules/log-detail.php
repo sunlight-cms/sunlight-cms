@@ -15,7 +15,8 @@ defined('SL_ROOT') or exit;
 $entry = Logger::get(Request::get('id', ''));
 
 if ($entry === null) {
-    $output .= Message::warning('todo');
+    $output .= Message::warning(_lang('admin.log.detail.not_found'));
+    return;
 }
 
 // process user ID
