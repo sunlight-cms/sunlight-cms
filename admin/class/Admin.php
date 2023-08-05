@@ -32,7 +32,7 @@ abstract class Admin
                 if (self::moduleAccess($module)) {
                     $active = (
                         $_admin->currentModule === $module
-                        || !empty($_admin->modules[$module]['children']) && in_array($_admin->currentModule, $_admin->modules[$module]['children'])
+                        || self::isChildModule($_admin->currentModule, $module)
                     );
                     $url = $_admin->modules[$module]['url'] ?? Router::admin($module);
 
@@ -183,6 +183,28 @@ abstract class Admin
 
         if (isset($_admin->modules[$module])) {
             return (bool) $_admin->modules[$module]['access'];
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if the given module is a child of the parent module
+     */
+    static function isChildModule(string $module, string $parentModule): bool
+    {
+        global $_admin;
+
+        while (($moduleArray = $_admin->modules[$module] ?? null) !== null) {
+            if (!isset($moduleArray['parent'])) {
+                break;
+            }
+
+            if ($moduleArray['parent'] === $parentModule) {
+                return true;
+            }
+
+            $module = $moduleArray['parent'];
         }
 
         return false;
