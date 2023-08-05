@@ -513,7 +513,7 @@ a.active-link {text-decoration: underline !important;}
 .message-err {background-color: <?= $scheme_bg_danger ?>; background-image: url("../public/images/icons/error.png");}
 
 /* preformatted */
-pre {white-space: -moz-pre-wrap; white-space: -pre-wrap; white-space: -o-pre-wrap; white-space: pre-wrap; word-break: break-all; word-wrap: break-word;}
+pre {white-space: pre-wrap; overflow-wrap: anywhere; word-break: normal;}
 pre.exception {max-height: 300px; margin: 1em 0; padding: 13px; overflow: auto; background-color: <?= $scheme_bg_danger ?>;}
 
 /* form tables */
@@ -596,6 +596,7 @@ fieldset .list > * tr > td {border-color: <?= $scheme_smoke_dark ?>;}
 .log-list > tbody + tbody {border-top: 1px solid <?= $scheme_smoke_med ?>;}
 .log-message {color: <?= $scheme_smoke_text_darker ?>;}
 .log-message a {display: block;}
+.log-message code {overflow-wrap: anywhere; word-break: normal;}
 
 .log-search .log-time-presets {width: 50px;}
 
