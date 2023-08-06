@@ -48,6 +48,9 @@ for ($x = 1; $x < 4; ++$x) {
     $pagingmode_choices[$x] = _lang('admin.settings.paging.pagingmode.' . $x);
 }
 
+// cron script URL
+$cron_script_url = Router::path('system/script/cron.php', ['query' => ['key' => $settings['cron_auth']], 'absolute' => true]);
+
 // define editable settings
 $editable_settings = [
     'main' => [
@@ -178,7 +181,7 @@ $editable_settings = [
     'cron' => [
         'items' => [
             ['name' => 'cron_auto', 'format' => 'bool'],
-            ['name' => 'cron_auth', 'format' => 'text'],
+            ['name' => 'cron_auth', 'format' => 'text', 'help' => _lang('admin.settings.cron.cron_auth.help', ['%script_url%' => _e($cron_script_url)]), 'reload_on_update' => true],
             ['name' => 'maintenance_interval', 'format' => 'int'],
             ['name' => 'thumb_cleanup_threshold', 'format' => 'int'],
             ['name' => 'thumb_touch_threshold', 'format' => 'int'],

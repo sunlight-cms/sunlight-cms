@@ -3,7 +3,9 @@
 use Sunlight\Core;
 use Sunlight\Cron;
 use Sunlight\Extend;
+use Sunlight\IpLog;
 use Sunlight\Settings;
+use Sunlight\Util\Environment;
 use Sunlight\Util\Request;
 
 require '../bootstrap.php';
@@ -11,17 +13,15 @@ Core::init('../../', [
     'content_type' => 'text/plain; charset=UTF-8',
 ]);
 
-// check authorization
-$auth = explode(':', Settings::get('cron_auth'), 2);
+// check authorization (unless in CLI env)
+if (!Environment::isCli()) {
+    $auth_key = Settings::get('cron_auth');
 
-if (
-    count($auth) !== 2
-    || Request::get('user') !== $auth[0]
-    || Request::get('password') !== $auth[1]
-) {
-    http_response_code(401);
-    echo 'Unauthorized';
-    exit(1);
+    if ($auth_key === '' || Request::get('key') !== $auth_key) {
+        http_response_code(401);
+        echo 'Unauthorized';
+        exit(1);
+    }
 }
 
 // run cron tasks

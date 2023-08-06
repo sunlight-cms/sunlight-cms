@@ -90,7 +90,6 @@ abstract class Core
      * minimal_mode (0)         stop after initializing base components and environment (= no plugins, db, settings, session, etc.) 1/0
      * session_enabled (1)      initialize session 1/0
      * session_regenerate (0)   force new session ID 1/0
-     * allow_cron_auto          allow running cron tasks automatically 1/0 (default state depends on env)
      * content_type (-)         content type, FALSE = disabled (default is "text/html; charset=UTF-8")
      * env ("script")           environment identifier, see Core::ENV_* constants
      *
@@ -100,7 +99,6 @@ abstract class Core
      *     minimal_mode?: bool,
      *     session_enabled?: bool,
      *     session_regenerate?: bool,
-     *     allow_cron_auto?: bool,
      *     content_type?: string|false,
      *     env?: string,
      * } $options see description
@@ -154,9 +152,17 @@ abstract class Core
         self::$ready = true;
         Extend::call('core.ready');
 
-        // cron tasks
-        if (Settings::get('cron_auto') && $options['allow_cron_auto']) {
-            Cron::run();
+        // run cron tasks on shutdown
+        if (self::$env !== self::ENV_SCRIPT && Settings::get('cron_auto')) {
+            register_shutdown_function(function () {
+                if (function_exists('fastcgi_finish_request')) {
+                    fastcgi_finish_request();
+                }
+
+                chdir(dirname($_SERVER['SCRIPT_FILENAME'])); // fix working directory
+
+                Cron::run();
+            });
         }
     }
 
