@@ -178,7 +178,6 @@ abstract class Core
             'session_enabled' => true,
             'session_regenerate' => false,
             'content_type' => null,
-            'allow_cron_auto' => isset($options['env']) && $options['env'] !== self::ENV_SCRIPT,
             'env' => self::ENV_SCRIPT,
         ];
 
