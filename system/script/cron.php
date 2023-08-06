@@ -3,7 +3,6 @@
 use Sunlight\Core;
 use Sunlight\Cron;
 use Sunlight\Extend;
-use Sunlight\IpLog;
 use Sunlight\Settings;
 use Sunlight\Util\Environment;
 use Sunlight\Util\Request;
