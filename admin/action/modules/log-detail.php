@@ -76,7 +76,7 @@ $output .= _buffer(function () use ($entry, $parsedContext, $userInfo) { ?>
             </tr>
             <tr>
                 <th class="cell-shrink"><?= _lang('admin.log.method') ?></th>
-                <td><code><?= _e($entry->method) ?></code></td>
+                <td><code><?= _e($entry->method ?? '-') ?></code></td>
             </tr>
             <tr>
                 <th class="cell-shrink"><?= _lang('admin.log.url') ?></th>
