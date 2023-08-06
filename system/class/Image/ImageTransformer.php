@@ -37,7 +37,7 @@ final class ImageTransformer
     /**
      * Resize image using the given options
      *
-     * Supported$options:
+     * Supported $options:
      * ------------------
      * w                    target width (optional if "h" is specified)
      * h                    target height (optional if "w" is specified)
