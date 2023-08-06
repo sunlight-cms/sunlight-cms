@@ -111,6 +111,11 @@ abstract class Core
 
         self::$start = microtime(true);
 
+        // change working directory in CLI
+        if (Environment::isCli()) {
+            chdir(dirname($_SERVER['SCRIPT_FILENAME']));
+        }
+
         // functions
         require __DIR__ . '/../functions.php';
 

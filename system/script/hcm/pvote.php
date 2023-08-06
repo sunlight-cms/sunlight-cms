@@ -9,7 +9,7 @@ use Sunlight\Util\Response;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
 
-require '../../bootstrap.php';
+require __DIR__ . '/../../bootstrap.php';
 Core::init('../../../');
 
 if (isset($_POST['pid'], $_POST['option']) && Xsrf::check()) {

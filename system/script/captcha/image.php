@@ -7,7 +7,7 @@ use Sunlight\Image\ImageFormat;
 use Sunlight\Image\ImageTransformer;
 use Sunlight\Util\Request;
 
-require '../../bootstrap.php';
+require __DIR__ . '/../../bootstrap.php';
 Core::init('../../../', [
     'content_type' => false,
 ]);

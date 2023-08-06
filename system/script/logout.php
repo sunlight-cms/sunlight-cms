@@ -5,7 +5,7 @@ use Sunlight\User;
 use Sunlight\Util\Response;
 use Sunlight\Xsrf;
 
-require '../bootstrap.php';
+require __DIR__ . '/../bootstrap.php';
 Core::init('../../');
 
 if (Xsrf::check(true)) {

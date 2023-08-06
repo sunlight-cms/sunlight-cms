@@ -7,7 +7,7 @@ use Sunlight\Util\Request;
 use Sunlight\Util\Response;
 use Sunlight\Util\UrlHelper;
 
-require '../bootstrap.php';
+require __DIR__ . '/../bootstrap.php';
 Core::init('../../', [
     'session_regenerate' => true,
 ]);

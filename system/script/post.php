@@ -18,7 +18,7 @@ use Sunlight\Util\StringHelper;
 use Sunlight\Util\UrlHelper;
 use Sunlight\Xsrf;
 
-require '../bootstrap.php';
+require __DIR__ . '/../bootstrap.php';
 Core::init('../../');
 
 // get guest name or author ID

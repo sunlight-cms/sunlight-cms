@@ -5,7 +5,7 @@ use Sunlight\Router;
 use Sunlight\User;
 use Sunlight\Util\Response;
 
-require '../../system/bootstrap.php';
+require __DIR__ . '/../../system/bootstrap.php';
 Core::init('../../', [
     'env' => Core::ENV_ADMIN,
 ]);

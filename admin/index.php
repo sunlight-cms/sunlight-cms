@@ -14,7 +14,7 @@ use Sunlight\Util\Request;
 use Sunlight\Util\Response;
 use Sunlight\Xsrf;
 
-require '../system/bootstrap.php';
+require __DIR__ . '/../system/bootstrap.php';
 Core::init('../', [
     'env' => Core::ENV_ADMIN,
 ]);

@@ -9,7 +9,7 @@ use Sunlight\Settings;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
 
-require '../bootstrap.php';
+require __DIR__ . '/../bootstrap.php';
 Core::init('../../');
 
 if (Settings::get('ratemode') == 0) {

@@ -6,7 +6,7 @@ use Sunlight\Util\Color;
 use Sunlight\Util\DateTime;
 use Sunlight\Util\Request;
 
-require '../../system/bootstrap.php';
+require __DIR__ . '/../../system/bootstrap.php';
 Core::init('../../', [
     'env' => Core::ENV_ADMIN,
     'session_enabled' => false,

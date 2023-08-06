@@ -12,7 +12,7 @@ use Sunlight\Util\Request;
 use Sunlight\Util\UrlHelper;
 use Sunlight\Xsrf;
 
-require '../../bootstrap.php';
+require __DIR__ . '/../../bootstrap.php';
 Core::init('../../../', [
     'content_type' => 'text/plain; charset=UTF-8',
 ]);

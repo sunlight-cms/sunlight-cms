@@ -5,7 +5,7 @@ use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
 
-require '../bootstrap.php';
+require __DIR__ . '/../bootstrap.php';
 Core::init('../../');
 
 // load variables

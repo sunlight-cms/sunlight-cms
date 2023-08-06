@@ -15,7 +15,7 @@ use Sunlight\Util\Response;
 use Sunlight\WebState;
 use Sunlight\Xsrf;
 
-require './system/bootstrap.php';
+require __DIR__ . '/system/bootstrap.php';
 Core::init('./', [
     'env' => Core::ENV_WEB,
 ]);
