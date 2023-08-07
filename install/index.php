@@ -10,9 +10,9 @@ use Sunlight\Database\DatabaseLoader;
 use Sunlight\Database\SqlReader;
 use Sunlight\Email;
 use Sunlight\User;
+use Sunlight\Util\ConfigurationFile;
 use Sunlight\Util\Form;
 use Sunlight\Util\Password;
-use Sunlight\Util\PhpTemplate;
 use Sunlight\Util\Request;
 use Sunlight\Util\StringGenerator;
 
@@ -26,30 +26,14 @@ Core::init('../', [
     'debug' => true,
 ]);
 
-/**
- * Configuration
- */
-abstract class Config
-{
-    /** @var array|null */
-    static $config;
+// config
+$config = new ConfigurationFile(CONFIG_PATH);
+$defaults = require __DIR__ . '/../system/config_template.php';
+$defaults['secret'] = StringGenerator::generateString(64);
 
-    /**
-     * Attempt to load the configuration file
-     */
-    static function load(): void
-    {
-        if (is_file(CONFIG_PATH)) {
-            self::$config = require CONFIG_PATH;
-        }
-    }
-
-    /**
-     * See whether the configuration file is loaded
-     */
-    static function isLoaded(): bool
-    {
-        return self::$config !== null;
+foreach ($defaults as $key => $value) {
+    if (!$config->isDefined($key)) {
+        $config[$key] = $value;
     }
 }
 
@@ -407,6 +391,13 @@ abstract class Step
     protected $submitted = false;
     /** @var array */
     protected $errors = [];
+    /** @var ConfigurationFile */
+    protected $config;
+
+    function __construct(ConfigurationFile $config)
+    {
+        $this->config = $config;
+    }
 
     abstract function getMainLabelKey(): string;
 
@@ -508,18 +499,6 @@ abstract class Step
      */
     function postComplete(): void
     {
-    }
-
-    /**
-     * Get configuration value
-     */
-    protected function getConfig(string $key, $default = null)
-    {
-        if (Config::isLoaded() && array_key_exists($key, Config::$config)) {
-            return Config::$config[$key];
-        }
-
-        return $default;
     }
 }
 
@@ -627,12 +606,13 @@ class ConfigurationStep extends Step
 
         // generate config file
         if (empty($this->errors)) {
-            $configTemplate = PhpTemplate::fromFile(__DIR__ . '/../system/config_template.php');
+            foreach ($config as $key => $value) {
+                $this->config[$key] = $value;
+            }
 
-            if (@file_put_contents(CONFIG_PATH, $configTemplate->compile($config)) !== false) {
-                // reload
-                Config::load();
-            } else {
+            try {
+                $this->config->save();
+            } catch (\Throwable $e) {
                 $this->errors[] = ['write_failed', ['%config_path%' => CONFIG_PATH]];
             }
         }
@@ -640,13 +620,9 @@ class ConfigurationStep extends Step
 
     function isComplete(): bool
     {
-        if (
-            parent::isComplete()
-            && is_file(CONFIG_PATH)
-            && Config::isLoaded()
-        ) {
+        if (parent::isComplete() && is_file(CONFIG_PATH)) {
             try {
-                DB::connect(Config::$config['db.server'], Config::$config['db.user'], Config::$config['db.password'], '', Config::$config['db.port'], Config::$config['db.prefix']);
+                DB::connect($this->config['db.server'], $this->config['db.user'], $this->config['db.password'], '', $this->config['db.port'], $this->config['db.prefix']);
 
                 return true;
             } catch (DatabaseException $e) {
@@ -658,9 +634,6 @@ class ConfigurationStep extends Step
 
     function run(): void
     {
-        $defaultSecret = StringGenerator::generateString(64);
-        $defaultDebug = $this->getConfig('debug', false);
-
         ?>
 
 <fieldset>
@@ -668,17 +641,17 @@ class ConfigurationStep extends Step
     <table>
         <tr>
             <th><?php Labels::render('config.db.server') ?></th>
-            <td><input type="text"<?= Form::restorePostValueAndName('config_db_server', $this->getConfig('db.server', 'localhost')) ?>></td>
+            <td><input type="text"<?= Form::restorePostValueAndName('config_db_server', $this->config['db.server']) ?>></td>
             <td class="help"><?php Labels::render('config.db.server.help') ?></td>
         </tr>
         <tr>
             <th><?php Labels::render('config.db.port') ?></th>
-            <td><input type="text"<?= Form::restorePostValueAndName('config_db_port', $this->getConfig('db.port')) ?>></td>
+            <td><input type="text"<?= Form::restorePostValueAndName('config_db_port', $this->config['db.port']) ?>></td>
             <td class="help"><?php Labels::render('config.db.port.help') ?></td>
         </tr>
         <tr>
             <th><?php Labels::render('config.db.user') ?></th>
-            <td><input type="text"<?= Form::restorePostValueAndName('config_db_user', $this->getConfig('db.user')) ?>></td>
+            <td><input type="text"<?= Form::restorePostValueAndName('config_db_user', $this->config['db.user']) ?>></td>
             <td class="help"><?php Labels::render('config.db.user.help') ?></td>
         </tr>
         <tr>
@@ -688,12 +661,12 @@ class ConfigurationStep extends Step
         </tr>
         <tr>
             <th><?php Labels::render('config.db.name') ?></th>
-            <td><input type="text"<?= Form::restorePostValueAndName('config_db_name', $this->getConfig('db.name')) ?>></td>
+            <td><input type="text"<?= Form::restorePostValueAndName('config_db_name', $this->config['db.name']) ?>></td>
             <td class="help"><?php Labels::render('config.db.name.help') ?></td>
         </tr>
         <tr>
             <th><?php Labels::render('config.db.prefix') ?></th>
-            <td><input type="text"<?= Form::restorePostValueAndName('config_db_prefix', $this->getConfig('db.prefix', 'sunlight')) ?>></td>
+            <td><input type="text"<?= Form::restorePostValueAndName('config_db_prefix', $this->config['db.prefix']) ?>></td>
             <td class="help"><?php Labels::render('config.db.prefix.help') ?></td>
         </tr>
     </table>
@@ -704,12 +677,12 @@ class ConfigurationStep extends Step
     <table>
         <tr>
             <th><?php Labels::render('config.secret') ?></th>
-            <td><input type="text"<?= Form::restorePostValueAndName('config_secret', $this->getConfig('secret', $defaultSecret)) ?>></td>
+            <td><input type="text"<?= Form::restorePostValueAndName('config_secret', $this->config['secret']) ?>></td>
             <td class="help"><?php Labels::render('config.secret.help') ?></td>
         </tr>
         <tr>
             <th><?php Labels::render('config.timezone') ?></th>
-            <td><input type="text"<?= Form::restorePostValueAndName('config_timezone', $this->getConfig('timezone')) ?>></td>
+            <td><input type="text"<?= Form::restorePostValueAndName('config_timezone', $this->config['timezone']) ?>></td>
             <td class="help">
                 <?php Labels::render('config.timezone.help') ?>
                 <a href="https://php.net/timezones" target="_blank">PHP timezones</a>
@@ -717,7 +690,7 @@ class ConfigurationStep extends Step
         </tr>
         <tr>
             <th><?php Labels::render('config.debug') ?></th>
-            <td><input type="checkbox"<?= Form::restoreCheckedAndName($this->getFormKeyVar(), 'config_debug', $this->getConfig('debug', $defaultDebug)) ?>></td>
+            <td><input type="checkbox"<?= Form::restoreCheckedAndName($this->getFormKeyVar(), 'config_debug', $this->config['debug']) ?>></td>
             <td class="help"><?php Labels::render('config.debug.help') ?></td>
         </tr>
     </table>
@@ -735,18 +708,19 @@ class ImportDatabaseStep extends Step
     private static $baseTableNames = [
         'article',
         'box',
-        'user_group',
         'gallery_image',
         'iplog',
+        'log',
+        'page',
         'pm',
         'poll',
         'post',
-        'page',
-        'shoutbox',
+        'redirect',
         'setting',
+        'shoutbox',
         'user',
         'user_activation',
-        'redirect',
+        'user_group',
     ];
     /** @var array|null */
     private $existingTableNames;
@@ -801,7 +775,7 @@ class ImportDatabaseStep extends Step
         // import the database
         if (empty($this->errors)) {
             // use database
-            DB::query('USE '. DB::escIdt(Config::$config['db.name']));
+            DB::query('USE '. DB::escIdt($this->config['db.name']));
 
             DB::transactional(function () use ($settings, $admin) {
                 // drop existing tables
@@ -936,7 +910,7 @@ Now you can <a href="admin/">log in to the administration</a> (with the account 
         </tr>
         <tr>
             <th><?php Labels::render('import.admin.email') ?></th>
-            <td><input type="email"<?= Form::restorePostValueAndName('import_admin_email', Config::$config['debug'] ? 'admin@localhost' : '@') ?>></td>
+            <td><input type="email"<?= Form::restorePostValueAndName('import_admin_email', $this->config['debug'] ? 'admin@localhost' : '@') ?>></td>
             <td class="help"><?php Labels::render('import.admin.email.help') ?></td>
         </tr>
     </table>
@@ -945,7 +919,7 @@ Now you can <a href="admin/">log in to the administration</a> (with the account 
 <?php if (count($this->getExistingTableNames()) > 0): ?>
 <fieldset>
     <legend><?php Labels::render('import.overwrite') ?></legend>
-    <p class="msg warning"><?php Labels::render('import.overwrite.text', ['%prefix%' => Config::$config['db.prefix'] . '_']) ?></p>
+    <p class="msg warning"><?php Labels::render('import.overwrite.text', ['%prefix%' => $this->config['db.prefix'] . '_']) ?></p>
     <p>
         <label>
             <input type="checkbox"<?= Form::restoreCheckedAndName($this->getFormKeyVar(), 'import_overwrite') ?>>
@@ -969,7 +943,7 @@ Now you can <a href="admin/">log in to the administration</a> (with the account 
     {
         if ($this->existingTableNames === null) {
             $this->existingTableNames = DB::queryRows(
-                'SHOW TABLES FROM ' . DB::escIdt(Config::$config['db.name']) . ' LIKE ' . DB::val(Config::$config['db.prefix'] . '_%'),
+                'SHOW TABLES FROM ' . DB::escIdt($this->config['db.name']) . ' LIKE ' . DB::val($this->config['db.prefix'] . '_%'),
                 null,
                 0,
                 false,
@@ -985,7 +959,7 @@ Now you can <a href="admin/">log in to the administration</a> (with the account 
      */
     private function getTableNames(): array
     {
-        $prefix = Config::$config['db.prefix'] . '_';
+        $prefix = $this->config['db.prefix'] . '_';
 
         return array_map(function ($baseTableName) use ($prefix) {
             return $prefix . $baseTableName;
@@ -1020,10 +994,12 @@ class CompleteStep extends Step
 
     function run(): void
     {
+        Core::$cache->clear();
+
         ?>
 <p class="msg success"><?php Labels::render('complete.success') ?></p>
 
-<?php if (!Config::$config['debug']): ?>
+<?php if (!$this->config['debug']): ?>
     <p class="msg warning"><?php Labels::render('complete.installdir_warning') ?></p>
 <?php endif ?>
 
@@ -1037,15 +1013,12 @@ class CompleteStep extends Step
     }
 }
 
-// load configuration
-Config::load();
-
 // create step runner
-$stepRunner= new StepRunner([
-    new ChooseLanguageStep(),
-    new ConfigurationStep(),
-    new ImportDatabaseStep(),
-    new CompleteStep(),
+$stepRunner = new StepRunner([
+    new ChooseLanguageStep($config),
+    new ConfigurationStep($config),
+    new ImportDatabaseStep($config),
+    new CompleteStep($config),
 ]);
 
 // run

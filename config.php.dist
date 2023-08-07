@@ -1,42 +1,18 @@
 <?php
 
 return [
-    // vyvojovy rezim (nepouzivat v produkci)
-    // debug mode (do not use in production)
     'debug' => false,
-
-    // pristup k databazi
-    // database access
     'db.server' => '',
     'db.port' => null,
     'db.user' => '',
     'db.password' => '',
     'db.name' => '',
-    'db.prefix' => '',
-
-    // nahodny tajny hash (pouzivano pro XSRF ochranu aj.)
-    // random secret hash (used for XSRF protection etc.)
-    // https://sunlight-cms.cz/resource/hashgen
+    'db.prefix' => 'sunlight',
     'secret' => '',
-
-    // vychozi jazyk (cs nebo en)
-    // default language (cs or en)
     'fallback_lang' => 'cs',
-
-    // nastaveni duveryhodnych proxy serveru (pokud jsou vase stranky za proxy serverem; potreba pro detekci URL a IP)
-    // trusted proxy configuration (if your site is behind a proxy; needed for correct URL and IP detection)
-    'trusted_proxies' => null, // ['10.20.30.40'] - list of IPs (can use CIDR notation)
-    'trusted_proxy_headers' => null, // 'forwarded' / 'x-forwarded' / 'all'
-
-    // pouzivat cache (doporuceno)
-    // use cache (recommended)
+    'trusted_proxies' => null,
+    'trusted_proxy_headers' => null, 
     'cache' => true,
-
-    // nastaveni lokalizace
-    // localisation settings
-    'timezone' => null, // date_default_timezone_set()
-
-    // bezpecny rezim (vypne vetsinu pluginu)
-    // safe mode (disables most plugins)
+    'timezone' => null, 
     'safe_mode' => false,
 ];

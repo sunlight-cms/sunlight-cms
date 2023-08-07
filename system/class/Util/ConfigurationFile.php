@@ -29,11 +29,7 @@ class ConfigurationFile implements \ArrayAccess
             return;
         }
 
-        file_put_contents(
-            $this->path,
-            sprintf("<?php return %s;\n", var_export($this->data, true)),
-            LOCK_EX
-        );
+        file_put_contents($this->path, self::build($this->data), LOCK_EX);
     }
 
     /**
@@ -52,6 +48,16 @@ class ConfigurationFile implements \ArrayAccess
         $this->ensureLoaded();
 
         return $this->data + $this->defaults;
+    }
+
+    /**
+     * See if a key is defined
+     */
+    function isDefined($key): bool
+    {
+        $this->ensureLoaded();
+
+        return array_key_exists($key, $this->data) || array_key_exists($key, $this->defaults);
     }
 
     function offsetExists($offset): bool
@@ -102,5 +108,13 @@ class ConfigurationFile implements \ArrayAccess
         } else {
             $this->data = [];
         }
+    }
+
+    /**
+     * Build PHP code to save to the configuration file
+     */
+    static function build(array $data): string
+    {
+        return sprintf("<?php\n\nreturn %s;\n", var_export($data, true));
     }
 }

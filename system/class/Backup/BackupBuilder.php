@@ -6,8 +6,8 @@ use Sunlight\Core;
 use Sunlight\Database\Database as DB;
 use Sunlight\Database\SqlDumper;
 use Sunlight\Logger;
+use Sunlight\Util\ConfigurationFile;
 use Sunlight\Util\Filesystem;
-use Sunlight\Util\PhpTemplate;
 use Sunlight\Util\TemporaryFile;
 
 /**
@@ -362,17 +362,13 @@ class BackupBuilder
 
     private function generateConfigFile(): string
     {
-        $phpFileBuilder = PhpTemplate::fromFile(SL_ROOT . 'system/config_template.php');
+        $config = require SL_ROOT . 'system/config_template.php';
 
         if ($this->prefillConfigFile) {
-            $vars = [
-                'db.prefix' => substr(DB::$prefix, 0, -1),
-                'fallback_lang' => Core::$fallbackLang,
-            ];
-        } else {
-            $vars = [];
+            $config['db.prefix'] = substr(DB::$prefix, 0, -1);
+            $config['fallback_lang'] = Core::$fallbackLang;
         }
 
-        return $phpFileBuilder->compile($vars);
+        return ConfigurationFile::build($config);
     }
 }
