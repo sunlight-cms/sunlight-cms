@@ -216,7 +216,6 @@ abstract class Core
             'fallback_lang' => 'en',
             'debug' => false,
             'cache' => true,
-            'locale' => null,
             'timezone' => 'Europe/Prague',
         ];
 
@@ -403,11 +402,6 @@ abstract class Core
         }
 
         error_reporting($err_rep);
-
-        // set locale
-        if (!empty($options['locale'])) {
-            @setlocale(LC_TIME, $options['locale']);
-        }
 
         if (!empty($options['timezone'])) {
             date_default_timezone_set($options['timezone']);

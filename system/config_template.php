@@ -34,6 +34,5 @@ return [
 
     // nastaveni lokalizace
     // localisation settings
-    'locale' => '@@locale|null@@', // setlocale()
     'timezone' => '@@timezone|null@@', // date_default_timezone_set()
 ];

@@ -104,8 +104,6 @@ abstract class Labels
             'config.secret.help' => 'náhodný tajný hash (používáno mj. jako součást XSRF ochrany)',
             'config.timezone' => 'Časové pásmo',
             'config.timezone.help' => 'časové pásmo (prázdné = spoléhat na nastavení serveru), viz',
-            'config.locale' => 'Lokalizace',
-            'config.locale.help' => 'nastavení lokalizace (prázdné = spoléhat na nastavení serveru), viz',
             'config.debug' => 'Vývojový režim',
             'config.debug.help' => 'aktivovat vývojový režim (zobrazování chyb - nepoužívat na ostrém webu!)',
 
@@ -177,8 +175,6 @@ abstract class Labels
             'config.secret.help' => 'random secret hash (used for XSRF protection etc.)',
             'config.timezone' => 'Timezone',
             'config.timezone.help' => 'timezone (empty = rely on server settings), see',
-            'config.locale' => 'Localisation',
-            'config.locale.help' => 'localisation settings (empty = rely on server settings), see',
             'config.debug' => 'Debug mode',
             'config.debug.help' => 'enable debug mode (displays errors - do not use in production!)',
 
@@ -589,7 +585,6 @@ class ConfigurationStep extends Step
             'secret' => trim(Request::post('config_secret', '')),
             'fallback_lang' => $this->vars['language'],
             'debug' => (bool) Form::loadCheckbox('config_debug'),
-            'locale' => $this->getArrayConfigFromString(trim(Request::post('config_locale', ''))),
             'timezone' => trim(Request::post('config_timezone', '')) ?: null,
         ];
 
@@ -721,14 +716,6 @@ class ConfigurationStep extends Step
             </td>
         </tr>
         <tr>
-            <th><?php Labels::render('config.locale') ?></th>
-            <td><input type="text"<?= Form::restorePostValueAndName('config_locale', $this->getArrayConfigAsString('locale')) ?>></td>
-            <td class="help">
-                <?php Labels::render('config.locale.help') ?>
-                <a href="https://php.net/setlocale" target="_blank">setlocale()</a>
-            </td>
-        </tr>
-        <tr>
             <th><?php Labels::render('config.debug') ?></th>
             <td><input type="checkbox"<?= Form::restoreCheckedAndName($this->getFormKeyVar(), 'config_debug', $this->getConfig('debug', $defaultDebug)) ?>></td>
             <td class="help"><?php Labels::render('config.debug.help') ?></td>
@@ -736,30 +723,6 @@ class ConfigurationStep extends Step
     </table>
 </fieldset>
 <?php
-    }
-
-    /**
-     * Convert string representation of an array config to an array
-     */
-    private function getArrayConfigFromString(string $value): ?array
-    {
-        return preg_split('/\s*,\s*/', $value, -1, PREG_SPLIT_NO_EMPTY) ?: null;
-    }
-
-    /**
-     * Get string representation of an array config option
-     */
-    private function getArrayConfigAsString(string $key): string
-    {
-        if (!Config::isLoaded()) {
-            $value = null;
-        } else {
-            $value = $this->getConfig($key);
-        }
-
-        return $value !== null
-            ? implode(', ', $value)
-            : '';
     }
 }
 
