@@ -26,7 +26,7 @@ class LanguagePlugin extends Plugin
         return $this->options['thousands_separator'];
     }
 
-    function getLocalizationEntries(bool $loadAdminDict): ?array
+    function getEntries(bool $loadAdminDict): ?array
     {
         // base dictionary
         $fileName = sprintf('%s/dictionary.php', $this->dir);
@@ -56,5 +56,14 @@ class LanguagePlugin extends Plugin
         }
 
         return null;
+    }
+
+    function load(): void
+    {
+        $entries = $this->getEntries(Core::$env === Core::ENV_ADMIN);
+
+        if ($entries !== null) {
+            Core::$dictionary->add($entries);
+        }
     }
 }

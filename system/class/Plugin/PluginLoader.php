@@ -16,14 +16,17 @@ class PluginLoader
 {
     private const PLUGIN_DIR_PATTERN = '{' . Plugin::ID_PATTERN . '$}AD';
 
-    /** @var PluginType[] */
+    /** @var bool */
+    private $safeMode;
+    /** @var array<string, PluginType> */
     private $types;
 
     /**
-     * @param PluginType[] $types
+     * @param array<string, PluginType> $types
      */
-    function __construct(array $types)
+    function __construct(bool $safeMode, array $types)
     {
+        $this->safeMode = $safeMode;
         $this->types = $types;
     }
 
@@ -144,6 +147,11 @@ class PluginLoader
         // override status if the plugin is disabled
         if ($isDisabled) {
             $plugin->status = Plugin::STATUS_DISABLED;
+        }
+
+        // override status if the plugin is not allowed in safe mode
+        if ($this->safeMode && $plugin->status === Plugin::STATUS_OK && !$type->isPluginAllowedInSafeMode($plugin)) {
+            $plugin->status = Plugin::STATUS_UNAVAILABLE;
         }
 
         return $plugin;

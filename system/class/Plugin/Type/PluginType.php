@@ -25,6 +25,11 @@ abstract class PluginType
 
     abstract function getDefaultBaseNamespace(): string;
 
+    function isPluginAllowedInSafeMode(PluginData $plugin): bool
+    {
+        return false;
+    }
+
     final function resolveOptions(PluginData $plugin, array $options): void
     {
         $optionResolver = $this->getOptionResolver();

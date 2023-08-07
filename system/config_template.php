@@ -35,4 +35,8 @@ return [
     // nastaveni lokalizace
     // localisation settings
     'timezone' => '@@timezone|null@@', // date_default_timezone_set()
+
+    // bezpecny rezim (vypne vetsinu pluginu)
+    // safe mode (disables most plugins)
+    'safe_mode' => false,
 ];

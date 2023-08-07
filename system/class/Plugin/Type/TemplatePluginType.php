@@ -8,6 +8,7 @@ use Kuria\Options\Resolver;
 use Sunlight\Plugin\PluginData;
 use Sunlight\Plugin\PluginOptionNormalizer;
 use Sunlight\Plugin\TemplatePlugin;
+use Sunlight\Settings;
 
 class TemplatePluginType extends PluginType
 {
@@ -29,6 +30,11 @@ class TemplatePluginType extends PluginType
     function getDefaultBaseNamespace(): string
     {
         return 'SunlightTemplate';
+    }
+
+    function isPluginAllowedInSafeMode(PluginData $plugin): bool
+    {
+        return $plugin->name === Settings::get('default_template');
     }
 
     protected function configureOptionResolver(Resolver $optionResolver): void

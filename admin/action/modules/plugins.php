@@ -21,6 +21,10 @@ if (isset($_GET['cleared'])) {
     $output .= Message::ok(_lang('global.done'));
 }
 
+if (Core::$safeMode) {
+    $output .= Message::warning(_lang('admin.plugins.safe_mode_warning'));
+}
+
 // buttons
 $output .= '<p>
         <a class="button" href="' . _e(Router::admin('plugins-upload')) . '"><img src="' . _e(Router::path('admin/public/images/icons/plugin.png')) . '" alt="upload" class="icon">' . _lang('admin.plugins.upload') . '</a>

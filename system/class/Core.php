@@ -60,6 +60,8 @@ abstract class Core
     static $sessionRegenerate;
     /** @var string|null */
     static $sessionPreviousId;
+    /** @var bool */
+    static $safeMode;
 
     /** @var ClassLoader */
     static $classLoader;
@@ -217,6 +219,7 @@ abstract class Core
             'debug' => false,
             'cache' => true,
             'timezone' => 'Europe/Prague',
+            'safe_mode' => false,
         ];
 
         // check required options
@@ -245,6 +248,7 @@ abstract class Core
         self::$fallbackLang = $options['fallback_lang'];
         self::$sessionEnabled = $options['session_enabled'];
         self::$sessionRegenerate = $options['session_regenerate'] || isset($_POST['_session_force_regenerate']);
+        self::$safeMode = (bool) $options['safe_mode'];
 
         // define constants
         define('SL_ROOT', $root);
@@ -294,7 +298,7 @@ abstract class Core
         // cache
         if (self::$cache === null) {
             self::$cache = new Cache(
-                $enableCache
+                $enableCache && !self::$safeMode
                     ? new FilesystemDriver(
                         SL_ROOT . 'system/cache/core',
                         new EntryFactory(null, null, SL_ROOT . 'system/tmp')
@@ -304,7 +308,7 @@ abstract class Core
         }
 
         // plugin manager
-        self::$pluginManager = new PluginManager();
+        self::$pluginManager = new PluginManager(self::$safeMode);
 
         // localization
         self::$dictionary = new LocalizationDictionary();
@@ -500,44 +504,30 @@ abstract class Core
      */
     private static function initLocalization(): void
     {
-        // language choice
-        if (User::isLoggedIn() && Settings::get('language_allowcustom') && User::$data['language'] !== '') {
+        // choose language
+        if (self::$safeMode) {
+            $lang = self::$fallbackLang;
+        } elseif (User::isLoggedIn() && Settings::get('language_allowcustom') && User::$data['language'] !== '') {
             $lang = User::$data['language'];
-            $usedLoginLanguage = true;
         } else {
             $lang = Settings::get('language');
-            $usedLoginLanguage = false;
         }
 
         // load language plugin
-        $languagePlugin = self::$pluginManager->getPlugins()->getLanguage($lang);
+        $langPlugin = self::$pluginManager->getPlugins()->getLanguage($lang)
+            ?? self::$pluginManager->getPlugins()->getLanguage(self::$fallbackLang);
 
-        if ($languagePlugin !== null) {
-            // load localization entries from the plugin
-            $entries = $languagePlugin->getLocalizationEntries(self::$env === Core::ENV_ADMIN);
-
-            if ($entries !== null) {
-                self::$dictionary->add($entries);
-            }
-        } else {
-            // language plugin was not found
-            if ($usedLoginLanguage) {
-                DB::update('user', 'id=' . User::getId(), ['language' => '']);
-            } else {
-                Settings::update('language', self::$fallbackLang);
-            }
-
-            if ($lang !== self::$fallbackLang) {
-                self::fail(
-                    'Jazykový balíček "%s" nebyl nalezen.',
-                    'Language plugin "%s" was not found.',
-                    [$lang]
-                );
-            }
+        if ($langPlugin === null) {
+            self::fail(
+                'Záložní jazykový plugin "%s" nebyl nalezen.',
+                'Fallback language plugin "%s" was not found.',
+                [self::$fallbackLang]
+            );
         }
 
-        self::$lang = $lang;
-        self::$langPlugin = $languagePlugin;
+        $langPlugin->load();
+        self::$lang = $langPlugin->getName();
+        self::$langPlugin = $langPlugin;
     }
 
     static function isReady(): bool

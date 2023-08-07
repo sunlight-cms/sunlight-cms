@@ -473,6 +473,7 @@ return [
     'admin.plugins.title.language' => 'Language packs',
     'admin.plugins.title.template' => 'Templates',
     'admin.plugins.title.extend' => 'Extend plugins',
+    'admin.plugins.safe_mode_warning' => 'The safe_mode option is enabled in config.php. Most plugins are unavailable.',
     'admin.plugins.plugin' => 'Plugin',
     'admin.plugins.description' => 'Description',
     'admin.plugins.authors' => 'Authors',

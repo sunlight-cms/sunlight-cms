@@ -9,6 +9,8 @@ use Sunlight\Util\Form;
 
 class PluginManager
 {
+    /** @var bool */
+    private $safeMode;
     /** @var array<string, Type\PluginType> */
     private $types;
     /** @var PluginRegistry */
@@ -18,8 +20,9 @@ class PluginManager
     /** @var bool */
     private $initialized = false;
 
-    function __construct()
+    function __construct(bool $safeMode)
     {
+        $this->safeMode = $safeMode;
         $this->types = [
             'extend' => new Type\ExtendPluginType(),
             'template' => new Type\TemplatePluginType(),
@@ -216,7 +219,7 @@ class PluginManager
 
     private function loadPlugins(): array
     {
-        $pluginLoader = new PluginLoader($this->types);
+        $pluginLoader = new PluginLoader($this->safeMode, $this->types);
         $result = $pluginLoader->load();
         $data = [
             'plugins' => $result['plugins'],

@@ -8,15 +8,14 @@ use Sunlight\Database\Database as DB;
 abstract class Settings
 {
     /** @var array */
-    private static $settings;
+    private static $settings = [];
+    private static $initialized = false;
 
     static function init(): void
     {
-        if (self::$settings !== null) {
+        if (self::$initialized) {
             throw new \LogicException('Already initialized');
         }
-
-        self::$settings = [];
 
         $cond = Core::$env === Core::ENV_ADMIN
             ? 'admin=1'
@@ -29,6 +28,8 @@ abstract class Settings
         }
 
         Extend::call('settings.init');
+
+        self::$initialized = true;
     }
 
     /**

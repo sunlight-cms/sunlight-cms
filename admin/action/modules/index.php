@@ -130,6 +130,10 @@ if (Core::$debug) {
     $messages[] = Message::warning(_lang('admin.index.debugwarn'));
 }
 
+if (Core::$safeMode) {
+    $messages[] = Message::warning(_lang('admin.plugins.safe_mode_warning'));
+}
+
 if (($version_data !== null) && $version_data['localAge'] >= 0) {
     // old version
     if ($version_data['localAge'] === 0) {

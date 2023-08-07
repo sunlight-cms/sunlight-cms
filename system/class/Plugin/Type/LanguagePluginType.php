@@ -4,7 +4,9 @@ namespace Sunlight\Plugin\Type;
 
 use Kuria\Options\Option;
 use Kuria\Options\Resolver;
+use Sunlight\Core;
 use Sunlight\Plugin\LanguagePlugin;
+use Sunlight\Plugin\PluginData;
 
 class LanguagePluginType extends PluginType
 {
@@ -26,6 +28,11 @@ class LanguagePluginType extends PluginType
     function getDefaultBaseNamespace(): string
     {
         return 'SunlightLanguage';
+    }
+
+    function isPluginAllowedInSafeMode(PluginData $plugin): bool
+    {
+        return $plugin->name === Core::$fallbackLang;
     }
 
     protected function configureOptionResolver(Resolver $optionResolver): void
