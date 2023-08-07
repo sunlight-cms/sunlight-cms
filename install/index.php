@@ -176,7 +176,7 @@ abstract class Labels
             'config.timezone' => 'Timezone',
             'config.timezone.help' => 'timezone (empty = rely on server settings), see',
             'config.debug' => 'Debug mode',
-            'config.debug.help' => 'enable debug mode (displays errors - do not use in production!)',
+            'config.debug.help' => 'enable debug mode (displays errors - do not use on a live website!)',
 
             'import.title' => 'Create database',
             'import.text' => 'This step will create system tables and the admin account.',
