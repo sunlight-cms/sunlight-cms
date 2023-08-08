@@ -47,7 +47,7 @@ foreach ($tree as $page) {
         $output .= '<span class="node-level-m' . $page['node_level'] . '">' . $page['title'] . '</span>';
     }
 
-    $output .= '</td><td>' . ($art_counts[$page['id']] ?? '') . "</td></tr>\n";
+    $output .= '</td><td>' . _num($art_counts[$page['id']] ?? 0) . "</td></tr>\n";
 }
 
 if (empty($tree)) {

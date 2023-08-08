@@ -39,7 +39,7 @@ foreach (Core::$pluginManager->getTypes() as $type) {
     $inactivePlugins = Core::$pluginManager->getPlugins()->getInactiveByType($type->getName());
 
     $output .= "<fieldset>\n";
-    $output .= '<legend>' . _lang('admin.plugins.title.' . $type->getName()) . ' (' . (count($plugins) + count($inactivePlugins)) . ")</legend>\n";
+    $output .= '<legend>' . _lang('admin.plugins.title.' . $type->getName()) . ' (' . _num(count($plugins) + count($inactivePlugins)) . ")</legend>\n";
     $output .= '<table class="list list-hover plugin-list">
 <thead>
     <tr>
