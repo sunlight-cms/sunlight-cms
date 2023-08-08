@@ -350,7 +350,7 @@ switch ($a) {
     <td><input type="checkbox" name="msg[]" value="' . $r['id'] . '"></td>
     <td><a href="' . _e(Router::module('messages', ['query' => ['a' => 'list', 'read' => $r['id']]])) . '"' . ($read ? '' : ' class="notread"') . '>' . $r['subject'] . '</a></td>
     <td>' . Router::userFromQuery(User::equals($r['sender']) ? $receiverUserQuery : $senderUserQuery, $r) . ' <small>(' . _num($r['unread_counter']) . ')</small></td>
-    <td>' . _num($r['update_time'], 'post') . "</td>
+    <td>' . GenericTemplates::renderTime($r['update_time'], 'post') . "</td>
 </tr>\n";
         }
 
