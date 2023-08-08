@@ -58,7 +58,7 @@ return function ($order = 'new', $limit = 5) {
                     continue 2;
                 }
 
-                $rext = ' (' . $rvar . ')';
+                $rext = ' (' . _num($rvar) . ')';
                 break;
 
             case 'article-rating':

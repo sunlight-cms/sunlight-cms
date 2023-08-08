@@ -26,6 +26,16 @@ class LanguagePlugin extends Plugin
         return $this->options['thousands_separator'];
     }
 
+    function formatInteger(int $integer): string
+    {
+        return number_format($integer, 0, '', $this->options['thousands_separator']);
+    }
+
+    function formatFloat(float $float, int $decimals): string
+    {
+        return number_format($float, $decimals, $this->options['decimal_point'], $this->options['thousands_separator']);
+    }
+
     function getEntries(bool $loadAdminDict): ?array
     {
         // base dictionary

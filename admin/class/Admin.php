@@ -71,7 +71,7 @@ abstract class Admin
                 $messages_count = DB::count('pm', '(receiver=' . User::getId() . ' AND receiver_deleted=0 AND receiver_readtime<update_time) OR (sender=' . User::getId() . ' AND sender_deleted=0 AND sender_readtime<update_time)');
 
                 if ($messages_count != 0) {
-                    $messages_count = ' <span class="highlight">(' . $messages_count . ')</span>';
+                    $messages_count = ' <span class="highlight">(' . _num($messages_count) . ')</span>';
                 } else {
                     $messages_count = '';
                 }
@@ -540,14 +540,14 @@ abstract class Admin
                     $sel = false;
                 }
 
-                $output .= '<option value="' . $group['id'] . '"' . Form::selectOption($sel) . '>' . $group['title'] . ' (' . DB::count('user', $options['user_cond'] . ' AND group_id=' . $group['id']) . ")</option>\n";
+                $output .= '<option value="' . $group['id'] . '"' . Form::selectOption($sel) . '>' . $group['title'] . ' (' . _num(DB::count('user', $options['user_cond'] . ' AND group_id=' . $group['id'])) . ")</option>\n";
             }
 
             if (!empty($missingSelectedMap)) {
                 $missingGroupsQuery = DB::query('SELECT id,title FROM ' . DB::table('user_group') . ' WHERE id IN(' . DB::arr(array_keys($missingSelectedMap)) . ')');
 
                 while ($group = DB::row($missingGroupsQuery)) {
-                    $output .= '<option value="' . $group['id'] . '" selected>' . $group['title'] . ' (' . DB::count('user', $options['user_cond'] . ' AND group_id=' . $group['id']) . ")</option>\n";
+                    $output .= '<option value="' . $group['id'] . '" selected>' . $group['title'] . ' (' . _num(DB::count('user', $options['user_cond'] . ' AND group_id=' . $group['id'])) . ")</option>\n";
                 }
             }
         }

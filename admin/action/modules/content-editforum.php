@@ -19,7 +19,7 @@ if ($continue) {
     if (!$new) {
         $custom_settings .= ' <tr><td colspan="2"><label>'
             . '<input type="checkbox" name="delposts" value="1"> ' . _lang('admin.content.form.deltopics')
-            . '<small>(' . DB::count('post', 'home=' . DB::val($id) . ' AND type=' . Post::FORUM_TOPIC . ' AND xhome=-1') . ')</small>'
+            . '<small>(' . _num(DB::count('post', 'home=' . DB::val($id) . ' AND type=' . Post::FORUM_TOPIC . ' AND xhome=-1')) . ')</small>'
             . '</label></td></tr>';
     }
 

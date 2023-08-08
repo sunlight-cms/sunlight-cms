@@ -178,7 +178,7 @@ $output .= _buffer(function () use ($query, $queryParamValues, $queryParamErrors
 
 <table class="list list-max list-noborder log-list">
     <?php if (!empty($entries)): ?>
-    <caption><?= _lang('admin.log.search.total', ['%count%' => $totalResults]) ?></caption>
+    <caption><?= _lang('admin.log.search.total', ['%count%' => _num($totalResults)]) ?></caption>
     <?php endif ?>
     <thead>
         <tr>

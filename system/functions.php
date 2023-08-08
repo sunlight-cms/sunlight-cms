@@ -37,3 +37,21 @@ function _lang(string $key, ?array $replacements = null, ?string $fallback = nul
 {
     return Core::$dictionary->get($key, $replacements, $fallback);
 }
+
+/**
+ * Format a number
+ */
+function _num($number, int $decimals = 2): string
+{
+    if (!is_numeric($number)) {
+        return '-';
+    }
+
+    if (is_int($number) || $decimals <= 0 || abs(fmod($number, 1)) < 0.1 ** $decimals) {
+        // an integer value
+        return Core::$langPlugin->formatInteger((int) $number);
+    }
+
+    // a float value
+    return Core::$langPlugin->formatFloat((float) $number, $decimals);
+}

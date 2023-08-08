@@ -32,7 +32,7 @@ if (isset($_POST['bulk_action'])) {
 
             $message = Message::render(
                 $user_delete_counter === count($user_ids) ? Message::OK : Message::WARNING,
-                _lang('admin.users.list.bulkdelete.msg', ['%done%' => $user_delete_counter, '%total%' => count($user_ids)])
+                _lang('admin.users.list.bulkdelete.msg', ['%done%' => _num($user_delete_counter), '%total%' => _num(count($user_ids))])
             );
             break;
     }
@@ -158,7 +158,7 @@ $output .= "</tbody></table>\n";
 
 // user count
 $totalusers = DB::count('user');
-$output .= '<p class="right">' . _lang('admin.users.list.totalusers') . ': ' . $totalusers . '</p>';
+$output .= '<p class="right">' . _lang('admin.users.list.totalusers') . ': ' . _num($totalusers) . '</p>';
 
 // bulk actions
 $output .= '

@@ -415,7 +415,7 @@ class ToolbarRenderer
                     <tr>
                         <td><code><?= _e($row['dict']) ?></code></td>
                         <td><?= _e($row['key']) ?></td>
-                        <td><?= _e($row['count']) ?></td>
+                        <td><?= _num($row['count']) ?></td>
                     </tr>
                 <?php endforeach ?>
             </tbody>

@@ -118,7 +118,7 @@ if (User::hasPrivilege('admingroups')) {
     <td>' . (($group['id'] != User::GUEST_GROUP_ID)
         ? '<a href="' . _e(Router::admin('users-list', ['query' => ['group_id' => $group['id']]])) . '">
             <img src="' . _e(Router::path('admin/public/images/icons/list.png')) . '" alt="list" class="icon">'
-            . $group['user_count']
+            . _num($group['user_count'])
             . '</a>'
             : '-')
     . '</td>

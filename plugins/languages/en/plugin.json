@@ -9,7 +9,8 @@
     "environment": {
         "system": "^8.0"
     },
+    "class": "EnglishLanguage",
     "iso_code": "en",
     "decimal_point": ".",
-    "thousands_separator": " "
+    "thousands_separator": ","
 }

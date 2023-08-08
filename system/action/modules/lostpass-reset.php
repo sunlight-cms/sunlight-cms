@@ -33,7 +33,7 @@ $error = null;
 do {
     // check login attempt limit
     if (!IpLog::check(IpLog::FAILED_LOGIN_ATTEMPT)) {
-        $error = _lang('login.attemptlimit', ['%minutes%' => Settings::get('maxloginexpire') / 60]);
+        $error = _lang('login.attemptlimit', ['%minutes%' => _num(Settings::get('maxloginexpire') / 60)]);
         break;
     }
 

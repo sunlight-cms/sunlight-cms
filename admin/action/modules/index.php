@@ -53,7 +53,7 @@ $logout_warning = '';
 $maxltime = ini_get('session.gc_maxlifetime');
 
 if (!empty($maxltime) && !Cookie::exists(User::COOKIE_PERSISTENT_LOGIN)) {
-    $logout_warning = Admin::note(_lang('admin.index.logoutwarn', ['%minutes%' => round($maxltime / 60)]));
+    $logout_warning = Admin::note(_lang('admin.index.logoutwarn', ['%minutes%' => _num(round($maxltime / 60))]));
 }
 
 // output
@@ -156,7 +156,7 @@ if (Admin::moduleAccess('log')) {
         $messages[] = Message::warning(
             _buffer(function () use ($log_query, $recent_log_errors) {
                 ?>
-    <?= _lang('admin.index.recent_log_errors', ['%count%' => $recent_log_errors]) ?><br><br>
+    <?= _lang('admin.index.recent_log_errors', ['%count%' => _num($recent_log_errors)]) ?><br><br>
 
     <a class="button" href="<?= _e(Router::admin('log', ['query' => ['maxLevel' => $log_query->maxLevel, 'since' => $log_query->since !== null ? "@{$log_query->since}" : null, 'desc' => '1', 'search' => '1']])) ?>">
         <?= _lang('global.show') ?>

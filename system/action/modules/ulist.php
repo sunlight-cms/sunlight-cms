@@ -83,4 +83,4 @@ if (Paginator::atBottom()) {
 }
 
 // total number of users
-$output .= '<p>' . _lang('user.list.total') . ': ' . $paging['count'] . '</p>';
+$output .= '<p>' . _lang('user.list.total') . ': ' . _num($paging['count']) . '</p>';

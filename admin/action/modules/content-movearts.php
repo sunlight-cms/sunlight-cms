@@ -84,7 +84,7 @@ if (isset($_POST['source'])) {
             $counter = DB::affectedRows();
         }
 
-        $message = Message::ok(_lang('admin.content.movearts.done', ['%moved%' => $counter]));
+        $message = Message::ok(_lang('admin.content.movearts.done', ['%moved%' => _num($counter)]));
     } else {
         $message = Message::list($error_log);
     }

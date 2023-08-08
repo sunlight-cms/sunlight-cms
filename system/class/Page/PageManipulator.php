@@ -268,19 +268,19 @@ abstract class PageManipulator
 
         switch ($page['type']) {
             case Page::SECTION:
-                $dependencies[] = DB::count('post', 'type=' . Post::SECTION_COMMENT . ' AND home=' . DB::val($page['id'])) . ' ' . _lang('count.comments');
+                $dependencies[] = _num(DB::count('post', 'type=' . Post::SECTION_COMMENT . ' AND home=' . DB::val($page['id']))) . ' ' . _lang('count.comments');
                 break;
             case Page::CATEGORY:
-                $dependencies[] = DB::count('article', 'home1=' . DB::val($page['id']) . ' AND home2=-1 AND home3=-1') . ' ' . _lang('count.articles');
+                $dependencies[] = _num(DB::count('article', 'home1=' . DB::val($page['id']) . ' AND home2=-1 AND home3=-1')) . ' ' . _lang('count.articles');
                 break;
             case Page::BOOK:
-                $dependencies[] = DB::count('post', 'type=' . Post::BOOK_ENTRY . ' AND home=' . DB::val($page['id'])) . ' ' . _lang('count.posts');
+                $dependencies[] = _num(DB::count('post', 'type=' . Post::BOOK_ENTRY . ' AND home=' . DB::val($page['id']))) . ' ' . _lang('count.posts');
                 break;
             case Page::GALLERY:
-                $dependencies[] = DB::count('gallery_image', 'home=' . DB::val($page['id'])) . ' ' . _lang('count.images');
+                $dependencies[] = _num(DB::count('gallery_image', 'home=' . DB::val($page['id']))) . ' ' . _lang('count.images');
                 break;
             case Page::FORUM:
-                $dependencies[] = DB::count('post', 'type=' . Post::FORUM_TOPIC . ' AND home=' . DB::val($page['id'])) . ' ' . _lang('count.posts');
+                $dependencies[] = _num(DB::count('post', 'type=' . Post::FORUM_TOPIC . ' AND home=' . DB::val($page['id']))) . ' ' . _lang('count.posts');
                 break;
             case Page::PLUGIN:
                 Extend::call('page.plugin.' . $page['type_idt'] . '.delete.confirm', [

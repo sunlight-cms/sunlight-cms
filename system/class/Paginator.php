@@ -114,7 +114,7 @@ class Paginator
 
                 // first
                 if ($beginpage > 1) {
-                    $paging .= '<a href="' . $url . $options['param'] . '=1' . $link_suffix . '" title="' . _lang('global.first') . "\">1</a><span class=\"paging-first-addon\"> ...</span>\n";
+                    $paging .= '<a href="' . $url . $options['param'] . '=1' . $link_suffix . '" title="' . _lang('global.first') . '">' . _num(1) . "</a><span class=\"paging-first-addon\"> ...</span>\n";
                 }
 
                 // previous
@@ -132,7 +132,9 @@ class Paginator
                         $class = '';
                     }
 
-                    $paging .= '<a href="' . $url . $options['param'] . '=' . $x . $link_suffix . '"' . $class . '>' . $x . "</a>\n";
+                    $paging .= '<a href="' . $url . $options['param'] . '=' . $x . $link_suffix . '"' . $class . '>' 
+                        . _num($x) 
+                        . "</a>\n";
 
                     if ($x != $endpage) {
                         $paging .= ' ';
@@ -148,7 +150,9 @@ class Paginator
 
                 // last
                 if ($endpage < $pages) {
-                    $paging .= '<span class="paging-last-addon"> ... </span><a class="paging-last" href="' . $url . $options['param'] . '=' . $pages . $link_suffix . '" title="' . _lang('global.last') . '">' . $pages . "</a>\n";
+                    $paging .= '<span class="paging-last-addon"> ... </span><a class="paging-last" href="' . $url . $options['param'] . '=' . $pages . $link_suffix . '" title="' . _lang('global.last') . '">' 
+                        . _num($pages)
+                        . "</a>\n";
                 }
 
                 $paging .= "\n</div>\n\n";

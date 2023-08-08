@@ -128,7 +128,7 @@ if ($public) {
 
 <tr>
 <th>' . _lang('mod.profile.logincounter') . '</th>
-<td>' . $query['logincounter'] . '</td>
+<td>' . _num($query['logincounter']) . '</td>
 </tr>' : '') . '
 
 ' . Extend::buffer('mod.profile.table.main', ['user' => $query]) . '
@@ -145,7 +145,7 @@ if ($public) {
 
 <tr><th>' . _lang('mod.profile.regtime') . '</th><td>' . GenericTemplates::renderDate($query['registertime'], 'user_registration') . '</td></tr>
 ' . (Settings::get('profileemail') ? '<tr><th>' . _lang('global.email') . '</th><td>' . Email::link($query['email']) . '</td></tr>' : '') . '
-<tr><th>' . _lang('global.postsnum') . '</th><td>' . $posts_count . $posts_viewlink . '</td></tr>
+<tr><th>' . _lang('global.postsnum') . '</th><td>' . _num($posts_count) . $posts_viewlink . '</td></tr>
 
 ' . $arts . '
 ' . Extend::buffer('mod.profile.table.extra', ['user' => $query]) . '

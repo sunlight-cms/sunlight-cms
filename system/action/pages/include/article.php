@@ -107,20 +107,20 @@ $infos = [];
 if ($_article['showinfo']) {
     $infos['author'] = [_lang('article.author'), Router::userFromQuery($_article['author_query'], $_article)];
     $infos['posted'] = [_lang('article.posted'), GenericTemplates::renderDate($_article['time'], 'article')];
-    $infos['view_count'] = [_lang('article.view_count'), $_article['view_count'] . 'x'];
+    $infos['view_count'] = [_lang('article.view_count'), _num($_article['view_count']) . 'x'];
 }
 
 if ($_article['rateon'] && Settings::get('ratemode') != 0) {
     if ($_article['ratenum'] != 0) {
         if (Settings::get('ratemode') == 1) {
             // percentage
-            $rate = (round($_article['ratesum'] / $_article['ratenum'])) . '%';
+            $rate = _num(round($_article['ratesum'] / $_article['ratenum'])) . '%';
         } else {
             // mark
-            $rate = round(-0.04 * ($_article['ratesum'] / $_article['ratenum']) + 5);
+            $rate = _num(round(-0.04 * ($_article['ratesum'] / $_article['ratenum']) + 5));
         }
 
-        $rate .= ' (' . _lang('article.rate.num') . ' ' . $_article['ratenum'] . 'x)';
+        $rate .= ' (' . _lang('article.rate.num') . ' ' . _num($_article['ratenum']) . 'x)';
     } else {
         $rate = _lang('article.rate.nodata');
     }

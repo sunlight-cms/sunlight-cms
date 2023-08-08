@@ -323,7 +323,8 @@ if ($continue) {
     // calculate rating
     if (!$new) {
         if ($query['ratenum'] != 0) {
-            $rate = DB::result(DB::query('SELECT ROUND(ratesum/ratenum) FROM ' . DB::table('article') . ' WHERE id=' . $query['id'])) . '%, ' . $query['ratenum'] . 'x';
+            $rate = _num(DB::result(DB::query('SELECT ROUND(ratesum/ratenum) FROM ' . DB::table('article') . ' WHERE id=' . $query['id']))) . '%'
+                . ', ' . _num($query['ratenum']) . 'x';
         } else {
             $rate = _lang('article.rate.nodata');
         }
@@ -444,8 +445,8 @@ if ($continue) {
                                     <tr><td><label><input type="checkbox" name="rateon" value="1"' . Form::activateCheckbox($query['rateon']) . '> ' . _lang('admin.content.form.artrate') . '</label></td></tr>
                                     <tr><td><label><input type="checkbox" name="showinfo" value="1"' . Form::activateCheckbox($query['showinfo']) . '> ' . _lang('admin.content.form.showinfo') . '</label></td></tr>
                                     ' . (!$new ? '<tr><td><label><input type="checkbox" name="resetrate" value="1"> ' . _lang('admin.content.form.resetartrate') . ' <small>(' . $rate . ')</small></label></td></tr>' : '') . '
-                                    ' . (!$new ? '<tr><td><label><input type="checkbox" name="delcomments" value="1"> ' . _lang('admin.content.form.delcomments') . ' <small>(' . DB::count('post', 'home=' . DB::val($query['id']) . ' AND type=' . Post::ARTICLE_COMMENT) . ')</small></label></td></tr>' : '') . '
-                                    ' . (!$new ? '<tr><td><label><input type="checkbox" name="resetread" value="1"> ' . _lang('admin.content.form.resetviews') . ' <small>(' . $view_count . ')</small></label></td></tr>' : '') . '
+                                    ' . (!$new ? '<tr><td><label><input type="checkbox" name="delcomments" value="1"> ' . _lang('admin.content.form.delcomments') . ' <small>(' . _num(DB::count('post', 'home=' . DB::val($query['id']) . ' AND type=' . Post::ARTICLE_COMMENT)) . ')</small></label></td></tr>' : '') . '
+                                    ' . (!$new ? '<tr><td><label><input type="checkbox" name="resetread" value="1"> ' . _lang('admin.content.form.resetviews') . ' <small>(' . _num($view_count) . ')</small></label></td></tr>' : '') . '
                                 </tbody>
                             </table>
                         </fieldset>

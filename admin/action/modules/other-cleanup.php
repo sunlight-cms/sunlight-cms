@@ -162,8 +162,8 @@ if (isset($_POST['action'])) do {
 
         $message = "<ul>\n";
 
-        foreach ($prev_count as $key => $val) {
-            $message .= '<li><strong>' . _lang($key) . ':</strong> <code>' . $val . "</code></li>\n";
+        foreach ($prev_count as $key => $count) {
+            $message .= '<li><strong>' . _lang($key) . ':</strong> <code>' . _num($count) . "</code></li>\n";
         }
 
         $message .= '</ul>';

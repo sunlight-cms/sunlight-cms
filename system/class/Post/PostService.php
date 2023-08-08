@@ -557,10 +557,10 @@ class PostService
                         $tpages .= '<span class="topic-pages">';
 
                         for ($i = 1; $i <= 3 && $i <= $tpages_num; ++$i) {
-                            $tpages .= '<a href="' . _e(Router::topic($item['id'], $forum_slug, ['query' => ['page' => $i], 'fragment' => 'posts'])) . '">' . $i . '</a>';
+                            $tpages .= '<a href="' . _e(Router::topic($item['id'], $forum_slug, ['query' => ['page' => $i], 'fragment' => 'posts'])) . '">' . _num($i) . '</a>';
                         }
 
-                        if ($tpages_num > 3) $tpages .= '<a href="' . _e(Router::topic($item['id'], $forum_slug, ['query' => ['page' => $tpages_num]])) . '">' . $tpages_num . ' &rarr;</a>';
+                        if ($tpages_num > 3) $tpages .= '<a href="' . _e(Router::topic($item['id'], $forum_slug, ['query' => ['page' => $tpages_num]])) . '">' . _num($tpages_num) . ' &rarr;</a>';
                         $tpages .= '</span>';
                     }
 
@@ -568,7 +568,7 @@ class PostService
                     $output .= '<tr class="topic-' . $icon . ($hl ? ' topic-hl' : '') . '">'
                         . '<td class="topic-icon-cell"><a href="' . _e(Router::topic($item['id'], $forum_slug)) . '"><img src="' . _e(Template::asset('images/icons/topic-' . $icon . '.png')) . '" alt="' . _lang('posts.topic.' . $icon) . '"></a></td>'
                         . '<td class="topic-main-cell"><a href="' . _e(Router::topic($item['id'], $forum_slug)) . '">' . $item['subject'] . '</a>' . $tpages . '<br>' . $author . ' <small class="post-info">(' . GenericTemplates::renderTime($item['time'], 'post') . ')</small></td>'
-                        . '<td>' . $item['answer_count'] . '</td><td>' . $lastpost . (($item['answer_count'] != 0) ? '<br><small class="post-info">(' . GenericTemplates::renderTime($item['bumptime'], 'post') . ')</small>' : '') . '</td>'
+                        . '<td>' . _num($item['answer_count']) . '</td><td>' . $lastpost . (($item['answer_count'] != 0) ? '<br><small class="post-info">(' . GenericTemplates::renderTime($item['bumptime'], 'post') . ')</small>' : '') . '</td>'
                         . "</tr>\n";
                     $hl = !$hl;
                 }

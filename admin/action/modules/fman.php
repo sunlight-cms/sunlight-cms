@@ -207,7 +207,7 @@ if ($continue) {
                     }
                 }
 
-                $message = Message::render($done == $total ? Message::OK : Message::WARNING, _lang('admin.fman.msg.upload.done', ['%done%' => $done, '%total%' => $total]));
+                $message = Message::render($done == $total ? Message::OK : Message::WARNING, _lang('admin.fman.msg.upload.done', ['%done%' => _num($done), '%total%' => _num($total)]));
                 break;
 
             // new dir
@@ -322,7 +322,7 @@ if ($continue) {
                         $total++;
                     }
 
-                    $message = Message::render($done == $total ? Message::OK : Message::WARNING, _lang('admin.fman.msg.move.done', ['%done%' => $done, '%total%' => $total]));
+                    $message = Message::render($done == $total ? Message::OK : Message::WARNING, _lang('admin.fman.msg.move.done', ['%done%' => _num($done), '%total%' => _num($total)]));
                 } else {
                     $message = Message::warning(_lang('admin.fman.msg.rootlimit'));
                 }
@@ -379,7 +379,7 @@ if ($continue) {
                     $total++;
                 }
 
-                $message = Message::render($done == $total ? Message::OK : Message::WARNING, _lang('admin.fman.msg.deleteselected.done', ['%done%' => $done, '%total%' => $total]));
+                $message = Message::render($done == $total ? Message::OK : Message::WARNING, _lang('admin.fman.msg.deleteselected.done', ['%done%' => _num($done), '%total%' => _num($total)]));
                 break;
 
             // add selection to gallery - choose gallery
@@ -431,7 +431,7 @@ if ($continue) {
                             DB::query('INSERT INTO ' . DB::table('gallery_image') . ' (home,ord,title,prev,full) VALUES ' . $sql);
                         }
 
-                        $message = Message::ok(_lang('admin.fman.addtogallery.done', ['%done%' => $counter]));
+                        $message = Message::ok(_lang('admin.fman.addtogallery.done', ['%done%' => _num($counter)]));
                     } else {
                         $message = Message::warning(_lang('global.badinput'));
                     }
@@ -599,7 +599,7 @@ if ($continue) {
 
       <tr>
       <th>' . _lang('admin.fman.addtogallery.counter') . '</th>
-      <td>' . $counter . '</td>
+      <td>' . _num($counter) . '</td>
       </tr>
       ';
                 } else {
@@ -790,10 +790,10 @@ if ($continue) {
     ' . Xsrf::getInput() . '</form>
 
     <p class="fman-menu">
-    <span><strong>' . _lang('admin.fman.filecounter') . ':</strong> ' . $filecounter . ' <small>(' . GenericTemplates::renderFileSize($sizecounter) . ')</small></span>
-    <a href="#" onclick="return Sunlight.admin.fmanSelect(' . $filecounter . ', 1)">' . _lang('admin.fman.selectall') . '</a>
-    <a href="#" onclick="return Sunlight.admin.fmanSelect(' . $filecounter . ', 2)">' . _lang('admin.fman.deselectall') . '</a>
-    <a href="#" onclick="return Sunlight.admin.fmanSelect(' . $filecounter . ', 3)">' . _lang('admin.fman.inverse') . '</a>
+    <span><strong>' . _lang('admin.fman.filecounter') . ':</strong> ' . _num($filecounter) . ' <small>(' . GenericTemplates::renderFileSize($sizecounter) . ')</small></span>
+    <a href="#" onclick="return Sunlight.admin.fmanSelect(' . _num($filecounter) . ', 1)">' . _lang('admin.fman.selectall') . '</a>
+    <a href="#" onclick="return Sunlight.admin.fmanSelect(' . _num($filecounter) . ', 2)">' . _lang('admin.fman.deselectall') . '</a>
+    <a href="#" onclick="return Sunlight.admin.fmanSelect(' . _num($filecounter) . ', 3)">' . _lang('admin.fman.inverse') . '</a>
     <strong>' . _lang('admin.fman.selected') . ':</strong>
     <a href="#" onclick="return Sunlight.admin.fmanMoveSelected()">' . _lang('admin.fman.selected.move') . '</a>
     <a href="#" onclick="return Sunlight.admin.fmanDeleteSelected()">' . _lang('admin.fman.selected.delete') . '</a>

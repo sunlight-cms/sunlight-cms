@@ -56,14 +56,20 @@ if (DB::size($items) != 0) {
                 // section
                 case Page::SECTION:
                     if ($item['var1'] == 1) {
-                        $iteminfos['comment_num'] = [_lang('article.comments'), DB::count('post', 'type=' . Post::SECTION_COMMENT . ' AND home=' . DB::val($item['id']))];
+                        $iteminfos['comment_num'] = [
+                            _lang('article.comments'),
+                             _num(DB::count('post', 'type=' . Post::SECTION_COMMENT . ' AND home=' . DB::val($item['id']))),
+                        ];
                     }
                     break;
 
                 // category
                 case Page::CATEGORY:
                     [, , $art_count] = Article::createFilter('art', [$item['id']], null, true);
-                    $iteminfos['article_num'] = [_lang('global.articlesnum'), $art_count];
+                    $iteminfos['article_num'] = [
+                        _lang('global.articlesnum'),
+                        _num($art_count),
+                    ];
                     break;
 
                 // book
@@ -82,19 +88,31 @@ if (DB::size($items) != 0) {
                         $lastpost = '-';
                     }
 
-                    $iteminfos['post_num'] = [_lang('global.postsnum'), DB::count('post', 'type=' . Post::BOOK_ENTRY . ' AND home=' . DB::val($item['id']))];
+                    $iteminfos['post_num'] = [
+                        _lang('global.postsnum'), 
+                        _num(DB::count('post', 'type=' . Post::BOOK_ENTRY . ' AND home=' . DB::val($item['id']))),
+                    ];
                     $iteminfos['last_post'] = [_lang('global.lastpost'), $lastpost];
                     break;
 
                 // gallery
                 case Page::GALLERY:
-                    $iteminfos['image_num'] = [_lang('global.imgsnum'), DB::count('gallery_image', 'home=' . DB::val($item['id']))];
+                    $iteminfos['image_num'] = [
+                        _lang('global.imgsnum'), 
+                        _num(DB::count('gallery_image', 'home=' . DB::val($item['id']))),
+                    ];
                     break;
 
                 // forum
                 case Page::FORUM:
-                    $iteminfos['topic_num'] = [_lang('global.topicsnum'), DB::count('post', 'type=' . Post::FORUM_TOPIC . ' AND home=' . DB::val($item['id']) . ' AND xhome=-1')];
-                    $iteminfos['answer_num'] = [_lang('global.answersnum'), DB::count('post', 'type=' . Post::FORUM_TOPIC . ' AND home=' . DB::val($item['id']) . ' AND xhome!=-1')];
+                    $iteminfos['topic_num'] = [
+                        _lang('global.topicsnum'), 
+                        _num(DB::count('post', 'type=' . Post::FORUM_TOPIC . ' AND home=' . DB::val($item['id']) . ' AND xhome=-1')),
+                    ];
+                    $iteminfos['answer_num'] = [
+                        _lang('global.answersnum'), 
+                        _num(DB::count('post', 'type=' . Post::FORUM_TOPIC . ' AND home=' . DB::val($item['id']) . ' AND xhome!=-1')),
+                    ];
                     break;
 
                 // plugin page

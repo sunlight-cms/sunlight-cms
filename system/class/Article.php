@@ -251,11 +251,11 @@ abstract class Article
             $infos = [
                 'author' => [_lang('article.author'), Router::userFromQuery($userQuery, $art)],
                 'posted' => [_lang('article.posted'), GenericTemplates::renderDate($art['time'], 'article')],
-                'view_count' => [_lang('article.view_count'), $art['view_count'] . 'x'],
+                'view_count' => [_lang('article.view_count'), _num($art['view_count']) . 'x'],
             ];
 
             if ($art['comments'] && isset($art['comment_count']) && Settings::get('comments')) {
-                $infos['comments'] = [_lang('article.comments'), $art['comment_count']];
+                $infos['comments'] = [_lang('article.comments'), _num($art['comment_count'])];
             }
 
             Extend::call('article.preview.infos', [

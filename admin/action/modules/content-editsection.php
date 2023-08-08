@@ -25,7 +25,7 @@ if ($continue) {
     if (!$new) {
         $custom_settings .= '<tr><td colspan="2"><label>'
             . '<input type="checkbox" name="delcomments" value="1"> ' . _lang('admin.content.form.delcomments')
-            . ' <small>(' . DB::count('post', 'home=' . DB::val($id) . ' AND type=' . Post::SECTION_COMMENT) . ')</small>'
+            . ' <small>(' . _num(DB::count('post', 'home=' . DB::val($id) . ' AND type=' . Post::SECTION_COMMENT)) . ')</small>'
             . '</label></td></tr>';
     }
 }

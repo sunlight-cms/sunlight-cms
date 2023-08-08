@@ -76,7 +76,7 @@ if ($systemgroup) {
 }
 
 if ($user_count > 0) {
-    $output .= Message::warning(_lang('admin.users.groups.delwarning', ['%user_count%' => $user_count]));
+    $output .= Message::warning(_lang('admin.users.groups.delwarning', ['%user_count%' => _num($user_count)]));
 }
 
 $output .= '

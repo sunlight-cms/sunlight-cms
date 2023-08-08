@@ -99,8 +99,8 @@ if (isset($_POST['text'])) {
                 ]);
 
                 $output .= Message::ok(_lang('admin.other.massemail.send', [
-                    '%done%' => $done,
-                    '%total%' => $total,
+                    '%done%' => _num($done),
+                    '%total%' => _num($total),
                 ]));
             } else {
                 $output .= Message::warning(_lang('admin.other.massemail.noreceiversfound'));

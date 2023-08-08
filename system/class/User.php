@@ -871,7 +871,7 @@ abstract class User
             case self::LOGIN_REMOVED:
                 return Message::ok(_lang('login.selfremove'));
             case self::LOGIN_ATTEMPTS_EXCEEDED:
-                return Message::warning(_lang('login.attemptlimit', ['%minutes%' => Settings::get('maxloginexpire') / 60]));
+                return Message::warning(_lang('login.attemptlimit', ['%minutes%' => _num(Settings::get('maxloginexpire') / 60)]));
             case self::LOGIN_XSRF_FAILURE:
                 return Message::error(_lang('xsrf.msg'));
             default:

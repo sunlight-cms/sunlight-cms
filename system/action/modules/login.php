@@ -20,7 +20,7 @@ if (User::isLoggedIn()) {
         [Router::adminIndex(), _lang('global.admintitle'), User::hasPrivilege('administration')],
         [Router::module('profile', ['query' => ['id' => User::getUsername()]]), _lang('mod.profile'), true],
         [Router::module('settings'), _lang('mod.settings'), true],
-        [Router::module('messages'), _lang('mod.messages') . ' [' . User::getUnreadPmCount() . ']', Settings::get('messages')],
+        [Router::module('messages'), _lang('mod.messages') . ' [' . _num(User::getUnreadPmCount()) . ']', Settings::get('messages')],
     ];
 
     foreach ($items as $item) {

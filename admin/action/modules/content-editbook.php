@@ -19,7 +19,7 @@ if ($continue) {
     if (!$new) {
         $custom_settings .= '<tr><td colspan="2"><label>'
             . '<input type="checkbox" name="delposts" value="1"> ' . _lang('admin.content.form.delposts')
-            . ' <small>(' . DB::count('post', 'home=' . DB::val($id) . ' AND type=' . Post::BOOK_ENTRY) . ')</small>'
+            . ' <small>(' . _num(DB::count('post', 'home=' . DB::val($id) . ' AND type=' . Post::BOOK_ENTRY)) . ')</small>'
             . '</label></td></tr>';
     }
 

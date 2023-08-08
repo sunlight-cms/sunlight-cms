@@ -276,7 +276,7 @@ if (isset($_POST['xaction']) && $continue) {
             $done = count($done);
             $message .= Message::render(
                 ($done === $total) ? Message::OK : Message::WARNING,
-                _lang('admin.content.manageimgs.upload.msg', ['%done%' => $done, '%total%' => $total])
+                _lang('admin.content.manageimgs.upload.msg', ['%done%' => _num($done), '%total%' => _num($total)])
             );
             break;
     }
