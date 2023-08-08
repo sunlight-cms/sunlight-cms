@@ -473,7 +473,7 @@ return [
     'admin.plugins.title.language' => 'Jazykové balíčky',
     'admin.plugins.title.template' => 'Motivy',
     'admin.plugins.title.extend' => 'Extend pluginy',
-    'admin.plugins.safe_mode_warning' => 'V config.php je aktivován safe_mode. Většina pluginů není dostupná.',
+    'admin.plugins.safe_mode_warning' => 'V config.php je aktivován nouzový režim (safe_mode). Většina pluginů je nedostupná.',
     'admin.plugins.plugin' => 'Plugin',
     'admin.plugins.description' => 'Popis',
     'admin.plugins.authors' => 'Autoři',
