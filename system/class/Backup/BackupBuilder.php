@@ -8,6 +8,7 @@ use Sunlight\Database\SqlDumper;
 use Sunlight\Logger;
 use Sunlight\Util\ConfigurationFile;
 use Sunlight\Util\Filesystem;
+use Sunlight\Util\StringGenerator;
 use Sunlight\Util\TemporaryFile;
 
 /**
@@ -367,6 +368,7 @@ class BackupBuilder
         if ($this->prefillConfigFile) {
             $config['db.prefix'] = substr(DB::$prefix, 0, -1);
             $config['fallback_lang'] = Core::$fallbackLang;
+            $config['secret'] = StringGenerator::generateString(64);
         }
 
         return ConfigurationFile::build($config);
