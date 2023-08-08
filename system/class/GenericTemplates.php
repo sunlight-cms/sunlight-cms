@@ -9,20 +9,6 @@ use Sunlight\Util\UrlHelper;
 abstract class GenericTemplates
 {
     /**
-     * Render a number
-     */
-    static function renderNumber($number, int $decimals = 2): string
-    {
-        if (is_int($number) || $decimals <= 0 || abs(fmod($number, 1)) < 0.1 ** $decimals) {
-            // an integer value
-            return number_format($number, 0, '', Core::$langPlugin->getThousandsSeparator());
-        }
-
-        // a float value
-        return number_format($number, $decimals, Core::$langPlugin->getDecimalPoint(), Core::$langPlugin->getThousandsSeparator());
-    }
-
-    /**
      * Render a date value
      *
      * @param int $timestamp UNIX timestamp
@@ -50,10 +36,10 @@ abstract class GenericTemplates
     static function renderFilesize(int $bytes): string
     {
         if ($bytes >= 1000000) {
-            return self::renderNumber($bytes / 1000000) . ' MB';
+            return _num($bytes / 1000000) . ' MB';
         }
 
-        return self::renderNumber(ceil($bytes / 1000)) . ' kB';
+        return _num(ceil($bytes / 1000)) . ' kB';
     }
 
     /**
