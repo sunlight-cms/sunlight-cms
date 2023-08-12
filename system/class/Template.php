@@ -496,7 +496,7 @@ abstract class Template
                 $messages_count = User::getUnreadPmCount();
 
                 if ($messages_count != 0) {
-                    $messages_count = " [{$messages_count}]";
+                    $messages_count = ' <span class="user-menu-unread-pm">' . $messages_count . '</span>';
                 } else {
                     $messages_count = '';
                 }

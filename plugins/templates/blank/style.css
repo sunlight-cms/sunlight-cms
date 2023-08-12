@@ -25,6 +25,12 @@ body {
     display: inline;
     padding-left: 5px;
 }
+.user-menu-unread-pm:before {
+    content: "[";
+}
+.user-menu-unread-pm:after {
+    content: "]";
+}
 
 /* Header */
 #header {

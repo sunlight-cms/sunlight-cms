@@ -113,6 +113,12 @@ a:hover {
 #header ul.user-menu a {
     color: #8F8F8F;
 }
+.user-menu-unread-pm:before {
+    content: "[";
+}
+.user-menu-unread-pm:after {
+    content: "]";
+}
 
 /* Menu */
 #menu {
