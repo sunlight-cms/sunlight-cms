@@ -6,18 +6,34 @@ use Sunlight\Database\Database as DB;
 use Sunlight\Search\SearchResult;
 use Sunlight\Search\SearchSource;
 
+/**
+ * @psalm-type ModifierString = 'IN NATURAL LANGUAGE MODE'|'IN NATURAL LANGUAGE MODE WITH QUERY EXPANSION'|'IN BOOLEAN MODE'|'WITH QUERY EXPANSION'|null
+ */
 abstract class FulltextSource extends SearchSource
 {
-    /** @var string|null */
-    private $modifier;
+    /** @var ModifierString */
+    private $modifier = 'IN BOOLEAN MODE';
+    /** @var callable|null */
+    private $queryProcessor;
     /** @var float */
     private $scoreThreshold = 0.0;
+
+    function __construct(string $key)
+    {
+        parent::__construct($key);
+
+        $this->queryProcessor = new FulltextQueryProcessor();
+    }
 
     function search(string $query): iterable
     {
         $alias = $this->getTableAlias();
         $joins = $this->getJoins();
         $filter = $this->getFilter();
+
+        if ($this->queryProcessor !== null) {
+            $query = ($this->queryProcessor)($query, $this->modifier);
+        }
 
         $query = DB::query(
             'SELECT ' . implode(',', $this->getResultColumns())
@@ -46,10 +62,17 @@ abstract class FulltextSource extends SearchSource
 
     /**
      * Set the full-text search modifier
+     * 
+     * @param ModifierString $modifier
      */
     function setModifier(?string $modifier): void
     {
         $this->modifier = $modifier;
+    }
+
+    function setQueryProcessor(?callable $processor): void
+    {
+        $this->queryProcessor = $processor;
     }
 
     /**
