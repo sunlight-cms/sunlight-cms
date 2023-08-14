@@ -684,6 +684,7 @@ return [
     'admin.other.cleanup.other.plugin_posts.label' => 'Plugin posts',
     'admin.other.cleanup.other.iplog' => 'remove all IP log entries',
     'admin.other.cleanup.other.user_activation' => 'remove all pending registrations',
+    'admin.other.cleanup.other.log' => 'remove all log entries',
     'admin.other.cleanup.time.1' => 'week',
     'admin.other.cleanup.time.2' => '2 weeks',
     'admin.other.cleanup.time.4' => 'month',

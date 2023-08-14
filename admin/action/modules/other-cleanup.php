@@ -116,6 +116,15 @@ if (isset($_POST['action'])) do {
         }
     }
 
+    if (Form::loadCheckbox('log')) {
+        if ($prev) {
+            $prev_count['mod.reg.confirm'] = DB::count('log');
+        } else {
+            DB::query('TRUNCATE TABLE ' . DB::table('log'));
+            $logged_db_cleanup_info['deleted_log'] = true;
+        }
+    }
+
     // users
     if (Form::loadCheckbox('users')) {
         $users_time = time() - (Request::post('users-time') * 7 * 24 * 60 * 60);
@@ -217,7 +226,8 @@ $output .= $message . '
     <label><input type="checkbox" name="posts" value="1"' . Form::activateCheckbox(isset($_POST['posts'])) . '> ' . _lang('admin.other.cleanup.other.posts') . '</label><br>
     <label><input type="checkbox" name="plugin_posts" value="1"' . Form::activateCheckbox(isset($_POST['plugin_posts'])) . '> ' . _lang('admin.other.cleanup.other.plugin_posts') . '</label><br>
     <label><input type="checkbox" name="iplog" value="1"' . Form::activateCheckbox(isset($_POST['iplog'])) . '> ' . _lang('admin.other.cleanup.other.iplog') . '</label><br>
-    <label><input type="checkbox" name="user_activation" value="1"' . Form::activateCheckbox(isset($_POST['user_activation'])) . '> ' . _lang('admin.other.cleanup.other.user_activation') . '</label>
+    <label><input type="checkbox" name="user_activation" value="1"' . Form::activateCheckbox(isset($_POST['user_activation'])) . '> ' . _lang('admin.other.cleanup.other.user_activation') . '</label><br>
+    <label><input type="checkbox" name="log" value="1"' . Form::activateCheckbox(isset($_POST['log'])) . '> ' . _lang('admin.other.cleanup.other.log') . '</label>
 </fieldset>
 
 <button class="button bigger" name="action" type="submit" value="preview">' . _lang('admin.other.cleanup.prev') . '</button>
