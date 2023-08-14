@@ -834,7 +834,9 @@ class ImportDatabaseStep extends Step
                         'title' => 'Úvod',
                         'content' => '<p>Instalace redakčního systému SunLight CMS ' . Core::VERSION . ' byla úspěšně dokončena!<br>
 Nyní se již můžete <a href="admin/">přihlásit do administrace</a> (s účtem nastaveným při instalaci).</p>
-<p>Podporu, diskusi a doplňky ke stažení naleznete na oficiálních webových stránkách <a href="https://sunlight-cms.cz/">sunlight-cms.cz</a>.</p>',
+<p>Podporu, diskusi a rozšíření naleznete na oficiálních webových stránkách <a href="https://sunlight-cms.cz/">sunlight-cms.cz</a>.</p>',
+                        'search_content' => 'Instalace redakčního systému SunLight CMS ' . Core::VERSION . ' byla úspěšně dokončena!
+Nyní se již můžete přihlásit do administrace (s účtem nastaveným při instalaci). Podporu, diskusi a rozšíření naleznete na oficiálních webových stránkách sunlight-cms.cz.',
                     ],
                 ],
             ];
@@ -854,10 +856,12 @@ Nyní se již můžete <a href="admin/">přihlásit do administrace</a> (s účt
                 ],
                 'page' => [
                     1 => [
-                        'title' => 'Home',
+                        'title' => 'Index',
                         'content' => '<p>Installation of SunLight CMS ' . Core::VERSION . ' has been a success!<br>
-Now you can <a href="admin/">log in to the administration</a> (with the account set up during installation).</p>
-<p>Support, forums and plugins are available at the official website <a href="https://sunlight-cms.cz/">sunlight-cms.cz</a>.</p>',
+Now you can <a href="admin/">log into the administration</a> (with the account set up during installation).</p>
+<p>Support, forums and plugins are available on the official website <a href="https://sunlight-cms.cz/">sunlight-cms.cz</a>.</p>',
+                        'search_content' => 'Installation of SunLight CMS ' . Core::VERSION . ' has been a success!
+Now you can log into the administration (with the account set up during installation). Support, forums and plugins are available on the official website sunlight-cms.cz.',
                     ],
                 ],
             ];
