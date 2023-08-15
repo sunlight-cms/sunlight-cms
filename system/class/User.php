@@ -1107,9 +1107,7 @@ abstract class User
         if ($hasAvatar) {
             $avatarPath = self::getAvatarPath($data['avatar']);
         } else {
-            $avatarPath = SL_ROOT . 'images/avatars/no-avatar'
-                . ($options['default_dark'] ?? Template::getCurrent()->getOption('dark') ? '-dark' : '')
-                . '.jpg';
+            $avatarPath = Template::getCurrent()->getDirectory() . '/images/no-avatar.jpg';
         }
 
         $url = Router::file($avatarPath);

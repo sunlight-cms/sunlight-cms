@@ -4,8 +4,7 @@
 /images/articles/*
 !/images/articles/.gitkeep
 /images/avatars/*
-!/images/avatars/no-avatar.jpg
-!/images/avatars/no-avatar-dark.jpg
+!/images/avatars/.gitkeep
 /images/galleries/*
 !/images/galleries/.gitkeep
 /images/thumb/*
