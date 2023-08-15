@@ -109,7 +109,7 @@ if (isset($_POST['action'])) do {
 
     if (Form::loadCheckbox('user_activation')) {
         if ($prev) {
-            $prev_count['mod.reg.confirm'] = DB::count('user_activation');
+            $prev_count['admin.log.title'] = DB::count('user_activation');
         } else {
             DB::query('TRUNCATE TABLE ' . DB::table('user_activation'));
             $logged_db_cleanup_info['deleted_user_activations'] = true;
