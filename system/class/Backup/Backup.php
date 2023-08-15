@@ -220,28 +220,32 @@ class Backup
         $this->ensureOpenAndNew();
 
         $basePath = SL_ROOT . $path;
-        $rootPathInfo = new \SplFileInfo(SL_ROOT);
-        $filePathNamePrefixLength = strlen($rootPathInfo->getPathname()) + 1;
-
         $iterator = Filesystem::createRecursiveIterator($basePath);
 
-        foreach ($iterator as $item) {
-            $dataPath = substr($item->getPathname(), $filePathNamePrefixLength);
+        if ($iterator->valid()) {
+            $rootPathInfo = new \SplFileInfo(SL_ROOT);
+            $filePathNamePrefixLength = strlen($rootPathInfo->getPathname()) + 1;
 
-            if ($filter !== null && !$filter($dataPath)) {
-                continue;
-            }
-
-            if ($item->isDir()) {
-                if (Filesystem::isDirectoryEmpty($item->getPathname())) {
-                    $this->addEmptyDirectory($dataPath);
+            foreach ($iterator as $item) {
+                $dataPath = substr($item->getPathname(), $filePathNamePrefixLength);
+    
+                if ($filter !== null && !$filter($dataPath)) {
+                    continue;
                 }
-            } else {
-                $this->addFile(
-                    $dataPath,
-                    $item->getPathname()
-                );
+    
+                if ($item->isDir()) {
+                    if (Filesystem::isDirectoryEmpty($item->getPathname())) {
+                        $this->addEmptyDirectory($dataPath);
+                    }
+                } else {
+                    $this->addFile(
+                        $dataPath,
+                        $item->getPathname()
+                    );
+                }
             }
+        } else {
+            $this->addEmptyDirectory($path);
         }
 
         $this->directoryList[] = $path;

@@ -32,6 +32,9 @@ class BackupBuilder
     /** @var string[] */
     private $emptyDirPathList = [
         'images/thumb',
+        'system/backup',
+        'system/cache',
+        'system/tmp',
     ];
 
     /** @var array[] name => paths */
@@ -62,11 +65,7 @@ class BackupBuilder
     ];
 
     /** @var array[] pattern list */
-    private $includedPathMap = [
-        'system/backup/.gitkeep' => ['static' => true, 'dynamic' => false],
-        'system/cache/.gitkeep' => ['static' => true, 'dynamic' => false],
-        'system/tmp/.gitkeep' => ['static' => true, 'dynamic' => false],
-    ];
+    private $includedPathMap = [];
 
     /** @var array[] pattern list */
     private $excludedPathMap = [
