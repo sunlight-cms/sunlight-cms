@@ -36,6 +36,6 @@ abstract class SystemMaintenance
         // check version
         VersionChecker::check();
 
-        Logger::info('system', sprintf('Finished system maintenance in %d seconds', time() - $startTime));
+        Logger::notice('system', sprintf('Finished system maintenance in %d seconds', time() - $startTime));
     }
 }

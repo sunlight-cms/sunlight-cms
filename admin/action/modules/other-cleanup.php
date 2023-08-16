@@ -39,6 +39,7 @@ if (isset($_POST['action'])) do {
 
     // messages
     $messages = Request::post('messages');
+    $logged_cleanup_info = [];
 
     switch ($messages) {
         case 1:
@@ -52,7 +53,7 @@ if (isset($_POST['action'])) do {
                     . ' LEFT JOIN ' . DB::table('post') . ' AS post ON (post.type=' . Post::PRIVATE_MSG . ' AND post.home=' . DB::table('pm') . '.id)'
                     . ' WHERE update_time<' . $messages_time
                 );
-                $logged_db_cleanup_info['deleted_messages_before'] = $messages_time;
+                $logged_cleanup_info['deleted_messages_before'] = $messages_time;
             }
             break;
 
@@ -62,7 +63,7 @@ if (isset($_POST['action'])) do {
             } else {
                 DB::query('TRUNCATE TABLE ' . DB::table('pm'));
                 DB::delete('post', 'type=' . Post::PRIVATE_MSG);
-                $logged_db_cleanup_info['deleted_all_messages'] = true;
+                $logged_cleanup_info['deleted_all_messages'] = true;
             }
             break;
     }
@@ -73,7 +74,7 @@ if (isset($_POST['action'])) do {
             $prev_count['admin.settings.functions.comments'] = DB::count('post', 'type=' . Post::SECTION_COMMENT . ' OR type=' . Post::ARTICLE_COMMENT);
         } else {
             DB::delete('post', 'type=' . Post::SECTION_COMMENT . ' OR type=' . Post::ARTICLE_COMMENT);
-            $logged_db_cleanup_info['deleted_comments'] = true;
+            $logged_cleanup_info['deleted_comments'] = true;
         }
     }
 
@@ -86,7 +87,7 @@ if (isset($_POST['action'])) do {
                 Post::SHOUTBOX_ENTRY,
                 Post::FORUM_TOPIC
             ]);
-            $logged_db_cleanup_info['deleted_posts'] = true;
+            $logged_cleanup_info['deleted_posts'] = true;
         }
     }
 
@@ -95,7 +96,7 @@ if (isset($_POST['action'])) do {
             $prev_count['admin.other.cleanup.other.plugin_posts.label'] = DB::count('post', 'type=' . Post::PLUGIN);
         } else {
             DB::delete('post', 'type=' . Post::PLUGIN);
-            $logged_db_cleanup_info['deleted_plugin_posts'] = true;
+            $logged_cleanup_info['deleted_plugin_posts'] = true;
         }
     }
 
@@ -104,7 +105,7 @@ if (isset($_POST['action'])) do {
             $prev_count['admin.iplog'] = DB::count('iplog');
         } else {
             DB::query('TRUNCATE TABLE ' . DB::table('iplog'));
-            $logged_db_cleanup_info['deleted_iplog'] = true;
+            $logged_cleanup_info['deleted_iplog'] = true;
         }
     }
 
@@ -113,7 +114,7 @@ if (isset($_POST['action'])) do {
             $prev_count['mod.reg.confirm'] = DB::count('user_activation');
         } else {
             DB::query('TRUNCATE TABLE ' . DB::table('user_activation'));
-            $logged_db_cleanup_info['deleted_user_activations'] = true;
+            $logged_cleanup_info['deleted_user_activations'] = true;
         }
     }
 
@@ -122,7 +123,7 @@ if (isset($_POST['action'])) do {
             $prev_count['admin.log.title'] = DB::count('log');
         } else {
             DB::query('TRUNCATE TABLE ' . DB::table('log'));
-            $logged_db_cleanup_info['deleted_log'] = true;
+            $logged_cleanup_info['deleted_log'] = true;
         }
     }
 
@@ -144,7 +145,7 @@ if (isset($_POST['action'])) do {
             while ($userid = DB::row($userids)) {
                 User::delete($userid['id']);
             }
-            $logged_db_cleanup_info['deleted_users'] = ['inactive_since' => $users_time, 'group_id' => $users_group];
+            $logged_cleanup_info['deleted_users'] = ['inactive_since' => $users_time, 'group_id' => $users_group];
 
             unset($userids);
         }
@@ -164,13 +165,14 @@ if (isset($_POST['action'])) do {
             }
         } else {
             Core::$cache->clear();
-            $logged_db_cleanup_info['cleared_cache'] = true;
+            $logged_cleanup_info['cleared_cache'] = true;
         }
     }
 
     // maintenance
     if (Form::loadCheckbox('maintenance') && !$prev) {
         SystemMaintenance::run();
+        $logged_cleanup_info['system_maintenance'] = true;
     }
 
     // optimization
@@ -178,7 +180,7 @@ if (isset($_POST['action'])) do {
         foreach (DB::getTablesByPrefix() as $table) {
             DB::query('OPTIMIZE TABLE `' . $table . '`');
         }
-        $logged_db_cleanup_info['optimized_tables'] = true;
+        $logged_cleanup_info['optimized_tables'] = true;
     }
 
     // message
@@ -198,8 +200,8 @@ if (isset($_POST['action'])) do {
 
         $message = Message::ok(_lang('admin.other.cleanup.found_items') . ':' . $message, true);
     } else {
-        if (!empty($logged_db_cleanup_info)) {
-            Logger::notice('system', 'Manually performed a database cleanup', $logged_db_cleanup_info);
+        if (!empty($logged_cleanup_info)) {
+            Logger::notice('system', 'Performed cleanup tasks via admin module', $logged_cleanup_info);
         }
 
         $message = Message::ok(_lang('global.done'));
