@@ -90,7 +90,7 @@ return [
     'global.any' => 'Jakýkoliv',
     'global.any2' => 'Jakákoliv',
     'global.nochange' => 'Neměnit',
-    'global.noaction' => 'Nebyla zvolena akce',
+    'global.noaction' => 'Žádná akce',
     'global.other' => 'Ostatní',
     'global.copy' => 'Kopie',
     'global.uploadlimit' => 'Max. velikost',

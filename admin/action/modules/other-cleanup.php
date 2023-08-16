@@ -1,6 +1,7 @@
 <?php
 
 use Sunlight\Admin\Admin;
+use Sunlight\Core;
 use Sunlight\Logger;
 use Sunlight\Post\Post;
 use Sunlight\Database\Database as DB;
@@ -109,7 +110,7 @@ if (isset($_POST['action'])) do {
 
     if (Form::loadCheckbox('user_activation')) {
         if ($prev) {
-            $prev_count['admin.log.title'] = DB::count('user_activation');
+            $prev_count['mod.reg.confirm'] = DB::count('user_activation');
         } else {
             DB::query('TRUNCATE TABLE ' . DB::table('user_activation'));
             $logged_db_cleanup_info['deleted_user_activations'] = true;
@@ -118,7 +119,7 @@ if (isset($_POST['action'])) do {
 
     if (Form::loadCheckbox('log')) {
         if ($prev) {
-            $prev_count['mod.reg.confirm'] = DB::count('log');
+            $prev_count['admin.log.title'] = DB::count('log');
         } else {
             DB::query('TRUNCATE TABLE ' . DB::table('log'));
             $logged_db_cleanup_info['deleted_log'] = true;
@@ -146,6 +147,24 @@ if (isset($_POST['action'])) do {
             $logged_db_cleanup_info['deleted_users'] = ['inactive_since' => $users_time, 'group_id' => $users_group];
 
             unset($userids);
+        }
+    }
+
+    // cache
+    if (Form::loadCheckbox('clear_cache')) {
+        if ($prev) {
+            if (Core::$cache->isFilterable()) {
+                $prev_count['admin.other.cleanup.other.clear_cache.label'] = 0;
+
+                foreach (Core::$cache->listKeys() as $key) {
+                    ++$prev_count['admin.other.cleanup.other.clear_cache.label'];
+                }
+            } else {
+                $prev_count['admin.other.cleanup.other.clear_cache.label'] = '?';
+            }
+        } else {
+            Core::$cache->clear();
+            $logged_db_cleanup_info['cleared_cache'] = true;
         }
     }
 
@@ -190,7 +209,6 @@ if (isset($_POST['action'])) do {
 // output
 $output .= $message . '
 <form class="cform" action="' . _e(Router::admin('other-cleanup')) . '" method="post">
-<p>' . _lang('admin.other.cleanup.cleanup.p') . '</p>
 
 <fieldset>
     <legend>' . _lang('mod.messages') . '</legend>
@@ -220,8 +238,9 @@ $output .= $message . '
 
 <fieldset>
     <legend>' . _lang('global.other') . '</legend>
-    <label><input type="checkbox" name="maintenance" value="1" checked> ' . _lang('admin.other.cleanup.other.maintenance') . '</label><br>
-    <label><input type="checkbox" name="optimize" value="1" checked> ' . _lang('admin.other.cleanup.other.optimize') . '</label><br>
+    <label><input type="checkbox" name="clear_cache" value="1"' . Form::activateCheckbox(isset($_POST['clear_cache'])) . '> ' . _lang('admin.other.cleanup.other.clear_cache') . '</label><br>
+    <label><input type="checkbox" name="maintenance" value="1"' . Form::activateCheckbox(isset($_POST['maintenance'])) . '> ' . _lang('admin.other.cleanup.other.maintenance') . '</label><br>
+    <label><input type="checkbox" name="optimize" value="1"' . Form::activateCheckbox(isset($_POST['optimize'])) . '> ' . _lang('admin.other.cleanup.other.optimize') . '</label><br>
     <label><input type="checkbox" name="comments" value="1"' . Form::activateCheckbox(isset($_POST['comments'])) . '> ' . _lang('admin.other.cleanup.other.comments') . '</label><br>
     <label><input type="checkbox" name="posts" value="1"' . Form::activateCheckbox(isset($_POST['posts'])) . '> ' . _lang('admin.other.cleanup.other.posts') . '</label><br>
     <label><input type="checkbox" name="plugin_posts" value="1"' . Form::activateCheckbox(isset($_POST['plugin_posts'])) . '> ' . _lang('admin.other.cleanup.other.plugin_posts') . '</label><br>
@@ -230,8 +249,14 @@ $output .= $message . '
     <label><input type="checkbox" name="log" value="1"' . Form::activateCheckbox(isset($_POST['log'])) . '> ' . _lang('admin.other.cleanup.other.log') . '</label>
 </fieldset>
 
-<button class="button bigger" name="action" type="submit" value="preview">' . _lang('admin.other.cleanup.prev') . '</button>
-<button class="button bigger" name="action" type="submit" value="do_cleanup" onclick="return Sunlight.confirm();">' . _lang('admin.other.cleanup.do') . '</button>
+<button class="button bigger" name="action" type="submit" value="do_cleanup" onclick="return Sunlight.confirm();">
+    <img class="icon" alt="warn" src="' . _e(Router::path('admin/public/images/icons/warn.png')) . '">
+    ' . _lang('admin.other.cleanup.do') 
+. '</button>
+<button class="button bigger" name="action" type="submit" value="preview">
+<img class="icon" alt="preview" src="' . _e(Router::path('admin/public/images/icons/eye.png')) . '">
+    ' . _lang('global.preview') 
+. '</button>
 
 ' . Xsrf::getInput() . '</form>
 ';

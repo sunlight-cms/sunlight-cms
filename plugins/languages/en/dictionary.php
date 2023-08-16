@@ -90,7 +90,7 @@ return [
     'global.any' => 'Any',
     'global.any2' => 'Any',
     'global.nochange' => 'Do not change',
-    'global.noaction' => 'No action selected',
+    'global.noaction' => 'No action',
     'global.other' => 'Other',
     'global.copy' => 'Copy',
     'global.uploadlimit' => 'Max. size',
