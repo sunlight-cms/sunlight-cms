@@ -25,31 +25,13 @@ abstract class DatabaseLoader
      */
     static function load(SqlReader $reader, ?string $currentPrefix = null, ?string $newPrefix = null): void
     {
-        // determine current sql mode
-        $oldSqlMode = DB::queryRow('SHOW VARIABLES WHERE Variable_name=\'sql_mode\'');
-
-        if ($oldSqlMode !== false) {
-            $oldSqlMode = $oldSqlMode['Value'];
-        } else {
-            $oldSqlMode = '';
-        }
-
-        // replace sql mode
-        DB::query('SET SQL_MODE = \'NO_AUTO_VALUE_ON_ZERO\'');
-        
-        // restore
-        try {
-            $reader->read(function ($query, $queryMap) use ($currentPrefix, $newPrefix) {
-                if ($currentPrefix !== null && $newPrefix !== null && $currentPrefix !== $newPrefix) {
-                    DB::query(DatabaseLoader::replacePrefix($query, $queryMap, $currentPrefix, $newPrefix));
-                } else {
-                    DB::query($query);
-                }
-            });
-        } finally {
-            // always restore sql mode
-            DB::query('SET SQL_MODE = ' . DB::val($oldSqlMode));
-        }
+        $reader->read(function ($query, $queryMap) use ($currentPrefix, $newPrefix) {
+            if ($currentPrefix !== null && $newPrefix !== null && $currentPrefix !== $newPrefix) {
+                DB::query(DatabaseLoader::replacePrefix($query, $queryMap, $currentPrefix, $newPrefix));
+            } else {
+                DB::query($query);
+            }
+        });
     }
 
     /**
