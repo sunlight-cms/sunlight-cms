@@ -11,9 +11,9 @@ use Sunlight\Core;
  *
  * Supported options:
  * ------------------
- * timeout      request timeout in seconds (float, default = 60, null/<=0 means unlimited)
- * headers      numerically indexed list of additional header strings
- * user_agent   user agent string
+ * - timeout      request timeout in seconds (float, default = 60, null/<=0 means unlimited)
+ * - headers      numerically indexed list of additional header strings
+ * - user_agent   user agent string
  *
  * @psalm-type HttpClientOptions = array{timeout?: float|null, headers?: list<string>, user_agent?: string}
  */

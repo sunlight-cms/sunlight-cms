@@ -82,9 +82,9 @@ abstract class PluginAction extends Action
      *
      * Supported options:
      * ------------------
-     * button_text      customize button text
-     * content_before   HTML before text
-     * content_after    HTML after text
+     * - button_text      customize button text
+     * - content_before   HTML before text
+     * - content_after    HTML after text
      *
      * @param array{
      *     button_text?: string|null,

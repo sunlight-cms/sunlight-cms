@@ -150,13 +150,13 @@ abstract class PageLister
      *
      * Supported options:
      * ------------------
-     * mode                 render mode (defaults to session value)
-     * actions (1)          render actions 1/0
-     * links (1)            page links 1/0
-     * sortable (0)         render as sortable 1/0
-     * title_editable (0)   render title as an editable input 1/0
-     * level_class (-)      render level class 1/0 or null (auto)
-     * breadcrumbs (1)      render breadcrumbs 1/0
+     * - mode                 render mode (defaults to session value)
+     * - actions (1)          render actions 1/0
+     * - links (1)            page links 1/0
+     * - sortable (0)         render as sortable 1/0
+     * - title_editable (0)   render title as an editable input 1/0
+     * - level_class (-)      render level class 1/0 or null (auto)
+     * - breadcrumbs (1)      render breadcrumbs 1/0
      *
      * @param array{
      *     mode?: int,

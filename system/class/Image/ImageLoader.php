@@ -21,9 +21,9 @@ final class ImageLoader
      *
      * Supported limits:
      * -----------------
-     * filesize (null)      max file size in bytes
-     * dimensions (null)    max image dimensions as array{w: int, h: int}
-     * memory (0.75)        max percentage of remaining memory used
+     * - filesize (null)      max file size in bytes
+     * - dimensions (null)    max image dimensions as array{w: int, h: int}
+     * - memory (0.75)        max percentage of remaining memory used
      *
      * @param array{
      *     filesize?: int|null,

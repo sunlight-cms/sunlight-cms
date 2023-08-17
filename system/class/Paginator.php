@@ -12,9 +12,9 @@ class Paginator
      *
      * Supported options:
      * ------------------
-     * param ('page')       query parameter name
-     * link_suffix ('')     string to append after every link
-     * auto_last (0)        default to the last page 1/0
+     * - param ('page')       query parameter name
+     * - link_suffix ('')     string to append after every link
+     * - auto_last (0)        default to the last page 1/0
      *
      * @param string $url base URL to add page parameter to
      * @param int $limit max item per page
@@ -182,8 +182,8 @@ class Paginator
      * Additional supported options:
      * @see Paginator::paginate() for more options
      * -------------------------------------------
-     * cond ('1')       row filter
-     * alias (-)        table alias to use
+     * - cond ('1')       row filter
+     * - alias (-)        table alias to use
      *
      * @param string $url base URL to add page parameter to
      * @param int $limit max item per page

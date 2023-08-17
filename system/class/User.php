@@ -1067,12 +1067,12 @@ abstract class User
      *
      * Supported options:
      * ------------------
-     * get_path (0)     return avatar path instead of HTML 1/0
-     * default (1)      use default avatar if user has none, otherwise return NULL 1/0
-     * default_dark (-) use dark variant of the default avatar 1/0 (default depends on current template)
-     * link (1)         link to the user's profile 1/0
-     * extend (1)       enable extend event 1/0
-     * class (-)        custom CSS class
+     * - get_path (0)     return avatar path instead of HTML 1/0
+     * - default (1)      use default avatar if user has none, otherwise return NULL 1/0
+     * - default_dark (-) use dark variant of the default avatar 1/0 (default depends on current template)
+     * - link (1)         link to the user's profile 1/0
+     * - extend (1)       enable extend event 1/0
+     * - class (-)        custom CSS class
      *
      * @param array $data user data (avatar, username, publicname)
      * @param array{

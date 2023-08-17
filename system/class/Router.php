@@ -11,9 +11,9 @@ use Sunlight\Util\Html;
 /**
  * Supported options:
  * ------------------
- * absolute (false)     generate an absolute URL 1/0
- * query (null)         array of query parameters
- * fragment (null)      fragment string (without #)
+ * - absolute (false)     generate an absolute URL 1/0
+ * - query (null)         array of query parameters
+ * - fragment (null)      fragment string (without #)
  *
  * @psalm-type RouterOptions = array{
  *     absolute?: bool|null,
@@ -210,17 +210,17 @@ abstract class Router
      *
      * Supported options
      * -----------------
-     * plain (0)        return only plain username 1/0
-     * link (1)         link to user profile 1/0
-     * custom_link (-)  custom URL to use instead of user's profile
-     * color (1)        add color based on user group 1/0
-     * icon (1)         show group icon 1/0
-     * publicname (1)   use public name, if available 1/0
-     * new_window (0)   link to a new window 1/0 (defaults to 1 in admin env)
-     * max_len (-)      max. username length
-     * class (-)        custom CSS class
-     * title (-)        title
-     * url (-)          URL options (see class description)
+     * - plain (0)        return only plain username 1/0
+     * - link (1)         link to user profile 1/0
+     * - custom_link (-)  custom URL to use instead of user's profile
+     * - color (1)        add color based on user group 1/0
+     * - icon (1)         show group icon 1/0
+     * - publicname (1)   use public name, if available 1/0
+     * - new_window (0)   link to a new window 1/0 (defaults to 1 in admin env)
+     * - max_len (-)      max. username length
+     * - class (-)        custom CSS class
+     * - title (-)        title
+     * - url (-)          URL options (see class description)
      *
      * @param array $data user data {@see User::createQuery()}
      * @param array{

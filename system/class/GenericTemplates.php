@@ -77,15 +77,15 @@ HTML;
      *
      * Parameters supported in $assets:
      * --------------------------------
-     * meta             HTML inserted at the beginning
-     * css              array with paths to CSS files
-     * js               array with paths to JS files
-     * css_before       HTML inserted before <link> tags
-     * css_after        HTML inserted after <link> tags
-     * js_before        HTML inserted before <script> tags
-     * js_after         HTML inserted after <script> tags
-     * extend_event     extend event name
-     * favicon          true = link to favicon, false = no favicon, null = no output
+     * - meta             HTML inserted at the beginning
+     * - css              array with paths to CSS files
+     * - js               array with paths to JS files
+     * - css_before       HTML inserted before <link> tags
+     * - css_after        HTML inserted after <link> tags
+     * - js_before        HTML inserted before <script> tags
+     * - js_after         HTML inserted after <script> tags
+     * - extend_event     extend event name
+     * - favicon          true = link to favicon, false = no favicon, null = no output
      *
      * @param array{
      *     meta?: string,
@@ -194,9 +194,9 @@ HTML;
      *
      * Supported options:
      * ------------------
-     * lcfirst (1)      lowercase first letter of each message
-     * escape (1)       escape HTML in messages
-     * show_keys (0)    render array keys
+     * - lcfirst (1)      lowercase first letter of each message
+     * - escape (1)       escape HTML in messages
+     * - show_keys (0)    render array keys
      *
      * @param string[] $messages
      * @param array{lcfirst?: bool|null, escape?: bool|null, show_keys?: bool|null} $options see description

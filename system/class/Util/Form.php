@@ -230,9 +230,9 @@ abstract class Form
      *
      * Supported options:
      * ------------------
-     * input_class (-)          input class name
-     * now_toggle (0)           add an option to set the timestamp to current time on save 1/0
-     * now_toggle_default (0)   enable the now_toggle by default 1/0
+     * - input_class (-)          input class name
+     * - now_toggle (0)           add an option to set the timestamp to current time on save 1/0
+     * - now_toggle_default (0)   enable the now_toggle by default 1/0
      *
      * @param string $name input name
      * @param int|null $timestamp pre-filled timestamp
@@ -311,27 +311,27 @@ abstract class Form
      *
      * Supported options:
      * ------------------
-     * name (-)             name attribute
-     * method (post)        method attribute
-     * action (-)           action attribute
-     * autocomplete (-)     autocomplete attribute
-     * enctype (-)          enctype attribute
-     * multipart (0)        set enctype to "multipart/form-data"
-     * id (-)               id attribute
-     * class (-)            class attribute
-     * embedded (0)         don't render <form> tag and XSRF input
-     * table_attrs          custom HTML at the end of the <table> tag
-     * table_prepend        custom after before <table>
-     * table_append         custom HTML before </table>
-     * form_prepend         custom HTML after <form>
-     * form_append          custom HTML before </form>
+     * - name (-)             name attribute
+     * - method (post)        method attribute
+     * - action (-)           action attribute
+     * - autocomplete (-)     autocomplete attribute
+     * - enctype (-)          enctype attribute
+     * - multipart (0)        set enctype to "multipart/form-data"
+     * - id (-)               id attribute
+     * - class (-)            class attribute
+     * - embedded (0)         don't render <form> tag and XSRF input
+     * - table_attrs          custom HTML at the end of the <table> tag
+     * - table_prepend        custom after before <table>
+     * - table_append         custom HTML before </table>
+     * - form_prepend         custom HTML after <form>
+     * - form_append          custom HTML before </form>
      *
      * Format of a single row in $rows:
      * --------------------------------
-     * label (-)        row label
-     * content (-)      row content
-     * top (0)          align the row to the top 1/0
-     * class (-)        custom <tr> class
+     * - label (-)        row label
+     * - content (-)      row content
+     * - top (0)          align the row to the top 1/0
+     * - class (-)        custom <tr> class
      *
      * - if both label and content is empty, the row is skipped
      * - if label is null, the content cell will span the entire row
@@ -444,10 +444,10 @@ abstract class Form
      *
      * Supported options:
      * ------------------
-     * label ('')   row label
-     * name (-)     submit button name
-     * text         submit button text
-     * append       HTML after submit button
+     * - label ('')   row label
+     * - name (-)     submit button name
+     * - text         submit button text
+     * - append       HTML after submit button
      *
      * @param array{
      *     label?: string|null,
