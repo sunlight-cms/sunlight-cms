@@ -88,12 +88,12 @@ abstract class Core
      *
      * Supported options:
      * ------------------
-     * config_file (-)          path to the configuration file, null (= default) or false (= skip)
-     * minimal_mode (0)         stop after initializing base components and environment (= no plugins, db, settings, session, etc.) 1/0
-     * session_enabled (1)      initialize session 1/0
-     * session_regenerate (0)   force new session ID 1/0
-     * content_type (-)         content type, FALSE = disabled (default is "text/html; charset=UTF-8")
-     * env ("script")           environment identifier, see Core::ENV_* constants
+     * - config_file (-)          path to the configuration file, null (= default) or false (= skip)
+     * - minimal_mode (0)         stop after initializing base components and environment (= no plugins, db, settings, session, etc.) 1/0
+     * - session_enabled (1)      initialize session 1/0
+     * - session_regenerate (0)   force new session ID 1/0
+     * - content_type (-)         content type, FALSE = disabled (default is "text/html; charset=UTF-8")
+     * - env ("script")           environment identifier, see Core::ENV_* constants
      *
      * @param string $root relative path to the system root directory (with a trailing slash)
      * @param array{

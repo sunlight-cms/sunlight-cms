@@ -17,11 +17,11 @@ class PageTreeFilter implements TreeFilterInterface
     /**
      * Supported options:
      * ------------------
-     * ord_start (-)    order from
-     * ord_end (-)      order to
-     * ord_level (0)    level at which to match the order (0 = root)
-     * check_level (1)  check user and page level 1/0
-     * check_public (1) check page's public column 1/0
+     * - ord_start (-)    order from
+     * - ord_end (-)      order to
+     * - ord_level (0)    level at which to match the order (0 = root)
+     * - check_level (1)  check user and page level 1/0
+     * - check_public (1) check page's public column 1/0
      *
      * @param array{
      *     ord_start?: int|null,

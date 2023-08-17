@@ -82,9 +82,9 @@ class Message
      *
      * Supported options:
      * ------------------
-     * type (warn)  see Message class constants
-     * text         content at the beginning of the message
-     * list         options for {@see GenericTemplates::renderMessageList()}
+     * - type (warn)  see Message class constants
+     * - text         content at the beginning of the message
+     * - list         options for {@see GenericTemplates::renderMessageList()}
      *
      * @param string[] $messages
      * @param array{

@@ -222,9 +222,9 @@ abstract class Template
      *
      * Supported options:
      * ------------------
-     * cms (1)      show link to CMS website
-     * admin (-)    show link to administration
-     *              (TRUE - always, FALSE - never, NULL - if user has privileges)
+     * - cms (1)      show link to CMS website
+     * - admin (-)    show link to administration
+     *                (TRUE - always, FALSE - never, NULL - if user has privileges)
      *
      * @param array{cms?: bool, admin?: bool|null} $options see description
      */
@@ -303,15 +303,15 @@ abstract class Template
      *
      * Supported options:
      * ------------------
-     * page_id (-)                      ID of page to render menu for (-1 = current)
-     * children_only (1)                only list children (requires page_id)
-     * max_depth (-)                    maximum number of levels (null = unlimited)
-     * ord_start (-)                    only list pages with this order number or higher
-     * ord_end (-)                      only list pages with this order number or less
-     * css_class (-)                    CSS class for the container tag
-     * extend_event ("tpl.menu.item")   menu item extend event name or null
-     * type ("tree")                    menu type identifier (for events)
-     * filter (-)                       additional options for {@see PageTreeFilter}
+     * - page_id (-)                      ID of page to render menu for (-1 = current)
+     * - children_only (1)                only list children (requires page_id)
+     * - max_depth (-)                    maximum number of levels (null = unlimited)
+     * - ord_start (-)                    only list pages with this order number or higher
+     * - ord_end (-)                      only list pages with this order number or less
+     * - css_class (-)                    CSS class for the container tag
+     * - extend_event ("tpl.menu.item")   menu item extend event name or null
+     * - type ("tree")                    menu type identifier (for events)
+     * - filter (-)                       additional options for {@see PageTreeFilter}
      *
      * @param array{
      *     page_id?: int|null,

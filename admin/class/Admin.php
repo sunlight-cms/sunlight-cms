@@ -118,12 +118,12 @@ abstract class Admin
      *
      * Supported options:
      * ------------------
-     * mode ('default')     'default' / 'code' (non-wysiwyg code editor) / 'lite' (short content editor)
-     * format ('html')      'xml' / 'css' / 'js' / 'json' / 'php' / 'php-raw' / 'html'
-     * cols (94)            number of textarea columns
-     * rows (25)            number of textarea rows
-     * wrap (-)             textarea wrap attribute
-     * class ('areabig')    textarea class attribute
+     * - mode ('default')     'default' / 'code' (non-wysiwyg code editor) / 'lite' (short content editor)
+     * - format ('html')      'xml' / 'css' / 'js' / 'json' / 'php' / 'php-raw' / 'html'
+     * - cols (94)            number of textarea columns
+     * - rows (25)            number of textarea rows
+     * - wrap (-)             textarea wrap attribute
+     * - class ('areabig')    textarea class attribute
      *
      * @param string $context descriptive identifier of where the editor is used (for plugins)
      * @param string $name form element name
@@ -313,16 +313,16 @@ abstract class Admin
      *
      * Supported options:
      * ------------------
-     * selected (-1)            ID of active page (or an array if multiple = TRUE)
-     * multiple (0)             allow choice of multiple pages 1/0
-     * empty_item (-)           label of empty item (ID = -1)
-     * type (-)                 limit to a single page type
-     * check_access (1)         check access to each page 1/0
-     * check_privilege (0)      also check privilege to manage each page type 1/0 (requires check_access = 1)
-     * allow_separators (0)     make separators selectable 1/0
-     * disabled_branches ([])   array of page IDs whose branches should be excluded
-     * maxlength (22)           max. length of page title or null (unlimited)
-     * attrs (-)                extra HTML with <select> attributes (without space)
+     * - selected (-1)            ID of active page (or an array if multiple = TRUE)
+     * - multiple (0)             allow choice of multiple pages 1/0
+     * - empty_item (-)           label of empty item (ID = -1)
+     * - type (-)                 limit to a single page type
+     * - check_access (1)         check access to each page 1/0
+     * - check_privilege (0)      also check privilege to manage each page type 1/0 (requires check_access = 1)
+     * - allow_separators (0)     make separators selectable 1/0
+     * - disabled_branches ([])   array of page IDs whose branches should be excluded
+     * - maxlength (22)           max. length of page title or null (unlimited)
+     * - attrs (-)                extra HTML with <select> attributes (without space)
      *
      * @param array{
      *     selected?: int|int[],
@@ -429,13 +429,13 @@ abstract class Admin
      *
      * Supported options:
      * ------------------
-     * selected (-)         ID or IDs of selected items
-     * group_cond ('1')     SQL condition for groups
-     * user_cond ('1')      SQL condition for users
-     * class (-)            CSS class on the select element
-     * extra_option (-)     add an extra option with this label (value = -1)
-     * select_groups (0)    select groups instead of users 1/0
-     * multiple (-)         render multi-select with this size
+     * - selected (-)         ID or IDs of selected items
+     * - group_cond ('1')     SQL condition for groups
+     * - user_cond ('1')      SQL condition for users
+     * - class (-)            CSS class on the select element
+     * - extra_option (-)     add an extra option with this label (value = -1)
+     * - select_groups (0)    select groups instead of users 1/0
+     * - multiple (-)         render multi-select with this size
      *
      * @param array{
      *     selected?: int|int[]|null,

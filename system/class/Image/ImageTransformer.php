@@ -39,15 +39,15 @@ final class ImageTransformer
      *
      * Supported $options:
      * ------------------
-     * w                    target width (optional if "h" is specified)
-     * h                    target height (optional if "w" is specified)
-     * mode (fill)          resize mode (see RESIZE_* class constants)
-     * keep_smaller (false) don't enlarge smaller images
-     * bgcolor (null)       static bg color as array{r, g, b} (ignored if trans = TRUE)
-     * pad (false)          keep extra space instead of cropping (only in "fit" modes)
-     * align-x (0)          horizontal alignment for cropping and padding, see ALIGN_* class constants
-     * align-y (0)          vertical alignment for cropping and padding, see ALIGN_* class constants
-     * trans (false)        enable transparency
+     * - w                    target width (optional if "h" is specified)
+     * - h                    target height (optional if "w" is specified)
+     * - mode (fill)          resize mode (see RESIZE_* class constants)
+     * - keep_smaller (false) don't enlarge smaller images
+     * - bgcolor (null)       static bg color as array{r, g, b} (ignored if trans = TRUE)
+     * - pad (false)          keep extra space instead of cropping (only in "fit" modes)
+     * - align-x (0)          horizontal alignment for cropping and padding, see ALIGN_* class constants
+     * - align-y (0)          vertical alignment for cropping and padding, see ALIGN_* class constants
+     * - trans (false)        enable transparency
      *
      * @param array{
      *     w?: int|null,

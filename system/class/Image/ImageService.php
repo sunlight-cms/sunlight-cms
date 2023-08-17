@@ -115,10 +115,10 @@ final class ImageService
      *
      * Supported options:
      * ------------------
-     * limits       {@see ImageLoader::load()}
-     * resize       {@see ImageTransformer::resize()}
-     * write        {@see Image::write()}
-     * format       source image format (otherwise determined from $source)
+     * - limits       {@see ImageLoader::load()}
+     * - resize       {@see ImageTransformer::resize()}
+     * - write        {@see Image::write()}
+     * - format       source image format (otherwise determined from $source)
      *
      * @param string $type descriptive type (for extend event)
      * @param string $source source path

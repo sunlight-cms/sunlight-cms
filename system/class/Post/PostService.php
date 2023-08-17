@@ -639,13 +639,13 @@ class PostService
      *
      * $vars structure:
      * ----------------
-     * url          return URL
-     * posttype     post type (see Post::* constants)
-     * posttarget   id_home
-     * xhome        id_xhome
-     * subject      show subject field 1/0
-     * is_topic     the new post is a forum topic 1/0
-     * pluginflag   plugin flag (only for posttype == Comment::PLUGIN)
+     * - url          return URL
+     * - posttype     post type (see Post::* constants)
+     * - posttarget   id_home
+     * - xhome        id_xhome
+     * - subject      show subject field 1/0
+     * - is_topic     the new post is a forum topic 1/0
+     * - pluginflag   plugin flag (only for posttype == Comment::PLUGIN)
      *
      * @param array{
      *     url: string,

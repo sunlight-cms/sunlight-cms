@@ -59,10 +59,10 @@ abstract class StringHelper
      *
      * Supported options:
      * ------------------
-     * lower (1)        generate lowercase slug 1/0
-     * extra ("._")     string list of extra allowed characters
-     * max_len (255)    slug length limit or null
-     * fallback ("")    fallback slug in case the process fails
+     * - lower (1)        generate lowercase slug 1/0
+     * - extra ("._")     string list of extra allowed characters
+     * - max_len (255)    slug length limit or null
+     * - fallback ("")    fallback slug in case the process fails
      *
      * @param array{lower?: bool, extra?: string, max_len?: int|null, fallback?: string} $options see description
      */
