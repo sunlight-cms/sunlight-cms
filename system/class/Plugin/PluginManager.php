@@ -56,9 +56,17 @@ class PluginManager
         }
 
         // setup autoload
-        Core::$classLoader->addPrefixes($data['autoload']['psr-0'], ClassLoader::PSR0);
-        Core::$classLoader->addPrefixes($data['autoload']['psr-4']);
-        Core::$classLoader->addClassMap($data['autoload']['classmap']);
+        foreach ($data['autoload']['psr-0'] as $prefix => $paths) {
+            Core::$classLoader->add($prefix, $paths);
+        }
+
+        foreach ($data['autoload']['psr-4'] as $prefix => $paths) {
+            Core::$classLoader->addPsr4($prefix, $paths);
+        }
+
+        if (!empty($data['autoload']['classmap'])) {
+            Core::$classLoader->addClassMap($data['autoload']['classmap']);
+        }
 
         foreach ($data['autoload']['files'] as $path) {
             require $path;

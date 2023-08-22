@@ -2,11 +2,11 @@
 
 namespace Sunlight;
 
+use Composer\Autoload\ClassLoader;
 use Kuria\Cache\Cache;
 use Kuria\Cache\Driver\Filesystem\Entry\EntryFactory;
 use Kuria\Cache\Driver\Filesystem\FilesystemDriver;
 use Kuria\Cache\Driver\Memory\MemoryDriver;
-use Kuria\ClassLoader\ClassLoader;
 use Kuria\Event\EventEmitter;
 use Kuria\RequestInfo\RequestInfo;
 use Kuria\RequestInfo\TrustedProxies;
@@ -289,9 +289,6 @@ abstract class Core
      */
     private static function initComponents(bool $enableCache): void
     {
-        // class loader
-        self::$classLoader->setDebug(self::$debug);
-
         // error handler
         self::$errorHandler->setDebug(self::$debug || Environment::isCli());
 
