@@ -74,6 +74,10 @@ class PluginLoader
         foreach ($this->types as $type) {
             $dir = SL_ROOT . $type->getDir();
 
+            if (!is_dir($dir)) {
+                continue;
+            }
+
             foreach (scandir($dir) as $item) {
                 if (
                     preg_match(self::PLUGIN_DIR_PATTERN, $item) // skips dots and invalid names
