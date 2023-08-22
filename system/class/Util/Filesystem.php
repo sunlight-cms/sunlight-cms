@@ -279,7 +279,7 @@ abstract class Filesystem
      * - keep_dir (0)         keep the empty directory (remove children only) 1/0
      * - files_only (0)       remove files only (keep directory structure) 1/0
      * - file_callback (-)    callback(\SplFileInfo file): bool - decide, whether to remove a file or not
-     *                      (this option is active only if files_only = 1)
+     *                        (this option is active only if files_only = 1)
      *
      * @param string $path path to the directory
      * @param array{keep_dir?: bool, files_only?: bool, file_callback?: callable|null} $options see description
