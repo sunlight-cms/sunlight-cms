@@ -8,8 +8,15 @@ class ComposerBridge
 {
     static function clearCache(): void
     {
-        Filesystem::purgeDirectory(__DIR__ . '/../../cache', ['keep_dir' => true]);
-        @touch(__DIR__ . '/../../cache/.gitkeep');
+        foreach (Filesystem::createIterator(__DIR__ . '/../../cache') as $item) {
+            if ($item->isDir()) {
+                if (!Filesystem::purgeDirectory($item->getPathname(), ['keep_dir' => true], $failedPath)) {
+                    throw new \RuntimeException(sprintf('Could not delete "%s"', $failedPath));
+                }
+            } elseif ($item->getFilename() !== '.gitkeep') {
+                unlink($item->getPathname());
+            }
+        }
     }
 
     static function denyAccessToVendorDirectory(): void
