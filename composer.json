@@ -40,13 +40,11 @@
     },
     "scripts": {
         "sunlight:clear-cache": "Sunlight\\Composer\\ComposerBridge::clearCache",
-        "post-update-cmd": [
+        "sunlight:post-composer": [
             "Sunlight\\Composer\\ComposerBridge::clearCache",
             "Sunlight\\Composer\\ComposerBridge::denyAccessToVendorDirectory"
         ],
-        "post-install-cmd": [
-            "Sunlight\\Composer\\ComposerBridge::clearCache",
-            "Sunlight\\Composer\\ComposerBridge::denyAccessToVendorDirectory"
-        ]
+        "post-update-cmd": "@sunlight:post-composer",
+        "post-install-cmd": "@sunlight:post-composer"
     }
 }
