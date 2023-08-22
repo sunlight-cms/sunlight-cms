@@ -17,9 +17,7 @@
 /system/cache/*
 !/system/cache/.gitkeep
 
-/plugins/.composer
 /plugins/*/*/config.php
-
 /plugins/extend/*
 !/plugins/extend/devkit
 !/plugins/extend/codemirror
