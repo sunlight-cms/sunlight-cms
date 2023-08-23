@@ -91,7 +91,7 @@ abstract class Database
      * @param bool $expectError don't throw an exception on failure 1/0
      * @param bool $event trigger an extend event 1/0
      * @throws DatabaseException
-     * @return \mysqli_result|false
+     * @return \mysqli_result|bool
      */
     static function query(string $sql, bool $expectError = false, bool $event = true)
     {
