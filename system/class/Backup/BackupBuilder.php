@@ -21,6 +21,7 @@ class BackupBuilder
         'admin',
         'system',
         'vendor',
+        'bin',
         'index.php',
         'composer.json',
         'robots.txt',

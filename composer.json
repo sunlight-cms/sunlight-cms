@@ -23,6 +23,7 @@
         "kuria/url": "^5.0"
     },
     "config": {
+        "bin-dir": "bin",
         "platform": {
             "php": "7.1.99"
         },

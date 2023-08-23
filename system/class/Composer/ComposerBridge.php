@@ -22,5 +22,9 @@ class ComposerBridge
     static function denyAccessToVendorDirectory(): void
     {
         Filesystem::denyAccessToDirectory(__DIR__ . '/../../../vendor');
+
+        if (is_dir(__DIR__ . '/../../../bin')) {
+            Filesystem::denyAccessToDirectory(__DIR__ . '/../../../bin');
+        }
     }
 }
