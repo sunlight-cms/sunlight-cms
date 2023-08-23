@@ -32,9 +32,8 @@
 !/plugins/templates/blank
 !/plugins/templates/.htaccess
 
-/vendor/*
-!/vendor/.htaccess
-
+/vendor/
+/bin/
 /composer.lock
 /config.php
 /mail.log
