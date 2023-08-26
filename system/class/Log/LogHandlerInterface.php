@@ -7,7 +7,7 @@ interface LogHandlerInterface
     /**
      * Add an entry to the log
      *
-     * This method must set {@see LogEntry::$id).
+     * This method must set {@see LogEntry::$id}.
      */
     function log(LogEntry $entry): void;
 
