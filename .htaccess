@@ -17,7 +17,8 @@ DirectoryIndex index.php
     RewriteRule ^ %{ENV:BASE}/index.php [L]
 </IfModule>
 
-<Files composer.json>
+# deny access to composer and hidden files
+<FilesMatch "^composer\.(json|lock)$|^\.">
     <IfModule mod_authz_core.c>
         Require all denied
     </IfModule>
@@ -25,4 +26,4 @@ DirectoryIndex index.php
         Order deny,allow
         Deny from all
     </IfModule>
-</Files>
+</FilesMatch>

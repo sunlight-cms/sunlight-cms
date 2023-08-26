@@ -41,7 +41,7 @@
         "sunlight:clear-cache": "Sunlight\\Composer\\ComposerBridge::clearCache",
         "sunlight:post-composer": [
             "Sunlight\\Composer\\ComposerBridge::clearCache",
-            "Sunlight\\Composer\\ComposerBridge::denyAccessToVendorDirectory"
+            "Sunlight\\Composer\\ComposerBridge::updateDirectoryAccess"
         ],
         "post-update-cmd": "@sunlight:post-composer",
         "post-install-cmd": "@sunlight:post-composer"

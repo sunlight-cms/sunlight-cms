@@ -19,12 +19,14 @@ class ComposerBridge
         }
     }
 
-    static function denyAccessToVendorDirectory(): void
+    static function updateDirectoryAccess(): void
     {
-        Filesystem::denyAccessToDirectory(__DIR__ . '/../../../vendor');
+        $root = __DIR__ . '/../../../';
 
-        if (is_dir(__DIR__ . '/../../../bin')) {
-            Filesystem::denyAccessToDirectory(__DIR__ . '/../../../bin');
+        foreach (['vendor', 'bin', '.git'] as $dir) {
+            if (is_dir($root . $dir)) {
+                Filesystem::denyAccessToDirectory($root . $dir);
+            }
         }
     }
 }
