@@ -90,14 +90,14 @@ class SystemChecker
         if (is_dir(SL_ROOT . 'install') && !Core::$debug) {
             $this->errors[] = [
                 'Adresář install se stále nachází na serveru - po instalaci je třeba jej odstranit',
-                'The install directory must be removed after installation',
+                'The install directory still exists - it must be removed after installation',
             ];
         }
 
         if (file_exists(SL_ROOT . 'patch.php')) {
             $this->errors[] = [
-                'Soubor patch.php se stále nachází na serveru - po aktualizaci databáze je třeba jej odstranit',
-                'The patch.php file must be removed after the update',
+                'Soubor patch.php se stále nachází na serveru - po použití je třeba jej odstranit',
+                'The patch.php file still exists - it must be removed after use',
             ];
         }
     }
