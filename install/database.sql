@@ -275,7 +275,7 @@ INSERT INTO `sunlight_setting` (`var`, `val`, `preload`, `web`, `admin`) VALUES
 ('cron_auto',	'1',	1,	1,	1),
 ('cron_times',	'',	1,	1,	1),
 ('date_format',	'j.n.Y',	1,	1,	1),
-('dbversion',	'8.0.0',	1,	1,	1),
+('dbversion',	'',	1,	1,	1),
 ('default_template',	'default',	1,	1,	1),
 ('defaultgroup',	'3',	1,	1,	1),
 ('description',	'',	1,	1,	1),

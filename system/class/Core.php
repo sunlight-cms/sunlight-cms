@@ -33,6 +33,8 @@ abstract class Core
     const VERSION = '8.0.0';
     /** CMS distribution type */
     const DIST = 'GIT'; // GIT / STABLE / BETA
+    /** Database structure version */
+    const DB_VERSION = 'sl8db-001';
     /** Web environment (frontend - index.php) */
     const ENV_WEB = 'web';
     /** Administration environment (backend) */
@@ -357,10 +359,11 @@ abstract class Core
     private static function checkSystemState(array $options): void
     {
         // check database version
-        if (Settings::get('dbversion') !== self::VERSION) {
+        if (Settings::get('dbversion') !== self::DB_VERSION) {
             self::fail(
-                'Verze nainstalované databáze není kompatibilní s verzí systému.',
-                'Database version is not compatible with the current system version.'
+                "Verze databáze %s není kompatibilní s verzí systému.\n\nJe požadována verze databáze %s.",
+                "Database version %s is not compatible with system version.\n\nDatabase version %s is required.",
+                [Settings::get('dbversion'), self::DB_VERSION]
             );
         }
 
