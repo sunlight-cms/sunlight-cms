@@ -157,6 +157,10 @@ abstract class Core
         // run cron tasks on shutdown
         if (self::$env !== self::ENV_SCRIPT && Settings::get('cron_auto')) {
             register_shutdown_function(function () {
+                if (!Settings::get('cron_auto')) {
+                    return; // setting has been changed or overriden during request
+                }
+
                 if (function_exists('fastcgi_finish_request')) {
                     fastcgi_finish_request();
                 }

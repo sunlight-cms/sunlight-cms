@@ -8,6 +8,7 @@ use Sunlight\Database\DatabaseLoader;
 use Sunlight\Database\SqlReader;
 use Sunlight\Logger;
 use Sunlight\Settings;
+use Sunlight\Util\ClassPreloader;
 use Sunlight\Util\Filesystem;
 
 class BackupRestorer
@@ -102,10 +103,10 @@ class BackupRestorer
             return false;
         }
 
-        // preload all system classes before any directories are restored
-        if (!empty($directories)) {
-            $this->preloadAllSystemClasses();
-        }
+        // prepare for restoration
+        Settings::overwrite('cron_auto', '0'); // prevent automatic cron task execution
+        Core::$eventEmitter->clearListeners(); // unregister all extend listeners
+        $this->preloadAllSystemClasses(); // preload all system classes
 
         // load database
         if ($database) {
@@ -228,36 +229,11 @@ class BackupRestorer
 
     private function preloadAllSystemClasses(): void
     {
-        $classMap = require SL_ROOT . 'vendor/composer/autoload_classmap.php';
-
-        foreach ($classMap as $class => $path) {
-            if ($this->shouldPreloadClass($class)) {
-                include_once $path;
-            }
-        }
-    }
-
-    private function shouldPreloadClass(string $class): bool
-    {
-        $nsSepPos = strpos($class, '\\');
-
-        if ($nsSepPos === false) {
-            return false; // no namespace
-        }
-
-        $rootNs = substr($class, 0, $nsSepPos);
-
-        if ($rootNs !== 'Kuria' && $rootNs !== 'Sunlight') {
-            return false; // only load system classes and kuria libs
-        }
-
-        $lastNsSepPos = strrpos($class, '\\', $nsSepPos + 1);
-
-        if ($lastNsSepPos !== false && substr($class, 0, $lastNsSepPos) === 'Kuria\Cache\Psr') {
-            return false; // don't load psr cache classes (psr interfaces are not available)
-        }
-
-        return true;
+        $preloader = new ClassPreloader();
+        $preloader->addPsr4Prefix('Sunlight\\');
+        $preloader->addPsr4Prefix('Kuria\\*');
+        $preloader->addExcludedClassPattern('Kuria\\Cache\\Psr\\*');
+        $preloader->preload();
     }
 
     private function purgeSystemDirectory(): void
