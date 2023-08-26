@@ -27,7 +27,6 @@
         "platform": {
             "php": "7.1.99"
         },
-        "optimize-autoloader": true,
         "sort-packages": true
     },
     "minimum-stability": "dev",
