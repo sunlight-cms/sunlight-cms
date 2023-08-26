@@ -9,7 +9,7 @@ if (!function_exists('dump')) {
     function dump($value, $maxLevel = Dumper::DEFAULT_MAX_LEVEL + 1, $maxStringLen = Dumper::DEFAULT_MAX_STRING_LENGTH * 2)
     {
         if (Environment::isCli()) {
-            echo Dumper::dump($value, $maxLevel, $maxStringLen);
+            echo Dumper::dump($value, $maxLevel, $maxStringLen), "\n";
         } else {
             $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1);
 
