@@ -150,9 +150,9 @@ abstract class Filesystem
     }
 
     /**
-     * Try to resolve a path within SL_ROOT and an optional base directory
+     * Try to resolve a path with an optional base directory
      *
-     * @return string|null the resolved path or NULL if invalid
+     * @return string|null the resolved path or NULL if not valid
      */
     static function resolvePath(string $path, bool $isFile, ?string $requiredBaseDir = null): ?string
     {
@@ -160,14 +160,13 @@ abstract class Filesystem
 
         if ($requiredBaseDir !== null) {
             $requiredBaseDir = self::parsePath($requiredBaseDir);
-        }
 
-        if (substr_count($path, '..') > substr_count(SL_ROOT, '..')) {
-            return null; // don't allow a path outside of SL_ROOT
-        }
-
-        if ($requiredBaseDir !== null && strncmp($requiredBaseDir, $path, strlen($requiredBaseDir)) !== 0) {
-            return null; // don't allow a path outside the required base directory
+            if (
+                strncmp($requiredBaseDir, $path, strlen($requiredBaseDir)) !== 0
+                || substr_count($path, '..') > substr_count($requiredBaseDir, '..')
+            ) {
+                return null; // don't allow a path outside the required base directory
+            }
         }
 
         return $path;

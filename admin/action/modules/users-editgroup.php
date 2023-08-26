@@ -260,7 +260,9 @@ if ($continue) {
                 continue;
             }
 
-            $icons .= '<label><input' . Form::activateCheckbox($file === $query['icon']) . ' type="radio" name="icon" value="' . _e($file) . '"> <img class="icon" src="' . $icon_dir . '/' . _e($file) . '" alt="' . _e($file) . "\"></label>\n";
+            $icons .= '<label><input' . Form::activateCheckbox($file === $query['icon']) . ' type="radio" name="icon" value="' . _e($file) . '">'
+                . ' <img class="icon" src="' . Router::file($icon_dir . '/' . $file) . '" alt="' . _e($file) . '">'
+                . "</label>\n";
         }
 
         $icons .= "<div class=\"cleaner\"></div></div>\n";
