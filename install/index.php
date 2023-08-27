@@ -689,8 +689,8 @@ class ConfigurationStep extends Step
             </td>
         </tr>
         <tr>
-            <th><?php Labels::render('config.debug') ?></th>
-            <td><input type="checkbox"<?= Form::restoreCheckedAndName($this->getFormKeyVar(), 'config_debug', $this->config['debug']) ?>></td>
+            <th><label for="config_debug_checkbox"><?php Labels::render('config.debug') ?></label></th>
+            <td><input id="config_debug_checkbox" type="checkbox"<?= Form::restoreCheckedAndName($this->getFormKeyVar(), 'config_debug', $this->config['debug']) ?>></td>
             <td class="help"><?php Labels::render('config.debug.help') ?></td>
         </tr>
     </table>
@@ -893,8 +893,8 @@ Now you can log into the administration (with the account set up during installa
             <td class="help"><?php Labels::render('import.settings.description.help') ?></td>
         </tr>
         <tr>
-            <th><?php Labels::render('import.settings.version_check') ?></th>
-            <td><input type="checkbox"<?= Form::restoreCheckedAndName($this->getFormKeyVar(), 'import_settings_version_check', true) ?>></td>
+            <th><label for="version_check_checkbox"><?php Labels::render('import.settings.version_check') ?></label></th>
+            <td><input id="version_check_checkbox" type="checkbox"<?= Form::restoreCheckedAndName($this->getFormKeyVar(), 'import_settings_version_check', true) ?>></td>
             <td class="help"><?php Labels::render('import.settings.version_check.help') ?></td>
         </tr>
     </table>
