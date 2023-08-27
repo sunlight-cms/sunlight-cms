@@ -65,7 +65,7 @@ do {
     // plugin routes
     if (($plugin_route_match = Core::$pluginManager->getRouter()->match('index', $_index->slug ?? '')) !== null) {
         $_index->type = WebState::PLUGIN;
-        ($plugin_route_match->callback)($plugin_route_match, $_index);
+        ($plugin_route_match->callback)($_index, $plugin_route_match);
         break;
     }
 
