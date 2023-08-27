@@ -682,7 +682,7 @@ class ConfigurationStep extends Step
         </tr>
         <tr>
             <th><?php Labels::render('config.timezone') ?></th>
-            <td><input type="text"<?= Form::restorePostValueAndName('config_timezone', $this->config['timezone']) ?>></td>
+            <td><input type="text" placeholder="<?= _e(date_default_timezone_get()) ?>"<?= Form::restorePostValueAndName('config_timezone', $this->config['timezone']) ?>></td>
             <td class="help">
                 <?php Labels::render('config.timezone.help') ?>
                 <a href="https://php.net/timezones" target="_blank">PHP timezones</a>
