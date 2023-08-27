@@ -52,7 +52,9 @@ class ExtendPluginType extends PluginType
                 ->notEmpty(),
             Option::nodeList(
                 'routes',
+                Option::string('type')->default('index'),
                 Option::string('pattern'),
+                Option::array('attrs')->default([]),
                 ...CallbackHandler::getDefinitionOptions()
             )->normalize([PluginOptionNormalizer::class, 'normalizeCallbackNodes']),
             Option::list('langs', 'string')

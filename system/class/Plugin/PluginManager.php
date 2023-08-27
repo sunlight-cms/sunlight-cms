@@ -15,6 +15,8 @@ class PluginManager
     private $types;
     /** @var PluginRegistry */
     private $plugins;
+    /** @var PluginRouter */
+    private $router;
     /** @var NamespacedCache */
     private $cache;
     /** @var bool */
@@ -29,6 +31,7 @@ class PluginManager
             'language' => new Type\LanguagePluginType(),
         ];
         $this->plugins = new PluginRegistry();
+        $this->router = new PluginRouter();
         $this->cache = Core::$cache->getNamespace(Core::$debug ? 'plugins_debug.' : 'plugins.');
     }
 
@@ -154,6 +157,11 @@ class PluginManager
     function getPlugins(): PluginRegistry
     {
         return $this->plugins;
+    }
+
+    function getRouter(): PluginRouter
+    {
+        return $this->router;
     }
 
     /**

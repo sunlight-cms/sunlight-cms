@@ -2,33 +2,35 @@
 
 namespace Sunlight\Plugin;
 
-use Sunlight\WebState;
-
-abstract class PluginRouter
+class PluginRouter
 {
-    /** @var array pattern => callback */
-    private static $routes = [];
+    /** @var array<array{type: string, pattern: string, attrs: array, callback: callable}> */
+    private $routes = [];
 
-    static function register(string $pattern, $callback): void
+    /**
+     * @param callable $callback
+     */
+    function register(string $type, string $pattern, array $attrs, $callback): void
     {
-        self::$routes["{{$pattern}\$}AD"] = $callback;
+        $this->routes[] = [
+            'type' => $type,
+            'pattern' => "{{$pattern}\$}AD",
+            'attrs' => $attrs,
+            'callback' => $callback,
+        ];
     }
 
-    static function handle(WebState $index): bool
+    function match(string $type, string $path): ?PluginRouterMatch
     {
-        if ($index->slug === null) {
-            return false;
-        }
-
-        foreach (self::$routes as $pattern => $callback) {
-            if (preg_match($pattern, $index->slug, $match)) {
-                $index->type = WebState::PLUGIN;
-                $callback($index, $match);
-
-                return true;
+        foreach ($this->routes as $route) {
+            if ($route['type'] === $type && preg_match($route['pattern'], $path, $match)) {
+                return new PluginRouterMatch(
+                    $route['callback'],
+                    $route['attrs'] + $match
+                );
             }
         }
 
-        return false;
+        return null;
     }
 }

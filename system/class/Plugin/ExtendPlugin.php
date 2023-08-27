@@ -71,10 +71,14 @@ class ExtendPlugin extends Plugin implements InitializableInterface
         }
 
         // register routes
-        if (Core::$env === Core::ENV_WEB) {
+        if (!empty($this->options['routes'])) {
+            $router = $this->manager->getRouter();
+
             foreach ($this->options['routes'] as $route) {
-                PluginRouter::register(
+                $router->register(
+                    $route['type'],
                     $route['pattern'],
+                    $route['attrs'],
                     CallbackHandler::fromArray($route, $this)
                 );
             }
