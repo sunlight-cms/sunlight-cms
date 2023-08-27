@@ -156,10 +156,10 @@ abstract class Filesystem
      */
     static function resolvePath(string $path, bool $isFile, ?string $requiredBaseDir = null): ?string
     {
-        $path = self::parsePath($path, $isFile);
+        $path = self::parsePath($path, $isFile, true);
 
         if ($requiredBaseDir !== null) {
-            $requiredBaseDir = self::parsePath($requiredBaseDir);
+            $requiredBaseDir = self::parsePath($requiredBaseDir, false, true);
 
             if (
                 strncmp($requiredBaseDir, $path, strlen($requiredBaseDir)) !== 0
