@@ -105,6 +105,7 @@ abstract class Core
      *     session_regenerate?: bool,
      *     content_type?: string|false,
      *     env?: string,
+     *     base_url?: string|null,
      * } $options see description
      */
     static function init(array $options = []): void
@@ -191,6 +192,7 @@ abstract class Core
             'session_regenerate' => false,
             'content_type' => null,
             'env' => self::ENV_SCRIPT,
+            'base_url' => null,
         ];
 
         // load config file
