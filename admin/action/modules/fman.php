@@ -752,7 +752,7 @@ if ($continue) {
         <tr class="' . implode(' ', $row_classes) . '">
         <td class="fman-item">
             <input type="checkbox" name="f' . $filecounter . '" id="f' . $filecounter . '" value="' . _e($encodeFilename($item)) . '">
-            <a href="' . _e($dir . $item) . '" target="_blank"' . ($image ? Extend::buffer('image.lightbox', ['group' => 'fman']) : '') . '>
+            <a href="' . _e(Router::file($dir . $item)) . '" target="_blank"' . ($image ? Extend::buffer('image.lightbox', ['group' => 'fman']) : '') . '>
                 <img src="' . _e(Router::path('admin/public/images/icons/fman/' . $icon . '.png')) . '" alt="file" class="icon">'
                 . _e(StringHelper::ellipsis($item, 64, false)) . '
             </a>
