@@ -6,7 +6,7 @@ use Sunlight\Util\Response;
 use Sunlight\Xsrf;
 
 require __DIR__ . '/../bootstrap.php';
-Core::init('../../');
+Core::init();
 
 if (Xsrf::check(true)) {
     User::logout();

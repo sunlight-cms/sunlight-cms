@@ -20,7 +20,7 @@ const CONFIG_PATH = __DIR__ . '/../config.php';
 
 // bootstrap
 require __DIR__ . '/../system/bootstrap.php';
-Core::init('../', [
+Core::init([
     'minimal_mode' => true,
     'config_file' => false,
     'debug' => true,

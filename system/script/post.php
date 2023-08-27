@@ -19,7 +19,7 @@ use Sunlight\Util\UrlHelper;
 use Sunlight\Xsrf;
 
 require __DIR__ . '/../bootstrap.php';
-Core::init('../../');
+Core::init();
 
 // get guest name or author ID
 if (User::isLoggedIn()) {

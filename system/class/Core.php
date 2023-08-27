@@ -96,8 +96,8 @@ abstract class Core
      * - session_regenerate (0)   force new session ID 1/0
      * - content_type (-)         content type, FALSE = disabled (default is "text/html; charset=UTF-8")
      * - env ("script")           environment identifier, see Core::ENV_* constants
+     * - base_url (-)             override the base URL (can be absolute or relative to override only the path)
      *
-     * @param string $root relative path to the system root directory (with a trailing slash)
      * @param array{
      *     config_file?: string|false|null,
      *     minimal_mode?: bool,
@@ -107,7 +107,7 @@ abstract class Core
      *     env?: string,
      * } $options see description
      */
-    static function init(string $root, array $options = []): void
+    static function init(array $options = []): void
     {
         if (self::$ready) {
             throw new \LogicException('Already initialized');
@@ -115,44 +115,35 @@ abstract class Core
 
         self::$start = microtime(true);
 
-        // functions
-        require __DIR__ . '/../functions.php';
+        // define SL_ROOT
+        $rootPath = realpath(__DIR__ . '/../..');
 
-        // base components
-        self::initBaseComponents();
-
-        // configuration
-        self::initConfiguration($root, $options);
-
-        // environment
-        self::initEnvironment($options);
-
-        // set URLs
-        self::$baseUrl = self::determineBaseUrl();
-        self::$currentUrl = RequestInfo::getUrl();
-
-        // components
-        self::initComponents($options['cache']);
-
-        // stop when minimal mode is enabled
-        if ($options['minimal_mode']) {
-            return;
+        if ($rootPath === false) {
+            throw new \RuntimeException('Could not resolve root path');
         }
 
-        // first init phase
+        define('SL_ROOT', $rootPath . '/');
+
+        // initialization
+        require __DIR__ . '/../functions.php';
+        self::initBaseComponents();
+        self::initConfiguration($options);
+        self::initEnvironment($options);
+        self::initUrls($options);
+        self::initComponents($options);
+
+        if ($options['minimal_mode']) {
+            return; // minimal mode enabled
+        }
+
         self::initDatabase($options);
         self::initPlugins();
         self::initSettings();
         Logger::init();
-
-        // check system phase
         self::checkSystemState($options);
-
-        // second init phase
         self::initSession();
         self::initLocalization();
 
-        // finalize
         self::$ready = true;
         Extend::call('core.ready');
 
@@ -160,7 +151,7 @@ abstract class Core
         if (self::$env !== self::ENV_SCRIPT && Settings::get('cron_auto')) {
             register_shutdown_function(function () {
                 if (!Settings::get('cron_auto')) {
-                    return; // setting has been changed or overriden during request
+                    return; // setting has been changed or overridden during request
                 }
 
                 if (function_exists('fastcgi_finish_request')) {
@@ -175,9 +166,22 @@ abstract class Core
     }
 
     /**
+     * Init base components that don't depend on configuration
+     */
+    private static function initBaseComponents(): void
+    {
+        // error handler
+        self::$errorHandler = new ErrorHandler();
+        self::$errorHandler->register();
+
+        // event emitter
+        self::$eventEmitter = new EventEmitter();
+    }
+
+    /**
      * Initialize configuration
      */
-    private static function initConfiguration(string $root, array &$options): void
+    private static function initConfiguration(array &$options): void
     {
         // defaults
         $options += [
@@ -192,7 +196,7 @@ abstract class Core
         // load config file
         if ($options['config_file'] !== false) {
             if ($options['config_file'] === null) {
-                $options['config_file'] = $root . 'config.php';
+                $options['config_file'] = SL_ROOT . 'config.php';
             }
 
             $configFileOptions = @include $options['config_file'];
@@ -209,6 +213,7 @@ abstract class Core
 
         // config defaults
         $options += [
+            'debug' => false,
             'db.server' => null,
             'db.port' => null,
             'db.user' => null,
@@ -217,7 +222,7 @@ abstract class Core
             'db.prefix' => null,
             'secret' => null,
             'fallback_lang' => 'en',
-            'debug' => false,
+            'fallback_base_url' => null,
             'cache' => true,
             'timezone' => 'Europe/Prague',
             'safe_mode' => false,
@@ -250,143 +255,6 @@ abstract class Core
         self::$sessionEnabled = $options['session_enabled'];
         self::$sessionRegenerate = $options['session_regenerate'] || isset($_POST['_session_force_regenerate']);
         self::$safeMode = (bool) $options['safe_mode'];
-
-        // define constants
-        define('SL_ROOT', $root);
-    }
-
-    private static function determineBaseUrl(): Url
-    {
-        $baseDir = RequestInfo::getBaseDir();
-
-        if (SL_ROOT !== './') {
-            // drop subdirs beyond root
-            $baseDir = implode('/', array_slice(explode('/', $baseDir), 0, -substr_count(SL_ROOT, '../')));
-        }
-
-        $url = RequestInfo::getUrl();
-        $url->setPath($baseDir);
-        $url->setQuery([]);
-        $url->setFragment(null);
-
-        return $url;
-    }
-
-    /**
-     * Init base components that don't depend on configuration
-     */
-    private static function initBaseComponents(): void
-    {
-        // error handler
-        self::$errorHandler = new ErrorHandler();
-        self::$errorHandler->register();
-
-        // event emitter
-        self::$eventEmitter = new EventEmitter();
-    }
-
-    /**
-     * Initialize components
-     */
-    private static function initComponents(bool $enableCache): void
-    {
-        // error handler
-        self::$errorHandler->setDebug(self::$debug || Environment::isCli());
-
-        // cache
-        if (self::$cache === null) {
-            self::$cache = new Cache(
-                $enableCache && !self::$safeMode
-                    ? new FilesystemDriver(
-                        SL_ROOT . 'system/cache/core',
-                        new EntryFactory(null, null, SL_ROOT . 'system/tmp')
-                    )
-                    : new MemoryDriver()
-            );
-        }
-
-        // plugin manager
-        self::$pluginManager = new PluginManager(self::$safeMode);
-
-        // localization
-        self::$dictionary = new LocalizationDictionary();
-    }
-
-    /**
-     * Initialize database
-     */
-    private static function initDatabase(array $options): void
-    {
-        try {
-            DB::connect(
-                $options['db.server'],
-                $options['db.user'],
-                $options['db.password'],
-                $options['db.name'],
-                $options['db.port'],
-                $options['db.prefix']
-            );
-        } catch (DatabaseException $e) {
-            self::fail(
-                'Připojení k databázi se nezdařilo. Důvodem je pravděpodobně výpadek serveru nebo chybné přístupové údaje.',
-                'Could not connect to the database. This may have been caused by the database server being temporarily unavailable or an error in the configuration.',
-                null,
-                $e->getMessage()
-            );
-        }
-    }
-
-    /**
-     * Initialize settings
-     */
-    private static function initSettings(): void
-    {
-        try {
-            Settings::init();
-        } catch (DatabaseException $e) {
-            self::fail(
-                'Připojení k databázi proběhlo úspěšně, ale dotaz na databázi selhal. Zkontrolujte, zda je databáze správně nainstalovaná.',
-                'Successfully connected to the database, but the database query has failed. Make sure the database is installed correctly.',
-                null,
-                $e->getMessage()
-            );
-        }
-    }
-
-    /**
-     * Check system state after initialization
-     */
-    private static function checkSystemState(array $options): void
-    {
-        // check database version
-        if (Settings::get('dbversion') !== self::DB_VERSION) {
-            self::fail(
-                "Verze databáze %s není kompatibilní s verzí systému.\n\nJe požadována verze databáze %s.",
-                "Database version %s is not compatible with system version.\n\nDatabase version %s is required.",
-                [Settings::get('dbversion'), self::DB_VERSION]
-            );
-        }
-
-        // installation check
-        if ($options['config_file'] !== false) {
-            $installCheckKey = sprintf('%s-%d', self::VERSION, filemtime($options['config_file']));
-
-            if (Settings::get('install_check') !== $installCheckKey) {
-                $systemChecker = new SystemChecker();
-                $systemChecker->check();
-
-                if ($systemChecker->hasErrors()) {
-                    self::fail(
-                        'Při kontrole instalace byly detekovány následující problémy:',
-                        'The installation check has detected the following problems:',
-                        null,
-                        $systemChecker->renderErrors()
-                    );
-                }
-
-                Settings::update('install_check', $installCheckKey);
-            }
-        }
     }
 
     /**
@@ -443,6 +311,114 @@ abstract class Core
         }
     }
 
+    private static function initUrls(array $options): void
+    {
+        if (Environment::isCli()) {
+            // use provided or fallback base URL in CLI
+            $base = Url::parse(
+                $options['base_url'] 
+                ?? $options['fallback_base_url']
+                ?? 'http://localhost/'
+            );
+
+            if (!$base->hasScheme()) {
+                $base->setScheme('http');
+            }
+
+            if (!$base->hasHost()) {
+                $base->setHost('localhost');
+            }
+
+            $current = $base;
+        } elseif (isset($options['base_url'])) {
+            // use provided base URL and detect current URL
+            $base = Url::parse($options['base_url']);
+            $current = RequestInfo::getUrl();
+
+            if (!$base->hasScheme()) {
+                $base->setScheme($current->getScheme());
+            }
+
+            if (!$base->hasHost()) {
+                $base->setHost($current->getHost());
+                $base->setPort($current->getPort());
+            }
+        } else {
+            // automatically determine URLs
+            $base = new Url();
+            $current = RequestInfo::getUrl();
+            
+            $base->setScheme($current->getScheme());
+            $base->setHost($current->getHost());
+            $base->setPort($current->getPort());
+            $base->setPath(RequestInfo::getBaseDir());
+
+            // drop possible subdirectories from base path
+            if (
+                isset($_SERVER['SCRIPT_FILENAME']) 
+                && ($scriptPath = realpath($_SERVER['SCRIPT_FILENAME']))
+                && strncmp(SL_ROOT, $scriptPath, strlen(SL_ROOT)) === 0
+                && ($subDirCount = substr_count($scriptPath, '/', strlen(SL_ROOT))) > 0
+            ) {
+                $base->setPath(implode('/', array_slice(explode('/', $base->getPath()), 0, -$subDirCount)));
+            }
+        }
+
+        self::$baseUrl = $base;
+        self::$currentUrl = $current;
+    }
+
+    /**
+     * Initialize components
+     */
+    private static function initComponents(array $options): void
+    {
+        // error handler
+        self::$errorHandler->setDebug(self::$debug || Environment::isCli());
+
+        // cache
+        if (self::$cache === null) {
+            self::$cache = new Cache(
+                $options['cache'] && !self::$safeMode
+                    ? new FilesystemDriver(
+                        SL_ROOT . 'system/cache/core',
+                        new EntryFactory(null, null, SL_ROOT . 'system/tmp')
+                    )
+                    : new MemoryDriver()
+            );
+        }
+
+        // plugin manager
+        self::$pluginManager = new PluginManager(self::$safeMode);
+
+        // localization
+        self::$dictionary = new LocalizationDictionary();
+    }
+
+    /**
+     * Initialize database
+     */
+    private static function initDatabase(array $options): void
+    {
+        try {
+            DB::connect(
+                $options['db.server'],
+                $options['db.user'],
+                $options['db.password'],
+                $options['db.name'],
+                $options['db.port'],
+                $options['db.prefix']
+            );
+        } catch (DatabaseException $e) {
+            self::fail(
+                'Připojení k databázi se nezdařilo. Důvodem je pravděpodobně výpadek serveru nebo chybné přístupové údaje.',
+                'Could not connect to the database. This may have been caused by the database server being temporarily unavailable or an error in the configuration.',
+                null,
+                $e->getMessage()
+            );
+        }
+    }
+
     /**
      * Initialize plugins
      */
@@ -450,6 +426,59 @@ abstract class Core
     {
         self::$pluginManager->initialize();
         Extend::call('plugins.ready');
+    }
+
+    /**
+     * Initialize settings
+     */
+    private static function initSettings(): void
+    {
+        try {
+            Settings::init();
+        } catch (DatabaseException $e) {
+            self::fail(
+                'Připojení k databázi proběhlo úspěšně, ale dotaz na databázi selhal. Zkontrolujte, zda je databáze správně nainstalovaná.',
+                'Successfully connected to the database, but the database query has failed. Make sure the database is installed correctly.',
+                null,
+                $e->getMessage()
+            );
+        }
+    }
+
+    /**
+     * Check system state after initialization
+     */
+    private static function checkSystemState(array $options): void
+    {
+        // check database version
+        if (Settings::get('dbversion') !== self::DB_VERSION) {
+            self::fail(
+                "Verze databáze %s není kompatibilní s verzí systému.\n\nJe požadována verze databáze %s.",
+                "Database version %s is not compatible with system version.\n\nDatabase version %s is required.",
+                [Settings::get('dbversion'), self::DB_VERSION]
+            );
+        }
+
+        // installation check
+        if ($options['config_file'] !== false) {
+            $installCheckKey = sprintf('%s-%d', self::VERSION, filemtime($options['config_file']));
+
+            if (Settings::get('install_check') !== $installCheckKey) {
+                $systemChecker = new SystemChecker();
+                $systemChecker->check();
+
+                if ($systemChecker->hasErrors()) {
+                    self::fail(
+                        'Při kontrole instalace byly detekovány následující problémy:',
+                        'The installation check has detected the following problems:',
+                        null,
+                        $systemChecker->renderErrors()
+                    );
+                }
+
+                Settings::update('install_check', $installCheckKey);
+            }
+        }
     }
 
     /**

@@ -8,9 +8,7 @@ use Sunlight\Image\ImageTransformer;
 use Sunlight\Util\Request;
 
 require __DIR__ . '/../../bootstrap.php';
-Core::init('../../../', [
-    'content_type' => false,
-]);
+Core::init(['content_type' => false]);
 
 // fetch code
 $captchaNumber = Request::get('n');

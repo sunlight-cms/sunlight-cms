@@ -269,6 +269,6 @@ class PluginManager
 
     private function getSystemHash(): string
     {
-        return sha1(Core::VERSION . '$' . realpath(SL_ROOT));
+        return sha1(Core::VERSION . '$' . SL_ROOT);
     }
 }

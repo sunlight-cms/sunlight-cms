@@ -10,7 +10,7 @@ use Sunlight\Util\Request;
 use Sunlight\Xsrf;
 
 require __DIR__ . '/../bootstrap.php';
-Core::init('../../');
+Core::init();
 
 if (Settings::get('ratemode') == 0) {
     exit;

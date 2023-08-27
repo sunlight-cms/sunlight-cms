@@ -8,9 +8,7 @@ use Sunlight\Util\Response;
 use Sunlight\Util\UrlHelper;
 
 require __DIR__ . '/../bootstrap.php';
-Core::init('../../', [
-    'session_regenerate' => true,
-]);
+Core::init(['session_regenerate' => true]);
 
 // load variables
 $username = Request::post('login_username');

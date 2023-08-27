@@ -130,10 +130,8 @@ class BackupRestorer
         }
 
         // filesystem cleanup
-        $systemRealPath = realpath(SL_ROOT . 'system');
-
         foreach ($directoriesToPurge as $directory) {
-            if (realpath($directory) === $systemRealPath) {
+            if (realpath($directory) === SL_ROOT . 'system') {
                 // the "system" directory needs special handling because backups are stored in it
                 $this->purgeSystemDirectory();
             } else {

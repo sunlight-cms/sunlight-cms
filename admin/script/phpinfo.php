@@ -6,9 +6,7 @@ use Sunlight\User;
 use Sunlight\Util\Response;
 
 require __DIR__ . '/../../system/bootstrap.php';
-Core::init('../../', [
-    'env' => Core::ENV_ADMIN,
-]);
+Core::init(['env' => Core::ENV_ADMIN]);
 
 if (!User::isSuperAdmin()) {
     Response::redirect(Router::adminIndex(['absolute' => true]));

@@ -13,9 +13,7 @@ use Sunlight\Util\UrlHelper;
 use Sunlight\Xsrf;
 
 require __DIR__ . '/../../bootstrap.php';
-Core::init('../../../', [
-    'content_type' => 'text/plain; charset=UTF-8',
-]);
+Core::init(['content_type' => 'text/plain; charset=UTF-8']);
 
 // load variables
 $subject = trim(Request::post('subject', ''));

@@ -7,7 +7,7 @@ use Sunlight\Util\DateTime;
 use Sunlight\Util\Request;
 
 require __DIR__ . '/../../system/bootstrap.php';
-Core::init('../../', [
+Core::init([
     'env' => Core::ENV_ADMIN,
     'session_enabled' => false,
     'content_type' => 'text/css; charset=UTF-8',

@@ -44,13 +44,6 @@ abstract class Router
      */
     static function file(string $filePath, ?array $options = null): string
     {
-        static $realRootPath = null, $realRootPathLength = null;
-
-        if ($realRootPath === null) {
-            $realRootPath = realpath(SL_ROOT) . DIRECTORY_SEPARATOR;
-            $realRootPathLength = strlen($realRootPath);
-        }
-
         $queryStringPos = strpos($filePath, '?');
 
         if ($queryStringPos !== false) {
@@ -61,8 +54,8 @@ abstract class Router
 
         $realFilePath = realpath($filePath);
 
-        if ($realFilePath !== false && substr($realFilePath, 0, $realRootPathLength) === $realRootPath) {
-            $path = str_replace('\\', '/', substr($realFilePath, $realRootPathLength));
+        if ($realFilePath !== false && strncmp($realFilePath, SL_ROOT, strlen(SL_ROOT)) === 0) {
+            $path = str_replace('\\', '/', substr($realFilePath, strlen(SL_ROOT)));
         } else {
             return '#';
         }

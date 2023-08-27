@@ -10,6 +10,7 @@ return [
     'db.prefix' => 'sunlight',
     'secret' => '',
     'fallback_lang' => 'cs',
+    'fallback_base_url' => null,
     'trusted_proxies' => null,
     'trusted_proxy_headers' => null, 
     'cache' => true,

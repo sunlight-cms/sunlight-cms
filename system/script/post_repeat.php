@@ -6,7 +6,7 @@ use Sunlight\Util\Form;
 use Sunlight\Util\Request;
 
 require __DIR__ . '/../bootstrap.php';
-Core::init('../../');
+Core::init();
 
 // load variables
 $login = (bool) Request::get('login');

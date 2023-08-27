@@ -8,9 +8,7 @@ use Sunlight\Util\Environment;
 use Sunlight\Util\Request;
 
 require __DIR__ . '/../bootstrap.php';
-Core::init('../../', [
-    'content_type' => 'text/plain; charset=UTF-8',
-]);
+Core::init(['content_type' => 'text/plain; charset=UTF-8']);
 
 // check authorization (unless in CLI env)
 if (!Environment::isCli()) {

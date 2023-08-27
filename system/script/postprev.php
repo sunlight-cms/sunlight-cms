@@ -5,6 +5,6 @@ use Sunlight\Post\Post;
 use Sunlight\Util\Request;
 
 require __DIR__ . '/../bootstrap.php';
-Core::init('../../');
+Core::init();
 
 echo Post::render(_e(Request::post('content'), ''));
