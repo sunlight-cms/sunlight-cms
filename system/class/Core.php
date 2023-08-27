@@ -122,7 +122,7 @@ abstract class Core
             throw new \RuntimeException('Could not resolve root path');
         }
 
-        define('SL_ROOT', $rootPath . '/');
+        define('SL_ROOT', $rootPath . DIRECTORY_SEPARATOR);
 
         // initialization
         require __DIR__ . '/../functions.php';
@@ -355,10 +355,10 @@ abstract class Core
 
             // drop possible subdirectories from base path
             if (
-                isset($_SERVER['SCRIPT_FILENAME']) 
-                && ($scriptPath = realpath($_SERVER['SCRIPT_FILENAME']))
+                isset($_SERVER['SCRIPT_FILENAME'])
+                && ($scriptPath = realpath($_SERVER['SCRIPT_FILENAME'])) !== false
                 && strncmp(SL_ROOT, $scriptPath, strlen(SL_ROOT)) === 0
-                && ($subDirCount = substr_count($scriptPath, '/', strlen(SL_ROOT))) > 0
+                && ($subDirCount = substr_count($scriptPath, DIRECTORY_SEPARATOR, strlen(SL_ROOT))) > 0
             ) {
                 $base->setPath(implode('/', array_slice(explode('/', $base->getPath()), 0, -$subDirCount)));
             }

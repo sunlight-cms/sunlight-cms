@@ -48,7 +48,7 @@ class PluginLoader
     {
         $autoload = array_fill_keys(['psr-0', 'psr-4', 'classmap', 'files'], []);
         $boundFiles = [];
-        $composerInjector = new RepositoryInjector(new Repository(SL_ROOT . '/composer.json'));
+        $composerInjector = new RepositoryInjector(new Repository(SL_ROOT . 'composer.json'));
 
         $plugins = $this->findPlugins($boundFiles);
         $this->resolveInstallationStatus($plugins);
