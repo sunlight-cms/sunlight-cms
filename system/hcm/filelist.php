@@ -6,10 +6,9 @@ use Sunlight\Router;
 use Sunlight\Util\Filesystem;
 
 return function ($path = '', $show_file_size = false) {
+    Hcm::normalizePathArgument($path, false);
     Hcm::normalizeArgument($path, 'string');
     Hcm::normalizeArgument($show_file_size, 'bool');
-
-    $path = Filesystem::resolvePath(SL_ROOT . $path, false, SL_ROOT . 'upload/');
 
     if ($path === null || !is_dir($path)) {
         return '';
