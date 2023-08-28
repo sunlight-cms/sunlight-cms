@@ -116,7 +116,7 @@ class PluginLoader
         // load options
         try {
             $options = Json::decode(file_get_contents($plugin->file));
-        } catch (\RuntimeException $e) {
+        } catch (\InvalidArgumentException $e) {
             $options = null;
             $plugin->errors[] = sprintf('could not parse %s - %s', $plugin->file, $e->getMessage());
         }
