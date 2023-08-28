@@ -112,25 +112,36 @@ abstract class PluginOptionNormalizer
     static function normalizeCallbackNodes(array $callbacks, PluginData $plugin): array
     {
         foreach ($callbacks as $key => $callback) {
-            $callbackProps = array_filter(
-                array_intersect_key($callback->toArray(), ['method' => true, 'callback' => true, 'script' => true]),
-                function ($value) { return $value !== null; }
-            );
+            self::normalizeCallbackNode($callback, $plugin, "[{$key}]");
 
-            if (count($callbackProps) > 1) {
-                self::fail('[%s] must specify only method, callback or script, got multiple', $key);
-            }
-
-            if (count($callbackProps) === 0) {
-                self::fail('[%s] must specify method, callback or script', $key);
-            }
-
-            if (key($callbackProps) === 'script') {
-                $callback['script'] = self::normalizePath($callback['script'], $plugin);
+            if (!empty($callback['middlewares'])) {
+                foreach ($callback['middlewares'] as $middlewareKey => $middleware) {
+                    self::normalizeCallbackNode($middleware, $plugin, "[$key][middlewares][$middlewareKey]");
+                }
             }
         }
 
         return $callbacks;
+    }
+
+    private static function normalizeCallbackNode(Node $callback, PluginData $plugin, string $path): void
+    {
+        $callbackProps = array_filter(
+            array_intersect_key($callback->toArray(), ['method' => true, 'callback' => true, 'script' => true]),
+            function ($value) { return $value !== null; }
+        );
+
+        if (count($callbackProps) > 1) {
+            self::fail('%s must specify only method, callback or script, got multiple', $path);
+        }
+
+        if (count($callbackProps) === 0) {
+            self::fail('%s must specify method, callback or script', $path);
+        }
+
+        if (key($callbackProps) === 'script') {
+            $callback['script'] = self::normalizePath($callback['script'], $plugin);
+        }
     }
 
     static function normalizeTemplateLayouts(array $layouts): array

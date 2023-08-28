@@ -157,6 +157,44 @@
                 },
                 "script": {
                     "type": "string"
+                },
+                "middlewares": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "method": {
+                                "type": "string"
+                            },
+                            "callback": {
+                                "type": [
+                                    "string",
+                                    "array"
+                                ]
+                            },
+                            "script": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "oneOf": [
+                            {
+                                "required": [
+                                    "method"
+                                ]
+                            },
+                            {
+                                "required": [
+                                    "callback"
+                                ]
+                            },
+                            {
+                                "required": [
+                                    "script"
+                                ]
+                            }
+                        ]
+                    }
                 }
             },
             "oneOf": [

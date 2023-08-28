@@ -4,6 +4,18 @@ namespace Sunlight\Callback;
 
 use Kuria\Options\Option;
 
+/**
+ * @psalm-type CallbackArray = array{
+ *      method?: string|null,
+ *      callback?: string|array|null,
+ *      script?: string|null,
+ *      middlewares?: array<array{
+ *          method?: string|null,
+ *          callback?: string|array|null,
+ *          script?: string|null,
+ *      }>|null,
+ * }
+ */
 abstract class CallbackHandler
 {
     /** @var array<string, ScriptCallback> */
@@ -18,35 +30,50 @@ abstract class CallbackHandler
     {
         static $options;
 
-        return $options ?? ($options = [
-            Option::string('method')->default(null),
-            Option::any('callback')->default(null),
-            Option::string('script')->default(null),
-        ]);
+        if ($options === null) {
+            $options = [
+                Option::string('method')->default(null),
+                Option::any('callback')->default(null),
+                Option::string('script')->default(null),
+            ];
+
+            $options[] = Option::nodeList('middlewares', ...$options)
+                ->default(null);
+        }
+
+        return $options;
     }
 
     /**
      * Create a callable from the given callback definition
      *
-     * @param array{method?: string, callback?: string|array, script?: string} $definition
+     * @param CallbackArray $definition
      * @param CallbackObjectInterface $object object to call methods on
      * @return callable
      */
     static function fromArray(array $definition, CallbackObjectInterface $object)
     {
         if (isset($definition['method'])) {
-            return [$object, $definition['method']];
+            $callable = [$object, $definition['method']];
+        } elseif (isset($definition['callback'])) {
+            $callable = $definition['callback'];
+        } elseif (isset($definition['script'])) {
+            $callable = self::fromScript($definition['script'], $object);
+        } else {
+            throw new \InvalidArgumentException('Invalid callback definition');
         }
 
-        if (isset($definition['callback'])) {
-            return $definition['callback'];
+        if (!empty($definition['middlewares'])) {
+            $callable = new MiddlewareCallback(
+                $callable,
+                array_map(
+                    function ($definition) use ($object) { return self::fromArray($definition, $object); },
+                    $definition['middlewares']
+                )
+            );;
         }
 
-        if (isset($definition['script'])) {
-            return self::fromScript($definition['script'], $object);
-        }
-
-        throw new \InvalidArgumentException('Invalid callback definition');
+        return $callable;
     }
 
     /**
