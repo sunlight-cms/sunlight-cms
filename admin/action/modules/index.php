@@ -191,6 +191,6 @@ if (User::$group['id'] == User::ADMIN_GROUP_ID) {
 $output .= '<script>
 Sunlight.admin.indexCheckHtaccess(
     ' . Json::encodeForInlineJs(Core::getBaseUrl()->getPath() . '/vendor/autoload.php?_why=this_is_a_test_if_htaccess_works') . ',
-    ' . Json::encodeForInlineJs(_lang('admin.index.htaccess_check_failure', ['%link%' => 'https://sunlight-cms.cz/resource/v8/no-htaccess'])) . "
+    ' . Json::encodeForInlineJs(_lang('admin.index.htaccess_check_failure', ['%link%' => 'https://sunlight-cms.cz/resource/8.x/no-htaccess'])) . "
 );
 </script>\n";
