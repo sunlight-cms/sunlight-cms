@@ -64,7 +64,7 @@ CREATE TABLE `sunlight_box` (
 INSERT INTO `sunlight_box` (`id`, `ord`, `title`, `content`, `visible`, `public`, `level`, `template`, `layout`, `slot`, `page_ids`, `page_children`, `class`) VALUES
 (1,	1,	'Menu',	'[hcm]menu_tree[/hcm]',	1,	1,	0,	'default',	'default',	'right',	NULL,	0,	NULL),
 (2,	2,	'Vyhledávání',	'[hcm]search[/hcm]',	1,	1,	0,	'default',	'default',	'right',	NULL,	0,	NULL),
-(3,	3,	'',	'<br><p class=\"center\"><a href=\'https://sunlight-cms.cz/\' title=\'SunLight CMS - open source redakční systém zdarma\'><img src=\'https://sunlight-cms.cz/icon.png\' alt=\'SunLight CMS - open source redakční systém zdarma\' style=\'width:88px;height:31px;border:0;\'></a></p>',	1,	1,	0,	'default',	'default',	'right',	NULL,	0,	NULL);
+(3,	3,	'',	'<br>\r\n<p class=\"center\">\r\n    <a href=\"https://sunlight-cms.cz/\" title=\"SunLight CMS - open source redakční systém zdarma\">\r\n        <img src=\"https://sunlight-cms.cz/icon.png\" alt=\"SunLight CMS - open source redakční systém zdarma\" style=\"width:88px;height:31px;border:0;\">\r\n    </a>\r\n</p>',	1,	1,	0,	'default',	'default',	'right',	NULL,	0,	NULL);
 
 CREATE TABLE `sunlight_gallery_image` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
