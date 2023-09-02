@@ -55,17 +55,17 @@ class BackupRestorer
         }
 
         // normalize lists
-        $files = $this->normalizePathList($files, $this->backup->getMetaData('file_list'));
-        $directories = $this->normalizePathList($directories, $this->backup->getMetaData('directory_list'));
+        $files = array_intersect($this->backup->getMetaData('file_list'), $files);
+        $directories = array_intersect($this->backup->getMetaData('directory_list'), $directories);
 
         if ($isPatch) {
-            $filesToRemove = $this->normalizePathList($this->backup->getMetaData('files_to_remove'), null, true, true);
-            $directoriesToRemove = $this->normalizePathList($this->backup->getMetaData('directories_to_remove'), null, true, true);
-            $directoriesToPurge = $this->normalizePathList($this->backup->getMetaData('directories_to_purge'), null, true, true);
+            $filesToRemove = $this->normalizePathList($this->backup->getMetaData('files_to_remove'));
+            $directoriesToRemove = $this->normalizePathList($this->backup->getMetaData('directories_to_remove'));
+            $directoriesToPurge = $this->normalizePathList($this->backup->getMetaData('directories_to_purge'));
         } else {
             $filesToRemove = [];
             $directoriesToRemove = [];
-            $directoriesToPurge = $this->normalizePathList($directories, null, true, true);
+            $directoriesToPurge = $this->normalizePathList($directories);
         }
 
         // verify what we are restoring
@@ -131,12 +131,26 @@ class BackupRestorer
 
         // filesystem cleanup
         foreach ($directoriesToPurge as $directory) {
-            if (realpath($directory) === SL_ROOT . 'system') {
-                // the "system" directory needs special handling because backups are stored in it
-                $this->purgeSystemDirectory();
-            } else {
-                // other dirs
-                Filesystem::purgeDirectory($directory, ['keep_dir' => true]);
+            switch ($directory) {
+                // system directory
+                case SL_ROOT . 'system':
+                    $this->clearDirectory($directory, [
+                        'backup' => true, // backup directory contains the backup
+                        'cache' => true, // cache gets cleared later anyway
+                    ]);
+                    break;
+
+                // admin directory
+                case SL_ROOT . 'admin':
+                    $this->clearDirectory($directory, [
+                        'index.php' => true, // https://github.com/php/php-src/issues/7910
+                    ]);
+                    break;
+
+                // other directories
+                default:
+                    $this->clearDirectory($directory);
+                    break;
             }
         }
 
@@ -196,30 +210,17 @@ class BackupRestorer
 
     /**
      * @param string[] $paths
-     * @param string[]|null $allowedValues list of allowed values in $paths
-     * @param bool $addRootPath prefix normalized paths with SL_ROOT 1/0
-     * @param bool $excludeNonexistent skip nonexistent paths 1/0
      */
-    private function normalizePathList(array $paths, ?array $allowedValues = null, bool $addRootPath = false, bool $excludeNonexistent = false): array
+    private function normalizePathList(array $paths): array
     {
-        if ($allowedValues) {
-            $paths = array_intersect($allowedValues, $paths);
-        }
-
         $normalizedPaths = [];
 
         foreach ($paths as $path) {
-            if ($excludeNonexistent && !file_exists(SL_ROOT . $path)) {
-                continue;
+            $normalizedPath = realpath(SL_ROOT . $path);
+
+            if ($normalizedPath !== false) {
+                $normalizedPaths[] = $normalizedPath;
             }
-
-            $normalizedPath = $path;
-
-            if ($addRootPath) {
-                $normalizedPath = SL_ROOT . $normalizedPath;
-            }
-
-            $normalizedPaths[] = $normalizedPath;
         }
 
         return $normalizedPaths;
@@ -234,18 +235,15 @@ class BackupRestorer
         $preloader->preload();
     }
 
-    private function purgeSystemDirectory(): void
+    private function clearDirectory(string $directory, array $excludedFilenameMap = []): void
     {
-        $preservedDirMap = [
-            'backup' => true, // has the backups in it, including the current one
-            'cache' => true, // will be cleared at the end of restore()
-        ];
+        foreach (Filesystem::createIterator($directory) as $item) {
+            if (isset($excludedFilenameMap[$item->getFilename()])) {
+                continue;
+            }
 
-        foreach (Filesystem::createIterator(SL_ROOT . 'system') as $item) {
             if ($item->isDir()) {
-                if (!isset($preservedDirMap[$item->getFilename()])) {
-                    Filesystem::purgeDirectory($item->getPathname());
-                }
+                Filesystem::purgeDirectory($item->getPathname());
             } else {
                 unlink($item->getPathname());
             }
