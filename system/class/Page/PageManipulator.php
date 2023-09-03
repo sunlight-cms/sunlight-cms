@@ -347,7 +347,7 @@ abstract class PageManipulator
             ]);
 
             if ($handled !== true) {
-                $error = _lang('plugin.error', ['%plugin%' => $page['type_idt']]);
+                $error = _lang('plugin.error', ['%info%' => sprintf('type_idt=%s', $page['type_idt'])]);
 
                 return false;
             }

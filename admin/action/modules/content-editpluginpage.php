@@ -20,7 +20,7 @@ $plugin_types = Page::getPluginTypes();
 
 // check plugin availability
 if (!isset($plugin_types[$type_idt])) {
-    $output .= Message::error(_lang('plugin.error', ['%plugin%' => $type_idt]), true);
+    $output .= Message::error(_lang('plugin.error', ['%info%' => sprintf('type_idt=', $type_idt)]), true);
 
     return;
 }
