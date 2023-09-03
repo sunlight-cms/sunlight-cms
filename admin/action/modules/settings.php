@@ -104,6 +104,7 @@ $editable_settings = [
                 'help' => false,
                 'extra_help' => _lang('admin.settings.users.rules.help'),
                 'input' => Admin::editor('settings-rules', 'rules', _e($settings['rules']), ['rows' => 9, 'class' => 'areasmallwide']),
+                'id' => false,
             ],
             ['name' => 'messages', 'format' => 'bool'],
             ['name' => 'lostpass', 'format' => 'bool'],
