@@ -138,7 +138,7 @@ abstract class Database
      * @param int|string|null $fetchColumn only fetch the given column instead of the entire row
      * @param bool $assoc fetch rows as associative arrays 1/0
      * @param bool $expectError don't throw an exception on failure 1/0
-     * @return array[]|false
+     * @return array|false
      */
     static function queryRows(string $sql, $indexBy = null, $fetchColumn = null, bool $assoc = true, bool $expectError = false)
     {
@@ -202,7 +202,6 @@ abstract class Database
      * @param int|string|null $indexBy index the resulting array using the given column
      * @param int|string|null $fetchColumn only fetch the given column instead of the entire row
      * @param bool $assoc fetch rows as associative arrays 1/0
-     * @return array[]
      */
     static function rows(\mysqli_result $result, $indexBy = null, $fetchColumn = null, bool $assoc = true): array
     {
