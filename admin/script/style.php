@@ -358,6 +358,7 @@ a#usermenu-username {margin-right: 0.5em; font-weight: bold; color: <?= $scheme_
 #contenttable .pad {padding: 20px 0;}
 .contenttable-box {padding: 8px; margin: 0; border-right: 1px solid <?= $scheme_smoke ?>;}
 .contenttable-box.main-box {width: 70%; padding-bottom: 0px;}
+.customsettings {padding-left: 10px;}
 
 #content-modules {border: none;}
 #content-modules h2 {margin-top: 1em;}

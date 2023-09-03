@@ -540,10 +540,7 @@ $output .= '<form class="cform" action="' . _e(Router::admin('content-edit' . Pa
 
                             . ($editscript_enable_content ?
                             '<tr class="valign-top">
-                                <th>'
-                                    . _lang('admin.content.form.content')
-                                    . (!$new ? ' <a href="' . _e(Router::page($query['id'], $query['slug'])) . '" target="_blank"><img src="' . _e(Router::path('admin/public/images/icons/loupe.png')) . '" alt="prev"></a>' : '')
-                            . '</th>
+                                <th>' . _lang('admin.content.form.content'). '</th>
                                 <td>' . Admin::editor('page-content', 'content', _e($query['content'])) . '</td>
                             </tr>' : '')
 
@@ -560,7 +557,19 @@ $output .= '<form class="cform" action="' . _e(Router::admin('content-edit' . Pa
                         . '</tbody>
                        <tfoot>
                         <tr><td></td><td></td></tr>
-                        <tr><td></td><td><input type="submit" class="button bigger" value="' . ($new ? _lang('global.create') : _lang('global.savechanges')) . '" accesskey="s"></td></tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <input type="submit" class="button bigger" value="' . ($new ? _lang('global.create') : _lang('global.savechanges')) . '" accesskey="s">
+
+                                ' . (!$new
+                                    ? ' <a class="button bigger" href="' . _e(Router::page($query['id'], $query['slug'])) . '" target="_blank">'
+                                        . '<img src="' . _e(Router::path('admin/public/images/icons/show.png')) . '" alt="open" class="icon">'
+                                        . _lang('global.open')
+                                        . '</a>'
+                                    : '') . '
+                            </td>
+                        </tr>
                        </tfoot>     
                     </table>                
                 </td> 

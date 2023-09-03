@@ -45,7 +45,6 @@ if (isset($_GET['id'], $_GET['returnid'], $_GET['returnpage'])) {
         $backlink = Router::admin('content-articles-list', ['query' => ['cat' => $returnid, 'page' => $returnpage]]);
         $actionplus = ['query' => ['id' => $id, 'returnid' => $returnid, 'returnpage' => $returnpage]];
         $submittext = 'global.savechanges';
-        $artlink = ' <a href="' . _e(Router::article($query['id'], $query['slug'], $query['cat_slug'])) . '" target="_blank"><img src="' . _e(Router::path('admin/public/images/icons/loupe.png')) . '" alt="prev"></a>';
         $new = false;
         $continue = true;
     }
@@ -53,7 +52,6 @@ if (isset($_GET['id'], $_GET['returnid'], $_GET['returnpage'])) {
     $backlink = Router::admin('content-articles');
     $actionplus = null;
     $submittext = 'global.create';
-    $artlink = '';
     $new = true;
     $id = -1;
     $view_count = 0;
@@ -387,7 +385,7 @@ if ($continue) {
                                 <td>' . Admin::editor('article-perex', 'perex', _e($query['perex']), ['mode' => 'lite', 'rows' => 9, 'class' => 'areabigperex']) . '</td>
                             </tr>
                             <tr class="valign-top">
-                                <th>' . _lang('admin.content.form.content') . $artlink . '</th>
+                                <th>' . _lang('admin.content.form.content') . '</th>
                                 <td>' . Admin::editor('article-content', 'content', _e($query['content'])) . '</td>
                             </tr>
                         </tbody>
@@ -397,9 +395,14 @@ if ($continue) {
                                 <td></td>
                                 <td id="ae-lastrow"><br><input type="submit" class="button bigger" value="' . _lang($submittext) . '" accesskey="s">'
                                 . (!$new ? '
+                                    <a class="button bigger" href="' . _e(Router::article($query['id'], $query['slug'], $query['cat_slug'])) . '" target="_blank">'
+                                        . '<img src="' . _e(Router::path('admin/public/images/icons/show.png')) . '" alt="show" class="icon">'
+                                        . _lang('global.open') 
+                                    . '</a>
+
                                     <span class="customsettings">
                                         <a href="' . _e(Router::admin('content-articles-delete', ['query' => ['id' => $query['id'], 'returnid' => $query['home1'], 'returnpage' => 1]])) . '">
-                                            <span><img src="' . _e(Router::path('admin/public/images/icons/delete.png')) . '" alt="del" class="icon">' . _lang('global.delete') . '</span>
+                                            <img src="' . _e(Router::path('admin/public/images/icons/delete.png')) . '" alt="del" class="icon">' . _lang('global.delete') . '
                                         </a>
                                     </span>
                                     <span class="customsettings">

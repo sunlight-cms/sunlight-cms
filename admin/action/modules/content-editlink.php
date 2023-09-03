@@ -17,13 +17,7 @@ if ($continue) {
     $editscript_enable_layout = false;
     $editscript_enable_show_heading = false;
     $editscript_extra_row = '<tr class="valign-top">
-<th>' . _lang('admin.content.form.url')
-    . (!$new && $query['link_url'] !== null
-        ? ' <a href="' . _e(Router::page($query['id'], $query['slug'])) . '" target="_blank">' 
-            . '<img src="' . _e(Router::path('admin/public/images/icons/loupe.png')) . '" alt="prev">' 
-            . '</a>' 
-        : '')
-. '</th>
+<th>' . _lang('admin.content.form.url'). '</th>
 <td>
 <input class="inputmax" type="text" name="link_url" value="' . _e($query['link_url'] ?? '') . '">
 </td>

@@ -212,11 +212,11 @@ if ($continue) {
   <td>
     <input type="submit" value="' . $submitcaption . '" accesskey="s">'
     . (!$new
-            ? ' <small>' . _lang('admin.content.form.thisid') . ' ' . $id . '</small>'
-            . ' <span class="customsettings"><a class="button" href="' . _e(Xsrf::addToUrl(Router::admin('content-polls', ['query' => ['del' => $id]]))) . '" onclick="return Sunlight.confirm();">'
-                . '<img src="' . _e(Router::path('admin/public/images/icons/delete.png')) . '" class="icon" alt="del"> '
+            ? '<span class="customsettings"><a href="' . _e(Xsrf::addToUrl(Router::admin('content-polls', ['query' => ['del' => $id]]))) . '" onclick="return Sunlight.confirm();">'
+                . '<img src="' . _e(Router::path('admin/public/images/icons/delete.png')) . '" class="icon" alt="del">'
                 . _lang('global.delete')
-            . '</a></span>'
+                . '</a></span>'
+            . '<span class="customsettings"><small>' . _lang('admin.content.form.thisid') . ' ' . $id . '</small></span>'
             : '')
 . '</td>
   </tr>
