@@ -835,9 +835,9 @@ class ImportDatabaseStep extends Step
                         'title' => 'Úvod',
                         'content' => '<p>Instalace redakčního systému SunLight CMS ' . Core::VERSION . ' byla úspěšně dokončena!<br>
 Nyní se již můžete <a href="admin/">přihlásit do administrace</a> (s účtem nastaveným při instalaci).</p>
-<p>Podporu, diskusi a rozšíření naleznete na oficiálních webových stránkách <a href="https://sunlight-cms.cz/">sunlight-cms.cz</a>.</p>',
+<p>Podporu, diskusi a pluginy naleznete na oficiálních webových stránkách <a href="https://sunlight-cms.cz/">sunlight-cms.cz</a>.</p>',
                         'search_content' => 'Instalace redakčního systému SunLight CMS ' . Core::VERSION . ' byla úspěšně dokončena!
-Nyní se již můžete přihlásit do administrace (s účtem nastaveným při instalaci). Podporu, diskusi a rozšíření naleznete na oficiálních webových stránkách sunlight-cms.cz.',
+Nyní se již můžete přihlásit do administrace (s účtem nastaveným při instalaci). Podporu, diskusi a pluginy naleznete na oficiálních webových stránkách sunlight-cms.cz.',
                     ],
                 ],
             ];
