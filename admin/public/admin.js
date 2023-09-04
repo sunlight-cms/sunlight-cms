@@ -1,5 +1,5 @@
 Sunlight.admin = (function ($) {
-    var fmanTotalFiles = 1;
+    var fmanAddedFiles = 1;
     var busyOverlayActive = false;
     
     /**
@@ -190,20 +190,20 @@ Sunlight.admin = (function ($) {
          * @param {Number} action action (1 = check, 2 = uncheck, 3 = invert)
          */
         fmanSelect: function (number, action) {
-            var tmp = 1;
-            while (tmp <= number) {
+            var counter = 1;
+            while (counter <= number) {
                 switch (action) {
                     case 1:
-                        document.filelist['f' + tmp].checked = true;
+                        document.filelist['file_' + counter].checked = true;
                         break;
                     case 2:
-                        document.filelist['f' + tmp].checked = false;
+                        document.filelist['file_' + counter].checked = false;
                         break;
                     case 3:
-                        document.filelist['f' + tmp].checked = !document.filelist['f' + tmp].checked;
+                        document.filelist['file_' + counter].checked = !document.filelist['file_' + counter].checked;
                         break;
                 }
-                tmp += 1;
+                counter += 1;
             }
 
             return false;
@@ -260,10 +260,13 @@ Sunlight.admin = (function ($) {
          */
         fmanAddFile: function () {
             var newfile = document.createElement('span');
-            newfile.id = "file" + fmanTotalFiles;
-            newfile.innerHTML = "<br><input type='file' name='upf" + fmanTotalFiles + "[]' multiple> <a href=\"#\" onclick=\"return Sunlight.admin.fmanRemoveFile(" + fmanTotalFiles + ");\">" + SunlightVars.labels.cancel + "</a>";
+            newfile.id = 'uploaded_file_' + fmanAddedFiles;
+            newfile.innerHTML = '<br><input type="file" name="uploaded_file_' + fmanAddedFiles + '[]" multiple>'
+                + ' <a href="#" onclick="return Sunlight.admin.fmanRemoveFile(' + fmanAddedFiles + ');">'
+                + SunlightVars.labels.cancel
+                + '</a>';
             document.getElementById("fmanFiles").appendChild(newfile);
-            fmanTotalFiles += 1;
+            ++fmanAddedFiles;
 
             return false;
         },
@@ -274,7 +277,7 @@ Sunlight.admin = (function ($) {
          * @param {Number} id
          */
         fmanRemoveFile: function (id) {
-            document.getElementById("fmanFiles").removeChild(document.getElementById("file" + id));
+            document.getElementById("fmanFiles").removeChild(document.getElementById("uploaded_file_" + id));
         },
 
         /**

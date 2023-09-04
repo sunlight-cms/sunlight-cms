@@ -175,6 +175,10 @@ $encodeFilename = function ($value) {
     return base64_encode($value);
 };
 
+$getSelectedFiles = function () use ($decodeFilename) {
+    return array_map($decodeFilename,  Arr::filterKeys($_POST, 'file_'));
+};
+
 // actions and output
 if ($continue) {
     // post actions
@@ -302,20 +306,14 @@ if ($continue) {
                     $newdir .= '/';
                 }
 
-                $newdir = Filesystem::parsePath($dir . $newdir);
+                $newdir = Filesystem::parsePath($dir . $newdir, false, true);
 
                 if (User::checkPath($newdir, false)) {
                     $done = 0;
                     $total = 0;
 
-                    foreach ($_POST as $var => $val) {
-                        if ($var == 'action' || $var == 'param') {
-                            continue;
-                        }
-
-                        $val = $decodeFilename($val);
-
-                        if (is_file($dir . $val) && !is_file($newdir . $val) && User::checkFilename($val) && rename($dir . $val, $newdir . $val)) {
+                    foreach ($getSelectedFiles() as $file) {
+                        if (is_file($dir . $file) && !is_file($newdir . $file) && User::checkFilename($file) && rename($dir . $file, $newdir . $file)) {
                             $done++;
                         }
 
@@ -333,15 +331,9 @@ if ($continue) {
                 // locate selected files
                 $selected = [];
 
-                foreach ($_POST as $var => $val) {
-                    if ($var == 'action' || $var == 'param') {
-                        continue;
-                    }
-
-                    $val = $decodeFilename($val);
-
-                    if (is_file($dir . $val) && User::checkFilename($val)) {
-                        $selected[] = $val;
+                foreach ($getSelectedFiles() as $file) {
+                    if (is_file($dir . $file) && User::checkFilename($file)) {
+                        $selected[] = $file;
                     }
                 }
 
@@ -365,14 +357,8 @@ if ($continue) {
                 $done = 0;
                 $total = 0;
 
-                foreach ($_POST as $var => $val) {
-                    if ($var == 'action' || $var == 'param') {
-                        continue;
-                    }
-
-                    $val = $decodeFilename($val);
-
-                    if (is_file($dir . $val) && User::checkFilename($val) && unlink($dir . $val)) {
+                foreach ($getSelectedFiles() as $file) {
+                    if (is_file($dir . $file) && User::checkFilename($file) && unlink($dir . $file)) {
                         $done++;
                     }
 
@@ -409,29 +395,25 @@ if ($continue) {
                         // move order numbers
                         DB::update('gallery_image', 'home=' . $galid, ['ord' => DB::raw('ord+' . (count($_POST) - 2))], null);
 
-                        // prepare query
-                        $sql = '';
+                        // prepare rows
+                        $rows = [];
 
-                        foreach ($_POST as $var => $val) {
-                            if ($var == 'action' || $var == 'param') {
-                                continue;
-                            }
-
-                            $val = $decodeFilename($val);
-
-                            if (is_file($dir . $val) && ImageService::isImage($val)) {
-                                $sql .= '(' . $galid . ',' . ($smallestord + $counter) . ",'','','" . substr($dir . $val, 3) . "'),";
-                                ++$counter;
+                        foreach ($getSelectedFiles() as $file) {
+                            if (is_file($dir . $file) && ImageService::isImage($file)) {
+                                $rows[] = [
+                                    'home' => $galid,
+                                    'ord' => $smallestord + count($rows),
+                                    'title' => '',
+                                    'prev' => '',
+                                    'full' => substr($dir . $file, strlen(SL_ROOT)),
+                                ];
                             }
                         }
 
                         // insert
-                        if ($counter != 0) {
-                            $sql = trim($sql, ',');
-                            DB::query('INSERT INTO ' . DB::table('gallery_image') . ' (home,ord,title,prev,full) VALUES ' . $sql);
-                        }
+                        DB::insertMulti('gallery_image', $rows);
 
-                        $message = Message::ok(_lang('admin.fman.addtogallery.done', ['%done%' => _num($counter)]));
+                        $message = Message::ok(_lang('admin.fman.addtogallery.done', ['%done%' => _num(count($rows))]));
                     } else {
                         $message = Message::warning(_lang('global.badinput'));
                     }
@@ -565,24 +547,12 @@ if ($continue) {
                 $action_title = 'admin.fman.menu.addtogallery';
 
                 // load and check images
-                $images_load = [];
-
-                foreach ($_POST as $var => $val) {
-                    if ($var == 'action' || $var == 'param') {
-                        continue;
-                    }
-
-                    $images_load[] = $val;
-                }
-
                 $images = '';
                 $counter = 0;
 
-                foreach ($images_load as $images_load_image) {
-                    $images_load_image = $decodeFilename($images_load_image);
-
-                    if (ImageService::isImage($images_load_image)) {
-                        $images .= '<input type="hidden" name="f' . $counter . '" value="' . _e($encodeFilename($images_load_image)) . "\">\n";
+                foreach ($getSelectedFiles() as $file) {
+                    if (ImageService::isImage($file)) {
+                        $images .= '<input type="hidden" name="file_' . $counter . '" value="' . _e($encodeFilename($file)) . "\">\n";
                         ++$counter;
                     }
                 }
@@ -751,7 +721,7 @@ if ($continue) {
         $output .= '
         <tr class="' . implode(' ', $row_classes) . '">
         <td class="fman-item">
-            <input type="checkbox" name="f' . $filecounter . '" id="f' . $filecounter . '" value="' . _e($encodeFilename($item)) . '">
+            <input type="checkbox" name="file_' . $filecounter . '" id="file_' . $filecounter . '" value="' . _e($encodeFilename($item)) . '">
             <a href="' . _e(Router::file($dir . $item)) . '" target="_blank"' . ($image ? Extend::buffer('image.lightbox', ['group' => 'fman']) : '') . '>
                 <img src="' . _e(Router::path('admin/public/images/icons/fman/' . $icon . '.png')) . '" alt="file" class="icon">'
                 . _e(StringHelper::ellipsis($item, 64, false)) . '
@@ -794,7 +764,7 @@ if ($continue) {
     <a href="#" onclick="return Sunlight.admin.fmanSelect(' . _num($filecounter) . ', 1)">' . _lang('admin.fman.selectall') . '</a>
     <a href="#" onclick="return Sunlight.admin.fmanSelect(' . _num($filecounter) . ', 2)">' . _lang('admin.fman.deselectall') . '</a>
     <a href="#" onclick="return Sunlight.admin.fmanSelect(' . _num($filecounter) . ', 3)">' . _lang('admin.fman.inverse') . '</a>
-    <strong>' . _lang('admin.fman.selected') . ':</strong>
+    <strong>' . _lang('admin.fman.selected') . ':</strong>&nbsp;&nbsp;
     <a href="#" onclick="return Sunlight.admin.fmanMoveSelected()">' . _lang('admin.fman.selected.move') . '</a>
     <a href="#" onclick="return Sunlight.admin.fmanDeleteSelected()">' . _lang('admin.fman.selected.delete') . '</a>
     <a href="#" onclick="return Sunlight.admin.fmanDownloadSelected()">' . _lang('admin.fman.selected.download') . '</a>
