@@ -18,13 +18,20 @@ Requirements
 Installation
 ************
 
-1. Download (and extract) or clone this repository locally.
+1. Clone (or download) this repository locally.
 2. Run ``composer install`` in the root directory.
 3. Open ``http://example.com/install/`` (change the domain and path accordingly) in your web browser.
 4. Follow the on-screen instructions.
+
+.. NOTE::
+
+   If you're creating new project, creating it from the skeleton_ might be preferable.
 
 
 Legacy code notice
 ******************
 
 This codebase, originally written for PHP 4, is very old. Expect a fair amount of spaghetti code :)
+
+
+.. _skeleton: https://github.com/sunlight-cms/skeleton
