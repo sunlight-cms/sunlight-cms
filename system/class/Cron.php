@@ -86,7 +86,7 @@ abstract class Cron
             }
 
             // save
-            Settings::update('cron_times', serialize($cronTimes), Logger::DEBUG);
+            Settings::update('cron_times', serialize($cronTimes), false);
         }
 
         // free lock file

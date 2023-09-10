@@ -200,7 +200,7 @@ class BackupRestorer
         Core::$cache->clear();
 
         // force install check
-        Settings::update('install_check', '');
+        Settings::update('install_check', '', false);
 
         // run patch scripts
         if ($isPatch) {

@@ -75,23 +75,24 @@ abstract class Settings
     /**
      * Update a setting
      */
-    static function update(string $setting, string $newValue, int $logLevel = Logger::NOTICE): void
+    static function update(string $setting, string $newValue, bool $log = true): void
     {
         $oldValue = self::get($setting);
 
         DB::update('setting', 'var=' . DB::val($setting), ['val' => $newValue]);
 
-        Logger::log(
-            $logLevel,
-            'system',
-            sprintf(
-                'Updated setting "%s" from %s to %s',
-                $setting,
-                Dumper::dump($oldValue),
-                Dumper::dump($newValue)
-            ),
-            ['setting' => $setting, 'old_value' => $oldValue, 'new_value' => $newValue]
-        );
+        if ($log) {
+            Logger::notice(
+                'system',
+                sprintf(
+                    'Updated setting "%s" from %s to %s',
+                    $setting,
+                    Dumper::dump($oldValue),
+                    Dumper::dump($newValue)
+                ),
+                ['setting' => $setting, 'old_value' => $oldValue, 'new_value' => $newValue]
+            );
+        }
 
         self::$settings[$setting] = $newValue;
     }

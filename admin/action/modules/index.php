@@ -19,7 +19,7 @@ use Sunlight\Xsrf;
 defined('SL_ROOT') or exit;
 
 if (isset($_POST['hide_recent_log_errors']) && Admin::moduleAccess('log')) {
-    Settings::update('admin_index_log_since', (string) time());
+    Settings::update('admin_index_log_since', (string) time(), false);
 }
 
 $admin_index_cfg = Settings::getMultiple([

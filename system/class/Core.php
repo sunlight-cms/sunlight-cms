@@ -478,7 +478,7 @@ abstract class Core
                     );
                 }
 
-                Settings::update('install_check', $installCheckKey);
+                Settings::update('install_check', $installCheckKey, false);
             }
         }
     }

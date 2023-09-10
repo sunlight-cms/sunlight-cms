@@ -286,7 +286,7 @@ if (!empty($_POST)) {
     }
 
     if ($forceInstallCheck) {
-        Settings::update('install_check', '');
+        Settings::update('install_check', '', false);
     }
 }
 
