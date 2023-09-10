@@ -665,7 +665,7 @@ return [
     'admin.other.patch.upload' => 'Aplikovat patch',
     'admin.other.patch.note' => 'Před aplikací patche je doporučeno <a href="%link%">provést zálohu systému</a>.',
     'admin.other.patch.errors.validate' => 'Patch není validní.',
-    'admin.other.patch.complete' => 'Patch byl aplikován. Je možné, že se budete muset znovu přihlásit.',
+    'admin.other.patch.complete' => 'Patch byl aplikován. Nová verze systému: %new_version%',
     'admin.other.cleanup.title' => 'Údržba a čištění',
     'admin.other.cleanup.messages.1' => 'Odstranit všechny vzkazy starší než',
     'admin.other.cleanup.messages.2' => 'Odstranit úplně všechny vzkazy.',

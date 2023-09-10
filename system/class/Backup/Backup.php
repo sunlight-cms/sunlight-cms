@@ -499,11 +499,14 @@ class Backup
             Option::list('directory_list', 'string'),
             Option::list('file_list', 'string'),
             Option::string('db_prefix')->nullable(),
-            Option::bool('is_patch')->default(false),
-            Option::list('files_to_remove', 'string')->default([]),
-            Option::list('directories_to_remove', 'string')->default([]),
-            Option::list('directories_to_purge', 'string')->default([]),
-            Option::list('patch_scripts', 'string')->default([])
+            Option::node(
+                'patch',
+                Option::string('new_system_version'),
+                Option::list('files_to_remove', 'string')->default([]),
+                Option::list('directories_to_remove', 'string')->default([]),
+                Option::list('directories_to_purge', 'string')->default([]),
+                Option::list('patch_scripts', 'string')->default([])
+            )->default(null)
         );
 
         try {

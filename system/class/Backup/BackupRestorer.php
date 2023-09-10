@@ -32,7 +32,7 @@ class BackupRestorer
             return false;
         }
 
-        if ($expectedIsPatch !== $this->backup->getMetaData('is_patch')) {
+        if ($expectedIsPatch !== ($this->backup->getMetaData('patch') !== null)) {
             $errors[] = $expectedIsPatch
                 ? 'expected a patch, but this archive is a backup'
                 : 'expected a backup, but this archive is a patch';
@@ -54,7 +54,8 @@ class BackupRestorer
     {
         $errors = [];
 
-        $isPatch = $this->backup->getMetaData('is_patch');
+        $patch = $this->backup->getMetaData('patch');
+        $isPatch = $patch !== null;
         $database = $database && $this->backup->hasDatabaseDump();
 
         // defaults
@@ -71,9 +72,9 @@ class BackupRestorer
         $directories = array_intersect($this->backup->getMetaData('directory_list'), $directories);
 
         if ($isPatch) {
-            $filesToRemove = $this->normalizePathList($this->backup->getMetaData('files_to_remove'));
-            $directoriesToRemove = $this->normalizePathList($this->backup->getMetaData('directories_to_remove'));
-            $directoriesToPurge = $this->normalizePathList($this->backup->getMetaData('directories_to_purge'));
+            $filesToRemove = $this->normalizePathList($patch['files_to_remove']);
+            $directoriesToRemove = $this->normalizePathList($patch['directories_to_remove']);
+            $directoriesToPurge = $this->normalizePathList($patch['directories_to_purge']);
         } else {
             $filesToRemove = [];
             $directoriesToRemove = [];
@@ -201,7 +202,7 @@ class BackupRestorer
 
         // run patch scripts
         if ($isPatch) {
-            foreach ($this->backup->getMetaData('patch_scripts') as $patchScriptPath) {
+            foreach ($patch['patch_scripts'] as $patchScriptPath) {
                 $patchScript = $this->backup->getFile($patchScriptPath);
 
                 if ($patchScript !== null) {

@@ -43,7 +43,7 @@ if (isset($_POST['apply_patch'])) do {
         $success = $restorer->restore(true, null, null, $errors);
 
         if ($success) {
-            $output .= Message::ok(_lang('admin.other.patch.complete'));
+            $output .= Message::ok(_lang('admin.other.patch.complete', ['%new_version%' => $patch->getMetaData('patch')['new_system_version'] ?? '???']));
 
             return;
         }

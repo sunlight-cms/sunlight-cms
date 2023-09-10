@@ -665,7 +665,7 @@ return [
     'admin.other.patch.upload' => 'Apply patch',
     'admin.other.patch.note' => 'It is recommended to <a href="%link%">backup your system</a> before applying any patches.',
     'admin.other.patch.errors.validate' => 'The patch is not valid.',
-    'admin.other.patch.complete' => 'The patch has been applied. You may need to log in again',
+    'admin.other.patch.complete' => 'The patch has been applied. New system version: %new_version%',
     'admin.other.cleanup.title' => 'Maintenance and cleanup',
     'admin.other.cleanup.messages.1' => 'Delete all messages older than',
     'admin.other.cleanup.messages.2' => 'Delete all messages.',
