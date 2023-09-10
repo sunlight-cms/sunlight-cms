@@ -83,7 +83,7 @@ class SystemChecker
     }
 
     /**
-     * Check installer / patch files
+     * Check installer files
      */
     private function checkInstallFiles(): void
     {
@@ -91,13 +91,6 @@ class SystemChecker
             $this->errors[] = [
                 'Adresář install se stále nachází na serveru - po instalaci je třeba jej odstranit',
                 'The install directory still exists - it must be removed after installation',
-            ];
-        }
-
-        if (file_exists(SL_ROOT . 'patch.php')) {
-            $this->errors[] = [
-                'Soubor patch.php se stále nachází na serveru - po použití je třeba jej odstranit',
-                'The patch.php file still exists - it must be removed after use',
             ];
         }
     }

@@ -147,16 +147,7 @@ $dir = User::normalizeDir(Request::get('dir'));
 $uploaded = [];
 
 // create default dir
-if (!(file_exists($defdir) && is_dir($defdir))) {
-    $test = mkdir($defdir, 0777, true);
-
-    if (!$test) {
-        $continue = false;
-        $output .= Message::error(_lang('admin.fman.msg.defdircreationfailure'));
-    } else {
-        chmod($defdir, 0777);
-    }
-}
+Filesystem::ensureDirectoryExists($defdir, true);
 
 // functions
 $fmanUrl = function (array $query = []) use ($dir) {
@@ -219,7 +210,7 @@ if ($continue) {
                 $name = $decodeFilename(Request::post('name'), false);
 
                 if (!file_exists($dir . $name)) {
-                    $test = mkdir($dir . $name);
+                    $test = @mkdir($dir . $name);
 
                     if ($test) {
                         $message = Message::ok(_lang('admin.fman.msg.newfolder.done'));

@@ -355,15 +355,29 @@ class Backup
     }
 
     /**
-     * Extract one or more files into the given directory path
+     * Get content of any file from the backup
+     * 
+     * @param string $file path to a file in the archive
+     */
+    function getFile(string $file): ?string
+    {
+        $this->ensureOpenAndNotNew();
+
+        $data = $this->zip->getFromName($file);
+
+        return $data !== false ? $data : null;
+    }
+
+    /**
+     * Extract one or more files from into the given directory path
      *
-     * @param array|string $files
+     * @param string[] $files file paths relative to the data directory
      */
     function extractFiles($files, string $targetPath): void
     {
         $this->ensureOpenAndNotNew();
 
-        foreach ((array) $files as $file) {
+        foreach ($files as $file) {
             Zip::extractFile(
                 $this->zip,
                 $this->dataPathToArchivePath($file),
@@ -488,7 +502,8 @@ class Backup
             Option::bool('is_patch')->default(false),
             Option::list('files_to_remove', 'string')->default([]),
             Option::list('directories_to_remove', 'string')->default([]),
-            Option::list('directories_to_purge', 'string')->default([])
+            Option::list('directories_to_purge', 'string')->default([]),
+            Option::list('patch_scripts', 'string')->default([])
         );
 
         try {

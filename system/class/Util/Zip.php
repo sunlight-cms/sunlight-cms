@@ -23,7 +23,8 @@ abstract class Zip
         \ZipArchive $zip,
         string $archivePath,
         string $targetPath,
-        int $bigFileThreshold = self::DEFAULT_BIG_FILE_THRESHOLD
+        int $bigFileThreshold = self::DEFAULT_BIG_FILE_THRESHOLD,
+        int $dirMode = 0777
     ): void {
         $stat = $zip->statName($archivePath);
 
@@ -31,6 +32,7 @@ abstract class Zip
             throw new \InvalidArgumentException(sprintf('Entry "%s" was not found in the archive', $archivePath));
         }
 
+        Filesystem::ensureDirectoryExists(dirname($targetPath), true, $dirMode, true);
         self::extractFileEntry($zip, $stat, $targetPath, $bigFileThreshold);
     }
 
@@ -169,13 +171,7 @@ abstract class Zip
                         }
 
                         // create target directory
-                        if (!is_dir($targetDir)) {
-                            if (is_file($targetDir)) {
-                                unlink($targetDir);
-                            }
-
-                            mkdir($targetDir, $options['dir_mode'], true);
-                        }
+                        Filesystem::ensureDirectoryExists($targetDir, true, $options['dir_mode'], true);
 
                         // extract the file
                         self::extractFileEntry($zip, $stat, $targetDir . $fileName, $options['big_file_threshold']);

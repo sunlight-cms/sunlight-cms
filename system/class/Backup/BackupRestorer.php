@@ -24,11 +24,23 @@ class BackupRestorer
     /**
      * Validate the backup
      */
-    function validate(?array &$errors = null): bool
+    function validate(bool $expectedIsPatch, ?array &$errors = null): bool
     {
         $errors = $this->backup->getMetaDataErrors();
 
-        return empty($errors);
+        if (!empty($errors)) {
+            return false;
+        }
+
+        if ($expectedIsPatch !== $this->backup->getMetaData('is_patch')) {
+            $errors[] = $expectedIsPatch
+                ? 'expected a patch, but this archive is a backup'
+                : 'expected a backup, but this archive is a patch';
+
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -69,7 +81,7 @@ class BackupRestorer
         }
 
         // verify what we are restoring
-        if (!$database && empty($directories) && empty($files)) {
+        if (!$isPatch && !$database && empty($directories) && empty($files)) {
             $errors[] = 'nothing to restore';
         }
 
@@ -187,6 +199,17 @@ class BackupRestorer
         // force install check
         Settings::update('install_check', '');
 
+        // run patch scripts
+        if ($isPatch) {
+            foreach ($this->backup->getMetaData('patch_scripts') as $patchScriptPath) {
+                $patchScript = $this->backup->getFile($patchScriptPath);
+
+                if ($patchScript !== null) {
+                    $this->runPhpScript($patchScript);
+                }
+            }
+        }
+
         return true;
     }
 
@@ -248,5 +271,14 @@ class BackupRestorer
                 unlink($item->getPathname());
             }
         }
+    }
+
+    private function runPhpScript(string $phpScript): void
+    {
+        if (strncmp('<?php', $phpScript, 5) === 0) {
+            $phpScript = substr($phpScript, 5);
+        }
+
+        eval($phpScript);
     }
 }

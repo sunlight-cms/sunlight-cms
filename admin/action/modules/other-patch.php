@@ -35,13 +35,8 @@ if (isset($_POST['apply_patch'])) do {
 
         $restorer = new BackupRestorer($patch);
 
-        if (!$restorer->validate($errors)) {
-            $output .= Message::list($errors, ['type' => Message::ERROR, 'text' => _lang('admin.other.patch.incompatible')]);
-            break;
-        }
-
-        if (!$patch->getMetaData('is_patch')) {
-            $output .= Message::warning(_lang('admin.other.patch.not_a_patch'));
+        if (!$restorer->validate(true, $errors)) {
+            $output .= Message::list($errors, ['type' => Message::ERROR, 'text' => _lang('admin.other.patch.errors.validate')]);
             break;
         }
 

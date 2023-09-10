@@ -28,10 +28,10 @@ $backup->open();
 $validation_errors = [];
 
 $backup_restorer = new BackupRestorer($backup);
-$backup_restorer->validate($validation_errors);
+$backup_restorer->validate(false, $validation_errors);
 
 if (!empty($validation_errors)) {
-    $output .= Message::list($validation_errors, ['text' => _lang('admin.backup.restore.errors.validate')]);
+    $output .= Message::list($validation_errors, ['type' => Message::ERROR, 'text' => _lang('admin.backup.restore.errors.validate')]);
     return;
 }
 

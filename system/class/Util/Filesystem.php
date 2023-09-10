@@ -61,6 +61,34 @@ abstract class Filesystem
     }
 
     /**
+     * Make sure a directory exists, optionally creating it
+     * 
+     * @throws \RuntimeException on failure
+     */
+    static function ensureDirectoryExists(string $path, bool $create, int $mode = 0777, bool $replaceFile = false): void
+    {
+        if (is_dir($path)) {
+            return;
+        }
+
+        if (!$create) {
+            throw new \RuntimeException(sprintf('Directory "%s" does not exist', $path));
+        }
+
+        $path = rtrim($path, '\\/');
+
+        if (is_file($path)) {
+            if ($replaceFile) {
+                unlink($path);
+            } else {
+                throw new \RuntimeException(sprintf('Cannot create directory at "%s" - a file already exists', $path));
+            }
+        }
+
+        mkdir($path, $mode, true);
+    }
+
+    /**
      * Normalize a path
      */
     static function normalizePath(string $path): string
