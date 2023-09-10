@@ -1,7 +1,6 @@
 <?php
 
 use Sunlight\Core;
-use Sunlight\Database\Database;
 use Sunlight\Log\LogQuery;
 use Sunlight\Logger;
 use Sunlight\Paginator;
@@ -192,7 +191,7 @@ $output .= _buffer(function () use ($query, $queryParamValues, $queryParamErrors
     <?php foreach ($entries as $entry): ?>
     <tbody>
         <tr class="log-meta valign-top">
-            <td class="cell-shrink"><strong><?= _e(Database::datetime($entry->time)) ?></strong></td>
+            <td class="cell-shrink"><strong><?= _e($entry->getDateTime()->format('Y-m-d H:i:s.u')) ?></strong></td>
             <td class="cell-shrink"><?= _e(Logger::LEVEL_NAMES[$entry->level]) ?></td>
             <td class="cell-shrink"><?= _e($entry->category) ?></td>
             <td><?= _e(StringHelper::ellipsis($entry->url ?? '-', 255, false)) ?></td>

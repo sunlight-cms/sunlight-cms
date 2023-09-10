@@ -10,7 +10,7 @@ class LogEntry
     public $level;
     /** @var string */
     public $category;
-    /** @var int time when the entry was made */
+    /** @var string time when the entry was made (UNIX timestamp with microseconds) */
     public $time;
     /** @var string the log message */
     public $message;
@@ -26,4 +26,9 @@ class LogEntry
     public $userId;
     /** @var string|null JSON data or NULL */
     public $context;
+
+    function getDateTime(): \DateTime
+    {
+        return (\DateTime::createFromFormat('U.u', $this->time));
+    }
 }

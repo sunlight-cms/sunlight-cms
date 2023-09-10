@@ -60,7 +60,7 @@ $output .= _buffer(function () use ($entry, $parsedContext, $userInfo) { ?>
         <tbody>
             <tr>
                 <th class="cell-shrink"><?= _lang('global.time') ?></th>
-                <td><?= _e(DB::datetime($entry->time)) ?></td>
+                <td><?= _e($entry->getDateTime()->format('Y-m-d H:i:s.u')) ?></td>
             </tr>
             <tr>
                 <th class="cell-shrink"><?= _lang('global.id') ?></th>

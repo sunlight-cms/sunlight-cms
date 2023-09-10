@@ -98,7 +98,7 @@ CREATE TABLE `sunlight_log` (
   `id` varchar(36) NOT NULL,
   `level` tinyint(4) NOT NULL,
   `category` varchar(64) NOT NULL,
-  `time` bigint(20) NOT NULL,
+  `time` decimal(19,6) NOT NULL,
   `message` text NOT NULL,
   `method` varchar(32) DEFAULT NULL,
   `url` varchar(2048) DEFAULT NULL,

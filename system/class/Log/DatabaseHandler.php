@@ -112,7 +112,7 @@ class DatabaseHandler implements LogHandlerInterface
         $entry->id = $row['id'];
         $entry->level = (int) $row['level'];
         $entry->category = $row['category'];
-        $entry->time = (int) $row['time'];
+        $entry->time = $row['time'];
         $entry->message = $row['message'];
         $entry->method = $row['method'];
         $entry->url = $row['url'];

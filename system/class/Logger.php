@@ -243,7 +243,7 @@ abstract class Logger
         $entry = new LogEntry();
         $entry->level = $level;
         $entry->category = $category;
-        $entry->time = time();
+        $entry->time = (new \DateTime())->format('U.u');
         $entry->message = $message;
 
         if (!Environment::isCli()) {
