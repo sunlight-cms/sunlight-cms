@@ -4,7 +4,6 @@ use Kuria\RequestInfo\RequestInfo;
 use Sunlight\Core;
 use Sunlight\Extend;
 use Sunlight\GenericTemplates;
-use Sunlight\Plugin\PluginRouter;
 use Sunlight\Plugin\TemplatePlugin;
 use Sunlight\Plugin\TemplateService;
 use Sunlight\Router;
