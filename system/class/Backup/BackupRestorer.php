@@ -101,6 +101,8 @@ class BackupRestorer
 
         // verify directories
         foreach (array_merge($directoriesToRemove, $directoriesToPurge) as $directory) {
+            $failedPaths = [];
+
             if (!Filesystem::checkDirectory($directory, true, $failedPaths)) {
                 $failedPathsString = implode(', ', array_slice($failedPaths, 0, 3));
 
