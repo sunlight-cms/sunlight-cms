@@ -29,7 +29,7 @@ class PluginArchive
      * Extract the archive
      *
      * @param bool $merge merge with current plugins (only install new ones) 1/0
-     * @param string[]|null &$failedPlugins
+     * @param-out string[] $failedPlugins
      * @return string[] list of successfully extracted plugins
      */
     function extract(bool $merge = false, ?array &$failedPlugins = null): array

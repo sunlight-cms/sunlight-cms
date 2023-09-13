@@ -28,7 +28,7 @@ class RepositoryInjector
     /**
      * Attempt to inject repository dependencies into the current state
      *
-     * @param string[] $errors
+     * @param-out string[] $errors
      */
     function inject(Repository $repository, array &$errors = null): bool
     {

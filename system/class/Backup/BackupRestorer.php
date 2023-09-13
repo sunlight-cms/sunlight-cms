@@ -23,6 +23,8 @@ class BackupRestorer
 
     /**
      * Validate the backup
+     * 
+     * @param-out string[] $errors
      */
     function validate(bool $expectedIsPatch, ?array &$errors = null): bool
     {
@@ -49,6 +51,7 @@ class BackupRestorer
      * @param bool $database restore the database 1/0
      * @param array|null $directories directory paths to restore (from backup's metadata), null = all
      * @param array|null $files file paths to restore (from backup's metadata), null = all
+     * @param-out string[] $errors
      */
     function restore(bool $database, ?array $directories = null, ?array $files = null, ?array &$errors = null): bool
     {
