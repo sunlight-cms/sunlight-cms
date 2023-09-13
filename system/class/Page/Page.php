@@ -279,7 +279,7 @@ abstract class Page
     static function getData(int $id, array $columns, bool $addTreeColumns = false)
     {
         if ($id < 1) {
-            return null;
+            return false;
         }
 
         if ($addTreeColumns) {
