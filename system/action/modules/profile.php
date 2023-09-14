@@ -60,7 +60,7 @@ if ($query !== false) {
         }
 
         // link to user's posts
-        [, , , $posts_count] = Post::createFilter('post', [Post::SECTION_COMMENT, Post::ARTICLE_COMMENT, Post::BOOK_ENTRY, Post::FORUM_TOPIC, Post::PLUGIN], [], 'post.author=' . DB::val($id), true);
+        [, , , $posts_count] = Post::createFilter('post', [Post::SECTION_COMMENT, Post::ARTICLE_COMMENT, Post::BOOK_ENTRY, Post::FORUM_TOPIC, Post::PLUGIN], [], 'post.author=' . $query['id'], true);
 
         if ($posts_count > 0) {
             $posts_viewlink = ', <a href="' . _e(Router::module('profile-posts', ['query' => ['id' => $id]])) . '">' . _lang('global.show') . ' &gt;</a>';
