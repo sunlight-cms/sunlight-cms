@@ -29,6 +29,7 @@ class LogEntry
 
     function getDateTime(): \DateTime
     {
-        return (\DateTime::createFromFormat('U.u', $this->time));
+        return \DateTime::createFromFormat('U.u', $this->time)
+            ->setTimezone(new \DateTimeZone(date_default_timezone_get()));
     }
 }
