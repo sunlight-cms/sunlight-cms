@@ -297,7 +297,7 @@ class PostService
             [
                 'cond' => $countcond,
                 'link_suffix' => '#posts',
-                'param' => $page_param,
+                'param' => $page_param ?? 'page',
                 'auto_last' => $auto_last,
             ]
         );
