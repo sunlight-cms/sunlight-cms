@@ -147,7 +147,7 @@ abstract class IpLog
         ]);
 
         if ($result === false) {
-            Logger::notice('ip_log', 'IP log check failed', ['type' => $type, 'var' => $var]);
+            Logger::debug('ip_log', 'IP log check failed', ['type' => $type, 'var' => $var]);
         }
 
         return $result;
