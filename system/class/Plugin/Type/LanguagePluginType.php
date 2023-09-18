@@ -42,7 +42,7 @@ class LanguagePluginType extends PluginType
         $optionResolver->addOption(
             Option::string('iso_code'),
             Option::string('decimal_point'),
-            Option::string('thousands_separator'),
+            Option::string('thousands_separator')
         );
     }
 }
