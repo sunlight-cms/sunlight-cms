@@ -148,7 +148,7 @@ registerArgumentsSet(
     'shoutbox',
     'user',
     'user_activation',
-    'user_group',
+    'user_group'
 );
 
 registerArgumentsSet(
