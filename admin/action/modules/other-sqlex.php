@@ -1,6 +1,7 @@
 <?php
 
 use Sunlight\Database\Database as DB;
+use Sunlight\Database\DatabaseException;
 use Sunlight\Database\SqlReader;
 use Sunlight\Logger;
 use Sunlight\Message;
@@ -54,24 +55,26 @@ if (!empty($queries)) {
     // process queries
     $log = [];
     $lastResult = null;
-    $error = false;
+    $error = null;
 
     for ($i = 0; isset($queries[$i]); ++$i) {
-        $result = DB::query($queries[$i], true);
-        Logger::notice('system', 'Executed a custom SQL query via admin module', ['query' => $queries[$i], 'success' => $result !== false]);
+        $result = null;
+
+        try {
+            $result = DB::query($queries[$i]);
+        } catch (DatabaseException $e) {
+            $log[] = _lang('global.error');
+            $error = $e->getMessage();
+            break;
+        } finally {
+            Logger::notice('system', 'Executed a custom SQL query via admin module', ['query' => $queries[$i], 'success' => $error === null]);
+        }
 
         if ($result instanceof mysqli_result) {
-            // result
             $log[] = _lang('admin.other.sqlex.rows') . ': ' . DB::size($result);
             $lastResult = $result;
-        } elseif ($result) {
-            // true
-            $log[] = _lang('admin.other.sqlex.affected') . ': ' . DB::affectedRows();
         } else {
-            // false
-            $log[] = _lang('global.error');
-            $error = true;
-            break;
+            $log[] = _lang('admin.other.sqlex.affected') . ': ' . DB::affectedRows();
         }
     }
 
@@ -83,15 +86,15 @@ if (!empty($queries)) {
 ';
 
     for ($i = 0; isset($log[$i]); ++$i) {
-        $isError = ($error && !isset($log[$i + 1]));
+        $isError = ($error !== null && !isset($log[$i + 1]));
         $output .= '<li' . ($isError ? ' class="important"' : '') . ">{$log[$i]}</li>\n";
     }
 
     $output .= "</ol>\n";
 
     // output results
-    if ($error) {
-        $output .= Message::error(DB::$mysqli->error);
+    if ($error !== null) {
+        $output .= Message::error($error);
     } elseif ($lastResult !== null) {
         $columns = DB::columns($lastResult);
 
