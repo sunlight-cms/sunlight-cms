@@ -8,7 +8,7 @@ class LanguagePlugin extends Plugin
 {
     function isEssential(): bool
     {
-        return $this->id === Core::$fallbackLang;
+        return $this->name === Core::$fallbackLang;
     }
 
     function getIsoCode(): string

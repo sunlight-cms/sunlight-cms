@@ -26,7 +26,7 @@ class TemplatePlugin extends Plugin
 
     function isEssential(): bool
     {
-        return $this->id === Settings::get('default_template');
+        return $this->name === Settings::get('default_template');
     }
 
     /**
