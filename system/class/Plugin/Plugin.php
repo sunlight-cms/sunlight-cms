@@ -243,7 +243,9 @@ abstract class Plugin implements CallbackObjectInterface
         }
 
         if (isset(self::DEFAULT_ACTIONS[$name])) {
-            return new (self::DEFAULT_ACTIONS[$name])($this);
+            $actionClass = self::DEFAULT_ACTIONS[$name];
+
+            return new $actionClass($this);
         }
 
         return null;
