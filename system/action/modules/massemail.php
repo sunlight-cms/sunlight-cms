@@ -23,7 +23,7 @@ do {
         break;
     }
 
-    $user = DB::queryRow('SELECT id,password,massemail FROM ' . DB::table('user') . ' WHERE email=' . DB::val($email));
+    $user = DB::queryRow('SELECT id,email,password,massemail FROM ' . DB::table('user') . ' WHERE email=' . DB::val($email));
 
     if ($user === false) {
         break;
