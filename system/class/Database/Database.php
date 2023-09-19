@@ -41,7 +41,7 @@ abstract class Database
         try {
             $mysqli = mysqli_connect($server, $user, $password, $database, $port);
         } catch (\mysqli_sql_exception $e) {
-            throw new DatabaseException('Could not connect to the database', 0, $e);
+            throw new DatabaseException($e->getMessage(), 0, $e);
         }
 
         mysqli_set_charset($mysqli, 'utf8mb4');
