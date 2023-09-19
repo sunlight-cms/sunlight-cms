@@ -63,7 +63,7 @@ class ClassPreloader
                             !class_exists($className, false) 
                             && !interface_exists($className, false)
                             && !trait_exists($className, false)
-                            && (PHP_VERSION_ID >= 80100 && !enum_exists($className, false))
+                            && (PHP_VERSION_ID < 80100 || !enum_exists($className, false))
                         ) {
                             Core::$classLoader->loadClass($className);
                         }
