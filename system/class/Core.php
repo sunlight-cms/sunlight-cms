@@ -122,8 +122,12 @@ abstract class Core
         if ($rootPath === false) {
             throw new \RuntimeException('Could not resolve root path');
         }
+        
+        if ($rootPath !== '/') {
+            $rootPath .= DIRECTORY_SEPARATOR;
+        }
 
-        define('SL_ROOT', $rootPath . DIRECTORY_SEPARATOR);
+        define('SL_ROOT', $rootPath);
 
         // initialization
         require __DIR__ . '/../functions.php';
