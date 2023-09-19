@@ -97,6 +97,7 @@ abstract class Core
      * - content_type (-)         content type, FALSE = disabled (default is "text/html; charset=UTF-8")
      * - env ("script")           environment identifier, see Core::ENV_* constants
      * - base_url (-)             override the base URL (can be absolute or relative to override only the path)
+     * - error_handler (1)        enable the default error handler 1/0
      *
      * @param array{
      *     config_file?: string|false|null,
@@ -106,6 +107,7 @@ abstract class Core
      *     content_type?: string|false,
      *     env?: string,
      *     base_url?: string|null,
+     *     error_handler?: bool,
      * } $options see description
      */
     static function init(array $options = []): void
@@ -131,7 +133,7 @@ abstract class Core
 
         // initialization
         require __DIR__ . '/../functions.php';
-        self::initBaseComponents();
+        self::initBaseComponents($options);
         self::initConfiguration($options);
         self::initEnvironment($options);
         self::initUrls($options);
@@ -173,11 +175,14 @@ abstract class Core
     /**
      * Init base components that don't depend on configuration
      */
-    private static function initBaseComponents(): void
+    private static function initBaseComponents(array $options): void
     {
         // error handler
         self::$errorHandler = new ErrorHandler();
-        self::$errorHandler->register();
+
+        if ($options['error_handler'] ?? true) {
+            self::$errorHandler->register();
+        }
 
         // event emitter
         self::$eventEmitter = new EventEmitter();
