@@ -30,7 +30,7 @@ use Sunlight\Util\Json;
 abstract class Core
 {
     /** CMS version */
-    const VERSION = '8.0.0';
+    const VERSION = '8.0.1';
     /** CMS distribution type */
     const DIST = 'GIT'; // GIT / STABLE / BETA
     /** Database structure version */
