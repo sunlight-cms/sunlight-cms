@@ -416,7 +416,7 @@ abstract class Core
                 'Připojení k databázi se nezdařilo. Důvodem je pravděpodobně výpadek serveru nebo chybné přístupové údaje.',
                 'Could not connect to the database. This may have been caused by the database server being temporarily unavailable or an error in the configuration.',
                 null,
-                $e->getMessage()
+                self::$debug ? $e->getMessage() : null
             );
         }
     }
@@ -442,7 +442,7 @@ abstract class Core
                 'Připojení k databázi proběhlo úspěšně, ale dotaz na databázi selhal. Zkontrolujte, zda je databáze správně nainstalovaná.',
                 'Successfully connected to the database, but the database query has failed. Make sure the database is installed correctly.',
                 null,
-                $e->getMessage()
+                self::$debug ? $e->getMessage() : null
             );
         }
     }
