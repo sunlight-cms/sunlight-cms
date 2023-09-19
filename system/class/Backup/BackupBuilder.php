@@ -139,7 +139,7 @@ class BackupBuilder
     {
         $this->emptyDirPathList[] = $path;
     }
-    
+
     function hasDynamicPath(string $name): bool
     {
         return isset($this->dynamicPathMap[$name]);
@@ -300,7 +300,9 @@ class BackupBuilder
             foreach ($this->dynamicPathMap as $name => $paths) {
                 if ($this->isDynamicPathEnabled($name)) {
                     foreach ($paths as $path) {
-                        $backup->addPath($path);
+                        $backup->addPath($path, function ($dataPath) {
+                            return $this->filterPath($dataPath, false, true);
+                        });
                     }
                 }
             }
