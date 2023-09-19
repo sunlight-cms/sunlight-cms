@@ -465,7 +465,7 @@ a#usermenu-username {margin-right: 0.5em; font-weight: bold; color: <?= $scheme_
 /* settings */
 #settingsnav {width: 20%; float: left; margin-right: 1em;}
 #settingsnav, #settingsnav a {font-size: 12px;}
-#settingsnav.scrollfix-top {position: fixed; top: 10px; height: calc(100% - 60px); overflow: auto; z-index: 100;}
+#settingsnav.scrollfix-top {position: fixed; top: 10px; height: calc(100% - 100px); overflow: auto; z-index: 100;}
 #settingsnav input[type=submit] {width: 100%;}
 #settingsnav ul {padding: 0; margin: 0.5em 0 0 0; border: 1px solid <?= $scheme_smoke ?>; background-color: <?= $scheme_smoke_lighter ?>;}
 #settingsnav li {display: block; list-style-type: none;}
