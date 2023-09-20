@@ -153,9 +153,15 @@ abstract class Article
             $joins .= 'LEFT JOIN ' . DB::table('page') . " cat{$i} ON({$alias}.home{$i}!=-1 AND cat{$i}.id={$alias}.home{$i})";
         }
 
-        $conditions = implode(' AND ', $conditions);
+        // event
+        Extend::call('article.filter', [
+            'categories' => $categories,
+            'joins' => &$joins,
+            'conditions' => &$conditions,
+        ]);
 
         // compose result
+        $conditions = implode(' AND ', $conditions);
         $result = [$joins, $conditions];
 
         // add count
