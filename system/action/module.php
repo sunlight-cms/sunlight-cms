@@ -34,7 +34,7 @@ if (isset($module, $script)) {
     $extend_args = Extend::args($output, ['id' => $module, 'script' => &$script]);
 
     Extend::call('mod.all.before', $extend_args);
-    Extend::call('mod.' . $_index->slug . '.before', $extend_args);
+    Extend::call('mod.' . $module . '.before', $extend_args);
 
     $extend_args = Extend::args($output, ['id' => $module]);
 
