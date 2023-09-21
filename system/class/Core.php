@@ -92,7 +92,7 @@ abstract class Core
      * ------------------
      * - config_file (-)          path to the configuration file, null (= default) or false (= skip)
      * - minimal_mode (0)         stop after initializing base components and environment (= no plugins, db, settings, session, etc.) 1/0
-     * - session_enabled (1)      initialize session 1/0
+     * - session_enabled          initialize session 1/0 (defaults to false in CLI, otherwise true)
      * - session_regenerate (0)   force new session ID 1/0
      * - content_type (-)         content type, FALSE = disabled (default is "text/html; charset=UTF-8")
      * - env ("script")           environment identifier, see Core::ENV_* constants
@@ -197,7 +197,7 @@ abstract class Core
         $options += [
             'config_file' => null,
             'minimal_mode' => false,
-            'session_enabled' => true,
+            'session_enabled' => !Environment::isCli(),
             'session_regenerate' => false,
             'content_type' => null,
             'env' => self::ENV_SCRIPT,
