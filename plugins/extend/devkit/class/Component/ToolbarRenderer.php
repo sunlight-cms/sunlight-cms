@@ -97,8 +97,7 @@ class ToolbarRenderer
     {
         ?>
 <div class="devkit-section devkit-sl">
-    <?= Core::VERSION ?>
-    <?= Core::DIST ?>
+    <?= _e(Core::VERSION) ?>
 </div>
 <?php
     }

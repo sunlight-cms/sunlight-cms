@@ -24,7 +24,7 @@ return [
     'admin.index.box.latest' => 'Nejnovější',
     'admin.index.logoutwarn' => 'Budete automaticky odhlášeni po %minutes% minutách neaktivity',
     'admin.index.messages' => 'Systémové zprávy',
-    'admin.index.betawarn' => 'Toto je betaverze určena pouze pro testovací účely',
+    'admin.index.unstablewarn' => 'Toto je nestabilní %stability% verze určena pouze pro testovací účely',
     'admin.index.debugwarn' => 'Vývojový režim je aktivní',
     'admin.index.htaccess_check_failure' => 'Pozor! Zdá se, že váš webový server nepodporuje soubory .htaccess. To představuje možné bezpečnostní riziko.<br><br>Viz <a href="%link%">%link%</a>',
     'admin.index.version.latest' => 'Používáte nejnovější verzi systému.',

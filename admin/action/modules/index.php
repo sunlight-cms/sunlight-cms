@@ -74,7 +74,7 @@ $output .= '
   <table>
     <tr>
       <th>' . _lang('global.version') . ':</th>
-      <td>' . Core::VERSION . ' <small>(' . Core::DIST . ')</small></td>
+      <td>' . _e(Core::VERSION) . '</td>
     </tr>
 
     ' . _buffer(function () use ($version_data) { ?>
@@ -120,9 +120,9 @@ $output .= Extend::buffer('admin.index.after_table');
 // messages
 $messages = [];
 
-if (Core::DIST === 'BETA') {
-    // beta warning
-    $messages[] = Message::warning(_lang('admin.index.betawarn'));
+if (Core::getStability() !== 'stable') {
+    // stability warning
+    $messages[] = Message::warning(_lang('admin.index.unstablewarn', ['%stability%' => Core::getStability()]));
 }
 
 if (Core::$debug) {

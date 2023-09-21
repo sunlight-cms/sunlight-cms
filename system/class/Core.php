@@ -3,6 +3,7 @@
 namespace Sunlight;
 
 use Composer\Autoload\ClassLoader;
+use Composer\Semver\VersionParser;
 use Kuria\Cache\Cache;
 use Kuria\Cache\Driver\Filesystem\Entry\EntryFactory;
 use Kuria\Cache\Driver\Filesystem\FilesystemDriver;
@@ -31,8 +32,8 @@ abstract class Core
 {
     /** CMS version */
     const VERSION = '8.0.1';
-    /** CMS distribution type */
-    const DIST = 'GIT'; // GIT / STABLE / BETA
+    /** @deprecated will be removed in 8.1 */
+    const DIST = '';
     /** Database structure version */
     const DB_VERSION = 'sl8db-001';
     /** Web environment (frontend - index.php) */
@@ -82,6 +83,8 @@ abstract class Core
     private static $baseUrl;
     /** @var Url */
     private static $currentUrl;
+    /** @var string|null */
+    private static $stability;
     /** @var bool */
     private static $ready = false;
 
@@ -652,6 +655,16 @@ abstract class Core
         }
 
         return $output;
+    }
+
+    /**
+     * Get system stability
+     * 
+     * @return 'stable'|'RC'|'beta'|'alpha'|'dev'
+     */
+    static function getStability(): string
+    {
+        return self::$stability ?? (self::$stability = VersionParser::parseStability(self::VERSION));
     }
 
     /**

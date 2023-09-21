@@ -44,7 +44,6 @@ class VersionChecker
             $versionApiUrl = Url::parse('https://api.sunlight-cms.cz/8.x/version-check');
             $versionApiUrl->add([
                 'ver' => Core::VERSION,
-                'dist' => Core::DIST,
                 'php' => PHP_VERSION_ID,
                 'checksum' => hash_hmac('sha1', __FILE__, Core::$secret),
                 'lang' => Core::$langPlugin->getIsoCode(),
