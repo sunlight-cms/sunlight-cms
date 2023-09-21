@@ -19,7 +19,7 @@ $persistent = Form::loadCheckbox('login_persistent');
 $result = User::submitLogin($username, $password, $persistent);
 
 // redirect back
-if ($result !== 1 && isset($_POST['login_form_url'])) {
+if ($result !== User::LOGIN_SUCCESS && isset($_POST['login_form_url'])) {
     $_SESSION['login_form_username'] = $username;
 
     Response::redirectBack(UrlHelper::appendParams(

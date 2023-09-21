@@ -1190,7 +1190,7 @@ abstract class User
         if ($do_repeat) {
             $action = $target_url;
         } else {
-            $action = Router::path('system/script/post_repeat.php', ['query' => ['login' => ($allow_login ? '1' : '0'), 'target' => $target_url]]);
+            $action = Router::path('system/script/post_repeat.php', ['query' => ['login' => ($allow_login ? '1' : '0'), '_return' => $target_url]]);
         }
 
         $output = '<form name="post_repeat" method="post" action="' . _e($action). "\">\n";
