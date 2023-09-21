@@ -11,8 +11,8 @@ require __DIR__ . '/../bootstrap.php';
 Core::init(['session_regenerate' => true]);
 
 // load variables
-$username = Request::post('login_username');
-$password = Request::post('login_password');
+$username = Request::post('login_username', '');
+$password = Request::post('login_password', '');
 $persistent = Form::loadCheckbox('login_persistent');
 
 // submit login
