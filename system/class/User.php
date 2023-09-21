@@ -740,6 +740,13 @@ abstract class User
     {
         $output = '';
 
+        // event
+        Extend::call('user.login.form', ['output' => &$output]);
+
+        if ($output !== '') {
+            return $output;
+        }
+
         // title
         if ($title) {
             $title_text = _lang($required ? (self::isLoggedIn() ? 'global.accessdenied' : 'login.required.title') : 'login.title');
@@ -901,12 +908,7 @@ abstract class User
             return self::LOGIN_ATTEMPTS_EXCEEDED;
         }
 
-        // check username
-        if ($username === '') {
-            return self::LOGIN_FAILURE;
-        }
-
-        // extend event (before)
+        // event
         $extend_result = null;
         Extend::call('user.login.before', [
             'username' => $username,
@@ -917,6 +919,11 @@ abstract class User
 
         if ($extend_result !== null) {
             return $extend_result;
+        }
+
+        // check username
+        if ($username === '') {
+            return self::LOGIN_FAILURE;
         }
 
         // load user
@@ -948,7 +955,7 @@ abstract class User
             return self::LOGIN_BLOCKED;
         }
 
-        // update user data
+        // prepare user data changeset
         $changeset = [
             'ip' => Core::getClientIp(),
             'activitytime' => time(),
@@ -961,6 +968,20 @@ abstract class User
             $changeset['password'] = $query['password'] = $password->build();
         }
 
+        // event
+        $extend_result = null;
+        Extend::call('user.login.verified', [
+            'user' => $query,
+            'persistent' => $persistent,
+            'changeset' => &$changeset,
+            'result' => &$extend_result,
+        ]);
+
+        if ($extend_result !== null) {
+            return $extend_result;
+        }
+
+        // update user data
         DB::update('user', 'id=' . DB::val($query['id']), $changeset);
 
         // extend event
