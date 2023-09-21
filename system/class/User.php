@@ -741,7 +741,13 @@ abstract class User
         $output = '';
 
         // event
-        Extend::call('user.login.form', ['output' => &$output]);
+        Extend::call('user.login.form', [
+            'title' => &$title,
+            'required' => &$required,
+            'return' => &$return,
+            'embedded' => $embedded,
+            'output' => &$output,
+        ]);
 
         if ($output !== '') {
             return $output;
