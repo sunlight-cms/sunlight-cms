@@ -2,6 +2,7 @@
 
 namespace Sunlight;
 
+use Kuria\Url\Url;
 use Sunlight\Post\Post;
 use Sunlight\Database\Database as DB;
 use Sunlight\Exception\ContentPrivilegeException;
@@ -19,7 +20,6 @@ use Sunlight\Util\Password;
 use Sunlight\Util\Request;
 use Sunlight\Util\StringGenerator;
 use Sunlight\Util\StringHelper;
-use Sunlight\Util\UrlHelper;
 
 abstract class User
 {
@@ -33,8 +33,6 @@ abstract class User
     const GUEST_GROUP_ID = 2;
     /** Default registered user group ID */
     const REGISTERED_GROUP_ID = 3;
-    /** Cookie name - session */
-    const COOKIE_SESSION = 'sl_session';
     /** Cookie name - persistent login key */
     const COOKIE_PERSISTENT_LOGIN = 'sl_persistent_login';
     /** Auth hash type - remember me */
@@ -714,8 +712,12 @@ abstract class User
     /**
      * Login a user
      */
-    static function login(int $id, string $storedPassword, string $email, bool $persistent = false): void
+    static function login(int $id, string $storedPassword, string $email, bool $persistent = false, bool $regenerateSession = true): void
     {
+        if ($regenerateSession) {
+            Session::regenerate();
+        }
+
         $_SESSION['user_id'] = $id;
         $_SESSION['user_auth'] = self::getAuthHash(self::AUTH_SESSION, $email, $storedPassword);
 
@@ -733,10 +735,9 @@ abstract class User
      *
      * @param bool $title render title 1/0
      * @param bool $required indicate a required login due to insufficient privileges 1/0
-     * @param string|null $return return URL
-     * @param bool $embedded don't render a <form> tag 1/0
+     * @param string|null $return_url URL to return to after a successful login
      */
-    static function renderLoginForm(bool $title = false, bool $required = false, ?string $return = null, bool $embedded = false): string
+    static function renderLoginForm(bool $title = false, bool $required = false, ?string $return_url = null): string
     {
         $output = '';
 
@@ -744,8 +745,7 @@ abstract class User
         Extend::call('user.login.form', [
             'title' => &$title,
             'required' => &$required,
-            'return' => &$return,
-            'embedded' => $embedded,
+            'return_url' => &$return_url,
             'output' => &$output,
         ]);
 
@@ -781,26 +781,12 @@ abstract class User
         // content
         if (!self::isLoggedIn()) {
             // return URL
-            if ($return === null && !$embedded) {
+            if ($return_url === null) {
                 if (isset($_GET['login_form_return'])) {
-                    $return = Request::get('login_form_return');
+                    $return_url = Request::get('login_form_return');
                 } else  {
-                    $return = Core::getCurrentUrl()->buildRelative();
+                    $return_url = Core::getCurrentUrl()->buildRelative();
                 }
-            }
-
-            // form action
-            if (!$embedded) {
-                // script
-                $action = Router::path('system/script/login.php');
-            } else {
-                // embedded
-                $action = null;
-            }
-
-            // add return URL to the action
-            if (!empty($return)) {
-                $action = UrlHelper::appendParams($action, '_return=' . urlencode($return));
             }
 
             // form URL
@@ -811,25 +797,20 @@ abstract class User
             }
 
             // render form
-            $rows = [];
-            $rows[] = ['label' => _lang('login.username'), 'content' => '<input type="text" name="login_username" class="inputmedium"' . Form::restoreValue($_SESSION, 'login_form_username') . ' maxlength="191" autocomplete="username" autofocus>'];
-            $rows[] = ['label' => _lang('login.password'), 'content' => '<input type="password" name="login_password" class="inputmedium" autocomplete="current-password">'];
-
-            if (!$embedded) {
-                $rows[] = Form::getSubmitRow([
-                    'text' => _lang('global.login'),
-                    'append' => ' <label><input type="checkbox" name="login_persistent" value="1"> ' . _lang('login.persistent') . '</label>',
-                ]);
-            }
-
             $output .= Form::render(
                 [
                     'name' => 'login_form',
-                    'action' => $action,
-                    'embedded' => $embedded,
+                    'action' => Router::path('system/script/login.php', ['query' => ['_return' => $return_url ?? '']]),
                     'form_append' => '<input type="hidden" name="login_form_url" value="' . _e($form_url->buildRelative()) . "\">\n",
                 ],
-                $rows
+                [
+                    ['label' => _lang('login.username'), 'content' => '<input type="text" name="login_username" class="inputmedium"' . Form::restoreValue($_SESSION, 'login_form_username') . ' maxlength="191" autocomplete="username" autofocus>'],
+                    ['label' => _lang('login.password'), 'content' => '<input type="password" name="login_password" class="inputmedium" autocomplete="current-password">'],
+                    Form::getSubmitRow([
+                        'text' => _lang('global.login'),
+                        'append' => ' <label><input type="checkbox" name="login_persistent" value="1" checked> ' . _lang('login.persistent') . '</label>',
+                    ]),
+                ],
             );
 
             if (isset($_SESSION['login_form_username'])) {
@@ -837,31 +818,33 @@ abstract class User
             }
 
             // links
-            if (!$embedded) {
-                $links = [];
+            $links = [];
 
-                if (Settings::get('registration') && Core::$env === Core::ENV_WEB) {
-                    $links['reg'] = ['url' => Router::module('reg'), 'text' => _lang('mod.reg')];
+            if (Settings::get('registration') && Core::$env === Core::ENV_WEB) {
+                $links['reg'] = ['url' => Router::module('reg'), 'text' => _lang('mod.reg')];
+            }
+
+            if (Settings::get('lostpass')) {
+                $links['lostpass'] = ['url' => Router::module('lostpass'), 'text' => _lang('mod.lostpass')];
+            }
+
+            Extend::call('user.login.links', ['links' => &$links]);
+
+            if (!empty($links)) {
+                $output .= "<ul class=\"login-form-links\">\n";
+
+                foreach ($links as $link_id => $link) {
+                    $output .= '<li class="login-form-link-' . $link_id . '"><a href="' . _e($link['url']) . "\">{$link['text']}</a></li>\n";
                 }
 
-                if (Settings::get('lostpass')) {
-                    $links['lostpass'] = ['url' => Router::module('lostpass'), 'text' => _lang('mod.lostpass')];
-                }
-
-                Extend::call('user.login.links', ['links' => &$links]);
-
-                if (!empty($links)) {
-                    $output .= "<ul class=\"login-form-links\">\n";
-
-                    foreach ($links as $link_id => $link) {
-                        $output .= '<li class="login-form-link-' . $link_id . '"><a href="' . _e($link['url']) . "\">{$link['text']}</a></li>\n";
-                    }
-
-                    $output .= "</ul>\n";
-                }
+                $output .= "</ul>\n";
             }
         } else {
-            $output .= '<p>' . _lang('login.ininfo') . ' <em>' . self::getUsername() . '</em> - <a href="' . _e(Xsrf::addToUrl(Router::path('system/script/logout.php'))) . '">' . _lang('usermenu.logout') . '</a>.</p>';
+            $output .= '<p>' 
+                . _lang('login.ininfo') 
+                . ' <em>' . self::getUsername() . '</em>'
+                . ' - <a href="' . _e(Xsrf::addToUrl(Router::path('system/script/logout.php'))) . '">' . _lang('usermenu.logout') . '</a>.'
+                . '</p>';
         }
 
         return $output;
@@ -1002,26 +985,15 @@ abstract class User
 
     /**
      * Logout the current user
-     *
-     * @param bool $destroy destroy session 1/0
      */
-    static function logout(bool $destroy = true): bool
+    static function logout(): bool
     {
         if (!self::isLoggedIn()) {
             return false;
         }
 
         Extend::call('user.logout');
-
-        $_SESSION = [];
-
-        if ($destroy) {
-            session_destroy();
-
-            if (!headers_sent()) {
-                Cookie::remove(self::COOKIE_SESSION);
-            }
-        }
+        Session::destroy();
 
         if (!headers_sent() && Cookie::exists(self::COOKIE_PERSISTENT_LOGIN)) {
             Cookie::remove(self::COOKIE_PERSISTENT_LOGIN);
@@ -1201,43 +1173,26 @@ abstract class User
     }
 
     /**
-     * Render a form to repeat a POST request
-     *
-     * @param bool $allow_login allow a login, if the user is not logged in 1/0
-     * @param Message|null $login_message custom login message
-     * @param string|null $target_url form's target URL (null = current URL)
-     * @param bool $do_repeat send to the final URL 1/0
+     * Render a form to repeat the current POST request
      */
-    static function renderPostRepeatForm(bool $allow_login = true, ?Message $login_message = null, ?string $target_url = null, bool $do_repeat = false): string
+    static function renderPostRepeatForm(): string
     {
-        if ($target_url === null) {
-            $target_url = Core::getCurrentUrl()->buildRelative();
+        if (
+            isset($_SERVER['HTTP_ORIGIN']) && Url::parse((string) $_SERVER['HTTP_ORIGIN'])->getHost() !== Core::getBaseUrl()->getHost()
+            || isset($_SERVER['HTTP_SEC_FETCH_SITE']) && !in_array($_SERVER['HTTP_SEC_FETCH_SITE'], ['same-origin', 'none'], true)
+        ) {
+            // don't render the form for cross-origin requests
+            return '';
         }
 
-        if ($do_repeat) {
-            $action = $target_url;
-        } else {
-            $action = Router::path('system/script/post_repeat.php', ['query' => ['login' => ($allow_login ? '1' : '0'), '_return' => $target_url]]);
-        }
-
-        $output = '<form name="post_repeat" method="post" action="' . _e($action). "\">\n";
-        $output .= Form::renderHiddenPostInputs(null, $allow_login ? 'login_' : null);
-
-        if ($allow_login && !self::isLoggedIn()) {
-            if ($login_message === null) {
-                $login_message = Message::ok(_lang('post_repeat.login'));
-            }
-
-            $login_message->append('<div class="hr"><hr></div>' . self::renderLoginForm(false, false, null, true), true);
-
-            $output .= $login_message;
-        } elseif ($login_message !== null) {
-            $output .= $login_message;
-        }
-
-        $output .= '<p><input type="submit" value="' . _lang($do_repeat ? 'post_repeat.submit' : 'global.continue') . '"></p>';
-        $output .= Xsrf::getInput() . "</form>\n";
-
-        return $output;
+        return Form::render(
+            [
+                'name' => 'post_repeat',
+                'form_append' => Form::renderHiddenInputs(Arr::filterKeys($_POST,  null, null, [Xsrf::TOKEN_NAME])),
+            ],
+            [
+                Form::getSubmitRow(['label' => null, 'text' => _lang('post_repeat.submit')]),
+            ]
+        );
     }
 }

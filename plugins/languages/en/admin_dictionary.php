@@ -7,8 +7,6 @@ return [
     'admin.denied' => 'You are not allowed to enter administration.',
     'admin.busy_overlay.text' => 'Please wait',
     'admin.iplog' => 'Log IP address',
-    'admin.post_repeat.title' => 'You are not logged in!',
-    'admin.post_repeat.msg' => 'The action has not been performed because you have been logged out of the system.',
     'admin.priv_error.message' => 'You do not have the sufficient privileges to perform this action (%message%).',
     'admin.priv_error.content_message' => 'The submitted data contain content what you are not authorized to use (%message%) to use. You can return to the previous page and try to solve the problem.',
     'admin.moduleunavailable' => 'Module unavailable.',

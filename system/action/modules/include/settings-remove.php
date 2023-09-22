@@ -2,6 +2,7 @@
 
 use Sunlight\Message;
 use Sunlight\Router;
+use Sunlight\Session;
 use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
@@ -21,9 +22,7 @@ if (isset($_POST['submit'])) {
 
     if (empty($errors)) {
         if (User::delete(User::getId())) {
-            $_SESSION = [];
-            session_destroy();
-
+            Session::destroy();
             $_index->redirect(Router::module('login', ['query' => ['login_form_result' => User::LOGIN_REMOVED], 'absolute' => true]));
 
             return;

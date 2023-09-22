@@ -7,8 +7,6 @@ return [
     'admin.denied' => 'Nemáte dostatečná práva pro vstup do administrace.',
     'admin.busy_overlay.text' => 'Prosím čekejte',
     'admin.iplog' => 'Log IP adres',
-    'admin.post_repeat.title' => 'Nejste přihlášeni!',
-    'admin.post_repeat.msg' => 'Akce nebyla provedena, protože jste byli odhlášeni ze systému.',
     'admin.priv_error.message' => 'Pro provedení této akce nemáte dostatečná oprávnění (%message%).',
     'admin.priv_error.content_message' => 'Zaslaná data obsahují obsah, na jehož použití nemáte dostatečná oprávnění (%message%). Můžete se vrátit na předchozí stránku a problém vyřešit.',
     'admin.moduleunavailable' => 'Modul není dostupný.',

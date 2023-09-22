@@ -6,12 +6,14 @@ use Sunlight\Util\UrlHelper;
 
 class Xsrf
 {
+    const TOKEN_NAME = '_security_token';
+
     /**
      * Render a hidden input with the XSRF token
      */
     static function getInput(): string
     {
-        return '<input type="hidden" name="_security_token" value="' . self::getToken() . '">';
+        return '<input type="hidden" name="' . _e(self::TOKEN_NAME) . '" value="' . self::getToken() . '">';
     }
 
     /**
@@ -19,7 +21,7 @@ class Xsrf
      */
     static function addToUrl(string $url): string
     {
-        return UrlHelper::appendParams($url, '_security_token=' . urlencode(self::getToken()));
+        return UrlHelper::appendParams($url, self::TOKEN_NAME . '=' . urlencode(self::getToken()));
     }
 
     /**
@@ -29,34 +31,16 @@ class Xsrf
      */
     static function getToken(bool $forCheck = false): string
     {
-        // token cache
-        static $tokens = [null, null];
+        static $tokens = [];
 
-        // token type - current or for verification purposes
-        $type = ($forCheck ? 1 : 0);
+        $sessionId = $forCheck ? (Session::getPreviousId() ?? Session::getId()) : Session::getId();
 
-        // generate a token
-        if ($tokens[$type] === null) {
-            // determine session ID
-            if (!Core::$sessionEnabled) {
-                $sessionId = 'none';
-            } elseif ($forCheck && Core::$sessionRegenerate) {
-                // session has just been regenerated, use previous ID
-                $sessionId = Core::$sessionPreviousId;
-            } else {
-                // current session ID
-                $sessionId = session_id();
-
-                if ($sessionId === '') {
-                    $sessionId = 'none';
-                }
-            }
-
-            // generate token
-            $tokens[$type] = hash_hmac('sha256', $sessionId, Core::$secret);
+        // no tokens without a session ID
+        if ($sessionId === null) {
+            return '';
         }
 
-        return $tokens[$type];
+        return $tokens[$sessionId] ?? ($tokens[$sessionId] = hash_hmac('sha256', $sessionId, Core::$secret));
     }
 
     /**
@@ -66,7 +50,7 @@ class Xsrf
      */
     static function check(bool $get = false): bool
     {
-        $token = $GLOBALS[$get ? '_GET' : '_POST']['_security_token'] ?? null;
+        $token = $GLOBALS[$get ? '_GET' : '_POST'][self::TOKEN_NAME] ?? null;
 
         return $token === self::getToken(true);
     }

@@ -10,6 +10,7 @@ use Sunlight\Message;
 use Sunlight\Page\Page;
 use Sunlight\Router;
 use Sunlight\User;
+use Sunlight\Util\Arr;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
@@ -269,7 +270,7 @@ if (!$infopage) {
 <input type="submit" value="' . _lang('mod.search.submit') . '">
 ';
 } else {
-    $output .= Form::renderHiddenPostInputs(null, null, ['_process']) . '
+    $output .= Form::renderHiddenInputs(Arr::filterKeys($_POST, null, null, [Xsrf::TOKEN_NAME, '_process'])) . '
 <input type="hidden" name="_process" value="1">
 ' . Message::ok(_lang('admin.content.artfilter.f1.infotext', ['%found%' => _num($found)])) . '
 <ul>';

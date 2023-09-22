@@ -160,20 +160,6 @@ abstract class Form
     }
 
     /**
-     * Render current POST data as hidden inputs
-     *
-     * XSRF token is excluded.
-     *
-     * @see Arr::filterKeys()
-     */
-    static function renderHiddenPostInputs(?string $includedPrefix = null, ?string $excludedPrefix = null, array $excludedKeys = []): string
-    {
-        $excludedKeys[] = '_security_token';
-
-        return self::renderHiddenInputs(Arr::filterKeys($_POST, $includedPrefix, $excludedPrefix, $excludedKeys));
-    }
-
-    /**
      * Render data as hidden inputs
      */
     static function renderHiddenInputs(array $data): string

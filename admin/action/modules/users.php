@@ -82,7 +82,7 @@ if (User::isSuperAdmin() && isset($_POST['switch_user'])) {
     $query = DB::queryRow('SELECT id,password,email FROM ' . DB::table('user') . ' WHERE username=' . DB::val($user));
 
     if ($query !== false) {
-        User::login($query['id'], $query['password'], $query['email']);
+        User::login($query['id'], $query['password'], $query['email'], false, false);
         $_admin->redirect(Router::module('login', ['absolute' => true]));
 
         return;

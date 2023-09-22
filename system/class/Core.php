@@ -36,9 +36,9 @@ abstract class Core
     const DIST = '';
     /** Database structure version */
     const DB_VERSION = 'sl8db-001';
-    /** Web environment (frontend - index.php) */
+    /** Web environment (index.php) */
     const ENV_WEB = 'web';
-    /** Administration environment (backend) */
+    /** Administration environment (admin/index.php or admin scripts) */
     const ENV_ADMIN = 'admin';
     /** Script environment */
     const ENV_SCRIPT = 'script';
@@ -57,12 +57,6 @@ abstract class Core
     static $fallbackLang;
     /** @var LanguagePlugin */
     static $langPlugin;
-    /** @var bool */
-    static $sessionEnabled;
-    /** @var bool */
-    static $sessionRegenerate;
-    /** @var string|null */
-    static $sessionPreviousId;
     /** @var bool */
     static $safeMode;
 
@@ -96,7 +90,6 @@ abstract class Core
      * - config_file (-)          path to the configuration file, null (= default) or false (= skip)
      * - minimal_mode (0)         stop after initializing base components and environment (= no plugins, db, settings, session, etc.) 1/0
      * - session_enabled          initialize session 1/0 (defaults to false in CLI, otherwise true)
-     * - session_regenerate (0)   force new session ID 1/0
      * - content_type (-)         content type, FALSE = disabled (default is "text/html; charset=UTF-8")
      * - env ("script")           environment identifier, see Core::ENV_* constants
      * - base_url (-)             override the base URL (can be absolute or relative to override only the path)
@@ -106,7 +99,6 @@ abstract class Core
      *     config_file?: string|false|null,
      *     minimal_mode?: bool,
      *     session_enabled?: bool,
-     *     session_regenerate?: bool,
      *     content_type?: string|false,
      *     env?: string,
      *     base_url?: string|null,
@@ -147,11 +139,13 @@ abstract class Core
         }
 
         self::initDatabase($options);
-        self::initPlugins();
-        self::initSettings();
+        self::$pluginManager->initialize();
+        Extend::call('plugins.ready');
+        Settings::init();
         Logger::init();
         self::checkSystemState($options);
-        self::initSession();
+        Session::init($options['session_enabled']);
+        User::init();
         self::initLocalization();
 
         self::$ready = true;
@@ -168,8 +162,8 @@ abstract class Core
                     fastcgi_finish_request();
                 }
 
+                Session::close(); // don't block session writes
                 chdir(dirname($_SERVER['SCRIPT_FILENAME'])); // fix working directory
-
                 Cron::run();
             });
         }
@@ -201,7 +195,6 @@ abstract class Core
             'config_file' => null,
             'minimal_mode' => false,
             'session_enabled' => !Environment::isCli(),
-            'session_regenerate' => false,
             'content_type' => null,
             'env' => self::ENV_SCRIPT,
             'base_url' => null,
@@ -266,8 +259,6 @@ abstract class Core
         self::$debug = (bool) $options['debug'];
         self::$secret = $options['secret'];
         self::$fallbackLang = $options['fallback_lang'];
-        self::$sessionEnabled = $options['session_enabled'];
-        self::$sessionRegenerate = $options['session_regenerate'] || isset($_POST['_session_force_regenerate']);
         self::$safeMode = (bool) $options['safe_mode'];
     }
 
@@ -434,32 +425,6 @@ abstract class Core
     }
 
     /**
-     * Initialize plugins
-     */
-    private static function initPlugins(): void
-    {
-        self::$pluginManager->initialize();
-        Extend::call('plugins.ready');
-    }
-
-    /**
-     * Initialize settings
-     */
-    private static function initSettings(): void
-    {
-        try {
-            Settings::init();
-        } catch (DatabaseException $e) {
-            self::fail(
-                'Připojení k databázi proběhlo úspěšně, ale dotaz na databázi selhal. Zkontrolujte, zda je databáze správně nainstalovaná.',
-                'Successfully connected to the database, but the database query has failed. Make sure the database is installed correctly.',
-                null,
-                self::$debug ? $e->getMessage() : null
-            );
-        }
-    }
-
-    /**
      * Check system state after initialization
      */
     private static function checkSystemState(array $options): void
@@ -501,44 +466,7 @@ abstract class Core
     private static function initSession(): void
     {
         // start session
-        if (self::$sessionEnabled) {
-            // cookie parameters
-            $cookieParams = [
-                'lifetime' => 0,
-                'path' => self::$baseUrl->getPath() . '/',
-                'domain' => '',
-                'secure' => self::isHttpsEnabled(),
-                'httponly' => true,
-                'samesite' => 'Lax',
-            ];
 
-            if (PHP_VERSION_ID >= 70300) {
-                session_set_cookie_params($cookieParams);
-            } else {
-                session_set_cookie_params(
-                    $cookieParams['lifetime'],
-                    $cookieParams['path'],
-                    $cookieParams['domain'],
-                    $cookieParams['secure'],
-                    $cookieParams['httponly']
-                );
-            }
-
-            // set session name and start it
-            session_name(User::COOKIE_SESSION);
-            session_start();
-
-            if (self::$sessionRegenerate) {
-                self::$sessionPreviousId = session_id();
-                session_regenerate_id(true);
-            }
-
-            // init user
-            User::init();
-        } else {
-            // no session
-            $_SESSION = [];
-        }
     }
 
     /**

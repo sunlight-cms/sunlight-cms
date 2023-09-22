@@ -10,16 +10,7 @@ use Sunlight\Xsrf;
 defined('SL_ROOT') or exit;
 
 // load code
-$process = false;
-$code = '';
-
-if (isset($_POST['code'])) {
-    $code = Request::post('code');
-
-    if (Xsrf::check()) {
-        $process = true;
-    }
-}
+$code = Request::post('code', '');
 
 $output .= _buffer(function () use ($code) { ?>
     <form method="post">
@@ -29,22 +20,24 @@ $output .= _buffer(function () use ($code) { ?>
     </form>
 <?php });
 
-if ($process) {
-    $html = isset($_POST['html']);
-    $output .= '<h2>' . _lang('global.result') . '</h2>';
-    $output .= '<div class="hr"><hr></div>';
-    $output .= "\n\n";
-
-    ob_start();
-
-    Logger::notice('system', 'Executed custom PHP code via admin module', ['code' => $code]);
-
-    try {
-        eval($code);
-    } catch (Throwable $e) {
-        $output .= GenericTemplates::renderException($e);
-        $html = true;
-    }
-
-    $output .= $html ? ob_get_clean() : '<pre>' . _e(ob_get_clean()) . '</pre>';
+if ($code === '') {
+    return;
 }
+
+$html = isset($_POST['html']);
+$output .= '<h2>' . _lang('global.result') . '</h2>';
+$output .= '<div class="hr"><hr></div>';
+$output .= "\n\n";
+
+ob_start();
+
+Logger::notice('system', 'Executed custom PHP code via admin module', ['code' => $code]);
+
+try {
+    eval($code);
+} catch (Throwable $e) {
+    $output .= GenericTemplates::renderException($e);
+    $html = true;
+}
+
+$output .= $html ? ob_get_clean() : '<pre>' . _e(ob_get_clean()) . '</pre>';
