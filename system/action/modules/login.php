@@ -1,5 +1,6 @@
 <?php
 
+use Sunlight\Extend;
 use Sunlight\Router;
 use Sunlight\Settings;
 use Sunlight\User;
@@ -17,11 +18,13 @@ if (User::isLoggedIn()) {
     $output .= "<div class=\"user-login-actions\">\n<ul>\n";
 
     $items = [
-        [Router::adminIndex(), _lang('global.admintitle'), User::hasPrivilege('administration')],
         [Router::module('profile', ['query' => ['id' => User::getUsername()]]), _lang('mod.profile'), true],
         [Router::module('settings'), _lang('mod.settings'), true],
         [Router::module('messages'), _lang('mod.messages') . ' [' . _num(User::getUnreadPmCount()) . ']', Settings::get('messages')],
+        [Router::adminIndex(), _lang('global.admintitle'), User::hasPrivilege('administration')],
     ];
+
+    Extend::call('mod.login.links', ['items' => &$items]);
 
     foreach ($items as $item) {
         if ($item[2]) {
