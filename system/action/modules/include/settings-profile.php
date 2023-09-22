@@ -20,6 +20,9 @@ $avatarLimits = [
 ];
 
 if (isset($_POST['save'])) {
+    $errors = [];
+    $changeset = [];
+
     // avatar
     if (Settings::get('uploadavatar')) {
         if (isset($_FILES['avatar']) && is_uploaded_file($_FILES['avatar']['tmp_name'])) {
