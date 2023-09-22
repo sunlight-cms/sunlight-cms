@@ -59,7 +59,7 @@ do {
     }
 
     // verify hash
-    if ($hash !== User::getAuthHash(User::AUTH_PASSWORD_RESET, $user['email'], $user['password'], $timestamp)) {
+    if (!hash_equals(User::getAuthHash(User::AUTH_PASSWORD_RESET, $user['email'], $user['password'], $timestamp), $hash)) {
         break;
     }
 

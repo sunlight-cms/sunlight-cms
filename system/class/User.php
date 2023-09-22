@@ -176,7 +176,7 @@ abstract class User
 
                         $validHash = self::getAuthHash(self::AUTH_PERSISTENT_LOGIN, $userData['email'], $userData['password']);
 
-                        if ($validHash !== $cookie['hash']) {
+                        if (!hash_equals($validHash, $cookie['hash'])) {
                             // invalid hash
                             IpLog::update(IpLog::FAILED_LOGIN_ATTEMPT);
                             $errorCode = 4;

@@ -50,8 +50,9 @@ class Xsrf
      */
     static function check(bool $get = false): bool
     {
-        $token = $GLOBALS[$get ? '_GET' : '_POST'][self::TOKEN_NAME] ?? null;
-
-        return $token === self::getToken(true);
+        return hash_equals(
+            self::getToken(true), 
+            $GLOBALS[$get ? '_GET' : '_POST'][self::TOKEN_NAME] ?? ''
+        );
     }
 }

@@ -31,7 +31,7 @@ do {
 
     $key = Request::get('key', '');
 
-    if (User::getAuthHash(User::AUTH_MASSEMAIL, $user['email'], $user['password']) !== $key) {
+    if (!hash_equals(User::getAuthHash(User::AUTH_MASSEMAIL, $user['email'], $user['password']), $key)) {
         break;
     }
 
