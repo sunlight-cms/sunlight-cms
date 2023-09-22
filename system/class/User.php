@@ -810,7 +810,7 @@ abstract class User
                         'text' => _lang('global.login'),
                         'append' => ' <label><input type="checkbox" name="login_persistent" value="1" checked> ' . _lang('login.persistent') . '</label>',
                     ]),
-                ],
+                ]
             );
 
             if (isset($_SESSION['login_form_username'])) {
