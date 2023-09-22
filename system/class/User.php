@@ -731,6 +731,22 @@ abstract class User
     }
 
     /**
+     * Refresh login data
+     * 
+     * @param array $userChangeset current changes made to the user data
+     */
+    static function refreshLogin(array $userChangeset = [], bool $regenerateSession = true): void
+    {
+        self::login(
+            self::$data['id'],
+            $userChangeset['password'] ?? self::$data['password'],
+            $userChangeset['email'] ?? self::$data['email'],
+            Cookie::exists(self::COOKIE_PERSISTENT_LOGIN),
+            $regenerateSession
+        );
+    }
+
+    /**
      * Render a login form
      *
      * @param bool $title render title 1/0

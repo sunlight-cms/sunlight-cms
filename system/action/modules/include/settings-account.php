@@ -142,7 +142,7 @@ if (isset($_POST['save'])) {
         DB::update('user', 'id=' . User::getId(), $changeset);
 
         if (isset($changeset['email'])) {
-            $_SESSION['user_auth'] = User::getAuthHash(User::AUTH_SESSION, $changeset['email'], User::$data['password']);
+            User::refreshLogin($changeset);
         }
 
         if (!empty($changeset)) {

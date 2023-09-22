@@ -33,10 +33,10 @@ if (isset($_POST['save'])) {
     }
 
     if (empty($errors)) {
-        $builtNewPassword = Password::create($newPassword)->build();
-        DB::update('user', 'id=' . User::getId(), ['password' => $builtNewPassword]);
+        $changeset = ['password' => Password::create($newPassword)->build()];
+        DB::update('user', 'id=' . User::getId(), $changeset);
         Logger::notice('user', sprintf('User "%s" has changed their password', User::getUsername()), ['user_id' => User::getId()]);
-        $_SESSION['user_auth'] = User::getAuthHash(User::AUTH_SESSION, User::$data['email'], $builtNewPassword);
+        User::refreshLogin($changeset);
         $output .= Message::ok(_lang('global.saved'));
     } else {
         $output .= Message::list($errors);
