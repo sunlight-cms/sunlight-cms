@@ -26,8 +26,12 @@ class Backup
     private $dbDumpPath = 'database.sql';
     /** @var string|null */
     private $metadataPath = 'backup.json';
+    /** @var callable|null */
+    private $metadataFactory;
     /** @var string[] */
     private $directoryList = [];
+    /** @var string[] */
+    private $fileList = [];
     /** @var bool */
     private $open = false;
     /** @var bool */
@@ -42,8 +46,6 @@ class Backup
     private $dbDumpFile;
     /** @var string|null */
     private $dbDumpPrefix;
-    /** @var string[] */
-    private $fileList = [];
 
     function __construct(string $path)
     {
@@ -92,6 +94,16 @@ class Backup
     function setMetadataPath(?string $metadataPath): void
     {
         $this->metadataPath = $metadataPath;
+    }
+
+    function getMetadataFactory(): ?callable
+    {
+        return $this->metadataFactory;
+    }
+
+    function setMetadataFactory(?callable $metadataFactory): void
+    {
+        $this->metadataFactory = $metadataFactory;
     }
 
     /**
@@ -228,11 +240,11 @@ class Backup
 
             foreach ($iterator as $item) {
                 $dataPath = substr($item->getPathname(), $filePathNamePrefixLength);
-    
+
                 if ($filter !== null && !$filter($dataPath)) {
                     continue;
                 }
-    
+
                 if ($item->isDir()) {
                     if (Filesystem::isDirectoryEmpty($item->getPathname())) {
                         $this->addEmptyDirectory($dataPath);
@@ -356,7 +368,7 @@ class Backup
 
     /**
      * Get content of any file from the backup
-     * 
+     *
      * @param string $file path to a file in the archive
      */
     function getFile(string $file): ?string
@@ -440,7 +452,7 @@ class Backup
             if (!array_key_exists($key, $this->metadataCache)) {
                 throw new \OutOfBoundsException(sprintf('Unknown metadata key "%s"', $key));
             }
-            
+
             return $this->metadataCache[$key];
         }
 
@@ -520,7 +532,7 @@ class Backup
 
     private function addMetaData(): void
     {
-        $this->addedMetaData = [
+        $metadata = [
             'system_version' => Core::VERSION,
             'created_at' => time(),
             'directory_list' => $this->directoryList,
@@ -528,7 +540,12 @@ class Backup
             'db_prefix' => $this->dbDumpPrefix,
         ];
 
-        $this->zip->addFromString($this->metadataPath, Json::encode($this->addedMetaData));
+        if ($this->metadataFactory !== null) {
+            $metadata = ($this->metadataFactory)($metadata);
+        }
+
+        $this->addedMetaData = $metadata;
+        $this->zip->addFromString($this->metadataPath, Json::encode($metadata));
     }
 
     /**
