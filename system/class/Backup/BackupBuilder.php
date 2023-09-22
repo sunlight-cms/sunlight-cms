@@ -82,7 +82,7 @@ class BackupBuilder
     private $databaseDumpEnabled = true;
 
     /** @var bool */
-    private $prefillConfigFile = true;
+    private $configFileEnabled = true;
 
     function isFullBackup(): bool
     {
@@ -104,14 +104,14 @@ class BackupBuilder
         $this->databaseDumpEnabled = $databaseDumpEnabled;
     }
 
-    function getPrefillConfigFile(): bool
+    function isConfigFileEnabled(): bool
     {
-        return $this->prefillConfigFile;
+        return $this->configFileEnabled;
     }
 
-    function setPrefillConfigFile(bool $prefillConfigFile): void
+    function setConfigFileEnabled(bool $configFileEnabled): void
     {
-        $this->prefillConfigFile = $prefillConfigFile;
+        $this->configFileEnabled = $configFileEnabled;
     }
 
     function getStaticPaths(): array
@@ -295,7 +295,9 @@ class BackupBuilder
                 }
             }
 
-            $backup->addFileFromString('config.php', $this->generateConfigFile(), false);
+            if ($this->configFileEnabled) {
+                $backup->addFileFromString('config.php', $this->generateConfigFile(), null, false);
+            }
         } else {
             foreach ($this->dynamicPathMap as $name => $paths) {
                 if ($this->isDynamicPathEnabled($name)) {
@@ -366,12 +368,9 @@ class BackupBuilder
     private function generateConfigFile(): string
     {
         $config = require SL_ROOT . 'system/config_template.php';
-
-        if ($this->prefillConfigFile) {
-            $config['db.prefix'] = substr(DB::$prefix, 0, -1);
-            $config['fallback_lang'] = Core::$fallbackLang;
-            $config['secret'] = StringGenerator::generateString(64);
-        }
+        $config['db.prefix'] = substr(DB::$prefix, 0, -1);
+        $config['fallback_lang'] = Core::$fallbackLang;
+        $config['secret'] = StringGenerator::generateString(64);
 
         return ConfigurationFile::build($config);
     }

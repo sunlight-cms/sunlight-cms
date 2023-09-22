@@ -206,9 +206,8 @@ class Backup
      *
      * @param string $path relative to the system root
      * @param callable|null $filter callback(data_path): bool
-     * @param bool $addRootFileToFileList automatically add root files to the file list 1/0
      */
-    function addPath(string $path, ?callable $filter = null, bool $addRootFileToFileList = true): void
+    function addPath(string $path, ?callable $filter = null): void
     {
         $realPath = SL_ROOT . $path;
 
@@ -216,7 +215,7 @@ class Backup
             if (is_dir($realPath)) {
                 $this->addDirectory($path, $filter);
             } else {
-                $this->addFile($path, $realPath, $filter, $addRootFileToFileList);
+                $this->addFile($path, $realPath, $filter);
             }
         }
     }
@@ -250,10 +249,7 @@ class Backup
                         $this->addEmptyDirectory($dataPath);
                     }
                 } else {
-                    $this->addFile(
-                        $dataPath,
-                        $item->getPathname()
-                    );
+                    $this->addFile($dataPath, $item->getPathname(), null, false);
                 }
             }
         } else {
@@ -281,22 +277,18 @@ class Backup
      * @param string $dataPath path within the backup's data directory (e.g. "foo.txt")
      * @param string $realPath real path to the file
      * @param callable|null $filter callback(data_path): bool
-     * @param bool $addRootFileToFileList automatically add root files to the file list 1/0
+     * @param bool $addToList add to the file list 1/0
      */
-    function addFile(string $dataPath, string $realPath, ?callable $filter = null, bool $addRootFileToFileList = true): void
+    function addFile(string $dataPath, string $realPath, ?callable $filter = null, bool $addToList = true): void
     {
         $this->ensureOpenAndNew();
 
         if ($filter === null || $filter($dataPath)) {
-            // add files that are not in any directory to the file list
-            if ($addRootFileToFileList && strpos($dataPath, '/') === false) {
+            if ($addToList) {
                 $this->fileList[] = $dataPath;
             }
 
-            $this->zip->addFile(
-                $realPath,
-                $this->dataPath . "/{$dataPath}"
-            );
+            $this->zip->addFile($realPath, $this->dataPath . "/{$dataPath}");
         }
     }
 
@@ -305,17 +297,20 @@ class Backup
      *
      * @param string $dataPath path within the backup's data directory (e.g. "foo.txt)
      * @param string $data the file's contents
-     * @param bool $addRootFileToFileList automatically add root files to the file list 1/0
+     * @param callable|null $filter callback(data_path): bool
+     * @param bool $addToList add to the file list 1/0
      */
-    function addFileFromString(string $dataPath, string $data, bool $addRootFileToFileList = true): void
+    function addFileFromString(string $dataPath, string $data, ?callable $filter = null, bool $addToList = true): void
     {
         $this->ensureOpenAndNew();
 
-        if ($addRootFileToFileList && strpos($dataPath, '/') === false) {
-            $this->fileList[] = $dataPath;
+        if ($filter === null || $filter($dataPath)) {
+            if ($addToList) {
+                $this->fileList[] = $dataPath;
+            }
+    
+            $this->zip->addFromString($this->dataPath . "/{$dataPath}", $data);
         }
-
-        $this->zip->addFromString($this->dataPath . "/{$dataPath}", $data);
     }
 
     /**
