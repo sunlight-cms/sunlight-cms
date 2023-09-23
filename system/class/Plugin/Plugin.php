@@ -12,7 +12,7 @@ use Sunlight\Util\ConfigurationFile;
 abstract class Plugin implements CallbackObjectInterface
 {
     /** ID pattern */
-    const ID_PATTERN = '[a-zA-Z][a-zA-Z0-9_.\-]*';
+    const ID_PATTERN = '[a-zA-Z][a-zA-Z0-9_.\-]+';
     /** Name of the plugin definition file */
     const FILE = 'plugin.json';
     /** Name of the plugin deactivating file */
