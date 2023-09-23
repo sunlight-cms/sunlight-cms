@@ -31,7 +31,7 @@ use Sunlight\Util\Json;
 abstract class Core
 {
     /** CMS version */
-    const VERSION = '8.0.1';
+    const VERSION = '8.0.2-dev';
     /** @deprecated will be removed in 8.1 */
     const DIST = '';
     /** Database structure version */
