@@ -7,6 +7,7 @@ use Sunlight\Database\Database as DB;
 use Sunlight\Database\DatabaseLoader;
 use Sunlight\Database\SqlReader;
 use Sunlight\Logger;
+use Sunlight\Plugin\Plugin;
 use Sunlight\Settings;
 use Sunlight\Util\ClassPreloader;
 use Sunlight\Util\Filesystem;
@@ -75,13 +76,22 @@ class BackupRestorer
         $directories = array_intersect($this->backup->getMetaData('directory_list'), $directories);
 
         if ($isPatch) {
-            $filesToRemove = $this->normalizePathList($patch['files_to_remove']);
-            $directoriesToRemove = $this->normalizePathList($patch['directories_to_remove']);
-            $directoriesToPurge = $this->normalizePathList($patch['directories_to_purge']);
+            $directories = array_filter($directories, function (string $directory) {
+                if (preg_match('{plugins/(\w+)/(' . Plugin::ID_PATTERN . ')$}AD', $directory, $match)) {
+                    // don't extract a plugin from a patch if it is not installed
+                    return is_dir(SL_ROOT . 'plugins/' . $match[1] . '/' . $match[2]);
+                }
+
+                return true;
+            });
+
+            $filesToRemove = $this->normalizeExistingPaths($patch['files_to_remove']);
+            $directoriesToRemove = $this->normalizeExistingPaths($patch['directories_to_remove']);
+            $directoriesToPurge = $this->normalizeExistingPaths(array_merge($directories, $patch['directories_to_purge']));
         } else {
             $filesToRemove = [];
             $directoriesToRemove = [];
-            $directoriesToPurge = $this->normalizePathList($directories);
+            $directoriesToPurge = $this->normalizeExistingPaths($directories);
         }
 
         // verify what we are restoring
@@ -149,9 +159,9 @@ class BackupRestorer
 
         // filesystem cleanup
         foreach ($directoriesToPurge as $directory) {
-            switch ($directory) {
+            switch (true) {
                 // system directory
-                case SL_ROOT . 'system':
+                case $directory === SL_ROOT . 'system':
                     $this->clearDirectory($directory, [
                         'backup' => true, // backup directory contains the backup
                         'cache' => true, // cache gets cleared later anyway
@@ -159,9 +169,17 @@ class BackupRestorer
                     break;
 
                 // admin directory
-                case SL_ROOT . 'admin':
+                case $directory === SL_ROOT . 'admin':
                     $this->clearDirectory($directory, [
                         'index.php' => true, // https://github.com/php/php-src/issues/7910
+                    ]);
+                    break;
+
+                // plugin directory in a patch
+                case $isPatch && strncmp($directory, SL_ROOT . 'plugins' . DIRECTORY_SEPARATOR, strlen(SL_ROOT) + 8) === 0:
+                    $this->clearDirectory($directory, [
+                        'config.php' => true, // keep config
+                        Plugin::DEACTIVATING_FILE => true, // keep deactivating file
                     ]);
                     break;
 
@@ -240,7 +258,7 @@ class BackupRestorer
     /**
      * @param string[] $paths
      */
-    private function normalizePathList(array $paths): array
+    private function normalizeExistingPaths(array $paths): array
     {
         $normalizedPaths = [];
 
