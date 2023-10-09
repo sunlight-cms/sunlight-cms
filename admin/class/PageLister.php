@@ -403,7 +403,7 @@ abstract class PageLister
 
         // order input
         if ($options['sortable']) {
-            $output .= '<td class="page-list-sortcell"><span class="sortable-handle"></span><input class="inputmini" type="number" name="ord[' . $page['id'] . ']" value="' . $page['ord'] . "\"></td>\n";
+            $output .= '<td class="page-list-sortcell"><span class="sortable-handle"></span><input class="page-list-ord" name="ord[' . $page['id'] . ']" value="' . $page['ord'] . "\"></td>\n";
         }
 
         // title

@@ -395,6 +395,7 @@ a#usermenu-username {margin-right: 0.5em; font-weight: bold; color: <?= $scheme_
 
 .page-list .sortable-placeholder td {height: 36px;}
 .page-list .page-list-sortcell {width: 1%; vertical-align: bottom;}
+.page-list .page-list-ord {width: 45px;}
 
 .page-list-breadcrumbs {margin: 0 0 0.5em 0; padding: 0.5em 1em; border-bottom: 2px solid <?= $scheme_smoke_dark ?>; list-style-type: none; background-color: <?= $scheme_lightest ?>;}
 .page-list-breadcrumbs li {display: inline; padding-right: 0.5em;}

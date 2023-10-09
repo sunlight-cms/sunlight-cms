@@ -378,18 +378,13 @@ Sunlight.admin = (function ($) {
             var currentOrd = null;
 
             $(options.inputSelector, container).each(function () {
-                if (
-                    currentOrd === null
-                    || !options.stopperSelector
-                    || $(this).parents(options.stopperSelector).length !== 0
-                ) {
-                    if (currentOrd === null) {
-                        this.value = currentOrd = options.start;
-                    } else {
-                        this.value = ++currentOrd;
-                    }
+                if (options.stopperSelector && $(this).parents(options.stopperSelector).length !== 0) {
+                    currentOrd = parseInt(this.value, 10) || currentOrd;
+                } else if (currentOrd === null) {
+                    currentOrd = options.start;
+                    this.value = currentOrd.toString();
                 } else {
-                    this.value = ++currentOrd;
+                    this.value = (++currentOrd).toString();
                 }
             });
         },
