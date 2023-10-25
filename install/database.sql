@@ -355,7 +355,7 @@ CREATE TABLE `sunlight_user` (
   `ip` varchar(45) NOT NULL DEFAULT '',
   `email` varchar(191) NOT NULL,
   `avatar` varchar(32) DEFAULT NULL,
-  `note` text NOT NULL DEFAULT '',
+  `note` text NOT NULL DEFAULT (''),
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`),
