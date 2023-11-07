@@ -19,7 +19,6 @@ if ($_page === false) {
 }
 
 // basic meta data
-$_index->url = Router::page($_page['id'], $_index->slug);
 $_index->bodyClasses[] = 't-page';
 
 if ($_index->slug !== null) {
@@ -33,6 +32,8 @@ if ($_index->slug !== null && ($slug_length = strlen($_page['slug'])) < strlen($
 } else {
     $segment = null;
 }
+
+$_index->url = Router::page($_page['id'], $_page['slug'], $segment);
 
 if ($_page['description'] !== '') {
     $_index->description = $_page['description'];
