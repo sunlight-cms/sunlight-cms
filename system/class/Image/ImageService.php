@@ -86,7 +86,11 @@ final class ImageService
             Logger::warning(
                 'image_service',
                 sprintf('Failed to generate thumbnail, reason = %s', $e->getReasonCode()),
-                ['exception' => $e]
+                [
+                    'type' => $type,
+                    'source' => $source,
+                    'exception' => $e,
+                ]
             );
 
             return self::getErrorImage($e->getReasonCode());
