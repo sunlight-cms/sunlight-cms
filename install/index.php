@@ -2,6 +2,7 @@
 
 namespace Sunlight\Installer;
 
+use Composer\Semver\Semver;
 use Kuria\Debug\Output;
 use Sunlight\Core;
 use Sunlight\Database\Database as DB;
@@ -99,6 +100,7 @@ abstract class Labels
             'import.error.admin.email.empty' => 'email nesmí být prázdný',
             'import.error.admin.email.invalid' => 'neplatná e-mailová adresa',
             'import.error.overwrite.required' => 'tabulky v databázi již existují, je potřeba potvrdit jejich přepsání',
+            'import.error.unsupported_db_version' => 'verze databáze není podporovaná, požadaná verze je MySQL 5.6.0+ nebo MariaDB 10.0.0+, zjištěná verze: %db_version%',
             'import.settings' => 'Nastavení systému',
             'import.settings.title' => 'Titulek webu',
             'import.settings.title.help' => 'hlavní titulek stránek',
@@ -170,6 +172,7 @@ abstract class Labels
             'import.error.admin.email.empty' => 'email must not be empty',
             'import.error.admin.email.invalid' => 'invalid email address',
             'import.error.overwrite.required' => 'tables already exist in the database - overwrite confirmation is required',
+            'import.error.unsupported_db_version' => 'unsupported database version, MySQL 5.6.0+ or MariaDB 10.0.0+ is required, detected version: %db_version%',
             'import.settings' => 'System settings',
             'import.settings.title' => 'Website title',
             'import.settings.title.help' => 'main website title',
@@ -773,6 +776,13 @@ class ImportDatabaseStep extends Step
             $this->errors[] = 'overwrite.required';
         }
 
+        // check DB version before importing
+        $dbVersion = DB::queryRow('SELECT version() AS v');
+
+        if ($dbVersion !== false && !$this->isDatabaseSupported($dbVersion['v'])) {
+            $this->errors[] = ['unsupported_db_version', ['%db_version%' => $dbVersion['v']]];
+        }
+
         // import the database
         if (empty($this->errors)) {
             // use database
@@ -939,6 +949,21 @@ Now you can log into the administration (with the account set up during installa
     private function isDatabaseInstalled(): bool
     {
         return count(array_diff($this->getTableNames(), $this->getExistingTableNames())) === 0;
+    }
+
+    private function isDatabaseSupported(string $version): bool
+    {
+        if (preg_match('{(\d+\.\d+\.\d+)(-[^-]+|$)}A', $version, $match)) {
+            if (stripos($match[2], 'MariaDB') !== false) {
+                $constraint = '>=10.0.0';
+            } else {
+                $constraint = '>=5.6.0';
+            }
+
+            return Semver::satisfies($match[1], $constraint);
+        }
+
+        return true; // can't parse version number, let the user proceed
     }
 
     /**
