@@ -35,11 +35,21 @@ $output .= '<p>
 
 // plugin list
 foreach (Core::$pluginManager->getTypes() as $type) {
-    $plugins = Core::$pluginManager->getPlugins()->getByType($type->getName());
-    $inactivePlugins = Core::$pluginManager->getPlugins()->getInactiveByType($type->getName());
+    $plugins = array_merge(
+        Core::$pluginManager->getPlugins()->getByType($type->getName()),
+        Core::$pluginManager->getPlugins()->getInactiveByType($type->getName())
+    );
+    
+    uasort($plugins, function (Plugin $a, Plugin $b) {
+        if (get_class($a) === get_class($b)) {
+            return strnatcasecmp($a->getName(), $b->getName());
+        }
 
-    $output .= "<fieldset>\n";
-    $output .= '<legend>' . _lang('admin.plugins.title.' . $type->getName()) . ' (' . _num(count($plugins) + count($inactivePlugins)) . ")</legend>\n";
+        return ($a instanceof InactivePlugin) ? 1 : -1;
+    });
+
+    $output .= '<fieldset id="admin-plugins-' . $type->getName() . '">' . "\n";
+    $output .= '<legend>' . _lang('admin.plugins.title.' . $type->getName()) . ' (' . _num(count($plugins)) . ")</legend>\n";
     $output .= '<table class="list list-hover plugin-list">
 <thead>
     <tr>
@@ -51,12 +61,13 @@ foreach (Core::$pluginManager->getTypes() as $type) {
 ';
 
     // list plugins
-    foreach (array_merge($plugins, $inactivePlugins) as $name => $plugin) {
+    foreach ($plugins as $name => $plugin) {
         /* @var $plugin Plugin */
 
         $isInactive = $plugin instanceof InactivePlugin;
 
         // get plugin data
+        $name = $plugin->getName();
         $title = $plugin->getOption('name');
         $descr = $plugin->getOption('description');
         $version = $plugin->getOption('version');
@@ -75,8 +86,8 @@ foreach (Core::$pluginManager->getTypes() as $type) {
     <tr' . ($rowClass !== null ? ' class="' . $rowClass . '"' : '') . '>
         <td>
             ' . ($isInactive
-                ? '<h3><del>' . _e($title) . '</del> <small>(' . _lang('admin.plugins.status.' . $plugin->getStatus()) . ')</small></h3>'
-                : '<h3>' . _e($title) . '</h3>') . '
+                ? '<h3><del>' . _e($title) . '</del> <small>(' . _e($name) . ', ' . _lang('admin.plugins.status.' . $plugin->getStatus()) . ')</small></h3>'
+                : '<h3>' . _e($title) . ' <small>(' . _e($name) . ')</small></h3>') . '
             <p>
                 ' . _buffer(function () use ($plugin) {
                     foreach ($plugin->getActions() as $name => $action) {
