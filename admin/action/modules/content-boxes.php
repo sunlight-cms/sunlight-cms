@@ -88,8 +88,14 @@ foreach ($boxes as $template_idt => $template_boxes) {
                     <td class="box-slot-cell box-sortable-cell"><?= _e(sprintf('%s - %s', $template->getLayoutLabel($box['layout']), $template->getSlotLabel($box['layout'], $box['slot']))) ?></td>
                     <td class="box-title-cell box-sortable-cell"><?= $box['title'] ?></td>
                     <td class="box-settings-cell">
-                        <?php if ($box['level'] > 0): $iconTitle = _lang('admin.content.form.level') . ' ' . _e($box['level']) . '+'; ?>
+                        <?php if ($box['public'] !== '1'): $iconTitle = _lang('admin.content.form.private'); ?>
                             <img src="<?= Router::path('admin/public/images/icons/lock3.png') ?>" class="icon" alt="<?= $iconTitle ?>" title="<?= $iconTitle ?>">
+                        <?php endif ?>
+                        <?php if ($box['level'] > 0): $iconTitle = _lang('admin.content.form.level') . ' ' . _e($box['level']) . '+'; ?>
+                            <img src="<?= Router::path('admin/public/images/icons/lock.png') ?>" class="icon" alt="<?= $iconTitle ?>" title="<?= $iconTitle ?>">
+                        <?php endif ?>
+                        <?php if ($box['visible'] !== '1'): $iconTitle = _lang('admin.content.form.invisible'); ?>
+                            <img src="<?= Router::path('admin/public/images/icons/eye.png') ?>" class="icon" alt="<?= $iconTitle ?>" title="<?= $iconTitle ?>">
                         <?php endif ?>
                         <?php if ($box['page_ids'] !== null): $iconTitle = _lang('admin.content.boxes.page_ids.icon'); ?>
                             <img src="<?= Router::path('admin/public/images/icons/tree.png') ?>" class="icon" alt="<?= $iconTitle ?>" title="<?= $iconTitle ?>">
