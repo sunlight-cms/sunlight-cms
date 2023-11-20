@@ -228,7 +228,12 @@ if ($_article['comments'] && Settings::get('comments')) {
 Extend::call('article.comments.after', $extend_args);
 
 // count view
-if ($_article['confirmed'] && $_article['time'] <= time() && IpLog::check(IpLog::ARTICLE_VIEW, $_article['id'])) {
+if (
+    $_article['confirmed']
+    && $_article['time'] <= time()
+    && $_article['author'] != User::getId()
+    && IpLog::check(IpLog::ARTICLE_VIEW, $_article['id'])
+) {
     DB::update('article', 'id=' . $_article['id'], ['view_count' => DB::raw('view_count+1')]);
     IpLog::update(IpLog::ARTICLE_VIEW, $_article['id']);
 }
