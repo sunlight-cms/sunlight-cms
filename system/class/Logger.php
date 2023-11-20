@@ -250,7 +250,7 @@ abstract class Logger
             $entry->method = Request::method();
             $entry->url = Core::getCurrentUrl()->build();
             $entry->ip = Core::getClientIp();
-            $entry->userAgent = $_SERVER['HTTP_USER_AGENT'] ?? null;
+            $entry->userAgent = Request::header('user-agent');
         }
 
         $entry->userId = User::isLoggedIn() ? User::getId() : null;

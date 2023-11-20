@@ -15,6 +15,26 @@ abstract class Request
     }
 
     /**
+     * See if a header is defined
+     * 
+     * @param string $name lowercase header name
+     */
+    static function hasHeader(string $name): bool
+    {
+        return isset(RequestInfo::getHeaders()[$name]);
+    }
+
+    /**
+     * Get a header value
+     * 
+     * @param string $name lowercase header name
+     */
+    static function header(string $name): ?string
+    {
+        return RequestInfo::getHeaders()[$name] ?? null;
+    }
+
+    /**
      * Get a value from $_GET
      *
      * @param string $key key to get

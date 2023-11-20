@@ -1218,8 +1218,8 @@ abstract class User
     static function renderPostRepeatForm(): string
     {
         if (
-            isset($_SERVER['HTTP_ORIGIN']) && Url::parse((string) $_SERVER['HTTP_ORIGIN'])->getHost() !== Core::getBaseUrl()->getHost()
-            || isset($_SERVER['HTTP_SEC_FETCH_SITE']) && !in_array($_SERVER['HTTP_SEC_FETCH_SITE'], ['same-origin', 'none'], true)
+            Request::hasHeader('origin') && Url::parse(Request::header('origin'))->getHost() !== Core::getBaseUrl()->getHost()
+            || Request::hasHeader('sec-fetch-site') && !in_array(Request::header('sec-fetch-site'), ['same-origin', 'none'], true)
         ) {
             // don't render the form for cross-origin requests
             return '';

@@ -50,7 +50,7 @@ abstract class Response
      * This function will attempt to load it from (in order of priority):
      *
      * 1) $_GET['_return']
-     * 2) $_SERVER['HTTP_REFERER']
+     * 2) referer header
      * 3) system's base URL
      */
     static function getReturnUrl(): string
@@ -65,8 +65,8 @@ abstract class Response
             }  elseif ($specifiedUrl !== './') {
                 $returnUrl->setPath($returnUrl->getPath() . '/' . $specifiedUrl);
             }
-        } elseif (!empty($_SERVER['HTTP_REFERER'])) {
-            $returnUrl = Url::parse($_SERVER['HTTP_REFERER']);
+        } elseif (Request::hasHeader('referer')) {
+            $returnUrl = Url::parse(Request::header('referer'));
         }
 
         // reject URLs with different hostname (prevent open redirection)
