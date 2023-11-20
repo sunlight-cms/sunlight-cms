@@ -550,7 +550,19 @@ abstract class User
             $where .= ' AND id!=' . DB::val($ignoredUserId);
         }
 
-        return DB::count('user', $where) === 0;
+        if (DB::count('user', $where) > 0) {
+            return false;
+        }
+
+        $result = true;
+
+        Extend::call('user.check_name_available', [
+            'name' => $name,
+            'ignored_user_id' => $ignoredUserId,
+            'result' => &$result,
+        ]);
+
+        return $result;
     }
 
     /**
@@ -564,7 +576,19 @@ abstract class User
             $where .= ' AND id!=' . DB::val($ignoredUserId);
         }
 
-        return DB::count('user', $where) === 0;
+        if (DB::count('user', $where) > 0) {
+            return false;
+        }
+
+        $result = true;
+
+        Extend::call('user.check_email_available', [
+            'email' => $email,
+            'ignored_user_id' => $ignoredUserId,
+            'result' => &$result,
+        ]);
+
+        return $result;
     }
 
     /**
