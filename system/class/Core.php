@@ -195,7 +195,6 @@ abstract class Core
             'session_enabled' => !Environment::isCli(),
             'content_type' => null,
             'env' => self::ENV_SCRIPT,
-            'base_url' => null,
         ];
 
         // load config file
@@ -226,6 +225,7 @@ abstract class Core
             'db.name' => null,
             'db.prefix' => null,
             'secret' => null,
+            'base_url' => null,
             'fallback_lang' => 'en',
             'fallback_base_url' => null,
             'cache' => true,
