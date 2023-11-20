@@ -1,5 +1,6 @@
 <?php
 
+use Composer\InstalledVersions;
 use Sunlight\Router;
 use Sunlight\User;
 
@@ -315,7 +316,7 @@ return [
     ],
     'other-patch' => [
         'title' => _lang('admin.other.patch.title'),
-        'access' => User::hasPrivilege('adminother') && User::isSuperAdmin(),
+        'access' => User::hasPrivilege('adminother') && User::isSuperAdmin() && !InstalledVersions::isInstalled('sunlight-cms/console'),
         'parent' => 'other',
         'other' => true,
         'other_system' => true,
