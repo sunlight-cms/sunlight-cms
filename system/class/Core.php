@@ -32,8 +32,6 @@ abstract class Core
 {
     /** CMS version */
     const VERSION = '8.1.0-dev';
-    /** @deprecated will be removed in 8.1 */
-    const DIST = '';
     /** Database structure version */
     const DB_VERSION = 'sl8db-001';
     /** Web environment (index.php) */
