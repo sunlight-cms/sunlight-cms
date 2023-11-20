@@ -183,7 +183,7 @@ abstract class Plugin implements CallbackObjectInterface
 
     function getAssetPath(string $path, ?array $routerOptions = null): string
     {
-        return $this->getWebPath($routerOptions) . '/' . $path;
+        return Router::path($this->webPath . '/' . $path, $routerOptions);
     }
 
     /**
