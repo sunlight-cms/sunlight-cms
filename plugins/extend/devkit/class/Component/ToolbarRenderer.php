@@ -3,6 +3,7 @@
 namespace SunlightExtend\Devkit\Component;
 
 use Kuria\Debug\Dumper;
+use Kuria\RequestInfo\RequestInfo;
 use Sunlight\Callback\ScriptCallback;
 use Sunlight\Core;
 use Sunlight\Extend;
@@ -474,14 +475,18 @@ class ToolbarRenderer
 <div class="devkit-content">
     <div>
         <?php foreach (['_GET', '_POST', '_COOKIE', '_SESSION'] as $globalVarName): ?>
-            <?php if (!empty($GLOBALS[$globalVarName])): ?>
             <div class="devkit-heading devkit-hideshow">
                 $<?= $globalVarName ?>
             </div>
 
-            <div class="devkit-request-dump devkit-hideshow-target"><pre><?= _e(Dumper::dump($GLOBALS[$globalVarName])) ?></pre></div>
-            <?php endif ?>
+            <div class="devkit-hideshow-target"><?php $this->renderArrayDump($GLOBALS[$globalVarName]) ?></div>
         <?php endforeach ?>
+
+        <div class="devkit-heading devkit-hideshow">
+            HTTP headers
+        </div>
+
+        <div class="devkit-hideshow-target"><?php $this->renderArrayDump(RequestInfo::getHeaders()) ?></div>
     </div>
 </div>
 <?php
@@ -560,5 +565,24 @@ class ToolbarRenderer
         } else {
             echo '-';
         }
+    }
+
+    private function renderArrayDump(array $array): void
+    {
+        ?>
+<table>
+    <?php if (!empty($array)): ?>
+        <?php foreach ($array as $key => $value): ?>
+            <tr>
+                <th><code><?= _e($key) ?></code></th>
+                <td><code><?= _e(Dumper::dump($value)) ?></code></td>
+            </tr>
+        <?php endforeach ?>
+    <?php else: ?>
+        <tr><td>Empty</td></tr>
+    <?php endif ?>
+</table>
+<?php
+
     }
 }
