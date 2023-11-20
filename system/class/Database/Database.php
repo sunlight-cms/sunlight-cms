@@ -31,7 +31,7 @@ abstract class Database
         string $user,
         string $password,
         string $database,
-        ?string $port,
+        ?int $port,
         string $prefix
     ): void {
         if (PHP_VERSION_ID < 80100) {
