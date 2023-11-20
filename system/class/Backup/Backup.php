@@ -130,7 +130,7 @@ class Backup
     {
         Filesystem::ensureFileExists($this->path);
 
-        if (($errorCode = $this->zip->open($this->path, \ZipArchive::CREATE)) !== true) {
+        if (($errorCode = $this->zip->open($this->path)) !== true) {
             throw new \RuntimeException(sprintf('Could not open ZIP archive at "%s" (code %d)', $this->path, $errorCode));
         }
 
