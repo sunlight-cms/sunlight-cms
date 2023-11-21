@@ -659,7 +659,11 @@ a.button:hover {
 .pre {
     display: block;
     font-family: monospace;
-    white-space: nowrap;
+    white-space: pre;
+    max-height: 300px;
+    overflow: auto;
+}
+.php-source {
     max-height: 300px;
     overflow: auto;
 }

@@ -335,7 +335,7 @@ abstract class Bbcode
 
             case 'code':
                 if ($buffer !== '') {
-                    return '<span class="pre">' . str_replace(' ', '&nbsp;', trim($buffer)) . '</span>';
+                    return '<span class="pre">' . trim($buffer) . '</span>';
                 }
                 break;
 
