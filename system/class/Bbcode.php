@@ -6,32 +6,42 @@ use Sunlight\Util\UrlHelper;
 
 abstract class Bbcode
 {
+    private const WS_MAP = [
+        "\t" => true,
+        "\n" => true,
+        "\v" => true,
+        "\f" => true,
+        "\r" => true,
+        ' ' => true,
+    ];
+
     /**
      * Entry format:
      *
      *      array(
-     *           (bool) is pair tag
-     *           (bool) has argument
-     *           (bool) is nestable
-     *           (bool) parse children
-     *           (null|int|string) button icon (null = none, 1 = template, string = custom path)
+     *           0: (bool) is pair tag
+     *           1: (bool) has argument
+     *           2: (bool) is nestable
+     *           3: (bool) parse children
+     *           4: (null|int|string) button icon (null = none, 1 = template, string = custom path)
+     *           5: (bool) eat whitespace after closing tag
      *      )
      */
     private static $tags = [
-        'b' => [true, false, true, true, 1], // bold
-        'i' => [true, false, true, true, 1], // italic
-        'u' => [true, false, true, true, 1], // underline
-        'q' => [true, false, true, true, null], // quote
-        'quote' => [true, false, false, true, null], // quote
-        's' => [true, false, true, true, 1], // strike
-        'img' => [true, true, false, false, 1], // image
-        'code' => [true, true, false, true, 1], // code
-        'c' => [true, false, true, true, null], // inline code
-        'url' => [true, true, true, true, 1], // link
-        'hr' => [false, false, false, false, 1], // horizontal rule
-        'color' => [true, true, true, true, null], // color
-        'size' => [true, true, true, true, null], // size
-        'noformat' => [true, false, true, false, null], // no format
+        'b' => [true, false, true, true, 1, false], // bold
+        'i' => [true, false, true, true, 1, false], // italic
+        'u' => [true, false, true, true, 1, false], // underline
+        'q' => [true, false, true, true, null, false], // quote
+        'quote' => [true, false, false, true, null, true], // quote
+        's' => [true, false, true, true, 1, false], // strike
+        'img' => [true, true, false, false, 1, false], // image
+        'code' => [true, true, false, true, 1, true], // code
+        'c' => [true, false, true, true, null, false], // inline code
+        'url' => [true, true, true, true, 1, false], // link
+        'hr' => [false, false, false, false, 1, false], // horizontal rule
+        'color' => [true, true, true, true, null, false], // color
+        'size' => [true, true, true, true, null, false], // size
+        'noformat' => [true, false, true, false, null, true], // no format
     ];
 
     private static $extended = false;
@@ -65,7 +75,9 @@ abstract class Bbcode
         $output = '';
         $buffer = '';
         $arg = '';
-        $reset = 0;
+        $reset = false;
+        $reset_flush = false;
+        $reset_mode = 0;
 
         // scan
         for ($i = 0; isset($s[$i]); ++$i) {
@@ -109,19 +121,16 @@ abstract class Bbcode
                                     if ($closing) {
                                         if ($parents_n === -1 || $parents[$parents_n][0] !== $tag) {
                                             // reset - invalid closing tag
-                                            $reset = 2;
+                                            $reset = true;
+                                            $reset_flush = true;
                                         } else {
                                             --$parents_n;
                                             $pop = array_pop($parents);
                                             $buffer = self::processTag($pop[0], $pop[1], $pop[2]);
 
-                                            if ($parents_n === -1) {
-                                                $output .= $buffer;
-                                            } else {
-                                                $parents[$parents_n][2] .= $buffer;
-                                            }
-
-                                            $reset = 1;
+                                            $reset = true;
+                                            $reset_flush = true;
+                                            $reset_mode = empty(self::$tags[$pop[0]][5]) ? 0 : 3;
                                             $char = '';
                                         }
                                     } elseif ($parents_n === -1 || self::$tags[$parents[$parents_n][0]][3]) {
@@ -130,10 +139,11 @@ abstract class Bbcode
                                         ++$parents_n;
                                         $buffer = '';
                                         $char = '';
-                                        $reset = 1;
+                                        $reset = true;
                                     } else {
                                         // reset - disallowed children
-                                        $reset = 7;
+                                        $reset = true;
+                                        $reset_flush = true;
                                     }
                                 } else {
                                     // standalone tag
@@ -145,26 +155,30 @@ abstract class Bbcode
                                         $parents[$parents_n][2] .= $buffer;
                                     }
 
-                                    $reset = 1;
+                                    $reset = true;
                                 }
                             } else {
                                 // reset - disallowed nesting
-                                $reset = 3;
+                                $reset = true;
+                                $reset_flush = true;
                             }
                         } else {
                             // reset - bad tag
-                            $reset = 4;
+                            $reset = true;
+                            $reset_flush = true;
                         }
                     } elseif ($char === '=') {
                         if (isset(self::$tags[$tag]) && self::$tags[$tag][1] === true && $arg === '' && !$closing) {
                             $mode = 2; // scan tag argument
                         } else {
                             // reset - bad / no argument
-                            $reset = 5;
+                            $reset = true;
+                            $reset_flush = true;
                         }
                     } else {
                         // reset - invalid character
-                        $reset = 8;
+                        $reset = true;
+                        $reset_flush = true;
                     }
                     break;
 
@@ -206,9 +220,26 @@ abstract class Bbcode
                         $mode = 1;
                     } else {
                         // reset - bad syntax
-                        $reset = 6;
+                        $reset = true;
+                        $reset_flush = true;
                     }
 
+                    break;
+
+                // eat whitespace
+                case 3:
+                    if (isset(self::WS_MAP[$char])) {
+                        if ($char === "\n") {
+                            // stop on newline
+                            $reset = true;
+                        }
+                    } else {
+                        // stop on non-whitespace char
+                        $reset = true;
+                        --$i;
+                    }
+
+                    $char = '';
                     break;
             }
 
@@ -216,8 +247,8 @@ abstract class Bbcode
             $buffer .= $char;
 
             // reset
-            if ($reset !== 0) {
-                if ($reset > 1) {
+            if ($reset) {
+                if ($reset_flush) {
                     if ($parents_n === -1) {
                         $output .= $buffer;
                     } else {
@@ -225,9 +256,11 @@ abstract class Bbcode
                     }
                 }
 
+                $mode = $reset_mode;
                 $buffer = '';
-                $reset = 0;
-                $mode = 0;
+                $reset = false;
+                $reset_flush = false;
+                $reset_mode = 0;
                 $submode = 0;
                 $closing = false;
                 $tag = '';
