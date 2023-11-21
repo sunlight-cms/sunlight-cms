@@ -22,6 +22,7 @@ abstract class Bbcode
         'i' => [true, false, true, true, 1], // italic
         'u' => [true, false, true, true, 1], // underline
         'q' => [true, false, true, true, null], // quote
+        'quote' => [true, false, false, true, null], // quote
         's' => [true, false, true, true, 1], // strike
         'img' => [true, true, false, false, 1], // image
         'code' => [true, true, false, true, 1], // code
@@ -287,6 +288,12 @@ abstract class Bbcode
                 }
                 break;
 
+            case 'quote':
+                if ($buffer !== '') {
+                    return '<blockquote>' . trim($buffer) . '</blockquote>';
+                }
+                break;
+
             case 's':
                 if ($buffer !== '') {
                     return '<del>' . $buffer . '</del>';
@@ -295,7 +302,7 @@ abstract class Bbcode
 
             case 'code':
                 if ($buffer !== '') {
-                    return '<span class="pre">' . str_replace(' ', '&nbsp;', $buffer) . '</span>';
+                    return '<span class="pre">' . str_replace(' ', '&nbsp;', trim($buffer)) . '</span>';
                 }
                 break;
 
