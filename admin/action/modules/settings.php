@@ -10,6 +10,7 @@ use Sunlight\Message;
 use Sunlight\Router;
 use Sunlight\Settings;
 use Sunlight\Util\Form;
+use Sunlight\Util\Password;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
 
@@ -106,6 +107,7 @@ $editable_settings = [
                 'input' => Admin::editor('settings-rules', 'rules', _e($settings['rules']), ['rows' => 9, 'class' => 'areasmallwide']),
                 'id' => false,
             ],
+            ['name' => 'password_min_len', 'format' => 'int', 'min_value' => 1, 'max_value' => Password::MAX_PASSWORD_LENGTH],
             ['name' => 'messages', 'format' => 'bool'],
             ['name' => 'lostpass', 'format' => 'bool'],
             ['name' => 'ulist', 'format' => 'bool'],

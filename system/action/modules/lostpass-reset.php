@@ -79,16 +79,8 @@ if (isset($_POST['new_password'])) {
     $newPasswordCheck = Request::post('new_password_check', '');
     $errors = [];
 
-    if ($newPassword !== $newPasswordCheck) {
-        $errors[] = _lang('mod.settings.password.error.not_same');
-    }
-
-    if ($newPassword === '') {
-        $errors[] = _lang('mod.settings.password.error.empty');
-    }
-
-    if (Password::isPasswordTooLong($newPassword)) {
-        $errors[] = _lang('mod.settings.password.error.too_long');
+    if (!Password::validate($newPassword, $newPasswordCheck, $newPasswordErr)) {
+        $errors[] = Password::getErrorMessage($newPasswordErr);
     }
 
     if (empty($errors)) {

@@ -303,6 +303,7 @@ INSERT INTO `sunlight_setting` (`var`, `val`, `preload`, `web`, `admin`) VALUES
 ('messagesperpage',	'10',	1,	1,	1),
 ('notpublicsite',	'0',	1,	1,	1),
 ('pagingmode',	'3',	1,	1,	1),
+('password_min_len',	'8',	0,	0,	0),
 ('pollvoteexpire',	'604800',	1,	1,	1),
 ('postadmintime',	'172800',	1,	1,	1),
 ('pretty_urls',	'0',	1,	1,	1),

@@ -106,18 +106,10 @@ if (isset($_GET['confirm'])) {
         $password = Request::post('password', '');
         $password2 = Request::post('password2', '');
 
-        if ($password !== $password2) {
-            $errors[] = _lang('mod.reg.nosame');
-        }
-
-        if ($password !== '') {
-            if (!Password::isPasswordTooLong($password)) {
-                $user_data['password'] = Password::create($password)->build();
-            } else {
-                $errors[] = _lang('mod.reg.passwordtoolong');
-            }
+        if (Password::validate($password, $password2, $password_err)) {
+            $user_data['password'] = Password::create($password)->build();
         } else {
-            $errors[] = _lang('mod.reg.passwordneeded');
+            $errors[] = Password::getErrorMessage($password_err);
         }
 
         $user_data['email'] = trim(Request::post('email', ''));

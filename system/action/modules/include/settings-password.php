@@ -20,16 +20,8 @@ if (isset($_POST['save'])) {
         $errors[] = _lang('mod.settings.password.error.bad_current');
     }
 
-    if ($newPassword !== $newPasswordCheck) {
-        $errors[] = _lang('mod.settings.password.error.not_same');
-    }
-
-    if ($newPassword === '') {
-        $errors[] = _lang('mod.settings.password.error.empty');
-    }
-
-    if (Password::isPasswordTooLong($newPassword)) {
-        $errors[] = _lang('mod.settings.password.error.too_long');
+    if (!Password::validate($newPassword, $newPasswordCheck, $newPasswordErr)) {
+        $errors[] = Password::getErrorMessage($newPasswordErr);
     }
 
     if (empty($errors)) {

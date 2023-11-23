@@ -2,6 +2,8 @@
 
 namespace Sunlight\Util;
 
+use Sunlight\Settings;
+
 class Password
 {
     /** Default algorithm */
@@ -14,6 +16,14 @@ class Password
     const GENERATED_SALT_LENGTH = 64;
     /** Maximum password length */
     const MAX_PASSWORD_LENGTH = 4096;
+    /** Error - password is empty */
+    const ERR_EMPTY = 'empty';
+    /** Error - password is too long */
+    const ERR_TOO_LONG = 'too_long';
+    /** Error - password is too short */
+    const ERR_TOO_SHORT = 'too_short';
+    /** Error - password does not match the check password */
+    const ERR_CHECK_NO_MATCH = 'check_no_match';
 
     /** @var string */
     private $algo;
@@ -163,7 +173,55 @@ class Password
         $this->hash = $newHash;
     }
 
-    static function isPasswordTooLong(string $plainPassword): bool
+    /**
+     * Validate a password
+     */
+    static function validate(string $plainPassword, ?string $plainPasswordCheck, ?string &$errorCode = null): bool
+    {
+        if ($plainPassword === '') {
+            $errorCode = self::ERR_EMPTY;
+
+            return false;
+        }
+
+        if (self::isPasswordTooLong($plainPassword)) {
+            $errorCode = self::ERR_TOO_LONG;
+
+            return false;
+        }
+
+        if (mb_strlen($plainPassword) < (int) Settings::get('password_min_len')) {
+            $errorCode = self::ERR_TOO_SHORT;
+
+            return false;
+        }
+
+        if ($plainPasswordCheck !== null && $plainPassword !== $plainPasswordCheck) {
+            $errorCode = self::ERR_CHECK_NO_MATCH;
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Get password error message
+     * 
+     * @see validate()
+     */
+    static function getErrorMessage(string $errorCode): string
+    {
+        $repl = null;
+
+        if ($errorCode === self::ERR_TOO_SHORT) {
+            $repl = ['%min_len%' => Settings::get('password_min_len')];
+        }
+
+        return _lang('password.error.' . $errorCode, $repl);
+    }
+
+    private static function isPasswordTooLong(string $plainPassword): bool
     {
         return strlen($plainPassword) > self::MAX_PASSWORD_LENGTH;
     }

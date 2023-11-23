@@ -134,12 +134,8 @@ if ($continue) {
         // password
         $password = Request::post('password', '');
 
-        if ($id == null && $password === '') {
-            $errors[] = _lang('admin.users.edit.passwordneeded');
-        }
-
-        if (Password::isPasswordTooLong($password)) {
-            $errors[] = _lang('admin.users.edit.passwordtoolong');
+        if (($id === null || $password !== '') && !Password::validate($password, null, $password_err)) {
+            $errors[] = Password::getErrorMessage($password_err);
         }
 
         // note
