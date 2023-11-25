@@ -310,7 +310,7 @@ INSERT INTO `sunlight_setting` (`var`, `val`, `preload`, `web`, `admin`) VALUES
 ('profileemail',	'0',	1,	1,	1),
 ('ratemode',	'2',	1,	1,	1),
 ('registration',	'1',	1,	1,	1),
-('registration_confirm',	'0',	1,	1,	1),
+('registration_confirm',	'1',	1,	1,	1),
 ('registration_grouplist',	'0',	1,	1,	1),
 ('rules',	'',	0,	1,	1),
 ('sboxmemory',	'20',	1,	1,	1),
