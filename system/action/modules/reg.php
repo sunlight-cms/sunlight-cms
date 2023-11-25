@@ -263,7 +263,7 @@ if (!$user_data_valid && $show_form) {
 
         // message
         if ($mail) {
-            $output .= Message::ok(_lang('mod.reg.confirm.sent', ['%email%' => $user_data['email']]), true);
+            $output .= Message::ok(_lang('mod.reg.confirm.sent', ['%email%' => _e($user_data['email'])]), true);
         } else {
             $output .= Message::error(_lang('global.emailerror'));
             DB::delete('user_activation', 'id=' . DB::val($insert_id));

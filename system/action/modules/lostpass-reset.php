@@ -87,7 +87,7 @@ if (isset($_POST['new_password'])) {
         DB::update('user', 'id=' . $user['id'], ['password' => Password::create($newPassword)->build()]);
         Logger::notice('user', sprintf('User "%s" has reset their password', $user['username']), ['user_id' => $user['id']]);
         $_SESSION['login_form_username'] = $user['username'];
-        $output .= Message::ok(_lang('mod.lostpass.reset.success', ['%login_link%' => Router::module('login')]), true);
+        $output .= Message::ok(_lang('mod.lostpass.reset.success', ['%login_link%' => _e(Router::module('login'))]), true);
         return;
     } else {
         $output .= Message::list($errors);
