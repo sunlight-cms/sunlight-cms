@@ -365,7 +365,7 @@ return [
     'admin.settings.emails.sysmail' => 'System e-mail',
     'admin.settings.emails.sysmail.help' => 'if the address is filled in, it is used as a sender of system e-mails (password reset, registration confirmation, etc.)',
     'admin.settings.emails.mailerusefrom' => 'Set sender',
-    'admin.settings.emails.mailerusefrom.help' => 'set the email sender (the <em>From</em> header), not just the reply address (may not be allowed)',
+    'admin.settings.emails.mailerusefrom.help' => 'set the e-mail sender (the <em>From</em> header), not just the reply address (may not be allowed)',
     'admin.settings.emails.profileemail' => 'E-mail in profile',
     'admin.settings.emails.profileemail.help' => 'publicly show e-mail addresses in user profiles',
     'admin.settings.emails.atreplace' => 'At sign replacement',

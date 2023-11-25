@@ -151,8 +151,8 @@ return [
     'mod.reg.p' => 'Username may contain letters (A-Z), a dot (.) and a dash (-). Maximum length is 24 characters. E-mail address is required.',
     'mod.reg.done' => 'Registration was sucessful. Now you can <a href="%login_link%">log in</a>',
     'mod.reg.confirm' => 'Registration confirmation',
-    'mod.reg.confirm.extratext' => 'A confirmation email will be sent to the given e-mail address.',
-    'mod.reg.confirm.sent' => 'A confirmation message has been sent to your email address <em>%email%</em>. To activate your account please click on the link in the message. The link is valid for 1 hour.',
+    'mod.reg.confirm.extratext' => 'A confirmation e-mail will be sent to the given e-mail address.',
+    'mod.reg.confirm.sent' => 'A confirmation message has been sent to your e-mail address <em>%email%</em>. To activate your account please click on the link in the message. The link is valid for 1 hour.',
     'mod.reg.confirm.subject' => 'Confirmation of registration on %domain%',
     'mod.reg.confirm.text' => 'Someone (probably you) has requested registration of the user account "%username%" on %domain%. If you wish to proceed with the registration, please click the link below:
 
@@ -249,7 +249,7 @@ The request was issued %date% by %ip%.',
 
 ----------------
 The request was issued %date% by %ip%.',
-    'mod.settings.email.confirm.sent' => 'A confirmation message has been sent to the email address <em>%email%</em>. To change your email address, please click on the link in the message. The link is valid for 1 hour.',
+    'mod.settings.email.confirm.sent' => 'A confirmation message has been sent to the e-mail address <em>%email%</em>. To change your e-mail address, please click on the link in the message. The link is valid for 1 hour.',
     'mod.change-email.p' => 'Please confirm the e-mail change:',
     'mod.change-email.success' => 'Your e-mail address has been changed',
     'mod.settings.profile' => 'Edit profile',
@@ -367,7 +367,7 @@ The request was issued %date% by %ip%.',
     'hcm.mailform.info' => 'This e-mail was sent %time% from %domain% by %ip%.
 The sender entered his address as: %sender%',
     'hcm.mailform.msg.done' => 'Message sent.',
-    'hcm.mailform.msg.failure' => 'The message was not sent. Invalid email address or empty message.',
+    'hcm.mailform.msg.failure' => 'The message was not sent. Invalid e-mail address or empty message.',
     'hcm.poll.vote' => 'Vote',
     'hcm.poll.votes' => 'Number&nbsp;of&nbsp;votes',
     'hcm.poll.locked' => 'poll closed',
