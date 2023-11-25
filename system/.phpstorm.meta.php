@@ -57,6 +57,7 @@ registerArgumentsSet(
     'messagesperpage',
     'notpublicsite',
     'pagingmode',
+    'password_min_len',
     'pollvoteexpire',
     'postadmintime',
     'pretty_urls',
