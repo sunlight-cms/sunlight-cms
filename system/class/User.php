@@ -43,6 +43,8 @@ abstract class User
     const AUTH_MASSEMAIL = 'massemail';
     /** Auth hash type - password reset */
     const AUTH_PASSWORD_RESET = 'password_reset';
+    /** Auth hash type - email change */
+    const AUTH_EMAIL_CHANGE = 'email_change';
     /** Login status - wrong username or password  */
     const LOGIN_FAILURE = 0;
     /** Login status - successful */

@@ -2,7 +2,6 @@
 
 use Sunlight\Core;
 use Sunlight\Database\Database as DB;
-use Sunlight\Email;
 use Sunlight\Extend;
 use Sunlight\Logger;
 use Sunlight\Message;
@@ -69,32 +68,6 @@ if (isset($_POST['save'])) {
         $changeset['publicname'] = $publicname;
     } while (false);
 
-    // email
-    $email = trim(Request::post('email', ''));
-
-    do {
-        if ($email === User::$data['email']) {
-            break;
-        }
-
-        if (!Email::validate($email)) {
-            $errors[] = _lang('user.msg.bademail');
-            break;
-        }
-
-        if (!User::isEmailAvailable($email)) {
-            $errors[] = _lang('user.msg.emailexists');
-            break;
-        }
-
-        if (!User::checkPassword(Request::post('current_password', ''))) {
-            $errors[] = _lang('mod.settings.password.error.bad_current');
-            break;
-        }
-
-        $changeset['email'] = $email;
-    } while (false);
-
     // language
     if (Settings::get('language_allowcustom')) {
         $language = Request::post('language', '');
@@ -141,10 +114,6 @@ if (isset($_POST['save'])) {
         Extend::call('mod.settings.account.save', ['changeset' => &$changeset]);
         DB::update('user', 'id=' . User::getId(), $changeset);
 
-        if (isset($changeset['email'])) {
-            User::refreshLogin($changeset);
-        }
-
         if (!empty($changeset)) {
             Logger::notice(
                 'user',
@@ -182,15 +151,6 @@ $output .= Form::render(
             'label' => _lang('mod.settings.account.publicname'),
             'content' => '<input type="text" maxlength="24" class="inputsmall"' . Form::restorePostValueAndName('publicname', User::$data['publicname'], false) . '>'
                 . ' <span class="hint">(' . _lang('mod.settings.account.publicname.hint') . ')</span>',
-        ],
-        [
-            'label' => _lang('global.email'),
-            'content' => '<input type="email" maxlength="191" class="inputsmall"' . Form::restorePostValueAndName('email', User::$data['email']) . '>',
-        ],
-        [
-            'label' => _lang('mod.settings.password.current'),
-            'content' => '<input type="password" name="current_password" class="inputsmall" autocomplete="off">'
-                . ' <span class="hint">(' . _lang('mod.settings.account.current_password.hint') . ')</span>',
         ],
         Settings::get('language_allowcustom')
             ? [

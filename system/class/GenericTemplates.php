@@ -195,11 +195,12 @@ HTML;
      * Supported options:
      * ------------------
      * - lcfirst (1)      lowercase first letter of each message
+     * - trim_dots (1)    remove dots at the end of each message
      * - escape (1)       escape HTML in messages
      * - show_keys (0)    render array keys
      *
      * @param string[] $messages
-     * @param array{lcfirst?: bool|null, escape?: bool|null, show_keys?: bool|null} $options see description
+     * @param array{lcfirst?: bool|null, trim_dots?: bool|null, escape?: bool|null, show_keys?: bool|null} $options see description
      */
     static function renderMessageList(array $messages, array $options = []): string
     {
@@ -211,6 +212,10 @@ HTML;
             foreach ($messages as $key => $item) {
                 if ($options['lcfirst'] ?? true) {
                     $item = StringHelper::lcfirst($item);
+                }
+
+                if ($options['trim_dots'] ?? true) {
+                    $item = rtrim($item, '.');
                 }
 
                 $output .= '<li>'

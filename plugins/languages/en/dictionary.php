@@ -152,13 +152,11 @@ return [
     'mod.reg.done' => 'Registration was sucessful. Now you can <a href="%login_link%">log in</a>',
     'mod.reg.confirm' => 'Registration confirmation',
     'mod.reg.confirm.extratext' => 'A confirmation email will be sent to the given e-mail address.',
-    'mod.reg.confirm.sent' => 'Confirmation message was sent to your email address <em>%email%</em>. To activate your account please click on the link in the message. The link is valid for 1 hour.',
+    'mod.reg.confirm.sent' => 'A confirmation message has been sent to your email address <em>%email%</em>. To activate your account please click on the link in the message. The link is valid for 1 hour.',
     'mod.reg.confirm.subject' => 'Confirmation of registration on %domain%',
     'mod.reg.confirm.text' => 'Someone (probably you) has requested registration of the user account "%username%" on %domain%. If you wish to proceed with the registration, please click the link below:
 
 %confirm_link%
-
-If you cannot click the link, copy it into your browser\'s address bar and navigate.
 
 ----------------
 The request was issued %date% by %ip%.',
@@ -174,7 +172,6 @@ The request was issued %date% by %ip%.',
     'mod.lostpass' => 'Forgotten password',
     'mod.lostpass.p' => 'If you have forgotten your password, enter your account\'s e-mail address into the field below. A password reset link will be sent to you.',
     'mod.lostpass.error.email_not_found' => 'There is no user with the given e-mail address',
-    'mod.lostpass.error.bad_link' => 'This link is incorrect or has expired',
     'mod.lostpass.email_sent' => 'Password reset link has been sent',
     'mod.lostpass.email.subject' => 'Password reset on %domain%',
     'mod.lostpass.email.text' => 'Someone (probably you) has requested a password reset for the user account "%username%" on %domain%. If you wish to proceed, please click the link below. If you have not requested a password reset, please ignore this message.
@@ -231,7 +228,6 @@ The request was issued %date% by %ip%.',
     'mod.settings.account.username.case_error' => 'only letter case can be changed in the username',
     'mod.settings.account.publicname' => 'Display name',
     'mod.settings.account.publicname.hint' => 'shown instead of username',
-    'mod.settings.account.current_password.hint' => 'enter only when you want to change your e-mail',
     'mod.settings.account.public' => 'Public profile',
     'mod.settings.account.public.label' => 'allow anyone to view your profile',
     'mod.settings.account.massemail' => 'E-mail subscription',
@@ -243,6 +239,19 @@ The request was issued %date% by %ip%.',
     'mod.settings.password.current' => 'Current password',
     'mod.settings.password.new' => 'New password',
     'mod.settings.password.error.bad_current' => 'wrong current password',
+    'mod.settings.email' => 'Change e-mail',
+    'mod.settings.email.new' => 'New e-mail',
+    'mod.settings.email.submit' => 'Change e-mail',
+    'mod.settings.email.confirm.subject' => 'Confirmation of e-mail change on %domain%',
+    'mod.settings.email.confirm.text' => 'Someone (probably you) has requested to change the e-mail for the account "%username%" to "%new_email%". If you wish to proceed with this change, please click the link below:
+
+%confirm_link%
+
+----------------
+The request was issued %date% by %ip%.',
+    'mod.settings.email.confirm.sent' => 'A confirmation message has been sent to the email address <em>%email%</em>. To change your email address, please click on the link in the message. The link is valid for 1 hour.',
+    'mod.change-email.p' => 'Please confirm the e-mail change:',
+    'mod.change-email.success' => 'Your e-mail address has been changed',
     'mod.settings.profile' => 'Edit profile',
     'mod.settings.profile.avatar' => 'Avatar',
     'mod.settings.profile.avatar.hint' => 'Maximum image size is <strong>1MB</strong> and <strong>1400x1400 pixels</strong>. The image will be resized and cropped to 96x128 pixels. Allowed formats are JPG, GIF and PNG.',
@@ -382,7 +391,8 @@ The sender entered his address as: %sender%',
     'plugin.error' => 'The action has failed because it has not been handled by the necessary plugin (<code>%info%</code>).',
     'action.success' => 'Action successful',
     'action.failure' => 'Could not perform the action',
-    'error.antispam' => 'Only one request can be sent in %antispamtimeout% seconds. Please wait.',
+    'error.antispam' => 'Please wait at least %antispamtimeout% seconds before sending another request.',
+    'error.bad_link' => 'This link is incorrect or has expired',
     'error.list_text' => 'The following errors have occured:',
     'password.error.empty' => 'the password must not be empty',
     'password.error.too_long' => 'the password is too long',

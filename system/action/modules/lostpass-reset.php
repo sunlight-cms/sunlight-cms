@@ -69,7 +69,7 @@ do {
 
 if (!$valid) {
     IpLog::update(IpLog::FAILED_LOGIN_ATTEMPT);
-    $output .= Message::warning($error ?? _lang('mod.lostpass.error.bad_link'));
+    $output .= Message::warning($error ?? _lang('error.bad_link'));
     return;
 }
 

@@ -153,12 +153,10 @@ return [
     'mod.reg.confirm' => 'Potvrzení registrace',
     'mod.reg.confirm.extratext' => 'Potvrzovací zpráva bude zaslána na uvedenou e-mailovou adresu.',
     'mod.reg.confirm.sent' => 'Potvrzovací zpráva byla odeslána na e-mailovou adresu <em>%email%</em>. Pro aktivaci účtu klikněte prosím na odkaz uvedený ve zprávě. Platnost odkazu je 1 hodina.',
-    'mod.reg.confirm.subject' => 'Potvrzeni registrace na %domain%',
+    'mod.reg.confirm.subject' => 'Potvrzení registrace na %domain%',
     'mod.reg.confirm.text' => 'Na %domain% bylo požádáno (pravděpodobně vámi) o registraci uživatelského účtu "%username%". Pokud s registrací souhlasíte, klikněte prosím na odkaz níže:
 
 %confirm_link%
-
-Pokud není možné na tento odkaz kliknout, zkopírujte jej prosím do adresního řádku vašeho prohlížeče a na tuto adresu přejděte.
 
 ----------------
 Žádost byla odeslána %date% z počítače %ip%.',
@@ -174,7 +172,6 @@ Pokud není možné na tento odkaz kliknout, zkopírujte jej prosím do adresní
     'mod.lostpass' => 'Zapomenuté heslo',
     'mod.lostpass.p' => 'Pokud jste zapomněli heslo, zadejte do pole níže e-mailovou adresu vedenou u vašeho účtu. Bude na ni zaslán odkaz pro nastavení nového hesla.',
     'mod.lostpass.error.email_not_found' => 'Uživatel s uvedenou e-mailovou adresou nebyl nalezen',
-    'mod.lostpass.error.bad_link' => 'Tento odkaz je nesprávný nebo již vypršela jeho platnost',
     'mod.lostpass.email_sent' => 'Odkaz pro nastavení nového hesla byl odeslán',
     'mod.lostpass.email.subject' => 'Obnoveni zapomenutého hesla na %domain%',
     'mod.lostpass.email.text' => 'Na %domain% bylo (pravděpodobně vámi) požádáno o obnovení zapomenutého hesla k uživatelskému účtu "%username%". Pokud si přejete nastavit nové heslo, pokračujte kliknutím na odkaz níže. V opačném případě tuto zprávu ignorujte.
@@ -231,7 +228,6 @@ Platnost tohoto odkazu je 1 hodina.
     'mod.settings.account.username.case_error' => 'v uživatelském jménu je dovoleno měnit pouze velikost písmen',
     'mod.settings.account.publicname' => 'Zobrazované jméno',
     'mod.settings.account.publicname.hint' => 'zobrazované namísto uživ. jména',
-    'mod.settings.account.current_password.hint' => 'vyplňte pokud chcete změnit e-mail',
     'mod.settings.account.public' => 'Veřejný profil',
     'mod.settings.account.public.label' => 'povolit komukoliv zobrazit si váš profil',
     'mod.settings.account.massemail' => 'Odběr e-mailů',
@@ -243,6 +239,19 @@ Platnost tohoto odkazu je 1 hodina.
     'mod.settings.password.current' => 'Současné heslo',
     'mod.settings.password.new' => 'Nové heslo',
     'mod.settings.password.error.bad_current' => 'chybné současné heslo',
+    'mod.settings.email' => 'Změna e-mailu',
+    'mod.settings.email.new' => 'Nový e-mail',
+    'mod.settings.email.submit' => 'Změnit e-mail',
+    'mod.settings.email.confirm.subject' => 'Změna e-mailu na %domain%',
+    'mod.settings.email.confirm.text' => 'Na %domain% bylo požádáno (pravděpodobně vámi) o změnu e-mailu pro uživatelský účet "%username%" na "%new_email%". Pokud se změnou souhlasíte, klikněte prosím na odkaz níže:
+
+%confirm_link%
+
+----------------
+Žádost byla odeslána %date% z počítače %ip%.',
+    'mod.settings.email.confirm.sent' => 'Potvrzovací zpráva byla odeslána na e-mailovou adresu <em>%email%</em>. Platnost odkazu je 1 hodina.',
+    'mod.change-email.p' => 'Prosím potvrďte změnu e-mailové adresy:',
+    'mod.change-email.success' => 'Vaše e-mailová adresa byla změněna',
     'mod.settings.profile' => 'Úprava profilu',
     'mod.settings.profile.avatar' => 'Avatar',
     'mod.settings.profile.avatar.hint' => 'Maximální velikost nahraného obrázku je <strong>%maxsize%</strong> a rozměry <strong>%maxw% x %maxh% pixelů</strong>. Obrázek bude zmenšen a ořezán.',
@@ -382,7 +391,8 @@ Odesílatel uvedl svou adresu jako: %sender%',
     'plugin.error' => 'Akce se nezdařila, jelikož ji nezpracoval potřebný plugin (<code>%info%</code>).',
     'action.success' => 'Akce byla provedena',
     'action.failure' => 'Akci se nepodařilo provést',
-    'error.antispam' => 'Je možné zaslat maximálně jeden požadavek za %antispamtimeout% sekund. Prosíme počkejte.',
+    'error.antispam' => 'Prosím počkejte alespoň %antispamtimeout% sekund před odesláním dalšího požadavku.',
+    'error.bad_link' => 'Tento odkaz je nesprávný nebo již vypršela jeho platnost',
     'error.list_text' => 'Během zpracovávání požadavku došlo k chybám:',
     'password.error.empty' => 'heslo nesmí být prázdné',
     'password.error.too_long' => 'heslo je příliš dlouhé',

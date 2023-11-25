@@ -90,7 +90,7 @@ class Message
      * @param array{
      *     type?: string,
      *     text?: string,
-     *     list?: array{lcfirst?: bool|null, escape?: bool|null, show_keys?: bool|null},
+     *     list?: array{lcfirst?: bool|null, trim_dots?: bool|null, escape?: bool|null, show_keys?: bool|null},
      * } $options see description
      */
     static function list(array $messages, array $options = []): self

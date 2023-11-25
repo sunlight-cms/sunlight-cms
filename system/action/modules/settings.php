@@ -17,6 +17,7 @@ $_index->title = _lang('mod.settings');
 $actions = [
     'account' => ['title' => _lang('mod.settings.account'), 'script' => __DIR__ . '/include/settings-account.php'],
     'password' => ['title' => _lang('mod.settings.password'), 'script' => __DIR__ . '/include/settings-password.php'],
+    'email' => ['title' => _lang('mod.settings.email'), 'script' => __DIR__ . '/include/settings-email.php'],
     'profile' => ['title' => _lang('mod.settings.profile'), 'script' => __DIR__ . '/include/settings-profile.php'],
     'download' => ['title' => _lang('mod.settings.download'), 'script' => __DIR__ . '/include/settings-download.php'],
 ];
