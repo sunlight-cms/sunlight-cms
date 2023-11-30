@@ -103,7 +103,7 @@ HTML;
     static function renderHeadAssets(array $assets): string
     {
         $html = '';
-        $cacheParam = '_' . Settings::get('cacheid');
+        $cacheParam = 'v=' . substr(hash_hmac('sha256', Core::VERSION . '$' . Settings::get('cacheid'), Core::$secret), 0, 8);
 
         $assets += [
             'meta' => '',
