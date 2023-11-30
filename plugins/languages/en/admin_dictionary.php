@@ -351,6 +351,8 @@ return [
     'admin.settings.users.defaultgroup.help' => 'determines the group to which the user will be automatically assigned upon registration (if not allowed to choose)',
     'admin.settings.users.rules' => 'Terms and conditions',
     'admin.settings.users.rules.help' => 'HTML code. Agreement to these rules will be required during registration. Leave blank to disable.',
+    'admin.settings.users.password_min_len' => 'Minimal password length',
+    'admin.settings.users.password_min_len.help' => 'passwords must be at least this long when creating an account or changing the password',
     'admin.settings.users.messages' => 'Messages',
     'admin.settings.users.messages.help' => 'enable private messaging between users',
     'admin.settings.users.lostpass' => 'Lost password',
