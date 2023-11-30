@@ -61,14 +61,16 @@ abstract class GenericTemplates
     static function renderHead(): string
     {
         $lang = _e(Core::$langPlugin->getIsoCode());
+        $generator = '<meta name="generator" content="SunLight CMS">' . "\n";
+        
+        Extend::call('render.meta_generator', ['generator' => &$generator]);
 
         return <<<HTML
 <!DOCTYPE html>
 <html lang="{$lang}">
 <head>
 <meta charset="UTF-8">
-<meta name="generator" content="SunLight CMS">
-
+{$generator}
 HTML;
     }
 
