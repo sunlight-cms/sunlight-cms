@@ -3,7 +3,6 @@
 namespace Sunlight;
 
 use Sunlight\Callback\CallbackHandler;
-use Sunlight\Exception\ContentPrivilegeException;
 use Sunlight\Util\ArgList;
 use Sunlight\Util\Filesystem;
 
@@ -133,10 +132,8 @@ abstract class Hcm
 
     /**
      * Filter HCM modules in the given content according to user privileges
-     *
-     * @throws ContentPrivilegeException if $exception is TRUE and a denied HCM module is found
      */
-    static function filter(string $content, bool $exception = false): string
+    static function filter(string $content): string
     {
         $deniedModules = [];
 
@@ -158,7 +155,7 @@ abstract class Hcm
         $deniedMap = $deniedModules !== null ? array_flip($deniedModules) : null;
         $allowedMap = $allowedModules !== null ? array_flip($allowedModules) : null;
 
-        return self::parse($content, function ($argList) use ($deniedMap, $allowedMap, $exception) {
+        return self::parse($content, function ($argList) use ($deniedMap, $allowedMap) {
             $module = (string) (ArgList::parse($argList)[0] ?? '');
 
             if (
@@ -166,10 +163,6 @@ abstract class Hcm
                 || $deniedMap === null
                 || isset($deniedMap[$module])
             ) {
-                if ($exception) {
-                    throw new ContentPrivilegeException(sprintf('HCM module "%s"', $module));
-                }
-
                 return '';
             }
 

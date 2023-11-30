@@ -5,7 +5,6 @@ namespace Sunlight;
 use Kuria\Url\Url;
 use Sunlight\Post\Post;
 use Sunlight\Database\Database as DB;
-use Sunlight\Exception\ContentPrivilegeException;
 use Sunlight\Image\ImageException;
 use Sunlight\Image\ImageLoader;
 use Sunlight\Image\ImageService;
@@ -16,6 +15,7 @@ use Sunlight\Util\Cookie;
 use Sunlight\Util\Filesystem;
 use Sunlight\Util\Form;
 use Sunlight\Util\Html;
+use Sunlight\Util\HtmlFilter;
 use Sunlight\Util\Password;
 use Sunlight\Util\Request;
 use Sunlight\Util\StringGenerator;
@@ -105,6 +105,7 @@ abstract class User
         'artrate' => true,
         'pollvote' => true,
         'selfremove' => true,
+        'rawhtml' => true,
     ];
 
     /** @var array|null data from user table (if logged in) */
@@ -476,7 +477,6 @@ abstract class User
      * @param string $content the content
      * @param bool $isHtml indicate HTML content 1/0
      * @param bool $hasHcm the content can contain HCM modules 1/0
-     * @throws ContentPrivilegeException
      */
     static function filterContent(string $content, bool $isHtml = true, bool $hasHcm = true): string
     {
@@ -485,7 +485,11 @@ abstract class User
                 throw new \LogicException('Content that supports HCM modules is always HTML');
             }
 
-            $content = Hcm::filter($content, true);
+            $content = Hcm::filter($content);
+        }
+
+        if ($isHtml && !self::hasPrivilege('rawhtml')) {
+            $content = HtmlFilter::sanitize($content);
         }
 
         Extend::call('user.filter_content', [

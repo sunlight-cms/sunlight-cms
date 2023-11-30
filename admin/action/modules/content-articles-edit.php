@@ -108,7 +108,7 @@ if (isset($_POST['title'])) {
         $newdata['author'] = $query['author'];
     }
 
-    $newdata['perex'] = Html::cut(Request::post('perex', ''), DB::MAX_TEXT_LENGTH);
+    $newdata['perex'] = User::filterContent(Html::cut(Request::post('perex', ''), DB::MAX_TEXT_LENGTH), true, false);
     $newdata['content'] = User::filterContent(Html::cut(Request::post('content', ''), DB::MAX_MEDIUMTEXT_LENGTH));
     $newdata['public'] = Form::loadCheckbox('public');
     $newdata['visible'] = Form::loadCheckbox('visible');

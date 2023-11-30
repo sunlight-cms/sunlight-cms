@@ -130,7 +130,8 @@ registerArgumentsSet(
     'movetopics',
     'artrate',
     'pollvote',
-    'selfremove'
+    'selfremove',
+    'rawhtml'
 );
 
 registerArgumentsSet(

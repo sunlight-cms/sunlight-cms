@@ -9,6 +9,7 @@ use Sunlight\Logger;
 use Sunlight\Message;
 use Sunlight\Router;
 use Sunlight\Settings;
+use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Password;
 use Sunlight\Util\Request;
@@ -98,6 +99,7 @@ $editable_settings = [
                 'table_id' => 'user_group',
                 'input' => Admin::userSelect('defaultgroup', ['selected' => Settings::get('defaultgroup'), 'select_groups' => true]),
                 'id' => false,
+                'reload_on_update' => true,
             ],
             [
                 'name' => 'rules',
@@ -106,6 +108,10 @@ $editable_settings = [
                 'extra_help' => _lang('admin.settings.users.rules.help'),
                 'input' => Admin::editor('settings-rules', 'rules', _e($settings['rules']), ['rows' => 9, 'class' => 'areasmallwide']),
                 'id' => false,
+                'transform_back' => function (string $rules) {
+                    return User::filterContent($rules, true, false);
+                },
+                'reload_on_update' => true,
             ],
             ['name' => 'password_min_len', 'format' => 'int', 'min_value' => 1, 'max_value' => Password::MAX_PASSWORD_LENGTH],
             ['name' => 'messages', 'format' => 'bool'],

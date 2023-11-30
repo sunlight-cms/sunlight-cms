@@ -63,7 +63,7 @@ if (isset($_POST['box_edit'])) do {
 
     $changeset = [
         'title' => Html::cut(_e(StringHelper::trimExtraWhitespace(Request::post('title'))), 255),
-        'content' => Html::cut(Request::post('content', ''), DB::MAX_MEDIUMTEXT_LENGTH),
+        'content' => User::filterContent(Html::cut(Request::post('content', ''), DB::MAX_MEDIUMTEXT_LENGTH)),
         'visible' => Form::loadCheckbox('visible'),
         'public' => Form::loadCheckbox('public'),
         'level' => Math::range((int) Request::post('level'), 0, User::MAX_LEVEL),

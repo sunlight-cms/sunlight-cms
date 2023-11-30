@@ -107,6 +107,7 @@ if ($continue) {
                 ['name' => 'admingroup'],
                 ['name' => 'adminforum'],
                 ['name' => 'adminpluginpage'],
+                ['name' => 'rawhtml', 'dangerous' => true],
             ],
         ],
         [
@@ -138,7 +139,7 @@ if ($continue) {
     $rights = '';
 
     foreach ($rights_array as $section) {
-        $rights .= '<fieldset><legend>' . $section['title'] . "</legend><table>\n";
+        $editable_rights = [];
 
         foreach ($section['rights'] as $item) {
             if (
@@ -146,11 +147,19 @@ if ($continue) {
                 || $id == User::GUEST_GROUP_ID && !in_array($item['name'], $unregistered_useable, true)
                 || empty($item['text']) && !User::hasPrivilege($item['name'])
             ) {
-                $disabled = true;
-            } else {
-                $disabled = false;
+                continue;
             }
 
+            $editable_rights[] = $item;
+        }
+
+        if (empty($editable_rights)) {
+            continue;
+        }
+
+        $rights .= '<fieldset><legend>' . $section['title'] . "</legend><table>\n";
+
+        foreach ($editable_rights as $item) {
             $isText = !empty($item['text']);
 
             $rights .= '<tr>
@@ -164,7 +173,6 @@ if ($continue) {
                 . ' name="' . $item['name'] . '"'
                 . ($isText ? ' value="' . _e($query[$item['name']]) . '"' : ' value="1"'
                 . Form::activateCheckbox($query[$item['name']]))
-                . Form::disableInputUnless(!$disabled)
             . '>
             ' . ($item['help'] ?? _lang('admin.users.groups.' . $item['name'] . '.help')) . "
         </label>
@@ -310,8 +318,8 @@ if ($continue) {
 
   </table>
 
-  ' . Message::ok(_lang('admin.users.groups.dangernotice'), true) . '
-  ' . $rights . '
+  ' . ($id != User::ADMIN_GROUP_ID ? Message::ok(_lang('admin.users.groups.dangernotice'), true) : '') . '
+  ' . ($rights !== '' ? $rights : '<br>') . '
   ' . Extend::buffer('admin.editgroup.form') . '
 
   <input type="submit" class="button bigger" value="' . _lang('global.save') . '" accesskey="s"> <small>' . _lang('admin.content.form.thisid') . ' ' . $id . '</small>

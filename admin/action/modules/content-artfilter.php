@@ -2,7 +2,6 @@
 
 use Sunlight\Admin\Admin;
 use Sunlight\Article;
-use Sunlight\Exception\PrivilegeException;
 use Sunlight\Post\Post;
 use Sunlight\Database\Database as DB;
 use Sunlight\IpLog;
@@ -50,11 +49,11 @@ if (isset($_POST['category'])) {
         $category == -1 && !User::hasPrivilege('adminpages')
         || $category != -1 && DB::count('page', 'id=' . DB::val($category) . ' AND type=' . Page::CATEGORY . ' AND level<=' . User::getLevel()) == 0
     ) {
-        throw new PrivilegeException(sprintf('Invalid article filter source category ID %d', $category));
+        throw new \UnexpectedValueException(sprintf('Invalid article filter source category ID %d', $category));
     }
 
     if ($new_category != -1 && DB::count('page', 'id=' . DB::val($new_category) . ' AND type=' . Page::CATEGORY . ' AND level<=' . User::getLevel()) === 0) {
-        throw new PrivilegeException(sprintf('Invalid article filter new category ID %d', $new_category));
+        throw new \UnexpectedValueException(sprintf('Invalid article filter new category ID %d', $new_category));
     }
 
     if ($new_author != -1 && DB::count('user', 'id=' . DB::val($new_author)) === 0) {

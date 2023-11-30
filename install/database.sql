@@ -434,16 +434,17 @@ CREATE TABLE `sunlight_user_group` (
   `artrate` tinyint(1) NOT NULL DEFAULT 0,
   `pollvote` tinyint(1) NOT NULL DEFAULT 0,
   `selfremove` tinyint(1) NOT NULL DEFAULT 0,
+  `rawhtml` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `level` (`level`),
   KEY `blocked` (`blocked`),
   KEY `reglist` (`reglist`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO `sunlight_user_group` (`id`, `title`, `descr`, `level`, `icon`, `color`, `blocked`, `reglist`, `administration`, `adminsettings`, `adminplugins`, `adminusers`, `admingroups`, `admincontent`, `adminother`, `adminpages`, `adminsection`, `admincategory`, `adminbook`, `adminseparator`, `admingallery`, `adminlink`, `admingroup`, `adminforum`, `adminpluginpage`, `adminart`, `adminallart`, `adminchangeartauthor`, `adminconfirm`, `adminautoconfirm`, `adminpoll`, `adminpollall`, `adminsbox`, `adminbox`, `fileaccess`, `fileglobalaccess`, `fileadminaccess`, `adminhcm`, `adminhcmphp`, `adminbackup`, `adminmassemail`, `adminposts`, `changeusername`, `postcomments`, `unlimitedpostaccess`, `locktopics`, `stickytopics`, `movetopics`, `artrate`, `pollvote`, `selfremove`) VALUES
-(1,	'SUPER_ADMIN',	'',	10000,	'redstar.png',	'',	0,	0,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	'*',	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1),
-(2,	'GUESTS',	'',	0,	'',	'',	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	'',	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	1,	1,	0),
-(3,	'REGISTERED',	'',	1,	'',	'',	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	'',	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	1,	1,	1),
-(4,	'ADMINISTRATORS',	'',	1000,	'orangestar.png',	'',	0,	0,	1,	1,	0,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	0,	'*',	0,	0,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	0),
-(5,	'MODERATORS',	'',	600,	'greenstar.png',	'',	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	'',	0,	0,	0,	1,	0,	1,	1,	1,	1,	1,	1,	1,	0),
-(6,	'EDITOR',	'',	500,	'bluestar.png',	'',	0,	0,	1,	0,	0,	0,	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	1,	0,	0,	0,	1,	0,	0,	'poll, gallery, linkart, linkpage',	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	1,	1,	0);
+INSERT INTO `sunlight_user_group` (`id`, `title`, `descr`, `level`, `icon`, `color`, `blocked`, `reglist`, `administration`, `adminsettings`, `adminplugins`, `adminusers`, `admingroups`, `admincontent`, `adminother`, `adminpages`, `adminsection`, `admincategory`, `adminbook`, `adminseparator`, `admingallery`, `adminlink`, `admingroup`, `adminforum`, `adminpluginpage`, `adminart`, `adminallart`, `adminchangeartauthor`, `adminconfirm`, `adminautoconfirm`, `adminpoll`, `adminpollall`, `adminsbox`, `adminbox`, `fileaccess`, `fileglobalaccess`, `fileadminaccess`, `adminhcm`, `adminhcmphp`, `adminbackup`, `adminmassemail`, `adminposts`, `changeusername`, `postcomments`, `unlimitedpostaccess`, `locktopics`, `stickytopics`, `movetopics`, `artrate`, `pollvote`, `selfremove`, `rawhtml`) VALUES
+(1,	'SUPER_ADMIN',	'',	10000,	'redstar.png',	'',	0,	0,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	'*',	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1),
+(2,	'GUESTS',	'',	0,	'',	'',	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	'',	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	1,	1,	0,	0),
+(3,	'REGISTERED',	'',	1,	'',	'',	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	'',	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	1,	1,	1,	0),
+(4,	'ADMINISTRATORS',	'',	1000,	'orangestar.png',	'',	0,	0,	1,	1,	0,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	0,	'*',	0,	0,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	0,	0),
+(5,	'MODERATORS',	'',	600,	'greenstar.png',	'',	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	'',	0,	0,	0,	1,	0,	1,	1,	1,	1,	1,	1,	1,	0,	0),
+(6,	'EDITOR',	'',	500,	'bluestar.png',	'',	0,	0,	1,	0,	0,	0,	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	1,	0,	0,	0,	1,	0,	0,	'poll, gallery, linkart, linkpage',	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	1,	1,	0,	0);

@@ -3,10 +3,8 @@
 use Sunlight\Admin\Admin;
 use Sunlight\Admin\AdminState;
 use Sunlight\Core;
-use Sunlight\Exception\PrivilegeException;
 use Sunlight\Extend;
 use Sunlight\GenericTemplates;
-use Sunlight\Logger;
 use Sunlight\Router;
 use Sunlight\Settings;
 use Sunlight\User;
@@ -41,17 +39,7 @@ asort($_admin->menu, SORT_NUMERIC);
 
 if (empty($_POST) || Xsrf::check()) {
     if ($_admin->access) {
-        try {
-            require SL_ROOT . 'admin/action/module.php';
-        } catch (PrivilegeException $privException) {
-            Logger::warning(
-                'security',
-                'User has caused a privilege exception',
-                ['module' => $_admin->currentModule, 'exception' => $privException]
-            );
-
-            require SL_ROOT . 'admin/action/priv_error.php';
-        }
+        require SL_ROOT . 'admin/action/module.php';
     } else {
         require SL_ROOT . 'admin/action/login.php';
     }

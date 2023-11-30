@@ -194,6 +194,7 @@ if (!empty($_POST)) {
 
             // perex
             case 'perex':
+                $val = User::filterContent($val, true, false);
                 $search_content->add($val, ['strip_tags' => true, 'unescape_html' => true]);
                 break;
 
