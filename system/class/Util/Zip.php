@@ -98,7 +98,7 @@ abstract class Zip
      * - dir_mode (0777)          mode of newly created directories
      * - recursive (1)            extract subdirectories 1/0
      * - exclude_prefix (-)       a common prefix to exclude from subpaths (e.g. "foo/")
-     *                          (the trailing slash is important)
+     *                            (the trailing slash is important)
      * - big_file_threshold (-)
      *
      * @param string[]|string $directories archive directory paths (e.g. "foo", "foo/bar" or "" for root)
