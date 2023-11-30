@@ -2,9 +2,14 @@
 
 namespace Sunlight\Util;
 
+use Sunlight\Settings;
+
 abstract class Filesystem
 {
     private const UNSAFE_EXT_REGEX = '{php\d*?|[ps]html|asp|py|cgi}Ai';
+
+    /** @var array<string, true>|null */
+    private static $allowedExtMap;
 
     /**
      * Create a temporary file in system/tmp/
@@ -15,7 +20,7 @@ abstract class Filesystem
     }
 
     /**
-     * Check if the file name in a path is safe
+     * Verify that the file name in a path is not a server-side script or a hidden file
      */
     static function isSafeFile(string $filepath): bool
     {
@@ -46,6 +51,21 @@ abstract class Filesystem
         }
 
         return true;
+    }
+
+    /**
+     * Verify that a the file name in a path has an allowed extension
+     */
+    static function isAllowedExtension(string $filepath): bool
+    {
+        if (self::$allowedExtMap === null) {
+            self::$allowedExtMap = array_fill_keys(
+                explode(',', Settings::get('allowed_file_ext')),
+                true
+            );
+        }
+
+        return isset(self::$allowedExtMap[pathinfo($filepath, PATHINFO_EXTENSION)]);
     }
 
     /**

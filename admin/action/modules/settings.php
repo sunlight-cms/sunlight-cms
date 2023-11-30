@@ -187,6 +187,19 @@ $editable_settings = [
             ['name' => 'lostpassexpire', 'format' => 'int', 'transform_to' => function ($v) { return $v / 60; }, 'transform_back' => function ($v) { return max(0, $v * 60); }],
         ],
     ],
+    'filesystem' => [
+        'items' => [
+            [
+                'name' => 'allowed_file_ext',
+                'format' => 'text',
+                'input' => '<textarea name="allowed_file_ext" class="areasmall" rows="9" cols="33">' . _e(Settings::get('allowed_file_ext')) . '</textarea>',
+                'transform_back' => function (string $list) {
+                    return implode(',', preg_split('{\s*+,\s*+}', $list, -1, PREG_SPLIT_NO_EMPTY));
+                },
+                'reload_on_update' => true,
+            ],
+        ],
+    ],
     'cron' => [
         'items' => [
             ['name' => 'cron_auto', 'format' => 'bool'],

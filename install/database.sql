@@ -255,6 +255,7 @@ INSERT INTO `sunlight_setting` (`var`, `val`, `preload`, `web`, `admin`) VALUES
 ('adminpagelist_mode',	'0',	1,	0,	1),
 ('adminscheme',	'0',	1,	0,	1),
 ('adminscheme_dark',	'0',	1,	0,	1),
+('allowed_file_ext',	'7z,avif,csv,doc,docx,dot,dotx,eot,gif,heic,ico,jpeg,jpg,jxl,m4a,m4v,md,mov,mp3,mp4,odg,odp,ods,odt,ogg,ogv,otf,otg,otp,ots,ott,pdf,png,pot,potx,ppt,pptx,ram,rar,rm,rst,tar,ttc,ttf,txt,webm,webp,wma,wmv,woff,woff2,xls,xlsx,xlt,xltx,zip',	0,	0,	0),
 ('antispamtimeout',	'60',	1,	1,	1),
 ('article_pic_h',	'600',	1,	1,	1),
 ('article_pic_thumb_h',	'200',	1,	1,	1),

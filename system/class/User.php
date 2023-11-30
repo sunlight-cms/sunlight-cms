@@ -467,7 +467,7 @@ abstract class User
             self::hasPrivilege('fileaccess')
             && (
                 self::hasPrivilege('fileadminaccess')
-                || Filesystem::isSafeFile($filename)
+                || Filesystem::isSafeFile($filename) && Filesystem::isAllowedExtension($filename)
             );
     }
 
