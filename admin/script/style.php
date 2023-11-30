@@ -596,10 +596,10 @@ fieldset .list > * tr > td {border-color: <?= $scheme_smoke_dark ?>;}
 .log-list a {color: unset;}
 .log-list > tbody:hover > tr > td {background-color: <?= $scheme_smoke_lighter ?>;}
 .log-list > tbody + tbody {border-top: 1px solid <?= $scheme_smoke_med ?>;}
+.log-url {white-space: nowrap; text-overflow: ellipsis; overflow: hidden; max-width: 0;}
 .log-message {color: <?= $scheme_smoke_text_darker ?>;}
 .log-message a {display: block;}
 .log-message code {overflow-wrap: anywhere; word-break: normal;}
-
 .log-search .log-time-presets {width: 50px;}
 
 /* actions list */

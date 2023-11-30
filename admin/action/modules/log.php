@@ -194,7 +194,7 @@ $output .= _buffer(function () use ($query, $queryParamValues, $queryParamErrors
             <td class="cell-shrink"><strong><?= _e($entry->getDateTime()->format('Y-m-d H:i:s.u')) ?></strong></td>
             <td class="cell-shrink"><?= _e(Logger::LEVEL_NAMES[$entry->level]) ?></td>
             <td class="cell-shrink"><?= _e($entry->category) ?></td>
-            <td><?= _e(StringHelper::ellipsis($entry->url ?? '-', 255, false)) ?></td>
+            <td class="log-url"><?= _e(StringHelper::ellipsis($entry->url ?? '-', 255, false)) ?></td>
             <td class="actions" rowspan="2">
                 <a class="button" href="<?= Router::admin('log-detail', ['query' => ['id' => $entry->id]]) ?>">
                     <?= _lang('admin.log.detail.link') ?>
