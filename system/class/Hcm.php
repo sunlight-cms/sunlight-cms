@@ -9,7 +9,7 @@ use Sunlight\Util\Filesystem;
 abstract class Hcm
 {
     /** @var int unique HCM identifier */
-    public static $uid = 0;
+    static $uid = 0;
     /** @var array<string, string> */
     private static $modules = [
         'articles' => __DIR__ . '/../hcm/articles.php',

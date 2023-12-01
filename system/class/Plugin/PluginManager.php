@@ -3,7 +3,6 @@
 namespace Sunlight\Plugin;
 
 use Kuria\Cache\NamespacedCache;
-use Kuria\ClassLoader\ClassLoader;
 use Sunlight\Core;
 use Sunlight\Util\Form;
 
