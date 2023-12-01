@@ -6,19 +6,30 @@ use Sunlight\Logger;
 use Sunlight\Message;
 use Sunlight\Plugin\PluginArchive;
 use Sunlight\Util\Form;
+use Sunlight\Util\Request;
 use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
 $message = '';
 
+$modes = [
+    PluginArchive::MODE_ALL_OR_NOTHING => _lang('admin.plugins.upload.mode.all_or_nothing'),
+    PluginArchive::MODE_SKIP_EXISTING => _lang('admin.plugins.upload.mode.skip'),
+    PluginArchive::MODE_OVERWRITE_EXISTING => _lang('admin.plugins.upload.mode.overwrite'),
+];
+
 if (isset($_FILES['archive']) && is_uploaded_file($_FILES['archive']['tmp_name'])) {
     try {
-        $merge = isset($_POST['merge']);
+        $mode = (int) Request::post('mode');
         $archive = new PluginArchive(Core::$pluginManager, $_FILES['archive']['tmp_name']);
 
+        if (!isset($modes[$mode])) {
+            throw new \UnexpectedValueException('Invalid mode');
+        }
+
         if ($archive->hasPlugins()) {
-            $extractedPlugins = $archive->extract($merge, $failedPlugins);
+            $extractedPlugins = $archive->extract($mode, $failedPlugins);
 
             if (!empty($extractedPlugins)) {
                 $message .= Message::list($extractedPlugins, ['type' => Message::OK, 'text' => _lang('admin.plugins.upload.extracted')]);
@@ -27,7 +38,7 @@ if (isset($_FILES['archive']) && is_uploaded_file($_FILES['archive']['tmp_name']
             }
 
             if (!empty($failedPlugins)) {
-                $message .= Message::list($failedPlugins, ['text' => _lang('admin.plugins.upload.failed' . (!$merge ? '.no_merge' : ''))]);
+                $message .= Message::list($failedPlugins, ['text' => _lang('admin.plugins.upload.skipped')]);
             }
 
             Logger::notice(
@@ -57,10 +68,13 @@ $output .= $message . '
             <td><input type="file" name="archive"></td>
         </tr>
         <tr>
+            <th>' . _lang('admin.plugins.upload.mode') . '</th>
+            <td>' . Form::select('mode', $modes, Request::post('mode')) . '</td>
+        </tr>
+        <tr>
             <td></td>
             <td>
                 <input class="button" name="do_upload" type="submit" value="' . _lang('global.upload') . '">
-                <label><input type="checkbox" value="1"' . Form::restoreCheckedAndName('do_upload', 'merge') . '> ' . _lang('admin.plugins.upload.skip_existing') . '</label>
             </td>
         </tr>
     </table>

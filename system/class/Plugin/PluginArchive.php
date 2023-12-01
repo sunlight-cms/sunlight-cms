@@ -7,6 +7,13 @@ use Sunlight\Util\Zip;
 
 class PluginArchive
 {
+    /** Fail if any plugins already exist */
+    const MODE_ALL_OR_NOTHING = 0;
+    /** Skip any existing plugins */
+    const MODE_SKIP_EXISTING = 1;
+    /** Overwrite any existing plugins */
+    const MODE_OVERWRITE_EXISTING = 2;
+
     /** @var PluginManager */
     private $manager;
     /** @var \ZipArchive */
@@ -15,7 +22,7 @@ class PluginArchive
     private $path;
     /** @var bool */
     private $open = false;
-    /** @var array<string, array<string, array{path: string, valid: bool}> */
+    /** @var array<string, array<string, string>> type => name => archive path */
     private $plugins;
 
     function __construct(PluginManager $manager, string $path)
@@ -28,32 +35,51 @@ class PluginArchive
     /**
      * Extract the archive
      *
-     * @param bool $merge merge with current plugins (only install new ones) 1/0
-     * @param-out string[] $failedPlugins
-     * @return string[] list of successfully extracted plugins
+     * @param int $mode see PluginArchive::MODE_* constants
+     * @param-out string[] $skippedPlugins list of skipped plugin paths
+     * @return string[] list of successfully extracted plugin paths
      */
-    function extract(bool $merge = false, ?array &$failedPlugins = null): array
+    function extract(int $mode, ?array &$skippedPlugins = null): array
     {
         $toExtract = [];
-        $failedPlugins = [];
+        $skippedPlugins = [];
 
         // get and check plugins
         foreach ($this->getPlugins() as $type => $plugins) {
-            foreach ($plugins as $name => $pluginParams) {
+            foreach ($plugins as $name => $archivePath) {
                 if (
-                    $this->manager->getPlugins()->hasName($type, $name)
-                    || $this->manager->getPlugins()->hasInactiveName($type, $name)
+                    $mode !== self::MODE_OVERWRITE_EXISTING
+                     && (
+                        $this->manager->getPlugins()->hasName($type, $name)
+                        || $this->manager->getPlugins()->hasInactiveName($type, $name)
+                     )
                 ) {
-                    $failedPlugins[] = $pluginParams['path'];
+                    $skippedPlugins[] = $archivePath;
                 } else {
-                    $toExtract[] = $pluginParams['path'];
+                    $toExtract[] = $archivePath;
                 }
             }
         }
 
-        // abort if there are failed plugins and we are not merging
-        if (!$merge && !empty($failedPlugins)) {
+        // abort if there is nothing to do or we should fail on existing
+        if (empty($toExtract) || $mode === self::MODE_ALL_OR_NOTHING && !empty($skippedPlugins)) {
             return [];
+        }
+
+        // if overwriting existing plugins, empty their directories first
+        if ($mode === self::MODE_OVERWRITE_EXISTING) {
+            foreach ($this->getPlugins() as $type => $plugins) {
+                foreach ($plugins as $name => $archivePath) {
+                    $existingPlugin = $this->manager->getPlugins()->getByName($type, $name)
+                        ?? $this->manager->getPlugins()->getInactiveByName($type, $name);
+
+                    if ($existingPlugin !== null) {
+                        Filesystem::emptyDirectory($existingPlugin->getDirectory(), function (\SplFileInfo $item) {
+                            return $item->isDir() || $item->getFilename() !== 'config.php';
+                        });
+                    }
+                }
+            }
         }
 
         // extract plugins
@@ -72,6 +98,11 @@ class PluginArchive
         return !empty($this->plugins);
     }
 
+    /**
+     * Get information about plugins inside the archive
+     * 
+     * @return array<string, array<string, string>> type => name => archive path
+     */
     function getPlugins(): array
     {
         $this->ensureOpen();
@@ -92,7 +123,6 @@ class PluginArchive
             }
 
             $this->load();
-
             $this->open = true;
         }
     }
@@ -102,10 +132,9 @@ class PluginArchive
      */
     private function load(): void
     {
-        $this->plugins = [];
+        $plugins = [];
 
         // map types
-        // build the regex
         $dirPatterns = [];
         $typeDir2Type = [];
 
@@ -114,6 +143,7 @@ class PluginArchive
             $typeDir2Type[$type->getDir()] = $type->getName();
         }
 
+        // build the regex
         $regex = '{(' . implode('|', $dirPatterns) . ')/(' . Plugin::ID_PATTERN . ')/(.+)$}AD';
 
         // iterate all files in the archive
@@ -124,17 +154,32 @@ class PluginArchive
                 [, $dir, $name, $subpath] = $match;
                 $type = $typeDir2Type[$dir];
 
-                if (!isset($this->plugins[$type][$name])) {
-                    $this->plugins[$type][$name] = [
+                if (!isset($plugins[$type][$name])) {
+                    $plugins[$type][$name] = [
+                        'name' => $name,
                         'path' => $dir . '/' . $name,
                         'valid' => false,
                     ];
                 }
 
                 if ($subpath === Plugin::FILE) {
-                    $this->plugins[$type][$name]['valid'] = true;
+                    $plugins[$type][$name]['valid'] = true;
                 }
             }
         }
+
+        // map valid plugins
+        $this->plugins = array_map(
+            function (array $plugins) {
+                // remove extra data
+                return array_column(
+                    // remove invalid plugins
+                    array_filter($plugins, function (array $plugin) { return $plugin['valid']; }),
+                    'path',
+                    'name'
+                );
+            },
+            $plugins
+        );
     }
 }
