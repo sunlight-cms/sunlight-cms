@@ -191,7 +191,7 @@ if ($continue) {
                         if (
                             is_uploaded_file($tmp_name)
                             && User::checkFilename($name)
-                            && (!$exists || isset($_POST['upload_rewrite']) && unlink($dir . $name))
+                            && (!$exists || isset($_POST['upload_rewrite']) && @unlink($dir . $name))
                             && User::moveUploadedFile($tmp_name, $dir . $name)
                         ) {
                             ++$done;
@@ -230,7 +230,7 @@ if ($continue) {
                 if (file_exists($dir . $name)) {
                     if (!is_dir($dir . $name)) {
                         if (User::checkFilename($name)) {
-                            if (unlink($dir . $name)) {
+                            if (@unlink($dir . $name)) {
                                 $message = Message::ok(_lang('admin.fman.msg.delete.done'));
                             } else {
                                 $message = Message::warning(_lang('admin.fman.msg.delete.failure'), true);
@@ -274,7 +274,7 @@ if ($continue) {
                 $content = Request::post('content');
 
                 if (User::checkFilename($name)) {
-                    $file = fopen($dir . $name, 'w');
+                    $file = @fopen($dir . $name, 'w');
 
                     if ($file) {
                         fwrite($file, $content);
@@ -349,7 +349,7 @@ if ($continue) {
                 $total = 0;
 
                 foreach ($getSelectedFiles() as $file) {
-                    if (is_file($dir . $file) && User::checkFilename($file) && unlink($dir . $file)) {
+                    if (is_file($dir . $file) && User::checkFilename($file) && @unlink($dir . $file)) {
                         $done++;
                     }
 
