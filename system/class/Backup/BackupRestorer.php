@@ -191,7 +191,7 @@ class BackupRestorer
         }
 
         foreach ($directoriesToRemove as $directory) {
-            Filesystem::purgeDirectory($directory);
+            Filesystem::removeDirectory($directory);
         }
 
         foreach ($filesToRemove as $file) {
@@ -284,17 +284,9 @@ class BackupRestorer
 
     private function clearDirectory(string $directory, array $excludedFilenameMap = []): void
     {
-        foreach (Filesystem::createIterator($directory) as $item) {
-            if (isset($excludedFilenameMap[$item->getFilename()])) {
-                continue;
-            }
-
-            if ($item->isDir()) {
-                Filesystem::purgeDirectory($item->getPathname());
-            } else {
-                unlink($item->getPathname());
-            }
-        }
+        Filesystem::emptyDirectory($directory, function (\SplFileInfo $item) use ($excludedFilenameMap) {
+            return !isset($excludedFilenameMap[$item->getFilename()]);
+        });
     }
 
     private function runPhpScript(string $phpScript): void

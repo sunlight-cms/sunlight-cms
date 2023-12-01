@@ -238,7 +238,7 @@ if ($continue) {
                         } else {
                             $message = Message::warning(_lang('admin.fman.msg.disallowedextension'));
                         }
-                    } elseif (Filesystem::purgeDirectory($dir . $name, [], $failedPath)) {
+                    } elseif (Filesystem::removeDirectory($dir . $name, $failedPath)) {
                         $message = Message::ok(_lang('admin.fman.msg.delete.done'));
                     } else {
                         $message = Message::warning(_lang('admin.fman.msg.delete.failure', ['%failed_path%' => _e($failedPath)]), true);

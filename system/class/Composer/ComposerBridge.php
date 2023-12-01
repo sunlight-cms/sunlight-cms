@@ -8,15 +8,9 @@ class ComposerBridge
 {
     static function clearCache(): void
     {
-        foreach (Filesystem::createIterator(__DIR__ . '/../../cache') as $item) {
-            if ($item->isDir()) {
-                if (!Filesystem::purgeDirectory($item->getPathname(), ['keep_dir' => true], $failedPath)) {
-                    throw new \RuntimeException(sprintf('Could not delete "%s"', $failedPath));
-                }
-            } elseif ($item->getFilename() !== '.gitkeep') {
-                unlink($item->getPathname());
-            }
-        }
+        Filesystem::emptyDirectory(__DIR__ . '/../../cache', function (\SplFileInfo $item) {
+            return $item->isDir() || $item->getFilename() !== '.gitkeep';
+        });
     }
 
     static function updateDirectoryAccess(): void

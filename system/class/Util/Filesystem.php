@@ -319,62 +319,96 @@ abstract class Filesystem
     }
 
     /**
-     * Recursively purge a directory
-     *
-     * Supported options:
-     * ------------------
-     * - keep_dir (0)         keep the empty directory (remove children only) 1/0
-     * - files_only (0)       remove files only (keep directory structure) 1/0
-     * - file_callback (-)    callback(\SplFileInfo file): bool - decide, whether to remove a file or not
-     *                        (this option is active only if files_only = 1)
-     *
+     * Recursively remove a directory
+     * 
      * @param string $path path to the directory
-     * @param array{keep_dir?: bool, files_only?: bool, file_callback?: callable|null} $options see description
-     * @param string|null $failedPath variable that will contain a path that could not be removed
+     * @param-out string|null $failedPath variable that will contain a path that could not be removed
      */
-    static function purgeDirectory(string $path, array $options = [], ?string &$failedPath = null): bool
+    static function removeDirectory(string $path, ?string &$failedPath = null): bool
     {
-        $options += [
-            'keep_dir' => false,
-            'files_only' => false,
-            'file_callback' => null,
-        ];
+        return self::purgeDirectory($path, false, null, $failedPath);
+    }
 
-        // create iterator
-        $iterator = self::createRecursiveIterator($path, \RecursiveIteratorIterator::CHILD_FIRST);
+    /**
+     * Recursively empty a directory
+     * 
+     * @param string $path path to the directory
+     * @param callable(\SplFileInfo):bool|null $filter decide which items directly inside the $path to remove
+     * @param-out string|null $failedPath variable that will contain a path that could not be removed
+     */
+    static function emptyDirectory(string $path, ?callable $filter = null, ?string &$failedPath = null): bool
+    {
+        foreach (self::createIterator($path) as $item) {
+            if ($filter !== null && !$filter($item)) {
+                continue;
+            }
 
-        // remove children
-        $success = true;
-
-        foreach ($iterator as $item) {
-            /* @var $item \SplFileInfo */
             if ($item->isDir()) {
-                if (!$options['files_only'] && !@rmdir($item)) {
-                    $failedPath = $item->getPathname();
-                    $success = false;
-                    break;
+                if (!self::purgeDirectory($item->getPathname(), false, null, $failedPath)) {
+                    return false;
                 }
-            } elseif (
-                (
-                    !$options['files_only']
-                    || $options['file_callback'] === null
-                    || $options['file_callback']($item)
-                )
-                && !@unlink($item)
-            ) {
+            } elseif (!@unlink($item->getPathname())) {
                 $failedPath = $item->getPathname();
-                $success = false;
-                break;
+
+                return false;
             }
         }
 
-        // remove directory
-        if ($success && !$options['keep_dir'] && !@rmdir($path)) {
-            $success = false;
-            $failedPath = $path;
+        return true;
+    }
+
+    /**
+     * Recursively purge a directory
+     *
+     * @param string $path path to the directory
+     * @param bool $keepRoot do not remove the root directory 1/0
+     * @param callable(\SplFileInfo, string):bool|null $filter callback to decide whether to remove an item or not
+     * @param-out string|null $failedPath variable that will contain a path that could not be removed
+     */
+    static function purgeDirectory(string $path, bool $keepRoot, ?callable $filter = null, ?string &$failedPath = null): bool
+    {
+        $iterator = self::createRecursiveIterator($path, \RecursiveIteratorIterator::CHILD_FIRST);
+        $keptDirMap = [];
+
+        // iterate and remove children
+        foreach ($iterator as $item) {
+            if ($filter !== null && !$filter($item, $path)) {
+                $keptDirMap[$item->getPath() . '/'] = true;
+
+                continue;
+            }
+
+            $itemPath = $item->getPathname();
+
+            if ($item->isDir()) {
+                foreach ($keptDirMap as $keptDir => $_) {
+                    if (strncmp($itemPath . '/', $keptDir, strlen($itemPath) + 1) === 0) {
+                        continue 2;
+                    }
+                }
+
+                if (!@rmdir($itemPath)) {
+                    $failedPath = $itemPath;
+
+                    return false;
+                }
+            } elseif (!@unlink($itemPath)) {
+                $failedPath = $itemPath;
+
+                return false;
+            }
         }
 
-        return $success;
+        // remove root directory
+        if (!$keepRoot && empty($keptDirs)) {
+            if (!@rmdir($path)) {
+                $failedPath = $itemPath;
+
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

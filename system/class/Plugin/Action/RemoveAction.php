@@ -32,7 +32,7 @@ class RemoveAction extends PluginAction
 
         $dir = $this->plugin->getDirectory();
 
-        if (Filesystem::checkDirectory($dir) && Filesystem::purgeDirectory($dir)) {
+        if (Filesystem::checkDirectory($dir) && Filesystem::removeDirectory($dir)) {
             return ActionResult::success(
                 Message::ok(_lang('admin.plugins.action.remove.success', ['%plugin%' => $this->plugin->getOption('name')]))
             );
