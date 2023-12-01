@@ -3,6 +3,7 @@
 namespace Sunlight\Util;
 
 use Sunlight\Extend;
+use Sunlight\GenericTemplates;
 use Sunlight\Xsrf;
 
 abstract class Form
@@ -209,6 +210,70 @@ abstract class Form
         }
 
         return '<input type="hidden" name="' . $name . '" value="' . _e($value) . '">';
+    }
+
+    /**
+     * Render a <select>
+     * 
+     * @param string $name select name
+     * @param array<array-key, string|array<array-key, string>> $choices value => label or optgroup => choices
+     * @param array-key|null $selected selected choice or null
+     * @param array<string, scalar|null> $attrs select tag attributes
+     * @param array{attrs?: array, selected?: array-key} $options
+     */
+    static function select(string $name, array $choices, $selected = null, array $attrs = []): string
+    {
+        $output = '<select name="' . _e($name) . '"'
+            . GenericTemplates::renderAttrs($attrs)
+            . '>';
+
+        foreach ($choices as $k => $v) {
+            if (is_array($v)) {
+                // optgroup
+                $output .= '<optgroup label="' . _e((string) $k) . "\">\n";
+
+                foreach ($v as $kk => $vv) {
+                    $output .= '    ' . self::option(
+                        $kk,
+                        $vv,
+                        $selected !== null && $kk == $selected
+                    );
+                    $output .= "\n";
+                }
+
+                $output .= '</optgroup>';
+
+            } else {
+                // option
+                $output .= self::option(
+                    $k,
+                    $v,
+                    $selected !== null && $k == $selected
+                );
+            }
+
+            $output .= "\n";
+        }
+
+        $output .= '</select>';
+
+        return $output;
+    }
+
+    /**
+     * Render an <option>
+     */
+    static function option(string $value, string $label, bool $selected = false, bool $disabled = false): string
+    {
+        return '<option'
+            . GenericTemplates::renderAttrs([
+                'value' => $value,
+                'selected' => $selected,
+                'disabled' => $disabled,
+            ])
+            . '>'
+            . _e($label)
+            . '</option>';
     }
 
     /**

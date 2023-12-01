@@ -235,9 +235,38 @@ HTML;
     /**
      * Render an exception
      */
-    public static function renderException(\Throwable $e, bool $showTrace = true, bool $showPrevious = true): string
+    static function renderException(\Throwable $e, bool $showTrace = true, bool $showPrevious = true): string
     {
         return '<pre class="exception">' . _e(Exception::render($e, $showTrace, $showPrevious)) . "</pre>\n";
+    }
+
+    /**
+     * Render HTML attributes
+     * 
+     * @param array<string, scalar|null> $attrs
+     * @return string HTML attribute string (including a space) or an empty string
+     */
+    static function renderAttrs(array $attrs): string
+    {
+        if (empty($attrs)) {
+            return '';
+        }
+
+        $output = '';
+
+        foreach ($attrs as $attr => $value) {
+            if ($value === false || $value === null) {
+                continue;
+            }
+
+            $output .= ' ' . $attr;
+
+            if ($value !== true) {
+                $output .= '="' . _e((string) $value) . '"';
+            }
+        }
+
+        return $output;
     }
 
     /**
