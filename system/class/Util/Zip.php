@@ -101,7 +101,7 @@ abstract class Zip
      *                            (the trailing slash is important)
      * - big_file_threshold (-)
      *
-     * @param string[]|string $directories archive directory paths (e.g. "foo", "foo/bar" or "" for root)
+     * @param string[] $directories archive directory paths (e.g. "foo", "foo/bar" or "" for root)
      * @param string $targetPath path where to extract the files to
      * @param array{
      *     path_mode?: int,
@@ -111,7 +111,7 @@ abstract class Zip
      *     big_file_threshold?: int|null,
      * } $options see description
      */
-    static function extractDirectories(\ZipArchive $zip, ?array $directories, string $targetPath, array $options = []): void
+    static function extractDirectories(\ZipArchive $zip, array $directories, string $targetPath, array $options = []): void
     {
         $options += [
             'path_mode' => self::PATH_FULL,
@@ -138,7 +138,7 @@ abstract class Zip
         // build archive path prefix map
         $archivePathPrefixMap = [];
 
-        foreach ((array) $directories as $archivePath) {
+        foreach ($directories as $archivePath) {
             if ($archivePath !== '') {
                 $archivePathPrefix = $archivePath . '/';
                 $archivePathPrefixMap[$archivePathPrefix] = strlen($archivePathPrefix);

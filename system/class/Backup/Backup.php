@@ -399,10 +399,10 @@ class Backup
      * The entire path is preserved.
      * Existing files will be overwritten.
      *
-     * @param array|string $directories one or more archive paths relative to the data directory (e.g. "upload")
+     * @param string[] $directories one or more archive paths relative to the data directory (e.g. ["upload"])
      * @param string $targetPath path where to extract the directories to
      */
-    function extractDirectories($directories, string $targetPath): void
+    function extractDirectories(array $directories, string $targetPath): void
     {
         $this->ensureOpenAndNotNew();
 
