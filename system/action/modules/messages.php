@@ -361,12 +361,15 @@ switch ($a) {
         $output .= '</tbody><tfoot>
 <tr><td colspan="4">
     <div class="hr messages-hr"><hr></div>
-    <select name="action">
-    <option value="1">' . _lang('mod.messages.delete.selected') . '</option>
-    <option value="2">' . _lang('mod.messages.mark.selected') . '</option>
-    <option value="3">' . _lang('mod.messages.delete.read') . '</option>
-    <option value="4">' . _lang('mod.messages.delete.all') . '</option>
-    </select>
+    ' . Form::select(
+        'action',
+        [
+            1 => _lang('mod.messages.delete.selected'),
+            2 => _lang('mod.messages.mark.selected'),
+            3 => _lang('mod.messages.delete.read'),
+            4 => _lang('mod.messages.delete.all'),
+        ]
+    ) . '
     <input type="submit" value="' . _lang('global.do') . '" onclick="return Sunlight.confirm();">
 </td></tr>
 </tfoot>

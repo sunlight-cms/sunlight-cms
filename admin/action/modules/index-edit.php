@@ -34,10 +34,14 @@ $output .= '
 
 <tr>
     <th>' . _lang('admin.menu.index.edit.pos') . '</th>
-    <td><select name="pos">
-        <option value="0"' . Form::selectOption($admin_index_cfg['admin_index_custom_pos'] == 0) . '>' . _lang('admin.menu.index.edit.pos.0') . '</option>
-        <option value="1"' . Form::selectOption($admin_index_cfg['admin_index_custom_pos'] == 1) . '>' . _lang('admin.menu.index.edit.pos.1') . '</option>
-    </select></td>
+    <td>' . Form::select(
+        'pos',
+        [
+            0 => _lang('admin.menu.index.edit.pos.0'),
+            1 => _lang('admin.menu.index.edit.pos.1')
+        ],
+        $admin_index_cfg['admin_index_custom_pos']
+    ) . '</td>
 </tr>
 
 <tr class="valign-top">

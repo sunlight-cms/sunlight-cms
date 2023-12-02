@@ -139,46 +139,52 @@ $output .= '
 <table class="formtable">
 
 <tr>
-<th>' . _lang('admin.other.massemail.sender') . '</th>
-<td><input type="email"' . Form::restorePostValueAndName('sender', Settings::get('sysmail')) . ' class="inputbig"></td>
+    <th>' . _lang('admin.other.massemail.sender') . '</th>
+    <td><input type="email"' . Form::restorePostValueAndName('sender', Settings::get('sysmail')) . ' class="inputbig"></td>
 </tr>
 
 <tr>
-<th>' . _lang('posts.subject') . '</th>
-<td><input type="text" class="inputbig"' . Form::restorePostValueAndName('subject') . '></td>
+    <th>' . _lang('posts.subject') . '</th>
+    <td><input type="text" class="inputbig"' . Form::restorePostValueAndName('subject') . '></td>
 </tr>
 
 <tr class="valign-top">
-<th>' . _lang('admin.other.massemail.receivers') . '</th>
-<td>'
-    . Admin::userSelect('receivers', [
-        'selected' => Request::post('receivers', [], true),
-        'group_cond' => 'blocked=0',
-        'user_cond' => 'massemail=1 AND blocked=0',
-        'class' => 'selectbig',
-        'select_groups' => true,
-        'multiple' => 8,
-    ])
-. '</td>
+    <th>' . _lang('admin.other.massemail.receivers') . '</th>
+    <td>'
+        . Admin::userSelect('receivers', [
+            'selected' => Request::post('receivers', [], true),
+            'group_cond' => 'blocked=0',
+            'user_cond' => 'massemail=1 AND blocked=0',
+            'class' => 'selectbig',
+            'select_groups' => true,
+            'multiple' => 8,
+        ])
+    . '</td>
 </tr>
 
 <tr>
-<th>' . _lang('admin.other.massemail.ctype') . '</th>
-<td>
-  <select name="ctype" class="selectbig">
-  <option value="1">' . _lang('admin.other.massemail.ctype.1') . '</option>
-  <option value="2"' . Form::selectOption(Request::post('ctype') == 2) . '>' . _lang('admin.other.massemail.ctype.2') . '</option>
-  </select>
-</td>
+    <th>' . _lang('admin.other.massemail.ctype') . '</th>
+    <td>
+        ' . Form::select(
+            'ctype',
+            [
+                1 => _lang('admin.other.massemail.ctype.1'),
+                2 => _lang('admin.other.massemail.ctype.2'),
+            ],
+            Request::post('ctype'),
+            ['class' => 'selectbig']
+        ) . '
+    </td>
 </tr>
 
 <tr class="valign-top">
-<th>' . _lang('admin.other.massemail.text') . '</th>
-<td>' . Admin::editor('massemail-body', 'text', Form::restorePostValue('text', null, false), ['mode' => 'code', 'rows' => 9]) . '</td>
+    <th>' . _lang('admin.other.massemail.text') . '</th>
+    <td>' . Admin::editor('massemail-body', 'text', Form::restorePostValue('text', null, false), ['mode' => 'code', 'rows' => 9]) . '</td>
 </tr>
 
-<tr><td></td>
-<td><input type="submit" value="' . _lang('global.send') . '"> <label><input type="checkbox" name="maillist" value="1"' . Form::activateCheckbox(Form::loadCheckbox('maillist')) . '> ' . _lang('admin.other.massemail.maillist') . '</label></td>
+<tr>
+    <td></td>
+    <td><input type="submit" value="' . _lang('global.send') . '"> <label><input type="checkbox" name="maillist" value="1"' . Form::activateCheckbox(Form::loadCheckbox('maillist')) . '> ' . _lang('admin.other.massemail.maillist') . '</label></td>
 </tr>
 
 </table>

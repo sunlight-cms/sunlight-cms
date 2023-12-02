@@ -220,10 +220,12 @@ abstract class Form
      * @param array-key|null $selected selected choice or null
      * @param array<string, scalar|null> $attrs select tag attributes
      * @param array{attrs?: array, selected?: array-key} $options
+     * @param bool $doubleEncodeLabels {@see _e()}
      */
-    static function select(string $name, array $choices, $selected = null, array $attrs = []): string
+    static function select(?string $name, array $choices, $selected = null, array $attrs = [], bool $doubleEncodeLabels = true): string
     {
-        $output = '<select name="' . _e($name) . '"'
+        $output = '<select'
+            . ($name !== null ? ' name="' . _e($name) . '"' : '')
             . GenericTemplates::renderAttrs($attrs)
             . '>';
 
@@ -236,7 +238,9 @@ abstract class Form
                     $output .= '    ' . self::option(
                         $kk,
                         $vv,
-                        $selected !== null && $kk == $selected
+                        ['selected' => $selected !== null && $kk == $selected],
+                        $doubleEncodeLabels
+                        
                     );
                     $output .= "\n";
                 }
@@ -248,7 +252,8 @@ abstract class Form
                 $output .= self::option(
                     $k,
                     $v,
-                    $selected !== null && $k == $selected
+                    ['selected' => $selected !== null && $k == $selected],
+                    $doubleEncodeLabels
                 );
             }
 
@@ -263,16 +268,13 @@ abstract class Form
     /**
      * Render an <option>
      */
-    static function option(string $value, string $label, bool $selected = false, bool $disabled = false): string
+    static function option(string $value, string $label, array $attrs = [], bool $doubleEncodeLabel = true): string
     {
         return '<option'
-            . GenericTemplates::renderAttrs([
-                'value' => $value,
-                'selected' => $selected,
-                'disabled' => $disabled,
-            ])
+            . ' value="' . _e($value) . '"'
+            . GenericTemplates::renderAttrs($attrs)
             . '>'
-            . _e($label)
+            . _e($label, $doubleEncodeLabel)
             . '</option>';
     }
 

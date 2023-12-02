@@ -18,17 +18,15 @@ defined('SL_ROOT') or exit;
 $message = '';
 
 $selectTime = function ($name) {
-    $opts = [1, 2, 4, 8, 25, 52, 104];
-    $active = (isset($_POST[$name]) ? (int) Request::post($name) : 25);
-    $output = '<select name="' . $name . "\">\n";
+    $choices = [];
 
-    for ($i = 0; isset($opts[$i]); ++$i) {
-        $output .= '<option value="' . $opts[$i] . '"' . Form::selectOption($active === $opts[$i]) . '>' . _lang('admin.other.cleanup.time.' . $opts[$i]) . "</option>\n";
+    foreach ([1, 2, 4, 8, 25, 52, 104] as $weeks) {
+        $choices[$weeks] = _lang('admin.other.cleanup.time.' . $weeks);
     }
 
-    $output .= "</select>\n";
+    $active = (isset($_POST[$name]) ? (int) Request::post($name) : 25);
 
-    return $output;
+    return Form::select($name, $choices, $active);
 };
 
 // action

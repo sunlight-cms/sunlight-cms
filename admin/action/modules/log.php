@@ -104,12 +104,7 @@ $output .= _buffer(function () use ($query, $queryParamValues, $queryParamErrors
             <!-- level -->
             <th><?= _lang('admin.log.level') ?></th>
             <td>
-                <select name="maxLevel" class="inputmax">
-                    <option value=""<?= Form::selectOption($query->maxLevel === null) ?>></option>
-                    <?php foreach (Logger::LEVEL_NAMES as $level => $name): ?>
-                        <option value="<?= $level ?>"<?= Form::selectOption($level === $query->maxLevel) ?>><?= _e($name) ?></option>
-                    <?php endforeach ?>
-                </select>
+                <?= Form::select('maxLevel', ['' => ''] + Logger::LEVEL_NAMES, $query->maxLevel ?? '', ['class' => 'inputmax']) ?>
             </td>
 
             <!-- category -->

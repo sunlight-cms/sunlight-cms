@@ -204,34 +204,6 @@ class PluginManager
         return $choices;
     }
 
-    /**
-     * Get HTML select for plugins of given type
-     *
-     * @param string|null $active active plugin name
-     * @param string|null $inputName input name (null = no <select> tag, only options)
-     */
-    function select(string $type, ?string $active = null, ?string $inputName = null): string
-    {
-        $output = '';
-
-        if ($inputName) {
-            $output .= '<select name=\"' . $inputName . "\">\n";
-        }
-
-        foreach ($this->choices($type) as $name => $label) {
-            $output .=
-                '<option value="' . _e($name) . '"' . Form::selectOption($active === $name) . '>'
-                . _e($label)
-                . "</option>\n";
-        }
-
-        if ($inputName) {
-            $output .= "</select>\n";
-        }
-
-        return $output;
-    }
-
     private function loadPlugins(): array
     {
         $pluginLoader = new PluginLoader($this->safeMode, $this->types);

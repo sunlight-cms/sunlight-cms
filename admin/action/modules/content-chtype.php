@@ -6,6 +6,7 @@ use Sunlight\Message;
 use Sunlight\Page\Page;
 use Sunlight\Page\PageManipulator;
 use Sunlight\User;
+use Sunlight\Util\Form;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
 
@@ -66,8 +67,21 @@ if (isset($_POST['new_type'])) {
     return;
 }
 
+// prepare type choices
+$new_type_choices = [];
+
+foreach (Page::TYPES as $type => $name) {
+    if ($type !== Page::PLUGIN && $type !== Page::SEPARATOR && User::hasPrivilege('admin' . $name)) {
+        $new_type_choices[$type] = _lang('page.type.' . $name);
+    }
+}
+
+if (User::hasPrivilege('adminpluginpage')) {
+    $new_type_choices += Page::getPluginTypes();
+}
+
 // output
-$output .= _buffer(function () { ?>
+$output .= _buffer(function () use ($new_type_choices) { ?>
     <?= Message::warning(_lang('admin.content.chtype.warning')) ?>
 
     <form method="post">
@@ -79,26 +93,13 @@ $output .= _buffer(function () { ?>
             <tr>
                 <th><?= _lang('admin.content.chtype.new_type') ?></th>
                 <td>
-                    <select name="new_type">
-                        <?php foreach (Page::TYPES as $type => $name): ?>
-                            <?php if ($type !== Page::PLUGIN && $type !== Page::SEPARATOR && User::hasPrivilege('admin' . $name)): ?>
-                                <option value="<?= $type ?>"><?= _lang('page.type.' . $name) ?></option>
-                            <?php endif ?>
-                        <?php endforeach ?>
-                        <?php if (User::hasPrivilege('adminpluginpage')): ?>
-                            <?php foreach (Page::getPluginTypes() as $type => $label): ?>
-                                <option value="<?= _e($type) ?>"><?= $label ?></option>
-                            <?php endforeach ?>
-                        <?php endif ?>
-                    </select>
+                    <?= Form::select('new_type', $new_type_choices) ?>
                 </td>
             </tr>
             <tr>
                 <td></td>
                 <td><input type="submit" value="<?= _lang('global.do') ?>"></td>
             </tr>
-        
-        
         </table>
         <?= Xsrf::getInput() ?>
     </form>

@@ -166,12 +166,11 @@ if (isset($_POST['category'])) {
 
 // output
 $boolSelect = function ($name, $changing = false) {
-    return '
-<select name="' . $name . '">
-<option value="-1">' . ($changing ? _lang('global.nochange') : _lang('admin.content.artfilter.f1.bool.doesntmatter')) . '</option>
-<option value="1">' . _lang('admin.content.artfilter.f1.bool.mustbe') . '</option>
-<option value="0">' . _lang('admin.content.artfilter.f1.bool.mustntbe') . "</option>
-</select> \n";
+    return Form::select($name, [
+        -1 => $changing ? _lang('global.nochange') : _lang('admin.content.artfilter.f1.bool.doesntmatter'),
+        1 => _lang('admin.content.artfilter.f1.bool.mustbe'),
+        0 => _lang('admin.content.artfilter.f1.bool.mustntbe'),
+    ]);
 };
 
 $output .= $message . '
@@ -198,12 +197,12 @@ if (!$infopage) {
 <th>' . _lang('article.posted') . '</th>
 <td>
 
-<select name="time_op">
-<option value="">' . _lang('admin.content.artfilter.f1.time.any') . '</option>
-<option value="&gt;">' . _lang('admin.content.artfilter.f1.time.gt') . '</option>
-<option value="=">' . _lang('admin.content.artfilter.f1.time.eq') . '</option>
-<option value="&lt;">' . _lang('admin.content.artfilter.f1.time.lt') . '</option>
-</select>
+' . Form::select('time_op', [
+    '' => _lang('admin.content.artfilter.f1.time.any'),
+    '>' => _lang('admin.content.artfilter.f1.time.gt'),
+    '=' => _lang('admin.content.artfilter.f1.time.eq'),
+    '<' => _lang('admin.content.artfilter.f1.time.lt'),
+]) . '
 
 ' . Form::editTime('time', time()) . '
 
@@ -213,12 +212,12 @@ if (!$infopage) {
 <tr class="valign-top">
 <th>' . _lang('admin.content.form.settings') . '</th>
 <td>
-' . $boolSelect('public') . _lang('admin.content.form.public') . '<br>
-' . $boolSelect('visible') . _lang('admin.content.form.visible') . '<br>
-' . $boolSelect('confirmed') . _lang('admin.content.form.confirmed') . '<br>
-' . $boolSelect('comments') . _lang('admin.content.form.comments') . '<br>
-' . $boolSelect('rateon') . _lang('admin.content.form.artrate') . '<br>
-' . $boolSelect('showinfo') . _lang('admin.content.form.showinfo') . '
+' . $boolSelect('public') . ' ' . _lang('admin.content.form.public') . '<br>
+' . $boolSelect('visible') . ' ' . _lang('admin.content.form.visible') . '<br>
+' . $boolSelect('confirmed') . ' ' . _lang('admin.content.form.confirmed') . '<br>
+' . $boolSelect('comments') . ' ' . _lang('admin.content.form.comments') . '<br>
+' . $boolSelect('rateon') . ' ' . _lang('admin.content.form.artrate') . '<br>
+' . $boolSelect('showinfo') . ' ' . _lang('admin.content.form.showinfo') . '
 </td>
 </tr>
 
@@ -243,12 +242,12 @@ if (!$infopage) {
 <tr class="valign-top">
 <th>' . _lang('admin.content.form.settings') . '</th>
 <td>
-' . $boolSelect('new_public', true) . _lang('admin.content.form.public') . '<br>
-' . $boolSelect('new_visible', true) . _lang('admin.content.form.visible') . '<br>
-' . (User::hasPrivilege('adminconfirm') ? $boolSelect('new_confirmed', true) . _lang('admin.content.form.confirmed') . '<br>' : '') . '
-' . $boolSelect('new_comments', true) . _lang('admin.content.form.comments') . '<br>
-' . $boolSelect('new_rateon', true) . _lang('admin.content.form.artrate') . '<br>
-' . $boolSelect('new_showinfo', true) . _lang('admin.content.form.showinfo') . '
+' . $boolSelect('new_public', true) . ' ' . _lang('admin.content.form.public') . '<br>
+' . $boolSelect('new_visible', true) . ' ' . _lang('admin.content.form.visible') . '<br>
+' . (User::hasPrivilege('adminconfirm') ? $boolSelect('new_confirmed', true) . ' ' . _lang('admin.content.form.confirmed') . '<br>' : '') . '
+' . $boolSelect('new_comments', true) . ' ' . _lang('admin.content.form.comments') . '<br>
+' . $boolSelect('new_rateon', true) . ' ' . _lang('admin.content.form.artrate') . '<br>
+' . $boolSelect('new_showinfo', true) . ' ' . _lang('admin.content.form.showinfo') . '
 </td>
 </tr>
 

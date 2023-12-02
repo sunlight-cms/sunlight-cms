@@ -13,6 +13,7 @@ use Sunlight\Router;
 use Sunlight\Settings;
 use Sunlight\User;
 use Sunlight\Util\Form;
+use Sunlight\Util\Html;
 use Sunlight\Util\Password;
 use Sunlight\Util\Request;
 use Sunlight\Util\StringGenerator;
@@ -175,13 +176,12 @@ if (!$user_data_valid && $show_form) {
         $groupselect_items = DB::query('SELECT id,title FROM ' . DB::table('user_group') . ' WHERE blocked=0 AND reglist=1 ORDER BY title');
 
         if (DB::size($groupselect_items) != 0) {
-            $groupselect_content = '';
+            $group_choices = DB::queryRows('SELECT id,title FROM ' . DB::table('user_group') . ' WHERE blocked=0 AND reglist=1 ORDER BY title', 'id', 'title');
 
-            while ($groupselect_item = DB::row($groupselect_items)) {
-                $groupselect_content .= '<option value="' . $groupselect_item['id'] . '"' . Form::selectOption($groupselect_item['id'] == Settings::get('defaultgroup')) . '>' . $groupselect_item['title'] . "</option>\n";
-            }
-
-            $groupselect = ['label' => _lang('global.group'), 'content' => '<select name="group_id">' . $groupselect_content . '</select>'];
+            $groupselect = [
+                'label' => _lang('global.group'), 
+                'content' => Form::select('group_id', $group_choices, Settings::get('defaultgroup'), [], false),
+            ];
         }
     }
 

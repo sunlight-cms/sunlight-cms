@@ -155,10 +155,12 @@ $output .= Form::render(
         Settings::get('language_allowcustom')
             ? [
                 'label' => _lang('global.language'),
-                'content' => '<select name="language" class="inputsmall">'
-                    . '<option value="">' . _lang('global.default') . '</option>'
-                    . Core::$pluginManager->select('language', User::$data['language'])
-                    . '</select>'
+                'content' => Form::select(
+                    'language',
+                    ['' => _lang('global.default')] + Core::$pluginManager->choices('language'),
+                    User::$data['language'],
+                    ['class' => 'inputsmall']
+                ),
             ]
             : [],
         [

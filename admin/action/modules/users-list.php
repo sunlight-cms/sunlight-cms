@@ -164,10 +164,7 @@ $output .= '<p class="right">' . _lang('admin.users.list.totalusers') . ': ' . _
 $output .= '
     <p class="left">
         ' . _lang('global.bulk') . ':
-        <select name="bulk_action">
-            <option value=""></option>
-            <option value="del">' . _lang('global.delete') . '</option>
-        </select>
+        ' . Form::select('bulk_action', ['' => '', 'del' => _lang('global.delete')]) . '
         <input class="button" type="submit" onclick="return Sunlight.confirm()" value="' . _lang('global.do') . '">
     </p>
 

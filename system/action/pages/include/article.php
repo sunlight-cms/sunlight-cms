@@ -140,13 +140,14 @@ if ($_article['rateon'] && Settings::get('ratemode') != 0 && User::hasPrivilege(
 
     if (Settings::get('ratemode') == 1) {
         // percentage
-        $rateform .= "<select name=\"r\">\n";
+        $rate_choices = [];
 
         for ($x = 0; $x <= 100; $x += 10) {
-            $rateform .= '<option value="' . $x . '"' . Form::selectOption($x === 50) . '>' . $x . "%</option>\n";
+            $rate_choices[$x] = $x . '%';
         }
 
-        $rateform .= "</select> \n<input type=\"submit\" value=\"" . _lang('article.rate.submit') . '">' ;
+        $rateform .= Form::select('r', $rate_choices, 50);
+        $rateform .= " \n<input type=\"submit\" value=\"" . _lang('article.rate.submit') . '">' ;
     } else {
         // marks
         $rateform .= "<table class=\"article-rating\">\n";

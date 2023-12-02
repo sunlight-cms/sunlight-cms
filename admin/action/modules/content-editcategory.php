@@ -16,10 +16,16 @@ if ($continue) {
         $artorder_select .= '<option value="' . $x . '"' . Form::selectOption($x == $query['var1']) . '>' . _lang('admin.content.form.artorder.' . $x) . '</option>';
     }
 
+    $artorder_choices = [];
+
+    for ($x = 1; $x <= 4; ++$x) {
+        $artorder_choices[$x] = _lang('admin.content.form.artorder.' . $x);
+    }
+
     $custom_settings = '
     <tr><td colspan="2"><label><input type="checkbox" name="var3" value="1"' . Form::activateCheckbox($query['var3']) . '> ' . _lang('admin.content.form.showinfo') . '</label></td></tr>
     <tr><td colspan="2"><label><input type="checkbox" name="var4" value="1"' . Form::activateCheckbox($query['var4']) . '> ' . _lang('admin.content.form.showpics') . '</label></td></tr>
-    <tr><td><select name="var1" class="selectmax">' . $artorder_select . '</select></td><td>'._lang('admin.content.form.artorder') . '</td></tr>
+    <tr><td>' . Form::select('var1', $artorder_choices, $query['var1'], ['class' => 'selectmax']) . '</td><td>'._lang('admin.content.form.artorder') . '</td></tr>
     <tr><td><input type="number" min="1" name="var2" value="' . $query['var2'] . '" class="inputmax"></td><td>' . _lang('admin.content.form.artsperpage') . '</td></tr>
   ';
 

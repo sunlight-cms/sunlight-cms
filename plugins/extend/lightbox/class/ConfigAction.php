@@ -16,13 +16,15 @@ class ConfigAction extends BaseConfigAction
         return [
             'dark_mode' => [
                 'label' => _lang('lightbox.cfg.dark_mode'),
-                'input' => _buffer(function () use ($config) { ?>
-                    <select name="config[dark_mode]">
-                        <option value="" <?= Form::selectOption($config['dark_mode'] === null) ?>><?= _lang('lightbox.cfg.dark_mode.auto') ?></option>
-                        <option value="1" <?= Form::selectOption($config['dark_mode'] === true) ?>><?= _lang('global.yes') ?></option>
-                        <option value="0" <?= Form::selectOption($config['dark_mode'] === false) ?>><?= _lang('global.no') ?></option>
-                    </select>
-                    <?php }),
+                'input' => Form::select(
+                    'config[dark_mode]',
+                    [
+                        '' => _lang('lightbox.cfg.dark_mode.auto'),
+                        1 => _lang('global.yes'),
+                        0 => _lang('global.no'),
+                    ],
+                    $config['dark_mode'] === null ? '' : (int) $config['dark_mode']
+                ),
             ],
             'options' => [
                 'label' => _lang('lightbox.cfg.options'),

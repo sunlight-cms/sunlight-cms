@@ -132,7 +132,7 @@ return [
     'admin.content.form.delposts' => 'delete posts',
     'admin.content.form.deltopics' => 'delete topics',
     'admin.content.form.unregpost' => 'allow guest posts',
-    'admin.content.form.artorder' => 'sort articles by',
+    'admin.content.form.artorder' => 'article sorting',
     'admin.content.form.artorder.1' => 'publication time',
     'admin.content.form.artorder.2' => 'order of creation',
     'admin.content.form.artorder.3' => 'alphabetically (A-Z)',

@@ -6,6 +6,7 @@ use Sunlight\Router;
 use Sunlight\Settings;
 use Sunlight\User;
 use Sunlight\Util\Form;
+use Sunlight\Util\Html;
 
 defined('SL_ROOT') or exit;
 
@@ -36,19 +37,19 @@ if (isset($_REQUEST['group_id'])) {
     $group = -1;
 }
 
+$group_choices = [-1 => _lang('global.all')]
+    + DB::queryRows('SELECT id,title FROM ' . DB::table('user_group') . ' WHERE id!=' . User::GUEST_GROUP_ID . ' ORDER BY level DESC', 'id', 'title');
+
 // group select
 $output .= '
   <form action="' . _e(Router::module('ulist')) . '" method="get">
-  <strong>' . _lang('user.list.groupfilter') . ':</strong> <select name="group_id">
-  <option value="-1">' . _lang('global.all') . '</option>
+    <strong>' . _lang('user.list.groupfilter') . ':</strong>
+    ' . Form::select('group_id', $group_choices, $group, [], false) . '
   ';
-$query = DB::query('SELECT id,title FROM ' . DB::table('user_group') . ' WHERE id!=' . User::GUEST_GROUP_ID . ' ORDER BY level DESC');
 
-while ($item = DB::row($query)) {
-    $output .= '<option value="' . $item['id'] . '"' . Form::selectOption($item['id'] == $group) . '>' . $item['title'] . '</option>';
-}
-
-$output .= '</select> <input type="submit" value="' . _lang('global.apply') . '"></form>';
+$output .= '
+    <input type="submit" value="' . _lang('global.apply') . '">
+</form>';
 
 // table
 $paging = Paginator::paginateTable(

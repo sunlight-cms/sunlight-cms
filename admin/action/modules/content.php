@@ -6,6 +6,7 @@ use Sunlight\Message;
 use Sunlight\Page\Page;
 use Sunlight\Router;
 use Sunlight\User;
+use Sunlight\Util\Form;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
 
@@ -123,22 +124,18 @@ if (
     }
 
     // page type list
-    $create_list = '';
+    $create_choices = [];
 
     if (User::hasPrivilege('adminpages')) {
         foreach (Page::TYPES as $type => $name) {
             if ($type != Page::PLUGIN && User::hasPrivilege('admin' . $name)) {
-                $create_list .= '<option value="' . $type . '">' . _lang('page.type.' . $name) . "</option>\n";
+                $create_choices[$type] = _lang('page.type.' . $name);
             }
         }
 
         // add plugin page types
-        $plugin_types = Page::getPluginTypes();
-
-        if (User::hasPrivilege('adminpluginpage') && !empty($plugin_types)) {
-            foreach ($plugin_types as $plugin_type => $plugin_label) {
-                $create_list .= '<option value="' . $plugin_type . '">' . $plugin_label . "</option>\n";
-            }
+        if (User::hasPrivilege('adminpluginpage')) {
+            $create_choices += Page::getPluginTypes();
         }
     }
 
@@ -162,7 +159,7 @@ if (
     ' . (User::hasPrivilege('adminpages') ? '
     <form action="' . _e(Router::admin('content')) . '" method="post" class="inline">
         <img src="' . _e(Router::path('admin/public/images/icons/new.png')) . '" alt="new" class="icon">
-        <select name="new_page_type">' . $create_list . '</select>
+        ' . Form::select('new_page_type', $create_choices) . '
         <input class="button" type="submit" value="' . _lang('global.create') . '">
     ' . Xsrf::getInput() . '</form>
 
