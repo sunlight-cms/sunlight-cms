@@ -213,6 +213,32 @@ abstract class Form
     }
 
     /**
+     * Render an <input>
+     */
+    static function input(?string $name, string $type, ?string $value, array $attrs = [], bool $doubleEncodeValue = true): string
+    {
+        return '<input '
+            . ($name !== null ? ' name="' . _e($name) . '"' : '')
+            . ' type="' . _e($type) . '"'
+            . ($value !== null ? ' value="' . _e($value, $doubleEncodeValue) . '"' : '')
+            . GenericTemplates::renderAttrs($attrs)
+            . '>';
+    }
+
+    /**
+     * Render a <textarea>
+     */
+    static function textarea(?string $name, ?string $content, array $attrs = [], bool $doubleEncodeContent = true): string
+    {
+        return '<textarea'
+            . ($name !== null ? ' name="' . _e($name) . '"' : '')
+            . GenericTemplates::renderAttrs($attrs)
+            . '>'
+            . _e($content ?? '', $doubleEncodeContent)
+            . '</textarea>';
+    }
+
+    /**
      * Render a <select>
      * 
      * @param string $name select name
