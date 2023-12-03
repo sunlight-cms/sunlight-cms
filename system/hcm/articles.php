@@ -106,9 +106,17 @@ return function ($type = 'new', $limit = null, $perex = 'perex', $info = true, $
         . ' WHERE ' . $cond . ' ORDER BY ' . $rorder . ' LIMIT ' . $limit
     );
 
+    if (DB::size($query) === 0) {
+        return '';
+    }
+
+    $result .= "<div class=\"list list-articles\">\n";
+
     while ($item = DB::row($query)) {
         $result .= Article::renderPreview($item, $userQuery, $info, $show_perex);
     }
+
+    $result .= "</div>\n";
 
     return $result;
 };

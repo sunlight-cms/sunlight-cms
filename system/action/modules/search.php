@@ -76,6 +76,10 @@ foreach ($search->getSources() as $key => $source) {
 $result_count = 0;
 
 foreach ($search->search() as $result) {
+    if ($result_count === 0) {
+        $output .= "<div class=\"list list-search\">\n";
+    }
+
     $output .= _buffer(function () use ($result) { ?>
     <div class="list-item">
         <h2 class="list-title">
@@ -97,6 +101,8 @@ foreach ($search->search() as $result) {
     ++$result_count;
 }
 
-if ($result_count === 0) {
+if ($result_count > 0) {
+    $output .= "</div>\n";
+} else {
     $output .= Message::ok(_lang('mod.search.noresult'));
 }

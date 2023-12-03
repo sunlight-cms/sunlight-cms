@@ -59,6 +59,12 @@ return function ($limit = null, $pages = null, $type = null) {
         . ' ORDER BY id DESC LIMIT ' . $limit
     );
 
+    if (DB::size($query) === 0) {
+        return '';
+    }
+
+    $result .= "<div class=\"list list-posts\">\n";
+
     while ($item = DB::row($query)) {
         if ($item['author'] != -1) {
             $authorname = Router::userFromQuery($userQuery, $item);
@@ -75,6 +81,8 @@ return function ($limit = null, $pages = null, $type = null) {
     [_lang('global.time'), GenericTemplates::renderTime($item['time'], 'post')],
 ]) . "</div>\n";
     }
+
+    $result .= "</div>\n";
 
     return $result;
 };

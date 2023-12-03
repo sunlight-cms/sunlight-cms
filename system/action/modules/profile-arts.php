@@ -61,9 +61,13 @@ $arts = DB::query(
 );
 
 if (DB::size($arts) != 0) {
+    $output .= "<div class=\"list list-articles\">\n";
+
     while ($art = DB::row($arts)) {
         $output .= Article::renderPreview($art, $userQuery);
     }
+
+    $output .= "</div>\n";
 
     if (Paginator::atBottom()) {
         $output .= $paging['paging'];

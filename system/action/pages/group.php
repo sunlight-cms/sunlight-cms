@@ -29,6 +29,8 @@ Extend::call('page.group.content.after', $extend_args);
 $items = DB::query('SELECT id,title,slug,type,type_idt,perex,var1 FROM ' . DB::table('page') . ' WHERE node_parent=' . $id . ' AND visible=1 ORDER BY ord');
 
 if (DB::size($items) != 0) {
+    $output .= "<div class=\"list list-pages\">\n";
+
     while ($item = DB::row($items)) {
         $extendArgs = Extend::args($output, ['item' => &$item]);
 
@@ -130,6 +132,8 @@ if (DB::size($items) != 0) {
 
         $output .= "</div>\n";
     }
+
+    $output .= "</div>\n";
 } else {
     $output .= '<p>' . _lang('global.nokit') . '</p>';
 }
