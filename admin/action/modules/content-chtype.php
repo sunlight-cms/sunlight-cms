@@ -98,7 +98,7 @@ $output .= _buffer(function () use ($new_type_choices) { ?>
             </tr>
             <tr>
                 <td></td>
-                <td><input type="submit" value="<?= _lang('global.do') ?>"></td>
+                <td><?= Form::input('submit', null, _lang('global.do')) ?></td>
             </tr>
         </table>
         <?= Xsrf::getInput() ?>

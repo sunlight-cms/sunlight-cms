@@ -149,7 +149,7 @@ $output .= _buffer(function () use ($id, $box, $new, $templates_to_choose_slot_f
         <table class="formtable">
             <tr>
                 <th><?= _lang('admin.content.form.title') ?></th>
-                <td><input type="text" class="inputbig" maxlength="255"<?= Form::restorePostValueAndName('title', $box['title'], false) ?>></td>
+                <td><?= Form::input('text', 'title', Request::post('title', $box['title']), ['class' => 'inputbig', 'maxlength' => 255], false) ?></td>
             </tr>
             <tr>
                 <th><?= _lang('admin.content.boxes.slot') ?></th>
@@ -157,22 +157,22 @@ $output .= _buffer(function () use ($id, $box, $new, $templates_to_choose_slot_f
             </tr>
             <tr>
                 <th><?= _lang('admin.content.form.ord') ?></th>
-                <td><input type="number" min="0" class="inputsmall"<?= Form::restorePostValueAndName('ord', $box['ord']) ?>></td>
+                <td><?= Form::input('number', 'ord', Request::post('ord', $box['ord']), ['class' => 'inputsmall', 'min' => 0]) ?></td>
             </tr>
             <tr>
                 <th><?= _lang('admin.content.form.content') ?></th>
-                <td><?= Admin::editor('box-content', 'content', Form::restorePostValue('content', $box['content'], false), ['rows' => 9, 'cols' => 33, 'class' => 'areasmallwide']) ?></td>
+                <td><?= Admin::editor('box-content', 'content', Request::post('content', $box['content']), ['rows' => 9, 'cols' => 33, 'class' => 'areasmallwide']) ?></td>
             </tr>
             <tr>
                 <th><?= _lang('admin.content.form.class') ?></th>
-                <td><input type="text" class="inputbig" maxlength="255"<?= Form::restorePostValueAndName('class', $box['class']) ?>></td>
+                <td><?= Form::input('text', 'class', Request::post('class', $box['class']), ['class' => 'inputbig', 'maxlength' => 255]) ?></td>
             </tr>
             <tr>
                 <th><?= _lang('admin.content.form.settings') ?></th>
                 <td>
                     <label><input type="checkbox"<?= Form::restoreCheckedAndName('box_edit', 'visible', $box['visible']) ?>> <?= _lang('admin.content.form.visible') ?></label>
                     <label><input type="checkbox"<?= Form::restoreCheckedAndName('box_edit', 'public', $box['public']) ?>> <?= _lang('admin.content.form.public') ?></label>
-                    <label><input type="number" min="0" max="<?= User::MAX_LEVEL ?>" class="inputsmaller"<?= Form::restorePostValueAndName('level', $box['level']) ?>> <?= _lang('admin.content.form.level') ?></label>
+                    <label><?= Form::input('number', 'level', Request::post('level', $box['level']), ['class' => 'inputsmaller', 'min' => 0, 'max' => User::MAX_LEVEL]) ?> <?= _lang('admin.content.form.level') ?></label>
                 </td>
             </tr>
             <tr class="valign-top">
@@ -194,7 +194,7 @@ $output .= _buffer(function () use ($id, $box, $new, $templates_to_choose_slot_f
             <tr>
                 <td></td>
                 <td>
-                    <input type="submit" class="button bigger" name="box_edit" value="<?= _lang('global.savechanges') ?>" accesskey="s">
+                    <?= Form::input('submit', 'box_edit', _lang('global.savechanges'), ['class' => 'button bigger', 'accesskey' => 's']) ?>
                 </td>
             </tr>
         </table>

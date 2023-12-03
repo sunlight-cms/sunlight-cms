@@ -192,7 +192,7 @@ $editable_settings = [
             [
                 'name' => 'allowed_file_ext',
                 'format' => 'text',
-                'input' => '<textarea name="allowed_file_ext" class="areasmall" rows="9" cols="33">' . _e(Settings::get('allowed_file_ext')) . '</textarea>',
+                'input' => Form::textarea('allowed_file_ext', Settings::get('allowed_file_ext'), ['class' => 'areasmall', 'rows' => 9, 'cols' => 33]),
                 'transform_back' => function (string $list) {
                     return implode(',', preg_split('{\s*+,\s*+}', $list, -1, PREG_SPLIT_NO_EMPTY));
                 },
@@ -317,7 +317,7 @@ $output .= ($saved ? Message::ok(_lang('admin.settings.saved')) : '') . '
 <form action="' . _e(Router::admin('settings')) . '" method="post">
 
 <div id="settingsnav">
-<input type="submit"  class="button bigger" value="' . _lang('global.savechanges') . '" accesskey="s">
+' . Form::input('submit', null, _lang('global.savechanges'), ['class' => 'button bigger', 'accesskey' => 's']) . '
 <ul>
 ';
 
@@ -360,48 +360,41 @@ foreach ($editable_settings as $settings_category => $settings_category_data) {
         // input
         if (!isset($item['input'])) {
             // attributes
-            $inputAttrs = ' name="' . $item['name'] . '"';
+            $input_name = $item['name'];
+            $inputAttrs = [];
 
             if (!isset($item['id']) || $item['id']) {
-                $inputAttrs .= ' id="' . $id . '"';
+                $inputAttrs['id'] = $id;
             }
 
             if (isset($item['disabled']) && $item['disabled']) {
-                $inputAttrs .= ' disabled="disabled"';
+                $inputAttrs['disabled'] = true;
             }
 
             if ($item['format'] !== 'bool') {
                 if (!isset($item['input_class'])) {
                     if (!isset($item['choices'])) {
-                        $inputAttrs .= ' class="inputmedium"';
+                        $inputAttrs['class'] = 'inputmedium';
                     }
                 } else {
-                    $inputAttrs .= ' class="' . $item['input_class'] . '"';
+                    $inputAttrs['class'] = $item['input_class'];
                 }
             }
 
             // input
             if (isset($item['choices'])) {
-                $input = "<select{$inputAttrs}>\n";
-
-                foreach ($item['choices'] as $choiceValue => $choiceLabel) {
-                    $input .= '<option' . Form::selectOption($choiceValue == $value) . ' value="' . _e($choiceValue) . '">' . $choiceLabel . "</option>\n";
-                }
-
-                $input .= '</select>';
+                $input = Form::select($input_name, $item['choices'], $value, $inputAttrs);
             } else {
                 switch ($item['format']) {
                     case 'int':
-                        $input = '<input type="number"' . $inputAttrs . ' value="' . _e($value) . '">';
+                        $input = Form::input('number', $input_name, $value, $inputAttrs);
                         break;
                     case 'bool':
-                        $input = '<input type="checkbox"' . $inputAttrs . ' value="1"' . Form::activateCheckbox($value) . '>';
+                        $input = Form::input('checkbox', $input_name, $value, $inputAttrs += ['checked' => (bool) $value]);
                         break;
                     case 'html':
                     default:
-                        $input = '<input type="text"' . $inputAttrs . ' value="'
-                            . ($item['format'] === 'html' ? $value : _e($value))
-                            . '">';
+                        $input = Form::input('text', $input_name, $value, $inputAttrs, !($item['format'] === 'html'));
                         break;
                 }
             }

@@ -185,32 +185,32 @@ if ($continue) {
 
   <tr>
   <th>' . _lang('admin.content.form.question') . '</th>
-  <td><input type="text" name="question" class="inputmedium" value="' . $query['question'] . '" maxlength="255"></td>
+  <td>' . Form::input('text', 'question', $query['question'], ['class' => 'inputmedium', 'maxlength' => 255], false) . '</td>
   </tr>
 
   ' . $author_select . '
 
   <tr class="valign-top">
   <th>' . _lang('admin.content.form.answers') . '</th>
-  <td><textarea name="answers" rows="25" cols="94" class="areamedium">' . $query['answers'] . '</textarea></td>
+  <td>' . Form::textarea('answers', $query['answers'], ['class' => 'areamedium', 'rows' => 25, 'cols' => 94]) . '</td>
   </tr>
 
   ' . (!$new ? '<tr>
   <th>' . _lang('admin.content.form.hcm') . '</th>
-  <td><input type="text" name="hcm" value="' . _e(Hcm::compose("poll,{$id}")) . '" readonly="readonly" onclick="this.select();" class="inputmedium"></td>
+  <td>' . Form::input('text', 'hcm', Hcm::compose("poll,{$id}"), ['class' => 'inputmedium', 'readonly' => true, 'onclick' => 'this.select()']) . '</td>
   </tr>' : '') . '
 
   <tr>
   <th>' . _lang('admin.content.form.settings') . '</th>
   <td>
-  <label><input type="checkbox" name="locked" value="1"' . Form::activateCheckbox($query['locked']) . '> ' . _lang('admin.content.form.locked') . '</label> 
-  ' . (!$new ? '<label><input type="checkbox" name="reset" value="1"> ' . _lang('admin.content.polls.reset') . '</label>' : '') . '
+  <label>' . Form::input('checkbox', 'locked', '1', ['checked' => (bool) $query['locked']]) . ' ' . _lang('admin.content.form.locked') . '</label> 
+  ' . (!$new ? '<label>' . Form::input('checkbox', 'reset', '1') . ' ' . _lang('admin.content.polls.reset') . '</label>' : '') . '
   </td>
   </tr>
 
   <tr><td></td>
   <td>
-    <input type="submit" value="' . $submitcaption . '" accesskey="s">'
+    ' . Form::input('submit', null, $submitcaption, ['accesskey' => 's'])
     . (!$new
             ? '<span class="customsettings"><a href="' . _e(Xsrf::addToUrl(Router::admin('content-polls', ['query' => ['del' => $id]]))) . '" onclick="return Sunlight.confirm();">'
                 . '<img src="' . _e(Router::path('admin/public/images/icons/delete.png')) . '" class="icon" alt="del">'

@@ -148,19 +148,19 @@ if ($form) {
     $inputs = [];
 
     if ($post['author'] == -1) {
-        $inputs[] = ['label' => _lang('posts.guestname'), 'content' => '<input type="text" name="guest" class="inputsmall" value="' . $post['guest'] . '" maxlength="24">'];
+        $inputs[] = ['label' => _lang('posts.guestname'), 'content' => Form::input('text', 'guest', $post['guest'], ['class' => 'inputsmall', 'maxlength' => 24]), false];
     }
 
     if ($post['xhome'] == -1 && in_array($post['type'], [Post::FORUM_TOPIC, Post::PRIVATE_MSG])) {
-        $inputs[] = ['label' => _lang((($post['type'] != Post::FORUM_TOPIC) ? 'posts.subject' : 'posts.topic')), 'content' => '<input type="text" name="subject" class="inputmedium" maxlength="48" value="' . $post['subject'] . '">' ];
+        $inputs[] = ['label' => _lang((($post['type'] != Post::FORUM_TOPIC) ? 'posts.subject' : 'posts.topic')), 'content' => Form::input('text', 'subject', $post['subject'], ['class' => 'inputmedium', 'maxlength' => 48]), false];
     }
 
-    $inputs[] = ['label' => _lang('posts.text'), 'content' => '<textarea name="text" class="areamedium" rows="5" cols="33">' . $post['text'] . '</textarea>', 'top' => true];
+    $inputs[] = ['label' => _lang('posts.text'), 'content' => Form::textarea('text', $post['text'], ['class' => 'areamedium', 'rows' => 5, 'cols' => 33]), 'top' => true];
     $inputs[] = ['label' => '', 'content' => PostForm::renderControls('postform', 'text', $post['type'] != Post::SHOUTBOX_ENTRY)];
     $inputs[] = Form::getSubmitRow([
         'text' => _lang('global.save'),
         'append' => ' ' . PostForm::renderPreviewButton('postform', 'text')
-            . (($post['type'] != Post::PRIVATE_MSG || $post['xhome'] != -1) ? '<br><br><label><input type="checkbox" name="delete" value="1"> ' . _lang('mod.editpost.delete') . '</label>' : ''),
+            . (($post['type'] != Post::PRIVATE_MSG || $post['xhome'] != -1) ? '<br><br><label>' . Form::input('checkbox', 'delete', '1') . ' ' . _lang('mod.editpost.delete') . '</label>' : ''),
     ]);
 
     $output .= Form::render(

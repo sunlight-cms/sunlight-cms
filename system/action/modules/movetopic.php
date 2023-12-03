@@ -91,7 +91,7 @@ if (empty($forums)) {
 }
 
 $output .= '</select>
-<input type="submit" value="' . _lang('mod.movetopic.submit') . '">
+' . Form::input('submit', null, _lang('mod.movetopic.submit')) . '
 </p>
 ' . Xsrf::getInput() . '</form>
 ';

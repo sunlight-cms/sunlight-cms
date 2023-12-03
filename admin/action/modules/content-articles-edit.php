@@ -335,12 +335,12 @@ if ($continue) {
 
     if (isset($query['picture_uid'])) {
         $picture .= '<img src="' . _e(Router::file(Article::getImagePath($query['picture_uid']))) . '" alt="article picture" id="article-edit-picture-file">
-<label id="article-edit-picture-delete"><input type="checkbox" name="picture-delete" value="1"> ' . _lang('global.delete') . '</label>';
+<label id="article-edit-picture-delete">' . Form::input('checkbox', 'picture-delete', '1') . ' ' . _lang('global.delete') . '</label>';
     } else {
         $picture .= '<img src="' . _e(Router::path('admin/public/images/art-no-pic.png')) . "\" alt=\"no picture\" id=\"article-edit-picture-file\">\n";
     }
 
-    $picture .= "<input type=\"file\" name=\"picture\" id=\"article-edit-picture-upload\">\n";
+    $picture .= Form::input('file', 'picture', null, ['id' => 'article-edit-picture-upload']) . "\n";
 
     // form
     $output .= Admin::backlink($backlink) . '
@@ -370,15 +370,15 @@ if ($continue) {
                             </tr>
                             <tr>
                                 <th>' . _lang('admin.content.form.title') . '</th>
-                                <td><input type="text" name="title" value="' . $query['title'] . '" class="inputmax"></td>
+                                <td>' . Form::input('text', 'title', $query['title'], ['class' => 'inputmax'], false) . '</td>
                             </tr>
                             <tr>
                                 <th>' . _lang('admin.content.form.slug') . '</th>
-                                <td><input type="text" name="slug" value="' . $query['slug'] . '" maxlength="255" class="inputmax"></td>
+                                <td>' . Form::input('text', 'slug', $query['slug'], ['class' => 'inputmax', 'maxlength' => 255]) . '</td>
                             </tr>
                             <tr>
                                 <th>' . _lang('admin.content.form.description') . '</th>
-                                <td><input type="text" name="description" value="' . $query['description'] . '" maxlength="255" class="inputmax"></td>
+                                <td>' . Form::input('text', 'description', $query['description'], ['class' => 'inputmax', 'maxlength' => 255], false) . '</td>
                             </tr>
                             <tr class="valign-top">
                                 <th>' . _lang('admin.content.form.perex') . '</th>
@@ -393,7 +393,7 @@ if ($continue) {
                             ' . Extend::buffer('admin.article.form', ['article' => $query]) . '
                             <tr>
                                 <td></td>
-                                <td id="ae-lastrow"><br><input type="submit" class="button bigger" value="' . _lang($submittext) . '" accesskey="s">'
+                                <td id="ae-lastrow"><br>' . Form::input('submit', null, _lang($submittext), ['class' => 'button bigger', 'accesskey' => 's'])
                                 . (!$new ? '
                                     <a class="button bigger" href="' . _e(Router::article($query['id'], $query['slug'], $query['cat_slug'])) . '" target="_blank">'
                                         . '<img src="' . _e(Router::path('admin/public/images/icons/show.png')) . '" alt="show" class="icon">'
@@ -438,18 +438,18 @@ if ($continue) {
                             <legend>' . _lang('admin.content.form.settings') . '</legend>
                             <table>
                                 <tbody>
-                                    <tr><td><label><input type="checkbox" name="public" value="1"' . Form::activateCheckbox($query['public']) . '> ' . _lang('admin.content.form.public') . '</label></td></tr>
-                                    <tr><td><label><input type="checkbox" name="visible" value="1"' . Form::activateCheckbox($query['visible']) . '> ' . _lang('admin.content.form.visible') . '</label></td></tr>
+                                    <tr><td><label>' . Form::input('checkbox', 'public', '1', ['checked' => (bool) $query['public']]) . ' ' . _lang('admin.content.form.public') . '</label></td></tr>
+                                    <tr><td><label>' . Form::input('checkbox', 'visible', '1', ['checked' => (bool) $query['visible']]) . ' ' . _lang('admin.content.form.visible') . '</label></td></tr>
                                     ' . ((User::hasPrivilege('adminconfirm') || (User::hasPrivilege('adminautoconfirm') && User::equals($query['author'])))
-                                        ? '<tr><td><label><input type="checkbox" name="confirmed" value="1"' . Form::activateCheckbox($query['confirmed']) . '> ' . _lang('admin.content.form.confirmed') . '</label></td></tr>'
+                                        ? '<tr><td><label>' . Form::input('checkbox', 'confirmed', '1', ['checked' => (bool) $query['confirmed']]) . ' ' . _lang('admin.content.form.confirmed') . '</label></td></tr>'
                                         : '') . '
-                                    <tr><td><label><input type="checkbox" name="comments" value="1"' . Form::activateCheckbox($query['comments']) . '> ' . _lang('admin.content.form.comments') . '</label></td></tr>
-                                    <tr><td><label><input type="checkbox" name="commentslocked" value="1"' . Form::activateCheckbox($query['commentslocked']) . '> ' . _lang('admin.content.form.commentslocked') . '</label></td></tr>
-                                    <tr><td><label><input type="checkbox" name="rateon" value="1"' . Form::activateCheckbox($query['rateon']) . '> ' . _lang('admin.content.form.artrate') . '</label></td></tr>
-                                    <tr><td><label><input type="checkbox" name="showinfo" value="1"' . Form::activateCheckbox($query['showinfo']) . '> ' . _lang('admin.content.form.showinfo') . '</label></td></tr>
-                                    ' . (!$new ? '<tr><td><label><input type="checkbox" name="resetrate" value="1"> ' . _lang('admin.content.form.resetartrate') . ' <small>(' . $rate . ')</small></label></td></tr>' : '') . '
-                                    ' . (!$new ? '<tr><td><label><input type="checkbox" name="delcomments" value="1"> ' . _lang('admin.content.form.delcomments') . ' <small>(' . _num(DB::count('post', 'home=' . DB::val($query['id']) . ' AND type=' . Post::ARTICLE_COMMENT)) . ')</small></label></td></tr>' : '') . '
-                                    ' . (!$new ? '<tr><td><label><input type="checkbox" name="resetread" value="1"> ' . _lang('admin.content.form.resetviews') . ' <small>(' . _num($view_count) . ')</small></label></td></tr>' : '') . '
+                                    <tr><td><label>' . Form::input('checkbox', 'comments', '1', ['checked' => (bool) $query['comments']]) . ' ' . _lang('admin.content.form.comments') . '</label></td></tr>
+                                    <tr><td><label>' . Form::input('checkbox', 'commentslocked', '1', ['checked' => (bool) $query['commentslocked']]) . ' ' . _lang('admin.content.form.commentslocked') . '</label></td></tr>
+                                    <tr><td><label>' . Form::input('checkbox', 'rateon', '1', ['checked' => (bool) $query['rateon']]) . ' ' . _lang('admin.content.form.artrate') . '</label></td></tr>
+                                    <tr><td><label>' . Form::input('checkbox', 'showinfo', '1', ['checked' => (bool) $query['showinfo']]) . ' ' . _lang('admin.content.form.showinfo') . '</label></td></tr>
+                                    ' . (!$new ? '<tr><td><label>' . Form::input('checkbox', 'resetrate', '1') . ' ' . _lang('admin.content.form.resetartrate') . ' <small>(' . $rate . ')</small></label></td></tr>' : '') . '
+                                    ' . (!$new ? '<tr><td><label>' . Form::input('checkbox', 'delcomments', '1') . ' ' . _lang('admin.content.form.delcomments') . ' <small>(' . _num(DB::count('post', 'home=' . DB::val($query['id']) . ' AND type=' . Post::ARTICLE_COMMENT)) . ')</small></label></td></tr>' : '') . '
+                                    ' . (!$new ? '<tr><td><label>' . Form::input('checkbox', 'resetread', '1') . ' ' . _lang('admin.content.form.resetviews') . ' <small>(' . _num($view_count) . ')</small></label></td></tr>' : '') . '
                                 </tbody>
                             </table>
                         </fieldset>

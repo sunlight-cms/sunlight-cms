@@ -7,6 +7,7 @@ use Sunlight\Message;
 use Sunlight\Page\Page;
 use Sunlight\Router;
 use Sunlight\User;
+use Sunlight\Util\Form;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
 
@@ -43,11 +44,11 @@ if (isset($_GET['category'])) {
 // output
 $output .= '
 <form class="cform" action="' . _e(Router::admin(null)) . '" method="get">
-    <input type="hidden" name="p" value="content-confirm">'
+    ' . Form::input('hidden', 'p', 'content-confirm')
     . _lang('admin.content.confirm.filter') . ': '
     . Admin::pageSelect('category', ['type' => Page::CATEGORY, 'selected' => $category, 'empty_item' => _lang('global.all')])
     . '
-    <input type="submit" value="' . _lang('global.do') . '">
+    ' . Form::input('submit', null, _lang('global.do')) . '
 </form>
 <div class="hr"><hr></div>
 

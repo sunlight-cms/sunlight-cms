@@ -112,7 +112,7 @@ $output .= Form::render(
     [
         [
             'label' => _lang('global.email'),
-            'content' => '<input type="email" class="inputsmall" maxlength="191"' . Form::restorePostValueAndName('email', '@') . ' autocomplete="email">',
+            'content' => Form::input('email', 'email', Request::post('email', '@'), ['class' => 'inputsmall', 'autocomplete' => 'email', 'maxlength' => 191]),
         ],
         Captcha::init(),
         Form::getSubmitRow(['text' => _lang('global.send')]),

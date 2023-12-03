@@ -106,11 +106,11 @@ $output .= Form::render(
     [
         [
             'label' => _lang('global.user'),
-            'content' => '<input type="text" class="inputsmall" value="' . _e($user['username']) . '" disabled>',
+            'content' => Form::input('text', null, $user['username'], ['class' => 'inputsmall', 'disabled' => true]),
         ],
         [
             'label' => _lang('mod.settings.email.new'),
-            'content' => '<input type="text" class="inputsmall" value="' . _e($newEmail) . '" disabled>',
+            'content' => Form::input('text', null, $newEmail, ['class' => 'inputsmall', 'disabled' => true]),
         ],
         Form::getSubmitRow(['text' => _lang('mod.settings.email.submit'), 'name' => 'confirm']),
     ]

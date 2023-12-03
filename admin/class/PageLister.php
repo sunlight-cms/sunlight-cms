@@ -10,6 +10,7 @@ use Sunlight\Page\Page;
 use Sunlight\Plugin\TemplateService;
 use Sunlight\Router;
 use Sunlight\Settings;
+use Sunlight\Util\Form;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
 
@@ -307,8 +308,8 @@ abstract class PageLister
 
         if ($options['sortable']) {
             $output .= '<p class="separated">
-                <input type="submit" value="' . _lang('global.savechanges') . '" accesskey="s">
-                <input type="submit" name="reset" value="' . _lang('global.reset') . '">
+                ' . Form::input('submit', null, _lang('global.savechanges'), ['accesskey' => 's']) . '
+                ' . Form::input('submit', 'reset', _lang('global.reset')) . '
             </p>';
 
             $output .= Xsrf::getInput() . '</form>';
@@ -403,7 +404,7 @@ abstract class PageLister
 
         // order input
         if ($options['sortable']) {
-            $output .= '<td class="page-list-sortcell"><span class="sortable-handle"></span><input class="page-list-ord" type="text" name="ord[' . $page['id'] . ']" value="' . $page['ord'] . "\"></td>\n";
+            $output .= '<td class="page-list-sortcell"><span class="sortable-handle"></span>' . Form::input('text', 'ord[' . $page['id'] . ']', $page['ord'], ['class' => 'page-list-ord']) . "</td>\n";
         }
 
         // title
@@ -420,7 +421,7 @@ abstract class PageLister
             $output .= '<span' . $itemAttrs . '><span class="page-list-title"><span>';
 
             if ($options['title_editable']) {
-                $output .= '<input class="inputbig" maxlength="255" type="text" name="title[' . $page['id'] . ']" value="' . $page['title'] . '">';
+                $output .= Form::input('text', 'title[' . $page['id'] . ']', $page['title'], ['class' => 'inputbig', 'maxlength' => 255], false);
             } else {
                 $output .= $page['title'];
             }

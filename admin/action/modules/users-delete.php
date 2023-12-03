@@ -3,6 +3,7 @@
 use Sunlight\Database\Database as DB;
 use Sunlight\Message;
 use Sunlight\User;
+use Sunlight\Util\Form;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
 
@@ -40,7 +41,7 @@ if ($continue) {
             $output .= '
 <p class="bborder">' . _lang('admin.users.deleteuser.confirmation', ['%user%' => $query['username']]) . '
 <form method="post">
-    <input type="submit" name="confirmed" value="' . _lang('admin.users.deleteuser') . '">
+    ' . Form::input('submit', 'confirmed', _lang('admin.users.deleteuser')) . '
 ' . Xsrf::getInput() . '</form>';
         }
     } else {

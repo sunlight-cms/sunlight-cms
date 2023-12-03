@@ -6,6 +6,7 @@ use Sunlight\Router;
 use Sunlight\User;
 use Sunlight\Util\Environment;
 use Sunlight\Util\Filesystem;
+use Sunlight\Util\Form;
 use Sunlight\Util\Request;
 use Sunlight\Util\Response;
 use Sunlight\Util\StringHelper;
@@ -77,7 +78,7 @@ $backup_list = '';
 if (!empty($backup_files)) {
     foreach ($backup_files as $backup_file => $backup_ctime) {
         $backup_list .= '<tr>
-    <td><label><input type="radio" name="backup_file" value="' . _e($backup_file) . '" required> ' . _e($backup_file) . '</label></td>
+    <td><label>' . Form::input('radio', 'backup_file', $backup_file, ['required' => true]) . ' ' . _e($backup_file) . '</label></td>
     <td>' . GenericTemplates::renderFileSize(filesize($backup_dir . '/' . $backup_file)) . '</td>
     <td>' . GenericTemplates::renderTime($backup_ctime, 'backup') . '</td>
     <td>'
@@ -100,11 +101,11 @@ $output .= $message . '
 
     <form method="post" action="' . _e(Router::admin('backup-create')) . '">
         <p>
-            <label><input type="radio" name="type" value="partial" required> ' . _lang('admin.backup.create.partial') . '</label> <small>(' . _lang('admin.backup.create.partial.help') . ')</small><br>
-            <label><input type="radio" name="type" value="full" required> ' . _lang('admin.backup.create.full') . '</label> <small>(' . _lang('admin.backup.create.full.help') . ')</small>
+            <label>' . Form::input('radio', 'type', 'partial', ['required' => true]) . ' ' . _lang('admin.backup.create.partial') . '</label> <small>(' . _lang('admin.backup.create.partial.help') . ')</small><br>
+            <label>' . Form::input('radio', 'type', 'full', ['required' => true]) . ' ' . _lang('admin.backup.create.full') . '</label> <small>(' . _lang('admin.backup.create.full.help') . ')</small>
         </p>
         
-        <input class="button" type="submit" value="' . _lang('global.continue') . '">
+        ' . Form::input('submit', null, _lang('global.continue'), ['class' => 'button']) . '
     ' . Xsrf::getInput() . '
     </form>
 </fieldset>
@@ -118,13 +119,13 @@ $output .= $message . '
             <tr>
                 <th>' . _lang('global.file') . '</th>
                 <td>
-                    <input type="file" name="backup">
+                    ' . Form::input('file', 'backup') . '
                     ' . Environment::renderUploadLimit() . '
                 </td>
             </tr>
             <tr>
                 <td></td>
-                <td><input class="button" type="submit" name="upload" value="' . _lang('global.upload') . '"></td>
+                <td>' . Form::input('submit', 'upload', _lang('global.upload'), ['class' => 'button']) . '</td>
             </tr>
         </table>
     ' . Xsrf::getInput() . '
@@ -151,9 +152,9 @@ $output .= $message . '
         </table>
 
         <p>
-            <input class="button" type="submit" value="' . _lang('admin.backup.restore.submit.load') . '">'
+            ' . Form::input('submit', null, _lang('admin.backup.restore.submit.load'), ['class' => 'button'])
     . ' ' . _lang('global.or') . ' '
-    . '<input class="button" onclick="return Sunlight.confirm()" type="submit" formaction="' . _e(Router::admin('backup')) . '" name="delete" value="' . _lang('admin.backup.restore.submit.delete') . '">
+    . Form::input('submit', 'delete', _lang('admin.backup.restore.submit.delete'), ['class' => 'button', 'onclick' => 'return Sunlight.confirm()', 'formaction' => Router::admin('backup-restore')]) . '
         </p>
     ' . Xsrf::getInput() . '
     </form>

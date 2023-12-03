@@ -212,14 +212,14 @@ $output .= $message . '
 
 <fieldset>
     <legend>' . _lang('mod.messages') . '</legend>
-    <label><input type="radio" name="messages" value="0"' . Form::activateCheckbox(!isset($_POST['messages']) || Request::post('messages') == 0) . '> ' . _lang('global.noaction') . '</label><br>
-    <label><input type="radio" name="messages" value="1"' . Form::activateCheckbox(isset($_POST['messages']) && Request::post('messages') == 1) . '> ' . _lang('admin.other.cleanup.messages.1') . '</label> ' . $selectTime('messages-time') . '<br>
-    <label><input type="radio" name="messages" value="2"' . Form::activateCheckbox(isset($_POST['messages']) && Request::post('messages') == 2) . '> ' . _lang('admin.other.cleanup.messages.2') . '</label>
+    <label>' . Form::input('radio', 'messages', '0', ['checked' => !isset($_POST['messages']) || Request::post('messages') == 0]) . ' ' . _lang('global.noaction') . '</label><br>
+    <label>' . Form::input('radio', 'messages', '1', ['checked' => isset($_POST['messages']) && Request::post('messages') == 1]) . ' ' . _lang('admin.other.cleanup.messages.1') . '</label> ' . $selectTime('messages-time') . '<br>
+    <label>' . Form::input('radio', 'messages', '2', ['checked' => isset($_POST['messages']) && Request::post('messages') == 2]) . ' ' . _lang('admin.other.cleanup.messages.2') . '</label>
 </fieldset>
 
 <fieldset>
     <legend>' . _lang('admin.users.users') . '</legend>
-    <p class="bborder"><label><input type="checkbox" name="users" value="1"' . Form::activateCheckbox(isset($_POST['users'])) . '> ' . _lang('admin.other.cleanup.users') . '</label></p>
+    <p class="bborder"><label>' . Form::input('checkbox', 'users', '1', ['checked' => isset($_POST['users'])]) . ' ' . _lang('admin.other.cleanup.users') . '</label></p>
 
     <table>
     
@@ -238,15 +238,15 @@ $output .= $message . '
 
 <fieldset>
     <legend>' . _lang('global.other') . '</legend>
-    <label><input type="checkbox" name="clear_cache" value="1"' . Form::activateCheckbox(isset($_POST['clear_cache'])) . '> ' . _lang('admin.other.cleanup.other.clear_cache') . '</label><br>
-    <label><input type="checkbox" name="maintenance" value="1"' . Form::activateCheckbox(isset($_POST['maintenance'])) . '> ' . _lang('admin.other.cleanup.other.maintenance') . '</label><br>
-    <label><input type="checkbox" name="optimize" value="1"' . Form::activateCheckbox(isset($_POST['optimize'])) . '> ' . _lang('admin.other.cleanup.other.optimize') . '</label><br>
-    <label><input type="checkbox" name="comments" value="1"' . Form::activateCheckbox(isset($_POST['comments'])) . '> ' . _lang('admin.other.cleanup.other.comments') . '</label><br>
-    <label><input type="checkbox" name="posts" value="1"' . Form::activateCheckbox(isset($_POST['posts'])) . '> ' . _lang('admin.other.cleanup.other.posts') . '</label><br>
-    <label><input type="checkbox" name="plugin_posts" value="1"' . Form::activateCheckbox(isset($_POST['plugin_posts'])) . '> ' . _lang('admin.other.cleanup.other.plugin_posts') . '</label><br>
-    <label><input type="checkbox" name="iplog" value="1"' . Form::activateCheckbox(isset($_POST['iplog'])) . '> ' . _lang('admin.other.cleanup.other.iplog') . '</label><br>
-    <label><input type="checkbox" name="user_activation" value="1"' . Form::activateCheckbox(isset($_POST['user_activation'])) . '> ' . _lang('admin.other.cleanup.other.user_activation') . '</label><br>
-    <label><input type="checkbox" name="log" value="1"' . Form::activateCheckbox(isset($_POST['log'])) . '> ' . _lang('admin.other.cleanup.other.log') . '</label>
+    <label>' . Form::input('checkbox', 'clear_cache', '1', ['checked' => isset($_POST['clear_cache'])]) . ' ' . _lang('admin.other.cleanup.other.clear_cache') . '</label><br>
+    <label>' . Form::input('checkbox', 'maintenance', '1', ['checked' => isset($_POST['maintenance'])]) . ' ' . _lang('admin.other.cleanup.other.maintenance') . '</label><br>
+    <label>' . Form::input('checkbox', 'optimize', '1', ['checked' => isset($_POST['optimize'])]) . ' ' . _lang('admin.other.cleanup.other.optimize') . '</label><br>
+    <label>' . Form::input('checkbox', 'comments', '1', ['checked' => isset($_POST['comments'])]) . ' ' . _lang('admin.other.cleanup.other.comments') . '</label><br>
+    <label>' . Form::input('checkbox', 'posts', '1', ['checked' => isset($_POST['posts'])]) . ' ' . _lang('admin.other.cleanup.other.posts') . '</label><br>
+    <label>' . Form::input('checkbox', 'plugin_posts', '1', ['checked' => isset($_POST['plugin_posts'])]) . ' ' . _lang('admin.other.cleanup.other.plugin_posts') . '</label><br>
+    <label>' . Form::input('checkbox', 'iplog', '1', ['checked' => isset($_POST['iplog'])]) . ' ' . _lang('admin.other.cleanup.other.iplog') . '</label><br>
+    <label>' . Form::input('checkbox', 'user_activation', '1', ['checked' => isset($_POST['user_activation'])]) . ' ' . _lang('admin.other.cleanup.other.user_activation') . '</label><br>
+    <label>' . Form::input('checkbox', 'log', '1', ['checked' => isset($_POST['log'])]) . ' ' . _lang('admin.other.cleanup.other.log') . '</label>
 </fieldset>
 
 <button class="button bigger" name="action" type="submit" value="do_cleanup" onclick="return Sunlight.confirm();">

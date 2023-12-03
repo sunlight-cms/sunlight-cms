@@ -142,9 +142,9 @@ switch ($a) {
 
         // form
         $inputs = [];
-        $inputs[] = ['label' => _lang('mod.messages.receiver'), 'content' => '<input type="text" class="inputsmall" maxlength="24"' . Form::restorePostValueAndName('receiver', Request::get('receiver')) . '>'];
-        $inputs[] = ['label' => _lang('posts.subject'), 'content' => '<input type="text" class="inputmedium" maxlength="48"' . Form::restorePostValueAndName('subject', Request::get('subject')) . '>'];
-        $inputs[] = ['label' => _lang('mod.messages.message'), 'content' => '<textarea class="areamedium" rows="5" cols="33" name="text">' . Form::restorePostValue('text', null, false) . '</textarea>', 'top' => true];
+        $inputs[] = ['label' => _lang('mod.messages.receiver'), 'content' => Form::input('text', 'receiver', Request::post('receiver', Request::get('receiver')), ['class' => 'inputmedium', 'maxlength' => 24])];
+        $inputs[] = ['label' => _lang('posts.subject'), 'content' => Form::input('text', 'subject', Request::post('subject', Request::get('subject')), ['class' => 'inputmedium', 'maxlength' => 48])];
+        $inputs[] = ['label' => _lang('mod.messages.message'), 'content' => Form::textarea('text', Request::post('text'), ['class' => 'areamedium', 'rows' => 5, 'cols' => 33]), 'top' => true];
         $inputs[] = ['label' => '', 'content' => PostForm::renderControls('newmsg', 'text')];
         $inputs[] = Form::getSubmitRow(['append' => ' ' . PostForm::renderPreviewButton('newmsg', 'text')]);
 
@@ -322,7 +322,7 @@ switch ($a) {
 <table class="messages-table">
 <thead>
 <tr>
-    <td><input type="checkbox" name="selector" onchange="var that=this;$(\'table.messages-table input\').each(function() {this.checked=that.checked;});"></td>
+    <td>' . Form::input('checkbox', 'selector', null, ['onchange' => 'var that=this;$(\'table.messages-table input\').each(function() {this.checked=that.checked;});']) . '</td>
     <th>' . _lang('mod.messages.message') . '</th>
     <th>' . _lang('global.user') . '</th>
     <th>' . _lang('mod.messages.time.update') . "</th>
@@ -347,7 +347,7 @@ switch ($a) {
         while ($r = DB::row($q)) {
             $read = (User::equals($r['sender']) && $r['sender_readtime'] >= $r['update_time'] || User::equals($r['receiver']) && $r['receiver_readtime'] >= $r['update_time']);
             $output .= '<tr>
-    <td><input type="checkbox" name="msg[]" value="' . $r['id'] . '"></td>
+    <td>' . Form::input('checkbox', 'msg[]', $r['id']) . '</td>
     <td><a href="' . _e(Router::module('messages', ['query' => ['a' => 'list', 'read' => $r['id']]])) . '"' . ($read ? '' : ' class="notread"') . '>' . $r['subject'] . '</a></td>
     <td>' . Router::userFromQuery(User::equals($r['sender']) ? $receiverUserQuery : $senderUserQuery, $r) . ' <small>(' . _num($r['unread_counter']) . ')</small></td>
     <td>' . GenericTemplates::renderTime($r['update_time'], 'post') . "</td>
@@ -370,7 +370,7 @@ switch ($a) {
             4 => _lang('mod.messages.delete.all'),
         ]
     ) . '
-    <input type="submit" value="' . _lang('global.do') . '" onclick="return Sunlight.confirm();">
+    ' . Form::input('submit', null, _lang('global.do'), ['onclick' => 'return Sunlight.confirm();']) . '
 </td></tr>
 </tfoot>
 </table>

@@ -6,6 +6,7 @@ use Sunlight\Message;
 use Sunlight\Plugin\TemplatePlugin;
 use Sunlight\Plugin\TemplateService;
 use Sunlight\Router;
+use Sunlight\Util\Form;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
 
@@ -84,7 +85,7 @@ foreach ($boxes as $template_idt => $template_boxes) {
             <tbody class="sortable" data-input-selector=".box-order-input" data-handle-selector="td.box-sortable-cell, .sortable-handle">
             <?php foreach ($layout_boxes as $box): ?>
                 <tr>
-                    <td class="box-order-cell"><span class="sortable-handle"></span><input class="inputmini box-order-input" type="number" name="ord[<?= _e($box['id']) ?>]" value="<?= _e($box['ord']) ?>"></td>
+                    <td class="box-order-cell"><span class="sortable-handle"></span><?= Form::input('number', 'ord[' . $box['id'] .']', $box['ord'], ['class' => 'inputmini box-order-input']) ?></td>
                     <td class="box-slot-cell box-sortable-cell"><?= _e(sprintf('%s - %s', $template->getLayoutLabel($box['layout']), $template->getSlotLabel($box['layout'], $box['slot']))) ?></td>
                     <td class="box-title-cell box-sortable-cell"><?= _e($box['title']) ?></td>
                     <td class="box-settings-cell">

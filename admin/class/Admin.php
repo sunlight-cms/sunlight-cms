@@ -157,18 +157,19 @@ abstract class Admin
 
         if ($output === '') {
             // default implementation
-            $output = '<textarea'
-                . ' name="' . _e($name) . '"'
-                . ' cols="' . ((int) $options['cols']) . '"'
-                . ' rows="' . ((int) $options['rows']) . '"'
-                . ($options['wrap'] !== null ? ' wrap="' . _e($options['wrap']) . '"' : '')
-                . ' class="editor ' . _e($options['class']) . '"'
-                . ' data-editor-context="' . _e($context) . '"'
-                . ' data-editor-mode="' . _e($options['mode']) . '"'
-                . ' data-editor-format="' . _e($options['format']) . '"'
-                . '>'
-                . $htmlContent
-                . '</textarea>';
+            $output = Form::textarea(
+                $name,
+                $htmlContent,
+                [
+                    'cols' => (int) $options['cols'],
+                    'rows' => (int) $options['rows'],
+                    'class' => 'editor ' . $options['class'],
+                    'data-editor-context' => $context,
+                    'data-editor-mode' => $options['mode'],
+                    'data-editor-format' => $options['format'],
+                ] + ($options['wrap'] === null ? [] : ['wrap' => $options['wrap']]),
+                false
+            );
         }
 
         return $output;

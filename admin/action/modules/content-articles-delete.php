@@ -6,6 +6,7 @@ use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\Message;
 use Sunlight\Router;
+use Sunlight\Util\Form;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
 
@@ -48,8 +49,8 @@ Admin::backlink(Router::admin('content-articles-list', ['query' => ['cat' => $re
 <h1>' . _lang('admin.content.articles.delete.title') . '</h1>
 <p class="bborder">' . _lang('admin.content.articles.delete.p', ['%arttitle%' => $query['title']]) . '</p>
 <form class="cform" action="' . _e(Router::admin('content-articles-delete', ['query' => ['id' => $id, 'returnid' => $returnid, 'returnpage' => $returnpage]])) . '" method="post">
-<input type="hidden" name="confirm" value="1">
-<input type="submit" value="' . _lang('admin.content.articles.delete.confirmbox') . '">
+' . Form::input('hidden', 'confirm', '1'). '
+' . Form::input('submit', null, _lang('admin.content.articles.delete.confirmbox')) . '
 ' . Xsrf::getInput() . '</form>
 ';
 } else {

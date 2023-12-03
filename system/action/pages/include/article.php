@@ -135,7 +135,7 @@ if ($_article['rateon'] && Settings::get('ratemode') != 0 && User::hasPrivilege(
     $rateform = '
 <strong>' . _lang('article.rate.title') . ':</strong>
 <form action="' . _e(Router::path('system/script/artrate.php')) . '" method="post">
-<input type="hidden" name="id" value="' . $_article['id'] . '">
+' . Form::input('hidden', 'id', $_article['id']) . '
 ';
 
     if (Settings::get('ratemode') == 1) {
@@ -147,7 +147,7 @@ if ($_article['rateon'] && Settings::get('ratemode') != 0 && User::hasPrivilege(
         }
 
         $rateform .= Form::select('r', $rate_choices, 50);
-        $rateform .= " \n<input type=\"submit\" value=\"" . _lang('article.rate.submit') . '">' ;
+        $rateform .= "\n" . Form::input('submit', null, _lang('article.rate.submit'));
     } else {
         // marks
         $rateform .= "<table class=\"article-rating\">\n";
@@ -161,7 +161,7 @@ if ($_article['rateon'] && Settings::get('ratemode') != 0 && User::hasPrivilege(
 
             for ($x = 1; $x < 6; $x++) {
                 if ($i == 0) {
-                    $rateform .= '<td><input type="radio" name="r" value="' . ((5 - $x) * 25) . "\"></td>\n";
+                    $rateform .= '<td>' . Form::input('radio', 'r', ((5 - $x) * 25)) . "</td>\n";
                 } else {
                     $rateform .= '<td>' . $x . "</td>\n";
                 }
@@ -175,7 +175,7 @@ if ($_article['rateon'] && Settings::get('ratemode') != 0 && User::hasPrivilege(
         }
 
         $rateform .= '
-<tr><td colspan="7"><input type="submit" value="' . _lang('article.rate.submit') . '"></td></tr>
+<tr><td colspan="7">' . Form::input('submit', null, _lang('article.rate.submit')) . '</td></tr>
 </table>
 ';
     }

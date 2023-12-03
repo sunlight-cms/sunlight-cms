@@ -5,6 +5,7 @@ use Sunlight\Database\Database as DB;
 use Sunlight\Message;
 use Sunlight\Router;
 use Sunlight\User;
+use Sunlight\Util\Form;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
 
@@ -43,5 +44,5 @@ $output .= $message . '
 . ' ' . Admin::userSelect('sourcegroup', ['group_cond' => 'id NOT IN(' . DB::arr($excluded_group_ids) . ')', 'select_groups' => true])
 . ' ' . _lang('admin.users.move.text2')
 . ' ' . Admin::userSelect('targetgroup', ['group_cond' => 'id NOT IN(' . DB::arr($excluded_group_ids) . ')', 'select_groups' => true])
-. ' <input class="button" type="submit" value="' . _lang('global.do') . '" onclick="return Sunlight.confirm();">
+. ' ' . Form::input('submit', null, _lang('global.do'), ['class' => 'button', 'onclick' => 'return Sunlight.confirm();']) . '
 ' . Xsrf::getInput() . '</form>';

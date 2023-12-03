@@ -74,27 +74,27 @@ if (isset($_GET['new']) || isset($_GET['edit'])) {
 
 <tr>
     <th>" . _lang('admin.content.redir.old') . '</th>
-    <td><input type="text" name="old" value="' . $q['old'] . '" class="inputmedium" maxlength="255"></td>
+    <td>' . Form::input('text', 'old', $q['old'], ['class' => 'inputmedium', 'maxlength' => 255]) . '</td>
 </tr>
 
 <tr>
     <th>' . _lang('admin.content.redir.new') . '</th>
-    <td><input type="text" name="new" value="' . $q['new'] . '" class="inputmedium" maxlength="255"></td>
+    <td>' . Form::input('text', 'new', $q['new'], ['class' => 'inputmedium', 'maxlength' => 255]) . '</td>
 </tr>
 
 <tr>
     <th>' . _lang('admin.content.redir.permanent') . '</th>
-    <td><input type="checkbox" name="permanent" value="1"' . Form::activateCheckbox($q['permanent']) . '></td>
+    <td>' . Form::input('checkbox', 'permanent', '1', ['checked' => (bool) $q['permanent']]) . '</td>
 </tr>
 
 <tr>
     <th>' . _lang('admin.content.redir.act') . '</th>
-    <td><input type="checkbox" name="act" value="1"' . Form::activateCheckbox($q['active']) . '></td>
+    <td>' . Form::input('checkbox', 'act', '1', ['checked' => (bool) $q['active']]) . '</td>
 </tr>
 
 <tr>
     <td></td>
-    <td><input type="submit" value="' . _lang('global.' . ($new ? 'create' : 'save')) . '"></td>
+    <td>' . Form::input('submit', null, _lang('global.' . ($new ? 'create' : 'save'))) . '</td>
 </tr>
 
 </table>
@@ -113,7 +113,7 @@ if (isset($_GET['new']) || isset($_GET['edit'])) {
         $output .= '
 <form method="post" class="well">
 ' . Message::warning(_lang('admin.content.redir.act.wipe.confirm')) . '
-<input type="submit" name="wipe_confirm" value="' . _lang('global.confirmdelete') . '">
+' . Form::input('submit', 'wipe_confirm', _lang('global.confirmdelete')) . '
 ' . Xsrf::getInput() . '</form>
 ';
     }

@@ -128,26 +128,26 @@ $output .= '
 <fieldset class="hs_fieldset">
 <legend>' . _lang('admin.content.sboxes.create') . '</legend>
 <form class="cform" action="' . _e(Router::admin('content-sboxes')) . '" method="post">
-<input type="hidden" name="action" value="1">
+' . Form::input('hidden', 'action', '1') . '
 
 <table>
 
 <tr>
 <th>' . _lang('admin.content.form.title') . '</th>
-<td><input type="text" name="title" class="inputbig" maxlength="64"></td>
+<td>' . Form::input('text', 'title', null, ['class' => 'inputbig', 'maxlength' => 64]) . '</td>
 </tr>
 
 <tr class="valign-top">
 <th>' . _lang('admin.content.form.settings') . '</th>
 <td>
-<label><input type="checkbox" name="public" value="1" checked> ' . _lang('admin.content.form.unregpost') . '</label><br>
-<label><input type="checkbox" name="locked" value="1"> ' . _lang('admin.content.form.locked2') . '</label>
+<label>' . Form::input('checkbox', 'public', '1', ['checked' => true]) . ' ' . _lang('admin.content.form.unregpost') . '</label><br>
+<label>' . Form::input('checkbox', 'locked', '1') . ' ' . _lang('admin.content.form.locked2') . '</label>
 </td>
 </tr>
 
 <tr>
 <td></td>
-<td><input type="submit" value="' . _lang('global.create') . '"></td>
+<td>' . Form::input('submit', null, _lang('global.create')) . '</td>
 </tr>
 
 </table>
@@ -158,9 +158,9 @@ $output .= '
 <fieldset>
 <legend>' . _lang('admin.content.sboxes.manage') . '</legend>
 <form class="cform" action="' . _e(Router::admin('content-sboxes')) . '" method="post">
-<input type="hidden" name="action" value="2">
+' . Form::input('hidden', 'action', '2') . '
 
-<input type="submit" value="' . _lang('global.savechanges') . '" accesskey="s">
+' . Form::input('submit', null, _lang('global.savechanges'), ['accesskey' => 's']) . '
 <div class="hr"><hr></div>
 ';
 
@@ -175,13 +175,13 @@ if (DB::size($shoutboxes) != 0) {
 
     <tr>
     <th>' . _lang('admin.content.form.title') . '</th>
-    <td><input type="text" name="s' . $shoutbox['id'] . '_title" class="inputmedium" value="' . $shoutbox['title'] . '"></td>
+    <td>' . Form::input('text', 's' . $shoutbox['id'] . '_title', $shoutbox['title'], ['class' => 'inputmedium']) . '</td>
     </tr>
 
     <tr>
     <th>' . _lang('admin.content.form.hcm') . '</th>
     <td>
-        <input type="text" value="' . Hcm::compose("sbox,{$shoutbox['id']}") . '" onclick="this.select()" readonly>
+        ' . Form::input('text', null, Hcm::compose("sbox,{$shoutbox['id']}"), ['onclick' => 'this.select()', 'readonly' => true]) . '
         <small>' . _lang('admin.content.form.thisid') . ' ' . $shoutbox['id'] . '</small>
     </td>
     </tr>
@@ -189,10 +189,10 @@ if (DB::size($shoutboxes) != 0) {
     <tr class="valign-top">
     <th>' . _lang('admin.content.form.settings') . '</th>
     <td>
-    <input type="hidden" name="s' . $shoutbox['id'] . '_publictrigger" value="1"><input type="hidden" name="s' . $shoutbox['id'] . '_lockedtrigger" value="1">
-    <label><input type="checkbox" name="s' . $shoutbox['id'] . '_public" value="1"' . Form::activateCheckbox($shoutbox['public']) . '> ' . _lang('admin.content.form.unregpost') . '</label><br>
-    <label><input type="checkbox" name="s' . $shoutbox['id'] . '_locked" value="1"' . Form::activateCheckbox($shoutbox['locked']) . '> ' . _lang('admin.content.form.locked2') . '</label><br>
-    <label><input type="checkbox" name="s' . $shoutbox['id'] . '_delposts" value="1"> ' . _lang('admin.content.form.delposts') . '</label><br><br>
+    ' . Form::input('hidden', 's' . $shoutbox['id'] . '_publictrigger', '1') . Form::input('hidden', 's' . $shoutbox['id'] . '_lockedtrigger', '1') . '
+    <label>' . Form::input('checkbox', 's' . $shoutbox['id'] . '_public', '1', ['checked' => (bool) $shoutbox['public']]) . ' ' . _lang('admin.content.form.unregpost') . '</label><br>
+    <label>' . Form::input('checkbox', 's' . $shoutbox['id'] . '_locked', '1', ['checked' => (bool) $shoutbox['locked']]) . ' ' . _lang('admin.content.form.locked2') . '</label><br>
+    <label>' . Form::input('checkbox', 's' . $shoutbox['id'] . '_delposts', '1') . ' ' . _lang('admin.content.form.delposts') . '</label><br><br>
     <a class="button" href="' . _e(Xsrf::addToUrl(Router::admin('content-sboxes', ['query' => ['del' => $shoutbox['id']]]))) . '" onclick="return Sunlight.confirm();">
         <img src="' . _e(Router::path('admin/public/images/icons/delete.png')) . '" alt="del" class="icon">' . _lang('global.delete') . '
     </a>

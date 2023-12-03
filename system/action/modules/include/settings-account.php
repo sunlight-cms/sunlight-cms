@@ -138,18 +138,18 @@ $output .= Form::render(
         'table_attrs' => ' class="profiletable"',
         'form_prepend' => '<fieldset><legend>' . _lang('mod.settings.account') . '</legend>',
         'form_append' => '</fieldset>'
-            . '<input type="submit" name="save" value="' . _lang('global.savechanges') . '">' . "\n"
-            . '<input type="reset" value="' . _lang('global.reset') . '" onclick="return Sunlight.confirm();">',
+            . Form::input('submit', 'save', _lang('global.savechanges')) . "\n"
+            . Form::input('reset', null, _lang('global.reset'), ['onclick' => 'return Sunlight.confirm();']),
     ],
     [
         [
             'label' => _lang('login.username'),
-            'content' => '<input type="text" maxlength="24" class="inputsmall" autocomplete="username"' . Form::restorePostValueAndName('username', User::getUsername()) . '>'
+            'content' => Form::input('text', 'username', Request::post('username', User::getUsername()), ['class' => 'inputsmall', 'maxlength' => 24, 'autocomplete' => 'username'])
                 . (User::hasPrivilege('changeusername') ? '' : ' <span class="hint">(' . _lang('mod.settings.account.username.case_only') . ')</span>'),
         ],
         [
             'label' => _lang('mod.settings.account.publicname'),
-            'content' => '<input type="text" maxlength="24" class="inputsmall"' . Form::restorePostValueAndName('publicname', User::$data['publicname'], false) . '>'
+            'content' => Form::input('text', 'publicname', Request::post('public', User::$data['publicname']), ['class' => 'inputsmall', 'maxlength' => 24], false)
                 . ' <span class="hint">(' . _lang('mod.settings.account.publicname.hint') . ')</span>',
         ],
         Settings::get('language_allowcustom')

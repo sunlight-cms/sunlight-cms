@@ -2,6 +2,7 @@
 
 namespace Sunlight;
 
+use Sunlight\Util\Form;
 use Sunlight\Util\Request;
 use Sunlight\Util\StringGenerator;
 
@@ -41,9 +42,9 @@ class Captcha
 
             return [
                 'label' => _lang('captcha.input'),
-                'content' => '<input type="text" name="_cp" class="inputc" autocomplete="off">'
+                'content' => Form::input('text', '_cp', null, ['class' => 'inputc', 'autocomplete' => 'off'])
                     . '<img src="' . _e(Router::path('system/script/captcha/image.php', ['query' => ['n' => $captchaCounter]])) . '" alt="captcha" title="' . _lang('captcha.help') . '" class="cimage">'
-                    . '<input type="hidden" name="_cn" value="' . $captchaCounter . '">',
+                    . Form::input('hidden', '_cn', $captchaCounter),
                 'top' => true,
                 'class' => 'captcha-row',
             ];

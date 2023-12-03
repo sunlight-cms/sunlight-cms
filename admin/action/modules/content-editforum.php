@@ -12,18 +12,18 @@ require SL_ROOT . 'admin/action/modules/include/page-editscript-init.php';
 
 if ($continue) {
     $custom_settings = '
-  <tr><td colspan="2"><label><input type="checkbox" name="var2" value="1"' . Form::activateCheckbox($query['var2']) . '> ' . _lang('admin.content.form.locked3') . '</label></td></tr> 
-  <tr><td colspan="2"><label><input type="checkbox" name="var3" value="1"' . Form::activateCheckbox($query['var3']) . '> ' . _lang('admin.content.form.unregpost') . '</label></td></tr>
+  <tr><td colspan="2"><label>' . Form::input('checkbox', 'var2', '1', ['checked' => (bool) $query['var2']]) . ' ' . _lang('admin.content.form.locked3') . '</label></td></tr> 
+  <tr><td colspan="2"><label>' . Form::input('checkbox', 'var3', '1', ['checked' => (bool) $query['var3']]) . ' ' . _lang('admin.content.form.unregpost') . '</label></td></tr>
   ';
 
     if (!$new) {
         $custom_settings .= ' <tr><td colspan="2"><label>'
-            . '<input type="checkbox" name="delposts" value="1"> ' . _lang('admin.content.form.deltopics')
+            . Form::input('checkbox', 'delposts', '1') . ' ' . _lang('admin.content.form.deltopics')
             . ' <small>(' . _num(DB::count('post', 'home=' . DB::val($id) . ' AND type=' . Post::FORUM_TOPIC . ' AND xhome=-1')) . ')</small>'
             . '</label></td></tr>';
     }
 
-    $custom_settings .= '<tr><td><input type="number" min="1" name="var1" value="' . $query['var1'] . '" class="inputmax"></td><td>' . _lang('admin.content.form.topicssperpage') . '</td></tr>';
+    $custom_settings .= '<tr><td>' . Form::input('number', 'var1', $query['var1'], ['class' => 'inputmax', 'min' => 1]) . '</td><td>' . _lang('admin.content.form.topicssperpage') . '</td></tr>';
     $custom_save_array = [
         'var1' => ['type' => 'int', 'nullable' => true],
         'var2' => ['type' => 'bool', 'nullable' => false],

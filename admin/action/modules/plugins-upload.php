@@ -65,7 +65,7 @@ $output .= $message . '
     <table>
         <tr>
             <th>' . _lang('admin.plugins.upload.file') . '</th>
-            <td><input type="file" name="archive"></td>
+            <td>' . Form::input('file', 'archive') . '</td>
         </tr>
         <tr>
             <th>' . _lang('admin.plugins.upload.mode') . '</th>
@@ -74,7 +74,7 @@ $output .= $message . '
         <tr>
             <td></td>
             <td>
-                <input class="button" name="do_upload" type="submit" value="' . _lang('global.upload') . '">
+                ' . Form::input('submit', 'do_upload', _lang('global.upload'), ['class' => 'button']) . '
             </td>
         </tr>
     </table>

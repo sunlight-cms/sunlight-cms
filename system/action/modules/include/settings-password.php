@@ -41,20 +41,20 @@ $output .= Form::render(
         'table_attrs' => ' class="profiletable"',
         'form_prepend' => '<fieldset><legend>' . _lang('mod.settings.password') . '</legend>',
         'form_append' => '</fieldset>'
-            . '<input type="submit" name="save" value="' . _lang('mod.settings.password.submit') . '">',
+            . Form::input('submit', 'save', _lang('mod.settings.password.submit')),
     ],
     [
         [
             'label' => _lang('mod.settings.password.current'),
-            'content' => '<input type="password" name="current_password" class="inputsmall" autocomplete="off">',
+            'content' => Form::input('password', 'current_password', null, ['class' => 'inputsmall', 'autocomplete' => 'off']),
         ],
         [
             'label' => _lang('mod.settings.password.new'),
-            'content' => '<input type="password" name="new_password" class="inputsmall" autocomplete="new-password">',
+            'content' => Form::input('password', 'new_password', null, ['class' => 'inputsmall', 'autocomplete' => 'new-password']),
         ],
         [
             'label' => _lang('mod.settings.password.new') . ' (' . _lang('global.check') . ')',
-            'content' => '<input type="password" name="new_password_check" class="inputsmall" autocomplete="new-password">',
+            'content' => Form::input('password', 'new_password_check', null, ['class' => 'inputsmall', 'autocomplete' => 'new-password']),
         ],
     ]
 );

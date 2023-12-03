@@ -5,6 +5,7 @@ use Sunlight\Message;
 use Sunlight\Page\Page;
 use Sunlight\Router;
 use Sunlight\Settings;
+use Sunlight\Util\Form;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
 
@@ -32,6 +33,6 @@ if (isset($_POST['index'])) {
 $output .= $message . '
 <form class="cform" action="' . _e(Router::admin('content-setindex')) . '" method="post">
 ' . Admin::pageSelect('index', ['check_access' => false, 'selected' => $index_id, 'maxlength' => null]) . '
-<input class="button" type="submit" value="' . _lang('global.do') . '">
+' . Form::input('submit', null, _lang('global.do'), ['class' => 'button']) . '
 ' . Xsrf::getInput() . '</form>
 ';

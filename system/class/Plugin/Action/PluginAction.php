@@ -8,6 +8,7 @@ use Sunlight\Core;
 use Sunlight\Logger;
 use Sunlight\Message;
 use Sunlight\Plugin\Plugin;
+use Sunlight\Util\Form;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
 
@@ -103,13 +104,13 @@ abstract class PluginAction extends Action
         ) {
             ?>
 <form method="post">
-    <input type="hidden" name="_plugin_action_confirmation" value="<?= $confirmationToken ?>">
+    <?= Form::input('hidden', '_plugin_action_confirmation', $confirmationToken) ?>
 
     <?= $options['content_before'] ?? '' ?>
     <p class="bborder"><?= $text ?></p>
     <?= $options['content_after'] ?? '' ?>
 
-    <input type="submit" value="<?= $options['button_text'] ?? _lang('global.continue') ?>">
+    <?= Form::input('submit', null, $options['button_text'] ?? _lang('global.continue')) ?>
     <?= Xsrf::getInput() ?>
 </form>
 <?php

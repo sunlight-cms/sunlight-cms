@@ -361,15 +361,15 @@ class StepRunner
         <a class="btn btn-lg" id="start-over" href="<?= Core::getBaseUrl() ?>/install/"><?php Labels::render('step.reset') ?></a>
     <?php endif ?>
     <?php if ($step->isSubmittable()): ?>
-        <input id="submit" name="step_submit" type="submit" value="<?php Labels::render('step.submit') ?>">
-        <input type="hidden" name="<?= $step->getFormKeyVar() ?>" value="1">
-        <input type="hidden" name="step_number" value="<?= $step->getNumber() ?>">
+        <?= Form::input('submit', 'step_submit', Labels::get('step.submit'), ['id' => 'submit']) ?>
+        <?= Form::input('hidden', $step->getFormKeyVar(), '1') ?>
+        <?= Form::input('hidden', 'step_number', $step->getNumber()) ?>
     <?php endif ?>
     </p>
     
     <?php foreach ($vars as $name => $value): ?>
         <?php if ($value !== null): ?>
-            <input type="hidden" name="<?= _e($name) ?>" value="<?= _e($value) ?>">
+            <?= Form::input('hidden', $name, $value) ?>
         <?php endif ?>
     <?php endforeach ?>
 </form>
@@ -532,8 +532,8 @@ class ChooseLanguageStep extends Step
     {
         ?>
 <ul class="big-list nobullets">
-    <li><label><input type="radio" name="language" value="cs" checked> Čeština</label></li>
-    <li><label><input type="radio" name="language" value="en"> English</label></li>
+    <li><label><?= Form::input('radio', 'language', 'cs', ['checked' => true]) ?> Čeština</label></li>
+    <li><label><?= Form::input('radio', 'language', 'en') ?> English</label></li>
 </ul>
 <?php
     }
@@ -644,32 +644,32 @@ class ConfigurationStep extends Step
     <table>
         <tr>
             <th><?php Labels::render('config.db.server') ?></th>
-            <td><input type="text"<?= Form::restorePostValueAndName('config_db_server', $this->config['db.server']) ?>></td>
+            <td><?= Form::input('text', 'config_db_server', Request::post('config_db_server', $this->config['db.server'])) ?></td>
             <td class="help"><?php Labels::render('config.db.server.help') ?></td>
         </tr>
         <tr>
             <th><?php Labels::render('config.db.port') ?></th>
-            <td><input type="text"<?= Form::restorePostValueAndName('config_db_port', $this->config['db.port']) ?>></td>
+            <td><?= Form::input('text', 'config_db_port', Request::post('config_db_port', $this->config['db.port'])) ?></td>
             <td class="help"><?php Labels::render('config.db.port.help') ?></td>
         </tr>
         <tr>
             <th><?php Labels::render('config.db.user') ?></th>
-            <td><input type="text"<?= Form::restorePostValueAndName('config_db_user', $this->config['db.user']) ?>></td>
+            <td><?= Form::input('text', 'config_db_user', Request::post('config_db_user', $this->config['db.user'])) ?></td>
             <td class="help"><?php Labels::render('config.db.user.help') ?></td>
         </tr>
         <tr>
             <th><?php Labels::render('config.db.password') ?></th>
-            <td><input type="text"<?= Form::restorePostValueAndName('config_db_password') ?>></td>
+            <td><?= Form::input('text', 'config_db_password', Request::post('config_db_password')) ?></td>
             <td class="help"><?php Labels::render('config.db.password.help') ?></td>
         </tr>
         <tr>
             <th><?php Labels::render('config.db.name') ?></th>
-            <td><input type="text"<?= Form::restorePostValueAndName('config_db_name', $this->config['db.name']) ?>></td>
+            <td><?= Form::input('text', 'config_db_name', Request::post('config_db_name', $this->config['db.name'])) ?></td>
             <td class="help"><?php Labels::render('config.db.name.help') ?></td>
         </tr>
         <tr>
             <th><?php Labels::render('config.db.prefix') ?></th>
-            <td><input type="text"<?= Form::restorePostValueAndName('config_db_prefix', $this->config['db.prefix']) ?>></td>
+            <td><?= Form::input('text', 'config_db_prefix', Request::post('config_db_prefix', $this->config['db.prefix'])) ?></td>
             <td class="help"><?php Labels::render('config.db.prefix.help') ?></td>
         </tr>
     </table>
@@ -680,12 +680,12 @@ class ConfigurationStep extends Step
     <table>
         <tr>
             <th><?php Labels::render('config.secret') ?></th>
-            <td><input type="text"<?= Form::restorePostValueAndName('config_secret', $this->config['secret']) ?>></td>
+            <td><?= Form::input('text', 'config_secret', Request::post('config_secret', $this->config['secret'])) ?></td>
             <td class="help"><?php Labels::render('config.secret.help') ?></td>
         </tr>
         <tr>
             <th><?php Labels::render('config.timezone') ?></th>
-            <td><input type="text" placeholder="<?= _e(date_default_timezone_get()) ?>"<?= Form::restorePostValueAndName('config_timezone', $this->config['timezone']) ?>></td>
+            <td><?= Form::input('text', 'config_timezone', Request::post('config_timezone', $this->config['timezone']), ['placeholder' => date_default_timezone_get()]) ?></td>
             <td class="help">
                 <?php Labels::render('config.timezone.help') ?>
                 <a href="https://php.net/timezones" target="_blank">PHP timezones</a>
@@ -894,12 +894,12 @@ Now you can log into the administration (with the account set up during installa
     <table>
         <tr>
             <th><?php Labels::render('import.settings.title') ?></th>
-            <td><input type="text"<?= Form::restorePostValueAndName('import_settings_title') ?>></td>
+            <td><?= Form::input('text', 'import_settings_title', Request::post('import_settings_title')) ?></td>
             <td class="help"><?php Labels::render('import.settings.title.help') ?></td>
         </tr>
         <tr>
             <th><?php Labels::render('import.settings.description') ?></th>
-            <td><input type="text"<?= Form::restorePostValueAndName('import_settings_description') ?>></td>
+            <td><?= Form::input('text', 'import_settings_description', Request::post('import_settings_description')) ?></td>
             <td class="help"><?php Labels::render('import.settings.description.help') ?></td>
         </tr>
         <tr>
@@ -915,17 +915,17 @@ Now you can log into the administration (with the account set up during installa
     <table>
         <tr>
             <th><?php Labels::render('import.admin.username') ?></th>
-            <td><input type="text"<?= Form::restorePostValueAndName('import_admin_username', 'admin') ?>></td>
+            <td><?= Form::input('text', 'import_admin_username', Request::post('import_admin_username', 'admin')) ?></td>
             <td class="help"><?php Labels::render('import.admin.username.help') ?></td>
         </tr>
         <tr>
             <th><?php Labels::render('import.admin.password') ?></th>
-            <td><input type="password" name="import_admin_password"></td>
+            <td><?= Form::input('password', 'import_admin_password') ?></td>
             <td class="help"><?php Labels::render('import.admin.password.help') ?></td>
         </tr>
         <tr>
             <th><?php Labels::render('import.admin.email') ?></th>
-            <td><input type="email"<?= Form::restorePostValueAndName('import_admin_email', $this->config['debug'] ? 'admin@localhost' : '@') ?>></td>
+            <td><?= Form::input('email', 'import_admin_email', Request::post('import_admin_email', $this->config['debug'] ? 'admin@localhost' : '@')) ?></td>
             <td class="help"><?php Labels::render('import.admin.email.help') ?></td>
         </tr>
     </table>

@@ -7,6 +7,7 @@ use Sunlight\Page\Page;
 use Sunlight\Page\PageManipulator;
 use Sunlight\Router;
 use Sunlight\User;
+use Sunlight\Util\Form;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
 
@@ -65,8 +66,8 @@ if ($continue) {
     . '
 
     <form class="cform" action="' . _e(Router::admin('content-delete', ['query' => ['id' => $id]])) . '" method="post">
-    <input type="hidden" name="confirm" value="1">
-    <input type="submit" value="' . _lang('admin.content.delete.confirm') . '">
+    ' . Form::input('hidden', 'confirm', '1') . '
+    ' . Form::input('submit', null, _lang('admin.content.delete.confirm')) . '
     ' . Xsrf::getInput() . '</form>
     ';
 } else {
