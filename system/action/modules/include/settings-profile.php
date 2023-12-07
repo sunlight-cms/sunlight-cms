@@ -76,8 +76,8 @@ $output .= Form::render(
         'table_attrs' => ' class="profiletable"',
         'form_prepend' => '<fieldset><legend>' . _lang('mod.settings.profile') . '</legend>',
         'form_append' => '</fieldset>'
-            . '<input type="submit" name="save" value="' . _lang('global.savechanges') . '">' . "\n"
-            . '<input type="reset" value="' . _lang('global.reset') . '" onclick="return Sunlight.confirm();">',
+            . Form::input('submit', 'save', _lang('global.savechanges')) . "\n"
+            . Form::input('reset', null, _lang('global.reset'), ['onclick' => 'return Sunlight.confirm();']),
         'multipart' => true,
     ],
     [
@@ -89,7 +89,7 @@ $output .= Form::render(
                     <table>
                         <tr>
                             <td>
-                                <input type="file" name="avatar">
+                                <?= Form::input('file', 'avatar') ?>
 
                                 <p>
                                     <?= _lang('mod.settings.profile.avatar.hint', [
@@ -103,7 +103,7 @@ $output .= Form::render(
                                 <?= User::renderAvatar(User::$data, ['link' => false]) ?>
                                 <?php if (User::$data['avatar'] !== null): ?>
                                     <p>
-                                        <label><input type="checkbox" name="remove_avatar" value="1"> <?= _lang('global.delete') ?></label>
+                                        <label><?= Form::input('checkbox', 'remove_avatar', '1') ?> <?= _lang('global.delete') ?></label>
                                     </p>
                                 <?php endif ?>
                             </td>
@@ -115,10 +115,8 @@ $output .= Form::render(
         [
             'label' => _lang('global.note'),
             'top' => true,
-            'content' => _buffer(function () { ?>
-                <textarea class="areasmall" rows="9" cols="33" name="note"><?= Form::restorePostValue('note', User::$data['note'], false, false) ?></textarea>
-                <?= GenericTemplates::jsLimitLength(1024, 'user_settings_profile', 'note') ?>
-            <?php }),
+            'content' => Form::textarea('note', Request::post('note', User::$data['note']), ['class' => 'areasmall', 'rows' => 9, 'cols' => 33], false)
+                . GenericTemplates::jsLimitLength(1024, 'user_settings_profile', 'note'),
         ],
         [
             'label' => '',

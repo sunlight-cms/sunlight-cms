@@ -122,7 +122,7 @@ if ($type === 'full') {
 
 // output
 $output .= '<form method="post">
-    <input type="hidden" name="type" value="' . _e($type) . '">
+    ' . Form::input('hidden', 'type', $type) . '
     <table class="list">
         <tr>
             <th>' . _lang('global.type') . '</th>
@@ -133,15 +133,15 @@ $output .= '<form method="post">
             <td>
                 <ul id="backup-contents" class="no-bullets">                    
                     ' . ($type === 'full'
-                        ? '<li><label><input type="checkbox" disabled checked> '
+                        ? '<li><label>' . Form::input('checkbox', null, null, ['disabled' => true, 'checked' => true]) . ' '
                             . _lang('admin.backup.contents.db')
                             . ' <small>(~' . GenericTemplates::renderFileSize($database_size) . ')</small>'
                             . '</label></li>'
-                            . '<li><label><input type="checkbox" disabled checked> '
+                            . '<li><label>' . Form::input('checkbox', null, null, ['disabled' => true, 'checked' => true]) . ' '
                             . _lang('admin.backup.contents.sys')
                             . ' <small>(' . GenericTemplates::renderFileSize($static_size) . ')</small>'
                             . '</label></li>'
-                        : '<li><label><input type="checkbox" value="1" name="database" checked> '
+                        : '<li><label>' . Form::input('checkbox', 'database', '1', ['checked' => true]) . ' '
                             . _lang('admin.backup.contents.db')
                             . ' <small>(~' . GenericTemplates::renderFileSize($database_size) . ')</small>'
                             . '</label></li>'
@@ -149,13 +149,15 @@ $output .= '<form method="post">
                     ' . _buffer(function () use ($dynamic_path_options) {
                         foreach ($dynamic_path_options as $name => $option) {
                             if ($option['optional']) {
-                                $input_attrs = ' name="dynpath_' . _e($name) . '" checked';
+                                $input_name = 'dynpath_' . $name;
+                                $input_attrs = ['checked' => true];
                             } else {
-                                $input_attrs = ' disabled checked';
+                                $input_name = null;
+                                $input_attrs = ['disabled' => true, 'checked' => true];
                             }
 
                             echo '<li><label>'
-                                . '<input type="checkbox" value="' . $name . '"' . $input_attrs . '>'
+                                . Form::input('checkbox', $input_name, $name, $input_attrs)
                                 . ' ' . _e($option['label'])
                                 . ' <small>(' . GenericTemplates::renderFileSize($option['size']) . ')</small>'
                                 . '</label></li>';
@@ -163,7 +165,7 @@ $output .= '<form method="post">
                     }) . '
                 </ul>
                 
-                <label class="right"><input type="checkbox" checked onchange="Sunlight.admin.toggleCheckboxes(document.querySelectorAll(\'#backup-contents input[type=checkbox]\'), this.checked)"> <em>' . _lang('global.all') . '</em></label>
+                <label class="right">' . Form::input('checkbox', null, null, ['checked' => true, 'onchange' => 'Sunlight.admin.toggleCheckboxes(document.querySelectorAll(\'#backup-contents input[type=checkbox]\'), this.checked)']) . ' <em>' . _lang('global.all') . '</em></label>
             </td>
         </tr>
         <tr>

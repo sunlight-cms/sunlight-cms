@@ -4,6 +4,7 @@ use Sunlight\Admin\PageLister;
 use Sunlight\Database\Database as DB;
 use Sunlight\Message;
 use Sunlight\Router;
+use Sunlight\Util\Form;
 use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
@@ -43,7 +44,7 @@ $output .= PageLister::render([
 
 $output .= '
     <p>
-        <input type="submit" value="' . _lang('global.save') . '" accesskey="s">
-        <input type="reset" value="' . _lang('global.reset') . '" onclick="return Sunlight.confirm();">
+        ' . Form::input('submit', null, _lang('global.save'), ['accesskey' => 's']) . '
+        ' . Form::input('reset', null, _lang('global.reset'), ['onclick' => 'return Sunlight.confirm();']) . '
     </p>
 ' . Xsrf::getInput() . '</form>';

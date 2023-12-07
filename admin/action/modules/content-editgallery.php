@@ -2,6 +2,7 @@
 
 use Sunlight\Page\Page;
 use Sunlight\Router;
+use Sunlight\Util\Form;
 
 defined('SL_ROOT') or exit;
 
@@ -19,11 +20,11 @@ if ($continue) {
     }
 
     $custom_settings = '
-  <tr><td><input type="number" min="-1" name="var1" value="' . $query['var1'] . '" class="inputmax"></td><td>' . _lang('admin.content.form.imgsperrow') . '</td></tr>
-  <tr><td><input type="number" min="1" name="var2" value="' . $query['var2'] . '" class="inputmax"></td><td>' . _lang('admin.content.form.imgsperpage') . '</td></tr>
+  <tr><td>' . Form::input('number', 'var1', $query['var1'], ['class' => 'inputmax', 'min' => -1]) . '</td><td>' . _lang('admin.content.form.imgsperrow') . '</td></tr>
+  <tr><td>' . Form::input('number', 'var2', $query['var2'], ['class' => 'inputmax', 'min' => 1]) . '</td><td>' . _lang('admin.content.form.imgsperpage') . '</td></tr>
  
-  <tr><td><input type="number" min="10" max="1024" name="var4" value="' . $query['var4'] . '" class="inputmax"></td><td>' . _lang('admin.content.form.prevwidth') . '</td></tr> 
-  <tr><td><input type="number" min="10" max="1024" name="var3" value="' . $query['var3'] . '" class="inputmax"></td><td>' . _lang('admin.content.form.prevheight') . '</td></tr>
+  <tr><td>' . Form::input('number', 'var4', $query['var4'], ['class' => 'inputmax', 'min' => 10, 'max' => 1024]) . '</td><td>' . _lang('admin.content.form.prevwidth') . '</td></tr> 
+  <tr><td>' . Form::input('number', 'var3', $query['var3'], ['class' => 'inputmax', 'min' => 10, 'max' => 1024]) . '</td><td>' . _lang('admin.content.form.prevheight') . '</td></tr>
 ';
 
     $custom_save_array = [

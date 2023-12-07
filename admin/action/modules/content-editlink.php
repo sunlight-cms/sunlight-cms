@@ -19,10 +19,10 @@ if ($continue) {
     $editscript_extra_row = '<tr class="valign-top">
 <th>' . _lang('admin.content.form.url'). '</th>
 <td>
-<input class="inputmax" type="text" name="link_url" value="' . _e($query['link_url'] ?? '') . '">
+' . Form::input('text', 'link_url', $query['link_url'] ?? '', ['class' => 'inputmax']) . '
 </td>
 </tr>';
-    $custom_settings = '<tr><td colspan="2"><label><input type="checkbox" name="link_new_window" value="1"' . Form::activateCheckbox($query['link_new_window']) . '> ' . _lang('admin.content.form.newwindow') . '</label></td></tr>';
+    $custom_settings = '<tr><td colspan="2"><label>' . Form::input('checkbox', 'link_new_window', '1', ['checked' => (bool) $query['link_new_window']]) . ' ' . _lang('admin.content.form.newwindow') . '</label></td></tr>';
     $custom_save_array = [
         'link_url' => ['type' => 'raw', 'nullable' => true],
         'link_new_window' => ['type' => 'bool', 'nullable' => false],

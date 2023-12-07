@@ -258,22 +258,22 @@ if ($continue) {
 
 <tr>
 <th>' . _lang('login.username') . '</th>
-<td><input type="text" class="inputsmall"' . Form::restorePostValueAndName('username', $query['username']) . ' maxlength="24"></td>
+<td>' . Form::input('text', 'username', Request::post('username', $query['username']), ['class' => 'inputsmall', 'maxlength' => 24]) . '</td>
 </tr>
 
 <tr>
 <th>' . _lang('mod.settings.account.publicname') . '</th>
-<td><input type="text" class="inputsmall"' . Form::restorePostValueAndName('publicname', $query['publicname'], false) . ' maxlength="24"></td>
+<td>' . Form::input('text', 'publicname', Request::post('publicname', $query['publicname']), ['class' => 'inputsmall', 'maxlength' => 24], false) . '</td>
 </tr>
 
 <tr>
 <th>' . _lang('global.email') . '</th>
-<td><input type="email" class="inputsmall"' . Form::restorePostValueAndName('email', $query['email']) . '></td>
+<td>' . Form::input('email', 'email', Request::post('email', $query['email']), ['class' => 'inputsmall']) . '</td>
 </tr>
 
 <tr>
 <th>' . _lang((($id == null) ? 'login.password' : 'mod.settings.password.new')) . '</th>
-<td><input type="password" name="password" class="inputsmall" autocomplete="new-password"></td>
+<td>' . Form::input('password', 'password', null, ['class' => 'inputsmall', 'autocomplete' => 'new-password']) . '</td>
 </tr>
 
 <tr>
@@ -283,44 +283,44 @@ if ($continue) {
 
 <tr>
 <th>' . _lang('login.blocked') . '</th>
-<td><input type="checkbox" name="blocked" value="1"' . Form::activateCheckbox($query['blocked'] || isset($_POST['blocked'])) . '></td>
+<td>' . Form::input('checkbox', 'blocked', '1', ['checked' => ($query['blocked'] || isset($_POST['blocked']))]) . '</td>
 </tr>
 
 <tr>
 <th>' . _lang('global.levelshift') . '</th>
-<td><input type="checkbox" name="levelshift" value="1"' . Form::activateCheckbox($query['levelshift'] || isset($_POST['levelshift'])) . Form::disableInputUnless(User::isSuperAdmin()) . '></td>
+<td>' . Form::input('checkbox', 'levelshift', '1', ['checked' => ($query['levelshift'] || isset($_POST['levelshift'])), 'disabled' => !User::isSuperAdmin()]) . '</td>
 </tr>
 
 <tr>
 <th>' . _lang('mod.settings.account.wysiwyg') . '</th>
-<td><input type="checkbox" name="wysiwyg" value="1"' . Form::activateCheckbox($query['wysiwyg'] || isset($_POST['wysiwyg'])) . '></td>
+<td>' . Form::input('checkbox', 'wysiwyg', '1', ['checked' => ($query['wysiwyg'] || isset($_POST['wysiwyg']))]) . '</td>
 </tr>
 
 <tr>
 <th>' . _lang('mod.settings.account.massemail') . '</th>
-<td><input type="checkbox" name="massemail" value="1"' . Form::activateCheckbox($query['massemail'] || isset($_POST['massemail'])) . '></td>
+<td>' . Form::input('checkbox', 'massemail', '1', ['checked' => ($query['massemail'] || isset($_POST['massemail']))]) . '</td>
 </tr>
 
 <tr>
 <th>' . _lang('mod.settings.account.public') . '</th>
-<td><input type="checkbox" name="public" value="1"' . Form::activateCheckbox($query['public'] || isset($_POST['public'])) . '></td>
+<td>' . Form::input('checkbox', 'public', '1', ['checked' => ($query['public'] || isset($_POST['public']))])  . '</td>
 </tr>
 
 <tr>
 <th>' . _lang('global.avatar') . '</th>
-<td><label><input type="checkbox" name="removeavatar" value="1"> ' . _lang('global.delete') . '</label></td>
+<td><label>' . Form::input('checkbox', 'removeavatar', '1') . ' ' . _lang('global.delete') . '</label></td>
 </tr>
 
 <tr class="valign-top">
 <th>' . _lang('global.note') . '</th>
-<td><textarea class="areasmall" rows="9" cols="33" name="note">' . Form::restorePostValue('note', $query['note'], false, false) . '</textarea></td>
+<td>' . Form::textarea('note', Request::post('note', $query['note']), ['class' => 'areasmall', 'rows' => 9, 'cols' => 33], false) . '</td>
 </tr>
 
 ' . Extend::buffer('admin.user.form', ['user' => $query]) . '
 
 <tr><td></td>
 <td>
-    <input type="submit" class="button bigger" value="' . _lang((isset($_GET['id']) ? 'global.save' : 'global.create')) . '" accesskey="s">'
+    ' . Form::input('submit', null, _lang((isset($_GET['id']) ? 'global.save' : 'global.create')), ['class' => 'button bigger', 'accesskey' => 's'])
     . (($id != null) ? ' <small>' . _lang('admin.content.form.thisid') . ' ' . $query['id'] . '</small>' : '')
 . '</td>
 </tr>

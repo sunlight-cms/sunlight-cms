@@ -665,24 +665,24 @@ class PostService
         $output = GenericTemplates::jsLimitLength(Post::getMaxLength($vars['posttype']), 'postform', 'text');
 
         if (!User::isLoggedIn()) {
-            $inputs[] = ['label' => _lang('posts.guestname'), 'content' => '<input type="text" name="guest" maxlength="24" class="inputsmall"' . Form::restoreValue($_SESSION, 'post_form_guest') . '>'];
+            $inputs[] = ['label' => _lang('posts.guestname'), 'content' => Form::input('text', 'guest', $_SESSION['post_form_guest'] ?? null, ['class' => 'inputsmall', 'maxlength' => 24])];
         }
 
         if ($vars['xhome'] == -1 && $vars['subject']) {
             $inputs[] = [
                 'label' => _lang($vars['is_topic'] ? 'posts.topic' : 'posts.subject'),
-                'content' => '<input type="text" name="subject" class="input' . ($vars['is_topic'] ? 'medium' : 'small') . '" maxlength="48"' . Form::restoreValue($_SESSION, 'post_form_subject') . '>',
+                'content' => Form::input('text', 'subject', $_SESSION['post_form_subject'] ?? null, ['class' => 'input' . ($vars['is_topic'] ? 'medium' : 'small'), 'maxlength' => 48]),
             ];
         }
 
         $inputs[] = $captcha;
         $inputs[] = [
             'label' => _lang('posts.text'),
-            'content' => '<textarea name="text" class="areamedium" rows="5" cols="33">' . Form::restoreValue($_SESSION, 'post_form_text', null, false) . '</textarea>'
-                . '<input type="hidden" name="_posttype" value="' . $vars['posttype'] . '">'
-                . '<input type="hidden" name="_posttarget" value="' . $vars['posttarget'] . '">'
-                . '<input type="hidden" name="_xhome" value="' . $vars['xhome'] . '">'
-                . (isset($vars['pluginflag']) ? '<input type="hidden" name="_pluginflag" value="' . $vars['pluginflag'] . '">' : ''),
+            'content' => Form::textarea('text', $_SESSION['post_form_text'] ?? null, ['class' => 'areamedium', 'rows' => 5, 'cols' => 33])
+                . Form::input('hidden', '_posttype', $vars['posttype'])
+                . Form::input('hidden', '_posttarget', $vars['posttarget'])
+                . Form::input('hidden', '_xhome', $vars['xhome'])
+                . (isset($vars['pluginflag']) ? Form::input('hidden', '_pluginflag', $vars['pluginflag']) : ''),
             'top' => true,
         ];
         $inputs[] = ['label' => '', 'content' => PostForm::renderControls('postform', 'text')];

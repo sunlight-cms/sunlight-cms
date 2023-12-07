@@ -48,7 +48,7 @@ $output .= '
   ';
 
 $output .= '
-    <input type="submit" value="' . _lang('global.apply') . '">
+    ' . Form::input('submit', null, _lang('global.apply')) . '
 </form>';
 
 // table

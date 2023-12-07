@@ -6,6 +6,7 @@ use Sunlight\Message;
 use Sunlight\Paginator;
 use Sunlight\Router;
 use Sunlight\User;
+use Sunlight\Util\Form;
 use Sunlight\Util\Request;
 use Sunlight\Util\StringHelper;
 use Sunlight\Xsrf;
@@ -42,10 +43,10 @@ $output .= '
 if (User::hasPrivilege('adminpollall')) {
     $output .= '
   <form class="cform" action="' . _e(Router::admin(null)) . '" method="get">
-  <input type="hidden" name="p" value="content-polls">
+  ' . Form::input('hidden', 'p', 'content-polls') . '
   <strong>' . _lang('admin.content.polls.filter') . ':</strong> '
     . Admin::userSelect('author', ['selected' => $author_filter_id, 'group_cond' => 'adminpoll=1', 'extra_option' => _lang('global.all2')])
-    . ' <input class="button" type="submit" value="' . _lang('global.apply') . '">
+    . ' ' . Form::input('submit', null, _lang('global.apply'), ['class' => 'button']) . ' 
   </form>
   ';
 }
@@ -106,7 +107,7 @@ $output .= '
 ' . $paging['paging'] . '
 
 <form class="cform" action="' . _e(Router::admin(null)) . '" method="get">
-<input type="hidden" name="p" value="content-polls-edit">
-' . _lang('admin.content.polls.openid') . ': <input type="number" name="id" class="inputmini"> <input class="button" type="submit" value="' . _lang('global.open') . '">
+' . Form::input('hidden', 'p', 'content-polls-edit') . '
+' . _lang('admin.content.polls.openid') . ': ' . Form::input('number', 'id', null, ['class' => 'inputmini']) . ' ' . Form::input('submit', null, _lang('global.open'), ['class' => 'button']) . '
 </form>
 ';

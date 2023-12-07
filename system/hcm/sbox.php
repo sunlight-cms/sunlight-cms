@@ -36,13 +36,13 @@ return function ($id = 0) {
         if ($sboxdata['locked'] != 1 && User::checkPublicAccess($sboxdata['public'])) {
             // prepare inputs
             if (!User::isLoggedIn()) {
-                $inputs[] = ['label' => _lang('posts.guestname'), 'content' => '<input type="text" name="guest" class="sbox-input" maxlength="24">'];
+                $inputs[] = ['label' => _lang('posts.guestname'), 'content' => Form::input('text', 'guest', null, ['class' => 'sbox-input', 'maxlength' => 24])];
             }
 
             $inputs[] = [
                 'label' => _lang('posts.text'),
-                'content' => '<input type="text" name="text" class="sbox-input" maxlength="' . Post::getMaxLength(Post::SHOUTBOX_ENTRY) . '">'
-                    . '<input type="hidden" name="_posttype" value="4"><input type="hidden" name="_posttarget" value="' . $id . '">',
+                'content' => Form::input('text', 'text', null, ['class' => 'sbox-input', 'maxlength' => Post::getMaxLength(Post::SHOUTBOX_ENTRY)])
+                    . Form::input('hidden', '_posttype', '4') . Form::input('hidden', '_posttarget', $id),
             ];
             $inputs[] = Form::getSubmitRow();
 

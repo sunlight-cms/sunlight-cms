@@ -2,6 +2,7 @@
 
 namespace Sunlight;
 
+use Sunlight\Util\Form;
 use Sunlight\Util\UrlHelper;
 
 class Xsrf
@@ -13,7 +14,7 @@ class Xsrf
      */
     static function getInput(): string
     {
-        return '<input type="hidden" name="' . _e(self::TOKEN_NAME) . '" value="' . self::getToken() . '">';
+        return Form::input('hidden', self::TOKEN_NAME, self::getToken());
     }
 
     /**

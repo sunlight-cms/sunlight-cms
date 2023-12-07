@@ -93,7 +93,7 @@ if (
 // output
 $output .= '
 <form method="post">
-    <input type="hidden" name="backup_file" value="' . _e($backup_file) . '">
+    ' . Form::input('hidden', 'backup_file', $backup_file) . ' 
     <table class="list">
         <tr>
             <th>' . _lang('global.name') . '</th>
@@ -132,7 +132,7 @@ $output .= '
                     }) . '
                 </ul>
 
-                <label class="right"><input type="checkbox" onchange="Sunlight.admin.toggleCheckboxes(document.querySelectorAll(\'#backup-contents input[type=checkbox]\'), this.checked)"> <em>' . _lang('global.all') . '</em></label>
+                <label class="right">' . Form::input('checkbox', null, null, ['onchange' => 'Sunlight.admin.toggleCheckboxes(document.querySelectorAll(\'#backup-contents input[type=checkbox]\'), this.checked)']) . ' <em>' . _lang('global.all') . '</em></label>
             </td>
         </tr>
     </table>
@@ -141,7 +141,7 @@ $output .= '
     ' . $backup_size_warning . '
 
     <p>
-        <input class="button" type="submit" name="restore" onclick="return Sunlight.confirm()" value="' . _lang('admin.backup.restore.title') . '">
+        ' . Form::input('submit', 'restore', _lang('admin.backup.restore.title'), ['class' => 'button', 'onclick' => 'return Sunlight.confirm()']) . '
     </p>
 ' . Xsrf::getInput() . '
 </form>

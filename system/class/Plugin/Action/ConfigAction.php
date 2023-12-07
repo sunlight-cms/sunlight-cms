@@ -71,8 +71,8 @@ class ConfigAction extends PluginAction
         <tr>
             <th></th>
             <td>
-                <input type="submit" name="save" value="<?= _lang('global.save') ?>">
-                <input type="submit" name="reset" value="<?= _lang('global.default') ?>" onclick="return Sunlight.confirm();">
+                <?= Form::input('submit', 'save', _lang('global.save')) ?>
+                <?= Form::input('submit', 'reset', _lang('global.default', ['onclick' => 'return Sunlight.confirm();'])) ?>
             </td>
         </tr>
     </table>
@@ -93,10 +93,10 @@ class ConfigAction extends PluginAction
             }
 
             if (is_bool($value)) {
-                $input = '<input type="checkbox" name="config[' . _e($key) . ']" value="1"' . Form::activateCheckbox($value) . '>';
+                $input = Form::input('checkbox', 'config[' . $key . ']', '1', ['checked' => $value]);
                 $type = 'checkbox';
             } else {
-                $input = '<input type="text" name="config[' . _e($key) . ']" class="inputmedium" value="' . _e((string) $value) . '">';
+                $input = Form::input('text', 'config[' . $key . ']', $value, ['class' => 'inputmedium']);
                 $type = 'text';
             }
 

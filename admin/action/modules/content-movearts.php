@@ -97,8 +97,8 @@ $output .= $message . '
     . ' ' . Admin::pageSelect('source', ['type' => Page::CATEGORY])
     . _lang('admin.content.movearts.text2')
     . ' ' . Admin::pageSelect('target', ['type' => Page::CATEGORY])
-    . ' <input class="button" type="submit" value="' . _lang('global.do') . '">
+    . ' ' . Form::input('submit', null, _lang('global.do'), ['class' => 'button']) . '
 <br><br>
-<label><input type="checkbox" name="fullmove" value="1"> ' . _lang('admin.content.movearts.fullmove') . '</label>
+<label>' . Form::input('checkbox', 'fullmove', '1') . ' ' . _lang('admin.content.movearts.fullmove') . '</label>
 ' . Xsrf::getInput() . '</form>
 ';

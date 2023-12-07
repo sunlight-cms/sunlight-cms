@@ -73,7 +73,7 @@ $output .= Form::render(
     [
         [
             'content' => '<label>'
-                . '<input type="checkbox" name="massemail" value="1"' . Form::activateCheckbox($user['massemail']). '> '
+                . Form::input('checkbox', 'massemail', '1', ['class' => 'inputcheckbox', 'checked' => (bool) $user['massemail']]) .' '
                 . _lang('mod.settings.account.massemail.label')
                 . '</label>',
         ],

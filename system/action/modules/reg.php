@@ -190,7 +190,7 @@ if (!$user_data_valid && $show_form) {
         $rules = [
             'content' => '<h2>' . _lang('mod.reg.rules') . '</h2>'
                 . $rules
-                . '<p><label><input type="checkbox" name="agreement" value="1"' . Form::activateCheckbox(isset($_POST['agreement'])) . '> ' . _lang('mod.reg.rules.agreement') . '</label></p>',
+                . '<p><label>' . Form::input('checkbox', 'agreement', '1', ['checked' => isset($_POST['agreement'])]) . ' ' . _lang('mod.reg.rules.agreement') . '</label></p>',
             'top' => true,
         ];
     } else {
@@ -209,10 +209,10 @@ if (!$user_data_valid && $show_form) {
             'action' => Router::module('reg'),
         ],
         [
-            ['label' => _lang('login.username'), 'content' => '<input type="text" class="inputsmall" maxlength="24"' . Form::restorePostValueAndName('username') . ' autocomplete="username">'],
-            ['label' => _lang('login.password'), 'content' => '<input type="password" name="password" class="inputsmall" autocomplete="new-password">'],
-            ['label' => _lang('login.password') . ' (' . _lang('global.check') . ')', 'content' => '<input type="password" name="password2" class="inputsmall" autocomplete="new-password">'],
-            ['label' => _lang('global.email'), 'content' => '<input type="email" class="inputsmall" ' . Form::restorePostValueAndName('email', '@') . ' autocomplete="email">'],
+            ['label' => _lang('login.username'), 'content' => Form::input('text', 'username', Request::post('username'), ['class' => 'inputsmall', 'maxlength' => 24, 'autocomplete' => 'username'])],
+            ['label' => _lang('login.password'), 'content' => Form::input('password', 'password', null, ['class' => 'inputsmall', 'autocomplete' => 'new-password'])],
+            ['label' => _lang('login.password') . ' (' . _lang('global.check') . ')', 'content' => Form::input('password', 'password2', null, ['class' => 'inputsmall', 'autocomplete' => 'new-password'])],
+            ['label' => _lang('global.email'), 'content' => Form::input('email', 'email', Request::post('email', '@'), ['class' => 'inputsmall', 'autocomplete' => 'email'])],
             ['label' => _lang('mod.settings.account.massemail'), 'content' => '<label><input type="checkbox" value="1"' . Form::restoreCheckedAndName('regform', 'massemail') . '> ' . _lang('mod.settings.account.massemail.label') . '</label>'],
             $groupselect,
             $captcha,

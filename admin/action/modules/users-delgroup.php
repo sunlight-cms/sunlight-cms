@@ -5,6 +5,7 @@ use Sunlight\Logger;
 use Sunlight\Message;
 use Sunlight\Settings;
 use Sunlight\User;
+use Sunlight\Util\Form;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
 
@@ -81,9 +82,9 @@ if ($user_count > 0) {
 
 $output .= '
 <form class="cform" method="post">
-<input type="hidden" name="doit" value="1">
+' . Form::input('hidden', 'doit', '1') . '
 
 <p>' . _lang('admin.users.groups.delconfirm', ['%group%' => $query['title']]) . '</p>
-<input type="submit" value="' . _lang('global.confirmdelete') . '">'
+' . Form::input('submit', null, _lang('global.confirmdelete'))
 . Xsrf::getInput()
 . '</form>';

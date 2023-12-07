@@ -40,17 +40,17 @@ $output .= Form::render(
         'table_attrs' => ' class="profiletable"',
         'form_prepend' => '<fieldset><legend>' . _lang('mod.settings.remove') . '</legend>',
         'form_append' => '</fieldset>'
-            . '<input type="submit" name="submit" value="' . _lang('mod.settings.remove.submit') . '">',
+            . Form::input('submit', 'submit', _lang('mod.settings.remove.submit')),
     ],
     [
         [
             'label' => _lang('mod.settings.password.current'),
-            'content' => '<input type="password" name="current_password" class="inputsmall" autocomplete="off">',
+            'content' => Form::input('password', 'current_password', null, ['class' => 'inputsmall', 'autocomplete' => 'off']),
         ],
         [
             'label' => '',
             'content' => '<label>'
-                . '<input type="checkbox" name="confirm" value="1" onclick="if (this.checked) return Sunlight.confirm();"> '
+                . Form::input('checkbox', 'confirm', '1', ['onclick' => 'if (this.checked) return Sunlight.confirm();']) . ' '
                 . _lang('mod.settings.remove.confirm', ['%username%' => User::getUsername()])
                 . '</label>',
         ],

@@ -40,14 +40,14 @@ $output .= _buffer(function () use ($search, $search_query, $empty_state) { ?>
 
     <form action="<?= _e(Router::module('search')) ?>" method="get" class="fullsearchform">
         <p>
-            <input type="search" name="q" class="inputmedium" value="<?= _e($search_query) ?>">
-            <input type="submit" value="<?= _lang('mod.search.submit') ?>">
+            <?= Form::input('search', 'q', $search_query, ['class' => 'inputmedium']) ?>
+            <?= Form::input('submit', null, _lang('mod.search.submit')) ?>
         </p>
 
         <p>
             <?= _lang('mod.search.where') ?>:
             <?php foreach ($search->getSources() as $key => $source): ?>
-                <label><input type="checkbox" name="<?= _e($key) ?>" value="1"<?= Form::activateCheckbox($empty_state || isset($_GET[$key])) ?>> <?= $source->getLabel() ?></label>
+                <label><?= Form::input('checkbox', $key, '1', ['checked' => ($empty_state || isset($_GET[$key]))]) ?> <?= $source->getLabel() ?></label>
             <?php endforeach ?>
         </p>
 

@@ -15,7 +15,7 @@ $code = Request::post('code', '');
 $output .= _buffer(function () use ($code) { ?>
     <form method="post">
         <?= Admin::editor('php-eval', 'code', _e($code), ['mode' => 'code', 'format' => 'php-raw']) ?><br>
-        <p><input class="inputfat" type="submit" value="<?= _lang('global.do') ?>">  <label><input type="checkbox" name="html" value="1"<?= Form::activateCheckbox(isset($_POST['html']) ? 1 : 0) ?>> <?= _lang('admin.other.phpex.html') ?></label></p>
+        <p><?= Form::input('submit', null, _lang('global.do'), ['class' => 'inputfat']) ?> <label><?= Form::input('checkbox', 'html', '1', ['class' => 'inputmax', 'checked' => isset($_POST['html'])]) ?> <?= _lang('admin.other.phpex.html') ?></label></p>
         <?= Xsrf::getInput() ?>
     </form>
 <?php });

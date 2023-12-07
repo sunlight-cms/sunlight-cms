@@ -104,11 +104,11 @@ $output .= Form::render(
     [
         [
             'label' => _lang('mod.settings.password.new'),
-            'content' => '<input type="password" name="new_password" class="inputsmall" autocomplete="new-password">',
+            'content' => Form::input('password', 'new_password', null, ['class' => 'inputsmall', 'autocomplete' => 'new-password']),
         ],
         [
             'label' => _lang('mod.settings.password.new') . ' (' . _lang('global.check') . ')',
-            'content' => '<input type="password" name="new_password_check" class="inputsmall" autocomplete="new-password">',
+            'content' => Form::input('password', 'new_password_check', null, ['class' => 'inputsmall', 'autocomplete' => 'new-password']),
         ],
         Form::getSubmitRow(['text' => _lang('mod.settings.password.submit')]),
     ]

@@ -122,7 +122,7 @@ if (isset($_POST['text'])) {
                     }
                 }
 
-                $output .= Message::ok('<textarea class="areasmallwide" rows="9" cols="33" name="list">' . $emails . '</textarea>', true);
+                $output .= Message::ok(Form::textarea('list', $emails, ['class' => 'areasmallwide', 'rows' => 9, 'cols' => 33], false));
             } else {
                 $output .= Message::warning(_lang('admin.other.massemail.noreceiversfound'));
             }
@@ -140,12 +140,12 @@ $output .= '
 
 <tr>
     <th>' . _lang('admin.other.massemail.sender') . '</th>
-    <td><input type="email"' . Form::restorePostValueAndName('sender', Settings::get('sysmail')) . ' class="inputbig"></td>
+    <td>' . Form::input('email', 'sender', Request::post('sender', Settings::get('sysmail')), ['class' => 'inputbig']) . '</td>
 </tr>
 
 <tr>
     <th>' . _lang('posts.subject') . '</th>
-    <td><input type="text" class="inputbig"' . Form::restorePostValueAndName('subject') . '></td>
+    <td>' . Form::input('text', 'subject', Request::post('subject'), ['class' => 'inputbig']) . '</td>
 </tr>
 
 <tr class="valign-top">
@@ -179,12 +179,12 @@ $output .= '
 
 <tr class="valign-top">
     <th>' . _lang('admin.other.massemail.text') . '</th>
-    <td>' . Admin::editor('massemail-body', 'text', Form::restorePostValue('text', null, false), ['mode' => 'code', 'rows' => 9]) . '</td>
+    <td>' . Admin::editor('massemail-body', 'text', Request::post('text', ''), ['mode' => 'code', 'rows' => 9]) . '</td>
 </tr>
 
 <tr>
     <td></td>
-    <td><input type="submit" value="' . _lang('global.send') . '"> <label><input type="checkbox" name="maillist" value="1"' . Form::activateCheckbox(Form::loadCheckbox('maillist')) . '> ' . _lang('admin.other.massemail.maillist') . '</label></td>
+    <td>' . Form::input('submit', null, _lang('global.send')) . '  <label>' . Form::input('checkbox', 'maillist', '1', ['checked' => (bool) Form::loadCheckbox('maillist')]) . ' ' . _lang('admin.other.massemail.maillist') . '</label></td>
 </tr>
 
 </table>

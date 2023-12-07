@@ -209,13 +209,13 @@ abstract class Form
             $name .= _e('[' . implode('][', $parentKeys) . ']');
         }
 
-        return '<input type="hidden" name="' . $name . '" value="' . _e($value) . '">';
+        return Form::input('hidden', $name, $value);
     }
 
     /**
      * Render an <input>
      */
-    static function input(?string $name, string $type, ?string $value, array $attrs = [], bool $doubleEncodeValue = true): string
+    static function input(string $type, ?string $name = null, ?string $value = null, array $attrs = [], bool $doubleEncodeValue = true): string
     {
         return '<input '
             . ($name !== null ? ' name="' . _e($name) . '"' : '')
@@ -331,15 +331,15 @@ abstract class Form
         ]);
 
         if ($output === '') {
-            $output .= '<input type="datetime-local" name="' . _e($name) . '"'
-                . ($options['input_class'] !== null ? ' class="' . _e($options['input_class']) . '"' : '')
-                . ($timestamp !== null ? ' value="' . _e(date('Y-m-d\TH:i', $timestamp)) . '"' : '');
-
-            $output .= '>';
+            $attrs = [];
+            if($options['input_class'] !== null) {
+                $attrs['class'] = $options['input_class'];
+            }
+            $output .= Form::input('datetime-local', $name, ($timestamp !== null ? date('Y-m-d\TH:i', $timestamp) : null), $attrs);
 
             if ($options['now_toggle']) {
                 $output .= ' <label>'
-                    . '<input type="checkbox" name="' . $name . '_now" value="1"' . self::activateCheckbox($options['now_toggle_default']) . '> '
+                    . Form::input('checkbox', $name . '_now', '1', ['checked' => (bool) $options['now_toggle_default']])
                     . _lang('time.update')
                     . '</label>';
             }
@@ -539,10 +539,8 @@ abstract class Form
     {
         return [
             'label' => array_key_exists('label', $options) ? $options['label'] : '',
-            'content' => '<input type="submit"'
-                . (isset($options['name']) ? ' name="' . _e($options['name']) . '"' : '')
-                . ' value="' . _e($options['text'] ?? _lang('global.send')) . '">'
-                . ($options['append'] ?? ''),
+            'content' => Form::input('submit', $options['name'] ?? null, $options['text'] ?? _lang('global.send'))
+            . ($options['append'] ?? ''),
             '_submit' => true, // mark the row for plugin purposes
         ];
     }

@@ -95,16 +95,16 @@ $output .= Form::render(
         'table_attrs' => ' class="profiletable"',
         'form_prepend' => '<fieldset><legend>' . _lang('mod.settings.email') . '</legend>',
         'form_append' => '</fieldset>'
-            . '<input type="submit" name="save" value="' . _lang('mod.settings.email.submit') . '">',
+            . Form::input('submit', 'save', _lang('mod.settings.email.submit')),
     ],
     [
         [
             'label' => _lang('mod.settings.email.new'),
-            'content' => '<input type="text" maxlength="191" class="inputsmall"' . Form::restorePostValueAndName('new_email', User::$data['email']) . '>',
+            'content' => Form::input('email', 'new_email', Request::post('new_email', User::$data['email']), ['class' => 'inputsmall', 'maxlength' => 191]),
         ],
         [
             'label' => _lang('mod.settings.password.current'),
-            'content' => '<input type="password" name="current_password" class="inputsmall" autocomplete="off">',
+            'content' => Form::input('password', 'current_password', null, ['class' => 'inputsmall', 'autocomplete' => 'off']),
         ],
     ]
 );

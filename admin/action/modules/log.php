@@ -75,7 +75,7 @@ $entries = Logger::search($query);
 // output
 $output .= _buffer(function () use ($query, $queryParamValues, $queryParamErrors, $totalResults, $entries) { ?>
 <form method="get" class="log-search">
-    <input type="hidden" name="p" value="log">
+    <?= Form::input('hidden', 'p', 'log') ?>
 
     <table class="formtable">
         <tr>
@@ -96,9 +96,9 @@ $output .= _buffer(function () use ($query, $queryParamValues, $queryParamErrors
                     <option data-since="-30 days 00:00" data-until=""><?= _lang('admin.log.search.time.30days') ?></option>
                     <option data-since="" data-until=""><?= _lang('admin.log.search.time.all') ?></option>
                 </select>
-                <input type="text" name="since" class="inputsmall<?php if (isset($queryParamErrors['since'])): ?> error-border<?php endif ?>" value="<?= _e($queryParamValues['since']) ?>">
+                <?= Form::input('text', 'since', $queryParamValues['since'], ['class' => 'inputsmall' . (isset($queryParamErrors['since']) ? ' error-border' : '')]) ?>
                 -
-                <input type="text" name="until" class="inputsmall<?php if (isset($queryParamErrors['until'])): ?> error-border<?php endif ?>" value="<?= _e($queryParamValues['until']) ?>">
+                <?= Form::input('text', 'until', $queryParamValues['until'], ['class' => 'inputsmall' . (isset($queryParamErrors['until']) ? ' error-border' : '')]) ?>
             </td>
 
             <!-- level -->
@@ -110,7 +110,7 @@ $output .= _buffer(function () use ($query, $queryParamValues, $queryParamErrors
             <!-- category -->
             <th><?= _lang('admin.log.category') ?></th>
             <td colspan="3">
-                <input type="text" name="category" value="<?= _e($query->category ?? '') ?>" list="log-categories" class="inputmax">
+                <?= Form::input('text', 'category', $query->category ?? '', ['class' => 'inputmax', 'list' => 'log-categories']) ?>
                 <datalist id="log-categories">
                     <?php foreach (Logger::getCategories() as $category): ?>
                     <option value="<?= _e($category) ?>">
@@ -123,25 +123,25 @@ $output .= _buffer(function () use ($query, $queryParamValues, $queryParamErrors
             <!-- URL -->
             <th><?= _lang('admin.log.url') ?></th>
             <td>
-                <input type="text" name="method" value="<?= _e($query->method ?? '') ?>" list="log-methods" class="inputsmaller" placeholder="<?= _lang('admin.log.method') ?>">
+                <?= Form::input('text', 'method', $query->method ?? '', ['class' => 'inputsmaller', 'list' => 'log-methods', 'placeholder' => _lang('admin.log.method')]) ?>
                 <datalist id="log-methods">
                     <option value="GET">
                     <option value="POST">
                 </datalist>
 
-                <input type="text" name="urlKeyword" value="<?= _e($query->urlKeyword ?? '') ?>" class="inputmedium">
+                <?= Form::input('text', 'urlKeyword', $query->urlKeyword ?? '', ['class' => 'inputmedium']) ?>
             </td>
 
             <!-- IP -->
             <th><?= _lang('admin.log.ip') ?></th>
             <td>
-                <input type="text" name="ip" value="<?= _e($query->ip ?? '') ?>" class="inputmax">
+                <?= Form::input('text', 'ip', $query->ip ?? '', ['class' => 'inputmax']) ?>
             </td>
 
             <!-- user -->
             <th><?= _lang('admin.log.user_id') ?></th>
             <td>
-                <input type="text" name="userId" value="<?= $query->userId ?? '' ?>" class="inputmax">
+                <?= Form::input('text', 'userId', $query->userId ?? '', ['class' => 'inputmax']) ?>
             </td>
         </tr>
 
@@ -149,14 +149,14 @@ $output .= _buffer(function () use ($query, $queryParamValues, $queryParamErrors
             <!-- message -->
             <th><?= _lang('admin.log.message') ?></th>
             <td>
-                <input type="text" name="keyword" value="<?= _e($query->keyword ?? '') ?>" class="inputmax">
+                <?= Form::input('text', 'keyword', $query->keyword ?? '', ['class' => 'inputmax']) ?>
             </td>
 
             <!-- paginator -->
             <th><?= _lang('admin.settings.paging') ?></th>
             <td colspan="3">
-                <input type="number" name="limit" value="<?= $query->limit ?>" class="inputsmaller" min="1" max="1000">
-                <label><input type="checkbox" name="desc" value="1"<?= Form::activateCheckbox($query->desc) ?>> <?= _lang('admin.log.search.desc') ?></label>
+                <?= Form::input('number', 'limit', $query->limit, ['class' => 'inputsmaller', 'min' => 1, 'max' => 1000])?>
+                <label><?= Form::input('checkbox', 'desc', '1', ['checked' => (bool) $query->desc]) ?> <?= _lang('admin.log.search.desc') ?></label>
             </td>
         </tr>
 

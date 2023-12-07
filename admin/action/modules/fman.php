@@ -12,6 +12,7 @@ use Sunlight\User;
 use Sunlight\Util\Arr;
 use Sunlight\Util\Environment;
 use Sunlight\Util\Filesystem;
+use Sunlight\Util\Form;
 use Sunlight\Util\Request;
 use Sunlight\Util\Response;
 use Sunlight\Util\StringHelper;
@@ -426,7 +427,7 @@ if ($continue) {
                 $action_code = '
       <tr>
       <th>' . _lang('global.name') . ':</th>
-      <td><input type="text" name="name" class="inputmedium" maxlength="64"></td>
+      <td>' . Form::input('text', 'name', null, ['class' => 'inputmedium', 'maxlength' => 64]) . '</td>
       </tr>
       ';
                 break;
@@ -439,7 +440,7 @@ if ($continue) {
                     $action_title = 'admin.fman.delete.title';
                     $action_code = '
         <tr>
-        <td colspan="2">' . _lang('admin.fman.delask', ['%name%' => _e($decodeFilename($name))]) . '<input type="hidden" name="name" value="' . _e($name) . '"></td>
+        <td colspan="2">' . _lang('admin.fman.delask', ['%name%' => _e($decodeFilename($name))]) . Form::input('hidden', 'name', $name) . '</td>
         </tr>
         ';
                 }
@@ -454,7 +455,7 @@ if ($continue) {
                     $action_code = '
         <tr>
         <th>' . _lang('admin.fman.newname') . ':</th>
-        <td><input type="text" name="newname" class="inputmedium" maxlength="64" value="' . _e($decodeFilename($name)) . '"><input type="hidden" name="name" value="' . _e($name) . '"></td>
+        <td>' . Form::input('text', 'newname', $decodeFilename($name), ['class' => 'inputmedium', 'maxlength' => 64]) . Form::input('hidden', 'name', $name) . '</td>
         </tr>
         ';
                 }
@@ -500,7 +501,7 @@ if ($continue) {
                     $action_code = '
         <tr>
         <th>' . _lang('global.name') . '</th>
-        <td><input type="text" name="name" class="inputmedium" maxlength="64" value="' . _e($decodeFilename($name)) . '"> <small>' . _lang('admin.fman.edit.namenote' . ($new ? '2' : '')) . '</small></td>
+        <td>' . Form::input('text', 'name', $decodeFilename($name), ['class' => 'inputmedium', 'maxlength' => 64]) . ' <small>' . _lang('admin.fman.edit.namenote' . ($new ? '2' : '')) . '</small></td>
         </tr>
 
         <tr class="valign-top">
@@ -519,13 +520,13 @@ if ($continue) {
                 $action_code = '
       <tr class="valign-top">
       <th>' . _lang('admin.fman.file') . ':</th>
-      <td id="fmanFiles"><input type="file" name="uf0[]" multiple> <a href="#" onclick="return Sunlight.admin.fmanAddFile();">' . _lang('admin.fman.upload.addfile') . '</a></td>
+      <td id="fmanFiles">' . Form::input('file', 'uf0[]', null, ['multiple' => 'true']) . ' <a href="#" onclick="return Sunlight.admin.fmanAddFile();">' . _lang('admin.fman.upload.addfile') . '</a></td>
       </tr>
 
       <tr>
       <td></td>
       <td>
-          <label><input type="checkbox" name="upload_rewrite" value="1"> ' . _lang('global.uploadrewrite') . '</label>
+          <label>' . Form::input('checkbox', 'upload_rewrite', '1') . ' ' . _lang('global.uploadrewrite') . '</label>
           ' . Environment::renderUploadLimit() . '
       </td>
       </tr>
@@ -543,7 +544,7 @@ if ($continue) {
 
                 foreach ($getSelectedFiles() as $file) {
                     if (ImageService::isImage($file)) {
-                        $images .= '<input type="hidden" name="file_' . $counter . '" value="' . _e($encodeFilename($file)) . "\">\n";
+                        $images .= Form::input('hidden', 'file_' . $counter, $encodeFilename($file)) . "\n";
                         ++$counter;
                     }
                 }
@@ -575,13 +576,13 @@ if ($continue) {
 <div id="fman-action">
 <h2>' . _lang($action_title) . '</h2>
 <form action="' . _e($fmanUrl($action_query)) . '"' . (($action_form_class !== null) ? ' class="' . $action_form_class . '"' : '') . ' method="post" enctype="multipart/form-data">
-<input type="hidden" name="action" value="' . _e(Request::get('a', '')) . '">
+' . Form::input('hidden', 'action', Request::get('a', '')) . '
 <table class="formtable">
 ' . $action_code . '
 
   <tr>
   <td></td>
-  <td><input type="submit" value="' . _lang($action_submit) . '" accesskey="s"> <a href="' . _e($fmanUrl()) . '">' . _lang('global.cancel') . '</a></td>
+  <td>' . Form::input('submit', null, _lang($action_submit), ['accesskey' => 's']) . ' <a href="' . _e($fmanUrl()) . '">' . _lang('global.cancel') . '</a></td>
   </tr>
 
 </table>
@@ -610,8 +611,8 @@ if ($continue) {
     // list
     $output .= '
     <form action="' . _e($fmanUrl()) . '" method="post" name="filelist">
-    <input type="hidden" name="action" value="-1">
-    <input type="hidden" name="param" value="-1">
+    ' . Form::input('hidden', 'action', -1) . '
+    ' . Form::input('hidden', 'param', -1) . '
     <table id="fman-list">
     ';
 
@@ -712,7 +713,7 @@ if ($continue) {
         $output .= '
         <tr class="' . implode(' ', $row_classes) . '">
         <td class="fman-item">
-            <input type="checkbox" name="file_' . $filecounter . '" id="file_' . $filecounter . '" value="' . _e($encodeFilename($item)) . '">
+            ' . Form::input('checkbox', 'file_' . $filecounter, $encodeFilename($item), ['id' => 'file_' . $filecounter]) . '
             <a href="' . _e(Router::file($dir . $item)) . '" target="_blank"' . ($image ? Extend::buffer('image.lightbox', ['group' => 'fman']) : '') . '>
                 <img src="' . _e(Router::path('admin/public/images/icons/fman/' . $icon . '.png')) . '" alt="file" class="icon">'
                 . _e(StringHelper::ellipsis($item, 64, false)) . '

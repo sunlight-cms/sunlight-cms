@@ -5,6 +5,7 @@ use Sunlight\Hcm;
 use Sunlight\IpLog;
 use Sunlight\Router;
 use Sunlight\User;
+use Sunlight\Util\Form;
 use Sunlight\Xsrf;
 
 return function ($id = 0) {
@@ -36,7 +37,7 @@ return function ($id = 0) {
                 . ' action="' . _e(Router::path('system/script/hcm/pvote.php', ['query' => ['_return=' => $GLOBALS['_index']->url], 'fragment' => 'hcm_poll_' . Hcm::$uid])) . '"'
                 . ' method="post"'
                 . '>'
-                . '<input type="hidden" name="pid" value="' . $vpolldata['id'] . '">';
+                . Form::input('hidden', 'pid', $vpolldata['id']);
         } else {
             $ranswers_code = '';
         }
@@ -52,7 +53,7 @@ return function ($id = 0) {
 
             if ($rallowvote) {
                 $item = '<label>'
-                    . '<input type="radio" name="option" value="' . $ranswer_id . '"> '
+                    . Form::input('radio', 'option', $ranswer_id) . ' '
                     . $item
                     . ' [' . $rvotes[$ranswer_id] . '/' . $rpercent . '%]'
                     . '</label>';
@@ -67,7 +68,7 @@ return function ($id = 0) {
         $ranswers_code .= '<div class="poll-answer">';
 
         if ($rallowvote) {
-            $ranswers_code .= '<input type="submit" value="' . _lang('hcm.poll.vote') . '" class="votebutton">';
+            $ranswers_code .= Form::input('submit', null, _lang('hcm.poll.vote'), ['class' => 'votebutton']);
         }
 
         $ranswers_code .= _lang('hcm.poll.votes') . ': ' . $rvotes_sum . '</div>';

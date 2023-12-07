@@ -7,6 +7,7 @@ use Sunlight\Logger;
 use Sunlight\Message;
 use Sunlight\Router;
 use Sunlight\User;
+use Sunlight\Util\Form;
 use Sunlight\Util\Math;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
@@ -196,18 +197,18 @@ $output .= $message . '
     <h2>' . _lang('global.action') . '</h2>
 
     <form class="cform" action="' . _e(Router::admin(null)) . '" method="get" name="edituserform">
-    <input type="hidden" name="p" value="users-edit">
+    ' . Form::input('hidden', 'p', 'users-edit') . '
     <h3>' . _lang('admin.users.edituser') . '</h3>
-    <input type="text" name="id" class="inputsmall">
-    <input class="button" type="submit" value="' . _lang('global.do') . '">
+    ' . Form::input('text', 'id', null, ['class' => 'inputsmall']) . '
+    ' . Form::input('submit', null, _lang('global.do'), ['class' => 'button']) . '
     </form>
 
     <form class="cform" action="' . _e(Router::admin(null)) . '" method="get" name="deleteuserform">
-    <input type="hidden" name="p" value="users-delete">
+    ' . Form::input('hidden', 'p', 'users-delete') . '
     ' . Xsrf::getInput() . '
     <h3>' . _lang('admin.users.deleteuser') . '</h3>
-    <input type="text" name="id" class="inputsmall">
-    <input class="button" type="submit" value="' . _lang('global.do') . '">
+    ' . Form::input('text', 'id', null, ['class' => 'inputsmall']) . '
+    ' . Form::input('submit', null, _lang('global.do'), ['class' => 'button']) . '
     </form>
     ' . Extend::buffer('admin.users.actions.after') . '
     
@@ -215,8 +216,8 @@ $output .= $message . '
 
     <form action="' . _e(Router::admin('users')) . '" method="post">
     <h3>' . _lang('admin.users.switchuser') . '</h3>
-    <input type="text" name="switch_user" class="inputsmall">
-    <input class="button" type="submit" value="' . _lang('global.do') . '">
+    ' . Form::input('text', 'switch_user', null, ['class' => 'inputsmall']) . '
+    ' . Form::input('submit', null, _lang('global.do'), ['class' => 'button']) . '
     ' . Xsrf::getInput() . '</form>
     ' : '') . '
 
@@ -228,7 +229,7 @@ $output .= $message . '
     <form action="' . _e(Router::admin('users')) . '" method="post">
         <p class="bborder"><strong>' . _lang('admin.users.groups.new') . ':</strong> '
         . Admin::userSelect('type', ['extra_option' => _lang('admin.users.groups.new.empty'), 'select_groups' => true])
-        . ' <input class="button" type="submit" value="' . _lang('global.do') . '">
+        . Form::input('submit', null, _lang('global.do'), ['class' => 'button']) . '
         </p>'
         . Xsrf::getInput() . '</form>
     ' . $group_table

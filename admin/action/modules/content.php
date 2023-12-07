@@ -160,7 +160,7 @@ if (
     <form action="' . _e(Router::admin('content')) . '" method="post" class="inline">
         <img src="' . _e(Router::path('admin/public/images/icons/new.png')) . '" alt="new" class="icon">
         ' . Form::select('new_page_type', $create_choices) . '
-        <input class="button" type="submit" value="' . _lang('global.create') . '">
+        ' . Form::input('submit', null, _lang('global.create'), ['class' => 'button']) . '
     ' . Xsrf::getInput() . '</form>
 
     <span class="inline-separator"></span>

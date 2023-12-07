@@ -5,6 +5,7 @@ use Sunlight\Message;
 use Sunlight\Post\Post;
 use Sunlight\Router;
 use Sunlight\User;
+use Sunlight\Util\Form;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
 
@@ -65,7 +66,7 @@ if (!$success) {
     $output .= '
     <form action="' . _e(Router::module('stickytopic', ['query' => ['id' => $id]])) . '" method="post">
     ' . Message::warning(_lang('mod.stickytopic.text' . $unstick, ['%topic%' => $query['subject']]), true) . '
-    <input type="submit" name="doit" value="' . _lang('mod.stickytopic.submit' . $unstick) . '">
+    ' . Form::input('submit', 'doit', _lang('mod.stickytopic.submit' . $unstick))  . '
     ' . Xsrf::getInput() . '</form>
     ';
 }

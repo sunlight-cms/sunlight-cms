@@ -12,6 +12,7 @@ use Sunlight\Settings;
 use Sunlight\User;
 use Sunlight\Util\Cookie;
 use Sunlight\Util\Environment;
+use Sunlight\Util\Form;
 use Sunlight\Util\Json;
 use Sunlight\VersionChecker;
 use Sunlight\Xsrf;
@@ -163,7 +164,7 @@ if (Admin::moduleAccess('log')) {
     </a>
 
     <form method="post" class="inline">
-        <input class="button" type="submit" name="hide_recent_log_errors" value="<?= _lang('global.hide') ?>">
+        <?= Form::input('submit', 'hide_recent_log_errors', _lang('global.hide'), ['class' => 'button']) ?>
         <?= Xsrf::getInput() ?>
     </form>
 <?php

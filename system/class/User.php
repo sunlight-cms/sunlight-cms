@@ -847,14 +847,14 @@ abstract class User
                 [
                     'name' => 'login_form',
                     'action' => Router::path('system/script/login.php', ['query' => ['_return' => $return_url ?? '']]),
-                    'form_append' => '<input type="hidden" name="login_form_url" value="' . _e($form_url->buildRelative()) . "\">\n",
+                    'form_append' => Form::input('hidden', 'login_form_url', $form_url->buildRelative()) . "\n",
                 ],
                 [
-                    ['label' => _lang('login.username'), 'content' => '<input type="text" name="login_username" class="inputmedium"' . Form::restoreValue($_SESSION, 'login_form_username') . ' maxlength="191" autocomplete="username" autofocus>'],
-                    ['label' => _lang('login.password'), 'content' => '<input type="password" name="login_password" class="inputmedium" autocomplete="current-password">'],
+                    ['label' => _lang('login.username'), 'content' => Form::input('text', 'login_username', $_SESSION['login_form_username'] ?? null, ['class' => 'inputmedium', 'maxlength' => 191, 'autocomplete' => 'username', 'autofocus' => true])],
+                    ['label' => _lang('login.password'), 'content' => Form::input('password', 'login_password', null, ['class' => 'inputmedium', 'autocomplete' => 'current-password'])],
                     Form::getSubmitRow([
                         'text' => _lang('global.login'),
-                        'append' => ' <label><input type="checkbox" name="login_persistent" value="1" checked> ' . _lang('login.persistent') . '</label>',
+                        'append' => ' <label>' . Form::input('checkbox', 'login_persistent', '1', ['checked' => true]) . ' ' . _lang('login.persistent') . '</label>',
                     ]),
                 ]
             );

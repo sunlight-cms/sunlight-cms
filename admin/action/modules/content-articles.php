@@ -5,6 +5,7 @@ use Sunlight\Admin\PageFilter;
 use Sunlight\Database\Database as DB;
 use Sunlight\Page\Page;
 use Sunlight\Router;
+use Sunlight\Util\Form;
 
 defined('SL_ROOT') or exit;
 
@@ -60,9 +61,9 @@ $output .= '
 
 <br>
 <form class="cform" action="' . _e(Router::admin(null)) . '" method="get">
-<input type="hidden" name="p" value="content-articles-edit">
-<input type="hidden" name="returnid" value="load">
-<input type="hidden" name="returnpage" value="1">
-' . _lang('admin.content.articles.openid') . ': <input type="number" name="id" class="inputmini"> <input class="button" type="submit" value="' . _lang('global.open') . '">
+' . Form::input('hidden', 'p', 'content-articles-edit') . '
+' . Form::input('hidden', 'returnid', 'load') . '
+' . Form::input('hidden', 'returnpage', '1') . '
+' . _lang('admin.content.articles.openid') . ': ' . Form::input('number', 'id', null, ['class' => 'inputmini']) . ' ' . Form::input('submit', null, _lang('global.open'), ['class' => 'button']) . '
 </form>
 ';

@@ -6,6 +6,7 @@ use Sunlight\Database\SqlReader;
 use Sunlight\Logger;
 use Sunlight\Message;
 use Sunlight\Router;
+use Sunlight\Util\Form;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
 
@@ -34,13 +35,13 @@ $output .= '
             </ul>
         </td>
         <td>
-            <textarea class="max-area" rows="15" cols="70" name="sql">' . _e($sql) . '</textarea>
+            ' . Form::textarea('sql', $sql, ['class' => 'max-area', 'rows' => 15, 'cols' => 70]) . '
         </td>
     </tr>
     <tr>
         <td></td>
         <td>
-            <input class="inputfat" type="submit" value="' . _lang('admin.other.sqlex.run') . '">
+            ' . Form::input('submit', null, _lang('admin.other.sqlex.run'), ['class' => 'inputfat']) . '
             <span class="note">(' . _lang('admin.other.sqlex.hint') . ')</span>
         </td>
     </tr>
@@ -122,10 +123,10 @@ if (!empty($queries)) {
                     $output .= '<code class="text-warning">NULL</code>';
                 } elseif (strpos($row[$j], "\n") !== false) {
                     // string with newlines
-                    $output .= '<textarea cols="60" rows="' . max(10, substr_count($row[$j], "\n")) . '">' . _e($row[$j]) . '</textarea>';
+                    $output .= Form::textarea(null, $row[$j], ['cols' => 60, 'rows' => max(10, substr_count($row[$j], "\n"))]);
                 } elseif (strlen($row[$j]) > 64) {
                     // long string
-                    $output .= '<input size="64" value="' . _e($row[$j]) . '">';
+                    $output .= Form::input('text', null, $row[$j], ['size' => 64]);
                 } else {
                     // short string
                     $output .= _e($row[$j]);

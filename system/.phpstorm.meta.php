@@ -235,6 +235,32 @@ registerArgumentsSet(
     'other-massemail'
 );
 
+registerArgumentsSet(
+    'input_types',
+    'button',
+    'checkbox',
+    'color',
+    'date',
+    'datetime-local',
+    'email',
+    'file',
+    'hidden',
+    'image',
+    'month',
+    'number',
+    'password',
+    'radio',
+    'range',
+    'reset',
+    'search',
+    'submit',
+    'tel',
+    'text',
+    'time',
+    'url',
+    'week'
+);
+
 expectedArguments(\Sunlight\Settings::get(), 0, argumentsSet('settings'));
 expectedArguments(\Sunlight\Settings::update(), 0, argumentsSet('settings'));
 expectedArguments(\Sunlight\Settings::overwrite(), 0, argumentsSet('settings'));
@@ -250,3 +276,4 @@ expectedArguments(\Sunlight\Database\Database::delete(), 0, argumentsSet('tables
 expectedArguments(\Sunlight\Database\Database::deleteSet(), 0, argumentsSet('tables'));
 expectedArguments(\Sunlight\Router::module(), 0, argumentsSet('web_modules'));
 expectedArguments(\Sunlight\Router::admin(), 0, argumentsSet('admin_modules'));
+expectedArguments(\Sunlight\Util\Form::input(), 0, argumentsSet('input_types'));

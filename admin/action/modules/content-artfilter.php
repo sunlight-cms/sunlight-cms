@@ -254,10 +254,10 @@ if (!$infopage) {
 <tr class="valign-top">
 <th>' . _lang('global.action') . '</th>
 <td>
-<label><input type="checkbox" name="new_delete" value="1"> ' . _lang('global.delete') . '</label><br>
-<label><input type="checkbox" name="new_resetrate" value="1"> ' . _lang('admin.content.form.resetartrate') . '</label><br>
-<label><input type="checkbox" name="new_delcomments" value="1"> ' . _lang('admin.content.form.delcomments') . '</label><br>
-<label><input type="checkbox" name="new_resetread" value="1"> ' . _lang('admin.content.form.resetviews') . '</label>
+<label>' . Form::input('checkbox', 'new_delete', '1') . ' ' . _lang('global.delete') . '</label><br>
+<label>' . Form::input('checkbox', 'new_resetrate', '1') . ' ' . _lang('admin.content.form.resetartrate') . '</label><br>
+<label>' . Form::input('checkbox', 'new_delcomments', '1') . ' ' . _lang('admin.content.form.delcomments') . '</label><br>
+<label>' . Form::input('checkbox', 'new_resetread', '1') . ' ' . _lang('admin.content.form.resetviews') . '</label>
 </td>
 </tr>
 
@@ -265,11 +265,11 @@ if (!$infopage) {
 
 <br><div class="hr"><hr></div><br>
 
-<input type="submit" value="' . _lang('mod.search.submit') . '">
+' . Form::input('submit', null, _lang('mod.search.submit')) . '
 ';
 } else {
     $output .= Form::renderHiddenInputs(Arr::filterKeys($_POST, null, null, [Xsrf::TOKEN_NAME, '_process'])) . '
-<input type="hidden" name="_process" value="1">
+' . Form::input('hidden', '_process', '1') . '
 ' . Message::ok(_lang('admin.content.artfilter.f1.infotext', ['%found%' => _num($found)])) . '
 <ul>';
 
@@ -286,7 +286,7 @@ if (!$infopage) {
     }
 
     $output .='</ul>
-<input type="submit" value="' . _lang('global.do2') . '"> <a href="' . _e(Router::admin('content-artfilter')) . '">' . _lang('global.cancel') . '</a>
+' . Form::input('submit', null, _lang('global.do2')) . ' <a href="' . _e(Router::admin('content-artfilter')) . '">' . _lang('global.cancel') . '</a>
 ';
 }
 

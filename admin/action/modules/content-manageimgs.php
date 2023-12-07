@@ -305,12 +305,12 @@ if ($continue) {
 <legend>' . _lang('admin.content.manageimgs.upload') . '</legend>
 <form action="' . _e(Router::admin('content-manageimgs', ['query' => ['g' => $galid]])) . '" method="post" enctype="multipart/form-data">
     <p>' . _lang('admin.content.manageimgs.upload.text', ['%w%' => Settings::get('galuploadresize_w'), '%h%' => Settings::get('galuploadresize_h')]) . '</p>
-    <input type="hidden" name="xaction" value="7">
-    <div id="fmanFiles"><input type="file" name="uf0[]" multiple> <a href="#" onclick="return Sunlight.admin.fmanAddFile();">' . _lang('admin.fman.upload.addfile') . '</a></div>
+    ' . Form::input('hidden', 'xaction', '7') . '
+    <div id="fmanFiles">' . Form::input('file', 'uf0[]', null, ['multiple' => true]) . ' <a href="#" onclick="return Sunlight.admin.fmanAddFile();">' . _lang('admin.fman.upload.addfile') . '</a></div>
     <div class="hr"><hr></div>
     <p>
-        <input type="submit" value="' . _lang('admin.content.manageimgs.upload.submit') . '">
-        <label><input type="checkbox" value="1" name="moveords" checked> ' . _lang('admin.content.manageimgs.moveords') . '</label>'
+        ' . Form::input('submit', null, _lang('admin.content.manageimgs.upload.submit')) . '
+        <label>' . Form::input('checkbox', 'moveords', '1', ['checked' => true]) . ' ' . _lang('admin.content.manageimgs.moveords') . '</label>'
         . Environment::renderUploadLimit() . '
     </p>
 ' . Xsrf::getInput() . '</form>
@@ -319,38 +319,38 @@ if ($continue) {
 <fieldset class="hs_fieldset">
 <legend>' . _lang('admin.content.manageimgs.insert') . '  <small>(' . _lang('admin.content.manageimgs.insert.tip') . ')</small></legend>
 <form action="' . _e(Router::admin('content-manageimgs', ['query' => ['g' => $galid]])) . '" method="post" name="addform">
-<input type="hidden" name="xaction" value="1">
+' . Form::input('hidden', 'xaction', '1') . '
 
 <table>
 <tr>
 <th>' . _lang('admin.content.form.title') . '</th>
-<td><input type="text" name="title" class="inputmedium" maxlength="255"></td>
+<td>' . Form::input('text', 'title', null, ['class' => 'inputmedium', 'maxlength' => 255]) . '</td>
 </tr>
 
 <tr>
 <th>' . _lang('admin.content.form.ord') . '</th>
 <td>
-    <input type="number" name="ord" class="inputsmall" disabled>
-    <label><input type="checkbox" name="moveords" value="1" checked onclick="Sunlight.toggleFormField(this.checked, \'addform\', \'ord\');"> ' . _lang('admin.content.manageimgs.moveords') . '</label>
+    ' . Form::input('number', 'ord', null, ['class' => 'inputsmall', 'disabled' => true]) . '
+    <label>' . Form::input('checkbox', 'moveords', '1', ['checked' => true, 'onclick' => 'Sunlight.toggleFormField(this.checked, \'addform\', \'ord\');']) . ' ' . _lang('admin.content.manageimgs.moveords') . '</label>
 </td>
 </tr>
 
 <tr>
 <th>' . _lang('admin.content.manageimgs.prev') . '</th>
 <td>
-    <input type="text" name="prev" class="inputsmall" disabled>
-    <label><input type="checkbox" name="autoprev" value="1" checked onclick="Sunlight.toggleFormField(this.checked, \'addform\', \'prev\');"> ' . _lang('admin.content.manageimgs.autoprev') . '</label>
+    ' . Form::input('text', 'prev', null, ['class' => 'inputsmall', 'disabled' => true]) . '
+    <label>' . Form::input('checkbox', 'autoprev', '1', ['checked' => true, 'onclick' => 'Sunlight.toggleFormField(this.checked, \'addform\', \'prev\');']) . ' ' . _lang('admin.content.manageimgs.autoprev') . '</label>
 </td>
 </tr>
 
 <tr>
 <th>' . _lang('admin.content.manageimgs.full') . '</th>
-<td><input type="text" name="full" class="inputmedium"></td>
+<td>' . Form::input('text', 'full', null, ['class' => 'inputmedium']) . '</td>
 </tr>
 
 <tr>
 <td></td>
-<td><input type="submit" value="' . _lang('global.insert') . '"></td>
+<td>' . Form::input('submit', null, _lang('global.insert')) . '</td>
 </tr>
 
 </table>
@@ -365,9 +365,9 @@ if ($continue) {
 <fieldset>
 <legend>' . _lang('admin.content.manageimgs.current') . '</legend>
 <form action="' . _e(Router::admin('content-manageimgs', ['query' => ['g' => $galid]])) . '" method="post" name="editform">
-<input type="hidden" name="xaction" value="4">
+' . Form::input('hidden', 'xaction', '4') . '
 
-<input type="submit" value="' . _lang('admin.content.manageimgs.savechanges') . '" class="gallery-savebutton">
+' . Form::input('submit', null, _lang('admin.content.manageimgs.savechanges'), ['class' => 'gallery-savebutton']) . '
 <div class="cleaner"></div>';
 
     // list
@@ -397,26 +397,26 @@ if ($continue) {
 
 <tr>
 <th>' . _lang('admin.content.form.title') . '</th>
-<td><input type="text" name="i' . $image['id'] . '_title" class="max-width" value="' . $image['title'] . '" maxlength="255"></td>
+<td>' . Form::input('text', 'i' . $image['id'] . '_title', $image['title'], ['class' => 'max-width', 'maxlength' => 255], false) . '</td>
 </tr>
 
 <tr class="image-order-row">
 <th>' . _lang('admin.content.form.ord') . '</th>
-<td><input type="text" name="i' . $image['id'] . '_ord" class="max-width" value="' . $image['ord'] . '"></td>
+<td>' . Form::input('text', 'i' . $image['id'] . '_ord', $image['ord'], ['class' => 'max-width']) . '</td>
 </tr>
 
 ' . (!$image['in_storage'] ? '<tr>
 <th>' . _lang('admin.content.manageimgs.prev') . '</th>
 <td>
-    <input type="hidden" name="i' . $image['id'] . '_prevtrigger" value="1">
-    <input type="text" name="i' . $image['id'] . '_prev" class="inputsmall" value="' . $image['prev'] . '"' . Form::disableInputUnless($image['prev'] != '') . '>
-    <label><input type="checkbox" name="i' . $image['id'] . '_autoprev" value="1" onclick="Sunlight.toggleFormField(checked, \'editform\', \'i' . $image['id'] . '_prev\');"' . Form::activateCheckbox($image['prev'] == '') . '>' . _lang('admin.content.manageimgs.autoprev') . '</label>
+    ' . Form::input('hidden', 'i' . $image['id'] . '_prevtrigger', '1') . '
+    ' . Form::input('text', 'i' . $image['id'] . '_prev', $image['prev'], ['class' => 'inputsmall', 'disabled' => ($image['prev'] != '')]) . '
+    <label>' . Form::input('checkbox', 'i' . $image['id'] . '_autoprev', '1', ['checked' => ($image['prev'] == ''), 'onclick' => 'Sunlight.toggleFormField(checked, \'editform\', \'i' . $image['id'] . '_prev\');']) . ' ' . _lang('admin.content.manageimgs.autoprev') . '</label>
 </td>
 </tr>
 
 <tr>
 <th>' . _lang('admin.content.manageimgs.full') . '</th>
-<td><input type="text" name="i' . $image['id'] . '_full" class="max-width" value="' . $image['full'] . '"></td>
+<td>' . Form::input('text', 'i' . $image['id'] . '_full', $image['full'], ['class' => 'max-width']) . '</td>
 </tr>' : '') . '
 
 <tr class="valign-top">
@@ -437,7 +437,7 @@ if ($continue) {
         $output .= '
 </div>
 <div class="cleaner"></div>
-<input type="submit" value="' . _lang('admin.content.manageimgs.savechanges') . '" class="gallery-savebutton" accesskey="s">';
+' . Form::input('submit', null, _lang('admin.content.manageimgs.savechanges'), ['class' => 'gallery-savebutton', 'accesskey' => 's']);
     } else {
         $output .= '<p>' . _lang('global.nokit') . '</p>';
     }
@@ -454,9 +454,9 @@ if ($continue) {
   <legend>' . _lang('admin.content.manageimgs.moveimgs') . '</legend>
 
   <form class="cform" action="' . _e(Router::admin('content-manageimgs', ['query' => ['g' => $galid]])) . '" method="post">
-  <input type="hidden" name="xaction" value="5">
-  ' . Admin::pageSelect('newhome', ['type' => Page::GALLERY]) . ' <input class="button" type="submit" value="' . _lang('global.do') . '" onclick="return Sunlight.confirm();"><br><br>
-  <label><input type="checkbox" name="moveords" value="1" checked> ' . _lang('admin.content.manageimgs.moveords') . '</label>
+  ' . Form::input('hidden', 'newhome', '5') . '
+  ' . Admin::pageSelect('newhome', ['type' => Page::GALLERY]) . ' ' . Form::input('submit', null, _lang('global.do'), ['class' => 'button', 'onclick' => 'return Sunlight.confirm();']) . '<br><br>
+  <label>' . Form::input('checkbox', 'moveords', '1', ['checked' => true]) . ' ' . _lang('admin.content.manageimgs.moveords') . '</label>
   ' . Xsrf::getInput() . '</form>
 
   </fieldset>
@@ -467,8 +467,8 @@ if ($continue) {
   <legend>' . _lang('admin.content.manageimgs.delimgs') . '</legend>
 
   <form class="cform" action="' . _e(Router::admin('content-manageimgs', ['query' => ['g' => $galid]])) . '" method="post">
-  <input type="hidden" name="xaction" value="6">
-  <label><input type="checkbox" name="confirm" value="1"> ' . _lang('admin.content.manageimgs.delimgs.confirm') . '</label> <input class="button" type="submit" value="' . _lang('global.do') . '" onclick="return Sunlight.confirm();">
+  ' . Form::input('hidden', 'newhome', '6') . '
+  <label>' . Form::input('checkbox', 'confirm', '1') . ' ' . _lang('admin.content.manageimgs.delimgs.confirm') . '</label> ' . Form::input('submit', null, _lang('global.do'), ['class' => 'button', 'onclick' => 'return Sunlight.confirm();']) . '
   ' . Xsrf::getInput() . '</form>
 
   </fieldset>

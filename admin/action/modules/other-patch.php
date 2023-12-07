@@ -7,6 +7,7 @@ use Sunlight\GenericTemplates;
 use Sunlight\Message;
 use Sunlight\Router;
 use Sunlight\Util\Environment;
+use Sunlight\Util\Form;
 use Sunlight\VersionChecker;
 use Sunlight\Xsrf;
 
@@ -70,7 +71,7 @@ $output .= _buffer(function () use ($latest_version) { ?>
             <tr>
                 <th><?= _lang('admin.other.patch.file') ?></th>
                 <td>
-                    <input type="file" name="patch" id="patch-input">
+                    <?= Form::input('file', 'patch', null, ['id' => 'patch-input']) ?>
                     <?= Environment::renderUploadLimit() ?>
                 </td>
             </tr>
@@ -78,7 +79,7 @@ $output .= _buffer(function () use ($latest_version) { ?>
                 <td></td>
                 <td>
                     <?= Message::warning(_lang('admin.other.patch.note', ['%link%' => Router::admin('backup')]), true) ?>
-                    <input type="submit" class="button big" name="apply_patch" value="<?= _lang('admin.other.patch.upload') ?>">
+                    <?= Form::input('submit', 'apply_patch', _lang('admin.other.patch.upload'), ['class' => 'button big']) ?>
 
                 </td>
             </tr>

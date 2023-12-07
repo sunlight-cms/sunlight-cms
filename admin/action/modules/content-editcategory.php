@@ -23,10 +23,10 @@ if ($continue) {
     }
 
     $custom_settings = '
-    <tr><td colspan="2"><label><input type="checkbox" name="var3" value="1"' . Form::activateCheckbox($query['var3']) . '> ' . _lang('admin.content.form.showinfo') . '</label></td></tr>
-    <tr><td colspan="2"><label><input type="checkbox" name="var4" value="1"' . Form::activateCheckbox($query['var4']) . '> ' . _lang('admin.content.form.showpics') . '</label></td></tr>
+    <tr><td colspan="2"><label>' . Form::input('checkbox', 'var3', '1', ['checked' => (bool) $query['var3']]) . ' ' . _lang('admin.content.form.showinfo') . '</label></td></tr>
+    <tr><td colspan="2"><label>' . Form::input('checkbox', 'var4', '1', ['checked' => (bool) $query['var4']]) . ' ' . _lang('admin.content.form.showpics') . '</label></td></tr>
     <tr><td>' . Form::select('var1', $artorder_choices, $query['var1'], ['class' => 'selectmax']) . '</td><td>'._lang('admin.content.form.artorder') . '</td></tr>
-    <tr><td><input type="number" min="1" name="var2" value="' . $query['var2'] . '" class="inputmax"></td><td>' . _lang('admin.content.form.artsperpage') . '</td></tr>
+    <tr><td>' . Form::input('number', 'var2', $query['var2'], ['class' => 'inputmax', 'min' => 1]) . '</td><td>' . _lang('admin.content.form.artsperpage') . '</td></tr>
   ';
 
     $custom_save_array = [

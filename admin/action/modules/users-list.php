@@ -74,19 +74,19 @@ $output .= '
 
 <td>
 <form class="cform" action="' . _e(Router::admin(null)) . '" method="get">
-<input type="hidden" name="p" value="users-list">
-<input type="hidden" name="search"' . Form::restoreGetValue('search', '') . '>
+' . Form::input('hidden', 'p', 'users-list') . '
+' . Form::input('hidden', 'search', Request::get('search', '')) . '
 <strong>' . _lang('admin.users.list.groupfilter') . ':</strong> '
 . Admin::userSelect('group_id', ['selected' => $group, 'extra_option' => _lang('global.all'), 'select_groups' => true])
-. '<input class="button" type="submit" value="' . _lang('global.apply') . '">
+. Form::input('submit', null, _lang('global.apply'), ['class' => 'button']) . '
 </form>
 </td>
 
 <td>
 <form class="cform" action="' . _e(Router::admin(null)) . '" method="get">
-<input type="hidden" name="p" value="users-list">
-<input type="hidden" name="group_id" value="' . $group . '">
-<strong>' . _lang('admin.users.list.search') . ':</strong> <input type="text" name="search" class="inputsmall"' . Form::restoreGetValue('search') . '> <input class="button" type="submit" value="' . _lang('mod.search.submit') . '">
+' . Form::input('hidden', 'p', 'users-list') . '
+' . Form::input('hidden', 'group_id', $group) . '
+<strong>' . _lang('admin.users.list.search') . ':</strong> ' . Form::input('text', 'search', Request::get('search'), ['class' => 'inputsmall']) . ' ' .  Form::input('submit', null, _lang('mod.search.submit'), ['class' => 'button']) . '
 ' . ($search ? ' <a href="' . _e(Router::admin('users-list', ['query' => ['group' => $group]])) . '">' . _lang('global.cancel') . '</a>' : '') . '
 </form>
 </td>
@@ -115,7 +115,7 @@ $output .= $message . '
 <form method="post">
 <table id="user-list" class="list list-hover list-max">
 <thead><tr>
-    <td><input type="checkbox" onclick="Sunlight.checkAll(event, this.checked, \'#user-list\')"></td>
+    <td>' . Form::input('checkbox', null, null, ['onclick' => 'Sunlight.checkAll(event, this.checked, \'#user-list\')']) . '</td>
     <td>ID</td><td>' . _lang('login.username') . '</td>
     <td>' . _lang('global.email') . '</td>
     <td>' . _lang('mod.settings.account.publicname') . '</td>
@@ -133,7 +133,7 @@ $query = DB::query('SELECT ' . $userQuery['column_list'] . ',u.email user_email 
 if (DB::size($query) != 0) {
     while ($item = DB::row($query)) {
         $output .= '<tr>
-            <td><input type="checkbox" name="user[]" value="' . $item['user_id'] . '"></td>
+            <td>' . Form::input('checkbox', 'user[]', $item['user_id'], []) . '</td>
             <td>' . $item['user_id'] . '</td>
             <td>' . Router::userFromQuery($userQuery, $item, ['new_window' => true, 'publicname' => false]) . '</td>
             <td>' . $item['user_email'] . '</td><td>' . (($item['user_publicname'] != '') ? $item['user_publicname'] : '-') . '</td>
@@ -165,7 +165,7 @@ $output .= '
     <p class="left">
         ' . _lang('global.bulk') . ':
         ' . Form::select('bulk_action', ['' => '', 'del' => _lang('global.delete')]) . '
-        <input class="button" type="submit" onclick="return Sunlight.confirm()" value="' . _lang('global.do') . '">
+        ' . Form::input('submit', null, _lang('global.do'), ['class' => 'button', 'onclick' => 'return Sunlight.confirm()']) . '
     </p>
 
 ' . Xsrf::getInput() . '</form>';

@@ -168,12 +168,12 @@ if ($continue) {
     </th>
     <td>
         <label>
-            <input type="' . ($isText ? 'text' : 'checkbox') . '"'
-                . ' id="setting_' . $item['name'] . '"'
-                . ' name="' . $item['name'] . '"'
-                . ($isText ? ' value="' . _e($query[$item['name']]) . '"' : ' value="1"'
-                . Form::activateCheckbox($query[$item['name']]))
-            . '>
+             ' . Form::input(
+                    $isText ? 'text' : 'checkbox',
+                    $item['name'],
+                    $isText ? $query[$item['name']] : '1',
+                   ['id' => 'setting_' . $item['name']] + ($isText ? [] : ['checked' => (bool) $query[$item['name']]])
+                ) . '
             ' . ($item['help'] ?? _lang('admin.users.groups.' . $item['name'] . '.help')) . "
         </label>
     </td>
@@ -254,7 +254,7 @@ if ($continue) {
     // load icons
     if ($id != User::GUEST_GROUP_ID) {
         $icons = "<div class=\"radio-group\">\n";
-        $icons .= '<label><input' . Form::activateCheckbox($query['icon'] === '') . ' type="radio" name="icon" value=""> ' . _lang('global.undefined') . "</label>\n";
+        $icons .= '<label>' . Form::input('radio', 'icon', '', ['checked' => ($query['icon'] === '')]) . ' ' . _lang('global.undefined') . "</label>\n";
 
         $icon_dir = SL_ROOT . 'images/groupicons';
 
@@ -268,7 +268,7 @@ if ($continue) {
                 continue;
             }
 
-            $icons .= '<label><input' . Form::activateCheckbox($file === $query['icon']) . ' type="radio" name="icon" value="' . _e($file) . '">'
+            $icons .= '<label>' . Form::input('radio', 'icon', $file, ['checked' => ($file === $query['icon'])])
                 . ' <img class="icon" src="' . Router::file($icon_dir . '/' . $file) . '" alt="' . _e($file) . '">'
                 . "</label>\n";
         }
@@ -286,17 +286,17 @@ if ($continue) {
 
   <tr>
   <th>' . _lang('global.name') . '</th>
-  <td><input type="text" name="title" class="inputmedium" value="' . $query['title'] . '" maxlength="128"></td>
+  <td>' . Form::input('text', 'title', $query['title'], ['class' => 'inputmedium', 'maxlength' => 128], false) . '</td>
   </tr>
 
   <tr>
   <th>' . _lang('global.descr') . '</th>
-  <td><input type="text" name="descr" class="inputmedium" value="' . $query['descr'] . '" maxlength="255"></td>
+  <td>' . Form::input('text', 'descr', $query['descr'], ['class' => 'inputmedium', 'maxlength' => 255], false) . '</td>
   </tr>
 
   <tr>
   <th>' . _lang('admin.users.groups.level') . '</th>
-  <td><input type="number" min="0" max="' . min(User::getLevel() -1, User::MAX_ASSIGNABLE_LEVEL) . '" name="level" class="inputmedium" value="' . $query['level'] . '"' . Form::disableInputUnless(!$systemitem) . '></td>
+  <td>' . Form::input('number', 'level', $query['level'], ['class' => 'inputmedium', 'min' => 0, 'max' => min(User::getLevel() - 1, User::MAX_ASSIGNABLE_LEVEL), 'disabled' => $systemitem]) . '</td>        
   </tr>
 
   ' . (($id != User::GUEST_GROUP_ID) ? '
@@ -304,16 +304,16 @@ if ($continue) {
   <tr>
     <th>' . _lang('admin.users.groups.color') . '</th>
     <td>
-        <input type="text" name="color" class="inputsmall" value="' . $query['color'] . '" maxlength="16">
-        <input type="color" value="' . Admin::formatHtmlColor($query['color']) . '" onchange="this.form.elements.color.value=this.value">
+        ' . Form::input('text', 'color', $query['color'], ['class' => 'inputsmall', 'maxlength' => 16]) . '
+        ' . Form::input('color', null, Admin::formatHtmlColor($query['color']), ['onchange' => 'this.form.elements.color.value=this.value']) . '
     </td>
   </tr>
-  <tr><th>' . _lang('admin.users.groups.reglist') . '</th><td><input type="checkbox" name="reglist" value="1"' . Form::activateCheckbox($query['reglist']) . '></td></tr>
+  <tr><th>' . _lang('admin.users.groups.reglist') . '</th><td>' . Form::input('checkbox', 'reglist', '1', ['checked' => (bool) $query['reglist']]) . '</td></tr>
   ' : '') . '
 
   <tr>
   <th>' . _lang('admin.users.groups.blocked') . '</th>
-  <td><input type="checkbox" name="blocked" value="1"' . Form::activateCheckbox($query['blocked']) . Form::disableInputUnless($id != User::ADMIN_GROUP_ID && $id != User::GUEST_GROUP_ID) . '></td>
+  <td>' . Form::input('checkbox', 'blocked', '1', ['checked' => (bool) $query['blocked'], 'disabled' => !($id != User::ADMIN_GROUP_ID && $id != User::GUEST_GROUP_ID)]) . '</td>
   </tr>
 
   </table>
@@ -322,7 +322,7 @@ if ($continue) {
   ' . ($rights !== '' ? $rights : '<br>') . '
   ' . Extend::buffer('admin.editgroup.form') . '
 
-  <input type="submit" class="button bigger" value="' . _lang('global.save') . '" accesskey="s"> <small>' . _lang('admin.content.form.thisid') . ' ' . $id . '</small>
+  ' . Form::input('submit', null, _lang('global.save'), ['class' => 'button bigger', 'accesskey' => 's']) . ' <small>' . _lang('admin.content.form.thisid') . ' ' . $id . '</small>
 
   ' . Xsrf::getInput() . '</form>
   ';
