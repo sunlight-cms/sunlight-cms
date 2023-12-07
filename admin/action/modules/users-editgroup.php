@@ -270,7 +270,7 @@ if ($continue) {
             }
 
             $icons .= '<label>' . Form::input('radio', 'icon', $file, ['checked' => ($file === $query['icon'])])
-                . ' <img class="icon" src="' . Router::file($icon_dir . '/' . $file) . '" alt="' . _e($file) . '">'
+                . ' <img class="icon" src="' . _e(Router::file($icon_dir . '/' . $file)) . '" alt="' . _e($file) . '">'
                 . "</label>\n";
         }
 
