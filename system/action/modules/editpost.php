@@ -148,14 +148,14 @@ if ($form) {
     $inputs = [];
 
     if ($post['author'] == -1) {
-        $inputs[] = ['label' => _lang('posts.guestname'), 'content' => Form::input('text', 'guest', $post['guest'], ['class' => 'inputsmall', 'maxlength' => 24]), false];
+        $inputs[] = ['label' => _lang('posts.guestname'), 'content' => Form::input('text', 'guest', $post['guest'], ['class' => 'inputsmall', 'maxlength' => 24], false)];
     }
 
     if ($post['xhome'] == -1 && in_array($post['type'], [Post::FORUM_TOPIC, Post::PRIVATE_MSG])) {
-        $inputs[] = ['label' => _lang((($post['type'] != Post::FORUM_TOPIC) ? 'posts.subject' : 'posts.topic')), 'content' => Form::input('text', 'subject', $post['subject'], ['class' => 'inputmedium', 'maxlength' => 48]), false];
+        $inputs[] = ['label' => _lang((($post['type'] != Post::FORUM_TOPIC) ? 'posts.subject' : 'posts.topic')), 'content' => Form::input('text', 'subject', $post['subject'], ['class' => 'inputmedium', 'maxlength' => 48], false), false];
     }
 
-    $inputs[] = ['label' => _lang('posts.text'), 'content' => Form::textarea('text', $post['text'], ['class' => 'areamedium', 'rows' => 5, 'cols' => 33]), 'top' => true];
+    $inputs[] = ['label' => _lang('posts.text'), 'content' => Form::textarea('text', $post['text'], ['class' => 'areamedium', 'rows' => 5, 'cols' => 33], false), 'top' => true];
     $inputs[] = ['label' => '', 'content' => PostForm::renderControls('postform', 'text', $post['type'] != Post::SHOUTBOX_ENTRY)];
     $inputs[] = Form::getSubmitRow([
         'text' => _lang('global.save'),

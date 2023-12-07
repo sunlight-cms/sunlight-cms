@@ -122,7 +122,7 @@ if (isset($_POST['text'])) {
                     }
                 }
 
-                $output .= Message::ok(Form::textarea('list', $emails, ['class' => 'areasmallwide', 'rows' => 9, 'cols' => 33], false));
+                $output .= Message::ok(Form::textarea('list', $emails, ['class' => 'areasmallwide', 'rows' => 9, 'cols' => 33]), true);
             } else {
                 $output .= Message::warning(_lang('admin.other.massemail.noreceiversfound'));
             }

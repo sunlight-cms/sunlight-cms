@@ -12,6 +12,7 @@ use Sunlight\Util\Form;
 use Sunlight\Util\Html;
 use Sunlight\Util\Math;
 use Sunlight\Util\Request;
+use Sunlight\Util\StringHelper;
 use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
@@ -187,7 +188,7 @@ if ($continue) {
     if (!empty($_POST)) {
         $changeset = [];
 
-        // base date
+        // base data
         $changeset['title'] = Html::cut(_e(trim(Request::post('title', ''))), 128);
 
         if ($changeset['title'] == '') {
@@ -197,7 +198,7 @@ if ($continue) {
         $changeset['descr'] = Html::cut(_e(trim(Request::post('descr', ''))), 255);
 
         if ($id != User::GUEST_GROUP_ID) {
-            $changeset['icon'] = Html::cut(_e(trim(Request::post('icon', ''))), 16);
+            $changeset['icon'] = StringHelper::cut(trim(Request::post('icon', '')), 16);
         }
 
         $changeset['color'] = Admin::formatHtmlColor(Request::post('color', ''), false, '');

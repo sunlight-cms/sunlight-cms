@@ -144,7 +144,7 @@ switch ($a) {
         $inputs = [];
         $inputs[] = ['label' => _lang('mod.messages.receiver'), 'content' => Form::input('text', 'receiver', Request::post('receiver', Request::get('receiver')), ['class' => 'inputmedium', 'maxlength' => 24])];
         $inputs[] = ['label' => _lang('posts.subject'), 'content' => Form::input('text', 'subject', Request::post('subject', Request::get('subject')), ['class' => 'inputmedium', 'maxlength' => 48])];
-        $inputs[] = ['label' => _lang('mod.messages.message'), 'content' => Form::textarea('text', Request::post('text'), ['class' => 'areamedium', 'rows' => 5, 'cols' => 33]), 'top' => true];
+        $inputs[] = ['label' => _lang('mod.messages.message'), 'content' => Form::textarea('text', Request::post('text'), ['class' => 'areamedium', 'rows' => 5, 'cols' => 33], false), 'top' => true];
         $inputs[] = ['label' => '', 'content' => PostForm::renderControls('newmsg', 'text')];
         $inputs[] = Form::getSubmitRow(['append' => ' ' . PostForm::renderPreviewButton('newmsg', 'text')]);
 

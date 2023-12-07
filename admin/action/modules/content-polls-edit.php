@@ -192,7 +192,7 @@ if ($continue) {
 
   <tr class="valign-top">
   <th>' . _lang('admin.content.form.answers') . '</th>
-  <td>' . Form::textarea('answers', $query['answers'], ['class' => 'areamedium', 'rows' => 25, 'cols' => 94]) . '</td>
+  <td>' . Form::textarea('answers', $query['answers'], ['class' => 'areamedium', 'rows' => 25, 'cols' => 94], false) . '</td>
   </tr>
 
   ' . (!$new ? '<tr>

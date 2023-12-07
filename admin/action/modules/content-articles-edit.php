@@ -382,11 +382,11 @@ if ($continue) {
                             </tr>
                             <tr class="valign-top">
                                 <th>' . _lang('admin.content.form.perex') . '</th>
-                                <td>' . Admin::editor('article-perex', 'perex', _e($query['perex']), ['mode' => 'lite', 'rows' => 9, 'class' => 'areabigperex']) . '</td>
+                                <td>' . Admin::editor('article-perex', 'perex', $query['perex'], ['mode' => 'lite', 'rows' => 9, 'class' => 'areabigperex']) . '</td>
                             </tr>
                             <tr class="valign-top">
                                 <th>' . _lang('admin.content.form.content') . '</th>
-                                <td>' . Admin::editor('article-content', 'content', _e($query['content'])) . '</td>
+                                <td>' . Admin::editor('article-content', 'content', $query['content']) . '</td>
                             </tr>
                         </tbody>
                         <tfoot>

@@ -46,7 +46,7 @@ $output .= '
 
 <tr class="valign-top">
     <th>' . _lang('admin.menu.index.edit.text') . '</th>
-    <td class="minwidth">' . Admin::editor('index-edit', 'text', _e($admin_index_cfg['admin_index_custom'])) . '</td>
+    <td class="minwidth">' . Admin::editor('index-edit', 'text', $admin_index_cfg['admin_index_custom']) . '</td>
 </tr>
 
 <tr>

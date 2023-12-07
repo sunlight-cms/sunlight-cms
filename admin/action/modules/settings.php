@@ -106,7 +106,7 @@ $editable_settings = [
                 'format' => 'text',
                 'help' => false,
                 'extra_help' => _lang('admin.settings.users.rules.help'),
-                'input' => Admin::editor('settings-rules', 'rules', _e($settings['rules']), ['rows' => 9, 'class' => 'areasmallwide']),
+                'input' => Admin::editor('settings-rules', 'rules', $settings['rules'], ['rows' => 9, 'class' => 'areasmallwide']),
                 'id' => false,
                 'transform_back' => function (string $rules) {
                     return User::filterContent($rules, true, false);
@@ -394,7 +394,7 @@ foreach ($editable_settings as $settings_category => $settings_category_data) {
                         break;
                     case 'html':
                     default:
-                        $input = Form::input('text', $input_name, $value, $inputAttrs, !($item['format'] === 'html'));
+                        $input = Form::input('text', $input_name, $value, $inputAttrs, $item['format'] !== 'html');
                         break;
                 }
             }

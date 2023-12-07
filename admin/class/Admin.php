@@ -124,10 +124,11 @@ abstract class Admin
      * - rows (25)            number of textarea rows
      * - wrap (-)             textarea wrap attribute
      * - class ('areabig')    textarea class attribute
+     * - double_encode (1)    encode special characters in $content even if already encoded
      *
      * @param string $context descriptive identifier of where the editor is used (for plugins)
      * @param string $name form element name
-     * @param string $htmlContent properly escaped HTML content for the editor
+     * @param string $content editor's contents
      * @param array{
      *     mode?: string,
      *     format?: string,
@@ -135,9 +136,10 @@ abstract class Admin
      *     rows?: int,
      *     wrap?: string|null,
      *     class?: string,
+     *     double_encode?: bool,
      * } $options see description
      */
-    static function editor(string $context, string $name, string $htmlContent, array $options = []): string
+    static function editor(string $context, string $name, string $content, array $options = []): string
     {
         $options += [
             'mode' => 'default',
@@ -146,12 +148,13 @@ abstract class Admin
             'rows' => 25,
             'wrap' => null,
             'class' => 'areabig',
+            'double_encode' => true,
         ];
 
         $output = Extend::buffer('admin.editor', [
             'context' => $context,
             'name' => $name,
-            'html_content' => &$htmlContent,
+            'content' => &$content,
             'options' => &$options,
         ]);
 
@@ -159,7 +162,7 @@ abstract class Admin
             // default implementation
             $output = Form::textarea(
                 $name,
-                $htmlContent,
+                $content,
                 [
                     'cols' => (int) $options['cols'],
                     'rows' => (int) $options['rows'],
@@ -168,7 +171,7 @@ abstract class Admin
                     'data-editor-mode' => $options['mode'],
                     'data-editor-format' => $options['format'],
                 ] + ($options['wrap'] === null ? [] : ['wrap' => $options['wrap']]),
-                false
+                $options['double_encode']
             );
         }
 

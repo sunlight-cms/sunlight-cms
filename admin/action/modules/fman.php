@@ -506,7 +506,7 @@ if ($continue) {
 
         <tr class="valign-top">
         <th>' . _lang('admin.content.form.content') . '</th>
-        <td>' . Admin::editor('fman-edit', 'content', _e($content), ['mode' => 'code', 'format' => $ext, 'wrap' => 'off']) . '</td>
+        <td>' . Admin::editor('fman-edit', 'content', $content, ['mode' => 'code', 'format' => $ext, 'wrap' => 'off']) . '</td>
         </tr>
         ';
                 }

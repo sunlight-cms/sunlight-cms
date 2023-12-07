@@ -530,7 +530,7 @@ $output .= '<form class="cform" action="' . _e(Router::admin('content-edit' . Pa
                             . ($editscript_enable_perex ?
                             '<tr class="valign-top">
                                 <th>' . _lang('admin.content.form.perex') . '</th>
-                                <td>' . Admin::editor('page-perex', 'perex', _e($query['perex']), ['mode' => 'lite', 'rows' => 2, 'class' => 'arealine']) . '</td>
+                                <td>' . Admin::editor('page-perex', 'perex', $query['perex'], ['mode' => 'lite', 'rows' => 2, 'class' => 'arealine']) . '</td>
                             </tr>' : '')
 
                             . ($editscript_enable_heading ?
@@ -542,7 +542,7 @@ $output .= '<form class="cform" action="' . _e(Router::admin('content-edit' . Pa
                             . ($editscript_enable_content ?
                             '<tr class="valign-top">
                                 <th>' . _lang('admin.content.form.content'). '</th>
-                                <td>' . Admin::editor('page-content', 'content', _e($query['content'])) . '</td>
+                                <td>' . Admin::editor('page-content', 'content', $query['content']) . '</td>
                             </tr>' : '')
 
                             . $editscript_extra_row

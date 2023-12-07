@@ -209,7 +209,7 @@ abstract class Form
             $name .= _e('[' . implode('][', $parentKeys) . ']');
         }
 
-        return Form::input('hidden', $name, $value);
+        return self::input('hidden', $name, $value);
     }
 
     /**
@@ -335,11 +335,11 @@ abstract class Form
             if($options['input_class'] !== null) {
                 $attrs['class'] = $options['input_class'];
             }
-            $output .= Form::input('datetime-local', $name, ($timestamp !== null ? date('Y-m-d\TH:i', $timestamp) : null), $attrs);
+            $output .= self::input('datetime-local', $name, ($timestamp !== null ? date('Y-m-d\TH:i', $timestamp) : null), $attrs);
 
             if ($options['now_toggle']) {
                 $output .= ' <label>'
-                    . Form::input('checkbox', $name . '_now', '1', ['checked' => (bool) $options['now_toggle_default']])
+                    . self::input('checkbox', $name . '_now', '1', ['checked' => (bool) $options['now_toggle_default']])
                     . _lang('time.update')
                     . '</label>';
             }
@@ -366,7 +366,7 @@ abstract class Form
             return $value;
         }
 
-        if (Form::loadCheckbox($name . '_now')) {
+        if (self::loadCheckbox($name . '_now')) {
             return time();
         }
 
@@ -539,7 +539,7 @@ abstract class Form
     {
         return [
             'label' => array_key_exists('label', $options) ? $options['label'] : '',
-            'content' => Form::input('submit', $options['name'] ?? null, $options['text'] ?? _lang('global.send'))
+            'content' => self::input('submit', $options['name'] ?? null, $options['text'] ?? _lang('global.send'))
             . ($options['append'] ?? ''),
             '_submit' => true, // mark the row for plugin purposes
         ];
