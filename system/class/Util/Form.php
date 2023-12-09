@@ -109,12 +109,26 @@ abstract class Form
      */
     static function input(string $type, ?string $name = null, ?string $value = null, array $attrs = [], bool $doubleEncodeValue = true): string
     {
-        return '<input'
-            . ($name !== null ? ' name="' . _e($name) . '"' : '')
-            . ' type="' . _e($type) . '"'
-            . ($value !== null ? ' value="' . _e($value, $doubleEncodeValue) . '"' : '')
-            . GenericTemplates::renderAttrs($attrs)
-            . '>';
+        $output = Extend::buffer('form.input', [
+            'type' => &$type,
+            'name' => &$name,
+            'value' => &$value,
+            'attrs' => &$attrs,
+            'doubleEncodeValue' => &$doubleEncodeValue,
+        ]);
+
+        if ($output === '') {
+            $output = '<input'
+                . ($name !== null ? ' name="' . _e($name) . '"' : '')
+                . ' type="' . _e($type) . '"'
+                . ($value !== null ? ' value="' . _e($value, $doubleEncodeValue) . '"' : '')
+                . GenericTemplates::renderAttrs($attrs)
+                . '>';
+        }
+
+        Extend::call('form.input.after', ['output' => &$output]);
+
+        return $output;
     }
 
     /**
@@ -122,12 +136,25 @@ abstract class Form
      */
     static function textarea(?string $name, ?string $content, array $attrs = [], bool $doubleEncodeContent = true): string
     {
-        return '<textarea'
-            . ($name !== null ? ' name="' . _e($name) . '"' : '')
-            . GenericTemplates::renderAttrs($attrs)
-            . '>'
-            . _e($content ?? '', $doubleEncodeContent)
-            . '</textarea>';
+        $output = Extend::buffer('form.textarea', [
+            'name' => &$name,
+            'content' => &$content,
+            'attrs' => &$attrs,
+            'doubleEncodeContent' => &$doubleEncodeContent,
+        ]);
+
+        if ($output === '') {
+            $output = '<textarea'
+                . ($name !== null ? ' name="' . _e($name) . '"' : '')
+                . GenericTemplates::renderAttrs($attrs)
+                . '>'
+                . _e($content ?? '', $doubleEncodeContent)
+                . '</textarea>';
+        }
+
+        Extend::call('form.textarea.after', ['output' => &$output]);
+
+        return $output;
     }
 
     /**
@@ -142,43 +169,55 @@ abstract class Form
      */
     static function select(?string $name, array $choices, $selected = null, array $attrs = [], bool $doubleEncodeLabels = true): string
     {
-        $output = '<select'
-            . ($name !== null ? ' name="' . _e($name) . '"' : '')
-            . GenericTemplates::renderAttrs($attrs)
-            . '>';
+        $output = Extend::buffer('form.select', [
+            'name' => &$name,
+            'choices' => &$choices,
+            'selected' => &$selected,
+            'attrs' => &$attrs,
+            'doubleEncodeLabels' => &$doubleEncodeLabels,
+        ]);
 
-        foreach ($choices as $k => $v) {
-            if (is_array($v)) {
-                // optgroup
-                $output .= '<optgroup label="' . _e((string) $k) . "\">\n";
+        if ($output === '') {
+            $output = '<select'
+                . ($name !== null ? ' name="' . _e($name) . '"' : '')
+                . GenericTemplates::renderAttrs($attrs)
+                . '>';
 
-                foreach ($v as $kk => $vv) {
-                    $output .= '    ' . self::option(
-                        $kk,
-                        $vv,
-                        ['selected' => $selected !== null && $kk == $selected],
+            foreach ($choices as $k => $v) {
+                if (is_array($v)) {
+                    // optgroup
+                    $output .= '<optgroup label="' . _e((string) $k) . "\">\n";
+
+                    foreach ($v as $kk => $vv) {
+                        $output .= '    ' . self::option(
+                            $kk,
+                            $vv,
+                            ['selected' => $selected !== null && $kk == $selected],
+                            $doubleEncodeLabels
+                            
+                        );
+                        $output .= "\n";
+                    }
+
+                    $output .= '</optgroup>';
+
+                } else {
+                    // option
+                    $output .= self::option(
+                        $k,
+                        $v,
+                        ['selected' => $selected !== null && $k == $selected],
                         $doubleEncodeLabels
-                        
                     );
-                    $output .= "\n";
                 }
 
-                $output .= '</optgroup>';
-
-            } else {
-                // option
-                $output .= self::option(
-                    $k,
-                    $v,
-                    ['selected' => $selected !== null && $k == $selected],
-                    $doubleEncodeLabels
-                );
+                $output .= "\n";
             }
 
-            $output .= "\n";
+            $output .= '</select>';
         }
 
-        $output .= '</select>';
+        Extend::call('form.select.after', ['output' => &$output]);
 
         return $output;
     }
