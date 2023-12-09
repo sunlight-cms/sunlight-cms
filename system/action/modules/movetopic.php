@@ -82,7 +82,7 @@ if (empty($forums)) {
         $output .= '<option'
             . ' value="' . $forum_id . '"'
             . ($forum['type'] != Page::FORUM ? ' disabled' : '')
-            . Form::selectOption($forum_id == $query['home'])
+            . ($forum_id == $query['home'] ? ' selected' : '')
             . '>'
             . str_repeat('&nbsp;&nbsp;&nbsp;│&nbsp;', $forum['node_level'])
             . $forum['title']

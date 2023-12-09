@@ -9,22 +9,6 @@ use Sunlight\Xsrf;
 abstract class Form
 {
     /**
-     * Activate a checkbox based on a condition
-     */
-    static function activateCheckbox(bool $checked): string
-    {
-        return $checked ? ' checked' : '';
-    }
-
-    /**
-     * Select an option based on a condition
-     */
-    static function selectOption(bool $selected): string
-    {
-        return $selected ? ' selected' : '';
-    }
-
-    /**
      * Check if a checkbox was submitted in POST data
      * 
      * @param bool $default default checkbox state (requires $key_var to detect form submission)
@@ -38,18 +22,6 @@ abstract class Form
         }
 
         return isset($request[$name]);
-    }
-
-    /**
-     * Disable an input unless a condition is TRUE
-     */
-    static function disableInputUnless(bool $enabled): string
-    {
-        if (!$enabled) {
-            return ' disabled';
-        }
-
-        return '';
     }
 
     /**

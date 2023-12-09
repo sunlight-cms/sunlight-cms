@@ -411,7 +411,7 @@ abstract class Admin
 
                 $output .= '<option'
                     . ($enabled ? ' value="' . $page['id'] . '"' : ' disabled')
-                    . Form::selectOption($active)
+                    . ($active ? ' selected' : '')
                     . '>'
                     . str_repeat('&nbsp;&nbsp;&nbsp;│&nbsp;', $page['node_level'])
                     . StringHelper::ellipsis($page['title'], $options['maxlength'])
@@ -518,7 +518,7 @@ abstract class Admin
                             $sel = false;
                         }
 
-                        $output .= '<option value="' . $user['id'] . '"' . Form::selectOption($sel) . '>' . ($user['publicname'] ?? $user['username']) . "</option>\n";
+                        $output .= '<option value="' . $user['id'] . '"' . ($sel ? ' selected' : '') . '>' . ($user['publicname'] ?? $user['username']) . "</option>\n";
                     }
 
                     $output .= '</optgroup>';
@@ -544,7 +544,7 @@ abstract class Admin
                     $sel = false;
                 }
 
-                $output .= '<option value="' . $group['id'] . '"' . Form::selectOption($sel) . '>' . $group['title'] . ' (' . _num(DB::count('user', $options['user_cond'] . ' AND group_id=' . $group['id'])) . ")</option>\n";
+                $output .= '<option value="' . $group['id'] . '"' . ($sel ? ' selected' : '') . '>' . $group['title'] . ' (' . _num(DB::count('user', $options['user_cond'] . ' AND group_id=' . $group['id'])) . ")</option>\n";
             }
 
             if (!empty($missingSelectedMap)) {
@@ -586,7 +586,7 @@ abstract class Admin
 
                 $active = $multiple === null && $layoutUid === $selected || $multiple !== null && in_array($layoutUid, $selected, true);
 
-                $output .= '<option value="' . _e($layoutUid) . '"' . Form::selectOption($active) . '>'
+                $output .= '<option value="' . _e($layoutUid) . '"' . ($active ? ' selected' : '') . '>'
                     . _e($layoutLabel)
                     . "</option>\n";
             }
@@ -626,7 +626,7 @@ abstract class Admin
                     $slotUid = TemplateService::composeUid($template, $layout, $slot);
                     $slotLabel = TemplateService::getComponentLabel($template, $layout, $slot, false);
 
-                    $output .= '<option value="' . _e($slotUid) . '"' . Form::selectOption($selected === $slotUid) . '>'
+                    $output .= '<option value="' . _e($slotUid) . '"' . ($selected === $slotUid ? ' selected' : '') . '>'
                         . _e($slotLabel)
                         . "</option>\n";
                 }
