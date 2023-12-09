@@ -34,7 +34,7 @@ abstract class Form
             'name' => &$name,
             'value' => &$value,
             'attrs' => &$attrs,
-            'doubleEncodeValue' => &$doubleEncodeValue,
+            'double_encode_value' => &$doubleEncodeValue,
         ]);
 
         if ($output === '') {
@@ -60,7 +60,7 @@ abstract class Form
             'name' => &$name,
             'content' => &$content,
             'attrs' => &$attrs,
-            'doubleEncodeContent' => &$doubleEncodeContent,
+            'double_encode_content' => &$doubleEncodeContent,
         ]);
 
         if ($output === '') {
@@ -94,7 +94,7 @@ abstract class Form
             'choices' => &$choices,
             'selected' => &$selected,
             'attrs' => &$attrs,
-            'doubleEncodeLabels' => &$doubleEncodeLabels,
+            'double_encode_labels' => &$doubleEncodeLabels,
         ]);
 
         if ($output === '') {
