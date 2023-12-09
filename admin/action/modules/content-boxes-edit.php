@@ -170,8 +170,8 @@ $output .= _buffer(function () use ($id, $box, $new, $templates_to_choose_slot_f
             <tr>
                 <th><?= _lang('admin.content.form.settings') ?></th>
                 <td>
-                    <label><input type="checkbox"<?= Form::restoreCheckedAndName('box_edit', 'visible', $box['visible']) ?>> <?= _lang('admin.content.form.visible') ?></label>
-                    <label><input type="checkbox"<?= Form::restoreCheckedAndName('box_edit', 'public', $box['public']) ?>> <?= _lang('admin.content.form.public') ?></label>
+                    <label><?= Form::input('checkbox', 'visible', '1', ['checked' => Form::loadCheckbox('visible', $box['visible'], 'box_edit')]) ?> <?= _lang('admin.content.form.visible') ?></label>
+                    <label><?= Form::input('checkbox', 'public', '1', ['checked' => Form::loadCheckbox('public', $box['public'], 'box_edit')]) ?> <?= _lang('admin.content.form.public') ?></label>
                     <label><?= Form::input('number', 'level', Request::post('level', $box['level']), ['class' => 'inputsmaller', 'min' => 0, 'max' => User::MAX_LEVEL]) ?> <?= _lang('admin.content.form.level') ?></label>
                 </td>
             </tr>
@@ -185,7 +185,7 @@ $output .= _buffer(function () use ($id, $box, $new, $templates_to_choose_slot_f
                         'empty_item' => _lang('global.all'),
                         'check_access' => false,
                     ]) ?>
-                    <p><label><input type="checkbox"<?= Form::restoreCheckedAndName('box_edit', 'page_children', $box['page_children']) ?>> <?= _lang('admin.content.form.include_subpages') ?></label>
+                    <p><label><?= Form::input('checkbox', 'page_children', '1', ['checked' => Form::loadCheckbox('page_children', $box['page_children'], 'box_edit')]) ?> <?= _lang('admin.content.form.include_subpages') ?></label>
                 </td>
             </tr>
 

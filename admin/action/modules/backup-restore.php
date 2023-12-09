@@ -111,11 +111,11 @@ $output .= '
             <th>' . _lang('admin.backup.restore.contents') . '</th>
             <td>
                 <ul id="backup-contents" class="no-bullets">
-                    <li><label><input type="checkbox"' . Form::restoreCheckedAndName('restore', 'database') . Form::disableInputUnless($backup->hasDatabaseDump()) . '> ' . _lang('admin.backup.contents.db') . '</label></li>
+                    <li><label>' . Form::input('checkbox', 'database', '1', ['checked' => Form::loadCheckbox('database'), 'disabled' => !$backup->hasDatabaseDump()]) . ' ' . _lang('admin.backup.contents.db') . '</label></li>
                     ' . _buffer(function () use ($backup_metadata) {
                         foreach ($backup_metadata['directory_list'] as $index => $directory) {
                             echo '<li><label>'
-                                . '<input type="checkbox"' . Form::restoreCheckedAndName('restore', 'directory_' . $index) . ' value="' . _e($directory) . '"> '
+                                . Form::input('checkbox', 'directory_' . $index, $directory, ['checked' => Form::loadCheckbox('directory_' . $index, false, 'restore')])
                                 . _lang('admin.backup.restore.contents.dir')
                                 . ' <code>' . _e($directory) . '</code>'
                                 . "</label></li>\n";
@@ -124,7 +124,7 @@ $output .= '
                     ' . _buffer(function () use ($backup_metadata) {
                         foreach ($backup_metadata['file_list'] as $index => $file) {
                             echo '<li><label>'
-                                . '<input type="checkbox"' . Form::restoreCheckedAndName('restore', 'file_' . $index) . ' value="' . _e($file) . '"> '
+                                . Form::input('checkbox', 'file_' . $index, $file, ['checked' => Form::loadCheckbox('file_' . $index, false, 'restore')])
                                 . _lang('admin.backup.restore.contents.file')
                                 . ' <code>' . _e($file) . '</code>'
                                 . "</label></li>\n";

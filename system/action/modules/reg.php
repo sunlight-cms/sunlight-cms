@@ -213,7 +213,7 @@ if (!$user_data_valid && $show_form) {
             ['label' => _lang('login.password'), 'content' => Form::input('password', 'password', null, ['class' => 'inputsmall', 'autocomplete' => 'new-password'])],
             ['label' => _lang('login.password') . ' (' . _lang('global.check') . ')', 'content' => Form::input('password', 'password2', null, ['class' => 'inputsmall', 'autocomplete' => 'new-password'])],
             ['label' => _lang('global.email'), 'content' => Form::input('email', 'email', Request::post('email', '@'), ['class' => 'inputsmall', 'autocomplete' => 'email'])],
-            ['label' => _lang('mod.settings.account.massemail'), 'content' => '<label><input type="checkbox" value="1"' . Form::restoreCheckedAndName('regform', 'massemail') . '> ' . _lang('mod.settings.account.massemail.label') . '</label>'],
+            ['label' => _lang('mod.settings.account.massemail'), 'content' => '<label>' . Form::input('checkbox', 'massemail', '1', ['checked' => Form::loadCheckbox('massemail', false, 'regform')]) . ' ' . _lang('mod.settings.account.massemail.label') . '</label>'],
             $groupselect,
             $captcha,
             $rules,

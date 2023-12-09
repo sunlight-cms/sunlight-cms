@@ -149,7 +149,7 @@ $output .= Form::render(
         ],
         [
             'label' => _lang('mod.settings.account.publicname'),
-            'content' => Form::input('text', 'publicname', Request::post('public', User::$data['publicname']), ['class' => 'inputsmall', 'maxlength' => 24], false)
+            'content' => Form::input('text', 'publicname', Request::post('publicname', User::$data['publicname']), ['class' => 'inputsmall', 'maxlength' => 24], false)
                 . ' <span class="hint">(' . _lang('mod.settings.account.publicname.hint') . ')</span>',
         ],
         Settings::get('language_allowcustom')
@@ -166,14 +166,14 @@ $output .= Form::render(
         [
             'label' => _lang('mod.settings.account.public'),
             'content' => '<label>'
-                . '<input type="checkbox" name="public" value="1"' . Form::restoreChecked('saved', 'public', User::$data['public']). '> '
+                . Form::input('checkbox', 'public', '1', ['checked' => Form::loadCheckbox('public', User::$data['public'], 'save')])
                 . _lang('mod.settings.account.public.label')
                 . '</label>',
         ],
         [
             'label' => _lang('mod.settings.account.massemail'),
             'content' => '<label>'
-                . '<input type="checkbox" name="massemail" value="1"' . Form::restoreChecked('saved', 'massemail', User::$data['massemail']). '> '
+                . Form::input('checkbox', 'massemail', '1', ['checked' => Form::loadCheckbox('massemail', User::$data['massemail'], 'save')])
                 . _lang('mod.settings.account.massemail.label')
                 . '</label>',
         ],
@@ -181,7 +181,7 @@ $output .= Form::render(
             ? [
                 'label' => _lang('mod.settings.account.wysiwyg'),
                 'content' => '<label>'
-                    . '<input type="checkbox" name="wysiwyg" value="1"' . Form::restoreChecked('saved', 'wysiwyg', User::$data['wysiwyg']). '> '
+                    . Form::input('checkbox', 'wysiwyg', '1', ['checked' => Form::loadCheckbox('wysiwyg', User::$data['wysiwyg'], 'save')])
                     . _lang('mod.settings.account.wysiwyg.label')
                     . '</label>',
             ]

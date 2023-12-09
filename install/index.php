@@ -693,7 +693,7 @@ class ConfigurationStep extends Step
         </tr>
         <tr>
             <th><label for="config_debug_checkbox"><?php Labels::render('config.debug') ?></label></th>
-            <td><input id="config_debug_checkbox" type="checkbox"<?= Form::restoreCheckedAndName($this->getFormKeyVar(), 'config_debug', $this->config['debug']) ?>></td>
+            <td><?= Form::input('checkbox', 'config_debug', '1', ['id' => 'config_debug_checkbox', 'checked' => Form::loadCheckbox('config_debug', $this->config['debug'], $this->getFormKeyVar())]) ?></td>
             <td class="help"><?php Labels::render('config.debug.help') ?></td>
         </tr>
     </table>
@@ -904,7 +904,7 @@ Now you can log into the administration (with the account set up during installa
         </tr>
         <tr>
             <th><label for="version_check_checkbox"><?php Labels::render('import.settings.version_check') ?></label></th>
-            <td><input id="version_check_checkbox" type="checkbox"<?= Form::restoreCheckedAndName($this->getFormKeyVar(), 'import_settings_version_check', true) ?>></td>
+            <td><?= Form::input('checkbox', 'import_settings_version_check', '1', ['id' => 'version_check_checkbox', 'checked' => Form::loadCheckbox('import_settings_version_check', true, $this->getFormKeyVar())]) ?></td>
             <td class="help"><?php Labels::render('import.settings.version_check.help') ?></td>
         </tr>
     </table>
@@ -937,7 +937,7 @@ Now you can log into the administration (with the account set up during installa
     <p class="msg warning"><?php Labels::render('import.overwrite.text', ['%prefix%' => $this->config['db.prefix'] . '_']) ?></p>
     <p>
         <label>
-            <input type="checkbox"<?= Form::restoreCheckedAndName($this->getFormKeyVar(), 'import_overwrite') ?>>
+            <?= Form::input('checkbox', 'import_overwrite', '1', ['checked' => Form::loadCheckbox('import_overwrite', false, $this->getFormKeyVar())]) ?>
             <?php Labels::render('import.overwrite.confirmation') ?>
         </label>
     </p>

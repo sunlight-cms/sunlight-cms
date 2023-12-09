@@ -26,12 +26,18 @@ abstract class Form
 
     /**
      * Check if a checkbox was submitted in POST data
-     *
-     * @return int 1 or 0
+     * 
+     * @param bool $default default checkbox state (requires $key_var to detect form submission)
      */
-    static function loadCheckbox(string $name): int
+    static function loadCheckbox(string $name, bool $default = false, ?string $key_var = null, bool $get = false): bool
     {
-        return isset($_POST[$name]) ? 1 : 0;
+        $request = $GLOBALS[$get ? '_GET' : '_POST'];
+
+        if ($key_var !== null && !isset($request[$key_var])) {
+            return $default; // form not submitted
+        }
+
+        return isset($request[$name]);
     }
 
     /**
@@ -44,120 +50,6 @@ abstract class Form
         }
 
         return '';
-    }
-
-    /**
-     * Restore checkbox state using POST or GET data
-     *
-     * @param string $key_var name of another input that indicates that the form has been submitted
-     * @param string $name checkbox name
-     * @param bool $default default state
-     * @param string $method POST/GET
-     */
-    static function restoreChecked(string $key_var, string $name, bool $default = false, string $method = 'POST'): string
-    {
-        if (
-            $method === Request::method()
-            && (
-                $method === 'POST' && isset($_POST[$key_var], $_POST[$name])
-                || $method === 'GET' && isset($_GET[$key_var], $_GET[$name])
-            )
-        ) {
-            $active = true;
-        } else {
-            $active = $default;
-        }
-
-        return $active ? ' checked' : '';
-    }
-
-    /**
-     * Set checkbox name and restore state using POST or GET data
-     *
-     * @param string $key_var name of another input that indicates that the form has been submitted
-     * @param string $name checkbox name
-     * @param bool $default default state
-     * @param string $method POST/GET
-     */
-    static function restoreCheckedAndName(string $key_var, string $name, bool $default = false, string $method = 'POST'): string
-    {
-        return ' name="' . $name . '"' . self::restoreChecked($key_var, $name, $default, $method);
-    }
-
-    /**
-     * Restore input value from POST data
-     *
-     * @param string $name input name
-     * @param string|null $else default value
-     * @param bool $param output a "value" attribute instead of just the value 1/0
-     * @param bool $else_entities escape HTML in $else 1/0
-     */
-    static function restorePostValue(string $name, ?string $else = null, bool $param = true, bool $else_entities = true): string
-    {
-        return self::restoreValue($_POST, $name, $else, $param, $else_entities);
-    }
-
-    /**
-     * Set input name and restore value from POST data
-     *
-     * @param string $name input name
-     * @param string|null $else default value
-     * @param bool $else_entities escape HTML in $else 1/0
-     */
-    static function restorePostValueAndName(string $name, ?string $else = null, bool $else_entities = true): string
-    {
-        return ' name="' . $name . '"' . self::restorePostValue($name, $else, true, $else_entities);
-    }
-
-    /**
-     * Restore input value from GET data
-     *
-     * @param string $name input name
-     * @param string|null $else default value
-     * @param bool $param output a "value" attribute instead of just the value 1/0
-     * @param bool $else_entities escape HTML in $else 1/0
-     */
-    static function restoreGetValue(string $name, ?string $else = null, bool $param = true, bool $else_entities = true): string
-    {
-        return self::restoreValue($_GET, $name, $else, $param, $else_entities);
-    }
-
-    /**
-     * Set input name and restore value from GET data
-     *
-     * @param string $name input name
-     * @param string|null $else default value
-     * @param bool $else_entities escape HTML in $else 1/0
-     */
-    static function restoreGetValueAndName(string $name, ?string $else = null, bool $else_entities = true): string
-    {
-        return ' name="' . $name . '"' . self::restoreGetValue($name, $else, true, $else_entities);
-    }
-
-    /**
-     * Restore input value based on submitted data
-     *
-     * @param array $values submitted data
-     * @param string $key input name
-     * @param string|null $else default value
-     * @param bool $param output a "value" attribute instead of just the value 1/0
-     * @param bool $else_entities escape HTML in $else 1/0
-     */
-    static function restoreValue(array $values, string $key, ?string $else = null, bool $param = true, bool $else_entities = true): string
-    {
-        if (isset($values[$key]) && is_scalar($values[$key])) {
-            $value = _e((string) $values[$key]);
-        } elseif ($else !== null) {
-            $value = $else_entities ? _e($else) : $else;
-        } else {
-            $value = '';
-        }
-
-        if ($param && $value !== '') {
-            return ' value="' . $value . '"';
-        }
-
-        return $value;
     }
 
     /**
@@ -217,7 +109,7 @@ abstract class Form
      */
     static function input(string $type, ?string $name = null, ?string $value = null, array $attrs = [], bool $doubleEncodeValue = true): string
     {
-        return '<input '
+        return '<input'
             . ($name !== null ? ' name="' . _e($name) . '"' : '')
             . ' type="' . _e($type) . '"'
             . ($value !== null ? ' value="' . _e($value, $doubleEncodeValue) . '"' : '')

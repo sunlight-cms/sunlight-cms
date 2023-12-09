@@ -153,8 +153,8 @@ $output .= $message . '
 
         <p>
             ' . Form::input('submit', null, _lang('admin.backup.restore.submit.load'), ['class' => 'button'])
-    . ' ' . _lang('global.or') . ' '
-    . Form::input('submit', 'delete', _lang('admin.backup.restore.submit.delete'), ['class' => 'button', 'onclick' => 'return Sunlight.confirm()', 'formaction' => Router::admin('backup-restore')]) . '
+            . ' ' . _lang('global.or') . ' '
+            . Form::input('submit', 'delete', _lang('admin.backup.restore.submit.delete'), ['class' => 'button', 'onclick' => 'return Sunlight.confirm()', 'formaction' => Router::admin('backup')]) . '
         </p>
     ' . Xsrf::getInput() . '
     </form>
