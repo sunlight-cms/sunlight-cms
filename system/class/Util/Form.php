@@ -25,58 +25,6 @@ abstract class Form
     }
 
     /**
-     * Render data as hidden inputs
-     */
-    static function renderHiddenInputs(array $data): string
-    {
-        $output = '';
-        $counter = 0;
-
-        foreach ($data as $key => $value) {
-            if ($counter > 0) {
-                $output .= "\n";
-            }
-
-            $output .= self::renderHiddenInput($key, $value);
-            ++$counter;
-        }
-
-        return $output;
-    }
-
-    /**
-     * Render 1 or more hidden inputs
-     */
-    static function renderHiddenInput(string $key, $value, array $parentKeys = []): string
-    {
-        if (is_array($value)) {
-            // array
-            $output = '';
-            $counter = 0;
-
-            foreach ($value as $vkey => $vvalue) {
-                if ($counter > 0) {
-                    $output .= "\n";
-                }
-
-                $output .= self::renderHiddenInput($key, $vvalue, array_merge($parentKeys, [$vkey]));
-                ++$counter;
-            }
-
-            return $output;
-        }
-
-        // value
-        $name = _e($key);
-
-        if (!empty($parentKeys)) {
-            $name .= _e('[' . implode('][', $parentKeys) . ']');
-        }
-
-        return self::input('hidden', $name, $value);
-    }
-
-    /**
      * Render an <input>
      */
     static function input(string $type, ?string $name = null, ?string $value = null, array $attrs = [], bool $doubleEncodeValue = true): string
@@ -205,6 +153,58 @@ abstract class Form
             . '>'
             . _e($label, $doubleEncodeLabel)
             . '</option>';
+    }
+
+    /**
+     * Render data as hidden inputs
+     */
+    static function renderHiddenInputs(array $data): string
+    {
+        $output = '';
+        $counter = 0;
+
+        foreach ($data as $key => $value) {
+            if ($counter > 0) {
+                $output .= "\n";
+            }
+
+            $output .= self::renderHiddenInput($key, $value);
+            ++$counter;
+        }
+
+        return $output;
+    }
+
+    /**
+     * Render 1 or more hidden inputs
+     */
+    static function renderHiddenInput(string $key, $value, array $parentKeys = []): string
+    {
+        if (is_array($value)) {
+            // array
+            $output = '';
+            $counter = 0;
+
+            foreach ($value as $vkey => $vvalue) {
+                if ($counter > 0) {
+                    $output .= "\n";
+                }
+
+                $output .= self::renderHiddenInput($key, $vvalue, array_merge($parentKeys, [$vkey]));
+                ++$counter;
+            }
+
+            return $output;
+        }
+
+        // value
+        $name = _e($key);
+
+        if (!empty($parentKeys)) {
+            $name .= _e('[' . implode('][', $parentKeys) . ']');
+        }
+
+        return self::input('hidden', $name, $value);
     }
 
     /**
