@@ -10,22 +10,24 @@ use Sunlight\Plugin\Type\PluginType;
 use Sunlight\Util\Environment;
 use Sunlight\Util\Filesystem;
 use Sunlight\Util\Json;
-use Sunlight\Util\StringHelper;
 
 class PluginLoader
 {
     private const PLUGIN_DIR_PATTERN = '{' . Plugin::ID_PATTERN . '$}AD';
 
-    /** @var bool */
-    private $safeMode;
+    /** @var PluginConfigStore */
+    private $configStore;
     /** @var array<string, PluginType> */
     private $types;
+    /** @var bool */
+    private $safeMode;
 
     /**
      * @param array<string, PluginType> $types
      */
-    function __construct(bool $safeMode, array $types)
+    function __construct(PluginConfigStore $configStore, array $types, bool $safeMode)
     {
+        $this->configStore = $configStore;
         $this->safeMode = $safeMode;
         $this->types = $types;
     }
@@ -81,11 +83,10 @@ class PluginLoader
             foreach (scandir($dir) as $item) {
                 if (
                     preg_match(self::PLUGIN_DIR_PATTERN, $item) // skips dots and invalid names
-                    && is_dir("{$dir}/{$item}")
-                    && ($plugin = $this->loadPlugin($dir, $item, $type))
+                    && ($file = realpath("{$dir}/{$item}/" . Plugin::FILE)) !== false
                 ) {
+                    $plugin = $this->loadLocalPlugin($type, $item, $file, $boundFiles);
                     $plugins[$plugin->id] = $plugin;
-                    $boundFiles[] = $plugin->file;
                 }
             }
         }
@@ -93,39 +94,37 @@ class PluginLoader
         return $plugins;
     }
 
-    private function loadPlugin(string $dir, string $name, PluginType $type): ?PluginData
+    private function loadLocalPlugin(PluginType $type, string $name, string $file, array &$boundFiles): PluginData
     {
-        $file = realpath("{$dir}/{$name}/" . Plugin::FILE);
+        $plugin = new PluginData("{$type->getName()}/{$name}", $name, $file);
+        $plugin->webPath = "{$type->getDir()}/{$name}";
 
-        if ($file === false) {
-            return null;
-        }
+        $this->loadOptions($plugin);
+        $this->loadPlugin($plugin, $type);
 
-        $plugin = new PluginData(
-            "{$type->getName()}/{$name}",
-            $name,
-            StringHelper::toCamelCase($name),
-            $type->getName(),
-            $file,
-            "{$type->getDir()}/{$name}"
-        );
+        $boundFiles[] = $file;
 
-        // check state
-        $isDisabled = is_file($plugin->dir . '/' . Plugin::DEACTIVATING_FILE);
+        return $plugin;
+    }
 
-        // load options
+    private function loadOptions(PluginData $plugin): void
+    {
         try {
-            $options = Json::decode(file_get_contents($plugin->file));
+            $plugin->options = Json::decode(file_get_contents($plugin->file));
         } catch (\InvalidArgumentException $e) {
-            $options = null;
             $plugin->errors[] = sprintf('could not parse %s - %s', $plugin->file, $e->getMessage());
         }
+    }
+
+    private function loadPlugin(PluginData $plugin, PluginType $type): void
+    {
+        $plugin->type = $type->getName();
 
         // process options
         $optionsAreValid = false;
 
-        if ($options !== null) {
-            $type->resolveOptions($plugin, $options);
+        if ($plugin->options !== null) {
+            $type->resolveOptions($plugin, $plugin->options);
 
             if (!$plugin->hasErrors()) {
                 $optionsAreValid = true;
@@ -149,7 +148,7 @@ class PluginLoader
         }
 
         // override status if the plugin is disabled
-        if ($isDisabled) {
+        if ($this->configStore->hasFlag($plugin->id, 'disabled')) {
             $plugin->status = Plugin::STATUS_DISABLED;
         }
 
@@ -157,8 +156,6 @@ class PluginLoader
         if ($this->safeMode && $plugin->status === Plugin::STATUS_OK && !$type->isPluginAllowedInSafeMode($plugin)) {
             $plugin->status = Plugin::STATUS_UNAVAILABLE;
         }
-
-        return $plugin;
     }
 
     private function checkEnvironment(PluginData $plugin): void

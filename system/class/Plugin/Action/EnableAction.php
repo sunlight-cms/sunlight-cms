@@ -3,6 +3,7 @@
 namespace Sunlight\Plugin\Action;
 
 use Sunlight\Action\ActionResult;
+use Sunlight\Core;
 use Sunlight\Message;
 use Sunlight\Plugin\Plugin;
 
@@ -20,16 +21,14 @@ class EnableAction extends PluginAction
 
     protected function execute(): ActionResult
     {
-        $file = $this->plugin->getDirectory() . '/' . Plugin::DEACTIVATING_FILE;
+        Core::$pluginManager->getConfigStore()->setFlag(
+            $this->plugin->getId(),
+            'disabled',
+            false
+        );
 
-        if (is_file($file) && @unlink($file)) {
-            return ActionResult::success(
-                Message::ok(_lang('admin.plugins.action.enable.success', ['%plugin%' => $this->plugin->getOption('name')]))
-            );
-        }
-
-        return ActionResult::failure(
-            Message::error(_lang('admin.plugins.action.enable.failure', ['%plugin%' => $this->plugin->getOption('name')]))
+        return ActionResult::success(
+            Message::ok(_lang('admin.plugins.action.enable.success', ['%plugin%' => $this->plugin->getOption('name')]))
         );
     }
 }

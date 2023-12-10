@@ -74,9 +74,7 @@ class PluginArchive
                         ?? $this->manager->getPlugins()->getInactiveByName($type, $name);
 
                     if ($existingPlugin !== null) {
-                        Filesystem::emptyDirectory($existingPlugin->getDirectory(), function (\SplFileInfo $item) {
-                            return $item->isDir() || $item->getFilename() !== 'config.php';
-                        });
+                        Filesystem::emptyDirectory($existingPlugin->getDirectory());
                     }
                 }
             }

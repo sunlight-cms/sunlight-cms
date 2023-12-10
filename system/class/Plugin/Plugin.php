@@ -15,8 +15,6 @@ abstract class Plugin implements CallbackObjectInterface
     const ID_PATTERN = '[a-zA-Z][a-zA-Z0-9_.\-]+';
     /** Name of the plugin definition file */
     const FILE = 'plugin.json';
-    /** Name of the plugin deactivating file */
-    const DEACTIVATING_FILE = 'DISABLED';
 
     /** Plugin status - OK */
     const STATUS_OK = 'ok';
@@ -54,8 +52,6 @@ abstract class Plugin implements CallbackObjectInterface
     /** @var string */
     protected $dir;
     /** @var string */
-    protected $file;
-    /** @var string */
     protected $webPath;
     /** @var string[] */
     protected $errors;
@@ -77,7 +73,6 @@ abstract class Plugin implements CallbackObjectInterface
         $this->status = $data->status;
         $this->installed = $data->installed;
         $this->dir = $data->dir;
-        $this->file = $data->file;
         $this->webPath = $data->webPath;
         $this->errors = $data->errors;
         $this->options = $data->options;
@@ -173,7 +168,7 @@ abstract class Plugin implements CallbackObjectInterface
 
     function getFile(): string
     {
-        return $this->file;
+        return $this->dir . '/' . self::FILE;
     }
 
     function getWebPath(?array $routerOptions = null): string
@@ -213,7 +208,7 @@ abstract class Plugin implements CallbackObjectInterface
 
     function hasConfig(): bool
     {
-        return !empty($this->options['config_defaults']);
+        return $this->options['config_defaults'] !== null;
     }
 
     function getConfig(): ConfigurationFile
@@ -221,19 +216,14 @@ abstract class Plugin implements CallbackObjectInterface
         if ($this->config === null) {
             $defaults = $this->options['config_defaults'];
 
-            if (empty($defaults)) {
+            if ($defaults === null) {
                 throw new \LogicException('To use the configuration file, defaults must be specified using the "config_defaults" option');
             }
 
-            $this->config = new ConfigurationFile($this->getConfigPath(), $defaults);
+            $this->config = $this->manager->getConfigStore()->getConfigFile($this->id, $defaults);
         }
 
         return $this->config;
-    }
-
-    protected function getConfigPath(): string
-    {
-        return $this->dir . '/config.php';
     }
 
     function getAction(string $name): ?PluginAction

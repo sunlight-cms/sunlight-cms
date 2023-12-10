@@ -175,14 +175,6 @@ class BackupRestorer
                     ]);
                     break;
 
-                // plugin directory in a patch
-                case $isPatch && strncmp($directory, SL_ROOT . 'plugins' . DIRECTORY_SEPARATOR, strlen(SL_ROOT) + 8) === 0:
-                    $this->clearDirectory($directory, [
-                        'config.php' => true, // keep config
-                        Plugin::DEACTIVATING_FILE => true, // keep deactivating file
-                    ]);
-                    break;
-
                 // other directories
                 default:
                     $this->clearDirectory($directory);

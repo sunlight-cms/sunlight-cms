@@ -3,6 +3,7 @@
 namespace Sunlight\Plugin\Action;
 
 use Sunlight\Action\ActionResult;
+use Sunlight\Core;
 use Sunlight\Message;
 use Sunlight\Plugin\Plugin;
 
@@ -32,14 +33,14 @@ class DisableAction extends PluginAction
             );
         }
 
-        if (@touch($this->plugin->getDirectory() . '/' . Plugin::DEACTIVATING_FILE)) {
-            return ActionResult::success(
-                Message::ok(_lang('admin.plugins.action.disable.success', ['%plugin%' => $this->plugin->getOption('name')]))
-            );
-        }
+        Core::$pluginManager->getConfigStore()->setFlag(
+            $this->plugin->getId(),
+            'disabled',
+            true
+        );
 
-        return ActionResult::failure(
-            Message::error(_lang('admin.plugins.action.disable.failure', ['%plugin%' => $this->plugin->getOption('name')]))
+        return ActionResult::success(
+            Message::ok(_lang('admin.plugins.action.disable.success', ['%plugin%' => $this->plugin->getOption('name')]))
         );
     }
 }

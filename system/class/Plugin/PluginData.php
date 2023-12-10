@@ -2,6 +2,8 @@
 
 namespace Sunlight\Plugin;
 
+use Sunlight\Util\StringHelper;
+
 class PluginData
 {
     /** @var string */
@@ -11,35 +13,29 @@ class PluginData
     /** @var string */
     public $camelCasedName;
     /** @var string */
-    public $type;
-    /** @var string|null */
-    public $status;
-    /** @var bool|null */
-    public $installed;
-    /** @var string */
     public $dir;
     /** @var string */
     public $file;
     /** @var string */
     public $webPath;
+    /** @var string|null */
+    public $type;
+    /** @var string|null */
+    public $status;
+    /** @var bool|null */
+    public $installed;
     /** @var string[] */
     public $errors = [];
-    /** @var array */
-    public $options = [];
+    /** @var array|null */
+    public $options;
 
-    function __construct(string $id, string $name, string $camelCasedName, string $type, string $file, string $webPath)
+    function __construct(string $id, string $name, string $file)
     {
         $this->id = $id;
         $this->name = $name;
-        $this->camelCasedName = $camelCasedName;
-        $this->type = $type;
+        $this->camelCasedName = StringHelper::toCamelCase($name);
         $this->dir = dirname($file);
         $this->file = $file;
-        $this->webPath = $webPath;
-        $this->options = [
-            'name' => $id,
-            'version' => '0.0.0',
-        ];
     }
 
     function isOk(): bool
