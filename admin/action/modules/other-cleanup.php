@@ -224,7 +224,7 @@ $output .= $message . '
 
 <fieldset>
     <legend>' . _lang('admin.users.users') . '</legend>
-    <p class="bborder"><label>' . Form::input('checkbox', 'users', '1', ['checked' => isset($_POST['users'])]) . ' ' . _lang('admin.other.cleanup.users') . '</label></p>
+    <p class="bborder"><label>' . Form::input('checkbox', 'users', '1', ['checked' => Form::loadCheckbox('users')]) . ' ' . _lang('admin.other.cleanup.users') . '</label></p>
 
     <table>
     
@@ -243,16 +243,16 @@ $output .= $message . '
 
 <fieldset>
     <legend>' . _lang('global.other') . '</legend>
-    <label>' . Form::input('checkbox', 'clear_cache', '1', ['checked' => isset($_POST['clear_cache'])]) . ' ' . _lang('admin.other.cleanup.other.clear_cache') . '</label><br>
-    <label>' . Form::input('checkbox', 'maintenance', '1', ['checked' => isset($_POST['maintenance'])]) . ' ' . _lang('admin.other.cleanup.other.maintenance') . '</label><br>
-    <label>' . Form::input('checkbox', 'optimize', '1', ['checked' => isset($_POST['optimize'])]) . ' ' . _lang('admin.other.cleanup.other.optimize') . '</label><br>
-    <label>' . Form::input('checkbox', 'comments', '1', ['checked' => isset($_POST['comments'])]) . ' ' . _lang('admin.other.cleanup.other.comments') . '</label><br>
-    <label>' . Form::input('checkbox', 'posts', '1', ['checked' => isset($_POST['posts'])]) . ' ' . _lang('admin.other.cleanup.other.posts') . '</label><br>
-    <label>' . Form::input('checkbox', 'plugin_posts', '1', ['checked' => isset($_POST['plugin_posts'])]) . ' ' . _lang('admin.other.cleanup.other.plugin_posts') . '</label><br>
-    <label>' . Form::input('checkbox', 'iplog', '1', ['checked' => isset($_POST['iplog'])]) . ' ' . _lang('admin.other.cleanup.other.iplog') . '</label><br>
-    <label>' . Form::input('checkbox', 'user_activation', '1', ['checked' => isset($_POST['user_activation'])]) . ' ' . _lang('admin.other.cleanup.other.user_activation') . '</label><br>
-    <label>' . Form::input('checkbox', 'log', '1', ['checked' => isset($_POST['log'])]) . ' ' . _lang('admin.other.cleanup.other.log') . '</label><br>
-    <label>' . Form::input('checkbox', 'plugin_config', '1', ['checked' => isset($_POST['plugin_config'])]) . ' ' . _lang('admin.other.cleanup.other.plugin_config') . '</label>
+    <label>' . Form::input('checkbox', 'clear_cache', '1', ['checked' => Form::loadCheckbox('clear_cache')]) . ' ' . _lang('admin.other.cleanup.other.clear_cache') . '</label><br>
+    <label>' . Form::input('checkbox', 'maintenance', '1', ['checked' => Form::loadCheckbox('maintenance')]) . ' ' . _lang('admin.other.cleanup.other.maintenance') . '</label><br>
+    <label>' . Form::input('checkbox', 'optimize', '1', ['checked' => Form::loadCheckbox('optimize')]) . ' ' . _lang('admin.other.cleanup.other.optimize') . '</label><br>
+    <label>' . Form::input('checkbox', 'comments', '1', ['checked' => Form::loadCheckbox('comments')]) . ' ' . _lang('admin.other.cleanup.other.comments') . '</label><br>
+    <label>' . Form::input('checkbox', 'posts', '1', ['checked' => Form::loadCheckbox('posts')]) . ' ' . _lang('admin.other.cleanup.other.posts') . '</label><br>
+    <label>' . Form::input('checkbox', 'plugin_posts', '1', ['checked' => Form::loadCheckbox('plugin_posts')]) . ' ' . _lang('admin.other.cleanup.other.plugin_posts') . '</label><br>
+    <label>' . Form::input('checkbox', 'iplog', '1', ['checked' => Form::loadCheckbox('iplog')]) . ' ' . _lang('admin.other.cleanup.other.iplog') . '</label><br>
+    <label>' . Form::input('checkbox', 'user_activation', '1', ['checked' => Form::loadCheckbox('user_activation')]) . ' ' . _lang('admin.other.cleanup.other.user_activation') . '</label><br>
+    <label>' . Form::input('checkbox', 'log', '1', ['checked' => Form::loadCheckbox('log')]) . ' ' . _lang('admin.other.cleanup.other.log') . '</label><br>
+    <label>' . Form::input('checkbox', 'plugin_config', '1', ['checked' => Form::loadCheckbox('plugin_config')]) . ' ' . _lang('admin.other.cleanup.other.plugin_config') . '</label>
 </fieldset>
 
 <button class="button bigger" name="action" type="submit" value="do_cleanup" onclick="return Sunlight.confirm();">

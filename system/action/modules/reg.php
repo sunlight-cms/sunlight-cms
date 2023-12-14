@@ -190,7 +190,7 @@ if (!$user_data_valid && $show_form) {
         $rules = [
             'content' => '<h2>' . _lang('mod.reg.rules') . '</h2>'
                 . $rules
-                . '<p><label>' . Form::input('checkbox', 'agreement', '1', ['checked' => isset($_POST['agreement'])]) . ' ' . _lang('mod.reg.rules.agreement') . '</label></p>',
+                . '<p><label>' . Form::input('checkbox', 'agreement', '1', ['checked' => Form::loadCheckbox('agreement', false, 'regform')]) . ' ' . _lang('mod.reg.rules.agreement') . '</label></p>',
             'top' => true,
         ];
     } else {
