@@ -19,16 +19,13 @@ class PluginLoader
     private $configStore;
     /** @var array<string, PluginType> */
     private $types;
-    /** @var bool */
-    private $safeMode;
 
     /**
      * @param array<string, PluginType> $types
      */
-    function __construct(PluginConfigStore $configStore, array $types, bool $safeMode)
+    function __construct(PluginConfigStore $configStore, array $types)
     {
         $this->configStore = $configStore;
-        $this->safeMode = $safeMode;
         $this->types = $types;
     }
 
@@ -153,7 +150,7 @@ class PluginLoader
         }
 
         // override status if the plugin is not allowed in safe mode
-        if ($this->safeMode && $plugin->status === Plugin::STATUS_OK && !$type->isPluginAllowedInSafeMode($plugin)) {
+        if (Core::$safeMode && $plugin->status === Plugin::STATUS_OK && !$type->isPluginAllowedInSafeMode($plugin)) {
             $plugin->status = Plugin::STATUS_UNAVAILABLE;
         }
     }

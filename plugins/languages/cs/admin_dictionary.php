@@ -684,6 +684,7 @@ return [
     'admin.other.cleanup.other.iplog' => 'odstranit všechny záznamy v logu IP adres',
     'admin.other.cleanup.other.user_activation' => 'odstranit všechna potvrzení registrace',
     'admin.other.cleanup.other.log' => 'odstranit všechny záznamy v logu',
+    'admin.other.cleanup.other.plugin_config' => 'odstranit konfigurační soubory neexistujících pluginů',
     'admin.other.cleanup.time.1' => 'týden',
     'admin.other.cleanup.time.2' => '2 týdny',
     'admin.other.cleanup.time.4' => 'měsíc',

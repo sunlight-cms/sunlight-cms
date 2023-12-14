@@ -32,10 +32,7 @@ class VersionChecker
             return;
         }
 
-        if (
-            Core::$cache->getDriver() instanceof Driver\Memory\MemoryDriver
-            || Core::$cache->getDriver() instanceof Driver\BlackHole\BlackHoleDriver
-        ) {
+        if (!Core::isCacheEnabled()) {
             // don't hit the API if cache is disabled
             return;
         }

@@ -4,12 +4,9 @@ namespace Sunlight\Plugin;
 
 use Kuria\Cache\NamespacedCache;
 use Sunlight\Core;
-use Sunlight\Util\Form;
 
 class PluginManager
 {
-    /** @var bool */
-    private $safeMode;
     /** @var array<string, Type\PluginType> */
     private $types;
     /** @var PluginRegistry */
@@ -23,9 +20,8 @@ class PluginManager
     /** @var bool */
     private $initialized = false;
 
-    function __construct(bool $safeMode)
+    function __construct()
     {
-        $this->safeMode = $safeMode;
         $this->types = [
             'extend' => new Type\ExtendPluginType(),
             'template' => new Type\TemplatePluginType(),
@@ -217,7 +213,7 @@ class PluginManager
 
     private function loadPlugins(): array
     {
-        $pluginLoader = new PluginLoader($this->configStore, $this->types, $this->safeMode);
+        $pluginLoader = new PluginLoader($this->configStore, $this->types);
         $result = $pluginLoader->load();
         $data = [
             'plugins' => $result['plugins'],

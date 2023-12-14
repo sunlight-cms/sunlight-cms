@@ -125,6 +125,11 @@ if (isset($_POST['action'])) do {
         }
     }
 
+    if (Form::loadCheckbox('plugin_config') && !$prev) {
+        Core::$pluginManager->getConfigStore()->cleanup(Core::$pluginManager->getPlugins());
+        $logged_cleanup_info['cleaned_plugin_config'] = true;
+    }
+
     // users
     if (Form::loadCheckbox('users')) {
         $users_time = time() - (Request::post('users-time') * 7 * 24 * 60 * 60);
@@ -246,7 +251,8 @@ $output .= $message . '
     <label>' . Form::input('checkbox', 'plugin_posts', '1', ['checked' => isset($_POST['plugin_posts'])]) . ' ' . _lang('admin.other.cleanup.other.plugin_posts') . '</label><br>
     <label>' . Form::input('checkbox', 'iplog', '1', ['checked' => isset($_POST['iplog'])]) . ' ' . _lang('admin.other.cleanup.other.iplog') . '</label><br>
     <label>' . Form::input('checkbox', 'user_activation', '1', ['checked' => isset($_POST['user_activation'])]) . ' ' . _lang('admin.other.cleanup.other.user_activation') . '</label><br>
-    <label>' . Form::input('checkbox', 'log', '1', ['checked' => isset($_POST['log'])]) . ' ' . _lang('admin.other.cleanup.other.log') . '</label>
+    <label>' . Form::input('checkbox', 'log', '1', ['checked' => isset($_POST['log'])]) . ' ' . _lang('admin.other.cleanup.other.log') . '</label><br>
+    <label>' . Form::input('checkbox', 'plugin_config', '1', ['checked' => isset($_POST['plugin_config'])]) . ' ' . _lang('admin.other.cleanup.other.plugin_config') . '</label>
 </fieldset>
 
 <button class="button bigger" name="action" type="submit" value="do_cleanup" onclick="return Sunlight.confirm();">

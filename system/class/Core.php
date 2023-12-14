@@ -5,8 +5,7 @@ namespace Sunlight;
 use Composer\Autoload\ClassLoader;
 use Composer\Semver\VersionParser;
 use Kuria\Cache\Cache;
-use Kuria\Cache\Driver\Filesystem\Entry\EntryFactory;
-use Kuria\Cache\Driver\Filesystem\FilesystemDriver;
+use Kuria\Cache\Driver;
 use Kuria\Cache\Driver\Memory\MemoryDriver;
 use Kuria\Event\EventEmitter;
 use Kuria\RequestInfo\RequestInfo;
@@ -383,16 +382,16 @@ abstract class Core
         if (self::$cache === null) {
             self::$cache = new Cache(
                 $options['cache'] && !self::$safeMode
-                    ? new FilesystemDriver(
+                    ? new Driver\Filesystem\FilesystemDriver(
                         SL_ROOT . 'system/cache/core',
-                        new EntryFactory(null, null, SL_ROOT . 'system/tmp')
+                        new Driver\Filesystem\Entry\EntryFactory(null, null, SL_ROOT . 'system/tmp')
                     )
                     : new MemoryDriver()
             );
         }
 
         // plugin manager
-        self::$pluginManager = new PluginManager(self::$safeMode);
+        self::$pluginManager = new PluginManager();
 
         // localization
         self::$dictionary = new LocalizationDictionary();
@@ -537,6 +536,15 @@ abstract class Core
     static function getClientIp(): string
     {
         return RequestInfo::getClientIp() ?? '127.0.0.1';
+    }
+
+    /**
+     * See if a persistent cache is used
+     */
+    static function isCacheEnabled(): bool
+    {
+        return !Core::$cache->getDriver() instanceof Driver\Memory\MemoryDriver
+            && !Core::$cache->getDriver() instanceof Driver\BlackHole\BlackHoleDriver;
     }
 
     /**
