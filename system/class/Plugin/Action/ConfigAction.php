@@ -92,16 +92,18 @@ class ConfigAction extends PluginAction
                 continue;
             }
 
+            $id = "plugin_config_{$key}";
+
             if (is_bool($value)) {
-                $input = Form::input('checkbox', 'config[' . $key . ']', '1', ['checked' => $value]);
+                $input = Form::input('checkbox', 'config[' . $key . ']', '1', ['id' => $id, 'checked' => $value]);
                 $type = 'checkbox';
             } else {
-                $input = Form::input('text', 'config[' . $key . ']', $value, ['class' => 'inputmedium']);
+                $input = Form::input('text', 'config[' . $key . ']', $value, ['id' => $id, 'class' => 'inputmedium']);
                 $type = 'text';
             }
 
             $fields[$key] = [
-                'label' => $this->getConfigLabel($key),
+                'label' => '<label for="' . _e($id) . '">' . $this->getConfigLabel($key) . '</label>',
                 'input' => $input,
                 'type' => $type,
             ];
