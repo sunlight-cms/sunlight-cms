@@ -123,10 +123,10 @@ if (!empty($queries)) {
                     $output .= '<code class="text-warning">NULL</code>';
                 } elseif (strpos($row[$j], "\n") !== false) {
                     // string with newlines
-                    $output .= Form::textarea(null, $row[$j], ['cols' => 60, 'rows' => max(10, substr_count($row[$j], "\n"))]);
+                    $output .= Form::textarea(null, $row[$j], ['cols' => 60, 'rows' => max(10, substr_count($row[$j], "\n")), 'readonly' => true]);
                 } elseif (strlen($row[$j]) > 64) {
                     // long string
-                    $output .= Form::input('text', null, $row[$j], ['size' => 64]);
+                    $output .= Form::input('text', null, $row[$j], ['size' => 64, 'readonly' => true]);
                 } else {
                     // short string
                     $output .= _e($row[$j]);
