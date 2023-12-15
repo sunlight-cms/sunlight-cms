@@ -77,7 +77,7 @@ class BackupRestorer
 
         if ($isPatch) {
             $directories = array_filter($directories, function (string $directory) {
-                if (preg_match('{plugins/(\w+)/(' . Plugin::ID_PATTERN . ')$}AD', $directory, $match)) {
+                if (preg_match('{plugins/(\w+)/(' . Plugin::NAME_PATTERN . ')$}AD', $directory, $match)) {
                     // don't extract a plugin from a patch if it is not installed
                     return is_dir(SL_ROOT . 'plugins/' . $match[1] . '/' . $match[2]);
                 }

@@ -13,7 +13,7 @@ use Sunlight\Util\Json;
 
 class PluginLoader
 {
-    private const PLUGIN_DIR_PATTERN = '{' . Plugin::ID_PATTERN . '$}AD';
+    private const PLUGIN_DIR_PATTERN = '{' . Plugin::NAME_PATTERN . '$}AD';
 
     /** @var PluginConfigStore */
     private $configStore;
@@ -47,9 +47,10 @@ class PluginLoader
     {
         $autoload = array_fill_keys(['psr-0', 'psr-4', 'classmap', 'files'], []);
         $boundFiles = [];
-        $composerInjector = new RepositoryInjector(new Repository(SL_ROOT . 'composer.json'));
+        $project = new Repository(SL_ROOT . 'composer.json');
+        $composerInjector = new RepositoryInjector($project);
 
-        $plugins = $this->findPlugins($boundFiles);
+        $plugins = $this->findPlugins($project, $boundFiles);
         $this->resolveInstallationStatus($plugins);
         $plugins = $this->resolveDependencies($plugins, $composerInjector, $boundFiles);
         $this->resolveAutoload($plugins, $autoload);
@@ -65,7 +66,7 @@ class PluginLoader
     /**
      * @return array<string, PluginData>
      */
-    private function findPlugins(array &$boundFiles): array
+    private function findPlugins(Repository $project, array &$boundFiles): array
     {
         $plugins = [];
 
@@ -77,13 +78,56 @@ class PluginLoader
                 continue;
             }
 
-            foreach (scandir($dir) as $item) {
+            foreach (Filesystem::createIterator($dir) as $item) {
                 if (
-                    preg_match(self::PLUGIN_DIR_PATTERN, $item) // skips dots and invalid names
-                    && ($file = realpath("{$dir}/{$item}/" . Plugin::FILE)) !== false
+                    $item->isDir()
+                    && preg_match(self::PLUGIN_DIR_PATTERN, $item->getFilename())
+                    && ($file = realpath($item->getPathname() . '/' . Plugin::FILE)) !== false
                 ) {
-                    $plugin = $this->loadLocalPlugin($type, $item, $file, $boundFiles);
+                    $plugin = $this->loadPlugin(
+                        $type,
+                        $item->getFilename(),
+                        $file,
+                        "{$type->getDir()}/{$item->getFilename()}",
+                        $boundFiles
+                    );
+
                     $plugins[$plugin->id] = $plugin;
+                }
+            }
+        }
+
+        // load plugins from vendor/
+        foreach ($project->getInstalledPackages() as $package) {
+            if (!isset($package->extra->{'sunlight-plugins'}) || !is_object($package->extra->{'sunlight-plugins'})) {
+                continue;
+            }
+
+            $packagePath = $project->getPackagePath($package);
+
+            foreach ($package->extra->{'sunlight-plugins'} as $type => $vendorPlugins) {
+                if (!isset($this->types[$type]) || !is_object($vendorPlugins)) {
+                    continue;
+                }
+
+                foreach ($vendorPlugins as $name => $path) {
+                    if (
+                        preg_match(self::PLUGIN_DIR_PATTERN, $name)
+                        && ($file = realpath("{$packagePath}/{$path}/" . Plugin::FILE)) !== false
+                    ) {
+                        $plugin = $this->loadPlugin(
+                            $this->types[$type],
+                            $name,
+                            $file,
+                            strncmp($file, SL_ROOT, strlen(SL_ROOT)) === 0
+                                ? strtr(substr($file, strlen(SL_ROOT), -strlen(Plugin::FILE) - 1), DIRECTORY_SEPARATOR, '/')
+                                : '#',
+                            $boundFiles
+                        );
+
+                        $plugin->vendor = true;
+                        $plugins[$plugin->id] = $plugin;
+                    }
                 }
             }
         }
@@ -91,31 +135,16 @@ class PluginLoader
         return $plugins;
     }
 
-    private function loadLocalPlugin(PluginType $type, string $name, string $file, array &$boundFiles): PluginData
+    private function loadPlugin(PluginType $type, string $name, string $file, string $webPath, array &$boundFiles): PluginData
     {
-        $plugin = new PluginData("{$type->getName()}/{$name}", $name, $file);
-        $plugin->webPath = "{$type->getDir()}/{$name}";
+        $plugin = new PluginData($type->getName(), "{$type->getName()}.{$name}", $name, $file, $webPath);
 
-        $this->loadOptions($plugin);
-        $this->loadPlugin($plugin, $type);
-
-        $boundFiles[] = $file;
-
-        return $plugin;
-    }
-
-    private function loadOptions(PluginData $plugin): void
-    {
+        // load options
         try {
             $plugin->options = Json::decode(file_get_contents($plugin->file));
         } catch (\InvalidArgumentException $e) {
             $plugin->errors[] = sprintf('could not parse %s - %s', $plugin->file, $e->getMessage());
         }
-    }
-
-    private function loadPlugin(PluginData $plugin, PluginType $type): void
-    {
-        $plugin->type = $type->getName();
 
         // process options
         $optionsAreValid = false;
@@ -153,6 +182,10 @@ class PluginLoader
         if (Core::$safeMode && $plugin->status === Plugin::STATUS_OK && !$type->isPluginAllowedInSafeMode($plugin)) {
             $plugin->status = Plugin::STATUS_UNAVAILABLE;
         }
+
+        $boundFiles[] = $file;
+
+        return $plugin;
     }
 
     private function checkEnvironment(PluginData $plugin): void
@@ -352,7 +385,7 @@ class PluginLoader
         array &$boundFiles,
         array &$errors
     ): void {
-        if (!$plugin->options['inject_composer']) {
+        if (!$plugin->options['inject_composer'] || $plugin->vendor) {
             return;
         }
 

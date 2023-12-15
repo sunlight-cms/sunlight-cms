@@ -8,45 +8,45 @@ class LanguagePlugin extends Plugin
 {
     function isEssential(): bool
     {
-        return $this->name === Core::$fallbackLang;
+        return $this->data->name === Core::$fallbackLang;
     }
 
     function getIsoCode(): string
     {
-        return $this->options['iso_code'];
+        return $this->data->options['iso_code'];
     }
 
     function getDecimalPoint(): string
     {
-        return $this->options['decimal_point'];
+        return $this->data->options['decimal_point'];
     }
 
     function getThousandsSeparator(): string
     {
-        return $this->options['thousands_separator'];
+        return $this->data->options['thousands_separator'];
     }
 
     function formatInteger(int $integer): string
     {
-        return number_format($integer, 0, '', $this->options['thousands_separator']);
+        return number_format($integer, 0, '', $this->data->options['thousands_separator']);
     }
 
     function formatFloat(float $float, int $decimals): string
     {
-        return number_format($float, $decimals, $this->options['decimal_point'], $this->options['thousands_separator']);
+        return number_format($float, $decimals, $this->data->options['decimal_point'], $this->data->options['thousands_separator']);
     }
 
     function getEntries(bool $loadAdminDict): ?array
     {
         // base dictionary
-        $fileName = sprintf('%s/dictionary.php', $this->dir);
+        $fileName = sprintf('%s/dictionary.php', $this->data->dir);
 
         if (is_file($fileName)) {
             $data = (array) include $fileName;
 
             // admin dictionary
             if ($loadAdminDict) {
-                $adminFileName = sprintf('%s/admin_dictionary.php', $this->dir);
+                $adminFileName = sprintf('%s/admin_dictionary.php', $this->data->dir);
 
                 if (is_file($adminFileName)) {
                     $data += (array) include $adminFileName;

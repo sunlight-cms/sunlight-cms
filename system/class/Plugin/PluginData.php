@@ -7,6 +7,8 @@ use Sunlight\Util\StringHelper;
 class PluginData
 {
     /** @var string */
+    public $type;
+    /** @var string */
     public $id;
     /** @var string */
     public $name;
@@ -19,23 +21,25 @@ class PluginData
     /** @var string */
     public $webPath;
     /** @var string|null */
-    public $type;
-    /** @var string|null */
     public $status;
     /** @var bool|null */
     public $installed;
+    /** @var bool */
+    public $vendor = false;
     /** @var string[] */
     public $errors = [];
     /** @var array|null */
     public $options;
 
-    function __construct(string $id, string $name, string $file)
+    function __construct(string $type, string $id, string $name, string $file, string $webPath)
     {
+        $this->type = $type;
         $this->id = $id;
         $this->name = $name;
         $this->camelCasedName = StringHelper::toCamelCase($name);
         $this->dir = dirname($file);
         $this->file = $file;
+        $this->webPath = $webPath;
     }
 
     function isOk(): bool

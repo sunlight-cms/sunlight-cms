@@ -77,7 +77,7 @@ class InfoAction extends PluginAction
     <tr>
         <th><?= _lang('admin.plugins.object') ?></th>
         <td>
-            <pre><?= _e(Dumper::dump($plugin)) ?></pre>
+            <pre><?= _e(Dumper::dump($plugin, 3)) ?></pre>
         </td>
     </tr>
 </table>

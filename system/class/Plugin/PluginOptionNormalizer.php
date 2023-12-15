@@ -151,7 +151,7 @@ abstract class PluginOptionNormalizer
                 self::fail('[%s] the layout name must be a string', $layout);
             }
 
-            if (!preg_match('{[a-zA-Z0-9_.]+$}AD', $layout)) {
+            if (!preg_match('{[\w.]+$}AD', $layout)) {
                 self::fail('[%s] the layout name is empty or contains invalid characters', $layout);
             }
 
@@ -161,7 +161,7 @@ abstract class PluginOptionNormalizer
 
             // slots
             foreach ($options['slots'] as $index => $slot) {
-                if (!preg_match('{[a-zA-Z0-9_.]+$}AD', $slot)) {
+                if (!preg_match('{[\w.]+$}AD', $slot)) {
                     self::fail('[%s][slots][%s] the slot name is empty or contains invalid characters', $layout, $index);
                 }
             }
@@ -179,9 +179,14 @@ abstract class PluginOptionNormalizer
         $normalized = [];
 
         foreach ($dependencies as $dependency => $version) {
+            // 8.0.x compatibility
+            if (strpos($dependency, '/') !== false) {
+                $dependency = strtr($dependency, '/', '.');
+            }
+
             // prefix dependency by current type if none is specified
-            if (strpos($dependency, '/') === false) {
-                $dependency = "{$plugin->type}/{$dependency}";
+            if (strpos($dependency, '.') === false) {
+                $dependency = "{$plugin->type}.{$dependency}";
             }
 
             $normalized[$dependency] = $version;

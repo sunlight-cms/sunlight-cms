@@ -15,7 +15,7 @@ class RemoveAction extends PluginAction
 
     function isAllowed(): bool
     {
-        return $this->plugin->isInstalled() !== true && !$this->plugin->isEssential();
+        return $this->plugin->isInstalled() !== true && !$this->plugin->isEssential() && !$this->plugin->isVendor();
     }
 
     protected function execute(): ActionResult

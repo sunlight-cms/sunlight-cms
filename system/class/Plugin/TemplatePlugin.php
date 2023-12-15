@@ -21,12 +21,12 @@ class TemplatePlugin extends Plugin
     {
         parent::__construct($data, $manager);
 
-        $this->lang = new LocalizationDirectory($this->options['lang_dir']);
+        $this->lang = new LocalizationDirectory($this->data->options['lang_dir']);
     }
 
     function isEssential(): bool
     {
-        return $this->name === Settings::get('default_template');
+        return $this->data->name === Settings::get('default_template');
     }
 
     /**
@@ -35,7 +35,7 @@ class TemplatePlugin extends Plugin
     function begin(string $layout): void
     {
         // register events once the template is being used
-        foreach ($this->options['events'] as $subscriber) {
+        foreach ($this->data->options['events'] as $subscriber) {
             Extend::reg(
                 $subscriber['event'],
                 CallbackHandler::fromArray($subscriber, $this),
@@ -57,11 +57,11 @@ class TemplatePlugin extends Plugin
      */
     function getTemplate(string $layout = self::DEFAULT_LAYOUT): string
     {
-        if (!isset($this->options['layouts'][$layout])) {
+        if (!isset($this->data->options['layouts'][$layout])) {
             $layout = self::DEFAULT_LAYOUT;
         }
 
-        return $this->options['layouts'][$layout]['template'];
+        return $this->data->options['layouts'][$layout]['template'];
     }
 
     /**
@@ -71,7 +71,7 @@ class TemplatePlugin extends Plugin
      */
     function hasLayout(string $layout): bool
     {
-        return isset($this->options['layouts'][$layout]);
+        return isset($this->data->options['layouts'][$layout]);
     }
 
     /**
@@ -81,7 +81,7 @@ class TemplatePlugin extends Plugin
      */
     function getLayouts(): array
     {
-        return array_keys($this->options['layouts']);
+        return array_keys($this->data->options['layouts']);
     }
 
     /**
@@ -110,8 +110,8 @@ class TemplatePlugin extends Plugin
      */
     function getSlots(string $layout): array
     {
-        if (isset($this->options['layouts'][$layout])) {
-            return $this->options['layouts'][$layout]['slots'];
+        if (isset($this->data->options['layouts'][$layout])) {
+            return $this->data->options['layouts'][$layout]['slots'];
         }
 
         return [];
@@ -130,7 +130,7 @@ class TemplatePlugin extends Plugin
      */
     function getBoxes(string $layout = self::DEFAULT_LAYOUT): array
     {
-        if (!isset($this->options['layouts'][$layout])) {
+        if (!isset($this->data->options['layouts'][$layout])) {
             $layout = self::DEFAULT_LAYOUT;
         }
 
@@ -147,10 +147,5 @@ class TemplatePlugin extends Plugin
         }
 
         return $boxes;
-    }
-
-    protected function getLocalizationPrefix(): string
-    {
-        return "{$this->type}_{$this->id}";
     }
 }

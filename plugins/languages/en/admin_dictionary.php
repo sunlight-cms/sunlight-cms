@@ -483,6 +483,7 @@ return [
     'admin.plugins.errors' => 'Errors',
     'admin.plugins.data' => 'Definition',
     'admin.plugins.object' => 'Object',
+    'admin.plugins.vendor' => 'vendor',
     'admin.plugins.status.ok' => 'ok',
     'admin.plugins.status.error' => 'error',
     'admin.plugins.status.needs_install' => 'not installed',

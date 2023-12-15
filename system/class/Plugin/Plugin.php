@@ -11,8 +11,8 @@ use Sunlight\Util\ConfigurationFile;
 
 abstract class Plugin implements CallbackObjectInterface
 {
-    /** ID pattern */
-    const ID_PATTERN = '[a-zA-Z][a-zA-Z0-9_.\-]+';
+    /** Name pattern */
+    const NAME_PATTERN = '[a-zA-Z][\w.\-]+';
     /** Name of the plugin definition file */
     const FILE = 'plugin.json';
 
@@ -37,45 +37,18 @@ abstract class Plugin implements CallbackObjectInterface
         'remove' => Action\RemoveAction::class,
     ];
 
-    /** @var string */
-    protected $id;
-    /** @var string */
-    protected $name;
-    /** @var string */
-    protected $camelCasedName;
-    /** @var string */
-    protected $type;
-    /** @var string */
-    protected $status;
-    /** @var bool|null */
-    protected $installed;
-    /** @var string */
-    protected $dir;
-    /** @var string */
-    protected $webPath;
-    /** @var string[] */
-    protected $errors;
-    /** @var array */
-    protected $options;
+    /** @var PluginData */
+    protected $data;
     /** @var PluginManager */
     protected $manager;
     /** @var ConfigurationFile|null */
     private $config;
     /** @var NamespacedCache|null */
-    private $cache;    
+    private $cache;
 
     function __construct(PluginData $data, PluginManager $manager)
     {
-        $this->id = $data->id;
-        $this->name = $data->name;
-        $this->camelCasedName = $data->camelCasedName;
-        $this->type = $data->type;
-        $this->status = $data->status;
-        $this->installed = $data->installed;
-        $this->dir = $data->dir;
-        $this->webPath = $data->webPath;
-        $this->errors = $data->errors;
-        $this->options = $data->options;
+        $this->data = $data;
         $this->manager = $manager;
     }
 
@@ -98,34 +71,79 @@ abstract class Plugin implements CallbackObjectInterface
         return $inst;
     }
 
+    function getType(): string
+    {
+        return $this->data->type;
+    }
+
     function getId(): string
     {
-        return $this->id;
+        return $this->data->id;
     }
 
     function getName(): string
     {
-        return $this->name;
+        return $this->data->name;
     }
 
     function getCamelCasedName(): string
     {
-        return $this->camelCasedName;
+        return $this->data->camelCasedName;
     }
 
-    function getType(): string
+    function getDirectory(): string
     {
-        return $this->type;
+        return $this->data->dir;
+    }
+
+    function getFile(): string
+    {
+        return $this->data->file;
+    }
+
+    function getWebPath(?array $routerOptions = null): string
+    {
+        return Router::path($this->data->webPath, $routerOptions);
+    }
+
+    function getAssetPath(string $path, ?array $routerOptions = null): string
+    {
+        return Router::path($this->data->webPath . '/' . $path, $routerOptions);
     }
 
     function getStatus(): string
     {
-        return $this->status;
+        return $this->data->status;
     }
 
     function hasStatus(string $status): bool
     {
-        return $this->status === $status;
+        return $this->data->status === $status;
+    }
+
+    /**
+     * @return bool|null null if the plugin has no installer
+     */
+    function isInstalled(): ?bool
+    {
+        return $this->data->installed;
+    }
+
+    /**
+     * @throws \LogicException if the plugin has no installer
+     */
+    function getInstaller(): PluginInstaller
+    {
+        if ($this->data->options['installer'] === null) {
+            throw new \LogicException('Plugin has no installer');
+        }
+
+        return require $this->data->options['installer'];
+    }
+
+    function isVendor(): bool
+    {
+        return $this->data->vendor;
     }
 
     function isEssential(): bool
@@ -134,51 +152,11 @@ abstract class Plugin implements CallbackObjectInterface
     }
 
     /**
-     * @return bool|null null if the plugin has no installer
-     */
-    function isInstalled(): ?bool
-    {
-        return $this->installed;
-    }
-
-    /**
-     * @throws \LogicException if the plugin has no installer
-     */
-    function getInstaller(): PluginInstaller
-    {
-        if ($this->options['installer'] === null) {
-            throw new \LogicException('Plugin has no installer');
-        }
-
-        return require $this->options['installer'];
-    }
-
-    /**
      * @return string[]
      */
     function getErrors(): array
     {
-        return $this->errors;
-    }
-
-    function getDirectory(): string
-    {
-        return $this->dir;
-    }
-
-    function getFile(): string
-    {
-        return $this->dir . '/' . self::FILE;
-    }
-
-    function getWebPath(?array $routerOptions = null): string
-    {
-        return Router::path($this->webPath, $routerOptions);
-    }
-
-    function getAssetPath(string $path, ?array $routerOptions = null): string
-    {
-        return Router::path($this->webPath . '/' . $path, $routerOptions);
+        return $this->data->errors;
     }
 
     /**
@@ -186,11 +164,11 @@ abstract class Plugin implements CallbackObjectInterface
      */
     function getOption(string $name)
     {
-        if (!array_key_exists($name, $this->options)) {
+        if (!array_key_exists($name, $this->data->options)) {
             throw new \OutOfBoundsException(sprintf('Option "%s" does not exist', $name));
         }
 
-        return $this->options[$name];
+        return $this->data->options[$name];
     }
 
     /**
@@ -198,29 +176,29 @@ abstract class Plugin implements CallbackObjectInterface
      */
     function getExtraOption(string $name)
     {
-        return $this->options['extra'][$name] ?? null;
+        return $this->data->options['extra'][$name] ?? null;
     }
 
     function getOptions(): array
     {
-        return $this->options;
+        return $this->data->options;
     }
 
     function hasConfig(): bool
     {
-        return $this->options['config_defaults'] !== null;
+        return $this->data->options['config_defaults'] !== null;
     }
 
     function getConfig(): ConfigurationFile
     {
         if ($this->config === null) {
-            $defaults = $this->options['config_defaults'];
+            $defaults = $this->data->options['config_defaults'];
 
             if ($defaults === null) {
                 throw new \LogicException('To use the configuration file, defaults must be specified using the "config_defaults" option');
             }
 
-            $this->config = $this->manager->getConfigStore()->getConfigFile($this->id, $defaults);
+            $this->config = $this->manager->getConfigStore()->getConfigFile($this->data->id, $defaults);
         }
 
         return $this->config;
@@ -228,8 +206,8 @@ abstract class Plugin implements CallbackObjectInterface
 
     function getAction(string $name): ?PluginAction
     {
-        if ($this->hasStatus(self::STATUS_OK) && isset($this->options['actions'][$name])) {
-            return new $this->options['actions'][$name]($this);
+        if ($this->hasStatus(self::STATUS_OK) && isset($this->data->options['actions'][$name])) {
+            return new $this->data->options['actions'][$name]($this);
         }
 
         if (isset(self::DEFAULT_ACTIONS[$name])) {
@@ -253,7 +231,7 @@ abstract class Plugin implements CallbackObjectInterface
 
             // append custom actions after config action
             if ($name === 'config' && $this->hasStatus(self::STATUS_OK)) {
-                foreach ($this->options['actions'] as $customName => $customClass) {
+                foreach ($this->data->options['actions'] as $customName => $customClass) {
                     // don't add default action overrides (to keep the order)
                     if (!isset(self::DEFAULT_ACTIONS[$customName])) {
                         $actions[$customName] = $this->getAction($customName);
@@ -272,6 +250,6 @@ abstract class Plugin implements CallbackObjectInterface
 
     function getCallbackCacheKey(): string
     {
-        return "plugin:{$this->id}";
+        return "plugin:{$this->data->id}";
     }
 }

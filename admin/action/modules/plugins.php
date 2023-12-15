@@ -81,13 +81,27 @@ foreach (Core::$pluginManager->getTypes() as $type) {
             $rowClass = null;
         }
 
+        // determine flags
+        $flags = [];
+
+        if ($plugin->isVendor()) {
+            $flags[] = _lang('admin.plugins.vendor');
+        }
+
+        if ($isInactive) {
+            $flags[] = _lang('admin.plugins.status.' . $plugin->getStatus());
+        }
+
         // output row
         $output .= '
     <tr' . ($rowClass !== null ? ' class="' . $rowClass . '"' : '') . '>
         <td>
-            ' . ($isInactive
-                ? '<h3><del>' . _e($title) . '</del> <small>(' . _e($name) . ', ' . _lang('admin.plugins.status.' . $plugin->getStatus()) . ')</small></h3>'
-                : '<h3>' . _e($title) . ' <small>(' . _e($name) . ')</small></h3>') . '
+            <h3>'
+            . ($isInactive ? '<del>' : '')
+            . _e($title)
+            . ($isInactive ? '</del>' : '')
+            . (!empty($flags) ? ' <small>' . implode(', ', $flags) . '</small>' : '')
+            . '</h3>
             <p>
                 ' . _buffer(function () use ($plugin) {
                     foreach ($plugin->getActions() as $name => $action) {

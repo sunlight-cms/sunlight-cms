@@ -483,6 +483,7 @@ return [
     'admin.plugins.errors' => 'Chyby',
     'admin.plugins.data' => 'Definice',
     'admin.plugins.object' => 'Objekt',
+    'admin.plugins.vendor' => 'vendor',
     'admin.plugins.status.ok' => 'ok',
     'admin.plugins.status.error' => 'chyba',
     'admin.plugins.status.needs_install' => 'nenainstalován',

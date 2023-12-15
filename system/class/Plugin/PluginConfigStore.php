@@ -80,11 +80,11 @@ class PluginConfigStore
 
     private function getFilename(string $id, string $ext): string
     {
-        return strtr($id, '/', '$') . '.' . $ext;
+        return $id . '.' . $ext;
     }
 
     private function getIdFromFilename(string $filename): string
     {
-        return strtr(pathinfo($filename, PATHINFO_FILENAME), '$', '/');
+        return pathinfo($filename, PATHINFO_FILENAME);
     }
 }

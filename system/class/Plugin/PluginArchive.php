@@ -142,7 +142,7 @@ class PluginArchive
         }
 
         // build the regex
-        $regex = '{(' . implode('|', $dirPatterns) . ')/(' . Plugin::ID_PATTERN . ')/(.+)$}AD';
+        $regex = '{(' . implode('|', $dirPatterns) . ')/(' . Plugin::NAME_PATTERN . ')/(.+)$}AD';
 
         // iterate all files in the archive
         for ($i = 0; $i < $this->zip->numFiles; ++$i) {

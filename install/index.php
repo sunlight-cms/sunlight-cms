@@ -581,7 +581,7 @@ class ConfigurationStep extends Step
 
         if ($config['db.prefix'] === '') {
             $this->errors[] = 'db.prefix.empty';
-        } elseif (!preg_match('{[a-zA-Z0-9_]+$}AD', $config['db.prefix'])) {
+        } elseif (!preg_match('{\w+$}AD', $config['db.prefix'])) {
             $this->errors[] = 'db.prefix.invalid';
         }
 
