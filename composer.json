@@ -13,7 +13,7 @@
         "ext-mysqli": "*",
         "ext-session": "*",
         "ext-zip": "*",
-        "composer/semver": "^3.3.2",
+        "composer/semver": "^3.4.0",
         "ezyang/htmlpurifier": "^4.17",
         "kuria/cache": "^6.0",
         "kuria/debug": "^4.0.1",
