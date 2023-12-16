@@ -663,6 +663,9 @@ a.button:hover {
     max-height: 300px;
     overflow: auto;
 }
+.pre br {
+    display: none;
+}
 .php-source {
     max-height: 300px;
     overflow: auto;
