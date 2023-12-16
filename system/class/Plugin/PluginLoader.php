@@ -121,7 +121,7 @@ class PluginLoader
                             $file,
                             strncmp($file, SL_ROOT, strlen(SL_ROOT)) === 0
                                 ? strtr(substr($file, strlen(SL_ROOT), -strlen(Plugin::FILE) - 1), DIRECTORY_SEPARATOR, '/')
-                                : '#',
+                                : '#', // package outside of root
                             $boundFiles
                         );
 
@@ -130,6 +130,10 @@ class PluginLoader
                     }
                 }
             }
+        }
+
+        if (is_file($project->getInstalledJsonPath())) {
+            $boundFiles[] = $project->getInstalledJsonPath();
         }
 
         return $plugins;
