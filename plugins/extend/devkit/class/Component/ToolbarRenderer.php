@@ -239,6 +239,10 @@ class ToolbarRenderer
         $pluginErrors = [];
 
         foreach (Core::$pluginManager->getPlugins()->inactiveMap as $inactivePlugin) {
+            if ($inactivePlugin->hasStatus(Plugin::STATUS_DISABLED)) {
+                continue;
+            }
+
             foreach ($inactivePlugin->getErrors() as $error) {
                 $pluginErrors[$inactivePlugin->getId()][] = $error;
             }
