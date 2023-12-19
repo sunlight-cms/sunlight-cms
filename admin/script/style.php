@@ -372,30 +372,31 @@ a#usermenu-username {margin-right: 0.5em; font-weight: bold; color: <?= $scheme_
 .page-list a {color: <?= $scheme_text ?>;}
 
 .page-list .page-title {width: 90%;}
-.page-list .page-title a, .page-list .page-title span {display: block;}
-.page-list.page-list-full-tree .page-title > :not(.node-level-p0) .page-list-title {padding-left: 8px; border-left: 1px solid <?= $scheme_smoke_dark ?>;}
-.page-list.page-list-full-tree .page-separator .page-title .page-list-title {border-left-color: <?= $scheme_smoke_text ?>;}
-.page-list.page-list-full-tree .page-title a:hover span:after, .page-list.page-list-single-level td.page-title a span:after {content: url("../public/images/down<?= $dark ? '_inverted' : '' ?>.png"); position: absolute; margin-left: 0.5em; margin-top: 2px;}
+.page-list .page-title a {color: inherit; padding: 4px 0;}
+.page-list .page-title a:hover {text-decoration: underline !important;}
+.page-list .page-invisible .page-title-content {color: <?= $scheme_smoke_text_dark ?>;}
+.page-list .page-title-content .page-actions {margin-left: 2px;}
 
-.page-list tr:hover:not(.page-separator) td {background-color: <?= $scheme_lighter ?>;}
+.page-list.page-list-full-tree .page-title-content:not(.node-level-m0) {padding-left: 8px; border-left: 1px solid <?= $scheme_smoke_dark ?>;}
+.page-list.page-list-full-tree .page-separator .page-title-content {border-left-color: <?= $scheme_smoke_text ?>;}
 
 .page-list .page-separator td {border-top: 24px solid <?= $scheme_white ?>; border-bottom: 2px solid <?= $scheme_smoke_dark ?>; background-color: <?= $scheme_lighter ?>;}
 .page-list .page-separator.sorting td {border-top: none;}
 .page-list .page-separator:first-child td {border: none;}
-.page-list .page-separator .page-title .page-list-title span {font-weight: bold;}
+.page-list .page-separator .page-title-content {font-weight: bold;}
 
-.page-list .page-type {color: <?= $scheme_smoke_text_dark ?>;}
+.page-list tr:hover:not(.page-separator) td {background-color: <?= $scheme_lighter ?>;}
 .page-list tr:hover .page-type {color: inherit;}
 
 .page-list .page-actions {text-align: right; white-space: nowrap;}
-.page-list .page-actions a {display: inline; padding: 2px 6px;}
-.page-list tr:hover .page-actions a {background-color: <?= $scheme_smoke ?>; outline: 1px solid <?= $scheme_smoke_dark ?>;}
+.page-list .page-actions a {padding: 4px;}
 .page-list .page-actions a img.icon {margin: 0; padding: 0; vertical-align: middle;}
 .page-list .page-actions a span {display: none;}
 
 .page-list .sortable-placeholder td {height: 36px;}
 .page-list .page-list-sortcell {width: 1%; vertical-align: bottom;}
 .page-list .page-list-ord {width: 45px;}
+.page-list .page-type {color: <?= $scheme_smoke_text_dark ?>;}
 
 .page-list-breadcrumbs {margin: 0 0 0.5em 0; padding: 0.5em 1em; border-bottom: 2px solid <?= $scheme_smoke_dark ?>; list-style-type: none; background-color: <?= $scheme_lightest ?>;}
 .page-list-breadcrumbs li {display: inline; padding-right: 0.5em;}

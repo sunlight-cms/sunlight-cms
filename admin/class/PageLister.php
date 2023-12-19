@@ -156,7 +156,6 @@ abstract class PageLister
      * - links (1)            page links 1/0
      * - sortable (0)         render as sortable 1/0
      * - title_editable (0)   render title as an editable input 1/0
-     * - level_class (-)      render level class 1/0 or null (auto)
      * - breadcrumbs (1)      render breadcrumbs 1/0
      *
      * @param array{
@@ -165,7 +164,6 @@ abstract class PageLister
      *     links?: bool,
      *     sortable?: bool,
      *     title_editable?: bool,
-     *     level_class?: bool|null,
      *     breadcrumbs?: bool,
      * } $options see description
      */
@@ -180,7 +178,6 @@ abstract class PageLister
             'flags' => false,
             'sortable' => false,
             'title_editable' => false,
-            'level_class' => null,
             'breadcrumbs' => true,
         ];
 
@@ -286,10 +283,6 @@ abstract class PageLister
         // render mode
         switch ($options['mode']) {
             case self::MODE_FULL_TREE:
-                if ($options['level_class'] === null) {
-                    $options['level_class'] = true;
-                }
-
                 if ($options['sortable']) {
                     throw new \RuntimeException('The "sortable" option is not supported in full tree list mode');
                 }
@@ -367,17 +360,6 @@ abstract class PageLister
             'is_accessible' => $isAccessible,
         ]);
 
-        // detect separator, compose link
-        $isSeparator = ($page['type'] == Page::SEPARATOR);
-
-        if (!$isSeparator && $options['links'] && $page['node_depth'] > 0) {
-            $nodeLink = Core::getCurrentUrl();
-            $nodeLink->set('page_id', $page['id']);
-            $nodeLink = $nodeLink->buildRelative();
-        } else {
-            $nodeLink = null;
-        }
-
         // get actions
         $actions = self::getPageActions($page, $isAccessible);
 
@@ -399,6 +381,10 @@ abstract class PageLister
             $class .= ' page-no-access';
         }
 
+        if (!$page['visible']) {
+            $class .= ' page-invisible';
+        }
+
         // render
         $output .= '<tr class="' . $class . "\">\n";
 
@@ -408,29 +394,43 @@ abstract class PageLister
         }
 
         // title
-        $output .= '<td class="page-title">';
-        $itemAttrs = ' title="ID: ' . $page['id'] . ', ' . _lang('admin.content.form.ord') . ': ' . $page['ord'] .'"';
+        $output .= "<td class=\"page-title\">\n";
+        $output .= '<div class="page-title-content node-level-m' . ($page['node_level'] + $levelOffset) . "\">\n";
 
-        if ($options['level_class']) {
-            $itemAttrs .= ' class="node-level-p' . ($page['node_level'] + $levelOffset) . '"';
-        }
-
-        if ($nodeLink !== null && !$options['title_editable']) {
-            $output .= '<a' . $itemAttrs . ' href="' . _e($nodeLink) . '"><span class="page-list-title">' . $page['title'] . '</span></a>';
+        if ($options['title_editable']) {
+            $output .= Form::input('text', 'title[' . $page['id'] . ']', $page['title'], ['class' => 'inputbig', 'maxlength' => 255], false);
         } else {
-            $output .= '<span' . $itemAttrs . '><span class="page-list-title"><span>';
+            $title = 'ID: ' . $page['id'] . ', ' . _lang('admin.content.form.ord') . ': ' . $page['ord'];
 
-            if ($options['title_editable']) {
-                $output .= Form::input('text', 'title[' . $page['id'] . ']', $page['title'], ['class' => 'inputbig', 'maxlength' => 255], false);
+            if ($options['links']) {
+                $output .= '<a'
+                    . ' href="' . _e(Router::admin('content-edit' . Page::TYPES[$page['type']], ['query' => ['id' => $page['id']]])) . '"'
+                    . ' title="' . _e($title) . '"'
+                    . '>'
+                    . $page['title']
+                    . "</a>\n";
+
+                if ($page['node_depth'] > 0) {
+                    $subtreeUrl = Core::getCurrentUrl();
+                    $subtreeUrl->set('page_id', $page['id']);
+
+                    $output .= "<span class=\"page-actions\">\n"
+                        . self::renderAction([
+                            'url' => $subtreeUrl->buildRelative(),
+                            'icon' => Router::path('admin/public/images/icons/down-arrow' . (Settings::get('adminscheme_dark') ? '-inv' : '') . '.png'),
+                            'label' => _lang('admin.content.form.showsubpages'),
+                        ])
+                        . "</span>\n";
+                }
             } else {
-                $output .= $page['title'];
+                $output .= '<span title="' . _e($title) . '">' . $page['title'] . '</span>';
             }
-
-            $output .= '</span></span></span>';
         }
 
+        $output .= "</div>\n";
         $output .= "</td>\n";
 
+        // flags
         if ($options['flags']) {
             $output .= '<td>';
             $output .= self::renderPageFlags($page);
@@ -439,7 +439,7 @@ abstract class PageLister
 
         // type
         if ($options['type']) {
-            if ($isSeparator) {
+            if ($page['type'] == Page::SEPARATOR) {
                 $typeLabel = '';
             } elseif ($page['type'] == Page::PLUGIN && isset(self::$pluginTypes[$page['type_idt']])) {
                 $typeLabel = self::$pluginTypes[$page['type_idt']];
@@ -452,23 +452,9 @@ abstract class PageLister
 
         // actions
         if ($options['actions']) {
-            $output .= "<td class=\"page-actions\">\n";
-
-            foreach ($actions as $actionId => $action) {
-                $actionLabel = _e($action['label']);
-                $output .= '<a'
-                    . ((isset($action['new_window']) && $action['new_window']) ? ' target="_blank"' : '')
-                    . ' class="page-action-' . $actionId . '" href="' . _e($action['url']) . '" title="' . $actionLabel . '"'
-                    . '>';
-
-                if (isset($action['icon'])) {
-                    $output .= '<img class="icon" src="' . _e($action['icon']) . '" alt="' . $actionLabel . '">';
-                }
-
-                $output .= "<span>{$actionLabel}</span></a>\n";
-            }
-
-            $output .= "</td>\n";
+            $output .= "<td class=\"page-actions\">\n"
+                . implode("\n", array_map([__CLASS__, 'renderAction'], $actions))
+                . "</td>\n";
         }
 
         $output .= "</tr>\n";
@@ -481,13 +467,34 @@ abstract class PageLister
     {
         $actions = [];
 
+        // type-specific actions
+        switch ($page['type']) {
+            case Page::GALLERY:
+                $actions['gallery_images'] = [
+                    'url' => Router::admin('content-manageimgs', ['query' => ['g' => $page['id']]]),
+                    'icon' => Router::path('admin/public/images/icons/img.png'),
+                    'label' => _lang('admin.content.form.showpics'),
+                    'order' => 50,
+                ];
+                break;
+
+            case Page::CATEGORY:
+                $actions['category_articles'] = [
+                    'url' => Router::admin('content-articles-list', ['query' => ['cat' => $page['id']]]),
+                    'icon' => Router::path('admin/public/images/icons/list.png'),
+                    'label' => _lang('admin.content.form.showarticles'),
+                    'order' => 50,
+                ];
+                break;
+        }
+
         // edit
         if ($hasAccess) {
             $actions['edit'] = [
                 'url' => Router::admin('content-edit' . Page::TYPES[$page['type']], ['query' => ['id' => $page['id']]]),
                 'icon' => Router::path('admin/public/images/icons/edit.png'),
                 'label' => _lang('global.edit'),
-                'order' => 50,
+                'order' => 100,
             ];
         }
 
@@ -500,27 +507,6 @@ abstract class PageLister
                 'label' => _lang('global.show'),
                 'order' => 100,
             ];
-        }
-
-        // special actions
-        switch ($page['type']) {
-            case Page::GALLERY:
-                $actions['gallery_images'] = [
-                    'url' => Router::admin('content-manageimgs', ['query' => ['g' => $page['id']]]),
-                    'icon' => Router::path('admin/public/images/icons/img.png'),
-                    'label' => _lang('admin.content.form.showpics'),
-                    'order' => 150,
-                ];
-                break;
-
-            case Page::CATEGORY:
-                $actions['category_articles'] = [
-                    'url' => Router::admin('content-articles-list', ['query' => ['cat' => $page['id']]]),
-                    'icon' => Router::path('admin/public/images/icons/list.png'),
-                    'label' => _lang('admin.content.form.showarticles'),
-                    'order' => 150,
-                ];
-                break;
         }
 
         // delete
@@ -544,17 +530,30 @@ abstract class PageLister
         return $actions;
     }
 
-    /**
-     * [CALLBACK] Sort actions
-     */
-    static function sortActions(array $a, array $b): int
+    private static function renderAction(array $action): string
+    {
+        $actionLabel = _e($action['label']);
+
+        $output = '<a'
+            . (!empty($action['new_window']) ? ' target="_blank"' : '')
+            . ' href="' . _e($action['url']) . '"'
+            . ' title="' . $actionLabel . '"'
+            . '>';
+
+        if (isset($action['icon'])) {
+            $output .= '<img class="icon" src="' . _e($action['icon']) . '" alt="' . $actionLabel . '">';
+        }
+
+        $output .= "<span>{$actionLabel}</span></a>\n";
+
+        return $output;
+    }
+
+    private static function sortActions(array $a, array $b): int
     {
         return $a['order'] > $b['order'] ? 1 : -1;
     }
 
-    /**
-     * Render page flags
-     */
     private static function renderPageFlags(array $page): string
     {
         $output = '';
@@ -590,7 +589,7 @@ abstract class PageLister
 
             if (!$page['visible']) {
                 $iconTitle = _lang('admin.content.form.invisible');
-                $output .= '<img src="' . _e(Router::path('admin/public/images/icons/eye.png')) . '" class="icon" alt="' . $iconTitle . '" title="' . $iconTitle . '">';
+                $output .= '<img src="' . _e(Router::path('admin/public/images/icons/eye-closed.png')) . '" class="icon" alt="' . $iconTitle . '" title="' . $iconTitle . '">';
             }
         }
 

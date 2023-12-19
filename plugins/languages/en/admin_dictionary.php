@@ -152,6 +152,7 @@ return [
     'admin.content.form.showinfo' => 'show item information',
     'admin.content.form.showpics' => 'images',
     'admin.content.form.showarticles' => 'articles',
+    'admin.content.form.showsubpages' => 'subpages',
     'admin.content.form.imgsperrow' => 'images per row<br>(-1 = no table)',
     'admin.content.form.imgsperpage' => 'per page',
     'admin.content.form.prevwidth' => 'thumbnail width',

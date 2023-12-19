@@ -11,5 +11,6 @@ $output .= PageLister::render([
     'mode' => PageLister::MODE_SINGLE_LEVEL,
     'sortable' => true,
     'actions' => false,
+    'links' => false,
     'type' => true,
 ]);

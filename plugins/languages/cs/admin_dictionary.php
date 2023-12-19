@@ -152,6 +152,7 @@ return [
     'admin.content.form.showinfo' => 'informace u položek',
     'admin.content.form.showpics' => 'obrázky',
     'admin.content.form.showarticles' => 'články',
+    'admin.content.form.showsubpages' => 'podstránky',
     'admin.content.form.imgsperrow' => 'obrázků na řádek<br>(-1 = bez tabulky)',
     'admin.content.form.imgsperpage' => 'na stranu',
     'admin.content.form.prevwidth' => 'šířka náhledu',

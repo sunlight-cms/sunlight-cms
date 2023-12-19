@@ -96,7 +96,7 @@ foreach ($boxes as $template_idt => $template_boxes) {
                             <img src="<?= _e(Router::path('admin/public/images/icons/lock.png')) ?>" class="icon" alt="<?= $iconTitle ?>" title="<?= $iconTitle ?>">
                         <?php endif ?>
                         <?php if (!$box['visible']): $iconTitle = _lang('admin.content.form.invisible'); ?>
-                            <img src="<?= _e(Router::path('admin/public/images/icons/eye.png')) ?>" class="icon" alt="<?= $iconTitle ?>" title="<?= $iconTitle ?>">
+                            <img src="<?= _e(Router::path('admin/public/images/icons/eye-closed.png')) ?>" class="icon" alt="<?= $iconTitle ?>" title="<?= $iconTitle ?>">
                         <?php endif ?>
                         <?php if ($box['page_ids'] !== null): $iconTitle = _lang('admin.content.boxes.page_ids.icon'); ?>
                             <img src="<?= _e(Router::path('admin/public/images/icons/tree.png')) ?>" class="icon" alt="<?= $iconTitle ?>" title="<?= $iconTitle ?>">
