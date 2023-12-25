@@ -80,21 +80,28 @@ $_index->heading = null;
 
 // image
 if (isset($_article['picture_uid'])) {
-    $thumbnail = Article::getThumbnail($_article['picture_uid']);
+    $thumbnail = Router::file(Article::getThumbnail($_article['picture_uid']));
 } else {
-    $thumbnail = null;
+    $thumbnail = Extend::fetch('article.fallback_thumbnail', ['article' => $_article]);
 }
 
 // perex
 Extend::call('article.perex.before', $extend_args);
-$output .= '<div class="article-perex">'
-    . ($thumbnail !== null
-        ? '<a href="' . _e(Router::file(Article::getImagePath($_article['picture_uid']))) . '" target="_blank"' . Extend::buffer('image.lightbox', ['group' => 'article']) . '>'
-          . '<img class="article-perex-image" src="' . _e(Router::file($thumbnail)) . '" alt="' . $_article['title'] . '">'
-          . '</a>'
-        : '</a>')
-    . $_article['perex']
-    . "</div>\n";
+$output .= '<div class="article-perex">';
+
+if ($thumbnail !== null) {
+    if (isset($_article['picture_uid'])) {
+        $output .= '<a href="' . _e(Router::file(Article::getImagePath($_article['picture_uid']))) . '" target="_blank"' . Extend::buffer('image.lightbox', ['group' => 'article']) . '>';
+    }
+
+    $output .= '<img class="article-perex-image" src="' . _e($thumbnail) . '" alt="' . $_article['title'] . '">';
+
+    if (isset($_article['picture_uid'])) {
+        $output .= '</a>';
+    }
+}
+
+$output .= $_article['perex']. "</div>\n";
 Extend::call('article.perex.after', $extend_args);
 
 // content

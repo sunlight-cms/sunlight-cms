@@ -241,13 +241,13 @@ abstract class Article
         // perex and image
         if ($perex) {
             if (isset($art['picture_uid'])) {
-                $thumbnail = self::getThumbnail($art['picture_uid']);
+                $thumbnail = Router::file(self::getThumbnail($art['picture_uid']));
             } else {
-                $thumbnail = null;
+                $thumbnail = Extend::fetch('article.preview.fallback_thumbnail', ['article' => $art]);
             }
 
             $output .= '<div class="list-perex">'
-                . ($thumbnail !== null ? '<a href="' . _e($link) . '"><img class="list-perex-image" src="' . _e(Router::file($thumbnail)) . '" alt="' . $art['title'] . '"></a>' : '')
+                . ($thumbnail !== null ? '<a href="' . _e($link) . '"><img class="list-perex-image" src="' . _e($thumbnail) . '" alt="' . $art['title'] . '"></a>' : '')
                 . $art['perex']
                 . "</div>\n";
         }
