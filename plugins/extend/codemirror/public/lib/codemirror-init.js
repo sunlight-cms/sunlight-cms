@@ -94,7 +94,9 @@ $(document).ready(function () {
             // addons
             matchBrackets: true,
             matchTags: true,
-            styleActiveLine: true
+            styleActiveLine: true,
+            foldGutter: true,
+            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
         });
 
         editor.setSize(null, height);
