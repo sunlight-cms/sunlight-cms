@@ -2,6 +2,7 @@
 
 namespace Sunlight\Backup;
 
+use Composer\Semver\Semver;
 use Kuria\Options\Exception\ResolverException;
 use Kuria\Options\Option;
 use Kuria\Options\Resolver;
@@ -501,7 +502,12 @@ class Backup
     {
         $options = new Resolver();
         $options->addOption(
-            Option::choice('system_version', Core::VERSION),
+            Option::string('system_version')
+                ->validate(function (string $constraint) {
+                    if (!Semver::satisfies(Core::VERSION, $constraint)) {
+                        return sprintf('incompatible system version (current: %s, required: %s)', Core::VERSION, $constraint);
+                    }
+                }),
             Option::int('created_at'),
             Option::list('directory_list', 'string'),
             Option::list('file_list', 'string'),
