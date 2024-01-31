@@ -30,9 +30,9 @@ use Sunlight\Util\Json;
 abstract class Core
 {
     /** CMS version */
-    const VERSION = '8.1.0-dev';
+    const VERSION = '8.1.0';
     /** Database structure version */
-    const DB_VERSION = 'sl8db-001';
+    const DB_VERSION = 'sl8db-002';
     /** Web environment (index.php) */
     const ENV_WEB = 'web';
     /** Administration environment (admin/index.php or admin scripts) */
