@@ -46,7 +46,14 @@ abstract class Form
                 . '>';
         }
 
-        Extend::call('form.input.after', ['output' => &$output]);
+        Extend::call('form.input.after', [
+            'type' => $type,
+            'name' => $name,
+            'value' => $value,
+            'attrs' => $attrs,
+            'double_encode_value' => $doubleEncodeValue,
+            'output' => &$output,
+        ]);
 
         return $output;
     }
@@ -72,7 +79,13 @@ abstract class Form
                 . '</textarea>';
         }
 
-        Extend::call('form.textarea.after', ['output' => &$output]);
+        Extend::call('form.textarea.after', [
+            'name' => $name,
+            'content' => $content,
+            'attrs' => $attrs,
+            'double_encode_content' => $doubleEncodeContent,
+            'output' => &$output,
+        ]);
 
         return $output;
     }
@@ -137,7 +150,14 @@ abstract class Form
             $output .= '</select>';
         }
 
-        Extend::call('form.select.after', ['output' => &$output]);
+        Extend::call('form.select.after', [
+            'name' => $name,
+            'choices' => $choices,
+            'selected' => $selected,
+            'attrs' => $attrs,
+            'double_encode_labels' => $doubleEncodeLabels,
+            'output' => &$output,
+        ]);
 
         return $output;
     }
