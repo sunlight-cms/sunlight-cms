@@ -24,6 +24,29 @@ abstract class HtmlFilter
 
         $config = \HTMLPurifier_HTML5Config::createDefault();
         $config->set('Cache.SerializerPath', $cacheDir);
+        $config->set('Attr.AllowedRel', [
+            'alternate' => true,
+            'author' => true,
+            'bookmark' => true,
+            'external' => true,
+            'help' => true,
+            'license' => true,
+            'next' => true,
+            'nofollow' => true,
+            'noopener' => true,
+            'noreferrer' => true,
+            'prev' => true,
+            'search' => true,
+            'tag' => true,
+        ]);
+        $config->set('Attr.AllowedFrameTargets', [
+            '_blank' => true,
+            '_self' => true,
+            '_parent' => true,
+            '_top' => true,
+        ]);
+        $config->set('HTML.TargetNoreferrer', false);
+        $config->set('HTML.TargetNoopener', false);
         
         return new \HTMLPurifier($config);
     }
