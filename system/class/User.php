@@ -480,14 +480,6 @@ abstract class User
      */
     static function filterContent(string $content, bool $isHtml = true, bool $hasHcm = true): string
     {
-        if ($hasHcm) {
-            if (!$isHtml) {
-                throw new \LogicException('Content that supports HCM modules is always HTML');
-            }
-
-            $content = Hcm::filter($content);
-        }
-
         if ($isHtml && !self::hasPrivilege('rawhtml')) {
             $content = HtmlFilter::sanitize($content);
         }
@@ -497,6 +489,14 @@ abstract class User
             'is_html' => $isHtml,
             'has_hcm' => $hasHcm,
         ]);
+
+        if ($hasHcm) {
+            if (!$isHtml) {
+                throw new \LogicException('Content that supports HCM modules is always HTML');
+            }
+
+            $content = Hcm::filter($content);
+        }
 
         return $content;
     }
