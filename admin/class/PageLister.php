@@ -374,7 +374,7 @@ abstract class PageLister
             $class .= ' page-'
                 . $typeName
                 . '-'
-                . self::$pluginTypes[$page['type_idt']];
+                . _e($page['type_idt']);
         }
 
         if (!$isAccessible) {
