@@ -16,14 +16,6 @@ return function ($receiver = '', $subject = null) {
     $result = '';
     $_SESSION['hcm_' . Hcm::$uid . '_mail_receiver'] = implode(',', Arr::removeValue(explode(';', trim($receiver)), ''));
 
-    if ($subject !== null) {
-        $subject_value = $subject;
-    } else {
-        $subject_value = null;
-    }
-
-    $rcaptcha = Captcha::init();
-
     // message
     $msg = '';
 
@@ -59,9 +51,9 @@ return function ($receiver = '', $subject = null) {
                 'action' => Router::path('system/script/hcm/mform.php', ['query' => ['_return' => $GLOBALS['_index']->url]]),
             ],
             [
-                ['label' => _lang('hcm.mailform.sender'), 'content' => Form::input('email', 'sender', $subject) . Form::input('hidden', 'fid', Hcm::$uid)],
-                ['label' => _lang('posts.subject'), 'content' => Form::input('text', 'subject', $subject_value), false],
-                $rcaptcha,
+                ['label' => _lang('hcm.mailform.sender'), 'content' => Form::input('email', 'sender', $sender) . Form::input('hidden', 'fid', Hcm::$uid)],
+                ['label' => _lang('posts.subject'), 'content' => Form::input('text', 'subject', $subject), false],
+                Captcha::init(),
                 ['label' => _lang('hcm.mailform.text'), 'content' => Form::textarea('text', null, ['class' => 'areamedium', 'rows' => 5, 'cols' => 33]), 'top' => true],
                 Form::getSubmitRow(['text' => _lang('hcm.mailform.send')])
             ]
