@@ -52,7 +52,7 @@ abstract class Cron
                             'delay' => $delay,
                         ]);
 
-                        Logger::notice(
+                        Logger::info(
                             'system',
                             sprintf('Cron task "%s" has succeeded', $taskName),
                             ['duration' => microtime(true) - $taskStart]
