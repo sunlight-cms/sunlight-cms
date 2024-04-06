@@ -144,7 +144,14 @@ $message = '';
 $action_code = '';
 
 $defdir = User::getHomeDir();
-$dir = User::normalizeDir(Request::get('dir'));
+$dir = Request::get('dir');
+
+if ($dir !== null) {
+    $dir = User::normalizeDir(SL_ROOT . $dir);
+} else {
+    $dir = $defdir;
+}
+
 $uploaded = [];
 
 // create default dir
@@ -152,7 +159,9 @@ Filesystem::ensureDirectoryExists($defdir, true);
 
 // functions
 $fmanUrl = function (array $query = []) use ($dir) {
-    return Router::admin('fman', ['query' => $query + ['dir' => $dir]]);
+    $urlDir = substr($query['dir'] ?? $dir, strlen(SL_ROOT));
+
+    return Router::admin('fman', ['query' => ['dir' => $urlDir] + $query]);
 };
 
 $decodeFilename = function ($value, $encoded = true) {
@@ -651,7 +660,7 @@ if ($continue) {
         $output .= '
         <tr' . $hl_class . '>
         <td class="fman-item" colspan="' . (($item == '..') ? '3' : '2') . '">
-            <a href="' . _e($fmanUrl(['dir' => $dirhref])) . '/">
+            <a href="' . _e($fmanUrl(['dir' => $dirhref])) . '">
                 <img src="' . _e(Router::path('admin/public/images/icons/fman/dir.png')) . '" alt="dir" class="icon">' . _e(StringHelper::ellipsis($item, 64, false)) . '
             </a>
         </td>
