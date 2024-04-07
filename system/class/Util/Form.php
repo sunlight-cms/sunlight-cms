@@ -334,6 +334,7 @@ abstract class Form
      * - content (-)      row content
      * - top (0)          align the row to the top 1/0
      * - class (-)        custom <tr> class
+     * - attrs (-)        array of additional <tr> attributes
      *
      * - if both label and content is empty, the row is skipped
      * - if label is null, the content cell will span the entire row
@@ -360,7 +361,8 @@ abstract class Form
      *     label?: string|null,
      *     content?: string|null,
      *     top?: bool,
-     *     class?: string
+     *     class?: string,
+     *     attrs?: array,
      * }> $rows see description
      */
     static function render(array $options, array $rows): string
@@ -475,19 +477,31 @@ abstract class Form
             'content' => null,
             'top' => false,
             'class' => '',
+            'attrs' => [],
         ];
-
-        if ($row['top']) {
-            $row['class'] .= ($row['class'] !== '' ? ' ' : '') . 'valign-top';
-        }
 
         // skip empty rows
         if (empty($row['label']) && empty($row['content'])) {
             return '';
         }
 
+        // handle classes
+        $classes = [];
+
+        if ($row['top']) {
+            $classes[] = 'valign-top';
+        }
+
+        if ($row['class'] !== '') {
+            $classes[] = $row['class'];
+        }
+
+        if (!empty($classes)) {
+            $row['attrs']['class'] = implode(' ', $classes);
+        }
+
         // <tr>
-        $output = '<tr' . ($row['class'] !== '' ? ' class="' . $row['class'] . '"' : '') . ">\n";
+        $output = '<tr' . GenericTemplates::renderAttrs($row['attrs']) . ">\n";
 
         // label
         if ($row['label'] !== null) {
