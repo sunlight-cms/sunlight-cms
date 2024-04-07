@@ -313,7 +313,7 @@ Platnost tohoto odkazu je 1 hodina.
     'posts.text' => 'Text',
     'posts.loginrequired' => 'Nemáte oprávnění přidávat příspěvky.',
     'posts.anonym' => 'Anonym',
-    'posts.failed' => 'Uložení se nezdařilo. Pravděpodobně jste nezadal(a) text nebo znaky z kontrolního obrázku.',
+    'posts.failed' => 'Uložení se nezdařilo.',
     'posts.added' => 'Příspěvek byl přidán.',
     'posts.guestnamedenied' => 'Bohužel nemůžete použít toto jméno, jelikož jej již používá existující uživatel!',
     'posts.topicadded' => 'Téma bylo přidáno.',
@@ -367,7 +367,7 @@ Platnost tohoto odkazu je 1 hodina.
     'hcm.mailform.info' => 'Tato e-mailová zpráva byla odeslána %time% ze stránek %domain% počítačem %ip%.
 Odesílatel uvedl svou adresu jako: %sender%',
     'hcm.mailform.msg.done' => 'Zpráva byla odeslána.',
-    'hcm.mailform.msg.failure' => 'Zpráva nebyla odeslána. Pravděpodobně jste nezadali platnou e-mailovou adresu nebo text zprávy.',
+    'hcm.mailform.msg.failure' => 'Zprávu se nepodařilo odeslat.',
     'hcm.poll.vote' => 'Hlasovat',
     'hcm.poll.votes' => 'Počet&nbsp;hlasů',
     'hcm.poll.locked' => 'hlasování skončilo',
