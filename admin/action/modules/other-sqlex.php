@@ -63,19 +63,19 @@ if (!empty($queries)) {
 
         try {
             $result = DB::query($queries[$i]);
+
+            if ($result instanceof mysqli_result) {
+                $log[] = _lang('admin.other.sqlex.rows') . ': ' . DB::size($result);
+                $lastResult = $result;
+            } else {
+                $log[] = _lang('admin.other.sqlex.affected') . ': ' . DB::affectedRows();
+            }
         } catch (DatabaseException $e) {
             $log[] = _lang('global.error');
             $error = $e->getMessage();
             break;
         } finally {
             Logger::notice('system', 'Executed a custom SQL query via admin module', ['query' => $queries[$i], 'success' => $error === null]);
-        }
-
-        if ($result instanceof mysqli_result) {
-            $log[] = _lang('admin.other.sqlex.rows') . ': ' . DB::size($result);
-            $lastResult = $result;
-        } else {
-            $log[] = _lang('admin.other.sqlex.affected') . ': ' . DB::affectedRows();
         }
     }
 
