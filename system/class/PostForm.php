@@ -37,7 +37,7 @@ abstract class PostForm
                 }
 
                 $icon = (($vars[4] === 1) ? _e(Template::asset('images/bbcode/' . $tag . '.png')) : $vars[4]);
-                $output .= '<a class="bbcode-button post-form-bbcode-' . $tag . '" href="#" onclick="return Sunlight.addBBCode(\'' . $form . '\',\'' . $area . '\',\'' . $tag . '\', ' . ($vars[0] ? 'true' : 'false') . ');" class="bbcode-button">'
+                $output .= '<a class="bbcode-button post-form-bbcode-' . $tag . '" href="#" onclick="return Sunlight.addBBCode(\'' . $form . '\',\'' . $area . '\',\'' . $tag . '\', ' . ($vars[0] ? 'true' : 'false') . ');">'
                     . '<img src="' . $icon . '" alt="' . $tag . '">'
                     . "</a>\n";
             }
