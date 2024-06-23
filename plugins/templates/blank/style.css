@@ -115,6 +115,8 @@ fieldset {
 }
 legend {
     padding: 0 10px;
+    color: #000;
+    font-weight: bold;
 }
 form {
     margin: 0;
@@ -138,10 +140,6 @@ input[type=search],
 button,
 select {
     padding: 3px;
-}
-legend {
-    color: #000;
-    font-weight: bold;
 }
 input[type=checkbox],
 input[type=radio] {
