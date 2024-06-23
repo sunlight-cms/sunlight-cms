@@ -80,7 +80,7 @@ body {
     padding-right: 10px;
 }
 #footer li:last-child {
-    padding-right: none;
+    padding-right: 0;
 }
 
 /* Tables */
