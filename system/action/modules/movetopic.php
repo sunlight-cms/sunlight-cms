@@ -52,7 +52,7 @@ if (isset($_POST['new_forum'])) {
     $new_forum_id = (int) Request::post('new_forum');
 
     if (isset($forums[$new_forum_id]) && $forums[$new_forum_id]['type'] == Page::FORUM) {
-        DB::update('post', 'id=' . DB::val($id) . ' OR (type=' . Post::FORUM_TOPIC . ' AND xhome=' . $id . ')', ['home' => $new_forum_id]);
+        DB::update('post', 'id=' . DB::val($id) . ' OR (type=' . Post::FORUM_TOPIC . ' AND xhome=' . $id . ')', ['home' => $new_forum_id], null);
         $query['home'] = $new_forum_id;
         $_index->backlink = Router::topic($query['id']);
         $message = Message::ok(_lang('mod.movetopic.ok'));
