@@ -172,7 +172,7 @@ AND ({$alias}.type!=" . self::ARTICLE_COMMENT . ' OR (
         }
 
         // joins
-        $joins = 'LEFT JOIN ' . DB::table('page') . " home_page ON({$alias}.type IN(1,3,5) AND {$alias}.home=home_page.id)
+        $joins = 'LEFT JOIN ' . DB::table('page') . " home_page ON({$alias}.type IN(" . DB::arr([Post::SECTION_COMMENT, Post::BOOK_ENTRY, Post::FORUM_TOPIC]) . ") AND {$alias}.home=home_page.id)
 LEFT JOIN " . DB::table('article') . " home_art ON({$alias}.type=" . self::ARTICLE_COMMENT . " AND {$alias}.home=home_art.id)
 LEFT JOIN " . DB::table('page') . " home_cat1 ON({$alias}.type=" . self::ARTICLE_COMMENT . ' AND home_art.home1=home_cat1.id)
 LEFT JOIN ' . DB::table('page') . " home_cat2 ON({$alias}.type=" . self::ARTICLE_COMMENT . ' AND home_art.home2!=-1 AND home_art.home2=home_cat2.id)
