@@ -95,9 +95,8 @@ abstract class Form
      * 
      * @param string $name select name
      * @param array<array-key, string|array<array-key, string>> $choices value => label or optgroup => choices
-     * @param array-key|null $selected selected choice or null
+     * @param array-key|array-key[]|null $selected selected choice(s) or null
      * @param array<string, scalar|null> $attrs select tag attributes
-     * @param array{attrs?: array, selected?: array-key} $options
      * @param bool $doubleEncodeLabels {@see _e()}
      */
     static function select(?string $name, array $choices, $selected = null, array $attrs = [], bool $doubleEncodeLabels = true): string
@@ -109,6 +108,14 @@ abstract class Form
             'attrs' => &$attrs,
             'double_encode_labels' => &$doubleEncodeLabels,
         ]);
+
+        if ($selected === null) {
+            $selected = [];
+        } elseif (is_array($selected)) {
+            $selected = array_flip($selected);
+        } else {
+            $selected = [$selected => 0];
+        }
 
         if ($output === '') {
             $output = '<select'
@@ -125,7 +132,7 @@ abstract class Form
                         $output .= '    ' . self::option(
                             $kk,
                             $vv,
-                            ['selected' => $selected !== null && $kk == $selected],
+                            ['selected' => isset($selected[$kk])],
                             $doubleEncodeLabels
                             
                         );
@@ -139,7 +146,7 @@ abstract class Form
                     $output .= self::option(
                         $k,
                         $v,
-                        ['selected' => $selected !== null && $k == $selected],
+                        ['selected' => isset($selected[$k])],
                         $doubleEncodeLabels
                     );
                 }
