@@ -13,6 +13,8 @@ abstract class Database
 {
     const MAX_TEXT_LENGTH = 65535;
     const MAX_MEDIUMTEXT_LENGTH = 16777215;
+    const ENGINE_INNODB = 'InnoDB';
+    const ENGINE_MYISAM = 'MyISAM';
 
     /** @var \mysqli */
     static $mysqli;
@@ -20,6 +22,8 @@ abstract class Database
     static $database;
     /** @var string */
     static $prefix;
+    /** @var string */
+    static $engine;
 
     /**
      * Connect to a MySQL server
@@ -32,7 +36,8 @@ abstract class Database
         string $password,
         string $database,
         ?int $port,
-        string $prefix
+        string $prefix,
+        string $engine = self::ENGINE_INNODB
     ): void {
         if (PHP_VERSION_ID < 80100) {
             mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
@@ -49,6 +54,7 @@ abstract class Database
         self::$mysqli = $mysqli;
         self::$database = $database;
         self::$prefix = $prefix . '_';
+        self::$engine = $engine;
     }
 
     /**

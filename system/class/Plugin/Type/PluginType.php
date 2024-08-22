@@ -84,6 +84,7 @@ abstract class PluginType
                 Option::string('system'),
                 Option::string('php')->default(null),
                 Option::list('php_extensions', 'string')->default([]),
+                Option::string('db_engine')->default(null),
                 Option::bool('debug')->default(null)
             ),
             Option::list('dependencies', 'string')

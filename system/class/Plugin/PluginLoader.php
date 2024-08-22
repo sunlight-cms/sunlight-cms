@@ -6,6 +6,7 @@ use Composer\Semver\Semver;
 use Sunlight\Composer\Repository;
 use Sunlight\Composer\RepositoryInjector;
 use Sunlight\Core;
+use Sunlight\Database\Database as DB;
 use Sunlight\Plugin\Type\PluginType;
 use Sunlight\Util\Environment;
 use Sunlight\Util\Filesystem;
@@ -211,6 +212,11 @@ class PluginLoader
             if (!extension_loaded($extension)) {
                 $plugin->addError(sprintf('PHP extension "%s" is required', $extension));
             }
+        }
+
+        // DB engine
+        if ($env['db_engine'] !== null && $env['db_engine'] !== DB::$engine) {
+            $plugin->addError(sprintf('Database engine "%s" is required', $env['db_engine']));
         }
 
         // debug mode

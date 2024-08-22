@@ -6,9 +6,9 @@ use Sunlight\Util\Filesystem;
 
 class SqlReader
 {
-    /** Query map item - comment */
+    /** Query map segment type - comment */
     const COMMENT = 0;
-    /** Query map item - quoted value */
+    /** Query map segment type - quoted value */
     const QUOTED = 1;
     /** Map of quote chars */
     private const QUOTE_MAP = ['"' => 0, '\'' => 1, '`' => 2];
@@ -204,5 +204,20 @@ class SqlReader
         $handleCompleteQuery();
 
         return $queries;
+    }
+
+    /**
+     * @param list<array{int, int, int}> $queryMap
+     * @return array{int, int, int}|null
+     */
+    static function getQueryMapSegment(array $queryMap, int $offset): ?array
+    {
+        for ($i = 0; isset($queryMap[$i]); ++$i) {
+            if ($offset >= $queryMap[$i][1] && $offset <= $queryMap[$i][2]) {
+                return $queryMap[$i];
+            }
+        }
+
+        return null;
     }
 }

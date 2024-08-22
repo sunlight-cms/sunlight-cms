@@ -8,6 +8,7 @@ return [
     'db.password' => '',
     'db.name' => '',
     'db.prefix' => 'sunlight',
+    'db.engine' => 'InnoDB',
     'secret' => '',
     'fallback_lang' => 'cs',
     'fallback_base_url' => null,

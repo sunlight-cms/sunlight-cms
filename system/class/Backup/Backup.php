@@ -47,6 +47,8 @@ class Backup
     private $dbDumpFile;
     /** @var string|null */
     private $dbDumpPrefix;
+    /** @var string|null */
+    private $dbDumpEngine;
 
     function __construct(string $path)
     {
@@ -353,12 +355,13 @@ class Backup
     /**
      * Add database dump
      */
-    function addDatabaseDump(TemporaryFile $databaseDump, string $prefix): void
+    function addDatabaseDump(TemporaryFile $databaseDump, string $prefix, string $engine): void
     {
         $this->ensureOpenAndNew();
 
         $this->dbDumpFile = $databaseDump; // keep a reference to the temp file
         $this->dbDumpPrefix = $prefix;
+        $this->dbDumpEngine = $engine;
         $this->zip->addFile($databaseDump->getPathname(), $this->dbDumpPath);
     }
 
@@ -512,6 +515,7 @@ class Backup
             Option::list('directory_list', 'string'),
             Option::list('file_list', 'string'),
             Option::string('db_prefix')->nullable(),
+            Option::string('db_engine')->nullable(),
             Option::node(
                 'patch',
                 Option::string('new_system_version'),
@@ -539,6 +543,7 @@ class Backup
             'directory_list' => $this->directoryList,
             'file_list' => $this->fileList,
             'db_prefix' => $this->dbDumpPrefix,
+            'db_engine' => $this->dbDumpEngine,
         ];
 
         if ($this->metadataFactory !== null) {

@@ -223,6 +223,7 @@ abstract class Core
             'db.password' => null,
             'db.name' => null,
             'db.prefix' => null,
+            'db.engine' => DB::ENGINE_INNODB,
             'secret' => null,
             'base_url' => null,
             'fallback_lang' => 'en',
@@ -409,7 +410,8 @@ abstract class Core
                 $options['db.password'],
                 $options['db.name'],
                 $options['db.port'],
-                $options['db.prefix']
+                $options['db.prefix'],
+                $options['db.engine']
             );
         } catch (DatabaseException $e) {
             self::fail(

@@ -267,7 +267,7 @@ class BackupBuilder
     protected function write(Backup $backup): void
     {
         if ($this->databaseDumpEnabled) {
-            $backup->addDatabaseDump($this->dumpDatabase(), DB::$prefix);
+            $backup->addDatabaseDump($this->dumpDatabase(), DB::$prefix, DB::$engine);
         }
 
         if ($this->fullBackup) {

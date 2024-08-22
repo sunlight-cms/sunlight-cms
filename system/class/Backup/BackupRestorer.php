@@ -146,7 +146,9 @@ class BackupRestorer
                 DatabaseLoader::load(
                     new SqlReader($this->backup->getDatabaseDump()),
                     $this->backup->getMetaData('db_prefix'),
-                    DB::$prefix
+                    DB::$prefix,
+                    $this->backup->getMetaData('db_engine'),
+                    DB::$engine
                 );
             });
 

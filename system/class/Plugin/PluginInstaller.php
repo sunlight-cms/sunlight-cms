@@ -135,10 +135,11 @@ abstract class PluginInstaller
      *
      * @param string $path path to the .sql file
      * @param string|null $currentPrefix prefix that is used in the dump (null = do not replace)
+     * @param string|null $currentEngine engine that is used in the dump (null = do not replace)
      */
-    protected function loadSqlDump(string $path, ?string $currentPrefix = 'sunlight_'): void
+    protected function loadSqlDump(string $path, ?string $currentPrefix = 'sunlight_', ?string $currentEngine = DB::ENGINE_INNODB): void
     {
-        $this->loadSql(SqlReader::fromFile($path), $currentPrefix);
+        $this->loadSql(SqlReader::fromFile($path), $currentPrefix, $currentEngine);
     }
 
     /**
@@ -146,19 +147,24 @@ abstract class PluginInstaller
      *
      * @param string $sql SQL statements to load
      * @param string|null $currentPrefix prefix that is used in the SQL string (null = do not replace)
+     * @param string|null $currentEngine engine that is used in the SQL string (null = do not replace)
      */
-    protected function loadSqlString(string $sql, ?string $currentPrefix = 'sunlight_'): void
+    protected function loadSqlString(string $sql, ?string $currentPrefix = 'sunlight_', ?string $currentEngine = DB::ENGINE_INNODB): void
     {
-        $this->loadSql(new SqlReader($sql), $currentPrefix);
+        $this->loadSql(new SqlReader($sql), $currentPrefix, $currentEngine);
     }
 
-    private function loadSql(SqlReader $reader, ?string $currentPrefix = 'sunlight_'): void
+    private function loadSql(SqlReader $reader, ?string $currentPrefix, ?string $currentEngine): void
     {
         DatabaseLoader::load(
             $reader,
             $currentPrefix,
             $currentPrefix !== null
                 ? DB::$prefix
+                : null,
+            $currentEngine,
+            $currentEngine !== null
+                ? DB::$engine
                 : null
         );
     }

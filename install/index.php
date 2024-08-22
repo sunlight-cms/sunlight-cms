@@ -67,7 +67,9 @@ abstract class Labels
             'config.error.db.name.empty' => 'název databáze nesmí být prázdný',
             'config.error.db.prefix.empty' => 'prefix nesmí být prázdný',
             'config.error.db.prefix.invalid' => 'prefix obsahuje nepovolené znaky',
+            'config.error.db.engine.invalid' => 'neplatný formát úložiště',
             'config.error.db.connect.error' => 'nepodařilo se připojit k databázi, chyba: %error%',
+            'config.error.db.engine.unsupported' => 'formát úložiště %engine% není podporován databázovým serverem',
             'config.error.db.create.error' => 'nepodařilo se vytvořit databázi (možná ji bude nutné vytvořit manuálně ve správě vašeho webhostingu): %error%',
             'config.error.secret.empty' => 'tajný hash nesmí být prázdný',
             'config.error.write_failed' => 'Nepodařilo se zapsat %config_path%. Zkontrolujte přístupová práva.',
@@ -84,6 +86,8 @@ abstract class Labels
             'config.db.name.help' => 'název databáze (pokud neexistuje, bude vytvořena)',
             'config.db.prefix' => 'Prefix',
             'config.db.prefix.help' => 'předpona názvu tabulek',
+            'config.db.engine' => 'Formát úložiště',
+            'config.db.engine.help' => 'formát databázového úložiště, který se má použít',
             'config.system' => 'Nastavení systému',
             'config.secret' => 'Tajný hash',
             'config.secret.help' => 'náhodný tajný hash (používáno mj. jako součást XSRF ochrany)',
@@ -139,7 +143,9 @@ abstract class Labels
             'config.error.db.name.empty' => 'database name must not be empty',
             'config.error.db.prefix.empty' => 'prefix must not be empty',
             'config.error.db.prefix.invalid' => 'prefix contains invalid characters',
+            'config.error.db.engine.invalid' => 'invalid engine',
             'config.error.db.connect.error' => 'could not connect to the database, error: %error%',
+            'config.error.db.engine.unsupported' => 'engine %engine% is not supported by the database server',
             'config.error.db.create.error' => 'could not create database (perhaps you need to create it manually via your webhosting\'s management page): %error%',
             'config.error.secret.empty' => 'secret hash must not be empty',
             'config.error.write_failed' => 'Could not write %config_path%. Check filesystem permissions.',
@@ -156,6 +162,8 @@ abstract class Labels
             'config.db.name.help' => 'name of the database (if it doesn\'t exist, it will be created)',
             'config.db.prefix' => 'Prefix',
             'config.db.prefix.help' => 'table name prefix',
+            'config.db.engine' => 'Engine',
+            'config.db.engine.help' => 'database engine to use',
             'config.system' => 'System configuration',
             'config.secret' => 'Secret hash',
             'config.secret.help' => 'random secret hash (used for XSRF protection etc.)',
@@ -564,6 +572,7 @@ class ConfigurationStep extends Step
             'db.password' => trim(Request::post('config_db_password', '')),
             'db.name' => trim(Request::post('config_db_name', '')),
             'db.prefix' => trim(Request::post('config_db_prefix', '')),
+            'db.engine' => trim(Request::post('config_db_engine', '')),
             'secret' => trim(Request::post('config_secret', '')),
             'fallback_lang' => $this->vars['language'],
             'debug' => (bool) Form::loadCheckbox('config_debug'),
@@ -585,6 +594,10 @@ class ConfigurationStep extends Step
             $this->errors[] = 'db.prefix.invalid';
         }
 
+        if (!in_array($config['db.engine'], $this->getDbEngines(), true)) {
+            $this->errors[] = 'db.engine.invalid';
+        }
+
         if ($config['secret'] === '') {
             $this->errors[] = 'secret.empty';
         }
@@ -592,9 +605,18 @@ class ConfigurationStep extends Step
         // connect to the database
         if (empty($this->errors)) {
             try {
-                DB::connect($config['db.server'], $config['db.user'], $config['db.password'], '', $config['db.port'], $config['db.prefix']);
+                DB::connect($config['db.server'], $config['db.user'], $config['db.password'], '', $config['db.port'], $config['db.prefix'], $config['db.engine']);
             } catch (DatabaseException $e) {
                 $this->errors[] = ['db.connect.error', ['%error%' => $e->getMessage()]];
+            }
+
+            if (empty($this->errors)) {
+                // verify engine support
+                $engines = DB::queryRows('SHOW ENGINES', 'Engine');
+
+                if (!in_array($engines[$config['db.engine']]['Support'] ?? null, ['YES', 'DEFAULT'])) {
+                    $this->errors[] = ['db.engine.unsupported', ['%engine%' => $config['db.engine']]];
+                }
             }
 
             if (empty($this->errors)) {
@@ -625,7 +647,15 @@ class ConfigurationStep extends Step
     {
         if (parent::isComplete() && is_file(CONFIG_PATH)) {
             try {
-                DB::connect($this->config['db.server'], $this->config['db.user'], $this->config['db.password'], '', $this->config['db.port'], $this->config['db.prefix']);
+                DB::connect(
+                    $this->config['db.server'],
+                    $this->config['db.user'],
+                    $this->config['db.password'],
+                    '',
+                    $this->config['db.port'],
+                    $this->config['db.prefix'],
+                    $this->config['db.engine']
+                );
 
                 return true;
             } catch (DatabaseException $e) {
@@ -672,6 +702,11 @@ class ConfigurationStep extends Step
             <td><?= Form::input('text', 'config_db_prefix', Request::post('config_db_prefix', $this->config['db.prefix'])) ?></td>
             <td class="help"><?php Labels::render('config.db.prefix.help') ?></td>
         </tr>
+        <tr>
+            <th><?php Labels::render('config.db.engine') ?></th>
+            <td><?= Form::select('config_db_engine', array_combine($this->getDbEngines(), $this->getDbEngines()), Request::post('config_db_engine', $this->config['db.engine'])) ?></td>
+            <td class="help"><?php Labels::render('config.db.engine.help') ?></td>
+        </tr>
     </table>
 </fieldset>
 
@@ -699,6 +734,11 @@ class ConfigurationStep extends Step
     </table>
 </fieldset>
 <?php
+    }
+
+    private function getDbEngines(): array
+    {
+        return [DB::ENGINE_INNODB, DB::ENGINE_MYISAM];
     }
 }
 
@@ -797,7 +837,9 @@ class ImportDatabaseStep extends Step
                 DatabaseLoader::load(
                     SqlReader::fromFile(__DIR__ . '/database.sql'),
                     'sunlight_',
-                    DB::$prefix
+                    DB::$prefix,
+                    DB::ENGINE_INNODB,
+                    $this->config['db.engine']
                 );
 
                 // update settings

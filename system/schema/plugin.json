@@ -58,6 +58,17 @@
                         "type": "string"
                     }
                 },
+                "db_engine": {
+                    "type": [
+                        "string",
+                         "null"
+                    ],
+                    "enum": [
+                        "InnoDB",
+                        "MyISAM",
+                        null
+                    ]
+                },
                 "debug": {
                     "type": [
                         "boolean",
