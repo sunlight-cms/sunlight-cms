@@ -259,23 +259,51 @@ if ($continue) {
             // rename
             case 'rename':
                 $name = $decodeFilename(Request::post('name'));
-                $newname = $decodeFilename(Request::post('newname'), false);
 
-                if (file_exists($dir . $name)) {
-                    if (!file_exists($dir . $newname)) {
-                        if (User::checkFilename($newname) && User::checkFilename($name)) {
-                            if (@rename($dir . $name, $dir . $newname)) {
-                                $message = Message::ok(_lang('admin.fman.msg.rename.done'));
-                            } else {
-                                $message = Message::warning(_lang('admin.fman.msg.rename.failure'));
-                            }
-                        } else {
-                            $message = Message::warning(_lang('admin.fman.msg.disallowedextension'));
-                        }
-                    } else {
-                        $message = Message::warning(_lang('admin.fman.msg.exists'));
-                    }
+                if (!file_exists($dir . $name)) {
+                    break;
                 }
+
+                $is_file = is_file($dir . $name);
+                $newname = Request::post('newname');
+
+                do {
+                    if ($is_file && !User::checkFilename($name)) {
+                        $message = Message::warning(_lang('admin.fman.msg.disallowedextension'));
+                        break;
+                    }
+
+                    if (!file_exists($dir . $name)) {
+                        $message = Message::warning(_lang('global.badinput'));
+                        break;
+                    }
+
+                    $newname = User::checkPath($dir . $newname, $is_file, true);
+
+                    if ($newname === false) {
+                        $message = Message::warning(_lang($is_file && !User::checkFilename($newname) ? 'admin.fman.msg.disallowedextension' : 'admin.fman.msg.rootlimit'));
+                        break;
+                    }
+
+                    if (file_exists($newname)) {
+                        $message = Message::warning(_lang('admin.fman.msg.exists'));
+                        break;
+                    }
+
+                    try {
+                        Filesystem::ensureDirectoryExists(dirname($newname), true);
+                    } catch(\RuntimeException $e) {
+                        $message = Message::warning(_lang('admin.fman.msg.newfolder.failure'));
+                        break;
+                    }
+
+                    if (!@rename($dir . $name, $newname)) {
+                        $message = Message::warning(_lang('admin.fman.msg.rename.failure'));
+                        break;
+                    }
+
+                    $message = Message::ok(_lang('admin.fman.msg.rename.done'));
+                } while(false);
                 break;
 
             // edit
@@ -300,8 +328,7 @@ if ($continue) {
 
             // move
             case 'move':
-                $newdir = Arr::removeValue(explode('/', Request::post('param')), '');
-                $newdir = implode('/', $newdir);
+                $newdir = Request::post('param');
 
                 if (substr($newdir, -1, 1) != '/') {
                     $newdir .= '/';
@@ -312,6 +339,13 @@ if ($continue) {
                 if (User::checkPath($newdir, false)) {
                     $done = 0;
                     $total = 0;
+
+                    try {
+                        Filesystem::ensureDirectoryExists($newdir, true);
+                    } catch (\RuntimeException $e) {
+                        $message = Message::warning(_lang('admin.fman.msg.newfolder.failure'));
+                        break;
+                    }
 
                     foreach ($getSelectedFiles() as $file) {
                         if (is_file($dir . $file) && !is_file($newdir . $file) && User::checkFilename($file) && @rename($dir . $file, $newdir . $file)) {
