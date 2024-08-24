@@ -93,8 +93,14 @@ abstract class Form
     /**
      * Render a <select>
      * 
+     * Each item in $choices can be one of:
+     * 
+     * a) SelectOption object (in this case the array key is ignored)
+     * b) value => label pair
+     * c) group label => array of choices (same rules as above)
+     * 
      * @param string $name select name
-     * @param array<array-key, string|array<array-key, string>> $choices value => label or optgroup => choices
+     * @param array<string|SelectOption|array<string|SelectOption>> $choices see description
      * @param array-key|array-key[]|null $selected selected choice(s) or null
      * @param array<string, scalar|null> $attrs select tag attributes
      * @param bool $doubleEncodeLabels {@see _e()}
@@ -129,26 +135,16 @@ abstract class Form
                     $output .= '<optgroup label="' . _e((string) $k) . "\">\n";
 
                     foreach ($v as $kk => $vv) {
-                        $output .= '    ' . self::option(
-                            $kk,
-                            $vv,
-                            ['selected' => isset($selected[$kk])],
-                            $doubleEncodeLabels
-                            
-                        );
-                        $output .= "\n";
+                        $option = $vv instanceof SelectOption ? $vv : new SelectOption($kk, $vv, [], $doubleEncodeLabels);
+                        $output .= $option->render(isset($selected[$option->value])) . "\n";
                     }
 
                     $output .= '</optgroup>';
 
                 } else {
                     // option
-                    $output .= self::option(
-                        $k,
-                        $v,
-                        ['selected' => isset($selected[$k])],
-                        $doubleEncodeLabels
-                    );
+                    $option = $v instanceof SelectOption ? $v : new SelectOption($k, $v, [], $doubleEncodeLabels);
+                    $output .= $option->render(isset($selected[$option->value])) . "\n";
                 }
 
                 $output .= "\n";
@@ -171,15 +167,12 @@ abstract class Form
 
     /**
      * Render an <option>
+     * 
+     * @deprecated see {@see SelectOption::render()}
      */
     static function option(string $value, string $label, array $attrs = [], bool $doubleEncodeLabel = true): string
     {
-        return '<option'
-            . ' value="' . _e($value) . '"'
-            . GenericTemplates::renderAttrs($attrs)
-            . '>'
-            . _e($label, $doubleEncodeLabel)
-            . '</option>';
+        return (new SelectOption($value, $label, $attrs, $doubleEncodeLabel))->render();
     }
 
     /**
