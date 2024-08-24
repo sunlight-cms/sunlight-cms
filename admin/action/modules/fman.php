@@ -264,7 +264,7 @@ if ($continue) {
                 if (file_exists($dir . $name)) {
                     if (!file_exists($dir . $newname)) {
                         if (User::checkFilename($newname) && User::checkFilename($name)) {
-                            if (rename($dir . $name, $dir . $newname)) {
+                            if (@rename($dir . $name, $dir . $newname)) {
                                 $message = Message::ok(_lang('admin.fman.msg.rename.done'));
                             } else {
                                 $message = Message::warning(_lang('admin.fman.msg.rename.failure'));
@@ -314,7 +314,7 @@ if ($continue) {
                     $total = 0;
 
                     foreach ($getSelectedFiles() as $file) {
-                        if (is_file($dir . $file) && !is_file($newdir . $file) && User::checkFilename($file) && rename($dir . $file, $newdir . $file)) {
+                        if (is_file($dir . $file) && !is_file($newdir . $file) && User::checkFilename($file) && @rename($dir . $file, $newdir . $file)) {
                             $done++;
                         }
 
