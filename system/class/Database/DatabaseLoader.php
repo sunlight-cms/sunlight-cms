@@ -28,7 +28,7 @@ abstract class DatabaseLoader
         ?string $currentPrefix = null,
         ?string $newPrefix = null,
         ?string $currentEngine = null,
-        ?string $newEngine = null,
+        ?string $newEngine = null
     ): void {
         $reader->read(function ($query, $queryMap) use ($currentPrefix, $newPrefix, $currentEngine, $newEngine) {
             if ($currentPrefix !== null && $newPrefix !== null && $currentPrefix !== $newPrefix) {
