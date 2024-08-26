@@ -9,6 +9,7 @@ use Sunlight\Router;
 use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
+use Sunlight\Util\SelectOption;
 use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
@@ -72,25 +73,23 @@ $output .= '
 <form action="' . _e(Router::module('movetopic', ['query' => ['id' => $id]])) . '" method="post">
 ' . Message::warning(_lang('mod.movetopic.text', ['%topic%' => $query['subject']]), true) . '
 <p>
-<select name="new_forum"' . (empty($forums) ? ' disabled' : '') . '>
 ';
 
+$choices = [];
 if (empty($forums)) {
-    $output .= '<option value="-1">' . _lang('mod.movetopic.noforums') . "</option>\n";
+    $choices[] = new SelectOption('-1', _lang('mod.movetopic.noforums'));
 } else {
     foreach ($forums as $forum_id => $forum) {
-        $output .= '<option'
-            . ' value="' . $forum_id . '"'
-            . ($forum['type'] != Page::FORUM ? ' disabled' : '')
-            . ($forum_id == $query['home'] ? ' selected' : '')
-            . '>'
-            . str_repeat('&nbsp;&nbsp;&nbsp;│&nbsp;', $forum['node_level'])
-            . $forum['title']
-            . "</option>\n";
+        $choices[] = new SelectOption(
+            $forum_id,
+            str_repeat('&nbsp;&nbsp;&nbsp;│&nbsp;', $forum['node_level']) . $forum['title'],
+            ['disabled' => $forum['type'] != Page::FORUM],
+            false
+        );
     }
 }
 
-$output .= '</select>
+$output .= Form::select('new_forum', $choices, $query['home'], ['disabled' => empty($forums)]) . '
 ' . Form::input('submit', null, _lang('mod.movetopic.submit')) . '
 </p>
 ' . Xsrf::getInput() . '</form>
