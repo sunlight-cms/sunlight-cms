@@ -13,6 +13,7 @@ use Sunlight\Router;
 use Sunlight\Settings;
 use Sunlight\User;
 use Sunlight\Util\Form;
+use Sunlight\Util\SelectOption;
 use Sunlight\Util\StringHelper;
 use Sunlight\Xsrf;
 
@@ -326,7 +327,7 @@ abstract class Admin
      * - allow_separators (0)     make separators selectable 1/0
      * - disabled_branches ([])   array of page IDs whose branches should be excluded
      * - maxlength (22)           max. length of page title or null (unlimited)
-     * - attrs (-)                extra HTML with <select> attributes (without space)
+     * - attrs ([])               array of extra <select> attributes
      *
      * @param array{
      *     selected?: int|int[],
@@ -338,7 +339,7 @@ abstract class Admin
      *     allow_separators?: bool,
      *     disabled_branches?: int[],
      *     maxlength?: int|null,
-     *     attrs?: string|null,
+     *     attrs?: array|null,
      * } $options see description
      */
     static function pageSelect(string $name, array $options): string
@@ -353,8 +354,16 @@ abstract class Admin
             'allow_separators' => false,
             'disabled_branches' => [],
             'maxlength' => 22,
-            'attrs' => null,
+            'attrs' => [],
         ];
+
+        // @deprecated - required array, accepts string|null to preserve BC
+        if (is_string($options['attrs'])) {
+            $options['attrs'] = [$options['attrs'] => true];
+        }
+
+        // attrs
+        $options['attrs']['multiple'] = $options['multiple'];
 
         // extend
         Extend::call('admin.page.select', ['options' => &$options]);
@@ -375,14 +384,11 @@ abstract class Admin
 
         $tree = Page::getFlatTree(null, null, $filter);
 
-        // list
-        $output = '<select name="' . $name . '"'
-            . ($options['multiple'] ? ' multiple' : '')
-            . ($options['attrs'] !== null ? ' ' . $options['attrs'] : '')
-            . ">\n";
+        // compose list
+        $choices = [];
 
         if ($options['empty_item'] !== null) {
-            $output .= '<option class="special" value="-1">' . $options['empty_item'] . "</option>\n";
+            $choices[] = new SelectOption('-1', $options['empty_item'], ['class' => 'special']);
         }
 
         $disabledBranchLevel = null;
@@ -399,33 +405,25 @@ abstract class Admin
 
             // list pages
             if ($disabledBranchLevel === null) {
-                if ($options['multiple']) {
-                    $active = in_array($page['id'], $options['selected']);
-                } else {
-                    $active = $options['selected'] == $page['id'];
-                }
-
                 $enabled = (!$options['check_access'] || self::pageAccess($page, $options['check_privilege']))
                     && ($options['type'] === null || $page['type'] == $options['type'])
                     && ($options['allow_separators'] || $page['type'] != Page::SEPARATOR);
 
-                $output .= '<option'
-                    . ($enabled ? ' value="' . $page['id'] . '"' : ' disabled')
-                    . ($active ? ' selected' : '')
-                    . '>'
-                    . str_repeat('&nbsp;&nbsp;&nbsp;│&nbsp;', $page['node_level'])
-                    . StringHelper::ellipsis($page['title'], $options['maxlength'])
-                    . "</option>\n";
+                $choices[] = new SelectOption(
+                    $enabled ? $page['id'] : '',
+                    str_repeat('&nbsp;&nbsp;&nbsp;│&nbsp;', $page['node_level'])
+                    . StringHelper::ellipsis($page['title'], $options['maxlength']),
+                    ['disabled' => !$enabled],
+                    false
+                );
             }
         }
 
         if (empty($tree) && $options['empty_item'] === null) {
-            $output .= '<option value="-1">' . _lang('global.nokit') . "</option>\n";
+            $choices[] = new SelectOption('-1', _lang('global.nokit'));
         }
 
-        $output .= "</select>\n";
-
-        return $output;
+        return Form::select($name, $choices, $options['selected'], $options['attrs']);
     }
 
     /**
@@ -454,7 +452,7 @@ abstract class Admin
     static function userSelect(string $name, array $options = []): string
     {
         $options += [
-            'selected' => null,
+            'selected' => [],
             'group_cond' => '1',
             'user_cond' => '1',
             'class' => null,
@@ -464,31 +462,30 @@ abstract class Admin
         ];
 
         if ($options['selected'] !== null) {
-            $selectedMap = array_flip(
+            $missingSelectedMap = array_flip(
                 is_array($options['selected'])
                     ? $options['selected']
                     : [$options['selected']]
             );
         } else {
-            $selectedMap = [];
+            $missingSelectedMap = [];
         }
 
-        $missingSelectedMap = $selectedMap;
+        $attrs = [];
 
         if ($options['class'] !== null) {
-            $class = ' class="' . _e($options['class']) . '"';
-        } else {
-            $class = '';
+            $attrs['class'] = $options['class'];
         }
 
         if ($options['multiple'] != null) {
-            $multiple = ' multiple size="' . _e($options['multiple']) . '"';
+            $attrs['multiple'] = true;
+            $attrs['size'] = $options['multiple'];
             $name .= '[]';
-        } else {
-            $multiple = '';
         }
 
-        $output = '<select name="' . $name . '"' . $class . $multiple . '>';
+        // compose list
+        $choices = [];
+
         $groupQuery = DB::query(
             'SELECT id,title,level FROM ' . DB::table('user_group')
             . ' WHERE ' . $options['group_cond'] . ' AND id!=' . User::GUEST_GROUP_ID
@@ -496,7 +493,7 @@ abstract class Admin
         );
 
         if ($options['extra_option'] != null) {
-            $output .= '<option value="-1" class="special">' . $options['extra_option'] . '</option>';
+            $choices[] = new SelectOption('-1', $options['extra_option'], ['class' => 'special']);
         }
 
         if (!$options['select_groups']) {
@@ -508,95 +505,70 @@ abstract class Admin
                 );
 
                 if (DB::size($userQuery) != 0) {
-                    $output .= '<optgroup label="' . $group['title'] . '">' ;
-
                     while ($user = DB::row($userQuery)) {
-                        if (isset($selectedMap[$user['id']])) {
-                            $sel = true;
-                            unset($missingSelectedMap[$user['id']]);
-                        } else {
-                            $sel = false;
-                        }
-
-                        $output .= '<option value="' . $user['id'] . '"' . ($sel ? ' selected' : '') . '>' . ($user['publicname'] ?? $user['username']) . "</option>\n";
+                        unset($missingSelectedMap[$user['id']]);
+                        $choices[$group['title']][] = new SelectOption($user['id'], $user['publicname'] ?? $user['username'], [], false);
                     }
-
-                    $output .= '</optgroup>';
                 }
             }
 
             if (!empty($missingSelectedMap)) {
-                $missingUsersQuery = DB::query('SELECT id, username, publicname FROM ' . DB::table('user'). ' WHERE id IN(' . DB::arr(array_keys($missingSelectedMap)) . ')');
-                $output .= '<optgroup label="' . _lang('global.other') . '">' ;
+                $missingUsersQuery = DB::query('SELECT id, username, publicname FROM ' . DB::table('user') . ' WHERE id IN(' . DB::arr(array_keys($missingSelectedMap)) . ')');
 
                 while ($user = DB::row($missingUsersQuery)) {
-                    $output .= '<option value="' . $user['id'] . '" selected>' . ($user['publicname'] ?? $user['username']) . "</option>\n";
+                    $choices[_lang('global.other')][] = new SelectOption($user['id'], $user['publicname'] ?? $user['username'], [], false);
                 }
-
-                $output .= '</optgroup>';
             }
         } else {
             while ($group = DB::row($groupQuery)) {
-                if (isset($selectedMap[$group['id']])) {
-                    $sel = true;
-                    unset($missingSelectedMap[$group['id']]);
-                } else {
-                    $sel = false;
-                }
-
-                $output .= '<option value="' . $group['id'] . '"' . ($sel ? ' selected' : '') . '>' . $group['title'] . ' (' . _num(DB::count('user', $options['user_cond'] . ' AND group_id=' . $group['id'])) . ")</option>\n";
+                unset($missingSelectedMap[$group['id']]);
+                $choices[] = new SelectOption($group['id'], $group['title'] . ' (' . _num(DB::count('user', $options['user_cond'] . ' AND group_id=' . $group['id'])) . ')');
             }
 
             if (!empty($missingSelectedMap)) {
                 $missingGroupsQuery = DB::query('SELECT id,title FROM ' . DB::table('user_group') . ' WHERE id IN(' . DB::arr(array_keys($missingSelectedMap)) . ')');
 
                 while ($group = DB::row($missingGroupsQuery)) {
-                    $output .= '<option value="' . $group['id'] . '" selected>' . $group['title'] . ' (' . _num(DB::count('user', $options['user_cond'] . ' AND group_id=' . $group['id'])) . ")</option>\n";
+                    $choices[] = new SelectOption($group['id'], $group['title'] . ' (' . _num(DB::count('user', $options['user_cond'] . ' AND group_id=' . $group['id'])) . ')');
                 }
             }
         }
 
-        $output .= '</select>';
-
-        return $output;
+        return Form::select($name, $choices, $options['selected'], $attrs);
     }
 
     /**
      * Render <select> for template layout
      *
-     * @param string|string[] $selected
+     * @param string|string[]|null $selected
      */
     static function templateLayoutSelect(string $name, $selected, ?string $empty_option = null, ?int $multiple = null, ?string $class = null): string
     {
-        $output = '<select name="' . $name . '"'
-            . ($class !== null ? ' class="' . $class . '"' : '')
-            . ($multiple !== null ? ' multiple size="' . $multiple . '"' : '')
-            . ">\n";
+        $attrs = [];
+        if ($class !== null) {
+            $attrs['class'] = $class;
+        }
 
+        if ($multiple !== null) {
+            $attrs['multiple'] = true;
+            $attrs['size'] = $multiple;
+        }
+
+        $choices = [];
         if ($empty_option !== null) {
-            $output .= '<option class="special" value="">' . _e($empty_option) . "</option>\n";
+            $choices[] = new SelectOption('', $empty_option, ['class' => 'special']);
         }
 
         foreach (Core::$pluginManager->getPlugins()->getTemplates() as $template) {
-            $output .= '<optgroup label="' . _e($template->getOption('name')) . "\">\n";
-
             foreach ($template->getLayouts() as $layout) {
                 $layoutUid = TemplateService::composeUid($template, $layout);
                 $layoutLabel = TemplateService::getComponentLabel($template, $layout);
 
-                $active = $multiple === null && $layoutUid === $selected || $multiple !== null && in_array($layoutUid, $selected, true);
-
-                $output .= '<option value="' . _e($layoutUid) . '"' . ($active ? ' selected' : '') . '>'
-                    . _e($layoutLabel)
-                    . "</option>\n";
+                $choices[$template->getOption('name')][] = new SelectOption($layoutUid, $layoutLabel);
             }
-
-            $output .= "</optgroup>\n";
         }
 
-        $output .= '</select>';
-
-        return $output;
+        return Form::select($name, $choices, $selected, $attrs);
     }
 
     /**
@@ -606,12 +578,14 @@ abstract class Admin
      */
     static function templateLayoutSlotSelect(string $name, ?string $selected, ?string $empty_option = null, ?string $class = null, ?array $templates = null): string
     {
-        $output = '<select name="' . $name . '"'
-            . ($class !== null ? ' class="' . $class . '"' : '')
-            . ">\n";
+        $attrs = [];
+        if($class !== null) {
+            $attrs['class'] = $class;
+        }
 
+        $choices = [];
         if ($empty_option !== null) {
-            $output .= '<option class="special" value="">' . _e($empty_option) . "</option>\n";
+            $choices[] = new SelectOption('', $empty_option, ['class' => 'special']);
         }
 
         if ($templates === null) {
@@ -619,25 +593,17 @@ abstract class Admin
         }
 
         foreach ($templates as $template) {
-            $output .= '<optgroup label="' . _e($template->getOption('name')) . "\">\n";
-
             foreach ($template->getLayouts() as $layout) {
                 foreach ($template->getSlots($layout) as $slot) {
                     $slotUid = TemplateService::composeUid($template, $layout, $slot);
                     $slotLabel = TemplateService::getComponentLabel($template, $layout, $slot, false);
 
-                    $output .= '<option value="' . _e($slotUid) . '"' . ($selected === $slotUid ? ' selected' : '') . '>'
-                        . _e($slotLabel)
-                        . "</option>\n";
+                    $choices[$template->getOption('name')][] = new SelectOption($slotUid, $slotLabel);
                 }
             }
-
-            $output .= "</optgroup>\n";
         }
 
-        $output .= "</select>\n";
-
-        return $output;
+        return Form::select($name, $choices, $selected, $attrs);
     }
 
     /**

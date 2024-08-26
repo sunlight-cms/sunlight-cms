@@ -7,6 +7,7 @@ use Sunlight\Paginator;
 use Sunlight\Router;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
+use Sunlight\Util\SelectOption;
 use Sunlight\Util\StringHelper;
 
 defined('SL_ROOT') or exit;
@@ -81,21 +82,20 @@ $output .= _buffer(function () use ($query, $queryParamValues, $queryParamErrors
         <tr>
             <!-- time range -->
             <th><?= _lang('global.time') ?></th>
-            <td>
-                <select
-                    class="log-time-presets"
-                    onchange="const o = this.options[this.selectedIndex]; this.form.since.value = o.dataset.since; this.form.until.value = o.dataset.until; this.value = '';"
-                >
-                    <option value="">🕒</option>
-                    <option data-since="-15 minutes" data-until=""><?= _lang('admin.log.search.time.15mins') ?></option>
-                    <option data-since="-1 hour" data-until=""><?= _lang('admin.log.search.time.hour') ?></option>
-                    <option data-since="today 00:00" data-until=""><?= _lang('admin.log.search.time.today') ?></option>
-                    <option data-since="yesterday 00:00" data-until="yesterday 23:59:59"><?= _lang('admin.log.search.time.yesterday') ?></option>
-                    <option data-since="-3 days 00:00" data-until=""><?= _lang('admin.log.search.time.3days') ?></option>
-                    <option data-since="-7 days 00:00" data-until=""><?= _lang('admin.log.search.time.7days') ?></option>
-                    <option data-since="-30 days 00:00" data-until=""><?= _lang('admin.log.search.time.30days') ?></option>
-                    <option data-since="" data-until=""><?= _lang('admin.log.search.time.all') ?></option>
-                </select>
+            <td><?= Form::select(null, [
+                    new SelectOption('', '🕒'),
+                    new SelectOption('', _lang('admin.log.search.time.15mins'), ['data-since' => '-15 minutes', 'data-until' => '']),
+                    new SelectOption('', _lang('admin.log.search.time.hour'), ['data-since' => '-1 hour', 'data-until' => '']),
+                    new SelectOption('', _lang('admin.log.search.time.today'), ['data-since' => 'today 00:00', 'data-until' => '']),
+                    new SelectOption('', _lang('admin.log.search.time.yesterday'), ['data-since' => 'yesterday 00:00', 'data-until' => 'yesterday 23:59:59']),
+                    new SelectOption('', _lang('admin.log.search.time.3days'), ['data-since' => '-3 days 00:00', 'data-until' => '']),
+                    new SelectOption('', _lang('admin.log.search.time.7days'), ['data-since' => '-7 days 00:00', 'data-until' => '']),
+                    new SelectOption('', _lang('admin.log.search.time.30days'), ['data-since' => '-30 days 00:00', 'data-until' => '']),
+                    new SelectOption('', _lang('admin.log.search.time.all'), ['data-since' => '', 'data-until' => '']),
+                ], null, [
+                    'class' => 'log-time-presets',
+                    'onchange' => "const o = this.options[this.selectedIndex]; this.form.since.value = o.dataset.since; this.form.until.value = o.dataset.until; this.value = '';",
+                ]) ?>
                 <?= Form::input('text', 'since', $queryParamValues['since'], ['class' => 'inputsmall' . (isset($queryParamErrors['since']) ? ' error-border' : '')]) ?>
                 -
                 <?= Form::input('text', 'until', $queryParamValues['until'], ['class' => 'inputsmall' . (isset($queryParamErrors['until']) ? ' error-border' : '')]) ?>
