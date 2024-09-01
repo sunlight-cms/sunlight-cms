@@ -154,6 +154,8 @@ abstract class PageLister
      * - mode                 render mode (defaults to session value)
      * - actions (1)          render actions 1/0
      * - links (1)            page links 1/0
+     * - type (0)             render type 1/0
+     * - flags (0)            render flags 1/0
      * - sortable (0)         render as sortable 1/0
      * - title_editable (0)   render title as an editable input 1/0
      * - breadcrumbs (1)      render breadcrumbs 1/0
@@ -162,6 +164,8 @@ abstract class PageLister
      *     mode?: int,
      *     actions?: bool,
      *     links?: bool,
+     *     type?: bool,
+     *     flags?: bool,
      *     sortable?: bool,
      *     title_editable?: bool,
      *     breadcrumbs?: bool,
