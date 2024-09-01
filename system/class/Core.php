@@ -91,6 +91,7 @@ abstract class Core
      * - env ("script")           environment identifier, see Core::ENV_* constants
      * - base_url (-)             override the base URL (can be absolute or relative to override only the path)
      * - error_handler (1)        enable the default error handler 1/0
+     * - debug (0)                enable debug mode 1/0
      *
      * @param array{
      *     config_file?: string|false|null,
@@ -100,6 +101,7 @@ abstract class Core
      *     env?: string,
      *     base_url?: string|null,
      *     error_handler?: bool,
+     *     debug?: bool,
      * } $options see description
      */
     static function init(array $options = []): void

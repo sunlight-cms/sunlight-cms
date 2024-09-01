@@ -1112,7 +1112,7 @@ abstract class User
      *
      * Supported options:
      * ------------------
-     * - get_path (0)     return avatar path instead of HTML 1/0
+     * - get_url (0)     return avatar path instead of HTML 1/0
      * - default (1)      use default avatar if user has none, otherwise return NULL 1/0
      * - default_dark (-) use dark variant of the default avatar 1/0 (default depends on current template)
      * - link (1)         link to the user's profile 1/0
@@ -1121,7 +1121,7 @@ abstract class User
      *
      * @param array $data user data (avatar, username, publicname)
      * @param array{
-     *     get_path?: bool,
+     *     get_url?: bool,
      *     default?: bool,
      *     default_dark?: bool|null,
      *     link?: bool,
