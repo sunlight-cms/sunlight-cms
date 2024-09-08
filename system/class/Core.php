@@ -30,7 +30,7 @@ use Sunlight\Util\Json;
 abstract class Core
 {
     /** CMS version */
-    const VERSION = '8.1.2-dev';
+    const VERSION = '8.2.0-dev';
     /** Database structure version */
     const DB_VERSION = 'sl8db-002';
     /** Web environment (index.php) */
@@ -459,15 +459,6 @@ abstract class Core
                 Settings::update('install_check', $installCheckKey, false);
             }
         }
-    }
-
-    /**
-     * Initialize session
-     */
-    private static function initSession(): void
-    {
-        // start session
-
     }
 
     /**
