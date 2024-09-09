@@ -15,17 +15,20 @@
     </div>
 
     <div id="page">
-        <div id="content">
+        <div id="content"<?php if (!Template::hasBoxes('right')): ?> class="no-sidebar"<?php endif ?>>
             <?= Template::heading() ?>
             <?= Template::backlink() ?>
             <?= Template::content() ?>
 
             <div class="cleaner"></div>
         </div>
+
+        <?php if (Template::hasBoxes('right')): ?>
         <div id="sidebar">
             <?= Template::boxes('right') ?>
         </div>
         <div class="cleaner"></div>
+        <?php endif ?>
     </div>
 </div>
 <div id="footer">

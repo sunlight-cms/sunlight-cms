@@ -178,6 +178,10 @@ a:hover {
     width: 650px;
     padding: 0 0 0 0;
 }
+#content.no-sidebar {
+    float: none;
+    width: auto;
+}
 
 /* Sidebar */
 #sidebar {
@@ -420,7 +424,7 @@ ul.list-info strong {
 }
 .article-footer {
     color: gray;
-    width: 646px;
+    width: 100%;
 }
 .article-footer a {
     color: gray;
@@ -475,7 +479,7 @@ ul.list-info strong {
 }
 .messages-table {
     border: 1px solid #dcdcdc;
-    width: 646px;
+    width: 100%;
 }
 .messages-table a {
     text-decoration: none;

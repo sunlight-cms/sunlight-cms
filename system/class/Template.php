@@ -85,6 +85,19 @@ abstract class Template
     }
 
     /**
+     * See if there are any boxes for the given slot
+     * 
+     * @param string $slot slot name
+     */
+    static function hasBoxes(string $slot): bool
+    {
+        global $_index;
+
+        return (!Settings::get('notpublicsite') || User::isLoggedIn())
+            && !empty($_index->templateBoxes[$slot]);
+    }
+
+    /**
      * Render boxes
      *
      * @param string $slot slot name

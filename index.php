@@ -138,7 +138,11 @@ switch ($_index->type) {
 Extend::call('tpl.start', ['index' => $_index]);
 
 $_index->template->begin($_index->templateLayout);
-$_index->templateBoxes = $_index->template->getBoxes($_index->templateLayout);
+
+if ($_index->templateBoxes === null) {
+    $_index->templateBoxes = $_index->template->getBoxes($_index->templateLayout);
+}
+
 $_index->templatePath = $_index->template->getTemplate($_index->templateLayout);
 
 Extend::call('tpl.ready', ['index' => $_index]);
