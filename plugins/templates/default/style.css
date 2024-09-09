@@ -174,20 +174,18 @@ a:hover {
 
 /* Content */
 #content {
-    float: left;
-    width: 650px;
-    padding: 0 0 0 0;
-}
-#content.no-sidebar {
     float: none;
     width: auto;
+}
+#content.with-sidebar {
+    float: left;
+    width: 650px;
 }
 
 /* Sidebar */
 #sidebar {
     float: right;
     width: 280px;
-    padding: 0 0 0 0;
 }
 
 #sidebar ul {

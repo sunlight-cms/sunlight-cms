@@ -15,7 +15,7 @@
     </div>
 
     <div id="page">
-        <div id="content"<?php if (!Template::hasBoxes('right')): ?> class="no-sidebar"<?php endif ?>>
+        <div id="content"<?php if (Template::hasBoxes('right')): ?> class="with-sidebar"<?php endif ?>>
             <?= Template::heading() ?>
             <?= Template::backlink() ?>
             <?= Template::content() ?>
