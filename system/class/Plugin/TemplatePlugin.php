@@ -3,6 +3,7 @@
 namespace Sunlight\Plugin;
 
 use Sunlight\Callback\CallbackHandler;
+use Sunlight\Core;
 use Sunlight\Database\Database as DB;
 use Sunlight\Extend;
 use Sunlight\Localization\LocalizationDictionary;
@@ -10,7 +11,7 @@ use Sunlight\Localization\LocalizationDirectory;
 use Sunlight\Settings;
 use Sunlight\User;
 
-class TemplatePlugin extends Plugin
+class TemplatePlugin extends Plugin implements InitializableInterface
 {
     const DEFAULT_LAYOUT = 'default';
 
@@ -24,6 +25,19 @@ class TemplatePlugin extends Plugin
         $this->lang = new LocalizationDirectory($this->data->options['lang_dir']);
     }
 
+    function initialize(): void
+    {
+        if (Core::$env === Core::ENV_WEB) {
+            foreach ($this->data->options['events'] as $subscriber) {
+                Extend::reg(
+                    $subscriber['event'],
+                    CallbackHandler::fromArray($subscriber, $this),
+                    $subscriber['priority']
+                );
+            }
+        }
+    }
+
     function isEssential(): bool
     {
         return $this->data->name === Settings::get('default_template');
@@ -34,14 +48,6 @@ class TemplatePlugin extends Plugin
      */
     function begin(string $layout): void
     {
-        // register events once the template is being used
-        foreach ($this->data->options['events'] as $subscriber) {
-            Extend::reg(
-                $subscriber['event'],
-                CallbackHandler::fromArray($subscriber, $this),
-                $subscriber['priority']
-            );
-        }
     }
 
     /**
@@ -147,5 +153,17 @@ class TemplatePlugin extends Plugin
         }
 
         return $boxes;
+    }
+
+    /**
+     * Middleware that skips the template's event subscriber callback if the template is not currently active
+     * 
+     * @param callable $next
+     */
+    function templateEventFilter($next, ...$args): void
+    {
+        if (Core::$env === Core::ENV_WEB && $GLOBALS['_index']->template === $this) {
+            $next(...$args);
+        }
     }
 }

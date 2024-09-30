@@ -73,6 +73,19 @@ class TemplatePluginType extends PluginType
                     return PluginOptionNormalizer::normalizePath('labels', $plugin);
                 }),
             $this->createEventSubscribersOption('events')
+                ->normalize(static function (array $callbacks, PluginData $plugin) {
+                    /** @var Node $callback */
+                    foreach ($callbacks as $callback) {
+                        if ($callback['middlewares'] === null) {
+                            $callback['middlewares'] = [];
+                        }
+                        
+
+                        array_unshift($callback['middlewares'], ['method' => 'templateEventFilter']);
+                    }
+            
+                    return $callbacks;
+                })
         );
     }
 }
