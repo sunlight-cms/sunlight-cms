@@ -25,7 +25,7 @@ $query = DB::queryRow('SELECT * FROM ' . DB::table('user') . ' WHERE username=' 
 $public = true;
 
 if ($query !== false) {
-    $groupdata = DB::queryRow('SELECT title,descr,icon,color,blocked,level FROM ' . DB::table('user_group') . ' WHERE id=' . $query['group_id']);
+    $groupdata = DB::queryRow('SELECT id,title,descr,icon,color,blocked,level FROM ' . DB::table('user_group') . ' WHERE id=' . $query['group_id']);
     $public = $query['public'] || User::checkLevel($query['id'], $groupdata['level']);
 
     if ($public) {
@@ -108,7 +108,7 @@ if ($public) {
 <th>' . _lang('global.group') . '</th>
 <td>
     <span class="text-icon">'
-    . (($groupdata['icon'] != '') ? '<img src="' . _e(Router::path('images/groupicons/' . $groupdata['icon'])) . '" alt="icon" class="icon">' : '')
+    . (($groupdata['icon'] != '') ? '<img src="' . _e(User::getUserGroupIcon($groupdata['id'], $groupdata['icon'])) . '" alt="icon" class="icon">' : '')
     . (($groupdata['color'] !== '')
         ? '<span style="color:' . $groupdata['color'] . ';">' . $groupdata['title']. '</span>'
         : $groupdata['title'])
