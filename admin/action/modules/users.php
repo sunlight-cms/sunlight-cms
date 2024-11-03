@@ -111,7 +111,7 @@ if (User::hasPrivilege('admingroups')) {
     <td>
         <span class="' . ($is_sys ? 'em' : '') . (($group['blocked'] == 1) ? ' strike' : '') . '"' . (($group['color'] !== '') ? ' style="color:' . $group['color'] . ';"' : '') . '>'
             . (($group['reglist'] == 1) ? '<img src="' . _e(Router::path('admin/public/images/icons/action.png')) . '" alt="reglist" class="icon" title="' . _lang('admin.users.groups.reglist') . '">' : '')
-            . (($group['icon'] != '') ? '<img src="' . _e(Router::path('images/groupicons/' . $group['icon'])) . '" alt="icon" class="icon"> ' : '')
+            . (($group['icon'] != '') ? '<img src="' . _e(User::getUserGroupIcon($group['id'], $group['icon'])) . '" alt="icon" class="icon"> ' : '')
             . $group['title']
         . '</span>
     </td>

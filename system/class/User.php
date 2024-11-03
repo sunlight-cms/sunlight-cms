@@ -3,13 +3,13 @@
 namespace Sunlight;
 
 use Kuria\Url\Url;
-use Sunlight\Post\Post;
 use Sunlight\Database\Database as DB;
 use Sunlight\Image\ImageException;
 use Sunlight\Image\ImageLoader;
 use Sunlight\Image\ImageService;
 use Sunlight\Image\ImageStorage;
 use Sunlight\Image\ImageTransformer;
+use Sunlight\Post\Post;
 use Sunlight\Util\Arr;
 use Sunlight\Util\Cookie;
 use Sunlight\Util\Filesystem;
@@ -45,11 +45,11 @@ abstract class User
     const AUTH_PASSWORD_RESET = 'password_reset';
     /** Auth hash type - email change */
     const AUTH_EMAIL_CHANGE = 'email_change';
-    /** Login status - wrong username or password  */
+    /** Login status - wrong username or password */
     const LOGIN_FAILURE = 0;
     /** Login status - successful */
     const LOGIN_SUCCESS = 1;
-    /** Login status - user or group is blocked  */
+    /** Login status - user or group is blocked */
     const LOGIN_BLOCKED = 2;
     /** Login status - user account removed */
     const LOGIN_REMOVED = 3;
@@ -617,6 +617,7 @@ abstract class User
             "{$alias}.publicname" => "{$prefix}publicname",
             "{$alias}.group_id" => "{$prefix}group_id",
             "{$alias}.avatar" => "{$prefix}avatar",
+            "{$groupAlias}.id" => "{$prefix}group_id",
             "{$groupAlias}.title" => "{$prefix}group_title",
             "{$groupAlias}.icon" => "{$prefix}group_icon",
             "{$groupAlias}.level" => "{$prefix}group_level",
@@ -1184,7 +1185,7 @@ abstract class User
         $out = '';
 
         if ($options['link']) {
-            $out .= '<a href="' . _e(Router::module('profile', ['query' => ['id' =>  $data['username']]])) . '">';
+            $out .= '<a href="' . _e(Router::module('profile', ['query' => ['id' => $data['username']]])) . '">';
         }
 
         $out .= '<img class="avatar' . ($options['class'] !== null ? " {$options['class']}" : '') . '" src="' . _e($url) . '" alt="' . $data[$data['publicname'] !== null ? 'publicname' : 'username'] . '">';
@@ -1219,6 +1220,19 @@ abstract class User
     }
 
     /**
+     * Render user group icon
+     */
+    static function getUserGroupIcon(int $groupId, string $iconName): string
+    {
+        $extendOutput = Extend::fetch('user.group_icon', [
+            'group_id' => $groupId,
+            'icon_name' => $iconName,
+        ]);
+
+        return $extendOutput ?? Router::path('images/groupicons/' . $iconName);
+    }
+
+    /**
      * Render a form to repeat the current POST request
      */
     static function renderPostRepeatForm(): string
@@ -1234,7 +1248,7 @@ abstract class User
         return Form::render(
             [
                 'name' => 'post_repeat',
-                'form_append' => Form::renderHiddenInputs(Arr::filterKeys($_POST,  null, null, [Xsrf::TOKEN_NAME])),
+                'form_append' => Form::renderHiddenInputs(Arr::filterKeys($_POST, null, null, [Xsrf::TOKEN_NAME])),
             ],
             [
                 Form::getSubmitRow(['label' => null, 'text' => _lang('post_repeat.submit')]),

@@ -289,7 +289,7 @@ abstract class Router
 
         // group icon
         if ($options['icon'] && $data['group_icon'] !== '') {
-            $out .= '<img src="' . _e(self::path('images/groupicons/' . $data['group_icon'])) . '" title="' . $data['group_title'] . '" alt="' . $data['group_title'] . '" class="icon">';
+            $out .= '<img src="' . _e(User::getUserGroupIcon($data['group_id'], $data['group_icon'])) . '" title="' . $data['group_title'] . '" alt="' . $data['group_title'] . '" class="icon">';
         }
 
         // username
