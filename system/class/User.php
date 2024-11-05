@@ -1220,7 +1220,7 @@ abstract class User
     }
 
     /**
-     * Render user group icon
+     * Get user group icon URL
      */
     static function getUserGroupIcon(int $groupId, string $iconName): string
     {
