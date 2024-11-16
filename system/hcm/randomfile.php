@@ -37,7 +37,7 @@ return function ($dir = '', $type = 'text', $limit = 1, $thumbnail_size = '') {
     while (($item = readdir($handle)) !== false) {
         $ext = strtolower(pathinfo($item, PATHINFO_EXTENSION));
 
-        if (is_dir($dir . $item) || $item == '.' || $item == '..' || !$extension_filter($ext)) {
+        if ($item == '.' || $item == '..' || is_dir($dir . $item) || !$extension_filter($ext)) {
             continue;
         }
 

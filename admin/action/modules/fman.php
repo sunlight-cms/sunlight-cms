@@ -666,7 +666,7 @@ if ($continue) {
     $items = [];
 
     while (($item = readdir($handle)) !== false) {
-        if (is_dir($dir . $item) && $item != '.' && $item != '..') {
+        if ($item != '.' && $item != '..' && is_dir($dir . $item)) {
             $items[] = $item;
         }
     }
@@ -717,7 +717,7 @@ if ($continue) {
     $items = [];
 
     while (($item = readdir($handle)) !== false) {
-        if (!is_dir($dir . $item) && $item != '..') {
+        if ($item !== '.' && $item != '..' && !is_dir($dir . $item)) {
             $items[] = $item;
         }
     }
