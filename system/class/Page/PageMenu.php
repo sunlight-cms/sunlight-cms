@@ -81,7 +81,19 @@ abstract class PageMenu
                     $containerClass .= ' ' . $rootClass;
                 }
 
-                $out .= '<ul class="' . $containerClass . "\">\n";
+                $attrs = '';
+
+                if ($pageEvent !== null) {
+                    Extend::call($pageEvent . '_container', [
+                        'type' => $menuType,
+                        'page' => &$page,
+                        'root_class' => $rootClass,
+                        'container_class' => &$containerClass,
+                        'attrs' => &$attrs
+                    ]);
+                }
+
+                $out .= '<ul class="' . $containerClass . "\"{$attrs}>\n";
             } else {
                 $out .= "</li>\n";
 
