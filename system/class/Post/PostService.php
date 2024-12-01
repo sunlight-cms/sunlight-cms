@@ -309,7 +309,7 @@ class PostService
                     $form_output .= Message::error(_lang('posts.failed'));
                     break;
                 case 1:
-                    $form_output .= Message::ok(_lang((($style != 5) ? 'posts.added' : 'posts.topicadded')));
+                    $form_output .= Message::ok(_lang((($style != self::RENDER_FORUM_TOPIC_LIST) ? 'posts.added' : 'posts.topicadded')));
                     break;
                 case 2:
                     $form_output .= Message::warning(_lang('error.antispam', ['%antispamtimeout%' => Settings::get('antispamtimeout')]));
