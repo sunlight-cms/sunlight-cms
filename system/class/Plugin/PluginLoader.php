@@ -215,7 +215,7 @@ class PluginLoader
         }
 
         // DB engine
-        if ($env['db_engine'] !== null && $env['db_engine'] !== DB::$engine) {
+        if ($env['db_engine'] !== null && strcasecmp($env['db_engine'], DB::$engine) !== 0) {
             $plugin->addError(sprintf('Database engine "%s" is required', $env['db_engine']));
         }
 
