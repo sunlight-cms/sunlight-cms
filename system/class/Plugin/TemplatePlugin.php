@@ -162,7 +162,7 @@ class TemplatePlugin extends Plugin implements InitializableInterface
      */
     function templateEventFilter($next, ...$args): void
     {
-        if (Core::$env === Core::ENV_WEB && $GLOBALS['_index']->template === $this) {
+        if (Core::$env === Core::ENV_WEB && isset($GLOBALS['_index']) && $GLOBALS['_index']->template === $this) {
             $next(...$args);
         }
     }
