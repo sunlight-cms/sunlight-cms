@@ -30,7 +30,7 @@ class RepositoryInjector
      *
      * @param-out string[] $errors
      */
-    function inject(Repository $repository, array &$errors = null): bool
+    function inject(Repository $repository, ?array &$errors = null): bool
     {
         $errors = [];
         $toInject = [];

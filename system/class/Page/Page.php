@@ -375,7 +375,7 @@ abstract class Page
         ?int $pageId = null,
         ?int $depth = null,
         ?TreeFilterInterface $filter = null,
-        array $extraColumns = null
+        ?array $extraColumns = null
     ) : array {
         return self::getTreeReader()->getFlatTree(
             self::getTreeReaderOptions($pageId, $depth, $filter, $extraColumns)
@@ -421,7 +421,7 @@ abstract class Page
      *
      * @param array|null $extraColumns list of additional columns to load
      */
-    static function getRootPages(TreeFilterInterface $filter = null, ?array $extraColumns = null): array
+    static function getRootPages(?TreeFilterInterface $filter = null, ?array $extraColumns = null): array
     {
         $options = self::getTreeReaderOptions(null, 0, $filter, $extraColumns);
 

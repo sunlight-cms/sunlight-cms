@@ -20,7 +20,7 @@ class LocalizationDirectory extends LocalizationDictionary
      * @param string $dir path to the directory containing the localization dictionaries (without a trailing slash)
      * @param array|null $availableLanguages list of available languages (saves an is_file() check)
      */
-    function __construct(string $dir, array $availableLanguages = null)
+    function __construct(string $dir, ?array $availableLanguages = null)
     {
         $this->dir = $dir;
         $this->availableLanguages = $availableLanguages;

@@ -501,7 +501,7 @@ class Backup
         }
     }
 
-    private function resolveMetadata(array $metaData, array &$errors = null): ?array
+    private function resolveMetadata(array $metaData, ?array &$errors = null): ?array
     {
         $options = new Resolver();
         $options->addOption(

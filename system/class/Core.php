@@ -274,7 +274,7 @@ abstract class Core
         $err_rep = E_ALL;
 
         if (!self::$debug) {
-            $err_rep &= ~(E_NOTICE | E_USER_NOTICE | E_DEPRECATED | E_STRICT);
+            $err_rep &= ~(E_NOTICE | E_USER_NOTICE | E_DEPRECATED | (PHP_VERSION_ID < 80400 ? E_STRICT : 0));
         }
 
         error_reporting($err_rep);
