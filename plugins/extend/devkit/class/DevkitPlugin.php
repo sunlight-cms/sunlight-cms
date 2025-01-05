@@ -12,6 +12,7 @@ use Sunlight\Plugin\ExtendPlugin;
 use Sunlight\Plugin\PluginData;
 use Sunlight\Plugin\PluginManager;
 use Sunlight\Settings;
+use Sunlight\Util\Json;
 
 class DevkitPlugin extends ExtendPlugin
 {
@@ -184,6 +185,7 @@ ENTRY
         }
 
         ?>
+<script>var SunlightVars = {basePath: <?= Json::encodeForInlineJs(Core::getBaseUrl()->getPath() . '/') ?>};</script>
 <script src="<?= _e($this->getAssetPath('public/devkit.js')) ?>"></script>
 <?= $this->getToolbar()->render() ?>
 <?php
