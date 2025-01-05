@@ -72,7 +72,7 @@ abstract class DatabaseLoader
      */
     static function replaceEngine(string $query, array $queryMap, string $currentEngine, string $newEngine): string
     {
-        return Regexp::replace('{ENGINE *= *' . preg_quote($currentEngine) . '\b}', $query, function (array $matches, $offset) use ($queryMap, $newEngine) {
+        return Regexp::replace('{ENGINE *= *' . preg_quote($currentEngine) . '\b}i', $query, function (array $matches, $offset) use ($queryMap, $newEngine) {
             // replace the match
             if (SqlReader::getQueryMapSegment($queryMap, $offset) === null) {
                 // outside quotes or comments - use new engine
