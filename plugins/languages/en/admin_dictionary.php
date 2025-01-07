@@ -434,7 +434,7 @@ return [
     'admin.settings.paging.sboxmemory.help' => 'specifies the maximum number of stored posts per shoutbox',
     'admin.settings.iplog' => 'Restrictions and limits',
     'admin.settings.iplog.postadmintime' => 'Post administration time',
-    'admin.settings.iplog.postadmintime.help' => 'specifies the number of hours after writing a post during which it can be edited or deleted by the author',
+    'admin.settings.iplog.postadmintime.help' => 'specifies the number of minutes after writing a post during which it can be edited or deleted by the author',
     'admin.settings.iplog.antispamtimeout' => 'Anti-spam',
     'admin.settings.iplog.antispamtimeout.help' => 'minimum time in seconds, after which it will be possible to send another request (post, message, comment, registration ...)',
     'admin.settings.iplog.maxloginattempts' => 'Login attempts',

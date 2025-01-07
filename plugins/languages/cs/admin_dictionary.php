@@ -434,7 +434,7 @@ return [
     'admin.settings.paging.sboxmemory.help' => 'určuje maximální počet uchovaných posledních příspěvků v shoutboxech',
     'admin.settings.iplog' => 'Omezení a limity',
     'admin.settings.iplog.postadmintime' => 'Doba správy příspěvku',
-    'admin.settings.iplog.postadmintime.help' => 'určuje počet hodin od napsání příspěvku, kdy jej může jeho autor upravit nebo smazat',
+    'admin.settings.iplog.postadmintime.help' => 'určuje počet minut od napsání příspěvku, kdy jej může jeho autor upravit nebo smazat',
     'admin.settings.iplog.antispamtimeout' => 'Anti-spam',
     'admin.settings.iplog.antispamtimeout.help' => 'minimální doba v sekundách, po jejíž uplynutí bude možné zaslat další požadavek (příspěvek, vzkaz, komentář, registrace...)',
     'admin.settings.iplog.maxloginattempts' => 'Pokusy o přihlášení',
