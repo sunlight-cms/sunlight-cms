@@ -25,7 +25,7 @@ return [
     'admin.index.cachewarn' => 'Cache is disabled (on a live site it is recommended to have the cache enabled)',
     'admin.index.htaccess_check_failure' => 'Beware! It looks like your webserver does not support .htaccess files. This is a potential security risk.<br><br>See <a href="%link%">%link%</a>',
     'admin.index.version.latest' => 'You are using the latest version.',
-    'admin.index.version.old' => 'A new version <strong>%version%</strong> is available. An <a href="%link%" target="_blank">upgrade</a> is recommended.',
+    'admin.index.version.old' => 'A new version <strong>%version%</strong> is available. An <a href="%link%" target="_blank">upgrade</a> is recommended',
     'admin.index.recent_log_errors' => 'The system log contains new errors since it was last checked: %count%',
     'admin.menu.index.edit.title' => 'Editing the main page',
     'admin.menu.index.edit.p' => 'Here you can change contents of the main page. If you want to deactivate this function, leave the <q> Your text </q> field empty.',
