@@ -2,7 +2,6 @@
 
 namespace Sunlight;
 
-use Kuria\Cache\Driver;
 use Kuria\Url\Url;
 use Sunlight\Util\HttpClient;
 use Sunlight\Util\HttpClientException;
@@ -15,6 +14,9 @@ class VersionChecker
     /** @var bool */
     private static $loaded = false;
 
+    /**
+     * @return array{latestVersion: string, localAge: int<-1, 3>, url: string}|null
+     */
     static function check(): ?array
     {
         if (!self::$loaded) {
