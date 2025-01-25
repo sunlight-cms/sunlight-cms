@@ -22,6 +22,7 @@ return [
     'admin.index.messages' => 'System messages',
     'admin.index.unstablewarn' => 'This is an unstable %stability% version intended for testing purposes only',
     'admin.index.debugwarn' => 'Debug mode is active',
+    'admin.index.cachewarn' => 'Cache is disabled (on a live site it is recommended to have the cache enabled)',
     'admin.index.htaccess_check_failure' => 'Beware! It looks like your webserver does not support .htaccess files. This is a potential security risk.<br><br>See <a href="%link%">%link%</a>',
     'admin.index.version.latest' => 'You are using the latest version.',
     'admin.index.version.old' => 'A new version <strong>%version%</strong> is available. An <a href="%link%" target="_blank">upgrade</a> is recommended.',

@@ -123,12 +123,15 @@ $messages = [];
 
 if (Core::getStability() !== 'stable') {
     // stability warning
-    $messages[] = Message::warning(_lang('admin.index.unstablewarn', ['%stability%' => Core::getStability()]));
+    $messages[] = Message::warning(_lang('admin.index.unstablewarn', ['%stability%' => Core::getStability()]), false, ['message-small']);
 }
 
 if (Core::$debug) {
     // debug mode
-    $messages[] = Message::warning(_lang('admin.index.debugwarn'));
+    $messages[] = Message::warning(_lang('admin.index.debugwarn'), false, ['message-small']);
+} elseif (!Core::isCacheEnabled()) {
+    // no cache
+    $messages[] = Message::warning(_lang('admin.index.cachewarn'), false, ['message-small']);
 }
 
 if (Core::$safeMode) {
@@ -138,9 +141,9 @@ if (Core::$safeMode) {
 if (($version_data !== null) && $version_data['localAge'] >= 0) {
     // old version
     if ($version_data['localAge'] === 0) {
-        $messages[] = Message::ok(_lang('admin.index.version.latest'));
+        $messages[] = Message::ok(_lang('admin.index.version.latest'), false, ['message-small']);
     } else {
-        $messages[] = Message::warning(
+        $messages[] = Message::ok(
             _lang('admin.index.version.old', ['%version%' => $version_data['latestVersion'], '%link%' => $version_data['url']]),
             true
         );
@@ -155,8 +158,7 @@ if (Admin::moduleAccess('log')) {
 
     if ($recent_log_errors > 0) {
         $messages[] = Message::warning(
-            _buffer(function () use ($log_query, $recent_log_errors) {
-                ?>
+            _buffer(function () use ($log_query, $recent_log_errors) { ?>
     <?= _lang('admin.index.recent_log_errors', ['%count%' => _num($recent_log_errors)]) ?><br><br>
 
     <a class="button" href="<?= _e(Router::admin('log', ['query' => ['maxLevel' => $log_query->maxLevel, 'since' => $log_query->since !== null ? "@{$log_query->since}" : null, 'desc' => '1', 'search' => '1']])) ?>">

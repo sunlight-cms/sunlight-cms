@@ -337,7 +337,7 @@ a#usermenu-username {margin-right: 0.5em; font-weight: bold; color: <?= $scheme_
 #external-container h1 {border-bottom: 3px solid <?= $scheme ?>; padding-bottom: 3px; margin-bottom: 6px;}
 
 /* index */
-#index-table {width: 100%; margin: 0; padding: 0; border-collapse: collapse;}
+#index-table {width: 100%; margin: 0 0 10px 0; padding: 0; border-collapse: collapse;}
 #index-table > tbody > tr > td {padding: 10px; border: 1px solid <?= $scheme_smoke_med ?>; background-color: <?= $scheme_smoke_lighter ?>;}
 #index-table > tbody > tr > td:last-child {width: 200px;}
 #index-table h2 {margin-bottom: 6px; border-bottom: 2px solid <?= $scheme_smoke_med ?>; padding-bottom: 6px;}
@@ -514,6 +514,7 @@ a.active-link {text-decoration: underline !important;}
 .message-ok {background-color: <?= $scheme_bg_info ?>; background-image: url("../public/images/icons/info.png");}
 .message-warn {background-color: <?= $scheme_bg_alert ?>; background-image: url("../public/images/icons/warning.png");}
 .message-err {background-color: <?= $scheme_bg_danger ?>; background-image: url("../public/images/icons/error.png");}
+.message-small {margin: 0.5em 0; padding: 7px 5px 7px 30px; background-color: unset !important; background-size: 20px 20px;}
 
 /* preformatted */
 pre {white-space: pre-wrap; overflow-wrap: anywhere; word-break: normal;}
