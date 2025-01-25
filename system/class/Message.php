@@ -19,27 +19,32 @@ class Message
     private $message;
     /** @var bool */
     private $isHtml;
+    /** @var bool */
+    private $classes;
 
     /**
      * @param string $type see class constants
      * @param string $message the message
      * @param bool $isHtml display the message should be rendered as html (unescaped) 1/0
+     * @param string[]|null $classes additional classes
      */
-    function __construct(string $type, string $message, bool $isHtml = false)
+    function __construct(string $type, string $message, bool $isHtml = false, ?array $classes = null)
     {
         $this->type = $type;
         $this->message = $message;
         $this->isHtml = $isHtml;
+        $this->classes = $classes;
     }
 
     /**
      * Render a message
      *
      * @see __construct()
+     * @param string[]|null $classes additional classes
      */
-    static function render(string $type, string $message, bool $isHtml = false): string
+    static function render(string $type, string $message, bool $isHtml = false, ?array $classes = null): string
     {
-        $message = new self($type, $message, $isHtml);
+        $message = new self($type, $message, $isHtml, $classes);
 
         return $message->__toString();
     }
@@ -49,10 +54,11 @@ class Message
      *
      * @param string $message the message
      * @param bool $isHtml display the message should be rendered as html (unescaped) 1/0
+     * @param string[]|null $classes additional classes
      */
-    static function ok(string $message, bool $isHtml = false): self
+    static function ok(string $message, bool $isHtml = false, ?array $classes = null): self
     {
-        return new self(self::OK, $message, $isHtml);
+        return new self(self::OK, $message, $isHtml, $classes);
     }
 
     /**
@@ -60,10 +66,11 @@ class Message
      *
      * @param string $message the message
      * @param bool $isHtml display the message should be rendered as html (unescaped) 1/0
+     * @param string[]|null $classes additional classes
      */
-    static function warning(string $message, bool $isHtml = false): self
+    static function warning(string $message, bool $isHtml = false, ?array $classes = null): self
     {
-        return new self(self::WARNING, $message, $isHtml);
+        return new self(self::WARNING, $message, $isHtml, $classes);
     }
 
     /**
@@ -71,10 +78,11 @@ class Message
      *
      * @param string $message the message
      * @param bool $isHtml display the message should be rendered as html (unescaped) 1/0
+     * @param string[]|null $classes additional classes
      */
-    static function error(string $message, bool $isHtml = false): self
+    static function error(string $message, bool $isHtml = false, ?array $classes = null): self
     {
-        return new self(self::ERROR, $message, $isHtml);
+        return new self(self::ERROR, $message, $isHtml, $classes);
     }
 
     /**
@@ -85,12 +93,14 @@ class Message
      * - type (warn)  see Message class constants
      * - text         content at the beginning of the message
      * - list         options for {@see GenericTemplates::renderMessageList()}
+     * - classes      additional classes
      *
      * @param string[] $messages
      * @param array{
      *     type?: string,
      *     text?: string,
      *     list?: array{lcfirst?: bool|null, trim_dots?: bool|null, escape?: bool|null, show_keys?: bool|null},
+     *     classes?: string[],
      * } $options see description
      */
     static function list(array $messages, array $options = []): self
@@ -120,7 +130,7 @@ class Message
         $output = Extend::buffer('message.render', ['message' => $this]);
 
         if ($output === '') {
-            $output = "\n<div class=\"message message-" . _e($this->type) . '">'
+            $output = "\n<div class=\"message message-" . _e($this->type) . (!empty($this->classes) ? ' ' . _e(implode(' ', $this->classes)) : '') . '">'
                 . ($this->isHtml ? $this->message : _e($this->message))
                 . "</div>\n";
         }
