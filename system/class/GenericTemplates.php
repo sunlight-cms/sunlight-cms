@@ -62,7 +62,7 @@ abstract class GenericTemplates
     {
         $lang = _e(Core::$langPlugin->getIsoCode());
         $generator = '<meta name="generator" content="SunLight CMS">' . "\n";
-        
+
         Extend::call('render.meta_generator', ['generator' => &$generator]);
 
         return <<<HTML
@@ -103,7 +103,7 @@ HTML;
     static function renderHeadAssets(array $assets): string
     {
         $html = '';
-        $cacheParam = 'v=' . substr(hash_hmac('sha256', Core::VERSION . '$' . Settings::get('cacheid'), Core::$secret), 0, 8);
+        $cacheParam = 'v=' . self::getAssetCacheHash();
 
         $assets += [
             'meta' => '',
@@ -145,7 +145,7 @@ HTML;
         // favicon
         if ($assets['favicon'] !== null) {
             $faviconPath = $assets['favicon']
-                ? Router::path('favicon.ico') . '?' . $cacheParam
+                ? UrlHelper::appendParams(Router::path('favicon.ico'), $cacheParam)
                 : 'data:,';
 
             $html .= "\n<link rel=\"icon\" href=\"" . _e($faviconPath) . '">';
@@ -161,6 +161,16 @@ HTML;
         $html .= $assets['js_after'];
 
         return $html;
+    }
+
+    /**
+     * Get a hash used for asset cache-busting purposes
+     */
+    static function getAssetCacheHash(): string
+    {
+        static $cacheHash;
+
+        return $cacheHash ?? ($cacheHash = substr(hash_hmac('sha256', Core::VERSION . '$' . Settings::get('cacheid'), Core::$secret), 0, 8));
     }
 
     /**
@@ -242,7 +252,7 @@ HTML;
 
     /**
      * Render HTML attributes
-     * 
+     *
      * @param array<string, scalar|null> $attrs
      * @return string HTML attribute string (including a space) or an empty string
      */
