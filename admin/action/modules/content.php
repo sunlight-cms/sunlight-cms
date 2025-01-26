@@ -139,52 +139,49 @@ if (
         }
     }
 
+    $show_modules = (
+        User::hasPrivilege('adminart')
+        || User::hasPrivilege('adminconfirm')
+        || User::hasPrivilege('admincategory')
+        || User::hasPrivilege('adminpoll')
+        || User::hasPrivilege('adminsbox')
+        || User::hasPrivilege('adminbox')
+    );
+
     $pageitems = '
-    <td class="contenttable-box" style="' .
-        (
-            (
-                User::hasPrivilege('adminart')
-                || User::hasPrivilege('adminconfirm')
-                || User::hasPrivilege('admincategory')
-                || User::hasPrivilege('adminpoll')
-                || User::hasPrivilege('adminsbox')
-                || User::hasPrivilege('adminbox')
-            )
-                ? 'width: 75%; '
-                : 'border-right: none;'
-        )
-        . 'padding-bottom: 0px;'
-    . '">
+    <td class="form-box' . ($show_modules ? ' main-box' : '') . '">
 
-    ' . (User::hasPrivilege('adminpages') ? '
-    <form action="' . _e(Router::admin('content')) . '" method="post" class="inline">
-        <img src="' . _e(Router::path('admin/public/images/icons/new.png')) . '" alt="new" class="icon">
-        ' . Form::select('new_page_type', $create_choices) . '
-        ' . Form::input('submit', null, _lang('global.create'), ['class' => 'button']) . '
-    ' . Xsrf::getInput() . '</form>
-
-    <span class="inline-separator"></span>
-    ' : '') . '
-
-    ' . (User::hasPrivilege('adminpages') ? '
-    <a class="button" href="' . _e(Router::admin('content-setindex')) . '"><img src="' . _e(Router::path('admin/public/images/icons/home.png')) . '" alt="act" class="icon">' . _lang('admin.content.setindex') . '</a>
-
-    <span class="inline-separator"></span>
-
-    <a class="button" href="' . _e(Router::admin('content-sort')) . '"><img src="' . _e(Router::path('admin/public/images/icons/action.png')) . '" alt="move" class="icon">' . _lang('admin.content.sort') . '</a>
-    <a class="button" href="' . _e(Router::admin('content-titles')) . '"><img src="' . _e(Router::path('admin/public/images/icons/action.png')) . '" alt="titles" class="icon">' . _lang('admin.content.titles') . '</a>
-    <a class="button" href="' . _e(Router::admin('content-chtype')) . '"><img src="' . _e(Router::path('admin/public/images/icons/action.png')) . '" alt="redir" class="icon">' . _lang('admin.content.chtype') . '</a>
-    <a class="button" href="' . _e(Router::admin('content-redir')) . '"><img src="' . _e(Router::path('admin/public/images/icons/action.png')) . '" alt="redir" class="icon">' . _lang('admin.content.redir') . '</a>
-
-    <span class="inline-separator"></span>
-    ' : '') . '
-
-    <a class="button" href="' . _e(Router::admin('content', ['query' => ['list_mode' => 'tree']])) . '"' . (PageLister::getConfig('mode') == PageLister::MODE_FULL_TREE ? ' class="active-link"' : '') . '>
-        <img src="' . _e(Router::path('admin/public/images/icons/tree.png')) . '" alt="move" class="icon">' . _lang('admin.content.mode.tree') . '
-    </a>
-    <a class="button" href="' . _e(Router::admin('content', ['query' => ['list_mode' => 'single']])) . '"' . (PageLister::getConfig('mode') == PageLister::MODE_SINGLE_LEVEL ? ' class="active-link"' : '') . '>
-        <img src="' . _e(Router::path('admin/public/images/icons/list.png')) . '" alt="move" class="icon">' . _lang('admin.content.mode.single') . '
-    </a>
+    <div id="contenttable-actions">
+        ' . (User::hasPrivilege('adminpages') ? '
+        <form action="' . _e(Router::admin('content')) . '" method="post" class="inline">
+            <img src="' . _e(Router::path('admin/public/images/icons/new.png')) . '" alt="new" class="icon">
+            ' . Form::select('new_page_type', $create_choices) . '
+            ' . Form::input('submit', null, _lang('global.create'), ['class' => 'button']) . '
+        ' . Xsrf::getInput() . '</form>
+    
+        <span class="inline-separator"></span>
+        ' : '') . '
+    
+        ' . (User::hasPrivilege('adminpages') ? '
+        <a class="button" href="' . _e(Router::admin('content-setindex')) . '"><img src="' . _e(Router::path('admin/public/images/icons/home.png')) . '" alt="act" class="icon">' . _lang('admin.content.setindex') . '</a>
+    
+        <span class="inline-separator"></span>
+    
+        <a class="button" href="' . _e(Router::admin('content-sort')) . '"><img src="' . _e(Router::path('admin/public/images/icons/action.png')) . '" alt="move" class="icon">' . _lang('admin.content.sort') . '</a>
+        <a class="button" href="' . _e(Router::admin('content-titles')) . '"><img src="' . _e(Router::path('admin/public/images/icons/action.png')) . '" alt="titles" class="icon">' . _lang('admin.content.titles') . '</a>
+        <a class="button" href="' . _e(Router::admin('content-chtype')) . '"><img src="' . _e(Router::path('admin/public/images/icons/action.png')) . '" alt="redir" class="icon">' . _lang('admin.content.chtype') . '</a>
+        <a class="button" href="' . _e(Router::admin('content-redir')) . '"><img src="' . _e(Router::path('admin/public/images/icons/action.png')) . '" alt="redir" class="icon">' . _lang('admin.content.redir') . '</a>
+    
+        <span class="inline-separator"></span>
+        ' : '') . '
+    
+        <a class="button" href="' . _e(Router::admin('content', ['query' => ['list_mode' => 'tree']])) . '"' . (PageLister::getConfig('mode') == PageLister::MODE_FULL_TREE ? ' class="active-link"' : '') . '>
+            <img src="' . _e(Router::path('admin/public/images/icons/tree.png')) . '" alt="move" class="icon">' . _lang('admin.content.mode.tree') . '
+        </a>
+        <a class="button" href="' . _e(Router::admin('content', ['query' => ['list_mode' => 'single']])) . '"' . (PageLister::getConfig('mode') == PageLister::MODE_SINGLE_LEVEL ? ' class="active-link"' : '') . '>
+            <img src="' . _e(Router::path('admin/public/images/icons/list.png')) . '" alt="move" class="icon">' . _lang('admin.content.mode.single') . '
+        </a>
+    </div>
 
     <div class="hr"><hr></div>
 
@@ -226,7 +223,7 @@ $output .= $message . '
 <table id="contenttable">
 <tr class="valign-top">
   ' . $pageitems . '
-  ' . ($content_modules_str !== '' ? '<td class="contenttable-box" id="content-modules">' . $content_modules_str . '</td>' : '') . '
+  ' . ($content_modules_str !== '' ? '<td class="form-box" id="content-modules">' . $content_modules_str . '</td>' : '') . '
 </tr>
 </table>
 ';

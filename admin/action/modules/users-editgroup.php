@@ -283,7 +283,7 @@ if ($continue) {
   ' . (isset($_GET['saved']) ? Message::ok(_lang('global.saved')) : '') . '
   ' . ($systemitem ? Admin::note(_lang('admin.users.groups.specialgroup.editnotice')) : '') . '
   <form action="' . _e(Router::admin('users-editgroup', ['query' => ['id' => $id]])) . '" method="post">
-  <table>
+  <table class="formtable">
 
   <tr>
   <th>' . _lang('global.name') . '</th>

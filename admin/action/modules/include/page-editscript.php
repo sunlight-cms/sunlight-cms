@@ -499,7 +499,7 @@ $output .= '<form class="cform" action="' . _e(Router::admin('content-edit' . Pa
     <table class="formtable edittable">
         <tbody>
             <tr class="valign-top">
-                <td class="contenttable-box main-box">
+                <td class="form-box main-box">
                     <table>
                         <tbody>
                             <tr>
@@ -574,7 +574,7 @@ $output .= '<form class="cform" action="' . _e(Router::admin('content-edit' . Pa
                        </tfoot>     
                     </table>                
                 </td> 
-                <td class="contenttable-box">
+                <td class="form-box">
 
                     <div id="settingseditform">'
 

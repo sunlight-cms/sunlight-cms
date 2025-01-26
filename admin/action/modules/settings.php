@@ -419,7 +419,7 @@ foreach ($editable_settings as $settings_category => $settings_category_data) {
 
         // item
         $output .= '<tr>
-    <td><label' . (!isset($item['id']) || $item['id'] ? ' for="' . $id . '"' : '') . ">{$label}</label></td>
+    <th><label' . (!isset($item['id']) || $item['id'] ? ' for="' . $id . '"' : '') . ">{$label}</label></th>
     <td" . ($help === '' ? ' colspan="2"' : '') . ">{$input}</td>\n";
 
         if ($help !== '') {

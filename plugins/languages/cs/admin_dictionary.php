@@ -15,6 +15,7 @@ return [
     'admin.menu.settings' => 'Nastavení',
     'admin.menu.plugins' => 'Pluginy',
     'admin.menu.other' => 'Ostatní',
+    'admin.open_menu' => 'Otevřít navigaci',
     'admin.index.p' => 'Vítejte v administraci! Z menu výše si vyberte s čím chcete pracovat.',
     'admin.index.box' => 'Informace o prostředí',
     'admin.index.box.latest' => 'Nejnovější',

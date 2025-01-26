@@ -78,6 +78,7 @@ $output .= '
 ' . Form::input('hidden', 'search', Request::get('search', '')) . '
 <strong>' . _lang('admin.users.list.groupfilter') . ':</strong> '
 . Admin::userSelect('group_id', ['selected' => $group, 'extra_option' => _lang('global.all'), 'select_groups' => true])
+. ' '
 . Form::input('submit', null, _lang('global.apply'), ['class' => 'button']) . '
 </form>
 </td>

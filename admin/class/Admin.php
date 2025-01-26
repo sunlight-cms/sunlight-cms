@@ -26,7 +26,7 @@ abstract class Admin
     {
         global $_admin;
 
-        $output = "<div id=\"menu\">\n";
+        $output = "<nav id=\"menu\">\n";
 
         if ($_admin->access) {
             foreach ($_admin->menu as $module => $order) {
@@ -46,7 +46,7 @@ abstract class Admin
             $output .= '<a href="' . _e(Router::adminIndex()) . '" class="act"><span>' . _lang('login.title') . "</span></a>\n";
         }
 
-        $output .= "</div>\n";
+        $output .= "</nav>\n";
 
         return $output;
     }

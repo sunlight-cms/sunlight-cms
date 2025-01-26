@@ -287,7 +287,7 @@ input, textarea, button, select {
 <?php } ?>
 
 /* layout */
-.wrapper {max-width: 1400px; min-width: 700px; margin: 0 auto;}
+.wrapper {max-width: 1400px; margin: 0 auto;}
 
 /* header */
 #top {background: url("../public/images/top_bg<?= $dark_suffix ?>.png") left bottom repeat-x;}
@@ -308,12 +308,16 @@ a#usermenu-username {margin-right: 0.5em; font-weight: bold; color: <?= $scheme_
 #menu a {color: <?= $scheme_bar_text ?>; text-decoration: none; display: inline-block;}
 #menu a span {display: inline-block; padding: 7px 16px; background: url("../public/images/menu_sep<?= $dark_suffix ?>.png") right bottom no-repeat; font-size: 13px; text-shadow: 0 0 5px <?= $scheme_bar_shadow ?>;}
 #menu a:hover span, #menu a.act span {color: <?= $scheme_black ?>; background: <?= $scheme_white ?> url("../public/images/menu_active<?= $dark_suffix ?>.png") left top repeat-x; text-shadow: none;}
+#menu-toggle-button {display: none;}
 
 /* content */
 #content {padding: 12px 16px 16px 16px; background-color: <?= $scheme_white ?>;}
+.static-layout #content {min-width: 1000px;}
+.responsive-layout #content {min-width: 320px;}
 
-/* copyright / footer */
-#footer {margin-bottom: 0.5em; text-align: right; padding: 8px 16px; background-color: <?= $scheme_bar ?>;}
+/* footer */
+#footer {margin-bottom: 0.5em; text-align: right;}
+#footer-content {padding: 8px 16px; background-color: <?= $scheme_bar ?>;}
 #footer, #footer a {font-size: 11px; text-decoration: none; color: <?= $scheme_bar_text ?>; text-shadow: 0 0 5px <?= $scheme_bar_shadow ?>;}
 #footer a:hover {text-decoration: underline;}
 #footer-links {float: left;}
@@ -321,7 +325,7 @@ a#usermenu-username {margin-right: 0.5em; font-weight: bold; color: <?= $scheme_
 
 /* login layout */
 .login-layout {background: radial-gradient(at center 270px, <?= $scheme_smoke_light ?>, <?= $scheme_smoke_dark ?>) no-repeat fixed;}
-.login-layout .wrapper {width: 500px; min-width: 0;}
+.login-layout .wrapper {max-width: 500px; min-width: 0;}
 .login-layout #header, .login-layout #menu {display: none;}
 .login-layout #top {padding-top: 140px; background: url("../public/images/logo.png") center 50px no-repeat;}
 .login-layout #content {padding: 24px 16px; box-shadow: 0 0 6px 1px <?= $scheme_alpha_shadow ?>; text-align: center;}
@@ -329,7 +333,7 @@ a#usermenu-username {margin-right: 0.5em; font-weight: bold; color: <?= $scheme_
 .login-layout .login-form-links, .login-layout #content form {text-align: left;}
 .login-layout .login-form-links {padding: 0 0 0 3px; list-style-type: none;}
 .login-layout #content .message {text-align: left;}
-.login-layout #footer {background: none;}
+.login-layout #footer-content {background: none;}
 .login-layout #footer, .login-layout #footer a {color: <?= $scheme_text ?>; text-shadow: none;}
 
 /* external container */
@@ -356,9 +360,7 @@ a#usermenu-username {margin-right: 0.5em; font-weight: bold; color: <?= $scheme_
 #contenttable a {text-decoration: none;}
 #contenttable h2 {margin: 0 0 8px 0; padding: 4px 0 7px 0; border-bottom: 1px solid <?= $scheme_smoke ?>;}
 #contenttable .pad {padding: 20px 0;}
-.contenttable-box {padding: 8px; margin: 0; border-right: 1px solid <?= $scheme_smoke ?>;}
-.contenttable-box.main-box {width: 70%; padding-bottom: 0px;}
-.customsettings {padding-left: 10px;}
+#contenttable .main-box {width: 80%;}
 
 #content-modules {border: none;}
 #content-modules h2 {margin-top: 1em;}
@@ -515,6 +517,7 @@ a.active-link {text-decoration: underline !important;}
 .message-warn {background-color: <?= $scheme_bg_alert ?>; background-image: url("../public/images/icons/warning.png");}
 .message-err {background-color: <?= $scheme_bg_danger ?>; background-image: url("../public/images/icons/error.png");}
 .message-small {margin: 0.5em 0; padding: 7px 5px 7px 30px; background-color: unset !important; background-size: 20px 20px;}
+.message-small + .message-small {margin-top: -0.25em;}
 
 /* preformatted */
 pre {white-space: pre-wrap; overflow-wrap: anywhere; word-break: normal;}
@@ -526,6 +529,9 @@ pre.exception {max-height: 300px; margin: 1em 0; padding: 13px; overflow: auto; 
 .cform th {width: 111px;}
 .cform th:first-child + td {width: 40%;}
 .cform th:first-child + td:last-child {width: auto;}
+.form-box {padding: 8px; margin: 0; border-right: 1px solid <?= $scheme_smoke ?>;}
+.form-box.main-box {width: 70%; padding-bottom: 0;}
+.customsettings {padding-left: 10px;}
 
 /* text colors */
 .text-success {color: #080;}
@@ -722,5 +728,103 @@ tr.valign-top > *, table.valign-top > * > tr > * {vertical-align: top;}
 .node-level-p19 {padding-left: 456px !important;}
 .node-level-m20 {margin-left: 480px !important;}
 .node-level-p20 {padding-left: 480px !important;}
+
+/* responsive styles <1000px */
+@media all and (max-width: 999px) {
+    /* tags */
+    body {margin: 0;}
+
+    /* header */
+    #top {background: none; position: relative;}
+    #header {padding: 0;}
+    #usermenu {display: block; position: static; float: none; padding: 10px 5px; text-align: right;}
+    #usermenu, #usermenu a {font-size: 16px;}
+    #title {padding: 8px 16px; color: <?= $scheme_white ?>; background: <?= $scheme_bar ?>; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;}
+
+    /* menu */
+    #menu-toggle-button {display: initial; cursor: pointer;}
+    #menu {display: none; position: absolute; left: 0; top: 100%; z-index: 200; padding: 16px;}
+    #menu {max-width: 300px;}
+    #menu a {display: block; background: unset;}
+    #menu a.act {background-color: <?= $scheme_white ?>}
+    #menu a.act span, #menu a:hover span {background: unset;}
+    #menu a span {font-size: 16px;}
+    #menu a:hover {background-color: <?= $scheme_smoke_lightest_colored ?>;}
+    #menu-toggle:checked ~ #menu {display: block;}
+
+    /* content */
+    #page {overflow-x: auto; background-color: <?= $scheme_white ?>;}
+    #content {background: unset;}
+
+    /* footer */
+    #footer {margin-bottom: 0;}
+
+    /* login layout */
+    .login-layout .login_form :is(table, tbody, tr, th, td) {display: block;}
+    .login-layout .login_form th {text-align: left; margin-top: 10px;}
+
+    /* index */
+    #index-table, #index-table > tbody, #index-table > tbody > tr, #index-table > tbody > tr > td {display: block; width: auto !important; margin: 10px 0;}
+
+    /* content management */
+    #contenttable, #contenttable > tbody, #contenttable > tbody > tr, #contenttable > tbody > tr > td {display: block;}
+    #contenttable {border: none; background: none;}
+    #contenttable .form-box {width: auto !important; margin-bottom: 20px; border: 1px solid <?= $scheme_smoke ?>;}
+    #contenttable-actions {line-height: 270%;}
+
+    /* file manager */
+    #fman-list .actions a.button {width: 14px; overflow: hidden;}
+    .fman-menu strong:before {display: block; content: ''; height: 3px;}
+
+    /* settings */
+    #settingsnav, #settingsform {float: none; width: auto !important;}
+    #settingsnav {margin-bottom: 5em;}
+    #settingsnav.scrollfix-top {position: static; }
+    #settingsnav.scrollfix-subtitute {display: none;}
+    #settingsform {padding-bottom: 0;}
+    #settingsform table,
+    #settingsform table > tbody,
+    #settingsform table > tbody > tr,
+    #settingsform table > tbody > tr > th,
+    #settingsform table > tbody > tr > td {display: block;}
+    #settingsform table td {border: none;}
+    #settingsform table tr {margin: 10px 0; border-bottom: 1px solid <?= $scheme_smoke_med ?>;}
+    #settingsform table tr:last-child {border-bottom: 0;}
+
+    /* two-column layout */
+    .two-columns {border: none;}
+    .two-columns, .two-columns > tbody, .two-columns > tbody > tr, .two-columns > tbody > tr > td {display: block; width: auto; margin: 0; padding: 0;}
+    .two-columns > tbody > tr > td {margin-bottom: 20px;}
+
+    /* form tables */
+    .responsive-layout .formtable,
+    .responsive-layout .formtable > tbody,
+    .responsive-layout .formtable > tbody > tr,
+    .responsive-layout .formtable > tbody > tr > td,
+    .responsive-layout .formtable > tbody > tr > th {display: block;}
+    .responsive-layout .formtable > tbody > tr > th {margin-top: 5px; text-align: left;}
+    .responsive-layout .formtable :is(
+        .areasmall,
+        .areasmallwide,
+        .areamedium,
+        .areabig,
+        .areabigperex,
+        .inputsmall,
+        .inputmedium,
+        .inputbig,
+        .selectmedium,
+        .selectbig,
+        select
+    ) {width: 80%;}
+
+    /* form element sizes */
+    .inputmedium {190px;}
+    .inputbig {width: 300px;}
+}
+
+/* responsive styles < 420px */
+@media all and (max-width: 419px) {
+    .login-layout #top {background-size: 90%;}
+}
 
 <?= Extend::buffer('admin.style') ?>
