@@ -775,9 +775,6 @@ tr.valign-top > *, table.valign-top > * > tr > * {vertical-align: top;}
     #contenttable .form-box {margin-bottom: 20px; border: 1px solid <?= $scheme_smoke ?>;}
     #contenttable-actions {line-height: 270%;}
 
-    /* file manager */
-    #fman-list .actions a.button {width: 14px; overflow: hidden;}
-
     /* backup */
     .module-backup label:has(input[type=radio]) {white-space: nowrap;}
 
@@ -821,7 +818,7 @@ tr.valign-top > *, table.valign-top > * > tr > * {vertical-align: top;}
         .areabigperex,
         .inputbig,
         .selectbig,
-        select
+        select:not(:inputmax)
     ) {width: 80%;}
 
     .edittable .main-box > table,
@@ -839,8 +836,14 @@ tr.valign-top > *, table.valign-top > * > tr > * {vertical-align: top;}
     /* form element sizes */
     .inputmedium, .selectmedium {width: 190px;}
 
+    /* icon buttons */
+    #fman-list .actions a.button,
+    .module-content-polls .list td.actions a.button {width: 14px; overflow: hidden;}
+
+
     /* generic */
     .desktop-only {display: none !important;}
+    .user-link {white-space: nowrap;}
 }
 
 /* responsive styles < 420px */

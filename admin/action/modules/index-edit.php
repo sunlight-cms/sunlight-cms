@@ -28,9 +28,9 @@ $output .= '
 
 ' . (isset($_GET['saved']) ? Message::ok(_lang('global.saved')) : '') . '
 
-<form method="post">
+<form method="post" class="cform">
 
-<table class="formtable max-width">
+<table class="formtable">
 
 <tr>
     <th class="cell-shrink">' . _lang('admin.menu.index.edit.pos') . '</th>
