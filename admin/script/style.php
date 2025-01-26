@@ -593,7 +593,6 @@ fieldset .paging a.act, fieldset .paging a:hover {background-color: <?= $scheme_
 fieldset .list > thead > tr > td, fieldset .list > * th {background-color: <?= $scheme_smoke_dark ?>;}
 fieldset .list > * tr > td {border-color: <?= $scheme_smoke_dark ?>;}
 
-
 /* log */
 .log-list {background-color: <?= $scheme_smoke_lightest ?>;}
 .log-list a {color: unset;}
@@ -653,7 +652,6 @@ fieldset fieldset .bborder {border-color: <?= $scheme_smoke ?>;}
 .inline {display: inline;}
 .hidden {display: none;}
 .cleaner {clear: both;}
-.micon {height: 15px; margin: 0 1px;}
 .special {color: <?= $scheme_link ?>;}
 .small {font-size: 10px;}
 .block {display: block;}
@@ -677,7 +675,8 @@ tr.valign-top > *, table.valign-top > * > tr > * {vertical-align: top;}
 .cell-shrink {width: 0; white-space: nowrap;}
 .error-border {border-color: #f00 !important;}
 .no-bullets {list-style-type: none; padding-left: 10px;}
-.ui-sortable-handle {-ms-touch-action:none; touch-action:none;}
+.ui-sortable-handle {-ms-touch-action: none; touch-action: none;}
+.no-wrap {white-space: nowrap;}
 
 /* tree */
 .node-level-m0 {margin-left: 0 !important;}
@@ -793,7 +792,6 @@ tr.valign-top > *, table.valign-top > * > tr > * {vertical-align: top;}
 
     /* plugins */
     #plugins-menu .right {float: none;}
-    #plugins-menu a.button, .module-plugins .list a.button {margin-bottom: 5px;}
     .module-plugins .list .inline-list > li {display: block; padding: 0;}
     .module-plugins .list .inline-list > li:after {display: none;}
 
@@ -818,7 +816,7 @@ tr.valign-top > *, table.valign-top > * > tr > * {vertical-align: top;}
         .areabigperex,
         .inputbig,
         .selectbig,
-        select:not(:inputmax)
+        select:not(.inputmax)
     ) {width: 80%;}
 
     .edittable .main-box > table,
@@ -828,7 +826,6 @@ tr.valign-top > *, table.valign-top > * > tr > * {vertical-align: top;}
     .edittable .main-box > table > tbody > tr > td,
     .edittable .main-box > table > tbody > tr > th {display: block;}
     .edittable .main-box > table > tbody > tr > th {margin-top: 10px; text-align: left;}
-    .edittable td:has(.button + .button) .button {margin-bottom: 5px;}
     .edittable select + select {margin-top: 5px;}
 
     .form-box {width: auto !important; border-right: none;}
@@ -836,10 +833,12 @@ tr.valign-top > *, table.valign-top > * > tr > * {vertical-align: top;}
     /* form element sizes */
     .inputmedium, .selectmedium {width: 190px;}
 
-    /* icon buttons */
-    #fman-list .actions a.button,
-    .module-content-polls .list td.actions a.button {width: 14px; overflow: hidden;}
+    /* buttons */
+    *:has(> .button + .button:not(.block)) > .button {margin-bottom: 5px !important;}
+    td.actions .button {width: 14px; overflow: hidden;}
 
+    /* list */
+    .list-half {width: 100%;}
 
     /* generic */
     .desktop-only {display: none !important;}

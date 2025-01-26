@@ -282,7 +282,7 @@ abstract class Admin
             . ($art['visible'] == 0 ? ' class="invisible-link"' : '')
             . '>';
 
-        $output .= $art['title'];
+        $output .= StringHelper::ellipsis($art['title'], 64);
         $output .= '</a>';
 
         // note

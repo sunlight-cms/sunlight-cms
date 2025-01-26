@@ -83,7 +83,7 @@ if (DB::size($query) != 0) {
         }
 
         $output .= '<tr>'
-            . '<td>' . StringHelper::ellipsis($item['question'], 64) . (($item['locked'] == 1) ? ' (' . _lang('admin.content.form.locked') . ')' : '') . '</td>'
+            . '<td class="no-wrap">' . StringHelper::ellipsis($item['question'], 64) . (($item['locked'] == 1) ? ' (' . _lang('admin.content.form.locked') . ')' : '') . '</td>'
             . $username
             . '<td>' . $item['id'] . '</td>'
             . '<td class="actions">

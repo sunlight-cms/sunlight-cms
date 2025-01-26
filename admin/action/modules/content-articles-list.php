@@ -90,7 +90,7 @@ if ($continue) {
     if (DB::size($arts) != 0) {
         while ($art = DB::row($arts)) {
             $output .= '<tr>
-    <td>' . Admin::articleEditLink($art) . '</td>
+    <td class="no-wrap">' . Admin::articleEditLink($art) . '</td>
     <td>' . Router::userFromQuery($userQuery, $art) . '</td>
     <td>' . GenericTemplates::renderTime($art['time'], 'article_admin') . '</td>
     <td class="actions">
