@@ -26,7 +26,7 @@ if (Core::$safeMode) {
 }
 
 // buttons
-$output .= '<p>
+$output .= '<p id="plugins-menu">
         <a class="button" href="' . _e(Router::admin('plugins-upload')) . '"><img src="' . _e(Router::path('admin/public/images/icons/plugin.png')) . '" alt="upload" class="icon">' . _lang('admin.plugins.upload') . '</a>
         <a class="button" href="' . _e(Router::admin('plugins', ['query' => ['clear' => 1]])) . '"><img src="' . _e(Router::path('admin/public/images/icons/refresh.png')) . '" alt="clear" class="icon">' . _lang('admin.plugins.clear_cache') . '</a>
         <a class="button right" href="https://sunlight-cms.cz/resource/8.x/get-plugins" target="_blank"><img src="' . _e(Router::path('admin/public/images/icons/show.png')) . '" alt="get" class="icon">' . _lang('admin.plugins.get') . '</a>

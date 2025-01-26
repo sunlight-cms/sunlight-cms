@@ -705,8 +705,6 @@ abstract class Admin
                 'jquery' => Router::path('system/public/jquery.js'),
                 'sunlight' => Router::path('system/public/sunlight.js'),
                 'rangyinputs' => Router::path('system/public/rangyinputs.js'),
-                'scrollwatch' => Router::path('system/public/scrollwatch.js'),
-                'scrollfix' => Router::path('system/public/scrollfix.js'),
                 'jquery_ui' => Router::path('admin/public/jquery-ui.js'),
                 'admin' => Router::path('admin/public/admin.js'),
             ],

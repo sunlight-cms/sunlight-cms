@@ -41,8 +41,11 @@ if (isset($_POST['sourcegroup'])) {
 $output .= $message . '
 <form class="cform" action="' . _e(Router::admin('users-move')) . '" method="post">
 ' . _lang('admin.users.move.text1')
+. '<br class="mobile-only">'
 . ' ' . Admin::userSelect('sourcegroup', ['group_cond' => 'id NOT IN(' . DB::arr($excluded_group_ids) . ')', 'select_groups' => true])
+. '<br class="mobile-only"><br class="mobile-only">'
 . ' ' . _lang('admin.users.move.text2')
+. '<br class="mobile-only">'
 . ' ' . Admin::userSelect('targetgroup', ['group_cond' => 'id NOT IN(' . DB::arr($excluded_group_ids) . ')', 'select_groups' => true])
 . ' ' . Form::input('submit', null, _lang('global.do'), ['class' => 'button', 'onclick' => 'return Sunlight.confirm();']) . '
 ' . Xsrf::getInput() . '</form>';

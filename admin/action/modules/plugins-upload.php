@@ -62,7 +62,7 @@ $output .= $message . '
 <p class="bborder">' . _lang('admin.plugins.upload.p') . '</p>
 
 <form method="post" enctype="multipart/form-data">
-    <table>
+    <table class="formtable">
         <tr>
             <th>' . _lang('admin.plugins.upload.file') . '</th>
             <td>' . Form::input('file', 'archive') . '</td>

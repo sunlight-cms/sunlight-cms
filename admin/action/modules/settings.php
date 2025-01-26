@@ -316,7 +316,8 @@ $output .= ($saved ? Message::ok(_lang('admin.settings.saved')) : '') . '
 
 <form action="' . _e(Router::admin('settings')) . '" method="post">
 
-<div id="settingsnav">
+<div id="settings-container">
+<div id="settings-nav">
 ' . Form::input('submit', null, _lang('global.savechanges'), ['class' => 'button bigger', 'accesskey' => 's']) . '
 <ul>
 ';
@@ -330,7 +331,7 @@ foreach ($editable_settings as $settings_category => $settings_category_data) {
 $output .= '</ul>
 </div>
 
-<div id="settingsform">
+<div id="settings-form">
 ';
 
 foreach ($editable_settings as $settings_category => $settings_category_data) {
@@ -444,22 +445,6 @@ foreach ($editable_settings as $settings_category => $settings_category_data) {
 
 $output .= '
 </div>
+</div>
 
-' . Xsrf::getInput() . '</form>
-
-<script>
-(function () {
-    $("#settingsnav").scrollFix({
-        style: false,
-        topPosition: 10
-    });
-
-    $("fieldset[id]").scrollWatchMapTo("#settingsnav li", null, {
-        resolutionMode: "focus-line",
-        focusRatio: 0,
-        focusOffset: 50
-    });
-})();
-</script>
-
-';
+' . Xsrf::getInput() . '</form>';

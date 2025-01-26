@@ -120,6 +120,7 @@ $output .= $message . '
                 <th>' . _lang('global.file') . '</th>
                 <td>
                     ' . Form::input('file', 'backup') . '
+                    <br class="mobile-only">
                     ' . Environment::renderUploadLimit() . '
                 </td>
             </tr>
