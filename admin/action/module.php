@@ -13,15 +13,14 @@ if (isset($_admin->modules[$_admin->currentModule])) {
         $module = $_admin->modules[$_admin->currentModule];
         $module_custom_header = (isset($module['custom_header']) && $module['custom_header']);
 
-        $_admin->title = $module['title'];
-        $_admin->responsiveLayout = $module['responsive'] ?? true;
-
         // backlink
         if (isset($module['parent']) && !$module_custom_header) {
             $output .= Admin::backlink(Router::admin($module['parent']));
         }
 
         // title
+        $_admin->title = $module['title'];
+
         if (!$module_custom_header) {
             $output .= '<h1>' . $module['title'] . "</h1>\n";
         }

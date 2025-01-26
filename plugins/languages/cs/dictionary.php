@@ -84,6 +84,8 @@ return [
     'global.time' => 'Čas',
     'global.postauthor' => 'Zaslal/a',
     'global.unconfirmed' => 'neschválený',
+    'global.unpublished' => 'nevydaný',
+    'global.notpublic' => 'neveřejný',
     'global.article' => 'Článek',
     'global.id' => 'ID',
     'global.default' => 'Výchozí',

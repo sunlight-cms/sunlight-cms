@@ -271,44 +271,39 @@ abstract class Admin
      *
      * @param array $art article data, including cat_slug
      */
-    static function articleEditLink(array $art, bool $showUnconfirmedNote = true): string
+    static function articleEditLink(array $art, bool $showFlags = true): string
     {
         $output = '';
 
-        // class
-        $class = '';
-
-        if ($art['visible'] == 0 && $art['public'] == 1) {
-            $class = ' class="invisible"';
-        }
-
-        if ($art['visible'] == 1 && $art['public'] == 0) {
-            $class = ' class="notpublic"';
-        }
-
-        if ($art['visible'] == 0 && $art['public'] == 0) {
-            $class = ' class="invisible-notpublic"';
-        }
-
         // link
-        $output .= '<a href="' . _e(Router::article($art['id'], $art['slug'], $art['cat_slug'])) . '" target="_blank"' . $class . '>';
-
-        if ($art['time'] <= time()) {
-            $output .= '<strong>';
-        }
+        $output .= '<a'
+            . ' href="' . _e(Router::article($art['id'], $art['slug'], $art['cat_slug'])) . '"'
+            . ' target="_blank"'
+            . ($art['visible'] == 0 ? ' class="invisible-link"' : '')
+            . '>';
 
         $output .= $art['title'];
-
-        if ($art['time'] <= time()) {
-            $output .= '</strong>';
-        }
-
         $output .= '</a>';
 
-        // confirmation note
-        if ($art['confirmed'] != 1 && $showUnconfirmedNote) {
-            $output .= ' <small>(' . _lang('global.unconfirmed') . ')</small>';
+        // note
+        if ($showFlags) {
+            $notes = [];
+
+            if ($art['confirmed'] != 1) {
+                $notes[] = _lang('global.unconfirmed');
+            } elseif ($art['time'] > time()) {
+                $notes[] = _lang('global.unpublished');
+            }
+
+            if ($art['public'] == 0) {
+                $notes[] = _lang('global.notpublic');
+            }
+
+            if (!empty($notes)) {
+                $output .= ' <small>(' . implode(', ', $notes) . ')</small>';
+            }
         }
+
 
         return $output;
     }

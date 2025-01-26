@@ -13,8 +13,6 @@ class AdminState
     /** @var bool */
     public $loginLayout = false;
     /** @var bool */
-    public $responsiveLayout = true;
-    /** @var bool */
     public $wysiwygAvailable = false;
     /** @var string[] */
     public $bodyClasses = [];

@@ -66,8 +66,6 @@ if ($_admin->redirectTo !== null) {
 // body classes
 if ($_admin->loginLayout) {
     $_admin->bodyClasses[] = 'login-layout';
-} else {
-    $_admin->bodyClasses[] = $_admin->responsiveLayout ? 'responsive-layout' : 'static-layout';
 }
 
 $_admin->bodyClasses[] = $_admin->dark ? 'dark' : 'light';

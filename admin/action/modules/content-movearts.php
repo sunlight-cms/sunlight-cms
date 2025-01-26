@@ -94,9 +94,13 @@ if (isset($_POST['source'])) {
 $output .= $message . '
 <form class="cform" action="' . _e(Router::admin('content-movearts')) . '" method="post">'
     . _lang('admin.content.movearts.text1')
+    . '<br class="mobile-only">'
     . ' ' . Admin::pageSelect('source', ['type' => Page::CATEGORY])
+    . '<br class="mobile-only"><br class="mobile-only">'
     . _lang('admin.content.movearts.text2')
+    . '<br class="mobile-only">'
     . ' ' . Admin::pageSelect('target', ['type' => Page::CATEGORY])
+    . '<br class="mobile-only"><br class="mobile-only">'
     . ' ' . Form::input('submit', null, _lang('global.do'), ['class' => 'button']) . '
 <br><br>
 <label>' . Form::input('checkbox', 'fullmove', '1') . ' ' . _lang('admin.content.movearts.fullmove') . '</label>

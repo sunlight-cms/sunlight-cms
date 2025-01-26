@@ -311,9 +311,7 @@ a#usermenu-username {margin-right: 0.5em; font-weight: bold; color: <?= $scheme_
 #menu-toggle-button {display: none;}
 
 /* content */
-#content {padding: 12px 16px 16px 16px; background-color: <?= $scheme_white ?>;}
-.static-layout #content {min-width: 1000px;}
-.responsive-layout #content {min-width: 320px;}
+#content {min-width: 320px; padding: 12px 16px 16px 16px; background-color: <?= $scheme_white ?>;}
 
 /* footer */
 #footer {margin-bottom: 0.5em; text-align: right;}
@@ -325,7 +323,7 @@ a#usermenu-username {margin-right: 0.5em; font-weight: bold; color: <?= $scheme_
 
 /* login layout */
 .login-layout {background: radial-gradient(at center 270px, <?= $scheme_smoke_light ?>, <?= $scheme_smoke_dark ?>) no-repeat fixed;}
-.login-layout .wrapper {max-width: 500px; min-width: 0;}
+.login-layout .wrapper {max-width: 500px;}
 .login-layout #header, .login-layout #menu {display: none;}
 .login-layout #top {padding-top: 140px; background: url("../public/images/logo.png") center 50px no-repeat;}
 .login-layout #content {padding: 24px 16px; box-shadow: 0 0 6px 1px <?= $scheme_alpha_shadow ?>; text-align: center;}
@@ -499,10 +497,7 @@ body.busy-overlay-active {overflow: hidden;}
 #busy-overlay > div > div > p {color: #fff; font-size: 1.8em;}
 
 /* link styles */
-a.normal {color: <?= $scheme_text ?>;}
-a.invisible {color: <?= $scheme_smoke_text ?>;}
-a.notpublic {font-style: italic; color: <?= $scheme_text ?>;}
-a.invisible-notpublic {color: <?= $scheme_smoke_text ?>; font-style: italic;}
+a.invisible-link {color: <?= $scheme_smoke_text ?>;}
 a.active-link {text-decoration: underline !important;}
 
 /* highlight */
@@ -663,7 +658,6 @@ fieldset fieldset .bborder {border-color: <?= $scheme_smoke ?>;}
 .small {font-size: 10px;}
 .block {display: block;}
 .note {color: <?= $scheme_smoke_text ?>;}
-.minwidth {min-width: 700px;}
 .important {color: red;}
 .highlight {color: <?= $scheme_link ?>;}
 .max-area {width: 100%; height: 100%;}
@@ -766,6 +760,9 @@ tr.valign-top > *, table.valign-top > * > tr > * {vertical-align: top;}
     #footer {position: sticky; bottom: 0; z-index: 200; margin-bottom: 0;}
 
     /* login layout */
+    .login-layout #container {min-width: 320px;}
+    .login-layout .wrapper {width: 90%; max-width: 400px;}
+    .login-layout #page {overflow-x: unset;}
     .login-layout .login_form :is(table, tbody, tr, th, td) {display: block;}
     .login-layout .login_form th {text-align: left; margin-top: 10px;}
 
@@ -775,7 +772,7 @@ tr.valign-top > *, table.valign-top > * > tr > * {vertical-align: top;}
     /* content management */
     #contenttable, #contenttable > tbody, #contenttable > tbody > tr, #contenttable > tbody > tr > td {display: block;}
     #contenttable {border: none; background: none;}
-    #contenttable .form-box {width: auto !important; margin-bottom: 20px; border: 1px solid <?= $scheme_smoke ?>;}
+    #contenttable .form-box {margin-bottom: 20px; border: 1px solid <?= $scheme_smoke ?>;}
     #contenttable-actions {line-height: 270%;}
 
     /* file manager */
@@ -809,13 +806,14 @@ tr.valign-top > *, table.valign-top > * > tr > * {vertical-align: top;}
     .two-columns > tbody > tr > td {margin-bottom: 20px;}
 
     /* form tables */
-    .responsive-layout .formtable,
-    .responsive-layout .formtable > tbody,
-    .responsive-layout .formtable > tbody > tr,
-    .responsive-layout .formtable > tbody > tr > td,
-    .responsive-layout .formtable > tbody > tr > th {display: block;}
-    .responsive-layout .formtable > tbody > tr > th {margin-top: 5px; text-align: left;}
-    .responsive-layout .formtable :is(
+    .formtable,
+    .formtable > tbody,
+    .formtable > tfoot,
+    .formtable > tbody > tr,
+    .formtable > tbody > tr > td,
+    .formtable > tbody > tr > th {display: block;}
+    .formtable > tbody > tr > th {margin-top: 10px; text-align: left;}
+    .formtable :is(
         .areasmall,
         .areasmallwide,
         .areamedium,
@@ -825,22 +823,21 @@ tr.valign-top > *, table.valign-top > * > tr > * {vertical-align: top;}
         .selectbig,
         select
     ) {width: 80%;}
-    /*.responsive-layout .formtable :is(*/
-    /*    .areasmall,*/
-    /*    .areasmallwide,*/
-    /*    .areamedium,*/
-    /*    .areabig,*/
-    /*    .areabigperex,*/
-    /*    .inputsmall,*/
-    /*    .inputmedium,*/
-    /*    .inputbig,*/
-    /*    .selectmedium,*/
-    /*    .selectbig,*/
-    /*    select*/
-    /*) {width: 80%;}*/
+
+    .edittable .main-box > table,
+    .edittable .main-box > table > tbody,
+    .edittable .main-box > table > tfoot,
+    .edittable .main-box > table > tbody > tr,
+    .edittable .main-box > table > tbody > tr > td,
+    .edittable .main-box > table > tbody > tr > th {display: block;}
+    .edittable .main-box > table > tbody > tr > th {margin-top: 10px; text-align: left;}
+    .edittable td:has(.button + .button) .button {margin-bottom: 5px;}
+    .edittable select + select {margin-top: 5px;}
+
+    .form-box {width: auto !important; border-right: none;}
 
     /* form element sizes */
-    .inputmedium, .selectmedium {190px;}
+    .inputmedium, .selectmedium {width: 190px;}
 
     /* generic */
     .desktop-only {display: none !important;}
