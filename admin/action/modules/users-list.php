@@ -76,8 +76,9 @@ $output .= '
 <form class="cform" action="' . _e(Router::admin(null)) . '" method="get">
 ' . Form::input('hidden', 'p', 'users-list') . '
 ' . Form::input('hidden', 'search', Request::get('search', '')) . '
-<strong>' . _lang('admin.users.list.groupfilter') . ':</strong> '
+<strong>' . _lang('admin.users.list.groupfilter') . ':</strong><br class="mobile-only"> '
 . Admin::userSelect('group_id', ['selected' => $group, 'extra_option' => _lang('global.all'), 'select_groups' => true])
+. ' '
 . Form::input('submit', null, _lang('global.apply'), ['class' => 'button']) . '
 </form>
 </td>
@@ -86,7 +87,7 @@ $output .= '
 <form class="cform" action="' . _e(Router::admin(null)) . '" method="get">
 ' . Form::input('hidden', 'p', 'users-list') . '
 ' . Form::input('hidden', 'group_id', $group) . '
-<strong>' . _lang('admin.users.list.search') . ':</strong> ' . Form::input('text', 'search', Request::get('search'), ['class' => 'inputsmall']) . ' ' .  Form::input('submit', null, _lang('mod.search.submit'), ['class' => 'button']) . '
+<strong>' . _lang('admin.users.list.search') . ':</strong><br class="mobile-only"> ' . Form::input('text', 'search', Request::get('search'), ['class' => 'inputsmall']) . ' ' .  Form::input('submit', null, _lang('mod.search.submit'), ['class' => 'button']) . '
 ' . ($search ? ' <a href="' . _e(Router::admin('users-list', ['query' => ['group' => $group]])) . '">' . _lang('global.cancel') . '</a>' : '') . '
 </form>
 </td>

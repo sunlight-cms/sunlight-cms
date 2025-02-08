@@ -76,7 +76,8 @@ echo _buffer(function () use ($_admin) {
 
     ?>
 <?= GenericTemplates::renderHead() ?>
-<meta name="robots" content="noindex,nofollow"><?= GenericTemplates::renderHeadAssets($_admin->assets), "\n" ?>
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1"><?= GenericTemplates::renderHeadAssets($_admin->assets), "\n" ?>
 <title><?= Settings::get('title'), ' - ', _lang('global.admintitle'), (!empty($_admin->title) ? ' - ' . $_admin->title : '') ?></title>
 </head>
 
@@ -87,30 +88,34 @@ echo _buffer(function () use ($_admin) {
 <?php if (!$replaceBody): ?>
 <div id="container">
 
-    <div id="top">
+    <header id="top">
         <div class="wrapper">
             <div id="header">
                 <?= Admin::userMenu($_admin->dark) ?>
                 <div id="title">
+                    <label id="menu-toggle-button" for="menu-toggle" aria-label="<?= _lang('admin.open_menu') ?>">☰</label>
                     <?= Settings::get('title'), ' - ', _lang('global.admintitle') ?>
                 </div>
             </div>
 
             <hr class="hidden">
-
+            <input type="checkbox" class="hidden" id="menu-toggle">
             <?= Admin::menu() ?>
         </div>
-    </div>
+    </header>
 
-    <div id="page" class="wrapper">
+    <main id="page" class="wrapper">
         <div id="content" class="module-<?= _e($_admin->currentModule) ?>">
             <?= $_admin->output ?>
 
             <div class="cleaner"></div>
         </div>
+    </main>
 
+    <footer id="footer" class="wrapper">
         <hr class="hidden">
-        <div id="footer">
+
+        <div id="footer-content">
             <div id="footer-links">
                 <?php if ($_admin->access): ?>
                     <a href="<?= _e(Router::index()) ?>" target="_blank"><?= _lang('admin.link.site') ?></a>
@@ -121,10 +126,10 @@ echo _buffer(function () use ($_admin) {
             </div>
 
             <div id="footer-powered-by">
-                <?= _lang('system.poweredby') ?> <a href="https://sunlight-cms.cz/" target="_blank">SunLight CMS</a>
+                <a href="https://sunlight-cms.cz/" target="_blank"><?= _lang('system.poweredby') ?> SunLight CMS</a>
             </div>
         </div>
-    </div>
+    </footer>
 
 </div>
 <?php endif ?>

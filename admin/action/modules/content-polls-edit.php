@@ -11,6 +11,7 @@ use Sunlight\Util\Arr;
 use Sunlight\Util\Form;
 use Sunlight\Util\Html;
 use Sunlight\Util\Request;
+use Sunlight\Util\StringHelper;
 use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
@@ -210,12 +211,12 @@ if ($continue) {
 
   <tr><td></td>
   <td>
-    ' . Form::input('submit', null, $submitcaption, ['accesskey' => 's'])
+    ' . Form::input('submit', null, $submitcaption, ['class' => 'button bigger', 'accesskey' => 's'])
     . (!$new
-            ? '<span class="customsettings"><a href="' . _e(Xsrf::addToUrl(Router::admin('content-polls', ['query' => ['del' => $id]]))) . '" onclick="return Sunlight.confirm();">'
+            ? ' <a class="button bigger" href="' . _e(Xsrf::addToUrl(Router::admin('content-polls', ['query' => ['del' => $id]]))) . '" onclick="return Sunlight.confirm();">'
                 . '<img src="' . _e(Router::path('admin/public/images/icons/delete.png')) . '" class="icon" alt="del">'
-                . _lang('global.delete')
-                . '</a></span>'
+                . StringHelper::ucfirst(_lang('global.delete'))
+                . '</a>'
             . '<span class="customsettings"><small>' . _lang('admin.content.form.thisid') . ' ' . $id . '</small></span>'
             : '')
 . '</td>

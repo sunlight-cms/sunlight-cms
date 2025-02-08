@@ -84,6 +84,8 @@ return [
     'global.time' => 'Time',
     'global.postauthor' => 'Sent by',
     'global.unconfirmed' => 'not approved',
+    'global.unpublished' => 'not published',
+    'global.notpublic' => 'not public',
     'global.article' => 'Article',
     'global.id' => 'ID',
     'global.default' => 'Default',

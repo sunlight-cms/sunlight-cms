@@ -342,6 +342,23 @@ if ($continue) {
 
     $picture .= Form::input('file', 'picture', null, ['id' => 'article-edit-picture-upload']) . "\n";
 
+    // save row
+    $save_row = Form::input('submit', null, _lang($submittext), ['class' => 'button bigger', 'accesskey' => 's'])
+        . (!$new ? '
+            <a class="button bigger" href="' . _e(Router::article($query['id'], $query['slug'], $query['cat_slug'])) . '" target="_blank">'
+                . '<img src="' . _e(Router::path('admin/public/images/icons/show.png')) . '" alt="show" class="icon">'
+                . _lang('global.open')
+            . '</a>
+    
+            <a class="button bigger" href="' . _e(Router::admin('content-articles-delete', ['query' => ['id' => $query['id'], 'returnid' => $query['home1'], 'returnpage' => 1]])) . '">
+                <img src="' . _e(Router::path('admin/public/images/icons/delete.png')) . '" alt="del" class="icon">' . StringHelper::ucfirst(_lang('global.delete')) . '
+            </a>
+
+            <span class="customsettings">
+                <small>' . _lang('admin.content.form.thisid') . ' ' . $query['id'] . '</small>
+            </span>
+        ' : '');
+
     // form
     $output .= Admin::backlink($backlink) . '
 <h1>' . _lang('admin.content.articles.edit.title') . '</h1>
@@ -356,14 +373,16 @@ if ($continue) {
     <table class="formtable edittable">
         <tbody>
             <tr class="valign-top">
-                <td class="contenttable-box main-box">
+                <td class="form-box main-box">
                     <table>
                         <tbody>
                             <tr>
                                 <th>' . _lang('article.category') . '</th>
                                 <td>'
                                     . Admin::pageSelect('home1', ['type' => Page::CATEGORY, 'selected' => $query['home1']])
+                                    .' '
                                     . Admin::pageSelect('home2', ['type' => Page::CATEGORY, 'selected' => $query['home2'], 'empty_item' => _lang('admin.content.form.category.none')])
+                                    .' '
                                     . Admin::pageSelect('home3', ['type' => Page::CATEGORY, 'selected' => $query['home3'], 'empty_item' => _lang('admin.content.form.category.none')])
                                     . '
                                 </td>
@@ -391,30 +410,14 @@ if ($continue) {
                         </tbody>
                         <tfoot>
                             ' . Extend::buffer('admin.article.form', ['article' => $query]) . '
-                            <tr>
+                            <tr class="desktop-only">
                                 <td></td>
-                                <td id="ae-lastrow"><br>' . Form::input('submit', null, _lang($submittext), ['class' => 'button bigger', 'accesskey' => 's'])
-                                . (!$new ? '
-                                    <a class="button bigger" href="' . _e(Router::article($query['id'], $query['slug'], $query['cat_slug'])) . '" target="_blank">'
-                                        . '<img src="' . _e(Router::path('admin/public/images/icons/show.png')) . '" alt="show" class="icon">'
-                                        . _lang('global.open') 
-                                    . '</a>
-
-                                    <span class="customsettings">
-                                        <a href="' . _e(Router::admin('content-articles-delete', ['query' => ['id' => $query['id'], 'returnid' => $query['home1'], 'returnpage' => 1]])) . '">
-                                            <img src="' . _e(Router::path('admin/public/images/icons/delete.png')) . '" alt="del" class="icon">' . _lang('global.delete') . '
-                                        </a>
-                                    </span>
-                                    <span class="customsettings">
-                                        <small>' . _lang('admin.content.form.thisid') . ' ' . $query['id'] . '</small>
-                                    </span>
-                                ' : '')
-                                . '</td>
+                                <td>' . $save_row . '</td>
                             </tr>
                        </tfoot>     
                     </table>    
                 </td> 
-                <td class="contenttable-box">
+                <td class="form-box">
                     <div id="settingseditform">
                         ' . Extend::buffer('admin.article.settings.before', ['article' => $query]) . '
                         <fieldset>
@@ -456,6 +459,9 @@ if ($continue) {
                         ' . Extend::buffer('admin.article.settings.after', ['article' => $query]) . '
                     </div>
                 </td>
+            </tr>
+            <tr class="mobile-only">
+                <td>' . $save_row . '</td>
             </tr>
         </tbody>
     </table>

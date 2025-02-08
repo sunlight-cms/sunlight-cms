@@ -26,7 +26,7 @@ abstract class Admin
     {
         global $_admin;
 
-        $output = "<div id=\"menu\">\n";
+        $output = "<nav id=\"menu\">\n";
 
         if ($_admin->access) {
             foreach ($_admin->menu as $module => $order) {
@@ -46,7 +46,7 @@ abstract class Admin
             $output .= '<a href="' . _e(Router::adminIndex()) . '" class="act"><span>' . _lang('login.title') . "</span></a>\n";
         }
 
-        $output .= "</div>\n";
+        $output .= "</nav>\n";
 
         return $output;
     }
@@ -271,44 +271,39 @@ abstract class Admin
      *
      * @param array $art article data, including cat_slug
      */
-    static function articleEditLink(array $art, bool $showUnconfirmedNote = true): string
+    static function articleEditLink(array $art, bool $showFlags = true): string
     {
         $output = '';
 
-        // class
-        $class = '';
-
-        if ($art['visible'] == 0 && $art['public'] == 1) {
-            $class = ' class="invisible"';
-        }
-
-        if ($art['visible'] == 1 && $art['public'] == 0) {
-            $class = ' class="notpublic"';
-        }
-
-        if ($art['visible'] == 0 && $art['public'] == 0) {
-            $class = ' class="invisible-notpublic"';
-        }
-
         // link
-        $output .= '<a href="' . _e(Router::article($art['id'], $art['slug'], $art['cat_slug'])) . '" target="_blank"' . $class . '>';
+        $output .= '<a'
+            . ' href="' . _e(Router::article($art['id'], $art['slug'], $art['cat_slug'])) . '"'
+            . ' target="_blank"'
+            . ($art['visible'] == 0 ? ' class="invisible-link"' : '')
+            . '>';
 
-        if ($art['time'] <= time()) {
-            $output .= '<strong>';
-        }
-
-        $output .= $art['title'];
-
-        if ($art['time'] <= time()) {
-            $output .= '</strong>';
-        }
-
+        $output .= StringHelper::ellipsis($art['title'], 64);
         $output .= '</a>';
 
-        // confirmation note
-        if ($art['confirmed'] != 1 && $showUnconfirmedNote) {
-            $output .= ' <small>(' . _lang('global.unconfirmed') . ')</small>';
+        // note
+        if ($showFlags) {
+            $notes = [];
+
+            if ($art['confirmed'] != 1) {
+                $notes[] = _lang('global.unconfirmed');
+            } elseif ($art['time'] > time()) {
+                $notes[] = _lang('global.unpublished');
+            }
+
+            if ($art['public'] == 0) {
+                $notes[] = _lang('global.notpublic');
+            }
+
+            if (!empty($notes)) {
+                $output .= ' <small>(' . implode(', ', $notes) . ')</small>';
+            }
         }
+
 
         return $output;
     }
@@ -705,8 +700,6 @@ abstract class Admin
                 'jquery' => Router::path('system/public/jquery.js'),
                 'sunlight' => Router::path('system/public/sunlight.js'),
                 'rangyinputs' => Router::path('system/public/rangyinputs.js'),
-                'scrollwatch' => Router::path('system/public/scrollwatch.js'),
-                'scrollfix' => Router::path('system/public/scrollfix.js'),
                 'jquery_ui' => Router::path('admin/public/jquery-ui.js'),
                 'admin' => Router::path('admin/public/admin.js'),
             ],

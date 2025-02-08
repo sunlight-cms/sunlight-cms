@@ -28,12 +28,12 @@ $output .= '
 
 ' . (isset($_GET['saved']) ? Message::ok(_lang('global.saved')) : '') . '
 
-<form method="post">
+<form method="post" class="cform">
 
 <table class="formtable">
 
 <tr>
-    <th>' . _lang('admin.menu.index.edit.pos') . '</th>
+    <th class="cell-shrink">' . _lang('admin.menu.index.edit.pos') . '</th>
     <td>' . Form::select(
         'pos',
         [
@@ -45,8 +45,8 @@ $output .= '
 </tr>
 
 <tr class="valign-top">
-    <th>' . _lang('admin.menu.index.edit.text') . '</th>
-    <td class="minwidth">' . Admin::editor('index-edit', 'text', $admin_index_cfg['admin_index_custom']) . '</td>
+    <th class="cell-shrink">' . _lang('admin.menu.index.edit.text') . '</th>
+    <td>' . Admin::editor('index-edit', 'text', $admin_index_cfg['admin_index_custom'], ['class' => 'areabig']) . '</td>
 </tr>
 
 <tr>

@@ -229,6 +229,7 @@ $output .= $message . '
     <form action="' . _e(Router::admin('users')) . '" method="post">
         <p class="bborder"><strong>' . _lang('admin.users.groups.new') . ':</strong> '
         . Admin::userSelect('type', ['extra_option' => _lang('admin.users.groups.new.empty'), 'select_groups' => true])
+        . ' '
         . Form::input('submit', null, _lang('global.do'), ['class' => 'button']) . '
         </p>'
         . Xsrf::getInput() . '</form>

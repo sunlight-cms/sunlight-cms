@@ -494,12 +494,22 @@ $actionOptions = array_merge(
     ($type == Page::PLUGIN && $new ? ['query' => ['idt' => $type_idt]] : [])
 );
 
+// save row
+$editscript_save_row = Form::input('submit', null, ($new ? _lang('global.create') : _lang('global.savechanges')), ['class' => 'button bigger', 'accesskey' => 's']) . "\n"
+    . (!$new
+        ? ' <a class="button bigger" href="' . _e(Router::page($query['id'], $query['slug'])) . '" target="_blank">'
+            . '<img src="' . _e(Router::path('admin/public/images/icons/show.png')) . '" alt="open" class="icon">'
+            . _lang('global.open')
+            . '</a>'
+        : '');
+
+// output
 $output .= '<form class="cform" action="' . _e(Router::admin('content-edit' . Page::TYPES[$type], $actionOptions)) . '" method="post">
 ' . $editscript_extra . '  
     <table class="formtable edittable">
         <tbody>
             <tr class="valign-top">
-                <td class="contenttable-box main-box">
+                <td class="form-box main-box">
                     <table>
                         <tbody>
                             <tr>
@@ -558,23 +568,14 @@ $output .= '<form class="cform" action="' . _e(Router::admin('content-edit' . Pa
                         . '</tbody>
                        <tfoot>
                         <tr><td></td><td></td></tr>
-                        <tr>
+                        <tr class="desktop-only">
                             <td></td>
-                            <td>
-                                ' . Form::input('submit', null, ($new ? _lang('global.create') : _lang('global.savechanges')), ['class' => 'button bigger', 'accesskey' => 's']) . '
-
-                                ' . (!$new
-                                    ? ' <a class="button bigger" href="' . _e(Router::page($query['id'], $query['slug'])) . '" target="_blank">'
-                                        . '<img src="' . _e(Router::path('admin/public/images/icons/show.png')) . '" alt="open" class="icon">'
-                                        . _lang('global.open')
-                                        . '</a>'
-                                    : '') . '
-                            </td>
+                            <td>' . $editscript_save_row . '</td>
                         </tr>
                        </tfoot>     
                     </table>                
                 </td> 
-                <td class="contenttable-box">
+                <td class="form-box">
 
                     <div id="settingseditform">'
 
@@ -627,7 +628,7 @@ $output .= '<form class="cform" action="' . _e(Router::admin('content-edit' . Pa
                                 . '</td>
                             </tr>
                             <tr>
-                                <td colspan="2">' . Form::input('checkbox', 'public', '1', ['checked' => (bool) $query['public']]) . ' ' . _lang('admin.content.form.public') . '</td>
+                                <td colspan="2"><label>' . Form::input('checkbox', 'public', '1', ['checked' => (bool) $query['public']]) . ' ' . _lang('admin.content.form.public') . '</label></td>
                             </tr>
                         </tbody>
                         </table>
@@ -635,6 +636,9 @@ $output .= '<form class="cform" action="' . _e(Router::admin('content-edit' . Pa
                 . $editscript_setting_extra2
                 . '</div>
                 </td>
+            </tr>
+            <tr class="mobile-only">
+                <td colspan="2">' . $editscript_save_row . '</td>
             </tr>
         </tbody>
     </table>

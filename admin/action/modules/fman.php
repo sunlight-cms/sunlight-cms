@@ -646,6 +646,7 @@ if ($continue) {
     <a href="' . _e($fmanUrl(['a' => 'newfolder'])) . '">' . _lang('admin.fman.menu.createfolder') . '</a>
     ' . ((User::hasPrivilege('admingallery') && User::hasPrivilege('admincontent')) ? '<a href="#" onclick="return Sunlight.admin.fmanAddSelectedToGallery()">' . _lang('admin.fman.menu.addtogallery') . '</a>' : '') . '
     <a href="' . _e($fmanUrl(['dir' => null])) . '">' . _lang('admin.fman.menu.home') . '</a>
+    <br class="mobile-only">
     <strong>' . _lang('admin.fman.currentdir') . ':</strong> ' . substr($dir, strlen(SL_ROOT)) . '
     </p>
 
@@ -799,11 +800,12 @@ if ($continue) {
     <a href="#" onclick="return Sunlight.admin.fmanSelect(' . _num($filecounter) . ', 1)">' . _lang('admin.fman.selectall') . '</a>
     <a href="#" onclick="return Sunlight.admin.fmanSelect(' . _num($filecounter) . ', 2)">' . _lang('admin.fman.deselectall') . '</a>
     <a href="#" onclick="return Sunlight.admin.fmanSelect(' . _num($filecounter) . ', 3)">' . _lang('admin.fman.inverse') . '</a>
+    <br class="mobile-only">
     <strong>' . _lang('admin.fman.selected') . ':</strong>&nbsp;&nbsp;
     <a href="#" onclick="return Sunlight.admin.fmanMoveSelected()">' . _lang('admin.fman.selected.move') . '</a>
     <a href="#" onclick="return Sunlight.admin.fmanDeleteSelected()">' . _lang('admin.fman.selected.delete') . '</a>
     <a href="#" onclick="return Sunlight.admin.fmanDownloadSelected()">' . _lang('admin.fman.selected.download') . '</a>
-    <a href="#top"><span class="big-text">&uarr;</span></a>
+    <a href="#top" class="desktop-only"><span class="big-text">&uarr;</span></a>
     </p>
     ';
 }

@@ -90,13 +90,13 @@ return [
     'content-articles-edit' => ['title' => _lang('admin.content.articles.edit.title'),
         'access' => User::hasPrivilege('adminart'),
         'parent' => 'content-articles',
-        'custom_header' => true
+        'custom_header' => true,
     ],
     'content-articles-delete' => [
         'title' => _lang('admin.content.articles.delete.title'),
         'access' => User::hasPrivilege('adminart'),
         'parent' => 'content-articles',
-        'custom_header' => true
+        'custom_header' => true,
     ],
     'content-confirm' => [
         'title' => _lang('admin.content.confirm.title'),
