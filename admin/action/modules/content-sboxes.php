@@ -182,6 +182,7 @@ if (DB::size($shoutboxes) != 0) {
     <th>' . _lang('admin.content.form.hcm') . '</th>
     <td>
         ' . Form::input('text', null, Hcm::compose("sbox,{$shoutbox['id']}"), ['onclick' => 'this.select()', 'readonly' => true]) . '
+        <br class="mobile-only">
         <small>' . _lang('admin.content.form.thisid') . ' ' . $shoutbox['id'] . '</small>
     </td>
     </tr>

@@ -55,6 +55,7 @@ $output .= '
 ' . $message . '
 
 <form method="post">
+<div class="horizontal-scroller">
 <table class="list list-hover list-max">
 <thead><tr><td>' . _lang('global.article') . '</td><td>' . _lang('article.category') . '</td><td>' . _lang('article.posted') . '</td><td>' . _lang('article.author') . '</td><td>' . _lang('global.action') . '</td></tr></thead>
 <tbody>';
@@ -112,5 +113,6 @@ if (DB::size($query) != 0) {
 
 $output .= '</tbody>
 </table>
+</div>
 ' . Xsrf::getInput() . '
 </form>';

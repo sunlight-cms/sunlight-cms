@@ -724,7 +724,7 @@ tr.valign-top > *, table.valign-top > * > tr > * {vertical-align: top;}
 
 /* desktop only styles >=1000px */
 @media all and (min-width: 1000px) {
-    .mobile-only {display: none !important;}
+    .mobile-only, .mobile-spacer {display: none !important;}
 }
 
 /* responsive styles <1000px */
@@ -787,6 +787,10 @@ tr.valign-top > *, table.valign-top > * > tr > * {vertical-align: top;}
     .module-plugins .list .inline-list > li {display: block; padding: 0;}
     .module-plugins .list .inline-list > li:after {display: none;}
 
+    /* articles */
+    .module-content-articles-list .list > tbody > tr > td:first-child,
+    .module-content-confirm .list > tbody > tr > td:first-child {min-width: 100px;}
+
     /* two-column layout */
     .two-columns {border: none;}
     .two-columns, .two-columns > tbody, .two-columns > tbody > tr, .two-columns > tbody > tr > td {display: block; width: auto; margin: 0; padding: 0;}
@@ -823,10 +827,12 @@ tr.valign-top > *, table.valign-top > * > tr > * {vertical-align: top;}
 
     /* form element sizes */
     .inputmedium, .selectmedium {width: 190px;}
+    .inputbig {width: 100%;}
 
     /* buttons */
     *:has(> .button + .button:not(.block)) > .button {margin-bottom: 5px !important;}
-    td.actions .button:has(.icon) {width: 14px; overflow: hidden;}
+    td.actions a.button:has(.icon) {width: 14px; overflow: hidden;}
+    td.actions button.button:has(.icon) {width: 26px; overflow: hidden;}
 
     /* list */
     .list-half {width: 100%;}
@@ -848,6 +854,8 @@ tr.valign-top > *, table.valign-top > * > tr > * {vertical-align: top;}
     /* generic */
     .desktop-only {display: none !important;}
     .user-link {white-space: nowrap;}
+    .mobile-text-wrap {overflow-wrap: anywhere;}
+    .mobile-spacer {height: 5px;}
 }
 
 /* responsive styles < 420px */

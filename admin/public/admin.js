@@ -303,6 +303,7 @@ Sunlight.admin = (function ($) {
                     inputSelector: null,
                     stopperSelector: null,
                     handleSelector: null,
+                    handleSelectorNoTouch: null,
                     sortingClass: 'sorting',
                     placeholder: 'sortable-placeholder',
                     tolerance: null,
@@ -339,6 +340,16 @@ Sunlight.admin = (function ($) {
                 });
             }
 
+            var handles = [];
+
+            if (options.handleSelector) {
+                handles.push(options.handleSelector);
+            }
+
+            if (options.handleSelectorNoTouch && !window.matchMedia('(pointer: coarse)').matches) {
+                handles.push(options.handleSelectorNoTouch);
+            }
+
             $(container)
                 .sortable({
                     items: options.itemSelector,
@@ -347,7 +358,7 @@ Sunlight.admin = (function ($) {
                     cancel: options.cancel,
                     forceHelperSize: true,
                     cursor: 'move',
-                    handle: options.handleSelector || false
+                    handle: handles.length > 0 ? handles.join(', ') : false
                 })
                 .on('sortstart', function (e, ui) {
                     $(container).addClass(options.sortingClass);

@@ -65,6 +65,7 @@ $paging = Paginator::paginateTable(
 $output .= $paging['paging'];
 
 $output .= $message . '
+<div class="horizontal-scroller">
 <table class="list list-hover list-max">
 <thead><tr><td>' . _lang('admin.content.form.question') . '</td>' . (User::hasPrivilege('adminpollall') ? '<td>' . _lang('article.author') . '</td>' : '') . '<td>' . _lang('global.id') . '</td><td>' . _lang('global.action') . '</td></tr></thead>
 <tbody>
@@ -103,6 +104,7 @@ if (DB::size($query) != 0) {
 $output .= '
 </tbody>
 </table>
+</div>
 
 ' . $paging['paging'] . '
 

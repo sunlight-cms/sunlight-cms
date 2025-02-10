@@ -120,7 +120,9 @@ if (isset($_GET['new']) || isset($_GET['edit'])) {
 }
 
 // table
-$output .= '<table class="list list-hover list-max">
+$output .= '
+<div class="horizontal-scroller">
+<table class="list list-hover list-max">
 <thead>
 <tr>
     <td>' . _lang('admin.content.redir.old') . '</td>
@@ -162,4 +164,5 @@ if ($counter === 0) {
 
 // end table
 $output .= "</tbody>
-</table>\n";
+</table>
+</div>\n";

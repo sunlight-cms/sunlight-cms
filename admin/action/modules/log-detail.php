@@ -52,7 +52,7 @@ if ($entry->context !== null) {
 
 // output
 $output .= _buffer(function () use ($entry, $parsedContext, $userInfo) { ?>
-    <table class="list list-max">
+    <table class="list list-max table-collapse">
         <caption>
             <code><?= nl2br(_e($entry->message), false) ?></code>
         </caption>
@@ -80,7 +80,7 @@ $output .= _buffer(function () use ($entry, $parsedContext, $userInfo) { ?>
             </tr>
             <tr>
                 <th class="cell-shrink"><?= _lang('admin.log.url') ?></th>
-                <td><?= _e($entry->url ?? '-') ?></td>
+                <td class="mobile-text-wrap"><?= _e($entry->url ?? '-') ?></td>
             </tr>
             <tr>
                 <th class="cell-shrink"><?= _lang('admin.log.ip') ?></th>

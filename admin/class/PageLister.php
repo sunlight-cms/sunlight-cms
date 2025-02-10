@@ -258,7 +258,8 @@ abstract class PageLister
     class="sortable"
     data-input-selector="td.page-list-sortcell input"
     data-stopper-selector="tr.page-separator"
-    data-handle-selector="td.page-title, .sortable-handle"';
+    data-handle-selector=".sortable-handle"
+    data-handle-selector-no-touch="td.page-title"';
         }
 
         $output .= ">\n";

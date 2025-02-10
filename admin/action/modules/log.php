@@ -96,6 +96,7 @@ $output .= _buffer(function () use ($query, $queryParamValues, $queryParamErrors
                     'class' => 'log-time-presets',
                     'onchange' => "const o = this.options[this.selectedIndex]; this.form.since.value = o.dataset.since; this.form.until.value = o.dataset.until; this.value = '';",
                 ]) ?>
+                <div class="mobile-spacer"></div>
                 <?= Form::input('text', 'since', $queryParamValues['since'], ['class' => 'inputsmall' . (isset($queryParamErrors['since']) ? ' error-border' : '')]) ?>
                 -
                 <?= Form::input('text', 'until', $queryParamValues['until'], ['class' => 'inputsmall' . (isset($queryParamErrors['until']) ? ' error-border' : '')]) ?>

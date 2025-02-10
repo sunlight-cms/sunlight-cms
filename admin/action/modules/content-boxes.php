@@ -68,61 +68,63 @@ $output .= _buffer(function () { ?>
 foreach ($boxes as $template_idt => $template_boxes) {
     $output .= _buffer(
         function (TemplatePlugin $template, array $boxes) { ?>
-    <table class="box-list list list-hover list-max">
-        <caption>
-            <h2><?= _lang('admin.content.form.template') ?>: <?= _e($template->getOption('name')) ?></h2>
-        </caption>
-        <thead>
-        <tr>
-            <th class="box-order-cell"><?= _lang('admin.content.form.ord') ?></th>
-            <th class="box-slot-cell"><?= _lang('admin.content.boxes.slot') ?></th>
-            <th class="box-title-cell"><?= _lang('admin.content.form.title') ?></th>
-            <th class="box-settings-cell"><?= _lang('admin.content.form.settings') ?></th>
-            <th class="box-action-cell"><?= _lang('global.action') ?></th>
-        </tr>
-        </thead>
-        <?php foreach ($boxes as $layout_boxes): ?>
-            <tbody class="sortable" data-input-selector=".box-order-input" data-handle-selector="td.box-sortable-cell, .sortable-handle">
-            <?php foreach ($layout_boxes as $box): ?>
+    <div class="horizontal-scroller">
+        <table class="box-list list list-hover list-max">
+            <caption>
+                <h2><?= _lang('admin.content.form.template') ?>: <?= _e($template->getOption('name')) ?></h2>
+            </caption>
+            <thead>
+            <tr>
+                <th class="box-order-cell"><?= _lang('admin.content.form.ord') ?></th>
+                <th class="box-slot-cell"><?= _lang('admin.content.boxes.slot') ?></th>
+                <th class="box-title-cell"><?= _lang('admin.content.form.title') ?></th>
+                <th class="box-settings-cell"><?= _lang('admin.content.form.settings') ?></th>
+                <th class="box-action-cell"><?= _lang('global.action') ?></th>
+            </tr>
+            </thead>
+            <?php foreach ($boxes as $layout_boxes): ?>
+                <tbody class="sortable" data-input-selector=".box-order-input" data-handle-selector=".sortable-handle" data-handle-selector-no-touch="td.box-sortable-cell">
+                <?php foreach ($layout_boxes as $box): ?>
+                    <tr>
+                        <td class="box-order-cell"><span class="sortable-handle"></span><?= Form::input('number', 'ord[' . $box['id'] .']', $box['ord'], ['class' => 'inputmini box-order-input']) ?></td>
+                        <td class="box-slot-cell box-sortable-cell"><?= _e(sprintf('%s - %s', $template->getLayoutLabel($box['layout']), $template->getSlotLabel($box['layout'], $box['slot']))) ?></td>
+                        <td class="box-title-cell box-sortable-cell"><?= _e($box['title']) ?></td>
+                        <td class="box-settings-cell">
+                            <?php if (!$box['public']): $iconTitle = _lang('admin.content.form.private'); ?>
+                                <img src="<?= _e(Router::path('admin/public/images/icons/lock3.png')) ?>" class="icon" alt="<?= $iconTitle ?>" title="<?= $iconTitle ?>">
+                            <?php endif ?>
+                            <?php if ($box['level'] > 0): $iconTitle = _lang('admin.content.form.level') . ' ' . _e($box['level']) . '+'; ?>
+                                <img src="<?= _e(Router::path('admin/public/images/icons/lock.png')) ?>" class="icon" alt="<?= $iconTitle ?>" title="<?= $iconTitle ?>">
+                            <?php endif ?>
+                            <?php if (!$box['visible']): $iconTitle = _lang('admin.content.form.invisible'); ?>
+                                <img src="<?= _e(Router::path('admin/public/images/icons/eye-closed.png')) ?>" class="icon" alt="<?= $iconTitle ?>" title="<?= $iconTitle ?>">
+                            <?php endif ?>
+                            <?php if ($box['page_ids'] !== null): $iconTitle = _lang('admin.content.boxes.page_ids.icon'); ?>
+                                <img src="<?= _e(Router::path('admin/public/images/icons/tree.png')) ?>" class="icon" alt="<?= $iconTitle ?>" title="<?= $iconTitle ?>">
+                            <?php endif ?>
+                        </td>
+                        <td class="box-action-cell">
+                            <a class="button" href="<?= _e(Router::admin('content-boxes-edit', ['query' => ['id' => $box['id']]])) ?>"><img src="<?= _e(Router::path('admin/public/images/icons/edit.png')) ?>" alt="edit" class="icon"><?= _lang('global.edit') ?></a>
+                            <button onclick="return Sunlight.confirm()" name="action" value="delete:<?= _e($box['id']) ?>" class="button">
+                                <img src="<?= _e(Router::path('admin/public/images/icons/delete.png')) ?>" alt="delete" class="icon"><?= _lang('global.delete') ?>
+                            </button>
+                        </td>
+                    </tr>
+                <?php endforeach ?>
+                </tbody>
+            <?php endforeach ?>
+            <tfoot>
                 <tr>
-                    <td class="box-order-cell"><span class="sortable-handle"></span><?= Form::input('number', 'ord[' . $box['id'] .']', $box['ord'], ['class' => 'inputmini box-order-input']) ?></td>
-                    <td class="box-slot-cell box-sortable-cell"><?= _e(sprintf('%s - %s', $template->getLayoutLabel($box['layout']), $template->getSlotLabel($box['layout'], $box['slot']))) ?></td>
-                    <td class="box-title-cell box-sortable-cell"><?= _e($box['title']) ?></td>
-                    <td class="box-settings-cell">
-                        <?php if (!$box['public']): $iconTitle = _lang('admin.content.form.private'); ?>
-                            <img src="<?= _e(Router::path('admin/public/images/icons/lock3.png')) ?>" class="icon" alt="<?= $iconTitle ?>" title="<?= $iconTitle ?>">
-                        <?php endif ?>
-                        <?php if ($box['level'] > 0): $iconTitle = _lang('admin.content.form.level') . ' ' . _e($box['level']) . '+'; ?>
-                            <img src="<?= _e(Router::path('admin/public/images/icons/lock.png')) ?>" class="icon" alt="<?= $iconTitle ?>" title="<?= $iconTitle ?>">
-                        <?php endif ?>
-                        <?php if (!$box['visible']): $iconTitle = _lang('admin.content.form.invisible'); ?>
-                            <img src="<?= _e(Router::path('admin/public/images/icons/eye-closed.png')) ?>" class="icon" alt="<?= $iconTitle ?>" title="<?= $iconTitle ?>">
-                        <?php endif ?>
-                        <?php if ($box['page_ids'] !== null): $iconTitle = _lang('admin.content.boxes.page_ids.icon'); ?>
-                            <img src="<?= _e(Router::path('admin/public/images/icons/tree.png')) ?>" class="icon" alt="<?= $iconTitle ?>" title="<?= $iconTitle ?>">
-                        <?php endif ?>
-                    </td>
-                    <td class="box-action-cell">
-                        <a class="button" href="<?= _e(Router::admin('content-boxes-edit', ['query' => ['id' => $box['id']]])) ?>"><img src="<?= _e(Router::path('admin/public/images/icons/edit.png')) ?>" alt="edit" class="icon"><?= _lang('global.edit') ?></a>
-                        <button onclick="return Sunlight.confirm()" name="action" value="delete:<?= _e($box['id']) ?>" class="button">
-                            <img src="<?= _e(Router::path('admin/public/images/icons/delete.png')) ?>" alt="delete" class="icon"><?= _lang('global.delete') ?>
-                        </button>
+                    <td colspan="5">
+                        <button name="action" value="save_ord" accesskey="s"><?= _lang('global.savechanges') ?></button>
+                        <a class="button right big" href="<?= _e(Router::admin('content-boxes-edit', ['query' => ['template' => $template->getName()]])) ?>">
+                            <img class="icon" src="<?= _e(Router::path('admin/public/images/icons/new.png')) ?>" alt="new"><?= _lang('admin.content.boxes.new.for_template') ?>
+                        </a>
                     </td>
                 </tr>
-            <?php endforeach ?>
-            </tbody>
-        <?php endforeach ?>
-        <tfoot>
-            <tr>
-                <td colspan="5">
-                    <button name="action" value="save_ord" accesskey="s"><?= _lang('global.savechanges') ?></button>
-                    <a class="button right big" href="<?= _e(Router::admin('content-boxes-edit', ['query' => ['template' => $template->getName()]])) ?>">
-                        <img class="icon" src="<?= _e(Router::path('admin/public/images/icons/new.png')) ?>" alt="new"><?= _lang('admin.content.boxes.new.for_template') ?>
-                    </a>
-                </td>
-            </tr>
-        </tfoot>
-    </table>
+            </tfoot>
+        </table>
+    </div>
 <?php },
         [TemplateService::getTemplate($template_idt), $template_boxes]
     );
