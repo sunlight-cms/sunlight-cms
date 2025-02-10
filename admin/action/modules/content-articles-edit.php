@@ -380,9 +380,9 @@ if ($continue) {
                                 <th>' . _lang('article.category') . '</th>
                                 <td>'
                                     . Admin::pageSelect('home1', ['type' => Page::CATEGORY, 'selected' => $query['home1']])
-                                    .' '
+                                    . ' '
                                     . Admin::pageSelect('home2', ['type' => Page::CATEGORY, 'selected' => $query['home2'], 'empty_item' => _lang('admin.content.form.category.none')])
-                                    .' '
+                                    . ' '
                                     . Admin::pageSelect('home3', ['type' => Page::CATEGORY, 'selected' => $query['home3'], 'empty_item' => _lang('admin.content.form.category.none')])
                                     . '
                                 </td>
