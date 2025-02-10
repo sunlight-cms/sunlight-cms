@@ -18,7 +18,7 @@ $sql = Request::post('sql', '');
 // form
 $output .= '
 <form method="post">
-<table id="sqlex">
+<table id="sqlex" class="table-collapse">
     <tr>
         <td>
             <ul>

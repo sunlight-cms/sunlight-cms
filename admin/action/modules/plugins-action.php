@@ -4,13 +4,14 @@ use Sunlight\Admin\Admin;
 use Sunlight\Core;
 use Sunlight\Message;
 use Sunlight\Router;
+use Sunlight\Slugify\Slugify;
 use Sunlight\Util\Request;
 use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
 $id = Request::get('id', '');
-$action = Request::get('action', '');
+$action_name = Request::get('action', '');
 
 if (!Xsrf::check(true)) {
     $output .= Message::error(_lang('global.badinput'));
@@ -24,7 +25,7 @@ $plugin = Core::$pluginManager->getPlugins()->get($id)
 
 if (
     $plugin === null
-    || ($action = $plugin->getAction($action)) === null
+    || ($action = $plugin->getAction($action_name)) === null
 ) {
     $output .= Message::error(_lang('global.badinput'));
 
@@ -32,6 +33,8 @@ if (
 }
 
 // run action
+$_admin->contentClasses[] = Slugify::getInstance()->slugify("plugin-action-{$action_name}");
+
 $result = $action->run();
 
 if ($result->isComplete()) {

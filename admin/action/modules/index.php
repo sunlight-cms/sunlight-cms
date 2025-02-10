@@ -59,7 +59,7 @@ if (!empty($maxltime) && !Cookie::exists(User::COOKIE_PERSISTENT_LOGIN)) {
 
 // output
 $output .= '
-<table id="index-table">
+<table id="index-table" class="table-collapse">
 
 <tr class="valign-top">
 

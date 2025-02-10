@@ -81,7 +81,7 @@ echo _buffer(function () use ($_admin) {
 <title><?= Settings::get('title'), ' - ', _lang('global.admintitle'), (!empty($_admin->title) ? ' - ' . $_admin->title : '') ?></title>
 </head>
 
-<body class="<?= implode(' ', $_admin->bodyClasses) ?>">
+<body class="<?= _e(implode(' ', $_admin->bodyClasses)) ?>">
 
 <?= Extend::buffer('admin.body.start', ['replace' => &$replaceBody]) ?>
 
@@ -105,7 +105,7 @@ echo _buffer(function () use ($_admin) {
     </header>
 
     <main id="page" class="wrapper">
-        <div id="content" class="module-<?= _e($_admin->currentModule) ?>">
+        <div id="content"<?php if (!empty($_admin->contentClasses)): ?> class="<?= _e(implode(' ', $_admin->contentClasses)) ?>"<?php endif ?>>
             <?= $_admin->output ?>
 
             <div class="cleaner"></div>

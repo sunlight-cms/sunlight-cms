@@ -657,6 +657,7 @@ if ($continue) {
     <form action="' . _e($fmanUrl()) . '" method="post" name="filelist">
     ' . Form::input('hidden', 'action', -1) . '
     ' . Form::input('hidden', 'param', -1) . '
+    <div class="horizontal-scroller">
     <table id="fman-list">
     ';
 
@@ -793,6 +794,7 @@ if ($continue) {
 
     $output .= '
     </table>
+    </div>
     ' . Xsrf::getInput() . '</form>
 
     <p class="fman-menu">

@@ -220,7 +220,7 @@ if (isset($_GET['done'])) {
 }
 
 $output .= $message . '
-<table id="contenttable">
+<table id="contenttable" class="table-collapse">
 <tr class="valign-top">
   ' . $pageitems . '
   ' . ($content_modules_str !== '' ? '<td class="form-box" id="content-modules">' . $content_modules_str . '</td>' : '') . '

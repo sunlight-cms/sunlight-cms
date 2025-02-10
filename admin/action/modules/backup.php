@@ -138,19 +138,21 @@ $output .= $message . '
     <p>' . _lang('admin.backup.restore.p') . '</p>
 
     <form method="post" action="' . _e(Router::admin('backup-restore')) . '">
-        <table class="list list-hover">
-            <thead>
-                <tr>
-                    <th>' . _lang('global.name') . '</th>
-                    <th>' . _lang('global.size') . '</th>
-                    <th>' . _lang('global.created_at') . '</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                ' . $backup_list . '
-            </tbody>
-        </table>
+        <div class="horizontal-scroller">
+            <table class="list list-hover">
+                <thead>
+                    <tr>
+                        <th>' . _lang('global.name') . '</th>
+                        <th>' . _lang('global.size') . '</th>
+                        <th>' . _lang('global.created_at') . '</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ' . $backup_list . '
+                </tbody>
+            </table>
+        </div>
 
         <p>
             ' . Form::input('submit', null, _lang('admin.backup.restore.submit.load'), ['class' => 'button'])

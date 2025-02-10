@@ -16,6 +16,8 @@ class AdminState
     public $wysiwygAvailable = false;
     /** @var string[] */
     public $bodyClasses = [];
+    /** @var string[] */
+    public $contentClasses = [];
     /** @var bool */
     public $access;
     /** @var string|null */

@@ -191,7 +191,7 @@ abstract class PageLister
         }
 
         // container start
-        $output = "<div class=\"page-list-container\">\n";
+        $output = "<div class=\"page-list-container horizontal-scroller\">\n";
 
         // breadcrumbs
         if ($options['breadcrumbs'] && self::$config['current_page'] !== null) {

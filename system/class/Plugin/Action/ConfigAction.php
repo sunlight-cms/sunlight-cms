@@ -61,7 +61,7 @@ class ConfigAction extends PluginAction
 
         return ActionResult::output(_buffer(function () use ($fields) { ?>
 <form method="POST">
-    <table class="list valign-top">
+    <table class="list table-collapse valign-top">
         <?php foreach ($fields as $field): ?>
             <tr>
                 <th><?= $field['label'] ?></th>

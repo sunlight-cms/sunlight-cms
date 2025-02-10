@@ -23,7 +23,7 @@ class InfoAction extends PluginAction
         $plugin = $this->plugin;
 
         return ActionResult::output(_buffer(function () use ($plugin) { ?>
-<table class="list valign-top">
+<table class="list table-collapse valign-top">
     <tr>
         <th><?= _lang('global.id') ?></th>
         <td><?= _e($plugin->getId()) ?></td>

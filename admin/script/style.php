@@ -756,7 +756,7 @@ tr.valign-top > *, table.valign-top > * > tr > * {vertical-align: top;}
     #content {background: unset;}
 
     /* footer */
-    #footer {position: sticky; bottom: 0; z-index: 200; margin-bottom: 0;}
+    #footer {position: sticky; bottom: 0; z-index: 190; margin-bottom: 0;}
 
     /* login layout */
     .login-layout #container {min-width: 320px;}
@@ -765,11 +765,7 @@ tr.valign-top > *, table.valign-top > * > tr > * {vertical-align: top;}
     .login-layout .login_form :is(table, tbody, tr, th, td) {display: block;}
     .login-layout .login_form th {text-align: left; margin-top: 10px;}
 
-    /* index */
-    #index-table, #index-table > tbody, #index-table > tbody > tr, #index-table > tbody > tr > td {display: block; width: auto !important; margin: 10px 0;}
-
     /* content management */
-    #contenttable, #contenttable > tbody, #contenttable > tbody > tr, #contenttable > tbody > tr > td {display: block;}
     #contenttable {border: none; background: none;}
     #contenttable .form-box {margin-bottom: 20px; border: 1px solid <?= $scheme_smoke ?>;}
     #contenttable-actions {line-height: 270%;}
@@ -779,16 +775,12 @@ tr.valign-top > *, table.valign-top > * > tr > * {vertical-align: top;}
 
     /* settings */
     #settings-container {display: initial;}
-    #settings-nav {margin-bottom: 5em;}
+    #settings-nav {margin: 0 0 5em 0;}
     #settings-nav li.active a {background-color: unset; color: unset;}
-    #settings-form table,
-    #settings-form table > tbody,
-    #settings-form table > tbody > tr,
-    #settings-form table > tbody > tr > th,
-    #settings-form table > tbody > tr > td {display: block;}
     #settings-form table td {border: none;}
     #settings-form table tr {margin: 10px 0; border-bottom: 1px solid <?= $scheme_smoke_med ?>;}
     #settings-form table tr:last-child {border-bottom: 0;}
+    #settings-form th {margin-bottom: 5px;}
 
     /* plugins */
     #plugins-menu .right {float: none;}
@@ -802,12 +794,11 @@ tr.valign-top > *, table.valign-top > * > tr > * {vertical-align: top;}
 
     /* form tables */
     .formtable,
-    .formtable > tbody,
-    .formtable > tfoot,
-    .formtable > tbody > tr,
-    .formtable > tbody > tr > td,
-    .formtable > tbody > tr > th {display: block;}
-    .formtable > tbody > tr > th {margin-top: 10px; text-align: left;}
+    .formtable > *,
+    .formtable > * > tr,
+    .formtable > * > tr > td,
+    .formtable > * > tr > th {display: block;}
+    .formtable > * > tr > th {margin-top: 10px; text-align: left;}
     .formtable :is(
         .areasmall,
         .areasmallwide,
@@ -820,12 +811,12 @@ tr.valign-top > *, table.valign-top > * > tr > * {vertical-align: top;}
     ) {width: 80%;}
 
     .edittable .main-box > table,
-    .edittable .main-box > table > tbody,
-    .edittable .main-box > table > tfoot,
-    .edittable .main-box > table > tbody > tr,
-    .edittable .main-box > table > tbody > tr > td,
-    .edittable .main-box > table > tbody > tr > th {display: block;}
-    .edittable .main-box > table > tbody > tr > th {margin-top: 10px; text-align: left;}
+    .edittable .main-box > table > *,
+    .edittable .main-box > table > *,
+    .edittable .main-box > table > * > tr,
+    .edittable .main-box > table > * > tr > td,
+    .edittable .main-box > table > * > tr > th {display: block;}
+    .edittable .main-box > table > * > tr > th {margin-top: 10px; text-align: left;}
     .edittable select + select {margin-top: 5px;}
 
     .form-box {width: auto !important; border-right: none;}
@@ -839,6 +830,20 @@ tr.valign-top > *, table.valign-top > * > tr > * {vertical-align: top;}
 
     /* list */
     .list-half {width: 100%;}
+
+    /*  horizontal scroller */
+    .horizontal-scroller {overflow-x: auto;}
+    fieldset .horizontal-scroller {max-width: calc(100vw - 40px);}
+
+    /* tables */
+    .table-collapse,
+    .table-collapse > *,
+    .table-collapse > * > tr,
+    .table-collapse > * > tr > th,
+    .table-collapse > * > tr > td {display: block; width: auto !important;}
+    .table-collapse > * > tr > td:not(:last-child) {margin-bottom: 10px;}
+    .table-collapse > * > tr > th {text-align: left;}
+    .table-collapse > * > tr > th:empty {display: none;}
 
     /* generic */
     .desktop-only {display: none !important;}

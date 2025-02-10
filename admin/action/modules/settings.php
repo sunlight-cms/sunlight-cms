@@ -340,7 +340,7 @@ foreach ($editable_settings as $settings_category => $settings_category_data) {
     $output .= '<fieldset id="settings_' . $settings_category . '">
 <legend>' . $title . '</legend>
 
-<table>';
+<table class="table-collapse">';
 
     foreach ($settings_category_data['items'] as $item) {
         if (!isset($settings[$item['name']])) {

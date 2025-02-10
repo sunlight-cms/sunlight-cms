@@ -13,6 +13,9 @@ if (isset($_admin->modules[$_admin->currentModule])) {
         $module = $_admin->modules[$_admin->currentModule];
         $module_custom_header = (isset($module['custom_header']) && $module['custom_header']);
 
+        // content class
+        $_admin->contentClasses[] = 'module-' . $_admin->currentModule;
+
         // backlink
         if (isset($module['parent']) && !$module_custom_header) {
             $output .= Admin::backlink(Router::admin($module['parent']));

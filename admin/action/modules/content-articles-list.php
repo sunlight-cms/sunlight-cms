@@ -66,6 +66,7 @@ if ($continue) {
     $s = $paging['current'];
     $output .= $paging['paging']
         . $message
+        . '<div class="horizontal-scroller">'
         . '<table class="list list-hover list-max">
     <thead>
         <tr>
@@ -107,7 +108,7 @@ if ($continue) {
         $output .= '<tr><td colspan="4">' . _lang('global.nokit') . '</td></tr>';
     }
 
-    $output .= '</tbody></table>';
+    $output .= '</tbody></table></div>';
     $output .= $paging['paging'];
 } else {
     $output .= Message::error(_lang('global.badinput'));

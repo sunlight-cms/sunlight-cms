@@ -114,6 +114,7 @@ $output .= $paging['paging'];
 // table
 $output .= $message . '
 <form method="post">
+<div class="horizontal-scroller">
 <table id="user-list" class="list list-hover list-max">
 <thead><tr>
     <td>' . Form::input('checkbox', null, null, ['onclick' => 'Sunlight.checkAll(event, this.checked, \'#user-list\')']) . '</td>
@@ -155,7 +156,7 @@ if (DB::size($query) != 0) {
     $output .= '<tr><td colspan="5">' . _lang('global.nokit') . "</td></tr>\n";
 }
 
-$output .= "</tbody></table>\n";
+$output .= "</tbody></table></div>\n";
 
 // user count
 $totalusers = DB::count('user');

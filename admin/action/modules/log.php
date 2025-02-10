@@ -170,50 +170,52 @@ $output .= _buffer(function () use ($query, $queryParamValues, $queryParamErrors
     </table>
 </form>
 
-<table class="list list-max list-noborder log-list">
-    <?php if (!empty($entries)): ?>
-    <caption><?= _lang('admin.log.search.total', ['%count%' => _num($totalResults)]) ?></caption>
-    <?php endif ?>
-    <thead>
-        <tr>
-            <th class="cell-shrink"><?= _lang('global.time') ?></th>
-            <th class="cell-shrink"><?= _lang('admin.log.level') ?></th>
-            <th class="cell-shrink"><?= _lang('admin.log.category') ?></th>
-            <th><?= _lang('admin.log.url') ?></th>
-            <th class="cell-shrink"><?= _lang('global.action') ?></th>
-        </tr>
-    </thead>
-    <?php foreach ($entries as $entry): ?>
-    <tbody>
-        <tr class="log-meta valign-top">
-            <td class="cell-shrink"><strong><?= _e($entry->getDateTime()->format('Y-m-d H:i:s.u')) ?></strong></td>
-            <td class="cell-shrink"><?= _e(Logger::LEVEL_NAMES[$entry->level]) ?></td>
-            <td class="cell-shrink"><?= _e($entry->category) ?></td>
-            <td class="log-url"><?= _e(StringHelper::ellipsis($entry->url ?? '-', 255, false)) ?></td>
-            <td class="actions" rowspan="2">
-                <a class="button" href="<?= _e(Router::admin('log-detail', ['query' => ['id' => $entry->id]])) ?>">
-                    <?= _lang('admin.log.detail.link') ?>
-                </a>
-            </td>
-        </tr>
-        <tr class="log-message">
-            <td colspan="4">
-                <code><?= _e(StringHelper::ellipsis($entry->message, 1024, false)) ?></code>
-            </td>
-        </tr>
-    </tbody>
-    <?php endforeach ?>
+<div class="horizontal-scroller">
+    <table class="list list-max list-noborder log-list">
+        <?php if (!empty($entries)): ?>
+        <caption><?= _lang('admin.log.search.total', ['%count%' => _num($totalResults)]) ?></caption>
+        <?php endif ?>
+        <thead>
+            <tr>
+                <th class="cell-shrink"><?= _lang('global.time') ?></th>
+                <th class="cell-shrink"><?= _lang('admin.log.level') ?></th>
+                <th class="cell-shrink"><?= _lang('admin.log.category') ?></th>
+                <th><?= _lang('admin.log.url') ?></th>
+                <th class="cell-shrink"><?= _lang('global.action') ?></th>
+            </tr>
+        </thead>
+        <?php foreach ($entries as $entry): ?>
+        <tbody>
+            <tr class="log-meta valign-top">
+                <td class="cell-shrink"><strong><?= _e($entry->getDateTime()->format('Y-m-d H:i:s.u')) ?></strong></td>
+                <td class="cell-shrink"><?= _e(Logger::LEVEL_NAMES[$entry->level]) ?></td>
+                <td class="cell-shrink"><?= _e($entry->category) ?></td>
+                <td class="log-url"><?= _e(StringHelper::ellipsis($entry->url ?? '-', 255, false)) ?></td>
+                <td class="actions" rowspan="2">
+                    <a class="button" href="<?= _e(Router::admin('log-detail', ['query' => ['id' => $entry->id]])) ?>">
+                        <?= _lang('admin.log.detail.link') ?>
+                    </a>
+                </td>
+            </tr>
+            <tr class="log-message">
+                <td colspan="4">
+                    <code><?= _e(StringHelper::ellipsis($entry->message, 1024, false)) ?></code>
+                </td>
+            </tr>
+        </tbody>
+        <?php endforeach ?>
 
-    <?php if (empty($entries)): ?>
-    <tbody>
-        <tr>
-            <td colspan="5">
-                <?= _lang('global.nokit') ?>
-            </td>
-        </tr>
-    </tbody>
-    <?php endif ?>
-</table>
+        <?php if (empty($entries)): ?>
+        <tbody>
+            <tr>
+                <td colspan="5">
+                    <?= _lang('global.nokit') ?>
+                </td>
+            </tr>
+        </tbody>
+        <?php endif ?>
+    </table>
+</div>
 
 <?php });
 
