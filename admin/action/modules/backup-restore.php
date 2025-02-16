@@ -91,9 +91,8 @@ if (
 }
 
 // output
-$output .= '
-<form method="post">
-    ' . Form::input('hidden', 'backup_file', $backup_file) . ' 
+$output .= Form::start('backup_restore', ['method' => 'post'])
+    . Form::input('hidden', 'backup_file', $backup_file) . ' 
     <table class="list">
         <tr>
             <th>' . _lang('global.name') . '</th>
@@ -143,6 +142,4 @@ $output .= '
     <p>
         ' . Form::input('submit', 'restore', _lang('admin.backup.restore.title'), ['class' => 'button', 'onclick' => 'return Sunlight.confirm()']) . '
     </p>
-' . Xsrf::getInput() . '
-</form>
-';
+' . Form::end('backup_restore');

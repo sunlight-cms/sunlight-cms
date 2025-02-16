@@ -121,7 +121,7 @@ if ($type === 'full') {
 }
 
 // output
-$output .= '<form method="post">
+$output .= Form::start('backup_create', ['method' => 'post']) . '
     ' . Form::input('hidden', 'type', $type) . '
     <table class="list">
         <tr>
@@ -177,6 +177,4 @@ $output .= '<form method="post">
             </td>
         </tr>
     </table>
-' . Xsrf::getInput() . '
-</form>
-';
+' . Form::end('backup_create');

@@ -369,7 +369,12 @@ if ($continue) {
 
 ' . ((!$new && DB::count('article', 'id!=' . DB::val($query['id']) . ' AND home1=' . DB::val($query['home1']) . ' AND slug=' . DB::val($query['slug'])) !== 0) ? Message::warning(_lang('admin.content.form.slug.collision')) : '') . '
 
-<form class="cform" action="' . _e(Router::admin('content-articles-edit', $actionplus)) . '" method="post" enctype="multipart/form-data" name="artform">
+' . Form::start('artform', [
+    'class' => 'cform',
+    'action' => Router::admin('content-articles-edit', $actionplus),
+    'method' => 'post',
+    'enctype' => 'multipart/form-data',
+]) . '
     <table class="formtable edittable">
         <tbody>
             <tr class="valign-top">
@@ -465,9 +470,7 @@ if ($continue) {
             </tr>
         </tbody>
     </table>
-' . Xsrf::getInput() . '</form>
-
-';
+' . Form::end('artform') . "\n";
 } else {
     $output .=
         Admin::backlink(Router::admin('content-articles'))

@@ -309,6 +309,53 @@ abstract class Form
     }
 
     /**
+     * Render the form opening tag
+     *
+     * @param string|null $name form name attribute
+     * @param array<string, scalar|null> $attrs additional attributes
+     */
+    static function start(?string $name, array $attrs = []): string
+    {
+        $output = Extend::buffer('form.start', ['attrs' => &$attrs]);
+
+        if ($output === '') {
+            $output = '<form'
+                . ($name !== null ? ' name="' . _e($name) . '"' : '')
+                . GenericTemplates::renderAttrs($attrs)
+                . '>';
+        }
+
+        Extend::call('form.start.after', ['output' => &$output]);
+
+        return $output;
+    }
+
+    /**
+     * Render a form closing tag
+     *
+     * This optionally also includes the XSRF input.
+     *
+     * @param string $name form name attribute (should correspond with the name passed to {@see Form::start()})
+     */
+    static function end(?string $name, bool $xsrfInput = true): string
+    {
+        $output = Extend::buffer('form.end', ['name' => $name, 'xsrf_input' => &$xsrfInput]);
+
+        if ($output === '') {
+            if ($xsrfInput) {
+                $output .= Xsrf::getInput();
+                $output .= "\n";
+            }
+
+            $output .= '</form>';
+        }
+
+        Extend::call('form.end.after', ['name' => $name,'xsrf_input' => $xsrfInput, 'output' => &$output,]);
+
+        return $output;
+    }
+
+    /**
      * Render a form
      *
      * Supported options:
@@ -404,15 +451,14 @@ abstract class Form
 
         // <form>
         if (!$options['embedded']) {
-            $output .= '<form';
-
-            foreach (['name', 'method', 'action', 'enctype', 'id', 'class', 'autocomplete'] as $attr) {
-                if ($options[$attr] !== null) {
-                    $output .= ' ' . $attr . '="' . _e($options[$attr]) . '"';
-                }
-            }
-
-            $output .= ">\n";
+            $output .= self::start($options['name'], [
+                'method' => $options['method'],
+                'action' => $options['action'],
+                'enctype' => $options['enctype'],
+                'id' => $options['id'],
+                'class' => $options['class'],
+                'autocomplete' => $options['autocomplete'],
+            ]);
         }
 
         $output .= $options['form_prepend'];
@@ -434,11 +480,8 @@ abstract class Form
 
         // </form>
         $output .= $options['form_append'];
-
-        if (!$options['embedded']) {
-            $output .= Xsrf::getInput();
-            $output .= "\n</form>\n";
-        }
+        $output .= self::end($options['name'], !$options['embedded']);
+        $options .= "\n";
 
         return $output;
     }

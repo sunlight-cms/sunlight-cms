@@ -19,7 +19,7 @@ class Captcha
     /**
      * Initialize a CAPTCHA form row
      *
-     * @see \Sunlight\Util\Form::render()
+     * @see Form::render
      */
     static function init(): array
     {
