@@ -91,7 +91,7 @@ if (
 }
 
 // output
-$output .= Form::start('backup_restore', ['method' => 'post'])
+$output .= Form::start('backup_restore')
     . Form::input('hidden', 'backup_file', $backup_file) . ' 
     <table class="list">
         <tr>

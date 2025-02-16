@@ -174,7 +174,7 @@ $boolSelect = function ($name, $changing = false) {
 };
 
 $output .= $message . '
-' . Form::start('artfilter', ['method' => 'post']);
+' . Form::start('artfilter');
 
 if (!$infopage) {
     $output .= '

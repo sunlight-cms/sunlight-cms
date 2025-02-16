@@ -311,12 +311,16 @@ abstract class Form
     /**
      * Render the form opening tag
      *
+     * (The default method is "post" unless specified otherwise via $attrs.)
+     *
      * @param string|null $name form name attribute
      * @param array<string, scalar|null> $attrs additional attributes
      */
     static function start(?string $name, array $attrs = []): string
     {
-        $output = Extend::buffer('form.start', ['attrs' => &$attrs]);
+        $attrs += ['method' => 'post'];
+
+        $output = Extend::buffer('form.start', ['name' => $name, 'attrs' => &$attrs]);
 
         if ($output === '') {
             $output = '<form'
@@ -325,7 +329,7 @@ abstract class Form
                 . '>';
         }
 
-        Extend::call('form.start.after', ['output' => &$output]);
+        Extend::call('form.start.after', ['name' => $name, 'attrs' => $attrs, 'output' => &$output]);
 
         return $output;
     }
@@ -350,7 +354,7 @@ abstract class Form
             $output .= '</form>';
         }
 
-        Extend::call('form.end.after', ['name' => $name,'xsrf_input' => $xsrfInput, 'output' => &$output,]);
+        Extend::call('form.end.after', ['name' => $name, 'xsrf_input' => $xsrfInput, 'output' => &$output]);
 
         return $output;
     }
@@ -481,7 +485,7 @@ abstract class Form
         // </form>
         $output .= $options['form_append'];
         $output .= self::end($options['name'], !$options['embedded']);
-        $options .= "\n";
+        $output .= "\n";
 
         return $output;
     }

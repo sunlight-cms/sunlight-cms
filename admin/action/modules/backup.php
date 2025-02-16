@@ -99,7 +99,7 @@ $output .= $message . '
     <legend>' . _lang('admin.backup.create.title') . '</legend>
     <p>' . _lang('admin.backup.create.p') . '</p>
 
-    ' . Form::start('backup_create', ['method' => 'post', 'action' => Router::admin('backup-create')]) . '
+    ' . Form::start('backup_create', ['action' => Router::admin('backup-create')]) . '
         <p>
             <label>' . Form::input('radio', 'type', 'partial', ['required' => true]) . ' ' . _lang('admin.backup.create.partial') . '</label> <small>(' . _lang('admin.backup.create.partial.help') . ')</small><br>
             <label>' . Form::input('radio', 'type', 'full', ['required' => true]) . ' ' . _lang('admin.backup.create.full') . '</label> <small>(' . _lang('admin.backup.create.full.help') . ')</small>
@@ -113,7 +113,7 @@ $output .= $message . '
     <legend>' . _lang('admin.backup.upload.title') . '</legend>
     <p>' . _lang('admin.backup.upload.p') . '</p>
 
-    ' . Form::start('backup_upload', ['method' => 'post', 'enctype' => 'multipart/form-data']) . '
+    ' . Form::start('backup_upload', ['enctype' => 'multipart/form-data']) . '
         <table>
             <tr>
                 <th>' . _lang('global.file') . '</th>
@@ -135,7 +135,7 @@ $output .= $message . '
     <legend>' . _lang('admin.backup.restore.title') . '</legend>
     <p>' . _lang('admin.backup.restore.p') . '</p>
 
-    ' . Form::start('backup_restore', ['method' => 'post', 'action' => Router::admin('backup-restore')]) . '
+    ' . Form::start('backup_restore', ['action' => Router::admin('backup-restore')]) . '
         <div class="horizontal-scroller">
             <table class="list list-hover">
                 <thead>

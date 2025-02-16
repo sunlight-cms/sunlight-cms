@@ -372,7 +372,6 @@ if ($continue) {
 ' . Form::start('artform', [
     'class' => 'cform',
     'action' => Router::admin('content-articles-edit', $actionplus),
-    'method' => 'post',
     'enctype' => 'multipart/form-data',
 ]) . '
     <table class="formtable edittable">

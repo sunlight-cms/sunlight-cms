@@ -50,7 +50,6 @@ Admin::backlink(Router::admin('content-articles-list', ['query' => ['cat' => $re
 <p class="bborder">' . _lang('admin.content.articles.delete.p', ['%arttitle%' => $query['title']]) . '</p>
 ' . Form::start('article_delete', [
     'class' => 'cform',
-    'method' => 'post',
     'action' => Router::admin('content-articles-delete', ['query' => ['id' => $id, 'returnid' => $returnid, 'returnpage' => $returnpage]]),
 ]) . '
 ' . Form::input('hidden', 'confirm', '1'). '

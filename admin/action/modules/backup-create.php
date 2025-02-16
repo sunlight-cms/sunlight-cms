@@ -121,7 +121,7 @@ if ($type === 'full') {
 }
 
 // output
-$output .= Form::start('backup_create', ['method' => 'post']) . '
+$output .= Form::start('backup_create') . '
     ' . Form::input('hidden', 'type', $type) . '
     <table class="list">
         <tr>
