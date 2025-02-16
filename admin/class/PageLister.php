@@ -12,7 +12,6 @@ use Sunlight\Router;
 use Sunlight\Settings;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
-use Sunlight\Xsrf;
 
 abstract class PageLister
 {
@@ -238,7 +237,7 @@ abstract class PageLister
         $class = 'page-list';
 
         if ($options['sortable']) {
-            $output .= "<form method=\"post\">\n";
+            $output .= Form::start('page-list') . "\n";
 
             if (self::saveOrd()) {
                 $output .= Message::ok(_lang('admin.content.form.ord.saved'));
@@ -310,7 +309,7 @@ abstract class PageLister
                 ' . Form::input('submit', 'reset', _lang('global.reset')) . '
             </p>';
 
-            $output .= Xsrf::getInput() . '</form>';
+            $output .= Form::end('page-list');
         }
     }
 

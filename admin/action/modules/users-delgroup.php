@@ -7,7 +7,6 @@ use Sunlight\Settings;
 use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
-use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
@@ -81,10 +80,9 @@ if ($user_count > 0) {
 }
 
 $output .= '
-<form class="cform" method="post">
+' . Form::start('users-delgroup', ['class' => 'cform']) . '
 ' . Form::input('hidden', 'doit', '1') . '
 
 <p>' . _lang('admin.users.groups.delconfirm', ['%group%' => $query['title']]) . '</p>
 ' . Form::input('submit', null, _lang('global.confirmdelete'))
-. Xsrf::getInput()
-. '</form>';
+. Form::end('users-delgroup');

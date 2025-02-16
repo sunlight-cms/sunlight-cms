@@ -8,7 +8,6 @@ use Sunlight\Plugin\Plugin;
 use Sunlight\Util\ConfigurationFile;
 use Sunlight\Util\Form;
 use Sunlight\Util\StringHelper;
-use Sunlight\Xsrf;
 
 class ConfigAction extends PluginAction
 {
@@ -60,7 +59,7 @@ class ConfigAction extends PluginAction
         }
 
         return ActionResult::output(_buffer(function () use ($fields) { ?>
-<form method="POST">
+<?= Form::start('plugin-config') ?>
     <table class="list table-collapse valign-top">
         <?php foreach ($fields as $field): ?>
             <tr>
@@ -76,9 +75,7 @@ class ConfigAction extends PluginAction
             </td>
         </tr>
     </table>
-
-    <?= Xsrf::getInput() ?>
-</form>
+<?= Form::end('plugin-config') ?>
 <?php
         }), $messages);
     }

@@ -17,7 +17,6 @@ use Sunlight\Util\Form;
 use Sunlight\Util\Html;
 use Sunlight\Util\Request;
 use Sunlight\Util\StringHelper;
-use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
@@ -504,7 +503,7 @@ $editscript_save_row = Form::input('submit', null, ($new ? _lang('global.create'
         : '');
 
 // output
-$output .= '<form class="cform" action="' . _e(Router::admin('content-edit' . Page::TYPES[$type], $actionOptions)) . '" method="post">
+$output .= Form::start('content-edit', ['class' => 'cform', 'action' => Router::admin('content-edit' . Page::TYPES[$type], $actionOptions)]) . '
 ' . $editscript_extra . '  
     <table class="formtable edittable">
         <tbody>
@@ -642,5 +641,4 @@ $output .= '<form class="cform" action="' . _e(Router::admin('content-edit' . Pa
             </tr>
         </tbody>
     </table>
-    ' . Xsrf::getInput() . '
-</form>';
+    ' . Form::end('content-edit');

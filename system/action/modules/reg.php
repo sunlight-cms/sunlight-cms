@@ -13,7 +13,6 @@ use Sunlight\Router;
 use Sunlight\Settings;
 use Sunlight\User;
 use Sunlight\Util\Form;
-use Sunlight\Util\Html;
 use Sunlight\Util\Password;
 use Sunlight\Util\Request;
 use Sunlight\Util\StringGenerator;

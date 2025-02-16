@@ -60,10 +60,9 @@ $output .= '
 </table>
 
 <br>
-<form class="cform" action="' . _e(Router::admin(null)) . '" method="get">
+' . Form::start('article-open-id', ['class' => 'cform', 'action' => Router::admin(null), 'method' => 'get']) . '
 ' . Form::input('hidden', 'p', 'content-articles-edit') . '
 ' . Form::input('hidden', 'returnid', 'load') . '
 ' . Form::input('hidden', 'returnpage', '1') . '
 ' . _lang('admin.content.articles.openid') . ': ' . Form::input('number', 'id', null, ['class' => 'inputmini']) . ' ' . Form::input('submit', null, _lang('global.open'), ['class' => 'button']) . '
-</form>
-';
+' . Form::end('article-open-id');

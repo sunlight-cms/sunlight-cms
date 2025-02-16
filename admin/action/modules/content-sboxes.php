@@ -127,7 +127,7 @@ $output .= '
 
 <fieldset class="hs_fieldset">
 <legend>' . _lang('admin.content.sboxes.create') . '</legend>
-<form class="cform" action="' . _e(Router::admin('content-sboxes')) . '" method="post">
+' . Form::start('sbox-create', ['class' => 'cform', 'action' => Router::admin('content-sboxes')]) . '
 ' . Form::input('hidden', 'action', '1') . '
 
 <table>
@@ -152,12 +152,12 @@ $output .= '
 
 </table>
 
-' . Xsrf::getInput() . '</form>
+' . Form::end('sbox-create') . '
 </fieldset>
 
 <fieldset>
 <legend>' . _lang('admin.content.sboxes.manage') . '</legend>
-<form class="cform" action="' . _e(Router::admin('content-sboxes')) . '" method="post">
+' . Form::start('sboxes', ['class' => 'cform', 'action' => Router::admin('content-sboxes')]) . '
 ' . Form::input('hidden', 'action', '2') . '
 
 ' . Form::input('submit', null, _lang('global.savechanges'), ['accesskey' => 's']) . '
@@ -209,7 +209,7 @@ if (DB::size($shoutboxes) != 0) {
 }
 
 $output .= '
-' . Xsrf::getInput() . '</form>
+' . Form::end('sboxes') . '
 </fieldset>
 
 ';

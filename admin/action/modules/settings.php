@@ -13,7 +13,6 @@ use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Password;
 use Sunlight\Util\Request;
-use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
@@ -314,7 +313,7 @@ if (!empty($_POST)) {
 // output
 $output .= ($saved ? Message::ok(_lang('admin.settings.saved')) : '') . '
 
-<form action="' . _e(Router::admin('settings')) . '" method="post">
+' . Form::start('settings', ['action' => Router::admin('settings')]) . '
 
 <div id="settings-container">
 <div id="settings-nav">
@@ -447,4 +446,4 @@ $output .= '
 </div>
 </div>
 
-' . Xsrf::getInput() . '</form>';
+' . Form::end('settings');

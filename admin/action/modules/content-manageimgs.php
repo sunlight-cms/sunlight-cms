@@ -303,7 +303,7 @@ if ($continue) {
 
 <fieldset>
 <legend>' . _lang('admin.content.manageimgs.upload') . '</legend>
-<form action="' . _e(Router::admin('content-manageimgs', ['query' => ['g' => $galid]])) . '" method="post" enctype="multipart/form-data">
+' . Form::start('uploadform', ['action' => Router::admin('content-manageimgs', ['query' => ['g' => $galid]]), 'enctype' => 'multipart/form-data']) . '
     <p>' . _lang('admin.content.manageimgs.upload.text', ['%w%' => Settings::get('galuploadresize_w'), '%h%' => Settings::get('galuploadresize_h')]) . '</p>
     ' . Form::input('hidden', 'xaction', '7') . '
     <div id="fmanFiles">' . Form::input('file', 'uf0[]', null, ['multiple' => true]) . ' <a href="#" onclick="return Sunlight.admin.fmanAddFile();">' . _lang('admin.fman.upload.addfile') . '</a></div>
@@ -313,12 +313,12 @@ if ($continue) {
         <label>' . Form::input('checkbox', 'moveords', '1', ['checked' => true]) . ' ' . _lang('admin.content.manageimgs.moveords') . '</label>'
         . Environment::renderUploadLimit() . '
     </p>
-' . Xsrf::getInput() . '</form>
+' . Form::end('uploadform') . '
 </fieldset>
 
 <fieldset class="hs_fieldset">
 <legend>' . _lang('admin.content.manageimgs.insert') . '  <small>(' . _lang('admin.content.manageimgs.insert.tip') . ')</small></legend>
-<form action="' . _e(Router::admin('content-manageimgs', ['query' => ['g' => $galid]])) . '" method="post" name="addform">
+' . Form::start('addform', ['action' => Router::admin('content-manageimgs', ['query' => ['g' => $galid]])]) . '
 ' . Form::input('hidden', 'xaction', '1') . '
 
 <table>
@@ -355,7 +355,7 @@ if ($continue) {
 
 </table>
 
-' . Xsrf::getInput() . '</form>
+' . Form::end('addform') . '
 </fieldset>
 
 ';
@@ -364,7 +364,7 @@ if ($continue) {
     $output .= '
 <fieldset>
 <legend>' . _lang('admin.content.manageimgs.current') . '</legend>
-<form action="' . _e(Router::admin('content-manageimgs', ['query' => ['g' => $galid]])) . '" method="post" name="editform">
+' . Form::start('editform', ['action' => Router::admin('content-manageimgs', ['query' => ['g' => $galid]])]) . '
 ' . Form::input('hidden', 'xaction', '4') . '
 
 ' . Form::input('submit', null, _lang('admin.content.manageimgs.savechanges'), ['class' => 'gallery-savebutton']) . '
@@ -443,7 +443,7 @@ if ($continue) {
     }
 
     $output .= '
-' . Xsrf::getInput() . '</form>
+' . Form::end('editform') . '
 </fieldset>
 
 <table class="max-width">
@@ -453,11 +453,11 @@ if ($continue) {
   <fieldset class="hs_fieldset">
   <legend>' . _lang('admin.content.manageimgs.moveimgs') . '</legend>
 
-  <form class="cform" action="' . _e(Router::admin('content-manageimgs', ['query' => ['g' => $galid]])) . '" method="post">
+  ' . Form::start('moveform', ['class' => 'cform', 'action' => Router::admin('content-manageimgs', ['query' => ['g' => $galid]])]) . '
   ' . Form::input('hidden', 'newhome', '5') . '
   ' . Admin::pageSelect('newhome', ['type' => Page::GALLERY]) . ' ' . Form::input('submit', null, _lang('global.do'), ['class' => 'button', 'onclick' => 'return Sunlight.confirm();']) . '<br><br>
   <label>' . Form::input('checkbox', 'moveords', '1', ['checked' => true]) . ' ' . _lang('admin.content.manageimgs.moveords') . '</label>
-  ' . Xsrf::getInput() . '</form>
+  ' . Form::end('moveform') . '
 
   </fieldset>
 </td>
@@ -466,10 +466,10 @@ if ($continue) {
   <fieldset class="hs_fieldset">
   <legend>' . _lang('admin.content.manageimgs.delimgs') . '</legend>
 
-  <form class="cform" action="' . _e(Router::admin('content-manageimgs', ['query' => ['g' => $galid]])) . '" method="post">
+  ' . Form::start('delform', ['class' => 'cform', 'action' => Router::admin('content-manageimgs', ['query' => ['g' => $galid]])]) . '
   ' . Form::input('hidden', 'newhome', '6') . '
   <label>' . Form::input('checkbox', 'confirm', '1') . ' ' . _lang('admin.content.manageimgs.delimgs.confirm') . '</label> ' . Form::input('submit', null, _lang('global.do'), ['class' => 'button', 'onclick' => 'return Sunlight.confirm();']) . '
-  ' . Xsrf::getInput() . '</form>
+  ' . Form::end('delform') . '
 
   </fieldset>
 </td>

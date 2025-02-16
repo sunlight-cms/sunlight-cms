@@ -6,7 +6,6 @@ use Sunlight\Router;
 use Sunlight\Settings;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
-use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
@@ -28,7 +27,7 @@ $output .= '
 
 ' . (isset($_GET['saved']) ? Message::ok(_lang('global.saved')) : '') . '
 
-<form method="post" class="cform">
+' . Form::start('index-edit', ['class' => 'cform']) . '
 
 <table class="formtable">
 
@@ -56,5 +55,5 @@ $output .= '
 
 </table>
 
-' . Xsrf::getInput() . '</form>
+' . Form::end('index-edit') . '
 ';

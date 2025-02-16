@@ -181,7 +181,7 @@ if ($continue) {
     }
 
     $output .= $message . '
-  <form action="' . _e(Router::admin('content-polls-edit', $actionbonus)) . '" method="post">
+  ' . Form::start('poll-edit', ['action' => Router::admin('content-polls-edit', $actionbonus)]) . '
   <table class="formtable">
 
   <tr>
@@ -223,7 +223,7 @@ if ($continue) {
   </tr>
 
   </table>
-  ' . Xsrf::getInput() . '</form>
+  ' . Form::end('poll-edit') . '
   ';
 } else {
     $output .= Message::error(_lang('global.badinput'));

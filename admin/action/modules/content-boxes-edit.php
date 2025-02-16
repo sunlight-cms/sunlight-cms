@@ -12,7 +12,6 @@ use Sunlight\Util\Html;
 use Sunlight\Util\Math;
 use Sunlight\Util\Request;
 use Sunlight\Util\StringHelper;
-use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
@@ -145,7 +144,7 @@ if (isset($_GET['created'])) {
 
 // form
 $output .= _buffer(function () use ($id, $box, $new, $templates_to_choose_slot_from) { ?>
-    <form method="post" action="<?= _e(Router::admin('content-boxes-edit', (!$new ? ['query' => ['id' => $id]] : null))) ?>">
+    <?= Form::start('box-edit', ['action' => Router::admin('content-boxes-edit', (!$new ? ['query' => ['id' => $id]] : null))]) ?>
         <table class="formtable">
             <tr>
                 <th><?= _lang('admin.content.form.title') ?></th>
@@ -198,7 +197,5 @@ $output .= _buffer(function () use ($id, $box, $new, $templates_to_choose_slot_f
                 </td>
             </tr>
         </table>
-
-        <?= Xsrf::getInput() ?>
-    </form>
+    <?= Form::end('box-edit') ?>
 <?php });

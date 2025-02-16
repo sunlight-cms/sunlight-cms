@@ -7,7 +7,6 @@ use Sunlight\Router;
 use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
-use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
@@ -65,9 +64,9 @@ $output .= $message;
 // form
 if (!$success) {
     $output .= '
-    <form action="' . _e(Router::module('locktopic', ['query' => ['id' => $id]])) . '" method="post">
+    ' . Form::start('locktopic', ['action' => Router::module('locktopic', ['query' => ['id' => $id]])]) . '
     ' . Message::warning(_lang('mod.locktopic.text' . $unlock, ['%topic%' => $query['subject']]), true) . '
     ' . Form::input('submit', 'doit', _lang('mod.locktopic.submit' . $unlock)) . '
-    ' . Xsrf::getInput() . '</form>
+    ' . Form::end('locktopic') . '
     ';
 }

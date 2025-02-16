@@ -16,7 +16,6 @@ use Sunlight\Util\Form;
 use Sunlight\Util\Request;
 use Sunlight\Util\Response;
 use Sunlight\Util\StringHelper;
-use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
@@ -618,7 +617,7 @@ if ($continue) {
             $action_code = '
 <div id="fman-action">
 <h2>' . _lang($action_title) . '</h2>
-<form action="' . _e($fmanUrl($action_query)) . '"' . (($action_form_class !== null) ? ' class="' . $action_form_class . '"' : '') . ' method="post" enctype="multipart/form-data">
+' . Form::start('fman-action', ['action' => $fmanUrl($action_query), 'class' => $action_form_class, 'enctype' => 'multipart/form-data']) . '
 ' . Form::input('hidden', 'action', Request::get('a', '')) . '
 <table class="formtable">
 ' . $action_code . '
@@ -629,7 +628,7 @@ if ($continue) {
   </tr>
 
 </table>
-' . Xsrf::getInput() . '</form>
+' . Form::end('fman-action') . '
 </div>
 ';
         }
@@ -654,7 +653,7 @@ if ($continue) {
 
     // list
     $output .= '
-    <form action="' . _e($fmanUrl()) . '" method="post" name="filelist">
+    ' . Form::start('filelist', ['action' => $fmanUrl()]) . '
     ' . Form::input('hidden', 'action', -1) . '
     ' . Form::input('hidden', 'param', -1) . '
     <div class="horizontal-scroller">
@@ -795,7 +794,7 @@ if ($continue) {
     $output .= '
     </table>
     </div>
-    ' . Xsrf::getInput() . '</form>
+    ' . Form::end('filelist') . '
 
     <p class="fman-menu">
     <span><strong>' . _lang('admin.fman.filecounter') . ':</strong> ' . _num($filecounter) . ' <small>(' . GenericTemplates::renderFileSize($sizecounter) . ')</small></span>

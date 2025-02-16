@@ -69,11 +69,12 @@ if (isset($_GET['new']) || isset($_GET['edit'])) {
         }
 
         // form
-        $output .= $message . "\n<form method=\"post\">
-<table class=\"formtable\">
+        $output .= $message . "\n"
+. Form::start('content-redir-edit') . '
+<table class="formtable">
 
 <tr>
-    <th>" . _lang('admin.content.redir.old') . '</th>
+    <th>' . _lang('admin.content.redir.old') . '</th>
     <td>' . Form::input('text', 'old', $q['old'], ['class' => 'inputmedium', 'maxlength' => 255]) . '</td>
 </tr>
 
@@ -98,7 +99,7 @@ if (isset($_GET['new']) || isset($_GET['edit'])) {
 </tr>
 
 </table>
-' . Xsrf::getInput() . '</form>';
+' . Form::end('content-redir-edit');
     } while (false);
 } elseif (isset($_GET['del']) && Xsrf::check(true)) {
     // delete
@@ -111,10 +112,10 @@ if (isset($_GET['new']) || isset($_GET['edit'])) {
         $output .= Message::ok(_lang('global.done'));
     } else {
         $output .= '
-<form method="post" class="well">
+' . Form::start('content-redir-delete') . '
 ' . Message::warning(_lang('admin.content.redir.act.wipe.confirm')) . '
 ' . Form::input('submit', 'wipe_confirm', _lang('global.confirmdelete')) . '
-' . Xsrf::getInput() . '</form>
+' . Form::end('content-redir-edit') . '
 ';
     }
 }

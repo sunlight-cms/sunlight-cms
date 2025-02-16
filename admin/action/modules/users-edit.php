@@ -13,7 +13,6 @@ use Sunlight\Util\Form;
 use Sunlight\Util\Password;
 use Sunlight\Util\Request;
 use Sunlight\Util\StringHelper;
-use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
@@ -253,7 +252,7 @@ if ($continue) {
     $output .= '
 <p class="bborder">' . _lang('admin.users.edit.p') . '</p>
 ' . $messages_code . '
-<form autocomplete="off" action="' . _e(Router::admin('users-edit', (($id != null)) ? ['query' => ['id' => $id]] : null)) . '" method="post" name="userform">
+' . Form::start('userform', ['action' => Router::admin('users-edit', (($id != null)) ? ['query' => ['id' => $id]] : null), 'autocomplete' => 'off']) . '
 <table class="formtable">
 
 <tr>
@@ -326,7 +325,7 @@ if ($continue) {
 </tr>
 
 </table>
-' . Xsrf::getInput() . '</form>
+' . Form::end('userform') . '
 ';
 
     // link to profile

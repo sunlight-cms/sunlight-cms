@@ -6,7 +6,6 @@ use Sunlight\Router;
 use Sunlight\Settings;
 use Sunlight\User;
 use Sunlight\Util\Form;
-use Sunlight\Util\Html;
 
 defined('SL_ROOT') or exit;
 
@@ -41,15 +40,14 @@ $group_choices = [-1 => _lang('global.all')]
     + DB::queryRows('SELECT id,title FROM ' . DB::table('user_group') . ' WHERE id!=' . User::GUEST_GROUP_ID . ' ORDER BY level DESC', 'id', 'title');
 
 // group select
-$output .= '
-  <form action="' . _e(Router::module('ulist')) . '" method="get">
+$output .= Form::start('ulist-filter', ['action' => Router::module('ulist'), 'method' => 'get']) . '
     <strong>' . _lang('user.list.groupfilter') . ':</strong>
     ' . Form::select('group_id', $group_choices, $group, [], false) . '
   ';
 
 $output .= '
     ' . Form::input('submit', null, _lang('global.apply')) . '
-</form>';
+' . Form::end('ulist-filter');
 
 // table
 $paging = Paginator::paginateTable(

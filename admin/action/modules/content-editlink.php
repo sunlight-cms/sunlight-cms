@@ -1,7 +1,6 @@
 <?php
 
 use Sunlight\Page\Page;
-use Sunlight\Router;
 use Sunlight\Util\Form;
 
 defined('SL_ROOT') or exit;

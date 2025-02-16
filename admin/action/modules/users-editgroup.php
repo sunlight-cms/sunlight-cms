@@ -13,7 +13,6 @@ use Sunlight\Util\Html;
 use Sunlight\Util\Math;
 use Sunlight\Util\Request;
 use Sunlight\Util\StringHelper;
-use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
@@ -282,7 +281,7 @@ if ($continue) {
   <p class="bborder">' . _lang('admin.users.groups.editp') . '</p>
   ' . (isset($_GET['saved']) ? Message::ok(_lang('global.saved')) : '') . '
   ' . ($systemitem ? Admin::note(_lang('admin.users.groups.specialgroup.editnotice')) : '') . '
-  <form action="' . _e(Router::admin('users-editgroup', ['query' => ['id' => $id]])) . '" method="post">
+  ' . Form::start('editgroup', ['action' => Router::admin('users-editgroup', ['query' => ['id' => $id]])]) . '
   <table class="formtable">
 
   <tr>
@@ -325,7 +324,7 @@ if ($continue) {
 
   ' . Form::input('submit', null, _lang('global.save'), ['class' => 'button bigger', 'accesskey' => 's']) . ' <small>' . _lang('admin.content.form.thisid') . ' ' . $id . '</small>
 
-  ' . Xsrf::getInput() . '</form>
+  ' . Form::end('editgroup') . '
   ';
 } elseif ($levelconflict == false) {
     $output .= Message::error(_lang('global.badinput'));

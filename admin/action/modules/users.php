@@ -10,7 +10,6 @@ use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Math;
 use Sunlight\Util\Request;
-use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
@@ -196,29 +195,28 @@ $output .= $message . '
 
     <h2>' . _lang('global.action') . '</h2>
 
-    <form class="cform" action="' . _e(Router::admin(null)) . '" method="get" name="edituserform">
+    ' . Form::start('user-edit', ['class' => 'cform', 'action' => Router::admin(null), 'method' => 'get']) . '
     ' . Form::input('hidden', 'p', 'users-edit') . '
     <h3>' . _lang('admin.users.edituser') . '</h3>
     ' . Form::input('text', 'id', null, ['class' => 'inputsmall']) . '
     ' . Form::input('submit', null, _lang('global.do'), ['class' => 'button']) . '
-    </form>
+    ' . Form::end('user-edit') . '
 
-    <form class="cform" action="' . _e(Router::admin(null)) . '" method="get" name="deleteuserform">
+    ' . Form::start('user-delete', ['class' => 'cform', 'action' => Router::admin(null), 'method' => 'get']) . '
     ' . Form::input('hidden', 'p', 'users-delete') . '
-    ' . Xsrf::getInput() . '
     <h3>' . _lang('admin.users.deleteuser') . '</h3>
     ' . Form::input('text', 'id', null, ['class' => 'inputsmall']) . '
     ' . Form::input('submit', null, _lang('global.do'), ['class' => 'button']) . '
-    </form>
+    ' . Form::end('user-delete') . '
     ' . Extend::buffer('admin.users.actions.after') . '
     
     ' . (User::isSuperAdmin() ? '
 
-    <form action="' . _e(Router::admin('users')) . '" method="post">
+    ' . Form::start('user-switch', ['action' => Router::admin('users')]) . '
     <h3>' . _lang('admin.users.switchuser') . '</h3>
     ' . Form::input('text', 'switch_user', null, ['class' => 'inputsmall']) . '
     ' . Form::input('submit', null, _lang('global.do'), ['class' => 'button']) . '
-    ' . Xsrf::getInput() . '</form>
+    ' . Form::end('user-switch') . '
     ' : '') . '
 
   </td>
@@ -226,13 +224,13 @@ $output .= $message . '
 
     ' . (User::hasPrivilege('admingroups') ? '<td>
     <h2>' . _lang('admin.users.groups') . '</h2>
-    <form action="' . _e(Router::admin('users')) . '" method="post">
+    ' . Form::start('group-create', ['action' => Router::admin('users')]) . '
         <p class="bborder"><strong>' . _lang('admin.users.groups.new') . ':</strong> '
         . Admin::userSelect('type', ['extra_option' => _lang('admin.users.groups.new.empty'), 'select_groups' => true])
         . ' '
         . Form::input('submit', null, _lang('global.do'), ['class' => 'button']) . '
         </p>'
-        . Xsrf::getInput() . '</form>
+        . Form::end('group-create') . '
     ' . $group_table
         . Extend::buffer('admin.users.groups.after') . '
     </td>' : '') . '

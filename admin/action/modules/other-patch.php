@@ -9,7 +9,6 @@ use Sunlight\Router;
 use Sunlight\Util\Environment;
 use Sunlight\Util\Form;
 use Sunlight\VersionChecker;
-use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
@@ -58,7 +57,7 @@ if (isset($_POST['apply_patch'])) do {
 $output .= _buffer(function () use ($latest_version) { ?>
     <p><?= _lang('admin.other.patch.text', ['%link%' => 'https://sunlight-cms.cz/resource/8.x/update?from=' . urlencode(Core::VERSION)]) ?></p>
 
-    <form method="post" enctype="multipart/form-data" onsubmit="return Sunlight.confirm()">
+    <?= Form::start('patch-upload', ['enctype' => 'multipart/form-data', 'onsubmit' => 'return Sunlight.confirm()']) ?>
         <table class="formtable">
             <tr>
                 <th><?= _lang('admin.other.patch.current_version') ?></th>
@@ -84,7 +83,5 @@ $output .= _buffer(function () use ($latest_version) { ?>
                 </td>
             </tr>
         </table>
-
-        <?= Xsrf::getInput() ?>
-    </form>
+    <?= Form::end('patch-upload') ?>
 <?php });

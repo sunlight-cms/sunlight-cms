@@ -8,7 +8,6 @@ use Sunlight\Router;
 use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
-use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
@@ -153,11 +152,11 @@ if (
 
     <div id="contenttable-actions">
         ' . (User::hasPrivilege('adminpages') ? '
-        <form action="' . _e(Router::admin('content')) . '" method="post" class="inline">
+        ' . Form::start('page-new', ['action' => Router::admin('content'), 'class' => 'inline']) . '
             <img src="' . _e(Router::path('admin/public/images/icons/new.png')) . '" alt="new" class="icon">
             ' . Form::select('new_page_type', $create_choices) . '
             ' . Form::input('submit', null, _lang('global.create'), ['class' => 'button']) . '
-        ' . Xsrf::getInput() . '</form>
+        ' . Form::end('page-new') . '
     
         <span class="inline-separator"></span>
         ' : '') . '

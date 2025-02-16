@@ -8,7 +8,6 @@ use Sunlight\Router;
 use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
-use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
@@ -92,7 +91,7 @@ if (isset($_POST['source'])) {
 
 // output
 $output .= $message . '
-<form class="cform" action="' . _e(Router::admin('content-movearts')) . '" method="post">'
+' . Form::start('move-articles', ['class' => 'cform', 'action' => Router::admin('content-movearts')]) . ''
     . _lang('admin.content.movearts.text1')
     . '<br class="mobile-only">'
     . ' ' . Admin::pageSelect('source', ['type' => Page::CATEGORY])
@@ -104,5 +103,5 @@ $output .= $message . '
     . ' ' . Form::input('submit', null, _lang('global.do'), ['class' => 'button']) . '
 <br><br>
 <label>' . Form::input('checkbox', 'fullmove', '1') . ' ' . _lang('admin.content.movearts.fullmove') . '</label>
-' . Xsrf::getInput() . '</form>
+' . Form::end('move-articles') . '
 ';

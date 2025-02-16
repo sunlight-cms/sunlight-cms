@@ -11,7 +11,6 @@ use Sunlight\Util\Filesystem;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
 use Sunlight\Util\Response;
-use Sunlight\Xsrf;
 
 // fetch type
 $type = Request::post('type');
@@ -121,7 +120,7 @@ if ($type === 'full') {
 }
 
 // output
-$output .= '<form method="post">
+$output .= Form::start('backup_create') . '
     ' . Form::input('hidden', 'type', $type) . '
     <table class="list">
         <tr>
@@ -177,6 +176,4 @@ $output .= '<form method="post">
             </td>
         </tr>
     </table>
-' . Xsrf::getInput() . '
-</form>
-';
+' . Form::end('backup_create');

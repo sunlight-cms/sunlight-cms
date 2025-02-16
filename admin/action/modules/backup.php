@@ -10,7 +10,6 @@ use Sunlight\Util\Form;
 use Sunlight\Util\Request;
 use Sunlight\Util\Response;
 use Sunlight\Util\StringHelper;
-use Sunlight\Xsrf;
 
 $message = '';
 
@@ -99,22 +98,21 @@ $output .= $message . '
     <legend>' . _lang('admin.backup.create.title') . '</legend>
     <p>' . _lang('admin.backup.create.p') . '</p>
 
-    <form method="post" action="' . _e(Router::admin('backup-create')) . '">
+    ' . Form::start('backup_create', ['action' => Router::admin('backup-create')]) . '
         <p>
             <label>' . Form::input('radio', 'type', 'partial', ['required' => true]) . ' ' . _lang('admin.backup.create.partial') . '</label> <small>(' . _lang('admin.backup.create.partial.help') . ')</small><br>
             <label>' . Form::input('radio', 'type', 'full', ['required' => true]) . ' ' . _lang('admin.backup.create.full') . '</label> <small>(' . _lang('admin.backup.create.full.help') . ')</small>
         </p>
         
         ' . Form::input('submit', null, _lang('global.continue'), ['class' => 'button']) . '
-    ' . Xsrf::getInput() . '
-    </form>
+    ' . Form::end('backup_create') . '
 </fieldset>
 
 <fieldset>
     <legend>' . _lang('admin.backup.upload.title') . '</legend>
     <p>' . _lang('admin.backup.upload.p') . '</p>
 
-    <form method="post" enctype="multipart/form-data">
+    ' . Form::start('backup_upload', ['enctype' => 'multipart/form-data']) . '
         <table>
             <tr>
                 <th>' . _lang('global.file') . '</th>
@@ -129,15 +127,14 @@ $output .= $message . '
                 <td>' . Form::input('submit', 'upload', _lang('global.upload'), ['class' => 'button']) . '</td>
             </tr>
         </table>
-    ' . Xsrf::getInput() . '
-    </form>
+    ' . Form::end('backup_upload') . '
 </fieldset>
 
 <fieldset>
     <legend>' . _lang('admin.backup.restore.title') . '</legend>
     <p>' . _lang('admin.backup.restore.p') . '</p>
 
-    <form method="post" action="' . _e(Router::admin('backup-restore')) . '">
+    ' . Form::start('backup_restore', ['action' => Router::admin('backup-restore')]) . '
         <div class="horizontal-scroller">
             <table class="list list-hover">
                 <thead>
@@ -159,7 +156,6 @@ $output .= $message . '
             . ' ' . _lang('global.or') . ' '
             . Form::input('submit', 'delete', _lang('admin.backup.restore.submit.delete'), ['class' => 'button', 'onclick' => 'return Sunlight.confirm()', 'formaction' => Router::admin('backup')]) . '
         </p>
-    ' . Xsrf::getInput() . '
-    </form>
+    ' . Form::end('backup_restore') . '
 </fieldset>
 ';

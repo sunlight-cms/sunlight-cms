@@ -355,7 +355,7 @@ class StepRunner
         ob_start();
         
         ?>
-<form method="post" autocomplete="off">
+<?= Form::start('installer', ['autocomplete' => 'off']) ?>
     <?php if ($step->hasText()): ?>
         <p><?php Labels::render($step->getMainLabelKey() . '.text') ?></p>
     <?php endif ?>
@@ -380,7 +380,7 @@ class StepRunner
             <?= Form::input('hidden', $name, $value) ?>
         <?php endif ?>
     <?php endforeach ?>
-</form>
+<?= Form::end('installer') ?>
 <?php
 
         return ob_get_clean();

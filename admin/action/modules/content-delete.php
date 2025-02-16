@@ -9,7 +9,6 @@ use Sunlight\Router;
 use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
-use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
@@ -65,10 +64,10 @@ if ($continue) {
             : '')
     . '
 
-    <form class="cform" action="' . _e(Router::admin('content-delete', ['query' => ['id' => $id]])) . '" method="post">
+    ' . Form::start('content-delete', ['class' => 'cform', 'action' => Router::admin('content-delete', ['query' => ['id' => $id]])]) . '
     ' . Form::input('hidden', 'confirm', '1') . '
     ' . Form::input('submit', null, _lang('admin.content.delete.confirm')) . '
-    ' . Xsrf::getInput() . '</form>
+    ' . Form::end('content-delete') . '
     ';
 } else {
     $output .= Message::error(_lang('global.badinput'));

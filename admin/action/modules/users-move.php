@@ -7,7 +7,6 @@ use Sunlight\Router;
 use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
-use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
@@ -39,7 +38,7 @@ if (isset($_POST['sourcegroup'])) {
 
 // output
 $output .= $message . '
-<form class="cform" action="' . _e(Router::admin('users-move')) . '" method="post">
+' . Form::start('users-move', ['class' => 'cform', 'action' => Router::admin('users-move')]) . '
 ' . _lang('admin.users.move.text1')
 . '<br class="mobile-only">'
 . ' ' . Admin::userSelect('sourcegroup', ['group_cond' => 'id NOT IN(' . DB::arr($excluded_group_ids) . ')', 'select_groups' => true])
@@ -48,4 +47,4 @@ $output .= $message . '
 . '<br class="mobile-only">'
 . ' ' . Admin::userSelect('targetgroup', ['group_cond' => 'id NOT IN(' . DB::arr($excluded_group_ids) . ')', 'select_groups' => true])
 . ' ' . Form::input('submit', null, _lang('global.do'), ['class' => 'button', 'onclick' => 'return Sunlight.confirm();']) . '
-' . Xsrf::getInput() . '</form>';
+' . Form::end('users-move');

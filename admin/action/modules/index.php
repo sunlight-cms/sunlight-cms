@@ -15,7 +15,6 @@ use Sunlight\Util\Environment;
 use Sunlight\Util\Form;
 use Sunlight\Util\Json;
 use Sunlight\VersionChecker;
-use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
@@ -165,10 +164,9 @@ if (Admin::moduleAccess('log')) {
         <?= _lang('global.show') ?>
     </a>
 
-    <form method="post" class="inline">
+    <?= Form::start('hide-recent-log-errors', ['class' => 'inline']) ?>
         <?= Form::input('submit', 'hide_recent_log_errors', _lang('global.hide'), ['class' => 'button']) ?>
-        <?= Xsrf::getInput() ?>
-    </form>
+    <?php Form::end('hide-recent-log-errors') ?>
 <?php
             }),
             true

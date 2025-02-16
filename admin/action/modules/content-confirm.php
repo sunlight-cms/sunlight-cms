@@ -9,7 +9,6 @@ use Sunlight\Router;
 use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
-use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
@@ -43,18 +42,18 @@ if (isset($_GET['category'])) {
 
 // output
 $output .= '
-<form class="cform" action="' . _e(Router::admin(null)) . '" method="get">
+' . Form::start('content-confirm-filter', ['class' => 'cform', 'action' => Router::admin(null), 'method' => 'get']) . '
     ' . Form::input('hidden', 'p', 'content-confirm')
     . _lang('admin.content.confirm.filter') . ': '
     . Admin::pageSelect('category', ['type' => Page::CATEGORY, 'selected' => $category, 'empty_item' => _lang('global.all')])
     . '
     ' . Form::input('submit', null, _lang('global.do')) . '
-</form>
+' . Form::end('content-confirm-filter') . '
 <div class="hr"><hr></div>
 
 ' . $message . '
 
-<form method="post">
+' . Form::start('content-confirm') . '
 <div class="horizontal-scroller">
 <table class="list list-hover list-max">
 <thead><tr><td>' . _lang('global.article') . '</td><td>' . _lang('article.category') . '</td><td>' . _lang('article.posted') . '</td><td>' . _lang('article.author') . '</td><td>' . _lang('global.action') . '</td></tr></thead>
@@ -114,5 +113,4 @@ if (DB::size($query) != 0) {
 $output .= '</tbody>
 </table>
 </div>
-' . Xsrf::getInput() . '
-</form>';
+' . Form::end('content-confirm') . "\n";

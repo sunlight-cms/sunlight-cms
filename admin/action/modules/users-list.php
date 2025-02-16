@@ -8,7 +8,6 @@ use Sunlight\Router;
 use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
-use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
@@ -73,23 +72,23 @@ $output .= '
 <tr>
 
 <td>
-<form class="cform" action="' . _e(Router::admin(null)) . '" method="get">
+' . Form::start('users-list-groups', ['class' => 'cform', 'action' => Router::admin(null), 'method' => 'get']) . '
 ' . Form::input('hidden', 'p', 'users-list') . '
 ' . Form::input('hidden', 'search', Request::get('search', '')) . '
 <strong>' . _lang('admin.users.list.groupfilter') . ':</strong><br class="mobile-only"> '
 . Admin::userSelect('group_id', ['selected' => $group, 'extra_option' => _lang('global.all'), 'select_groups' => true])
 . ' '
 . Form::input('submit', null, _lang('global.apply'), ['class' => 'button']) . '
-</form>
+' . Form::end('users-list-groups') . '
 </td>
 
 <td>
-<form class="cform" action="' . _e(Router::admin(null)) . '" method="get">
+' . Form::start('users-list-search', ['class' => 'cform', 'action' => Router::admin(null), 'method' => 'get']) . '
 ' . Form::input('hidden', 'p', 'users-list') . '
 ' . Form::input('hidden', 'group_id', $group) . '
 <strong>' . _lang('admin.users.list.search') . ':</strong><br class="mobile-only"> ' . Form::input('text', 'search', Request::get('search'), ['class' => 'inputsmall']) . ' ' .  Form::input('submit', null, _lang('mod.search.submit'), ['class' => 'button']) . '
 ' . ($search ? ' <a href="' . _e(Router::admin('users-list', ['query' => ['group' => $group]])) . '">' . _lang('global.cancel') . '</a>' : '') . '
-</form>
+' . Form::end('users-list-search') . '
 </td>
 
 </tr>
@@ -113,7 +112,7 @@ $output .= $paging['paging'];
 
 // table
 $output .= $message . '
-<form method="post">
+' . Form::start('user-list') . '
 <div class="horizontal-scroller">
 <table id="user-list" class="list list-hover list-max">
 <thead><tr>
@@ -135,7 +134,7 @@ $query = DB::query('SELECT ' . $userQuery['column_list'] . ',u.email user_email 
 if (DB::size($query) != 0) {
     while ($item = DB::row($query)) {
         $output .= '<tr>
-            <td>' . Form::input('checkbox', 'user[]', $item['user_id'], []) . '</td>
+            <td>' . Form::input('checkbox', 'user[]', $item['user_id']) . '</td>
             <td>' . $item['user_id'] . '</td>
             <td>' . Router::userFromQuery($userQuery, $item, ['new_window' => true, 'publicname' => false]) . '</td>
             <td>' . $item['user_email'] . '</td><td>' . (($item['user_publicname'] != '') ? $item['user_publicname'] : '-') . '</td>
@@ -170,7 +169,7 @@ $output .= '
         ' . Form::input('submit', null, _lang('global.do'), ['class' => 'button', 'onclick' => 'return Sunlight.confirm()']) . '
     </p>
 
-' . Xsrf::getInput() . '</form>';
+' . Form::end('user-list');
 
 // paging
 $output .= $paging['paging'];

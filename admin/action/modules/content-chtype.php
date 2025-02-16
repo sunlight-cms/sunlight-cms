@@ -8,7 +8,6 @@ use Sunlight\Page\PageManipulator;
 use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
-use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
@@ -84,7 +83,7 @@ if (User::hasPrivilege('adminpluginpage')) {
 $output .= _buffer(function () use ($new_type_choices) { ?>
     <?= Message::warning(_lang('admin.content.chtype.warning')) ?>
 
-    <form method="post">
+    <?= Form::start('content-chtype') ?>
         <table class="formtable">
             <tr>
                 <th><?= _lang('admin.content.form.page') ?></th>
@@ -101,6 +100,5 @@ $output .= _buffer(function () use ($new_type_choices) { ?>
                 <td><?= Form::input('submit', null, _lang('global.do')) ?></td>
             </tr>
         </table>
-        <?= Xsrf::getInput() ?>
-    </form>
+    <?= Form::end('content-chtype') ?>
 <?php });

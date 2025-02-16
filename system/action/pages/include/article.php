@@ -12,7 +12,6 @@ use Sunlight\Settings;
 use Sunlight\Template;
 use Sunlight\User;
 use Sunlight\Util\Form;
-use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
@@ -141,7 +140,7 @@ $rateform = null;
 if ($_article['rateon'] && Settings::get('ratemode') != 0 && User::hasPrivilege('artrate') && IpLog::check(IpLog::ARTICLE_RATED, $_article['id'])) {
     $rateform = '
 <strong>' . _lang('article.rate.title') . ':</strong>
-<form action="' . _e(Router::path('system/script/artrate.php')) . '" method="post">
+' . Form::start('article-rate', ['action' => Router::path('system/script/artrate.php')]) . '
 ' . Form::input('hidden', 'id', $_article['id']) . '
 ';
 
@@ -187,7 +186,7 @@ if ($_article['rateon'] && Settings::get('ratemode') != 0 && User::hasPrivilege(
 ';
     }
 
-    $rateform .= Xsrf::getInput() . "</form>\n";
+    $rateform .= Form::end('article-rate') . "\n";
 }
 
 // render infos

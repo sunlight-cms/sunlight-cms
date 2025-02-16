@@ -6,7 +6,6 @@ use Sunlight\IpLog;
 use Sunlight\Router;
 use Sunlight\User;
 use Sunlight\Util\Form;
-use Sunlight\Xsrf;
 
 return function ($id = 0) {
     Hcm::normalizeArgument($id, 'int');
@@ -33,11 +32,10 @@ return function ($id = 0) {
         }
 
         if ($rallowvote) {
-            $ranswers_code = '<form'
-                . ' action="' . _e(Router::path('system/script/hcm/pvote.php', ['query' => ['_return=' => $GLOBALS['_index']->url], 'fragment' => 'hcm_poll_' . Hcm::$uid])) . '"'
-                . ' method="post"'
-                . '>'
-                . Form::input('hidden', 'pid', $vpolldata['id']);
+            $ranswers_code = Form::start(
+                'poll-' . Hcm::$uid,
+                ['action' => Router::path('system/script/hcm/pvote.php', ['query' => ['_return=' => $GLOBALS['_index']->url], 'fragment' => 'hcm_poll_' . Hcm::$uid])]
+            ) . Form::input('hidden', 'pid', $vpolldata['id']);
         } else {
             $ranswers_code = '';
         }
@@ -74,7 +72,7 @@ return function ($id = 0) {
         $ranswers_code .= _lang('hcm.poll.votes') . ': ' . $rvotes_sum . '</div>';
 
         if ($rallowvote) {
-            $ranswers_code .= Xsrf::getInput() . "</form>\n";
+            $ranswers_code .= Form::end('poll-' . Hcm::$uid) . "\n";
         }
 
         return '

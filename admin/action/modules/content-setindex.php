@@ -7,7 +7,6 @@ use Sunlight\Router;
 use Sunlight\Settings;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
-use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
@@ -31,8 +30,8 @@ if (isset($_POST['index'])) {
 
 // output
 $output .= $message . '
-<form class="cform" action="' . _e(Router::admin('content-setindex')) . '" method="post">
+' . Form::start('setindex', ['class' => 'cform', 'action' => Router::admin('content-setindex')]) . '
 ' . Admin::pageSelect('index', ['check_access' => false, 'selected' => $index_id, 'maxlength' => null]) . '
 ' . Form::input('submit', null, _lang('global.do'), ['class' => 'button']) . '
-' . Xsrf::getInput() . '</form>
+' . Form::end('setindex') . '
 ';

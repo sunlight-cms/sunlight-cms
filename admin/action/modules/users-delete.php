@@ -5,7 +5,6 @@ use Sunlight\Message;
 use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
-use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
@@ -40,9 +39,9 @@ if ($continue) {
         } else {
             $output .= '
 <p class="bborder">' . _lang('admin.users.deleteuser.confirmation', ['%user%' => $query['username']]) . '
-<form method="post">
+' . Form::start('user-delete') . '
     ' . Form::input('submit', 'confirmed', _lang('admin.users.deleteuser')) . '
-' . Xsrf::getInput() . '</form>';
+' . Form::end('user-delete');
         }
     } else {
         $output .= Message::warning(_lang('admin.users.deleteuser.selfnote'));

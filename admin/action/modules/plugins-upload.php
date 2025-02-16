@@ -7,7 +7,6 @@ use Sunlight\Message;
 use Sunlight\Plugin\PluginArchive;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
-use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
@@ -65,7 +64,7 @@ if (isset($_FILES['archive']) && is_uploaded_file($_FILES['archive']['tmp_name']
 $output .= $message . '
 <p class="bborder">' . _lang('admin.plugins.upload.p') . '</p>
 
-<form method="post" enctype="multipart/form-data">
+' . Form::start('plugin-upload', ['enctype' => 'multipart/form-data']) . '
     <table class="formtable">
         <tr>
             <th>' . _lang('admin.plugins.upload.file') . '</th>
@@ -82,4 +81,4 @@ $output .= $message . '
             </td>
         </tr>
     </table>
-' . Xsrf::getInput() . '</form>';
+' . Form::end('plugin-upload');

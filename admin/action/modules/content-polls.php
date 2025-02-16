@@ -42,12 +42,12 @@ $output .= '
 // filter
 if (User::hasPrivilege('adminpollall')) {
     $output .= '
-  <form class="cform" action="' . _e(Router::admin(null)) . '" method="get">
+  ' . Form::start('polls-filter', ['class' => 'cform', 'action' => Router::admin(null), 'method' => 'get']) . '
   ' . Form::input('hidden', 'p', 'content-polls') . '
   <strong>' . _lang('admin.content.polls.filter') . ':</strong> '
     . Admin::userSelect('author', ['selected' => $author_filter_id, 'group_cond' => 'adminpoll=1', 'extra_option' => _lang('global.all2')])
     . ' ' . Form::input('submit', null, _lang('global.apply'), ['class' => 'button']) . ' 
-  </form>
+  ' . Form::end('polls-filter') . '
   ';
 }
 
@@ -108,8 +108,7 @@ $output .= '
 
 ' . $paging['paging'] . '
 
-<form class="cform" action="' . _e(Router::admin(null)) . '" method="get">
+' . Form::start('poll-open-id', ['class' => 'cform', 'action' => Router::admin(null), 'method' => 'get']) . '
 ' . Form::input('hidden', 'p', 'content-polls-edit') . '
 ' . _lang('admin.content.polls.openid') . ': ' . Form::input('number', 'id', null, ['class' => 'inputmini']) . ' ' . Form::input('submit', null, _lang('global.open'), ['class' => 'button']) . '
-</form>
-';
+' . Form::end('poll-open-id') . "\n";

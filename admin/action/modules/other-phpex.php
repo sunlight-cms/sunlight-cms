@@ -5,7 +5,6 @@ use Sunlight\GenericTemplates;
 use Sunlight\Logger;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
-use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
@@ -13,11 +12,10 @@ defined('SL_ROOT') or exit;
 $code = Request::post('code', '');
 
 $output .= _buffer(function () use ($code) { ?>
-    <form method="post">
+    <?= Form::start('phpex') ?>
         <?= Admin::editor('php-eval', 'code', $code, ['mode' => 'code', 'format' => 'php-raw']) ?><br>
         <p><?= Form::input('submit', null, _lang('global.do'), ['class' => 'inputfat']) ?> <label><?= Form::input('checkbox', 'html', '1', ['checked' => Form::loadCheckbox('html')]) ?> <?= _lang('admin.other.phpex.html') ?></label></p>
-        <?= Xsrf::getInput() ?>
-    </form>
+    <?= Form::end('phpex') ?>
 <?php });
 
 if ($code === '') {

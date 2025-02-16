@@ -11,7 +11,6 @@ use Sunlight\SystemMaintenance;
 use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
-use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
@@ -213,7 +212,7 @@ if (isset($_POST['action'])) do {
 
 // output
 $output .= $message . '
-<form class="cform" action="' . _e(Router::admin('other-cleanup')) . '" method="post">
+' . Form::start('cleanup', ['class' => 'cform', 'action' => Router::admin('other-cleanup')]) . '
 
 <fieldset>
     <legend>' . _lang('mod.messages') . '</legend>
@@ -264,5 +263,5 @@ $output .= $message . '
     ' . _lang('global.preview') 
 . '</button>
 
-' . Xsrf::getInput() . '</form>
+' . Form::end('cleanup') . '
 ';

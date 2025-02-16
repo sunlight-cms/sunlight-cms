@@ -8,7 +8,6 @@ use Sunlight\Message;
 use Sunlight\Router;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
-use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
@@ -17,7 +16,7 @@ $sql = Request::post('sql', '');
 
 // form
 $output .= '
-<form method="post">
+' . Form::start('sqlex') . '
 <table id="sqlex" class="table-collapse">
     <tr>
         <td>
@@ -46,8 +45,7 @@ $output .= '
         </td>
     </tr>
 </table>
-' . Xsrf::getInput() . '
-</form>';
+' . Form::end('sqlex');
 
 // result
 $queries = (new SqlReader($sql))->read();

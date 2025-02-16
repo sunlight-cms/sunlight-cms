@@ -10,7 +10,6 @@ use Sunlight\Message;
 use Sunlight\Plugin\Plugin;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
-use Sunlight\Xsrf;
 
 abstract class PluginAction extends Action
 {
@@ -103,7 +102,7 @@ abstract class PluginAction extends Action
             $confirmationToken
         ) {
             ?>
-<form method="post">
+<?= Form::start('plugin-confirm') ?>
     <?= Form::input('hidden', '_plugin_action_confirmation', $confirmationToken) ?>
 
     <?= $options['content_before'] ?? '' ?>
@@ -111,8 +110,7 @@ abstract class PluginAction extends Action
     <?= $options['content_after'] ?? '' ?>
 
     <?= Form::input('submit', null, $options['button_text'] ?? _lang('global.continue')) ?>
-    <?= Xsrf::getInput() ?>
-</form>
+<?= Form::end('plugin-confirm') ?>
 <?php
         }));
     }

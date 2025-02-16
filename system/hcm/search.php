@@ -1,14 +1,14 @@
 <?php
 
+use Sunlight\Hcm;
 use Sunlight\Router;
 use Sunlight\Search\Search;
 use Sunlight\Settings;
 use Sunlight\Util\Form;
-use Sunlight\Xsrf;
 
 return function () {
     if (Settings::get('search')) {
-        $output = '<form action="' . _e(Router::module('search')) . '" method="get" class="searchform">' . "\n";
+        $output = Form::start('search-' . Hcm::$uid, ['action' => Router::module('search'), 'class' => 'searchform', 'method' => 'get']) . "\n";
 
         foreach (Search::getSources() as $source) {
             if ($source->isEnabledByDefault()) {
@@ -17,8 +17,7 @@ return function () {
         }
 
         $output .= Form::input('search', 'q', null, ['class' => 'search-query']) . ' ' . Form::input('submit', null, _lang('mod.search.submit')) . "\n"
-            . Xsrf::getInput() . "\n"
-            . "</form>\n";
+            . Form::end('search-' . Hcm::$uid) . "\n";
 
         return $output;
     }

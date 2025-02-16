@@ -11,7 +11,6 @@ use Sunlight\Settings;
 use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
-use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
@@ -135,7 +134,7 @@ if (isset($_POST['text'])) {
 // output
 $output .= '
 <br>
-<form class="cform" action="' . _e(Router::admin('other-massemail')) . '" method="post">
+' . Form::start('massemail', ['class' => 'cform', 'action' => Router::admin('other-massemail')]) . '
 <table class="formtable">
 
 <tr>
@@ -188,5 +187,5 @@ $output .= '
 </tr>
 
 </table>
-' . Xsrf::getInput() . '</form>
+' . Form::end('massemail') . '
 ';

@@ -8,7 +8,6 @@ use Sunlight\Plugin\TemplateService;
 use Sunlight\Router;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
-use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
@@ -58,7 +57,7 @@ $output .= $message;
 
 // main form
 $output .= _buffer(function () { ?>
-    <form method="post">
+    <?= Form::start('boxes') ?>
     <p>
         <a class="button" href="<?= _e(Router::admin('content-boxes-edit')) ?>"><img class="icon" src="<?= _e(Router::path('admin/public/images/icons/new.png')) ?>" alt="new"><?= _lang('admin.content.boxes.new') ?></a>
     </p>
@@ -166,4 +165,4 @@ if (!empty($unassigned_boxes)) $output .= _buffer(function () use ($unassigned_b
 <?php });
 
 // main form end
-$output .= Xsrf::getInput() . "</form>\n";
+$output .= Form::end('boxes') . "\n";

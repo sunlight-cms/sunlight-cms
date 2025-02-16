@@ -5,7 +5,6 @@ use Sunlight\Database\Database as DB;
 use Sunlight\Message;
 use Sunlight\Router;
 use Sunlight\Util\Form;
-use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
@@ -30,7 +29,7 @@ if (isset($_POST['title']) && is_array($_POST['title'])) {
 // output
 $output .= $message . '
 
-<form action="' . _e(Router::admin('content-titles')) . '" method="post">
+' . Form::start('titles', ['action' => Router::admin('content-titles')]) . '
 ';
 
 $output .= PageLister::render([
@@ -47,4 +46,4 @@ $output .= '
         ' . Form::input('submit', null, _lang('global.save'), ['accesskey' => 's']) . '
         ' . Form::input('reset', null, _lang('global.reset'), ['onclick' => 'return Sunlight.confirm();']) . '
     </p>
-' . Xsrf::getInput() . '</form>';
+' . Form::end('titles');

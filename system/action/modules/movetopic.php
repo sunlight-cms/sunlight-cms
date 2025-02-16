@@ -10,7 +10,6 @@ use Sunlight\User;
 use Sunlight\Util\Form;
 use Sunlight\Util\Request;
 use Sunlight\Util\SelectOption;
-use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
@@ -70,7 +69,7 @@ $output .= $message;
 
 // form
 $output .= '
-<form action="' . _e(Router::module('movetopic', ['query' => ['id' => $id]])) . '" method="post">
+' . Form::start('movetopic', ['action' => Router::module('movetopic', ['query' => ['id' => $id]])]) . '
 ' . Message::warning(_lang('mod.movetopic.text', ['%topic%' => $query['subject']]), true) . '
 <p>
 ';
@@ -92,5 +91,5 @@ if (empty($forums)) {
 $output .= Form::select('new_forum', $choices, $query['home'], ['disabled' => empty($forums)]) . '
 ' . Form::input('submit', null, _lang('mod.movetopic.submit')) . '
 </p>
-' . Xsrf::getInput() . '</form>
+' . Form::end('movetopic') . '
 ';

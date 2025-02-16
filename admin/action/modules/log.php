@@ -75,7 +75,7 @@ $entries = Logger::search($query);
 
 // output
 $output .= _buffer(function () use ($query, $queryParamValues, $queryParamErrors, $totalResults, $entries) { ?>
-<form method="get" class="log-search">
+<?= Form::start('log-search', ['class' => 'log-search', 'method' => 'get']) ?>
     <?= Form::input('hidden', 'p', 'log') ?>
 
     <table class="formtable">
@@ -169,7 +169,7 @@ $output .= _buffer(function () use ($query, $queryParamValues, $queryParamErrors
             </td>
         </tr>
     </table>
-</form>
+<?= Form::end('log-search') ?>
 
 <div class="horizontal-scroller">
     <table class="list list-max list-noborder log-list">

@@ -18,7 +18,6 @@ use Sunlight\Util\Form;
 use Sunlight\Util\Html;
 use Sunlight\Util\Request;
 use Sunlight\Util\StringHelper;
-use Sunlight\Xsrf;
 
 defined('SL_ROOT') or exit;
 
@@ -314,7 +313,7 @@ switch ($a) {
 
         // table
         $output .= $message . '
-        <form method="post" action="">
+' . Form::start('messages') . '
 <p class="messages-menu">
     <a class="button" href="' . _e(Router::module('messages', ['query' => ['a' => 'new']])) . '"><img src="' . _e(Template::asset('images/icons/bubble.png')) . '" alt="new" class="icon">' . _lang('mod.messages.new') . '</a>
 </p>
@@ -374,7 +373,7 @@ switch ($a) {
 </td></tr>
 </tfoot>
 </table>
-' . Xsrf::getInput() . "</form>\n";
+' . Form::end('messages') . "\n";
 
         // paging at bottom
         if (Paginator::atBottom()) {

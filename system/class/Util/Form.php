@@ -309,6 +309,69 @@ abstract class Form
     }
 
     /**
+     * Render the form opening tag
+     *
+     * Supported $options:
+     * -------------------
+     * xsrf_input       include the XSRF input (defaults to TRUE if form method is POST)
+     *
+     * @param string|null $name form name attribute
+     * @param array<string, scalar|null> $attrs additional attributes
+     * @param array{xsrf_input?: bool} $options
+     */
+    static function start(?string $name, array $attrs = [], array $options = []): string
+    {
+        $attrs += ['method' => 'post'];
+        $options += [
+            'xsrf_input' => strcasecmp($attrs['method'], 'post') === 0,
+        ];
+
+        $output = Extend::buffer('form.start', [
+            'name' => $name,
+            'attrs' => &$attrs,
+            'options' => &$options,
+        ]);
+
+        if ($output === '') {
+            $output = '<form'
+                . ($name !== null ? ' name="' . _e($name) . '"' : '')
+                . GenericTemplates::renderAttrs($attrs)
+                . '>';
+
+            if ($options['xsrf_input']) {
+                $output .= Xsrf::getInput();
+            }
+        }
+
+        Extend::call('form.start.after', [
+            'name' => $name,
+            'attrs' => $attrs,
+            'options' => $options,
+            'output' => &$output,
+        ]);
+
+        return $output;
+    }
+
+    /**
+     * Render a form closing tag
+     *
+     * @param string $name form name attribute (should correspond with the name passed to {@see Form::start()})
+     */
+    static function end(?string $name): string
+    {
+        $output = Extend::buffer('form.end', ['name' => $name]);
+
+        if ($output === '') {
+            $output = '</form>';
+        }
+
+        Extend::call('form.end.after', ['name' => $name, 'output' => &$output]);
+
+        return $output;
+    }
+
+    /**
      * Render a form
      *
      * Supported options:
@@ -404,15 +467,14 @@ abstract class Form
 
         // <form>
         if (!$options['embedded']) {
-            $output .= '<form';
-
-            foreach (['name', 'method', 'action', 'enctype', 'id', 'class', 'autocomplete'] as $attr) {
-                if ($options[$attr] !== null) {
-                    $output .= ' ' . $attr . '="' . _e($options[$attr]) . '"';
-                }
-            }
-
-            $output .= ">\n";
+            $output .= self::start($options['name'], [
+                'method' => $options['method'],
+                'action' => $options['action'],
+                'enctype' => $options['enctype'],
+                'id' => $options['id'],
+                'class' => $options['class'],
+                'autocomplete' => $options['autocomplete'],
+            ]);
         }
 
         $output .= $options['form_prepend'];
@@ -434,11 +496,8 @@ abstract class Form
 
         // </form>
         $output .= $options['form_append'];
-
-        if (!$options['embedded']) {
-            $output .= Xsrf::getInput();
-            $output .= "\n</form>\n";
-        }
+        $output .= self::end($options['name']);
+        $output .= "\n";
 
         return $output;
     }

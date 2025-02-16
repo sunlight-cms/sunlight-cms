@@ -174,8 +174,7 @@ $boolSelect = function ($name, $changing = false) {
 };
 
 $output .= $message . '
-<form action="' . _e(Router::admin('content-artfilter')) . '" method="post">
-';
+' . Form::start('artfilter');
 
 if (!$infopage) {
     $output .= '
@@ -290,4 +289,4 @@ if (!$infopage) {
 ';
 }
 
-$output .= Xsrf::getInput() . '</form>';
+$output .= Form::end('artfilter');
