@@ -92,6 +92,8 @@ abstract class Zip
     /**
      * Extract one or more paths from an archive
      *
+     * $targetPath can be a single path or a map of each directory in $directories to a target path (directory => targetPath).
+     *
      * Supported options:
      * ------------------
      * - path_mode (PATH_FULL)    (see Zip::PATH_* constants)
@@ -102,7 +104,7 @@ abstract class Zip
      * - big_file_threshold (-)
      *
      * @param string[] $directories archive directory paths (e.g. "foo", "foo/bar" or "" for root)
-     * @param string $targetPath path where to extract the files to
+     * @param string|array<string, string> $targetPath path or a map of paths where to extract the files to (see description)
      * @param array{
      *     path_mode?: int,
      *     dir_mode?: int,
@@ -111,7 +113,7 @@ abstract class Zip
      *     big_file_threshold?: int|null,
      * } $options see description
      */
-    static function extractDirectories(\ZipArchive $zip, array $directories, string $targetPath, array $options = []): void
+    static function extractDirectories(\ZipArchive $zip, array $directories, $targetPath, array $options = []): void
     {
         $options += [
             'path_mode' => self::PATH_FULL,
@@ -129,12 +131,41 @@ abstract class Zip
             }
         }
 
-        $targetPath = realpath($targetPath);
+        // prepare target path map
+        $targetPathMap = [];
 
-        if ($targetPath === false) {
-            throw new \InvalidArgumentException('Target path does not exist or is inaccessible');
+        if (is_array($targetPath)) {
+            foreach ($targetPath as $directory => $targetPathItem) {
+                Filesystem::ensureDirectoryExists($targetPathItem, true, $options['dir_mode'], true);
+                $realTargetPath = realpath($targetPathItem);
+
+                if ($realTargetPath === false) {
+                    throw new \InvalidArgumentException(sprintf('Target path "%s" does not exist or is inaccessible', $targetPathItem));
+                }
+
+                $targetPathMap[$directory . '/'] = $realTargetPath;
+            }
+
+            // detect wrong target path mapping early
+            foreach ($directories as $directory) {
+                if (!isset($targetPathMap[$directory . '/'])) {
+                    throw new \InvalidArgumentException(sprintf('Missing target path for directory "%s"', $directory));
+                }
+            }
+        } else {
+            Filesystem::ensureDirectoryExists($targetPath, true, $options['dir_mode'], true);
+            $realTargetPath = realpath($targetPath);
+
+            if ($realTargetPath === false) {
+                throw new \InvalidArgumentException(sprintf('Target path "%s" does not exist or is inaccessible', $targetPath));
+            }
+
+            foreach ($directories as $directory) {
+                $targetPathMap[$directory . '/'] = $realTargetPath;
+            }
         }
 
+        // determine exclude prefix length
         $excludePrefixLen = $options['exclude_prefix'] !== null
             ? strlen($options['exclude_prefix'])
             : 0;
@@ -168,7 +199,11 @@ abstract class Zip
                         $subpath = self::getSubpath($options['path_mode'], $stat['name'], $lastSlashPos, $archivePathPrefixLen, $options['exclude_prefix'], $excludePrefixLen);
 
                         // determine target directory
-                        $targetDir = $targetPath;
+                        $targetDir = $targetPathMap[$archivePathPrefix] ?? null;
+
+                        if ($targetDir === null) {
+                            throw new \InvalidArgumentException(sprintf('No target path is mapped for "%s"', $archivePathPrefix)); // this should never happen
+                        }
 
                         if ($subpath !== null) {
                             $targetDir .= $subpath;

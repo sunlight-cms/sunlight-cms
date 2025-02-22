@@ -29,7 +29,7 @@ if (isset($_FILES['archive']) && is_uploaded_file($_FILES['archive']['tmp_name']
         }
 
         if ($archive->hasPlugins()) {
-            $extractedPlugins = $archive->extract($mode, $failedPlugins);
+            $extractedPlugins = $archive->extract($mode, $skippedPlugins);
 
             if (!empty($extractedPlugins)) {
                 $message .= Message::list($extractedPlugins, ['type' => Message::OK, 'text' => _lang('admin.plugins.upload.extracted')]);
@@ -37,8 +37,12 @@ if (isset($_FILES['archive']) && is_uploaded_file($_FILES['archive']['tmp_name']
                 Core::$pluginManager->clearCache();
             }
 
-            if (!empty($failedPlugins)) {
-                $message .= Message::list($failedPlugins, ['text' => _lang('admin.plugins.upload.skipped')]);
+            if (!empty($skippedPlugins)) {
+                if ($mode === PluginArchive::MODE_ALL_OR_NOTHING) {
+                    $message .= Message::list($skippedPlugins, ['text' => _lang('admin.plugins.upload.failed_on_existing')]);
+                } else {
+                    $message .= Message::list($skippedPlugins, ['text' => _lang('admin.plugins.upload.skipped')]);
+                }
             }
 
             Logger::notice(
@@ -48,7 +52,7 @@ if (isset($_FILES['archive']) && is_uploaded_file($_FILES['archive']['tmp_name']
                     $_FILES['archive']['name'],
                     count($extractedPlugins)
                 ),
-                ['extracted_plugins' => $extractedPlugins, 'failed_plugins' => $failedPlugins]
+                ['extracted_plugins' => $extractedPlugins, 'skipped_plugins' => $skippedPlugins]
             );
         } else {
             $message = Message::warning(_lang('admin.plugins.upload.no_plugins'));

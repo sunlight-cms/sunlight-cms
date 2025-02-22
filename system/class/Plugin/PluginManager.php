@@ -4,6 +4,7 @@ namespace Sunlight\Plugin;
 
 use Kuria\Cache\NamespacedCache;
 use Sunlight\Core;
+use Sunlight\Plugin\Type\PluginType;
 
 class PluginManager
 {
@@ -137,6 +138,14 @@ class PluginManager
             $this->cache->getWrappedCache(),
             $this->cache->getPrefix() . $plugin->getId()
         );
+    }
+
+    /**
+     * Get a plugin type by its name
+     */
+    function getType(string $typeName): ?PluginType
+    {
+        return $this->types[$typeName] ?? null;
     }
 
     /**

@@ -524,6 +524,7 @@ return [
     'admin.plugins.upload.no_plugins' => 'Archív neobsahuje žádné pluginy',
     'admin.plugins.upload.extracted' => 'Následující pluginy byly nahrány:',
     'admin.plugins.upload.skipped' => 'Následující pluginy byly přeskočeny:',
+    'admin.plugins.upload.failed_on_existing' => 'Nebyly nahrány žádné pluginy. Následující pluginy již existují:',
     'admin.plugins.clear_cache' => 'Znovu načíst pluginy',
     'admin.plugins.get' => 'Získat pluginy',
     'admin.users.groups' => 'Skupiny',

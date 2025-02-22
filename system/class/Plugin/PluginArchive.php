@@ -3,6 +3,7 @@
 namespace Sunlight\Plugin;
 
 use Sunlight\Util\Filesystem;
+use Sunlight\Util\Json;
 use Sunlight\Util\Zip;
 
 class PluginArchive
@@ -41,7 +42,9 @@ class PluginArchive
      */
     function extract(int $mode, ?array &$skippedPlugins = null): array
     {
-        $toExtract = [];
+        $dirsToExtract = [];
+        $targetPathMap = [];
+        $extractedPlugins = [];
         $skippedPlugins = [];
 
         // get and check plugins
@@ -54,15 +57,17 @@ class PluginArchive
                         || $this->manager->getPlugins()->hasInactiveName($type, $name)
                      )
                 ) {
-                    $skippedPlugins[] = $archivePath;
+                    $skippedPlugins[] = $type . '/' . $name;
                 } else {
-                    $toExtract[] = $archivePath;
+                    $dirsToExtract[] = $archivePath;
+                    $targetPathMap[$archivePath] = SL_ROOT . $this->manager->getType($type)->getDir() . '/' . $name;
+                    $extractedPlugins[] = $type . '/' . $name;
                 }
             }
         }
 
         // abort if there is nothing to do or we should fail on existing
-        if (empty($toExtract) || $mode === self::MODE_ALL_OR_NOTHING && !empty($skippedPlugins)) {
+        if (empty($dirsToExtract) || $mode === self::MODE_ALL_OR_NOTHING && !empty($skippedPlugins)) {
             return [];
         }
 
@@ -81,9 +86,9 @@ class PluginArchive
         }
 
         // extract plugins
-        Zip::extractDirectories($this->zip, $toExtract, SL_ROOT);
+        Zip::extractDirectories($this->zip, $dirsToExtract, $targetPathMap, ['path_mode' => Zip::PATH_SUB]);
 
-        return $toExtract;
+        return $extractedPlugins;
     }
 
     /**
@@ -132,52 +137,126 @@ class PluginArchive
     {
         $plugins = [];
 
-        // map types
-        $dirPatterns = [];
-        $typeDir2Type = [];
+        // find all plugin.json files in the archive
+        /** @var array<array{index: int, name: string}> $pluginJsons */
+        $pluginJsons = [];
 
-        foreach ($this->manager->getTypes() as $type) {
-            $dirPatterns[] = preg_quote($type->getDir());
-            $typeDir2Type[$type->getDir()] = $type->getName();
-        }
-
-        // build the regex
-        $regex = '{(' . implode('|', $dirPatterns) . ')/(' . Plugin::NAME_PATTERN . ')/(.+)$}AD';
-
-        // iterate all files in the archive
         for ($i = 0; $i < $this->zip->numFiles; ++$i) {
             $stat = $this->zip->statIndex($i);
 
-            if (preg_match($regex, $stat['name'], $match)) {
-                [, $dir, $name, $subpath] = $match;
-                $type = $typeDir2Type[$dir];
+            if ($stat === false) {
+                throw new \RuntimeException(sprintf('Failed to stat index %d in the archive', $i));
+            }
 
-                if (!isset($plugins[$type][$name])) {
-                    $plugins[$type][$name] = [
-                        'name' => $name,
-                        'path' => $dir . '/' . $name,
-                        'valid' => false,
-                    ];
-                }
+            if (($stat['name'][-1] ?? null) !== '/' && basename($stat['name']) === Plugin::FILE) {
+                $pluginJsons[] = $stat;
+            }
+        }
 
-                if ($subpath === Plugin::FILE) {
-                    $plugins[$type][$name]['valid'] = true;
+        // sort by path length
+        usort($pluginJsons, function (array $a, array $b) {
+            return strlen($a['name']) <=> strlen($b['name']);
+        });
+
+        // remove plugin.json paths that are nested
+        $pluginJsonsCount = count($pluginJsons);
+
+        for ($i = 0; $i < $pluginJsonsCount; ++$i) {
+            // skip removed entries
+            if (!isset($pluginJsons[$i])) {
+                continue;
+            }
+
+            // for every $i, remove all following entries that are under the same path
+            $pathEndOffset = strrpos($pluginJsons[$i]['name'], '/') + 1;
+
+            for ($j = $i + 1; isset($pluginJsons[$j]); ++$j) {
+                if (strncasecmp($pluginJsons[$i]['name'], $pluginJsons[$j]['name'], $pathEndOffset) === 0) {
+                    unset($pluginJsons[$j]);
                 }
             }
         }
 
-        // map valid plugins
-        $this->plugins = array_map(
-            function (array $plugins) {
-                // remove extra data
-                return array_column(
-                    // remove invalid plugins
-                    array_filter($plugins, function (array $plugin) { return $plugin['valid']; }),
-                    'path',
-                    'name'
-                );
-            },
-            $plugins
-        );
+        // load plugins
+        foreach ($pluginJsons as $pluginJson) {
+            $this->loadPlugin($plugins, $pluginJson['index'], $pluginJson['name']);
+        }
+
+        $this->plugins = $plugins;
+    }
+
+    /**
+     * @param array<string, array<string, string>> $plugins
+     */
+    private function loadPlugin(array &$plugins, int $pluginJsonIndex, string $pluginJsonPath): void
+    {
+        try {
+            if (strpos($pluginJsonPath, '/') === false) {
+                throw new \RuntimeException(sprintf('%s at the root of the archive is not supported', Plugin::FILE));
+            }
+
+            $pluginName = basename(dirname($pluginJsonPath));
+            $typeName = $this->guessPluginTypeFromPath($pluginJsonPath)
+                ?? $this->guessPluginTypeFromSchema($pluginJsonIndex);
+
+            $plugins[$typeName][$pluginName] = dirname($pluginJsonPath);
+        } catch (\Throwable $e) {
+            throw new \RuntimeException(
+                sprintf('Could not load plugin at "%s" from the archive: %s', dirname($pluginJsonPath), $e->getMessage()),
+                0,
+                $e
+            );
+        }
+    }
+
+    private function guessPluginTypeFromPath(string $pluginJsonPath): ?string
+    {
+        if (preg_match('{plugins/(\w+)/' . Plugin::NAME_PATTERN . '/' . preg_quote(Plugin::FILE) . '$}AD', $pluginJsonPath, $match)) {
+            $type = $this->manager->getType($match[1]);
+
+            if ($type !== null) {
+                return $type->getName();
+            }
+        }
+
+        return null;
+    }
+
+    private function guessPluginTypeFromSchema(int $pluginJsonIndex): string
+    {
+        $pluginJson = $this->zip->getFromIndex($pluginJsonIndex);
+
+        if ($pluginJson === false) {
+            throw new \RuntimeException(sprintf('Could not load %s', Plugin::FILE));
+        }
+
+        $pluginJson = Json::decode($pluginJson);
+
+        if (!isset($pluginJson['$schema'])) {
+            throw new \RuntimeException(sprintf(
+                '%s must define "$schema" or be in a standard path (plugins/<type>/<name>/)',
+                Plugin::FILE
+            ));
+        }
+
+        if (!is_string($pluginJson['$schema'])) {
+            throw new \RuntimeException(sprintf(
+                '"$schema" in %s must be a string, got %s',
+                Plugin::FILE,
+                gettype($pluginJson['$schema'])
+            ));
+        }
+
+        $type = $this->manager->getType(pathinfo($pluginJson['$schema'], PATHINFO_FILENAME));
+
+        if ($type === null) {
+            throw new \RuntimeException(sprintf(
+                'Failed to determine plugin type from "$schema": "%s" in %s',
+                $pluginJson['$schema'],
+                Plugin::FILE
+            ));
+        }
+
+        return $type->getName();
     }
 }

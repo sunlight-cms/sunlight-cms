@@ -524,6 +524,7 @@ return [
     'admin.plugins.upload.no_plugins' => 'The archive does not contain any plugins',
     'admin.plugins.upload.extracted' => 'The following plugins were uploaded:',
     'admin.plugins.upload.skipped' => 'The following plugins were skipped:',
+    'admin.plugins.upload.failed_on_existing' => 'No plugins were uploaded. The following plugins already exist:',
     'admin.plugins.clear_cache' => 'Reload plugins',
     'admin.plugins.get' => 'Get plugins',
     'admin.users.groups' => 'Groups',
