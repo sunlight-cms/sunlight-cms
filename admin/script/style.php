@@ -450,9 +450,10 @@ a#usermenu-username {margin-right: 0.5em; font-weight: bold; color: <?= $scheme_
 #gallery-edit {float: left; margin: 14px 0; padding: 5px; border: 1px solid <?= $scheme_smoke_light ?>;}
 .gallery-edit-image {float: left; margin: 5px;}
 .gallery-edit-image input {cursor: default;}
-.gallery-edit-image table {border: 1px solid <?= $scheme_smoke_dark ?>; padding: 10px; background-color: <?= $scheme_smoke ?>; cursor: move;}
+.gallery-edit-image table {width: 100%; height: 100%; border: 1px solid <?= $scheme_smoke_dark ?>; padding: 10px; background-color: <?= $scheme_smoke ?>; cursor: move;}
 .gallery-edit-image a {color: <?= $scheme_black ?>; cursor: pointer;}
-.gallery-edit-image a.lightbox img {border: 1px solid <?= $scheme_smoke_text ?>; max-width: 300px;}
+.gallery-edit-image-preview {margin-bottom: 5px;}
+.gallery-edit-image-preview img {border: 1px solid <?= $scheme_smoke_text ?>; max-width: 248px;}
 
 /* sqlex */
 #sqlex {width: 100%; margin-top: 1em; border-collapse: collapse;}

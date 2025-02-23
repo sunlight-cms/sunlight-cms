@@ -277,26 +277,26 @@ if ($continue) {
                         break;
                     }
 
-                    $newname = User::checkPath($dir . $newname, $is_file, true);
+                    $newname_normalized = User::checkPath($dir . $newname, $is_file, true);
 
-                    if ($newname === false) {
+                    if ($newname_normalized === false) {
                         $message = Message::warning(_lang($is_file && !User::checkFilename($newname) ? 'admin.fman.msg.disallowedextension' : 'admin.fman.msg.rootlimit'));
                         break;
                     }
 
-                    if (file_exists($newname)) {
+                    if (file_exists($newname_normalized)) {
                         $message = Message::warning(_lang('admin.fman.msg.exists'));
                         break;
                     }
 
                     try {
-                        Filesystem::ensureDirectoryExists(dirname($newname), true);
-                    } catch(\RuntimeException $e) {
+                        Filesystem::ensureDirectoryExists(dirname($newname_normalized), true);
+                    } catch(RuntimeException $e) {
                         $message = Message::warning(_lang('admin.fman.msg.newfolder.failure'));
                         break;
                     }
 
-                    if (!@rename($dir . $name, $newname)) {
+                    if (!@rename($dir . $name, $newname_normalized)) {
                         $message = Message::warning(_lang('admin.fman.msg.rename.failure'));
                         break;
                     }
@@ -341,7 +341,7 @@ if ($continue) {
 
                     try {
                         Filesystem::ensureDirectoryExists($newdir, true);
-                    } catch (\RuntimeException $e) {
+                    } catch (RuntimeException $e) {
                         $message = Message::warning(_lang('admin.fman.msg.newfolder.failure'));
                         break;
                     }
@@ -414,20 +414,16 @@ if ($continue) {
                 if (User::hasPrivilege('admingallery') && User::hasPrivilege('admincontent')) {
                     $counter = 0;
                     $galid = (int) Request::post('gallery');
+                    $moveords = (bool) Request::post('moveords');
 
                     // insert images
                     if (DB::count('page', 'id=' . DB::val($galid) . ' AND type=' . Page::GALLERY . ' AND level<=' . User::getLevel()) !== 0) {
-                        // get the lowest order number
-                        $smallestord = DB::queryRow('SELECT ord FROM ' . DB::table('gallery_image') . ' WHERE home=' . $galid . ' ORDER BY ord LIMIT 1');
-
-                        if ($smallestord !== false) {
-                            $smallestord = $smallestord['ord'];
-                        } else {
-                            $smallestord = 1;
-                        }
-
-                        // move order numbers
-                        DB::update('gallery_image', 'home=' . $galid, ['ord' => DB::raw('ord+' . (count($_POST) - 2))], null);
+                        // get the initial order number
+                        $ord = DB::queryRow(
+                            'SELECT COALESCE(' . ($moveords ? 'MIN(ord)' : 'MAX(ord) + 1') . ', 1) AS ord'
+                            . ' FROM ' . DB::table('gallery_image')
+                            . ' WHERE home=' . $galid
+                        )['ord'];
 
                         // prepare rows
                         $rows = [];
@@ -436,12 +432,17 @@ if ($continue) {
                             if (is_file($dir . $file) && ImageService::isImage($file)) {
                                 $rows[] = [
                                     'home' => $galid,
-                                    'ord' => $smallestord + count($rows),
+                                    'ord' => $ord++,
                                     'title' => '',
                                     'prev' => '',
                                     'full' => substr($dir . $file, strlen(SL_ROOT)),
                                 ];
                             }
+                        }
+
+                        // move order numbers
+                        if ($moveords) {
+                            DB::update('gallery_image', 'home=' . $galid, ['ord' => DB::raw('ord+' . count($rows))], null);
                         }
 
                         // insert
@@ -605,6 +606,11 @@ if ($continue) {
       <th>' . _lang('admin.fman.addtogallery.counter') . '</th>
       <td>' . _num($counter) . '</td>
       </tr>
+
+      <tr>
+      <th>' . _lang('admin.content.form.ord') . '</th>
+      <td><label>' . Form::input('checkbox', 'moveords', '1', ['checked' => true]) . ' ' . _lang('admin.content.manageimgs.moveords') . '</label></td>
+      </tr>
       ';
                 } else {
                     $message = Message::warning(_lang('admin.fman.addtogallery.noimages'));
@@ -644,7 +650,7 @@ if ($continue) {
     <a href="' . _e($fmanUrl(['a' => 'edit'])) . '">' . _lang('admin.fman.menu.createfile') . '</a>
     <a href="' . _e($fmanUrl(['a' => 'newfolder'])) . '">' . _lang('admin.fman.menu.createfolder') . '</a>
     ' . ((User::hasPrivilege('admingallery') && User::hasPrivilege('admincontent')) ? '<a href="#" onclick="return Sunlight.admin.fmanAddSelectedToGallery()">' . _lang('admin.fman.menu.addtogallery') . '</a>' : '') . '
-    <a href="' . _e($fmanUrl(['dir' => null])) . '">' . _lang('admin.fman.menu.home') . '</a>
+    <a href="' . _e($fmanUrl(['dir' => $defdir])) . '">' . _lang('admin.fman.menu.home') . '</a>
     <br class="mobile-only">
     <strong>' . _lang('admin.fman.currentdir') . ':</strong> ' . substr($dir, strlen(SL_ROOT)) . '
     </p>

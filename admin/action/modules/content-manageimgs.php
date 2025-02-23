@@ -58,17 +58,11 @@ if (isset($_POST['xaction']) && $continue) {
 
             // load order
             if (Form::loadCheckbox('moveords')) {
-                $smallerord = DB::queryRow('SELECT ord FROM ' . DB::table('gallery_image') . ' WHERE home=' . $galid . ' ORDER BY ord LIMIT 1');
-
-                if ($smallerord !== false) {
-                    $ord = $smallerord['ord'];
-                } else {
-                    $ord = 1;
-                }
+                $ord = DB::queryRow('SELECT COALESCE(MIN(ord), 1) AS ord FROM ' . DB::table('gallery_image') . ' WHERE home=' . $galid)['ord'];
 
                 DB::update('gallery_image', 'home=' . $galid, ['ord' => DB::raw('ord+1')], null);
             } else {
-                $ord = floatval(Request::post('ord'));
+                $ord = DB::queryRow('SELECT COALESCE(MAX(ord)+1, 1) AS ord FROM ' . DB::table('gallery_image') . ' WHERE home=' . $galid)['ord'];
             }
 
             // check and insert
@@ -180,8 +174,7 @@ if (isset($_POST['xaction']) && $continue) {
 
                         if ($moveords) {
                             // get the highest order number in this gallery
-                            $greatestord = DB::queryRow('SELECT ord FROM ' . DB::table('gallery_image') . ' WHERE home=' . $galid . ' ORDER BY ord DESC LIMIT 1');
-                            $greatestord = $greatestord['ord'];
+                            $greatestord = DB::queryRow('SELECT COALESCE(MAX(ord), 1) AS ord FROM ' . DB::table('gallery_image') . ' WHERE home=' . $galid)['ord'];
 
                             DB::update('gallery_image', 'home=' . $newhome, ['ord' => DB::raw('ord+' . $greatestord)], null);
                         }
@@ -246,12 +239,11 @@ if (isset($_POST['xaction']) && $continue) {
                 // get order number
                 if (isset($_POST['moveords'])) {
                     // move
-                    $ord = 0;
+                    $ord = 1;
                     DB::update('gallery_image', 'home=' . $galid, ['ord' => DB::raw('ord+' . count($done))], null);
                 } else {
                     // get max + 1
-                    $ord = DB::queryRow('SELECT ord FROM ' . DB::table('gallery_image') . ' WHERE home=' . $galid . ' ORDER BY ord DESC LIMIT 1');
-                    $ord = $ord['ord'] + 1;
+                    $ord = DB::queryRow('SELECT COALESCE(MAX(ord)+1, 1) AS ord FROM ' . DB::table('gallery_image') . ' WHERE home=' . $galid)['ord'];
                 }
 
                 // query
@@ -260,13 +252,12 @@ if (isset($_POST['xaction']) && $continue) {
                 foreach ($done as $path) {
                     $insertdata[] = [
                         'home' => $galid,
-                        'ord' => $ord,
+                        'ord' => $ord++,
                         'title' => '',
                         'prev' => '',
                         'full' => $path,
                         'in_storage' => 1
                     ];
-                    ++$ord;
                 }
 
                 DB::insertMulti('gallery_image', $insertdata);
@@ -328,14 +319,6 @@ if ($continue) {
 </tr>
 
 <tr>
-<th>' . _lang('admin.content.form.ord') . '</th>
-<td>
-    ' . Form::input('number', 'ord', null, ['class' => 'inputsmall', 'disabled' => true]) . '
-    <label>' . Form::input('checkbox', 'moveords', '1', ['checked' => true, 'onclick' => 'Sunlight.toggleFormField(this.checked, \'addform\', \'ord\');']) . ' ' . _lang('admin.content.manageimgs.moveords') . '</label>
-</td>
-</tr>
-
-<tr>
 <th>' . _lang('admin.content.manageimgs.prev') . '</th>
 <td>
     ' . Form::input('text', 'prev', null, ['class' => 'inputsmall', 'disabled' => true]) . '
@@ -350,7 +333,10 @@ if ($continue) {
 
 <tr>
 <td></td>
-<td>' . Form::input('submit', null, _lang('global.insert')) . '</td>
+<td>
+    ' . Form::input('submit', null, _lang('global.insert')) . '
+    <label>' . Form::input('checkbox', 'moveords', '1', ['checked' => true]) . ' ' . _lang('admin.content.manageimgs.moveords') . '</label>
+</td>
 </tr>
 
 </table>
@@ -421,7 +407,8 @@ if ($continue) {
 
 <tr class="valign-top">
 <th>' . _lang('global.preview') . '</th>
-<td>' . $preview . '<br><br>
+<td>
+    <div class="gallery-edit-image-preview">' . $preview . '</div>
     <a class="button" href="' . _e(Xsrf::addToUrl(Router::admin('content-manageimgs', ['query' => ['g' => $galid, 'del' => $image['id']]]))) . '" onclick="return Sunlight.confirm();">
         <img src="' . _e(Router::path('admin/public/images/icons/delete.png')) . '" alt="del" class="icon">'
         . _lang('admin.content.manageimgs.delete')
