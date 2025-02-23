@@ -480,7 +480,6 @@ a#usermenu-username {margin-right: 0.5em; font-weight: bold; color: <?= $scheme_
 #settings-form label {font-weight: bold;}
 #settings-form table {border-collapse: collapse;}
 #settings-form table td {padding: 4px 8px; border-bottom: 1px solid <?= $scheme_smoke_med ?>;}
-#settings-form table td:first-child {white-space: nowrap; border-right: 1px solid <?= $scheme_smoke_med ?>;}
 #settings-form table th {padding-right: 8px; padding-left: 4px;}
 #settings-form table tr:last-child td {border-bottom: none;}
 
