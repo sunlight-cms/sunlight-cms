@@ -323,7 +323,7 @@ return [
     'admin.settings.info.favicon.help' => 'link the favicon in the page head (the root directory should contain <em>favicon.ico</em>)',
     'admin.settings.admin' => 'Administration',
     'admin.settings.admin.version_check' => 'Check version',
-    'admin.settings.admin.version_check.help' => 'check whether the system is up to date',
+    'admin.settings.admin.version_check.help' => 'check whether the system is up to date (<a href="%link%" target="_blank">more information</a>)',
     'admin.settings.admin.adminscheme' => 'Color scheme',
     'admin.settings.admin.adminscheme.help' => 'main color of the administration theme',
     'admin.settings.admin.adminscheme.0' => 'orange',

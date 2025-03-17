@@ -78,7 +78,7 @@ $editable_settings = [
     ],
     'admin' => [
         'items' => [
-            ['name' => 'version_check', 'format' => 'bool'],
+            ['name' => 'version_check', 'format' => 'bool', 'help' => _lang('admin.settings.admin.version_check.help', ['%link%' => 'https://sunlight-cms.cz/resource/8.x/version-check-info'])],
             ['name' => 'adminscheme', 'format' => 'int', 'choices' => $adminscheme_choices, 'reload_on_update' => true],
             ['name' => 'adminscheme_dark', 'format' => 'bool', 'reload_on_update' => true],
             ['name' => 'adminpagelist_mode', 'format' => 'text', 'choices' => [

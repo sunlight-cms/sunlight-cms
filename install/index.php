@@ -111,7 +111,7 @@ abstract class Labels
             'import.settings.description' => 'Popis webu',
             'import.settings.description.help' => 'krátký popis stránek',
             'import.settings.version_check' => 'Kontrola verze',
-            'import.settings.version_check.help' => 'kontrolovat, zda je verze systému aktuální',
+            'import.settings.version_check.help' => 'kontrolovat, zda je verze systému aktuální (<a href="%link%" target="_blank">více informací</a>)',
             'import.admin' => 'Účet administrátora',
             'import.admin.username' => 'Uživ. jméno',
             'import.admin.username.help' => 'povolené znaky jsou: a-z, tečka, pomlčka, podtržítko',
@@ -187,7 +187,7 @@ abstract class Labels
             'import.settings.description' => 'Description',
             'import.settings.description.help' => 'brief site description',
             'import.settings.version_check' => 'Check version',
-            'import.settings.version_check.help' => 'check whether the system is up to date',
+            'import.settings.version_check.help' => 'check whether the system is up to date (<a href="%link%">more information</a>)',
             'import.admin' => 'Admin account',
             'import.admin.username' => 'Username',
             'import.admin.username.help' => 'allowed characters: a-z, dot, dash, underscore',
@@ -947,7 +947,7 @@ Now you can log into the administration (with the account set up during installa
         <tr>
             <th><label for="version_check_checkbox"><?php Labels::render('import.settings.version_check') ?></label></th>
             <td><?= Form::input('checkbox', 'import_settings_version_check', '1', ['id' => 'version_check_checkbox', 'checked' => Form::loadCheckbox('import_settings_version_check', true, $this->getFormKeyVar())]) ?></td>
-            <td class="help"><?php Labels::render('import.settings.version_check.help') ?></td>
+            <td class="help"><?= Labels::get('import.settings.version_check.help', ['%link%' => 'https://sunlight-cms.cz/resource/8.x/version-check-info']) ?></td>
         </tr>
     </table>
 </fieldset>

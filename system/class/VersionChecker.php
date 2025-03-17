@@ -39,7 +39,7 @@ class VersionChecker
             return;
         }
 
-        $data = Core::$cache->cached('version_checker', 7 * 24 * 60 * 6, function () {
+        $data = Core::$cache->cached('version_checker', 7 * 24 * 60 * 60, function () {
             $versionApiUrl = Url::parse('https://api.sunlight-cms.cz/8.x/version-check');
             $versionApiUrl->add([
                 'ver' => Core::VERSION,
@@ -48,9 +48,11 @@ class VersionChecker
                 'lang' => Core::$langPlugin->getIsoCode(),
             ]);
 
+            $baseUrl = Core::getBaseUrl();
+
             try {
                 $response = HttpClient::get($versionApiUrl->build(), [
-                    'headers' => [sprintf('Referer: %s', Core::getBaseUrl()->build())],
+                    'headers' => [sprintf('Referer: %s://%s', $baseUrl->getScheme() ?? 'http', $baseUrl->getFullHost())],
                     'timeout' => 1,
                 ]);
             } catch (HttpClientException $e) {

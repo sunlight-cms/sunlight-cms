@@ -323,7 +323,7 @@ return [
     'admin.settings.info.favicon.help' => 'odkazovat na ikonku v hlavičce (do kořenového adresáře je potřeba nahrát soubor <em>favicon.ico</em>)',
     'admin.settings.admin' => 'Administrace',
     'admin.settings.admin.version_check' => 'Kontrola verze',
-    'admin.settings.admin.version_check.help' => 'kontrolovat, zda je verze systému aktuální',
+    'admin.settings.admin.version_check.help' => 'kontrolovat, zda je verze systému aktuální (<a href="%link%" target="_blank">více informací</a>)',
     'admin.settings.admin.adminscheme' => 'Barevné schéma',
     'admin.settings.admin.adminscheme.help' => 'barevné schéma stylu administrace',
     'admin.settings.admin.adminscheme.0' => 'oranžové',
