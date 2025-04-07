@@ -20,7 +20,7 @@
         "kuria/error": "^4.2.3",
         "kuria/event": "^2.0.1",
         "kuria/options": "^2.1",
-        "kuria/request-info": "^1.0.2",
+        "kuria/request-info": "^1.0.3",
         "kuria/url": "^5.0",
         "xemlock/htmlpurifier-html5": "^0.1.11"
     },
