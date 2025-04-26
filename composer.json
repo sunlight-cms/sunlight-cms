@@ -17,12 +17,12 @@
         "ezyang/htmlpurifier": "^4.17",
         "kuria/cache": "^6.0",
         "kuria/debug": "^4.0.1",
-        "kuria/error": "^4.2.3",
+        "kuria/error": "^4.2.4",
         "kuria/event": "^2.0.1",
         "kuria/options": "^2.1",
         "kuria/request-info": "^1.0.3",
         "kuria/url": "^5.0",
-        "xemlock/htmlpurifier-html5": "^0.1.11"
+        "xemlock/htmlpurifier-html5": "dev-master#a564d2ab as 0.1.12"
     },
     "config": {
         "bin-dir": "bin",
