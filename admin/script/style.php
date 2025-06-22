@@ -407,7 +407,7 @@ a#usermenu-username {margin-right: 0.5em; font-weight: bold; color: <?= $scheme_
 /* editpages settings */
 #settingseditform fieldset label{display: block;}
 #settingseditform fieldset:first-child {margin: 0 0 25px 0;}
-#settingseditform table td { padding: 4px 8px;border-bottom: 1px solid #d9d9d9;}
+#settingseditform table td { padding: 4px 8px;border-bottom: 1px solid <?= $scheme_smoke_med ?>;}
 #settingseditform table tr:last-child td {border-bottom: none;}
 
 /* box management */
