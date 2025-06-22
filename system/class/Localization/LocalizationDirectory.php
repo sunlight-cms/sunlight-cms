@@ -61,10 +61,20 @@ class LocalizationDirectory extends LocalizationDictionary
      */
     private function load(): void
     {
-        if ($this->hasDictionaryForLanguage(Core::$lang)) {
-            $this->add($this->loadDictionaryForLanguage(Core::$lang));
-        } elseif (Core::$fallbackLang !== Core::$lang && $this->hasDictionaryForLanguage(Core::$fallbackLang)) {
-            $this->add($this->loadDictionaryForLanguage(Core::$fallbackLang));
+        $currentLangCode = Core::$langPlugin->getIsoCode();
+
+        if ($this->hasDictionaryForLanguage($currentLangCode)) {
+            $this->add($this->loadDictionaryForLanguage($currentLangCode));
+        } elseif (Core::$fallbackLang !== Core::$lang) {
+            $fallbackLangPlugin = Core::$pluginManager->getPlugins()->getLanguage(Core::$fallbackLang);
+
+            if ($fallbackLangPlugin !== null) {
+                $fallbackLangCode = $fallbackLangPlugin->getIsoCode();
+
+                if ($this->hasDictionaryForLanguage($fallbackLangCode)) {
+                    $this->add($this->loadDictionaryForLanguage($fallbackLangCode));
+                }
+            }
         }
 
         $this->isLoaded = true;
