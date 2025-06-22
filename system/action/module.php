@@ -1,6 +1,7 @@
 <?php
 
 use Sunlight\Extend;
+use Sunlight\Router;
 use Sunlight\Util\StringHelper;
 
 defined('SL_ROOT') or exit;
@@ -11,7 +12,7 @@ $script = null;
 
 if (preg_match('{m/([a-zA-Z_\-.]+)$}AD', $_index->slug, $match)) {
     $module = $match[1];
-    $_index->url = clone $_url;
+    $_index->url = Router::module($module);
 
     // check if it's a system module
     $systemModule = SL_ROOT . 'system/action/modules/' . $module . '.php';
