@@ -619,7 +619,7 @@ $output .= Form::start('content-edit', ['class' => 'cform', 'action' => Router::
                         <tbody>
                             <tr>
                                 <td>
-                                    ' . Form::input('number', 'level', ($query['level_inherit'] ? '' : $query['level']), ['class' => 'inputmax', 'min' => 0, 'max' => User::MAX_LEVEL, 'maxlength' => 5]) . '
+                                    ' . Form::input('number', 'level', ($query['level_inherit'] ? '' : $query['level']), ['class' => 'inputmax', 'min' => 0, 'max' => User::MAX_LEVEL]) . '
                                 </td>
                                 <td>'
                                     . _lang('admin.content.form.level')
