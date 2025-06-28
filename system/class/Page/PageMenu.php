@@ -26,29 +26,16 @@ abstract class PageMenu
         $trailMap = [];
 
         if ($activePage !== null) {
-            $maxLevel = 0;
-            $maxDepth = 0;
+            if (isset($flatPageTree[$activePage['id']])) {
+                // active page is in the tree - mark trail
+                $current = $flatPageTree[$activePage['id']];
 
-            foreach ($flatPageTree as $page) {
-                if ($page['node_level'] == 0 && $page['node_depth'] > $maxDepth) {
-                    $maxDepth = $page['node_depth'];
-                } elseif ($page['node_level'] > $maxLevel) {
-                    $maxLevel = $page['node_level'];
+                while ($current['node_parent'] !== null && isset($flatPageTree[$current['node_parent']])) {
+                    $current = $flatPageTree[$current['node_parent']];
+                    $trailMap[$current['id']] = true;
                 }
-
-                if ($page['id'] == $activePage['id']) {
-                    $current = $page;
-
-                    while ($current['node_parent'] !== null && isset($flatPageTree[$current['node_parent']])) {
-                        $current = $flatPageTree[$current['node_parent']];
-                        $trailMap[$current['id']] = true;
-                    }
-                }
-            }
-
-            if ($maxDepth > $maxLevel && empty($trailMap)) {
-                // there are more pages at a deeper level and the active page is not in the current tree
-                // load a full path to get the trail
+            } else {
+                // active page is not in the tree - load full path to generate trail
                 foreach (Page::getPath($activePage['id'], $activePage['node_level']) as $page) {
                     if ($page['id'] != $activePage['id']) {
                         $trailMap[$page['id']] = true;
