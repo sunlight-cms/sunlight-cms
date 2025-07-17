@@ -21,7 +21,7 @@ if (isset($_POST['action'])) {
         case 1:
             $title = Html::cut(_e(Request::post('title', '')), 64);
             $public = Form::loadCheckbox('public');
-            $locked = Form::loadCheckbox('lockedc');
+            $locked = Form::loadCheckbox('locked');
 
             DB::insert('shoutbox', [
                 'title' => $title,
@@ -33,78 +33,35 @@ if (isset($_POST['action'])) {
 
         // save
         case 2:
-            $lastid = -1;
-            $sql = '';
+            $shoutboxes_post = Request::post('shoutbox', null, true);
 
-            foreach ($_POST as $var => $val) {
-                if ($var == 'action') {
+            if (!is_array($shoutboxes_post)) {
+                break;
+            }
+
+            $shoutbox_changeset_map = [];
+
+            foreach ($shoutboxes_post as $shoutbox_id => $shoutbox_data) {
+                if (
+                    !is_int($shoutbox_id)
+                    || !isset($shoutbox_data['title'])
+                    || !is_string($shoutbox_data['title'])
+                ) {
                     continue;
                 }
 
-                $var = explode('_', $var);
+                $shoutbox_changeset_map[$shoutbox_id] = [
+                    'title' =>  Html::cut(_e(trim($shoutbox_data['title'])), 64),
+                    'locked' => isset($shoutbox_data['locked']),
+                    'public' => isset($shoutbox_data['public']),
+                ];
 
-                if (count($var) == 2) {
-                    $id = (int) mb_substr($var[0], 1);
-                    $var = $var[1];
-
-                    if ($lastid == -1) {
-                        $lastid = $id;
-                    }
-
-                    $quotes = true;
-                    $skip = false;
-
-                    switch ($var) {
-                        case 'title':
-                            $val = Html::cut(_e(trim($val)), 64);
-                            break;
-                        case 'lockedtrigger':
-                            $var = 'locked';
-                            $val = Form::loadCheckbox('s' . $id . '_locked');
-                            $quotes = false;
-                            break;
-                        case 'publictrigger':
-                            $var = 'public';
-                            $val = Form::loadCheckbox('s' . $id . '_public');
-                            $quotes = false;
-                            break;
-                        case 'delposts':
-                            $skip = true;
-                            DB::delete('post', 'home=' . $id . ' AND type=' . Post::SHOUTBOX_ENTRY);
-                            break;
-                        default:
-                            $skip = true;
-                            break;
-                    }
-
-                    // save each shoutbox
-                    if (!$skip) {
-                        if ($lastid != $id) {
-                            DB::query('UPDATE ' . DB::table('shoutbox') . ' SET ' . $sql . ' WHERE id=' . $lastid);
-                            $sql = '';
-                            $lastid = $id;
-                        }
-
-                        if ($sql !== '') {
-                            $sql .= ',';
-                        }
-
-                        $sql .= $var . '=';
-
-                        if ($quotes) {
-                            $sql .= DB::val($val);
-                        } else {
-                            $sql .= $val;
-                        }
-                    }
+                if (isset($shoutbox_data['delposts'])) {
+                    DB::delete('post', 'home=' . $shoutbox_id . ' AND type=' . Post::SHOUTBOX_ENTRY);
                 }
             }
 
-            // save last (or only) shoutbox
-            if ($sql != '') {
-                $sql = trim($sql, ',');
-                DB::query('UPDATE ' . DB::table('shoutbox') . ' SET ' . $sql . ' WHERE id=' . $id);
-            }
+            DB::updateSetMulti('shoutbox', 'id', $shoutbox_changeset_map);
 
             $message = Message::ok(_lang('global.saved'));
             break;
@@ -175,7 +132,7 @@ if (DB::size($shoutboxes) != 0) {
 
     <tr>
     <th>' . _lang('admin.content.form.title') . '</th>
-    <td>' . Form::input('text', 's' . $shoutbox['id'] . '_title', $shoutbox['title'], ['class' => 'inputmedium']) . '</td>
+    <td>' . Form::input('text', 'shoutbox[' . $shoutbox['id'] . '][title]', $shoutbox['title'], ['class' => 'inputmedium']) . '</td>
     </tr>
 
     <tr>
@@ -190,10 +147,9 @@ if (DB::size($shoutboxes) != 0) {
     <tr class="valign-top">
     <th>' . _lang('admin.content.form.settings') . '</th>
     <td>
-    ' . Form::input('hidden', 's' . $shoutbox['id'] . '_publictrigger', '1') . Form::input('hidden', 's' . $shoutbox['id'] . '_lockedtrigger', '1') . '
-    <label>' . Form::input('checkbox', 's' . $shoutbox['id'] . '_public', '1', ['checked' => (bool) $shoutbox['public']]) . ' ' . _lang('admin.content.form.unregpost') . '</label><br>
-    <label>' . Form::input('checkbox', 's' . $shoutbox['id'] . '_locked', '1', ['checked' => (bool) $shoutbox['locked']]) . ' ' . _lang('admin.content.form.locked2') . '</label><br>
-    <label>' . Form::input('checkbox', 's' . $shoutbox['id'] . '_delposts', '1') . ' ' . _lang('admin.content.form.delposts') . '</label><br><br>
+    <label>' . Form::input('checkbox', 'shoutbox[' . $shoutbox['id'] . '][public]', '1', ['checked' => (bool) $shoutbox['public']]) . ' ' . _lang('admin.content.form.unregpost') . '</label><br>
+    <label>' . Form::input('checkbox', 'shoutbox[' . $shoutbox['id'] . '][locked]', '1', ['checked' => (bool) $shoutbox['locked']]) . ' ' . _lang('admin.content.form.locked2') . '</label><br>
+    <label>' . Form::input('checkbox', 'shoutbox[' . $shoutbox['id'] . '][delposts]', '1') . ' ' . _lang('admin.content.form.delposts') . '</label><br><br>
     <a class="button" href="' . _e(Xsrf::addToUrl(Router::admin('content-sboxes', ['query' => ['del' => $shoutbox['id']]]))) . '" onclick="return Sunlight.confirm();">
         <img src="' . _e(Router::path('admin/public/images/icons/delete.png')) . '" alt="del" class="icon">' . _lang('global.delete') . '
     </a>
