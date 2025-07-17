@@ -38,7 +38,7 @@ $_index->title = _lang('mod.search');
 $output .= _buffer(function () use ($search, $search_query, $empty_state) { ?>
     <p class="bborder"><?= _lang('mod.search.p') ?></p>
 
-    <?= Form::start('full-search', ['action' => Router::module('search'), 'method' => 'get', 'class' => 'fullsearchform']) ?>
+    <?= Form::start('full-search', ['action' => Router::module('search'), 'method' => 'get', 'class' => 'fullsearchform'], ['xsrf_input' => true]) ?>
         <p>
             <?= Form::input('search', 'q', $search_query, ['class' => 'inputmedium']) ?>
             <?= Form::input('submit', null, _lang('mod.search.submit')) ?>
