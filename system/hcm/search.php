@@ -8,7 +8,7 @@ use Sunlight\Util\Form;
 
 return function () {
     if (Settings::get('search')) {
-        $output = Form::start('search-' . Hcm::$uid, ['action' => Router::module('search'), 'class' => 'searchform', 'method' => 'get']) . "\n";
+        $output = Form::start('search-' . Hcm::$uid, ['action' => Router::module('search'), 'class' => 'searchform', 'method' => 'get'], ['xsrf_input' => true]) . "\n";
 
         foreach (Search::getSources() as $source) {
             if ($source->isEnabledByDefault()) {
