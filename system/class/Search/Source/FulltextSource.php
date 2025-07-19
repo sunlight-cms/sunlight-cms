@@ -3,6 +3,7 @@
 namespace Sunlight\Search\Source;
 
 use Sunlight\Database\Database as DB;
+use Sunlight\Extend;
 use Sunlight\Search\SearchResult;
 use Sunlight\Search\SearchSource;
 
@@ -34,6 +35,12 @@ abstract class FulltextSource extends SearchSource
         if ($this->queryProcessor !== null) {
             $query = ($this->queryProcessor)($query, $this->modifier);
         }
+
+        Extend::call('search.fulltext', [
+            'alias' => $alias,
+            'joins' => &$joins,
+            'filter' => &$filter,
+        ]);
 
         $query = DB::query(
             'SELECT ' . implode(',', $this->getResultColumns())
