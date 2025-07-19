@@ -9,17 +9,11 @@ class SqlLogger
     /** @var float|null */
     private $timerStartedAt = 0;
 
-    /**
-     * Set the timer
-     */
     function setTimer(): void
     {
         $this->timerStartedAt = microtime(true);
     }
 
-    /**
-     * Log SQL query
-     */
     function log(string $query): void
     {
         $dummyException = new \Exception();
@@ -33,9 +27,6 @@ class SqlLogger
         $this->timerStartedAt = 0;
     }
 
-    /**
-     * Get log
-     */
     function getLog(): array
     {
         return $this->log;

@@ -202,6 +202,6 @@ body.devkit-content-open {
     word-break: break-all;
     word-wrap: break-word;
 }
-#devkit-toolbar .break-all {
+#devkit-toolbar .devkit-break-all {
     word-break: break-all;
 }

@@ -196,6 +196,7 @@ ENTRY
         return new Component\ToolbarRenderer(
             $this->sqlLogger->getLog(),
             $this->eventLogger->getLog(),
+            $this->eventLogger->getEventCount(),
             $this->missingLocalizationLogger->getMissingEntries(),
             $this->logEntries,
             $this->dumps

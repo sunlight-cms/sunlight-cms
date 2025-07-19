@@ -24,6 +24,8 @@ class ToolbarRenderer
     private $sqlLog;
     /** @var array */
     private $eventLog;
+    /** @var int */
+    private $eventCount;
     /** @var \SplObjectStorage */
     private $missingLocalizations;
     /** @var LogEntry[] */
@@ -38,12 +40,14 @@ class ToolbarRenderer
     function __construct(
         array $sqlLog,
         array $eventLog,
+        int $eventCount,
         \SplObjectStorage $missingLocalizations,
         array $logEntries,
         array $dumps
     ) {
         $this->sqlLog = $sqlLog;
         $this->eventLog = $eventLog;
+        $this->eventCount = $eventCount;
         $this->missingLocalizations = $missingLocalizations;
         $this->logEntries = $logEntries;
         $this->dumps = $dumps;
@@ -116,7 +120,7 @@ class ToolbarRenderer
     {
         ?>
 <div class="devkit-section devkit-memory">
-    <?= number_format(round(memory_get_peak_usage() / 1048576, 1), 1) ?>MB
+    <?= _e($this->formatNumber(round(memory_get_peak_usage() / 1048576, 1), 1)) ?>MB
 </div>
 <?php
     }
@@ -146,10 +150,8 @@ class ToolbarRenderer
                     <tr>
                         <td><?= $index + 1 ?></td>
                         <td><?= round($entry['time'] * 1000) ?>ms</td>
-                        <td>
-                            <a href="#" class="devkit-hideshow" data-target="#devkit-db-trace-<?= $index ?>">show</a>
-                        </td>
-                        <td class="break-all"><code><?= _e($entry['query']) ?></code></td>
+                        <td><a href="#" class="devkit-hideshow" data-target="#devkit-db-trace-<?= $index ?>">show</a></td>
+                        <td class="devkit-break-all"><code><?= _e($entry['query']) ?></code></td>
                     </tr>
                     <tr id="devkit-db-trace-<?= $index ?>" class="devkit-hidden">
                         <td colspan="4">
@@ -183,7 +185,7 @@ class ToolbarRenderer
 
         ?>
 <div class="devkit-section devkit-extend devkit-toggleable">
-    <?= count($this->eventLog) ?>
+    <?= _e($this->formatNumber($this->eventCount)) ?>
 </div>
 
 <div class="devkit-content">
@@ -195,17 +197,29 @@ class ToolbarRenderer
                 <tr>
                     <th>Event</th>
                     <th>Count</th>
+                    <th>Calls</th>
                     <th>Args</th>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($this->eventLog as $event => $data): ?>
+                <?php
+                $eventIndex = 0;
+
+                foreach ($this->eventLog as $event => $data) {
+                ?>
                     <tr>
                         <td><?= _e($event) ?></td>
-                        <td><?= _e($data[0]) ?></td>
-                        <td><?php $this->renderEventArgs($data[1]) ?></td>
+                        <td><?= _e(count($data[1])) ?></td>
+                        <td><a href="#" class="devkit-hideshow" data-target="#devkit-event-calls-<?= $eventIndex ?>">show</a></td>
+                        <td><?php $this->renderEventArgs($data[0]) ?></td>
                     </tr>
-                <?php endforeach ?>
+                    <tr id="devkit-event-calls-<?= $eventIndex ?>" class="devkit-hidden">
+                        <td colspan="4"><?php $this->renderEventCalls($data[1]) ?></td>
+                    </tr>
+                <?php
+                    ++$eventIndex;
+                }
+                ?>
             </tbody>
         </table>
 
@@ -471,6 +485,10 @@ class ToolbarRenderer
 
     private function renderRequestSection(): void
     {
+        $valueRenderer = static function ($value) {
+            return '<pre>' . _e(Dumper::dump($value)) . '</pre>';
+        };
+
         ?>
 <div class="devkit-section devkit-request devkit-toggleable">
     <?= _e(Request::method()) ?>
@@ -483,14 +501,14 @@ class ToolbarRenderer
                 $<?= $globalVarName ?>
             </div>
 
-            <div class="devkit-hideshow-target"><?php $this->renderArrayDump($GLOBALS[$globalVarName]) ?></div>
+            <div class="devkit-hideshow-target"><?php $this->renderArray($GLOBALS[$globalVarName], $valueRenderer) ?></div>
         <?php endforeach ?>
 
         <div class="devkit-heading devkit-hideshow">
             HTTP headers
         </div>
 
-        <div class="devkit-hideshow-target"><?php $this->renderArrayDump(RequestInfo::getHeaders()) ?></div>
+        <div class="devkit-hideshow-target"><?php $this->renderArray(RequestInfo::getHeaders(), $valueRenderer) ?></div>
     </div>
 </div>
 <?php
@@ -549,29 +567,63 @@ class ToolbarRenderer
         return sprintf('Closure(file="%s", line=%d)', $refl->getFileName(), $refl->getStartLine());
     }
 
-    /**
-     * Render event argument list
-     */
     private function renderEventArgs(array $args): void
     {
-        if (!empty($args)) {
-            $eventArgIsFirst = true;
-
-            foreach ($args as $eventArgName => $eventArgType) {
-                if ($eventArgIsFirst) {
-                    $eventArgIsFirst = false;
-                } else {
-                    echo ', ';
-                }
-
-                echo '<span class="devkit-type">' . _e($eventArgType) . '</span> ' . _e($eventArgName);
-            }
-        } else {
+        if (empty($args)) {
             echo '-';
+            return;
         }
+
+        $first = true;
+
+        echo '<code>';
+
+        foreach ($args as $argName => $argTypeMap) {
+            if ($first) {
+                $first = false;
+            } else {
+                echo ', ';
+            }
+
+            echo _e($argName),
+                ' => ',
+                '<span class="devkit-type">',
+                count($argTypeMap) <= 3 ? _e(implode('|', array_keys($argTypeMap))) : 'mixed',
+                '</span>';
+        }
+
+        echo '</code>';
     }
 
-    private function renderArrayDump(array $array): void
+    private function renderEventCalls(array $calls): void
+    {
+        $argRenderer = static function ($dump) {
+            return '<pre>' . _e($dump) . '</pre>';
+        };
+
+        ?>
+<table>
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Args</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($calls as $index => $args): ?>
+            <tr>
+                <td><?= _e($index) ?></td>
+                <td>
+                    <?php $this->renderArray($args, $argRenderer) ?>
+                </td>
+            </tr>
+        <?php endforeach ?>
+    </tbody>
+</table>
+<?php
+    }
+
+    private function renderArray(array $array, \Closure $valueRenderer): void
     {
         ?>
 <table>
@@ -579,7 +631,7 @@ class ToolbarRenderer
         <?php foreach ($array as $key => $value): ?>
             <tr>
                 <th><code><?= _e($key) ?></code></th>
-                <td><code><?= _e(Dumper::dump($value)) ?></code></td>
+                <td><?= $valueRenderer($value) ?></td>
             </tr>
         <?php endforeach ?>
     <?php else: ?>
@@ -587,6 +639,10 @@ class ToolbarRenderer
     <?php endif ?>
 </table>
 <?php
+    }
 
+    private function formatNumber($number, int $decimals = 0): string
+    {
+        return number_format($number, $decimals, '.', '');
     }
 }
