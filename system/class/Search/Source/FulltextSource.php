@@ -37,6 +37,7 @@ abstract class FulltextSource extends SearchSource
         }
 
         Extend::call('search.fulltext', [
+            'source' => $this,
             'alias' => $alias,
             'joins' => &$joins,
             'filter' => &$filter,
